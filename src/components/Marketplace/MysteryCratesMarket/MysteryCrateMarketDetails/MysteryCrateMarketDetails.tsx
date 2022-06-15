@@ -15,6 +15,7 @@ import { Dates } from "../../Common/MarketDetails/Dates"
 import { ImagesPreview } from "../../Common/MarketDetails/ImagesPreview"
 import { ManageListing } from "../../Common/MarketDetails/ManageListing"
 import { Owner } from "../../Common/MarketDetails/Owner"
+import { SoldDetails } from "../../Common/MarketDetails/SoldDetails"
 import { CrateDetails } from "./CrateDetails"
 
 export const MysteryCrateMarketDetails = ({ id }: { id: string }) => {
@@ -114,7 +115,7 @@ const WarMachineMarketDetailsInner = ({
 }) => {
     const below780 = useMediaQuery("(max-width:780px)")
     const [isTimeEnded, toggleIsTimeEnded] = useToggle()
-    const { id, owner, mystery_crate, created_at, end_at } = marketItem
+    const { id, owner, mystery_crate, created_at, end_at, sold_at, sold_for } = marketItem
 
     return (
         <Box
@@ -173,9 +174,11 @@ const WarMachineMarketDetailsInner = ({
 
                             <Owner owner={owner} />
 
-                            <Dates createdAt={created_at} endAt={end_at} onTimeEnded={() => toggleIsTimeEnded(true)} />
+                            <Dates createdAt={created_at} endAt={end_at} onTimeEnded={() => toggleIsTimeEnded(true)} soldAt={sold_at} />
 
-                            {marketItem.buyout_price && (
+                            {sold_for && <SoldDetails soldFor={sold_for} />}
+
+                            {!sold_for && marketItem.buyout_price && (
                                 <BuyNowDetails
                                     id={marketItem.id}
                                     itemType={ItemType.MysteryCrate}
@@ -188,7 +191,7 @@ const WarMachineMarketDetailsInner = ({
                                 />
                             )}
 
-                            {marketItem.auction_current_price && (
+                            {!sold_for && marketItem.auction_current_price && (
                                 <AuctionDetails
                                     id={marketItem.id}
                                     itemType={ItemType.MysteryCrate}
