@@ -222,7 +222,10 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate }: MysteryCrateStore
                 <ConfirmModal
                     title="CONFIRMATION"
                     onConfirm={confirmBuy}
-                    onClose={() => toggleConfirmModalOpen(false)}
+                    onClose={() => {
+                        setBuyError(undefined)
+                        toggleConfirmModalOpen(false)
+                    }}
                     isLoading={isLoading}
                     error={buyError}
                     confirmSuffix={

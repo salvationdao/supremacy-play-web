@@ -16,6 +16,7 @@ import { Dates } from "../../Common/MarketDetails/Dates"
 import { ImagesPreview, MarketMedia } from "../../Common/MarketDetails/ImagesPreview"
 import { ManageListing } from "../../Common/MarketDetails/ManageListing"
 import { Owner } from "../../Common/MarketDetails/Owner"
+import { SoldDetails } from "../../Common/MarketDetails/SoldDetails"
 import { MechBattleHistoryDetails } from "./MechBattleHistoryDetails"
 import { MechStatsDetails } from "./MechStatsDetails"
 
@@ -170,7 +171,7 @@ const WarMachineMarketDetailsInner = ({
         ]
     }, [mechDetails])
 
-    const { id, owner, mech, created_at, end_at } = marketItem
+    const { id, owner, mech, created_at, end_at, sold_at, sold_for } = marketItem
 
     return (
         <Box
@@ -225,9 +226,11 @@ const WarMachineMarketDetailsInner = ({
 
                             <Owner owner={owner} />
 
-                            <Dates createdAt={created_at} endAt={end_at} onTimeEnded={() => toggleIsTimeEnded(true)} />
+                            <Dates createdAt={created_at} endAt={end_at} onTimeEnded={() => toggleIsTimeEnded(true)} soldAt={sold_at} />
 
-                            {marketItem.buyout_price && (
+                            {sold_for && <SoldDetails soldFor={sold_for} />}
+
+                            {!sold_for && marketItem.buyout_price && (
                                 <BuyNowDetails
                                     id={marketItem.id}
                                     itemType={ItemType.WarMachine}
@@ -240,7 +243,7 @@ const WarMachineMarketDetailsInner = ({
                                 />
                             )}
 
-                            {marketItem.auction_current_price && (
+                            {!sold_for && marketItem.auction_current_price && (
                                 <AuctionDetails
                                     id={marketItem.id}
                                     itemType={ItemType.WarMachine}

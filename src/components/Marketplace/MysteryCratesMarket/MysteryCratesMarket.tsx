@@ -32,7 +32,7 @@ export const MysteryCratesMarket = () => {
     const [search, setSearch] = useState("")
     const [sort, setSort] = useState<SortType>(SortType.NewestFirst)
     const [status, setStatus] = useState<string[]>([])
-    const [ownedBy, setOwnedBy] = useState<string[]>(["others"])
+    const [ownedBy, setOwnedBy] = useState<string[]>([])
     const [listingTypes, setListingTypes] = useState<string[]>([])
     const [price, setPrice] = useState<(number | undefined)[]>([undefined, undefined])
 
