@@ -1,5 +1,5 @@
 import Masonry from "@mui/lab/Masonry"
-import { Box, CircularProgress, Stack, Typography } from "@mui/material"
+import { Box, CircularProgress, Stack, Typography, useMediaQuery } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
 import { SafePNG } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
@@ -101,6 +101,7 @@ export const KeycardMarketDetails = ({ id }: { id: string }) => {
 }
 
 const WarMachineMarketDetailsInner = ({ marketItem, primaryColor }: { marketItem: MarketplaceBuyAuctionItem; primaryColor: string }) => {
+    const below780 = useMediaQuery("(max-width:780px)")
     const [isTimeEnded, toggleIsTimeEnded] = useToggle()
     const { id, owner, keycard, created_at, end_at } = marketItem
 
@@ -137,7 +138,7 @@ const WarMachineMarketDetailsInner = ({ marketItem, primaryColor }: { marketItem
                         px: "3rem",
                     }}
                 >
-                    <Masonry columns={2} spacing={4}>
+                    <Masonry columns={below780 ? 1 : 2} spacing={4}>
                         <ImagesPreview
                             media={[
                                 {
