@@ -78,7 +78,7 @@ export const WalletPopover = ({
                 backgroundColor={theme.factionTheme.background}
                 sx={{ height: "100%" }}
             >
-                <Stack spacing="1.4rem" sx={{ position: "relative", minWidth: "35rem", px: "2rem", pt: "1.6rem", pb: "2rem" }}>
+                <Stack spacing="2rem" sx={{ position: "relative", minWidth: "35rem", px: "2rem", pt: "1.6rem", pb: "2rem" }}>
                     <Box>
                         <Typography gutterBottom sx={{ fontFamily: fonts.nostromoBlack, color: theme.factionTheme.primary }}>
                             CURRENT SESSION
