@@ -258,7 +258,7 @@ const PurchaseSuccessModal = ({ reward, onClose }: { reward: RewardResponse | un
                     outline: "none",
                 }}
             >
-                {reward && <ClaimedRewards rewards={[reward]} />}
+                <Box sx={{ position: "relative" }}>{reward && <ClaimedRewards rewards={[reward]} onClose={onClose} />}</Box>
             </Box>
         </Modal>
     )
