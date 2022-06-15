@@ -11,7 +11,7 @@ import { MarketUser } from "../../../../types/marketplace"
 import { ConfirmModal } from "../../../Common/ConfirmModal"
 import { SuccessModal } from "../../../Common/SuccessModal"
 
-export const ManageListing = ({ id, owner, isKeycard }: { id: string; owner?: MarketUser; isKeycard?: boolean }) => {
+export const ManageListing = ({ id, owner, isKeycard, isTimeEnded }: { id: string; owner?: MarketUser; isKeycard?: boolean; isTimeEnded: boolean }) => {
     const { userID } = useAuth()
     const history = useHistory()
     const location = useLocation()
@@ -59,6 +59,7 @@ export const ManageListing = ({ id, owner, isKeycard }: { id: string; owner?: Ma
                     <Stack direction="row" alignItems="center" spacing=".7rem">
                         <FancyButton
                             excludeCaret
+                            disabled={isTimeEnded}
                             clipThingsProps={{
                                 clipSize: "9px",
                                 backgroundColor: colors.red,

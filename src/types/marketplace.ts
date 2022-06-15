@@ -75,4 +75,6 @@ export interface MarketplaceBuyAuctionItem {
     }
     keycard?: MarketKeycard
     mystery_crate?: MarketCrate
+    sold_for?: string
+    sold_at?: Date
 }

@@ -4,14 +4,16 @@ import { ReactNode, useMemo } from "react"
 import { useHistory } from "react-router-dom"
 import { FancyButton } from "../../.."
 import { useTheme } from "../../../../containers/theme"
-import { numFormatter, timeDiff } from "../../../../helpers"
+import { numFormatter, shadeColor, timeDiff } from "../../../../helpers"
 import { MARKETPLACE_TABS } from "../../../../pages"
+import { colors } from "../../../../theme/theme"
 import { MarketplaceBuyAuctionItem } from "../../../../types/marketplace"
 import { AuctionPrice } from "../../Common/MarketItem/AuctionPrice"
 import { BuyoutPrice } from "../../Common/MarketItem/BuyoutPrice"
 import { SellerInfo } from "../../Common/MarketItem/SellerInfo"
 import { Thumbnail } from "../../Common/MarketItem/Thumbnail"
 import { Timeframe } from "../../Common/MarketItem/Timeframe"
+import { SoldPrice } from "./SoldPrice"
 
 interface MarketItemProps {
     imageUrl: string
@@ -50,8 +52,9 @@ export const MarketItem = ({ imageUrl, animationUrl, cardAnimationUrl, backgroun
 
     const primaryColor = theme.factionTheme.primary
     const backgroundColor = theme.factionTheme.background
+    const soldBackgroundColor = useMemo(() => shadeColor(colors.green, -90), [])
 
-    const { id, end_at, owner, total_bids } = item
+    const { id, end_at, owner, total_bids, sold_at, sold_for } = item
 
     if (!owner) return null
 
@@ -68,9 +71,9 @@ export const MarketItem = ({ imageUrl, animationUrl, cardAnimationUrl, backgroun
                         bottomLeft: true,
                         bottomRight: true,
                     },
-                    backgroundColor: backgroundColor,
+                    backgroundColor: sold_at ? soldBackgroundColor : backgroundColor,
                     opacity: 0.7,
-                    border: { isFancy: !isGridView, borderColor: primaryColor, borderThickness: ".25rem" },
+                    border: { isFancy: !isGridView, borderColor: sold_at ? colors.green : primaryColor, borderThickness: ".25rem" },
                     sx: { position: "relative" },
                 }}
                 sx={{ color: primaryColor, textAlign: "start" }}
@@ -82,7 +85,7 @@ export const MarketItem = ({ imageUrl, animationUrl, cardAnimationUrl, backgroun
                         p: isGridView ? ".5rem .6rem" : ".1rem .3rem",
                         display: isGridView ? "block" : "grid",
                         gridTemplateRows: "7rem",
-                        gridTemplateColumns: "8rem minmax(auto, 38rem) 1.5fr repeat(3, 1fr)",
+                        gridTemplateColumns: `8rem minmax(auto, 38rem) 1.5fr repeat(${sold_at ? 2 : 3}, 1fr)`,
                         gap: "1.6rem",
                         ...(isGridView
                             ? {
@@ -96,9 +99,16 @@ export const MarketItem = ({ imageUrl, animationUrl, cardAnimationUrl, backgroun
                     <Thumbnail isGridView={isGridView} imageUrl={imageUrl} animationUrl={animationUrl} cardAnimationUrl={cardAnimationUrl} />
                     {children}
                     <SellerInfo isGridView={isGridView} owner={owner} />
-                    <Timeframe isGridView={isGridView} endAt={end_at} />
-                    <BuyoutPrice isGridView={isGridView} formattedPrice={formattedBuyoutPrice} formattedDropPrice={formattedDropPrice} />
-                    <AuctionPrice isGridView={isGridView} formattedPrice={formattedAuctionPrice} totalBids={total_bids} />
+                    <Timeframe isGridView={isGridView} endAt={end_at} soldAt={sold_at} />
+
+                    {sold_at && sold_for ? (
+                        <SoldPrice isGridView={isGridView} soldFor={sold_for} />
+                    ) : (
+                        <>
+                            <BuyoutPrice isGridView={isGridView} formattedPrice={formattedBuyoutPrice} formattedDropPrice={formattedDropPrice} />
+                            <AuctionPrice isGridView={isGridView} formattedPrice={formattedAuctionPrice} totalBids={total_bids} />
+                        </>
+                    )}
                 </Box>
 
                 <Box

@@ -174,7 +174,7 @@ const WarMachineMarketDetailsInner = ({ marketItem, primaryColor }: { marketItem
                                 isTimeEnded={isTimeEnded}
                             />
 
-                            <ManageListing id={id} owner={owner} isKeycard />
+                            <ManageListing id={id} owner={owner} isKeycard isTimeEnded={isTimeEnded} />
                         </Stack>
 
                         <KeycardDetails keycard={keycard} primaryColor={primaryColor} />
