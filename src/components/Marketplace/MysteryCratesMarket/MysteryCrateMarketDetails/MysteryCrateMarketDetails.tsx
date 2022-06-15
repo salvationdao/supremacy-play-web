@@ -201,7 +201,7 @@ const WarMachineMarketDetailsInner = ({
                                 />
                             )}
 
-                            <ManageListing id={id} owner={owner} />
+                            <ManageListing id={id} owner={owner} isTimeEnded={isTimeEnded} />
                         </Stack>
 
                         <CrateDetails crate={mystery_crate} primaryColor={primaryColor} backgroundColor={backgroundColor} />
