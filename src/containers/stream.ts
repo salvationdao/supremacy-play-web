@@ -7,6 +7,7 @@ import { getObjectFromArrayByKey, parseString } from "../helpers"
 import { useSnackbar } from "."
 import { useParameterizedQuery } from "react-fetching-library"
 import { GetStreamList } from "../fetching"
+import { OVENPLAYER_STREAM } from "../constants"
 
 const MAX_OPTIONS = 10
 
@@ -51,6 +52,24 @@ interface WebRTCAdaptorType {
     play: (stream_id: string, token_id: string) => void
     getStreamInfo: (stream_id: string) => void
     closeWebSocket: (stream_id: string) => void
+}
+
+// using ovenplayer
+const ovenPlayerStream: Stream = {
+    host: OVENPLAYER_STREAM,
+    name: OVENPLAYER_STREAM,
+    url: "wss://stream2.supremacy.game:3334/app/stream2",
+    stream_id: OVENPLAYER_STREAM,
+    region: "",
+    resolution: "",
+    bit_rates_kbits: 100,
+    user_max: 100,
+    users_now: 100,
+    active: true,
+    status: "",
+    latitude: 100,
+    longitude: 100,
+    distance: 100,
 }
 
 const blankOption: Stream = {
@@ -201,9 +220,12 @@ export const StreamContainer = createContainer(() => {
         if (!streams || streams.length <= 0) return
 
         // Filter for servers that have capacity and is onlnine
-        const availStreams = streams.filter((x) => {
-            return x.users_now < x.user_max && x.status === "online" && x.active
-        })
+        const availStreams = [
+            ...streams.filter((x) => {
+                return x.users_now < x.user_max && x.status === "online" && x.active
+            }),
+            ovenPlayerStream,
+        ]
 
         if (availStreams.length <= 0) return
 
