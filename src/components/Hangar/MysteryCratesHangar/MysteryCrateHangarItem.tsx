@@ -129,7 +129,7 @@ export const MysteryCrateHangarItem = ({ crate }: MysteryCrateStoreItemProps) =>
                                         clipSize: "5px",
                                         backgroundColor: crate.locked_to_marketplace ? backgroundColor : colors.red,
                                         opacity: 1,
-                                        border: { isFancy: true, borderColor: colors.red, borderThickness: "1.5px" },
+                                        border: { isFancy: !crate.locked_to_marketplace, borderColor: colors.red, borderThickness: "1.5px" },
                                         sx: { position: "relative", mt: "1rem", width: "100%" },
                                     }}
                                     sx={{ px: "1.6rem", py: ".6rem", color: crate.locked_to_marketplace ? colors.red : "#FFFFFF" }}

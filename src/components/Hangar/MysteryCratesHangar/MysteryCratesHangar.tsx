@@ -1,18 +1,17 @@
 import { Box, Pagination, Stack, Typography } from "@mui/material"
 import React, { useCallback, useEffect, useMemo, useState } from "react"
+import { useHistory, useLocation } from "react-router-dom"
 import { ClipThing, FancyButton } from "../.."
 import { SafePNG } from "../../../assets"
-import { useSnackbar } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { usePagination } from "../../../hooks"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { MysteryCrate } from "../../../types"
+import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { MysteryCrateStoreItemLoadingSkeleton } from "../../Storefront/MysteryCratesStore/MysteryCrateStoreItem/MysteryCrateStoreItem"
 import { MysteryCrateHangarItem } from "./MysteryCrateHangarItem"
-import { useHistory, useLocation } from "react-router-dom"
-import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 
 interface GetCratesRequest {
     page: number
@@ -29,7 +28,6 @@ interface GetAssetsResponse {
 export const MysteryCratesHangar = () => {
     const history = useHistory()
     const location = useLocation()
-    const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsUser("/user_commander")
     const theme = useTheme()
     const [crates, setCrates] = useState<MysteryCrate[]>()
@@ -55,12 +53,11 @@ export const MysteryCratesHangar = () => {
         } catch (e) {
             const message = typeof e === "string" ? e : "Failed to get mystery crates."
             setLoadError(message)
-            newSnackbarMessage(message, "error")
             console.error(e)
         } finally {
             setIsLoading(false)
         }
-    }, [send, page, pageSize, setTotalItems, newSnackbarMessage])
+    }, [send, page, pageSize, setTotalItems])
 
     useEffect(() => {
         getItems()
