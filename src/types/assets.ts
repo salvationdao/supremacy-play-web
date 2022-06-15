@@ -34,6 +34,8 @@ interface Collection {
     card_animation_url?: string
     avatar_url?: string
     large_image_url?: string
+    locked_to_marketplace: boolean
+    item_sale_id?: string
 }
 
 export interface MechBasic extends Collection {
@@ -355,7 +357,6 @@ export interface MysteryCrate extends Collection {
     label: string
     opened: boolean
     locked_until: Date
-    locked_to_marketplace: boolean
     purchased: boolean
     description: string
     deleted_at?: string
@@ -369,6 +370,7 @@ export interface Keycard {
     blueprint_keycard_id: string
     count: number
     market_listed_count: number
+    item_sale_ids?: string[]
     created_at: string
     blueprints: KeycardBlueprint
 }
