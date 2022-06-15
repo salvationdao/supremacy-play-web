@@ -96,10 +96,10 @@ export const SellItemInner = ({ toggleReset }: { toggleReset: () => void }) => {
 
     const checkReservePriceError = useCallback((): string | undefined => {
         if (!reservePrice) return
-        if (startingPrice && reservePrice < startingPrice) {
-            return "Reserve price cannot be lower than the auction starting price."
-        } else if (buyoutPrice && reservePrice > buyoutPrice) {
-            return "Reserve price cannot be higher than the buyout price."
+        if (startingPrice && reservePrice <= startingPrice) {
+            return "Reserve price cannot be lower than or equal to the auction starting price."
+        } else if (buyoutPrice && reservePrice >= buyoutPrice) {
+            return "Reserve price cannot be higher than or equal to the buyout price."
         }
     }, [buyoutPrice, reservePrice, startingPrice])
 
