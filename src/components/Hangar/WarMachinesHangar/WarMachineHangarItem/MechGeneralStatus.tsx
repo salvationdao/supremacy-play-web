@@ -6,14 +6,7 @@ import { GameServerKeys } from "../../../../keys"
 import { fonts, colors } from "../../../../theme/theme"
 import { MechStatus } from "../../../../types"
 
-export const MechGeneralStatus = ({
-    mechID,
-    setMechStatus,
-}: {
-    mechID: string
-    mechStatus?: MechStatus
-    setMechStatus: React.Dispatch<React.SetStateAction<MechStatus | undefined>>
-}) => {
+export const MechGeneralStatus = ({ mechID }: { mechID: string }) => {
     const theme = useTheme()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [text, setText] = useState("LOADING...")
@@ -25,24 +18,28 @@ export const MechGeneralStatus = ({
             key: GameServerKeys.SubMechQueuePosition,
         },
         (payload) => {
-            if (!payload) return
-            setMechStatus(payload)
-            if (payload.status === "IDLE") {
-                setText("IDLE")
-                setColour(colors.green)
-            } else if (payload.status === "QUEUE") {
-                const queuePosition = payload.queue_position
-                setText(`IN QUEUE${queuePosition ? `: ${queuePosition}` : ""}`)
-                setColour(colors.yellow)
-            } else if (payload.status === "BATTLE") {
-                setText("IN BATTLE")
-                setColour(colors.red)
-            } else if (payload.status === "MARKET") {
-                setText("IN MARKETPLACE")
-                setColour(colors.orange)
-            } else if (payload.status === "SOLD") {
-                setText("SOLD")
-                setColour(colors.lightGrey)
+            if (!payload || text === "SOLD") return
+            switch (payload.status) {
+                case "IDLE":
+                    setText("IDLE")
+                    setColour(colors.green)
+                    break
+                case "QUEUE":
+                    setText(`IN QUEUE${payload.queue_position ? `: ${payload.queue_position}` : ""}`)
+                    setColour(colors.yellow)
+                    break
+                case "BATTLE":
+                    setText("IN BATTLE")
+                    setColour(colors.red)
+                    break
+                case "MARKET":
+                    setText("IN MARKETPLACE")
+                    setColour(colors.orange)
+                    break
+                case "SOLD":
+                    setText("SOLD")
+                    setColour(colors.lightGrey)
+                    break
             }
         },
     )
@@ -51,9 +48,7 @@ export const MechGeneralStatus = ({
     const triggerStatusUpdate = useCallback(
         async (currentStatus: string) => {
             try {
-                // TODO: status is not correct need to be fixed
-                console.log({ currentStatus })
-                // if (currentStatus !== "QUEUE") return
+                if (currentStatus.includes("QUEUE")) return
                 await send(GameServerKeys.TriggerMechStatusUpdate, {
                     mech_id: mechID,
                 })
