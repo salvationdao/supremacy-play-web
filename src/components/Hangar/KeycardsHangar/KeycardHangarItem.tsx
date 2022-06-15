@@ -116,9 +116,9 @@ export const KeycardHangarItemInner = ({ keycard, itemSaleID }: MysteryCrateStor
                                     backgroundColor: itemSaleID ? backgroundColor : colors.red,
                                     opacity: 1,
                                     border: { isFancy: !itemSaleID, borderColor: colors.red, borderThickness: "1.5px" },
-                                    sx: { position: "relative", mt: "1rem", width: "100%", color: itemSaleID ? colors.red : "#FFFFFF" },
+                                    sx: { position: "relative", mt: "1rem", width: "100%" },
                                 }}
-                                sx={{ px: "1.6rem", py: ".6rem" }}
+                                sx={{ px: "1.6rem", py: ".6rem", color: itemSaleID ? colors.red : "#FFFFFF" }}
                             >
                                 <Typography variant={"caption"} sx={{ fontFamily: fonts.nostromoBlack, color: itemSaleID ? colors.red : "#FFFFFF" }}>
                                     {itemSaleID ? "VIEW LISTING" : "SELL ITEM"}
