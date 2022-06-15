@@ -113,14 +113,14 @@ export const KeycardHangarItemInner = ({ keycard, itemSaleID }: MysteryCrateStor
                                 }}
                                 clipThingsProps={{
                                     clipSize: "5px",
-                                    backgroundColor: colors.red,
+                                    backgroundColor: itemSaleID ? backgroundColor : colors.red,
                                     opacity: 1,
                                     border: { isFancy: true, borderColor: colors.red, borderThickness: "1.5px" },
-                                    sx: { position: "relative", mt: "1rem", width: "100%" },
+                                    sx: { position: "relative", mt: "1rem", width: "100%", color: itemSaleID ? colors.red : "#FFFFFF" },
                                 }}
                                 sx={{ px: "1.6rem", py: ".6rem" }}
                             >
-                                <Typography variant={"caption"} sx={{ fontFamily: fonts.nostromoBlack }}>
+                                <Typography variant={"caption"} sx={{ fontFamily: fonts.nostromoBlack, color: itemSaleID ? colors.red : "#FFFFFF" }}>
                                     {itemSaleID ? "VIEW LISTING" : "SELL ITEM"}
                                 </Typography>
                             </FancyButton>
