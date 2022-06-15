@@ -253,7 +253,7 @@ const WarMachineMarketDetailsInner = ({
                                 />
                             )}
 
-                            <ManageListing id={id} owner={owner} />
+                            <ManageListing id={id} owner={owner} isTimeEnded={isTimeEnded} />
                         </Stack>
 
                         <MechStatsDetails mechDetails={mechDetails} primaryColor={primaryColor} backgroundColor={backgroundColor} />
