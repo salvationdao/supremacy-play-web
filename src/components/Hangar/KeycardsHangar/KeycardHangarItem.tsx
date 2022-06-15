@@ -1,17 +1,30 @@
 import { Box, Stack, Typography } from "@mui/material"
+import { useHistory, useLocation } from "react-router-dom"
+import { FancyButton } from "../.."
+import { useTheme } from "../../../containers/theme"
+import { MARKETPLACE_TABS } from "../../../pages"
 import { colors, fonts } from "../../../theme/theme"
 import { Keycard } from "../../../types"
-import { ClipThing } from "../../Common/ClipThing"
-import { useTheme } from "../../../containers/theme"
-import { FancyButton } from "../.."
-import { useHistory, useLocation } from "react-router-dom"
 import { ItemType } from "../../../types/marketplace"
+import { ClipThing } from "../../Common/ClipThing"
 
 interface MysteryCrateStoreItemProps {
     keycard: Keycard
+    itemSaleID?: string
 }
 
 export const KeycardHangarItem = ({ keycard }: MysteryCrateStoreItemProps) => {
+    return (
+        <>
+            {keycard.count > 0 && <KeycardHangarItemInner keycard={keycard} />}
+            {keycard.item_sale_ids?.map((itemSaleID) => {
+                return <KeycardHangarItemInner key={itemSaleID} keycard={keycard} itemSaleID={itemSaleID} />
+            })}
+        </>
+    )
+}
+
+export const KeycardHangarItemInner = ({ keycard, itemSaleID }: MysteryCrateStoreItemProps) => {
     const history = useHistory()
     const location = useLocation()
     const theme = useTheme()
@@ -72,11 +85,13 @@ export const KeycardHangarItem = ({ keycard }: MysteryCrateStoreItemProps) => {
                             {keycard.blueprints.card_animation_url && <source src={keycard.blueprints.animation_url} type="video/mp4" />}
                         </Box>
 
-                        <Box sx={{ position: "absolute", top: ".6rem", right: ".8rem" }}>
-                            <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
-                                {keycard.count}x
-                            </Typography>
-                        </Box>
+                        {!itemSaleID && (
+                            <Box sx={{ position: "absolute", top: ".6rem", right: ".8rem" }}>
+                                <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
+                                    {keycard.count}x
+                                </Typography>
+                            </Box>
+                        )}
                     </Box>
 
                     <Stack spacing=".4rem" sx={{ flex: 1, px: ".4rem", py: ".3rem" }}>
@@ -89,9 +104,12 @@ export const KeycardHangarItem = ({ keycard }: MysteryCrateStoreItemProps) => {
                         <Stack alignItems="center" sx={{ mt: "auto !important", pt: ".8rem", alignSelf: "stretch" }}>
                             <FancyButton
                                 excludeCaret
-                                disabled={keycard.market_listed_count >= keycard.count}
                                 onClick={() => {
-                                    history.push(`/marketplace/sell?item-type=${ItemType.Keycards}&asset-id=${keycard.id}${location.hash}`)
+                                    if (itemSaleID) {
+                                        history.push(`/marketplace/${MARKETPLACE_TABS.Keycards}/${itemSaleID}${location.hash}`)
+                                    } else {
+                                        history.push(`/marketplace/sell?item-type=${ItemType.Keycards}&asset-id=${keycard.id}${location.hash}`)
+                                    }
                                 }}
                                 clipThingsProps={{
                                     clipSize: "5px",
@@ -103,7 +121,7 @@ export const KeycardHangarItem = ({ keycard }: MysteryCrateStoreItemProps) => {
                                 sx={{ px: "1.6rem", py: ".6rem" }}
                             >
                                 <Typography variant={"caption"} sx={{ fontFamily: fonts.nostromoBlack }}>
-                                    SELL ITEM
+                                    {itemSaleID ? "VIEW LISTING" : "SELL ITEM"}
                                 </Typography>
                             </FancyButton>
                         </Stack>
