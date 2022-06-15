@@ -18,7 +18,7 @@ export const AuctionPrice = ({ isGridView, formattedPrice, totalBids }: { isGrid
                 {formattedPrice && (
                     <Stack direction="row" alignItems="center" sx={{ flexShrink: 0, transform: "scale(.95)", fontStyle: "italic" }}>
                         <Typography variant="caption" sx={{ color: colors.auction, fontFamily: fonts.nostromoBold }}>
-                            &nbsp;({totalBids} BIDS)
+                            &nbsp;({totalBids} BID{totalBids === 1 ? "" : "S"})
                         </Typography>
                     </Stack>
                 )}
