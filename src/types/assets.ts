@@ -4,7 +4,7 @@ export enum MechStatusEnum {
     Idle = "IDLE",
     Queue = "QUEUE",
     Battle = "BATTLE",
-    MARKET = "MARKET",
+    Market = "MARKET",
     Sold = "SOLD",
 }
 
