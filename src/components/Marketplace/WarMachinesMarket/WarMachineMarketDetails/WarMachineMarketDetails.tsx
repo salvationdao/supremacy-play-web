@@ -207,7 +207,7 @@ const WarMachineMarketDetailsInner = ({
                     <Masonry columns={2} spacing={4}>
                         <ImagesPreview media={media} primaryColor={primaryColor} />
 
-                        <Stack spacing="2rem" sx={{ pb: "1rem" }}>
+                        <Stack spacing="2rem" sx={{ pb: "1rem", minHeight: "65rem" }}>
                             <Box>
                                 <Typography
                                     gutterBottom

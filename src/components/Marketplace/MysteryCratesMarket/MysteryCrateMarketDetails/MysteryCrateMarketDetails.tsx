@@ -159,7 +159,7 @@ const WarMachineMarketDetailsInner = ({
                             primaryColor={primaryColor}
                         />
 
-                        <Stack spacing="2rem">
+                        <Stack spacing="2rem" sx={{ minHeight: "65rem" }}>
                             <Box>
                                 <Typography gutterBottom variant="h5" sx={{ color: primaryColor, fontFamily: fonts.nostromoBold }}>
                                     MYSTERY CRATE
