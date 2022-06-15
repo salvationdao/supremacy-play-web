@@ -78,6 +78,7 @@ export const KeycardsMarket = () => {
                 sort_dir: sortDir,
                 sort_by: sortBy,
                 owned_by: ownedBy,
+                sold: status.length > 0,
             })
 
             if (!resp) return
@@ -92,7 +93,7 @@ export const KeycardsMarket = () => {
         } finally {
             setIsLoading(false)
         }
-    }, [sort, price, send, page, pageSize, search, ownedBy, setTotalItems, newSnackbarMessage])
+    }, [sort, price, send, page, pageSize, search, ownedBy, status.length, setTotalItems, newSnackbarMessage])
 
     useEffect(() => {
         getItems()
