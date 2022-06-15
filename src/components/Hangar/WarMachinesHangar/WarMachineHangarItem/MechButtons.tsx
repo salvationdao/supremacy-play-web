@@ -1,4 +1,4 @@
-import { Stack, Typography } from "@mui/material"
+import { Box, Typography } from "@mui/material"
 import { useHistory, useLocation } from "react-router-dom"
 import { FancyButton } from "../../.."
 import { useTheme } from "../../../../containers/theme"
@@ -8,6 +8,7 @@ import { ItemType } from "../../../../types/marketplace"
 import { useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { useState } from "react"
+import { MARKETPLACE_TABS } from "../../../../pages"
 
 export const MechButtons = ({
     mechDetails,
@@ -41,7 +42,15 @@ export const MechButtons = ({
     )
 
     return (
-        <Stack direction="row" spacing=".8rem">
+        <Box
+            sx={{
+                display: "grid",
+                gridTemplateColumns: "repeat(4, 1fr) max-content", // hard-coded to have 5 buttons, adjust as required
+                gap: ".8rem",
+                alignItems: "center",
+                justifyContent: "center",
+            }}
+        >
             {/* Button 1 */}
             {mechState === MechStatusEnum.Battle || mechState === MechStatusEnum.Queue ? (
                 <ReusableButton
@@ -75,7 +84,6 @@ export const MechButtons = ({
                 primaryColor={theme.factionTheme.primary}
                 backgroundColor={theme.factionTheme.background}
                 label="HISTORY"
-                disabled={!mechDetails}
                 onClick={() => {
                     setSelectedMechDetails(mechDetails)
                     setHistoryMechModalOpen(true)
@@ -96,22 +104,29 @@ export const MechButtons = ({
 
             {/* Button 5 */}
             <ReusableButton
-                isFancy
+                isFancy={mechState !== MechStatusEnum.Market}
                 primaryColor={colors.red}
-                backgroundColor={colors.red}
-                label="SELL"
-                disabled={!mechDetails || mechState !== MechStatusEnum.Idle}
+                secondaryColor={mechState === MechStatusEnum.Market ? colors.red : undefined}
+                backgroundColor={mechState === MechStatusEnum.Market ? theme.factionTheme.background : colors.red}
+                label={mechState === MechStatusEnum.Market ? "VIEW LISTING" : "SELL"}
+                disabled={mechState !== MechStatusEnum.Idle && mechState !== MechStatusEnum.Market}
                 onClick={() => {
-                    history.push(`/marketplace/sell?item-type=${ItemType.WarMachine}&asset-id=${mechDetails.id}${location.hash}`)
+                    if (mechDetails.locked_to_marketplace) {
+                        if (!mechDetails.item_sale_id) return
+                        history.push(`/marketplace/${MARKETPLACE_TABS.WarMachines}/${mechDetails.item_sale_id}${location.hash}`)
+                    } else {
+                        history.push(`/marketplace/sell?item-type=${ItemType.WarMachine}&asset-id=${mechDetails.id}${location.hash}`)
+                    }
                 }}
             />
-        </Stack>
+        </Box>
     )
 }
 
 const ReusableButton = ({
     isFancy,
     primaryColor,
+    secondaryColor,
     backgroundColor,
     label,
     onClick,
@@ -119,6 +134,7 @@ const ReusableButton = ({
 }: {
     isFancy?: boolean
     primaryColor: string
+    secondaryColor?: string
     backgroundColor: string
     label: string
     onClick?: () => void
@@ -132,14 +148,15 @@ const ReusableButton = ({
                 clipSize: "8px",
                 backgroundColor: backgroundColor,
                 border: { isFancy, borderColor: primaryColor, borderThickness: "1.5px" },
-                sx: { flex: 1, position: "relative" },
+                sx: { position: "relative", minWidth: "10rem" },
             }}
-            sx={{ px: "1.3rem", py: ".3rem", color: primaryColor }}
+            sx={{ px: "1.3rem", py: ".3rem", color: secondaryColor || primaryColor }}
             onClick={onClick}
         >
             <Typography
                 variant="caption"
                 sx={{
+                    color: secondaryColor || "#FFFFFF",
                     fontFamily: fonts.nostromoBold,
                 }}
             >
