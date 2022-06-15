@@ -28,10 +28,10 @@ declare module "@mui/material/styles" {
 export const colors = {
     text: "#FFFFFF",
     offWhite: "#D4FFFF",
-    red: "#C24242",
+    red: "#D93434",
     lightRed: "#E83200",
     green: "#2BA172",
-    yellow: "#FFE200",
+    yellow: "#FFC800",
     orange: "#E04F00",
     gold: "#FFC400",
     blue: "#0074D9",
@@ -40,6 +40,7 @@ export const colors = {
     black2: "#13161B",
     black3: "#080303",
 
+    neonPink: "#F72485",
     lightNeonBlue: "#8DE9FF",
     neonBlue: "#00FFFF",
     darkNeonBlue: "#176969",
@@ -53,7 +54,7 @@ export const colors = {
     shield: "#00F7F7",
     warMachineSkillBar: "#9669FF",
 
-    lightGrey: "#aeaeb3",
+    lightGrey: "#C0C0C4",
     grey: "#89898d",
     battleQueueBanner: "#C24242",
     darkestNeonBlue: "#050c12",
@@ -63,6 +64,16 @@ export const colors = {
 
     supsCredit: "#01FF70",
     supsDebit: "#FF4136",
+
+    auction: "#E04F00",
+    dutchAuction: "#D98D00",
+
+    chassisSkin: "#EBD110",
+    introAnimation: "#C017EB",
+    outroAnimation: "#C017EB",
+    weapons: "#EB2300",
+    utilities: "#5DC437",
+    powerCore: "#00EBEB",
 
     rarity: {
         MEGA: "#e84234",
@@ -92,6 +103,7 @@ export const fonts = {
     nostromoMedium: ["Nostromo Regular Medium", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
     nostromoLight: ["Nostromo Regular Light", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
     shareTech: ["Share Tech", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
+    shareTechMono: ["Share Tech Mono", "monospace"].join(","),
 }
 
 export enum siteZIndex {
@@ -116,7 +128,7 @@ export enum siteZIndex {
     MiniMap = 50,
     MoveableResizableHover = 51,
     MoveableResizable = 20,
-    Notfications = 40,
+    Notifications = 40,
     MechStats = 30,
     VotingSystem = 30,
     Stream = 5,
@@ -175,28 +187,28 @@ export const theme = createTheme({
         },
         h6: {
             fontFamily: fonts.shareTech,
-            fontSize: "1.78rem",
+            fontSize: "1.82rem",
         },
         body1: {
             fontFamily: fonts.shareTech,
-            fontSize: "1.43rem",
+            fontSize: "1.6rem",
         },
         body2: {
             fontFamily: fonts.shareTech,
-            fontSize: "1.28rem",
+            fontSize: "1.4rem",
         },
         subtitle1: {
             fontFamily: fonts.shareTech,
-            fontSize: "1.19rem",
+            fontSize: "1.3rem",
             textAlign: "center",
         },
         subtitle2: {
             fontFamily: fonts.shareTech,
-            fontSize: "1.19rem",
+            fontSize: "1.3rem",
         },
         caption: {
             fontFamily: fonts.shareTech,
-            fontSize: "1.19rem",
+            fontSize: "1.2rem",
         },
     },
     components: {

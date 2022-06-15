@@ -15,6 +15,10 @@ body {
     src: url("../assets/fonts/share-tech/share-tech.otf");
 }
 @font-face {
+    font-family: "Share Tech Mono";
+    src: url("../assets/fonts/share-tech/ShareTechMono-Regular.ttf");
+}
+@font-face {
     font-family: "Nostromo Regular Light";
     src: url("../assets/fonts/nostromo-regular/NostromoRegular-Light.otf");
 }
@@ -45,12 +49,12 @@ body {
 
 /* Update `src/containers/dimensions.ts` */
 html {
-    font-size: 62.5%; /* 62.5% of 16px is 10px */
+    font-size: 60%; /* 62.5% of 16px is 10px */
 }
 
-@media only screen and (max-width: 1920px) {
+@media only screen and (max-width: 1922px) {
     html {
-        font-size: 54%;
+        font-size: 52%;
     }
 }
 

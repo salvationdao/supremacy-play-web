@@ -1,4 +1,4 @@
-import { Box, Fade, Theme, useTheme } from "@mui/material"
+import { Box, Fade } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
 import { ClipThing, MiniMapInside, ResizeBox, TargetTimerCountdown, TopIconSettings } from ".."
 import { SvgResizeXY } from "../../assets"
@@ -7,9 +7,10 @@ import { useDimension, useGame, useOverlayToggles, BribeStageResponse, WinnerAnn
 import { useToggle } from "../../hooks"
 import { colors, siteZIndex } from "../../theme/theme"
 import { Dimension, Map } from "../../types"
+import { useTheme } from "../../containers/theme"
 
 export const MiniMap = () => {
-    const theme = useTheme<Theme>()
+    const theme = useTheme()
     const { newSnackbarMessage } = useSnackbar()
     const { map, winner, setWinner, bribeStage } = useGame()
     const { isMapOpen, toggleIsMapOpen } = useOverlayToggles()
@@ -215,8 +216,8 @@ const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, toggleIsM
                                 display: !isMapOpen ? "none" : enlarged ? "none" : "unset",
                                 pointerEvents: "all",
                                 position: "absolute",
-                                top: ".75rem",
-                                left: "1.15rem",
+                                top: "1rem",
+                                left: "1.65rem",
                                 cursor: "nwse-resize",
                                 color: colors.text,
                                 opacity: 0.8,
@@ -234,7 +235,7 @@ const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, toggleIsM
                             clipSize="10px"
                             border={{
                                 isFancy: true,
-                                borderThickness: ".2rem",
+                                borderThickness: ".3rem",
                                 borderColor: mainColor,
                             }}
                             backgroundColor={colors.darkNavy}

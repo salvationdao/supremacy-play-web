@@ -16,11 +16,13 @@ import Robot from "!react-svg-loader!./svg/Robot.svg"
 import Unknown from "!react-svg-loader!./svg/Unknown.svg"
 import Edit from "!react-svg-loader!./svg/Edit.svg"
 import Volume from "!react-svg-loader!./svg/Volume.svg"
+import Angle from "!react-svg-loader!./svg/Angle.svg"
 import Cancelled from "!react-svg-loader!./svg/Cancelled.svg"
 import VolumeMute from "!react-svg-loader!./svg/VolumeMute.svg"
 import Settings from "!react-svg-loader!./svg/Settings.svg"
 import Play from "!react-svg-loader!./svg/Play.svg"
 import Target from "!react-svg-loader!./svg/Target.svg"
+import Search from "!react-svg-loader!./svg/Search.svg"
 import Support from "!react-svg-loader!./svg/Support.svg"
 import Microchip from "!react-svg-loader!./svg/Microchip.svg"
 import Announcement from "!react-svg-loader!./svg/Announcement.svg"
@@ -39,6 +41,7 @@ import MusicMute from "!react-svg-loader!./svg/MusicMute.svg"
 import WarnTriangle from "!react-svg-loader!./svg/WarnTriangle.svg"
 import General from "!react-svg-loader!./svg/Ranks/General.svg"
 import Corporal from "!react-svg-loader!./svg/Ranks/Corporal.svg"
+import Filter from "!react-svg-loader!./svg/Filter.svg"
 import Private from "!react-svg-loader!./svg/Ranks/Private.svg"
 import NewRecruit from "!react-svg-loader!./svg/Ranks/NewRecruit.svg"
 import Drag from "!react-svg-loader!./svg/Drag.svg"
@@ -79,6 +82,7 @@ import Emoji from "!@svgr/webpack!./svg/Emoji.svg"
 import Copy from "!@svgr/webpack!./svg/Copy.svg"
 import ExternalLink from "!@svgr/webpack!./svg/ExternalLink.svg"
 import FastRepair from "!@svgr/webpack!./svg/FastRepair.svg"
+import Hammer from "!@svgr/webpack!./svg/Hammer.svg"
 import Scrolldown from "!@svgr/webpack!./svg/Scrolldown.svg"
 import Logout from "!@svgr/webpack!./svg/Logout.svg"
 import Refresh from "!@svgr/webpack!./svg/Refresh.svg"
@@ -88,7 +92,13 @@ import Ability from "!@svgr/webpack!./svg/Ability.svg"
 import Save from "!@svgr/webpack!./svg/Save.svg"
 import View from "!@svgr/webpack!./svg/View.svg"
 import Death from "!@svgr/webpack!./svg/Death.svg"
+import PowerCore from "!@svgr/webpack!./svg/PowerCore.svg"
 import Global from "!@svgr/webpack!./svg/Global.svg"
+import IntroAnimation from "!@svgr/webpack!./svg/IntroAnimation.svg"
+import OutroAnimation from "!@svgr/webpack!./svg/OutroAnimation.svg"
+import Skin from "!@svgr/webpack!./svg/Skin.svg"
+import Utilities from "!@svgr/webpack!./svg/Utilities.svg"
+import Weapons from "!@svgr/webpack!./svg/Weapons.svg"
 import Graph from "!@svgr/webpack!./svg/Graph.svg"
 import Chest from "!@svgr/webpack!./svg/Chest.svg"
 import Close2 from "!@svgr/webpack!./svg/Close2.svg"
@@ -101,11 +111,18 @@ import GenericWarMachinePNG from "./images/GenericWarMachine.png"
 import SupremacyPNG from "./images/Supremacy.png"
 import FlamesPNG from "./images/Flames.png"
 import MaintenancePNG from "./images/Maintenance.png"
+import WarMachineIconPNG from "./images/WarMachineIcon.png"
 import TrailerThumbPNG from "./images/TrailerThumb.png"
 import LogoWEBP from "./images/Logo.webp"
 import BottomMechWEBP from "./images/BottomMech.webp"
 import SupBackground from "./images/SupBackground.webp"
+import HangarBg from "./images/HangarBg.jpg"
+import ClaimsBg from "./images/ClaimsBg.jpg"
 import Crosshair from "./images/Crosshair.png"
+import EmptyWarMachinesPNG from "./images/EmptyWarMachines.png"
+import SafePNG from "./images/Safe.png"
+import RainingSupsPNG from "./images/supsRain.png"
+import KeycardPNG from "./images/Keycard.png"
 import Gabs from "./images/Gabs.png"
 import FontCase from "!@svgr/webpack!./svg/FontCase.svg"
 import ZaibatsuMechKillIcon from "!@svgr/webpack!./svg/ZaibatsuKillIcon.svg"
@@ -155,6 +172,9 @@ export {
 // End multiplier images
 
 export {
+    KeycardPNG,
+    HangarBg,
+    ClaimsBg,
     SupremacyPNG,
     GenericWarMachinePNG,
     FlamesPNG,
@@ -168,6 +188,10 @@ export {
     SupBackground,
     Crosshair,
     Gabs,
+    EmptyWarMachinesPNG,
+    SafePNG,
+    RainingSupsPNG,
+    WarMachineIconPNG,
 }
 
 export interface SvgWrapperProps extends BoxProps {
@@ -816,5 +840,65 @@ export const SvgMicrochip: React.VoidFunctionComponent<SvgWrapperProps> = (props
 export const SvgSupport: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <Support />
+    </SvgWrapper>
+)
+
+export const SvgFilter: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Filter />
+    </SvgWrapper>
+)
+
+export const SvgPowerCore: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <PowerCore />
+    </SvgWrapper>
+)
+
+export const SvgIntroAnimation: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <IntroAnimation />
+    </SvgWrapper>
+)
+
+export const SvgOutroAnimation: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <OutroAnimation />
+    </SvgWrapper>
+)
+
+export const SvgSkin: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Skin />
+    </SvgWrapper>
+)
+
+export const SvgUtilities: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Utilities />
+    </SvgWrapper>
+)
+
+export const SvgWeapons: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Weapons />
+    </SvgWrapper>
+)
+
+export const SvgHammer: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Hammer />
+    </SvgWrapper>
+)
+
+export const SvgSearch: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Search />
+    </SvgWrapper>
+)
+
+export const SvgAngle: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Angle />
     </SvgWrapper>
 )

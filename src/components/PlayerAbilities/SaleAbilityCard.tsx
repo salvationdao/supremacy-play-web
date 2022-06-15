@@ -1,10 +1,11 @@
 import { LoadingButton } from "@mui/lab"
 import { Box, ButtonBase, ButtonBaseProps, Fade, Modal, Stack, Typography } from "@mui/material"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { SvgGlobal, SvgMicrochip, SvgQuestionMark, SvgSupToken, SvgTarget } from "../../assets"
-import { SocketState, useGameServerAuth, useGameServerWebsocket, useSnackbar } from "../../containers"
+import { useSnackbar } from "../../containers"
 import { supFormatter } from "../../helpers"
 import { useToggle } from "../../hooks"
+import { useGameServerCommandsUser } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { pulseEffect } from "../../theme/keyframes"
 import { colors, fonts } from "../../theme/theme"
@@ -19,11 +20,10 @@ export interface AbilityCardProps extends ButtonBaseProps {
 const purchaseModalWidth = 400
 
 export const SaleAbilityCard = ({ abilityID, ...props }: AbilityCardProps) => {
-    const { userID } = useGameServerAuth()
-    const { state, send, subscribe } = useGameServerWebsocket()
+    const { send } = useGameServerCommandsUser("/user_commander")
     const [saleAbility, setSaleAbility] = useState<SaleAbility | null>(null)
-    const [price, setPrice] = useState<string | null>(null)
-    const [previousPrice, setPreviousPrice] = useState<string | null>(null)
+    const [price] = useState<string | null>(null)
+    const [previousPrice] = useState<string | null>(null)
     const [error, setError] = useState<string | null>(null)
 
     // Purchasing
@@ -48,14 +48,14 @@ export const SaleAbilityCard = ({ abilityID, ...props }: AbilityCardProps) => {
             abilityTypeIcon = <SvgMicrochip />
     }
 
-    const onPurchase = async () => {
+    const onPurchase = useCallback(async () => {
         try {
             setPurchaseLoading(true)
             await send(GameServerKeys.SaleAbilityPurchase, {
                 ability_id: abilityID,
                 amount: price,
             })
-            newSnackbarMessage(`Successfully purchased 1 ${saleAbility?.ability?.label || "Ability"}`, "success")
+            newSnackbarMessage(`Successfully purchased 1 ${saleAbility?.ability?.label || "ability"}`, "success")
             toggleShowPurchaseModal(false)
             setPurchaseError(null)
         } catch (e) {
@@ -67,43 +67,40 @@ export const SaleAbilityCard = ({ abilityID, ...props }: AbilityCardProps) => {
         } finally {
             setPurchaseLoading(false)
         }
-    }
+    }, [abilityID, newSnackbarMessage, price, saleAbility?.ability?.label, send, toggleShowPurchaseModal])
+
+    // useGameServerSubscription<{ id: string; price: string }>(
+    //     {
+    //         URI: "xxxxxxxxx",
+    //         key: GameServerKeys.SaleAbilityPriceSubscribe,
+    //     },
+    //     (payload) => {
+    //         if (!payload || payload.id !== abilityID) return
+    //         setPrice((prev) => {
+    //             if (prev) setPreviousPrice(prev)
+    //             return payload.price
+    //         })
+    //     },
+    // )
 
     useEffect(() => {
-        if (state !== SocketState.OPEN || !send || !subscribe || !userID) return
-
-        try {
-            ;(async () => {
+        ;(async () => {
+            try {
                 const resp = await send<SaleAbility>(GameServerKeys.SaleAbilityDetailed, {
                     ability_id: abilityID,
                 })
 
+                if (!resp) return
                 setSaleAbility(resp)
-            })()
-
-            return subscribe<string>(
-                GameServerKeys.SaleAbilityPriceSubscribe,
-                (resp) => {
-                    setPrice((prev) => {
-                        if (prev) {
-                            setPreviousPrice(prev)
-                        }
-
-                        return resp
-                    })
-                },
-                {
-                    ability_id: abilityID,
-                },
-            )
-        } catch (e) {
-            if (e instanceof Error) {
-                setError(e.message)
-            } else if (typeof e === "string") {
-                setError(e)
+            } catch (e) {
+                if (e instanceof Error) {
+                    setError(e.message)
+                } else if (typeof e === "string") {
+                    setError(e)
+                }
             }
-        }
-    }, [state, send, subscribe, userID, abilityID])
+        })()
+    }, [abilityID, send])
 
     if (!saleAbility || !price) {
         return <Box>Loading...</Box>
@@ -199,12 +196,13 @@ export const SaleAbilityCard = ({ abilityID, ...props }: AbilityCardProps) => {
                             transform: "translate(-50%, -50%)",
                             width: "100%",
                             maxWidth: purchaseModalWidth,
+                            outline: "none",
                         }}
                     >
                         <ClipThing
                             border={{
                                 borderColor: saleAbility.ability?.colour || colors.neonBlue,
-                                borderThickness: ".15rem",
+                                borderThickness: ".2rem",
                                 isFancy: true,
                             }}
                             backgroundColor={colors.darkNavy}
@@ -307,7 +305,7 @@ export const SaleAbilityCard = ({ abilityID, ...props }: AbilityCardProps) => {
                                             backgroundColor: `${colors.green}90`,
                                         },
                                     }}
-                                    onClick={() => onPurchase()}
+                                    onClick={onPurchase}
                                     loading={purchaseLoading}
                                 >
                                     <Typography variant="body2">Purchase for</Typography>

@@ -1,9 +1,9 @@
-import { useGameServerWebsocket } from "../../containers"
-import { NetMessageType } from "../../types"
 import BigNumber from "bignumber.js"
 import { RefObject, MutableRefObject, useEffect, useRef, useState } from "react"
 import { colors } from "../../theme/theme"
 import { Box, Stack, Typography } from "@mui/material"
+import { GameServerKeys } from "../../keys"
+import { useGameServerSubscription } from "../../hooks/useGameServer"
 
 interface LiveGraphProps {
     maxHeightPx: number
@@ -15,7 +15,6 @@ interface LiveGraphProps {
 export const LiveGraph = (props: LiveGraphProps) => {
     const { battleIdentifier, maxWidthPx, maxHeightPx, maxLiveVotingDataLength } = props
 
-    const { state, subscribeNetMessage } = useGameServerWebsocket()
     const canvasRef = useRef<HTMLCanvasElement>(null)
     const [liveVotingData, setLiveVotingData] = useState<number[]>([])
     const largest = useRef<number>(0.1)
@@ -38,9 +37,12 @@ export const LiveGraph = (props: LiveGraphProps) => {
     }, [maxLiveVotingDataLength])
 
     // Live voting data
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribeNetMessage) return
-        return subscribeNetMessage<string | undefined>(NetMessageType.LiveVoting, (payload) => {
+    useGameServerSubscription<string | undefined>(
+        {
+            URI: "/public/live_data",
+            key: GameServerKeys.SubLiveGraph,
+        },
+        (payload) => {
             if (!payload) return
             const rawData = new BigNumber(payload).dividedBy(new BigNumber("1000000000000000000")).toNumber()
             setLiveVotingData((lvd) => {
@@ -52,8 +54,8 @@ export const LiveGraph = (props: LiveGraphProps) => {
 
                 return lvd.concat(rawData)
             })
-        })
-    }, [maxLiveVotingDataLength, state, subscribeNetMessage])
+        },
+    )
 
     // Draw live graph
     useEffect(() => {

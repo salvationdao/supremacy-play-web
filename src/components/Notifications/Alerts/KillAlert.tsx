@@ -1,10 +1,8 @@
 import { Box } from "@mui/material"
 import { ClipThing, StyledImageText, StyledNormalText } from "../.."
 import { SvgDeath, SvgSkull2 } from "../../../assets"
-import { PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
-import { FactionsAll } from "../../../containers"
 import { colors } from "../../../theme/theme"
-import { User, WarMachineState } from "../../../types"
+import { Faction, User, WarMachineState } from "../../../types"
 
 export interface KillAlertProps {
     destroyed_war_machine: WarMachineState
@@ -13,12 +11,12 @@ export interface KillAlertProps {
     killed_by_user?: User
 }
 
-export const KillAlert = ({ data, factionsAll }: { data: KillAlertProps; factionsAll: FactionsAll }) => {
+export const KillAlert = ({ data, getFaction }: { data: KillAlertProps; getFaction: (factionID: string) => Faction }) => {
     const { destroyed_war_machine, killed_by_war_machine, killed_by, killed_by_user } = data
 
     if (!destroyed_war_machine) return null
 
-    const mainColor = killed_by_war_machine?.faction.theme.primary || killed_by_user?.faction.theme.primary
+    const mainColor = getFaction(killed_by_war_machine?.factionID || killed_by_user?.faction_id || "").primary_color
 
     let killedBy = null
     if (killed_by_war_machine) {
@@ -40,8 +38,8 @@ export const KillAlert = ({ data, factionsAll }: { data: KillAlertProps; faction
                         {`${killed_by ? ` ${killed_by}` : ""}`}
                     </>
                 }
-                color={killed_by_user.faction.theme.primary}
-                imageUrl={`${PASSPORT_SERVER_HOST_IMAGES}/api/files/${factionsAll[killed_by_user.faction.id]?.logo_blob_id}`}
+                color={getFaction(killed_by_user.faction_id).primary_color}
+                imageUrl={getFaction(killed_by_user.faction_id).logo_url}
                 imageMb={-0.2}
             />
         )
@@ -52,10 +50,11 @@ export const KillAlert = ({ data, factionsAll }: { data: KillAlertProps; faction
     return (
         <ClipThing
             clipSize="3px"
+            clipSlantSize="2px"
             border={{
                 borderColor: mainColor || colors.grey,
                 isFancy: true,
-                borderThickness: ".15rem",
+                borderThickness: ".2rem",
             }}
             opacity={0.8}
             backgroundColor={colors.darkNavy}
@@ -73,7 +72,7 @@ export const KillAlert = ({ data, factionsAll }: { data: KillAlertProps; faction
                 <StyledImageText
                     textSx={{ textDecoration: "line-through" }}
                     text={destroyed_war_machine.name || destroyed_war_machine.hash}
-                    color={destroyed_war_machine.faction.theme.primary}
+                    color={getFaction(destroyed_war_machine.factionID).primary_color}
                     imageUrl={destroyed_war_machine.imageAvatar}
                     imageMb={-0.2}
                 />

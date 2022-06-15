@@ -47,19 +47,25 @@ export const SectionBottom = ({ battleEndDetail }: { battleEndDetail: BattleEndD
                     clipSize: "8px",
                     backgroundColor: primaryColor,
                     border: {
+                        isFancy: true,
                         borderColor: primaryColor,
                     },
                 }}
                 sx={{
-                    py: ".16rem",
-                    pt: ".3rem",
+                    py: ".2rem",
                     width: "9rem",
-                    color: secondaryColor,
-                    fontFamily: fonts.nostromoBlack,
                 }}
                 onClick={() => toggleIsEndBattleDetailOpen(false)}
             >
-                CLOSE
+                <Typography
+                    variant="caption"
+                    sx={{
+                        color: secondaryColor,
+                        fontFamily: fonts.nostromoBlack,
+                    }}
+                >
+                    CLOSE
+                </Typography>
             </FancyButton>
         </Stack>
     )

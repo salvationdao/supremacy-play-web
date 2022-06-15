@@ -1,14 +1,14 @@
-import { Box, Button, Stack, Theme, Typography, useTheme } from "@mui/material"
-import { StyledImageText, UserBanForm } from "../.."
-import { PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
+import { Box, Stack, Typography } from "@mui/material"
+import { FancyButton, StyledImageText, UserBanForm } from "../.."
 import { truncate } from "../../../helpers"
 import { useToggle } from "../../../hooks"
-import { colors } from "../../../theme/theme"
+import { colors, fonts } from "../../../theme/theme"
 import { User } from "../../../types"
-import { FactionGeneralData } from "../../../types/passport"
+import { Faction } from "../../../types"
+import { useTheme } from "../../../containers/theme"
 
-export const PlayerItem = ({ player, faction, user, isActive }: { player: User; faction: FactionGeneralData; user: User; isActive?: boolean }) => {
-    const theme = useTheme<Theme>()
+export const PlayerItem = ({ player, faction, user, isActive }: { player: User; faction: Faction; user: User; isActive?: boolean }) => {
+    const theme = useTheme()
     const [banModalOpen, toggleBanModalOpen] = useToggle()
 
     return (
@@ -18,8 +18,7 @@ export const PlayerItem = ({ player, faction, user, isActive }: { player: User; 
                 alignItems="center"
                 sx={{
                     px: "1.3rem",
-                    pt: ".2rem",
-                    pb: ".3rem",
+                    py: ".5rem",
                     backgroundColor: (theme) => `${theme.factionTheme.primary}10`,
                     opacity: isActive ? 1 : 0.6,
                 }}
@@ -35,14 +34,31 @@ export const PlayerItem = ({ player, faction, user, isActive }: { player: User; 
                             </>
                         }
                         color={theme.factionTheme.primary}
-                        imageUrl={`${PASSPORT_SERVER_HOST_IMAGES}/api/files/${faction?.logo_blob_id}`}
+                        imageUrl={faction.logo_url}
                         imageMb={-0.2}
                     />
                 </Box>
 
-                <Button size="small" onClick={() => toggleBanModalOpen()} sx={{ px: "1rem", ml: "auto" }}>
-                    <Typography>REPORT</Typography>
-                </Button>
+                <FancyButton
+                    excludeCaret
+                    clipThingsProps={{
+                        clipSize: "7px",
+                        opacity: 1,
+                        sx: { position: "relative", ml: "auto" },
+                    }}
+                    sx={{ px: "1rem", py: ".1rem", color: theme.factionTheme.primary }}
+                    onClick={() => toggleBanModalOpen()}
+                >
+                    <Typography
+                        variant="caption"
+                        sx={{
+                            color: "#FFFFFF80",
+                            fontFamily: fonts.nostromoBold,
+                        }}
+                    >
+                        REPORT
+                    </Typography>
+                </FancyButton>
             </Stack>
 
             {banModalOpen && (

@@ -1,34 +1,40 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
-import { Dispatch, useState } from "react"
+import { Dispatch, useMemo, useState } from "react"
 import { PlayerListContent } from "../.."
-import { PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
-import { useGameServerAuth } from "../../../containers"
-import { acronym } from "../../../helpers"
+import { useAuth, useSupremacy } from "../../../containers"
+import { useTheme } from "../../../containers/theme"
+import { acronym, shadeColor } from "../../../helpers"
 import { colors, fonts } from "../../../theme/theme"
-import { User } from "../../../types"
+import { Faction, User } from "../../../types"
 
 export const PlayerList = () => {
-    const { user } = useGameServerAuth()
+    const { getFaction } = useSupremacy()
+    const { user } = useAuth()
     const [activePlayers, setActivePlayers] = useState<User[]>([])
 
     return (
         <Fade in>
             <Stack direction="row" sx={{ width: "100%", height: "100%" }}>
-                <Content user={user} activePlayers={activePlayers} setActivePlayers={setActivePlayers} />
+                <Content getFaction={getFaction} user={user} activePlayers={activePlayers} setActivePlayers={setActivePlayers} />
             </Stack>
         </Fade>
     )
 }
 
 const Content = ({
+    getFaction,
     user,
     activePlayers,
     setActivePlayers,
 }: {
-    user?: User
+    getFaction: (factionID: string) => Faction
+    user: User
     activePlayers: User[]
     setActivePlayers: Dispatch<React.SetStateAction<User[]>>
 }) => {
+    const theme = useTheme()
+    const bannerColor = useMemo(() => shadeColor(theme.factionTheme.primary, -60), [theme.factionTheme.primary])
+
     return (
         <Stack sx={{ flex: 1 }}>
             <Stack
@@ -40,18 +46,18 @@ const Content = ({
                     pl: "2.2rem",
                     pr: "4.8rem",
                     height: `${5}rem`,
-                    background: (theme) => `${theme.factionTheme.primary}40`,
+                    background: `linear-gradient(${bannerColor} 26%, ${bannerColor}95)`,
                     boxShadow: 1.5,
                 }}
             >
-                {user && user.faction && (
+                {user.faction_id && (
                     <Box
                         sx={{
                             width: "3rem",
                             height: "3rem",
                             flexShrink: 0,
                             mb: ".16rem",
-                            backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${user.faction.logo_blob_id})`,
+                            backgroundImage: `url(${getFaction(user.faction_id).logo_url})`,
                             backgroundRepeat: "no-repeat",
                             backgroundPosition: "center",
                             backgroundSize: "contain",
@@ -63,7 +69,7 @@ const Content = ({
                 )}
                 <Stack spacing=".1rem">
                     <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBlack }}>
-                        {user && user.faction ? `${acronym(user.faction.label)} ACTIVE PLAYERS` : "ACTIVE PLAYERS"}
+                        {user.faction_id ? `${acronym(getFaction(user.faction_id).label)} ACTIVE PLAYERS` : "ACTIVE PLAYERS"}
                     </Typography>
                     <Stack direction="row" alignItems="center" spacing="1.3rem">
                         <Stack direction="row" alignItems="center" spacing=".4rem">
@@ -79,16 +85,15 @@ const Content = ({
 
             <Box
                 sx={{
-                    my: ".8rem",
-                    ml: ".3rem",
-                    pl: ".5rem",
+                    flex: 1,
+                    ml: ".8rem",
                     mr: ".3rem",
                     pr: ".5rem",
-                    flex: 1,
+                    my: "1rem",
                     overflowY: "auto",
                     overflowX: "hidden",
                     direction: "ltr",
-                    scrollbarWidth: "none",
+
                     "::-webkit-scrollbar": {
                         width: ".4rem",
                     },
@@ -102,7 +107,7 @@ const Content = ({
                     },
                 }}
             >
-                {user && <PlayerListContent user={user} activePlayers={activePlayers} setActivePlayers={setActivePlayers} />}
+                <PlayerListContent user={user} activePlayers={activePlayers} setActivePlayers={setActivePlayers} />
             </Box>
         </Stack>
     )

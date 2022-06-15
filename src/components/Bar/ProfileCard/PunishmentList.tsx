@@ -1,12 +1,19 @@
-import { Box, IconButton, Modal, Stack, Typography, useTheme, Theme } from "@mui/material"
+import { Box, IconButton, Modal, Stack, Typography } from "@mui/material"
 import { ClipThing } from "../.."
 import { SvgClose } from "../../../assets"
+import { useTheme } from "../../../containers/theme"
 import { dateFormatter, snakeToTitle } from "../../../helpers"
 import { colors, fonts } from "../../../theme/theme"
 import { PunishListItem } from "../../../types/chat"
 
-export const PunishmentList = ({ open, onClose, punishments }: { open: boolean; onClose: () => void; punishments?: PunishListItem[] }) => {
-    const theme = useTheme<Theme>()
+interface Props {
+    open: boolean
+    onClose: () => void
+    punishments?: PunishListItem[]
+}
+
+export const PunishmentList = ({ open, onClose, punishments }: Props) => {
+    const theme = useTheme()
 
     if (!punishments || punishments.length <= 0) return null
 
@@ -20,16 +27,15 @@ export const PunishmentList = ({ open, onClose, punishments }: { open: boolean; 
                     transform: "translate(-50%, -50%)",
                     width: "40rem",
                     border: "none",
-                    outline: "none",
                     boxShadow: 6,
+                    outline: "none",
                 }}
             >
                 <ClipThing
-                    clipSize="0"
+                    clipSize="8px"
                     border={{
-                        isFancy: true,
                         borderColor: colors.red,
-                        borderThickness: ".15rem",
+                        borderThickness: ".3rem",
                     }}
                     sx={{ position: "relative" }}
                     backgroundColor={theme.factionTheme.background}
@@ -71,8 +77,8 @@ export const PunishmentList = ({ open, onClose, punishments }: { open: boolean; 
                         </Stack>
                     </Box>
 
-                    <IconButton size="small" onClick={onClose} sx={{ position: "absolute", top: ".2rem", right: ".2rem" }}>
-                        <SvgClose size="1.6rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
+                    <IconButton size="small" onClick={onClose} sx={{ position: "absolute", top: ".5rem", right: ".5rem" }}>
+                        <SvgClose size="1.9rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
                     </IconButton>
                 </ClipThing>
             </Box>

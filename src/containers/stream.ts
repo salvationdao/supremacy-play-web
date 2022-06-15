@@ -4,14 +4,15 @@ import { WebRTCAdaptor } from "@antmedia/webrtc_adaptor"
 import { useToggle } from "../hooks"
 import { Stream } from "../types"
 import { getObjectFromArrayByKey, parseString } from "../helpers"
-import { useGameServerWebsocket, useSnackbar } from "."
-import { GameServerKeys } from "../keys"
+import { useSnackbar } from "."
+import { useParameterizedQuery } from "react-fetching-library"
+import { GetStreamList } from "../fetching"
 import { OVENPLAYER_STREAM } from "../constants"
 
 const MAX_OPTIONS = 10
 
 // using ovenplayer
-const ovenPlayerStream = {
+const ovenPlayerStream: Stream = {
     host: OVENPLAYER_STREAM,
     name: OVENPLAYER_STREAM,
     url: "wss://stream2.supremacy.game:3334/app/stream2",
@@ -90,7 +91,7 @@ const blankOption: Stream = {
 
 export const StreamContainer = createContainer(() => {
     const { newSnackbarMessage } = useSnackbar()
-    const { state, subscribe } = useGameServerWebsocket()
+    const { query: queryGetStreamList } = useParameterizedQuery(GetStreamList)
     const defaultResolution = 720
 
     // video
@@ -113,6 +114,19 @@ export const StreamContainer = createContainer(() => {
     const [selectedResolution, setSelectedResolution] = useState<number>()
     const [streamResolutions, setStreamResolutions] = useState<number[]>([])
     const [, setFailedToChangeRed] = useState(false)
+
+    // Fetch stream list
+    useEffect(() => {
+        ;(async () => {
+            try {
+                const resp = await queryGetStreamList({})
+                if (resp.error || !resp.payload) return
+                setStreams([blankOption, ...resp.payload])
+            } catch (e) {
+                console.error(e)
+            }
+        })()
+    }, [queryGetStreamList])
 
     // When user selects a resolution, make the change into the stream
     useEffect(() => {
@@ -171,15 +185,6 @@ export const StreamContainer = createContainer(() => {
 
         toggleIsMusicMute(false)
     }, [musicVolume, toggleIsMusicMute])
-
-    // Subscribe to list of streams
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe) return
-        return subscribe<Stream[]>(GameServerKeys.SubStreamList, (payload) => {
-            if (!payload) return
-            setStreams([blankOption, ...payload])
-        })
-    }, [state, subscribe])
 
     const changeStream = useCallback((s: Stream) => {
         if (!s) return
@@ -291,13 +296,13 @@ export const StreamContainer = createContainer(() => {
                     },
                     callbackError: (e: string) => {
                         if (e === "no_stream_exist" || e === "WebSocketNotConnected") {
-                            console.debug("Failed to start stream:", e)
+                            console.error("Failed to start stream:", e)
                             newSnackbarMessage("Failed to start stream.", "error")
                         }
                     },
                 })
             } catch (e) {
-                console.debug(e)
+                console.error(e)
                 webRtc.current = undefined
             }
         },

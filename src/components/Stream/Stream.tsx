@@ -1,14 +1,12 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useTour } from "@reactour/tour"
-import { useEffect, useState } from "react"
+import OvenPlayer from "ovenplayer"
+import { useEffect } from "react"
 import { SupBackground } from "../../assets"
 import { DEV_ONLY, OVENPLAYER_STREAM, STREAM_ASPECT_RATIO_W_H } from "../../constants"
 import { useDimension, useStream } from "../../containers"
 import { colors, fonts, siteZIndex } from "../../theme/theme"
 import { Music } from "../Music/Music"
-import { Trailer } from "./Trailer"
-
-import OvenPlayer from "ovenplayer"
 
 interface OvenPlayerSource {
     type: "webrtc" | "llhls" | "hls" | "lldash" | "dash" | "mp4"
@@ -20,14 +18,9 @@ interface OvenPlayerSource {
 }
 
 export const Stream = () => {
-    const [watchedTrailer, setWatchedTrailer] = useState(localStorage.getItem("watchedTrailer") == "true")
     const { iframeDimensions } = useDimension()
     const { currentStream, isMute, streamResolutions, vidRefCallback } = useStream()
     const { isOpen } = useTour()
-
-    if (!watchedTrailer) {
-        return <Trailer watchedTrailer={watchedTrailer} setWatchedTrailer={setWatchedTrailer} />
-    }
 
     if (isOpen) return null
 
@@ -146,6 +139,16 @@ const NoStreamScreen = () => {
     )
 }
 
+// Ovenplayer
+interface OvenPlayerSource {
+    type: "webrtc" | "llhls" | "hls" | "lldash" | "dash" | "mp4"
+    file: string
+    label?: string
+    framerate?: number
+    sectionStart?: number
+    sectionEnd?: number
+}
+
 const OutputPlayerOven = ({
     iframeDimensions,
 }: {
@@ -174,6 +177,10 @@ const OutputPlayerOven = ({
             ovenPlayer.on("ready", () => {
                 console.log("ovenplayer ready")
             })
+
+            ovenPlayer.on("error", (e: Error) => {
+                console.log("ovenplayer error: ", e)
+            })
         }
     }
 
@@ -195,12 +202,15 @@ const OutputPlayerOven = ({
                     left: "50% !important",
                     transform: "translate(-50%, -50%) !important",
                     aspectRatio: `${STREAM_ASPECT_RATIO_W_H.toString()} !important`,
-                    width: `${iframeDimensions.width} !important`,
-                    height: `${iframeDimensions.height} !important`,
+                    width: `${iframeDimensions.width}${iframeDimensions.width == "unset" ? "" : "px "} !important`,
+                    height: `${iframeDimensions.height}${iframeDimensions.height == "unset" ? "" : "px "} !important`,
                     zIndex: siteZIndex.Stream,
                 },
                 ".op-ui": {
                     display: "none !important",
+                },
+                ".op-ratio": {
+                    paddingBottom: "0 !important",
                 },
             }}
         >

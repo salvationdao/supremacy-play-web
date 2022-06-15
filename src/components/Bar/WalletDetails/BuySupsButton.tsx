@@ -1,36 +1,25 @@
 import { Button } from "@mui/material"
 import { useCallback, useMemo, useState } from "react"
 import { TooltipHelper } from "../.."
-import { TOKEN_SALE_PAGE } from "../../../constants"
-import { usePassportServerWebsocket } from "../../../containers"
+import { STAGING_OR_DEV_ONLY, TOKEN_SALE_PAGE } from "../../../constants"
 import { dateFormatter } from "../../../helpers"
-import { PassportServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { UserData } from "../../../types/passport"
 
-export const BuySupsButton = ({ user }: { user?: UserData }) => {
-    const { send, state } = usePassportServerWebsocket()
-    const [timeTilNextClaim, setTimeTilNextClaim] = useState<Date>()
-
-    // Free sups button
-    const isFreeSupsEnabled = useMemo(
-        () => process.env.REACT_APP_SENTRY_ENVIRONMENT === "staging" || process.env.REACT_APP_SENTRY_ENVIRONMENT === "development",
-        [],
-    )
+export const BuySupsButton = () => {
+    // const { send } = usePassportCommandsUser("xxxxxxxxx")
+    const [timeTilNextClaim] = useState<Date>()
 
     const getFreeSups = useCallback(async () => {
-        if (state !== WebSocket.OPEN || !send || !user) return
-
-        try {
-            const resp = await send<Date | boolean>(PassportServerKeys.GetFreeSups)
-            if (resp instanceof Date) setTimeTilNextClaim(resp)
-        } catch (e) {
-            console.debug(e)
-        }
-    }, [state, send, user])
+        // try {
+        //     const resp = await send<Date | boolean>(PassportServerKeys.GetFreeSups)
+        //     if (resp instanceof Date) setTimeTilNextClaim(resp)
+        // } catch (e) {
+        //     console.error(e)
+        // }
+    }, [])
 
     const tooltipText = useMemo(() => {
-        if (isFreeSupsEnabled) {
+        if (STAGING_OR_DEV_ONLY) {
             if (timeTilNextClaim && timeTilNextClaim < new Date()) {
                 return `Time until next claim: ${dateFormatter(timeTilNextClaim)}`
             }
@@ -38,7 +27,7 @@ export const BuySupsButton = ({ user }: { user?: UserData }) => {
             return "Claim free SUPs!"
         }
         return ""
-    }, [isFreeSupsEnabled, timeTilNextClaim])
+    }, [timeTilNextClaim])
 
     const openBuySupsPage = useCallback(() => {
         const width = 520
@@ -58,17 +47,17 @@ export const BuySupsButton = ({ user }: { user?: UserData }) => {
                     pb: ".16rem",
                     flexShrink: 0,
                     justifyContent: "flex-start",
-                    color: isFreeSupsEnabled ? colors.gold : colors.neonBlue,
+                    color: STAGING_OR_DEV_ONLY ? colors.gold : colors.neonBlue,
                     whiteSpace: "nowrap",
                     borderRadius: 0.2,
-                    border: `1px solid ${isFreeSupsEnabled ? colors.gold : colors.neonBlue}`,
+                    border: `1px solid ${STAGING_OR_DEV_ONLY ? colors.gold : colors.neonBlue}`,
                     overflow: "hidden",
                     fontFamily: fonts.nostromoBold,
                 }}
-                onClick={isFreeSupsEnabled ? getFreeSups : openBuySupsPage}
-                disabled={isFreeSupsEnabled && timeTilNextClaim && timeTilNextClaim < new Date()}
+                onClick={STAGING_OR_DEV_ONLY ? getFreeSups : openBuySupsPage}
+                disabled={STAGING_OR_DEV_ONLY && timeTilNextClaim && timeTilNextClaim < new Date()}
             >
-                {isFreeSupsEnabled ? "GET FREE SUPS" : "GET SUPS"}
+                {STAGING_OR_DEV_ONLY ? "GET FREE SUPS" : "GET SUPS"}
             </Button>
         </TooltipHelper>
     )

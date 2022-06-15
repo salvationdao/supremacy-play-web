@@ -1,5 +1,4 @@
-import { Box, Stack, Theme } from "@mui/material"
-import { useTheme } from "@mui/styles"
+import { Box, Stack } from "@mui/material"
 import { ReactElement, useCallback, useEffect, useMemo, useState } from "react"
 import Draggable, { DraggableData, DraggableEvent } from "react-draggable"
 import { ResizeBox, TooltipHelper } from ".."
@@ -9,6 +8,7 @@ import { clamp, parseString } from "../../helpers"
 import { colors, siteZIndex } from "../../theme/theme"
 import { Dimension } from "../../types"
 import { ClipThing } from "../../components"
+import { useTheme } from "../../containers/theme"
 
 export interface MoveableResizableConfig {
     localStoragePrefix: string
@@ -50,7 +50,7 @@ export const MoveableResizable = ({ config, children }: { config: MoveableResiza
         tooltipText,
     } = config
 
-    const theme = useTheme<Theme>()
+    const theme = useTheme()
     const {
         remToPxRatio,
         gameUIDimensions: { width, height },
@@ -171,7 +171,7 @@ export const MoveableResizable = ({ config, children }: { config: MoveableResiza
                         clipSize=".5rem"
                         border={{
                             isFancy: true,
-                            borderThickness: ".15rem",
+                            borderThickness: ".3rem",
                             borderColor: theme.factionTheme.primary,
                         }}
                         backgroundColor={theme.factionTheme.background}

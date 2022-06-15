@@ -1,106 +1,31 @@
-import { Box, Stack, ThemeProvider, Theme } from "@mui/material"
+import { Box, Stack } from "@mui/material"
 import { TourProvider } from "@reactour/tour"
 import * as Sentry from "@sentry/react"
-import { useEffect, useMemo, useState } from "react"
 import ReactDOM from "react-dom"
-import { BrowserRouter, Route, Redirect, Switch, useLocation } from "react-router-dom"
-import { Bar, GlobalSnackbar, LoadMessage, RightDrawer, Maintenance, EarlyAccessWarning } from "./components"
+import { Buffer } from "buffer"
+import { Action, ClientContextProvider, createClient } from "react-fetching-library"
+import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom"
+import { Bar, EarlyAccessWarning, GlobalSnackbar, Maintenance, RightDrawer } from "./components"
 import { tourStyles } from "./components/HowToPlay/Tutorial/SetupTutorial"
 import { LeftDrawer } from "./components/LeftDrawer/LeftDrawer"
-import { DEV_ONLY, PASSPORT_SERVER_HOST, SENTRY_CONFIG, UNDER_MAINTENANCE } from "./constants"
-import {
-    RightDrawerProvider,
-    GameServerAuthProvider,
-    GameServerSocketProvider,
-    PassportServerAuthProvider,
-    PassportServerSocketProvider,
-    SnackBarProvider,
-    SupremacyProvider,
-    useGameServerWebsocket,
-    WalletProvider,
-    BarProvider,
-    useGameServerAuth,
-} from "./containers"
-import { mergeDeep, shadeColor } from "./helpers"
+import { GAME_SERVER_HOSTNAME, SENTRY_CONFIG, STAGING_OR_DEV_ONLY, UNDER_MAINTENANCE } from "./constants"
+import { BarProvider, SnackBarProvider, SupremacyProvider, useSupremacy, WalletProvider } from "./containers"
+import { AuthProvider, useAuth, UserUpdater } from "./containers/auth"
+import { ThemeProvider } from "./containers/theme"
 import { useToggle } from "./hooks"
 import { NotFoundPage } from "./pages"
 import { ROUTES_ARRAY, ROUTES_MAP } from "./routes"
-import { colors, theme } from "./theme/theme"
-import { FactionThemeColor, UpdateTheme } from "./types"
-
-if (SENTRY_CONFIG) {
-    Sentry.init({
-        dsn: SENTRY_CONFIG.DSN,
-        release: SENTRY_CONFIG.RELEASE,
-        environment: SENTRY_CONFIG.ENVIRONMENT,
-        tracesSampleRate: SENTRY_CONFIG.SAMPLERATE,
-    })
-}
-
-const App = () => {
-    const [currentTheme, setTheme] = useState<Theme>(theme)
-    const [factionColors, setFactionColors] = useState<FactionThemeColor>({
-        primary: colors.neonBlue,
-        secondary: "#000000",
-        background: shadeColor(colors.neonBlue, -95),
-    })
-
-    useEffect(() => {
-        setTheme((curTheme: Theme) => mergeDeep(curTheme, { factionTheme: factionColors }))
-    }, [factionColors])
-
-    const tourProviderProps = useMemo(
-        () => ({
-            children: <AppInner />,
-            steps: [],
-            padding: 2,
-            styles: tourStyles,
-            showBadge: false,
-            disableKeyboardNavigation: false,
-            disableDotsNavigation: true,
-        }),
-        [],
-    )
-
-    return (
-        <UpdateTheme.Provider value={{ updateTheme: setFactionColors }}>
-            <ThemeProvider theme={currentTheme}>
-                <SnackBarProvider>
-                    <PassportServerSocketProvider initialState={{ host: PASSPORT_SERVER_HOST }}>
-                        <PassportServerAuthProvider>
-                            <GameServerSocketProvider>
-                                <GameServerAuthProvider>
-                                    <SupremacyProvider>
-                                        <WalletProvider>
-                                            <BarProvider>
-                                                <RightDrawerProvider>
-                                                    <TourProvider {...tourProviderProps}>
-                                                        <BrowserRouter>
-                                                            <AppInner />
-                                                        </BrowserRouter>
-                                                    </TourProvider>
-                                                </RightDrawerProvider>
-                                            </BarProvider>
-                                        </WalletProvider>
-                                    </SupremacyProvider>
-                                </GameServerAuthProvider>
-                            </GameServerSocketProvider>
-                        </PassportServerAuthProvider>
-                    </PassportServerSocketProvider>
-                </SnackBarProvider>
-            </ThemeProvider>
-        </UpdateTheme.Provider>
-    )
-}
+import { colors } from "./theme/theme"
+import { LoginRedirect } from "./pages/LoginRedirect"
+import { ws } from "./containers/ws"
+import { FingerprintProvider } from "./containers/fingerprint"
+import { AuthPage } from "./pages/AuthPage"
+import { EnlistPage } from "./pages/EnlistPage"
 
 const AppInner = () => {
-    const { isServerUp } = useGameServerWebsocket()
-    useGameServerAuth() // For re-rendering the site when user has changed (e.g. theme color etc.)
-    const location = useLocation()
+    const { isServerUp } = useSupremacy()
+    const { userID, factionID } = useAuth()
     const [understand, toggleUnderstand] = useToggle()
-
-    // Dont show gamebar and left nav in 404
-    if (location.pathname === "/404") return <NotFoundPage />
 
     return (
         <>
@@ -127,7 +52,7 @@ const AppInner = () => {
                         },
                     }}
                 >
-                    {DEV_ONLY && <LeftDrawer />}
+                    {STAGING_OR_DEV_ONLY && <LeftDrawer />}
 
                     <Box
                         sx={{
@@ -138,20 +63,26 @@ const AppInner = () => {
                             overflow: "hidden",
                         }}
                     >
-                        <LoadMessage />
                         <EarlyAccessWarning onAcknowledged={() => toggleUnderstand(true)} />
 
                         {understand && isServerUp && !UNDER_MAINTENANCE && (
                             <Switch>
                                 {ROUTES_ARRAY.map((r) => {
-                                    const { id, path, exact, Component } = r
-                                    return <Route key={id} path={path} exact={exact} component={Component} />
+                                    const { id, path, exact, Component, requireAuth, requireFaction, authTitle, authDescription } = r
+                                    let component = Component
+                                    if (requireAuth && !userID) {
+                                        const Comp = () => <AuthPage authTitle={authTitle} authDescription={authDescription} />
+                                        component = Comp
+                                    } else if (requireFaction && !factionID) {
+                                        component = EnlistPage
+                                    }
+                                    return <Route key={id} path={path} exact={exact} component={component} />
                                 })}
                                 <Redirect to={ROUTES_MAP.not_found_page.path} />
                             </Switch>
                         )}
 
-                        {!isServerUp || (UNDER_MAINTENANCE && <Maintenance />)}
+                        {(isServerUp === false || UNDER_MAINTENANCE) && <Maintenance />}
                     </Box>
 
                     <RightDrawer />
@@ -160,6 +91,82 @@ const AppInner = () => {
 
             <GlobalSnackbar />
         </>
+    )
+}
+
+if (SENTRY_CONFIG) {
+    Sentry.init({
+        dsn: SENTRY_CONFIG.DSN,
+        release: SENTRY_CONFIG.RELEASE,
+        environment: SENTRY_CONFIG.ENVIRONMENT,
+        tracesSampleRate: SENTRY_CONFIG.SAMPLERATE,
+    })
+}
+
+window.Buffer = Buffer
+
+if (window.location.host.includes("localhost")) {
+    alert("Please don't run on localhost.")
+    throw new Error("Please don't run on localhost.")
+}
+
+const prefixURL = (prefix: string) => () => async (action: Action) => {
+    return {
+        ...action,
+        headers: {
+            "X-AUTH-TOKEN": localStorage.getItem("auth-token") || "",
+            ...action.headers,
+        },
+        endpoint: action.endpoint.startsWith("http") ? action.endpoint : `${prefix}${action.endpoint}`,
+    }
+}
+
+const client = createClient({
+    //None of the options is required
+    requestInterceptors: [prefixURL(`${window.location.protocol}//${GAME_SERVER_HOSTNAME}/api`)],
+    responseInterceptors: [],
+})
+
+ws.Initialise({ defaultHost: GAME_SERVER_HOSTNAME })
+
+const tourProviderProps = {
+    children: <AppInner />,
+    steps: [],
+    padding: 2,
+    styles: tourStyles,
+    showBadge: false,
+    disableKeyboardNavigation: false,
+    disableDotsNavigation: true,
+}
+
+const App = () => {
+    return (
+        <ThemeProvider>
+            <FingerprintProvider>
+                <SnackBarProvider>
+                    <ClientContextProvider client={client}>
+                        <AuthProvider>
+                            <SupremacyProvider>
+                                <WalletProvider>
+                                    <BarProvider>
+                                        <TourProvider {...tourProviderProps}>
+                                            <UserUpdater />
+                                            <BrowserRouter>
+                                                <Switch>
+                                                    <Route path="/404" exact component={NotFoundPage} />
+                                                    <Route path="/login-redirect" exact component={LoginRedirect} />
+                                                    <Route path="" component={AppInner} />
+                                                </Switch>
+                                            </BrowserRouter>
+                                        </TourProvider>
+                                    </BarProvider>
+                                </WalletProvider>
+                            </SupremacyProvider>
+                        </AuthProvider>
+                    </ClientContextProvider>
+                </SnackBarProvider>
+            </FingerprintProvider>
+        </ThemeProvider>
     )
 }
 

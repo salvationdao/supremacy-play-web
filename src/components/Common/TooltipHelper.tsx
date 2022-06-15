@@ -1,5 +1,6 @@
-import { Box, Tooltip, Typography } from "@mui/material"
+import { Stack, Tooltip, Typography, useTheme } from "@mui/material"
 import { ReactElement } from "react"
+import { ClipThing } from ".."
 import { fonts, siteZIndex } from "../../theme/theme"
 
 export const TooltipHelper = ({
@@ -27,6 +28,8 @@ export const TooltipHelper = ({
         | "top"
     open?: boolean
 }) => {
+    const theme = useTheme()
+
     if (!text) return <>{children}</>
 
     return (
@@ -41,18 +44,34 @@ export const TooltipHelper = ({
                 },
             }}
             title={
-                <Box sx={{ px: ".4rem", py: ".16rem" }}>
-                    <Typography variant="body1" sx={{ fontFamily: fonts.shareTech, textAlign: isCentered ? "center" : "start" }}>
-                        {text}
-                    </Typography>
-                </Box>
+                <ClipThing
+                    clipSize="6px"
+                    clipSlantSize="3px"
+                    border={{
+                        borderColor: theme.factionTheme.primary,
+                        borderThickness: ".15rem",
+                    }}
+                    corners={{
+                        topRight: true,
+                        bottomLeft: true,
+                    }}
+                    opacity={0.99}
+                    backgroundColor={theme.factionTheme.background}
+                    sx={{ height: "100%" }}
+                >
+                    <Stack sx={{ height: "100%", px: "1.1rem", py: ".6rem" }}>
+                        <Typography variant="body1" sx={{ fontFamily: fonts.shareTech, textAlign: isCentered ? "center" : "start" }}>
+                            {text}
+                        </Typography>
+                    </Stack>
+                </ClipThing>
             }
             componentsProps={{
                 popper: {
-                    style: { filter: "drop-shadow(0 3px 3px #00000050)", zIndex: 999999, opacity: 0.92 },
+                    style: { filter: "drop-shadow(0 3px 3px #00000050)", zIndex: 999999 },
                 },
-                arrow: { sx: { color: "#333333" } },
-                tooltip: { sx: { maxWidth: "25rem", background: "#333333" } },
+                arrow: { sx: { color: theme.factionTheme.primary } },
+                tooltip: { sx: { padding: "0 !important", maxWidth: "25rem", background: "unset" } },
             }}
         >
             {children}

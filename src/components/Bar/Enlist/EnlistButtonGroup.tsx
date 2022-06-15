@@ -1,39 +1,13 @@
 import { Box, CircularProgress, Divider, Stack, Typography } from "@mui/material"
-import { useEffect, useState } from "react"
 import { BarExpandable, EnlistButton } from "../.."
 import { RedMountainLogo } from "../../../assets"
-import { usePassportServerWebsocket, useSnackbar } from "../../../containers"
-import { PassportServerKeys } from "../../../keys"
+import { useSupremacy } from "../../../containers"
 import { colors, fonts } from "../../../theme/theme"
-import { FactionGeneralData } from "../../../types/passport"
 
 export const EnlistButtonGroup = () => {
-    const { newSnackbarMessage } = useSnackbar()
-    const { state, send } = usePassportServerWebsocket()
-    const [factionsData, setFactionsData] = useState<FactionGeneralData[]>()
+    const { factionsAll } = useSupremacy()
 
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !send) return
-        ;(async () => {
-            try {
-                const resp = await send<FactionGeneralData[], null>(PassportServerKeys.GetFactionsAll, null)
-
-                if (resp) {
-                    setFactionsData(resp)
-                    return true
-                } else {
-                    throw new Error()
-                }
-            } catch (e) {
-                setFactionsData(undefined)
-                newSnackbarMessage(typeof e === "string" ? e : "Failed to retrieve syndicate data.", "error")
-                console.debug(e)
-                return false
-            }
-        })()
-    }, [newSnackbarMessage, send, state])
-
-    if (!factionsData) {
+    if (!factionsAll) {
         return (
             <Stack alignItems="center" sx={{ position: "relative", width: "13rem" }}>
                 <CircularProgress size="1.8rem" sx={{ color: colors.neonBlue }} />
@@ -71,7 +45,7 @@ export const EnlistButtonGroup = () => {
                         height: "100%",
                         overflowX: "auto",
                         overflowY: "hidden",
-                        scrollbarWidth: "none",
+
                         "::-webkit-scrollbar": {
                             height: ".3rem",
                         },
@@ -87,7 +61,7 @@ export const EnlistButtonGroup = () => {
                 >
                     <Typography sx={{ fontFamily: fonts.nostromoBold }}>Enlist:</Typography>
 
-                    {factionsData.map((f) => (
+                    {Object.values(factionsAll).map((f) => (
                         <EnlistButton key={f.id} faction={f} />
                     ))}
                 </Stack>

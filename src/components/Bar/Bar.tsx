@@ -1,24 +1,28 @@
-import { Box, Button, Stack, Typography } from "@mui/material"
-import { useEffect } from "react"
+import { Box, Stack, Typography } from "@mui/material"
 import { Enlist, Logo, ProfileCard, WalletDetails } from ".."
-import { DEV_ONLY, DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT } from "../../constants"
-import { SocketState, useGameServerWebsocket, usePassportServerAuth, usePassportServerWebsocket, useSnackbar } from "../../containers"
+import { SvgDisconnected } from "../../assets"
+import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT } from "../../constants"
+import { useAuth, useSupremacy } from "../../containers"
 import { useToggle } from "../../hooks"
-import { GameServerKeys } from "../../keys"
 import { fonts, siteZIndex } from "../../theme/theme"
-import { UserData } from "../../types/passport"
+import { User } from "../../types"
 import { HowToPlay } from "../HowToPlay/HowToPlay"
 import { SaleAbilitiesModal } from "../PlayerAbilities/SaleAbilitiesModal"
 
 export const Bar = () => {
-    const { user, userID } = usePassportServerAuth()
-    const { state, subscribe } = useGameServerWebsocket()
-    const { newSnackbarMessage } = useSnackbar()
+    const { userID, user } = useAuth()
+    // const { newSnackbarMessage } = useSnackbar()
 
-    useEffect(() => {
-        if (state !== SocketState.OPEN || !subscribe || !userID || !DEV_ONLY) return
-        return subscribe(GameServerKeys.TriggerSaleAbilitiesListUpdated, () => newSnackbarMessage("Player abilities market has been refreshed.", "info"))
-    }, [newSnackbarMessage, state, subscribe, userID])
+    // useGameServerSubscription(
+    //     {
+    //         URI: "xxxxxxxxx",
+    //         key: GameServerKeys.TriggerSaleAbilitiesListUpdated,
+    //     },
+    //     () => {
+    //         if (DEV_ONLY) return
+    //         newSnackbarMessage("Player abilities market has been refreshed.", "info")
+    //     },
+    // )
 
     return (
         <Stack
@@ -31,8 +35,8 @@ export const Bar = () => {
                 flexShrink: 0,
                 height: `${GAME_BAR_HEIGHT}rem`,
                 color: "#FFFFFF",
-                backgroundColor: (theme) => theme.factionTheme.background,
-                scrollbarWidth: "none",
+                background: (theme) => `linear-gradient(#FFFFFF10 26%, ${theme.factionTheme.background})`,
+
                 zIndex: siteZIndex.Popover,
                 "::-webkit-scrollbar": {
                     height: ".3rem",
@@ -49,23 +53,26 @@ export const Bar = () => {
                 transition: `all ${DRAWER_TRANSITION_DURATION / 1000}s`,
             }}
         >
-            <BarContent user={user} />
+            <BarContent userID={userID} user={user} />
         </Stack>
     )
 }
 
-const BarContent = ({ user }: { user?: UserData }) => {
-    const { state, isServerUp } = usePassportServerWebsocket()
+const BarContent = ({ userID, user }: { userID?: string; user: User }) => {
+    const { isServerUp } = useSupremacy()
     const [showSaleAbilities, toggleShowSaleAbilities] = useToggle()
 
-    if (state !== WebSocket.OPEN) {
+    if (isServerUp === false) {
         return (
             <>
                 <Logo />
                 <Box sx={{ flexGrow: 1 }} />
-                <Typography sx={{ mr: "1.6rem", fontFamily: fonts.nostromoBold }} variant="caption">
-                    {isServerUp ? "Connecting to passport..." : "Passport offline."}
-                </Typography>
+                <Stack direction="row" alignItems="center" spacing=".8rem" sx={{ mr: "1.6rem" }}>
+                    <SvgDisconnected size="1.7rem" sx={{ pb: ".6rem" }} />
+                    <Typography sx={{ fontFamily: fonts.nostromoBold }} variant="caption">
+                        DISCONNECTED
+                    </Typography>
+                </Stack>
             </>
         )
     }
@@ -75,18 +82,13 @@ const BarContent = ({ user }: { user?: UserData }) => {
             <Logo />
             <Box sx={{ flexGrow: 1 }} />
             <HowToPlay />
-            {user && (
+            {userID && (
                 <>
-                    {DEV_ONLY && (
-                        <Button variant="outlined" onClick={() => toggleShowSaleAbilities(true)} sx={{ flexShrink: 0 }}>
-                            Purchase Abilities
-                        </Button>
-                    )}
                     <Enlist />
                     <WalletDetails />
                 </>
             )}
-            <ProfileCard user={user} />
+            <ProfileCard userID={userID} user={user} />
 
             {showSaleAbilities && <SaleAbilitiesModal open={showSaleAbilities} onClose={() => toggleShowSaleAbilities(false)} />}
         </>

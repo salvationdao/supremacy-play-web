@@ -51,16 +51,8 @@ export const GlobalAnnouncement = ({ globalAnnouncement }: { globalAnnouncement:
                     boxShadow: 2,
                 }}
             >
-                <Typography
-                    sx={{
-                        textAlign: "center",
-                        fontFamily: fonts.nostromoHeavy,
-                    }}
-                >
-                    {globalAnnouncement.title}
-                </Typography>
-
-                <Typography sx={{ textAlign: "center" }}>{globalAnnouncement.message}</Typography>
+                <Typography sx={{ fontFamily: fonts.nostromoHeavy }}>{globalAnnouncement.title}</Typography>
+                <Typography>{globalAnnouncement.message}</Typography>
             </Stack>
         </Box>
     )

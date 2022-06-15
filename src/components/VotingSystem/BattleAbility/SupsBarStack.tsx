@@ -1,25 +1,24 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useMemo } from "react"
 import { BattleAbilityProgressBigNum, ContributionBar } from "../.."
-import { PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
-import { FactionsAll } from "../../../containers"
 import { zoomEffect } from "../../../theme/keyframes"
+import { Faction } from "../../../types"
 
 interface SubsBarStackProps {
     battleAbilityProgress: BattleAbilityProgressBigNum[]
-    factionsAll: FactionsAll
+    getFaction: (factionID: string) => Faction
     forceDisplay100Percentage: string
 }
 
-export const SupsBarStack = ({ battleAbilityProgress, factionsAll, forceDisplay100Percentage }: SubsBarStackProps) => {
+export const SupsBarStack = ({ battleAbilityProgress, getFaction, forceDisplay100Percentage }: SubsBarStackProps) => {
     const progressBars = useMemo(() => {
         if (!battleAbilityProgress || !Array.isArray(battleAbilityProgress) || battleAbilityProgress.length === 0) {
             return null
         }
         return battleAbilityProgress.map((a) => {
-            return <SupsBar key={a.faction_id} forceDisplay100Percentage={forceDisplay100Percentage} factionsAll={factionsAll} abilityProgress={a} />
+            return <SupsBar key={a.faction_id} forceDisplay100Percentage={forceDisplay100Percentage} getFaction={getFaction} abilityProgress={a} />
         })
-    }, [factionsAll, battleAbilityProgress, forceDisplay100Percentage])
+    }, [getFaction, battleAbilityProgress, forceDisplay100Percentage])
 
     if (!progressBars || progressBars.length <= 0) return null
 
@@ -41,13 +40,13 @@ export const SupsBarStack = ({ battleAbilityProgress, factionsAll, forceDisplay1
 
 interface SupsBarProps {
     forceDisplay100Percentage: string
-    factionsAll: FactionsAll
+    getFaction: (factionID: string) => Faction
     abilityProgress: BattleAbilityProgressBigNum
 }
 
-const SupsBar = ({ forceDisplay100Percentage, factionsAll, abilityProgress }: SupsBarProps) => {
+const SupsBar = ({ forceDisplay100Percentage, getFaction, abilityProgress }: SupsBarProps) => {
     const { faction_id, sups_cost, current_sups } = abilityProgress
-    const primaryColor = useMemo(() => factionsAll[faction_id]?.theme.primary, [faction_id, factionsAll])
+    const primaryColor = useMemo(() => getFaction(faction_id).primary_color, [faction_id, getFaction])
 
     return (
         <Stack key={faction_id} spacing=".96rem" direction="row" alignItems="center">
@@ -55,7 +54,7 @@ const SupsBar = ({ forceDisplay100Percentage, factionsAll, abilityProgress }: Su
                 sx={{
                     height: "1.6rem",
                     width: "1.6rem",
-                    backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${factionsAll[faction_id]?.logo_blob_id})`,
+                    backgroundImage: `url(${getFaction(faction_id).logo_url})`,
                     backgroundRepeat: "no-repeat",
                     backgroundPosition: "center",
                     backgroundSize: "cover",
