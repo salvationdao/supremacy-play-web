@@ -3,13 +3,11 @@ import BigNumber from "bignumber.js"
 import { useMemo } from "react"
 import { ClipThing } from "../../.."
 import { SvgSupToken } from "../../../../assets"
-import { useTheme } from "../../../../containers/theme"
-import { numberCommaFormatter } from "../../../../helpers"
+import { numberCommaFormatter, shadeColor } from "../../../../helpers"
 import { colors, fonts } from "../../../../theme/theme"
 
 export const SoldDetails = ({ soldFor }: { soldFor: string }) => {
-    const theme = useTheme()
-
+    const soldBackgroundColor = useMemo(() => shadeColor(colors.green, -95), [])
     const formattedCommaPrice = useMemo(() => numberCommaFormatter(new BigNumber(soldFor).shiftedBy(-18).toNumber()), [soldFor])
 
     return (
@@ -24,14 +22,14 @@ export const SoldDetails = ({ soldFor }: { soldFor: string }) => {
                     clipSlantSize="3px"
                     border={{
                         isFancy: true,
-                        borderColor: theme.factionTheme.primary,
+                        borderColor: colors.green,
                         borderThickness: ".2rem",
                     }}
                     corners={{
                         topRight: true,
                         bottomLeft: true,
                     }}
-                    backgroundColor={theme.factionTheme.background}
+                    backgroundColor={soldBackgroundColor}
                     sx={{ alignSelf: "flex-start" }}
                 >
                     <Stack direction="row" alignItems="center" spacing=".2rem" sx={{ pl: "1.5rem", pr: "1.6rem", py: ".5rem" }}>
