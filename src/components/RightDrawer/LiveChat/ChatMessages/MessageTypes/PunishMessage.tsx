@@ -28,11 +28,11 @@ export const PunishMessage = ({
     const votedByRender = useMemo(() => {
         if (!data) return null
 
-        const { is_passed, agreed_player_number, total_player_number } = data
+        const { agreed_player_number, total_player_number } = data
 
         return (
             <Box>
-                <Typography sx={{ color: is_passed ? colors.green : colors.red }}>
+                <Typography sx={{ color: agreed_player_number > total_player_number / 2 ? colors.green : colors.red }}>
                     {agreed_player_number}/{total_player_number} AGREED
                 </Typography>
             </Box>
@@ -47,11 +47,11 @@ export const PunishMessage = ({
 
         return (
             <Box>
-                <Stack direction="row">
+                <Stack direction="column">
                     {instant_pass_by_users.map((ipu, i) => {
                         const rankDeets = getUserRankDeets(ipu.rank, "1rem", "1.3rem")
                         return (
-                            <Stack direction="row" key={i}>
+                            <Stack direction="row" key={i} sx={{ pb: ".2rem" }}>
                                 {rankDeets?.icon}
                                 <Typography sx={{ ml: ".2rem" }}>
                                     {`${ipu.username}`}
@@ -67,7 +67,7 @@ export const PunishMessage = ({
 
     if (!data) return null
 
-    const { issued_by_user, reported_user, is_passed, punish_option, punish_reason, instant_pass_by_users } = data
+    const { issued_by_user, reported_user, is_passed, punish_option, punish_reason, instant_pass_by_users, agreed_player_number, total_player_number } = data
 
     return (
         <Box>
@@ -199,8 +199,14 @@ export const PunishMessage = ({
                             <Typography>{punish_reason}</Typography>
                         </LineItem>
 
-                        {instant_pass_by_users && instant_pass_by_users.length > 0 && <LineItem title={"COMMANDER"}>{commanderVoteRender}</LineItem>}
-                        <LineItem title="VOTES">{votedByRender}</LineItem>
+                        <LineItem title="VOTES" color={agreed_player_number > total_player_number / 2 ? colors.green : colors.red}>
+                            {votedByRender}
+                        </LineItem>
+                        {instant_pass_by_users && instant_pass_by_users.length > 0 && (
+                            <LineItem title={"COMMAND OVERRIDE"} color={instant_pass_by_users.length >= 2 ? colors.green : colors.red}>
+                                {commanderVoteRender}
+                            </LineItem>
+                        )}
                     </Stack>
                 )}
             </Box>
