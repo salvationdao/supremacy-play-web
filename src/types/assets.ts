@@ -355,6 +355,7 @@ export interface MysteryCrate extends Collection {
     label: string
     opened: boolean
     locked_until: Date
+    locked_to_marketplace: boolean
     purchased: boolean
     description: string
     deleted_at?: string
