@@ -4,7 +4,7 @@ import { Keycard } from "../../../types"
 import { ClipThing } from "../../Common/ClipThing"
 import { useTheme } from "../../../containers/theme"
 import { FancyButton } from "../.."
-import { useHistory } from "react-router-dom"
+import { useHistory, useLocation } from "react-router-dom"
 import { ItemType } from "../../../types/marketplace"
 
 interface MysteryCrateStoreItemProps {
@@ -13,6 +13,7 @@ interface MysteryCrateStoreItemProps {
 
 export const KeycardHangarItem = ({ keycard }: MysteryCrateStoreItemProps) => {
     const history = useHistory()
+    const location = useLocation()
     const theme = useTheme()
 
     const primaryColor = theme.factionTheme.primary
@@ -83,7 +84,7 @@ export const KeycardHangarItem = ({ keycard }: MysteryCrateStoreItemProps) => {
                             <FancyButton
                                 excludeCaret
                                 onClick={() => {
-                                    history.push(`/marketplace/sell?item-type=${ItemType.Keycards}&asset-id=${keycard.id}`)
+                                    history.push(`/marketplace/sell?item-type=${ItemType.Keycards}&asset-id=${keycard.id}${location.hash}`)
                                 }}
                                 clipThingsProps={{
                                     clipSize: "5px",

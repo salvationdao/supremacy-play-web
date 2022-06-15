@@ -1,6 +1,6 @@
 import { Box, Divider, Stack, Typography } from "@mui/material"
 import { useCallback, useState } from "react"
-import { useHistory } from "react-router-dom"
+import { useHistory, useLocation } from "react-router-dom"
 import { FancyButton } from "../../.."
 import { useAuth } from "../../../../containers"
 import { useToggle } from "../../../../hooks"
@@ -14,6 +14,7 @@ import { SuccessModal } from "../../../Common/SuccessModal"
 export const ManageListing = ({ id, owner, isKeycard }: { id: string; owner?: MarketUser; isKeycard?: boolean }) => {
     const { userID } = useAuth()
     const history = useHistory()
+    const location = useLocation()
     const { send } = useGameServerCommandsFaction("/faction_commander")
 
     // Cancel listing
@@ -100,11 +101,11 @@ export const ManageListing = ({ id, owner, isKeycard }: { id: string; owner?: Ma
                     title="ITEM CANCELLED"
                     leftLabel="SELL ANOTHER"
                     onLeftButton={() => {
-                        history.replace(`/marketplace/sell`)
+                        history.replace(`/marketplace/sell${location.hash}`)
                     }}
                     rightLabel="GO BACK TO MARKETPLACE"
                     onRightButton={() => {
-                        history.replace(`/marketplace`)
+                        history.replace(`/marketplace${location.hash}`)
                     }}
                 >
                     <Typography variant="h6">Your item has been removed from the marketplace.</Typography>

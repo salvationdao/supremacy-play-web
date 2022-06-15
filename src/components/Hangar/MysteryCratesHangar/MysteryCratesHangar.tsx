@@ -11,7 +11,7 @@ import { colors, fonts } from "../../../theme/theme"
 import { MysteryCrate } from "../../../types"
 import { MysteryCrateStoreItemLoadingSkeleton } from "../../Storefront/MysteryCratesStore/MysteryCrateStoreItem/MysteryCrateStoreItem"
 import { MysteryCrateHangarItem } from "./MysteryCrateHangarItem"
-import { useHistory } from "react-router-dom"
+import { useHistory, useLocation } from "react-router-dom"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 
 interface GetCratesRequest {
@@ -28,6 +28,7 @@ interface GetAssetsResponse {
 
 export const MysteryCratesHangar = () => {
     const history = useHistory()
+    const location = useLocation()
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsUser("/user_commander")
     const theme = useTheme()
@@ -153,7 +154,7 @@ export const MysteryCratesHangar = () => {
                     </Typography>
 
                     <FancyButton
-                        onClick={() => history.push("/marketplace/mystery-crates")}
+                        onClick={() => history.push(`/marketplace/mystery-crates${location.hash}`)}
                         excludeCaret
                         clipThingsProps={{
                             clipSize: "9px",
@@ -177,7 +178,7 @@ export const MysteryCratesHangar = () => {
                 </Stack>
             </Stack>
         )
-    }, [crates, history, isLoading, loadError, theme.factionTheme.primary, theme.factionTheme.secondary])
+    }, [crates, history, isLoading, loadError, location.hash, theme.factionTheme.primary, theme.factionTheme.secondary])
 
     return (
         <ClipThing

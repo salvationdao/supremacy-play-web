@@ -1,7 +1,7 @@
 import { Box, Divider, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
 import { useCallback, useMemo, useState } from "react"
-import { useHistory } from "react-router"
+import { useHistory, useLocation } from "react-router-dom"
 import { ClipThing, FancyButton } from "../../.."
 import { SvgSupToken, SvgWallet } from "../../../../assets"
 import { useAuth } from "../../../../containers"
@@ -43,6 +43,7 @@ export const BuyNowDetails = ({ id, itemType, owner, itemName, buyNowPrice, dutc
 
     const theme = useTheme()
     const history = useHistory()
+    const location = useLocation()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [currentPrice, setCurrentPrice] = useState<BigNumber>(calculateNewPrice())
 
@@ -191,7 +192,7 @@ export const BuyNowDetails = ({ id, itemType, owner, itemName, buyNowPrice, dutc
                     title="PURCHASED ITEM"
                     leftLabel="GO BACK TO MARKETPLACE"
                     onLeftButton={() => {
-                        history.replace(`/marketplace`)
+                        history.replace(`/marketplace${location.hash}`)
                     }}
                     rightLabel="GO TO FLEET"
                     onRightButton={() => {
@@ -208,7 +209,7 @@ export const BuyNowDetails = ({ id, itemType, owner, itemName, buyNowPrice, dutc
                                 break
                         }
 
-                        history.replace(`/fleet/${subPath}`)
+                        history.replace(`/fleet/${subPath}${location.hash}`)
                     }}
                 >
                     <Typography variant="h6">Your item has been removed from the marketplace.</Typography>

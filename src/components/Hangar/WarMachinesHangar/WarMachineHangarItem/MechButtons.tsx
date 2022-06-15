@@ -1,5 +1,5 @@
 import { Stack, Typography } from "@mui/material"
-import { useHistory } from "react-router-dom"
+import { useHistory, useLocation } from "react-router-dom"
 import { FancyButton } from "../../.."
 import { useTheme } from "../../../../containers/theme"
 import { colors, fonts } from "../../../../theme/theme"
@@ -25,6 +25,7 @@ export const MechButtons = ({
     setRentalMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
 }) => {
     const history = useHistory()
+    const location = useLocation()
     const theme = useTheme()
     const [mechState, setMechState] = useState<MechStatusEnum>()
 
@@ -107,7 +108,7 @@ export const MechButtons = ({
                 label="SELL"
                 disabled={!mechDetails || mechState !== MechStatusEnum.Idle}
                 onClick={() => {
-                    history.push(`/marketplace/sell?item-type=${ItemType.WarMachine}&asset-id=${mechDetails.id}`)
+                    history.push(`/marketplace/sell?item-type=${ItemType.WarMachine}&asset-id=${mechDetails.id}${location.hash}`)
                 }}
             />
         </Stack>

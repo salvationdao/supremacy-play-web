@@ -1,6 +1,6 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useState } from "react"
-import { useHistory } from "react-router-dom"
+import { useHistory, useLocation } from "react-router-dom"
 import { FancyButton } from "../.."
 import { SvgSupToken, WarMachineIconPNG } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
@@ -44,6 +44,7 @@ export const SellItem = () => {
 export const SellItemInner = ({ toggleReset }: { toggleReset: () => void }) => {
     const theme = useTheme()
     const history = useHistory()
+    const location = useLocation()
     const query = useUrlQuery()
     const { send } = useGameServerCommandsFaction("/faction_commander")
 
@@ -364,7 +365,7 @@ export const SellItemInner = ({ toggleReset }: { toggleReset: () => void }) => {
                         let subPath = MARKETPLACE_TABS.WarMachines
                         if (successPayload.mystery_crate) subPath = MARKETPLACE_TABS.MysteryCrates
                         if (successPayload.keycard) subPath = MARKETPLACE_TABS.Keycards
-                        history.replace(`/marketplace/${subPath}/${successPayload.id}`)
+                        history.replace(`/marketplace/${subPath}/${successPayload.id}${location.hash}`)
                     }}
                 >
                     <Typography variant="h6">

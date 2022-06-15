@@ -1,6 +1,6 @@
 import { Box, IconButton, Stack, Typography } from "@mui/material"
 import { useMemo } from "react"
-import { useHistory } from "react-router-dom"
+import { useHistory, useLocation } from "react-router-dom"
 import { RainingSupsPNG, SafePNG, SvgClose } from "../../assets"
 import { useTheme } from "../../containers/theme"
 import { supFormatter } from "../../helpers"
@@ -18,6 +18,7 @@ interface ClaimedRewardsProps {
 export const ClaimedRewards = ({ rewards, onClose }: ClaimedRewardsProps) => {
     const theme = useTheme()
     const history = useHistory()
+    const location = useLocation()
 
     const isMechCrateReward = useMemo(() => rewards.find((reward) => reward.label === "MECH"), [rewards])
     const isWeaponCrateReward = useMemo(() => rewards.find((reward) => reward.label === "WEAPON"), [rewards])
@@ -81,7 +82,7 @@ export const ClaimedRewards = ({ rewards, onClose }: ClaimedRewardsProps) => {
                     }}
                     sx={{ width: "100%", py: "1rem", color: theme.factionTheme.secondary }}
                     onClick={() => {
-                        history.push("/fleet/mystery-crates")
+                        history.push(`/fleet/mystery-crates${location.hash}`)
                     }}
                 >
                     <Typography
