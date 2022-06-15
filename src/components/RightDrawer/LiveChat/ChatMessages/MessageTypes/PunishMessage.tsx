@@ -28,29 +28,39 @@ export const PunishMessage = ({
     const votedByRender = useMemo(() => {
         if (!data) return null
 
-        const { issued_by_user, is_passed, instant_pass_by_users, agreed_player_number, total_player_number } = data
+        const { is_passed, agreed_player_number, total_player_number } = data
 
         return (
             <Box>
-                {instant_pass_by_users && instant_pass_by_users.length > 0 && (
-                    <Stack direction="row">
-                        {instant_pass_by_users.map((ipu, i) => {
-                            const rankDeets = getUserRankDeets(ipu.rank, "1rem", "1.3rem")
-                            return (
-                                <Stack direction="row" key={i}>
-                                    {rankDeets?.icon}
-                                    <Typography sx={{ ml: ".2rem" }}>
-                                        {`${ipu.username}`}
-                                        <span style={{ marginLeft: ".2rem", opacity: 0.7 }}>{`#${ipu.gid}`}</span>
-                                    </Typography>
-                                </Stack>
-                            )
-                        })}
-                    </Stack>
-                )}
                 <Typography sx={{ color: is_passed ? colors.green : colors.red }}>
                     {agreed_player_number}/{total_player_number} AGREED
                 </Typography>
+            </Box>
+        )
+    }, [data])
+
+    const commanderVoteRender = useMemo(() => {
+        if (!data) return null
+
+        const { instant_pass_by_users } = data
+        if (!instant_pass_by_users || instant_pass_by_users.length == 0) return null
+
+        return (
+            <Box>
+                <Stack direction="row">
+                    {instant_pass_by_users.map((ipu, i) => {
+                        const rankDeets = getUserRankDeets(ipu.rank, "1rem", "1.3rem")
+                        return (
+                            <Stack direction="row" key={i}>
+                                {rankDeets?.icon}
+                                <Typography sx={{ ml: ".2rem" }}>
+                                    {`${ipu.username}`}
+                                    <span style={{ marginLeft: ".2rem", opacity: 0.7 }}>{`#${ipu.gid}`}</span>
+                                </Typography>
+                            </Stack>
+                        )
+                    })}
+                </Stack>
             </Box>
         )
     }, [data])
@@ -189,7 +199,8 @@ export const PunishMessage = ({
                             <Typography>{punish_reason}</Typography>
                         </LineItem>
 
-                        <LineItem title={instant_pass_by_users && instant_pass_by_users.length >= 2 ? "INSTANT BANNED" : "VOTES"}>{votedByRender}</LineItem>
+                        {instant_pass_by_users && instant_pass_by_users.length > 0 && <LineItem title={"COMMANDER"}>{commanderVoteRender}</LineItem>}
+                        <LineItem title="VOTES">{votedByRender}</LineItem>
                     </Stack>
                 )}
             </Box>
