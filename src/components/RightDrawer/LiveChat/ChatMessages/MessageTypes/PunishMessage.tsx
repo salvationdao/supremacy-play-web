@@ -21,41 +21,53 @@ export const PunishMessage = ({
 }) => {
     const [isExpanded, toggleIsExpanded] = useToggle()
     const factionColor = useMemo(
-        () => (data?.issued_by_user.faction_id ? getFaction(data?.issued_by_user.faction_id).primary_color : "#FFFFFF"),
+        () => (data?.issued_by_user.faction_id ? getFaction(data.issued_by_user.faction_id).primary_color : "#FFFFFF"),
         [data?.issued_by_user.faction_id, getFaction],
     )
 
     const votedByRender = useMemo(() => {
         if (!data) return null
 
-        const { issued_by_user, is_passed, instant_pass_by_user, agreed_player_number, total_player_number } = data
-
-        // If ban was triggered instantly by a GENERAL
-        if (instant_pass_by_user && instant_pass_by_user.rank) {
-            const rankDeets = getUserRankDeets(instant_pass_by_user.rank, "1rem", "1.3rem")
-            return (
-                <Stack direction="row">
-                    {rankDeets?.icon}
-                    <Typography sx={{ ml: ".2rem" }}>
-                        {`${issued_by_user.username}`}
-                        <span style={{ marginLeft: ".2rem", opacity: 0.7 }}>{`#${issued_by_user.gid}`}</span>
-                    </Typography>
-                </Stack>
-            )
-        }
+        const { agreed_player_number, total_player_number } = data
 
         return (
             <Box>
-                <Typography sx={{ color: is_passed ? colors.green : colors.red }}>
+                <Typography sx={{ color: agreed_player_number > total_player_number / 2 ? colors.green : colors.red }}>
                     {agreed_player_number}/{total_player_number} AGREED
                 </Typography>
             </Box>
         )
     }, [data])
 
+    const commanderVoteRender = useMemo(() => {
+        if (!data) return null
+
+        const { instant_pass_by_users } = data
+        if (!instant_pass_by_users || instant_pass_by_users.length == 0) return null
+
+        return (
+            <Box>
+                <Stack direction="column">
+                    {instant_pass_by_users.map((ipu, i) => {
+                        const rankDeets = getUserRankDeets(ipu.rank, "1rem", "1.3rem")
+                        return (
+                            <Stack direction="row" key={i} sx={{ pb: ".2rem" }}>
+                                {rankDeets?.icon}
+                                <Typography sx={{ ml: ".2rem" }}>
+                                    {`${ipu.username}`}
+                                    <span style={{ marginLeft: ".2rem", opacity: 0.7 }}>{`#${ipu.gid}`}</span>
+                                </Typography>
+                            </Stack>
+                        )
+                    })}
+                </Stack>
+            </Box>
+        )
+    }, [data])
+
     if (!data) return null
 
-    const { issued_by_user, reported_user, is_passed, punish_option, punish_reason, instant_pass_by_user } = data
+    const { issued_by_user, reported_user, is_passed, punish_option, punish_reason, instant_pass_by_users, agreed_player_number, total_player_number } = data
 
     return (
         <Box>
@@ -187,7 +199,14 @@ export const PunishMessage = ({
                             <Typography>{punish_reason}</Typography>
                         </LineItem>
 
-                        <LineItem title={instant_pass_by_user ? "INSTANT BANNED" : "VOTES"}>{votedByRender}</LineItem>
+                        <LineItem title="VOTES" color={agreed_player_number > total_player_number / 2 ? colors.green : colors.red}>
+                            {votedByRender}
+                        </LineItem>
+                        {instant_pass_by_users && instant_pass_by_users.length > 0 && (
+                            <LineItem title={"COMMAND OVERRIDE"} color={instant_pass_by_users.length >= 2 ? colors.green : colors.red}>
+                                {commanderVoteRender}
+                            </LineItem>
+                        )}
                     </Stack>
                 )}
             </Box>
