@@ -8,7 +8,6 @@ import { MechStatus } from "../../../../types"
 
 export const MechGeneralStatus = ({
     mechID,
-    mechStatus,
     setMechStatus,
 }: {
     mechID: string
@@ -53,6 +52,7 @@ export const MechGeneralStatus = ({
         async (currentStatus: string) => {
             try {
                 // TODO: status is not correct need to be fixed
+                console.log({ currentStatus })
                 // if (currentStatus !== "QUEUE") return
                 await send(GameServerKeys.TriggerMechStatusUpdate, {
                     mech_id: mechID,
