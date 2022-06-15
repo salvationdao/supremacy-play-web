@@ -224,12 +224,15 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate }: MysteryCrateStore
                     isLoading={isLoading}
                     error={buyError}
                     confirmSuffix={
-                        <>
+                        <Stack direction="row" sx={{ ml: ".4rem" }}>
+                            <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
+                                (
+                            </Typography>
                             <SvgSupToken size="1.8rem" />
                             <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
                                 {formattedPrice})
                             </Typography>
-                        </>
+                        </Stack>
                     }
                 >
                     <Typography variant="h6">

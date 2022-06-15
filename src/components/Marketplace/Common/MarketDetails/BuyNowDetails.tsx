@@ -162,12 +162,15 @@ export const BuyNowDetails = ({ id, itemType, owner, itemName, buyNowPrice, dutc
                     isLoading={isLoading}
                     error={buyError}
                     confirmSuffix={
-                        <>
+                        <Stack direction="row" sx={{ ml: ".4rem" }}>
+                            <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
+                                (
+                            </Typography>
                             <SvgSupToken size="1.8rem" />
                             <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
-                                {numFormatter(new BigNumber(buyNowPrice).shiftedBy(-18).toNumber())}
+                                {numFormatter(new BigNumber(buyNowPrice).shiftedBy(-18).toNumber())})
                             </Typography>
-                        </>
+                        </Stack>
                     }
                 >
                     <Typography variant="h6">

@@ -229,12 +229,15 @@ export const AuctionDetails = ({ id, owner, itemName, auctionCurrentPrice, aucti
                     isLoading={isLoading}
                     error={bidError}
                     confirmSuffix={
-                        <>
+                        <Stack direction="row" sx={{ ml: ".4rem" }}>
+                            <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
+                                (
+                            </Typography>
                             <SvgSupToken size="1.8rem" />
                             <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
                                 {numFormatter(inputBidPrice)})
                             </Typography>
-                        </>
+                        </Stack>
                     }
                 >
                     <Typography variant="h6">

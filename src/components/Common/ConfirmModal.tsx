@@ -91,7 +91,7 @@ export const ConfirmModal = ({ title, children, onConfirm, onClose, isLoading, e
                                 <Stack direction="row" justifyContent="center">
                                     {confirmPrefix}
                                     <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
-                                        CONFIRM (
+                                        CONFIRM
                                     </Typography>
                                     {confirmSuffix}
                                 </Stack>
