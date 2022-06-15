@@ -58,15 +58,15 @@ export const SellItem = () => {
     useEffect(() => {
         let fee = 10
         if (reservePrice) fee += 5
-        if (buyoutPrice && itemType !== ItemType.Keycards) fee += 5
+        if (dropRate) fee += 5
         setListingFee(fee)
     }, [buyoutPrice, reservePrice, dropRate, itemType])
 
     // Form validators
     const checkBuyoutPriceError = useCallback((): string | undefined => {
         if (!buyoutPrice) return
-        if (startingPrice && buyoutPrice < startingPrice) {
-            return "Buyout price cannot be lower than the auction starting price."
+        if (startingPrice && buyoutPrice <= startingPrice) {
+            return "Buyout price cannot be lower than or equal to the auction starting price."
         }
     }, [buyoutPrice, startingPrice])
 
@@ -228,7 +228,7 @@ export const SellItem = () => {
                                     question="Auction Starting Price"
                                     description="This will allow buyers to bid on your item as an auction."
                                     placeholder="Enter auction starting price..."
-                                    isOptional={!!buyoutPrice}
+                                    isOptional={!!buyoutPrice && !startingPrice}
                                 />
                             )}
 
