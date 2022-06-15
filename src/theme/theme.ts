@@ -187,7 +187,7 @@ export const theme = createTheme({
         },
         h6: {
             fontFamily: fonts.shareTech,
-            fontSize: "1.78rem",
+            fontSize: "1.82rem",
         },
         body1: {
             fontFamily: fonts.shareTech,

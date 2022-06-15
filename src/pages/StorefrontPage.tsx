@@ -70,39 +70,9 @@ export const StorefrontPage = () => {
                         }}
                     >
                         <Tab label="MYSTERY CRATES" value={STOREFRONT_TABS.MysteryCrates} />
-                        <Tab
-                            label={
-                                <>
-                                    SKINS
-                                    <br />
-                                    <span>(COMING SOON)</span>
-                                </>
-                            }
-                            value={STOREFRONT_TABS.Skins}
-                            disabled
-                        />
-                        <Tab
-                            label={
-                                <>
-                                    ABILITIES
-                                    <br />
-                                    <span>(COMING SOON)</span>
-                                </>
-                            }
-                            disabled
-                            value={STOREFRONT_TABS.Abilities}
-                        />
-                        <Tab
-                            label={
-                                <>
-                                    MERCHANDISE
-                                    <br />
-                                    <span>(COMING SOON)</span>
-                                </>
-                            }
-                            disabled
-                            value={STOREFRONT_TABS.Merchandise}
-                        />
+                        {/* <Tab label="SKINS" value={STOREFRONT_TABS.Skins} disabled />
+                        <Tab label="ABILITIES" disabled value={STOREFRONT_TABS.Abilities} />
+                        <Tab label="MERCHANDISE" disabled value={STOREFRONT_TABS.Merchandise} /> */}
                     </Tabs>
                 </Box>
 

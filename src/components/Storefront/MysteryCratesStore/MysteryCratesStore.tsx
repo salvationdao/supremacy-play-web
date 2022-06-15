@@ -202,10 +202,8 @@ export const MysteryCratesStore = () => {
                                 MYSTERY CRATES <span style={{ color: colors.neonBlue, fontFamily: "inherit", fontSize: "inherit" }}>(LIMITED SUPPLY)</span>
                             </Typography>
                             <Typography sx={{ fontSize: "1.85rem" }}>
-                                Gear up for the battle arena with a variety of War Machines and Weapons.{" "}
-                                <span style={{ color: colors.neonBlue, fontFamily: "inherit" }}>
-                                    You must have at least 1 keycard in order to purchase mystery crates.
-                                </span>
+                                Gear up for the battle arena with a variety of War Machines and Weapons. Each keycard you have allows you to purchase 10 mystery
+                                crates.
                             </Typography>
                         </Box>
                         <Stack spacing="1rem" sx={{ ml: "auto" }}>

@@ -56,7 +56,7 @@ export const WarMachineAbilitiesPopover = ({
                         borderThickness: ".2rem",
                         borderColor: faction.primary_color,
                     }}
-                    opacity={0.8}
+                    opacity={0.99}
                     backgroundColor={faction.background_color}
                 >
                     <Box sx={{ px: "1.28rem", pt: "1.28rem", pb: "1.28rem" }}>

@@ -1,6 +1,6 @@
 import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { useHistory } from "react-router-dom"
+import { useHistory, useLocation } from "react-router-dom"
 import { ClipThing, FancyButton } from "../.."
 import { EmptyWarMachinesPNG, KeycardPNG } from "../../../assets"
 import { useSnackbar } from "../../../containers"
@@ -16,6 +16,7 @@ import { KeycardMarketItem } from "./KeycardMarketItem"
 
 export const KeycardsMarket = () => {
     const history = useHistory()
+    const location = useLocation()
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const theme = useTheme()
@@ -37,8 +38,8 @@ export const KeycardsMarket = () => {
     const ownedByFilterSection = useRef<ChipFilter>({
         label: "OWNED BY",
         options: [
-            { value: "self", label: "YOU", color: theme.factionTheme.primary },
-            { value: "others", label: "OTHERS", color: theme.factionTheme.primary },
+            { value: "self", label: "YOU", color: theme.factionTheme.primary, textColor: theme.factionTheme.secondary },
+            { value: "others", label: "OTHERS", color: theme.factionTheme.primary, textColor: theme.factionTheme.secondary },
         ],
         initialSelected: ownedBy,
         onSetSelected: setOwnedBy,
@@ -50,7 +51,7 @@ export const KeycardsMarket = () => {
         onSetValue: setPrice,
     })
 
-    const getKeycards = useCallback(async () => {
+    const getItems = useCallback(async () => {
         try {
             setIsLoading(true)
 
@@ -86,10 +87,9 @@ export const KeycardsMarket = () => {
         }
     }, [sort, price, send, page, pageSize, search, ownedBy, setTotalItems, newSnackbarMessage])
 
-    // Initial load the key card listings
     useEffect(() => {
-        getKeycards()
-    }, [getKeycards])
+        getItems()
+    }, [getItems])
 
     const content = useMemo(() => {
         if (loadError) {
@@ -244,7 +244,7 @@ export const KeycardsMarket = () => {
                                     sx: { position: "relative", ml: "auto" },
                                 }}
                                 sx={{ px: "1.6rem", py: ".4rem", color: "#FFFFFF" }}
-                                onClick={() => history.push("/marketplace/sell")}
+                                onClick={() => history.push(`/marketplace/sell${location.hash}`)}
                             >
                                 <Typography
                                     variant="caption"
@@ -266,6 +266,7 @@ export const KeycardsMarket = () => {
                             changePage={changePage}
                             isGridView={isGridView}
                             toggleIsGridView={toggleIsGridView}
+                            manualRefresh={getItems}
                         />
 
                         <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>

@@ -71,7 +71,7 @@ export const MechBattleHistoryDetails = ({ mechDetails }: { mechDetails?: MechDe
     if (!mechDetails) return null
 
     return (
-        <Stack spacing="3.8rem" sx={{ pt: ".4rem" }}>
+        <Stack spacing="3.8rem">
             <Stack direction="row" justifyContent="space-between" sx={{ px: "2rem" }}>
                 {statsLoading ? (
                     <>

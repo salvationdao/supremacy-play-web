@@ -1,7 +1,7 @@
-import { Box, CircularProgress, Modal, Stack, Typography } from "@mui/material"
+import { Box, CircularProgress, IconButton, Modal, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
 import { ClipThing } from ".."
-import { FlamesPNG, GenericWarMachinePNG, SvgDamageCross, SvgDamageIcon, SvgSkull } from "../../assets"
+import { FlamesPNG, GenericWarMachinePNG, SvgClose, SvgDamageCross, SvgDamageIcon, SvgSkull } from "../../assets"
 import { colors, fonts, siteZIndex } from "../../theme/theme"
 import { DamageRecord, Faction, WarMachineDestroyedRecord, WarMachineState } from "../../types"
 import { useTheme } from "../../containers/theme"
@@ -124,6 +124,7 @@ export const WarMachineDestroyedInfo = ({
                         borderThickness: ".3rem",
                     }}
                     backgroundColor={theme.factionTheme.background}
+                    sx={{ position: "relative" }}
                 >
                     <Box sx={{ position: "relative" }}>
                         <Box
@@ -144,6 +145,10 @@ export const WarMachineDestroyedInfo = ({
 
                         {content}
                     </Box>
+
+                    <IconButton size="small" onClick={onClose} sx={{ position: "absolute", top: ".5rem", right: ".5rem" }}>
+                        <SvgClose size="1.9rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
+                    </IconButton>
                 </ClipThing>
             </Box>
         </Modal>

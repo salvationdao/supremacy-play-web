@@ -1,6 +1,6 @@
 import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { useHistory } from "react-router-dom"
+import { useHistory, useLocation } from "react-router-dom"
 import { ClipThing, FancyButton } from "../.."
 import { EmptyWarMachinesPNG, SafePNG } from "../../../assets"
 import { useSnackbar } from "../../../containers"
@@ -16,6 +16,7 @@ import { MysteryCrateMarketItem } from "./MysteryCrateMarketItem"
 
 export const MysteryCratesMarket = () => {
     const history = useHistory()
+    const location = useLocation()
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const theme = useTheme()
@@ -62,7 +63,7 @@ export const MysteryCratesMarket = () => {
         onSetValue: setPrice,
     })
 
-    const getCrates = useCallback(async () => {
+    const getItems = useCallback(async () => {
         try {
             setIsLoading(true)
 
@@ -100,10 +101,9 @@ export const MysteryCratesMarket = () => {
         }
     }, [sort, price, send, page, pageSize, search, listingTypes, ownedBy, setTotalItems, newSnackbarMessage])
 
-    // Initial load the crate listings
     useEffect(() => {
-        getCrates()
-    }, [getCrates])
+        getItems()
+    }, [getItems])
 
     const content = useMemo(() => {
         if (loadError) {
@@ -258,7 +258,7 @@ export const MysteryCratesMarket = () => {
                                     sx: { position: "relative", ml: "auto" },
                                 }}
                                 sx={{ px: "1.6rem", py: ".4rem", color: "#FFFFFF" }}
-                                onClick={() => history.push("/marketplace/sell")}
+                                onClick={() => history.push(`/marketplace/sell${location.hash}`)}
                             >
                                 <Typography
                                     variant="caption"
@@ -280,6 +280,7 @@ export const MysteryCratesMarket = () => {
                             changePage={changePage}
                             isGridView={isGridView}
                             toggleIsGridView={toggleIsGridView}
+                            manualRefresh={getItems}
                         />
 
                         <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>

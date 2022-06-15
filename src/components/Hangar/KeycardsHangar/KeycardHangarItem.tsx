@@ -4,7 +4,7 @@ import { Keycard } from "../../../types"
 import { ClipThing } from "../../Common/ClipThing"
 import { useTheme } from "../../../containers/theme"
 import { FancyButton } from "../.."
-import { useHistory } from "react-router-dom"
+import { useHistory, useLocation } from "react-router-dom"
 import { ItemType } from "../../../types/marketplace"
 
 interface MysteryCrateStoreItemProps {
@@ -13,6 +13,7 @@ interface MysteryCrateStoreItemProps {
 
 export const KeycardHangarItem = ({ keycard }: MysteryCrateStoreItemProps) => {
     const history = useHistory()
+    const location = useLocation()
     const theme = useTheme()
 
     const primaryColor = theme.factionTheme.primary
@@ -70,6 +71,12 @@ export const KeycardHangarItem = ({ keycard }: MysteryCrateStoreItemProps) => {
                             {keycard.blueprints.animation_url && <source src={keycard.blueprints.animation_url} type="video/mp4" />}
                             {keycard.blueprints.card_animation_url && <source src={keycard.blueprints.animation_url} type="video/mp4" />}
                         </Box>
+
+                        <Box sx={{ position: "absolute", top: ".6rem", right: ".8rem" }}>
+                            <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
+                                {keycard.count}x
+                            </Typography>
+                        </Box>
                     </Box>
 
                     <Stack spacing=".4rem" sx={{ flex: 1, px: ".4rem", py: ".3rem" }}>
@@ -82,8 +89,9 @@ export const KeycardHangarItem = ({ keycard }: MysteryCrateStoreItemProps) => {
                         <Stack alignItems="center" sx={{ mt: "auto !important", pt: ".8rem", alignSelf: "stretch" }}>
                             <FancyButton
                                 excludeCaret
+                                disabled={keycard.market_listed_count >= keycard.count}
                                 onClick={() => {
-                                    history.push(`/marketplace/sell?item-type=${ItemType.Keycards}&asset-id=${keycard.id}`)
+                                    history.push(`/marketplace/sell?item-type=${ItemType.Keycards}&asset-id=${keycard.id}${location.hash}`)
                                 }}
                                 clipThingsProps={{
                                     clipSize: "5px",

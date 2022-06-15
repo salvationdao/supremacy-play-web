@@ -114,7 +114,7 @@ const WarMachineHangarItemInner = ({
                 opacity={isSelected ? 1 : 0.7}
                 backgroundColor={theme.factionTheme.background}
             >
-                <Stack direction="row" alignItems="center" spacing="1.2rem" sx={{ height: "23rem", px: "1.8rem", pt: "2.4rem", pb: "1.4rem" }}>
+                <Stack direction="row" alignItems="center" spacing="1.2rem" sx={{ height: "23rem", px: "1.8rem", pt: "2.6rem", pb: "1.4rem" }}>
                     <Stack spacing="1rem" sx={{ height: "100%" }}>
                         <MechThumbnail mech={mech} mechDetails={mechDetails} />
                         <MechGeneralStatus mechID={mech.id} />

@@ -1,5 +1,5 @@
 import Masonry from "@mui/lab/Masonry"
-import { Box, CircularProgress, Stack, Typography } from "@mui/material"
+import { Box, CircularProgress, Stack, Typography, useMediaQuery } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
 import { useTheme } from "../../../../containers/theme"
 import { getRarityDeets } from "../../../../helpers"
@@ -141,6 +141,7 @@ const WarMachineMarketDetailsInner = ({
     primaryColor: string
     backgroundColor: string
 }) => {
+    const below780 = useMediaQuery("(max-width:780px)")
     const [isTimeEnded, toggleIsTimeEnded] = useToggle()
     const rarityDeets = useMemo(() => getRarityDeets(marketItem.collection_item?.tier || ""), [marketItem.collection_item?.tier])
 
@@ -204,10 +205,10 @@ const WarMachineMarketDetailsInner = ({
                         px: "3rem",
                     }}
                 >
-                    <Masonry columns={2} spacing={4}>
+                    <Masonry columns={below780 ? 1 : 2} spacing={4}>
                         <ImagesPreview media={media} primaryColor={primaryColor} />
 
-                        <Stack spacing="2rem" sx={{ pb: "1rem" }}>
+                        <Stack spacing="2rem" sx={{ pb: "1rem", minHeight: "65rem" }}>
                             <Box>
                                 <Typography
                                     gutterBottom

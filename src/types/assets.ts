@@ -1,11 +1,10 @@
 import { Battle, Faction, User, Vector2i } from "."
 
 export enum MechStatusEnum {
-    Unknown = "UNKNOWN",
     Idle = "IDLE",
     Queue = "QUEUE",
     Battle = "BATTLE",
-    MARKET = "MARKET",
+    Market = "MARKET",
     Sold = "SOLD",
 }
 
@@ -356,6 +355,7 @@ export interface MysteryCrate extends Collection {
     label: string
     opened: boolean
     locked_until: Date
+    locked_to_marketplace: boolean
     purchased: boolean
     description: string
     deleted_at?: string
