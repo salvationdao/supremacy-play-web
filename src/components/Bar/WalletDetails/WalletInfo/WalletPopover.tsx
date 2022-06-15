@@ -121,7 +121,7 @@ export const WalletPopover = ({
                     {transactions.length > 0 && (
                         <Box>
                             <Stack direction="row" alignItems="center" spacing=".8rem" sx={{ mb: ".2rem" }}>
-                                <Typography sx={{ fontFamily: fonts.nostromoBlack, color: theme.factionTheme.primary }}>RECENT TRANSACTIONS</Typography>
+                                <Typography sx={{ fontFamily: fonts.nostromoBlack, color: theme.factionTheme.primary }}>TRANSACTIONS (24HRS)</Typography>
 
                                 <Link href={`${PASSPORT_WEB}transactions`} target="_blank">
                                     <SvgExternalLink size="1.2rem" sx={{ opacity: 0.7, ":hover": { opacity: 1 } }} />

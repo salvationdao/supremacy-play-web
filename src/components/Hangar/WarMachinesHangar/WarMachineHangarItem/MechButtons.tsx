@@ -45,10 +45,9 @@ export const MechButtons = ({
         <Box
             sx={{
                 display: "grid",
-                gridTemplateColumns: "repeat(4, 1fr) max-content", // hard-coded to have 5 buttons, adjust as required
+                gridTemplateColumns: "repeat(4, 1fr) max-content",
                 gap: ".8rem",
                 alignItems: "center",
-                justifyContent: "center",
             }}
         >
             {/* Button 1 */}
@@ -57,7 +56,7 @@ export const MechButtons = ({
                     primaryColor={theme.factionTheme.primary}
                     backgroundColor={theme.factionTheme.background}
                     label="UNDEPLOY"
-                    disabled={mechState === MechStatusEnum.Battle}
+                    disabled={!mechState || mechState === MechStatusEnum.Battle}
                     onClick={() => {
                         setSelectedMechDetails(mechDetails)
                         setLeaveMechModalOpen(true)
@@ -68,7 +67,7 @@ export const MechButtons = ({
                     primaryColor={theme.factionTheme.primary}
                     backgroundColor={theme.factionTheme.background}
                     label="DEPLOY"
-                    disabled={mechState !== MechStatusEnum.Idle}
+                    disabled={!mechState || mechState !== MechStatusEnum.Idle}
                     onClick={() => {
                         setSelectedMechDetails(mechDetails)
                         setDeployMechModalOpen(true)
@@ -77,7 +76,7 @@ export const MechButtons = ({
             )}
 
             {/* Button 2 */}
-            <ReusableButton primaryColor={theme.factionTheme.primary} backgroundColor={theme.factionTheme.background} label="REPAIR" disabled={!mechDetails} />
+            <ReusableButton primaryColor={theme.factionTheme.primary} backgroundColor={theme.factionTheme.background} label="REPAIR" disabled={!mechState} />
 
             {/* Button 3 */}
             <ReusableButton
@@ -109,7 +108,7 @@ export const MechButtons = ({
                 secondaryColor={mechState === MechStatusEnum.Market ? colors.red : undefined}
                 backgroundColor={mechState === MechStatusEnum.Market ? theme.factionTheme.background : colors.red}
                 label={mechState === MechStatusEnum.Market ? "VIEW LISTING" : "SELL"}
-                disabled={mechState !== MechStatusEnum.Idle && mechState !== MechStatusEnum.Market}
+                disabled={!mechState || (mechState !== MechStatusEnum.Idle && mechState !== MechStatusEnum.Market)}
                 onClick={() => {
                     if (mechDetails.locked_to_marketplace) {
                         if (!mechDetails.item_sale_id) return
