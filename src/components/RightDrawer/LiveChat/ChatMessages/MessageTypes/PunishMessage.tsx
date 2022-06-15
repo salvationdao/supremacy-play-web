@@ -202,11 +202,16 @@ export const PunishMessage = ({
                         <LineItem title="VOTES" color={agreed_player_number > total_player_number / 2 ? colors.green : colors.red}>
                             {votedByRender}
                         </LineItem>
+
                         {instant_pass_by_users && instant_pass_by_users.length > 0 && (
                             <LineItem title={"COMMAND OVERRIDE"} color={instant_pass_by_users.length >= 2 ? colors.green : colors.red}>
                                 {commanderVoteRender}
                             </LineItem>
                         )}
+
+                        <LineItem title="RESULT" color={is_passed ? colors.green : colors.red}>
+                            <Typography sx={{ color: is_passed ? colors.green : colors.red }}>{is_passed ? "PUNISHED" : "NOT PUNISHED"}</Typography>
+                        </LineItem>
                     </Stack>
                 )}
             </Box>
