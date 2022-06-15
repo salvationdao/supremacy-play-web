@@ -101,7 +101,7 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate }: MysteryCrateStore
                                 <Stack direction="row" alignItems="center" spacing=".1rem" sx={{ position: "relative", opacity: 0.9 }}>
                                     <SvgSupToken size={enlargedView ? "2rem" : "1.3rem"} fill={colors.yellow} />
                                     <Typography sx={{ fontSize: enlargedView ? "1.6rem" : "1.3rem", fontWeight: "fontWeightBold" }}>
-                                        {supFormatterNoFixed(new BigNumber(mysteryCrate.price).multipliedBy(2).toString(), 2)}
+                                        {supFormatterNoFixed(new BigNumber(mysteryCrate.price).plus(1000).toString(), 2)}
                                     </Typography>
                                     <Box
                                         sx={{
