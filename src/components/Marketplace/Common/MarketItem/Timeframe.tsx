@@ -12,9 +12,8 @@ export const Timeframe = ({ isGridView, endAt, soldAt }: { isGridView: boolean; 
                 TIME LEFT
             </Typography>
             <Typography
-                variant="caption"
                 sx={{
-                    fontFamily: fonts.nostromoBold,
+                    fontWeight: "fontWeightBold",
                     display: "-webkit-box",
                     overflow: "hidden",
                     overflowWrap: "anywhere",

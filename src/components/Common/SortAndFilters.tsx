@@ -296,7 +296,7 @@ const ChipFilterSection = ({ filter, primaryColor, secondaryColor }: { filter: C
             <FancyButton
                 excludeCaret
                 clipThingsProps={{
-                    clipSize: "8px",
+                    clipSize: "7px",
                     opacity: 1,
                     sx: { position: "relative" },
                 }}
@@ -304,11 +304,10 @@ const ChipFilterSection = ({ filter, primaryColor, secondaryColor }: { filter: C
                 onClick={() => setSelectedOptionsInstant([])}
             >
                 <Typography
-                    variant="caption"
                     sx={{
                         color: secondaryColor,
                         fontSize: "1.1rem",
-                        fontFamily: fonts.nostromoBlack,
+                        fontWeight: "fontWeightBold",
                         opacity: 0.7,
                     }}
                 >

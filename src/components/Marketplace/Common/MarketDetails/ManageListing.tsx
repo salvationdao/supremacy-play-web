@@ -96,7 +96,11 @@ export const ManageListing = ({ id, owner, isKeycard, isTimeEnded }: { id: strin
                     isLoading={cancelling}
                     error={cancelError}
                 >
-                    <Typography variant="h6">Do you wish to remove the listing from the marketplace?</Typography>
+                    <Typography variant="h6">
+                        Do you wish to remove the listing from the marketplace?
+                        <br />
+                        Your listing fee will not be refunded.
+                    </Typography>
                 </ConfirmModal>
             )}
 

@@ -182,6 +182,7 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate }: MysteryCrateStore
 
                         <Stack alignItems={enlargedView ? "center" : "flex-start"} sx={{ flex: 1, px: ".4rem", py: ".3rem", flexShrink: 0 }}>
                             <Typography
+                                gutterBottom
                                 variant={enlargedView ? "h4" : "h6"}
                                 sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack, textAlign: enlargedView ? "center" : "start" }}
                             >

@@ -55,9 +55,7 @@ const MysteryCrateInfo = ({ isGridView, label, description }: { isGridView: bool
             </Typography>
 
             <Typography
-                variant="caption"
                 sx={{
-                    fontFamily: fonts.nostromoBold,
                     display: "-webkit-box",
                     overflow: "hidden",
                     overflowWrap: "anywhere",
