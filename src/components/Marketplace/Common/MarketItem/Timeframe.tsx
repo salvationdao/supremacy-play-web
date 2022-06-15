@@ -3,7 +3,7 @@ import { useMemo } from "react"
 import { timeSinceInWords } from "../../../../helpers"
 import { fonts, colors } from "../../../../theme/theme"
 
-export const Timeframe = ({ isGridView, endAt }: { isGridView: boolean; endAt: Date }) => {
+export const Timeframe = ({ isGridView, endAt, soldAt }: { isGridView: boolean; endAt: Date; soldAt?: Date }) => {
     const timeLeft = useMemo(() => timeSinceInWords(new Date(), endAt), [endAt])
 
     return (
@@ -23,7 +23,7 @@ export const Timeframe = ({ isGridView, endAt }: { isGridView: boolean; endAt: D
                     WebkitBoxOrient: "vertical",
                 }}
             >
-                {timeLeft}
+                {soldAt ? "LISTING ENDED" : timeLeft}
             </Typography>
         </Stack>
     )

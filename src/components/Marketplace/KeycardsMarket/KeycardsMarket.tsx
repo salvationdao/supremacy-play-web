@@ -2,7 +2,7 @@ import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/mater
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useHistory, useLocation } from "react-router-dom"
 import { ClipThing, FancyButton } from "../.."
-import { EmptyWarMachinesPNG, KeycardPNG } from "../../../assets"
+import { KeycardPNG } from "../../../assets"
 import { useSnackbar } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { usePagination, useToggle } from "../../../hooks"
@@ -165,7 +165,7 @@ export const KeycardsMarket = () => {
                             height: "16rem",
                             opacity: 0.6,
                             filter: "grayscale(100%)",
-                            background: `url(${EmptyWarMachinesPNG})`,
+                            background: `url(${KeycardPNG})`,
                             backgroundRepeat: "no-repeat",
                             backgroundPosition: "bottom center",
                             backgroundSize: "contain",
