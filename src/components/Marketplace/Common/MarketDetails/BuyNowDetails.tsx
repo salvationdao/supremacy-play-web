@@ -5,8 +5,7 @@ import { useHistory, useLocation } from "react-router-dom"
 import { ClipThing, FancyButton } from "../../.."
 import { SvgSupToken, SvgWallet } from "../../../../assets"
 import { useAuth } from "../../../../containers"
-import { useTheme } from "../../../../containers/theme"
-import { numberCommaFormatter, numFormatter, timeDiff, timeSince } from "../../../../helpers"
+import { numberCommaFormatter, numFormatter, shadeColor, timeDiff, timeSince } from "../../../../helpers"
 import { useInterval, useToggle } from "../../../../hooks"
 import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
@@ -41,7 +40,6 @@ export const BuyNowDetails = ({ id, itemType, owner, itemName, buyNowPrice, dutc
         return newPrice
     }, [buyNowPrice, createdAt, dutchAuctionDropRate])
 
-    const theme = useTheme()
     const history = useHistory()
     const location = useLocation()
     const { send } = useGameServerCommandsFaction("/faction_commander")
@@ -53,9 +51,9 @@ export const BuyNowDetails = ({ id, itemType, owner, itemName, buyNowPrice, dutc
     const [confirmBuyModalOpen, toggleConfirmBuyModalOpen] = useToggle()
     const [successModalOpen, toggleSuccessModalOpen] = useToggle()
 
-    const primaryColor = useMemo(() => theme.factionTheme.primary, [theme.factionTheme])
-    const secondaryColor = useMemo(() => theme.factionTheme.secondary, [theme.factionTheme])
-    const backgroundColor = useMemo(() => theme.factionTheme.background, [theme.factionTheme])
+    const primaryColor = colors.buyout
+    const secondaryColor = "#FFFFFF"
+    const backgroundColor = useMemo(() => shadeColor(colors.buyout, -93), [])
     const formattedCommaPrice = useMemo(() => numberCommaFormatter(currentPrice.toNumber()), [currentPrice])
 
     const confirmBuy = useCallback(async () => {

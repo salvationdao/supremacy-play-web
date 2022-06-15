@@ -1,8 +1,6 @@
 import { Stack, Typography } from "@mui/material"
 import { useMemo } from "react"
 import { SvgSupToken } from "../../../../assets"
-import { useTheme } from "../../../../containers/theme"
-import { shadeColor } from "../../../../helpers"
 import { colors, fonts } from "../../../../theme/theme"
 
 export const BuyoutPrice = ({
@@ -14,11 +12,7 @@ export const BuyoutPrice = ({
     formattedPrice: string
     formattedDropPrice?: string
 }) => {
-    const theme = useTheme()
-    const primaryColor = useMemo(
-        () => (formattedDropPrice ? colors.dutchAuction : shadeColor(theme.factionTheme.primary, 30)),
-        [formattedDropPrice, theme.factionTheme.primary],
-    )
+    const primaryColor = useMemo(() => (formattedDropPrice ? colors.dutchAuction : colors.buyout), [formattedDropPrice])
 
     return (
         <Stack spacing={isGridView ? ".1rem" : ".6rem"}>

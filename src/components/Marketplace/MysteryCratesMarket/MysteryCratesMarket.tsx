@@ -56,7 +56,7 @@ export const MysteryCratesMarket = () => {
     const listingTypeFilterSection = useRef<ChipFilter>({
         label: "LISTING TYPE",
         options: [
-            { value: "BUY_NOW", label: "BUY NOW", color: theme.factionTheme.primary },
+            { value: "BUY_NOW", label: "BUY NOW", color: colors.buyout },
             { value: "DUTCH_AUCTION", label: "DUTCH AUCTION", color: colors.dutchAuction },
             { value: "AUCTION", label: "AUCTION", color: colors.auction },
         ],

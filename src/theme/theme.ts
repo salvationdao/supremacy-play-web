@@ -65,6 +65,7 @@ export const colors = {
     supsCredit: "#01FF70",
     supsDebit: "#FF4136",
 
+    buyout: "#309FFF",
     auction: "#E04F00",
     dutchAuction: "#D98D00",
 
