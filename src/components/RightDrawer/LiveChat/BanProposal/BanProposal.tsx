@@ -53,9 +53,10 @@ const BanProposalInner = ({
     toggleOutOfTime: (value?: boolean | undefined) => void
 }) => {
     const { send } = useGameServerCommandsFaction("/faction_commander")
-    const { userStat, userRank } = useAuth()
-    const [submitted, setSubmitted] = useState(!!banProposal.decision)
+    const { userStat, userRank, userID } = useAuth()
+    const [submitted, setSubmitted] = useState(!!banProposal.decision || !!banProposal.instant_pass_user_ids.find((id) => id === userID))
     const [submittedVote, setSubmittedVote] = useState(banProposal.decision?.is_agreed)
+    const [instantPassVoted, setInstantPassVoted] = useState(!!banProposal.instant_pass_user_ids.find((id) => id === userID))
     const [error, setError] = useState("")
     const [instantPunishModalOpen, toggleInstantPunishModalOpen] = useToggle()
 
@@ -88,9 +89,9 @@ const BanProposalInner = ({
 
             if (!resp) return
             setSubmitted(true)
-            setSubmittedVote(true)
             setError("")
             toggleInstantPunishModalOpen(false)
+            setInstantPassVoted(true)
         } catch (e) {
             setError(typeof e === "string" ? e : "Failed to submit your vote.")
         }
@@ -106,6 +107,13 @@ const BanProposalInner = ({
         }
 
         if (submitted) {
+            if (instantPassVoted) {
+                return (
+                    <Typography>
+                        <i>You trigger a instant pass with this proposal.</i>
+                    </Typography>
+                )
+            }
             return (
                 <Typography>
                     <i>
@@ -179,7 +187,7 @@ const BanProposalInner = ({
                 )}
             </>
         )
-    }, [userStat, userRank, submitted, rankDeets?.icon, error, submittedVote, toggleInstantPunishModalOpen, submitVote])
+    }, [userStat, userRank, submitted, rankDeets?.icon, error, submittedVote, toggleInstantPunishModalOpen, submitVote, instantPassVoted])
 
     return (
         <>
