@@ -82,7 +82,7 @@ export const SuccessModal = ({
                                             border: { borderColor: leftColor, borderThickness: "2px" },
                                             sx: { flex: 2, position: "relative" },
                                         }}
-                                        sx={{ pt: 0, pb: 0, minWidth: "5rem" }}
+                                        sx={{ pt: 0, pb: 0, minWidth: "5rem", color: "#FFFFFF" }}
                                         onClick={onLeftButton}
                                     >
                                         <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
@@ -98,7 +98,7 @@ export const SuccessModal = ({
                                             border: { borderColor: rightColor, borderThickness: "2px" },
                                             sx: { flex: 2, position: "relative" },
                                         }}
-                                        sx={{ pt: 0, pb: 0, minWidth: "5rem" }}
+                                        sx={{ pt: 0, pb: 0, minWidth: "5rem", color: "#FFFFFF" }}
                                         onClick={onRightButton}
                                     >
                                         <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
