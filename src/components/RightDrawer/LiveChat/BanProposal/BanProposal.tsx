@@ -90,6 +90,7 @@ const BanProposalInner = ({
             setSubmitted(true)
             setSubmittedVote(true)
             setError("")
+            toggleInstantPunishModalOpen(false)
         } catch (e) {
             setError(typeof e === "string" ? e : "Failed to submit your vote.")
         }
