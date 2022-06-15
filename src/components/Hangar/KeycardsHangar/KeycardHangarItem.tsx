@@ -115,7 +115,7 @@ export const KeycardHangarItemInner = ({ keycard, itemSaleID }: MysteryCrateStor
                                     clipSize: "5px",
                                     backgroundColor: itemSaleID ? backgroundColor : colors.red,
                                     opacity: 1,
-                                    border: { isFancy: true, borderColor: colors.red, borderThickness: "1.5px" },
+                                    border: { isFancy: !itemSaleID, borderColor: colors.red, borderThickness: "1.5px" },
                                     sx: { position: "relative", mt: "1rem", width: "100%", color: itemSaleID ? colors.red : "#FFFFFF" },
                                 }}
                                 sx={{ px: "1.6rem", py: ".6rem" }}
