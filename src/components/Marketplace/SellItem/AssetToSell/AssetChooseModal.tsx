@@ -1,5 +1,5 @@
 import { Box, CircularProgress, IconButton, Modal, Pagination, Stack, Typography } from "@mui/material"
-import { useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { ClipThing } from "../../.."
 import { SvgClose } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
@@ -47,62 +47,63 @@ export const AssetChooseModal = ({
     const secondaryColor = theme.factionTheme.secondary
     const backgroundColor = theme.factionTheme.background
 
-    // Get assets
-    useEffect(() => {
-        ;(async () => {
-            let key = ""
+    const getItems = useCallback(async () => {
+        let key = ""
+        if (itemType === ItemType.WarMachine) {
+            key = GameServerKeys.GetMechs
+        } else if (itemType === ItemType.MysteryCrate) {
+            key = GameServerKeys.GetPlayerMysteryCrates
+        } else {
+            key = GameServerKeys.GetPlayerKeycards
+        }
+
+        try {
+            setIsLoading(true)
+            const resp = await send<GetAssetsResponse>(key, {
+                page, // Starts with 0
+                page_size: pageSize,
+                exclude_opened: true,
+                exclude_market_listed: true,
+                exclude_market_locked: true,
+            })
+
+            if (!resp) return
+
             if (itemType === ItemType.WarMachine) {
-                key = GameServerKeys.GetMechs
+                setOwnedAssets(
+                    resp.mechs.map((mech) => ({
+                        id: mech.id,
+                        mech: mech,
+                    })),
+                )
             } else if (itemType === ItemType.MysteryCrate) {
-                key = GameServerKeys.GetPlayerMysteryCrates
+                setOwnedAssets(
+                    resp.mystery_crates.map((crate) => ({
+                        id: crate.id,
+                        mysteryCrate: crate,
+                    })),
+                )
             } else {
-                key = GameServerKeys.GetPlayerKeycards
+                setOwnedAssets(
+                    resp.keycards.map((keycard) => ({
+                        id: keycard.id,
+                        keycard: keycard,
+                    })),
+                )
             }
-
-            try {
-                setIsLoading(true)
-                const resp = await send<GetAssetsResponse>(key, {
-                    page, // Starts with 0
-                    page_size: pageSize,
-                    exclude_opened: true,
-                    exclude_market_listed: true,
-                    exclude_market_locked: true,
-                })
-
-                if (!resp) return
-
-                if (itemType === ItemType.WarMachine) {
-                    setOwnedAssets(
-                        resp.mechs.map((mech) => ({
-                            id: mech.id,
-                            mech: mech,
-                        })),
-                    )
-                } else if (itemType === ItemType.MysteryCrate) {
-                    setOwnedAssets(
-                        resp.mystery_crates.map((crate) => ({
-                            id: crate.id,
-                            mysteryCrate: crate,
-                        })),
-                    )
-                } else {
-                    setOwnedAssets(
-                        resp.keycards.map((keycard) => ({
-                            id: keycard.id,
-                            keycard: keycard,
-                        })),
-                    )
-                }
-                setTotalItems(resp.total)
-            } catch (err) {
-                const message = typeof err === "string" ? err : "Failed to get owned assets."
-                setLoadError(message)
-                console.error(err)
-            } finally {
-                setIsLoading(false)
-            }
-        })()
+            setTotalItems(resp.total)
+        } catch (err) {
+            const message = typeof err === "string" ? err : "Failed to get owned assets."
+            setLoadError(message)
+            console.error(err)
+        } finally {
+            setIsLoading(false)
+        }
     }, [send, itemType, page, pageSize, setTotalItems])
+
+    useEffect(() => {
+        getItems()
+    }, [getItems])
 
     return (
         <Modal open={open} onClose={onClose} sx={{ zIndex: siteZIndex.Modal }}>
@@ -165,6 +166,7 @@ export const AssetChooseModal = ({
                             pageSize={pageSize}
                             setPageSize={setPageSize}
                             changePage={changePage}
+                            manualRefresh={getItems}
                         />
 
                         {loadError && (

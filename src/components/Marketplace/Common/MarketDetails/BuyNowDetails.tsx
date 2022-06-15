@@ -1,16 +1,20 @@
-import { Box, Divider, IconButton, Modal, Stack, Typography } from "@mui/material"
+import { Box, Divider, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
 import { useCallback, useMemo, useState } from "react"
+import { useHistory, useLocation } from "react-router-dom"
 import { ClipThing, FancyButton } from "../../.."
-import { SvgClose, SvgSupToken, SvgWallet } from "../../../../assets"
-import { useAuth, useSnackbar } from "../../../../containers"
+import { SvgSupToken, SvgWallet } from "../../../../assets"
+import { useAuth } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
 import { numberCommaFormatter, numFormatter, timeDiff, timeSince } from "../../../../helpers"
 import { useInterval, useToggle } from "../../../../hooks"
 import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
-import { colors, fonts, siteZIndex } from "../../../../theme/theme"
+import { HANGAR_TABS } from "../../../../pages"
+import { colors, fonts } from "../../../../theme/theme"
 import { ItemType, MarketUser } from "../../../../types/marketplace"
+import { ConfirmModal } from "../../../Common/ConfirmModal"
+import { SuccessModal } from "../../../Common/SuccessModal"
 
 interface BuyNowDetailsProps {
     id: string
@@ -38,13 +42,43 @@ export const BuyNowDetails = ({ id, itemType, owner, itemName, buyNowPrice, dutc
     }, [buyNowPrice, createdAt, dutchAuctionDropRate])
 
     const theme = useTheme()
+    const history = useHistory()
+    const location = useLocation()
+    const { send } = useGameServerCommandsFaction("/faction_commander")
     const [currentPrice, setCurrentPrice] = useState<BigNumber>(calculateNewPrice())
+
+    // Buying
+    const [isLoading, setIsLoading] = useState(false)
+    const [buyError, setBuyError] = useState<string>()
     const [confirmBuyModalOpen, toggleConfirmBuyModalOpen] = useToggle()
+    const [successModalOpen, toggleSuccessModalOpen] = useToggle()
 
     const primaryColor = useMemo(() => theme.factionTheme.primary, [theme.factionTheme])
     const secondaryColor = useMemo(() => theme.factionTheme.secondary, [theme.factionTheme])
     const backgroundColor = useMemo(() => theme.factionTheme.background, [theme.factionTheme])
     const formattedCommaPrice = useMemo(() => numberCommaFormatter(currentPrice.toNumber()), [currentPrice])
+
+    const confirmBuy = useCallback(async () => {
+        try {
+            setIsLoading(true)
+            const isKeycard = itemType === ItemType.Keycards
+
+            const resp = await send(isKeycard ? GameServerKeys.MarketplaceSalesKeycardBuy : GameServerKeys.MarketplaceSalesBuy, {
+                id,
+            })
+
+            if (!resp) return
+            toggleConfirmBuyModalOpen(false)
+            toggleSuccessModalOpen(true)
+            setBuyError(undefined)
+        } catch (err) {
+            const message = typeof err === "string" ? err : "Failed to purchase item."
+            setBuyError(message)
+            console.error(err)
+        } finally {
+            setIsLoading(false)
+        }
+    }, [id, itemType, send, toggleConfirmBuyModalOpen, toggleSuccessModalOpen])
 
     const isSelfItem = userID === owner?.id
 
@@ -128,7 +162,58 @@ export const BuyNowDetails = ({ id, itemType, owner, itemName, buyNowPrice, dutc
             </Stack>
 
             {confirmBuyModalOpen && !isSelfItem && !isTimeEnded && (
-                <ConfirmBuyModal id={id} itemType={itemType} itemName={itemName} price={buyNowPrice} onClose={() => toggleConfirmBuyModalOpen(false)} />
+                <ConfirmModal
+                    title="CONFIRMATION"
+                    onConfirm={confirmBuy}
+                    onClose={() => toggleConfirmBuyModalOpen(false)}
+                    isLoading={isLoading}
+                    error={buyError}
+                    confirmSuffix={
+                        <Stack direction="row" sx={{ ml: ".4rem" }}>
+                            <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
+                                (
+                            </Typography>
+                            <SvgSupToken size="1.8rem" />
+                            <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
+                                {numFormatter(new BigNumber(buyNowPrice).shiftedBy(-18).toNumber())})
+                            </Typography>
+                        </Stack>
+                    }
+                >
+                    <Typography variant="h6">
+                        Do you wish to purchase <strong>{itemName}</strong> for{" "}
+                        <span>{numFormatter(new BigNumber(buyNowPrice).shiftedBy(-18).toNumber())}</span> SUPS?
+                    </Typography>
+                </ConfirmModal>
+            )}
+
+            {successModalOpen && (
+                <SuccessModal
+                    title="PURCHASED ITEM"
+                    leftLabel="GO BACK TO MARKETPLACE"
+                    onLeftButton={() => {
+                        history.replace(`/marketplace${location.hash}`)
+                    }}
+                    rightLabel="GO TO FLEET"
+                    onRightButton={() => {
+                        let subPath = ""
+                        switch (itemType) {
+                            case ItemType.WarMachine:
+                                subPath = HANGAR_TABS.WarMachines
+                                break
+                            case ItemType.MysteryCrate:
+                                subPath = HANGAR_TABS.MysteryCrates
+                                break
+                            case ItemType.Keycards:
+                                subPath = HANGAR_TABS.Keycards
+                                break
+                        }
+
+                        history.replace(`/fleet/${subPath}${location.hash}`)
+                    }}
+                >
+                    <Typography variant="h6">Your item has been removed from the marketplace.</Typography>
+                </SuccessModal>
             )}
         </>
     )
@@ -158,148 +243,4 @@ const PriceDropper = ({
     }, 1000)
 
     return <>{timeLeft}</>
-}
-
-export const ConfirmBuyModal = ({
-    id,
-    itemType,
-    itemName,
-    price,
-    onClose,
-}: {
-    id: string
-    itemType: ItemType
-    itemName: string
-    price: string
-    onClose: () => void
-}) => {
-    const { newSnackbarMessage } = useSnackbar()
-    const theme = useTheme()
-    const { send } = useGameServerCommandsFaction("/faction_commander")
-    const [isLoading, setIsLoading] = useState(false)
-    const [buyError, setBuyError] = useState<string>()
-
-    const formattedPrice = useMemo(() => numFormatter(new BigNumber(price).shiftedBy(-18).toNumber()), [price])
-
-    const confirmBuy = useCallback(async () => {
-        try {
-            setIsLoading(true)
-            const isKeycard = itemType === ItemType.Keycards
-
-            const resp = await send(isKeycard ? GameServerKeys.MarketplaceSalesKeycardBuy : GameServerKeys.MarketplaceSalesBuy, {
-                id,
-            })
-
-            if (!resp) return
-            newSnackbarMessage(`Successfully purchased ${itemName}.`, "success")
-            onClose()
-        } catch (err) {
-            const message = typeof err === "string" ? err : "Failed to purchase item."
-            setBuyError(message)
-            console.error(err)
-        } finally {
-            setIsLoading(false)
-        }
-    }, [id, itemName, itemType, newSnackbarMessage, onClose, send])
-
-    return (
-        <Modal open onClose={onClose} sx={{ zIndex: siteZIndex.Modal }}>
-            <Box
-                sx={{
-                    position: "absolute",
-                    top: "50%",
-                    left: "50%",
-                    transform: "translate(-50%, -50%)",
-                    width: "48rem",
-                    boxShadow: 6,
-                    outline: "none",
-                }}
-            >
-                <ClipThing
-                    clipSize="8px"
-                    border={{
-                        borderColor: theme.factionTheme.primary,
-                        borderThickness: ".2rem",
-                    }}
-                    sx={{ position: "relative" }}
-                    backgroundColor={theme.factionTheme.background}
-                >
-                    <Stack
-                        spacing="1.2rem"
-                        sx={{
-                            position: "relative",
-                            px: "2.5rem",
-                            py: "2.4rem",
-                            span: {
-                                color: colors.neonBlue,
-                                fontWeight: "fontWeightBold",
-                            },
-                        }}
-                    >
-                        <Typography variant="h5" sx={{ lineHeight: 1, fontFamily: fonts.nostromoBlack }}>
-                            CONFIRMATION
-                        </Typography>
-                        <Typography variant="h6">
-                            Do you wish to purchase <strong>{itemName}</strong> for <span>{formattedPrice}</span> SUPS?
-                        </Typography>
-                        <Stack direction="row" spacing="1rem" sx={{ pt: ".4rem" }}>
-                            <FancyButton
-                                loading={isLoading}
-                                excludeCaret
-                                clipThingsProps={{
-                                    clipSize: "5px",
-                                    backgroundColor: colors.green,
-                                    border: { borderColor: colors.green, borderThickness: "2px" },
-                                    sx: { flex: 2, position: "relative" },
-                                }}
-                                sx={{ pt: 0, pb: 0, minWidth: "5rem" }}
-                                onClick={confirmBuy}
-                            >
-                                <Stack direction="row" justifyContent="center">
-                                    <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
-                                        CONFIRM (
-                                    </Typography>
-                                    <SvgSupToken size="1.8rem" />
-                                    <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
-                                        {formattedPrice})
-                                    </Typography>
-                                </Stack>
-                            </FancyButton>
-
-                            <FancyButton
-                                excludeCaret
-                                clipThingsProps={{
-                                    clipSize: "5px",
-                                    backgroundColor: colors.red,
-                                    border: { borderColor: colors.red, borderThickness: "2px" },
-                                    sx: { flex: 2, position: "relative" },
-                                }}
-                                sx={{ pt: 0, pb: 0, minWidth: "5rem" }}
-                                onClick={onClose}
-                            >
-                                <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
-                                    CANCEL
-                                </Typography>
-                            </FancyButton>
-                        </Stack>
-
-                        {buyError && (
-                            <Typography
-                                sx={{
-                                    mt: ".3rem",
-                                    color: "red",
-                                }}
-                            >
-                                {buyError}
-                            </Typography>
-                        )}
-                    </Stack>
-
-                    <IconButton size="small" onClick={onClose} sx={{ position: "absolute", top: ".5rem", right: ".5rem" }}>
-                        <SvgClose size="1.9rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
-                    </IconButton>
-                </ClipThing>
-            </Box>
-        </Modal>
-    )
 }

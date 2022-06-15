@@ -1,5 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useHistory } from "react-router-dom"
+import { useHistory, useLocation } from "react-router-dom"
 import { SafePNG } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { useTimer } from "../../../hooks"
@@ -15,6 +15,7 @@ interface MysteryCrateStoreItemProps {
 
 export const MysteryCrateHangarItem = ({ crate }: MysteryCrateStoreItemProps) => {
     const history = useHistory()
+    const location = useLocation()
     const theme = useTheme()
 
     const primaryColor = theme.factionTheme.primary
@@ -116,7 +117,7 @@ export const MysteryCrateHangarItem = ({ crate }: MysteryCrateStoreItemProps) =>
                                 <FancyButton
                                     excludeCaret
                                     onClick={() => {
-                                        history.push(`/marketplace/sell?item-type=${ItemType.MysteryCrate}&asset-id=${crate.id}`)
+                                        history.push(`/marketplace/sell?item-type=${ItemType.MysteryCrate}&asset-id=${crate.id}${location.hash}`)
                                     }}
                                     clipThingsProps={{
                                         clipSize: "5px",

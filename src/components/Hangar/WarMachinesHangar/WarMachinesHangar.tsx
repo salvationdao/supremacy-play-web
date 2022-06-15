@@ -1,6 +1,6 @@
 import { Box, Pagination, Stack, Typography } from "@mui/material"
-import React, { useEffect, useMemo, useState } from "react"
-import { useHistory } from "react-router-dom"
+import React, { useCallback, useEffect, useMemo, useState } from "react"
+import { useHistory, useLocation } from "react-router-dom"
 import { ClipThing, FancyButton } from "../.."
 import { PASSPORT_WEB } from "../../../constants"
 import { useSnackbar } from "../../../containers"
@@ -90,6 +90,7 @@ const WarMachinesHangarInner = ({
     setRentalMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
 }) => {
     const history = useHistory()
+    const location = useLocation()
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsUser("/user_commander")
     const theme = useTheme()
@@ -98,30 +99,31 @@ const WarMachinesHangarInner = ({
     const [loadError, setLoadError] = useState<string>()
     const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, setPageSize } = usePagination({ pageSize: 5, page: 1 })
 
-    // Get mechs
-    useEffect(() => {
-        ;(async () => {
-            try {
-                setIsLoading(true)
-                const resp = await send<GetAssetsResponse, GetMechsRequest>(GameServerKeys.GetMechs, {
-                    page,
-                    page_size: pageSize,
-                    include_market_listed: true,
-                })
+    const getItems = useCallback(async () => {
+        try {
+            setIsLoading(true)
+            const resp = await send<GetAssetsResponse, GetMechsRequest>(GameServerKeys.GetMechs, {
+                page,
+                page_size: pageSize,
+                include_market_listed: true,
+            })
 
-                if (!resp) return
-                setLoadError(undefined)
-                setMechs(resp.mechs)
-                setTotalItems(resp.total)
-            } catch (e) {
-                setLoadError(typeof e === "string" ? e : "Failed to get war machines.")
-                newSnackbarMessage(typeof e === "string" ? e : "Failed to get war machines.", "error")
-                console.error(e)
-            } finally {
-                setIsLoading(false)
-            }
-        })()
+            if (!resp) return
+            setLoadError(undefined)
+            setMechs(resp.mechs)
+            setTotalItems(resp.total)
+        } catch (e) {
+            setLoadError(typeof e === "string" ? e : "Failed to get war machines.")
+            newSnackbarMessage(typeof e === "string" ? e : "Failed to get war machines.", "error")
+            console.error(e)
+        } finally {
+            setIsLoading(false)
+        }
     }, [send, page, pageSize, setTotalItems, newSnackbarMessage])
+
+    useEffect(() => {
+        getItems()
+    }, [getItems])
 
     const content = useMemo(() => {
         return (
@@ -169,6 +171,7 @@ const WarMachinesHangarInner = ({
                         pageSize={pageSize}
                         setPageSize={setPageSize}
                         changePage={changePage}
+                        manualRefresh={getItems}
                     />
 
                     <Box
@@ -244,7 +247,7 @@ const WarMachinesHangarInner = ({
                                         {"You don't have any war machines, go to the Marketplace or go to Xsyn to transfer your assets to Supremacy."}
                                     </Typography>
                                     <FancyButton
-                                        onClick={() => history.push("/marketplace/war-machines")}
+                                        onClick={() => history.push(`/marketplace/war-machines${location.hash}`)}
                                         excludeCaret
                                         clipThingsProps={{
                                             clipSize: "9px",

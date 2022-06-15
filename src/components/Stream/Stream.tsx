@@ -130,7 +130,7 @@ const NoStreamScreen = () => {
     )
 }
 
-// ovenplayer
+// Ovenplayer
 interface OvenPlayerSource {
     type: "webrtc" | "llhls" | "hls" | "lldash" | "dash" | "mp4"
     file: string

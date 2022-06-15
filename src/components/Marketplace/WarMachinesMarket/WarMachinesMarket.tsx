@@ -1,6 +1,6 @@
 import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { useHistory } from "react-router-dom"
+import { useHistory, useLocation } from "react-router-dom"
 import { ClipThing, FancyButton } from "../.."
 import { EmptyWarMachinesPNG, WarMachineIconPNG } from "../../../assets"
 import { useSnackbar } from "../../../containers"
@@ -17,6 +17,7 @@ import { WarMachineMarketItem } from "./WarMachineMarketItem"
 
 export const WarMachinesMarket = () => {
     const history = useHistory()
+    const location = useLocation()
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const theme = useTheme()
@@ -25,6 +26,7 @@ export const WarMachinesMarket = () => {
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
     const [mechItems, setMechItems] = useState<MarketplaceBuyAuctionItem[]>()
+
     const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, setPageSize } = usePagination({ pageSize: 10, page: 1 })
     const [isGridView, toggleIsGridView] = useToggle(false)
 
@@ -83,7 +85,7 @@ export const WarMachinesMarket = () => {
         onSetValue: setPrice,
     })
 
-    const getMechs = useCallback(async () => {
+    const getItems = useCallback(async () => {
         try {
             setIsLoading(true)
 
@@ -122,10 +124,9 @@ export const WarMachinesMarket = () => {
         }
     }, [sort, price, send, page, pageSize, search, rarities, listingTypes, ownedBy, setTotalItems, newSnackbarMessage])
 
-    // Initial load the mech listings
     useEffect(() => {
-        getMechs()
-    }, [getMechs])
+        getItems()
+    }, [getItems])
 
     const content = useMemo(() => {
         if (loadError) {
@@ -280,7 +281,7 @@ export const WarMachinesMarket = () => {
                                     sx: { position: "relative", ml: "auto" },
                                 }}
                                 sx={{ px: "1.6rem", py: ".4rem", color: "#FFFFFF" }}
-                                onClick={() => history.push("/marketplace/sell")}
+                                onClick={() => history.push(`/marketplace/sell${location.hash}`)}
                             >
                                 <Typography
                                     variant="caption"
@@ -302,6 +303,7 @@ export const WarMachinesMarket = () => {
                             changePage={changePage}
                             isGridView={isGridView}
                             toggleIsGridView={toggleIsGridView}
+                            manualRefresh={getItems}
                         />
 
                         <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>

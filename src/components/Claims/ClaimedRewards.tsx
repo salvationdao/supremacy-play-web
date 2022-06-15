@@ -1,7 +1,7 @@
-import { Box, Stack, Typography } from "@mui/material"
+import { Box, IconButton, Stack, Typography } from "@mui/material"
 import { useMemo } from "react"
-import { useHistory } from "react-router-dom"
-import { RainingSupsPNG, SafePNG } from "../../assets"
+import { useHistory, useLocation } from "react-router-dom"
+import { RainingSupsPNG, SafePNG, SvgClose } from "../../assets"
 import { useTheme } from "../../containers/theme"
 import { supFormatter } from "../../helpers"
 import { useTimer } from "../../hooks"
@@ -12,11 +12,13 @@ import { FancyButton } from "../Common/FancyButton"
 
 interface ClaimedRewardsProps {
     rewards: RewardResponse[]
+    onClose?: () => void
 }
 
-export const ClaimedRewards = ({ rewards }: ClaimedRewardsProps) => {
+export const ClaimedRewards = ({ rewards, onClose }: ClaimedRewardsProps) => {
     const theme = useTheme()
     const history = useHistory()
+    const location = useLocation()
 
     const isMechCrateReward = useMemo(() => rewards.find((reward) => reward.label === "MECH"), [rewards])
     const isWeaponCrateReward = useMemo(() => rewards.find((reward) => reward.label === "WEAPON"), [rewards])
@@ -80,7 +82,7 @@ export const ClaimedRewards = ({ rewards }: ClaimedRewardsProps) => {
                     }}
                     sx={{ width: "100%", py: "1rem", color: theme.factionTheme.secondary }}
                     onClick={() => {
-                        history.push("/fleet/mystery-crates")
+                        history.push(`/fleet/mystery-crates${location.hash}`)
                     }}
                 >
                     <Typography
@@ -94,6 +96,12 @@ export const ClaimedRewards = ({ rewards }: ClaimedRewardsProps) => {
                     </Typography>
                 </FancyButton>
             </Stack>
+
+            {onClose && (
+                <IconButton size="small" onClick={onClose} sx={{ position: "absolute", top: "1rem", right: "1rem" }}>
+                    <SvgClose size="3rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
+                </IconButton>
+            )}
         </ClipThing>
     )
 }

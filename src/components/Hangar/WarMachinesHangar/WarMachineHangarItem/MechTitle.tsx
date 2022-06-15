@@ -50,7 +50,11 @@ export const MechTitle = ({ mech, mechDetails, isSelected }: { mech: MechBasic; 
             {userID && hash && (
                 <span>
                     <Link href={`${PASSPORT_WEB}profile/${user.username}/asset/${hash}`} target="_blank" sx={{ display: "inline", ml: ".7rem" }}>
-                        <SvgExternalLink size="1.2rem" sx={{ display: "inline", opacity: 0.7, ":hover": { opacity: 1 } }} />
+                        <SvgExternalLink
+                            size="1.2rem"
+                            sx={{ display: "inline", opacity: 0.7, ":hover": { opacity: 1 } }}
+                            fill={isSelected ? theme.factionTheme.secondary : "#FFFFFF"}
+                        />
                     </Link>
                 </span>
             )}

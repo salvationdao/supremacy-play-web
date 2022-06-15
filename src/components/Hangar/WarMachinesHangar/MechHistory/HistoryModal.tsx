@@ -177,7 +177,7 @@ export const HistoryModal = ({
                                 width: "calc(100% + 1rem)",
                                 overflowY: "auto",
                                 overflowX: "hidden",
-                                pr: "1.5rem",
+                                pr: "1rem",
                                 py: ".16rem",
                                 direction: "ltr",
 

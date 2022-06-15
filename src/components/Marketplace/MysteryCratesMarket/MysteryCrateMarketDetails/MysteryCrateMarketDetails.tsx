@@ -1,5 +1,5 @@
 import Masonry from "@mui/lab/Masonry"
-import { Box, CircularProgress, Stack, Typography } from "@mui/material"
+import { Box, CircularProgress, Stack, Typography, useMediaQuery } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
 import { SafePNG } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
@@ -112,6 +112,7 @@ const WarMachineMarketDetailsInner = ({
     primaryColor: string
     backgroundColor: string
 }) => {
+    const below780 = useMediaQuery("(max-width:780px)")
     const [isTimeEnded, toggleIsTimeEnded] = useToggle()
     const { id, owner, mystery_crate, created_at, end_at } = marketItem
 
@@ -148,7 +149,7 @@ const WarMachineMarketDetailsInner = ({
                         px: "3rem",
                     }}
                 >
-                    <Masonry columns={2} spacing={4}>
+                    <Masonry columns={below780 ? 1 : 2} spacing={4}>
                         <ImagesPreview
                             media={[
                                 {
@@ -159,7 +160,7 @@ const WarMachineMarketDetailsInner = ({
                             primaryColor={primaryColor}
                         />
 
-                        <Stack spacing="2rem">
+                        <Stack spacing="2rem" sx={{ minHeight: "65rem" }}>
                             <Box>
                                 <Typography gutterBottom variant="h5" sx={{ color: primaryColor, fontFamily: fonts.nostromoBold }}>
                                     MYSTERY CRATE

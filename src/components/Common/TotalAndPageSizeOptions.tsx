@@ -1,5 +1,5 @@
-import { IconButton, Stack, Typography } from "@mui/material"
-import { SvgGridView, SvgListView } from "../../assets"
+import { Divider, IconButton, Stack, Typography } from "@mui/material"
+import { SvgGridView, SvgListView, SvgRefresh } from "../../assets"
 import { fonts } from "../../theme/theme"
 
 interface TotalAndPageSizeOptionsProps {
@@ -10,6 +10,7 @@ interface TotalAndPageSizeOptionsProps {
     setPageSize: (value: number) => void
     changePage: (value: number) => void
     toggleIsGridView?: (value: boolean) => void
+    manualRefresh?: () => void
 }
 
 export const TotalAndPageSizeOptions = ({
@@ -20,6 +21,7 @@ export const TotalAndPageSizeOptions = ({
     setPageSize,
     changePage,
     toggleIsGridView,
+    manualRefresh,
 }: TotalAndPageSizeOptionsProps) => {
     return (
         <Stack
@@ -64,6 +66,8 @@ export const TotalAndPageSizeOptions = ({
                         </IconButton>
                     </>
                 )}
+
+                <Divider orientation="vertical" sx={{ height: "unset", alignSelf: "stretch", my: ".4rem !important" }} />
 
                 <IconButton
                     sx={{
@@ -110,6 +114,16 @@ export const TotalAndPageSizeOptions = ({
                         15
                     </Typography>
                 </IconButton>
+
+                {manualRefresh && (
+                    <>
+                        <Divider orientation="vertical" sx={{ height: "unset", alignSelf: "stretch", my: ".4rem !important" }} />
+
+                        <IconButton size="small" onClick={manualRefresh}>
+                            <SvgRefresh size="1.2rem" />
+                        </IconButton>
+                    </>
+                )}
             </Stack>
         </Stack>
     )

@@ -1,8 +1,8 @@
-import { Box, IconButton, Modal, Skeleton, Stack, Typography } from "@mui/material"
+import { Box, Modal, Skeleton, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
-import { useCallback, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 import { ClipThing, FancyButton } from "../../.."
-import { SafePNG, SvgClose, SvgSupToken } from "../../../../assets"
+import { SafePNG, SvgSupToken } from "../../../../assets"
 import { useSnackbar } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
 import { numberCommaFormatter, supFormatterNoFixed } from "../../../../helpers"
@@ -12,6 +12,7 @@ import { GameServerKeys } from "../../../../keys"
 import { colors, fonts, siteZIndex } from "../../../../theme/theme"
 import { RewardResponse, StorefrontMysteryCrate } from "../../../../types"
 import { ClaimedRewards } from "../../../Claims/ClaimedRewards"
+import { ConfirmModal } from "../../../Common/ConfirmModal"
 
 interface MysteryCrateStoreItemProps {
     enlargedView?: boolean
@@ -20,12 +21,20 @@ interface MysteryCrateStoreItemProps {
 
 export const MysteryCrateStoreItem = ({ enlargedView, crate }: MysteryCrateStoreItemProps) => {
     const theme = useTheme()
+    const { newSnackbarMessage } = useSnackbar()
+    const { send } = useGameServerCommandsFaction("/faction_commander")
     const [mysteryCrate, setMysteryCrate] = useState<StorefrontMysteryCrate>(crate)
-    const [confirmModalOpen, toggleConfirmModalOpen] = useToggle()
     const [reward, setReward] = useState<RewardResponse>()
+
+    // Buying
+    const [confirmModalOpen, toggleConfirmModalOpen] = useToggle()
+    const [isLoading, setIsLoading] = useState(false)
+    const [buyError, setBuyError] = useState<string>()
 
     const primaryColor = theme.factionTheme.primary
     const backgroundColor = theme.factionTheme.background
+
+    const formattedPrice = useMemo(() => supFormatterNoFixed(mysteryCrate.price, 2), [mysteryCrate.price])
 
     useGameServerSubscriptionFaction<StorefrontMysteryCrate>(
         {
@@ -37,6 +46,26 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate }: MysteryCrateStore
             setMysteryCrate(payload)
         },
     )
+
+    const confirmBuy = useCallback(async () => {
+        try {
+            setIsLoading(true)
+            const resp = await send<RewardResponse>(GameServerKeys.PurchaseMysteryCrate, {
+                type: mysteryCrate.mystery_crate_type,
+            })
+
+            if (!resp) return
+            setReward(resp)
+            newSnackbarMessage(`Successfully purchased ${mysteryCrate.mystery_crate_type} crate.`, "success")
+            toggleConfirmModalOpen(false)
+            setBuyError(undefined)
+        } catch (err) {
+            setBuyError(typeof err === "string" ? err : "Failed to purchase item.")
+            console.error(err)
+        } finally {
+            setIsLoading(false)
+        }
+    }, [send, mysteryCrate.mystery_crate_type, newSnackbarMessage, setReward, toggleConfirmModalOpen])
 
     return (
         <>
@@ -119,7 +148,7 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate }: MysteryCrateStore
                                 <Stack direction="row" alignItems="center" spacing=".1rem">
                                     <SvgSupToken size={enlargedView ? "2.6rem" : "1.9rem"} fill={colors.yellow} />
                                     <Typography sx={{ fontSize: enlargedView ? "2.2rem" : "1.9rem", fontWeight: "fontWeightBold" }}>
-                                        {supFormatterNoFixed(mysteryCrate.price, 2)}
+                                        {formattedPrice}
                                     </Typography>
                                 </Stack>
                             </Stack>
@@ -189,148 +218,33 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate }: MysteryCrateStore
                 </ClipThing>
             </Box>
 
-            {confirmModalOpen && <ConfirmModal mysteryCrate={mysteryCrate} setReward={setReward} onClose={() => toggleConfirmModalOpen(false)} />}
+            {confirmModalOpen && (
+                <ConfirmModal
+                    title="CONFIRMATION"
+                    onConfirm={confirmBuy}
+                    onClose={() => toggleConfirmModalOpen(false)}
+                    isLoading={isLoading}
+                    error={buyError}
+                    confirmSuffix={
+                        <Stack direction="row" sx={{ ml: ".4rem" }}>
+                            <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
+                                (
+                            </Typography>
+                            <SvgSupToken size="1.8rem" />
+                            <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
+                                {formattedPrice})
+                            </Typography>
+                        </Stack>
+                    }
+                >
+                    <Typography variant="h6">
+                        Do you wish to purchase a <strong>{mysteryCrate.mystery_crate_type}</strong> crate for <span>{formattedPrice}</span> SUPS?
+                    </Typography>
+                </ConfirmModal>
+            )}
+
             {reward && <PurchaseSuccessModal reward={reward} onClose={() => setReward(undefined)} />}
         </>
-    )
-}
-
-const ConfirmModal = ({
-    mysteryCrate,
-    setReward,
-    onClose,
-}: {
-    mysteryCrate: StorefrontMysteryCrate
-    setReward: (value: ((prevState: RewardResponse | undefined) => RewardResponse | undefined) | RewardResponse | undefined) => void
-    onClose: () => void
-}) => {
-    const theme = useTheme()
-    const { newSnackbarMessage } = useSnackbar()
-    const { send } = useGameServerCommandsFaction("/faction_commander")
-    const [isLoading, setIsLoading] = useState(false)
-    const [buyError, setBuyError] = useState<string>()
-
-    const { mystery_crate_type, price } = mysteryCrate
-    const formattedPrice = supFormatterNoFixed(price, 2)
-
-    const confirmBuy = useCallback(async () => {
-        try {
-            setIsLoading(true)
-            const resp = await send<RewardResponse>(GameServerKeys.PurchaseMysteryCrate, {
-                type: mystery_crate_type,
-            })
-
-            if (!resp) return
-            setReward(resp)
-            newSnackbarMessage(`Successfully purchased ${mystery_crate_type} crate.`, "success")
-            onClose()
-        } catch (err) {
-            setBuyError(typeof err === "string" ? err : "Failed to purchase item.")
-            console.error(err)
-        } finally {
-            setIsLoading(false)
-        }
-    }, [send, mystery_crate_type, newSnackbarMessage, onClose, setReward])
-
-    return (
-        <Modal open onClose={onClose} sx={{ zIndex: siteZIndex.Modal }}>
-            <Box
-                sx={{
-                    position: "absolute",
-                    top: "50%",
-                    left: "50%",
-                    transform: "translate(-50%, -50%)",
-                    width: "48rem",
-                    boxShadow: 6,
-                    outline: "none",
-                }}
-            >
-                <ClipThing
-                    clipSize="8px"
-                    border={{
-                        borderColor: theme.factionTheme.primary,
-                        borderThickness: ".2rem",
-                    }}
-                    sx={{ position: "relative" }}
-                    backgroundColor={theme.factionTheme.background}
-                >
-                    <Stack
-                        spacing="1.2rem"
-                        sx={{
-                            position: "relative",
-                            px: "2.5rem",
-                            py: "2.4rem",
-                            span: {
-                                color: colors.neonBlue,
-                                fontWeight: "fontWeightBold",
-                            },
-                        }}
-                    >
-                        <Typography variant="h5" sx={{ lineHeight: 1, fontFamily: fonts.nostromoBlack }}>
-                            CONFIRMATION
-                        </Typography>
-                        <Typography variant="h6">
-                            Do you wish to purchase a <strong>{mystery_crate_type}</strong> crate for <span>{formattedPrice}</span> SUPS?
-                        </Typography>
-                        <Stack direction="row" spacing="1rem" sx={{ pt: ".4rem" }}>
-                            <FancyButton
-                                loading={isLoading}
-                                excludeCaret
-                                clipThingsProps={{
-                                    clipSize: "5px",
-                                    backgroundColor: colors.green,
-                                    border: { borderColor: colors.green, borderThickness: "2px" },
-                                    sx: { flex: 2, position: "relative" },
-                                }}
-                                sx={{ pt: 0, pb: 0, minWidth: "5rem" }}
-                                onClick={confirmBuy}
-                            >
-                                <Stack direction="row" justifyContent="center">
-                                    <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
-                                        CONFIRM (
-                                    </Typography>
-                                    <SvgSupToken size="1.8rem" />
-                                    <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
-                                        {formattedPrice})
-                                    </Typography>
-                                </Stack>
-                            </FancyButton>
-
-                            <FancyButton
-                                excludeCaret
-                                clipThingsProps={{
-                                    clipSize: "5px",
-                                    backgroundColor: colors.red,
-                                    border: { borderColor: colors.red, borderThickness: "2px" },
-                                    sx: { flex: 2, position: "relative" },
-                                }}
-                                sx={{ pt: 0, pb: 0, minWidth: "5rem" }}
-                                onClick={onClose}
-                            >
-                                <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
-                                    CANCEL
-                                </Typography>
-                            </FancyButton>
-                        </Stack>
-
-                        {buyError && (
-                            <Typography
-                                sx={{
-                                    mt: ".3rem",
-                                    color: "red",
-                                }}
-                            >
-                                {buyError}
-                            </Typography>
-                        )}
-                    </Stack>
-
-                    <IconButton size="small" onClick={onClose} sx={{ position: "absolute", top: ".5rem", right: ".5rem" }}>
-                        <SvgClose size="1.9rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
-                    </IconButton>
-                </ClipThing>
-            </Box>
-        </Modal>
     )
 }
 
@@ -346,7 +260,7 @@ const PurchaseSuccessModal = ({ reward, onClose }: { reward: RewardResponse | un
                     outline: "none",
                 }}
             >
-                {reward && <ClaimedRewards rewards={[reward]} />}
+                <Box sx={{ position: "relative" }}>{reward && <ClaimedRewards rewards={[reward]} onClose={onClose} />}</Box>
             </Box>
         </Modal>
     )
