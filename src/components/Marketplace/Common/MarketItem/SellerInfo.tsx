@@ -15,9 +15,8 @@ export const SellerInfo = ({ isGridView, owner }: { isGridView: boolean; owner: 
                 SELLER
             </Typography>
             <Typography
-                variant="caption"
                 sx={{
-                    fontFamily: fonts.nostromoBold,
+                    fontWeight: "fontWeightBold",
                     display: "-webkit-box",
                     overflow: "hidden",
                     overflowWrap: "anywhere",

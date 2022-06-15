@@ -52,7 +52,7 @@ export const MarketItem = ({ imageUrl, animationUrl, cardAnimationUrl, backgroun
 
     const primaryColor = theme.factionTheme.primary
     const backgroundColor = theme.factionTheme.background
-    const soldBackgroundColor = useMemo(() => shadeColor(colors.green, -90), [])
+    const soldBackgroundColor = useMemo(() => shadeColor(colors.green, -95), [])
 
     const { id, end_at, owner, total_bids, sold_at, sold_for } = item
 
@@ -72,7 +72,7 @@ export const MarketItem = ({ imageUrl, animationUrl, cardAnimationUrl, backgroun
                         bottomRight: true,
                     },
                     backgroundColor: sold_at ? soldBackgroundColor : backgroundColor,
-                    opacity: 0.7,
+                    opacity: 0.9,
                     border: { isFancy: !isGridView, borderColor: sold_at ? colors.green : primaryColor, borderThickness: ".25rem" },
                     sx: { position: "relative" },
                 }}
@@ -122,7 +122,7 @@ export const MarketItem = ({ imageUrl, animationUrl, cardAnimationUrl, backgroun
                         backgroundRepeat: "no-repeat",
                         backgroundPosition: "top",
                         backgroundSize: "cover",
-                        opacity: 0.08,
+                        opacity: 0.06,
                         zIndex: -2,
                     }}
                 />

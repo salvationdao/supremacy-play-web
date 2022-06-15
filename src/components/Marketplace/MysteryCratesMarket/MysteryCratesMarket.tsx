@@ -56,7 +56,7 @@ export const MysteryCratesMarket = () => {
     const listingTypeFilterSection = useRef<ChipFilter>({
         label: "LISTING TYPE",
         options: [
-            { value: "BUY_NOW", label: "BUY NOW", color: theme.factionTheme.primary },
+            { value: "BUY_NOW", label: "BUY NOW", color: colors.buyout },
             { value: "DUTCH_AUCTION", label: "DUTCH AUCTION", color: colors.dutchAuction },
             { value: "AUCTION", label: "AUCTION", color: colors.auction },
         ],
@@ -196,7 +196,7 @@ export const MysteryCratesMarket = () => {
                             textAlign: "center",
                         }}
                     >
-                        {"There are no war machines found, please try again."}
+                        {"There are no mystery crates found, please try again."}
                     </Typography>
                 </Stack>
             </Stack>

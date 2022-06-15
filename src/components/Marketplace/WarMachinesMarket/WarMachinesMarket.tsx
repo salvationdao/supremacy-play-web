@@ -60,7 +60,7 @@ export const WarMachinesMarket = () => {
     const listingTypeFilterSection = useRef<ChipFilter>({
         label: "LISTING TYPE",
         options: [
-            { value: "BUY_NOW", label: "BUY NOW", color: theme.factionTheme.primary },
+            { value: "BUY_NOW", label: "BUY NOW", color: colors.buyout },
             { value: "DUTCH_AUCTION", label: "DUTCH AUCTION", color: colors.dutchAuction },
             { value: "AUCTION", label: "AUCTION", color: colors.auction },
         ],
@@ -201,7 +201,7 @@ export const WarMachinesMarket = () => {
                         sx={{
                             width: "80%",
                             height: "16rem",
-                            opacity: 0.6,
+                            opacity: 0.7,
                             filter: "grayscale(100%)",
                             background: `url(${EmptyWarMachinesPNG})`,
                             backgroundRepeat: "no-repeat",

@@ -53,9 +53,7 @@ const KeycardInfo = ({ isGridView, label, description }: { isGridView: boolean; 
             </Typography>
 
             <Typography
-                variant="caption"
                 sx={{
-                    fontFamily: fonts.nostromoBold,
                     display: "-webkit-box",
                     overflow: "hidden",
                     overflowWrap: "anywhere",
