@@ -1,12 +1,12 @@
 import { Box, IconButton, Popover, Stack, Typography } from "@mui/material"
-import { SvgClose } from "../../../../assets"
-import { colors, siteZIndex } from "../../../../theme/theme"
-import { BattleMultipliers } from "../../../../types"
-import { useEffect, MutableRefObject } from "react"
-import { useToggle } from "../../../../hooks"
-import { MultipliersBattle } from "./MultipliersBattle"
-import { useTheme } from "../../../../containers/theme"
+import { MutableRefObject, useEffect } from "react"
 import { ClipThing } from "../../.."
+import { SvgClose } from "../../../../assets"
+import { useTheme } from "../../../../containers/theme"
+import { useToggle } from "../../../../hooks"
+import { fonts, siteZIndex } from "../../../../theme/theme"
+import { BattleMultipliers } from "../../../../types"
+import { MultipliersBattle } from "./MultipliersBattle"
 
 export const MultipliersPopover = ({
     open,
@@ -69,7 +69,7 @@ export const MultipliersPopover = ({
                 <Stack spacing="1.2rem" sx={{ position: "relative", width: "35rem", px: "2rem", py: "1.4rem" }}>
                     {actualMultipliers && actualMultipliers.length > 0 ? (
                         <Box>
-                            <Typography sx={{ fontWeight: "bold", color: colors.offWhite }} variant="h6">
+                            <Typography gutterBottom sx={{ fontFamily: fonts.nostromoBlack, color: theme.factionTheme.primary }}>
                                 ACTIVE MULTIPLIERS
                             </Typography>
 

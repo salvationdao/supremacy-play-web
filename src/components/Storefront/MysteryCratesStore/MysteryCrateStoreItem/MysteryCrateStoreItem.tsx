@@ -129,7 +129,7 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate }: MysteryCrateStore
                             >
                                 <Stack direction="row" alignItems="center" spacing=".1rem" sx={{ position: "relative", opacity: 0.9 }}>
                                     <SvgSupToken size={enlargedView ? "2rem" : "1.3rem"} fill={colors.yellow} />
-                                    <Typography sx={{ fontSize: enlargedView ? "1.6rem" : "1.3rem", fontWeight: "fontWeightBold" }}>
+                                    <Typography sx={{ fontSize: enlargedView ? "1.6rem" : "1.3rem", fontFamily: fonts.nostromoBold }}>
                                         {supFormatterNoFixed(new BigNumber(mysteryCrate.price).plus(Math.pow(10, 21)).toString(), 2)}
                                     </Typography>
                                     <Box
@@ -147,7 +147,7 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate }: MysteryCrateStore
 
                                 <Stack direction="row" alignItems="center" spacing=".1rem">
                                     <SvgSupToken size={enlargedView ? "2.6rem" : "1.9rem"} fill={colors.yellow} />
-                                    <Typography sx={{ fontSize: enlargedView ? "2.2rem" : "1.9rem", fontWeight: "fontWeightBold" }}>
+                                    <Typography sx={{ fontSize: enlargedView ? "2.2rem" : "1.9rem", fontFamily: fonts.nostromoBlack }}>
                                         {formattedPrice}
                                     </Typography>
                                 </Stack>

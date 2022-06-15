@@ -1,12 +1,11 @@
 import { Box, IconButton, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo } from "react"
-import Tooltip from "@mui/material/Tooltip"
-import { SvgContentCopyIcon, SvgSupToken } from "../../../../assets"
-import { useToggle } from "../../../../hooks"
-import { Transaction } from "../../../../types"
 import { TooltipHelper } from "../../.."
+import { SvgContentCopyIcon, SvgSupToken } from "../../../../assets"
 import { dateFormatter, supFormatterNoFixed } from "../../../../helpers"
-import { colors, siteZIndex } from "../../../../theme/theme"
+import { useToggle } from "../../../../hooks"
+import { colors } from "../../../../theme/theme"
+import { Transaction } from "../../../../types"
 
 export const TransactionItem = ({ transaction, userID }: { transaction: Transaction; userID: string }) => {
     const [copySuccess, toggleCopySuccess] = useToggle()
@@ -28,7 +27,7 @@ export const TransactionItem = ({ transaction, userID }: { transaction: Transact
     return (
         <Stack direction="row" alignItems="center" sx={{ px: ".64rem", py: ".06rem", border: `#FFFFFF30 1px dashed`, borderRadius: 0.2 }}>
             <TooltipHelper placement="left" text={tooltipText ? `  ${tooltipText.toUpperCase()}` : ""}>
-                <Stack direction="row" alignItems="center" sx={{ mr: ".6rem" }}>
+                <Stack direction="row" alignItems="center" sx={{ mr: ".6rem", flex: 1 }}>
                     <Typography sx={{ lineHeight: 1, color }}>{isCredit ? "+" : "-"}</Typography>
                     <SvgSupToken size="1.3rem" fill={color} />
                     <Typography sx={{ lineHeight: 1, color }}>{supFormatterNoFixed(transaction.amount, 4)}</Typography>
@@ -47,31 +46,7 @@ export const TransactionItem = ({ transaction, userID }: { transaction: Transact
                 {dateFormatter(transaction.created_at, true)}
             </Typography>
 
-            <Tooltip
-                arrow
-                placement="right"
-                open={copySuccess}
-                sx={{
-                    zIndex: `${siteZIndex.Tooltip} !important`,
-                    ".MuiTooltip-popper": {
-                        zIndex: `${siteZIndex.Tooltip} !important`,
-                    },
-                }}
-                title={
-                    <Box sx={{ px: ".4rem", py: ".16rem" }}>
-                        <Typography variant="body1" sx={{ textAlign: "center" }}>
-                            Copied!
-                        </Typography>
-                    </Box>
-                }
-                componentsProps={{
-                    popper: {
-                        style: { filter: "drop-shadow(0 3px 3px #00000050)", zIndex: `${siteZIndex.Tooltip} !important`, opacity: 0.92 },
-                    },
-                    arrow: { sx: { color: "#333333" } },
-                    tooltip: { sx: { maxWidth: "25rem", background: "#333333" } },
-                }}
-            >
+            <TooltipHelper open={copySuccess} placement="right" text="Copied!">
                 <Box>
                     <IconButton
                         size="small"
@@ -86,7 +61,7 @@ export const TransactionItem = ({ transaction, userID }: { transaction: Transact
                         <SvgContentCopyIcon size="1.3rem" />
                     </IconButton>
                 </Box>
-            </Tooltip>
+            </TooltipHelper>
         </Stack>
     )
 }
