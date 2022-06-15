@@ -196,7 +196,7 @@ export const MysteryCratesMarket = () => {
                             textAlign: "center",
                         }}
                     >
-                        {"There are no war machines found, please try again."}
+                        {"There are no mystery crates found, please try again."}
                     </Typography>
                 </Stack>
             </Stack>
