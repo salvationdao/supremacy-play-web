@@ -364,7 +364,7 @@ export const SellItemInner = ({ toggleReset }: { toggleReset: () => void }) => {
                         let subPath = MARKETPLACE_TABS.WarMachines
                         if (successPayload.mystery_crate) subPath = MARKETPLACE_TABS.MysteryCrates
                         if (successPayload.keycard) subPath = MARKETPLACE_TABS.Keycards
-                        history.push(`/marketplace/${subPath}/${successPayload.id}`)
+                        history.replace(`/marketplace/${subPath}/${successPayload.id}`)
                     }}
                 >
                     <Typography variant="h6">

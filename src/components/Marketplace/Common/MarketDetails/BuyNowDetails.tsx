@@ -191,7 +191,7 @@ export const BuyNowDetails = ({ id, itemType, owner, itemName, buyNowPrice, dutc
                     title="PURCHASED ITEM"
                     leftLabel="GO BACK TO MARKETPLACE"
                     onLeftButton={() => {
-                        history.push(`/marketplace`)
+                        history.replace(`/marketplace`)
                     }}
                     rightLabel="GO TO FLEET"
                     onRightButton={() => {
@@ -208,7 +208,7 @@ export const BuyNowDetails = ({ id, itemType, owner, itemName, buyNowPrice, dutc
                                 break
                         }
 
-                        history.push(`/fleet/${subPath}`)
+                        history.replace(`/fleet/${subPath}`)
                     }}
                 >
                     <Typography variant="h6">Your item has been removed from the marketplace.</Typography>
