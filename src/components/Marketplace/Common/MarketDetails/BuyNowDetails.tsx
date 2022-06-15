@@ -65,6 +65,7 @@ export const BuyNowDetails = ({ id, itemType, owner, itemName, buyNowPrice, dutc
             if (!resp) return
             newSnackbarMessage(`Successfully purchased ${itemName}.`, "success")
             toggleConfirmBuyModalOpen(false)
+            setBuyError(undefined)
         } catch (err) {
             const message = typeof err === "string" ? err : "Failed to purchase item."
             setBuyError(message)

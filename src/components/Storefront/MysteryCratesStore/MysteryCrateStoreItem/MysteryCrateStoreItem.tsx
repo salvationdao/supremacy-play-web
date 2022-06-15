@@ -58,6 +58,7 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate }: MysteryCrateStore
             setReward(resp)
             newSnackbarMessage(`Successfully purchased ${mysteryCrate.mystery_crate_type} crate.`, "success")
             toggleConfirmModalOpen(false)
+            setBuyError(undefined)
         } catch (err) {
             setBuyError(typeof err === "string" ? err : "Failed to purchase item.")
             console.error(err)

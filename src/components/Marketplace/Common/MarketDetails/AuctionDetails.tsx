@@ -65,6 +65,7 @@ export const AuctionDetails = ({ id, owner, itemName, auctionCurrentPrice, aucti
             setInputBidPrice(undefined)
             newSnackbarMessage("Successfully placed your bid.", "success")
             toggleConfirmBidModalOpen(false)
+            setBidError(undefined)
         } catch (err) {
             const message = typeof err === "string" ? err : "Failed to purchase item."
             setBidError(message)

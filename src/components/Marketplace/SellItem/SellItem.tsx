@@ -122,6 +122,7 @@ export const SellItem = () => {
 
             if (!resp) return
             toggleConfirmModalOpen(false)
+            setSubmitError(undefined)
             history.push(`/marketplace`)
         } catch (err) {
             const message = typeof err === "string" ? err : "Failed to purchase item."
