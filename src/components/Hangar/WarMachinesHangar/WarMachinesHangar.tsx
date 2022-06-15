@@ -3,7 +3,6 @@ import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { useHistory, useLocation } from "react-router-dom"
 import { ClipThing, FancyButton } from "../.."
 import { PASSPORT_WEB } from "../../../constants"
-import { useSnackbar } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { usePagination } from "../../../hooks"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
@@ -91,7 +90,6 @@ const WarMachinesHangarInner = ({
 }) => {
     const history = useHistory()
     const location = useLocation()
-    const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsUser("/user_commander")
     const theme = useTheme()
     const [mechs, setMechs] = useState<MechBasic[]>([])
@@ -114,12 +112,11 @@ const WarMachinesHangarInner = ({
             setTotalItems(resp.total)
         } catch (e) {
             setLoadError(typeof e === "string" ? e : "Failed to get war machines.")
-            newSnackbarMessage(typeof e === "string" ? e : "Failed to get war machines.", "error")
             console.error(e)
         } finally {
             setIsLoading(false)
         }
-    }, [send, page, pageSize, setTotalItems, newSnackbarMessage])
+    }, [send, page, pageSize, setTotalItems])
 
     useEffect(() => {
         getItems()

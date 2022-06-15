@@ -165,7 +165,10 @@ export const BuyNowDetails = ({ id, itemType, owner, itemName, buyNowPrice, dutc
                 <ConfirmModal
                     title="CONFIRMATION"
                     onConfirm={confirmBuy}
-                    onClose={() => toggleConfirmBuyModalOpen(false)}
+                    onClose={() => {
+                        setBuyError(undefined)
+                        toggleConfirmBuyModalOpen(false)
+                    }}
                     isLoading={isLoading}
                     error={buyError}
                     confirmSuffix={

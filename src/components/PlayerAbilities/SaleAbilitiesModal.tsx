@@ -121,7 +121,7 @@ export const SaleAbilitiesModal = ({ open, onClose }: SaleAbilitiesModalProps) =
                                         <Box
                                             sx={{
                                                 display: "grid",
-                                                gridTemplateColumns: "repeat(6, 70px)",
+                                                gridTemplateColumns: "repeat(6, 70px)", // hard-coded to have 6 columns, adjust as required
                                                 gap: ".5rem",
                                             }}
                                         >

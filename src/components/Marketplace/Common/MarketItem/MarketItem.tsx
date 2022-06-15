@@ -85,7 +85,7 @@ export const MarketItem = ({ imageUrl, animationUrl, cardAnimationUrl, backgroun
                         p: isGridView ? ".5rem .6rem" : ".1rem .3rem",
                         display: isGridView ? "block" : "grid",
                         gridTemplateRows: "7rem",
-                        gridTemplateColumns: `8rem minmax(auto, 38rem) 1.5fr repeat(${sold_at ? 2 : 3}, 1fr)`,
+                        gridTemplateColumns: `8rem minmax(auto, 38rem) 1.5fr repeat(${sold_at ? 2 : 3}, 1fr)`, // hard-coded to have X columns, adjust as required
                         gap: "1.6rem",
                         ...(isGridView
                             ? {

@@ -30,11 +30,11 @@ export const MechGeneralStatus = ({ mechID }: { mechID: string }) => {
                     break
                 case MechStatusEnum.Battle:
                     setText("IN BATTLE")
-                    setColour(colors.red)
+                    setColour(colors.orange)
                     break
                 case MechStatusEnum.Market:
-                    setText("IN MARKETPLACE")
-                    setColour(colors.orange)
+                    setText("MARKETPLACE")
+                    setColour(colors.red)
                     break
                 case MechStatusEnum.Sold:
                     setText("SOLD")

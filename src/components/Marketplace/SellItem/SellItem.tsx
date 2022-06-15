@@ -334,7 +334,10 @@ export const SellItemInner = ({ toggleReset }: { toggleReset: () => void }) => {
                 <ConfirmModal
                     title="CONFIRMATION"
                     onConfirm={submitHandler}
-                    onClose={() => toggleConfirmModalOpen(false)}
+                    onClose={() => {
+                        setSubmitError(undefined)
+                        toggleConfirmModalOpen(false)
+                    }}
                     isLoading={submitting}
                     error={submitError}
                     confirmSuffix={

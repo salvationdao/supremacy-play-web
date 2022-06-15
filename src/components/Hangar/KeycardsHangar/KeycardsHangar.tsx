@@ -3,7 +3,6 @@ import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { useHistory, useLocation } from "react-router-dom"
 import { ClipThing, FancyButton } from "../.."
 import { KeycardPNG } from "../../../assets"
-import { useSnackbar } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { usePagination } from "../../../hooks"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
@@ -28,7 +27,6 @@ interface GetAssetsResponse {
 export const KeycardsHangar = () => {
     const history = useHistory()
     const location = useLocation()
-    const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsUser("/user_commander")
     const theme = useTheme()
     const [keycards, setKeycards] = useState<Keycard[]>()
@@ -53,12 +51,11 @@ export const KeycardsHangar = () => {
         } catch (e) {
             const message = typeof e === "string" ? e : "Failed to get keycards."
             setLoadError(message)
-            newSnackbarMessage(message, "error")
             console.error(e)
         } finally {
             setIsLoading(false)
         }
-    }, [send, page, pageSize, setTotalItems, newSnackbarMessage])
+    }, [send, page, pageSize, setTotalItems])
 
     useEffect(() => {
         getItems()

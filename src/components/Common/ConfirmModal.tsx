@@ -59,6 +59,17 @@ export const ConfirmModal = ({ title, children, onConfirm, onClose, isLoading, e
 
                         {children}
 
+                        {error && (
+                            <Typography
+                                sx={{
+                                    mt: ".3rem",
+                                    color: "red",
+                                }}
+                            >
+                                {error}
+                            </Typography>
+                        )}
+
                         <Stack direction="row" spacing="1rem" sx={{ pt: ".4rem" }}>
                             <FancyButton
                                 excludeCaret
@@ -97,17 +108,6 @@ export const ConfirmModal = ({ title, children, onConfirm, onClose, isLoading, e
                                 </Stack>
                             </FancyButton>
                         </Stack>
-
-                        {error && (
-                            <Typography
-                                sx={{
-                                    mt: ".3rem",
-                                    color: "red",
-                                }}
-                            >
-                                {error}
-                            </Typography>
-                        )}
                     </Stack>
 
                     <IconButton size="small" onClick={onClose} sx={{ position: "absolute", top: ".5rem", right: ".5rem" }}>

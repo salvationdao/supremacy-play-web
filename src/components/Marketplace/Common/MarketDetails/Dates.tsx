@@ -4,7 +4,7 @@ import { timeSinceInWords } from "../../../../helpers"
 import { useInterval } from "../../../../hooks"
 import { colors, fonts } from "../../../../theme/theme"
 
-export const Dates = ({ createdAt, endAt, onTimeEnded }: { createdAt: Date; endAt: Date; onTimeEnded: () => void }) => {
+export const Dates = ({ createdAt, endAt, onTimeEnded, soldAt }: { createdAt: Date; endAt: Date; onTimeEnded: () => void; soldAt?: Date }) => {
     return (
         <>
             <Box>
@@ -23,7 +23,7 @@ export const Dates = ({ createdAt, endAt, onTimeEnded }: { createdAt: Date; endA
                 <Typography variant="h5" sx={{ fontWeight: "fontWeightBold", span: { color: colors.lightNeonBlue, fontFamily: "inherit" } }}>
                     {endAt.toUTCString()}{" "}
                     <span>
-                        (<TimeLeft endAt={endAt} onTimeEnded={onTimeEnded} />)
+                        (<TimeLeft endAt={soldAt || endAt} onTimeEnded={onTimeEnded} />)
                     </span>
                 </Typography>
             </Box>
