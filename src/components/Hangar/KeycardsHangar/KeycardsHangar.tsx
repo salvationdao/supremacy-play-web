@@ -1,5 +1,5 @@
 import { Box, Pagination, Stack, Typography } from "@mui/material"
-import React, { useEffect, useMemo, useState } from "react"
+import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { useHistory } from "react-router-dom"
 import { ClipThing, FancyButton } from "../.."
 import { KeycardPNG } from "../../../assets"
@@ -36,30 +36,32 @@ export const KeycardsHangar = () => {
 
     const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, setPageSize } = usePagination({ pageSize: 10, page: 1 })
 
-    useEffect(() => {
-        ;(async () => {
-            try {
-                setIsLoading(true)
-                const resp = await send<GetAssetsResponse, GetPlayerKeycardsRequest>(GameServerKeys.GetPlayerKeycards, {
-                    page,
-                    page_size: pageSize,
-                    include_market_listed: true,
-                })
+    const getItems = useCallback(async () => {
+        try {
+            setIsLoading(true)
+            const resp = await send<GetAssetsResponse, GetPlayerKeycardsRequest>(GameServerKeys.GetPlayerKeycards, {
+                page,
+                page_size: pageSize,
+                include_market_listed: true,
+            })
 
-                if (!resp) return
-                setLoadError(undefined)
-                setKeycards(resp.keycards)
-                setTotalItems(resp.total)
-            } catch (e) {
-                const message = typeof e === "string" ? e : "Failed to get keycards."
-                setLoadError(message)
-                newSnackbarMessage(message, "error")
-                console.error(e)
-            } finally {
-                setIsLoading(false)
-            }
-        })()
+            if (!resp) return
+            setLoadError(undefined)
+            setKeycards(resp.keycards)
+            setTotalItems(resp.total)
+        } catch (e) {
+            const message = typeof e === "string" ? e : "Failed to get keycards."
+            setLoadError(message)
+            newSnackbarMessage(message, "error")
+            console.error(e)
+        } finally {
+            setIsLoading(false)
+        }
     }, [send, page, pageSize, setTotalItems, newSnackbarMessage])
+
+    useEffect(() => {
+        getItems()
+    }, [getItems])
 
     const content = useMemo(() => {
         if (loadError) {
@@ -199,6 +201,7 @@ export const KeycardsHangar = () => {
                         pageSize={pageSize}
                         setPageSize={setPageSize}
                         changePage={changePage}
+                        manualRefresh={getItems}
                     />
 
                     <Stack sx={{ px: "2rem", py: "1rem", flex: 1 }}>

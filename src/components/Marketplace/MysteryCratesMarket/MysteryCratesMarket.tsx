@@ -62,7 +62,7 @@ export const MysteryCratesMarket = () => {
         onSetValue: setPrice,
     })
 
-    const getCrates = useCallback(async () => {
+    const getItems = useCallback(async () => {
         try {
             setIsLoading(true)
 
@@ -100,10 +100,9 @@ export const MysteryCratesMarket = () => {
         }
     }, [sort, price, send, page, pageSize, search, listingTypes, ownedBy, setTotalItems, newSnackbarMessage])
 
-    // Initial load the crate listings
     useEffect(() => {
-        getCrates()
-    }, [getCrates])
+        getItems()
+    }, [getItems])
 
     const content = useMemo(() => {
         if (loadError) {
@@ -280,6 +279,7 @@ export const MysteryCratesMarket = () => {
                             changePage={changePage}
                             isGridView={isGridView}
                             toggleIsGridView={toggleIsGridView}
+                            manualRefresh={getItems}
                         />
 
                         <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>

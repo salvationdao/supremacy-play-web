@@ -50,7 +50,7 @@ export const KeycardsMarket = () => {
         onSetValue: setPrice,
     })
 
-    const getKeycards = useCallback(async () => {
+    const getItems = useCallback(async () => {
         try {
             setIsLoading(true)
 
@@ -86,10 +86,9 @@ export const KeycardsMarket = () => {
         }
     }, [sort, price, send, page, pageSize, search, ownedBy, setTotalItems, newSnackbarMessage])
 
-    // Initial load the key card listings
     useEffect(() => {
-        getKeycards()
-    }, [getKeycards])
+        getItems()
+    }, [getItems])
 
     const content = useMemo(() => {
         if (loadError) {
@@ -266,6 +265,7 @@ export const KeycardsMarket = () => {
                             changePage={changePage}
                             isGridView={isGridView}
                             toggleIsGridView={toggleIsGridView}
+                            manualRefresh={getItems}
                         />
 
                         <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
