@@ -4,7 +4,7 @@ import { useTheme } from "../../../../containers/theme"
 import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { fonts, colors } from "../../../../theme/theme"
-import { MechStatus } from "../../../../types"
+import { MechStatus, MechStatusEnum } from "../../../../types"
 
 export const MechGeneralStatus = ({ mechID }: { mechID: string }) => {
     const theme = useTheme()
@@ -20,23 +20,23 @@ export const MechGeneralStatus = ({ mechID }: { mechID: string }) => {
         (payload) => {
             if (!payload || text === "SOLD") return
             switch (payload.status) {
-                case "IDLE":
+                case MechStatusEnum.Idle:
                     setText("IDLE")
                     setColour(colors.green)
                     break
-                case "QUEUE":
+                case MechStatusEnum.Queue:
                     setText(`IN QUEUE${payload.queue_position ? `: ${payload.queue_position}` : ""}`)
                     setColour(colors.yellow)
                     break
-                case "BATTLE":
+                case MechStatusEnum.Battle:
                     setText("IN BATTLE")
                     setColour(colors.red)
                     break
-                case "MARKET":
+                case MechStatusEnum.MARKET:
                     setText("IN MARKETPLACE")
                     setColour(colors.orange)
                     break
-                case "SOLD":
+                case MechStatusEnum.Sold:
                     setText("SOLD")
                     setColour(colors.lightGrey)
                     break
