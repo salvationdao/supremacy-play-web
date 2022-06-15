@@ -64,6 +64,7 @@ export const AuctionDetails = ({ id, owner, itemName, auctionCurrentPrice, aucti
             if (!resp) return
             setInputBidPrice(undefined)
             newSnackbarMessage("Successfully placed your bid.", "success")
+            toggleConfirmBidModalOpen(false)
         } catch (err) {
             const message = typeof err === "string" ? err : "Failed to purchase item."
             setBidError(message)
@@ -71,7 +72,7 @@ export const AuctionDetails = ({ id, owner, itemName, auctionCurrentPrice, aucti
         } finally {
             setIsLoading(false)
         }
-    }, [send, id, inputBidPrice, newSnackbarMessage])
+    }, [send, id, inputBidPrice, newSnackbarMessage, toggleConfirmBidModalOpen])
 
     useGameServerSubscriptionFaction<{ auction_current_price: string; total_bids: number; last_bid: MarketUser }>(
         {

@@ -57,13 +57,14 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate }: MysteryCrateStore
             if (!resp) return
             setReward(resp)
             newSnackbarMessage(`Successfully purchased ${mysteryCrate.mystery_crate_type} crate.`, "success")
+            toggleConfirmModalOpen(false)
         } catch (err) {
             setBuyError(typeof err === "string" ? err : "Failed to purchase item.")
             console.error(err)
         } finally {
             setIsLoading(false)
         }
-    }, [send, mysteryCrate.mystery_crate_type, newSnackbarMessage, setReward])
+    }, [send, mysteryCrate.mystery_crate_type, newSnackbarMessage, setReward, toggleConfirmModalOpen])
 
     return (
         <>

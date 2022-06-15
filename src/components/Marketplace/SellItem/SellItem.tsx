@@ -111,7 +111,7 @@ export const SellItem = () => {
         try {
             toggleSubmitting(true)
             setSubmitError(undefined)
-            await send<{ id: string }>(isKeycard ? GameServerKeys.MarketplaceSalesKeycardCreate : GameServerKeys.MarketplaceSalesCreate, {
+            const resp = await send<{ id: string }>(isKeycard ? GameServerKeys.MarketplaceSalesKeycardCreate : GameServerKeys.MarketplaceSalesCreate, {
                 item_type: itemTypePayload,
                 item_id: assetToSell?.id,
                 asking_price: buyoutPrice ? buyoutPrice.toString() : undefined,
@@ -119,6 +119,9 @@ export const SellItem = () => {
                 auction_current_price: !isKeycard && startingPrice ? startingPrice.toString() : undefined,
                 auction_reserved_price: !isKeycard && reservePrice ? reservePrice.toString() : undefined,
             })
+
+            if (!resp) return
+            toggleConfirmModalOpen(false)
             history.push(`/marketplace`)
         } catch (err) {
             const message = typeof err === "string" ? err : "Failed to purchase item."
@@ -127,7 +130,7 @@ export const SellItem = () => {
         } finally {
             toggleSubmitting(false)
         }
-    }, [assetToSell?.id, buyoutPrice, dropRate, history, isFormReady, itemType, reservePrice, send, startingPrice, toggleSubmitting])
+    }, [assetToSell?.id, buyoutPrice, dropRate, history, isFormReady, itemType, reservePrice, send, startingPrice, toggleSubmitting, toggleConfirmModalOpen])
 
     return (
         <>

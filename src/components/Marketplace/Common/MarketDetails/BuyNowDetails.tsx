@@ -64,6 +64,7 @@ export const BuyNowDetails = ({ id, itemType, owner, itemName, buyNowPrice, dutc
 
             if (!resp) return
             newSnackbarMessage(`Successfully purchased ${itemName}.`, "success")
+            toggleConfirmBuyModalOpen(false)
         } catch (err) {
             const message = typeof err === "string" ? err : "Failed to purchase item."
             setBuyError(message)
@@ -71,7 +72,7 @@ export const BuyNowDetails = ({ id, itemType, owner, itemName, buyNowPrice, dutc
         } finally {
             setIsLoading(false)
         }
-    }, [id, itemName, itemType, newSnackbarMessage, send])
+    }, [id, itemName, itemType, newSnackbarMessage, send, toggleConfirmBuyModalOpen])
 
     const isSelfItem = userID === owner?.id
 

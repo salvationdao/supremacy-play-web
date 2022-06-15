@@ -30,6 +30,7 @@ export const ManageListing = ({ id, owner, isKeycard }: { id: string; owner?: Ma
 
             if (!resp) return
             newSnackbarMessage("Successfully cancel listing.", "success")
+            toggleConfirmCancelModalOpen(false)
             history.push(`/marketplace`)
         } catch (err) {
             const message = typeof err === "string" ? err : "Failed to cancel listing."
@@ -38,7 +39,7 @@ export const ManageListing = ({ id, owner, isKeycard }: { id: string; owner?: Ma
         } finally {
             toggleCancelling(false)
         }
-    }, [history, id, isKeycard, newSnackbarMessage, send, toggleCancelling])
+    }, [history, id, isKeycard, newSnackbarMessage, send, toggleCancelling, toggleConfirmCancelModalOpen])
 
     const isSelfItem = userID === owner?.id
 
