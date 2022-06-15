@@ -81,11 +81,14 @@ export const SellItemInner = ({ toggleReset }: { toggleReset: () => void }) => {
 
     // Form validators
     const checkBuyoutPriceError = useCallback((): string | undefined => {
+        if (dropRate && !buyoutPrice) {
+            return "You must enter a buyout price if there is a price drop."
+        }
         if (!buyoutPrice) return
         if (startingPrice && buyoutPrice <= startingPrice) {
             return "Buyout price cannot be lower than or equal to the auction starting price."
         }
-    }, [buyoutPrice, startingPrice])
+    }, [buyoutPrice, dropRate, startingPrice])
 
     const checkPriceDropError = useCallback((): string | undefined => {
         if (!dropRate) return
@@ -250,7 +253,7 @@ export const SellItemInner = ({ toggleReset }: { toggleReset: () => void }) => {
                                     description="A buyer can pay this amount to immediately purchase your item."
                                     placeholder="Enter buyout price..."
                                     error={checkBuyoutPriceError()}
-                                    isOptional={!!startingPrice}
+                                    isOptional={!!startingPrice && !dropRate}
                                 />
 
                                 {itemType !== ItemType.Keycards && (
