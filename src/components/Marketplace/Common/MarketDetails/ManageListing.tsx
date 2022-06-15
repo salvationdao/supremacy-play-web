@@ -100,11 +100,11 @@ export const ManageListing = ({ id, owner, isKeycard }: { id: string; owner?: Ma
                     title="ITEM CANCELLED"
                     leftLabel="SELL ANOTHER"
                     onLeftButton={() => {
-                        history.push(`/marketplace/sell`)
+                        history.replace(`/marketplace/sell`)
                     }}
                     rightLabel="GO BACK TO MARKETPLACE"
                     onRightButton={() => {
-                        history.push(`/marketplace`)
+                        history.replace(`/marketplace`)
                     }}
                 >
                     <Typography variant="h6">Your item has been removed from the marketplace.</Typography>
