@@ -42,18 +42,19 @@ export const MechButtons = ({
     return (
         <Stack direction="row" spacing=".8rem">
             {/* Button 1 */}
-            {mechState === MechStatusEnum.Idle && (
-                <ReusableButton
-                    primaryColor={theme.factionTheme.primary}
-                    backgroundColor={theme.factionTheme.background}
-                    label="DEPLOY"
-                    disabled={!mechDetails}
-                    onClick={() => {
-                        setSelectedMechDetails(mechDetails)
-                        setDeployMechModalOpen(true)
-                    }}
-                />
-            )}
+            {mechState === undefined ||
+                (mechState === MechStatusEnum.Idle && (
+                    <ReusableButton
+                        primaryColor={theme.factionTheme.primary}
+                        backgroundColor={theme.factionTheme.background}
+                        label="DEPLOY"
+                        disabled={!mechDetails}
+                        onClick={() => {
+                            setSelectedMechDetails(mechDetails)
+                            setDeployMechModalOpen(true)
+                        }}
+                    />
+                ))}
 
             {mechState === MechStatusEnum.Battle && (
                 <ReusableButton primaryColor={theme.factionTheme.primary} backgroundColor={theme.factionTheme.background} label="UNDEPLOY" disabled={true} />
