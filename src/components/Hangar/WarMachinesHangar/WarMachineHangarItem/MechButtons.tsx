@@ -26,7 +26,7 @@ export const MechButtons = ({
 }) => {
     const history = useHistory()
     const theme = useTheme()
-    const [mechState, setMechState] = useState<MechStatusEnum>(MechStatusEnum.Unknown)
+    const [mechState, setMechState] = useState<MechStatusEnum>()
 
     useGameServerSubscriptionFaction<MechStatus>(
         {

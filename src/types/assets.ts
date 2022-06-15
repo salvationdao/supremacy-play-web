@@ -1,7 +1,6 @@
 import { Battle, Faction, User, Vector2i } from "."
 
 export enum MechStatusEnum {
-    Unknown = "UNKNOWN",
     Idle = "IDLE",
     Queue = "QUEUE",
     Battle = "BATTLE",
