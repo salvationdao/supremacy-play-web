@@ -1,7 +1,16 @@
 import { Battle, Faction, User, Vector2i } from "."
 
+export enum MechStatusEnum {
+    Unknown = "UNKNOWN",
+    Idle = "IDLE",
+    Queue = "QUEUE",
+    Battle = "BATTLE",
+    MARKET = "MARKET",
+    Sold = "SOLD",
+}
+
 export interface MechStatus {
-    status: "IDLE" | "QUEUE" | "BATTLE" | "MARKET" | "SOLD"
+    status: MechStatusEnum
     queue_position?: number
 }
 

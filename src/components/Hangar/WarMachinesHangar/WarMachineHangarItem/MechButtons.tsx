@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom"
 import { FancyButton } from "../../.."
 import { useTheme } from "../../../../containers/theme"
 import { colors, fonts } from "../../../../theme/theme"
-import { MechDetails, MechStatus } from "../../../../types"
+import { MechDetails, MechStatus, MechStatusEnum } from "../../../../types"
 import { ItemType } from "../../../../types/marketplace"
 import { useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
@@ -26,7 +26,7 @@ export const MechButtons = ({
 }) => {
     const history = useHistory()
     const theme = useTheme()
-    const [mechState, setMechState] = useState("LOADING...")
+    const [mechState, setMechState] = useState<MechStatusEnum>(MechStatusEnum.Unknown)
 
     useGameServerSubscriptionFaction<MechStatus>(
         {
@@ -34,7 +34,7 @@ export const MechButtons = ({
             key: GameServerKeys.SubMechQueuePosition,
         },
         (payload) => {
-            if (!payload || mechState === "SOLD") return
+            if (!payload || mechState === MechStatusEnum.Sold) return
             setMechState(payload.status)
         },
     )
@@ -42,7 +42,7 @@ export const MechButtons = ({
     return (
         <Stack direction="row" spacing=".8rem">
             {/* Button 1 */}
-            {mechState === "IDLE" && (
+            {mechState === MechStatusEnum.Idle && (
                 <ReusableButton
                     primaryColor={theme.factionTheme.primary}
                     backgroundColor={theme.factionTheme.background}
@@ -55,11 +55,11 @@ export const MechButtons = ({
                 />
             )}
 
-            {mechState === "BATTLE" && (
+            {mechState === MechStatusEnum.Battle && (
                 <ReusableButton primaryColor={theme.factionTheme.primary} backgroundColor={theme.factionTheme.background} label="UNDEPLOY" disabled={true} />
             )}
 
-            {mechState === "QUEUE" && (
+            {mechState === MechStatusEnum.Queue && (
                 <ReusableButton
                     primaryColor={theme.factionTheme.primary}
                     backgroundColor={theme.factionTheme.background}
@@ -104,7 +104,7 @@ export const MechButtons = ({
                 primaryColor={colors.red}
                 backgroundColor={colors.red}
                 label="SELL"
-                disabled={!mechDetails || mechState !== "IDLE"}
+                disabled={!mechDetails || mechState !== MechStatusEnum.Idle}
                 onClick={() => {
                     history.push(`/marketplace/sell?item-type=${ItemType.WarMachine}&asset-id=${mechDetails.id}`)
                 }}

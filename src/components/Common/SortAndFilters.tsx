@@ -279,22 +279,23 @@ const ChipFilterSection = ({ filter, primaryColor, secondaryColor }: { filter: C
                     opacity: 1,
                     sx: { position: "relative" },
                 }}
-                sx={{ px: "1.2rem", pt: ".0rem", pb: ".2rem", color: colors.offWhite }}
+                sx={{ px: "1.2rem", pt: ".0rem", pb: ".2rem", color: secondaryColor }}
                 onClick={() => setSelectedOptionsInstant([])}
             >
                 <Typography
                     variant="caption"
                     sx={{
-                        color: colors.offWhite,
+                        color: secondaryColor,
                         fontSize: "1.1rem",
                         fontFamily: fonts.nostromoBlack,
+                        opacity: 0.7,
                     }}
                 >
                     RESET FILTER
                 </Typography>
             </FancyButton>
         )
-    }, [selectedOptions.length, setSelectedOptionsInstant])
+    }, [secondaryColor, selectedOptions.length, setSelectedOptionsInstant])
 
     if (!options || options.length <= 0) return null
 
@@ -367,22 +368,23 @@ const RangeFilterSection = ({ filter, primaryColor, secondaryColor }: { filter: 
                     opacity: 1,
                     sx: { position: "relative" },
                 }}
-                sx={{ px: "1.2rem", pt: ".0rem", pb: ".2rem", color: colors.offWhite }}
+                sx={{ px: "1.2rem", pt: ".0rem", pb: ".2rem", color: secondaryColor }}
                 onClick={() => setValueInstant([undefined, undefined])}
             >
                 <Typography
                     variant="caption"
                     sx={{
-                        color: colors.offWhite,
+                        color: secondaryColor,
                         fontSize: "1.1rem",
                         fontFamily: fonts.nostromoBlack,
+                        opacity: 0.7,
                     }}
                 >
                     RESET FILTER
                 </Typography>
             </FancyButton>
         )
-    }, [setValueInstant, value])
+    }, [secondaryColor, setValueInstant, value])
 
     return (
         <Section label={label} primaryColor={primaryColor} secondaryColor={secondaryColor} endComponent={resetButton}>
