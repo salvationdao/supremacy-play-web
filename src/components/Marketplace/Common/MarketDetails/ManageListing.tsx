@@ -89,7 +89,10 @@ export const ManageListing = ({ id, owner, isKeycard, isTimeEnded }: { id: strin
                 <ConfirmModal
                     title="CONFIRMATION"
                     onConfirm={onCancelListing}
-                    onClose={() => toggleConfirmCancelModalOpen(false)}
+                    onClose={() => {
+                        setCancelError(undefined)
+                        toggleConfirmCancelModalOpen(false)
+                    }}
                     isLoading={cancelling}
                     error={cancelError}
                 >

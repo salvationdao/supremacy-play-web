@@ -227,7 +227,10 @@ export const AuctionDetails = ({ id, owner, itemName, auctionCurrentPrice, aucti
                 <ConfirmModal
                     title="CONFIRMATION"
                     onConfirm={confirmBid}
-                    onClose={() => toggleConfirmBidModalOpen(false)}
+                    onClose={() => {
+                        setBidError(undefined)
+                        toggleConfirmBidModalOpen(false)
+                    }}
                     isLoading={isLoading}
                     error={bidError}
                     confirmSuffix={
