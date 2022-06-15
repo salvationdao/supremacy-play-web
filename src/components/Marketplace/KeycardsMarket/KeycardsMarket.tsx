@@ -31,10 +31,17 @@ export const KeycardsMarket = () => {
     // Filters and sorts
     const [search, setSearch] = useState("")
     const [sort, setSort] = useState<SortType>(SortType.NewestFirst)
+    const [status, setStatus] = useState<string[]>([])
     const [ownedBy, setOwnedBy] = useState<string[]>(["others"])
     const [price, setPrice] = useState<(number | undefined)[]>([undefined, undefined])
 
     // Filters
+    const statusFilterSection = useRef<ChipFilter>({
+        label: "STATUS",
+        options: [{ value: "true", label: "SOLD", color: colors.green }],
+        initialSelected: status,
+        onSetSelected: setStatus,
+    })
     const ownedByFilterSection = useRef<ChipFilter>({
         label: "OWNED BY",
         options: [
@@ -188,7 +195,7 @@ export const KeycardsMarket = () => {
                 onSetSearch={setSearch}
                 initialSort={sort}
                 onSetSort={setSort}
-                chipFilters={[ownedByFilterSection.current]}
+                chipFilters={[statusFilterSection.current, ownedByFilterSection.current]}
                 rangeFilters={[priceRangeFilter.current]}
             />
 

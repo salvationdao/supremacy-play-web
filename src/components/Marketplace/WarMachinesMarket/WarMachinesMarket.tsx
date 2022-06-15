@@ -40,7 +40,7 @@ export const WarMachinesMarket = () => {
     const [price, setPrice] = useState<(number | undefined)[]>([undefined, undefined])
 
     // Filters
-    const soldFilterSection = useRef<ChipFilter>({
+    const statusFilterSection = useRef<ChipFilter>({
         label: "STATUS",
         options: [{ value: "true", label: "SOLD", color: colors.green }],
         initialSelected: status,
@@ -234,7 +234,7 @@ export const WarMachinesMarket = () => {
                 onSetSearch={setSearch}
                 initialSort={sort}
                 onSetSort={setSort}
-                chipFilters={[soldFilterSection.current, ownedByFilterSection.current, listingTypeFilterSection.current, rarityChipFilter.current]}
+                chipFilters={[statusFilterSection.current, ownedByFilterSection.current, listingTypeFilterSection.current, rarityChipFilter.current]}
                 rangeFilters={[priceRangeFilter.current]}
             />
 
