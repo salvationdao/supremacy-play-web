@@ -4,7 +4,7 @@ import { ClipThing } from "../../.."
 import { useTheme } from "../../../../containers/theme"
 import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
-import { MechBasic, MechDetails, MechStatus } from "../../../../types"
+import { MechBasic, MechDetails } from "../../../../types"
 import { MechBarStats } from "./MechBarStats"
 import { MechButtons } from "./MechButtons"
 import { MechGeneralStatus } from "./MechGeneralStatus"
@@ -90,7 +90,6 @@ const WarMachineHangarItemInner = ({
     setRentalMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
 }) => {
     const theme = useTheme()
-    const [mechStatus, setMechStatus] = useState<MechStatus>()
 
     const skin = mechDetails ? mechDetails.chassis_skin || mechDetails.default_chassis_skin : undefined
     const imageUrl = skin?.large_image_url
@@ -118,7 +117,7 @@ const WarMachineHangarItemInner = ({
                 <Stack direction="row" alignItems="center" spacing="1.2rem" sx={{ height: "23rem", px: "1.8rem", pt: "2.4rem", pb: "1.4rem" }}>
                     <Stack spacing="1rem" sx={{ height: "100%" }}>
                         <MechThumbnail mech={mech} mechDetails={mechDetails} />
-                        <MechGeneralStatus mechID={mech.id} mechStatus={mechStatus} setMechStatus={setMechStatus} />
+                        <MechGeneralStatus mechID={mech.id} />
                     </Stack>
 
                     <Stack spacing="1.1rem" sx={{ flex: 1, height: "100%" }}>
@@ -131,7 +130,6 @@ const WarMachineHangarItemInner = ({
                         {mechDetails ? (
                             <MechButtons
                                 mechDetails={mechDetails}
-                                mechStatus={mechStatus}
                                 setSelectedMechDetails={setSelectedMechDetails}
                                 setDeployMechModalOpen={setDeployMechModalOpen}
                                 setLeaveMechModalOpen={setLeaveMechModalOpen}
