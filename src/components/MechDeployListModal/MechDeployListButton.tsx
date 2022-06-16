@@ -7,7 +7,7 @@ export const MechDeployListButton = () => {
     return (
         <Stack alignItems="center" sx={{ backgroundColor: mechDeployModalOpen ? colors.purple : `${colors.purple}60`, opacity: 0.9, ":hover": { opacity: 1 } }}>
             <IconButton size="small" onClick={() => toggleMechDeployModalOpen()}>
-                <SvgRobot size="1.7rem" />
+                <SvgRobot size="1.6rem" />
             </IconButton>
         </Stack>
     )
