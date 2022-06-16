@@ -83,6 +83,7 @@ export const MechButtons = ({
             <ReusableButton
                 isFancy
                 primaryColor={theme.factionTheme.primary}
+                secondaryColor={theme.factionTheme.secondary}
                 backgroundColor={theme.factionTheme.primary}
                 label="HISTORY"
                 onClick={() => {
