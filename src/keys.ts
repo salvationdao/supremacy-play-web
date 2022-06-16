@@ -46,6 +46,7 @@ export enum GameServerKeys {
     SubmitRepair = "ASSET:REPAIR:PAY:FEE",
     MechQueueUpdated = "PLAYER:ASSET:MECH:QUEUE:UPDATE",
     TriggerMechStatusUpdate = "PLAYER:ASSET:MECH:STATUS:UPDATE",
+    MechRename = "PLAYER:MECH:RENAME",
 
     // Player Abilities
     TriggerSaleAbilitiesListUpdated = "SALE:ABILITIES:LIST:UPDATED",

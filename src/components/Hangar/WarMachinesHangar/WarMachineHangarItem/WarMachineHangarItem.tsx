@@ -98,7 +98,7 @@ const WarMachineHangarItemInner = ({
 
     return (
         <Box sx={{ position: "relative", overflow: "visible" }} onClick={() => setSelectedMechDetails(mechDetails)}>
-            <MechTitle mech={mech} mechDetails={mechDetails} isSelected={isSelected} />
+            <MechTitle setSelectedMechDetails={setSelectedMechDetails} mech={mech} mechDetails={mechDetails} isSelected={isSelected} />
 
             <ClipThing
                 clipSize="10px"
