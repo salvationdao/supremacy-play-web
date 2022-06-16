@@ -9,6 +9,7 @@ import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { MysteryCrate } from "../../../types"
+import { PageHeader } from "../../Common/PageHeader"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { MysteryCrateStoreItemLoadingSkeleton } from "../../Storefront/MysteryCratesStore/MysteryCrateStoreItem/MysteryCrateStoreItem"
 import { MysteryCrateHangarItem } from "./MysteryCrateHangarItem"
@@ -193,6 +194,8 @@ export const MysteryCratesHangar = () => {
         >
             <Stack sx={{ position: "relative", height: "100%" }}>
                 <Stack sx={{ flex: 1 }}>
+                    <PageHeader title="MYSTERY CRATES" description="The mystery crates that you own are shown here." imageUrl={SafePNG}></PageHeader>
+
                     <TotalAndPageSizeOptions
                         countItems={crates?.length}
                         totalItems={totalItems}

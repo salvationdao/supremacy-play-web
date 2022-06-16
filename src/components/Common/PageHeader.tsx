@@ -6,7 +6,7 @@ interface PageHeaderProps {
     title: ReactNode
     description: ReactNode
     imageUrl: string
-    children: ReactNode
+    children?: ReactNode
 }
 
 export const PageHeader = ({ title, description, imageUrl, children }: PageHeaderProps) => {
@@ -41,7 +41,7 @@ export const PageHeader = ({ title, description, imageUrl, children }: PageHeade
                 <Typography sx={{ fontSize: "1.85rem" }}>{description}</Typography>
             </Box>
 
-            <Box sx={{ ml: "auto" }}>{children}</Box>
+            {children && <Box sx={{ ml: "auto" }}>{children}</Box>}
         </Stack>
     )
 }

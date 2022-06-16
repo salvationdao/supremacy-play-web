@@ -1,6 +1,5 @@
 import { Box, IconButton, Stack, Typography } from "@mui/material"
-import { Link } from "react-router-dom"
-import { LogoWEBP, SvgDiscord, SvgTwitter, SvgYouTube, MaintenancePNG } from "../../assets"
+import { LogoWEBP, MaintenancePNG, SvgDiscord, SvgTwitter, SvgYouTube } from "../../assets"
 import { SUPREMACY_PAGE } from "../../constants"
 import { colors, fonts, siteZIndex } from "../../theme/theme"
 
@@ -31,7 +30,7 @@ export const Maintenance = () => {
                     zIndex: siteZIndex.RoutePage,
                 }}
             >
-                <Link target="_blank" to={SUPREMACY_PAGE} style={{ width: "100%", height: "12rem" }}>
+                <a target="_blank" href={SUPREMACY_PAGE} style={{ width: "100%", height: "12rem" }} rel="noreferrer">
                     <Box
                         sx={{
                             width: "100%",
@@ -42,7 +41,7 @@ export const Maintenance = () => {
                             backgroundRepeat: "no-repeat",
                         }}
                     />
-                </Link>
+                </a>
 
                 <Box sx={{ backgroundColor: "#00000099" }}>
                     <Stack

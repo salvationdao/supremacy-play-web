@@ -3,12 +3,15 @@ import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { useLocation } from "react-router-dom"
 import { ClipThing, FancyButton } from "../.."
 import { KeycardPNG } from "../../../assets"
+import { PASSPORT_WEB } from "../../../constants"
+import { useAuth } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { usePagination } from "../../../hooks"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { Keycard } from "../../../types"
+import { PageHeader } from "../../Common/PageHeader"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { MysteryCrateStoreItemLoadingSkeleton } from "../../Storefront/MysteryCratesStore/MysteryCrateStoreItem/MysteryCrateStoreItem"
 import { KeycardHangarItem } from "./KeycardHangarItem"
@@ -26,6 +29,7 @@ interface GetAssetsResponse {
 
 export const KeycardsHangar = () => {
     const location = useLocation()
+    const { user } = useAuth()
     const { send } = useGameServerCommandsUser("/user_commander")
     const theme = useTheme()
     const [keycards, setKeycards] = useState<Keycard[]>()
@@ -191,6 +195,21 @@ export const KeycardsHangar = () => {
         >
             <Stack sx={{ position: "relative", height: "100%" }}>
                 <Stack sx={{ flex: 1 }}>
+                    <PageHeader
+                        title="KEY CARDS"
+                        description={
+                            <>
+                                The keycards that you have on Supremacy are shown here. If you don&apos;t see your keycards here, you may need to transfer them
+                                from{" "}
+                                <a rel="noreferrer" target="_blank" href={`${PASSPORT_WEB}profile/${user.username}/achievements`}>
+                                    XSYN
+                                </a>{" "}
+                                to Supremacy.
+                            </>
+                        }
+                        imageUrl={KeycardPNG}
+                    ></PageHeader>
+
                     <TotalAndPageSizeOptions
                         countItems={keycards?.length}
                         totalItems={totalItems}
