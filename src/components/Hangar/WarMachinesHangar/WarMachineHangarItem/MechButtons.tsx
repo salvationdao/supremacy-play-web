@@ -78,13 +78,7 @@ export const MechButtons = ({
             )}
 
             {/* Button 2 */}
-            <ReusableButton
-                primaryColor={colors.lightNeonBlue}
-                secondaryColor={colors.lightNeonBlue}
-                backgroundColor={theme.factionTheme.background}
-                label="REPAIR"
-                disabled={!mechState}
-            />
+            <ReusableButton isFancy primaryColor={colors.orange} backgroundColor={colors.orange} label="REPAIR" disabled={!mechState} />
 
             {/* Button 3 */}
             <ReusableButton
