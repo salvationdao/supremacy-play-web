@@ -1,4 +1,4 @@
-import { Box, Tooltip, Typography } from "@mui/material"
+import { Box, Typography } from "@mui/material"
 import { useState } from "react"
 import { useLocation } from "react-router-dom"
 import { FancyButton, TooltipHelper } from "../../.."
