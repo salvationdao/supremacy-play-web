@@ -53,8 +53,8 @@ export const MechButtons = ({
             {/* Button 1 */}
             {mechState === MechStatusEnum.Battle || mechState === MechStatusEnum.Queue ? (
                 <ReusableButton
-                    primaryColor={colors.yellow}
-                    secondaryColor={colors.yellow}
+                    primaryColor={colors.green}
+                    secondaryColor={colors.green}
                     backgroundColor={theme.factionTheme.background}
                     label="UNDEPLOY"
                     disabled={!mechState || mechState === MechStatusEnum.Battle}
@@ -65,9 +65,9 @@ export const MechButtons = ({
                 />
             ) : (
                 <ReusableButton
+                    isFancy
                     primaryColor={colors.green}
-                    secondaryColor={colors.green}
-                    backgroundColor={theme.factionTheme.background}
+                    backgroundColor={colors.green}
                     label="DEPLOY"
                     disabled={!mechState || mechState !== MechStatusEnum.Idle}
                     onClick={() => {
@@ -78,12 +78,18 @@ export const MechButtons = ({
             )}
 
             {/* Button 2 */}
-            <ReusableButton primaryColor={theme.factionTheme.primary} backgroundColor={theme.factionTheme.background} label="REPAIR" disabled={!mechState} />
+            <ReusableButton
+                primaryColor={colors.lightNeonBlue}
+                secondaryColor={colors.lightNeonBlue}
+                backgroundColor={theme.factionTheme.background}
+                label="REPAIR"
+                disabled={!mechState}
+            />
 
             {/* Button 3 */}
             <ReusableButton
                 primaryColor={theme.factionTheme.primary}
-                backgroundColor={theme.factionTheme.background}
+                backgroundColor={theme.factionTheme.primary}
                 label="HISTORY"
                 onClick={() => {
                     setSelectedMechDetails(mechDetails)
@@ -93,8 +99,9 @@ export const MechButtons = ({
 
             {/* Button 4 */}
             <ReusableButton
-                primaryColor={theme.factionTheme.primary}
-                backgroundColor={theme.factionTheme.background}
+                isFancy
+                primaryColor={colors.purple}
+                backgroundColor={colors.purple}
                 label="RENT"
                 disabled={true}
                 onClick={() => {
