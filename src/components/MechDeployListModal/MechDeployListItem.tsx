@@ -1,10 +1,12 @@
 import { Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
+import { FancyButton } from ".."
+import { useTheme } from "../../containers/theme"
 import { getRarityDeets } from "../../helpers"
-import { useGameServerCommandsFaction } from "../../hooks/useGameServer"
+import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
-import { fonts } from "../../theme/theme"
-import { MechBasic, MechDetails } from "../../types"
+import { colors, fonts } from "../../theme/theme"
+import { MechBasic, MechDetails, MechStatus, MechStatusEnum } from "../../types"
 import { MechGeneralStatus } from "../Hangar/WarMachinesHangar/WarMachineHangarItem/MechGeneralStatus"
 import { MechThumbnail } from "../Hangar/WarMachinesHangar/WarMachineHangarItem/MechThumbnail"
 
@@ -13,9 +15,11 @@ interface MechDeployListItemProps {
 }
 
 export const MechDeployListItem = ({ mech }: MechDeployListItemProps) => {
+    const theme = useTheme()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [mechDetails, setMechDetails] = useState<MechDetails>()
     const rarityDeets = useMemo(() => getRarityDeets(mech.tier || mechDetails?.tier || ""), [mech, mechDetails])
+    const [mechState, setMechState] = useState<MechStatusEnum>()
 
     // Get addition mech data
     useEffect(() => {
@@ -32,6 +36,17 @@ export const MechDeployListItem = ({ mech }: MechDeployListItemProps) => {
         })()
     }, [mech.id, send])
 
+    useGameServerSubscriptionFaction<MechStatus>(
+        {
+            URI: `/queue/${mech.id}`,
+            key: GameServerKeys.SubMechQueuePosition,
+        },
+        (payload) => {
+            if (!payload || mechState === MechStatusEnum.Sold) return
+            setMechState(payload.status)
+        },
+    )
+
     return (
         <Stack
             direction="row"
@@ -42,7 +57,6 @@ export const MechDeployListItem = ({ mech }: MechDeployListItemProps) => {
                 py: ".7rem",
                 px: ".5rem",
             }}
-            // onClick={onClick}
         >
             <Stack sx={{ height: "8rem" }}>
                 <MechThumbnail mech={mech} mechDetails={mechDetails} smallSize />
@@ -76,7 +90,37 @@ export const MechDeployListItem = ({ mech }: MechDeployListItemProps) => {
                     {mech.name || mech.label}
                 </Typography>
 
-                <MechGeneralStatus mechID={mech.id} smallSize />
+                <Stack direction="row" alignItems="center" spacing="1rem">
+                    <MechGeneralStatus mechID={mech.id} smallSize />
+
+                    {(mechState === MechStatusEnum.Idle || mechState === MechStatusEnum.Queue) && (
+                        <FancyButton
+                            clipThingsProps={{
+                                clipSize: "5px",
+                                backgroundColor: mechState === MechStatusEnum.Idle ? colors.green : theme.factionTheme.background,
+                                opacity: 1,
+                                border: {
+                                    isFancy: true,
+                                    borderColor: mechState === MechStatusEnum.Idle ? colors.green : colors.yellow,
+                                    borderThickness: "1px",
+                                },
+                                sx: { position: "relative" },
+                            }}
+                            sx={{ px: "1.6rem", pt: 0, pb: ".1rem", color: theme.factionTheme.primary }}
+                            // onClick={onClick}
+                        >
+                            <Typography
+                                variant="caption"
+                                sx={{
+                                    color: mechState === MechStatusEnum.Idle ? "#FFFFFF" : colors.yellow,
+                                    fontFamily: fonts.nostromoBlack,
+                                }}
+                            >
+                                {mechState === MechStatusEnum.Idle ? "DEPLOY" : "UNDEPLOY"}
+                            </Typography>
+                        </FancyButton>
+                    )}
+                </Stack>
             </Stack>
         </Stack>
     )
