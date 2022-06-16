@@ -5,7 +5,7 @@ import { useHistory, useLocation } from "react-router-dom"
 import { ClipThing, FancyButton } from "../../.."
 import { SvgSupToken, SvgWallet } from "../../../../assets"
 import { useAuth } from "../../../../containers"
-import { numberCommaFormatter, numFormatter, shadeColor, timeDiff, timeSince } from "../../../../helpers"
+import { numberCommaFormatter, shadeColor, timeDiff, timeSince } from "../../../../helpers"
 import { useInterval, useToggle } from "../../../../hooks"
 import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
@@ -176,14 +176,13 @@ export const BuyNowDetails = ({ id, itemType, owner, itemName, buyNowPrice, dutc
                             </Typography>
                             <SvgSupToken size="1.8rem" />
                             <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
-                                {numFormatter(new BigNumber(buyNowPrice).shiftedBy(-18).toNumber())})
+                                {formattedCommaPrice})
                             </Typography>
                         </Stack>
                     }
                 >
                     <Typography variant="h6">
-                        Do you wish to purchase <strong>{itemName}</strong> for{" "}
-                        <span>{numFormatter(new BigNumber(buyNowPrice).shiftedBy(-18).toNumber())}</span> SUPS?
+                        Do you wish to purchase <strong>{itemName}</strong> for <span>{formattedCommaPrice}</span> SUPS?
                     </Typography>
                 </ConfirmModal>
             )}

@@ -4,7 +4,7 @@ import { useCallback, useMemo, useState } from "react"
 import { ClipThing, FancyButton } from "../../.."
 import { SvgHammer, SvgSupToken } from "../../../../assets"
 import { useAuth, useSnackbar } from "../../../../containers"
-import { numberCommaFormatter, numFormatter, shadeColor } from "../../../../helpers"
+import { numberCommaFormatter, shadeColor } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
 import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
@@ -240,13 +240,13 @@ export const AuctionDetails = ({ id, owner, itemName, auctionCurrentPrice, aucti
                             </Typography>
                             <SvgSupToken size="1.8rem" />
                             <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
-                                {numFormatter(inputBidPrice)})
+                                {numberCommaFormatter(inputBidPrice)})
                             </Typography>
                         </Stack>
                     }
                 >
                     <Typography variant="h6">
-                        Do you wish to place a bid of <span>{numFormatter(inputBidPrice)}</span> SUPS on <strong>{itemName}</strong>?
+                        Do you wish to place a bid of <span>{numberCommaFormatter(inputBidPrice)}</span> SUPS on <strong>{itemName}</strong>?
                     </Typography>
                 </ConfirmModal>
             )}
