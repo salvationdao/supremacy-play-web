@@ -64,8 +64,11 @@ export const KeycardsMarket = () => {
 
             let sortDir = "asc"
             let sortBy = "alphabetical"
-            if (sort === SortType.AlphabeticalReverse || sort === SortType.NewestFirst) sortDir = "desc"
+            if (sort === SortType.AlphabeticalReverse || sort === SortType.NewestFirst || sort === SortType.ExpiringReverse || sort === SortType.PriceHighest)
+                sortDir = "desc"
             if (sort === SortType.OldestFirst || sort === SortType.NewestFirst) sortBy = "created_at"
+            if (sort === SortType.ExpiringFirst || sort === SortType.ExpiringReverse) sortBy = "time"
+            if (sort === SortType.PriceLowest || sort === SortType.PriceHighest) sortBy = "price"
 
             const [min_price, max_price] = price
 
