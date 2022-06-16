@@ -175,7 +175,7 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate }: MysteryCrateStore
                                     }}
                                 >
                                     <span>{numberCommaFormatter(mysteryCrate.amount - mysteryCrate.amount_sold)}</span> /{" "}
-                                    {numberCommaFormatter(mysteryCrate.amount)}
+                                    {numberCommaFormatter(mysteryCrate.amount)} left
                                 </Typography>
                             </Box>
                         </Box>
