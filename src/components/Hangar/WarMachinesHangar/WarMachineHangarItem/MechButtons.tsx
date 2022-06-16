@@ -82,6 +82,7 @@ export const MechButtons = ({
 
             {/* Button 3 */}
             <ReusableButton
+                isFancy
                 primaryColor={theme.factionTheme.primary}
                 backgroundColor={theme.factionTheme.primary}
                 label="HISTORY"
