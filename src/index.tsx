@@ -5,7 +5,7 @@ import { Buffer } from "buffer"
 import ReactDOM from "react-dom"
 import { Action, ClientContextProvider, createClient } from "react-fetching-library"
 import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom"
-import { Bar, EarlyAccessWarning, GlobalSnackbar, Maintenance, RightDrawer } from "./components"
+import { Bar, GlobalSnackbar, Maintenance, RightDrawer } from "./components"
 import { tourStyles } from "./components/HowToPlay/Tutorial/SetupTutorial"
 import { LeftDrawer } from "./components/LeftDrawer/LeftDrawer"
 import { GAME_SERVER_HOSTNAME, SENTRY_CONFIG, UNDER_MAINTENANCE } from "./constants"
@@ -14,7 +14,6 @@ import { AuthProvider, useAuth, UserUpdater } from "./containers/auth"
 import { FingerprintProvider } from "./containers/fingerprint"
 import { ThemeProvider } from "./containers/theme"
 import { ws } from "./containers/ws"
-import { useToggle } from "./hooks"
 import { NotFoundPage } from "./pages"
 import { AuthPage } from "./pages/AuthPage"
 import { EnlistPage } from "./pages/EnlistPage"
@@ -25,7 +24,6 @@ import { colors } from "./theme/theme"
 const AppInner = () => {
     const { isServerUp } = useSupremacy()
     const { userID, factionID } = useAuth()
-    const [understand, toggleUnderstand] = useToggle()
 
     return (
         <>
@@ -63,9 +61,7 @@ const AppInner = () => {
                             overflow: "hidden",
                         }}
                     >
-                        <EarlyAccessWarning onAcknowledged={() => toggleUnderstand(true)} />
-
-                        {understand && isServerUp && !UNDER_MAINTENANCE && (
+                        {isServerUp && !UNDER_MAINTENANCE && (
                             <Switch>
                                 {ROUTES_ARRAY.map((r) => {
                                     const { id, path, exact, Component, requireAuth, requireFaction, authTitle, authDescription } = r

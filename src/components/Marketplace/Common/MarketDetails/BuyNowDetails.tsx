@@ -55,6 +55,10 @@ export const BuyNowDetails = ({ id, itemType, owner, itemName, buyNowPrice, dutc
     const secondaryColor = "#FFFFFF"
     const backgroundColor = useMemo(() => shadeColor(colors.buyout, -93), [])
     const formattedCommaPrice = useMemo(() => numberCommaFormatter(currentPrice.toNumber()), [currentPrice])
+    const formattedCommaDropPrice = useMemo(
+        () => numberCommaFormatter(new BigNumber(dutchAuctionDropRate || "").shiftedBy(-18).toNumber()),
+        [dutchAuctionDropRate],
+    )
 
     const confirmBuy = useCallback(async () => {
         try {
@@ -86,16 +90,33 @@ export const BuyNowDetails = ({ id, itemType, owner, itemName, buyNowPrice, dutc
                 <Divider />
 
                 {dutchAuctionDropRate && (
-                    <Box>
-                        <Typography gutterBottom sx={{ color: colors.lightGrey, fontFamily: fonts.nostromoBold }}>
-                            PRICE DROP:
-                        </Typography>
-                        <Typography variant="h5" sx={{ fontWeight: "fontWeightBold", span: { color: colors.lightNeonBlue, fontFamily: "inherit" } }}>
-                            NEXT PRICE DROP IN{" "}
-                            <span>{<PriceDropper createdAt={createdAt} calculateNewPrice={calculateNewPrice} setCurrentPrice={setCurrentPrice} />}</span>{" "}
-                            SECONDS
-                        </Typography>
-                    </Box>
+                    <>
+                        <Box>
+                            <Typography gutterBottom sx={{ color: colors.lightGrey, fontFamily: fonts.nostromoBold }}>
+                                PRICE DROP:
+                            </Typography>
+                            <Typography variant="h5" sx={{ fontWeight: "fontWeightBold", span: { color: colors.lightNeonBlue, fontFamily: "inherit" } }}>
+                                NEXT PRICE DROP IN{" "}
+                                <span>{<PriceDropper createdAt={createdAt} calculateNewPrice={calculateNewPrice} setCurrentPrice={setCurrentPrice} />}</span>{" "}
+                                SECONDS
+                            </Typography>
+                        </Box>
+
+                        <Box>
+                            <Typography gutterBottom sx={{ color: colors.lightGrey, fontFamily: fonts.nostromoBold }}>
+                                DROP RATE:
+                            </Typography>
+                            <Stack direction="row" alignItems="center" sx={{ fontStyle: "italic" }}>
+                                <Typography variant="h5" sx={{ color: colors.dutchAuction, fontWeight: "fontWeightBold" }}>
+                                    -
+                                </Typography>
+                                <SvgSupToken size="2.4rem" fill={colors.dutchAuction} sx={{ transform: "skew(-20deg)" }} />
+                                <Typography variant="h5" sx={{ ml: "-.3rem", fontWeight: "fontWeightBold", color: colors.dutchAuction }}>
+                                    {formattedCommaDropPrice}/MIN
+                                </Typography>
+                            </Stack>
+                        </Box>
+                    </>
                 )}
 
                 <Stack>

@@ -9,12 +9,12 @@ interface FancyButtonProps extends LoadingButtonProps {
     sx?: SxProps
     innerSx?: SxProps
     clipThingsProps?: ClipThingProps
-    to?: string
     href?: string
+    to?: string
     target?: HTMLAttributeAnchorTarget | undefined
 }
 
-export const FancyButton = ({ sx, innerSx, disabled, clipThingsProps, children, loading, to, href, ...props }: FancyButtonProps) => {
+export const FancyButton = ({ sx, innerSx, disabled, clipThingsProps, children, loading, to, href, target, ...props }: FancyButtonProps) => {
     return (
         <ClipThing
             corners={{
@@ -64,9 +64,13 @@ export const FancyButton = ({ sx, innerSx, disabled, clipThingsProps, children, 
             >
                 <Box sx={{ pt: ".3rem", height: "100%", width: "100%", ...innerSx }}>
                     {to ? (
-                        <Link to={to} href={href}>
+                        <Link to={to} target={target}>
                             {children}
                         </Link>
+                    ) : href ? (
+                        <a href={href} target={target}>
+                            {children}
+                        </a>
                     ) : (
                         children
                     )}

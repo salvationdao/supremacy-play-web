@@ -8,12 +8,16 @@ export const MechDeployListButton = () => {
     const { mechDeployModalOpen, toggleMechDeployModalOpen } = useSupremacy()
     const location = useLocation()
 
+    const inBattleArena = location.pathname === "/"
+
+    if (!inBattleArena) return null
+
     return (
         <Stack alignItems="center" sx={{ backgroundColor: mechDeployModalOpen ? colors.green : `${colors.green}90`, opacity: 0.9, ":hover": { opacity: 1 } }}>
             <IconButton
                 size="small"
                 onClick={() => {
-                    if (location.pathname !== "/") return
+                    if (!inBattleArena) return
                     toggleMechDeployModalOpen(true)
                 }}
             >
