@@ -70,7 +70,7 @@ export const KeycardsMarket = () => {
             const [min_price, max_price] = price
 
             const resp = await send<{ total: number; records: MarketplaceBuyAuctionItem[] }>(GameServerKeys.MarketplaceSalesKeycardList, {
-                page_number: page,
+                page: page - 1,
                 page_size: pageSize,
                 search: search,
                 min_price,

@@ -82,7 +82,7 @@ export const MysteryCratesMarket = () => {
             const [min_price, max_price] = price
 
             const resp = await send<{ total: number; records: MarketplaceBuyAuctionItem[] }>(GameServerKeys.MarketplaceSalesList, {
-                page_number: page,
+                page: page - 1,
                 page_size: pageSize,
                 search: search,
                 listing_types: listingTypes,
