@@ -1,7 +1,7 @@
 import { Box, Tooltip, Typography } from "@mui/material"
 import { useState } from "react"
 import { useLocation } from "react-router-dom"
-import { FancyButton } from "../../.."
+import { FancyButton, TooltipHelper } from "../../.."
 import { useTheme } from "../../../../containers/theme"
 import { useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
@@ -108,23 +108,28 @@ export const MechButtons = ({
             />
 
             {/* Button 5 */}
-            <Tooltip title={"Mech on v2 Staking Contract"}>
-                <ReusableButton
-                    isFancy={mechState !== MechStatusEnum.Market}
-                    primaryColor={colors.red}
-                    secondaryColor={mechState === MechStatusEnum.Market ? colors.red : undefined}
-                    backgroundColor={mechState === MechStatusEnum.Market ? theme.factionTheme.background : colors.red}
-                    label={mechState === MechStatusEnum.Market ? "VIEW LISTING" : "SELL"}
-                    disabled={!mechState || (mechState !== MechStatusEnum.Idle && mechState !== MechStatusEnum.Market && marketLocked)}
-                    to={
-                        mechDetails.locked_to_marketplace
-                            ? !mechDetails.item_sale_id
-                                ? undefined
-                                : `/marketplace/${MARKETPLACE_TABS.WarMachines}/${mechDetails.item_sale_id}${location.hash}`
-                            : `/marketplace/sell?item-type=${ItemType.WarMachine}&asset-id=${mechDetails.id}${location.hash}`
-                    }
-                />
-            </Tooltip>
+            <TooltipHelper
+                placement={"right"}
+                text={marketLocked ? "Unfortunately assets on the old staking contract cannot be listed on our marketplace." : ""}
+            >
+                <Box>
+                    <ReusableButton
+                        isFancy={mechState !== MechStatusEnum.Market}
+                        primaryColor={colors.red}
+                        secondaryColor={mechState === MechStatusEnum.Market ? colors.red : undefined}
+                        backgroundColor={mechState === MechStatusEnum.Market ? theme.factionTheme.background : colors.red}
+                        label={mechState === MechStatusEnum.Market ? "VIEW LISTING" : "SELL"}
+                        disabled={!mechState || (mechState !== MechStatusEnum.Idle && mechState !== MechStatusEnum.Market) || marketLocked}
+                        to={
+                            mechDetails.locked_to_marketplace
+                                ? !mechDetails.item_sale_id
+                                    ? undefined
+                                    : `/marketplace/${MARKETPLACE_TABS.WarMachines}/${mechDetails.item_sale_id}${location.hash}`
+                                : `/marketplace/sell?item-type=${ItemType.WarMachine}&asset-id=${mechDetails.id}${location.hash}`
+                        }
+                    />
+                </Box>
+            </TooltipHelper>
         </Box>
     )
 }
