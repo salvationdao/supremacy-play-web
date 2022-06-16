@@ -1,5 +1,5 @@
-import { Stack, Typography } from "@mui/material"
-import { useHistory } from "react-router-dom"
+import { Box, Typography } from "@mui/material"
+import { useHistory, useLocation } from "react-router-dom"
 import { FancyButton } from "../../.."
 import { useTheme } from "../../../../containers/theme"
 import { colors, fonts } from "../../../../theme/theme"
@@ -8,6 +8,7 @@ import { ItemType } from "../../../../types/marketplace"
 import { useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { useState } from "react"
+import { MARKETPLACE_TABS } from "../../../../pages"
 
 export const MechButtons = ({
     mechDetails,
@@ -25,8 +26,9 @@ export const MechButtons = ({
     setRentalMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
 }) => {
     const history = useHistory()
+    const location = useLocation()
     const theme = useTheme()
-    const [mechState, setMechState] = useState<MechStatusEnum>(MechStatusEnum.Unknown)
+    const [mechState, setMechState] = useState<MechStatusEnum>()
 
     useGameServerSubscriptionFaction<MechStatus>(
         {
@@ -40,14 +42,32 @@ export const MechButtons = ({
     )
 
     return (
-        <Stack direction="row" spacing=".8rem">
+        <Box
+            sx={{
+                display: "grid",
+                gridTemplateColumns: "repeat(4, 1fr) max-content",
+                gap: ".8rem",
+                alignItems: "center",
+            }}
+        >
             {/* Button 1 */}
-            {mechState === MechStatusEnum.Idle && (
+            {mechState === MechStatusEnum.Battle || mechState === MechStatusEnum.Queue ? (
+                <ReusableButton
+                    primaryColor={theme.factionTheme.primary}
+                    backgroundColor={theme.factionTheme.background}
+                    label="UNDEPLOY"
+                    disabled={!mechState || mechState === MechStatusEnum.Battle}
+                    onClick={() => {
+                        setSelectedMechDetails(mechDetails)
+                        setLeaveMechModalOpen(true)
+                    }}
+                />
+            ) : (
                 <ReusableButton
                     primaryColor={theme.factionTheme.primary}
                     backgroundColor={theme.factionTheme.background}
                     label="DEPLOY"
-                    disabled={!mechDetails}
+                    disabled={!mechState || mechState !== MechStatusEnum.Idle}
                     onClick={() => {
                         setSelectedMechDetails(mechDetails)
                         setDeployMechModalOpen(true)
@@ -55,31 +75,14 @@ export const MechButtons = ({
                 />
             )}
 
-            {mechState === MechStatusEnum.Battle && (
-                <ReusableButton primaryColor={theme.factionTheme.primary} backgroundColor={theme.factionTheme.background} label="UNDEPLOY" disabled={true} />
-            )}
-
-            {mechState === MechStatusEnum.Queue && (
-                <ReusableButton
-                    primaryColor={theme.factionTheme.primary}
-                    backgroundColor={theme.factionTheme.background}
-                    label="UNDEPLOY"
-                    onClick={() => {
-                        setSelectedMechDetails(mechDetails)
-                        setLeaveMechModalOpen(true)
-                    }}
-                />
-            )}
-
             {/* Button 2 */}
-            <ReusableButton primaryColor={theme.factionTheme.primary} backgroundColor={theme.factionTheme.background} label="REPAIR" disabled={!mechDetails} />
+            <ReusableButton primaryColor={theme.factionTheme.primary} backgroundColor={theme.factionTheme.background} label="REPAIR" disabled={!mechState} />
 
             {/* Button 3 */}
             <ReusableButton
                 primaryColor={theme.factionTheme.primary}
                 backgroundColor={theme.factionTheme.background}
                 label="HISTORY"
-                disabled={!mechDetails}
                 onClick={() => {
                     setSelectedMechDetails(mechDetails)
                     setHistoryMechModalOpen(true)
@@ -100,22 +103,29 @@ export const MechButtons = ({
 
             {/* Button 5 */}
             <ReusableButton
-                isFancy
+                isFancy={mechState !== MechStatusEnum.Market}
                 primaryColor={colors.red}
-                backgroundColor={colors.red}
-                label="SELL"
-                disabled={!mechDetails || mechState !== MechStatusEnum.Idle}
+                secondaryColor={mechState === MechStatusEnum.Market ? colors.red : undefined}
+                backgroundColor={mechState === MechStatusEnum.Market ? theme.factionTheme.background : colors.red}
+                label={mechState === MechStatusEnum.Market ? "VIEW LISTING" : "SELL"}
+                disabled={!mechState || (mechState !== MechStatusEnum.Idle && mechState !== MechStatusEnum.Market)}
                 onClick={() => {
-                    history.push(`/marketplace/sell?item-type=${ItemType.WarMachine}&asset-id=${mechDetails.id}`)
+                    if (mechDetails.locked_to_marketplace) {
+                        if (!mechDetails.item_sale_id) return
+                        history.push(`/marketplace/${MARKETPLACE_TABS.WarMachines}/${mechDetails.item_sale_id}${location.hash}`)
+                    } else {
+                        history.push(`/marketplace/sell?item-type=${ItemType.WarMachine}&asset-id=${mechDetails.id}${location.hash}`)
+                    }
                 }}
             />
-        </Stack>
+        </Box>
     )
 }
 
 const ReusableButton = ({
     isFancy,
     primaryColor,
+    secondaryColor,
     backgroundColor,
     label,
     onClick,
@@ -123,6 +133,7 @@ const ReusableButton = ({
 }: {
     isFancy?: boolean
     primaryColor: string
+    secondaryColor?: string
     backgroundColor: string
     label: string
     onClick?: () => void
@@ -136,14 +147,15 @@ const ReusableButton = ({
                 clipSize: "8px",
                 backgroundColor: backgroundColor,
                 border: { isFancy, borderColor: primaryColor, borderThickness: "1.5px" },
-                sx: { flex: 1, position: "relative" },
+                sx: { position: "relative", minWidth: "10rem" },
             }}
-            sx={{ px: "1.3rem", py: ".3rem", color: primaryColor }}
+            sx={{ px: "1.3rem", py: ".3rem", color: secondaryColor || primaryColor }}
             onClick={onClick}
         >
             <Typography
                 variant="caption"
                 sx={{
+                    color: secondaryColor || "#FFFFFF",
                     fontFamily: fonts.nostromoBold,
                 }}
             >

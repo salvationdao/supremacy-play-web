@@ -1,14 +1,15 @@
-import { Box, IconButton, Popover, Stack, Switch, Typography } from "@mui/material"
-import { SvgClose, SvgSupToken } from "../../../../assets"
+import { Box, IconButton, Link, Popover, Stack, Switch, Typography } from "@mui/material"
+import { SvgClose, SvgExternalLink, SvgSupToken } from "../../../../assets"
 import { ClipThing, TransactionItem } from "../../.."
 import { Transaction } from "../../../../types"
-import { colors, siteZIndex } from "../../../../theme/theme"
+import { colors, fonts, siteZIndex } from "../../../../theme/theme"
 import { supFormatterNoFixed } from "../../../../helpers"
 import { useEffect, MutableRefObject } from "react"
 import BigNumber from "bignumber.js"
 import { useToggle } from "../../../../hooks"
 import { TimeElapsed } from "./TimeElapsed"
 import { useTheme } from "../../../../containers/theme"
+import { PASSPORT_WEB } from "../../../../constants"
 
 export const WalletPopover = ({
     open,
@@ -77,10 +78,10 @@ export const WalletPopover = ({
                 backgroundColor={theme.factionTheme.background}
                 sx={{ height: "100%" }}
             >
-                <Stack spacing="1.2rem" sx={{ position: "relative", minWidth: "35rem", px: "2rem", pt: "1.6rem", pb: "2rem" }}>
+                <Stack spacing="2rem" sx={{ position: "relative", minWidth: "35rem", px: "2rem", pt: "1.6rem", pb: "2rem" }}>
                     <Box>
-                        <Typography sx={{ mb: ".24rem", fontWeight: "bold", color: colors.offWhite }} variant="h6">
-                            CURRENT SESSION:
+                        <Typography gutterBottom sx={{ fontFamily: fonts.nostromoBlack, color: theme.factionTheme.primary }}>
+                            CURRENT SESSION
                         </Typography>
 
                         <Stack spacing=".5rem">
@@ -107,8 +108,8 @@ export const WalletPopover = ({
                     </Box>
 
                     <Box>
-                        <Typography sx={{ mb: ".24rem", fontWeight: "bold", color: colors.offWhite }} variant="h6">
-                            TOTAL SUPS:
+                        <Typography gutterBottom sx={{ fontFamily: fonts.nostromoBlack, color: theme.factionTheme.primary }}>
+                            TOTAL SUPS
                         </Typography>
 
                         <Stack direction="row" alignItems="center">
@@ -119,11 +120,15 @@ export const WalletPopover = ({
 
                     {transactions.length > 0 && (
                         <Box>
-                            <Typography sx={{ fontWeight: "bold", color: colors.offWhite }} variant="h6">
-                                RECENT TRANSACTIONS:
-                            </Typography>
+                            <Stack direction="row" alignItems="center" spacing=".8rem" sx={{ mb: ".2rem" }}>
+                                <Typography sx={{ fontFamily: fonts.nostromoBlack, color: theme.factionTheme.primary }}>TRANSACTIONS (24HRS)</Typography>
 
-                            <Stack direction="row" alignItems="center" sx={{ mt: "-.5rem", opacity: 0.7, ":hover": { opacity: 1 } }}>
+                                <Link href={`${PASSPORT_WEB}transactions`} target="_blank">
+                                    <SvgExternalLink size="1.2rem" sx={{ opacity: 0.7, ":hover": { opacity: 1 } }} />
+                                </Link>
+                            </Stack>
+
+                            <Stack direction="row" alignItems="center" sx={{ mt: "-.5rem", mb: ".2rem", opacity: 0.7, ":hover": { opacity: 1 } }}>
                                 <Typography variant="body2">Hide battle transactions:</Typography>
                                 <Switch
                                     size="small"

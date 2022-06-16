@@ -1,8 +1,8 @@
 import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { useHistory } from "react-router-dom"
+import { useHistory, useLocation } from "react-router-dom"
 import { ClipThing, FancyButton } from "../.."
-import { EmptyWarMachinesPNG, SafePNG } from "../../../assets"
+import { SafePNG } from "../../../assets"
 import { useSnackbar } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { usePagination, useToggle } from "../../../hooks"
@@ -16,6 +16,7 @@ import { MysteryCrateMarketItem } from "./MysteryCrateMarketItem"
 
 export const MysteryCratesMarket = () => {
     const history = useHistory()
+    const location = useLocation()
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const theme = useTheme()
@@ -30,11 +31,18 @@ export const MysteryCratesMarket = () => {
     // Filters and sorts
     const [search, setSearch] = useState("")
     const [sort, setSort] = useState<SortType>(SortType.NewestFirst)
-    const [ownedBy, setOwnedBy] = useState<string[]>(["others"])
+    const [status, setStatus] = useState<string[]>([])
+    const [ownedBy, setOwnedBy] = useState<string[]>([])
     const [listingTypes, setListingTypes] = useState<string[]>([])
     const [price, setPrice] = useState<(number | undefined)[]>([undefined, undefined])
 
     // Filters
+    const statusFilterSection = useRef<ChipFilter>({
+        label: "STATUS",
+        options: [{ value: "true", label: "SOLD", color: colors.green }],
+        initialSelected: status,
+        onSetSelected: setStatus,
+    })
     const ownedByFilterSection = useRef<ChipFilter>({
         label: "OWNED BY",
         options: [
@@ -48,7 +56,7 @@ export const MysteryCratesMarket = () => {
     const listingTypeFilterSection = useRef<ChipFilter>({
         label: "LISTING TYPE",
         options: [
-            { value: "BUY_NOW", label: "BUY NOW", color: theme.factionTheme.primary },
+            { value: "BUY_NOW", label: "BUY NOW", color: colors.buyout },
             { value: "DUTCH_AUCTION", label: "DUTCH AUCTION", color: colors.dutchAuction },
             { value: "AUCTION", label: "AUCTION", color: colors.auction },
         ],
@@ -62,7 +70,7 @@ export const MysteryCratesMarket = () => {
         onSetValue: setPrice,
     })
 
-    const getCrates = useCallback(async () => {
+    const getItems = useCallback(async () => {
         try {
             setIsLoading(true)
 
@@ -84,6 +92,7 @@ export const MysteryCratesMarket = () => {
                 sort_dir: sortDir,
                 sort_by: sortBy,
                 owned_by: ownedBy,
+                sold: status.length > 0,
             })
 
             if (!resp) return
@@ -98,12 +107,11 @@ export const MysteryCratesMarket = () => {
         } finally {
             setIsLoading(false)
         }
-    }, [sort, price, send, page, pageSize, search, listingTypes, ownedBy, setTotalItems, newSnackbarMessage])
+    }, [sort, price, send, page, pageSize, search, listingTypes, ownedBy, status.length, setTotalItems, newSnackbarMessage])
 
-    // Initial load the crate listings
     useEffect(() => {
-        getCrates()
-    }, [getCrates])
+        getItems()
+    }, [getItems])
 
     const content = useMemo(() => {
         if (loadError) {
@@ -171,7 +179,7 @@ export const MysteryCratesMarket = () => {
                             height: "16rem",
                             opacity: 0.6,
                             filter: "grayscale(100%)",
-                            background: `url(${EmptyWarMachinesPNG})`,
+                            background: `url(${SafePNG})`,
                             backgroundRepeat: "no-repeat",
                             backgroundPosition: "bottom center",
                             backgroundSize: "contain",
@@ -188,7 +196,7 @@ export const MysteryCratesMarket = () => {
                             textAlign: "center",
                         }}
                     >
-                        {"There are no war machines found, please try again."}
+                        {"There are no mystery crates found, please try again."}
                     </Typography>
                 </Stack>
             </Stack>
@@ -202,7 +210,7 @@ export const MysteryCratesMarket = () => {
                 onSetSearch={setSearch}
                 initialSort={sort}
                 onSetSort={setSort}
-                chipFilters={[ownedByFilterSection.current, listingTypeFilterSection.current]}
+                chipFilters={[statusFilterSection.current, ownedByFilterSection.current, listingTypeFilterSection.current]}
                 rangeFilters={[priceRangeFilter.current]}
             />
 
@@ -258,7 +266,7 @@ export const MysteryCratesMarket = () => {
                                     sx: { position: "relative", ml: "auto" },
                                 }}
                                 sx={{ px: "1.6rem", py: ".4rem", color: "#FFFFFF" }}
-                                onClick={() => history.push("/marketplace/sell")}
+                                onClick={() => history.push(`/marketplace/sell${location.hash}`)}
                             >
                                 <Typography
                                     variant="caption"
@@ -280,6 +288,7 @@ export const MysteryCratesMarket = () => {
                             changePage={changePage}
                             isGridView={isGridView}
                             toggleIsGridView={toggleIsGridView}
+                            manualRefresh={getItems}
                         />
 
                         <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>

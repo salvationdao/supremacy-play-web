@@ -1,6 +1,6 @@
 import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { useHistory } from "react-router-dom"
+import { useHistory, useLocation } from "react-router-dom"
 import { ClipThing, FancyButton } from "../.."
 import { EmptyWarMachinesPNG, WarMachineIconPNG } from "../../../assets"
 import { useSnackbar } from "../../../containers"
@@ -17,6 +17,7 @@ import { WarMachineMarketItem } from "./WarMachineMarketItem"
 
 export const WarMachinesMarket = () => {
     const history = useHistory()
+    const location = useLocation()
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const theme = useTheme()
@@ -25,18 +26,27 @@ export const WarMachinesMarket = () => {
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
     const [mechItems, setMechItems] = useState<MarketplaceBuyAuctionItem[]>()
+
     const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, setPageSize } = usePagination({ pageSize: 10, page: 1 })
     const [isGridView, toggleIsGridView] = useToggle(false)
 
     // Filters and sorts
     const [search, setSearch] = useState("")
     const [sort, setSort] = useState<SortType>(SortType.NewestFirst)
-    const [ownedBy, setOwnedBy] = useState<string[]>(["others"])
+    const [status, setStatus] = useState<string[]>([])
+    const [ownedBy, setOwnedBy] = useState<string[]>([])
     const [listingTypes, setListingTypes] = useState<string[]>([])
     const [rarities, setRarities] = useState<string[]>([])
     const [price, setPrice] = useState<(number | undefined)[]>([undefined, undefined])
 
     // Filters
+    const statusFilterSection = useRef<ChipFilter>({
+        label: "STATUS",
+        options: [{ value: "true", label: "SOLD", color: colors.green }],
+        initialSelected: status,
+        onSetSelected: setStatus,
+    })
+
     const ownedByFilterSection = useRef<ChipFilter>({
         label: "OWNED BY",
         options: [
@@ -50,7 +60,7 @@ export const WarMachinesMarket = () => {
     const listingTypeFilterSection = useRef<ChipFilter>({
         label: "LISTING TYPE",
         options: [
-            { value: "BUY_NOW", label: "BUY NOW", color: theme.factionTheme.primary },
+            { value: "BUY_NOW", label: "BUY NOW", color: colors.buyout },
             { value: "DUTCH_AUCTION", label: "DUTCH AUCTION", color: colors.dutchAuction },
             { value: "AUCTION", label: "AUCTION", color: colors.auction },
         ],
@@ -83,7 +93,7 @@ export const WarMachinesMarket = () => {
         onSetValue: setPrice,
     })
 
-    const getMechs = useCallback(async () => {
+    const getItems = useCallback(async () => {
         try {
             setIsLoading(true)
 
@@ -106,6 +116,7 @@ export const WarMachinesMarket = () => {
                 sort_dir: sortDir,
                 sort_by: sortBy,
                 owned_by: ownedBy,
+                sold: status.length > 0,
             })
 
             if (!resp) return
@@ -120,12 +131,11 @@ export const WarMachinesMarket = () => {
         } finally {
             setIsLoading(false)
         }
-    }, [sort, price, send, page, pageSize, search, rarities, listingTypes, ownedBy, setTotalItems, newSnackbarMessage])
+    }, [sort, price, send, page, pageSize, search, rarities, listingTypes, ownedBy, status.length, setTotalItems, newSnackbarMessage])
 
-    // Initial load the mech listings
     useEffect(() => {
-        getMechs()
-    }, [getMechs])
+        getItems()
+    }, [getItems])
 
     const content = useMemo(() => {
         if (loadError) {
@@ -191,7 +201,7 @@ export const WarMachinesMarket = () => {
                         sx={{
                             width: "80%",
                             height: "16rem",
-                            opacity: 0.6,
+                            opacity: 0.7,
                             filter: "grayscale(100%)",
                             background: `url(${EmptyWarMachinesPNG})`,
                             backgroundRepeat: "no-repeat",
@@ -224,7 +234,7 @@ export const WarMachinesMarket = () => {
                 onSetSearch={setSearch}
                 initialSort={sort}
                 onSetSort={setSort}
-                chipFilters={[ownedByFilterSection.current, listingTypeFilterSection.current, rarityChipFilter.current]}
+                chipFilters={[statusFilterSection.current, ownedByFilterSection.current, listingTypeFilterSection.current, rarityChipFilter.current]}
                 rangeFilters={[priceRangeFilter.current]}
             />
 
@@ -280,7 +290,7 @@ export const WarMachinesMarket = () => {
                                     sx: { position: "relative", ml: "auto" },
                                 }}
                                 sx={{ px: "1.6rem", py: ".4rem", color: "#FFFFFF" }}
-                                onClick={() => history.push("/marketplace/sell")}
+                                onClick={() => history.push(`/marketplace/sell${location.hash}`)}
                             >
                                 <Typography
                                     variant="caption"
@@ -302,6 +312,7 @@ export const WarMachinesMarket = () => {
                             changePage={changePage}
                             isGridView={isGridView}
                             toggleIsGridView={toggleIsGridView}
+                            manualRefresh={getItems}
                         />
 
                         <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>

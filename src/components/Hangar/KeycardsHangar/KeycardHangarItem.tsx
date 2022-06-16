@@ -1,18 +1,32 @@
 import { Box, Stack, Typography } from "@mui/material"
+import { useHistory, useLocation } from "react-router-dom"
+import { FancyButton } from "../.."
+import { useTheme } from "../../../containers/theme"
+import { MARKETPLACE_TABS } from "../../../pages"
 import { colors, fonts } from "../../../theme/theme"
 import { Keycard } from "../../../types"
-import { ClipThing } from "../../Common/ClipThing"
-import { useTheme } from "../../../containers/theme"
-import { FancyButton } from "../.."
-import { useHistory } from "react-router-dom"
 import { ItemType } from "../../../types/marketplace"
+import { ClipThing } from "../../Common/ClipThing"
 
 interface MysteryCrateStoreItemProps {
     keycard: Keycard
+    itemSaleID?: string
 }
 
 export const KeycardHangarItem = ({ keycard }: MysteryCrateStoreItemProps) => {
+    return (
+        <>
+            {keycard.count > 0 && <KeycardHangarItemInner keycard={keycard} />}
+            {keycard.item_sale_ids?.map((itemSaleID) => {
+                return <KeycardHangarItemInner key={itemSaleID} keycard={keycard} itemSaleID={itemSaleID} />
+            })}
+        </>
+    )
+}
+
+export const KeycardHangarItemInner = ({ keycard, itemSaleID }: MysteryCrateStoreItemProps) => {
     const history = useHistory()
+    const location = useLocation()
     const theme = useTheme()
 
     const primaryColor = theme.factionTheme.primary
@@ -70,6 +84,14 @@ export const KeycardHangarItem = ({ keycard }: MysteryCrateStoreItemProps) => {
                             {keycard.blueprints.animation_url && <source src={keycard.blueprints.animation_url} type="video/mp4" />}
                             {keycard.blueprints.card_animation_url && <source src={keycard.blueprints.animation_url} type="video/mp4" />}
                         </Box>
+
+                        {!itemSaleID && (
+                            <Box sx={{ position: "absolute", top: ".6rem", right: ".8rem" }}>
+                                <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
+                                    {keycard.count}x
+                                </Typography>
+                            </Box>
+                        )}
                     </Box>
 
                     <Stack spacing=".4rem" sx={{ flex: 1, px: ".4rem", py: ".3rem" }}>
@@ -83,19 +105,23 @@ export const KeycardHangarItem = ({ keycard }: MysteryCrateStoreItemProps) => {
                             <FancyButton
                                 excludeCaret
                                 onClick={() => {
-                                    history.push(`/marketplace/sell?item-type=${ItemType.Keycards}&asset-id=${keycard.id}`)
+                                    if (itemSaleID) {
+                                        history.push(`/marketplace/${MARKETPLACE_TABS.Keycards}/${itemSaleID}${location.hash}`)
+                                    } else {
+                                        history.push(`/marketplace/sell?item-type=${ItemType.Keycards}&asset-id=${keycard.id}${location.hash}`)
+                                    }
                                 }}
                                 clipThingsProps={{
                                     clipSize: "5px",
-                                    backgroundColor: colors.red,
+                                    backgroundColor: itemSaleID ? backgroundColor : colors.red,
                                     opacity: 1,
-                                    border: { isFancy: true, borderColor: colors.red, borderThickness: "1.5px" },
+                                    border: { isFancy: !itemSaleID, borderColor: colors.red, borderThickness: "1.5px" },
                                     sx: { position: "relative", mt: "1rem", width: "100%" },
                                 }}
-                                sx={{ px: "1.6rem", py: ".6rem" }}
+                                sx={{ px: "1.6rem", py: ".6rem", color: itemSaleID ? colors.red : "#FFFFFF" }}
                             >
-                                <Typography variant={"caption"} sx={{ fontFamily: fonts.nostromoBlack }}>
-                                    SELL ITEM
+                                <Typography variant={"caption"} sx={{ fontFamily: fonts.nostromoBlack, color: itemSaleID ? colors.red : "#FFFFFF" }}>
+                                    {itemSaleID ? "VIEW LISTING" : "SELL ITEM"}
                                 </Typography>
                             </FancyButton>
                         </Stack>

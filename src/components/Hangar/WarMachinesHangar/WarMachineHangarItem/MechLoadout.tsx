@@ -116,7 +116,7 @@ const LoadoutItem = ({ imageUrl, primaryColor, tooltipText, Icon }: { imageUrl?:
                 clipThingsProps={{
                     clipSize: "10px",
                     backgroundColor: primaryColor,
-                    opacity: 0.15,
+                    opacity: 0.1,
                     border: {
                         isFancy: true,
                         borderColor: primaryColor,

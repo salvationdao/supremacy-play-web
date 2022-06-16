@@ -61,9 +61,98 @@ export const SortAndFilters = ({ initialSearch, onSetSearch, initialSort, onSetS
             backgroundColor={theme.factionTheme.background}
             sx={{ height: "100%", minWidth: "30rem", maxWidth: "38rem" }}
         >
-            <Stack sx={{ position: "relative", height: "100%", mt: "-.3rem", mx: "-.3rem" }}>
-                <Section label="SEARCH" primaryColor={primaryColor} secondaryColor={secondaryColor}>
-                    <Stack direction="row" spacing=".5rem">
+            <Box
+                sx={{
+                    height: "100%",
+                    overflowY: "auto",
+                    overflowX: "hidden",
+                    direction: "ltr",
+                    scrollbarWidth: "none",
+                    "::-webkit-scrollbar": {
+                        width: ".4rem",
+                    },
+                    "::-webkit-scrollbar-track": {
+                        background: "#FFFFFF15",
+                        borderRadius: 3,
+                    },
+                    "::-webkit-scrollbar-thumb": {
+                        background: (theme) => theme.factionTheme.primary,
+                        borderRadius: 3,
+                    },
+                }}
+            >
+                <Stack sx={{ position: "relative", height: 0, mt: "-.3rem", mx: "-.3rem" }}>
+                    <Section label="SEARCH" primaryColor={primaryColor} secondaryColor={secondaryColor}>
+                        <Stack direction="row" spacing=".5rem">
+                            <ClipThing
+                                clipSize="5px"
+                                clipSlantSize="2px"
+                                opacity={0.9}
+                                border={{
+                                    borderColor: primaryColor,
+                                    borderThickness: "1px",
+                                }}
+                                backgroundColor={backgroundColor}
+                                sx={{ height: "100%", flex: 1 }}
+                            >
+                                <Stack sx={{ height: "100%" }}>
+                                    <TextField
+                                        variant="outlined"
+                                        hiddenLabel
+                                        fullWidth
+                                        placeholder="Enter keywords..."
+                                        sx={{
+                                            backgroundColor: "unset",
+                                            ".MuiOutlinedInput-input": {
+                                                px: "1.5rem",
+                                                py: ".5rem",
+                                                height: "unset",
+                                                "::-webkit-outer-spin-button, ::-webkit-inner-spin-button": {
+                                                    "-webkit-appearance": "none",
+                                                },
+                                                borderRadius: 0.5,
+                                                border: `${primaryColor}50 2px solid`,
+                                                ":hover, :focus, :active": { backgroundColor: "#00000080", border: `${primaryColor}99 2px solid` },
+                                            },
+                                            ".MuiOutlinedInput-notchedOutline": { border: "unset" },
+                                        }}
+                                        value={searchValue}
+                                        onChange={(e) => setSearchValue(e.target.value)}
+                                        onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
+                                            e.stopPropagation()
+                                            switch (e.key) {
+                                                case "Enter": {
+                                                    e.preventDefault()
+                                                    onSetSearch(searchValue)
+                                                    break
+                                                }
+                                            }
+                                        }}
+                                    />
+                                </Stack>
+                            </ClipThing>
+
+                            <Box sx={{ py: ".1rem" }}>
+                                <FancyButton
+                                    excludeCaret
+                                    clipThingsProps={{
+                                        clipSize: "5px",
+                                        clipSlantSize: "2px",
+                                        backgroundColor: primaryColor,
+                                        opacity: 1,
+                                        border: { isFancy: true, borderColor: primaryColor, borderThickness: "1px" },
+                                        sx: { position: "relative", width: "4.5rem", height: "100%" },
+                                    }}
+                                    sx={{ py: ".6rem", color: secondaryColor, minWidth: 0, height: "100%" }}
+                                    onClick={() => onSetSearch(searchValue)}
+                                >
+                                    <SvgSearch size="1.4rem" fill={secondaryColor} sx={{ pt: ".1rem" }} />
+                                </FancyButton>
+                            </Box>
+                        </Stack>
+                    </Section>
+
+                    <Section label="SORT" primaryColor={primaryColor} secondaryColor={secondaryColor}>
                         <ClipThing
                             clipSize="5px"
                             clipSlantSize="2px"
@@ -73,140 +162,72 @@ export const SortAndFilters = ({ initialSearch, onSetSearch, initialSort, onSetS
                                 borderThickness: "1px",
                             }}
                             backgroundColor={backgroundColor}
-                            sx={{ height: "100%", flex: 1 }}
                         >
                             <Stack sx={{ height: "100%" }}>
-                                <TextField
-                                    variant="outlined"
-                                    hiddenLabel
-                                    fullWidth
-                                    placeholder="Enter keywords..."
+                                <Select
                                     sx={{
-                                        backgroundColor: "unset",
-                                        ".MuiOutlinedInput-input": {
-                                            px: "1.5rem",
-                                            py: ".5rem",
-                                            height: "unset",
-                                            "::-webkit-outer-spin-button, ::-webkit-inner-spin-button": {
-                                                "-webkit-appearance": "none",
-                                            },
-                                            borderRadius: 0.5,
-                                            border: `${primaryColor}50 2px solid`,
-                                            ":hover, :focus, :active": { backgroundColor: "#00000080", border: `${primaryColor}99 2px solid` },
+                                        width: "100%",
+                                        borderRadius: 0.5,
+                                        "&:hover": {
+                                            backgroundColor: colors.darkNavy,
                                         },
-                                        ".MuiOutlinedInput-notchedOutline": { border: "unset" },
+                                        ".MuiTypography-root": {
+                                            px: "1rem",
+                                            py: ".5rem",
+                                        },
+                                        "& .MuiSelect-outlined": { px: ".8rem", pt: ".2rem", pb: 0 },
+                                        ".MuiOutlinedInput-notchedOutline": {
+                                            border: "none !important",
+                                        },
                                     }}
-                                    value={searchValue}
-                                    onChange={(e) => setSearchValue(e.target.value)}
-                                    onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
-                                        e.stopPropagation()
-                                        switch (e.key) {
-                                            case "Enter": {
-                                                e.preventDefault()
-                                                onSetSearch(searchValue)
-                                                break
-                                            }
-                                        }
+                                    value={sortValue}
+                                    MenuProps={{
+                                        variant: "menu",
+                                        sx: {
+                                            "&& .Mui-selected": {
+                                                ".MuiTypography-root": {
+                                                    color: secondaryColor,
+                                                },
+                                                backgroundColor: primaryColor,
+                                            },
+                                        },
+                                        PaperProps: {
+                                            sx: {
+                                                backgroundColor: colors.darkNavy,
+                                                borderRadius: 0.5,
+                                            },
+                                        },
                                     }}
-                                />
+                                >
+                                    {sortOptions.map((x, i) => {
+                                        return (
+                                            <MenuItem
+                                                key={x + i}
+                                                value={x}
+                                                onClick={() => {
+                                                    setSortValue(x)
+                                                    onSetSort(x)
+                                                }}
+                                                sx={{ "&:hover": { backgroundColor: "#FFFFFF20" } }}
+                                            >
+                                                <Typography textTransform="uppercase">{x}</Typography>
+                                            </MenuItem>
+                                        )
+                                    })}
+                                </Select>
                             </Stack>
                         </ClipThing>
+                    </Section>
 
-                        <Box sx={{ py: ".1rem" }}>
-                            <FancyButton
-                                excludeCaret
-                                clipThingsProps={{
-                                    clipSize: "5px",
-                                    clipSlantSize: "2px",
-                                    backgroundColor: primaryColor,
-                                    opacity: 1,
-                                    border: { isFancy: true, borderColor: primaryColor, borderThickness: "1px" },
-                                    sx: { position: "relative", width: "4.5rem", height: "100%" },
-                                }}
-                                sx={{ py: ".6rem", color: secondaryColor, minWidth: 0, height: "100%" }}
-                                onClick={() => onSetSearch(searchValue)}
-                            >
-                                <SvgSearch size="1.4rem" fill={secondaryColor} sx={{ pt: ".1rem" }} />
-                            </FancyButton>
-                        </Box>
-                    </Stack>
-                </Section>
+                    {!!chipFilters &&
+                        chipFilters.length > 0 &&
+                        chipFilters.map((f, i) => <ChipFilterSection key={i} filter={f} primaryColor={primaryColor} secondaryColor={secondaryColor} />)}
 
-                <Section label="SORT" primaryColor={primaryColor} secondaryColor={secondaryColor}>
-                    <ClipThing
-                        clipSize="5px"
-                        clipSlantSize="2px"
-                        opacity={0.9}
-                        border={{
-                            borderColor: primaryColor,
-                            borderThickness: "1px",
-                        }}
-                        backgroundColor={backgroundColor}
-                    >
-                        <Stack sx={{ height: "100%" }}>
-                            <Select
-                                sx={{
-                                    width: "100%",
-                                    borderRadius: 0.5,
-                                    "&:hover": {
-                                        backgroundColor: colors.darkNavy,
-                                    },
-                                    ".MuiTypography-root": {
-                                        px: "1rem",
-                                        py: ".5rem",
-                                    },
-                                    "& .MuiSelect-outlined": { px: ".8rem", pt: ".2rem", pb: 0 },
-                                    ".MuiOutlinedInput-notchedOutline": {
-                                        border: "none !important",
-                                    },
-                                }}
-                                value={sortValue}
-                                MenuProps={{
-                                    variant: "menu",
-                                    sx: {
-                                        "&& .Mui-selected": {
-                                            ".MuiTypography-root": {
-                                                color: secondaryColor,
-                                            },
-                                            backgroundColor: primaryColor,
-                                        },
-                                    },
-                                    PaperProps: {
-                                        sx: {
-                                            backgroundColor: colors.darkNavy,
-                                            borderRadius: 0.5,
-                                        },
-                                    },
-                                }}
-                            >
-                                {sortOptions.map((x, i) => {
-                                    return (
-                                        <MenuItem
-                                            key={x + i}
-                                            value={x}
-                                            onClick={() => {
-                                                setSortValue(x)
-                                                onSetSort(x)
-                                            }}
-                                            sx={{ "&:hover": { backgroundColor: "#FFFFFF20" } }}
-                                        >
-                                            <Typography textTransform="uppercase">{x}</Typography>
-                                        </MenuItem>
-                                    )
-                                })}
-                            </Select>
-                        </Stack>
-                    </ClipThing>
-                </Section>
-
-                {!!chipFilters &&
-                    chipFilters.length > 0 &&
-                    chipFilters.map((f, i) => <ChipFilterSection key={i} filter={f} primaryColor={primaryColor} secondaryColor={secondaryColor} />)}
-
-                {!!rangeFilters &&
-                    rangeFilters.length > 0 &&
-                    rangeFilters.map((f, i) => <RangeFilterSection key={i} filter={f} primaryColor={primaryColor} secondaryColor={secondaryColor} />)}
-            </Stack>
+                    {!!rangeFilters &&
+                        rangeFilters.length > 0 &&
+                        rangeFilters.map((f, i) => <RangeFilterSection key={i} filter={f} primaryColor={primaryColor} secondaryColor={secondaryColor} />)}
+                </Stack>
+            </Box>
         </ClipThing>
     )
 }
@@ -275,7 +296,7 @@ const ChipFilterSection = ({ filter, primaryColor, secondaryColor }: { filter: C
             <FancyButton
                 excludeCaret
                 clipThingsProps={{
-                    clipSize: "8px",
+                    clipSize: "7px",
                     opacity: 1,
                     sx: { position: "relative" },
                 }}
@@ -283,11 +304,10 @@ const ChipFilterSection = ({ filter, primaryColor, secondaryColor }: { filter: C
                 onClick={() => setSelectedOptionsInstant([])}
             >
                 <Typography
-                    variant="caption"
                     sx={{
                         color: secondaryColor,
                         fontSize: "1.1rem",
-                        fontFamily: fonts.nostromoBlack,
+                        fontWeight: "fontWeightBold",
                         opacity: 0.7,
                     }}
                 >

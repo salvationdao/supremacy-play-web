@@ -1,18 +1,17 @@
 import { Box, Pagination, Stack, Typography } from "@mui/material"
-import React, { useEffect, useMemo, useState } from "react"
+import React, { useCallback, useEffect, useMemo, useState } from "react"
+import { useHistory, useLocation } from "react-router-dom"
 import { ClipThing, FancyButton } from "../.."
 import { SafePNG } from "../../../assets"
-import { useSnackbar } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { usePagination } from "../../../hooks"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { MysteryCrate } from "../../../types"
+import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { MysteryCrateStoreItemLoadingSkeleton } from "../../Storefront/MysteryCratesStore/MysteryCrateStoreItem/MysteryCrateStoreItem"
 import { MysteryCrateHangarItem } from "./MysteryCrateHangarItem"
-import { useHistory } from "react-router-dom"
-import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 
 interface GetCratesRequest {
     page: number
@@ -28,7 +27,7 @@ interface GetAssetsResponse {
 
 export const MysteryCratesHangar = () => {
     const history = useHistory()
-    const { newSnackbarMessage } = useSnackbar()
+    const location = useLocation()
     const { send } = useGameServerCommandsUser("/user_commander")
     const theme = useTheme()
     const [crates, setCrates] = useState<MysteryCrate[]>()
@@ -37,31 +36,32 @@ export const MysteryCratesHangar = () => {
 
     const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, setPageSize } = usePagination({ pageSize: 10, page: 1 })
 
-    useEffect(() => {
-        ;(async () => {
-            try {
-                setIsLoading(true)
-                const resp = await send<GetAssetsResponse, GetCratesRequest>(GameServerKeys.GetPlayerMysteryCrates, {
-                    page,
-                    page_size: pageSize,
-                    exclude_opened: true,
-                    include_market_listed: true,
-                })
+    const getItems = useCallback(async () => {
+        try {
+            setIsLoading(true)
+            const resp = await send<GetAssetsResponse, GetCratesRequest>(GameServerKeys.GetPlayerMysteryCrates, {
+                page,
+                page_size: pageSize,
+                exclude_opened: true,
+                include_market_listed: true,
+            })
 
-                if (!resp) return
-                setLoadError(undefined)
-                setCrates(resp.mystery_crates)
-                setTotalItems(resp.total)
-            } catch (e) {
-                const message = typeof e === "string" ? e : "Failed to get mystery crates."
-                setLoadError(message)
-                newSnackbarMessage(message, "error")
-                console.error(e)
-            } finally {
-                setIsLoading(false)
-            }
-        })()
-    }, [send, page, pageSize, setTotalItems, newSnackbarMessage])
+            if (!resp) return
+            setLoadError(undefined)
+            setCrates(resp.mystery_crates)
+            setTotalItems(resp.total)
+        } catch (e) {
+            const message = typeof e === "string" ? e : "Failed to get mystery crates."
+            setLoadError(message)
+            console.error(e)
+        } finally {
+            setIsLoading(false)
+        }
+    }, [send, page, pageSize, setTotalItems])
+
+    useEffect(() => {
+        getItems()
+    }, [getItems])
 
     const content = useMemo(() => {
         if (loadError) {
@@ -151,7 +151,7 @@ export const MysteryCratesHangar = () => {
                     </Typography>
 
                     <FancyButton
-                        onClick={() => history.push("/marketplace/mystery-crates")}
+                        onClick={() => history.push(`/marketplace/mystery-crates${location.hash}`)}
                         excludeCaret
                         clipThingsProps={{
                             clipSize: "9px",
@@ -175,7 +175,7 @@ export const MysteryCratesHangar = () => {
                 </Stack>
             </Stack>
         )
-    }, [crates, history, isLoading, loadError, theme.factionTheme.primary, theme.factionTheme.secondary])
+    }, [crates, history, isLoading, loadError, location.hash, theme.factionTheme.primary, theme.factionTheme.secondary])
 
     return (
         <ClipThing
@@ -201,6 +201,7 @@ export const MysteryCratesHangar = () => {
                         pageSize={pageSize}
                         setPageSize={setPageSize}
                         changePage={changePage}
+                        manualRefresh={getItems}
                     />
 
                     <Stack sx={{ px: "2rem", py: "1rem", flex: 1 }}>

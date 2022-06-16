@@ -80,9 +80,8 @@ const MechInfo = ({
             </Typography>
 
             <Typography
-                variant="caption"
                 sx={{
-                    fontFamily: fonts.nostromoBold,
+                    fontWeight: "fontWeightBold",
                     display: "-webkit-box",
                     overflow: "hidden",
                     overflowWrap: "anywhere",

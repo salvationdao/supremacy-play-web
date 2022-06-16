@@ -1,8 +1,9 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useHistory } from "react-router-dom"
+import { useHistory, useLocation } from "react-router-dom"
 import { SafePNG } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { useTimer } from "../../../hooks"
+import { MARKETPLACE_TABS } from "../../../pages"
 import { colors, fonts } from "../../../theme/theme"
 import { MysteryCrate } from "../../../types"
 import { ItemType } from "../../../types/marketplace"
@@ -15,6 +16,7 @@ interface MysteryCrateStoreItemProps {
 
 export const MysteryCrateHangarItem = ({ crate }: MysteryCrateStoreItemProps) => {
     const history = useHistory()
+    const location = useLocation()
     const theme = useTheme()
 
     const primaryColor = theme.factionTheme.primary
@@ -116,19 +118,27 @@ export const MysteryCrateHangarItem = ({ crate }: MysteryCrateStoreItemProps) =>
                                 <FancyButton
                                     excludeCaret
                                     onClick={() => {
-                                        history.push(`/marketplace/sell?item-type=${ItemType.MysteryCrate}&asset-id=${crate.id}`)
+                                        if (crate.locked_to_marketplace) {
+                                            if (!crate.item_sale_id) return
+                                            history.push(`/marketplace/${MARKETPLACE_TABS.MysteryCrates}/${crate.item_sale_id}${location.hash}`)
+                                        } else {
+                                            history.push(`/marketplace/sell?item-type=${ItemType.MysteryCrate}&asset-id=${crate.id}${location.hash}`)
+                                        }
                                     }}
                                     clipThingsProps={{
                                         clipSize: "5px",
-                                        backgroundColor: colors.red,
+                                        backgroundColor: crate.locked_to_marketplace ? backgroundColor : colors.red,
                                         opacity: 1,
-                                        border: { isFancy: true, borderColor: colors.red, borderThickness: "1.5px" },
+                                        border: { isFancy: !crate.locked_to_marketplace, borderColor: colors.red, borderThickness: "1.5px" },
                                         sx: { position: "relative", mt: "1rem", width: "100%" },
                                     }}
-                                    sx={{ px: "1.6rem", py: ".6rem" }}
+                                    sx={{ px: "1.6rem", py: ".6rem", color: crate.locked_to_marketplace ? colors.red : "#FFFFFF" }}
                                 >
-                                    <Typography variant={"caption"} sx={{ fontFamily: fonts.nostromoBlack }}>
-                                        SELL ITEM
+                                    <Typography
+                                        variant={"caption"}
+                                        sx={{ fontFamily: fonts.nostromoBlack, color: crate.locked_to_marketplace ? colors.red : "#FFFFFF" }}
+                                    >
+                                        {crate.locked_to_marketplace ? "VIEW LISTING" : "SELL ITEM"}
                                     </Typography>
                                 </FancyButton>
                             </Stack>

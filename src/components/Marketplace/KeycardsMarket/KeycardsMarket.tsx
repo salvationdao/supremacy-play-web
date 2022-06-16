@@ -1,8 +1,8 @@
 import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { useHistory } from "react-router-dom"
+import { useHistory, useLocation } from "react-router-dom"
 import { ClipThing, FancyButton } from "../.."
-import { EmptyWarMachinesPNG, KeycardPNG } from "../../../assets"
+import { KeycardPNG } from "../../../assets"
 import { useSnackbar } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { usePagination, useToggle } from "../../../hooks"
@@ -16,6 +16,7 @@ import { KeycardMarketItem } from "./KeycardMarketItem"
 
 export const KeycardsMarket = () => {
     const history = useHistory()
+    const location = useLocation()
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const theme = useTheme()
@@ -30,15 +31,22 @@ export const KeycardsMarket = () => {
     // Filters and sorts
     const [search, setSearch] = useState("")
     const [sort, setSort] = useState<SortType>(SortType.NewestFirst)
-    const [ownedBy, setOwnedBy] = useState<string[]>(["others"])
+    const [status, setStatus] = useState<string[]>([])
+    const [ownedBy, setOwnedBy] = useState<string[]>([])
     const [price, setPrice] = useState<(number | undefined)[]>([undefined, undefined])
 
     // Filters
+    const statusFilterSection = useRef<ChipFilter>({
+        label: "STATUS",
+        options: [{ value: "true", label: "SOLD", color: colors.green }],
+        initialSelected: status,
+        onSetSelected: setStatus,
+    })
     const ownedByFilterSection = useRef<ChipFilter>({
         label: "OWNED BY",
         options: [
-            { value: "self", label: "YOU", color: theme.factionTheme.primary },
-            { value: "others", label: "OTHERS", color: theme.factionTheme.primary },
+            { value: "self", label: "YOU", color: theme.factionTheme.primary, textColor: theme.factionTheme.secondary },
+            { value: "others", label: "OTHERS", color: theme.factionTheme.primary, textColor: theme.factionTheme.secondary },
         ],
         initialSelected: ownedBy,
         onSetSelected: setOwnedBy,
@@ -50,7 +58,7 @@ export const KeycardsMarket = () => {
         onSetValue: setPrice,
     })
 
-    const getKeycards = useCallback(async () => {
+    const getItems = useCallback(async () => {
         try {
             setIsLoading(true)
 
@@ -70,6 +78,7 @@ export const KeycardsMarket = () => {
                 sort_dir: sortDir,
                 sort_by: sortBy,
                 owned_by: ownedBy,
+                sold: status.length > 0,
             })
 
             if (!resp) return
@@ -84,12 +93,11 @@ export const KeycardsMarket = () => {
         } finally {
             setIsLoading(false)
         }
-    }, [sort, price, send, page, pageSize, search, ownedBy, setTotalItems, newSnackbarMessage])
+    }, [sort, price, send, page, pageSize, search, ownedBy, status.length, setTotalItems, newSnackbarMessage])
 
-    // Initial load the key card listings
     useEffect(() => {
-        getKeycards()
-    }, [getKeycards])
+        getItems()
+    }, [getItems])
 
     const content = useMemo(() => {
         if (loadError) {
@@ -157,7 +165,7 @@ export const KeycardsMarket = () => {
                             height: "16rem",
                             opacity: 0.6,
                             filter: "grayscale(100%)",
-                            background: `url(${EmptyWarMachinesPNG})`,
+                            background: `url(${KeycardPNG})`,
                             backgroundRepeat: "no-repeat",
                             backgroundPosition: "bottom center",
                             backgroundSize: "contain",
@@ -188,7 +196,7 @@ export const KeycardsMarket = () => {
                 onSetSearch={setSearch}
                 initialSort={sort}
                 onSetSort={setSort}
-                chipFilters={[ownedByFilterSection.current]}
+                chipFilters={[statusFilterSection.current, ownedByFilterSection.current]}
                 rangeFilters={[priceRangeFilter.current]}
             />
 
@@ -244,7 +252,7 @@ export const KeycardsMarket = () => {
                                     sx: { position: "relative", ml: "auto" },
                                 }}
                                 sx={{ px: "1.6rem", py: ".4rem", color: "#FFFFFF" }}
-                                onClick={() => history.push("/marketplace/sell")}
+                                onClick={() => history.push(`/marketplace/sell${location.hash}`)}
                             >
                                 <Typography
                                     variant="caption"
@@ -266,6 +274,7 @@ export const KeycardsMarket = () => {
                             changePage={changePage}
                             isGridView={isGridView}
                             toggleIsGridView={toggleIsGridView}
+                            manualRefresh={getItems}
                         />
 
                         <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>

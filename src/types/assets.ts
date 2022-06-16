@@ -1,11 +1,10 @@
 import { Battle, Faction, User, Vector2i } from "."
 
 export enum MechStatusEnum {
-    Unknown = "UNKNOWN",
     Idle = "IDLE",
     Queue = "QUEUE",
     Battle = "BATTLE",
-    MARKET = "MARKET",
+    Market = "MARKET",
     Sold = "SOLD",
 }
 
@@ -35,6 +34,8 @@ interface Collection {
     card_animation_url?: string
     avatar_url?: string
     large_image_url?: string
+    locked_to_marketplace: boolean
+    item_sale_id?: string
 }
 
 export interface MechBasic extends Collection {
@@ -369,6 +370,7 @@ export interface Keycard {
     blueprint_keycard_id: string
     count: number
     market_listed_count: number
+    item_sale_ids?: string[]
     created_at: string
     blueprints: KeycardBlueprint
 }
