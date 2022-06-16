@@ -69,7 +69,6 @@ export const InstantPunishConfirmModal = ({
 
                         <Stack direction="row" spacing="1rem" sx={{ pt: ".4rem" }}>
                             <FancyButton
-                                excludeCaret
                                 clipThingsProps={{
                                     clipSize: "5px",
                                     backgroundColor: colors.green,
@@ -91,7 +90,6 @@ export const InstantPunishConfirmModal = ({
                             </FancyButton>
 
                             <FancyButton
-                                excludeCaret
                                 clipThingsProps={{
                                     clipSize: "5px",
                                     backgroundColor: colors.red,

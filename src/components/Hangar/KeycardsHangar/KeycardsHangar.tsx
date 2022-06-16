@@ -150,7 +150,6 @@ export const KeycardsHangar = () => {
 
                     <FancyButton
                         onClick={() => history.push(`/marketplace/keycards${location.hash}`)}
-                        excludeCaret
                         clipThingsProps={{
                             clipSize: "9px",
                             backgroundColor: theme.factionTheme.primary,

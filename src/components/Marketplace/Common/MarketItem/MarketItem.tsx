@@ -61,7 +61,6 @@ export const MarketItem = ({ imageUrl, animationUrl, cardAnimationUrl, backgroun
     return (
         <Box sx={{ position: "relative", overflow: "visible" }}>
             <FancyButton
-                excludeCaret
                 clipThingsProps={{
                     clipSize: "7px",
                     clipSlantSize: "0px",

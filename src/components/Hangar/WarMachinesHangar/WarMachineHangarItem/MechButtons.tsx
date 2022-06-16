@@ -146,7 +146,6 @@ const ReusableButton = ({
     return (
         <FancyButton
             disabled={!onClick || disabled}
-            excludeCaret
             clipThingsProps={{
                 clipSize: "8px",
                 backgroundColor: backgroundColor,

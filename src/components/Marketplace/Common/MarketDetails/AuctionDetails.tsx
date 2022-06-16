@@ -178,7 +178,6 @@ export const AuctionDetails = ({ id, owner, itemName, auctionCurrentPrice, aucti
                             }}
                         />
                         <FancyButton
-                            excludeCaret
                             disabled={isSelfItem || isTimeEnded || !currentPrice || !inputBidPrice || currentPrice.isGreaterThanOrEqualTo(inputBidPrice)}
                             clipThingsProps={{
                                 clipSize: "9px",

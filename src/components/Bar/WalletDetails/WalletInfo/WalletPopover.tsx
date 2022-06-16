@@ -1,4 +1,5 @@
-import { Box, IconButton, Link, Popover, Stack, Switch, Typography } from "@mui/material"
+import { Box, IconButton, Popover, Stack, Switch, Typography } from "@mui/material"
+import { Link } from "react-router-dom"
 import { SvgClose, SvgExternalLink, SvgSupToken } from "../../../../assets"
 import { ClipThing, TransactionItem } from "../../.."
 import { Transaction } from "../../../../types"
@@ -123,7 +124,7 @@ export const WalletPopover = ({
                             <Stack direction="row" alignItems="center" spacing=".8rem" sx={{ mb: ".2rem" }}>
                                 <Typography sx={{ fontFamily: fonts.nostromoBlack, color: theme.factionTheme.primary }}>TRANSACTIONS (24HRS)</Typography>
 
-                                <Link href={`${PASSPORT_WEB}transactions`} target="_blank">
+                                <Link to={`${PASSPORT_WEB}transactions`} target="_blank">
                                     <SvgExternalLink size="1.2rem" sx={{ opacity: 0.7, ":hover": { opacity: 1 } }} />
                                 </Link>
                             </Stack>

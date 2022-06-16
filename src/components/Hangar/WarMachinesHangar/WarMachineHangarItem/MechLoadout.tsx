@@ -112,7 +112,6 @@ const LoadoutItem = ({ imageUrl, primaryColor, tooltipText, Icon }: { imageUrl?:
     return (
         <Box sx={{ position: "relative", flexBasis: "50%", width: `${ITEM_WIDTH}rem`, p: ".3rem" }}>
             <FancyButton
-                excludeCaret
                 clipThingsProps={{
                     clipSize: "10px",
                     backgroundColor: primaryColor,
@@ -166,7 +165,6 @@ export const AddLoadoutItem = ({ primaryColor }: { primaryColor: string }) => {
     return (
         <Box sx={{ flexBasis: "50%", width: `${ITEM_WIDTH}rem`, p: ".2rem" }}>
             <FancyButton
-                excludeCaret
                 clipThingsProps={{
                     clipSize: "10px",
                     backgroundColor: primaryColor,

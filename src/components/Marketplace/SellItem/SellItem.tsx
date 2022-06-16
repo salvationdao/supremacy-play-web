@@ -305,7 +305,6 @@ export const SellItemInner = ({ toggleReset }: { toggleReset: () => void }) => {
 
                         <FancyButton
                             disabled={!isFormReady()}
-                            excludeCaret
                             clipThingsProps={{
                                 clipSize: "9px",
                                 backgroundColor: colors.green,

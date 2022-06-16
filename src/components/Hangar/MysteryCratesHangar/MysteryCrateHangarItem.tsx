@@ -96,7 +96,6 @@ export const MysteryCrateHangarItem = ({ crate }: MysteryCrateStoreItemProps) =>
                             <Stack alignItems="center" sx={{ mt: "auto !important", pt: ".8rem", alignSelf: "stretch" }}>
                                 <FancyButton
                                     disabled={new Date() < crate.locked_until}
-                                    excludeCaret
                                     onClick={() => {
                                         /*TODO: open crate function*/
                                         return
@@ -116,7 +115,6 @@ export const MysteryCrateHangarItem = ({ crate }: MysteryCrateStoreItemProps) =>
                                 </FancyButton>
 
                                 <FancyButton
-                                    excludeCaret
                                     onClick={() => {
                                         if (crate.locked_to_marketplace) {
                                             if (!crate.item_sale_id) return

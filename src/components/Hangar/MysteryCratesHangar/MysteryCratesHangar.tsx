@@ -152,7 +152,6 @@ export const MysteryCratesHangar = () => {
 
                     <FancyButton
                         onClick={() => history.push(`/marketplace/mystery-crates${location.hash}`)}
-                        excludeCaret
                         clipThingsProps={{
                             clipSize: "9px",
                             backgroundColor: theme.factionTheme.primary,

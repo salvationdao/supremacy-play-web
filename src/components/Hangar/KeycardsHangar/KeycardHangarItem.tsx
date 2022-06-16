@@ -103,7 +103,6 @@ export const KeycardHangarItemInner = ({ keycard, itemSaleID }: MysteryCrateStor
 
                         <Stack alignItems="center" sx={{ mt: "auto !important", pt: ".8rem", alignSelf: "stretch" }}>
                             <FancyButton
-                                excludeCaret
                                 onClick={() => {
                                     if (itemSaleID) {
                                         history.push(`/marketplace/${MARKETPLACE_TABS.Keycards}/${itemSaleID}${location.hash}`)

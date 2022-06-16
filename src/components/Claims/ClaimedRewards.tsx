@@ -72,7 +72,6 @@ export const ClaimedRewards = ({ rewards, onClose }: ClaimedRewardsProps) => {
                 </Stack>
 
                 <FancyButton
-                    excludeCaret
                     clipThingsProps={{
                         clipSize: "9px",
                         backgroundColor: theme.factionTheme.primary,

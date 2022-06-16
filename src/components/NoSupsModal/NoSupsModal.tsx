@@ -1,4 +1,5 @@
-import { Box, Divider, Link, Modal, Stack, Typography } from "@mui/material"
+import { Box, Divider, Modal, Stack, Typography } from "@mui/material"
+import { Link } from "react-router-dom"
 import { colors, fonts } from "../../theme/theme"
 import WarningAmberIcon from "@mui/icons-material/WarningAmber"
 import { TOKEN_SALE_PAGE, PASSPORT_WEB } from "../../constants"
@@ -59,14 +60,14 @@ export const NoSupsModal = ({ onClose }: { onClose: () => void }) => {
 
                             <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBold }}>
                                 • Navigate to the{" "}
-                                <Link target="_blank" href={TOKEN_SALE_PAGE} color={colors.neonBlue}>
+                                <Link target="_blank" to={TOKEN_SALE_PAGE}>
                                     token sale here
                                 </Link>{" "}
                                 or click the &quot;Get SUPS&quot; button in the top right-hand corner of the stream.
                                 <br />
                                 <br />• From PancakeSwap, the tokens will reside in your off-world wallet. To use them on-world, and in game, you will have to
                                 deposit your $SUPS into your connected account. You can{" "}
-                                <Link target="_blank" href={PASSPORT_WEB + "deposit"} color={colors.neonBlue}>
+                                <Link target="_blank" to={PASSPORT_WEB + "deposit"}>
                                     deposit your tokens here
                                 </Link>
                                 .
@@ -74,7 +75,6 @@ export const NoSupsModal = ({ onClose }: { onClose: () => void }) => {
                         </Stack>
 
                         <FancyButton
-                            excludeCaret
                             clipThingsProps={{
                                 clipSize: "9px",
                                 backgroundColor: colors.darkNavy,

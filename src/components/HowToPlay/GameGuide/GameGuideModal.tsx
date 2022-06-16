@@ -186,7 +186,6 @@ export const GameGuideModal = ({ onClose }: { onClose: () => void }) => {
                         )}
 
                         <FancyButton
-                            excludeCaret
                             clipThingsProps={{
                                 clipSize: "9px",
                                 backgroundColor: backgroundColor,

@@ -245,7 +245,6 @@ const WarMachinesHangarInner = ({
                                     </Typography>
                                     <FancyButton
                                         onClick={() => history.push(`/marketplace/war-machines${location.hash}`)}
-                                        excludeCaret
                                         clipThingsProps={{
                                             clipSize: "9px",
                                             backgroundColor: theme.factionTheme.primary,
@@ -268,7 +267,6 @@ const WarMachinesHangarInner = ({
                                     <FancyButton
                                         href={`${PASSPORT_WEB}profile`}
                                         target="_blank"
-                                        excludeCaret
                                         clipThingsProps={{
                                             clipSize: "9px",
                                             backgroundColor: colors.neonPink,

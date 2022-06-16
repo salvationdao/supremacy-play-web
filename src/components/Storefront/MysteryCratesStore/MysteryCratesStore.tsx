@@ -1,5 +1,6 @@
 import { Box, Pagination, Stack, Typography } from "@mui/material"
-import { useState, useEffect, useMemo } from "react"
+import { useEffect, useMemo, useState } from "react"
+import { Link } from "react-router-dom"
 import { ClipThing } from "../.."
 import { SafePNG } from "../../../assets"
 import { useSnackbar } from "../../../containers"
@@ -7,8 +8,10 @@ import { useTheme } from "../../../containers/theme"
 import { usePagination } from "../../../hooks"
 import { useGameServerCommandsFaction, useGameServerSubscriptionUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
+import { HANGAR_TABS } from "../../../pages"
 import { colors, fonts } from "../../../theme/theme"
 import { StorefrontMysteryCrate } from "../../../types"
+import { PageHeader } from "../../Common/PageHeader"
 import { TooltipHelper } from "../../Common/TooltipHelper"
 import { MysteryCrateStoreItem, MysteryCrateStoreItemLoadingSkeleton } from "./MysteryCrateStoreItem/MysteryCrateStoreItem"
 
@@ -176,37 +179,21 @@ export const MysteryCratesStore = () => {
         >
             <Stack sx={{ position: "relative", height: "100%" }}>
                 <Stack sx={{ flex: 1 }}>
-                    <Stack
-                        direction="row"
-                        alignItems="center"
-                        sx={{
-                            p: "2rem",
-                            backgroundColor: "#00000070",
-                            borderBottom: (theme) => `${theme.factionTheme.primary}70 1.5px solid`,
-                        }}
-                    >
-                        <Box
-                            sx={{
-                                flexShrink: 0,
-                                mr: "1.6rem",
-                                width: "7rem",
-                                height: "6rem",
-                                background: `url(${SafePNG})`,
-                                backgroundRepeat: "no-repeat",
-                                backgroundPosition: "center",
-                                backgroundSize: "cover",
-                            }}
-                        />
-                        <Box sx={{ mr: "2rem" }}>
-                            <Typography variant="h5" sx={{ fontFamily: fonts.nostromoBlack }}>
+                    <PageHeader
+                        title={
+                            <>
                                 MYSTERY CRATES <span style={{ color: colors.neonBlue, fontFamily: "inherit", fontSize: "inherit" }}>(LIMITED SUPPLY)</span>
-                            </Typography>
-                            <Typography sx={{ fontSize: "1.85rem" }}>
-                                Gear up for the battle arena with a variety of War Machines and Weapons. Each keycard you have allows you to purchase 10 mystery
-                                crates.
-                            </Typography>
-                        </Box>
-                        <Stack spacing="1rem" sx={{ ml: "auto" }}>
+                            </>
+                        }
+                        description={
+                            <>
+                                Gear up for the battle arena with a variety of War Machines and Weapons. Each{" "}
+                                <Link to={`/fleet/${HANGAR_TABS.Keycards}`}>keycard</Link> you have on Supremacy allows you to purchase 10 mystery crates.
+                            </>
+                        }
+                        imageUrl={SafePNG}
+                    >
+                        <Stack spacing="1rem">
                             <Stack direction="row" alignItems="center" justifyContent="flex-end" spacing=".8rem">
                                 <Typography variant="body2" sx={{ color: colors.neonBlue, fontFamily: fonts.nostromoHeavy }}>
                                     Total owned:
@@ -261,7 +248,7 @@ export const MysteryCratesStore = () => {
                                 </Stack>
                             </TooltipHelper>
                         </Stack>
-                    </Stack>
+                    </PageHeader>
 
                     <Stack sx={{ px: "2rem", py: "1rem", flex: 1 }}>
                         <Box

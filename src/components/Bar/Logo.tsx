@@ -1,5 +1,6 @@
-import { Box, Divider, Link, Stack, Typography } from "@mui/material"
+import { Box, Divider, Stack, Typography } from "@mui/material"
 import React, { useState } from "react"
+import { Link } from "react-router-dom"
 import { SvgNinjaSyndicateLogo, SvgSupremacyLogo } from "../../assets"
 import { PASSPORT_WEB, SUPREMACY_PAGE, VERSION } from "../../constants"
 import { colors, fonts } from "../../theme/theme"
@@ -9,11 +10,11 @@ export const Logo = React.memo(function Logo() {
 
     return (
         <Stack direction="row" alignItems="center" spacing="1.44rem" sx={{ px: "1.6rem", zIndex: 1 }}>
-            <Link href={PASSPORT_WEB} target="_blank">
+            <Link to={PASSPORT_WEB} target="_blank">
                 <SvgNinjaSyndicateLogo size="2.6rem" />
             </Link>
             <Divider orientation="vertical" flexItem sx={{ borderColor: "#FFFFFF", borderRightWidth: 2 }} />
-            <Link href={SUPREMACY_PAGE} target="_blank">
+            <Link to={SUPREMACY_PAGE} target="_blank">
                 <SvgSupremacyLogo width="15rem" />
             </Link>
             <Box

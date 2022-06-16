@@ -128,7 +128,6 @@ export const BuyNowDetails = ({ id, itemType, owner, itemName, buyNowPrice, dutc
                         </ClipThing>
 
                         <FancyButton
-                            excludeCaret
                             disabled={isSelfItem || isTimeEnded}
                             clipThingsProps={{
                                 clipSize: "9px",
