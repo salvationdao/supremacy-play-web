@@ -53,6 +53,24 @@ export const WarMachineHangarItem = ({
         })()
     }, [index, mech.id, send, setSelectedMechDetails])
 
+    const ranameMech = async (newName: string) => {
+        try {
+            console.log("hello")
+
+            const resp = await send<string>(GameServerKeys.MechRename, {
+                mech_id: mech.id,
+                new_name: newName,
+            })
+
+            console.log("res", resp)
+
+            if (!resp || !mechDetails) return
+            setMechDetails({ ...mechDetails, name: resp })
+        } catch (e) {
+            console.error(e)
+        }
+    }
+
     return useMemo(
         () => (
             <WarMachineHangarItemInner

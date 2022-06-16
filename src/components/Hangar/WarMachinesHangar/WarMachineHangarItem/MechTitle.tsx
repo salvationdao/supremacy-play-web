@@ -23,7 +23,7 @@ export const MechTitle = ({
 }) => {
     const { userID, user } = useAuth()
     const theme = useTheme()
-    const { label, name } = mechDetails
+    const { label, name } = mech
     const hash = mech.hash || mechDetails?.hash
 
     const { send } = useGameServerCommandsUser("/user_commander")
@@ -54,7 +54,7 @@ export const MechTitle = ({
         console.log("after")
     }
 
-    console.log("name", mechDetails.name)
+    // console.log("name", mechDetails.name)
 
     return (
         <Stack
