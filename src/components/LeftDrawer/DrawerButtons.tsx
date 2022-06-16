@@ -54,23 +54,22 @@ export const DrawerButtons = ({ openLeftDrawer }: { openLeftDrawer: () => void }
                     const disable = (requireAuth || requireFaction) && !userID
                     const navigateTo = r.path.split("/:")[0]
 
-                    return (
-                        <>
-                            {/* Hard-coded fleet button */}
-                            {id === "fleet" && <MechDeployListButton />}
+                    const toRender = []
 
-                            <TabButton
-                                key={r.id}
-                                label={label}
-                                enable={enable && !disable}
-                                isComingSoon={!enable}
-                                onClick={() => history.push(`${navigateTo}${location.hash}`)}
-                                isActive={activeTabID === r.matchLeftDrawerID || location.pathname === r.path}
-                                primaryColor={theme.factionTheme.primary}
-                                secondaryColor={theme.factionTheme.secondary}
-                            />
-                        </>
+                    if (id === "fleet") toRender.push(<MechDeployListButton />)
+                    toRender.push(
+                        <TabButton
+                            key={r.id}
+                            label={label}
+                            enable={enable && !disable}
+                            isComingSoon={!enable}
+                            onClick={() => history.push(`${navigateTo}${location.hash}`)}
+                            isActive={activeTabID === r.matchLeftDrawerID || location.pathname === r.path}
+                            primaryColor={theme.factionTheme.primary}
+                            secondaryColor={theme.factionTheme.secondary}
+                        />,
                     )
+                    return toRender
                 })}
             </Tabs>
 
