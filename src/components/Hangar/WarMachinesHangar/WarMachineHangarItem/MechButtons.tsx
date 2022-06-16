@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material"
+import { Box, Tooltip, Typography } from "@mui/material"
 import { useState } from "react"
 import { useLocation } from "react-router-dom"
 import { FancyButton } from "../../.."
@@ -17,6 +17,7 @@ export const MechButtons = ({
     setLeaveMechModalOpen,
     setHistoryMechModalOpen,
     setRentalMechModalOpen,
+    marketLocked,
 }: {
     mechDetails: MechDetails
     setSelectedMechDetails: React.Dispatch<React.SetStateAction<MechDetails | undefined>>
@@ -24,6 +25,7 @@ export const MechButtons = ({
     setLeaveMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
     setHistoryMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
     setRentalMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
+    marketLocked: boolean
 }) => {
     const location = useLocation()
     const theme = useTheme()
@@ -106,21 +108,23 @@ export const MechButtons = ({
             />
 
             {/* Button 5 */}
-            <ReusableButton
-                isFancy={mechState !== MechStatusEnum.Market}
-                primaryColor={colors.red}
-                secondaryColor={mechState === MechStatusEnum.Market ? colors.red : undefined}
-                backgroundColor={mechState === MechStatusEnum.Market ? theme.factionTheme.background : colors.red}
-                label={mechState === MechStatusEnum.Market ? "VIEW LISTING" : "SELL"}
-                disabled={!mechState || (mechState !== MechStatusEnum.Idle && mechState !== MechStatusEnum.Market)}
-                to={
-                    mechDetails.locked_to_marketplace
-                        ? !mechDetails.item_sale_id
-                            ? undefined
-                            : `/marketplace/${MARKETPLACE_TABS.WarMachines}/${mechDetails.item_sale_id}${location.hash}`
-                        : `/marketplace/sell?item-type=${ItemType.WarMachine}&asset-id=${mechDetails.id}${location.hash}`
-                }
-            />
+            <Tooltip title={"Mech on v2 Staking Contract"}>
+                <ReusableButton
+                    isFancy={mechState !== MechStatusEnum.Market}
+                    primaryColor={colors.red}
+                    secondaryColor={mechState === MechStatusEnum.Market ? colors.red : undefined}
+                    backgroundColor={mechState === MechStatusEnum.Market ? theme.factionTheme.background : colors.red}
+                    label={mechState === MechStatusEnum.Market ? "VIEW LISTING" : "SELL"}
+                    disabled={!mechState || (mechState !== MechStatusEnum.Idle && mechState !== MechStatusEnum.Market && marketLocked)}
+                    to={
+                        mechDetails.locked_to_marketplace
+                            ? !mechDetails.item_sale_id
+                                ? undefined
+                                : `/marketplace/${MARKETPLACE_TABS.WarMachines}/${mechDetails.item_sale_id}${location.hash}`
+                            : `/marketplace/sell?item-type=${ItemType.WarMachine}&asset-id=${mechDetails.id}${location.hash}`
+                    }
+                />
+            </Tooltip>
         </Box>
     )
 }
