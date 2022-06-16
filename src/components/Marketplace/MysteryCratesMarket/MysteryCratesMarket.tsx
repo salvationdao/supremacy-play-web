@@ -1,6 +1,6 @@
 import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { useHistory, useLocation } from "react-router-dom"
+import { useLocation } from "react-router-dom"
 import { ClipThing, FancyButton } from "../.."
 import { SafePNG } from "../../../assets"
 import { useSnackbar } from "../../../containers"
@@ -16,7 +16,6 @@ import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { MysteryCrateMarketItem } from "./MysteryCrateMarketItem"
 
 export const MysteryCratesMarket = () => {
-    const history = useHistory()
     const location = useLocation()
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsFaction("/faction_commander")
@@ -237,7 +236,7 @@ export const MysteryCratesMarket = () => {
                                     sx: { position: "relative" },
                                 }}
                                 sx={{ px: "1.6rem", py: ".4rem", color: "#FFFFFF" }}
-                                onClick={() => history.push(`/marketplace/sell${location.hash}`)}
+                                to={`/marketplace/sell${location.hash}`}
                             >
                                 <Typography
                                     variant="caption"

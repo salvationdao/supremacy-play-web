@@ -1,6 +1,6 @@
 import { Box, Pagination, Stack, Typography } from "@mui/material"
 import React, { useCallback, useEffect, useMemo, useState } from "react"
-import { useHistory, useLocation } from "react-router-dom"
+import { useLocation } from "react-router-dom"
 import { ClipThing, FancyButton } from "../.."
 import { PASSPORT_WEB } from "../../../constants"
 import { useTheme } from "../../../containers/theme"
@@ -88,7 +88,6 @@ const WarMachinesHangarInner = ({
     setHistoryMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
     setRentalMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
 }) => {
-    const history = useHistory()
     const location = useLocation()
     const { send } = useGameServerCommandsUser("/user_commander")
     const theme = useTheme()
@@ -244,7 +243,7 @@ const WarMachinesHangarInner = ({
                                         {"You don't have any war machines, go to the Marketplace or go to Xsyn to transfer your assets to Supremacy."}
                                     </Typography>
                                     <FancyButton
-                                        onClick={() => history.push(`/marketplace/war-machines${location.hash}`)}
+                                        to={`/marketplace/war-machines${location.hash}`}
                                         clipThingsProps={{
                                             clipSize: "9px",
                                             backgroundColor: theme.factionTheme.primary,

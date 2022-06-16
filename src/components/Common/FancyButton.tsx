@@ -1,6 +1,7 @@
 import LoadingButton, { LoadingButtonProps } from "@mui/lab/LoadingButton"
 import { Box, SxProps } from "@mui/system"
 import { HTMLAttributeAnchorTarget } from "react"
+import { Link } from "react-router-dom"
 import { mergeDeep } from "../../helpers"
 import { colors, fonts } from "../../theme/theme"
 import { ClipThing, ClipThingProps } from "./ClipThing"
@@ -8,11 +9,12 @@ interface FancyButtonProps extends LoadingButtonProps {
     sx?: SxProps
     innerSx?: SxProps
     clipThingsProps?: ClipThingProps
+    to?: string
     href?: string
     target?: HTMLAttributeAnchorTarget | undefined
 }
 
-export const FancyButton = ({ sx, innerSx, disabled, clipThingsProps, children, loading, ...props }: FancyButtonProps) => {
+export const FancyButton = ({ sx, innerSx, disabled, clipThingsProps, children, loading, to, href, ...props }: FancyButtonProps) => {
     return (
         <ClipThing
             corners={{
@@ -60,7 +62,15 @@ export const FancyButton = ({ sx, innerSx, disabled, clipThingsProps, children, 
                 loading={loading}
                 {...props}
             >
-                <Box sx={{ pt: ".3rem", height: "100%", width: "100%", ...innerSx }}>{children}</Box>
+                <Box sx={{ pt: ".3rem", height: "100%", width: "100%", ...innerSx }}>
+                    {to ? (
+                        <Link to={to} href={href}>
+                            {children}
+                        </Link>
+                    ) : (
+                        children
+                    )}
+                </Box>
             </LoadingButton>
         </ClipThing>
     )

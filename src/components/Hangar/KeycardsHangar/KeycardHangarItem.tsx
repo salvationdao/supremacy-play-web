@@ -1,5 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useHistory, useLocation } from "react-router-dom"
+import { useLocation } from "react-router-dom"
 import { FancyButton } from "../.."
 import { useTheme } from "../../../containers/theme"
 import { MARKETPLACE_TABS } from "../../../pages"
@@ -25,7 +25,6 @@ export const KeycardHangarItem = ({ keycard }: MysteryCrateStoreItemProps) => {
 }
 
 export const KeycardHangarItemInner = ({ keycard, itemSaleID }: MysteryCrateStoreItemProps) => {
-    const history = useHistory()
     const location = useLocation()
     const theme = useTheme()
 
@@ -103,13 +102,11 @@ export const KeycardHangarItemInner = ({ keycard, itemSaleID }: MysteryCrateStor
 
                         <Stack alignItems="center" sx={{ mt: "auto !important", pt: ".8rem", alignSelf: "stretch" }}>
                             <FancyButton
-                                onClick={() => {
-                                    if (itemSaleID) {
-                                        history.push(`/marketplace/${MARKETPLACE_TABS.Keycards}/${itemSaleID}${location.hash}`)
-                                    } else {
-                                        history.push(`/marketplace/sell?item-type=${ItemType.Keycards}&asset-id=${keycard.id}${location.hash}`)
-                                    }
-                                }}
+                                to={
+                                    itemSaleID
+                                        ? `/marketplace/${MARKETPLACE_TABS.Keycards}/${itemSaleID}${location.hash}`
+                                        : `/marketplace/sell?item-type=${ItemType.Keycards}&asset-id=${keycard.id}${location.hash}`
+                                }
                                 clipThingsProps={{
                                     clipSize: "5px",
                                     backgroundColor: itemSaleID ? backgroundColor : colors.red,
