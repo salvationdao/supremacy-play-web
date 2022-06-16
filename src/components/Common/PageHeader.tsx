@@ -4,8 +4,8 @@ import { fonts } from "../../theme/theme"
 
 interface PageHeaderProps {
     title: ReactNode
-    description: ReactNode
-    imageUrl: string
+    description?: ReactNode
+    imageUrl?: string
     children?: ReactNode
 }
 
@@ -21,24 +21,26 @@ export const PageHeader = ({ title, description, imageUrl, children }: PageHeade
                 borderBottom: (theme) => `${theme.factionTheme.primary}70 1.5px solid`,
             }}
         >
-            <Box
-                sx={{
-                    alignSelf: "flex-start",
-                    flexShrink: 0,
-                    mr: "1.6rem",
-                    width: "7rem",
-                    height: "5.2rem",
-                    background: `url(${imageUrl})`,
-                    backgroundRepeat: "no-repeat",
-                    backgroundPosition: "center",
-                    backgroundSize: "cover",
-                }}
-            />
+            {imageUrl && (
+                <Box
+                    sx={{
+                        alignSelf: "flex-start",
+                        flexShrink: 0,
+                        mr: "1.6rem",
+                        width: "7rem",
+                        height: "5.2rem",
+                        background: `url(${imageUrl})`,
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "center",
+                        backgroundSize: "cover",
+                    }}
+                />
+            )}
             <Box sx={{ mr: "2rem" }}>
                 <Typography variant="h5" sx={{ fontFamily: fonts.nostromoBlack }}>
                     {title}
                 </Typography>
-                <Typography sx={{ fontSize: "1.85rem" }}>{description}</Typography>
+                {description && <Typography sx={{ fontSize: "1.85rem" }}>{description}</Typography>}
             </Box>
 
             {children && <Box sx={{ ml: "auto" }}>{children}</Box>}

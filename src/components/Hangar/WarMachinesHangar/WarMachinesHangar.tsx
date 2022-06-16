@@ -45,24 +45,24 @@ export const WarMachinesHangar = () => {
                 setHistoryMechModalOpen={setHistoryMechModalOpen}
                 setRentalMechModalOpen={setRentalMechModalOpen}
             />
-            {selectedMechDetails && (
+            {selectedMechDetails && deployMechModalOpen && (
                 <DeployModal
                     selectedMechDetails={selectedMechDetails}
                     deployMechModalOpen={deployMechModalOpen}
                     setDeployMechModalOpen={setDeployMechModalOpen}
                 />
             )}
-            {selectedMechDetails && (
+            {selectedMechDetails && leaveMechModalOpen && (
                 <LeaveModal selectedMechDetails={selectedMechDetails} leaveMechModalOpen={leaveMechModalOpen} setLeaveMechModalOpen={setLeaveMechModalOpen} />
             )}
-            {selectedMechDetails && (
+            {selectedMechDetails && historyMechModalOpen && (
                 <HistoryModal
                     selectedMechDetails={selectedMechDetails}
                     historyMechModalOpen={historyMechModalOpen}
                     setHistoryMechModalOpen={setHistoryMechModalOpen}
                 />
             )}
-            {selectedMechDetails && (
+            {selectedMechDetails && rentalMechModalOpen && (
                 <RentalModal
                     selectedMechDetails={selectedMechDetails}
                     rentalMechModalOpen={rentalMechModalOpen}
