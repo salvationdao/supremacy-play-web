@@ -135,6 +135,7 @@ const WarMachineHangarItemInner = ({
                                 setLeaveMechModalOpen={setLeaveMechModalOpen}
                                 setHistoryMechModalOpen={setHistoryMechModalOpen}
                                 setRentalMechModalOpen={setRentalMechModalOpen}
+                                marketLocked={mech.market_locked}
                             />
                         ) : (
                             <Box sx={{ height: "3rem" }} />
