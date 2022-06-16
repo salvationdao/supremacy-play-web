@@ -12,9 +12,12 @@ import { MechThumbnail } from "../Hangar/WarMachinesHangar/WarMachineHangarItem/
 
 interface MechDeployListItemProps {
     mech: MechBasic
+    setDeployMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
+    setLeaveMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
+    setSelectedMechDetails: React.Dispatch<React.SetStateAction<MechDetails | undefined>>
 }
 
-export const MechDeployListItem = ({ mech }: MechDeployListItemProps) => {
+export const MechDeployListItem = ({ mech, setSelectedMechDetails, setDeployMechModalOpen, setLeaveMechModalOpen }: MechDeployListItemProps) => {
     const theme = useTheme()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [mechDetails, setMechDetails] = useState<MechDetails>()
@@ -93,7 +96,7 @@ export const MechDeployListItem = ({ mech }: MechDeployListItemProps) => {
                 <Stack direction="row" alignItems="center" spacing="1rem">
                     <MechGeneralStatus mechID={mech.id} smallSize />
 
-                    {(mechState === MechStatusEnum.Idle || mechState === MechStatusEnum.Queue) && (
+                    {mechDetails && (mechState === MechStatusEnum.Idle || mechState === MechStatusEnum.Queue) && (
                         <FancyButton
                             clipThingsProps={{
                                 clipSize: "5px",
@@ -107,7 +110,15 @@ export const MechDeployListItem = ({ mech }: MechDeployListItemProps) => {
                                 sx: { position: "relative" },
                             }}
                             sx={{ px: "1.6rem", pt: 0, pb: ".1rem", color: theme.factionTheme.primary }}
-                            // onClick={onClick}
+                            onClick={() => {
+                                if (mechState === MechStatusEnum.Idle) {
+                                    setSelectedMechDetails(mechDetails)
+                                    setDeployMechModalOpen(true)
+                                } else {
+                                    setSelectedMechDetails(mechDetails)
+                                    setLeaveMechModalOpen(true)
+                                }
+                            }}
                         >
                             <Typography
                                 variant="caption"
