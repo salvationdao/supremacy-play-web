@@ -53,7 +53,8 @@ export const MechButtons = ({
             {/* Button 1 */}
             {mechState === MechStatusEnum.Battle || mechState === MechStatusEnum.Queue ? (
                 <ReusableButton
-                    primaryColor={theme.factionTheme.primary}
+                    primaryColor={colors.yellow}
+                    secondaryColor={colors.yellow}
                     backgroundColor={theme.factionTheme.background}
                     label="UNDEPLOY"
                     disabled={!mechState || mechState === MechStatusEnum.Battle}
@@ -64,7 +65,8 @@ export const MechButtons = ({
                 />
             ) : (
                 <ReusableButton
-                    primaryColor={theme.factionTheme.primary}
+                    primaryColor={colors.green}
+                    secondaryColor={colors.green}
                     backgroundColor={theme.factionTheme.background}
                     label="DEPLOY"
                     disabled={!mechState || mechState !== MechStatusEnum.Idle}
