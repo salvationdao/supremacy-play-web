@@ -63,7 +63,7 @@ export const MechDeployListModal = ({ open, onClose }: { open: boolean; onClose:
             const resp = await send<GetAssetsResponse, GetMechsRequest>(GameServerKeys.GetMechs, {
                 page,
                 page_size: pageSize,
-                include_market_listed: true,
+                include_market_listed: false,
             })
 
             if (!resp) return

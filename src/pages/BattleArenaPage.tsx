@@ -3,6 +3,7 @@ import {
     BattleEndScreen,
     BattleHistory,
     Controls,
+    EarlyAccessWarning,
     LiveVotingChart,
     MiniMap,
     NoSupsModal,
@@ -20,6 +21,10 @@ import { Trailer } from "../components/Stream/Trailer"
 import { MechDeployListModal } from "../components/MechDeployListModal/MechDeployListModal"
 
 export const BattleArenaPage = () => {
+    const [understand, toggleUnderstand] = useToggle()
+
+    if (!understand) return <EarlyAccessWarning onAcknowledged={() => toggleUnderstand(true)} />
+
     return (
         <StreamProvider>
             <GameProvider>
