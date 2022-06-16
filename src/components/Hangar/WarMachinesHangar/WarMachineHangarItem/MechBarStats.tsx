@@ -163,7 +163,7 @@ const BarStatInner = ({
                     <Typography
                         variant="caption"
                         sx={{
-                            width: "8rem",
+                            width: "8.5rem",
                             fontSize,
                             fontFamily: fonts.nostromoBold,
                             display: "-webkit-box",

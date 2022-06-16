@@ -1,14 +1,14 @@
 import { Box, Typography } from "@mui/material"
-import { useHistory, useLocation } from "react-router-dom"
+import { useState } from "react"
+import { useLocation } from "react-router-dom"
 import { FancyButton } from "../../.."
 import { useTheme } from "../../../../containers/theme"
+import { useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../../keys"
+import { MARKETPLACE_TABS } from "../../../../pages"
 import { colors, fonts } from "../../../../theme/theme"
 import { MechDetails, MechStatus, MechStatusEnum } from "../../../../types"
 import { ItemType } from "../../../../types/marketplace"
-import { useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
-import { GameServerKeys } from "../../../../keys"
-import { useState } from "react"
-import { MARKETPLACE_TABS } from "../../../../pages"
 
 export const MechButtons = ({
     mechDetails,
@@ -25,7 +25,6 @@ export const MechButtons = ({
     setHistoryMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
     setRentalMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
 }) => {
-    const history = useHistory()
     const location = useLocation()
     const theme = useTheme()
     const [mechState, setMechState] = useState<MechStatusEnum>()
@@ -53,7 +52,8 @@ export const MechButtons = ({
             {/* Button 1 */}
             {mechState === MechStatusEnum.Battle || mechState === MechStatusEnum.Queue ? (
                 <ReusableButton
-                    primaryColor={theme.factionTheme.primary}
+                    primaryColor={colors.green}
+                    secondaryColor={colors.green}
                     backgroundColor={theme.factionTheme.background}
                     label="UNDEPLOY"
                     disabled={!mechState || mechState === MechStatusEnum.Battle}
@@ -64,8 +64,9 @@ export const MechButtons = ({
                 />
             ) : (
                 <ReusableButton
-                    primaryColor={theme.factionTheme.primary}
-                    backgroundColor={theme.factionTheme.background}
+                    isFancy
+                    primaryColor={colors.green}
+                    backgroundColor={colors.green}
                     label="DEPLOY"
                     disabled={!mechState || mechState !== MechStatusEnum.Idle}
                     onClick={() => {
@@ -76,12 +77,13 @@ export const MechButtons = ({
             )}
 
             {/* Button 2 */}
-            <ReusableButton primaryColor={theme.factionTheme.primary} backgroundColor={theme.factionTheme.background} label="REPAIR" disabled={!mechState} />
+            <ReusableButton isFancy primaryColor={colors.orange} backgroundColor={colors.orange} label="REPAIR" disabled={!mechState} />
 
             {/* Button 3 */}
             <ReusableButton
+                isFancy
                 primaryColor={theme.factionTheme.primary}
-                backgroundColor={theme.factionTheme.background}
+                backgroundColor={theme.factionTheme.primary}
                 label="HISTORY"
                 onClick={() => {
                     setSelectedMechDetails(mechDetails)
@@ -91,8 +93,9 @@ export const MechButtons = ({
 
             {/* Button 4 */}
             <ReusableButton
-                primaryColor={theme.factionTheme.primary}
-                backgroundColor={theme.factionTheme.background}
+                isFancy
+                primaryColor={colors.purple}
+                backgroundColor={colors.purple}
                 label="RENT"
                 disabled={true}
                 onClick={() => {
@@ -109,14 +112,13 @@ export const MechButtons = ({
                 backgroundColor={mechState === MechStatusEnum.Market ? theme.factionTheme.background : colors.red}
                 label={mechState === MechStatusEnum.Market ? "VIEW LISTING" : "SELL"}
                 disabled={!mechState || (mechState !== MechStatusEnum.Idle && mechState !== MechStatusEnum.Market)}
-                onClick={() => {
-                    if (mechDetails.locked_to_marketplace) {
-                        if (!mechDetails.item_sale_id) return
-                        history.push(`/marketplace/${MARKETPLACE_TABS.WarMachines}/${mechDetails.item_sale_id}${location.hash}`)
-                    } else {
-                        history.push(`/marketplace/sell?item-type=${ItemType.WarMachine}&asset-id=${mechDetails.id}${location.hash}`)
-                    }
-                }}
+                to={
+                    mechDetails.locked_to_marketplace
+                        ? !mechDetails.item_sale_id
+                            ? undefined
+                            : `/marketplace/${MARKETPLACE_TABS.WarMachines}/${mechDetails.item_sale_id}${location.hash}`
+                        : `/marketplace/sell?item-type=${ItemType.WarMachine}&asset-id=${mechDetails.id}${location.hash}`
+                }
             />
         </Box>
     )
@@ -130,6 +132,8 @@ const ReusableButton = ({
     label,
     onClick,
     disabled,
+    to,
+    href,
 }: {
     isFancy?: boolean
     primaryColor: string
@@ -138,11 +142,14 @@ const ReusableButton = ({
     label: string
     onClick?: () => void
     disabled?: boolean
+    to?: string
+    href?: string
 }) => {
     return (
         <FancyButton
-            disabled={!onClick || disabled}
-            excludeCaret
+            to={to}
+            href={href}
+            disabled={(!onClick && !to) || disabled}
             clipThingsProps={{
                 clipSize: "8px",
                 backgroundColor: backgroundColor,

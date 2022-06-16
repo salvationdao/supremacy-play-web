@@ -1,4 +1,4 @@
-import { Box, Divider, Link, Stack, Typography } from "@mui/material"
+import { Box, Divider, Stack, Typography } from "@mui/material"
 import React, { useState } from "react"
 import { SvgNinjaSyndicateLogo, SvgSupremacyLogo } from "../../assets"
 import { PASSPORT_WEB, SUPREMACY_PAGE, VERSION } from "../../constants"
@@ -9,13 +9,13 @@ export const Logo = React.memo(function Logo() {
 
     return (
         <Stack direction="row" alignItems="center" spacing="1.44rem" sx={{ px: "1.6rem", zIndex: 1 }}>
-            <Link href={PASSPORT_WEB} target="_blank">
+            <a href={PASSPORT_WEB} target="_blank" rel="noreferrer">
                 <SvgNinjaSyndicateLogo size="2.6rem" />
-            </Link>
+            </a>
             <Divider orientation="vertical" flexItem sx={{ borderColor: "#FFFFFF", borderRightWidth: 2 }} />
-            <Link href={SUPREMACY_PAGE} target="_blank">
+            <a href={SUPREMACY_PAGE} target="_blank" rel="noreferrer">
                 <SvgSupremacyLogo width="15rem" />
-            </Link>
+            </a>
             <Box
                 onMouseEnter={() => {
                     setText(`${VERSION.substring(0, 10)}...`)

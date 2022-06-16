@@ -143,7 +143,6 @@ export const SortAndFilters = ({ initialSearch, onSetSearch, initialSort, onSetS
 
                             <Box sx={{ py: ".1rem" }}>
                                 <FancyButton
-                                    excludeCaret
                                     clipThingsProps={{
                                         clipSize: "5px",
                                         clipSlantSize: "2px",
@@ -303,7 +302,6 @@ const ChipFilterSection = ({ filter, primaryColor, secondaryColor }: { filter: C
 
         return (
             <FancyButton
-                excludeCaret
                 clipThingsProps={{
                     clipSize: "7px",
                     opacity: 1,
@@ -337,7 +335,6 @@ const ChipFilterSection = ({ filter, primaryColor, secondaryColor }: { filter: C
                     return (
                         <Box key={i} sx={{ p: ".4rem" }}>
                             <FancyButton
-                                excludeCaret
                                 clipThingsProps={{
                                     clipSize: "9px",
                                     backgroundColor: isSelected ? color : "#000000",
@@ -391,7 +388,6 @@ const RangeFilterSection = ({ filter, primaryColor, secondaryColor }: { filter: 
 
         return (
             <FancyButton
-                excludeCaret
                 clipThingsProps={{
                     clipSize: "8px",
                     opacity: 1,

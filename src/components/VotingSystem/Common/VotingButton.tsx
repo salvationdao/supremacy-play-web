@@ -26,7 +26,6 @@ export const VotingButton = ({ displayPercentage, cost, color, textColor, isVoti
     return (
         <FancyButton
             disabled={!isVotable}
-            excludeCaret
             clipThingsProps={{
                 clipSize: "5px",
                 backgroundColor: color || "#14182B",

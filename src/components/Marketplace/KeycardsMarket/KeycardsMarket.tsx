@@ -1,6 +1,6 @@
 import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { useHistory, useLocation } from "react-router-dom"
+import { useLocation } from "react-router-dom"
 import { ClipThing, FancyButton } from "../.."
 import { KeycardPNG } from "../../../assets"
 import { useSnackbar } from "../../../containers"
@@ -10,12 +10,12 @@ import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { MarketplaceBuyAuctionItem, SortType } from "../../../types/marketplace"
+import { PageHeader } from "../../Common/PageHeader"
 import { ChipFilter, RangeFilter, SortAndFilters } from "../../Common/SortAndFilters"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { KeycardMarketItem } from "./KeycardMarketItem"
 
 export const KeycardsMarket = () => {
-    const history = useHistory()
     const location = useLocation()
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsFaction("/faction_commander")
@@ -215,47 +215,17 @@ export const KeycardsMarket = () => {
             >
                 <Stack sx={{ position: "relative", height: "100%" }}>
                     <Stack sx={{ flex: 1 }}>
-                        <Stack
-                            direction="row"
-                            alignItems="center"
-                            sx={{
-                                px: "2rem",
-                                py: "2.2rem",
-                                backgroundColor: "#00000070",
-                                borderBottom: (theme) => `${theme.factionTheme.primary}70 1.5px solid`,
-                            }}
-                        >
-                            <Box
-                                sx={{
-                                    alignSelf: "flex-start",
-                                    flexShrink: 0,
-                                    mr: "1.6rem",
-                                    width: "7rem",
-                                    height: "5.2rem",
-                                    background: `url(${KeycardPNG})`,
-                                    backgroundRepeat: "no-repeat",
-                                    backgroundPosition: "center",
-                                    backgroundSize: "cover",
-                                }}
-                            />
-                            <Box sx={{ mr: "2rem" }}>
-                                <Typography variant="h5" sx={{ fontFamily: fonts.nostromoBlack }}>
-                                    KEY CARDS
-                                </Typography>
-                                <Typography sx={{ fontSize: "1.85rem" }}>Explore what other citizens have to offer.</Typography>
-                            </Box>
-
+                        <PageHeader title="KEY CARDS" description="Explore what other citizens have to offer." imageUrl={KeycardPNG}>
                             <FancyButton
-                                excludeCaret
                                 clipThingsProps={{
                                     clipSize: "9px",
                                     backgroundColor: colors.red,
                                     opacity: 1,
                                     border: { isFancy: true, borderColor: colors.red, borderThickness: "2px" },
-                                    sx: { position: "relative", ml: "auto" },
+                                    sx: { position: "relative" },
                                 }}
                                 sx={{ px: "1.6rem", py: ".4rem", color: "#FFFFFF" }}
-                                onClick={() => history.push(`/marketplace/sell${location.hash}`)}
+                                to={`/marketplace/sell${location.hash}`}
                             >
                                 <Typography
                                     variant="caption"
@@ -267,7 +237,7 @@ export const KeycardsMarket = () => {
                                     SELL ITEM
                                 </Typography>
                             </FancyButton>
-                        </Stack>
+                        </PageHeader>
 
                         <TotalAndPageSizeOptions
                             countItems={keycardItems?.length}

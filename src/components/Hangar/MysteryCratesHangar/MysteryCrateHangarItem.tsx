@@ -1,5 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useHistory, useLocation } from "react-router-dom"
+import { useLocation } from "react-router-dom"
 import { SafePNG } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { useTimer } from "../../../hooks"
@@ -15,7 +15,6 @@ interface MysteryCrateStoreItemProps {
 }
 
 export const MysteryCrateHangarItem = ({ crate }: MysteryCrateStoreItemProps) => {
-    const history = useHistory()
     const location = useLocation()
     const theme = useTheme()
 
@@ -96,7 +95,6 @@ export const MysteryCrateHangarItem = ({ crate }: MysteryCrateStoreItemProps) =>
                             <Stack alignItems="center" sx={{ mt: "auto !important", pt: ".8rem", alignSelf: "stretch" }}>
                                 <FancyButton
                                     disabled={new Date() < crate.locked_until}
-                                    excludeCaret
                                     onClick={() => {
                                         /*TODO: open crate function*/
                                         return
@@ -116,15 +114,13 @@ export const MysteryCrateHangarItem = ({ crate }: MysteryCrateStoreItemProps) =>
                                 </FancyButton>
 
                                 <FancyButton
-                                    excludeCaret
-                                    onClick={() => {
-                                        if (crate.locked_to_marketplace) {
-                                            if (!crate.item_sale_id) return
-                                            history.push(`/marketplace/${MARKETPLACE_TABS.MysteryCrates}/${crate.item_sale_id}${location.hash}`)
-                                        } else {
-                                            history.push(`/marketplace/sell?item-type=${ItemType.MysteryCrate}&asset-id=${crate.id}${location.hash}`)
-                                        }
-                                    }}
+                                    to={
+                                        crate.locked_to_marketplace
+                                            ? !crate.item_sale_id
+                                                ? undefined
+                                                : `/marketplace/${MARKETPLACE_TABS.MysteryCrates}/${crate.item_sale_id}${location.hash}`
+                                            : `/marketplace/sell?item-type=${ItemType.MysteryCrate}&asset-id=${crate.id}${location.hash}`
+                                    }
                                     clipThingsProps={{
                                         clipSize: "5px",
                                         backgroundColor: crate.locked_to_marketplace ? backgroundColor : colors.red,
