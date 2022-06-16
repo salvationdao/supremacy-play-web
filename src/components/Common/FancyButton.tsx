@@ -1,37 +1,27 @@
 import LoadingButton, { LoadingButtonProps } from "@mui/lab/LoadingButton"
-import { Box, styled, SxProps } from "@mui/system"
+import { Box, SxProps } from "@mui/system"
 import { HTMLAttributeAnchorTarget } from "react"
+import { Link } from "react-router-dom"
 import { mergeDeep } from "../../helpers"
 import { colors, fonts } from "../../theme/theme"
 import { ClipThing, ClipThingProps } from "./ClipThing"
-
-const Triangle = styled("div")({
-    position: "absolute",
-    bottom: "3px",
-    right: "3px",
-    clipPath: "polygon(100% 0, 0% 100%, 100% 100%)",
-    height: "1rem",
-    width: "1rem",
-})
-
 interface FancyButtonProps extends LoadingButtonProps {
-    excludeCaret?: boolean
     sx?: SxProps
     innerSx?: SxProps
-    caretColor?: string
     clipThingsProps?: ClipThingProps
+    to?: string
     href?: string
     target?: HTMLAttributeAnchorTarget | undefined
 }
 
-export const FancyButton = ({ sx, innerSx, excludeCaret = false, disabled, caretColor, clipThingsProps, children, loading, ...props }: FancyButtonProps) => {
+export const FancyButton = ({ sx, innerSx, disabled, clipThingsProps, children, loading, to, href, ...props }: FancyButtonProps) => {
     return (
         <ClipThing
             corners={{
                 topRight: true,
                 bottomLeft: true,
             }}
-            {...mergeDeep({ clipSlantSize: "2px" }, clipThingsProps, { opacity: disabled ? 0.7 : clipThingsProps?.opacity })}
+            {...mergeDeep({ clipSlantSize: "2px" }, clipThingsProps, { opacity: disabled ? 0.5 : clipThingsProps?.opacity })}
         >
             {(loading || disabled) && (
                 <Box
@@ -42,7 +32,7 @@ export const FancyButton = ({ sx, innerSx, excludeCaret = false, disabled, caret
                         left: 0,
                         right: 0,
                         backgroundColor: "#050c12",
-                        opacity: 0.08,
+                        opacity: 0.5,
                         zIndex: 99,
                     }}
                 />
@@ -73,8 +63,13 @@ export const FancyButton = ({ sx, innerSx, excludeCaret = false, disabled, caret
                 {...props}
             >
                 <Box sx={{ pt: ".3rem", height: "100%", width: "100%", ...innerSx }}>
-                    {children}
-                    {!excludeCaret && <Triangle sx={{ backgroundColor: caretColor }} />}
+                    {to ? (
+                        <Link to={to} href={href}>
+                            {children}
+                        </Link>
+                    ) : (
+                        children
+                    )}
                 </Box>
             </LoadingButton>
         </ClipThing>

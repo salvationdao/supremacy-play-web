@@ -1,9 +1,9 @@
-import { Box, Divider, Link, Modal, Stack, Typography } from "@mui/material"
-import { colors, fonts } from "../../theme/theme"
 import WarningAmberIcon from "@mui/icons-material/WarningAmber"
-import { TOKEN_SALE_PAGE, PASSPORT_WEB } from "../../constants"
-import { useAuth } from "../../containers"
+import { Box, Divider, Modal, Stack, Typography } from "@mui/material"
 import { ClipThing, FancyButton } from ".."
+import { PASSPORT_WEB, TOKEN_SALE_PAGE } from "../../constants"
+import { useAuth } from "../../containers"
+import { colors, fonts } from "../../theme/theme"
 
 export const NoSupsModal = ({ onClose }: { onClose: () => void }) => {
     const { userID } = useAuth()
@@ -59,22 +59,21 @@ export const NoSupsModal = ({ onClose }: { onClose: () => void }) => {
 
                             <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBold }}>
                                 • Navigate to the{" "}
-                                <Link target="_blank" href={TOKEN_SALE_PAGE} color={colors.neonBlue}>
+                                <a target="_blank" href={TOKEN_SALE_PAGE} rel="noreferrer">
                                     token sale here
-                                </Link>{" "}
+                                </a>{" "}
                                 or click the &quot;Get SUPS&quot; button in the top right-hand corner of the stream.
                                 <br />
                                 <br />• From PancakeSwap, the tokens will reside in your off-world wallet. To use them on-world, and in game, you will have to
                                 deposit your $SUPS into your connected account. You can{" "}
-                                <Link target="_blank" href={PASSPORT_WEB + "deposit"} color={colors.neonBlue}>
+                                <a target="_blank" href={PASSPORT_WEB + "deposit"} rel="noreferrer">
                                     deposit your tokens here
-                                </Link>
+                                </a>
                                 .
                             </Typography>
                         </Stack>
 
                         <FancyButton
-                            excludeCaret
                             clipThingsProps={{
                                 clipSize: "9px",
                                 backgroundColor: colors.darkNavy,

@@ -40,7 +40,6 @@ export const PlayerItem = ({ player, faction, user, isActive }: { player: User; 
                 </Box>
 
                 <FancyButton
-                    excludeCaret
                     clipThingsProps={{
                         clipSize: "7px",
                         opacity: 1,

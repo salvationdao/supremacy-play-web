@@ -150,7 +150,6 @@ export const UserDetailsPopover = ({
 
                         {fromUserFactionID === user.faction_id && (
                             <FancyButton
-                                excludeCaret
                                 clipThingsProps={{
                                     clipSize: "5px",
                                     backgroundColor: factionColor,

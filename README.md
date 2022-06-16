@@ -31,7 +31,6 @@
 
 
 <FancyButton
-	excludeCaret
 	clipThingsProps={{
 		clipSize: "9px",
 		backgroundColor: "#333333",

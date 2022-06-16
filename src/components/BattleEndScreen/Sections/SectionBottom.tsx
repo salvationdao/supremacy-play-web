@@ -42,7 +42,6 @@ export const SectionBottom = ({ battleEndDetail }: { battleEndDetail: BattleEndD
             </Stack>
 
             <FancyButton
-                excludeCaret
                 clipThingsProps={{
                     clipSize: "8px",
                     backgroundColor: primaryColor,

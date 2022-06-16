@@ -1,15 +1,15 @@
-import { Box, IconButton, Link, Popover, Stack, Switch, Typography } from "@mui/material"
-import { SvgClose, SvgExternalLink, SvgSupToken } from "../../../../assets"
-import { ClipThing, TransactionItem } from "../../.."
-import { Transaction } from "../../../../types"
-import { colors, fonts, siteZIndex } from "../../../../theme/theme"
-import { supFormatterNoFixed } from "../../../../helpers"
-import { useEffect, MutableRefObject } from "react"
+import { Box, IconButton, Popover, Stack, Switch, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
-import { useToggle } from "../../../../hooks"
-import { TimeElapsed } from "./TimeElapsed"
-import { useTheme } from "../../../../containers/theme"
+import { MutableRefObject, useEffect } from "react"
+import { ClipThing, TransactionItem } from "../../.."
+import { SvgClose, SvgExternalLink, SvgSupToken } from "../../../../assets"
 import { PASSPORT_WEB } from "../../../../constants"
+import { useTheme } from "../../../../containers/theme"
+import { supFormatterNoFixed } from "../../../../helpers"
+import { useToggle } from "../../../../hooks"
+import { colors, fonts, siteZIndex } from "../../../../theme/theme"
+import { Transaction } from "../../../../types"
+import { TimeElapsed } from "./TimeElapsed"
 
 export const WalletPopover = ({
     open,
@@ -123,9 +123,9 @@ export const WalletPopover = ({
                             <Stack direction="row" alignItems="center" spacing=".8rem" sx={{ mb: ".2rem" }}>
                                 <Typography sx={{ fontFamily: fonts.nostromoBlack, color: theme.factionTheme.primary }}>TRANSACTIONS (24HRS)</Typography>
 
-                                <Link href={`${PASSPORT_WEB}transactions`} target="_blank">
+                                <a href={`${PASSPORT_WEB}transactions`} target="_blank" rel="noreferrer">
                                     <SvgExternalLink size="1.2rem" sx={{ opacity: 0.7, ":hover": { opacity: 1 } }} />
-                                </Link>
+                                </a>
                             </Stack>
 
                             <Stack direction="row" alignItems="center" sx={{ mt: "-.5rem", mb: ".2rem", opacity: 0.7, ":hover": { opacity: 1 } }}>

@@ -73,7 +73,7 @@ export const MechGeneralStatus = ({ mechID }: { mechID: string }) => {
     )
 
     return (
-        <Box sx={{ px: "1.6rem", pt: ".9rem", pb: ".6rem", backgroundColor: `${color}10`, border: `${color} 1.5px dashed` }}>
+        <Box sx={{ px: "1.6rem", pt: ".9rem", pb: ".6rem", backgroundColor: `${color}20`, border: `${color} 1.5px dashed` }}>
             <Typography variant="body2" sx={{ color, textAlign: "center", fontFamily: fonts.nostromoBlack }}>
                 {text}
             </Typography>

@@ -122,7 +122,6 @@ const BanProposalInner = ({
                 <Stack direction="row" spacing=".6rem">
                     <TooltipHelper placement="bottom" text="GENERALS can skip the voting process and instantly punish a player.">
                         <FancyButton
-                            excludeCaret
                             clipThingsProps={{
                                 clipSize: "5px",
                                 backgroundColor: colors.darkNavyBlue,
@@ -143,7 +142,6 @@ const BanProposalInner = ({
                     </TooltipHelper>
 
                     <FancyButton
-                        excludeCaret
                         clipThingsProps={{
                             clipSize: "5px",
                             backgroundColor: colors.green,
@@ -157,7 +155,6 @@ const BanProposalInner = ({
                     </FancyButton>
 
                     <FancyButton
-                        excludeCaret
                         clipThingsProps={{
                             clipSize: "5px",
                             backgroundColor: colors.red,
