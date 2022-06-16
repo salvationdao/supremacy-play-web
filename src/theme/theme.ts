@@ -280,6 +280,10 @@ export const theme = createTheme({
                     ".MuiPagination-ul": {
                         justifyContent: "center",
                     },
+                    ".MuiButtonBase-root": {
+                        minWidth: "25px",
+                        height: "25px",
+                    },
                 },
             },
         },

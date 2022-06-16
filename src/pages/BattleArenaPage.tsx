@@ -17,6 +17,7 @@ import { TutorialModal } from "../components/HowToPlay/Tutorial/TutorialModal"
 import { useToggle } from "../hooks"
 import { useState } from "react"
 import { Trailer } from "../components/Stream/Trailer"
+import { MechDeployListModal } from "../components/MechDeployListModal/MechDeployListModal"
 
 export const BattleArenaPage = () => {
     return (
@@ -34,7 +35,7 @@ export const BattleArenaPage = () => {
 
 const BattleArenaPageInner = () => {
     const { userID } = useAuth()
-    const { isServerUp, haveSups } = useSupremacy()
+    const { isServerUp, haveSups, mechDeployModalOpen, toggleMechDeployModalOpen } = useSupremacy()
     const [noSupsModalOpen, toggleNoSupsModalOpen] = useToggle(true)
     const [watchedTrailer, setWatchedTrailer] = useState(localStorage.getItem("watchedTrailer") == "true")
 
@@ -54,6 +55,7 @@ const BattleArenaPageInner = () => {
                             <BattleHistory />
                             <VotingSystem />
 
+                            {mechDeployModalOpen && <MechDeployListModal open={mechDeployModalOpen} onClose={() => toggleMechDeployModalOpen(false)} />}
                             {isServerUp && userID && haveSups === false && noSupsModalOpen && <NoSupsModal onClose={() => toggleNoSupsModalOpen(false)} />}
                             {userID && !noSupsModalOpen && <TutorialModal />}
                         </>
