@@ -12,16 +12,20 @@ import { MovingBox } from "./MovingBox"
 export interface MoveableResizableConfig {
     localStoragePrefix: string
     // Defaults
-    defaultPositionX: number
-    defaultPositionY: number
-    defaultSizeX: number
-    defaultSizeY: number
+    defaultPosX: number
+    defaultPosY: number
+    defaultWidth: number
+    defaultHeight: number
+    // Position limits
+    minPosX?: number
+    minPosY?: number
+    maxPosX?: number
+    maxPosY?: number
     // Size limits
-    minSizeX: number
-    minSizeY: number
-    // Toggles
-    allowResizeX?: boolean
-    allowResizeY?: boolean
+    minWidth?: number
+    minHeight?: number
+    maxWidth?: number
+    maxHeight?: number
     // Callbacks
     onReizeCallback?: (width: number, height: number) => void
     onHideCallback?: () => void
@@ -33,26 +37,35 @@ export interface MoveableResizableConfig {
 export const MoveableResizable = ({ config, children }: { config: MoveableResizableConfig; children: ReactNode }) => {
     const {
         localStoragePrefix,
-        defaultPositionX,
-        defaultPositionY,
-        defaultSizeX,
-        defaultSizeY,
-        minSizeX,
-        minSizeY,
-        allowResizeX,
-        allowResizeY,
+
+        defaultPosX = 0,
+        defaultPosY = 0,
+        defaultWidth = 50,
+        defaultHeight = 50,
+
+        minPosX,
+        minPosY,
+        maxPosX,
+        maxPosY,
+
+        minWidth,
+        minHeight,
+        maxWidth,
+        maxHeight,
+
         onReizeCallback,
         onHideCallback,
+
         CaptionArea,
         infoTooltipText,
     } = config
 
     const theme = useTheme()
 
-    const [curPosX, setCurPosX] = useState(parseString(localStorage.getItem(`${localStoragePrefix}PosX`), defaultPositionX))
-    const [curPosY, setCurPosY] = useState(parseString(localStorage.getItem(`${localStoragePrefix}PosY`), defaultPositionY))
-    const [curWidth, setCurWidth] = useState(parseString(localStorage.getItem(`${localStoragePrefix}SizeX`), defaultSizeX))
-    const [curHeight, setCurHeight] = useState(parseString(localStorage.getItem(`${localStoragePrefix}SizeY`), defaultSizeY))
+    const [curPosX, setCurPosX] = useState(parseString(localStorage.getItem(`${localStoragePrefix}PosX`), defaultPosX))
+    const [curPosY, setCurPosY] = useState(parseString(localStorage.getItem(`${localStoragePrefix}PosY`), defaultPosY))
+    const [curWidth, setCurWidth] = useState(parseString(localStorage.getItem(`${localStoragePrefix}SizeX`), defaultWidth))
+    const [curHeight, setCurHeight] = useState(parseString(localStorage.getItem(`${localStoragePrefix}SizeY`), defaultHeight))
 
     const onMovingStopped = useCallback(
         (data: Position) => {
@@ -93,6 +106,10 @@ export const MoveableResizable = ({ config, children }: { config: MoveableResiza
                 onMovingStopped={onMovingStopped}
                 initialPosX={curPosX}
                 initialPosY={curPosY}
+                minPosX={minPosX}
+                minPosY={minPosY}
+                maxPosX={maxPosX}
+                maxPosY={maxPosY}
                 curWidth={curWidth}
                 curHeight={curHeight}
                 handle={
@@ -132,22 +149,22 @@ export const MoveableResizable = ({ config, children }: { config: MoveableResiza
                         onResizeStopped={onResizeStopped}
                         initialWidth={curWidth}
                         initialHeight={curHeight}
-                        minWidth={allowResizeX ? minSizeX : defaultSizeX}
-                        maxWidth={allowResizeX ? undefined : defaultSizeX}
-                        minHeight={allowResizeY ? minSizeY : defaultSizeY}
-                        maxHeight={allowResizeY ? undefined : defaultSizeY}
+                        minWidth={minWidth || defaultWidth}
+                        minHeight={minHeight || defaultHeight}
+                        maxWidth={maxWidth}
+                        maxHeight={maxHeight}
                         resizeHandles={["se"]}
                         handle={() => (
                             <Box
                                 sx={{
                                     pointerEvents: "all",
                                     position: "absolute",
-                                    top: 0,
+                                    bottom: 0,
                                     right: 0,
-                                    cursor: "ew-resize",
+                                    cursor: "nw-resize",
                                     zIndex: siteZIndex.MoveableResizable,
                                     width: "10px",
-                                    height: "100%",
+                                    height: "10px",
                                 }}
                             />
                         )}
@@ -162,25 +179,25 @@ export const MoveableResizable = ({ config, children }: { config: MoveableResiza
                         backgroundColor={theme.factionTheme.background}
                         opacity={0.8}
                     >
-                        <Box sx={{ position: "relative" }}>
-                            <Stack
-                                sx={{
-                                    position: "relative",
-                                    width: curWidth,
-                                    height: curHeight,
-                                    transition: "all .2s",
-                                    resize: "all",
-                                    overflow: "hidden",
-                                    borderRadius: 0.5,
-                                }}
-                            >
-                                {children}
+                        <Stack
+                            sx={{
+                                position: "relative",
+                                width: curWidth,
+                                height: curHeight,
+                                transition: "all .2s",
+                                resize: "all",
+                                overflow: "hidden",
+                                borderRadius: 0.5,
+                            }}
+                        >
+                            <Box sx={{ flex: 1, overflow: "hidden" }}>{children}</Box>
 
-                                <Stack direction="row" alignItems="center" justifyContent="flex-end" sx={{ px: "1.04rem", pb: ".56rem" }}>
-                                    <Stack direction="row" alignItems="center" justifyContent="center" sx={{ mr: "auto" }}>
-                                        {CaptionArea}
-                                    </Stack>
+                            <Stack direction="row" alignItems="center" justifyContent="flex-end" sx={{ height: "3.1rem", px: "1.04rem", mr: "2rem" }}>
+                                <Stack direction="row" alignItems="center" justifyContent="center" sx={{ mr: "auto" }}>
+                                    {CaptionArea}
+                                </Stack>
 
+                                {infoTooltipText && (
                                     <TooltipHelper text={infoTooltipText}>
                                         <Box
                                             sx={{
@@ -192,21 +209,23 @@ export const MoveableResizable = ({ config, children }: { config: MoveableResiza
                                             <SvgInfoCircular fill={colors.text} size="1.2rem" />
                                         </Box>
                                     </TooltipHelper>
+                                )}
 
+                                {onHideCallback && (
                                     <Box
-                                        onClick={() => onHideCallback && onHideCallback()}
+                                        onClick={() => onHideCallback()}
                                         sx={{
                                             cursor: "pointer",
-                                            mr: "3rem",
+                                            mr: ".88rem",
                                             opacity: 0.4,
                                             ":hover": { opacity: 1 },
                                         }}
                                     >
                                         <SvgHide size="1.3rem" />
                                     </Box>
-                                </Stack>
+                                )}
                             </Stack>
-                        </Box>
+                        </Stack>
                     </ClipThing>
                 </Box>
             </Box>

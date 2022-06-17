@@ -41,16 +41,14 @@ export const LiveVotingChart = () => {
         () => ({
             localStoragePrefix: "liveVoting",
             // Defaults
-            defaultPositionX: 0,
-            defaultPositionY: 400,
-            defaultSizeX: 415,
-            defaultSizeY: 120,
-            // Limits
-            minSizeX: 415,
-            minSizeY: 120,
-            // Toggles
-            allowResizeX: true,
-            allowResizeY: false,
+            defaultPosX: 0,
+            defaultPosY: 400,
+            defaultWidth: 415,
+            defaultHeight: 120,
+            // Size limits
+            minWidth: 415,
+            minHeight: 120,
+            maxHeight: 120,
             // Callbacks
             onReizeCallback: onResize,
             onHideCallback: () => toggleIsLiveChartOpen(false),
@@ -74,8 +72,8 @@ export const LiveVotingChart = () => {
                 <MoveableResizable config={config}>
                     <Box
                         sx={{
-                            flex: 1,
                             position: "relative",
+                            height: "100%",
                             px: "1.1rem",
                             pt: "1rem",
                             pb: ".8rem",

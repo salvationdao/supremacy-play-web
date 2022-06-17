@@ -21,8 +21,9 @@ export const FactionAbilities = () => {
     return (
         <Fade in={true}>
             <Box>
-                <Divider sx={{ mb: 2.3, borderColor: (theme) => theme.factionTheme.primary, opacity: 0.28 }} />
-                <Stack spacing=".56rem">
+                <Divider sx={{ mb: "2rem", borderBottomWidth: ".25rem", borderColor: (theme) => theme.factionTheme.primary, opacity: 0.15 }} />
+
+                <Stack spacing=".8rem">
                     <Stack direction="row" spacing=".48rem" alignItems="center">
                         {factionID && (
                             <Box

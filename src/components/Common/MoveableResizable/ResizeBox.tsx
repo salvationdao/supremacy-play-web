@@ -15,8 +15,8 @@ interface ResizeBoxProps {
     initialWidth?: number
     initialHeight?: number
     minWidth?: number
-    maxWidth?: number
     minHeight?: number
+    maxWidth?: number
     maxHeight?: number
     resizeHandles?: ResizeHandle[]
     handle?: ReactNode

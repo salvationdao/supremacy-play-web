@@ -1,5 +1,5 @@
 import { Box, SxProps, Theme } from "@mui/system"
-import { ReactNode, useCallback, useEffect, useState } from "react"
+import { ReactNode, useCallback, useState } from "react"
 import Draggable, { DraggableData, DraggableEvent } from "react-draggable"
 import { useDimension } from "../../../containers"
 import { clamp } from "../../../helpers"
@@ -17,8 +17,8 @@ interface MovingBoxProps {
     curWidth: number
     curHeight: number
     minPosX?: number
-    maxPosX?: number
     minPosY?: number
+    maxPosX?: number
     maxPosY?: number
     handle?: ReactNode
 }
@@ -58,11 +58,11 @@ export const MovingBox = (props: MovingBoxProps) => {
     }, [curPosX, curPosY, onMovingStopped, toggleMoving])
 
     // When user resizes the window and the position is outside, then we need to fix it
-    useEffect(() => {
-        onDrag(undefined, { x: curPosX, y: curPosY })
-        onDragStop()
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [width, height])
+    // useEffect(() => {
+    //     onDrag(undefined, { x: curPosX, y: curPosY })
+    //     onDragStop()
+    //     // eslint-disable-next-line react-hooks/exhaustive-deps
+    // }, [width, height])
 
     return (
         <MovingBoxInner

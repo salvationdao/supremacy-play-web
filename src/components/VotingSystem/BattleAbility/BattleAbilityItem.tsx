@@ -4,6 +4,7 @@ import { useCallback, useMemo, useState } from "react"
 import { BattleAbilityCountdown, ClipThing } from "../.."
 import { BribeStageResponse, useGame, useAuth, useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
+import { shadeColor } from "../../../helpers"
 import { useToggle } from "../../../hooks"
 import { useGameServerCommandsFaction, useGameServerSubscription, useGameServerSubscriptionAbilityFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
@@ -151,15 +152,26 @@ const BattleAbilityItemInner = ({
     const { label, colour, image_url, description, cooldown_duration_second } = battleAbility
     const battleAbilityFactionProgress = battleAbilityProgress.find((a) => a.faction_id === currentFactionID)
 
+    const backgroundColor = useMemo(() => shadeColor(colour, -75), [colour])
+
     return (
         <Fade in={true}>
-            <Stack spacing=".56rem">
+            <Stack spacing=".8rem">
                 <BattleAbilityCountdown bribeStage={bribeStage} />
 
                 <Stack key={fadeEffect.toString()} spacing="1.04rem">
                     <Fade in={true}>
                         <Box>
-                            <ClipThing clipSize="6px" backgroundColor={`${colour || colors.darkNavy}`} opacity={0.12}>
+                            <ClipThing
+                                clipSize="6px"
+                                border={{
+                                    isFancy: true,
+                                    borderColor: colour,
+                                    borderThickness: ".3rem",
+                                }}
+                                backgroundColor={backgroundColor}
+                                opacity={0.7}
+                            >
                                 <Stack
                                     spacing=".8rem"
                                     alignItems="flex-start"
