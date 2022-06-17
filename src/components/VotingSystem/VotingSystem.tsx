@@ -31,6 +31,7 @@ const VotingSystemInner = ({ bribeStage }: { bribeStage?: BribeStageResponse }) 
             maxHeight: 500,
             // Others
             CaptionArea: <Box sx={{ pl: ".3rem" }}></Box>,
+            infoTooltipText: "Vote for game abilities and fight for your Syndicate!",
         }),
         [],
     )
