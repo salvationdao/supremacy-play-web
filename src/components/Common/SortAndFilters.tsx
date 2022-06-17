@@ -7,7 +7,16 @@ import { useDebounce } from "../../hooks"
 import { colors, fonts } from "../../theme/theme"
 import { SortType } from "../../types/marketplace"
 
-const sortOptions: SortType[] = [SortType.OldestFirst, SortType.NewestFirst, SortType.Alphabetical, SortType.AlphabeticalReverse]
+const sortOptions: SortType[] = [
+    SortType.OldestFirst,
+    SortType.NewestFirst,
+    SortType.ExpiringFirst,
+    SortType.ExpiringReverse,
+    SortType.PriceLowest,
+    SortType.PriceHighest,
+    SortType.Alphabetical,
+    SortType.AlphabeticalReverse,
+]
 
 export interface ChipFilter {
     label: string
