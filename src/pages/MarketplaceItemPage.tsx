@@ -37,7 +37,6 @@ export const MarketplaceItemPage = () => {
         >
             <Stack spacing=".6rem" sx={{ mt: "1.5rem", mb: "2rem", height: "100%", width: "calc(100% - 3rem)", maxWidth: "132rem" }}>
                 <FancyButton
-                    excludeCaret
                     clipThingsProps={{
                         clipSize: "9px",
                         corners: { topLeft: true },

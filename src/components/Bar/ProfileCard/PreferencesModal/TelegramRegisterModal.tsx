@@ -108,7 +108,6 @@ export const TelegramRegisterModal = ({ onClose, code }: { onClose: () => void; 
                                 </Box>
 
                                 <FancyButton
-                                    excludeCaret
                                     clipThingsProps={{
                                         clipSize: "5px",
                                         backgroundColor: colors.darkNavy,
@@ -312,7 +311,6 @@ export const TelegramRegisterModal = ({ onClose, code }: { onClose: () => void; 
                             </Box>
 
                             <FancyButton
-                                excludeCaret
                                 clipThingsProps={{
                                     clipSize: "9px",
                                     backgroundColor: colors.darkNavy,

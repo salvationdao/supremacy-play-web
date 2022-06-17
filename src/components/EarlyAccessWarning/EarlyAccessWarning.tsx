@@ -68,7 +68,6 @@ export const EarlyAccessWarning = ({ onAcknowledged }: { onAcknowledged: () => v
                         </Stack>
 
                         <FancyButton
-                            excludeCaret
                             clipThingsProps={{
                                 clipSize: "9px",
                                 backgroundColor: colors.darkNavy,

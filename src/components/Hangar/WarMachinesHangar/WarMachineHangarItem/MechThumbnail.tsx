@@ -6,7 +6,7 @@ import { getRarityDeets } from "../../../../helpers"
 import { fonts } from "../../../../theme/theme"
 import { MechBasic, MechDetails } from "../../../../types"
 
-export const MechThumbnail = ({ mech, mechDetails }: { mech: MechBasic; mechDetails?: MechDetails }) => {
+export const MechThumbnail = ({ mech, mechDetails, smallSize }: { mech: MechBasic; mechDetails?: MechDetails; smallSize?: boolean }) => {
     const theme = useTheme()
     const primaryColor = theme.factionTheme.primary
     const rarityDeets = useMemo(() => getRarityDeets(mech.tier || mechDetails?.tier || ""), [mech, mechDetails])
@@ -15,40 +15,43 @@ export const MechThumbnail = ({ mech, mechDetails }: { mech: MechBasic; mechDeta
 
     return (
         <ClipThing
-            clipSize="8px"
+            clipSize={smallSize ? "4px" : "8px"}
             border={{
                 borderColor: primaryColor,
-                borderThickness: imageUrl ? "0" : ".15rem",
+                borderThickness: imageUrl && !smallSize ? "0" : ".12rem",
             }}
             backgroundColor={theme.factionTheme.background}
             sx={{ flex: 1, position: "relative" }}
         >
-            <Typography
-                sx={{
-                    position: "absolute",
-                    bottom: "1px",
-                    left: "2px",
-                    lineHeight: 1,
-                    fontFamily: fonts.nostromoHeavy,
-                    color: rarityDeets.color,
-                }}
-            >
-                <span
-                    style={{
-                        padding: ".1rem .6rem",
-                        lineHeight: 1.5,
-                        backgroundColor: `${theme.factionTheme.background}DD`,
-                        fontFamily: "inherit",
+            {!smallSize && (
+                <Typography
+                    variant="body1"
+                    sx={{
+                        position: "absolute",
+                        bottom: "1px",
+                        left: "2px",
+                        lineHeight: 1,
+                        fontFamily: fonts.nostromoHeavy,
+                        color: rarityDeets.color,
                     }}
                 >
-                    {rarityDeets.label}
-                </span>
-            </Typography>
+                    <span
+                        style={{
+                            padding: ".1rem .6rem",
+                            lineHeight: 1.5,
+                            backgroundColor: `${theme.factionTheme.background}DD`,
+                            fontFamily: "inherit",
+                        }}
+                    >
+                        {rarityDeets.label}
+                    </span>
+                </Typography>
+            )}
 
             <Box
                 sx={{
                     height: "100%",
-                    width: "16.8rem",
+                    width: smallSize ? "9rem" : "16.8rem",
                     overflow: "hidden",
                     background: `url(${imageUrl})`,
                     backgroundRepeat: "no-repeat",

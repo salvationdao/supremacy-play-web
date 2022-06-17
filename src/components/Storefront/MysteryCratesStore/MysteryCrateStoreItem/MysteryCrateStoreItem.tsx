@@ -175,7 +175,7 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate }: MysteryCrateStore
                                     }}
                                 >
                                     <span>{numberCommaFormatter(mysteryCrate.amount - mysteryCrate.amount_sold)}</span> /{" "}
-                                    {numberCommaFormatter(mysteryCrate.amount)}
+                                    {numberCommaFormatter(mysteryCrate.amount)} left
                                 </Typography>
                             </Box>
                         </Box>
@@ -195,7 +195,6 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate }: MysteryCrateStore
 
                             <Stack alignItems="center" sx={{ mt: "auto !important", pt: ".8rem", alignSelf: "stretch" }}>
                                 <FancyButton
-                                    excludeCaret
                                     onClick={() => toggleConfirmModalOpen(true)}
                                     clipThingsProps={{
                                         clipSize: "5px",

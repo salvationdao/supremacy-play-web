@@ -1,6 +1,6 @@
 import { Box, IconButton, Stack, Typography } from "@mui/material"
 import { useMemo } from "react"
-import { useHistory, useLocation } from "react-router-dom"
+import { useLocation } from "react-router-dom"
 import { RainingSupsPNG, SafePNG, SvgClose } from "../../assets"
 import { useTheme } from "../../containers/theme"
 import { supFormatter } from "../../helpers"
@@ -17,7 +17,6 @@ interface ClaimedRewardsProps {
 
 export const ClaimedRewards = ({ rewards, onClose }: ClaimedRewardsProps) => {
     const theme = useTheme()
-    const history = useHistory()
     const location = useLocation()
 
     const isMechCrateReward = useMemo(() => rewards.find((reward) => reward.label === "MECH"), [rewards])
@@ -72,7 +71,6 @@ export const ClaimedRewards = ({ rewards, onClose }: ClaimedRewardsProps) => {
                 </Stack>
 
                 <FancyButton
-                    excludeCaret
                     clipThingsProps={{
                         clipSize: "9px",
                         backgroundColor: theme.factionTheme.primary,
@@ -81,9 +79,7 @@ export const ClaimedRewards = ({ rewards, onClose }: ClaimedRewardsProps) => {
                         sx: { position: "relative", width: "32rem" },
                     }}
                     sx={{ width: "100%", py: "1rem", color: theme.factionTheme.secondary }}
-                    onClick={() => {
-                        history.push(`/fleet/mystery-crates${location.hash}`)
-                    }}
+                    to={`/fleet/mystery-crates${location.hash}`}
                 >
                     <Typography
                         variant="h6"

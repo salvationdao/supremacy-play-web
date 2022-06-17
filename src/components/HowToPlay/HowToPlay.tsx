@@ -122,7 +122,6 @@ const OptionButton = ({ text, onClick }: { text: string; onClick: () => void }) 
     return (
         <FancyButton
             tabIndex={0}
-            excludeCaret
             clipThingsProps={{
                 clipSize: "9px",
                 opacity: 1,

@@ -358,7 +358,6 @@ export const UserBanForm = ({ user, open, onClose, prefillUser }: { user: User; 
                         </Stack>
 
                         <FancyButton
-                            excludeCaret
                             clipThingsProps={{
                                 clipSize: "9px",
                                 backgroundColor: primaryColor,

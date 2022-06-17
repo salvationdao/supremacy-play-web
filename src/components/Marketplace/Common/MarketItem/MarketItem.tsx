@@ -1,7 +1,6 @@
 import { Box } from "@mui/material"
 import BigNumber from "bignumber.js"
 import { ReactNode, useMemo } from "react"
-import { useHistory } from "react-router-dom"
 import { FancyButton } from "../../.."
 import { useTheme } from "../../../../containers/theme"
 import { numFormatter, shadeColor, timeDiff } from "../../../../helpers"
@@ -27,7 +26,6 @@ interface MarketItemProps {
 }
 
 export const MarketItem = ({ imageUrl, animationUrl, cardAnimationUrl, backgroundImageUrl, item, isGridView, children, linkSubPath }: MarketItemProps) => {
-    const history = useHistory()
     const theme = useTheme()
 
     const formattedBuyoutPrice = useMemo(() => {
@@ -61,7 +59,6 @@ export const MarketItem = ({ imageUrl, animationUrl, cardAnimationUrl, backgroun
     return (
         <Box sx={{ position: "relative", overflow: "visible" }}>
             <FancyButton
-                excludeCaret
                 clipThingsProps={{
                     clipSize: "7px",
                     clipSlantSize: "0px",
@@ -77,7 +74,7 @@ export const MarketItem = ({ imageUrl, animationUrl, cardAnimationUrl, backgroun
                     sx: { position: "relative" },
                 }}
                 sx={{ color: primaryColor, textAlign: "start" }}
-                onClick={() => history.push(`/marketplace/${linkSubPath}/${id}${location.hash}`)}
+                to={`/marketplace/${linkSubPath}/${id}${location.hash}`}
             >
                 <Box
                     sx={{

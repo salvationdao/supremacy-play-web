@@ -76,7 +76,6 @@ export const CodeRedemption = ({ setRewards }: redemptionProps) => {
                     </ClipThing>
 
                     <FancyButton
-                        excludeCaret
                         disabled={code.length !== 6 || loading}
                         loading={loading}
                         clipThingsProps={{

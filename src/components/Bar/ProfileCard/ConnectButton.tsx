@@ -22,7 +22,6 @@ export const ConnectButton = ({ width, label, loadingLabel, sx, typeSx, clipBord
             {!isLoggingIn ? (
                 <FancyButton
                     id="tutorial-connect"
-                    excludeCaret
                     clipThingsProps={{
                         clipSize: "7px",
                         backgroundColor: clipBackgroundColor || colors.neonBlue,

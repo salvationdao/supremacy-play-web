@@ -18,10 +18,10 @@ export const Dates = ({ createdAt, endAt, onTimeEnded, soldAt }: { createdAt: Da
 
             <Box>
                 <Typography gutterBottom sx={{ color: colors.lightGrey, fontFamily: fonts.nostromoBold }}>
-                    END DATE:
+                    {soldAt ? "DATE SOLD" : "END DATE:"}
                 </Typography>
                 <Typography variant="h5" sx={{ fontWeight: "fontWeightBold", span: { color: colors.lightNeonBlue, fontFamily: "inherit" } }}>
-                    {endAt.toUTCString()}{" "}
+                    {(soldAt || endAt).toUTCString()}{" "}
                     <span>
                         (<TimeLeft endAt={soldAt || endAt} onTimeEnded={onTimeEnded} />)
                     </span>

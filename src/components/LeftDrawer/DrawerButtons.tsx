@@ -5,6 +5,7 @@ import { useAuth } from "../../containers"
 import { useTheme } from "../../containers/theme"
 import { ROUTES_ARRAY } from "../../routes"
 import { colors, fonts, siteZIndex } from "../../theme/theme"
+import { MechDeployListButton } from "../MechDeployListModal/MechDeployListButton"
 
 const DRAWER_BAR_WIDTH = 3 // rem
 const BUTTON_WIDTH = 17 //rem
@@ -48,12 +49,15 @@ export const DrawerButtons = ({ openLeftDrawer }: { openLeftDrawer: () => void }
             <Tabs value={0} orientation="vertical" variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile sx={{ flex: 1 }}>
                 {ROUTES_ARRAY.map((r) => {
                     if (!r.leftDrawer) return null
-                    const { requireAuth, requireFaction } = r
+                    const { id, requireAuth, requireFaction } = r
                     const { enable, label } = r.leftDrawer
                     const disable = (requireAuth || requireFaction) && !userID
                     const navigateTo = r.path.split("/:")[0]
 
-                    return (
+                    const toRender = []
+
+                    if (id === "fleet") toRender.push(<MechDeployListButton />)
+                    toRender.push(
                         <TabButton
                             key={r.id}
                             label={label}
@@ -63,8 +67,9 @@ export const DrawerButtons = ({ openLeftDrawer }: { openLeftDrawer: () => void }
                             isActive={activeTabID === r.matchLeftDrawerID || location.pathname === r.path}
                             primaryColor={theme.factionTheme.primary}
                             secondaryColor={theme.factionTheme.secondary}
-                        />
+                        />,
                     )
+                    return toRender
                 })}
             </Tabs>
 
