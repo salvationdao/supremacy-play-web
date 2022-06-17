@@ -1,12 +1,11 @@
 import { Box, Link, Stack, TextField, Typography } from "@mui/material"
-import { useEffect, useState } from "react"
-import { SvgEdit, SvgExternalLink } from "../../../../assets"
+import { useEffect, useRef, useState } from "react"
+import { SvgExternalLink } from "../../../../assets"
 import { PASSPORT_WEB } from "../../../../constants"
 import { useAuth } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
-import { fonts } from "../../../../theme/theme"
+import { colors, fonts } from "../../../../theme/theme"
 import { MechBasic, MechDetails } from "../../../../types"
-import { FancyButton } from "../../../Common/FancyButton"
 
 export const MechTitle = ({
     mech,
@@ -25,6 +24,8 @@ export const MechTitle = ({
     const name = mechDetails?.name
     const hash = mech.hash || mechDetails?.hash
 
+    // Rename
+    const renamingRef = useRef<HTMLInputElement>()
     const [editing, setEditing] = useState(false)
     const [newMechName, setNewMechName] = useState<string>(name || "")
 
@@ -45,7 +46,6 @@ export const MechTitle = ({
             sx={{
                 top: 0,
                 left: "1rem",
-                maxWidth: "70%",
                 overflow: "visible",
                 zIndex: 9,
             }}
@@ -58,148 +58,133 @@ export const MechTitle = ({
                     px: "1rem",
                     py: ".5rem",
                     maxWidth: "70%",
-                    background:
-                        !editing && isSelected
-                            ? `linear-gradient(${theme.factionTheme.primary}FF 26%, ${theme.factionTheme.primary}BB)`
-                            : theme.factionTheme.background,
-                    border: editing ? "" : !editing && isSelected ? `${theme.factionTheme.primary} .3rem solid` : `${theme.factionTheme.primary}90 .2rem solid`,
-                    zIndex: 90,
-                }}
-            >
-                {!editing && (
-                    <Stack>
-                        <Box display="flex">
-                            <Typography
-                                sx={{
-                                    color: isSelected ? theme.factionTheme.secondary : "#FFFFFF",
-                                    fontFamily: fonts.nostromoBlack,
-                                    display: "-webkit-box",
-                                    overflow: "hidden",
-                                    overflowWrap: "anywhere",
-                                    textOverflow: "ellipsis",
-                                    WebkitLineClamp: 1,
-                                    WebkitBoxOrient: "vertical",
-                                }}
-                            >
-                                {label}
-                            </Typography>
-
-                            {userID && hash && (
-                                <Box mt="2px">
-                                    <span>
-                                        <Link
-                                            href={`${PASSPORT_WEB}profile/${user.username}/asset/${hash}`}
-                                            target="_blank"
-                                            sx={{ display: "inline", ml: ".7rem" }}
-                                        >
-                                            <SvgExternalLink
-                                                size="1.2rem"
-                                                sx={{ display: "inline", opacity: 0.7, ":hover": { opacity: 1 } }}
-                                                fill={isSelected ? theme.factionTheme.secondary : "#FFFFFF"}
-                                            />
-                                        </Link>
-                                    </span>
-                                </Box>
-                            )}
-                        </Box>
-                    </Stack>
-                )}
-            </Stack>
-
-            <Stack
-                direction="row"
-                alignItems="center"
-                sx={{
-                    px: "1rem",
-                    py: ".2rem",
-                    maxWidth: "70%",
                     background: isSelected
                         ? `linear-gradient(${theme.factionTheme.primary}FF 26%, ${theme.factionTheme.primary}BB)`
                         : theme.factionTheme.background,
                     border: isSelected ? `${theme.factionTheme.primary} .3rem solid` : `${theme.factionTheme.primary}90 .2rem solid`,
+                    zIndex: 9,
                 }}
             >
-                {!editing && (
-                    <Stack>
-                        <div onClick={() => setEditing(true)} style={{ display: "flex", cursor: "pointer" }}>
-                            <Typography
-                                sx={{
-                                    color: isSelected ? theme.factionTheme.secondary : "#FFFFFF",
-                                    fontFamily: fonts.nostromoBlack,
-                                    display: "-webkit-box",
-                                    overflow: "hidden",
-                                    overflowWrap: "anywhere",
-                                    textOverflow: "ellipsis",
-                                    WebkitLineClamp: 1,
-                                    WebkitBoxOrient: "vertical",
-                                    fontSize: "9px",
-                                }}
-                            >
-                                {name || "name"}
-                            </Typography>
-
-                            <span>
-                                <SvgEdit
-                                    size="1.2rem"
-                                    sx={{ ml: "5px", display: "inline", opacity: 0.7, ":hover": { opacity: 1 } }}
-                                    fill={isSelected ? theme.factionTheme.secondary : "#FFFFFF"}
-                                />
-                            </span>
-                        </div>
-                    </Stack>
-                )}
-
-                {editing && (
+                <Stack sx={{ position: "relative" }}>
                     <Box display="flex">
-                        <TextField
-                            onBlur={renameMechHandler}
-                            value={newMechName}
-                            placeholder="Name"
-                            onChange={(e) => {
-                                setNewMechName(e.currentTarget.value)
-                            }}
-                            type="text"
-                            hiddenLabel
+                        <Typography
                             sx={{
-                                borderRadius: 1,
-                                "& .MuiInputBase-root": {
-                                    py: 0,
-                                    fontFamily: fonts.shareTech,
-                                },
-                                ".Mui-disabled": {
-                                    WebkitTextFillColor: "unset",
-                                },
-                                ".Mui-focused .MuiOutlinedInput-notchedOutline": {},
-                                input: {
-                                    padding: "3px",
-                                    color: "#000",
-                                    fontFamily: fonts.nostromoBlack,
-                                    border: "1px solid black",
-                                },
+                                color: isSelected ? theme.factionTheme.secondary : "#FFFFFF",
+                                fontFamily: fonts.nostromoBlack,
+                                display: "-webkit-box",
+                                overflow: "hidden",
+                                overflowWrap: "anywhere",
+                                textOverflow: "ellipsis",
+                                WebkitLineClamp: 1,
+                                WebkitBoxOrient: "vertical",
                             }}
-                        />
-
-                        <FancyButton
-                            clipThingsProps={{
-                                clipSize: "8px",
-                                sx: { position: "relative", minWidth: "10rem" },
-                            }}
-                            sx={{ px: "1.3rem", py: ".3rem" }}
-                            onClick={renameMechHandler}
                         >
-                            <Typography
-                                variant="caption"
-                                sx={{
-                                    color: "#000",
-                                    fontFamily: fonts.nostromoBlack,
-                                    fontWeight: "bold",
-                                }}
-                            >
-                                Save
-                            </Typography>
-                        </FancyButton>
+                            {label}
+                        </Typography>
+
+                        {userID && hash && (
+                            <Box mt="2px">
+                                <span>
+                                    <Link
+                                        href={`${PASSPORT_WEB}profile/${user.username}/asset/${hash}`}
+                                        target="_blank"
+                                        sx={{ display: "inline", ml: ".7rem" }}
+                                    >
+                                        <SvgExternalLink
+                                            size="1.2rem"
+                                            sx={{ display: "inline", opacity: 0.7, ":hover": { opacity: 1 } }}
+                                            fill={isSelected ? theme.factionTheme.secondary : "#FFFFFF"}
+                                        />
+                                    </Link>
+                                </span>
+                            </Box>
+                        )}
                     </Box>
-                )}
+
+                    <Box sx={{ zIndex: 10, position: "absolute", left: "5px", bottom: "-25px" }}>
+                        <Box
+                            sx={{
+                                p: "0.5rem",
+                                width: "auto",
+                                display: "inline-block",
+                                flexGrow: 0,
+                                zIndex: 10,
+
+                                background: isSelected
+                                    ? `linear-gradient(${theme.factionTheme.primary}FF 26%, ${theme.factionTheme.primary}BB)`
+                                    : theme.factionTheme.background,
+                                border: isSelected ? `${theme.factionTheme.primary} .3rem solid` : `${theme.factionTheme.primary}90 .2rem solid`,
+                            }}
+                        >
+                            <Box onClick={() => setEditing(true)} sx={{ display: "flex", justifyContent: "flex-start", cursor: "pointer" }}>
+                                {editing && (
+                                    <TextField
+                                        inputRef={renamingRef}
+                                        variant={"standard"}
+                                        sx={{
+                                            position: "relative",
+                                            flex: 1,
+                                            m: 0,
+                                            "& .MuiInput-root": {
+                                                p: 0,
+                                                fontSize: 10,
+                                                color: isSelected ? "#000" : "#fff",
+                                            },
+                                            "& .MuiInputBase-input": {
+                                                p: 0,
+                                                display: "inline",
+                                                fontFamily: fonts.nostromoBlack,
+                                                wordBreak: "break-word",
+                                            },
+                                            ".MuiInputBase-input:focus": {
+                                                px: ".7rem",
+                                                py: ".1rem",
+                                                borderRadius: 0.5,
+                                                cursor: "auto !important",
+                                                color: "#000",
+                                                border: `1.5px dashed ${colors.lightGrey}`,
+                                                backgroundColor: "#FFFFFF09",
+                                            },
+                                        }}
+                                        spellCheck={false}
+                                        InputProps={{
+                                            disableUnderline: true,
+                                        }}
+                                        value={newMechName}
+                                        onChange={(e) => setNewMechName(e.target.value)}
+                                        onFocus={() => {
+                                            renamingRef.current?.setSelectionRange(newMechName.length, newMechName.length)
+                                        }}
+                                        onKeyDown={(e) => {
+                                            if (e.key === "Enter") {
+                                                e.preventDefault()
+                                                renameMechHandler()
+                                                renamingRef.current?.blur()
+                                            }
+                                        }}
+                                    />
+                                )}
+                                {!editing && (
+                                    <Typography
+                                        sx={{
+                                            color: isSelected ? theme.factionTheme.secondary : "#FFFFFF",
+                                            fontFamily: fonts.nostromoBlack,
+                                            display: "-webkit-box",
+                                            overflow: "hidden",
+                                            overflowWrap: "anywhere",
+                                            textOverflow: "ellipsis",
+                                            WebkitLineClamp: 1,
+                                            WebkitBoxOrient: "vertical",
+                                            fontSize: "9px",
+                                        }}
+                                    >
+                                        {name || "name"}
+                                    </Typography>
+                                )}
+                            </Box>
+                        </Box>
+                    </Box>
+                </Stack>
             </Stack>
         </Box>
     )
