@@ -16,7 +16,7 @@ export const PageHeader = ({ title, description, imageUrl, children }: PageHeade
             alignItems="center"
             sx={{
                 px: "2rem",
-                py: "1.8rem",
+                py: "1.5rem",
                 backgroundColor: "#00000070",
                 borderBottom: (theme) => `${theme.factionTheme.primary}70 1.5px solid`,
             }}

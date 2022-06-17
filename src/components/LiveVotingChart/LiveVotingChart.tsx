@@ -114,7 +114,7 @@ export const LiveVotingChart = () => {
                                     }}
                                 />
                                 <Typography variant="body2" sx={{ lineHeight: 1 }}>
-                                    Live
+                                    LIVE
                                 </Typography>
                             </Stack>
 

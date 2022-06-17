@@ -139,8 +139,7 @@ export const LocationSelectAlert = ({ data, getFaction }: { data: LocationSelect
 
     return (
         <ClipThing
-            clipSize="3px"
-            clipSlantSize="2px"
+            clipSize="6px"
             border={{
                 borderColor: mainColor || colors.grey,
                 isFancy: true,

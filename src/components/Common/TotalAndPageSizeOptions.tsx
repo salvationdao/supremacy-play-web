@@ -33,14 +33,14 @@ export const TotalAndPageSizeOptions = ({
             sx={{
                 pl: "1.5rem",
                 pr: ".5rem",
-                py: ".6rem",
+                py: ".3rem",
                 backgroundColor: "#00000070",
                 borderBottom: (theme) => `${theme.factionTheme.primary}70 1.5px solid`,
-                span: { fontFamily: fonts.nostromoBold },
-                strong: { fontFamily: fonts.nostromoBlack },
+                // span: { fontFamily: fonts.nostromoBold },
+                // strong: { fontFamily: fonts.nostromoBlack },
             }}
         >
-            <Typography variant="caption" sx={{ lineHeight: 1 }}>
+            <Typography variant="body1" sx={{ lineHeight: 1 }}>
                 <strong>DISPLAYING:</strong> {countItems || 0} of {totalItems}
             </Typography>
             <Stack
@@ -86,7 +86,7 @@ export const TotalAndPageSizeOptions = ({
                                 changePage(1)
                             }}
                         >
-                            <Typography variant="caption" sx={{ color: "inherit" }}>
+                            <Typography variant="body2" sx={{ color: "inherit" }}>
                                 {size}
                             </Typography>
                         </IconButton>

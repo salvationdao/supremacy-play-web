@@ -284,15 +284,11 @@ const AmountItem = ({
     return (
         <TooltipHelper placement="bottom" text={tooltip}>
             <Stack direction="row" alignItems="center">
-                <Typography variant="body1" sx={{ mr: ".4rem", fontWeight: "fontWeightBold" }}>
-                    {title}
-                </Typography>
+                <Typography sx={{ mr: ".4rem", fontWeight: "fontWeightBold" }}>{title}</Typography>
 
-                {!disableIcon && <SvgSupToken size="1.6rem" fill={color} sx={{ mr: ".1rem", pb: ".4rem" }} />}
+                {!disableIcon && <SvgSupToken size="1.7rem" fill={color} sx={{ mr: ".1rem", pb: ".2rem" }} />}
 
-                <Typography variant="body1" sx={{ color: color }}>
-                    {value || "---"}
-                </Typography>
+                <Typography sx={{ color: color, fontWeight: "fontWeightBold" }}>{value || "---"}</Typography>
             </Stack>
         </TooltipHelper>
     )
