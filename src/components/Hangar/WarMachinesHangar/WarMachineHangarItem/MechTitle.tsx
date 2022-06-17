@@ -152,10 +152,7 @@ export const MechTitle = ({
                 {editing && (
                     <Box display="flex">
                         <TextField
-                            onBlur={() => {
-                                console.log("hellow")
-                                renameMechHandler()
-                            }}
+                            onBlur={renameMechHandler}
                             value={newMechName}
                             placeholder="Name"
                             onChange={(e) => {
