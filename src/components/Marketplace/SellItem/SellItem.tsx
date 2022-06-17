@@ -75,7 +75,7 @@ export const SellItemInner = ({ toggleReset }: { toggleReset: () => void }) => {
     useEffect(() => {
         let fee = 10
         if (reservePrice) fee += 5
-        if (buyoutPrice && !dropRate) fee += 5
+        if (buyoutPrice && !dropRate && itemType !== ItemType.Keycards) fee += 5
         setListingFee(fee)
     }, [buyoutPrice, reservePrice, dropRate, itemType])
 
