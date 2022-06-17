@@ -101,7 +101,7 @@ export const MechTitle = ({
                         )}
                     </Box>
 
-                    <Box sx={{ zIndex: 10, position: "absolute", left: "5px", bottom: "-25px" }}>
+                    <Box sx={{ zIndex: 10, position: "absolute", left: "5px", bottom: "-25px", transition: "all .2s" }}>
                         <Box
                             sx={{
                                 p: "0.5rem",
@@ -117,53 +117,55 @@ export const MechTitle = ({
                             }}
                         >
                             <Box onClick={() => setEditing(true)} sx={{ display: "flex", justifyContent: "flex-start", cursor: "pointer" }}>
-                                {editing && (
-                                    <TextField
-                                        inputRef={renamingRef}
-                                        variant={"standard"}
-                                        sx={{
-                                            position: "relative",
-                                            flex: 1,
-                                            m: 0,
-                                            "& .MuiInput-root": {
-                                                p: 0,
-                                                fontSize: 10,
-                                                color: isSelected ? "#000" : "#fff",
-                                            },
-                                            "& .MuiInputBase-input": {
-                                                p: 0,
-                                                display: "inline",
-                                                fontFamily: fonts.nostromoBlack,
-                                                wordBreak: "break-word",
-                                            },
-                                            ".MuiInputBase-input:focus": {
-                                                px: ".7rem",
-                                                py: ".1rem",
-                                                borderRadius: 0.5,
-                                                cursor: "auto !important",
-                                                color: "#000",
-                                                border: `1.5px dashed ${colors.lightGrey}`,
-                                                backgroundColor: "#FFFFFF09",
-                                            },
-                                        }}
-                                        spellCheck={false}
-                                        InputProps={{
-                                            disableUnderline: true,
-                                        }}
-                                        value={newMechName}
-                                        onChange={(e) => setNewMechName(e.target.value)}
-                                        onFocus={() => {
-                                            renamingRef.current?.setSelectionRange(newMechName.length, newMechName.length)
-                                        }}
-                                        onKeyDown={(e) => {
-                                            if (e.key === "Enter") {
-                                                e.preventDefault()
-                                                renameMechHandler()
-                                                renamingRef.current?.blur()
-                                            }
-                                        }}
-                                    />
-                                )}
+                                {/* {editing && ( */}
+                                <TextField
+                                    inputRef={renamingRef}
+                                    variant={"standard"}
+                                    sx={{
+                                        transition: "all 0.2s",
+                                        width: editing ? "150px" : "0px",
+                                        position: "relative",
+                                        flex: 1,
+                                        m: 0,
+                                        "& .MuiInput-root": {
+                                            p: 0,
+                                            fontSize: 10,
+                                            color: isSelected ? "#000" : "#fff",
+                                        },
+                                        "& .MuiInputBase-input": {
+                                            p: 0,
+                                            display: "inline",
+                                            fontFamily: fonts.nostromoBlack,
+                                            wordBreak: "break-word",
+                                        },
+                                        ".MuiInputBase-input:focus": {
+                                            px: ".7rem",
+                                            py: ".1rem",
+                                            borderRadius: 0.5,
+                                            cursor: "auto !important",
+                                            color: "#000",
+                                            border: `1.5px dashed ${colors.lightGrey}`,
+                                            backgroundColor: "#FFFFFF09",
+                                        },
+                                    }}
+                                    spellCheck={false}
+                                    InputProps={{
+                                        disableUnderline: true,
+                                    }}
+                                    value={newMechName}
+                                    onChange={(e) => setNewMechName(e.target.value)}
+                                    onFocus={() => {
+                                        renamingRef.current?.setSelectionRange(newMechName.length, newMechName.length)
+                                    }}
+                                    onKeyDown={(e) => {
+                                        if (e.key === "Enter") {
+                                            e.preventDefault()
+                                            renameMechHandler()
+                                            renamingRef.current?.blur()
+                                        }
+                                    }}
+                                />
+                                {/* )} */}
                                 {!editing && (
                                     <Typography
                                         sx={{
