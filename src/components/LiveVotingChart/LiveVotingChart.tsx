@@ -50,14 +50,9 @@ export const LiveVotingChart = () => {
             minHeight: 120,
             maxHeight: 120,
             // Callbacks
-            onReizeCallback: onResize,
+            onResizeCallback: onResize,
             onHideCallback: () => toggleIsLiveChartOpen(false),
             // Others
-            CaptionArea: (
-                <Box sx={{ pl: ".3rem" }}>
-                    <BattleStats />
-                </Box>
-            ),
             infoTooltipText:
                 "The chart shows you the SUPS being spent into the battle arena in real time. All SUPS spent are accumulated into the SPOILS OF WAR, which are distributed back to the players in future battles based on the multipliers that they have earned. Contribute to the battle or be part of the winning Syndicate to increase your earnings.",
         }),
@@ -70,62 +65,66 @@ export const LiveVotingChart = () => {
         <Fade in={isLiveChartOpen}>
             <Box>
                 <MoveableResizable config={config}>
-                    <Box
-                        sx={{
-                            position: "relative",
-                            height: "100%",
-                            px: "1.1rem",
-                            pt: "1rem",
-                            pb: ".8rem",
-                            width: "100%",
-                        }}
-                    >
+                    <Stack sx={{ height: "100%", pt: "1.2rem" }}>
                         <Box
-                            key={maxLiveVotingDataLength}
                             sx={{
+                                flex: 1,
                                 position: "relative",
-                                height: "100%",
-                                px: ".56rem",
-                                pt: "1.6rem",
-                                background: "#000000E6",
-                                border: (theme) => `${theme.factionTheme.primary}10 1px solid`,
-                                borderRadius: 1,
+                                px: "1.3rem",
+                                pb: ".4rem",
                             }}
                         >
-                            <Stack
-                                direction="row"
-                                alignItems="center"
-                                justifyContent="center"
-                                spacing=".4rem"
+                            <Box
+                                key={maxLiveVotingDataLength}
                                 sx={{
-                                    position: "absolute",
-                                    top: ".5rem",
-                                    right: ".7rem",
+                                    position: "relative",
+                                    height: "100%",
+                                    px: ".56rem",
+                                    pt: "1.6rem",
+                                    background: "#000000E6",
+                                    border: (theme) => `${theme.factionTheme.primary}10 1px solid`,
+                                    borderRadius: 1,
                                 }}
                             >
-                                <Box
+                                <Stack
+                                    direction="row"
+                                    alignItems="center"
+                                    justifyContent="center"
+                                    spacing=".4rem"
                                     sx={{
-                                        width: 7,
-                                        height: 7,
-                                        mb: ".32rem",
-                                        backgroundColor: colors.red,
-                                        borderRadius: "50%",
-                                        animation: `${pulseEffect} 3s infinite`,
+                                        position: "absolute",
+                                        top: ".5rem",
+                                        right: ".7rem",
                                     }}
-                                />
-                                <Typography variant="body2" sx={{ lineHeight: 1 }}>
-                                    LIVE
-                                </Typography>
-                            </Stack>
+                                >
+                                    <Box
+                                        sx={{
+                                            width: 7,
+                                            height: 7,
+                                            mb: ".32rem",
+                                            backgroundColor: colors.red,
+                                            borderRadius: "50%",
+                                            animation: `${pulseEffect} 3s infinite`,
+                                        }}
+                                    />
+                                    <Typography variant="body2" sx={{ lineHeight: 1 }}>
+                                        LIVE
+                                    </Typography>
+                                </Stack>
 
-                            <LiveGraph
-                                battleIdentifier={battleIdentifier}
-                                maxWidthPx={curWidth}
-                                maxHeightPx={curHeight}
-                                maxLiveVotingDataLength={maxLiveVotingDataLength}
-                            />
+                                <LiveGraph
+                                    battleIdentifier={battleIdentifier}
+                                    maxWidthPx={curWidth}
+                                    maxHeightPx={curHeight}
+                                    maxLiveVotingDataLength={maxLiveVotingDataLength}
+                                />
+                            </Box>
                         </Box>
-                    </Box>
+
+                        <Box sx={{ px: "1.5rem", pt: ".3rem", pb: ".5rem" }}>
+                            <BattleStats />
+                        </Box>
+                    </Stack>
                 </MoveableResizable>
             </Box>
         </Fade>

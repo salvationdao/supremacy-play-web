@@ -87,7 +87,6 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
             maxWidth: 1000,
             maxHeight: 1000,
             // Others
-            CaptionArea: <Box sx={{ pl: ".3rem" }}></Box>,
             infoTooltipText: "TODO",
         }),
         [],
@@ -109,6 +108,7 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
                             }}
                         >
                             <PageHeader
+                                smallSize
                                 title="QUICK DEPLOY"
                                 description={
                                     <Stack spacing="1.5rem" direction="row">
@@ -244,7 +244,7 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
                                         count={totalPages}
                                         page={page}
                                         sx={{
-                                            ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold },
+                                            ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold, fontSize: "1.2rem" },
                                             ".Mui-selected": {
                                                 color: secondaryColor,
                                                 backgroundColor: `${primaryColor} !important`,

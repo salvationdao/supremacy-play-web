@@ -1,10 +1,10 @@
 import { Box, Stack } from "@mui/material"
-import { ReactNode, useCallback, useState } from "react"
+import { ReactNode, useCallback, useMemo, useState } from "react"
 import { ResizeBox, TooltipHelper } from "../.."
-import { SvgDrag, SvgHide, SvgInfoCircular } from "../../../assets"
+import { SvgClose, SvgDrag, SvgInfoCircular } from "../../../assets"
 import { ClipThing } from "../../../components"
 import { useTheme } from "../../../containers/theme"
-import { parseString } from "../../../helpers"
+import { parseString, shadeColor } from "../../../helpers"
 import { colors, siteZIndex } from "../../../theme/theme"
 import { Dimension, Position } from "../../../types"
 import { MovingBox } from "./MovingBox"
@@ -27,10 +27,9 @@ export interface MoveableResizableConfig {
     maxWidth?: number
     maxHeight?: number
     // Callbacks
-    onReizeCallback?: (width: number, height: number) => void
+    onResizeCallback?: (width: number, height: number) => void
     onHideCallback?: () => void
     // Others
-    CaptionArea?: ReactNode
     infoTooltipText?: string
 }
 
@@ -53,10 +52,9 @@ export const MoveableResizable = ({ config, children }: { config: MoveableResiza
         maxWidth,
         maxHeight,
 
-        onReizeCallback,
+        onResizeCallback,
         onHideCallback,
 
-        CaptionArea,
         infoTooltipText,
     } = config
 
@@ -83,10 +81,12 @@ export const MoveableResizable = ({ config, children }: { config: MoveableResiza
             setCurHeight(data.height)
             localStorage.setItem(`${localStoragePrefix}SizeX`, data.width.toString())
             localStorage.setItem(`${localStoragePrefix}SizeY`, data.height.toString())
-            onReizeCallback && onReizeCallback(data.width, data.height)
+            onResizeCallback && onResizeCallback(data.width, data.height)
         },
-        [localStoragePrefix, onReizeCallback],
+        [localStoragePrefix, onResizeCallback],
     )
+
+    const topRightBackgroundColor = useMemo(() => shadeColor(theme.factionTheme.primary, -90), [theme.factionTheme.primary])
 
     return (
         <Box
@@ -118,14 +118,14 @@ export const MoveableResizable = ({ config, children }: { config: MoveableResiza
                         sx={{
                             pointerEvents: "all",
                             position: "absolute",
-                            right: "1.7rem",
-                            bottom: ".6rem",
+                            right: onHideCallback ? "3.45rem" : "1rem",
+                            top: ".8rem",
                             cursor: "move",
                             opacity: 0.4,
                             ":hover": { opacity: 1 },
                         }}
                     >
-                        <SvgDrag size="1.2rem" />
+                        <SvgDrag size="1.5rem" />
                     </Box>
                 }
             />
@@ -178,35 +178,38 @@ export const MoveableResizable = ({ config, children }: { config: MoveableResiza
                         }}
                         backgroundColor={theme.factionTheme.background}
                         opacity={0.8}
+                        sx={{ position: "relative" }}
                     >
-                        <Stack
+                        <Box
                             sx={{
-                                position: "relative",
-                                width: curWidth,
-                                height: curHeight,
-                                transition: "all .2s",
-                                resize: "all",
-                                overflow: "hidden",
-                                borderRadius: 0.5,
+                                position: "absolute",
+                                top: 0,
+                                right: 0,
                             }}
                         >
-                            <Box sx={{ flex: 1, overflow: "hidden" }}>{children}</Box>
-
-                            <Stack direction="row" alignItems="center" justifyContent="flex-end" sx={{ height: "3.1rem", px: "1.04rem", mr: "2rem" }}>
-                                <Stack direction="row" alignItems="center" justifyContent="center" sx={{ mr: "auto" }}>
-                                    {CaptionArea}
-                                </Stack>
-
+                            <Stack
+                                direction="row"
+                                alignItems="center"
+                                justifyContent="flex-end"
+                                sx={{
+                                    position: "relative",
+                                    pl: "1rem",
+                                    pt: ".8rem",
+                                    pb: ".5rem",
+                                    pr: onHideCallback ? "1.7rem" : "3rem",
+                                    zIndex: 3,
+                                }}
+                            >
                                 {infoTooltipText && (
                                     <TooltipHelper text={infoTooltipText}>
                                         <Box
                                             sx={{
-                                                mr: ".88rem",
+                                                mr: onHideCallback ? "3rem" : ".9rem",
                                                 opacity: 0.4,
                                                 ":hover": { opacity: 1 },
                                             }}
                                         >
-                                            <SvgInfoCircular fill={colors.text} size="1.2rem" />
+                                            <SvgInfoCircular fill={colors.text} size="1.6rem" />
                                         </Box>
                                     </TooltipHelper>
                                 )}
@@ -216,16 +219,45 @@ export const MoveableResizable = ({ config, children }: { config: MoveableResiza
                                         onClick={() => onHideCallback()}
                                         sx={{
                                             cursor: "pointer",
-                                            mr: ".88rem",
                                             opacity: 0.4,
                                             ":hover": { opacity: 1 },
                                         }}
                                     >
-                                        <SvgHide size="1.3rem" />
+                                        <SvgClose size="1.6rem" />
                                     </Box>
                                 )}
+
+                                <Box
+                                    sx={{
+                                        position: "absolute",
+                                        top: 0,
+                                        bottom: 0,
+                                        left: -6,
+                                        right: -6,
+                                        backgroundColor: topRightBackgroundColor,
+                                        borderLeft: `${theme.factionTheme.primary}BB .25rem solid`,
+                                        borderBottom: `${theme.factionTheme.primary}BB .25rem solid`,
+                                        transform: "skew(35deg)",
+                                        zIndex: -1,
+                                    }}
+                                />
                             </Stack>
-                        </Stack>
+                        </Box>
+
+                        <Box
+                            sx={{
+                                position: "relative",
+                                width: curWidth,
+                                height: curHeight,
+                                transition: "all .2s",
+                                resize: "all",
+                                overflow: "hidden",
+                                borderRadius: 0.5,
+                                zIndex: 2,
+                            }}
+                        >
+                            {children}
+                        </Box>
                     </ClipThing>
                 </Box>
             </Box>
