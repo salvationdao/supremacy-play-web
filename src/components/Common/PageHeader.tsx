@@ -16,7 +16,7 @@ export const PageHeader = ({ title, description, imageUrl, children }: PageHeade
             alignItems="center"
             sx={{
                 px: "2rem",
-                py: "2.2rem",
+                py: "1.8rem",
                 backgroundColor: "#00000070",
                 borderBottom: (theme) => `${theme.factionTheme.primary}70 1.5px solid`,
             }}
@@ -43,7 +43,7 @@ export const PageHeader = ({ title, description, imageUrl, children }: PageHeade
                 {description && <Typography sx={{ fontSize: "1.85rem" }}>{description}</Typography>}
             </Box>
 
-            {children && <Box sx={{ ml: "auto" }}>{children}</Box>}
+            {children && <Box sx={{ ml: "auto !important" }}>{children}</Box>}
         </Stack>
     )
 }

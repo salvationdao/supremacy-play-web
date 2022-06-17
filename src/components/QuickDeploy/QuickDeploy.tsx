@@ -1,8 +1,9 @@
 import { Box, CircularProgress, Fade, IconButton, Pagination, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { MoveableResizable, MoveableResizableConfig, QueueFeed } from ".."
-import { SvgClose } from "../../assets"
+import { MoveableResizable, MoveableResizableConfig, QueueFeed, TooltipHelper } from ".."
+import { SvgClose, SvgSupToken } from "../../assets"
 import { useTheme } from "../../containers/theme"
+import { supFormatter } from "../../helpers"
 import { usePagination } from "../../hooks"
 import { useGameServerCommandsUser, useGameServerSubscriptionFaction } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
@@ -92,6 +93,9 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
         [],
     )
 
+    const queueLength = queueFeed?.queue_length || 0
+    const contractReward = queueFeed?.contract_reward || ""
+
     return (
         <Fade in>
             <Box>
@@ -104,7 +108,38 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
                                 overflow: "hidden",
                             }}
                         >
-                            <PageHeader title="QUICK DEPLOY" />
+                            <PageHeader
+                                title="QUICK DEPLOY"
+                                description={
+                                    <Stack spacing="1.5rem" direction="row">
+                                        {queueLength >= 0 && (
+                                            <AmountItem
+                                                key={`${queueLength}-queue_length`}
+                                                title={"POSITION: "}
+                                                color="#FFFFFF"
+                                                value={`${queueLength + 1}`}
+                                                tooltip="The queue position of your war machine if you deploy now."
+                                                disableIcon
+                                            />
+                                        )}
+
+                                        <AmountItem
+                                            key={`${contractReward}-contract_reward`}
+                                            title={"REWARD: "}
+                                            color={colors.yellow}
+                                            value={supFormatter(contractReward, 2)}
+                                            tooltip="Your reward if your mech survives the battle giving your syndicate a victory."
+                                        />
+
+                                        <AmountItem
+                                            title={"FEE: "}
+                                            color={"#FF4136"}
+                                            value={supFormatter(queueFeed?.queue_cost || "0", 2)}
+                                            tooltip="The cost to place your war machine into the battle queue."
+                                        />
+                                    </Stack>
+                                }
+                            ></PageHeader>
 
                             <TotalAndPageSizeOptions
                                 countItems={mechs?.length}
@@ -230,5 +265,35 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
                 </MoveableResizable>
             </Box>
         </Fade>
+    )
+}
+
+const AmountItem = ({
+    title,
+    color,
+    value,
+    tooltip,
+    disableIcon,
+}: {
+    title: string
+    color: string
+    value: string | number
+    tooltip: string
+    disableIcon?: boolean
+}) => {
+    return (
+        <TooltipHelper placement="bottom" text={tooltip}>
+            <Stack direction="row" alignItems="center">
+                <Typography variant="body1" sx={{ mr: ".4rem", fontWeight: "fontWeightBold" }}>
+                    {title}
+                </Typography>
+
+                {!disableIcon && <SvgSupToken size="1.6rem" fill={color} sx={{ mr: ".1rem", pb: ".4rem" }} />}
+
+                <Typography variant="body1" sx={{ color: color }}>
+                    {value || "---"}
+                </Typography>
+            </Stack>
+        </TooltipHelper>
     )
 }

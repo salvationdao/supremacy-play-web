@@ -1,11 +1,10 @@
 import { Stack, Typography } from "@mui/material"
-import BigNumber from "bignumber.js"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { FancyButton, QueueFeed } from ".."
 import { SvgSupToken } from "../../assets"
 import { useSnackbar } from "../../containers"
 import { useTheme } from "../../containers/theme"
-import { getRarityDeets } from "../../helpers"
+import { getRarityDeets, supFormatter } from "../../helpers"
 import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { colors, fonts } from "../../theme/theme"
@@ -182,7 +181,7 @@ export const QuickDeployItem = ({ mech, queueFeed }: QuickDeployItemProps) => {
                                                 fontFamily: fonts.nostromoBold,
                                             }}
                                         >
-                                            {new BigNumber(queueFeed.queue_cost).shiftedBy(-18).toFixed()}
+                                            {supFormatter(queueFeed.queue_cost, 2)}
                                         </Typography>
                                     </Stack>
                                 )}
