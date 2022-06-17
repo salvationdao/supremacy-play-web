@@ -2,7 +2,7 @@ import { Box, Skeleton, Stack } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
 import { ClipThing } from "../../.."
 import { useTheme } from "../../../../containers/theme"
-import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
+import { useGameServerCommandsFaction, useGameServerCommandsUser } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { MechBasic, MechDetails } from "../../../../types"
 import { MechBarStats } from "./MechBarStats"
@@ -35,6 +35,8 @@ export const WarMachineHangarItem = ({
     setRentalMechModalOpen,
 }: WarMachineHangarItemProps) => {
     const { send } = useGameServerCommandsFaction("/faction_commander")
+    const { send: userSend } = useGameServerCommandsUser("/user_commander")
+
     const [mechDetails, setMechDetails] = useState<MechDetails>()
 
     useEffect(() => {
@@ -53,19 +55,15 @@ export const WarMachineHangarItem = ({
         })()
     }, [index, mech.id, send, setSelectedMechDetails])
 
-    const ranameMech = async (newName: string) => {
+    const renameMech = async (newName: string) => {
         try {
-            console.log("hello")
-
-            const resp = await send<string>(GameServerKeys.MechRename, {
+            const resp = await userSend<string>(GameServerKeys.MechRename, {
                 mech_id: mech.id,
                 new_name: newName,
             })
 
-            console.log("res", resp)
-
             if (!resp || !mechDetails) return
-            setMechDetails({ ...mechDetails, name: resp })
+            setMechDetails({ ...mechDetails, name: newName })
         } catch (e) {
             console.error(e)
         }
@@ -75,6 +73,7 @@ export const WarMachineHangarItem = ({
         () => (
             <WarMachineHangarItemInner
                 mech={mech}
+                renameMech={renameMech}
                 isSelected={isSelected}
                 mechDetails={mechDetails}
                 setSelectedMechDetails={setSelectedMechDetails}
@@ -92,6 +91,7 @@ const WarMachineHangarItemInner = ({
     mech,
     mechDetails,
     isSelected,
+    renameMech,
     setSelectedMechDetails,
     setDeployMechModalOpen,
     setLeaveMechModalOpen,
@@ -101,6 +101,7 @@ const WarMachineHangarItemInner = ({
     mech: MechBasic
     mechDetails?: MechDetails
     isSelected: boolean
+    renameMech: (newName: string) => Promise<void>
     setSelectedMechDetails: React.Dispatch<React.SetStateAction<MechDetails | undefined>>
     setDeployMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
     setLeaveMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
@@ -116,7 +117,7 @@ const WarMachineHangarItemInner = ({
 
     return (
         <Box sx={{ position: "relative", overflow: "visible" }} onClick={() => setSelectedMechDetails(mechDetails)}>
-            <MechTitle setSelectedMechDetails={setSelectedMechDetails} mech={mech} mechDetails={mechDetails} isSelected={isSelected} />
+            {mechDetails && <MechTitle renameMech={renameMech} mech={mech} mechDetails={mechDetails} isSelected={isSelected} />}
 
             <ClipThing
                 clipSize="10px"
