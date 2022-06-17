@@ -201,11 +201,10 @@ const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, toggleIsM
             }}
         >
             <Box sx={{ position: "relative", pointerEvents: "all" }}>
-                <ResizeBox
+                {/* <ResizeBox
                     sx={{ bottom: 0, right: 0 }}
                     color={mainColor}
-                    adjustment={adjustment}
-                    onResizeStop={setDimensions}
+                    onResizeStopped={setDimensions}
                     initialDimensions={[dimensions.width, dimensions.height]}
                     minConstraints={[defaultDimensions.width, defaultDimensions.height]}
                     maxConstraints={[Math.min(width - 25, 638), Math.min(height - 25, 638)]}
@@ -227,7 +226,7 @@ const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, toggleIsM
                             <SvgResizeXY size="1rem" sx={{ transform: "rotate(90deg)" }} />
                         </Box>
                     )}
-                />
+                /> */}
 
                 <Fade in={isMapOpen}>
                     <Box>

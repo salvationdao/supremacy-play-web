@@ -47,6 +47,11 @@ export interface Dimension {
     height: number
 }
 
+export interface Position {
+    x: number
+    y: number
+}
+
 export interface Vector2i {
     x: number
     y: number

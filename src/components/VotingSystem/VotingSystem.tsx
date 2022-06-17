@@ -30,7 +30,7 @@ const VotingSystemInner = ({ bribeStage }: { bribeStage?: BribeStageResponse }) 
 
     const adjustment = useMemo(() => Math.min(remToPxRatio, 9) / 9, [remToPxRatio])
 
-    const onResizeStop = useCallback(
+    const onResizeStopped = useCallback(
         (data: Dimension) => {
             const size = data || { width: containerWidth, height: containerHeight }
             setContainerWidth(size.width)
@@ -55,9 +55,9 @@ const VotingSystemInner = ({ bribeStage }: { bribeStage?: BribeStageResponse }) 
         >
             <Slide in={isBattleStarted} direction="right">
                 <Box sx={{ position: "relative" }}>
-                    <ResizeBox
+                    {/* <ResizeBox
                         color={theme.factionTheme.primary}
-                        onResizeStop={onResizeStop}
+                        onResizeStopped={onResizeStopped}
                         adjustment={adjustment}
                         initialDimensions={[containerWidth, containerHeight]}
                         minConstraints={[initialSize.minWidth, initialSize.height]}
@@ -77,7 +77,7 @@ const VotingSystemInner = ({ bribeStage }: { bribeStage?: BribeStageResponse }) 
                                 }}
                             />
                         )}
-                    />
+                    /> */}
 
                     {DEV_ONLY && (
                         <Tabs
