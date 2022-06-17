@@ -1,16 +1,15 @@
 import { Box, CircularProgress, Fade, IconButton, Pagination, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { DeployModal, MoveableResizable, MoveableResizableConfig } from ".."
+import { MoveableResizable, MoveableResizableConfig, QueueFeed } from ".."
 import { SvgClose } from "../../assets"
 import { useTheme } from "../../containers/theme"
 import { usePagination } from "../../hooks"
-import { useGameServerCommandsUser } from "../../hooks/useGameServer"
+import { useGameServerCommandsUser, useGameServerSubscriptionFaction } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { colors, fonts } from "../../theme/theme"
-import { MechBasic, MechDetails } from "../../types"
+import { MechBasic } from "../../types"
 import { PageHeader } from "../Common/PageHeader"
 import { TotalAndPageSizeOptions } from "../Common/TotalAndPageSizeOptions"
-import { LeaveModal } from "../Hangar/WarMachinesHangar/LeaveQueue/LeaveModal"
 import { QuickDeployItem } from "./QuickDeployItem"
 
 interface GetMechsRequest {
@@ -32,9 +31,6 @@ export const QuickDeploy = ({ open, onClose }: { open: boolean; onClose: () => v
 const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
     const theme = useTheme()
     const { send } = useGameServerCommandsUser("/user_commander")
-    const [selectedMechDetails, setSelectedMechDetails] = useState<MechDetails>()
-    const [deployMechModalOpen, setDeployMechModalOpen] = useState<boolean>(false)
-    const [leaveMechModalOpen, setLeaveMechModalOpen] = useState<boolean>(false)
 
     // Mechs
     const [mechs, setMechs] = useState<MechBasic[]>([])
@@ -44,6 +40,12 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
 
     const primaryColor = theme.factionTheme.primary
     const secondaryColor = theme.factionTheme.secondary
+
+    // Queuing cost, queue length win reward etc.
+    const queueFeed = useGameServerSubscriptionFaction<QueueFeed>({
+        URI: "/queue",
+        key: GameServerKeys.SubQueueFeed,
+    })
 
     const getItems = useCallback(async () => {
         try {
@@ -91,163 +93,142 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
     )
 
     return (
-        <>
-            <Fade in>
-                <Box>
-                    <MoveableResizable config={config}>
-                        <Box sx={{ height: "100%" }}>
-                            <Stack
-                                sx={{
-                                    height: "100%",
-                                    position: "relative",
-                                    overflow: "hidden",
-                                }}
-                            >
-                                <PageHeader title="QUICK DEPLOY" />
+        <Fade in>
+            <Box>
+                <MoveableResizable config={config}>
+                    <Box sx={{ height: "100%" }}>
+                        <Stack
+                            sx={{
+                                height: "100%",
+                                position: "relative",
+                                overflow: "hidden",
+                            }}
+                        >
+                            <PageHeader title="QUICK DEPLOY" />
 
-                                <TotalAndPageSizeOptions
-                                    countItems={mechs?.length}
-                                    totalItems={totalItems}
-                                    pageSize={pageSize}
-                                    setPageSize={setPageSize}
-                                    changePage={changePage}
-                                    manualRefresh={getItems}
-                                />
+                            <TotalAndPageSizeOptions
+                                countItems={mechs?.length}
+                                totalItems={totalItems}
+                                pageSize={pageSize}
+                                setPageSize={setPageSize}
+                                changePage={changePage}
+                                manualRefresh={getItems}
+                            />
 
-                                {loadError && (
-                                    <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
-                                        <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
-                                            <Typography
-                                                sx={{
-                                                    color: colors.red,
-                                                    fontFamily: fonts.nostromoBold,
-                                                    textAlign: "center",
-                                                }}
-                                            >
-                                                {loadError}
-                                            </Typography>
-                                        </Stack>
-                                    </Stack>
-                                )}
-
-                                {isLoading && !loadError && (
-                                    <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
-                                        <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
-                                            <CircularProgress size="3rem" sx={{ color: primaryColor }} />
-                                        </Stack>
-                                    </Stack>
-                                )}
-
-                                {!isLoading && !loadError && mechs && mechs.length > 0 && (
-                                    <Box
-                                        sx={{
-                                            flex: 1,
-                                            overflowY: "auto",
-                                            overflowX: "hidden",
-                                            ml: "1rem",
-                                            mr: ".5rem",
-                                            pr: ".5rem",
-                                            my: "1rem",
-                                            direction: "ltr",
-                                            scrollbarWidth: "none",
-                                            "::-webkit-scrollbar": {
-                                                width: ".4rem",
-                                            },
-                                            "::-webkit-scrollbar-track": {
-                                                background: "#FFFFFF15",
-                                                borderRadius: 3,
-                                            },
-                                            "::-webkit-scrollbar-thumb": {
-                                                background: primaryColor,
-                                                borderRadius: 3,
-                                            },
-                                        }}
-                                    >
-                                        <Box sx={{ direction: "ltr", height: 0 }}>
-                                            <Stack>
-                                                {mechs.map((mech) => {
-                                                    return (
-                                                        <QuickDeployItem
-                                                            key={mech.id}
-                                                            mech={mech}
-                                                            setDeployMechModalOpen={setDeployMechModalOpen}
-                                                            setLeaveMechModalOpen={setLeaveMechModalOpen}
-                                                            setSelectedMechDetails={setSelectedMechDetails}
-                                                        />
-                                                    )
-                                                })}
-                                            </Stack>
-                                        </Box>
-                                    </Box>
-                                )}
-
-                                {!isLoading && !loadError && mechs && mechs.length <= 0 && (
-                                    <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
-                                        <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", maxWidth: "40rem" }}>
-                                            <Typography
-                                                sx={{
-                                                    px: "1.28rem",
-                                                    pt: "1.28rem",
-                                                    color: colors.grey,
-                                                    fontFamily: fonts.nostromoBold,
-                                                    userSelect: "text !important",
-                                                    opacity: 0.9,
-                                                    textAlign: "center",
-                                                }}
-                                            >
-                                                {`You don't own any war machines.`}
-                                            </Typography>
-                                        </Stack>
-                                    </Stack>
-                                )}
-
-                                {totalPages > 1 && (
-                                    <Box
-                                        sx={{
-                                            px: "1rem",
-                                            py: ".7rem",
-                                            borderTop: `${primaryColor}70 1.5px solid`,
-                                            borderBottom: `${primaryColor}70 1.5px solid`,
-                                            backgroundColor: "#00000070",
-                                        }}
-                                    >
-                                        <Pagination
-                                            size="medium"
-                                            count={totalPages}
-                                            page={page}
+                            {loadError && (
+                                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                                    <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
+                                        <Typography
                                             sx={{
-                                                ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold },
-                                                ".Mui-selected": {
-                                                    color: secondaryColor,
-                                                    backgroundColor: `${primaryColor} !important`,
-                                                },
+                                                color: colors.red,
+                                                fontFamily: fonts.nostromoBold,
+                                                textAlign: "center",
                                             }}
-                                            onChange={(e, p) => changePage(p)}
-                                            showFirstButton
-                                            showLastButton
-                                        />
+                                        >
+                                            {loadError}
+                                        </Typography>
+                                    </Stack>
+                                </Stack>
+                            )}
+
+                            {isLoading && !loadError && (
+                                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                                    <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
+                                        <CircularProgress size="3rem" sx={{ color: primaryColor }} />
+                                    </Stack>
+                                </Stack>
+                            )}
+
+                            {!isLoading && !loadError && mechs && mechs.length > 0 && (
+                                <Box
+                                    sx={{
+                                        flex: 1,
+                                        overflowY: "auto",
+                                        overflowX: "hidden",
+                                        ml: "1rem",
+                                        mr: ".5rem",
+                                        pr: ".6rem",
+                                        my: "1rem",
+                                        direction: "ltr",
+                                        scrollbarWidth: "none",
+                                        "::-webkit-scrollbar": {
+                                            width: ".4rem",
+                                        },
+                                        "::-webkit-scrollbar-track": {
+                                            background: "#FFFFFF15",
+                                            borderRadius: 3,
+                                        },
+                                        "::-webkit-scrollbar-thumb": {
+                                            background: primaryColor,
+                                            borderRadius: 3,
+                                        },
+                                    }}
+                                >
+                                    <Box sx={{ direction: "ltr", height: 0 }}>
+                                        <Stack>
+                                            {mechs.map((mech) => {
+                                                return <QuickDeployItem key={mech.id} mech={mech} queueFeed={queueFeed} />
+                                            })}
+                                        </Stack>
                                     </Box>
-                                )}
-                            </Stack>
+                                </Box>
+                            )}
 
-                            <IconButton size="small" onClick={onClose} sx={{ position: "absolute", top: ".5rem", right: ".5rem" }}>
-                                <SvgClose size="1.9rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
-                            </IconButton>
-                        </Box>
-                    </MoveableResizable>
-                </Box>
-            </Fade>
+                            {!isLoading && !loadError && mechs && mechs.length <= 0 && (
+                                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                                    <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", maxWidth: "40rem" }}>
+                                        <Typography
+                                            sx={{
+                                                px: "1.28rem",
+                                                pt: "1.28rem",
+                                                color: colors.grey,
+                                                fontFamily: fonts.nostromoBold,
+                                                userSelect: "text !important",
+                                                opacity: 0.9,
+                                                textAlign: "center",
+                                            }}
+                                        >
+                                            {`You don't own any war machines.`}
+                                        </Typography>
+                                    </Stack>
+                                </Stack>
+                            )}
 
-            {selectedMechDetails && deployMechModalOpen && (
-                <DeployModal
-                    selectedMechDetails={selectedMechDetails}
-                    deployMechModalOpen={deployMechModalOpen}
-                    setDeployMechModalOpen={setDeployMechModalOpen}
-                />
-            )}
-            {selectedMechDetails && leaveMechModalOpen && (
-                <LeaveModal selectedMechDetails={selectedMechDetails} leaveMechModalOpen={leaveMechModalOpen} setLeaveMechModalOpen={setLeaveMechModalOpen} />
-            )}
-        </>
+                            {totalPages > 1 && (
+                                <Box
+                                    sx={{
+                                        px: "1rem",
+                                        py: ".7rem",
+                                        borderTop: `${primaryColor}70 1.5px solid`,
+                                        borderBottom: `${primaryColor}70 1.5px solid`,
+                                        backgroundColor: "#00000070",
+                                    }}
+                                >
+                                    <Pagination
+                                        size="medium"
+                                        count={totalPages}
+                                        page={page}
+                                        sx={{
+                                            ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold },
+                                            ".Mui-selected": {
+                                                color: secondaryColor,
+                                                backgroundColor: `${primaryColor} !important`,
+                                            },
+                                        }}
+                                        onChange={(e, p) => changePage(p)}
+                                        showFirstButton
+                                        showLastButton
+                                    />
+                                </Box>
+                            )}
+                        </Stack>
+
+                        <IconButton size="small" onClick={onClose} sx={{ position: "absolute", top: ".5rem", right: ".5rem" }}>
+                            <SvgClose size="1.9rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
+                        </IconButton>
+                    </Box>
+                </MoveableResizable>
+            </Box>
+        </Fade>
     )
 }

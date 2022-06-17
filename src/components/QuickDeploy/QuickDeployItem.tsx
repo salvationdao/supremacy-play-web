@@ -1,6 +1,9 @@
 import { Stack, Typography } from "@mui/material"
-import { useEffect, useMemo, useState } from "react"
-import { FancyButton } from ".."
+import BigNumber from "bignumber.js"
+import { useCallback, useEffect, useMemo, useState } from "react"
+import { FancyButton, QueueFeed } from ".."
+import { SvgSupToken } from "../../assets"
+import { useSnackbar } from "../../containers"
 import { useTheme } from "../../containers/theme"
 import { getRarityDeets } from "../../helpers"
 import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../hooks/useGameServer"
@@ -12,17 +15,18 @@ import { MechThumbnail } from "../Hangar/WarMachinesHangar/WarMachineHangarItem/
 
 interface QuickDeployItemProps {
     mech: MechBasic
-    setDeployMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
-    setLeaveMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
-    setSelectedMechDetails: React.Dispatch<React.SetStateAction<MechDetails | undefined>>
+    queueFeed?: QueueFeed
 }
 
-export const QuickDeployItem = ({ mech, setSelectedMechDetails, setDeployMechModalOpen, setLeaveMechModalOpen }: QuickDeployItemProps) => {
+export const QuickDeployItem = ({ mech, queueFeed }: QuickDeployItemProps) => {
+    const { newSnackbarMessage } = useSnackbar()
     const theme = useTheme()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [mechDetails, setMechDetails] = useState<MechDetails>()
     const rarityDeets = useMemo(() => getRarityDeets(mech.tier || mechDetails?.tier || ""), [mech, mechDetails])
     const [mechState, setMechState] = useState<MechStatusEnum>()
+    const [isLoading, setIsLoading] = useState(false)
+    const [error, setError] = useState<string>()
 
     // Get addition mech data
     useEffect(() => {
@@ -50,6 +54,42 @@ export const QuickDeployItem = ({ mech, setSelectedMechDetails, setDeployMechMod
         },
     )
 
+    const onDeployQueue = useCallback(async () => {
+        try {
+            setIsLoading(true)
+            const resp = await send<{ success: boolean; code: string }>(GameServerKeys.JoinQueue, {
+                asset_hash: mech.hash,
+            })
+
+            if (resp && resp.success) {
+                newSnackbarMessage("Successfully deployed war machine.", "success")
+                setError(undefined)
+            }
+        } catch (e) {
+            setError(typeof e === "string" ? e : "Failed to deploy war machine.")
+            console.error(e)
+            return
+        } finally {
+            setIsLoading(false)
+        }
+    }, [send, mech.hash, newSnackbarMessage])
+
+    const onLeaveQueue = useCallback(async () => {
+        try {
+            setIsLoading(true)
+            const resp = await send(GameServerKeys.LeaveQueue, { asset_hash: mech.hash })
+            if (resp) {
+                newSnackbarMessage("Successfully removed war machine from queue.", "success")
+                setError(undefined)
+            }
+        } catch (e) {
+            setError(typeof e === "string" ? e : "Failed to leave queue.")
+            console.error(e)
+        } finally {
+            setIsLoading(false)
+        }
+    }, [send, mech.hash, newSnackbarMessage])
+
     return (
         <Stack
             direction="row"
@@ -65,7 +105,7 @@ export const QuickDeployItem = ({ mech, setSelectedMechDetails, setDeployMechMod
                 <MechThumbnail mech={mech} mechDetails={mechDetails} smallSize />
             </Stack>
 
-            <Stack alignItems="flex-start" sx={{ py: ".2rem" }}>
+            <Stack alignItems="flex-start" sx={{ py: ".2rem", flex: 1 }}>
                 <Typography
                     variant="caption"
                     sx={{
@@ -93,11 +133,12 @@ export const QuickDeployItem = ({ mech, setSelectedMechDetails, setDeployMechMod
                     {mech.name || mech.label}
                 </Typography>
 
-                <Stack direction="row" alignItems="center" spacing="1rem">
+                <Stack direction="row" alignItems="center" spacing="1rem" justifyContent="space-between" sx={{ width: "100%" }}>
                     <MechGeneralStatus mechID={mech.id} smallSize />
 
-                    {mechDetails && (mechState === MechStatusEnum.Idle || mechState === MechStatusEnum.Queue) && (
+                    {!error && mechDetails && (mechState === MechStatusEnum.Idle || mechState === MechStatusEnum.Queue) && (
                         <FancyButton
+                            loading={isLoading}
                             clipThingsProps={{
                                 clipSize: "5px",
                                 backgroundColor: mechState === MechStatusEnum.Idle ? colors.green : theme.factionTheme.background,
@@ -112,24 +153,47 @@ export const QuickDeployItem = ({ mech, setSelectedMechDetails, setDeployMechMod
                             sx={{ px: "1.6rem", pt: 0, pb: ".1rem", color: theme.factionTheme.primary }}
                             onClick={() => {
                                 if (mechState === MechStatusEnum.Idle) {
-                                    setSelectedMechDetails(mechDetails)
-                                    setDeployMechModalOpen(true)
+                                    onDeployQueue()
                                 } else {
-                                    setSelectedMechDetails(mechDetails)
-                                    setLeaveMechModalOpen(true)
+                                    onLeaveQueue()
                                 }
                             }}
                         >
-                            <Typography
-                                variant="caption"
-                                sx={{
-                                    color: mechState === MechStatusEnum.Idle ? "#FFFFFF" : colors.yellow,
-                                    fontFamily: fonts.nostromoBlack,
-                                }}
-                            >
-                                {mechState === MechStatusEnum.Idle ? "DEPLOY" : "UNDEPLOY"}
-                            </Typography>
+                            <Stack direction="row" alignItems="center" spacing=".5rem">
+                                <Typography
+                                    variant="caption"
+                                    sx={{
+                                        color: mechState === MechStatusEnum.Idle ? "#FFFFFF" : colors.yellow,
+                                        fontSize: "1.1rem",
+                                        fontFamily: fonts.nostromoBlack,
+                                    }}
+                                >
+                                    {mechState === MechStatusEnum.Idle ? "DEPLOY" : "UNDEPLOY"}
+                                </Typography>
+
+                                {mechState === MechStatusEnum.Idle && queueFeed?.queue_cost && (
+                                    <Stack direction="row" alignItems="center">
+                                        <SvgSupToken size="1.3rem" />
+                                        <Typography
+                                            variant="caption"
+                                            sx={{
+                                                color: mechState === MechStatusEnum.Idle ? "#FFFFFF" : colors.yellow,
+                                                fontSize: "1.1rem",
+                                                fontFamily: fonts.nostromoBold,
+                                            }}
+                                        >
+                                            {new BigNumber(queueFeed.queue_cost).shiftedBy(-18).toFixed()}
+                                        </Typography>
+                                    </Stack>
+                                )}
+                            </Stack>
                         </FancyButton>
+                    )}
+
+                    {error && (
+                        <Typography variant="body2" sx={{ color: colors.red }}>
+                            {error}
+                        </Typography>
                     )}
                 </Stack>
             </Stack>
