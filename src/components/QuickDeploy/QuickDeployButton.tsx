@@ -18,7 +18,7 @@ export const QuickDeployButton = () => {
                 size="small"
                 onClick={() => {
                     if (!inBattleArena) return
-                    toggleMechDeployModalOpen(true)
+                    toggleMechDeployModalOpen()
                 }}
             >
                 <SvgRobot size="1.6rem" />
