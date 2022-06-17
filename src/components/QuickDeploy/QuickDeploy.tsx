@@ -87,7 +87,7 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
             maxWidth: 1000,
             maxHeight: 1000,
             // Others
-            infoTooltipText: "TODO",
+            infoTooltipText: "Quickly deploy your war machines to the battle queue.",
         }),
         [],
     )

@@ -258,6 +258,25 @@ export const MoveableResizable = ({ config, children }: { config: MoveableResiza
                         >
                             {children}
                         </Box>
+
+                        <Box
+                            sx={{
+                                position: "absolute",
+                                bottom: -9,
+                                right: ".9rem",
+                                height: "4.2rem",
+                                transform: "rotate(45deg)",
+                                zIndex: 3,
+                            }}
+                        >
+                            <Box
+                                sx={{
+                                    width: ".25rem",
+                                    height: "100%",
+                                    backgroundColor: theme.factionTheme.primary,
+                                }}
+                            />
+                        </Box>
                     </ClipThing>
                 </Box>
             </Box>
