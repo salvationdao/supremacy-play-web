@@ -29,6 +29,8 @@ export const MechTitle = ({
     const [editing, setEditing] = useState(false)
     const [newMechName, setNewMechName] = useState<string>(name || "")
 
+    const nameColour = !name ? "grey" : theme.factionTheme.secondary
+
     const renameMechHandler = async () => {
         await renameMech(newMechName)
         setEditing(false)
@@ -117,7 +119,6 @@ export const MechTitle = ({
                             }}
                         >
                             <Box onClick={() => setEditing(true)} sx={{ display: "flex", justifyContent: "flex-start", cursor: "pointer" }}>
-                                {/* {editing && ( */}
                                 <TextField
                                     inputRef={renamingRef}
                                     variant={"standard"}
@@ -165,11 +166,11 @@ export const MechTitle = ({
                                         }
                                     }}
                                 />
-                                {/* )} */}
                                 {!editing && (
                                     <Typography
                                         sx={{
-                                            color: isSelected ? theme.factionTheme.secondary : "#FFFFFF",
+                                            color: isSelected ? nameColour : "#FFFFFF",
+                                            opacity: !name ? 0.4 : 1,
                                             fontFamily: fonts.nostromoBlack,
                                             display: "-webkit-box",
                                             overflow: "hidden",
@@ -180,7 +181,7 @@ export const MechTitle = ({
                                             fontSize: "9px",
                                         }}
                                     >
-                                        {name || "name"}
+                                        {name || "unnamed"}
                                     </Typography>
                                 )}
                             </Box>
