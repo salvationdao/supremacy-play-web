@@ -67,7 +67,7 @@ export const WarMachineHangarItem = ({
 
                 if (!resp || !mechDetails) return
                 setMechDetails({ ...mechDetails, name: newName })
-                newSnackbarMessage("Successfully updated war machines name.", "success")
+                newSnackbarMessage("Successfully updated war machine name.", "success")
             } catch (e) {
                 newSnackbarMessage("Failed to update war machine name. ", "error")
             }
