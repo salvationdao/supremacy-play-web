@@ -75,7 +75,6 @@ export const SuccessModal = ({
 
                                 <Stack direction="row" spacing="1rem" sx={{ pt: ".4rem" }}>
                                     <FancyButton
-                                        excludeCaret
                                         clipThingsProps={{
                                             clipSize: "5px",
                                             backgroundColor: leftColor,
@@ -91,7 +90,6 @@ export const SuccessModal = ({
                                     </FancyButton>
 
                                     <FancyButton
-                                        excludeCaret
                                         clipThingsProps={{
                                             clipSize: "5px",
                                             backgroundColor: rightColor,

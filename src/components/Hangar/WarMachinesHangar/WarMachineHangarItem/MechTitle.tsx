@@ -36,7 +36,7 @@ export const MechTitle = ({
     useEffect(() => {
         if (!editing) return
         setEditing(isSelected)
-    }, [isSelected])
+    }, [isSelected, editing])
 
     return (
         <Box
@@ -180,7 +180,6 @@ export const MechTitle = ({
                         />
 
                         <FancyButton
-                            excludeCaret
                             clipThingsProps={{
                                 clipSize: "8px",
                                 sx: { position: "relative", minWidth: "10rem" },

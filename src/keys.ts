@@ -136,12 +136,8 @@ export enum PassportServerKeys {
     SubscribeUserTransactions = "USER:SUPS:TRANSACTIONS:SUBSCRIBE",
 
     // Assets
-    SubAssetData = "ASSET:SUBSCRIBE",
     UpdateAssetName = "ASSET:UPDATE:NAME",
 
     // Misc
     GetFreeSups = "GAMEBAR:GET:SUPS",
-
-    //User
-    UserUpdate = "USER:UPDATE",
 }

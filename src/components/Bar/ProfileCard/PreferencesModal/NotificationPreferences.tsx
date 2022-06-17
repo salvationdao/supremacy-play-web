@@ -225,7 +225,6 @@ export const NotificationPreferencesInner = ({ notificationPreferences, setNotif
 
             <Stack direction="row" spacing="1rem" sx={{ pt: "1rem" }}>
                 <FancyButton
-                    excludeCaret
                     clipThingsProps={{
                         clipSize: "5px",
                         backgroundColor: theme.factionTheme.background,

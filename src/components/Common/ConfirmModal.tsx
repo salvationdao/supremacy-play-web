@@ -72,7 +72,6 @@ export const ConfirmModal = ({ title, children, onConfirm, onClose, isLoading, e
 
                         <Stack direction="row" spacing="1rem" sx={{ pt: ".4rem" }}>
                             <FancyButton
-                                excludeCaret
                                 clipThingsProps={{
                                     clipSize: "5px",
                                     backgroundColor: colors.red,
@@ -89,7 +88,6 @@ export const ConfirmModal = ({ title, children, onConfirm, onClose, isLoading, e
 
                             <FancyButton
                                 loading={isLoading}
-                                excludeCaret
                                 clipThingsProps={{
                                     clipSize: "5px",
                                     backgroundColor: colors.green,

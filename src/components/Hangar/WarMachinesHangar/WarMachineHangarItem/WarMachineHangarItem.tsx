@@ -1,5 +1,5 @@
 import { Box, Skeleton, Stack } from "@mui/material"
-import { useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { ClipThing } from "../../.."
 import { useTheme } from "../../../../containers/theme"
 import { useGameServerCommandsFaction, useGameServerCommandsUser } from "../../../../hooks/useGameServer"
@@ -55,19 +55,22 @@ export const WarMachineHangarItem = ({
         })()
     }, [index, mech.id, send, setSelectedMechDetails])
 
-    const renameMech = async (newName: string) => {
-        try {
-            const resp = await userSend<string>(GameServerKeys.MechRename, {
-                mech_id: mech.id,
-                new_name: newName,
-            })
+    const renameMech = useCallback(
+        async (newName: string) => {
+            try {
+                const resp = await userSend<string>(GameServerKeys.MechRename, {
+                    mech_id: mech.id,
+                    new_name: newName,
+                })
 
-            if (!resp || !mechDetails) return
-            setMechDetails({ ...mechDetails, name: newName })
-        } catch (e) {
-            console.error(e)
-        }
-    }
+                if (!resp || !mechDetails) return
+                setMechDetails({ ...mechDetails, name: newName })
+            } catch (e) {
+                console.error(e)
+            }
+        },
+        [setMechDetails, mechDetails, mech.id, userSend],
+    )
 
     return useMemo(
         () => (
@@ -83,7 +86,17 @@ export const WarMachineHangarItem = ({
                 setRentalMechModalOpen={setRentalMechModalOpen}
             />
         ),
-        [mech, isSelected, mechDetails, setSelectedMechDetails, setDeployMechModalOpen, setLeaveMechModalOpen, setHistoryMechModalOpen, setRentalMechModalOpen],
+        [
+            mech,
+            isSelected,
+            mechDetails,
+            setSelectedMechDetails,
+            setDeployMechModalOpen,
+            setLeaveMechModalOpen,
+            setHistoryMechModalOpen,
+            setRentalMechModalOpen,
+            renameMech,
+        ],
     )
 }
 
@@ -154,6 +167,7 @@ const WarMachineHangarItemInner = ({
                                 setLeaveMechModalOpen={setLeaveMechModalOpen}
                                 setHistoryMechModalOpen={setHistoryMechModalOpen}
                                 setRentalMechModalOpen={setRentalMechModalOpen}
+                                marketLocked={mech.market_locked}
                             />
                         ) : (
                             <Box sx={{ height: "3rem" }} />

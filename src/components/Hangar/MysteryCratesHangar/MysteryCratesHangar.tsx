@@ -1,6 +1,6 @@
 import { Box, Pagination, Stack, Typography } from "@mui/material"
 import React, { useCallback, useEffect, useMemo, useState } from "react"
-import { useHistory, useLocation } from "react-router-dom"
+import { useLocation } from "react-router-dom"
 import { ClipThing, FancyButton } from "../.."
 import { SafePNG } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
@@ -9,6 +9,7 @@ import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { MysteryCrate } from "../../../types"
+import { PageHeader } from "../../Common/PageHeader"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { MysteryCrateStoreItemLoadingSkeleton } from "../../Storefront/MysteryCratesStore/MysteryCrateStoreItem/MysteryCrateStoreItem"
 import { MysteryCrateHangarItem } from "./MysteryCrateHangarItem"
@@ -26,7 +27,6 @@ interface GetAssetsResponse {
 }
 
 export const MysteryCratesHangar = () => {
-    const history = useHistory()
     const location = useLocation()
     const { send } = useGameServerCommandsUser("/user_commander")
     const theme = useTheme()
@@ -151,8 +151,7 @@ export const MysteryCratesHangar = () => {
                     </Typography>
 
                     <FancyButton
-                        onClick={() => history.push(`/marketplace/mystery-crates${location.hash}`)}
-                        excludeCaret
+                        to={`/marketplace/mystery-crates${location.hash}`}
                         clipThingsProps={{
                             clipSize: "9px",
                             backgroundColor: theme.factionTheme.primary,
@@ -175,7 +174,7 @@ export const MysteryCratesHangar = () => {
                 </Stack>
             </Stack>
         )
-    }, [crates, history, isLoading, loadError, location.hash, theme.factionTheme.primary, theme.factionTheme.secondary])
+    }, [crates, isLoading, loadError, location.hash, theme.factionTheme.primary, theme.factionTheme.secondary])
 
     return (
         <ClipThing
@@ -195,6 +194,8 @@ export const MysteryCratesHangar = () => {
         >
             <Stack sx={{ position: "relative", height: "100%" }}>
                 <Stack sx={{ flex: 1 }}>
+                    <PageHeader title="MYSTERY CRATES" description="The mystery crates that you own are shown here." imageUrl={SafePNG}></PageHeader>
+
                     <TotalAndPageSizeOptions
                         countItems={crates?.length}
                         totalItems={totalItems}

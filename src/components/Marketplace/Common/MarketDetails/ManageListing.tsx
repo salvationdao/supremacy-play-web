@@ -58,7 +58,6 @@ export const ManageListing = ({ id, owner, isKeycard, isTimeEnded }: { id: strin
                     </Typography>
                     <Stack direction="row" alignItems="center" spacing=".7rem">
                         <FancyButton
-                            excludeCaret
                             disabled={isTimeEnded}
                             clipThingsProps={{
                                 clipSize: "9px",

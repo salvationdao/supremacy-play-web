@@ -1,6 +1,6 @@
 import { Box, Pagination, Stack, Typography } from "@mui/material"
 import React, { useCallback, useEffect, useMemo, useState } from "react"
-import { useHistory, useLocation } from "react-router-dom"
+import { useLocation } from "react-router-dom"
 import { ClipThing, FancyButton } from "../.."
 import { PASSPORT_WEB } from "../../../constants"
 import { useTheme } from "../../../containers/theme"
@@ -45,24 +45,24 @@ export const WarMachinesHangar = () => {
                 setHistoryMechModalOpen={setHistoryMechModalOpen}
                 setRentalMechModalOpen={setRentalMechModalOpen}
             />
-            {selectedMechDetails && (
+            {selectedMechDetails && deployMechModalOpen && (
                 <DeployModal
                     selectedMechDetails={selectedMechDetails}
                     deployMechModalOpen={deployMechModalOpen}
                     setDeployMechModalOpen={setDeployMechModalOpen}
                 />
             )}
-            {selectedMechDetails && (
+            {selectedMechDetails && leaveMechModalOpen && (
                 <LeaveModal selectedMechDetails={selectedMechDetails} leaveMechModalOpen={leaveMechModalOpen} setLeaveMechModalOpen={setLeaveMechModalOpen} />
             )}
-            {selectedMechDetails && (
+            {selectedMechDetails && historyMechModalOpen && (
                 <HistoryModal
                     selectedMechDetails={selectedMechDetails}
                     historyMechModalOpen={historyMechModalOpen}
                     setHistoryMechModalOpen={setHistoryMechModalOpen}
                 />
             )}
-            {selectedMechDetails && (
+            {selectedMechDetails && rentalMechModalOpen && (
                 <RentalModal
                     selectedMechDetails={selectedMechDetails}
                     rentalMechModalOpen={rentalMechModalOpen}
@@ -88,7 +88,6 @@ const WarMachinesHangarInner = ({
     setHistoryMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
     setRentalMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
 }) => {
-    const history = useHistory()
     const location = useLocation()
     const { send } = useGameServerCommandsUser("/user_commander")
     const theme = useTheme()
@@ -244,8 +243,7 @@ const WarMachinesHangarInner = ({
                                         {"You don't have any war machines, go to the Marketplace or go to Xsyn to transfer your assets to Supremacy."}
                                     </Typography>
                                     <FancyButton
-                                        onClick={() => history.push(`/marketplace/war-machines${location.hash}`)}
-                                        excludeCaret
+                                        to={`/marketplace/war-machines${location.hash}`}
                                         clipThingsProps={{
                                             clipSize: "9px",
                                             backgroundColor: theme.factionTheme.primary,
@@ -268,7 +266,6 @@ const WarMachinesHangarInner = ({
                                     <FancyButton
                                         href={`${PASSPORT_WEB}profile`}
                                         target="_blank"
-                                        excludeCaret
                                         clipThingsProps={{
                                             clipSize: "9px",
                                             backgroundColor: colors.neonPink,

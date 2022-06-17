@@ -7,7 +7,16 @@ import { useDebounce } from "../../hooks"
 import { colors, fonts } from "../../theme/theme"
 import { SortType } from "../../types/marketplace"
 
-const sortOptions: SortType[] = [SortType.OldestFirst, SortType.NewestFirst, SortType.Alphabetical, SortType.AlphabeticalReverse]
+const sortOptions: SortType[] = [
+    SortType.OldestFirst,
+    SortType.NewestFirst,
+    SortType.ExpiringFirst,
+    SortType.ExpiringReverse,
+    SortType.PriceLowest,
+    SortType.PriceHighest,
+    SortType.Alphabetical,
+    SortType.AlphabeticalReverse,
+]
 
 export interface ChipFilter {
     label: string
@@ -134,7 +143,6 @@ export const SortAndFilters = ({ initialSearch, onSetSearch, initialSort, onSetS
 
                             <Box sx={{ py: ".1rem" }}>
                                 <FancyButton
-                                    excludeCaret
                                     clipThingsProps={{
                                         clipSize: "5px",
                                         clipSlantSize: "2px",
@@ -294,7 +302,6 @@ const ChipFilterSection = ({ filter, primaryColor, secondaryColor }: { filter: C
 
         return (
             <FancyButton
-                excludeCaret
                 clipThingsProps={{
                     clipSize: "7px",
                     opacity: 1,
@@ -328,7 +335,6 @@ const ChipFilterSection = ({ filter, primaryColor, secondaryColor }: { filter: C
                     return (
                         <Box key={i} sx={{ p: ".4rem" }}>
                             <FancyButton
-                                excludeCaret
                                 clipThingsProps={{
                                     clipSize: "9px",
                                     backgroundColor: isSelected ? color : "#000000",
@@ -382,7 +388,6 @@ const RangeFilterSection = ({ filter, primaryColor, secondaryColor }: { filter: 
 
         return (
             <FancyButton
-                excludeCaret
                 clipThingsProps={{
                     clipSize: "8px",
                     opacity: 1,

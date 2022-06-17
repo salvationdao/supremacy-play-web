@@ -69,3 +69,8 @@ html {
         font-size: 44%;
     }
 }
+
+a {
+    text-decoration: none;
+    color: #00ffff;
+}

@@ -61,7 +61,6 @@ export const LeaveModal = ({
                 <Box sx={{ mt: "auto" }}>
                     <FancyButton
                         loading={isLoading}
-                        excludeCaret
                         clipThingsProps={{
                             clipSize: "5px",
                             backgroundColor: colors.red,

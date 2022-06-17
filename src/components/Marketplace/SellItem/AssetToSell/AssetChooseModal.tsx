@@ -9,6 +9,7 @@ import { GameServerKeys } from "../../../../keys"
 import { colors, fonts, siteZIndex } from "../../../../theme/theme"
 import { Keycard, MechBasic, MysteryCrate } from "../../../../types"
 import { ItemType } from "../../../../types/marketplace"
+import { PageHeader } from "../../../Common/PageHeader"
 import { TotalAndPageSizeOptions } from "../../../Common/TotalAndPageSizeOptions"
 import { AssetToSellStruct, itemTypes } from "../SellItem"
 import { AssetToSellItem } from "./AssetToSellItem"
@@ -125,12 +126,6 @@ export const AssetChooseModal = ({
                         borderColor: primaryColor,
                         borderThickness: ".3rem",
                     }}
-                    corners={{
-                        topLeft: true,
-                        topRight: true,
-                        bottomLeft: true,
-                        bottomRight: true,
-                    }}
                     sx={{ position: "relative" }}
                     backgroundColor={backgroundColor}
                 >
@@ -142,23 +137,7 @@ export const AssetChooseModal = ({
                             overflow: "hidden",
                         }}
                     >
-                        <Box
-                            sx={{
-                                px: "2.5rem",
-                                pt: "2.4rem",
-                                pb: "1.6rem",
-                                borderBottom: `${primaryColor}70 1.5px solid`,
-                            }}
-                        >
-                            <Typography
-                                variant="h6"
-                                sx={{
-                                    fontFamily: fonts.nostromoBlack,
-                                }}
-                            >
-                                {question}
-                            </Typography>
-                        </Box>
+                        <PageHeader title={question}></PageHeader>
 
                         <TotalAndPageSizeOptions
                             countItems={ownedAssets?.length}
