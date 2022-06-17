@@ -1,7 +1,8 @@
 import { Box, Divider, Stack, Typography } from "@mui/material"
 import React, { useState } from "react"
+import { Link } from "react-router-dom"
 import { SvgNinjaSyndicateLogo, SvgSupremacyLogo } from "../../assets"
-import { PASSPORT_WEB, SUPREMACY_PAGE, VERSION } from "../../constants"
+import { PASSPORT_WEB, VERSION } from "../../constants"
 import { colors, fonts } from "../../theme/theme"
 
 export const Logo = React.memo(function Logo() {
@@ -13,9 +14,9 @@ export const Logo = React.memo(function Logo() {
                 <SvgNinjaSyndicateLogo size="2.6rem" />
             </a>
             <Divider orientation="vertical" flexItem sx={{ borderColor: "#FFFFFF", borderRightWidth: 2 }} />
-            <a href={SUPREMACY_PAGE} target="_blank" rel="noreferrer">
+            <Link to="/">
                 <SvgSupremacyLogo width="15rem" />
-            </a>
+            </Link>
             <Box
                 onMouseEnter={() => {
                     setText(`${VERSION.substring(0, 10)}...`)
