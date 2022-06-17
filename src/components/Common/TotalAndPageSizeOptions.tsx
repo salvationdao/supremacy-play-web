@@ -31,7 +31,8 @@ export const TotalAndPageSizeOptions = ({
             alignItems="center"
             justifyContent="space-between"
             sx={{
-                px: "1.5rem",
+                pl: "1.5rem",
+                pr: ".5rem",
                 py: ".6rem",
                 backgroundColor: "#00000070",
                 borderBottom: (theme) => `${theme.factionTheme.primary}70 1.5px solid`,

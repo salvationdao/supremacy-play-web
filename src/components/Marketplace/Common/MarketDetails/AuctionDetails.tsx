@@ -30,7 +30,9 @@ export const AuctionDetails = ({ id, owner, itemName, auctionCurrentPrice, aucti
     const [currentPrice, setCurrentPrice] = useState<BigNumber>(new BigNumber(auctionCurrentPrice).shiftedBy(-18))
     const [bidCount, setBidCount] = useState<number>(auctionBidCount)
     const [lastBidUser, setLastBidUser] = useState<MarketUser | undefined>(auctionLastBid)
-    const [inputBidPrice, setInputBidPrice] = useState<number>()
+    const [inputBidPrice, setInputBidPrice] = useState<number | undefined>(
+        auctionCurrentPrice ? new BigNumber(auctionCurrentPrice).shiftedBy(-18).plus(1).toNumber() : undefined,
+    )
 
     // Bidding
     const [isLoading, setIsLoading] = useState(false)
@@ -147,7 +149,7 @@ export const AuctionDetails = ({ id, owner, itemName, auctionCurrentPrice, aucti
                             variant="outlined"
                             hiddenLabel
                             disabled={isSelfItem}
-                            placeholder={currentPrice ? currentPrice.plus(1).toString() : "Enter your bid..."}
+                            placeholder={"Enter your bid..."}
                             InputProps={{
                                 startAdornment: (
                                     <InputAdornment position="start">
