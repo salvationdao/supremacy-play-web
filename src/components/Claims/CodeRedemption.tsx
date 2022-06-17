@@ -124,7 +124,7 @@ const CodeEntry = ({ length, code, setCode }: CodeEntryProps) => {
             id="code_entry_redemption"
             variant="standard"
             value={code}
-            onChange={(e) => setCode(e.target.value)}
+            onChange={(e) => setCode(e.target.value.toUpperCase())}
             inputProps={{
                 style: {
                     margin: "1rem auto",
