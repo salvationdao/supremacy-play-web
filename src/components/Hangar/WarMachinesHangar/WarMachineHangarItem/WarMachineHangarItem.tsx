@@ -1,6 +1,7 @@
 import { Box, Skeleton, Stack } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { ClipThing } from "../../.."
+import { useSnackbar } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
 import { useGameServerCommandsFaction, useGameServerCommandsUser } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
@@ -36,6 +37,7 @@ export const WarMachineHangarItem = ({
 }: WarMachineHangarItemProps) => {
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const { send: userSend } = useGameServerCommandsUser("/user_commander")
+    const { newSnackbarMessage } = useSnackbar()
 
     const [mechDetails, setMechDetails] = useState<MechDetails>()
 
@@ -63,13 +65,16 @@ export const WarMachineHangarItem = ({
                     new_name: newName,
                 })
 
-                if (!resp || !mechDetails) return
+                if (!resp || !mechDetails) {
+                    return
+                }
                 setMechDetails({ ...mechDetails, name: newName })
+                newSnackbarMessage("Mech name updated ", "success")
             } catch (e) {
-                console.error(e)
+                newSnackbarMessage("Failed to update mech name. ", "error")
             }
         },
-        [setMechDetails, mechDetails, mech.id, userSend],
+        [setMechDetails, mechDetails, mech.id, userSend, newSnackbarMessage],
     )
 
     return useMemo(
