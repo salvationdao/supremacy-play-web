@@ -239,6 +239,7 @@ export const WarMachinesMarket = () => {
                 onSetSort={setSort}
                 chipFilters={[statusFilterSection.current, ownedByFilterSection.current, listingTypeFilterSection.current, rarityChipFilter.current]}
                 rangeFilters={[priceRangeFilter.current]}
+                changePage={changePage}
             />
 
             <ClipThing

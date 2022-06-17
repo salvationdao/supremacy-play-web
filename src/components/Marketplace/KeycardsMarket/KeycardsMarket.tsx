@@ -201,6 +201,7 @@ export const KeycardsMarket = () => {
                 onSetSort={setSort}
                 chipFilters={[statusFilterSection.current, ownedByFilterSection.current]}
                 rangeFilters={[priceRangeFilter.current]}
+                changePage={changePage}
             />
 
             <ClipThing

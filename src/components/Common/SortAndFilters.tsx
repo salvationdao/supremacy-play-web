@@ -43,9 +43,10 @@ interface SortAndFiltersProps {
     onSetSort: React.Dispatch<React.SetStateAction<SortType>>
     chipFilters?: ChipFilter[]
     rangeFilters?: RangeFilter[]
+    changePage: (page: number) => void
 }
 
-export const SortAndFilters = ({ initialSearch, onSetSearch, initialSort, onSetSort, chipFilters, rangeFilters }: SortAndFiltersProps) => {
+export const SortAndFilters = ({ initialSearch, onSetSearch, initialSort, onSetSort, chipFilters, rangeFilters, changePage }: SortAndFiltersProps) => {
     const theme = useTheme()
     const [searchValue, setSearchValue] = useState(initialSearch)
     const [sortValue, setSortValue] = useState<SortType>(initialSort)
@@ -133,6 +134,7 @@ export const SortAndFilters = ({ initialSearch, onSetSearch, initialSort, onSetS
                                                 case "Enter": {
                                                     e.preventDefault()
                                                     onSetSearch(searchValue)
+                                                    changePage(1)
                                                     break
                                                 }
                                             }
@@ -215,6 +217,7 @@ export const SortAndFilters = ({ initialSearch, onSetSearch, initialSort, onSetS
                                                 onClick={() => {
                                                     setSortValue(x)
                                                     onSetSort(x)
+                                                    changePage(1)
                                                 }}
                                                 sx={{ "&:hover": { backgroundColor: "#FFFFFF20" } }}
                                             >
@@ -229,11 +232,15 @@ export const SortAndFilters = ({ initialSearch, onSetSearch, initialSort, onSetS
 
                     {!!chipFilters &&
                         chipFilters.length > 0 &&
-                        chipFilters.map((f, i) => <ChipFilterSection key={i} filter={f} primaryColor={primaryColor} secondaryColor={secondaryColor} />)}
+                        chipFilters.map((f, i) => (
+                            <ChipFilterSection key={i} filter={f} primaryColor={primaryColor} secondaryColor={secondaryColor} changePage={changePage} />
+                        ))}
 
                     {!!rangeFilters &&
                         rangeFilters.length > 0 &&
-                        rangeFilters.map((f, i) => <RangeFilterSection key={i} filter={f} primaryColor={primaryColor} secondaryColor={secondaryColor} />)}
+                        rangeFilters.map((f, i) => (
+                            <RangeFilterSection key={i} filter={f} primaryColor={primaryColor} secondaryColor={secondaryColor} changePage={changePage} />
+                        ))}
                 </Stack>
             </Box>
         </ClipThing>
@@ -281,7 +288,17 @@ const Section = ({
     )
 }
 
-const ChipFilterSection = ({ filter, primaryColor, secondaryColor }: { filter: ChipFilter; primaryColor: string; secondaryColor: string }) => {
+const ChipFilterSection = ({
+    filter,
+    primaryColor,
+    secondaryColor,
+    changePage,
+}: {
+    filter: ChipFilter
+    primaryColor: string
+    secondaryColor: string
+    changePage: (page: number) => void
+}) => {
     const { label, options, initialSelected, onSetSelected } = filter
     const [selectedOptions, setSelectedOptions, selectedOptionsInstant, setSelectedOptionsInstant] = useDebounce<string[]>(initialSelected, 700)
 
@@ -293,8 +310,9 @@ const ChipFilterSection = ({ filter, primaryColor, secondaryColor }: { filter: C
     const onSelect = useCallback(
         (option: string) => {
             setSelectedOptions((prev) => (prev.includes(option) ? prev.filter((r) => r !== option) : prev.concat(option)))
+            changePage(1)
         },
-        [setSelectedOptions],
+        [changePage, setSelectedOptions],
     )
 
     const resetButton = useMemo(() => {
@@ -363,14 +381,25 @@ const ChipFilterSection = ({ filter, primaryColor, secondaryColor }: { filter: C
     )
 }
 
-const RangeFilterSection = ({ filter, primaryColor, secondaryColor }: { filter: RangeFilter; primaryColor: string; secondaryColor: string }) => {
+const RangeFilterSection = ({
+    filter,
+    primaryColor,
+    secondaryColor,
+    changePage,
+}: {
+    filter: RangeFilter
+    primaryColor: string
+    secondaryColor: string
+    changePage: (page: number) => void
+}) => {
     const { label, initialValue, onSetValue } = filter
     const [value, setValue, valueInstant, setValueInstant] = useDebounce<(number | undefined)[]>(initialValue, 700)
 
     // Set the value on the parent
     useEffect(() => {
         onSetValue(value)
-    }, [onSetValue, value])
+        changePage(1)
+    }, [changePage, onSetValue, value])
 
     const handleChange = useCallback(
         (newValue: number, index: number) => {

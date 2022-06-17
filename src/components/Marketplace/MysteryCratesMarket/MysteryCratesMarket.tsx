@@ -215,6 +215,7 @@ export const MysteryCratesMarket = () => {
                 onSetSort={setSort}
                 chipFilters={[statusFilterSection.current, ownedByFilterSection.current, listingTypeFilterSection.current]}
                 rangeFilters={[priceRangeFilter.current]}
+                changePage={changePage}
             />
 
             <ClipThing
