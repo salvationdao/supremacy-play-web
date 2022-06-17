@@ -79,10 +79,10 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
             // Defaults
             defaultPosX: 0,
             defaultPosY: 0,
-            defaultWidth: 500,
-            defaultHeight: 800,
+            defaultWidth: 420,
+            defaultHeight: 600,
             // Size limits
-            minWidth: 380,
+            minWidth: 350,
             minHeight: 400,
             maxWidth: 1000,
             maxHeight: 1000,

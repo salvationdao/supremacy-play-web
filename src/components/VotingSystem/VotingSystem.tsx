@@ -20,8 +20,8 @@ const VotingSystemInner = ({ bribeStage }: { bribeStage?: BribeStageResponse }) 
         () => ({
             localStoragePrefix: "votingSystem",
             // Defaults
-            defaultPosX: 0,
-            defaultPosY: 0,
+            defaultPosX: 10,
+            defaultPosY: 10,
             defaultWidth: 390,
             defaultHeight: 360,
             // Size limits
