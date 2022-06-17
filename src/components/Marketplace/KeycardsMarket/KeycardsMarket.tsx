@@ -201,6 +201,7 @@ export const KeycardsMarket = () => {
                 onSetSort={setSort}
                 chipFilters={[statusFilterSection.current, ownedByFilterSection.current]}
                 rangeFilters={[priceRangeFilter.current]}
+                changePage={changePage}
             />
 
             <ClipThing
@@ -244,6 +245,7 @@ export const KeycardsMarket = () => {
                             totalItems={totalItems}
                             pageSize={pageSize}
                             setPageSize={setPageSize}
+                            pageSizeOptions={[10, 20, 40]}
                             changePage={changePage}
                             isGridView={isGridView}
                             toggleIsGridView={toggleIsGridView}

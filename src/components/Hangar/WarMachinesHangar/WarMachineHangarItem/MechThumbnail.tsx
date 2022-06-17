@@ -15,10 +15,10 @@ export const MechThumbnail = ({ mech, mechDetails, smallSize }: { mech: MechBasi
 
     return (
         <ClipThing
-            clipSize={smallSize ? "4px" : "8px"}
+            clipSize={smallSize ? "6px" : "8px"}
             border={{
                 borderColor: primaryColor,
-                borderThickness: imageUrl && !smallSize ? "0" : ".12rem",
+                borderThickness: imageUrl && !smallSize ? "0" : ".18rem",
             }}
             backgroundColor={theme.factionTheme.background}
             sx={{ flex: 1, position: "relative" }}

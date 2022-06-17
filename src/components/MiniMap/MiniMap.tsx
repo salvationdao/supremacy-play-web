@@ -204,11 +204,13 @@ const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, toggleIsM
                 <ResizeBox
                     sx={{ bottom: 0, right: 0 }}
                     color={mainColor}
-                    adjustment={adjustment}
-                    onResizeStop={setDimensions}
-                    initialDimensions={[dimensions.width, dimensions.height]}
-                    minConstraints={[defaultDimensions.width, defaultDimensions.height]}
-                    maxConstraints={[Math.min(width - 25, 638), Math.min(height - 25, 638)]}
+                    onResizeStopped={setDimensions}
+                    initialWidth={dimensions.width}
+                    initialHeight={dimensions.height}
+                    minWidth={defaultDimensions.width}
+                    minHeight={defaultDimensions.height}
+                    maxWidth={Math.min(width - 25, 638)}
+                    maxHeight={Math.min(height - 25, 638)}
                     resizeHandles={["nw"]}
                     handle={() => (
                         <Box

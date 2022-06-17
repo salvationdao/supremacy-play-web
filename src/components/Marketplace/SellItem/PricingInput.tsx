@@ -46,6 +46,9 @@ export const PricingInput = ({
                             variant="outlined"
                             hiddenLabel
                             placeholder={placeholder}
+                            onWheel={(event) => {
+                                event.currentTarget.getElementsByTagName("input")[0]?.blur()
+                            }}
                             InputProps={{
                                 startAdornment: (
                                     <InputAdornment position="start">

@@ -239,6 +239,7 @@ export const WarMachinesMarket = () => {
                 onSetSort={setSort}
                 chipFilters={[statusFilterSection.current, ownedByFilterSection.current, listingTypeFilterSection.current, rarityChipFilter.current]}
                 rangeFilters={[priceRangeFilter.current]}
+                changePage={changePage}
             />
 
             <ClipThing
@@ -282,6 +283,7 @@ export const WarMachinesMarket = () => {
                             totalItems={totalItems}
                             pageSize={pageSize}
                             setPageSize={setPageSize}
+                            pageSizeOptions={[10, 20, 40]}
                             changePage={changePage}
                             isGridView={isGridView}
                             toggleIsGridView={toggleIsGridView}
