@@ -103,9 +103,8 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
                                     overflow: "hidden",
                                 }}
                             >
-                                <Box className="handle" sx={{ cursor: "move" }}>
-                                    <PageHeader title="QUICK DEPLOY"></PageHeader>
-                                </Box>
+                                <PageHeader title="QUICK DEPLOY" />
+
                                 <TotalAndPageSizeOptions
                                     countItems={mechs?.length}
                                     totalItems={totalItems}
