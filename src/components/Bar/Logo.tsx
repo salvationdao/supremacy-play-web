@@ -1,19 +1,15 @@
-import { Box, Divider, Stack, Typography } from "@mui/material"
+import { Box, Stack, Typography } from "@mui/material"
 import React, { useState } from "react"
 import { Link } from "react-router-dom"
-import { SvgNinjaSyndicateLogo, SvgSupremacyLogo } from "../../assets"
-import { PASSPORT_WEB, VERSION } from "../../constants"
+import { SvgSupremacyLogo } from "../../assets"
+import { VERSION } from "../../constants"
 import { colors, fonts } from "../../theme/theme"
 
 export const Logo = React.memo(function Logo() {
     const [text, setText] = useState<string>("EARLY ACCESS")
 
     return (
-        <Stack direction="row" alignItems="center" spacing="1.44rem" sx={{ px: "1.6rem", zIndex: 1 }}>
-            <a href={PASSPORT_WEB} target="_blank" rel="noreferrer">
-                <SvgNinjaSyndicateLogo size="2.6rem" />
-            </a>
-            <Divider orientation="vertical" flexItem sx={{ borderColor: "#FFFFFF", borderRightWidth: 2 }} />
+        <Stack direction="row" alignItems="center" spacing="1.44rem" sx={{ px: ".8rem", zIndex: 1 }}>
             <Link to="/">
                 <SvgSupremacyLogo width="15rem" />
             </Link>
