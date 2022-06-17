@@ -258,6 +258,7 @@ export const MysteryCratesMarket = () => {
                             totalItems={totalItems}
                             pageSize={pageSize}
                             setPageSize={setPageSize}
+                            pageSizeOptions={[10, 20, 40]}
                             changePage={changePage}
                             isGridView={isGridView}
                             toggleIsGridView={toggleIsGridView}

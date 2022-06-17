@@ -6,6 +6,7 @@ interface TotalAndPageSizeOptionsProps {
     countItems?: number
     totalItems: number
     pageSize: number
+    pageSizeOptions?: number[]
     isGridView?: boolean
     setPageSize: (value: number) => void
     changePage: (value: number) => void
@@ -17,6 +18,7 @@ export const TotalAndPageSizeOptions = ({
     countItems,
     totalItems,
     pageSize,
+    pageSizeOptions = [5, 10, 20],
     isGridView,
     setPageSize,
     changePage,
@@ -69,51 +71,26 @@ export const TotalAndPageSizeOptions = ({
                     </>
                 )}
 
-                <IconButton
-                    sx={{
-                        color: (theme) => (pageSize === 5 ? `${theme.factionTheme.secondary} !important` : "#FFFFFF60 !important"),
-                        backgroundColor: (theme) => (pageSize === 5 ? `${theme.factionTheme.primary} !important` : "unset"),
-                    }}
-                    size="small"
-                    onClick={() => {
-                        setPageSize(5)
-                        changePage(1)
-                    }}
-                >
-                    <Typography variant="caption" sx={{ color: "inherit" }}>
-                        5
-                    </Typography>
-                </IconButton>
-                <IconButton
-                    sx={{
-                        color: (theme) => (pageSize === 10 ? `${theme.factionTheme.secondary} !important` : "#FFFFFF60 !important"),
-                        backgroundColor: (theme) => (pageSize === 10 ? `${theme.factionTheme.primary} !important` : "unset"),
-                    }}
-                    size="small"
-                    onClick={() => {
-                        setPageSize(10)
-                        changePage(1)
-                    }}
-                >
-                    <Typography variant="caption" sx={{ color: "inherit" }}>
-                        10
-                    </Typography>
-                </IconButton>
-                <IconButton
-                    sx={{
-                        color: (theme) => (pageSize === 15 ? `${theme.factionTheme.secondary} !important` : "#FFFFFF60 !important"),
-                        backgroundColor: (theme) => (pageSize === 15 ? `${theme.factionTheme.primary} !important` : "unset"),
-                    }}
-                    size="small"
-                    onClick={() => {
-                        setPageSize(15)
-                        changePage(1)
-                    }}
-                >
-                    <Typography variant="caption" sx={{ color: "inherit" }}>
-                        15
-                    </Typography>
-                </IconButton>
+                {pageSizeOptions.map((size, i) => {
+                    return (
+                        <IconButton
+                            key={i}
+                            sx={{
+                                color: (theme) => (pageSize === size ? `${theme.factionTheme.secondary} !important` : "#FFFFFF60 !important"),
+                                backgroundColor: (theme) => (pageSize === size ? `${theme.factionTheme.primary} !important` : "unset"),
+                            }}
+                            size="small"
+                            onClick={() => {
+                                setPageSize(size)
+                                changePage(1)
+                            }}
+                        >
+                            <Typography variant="caption" sx={{ color: "inherit" }}>
+                                {size}
+                            </Typography>
+                        </IconButton>
+                    )
+                })}
 
                 {manualRefresh && (
                     <>
