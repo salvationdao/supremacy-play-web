@@ -12,14 +12,14 @@ export enum SaleType {
 }
 
 export enum SortType {
-    OldestFirst = "Oldest first",
-    NewestFirst = "Newest first",
-    ExpiringFirst = "Time: ending soonest",
-    ExpiringReverse = "Time: newly listed",
+    OldestFirst = "Create time: oldest",
+    NewestFirst = "Create time: newly listed",
+    ExpiringFirst = "End time: ending soon",
+    ExpiringReverse = "End time: ending last",
     PriceLowest = "Price: lowest first",
     PriceHighest = "Price: highest first",
-    Alphabetical = "Name (ascending)",
-    AlphabeticalReverse = "Name (descending)",
+    Alphabetical = "Name: ascending",
+    AlphabeticalReverse = "Name: descending",
 }
 
 export interface MarketUser {

@@ -160,7 +160,7 @@ export const SortAndFilters = ({ initialSearch, onSetSearch, initialSort, onSetS
                         </Stack>
                     </Section>
 
-                    <Section label="SORT" primaryColor={primaryColor} secondaryColor={secondaryColor}>
+                    <Section label="SORT BY" primaryColor={primaryColor} secondaryColor={secondaryColor}>
                         <ClipThing
                             clipSize="5px"
                             clipSlantSize="2px"
