@@ -164,6 +164,7 @@ export const MechTitle = ({
                             }
                         }}
                     />
+
                     {editing && !submitting && newMechName !== name && (
                         <IconButton size="small" sx={{ ml: ".5rem" }} onClick={renameMechHandler}>
                             <SvgSave size="1.2rem" />
