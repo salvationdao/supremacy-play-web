@@ -13,7 +13,7 @@ import { MechBasic, MechDetails } from "../../types"
 import { PageHeader } from "../Common/PageHeader"
 import { TotalAndPageSizeOptions } from "../Common/TotalAndPageSizeOptions"
 import { LeaveModal } from "../Hangar/WarMachinesHangar/LeaveQueue/LeaveModal"
-import { MechDeployListItem } from "./MechDeployListItem"
+import { QuickDeployItem } from "./QuickDeployItem"
 
 interface GetMechsRequest {
     page: number
@@ -26,7 +26,7 @@ interface GetAssetsResponse {
     total: number
 }
 
-export const MechDeployListModal = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
+export const QuickDeploy = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
     const theme = useTheme()
     const { send } = useGameServerCommandsUser("/user_commander")
     const [selectedMechDetails, setSelectedMechDetails] = useState<MechDetails>()
@@ -193,7 +193,7 @@ export const MechDeployListModal = ({ open, onClose }: { open: boolean; onClose:
                                                 <Stack>
                                                     {mechs.map((mech) => {
                                                         return (
-                                                            <MechDeployListItem
+                                                            <QuickDeployItem
                                                                 key={mech.id}
                                                                 mech={mech}
                                                                 setDeployMechModalOpen={setDeployMechModalOpen}

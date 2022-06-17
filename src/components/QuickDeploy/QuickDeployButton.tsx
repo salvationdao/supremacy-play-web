@@ -4,7 +4,7 @@ import { SvgRobot } from "../../assets"
 import { useSupremacy } from "../../containers"
 import { colors } from "../../theme/theme"
 
-export const MechDeployListButton = () => {
+export const QuickDeployButton = () => {
     const { mechDeployModalOpen, toggleMechDeployModalOpen } = useSupremacy()
     const location = useLocation()
 

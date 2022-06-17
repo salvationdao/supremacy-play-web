@@ -10,14 +10,14 @@ import { MechBasic, MechDetails, MechStatus, MechStatusEnum } from "../../types"
 import { MechGeneralStatus } from "../Hangar/WarMachinesHangar/WarMachineHangarItem/MechGeneralStatus"
 import { MechThumbnail } from "../Hangar/WarMachinesHangar/WarMachineHangarItem/MechThumbnail"
 
-interface MechDeployListItemProps {
+interface QuickDeployItemProps {
     mech: MechBasic
     setDeployMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
     setLeaveMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
     setSelectedMechDetails: React.Dispatch<React.SetStateAction<MechDetails | undefined>>
 }
 
-export const MechDeployListItem = ({ mech, setSelectedMechDetails, setDeployMechModalOpen, setLeaveMechModalOpen }: MechDeployListItemProps) => {
+export const QuickDeployItem = ({ mech, setSelectedMechDetails, setDeployMechModalOpen, setLeaveMechModalOpen }: QuickDeployItemProps) => {
     const theme = useTheme()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [mechDetails, setMechDetails] = useState<MechDetails>()

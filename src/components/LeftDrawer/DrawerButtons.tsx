@@ -5,7 +5,7 @@ import { useAuth } from "../../containers"
 import { useTheme } from "../../containers/theme"
 import { ROUTES_ARRAY } from "../../routes"
 import { colors, fonts, siteZIndex } from "../../theme/theme"
-import { MechDeployListButton } from "../MechDeployListModal/MechDeployListButton"
+import { QuickDeployButton } from "../QuickDeploy/QuickDeployButton"
 
 const DRAWER_BAR_WIDTH = 3 // rem
 const BUTTON_WIDTH = 17 //rem
@@ -56,7 +56,7 @@ export const DrawerButtons = ({ openLeftDrawer }: { openLeftDrawer: () => void }
 
                     const toRender = []
 
-                    if (id === "fleet") toRender.push(<MechDeployListButton />)
+                    if (id === "fleet") toRender.push(<QuickDeployButton />)
                     toRender.push(
                         <TabButton
                             key={r.id}
