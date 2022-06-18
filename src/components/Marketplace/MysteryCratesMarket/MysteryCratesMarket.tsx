@@ -12,11 +12,21 @@ import { colors, fonts } from "../../../theme/theme"
 import { MarketplaceBuyAuctionItem, SortType } from "../../../types/marketplace"
 import { PageHeader } from "../../Common/PageHeader"
 import { ChipFilter } from "../../Common/SortAndFilters/ChipFilterSection"
-import { DropdownOptions } from "../../Common/SortAndFilters/DropdownOptionsSection"
 import { RangeFilter } from "../../Common/SortAndFilters/RangeFilterSection"
 import { SortAndFilters } from "../../Common/SortAndFilters/SortAndFilters"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { MysteryCrateMarketItem } from "./MysteryCrateMarketItem"
+
+const sortOptions = [
+    { label: SortType.OldestFirst, value: SortType.OldestFirst },
+    { label: SortType.NewestFirst, value: SortType.NewestFirst },
+    { label: SortType.ExpiringFirst, value: SortType.ExpiringFirst },
+    { label: SortType.ExpiringReverse, value: SortType.ExpiringReverse },
+    { label: SortType.PriceLowest, value: SortType.PriceLowest },
+    { label: SortType.PriceHighest, value: SortType.PriceHighest },
+    { label: SortType.Alphabetical, value: SortType.Alphabetical },
+    { label: SortType.AlphabeticalReverse, value: SortType.AlphabeticalReverse },
+]
 
 export const MysteryCratesMarket = () => {
     const location = useLocation()
@@ -40,22 +50,6 @@ export const MysteryCratesMarket = () => {
     const [price, setPrice] = useState<(number | undefined)[]>([undefined, undefined])
 
     // Filters
-    const dropdownOptionsSection = useRef<DropdownOptions>({
-        label: "SORT BY",
-        initialSelected: sort,
-        options: [
-            { label: SortType.OldestFirst, value: SortType.OldestFirst },
-            { label: SortType.NewestFirst, value: SortType.NewestFirst },
-            { label: SortType.ExpiringFirst, value: SortType.ExpiringFirst },
-            { label: SortType.ExpiringReverse, value: SortType.ExpiringReverse },
-            { label: SortType.PriceLowest, value: SortType.PriceLowest },
-            { label: SortType.PriceHighest, value: SortType.PriceHighest },
-            { label: SortType.Alphabetical, value: SortType.Alphabetical },
-            { label: SortType.AlphabeticalReverse, value: SortType.AlphabeticalReverse },
-        ],
-        onSetSelected: setSort,
-    })
-
     const statusFilterSection = useRef<ChipFilter>({
         label: "STATUS",
         options: [{ value: "true", label: "SOLD", color: colors.green }],
@@ -230,7 +224,6 @@ export const MysteryCratesMarket = () => {
             <SortAndFilters
                 initialSearch={search}
                 onSetSearch={setSearch}
-                dropdownOptions={[dropdownOptionsSection.current]}
                 chipFilters={[statusFilterSection.current, ownedByFilterSection.current, listingTypeFilterSection.current]}
                 rangeFilters={[priceRangeFilter.current]}
                 changePage={changePage}
@@ -282,6 +275,9 @@ export const MysteryCratesMarket = () => {
                             isGridView={isGridView}
                             toggleIsGridView={toggleIsGridView}
                             manualRefresh={getItems}
+                            sortOptions={sortOptions}
+                            selectedSort={sort}
+                            onSetSort={setSort}
                         />
 
                         <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>

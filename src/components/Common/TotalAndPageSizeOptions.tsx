@@ -1,6 +1,6 @@
-import { Divider, IconButton, Stack, Typography } from "@mui/material"
+import { Box, Divider, IconButton, MenuItem, Select, Stack, Typography } from "@mui/material"
 import { SvgGridView, SvgListView, SvgRefresh } from "../../assets"
-import { fonts } from "../../theme/theme"
+import { colors, fonts } from "../../theme/theme"
 
 interface TotalAndPageSizeOptionsProps {
     countItems?: number
@@ -12,6 +12,12 @@ interface TotalAndPageSizeOptionsProps {
     changePage: (value: number) => void
     toggleIsGridView?: (value: boolean) => void
     manualRefresh?: () => void
+    sortOptions?: {
+        label: string
+        value: string
+    }[]
+    selectedSort?: string
+    onSetSort?: React.Dispatch<React.SetStateAction<string>>
 }
 
 export const TotalAndPageSizeOptions = ({
@@ -24,6 +30,9 @@ export const TotalAndPageSizeOptions = ({
     changePage,
     toggleIsGridView,
     manualRefresh,
+    sortOptions,
+    selectedSort,
+    onSetSort,
 }: TotalAndPageSizeOptionsProps) => {
     return (
         <Stack
@@ -43,10 +52,12 @@ export const TotalAndPageSizeOptions = ({
             <Typography variant="caption" sx={{ lineHeight: 1 }}>
                 <strong>DISPLAYING:</strong> {countItems || 0} OF {totalItems}
             </Typography>
+
             <Stack
                 direction="row"
-                spacing=".6rem"
+                spacing="1rem"
                 alignItems="center"
+                divider={<Divider orientation="vertical" sx={{ height: "unset", alignSelf: "stretch", my: ".4rem !important" }} />}
                 sx={{
                     "& .MuiIconButton-root": {
                         minWidth: "3rem",
@@ -60,47 +71,105 @@ export const TotalAndPageSizeOptions = ({
                 }}
             >
                 {toggleIsGridView && (
-                    <>
+                    <Stack direction="row" spacing=".6rem" alignItems="center">
                         <IconButton size="small" onClick={() => toggleIsGridView(false)}>
                             <SvgListView size="1.2rem" sx={{ opacity: isGridView ? 0.3 : 1 }} />
                         </IconButton>
                         <IconButton size="small" onClick={() => toggleIsGridView(true)}>
                             <SvgGridView size="1.2rem" sx={{ opacity: isGridView ? 1 : 0.3 }} />
                         </IconButton>
-
-                        <Divider orientation="vertical" sx={{ height: "unset", alignSelf: "stretch", my: ".4rem !important" }} />
-                    </>
+                    </Stack>
                 )}
 
-                {pageSizeOptions.map((size, i) => {
-                    return (
-                        <IconButton
-                            key={i}
+                <Stack direction="row" spacing=".6rem" alignItems="center">
+                    {pageSizeOptions.map((size, i) => {
+                        return (
+                            <IconButton
+                                key={i}
+                                sx={{
+                                    color: (theme) => (pageSize === size ? `${theme.factionTheme.secondary} !important` : "#FFFFFF60 !important"),
+                                    backgroundColor: (theme) => (pageSize === size ? `${theme.factionTheme.primary} !important` : "unset"),
+                                }}
+                                size="small"
+                                onClick={() => {
+                                    setPageSize(size)
+                                    changePage(1)
+                                }}
+                            >
+                                <Typography variant="caption" sx={{ color: "inherit" }}>
+                                    {size}
+                                </Typography>
+                            </IconButton>
+                        )
+                    })}
+                </Stack>
+
+                {sortOptions && selectedSort && onSetSort && (
+                    <Stack direction="row" alignItems="center" spacing=".6rem">
+                        <Typography variant="caption">SORT:</Typography>
+
+                        <Select
                             sx={{
-                                color: (theme) => (pageSize === size ? `${theme.factionTheme.secondary} !important` : "#FFFFFF60 !important"),
-                                backgroundColor: (theme) => (pageSize === size ? `${theme.factionTheme.primary} !important` : "unset"),
+                                width: "100%",
+                                borderRadius: 0.5,
+                                "&:hover": {
+                                    backgroundColor: (theme) => theme.factionTheme.primary,
+                                },
+                                ".MuiTypography-root": {
+                                    px: ".1rem",
+                                    py: ".2rem",
+                                },
+                                "& .MuiSelect-outlined": { px: ".8rem", pt: ".2rem", pb: 0 },
+                                ".MuiOutlinedInput-notchedOutline": {
+                                    border: "none !important",
+                                },
                             }}
-                            size="small"
-                            onClick={() => {
-                                setPageSize(size)
-                                changePage(1)
+                            value={selectedSort}
+                            MenuProps={{
+                                variant: "menu",
+                                sx: {
+                                    "&& .Mui-selected": {
+                                        ".MuiTypography-root": {
+                                            color: (theme) => theme.factionTheme.secondary,
+                                        },
+                                        backgroundColor: (theme) => theme.factionTheme.primary,
+                                    },
+                                },
+                                PaperProps: {
+                                    sx: {
+                                        backgroundColor: colors.darkNavy,
+                                        borderRadius: 0.5,
+                                    },
+                                },
                             }}
                         >
-                            <Typography variant="caption" sx={{ color: "inherit" }}>
-                                {size}
-                            </Typography>
-                        </IconButton>
-                    )
-                })}
+                            {sortOptions.map((x, i) => {
+                                return (
+                                    <MenuItem
+                                        key={x.value + i}
+                                        value={x.value}
+                                        onClick={() => {
+                                            onSetSort(x.value)
+                                            changePage(1)
+                                        }}
+                                        sx={{ "&:hover": { backgroundColor: "#FFFFFF20" } }}
+                                    >
+                                        <Typography variant="body1" textTransform="uppercase">
+                                            {x.label}
+                                        </Typography>
+                                    </MenuItem>
+                                )
+                            })}
+                        </Select>
+                    </Stack>
+                )}
 
                 {manualRefresh && (
-                    <>
-                        <Divider orientation="vertical" sx={{ height: "unset", alignSelf: "stretch", my: ".4rem !important" }} />
-
+                    <Box>
                         <IconButton size="small" onClick={manualRefresh}>
                             <SvgRefresh size="1.2rem" />
                         </IconButton>
-                    </>
+                    </Box>
                 )}
             </Stack>
         </Stack>

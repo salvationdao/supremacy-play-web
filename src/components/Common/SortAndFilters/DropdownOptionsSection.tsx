@@ -48,7 +48,7 @@ export const DropdownOptionsSection = ({
                             width: "100%",
                             borderRadius: 0.5,
                             "&:hover": {
-                                backgroundColor: colors.darkNavy,
+                                backgroundColor: primaryColor,
                             },
                             ".MuiTypography-root": {
                                 px: "1rem",
