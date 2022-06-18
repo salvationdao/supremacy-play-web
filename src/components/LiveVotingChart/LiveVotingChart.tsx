@@ -46,9 +46,9 @@ export const LiveVotingChart = () => {
             defaultWidth: 415,
             defaultHeight: 120,
             // Size limits
-            minWidth: 415,
-            minHeight: 120,
-            maxHeight: 120,
+            minWidth: 300,
+            minHeight: 110,
+            maxHeight: 200,
             // Callbacks
             onResizeCallback: onResize,
             onHideCallback: () => toggleIsLiveChartOpen(false),
