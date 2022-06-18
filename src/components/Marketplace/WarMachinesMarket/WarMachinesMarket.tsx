@@ -12,7 +12,7 @@ import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { MarketplaceBuyAuctionItem, SortType } from "../../../types/marketplace"
 import { PageHeader } from "../../Common/PageHeader"
-import { ChipFilter, RangeFilter, SortAndFilters } from "../../Common/SortAndFilters"
+import { ChipFilter, DropdownOptions, RangeFilter, SortAndFilters } from "../../Common/SortAndFilters"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { WarMachineMarketItem } from "./WarMachineMarketItem"
 
@@ -32,7 +32,7 @@ export const WarMachinesMarket = () => {
 
     // Filters and sorts
     const [search, setSearch] = useState("")
-    const [sort, setSort] = useState<SortType>(SortType.NewestFirst)
+    const [sort, setSort] = useState<string>(SortType.NewestFirst)
     const [status, setStatus] = useState<string[]>([])
     const [ownedBy, setOwnedBy] = useState<string[]>([])
     const [listingTypes, setListingTypes] = useState<string[]>([])
@@ -40,6 +40,22 @@ export const WarMachinesMarket = () => {
     const [price, setPrice] = useState<(number | undefined)[]>([undefined, undefined])
 
     // Filters
+    const dropdownOptionsSection = useRef<DropdownOptions>({
+        label: "SORT BY",
+        initialSelected: sort,
+        options: [
+            { label: SortType.OldestFirst, value: SortType.OldestFirst },
+            { label: SortType.NewestFirst, value: SortType.NewestFirst },
+            { label: SortType.ExpiringFirst, value: SortType.ExpiringFirst },
+            { label: SortType.ExpiringReverse, value: SortType.ExpiringReverse },
+            { label: SortType.PriceLowest, value: SortType.PriceLowest },
+            { label: SortType.PriceHighest, value: SortType.PriceHighest },
+            { label: SortType.Alphabetical, value: SortType.Alphabetical },
+            { label: SortType.AlphabeticalReverse, value: SortType.AlphabeticalReverse },
+        ],
+        onSetSelected: setSort,
+    })
+
     const statusFilterSection = useRef<ChipFilter>({
         label: "STATUS",
         options: [{ value: "true", label: "SOLD", color: colors.green }],
@@ -235,8 +251,7 @@ export const WarMachinesMarket = () => {
             <SortAndFilters
                 initialSearch={search}
                 onSetSearch={setSearch}
-                initialSort={sort}
-                onSetSort={setSort}
+                dropdownOptions={[dropdownOptionsSection.current]}
                 chipFilters={[statusFilterSection.current, ownedByFilterSection.current, listingTypeFilterSection.current, rarityChipFilter.current]}
                 rangeFilters={[priceRangeFilter.current]}
                 changePage={changePage}

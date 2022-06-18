@@ -364,7 +364,10 @@ export const SellItemInner = ({ toggleReset }: { toggleReset: () => void }) => {
                 <SuccessModal
                     title="ITEM LISTED!"
                     leftLabel="SELL ANOTHER"
-                    onLeftButton={toggleReset}
+                    onLeftButton={() => {
+                        history.replace(`/marketplace/sell${location.hash}`)
+                        toggleReset()
+                    }}
                     rightLabel="VIEW LISTING"
                     onRightButton={() => {
                         let subPath = ""

@@ -5,18 +5,16 @@ import { SvgSearch, SvgSupToken } from "../../assets"
 import { useTheme } from "../../containers/theme"
 import { useDebounce } from "../../hooks"
 import { colors, fonts } from "../../theme/theme"
-import { SortType } from "../../types/marketplace"
 
-const sortOptions: SortType[] = [
-    SortType.OldestFirst,
-    SortType.NewestFirst,
-    SortType.ExpiringFirst,
-    SortType.ExpiringReverse,
-    SortType.PriceLowest,
-    SortType.PriceHighest,
-    SortType.Alphabetical,
-    SortType.AlphabeticalReverse,
-]
+export interface DropdownOptions {
+    label: string
+    options: {
+        label: string
+        value: string
+    }[]
+    initialSelected: string
+    onSetSelected: React.Dispatch<React.SetStateAction<string>>
+}
 
 export interface ChipFilter {
     label: string
@@ -39,17 +37,15 @@ export interface RangeFilter {
 interface SortAndFiltersProps {
     initialSearch: string
     onSetSearch: React.Dispatch<React.SetStateAction<string>>
-    initialSort: SortType
-    onSetSort: React.Dispatch<React.SetStateAction<SortType>>
+    dropdownOptions?: DropdownOptions[]
     chipFilters?: ChipFilter[]
     rangeFilters?: RangeFilter[]
     changePage: (page: number) => void
 }
 
-export const SortAndFilters = ({ initialSearch, onSetSearch, initialSort, onSetSort, chipFilters, rangeFilters, changePage }: SortAndFiltersProps) => {
+export const SortAndFilters = ({ initialSearch, onSetSearch, dropdownOptions, chipFilters, rangeFilters, changePage }: SortAndFiltersProps) => {
     const theme = useTheme()
     const [searchValue, setSearchValue] = useState(initialSearch)
-    const [sortValue, setSortValue] = useState<SortType>(initialSort)
 
     const primaryColor = theme.factionTheme.primary
     const secondaryColor = theme.factionTheme.secondary
@@ -165,73 +161,18 @@ export const SortAndFilters = ({ initialSearch, onSetSearch, initialSort, onSetS
                         </Stack>
                     </Section>
 
-                    <Section label="SORT BY" primaryColor={primaryColor} secondaryColor={secondaryColor}>
-                        <ClipThing
-                            clipSize="5px"
-                            clipSlantSize="2px"
-                            opacity={0.9}
-                            border={{
-                                borderColor: primaryColor,
-                                borderThickness: "1px",
-                            }}
-                            backgroundColor={backgroundColor}
-                        >
-                            <Stack sx={{ height: "100%" }}>
-                                <Select
-                                    sx={{
-                                        width: "100%",
-                                        borderRadius: 0.5,
-                                        "&:hover": {
-                                            backgroundColor: colors.darkNavy,
-                                        },
-                                        ".MuiTypography-root": {
-                                            px: "1rem",
-                                            py: ".5rem",
-                                        },
-                                        "& .MuiSelect-outlined": { px: ".8rem", pt: ".2rem", pb: 0 },
-                                        ".MuiOutlinedInput-notchedOutline": {
-                                            border: "none !important",
-                                        },
-                                    }}
-                                    value={sortValue}
-                                    MenuProps={{
-                                        variant: "menu",
-                                        sx: {
-                                            "&& .Mui-selected": {
-                                                ".MuiTypography-root": {
-                                                    color: secondaryColor,
-                                                },
-                                                backgroundColor: primaryColor,
-                                            },
-                                        },
-                                        PaperProps: {
-                                            sx: {
-                                                backgroundColor: colors.darkNavy,
-                                                borderRadius: 0.5,
-                                            },
-                                        },
-                                    }}
-                                >
-                                    {sortOptions.map((x, i) => {
-                                        return (
-                                            <MenuItem
-                                                key={x + i}
-                                                value={x}
-                                                onClick={() => {
-                                                    setSortValue(x)
-                                                    onSetSort(x)
-                                                    changePage(1)
-                                                }}
-                                                sx={{ "&:hover": { backgroundColor: "#FFFFFF20" } }}
-                                            >
-                                                <Typography textTransform="uppercase">{x}</Typography>
-                                            </MenuItem>
-                                        )
-                                    })}
-                                </Select>
-                            </Stack>
-                        </ClipThing>
-                    </Section>
+                    {!!dropdownOptions &&
+                        dropdownOptions.length > 0 &&
+                        dropdownOptions.map((d, i) => (
+                            <DropdownOptionsSection
+                                key={i}
+                                dropdownOptions={d}
+                                primaryColor={primaryColor}
+                                secondaryColor={secondaryColor}
+                                backgroundColor={backgroundColor}
+                                changePage={changePage}
+                            />
+                        ))}
 
                     {!!chipFilters &&
                         chipFilters.length > 0 &&
@@ -288,6 +229,93 @@ const Section = ({
 
             <Box sx={{ px: "2rem", pt: "1.8rem", pb: "2.2rem" }}>{children}</Box>
         </Box>
+    )
+}
+
+const DropdownOptionsSection = ({
+    dropdownOptions,
+    primaryColor,
+    secondaryColor,
+    backgroundColor,
+    changePage,
+}: {
+    dropdownOptions: DropdownOptions
+    primaryColor: string
+    secondaryColor: string
+    backgroundColor: string
+    changePage: (page: number) => void
+}) => {
+    const { label, options, initialSelected, onSetSelected } = dropdownOptions
+    const [selected, setSelected] = useState<string>(initialSelected)
+
+    return (
+        <Section label={label} primaryColor={primaryColor} secondaryColor={secondaryColor}>
+            <ClipThing
+                clipSize="5px"
+                clipSlantSize="2px"
+                opacity={0.9}
+                border={{
+                    borderColor: primaryColor,
+                    borderThickness: "1px",
+                }}
+                backgroundColor={backgroundColor}
+            >
+                <Stack sx={{ height: "100%" }}>
+                    <Select
+                        sx={{
+                            width: "100%",
+                            borderRadius: 0.5,
+                            "&:hover": {
+                                backgroundColor: colors.darkNavy,
+                            },
+                            ".MuiTypography-root": {
+                                px: "1rem",
+                                py: ".5rem",
+                            },
+                            "& .MuiSelect-outlined": { px: ".8rem", pt: ".2rem", pb: 0 },
+                            ".MuiOutlinedInput-notchedOutline": {
+                                border: "none !important",
+                            },
+                        }}
+                        value={selected}
+                        MenuProps={{
+                            variant: "menu",
+                            sx: {
+                                "&& .Mui-selected": {
+                                    ".MuiTypography-root": {
+                                        color: secondaryColor,
+                                    },
+                                    backgroundColor: primaryColor,
+                                },
+                            },
+                            PaperProps: {
+                                sx: {
+                                    backgroundColor: colors.darkNavy,
+                                    borderRadius: 0.5,
+                                },
+                            },
+                        }}
+                    >
+                        {options.map((x, i) => {
+                            return (
+                                <MenuItem
+                                    key={x.value + i}
+                                    value={x.value}
+                                    onClick={() => {
+                                        setSelected(x.value)
+                                        onSetSelected(x.value)
+                                        changePage(1)
+                                    }}
+                                    sx={{ "&:hover": { backgroundColor: "#FFFFFF20" } }}
+                                >
+                                    <Typography textTransform="uppercase">{x.label}</Typography>
+                                </MenuItem>
+                            )
+                        })}
+                    </Select>
+                </Stack>
+            </ClipThing>
+        </Section>
     )
 }
 
