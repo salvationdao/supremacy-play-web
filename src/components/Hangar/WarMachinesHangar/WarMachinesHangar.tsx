@@ -4,7 +4,8 @@ import { useLocation } from "react-router-dom"
 import { ClipThing, FancyButton } from "../.."
 import { PASSPORT_WEB } from "../../../constants"
 import { useTheme } from "../../../containers/theme"
-import { usePagination } from "../../../hooks"
+import { parseString } from "../../../helpers"
+import { usePagination, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
@@ -89,12 +90,17 @@ const WarMachinesHangarInner = ({
     setRentalMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
 }) => {
     const location = useLocation()
+    const [query, updateQuery] = useUrlQuery()
     const { send } = useGameServerCommandsUser("/user_commander")
     const theme = useTheme()
     const [mechs, setMechs] = useState<MechBasic[]>([])
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
-    const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({ pageSize: 5, page: 1 })
+
+    const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({
+        pageSize: parseString(query.get("pageSize"), 5),
+        page: parseString(query.get("page"), 1),
+    })
 
     const getItems = useCallback(async () => {
         try {
@@ -103,6 +109,11 @@ const WarMachinesHangarInner = ({
                 page,
                 page_size: pageSize,
                 include_market_listed: true,
+            })
+
+            updateQuery({
+                page: page.toString(),
+                pageSize: pageSize.toString(),
             })
 
             if (!resp) return
@@ -115,7 +126,7 @@ const WarMachinesHangarInner = ({
         } finally {
             setIsLoading(false)
         }
-    }, [send, page, pageSize, setTotalItems])
+    }, [send, page, pageSize, updateQuery, setTotalItems])
 
     useEffect(() => {
         getItems()

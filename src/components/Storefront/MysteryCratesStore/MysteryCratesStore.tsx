@@ -5,7 +5,8 @@ import { ClipThing } from "../.."
 import { SafePNG } from "../../../assets"
 import { useSnackbar } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
-import { usePagination } from "../../../hooks"
+import { parseString } from "../../../helpers"
+import { usePagination, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsFaction, useGameServerSubscriptionUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { HANGAR_TABS } from "../../../pages"
@@ -22,6 +23,7 @@ interface MysteryCrateOwnershipResp {
 
 export const MysteryCratesStore = () => {
     const { newSnackbarMessage } = useSnackbar()
+    const [query, updateQuery] = useUrlQuery()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const theme = useTheme()
     const [crates, setCrates] = useState<StorefrontMysteryCrate[]>()
@@ -31,7 +33,10 @@ export const MysteryCratesStore = () => {
         allowed: 0,
         owned: 0,
     })
-    const { page, changePage, setTotalItems, totalPages, pageSize } = usePagination({ pageSize: 10, page: 1 })
+    const { page, changePage, setTotalItems, totalPages, pageSize } = usePagination({
+        pageSize: parseString(query.get("pageSize"), 10),
+        page: parseString(query.get("page"), 1),
+    })
 
     const enlargedView = crates ? crates.length <= 2 : false
 
@@ -51,9 +56,15 @@ export const MysteryCratesStore = () => {
         ;(async () => {
             try {
                 setIsLoading(true)
+
                 const resp = await send<StorefrontMysteryCrate[]>(GameServerKeys.GetMysteryCrates, {
                     page,
                     page_size: pageSize,
+                })
+
+                updateQuery({
+                    page: page.toString(),
+                    pageSize: pageSize.toString(),
                 })
 
                 if (!resp) return
@@ -68,7 +79,7 @@ export const MysteryCratesStore = () => {
                 setIsLoading(false)
             }
         })()
-    }, [send, page, pageSize, setTotalItems, newSnackbarMessage])
+    }, [send, page, pageSize, setTotalItems, newSnackbarMessage, updateQuery])
 
     const content = useMemo(() => {
         if (loadError) {

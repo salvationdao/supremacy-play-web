@@ -4,7 +4,8 @@ import { useLocation } from "react-router-dom"
 import { ClipThing, FancyButton } from "../.."
 import { SafePNG } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
-import { usePagination } from "../../../hooks"
+import { parseString } from "../../../helpers"
+import { usePagination, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
@@ -28,13 +29,17 @@ interface GetAssetsResponse {
 
 export const MysteryCratesHangar = () => {
     const location = useLocation()
+    const [query, updateQuery] = useUrlQuery()
     const { send } = useGameServerCommandsUser("/user_commander")
     const theme = useTheme()
     const [crates, setCrates] = useState<MysteryCrate[]>()
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
 
-    const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({ pageSize: 10, page: 1 })
+    const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({
+        pageSize: parseString(query.get("pageSize"), 10),
+        page: parseString(query.get("page"), 1),
+    })
 
     const getItems = useCallback(async () => {
         try {
@@ -44,6 +49,11 @@ export const MysteryCratesHangar = () => {
                 page_size: pageSize,
                 exclude_opened: true,
                 include_market_listed: true,
+            })
+
+            updateQuery({
+                page: page.toString(),
+                pageSize: pageSize.toString(),
             })
 
             if (!resp) return
@@ -57,7 +67,7 @@ export const MysteryCratesHangar = () => {
         } finally {
             setIsLoading(false)
         }
-    }, [send, page, pageSize, setTotalItems])
+    }, [send, page, pageSize, updateQuery, setTotalItems])
 
     useEffect(() => {
         getItems()

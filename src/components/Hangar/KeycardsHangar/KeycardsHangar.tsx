@@ -6,7 +6,8 @@ import { KeycardPNG } from "../../../assets"
 import { PASSPORT_WEB } from "../../../constants"
 import { useAuth } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
-import { usePagination } from "../../../hooks"
+import { parseString } from "../../../helpers"
+import { usePagination, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
@@ -29,6 +30,7 @@ interface GetAssetsResponse {
 
 export const KeycardsHangar = () => {
     const location = useLocation()
+    const [query, updateQuery] = useUrlQuery()
     const { user } = useAuth()
     const { send } = useGameServerCommandsUser("/user_commander")
     const theme = useTheme()
@@ -36,7 +38,10 @@ export const KeycardsHangar = () => {
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
 
-    const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({ pageSize: 10, page: 1 })
+    const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({
+        pageSize: parseString(query.get("pageSize"), 10),
+        page: parseString(query.get("page"), 1),
+    })
 
     const getItems = useCallback(async () => {
         try {
@@ -45,6 +50,11 @@ export const KeycardsHangar = () => {
                 page,
                 page_size: pageSize,
                 include_market_listed: true,
+            })
+
+            updateQuery({
+                page: page.toString(),
+                pageSize: pageSize.toString(),
             })
 
             if (!resp) return
@@ -58,7 +68,7 @@ export const KeycardsHangar = () => {
         } finally {
             setIsLoading(false)
         }
-    }, [send, page, pageSize, setTotalItems])
+    }, [send, page, pageSize, updateQuery, setTotalItems])
 
     useEffect(() => {
         getItems()
