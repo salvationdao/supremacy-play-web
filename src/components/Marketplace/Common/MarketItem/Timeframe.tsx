@@ -9,7 +9,7 @@ export const Timeframe = ({ isGridView, endAt, soldAt }: { isGridView: boolean; 
     return (
         <Stack spacing={isGridView ? ".1rem" : ".6rem"}>
             <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack, color: colors.lightGrey }}>
-                {soldAt ? "SOLD AT" : "TIME LEFT"}
+                {soldAt ? "DATE SOLD" : "TIME LEFT"}
             </Typography>
             <Typography
                 sx={{

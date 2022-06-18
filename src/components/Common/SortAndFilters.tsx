@@ -154,7 +154,10 @@ export const SortAndFilters = ({ initialSearch, onSetSearch, initialSort, onSetS
                                         sx: { position: "relative", width: "4.5rem", height: "100%" },
                                     }}
                                     sx={{ py: ".6rem", color: secondaryColor, minWidth: 0, height: "100%" }}
-                                    onClick={() => onSetSearch(searchValue)}
+                                    onClick={() => {
+                                        onSetSearch(searchValue)
+                                        changePage(1)
+                                    }}
                                 >
                                     <SvgSearch size="1.4rem" fill={secondaryColor} sx={{ pt: ".1rem" }} />
                                 </FancyButton>
@@ -304,15 +307,17 @@ const ChipFilterSection = ({
 
     // Set the value on the parent
     useEffect(() => {
-        onSetSelected(selectedOptions)
-    }, [onSetSelected, selectedOptions])
+        onSetSelected((prev) => {
+            if (prev !== selectedOptions) changePage(1)
+            return selectedOptions
+        })
+    }, [changePage, onSetSelected, selectedOptions])
 
     const onSelect = useCallback(
         (option: string) => {
             setSelectedOptions((prev) => (prev.includes(option) ? prev.filter((r) => r !== option) : prev.concat(option)))
-            changePage(1)
         },
-        [changePage, setSelectedOptions],
+        [setSelectedOptions],
     )
 
     const resetButton = useMemo(() => {
@@ -329,9 +334,9 @@ const ChipFilterSection = ({
                 onClick={() => setSelectedOptionsInstant([])}
             >
                 <Typography
+                    variant="caption"
                     sx={{
                         color: secondaryColor,
-                        fontSize: "1.1rem",
                         fontWeight: "fontWeightBold",
                         opacity: 0.7,
                     }}
@@ -397,8 +402,10 @@ const RangeFilterSection = ({
 
     // Set the value on the parent
     useEffect(() => {
-        onSetValue(value)
-        changePage(1)
+        onSetValue((prev) => {
+            if (prev !== value) changePage(1)
+            return value
+        })
     }, [changePage, onSetValue, value])
 
     const handleChange = useCallback(
@@ -429,7 +436,6 @@ const RangeFilterSection = ({
                     variant="caption"
                     sx={{
                         color: secondaryColor,
-                        fontSize: "1.1rem",
                         fontFamily: fonts.nostromoBlack,
                         opacity: 0.7,
                     }}
