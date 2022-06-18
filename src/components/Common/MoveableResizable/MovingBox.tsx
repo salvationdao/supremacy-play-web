@@ -1,5 +1,5 @@
 import { Box, SxProps, Theme } from "@mui/system"
-import { ReactNode, useCallback, useState } from "react"
+import { ReactNode, useCallback, useEffect, useState } from "react"
 import Draggable, { DraggableData, DraggableEvent } from "react-draggable"
 import { useDimension } from "../../../containers"
 import { clamp } from "../../../helpers"
@@ -33,36 +33,54 @@ export const MovingBox = (props: MovingBoxProps) => {
     const [curPosX, setCurPosX] = useState<number>(initialPosX || minPosX)
     const [curPosY, setCurPosY] = useState<number>(initialPosY || minPosY)
 
+    const clampPosition = useCallback(
+        (data: Position) => {
+            if (!data) return
+            return {
+                x: clamp(Math.max(PADDING, minPosX), data.x, width - curWidth - PADDING),
+                y: clamp(Math.max(PADDING, minPosY), data.y, height - curHeight - PADDING),
+            }
+        },
+        [curHeight, curWidth, height, minPosX, minPosY, width],
+    )
+
     // When dragging stops, just set the position and save to local storage
     // The bounds in the Draggable component already limits it's range of motion
     const onDrag = useCallback(
         (e: DraggableEvent | undefined, data: Position) => {
-            if (!data) return
-            const newPosX = clamp(minPosX, data.x, width - curWidth - PADDING)
-            const newPosY = clamp(minPosY, data.y, height - curHeight - PADDING)
-            setCurPosX(newPosX)
-            setCurPosY(newPosY)
+            const clampedData = clampPosition(data)
+            if (!clampedData) return
+            setCurPosX(clampedData.x)
+            setCurPosY(clampedData.y)
             toggleMoving(true)
         },
-        [curHeight, curWidth, height, minPosX, minPosY, toggleMoving, width],
+        [clampPosition, toggleMoving],
     )
 
-    const onDragStop = useCallback(() => {
-        if (curPosX <= 0 || curPosY <= 0) return
-        onMovingStopped &&
-            onMovingStopped({
-                x: curPosX,
-                y: curPosY,
-            })
-        toggleMoving(false)
-    }, [curPosX, curPosY, onMovingStopped, toggleMoving])
+    const onDragStop = useCallback(
+        (pos?: Position) => {
+            const x = pos?.x || curPosX
+            const y = pos?.y || curPosY
+            if (x <= 0 || y <= 0) return
+            onMovingStopped &&
+                onMovingStopped({
+                    x: x,
+                    y: y,
+                })
+            toggleMoving(false)
+        },
+        [curPosX, curPosY, onMovingStopped, toggleMoving],
+    )
 
     // When user resizes the window and the position is outside, then we need to fix it
-    // useEffect(() => {
-    //     onDrag(undefined, { x: curPosX, y: curPosY })
-    //     onDragStop()
-    //     // eslint-disable-next-line react-hooks/exhaustive-deps
-    // }, [width, height])
+    useEffect(() => {
+        if (!width || !height) return
+        const pos = clampPosition({ x: curPosX, y: curPosY })
+        if (!pos) return
+        onDrag(undefined, pos)
+        onDragStop(pos)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [width, height, curWidth, curHeight])
 
     return (
         <MovingBoxInner
@@ -114,7 +132,7 @@ const MovingBoxInner = ({
                     y: curPosY,
                 }}
                 onDrag={onDrag}
-                onStop={onDragStop}
+                onStop={() => onDragStop()}
                 bounds={{
                     top: minPosY || PADDING,
                     bottom: maxPosY,

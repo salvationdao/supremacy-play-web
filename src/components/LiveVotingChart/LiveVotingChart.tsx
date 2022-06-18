@@ -45,6 +45,9 @@ export const LiveVotingChart = () => {
             defaultPosY: 400,
             defaultWidth: 415,
             defaultHeight: 120,
+            // Position limits
+            minPosX: 10,
+            minPosY: 10,
             // Size limits
             minWidth: 300,
             minHeight: 120,
