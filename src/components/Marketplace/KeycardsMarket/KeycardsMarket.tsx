@@ -38,7 +38,7 @@ export const KeycardsMarket = () => {
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
     const [keycardItems, setKeycardItems] = useState<MarketplaceBuyAuctionItem[]>()
-    const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, setPageSize } = usePagination({ pageSize: 10, page: 1 })
+    const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({ pageSize: 10, page: 1 })
     const [isGridView, toggleIsGridView] = useToggle(false)
 
     // Filters and sorts
@@ -264,7 +264,7 @@ export const KeycardsMarket = () => {
                             countItems={keycardItems?.length}
                             totalItems={totalItems}
                             pageSize={pageSize}
-                            setPageSize={setPageSize}
+                            changePageSize={changePageSize}
                             pageSizeOptions={[10, 20, 40]}
                             changePage={changePage}
                             isGridView={isGridView}

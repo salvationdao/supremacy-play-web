@@ -36,7 +36,7 @@ export const KeycardsHangar = () => {
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
 
-    const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, setPageSize } = usePagination({ pageSize: 10, page: 1 })
+    const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({ pageSize: 10, page: 1 })
 
     const getItems = useCallback(async () => {
         try {
@@ -214,7 +214,7 @@ export const KeycardsHangar = () => {
                         countItems={keycards?.length}
                         totalItems={totalItems}
                         pageSize={pageSize}
-                        setPageSize={setPageSize}
+                        changePageSize={changePageSize}
                         changePage={changePage}
                         manualRefresh={getItems}
                     />

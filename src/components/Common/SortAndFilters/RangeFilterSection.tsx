@@ -18,7 +18,10 @@ export const RangeFilterSection = ({ filter, primaryColor, secondaryColor }: { f
 
     // Set the value on the parent
     useEffect(() => {
+        if (value === valueInstant) return
         onSetValue(value)
+        // Need to skip lint or else theres no point in debounce.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [onSetValue, value])
 
     const handleChange = useCallback(

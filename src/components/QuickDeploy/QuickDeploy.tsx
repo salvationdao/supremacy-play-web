@@ -37,7 +37,7 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
     const [mechs, setMechs] = useState<MechBasic[]>([])
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
-    const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, setPageSize } = usePagination({ pageSize: 5, page: 1 })
+    const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({ pageSize: 5, page: 1 })
 
     const primaryColor = theme.factionTheme.primary
     const secondaryColor = theme.factionTheme.secondary
@@ -148,7 +148,7 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
                             countItems={mechs?.length}
                             totalItems={totalItems}
                             pageSize={pageSize}
-                            setPageSize={setPageSize}
+                            changePageSize={changePageSize}
                             changePage={changePage}
                             manualRefresh={getItems}
                         />

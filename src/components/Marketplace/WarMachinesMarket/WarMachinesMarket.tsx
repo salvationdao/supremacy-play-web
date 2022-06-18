@@ -40,7 +40,7 @@ export const WarMachinesMarket = () => {
     const [loadError, setLoadError] = useState<string>()
     const [mechItems, setMechItems] = useState<MarketplaceBuyAuctionItem[]>()
 
-    const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, setPageSize } = usePagination({ pageSize: 10, page: 1 })
+    const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({ pageSize: 10, page: 1, useURLParam: true })
     const [isGridView, toggleIsGridView] = useToggle(false)
 
     // Filters and sorts
@@ -305,7 +305,7 @@ export const WarMachinesMarket = () => {
                             countItems={mechItems?.length}
                             totalItems={totalItems}
                             pageSize={pageSize}
-                            setPageSize={setPageSize}
+                            changePageSize={changePageSize}
                             pageSizeOptions={[10, 20, 40]}
                             changePage={changePage}
                             isGridView={isGridView}

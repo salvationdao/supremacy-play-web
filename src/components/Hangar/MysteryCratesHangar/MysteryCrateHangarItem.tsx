@@ -119,7 +119,7 @@ export const MysteryCrateHangarItem = ({ crate }: MysteryCrateStoreItemProps) =>
                                             ? !crate.item_sale_id
                                                 ? undefined
                                                 : `/marketplace/${MARKETPLACE_TABS.MysteryCrates}/${crate.item_sale_id}${location.hash}`
-                                            : `/marketplace/sell?item-type=${ItemType.MysteryCrate}&asset-id=${crate.id}${location.hash}`
+                                            : `/marketplace/sell?itemType=${ItemType.MysteryCrate}&assetID=${crate.id}${location.hash}`
                                     }
                                     clipThingsProps={{
                                         clipSize: "5px",

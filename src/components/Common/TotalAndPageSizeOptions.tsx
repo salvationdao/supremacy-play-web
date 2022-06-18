@@ -8,7 +8,7 @@ interface TotalAndPageSizeOptionsProps {
     pageSize: number
     pageSizeOptions?: number[]
     isGridView?: boolean
-    setPageSize: (value: number) => void
+    changePageSize: (value: number) => void
     changePage: (value: number) => void
     toggleIsGridView?: (value: boolean) => void
     manualRefresh?: () => void
@@ -26,7 +26,7 @@ export const TotalAndPageSizeOptions = ({
     pageSize,
     pageSizeOptions = [5, 10, 20],
     isGridView,
-    setPageSize,
+    changePageSize,
     changePage,
     toggleIsGridView,
     manualRefresh,
@@ -92,7 +92,7 @@ export const TotalAndPageSizeOptions = ({
                                 }}
                                 size="small"
                                 onClick={() => {
-                                    setPageSize(size)
+                                    changePageSize(size)
                                     changePage(1)
                                 }}
                             >

@@ -125,7 +125,7 @@ export const MechButtons = ({
                                 ? !mechDetails.item_sale_id
                                     ? undefined
                                     : `/marketplace/${MARKETPLACE_TABS.WarMachines}/${mechDetails.item_sale_id}${location.hash}`
-                                : `/marketplace/sell?item-type=${ItemType.WarMachine}&asset-id=${mechDetails.id}${location.hash}`
+                                : `/marketplace/sell?itemType=${ItemType.WarMachine}&assetID=${mechDetails.id}${location.hash}`
                         }
                     />
                 </Box>
