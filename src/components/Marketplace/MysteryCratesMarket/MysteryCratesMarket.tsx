@@ -54,7 +54,10 @@ export const MysteryCratesMarket = () => {
         label: "STATUS",
         options: [{ value: "true", label: "SOLD", color: colors.green }],
         initialSelected: status,
-        onSetSelected: setStatus,
+        onSetSelected: (value: string[]) => {
+            setStatus(value)
+            changePage(1)
+        },
     })
     const ownedByFilterSection = useRef<ChipFilter>({
         label: "OWNED BY",
@@ -63,7 +66,10 @@ export const MysteryCratesMarket = () => {
             { value: "others", label: "OTHERS", color: theme.factionTheme.primary, textColor: theme.factionTheme.secondary },
         ],
         initialSelected: ownedBy,
-        onSetSelected: setOwnedBy,
+        onSetSelected: (value: string[]) => {
+            setOwnedBy(value)
+            changePage(1)
+        },
     })
 
     const listingTypeFilterSection = useRef<ChipFilter>({
@@ -74,13 +80,19 @@ export const MysteryCratesMarket = () => {
             { value: "AUCTION", label: "AUCTION", color: colors.auction },
         ],
         initialSelected: listingTypes,
-        onSetSelected: setListingTypes,
+        onSetSelected: (value: string[]) => {
+            setListingTypes(value)
+            changePage(1)
+        },
     })
 
     const priceRangeFilter = useRef<RangeFilter>({
         label: "PRICE RANGE",
         initialValue: price,
-        onSetValue: setPrice,
+        onSetValue: (value: (number | undefined)[]) => {
+            setPrice(value)
+            changePage(1)
+        },
     })
 
     const getItems = useCallback(async () => {

@@ -11,7 +11,7 @@ export interface DropdownOptions {
         value: string
     }[]
     initialSelected: string
-    onSetSelected: React.Dispatch<React.SetStateAction<string>>
+    onSetSelected: (value: string) => void
 }
 
 export const DropdownOptionsSection = ({

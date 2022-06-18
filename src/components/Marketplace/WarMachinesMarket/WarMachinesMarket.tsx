@@ -67,7 +67,10 @@ export const WarMachinesMarket = () => {
             { value: "others", label: "OTHERS", color: theme.factionTheme.primary, textColor: theme.factionTheme.secondary },
         ],
         initialSelected: ownedBy,
-        onSetSelected: setOwnedBy,
+        onSetSelected: (value: string[]) => {
+            setOwnedBy(value)
+            changePage(1)
+        },
     })
 
     const listingTypeFilterSection = useRef<ChipFilter>({
@@ -78,7 +81,10 @@ export const WarMachinesMarket = () => {
             { value: "AUCTION", label: "AUCTION", color: colors.auction },
         ],
         initialSelected: listingTypes,
-        onSetSelected: setListingTypes,
+        onSetSelected: (value: string[]) => {
+            setListingTypes(value)
+            changePage(1)
+        },
     })
 
     const rarityChipFilter = useRef<ChipFilter>({
@@ -97,13 +103,19 @@ export const WarMachinesMarket = () => {
             { value: "TITAN", ...getRarityDeets("TITAN") },
         ],
         initialSelected: rarities,
-        onSetSelected: setRarities,
+        onSetSelected: (value: string[]) => {
+            setRarities(value)
+            changePage(1)
+        },
     })
 
     const priceRangeFilter = useRef<RangeFilter>({
         label: "PRICE RANGE",
         initialValue: price,
-        onSetValue: setPrice,
+        onSetValue: (value: (number | undefined)[]) => {
+            setPrice(value)
+            changePage(1)
+        },
     })
 
     const getItems = useCallback(async () => {

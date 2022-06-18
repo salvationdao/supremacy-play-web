@@ -150,15 +150,11 @@ export const SortAndFilters = ({ initialSearch, onSetSearch, dropdownOptions, ch
 
                     {!!chipFilters &&
                         chipFilters.length > 0 &&
-                        chipFilters.map((f, i) => (
-                            <ChipFilterSection key={i} filter={f} primaryColor={primaryColor} secondaryColor={secondaryColor} changePage={changePage} />
-                        ))}
+                        chipFilters.map((f, i) => <ChipFilterSection key={i} filter={f} primaryColor={primaryColor} secondaryColor={secondaryColor} />)}
 
                     {!!rangeFilters &&
                         rangeFilters.length > 0 &&
-                        rangeFilters.map((f, i) => (
-                            <RangeFilterSection key={i} filter={f} primaryColor={primaryColor} secondaryColor={secondaryColor} changePage={changePage} />
-                        ))}
+                        rangeFilters.map((f, i) => <RangeFilterSection key={i} filter={f} primaryColor={primaryColor} secondaryColor={secondaryColor} />)}
                 </Stack>
             </Box>
         </ClipThing>

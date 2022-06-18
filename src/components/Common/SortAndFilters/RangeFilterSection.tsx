@@ -9,30 +9,17 @@ import { Section } from "./Section"
 export interface RangeFilter {
     label: string
     initialValue: (number | undefined)[]
-    onSetValue: React.Dispatch<React.SetStateAction<(number | undefined)[]>>
+    onSetValue: (value: (number | undefined)[]) => void
 }
 
-export const RangeFilterSection = ({
-    filter,
-    primaryColor,
-    secondaryColor,
-    changePage,
-}: {
-    filter: RangeFilter
-    primaryColor: string
-    secondaryColor: string
-    changePage: (page: number) => void
-}) => {
+export const RangeFilterSection = ({ filter, primaryColor, secondaryColor }: { filter: RangeFilter; primaryColor: string; secondaryColor: string }) => {
     const { label, initialValue, onSetValue } = filter
     const [value, setValue, valueInstant, setValueInstant] = useDebounce<(number | undefined)[]>(initialValue, 700)
 
     // Set the value on the parent
     useEffect(() => {
-        onSetValue((prev) => {
-            if (prev !== value) changePage(1)
-            return value
-        })
-    }, [changePage, onSetValue, value])
+        onSetValue(value)
+    }, [onSetValue, value])
 
     const handleChange = useCallback(
         (newValue: number, index: number) => {

@@ -14,30 +14,20 @@ export interface ChipFilter {
         textColor?: string
     }[]
     initialSelected: string[]
-    onSetSelected: React.Dispatch<React.SetStateAction<string[]>>
+    onSetSelected: (value: string[]) => void
 }
 
-export const ChipFilterSection = ({
-    filter,
-    primaryColor,
-    secondaryColor,
-    changePage,
-}: {
-    filter: ChipFilter
-    primaryColor: string
-    secondaryColor: string
-    changePage: (page: number) => void
-}) => {
+export const ChipFilterSection = ({ filter, primaryColor, secondaryColor }: { filter: ChipFilter; primaryColor: string; secondaryColor: string }) => {
     const { label, options, initialSelected, onSetSelected } = filter
     const [selectedOptions, setSelectedOptions, selectedOptionsInstant, setSelectedOptionsInstant] = useDebounce<string[]>(initialSelected, 700)
 
     // Set the value on the parent
     useEffect(() => {
-        onSetSelected((prev) => {
-            if (prev !== selectedOptions) changePage(1)
-            return selectedOptions
-        })
-    }, [changePage, onSetSelected, selectedOptions])
+        if (selectedOptions === selectedOptionsInstant) return
+        onSetSelected(selectedOptions)
+        // Need to skip lint or else theres no point in debounce.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [onSetSelected, selectedOptions])
 
     const onSelect = useCallback(
         (option: string) => {
