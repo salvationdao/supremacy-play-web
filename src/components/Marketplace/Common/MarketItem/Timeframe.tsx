@@ -9,7 +9,7 @@ export const Timeframe = ({ isGridView, endAt, soldAt }: { isGridView: boolean; 
     return (
         <Stack spacing={isGridView ? ".1rem" : ".6rem"}>
             <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack, color: colors.lightGrey }}>
-                TIME LEFT
+                {soldAt ? "SOLD AT" : "TIME LEFT"}
             </Typography>
             <Typography
                 sx={{
@@ -22,7 +22,7 @@ export const Timeframe = ({ isGridView, endAt, soldAt }: { isGridView: boolean; 
                     WebkitBoxOrient: "vertical",
                 }}
             >
-                {soldAt ? "LISTING ENDED" : timeLeft}
+                {soldAt ? soldAt.toUTCString() : timeLeft}
             </Typography>
         </Stack>
     )
