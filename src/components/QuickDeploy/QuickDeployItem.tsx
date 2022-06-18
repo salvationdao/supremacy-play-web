@@ -150,7 +150,7 @@ export const QuickDeployItem = ({ mech, queueFeed }: QuickDeployItemProps) => {
                                 },
                                 sx: { position: "relative" },
                             }}
-                            sx={{ px: "1.6rem", pt: 0, pb: ".1rem", color: theme.factionTheme.primary }}
+                            sx={{ px: "1rem", pt: 0, pb: ".1rem", color: theme.factionTheme.primary }}
                             onClick={() => {
                                 if (mechState === MechStatusEnum.Idle) {
                                     onDeployQueue()
