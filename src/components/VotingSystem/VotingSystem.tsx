@@ -25,12 +25,11 @@ const VotingSystemInner = ({ bribeStage }: { bribeStage?: BribeStageResponse }) 
             defaultWidth: 390,
             defaultHeight: 360,
             // Size limits
-            minWidth: 370,
+            minWidth: 300,
             minHeight: 215,
             maxWidth: 500,
-            maxHeight: 500,
+            maxHeight: 600,
             // Others
-            CaptionArea: <Box sx={{ pl: ".3rem" }}></Box>,
             infoTooltipText: "Vote for game abilities and fight for your Syndicate!",
         }),
         [],

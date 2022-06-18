@@ -1,7 +1,7 @@
-import { Box, CircularProgress, Fade, IconButton, Pagination, Stack, Typography } from "@mui/material"
+import { Box, CircularProgress, Fade, Pagination, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { MoveableResizable, MoveableResizableConfig, QueueFeed, TooltipHelper } from ".."
-import { SvgClose, SvgSupToken } from "../../assets"
+import { SvgSupToken } from "../../assets"
 import { useTheme } from "../../containers/theme"
 import { supFormatter } from "../../helpers"
 import { usePagination } from "../../hooks"
@@ -37,7 +37,7 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
     const [mechs, setMechs] = useState<MechBasic[]>([])
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
-    const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, setPageSize } = usePagination({ pageSize: 5, page: 1 })
+    const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({ pageSize: 5, page: 1 })
 
     const primaryColor = theme.factionTheme.primary
     const secondaryColor = theme.factionTheme.secondary
@@ -77,20 +77,23 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
         () => ({
             localStoragePrefix: "quickDeploy",
             // Defaults
-            defaultPosX: 0,
-            defaultPosY: 0,
+            defaultPosX: 10,
+            defaultPosY: 10,
             defaultWidth: 420,
-            defaultHeight: 600,
+            defaultHeight: 580,
+            // Position limits
+            minPosX: 10,
+            minPosY: 10,
             // Size limits
-            minWidth: 350,
-            minHeight: 400,
+            minWidth: 300,
+            minHeight: 280,
             maxWidth: 1000,
             maxHeight: 1000,
             // Others
-            CaptionArea: <Box sx={{ pl: ".3rem" }}></Box>,
-            infoTooltipText: "TODO",
+            infoTooltipText: "Quickly deploy your war machines to the battle queue.",
+            onHideCallback: onClose,
         }),
-        [],
+        [onClose],
     )
 
     const queueLength = queueFeed?.queue_length || 0
@@ -100,168 +103,163 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
         <Fade in>
             <Box>
                 <MoveableResizable config={config}>
-                    <Box sx={{ height: "100%" }}>
-                        <Stack
-                            sx={{
-                                height: "100%",
-                                position: "relative",
-                                overflow: "hidden",
-                            }}
-                        >
-                            <PageHeader
-                                title="QUICK DEPLOY"
-                                description={
-                                    <Stack spacing="1.5rem" direction="row">
-                                        {queueLength >= 0 && (
-                                            <AmountItem
-                                                key={`${queueLength}-queue_length`}
-                                                title={"POSITION: "}
-                                                color="#FFFFFF"
-                                                value={`${queueLength + 1}`}
-                                                tooltip="The queue position of your war machine if you deploy now."
-                                                disableIcon
-                                            />
-                                        )}
-
+                    <Stack
+                        sx={{
+                            height: "100%",
+                            position: "relative",
+                            overflow: "hidden",
+                        }}
+                    >
+                        <PageHeader
+                            smallSize
+                            title="QUICK DEPLOY"
+                            description={
+                                <Stack spacing="1.5rem" direction="row">
+                                    {queueLength >= 0 && (
                                         <AmountItem
-                                            key={`${contractReward}-contract_reward`}
-                                            title={"REWARD: "}
-                                            color={colors.yellow}
-                                            value={supFormatter(contractReward, 2)}
-                                            tooltip="Your reward if your mech survives the battle giving your syndicate a victory."
+                                            key={`${queueLength}-queue_length`}
+                                            title={"POSITION: "}
+                                            color="#FFFFFF"
+                                            value={`${queueLength + 1}`}
+                                            tooltip="The queue position of your war machine if you deploy now."
+                                            disableIcon
                                         />
+                                    )}
 
-                                        <AmountItem
-                                            title={"FEE: "}
-                                            color={"#FF4136"}
-                                            value={supFormatter(queueFeed?.queue_cost || "0", 2)}
-                                            tooltip="The cost to place your war machine into the battle queue."
-                                        />
-                                    </Stack>
-                                }
-                            ></PageHeader>
-
-                            <TotalAndPageSizeOptions
-                                countItems={mechs?.length}
-                                totalItems={totalItems}
-                                pageSize={pageSize}
-                                setPageSize={setPageSize}
-                                changePage={changePage}
-                                manualRefresh={getItems}
-                            />
-
-                            {loadError && (
-                                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
-                                    <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
-                                        <Typography
-                                            sx={{
-                                                color: colors.red,
-                                                fontFamily: fonts.nostromoBold,
-                                                textAlign: "center",
-                                            }}
-                                        >
-                                            {loadError}
-                                        </Typography>
-                                    </Stack>
-                                </Stack>
-                            )}
-
-                            {isLoading && !loadError && (
-                                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
-                                    <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
-                                        <CircularProgress size="3rem" sx={{ color: primaryColor }} />
-                                    </Stack>
-                                </Stack>
-                            )}
-
-                            {!isLoading && !loadError && mechs && mechs.length > 0 && (
-                                <Box
-                                    sx={{
-                                        flex: 1,
-                                        overflowY: "auto",
-                                        overflowX: "hidden",
-                                        ml: "1rem",
-                                        mr: ".5rem",
-                                        pr: ".6rem",
-                                        my: "1rem",
-                                        direction: "ltr",
-                                        scrollbarWidth: "none",
-                                        "::-webkit-scrollbar": {
-                                            width: ".4rem",
-                                        },
-                                        "::-webkit-scrollbar-track": {
-                                            background: "#FFFFFF15",
-                                            borderRadius: 3,
-                                        },
-                                        "::-webkit-scrollbar-thumb": {
-                                            background: primaryColor,
-                                            borderRadius: 3,
-                                        },
-                                    }}
-                                >
-                                    <Box sx={{ direction: "ltr", height: 0 }}>
-                                        <Stack>
-                                            {mechs.map((mech) => {
-                                                return <QuickDeployItem key={mech.id} mech={mech} queueFeed={queueFeed} />
-                                            })}
-                                        </Stack>
-                                    </Box>
-                                </Box>
-                            )}
-
-                            {!isLoading && !loadError && mechs && mechs.length <= 0 && (
-                                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
-                                    <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", maxWidth: "40rem" }}>
-                                        <Typography
-                                            sx={{
-                                                px: "1.28rem",
-                                                pt: "1.28rem",
-                                                color: colors.grey,
-                                                fontFamily: fonts.nostromoBold,
-                                                userSelect: "text !important",
-                                                opacity: 0.9,
-                                                textAlign: "center",
-                                            }}
-                                        >
-                                            {`You don't own any war machines.`}
-                                        </Typography>
-                                    </Stack>
-                                </Stack>
-                            )}
-
-                            {totalPages > 1 && (
-                                <Box
-                                    sx={{
-                                        px: "1rem",
-                                        py: ".7rem",
-                                        borderTop: `${primaryColor}70 1.5px solid`,
-                                        borderBottom: `${primaryColor}70 1.5px solid`,
-                                        backgroundColor: "#00000070",
-                                    }}
-                                >
-                                    <Pagination
-                                        size="medium"
-                                        count={totalPages}
-                                        page={page}
-                                        sx={{
-                                            ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold },
-                                            ".Mui-selected": {
-                                                color: secondaryColor,
-                                                backgroundColor: `${primaryColor} !important`,
-                                            },
-                                        }}
-                                        onChange={(e, p) => changePage(p)}
-                                        showFirstButton
-                                        showLastButton
+                                    <AmountItem
+                                        key={`${contractReward}-contract_reward`}
+                                        title={"REWARD: "}
+                                        color={colors.yellow}
+                                        value={supFormatter(contractReward, 2)}
+                                        tooltip="Your reward if your mech survives the battle giving your syndicate a victory."
                                     />
-                                </Box>
-                            )}
-                        </Stack>
 
-                        <IconButton size="small" onClick={onClose} sx={{ position: "absolute", top: ".5rem", right: ".5rem" }}>
-                            <SvgClose size="1.9rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
-                        </IconButton>
-                    </Box>
+                                    <AmountItem
+                                        title={"FEE: "}
+                                        color={"#FF4136"}
+                                        value={supFormatter(queueFeed?.queue_cost || "0", 2)}
+                                        tooltip="The cost to place your war machine into the battle queue."
+                                    />
+                                </Stack>
+                            }
+                        ></PageHeader>
+
+                        <TotalAndPageSizeOptions
+                            countItems={mechs?.length}
+                            totalItems={totalItems}
+                            pageSize={pageSize}
+                            changePageSize={changePageSize}
+                            changePage={changePage}
+                            manualRefresh={getItems}
+                        />
+
+                        {loadError && (
+                            <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
+                                    <Typography
+                                        sx={{
+                                            color: colors.red,
+                                            fontFamily: fonts.nostromoBold,
+                                            textAlign: "center",
+                                        }}
+                                    >
+                                        {loadError}
+                                    </Typography>
+                                </Stack>
+                            </Stack>
+                        )}
+
+                        {isLoading && !loadError && (
+                            <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
+                                    <CircularProgress size="3rem" sx={{ color: primaryColor }} />
+                                </Stack>
+                            </Stack>
+                        )}
+
+                        {!isLoading && !loadError && mechs && mechs.length > 0 && (
+                            <Box
+                                sx={{
+                                    flex: 1,
+                                    overflowY: "auto",
+                                    overflowX: "hidden",
+                                    ml: "1rem",
+                                    mr: ".5rem",
+                                    pr: ".6rem",
+                                    my: "1rem",
+                                    direction: "ltr",
+                                    scrollbarWidth: "none",
+                                    "::-webkit-scrollbar": {
+                                        width: ".4rem",
+                                    },
+                                    "::-webkit-scrollbar-track": {
+                                        background: "#FFFFFF15",
+                                        borderRadius: 3,
+                                    },
+                                    "::-webkit-scrollbar-thumb": {
+                                        background: primaryColor,
+                                        borderRadius: 3,
+                                    },
+                                }}
+                            >
+                                <Box sx={{ direction: "ltr", height: 0 }}>
+                                    <Stack>
+                                        {mechs.map((mech) => {
+                                            return <QuickDeployItem key={mech.id} mech={mech} queueFeed={queueFeed} />
+                                        })}
+                                    </Stack>
+                                </Box>
+                            </Box>
+                        )}
+
+                        {!isLoading && !loadError && mechs && mechs.length <= 0 && (
+                            <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", maxWidth: "40rem" }}>
+                                    <Typography
+                                        sx={{
+                                            px: "1.28rem",
+                                            pt: "1.28rem",
+                                            color: colors.grey,
+                                            fontFamily: fonts.nostromoBold,
+                                            userSelect: "text !important",
+                                            opacity: 0.9,
+                                            textAlign: "center",
+                                        }}
+                                    >
+                                        {`You don't own any war machines.`}
+                                    </Typography>
+                                </Stack>
+                            </Stack>
+                        )}
+
+                        {totalPages > 1 && (
+                            <Box
+                                sx={{
+                                    px: "1rem",
+                                    py: ".7rem",
+                                    borderTop: `${primaryColor}70 1.5px solid`,
+                                    borderBottom: `${primaryColor}70 1.5px solid`,
+                                    backgroundColor: "#00000070",
+                                }}
+                            >
+                                <Pagination
+                                    size="medium"
+                                    count={totalPages}
+                                    page={page}
+                                    sx={{
+                                        ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold, fontSize: "1.2rem" },
+                                        ".Mui-selected": {
+                                            color: secondaryColor,
+                                            backgroundColor: `${primaryColor} !important`,
+                                        },
+                                    }}
+                                    onChange={(e, p) => changePage(p)}
+                                    showFirstButton
+                                    showLastButton
+                                />
+                            </Box>
+                        )}
+                    </Stack>
                 </MoveableResizable>
             </Box>
         </Fade>
@@ -284,15 +282,11 @@ const AmountItem = ({
     return (
         <TooltipHelper placement="bottom" text={tooltip}>
             <Stack direction="row" alignItems="center">
-                <Typography variant="body1" sx={{ mr: ".4rem", fontWeight: "fontWeightBold" }}>
-                    {title}
-                </Typography>
+                <Typography sx={{ mr: ".4rem", fontWeight: "fontWeightBold" }}>{title}</Typography>
 
-                {!disableIcon && <SvgSupToken size="1.6rem" fill={color} sx={{ mr: ".1rem", pb: ".4rem" }} />}
+                {!disableIcon && <SvgSupToken size="1.7rem" fill={color} sx={{ mr: ".1rem", pb: ".2rem" }} />}
 
-                <Typography variant="body1" sx={{ color: color }}>
-                    {value || "---"}
-                </Typography>
+                <Typography sx={{ color: color, fontWeight: "fontWeightBold" }}>{value || "---"}</Typography>
             </Stack>
         </TooltipHelper>
     )

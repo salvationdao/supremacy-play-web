@@ -45,7 +45,7 @@ export const SellItemInner = ({ toggleReset }: { toggleReset: () => void }) => {
     const theme = useTheme()
     const history = useHistory()
     const location = useLocation()
-    const query = useUrlQuery()
+    const [query] = useUrlQuery()
     const { send } = useGameServerCommandsFaction("/faction_commander")
 
     // Submitting
@@ -57,8 +57,8 @@ export const SellItemInner = ({ toggleReset }: { toggleReset: () => void }) => {
     const [successPayload, setSuccessPayload] = useState<MarketplaceBuyAuctionItem>()
 
     // Form states
-    const [itemType, setItemType] = useState<ItemType | undefined>(query.get("item-type") as ItemType)
-    const [assetToSell, setAssetToSell] = useState<AssetToSellStruct | undefined>({ id: query.get("asset-id") || "" })
+    const [itemType, setItemType] = useState<ItemType | undefined>(query.get("itemType") as ItemType)
+    const [assetToSell, setAssetToSell] = useState<AssetToSellStruct | undefined>({ id: query.get("assetID") || "" })
     // Buyout
     const [buyoutPrice, setBuyoutPrice] = useState<number>()
     // Auction
@@ -364,7 +364,10 @@ export const SellItemInner = ({ toggleReset }: { toggleReset: () => void }) => {
                 <SuccessModal
                     title="ITEM LISTED!"
                     leftLabel="SELL ANOTHER"
-                    onLeftButton={toggleReset}
+                    onLeftButton={() => {
+                        history.replace(`/marketplace/sell${location.hash}`)
+                        toggleReset()
+                    }}
                     rightLabel="VIEW LISTING"
                     onRightButton={() => {
                         let subPath = ""

@@ -1,6 +1,7 @@
-import { Box, Link, Stack, TextField, Typography } from "@mui/material"
-import { useEffect, useRef, useState } from "react"
-import { SvgExternalLink } from "../../../../assets"
+import { CircularProgress, IconButton, Link, Stack, TextField, Typography } from "@mui/material"
+import { useCallback, useEffect, useRef, useState } from "react"
+import { ClipThing } from "../../.."
+import { SvgExternalLink, SvgSave } from "../../../../assets"
 import { PASSPORT_WEB } from "../../../../constants"
 import { useAuth } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
@@ -27,14 +28,19 @@ export const MechTitle = ({
     // Rename
     const renamingRef = useRef<HTMLInputElement>()
     const [editing, setEditing] = useState(false)
+    const [submitting, setSubmitting] = useState(false)
     const [newMechName, setNewMechName] = useState<string>(name || "")
 
-    const nameColour = !name ? "grey" : theme.factionTheme.secondary
-
-    const renameMechHandler = async () => {
-        await renameMech(newMechName)
-        setEditing(false)
-    }
+    const renameMechHandler = useCallback(async () => {
+        try {
+            setSubmitting(true)
+            renamingRef.current?.blur()
+            await renameMech(newMechName)
+        } finally {
+            setSubmitting(false)
+            setEditing(false)
+        }
+    }, [newMechName, renameMech])
 
     useEffect(() => {
         if (!editing) return
@@ -42,36 +48,136 @@ export const MechTitle = ({
     }, [isSelected, editing])
 
     return (
-        <Box
-            display="flex"
-            flexDirection="column"
+        <Stack
+            direction="row"
+            alignItems="center"
             sx={{
-                top: 0,
-                left: "1rem",
-                overflow: "visible",
+                position: "relative",
+                px: "1rem",
+                pt: ".7rem",
+                pb: "1.2rem",
+                width: "fit-content",
+                maxWidth: "70%",
+                background: isSelected
+                    ? `linear-gradient(${theme.factionTheme.primary}FF 26%, ${theme.factionTheme.primary}BB)`
+                    : theme.factionTheme.background,
+                border: isSelected ? `${theme.factionTheme.primary} .3rem solid` : `${theme.factionTheme.primary}90 .2rem solid`,
+                borderBottom: "none",
                 zIndex: 9,
             }}
         >
-            <Stack
-                direction="row"
-                alignItems="center"
+            <Typography
                 sx={{
-                    left: "1rem",
-                    px: "1rem",
-                    py: ".5rem",
-                    maxWidth: "70%",
-                    background: isSelected
-                        ? `linear-gradient(${theme.factionTheme.primary}FF 26%, ${theme.factionTheme.primary}BB)`
-                        : theme.factionTheme.background,
-                    border: isSelected ? `${theme.factionTheme.primary} .3rem solid` : `${theme.factionTheme.primary}90 .2rem solid`,
-                    zIndex: 9,
+                    color: isSelected ? theme.factionTheme.secondary : "#FFFFFF",
+                    fontFamily: fonts.nostromoBlack,
+                    display: "-webkit-box",
+                    overflow: "hidden",
+                    overflowWrap: "anywhere",
+                    textOverflow: "ellipsis",
+                    WebkitLineClamp: 1,
+                    WebkitBoxOrient: "vertical",
                 }}
             >
-                <Stack sx={{ position: "relative" }}>
-                    <Box display="flex">
+                {label}
+            </Typography>
+
+            {userID && hash && (
+                <Link href={`${PASSPORT_WEB}profile/${user.username}/asset/${hash}`} target="_blank" sx={{ display: "inline", mb: ".4rem", ml: "1rem" }}>
+                    <SvgExternalLink
+                        size="1.3rem"
+                        sx={{ display: "inline", opacity: 0.7, ":hover": { opacity: 1 } }}
+                        fill={isSelected ? theme.factionTheme.secondary : "#FFFFFF"}
+                    />
+                </Link>
+            )}
+            <ClipThing
+                clipSize="9px"
+                clipSlantSize="4px"
+                border={{
+                    borderColor: theme.factionTheme.primary,
+                    borderThickness: ".15rem",
+                }}
+                backgroundColor={theme.factionTheme.background}
+                sx={{
+                    position: "absolute",
+                    left: "1.8rem",
+                    bottom: 0,
+                    transform: "translateY(calc(50% + .5rem))",
+                }}
+            >
+                <Stack
+                    direction="row"
+                    alignItems="center"
+                    onClick={() => {
+                        setEditing(true)
+                        renamingRef.current?.focus()
+                    }}
+                    sx={{
+                        px: "1.6rem",
+                        py: ".4rem",
+                        cursor: "text",
+                        zIndex: 10,
+                    }}
+                >
+                    <TextField
+                        inputRef={renamingRef}
+                        variant="standard"
+                        sx={{
+                            m: 0,
+                            py: ".2rem",
+                            position: "relative",
+                            width: editing ? "23rem" : 0,
+                            height: editing ? "unset" : 0,
+                            "& .MuiInput-root": {
+                                p: 0,
+                                fontSize: "1.3rem",
+                                color: "#FFFFFF",
+                            },
+                            "& .MuiInputBase-input": {
+                                p: 0,
+                                display: "inline",
+                                fontFamily: fonts.nostromoBold,
+                                wordBreak: "break-word",
+                            },
+                            ".MuiInputBase-input:focus": {
+                                px: "1rem",
+                                py: ".2rem",
+                                fontSize: "1.5rem",
+                                color: "#FFFFFF",
+                                border: `#FFFFFF99 1.5px dashed`,
+                                borderRadius: 0.5,
+                                backgroundColor: "#FFFFFF12",
+                            },
+                        }}
+                        spellCheck={false}
+                        InputProps={{
+                            disableUnderline: true,
+                        }}
+                        value={newMechName}
+                        placeholder="Enter a name..."
+                        onChange={(e) => setNewMechName(e.target.value)}
+                        onFocus={() => renamingRef.current?.setSelectionRange(0, newMechName.length)}
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                                e.preventDefault()
+                                renameMechHandler()
+                            }
+                        }}
+                    />
+
+                    {editing && !submitting && newMechName !== name && (
+                        <IconButton size="small" sx={{ ml: ".5rem" }} onClick={renameMechHandler}>
+                            <SvgSave size="1.2rem" />
+                        </IconButton>
+                    )}
+
+                    {editing && submitting && <CircularProgress size="1.2rem" sx={{ ml: "1rem", color: "#FFFFFF" }} />}
+
+                    {!editing && (
                         <Typography
                             sx={{
-                                color: isSelected ? theme.factionTheme.secondary : "#FFFFFF",
+                                fontSize: "1.3rem",
+                                color: !name ? colors.grey : "#FFFFFF",
                                 fontFamily: fonts.nostromoBlack,
                                 display: "-webkit-box",
                                 overflow: "hidden",
@@ -81,114 +187,11 @@ export const MechTitle = ({
                                 WebkitBoxOrient: "vertical",
                             }}
                         >
-                            {label}
+                            {name || "unnamed"}
                         </Typography>
-
-                        {userID && hash && (
-                            <Box mt="2px">
-                                <span>
-                                    <Link
-                                        href={`${PASSPORT_WEB}profile/${user.username}/asset/${hash}`}
-                                        target="_blank"
-                                        sx={{ display: "inline", ml: ".7rem" }}
-                                    >
-                                        <SvgExternalLink
-                                            size="1.2rem"
-                                            sx={{ display: "inline", opacity: 0.7, ":hover": { opacity: 1 } }}
-                                            fill={isSelected ? theme.factionTheme.secondary : "#FFFFFF"}
-                                        />
-                                    </Link>
-                                </span>
-                            </Box>
-                        )}
-                    </Box>
-
-                    <Box sx={{ zIndex: 10, position: "absolute", left: "5px", bottom: "-25px", transition: "all .2s" }}>
-                        <Box
-                            sx={{
-                                p: "0.5rem",
-                                width: "auto",
-                                display: "inline-block",
-                                flexGrow: 0,
-                                zIndex: 10,
-
-                                background: isSelected
-                                    ? `linear-gradient(${theme.factionTheme.primary}FF 26%, ${theme.factionTheme.primary}BB)`
-                                    : theme.factionTheme.background,
-                                border: isSelected ? `${theme.factionTheme.primary} .3rem solid` : `${theme.factionTheme.primary}90 .2rem solid`,
-                            }}
-                        >
-                            <Box onClick={() => setEditing(true)} sx={{ display: "flex", justifyContent: "flex-start", cursor: "pointer" }}>
-                                <TextField
-                                    inputRef={renamingRef}
-                                    variant={"standard"}
-                                    sx={{
-                                        transition: "all 0.2s",
-                                        width: editing ? "150px" : "0px",
-                                        position: "relative",
-                                        flex: 1,
-                                        m: 0,
-                                        "& .MuiInput-root": {
-                                            p: 0,
-                                            fontSize: 10,
-                                            color: isSelected ? "#000" : "#fff",
-                                        },
-                                        "& .MuiInputBase-input": {
-                                            p: 0,
-                                            display: "inline",
-                                            fontFamily: fonts.nostromoBlack,
-                                            wordBreak: "break-word",
-                                        },
-                                        ".MuiInputBase-input:focus": {
-                                            px: ".7rem",
-                                            py: ".1rem",
-                                            borderRadius: 0.5,
-                                            cursor: "auto !important",
-                                            color: "#000",
-                                            border: `1.5px dashed ${colors.lightGrey}`,
-                                            backgroundColor: "#FFFFFF09",
-                                        },
-                                    }}
-                                    spellCheck={false}
-                                    InputProps={{
-                                        disableUnderline: true,
-                                    }}
-                                    value={newMechName}
-                                    onChange={(e) => setNewMechName(e.target.value)}
-                                    onFocus={() => {
-                                        renamingRef.current?.setSelectionRange(newMechName.length, newMechName.length)
-                                    }}
-                                    onKeyDown={(e) => {
-                                        if (e.key === "Enter") {
-                                            e.preventDefault()
-                                            renameMechHandler()
-                                            renamingRef.current?.blur()
-                                        }
-                                    }}
-                                />
-                                {!editing && (
-                                    <Typography
-                                        sx={{
-                                            color: isSelected ? nameColour : "#FFFFFF",
-                                            opacity: !name ? 0.4 : 1,
-                                            fontFamily: fonts.nostromoBlack,
-                                            display: "-webkit-box",
-                                            overflow: "hidden",
-                                            overflowWrap: "anywhere",
-                                            textOverflow: "ellipsis",
-                                            WebkitLineClamp: 1,
-                                            WebkitBoxOrient: "vertical",
-                                            fontSize: "9px",
-                                        }}
-                                    >
-                                        {name || "unnamed"}
-                                    </Typography>
-                                )}
-                            </Box>
-                        </Box>
-                    </Box>
+                    )}
                 </Stack>
-            </Stack>
-        </Box>
+            </ClipThing>
+        </Stack>
     )
 }

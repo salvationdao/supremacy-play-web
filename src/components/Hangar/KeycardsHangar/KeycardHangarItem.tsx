@@ -105,7 +105,7 @@ export const KeycardHangarItemInner = ({ keycard, itemSaleID }: MysteryCrateStor
                                 to={
                                     itemSaleID
                                         ? `/marketplace/${MARKETPLACE_TABS.Keycards}/${itemSaleID}${location.hash}`
-                                        : `/marketplace/sell?item-type=${ItemType.Keycards}&asset-id=${keycard.id}${location.hash}`
+                                        : `/marketplace/sell?itemType=${ItemType.Keycards}&assetID=${keycard.id}${location.hash}`
                                 }
                                 clipThingsProps={{
                                     clipSize: "5px",

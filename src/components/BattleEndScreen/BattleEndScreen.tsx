@@ -34,13 +34,6 @@ export const BattleEndScreen = () => {
         [battleEndDetail],
     )
 
-    const backgroundColorGradient = useMemo(
-        () => ({
-            background: `linear-gradient(65deg, ${backgroundColor} 3%, ${backgroundColor}98 50%, ${backgroundColor}95)`,
-        }),
-        [backgroundColor],
-    )
-
     if (!battleEndDetail || !battleEndDetail.winning_faction) return null
 
     return (
@@ -51,68 +44,47 @@ export const BattleEndScreen = () => {
                     top: 0,
                     bottom: 0,
                     left: 0,
+                    pl: "2.9rem",
+                    pr: ".8rem",
+                    pt: "2.4rem",
+                    pb: "1.2rem",
                     boxShadow: 20,
                     zIndex: siteZIndex.Popover,
                     maxWidth: "48rem",
-                    ...backgroundColorGradient,
+                    background: `linear-gradient(65deg, ${backgroundColor} 3%, ${backgroundColor}FF 50%, ${backgroundColor}EE)`,
                 }}
             >
-                <Box
+                <Stack
+                    spacing="3.2rem"
                     sx={{
-                        position: "relative",
-                        height: "100%",
-                        width: "100%",
-                        pl: "2.9rem",
-                        pr: ".8rem",
-                        pt: "2.4rem",
-                        pb: "1.2rem",
-                        ...backgroundColorGradient,
+                        height: `calc(100% - ${BOTTOM_BUTTONS_HEIGHT}rem)`,
+                        pr: "1.76rem",
+                        pb: "3.2rem",
+                        overflowY: "auto",
+                        overflowX: "auto",
+
+                        "::-webkit-scrollbar": {
+                            width: ".4rem",
+                            height: ".4rem",
+                        },
+                        "::-webkit-scrollbar-track": {
+                            background: "#FFFFFF15",
+                            borderRadius: 3,
+                        },
+                        "::-webkit-scrollbar-thumb": {
+                            background: primaryColor,
+                            borderRadius: 3,
+                        },
                     }}
                 >
-                    <Stack
-                        spacing="3.2rem"
-                        sx={{
-                            height: `calc(100% - ${BOTTOM_BUTTONS_HEIGHT}rem)`,
-                            pr: "1.76rem",
-                            pb: "3.2rem",
-                            overflowY: "auto",
-                            overflowX: "auto",
+                    <SectionMultipliers battleEndDetail={battleEndDetail} />
+                    <SectionWinner battleEndDetail={battleEndDetail} />
+                    <SectionTopSups battleEndDetail={battleEndDetail} />
+                    <SectionMostFrequentAbilityExecutor battleEndDetail={battleEndDetail} />
+                    <SectionTopSupsFaction battleEndDetail={battleEndDetail} />
+                </Stack>
 
-                            "::-webkit-scrollbar": {
-                                width: ".4rem",
-                                height: ".4rem",
-                            },
-                            "::-webkit-scrollbar-track": {
-                                background: "#FFFFFF15",
-                                borderRadius: 3,
-                            },
-                            "::-webkit-scrollbar-thumb": {
-                                background: primaryColor,
-                                borderRadius: 3,
-                            },
-                        }}
-                    >
-                        <SectionMultipliers battleEndDetail={battleEndDetail} />
-                        <SectionWinner battleEndDetail={battleEndDetail} />
-                        <SectionTopSups battleEndDetail={battleEndDetail} />
-                        <SectionMostFrequentAbilityExecutor battleEndDetail={battleEndDetail} />
-                        <SectionTopSupsFaction battleEndDetail={battleEndDetail} />
-                    </Stack>
-
-                    <SectionBottom battleEndDetail={battleEndDetail} />
-
-                    <Box
-                        sx={{
-                            position: "absolute",
-                            top: 0,
-                            bottom: 0,
-                            left: 0,
-                            right: 0,
-                            zIndex: -1,
-                            ...backgroundColorGradient,
-                        }}
-                    />
-                </Box>
+                <SectionBottom battleEndDetail={battleEndDetail} />
             </Box>
         </Slide>
     )

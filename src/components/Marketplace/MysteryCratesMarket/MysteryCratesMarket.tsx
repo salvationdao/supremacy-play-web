@@ -5,18 +5,33 @@ import { ClipThing, FancyButton } from "../.."
 import { SafePNG } from "../../../assets"
 import { useSnackbar } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
-import { usePagination, useToggle } from "../../../hooks"
+import { parseString } from "../../../helpers"
+import { usePagination, useToggle, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { MarketplaceBuyAuctionItem, SortType } from "../../../types/marketplace"
 import { PageHeader } from "../../Common/PageHeader"
-import { ChipFilter, RangeFilter, SortAndFilters } from "../../Common/SortAndFilters"
+import { ChipFilter } from "../../Common/SortAndFilters/ChipFilterSection"
+import { RangeFilter } from "../../Common/SortAndFilters/RangeFilterSection"
+import { SortAndFilters } from "../../Common/SortAndFilters/SortAndFilters"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { MysteryCrateMarketItem } from "./MysteryCrateMarketItem"
 
+const sortOptions = [
+    { label: SortType.OldestFirst, value: SortType.OldestFirst },
+    { label: SortType.NewestFirst, value: SortType.NewestFirst },
+    { label: SortType.ExpiringFirst, value: SortType.ExpiringFirst },
+    { label: SortType.ExpiringReverse, value: SortType.ExpiringReverse },
+    { label: SortType.PriceLowest, value: SortType.PriceLowest },
+    { label: SortType.PriceHighest, value: SortType.PriceHighest },
+    { label: SortType.Alphabetical, value: SortType.Alphabetical },
+    { label: SortType.AlphabeticalReverse, value: SortType.AlphabeticalReverse },
+]
+
 export const MysteryCratesMarket = () => {
     const location = useLocation()
+    const [query, updateQuery] = useUrlQuery()
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const theme = useTheme()
@@ -25,23 +40,32 @@ export const MysteryCratesMarket = () => {
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
     const [crateItems, setCrateItems] = useState<MarketplaceBuyAuctionItem[]>()
-    const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, setPageSize } = usePagination({ pageSize: 10, page: 1 })
+
+    const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({
+        pageSize: parseString(query.get("pageSize"), 10),
+        page: parseString(query.get("page"), 1),
+    })
     const [isGridView, toggleIsGridView] = useToggle(false)
 
     // Filters and sorts
     const [search, setSearch] = useState("")
-    const [sort, setSort] = useState<SortType>(SortType.NewestFirst)
-    const [status, setStatus] = useState<string[]>([])
-    const [ownedBy, setOwnedBy] = useState<string[]>([])
-    const [listingTypes, setListingTypes] = useState<string[]>([])
-    const [price, setPrice] = useState<(number | undefined)[]>([undefined, undefined])
+    const [sort, setSort] = useState<string>(query.get("sort") || SortType.NewestFirst)
+    const [status, setStatus] = useState<string[]>((query.get("statuses") || undefined)?.split("||") || [])
+    const [ownedBy, setOwnedBy] = useState<string[]>((query.get("ownedBy") || undefined)?.split("||") || [])
+    const [listingTypes, setListingTypes] = useState<string[]>((query.get("listingTypes") || undefined)?.split("||") || [])
+    const [price, setPrice] = useState<(number | undefined)[]>(
+        (query.get("priceRanges") || undefined)?.split("||").map((p) => (p ? parseInt(p) : undefined)) || [undefined, undefined],
+    )
 
     // Filters
     const statusFilterSection = useRef<ChipFilter>({
         label: "STATUS",
         options: [{ value: "true", label: "SOLD", color: colors.green }],
         initialSelected: status,
-        onSetSelected: setStatus,
+        onSetSelected: (value: string[]) => {
+            setStatus(value)
+            changePage(1)
+        },
     })
     const ownedByFilterSection = useRef<ChipFilter>({
         label: "OWNED BY",
@@ -50,7 +74,10 @@ export const MysteryCratesMarket = () => {
             { value: "others", label: "OTHERS", color: theme.factionTheme.primary, textColor: theme.factionTheme.secondary },
         ],
         initialSelected: ownedBy,
-        onSetSelected: setOwnedBy,
+        onSetSelected: (value: string[]) => {
+            setOwnedBy(value)
+            changePage(1)
+        },
     })
 
     const listingTypeFilterSection = useRef<ChipFilter>({
@@ -61,13 +88,19 @@ export const MysteryCratesMarket = () => {
             { value: "AUCTION", label: "AUCTION", color: colors.auction },
         ],
         initialSelected: listingTypes,
-        onSetSelected: setListingTypes,
+        onSetSelected: (value: string[]) => {
+            setListingTypes(value)
+            changePage(1)
+        },
     })
 
     const priceRangeFilter = useRef<RangeFilter>({
         label: "PRICE RANGE",
         initialValue: price,
-        onSetValue: setPrice,
+        onSetValue: (value: (number | undefined)[]) => {
+            setPrice(value)
+            changePage(1)
+        },
     })
 
     const getItems = useCallback(async () => {
@@ -98,6 +131,16 @@ export const MysteryCratesMarket = () => {
                 sold: status.length > 0,
             })
 
+            updateQuery({
+                sort,
+                page: page.toString(),
+                pageSize: pageSize.toString(),
+                statuses: status.join("||"),
+                ownedBy: ownedBy.join("||"),
+                listingTypes: listingTypes.join("||"),
+                priceRanges: price.join("||"),
+            })
+
             if (!resp) return
             setTotalItems(resp.total)
             setCrateItems(resp.records)
@@ -110,7 +153,7 @@ export const MysteryCratesMarket = () => {
         } finally {
             setIsLoading(false)
         }
-    }, [sort, price, send, page, pageSize, search, listingTypes, ownedBy, status.length, setTotalItems, newSnackbarMessage])
+    }, [sort, price, send, page, pageSize, search, listingTypes, ownedBy, status, updateQuery, setTotalItems, newSnackbarMessage])
 
     useEffect(() => {
         getItems()
@@ -211,8 +254,6 @@ export const MysteryCratesMarket = () => {
             <SortAndFilters
                 initialSearch={search}
                 onSetSearch={setSearch}
-                initialSort={sort}
-                onSetSort={setSort}
                 chipFilters={[statusFilterSection.current, ownedByFilterSection.current, listingTypeFilterSection.current]}
                 rangeFilters={[priceRangeFilter.current]}
                 changePage={changePage}
@@ -258,12 +299,15 @@ export const MysteryCratesMarket = () => {
                             countItems={crateItems?.length}
                             totalItems={totalItems}
                             pageSize={pageSize}
-                            setPageSize={setPageSize}
+                            changePageSize={changePageSize}
                             pageSizeOptions={[10, 20, 40]}
                             changePage={changePage}
                             isGridView={isGridView}
                             toggleIsGridView={toggleIsGridView}
                             manualRefresh={getItems}
+                            sortOptions={sortOptions}
+                            selectedSort={sort}
+                            onSetSort={setSort}
                         />
 
                         <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
