@@ -1,9 +1,9 @@
 import { InputAdornment, Stack, TextField, Typography } from "@mui/material"
-import { useCallback, useEffect, useMemo } from "react"
+import { useCallback, useEffect, useMemo, useRef } from "react"
 import { FancyButton } from "../.."
 import { SvgSupToken } from "../../../assets"
 import { useDebounce } from "../../../hooks"
-import { colors, fonts } from "../../../theme/theme"
+import { colors } from "../../../theme/theme"
 import { Section } from "./Section"
 
 export interface RangeFilter {
@@ -15,13 +15,13 @@ export interface RangeFilter {
 export const RangeFilterSection = ({ filter, primaryColor, secondaryColor }: { filter: RangeFilter; primaryColor: string; secondaryColor: string }) => {
     const { label, initialValue, onSetValue } = filter
     const [value, setValue, valueInstant, setValueInstant] = useDebounce<(number | undefined)[]>(initialValue, 700)
+    const calledCallback = useRef(true)
 
     // Set the value on the parent
     useEffect(() => {
-        if (value === valueInstant) return
+        if (calledCallback.current) return
         onSetValue(value)
-        // Need to skip lint or else theres no point in debounce.
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        calledCallback.current = true
     }, [onSetValue, value])
 
     const handleChange = useCallback(
@@ -31,6 +31,7 @@ export const RangeFilterSection = ({ filter, primaryColor, secondaryColor }: { f
                 newArray[index] = newValue ? newValue : undefined
                 return newArray
             })
+            calledCallback.current = false
         },
         [setValue],
     )
@@ -46,13 +47,16 @@ export const RangeFilterSection = ({ filter, primaryColor, secondaryColor }: { f
                     sx: { position: "relative" },
                 }}
                 sx={{ px: "1.2rem", pt: ".0rem", pb: ".2rem", color: secondaryColor }}
-                onClick={() => setValueInstant([undefined, undefined])}
+                onClick={() => {
+                    setValueInstant([undefined, undefined])
+                    calledCallback.current = false
+                }}
             >
                 <Typography
-                    variant="caption"
+                    variant="body2"
                     sx={{
                         color: secondaryColor,
-                        fontFamily: fonts.nostromoBlack,
+                        fontWeight: "fontWeightBold",
                         opacity: 0.7,
                     }}
                 >

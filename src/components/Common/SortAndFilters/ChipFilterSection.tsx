@@ -1,5 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useCallback, useEffect, useMemo } from "react"
+import { useCallback, useEffect, useMemo, useRef } from "react"
 import { FancyButton } from "../.."
 import { useDebounce } from "../../../hooks"
 import { fonts } from "../../../theme/theme"
@@ -20,18 +20,19 @@ export interface ChipFilter {
 export const ChipFilterSection = ({ filter, primaryColor, secondaryColor }: { filter: ChipFilter; primaryColor: string; secondaryColor: string }) => {
     const { label, options, initialSelected, onSetSelected } = filter
     const [selectedOptions, setSelectedOptions, selectedOptionsInstant, setSelectedOptionsInstant] = useDebounce<string[]>(initialSelected, 700)
+    const calledCallback = useRef(true)
 
     // Set the value on the parent
     useEffect(() => {
-        if (selectedOptions === selectedOptionsInstant) return
+        if (calledCallback.current) return
         onSetSelected(selectedOptions)
-        // Need to skip lint or else theres no point in debounce.
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        calledCallback.current = true
     }, [onSetSelected, selectedOptions])
 
     const onSelect = useCallback(
         (option: string) => {
             setSelectedOptions((prev) => (prev.includes(option) ? prev.filter((r) => r !== option) : prev.concat(option)))
+            calledCallback.current = false
         },
         [setSelectedOptions],
     )
@@ -47,10 +48,13 @@ export const ChipFilterSection = ({ filter, primaryColor, secondaryColor }: { fi
                     sx: { position: "relative" },
                 }}
                 sx={{ px: "1.2rem", pt: ".0rem", pb: ".2rem", color: secondaryColor }}
-                onClick={() => setSelectedOptionsInstant([])}
+                onClick={() => {
+                    setSelectedOptionsInstant([])
+                    calledCallback.current = false
+                }}
             >
                 <Typography
-                    variant="caption"
+                    variant="body2"
                     sx={{
                         color: secondaryColor,
                         fontWeight: "fontWeightBold",

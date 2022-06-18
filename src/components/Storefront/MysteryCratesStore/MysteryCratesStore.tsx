@@ -31,7 +31,7 @@ export const MysteryCratesStore = () => {
         allowed: 0,
         owned: 0,
     })
-    const { page, changePage, setTotalItems, totalPages, pageSize } = usePagination({ pageSize: 10, page: 1, autoURLParam: true })
+    const { page, changePage, setTotalItems, totalPages, pageSize } = usePagination({ pageSize: 10, page: 1 })
 
     const enlargedView = crates ? crates.length <= 2 : false
 
