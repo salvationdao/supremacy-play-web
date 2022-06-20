@@ -113,20 +113,26 @@ export const MoveableResizable = ({ config, children }: { config: MoveableResiza
                 curWidth={curWidth}
                 curHeight={curHeight}
                 handle={
-                    <Box
-                        className="handle"
-                        sx={{
-                            pointerEvents: "all",
-                            position: "absolute",
-                            right: onHideCallback ? "3.45rem" : "1rem",
-                            top: ".8rem",
-                            cursor: "move",
-                            opacity: 0.4,
-                            ":hover": { opacity: 1 },
-                        }}
-                    >
-                        <SvgDrag size="1.5rem" />
-                    </Box>
+                    <>
+                        <Box
+                            className="handle"
+                            sx={{ cursor: "move", position: "absolute", top: 0, left: 0, right: "10rem", height: "3rem", pointerEvents: "all" }}
+                        />
+                        <Box
+                            className="handle"
+                            sx={{
+                                pointerEvents: "all",
+                                position: "absolute",
+                                right: onHideCallback ? "3.45rem" : "1rem",
+                                top: ".8rem",
+                                cursor: "move",
+                                opacity: 0.4,
+                                ":hover": { opacity: 1 },
+                            }}
+                        >
+                            <SvgDrag size="1.5rem" />
+                        </Box>
+                    </>
                 }
             />
 

@@ -9,11 +9,18 @@ import { useGameServerCommandsUser, useGameServerSubscriptionFaction } from "../
 import { GameServerKeys } from "../../keys"
 import { colors, fonts } from "../../theme/theme"
 import { MechBasic } from "../../types"
+import { SortTypeLabel } from "../../types/marketplace"
 import { PageHeader } from "../Common/PageHeader"
 import { TotalAndPageSizeOptions } from "../Common/TotalAndPageSizeOptions"
 import { QuickDeployItem } from "./QuickDeployItem"
 
+const sortOptions = [
+    { label: SortTypeLabel.MechQueueAsc, value: SortTypeLabel.MechQueueAsc },
+    { label: SortTypeLabel.MechQueueDesc, value: SortTypeLabel.MechQueueDesc },
+]
+
 interface GetMechsRequest {
+    queue_sort: string
     page: number
     page_size: number
     include_market_listed: boolean
@@ -37,6 +44,8 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
     const [mechs, setMechs] = useState<MechBasic[]>([])
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
+
+    const [sort, setSort] = useState<string>(SortTypeLabel.MechQueueAsc)
     const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({ pageSize: 5, page: 1 })
 
     const primaryColor = theme.factionTheme.primary
@@ -51,7 +60,12 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
     const getItems = useCallback(async () => {
         try {
             setIsLoading(true)
+
+            let sortDir = "asc"
+            if (sort === SortTypeLabel.MechQueueDesc) sortDir = "desc"
+
             const resp = await send<GetAssetsResponse, GetMechsRequest>(GameServerKeys.GetMechs, {
+                queue_sort: sortDir,
                 page,
                 page_size: pageSize,
                 include_market_listed: false,
@@ -67,7 +81,7 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
         } finally {
             setIsLoading(false)
         }
-    }, [send, page, pageSize, setTotalItems])
+    }, [send, sort, page, pageSize, setTotalItems])
 
     useEffect(() => {
         getItems()
@@ -151,6 +165,11 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
                             changePageSize={changePageSize}
                             changePage={changePage}
                             manualRefresh={getItems}
+                            sortOptions={sortOptions}
+                            selectedSort={sort}
+                            onSetSort={setSort}
+                            hideTotal
+                            hidePageSizeOptions
                         />
 
                         {loadError && (
@@ -216,6 +235,7 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
                             <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                                 <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", maxWidth: "40rem" }}>
                                     <Typography
+                                        variant="body2"
                                         sx={{
                                             px: "1.28rem",
                                             pt: "1.28rem",
@@ -243,7 +263,7 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
                                 }}
                             >
                                 <Pagination
-                                    size="medium"
+                                    size="small"
                                     count={totalPages}
                                     page={page}
                                     sx={{
@@ -254,8 +274,6 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
                                         },
                                     }}
                                     onChange={(e, p) => changePage(p)}
-                                    showFirstButton
-                                    showLastButton
                                 />
                             </Box>
                         )}
@@ -280,7 +298,7 @@ const AmountItem = ({
     disableIcon?: boolean
 }) => {
     return (
-        <TooltipHelper placement="bottom" text={tooltip}>
+        <TooltipHelper placement="bottom-start" text={tooltip}>
             <Stack direction="row" alignItems="center">
                 <Typography sx={{ mr: ".4rem", fontWeight: "fontWeightBold" }}>{title}</Typography>
 

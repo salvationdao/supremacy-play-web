@@ -10,6 +10,7 @@ import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { MechBasic, MechDetails } from "../../../types"
+import { SortTypeLabel } from "../../../types/marketplace"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { DeployModal } from "./DeployQueue/DeployModal"
 import { LeaveModal } from "./LeaveQueue/LeaveModal"
@@ -18,7 +19,13 @@ import { RentalModal } from "./MechRental/RentalModal"
 import { MechViewer } from "./MechViewer/MechViewer"
 import { WarMachineHangarItem, WarMachineHangarItemLoadingSkeleton } from "./WarMachineHangarItem/WarMachineHangarItem"
 
+const sortOptions = [
+    { label: SortTypeLabel.MechQueueAsc, value: SortTypeLabel.MechQueueAsc },
+    { label: SortTypeLabel.MechQueueDesc, value: SortTypeLabel.MechQueueDesc },
+]
+
 interface GetMechsRequest {
+    queue_sort: string
     page: number
     page_size: number
     include_market_listed: boolean
@@ -97,6 +104,7 @@ const WarMachinesHangarInner = ({
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
 
+    const [sort, setSort] = useState<string>(query.get("sort") || SortTypeLabel.MechQueueAsc)
     const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({
         pageSize: parseString(query.get("pageSize"), 5),
         page: parseString(query.get("page"), 1),
@@ -105,13 +113,19 @@ const WarMachinesHangarInner = ({
     const getItems = useCallback(async () => {
         try {
             setIsLoading(true)
+
+            let sortDir = "asc"
+            if (sort === SortTypeLabel.MechQueueDesc) sortDir = "desc"
+
             const resp = await send<GetAssetsResponse, GetMechsRequest>(GameServerKeys.GetMechs, {
+                queue_sort: sortDir,
                 page,
                 page_size: pageSize,
                 include_market_listed: true,
             })
 
             updateQuery({
+                sort,
                 page: page.toString(),
                 pageSize: pageSize.toString(),
             })
@@ -126,7 +140,7 @@ const WarMachinesHangarInner = ({
         } finally {
             setIsLoading(false)
         }
-    }, [send, page, pageSize, updateQuery, setTotalItems])
+    }, [send, page, pageSize, updateQuery, sort, setTotalItems])
 
     useEffect(() => {
         getItems()
@@ -179,6 +193,9 @@ const WarMachinesHangarInner = ({
                         changePageSize={changePageSize}
                         changePage={changePage}
                         manualRefresh={getItems}
+                        sortOptions={sortOptions}
+                        selectedSort={sort}
+                        onSetSort={setSort}
                     />
 
                     <Box

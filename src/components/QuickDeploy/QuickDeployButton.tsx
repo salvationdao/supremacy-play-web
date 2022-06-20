@@ -30,7 +30,7 @@ export const QuickDeployButton = () => {
                     toggleMechDeployModalOpen()
                 }}
             >
-                <SvgRobot size="1.6rem" />
+                <SvgRobot size="1.6rem" fill={theme.factionTheme.secondary} />
             </IconButton>
         </Stack>
     )
