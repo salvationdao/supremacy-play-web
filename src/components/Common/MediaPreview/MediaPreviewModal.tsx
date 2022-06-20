@@ -3,7 +3,7 @@ import { SvgClose } from "../../../assets"
 import { siteZIndex } from "../../../theme/theme"
 import { MediaPreview } from "./MediaPreview"
 
-export const MediaPreviewModal = ({ imageUrl, videoUrls, onClose }: { imageUrl?: string; videoUrls?: string[]; onClose: () => void }) => {
+export const MediaPreviewModal = ({ imageUrl, videoUrls, onClose }: { imageUrl?: string; videoUrls?: (string | undefined)[]; onClose: () => void }) => {
     return (
         <Modal open onClose={onClose} sx={{ zIndex: siteZIndex.Modal }}>
             <Box
