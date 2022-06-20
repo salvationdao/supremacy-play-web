@@ -27,7 +27,7 @@ const VotingSystemInner = ({ bribeStage }: { bribeStage?: BribeStageResponse }) 
             defaultHeight: 360,
             // Size limits
             minWidth: 300,
-            minHeight: 215,
+            minHeight: 168,
             maxWidth: 500,
             maxHeight: 600,
             // Others
