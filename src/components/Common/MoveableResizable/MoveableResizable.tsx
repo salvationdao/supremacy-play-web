@@ -114,7 +114,10 @@ export const MoveableResizable = ({ config, children }: { config: MoveableResiza
                 curHeight={curHeight}
                 handle={
                     <>
-                        <Box className="handle" sx={{ position: "absolute", top: 0, left: 0, right: "10rem", height: "3rem", pointerEvents: "all" }} />
+                        <Box
+                            className="handle"
+                            sx={{ cursor: "move", position: "absolute", top: 0, left: 0, right: "10rem", height: "3rem", pointerEvents: "all" }}
+                        />
                         <Box
                             className="handle"
                             sx={{
