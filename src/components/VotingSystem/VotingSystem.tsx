@@ -2,7 +2,7 @@ import { Box, Fade, Stack, Tab } from "@mui/material"
 import { TabProps } from "@mui/material/Tab"
 import { useMemo } from "react"
 import { BattleAbilityItem, FactionAbilities, MoveableResizable, MoveableResizableConfig } from ".."
-import { BribeStageResponse, useGame } from "../../containers"
+import { BribeStageResponse, useAuth, useGame } from "../../containers"
 import { useTheme } from "../../containers/theme"
 import { colors } from "../../theme/theme"
 
@@ -13,6 +13,7 @@ export const VotingSystem = () => {
 
 const VotingSystemInner = ({ bribeStage }: { bribeStage?: BribeStageResponse }) => {
     const theme = useTheme()
+    const { factionID } = useAuth()
     // const [currentTab, setCurrentTab] = useState(0)
     const isBattleStarted = useMemo(() => bribeStage && bribeStage.phase !== "HOLD", [bribeStage])
 
@@ -85,7 +86,7 @@ const VotingSystemInner = ({ bribeStage }: { bribeStage?: BribeStageResponse }) 
                             }}
                         >
                             <Stack spacing="2rem" sx={{ direction: "ltr", py: ".4rem" }}>
-                                <BattleAbilityItem />
+                                <BattleAbilityItem key={factionID} />
                                 <FactionAbilities />
                             </Stack>
                         </Box>
