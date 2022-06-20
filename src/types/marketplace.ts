@@ -20,6 +20,8 @@ export enum SortType {
     PriceHighest = "Price: highest first",
     Alphabetical = "Name: ascending",
     AlphabeticalReverse = "Name: descending",
+    MechQueueAsc = "Queue position: lowest first",
+    MechQueueDesc = "Queue position: highest first",
 }
 
 export interface MarketUser {

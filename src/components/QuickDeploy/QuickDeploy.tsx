@@ -9,11 +9,18 @@ import { useGameServerCommandsUser, useGameServerSubscriptionFaction } from "../
 import { GameServerKeys } from "../../keys"
 import { colors, fonts } from "../../theme/theme"
 import { MechBasic } from "../../types"
+import { SortType } from "../../types/marketplace"
 import { PageHeader } from "../Common/PageHeader"
 import { TotalAndPageSizeOptions } from "../Common/TotalAndPageSizeOptions"
 import { QuickDeployItem } from "./QuickDeployItem"
 
+const sortOptions = [
+    { label: SortType.MechQueueAsc, value: SortType.MechQueueAsc },
+    { label: SortType.MechQueueDesc, value: SortType.MechQueueDesc },
+]
+
 interface GetMechsRequest {
+    queue_sort: string
     page: number
     page_size: number
     include_market_listed: boolean
@@ -37,6 +44,8 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
     const [mechs, setMechs] = useState<MechBasic[]>([])
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
+
+    const [sort, setSort] = useState<string>(SortType.MechQueueAsc)
     const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({ pageSize: 5, page: 1 })
 
     const primaryColor = theme.factionTheme.primary
@@ -51,7 +60,12 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
     const getItems = useCallback(async () => {
         try {
             setIsLoading(true)
+
+            let sortDir = "asc"
+            if (sort === SortType.MechQueueDesc) sortDir = "desc"
+
             const resp = await send<GetAssetsResponse, GetMechsRequest>(GameServerKeys.GetMechs, {
+                queue_sort: sortDir,
                 page,
                 page_size: pageSize,
                 include_market_listed: false,
@@ -67,7 +81,7 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
         } finally {
             setIsLoading(false)
         }
-    }, [send, page, pageSize, setTotalItems])
+    }, [send, sort, page, pageSize, setTotalItems])
 
     useEffect(() => {
         getItems()
@@ -151,6 +165,9 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
                             changePageSize={changePageSize}
                             changePage={changePage}
                             manualRefresh={getItems}
+                            sortOptions={sortOptions}
+                            selectedSort={sort}
+                            onSetSort={setSort}
                         />
 
                         {loadError && (
