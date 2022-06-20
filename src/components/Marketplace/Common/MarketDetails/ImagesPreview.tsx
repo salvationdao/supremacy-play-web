@@ -81,13 +81,7 @@ export const ImagesPreview = ({ media, primaryColor }: { media: MarketMedia[]; p
                 </Box>
             </Stack>
 
-            {previewModalOpen && (
-                <MediaPreviewModal
-                    imageUrl={activeImageUrl}
-                    videoUrls={activeVideoUrl ? [activeVideoUrl] : undefined}
-                    onClose={() => togglePreviewModalOpen(false)}
-                />
-            )}
+            {previewModalOpen && <MediaPreviewModal imageUrl={activeImageUrl} videoUrls={[activeVideoUrl]} onClose={() => togglePreviewModalOpen(false)} />}
         </>
     )
 }
