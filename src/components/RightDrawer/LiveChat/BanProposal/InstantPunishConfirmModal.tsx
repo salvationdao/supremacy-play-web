@@ -58,13 +58,13 @@ export const InstantPunishConfirmModal = ({
                         <Stack spacing=".6rem" direction="row" alignItems="center">
                             {rankDeets?.icon}
                             <Typography variant="h6" sx={{ lineHeight: 1, fontFamily: fonts.nostromoBlack }}>
-                                INSTANT PUNISH
+                                COMMAND OVERRIDE
                             </Typography>
                         </Stack>
 
                         <Typography>
-                            As a GENERAL, you have the privilege to instantly punish a player. Do you wish to spend <span>{supFormatterNoFixed(cost, 0)}</span>{" "}
-                            SUPS to instantly punish player [{punishPlayer}]?
+                            To initiate command override, there needs to be <span> 2x GENERALs </span> to punish a player instantly. Do you wish to spend{" "}
+                            <span>{supFormatterNoFixed(cost, 0)}</span> SUPS to initiate the command override to punish player [{punishPlayer}]?
                         </Typography>
 
                         <Stack direction="row" spacing="1rem" sx={{ pt: ".4rem" }}>

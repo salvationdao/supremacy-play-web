@@ -82,6 +82,7 @@ export enum GameServerKeys {
     GetBanPlayerCost = "PUNISH:VOTE:PRICE:QUOTE",
     SubmitBanProposal = "ISSUE:PUNISH:VOTE",
     SubBanProposals = "PUNISH:VOTE:SUBSCRIBE",
+    SubBanProposalCommandOverrideCount = "PUNISH:VOTE:COMMAND:OVERRIDE:COUNT:SUBSCRIBE",
     SubmitBanVote = "PUNISH:VOTE",
     SubmitInstantBan = "PUNISH:VOTE:INSTANT:PASS",
 
