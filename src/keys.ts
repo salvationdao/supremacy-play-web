@@ -32,16 +32,20 @@ export enum GameServerKeys {
     // Game Use
     GameUserOnline = "GAME:ONLINE",
 
-    TriggerBattleQueueUpdated = "BATTLE:QUEUE:UPDATED",
-
     // Global messages
     SubGlobalAnnouncement = "GLOBAL_ANNOUNCEMENT:SUBSCRIBE",
 
     // Asset / queue
     SubQueueFeed = "BATTLE:QUEUE:STATUS:SUBSCRIBE",
-    GetAssetsQueue = "ASSET:MANY",
+    GetMechs = "PLAYER:ASSET:MECH:LIST",
+    GetMechDetails = "PLAYER:ASSET:MECH:DETAIL",
+    SubMechQueuePosition = "PLAYER:ASSET:MECH:QUEUE:SUBSCRIBE",
     JoinQueue = "BATTLE:QUEUE:JOIN",
     LeaveQueue = "BATTLE:QUEUE:LEAVE",
+    SubRepairStatus = "ASSET:REPAIR:STATUS",
+    SubmitRepair = "ASSET:REPAIR:PAY:FEE",
+    MechQueueUpdated = "PLAYER:ASSET:MECH:QUEUE:UPDATE",
+    TriggerMechStatusUpdate = "PLAYER:ASSET:MECH:STATUS:UPDATE",
 
     // Player Abilities
     SaleAbilitiesPriceSubscribe = "SALE:ABILITIES:PRICE:SUBSCRIBE",
@@ -64,9 +68,9 @@ export enum GameServerKeys {
     SubGameSettings = "GAME:SETTINGS:UPDATED",
     SubBattleEndDetailUpdated = "BATTLE:END:DETAIL:UPDATED",
     SubscribeSupsMultiplier = "USER:MULTIPLIERS:SUBSCRIBE",
+    SubMysteryCrateOwnership = "STORE:MYSTERY:CRATE:OWNERSHIP:SUBSCRIBE",
     SubViewersLiveCount = "VIEWER:LIVE:COUNT:UPDATED",
     SubscribeUserStat = "USER:STAT:SUBSCRIBE",
-
     UpdateSettings = "PLAYER:UPDATE_SETTINGS",
     GetSettings = "PLAYER:GET_SETTINGS",
 
@@ -77,6 +81,7 @@ export enum GameServerKeys {
     SubmitBanProposal = "ISSUE:PUNISH:VOTE",
     SubBanProposals = "PUNISH:VOTE:SUBSCRIBE",
     SubmitBanVote = "PUNISH:VOTE",
+    SubmitInstantBan = "PUNISH:VOTE:INSTANT:PASS",
 
     // Player list
     SubPlayerList = "FACTION:ACTIVE:PLAYER:SUBSCRIBE",
@@ -84,7 +89,43 @@ export enum GameServerKeys {
     // Telegram
     UserTelegramShortcodeRegistered = "USER:TELEGRAM_SHORTCODE_REGISTERED",
 
+    // Player Profile
+    GetNotificationPreferences = "PLAYER:PREFERENCES_GET",
+    UpdateNotificationPreferences = "PLAYER:PREFERENCES_UPDATE",
+
     EnlistFaction = "FACTION:ENLIST",
+
+    //Redeem Coupon Code
+    CodeRedemption = "CODE:REDEMPTION",
+
+    // Storefront
+    GetMysteryCrates = "STORE:MYSTERY:CRATES",
+    SubMysteryCrate = "STORE:MYSTERY:CRATE:SUBSCRIBE",
+    PurchaseMysteryCrate = "STORE:MYSTERY:CRATE:PURCHASE",
+
+    // Marketplace
+    MarketplaceSalesList = "MARKETPLACE:SALES:LIST",
+    MarketplaceSalesGet = "MARKETPLACE:SALES:GET",
+    MarketplaceSalesCreate = "MARKETPLACE:SALES:CREATE",
+    MarketplaceSalesBuy = "MARKETPLACE:SALES:BUY",
+    MarketplaceSalesBid = "MARKETPLACE:SALES:BID",
+    SubMarketplaceSalesItem = "MARKETPLACE:SALES:ITEM:UPDATE",
+    CancelMarketplaceListing = "MARKETPLACE:SALES:ARCHIVE",
+
+    // Marketplace Keycards
+    MarketplaceSalesKeycardList = "MARKETPLACE:SALES:KEYCARD:LIST",
+    GetKeycard = "MARKETPLACE:SALES:KEYCARD:GET",
+    MarketplaceSalesKeycardCreate = "MARKETPLACE:SALES:KEYCARD:CREATE",
+    MarketplaceSalesKeycardBuy = "MARKETPLACE:SALES:KEYCARD:BUY",
+    CancelKeycardListing = "MARKETPLACE:SALES:KEYCARD:ARCHIVE",
+
+    // Mystery Crates
+    GetPlayerMysteryCrates = "PLAYER:ASSET:MYSTERY_CRATE:LIST",
+    GetPlayerMysteryCrate = "PLAYER:ASSET:MYSTERY_CRATE:GET",
+
+    // Keycards
+    GetPlayerKeycards = "PLAYER:ASSET:KEYCARD:LIST",
+    GetPlayerKeycard = "PLAYER:ASSET:KEYCARD:GET",
 }
 
 export enum PassportServerKeys {

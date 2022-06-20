@@ -162,12 +162,13 @@ export const SaleAbilityCard = ({ saleAbility, updatedPrice, ...props }: Ability
                             transform: "translate(-50%, -50%)",
                             width: "100%",
                             maxWidth: purchaseModalWidth,
+                            outline: "none",
                         }}
                     >
                         <ClipThing
                             border={{
                                 borderColor: saleAbility.ability?.colour || colors.neonBlue,
-                                borderThickness: ".15rem",
+                                borderThickness: ".2rem",
                                 isFancy: true,
                             }}
                             backgroundColor={colors.darkNavy}

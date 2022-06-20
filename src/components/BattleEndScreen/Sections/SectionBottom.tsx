@@ -11,12 +11,12 @@ export const SectionBottom = ({ battleEndDetail }: { battleEndDetail: BattleEndD
     const { battle_identifier, started_at, ended_at } = battleEndDetail
 
     const primaryColor = useMemo(
-        () => (battleEndDetail && battleEndDetail.winning_faction ? battleEndDetail && battleEndDetail.winning_faction.primary_color : colors.darkNavyBlue),
+        () => (battleEndDetail && battleEndDetail.winning_faction ? battleEndDetail && battleEndDetail.winning_faction.theme.primary : colors.darkNavyBlue),
         [battleEndDetail],
     )
 
     const secondaryColor = useMemo(
-        () => (battleEndDetail && battleEndDetail.winning_faction ? battleEndDetail && battleEndDetail.winning_faction.secondary_color : colors.text),
+        () => (battleEndDetail && battleEndDetail.winning_faction ? battleEndDetail && battleEndDetail.winning_faction.theme.secondary : colors.text),
         [battleEndDetail],
     )
 
@@ -47,6 +47,7 @@ export const SectionBottom = ({ battleEndDetail }: { battleEndDetail: BattleEndD
                     clipSize: "8px",
                     backgroundColor: primaryColor,
                     border: {
+                        isFancy: true,
                         borderColor: primaryColor,
                     },
                 }}

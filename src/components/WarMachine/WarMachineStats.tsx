@@ -49,7 +49,7 @@ export const WarMachineStats = () => {
                 {haveFactionMechs && (
                     <BoxSlanted
                         clipSize="9px"
-                        clipSlantSize="26px"
+                        clipSlantSize="20px"
                         skipLeft
                         sx={{
                             pl: ".5rem",
@@ -123,7 +123,7 @@ const ScrollContainer = ({ children }: { children: ReactElement }) => {
                 overflowY: "hidden",
                 overflowX: "auto",
                 direction: "ltr",
-                scrollbarWidth: "none",
+
                 "::-webkit-scrollbar": {
                     height: ".4rem",
                 },

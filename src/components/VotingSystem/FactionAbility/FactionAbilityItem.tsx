@@ -3,7 +3,7 @@ import BigNumber from "bignumber.js"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { ClipThing, ContributionBar } from "../.."
 import { useGame } from "../../../containers"
-import { useGameServerCommandsBattleFaction, useGameServerSubscriptionBattleFaction } from "../../../hooks/useGameServer"
+import { useGameServerCommandsFaction, useGameServerSubscriptionAbilityFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
 import { GameAbility, GameAbilityProgress } from "../../../types"
@@ -21,10 +21,11 @@ interface FactionAbilityItemProps {
     gameAbility: GameAbility
     abilityMaxPrice?: BigNumber
     clipSlantSize?: string
+    progressWsURI?: string
 }
 
-export const FactionAbilityItem = ({ gameAbility, abilityMaxPrice, clipSlantSize }: FactionAbilityItemProps) => {
-    const { send } = useGameServerCommandsBattleFaction("/faction_commander")
+export const FactionAbilityItem = ({ gameAbility, abilityMaxPrice, clipSlantSize, progressWsURI }: FactionAbilityItemProps) => {
+    const { send } = useGameServerCommandsFaction("/faction_commander")
     const { bribeStage } = useGame()
 
     const [gameAbilityProgress, setGameAbilityProgress] = useState<GameAbilityProgress>()
@@ -38,9 +39,9 @@ export const FactionAbilityItem = ({ gameAbility, abilityMaxPrice, clipSlantSize
     const { identity } = gameAbility
 
     // Listen on the progress of the votes
-    useGameServerSubscriptionBattleFaction<GameAbilityProgress | undefined>(
+    useGameServerSubscriptionAbilityFaction<GameAbilityProgress | undefined>(
         {
-            URI: "/ability/faction",
+            URI: progressWsURI || "/faction",
             key: GameServerKeys.SubAbilityProgress,
         },
         (payload) => {
@@ -83,7 +84,7 @@ export const FactionAbilityItem = ({ gameAbility, abilityMaxPrice, clipSlantSize
         [send, identity, offeringID],
     )
 
-    const isVoting = useMemo(() => bribeStage && bribeStage?.phase != "HOLD" && supsCost.isGreaterThan(currentSups), [bribeStage, supsCost, currentSups])
+    const isVoting = useMemo(() => bribeStage && bribeStage?.phase != "HOLD", [bribeStage])
 
     return (
         <FactionAbilityItemInner

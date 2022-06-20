@@ -1,6 +1,6 @@
-import { Autocomplete, Box, Button, CircularProgress, IconButton, MenuItem, Modal, Select, Stack, SxProps, TextField, Typography } from "@mui/material"
+import { Autocomplete, Box, CircularProgress, IconButton, MenuItem, Modal, Select, Stack, SxProps, TextField, Typography } from "@mui/material"
 import { useCallback, useEffect, useState } from "react"
-import { ClipThing } from "../../.."
+import { ClipThing, FancyButton } from "../../.."
 import { SvgClose, SvgCooldown, SvgSupToken } from "../../../../assets"
 import { MAX_BAN_PROPOSAL_REASON_LENGTH } from "../../../../constants"
 import { useAuth, useSnackbar, useSupremacy } from "../../../../containers"
@@ -50,7 +50,7 @@ export const UserBanForm = ({ user, open, onClose, prefillUser }: { user: User; 
     const theme = useTheme()
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsFaction("/faction_commander")
-    const { userStat } = useAuth()
+    const { userStat, userRank } = useAuth()
     // Options and display only
     const [searchText, setSearchText] = useState(prefillUser ? `${prefillUser.username}#${prefillUser.gid}` : "")
     const [search, setSearch] = useDebounce(prefillUser ? `${prefillUser.username}#${prefillUser.gid}` : "", 300)
@@ -134,7 +134,8 @@ export const UserBanForm = ({ user, open, onClose, prefillUser }: { user: User; 
         }
     }, [selectedUser, selectedBanOptionID, reason, send, onClose, newSnackbarMessage])
 
-    const isDisabled = !selectedUser || !selectedBanOptionID || !reason || (userStat.last_seven_days_kills < 5 && userStat.ability_kill_count < 100)
+    const isDisabled =
+        !selectedUser || !selectedBanOptionID || !reason || (userStat.last_seven_days_kills < 5 && userStat.ability_kill_count < 100 && userRank !== "GENERAL")
 
     return (
         <Modal open={open} onClose={onClose}>
@@ -146,23 +147,22 @@ export const UserBanForm = ({ user, open, onClose, prefillUser }: { user: User; 
                     transform: "translate(-50%, -50%)",
                     width: "42rem",
                     boxShadow: 24,
+                    outline: "none",
                 }}
             >
                 <ClipThing
-                    clipSize="0"
+                    clipSize="8px"
                     border={{
-                        isFancy: true,
                         borderColor: primaryColor,
-                        borderThickness: ".15rem",
+                        borderThickness: ".3rem",
                     }}
                     sx={{ position: "relative" }}
                     backgroundColor={theme.factionTheme.background}
                 >
                     <Stack
                         sx={{
-                            px: "2rem",
-                            pt: "1.8rem",
-                            pb: "2rem",
+                            px: "2.2rem",
+                            py: "2.1rem",
                             ".MuiAutocomplete-popper": {
                                 zIndex: siteZIndex.Modal,
                                 ".MuiPaper-root": {
@@ -173,7 +173,7 @@ export const UserBanForm = ({ user, open, onClose, prefillUser }: { user: User; 
                             },
                         }}
                     >
-                        <Typography sx={{ mb: ".9rem", fontFamily: fonts.nostromoBlack }}>PROPOSE TO PUNISH A PLAYER</Typography>
+                        <Typography sx={{ mb: "1.2rem", fontFamily: fonts.nostromoBlack }}>PROPOSE TO PUNISH A PLAYER</Typography>
 
                         <Autocomplete
                             options={userDropdown}
@@ -275,7 +275,10 @@ export const UserBanForm = ({ user, open, onClose, prefillUser }: { user: User; 
                                         variant: "menu",
                                         sx: {
                                             "&& .Mui-selected": {
-                                                backgroundColor: "#FFFFFF25",
+                                                ".MuiTypography-root": {
+                                                    color: secondaryColor,
+                                                },
+                                                backgroundColor: primaryColor,
                                             },
                                         },
                                         PaperProps: {
@@ -293,11 +296,7 @@ export const UserBanForm = ({ user, open, onClose, prefillUser }: { user: User; 
                                                 key={`ban-reason-${x.id}`}
                                                 value={x.id}
                                                 onClick={() => setSelectedBanOptionID(x.id)}
-                                                sx={{
-                                                    "&:hover": {
-                                                        backgroundColor: "#FFFFFF15",
-                                                    },
-                                                }}
+                                                sx={{ "&:hover": { backgroundColor: "#FFFFFF20" } }}
                                             >
                                                 <Stack direction="row" spacing="1rem" justifyContent="space-between" sx={{ flex: 1 }}>
                                                     <Typography>{snakeToTitle(x.key)}</Typography>
@@ -358,33 +357,29 @@ export const UserBanForm = ({ user, open, onClose, prefillUser }: { user: User; 
                             </Stack>
                         </Stack>
 
-                        <Button
-                            variant="contained"
-                            size="small"
+                        <FancyButton
+                            excludeCaret
+                            clipThingsProps={{
+                                clipSize: "9px",
+                                backgroundColor: primaryColor,
+                                opacity: 1,
+                                border: { isFancy: true, borderColor: primaryColor, borderThickness: "2px" },
+                                sx: { position: "relative", flex: 1, minWidth: 0, mt: "1.8rem" },
+                            }}
+                            sx={{ px: "1.6rem", py: ".3rem", color: secondaryColor }}
                             onClick={onSubmit}
                             disabled={isDisabled}
-                            sx={{
-                                flex: 1,
-                                minWidth: 0,
-                                mt: "1.8rem",
-                                px: ".8rem",
-                                py: ".8rem",
-                                backgroundColor: primaryColor,
-                                borderRadius: 0.3,
-                                ":hover": { backgroundColor: `${primaryColor}90` },
-                            }}
                         >
                             <Typography
+                                variant="caption"
                                 sx={{
                                     color: secondaryColor,
-                                    lineHeight: 1,
-                                    fontWeight: "fontWeightBold",
-                                    opacity: isDisabled ? 0.6 : 1,
+                                    fontFamily: fonts.nostromoBlack,
                                 }}
                             >
                                 SUBMIT
                             </Typography>
-                        </Button>
+                        </FancyButton>
 
                         {userStat.last_seven_days_kills < 5 && userStat.ability_kill_count < 100 && (
                             <Typography variant="body2" sx={{ mt: "1rem", opacity: 0.6, lineHeight: 1.2 }}>
@@ -399,8 +394,8 @@ export const UserBanForm = ({ user, open, onClose, prefillUser }: { user: User; 
                         )}
                     </Stack>
 
-                    <IconButton size="small" onClick={onClose} sx={{ position: "absolute", top: ".2rem", right: ".2rem" }}>
-                        <SvgClose size="1.6rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
+                    <IconButton size="small" onClick={onClose} sx={{ position: "absolute", top: ".5rem", right: ".5rem" }}>
+                        <SvgClose size="1.9rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
                     </IconButton>
                 </ClipThing>
             </Box>

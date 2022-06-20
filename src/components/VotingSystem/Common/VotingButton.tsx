@@ -28,9 +28,9 @@ export const VotingButton = ({ displayPercentage, cost, color, textColor, isVoti
             disabled={!isVotable}
             excludeCaret
             clipThingsProps={{
-                clipSize: "4px",
+                clipSize: "5px",
                 backgroundColor: color || "#14182B",
-                border: { borderColor: color || "#14182B" },
+                border: { isFancy: true, borderColor: color || "#14182B" },
                 sx: { flex: 1, position: "relative" },
             }}
             sx={{ py: ".2rem", minWidth: "2rem" }}

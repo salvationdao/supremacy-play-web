@@ -1,9 +1,15 @@
 import { MenuItem, Select, Stack, Typography } from "@mui/material"
+import { OVENPLAYER_STREAM } from "../../constants"
 import { useStream } from "../../containers"
+import { useTheme } from "../../containers/theme"
 import { colors } from "../../theme/theme"
 
 export const StreamSelect = () => {
+    const theme = useTheme()
     const { currentStream, changeStream, streamOptions } = useStream()
+
+    const primaryColor = theme.factionTheme.primary
+    const secondaryColor = theme.factionTheme.secondary
 
     return (
         <Stack direction="row" spacing=".24rem" alignItems="center">
@@ -18,7 +24,11 @@ export const StreamSelect = () => {
                     "&:hover": {
                         backgroundColor: colors.darkNavy,
                     },
-                    "& .MuiSelect-outlined": { px: ".8rem", pt: ".48rem", pb: 0 },
+                    ".MuiTypography-root": {
+                        px: ".8rem",
+                        pt: ".48rem",
+                    },
+                    "& .MuiSelect-outlined": { p: 0 },
                 }}
                 defaultValue={currentStream?.host}
                 value={currentStream ? currentStream.host : ""}
@@ -26,7 +36,10 @@ export const StreamSelect = () => {
                     variant: "menu",
                     sx: {
                         "&& .Mui-selected": {
-                            backgroundColor: colors.darkerNeonBlue,
+                            ".MuiTypography-root": {
+                                color: secondaryColor,
+                            },
+                            backgroundColor: primaryColor,
                         },
                     },
                     PaperProps: {
@@ -46,12 +59,21 @@ export const StreamSelect = () => {
                                 changeStream(x)
                             }}
                             sx={{
+                                color: x.name === OVENPLAYER_STREAM ? "#E4E455" : "",
                                 "&:hover": {
                                     backgroundColor: colors.darkNavyBlue,
                                 },
                             }}
                         >
-                            <Typography variant="body2">{x.name}</Typography>
+                            <Typography
+                                sx={{
+                                    color: x.name === OVENPLAYER_STREAM ? "#E4E455" : "",
+                                    fontWeight: x.name === OVENPLAYER_STREAM ? "bold" : "",
+                                }}
+                                variant="body2"
+                            >
+                                {x.name}
+                            </Typography>
                         </MenuItem>
                     )
                 })}

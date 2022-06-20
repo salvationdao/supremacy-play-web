@@ -140,7 +140,7 @@ export const Notifications = () => {
 
     // Notifications
     const incomingNotification = useGameServerSubscription<NotificationResponse | undefined>({
-        URI: "/battle/notification",
+        URI: "/public/notification",
         key: GameServerKeys.SubGameNotification,
     })
 
@@ -214,7 +214,7 @@ const NotificationsInner = ({ height, notificationsJsx }: { height: number; noti
                 position: "absolute",
                 top: "1rem",
                 right: "1rem",
-                zIndex: siteZIndex.Notfications,
+                zIndex: siteZIndex.Notifications,
                 overflow: "hidden",
             }}
         >
@@ -228,7 +228,7 @@ const NotificationsInner = ({ height, notificationsJsx }: { height: number; noti
                         pr: ".8rem",
                         py: ".16rem",
                         direction: "ltr",
-                        scrollbarWidth: "none",
+
                         "::-webkit-scrollbar": {
                             width: ".4rem",
                         },

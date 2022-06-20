@@ -27,16 +27,15 @@ export const PunishmentList = ({ open, onClose, punishments }: Props) => {
                     transform: "translate(-50%, -50%)",
                     width: "40rem",
                     border: "none",
-                    outline: "none",
                     boxShadow: 6,
+                    outline: "none",
                 }}
             >
                 <ClipThing
-                    clipSize="0"
+                    clipSize="8px"
                     border={{
-                        isFancy: true,
                         borderColor: colors.red,
-                        borderThickness: ".15rem",
+                        borderThickness: ".3rem",
                     }}
                     sx={{ position: "relative" }}
                     backgroundColor={theme.factionTheme.background}
@@ -50,7 +49,7 @@ export const PunishmentList = ({ open, onClose, punishments }: Props) => {
                             {punishments.map((p) => {
                                 if (p.related_punish_vote.status !== "PASSED") return null
                                 return (
-                                    <Stack key={p.id} spacing=".5rem" sx={{ px: "1.2rem", py: ".8rem", backgroundColor: "#00000030" }}>
+                                    <Stack key={p.id} spacing=".5rem" sx={{ px: "1.2rem", py: ".8rem", backgroundColor: "#FFFFFF08" }}>
                                         <Stack direction="row" alignItems="center" justifyContent="space-between" spacing="1rem">
                                             <Typography sx={{ color: colors.lightNeonBlue }}>
                                                 <strong>{snakeToTitle(p.punish_option.key).toUpperCase()}</strong>
@@ -78,8 +77,8 @@ export const PunishmentList = ({ open, onClose, punishments }: Props) => {
                         </Stack>
                     </Box>
 
-                    <IconButton size="small" onClick={onClose} sx={{ position: "absolute", top: ".2rem", right: ".2rem" }}>
-                        <SvgClose size="1.6rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
+                    <IconButton size="small" onClick={onClose} sx={{ position: "absolute", top: ".5rem", right: ".5rem" }}>
+                        <SvgClose size="1.9rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
                     </IconButton>
                 </ClipThing>
             </Box>

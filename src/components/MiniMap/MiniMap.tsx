@@ -308,8 +308,8 @@ const MiniMapInner = ({
                                 display: !isMapOpen ? "none" : enlarged ? "none" : "unset",
                                 pointerEvents: "all",
                                 position: "absolute",
-                                top: ".75rem",
-                                left: "1.15rem",
+                                top: "1rem",
+                                left: "1.65rem",
                                 cursor: "nwse-resize",
                                 color: colors.text,
                                 opacity: 0.8,
@@ -326,10 +326,10 @@ const MiniMapInner = ({
                         <ClipThing
                             clipSize="10px"
                             border={{
-                                isFancy: true,
                                 borderThickness: ".2rem",
                                 borderColor: mainColor,
                             }}
+                            opacity={0.8}
                             backgroundColor={colors.darkNavy}
                         >
                             <Box

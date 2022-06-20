@@ -1,7 +1,7 @@
 import { Box, Divider, Stack, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
 import { BattleEndTooltip, StyledImageText, TooltipHelper } from "../.."
-import { getMutiplierDeets } from "../../../helpers"
+import { getMultiplierDeets } from "../../../helpers"
 import { colors, fonts } from "../../../theme/theme"
 import { BattleEndDetail, Multiplier } from "../../../types"
 
@@ -61,10 +61,10 @@ export const SectionMultipliers = ({ battleEndDetail }: { battleEndDetail: Battl
                                 MULTIPLIERS
                             </Typography>
 
-                            {multiplierList.map((m, index) => {
-                                const deets = getMutiplierDeets(m.key)
+                            {multiplierList.map((m) => {
+                                const deets = getMultiplierDeets(m.key)
                                 return (
-                                    <TooltipHelper key={`${m.key}-${index}`} placement="right" text={m.description}>
+                                    <TooltipHelper key={`${m.key}`} placement="right" text={m.description}>
                                         <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ px: ".8rem" }}>
                                             <StyledImageText
                                                 color={colors.text}
@@ -110,7 +110,7 @@ export const SectionMultipliers = ({ battleEndDetail }: { battleEndDetail: Battl
                                 </Typography>
 
                                 {multiplicative.map((m) => {
-                                    const deets = getMutiplierDeets(m.key)
+                                    const deets = getMultiplierDeets(m.key)
                                     return (
                                         <TooltipHelper key={m.key} placement="right" text={m.description}>
                                             <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ px: ".8rem" }}>

@@ -1,10 +1,10 @@
-import { Box, Button, Popover, Stack, Typography } from "@mui/material"
+import { Box, Popover, Stack, Typography } from "@mui/material"
 import { useEffect } from "react"
-import { ClipThing } from "../../../.."
+import { ClipThing, FancyButton } from "../../../.."
 import { SvgSkull2, SvgAbility, SvgDeath, SvgView } from "../../../../../assets"
 import { truncate } from "../../../../../helpers"
 import { useToggle } from "../../../../../hooks"
-import { colors, siteZIndex } from "../../../../../theme/theme"
+import { colors, fonts, siteZIndex } from "../../../../../theme/theme"
 import { User, UserStat } from "../../../../../types"
 
 export const UserDetailsPopover = ({
@@ -74,16 +74,19 @@ export const UserDetailsPopover = ({
                 }}
             >
                 <ClipThing
-                    clipSize="0"
+                    clipSize="8px"
                     border={{
-                        isFancy: true,
                         borderColor: factionColor || colors.neonBlue,
-                        borderThickness: ".15rem",
+                        borderThickness: ".2rem",
+                    }}
+                    corners={{
+                        topRight: true,
+                        bottomLeft: true,
                     }}
                     sx={{ position: "relative" }}
                     backgroundColor={colors.darkNavy}
                 >
-                    <Stack sx={{ minWidth: "20rem", px: "1.2rem", py: ".8rem" }}>
+                    <Stack sx={{ minWidth: "20rem", px: "1.5rem", py: "1.2rem" }}>
                         <Stack direction="row" spacing=".5rem" sx={{ mt: ".3rem", mb: ".7rem" }}>
                             {faction_logo_url && (
                                 <Box
@@ -146,35 +149,31 @@ export const UserDetailsPopover = ({
                         </Stack>
 
                         {fromUserFactionID === user.faction_id && (
-                            <Button
-                                variant="contained"
-                                size="small"
+                            <FancyButton
+                                excludeCaret
+                                clipThingsProps={{
+                                    clipSize: "5px",
+                                    backgroundColor: factionColor,
+                                    opacity: 1,
+                                    border: { isFancy: true, borderColor: factionColor, borderThickness: "2px" },
+                                    sx: { position: "relative", mt: ".7rem" },
+                                }}
+                                sx={{ px: "1.6rem", py: ".1rem", color: factionSecondaryColor }}
                                 onClick={() => {
                                     toggleBanModalOpen()
                                     toggleLocalOpen(false)
                                 }}
-                                sx={{
-                                    mt: ".7rem",
-                                    px: ".8rem",
-                                    pt: ".48rem",
-                                    pb: ".3rem",
-                                    backgroundColor: factionColor,
-                                    border: `${factionColor} 1px solid`,
-                                    borderRadius: 0.3,
-                                    ":hover": { backgroundColor: `${factionColor}90` },
-                                }}
                             >
                                 <Typography
-                                    variant="body2"
+                                    variant="caption"
                                     sx={{
-                                        lineHeight: 1,
-                                        fontWeight: "fontWeightBold",
                                         color: factionSecondaryColor,
+                                        fontFamily: fonts.nostromoBlack,
                                     }}
                                 >
                                     PUNISH
                                 </Typography>
-                            </Button>
+                            </FancyButton>
                         )}
                     </Stack>
                 </ClipThing>

@@ -1,28 +1,9 @@
 import LoadingButton, { LoadingButtonProps } from "@mui/lab/LoadingButton"
 import { Box, styled, SxProps } from "@mui/system"
-import { fonts } from "../../theme/theme"
+import { HTMLAttributeAnchorTarget } from "react"
+import { mergeDeep } from "../../helpers"
+import { colors, fonts } from "../../theme/theme"
 import { ClipThing, ClipThingProps } from "./ClipThing"
-
-const Base = styled(LoadingButton)({
-    borderRadius: 0,
-    fontFamily: fonts.shareTech,
-    fontWeight: "fontWeightBold",
-    color: "white",
-    textTransform: "uppercase",
-    "&:focus": {
-        boxShadow: "none",
-    },
-    "&:active": {
-        opacity: 0.75,
-    },
-    "& .MuiLoadingButton-loadingIndicator": {
-        color: "#FFFFFF",
-    },
-    "& > *": {
-        fontFamily: fonts.shareTech,
-        fontWeight: "fontWeightBold",
-    },
-})
 
 const Triangle = styled("div")({
     position: "absolute",
@@ -36,14 +17,23 @@ const Triangle = styled("div")({
 interface FancyButtonProps extends LoadingButtonProps {
     excludeCaret?: boolean
     sx?: SxProps
+    innerSx?: SxProps
     caretColor?: string
     clipThingsProps?: ClipThingProps
+    href?: string
+    target?: HTMLAttributeAnchorTarget | undefined
 }
 
-export const FancyButton = ({ sx, excludeCaret = false, disabled, caretColor, clipThingsProps, children, ...props }: FancyButtonProps) => {
+export const FancyButton = ({ sx, innerSx, excludeCaret = false, disabled, caretColor, clipThingsProps, children, loading, ...props }: FancyButtonProps) => {
     return (
-        <ClipThing {...clipThingsProps}>
-            {disabled && (
+        <ClipThing
+            corners={{
+                topRight: true,
+                bottomLeft: true,
+            }}
+            {...mergeDeep({ clipSlantSize: "2px" }, clipThingsProps, { opacity: disabled ? 0.7 : clipThingsProps?.opacity })}
+        >
+            {(loading || disabled) && (
                 <Box
                     sx={{
                         position: "absolute",
@@ -52,17 +42,41 @@ export const FancyButton = ({ sx, excludeCaret = false, disabled, caretColor, cl
                         left: 0,
                         right: 0,
                         backgroundColor: "#050c12",
-                        opacity: 0.5,
+                        opacity: 0.08,
                         zIndex: 99,
                     }}
                 />
             )}
-            <Base sx={{ ...sx }} fullWidth {...props}>
-                <Box sx={{ pt: ".3rem" }}>
+            <LoadingButton
+                sx={{
+                    borderRadius: 0,
+                    fontFamily: fonts.shareTech,
+                    fontWeight: "fontWeightBold",
+                    color: "#FFFFFF",
+                    textTransform: "uppercase",
+                    "&:focus": {
+                        boxShadow: "none",
+                    },
+                    "&:active": {
+                        opacity: 0.75,
+                    },
+                    "& .MuiLoadingButton-loadingIndicator": {
+                        color: "#FFFFFF",
+                    },
+                    ".MuiCircularProgress-root": {
+                        color: colors.offWhite,
+                    },
+                    ...sx,
+                }}
+                fullWidth
+                loading={loading}
+                {...props}
+            >
+                <Box sx={{ pt: ".3rem", height: "100%", width: "100%", ...innerSx }}>
                     {children}
                     {!excludeCaret && <Triangle sx={{ backgroundColor: caretColor }} />}
                 </Box>
-            </Base>
+            </LoadingButton>
         </ClipThing>
     )
 }

@@ -4,6 +4,7 @@ import { createContainer } from "unstated-next"
 import { FallbackFaction, useSnackbar } from "."
 import { GAME_SERVER_HOSTNAME } from "../constants"
 import { GetFactionsAll } from "../fetching"
+import { useToggle } from "../hooks"
 import { FactionsAll } from "../types"
 import { useWS } from "./ws/useWS"
 
@@ -13,6 +14,7 @@ export const SupremacyContainer = createContainer(() => {
         URI: "/public/online",
         host: GAME_SERVER_HOSTNAME,
     })
+    const [readyToCheckServerState, toggleReadyToCheckServerState] = useToggle()
     const [isServerUp, toggleIsServerUp] = useState<boolean | undefined>(undefined) // Needs 3 states: true, false, undefined. Undefined means it's not loaded yet.
     const [haveSups, toggleHaveSups] = useState<boolean>() // Needs 3 states: true, false, undefined. Undefined means it's not loaded yet.
     const [factionsAll, setFactionsAll] = useState<FactionsAll>({})
@@ -22,8 +24,15 @@ export const SupremacyContainer = createContainer(() => {
 
     // Listens on the server status
     useEffect(() => {
+        if (!readyToCheckServerState && state !== WebSocket.OPEN) {
+            setTimeout(() => {
+                toggleReadyToCheckServerState(true)
+            }, 3600)
+            return
+        }
+
         toggleIsServerUp(state === WebSocket.OPEN)
-    }, [state, toggleIsServerUp])
+    }, [readyToCheckServerState, state, toggleIsServerUp, toggleReadyToCheckServerState])
 
     // Get main color of each factions
     useEffect(() => {
@@ -38,7 +47,7 @@ export const SupremacyContainer = createContainer(() => {
                 setFactionsAll(currentData)
             } catch (e) {
                 newSnackbarMessage(typeof e === "string" ? e : "Failed to retrieve syndicate data.", "error")
-                console.debug(e)
+                console.error(e)
                 return false
             }
         })()

@@ -1,7 +1,7 @@
-import { Box, CircularProgress, Modal, Stack, Typography } from "@mui/material"
+import { Box, CircularProgress, IconButton, Modal, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
 import { ClipThing } from ".."
-import { FlamesPNG, GenericWarMachinePNG, SvgDamageCross, SvgDamageIcon, SvgSkull } from "../../assets"
+import { FlamesPNG, GenericWarMachinePNG, SvgClose, SvgDamageCross, SvgDamageIcon, SvgSkull } from "../../assets"
 import { colors, fonts, siteZIndex } from "../../theme/theme"
 import { DamageRecord, Faction, WarMachineDestroyedRecord, WarMachineState } from "../../types"
 import { useTheme } from "../../containers/theme"
@@ -33,7 +33,7 @@ export const WarMachineDestroyedInfo = ({
                 setWarMachineDestroyedRecord(resp.payload)
             } catch (e) {
                 newSnackbarMessage(typeof e === "string" ? e : "Failed to retrieve mech destroyed info.", "error")
-                console.debug(e)
+                console.error(e)
             }
         })()
     }, [newSnackbarMessage, queryGetMechDestroyedInfo, warMachine.id])
@@ -113,18 +113,18 @@ export const WarMachineDestroyedInfo = ({
                     transform: "translate(-50%, -50%)",
                     width: "63rem",
                     border: "none",
-                    outline: "none",
                     boxShadow: 6,
+                    outline: "none",
                 }}
             >
                 <ClipThing
-                    clipSize="0"
+                    clipSize="8px"
                     border={{
-                        isFancy: true,
                         borderColor: theme.factionTheme.primary,
-                        borderThickness: ".15rem",
+                        borderThickness: ".3rem",
                     }}
                     backgroundColor={theme.factionTheme.background}
+                    sx={{ position: "relative" }}
                 >
                     <Box sx={{ position: "relative" }}>
                         <Box
@@ -145,6 +145,10 @@ export const WarMachineDestroyedInfo = ({
 
                         {content}
                     </Box>
+
+                    <IconButton size="small" onClick={onClose} sx={{ position: "absolute", top: ".5rem", right: ".5rem" }}>
+                        <SvgClose size="1.9rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
+                    </IconButton>
                 </ClipThing>
             </Box>
         </Modal>
@@ -157,8 +161,7 @@ const WarMachineIcon = ({ color, imageUrl, isDead, size }: { color: string; imag
             <ClipThing
                 clipSize="6px"
                 border={{
-                    isFancy: false,
-                    borderThickness: ".15rem",
+                    borderThickness: ".2rem",
                     borderColor: color,
                 }}
                 innerSx={{ background: `linear-gradient(${color}, #000000)` }}

@@ -170,8 +170,7 @@ export const MoveableResizable = ({ config, children }: { config: MoveableResiza
                     <ClipThing
                         clipSize=".5rem"
                         border={{
-                            isFancy: true,
-                            borderThickness: ".15rem",
+                            borderThickness: ".2rem",
                             borderColor: theme.factionTheme.primary,
                         }}
                         backgroundColor={theme.factionTheme.background}

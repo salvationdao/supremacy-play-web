@@ -109,7 +109,7 @@ const ChatSendInner = ({ primaryColor, faction_id, send, user, userRank, onSentM
         } catch (e) {
             newSnackbarMessage(typeof e === "string" ? e : "Failed to send chat message.", "error")
             onFailedMessage(sentAt)
-            console.debug(e)
+            console.error(e)
         }
     }, [message, user, send, newMessageHandler, userRank, messageColor, faction_id, onSentMessage, newSnackbarMessage, onFailedMessage])
 
@@ -311,7 +311,11 @@ const ChatSendInner = ({ primaryColor, faction_id, send, user, userRank, onSentM
                     border={{
                         isFancy: true,
                         borderColor: primaryColor,
-                        borderThickness: ".2rem",
+                        borderThickness: ".25rem",
+                    }}
+                    corners={{
+                        topRight: true,
+                        bottomLeft: true,
                     }}
                     opacity={0.6}
                     backgroundColor="#494949"

@@ -5,8 +5,10 @@ import { colors } from "../../../../theme/theme"
 import { BattleMultipliers } from "../../../../types"
 import { useState } from "react"
 import { useToggle } from "../../../../hooks"
+import { useTheme } from "../../../../containers/theme"
 
 export const MultipliersBattle = ({ bm }: { bm: BattleMultipliers }) => {
+    const theme = useTheme()
     const [open, toggleOpen] = useToggle()
     const [multiplierList] = useState(bm.multipliers.filter((m) => !m.is_multiplicative))
     const [multiplicative] = useState(bm.multipliers.filter((m) => m.is_multiplicative))
@@ -23,6 +25,7 @@ export const MultipliersBattle = ({ bm }: { bm: BattleMultipliers }) => {
                     px: "1.2rem",
                     border: `#FFFFFF30 1px dashed`,
                     borderRadius: 0.2,
+                    color: theme.factionTheme.primary,
                     ":hover": {
                         border: `#FFFFFF60 1px dashed`,
                     },
@@ -56,13 +59,14 @@ export const MultipliersBattle = ({ bm }: { bm: BattleMultipliers }) => {
                 <Box
                     sx={{
                         maxHeight: "16rem",
-                        mt: ".3rem",
-                        py: "0.5rem",
-                        px: ".8rem",
+                        ml: "1rem",
+                        mr: ".5rem",
+                        pr: ".5rem",
+                        my: ".8rem",
                         overflowY: "auto",
                         overflowX: "hidden",
                         direction: "ltr",
-                        scrollbarWidth: "none",
+
                         "::-webkit-scrollbar": {
                             width: ".4rem",
                         },

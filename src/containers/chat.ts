@@ -17,7 +17,7 @@ export interface IncomingMessages {
 
 export type SplitOptionType = "tabbed" | "split" | null
 
-export type FontSizeType = 0.8 | 1.1 | 1.35
+export type FontSizeType = 0.8 | 1.2 | 1.35
 
 export const ChatContainer = createContainer(() => {
     const { userID } = useAuth()
@@ -30,7 +30,7 @@ export const ChatContainer = createContainer(() => {
     const [filterZerosGlobal, toggleFilterZerosGlobal] = useToggle(localStorage.getItem("chatFilterZerosGlobal") == "true")
     const [filterZerosFaction, toggleFilterZerosFaction] = useToggle(localStorage.getItem("chatFilterZerosFaction") == "true")
     const [filterSystemMessages, toggleFilterSystemMessages] = useToggle(localStorage.getItem("chatFilterSystemMessages") == "true")
-    const [fontSize, setFontSize] = useState<FontSizeType>(parseString(localStorage.getItem("chatFontSize2"), 1.1) as FontSizeType)
+    const [fontSize, setFontSize] = useState<FontSizeType>(parseString(localStorage.getItem("chatFontSize2"), 1.2) as FontSizeType)
 
     // Global announcement message
     const [globalAnnouncement, setGlobalAnnouncement] = useState<GlobalAnnouncementType>()

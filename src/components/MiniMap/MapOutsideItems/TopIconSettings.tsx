@@ -27,7 +27,7 @@ export const TopIconSettings = ({
             sx={{
                 position: "relative",
                 width: "100%",
-                height: "2.4rem",
+                height: "2.6rem",
                 backgroundColor: shadeColor(mainColor, -86),
                 boxShadow: 2,
             }}
@@ -36,8 +36,8 @@ export const TopIconSettings = ({
                 size="small"
                 sx={{
                     position: "absolute",
-                    left: enlarged ? ".5rem" : "2.5rem",
-                    top: 0,
+                    left: enlarged ? "1rem" : "3rem",
+                    top: 1,
                     color: colors.text,
                     opacity: 0.8,
                     zIndex: 50,
@@ -51,8 +51,8 @@ export const TopIconSettings = ({
                 size="small"
                 sx={{
                     position: "absolute",
-                    left: enlarged ? "2.5rem" : "4.5rem",
-                    top: 0,
+                    left: enlarged ? "3rem" : "5rem",
+                    top: 1,
                     color: colors.text,
                     opacity: 0.8,
                     zIndex: 50,
@@ -66,8 +66,8 @@ export const TopIconSettings = ({
                 variant="caption"
                 sx={{
                     position: "absolute",
-                    left: enlarged ? "5.6rem" : "7.6rem",
-                    top: 7.2,
+                    left: enlarged ? "6.1rem" : "8.1rem",
+                    top: 8.2,
                     fontSize: "1rem",
                     fontFamily: fonts.nostromoBlack,
                     lineHeight: 1,

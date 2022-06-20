@@ -116,8 +116,12 @@ const VotingSystemInner = ({ userID, bribeStage }: VotingSystemInnerProps) => {
                             transition: "all .2s",
                         }}
                         border={{
-                            borderThickness: ".15rem",
+                            borderThickness: ".2rem",
                             borderColor: theme.factionTheme.primary,
+                        }}
+                        corners={{
+                            topRight: true,
+                            bottomLeft: true,
                         }}
                         clipSize="10px"
                         backgroundColor={theme.factionTheme.background}
@@ -142,7 +146,7 @@ const VotingSystemInner = ({ userID, bribeStage }: VotingSystemInnerProps) => {
                                         pl: ".88rem",
                                         py: ".16rem",
                                         direction: "rtl",
-                                        scrollbarWidth: "none",
+
                                         "::-webkit-scrollbar": {
                                             width: ".4rem",
                                         },

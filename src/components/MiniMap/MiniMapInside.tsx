@@ -148,8 +148,8 @@ export const MiniMapInside = ({
             }
             newSnackbarMessage(`Successfully submitted target location.`, "success")
         } catch (e) {
-            console.debug(e)
             newSnackbarMessage(typeof e === "string" ? e : "Failed to submit target location.", "error")
+            console.error(e)
         }
     }, [send, selection, resetSelection, gameAbility, playerAbility, newSnackbarMessage, setHighlightedMechHash])
 

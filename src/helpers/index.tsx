@@ -17,6 +17,7 @@ import {
     MultiplierSniper,
     MultiplierWonBattle,
     MultiplierWonLastThreeBattles,
+    SafePNG,
     SvgCorporal,
     SvgGeneral,
     SvgNewRecruit,
@@ -24,7 +25,7 @@ import {
     SvgWrapperProps,
 } from "../assets"
 import { colors } from "../theme/theme"
-import { UserRank } from "../types"
+import { MysteryCrateType, UserRank } from "../types"
 
 // Capitalize convert a string "example" to "Example"
 export const Capitalize = (str: string): string => str[0].toUpperCase() + str.substring(1).toLowerCase()
@@ -94,13 +95,14 @@ export const getRandomArbitrary = (min: number, max: number): number => {
 }
 
 export const numFormatter = (num: number) => {
-    if (num > 999 && num < 1000000) {
-        return (num / 1000).toFixed(1) + "K"
-    } else if (num > 1000000) {
+    if (num >= 1000000000) {
+        return (num / 1000000000).toFixed(1) + "B"
+    } else if (num >= 1000000) {
         return (num / 1000000).toFixed(1) + "M"
-    } else if (num < 900) {
-        return num + ""
+    } else if (num >= 1000) {
+        return (num / 1000).toFixed(1) + "K"
     }
+    return num + ""
 }
 
 export const supFormatter = (num: string, fixedAmount: number | undefined = 0): string => {
@@ -180,36 +182,36 @@ export const hexToRGB = (hex: string, alpha?: number): string => {
     else return "rgb(" + r + ", " + g + ", " + b + ")"
 }
 
-export const getRarityDeets = (rarityKey: string): { label: string; color: string } => {
+export const getRarityDeets = (rarityKey: string): { label: string; color: string; textColor: string } => {
     switch (rarityKey) {
         case "COLOSSAL":
-            return { label: "Colossal", color: colors.rarity.COLOSSAL }
+            return { label: "Colossal", color: colors.rarity.COLOSSAL, textColor: "#FFFFFF" }
         case "RARE":
-            return { label: "Rare", color: colors.rarity.RARE }
+            return { label: "Rare", color: colors.rarity.RARE, textColor: "#FFFFFF" }
         case "LEGENDARY":
-            return { label: "Legendary", color: colors.rarity.LEGENDARY }
+            return { label: "Legendary", color: colors.rarity.LEGENDARY, textColor: "#FFFFFF" }
         case "ELITE_LEGENDARY":
-            return { label: "Elite Legendary", color: colors.rarity.ELITE_LEGENDARY }
+            return { label: "Elite Legendary", color: colors.rarity.ELITE_LEGENDARY, textColor: "#FFFFFF" }
         case "ULTRA_RARE":
-            return { label: "Ultra Rare", color: colors.rarity.ULTRA_RARE }
+            return { label: "Ultra Rare", color: colors.rarity.ULTRA_RARE, textColor: "#FFFFFF" }
         case "EXOTIC":
-            return { label: "Exotic", color: colors.rarity.EXOTIC }
+            return { label: "Exotic", color: colors.rarity.EXOTIC, textColor: "#FFFFFF" }
         case "GUARDIAN":
-            return { label: "Guardian", color: colors.rarity.GUARDIAN }
+            return { label: "Guardian", color: colors.rarity.GUARDIAN, textColor: "#FFFFFF" }
         case "MYTHIC":
-            return { label: "Mythic", color: colors.rarity.MYTHIC }
+            return { label: "Mythic", color: colors.rarity.MYTHIC, textColor: "#000000" }
         case "DEUS_EX":
-            return { label: "Deus Ex", color: colors.rarity.DEUS_EX }
+            return { label: "Deus Ex", color: colors.rarity.DEUS_EX, textColor: "#000000" }
         case "TITAN":
-            return { label: "Titan", color: colors.rarity.TITAN }
+            return { label: "Titan", color: colors.rarity.TITAN, textColor: "#000000" }
         case "MEGA":
-            return { label: "Mega", color: colors.rarity.MEGA }
+            return { label: "Mega", color: colors.rarity.MEGA, textColor: "#FFFFFF" }
         default:
-            return { label: "", color: colors.rarity.MEGA }
+            return { label: "", color: colors.rarity.MEGA, textColor: "#FFFFFF" }
     }
 }
 
-export const getMutiplierDeets = (multiplierKey: string): { image: string } => {
+export const getMultiplierDeets = (multiplierKey: string): { image: string } => {
     let image
 
     switch (multiplierKey.toLowerCase()) {
@@ -303,6 +305,10 @@ export const snakeToTitle = (str: string, lowerCase?: boolean): string => {
     return Capitalize(result)
 }
 
+export const snakeToSlug = (str: string): string => {
+    return str.split("_").join("-").toLowerCase()
+}
+
 export const getUserRankDeets = (rank: UserRank, width: string, height: string): { icon: SvgWrapperProps; title: string; desc: string } => {
     let icon = null
     let title = ""
@@ -335,31 +341,95 @@ export const getUserRankDeets = (rank: UserRank, width: string, height: string):
     return { icon, title, desc }
 }
 
-export const timeSince = (date: Date, dateToCompare?: Date) => {
-    const seconds = Math.floor(((dateToCompare ? dateToCompare.getTime() : Date.now()) - date.getTime()) / 1000)
+export const getMysteryCrateDeets = (mysteryCrateType: MysteryCrateType): { image: string; label: string; desc: string } => {
+    let image = SafePNG
+    let label = "MYSTERY CRATE"
+    let desc = "Open a mystery crate to receive random weapon / war machine!"
 
-    let interval = seconds / 31536000
+    switch (mysteryCrateType) {
+        case "MECH":
+            image = SafePNG
+            label = "WAR MACHINE CRATE"
+            desc = "Get a random war machine to participate in the battle arena."
+            break
+        case "WEAPON":
+            image = SafePNG
+            label = "WEAPON CRATE"
+            desc = "Get a random weapon to equip onto your war machine."
+            break
+    }
 
-    if (interval > 1) {
-        return Math.floor(interval) + " years"
+    return { image, label, desc }
+}
+
+// Calculates the difference between two dates in different units (days, hours etc.)
+export const timeDiff = (
+    fromDate: Date,
+    toDate: Date,
+): {
+    total: number
+    days: number
+    hours: number
+    minutes: number
+    seconds: number
+} => {
+    const total = toDate.getTime() - fromDate.getTime()
+    const seconds = Math.floor(total / 1000)
+    const minutes = Math.floor(total / 1000 / 60)
+    const hours = Math.floor(total / (1000 * 60 * 60))
+    const days = Math.floor(total / (1000 * 60 * 60 * 24))
+
+    return {
+        total,
+        days,
+        hours,
+        minutes,
+        seconds,
     }
-    interval = seconds / 2592000
-    if (interval > 1) {
-        return Math.floor(interval) + " months"
+}
+
+// Calculates the time difference between two dates in days, hours minutes etc.
+export const timeSince = (
+    fromDate: Date,
+    toDate: Date,
+): {
+    total: number
+    days: number
+    hours: number
+    minutes: number
+    seconds: number
+} => {
+    const total = toDate.getTime() - fromDate.getTime()
+    const seconds = Math.floor((total / 1000) % 60)
+    const minutes = Math.floor((total / 1000 / 60) % 60)
+    const hours = Math.floor((total / (1000 * 60 * 60)) % 24)
+    const days = Math.floor(total / (1000 * 60 * 60 * 24))
+
+    return {
+        total,
+        days,
+        hours,
+        minutes,
+        seconds,
     }
-    interval = seconds / 86400
-    if (interval > 1) {
-        return Math.floor(interval) + " days"
-    }
-    interval = seconds / 3600
-    if (interval > 1) {
-        return Math.floor(interval) + " hours"
-    }
-    interval = seconds / 60
-    if (interval > 1) {
-        return Math.floor(interval) + " minutes"
-    }
-    return Math.floor(seconds) + " seconds"
+}
+
+export const timeSinceInWords = (fromDate: Date, toDate: Date): string => {
+    const { days, hours, minutes, seconds } = timeSince(fromDate, toDate)
+
+    let result = days > 0 ? days + " day" + (days === 1 ? "" : "s") : ""
+    result = (result ? result + " " : "") + (hours > 0 ? hours + " hour" + (hours === 1 ? "" : "s") : "")
+
+    // Return result if more than a day, else too long
+    if (days > 0) return result
+
+    result = (result ? result + " " : "") + (minutes > 0 ? minutes + " minute" + (minutes === 1 ? "" : "s") : "")
+
+    // Return result if more than a day, else too long
+    if (hours > 0) return result
+
+    result = (result ? result + " " : "") + (seconds > 0 ? seconds + " second" + (seconds === 1 ? "" : "s") : "")
+    return result
 }
 
 export const camelToTitle = (str: string) => {
@@ -378,7 +448,7 @@ export const checkIfIsEmoji = (message: string) => {
     // If message is long then don't bother
     if (trimmedMsg.length > 8) return false
 
-    // Spreading string for proper emoji seperation-ignoring spaces that can appear between emojis and mess everything up
+    // Spreading string for proper emoji separation-ignoring spaces that can appear between emojis and mess everything up
     const messageArray = [...trimmedMsg.replaceAll(" ", "")]
 
     messageArray.map((c) => {
@@ -403,4 +473,19 @@ export const getRandomColor = () => {
     let color = "#"
     for (let i = 0; i < 3; i++) color += ("0" + Math.floor(((1 + Math.random()) * Math.pow(16, 2)) / 2).toString(16)).slice(-2)
     return color
+}
+
+export const equalsIgnoreOrder = (a: unknown[], b: unknown[]) => {
+    if (a.length !== b.length) return false
+    const uniqueValues = new Set([...a, ...b])
+    for (const v of uniqueValues) {
+        const aCount = a.filter((e) => e === v).length
+        const bCount = b.filter((e) => e === v).length
+        if (aCount !== bCount) return false
+    }
+    return true
+}
+
+export const numberCommaFormatter = (num: number): string => {
+    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
 }

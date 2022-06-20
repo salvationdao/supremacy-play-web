@@ -1,64 +1,103 @@
 import { Popover, Stack } from "@mui/material"
-import { MutableRefObject, useEffect } from "react"
-import { SvgAssets, SvgProfile, SvgShop, SvgSupport } from "../../../../assets"
+import { MutableRefObject, useEffect, useState } from "react"
+import { ClipThing } from "../../.."
+import { SvgAssets, SvgProfile, SvgSettings, SvgSupport } from "../../../../assets"
 import { PASSPORT_WEB } from "../../../../constants"
+import { useTheme } from "../../../../containers/theme"
 import { useToggle } from "../../../../hooks"
 import { siteZIndex } from "../../../../theme/theme"
 import { User } from "../../../../types"
+import { PreferencesModal } from "../PreferencesModal/PreferencesModal"
+import { TelegramRegisterModal } from "../PreferencesModal/TelegramRegisterModal"
 import { LogoutButton } from "./LogoutButton"
 import { NavButton } from "./NavButton"
 
 export const ProfilePopover = ({ open, popoverRef, onClose, user }: { open: boolean; popoverRef: MutableRefObject<null>; onClose: () => void; user: User }) => {
+    const theme = useTheme()
     const [localOpen, toggleLocalOpen] = useToggle(open)
+    const [preferencesModalOpen, togglePreferencesModalOpen] = useToggle()
+    const [telegramShortcode, setTelegramShortcode] = useState<string>("")
 
     useEffect(() => {
-        if (!localOpen) {
+        if (!localOpen && !preferencesModalOpen) {
             const timeout = setTimeout(() => {
                 onClose()
             }, 300)
 
             return () => clearTimeout(timeout)
         }
-    }, [localOpen, onClose])
+    }, [localOpen, onClose, preferencesModalOpen])
 
     return (
-        <Popover
-            open={localOpen}
-            anchorEl={popoverRef.current}
-            onClose={() => toggleLocalOpen(false)}
-            anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "left",
-            }}
-            transformOrigin={{
-                vertical: "top",
-                horizontal: "left",
-            }}
-            sx={{
-                mt: ".8rem",
-                zIndex: siteZIndex.Popover,
-                ".MuiPaper-root": {
-                    background: "none",
-                    backgroundColor: (theme) => theme.factionTheme.background,
-                    border: "#FFFFFF50 1px solid",
-                },
-            }}
-        >
-            <Stack spacing=".32rem" sx={{ p: ".8rem" }}>
-                <NavButton href={`${PASSPORT_WEB}collections/${user.username}`} startIcon={<SvgAssets sx={{ pb: ".5rem" }} size="1.6rem" />}>
-                    My Inventory
-                </NavButton>
-                <NavButton href={`${PASSPORT_WEB}stores`} startIcon={<SvgShop sx={{ pb: ".5rem" }} size="1.6rem" />}>
-                    Purchase Assets
-                </NavButton>
-                <NavButton href={`${PASSPORT_WEB}profile/${user.username}/edit`} startIcon={<SvgProfile sx={{ pb: ".5rem" }} size="1.6rem" />}>
-                    Edit Profile
-                </NavButton>
-                <NavButton href="https://supremacyhelp.zendesk.com/" startIcon={<SvgSupport sx={{ pb: ".5rem" }} size="1.6rem" />}>
-                    SUPPORT
-                </NavButton>
-                <LogoutButton />
-            </Stack>
-        </Popover>
+        <>
+            <Popover
+                open={localOpen}
+                anchorEl={popoverRef.current}
+                onClose={() => toggleLocalOpen(false)}
+                anchorOrigin={{
+                    vertical: "bottom",
+                    horizontal: "left",
+                }}
+                transformOrigin={{
+                    vertical: "top",
+                    horizontal: "left",
+                }}
+                sx={{
+                    mt: ".5rem",
+                    zIndex: siteZIndex.Popover,
+                    ".MuiPaper-root": {
+                        background: "none",
+                        boxShadow: 0,
+                    },
+                }}
+            >
+                <ClipThing
+                    clipSize="10px"
+                    border={{
+                        isFancy: true,
+                        borderColor: theme.factionTheme.primary,
+                        borderThickness: ".3rem",
+                    }}
+                    backgroundColor={theme.factionTheme.background}
+                    sx={{ height: "100%" }}
+                >
+                    <Stack spacing=".32rem" sx={{ p: ".8rem" }}>
+                        <NavButton href={`${PASSPORT_WEB}profile`} startIcon={<SvgAssets sx={{ pb: ".5rem" }} size="1.6rem" />} text="My Inventory" />
+
+                        <NavButton
+                            href={`${PASSPORT_WEB}profile/${user.username}/edit`}
+                            startIcon={<SvgProfile sx={{ pb: ".5rem" }} size="1.6rem" />}
+                            text="Edit Profile"
+                        />
+
+                        <NavButton href="https://supremacyhelp.zendesk.com/" startIcon={<SvgSupport sx={{ pb: ".5rem" }} size="1.6rem" />} text="SUPPORT" />
+
+                        <NavButton
+                            onClick={() => {
+                                togglePreferencesModalOpen(true)
+                            }}
+                            startIcon={<SvgSettings sx={{ pb: ".5rem" }} size="1.6rem" />}
+                            text="Preferences"
+                        />
+
+                        <LogoutButton />
+                    </Stack>
+                </ClipThing>
+            </Popover>
+
+            {/* preferences modal */}
+            {preferencesModalOpen && (
+                <PreferencesModal
+                    onClose={() => {
+                        togglePreferencesModalOpen(false)
+                        toggleLocalOpen(false)
+                    }}
+                    setTelegramShortcode={setTelegramShortcode}
+                />
+            )}
+
+            {/* telegram register modal */}
+            {!!telegramShortcode && <TelegramRegisterModal code={telegramShortcode} onClose={() => setTelegramShortcode("")} />}
+        </>
     )
 }

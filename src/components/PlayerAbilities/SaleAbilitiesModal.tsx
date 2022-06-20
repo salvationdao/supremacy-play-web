@@ -65,15 +65,18 @@ export const SaleAbilitiesModal = ({ open, onClose }: SaleAbilitiesModalProps) =
                             left: `calc(50vw - min(${modalWidth / 2}px, 50vw))`,
                             width: "100%",
                             maxWidth: modalWidth,
+                            outline: "none",
                         }}
                     >
                         <ClipThing
+                            clipSize="8px"
                             border={{
-                                borderThickness: ".15rem",
+                                borderThickness: ".3rem",
                                 borderColor: colors.blue2,
-                                isFancy: true,
                             }}
-                            skipRightCorner
+                            corners={{
+                                bottomLeft: true,
+                            }}
                             backgroundColor={colors.darkNavy}
                         >
                             <Box sx={{ px: "2rem", py: "1.5rem" }}>
@@ -90,7 +93,7 @@ export const SaleAbilitiesModal = ({ open, onClose }: SaleAbilitiesModalProps) =
                                 <Box
                                     sx={{
                                         overflowX: "auto",
-                                        scrollbarWidth: "none",
+
                                         "::-webkit-scrollbar": {
                                             width: ".4rem",
                                         },
@@ -108,7 +111,7 @@ export const SaleAbilitiesModal = ({ open, onClose }: SaleAbilitiesModalProps) =
                                         <Box
                                             sx={{
                                                 display: "grid",
-                                                gridTemplateColumns: "repeat(6, 70px)",
+                                                gridTemplateColumns: "repeat(6, 70px)", // hard-coded to have 6 columns, adjust as required
                                                 gap: ".5rem",
                                             }}
                                         >

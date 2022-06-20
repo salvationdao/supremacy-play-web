@@ -27,8 +27,9 @@ export const HealthShieldBars = ({
     // Listen on current war machine changes
     useGameServerSubscription<WarMachineLiveState | undefined>(
         {
-            URI: `/battle/mech/${participantID}`,
+            URI: `/public/mech/${participantID}`,
             key: GameServerKeys.SubMechLiveStats,
+            ready: !!participantID,
         },
         (payload) => {
             if (payload?.health !== undefined) {

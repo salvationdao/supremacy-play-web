@@ -5,7 +5,7 @@ import { BoxSlanted, ClipThing, HealthShieldBars, SkillBar, TooltipHelper, WarMa
 import { GenericWarMachinePNG, SvgInfoCircular, SvgSkull, SvgSupToken } from "../../assets"
 import { getRarityDeets } from "../../helpers"
 import { useToggle } from "../../hooks"
-import { useGameServerSubscriptionBattleFaction } from "../../hooks/useGameServer"
+import { useGameServerSubscriptionAbilityFaction } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { fonts } from "../../theme/theme"
 import { GameAbility, WarMachineState } from "../../types"
@@ -13,12 +13,12 @@ import { GameAbility, WarMachineState } from "../../types"
 // in rems
 const WIDTH_WM_IMAGE = 9.2
 const WIDTH_CENTER = 14.2
-export const WIDTH_PER_SLANTED_BAR = 1.2
-export const WIDTH_PER_SLANTED_BAR_ACTUAL = 3.2
+export const WIDTH_PER_SLANTED_BAR = 1
+export const WIDTH_PER_SLANTED_BAR_ACTUAL = 2.4
 const WIDTH_SKILL_BUTTON = 4.3
 const HEIGHT = 7.6
 
-const SKILL_BUTTON_TEXT_ROTATION = 76.5
+const SKILL_BUTTON_TEXT_ROTATION = 78.5
 const DEAD_OPACITY = 0.6
 
 interface WarMachineItemProps {
@@ -41,10 +41,10 @@ export const WarMachineItem = (props: WarMachineItemProps) => {
     const { participantID, factionID: warMachineFactionID } = warMachine
 
     // Subscribe to war machine ability updates
-    const gameAbilities = useGameServerSubscriptionBattleFaction<GameAbility[] | undefined>({
-        URI: `/ability/mech/${participantID}`,
+    const gameAbilities = useGameServerSubscriptionAbilityFaction<GameAbility[] | undefined>({
+        URI: `/mech/${participantID}`,
         key: GameServerKeys.SubWarMachineAbilitiesUpdated,
-        ready: factionID === warMachineFactionID,
+        ready: factionID === warMachineFactionID && !!participantID,
     })
 
     return (
@@ -140,7 +140,7 @@ const WarMachineItemInner = ({
     }, [shouldBeExpanded, toggleIsExpanded])
 
     return (
-        <BoxSlanted key={`WarMachineItem-${participantID}`} clipSlantSize="20px" sx={{ transform: `scale(${scale})` }}>
+        <BoxSlanted key={`WarMachineItem-${participantID}`} clipSlantSize="14px" sx={{ transform: `scale(${scale})` }}>
             <Stack
                 ref={popoverRef}
                 direction="row"
@@ -218,10 +218,13 @@ const WarMachineItemInner = ({
 
                 <ClipThing
                     clipSize="8px"
-                    clipSlantSize="18px"
+                    clipSlantSize="12px"
                     border={{ isFancy: false, borderColor: primaryColor, borderThickness: ".4rem" }}
                     sx={{ zIndex: 2 }}
-                    skipRightCorner={!isExpanded}
+                    corners={{
+                        topRight: !isExpanded,
+                        bottomLeft: true,
+                    }}
                     innerSx={{ background: `linear-gradient(${primaryColor}, #000000)` }}
                 >
                     <Box>
@@ -367,7 +370,7 @@ const WarMachineItemInner = ({
                     {gameAbilities && gameAbilities.length > 0 && (
                         <>
                             <BoxSlanted
-                                clipSlantSize="20px"
+                                clipSlantSize="14px"
                                 onClick={
                                     isAlive
                                         ? () => {
@@ -380,7 +383,7 @@ const WarMachineItemInner = ({
                                     position: "relative",
                                     width: `${WIDTH_SKILL_BUTTON + numSkillBars * WIDTH_PER_SLANTED_BAR}rem`,
                                     alignSelf: "stretch",
-                                    ml: "-2rem",
+                                    ml: "-1.5rem",
                                     backgroundColor: primaryColor,
                                     boxShadow: 3,
                                     cursor: isAlive ? "pointer" : "auto",

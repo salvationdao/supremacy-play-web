@@ -7,8 +7,27 @@ import { getObjectFromArrayByKey, parseString } from "../helpers"
 import { useSnackbar } from "."
 import { useParameterizedQuery } from "react-fetching-library"
 import { GetStreamList } from "../fetching"
+import { OVENPLAYER_STREAM } from "../constants"
 
 const MAX_OPTIONS = 10
+
+// using ovenplayer
+const ovenPlayerStream: Stream = {
+    host: OVENPLAYER_STREAM,
+    name: OVENPLAYER_STREAM,
+    url: "wss://stream2.supremacy.game:3334/app/stream2",
+    stream_id: OVENPLAYER_STREAM,
+    region: "",
+    resolution: "",
+    bit_rates_kbits: 100,
+    user_max: 100,
+    users_now: 100,
+    active: true,
+    status: "",
+    latitude: 100,
+    longitude: 100,
+    distance: 100,
+}
 
 interface StreamInfoEntry {
     audioBitrate: number
@@ -201,9 +220,12 @@ export const StreamContainer = createContainer(() => {
         if (!streams || streams.length <= 0) return
 
         // Filter for servers that have capacity and is onlnine
-        const availStreams = streams.filter((x) => {
-            return x.users_now < x.user_max && x.status === "online" && x.active
-        })
+        const availStreams = [
+            ...streams.filter((x) => {
+                return x.users_now < x.user_max && x.status === "online" && x.active
+            }),
+            ovenPlayerStream,
+        ]
 
         if (availStreams.length <= 0) return
 
@@ -274,13 +296,13 @@ export const StreamContainer = createContainer(() => {
                     },
                     callbackError: (e: string) => {
                         if (e === "no_stream_exist" || e === "WebSocketNotConnected") {
-                            console.debug("Failed to start stream:", e)
+                            console.error("Failed to start stream:", e)
                             newSnackbarMessage("Failed to start stream.", "error")
                         }
                     },
                 })
             } catch (e) {
-                console.debug(e)
+                console.error(e)
                 webRtc.current = undefined
             }
         },

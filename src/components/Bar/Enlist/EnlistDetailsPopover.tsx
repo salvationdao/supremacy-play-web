@@ -53,7 +53,7 @@ export const EnlistDetailsPopover = ({ popoverRef, open, onClose, faction }: Enl
                     border={{
                         isFancy: true,
                         borderColor: primary_color,
-                        borderThickness: ".15rem",
+                        borderThickness: ".3rem",
                     }}
                     backgroundColor="#101019"
                 >
@@ -96,7 +96,7 @@ const PopoverContent = ({ faction }: { faction: Faction }) => {
             newSnackbarMessage("Successfully enlisted into syndicate.", "success")
         } catch (e) {
             newSnackbarMessage(typeof e === "string" ? e : "Failed to enlist into syndicate.", "error")
-            console.debug(e)
+            console.error(e)
         }
         return
     }, [send, faction.id, newSnackbarMessage])
@@ -203,12 +203,13 @@ const PopoverContent = ({ faction }: { faction: Faction }) => {
                             sx: { ml: "auto !important" },
                             backgroundColor: primary_color,
                             border: {
+                                isFancy: true,
                                 borderColor: primary_color,
                             },
                         }}
                         sx={{
-                            px: "2.56rem",
-                            py: ".2rem",
+                            px: "3rem",
+                            py: ".4rem",
                         }}
                         onClick={enlistFaction}
                     >
@@ -216,7 +217,7 @@ const PopoverContent = ({ faction }: { faction: Faction }) => {
                             variant="caption"
                             sx={{
                                 color: secondary_color,
-                                fontFamily: fonts.nostromoBold,
+                                fontFamily: fonts.nostromoBlack,
                             }}
                         >
                             ENLIST

@@ -1,27 +1,30 @@
 import { Box, Stack } from "@mui/material"
 import { TourProvider } from "@reactour/tour"
 import * as Sentry from "@sentry/react"
-import ReactDOM from "react-dom"
 import { Buffer } from "buffer"
+import ReactDOM from "react-dom"
 import { Action, ClientContextProvider, createClient } from "react-fetching-library"
-import { BrowserRouter, Route, Redirect, Switch } from "react-router-dom"
-import { Bar, GlobalSnackbar, RightDrawer, Maintenance, EarlyAccessWarning } from "./components"
+import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom"
+import { Bar, EarlyAccessWarning, GlobalSnackbar, Maintenance, RightDrawer } from "./components"
 import { tourStyles } from "./components/HowToPlay/Tutorial/SetupTutorial"
 import { LeftDrawer } from "./components/LeftDrawer/LeftDrawer"
-import { DEV_ONLY, GAME_SERVER_HOSTNAME, SENTRY_CONFIG, UNDER_MAINTENANCE } from "./constants"
-import { RightDrawerProvider, SnackBarProvider, SupremacyProvider, WalletProvider, BarProvider, useAuth, useSupremacy } from "./containers"
-import { AuthProvider, UserUpdater } from "./containers/auth"
+import { GAME_SERVER_HOSTNAME, SENTRY_CONFIG, UNDER_MAINTENANCE } from "./constants"
+import { BarProvider, SnackBarProvider, SupremacyProvider, useSupremacy, WalletProvider } from "./containers"
+import { AuthProvider, useAuth, UserUpdater } from "./containers/auth"
+import { FingerprintProvider } from "./containers/fingerprint"
 import { ThemeProvider } from "./containers/theme"
+import { ws } from "./containers/ws"
 import { useToggle } from "./hooks"
 import { NotFoundPage } from "./pages"
+import { AuthPage } from "./pages/AuthPage"
+import { EnlistPage } from "./pages/EnlistPage"
+import { LoginRedirect } from "./pages/LoginRedirect"
 import { ROUTES_ARRAY, ROUTES_MAP } from "./routes"
 import { colors } from "./theme/theme"
-import { LoginRedirect } from "./pages/LoginRedirect"
-import { ws } from "./containers/ws"
 
 const AppInner = () => {
-    useAuth() // For re-rendering the site when user has changed (e.g. theme color etc.)
     const { isServerUp } = useSupremacy()
+    const { userID, factionID } = useAuth()
     const [understand, toggleUnderstand] = useToggle()
 
     return (
@@ -49,7 +52,7 @@ const AppInner = () => {
                         },
                     }}
                 >
-                    {DEV_ONLY && <LeftDrawer />}
+                    <LeftDrawer />
 
                     <Box
                         sx={{
@@ -65,8 +68,15 @@ const AppInner = () => {
                         {understand && isServerUp && !UNDER_MAINTENANCE && (
                             <Switch>
                                 {ROUTES_ARRAY.map((r) => {
-                                    const { id, path, exact, Component } = r
-                                    return <Route key={id} path={path} exact={exact} component={Component} />
+                                    const { id, path, exact, Component, requireAuth, requireFaction, authTitle, authDescription } = r
+                                    let component = Component
+                                    if (requireAuth && !userID) {
+                                        const Comp = () => <AuthPage authTitle={authTitle} authDescription={authDescription} />
+                                        component = Comp
+                                    } else if (requireFaction && !factionID) {
+                                        component = EnlistPage
+                                    }
+                                    return <Route key={id} path={path} exact={exact} component={component} />
                                 })}
                                 <Redirect to={ROUTES_MAP.not_found_page.path} />
                             </Switch>
@@ -132,13 +142,13 @@ const tourProviderProps = {
 const App = () => {
     return (
         <ThemeProvider>
-            <SnackBarProvider>
-                <ClientContextProvider client={client}>
-                    <AuthProvider>
-                        <SupremacyProvider>
-                            <WalletProvider>
-                                <BarProvider>
-                                    <RightDrawerProvider>
+            <FingerprintProvider>
+                <SnackBarProvider>
+                    <ClientContextProvider client={client}>
+                        <AuthProvider>
+                            <SupremacyProvider>
+                                <WalletProvider>
+                                    <BarProvider>
                                         <TourProvider {...tourProviderProps}>
                                             <UserUpdater />
                                             <BrowserRouter>
@@ -149,13 +159,13 @@ const App = () => {
                                                 </Switch>
                                             </BrowserRouter>
                                         </TourProvider>
-                                    </RightDrawerProvider>
-                                </BarProvider>
-                            </WalletProvider>
-                        </SupremacyProvider>
-                    </AuthProvider>
-                </ClientContextProvider>
-            </SnackBarProvider>
+                                    </BarProvider>
+                                </WalletProvider>
+                            </SupremacyProvider>
+                        </AuthProvider>
+                    </ClientContextProvider>
+                </SnackBarProvider>
+            </FingerprintProvider>
         </ThemeProvider>
     )
 }

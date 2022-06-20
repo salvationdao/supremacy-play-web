@@ -53,10 +53,10 @@ export const WarMachineAbilitiesPopover = ({
                     clipSlantSize="8px"
                     border={{
                         isFancy: true,
-                        borderThickness: ".14rem",
+                        borderThickness: ".2rem",
                         borderColor: faction.primary_color,
                     }}
-                    opacity={0.8}
+                    opacity={0.99}
                     backgroundColor={faction.background_color}
                 >
                     <Box sx={{ px: "1.28rem", pt: "1.28rem", pb: "1.28rem" }}>
@@ -91,6 +91,7 @@ export const WarMachineAbilitiesPopover = ({
                                             gameAbility={ga}
                                             abilityMaxPrice={maxAbilityPriceMap?.current.get(ga.identity)}
                                             clipSlantSize="5px"
+                                            progressWsURI={`/mech/${warMachine.participantID}`}
                                         />
                                     </Box>
                                 ))}

@@ -1,22 +1,26 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useTour } from "@reactour/tour"
-import { useState } from "react"
+import OvenPlayer from "ovenplayer"
+import { useEffect } from "react"
 import { SupBackground } from "../../assets"
-import { DEV_ONLY, STREAM_ASPECT_RATIO_W_H } from "../../constants"
+import { DEV_ONLY, OVENPLAYER_STREAM, STREAM_ASPECT_RATIO_W_H } from "../../constants"
 import { useDimension, useStream } from "../../containers"
 import { colors, fonts, siteZIndex } from "../../theme/theme"
 import { Music } from "../Music/Music"
-import { Trailer } from "./Trailer"
+
+interface OvenPlayerSource {
+    type: "webrtc" | "llhls" | "hls" | "lldash" | "dash" | "mp4"
+    file: string
+    label?: string
+    framerate?: number
+    sectionStart?: number
+    sectionEnd?: number
+}
 
 export const Stream = () => {
-    const [watchedTrailer, setWatchedTrailer] = useState(localStorage.getItem("watchedTrailer") == "true")
     const { iframeDimensions } = useDimension()
     const { currentStream, isMute, streamResolutions, vidRefCallback } = useStream()
     const { isOpen } = useTour()
-
-    if (!watchedTrailer) {
-        return <Trailer watchedTrailer={watchedTrailer} setWatchedTrailer={setWatchedTrailer} />
-    }
 
     if (isOpen) return null
 
@@ -24,30 +28,34 @@ export const Stream = () => {
 
     return (
         <>
-            <Stack sx={{ width: "100%", height: "100%", zIndex: siteZIndex.Stream }}>
-                {!isPlaying && <NoStreamScreen />}
+            {currentStream?.name === OVENPLAYER_STREAM ? (
+                <OutputPlayerOven iframeDimensions={iframeDimensions} />
+            ) : (
+                <Stack sx={{ width: "100%", height: "100%", zIndex: siteZIndex.Stream }}>
+                    {!isPlaying && <NoStreamScreen />}
 
-                <video
-                    key={currentStream?.stream_id}
-                    id={"remoteVideo"}
-                    muted={isMute}
-                    ref={vidRefCallback}
-                    autoPlay
-                    controls={false}
-                    playsInline
-                    style={{
-                        position: "absolute",
-                        top: "50%",
-                        left: "50%",
-                        transform: "translate(-50%, -50%)",
-                        aspectRatio: STREAM_ASPECT_RATIO_W_H.toString(),
-                        width: iframeDimensions.width,
-                        height: iframeDimensions.height,
-                        zIndex: siteZIndex.Stream,
-                        background: isPlaying ? "unset" : `center url(${SupBackground}) ${colors.darkNavy} cover no-repeat`,
-                    }}
-                />
-            </Stack>
+                    <video
+                        key={currentStream?.stream_id}
+                        id={"remoteVideo"}
+                        muted={isMute}
+                        ref={vidRefCallback}
+                        autoPlay
+                        controls={false}
+                        playsInline
+                        style={{
+                            position: "absolute",
+                            top: "50%",
+                            left: "50%",
+                            transform: "translate(-50%, -50%)",
+                            aspectRatio: STREAM_ASPECT_RATIO_W_H.toString(),
+                            width: iframeDimensions.width,
+                            height: iframeDimensions.height,
+                            zIndex: siteZIndex.Stream,
+                            background: isPlaying ? "unset" : `center url(${SupBackground}) ${colors.darkNavy} cover no-repeat`,
+                        }}
+                    />
+                </Stack>
+            )}
 
             {DEV_ONLY && <Music />}
         </>
@@ -128,5 +136,85 @@ const NoStreamScreen = () => {
                 }}
             />
         </Box>
+    )
+}
+
+// Ovenplayer
+interface OvenPlayerSource {
+    type: "webrtc" | "llhls" | "hls" | "lldash" | "dash" | "mp4"
+    file: string
+    label?: string
+    framerate?: number
+    sectionStart?: number
+    sectionEnd?: number
+}
+
+const OutputPlayerOven = ({
+    iframeDimensions,
+}: {
+    iframeDimensions: {
+        width: string | number
+        height: string | number
+    }
+}) => {
+    const loadOvenPlayer = () => {
+        if (document.getElementById("oven-player")) {
+            // load oven player
+            const source: OvenPlayerSource = {
+                label: "label_for_webrtc",
+                // Set the type to 'webrtc'
+                type: "webrtc",
+                file: "wss://stream2.supremacy.game:3334/app/stream2",
+            }
+            const ovenPlayer = OvenPlayer.create("oven-player", {
+                autoStart: true,
+                controls: false,
+                mute: false,
+                sources: [source],
+                autoFallback: true,
+            })
+
+            ovenPlayer.on("ready", () => {
+                console.log("ovenplayer ready")
+            })
+
+            ovenPlayer.on("error", (e: Error) => {
+                console.log("ovenplayer error: ", e)
+            })
+        }
+    }
+
+    useEffect(() => {
+        loadOvenPlayer()
+    }, [])
+    return (
+        <Stack
+            sx={{
+                width: "100%",
+                height: "100%",
+                zIndex: siteZIndex.Stream,
+                div: {
+                    height: "100% !important",
+                },
+                video: {
+                    position: "absolute !important",
+                    top: "50% !important",
+                    left: "50% !important",
+                    transform: "translate(-50%, -50%) !important",
+                    aspectRatio: `${STREAM_ASPECT_RATIO_W_H.toString()} !important`,
+                    width: `${iframeDimensions.width}${iframeDimensions.width == "unset" ? "" : "px "} !important`,
+                    height: `${iframeDimensions.height}${iframeDimensions.height == "unset" ? "" : "px "} !important`,
+                    zIndex: siteZIndex.Stream,
+                },
+                ".op-ui": {
+                    display: "none !important",
+                },
+                ".op-ratio": {
+                    paddingBottom: "0 !important",
+                },
+            }}
+        >
+            <div id="oven-player" />
+        </Stack>
     )
 }

@@ -1,5 +1,6 @@
 import { Box, SxProps } from "@mui/system"
-import React from "react"
+import React, { useMemo } from "react"
+import { shadeColor } from "../../helpers"
 import { colors } from "../../theme/theme"
 
 export interface ClipThingProps {
@@ -13,7 +14,12 @@ export interface ClipThingProps {
     sx?: SxProps
     outerSx?: SxProps
     innerSx?: SxProps
-    skipRightCorner?: boolean
+    corners?: {
+        topLeft?: boolean
+        topRight?: boolean
+        bottomLeft?: boolean
+        bottomRight?: boolean
+    }
     opacity?: number
     backgroundColor?: string
 }
@@ -26,27 +32,59 @@ export const ClipThing: React.FC<ClipThingProps> = ({
     sx,
     innerSx,
     outerSx,
-    skipRightCorner,
+    corners = {
+        topLeft: true,
+        topRight: true,
+        bottomLeft: true,
+        bottomRight: true,
+    },
     opacity,
     backgroundColor,
 }) => {
-    const innerClipStyles: SxProps = {
-        lineHeight: 1,
-        clipPath: `polygon(${clipSlantSize} 0, calc(100% - ${
-            skipRightCorner ? "0%" : clipSize
-        }) 0%, 100% ${clipSize}, calc(100% - ${clipSlantSize}) 100%, ${clipSize} 100%, ${clipSlantSize != "0px" ? "2px" : "0%"} calc(100% - ${clipSize}))`,
-    }
+    const { topLeft, topRight, bottomLeft, bottomRight } = corners
+    const isSlanted = useMemo(() => clipSlantSize !== "0" && clipSlantSize !== "0px", [clipSlantSize])
 
-    const outerClipStyles: SxProps = {
-        lineHeight: 1,
-        clipPath: `polygon(${clipSlantSize} 0, calc(100% - ${
-            skipRightCorner ? "0%" : clipSize
-        }) 0%, 100% ${clipSize}, calc(100% - ${clipSlantSize}) 100%, ${clipSize} 100%, 0% calc(100% - ${clipSize}))`,
-    }
+    const innerClipStyles: SxProps = useMemo(
+        () => ({
+            lineHeight: 1,
+            clipPath: `
+            polygon(
+                ${isSlanted ? `${clipSlantSize} 0` : topLeft ? `${clipSize} 0` : "0 0"}
+                ${topRight ? `,calc(100% - ${clipSize}) 0` : ",100% 0"}
+                ${topRight ? `,${isSlanted ? "calc(100% - 2px)" : "100%"} ${clipSize}` : ""}
+                ${isSlanted ? `,calc(100% - ${clipSlantSize}) 100%` : bottomRight ? `,100% calc(100% - ${clipSize})` : ",100% 100%"}
+                ${!isSlanted && bottomRight ? `,calc(100% - ${clipSize}) 100%` : ""}
+                ${bottomLeft ? `,${clipSize} 100%` : ",0 100%"}
+                ${bottomLeft ? `,${isSlanted ? "2px" : "0"} calc(100% - ${clipSize})` : ""}
+                ${!isSlanted && topLeft ? `,0 ${clipSize}` : ""}
+            )
+        `,
+        }),
+        [bottomLeft, bottomRight, clipSize, clipSlantSize, isSlanted, topLeft, topRight],
+    )
+
+    const outerClipStyles: SxProps = useMemo(
+        () => ({
+            lineHeight: 1,
+            clipPath: `
+            polygon(
+                ${isSlanted ? `${clipSlantSize} 0` : topLeft ? `${clipSize} 0` : "0 0"}
+                ${topRight ? `,calc(100% - ${clipSize}) 0` : ",100% 0"}
+                ${topRight ? `,100% ${clipSize}` : ""}
+                ${isSlanted ? `,calc(100% - ${clipSlantSize}) 100%` : bottomRight ? `,100% calc(100% - ${clipSize})` : ",100% 100%"}
+                ${!isSlanted && bottomRight ? `,calc(100% - ${clipSize}) 100%` : ""}
+                ${bottomLeft ? `,${clipSize} 100%` : ",0 100%"}
+                ${bottomLeft ? `,0 calc(100% - ${clipSize})` : ""}
+                ${!isSlanted && topLeft ? `,0 ${clipSize}` : ""}
+            )
+        `,
+        }),
+        [bottomLeft, bottomRight, clipSize, clipSlantSize, isSlanted, topLeft, topRight],
+    )
 
     const borderStyles: SxProps = {
-        borderTopLeftRadius: "2px",
-        borderBottomRightRadius: "2px",
+        borderTopLeftRadius: "1.5px",
+        borderBottomRightRadius: "1.5px",
     }
 
     if (border) {
@@ -60,6 +98,11 @@ export const ClipThing: React.FC<ClipThingProps> = ({
             }
         }
     }
+
+    const innerBackground = useMemo(
+        () => (backgroundColor ? `linear-gradient(${backgroundColor} 26%, ${shadeColor(backgroundColor, -20)})` : "unset"),
+        [backgroundColor],
+    )
 
     return (
         <Box
@@ -95,12 +138,12 @@ export const ClipThing: React.FC<ClipThingProps> = ({
                             ...innerSx,
                             ...innerClipStyles,
                             height: "100%",
-                            backgroundColor: backgroundColor || "unset",
+                            background: innerBackground,
                         } as Record<string, unknown>
                     }
                 />
             </Box>
-            <Box sx={{ ...innerClipStyles }}>{children}</Box>
+            <Box sx={{ height: "100%", ...innerClipStyles }}>{children}</Box>
         </Box>
     )
 }
