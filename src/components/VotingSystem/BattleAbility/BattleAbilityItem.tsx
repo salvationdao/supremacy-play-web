@@ -6,7 +6,7 @@ import { BribeStageResponse, useGame, useAuth, useSupremacy } from "../../../con
 import { useTheme } from "../../../containers/theme"
 import { shadeColor } from "../../../helpers"
 import { useToggle } from "../../../hooks"
-import { useGameServerCommandsFaction, useGameServerSubscription, useGameServerSubscriptionAbilityFaction } from "../../../hooks/useGameServer"
+import { useGameServerCommandsFaction, useGameServerSubscription } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
 import { BattleAbility as BattleAbilityType, BattleAbilityProgress, Faction } from "../../../types"
