@@ -11,7 +11,7 @@ export enum SaleType {
     DutchAuction = "DUTCH_AUCTION",
 }
 
-export enum SortType {
+export enum SortTypeLabel {
     OldestFirst = "Create time: oldest",
     NewestFirst = "Create time: newly listed",
     ExpiringFirst = "End time: ending soon",

@@ -9,14 +9,14 @@ import { useGameServerCommandsUser, useGameServerSubscriptionFaction } from "../
 import { GameServerKeys } from "../../keys"
 import { colors, fonts } from "../../theme/theme"
 import { MechBasic } from "../../types"
-import { SortType } from "../../types/marketplace"
+import { SortTypeLabel } from "../../types/marketplace"
 import { PageHeader } from "../Common/PageHeader"
 import { TotalAndPageSizeOptions } from "../Common/TotalAndPageSizeOptions"
 import { QuickDeployItem } from "./QuickDeployItem"
 
 const sortOptions = [
-    { label: SortType.MechQueueAsc, value: SortType.MechQueueAsc },
-    { label: SortType.MechQueueDesc, value: SortType.MechQueueDesc },
+    { label: SortTypeLabel.MechQueueAsc, value: SortTypeLabel.MechQueueAsc },
+    { label: SortTypeLabel.MechQueueDesc, value: SortTypeLabel.MechQueueDesc },
 ]
 
 interface GetMechsRequest {
@@ -45,7 +45,7 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
 
-    const [sort, setSort] = useState<string>(SortType.MechQueueAsc)
+    const [sort, setSort] = useState<string>(SortTypeLabel.MechQueueAsc)
     const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({ pageSize: 5, page: 1 })
 
     const primaryColor = theme.factionTheme.primary
@@ -62,7 +62,7 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
             setIsLoading(true)
 
             let sortDir = "asc"
-            if (sort === SortType.MechQueueDesc) sortDir = "desc"
+            if (sort === SortTypeLabel.MechQueueDesc) sortDir = "desc"
 
             const resp = await send<GetAssetsResponse, GetMechsRequest>(GameServerKeys.GetMechs, {
                 queue_sort: sortDir,

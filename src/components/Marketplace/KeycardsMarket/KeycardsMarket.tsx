@@ -10,7 +10,7 @@ import { usePagination, useToggle, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { MarketplaceBuyAuctionItem, SortType } from "../../../types/marketplace"
+import { MarketplaceBuyAuctionItem, SortTypeLabel } from "../../../types/marketplace"
 import { PageHeader } from "../../Common/PageHeader"
 import { ChipFilter } from "../../Common/SortAndFilters/ChipFilterSection"
 import { RangeFilter } from "../../Common/SortAndFilters/RangeFilterSection"
@@ -19,14 +19,14 @@ import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { KeycardMarketItem } from "./KeycardMarketItem"
 
 const sortOptions = [
-    { label: SortType.OldestFirst, value: SortType.OldestFirst },
-    { label: SortType.NewestFirst, value: SortType.NewestFirst },
-    { label: SortType.ExpiringFirst, value: SortType.ExpiringFirst },
-    { label: SortType.ExpiringReverse, value: SortType.ExpiringReverse },
-    { label: SortType.PriceLowest, value: SortType.PriceLowest },
-    { label: SortType.PriceHighest, value: SortType.PriceHighest },
-    { label: SortType.Alphabetical, value: SortType.Alphabetical },
-    { label: SortType.AlphabeticalReverse, value: SortType.AlphabeticalReverse },
+    { label: SortTypeLabel.OldestFirst, value: SortTypeLabel.OldestFirst },
+    { label: SortTypeLabel.NewestFirst, value: SortTypeLabel.NewestFirst },
+    { label: SortTypeLabel.ExpiringFirst, value: SortTypeLabel.ExpiringFirst },
+    { label: SortTypeLabel.ExpiringReverse, value: SortTypeLabel.ExpiringReverse },
+    { label: SortTypeLabel.PriceLowest, value: SortTypeLabel.PriceLowest },
+    { label: SortTypeLabel.PriceHighest, value: SortTypeLabel.PriceHighest },
+    { label: SortTypeLabel.Alphabetical, value: SortTypeLabel.Alphabetical },
+    { label: SortTypeLabel.AlphabeticalReverse, value: SortTypeLabel.AlphabeticalReverse },
 ]
 
 export const KeycardsMarket = () => {
@@ -49,7 +49,7 @@ export const KeycardsMarket = () => {
 
     // Filters and sorts
     const [search, setSearch] = useState("")
-    const [sort, setSort] = useState<string>(query.get("sort") || SortType.NewestFirst)
+    const [sort, setSort] = useState<string>(query.get("sort") || SortTypeLabel.NewestFirst)
     const [status, setStatus] = useState<string[]>((query.get("statuses") || undefined)?.split("||") || [])
     const [ownedBy, setOwnedBy] = useState<string[]>((query.get("ownedBy") || undefined)?.split("||") || [])
     const [price, setPrice] = useState<(number | undefined)[]>(
@@ -94,11 +94,16 @@ export const KeycardsMarket = () => {
 
             let sortDir = "asc"
             let sortBy = "alphabetical"
-            if (sort === SortType.AlphabeticalReverse || sort === SortType.NewestFirst || sort === SortType.ExpiringReverse || sort === SortType.PriceHighest)
+            if (
+                sort === SortTypeLabel.AlphabeticalReverse ||
+                sort === SortTypeLabel.NewestFirst ||
+                sort === SortTypeLabel.ExpiringReverse ||
+                sort === SortTypeLabel.PriceHighest
+            )
                 sortDir = "desc"
-            if (sort === SortType.OldestFirst || sort === SortType.NewestFirst) sortBy = "created_at"
-            if (sort === SortType.ExpiringFirst || sort === SortType.ExpiringReverse) sortBy = "time"
-            if (sort === SortType.PriceLowest || sort === SortType.PriceHighest) sortBy = "price"
+            if (sort === SortTypeLabel.OldestFirst || sort === SortTypeLabel.NewestFirst) sortBy = "created_at"
+            if (sort === SortTypeLabel.ExpiringFirst || sort === SortTypeLabel.ExpiringReverse) sortBy = "time"
+            if (sort === SortTypeLabel.PriceLowest || sort === SortTypeLabel.PriceHighest) sortBy = "price"
 
             const [min_price, max_price] = price
 

@@ -130,19 +130,18 @@ export const MechTitle = ({
                             height: editing ? "unset" : 0,
                             "& .MuiInput-root": {
                                 p: 0,
-                                fontSize: "1.3rem",
+                                fontSize: "1.5rem",
                                 color: "#FFFFFF",
                             },
                             "& .MuiInputBase-input": {
                                 p: 0,
                                 display: "inline",
-                                fontFamily: fonts.nostromoBold,
                                 wordBreak: "break-word",
                             },
                             ".MuiInputBase-input:focus": {
                                 px: "1rem",
                                 py: ".2rem",
-                                fontSize: "1.5rem",
+                                fontSize: "1.7rem",
                                 color: "#FFFFFF",
                                 border: `#FFFFFF99 1.5px dashed`,
                                 borderRadius: 0.5,
@@ -176,9 +175,9 @@ export const MechTitle = ({
                     {!editing && (
                         <Typography
                             sx={{
-                                fontSize: "1.3rem",
+                                fontSize: "1.5rem",
                                 color: !name ? colors.grey : "#FFFFFF",
-                                fontFamily: fonts.nostromoBlack,
+                                fontWeight: "fontWeightBold",
                                 display: "-webkit-box",
                                 overflow: "hidden",
                                 overflowWrap: "anywhere",
@@ -187,7 +186,7 @@ export const MechTitle = ({
                                 WebkitBoxOrient: "vertical",
                             }}
                         >
-                            {name || "unnamed"}
+                            {name || "Unnamed"}
                         </Typography>
                     )}
                 </Stack>

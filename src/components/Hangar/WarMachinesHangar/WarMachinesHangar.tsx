@@ -10,7 +10,7 @@ import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { MechBasic, MechDetails } from "../../../types"
-import { SortType } from "../../../types/marketplace"
+import { SortTypeLabel } from "../../../types/marketplace"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { DeployModal } from "./DeployQueue/DeployModal"
 import { LeaveModal } from "./LeaveQueue/LeaveModal"
@@ -20,8 +20,8 @@ import { MechViewer } from "./MechViewer/MechViewer"
 import { WarMachineHangarItem, WarMachineHangarItemLoadingSkeleton } from "./WarMachineHangarItem/WarMachineHangarItem"
 
 const sortOptions = [
-    { label: SortType.MechQueueAsc, value: SortType.MechQueueAsc },
-    { label: SortType.MechQueueDesc, value: SortType.MechQueueDesc },
+    { label: SortTypeLabel.MechQueueAsc, value: SortTypeLabel.MechQueueAsc },
+    { label: SortTypeLabel.MechQueueDesc, value: SortTypeLabel.MechQueueDesc },
 ]
 
 interface GetMechsRequest {
@@ -104,7 +104,7 @@ const WarMachinesHangarInner = ({
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
 
-    const [sort, setSort] = useState<string>(query.get("sort") || SortType.MechQueueAsc)
+    const [sort, setSort] = useState<string>(query.get("sort") || SortTypeLabel.MechQueueAsc)
     const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({
         pageSize: parseString(query.get("pageSize"), 5),
         page: parseString(query.get("page"), 1),
@@ -115,7 +115,7 @@ const WarMachinesHangarInner = ({
             setIsLoading(true)
 
             let sortDir = "asc"
-            if (sort === SortType.MechQueueDesc) sortDir = "desc"
+            if (sort === SortTypeLabel.MechQueueDesc) sortDir = "desc"
 
             const resp = await send<GetAssetsResponse, GetMechsRequest>(GameServerKeys.GetMechs, {
                 queue_sort: sortDir,
