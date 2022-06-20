@@ -18,6 +18,7 @@ import { SuccessModal } from "../../Common/SuccessModal"
 import { AssetToSell } from "./AssetToSell/AssetToSell"
 import { ItemTypeSelect } from "./ItemTypeSelect"
 import { PricingInput } from "./PricingInput"
+import { ListingDurationHoursEnum, ListingDurationSelect } from "./ListingDurationSelect"
 
 export interface AssetToSellStruct {
     id: string
@@ -45,7 +46,7 @@ export const SellItemInner = ({ toggleReset }: { toggleReset: () => void }) => {
     const theme = useTheme()
     const history = useHistory()
     const location = useLocation()
-    const query = useUrlQuery()
+    const [query] = useUrlQuery()
     const { send } = useGameServerCommandsFaction("/faction_commander")
 
     // Submitting
@@ -57,8 +58,10 @@ export const SellItemInner = ({ toggleReset }: { toggleReset: () => void }) => {
     const [successPayload, setSuccessPayload] = useState<MarketplaceBuyAuctionItem>()
 
     // Form states
-    const [itemType, setItemType] = useState<ItemType | undefined>(query.get("item-type") as ItemType)
-    const [assetToSell, setAssetToSell] = useState<AssetToSellStruct | undefined>({ id: query.get("asset-id") || "" })
+    const [itemType, setItemType] = useState<ItemType | undefined>(query.get("itemType") as ItemType)
+    const [assetToSell, setAssetToSell] = useState<AssetToSellStruct | undefined>({ id: query.get("assetID") || "" })
+    const [listingDurationHours, setListingDurationHours] = useState<ListingDurationHoursEnum>(ListingDurationHoursEnum.OneDay)
+
     // Buyout
     const [buyoutPrice, setBuyoutPrice] = useState<number>()
     // Auction
@@ -76,8 +79,13 @@ export const SellItemInner = ({ toggleReset }: { toggleReset: () => void }) => {
         let fee = 10
         if (reservePrice) fee += 5
         if (buyoutPrice && !dropRate && itemType !== ItemType.Keycards) fee += 5
+        if (listingDurationHours !== ListingDurationHoursEnum.HalfDay && listingDurationHours !== ListingDurationHoursEnum.OneDay) {
+            //listing duration from hours to days minus 1 day (to only account for additional days listed) * 5 sups
+            const listingDurationFee = (listingDurationHours / 24 - 1) * 5
+            fee += listingDurationFee
+        }
         setListingFee(fee)
-    }, [buyoutPrice, reservePrice, dropRate, itemType])
+    }, [buyoutPrice, reservePrice, dropRate, itemType, listingDurationHours])
 
     // Form validators
     const checkBuyoutPriceError = useCallback((): string | undefined => {
@@ -135,6 +143,7 @@ export const SellItemInner = ({ toggleReset }: { toggleReset: () => void }) => {
                     dutch_auction_drop_rate: !isKeycard && dropRate ? dropRate.toString() : undefined,
                     auction_current_price: !isKeycard && startingPrice ? startingPrice.toString() : undefined,
                     auction_reserved_price: !isKeycard && reservePrice ? reservePrice.toString() : undefined,
+                    listing_duration_hours: listingDurationHours,
                 },
             )
 
@@ -149,7 +158,19 @@ export const SellItemInner = ({ toggleReset }: { toggleReset: () => void }) => {
         } finally {
             toggleSubmitting(false)
         }
-    }, [assetToSell?.id, buyoutPrice, dropRate, isFormReady, itemType, reservePrice, send, startingPrice, toggleSubmitting, toggleConfirmModalOpen])
+    }, [
+        assetToSell?.id,
+        buyoutPrice,
+        dropRate,
+        isFormReady,
+        listingDurationHours,
+        itemType,
+        reservePrice,
+        send,
+        startingPrice,
+        toggleSubmitting,
+        toggleConfirmModalOpen,
+    ])
 
     return (
         <>
@@ -234,6 +255,7 @@ export const SellItemInner = ({ toggleReset }: { toggleReset: () => void }) => {
                                 {/* Asset to sell */}
                                 <AssetToSell itemType={itemType} assetToSell={assetToSell} setAssetToSell={setAssetToSell} />
 
+                                <ListingDurationSelect listingDurationHours={listingDurationHours} setListingDurationHours={setListingDurationHours} />
                                 {/* Pricing inputs */}
                                 {itemType !== ItemType.Keycards && (
                                     <PricingInput
@@ -364,7 +386,10 @@ export const SellItemInner = ({ toggleReset }: { toggleReset: () => void }) => {
                 <SuccessModal
                     title="ITEM LISTED!"
                     leftLabel="SELL ANOTHER"
-                    onLeftButton={toggleReset}
+                    onLeftButton={() => {
+                        history.replace(`/marketplace/sell${location.hash}`)
+                        toggleReset()
+                    }}
                     rightLabel="VIEW LISTING"
                     onRightButton={() => {
                         let subPath = ""

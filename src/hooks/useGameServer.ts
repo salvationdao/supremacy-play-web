@@ -24,21 +24,27 @@ export const useGameServerCommands = (URI: string) => {
 // ******************
 // ** Subscription **
 // ******************
-export function useGameServerSubscriptionUser<T = DataType>({ URI, key, args, ready = true }: SubProps, callback?: (payload: T) => void) {
+export function useGameServerSubscriptionUser<T = DataType>({ URI, key, args, batchURI, ready = true }: SubProps, callback?: (payload: T) => void) {
     const { userID } = useAuth()
-    return useSubscription({ URI: `/user/${userID}${URI}`, key, host: GAME_SERVER_HOSTNAME, args, ready: !!userID && ready }, callback)
+    return useSubscription({ URI: `/user/${userID}${URI}`, key, host: GAME_SERVER_HOSTNAME, batchURI: batchURI, args, ready: !!userID && ready }, callback)
 }
 
-export function useGameServerSubscriptionFaction<T = DataType>({ URI, key, args, ready = true }: SubProps, callback?: (payload: T) => void) {
+export function useGameServerSubscriptionFaction<T = DataType>({ URI, key, args, batchURI, ready = true }: SubProps, callback?: (payload: T) => void) {
     const { userID, factionID } = useAuth()
-    return useSubscription({ URI: `/faction/${factionID}${URI}`, key, host: GAME_SERVER_HOSTNAME, args, ready: !!userID && !!factionID && ready }, callback)
+    return useSubscription(
+        { URI: `/faction/${factionID}${URI}`, key, host: GAME_SERVER_HOSTNAME, batchURI: batchURI, args, ready: !!userID && !!factionID && ready },
+        callback,
+    )
 }
 
-export function useGameServerSubscriptionAbilityFaction<T = DataType>({ URI, key, args, ready = true }: SubProps, callback?: (payload: T) => void) {
+export function useGameServerSubscriptionAbilityFaction<T = DataType>({ URI, key, args, batchURI, ready = true }: SubProps, callback?: (payload: T) => void) {
     const { userID, factionID } = useAuth()
-    return useSubscription({ URI: `/ability/${factionID}${URI}`, key, host: GAME_SERVER_HOSTNAME, args, ready: !!userID && !!factionID && ready }, callback)
+    return useSubscription(
+        { URI: `/ability/${factionID}${URI}`, key, host: GAME_SERVER_HOSTNAME, batchURI: batchURI, args, ready: !!userID && !!factionID && ready },
+        callback,
+    )
 }
 
-export function useGameServerSubscription<T = DataType>({ URI, key, args, ready = true }: SubProps, callback?: (payload: T) => void) {
-    return useSubscription({ URI: `${URI}`, key, host: GAME_SERVER_HOSTNAME, args, ready }, callback)
+export function useGameServerSubscription<T = DataType>({ URI, key, args, batchURI, ready = true }: SubProps, callback?: (payload: T) => void) {
+    return useSubscription({ URI: `${URI}`, key, host: GAME_SERVER_HOSTNAME, batchURI: batchURI, args, ready }, callback)
 }

@@ -51,7 +51,7 @@ export const MechThumbnail = ({ mech, mechDetails, smallSize }: { mech: MechBasi
             <Box
                 sx={{
                     height: "100%",
-                    width: smallSize ? "9rem" : "16.8rem",
+                    width: smallSize ? "8rem" : "16.8rem",
                     overflow: "hidden",
                     background: `url(${imageUrl})`,
                     backgroundRepeat: "no-repeat",

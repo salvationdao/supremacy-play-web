@@ -92,12 +92,13 @@ export const QuickDeployItem = ({ mech, queueFeed }: QuickDeployItemProps) => {
     return (
         <Stack
             direction="row"
-            spacing="1.5rem"
+            spacing="1.2rem"
             alignItems="flex-start"
             sx={{
                 position: "relative",
                 py: ".7rem",
-                px: ".5rem",
+                pl: ".5rem",
+                pr: ".7rem",
             }}
         >
             <Stack sx={{ height: "8rem" }}>
@@ -149,7 +150,7 @@ export const QuickDeployItem = ({ mech, queueFeed }: QuickDeployItemProps) => {
                                 },
                                 sx: { position: "relative" },
                             }}
-                            sx={{ px: "1.6rem", pt: 0, pb: ".1rem", color: theme.factionTheme.primary }}
+                            sx={{ px: "1rem", pt: 0, pb: ".1rem", color: theme.factionTheme.primary }}
                             onClick={() => {
                                 if (mechState === MechStatusEnum.Idle) {
                                     onDeployQueue()
@@ -163,7 +164,7 @@ export const QuickDeployItem = ({ mech, queueFeed }: QuickDeployItemProps) => {
                                     variant="caption"
                                     sx={{
                                         color: mechState === MechStatusEnum.Idle ? "#FFFFFF" : colors.yellow,
-                                        fontSize: "1.1rem",
+                                        fontSize: "1.15rem",
                                         fontFamily: fonts.nostromoBlack,
                                     }}
                                 >
@@ -172,13 +173,11 @@ export const QuickDeployItem = ({ mech, queueFeed }: QuickDeployItemProps) => {
 
                                 {mechState === MechStatusEnum.Idle && queueFeed?.queue_cost && (
                                     <Stack direction="row" alignItems="center">
-                                        <SvgSupToken size="1.3rem" />
+                                        <SvgSupToken size="1.6rem" />
                                         <Typography
-                                            variant="caption"
                                             sx={{
                                                 color: mechState === MechStatusEnum.Idle ? "#FFFFFF" : colors.yellow,
-                                                fontSize: "1.1rem",
-                                                fontFamily: fonts.nostromoBold,
+                                                fontWeight: "fontWeightBold",
                                             }}
                                         >
                                             {supFormatter(queueFeed.queue_cost, 2)}

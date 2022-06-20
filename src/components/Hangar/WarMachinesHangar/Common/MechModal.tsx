@@ -26,6 +26,7 @@ export const MechModal = ({
     const rarityDeets = useMemo(() => getRarityDeets(tier || ""), [tier])
     const skin = mechDetails ? mechDetails.chassis_skin || mechDetails.default_chassis_skin : undefined
     const imageUrl = skin?.image_url || mechDetails.image_url
+    const cardAnimationUrl = skin?.card_animation_url || mechDetails.card_animation_url
 
     return (
         <Modal open={open} onClose={onClose} sx={{ zIndex: siteZIndex.Modal }}>
@@ -77,15 +78,21 @@ export const MechModal = ({
                             }}
                         >
                             <Box
+                                component="video"
                                 sx={{
                                     width: "100%",
                                     height: "19rem",
-                                    backgroundImage: `url(${imageUrl})`,
-                                    backgroundRepeat: "no-repeat",
-                                    backgroundPosition: "top center",
-                                    backgroundSize: "contain",
+                                    overflow: "hidden",
+                                    objectFit: "contain",
+                                    objectPosition: "center",
                                 }}
-                            />
+                                loop
+                                muted
+                                autoPlay
+                                poster={imageUrl}
+                            >
+                                <source src={cardAnimationUrl} type="video/mp4" />
+                            </Box>
                         </Box>
 
                         <Box>

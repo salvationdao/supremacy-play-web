@@ -4,11 +4,13 @@ import { useLocation } from "react-router-dom"
 import { ClipThing, FancyButton } from "../.."
 import { PASSPORT_WEB } from "../../../constants"
 import { useTheme } from "../../../containers/theme"
-import { usePagination } from "../../../hooks"
+import { parseString } from "../../../helpers"
+import { usePagination, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { MechBasic, MechDetails } from "../../../types"
+import { SortTypeLabel } from "../../../types/marketplace"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { DeployModal } from "./DeployQueue/DeployModal"
 import { LeaveModal } from "./LeaveQueue/LeaveModal"
@@ -17,7 +19,13 @@ import { RentalModal } from "./MechRental/RentalModal"
 import { MechViewer } from "./MechViewer/MechViewer"
 import { WarMachineHangarItem, WarMachineHangarItemLoadingSkeleton } from "./WarMachineHangarItem/WarMachineHangarItem"
 
+const sortOptions = [
+    { label: SortTypeLabel.MechQueueAsc, value: SortTypeLabel.MechQueueAsc },
+    { label: SortTypeLabel.MechQueueDesc, value: SortTypeLabel.MechQueueDesc },
+]
+
 interface GetMechsRequest {
+    queue_sort: string
     page: number
     page_size: number
     include_market_listed: boolean
@@ -89,20 +97,37 @@ const WarMachinesHangarInner = ({
     setRentalMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
 }) => {
     const location = useLocation()
+    const [query, updateQuery] = useUrlQuery()
     const { send } = useGameServerCommandsUser("/user_commander")
     const theme = useTheme()
     const [mechs, setMechs] = useState<MechBasic[]>([])
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
-    const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, setPageSize } = usePagination({ pageSize: 5, page: 1 })
+
+    const [sort, setSort] = useState<string>(query.get("sort") || SortTypeLabel.MechQueueAsc)
+    const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({
+        pageSize: parseString(query.get("pageSize"), 5),
+        page: parseString(query.get("page"), 1),
+    })
 
     const getItems = useCallback(async () => {
         try {
             setIsLoading(true)
+
+            let sortDir = "asc"
+            if (sort === SortTypeLabel.MechQueueDesc) sortDir = "desc"
+
             const resp = await send<GetAssetsResponse, GetMechsRequest>(GameServerKeys.GetMechs, {
+                queue_sort: sortDir,
                 page,
                 page_size: pageSize,
                 include_market_listed: true,
+            })
+
+            updateQuery({
+                sort,
+                page: page.toString(),
+                pageSize: pageSize.toString(),
             })
 
             if (!resp) return
@@ -115,7 +140,7 @@ const WarMachinesHangarInner = ({
         } finally {
             setIsLoading(false)
         }
-    }, [send, page, pageSize, setTotalItems])
+    }, [send, page, pageSize, updateQuery, sort, setTotalItems])
 
     useEffect(() => {
         getItems()
@@ -124,7 +149,7 @@ const WarMachinesHangarInner = ({
     const content = useMemo(() => {
         return (
             <Box sx={{ direction: "ltr", height: 0 }}>
-                <Stack spacing="3.2rem" sx={{ px: "1rem", py: "1.5rem" }}>
+                <Stack spacing="2rem" sx={{ px: "1rem", py: "1.5rem" }}>
                     {mechs.map((mech, i) => (
                         <WarMachineHangarItem
                             key={`hangar-mech-${mech.id}`}
@@ -165,9 +190,12 @@ const WarMachinesHangarInner = ({
                         countItems={mechs?.length}
                         totalItems={totalItems}
                         pageSize={pageSize}
-                        setPageSize={setPageSize}
+                        changePageSize={changePageSize}
                         changePage={changePage}
                         manualRefresh={getItems}
+                        sortOptions={sortOptions}
+                        selectedSort={sort}
+                        onSetSort={setSort}
                     />
 
                     <Box

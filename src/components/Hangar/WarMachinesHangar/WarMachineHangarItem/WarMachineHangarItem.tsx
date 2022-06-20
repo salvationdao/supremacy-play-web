@@ -67,9 +67,11 @@ export const WarMachineHangarItem = ({
 
                 if (!resp || !mechDetails) return
                 setMechDetails({ ...mechDetails, name: newName })
-                newSnackbarMessage("Successfully updated war machines name.", "success")
-            } catch (e) {
-                newSnackbarMessage("Failed to update war machine name. ", "error")
+                newSnackbarMessage("Successfully updated war machine name.", "success")
+            } catch (err) {
+                const message = typeof err === "string" ? err : "Failed to update war machine name."
+                newSnackbarMessage(message, "error")
+                console.error(err)
             }
         },
         [setMechDetails, mechDetails, mech.id, userSend, newSnackbarMessage],
@@ -146,7 +148,6 @@ const WarMachineHangarItemInner = ({
                     topRight: true,
                     bottomLeft: true,
                 }}
-                opacity={isSelected ? 1 : 0.7}
                 backgroundColor={theme.factionTheme.background}
             >
                 <Stack direction="row" alignItems="center" spacing="1.2rem" sx={{ height: "23rem", px: "1.8rem", pt: "2.6rem", pb: "1.4rem" }}>
