@@ -7,6 +7,7 @@ import { GameServerKeys } from "../../../../keys"
 import { fonts } from "../../../../theme/theme"
 import { Keycard, MechDetails, MysteryCrate } from "../../../../types"
 import { ItemType } from "../../../../types/marketplace"
+import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
 import { MechLoadoutIcons } from "../../WarMachinesMarket/WarMachineMarketItem"
 import { AssetToSellStruct } from "../SellItem"
 
@@ -135,25 +136,12 @@ export const AssetToSellItem = ({
             onClick={onClick}
         >
             <Box
-                component="video"
                 sx={{
                     height: orientation === "horizontal" ? "7rem" : "28rem",
                     width: orientation === "horizontal" ? "7rem" : "100%",
-                    overflow: "hidden",
-                    objectFit: "contain",
-                    objectPosition: "center",
-                    borderRadius: 1,
-                    border: "#FFFFFF18 2px solid",
-                    boxShadow: "inset 0 0 12px 6px #00000040",
-                    background: `radial-gradient(#FFFFFF20 10px, #00000080)`,
                 }}
-                loop
-                muted
-                autoPlay
-                poster={playVideo ? imageUrl : avatarUrl}
             >
-                {playVideo && <source src={videoUrl} type="video/mp4" />}
-                {playVideo && videoUrl2 && <source src={videoUrl2} type="video/mp4" />}
+                <MediaPreview imageUrl={playVideo ? imageUrl : avatarUrl} {...{ videoUrls: playVideo ? [videoUrl, videoUrl2] : [] }} />
             </Box>
 
             <Stack spacing=".3rem">

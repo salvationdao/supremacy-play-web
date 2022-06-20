@@ -1,8 +1,8 @@
-import { Box, CircularProgress, IconButton, Modal, Stack } from "@mui/material"
+import { Box, CircularProgress, Stack } from "@mui/material"
 import { useEffect, useState } from "react"
-import { SvgClose } from "../../../../assets"
 import { useToggle } from "../../../../hooks"
-import { siteZIndex } from "../../../../theme/theme"
+import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
+import { MediaPreviewModal } from "../../../Common/MediaPreview/MediaPreviewModal"
 
 export interface MarketMedia {
     imageUrl?: string
@@ -39,7 +39,7 @@ export const ImagesPreview = ({ media, primaryColor }: { media: MarketMedia[]; p
                     onClick={() => togglePreviewModalOpen(true)}
                 >
                     {activeImageUrl ? (
-                        <MainPreview imageUrl={activeImageUrl} videoUrl={activeVideoUrl} />
+                        <MediaPreview imageUrl={activeImageUrl} videoUrls={activeVideoUrl ? [activeVideoUrl] : undefined} showBorder />
                     ) : (
                         <Stack
                             alignItems="center"
@@ -81,38 +81,14 @@ export const ImagesPreview = ({ media, primaryColor }: { media: MarketMedia[]; p
                 </Box>
             </Stack>
 
-            {previewModalOpen && <PreviewModal imageUrl={activeImageUrl} videoUrl={activeVideoUrl} onClose={() => togglePreviewModalOpen(false)} />}
+            {previewModalOpen && (
+                <MediaPreviewModal
+                    imageUrl={activeImageUrl}
+                    videoUrls={activeVideoUrl ? [activeVideoUrl] : undefined}
+                    onClose={() => togglePreviewModalOpen(false)}
+                />
+            )}
         </>
-    )
-}
-
-const MainPreview = ({ imageUrl, videoUrl }: { imageUrl?: string; videoUrl?: string }) => {
-    const styles = {
-        height: "100%",
-        width: "100%",
-        objectFit: "contain",
-        objectPosition: "center",
-        border: "#FFFFFF18 2px solid",
-        boxShadow: "inset 0 0 12px 6px #00000040",
-        background: `radial-gradient(#FFFFFF20 10px, #00000080)`,
-    }
-
-    if (!videoUrl) {
-        return (
-            <Box
-                component="img"
-                src={imageUrl}
-                sx={{
-                    ...styles,
-                }}
-            />
-        )
-    }
-
-    return (
-        <Box key={imageUrl} component="video" sx={{ ...styles }} loop muted autoPlay poster={`${imageUrl}`}>
-            <source src={videoUrl} type="video/mp4" />
-        </Box>
     )
 }
 
@@ -148,33 +124,5 @@ const SmallImageThumbnail = ({
                 setActiveVideoUrl(videoUrl)
             }}
         />
-    )
-}
-
-const PreviewModal = ({ imageUrl, videoUrl, onClose }: { imageUrl?: string; videoUrl?: string; onClose: () => void }) => {
-    return (
-        <Modal open onClose={onClose} sx={{ zIndex: siteZIndex.Modal }}>
-            <Box
-                sx={{
-                    position: "absolute",
-                    top: "50%",
-                    left: "50%",
-                    transform: "translate(-50%, -50%)",
-                    width: "80vw",
-                    height: "90vh",
-                    boxShadow: 6,
-                    outline: "none",
-                    backgroundColor: "#000000",
-                }}
-            >
-                <Box sx={{ position: "relative", height: "100%" }}>
-                    <MainPreview imageUrl={imageUrl} videoUrl={videoUrl} />
-
-                    <IconButton size="small" onClick={onClose} sx={{ position: "absolute", top: ".5rem", right: ".5rem" }}>
-                        <SvgClose size="3rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
-                    </IconButton>
-                </Box>
-            </Box>
-        </Modal>
     )
 }
