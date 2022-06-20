@@ -11,6 +11,7 @@ export enum ListingDurationHoursEnum {
     "OneDay" = 24,
     "ThreeDays" = 72,
     "OneWeek" = 168,
+    "OneMonth" = 720,
 }
 
 export const listingDurations: {
@@ -21,6 +22,7 @@ export const listingDurations: {
     { label: "1 Day", value: ListingDurationHoursEnum.OneDay },
     { label: "3 Days", value: ListingDurationHoursEnum.ThreeDays },
     { label: "7 Days", value: ListingDurationHoursEnum.OneWeek },
+    { label: "30 Days", value: ListingDurationHoursEnum.OneMonth },
 ]
 
 export const ListingDurationSelect = ({
