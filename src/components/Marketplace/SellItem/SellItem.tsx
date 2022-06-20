@@ -60,7 +60,7 @@ export const SellItemInner = ({ toggleReset }: { toggleReset: () => void }) => {
     // Form states
     const [itemType, setItemType] = useState<ItemType | undefined>(query.get("itemType") as ItemType)
     const [assetToSell, setAssetToSell] = useState<AssetToSellStruct | undefined>({ id: query.get("assetID") || "" })
-    const [listingDuration, setListingDuration] = useState<ListingDurationHoursEnum>(ListingDurationHoursEnum.OneDay)
+    const [listingDurationHours, setListingDurationHours] = useState<ListingDurationHoursEnum>(ListingDurationHoursEnum.OneDay)
 
     // Buyout
     const [buyoutPrice, setBuyoutPrice] = useState<number>()
@@ -79,13 +79,13 @@ export const SellItemInner = ({ toggleReset }: { toggleReset: () => void }) => {
         let fee = 10
         if (reservePrice) fee += 5
         if (buyoutPrice && !dropRate && itemType !== ItemType.Keycards) fee += 5
-        if (listingDuration !== ListingDurationHoursEnum.HalfDay && listingDuration !== ListingDurationHoursEnum.OneDay) {
+        if (listingDurationHours !== ListingDurationHoursEnum.HalfDay && listingDurationHours !== ListingDurationHoursEnum.OneDay) {
             //listing duration from hours to days minus 1 day (to only account for additional days listed) * 5 sups
-            const listingDurationFee = (listingDuration / 24 - 1) * 5
+            const listingDurationFee = (listingDurationHours / 24 - 1) * 5
             fee += listingDurationFee
         }
         setListingFee(fee)
-    }, [buyoutPrice, reservePrice, dropRate, itemType, listingDuration])
+    }, [buyoutPrice, reservePrice, dropRate, itemType, listingDurationHours])
 
     // Form validators
     const checkBuyoutPriceError = useCallback((): string | undefined => {
@@ -143,7 +143,7 @@ export const SellItemInner = ({ toggleReset }: { toggleReset: () => void }) => {
                     dutch_auction_drop_rate: !isKeycard && dropRate ? dropRate.toString() : undefined,
                     auction_current_price: !isKeycard && startingPrice ? startingPrice.toString() : undefined,
                     auction_reserved_price: !isKeycard && reservePrice ? reservePrice.toString() : undefined,
-                    listing_duration: listingDuration,
+                    listing_duration_hours: listingDurationHours,
                 },
             )
 
@@ -163,7 +163,7 @@ export const SellItemInner = ({ toggleReset }: { toggleReset: () => void }) => {
         buyoutPrice,
         dropRate,
         isFormReady,
-        listingDuration,
+        listingDurationHours,
         itemType,
         reservePrice,
         send,
@@ -255,7 +255,7 @@ export const SellItemInner = ({ toggleReset }: { toggleReset: () => void }) => {
                                 {/* Asset to sell */}
                                 <AssetToSell itemType={itemType} assetToSell={assetToSell} setAssetToSell={setAssetToSell} />
 
-                                <ListingDurationSelect listingDuration={listingDuration} setListingDuration={setListingDuration} />
+                                <ListingDurationSelect listingDurationHours={listingDurationHours} setListingDurationHours={setListingDurationHours} />
                                 {/* Pricing inputs */}
                                 {itemType !== ItemType.Keycards && (
                                     <PricingInput

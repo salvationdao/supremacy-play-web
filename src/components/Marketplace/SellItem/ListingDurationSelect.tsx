@@ -26,15 +26,15 @@ export const listingDurations: {
 ]
 
 export const ListingDurationSelect = ({
-    listingDuration,
-    setListingDuration,
+    listingDurationHours,
+    setListingDurationHours,
 }: {
-    listingDuration: ListingDurationHoursEnum
-    setListingDuration: React.Dispatch<React.SetStateAction<ListingDurationHoursEnum>>
+    listingDurationHours: ListingDurationHoursEnum
+    setListingDurationHours: React.Dispatch<React.SetStateAction<ListingDurationHoursEnum>>
 }) => {
     const theme = useTheme()
 
-    const listingDurationLabel = useMemo(() => listingDurations.find((i) => i.value === listingDuration)?.label, [listingDuration])
+    const listingDurationLabel = useMemo(() => listingDurations.find((i) => i.value === listingDurationHours)?.label, [listingDurationHours])
 
     const primaryColor = theme.factionTheme.primary
     const secondaryColor = theme.factionTheme.secondary
@@ -71,7 +71,7 @@ export const ListingDurationSelect = ({
                             },
                         }}
                         displayEmpty
-                        value={listingDuration}
+                        value={listingDurationHours}
                         MenuProps={{
                             variant: "menu",
                             sx: {
@@ -108,7 +108,7 @@ export const ListingDurationSelect = ({
                                     key={x.value + i}
                                     value={x.value}
                                     onClick={() => {
-                                        setListingDuration(x.value)
+                                        setListingDurationHours(x.value)
                                     }}
                                     sx={{ "&:hover": { backgroundColor: "#FFFFFF20" } }}
                                 >
