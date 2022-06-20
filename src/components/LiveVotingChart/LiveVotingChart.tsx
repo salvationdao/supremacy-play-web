@@ -1,12 +1,13 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { MoveableResizable, MoveableResizableConfig } from ".."
+import { MoveableResizable } from ".."
 import { useOverlayToggles, useSupremacy } from "../../containers"
 import { parseString } from "../../helpers"
 import { useToggle } from "../../hooks"
 import { pulseEffect } from "../../theme/keyframes"
 import { colors } from "../../theme/theme"
 import { BattleStats } from "../BattleStats/BattleStats"
+import { MoveableResizableConfig } from "../Common/MoveableResizable/MoveableResizableContainer"
 import { LiveGraph } from "./LiveGraph"
 
 const DefaultMaxLiveVotingDataLength = 100

@@ -1,10 +1,11 @@
 import { Box, Fade, Stack, Tab } from "@mui/material"
 import { TabProps } from "@mui/material/Tab"
 import { useMemo } from "react"
-import { BattleAbilityItem, FactionAbilities, MoveableResizable, MoveableResizableConfig } from ".."
+import { BattleAbilityItem, FactionAbilities, MoveableResizable } from ".."
 import { BribeStageResponse, useAuth, useGame } from "../../containers"
 import { useTheme } from "../../containers/theme"
 import { colors } from "../../theme/theme"
+import { MoveableResizableConfig } from "../Common/MoveableResizable/MoveableResizableContainer"
 
 export const VotingSystem = () => {
     const { bribeStage } = useGame()

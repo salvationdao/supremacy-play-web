@@ -1,18 +1,19 @@
 import { Stack, IconButton } from "@mui/material"
 import { useLocation } from "react-router"
 import { SvgRobot } from "../../assets"
-import { useSupremacy } from "../../containers"
+import { useAuth, useSupremacy } from "../../containers"
 import { useTheme } from "../../containers/theme"
 import { pulseEffect } from "../../theme/keyframes"
 
 export const QuickDeployButton = () => {
     const theme = useTheme()
+    const { userID } = useAuth()
     const { mechDeployModalOpen, toggleMechDeployModalOpen } = useSupremacy()
     const location = useLocation()
 
     const inBattleArena = location.pathname === "/"
 
-    if (!inBattleArena) return null
+    if (!inBattleArena || !userID) return null
 
     return (
         <Stack
