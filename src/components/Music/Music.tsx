@@ -169,6 +169,7 @@ const Mech = ({ warMachine, setDeathCount }: MechProps) => {
             URI: `/public/mech/${participantID}`,
             key: GameServerKeys.SubMechLiveStats,
             ready: !!participantID,
+            batchURI: "/public/mech",
         },
         (payload) => {
             if (payload?.health !== undefined) {

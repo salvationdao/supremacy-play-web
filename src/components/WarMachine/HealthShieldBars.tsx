@@ -30,6 +30,7 @@ export const HealthShieldBars = ({
             URI: `/public/mech/${participantID}`,
             key: GameServerKeys.SubMechLiveStats,
             ready: !!participantID,
+            batchURI: "/public/mech",
         },
         (payload) => {
             if (payload?.health !== undefined) {
