@@ -29,10 +29,8 @@ export interface MoveableResizableConfig {
     minHeight?: number
     maxWidth?: number
     maxHeight?: number
-    // Callbacks
-    onResizeCallback?: (width: number, height: number) => void
-    onHideCallback?: () => void
     // Others
+    onHideCallback?: () => void
     infoTooltipText?: string
 }
 
@@ -43,8 +41,8 @@ export const MoveableResizableContainer = createContainer((initialState: Moveabl
 
         defaultPosX = 0,
         defaultPosY = 0,
-        defaultWidth = 50,
-        defaultHeight = 50,
+        defaultWidth: defaultW = 50,
+        defaultHeight: defaultH = 50,
 
         minPosX,
         minPosY,
@@ -56,14 +54,14 @@ export const MoveableResizableContainer = createContainer((initialState: Moveabl
         maxWidth,
         maxHeight,
 
-        onResizeCallback,
         onHideCallback,
-
         infoTooltipText,
     } = initialState || defaultConfig
 
     const [curPosX, setCurPosX] = useState(parseString(localStorage.getItem(`${localStoragePrefix}PosX`), defaultPosX))
     const [curPosY, setCurPosY] = useState(parseString(localStorage.getItem(`${localStoragePrefix}PosY`), defaultPosY))
+    const [defaultWidth, setDefaultWidth] = useState(defaultW)
+    const [defaultHeight, setDefaultHeight] = useState(defaultH)
     const [curWidth, setCurWidth] = useState(parseString(localStorage.getItem(`${localStoragePrefix}SizeX`), defaultWidth))
     const [curHeight, setCurHeight] = useState(parseString(localStorage.getItem(`${localStoragePrefix}SizeY`), defaultHeight))
 
@@ -83,14 +81,12 @@ export const MoveableResizableContainer = createContainer((initialState: Moveabl
             setCurHeight(data.height)
             localStorage.setItem(`${localStoragePrefix}SizeX`, data.width.toString())
             localStorage.setItem(`${localStoragePrefix}SizeY`, data.height.toString())
-            onResizeCallback && onResizeCallback(data.width, data.height)
         },
-        [localStoragePrefix, onResizeCallback],
+        [localStoragePrefix],
     )
 
     return {
-        defaultWidth,
-        defaultHeight,
+        // From config
         minPosX,
         minPosY,
         maxPosX,
@@ -99,9 +95,14 @@ export const MoveableResizableContainer = createContainer((initialState: Moveabl
         minHeight,
         maxWidth,
         maxHeight,
-        onResizeCallback,
         onHideCallback,
         infoTooltipText,
+
+        // Own states
+        defaultWidth,
+        defaultHeight,
+        setDefaultWidth,
+        setDefaultHeight,
         curPosX,
         curPosY,
         curWidth,

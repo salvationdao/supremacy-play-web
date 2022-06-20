@@ -1,6 +1,6 @@
 import { Box, Fade } from "@mui/material"
-import { useEffect, useMemo, useState } from "react"
-import { ClipThing, MiniMapInside, ResizeBox, TargetTimerCountdown, TopIconSettings } from ".."
+import { useCallback, useEffect, useMemo, useState } from "react"
+import { ClipThing, MiniMapInside, MoveableResizable, ResizeBox, TargetTimerCountdown, TopIconSettings } from ".."
 import { SvgResizeXY } from "../../assets"
 import { MINI_MAP_DEFAULT_SIZE } from "../../constants"
 import { useDimension, useGame, useOverlayToggles, BribeStageResponse, WinnerAnnouncementResponse, useSnackbar, Severity } from "../../containers"
@@ -8,10 +8,10 @@ import { useToggle } from "../../hooks"
 import { colors, siteZIndex } from "../../theme/theme"
 import { Dimension, Map } from "../../types"
 import { useTheme } from "../../containers/theme"
+import { MoveableResizableConfig, useMoveableResizable } from "../Common/MoveableResizable/MoveableResizableContainer"
 
 export const MiniMap = () => {
     const theme = useTheme()
-    const { newSnackbarMessage } = useSnackbar()
     const { map, winner, setWinner, bribeStage } = useGame()
     const { isMapOpen, toggleIsMapOpen } = useOverlayToggles()
     const [isRender, toggleIsRender] = useToggle(isMapOpen)
@@ -39,6 +39,30 @@ export const MiniMap = () => {
         }
     }, [winner, bribeStage, toggleIsMapOpen])
 
+    // Map
+    const config: MoveableResizableConfig = useMemo(
+        () => ({
+            localStoragePrefix: "minimap",
+            // Defaults
+            defaultPosX: 10,
+            defaultPosY: 10,
+            defaultWidth: MINI_MAP_DEFAULT_SIZE,
+            defaultHeight: MINI_MAP_DEFAULT_SIZE,
+            // Position limits
+            minPosX: 10,
+            minPosY: 10,
+            // Size limits
+            minWidth: 300,
+            minHeight: 280,
+            maxWidth: 1000,
+            maxHeight: 1000,
+            // Others
+            infoTooltipText: "Quickly deploy your war machines to the battle queue.",
+            onHideCallback: () => toggleIsMapOpen(false),
+        }),
+        [toggleIsMapOpen],
+    )
+
     const mapRender = useMemo(
         () => (
             <MiniMapInner
@@ -48,18 +72,17 @@ export const MiniMap = () => {
                 bribeStage={bribeStage}
                 isMapOpen={isMapOpen && show}
                 toggleIsMapOpen={toggleIsMapOpen}
-                newSnackbarMessage={newSnackbarMessage}
                 factionColor={theme.factionTheme.primary}
             />
         ),
-        [map, winner, setWinner, bribeStage, isMapOpen, toggleIsMapOpen, newSnackbarMessage, theme, show],
+        [map, winner, setWinner, bribeStage, isMapOpen, toggleIsMapOpen, theme, show],
     )
 
     if (!isRender) return null
-    return <>{mapRender}</>
+    return <MoveableResizable config={config}>{mapRender}</MoveableResizable>
 }
 
-interface InnerProps {
+interface MiniMapInnerProps {
     map?: Map
     winner?: WinnerAnnouncementResponse
     setWinner: (winner?: WinnerAnnouncementResponse) => void
@@ -67,51 +90,41 @@ interface InnerProps {
     isMapOpen: boolean
     toggleIsMapOpen: (open?: boolean) => void
     factionColor: string
-    newSnackbarMessage: (message: string, severity?: Severity) => void
 }
 
-const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, toggleIsMapOpen, factionColor, newSnackbarMessage }: InnerProps) => {
-    const {
-        remToPxRatio,
-        gameUIDimensions: { width, height },
-    } = useDimension()
-    const [enlarged, toggleEnlarged] = useToggle()
-    const [mapHeightWidthRatio, setMapHeightWidthRatio] = useState(1)
-    const [defaultDimensions, setDefaultDimensions] = useState<Dimension>({
-        width: MINI_MAP_DEFAULT_SIZE,
-        height: MINI_MAP_DEFAULT_SIZE,
-    })
-    const [dimensions, setDimensions] = useState<Dimension>({
-        width: MINI_MAP_DEFAULT_SIZE,
-        height: MINI_MAP_DEFAULT_SIZE,
-    })
+const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, toggleIsMapOpen, factionColor }: MiniMapInnerProps) => {
+    const { newSnackbarMessage } = useSnackbar()
 
     // For targeting map
     const [timeReachZero, setTimeReachZero] = useState<boolean>(false)
     const [submitted, setSubmitted] = useState<boolean>(false)
-
-    const adjustment = useMemo(() => Math.min(remToPxRatio, 9) / 9, [remToPxRatio])
 
     const isTargeting = useMemo(
         () => winner && !timeReachZero && !submitted && bribeStage?.phase == "LOCATION_SELECT",
         [winner, timeReachZero, submitted, bribeStage],
     )
 
+    // For map rendering
+    const { remToPxRatio } = useDimension()
+    const [enlarged, toggleEnlarged] = useToggle()
+    const [mapHeightWidthRatio, setMapHeightWidthRatio] = useState(1)
+    const { curWidth, curHeight, defaultWidth, defaultHeight, setCurWidth, setCurHeight, setDefaultWidth, setDefaultHeight } = useMoveableResizable()
+
+    const adjustment = useMemo(() => Math.min(remToPxRatio, 9) / 9, [remToPxRatio])
+
     // Set initial size
     useEffect(() => {
         if (!map) return
         const ratio = map ? map.height / map.width : 1
-        const defaultRes = {
-            width: MINI_MAP_DEFAULT_SIZE * adjustment,
-            height: MINI_MAP_DEFAULT_SIZE * ratio * adjustment + 2.4 * remToPxRatio,
-        }
+        const defaultW = MINI_MAP_DEFAULT_SIZE * adjustment
+        const defaultH = MINI_MAP_DEFAULT_SIZE * ratio * adjustment + 2.4 * remToPxRatio
 
-        setDefaultDimensions(defaultRes)
-        setDimensions((prev) => {
-            return { width: prev.width, height: prev.width * ratio }
-        })
+        setDefaultWidth(defaultW)
+        setDefaultHeight(defaultH)
+        setCurHeight(curWidth * ratio)
         setMapHeightWidthRatio(ratio)
-    }, [map, adjustment, remToPxRatio])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [map, adjustment, remToPxRatio, setDefaultWidth, setDefaultHeight, setCurHeight])
 
     useEffect(() => {
         if (width <= 0 || height <= 0) return
