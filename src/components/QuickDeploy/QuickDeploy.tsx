@@ -168,6 +168,8 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
                             sortOptions={sortOptions}
                             selectedSort={sort}
                             onSetSort={setSort}
+                            hideTotal
+                            hidePageSizeOptions
                         />
 
                         {loadError && (
@@ -261,7 +263,7 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
                                 }}
                             >
                                 <Pagination
-                                    size="medium"
+                                    size="small"
                                     count={totalPages}
                                     page={page}
                                     sx={{
@@ -272,8 +274,6 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
                                         },
                                     }}
                                     onChange={(e, p) => changePage(p)}
-                                    showFirstButton
-                                    showLastButton
                                 />
                             </Box>
                         )}

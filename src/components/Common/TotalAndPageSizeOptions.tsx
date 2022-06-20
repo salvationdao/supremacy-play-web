@@ -7,17 +7,23 @@ interface TotalAndPageSizeOptionsProps {
     totalItems: number
     pageSize: number
     pageSizeOptions?: number[]
-    isGridView?: boolean
     changePageSize: (value: number) => void
     changePage: (value: number) => void
+    isGridView?: boolean
     toggleIsGridView?: (value: boolean) => void
     manualRefresh?: () => void
+
+    // Sorting
     sortOptions?: {
         label: string
         value: string
     }[]
     selectedSort?: string
     onSetSort?: React.Dispatch<React.SetStateAction<string>>
+
+    // Hide stuff
+    hideTotal?: boolean
+    hidePageSizeOptions?: boolean
 }
 
 export const TotalAndPageSizeOptions = ({
@@ -25,14 +31,18 @@ export const TotalAndPageSizeOptions = ({
     totalItems,
     pageSize,
     pageSizeOptions = [5, 10, 20],
-    isGridView,
     changePageSize,
     changePage,
+    isGridView,
     toggleIsGridView,
     manualRefresh,
+
     sortOptions,
     selectedSort,
     onSetSort,
+
+    hideTotal,
+    hidePageSizeOptions,
 }: TotalAndPageSizeOptionsProps) => {
     return (
         <Stack
@@ -49,9 +59,11 @@ export const TotalAndPageSizeOptions = ({
                 strong: { fontFamily: fonts.nostromoBlack },
             }}
         >
-            <Typography variant="caption" sx={{ lineHeight: 1 }}>
-                <strong>DISPLAYING:</strong> {countItems || 0} OF {totalItems}
-            </Typography>
+            {!hideTotal && (
+                <Typography variant="caption" sx={{ lineHeight: 1 }}>
+                    <strong>DISPLAYING:</strong> {countItems || 0} OF {totalItems}
+                </Typography>
+            )}
 
             <Stack
                 direction="row"
@@ -81,28 +93,30 @@ export const TotalAndPageSizeOptions = ({
                     </Stack>
                 )}
 
-                <Stack direction="row" spacing=".6rem" alignItems="center">
-                    {pageSizeOptions.map((size, i) => {
-                        return (
-                            <IconButton
-                                key={i}
-                                sx={{
-                                    color: (theme) => (pageSize === size ? `${theme.factionTheme.secondary} !important` : "#FFFFFF60 !important"),
-                                    backgroundColor: (theme) => (pageSize === size ? `${theme.factionTheme.primary} !important` : "unset"),
-                                }}
-                                size="small"
-                                onClick={() => {
-                                    changePageSize(size)
-                                    changePage(1)
-                                }}
-                            >
-                                <Typography variant="caption" sx={{ color: "inherit" }}>
-                                    {size}
-                                </Typography>
-                            </IconButton>
-                        )
-                    })}
-                </Stack>
+                {!hidePageSizeOptions && (
+                    <Stack direction="row" spacing=".6rem" alignItems="center">
+                        {pageSizeOptions.map((size, i) => {
+                            return (
+                                <IconButton
+                                    key={i}
+                                    sx={{
+                                        color: (theme) => (pageSize === size ? `${theme.factionTheme.secondary} !important` : "#FFFFFF60 !important"),
+                                        backgroundColor: (theme) => (pageSize === size ? `${theme.factionTheme.primary} !important` : "unset"),
+                                    }}
+                                    size="small"
+                                    onClick={() => {
+                                        changePageSize(size)
+                                        changePage(1)
+                                    }}
+                                >
+                                    <Typography variant="caption" sx={{ color: "inherit" }}>
+                                        {size}
+                                    </Typography>
+                                </IconButton>
+                            )
+                        })}
+                    </Stack>
+                )}
 
                 {sortOptions && selectedSort && onSetSort && (
                     <Stack direction="row" alignItems="center" spacing=".6rem">
