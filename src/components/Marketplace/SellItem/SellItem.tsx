@@ -18,7 +18,7 @@ import { SuccessModal } from "../../Common/SuccessModal"
 import { AssetToSell } from "./AssetToSell/AssetToSell"
 import { ItemTypeSelect } from "./ItemTypeSelect"
 import { PricingInput } from "./PricingInput"
-import { ListingDurationSelect } from "./ListingDurationSelect"
+import { ListingDurationHoursEnum, ListingDurationSelect } from "./ListingDurationSelect"
 
 export interface AssetToSellStruct {
     id: string
@@ -60,7 +60,7 @@ export const SellItemInner = ({ toggleReset }: { toggleReset: () => void }) => {
     // Form states
     const [itemType, setItemType] = useState<ItemType | undefined>(query.get("itemType") as ItemType)
     const [assetToSell, setAssetToSell] = useState<AssetToSellStruct | undefined>({ id: query.get("assetID") || "" })
-    const [listingDuration, setListingDuration] = useState<number>(24)
+    const [listingDuration, setListingDuration] = useState<ListingDurationHoursEnum>(ListingDurationHoursEnum.OneDay)
 
     // Buyout
     const [buyoutPrice, setBuyoutPrice] = useState<number>()
@@ -153,7 +153,19 @@ export const SellItemInner = ({ toggleReset }: { toggleReset: () => void }) => {
         } finally {
             toggleSubmitting(false)
         }
-    }, [assetToSell?.id, buyoutPrice, dropRate, isFormReady, itemType, reservePrice, send, startingPrice, toggleSubmitting, toggleConfirmModalOpen])
+    }, [
+        assetToSell?.id,
+        buyoutPrice,
+        dropRate,
+        isFormReady,
+        listingDuration,
+        itemType,
+        reservePrice,
+        send,
+        startingPrice,
+        toggleSubmitting,
+        toggleConfirmModalOpen,
+    ])
 
     return (
         <>

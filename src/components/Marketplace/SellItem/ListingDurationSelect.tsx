@@ -5,22 +5,30 @@ import { colors } from "../../../theme/theme"
 import { ClipThing } from "../../Common/ClipThing"
 import { QuestionSection } from "./QuestionSection"
 
+//these values are in terms of hours
+export enum ListingDurationHoursEnum {
+    "HalfDay" = 12,
+    "OneDay" = 24,
+    "ThreeDays" = 72,
+    "OneWeek" = 168,
+}
+
 export const listingDurations: {
     label: string
     value: number
 }[] = [
-    { label: "12 Hours", value: 12 },
-    { label: "1 Day", value: 24 },
-    { label: "3 Days", value: 72 },
-    { label: "7 Days", value: 168 },
+    { label: "12 Hours", value: ListingDurationHoursEnum.HalfDay },
+    { label: "1 Day", value: ListingDurationHoursEnum.OneDay },
+    { label: "3 Days", value: ListingDurationHoursEnum.ThreeDays },
+    { label: "7 Days", value: ListingDurationHoursEnum.OneWeek },
 ]
 
 export const ListingDurationSelect = ({
     listingDuration,
     setListingDuration,
 }: {
-    listingDuration: number
-    setListingDuration: React.Dispatch<React.SetStateAction<number>>
+    listingDuration: ListingDurationHoursEnum
+    setListingDuration: React.Dispatch<React.SetStateAction<ListingDurationHoursEnum>>
 }) => {
     const theme = useTheme()
 
