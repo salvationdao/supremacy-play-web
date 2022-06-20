@@ -216,6 +216,7 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
                             <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                                 <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", maxWidth: "40rem" }}>
                                     <Typography
+                                        variant="body2"
                                         sx={{
                                             px: "1.28rem",
                                             pt: "1.28rem",
@@ -280,7 +281,7 @@ const AmountItem = ({
     disableIcon?: boolean
 }) => {
     return (
-        <TooltipHelper placement="bottom" text={tooltip}>
+        <TooltipHelper placement="bottom-start" text={tooltip}>
             <Stack direction="row" alignItems="center">
                 <Typography sx={{ mr: ".4rem", fontWeight: "fontWeightBold" }}>{title}</Typography>
 
