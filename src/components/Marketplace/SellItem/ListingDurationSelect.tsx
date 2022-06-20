@@ -5,7 +5,7 @@ import { colors } from "../../../theme/theme"
 import { ClipThing } from "../../Common/ClipThing"
 import { QuestionSection } from "./QuestionSection"
 
-export const listingLengths: {
+export const listingDurations: {
     label: string
     value: number
 }[] = [
@@ -15,23 +15,23 @@ export const listingLengths: {
     { label: "7 Days", value: 168 },
 ]
 
-export const ListingLengthSelect = ({
-    listingLength,
-    setListingLength,
+export const ListingDurationSelect = ({
+    listingDuration,
+    setListingDuration,
 }: {
-    listingLength: number
-    setListingLength: React.Dispatch<React.SetStateAction<number>>
+    listingDuration: number
+    setListingDuration: React.Dispatch<React.SetStateAction<number>>
 }) => {
     const theme = useTheme()
 
-    const listingLengthLabel = useMemo(() => listingLengths.find((i) => i.value === listingLength)?.label, [listingLength])
+    const listingDurationLabel = useMemo(() => listingDurations.find((i) => i.value === listingDuration)?.label, [listingDuration])
 
     const primaryColor = theme.factionTheme.primary
     const secondaryColor = theme.factionTheme.secondary
     const backgroundColor = theme.factionTheme.background
 
     return (
-        <QuestionSection primaryColor={primaryColor} question="Timeframe" description="You can choose how long you want this listing to be available.">
+        <QuestionSection primaryColor={primaryColor} question="Duration" description="You can choose how long you want this listing to be available.">
             <ClipThing
                 clipSize="5px"
                 clipSlantSize="2px"
@@ -61,7 +61,7 @@ export const ListingLengthSelect = ({
                             },
                         }}
                         displayEmpty
-                        value={listingLength}
+                        value={listingDuration}
                         MenuProps={{
                             variant: "menu",
                             sx: {
@@ -82,23 +82,23 @@ export const ListingLengthSelect = ({
                         renderValue={(x) => {
                             return (
                                 <Typography textTransform="uppercase" variant="h6" sx={{ opacity: x ? 1 : 0.7 }}>
-                                    {listingLengthLabel || "CHOOSE A LISTING LENGTH"}
+                                    {listingDurationLabel || "CHOOSE A LISTING DURATION"}
                                 </Typography>
                             )
                         }}
                     >
                         <MenuItem disabled value="">
                             <Typography textTransform="uppercase" variant="h6">
-                                CHOOSE A LISTING LENGTH
+                                CHOOSE A LISTING DURATION
                             </Typography>
                         </MenuItem>
-                        {listingLengths.map((x, i) => {
+                        {listingDurations.map((x, i) => {
                             return (
                                 <MenuItem
                                     key={x.value + i}
                                     value={x.value}
                                     onClick={() => {
-                                        setListingLength(x.value)
+                                        setListingDuration(x.value)
                                     }}
                                     sx={{ "&:hover": { backgroundColor: "#FFFFFF20" } }}
                                 >

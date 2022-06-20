@@ -18,7 +18,7 @@ import { SuccessModal } from "../../Common/SuccessModal"
 import { AssetToSell } from "./AssetToSell/AssetToSell"
 import { ItemTypeSelect } from "./ItemTypeSelect"
 import { PricingInput } from "./PricingInput"
-import { ListingLengthSelect } from "./ListingLengthSelect"
+import { ListingDurationSelect } from "./ListingDurationSelect"
 
 export interface AssetToSellStruct {
     id: string
@@ -60,7 +60,7 @@ export const SellItemInner = ({ toggleReset }: { toggleReset: () => void }) => {
     // Form states
     const [itemType, setItemType] = useState<ItemType | undefined>(query.get("itemType") as ItemType)
     const [assetToSell, setAssetToSell] = useState<AssetToSellStruct | undefined>({ id: query.get("assetID") || "" })
-    const [listingLength, setListingLength] = useState<number>(24)
+    const [listingDuration, setListingDuration] = useState<number>(24)
 
     // Buyout
     const [buyoutPrice, setBuyoutPrice] = useState<number>()
@@ -138,7 +138,7 @@ export const SellItemInner = ({ toggleReset }: { toggleReset: () => void }) => {
                     dutch_auction_drop_rate: !isKeycard && dropRate ? dropRate.toString() : undefined,
                     auction_current_price: !isKeycard && startingPrice ? startingPrice.toString() : undefined,
                     auction_reserved_price: !isKeycard && reservePrice ? reservePrice.toString() : undefined,
-                    listing_length: listingLength,
+                    listing_duration: listingDuration,
                 },
             )
 
@@ -238,7 +238,7 @@ export const SellItemInner = ({ toggleReset }: { toggleReset: () => void }) => {
                                 {/* Asset to sell */}
                                 <AssetToSell itemType={itemType} assetToSell={assetToSell} setAssetToSell={setAssetToSell} />
 
-                                <ListingLengthSelect listingLength={listingLength} setListingLength={setListingLength} />
+                                <ListingDurationSelect listingDuration={listingDuration} setListingDuration={setListingDuration} />
                                 {/* Pricing inputs */}
                                 {itemType !== ItemType.Keycards && (
                                     <PricingInput
