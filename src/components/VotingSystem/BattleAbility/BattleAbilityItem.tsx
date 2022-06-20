@@ -32,9 +32,9 @@ export const BattleAbilityItem = () => {
     const [battleAbilityProgress, setBattleAbilityProgress] = useState<BattleAbilityProgressBigNum[]>([])
 
     // Subscribe to battle ability updates
-    useGameServerSubscriptionAbilityFaction<BattleAbilityType>(
+    useGameServerSubscription<BattleAbilityType>(
         {
-            URI: "",
+            URI: factionID ? `/ability/${factionID}` : "/public/battle_ability",
             key: GameServerKeys.SubBattleAbility,
         },
         (payload) => {
