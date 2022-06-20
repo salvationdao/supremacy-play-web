@@ -79,8 +79,13 @@ export const SellItemInner = ({ toggleReset }: { toggleReset: () => void }) => {
         let fee = 10
         if (reservePrice) fee += 5
         if (buyoutPrice && !dropRate && itemType !== ItemType.Keycards) fee += 5
+        if (listingDuration === ListingDurationHoursEnum.ThreeDays || listingDuration === ListingDurationHoursEnum.OneWeek) {
+            //listing duration from hours to days minus 1 day (to only account for additional days listed) * 5 sups
+            const listingDurationFee = (listingDuration / 24 - 1) * 5
+            fee += listingDurationFee
+        }
         setListingFee(fee)
-    }, [buyoutPrice, reservePrice, dropRate, itemType])
+    }, [buyoutPrice, reservePrice, dropRate, itemType, listingDuration])
 
     // Form validators
     const checkBuyoutPriceError = useCallback((): string | undefined => {
