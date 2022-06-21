@@ -38,12 +38,18 @@ export const PlayerAbilities = () => {
     )
 
     useEffect(() => {
-        setShownPlayerAbilities(playerAbilities.slice((currentPage - 1) * pageSize, currentPage * pageSize + 1))
-    }, [playerAbilities, currentPage])
+        setCurrentPage(1)
+    }, [locationSelectType])
 
     useEffect(() => {
-        setShownPlayerAbilities(playerAbilities.filter((p) => p.ability.location_select_type === locationSelectType))
-    }, [playerAbilities, locationSelectType])
+        let result = playerAbilities.map((p) => p)
+        if (locationSelectType) {
+            result = result.filter((p) => p.ability.location_select_type === locationSelectType)
+        }
+
+        setTotalPages(Math.ceil(result.length / pageSize))
+        setShownPlayerAbilities(result.slice((currentPage - 1) * pageSize, currentPage * pageSize))
+    }, [playerAbilities, locationSelectType, currentPage])
 
     if (!userID)
         return (
@@ -160,7 +166,7 @@ export const PlayerAbilities = () => {
                 </ButtonGroup>
             </Stack>
             <Box marginBottom="1rem">
-                {playerAbilities.length > 0 ? (
+                {shownPlayerAbilities.length > 0 ? (
                     <Box
                         sx={{
                             display: "grid",
