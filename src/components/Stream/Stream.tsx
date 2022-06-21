@@ -17,8 +17,6 @@ export const Stream = () => {
     if (isOpen) return null
     const isPlaying = streamResolutions && streamResolutions.length > 0
 
-    console.log("this is curr stream", currentStream)
-
     return (
         <>
             {currentStream?.service === "OvenMediaEngine" ? (
