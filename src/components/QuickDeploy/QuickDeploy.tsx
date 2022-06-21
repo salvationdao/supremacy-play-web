@@ -1,6 +1,6 @@
 import { Box, CircularProgress, Fade, Pagination, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { MoveableResizable, MoveableResizableConfig, QueueFeed, TooltipHelper } from ".."
+import { MoveableResizable, QueueFeed, TooltipHelper } from ".."
 import { SvgSupToken } from "../../assets"
 import { useTheme } from "../../containers/theme"
 import { supFormatter } from "../../helpers"
@@ -10,13 +10,14 @@ import { GameServerKeys } from "../../keys"
 import { colors, fonts } from "../../theme/theme"
 import { MechBasic } from "../../types"
 import { SortTypeLabel } from "../../types/marketplace"
+import { MoveableResizableConfig } from "../Common/MoveableResizable/MoveableResizableContainer"
 import { PageHeader } from "../Common/PageHeader"
 import { TotalAndPageSizeOptions } from "../Common/TotalAndPageSizeOptions"
 import { QuickDeployItem } from "./QuickDeployItem"
 
 const sortOptions = [
-    { label: SortTypeLabel.MechQueueAsc, value: SortTypeLabel.MechQueueAsc },
-    { label: SortTypeLabel.MechQueueDesc, value: SortTypeLabel.MechQueueDesc },
+    { label: "Queue: lowest first", value: SortTypeLabel.MechQueueAsc },
+    { label: "Queue: highest first", value: SortTypeLabel.MechQueueDesc },
 ]
 
 interface GetMechsRequest {
@@ -99,7 +100,7 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
             minPosX: 10,
             minPosY: 10,
             // Size limits
-            minWidth: 300,
+            minWidth: 360,
             minHeight: 280,
             maxWidth: 1000,
             maxHeight: 1000,
@@ -112,6 +113,7 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
 
     const queueLength = queueFeed?.queue_length || 0
     const contractReward = queueFeed?.contract_reward || ""
+    const queueCost = queueFeed?.queue_cost || ""
 
     return (
         <Fade in>
@@ -129,7 +131,7 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
                             title="QUICK DEPLOY"
                             description={
                                 <Stack spacing="1.5rem" direction="row">
-                                    {queueLength >= 0 && (
+                                    {queueLength > 0 && (
                                         <AmountItem
                                             key={`${queueLength}-queue_length`}
                                             title={"POSITION: "}
@@ -140,20 +142,24 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
                                         />
                                     )}
 
-                                    <AmountItem
-                                        key={`${contractReward}-contract_reward`}
-                                        title={"REWARD: "}
-                                        color={colors.yellow}
-                                        value={supFormatter(contractReward, 2)}
-                                        tooltip="Your reward if your mech survives the battle giving your syndicate a victory."
-                                    />
+                                    {contractReward && (
+                                        <AmountItem
+                                            key={`${contractReward}-contract_reward`}
+                                            title={"REWARD: "}
+                                            color={colors.yellow}
+                                            value={supFormatter(contractReward, 2)}
+                                            tooltip="Your reward if your mech survives the battle giving your syndicate a victory."
+                                        />
+                                    )}
 
-                                    <AmountItem
-                                        title={"FEE: "}
-                                        color={"#FF4136"}
-                                        value={supFormatter(queueFeed?.queue_cost || "0", 2)}
-                                        tooltip="The cost to place your war machine into the battle queue."
-                                    />
+                                    {queueCost && (
+                                        <AmountItem
+                                            title={"FEE: "}
+                                            color={colors.orange}
+                                            value={supFormatter(queueCost || "0", 2)}
+                                            tooltip="The cost to place your war machine into the battle queue."
+                                        />
+                                    )}
                                 </Stack>
                             }
                         ></PageHeader>
@@ -169,7 +175,6 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
                             selectedSort={sort}
                             onSetSort={setSort}
                             hideTotal
-                            hidePageSizeOptions
                         />
 
                         {loadError && (

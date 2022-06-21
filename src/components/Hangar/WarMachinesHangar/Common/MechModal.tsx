@@ -6,6 +6,7 @@ import { useTheme } from "../../../../containers/theme"
 import { getRarityDeets } from "../../../../helpers"
 import { fonts, siteZIndex } from "../../../../theme/theme"
 import { MechDetails } from "../../../../types"
+import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
 
 export const MechModal = ({
     open,
@@ -66,33 +67,8 @@ export const MechModal = ({
                             overflow: "hidden",
                         }}
                     >
-                        <Box
-                            sx={{
-                                position: "relative",
-                                px: ".6rem",
-                                py: "1rem",
-                                borderRadius: 1,
-                                boxShadow: "inset 0 0 12px 6px #00000040",
-                                background: `radial-gradient(#FFFFFF20 10px, ${theme.factionTheme.background})`,
-                                border: "#00000060 1px solid",
-                            }}
-                        >
-                            <Box
-                                component="video"
-                                sx={{
-                                    width: "100%",
-                                    height: "19rem",
-                                    overflow: "hidden",
-                                    objectFit: "contain",
-                                    objectPosition: "center",
-                                }}
-                                loop
-                                muted
-                                autoPlay
-                                poster={imageUrl}
-                            >
-                                <source src={cardAnimationUrl} type="video/mp4" />
-                            </Box>
+                        <Box sx={{ height: "19rem" }}>
+                            <MediaPreview imageUrl={imageUrl} videoUrls={[cardAnimationUrl]} />
                         </Box>
 
                         <Box>
