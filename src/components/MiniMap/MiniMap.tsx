@@ -55,7 +55,7 @@ export const MiniMap = () => {
             maxWidth: 1000,
             maxHeight: 1000,
             // Others
-            infoTooltipText: "View the battle arena with the minimap.",
+            infoTooltipText: "Battle arena minimap.",
             onHideCallback: () => toggleIsMapOpen(false),
         }),
         [toggleIsMapOpen],
