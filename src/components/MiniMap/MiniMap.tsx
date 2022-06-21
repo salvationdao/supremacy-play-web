@@ -216,9 +216,6 @@ const MiniMapInner = ({ map, winner, setWinner, bribeStage }: MiniMapInnerProps)
                     direction="row"
                     alignItems="center"
                     sx={{
-                        position: "absolute",
-                        left: 0,
-                        right: 0,
                         height: "3.1rem",
                         px: "1.8rem",
                         backgroundColor: "#000000BF",
