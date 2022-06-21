@@ -16,8 +16,8 @@ import { TotalAndPageSizeOptions } from "../Common/TotalAndPageSizeOptions"
 import { QuickDeployItem } from "./QuickDeployItem"
 
 const sortOptions = [
-    { label: SortTypeLabel.MechQueueAsc, value: SortTypeLabel.MechQueueAsc },
-    { label: SortTypeLabel.MechQueueDesc, value: SortTypeLabel.MechQueueDesc },
+    { label: "Queue: lowest first", value: SortTypeLabel.MechQueueAsc },
+    { label: "Queue: highest first", value: SortTypeLabel.MechQueueDesc },
 ]
 
 interface GetMechsRequest {
@@ -100,7 +100,7 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
             minPosX: 10,
             minPosY: 10,
             // Size limits
-            minWidth: 300,
+            minWidth: 360,
             minHeight: 280,
             maxWidth: 1000,
             maxHeight: 1000,
@@ -175,7 +175,6 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
                             selectedSort={sort}
                             onSetSort={setSort}
                             hideTotal
-                            hidePageSizeOptions
                         />
 
                         {loadError && (

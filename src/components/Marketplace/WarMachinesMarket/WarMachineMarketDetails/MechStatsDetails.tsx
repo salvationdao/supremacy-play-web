@@ -1,6 +1,6 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { ClipThing } from "../../.."
-import { SvgInfoCircular, SvgIntroAnimation, SvgOutroAnimation, SvgPowerCore, SvgSkin, SvgUtilities, SvgWeapons } from "../../../../assets"
+import { SvgStats, SvgIntroAnimation, SvgOutroAnimation, SvgPowerCore, SvgSkin, SvgUtilities, SvgWeapons } from "../../../../assets"
 import { colors, fonts } from "../../../../theme/theme"
 import { MechDetails } from "../../../../types"
 import { MechBarStats } from "../../../Hangar/WarMachinesHangar/WarMachineHangarItem/MechBarStats"
@@ -29,7 +29,7 @@ export const MechStatsDetails = ({
         <Stack spacing="3rem">
             <Stack spacing="1rem">
                 <Stack direction="row" spacing=".8rem" alignItems="center">
-                    <SvgInfoCircular fill={primaryColor} size="1.8rem" />
+                    <SvgStats fill={primaryColor} size="1.8rem" />
                     <Typography variant="h5" sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack }}>
                         WAR MACHINE STATS
                     </Typography>
