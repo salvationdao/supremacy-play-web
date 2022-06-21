@@ -24,7 +24,7 @@ export const SaleAbilitiesModal = ({ open, onClose }: SaleAbilitiesModalProps) =
 
     useGameServerSubscriptionSecurePublic<SaleAbility[]>(
         {
-            URI: "/sale_abilities",
+            URI: "sale_abilities",
             key: GameServerKeys.SaleAbilitiesList,
         },
         (payload) => {
@@ -33,15 +33,15 @@ export const SaleAbilitiesModal = ({ open, onClose }: SaleAbilitiesModalProps) =
         },
     )
 
-    useGameServerSubscriptionSecurePublic<{ id: string; price: string }>(
+    useGameServerSubscriptionSecurePublic<{ id: string; current_price: string }>(
         {
-            URI: "/sale_abilities",
+            URI: "sale_abilities",
             key: GameServerKeys.SaleAbilitiesPriceSubscribe,
         },
         (payload) => {
             if (!payload) return
             setPriceMap((prev) => {
-                return new Map(prev.set(payload.id, payload.price))
+                return new Map(prev.set(payload.id, payload.current_price))
             })
         },
     )
@@ -116,7 +116,7 @@ export const SaleAbilitiesModal = ({ open, onClose }: SaleAbilitiesModalProps) =
                                             }}
                                         >
                                             {saleAbilities.map((s) => (
-                                                <SaleAbilityCard key={s.id} saleAbility={s} updatedPrice={priceMap.get(s.id) || s.current_price} />
+                                                <SaleAbilityCard key={`${s.id}`} saleAbility={s} updatedPrice={priceMap.get(s.id) || s.current_price} />
                                             ))}
                                         </Box>
                                     ) : (
