@@ -193,7 +193,8 @@ const MiniMapInner = ({ map, winner, setWinner, bribeStage }: MiniMapInnerProps)
                 return prevPosY.current
             })
         }
-    }, [height, isTargeting, maxHeight, maxWidth, setCurHeight, setCurPosX, setCurPosY, setCurWidth, width])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isTargeting, maxHeight, maxWidth, setCurHeight, setCurPosX, setCurPosY, setCurWidth])
 
     let mapName = map.name
     if (mapName === "NeoTokyo") mapName = "City Block X2"
