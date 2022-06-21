@@ -16,7 +16,17 @@ interface OvenPlayerSource {
 
 export const OverPlayerStream = () => {
     const { iframeDimensions } = useDimension()
-    const { currentStream, isMute, streamResolutions, vidRefCallback } = useStream()
+    const {
+        isMute,
+        volume,
+        resolutions,
+        currentStream,
+        currentPlayingStreamHost,
+        setCurrentPlayingStreamHost,
+        selectedResolution,
+        setResolutions,
+        setSelectedResolution,
+    } = useStream()
 
     // Load oven player
     useEffect(() => {

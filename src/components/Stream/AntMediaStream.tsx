@@ -2,6 +2,7 @@ import { Stack } from "@mui/material"
 import { useCallback, useEffect, useRef } from "react"
 import { SupBackground } from "../../assets"
 import { STREAM_ASPECT_RATIO_W_H } from "../../constants"
+import { WebRTCAdaptor } from "@antmedia/webrtc_adaptor"
 import { useDimension, useSnackbar, useStream } from "../../containers"
 import { parseString } from "../../helpers"
 import { colors, siteZIndex } from "../../theme/theme"
@@ -53,7 +54,17 @@ interface WebRTCAdaptorType {
 export const AntMediaStream = () => {
     const { newSnackbarMessage } = useSnackbar()
     const { iframeDimensions } = useDimension()
-    const { currentStream, isMute, streamResolutions, volume } = useStream()
+    const {
+        isMute,
+        volume,
+        resolutions,
+        currentStream,
+        currentPlayingStreamHost,
+        setCurrentPlayingStreamHost,
+        selectedResolution,
+        setResolutions,
+        setSelectedResolution,
+    } = useStream()
     const webRtc = useRef<WebRTCAdaptorType>()
     const vidRef = useRef<HTMLVideoElement | undefined>(undefined)
 
@@ -68,8 +79,8 @@ export const AntMediaStream = () => {
             webRtc?.current &&
             selectedResolution &&
             selectedResolution > 0 &&
-            streamResolutions &&
-            streamResolutions.length > 0 &&
+            resolutions &&
+            resolutions.length > 0 &&
             currentStream &&
             currentStream.host === currentPlayingStreamHost
         ) {
@@ -79,7 +90,7 @@ export const AntMediaStream = () => {
                 console.log("")
             }
         }
-    }, [selectedResolution, currentStream, streamResolutions, currentPlayingStreamHost])
+    }, [selectedResolution, currentStream, resolutions, currentPlayingStreamHost])
 
     const vidRefCallback = useCallback(
         (vid: HTMLVideoElement) => {
@@ -118,7 +129,7 @@ export const AntMediaStream = () => {
                                     resolutions.push(entry["streamHeight"])
                                 }
                             })
-                            setStreamResolutions(resolutions)
+                            setResolutions(resolutions)
                             setSelectedResolution(Math.max.apply(null, resolutions))
                             setCurrentPlayingStreamHost(currentStream.host)
                         } else if (info == "closed") {
@@ -140,10 +151,10 @@ export const AntMediaStream = () => {
                 webRtc.current = undefined
             }
         },
-        [currentStream, newSnackbarMessage],
+        [currentStream, newSnackbarMessage, setCurrentPlayingStreamHost, setSelectedResolution, setResolutions],
     )
 
-    const isPlaying = streamResolutions && streamResolutions.length > 0
+    const isPlaying = resolutions && resolutions.length > 0
 
     return (
         <Stack sx={{ width: "100%", height: "100%", zIndex: siteZIndex.Stream }}>

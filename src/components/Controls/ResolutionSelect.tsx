@@ -5,9 +5,9 @@ import { colors } from "../../theme/theme"
 
 export const ResolutionSelect = () => {
     const theme = useTheme()
-    const { streamResolutions, selectedResolution, setSelectedResolution } = useStream()
+    const { resolutions, selectedResolution, setSelectedResolution } = useStream()
 
-    if (!streamResolutions || streamResolutions.length <= 0) return null
+    if (!resolutions || resolutions.length <= 0) return null
 
     const primaryColor = theme.factionTheme.primary
     const secondaryColor = theme.factionTheme.secondary
@@ -31,8 +31,8 @@ export const ResolutionSelect = () => {
                     },
                     "& .MuiSelect-outlined": { p: 0 },
                 }}
-                defaultValue={streamResolutions[0]}
-                value={selectedResolution || streamResolutions[0] || -1}
+                defaultValue={resolutions[0]}
+                value={selectedResolution || resolutions[0] || -1}
                 MenuProps={{
                     variant: "menu",
                     sx: {
@@ -51,7 +51,7 @@ export const ResolutionSelect = () => {
                     },
                 }}
             >
-                {streamResolutions.map((x) => {
+                {resolutions.map((x) => {
                     return (
                         <MenuItem
                             key={x}

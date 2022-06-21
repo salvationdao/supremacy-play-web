@@ -190,23 +190,22 @@ const blankOption: Stream = {
 
 export const StreamContainer = createContainer(() => {
     const { query: queryGetStreamList } = useParameterizedQuery(GetStreamList)
-    const defaultResolution = 720
 
-    // stream
-    const [currentPlayingStreamHost, setCurrentPlayingStreamHost] = useState<string>()
-    const [streams, setStreams] = useState<Stream[]>([])
+    // Stream
+    const [loadedStreams, setLoadedStreams] = useState<Stream[]>([])
     const [streamOptions, setStreamOptions] = useState<Stream[]>([])
     const [currentStream, setCurrentStream] = useState<Stream>()
+    const [currentPlayingStreamHost, setCurrentPlayingStreamHost] = useState<string>()
 
-    // volume
+    // Volume control
     const [volume, setVolume] = useState(parseString(localStorage.getItem("streamVolume"), 0.3))
     const [isMute, toggleIsMute] = useToggle(localStorage.getItem("isMute") == "true")
     const [musicVolume, setMusicVolume] = useState(parseString(localStorage.getItem("musicVolume"), 0.3))
     const [isMusicMute, toggleIsMusicMute] = useToggle(localStorage.getItem("isMusicMute") == "true")
 
-    // resolution
+    // Resolution control
     const [selectedResolution, setSelectedResolution] = useState<number>()
-    const [streamResolutions, setStreamResolutions] = useState<number[]>([])
+    const [resolutions, setResolutions] = useState<number[]>([])
 
     // Fetch stream list
     useEffect(() => {
@@ -214,8 +213,8 @@ export const StreamContainer = createContainer(() => {
             try {
                 const resp = await queryGetStreamList({})
                 if (resp.error || !resp.payload) return
-                // setStreams([blankOption, ...resp.payload])
-                setStreams(testData)
+                // setLoadedStreams([blankOption, ...resp.payload])
+                setLoadedStreams(testData)
             } catch (e) {
                 console.error(e)
             }
@@ -274,9 +273,7 @@ export const StreamContainer = createContainer(() => {
             // If there is no current stream selected then pick the US one (for now)
             if (!dontChangeCurrentStream && !currentStream && newStreamOptions && newStreamOptions.length > 0) {
                 const usaStreams = newStreamOptions.filter((s) => s.name == "USA AZ")
-                if (usaStreams && usaStreams.length > 0) {
-                    changeStream(usaStreams[0])
-                }
+                if (usaStreams && usaStreams.length > 0) changeStream(usaStreams[0])
             }
 
             // Reverse the order for rendering so best is closer to user's mouse
@@ -288,11 +285,11 @@ export const StreamContainer = createContainer(() => {
 
     // Build stream options for the drop down
     useEffect(() => {
-        if (!streams || streams.length <= 0) return
+        if (!loadedStreams || loadedStreams.length <= 0) return
 
-        // Filter for servers that have capacity and is onlnine
+        // Filter for servers that have capacity and is online
         const availStreams = [
-            ...streams.filter((x) => {
+            ...loadedStreams.filter((x) => {
                 return x.users_now < x.user_max && x.status === "online" && x.active
             }),
         ]
@@ -315,31 +312,27 @@ export const StreamContainer = createContainer(() => {
         }
 
         setNewStreamOptions(quietestStreams)
-    }, [setNewStreamOptions, streams])
+    }, [setNewStreamOptions, loadedStreams])
 
     return {
         streamOptions,
         currentStream,
         changeStream,
-
-        streamResolutions,
+        resolutions,
+        setResolutions,
         selectedResolution,
         setSelectedResolution,
         currentPlayingStreamHost,
         setCurrentPlayingStreamHost,
-        setStreamResolutions,
 
         volume,
         setVolume,
         isMute,
         toggleIsMute,
-
         musicVolume,
         setMusicVolume,
         isMusicMute,
         toggleIsMusicMute,
-
-        defaultResolution,
     }
 })
 
