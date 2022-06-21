@@ -1,10 +1,11 @@
 import { Box, Fade, Stack, Tab } from "@mui/material"
 import { TabProps } from "@mui/material/Tab"
 import { useMemo } from "react"
-import { BattleAbilityItem, FactionAbilities, MoveableResizable, MoveableResizableConfig } from ".."
+import { BattleAbilityItem, FactionAbilities, MoveableResizable } from ".."
 import { BribeStageResponse, useAuth, useGame } from "../../containers"
 import { useTheme } from "../../containers/theme"
 import { colors } from "../../theme/theme"
+import { MoveableResizableConfig } from "../Common/MoveableResizable/MoveableResizableContainer"
 
 export const VotingSystem = () => {
     const { bribeStage } = useGame()
@@ -27,7 +28,7 @@ const VotingSystemInner = ({ bribeStage }: { bribeStage?: BribeStageResponse }) 
             defaultHeight: 360,
             // Size limits
             minWidth: 300,
-            minHeight: 215,
+            minHeight: 168,
             maxWidth: 500,
             maxHeight: 600,
             // Others

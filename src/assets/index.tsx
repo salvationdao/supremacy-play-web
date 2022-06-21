@@ -21,6 +21,7 @@ import Cancelled from "!react-svg-loader!./svg/Cancelled.svg"
 import VolumeMute from "!react-svg-loader!./svg/VolumeMute.svg"
 import Settings from "!react-svg-loader!./svg/Settings.svg"
 import Play from "!react-svg-loader!./svg/Play.svg"
+import Stats from "!react-svg-loader!./svg/Stats.svg"
 import Target from "!react-svg-loader!./svg/Target.svg"
 import Search from "!react-svg-loader!./svg/Search.svg"
 import Support from "!react-svg-loader!./svg/Support.svg"
@@ -900,5 +901,11 @@ export const SvgSearch: React.VoidFunctionComponent<SvgWrapperProps> = (props) =
 export const SvgAngle: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <Angle />
+    </SvgWrapper>
+)
+
+export const SvgStats: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Stats />
     </SvgWrapper>
 )

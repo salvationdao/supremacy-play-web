@@ -1,90 +1,49 @@
 import { Box, Stack } from "@mui/material"
-import { ReactNode, useCallback, useMemo, useState } from "react"
+import { ReactNode, useMemo } from "react"
 import { ResizeBox, TooltipHelper } from "../.."
 import { SvgClose, SvgDrag, SvgInfoCircular } from "../../../assets"
 import { ClipThing } from "../../../components"
 import { useTheme } from "../../../containers/theme"
-import { parseString, shadeColor } from "../../../helpers"
+import { shadeColor } from "../../../helpers"
 import { colors, siteZIndex } from "../../../theme/theme"
-import { Dimension, Position } from "../../../types"
+import { MoveableResizableConfig, MoveableResizableProvider, useMoveableResizable } from "./MoveableResizableContainer"
 import { MovingBox } from "./MovingBox"
 
-export interface MoveableResizableConfig {
-    localStoragePrefix: string
-    // Defaults
-    defaultPosX: number
-    defaultPosY: number
-    defaultWidth: number
-    defaultHeight: number
-    // Position limits
-    minPosX?: number
-    minPosY?: number
-    maxPosX?: number
-    maxPosY?: number
-    // Size limits
-    minWidth?: number
-    minHeight?: number
-    maxWidth?: number
-    maxHeight?: number
-    // Callbacks
-    onResizeCallback?: (width: number, height: number) => void
-    onHideCallback?: () => void
-    // Others
-    infoTooltipText?: string
+interface MoveableResizableProps {
+    config: MoveableResizableConfig
+    children: ReactNode
 }
 
-export const MoveableResizable = ({ config, children }: { config: MoveableResizableConfig; children: ReactNode }) => {
+export const MoveableResizable = (props: MoveableResizableProps) => {
+    return (
+        <MoveableResizableProvider initialState={props.config}>
+            <MoveableResizableInner {...props} />
+        </MoveableResizableProvider>
+    )
+}
+
+const MoveableResizableInner = ({ children }: MoveableResizableProps) => {
+    const theme = useTheme()
     const {
-        localStoragePrefix,
-
-        defaultPosX = 0,
-        defaultPosY = 0,
-        defaultWidth = 50,
-        defaultHeight = 50,
-
+        defaultWidth,
+        defaultHeight,
         minPosX,
         minPosY,
         maxPosX,
         maxPosY,
-
         minWidth,
         minHeight,
         maxWidth,
         maxHeight,
-
-        onResizeCallback,
         onHideCallback,
-
         infoTooltipText,
-    } = config
-
-    const theme = useTheme()
-
-    const [curPosX, setCurPosX] = useState(parseString(localStorage.getItem(`${localStoragePrefix}PosX`), defaultPosX))
-    const [curPosY, setCurPosY] = useState(parseString(localStorage.getItem(`${localStoragePrefix}PosY`), defaultPosY))
-    const [curWidth, setCurWidth] = useState(parseString(localStorage.getItem(`${localStoragePrefix}SizeX`), defaultWidth))
-    const [curHeight, setCurHeight] = useState(parseString(localStorage.getItem(`${localStoragePrefix}SizeY`), defaultHeight))
-
-    const onMovingStopped = useCallback(
-        (data: Position) => {
-            setCurPosX(data.x)
-            setCurPosY(data.y)
-            localStorage.setItem(`${localStoragePrefix}PosX`, data.x.toString())
-            localStorage.setItem(`${localStoragePrefix}PosY`, data.y.toString())
-        },
-        [localStoragePrefix],
-    )
-
-    const onResizeStopped = useCallback(
-        (data: Dimension) => {
-            setCurWidth(data.width)
-            setCurHeight(data.height)
-            localStorage.setItem(`${localStoragePrefix}SizeX`, data.width.toString())
-            localStorage.setItem(`${localStoragePrefix}SizeY`, data.height.toString())
-            onResizeCallback && onResizeCallback(data.width, data.height)
-        },
-        [localStoragePrefix, onResizeCallback],
-    )
+        curPosX,
+        curPosY,
+        curWidth,
+        curHeight,
+        onMovingStopped,
+        onResizeStopped,
+    } = useMoveableResizable()
 
     const topRightBackgroundColor = useMemo(() => shadeColor(theme.factionTheme.primary, -90), [theme.factionTheme.primary])
 
@@ -102,6 +61,7 @@ export const MoveableResizable = ({ config, children }: { config: MoveableResiza
             }}
         >
             <MovingBox
+                key={`${curWidth}${curHeight}${curPosX}${curPosY}`}
                 color={theme.factionTheme.primary}
                 onMovingStopped={onMovingStopped}
                 initialPosX={curPosX}
@@ -147,6 +107,7 @@ export const MoveableResizable = ({ config, children }: { config: MoveableResiza
                         zIndex: siteZIndex.MoveableResizableHover,
                     },
                     pointerEvents: "all",
+                    transition: "all .2s",
                 }}
             >
                 <Box sx={{ position: "relative" }}>
@@ -169,8 +130,8 @@ export const MoveableResizable = ({ config, children }: { config: MoveableResiza
                                     right: 0,
                                     cursor: "nw-resize",
                                     zIndex: siteZIndex.MoveableResizable,
-                                    width: "10px",
-                                    height: "10px",
+                                    width: "2rem",
+                                    height: "2rem",
                                 }}
                             />
                         )}
@@ -200,14 +161,13 @@ export const MoveableResizable = ({ config, children }: { config: MoveableResiza
                                 sx={{
                                     position: "relative",
                                     pl: "1rem",
-                                    pt: ".8rem",
-                                    pb: ".5rem",
                                     pr: onHideCallback ? "1.7rem" : "3rem",
+                                    height: "3.3rem",
                                     zIndex: 3,
                                 }}
                             >
                                 {infoTooltipText && (
-                                    <TooltipHelper text={infoTooltipText}>
+                                    <TooltipHelper text={infoTooltipText} placement="bottom">
                                         <Box
                                             sx={{
                                                 mr: onHideCallback ? "3rem" : ".9rem",

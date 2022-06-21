@@ -75,7 +75,7 @@ export const DimensionContainer = createContainer(() => {
 
         setGameUIDimensions({ width: containerWidth, height: containerHeight })
         setIframeDimensions({ width: iframeWidth, height: iframeHeight })
-    }, [gameUIDimensions, remToPxRatio, setGameUIDimensions])
+    }, [remToPxRatio, setGameUIDimensions])
 
     return {
         remToPxRatio,

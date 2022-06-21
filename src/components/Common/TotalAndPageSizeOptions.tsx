@@ -48,7 +48,6 @@ export const TotalAndPageSizeOptions = ({
         <Stack
             direction="row"
             alignItems="center"
-            justifyContent="space-between"
             sx={{
                 pl: "1.5rem",
                 pr: ".5rem",
@@ -71,6 +70,7 @@ export const TotalAndPageSizeOptions = ({
                 alignItems="center"
                 divider={<Divider orientation="vertical" sx={{ height: "unset", alignSelf: "stretch", my: ".4rem !important" }} />}
                 sx={{
+                    ml: "auto",
                     "& .MuiIconButton-root": {
                         minWidth: "3rem",
                         borderRadius: 0.8,

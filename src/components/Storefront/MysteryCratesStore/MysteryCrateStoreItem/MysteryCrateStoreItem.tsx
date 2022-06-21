@@ -13,6 +13,7 @@ import { colors, fonts, siteZIndex } from "../../../../theme/theme"
 import { RewardResponse, StorefrontMysteryCrate } from "../../../../types"
 import { ClaimedRewards } from "../../../Claims/ClaimedRewards"
 import { ConfirmModal } from "../../../Common/ConfirmModal"
+import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
 
 interface MysteryCrateStoreItemProps {
     enlargedView?: boolean
@@ -90,33 +91,16 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate }: MysteryCrateStore
                     sx={{ height: "100%" }}
                 >
                     <Stack spacing={enlargedView ? "2.5rem" : "1.5rem"} sx={{ height: "100%", p: enlargedView ? "3rem" : "1.5rem" }}>
-                        <Box
-                            sx={{
-                                position: "relative",
-                                px: enlargedView ? "4rem" : ".8rem",
-                                py: enlargedView ? "5rem" : "2rem",
-                                borderRadius: 1,
-                                boxShadow: "inset 0 0 12px 6px #00000040",
-                                background: `radial-gradient(#FFFFFF20 10px, ${backgroundColor})`,
-                                border: "#00000060 1px solid",
-                            }}
-                        >
+                        <Box sx={{ position: "relative" }}>
                             <Box
-                                component="video"
                                 sx={{
-                                    width: "100%",
-                                    height: enlargedView ? "30rem" : "22rem",
-                                    overflow: "hidden",
-                                    objectFit: "contain",
-                                    objectPosition: "center",
+                                    height: enlargedView ? "37rem" : "25rem",
                                 }}
-                                loop
-                                muted
-                                autoPlay
-                                poster={`${mysteryCrate.image_url || SafePNG}`}
                             >
-                                <source src={mysteryCrate.animation_url} type="video/mp4" />
-                                <source src={mysteryCrate.card_animation_url} type="video/mp4" />
+                                <MediaPreview
+                                    imageUrl={mysteryCrate.image_url || SafePNG}
+                                    videoUrls={[mysteryCrate.animation_url, mysteryCrate.card_animation_url]}
+                                />
                             </Box>
 
                             <Stack

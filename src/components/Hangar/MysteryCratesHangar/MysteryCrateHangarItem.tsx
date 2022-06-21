@@ -9,6 +9,7 @@ import { MysteryCrate } from "../../../types"
 import { ItemType } from "../../../types/marketplace"
 import { ClipThing } from "../../Common/ClipThing"
 import { FancyButton } from "../../Common/FancyButton"
+import { MediaPreview } from "../../Common/MediaPreview/MediaPreview"
 
 interface MysteryCrateStoreItemProps {
     crate: MysteryCrate
@@ -48,32 +49,10 @@ export const MysteryCrateHangarItem = ({ crate }: MysteryCrateStoreItemProps) =>
                         <Box
                             sx={{
                                 position: "relative",
-                                px: ".8rem",
-                                py: "2rem",
-                                borderRadius: 1,
                                 height: "20rem",
-                                boxShadow: "inset 0 0 12px 6px #00000040",
-                                background: `radial-gradient(#FFFFFF20 10px, ${backgroundColor})`,
-                                border: "#00000060 1px solid",
                             }}
                         >
-                            <Box
-                                component="video"
-                                sx={{
-                                    height: "100%",
-                                    width: "100%",
-                                    overflow: "hidden",
-                                    objectFit: "contain",
-                                    objectPosition: "center",
-                                }}
-                                loop
-                                muted
-                                autoPlay
-                                poster={`${crate.image_url || SafePNG}`}
-                            >
-                                <source src={crate.animation_url} type="video/mp4" />
-                                <source src={crate.card_animation_url} type="video/mp4" />
-                            </Box>
+                            <MediaPreview imageUrl={crate.image_url || SafePNG} videoUrls={[crate.animation_url, crate.card_animation_url]} />
 
                             <Stack
                                 alignItems="center"
