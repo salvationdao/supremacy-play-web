@@ -6,8 +6,8 @@ import { SupBackground } from "../../assets"
 import { DEV_ONLY, STREAM_ASPECT_RATIO_W_H } from "../../constants"
 import { useDimension, useStream } from "../../containers"
 import { colors, fonts, siteZIndex } from "../../theme/theme"
-import { Music } from "../Music/Music"
 import { Stream as StreamType } from "../../types"
+import { Music } from "../Music/Music"
 
 export const Stream = () => {
     const { iframeDimensions } = useDimension()
@@ -178,6 +178,7 @@ const OutputPlayerOven = ({
 
     useEffect(() => {
         loadOvenPlayer()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
     return (
         <Stack
