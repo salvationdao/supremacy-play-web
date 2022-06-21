@@ -206,7 +206,6 @@ export const StreamContainer = createContainer(() => {
             ...streams.filter((x) => {
                 return x.users_now < x.user_max && x.status === "online" && x.active
             }),
-            // ovenPlayerStream,
         ]
 
         if (availStreams.length <= 0) return
