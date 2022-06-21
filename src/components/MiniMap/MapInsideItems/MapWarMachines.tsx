@@ -125,7 +125,7 @@ const MapWarMachine = ({
                 transform: `translate(-50%, -50%) translate3d(${(position.x - map.left_pixels) * mapScale}px, ${
                     (position.y - map.top_pixels) * mapScale
                 }px, 0)`,
-                transition: "transform 0.35s linear",
+                transition: "transform 0.275s linear",
                 zIndex: isAlive ? 5 : 4,
                 opacity: 1,
                 border: highlightedMechHash === warMachine.hash ? `${primaryColor} 1rem dashed` : "unset",

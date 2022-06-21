@@ -4,6 +4,7 @@ import { ClipThing, FactionAbilityItem } from ".."
 import { GenericWarMachinePNG } from "../../assets"
 import { Faction, GameAbility, WarMachineState } from "../../types"
 import { ContributorAmount } from "../BattleStats/ContributorAmount"
+import { MechMoveCommand } from "../PlayerAbilities/MechMoveCommand"
 
 interface WarMachineAbilitiesPopoverProps {
     popoverRef: React.MutableRefObject<null>
@@ -95,6 +96,7 @@ export const WarMachineAbilitiesPopover = ({
                                         />
                                     </Box>
                                 ))}
+                                <MechMoveCommand warMachine={warMachine} faction={faction} clipSlantSize="5px" />
                             </Stack>
                         </Stack>
                     </Box>
