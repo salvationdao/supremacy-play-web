@@ -42,11 +42,8 @@
 	onClick={onClick}
 >
 	<Typography
-		variant="caption"
-		sx={{
-			color: "#FF0000",
-			fontFamily: fonts.nostromoBlack,
-		}}
+		variant="body2"
+		sx={{ color: "#FF0000", }}
 	>
 		GO TO ASSET STORE
 	</Typography>
