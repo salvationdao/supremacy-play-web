@@ -29,6 +29,7 @@ export interface Stream {
     host: string
     name: string
     url: string
+    service: string
     stream_id: string
     region: string
     resolution: string
