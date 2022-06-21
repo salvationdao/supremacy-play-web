@@ -161,9 +161,8 @@ const MoveableResizableInner = ({ children }: MoveableResizableProps) => {
                                 sx={{
                                     position: "relative",
                                     pl: "1rem",
-                                    pt: ".8rem",
-                                    pb: ".5rem",
                                     pr: onHideCallback ? "1.7rem" : "3rem",
+                                    height: "3.3rem",
                                     zIndex: 3,
                                 }}
                             >

@@ -1,9 +1,11 @@
-import { Box, Fade } from "@mui/material"
+import { Box, Fade, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useRef, useState } from "react"
 import { MiniMapInside, MoveableResizable, TargetTimerCountdown } from ".."
 import { MINI_MAP_DEFAULT_SIZE } from "../../constants"
 import { BribeStageResponse, useDimension, useGame, useOverlayToggles, useSnackbar, WinnerAnnouncementResponse } from "../../containers"
+import { useTheme } from "../../containers/theme"
 import { useToggle } from "../../hooks"
+import { fonts } from "../../theme/theme"
 import { Map } from "../../types"
 import { MoveableResizableConfig, useMoveableResizable } from "../Common/MoveableResizable/MoveableResizableContainer"
 
@@ -109,6 +111,7 @@ const MiniMapInner = ({ map, winner, setWinner, bribeStage }: MiniMapInnerProps)
     }, [timeReachZero, submitted, setWinner, newSnackbarMessage])
 
     // For map rendering
+    const theme = useTheme()
     const {
         gameUIDimensions: { width, height },
     } = useDimension()
@@ -192,6 +195,9 @@ const MiniMapInner = ({ map, winner, setWinner, bribeStage }: MiniMapInnerProps)
         }
     }, [height, isTargeting, maxHeight, maxWidth, setCurHeight, setCurPosX, setCurPosY, setCurWidth, width])
 
+    let mapName = map.name
+    if (mapName === "NeoTokyo") mapName = "City Block X2"
+
     return useMemo(
         () => (
             <Box
@@ -205,6 +211,35 @@ const MiniMapInner = ({ map, winner, setWinner, bribeStage }: MiniMapInnerProps)
                     pointerEvents: "all",
                 }}
             >
+                <Stack
+                    direction="row"
+                    alignItems="center"
+                    sx={{
+                        position: "absolute",
+                        left: 0,
+                        right: 0,
+                        height: "3.1rem",
+                        px: "1.8rem",
+                        backgroundColor: "#000000BF",
+                        borderBottom: `${theme.factionTheme.primary}80 .25rem solid`,
+                        zIndex: 99,
+                    }}
+                >
+                    <Typography
+                        variant="caption"
+                        sx={{
+                            fontFamily: fonts.nostromoBlack,
+                            lineHeight: 1,
+                            opacity: 0.8,
+                        }}
+                    >
+                        {mapName
+                            .replace(/([A-Z])/g, " $1")
+                            .trim()
+                            .toUpperCase()}
+                    </Typography>
+                </Stack>
+
                 {isTargeting && winner ? (
                     <>
                         <MiniMapInside
@@ -227,6 +262,6 @@ const MiniMapInner = ({ map, winner, setWinner, bribeStage }: MiniMapInnerProps)
                 )}
             </Box>
         ),
-        [curHeight, curWidth, isTargeting, newSnackbarMessage, winner],
+        [curHeight, curWidth, isTargeting, mapName, newSnackbarMessage, theme.factionTheme.primary, winner],
     )
 }
