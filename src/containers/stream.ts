@@ -1,57 +1,175 @@
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
+import { useParameterizedQuery } from "react-fetching-library"
 import { createContainer } from "unstated-next"
-import { WebRTCAdaptor } from "@antmedia/webrtc_adaptor"
+import { GetStreamList } from "../fetching"
+import { getObjectFromArrayByKey, parseString } from "../helpers"
 import { useToggle } from "../hooks"
 import { Stream, StreamService } from "../types"
-import { getObjectFromArrayByKey, parseString } from "../helpers"
-import { useSnackbar } from "."
-import { useParameterizedQuery } from "react-fetching-library"
-import { GetStreamList } from "../fetching"
+
+const testData: Stream[] = [
+    {
+        host: "https://stream2.supremacy.game:3334/app/stream2",
+        name: "Experimental 🌟",
+        url: "wss://stream2.supremacy.game:3334/app/stream2",
+        stream_id: "Experimental",
+        region: "au",
+        resolution: "1920x1080",
+        bit_rates_k_bits: 4000,
+        user_max: 1000,
+        users_now: 100,
+        active: true,
+        status: "online",
+        latitude: "1.3521000146865845",
+        longitude: "103.8198013305664",
+        service: StreamService.OvenMediaEngine,
+    },
+    {
+        host: "https://video-us-az.ninja-cdn.com/WebRTCAppEE/player.html?name=C09fbFLgzraO1655181891921",
+        name: "STAGING",
+        url: "wss://video-us-az.ninja-cdn.com/WebRTCAppEE/websocket",
+        stream_id: "C09fbFLgzraO1655181891921",
+        region: "us",
+        resolution: "1920x1080",
+        bit_rates_k_bits: 6000,
+        user_max: 1000,
+        users_now: 40,
+        active: true,
+        status: "online",
+        latitude: "34.048927",
+        longitude: "-111.093735",
+        service: StreamService.AntMedia,
+    },
+    {
+        host: "https://video-au-syd.ninja-cdn.com/WebRTCAppEE/player.html?name=kKS7qgSpuaVb1645817767607",
+        name: "AUS SYD",
+        url: "wss://video-au-syd.ninja-cdn.com/WebRTCAppEE/websocket",
+        stream_id: "kKS7qgSpuaVb1645817767607",
+        region: "au",
+        resolution: "1920x1080",
+        bit_rates_k_bits: 4000,
+        user_max: 150,
+        users_now: 50,
+        active: false,
+        status: "offline",
+        latitude: "-33.865143",
+        longitude: "151.2099",
+        service: StreamService.AntMedia,
+    },
+    {
+        host: "https://video-sg-sin.ninja-cdn.com/WebRTCAppEE/player.html?name=kKS7qgSpuaVb1645817767607",
+        name: "SG SIN",
+        url: "wss://video-sg-sin.ninja-cdn.com/WebRTCAppEE/websocket",
+        stream_id: "kKS7qgSpuaVb1645817767607",
+        region: "se-asia",
+        resolution: "1920x1080",
+        bit_rates_k_bits: 4000,
+        user_max: 150,
+        users_now: 50,
+        active: false,
+        status: "offline",
+        latitude: "1.3521000146865845",
+        longitude: "103.8198013305664",
+        service: StreamService.AntMedia,
+    },
+    {
+        host: "https://video-jp-tyo.ninja-cdn.com/WebRTCAppEE/player.html?name=kKS7qgSpuaVb1645817767607",
+        name: "JP TYO",
+        url: "wss://video-jp-tyo.ninja-cdn.com/WebRTCAppEE/websocket",
+        stream_id: "kKS7qgSpuaVb1645817767607",
+        region: "jp",
+        resolution: "1920x1080",
+        bit_rates_k_bits: 4000,
+        user_max: 150,
+        users_now: 50,
+        active: false,
+        status: "offline",
+        latitude: "35.652832",
+        longitude: "139.839478",
+        service: StreamService.AntMedia,
+    },
+    {
+        host: "https://video-de-fra.ninja-cdn.com/WebRTCAppEE/player.html?name=kKS7qgSpuaVb1645817767607",
+        name: "DE FRA",
+        url: "wss://video-de-fra.ninja-cdn.com/WebRTCAppEE/websocket",
+        stream_id: "kKS7qgSpuaVb1645817767607",
+        region: "eu",
+        resolution: "1920x1080",
+        bit_rates_k_bits: 4000,
+        user_max: 300,
+        users_now: 100,
+        active: false,
+        status: "offline",
+        latitude: "10.451499938964844",
+        longitude: "51.16569900512695",
+        service: StreamService.AntMedia,
+    },
+    {
+        host: "https://video-us-la.ninja-cdn.com/WebRTCAppEE/player.html?name=kKS7qgSpuaVb1645817767607",
+        name: "USA LA",
+        url: "wss://video-us-la.ninja-cdn.com/WebRTCAppEE/websocket",
+        stream_id: "kKS7qgSpuaVb1645817767607",
+        region: "us",
+        resolution: "1920x1080",
+        bit_rates_k_bits: 4000,
+        user_max: 1000,
+        users_now: 100,
+        active: false,
+        status: "offline",
+        latitude: "34.052235",
+        longitude: "-118.243683",
+        service: StreamService.AntMedia,
+    },
+    {
+        host: "https://video-us-ny.ninja-cdn.com/WebRTCAppEE/player.html?name=kKS7qgSpuaVb1645817767607",
+        name: "USA NY",
+        url: "wss://video-us-ny.ninja-cdn.com/WebRTCAppEE/websocket",
+        stream_id: "kKS7qgSpuaVb1645817767607",
+        region: "us",
+        resolution: "1920x1080",
+        bit_rates_k_bits: 4000,
+        user_max: 3000,
+        users_now: 100,
+        active: false,
+        status: "offline",
+        latitude: "40.712776",
+        longitude: "-74.005974",
+        service: StreamService.AntMedia,
+    },
+    {
+        host: "http://23.250.14.154:5080/WebRTCAppEE/player.html?name=kKS7qgSpuaVb1645817767607",
+        name: "USA NY",
+        url: "ws://23.250.14.154:5080/WebRTCAppEE/websocket",
+        stream_id: "kKS7qgSpuaVb1645817767607",
+        region: "us",
+        resolution: "1920x1080",
+        bit_rates_k_bits: 6000,
+        user_max: 400,
+        users_now: 40,
+        active: false,
+        status: "online",
+        latitude: "40.712776",
+        longitude: "-74.005974",
+        service: StreamService.AntMedia,
+    },
+    {
+        host: "https://video-us-ny2.ninja-cdn.com/WebRTCAppEE/player.html?name=kKS7qgSpuaVb1645817767607",
+        name: "USA NY2",
+        url: "wss://video-us-ny2.ninja-cdn.com/WebRTCAppEE/websocket",
+        stream_id: "kKS7qgSpuaVb1645817767607",
+        region: "us",
+        resolution: "1920x1080",
+        bit_rates_k_bits: 4000,
+        user_max: 2000,
+        users_now: 100,
+        active: false,
+        status: "online",
+        latitude: "40.712776",
+        longitude: "-74.005974",
+        service: StreamService.AntMedia,
+    },
+]
 
 const MAX_OPTIONS = 10
-
-interface StreamInfoEntry {
-    audioBitrate: number
-    streamHeight: number
-    streamWidth: number
-    videoBitrate: number
-    videoCodec: string
-}
-
-interface WebRTCCallbackObj {
-    command: string
-    streamId: string
-    streamInfo: {
-        videoBitrate: number
-        streamWidth: number
-        streamHeight: number
-        audioBitrate: number
-        videoCodec: string
-    }[]
-}
-
-interface WebRTCAdaptorType {
-    websocket_url: string
-    mediaConstraints: {
-        video: boolean
-        audio: boolean
-    }
-    sdp_constraints: {
-        OfferToReceiveAudio: boolean
-        OfferToReceiveVideo: boolean
-    }
-    remoteVideoId: string
-    isPlayMode: boolean
-    debug: boolean
-    candidateTypes: string[]
-    callback: (info: string, obj: WebRTCCallbackObj | null) => void
-    callbackError: (error: string) => void
-
-    forceStreamQuality: (stream_id: string, quality: number) => void
-    play: (stream_id: string, token_id: string) => void
-    getStreamInfo: (stream_id: string) => void
-    closeWebSocket: (stream_id: string) => void
-}
 
 const blankOption: Stream = {
     host: "No Stream",
@@ -60,28 +178,22 @@ const blankOption: Stream = {
     stream_id: "No Stream",
     region: "",
     resolution: "",
-    bit_rates_kbits: 0,
+    bit_rates_k_bits: 0,
     user_max: 999999,
     users_now: 0,
     active: true,
     status: "online",
-    latitude: 0,
-    longitude: 0,
-    distance: 0,
+    latitude: "0",
+    longitude: "0",
     service: StreamService.None,
 }
 
 export const StreamContainer = createContainer(() => {
-    const { newSnackbarMessage } = useSnackbar()
     const { query: queryGetStreamList } = useParameterizedQuery(GetStreamList)
     const defaultResolution = 720
 
-    // video
-    const webRtc = useRef<WebRTCAdaptorType>()
-    const vidRef = useRef<HTMLVideoElement | undefined>(undefined)
-    const [currentPlayingStreamHost, setCurrentPlayingStreamHost] = useState<string>()
-
     // stream
+    const [currentPlayingStreamHost, setCurrentPlayingStreamHost] = useState<string>()
     const [streams, setStreams] = useState<Stream[]>([])
     const [streamOptions, setStreamOptions] = useState<Stream[]>([])
     const [currentStream, setCurrentStream] = useState<Stream>()
@@ -95,7 +207,6 @@ export const StreamContainer = createContainer(() => {
     // resolution
     const [selectedResolution, setSelectedResolution] = useState<number>()
     const [streamResolutions, setStreamResolutions] = useState<number[]>([])
-    const [, setFailedToChangeRed] = useState(false)
 
     // Fetch stream list
     useEffect(() => {
@@ -103,32 +214,13 @@ export const StreamContainer = createContainer(() => {
             try {
                 const resp = await queryGetStreamList({})
                 if (resp.error || !resp.payload) return
-                setStreams([blankOption, ...resp.payload])
+                // setStreams([blankOption, ...resp.payload])
+                setStreams(testData)
             } catch (e) {
                 console.error(e)
             }
         })()
     }, [queryGetStreamList])
-
-    // When user selects a resolution, make the change into the stream
-    useEffect(() => {
-        if (
-            webRtc?.current &&
-            selectedResolution &&
-            selectedResolution > 0 &&
-            streamResolutions &&
-            streamResolutions.length > 0 &&
-            currentStream &&
-            currentStream.host === currentPlayingStreamHost
-        ) {
-            try {
-                webRtc.current.forceStreamQuality(currentStream.stream_id, selectedResolution)
-                setFailedToChangeRed(false)
-            } catch {
-                setFailedToChangeRed(true)
-            }
-        }
-    }, [selectedResolution, currentStream, streamResolutions, currentPlayingStreamHost])
 
     useEffect(() => {
         if (localStorage.getItem("isMute") == "true") setVolume(0)
@@ -151,9 +243,6 @@ export const StreamContainer = createContainer(() => {
             return
         }
 
-        if (vidRef && vidRef.current) {
-            vidRef.current.volume = volume
-        }
         toggleIsMute(false)
     }, [toggleIsMute, volume])
 
@@ -228,81 +317,17 @@ export const StreamContainer = createContainer(() => {
         setNewStreamOptions(quietestStreams)
     }, [setNewStreamOptions, streams])
 
-    const vidRefCallback = useCallback(
-        (vid: HTMLVideoElement) => {
-            if (!currentStream || !currentStream.url || !currentStream.stream_id) return
-            if (!vid || !vid.parentNode) {
-                vidRef.current = undefined
-                return
-            }
-            try {
-                vidRef.current = vid
-                vidRef.current.volume = parseString(localStorage.getItem("streamVolume"), 0.3)
-
-                webRtc.current = new WebRTCAdaptor({
-                    websocket_url: currentStream.url,
-                    mediaConstraints: { video: false, audio: false },
-                    sdp_constraints: {
-                        OfferToReceiveAudio: true,
-                        OfferToReceiveVideo: true,
-                    },
-                    remoteVideoId: "remoteVideo",
-                    isPlayMode: true,
-                    debug: false,
-                    candidateTypes: ["tcp", "udp"],
-                    callback: (info: string, obj: WebRTCCallbackObj) => {
-                        if (info == "initialized") {
-                            if (!webRtc || !webRtc.current || !webRtc.current.play) return
-                            webRtc.current.play(currentStream.stream_id, "")
-                        } else if (info == "play_started") {
-                            if (!webRtc || !webRtc.current || !webRtc.current.getStreamInfo) return
-                            webRtc.current.getStreamInfo(currentStream.stream_id)
-                        } else if (info == "streamInformation") {
-                            const resolutions: number[] = []
-                            obj["streamInfo"].forEach((entry: StreamInfoEntry) => {
-                                // get resolutions from server response and added to an array.
-                                if (!resolutions.includes(entry["streamHeight"])) {
-                                    resolutions.push(entry["streamHeight"])
-                                }
-                            })
-                            setStreamResolutions(resolutions)
-                            setSelectedResolution(Math.max.apply(null, resolutions))
-                            setCurrentPlayingStreamHost(currentStream.host)
-                        } else if (info == "closed") {
-                            webRtc.current = undefined
-                            if (typeof obj != "undefined") {
-                                console.debug("connection closed: " + JSON.stringify(obj))
-                            }
-                        }
-                    },
-                    callbackError: (e: string) => {
-                        if (e === "no_stream_exist" || e === "WebSocketNotConnected") {
-                            console.error("Failed to start stream:", e)
-                            newSnackbarMessage("Failed to start stream.", "error")
-                        }
-                    },
-                })
-            } catch (e) {
-                console.error(e)
-                webRtc.current = undefined
-            }
-        },
-        [currentStream, newSnackbarMessage],
-    )
-
     return {
-        webRtc,
-        vidRef,
-        vidRefCallback,
-
         streamOptions,
-
         currentStream,
         changeStream,
 
         streamResolutions,
         selectedResolution,
         setSelectedResolution,
+        currentPlayingStreamHost,
+        setCurrentPlayingStreamHost,
+        setStreamResolutions,
 
         volume,
         setVolume,
