@@ -3,19 +3,11 @@ import { useTour } from "@reactour/tour"
 import OvenPlayer from "ovenplayer"
 import { useEffect } from "react"
 import { SupBackground } from "../../assets"
-import { DEV_ONLY, OVENPLAYER_STREAM, STREAM_ASPECT_RATIO_W_H } from "../../constants"
+import { DEV_ONLY, STREAM_ASPECT_RATIO_W_H } from "../../constants"
 import { useDimension, useStream } from "../../containers"
 import { colors, fonts, siteZIndex } from "../../theme/theme"
+import { Stream as StreamType, StreamService } from "../../types"
 import { Music } from "../Music/Music"
-
-interface OvenPlayerSource {
-    type: "webrtc" | "llhls" | "hls" | "lldash" | "dash" | "mp4"
-    file: string
-    label?: string
-    framerate?: number
-    sectionStart?: number
-    sectionEnd?: number
-}
 
 export const Stream = () => {
     const { iframeDimensions } = useDimension()
@@ -23,13 +15,12 @@ export const Stream = () => {
     const { isOpen } = useTour()
 
     if (isOpen) return null
-
     const isPlaying = streamResolutions && streamResolutions.length > 0
 
     return (
         <>
-            {currentStream?.name === OVENPLAYER_STREAM ? (
-                <OutputPlayerOven iframeDimensions={iframeDimensions} />
+            {currentStream?.service === StreamService.OvenMediaEngine ? (
+                <OutputPlayerOven stream={currentStream} iframeDimensions={iframeDimensions} />
             ) : (
                 <Stack sx={{ width: "100%", height: "100%", zIndex: siteZIndex.Stream }}>
                     {!isPlaying && <NoStreamScreen />}
@@ -151,7 +142,9 @@ interface OvenPlayerSource {
 
 const OutputPlayerOven = ({
     iframeDimensions,
+    stream,
 }: {
+    stream: StreamType
     iframeDimensions: {
         width: string | number
         height: string | number
@@ -161,10 +154,9 @@ const OutputPlayerOven = ({
         if (document.getElementById("oven-player")) {
             // load oven player
             const source: OvenPlayerSource = {
-                label: "label_for_webrtc",
-                // Set the type to 'webrtc'
+                label: stream.name,
                 type: "webrtc",
-                file: "wss://stream2.supremacy.game:3334/app/stream2",
+                file: stream.url,
             }
             const ovenPlayer = OvenPlayer.create("oven-player", {
                 autoStart: true,
@@ -186,6 +178,7 @@ const OutputPlayerOven = ({
 
     useEffect(() => {
         loadOvenPlayer()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
     return (
         <Stack
