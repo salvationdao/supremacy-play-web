@@ -157,15 +157,17 @@ const OutputPlayerOven = ({
         height: string | number
     }
 }) => {
-    const loadOvenPlayer = () => {
+    // Load oven player
+    useEffect(() => {
         if (document.getElementById("oven-player")) {
-            // load oven player
+            // Load oven player
             const source: OvenPlayerSource = {
                 label: "label_for_webrtc",
                 // Set the type to 'webrtc'
                 type: "webrtc",
                 file: "wss://stream2.supremacy.game:3334/app/stream2",
             }
+
             const ovenPlayer = OvenPlayer.create("oven-player", {
                 autoStart: true,
                 controls: false,
@@ -179,14 +181,11 @@ const OutputPlayerOven = ({
             })
 
             ovenPlayer.on("error", (e: Error) => {
-                console.log("ovenplayer error: ", e)
+                console.error("ovenplayer error: ", e)
             })
         }
-    }
-
-    useEffect(() => {
-        loadOvenPlayer()
     }, [])
+
     return (
         <Stack
             sx={{
