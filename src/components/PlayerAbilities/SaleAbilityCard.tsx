@@ -31,6 +31,10 @@ export const SaleAbilityCard = ({ saleAbility, updatedPrice, ...props }: Ability
     const [purchaseError, setPurchaseError] = useState<string | null>(null)
 
     useEffect(() => {
+        console.log(updatedPrice, "updated price")
+    }, [updatedPrice])
+
+    useEffect(() => {
         switch (saleAbility.ability.location_select_type) {
             case LocationSelectType.GLOBAL:
                 setAbilityTypeDescription("This ability will affect all units on the map.")
@@ -56,7 +60,7 @@ export const SaleAbilityCard = ({ saleAbility, updatedPrice, ...props }: Ability
             setPurchaseLoading(true)
             await send(GameServerKeys.SaleAbilityPurchase, {
                 ability_id: saleAbility.id,
-                amount: saleAbility.current_price,
+                amount: updatedPrice,
             })
             newSnackbarMessage(`Successfully purchased 1 ${saleAbility.ability.label || "ability"}`, "success")
             toggleShowPurchaseModal(false)
@@ -70,7 +74,7 @@ export const SaleAbilityCard = ({ saleAbility, updatedPrice, ...props }: Ability
         } finally {
             setPurchaseLoading(false)
         }
-    }, [send, saleAbility, newSnackbarMessage, toggleShowPurchaseModal])
+    }, [send, saleAbility, updatedPrice, newSnackbarMessage, toggleShowPurchaseModal])
 
     return (
         <>
