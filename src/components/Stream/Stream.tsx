@@ -6,7 +6,7 @@ import { SupBackground } from "../../assets"
 import { DEV_ONLY, STREAM_ASPECT_RATIO_W_H } from "../../constants"
 import { useDimension, useStream } from "../../containers"
 import { colors, fonts, siteZIndex } from "../../theme/theme"
-import { Stream as StreamType } from "../../types"
+import { Stream as StreamType, StreamService } from "../../types"
 import { Music } from "../Music/Music"
 
 export const Stream = () => {
@@ -19,7 +19,7 @@ export const Stream = () => {
 
     return (
         <>
-            {currentStream?.service === "OvenMediaEngine" ? (
+            {currentStream?.service === StreamService.OvenMediaEngine ? (
                 <OutputPlayerOven stream={currentStream} iframeDimensions={iframeDimensions} />
             ) : (
                 <Stack sx={{ width: "100%", height: "100%", zIndex: siteZIndex.Stream }}>

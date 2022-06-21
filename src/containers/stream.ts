@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import { createContainer } from "unstated-next"
 import { WebRTCAdaptor } from "@antmedia/webrtc_adaptor"
 import { useToggle } from "../hooks"
-import { Stream } from "../types"
+import { Stream, StreamService } from "../types"
 import { getObjectFromArrayByKey, parseString } from "../helpers"
 import { useSnackbar } from "."
 import { useParameterizedQuery } from "react-fetching-library"
@@ -68,7 +68,7 @@ const blankOption: Stream = {
     latitude: 0,
     longitude: 0,
     distance: 0,
-    service: "",
+    service: StreamService.None,
 }
 
 export const StreamContainer = createContainer(() => {
