@@ -61,6 +61,7 @@ const MoveableResizableInner = ({ children }: MoveableResizableProps) => {
             }}
         >
             <MovingBox
+                key={`${curWidth}${curHeight}${curPosX}${curPosY}`}
                 color={theme.factionTheme.primary}
                 onMovingStopped={onMovingStopped}
                 initialPosX={curPosX}
@@ -106,6 +107,7 @@ const MoveableResizableInner = ({ children }: MoveableResizableProps) => {
                         zIndex: siteZIndex.MoveableResizableHover,
                     },
                     pointerEvents: "all",
+                    transition: "all .2s",
                 }}
             >
                 <Box sx={{ position: "relative" }}>
@@ -128,8 +130,8 @@ const MoveableResizableInner = ({ children }: MoveableResizableProps) => {
                                     right: 0,
                                     cursor: "nw-resize",
                                     zIndex: siteZIndex.MoveableResizable,
-                                    width: "10px",
-                                    height: "10px",
+                                    width: "2rem",
+                                    height: "2rem",
                                 }}
                             />
                         )}
@@ -166,7 +168,7 @@ const MoveableResizableInner = ({ children }: MoveableResizableProps) => {
                                 }}
                             >
                                 {infoTooltipText && (
-                                    <TooltipHelper text={infoTooltipText}>
+                                    <TooltipHelper text={infoTooltipText} placement="bottom">
                                         <Box
                                             sx={{
                                                 mr: onHideCallback ? "3rem" : ".9rem",

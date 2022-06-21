@@ -31,6 +31,7 @@ export interface MoveableResizableConfig {
     maxHeight?: number
     // Others
     onHideCallback?: () => void
+    resizeHandlePlacement?: "topLeft" | "bottomRight"
     infoTooltipText?: string
 }
 
