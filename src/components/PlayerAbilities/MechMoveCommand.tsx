@@ -1,7 +1,7 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
-import { useGameServerSubscriptionFaction } from "../../hooks/useGameServer"
+import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
-import { useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { Faction, WarMachineState } from "../../types"
 import { useAuth } from "../../containers"
 import { ClipThing } from "../Common/ClipThing"
@@ -41,22 +41,39 @@ export const MechMoveCommand = ({ warMachine, faction, clipSlantSize }: MechMove
         (payload) => {
             if (!payload) return
             setMechMoveCommand(payload)
+            console.log(payload)
         },
     )
 
     if (!mechMoveCommand) return null
 
-    return <MechMoveCommandInner faction={faction} clipSlantSize={clipSlantSize} mechMoveCommand={mechMoveCommand} />
+    return <MechMoveCommandInner faction={faction} clipSlantSize={clipSlantSize} mechMoveCommand={mechMoveCommand} warMachine={warMachine} />
 }
 
 interface MechMoveCommandInnerProps {
     faction: Faction
     clipSlantSize: string
     mechMoveCommand: MechMoveCommand
+    warMachine: WarMachineState
 }
 
-export const MechMoveCommandInner = ({ faction, clipSlantSize, mechMoveCommand }: MechMoveCommandInnerProps) => {
+export const MechMoveCommandInner = ({ faction, clipSlantSize, mechMoveCommand, warMachine }: MechMoveCommandInnerProps) => {
+    const { hash } = warMachine
     const backgroundColor = useMemo(() => shadeColor(faction.primary_color, -70), [])
+    const [remainSeconds, setRemainSeconds] = useState(mechMoveCommand.remain_cooldown_seconds)
+    useEffect(() => {
+        console.log("triggered")
+        setRemainSeconds(mechMoveCommand.remain_cooldown_seconds)
+    }, [mechMoveCommand])
+    useInterval(() => {
+        setRemainSeconds((rs) => {
+            if (rs == 0) {
+                return 0
+            }
+            return rs - 1
+        })
+    }, 1000)
+
     return (
         <Box>
             <Fade in={true}>
@@ -92,9 +109,11 @@ export const MechMoveCommandInner = ({ faction, clipSlantSize, mechMoveCommand }
                                 />
                                 <MechCommandButton
                                     color={faction.primary_color}
-                                    remainCooldownSeconds={mechMoveCommand.remain_cooldown_seconds}
+                                    remainCooldownSeconds={remainSeconds}
                                     textColor={faction.secondary_color}
                                     isCancelled={!!mechMoveCommand.cancelled_at}
+                                    hash={hash}
+                                    mechMoveCommandID={mechMoveCommand.id}
                                 />
                             </Stack>
                             <Box
@@ -106,7 +125,7 @@ export const MechMoveCommandInner = ({ faction, clipSlantSize, mechMoveCommand }
                                     borderRadius: 1,
                                 }}
                             >
-                                <MechCommandCooldownBar remainCooldownSecond={mechMoveCommand.remain_cooldown_seconds} color={faction.primary_color} />
+                                <MechCommandChargingBar remainCooldownSecond={remainSeconds} color={faction.primary_color} />
                             </Box>
                         </Stack>
                     </ClipThing>
@@ -121,8 +140,13 @@ interface MechCommandButton {
     remainCooldownSeconds: number
     isCancelled: boolean
     textColor?: string
+
+    // delete afterward
+    hash: string
+    mechMoveCommandID: string
 }
-const MechCommandButton = ({ color, remainCooldownSeconds, isCancelled, textColor }: MechCommandButton) => {
+const MechCommandButton = ({ color, remainCooldownSeconds, isCancelled, textColor, hash, mechMoveCommandID }: MechCommandButton) => {
+    const { send } = useGameServerCommandsFaction("/faction_commander")
     const text = useMemo(() => {
         if (remainCooldownSeconds > 0 && !isCancelled) {
             return "Cancel"
@@ -145,6 +169,30 @@ const MechCommandButton = ({ color, remainCooldownSeconds, isCancelled, textColo
         return textColor || "#FFFFFF"
     }, [remainCooldownSeconds, isCancelled, textColor])
 
+    const onCreate = useCallback(
+        () =>
+            send(GameServerKeys.MechMoveCommandCreate, {
+                hash: hash,
+                x: 10,
+                y: 10,
+            }).catch((e) => console.log(e)),
+        [hash],
+    )
+
+    const onCancel = useCallback(
+        () =>
+            send(GameServerKeys.MechMoveCommandCancel, {
+                move_command_id: mechMoveCommandID,
+                hash,
+            }).catch((e) => console.log(e)),
+        [mechMoveCommandID],
+    )
+
+    const onClick = useMemo(() => {
+        if (remainCooldownSeconds > 0 && !isCancelled) return onCancel
+        return onCreate
+    }, [remainCooldownSeconds, isCancelled, textColor, onCreate, onCancel])
+
     return (
         <FancyButton
             clipThingsProps={{
@@ -153,7 +201,9 @@ const MechCommandButton = ({ color, remainCooldownSeconds, isCancelled, textColo
                 border: { isFancy: true, borderColor: color || "#14182B" },
                 sx: { flex: 1, position: "relative" },
             }}
+            disabled={remainCooldownSeconds > 0 && isCancelled}
             sx={{ py: ".2rem", minWidth: "2rem" }}
+            onClick={onClick}
         >
             <Stack alignItems="center" justifyContent="center" direction="row">
                 <Typography
@@ -175,12 +225,7 @@ interface MechCommandCooldownBarProps {
     remainCooldownSecond: number
     color: string
 }
-const MechCommandCooldownBar = ({ remainCooldownSecond, color }: MechCommandCooldownBarProps) => {
-    const [progressPercent, setProgressPercent] = useState(0)
-    useInterval(() => {
-        setProgressPercent((30 - remainCooldownSecond / 30) * 100)
-    }, 1000)
-
+const MechCommandChargingBar = ({ remainCooldownSecond, color }: MechCommandCooldownBarProps) => {
     return (
         <Stack
             direction="row"
@@ -198,9 +243,9 @@ const MechCommandCooldownBar = ({ remainCooldownSecond, color }: MechCommandCool
         >
             <Box
                 style={{
-                    width: `${progressPercent}%`,
+                    width: `${((30.0 - remainCooldownSecond) / 30.0) * 100}%`,
                     height: "100%",
-                    transition: "all .15s",
+                    transition: "all 1s",
                     backgroundColor: color || colors.neonBlue,
                     zIndex: 5,
                     borderRadius: 0.4,

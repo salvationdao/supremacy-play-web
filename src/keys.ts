@@ -30,6 +30,8 @@ export enum GameServerKeys {
     SubmitAbilityLocationSelect = "ABILITY:LOCATION:SELECT",
 
     SubMechMoveCommand = "MECH:MOVE:COMMAND:SUBSCRIBE",
+    MechMoveCommandCreate = "MECH:MOVE:COMMAND:CREATE",
+    MechMoveCommandCancel = "MECH:MOVE:COMMAND:CANCEL",
 
     // Game Use
     GameUserOnline = "GAME:ONLINE",
