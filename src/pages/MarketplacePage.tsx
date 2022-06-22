@@ -7,9 +7,10 @@ import { MysteryCratesMarket } from "../components/Marketplace/MysteryCratesMark
 import { WarMachinesMarket } from "../components/Marketplace/WarMachinesMarket/WarMachinesMarket"
 import { useTheme } from "../containers/theme"
 import { ROUTES_MAP } from "../routes"
-import { siteZIndex } from "../theme/theme"
+import { colors, siteZIndex } from "../theme/theme"
 
 export enum MARKETPLACE_TABS {
+    You = "you",
     WarMachines = "war-machines",
     Keycards = "key-cards",
     MysteryCrates = "mystery-crates",
@@ -38,6 +39,9 @@ export const MarketplacePage = () => {
 
     if (!currentValue) return null
 
+    const primaryColor = currentValue === MARKETPLACE_TABS.You ? colors.green : theme.factionTheme.primary
+    const secondaryColor = currentValue === MARKETPLACE_TABS.You ? "#FFFFFF" : theme.factionTheme.secondary
+
     return (
         <Stack
             alignItems="center"
@@ -52,7 +56,7 @@ export const MarketplacePage = () => {
             }}
         >
             <Stack sx={{ mt: "1.5rem", mb: "2rem", height: "100%", width: "calc(100% - 3rem)", maxWidth: "190rem" }}>
-                <Box sx={{ maxWidth: "fit-content", mb: "1.1rem", border: `${theme.factionTheme.primary}CC .4rem solid` }}>
+                <Box sx={{ maxWidth: "fit-content", mb: "1.1rem", border: `${primaryColor}CC .4rem solid` }}>
                     <Tabs
                         value={currentValue}
                         onChange={handleChange}
@@ -60,22 +64,26 @@ export const MarketplacePage = () => {
                         scrollButtons="auto"
                         sx={{
                             flexShrink: 0,
-                            color: (theme) => theme.factionTheme.primary,
+                            color: primaryColor,
                             minHeight: 0,
                             ".MuiTab-root": { minHeight: 0, fontSize: "1.3rem", py: ".8rem" },
                             ".Mui-selected": {
-                                color: (theme) => `${theme.factionTheme.secondary} !important`,
-                                background: (theme) => `linear-gradient(${theme.factionTheme.primary} 26%, ${theme.factionTheme.primary}BB)`,
+                                color: `${secondaryColor} !important`,
+                                background: `linear-gradient(${primaryColor} 26%, ${primaryColor}BB)`,
                             },
                             ".MuiTabs-indicator": { display: "none" },
                         }}
                     >
+                        <Tab label="YOU" value={MARKETPLACE_TABS.You} />
                         <Tab label="WAR MACHINES" value={MARKETPLACE_TABS.WarMachines} />
                         <Tab label="KEY CARDS" value={MARKETPLACE_TABS.Keycards} />
                         <Tab label="MYSTERY CRATES" value={MARKETPLACE_TABS.MysteryCrates} />
                     </Tabs>
                 </Box>
 
+                <TabPanel currentValue={currentValue} value={MARKETPLACE_TABS.You}>
+                    aaa
+                </TabPanel>
                 <TabPanel currentValue={currentValue} value={MARKETPLACE_TABS.WarMachines}>
                     <WarMachinesMarket />
                 </TabPanel>
