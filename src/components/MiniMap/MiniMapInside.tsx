@@ -66,13 +66,16 @@ const MiniMapInsideInner = ({
         if (!selection) return
 
         try {
-            send<boolean, { x: number; y: number }>(GameServerKeys.SubmitAbilityLocationSelect, {
+            const resp = await send<boolean, { x: number; y: number }>(GameServerKeys.SubmitAbilityLocationSelect, {
                 x: Math.floor(selection.x),
                 y: Math.floor(selection.y),
             })
-            setSubmitted && setSubmitted(true)
-            setSelection(undefined)
+
             newSnackbarMessage("Successfully submitted target location.", "success")
+            if (resp) {
+                setSubmitted && setSubmitted(true)
+                setSelection(undefined)
+            }
         } catch (e) {
             newSnackbarMessage(typeof e === "string" ? e : "Failed to submit target location.", "error")
             console.error(e)

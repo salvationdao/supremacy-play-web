@@ -150,14 +150,16 @@ const OutputPlayerOven = ({
         height: string | number
     }
 }) => {
-    const loadOvenPlayer = () => {
+    // Load oven player
+    useEffect(() => {
         if (document.getElementById("oven-player")) {
-            // load oven player
+            // Load oven player
             const source: OvenPlayerSource = {
                 label: stream.name,
                 type: "webrtc",
                 file: stream.url,
             }
+
             const ovenPlayer = OvenPlayer.create("oven-player", {
                 autoStart: true,
                 controls: false,
@@ -171,15 +173,11 @@ const OutputPlayerOven = ({
             })
 
             ovenPlayer.on("error", (e: Error) => {
-                console.log("ovenplayer error: ", e)
+                console.error("ovenplayer error: ", e)
             })
         }
-    }
+    }, [stream.name, stream.url])
 
-    useEffect(() => {
-        loadOvenPlayer()
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
     return (
         <Stack
             sx={{
