@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react"
 import { useParameterizedQuery } from "react-fetching-library"
 import { createContainer } from "unstated-next"
+import { useSnackbar } from "."
 import { GetStreamList } from "../fetching"
 import { getObjectFromArrayByKey, parseString } from "../helpers"
 import { useToggle } from "../hooks"
@@ -26,6 +27,7 @@ const blankOption: Stream = {
 }
 
 export const StreamContainer = createContainer(() => {
+    const { newSnackbarMessage } = useSnackbar()
     const { query: queryGetStreamList } = useParameterizedQuery(GetStreamList)
 
     // Stream
@@ -51,11 +53,13 @@ export const StreamContainer = createContainer(() => {
                 const resp = await queryGetStreamList({})
                 if (resp.error || !resp.payload) return
                 setLoadedStreams([blankOption, ...resp.payload])
-            } catch (e) {
-                console.error(e)
+            } catch (err) {
+                const message = typeof err === "string" ? err : "Failed to get the list of streams."
+                newSnackbarMessage(message, "error")
+                console.error(message)
             }
         })()
-    }, [queryGetStreamList])
+    }, [newSnackbarMessage, queryGetStreamList])
 
     useEffect(() => {
         if (localStorage.getItem("isMute") == "true") setVolume(0)

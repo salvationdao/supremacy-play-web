@@ -2,7 +2,7 @@ import { Stack } from "@mui/material"
 import OvenPlayer from "ovenplayer"
 import { useEffect, useRef } from "react"
 import { STREAM_ASPECT_RATIO_W_H } from "../../constants"
-import { useDimension, useStream } from "../../containers"
+import { useDimension, useSnackbar, useStream } from "../../containers"
 import { parseString } from "../../helpers"
 import { siteZIndex } from "../../theme/theme"
 import { StreamService } from "../../types"
@@ -71,6 +71,7 @@ interface OvenPlayerInstance {
 }
 
 export const OverPlayerStream = () => {
+    const { newSnackbarMessage } = useSnackbar()
     const { iframeDimensions } = useDimension()
     const { isMute, volume, currentStream, setCurrentPlayingStreamHost } = useStream()
     const ovenPlayer = useRef<OvenPlayerInstance>()
@@ -103,8 +104,9 @@ export const OverPlayerStream = () => {
                 setCurrentPlayingStreamHost(currentStream.host)
             })
 
-            newOvenPlayer.on("error", (e: Error) => {
-                console.error("ovenplayer error: ", e)
+            newOvenPlayer.on("error", (err: Error) => {
+                newSnackbarMessage(err.message, "error")
+                console.error("ovenplayer error: ", err)
             })
 
             newOvenPlayer.play()

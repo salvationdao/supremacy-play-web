@@ -85,11 +85,7 @@ export const AntMediaStream = () => {
             currentStream &&
             currentStream.host === currentPlayingStreamHost
         ) {
-            try {
-                webRtc.current.forceStreamQuality(currentStream.stream_id, selectedResolution)
-            } catch {
-                console.log("")
-            }
+            webRtc.current.forceStreamQuality(currentStream.stream_id, selectedResolution)
         }
     }, [selectedResolution, currentStream, resolutions, currentPlayingStreamHost])
 
