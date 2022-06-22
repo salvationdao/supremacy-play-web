@@ -23,6 +23,7 @@ import Settings from "!react-svg-loader!./svg/Settings.svg"
 import Play from "!react-svg-loader!./svg/Play.svg"
 import Stats from "!react-svg-loader!./svg/Stats.svg"
 import Target from "!react-svg-loader!./svg/Target.svg"
+import Notification from "!react-svg-loader!./svg/Notification.svg"
 import Search from "!react-svg-loader!./svg/Search.svg"
 import Support from "!react-svg-loader!./svg/Support.svg"
 import Microchip from "!react-svg-loader!./svg/Microchip.svg"
@@ -907,5 +908,11 @@ export const SvgAngle: React.VoidFunctionComponent<SvgWrapperProps> = (props) =>
 export const SvgStats: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <Stats />
+    </SvgWrapper>
+)
+
+export const SvgNotification: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Notification />
     </SvgWrapper>
 )

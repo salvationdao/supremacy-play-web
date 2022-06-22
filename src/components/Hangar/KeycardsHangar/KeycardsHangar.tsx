@@ -208,14 +208,14 @@ export const KeycardsHangar = () => {
                     <PageHeader
                         title="KEY CARDS"
                         description={
-                            <>
+                            <Typography sx={{ fontSize: "1.85rem" }}>
                                 The keycards that you have on Supremacy are shown here. If you don&apos;t see your keycards here, you may need to transfer them
                                 from{" "}
                                 <a rel="noreferrer" target="_blank" href={`${PASSPORT_WEB}profile/${user.username}/achievements`}>
                                     XSYN
                                 </a>{" "}
                                 to Supremacy.
-                            </>
+                            </Typography>
                         }
                         imageUrl={KeycardPNG}
                     ></PageHeader>

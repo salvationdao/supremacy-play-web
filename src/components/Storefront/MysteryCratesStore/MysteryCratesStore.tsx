@@ -195,15 +195,15 @@ export const MysteryCratesStore = () => {
                 <Stack sx={{ flex: 1 }}>
                     <PageHeader
                         title={
-                            <>
+                            <Typography variant="h5" sx={{ fontFamily: fonts.nostromoBlack }}>
                                 MYSTERY CRATES <span style={{ color: colors.neonBlue, fontFamily: "inherit", fontSize: "inherit" }}>(LIMITED SUPPLY)</span>
-                            </>
+                            </Typography>
                         }
                         description={
-                            <>
+                            <Typography sx={{ fontSize: "1.85rem" }}>
                                 Gear up for the battle arena with a variety of War Machines and Weapons. Each{" "}
                                 <Link to={`/fleet/${HANGAR_TABS.Keycards}`}>keycard</Link> you have on Supremacy allows you to purchase 10 mystery crates.
-                            </>
+                            </Typography>
                         }
                         imageUrl={SafePNG}
                     >

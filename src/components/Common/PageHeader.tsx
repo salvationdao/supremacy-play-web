@@ -37,14 +37,21 @@ export const PageHeader = ({ title, description, imageUrl, children, smallSize }
                     }}
                 />
             )}
-            <Box sx={{ mr: "2rem" }}>
-                <Typography variant={smallSize ? "h6" : "h5"} sx={{ fontFamily: fonts.nostromoBlack }}>
-                    {title}
-                </Typography>
-                {description && <Typography sx={{ fontSize: "1.85rem" }}>{description}</Typography>}
+            <Box sx={{ flex: 1 }}>
+                {typeof title === "string" && (
+                    <Typography variant={smallSize ? "h6" : "h5"} sx={{ fontFamily: fonts.nostromoBlack }}>
+                        {title}
+                    </Typography>
+                )}
+
+                {typeof title !== "string" && title}
+
+                {description && typeof description === "string" && <Typography sx={{ fontSize: "1.85rem" }}>{description}</Typography>}
+
+                {description && typeof description !== "string" && description}
             </Box>
 
-            {children && <Box sx={{ ml: "auto !important" }}>{children}</Box>}
+            {children && <Box sx={{ ml: "2rem" }}>{children}</Box>}
         </Stack>
     )
 }
