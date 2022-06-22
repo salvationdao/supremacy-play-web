@@ -4,7 +4,7 @@ import { useAuth, useSupremacy } from "../../../../containers"
 import { colors, fonts } from "../../../../theme/theme"
 import { MarketUser } from "../../../../types/marketplace"
 
-export const UserInfo = ({ marketUser, title }: { marketUser?: MarketUser; title?: string }) => {
+export const UserInfo = ({ marketUser, title, primaryColor }: { marketUser?: MarketUser; title?: string; primaryColor?: string }) => {
     const { userID } = useAuth()
     const { getFaction } = useSupremacy()
     const ownerFactionDeets = useMemo(() => getFaction(marketUser?.faction_id || ""), [marketUser, getFaction])
@@ -37,7 +37,7 @@ export const UserInfo = ({ marketUser, title }: { marketUser?: MarketUser; title
                         }}
                     />
                 )}
-                <Typography variant="h5" sx={{ color: ownerFactionDeets.primary_color, fontWeight: "fontWeightBold" }}>
+                <Typography variant="h5" sx={{ color: primaryColor || ownerFactionDeets.primary_color, fontWeight: "fontWeightBold" }}>
                     {username}
                     <span style={{ marginLeft: ".2rem", opacity: 0.8, fontFamily: "inherit" }}>{`#${gid}`}</span>
                     <span style={{ color: colors.neonBlue, fontFamily: "inherit" }}>{isSelfItem ? " (YOU)" : ""}</span>

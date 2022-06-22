@@ -221,7 +221,7 @@ const WarMachineMarketDetailsInner = ({
 
                             <Dates createdAt={created_at} endAt={end_at} onTimeEnded={() => toggleIsTimeEnded(true)} soldAt={sold_at} />
 
-                            {sold_to && <UserInfo marketUser={sold_to} title="SOLD TO:" />}
+                            {sold_to && <UserInfo marketUser={sold_to} title="SOLD TO:" primaryColor={colors.green} />}
 
                             {sold_for && <SoldDetails soldFor={sold_for} />}
 
