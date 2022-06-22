@@ -30,21 +30,22 @@ export enum StreamService {
     AntMedia = "AntMedia",
     None = "None",
 }
+
 export interface Stream {
     host: string
     name: string
     url: string
-    service: StreamService
     stream_id: string
     region: string
     resolution: string
-    bit_rates_kbits: number
+    bit_rates_k_bits: number
     user_max: number
     users_now: number
     active: boolean
     status: string
-    latitude: number
-    longitude: number
+    latitude: string
+    longitude: string
+    service: StreamService
     distance?: number
 }
 
