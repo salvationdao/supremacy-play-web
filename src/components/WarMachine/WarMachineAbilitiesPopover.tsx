@@ -5,6 +5,7 @@ import { GenericWarMachinePNG } from "../../assets"
 import { Faction, GameAbility, WarMachineState } from "../../types"
 import { ContributorAmount } from "../BattleStats/ContributorAmount"
 import { MechMoveCommand } from "../PlayerAbilities/MechMoveCommand"
+import { useAuth } from "../../containers"
 
 interface WarMachineAbilitiesPopoverProps {
     popoverRef: React.MutableRefObject<null>
@@ -25,6 +26,7 @@ export const WarMachineAbilitiesPopover = ({
     maxAbilityPriceMap,
     getFaction,
 }: WarMachineAbilitiesPopoverProps) => {
+    const { userID } = useAuth()
     const faction = getFaction(warMachine.factionID)
 
     return (
@@ -96,7 +98,7 @@ export const WarMachineAbilitiesPopover = ({
                                         />
                                     </Box>
                                 ))}
-                                <MechMoveCommand warMachine={warMachine} faction={faction} clipSlantSize="5px" />
+                                {warMachine.ownedByID === userID && <MechMoveCommand warMachine={warMachine} faction={faction} clipSlantSize="5px" />}
                             </Stack>
                         </Stack>
                     </Box>

@@ -9,6 +9,7 @@ import { useGameServerSubscriptionAbilityFaction, useGameServerSubscriptionFacti
 import { GameServerKeys } from "../../keys"
 import { fonts } from "../../theme/theme"
 import { Faction, GameAbility, WarMachineState } from "../../types"
+import { useAuth } from "../../containers"
 
 // in rems
 const WIDTH_WM_IMAGE = 9.2
@@ -37,7 +38,8 @@ interface WarMachineItemProps {
 }
 
 export const WarMachineItem = (props: WarMachineItemProps) => {
-    const { warMachine, scale, shouldBeExpanded, userID, factionID, battleIdentifier, getFaction, highlightedMechHash, setHighlightedMechHash } = props
+    const { factionID } = useAuth()
+    const { warMachine, scale, shouldBeExpanded, userID, battleIdentifier, getFaction, highlightedMechHash, setHighlightedMechHash } = props
     const { participantID, factionID: warMachineFactionID } = warMachine
 
     // Subscribe to war machine ability updates
