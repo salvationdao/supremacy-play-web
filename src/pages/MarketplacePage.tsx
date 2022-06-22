@@ -78,7 +78,7 @@ export const MarketplacePage = () => {
                         <Tab
                             label="YOUR EVENTS"
                             value={MARKETPLACE_TABS.YourEvents}
-                            sx={{ color: colors.marketSold, backgroundColor: `${colors.marketSold}30` }}
+                            sx={{ color: colors.marketSold, backgroundColor: `${colors.marketSold}20` }}
                         />
                         <Tab label="WAR MACHINES" value={MARKETPLACE_TABS.WarMachines} />
                         <Tab label="KEY CARDS" value={MARKETPLACE_TABS.Keycards} />

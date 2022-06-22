@@ -196,7 +196,7 @@ export const MysteryCratesStore = () => {
                     <PageHeader
                         title={
                             <Typography variant="h5" sx={{ fontFamily: fonts.nostromoBlack }}>
-                                MYSTERY CRATES <span style={{ color: colors.neonBlue, fontFamily: "inherit", fontSize: "inherit" }}>(LIMITED SUPPLY)</span>
+                                MYSTERY CRATES <span style={{ color: colors.lightNeonBlue, fontFamily: "inherit", fontSize: "inherit" }}>(LIMITED SUPPLY)</span>
                             </Typography>
                         }
                         description={
@@ -209,7 +209,7 @@ export const MysteryCratesStore = () => {
                     >
                         <Stack spacing="1rem">
                             <Stack direction="row" alignItems="center" justifyContent="flex-end" spacing=".8rem">
-                                <Typography variant="body2" sx={{ color: colors.neonBlue, fontFamily: fonts.nostromoHeavy }}>
+                                <Typography variant="body2" sx={{ color: colors.lightNeonBlue, fontFamily: fonts.nostromoHeavy }}>
                                     Total owned:
                                 </Typography>
 
@@ -217,7 +217,7 @@ export const MysteryCratesStore = () => {
                                     clipSize="8px"
                                     clipSlantSize="3px"
                                     border={{
-                                        borderColor: colors.neonBlue,
+                                        borderColor: colors.lightNeonBlue,
                                         borderThickness: ".15rem",
                                     }}
                                     corners={{
@@ -234,9 +234,9 @@ export const MysteryCratesStore = () => {
                                 </ClipThing>
                             </Stack>
 
-                            <TooltipHelper placement="bottom" text="Maximum capacity is dependent on the number of keycards you hold.">
+                            <TooltipHelper placement="bottom" text="The maximum capacity is dependent on the number of keycards you hold.">
                                 <Stack direction="row" alignItems="center" justifyContent="flex-end" spacing=".8rem">
-                                    <Typography variant="body2" sx={{ color: colors.neonBlue, fontFamily: fonts.nostromoBlack }}>
+                                    <Typography variant="body2" sx={{ color: colors.lightNeonBlue, fontFamily: fonts.nostromoBlack }}>
                                         Maximum capacity:
                                     </Typography>
 
@@ -244,7 +244,7 @@ export const MysteryCratesStore = () => {
                                         clipSize="8px"
                                         clipSlantSize="3px"
                                         border={{
-                                            borderColor: colors.neonBlue,
+                                            borderColor: colors.lightNeonBlue,
                                             borderThickness: ".15rem",
                                         }}
                                         corners={{
