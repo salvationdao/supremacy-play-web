@@ -1,6 +1,6 @@
 import { Box, Fade, Stack, Tab } from "@mui/material"
 import { TabProps } from "@mui/material/Tab"
-import { useMemo, useState } from "react"
+import { useMemo } from "react"
 import { BattleAbilityItem, FactionAbilities, MoveableResizable } from ".."
 import { DEV_ONLY } from "../../constants"
 import { BribeStageResponse, useAuth, useGame } from "../../containers"
@@ -25,7 +25,6 @@ interface VotingSystemInnerProps {
 const VotingSystemInner = ({ userID, bribeStage }: VotingSystemInnerProps) => {
     const theme = useTheme()
     const { factionID } = useAuth()
-    const [showPlayerAbilities, setShowPlayerAbilities] = useState(false)
     const isBattleStarted = useMemo(() => bribeStage && bribeStage.phase !== "HOLD", [bribeStage])
 
     const config: MoveableResizableConfig = useMemo(

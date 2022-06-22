@@ -8,7 +8,7 @@ import { useToggle } from "../../hooks"
 import { useGameServerSubscriptionAbilityFaction } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { fonts } from "../../theme/theme"
-import { GameAbility, WarMachineState } from "../../types"
+import { Faction, GameAbility, WarMachineState } from "../../types"
 
 // in rems
 const WIDTH_WM_IMAGE = 9.2
@@ -30,7 +30,7 @@ interface WarMachineItemProps {
     factionID?: string
     // useSupremacy
     battleIdentifier?: number
-    getFaction: (factionID: string) => any
+    getFaction: (factionID: string) => Faction
     // useMiniMap
     highlightedMechHash?: string
     setHighlightedMechHash: React.Dispatch<React.SetStateAction<string | undefined>>
@@ -73,7 +73,7 @@ interface WarMachineItemInnerProps {
     factionID?: string
     // useSupremacy
     battleIdentifier?: number
-    getFaction: (factionID: string) => any
+    getFaction: (factionID: string) => Faction
     // useMiniMap
     highlightedMechHash?: string
     setHighlightedMechHash: React.Dispatch<React.SetStateAction<string | undefined>>

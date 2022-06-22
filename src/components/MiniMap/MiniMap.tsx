@@ -120,7 +120,6 @@ export const MiniMap = () => {
         )
     }, [
         config,
-        bribeStage,
         show,
         userID,
         factionID,
@@ -279,25 +278,6 @@ const MiniMapInner = ({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isTargeting, maxHeight, maxWidth, setCurHeight, setCurPosX, setCurPosY, setCurWidth])
 
-    const mapInsideRenderDependencies = [
-        userID,
-        factionID,
-        map,
-        warMachines,
-        getFaction,
-        winner,
-        enlarged,
-        isTargeting,
-        selection,
-        setSelection,
-        resetSelection,
-        highlightedMechHash,
-        setHighlightedMechHash,
-        playerAbility,
-        newSnackbarMessage,
-        curHeight,
-        curWidth,
-    ]
     const mapInsideRender = useMemo(() => {
         return (
             <MiniMapInside
@@ -319,7 +299,24 @@ const MiniMapInner = ({
                 newSnackbarMessage={newSnackbarMessage}
             />
         )
-    }, mapInsideRenderDependencies)
+    }, [
+        userID,
+        factionID,
+        map,
+        warMachines,
+        getFaction,
+        winner,
+        isTargeting,
+        selection,
+        setSelection,
+        resetSelection,
+        highlightedMechHash,
+        setHighlightedMechHash,
+        playerAbility,
+        newSnackbarMessage,
+        curHeight,
+        curWidth,
+    ])
 
     let mapName = map.name
     if (mapName === "NeoTokyo") mapName = "City Block X2"
@@ -381,6 +378,7 @@ const MiniMapInner = ({
         ),
         [
             mapName,
+            mapInsideRender,
             factionColor,
             userID,
             factionID,
