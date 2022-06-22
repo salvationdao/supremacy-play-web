@@ -92,8 +92,9 @@ export enum MarketplaceEventType {
     Outbid = "bid_refund",
     // Seller's POV
     Created = "created",
-    Cancelled = "cancelled",
     Sold = "sold",
+    // Common
+    Cancelled = "cancelled",
 }
 
 export interface MarketplaceEvent {
