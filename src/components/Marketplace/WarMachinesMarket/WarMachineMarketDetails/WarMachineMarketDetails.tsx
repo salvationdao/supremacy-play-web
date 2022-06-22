@@ -171,7 +171,7 @@ const WarMachineMarketDetailsInner = ({
         ]
     }, [mechDetails])
 
-    const { id, owner, mech, created_at, end_at, sold_at, sold_for } = marketItem
+    const { id, owner, mech, created_at, end_at, sold_at, sold_for, sold_to } = marketItem
 
     return (
         <Box
@@ -224,9 +224,11 @@ const WarMachineMarketDetailsInner = ({
                                 </Typography>
                             </Box>
 
-                            <Owner owner={owner} />
+                            <Owner marketUser={owner} title="OWNED BY:" />
 
                             <Dates createdAt={created_at} endAt={end_at} onTimeEnded={() => toggleIsTimeEnded(true)} soldAt={sold_at} />
+
+                            {sold_to && <Owner marketUser={sold_to} title="SOLD TO:" />}
 
                             {sold_for && <SoldDetails soldFor={sold_for} />}
 

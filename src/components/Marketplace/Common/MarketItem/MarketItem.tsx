@@ -9,7 +9,7 @@ import { colors } from "../../../../theme/theme"
 import { MarketplaceBuyAuctionItem } from "../../../../types/marketplace"
 import { AuctionPrice } from "../../Common/MarketItem/AuctionPrice"
 import { BuyoutPrice } from "../../Common/MarketItem/BuyoutPrice"
-import { SellerInfo } from "../../Common/MarketItem/SellerInfo"
+import { UserInfo } from "../../Common/MarketItem/SellerInfo"
 import { Thumbnail } from "../../Common/MarketItem/Thumbnail"
 import { Timeframe } from "../../Common/MarketItem/Timeframe"
 import { SoldPrice } from "./SoldPrice"
@@ -52,7 +52,7 @@ export const MarketItem = ({ imageUrl, animationUrl, cardAnimationUrl, backgroun
     const backgroundColor = theme.factionTheme.background
     const soldBackgroundColor = useMemo(() => shadeColor(colors.green, -95), [])
 
-    const { id, end_at, owner, total_bids, sold_at, sold_for } = item
+    const { id, end_at, owner, total_bids, sold_at, sold_for, sold_to } = item
 
     if (!owner) return null
 
@@ -82,7 +82,7 @@ export const MarketItem = ({ imageUrl, animationUrl, cardAnimationUrl, backgroun
                         p: isGridView ? ".5rem .6rem" : ".1rem .3rem",
                         display: isGridView ? "block" : "grid",
                         gridTemplateRows: "7rem",
-                        gridTemplateColumns: `8rem minmax(auto, 38rem) 1.5fr repeat(${sold_at ? 2 : 3}, 1fr)`, // hard-coded to have X columns, adjust as required
+                        gridTemplateColumns: `8rem minmax(auto, 38rem) 1.5fr repeat(3, 1fr)`, // hard-coded to have 6 columns, adjust as required
                         gap: "1.6rem",
                         ...(isGridView
                             ? {
@@ -94,8 +94,13 @@ export const MarketItem = ({ imageUrl, animationUrl, cardAnimationUrl, backgroun
                     }}
                 >
                     <Thumbnail isGridView={isGridView} imageUrl={imageUrl} animationUrl={animationUrl} cardAnimationUrl={cardAnimationUrl} />
+
                     {children}
-                    <SellerInfo isGridView={isGridView} owner={owner} />
+
+                    <UserInfo isGridView={isGridView} marketUser={owner} title="SELLER" />
+
+                    {sold_to && <UserInfo isGridView={isGridView} marketUser={sold_to} title="SOLD TO" />}
+
                     <Timeframe isGridView={isGridView} endAt={end_at} soldAt={sold_at} />
 
                     {sold_at && sold_for ? (

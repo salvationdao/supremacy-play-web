@@ -83,6 +83,7 @@ export interface MarketplaceBuyAuctionItem {
     mystery_crate?: MarketCrate
     sold_for?: string
     sold_at?: Date
+    sold_to?: MarketUser
 }
 
 export enum MarketplaceEventType {

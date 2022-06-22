@@ -104,7 +104,7 @@ export const KeycardMarketDetails = ({ id }: { id: string }) => {
 const WarMachineMarketDetailsInner = ({ marketItem, primaryColor }: { marketItem: MarketplaceBuyAuctionItem; primaryColor: string }) => {
     const below780 = useMediaQuery("(max-width:780px)")
     const [isTimeEnded, toggleIsTimeEnded] = useToggle()
-    const { id, owner, keycard, created_at, end_at, sold_at, sold_for } = marketItem
+    const { id, owner, keycard, created_at, end_at, sold_at, sold_for, sold_to } = marketItem
 
     return (
         <Box
@@ -161,9 +161,11 @@ const WarMachineMarketDetailsInner = ({ marketItem, primaryColor }: { marketItem
                                 </Typography>
                             </Box>
 
-                            <Owner owner={owner} />
+                            <Owner marketUser={owner} title="OWNED BY:" />
 
                             <Dates createdAt={created_at} endAt={end_at} onTimeEnded={() => toggleIsTimeEnded(true)} soldAt={sold_at} />
+
+                            {sold_to && <Owner marketUser={sold_to} title="SOLD TO:" />}
 
                             {sold_for && <SoldDetails soldFor={sold_for} />}
 
