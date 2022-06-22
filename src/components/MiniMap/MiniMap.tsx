@@ -376,6 +376,7 @@ const MiniMapInner = ({
                 )}
             </Box>
         ),
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         [
             mapName,
             mapInsideRender,
