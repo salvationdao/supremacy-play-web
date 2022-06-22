@@ -59,7 +59,7 @@ export const colors = {
     battleQueueBanner: "#C24242",
     darkestNeonBlue: "#050c12",
 
-    globalChat: "#1A6044",
+    globalChat: "#35A679",
     assetsBanner: "#4E1A61",
 
     supsCredit: "#01FF70",

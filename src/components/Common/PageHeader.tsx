@@ -8,9 +8,10 @@ interface PageHeaderProps {
     imageUrl?: string
     children?: ReactNode
     smallSize?: boolean
+    primaryColor?: string
 }
 
-export const PageHeader = ({ title, description, imageUrl, children, smallSize }: PageHeaderProps) => {
+export const PageHeader = ({ title, description, imageUrl, children, smallSize, primaryColor }: PageHeaderProps) => {
     return (
         <Stack
             direction="row"
@@ -19,7 +20,7 @@ export const PageHeader = ({ title, description, imageUrl, children, smallSize }
                 px: smallSize ? "1.6rem" : "2rem",
                 py: smallSize ? "1rem" : "1.5rem",
                 backgroundColor: "#00000070",
-                borderBottom: (theme) => `${theme.factionTheme.primary}70 1.5px solid`,
+                borderBottom: (theme) => `${primaryColor || theme.factionTheme.primary}70 1.5px solid`,
             }}
         >
             {imageUrl && (

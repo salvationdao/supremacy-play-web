@@ -131,7 +131,7 @@ export const YourEventsMarket = () => {
             return (
                 <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                     <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
-                        <CircularProgress size="3rem" sx={{ color: theme.factionTheme.primary }} />
+                        <CircularProgress size="3rem" sx={{ color: colors.marketSold }} />
                     </Stack>
                 </Stack>
             )
@@ -191,16 +191,22 @@ export const YourEventsMarket = () => {
                 </Stack>
             </Stack>
         )
-    }, [loadError, eventItems, isLoading, theme.factionTheme.primary])
+    }, [loadError, eventItems, isLoading])
 
     return (
         <Stack direction="row" spacing="1rem" sx={{ height: "100%" }}>
-            <SortAndFilters initialSearch={search} onSetSearch={setSearch} chipFilters={[eventTypeFilterSection.current]} changePage={changePage} />
+            <SortAndFilters
+                initialSearch={search}
+                onSetSearch={setSearch}
+                chipFilters={[eventTypeFilterSection.current]}
+                changePage={changePage}
+                primaryColor={colors.marketSold}
+            />
 
             <ClipThing
                 clipSize="10px"
                 border={{
-                    borderColor: theme.factionTheme.primary,
+                    borderColor: colors.marketSold,
                     borderThickness: ".3rem",
                 }}
                 opacity={0.7}
@@ -209,7 +215,12 @@ export const YourEventsMarket = () => {
             >
                 <Stack sx={{ position: "relative", height: "100%" }}>
                     <Stack sx={{ flex: 1 }}>
-                        <PageHeader title="YOUR MARKETPLACE EVENTS" description="See your marketplace events and logs here." imageUrl={WarMachineIconPNG}>
+                        <PageHeader
+                            title="YOUR MARKETPLACE EVENTS"
+                            description="See your marketplace events and logs here."
+                            imageUrl={WarMachineIconPNG}
+                            primaryColor={colors.marketSold}
+                        >
                             <FancyButton
                                 clipThingsProps={{
                                     clipSize: "9px",
@@ -244,6 +255,7 @@ export const YourEventsMarket = () => {
                             sortOptions={sortOptions}
                             selectedSort={sort}
                             onSetSort={setSort}
+                            primaryColor={colors.marketSold}
                         />
 
                         <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
@@ -266,7 +278,7 @@ export const YourEventsMarket = () => {
                                         borderRadius: 3,
                                     },
                                     "::-webkit-scrollbar-thumb": {
-                                        background: theme.factionTheme.primary,
+                                        background: colors.marketSold,
                                         borderRadius: 3,
                                     },
                                 }}
@@ -281,7 +293,7 @@ export const YourEventsMarket = () => {
                             sx={{
                                 px: "1rem",
                                 py: ".7rem",
-                                borderTop: (theme) => `${theme.factionTheme.primary}70 1.5px solid`,
+                                borderTop: `${colors.marketSold}70 1.5px solid`,
                                 backgroundColor: "#00000070",
                             }}
                         >
@@ -293,7 +305,7 @@ export const YourEventsMarket = () => {
                                     ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold },
                                     ".Mui-selected": {
                                         color: (theme) => theme.factionTheme.secondary,
-                                        backgroundColor: `${theme.factionTheme.primary} !important`,
+                                        backgroundColor: `${colors.marketSold} !important`,
                                     },
                                 }}
                                 onChange={(e, p) => changePage(p)}
