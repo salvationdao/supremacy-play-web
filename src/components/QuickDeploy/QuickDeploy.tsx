@@ -18,8 +18,8 @@ import { TotalAndPageSizeOptions } from "../Common/TotalAndPageSizeOptions"
 import { QuickDeployItem } from "./QuickDeployItem"
 
 const sortOptions = [
-    { label: "Queue: lowest first", value: SortTypeLabel.MechQueueAsc },
-    { label: "Queue: highest first", value: SortTypeLabel.MechQueueDesc },
+    { label: SortTypeLabel.MechQueueAsc, value: SortTypeLabel.MechQueueAsc },
+    { label: SortTypeLabel.MechQueueDesc, value: SortTypeLabel.MechQueueDesc },
 ]
 
 interface GetMechsRequest {

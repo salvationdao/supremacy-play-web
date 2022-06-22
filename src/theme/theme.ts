@@ -68,6 +68,7 @@ export const colors = {
     buyout: "#309FFF",
     auction: "#E04F00",
     dutchAuction: "#D98D00",
+    marketSold: "#2BA172",
 
     chassisSkin: "#EBD110",
     introAnimation: "#C017EB",

@@ -17,8 +17,8 @@ export const SoldPrice = ({ isGridView, soldFor }: { isGridView: boolean; soldFo
             </Typography>
 
             <Stack direction="row" alignItems="center" flexWrap="wrap">
-                <SvgSupToken size="1.7rem" fill={colors.green} />
-                <Typography sx={{ color: colors.green, fontWeight: "fontWeightBold" }}>{formattedPrice}</Typography>
+                <SvgSupToken size="1.7rem" fill={colors.marketSold} />
+                <Typography sx={{ color: colors.marketSold, fontWeight: "fontWeightBold" }}>{formattedPrice}</Typography>
             </Stack>
         </Stack>
     )

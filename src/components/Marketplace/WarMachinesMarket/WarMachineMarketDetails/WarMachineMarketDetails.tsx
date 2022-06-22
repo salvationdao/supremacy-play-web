@@ -27,7 +27,10 @@ export const WarMachineMarketDetails = ({ id }: { id: string }) => {
     const [marketItem, setMarketItem] = useState<MarketplaceBuyAuctionItem>()
     const [mechDetails, setMechDetails] = useState<MechDetails>()
 
-    const primaryColor = useMemo(() => (marketItem?.sold_at ? colors.green : theme.factionTheme.primary), [marketItem?.sold_at, theme.factionTheme.primary])
+    const primaryColor = useMemo(
+        () => (marketItem?.sold_at ? colors.marketSold : theme.factionTheme.primary),
+        [marketItem?.sold_at, theme.factionTheme.primary],
+    )
 
     // Get listing details
     useEffect(() => {
@@ -221,7 +224,7 @@ const WarMachineMarketDetailsInner = ({
 
                             <Dates createdAt={created_at} endAt={end_at} onTimeEnded={() => toggleIsTimeEnded(true)} soldAt={sold_at} />
 
-                            {sold_to && <UserInfo marketUser={sold_to} title="SOLD TO:" primaryColor={colors.green} />}
+                            {sold_to && <UserInfo marketUser={sold_to} title="SOLD TO:" primaryColor={colors.marketSold} />}
 
                             {sold_for && <SoldDetails soldFor={sold_for} />}
 

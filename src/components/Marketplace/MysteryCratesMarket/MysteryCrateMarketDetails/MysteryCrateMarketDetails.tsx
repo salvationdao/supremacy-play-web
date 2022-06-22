@@ -24,7 +24,10 @@ export const MysteryCrateMarketDetails = ({ id }: { id: string }) => {
     const [loadError, setLoadError] = useState<string>()
     const [marketItem, setMarketItem] = useState<MarketplaceBuyAuctionItem>()
 
-    const primaryColor = useMemo(() => (marketItem?.sold_at ? colors.green : theme.factionTheme.primary), [marketItem?.sold_at, theme.factionTheme.primary])
+    const primaryColor = useMemo(
+        () => (marketItem?.sold_at ? colors.marketSold : theme.factionTheme.primary),
+        [marketItem?.sold_at, theme.factionTheme.primary],
+    )
 
     // Get listing details
     useEffect(() => {
@@ -83,7 +86,7 @@ export const MysteryCrateMarketDetails = ({ id }: { id: string }) => {
         return (
             <WarMachineMarketDetailsInner
                 marketItem={marketItem}
-                primaryColor={marketItem?.sold_at ? colors.green : primaryColor}
+                primaryColor={marketItem?.sold_at ? colors.marketSold : primaryColor}
                 backgroundColor={theme.factionTheme.background}
             />
         )
@@ -182,7 +185,7 @@ const WarMachineMarketDetailsInner = ({
 
                             <Dates createdAt={created_at} endAt={end_at} onTimeEnded={() => toggleIsTimeEnded(true)} soldAt={sold_at} />
 
-                            {sold_to && <UserInfo marketUser={sold_to} title="SOLD TO:" primaryColor={colors.green} />}
+                            {sold_to && <UserInfo marketUser={sold_to} title="SOLD TO:" primaryColor={colors.marketSold} />}
 
                             {sold_for && <SoldDetails soldFor={sold_for} />}
 

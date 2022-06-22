@@ -2,33 +2,27 @@ import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/mater
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useLocation } from "react-router-dom"
 import { ClipThing, FancyButton } from "../.."
-import { KeycardPNG } from "../../../assets"
+import { EmptyWarMachinesPNG, WarMachineIconPNG } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { parseString } from "../../../helpers"
-import { usePagination, useToggle, useUrlQuery } from "../../../hooks"
+import { usePagination, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { MarketplaceBuyAuctionItem, SortTypeLabel } from "../../../types/marketplace"
+import { MarketplaceEvent, MarketplaceEventType, SortTypeLabel } from "../../../types/marketplace"
 import { PageHeader } from "../../Common/PageHeader"
 import { ChipFilter } from "../../Common/SortAndFilters/ChipFilterSection"
-import { RangeFilter } from "../../Common/SortAndFilters/RangeFilterSection"
 import { SortAndFilters } from "../../Common/SortAndFilters/SortAndFilters"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
-import { KeycardMarketItem } from "./KeycardMarketItem"
 
 const sortOptions = [
-    { label: SortTypeLabel.CreateTimeOldestFirst, value: SortTypeLabel.CreateTimeOldestFirst },
-    { label: SortTypeLabel.CreateTimeNewestFirst, value: SortTypeLabel.CreateTimeNewestFirst },
-    { label: SortTypeLabel.EndTimeEndingSoon, value: SortTypeLabel.EndTimeEndingSoon },
-    { label: SortTypeLabel.EndTimeEndingLast, value: SortTypeLabel.EndTimeEndingLast },
-    { label: SortTypeLabel.PriceLowest, value: SortTypeLabel.PriceLowest },
-    { label: SortTypeLabel.PriceHighest, value: SortTypeLabel.PriceHighest },
+    { label: "TIME: OLDEST FIRST", value: SortTypeLabel.CreateTimeOldestFirst },
+    { label: "TIME: NEWEST FIRST", value: SortTypeLabel.CreateTimeNewestFirst },
     { label: SortTypeLabel.Alphabetical, value: SortTypeLabel.Alphabetical },
     { label: SortTypeLabel.AlphabeticalReverse, value: SortTypeLabel.AlphabeticalReverse },
 ]
 
-export const KeycardsMarket = () => {
+export const YourEventsMarket = () => {
     const location = useLocation()
     const [query, updateQuery] = useUrlQuery()
     const { send } = useGameServerCommandsFaction("/faction_commander")
@@ -37,51 +31,32 @@ export const KeycardsMarket = () => {
     // Items
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
-    const [keycardItems, setKeycardItems] = useState<MarketplaceBuyAuctionItem[]>()
+    const [eventItems, setEventItems] = useState<MarketplaceEvent[]>()
 
     const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({
         pageSize: parseString(query.get("pageSize"), 10),
         page: parseString(query.get("page"), 1),
     })
-    const [isGridView, toggleIsGridView] = useToggle(false)
 
     // Filters and sorts
     const [search, setSearch] = useState("")
     const [sort, setSort] = useState<string>(query.get("sort") || SortTypeLabel.CreateTimeNewestFirst)
-    const [status, setStatus] = useState<string[]>((query.get("statuses") || undefined)?.split("||") || [])
-    const [ownedBy, setOwnedBy] = useState<string[]>((query.get("ownedBy") || undefined)?.split("||") || [])
-    const [price, setPrice] = useState<(number | undefined)[]>(
-        (query.get("priceRanges") || undefined)?.split("||").map((p) => (p ? parseInt(p) : undefined)) || [undefined, undefined],
-    )
+    const [eventType, setEventType] = useState<string[]>((query.get("eventType") || undefined)?.split("||") || [])
 
     // Filters
-    const statusFilterSection = useRef<ChipFilter>({
-        label: "STATUS",
-        options: [{ value: "true", label: "SOLD", color: colors.marketSold }],
-        initialSelected: status,
-        onSetSelected: (value: string[]) => {
-            setStatus(value)
-            changePage(1)
-        },
-    })
-    const ownedByFilterSection = useRef<ChipFilter>({
-        label: "OWNED BY",
+    const eventTypeFilterSection = useRef<ChipFilter>({
+        label: "EVENT TYPE",
         options: [
-            { value: "self", label: "YOU", color: theme.factionTheme.primary, textColor: theme.factionTheme.secondary },
-            { value: "others", label: "OTHERS", color: theme.factionTheme.primary, textColor: theme.factionTheme.secondary },
+            { value: MarketplaceEventType.Purchased, label: "PURCHASE", color: colors.buyout },
+            { value: MarketplaceEventType.Bid, label: "BID", color: colors.auction },
+            { value: MarketplaceEventType.Outbid, label: "OUTBID", color: colors.red },
+            { value: MarketplaceEventType.Created, label: "CREATE", color: colors.yellow },
+            { value: MarketplaceEventType.Cancelled, label: "CANCEL", color: colors.lightGrey },
+            { value: MarketplaceEventType.Sold, label: "SOLD", color: colors.marketSold },
         ],
-        initialSelected: ownedBy,
+        initialSelected: eventType,
         onSetSelected: (value: string[]) => {
-            setOwnedBy(value)
-            changePage(1)
-        },
-    })
-
-    const priceRangeFilter = useRef<RangeFilter>({
-        label: "PRICE RANGE",
-        initialValue: price,
-        onSetValue: (value: (number | undefined)[]) => {
-            setPrice(value)
+            setEventType(value)
             changePage(1)
         },
     })
@@ -92,52 +67,37 @@ export const KeycardsMarket = () => {
 
             let sortDir = "asc"
             let sortBy = "alphabetical"
-            if (
-                sort === SortTypeLabel.AlphabeticalReverse ||
-                sort === SortTypeLabel.CreateTimeNewestFirst ||
-                sort === SortTypeLabel.EndTimeEndingLast ||
-                sort === SortTypeLabel.PriceHighest
-            )
-                sortDir = "desc"
+            if (sort === SortTypeLabel.AlphabeticalReverse || sort === SortTypeLabel.CreateTimeNewestFirst) sortDir = "desc"
             if (sort === SortTypeLabel.CreateTimeOldestFirst || sort === SortTypeLabel.CreateTimeNewestFirst) sortBy = "created_at"
-            if (sort === SortTypeLabel.EndTimeEndingSoon || sort === SortTypeLabel.EndTimeEndingLast) sortBy = "time"
-            if (sort === SortTypeLabel.PriceLowest || sort === SortTypeLabel.PriceHighest) sortBy = "price"
 
-            const [min_price, max_price] = price
-
-            const resp = await send<{ total: number; records: MarketplaceBuyAuctionItem[] }>(GameServerKeys.MarketplaceSalesKeycardList, {
+            const resp = await send<{ total: number; records: MarketplaceEvent[] }>(GameServerKeys.GetMarketplaceEvents, {
                 page: page - 1,
                 page_size: pageSize,
                 search,
-                min_price,
-                max_price,
+                eventType,
                 sort_dir: sortDir,
                 sort_by: sortBy,
-                owned_by: ownedBy,
-                sold: status.length > 0,
             })
 
             updateQuery({
                 sort,
                 page: page.toString(),
                 pageSize: pageSize.toString(),
-                statuses: status.join("||"),
-                ownedBy: ownedBy.join("||"),
-                priceRanges: price.join("||"),
+                eventType: eventType.join("||"),
             })
 
             if (!resp) return
             setTotalItems(resp.total)
-            setKeycardItems(resp.records)
+            setEventItems(resp.records)
             setLoadError(undefined)
         } catch (err) {
-            const message = typeof err === "string" ? err : "Failed to get key card listings."
+            const message = typeof err === "string" ? err : "Failed to market events."
             setLoadError(message)
             console.error(err)
         } finally {
             setIsLoading(false)
         }
-    }, [sort, price, send, page, pageSize, search, ownedBy, status, updateQuery, setTotalItems])
+    }, [sort, send, page, pageSize, search, eventType, updateQuery, setTotalItems])
 
     useEffect(() => {
         getItems()
@@ -167,7 +127,7 @@ export const KeycardsMarket = () => {
             )
         }
 
-        if (!keycardItems || isLoading) {
+        if (!eventItems || isLoading) {
             return (
                 <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                     <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
@@ -177,7 +137,7 @@ export const KeycardsMarket = () => {
             )
         }
 
-        if (keycardItems && keycardItems.length > 0) {
+        if (eventItems && eventItems.length > 0) {
             return (
                 <Box sx={{ direction: "ltr", height: 0 }}>
                     <Box
@@ -185,16 +145,16 @@ export const KeycardsMarket = () => {
                             width: "100%",
                             py: "1rem",
                             display: "grid",
-                            gridTemplateColumns: isGridView ? "repeat(auto-fill, minmax(29rem, 1fr))" : "100%",
+                            gridTemplateColumns: "100%",
                             gap: "1.3rem",
                             alignItems: "center",
                             justifyContent: "center",
                             overflow: "visible",
                         }}
                     >
-                        {keycardItems.map((item) => (
-                            <KeycardMarketItem key={`marketplace-${item.id}`} item={item} isGridView={isGridView} />
-                        ))}
+                        {/* {mechItems.map((item) => (
+                            <WarMachineMarketItem key={`marketplace-${item.id}`} item={item} isGridView={isGridView} />
+                        ))} */}
                     </Box>
                 </Box>
             )
@@ -207,9 +167,9 @@ export const KeycardsMarket = () => {
                         sx={{
                             width: "80%",
                             height: "16rem",
-                            opacity: 0.6,
+                            opacity: 0.7,
                             filter: "grayscale(100%)",
-                            background: `url(${KeycardPNG})`,
+                            background: `url(${EmptyWarMachinesPNG})`,
                             backgroundRepeat: "no-repeat",
                             backgroundPosition: "bottom center",
                             backgroundSize: "contain",
@@ -226,22 +186,16 @@ export const KeycardsMarket = () => {
                             textAlign: "center",
                         }}
                     >
-                        {"There are no keycards found, please try again."}
+                        {"There are no marketplace events found, please try again."}
                     </Typography>
                 </Stack>
             </Stack>
         )
-    }, [loadError, keycardItems, isLoading, theme.factionTheme.primary, isGridView])
+    }, [loadError, eventItems, isLoading, theme.factionTheme.primary])
 
     return (
         <Stack direction="row" spacing="1rem" sx={{ height: "100%" }}>
-            <SortAndFilters
-                initialSearch={search}
-                onSetSearch={setSearch}
-                chipFilters={[statusFilterSection.current, ownedByFilterSection.current]}
-                rangeFilters={[priceRangeFilter.current]}
-                changePage={changePage}
-            />
+            <SortAndFilters initialSearch={search} onSetSearch={setSearch} chipFilters={[eventTypeFilterSection.current]} changePage={changePage} />
 
             <ClipThing
                 clipSize="10px"
@@ -255,7 +209,7 @@ export const KeycardsMarket = () => {
             >
                 <Stack sx={{ position: "relative", height: "100%" }}>
                     <Stack sx={{ flex: 1 }}>
-                        <PageHeader title="KEY CARDS" description="Explore what other citizens have to offer." imageUrl={KeycardPNG}>
+                        <PageHeader title="YOUR MARKETPLACE EVENTS" description="See your marketplace events and logs here." imageUrl={WarMachineIconPNG}>
                             <FancyButton
                                 clipThingsProps={{
                                     clipSize: "9px",
@@ -280,14 +234,12 @@ export const KeycardsMarket = () => {
                         </PageHeader>
 
                         <TotalAndPageSizeOptions
-                            countItems={keycardItems?.length}
+                            countItems={eventItems?.length}
                             totalItems={totalItems}
                             pageSize={pageSize}
                             changePageSize={changePageSize}
                             pageSizeOptions={[10, 20, 40]}
                             changePage={changePage}
-                            isGridView={isGridView}
-                            toggleIsGridView={toggleIsGridView}
                             manualRefresh={getItems}
                             sortOptions={sortOptions}
                             selectedSort={sort}
