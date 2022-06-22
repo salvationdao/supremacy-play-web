@@ -1,13 +1,12 @@
 import { ClipThing } from "../Common/ClipThing"
 import { Stack, TextField, Typography } from "@mui/material"
-import { fonts } from "../../theme/theme"
+import { colors, fonts } from "../../theme/theme"
 import { useTheme } from "../../containers/theme"
 import { useCallback, useEffect, useState } from "react"
 import { FancyButton } from "../Common/FancyButton"
 import { useGameServerCommandsFaction } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { RewardResponse } from "../../types"
-import { useSnackbar } from "../../containers"
 
 interface redemptionProps {
     setRewards: (value: ((prevState: RewardResponse[] | undefined) => RewardResponse[] | undefined) | RewardResponse[] | undefined) => void
@@ -18,23 +17,25 @@ export const CodeRedemption = ({ setRewards }: redemptionProps) => {
     const [code, setCode] = useState<string>("")
     const [loading, setLoading] = useState<boolean>(false)
     const { send } = useGameServerCommandsFaction("/faction_commander")
-    const { newSnackbarMessage } = useSnackbar()
+    const [error, setError] = useState<string>()
 
     const onClaim = useCallback(async () => {
         if (!send) return
         setLoading(true)
+        setError(undefined)
         try {
             const resp = await send<{ rewards: RewardResponse[] }, { code: string }>(GameServerKeys.CodeRedemption, {
                 code: code,
             })
             setRewards(resp.rewards)
         } catch (e) {
-            newSnackbarMessage(typeof e === "string" ? e : "Could not redeem code, try again or contact support.", "error")
+            const message = typeof e === "string" ? e : "Could not redeem code, try again or contact support."
+            setError(message)
             console.error(e)
         } finally {
             setLoading(false)
         }
-    }, [code, send, newSnackbarMessage, setLoading, setRewards])
+    }, [code, send, setLoading, setRewards])
 
     return (
         <ClipThing
@@ -74,6 +75,18 @@ export const CodeRedemption = ({ setRewards }: redemptionProps) => {
                     >
                         <CodeEntry code={code} length={6} setCode={setCode} />
                     </ClipThing>
+
+                    {error && (
+                        <Typography
+                            sx={{
+                                mb: "1rem",
+                                color: colors.red,
+                                textAlign: "center",
+                            }}
+                        >
+                            {error}
+                        </Typography>
+                    )}
 
                     <FancyButton
                         disabled={code.length !== 6 || loading}
