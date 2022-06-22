@@ -6,7 +6,7 @@ import { useTheme } from "../../../containers/theme"
 import { numFormatter, shadeColor, timeDiff } from "../../../helpers"
 import { MARKETPLACE_TABS } from "../../../pages"
 import { colors } from "../../../theme/theme"
-import { MarketplaceEventent } from "../../../types/marketplace"
+import { MarketplaceEvent, MarketplaceEventType } from "../../../types/marketplace"
 import { AuctionPrice } from "../Common/MarketItem/AuctionPrice"
 import { BuyoutPrice } from "../Common/MarketItem/BuyoutPrice"
 import { UserInfo } from "../Common/MarketItem/UserInfo"
@@ -14,17 +14,62 @@ import { Thumbnail } from "../Common/MarketItem/Thumbnail"
 import { Timeframe } from "../Common/MarketItem/Timeframe"
 import { SoldPrice } from "../Common/MarketItem/SoldPrice"
 
-interface YourEventItemProps {
-    imageUrl: string
-    animationUrl?: string
-    cardAnimationUrl?: string
-    backgroundImageUrl?: string
-    eventItem: MarketplaceEvent
-    children: ReactNode
-}
-
-export const YourEventItem = ({ imageUrl, animationUrl, cardAnimationUrl, backgroundImageUrl, eventItem, children }: YourEventItemProps) => {
+export const YourEventItem = ({ eventItem }: { eventItem: MarketplaceEvent }) => {
     const theme = useTheme()
+
+    const itemRelatedData = useMemo(() => {
+        const linkSubPath = ""
+        const imageUrl = ""
+        const animationUrl = ""
+        const cardAnimationUrl = ""
+        const backgroundImageUrl = ""
+
+        return {
+            linkSubPath,
+            imageUrl,
+            animationUrl,
+            cardAnimationUrl,
+            backgroundImageUrl,
+        }
+    }, [])
+
+    const content = useMemo(() => {
+        switch (eventItem.event_type) {
+            case MarketplaceEventType.Purchased:
+                return (
+                    <>
+                        {children}
+
+                        <UserInfo marketUser={owner} title="SELLER" />
+
+                        {sold_to && <UserInfo marketUser={sold_to} title="SOLD TO" />}
+
+                        <Timeframe endAt={end_at} soldAt={sold_at} />
+
+                        {sold_at && sold_for ? (
+                            <SoldPrice soldFor={sold_for} />
+                        ) : (
+                            <>
+                                <BuyoutPrice formattedPrice={formattedBuyoutPrice} formattedDropPrice={formattedDropPrice} />
+                                <AuctionPrice formattedPrice={formattedAuctionPrice} totalBids={total_bids} />
+                            </>
+                        )}
+                    </>
+                )
+            case MarketplaceEventType.Bid:
+                return null
+            case MarketplaceEventType.Outbid:
+                return null
+            case MarketplaceEventType.Created:
+                return null
+            case MarketplaceEventType.Sold:
+                return null
+            case MarketplaceEventType.Cancelled:
+                return null
+            default:
+                return null
+        }
+    }, [eventItem])
 
     const formattedBuyoutPrice = useMemo(() => {
         if (!item.buyout_price) return ""
@@ -68,47 +113,28 @@ export const YourEventItem = ({ imageUrl, animationUrl, cardAnimationUrl, backgr
                     },
                     backgroundColor: sold_at ? soldBackgroundColor : backgroundColor,
                     opacity: 0.9,
-                    border: { isFancy: !isGridView, borderColor: sold_at ? colors.marketSold : primaryColor, borderThickness: ".25rem" },
+                    border: { isFancy: true, borderColor: sold_at ? colors.marketSold : primaryColor, borderThickness: ".25rem" },
                     sx: { position: "relative" },
                 }}
                 sx={{ color: primaryColor, textAlign: "start" }}
-                to={`/marketplace/${linkSubPath}/${id}${location.hash}`}
+                to={`/marketplace/${itemRelatedData.linkSubPath}/${id}${location.hash}`}
             >
                 <Box
                     sx={{
                         position: "relative",
-                        p: isGridView ? ".5rem .6rem" : ".1rem .3rem",
-                        display: isGridView ? "block" : "grid",
+                        p: ".1rem .3rem",
+                        display: "grid",
                         gridTemplateRows: "7rem",
                         gridTemplateColumns: `8rem minmax(auto, 38rem) 1.2fr ${sold_to ? "1.2fr" : "1fr"} repeat(2, 1fr)`, // hard-coded to have 6 columns, adjust as required
                         gap: "1.4rem",
-                        ...(isGridView
-                            ? {
-                                  "&>*:not(:last-child)": {
-                                      mb: ".8rem",
-                                  },
-                              }
-                            : {}),
                     }}
                 >
-                    <Thumbnail isGridView={isGridView} imageUrl={imageUrl} animationUrl={animationUrl} cardAnimationUrl={cardAnimationUrl} />
-
-                    {children}
-
-                    <UserInfo isGridView={isGridView} marketUser={owner} title="SELLER" />
-
-                    {sold_to && <UserInfo isGridView={isGridView} marketUser={sold_to} title="SOLD TO" />}
-
-                    <Timeframe isGridView={isGridView} endAt={end_at} soldAt={sold_at} />
-
-                    {sold_at && sold_for ? (
-                        <SoldPrice isGridView={isGridView} soldFor={sold_for} />
-                    ) : (
-                        <>
-                            <BuyoutPrice isGridView={isGridView} formattedPrice={formattedBuyoutPrice} formattedDropPrice={formattedDropPrice} />
-                            <AuctionPrice isGridView={isGridView} formattedPrice={formattedAuctionPrice} totalBids={total_bids} />
-                        </>
-                    )}
+                    <Thumbnail
+                        imageUrl={itemRelatedData.imageUrl}
+                        animationUrl={itemRelatedData.animationUrl}
+                        cardAnimationUrl={itemRelatedData.cardAnimationUrl}
+                    />
+                    {content}
                 </Box>
 
                 <Box
@@ -118,7 +144,7 @@ export const YourEventItem = ({ imageUrl, animationUrl, cardAnimationUrl, backgr
                         right: 0,
                         top: 0,
                         bottom: 0,
-                        background: `url(${backgroundImageUrl})`,
+                        background: `url(${itemRelatedData.backgroundImageUrl})`,
                         backgroundRepeat: "no-repeat",
                         backgroundPosition: "top",
                         backgroundSize: "cover",

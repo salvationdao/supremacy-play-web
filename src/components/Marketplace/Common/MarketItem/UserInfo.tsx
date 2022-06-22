@@ -3,7 +3,7 @@ import { useAuth } from "../../../../containers"
 import { fonts, colors } from "../../../../theme/theme"
 import { MarketUser } from "../../../../types/marketplace"
 
-export const UserInfo = ({ isGridView, marketUser, title }: { isGridView: boolean; marketUser: MarketUser; title?: string }) => {
+export const UserInfo = ({ isGridView, marketUser, title }: { isGridView?: boolean; marketUser: MarketUser; title?: string }) => {
     const { userID } = useAuth()
 
     const { id, username, gid } = marketUser

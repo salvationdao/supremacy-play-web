@@ -2,7 +2,7 @@ import { Stack, Typography } from "@mui/material"
 import { SvgSupToken } from "../../../../assets"
 import { colors, fonts } from "../../../../theme/theme"
 
-export const AuctionPrice = ({ isGridView, formattedPrice, totalBids }: { isGridView: boolean; formattedPrice: string; totalBids: number }) => {
+export const AuctionPrice = ({ isGridView, formattedPrice, totalBids }: { isGridView?: boolean; formattedPrice: string; totalBids: number }) => {
     return (
         <Stack spacing={isGridView ? ".1rem" : ".6rem"}>
             <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack, color: colors.lightGrey }}>

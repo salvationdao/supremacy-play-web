@@ -5,7 +5,7 @@ import { SvgSupToken } from "../../../../assets"
 import { numFormatter } from "../../../../helpers"
 import { colors, fonts } from "../../../../theme/theme"
 
-export const SoldPrice = ({ isGridView, soldFor }: { isGridView: boolean; soldFor: string }) => {
+export const SoldPrice = ({ isGridView, soldFor }: { isGridView?: boolean; soldFor: string }) => {
     const formattedPrice = useMemo(() => {
         return numFormatter(new BigNumber(soldFor).shiftedBy(-18).toNumber())
     }, [soldFor])

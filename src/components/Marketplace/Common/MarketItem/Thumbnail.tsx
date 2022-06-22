@@ -7,7 +7,7 @@ export const Thumbnail = ({
     animationUrl,
     cardAnimationUrl,
 }: {
-    isGridView: boolean
+    isGridView?: boolean
     imageUrl: string
     animationUrl?: string
     cardAnimationUrl?: string
