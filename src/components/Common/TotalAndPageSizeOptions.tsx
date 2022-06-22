@@ -4,7 +4,7 @@ import { colors, fonts } from "../../theme/theme"
 
 interface TotalAndPageSizeOptionsProps {
     countItems?: number
-    totalItems: number
+    totalItems?: number
     pageSize: number
     pageSizeOptions?: number[]
     changePageSize: (value: number) => void
@@ -22,7 +22,6 @@ interface TotalAndPageSizeOptionsProps {
     onSetSort?: React.Dispatch<React.SetStateAction<string>>
 
     // Hide stuff
-    hideTotal?: boolean
     hidePageSizeOptions?: boolean
 }
 
@@ -41,7 +40,6 @@ export const TotalAndPageSizeOptions = ({
     selectedSort,
     onSetSort,
 
-    hideTotal,
     hidePageSizeOptions,
 }: TotalAndPageSizeOptionsProps) => {
     return (
@@ -58,7 +56,7 @@ export const TotalAndPageSizeOptions = ({
                 strong: { fontFamily: fonts.nostromoBlack },
             }}
         >
-            {!hideTotal && (
+            {totalItems && (
                 <Typography variant="caption" sx={{ lineHeight: 1 }}>
                     <strong>DISPLAYING:</strong> {countItems || 0} OF {totalItems}
                 </Typography>

@@ -1,5 +1,5 @@
 import { Box, Pagination, Stack, Typography } from "@mui/material"
-import { useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { Link } from "react-router-dom"
 import { ClipThing } from "../.."
 import { SafePNG } from "../../../assets"
@@ -14,6 +14,7 @@ import { colors, fonts } from "../../../theme/theme"
 import { StorefrontMysteryCrate } from "../../../types"
 import { PageHeader } from "../../Common/PageHeader"
 import { TooltipHelper } from "../../Common/TooltipHelper"
+import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { MysteryCrateStoreItem, MysteryCrateStoreItemLoadingSkeleton } from "./MysteryCrateStoreItem/MysteryCrateStoreItem"
 
 interface MysteryCrateOwnershipResp {
@@ -33,7 +34,7 @@ export const MysteryCratesStore = () => {
         allowed: 0,
         owned: 0,
     })
-    const { page, changePage, setTotalItems, totalPages, pageSize } = usePagination({
+    const { page, changePage, changePageSize, totalPages, pageSize } = usePagination({
         pageSize: parseString(query.get("pageSize"), 10),
         page: parseString(query.get("page"), 1),
     })
@@ -52,34 +53,36 @@ export const MysteryCratesStore = () => {
     )
 
     // Get mystery crates
+    const getItems = useCallback(async () => {
+        try {
+            setIsLoading(true)
+
+            const resp = await send<StorefrontMysteryCrate[]>(GameServerKeys.GetMysteryCrates, {
+                page,
+                page_size: pageSize,
+            })
+
+            updateQuery({
+                page: page.toString(),
+                pageSize: pageSize.toString(),
+            })
+
+            if (!resp) return
+            setLoadError(undefined)
+            setCrates(resp)
+        } catch (e) {
+            const message = typeof e === "string" ? e : "Failed to get mystery crates."
+            setLoadError(message)
+            newSnackbarMessage(message, "error")
+            console.error(e)
+        } finally {
+            setIsLoading(false)
+        }
+    }, [updateQuery, page, pageSize, send, newSnackbarMessage])
+
     useEffect(() => {
-        ;(async () => {
-            try {
-                setIsLoading(true)
-
-                const resp = await send<StorefrontMysteryCrate[]>(GameServerKeys.GetMysteryCrates, {
-                    page,
-                    page_size: pageSize,
-                })
-
-                updateQuery({
-                    page: page.toString(),
-                    pageSize: pageSize.toString(),
-                })
-
-                if (!resp) return
-                setLoadError(undefined)
-                setCrates(resp)
-            } catch (e) {
-                const message = typeof e === "string" ? e : "Failed to get mystery crates."
-                setLoadError(message)
-                newSnackbarMessage(message, "error")
-                console.error(e)
-            } finally {
-                setIsLoading(false)
-            }
-        })()
-    }, [send, page, pageSize, setTotalItems, newSnackbarMessage, updateQuery])
+        getItems()
+    }, [getItems])
 
     const content = useMemo(() => {
         if (loadError) {
@@ -260,6 +263,15 @@ export const MysteryCratesStore = () => {
                             </TooltipHelper>
                         </Stack>
                     </PageHeader>
+
+                    <TotalAndPageSizeOptions
+                        countItems={crates?.length}
+                        pageSize={pageSize}
+                        changePageSize={changePageSize}
+                        pageSizeOptions={[10, 20, 40]}
+                        changePage={changePage}
+                        manualRefresh={getItems}
+                    />
 
                     <Stack sx={{ px: "2rem", py: "1rem", flex: 1 }}>
                         <Box

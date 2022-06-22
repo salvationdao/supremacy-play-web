@@ -84,3 +84,21 @@ export interface MarketplaceBuyAuctionItem {
     sold_for?: string
     sold_at?: Date
 }
+
+export enum MarketplaceEventType {
+    // Buyer's POV
+    Purchased = "purchase",
+    Bid = "bid",
+    Outbid = "bid_refund",
+    // Seller's POV
+    Created = "created",
+    Cancelled = "cancelled",
+    Sold = "sold",
+}
+
+export interface MarketplaceEvent {
+    id: string
+    event_type: MarketplaceEventType
+    created_at: Date
+    item: MarketplaceBuyAuctionItem
+}

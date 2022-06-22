@@ -47,7 +47,7 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
     const [loadError, setLoadError] = useState<string>()
 
     const [sort, setSort] = useState<string>(SortTypeLabel.MechQueueAsc)
-    const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({ pageSize: 5, page: 1 })
+    const { page, changePage, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({ pageSize: 5, page: 1 })
 
     const primaryColor = theme.factionTheme.primary
     const secondaryColor = theme.factionTheme.secondary
@@ -166,7 +166,6 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
 
                         <TotalAndPageSizeOptions
                             countItems={mechs?.length}
-                            totalItems={totalItems}
                             pageSize={pageSize}
                             changePageSize={changePageSize}
                             changePage={changePage}
@@ -174,7 +173,6 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
                             sortOptions={sortOptions}
                             selectedSort={sort}
                             onSetSort={setSort}
-                            hideTotal
                         />
 
                         {loadError && (
