@@ -15,7 +15,7 @@ import { BuyNowDetails } from "../../Common/MarketDetails/BuyNowDetails"
 import { Dates } from "../../Common/MarketDetails/Dates"
 import { ImagesPreview, MarketMedia } from "../../Common/MarketDetails/ImagesPreview"
 import { ManageListing } from "../../Common/MarketDetails/ManageListing"
-import { Owner } from "../../Common/MarketDetails/Owner"
+import { UserInfo } from "../../Common/MarketDetails/UserInfo"
 import { SoldDetails } from "../../Common/MarketDetails/SoldDetails"
 import { MechBattleHistoryDetails } from "./MechBattleHistoryDetails"
 import { MechStatsDetails } from "./MechStatsDetails"
@@ -26,6 +26,8 @@ export const WarMachineMarketDetails = ({ id }: { id: string }) => {
     const [loadError, setLoadError] = useState<string>()
     const [marketItem, setMarketItem] = useState<MarketplaceBuyAuctionItem>()
     const [mechDetails, setMechDetails] = useState<MechDetails>()
+
+    const primaryColor = useMemo(() => (marketItem?.sold_at ? colors.green : theme.factionTheme.primary), [marketItem?.sold_at, theme.factionTheme.primary])
 
     // Get listing details
     useEffect(() => {
@@ -94,27 +96,20 @@ export const WarMachineMarketDetails = ({ id }: { id: string }) => {
             return (
                 <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                     <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
-                        <CircularProgress size="3rem" sx={{ color: theme.factionTheme.primary }} />
+                        <CircularProgress size="3rem" sx={{ color: primaryColor }} />
                     </Stack>
                 </Stack>
             )
         }
 
-        return (
-            <WarMachineMarketDetailsInner
-                marketItem={marketItem}
-                mechDetails={mechDetails}
-                primaryColor={theme.factionTheme.primary}
-                backgroundColor={theme.factionTheme.background}
-            />
-        )
-    }, [loadError, marketItem, mechDetails, theme.factionTheme.background, theme.factionTheme.primary])
+        return <WarMachineMarketDetailsInner marketItem={marketItem} mechDetails={mechDetails} primaryColor={primaryColor} />
+    }, [loadError, marketItem, mechDetails, primaryColor])
 
     return (
         <ClipThing
             clipSize="10px"
             border={{
-                borderColor: theme.factionTheme.primary,
+                borderColor: primaryColor,
                 borderThickness: ".3rem",
             }}
             corners={{
@@ -135,12 +130,10 @@ const WarMachineMarketDetailsInner = ({
     marketItem,
     mechDetails,
     primaryColor,
-    backgroundColor,
 }: {
     marketItem: MarketplaceBuyAuctionItem
     mechDetails?: MechDetails
     primaryColor: string
-    backgroundColor: string
 }) => {
     const below780 = useMediaQuery("(max-width:780px)")
     const [isTimeEnded, toggleIsTimeEnded] = useToggle()
@@ -224,11 +217,11 @@ const WarMachineMarketDetailsInner = ({
                                 </Typography>
                             </Box>
 
-                            <Owner marketUser={owner} title="OWNED BY:" />
+                            <UserInfo marketUser={owner} title="OWNED BY:" />
 
                             <Dates createdAt={created_at} endAt={end_at} onTimeEnded={() => toggleIsTimeEnded(true)} soldAt={sold_at} />
 
-                            {sold_to && <Owner marketUser={sold_to} title="SOLD TO:" />}
+                            {sold_to && <UserInfo marketUser={sold_to} title="SOLD TO:" />}
 
                             {sold_for && <SoldDetails soldFor={sold_for} />}
 
@@ -261,7 +254,7 @@ const WarMachineMarketDetailsInner = ({
                             <ManageListing id={id} owner={owner} isTimeEnded={isTimeEnded} />
                         </Stack>
 
-                        <MechStatsDetails mechDetails={mechDetails} primaryColor={primaryColor} backgroundColor={backgroundColor} />
+                        <MechStatsDetails mechDetails={mechDetails} />
 
                         <MechBattleHistoryDetails mechDetails={mechDetails} />
                     </Masonry>

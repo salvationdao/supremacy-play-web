@@ -4,7 +4,7 @@ import { useAuth, useSupremacy } from "../../../../containers"
 import { colors, fonts } from "../../../../theme/theme"
 import { MarketUser } from "../../../../types/marketplace"
 
-export const Owner = ({ marketUser, title }: { marketUser?: MarketUser; title?: string }) => {
+export const UserInfo = ({ marketUser, title }: { marketUser?: MarketUser; title?: string }) => {
     const { userID } = useAuth()
     const { getFaction } = useSupremacy()
     const ownerFactionDeets = useMemo(() => getFaction(marketUser?.faction_id || ""), [marketUser, getFaction])
