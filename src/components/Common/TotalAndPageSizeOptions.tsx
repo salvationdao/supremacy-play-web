@@ -126,6 +126,7 @@ export const TotalAndPageSizeOptions = ({
                                 borderRadius: 0.5,
                                 "&:hover": {
                                     backgroundColor: (theme) => theme.factionTheme.primary,
+                                    ".MuiTypography-root": { color: (theme) => theme.factionTheme.secondary },
                                 },
                                 ".MuiTypography-root": {
                                     px: ".1rem",
