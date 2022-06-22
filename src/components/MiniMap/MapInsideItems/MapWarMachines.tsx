@@ -1,27 +1,50 @@
 import { Box, Stack } from "@mui/material"
 import { useCallback, useMemo, useState } from "react"
 import { GenericWarMachinePNG, SvgMapSkull, SvgMapWarMachine } from "../../../assets"
-import { useGame, useAuth, useSupremacy } from "../../../containers"
 import { useGameServerSubscription } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
-import { Map, WarMachineLiveState, Vector2i, WarMachineState, Faction } from "../../../types"
+import { LocationSelectType, Map, PlayerAbility, Vector2i, WarMachineState } from "../../../types"
+import { WarMachineLiveState } from "../../../types/game"
+import { Faction } from "../../../types/user"
+import { MapSelection } from "../MiniMapInside"
 
 interface MapWarMachineProps {
     gridWidth: number
     gridHeight: number
-    warMachines: WarMachineState[]
-
-    map: Map
+    // useAuth
+    userID?: string
+    factionID?: string
+    // useSupremacy
+    getFaction: (factionID: string) => Faction
+    // useGame
+    map?: Map
+    warMachines?: WarMachineState[]
+    // useMiniMap
     enlarged: boolean
-    targeting?: boolean
+    targeting: boolean
+    setSelection: React.Dispatch<React.SetStateAction<MapSelection | undefined>>
+    highlightedMechHash?: string
+    setHighlightedMechHash: React.Dispatch<React.SetStateAction<string | undefined>>
+    // useConsumables
+    playerAbility?: PlayerAbility
 }
 
-export const MapWarMachines = ({ gridWidth, gridHeight, warMachines, map, enlarged, targeting }: MapWarMachineProps) => {
-    const { userID } = useAuth()
-    const { getFaction } = useSupremacy()
-    const { highlightedMechHash, setHighlightedMechHash } = useGame()
-
+export const MapWarMachines = ({
+    gridWidth,
+    gridHeight,
+    userID,
+    factionID,
+    getFaction,
+    map,
+    warMachines,
+    enlarged,
+    targeting,
+    setSelection,
+    highlightedMechHash,
+    setHighlightedMechHash,
+    playerAbility,
+}: MapWarMachineProps) => {
     if (!map || !warMachines || warMachines.length <= 0) return null
 
     return (
@@ -37,6 +60,9 @@ export const MapWarMachines = ({ gridWidth, gridHeight, warMachines, map, enlarg
                     enlarged={enlarged}
                     targeting={targeting}
                     userID={userID}
+                    factionID={factionID}
+                    playerAbility={playerAbility}
+                    setSelection={setSelection}
                     highlightedMechHash={highlightedMechHash}
                     setHighlightedMechHash={setHighlightedMechHash}
                 />
@@ -51,11 +77,17 @@ interface Props {
     gridHeight: number
     warMachine: WarMachineState
     map: Map
+    // useAuth
+    userID?: string
+    factionID?: string
+    // useMiniMap
     enlarged: boolean
-    targeting?: boolean
-    userID: string
+    targeting: boolean
+    setSelection: React.Dispatch<React.SetStateAction<MapSelection | undefined>>
     highlightedMechHash?: string
-    setHighlightedMechHash: (s?: string) => void
+    setHighlightedMechHash: React.Dispatch<React.SetStateAction<string | undefined>>
+    // useConsumables
+    playerAbility?: PlayerAbility
 }
 
 const MapWarMachine = ({
@@ -67,10 +99,13 @@ const MapWarMachine = ({
     enlarged,
     targeting,
     userID,
+    factionID,
     highlightedMechHash,
     setHighlightedMechHash,
+    playerAbility,
+    setSelection,
 }: Props) => {
-    const { hash, participantID, factionID, maxHealth, maxShield, imageAvatar, ownedByID } = warMachine
+    const { hash, participantID, factionID: warMachineFactionID, maxHealth, maxShield, imageAvatar, ownedByID } = warMachine
 
     const [health, setHealth] = useState<number>(warMachine.health)
     const [shield, setShield] = useState<number>(warMachine.shield)
@@ -84,7 +119,7 @@ const MapWarMachine = ({
     const ICON_SIZE = useMemo(() => 1 * SIZE, [SIZE])
     const ARROW_LENGTH = useMemo(() => ICON_SIZE / 2 + 0.6 * SIZE, [ICON_SIZE, SIZE])
     const DOT_SIZE = useMemo(() => 1.2 * SIZE, [SIZE])
-    const primaryColor = useMemo(() => getFaction(factionID).primary_color || "#FFFFFF", [factionID, getFaction])
+    const primaryColor = useMemo(() => getFaction(warMachineFactionID).primary_color || "#FFFFFF", [warMachineFactionID, getFaction])
     const isAlive = useMemo(() => health > 0, [health])
 
     // Listen on current war machine changes
@@ -106,8 +141,19 @@ const MapWarMachine = ({
     const handleClick = useCallback(() => {
         if (hash === highlightedMechHash) {
             setHighlightedMechHash(undefined)
-        } else setHighlightedMechHash(hash)
-    }, [hash, highlightedMechHash, setHighlightedMechHash])
+            if (playerAbility) {
+                setSelection(undefined)
+            }
+        } else {
+            if (playerAbility && factionID !== warMachineFactionID) return
+            setHighlightedMechHash(hash)
+            if (playerAbility) {
+                setSelection({
+                    mechHash: hash,
+                })
+            }
+        }
+    }, [hash, highlightedMechHash, setHighlightedMechHash, setSelection, playerAbility, factionID, warMachineFactionID])
 
     if (!position) return null
 
@@ -120,7 +166,7 @@ const MapWarMachine = ({
             onClick={handleClick}
             style={{
                 position: "absolute",
-                pointerEvents: targeting ? "none" : "all",
+                pointerEvents: targeting && playerAbility?.ability.location_select_type !== LocationSelectType.MECH_SELECT ? "none" : "all",
                 cursor: "pointer",
                 transform: `translate(-50%, -50%) translate3d(${(position.x - map.left_pixels) * mapScale}px, ${
                     (position.y - map.top_pixels) * mapScale
@@ -133,6 +179,27 @@ const MapWarMachine = ({
                 padding: "1rem 1.3rem",
             }}
         >
+            {playerAbility && playerAbility.ability.location_select_type === LocationSelectType.MECH_SELECT && hash === highlightedMechHash && (
+                <Box
+                    onClick={() => setSelection(undefined)}
+                    sx={{
+                        position: "absolute",
+                        top: "0",
+                        left: "50%",
+                        transform: "translate(-50%, -50%)",
+                        height: `${SIZE}px`,
+                        width: `${SIZE}px`,
+                        cursor: "pointer",
+                        border: `2px solid ${playerAbility.ability.colour}`,
+                        borderRadius: 1,
+                        backgroundImage: `url(${playerAbility.ability.image_url})`,
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "center",
+                        backgroundSize: "cover",
+                        zIndex: 100,
+                    }}
+                />
+            )}
             <Box
                 style={
                     enlarged

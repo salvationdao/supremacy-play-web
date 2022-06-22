@@ -13,6 +13,18 @@ export interface ViewerLiveCount {
     other: number
 }
 
+export interface CellCoords {
+    x: number
+    y: number
+}
+
+export enum LocationSelectType {
+    LINE_SELECT = "LINE_SELECT",
+    MECH_SELECT = "MECH_SELECT",
+    LOCATION_SELECT = "LOCATION_SELECT",
+    GLOBAL = "GLOBAL",
+}
+
 export interface Map {
     name: string
     image_url: string
@@ -86,25 +98,29 @@ export interface GameAbility {
     ability_offering_id: string
 }
 
-export interface PlayerAbility {
+export interface BlueprintPlayerAbility {
     id: string
-    owner_id: string
-    blueprint_id: string
-    game_client_ability_id: string
+    game_client_ability_id: number
     label: string
     colour: string
     image_url: string
     description: string
     text_colour: string
-    location_select_type: "MECH_SELECT" | "LOCATION_SELECT" | "GLOBAL"
-    purchased_at: string
+    location_select_type: string
+    created_at: Date
+}
+
+export interface PlayerAbility {
+    count: number
+    last_purchased_at: Date
+    ability: BlueprintPlayerAbility
 }
 
 export interface SaleAbility {
     id: string
     current_price: string
     available_until?: Date
-    ability?: PlayerAbility
+    ability: BlueprintPlayerAbility
 }
 
 export interface GameAbilityProgress {

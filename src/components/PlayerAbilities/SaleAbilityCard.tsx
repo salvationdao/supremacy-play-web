@@ -1,61 +1,68 @@
 import { LoadingButton } from "@mui/lab"
-import { Box, ButtonBase, ButtonBaseProps, Fade, Modal, Stack, Typography } from "@mui/material"
+import { Box, ButtonBase, ButtonBaseProps, Fade, IconButton, Modal, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useState } from "react"
-import { SvgGlobal, SvgMicrochip, SvgQuestionMark, SvgSupToken, SvgTarget } from "../../assets"
+import { SvgClose, SvgGlobal, SvgLine, SvgMicrochip, SvgQuestionMark, SvgSupToken, SvgTarget } from "../../assets"
 import { useSnackbar } from "../../containers"
 import { supFormatter } from "../../helpers"
 import { useToggle } from "../../hooks"
 import { useGameServerCommandsUser } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
-import { pulseEffect } from "../../theme/keyframes"
 import { colors, fonts } from "../../theme/theme"
-import { SaleAbility } from "../../types"
+import { LocationSelectType, SaleAbility } from "../../types"
 import { ClipThing } from "../Common/ClipThing"
 import { TooltipHelper } from "../Common/TooltipHelper"
 
-export interface AbilityCardProps extends ButtonBaseProps {
-    abilityID: string
+interface AbilityCardProps extends ButtonBaseProps {
+    saleAbility: SaleAbility
+    updatedPrice: string
 }
 
 const purchaseModalWidth = 400
 
-export const SaleAbilityCard = ({ abilityID, ...props }: AbilityCardProps) => {
-    const { send } = useGameServerCommandsUser("/user_commander")
-    const [saleAbility, setSaleAbility] = useState<SaleAbility | null>(null)
-    const [price] = useState<string | null>(null)
-    const [previousPrice] = useState<string | null>(null)
-    const [error, setError] = useState<string | null>(null)
+export const SaleAbilityCard = ({ saleAbility, updatedPrice, ...props }: AbilityCardProps) => {
+    const [abilityTypeIcon, setAbilityTypeIcon] = useState<JSX.Element>(<SvgQuestionMark />)
+    const [abilityTypeDescription, setAbilityTypeDescription] = useState("Miscellaneous ability type.")
 
     // Purchasing
     const { newSnackbarMessage } = useSnackbar()
+    const { send } = useGameServerCommandsUser("/user_commander")
     const [showPurchaseModal, toggleShowPurchaseModal] = useToggle(false)
     const [purchaseLoading, setPurchaseLoading] = useState(false)
     const [purchaseError, setPurchaseError] = useState<string | null>(null)
 
-    let abilityTypeIcon = <SvgQuestionMark />
-    let abilityTypeDescription = "Miscellaneous ability type."
-    switch (saleAbility?.ability?.location_select_type) {
-        case "GLOBAL":
-            abilityTypeDescription = "This ability will affect all units on the map."
-            abilityTypeIcon = <SvgGlobal />
-            break
-        case "LOCATION_SELECT":
-            abilityTypeDescription = "This ability will target a specific location on the map."
-            abilityTypeIcon = <SvgTarget />
-            break
-        case "MECH_SELECT":
-            abilityTypeDescription = "This ability will target a specific mech on the map."
-            abilityTypeIcon = <SvgMicrochip />
-    }
+    useEffect(() => {
+        console.log(updatedPrice, "updated price")
+    }, [updatedPrice])
+
+    useEffect(() => {
+        switch (saleAbility.ability.location_select_type) {
+            case LocationSelectType.GLOBAL:
+                setAbilityTypeDescription("This ability will affect all units on the map.")
+                setAbilityTypeIcon(<SvgGlobal />)
+                break
+            case LocationSelectType.LOCATION_SELECT:
+                setAbilityTypeDescription("This ability will target a specific location on the map.")
+                setAbilityTypeIcon(<SvgTarget />)
+                break
+            case LocationSelectType.MECH_SELECT:
+                setAbilityTypeDescription("This ability will target a specific mech on the map.")
+                setAbilityTypeIcon(<SvgMicrochip />)
+                break
+            case LocationSelectType.LINE_SELECT:
+                setAbilityTypeDescription("This ability will target a straight line on the map.")
+                setAbilityTypeIcon(<SvgLine />)
+                break
+        }
+    }, [saleAbility])
 
     const onPurchase = useCallback(async () => {
         try {
             setPurchaseLoading(true)
             await send(GameServerKeys.SaleAbilityPurchase, {
-                ability_id: abilityID,
-                amount: price,
+                ability_id: saleAbility.id,
+                amount: updatedPrice,
             })
-            newSnackbarMessage(`Successfully purchased 1 ${saleAbility?.ability?.label || "ability"}`, "success")
+            newSnackbarMessage(`Successfully purchased 1 ${saleAbility.ability.label || "ability"}`, "success")
             toggleShowPurchaseModal(false)
             setPurchaseError(null)
         } catch (e) {
@@ -67,44 +74,7 @@ export const SaleAbilityCard = ({ abilityID, ...props }: AbilityCardProps) => {
         } finally {
             setPurchaseLoading(false)
         }
-    }, [abilityID, newSnackbarMessage, price, saleAbility?.ability?.label, send, toggleShowPurchaseModal])
-
-    // useGameServerSubscription<{ id: string; price: string }>(
-    //     {
-    //         URI: "xxxxxxxxx",
-    //         key: GameServerKeys.SaleAbilityPriceSubscribe,
-    //     },
-    //     (payload) => {
-    //         if (!payload || payload.id !== abilityID) return
-    //         setPrice((prev) => {
-    //             if (prev) setPreviousPrice(prev)
-    //             return payload.price
-    //         })
-    //     },
-    // )
-
-    useEffect(() => {
-        ;(async () => {
-            try {
-                const resp = await send<SaleAbility>(GameServerKeys.SaleAbilityDetailed, {
-                    ability_id: abilityID,
-                })
-
-                if (!resp) return
-                setSaleAbility(resp)
-            } catch (e) {
-                if (e instanceof Error) {
-                    setError(e.message)
-                } else if (typeof e === "string") {
-                    setError(e)
-                }
-            }
-        })()
-    }, [abilityID, send])
-
-    if (!saleAbility || !price) {
-        return <Box>Loading...</Box>
-    }
+    }, [send, saleAbility, updatedPrice, newSnackbarMessage, toggleShowPurchaseModal])
 
     return (
         <>
@@ -181,7 +151,7 @@ export const SaleAbilityCard = ({ abilityID, ...props }: AbilityCardProps) => {
                         </Typography>
                         <Stack direction="row" alignItems="center">
                             <SvgSupToken fill={colors.yellow} size="1.5rem" />
-                            <Typography>{supFormatter(price)}</Typography>
+                            <Typography>{supFormatter(updatedPrice)}</Typography>
                         </Stack>
                     </Box>
                 </ButtonBase>
@@ -206,7 +176,13 @@ export const SaleAbilityCard = ({ abilityID, ...props }: AbilityCardProps) => {
                                 isFancy: true,
                             }}
                             backgroundColor={colors.darkNavy}
+                            sx={{
+                                position: "relative",
+                            }}
                         >
+                            <IconButton size="small" onClick={() => toggleShowPurchaseModal(false)} sx={{ position: "absolute", top: ".2rem", right: ".2rem" }}>
+                                <SvgClose size="1.6rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
+                            </IconButton>
                             <Box sx={{ px: "2rem", py: "1.5rem" }}>
                                 <Typography
                                     variant="h5"
@@ -253,35 +229,6 @@ export const SaleAbilityCard = ({ abilityID, ...props }: AbilityCardProps) => {
                                         }}
                                     >
                                         <Typography>{saleAbility.ability?.description}</Typography>
-                                        <Typography
-                                            variant="caption"
-                                            sx={{
-                                                alignSelf: "end",
-                                            }}
-                                        >
-                                            <Box
-                                                component="span"
-                                                sx={{
-                                                    display: "inline-block",
-                                                    width: 7,
-                                                    height: 7,
-                                                    marginRight: ".5rem",
-                                                    borderRadius: "50%",
-                                                    backgroundColor: colors.red,
-                                                    animation: `${pulseEffect} 3s infinite`,
-                                                }}
-                                            />
-                                            Price Trend:
-                                            <Box
-                                                component="span"
-                                                sx={{
-                                                    ml: ".5rem",
-                                                    color: previousPrice && previousPrice > price ? colors.blue : colors.offWhite,
-                                                }}
-                                            >
-                                                {!previousPrice || previousPrice === price ? "Same" : previousPrice > price ? "Down" : "Up"}
-                                            </Box>
-                                        </Typography>
                                     </Box>
                                 </Stack>
                                 <LoadingButton
@@ -310,10 +257,9 @@ export const SaleAbilityCard = ({ abilityID, ...props }: AbilityCardProps) => {
                                 >
                                     <Typography variant="body2">Purchase for</Typography>
                                     <SvgSupToken size="1.5rem" fill={colors.gold} />
-                                    <Typography variant="body2">{supFormatter(price, 2)}</Typography>
+                                    <Typography variant="body2">{supFormatter(updatedPrice, 2)}</Typography>
                                 </LoadingButton>
                                 {purchaseError && <Typography color={colors.red}>Error: {purchaseError}</Typography>}
-                                {error && <Typography color={colors.red}>Error: Something went wrong while loading this ability.</Typography>}
                             </Box>
                         </ClipThing>
                     </Box>

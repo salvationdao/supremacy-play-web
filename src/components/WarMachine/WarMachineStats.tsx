@@ -2,7 +2,7 @@ import { Box, Slide, Stack } from "@mui/material"
 import { ReactElement, useEffect, useMemo } from "react"
 import { BoxSlanted } from ".."
 import { MINI_MAP_DEFAULT_SIZE } from "../../constants"
-import { useDimension, useGame, useAuth, useOverlayToggles } from "../../containers"
+import { useAuth, useDimension, useGame, useMiniMap, useOverlayToggles, useSupremacy } from "../../containers"
 import { useToggle } from "../../hooks"
 import { siteZIndex } from "../../theme/theme"
 import { WarMachineItem } from "./WarMachineItem"
@@ -10,13 +10,15 @@ import { WarMachineItem } from "./WarMachineItem"
 export const WarMachineStats = () => {
     const { factionID } = useAuth()
     const { warMachines, bribeStage } = useGame()
+    const { battleIdentifier, getFaction } = useSupremacy()
     const { remToPxRatio } = useDimension()
+    const { highlightedMechHash, setHighlightedMechHash } = useMiniMap()
     const { isMapOpen } = useOverlayToggles()
 
     // Temp hotfix ask james ****************************
     const [show, toggleShow] = useToggle(false)
     useEffect(() => {
-        toggleShow(bribeStage !== undefined && bribeStage.phase !== "HOLD")
+        toggleShow(bribeStage && bribeStage.phase !== "HOLD")
     }, [bribeStage, toggleShow])
     // End ****************************************
 
@@ -60,7 +62,16 @@ export const WarMachineStats = () => {
                         <ScrollContainer>
                             <Stack spacing="-3.8rem" direction="row" alignItems="center" justifyContent="center">
                                 {factionMechs.map((wm) => (
-                                    <WarMachineItem key={`${wm.participantID} - ${wm.hash}`} warMachine={wm} scale={0.75} shouldBeExpanded={false} />
+                                    <WarMachineItem
+                                        key={`${wm.participantID} - ${wm.hash}`}
+                                        warMachine={wm}
+                                        scale={0.75}
+                                        shouldBeExpanded={false}
+                                        battleIdentifier={battleIdentifier}
+                                        getFaction={getFaction}
+                                        highlightedMechHash={highlightedMechHash}
+                                        setHighlightedMechHash={setHighlightedMechHash}
+                                    />
                                 ))}
                             </Stack>
                         </ScrollContainer>
@@ -84,7 +95,15 @@ export const WarMachineStats = () => {
                                     .sort((a, b) => a.factionID.localeCompare(b.factionID))
                                     .map((wm) => (
                                         <Box key={`${wm.participantID} - ${wm.hash}`} sx={{ ":not(:last-child)": { pr: "1.6rem" } }}>
-                                            <WarMachineItem warMachine={wm} scale={haveFactionMechs ? 0.7 : 0.7} shouldBeExpanded={false} />
+                                            <WarMachineItem
+                                                warMachine={wm}
+                                                scale={haveFactionMechs ? 0.7 : 0.7}
+                                                shouldBeExpanded={false}
+                                                battleIdentifier={battleIdentifier}
+                                                getFaction={getFaction}
+                                                highlightedMechHash={highlightedMechHash}
+                                                setHighlightedMechHash={setHighlightedMechHash}
+                                            />
                                         </Box>
                                     ))}
                             </Stack>
