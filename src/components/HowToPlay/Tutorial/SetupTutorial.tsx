@@ -160,7 +160,6 @@ export const SetupTutorial = () => {
                             Start contributing to your syndicate&apos;s battle effort to ensure it&apos;s supremacy and reap the Spoils of War!
                         </Typography>
                         <FancyButton
-                            excludeCaret
                             clipThingsProps={{
                                 clipSize: "9px",
                                 backgroundColor: colors.neonBlue,

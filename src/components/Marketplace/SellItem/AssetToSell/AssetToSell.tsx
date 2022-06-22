@@ -54,7 +54,6 @@ export const AssetToSell = ({
                         </ClipThing>
                     )}
                     <FancyButton
-                        excludeCaret
                         disabled={!itemType}
                         clipThingsProps={{
                             clipSize: "9px",

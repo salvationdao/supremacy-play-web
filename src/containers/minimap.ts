@@ -13,7 +13,7 @@ export const MiniMapContainer = createContainer(() => {
 
     // Map data
     const [winner, setWinner] = useState<WinnerAnnouncementResponse>()
-    const [targeting, setTargeting] = useState(false)
+    const [isTargeting, setIsTargeting] = useState(false)
     const [highlightedMechHash, setHighlightedMechHash] = useState<string>()
 
     // Map controls
@@ -29,8 +29,12 @@ export const MiniMapContainer = createContainer(() => {
             setEnlarged(false)
         }
         setSelection(undefined)
-        setTargeting(false)
+        setIsTargeting(false)
     }, [winner, playerAbility, setPlayerAbility])
+
+    useEffect(() => {
+        console.log(selection)
+    }, [selection])
 
     // Subscribe on winner announcements
     useGameServerSubscriptionUser<WinnerAnnouncementResponse | undefined>(
@@ -61,22 +65,22 @@ export const MiniMapContainer = createContainer(() => {
             // If battle ability is overriding player ability selection
             if (playerAbility) {
                 // Close the map
-                setTargeting(false)
+                setIsTargeting(false)
                 setEnlarged(false)
                 setSelection(undefined)
                 const t = setTimeout(() => {
                     // Then open the map again
                     setEnlarged(true)
-                    setTargeting(true)
+                    setIsTargeting(true)
                 }, 1000)
                 return () => clearTimeout(t)
             } else {
                 setEnlarged(true)
-                setTargeting(true)
+                setIsTargeting(true)
             }
         } else if (playerAbility) {
             setEnlarged(true)
-            setTargeting(true)
+            setIsTargeting(true)
         }
     }, [winner, bribeStage, playerAbility])
 
@@ -87,7 +91,7 @@ export const MiniMapContainer = createContainer(() => {
         setWinner,
         highlightedMechHash,
         setHighlightedMechHash,
-        targeting,
+        isTargeting,
         selection,
         setSelection,
         resetSelection,

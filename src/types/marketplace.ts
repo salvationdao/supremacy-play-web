@@ -11,11 +11,17 @@ export enum SaleType {
     DutchAuction = "DUTCH_AUCTION",
 }
 
-export enum SortType {
-    OldestFirst = "Oldest first",
-    NewestFirst = "Newest first",
-    Alphabetical = "Ascending",
-    AlphabeticalReverse = "Descending",
+export enum SortTypeLabel {
+    OldestFirst = "Create time: oldest",
+    NewestFirst = "Create time: newly listed",
+    ExpiringFirst = "End time: ending soon",
+    ExpiringReverse = "End time: ending last",
+    PriceLowest = "Price: lowest first",
+    PriceHighest = "Price: highest first",
+    Alphabetical = "Name: ascending",
+    AlphabeticalReverse = "Name: descending",
+    MechQueueAsc = "Queue position: lowest first",
+    MechQueueDesc = "Queue position: highest first",
 }
 
 export interface MarketUser {

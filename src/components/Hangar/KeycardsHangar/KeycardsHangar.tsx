@@ -1,14 +1,18 @@
 import { Box, Pagination, Stack, Typography } from "@mui/material"
 import React, { useCallback, useEffect, useMemo, useState } from "react"
-import { useHistory, useLocation } from "react-router-dom"
+import { useLocation } from "react-router-dom"
 import { ClipThing, FancyButton } from "../.."
 import { KeycardPNG } from "../../../assets"
+import { PASSPORT_WEB } from "../../../constants"
+import { useAuth } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
-import { usePagination } from "../../../hooks"
+import { parseString } from "../../../helpers"
+import { usePagination, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { Keycard } from "../../../types"
+import { PageHeader } from "../../Common/PageHeader"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { MysteryCrateStoreItemLoadingSkeleton } from "../../Storefront/MysteryCratesStore/MysteryCrateStoreItem/MysteryCrateStoreItem"
 import { KeycardHangarItem } from "./KeycardHangarItem"
@@ -25,15 +29,19 @@ interface GetAssetsResponse {
 }
 
 export const KeycardsHangar = () => {
-    const history = useHistory()
     const location = useLocation()
+    const [query, updateQuery] = useUrlQuery()
+    const { user } = useAuth()
     const { send } = useGameServerCommandsUser("/user_commander")
     const theme = useTheme()
     const [keycards, setKeycards] = useState<Keycard[]>()
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
 
-    const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, setPageSize } = usePagination({ pageSize: 10, page: 1 })
+    const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({
+        pageSize: parseString(query.get("pageSize"), 10),
+        page: parseString(query.get("page"), 1),
+    })
 
     const getItems = useCallback(async () => {
         try {
@@ -42,6 +50,11 @@ export const KeycardsHangar = () => {
                 page,
                 page_size: pageSize,
                 include_market_listed: true,
+            })
+
+            updateQuery({
+                page: page.toString(),
+                pageSize: pageSize.toString(),
             })
 
             if (!resp) return
@@ -55,7 +68,7 @@ export const KeycardsHangar = () => {
         } finally {
             setIsLoading(false)
         }
-    }, [send, page, pageSize, setTotalItems])
+    }, [send, page, pageSize, updateQuery, setTotalItems])
 
     useEffect(() => {
         getItems()
@@ -149,8 +162,7 @@ export const KeycardsHangar = () => {
                     </Typography>
 
                     <FancyButton
-                        onClick={() => history.push(`/marketplace/keycards${location.hash}`)}
-                        excludeCaret
+                        to={`/marketplace/keycards${location.hash}`}
                         clipThingsProps={{
                             clipSize: "9px",
                             backgroundColor: theme.factionTheme.primary,
@@ -173,7 +185,7 @@ export const KeycardsHangar = () => {
                 </Stack>
             </Stack>
         )
-    }, [loadError, keycards, isLoading, theme.factionTheme.primary, theme.factionTheme.secondary, history, location.hash])
+    }, [loadError, keycards, isLoading, theme.factionTheme.primary, theme.factionTheme.secondary, location.hash])
 
     return (
         <ClipThing
@@ -193,11 +205,26 @@ export const KeycardsHangar = () => {
         >
             <Stack sx={{ position: "relative", height: "100%" }}>
                 <Stack sx={{ flex: 1 }}>
+                    <PageHeader
+                        title="KEY CARDS"
+                        description={
+                            <>
+                                The keycards that you have on Supremacy are shown here. If you don&apos;t see your keycards here, you may need to transfer them
+                                from{" "}
+                                <a rel="noreferrer" target="_blank" href={`${PASSPORT_WEB}profile/${user.username}/achievements`}>
+                                    XSYN
+                                </a>{" "}
+                                to Supremacy.
+                            </>
+                        }
+                        imageUrl={KeycardPNG}
+                    ></PageHeader>
+
                     <TotalAndPageSizeOptions
                         countItems={keycards?.length}
                         totalItems={totalItems}
                         pageSize={pageSize}
-                        setPageSize={setPageSize}
+                        changePageSize={changePageSize}
                         changePage={changePage}
                         manualRefresh={getItems}
                     />

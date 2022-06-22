@@ -1,5 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useHistory, useLocation } from "react-router-dom"
+import { useLocation } from "react-router-dom"
 import { FancyButton } from "../.."
 import { useTheme } from "../../../containers/theme"
 import { MARKETPLACE_TABS } from "../../../pages"
@@ -7,6 +7,7 @@ import { colors, fonts } from "../../../theme/theme"
 import { Keycard } from "../../../types"
 import { ItemType } from "../../../types/marketplace"
 import { ClipThing } from "../../Common/ClipThing"
+import { MediaPreview } from "../../Common/MediaPreview/MediaPreview"
 
 interface MysteryCrateStoreItemProps {
     keycard: Keycard
@@ -25,7 +26,6 @@ export const KeycardHangarItem = ({ keycard }: MysteryCrateStoreItemProps) => {
 }
 
 export const KeycardHangarItemInner = ({ keycard, itemSaleID }: MysteryCrateStoreItemProps) => {
-    const history = useHistory()
     const location = useLocation()
     const theme = useTheme()
 
@@ -57,33 +57,13 @@ export const KeycardHangarItemInner = ({ keycard, itemSaleID }: MysteryCrateStor
                     <Box
                         sx={{
                             position: "relative",
-                            px: ".8rem",
-                            py: "2rem",
-                            borderRadius: 1,
                             height: "20rem",
-                            boxShadow: "inset 0 0 12px 6px #00000040",
-                            background: `radial-gradient(#FFFFFF20 10px, ${backgroundColor})`,
-                            border: "#00000060 1px solid",
                         }}
                     >
-                        <Box
-                            component="video"
-                            sx={{
-                                height: "100%",
-                                width: "100%",
-                                overflow: "hidden",
-                                objectFit: "contain",
-                                objectPosition: "center",
-                                borderRadius: 1,
-                            }}
-                            loop
-                            muted
-                            autoPlay
-                            poster={`${keycard.blueprints.image_url}`}
-                        >
-                            {keycard.blueprints.animation_url && <source src={keycard.blueprints.animation_url} type="video/mp4" />}
-                            {keycard.blueprints.card_animation_url && <source src={keycard.blueprints.animation_url} type="video/mp4" />}
-                        </Box>
+                        <MediaPreview
+                            imageUrl={keycard.blueprints.image_url}
+                            videoUrls={[keycard.blueprints.animation_url, keycard.blueprints.card_animation_url]}
+                        />
 
                         {!itemSaleID && (
                             <Box sx={{ position: "absolute", top: ".6rem", right: ".8rem" }}>
@@ -103,14 +83,11 @@ export const KeycardHangarItemInner = ({ keycard, itemSaleID }: MysteryCrateStor
 
                         <Stack alignItems="center" sx={{ mt: "auto !important", pt: ".8rem", alignSelf: "stretch" }}>
                             <FancyButton
-                                excludeCaret
-                                onClick={() => {
-                                    if (itemSaleID) {
-                                        history.push(`/marketplace/${MARKETPLACE_TABS.Keycards}/${itemSaleID}${location.hash}`)
-                                    } else {
-                                        history.push(`/marketplace/sell?item-type=${ItemType.Keycards}&asset-id=${keycard.id}${location.hash}`)
-                                    }
-                                }}
+                                to={
+                                    itemSaleID
+                                        ? `/marketplace/${MARKETPLACE_TABS.Keycards}/${itemSaleID}${location.hash}`
+                                        : `/marketplace/sell?itemType=${ItemType.Keycards}&assetID=${keycard.id}${location.hash}`
+                                }
                                 clipThingsProps={{
                                     clipSize: "5px",
                                     backgroundColor: itemSaleID ? backgroundColor : colors.red,

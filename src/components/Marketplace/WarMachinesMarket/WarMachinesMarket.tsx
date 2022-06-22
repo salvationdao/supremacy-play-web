@@ -1,23 +1,37 @@
 import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { useHistory, useLocation } from "react-router-dom"
+import { useLocation } from "react-router-dom"
 import { ClipThing, FancyButton } from "../.."
 import { EmptyWarMachinesPNG, WarMachineIconPNG } from "../../../assets"
 import { useSnackbar } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
-import { getRarityDeets } from "../../../helpers"
-import { usePagination, useToggle } from "../../../hooks"
+import { getRarityDeets, parseString } from "../../../helpers"
+import { usePagination, useToggle, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { MarketplaceBuyAuctionItem, SortType } from "../../../types/marketplace"
-import { ChipFilter, RangeFilter, SortAndFilters } from "../../Common/SortAndFilters"
+import { MarketplaceBuyAuctionItem, SortTypeLabel } from "../../../types/marketplace"
+import { PageHeader } from "../../Common/PageHeader"
+import { ChipFilter } from "../../Common/SortAndFilters/ChipFilterSection"
+import { RangeFilter } from "../../Common/SortAndFilters/RangeFilterSection"
+import { SortAndFilters } from "../../Common/SortAndFilters/SortAndFilters"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { WarMachineMarketItem } from "./WarMachineMarketItem"
 
+const sortOptions = [
+    { label: SortTypeLabel.OldestFirst, value: SortTypeLabel.OldestFirst },
+    { label: SortTypeLabel.NewestFirst, value: SortTypeLabel.NewestFirst },
+    { label: SortTypeLabel.ExpiringFirst, value: SortTypeLabel.ExpiringFirst },
+    { label: SortTypeLabel.ExpiringReverse, value: SortTypeLabel.ExpiringReverse },
+    { label: SortTypeLabel.PriceLowest, value: SortTypeLabel.PriceLowest },
+    { label: SortTypeLabel.PriceHighest, value: SortTypeLabel.PriceHighest },
+    { label: SortTypeLabel.Alphabetical, value: SortTypeLabel.Alphabetical },
+    { label: SortTypeLabel.AlphabeticalReverse, value: SortTypeLabel.AlphabeticalReverse },
+]
+
 export const WarMachinesMarket = () => {
-    const history = useHistory()
     const location = useLocation()
+    const [query, updateQuery] = useUrlQuery()
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const theme = useTheme()
@@ -27,24 +41,32 @@ export const WarMachinesMarket = () => {
     const [loadError, setLoadError] = useState<string>()
     const [mechItems, setMechItems] = useState<MarketplaceBuyAuctionItem[]>()
 
-    const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, setPageSize } = usePagination({ pageSize: 10, page: 1 })
+    const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({
+        pageSize: parseString(query.get("pageSize"), 10),
+        page: parseString(query.get("page"), 1),
+    })
     const [isGridView, toggleIsGridView] = useToggle(false)
 
     // Filters and sorts
     const [search, setSearch] = useState("")
-    const [sort, setSort] = useState<SortType>(SortType.NewestFirst)
-    const [status, setStatus] = useState<string[]>([])
-    const [ownedBy, setOwnedBy] = useState<string[]>([])
-    const [listingTypes, setListingTypes] = useState<string[]>([])
-    const [rarities, setRarities] = useState<string[]>([])
-    const [price, setPrice] = useState<(number | undefined)[]>([undefined, undefined])
+    const [sort, setSort] = useState<string>(query.get("sort") || SortTypeLabel.NewestFirst)
+    const [status, setStatus] = useState<string[]>((query.get("statuses") || undefined)?.split("||") || [])
+    const [ownedBy, setOwnedBy] = useState<string[]>((query.get("ownedBy") || undefined)?.split("||") || [])
+    const [listingTypes, setListingTypes] = useState<string[]>((query.get("listingTypes") || undefined)?.split("||") || [])
+    const [rarities, setRarities] = useState<string[]>((query.get("rarities") || undefined)?.split("||") || [])
+    const [price, setPrice] = useState<(number | undefined)[]>(
+        (query.get("priceRanges") || undefined)?.split("||").map((p) => (p ? parseInt(p) : undefined)) || [undefined, undefined],
+    )
 
     // Filters
     const statusFilterSection = useRef<ChipFilter>({
         label: "STATUS",
         options: [{ value: "true", label: "SOLD", color: colors.green }],
         initialSelected: status,
-        onSetSelected: setStatus,
+        onSetSelected: (value: string[]) => {
+            setStatus(value)
+            changePage(1)
+        },
     })
 
     const ownedByFilterSection = useRef<ChipFilter>({
@@ -54,7 +76,10 @@ export const WarMachinesMarket = () => {
             { value: "others", label: "OTHERS", color: theme.factionTheme.primary, textColor: theme.factionTheme.secondary },
         ],
         initialSelected: ownedBy,
-        onSetSelected: setOwnedBy,
+        onSetSelected: (value: string[]) => {
+            setOwnedBy(value)
+            changePage(1)
+        },
     })
 
     const listingTypeFilterSection = useRef<ChipFilter>({
@@ -65,7 +90,10 @@ export const WarMachinesMarket = () => {
             { value: "AUCTION", label: "AUCTION", color: colors.auction },
         ],
         initialSelected: listingTypes,
-        onSetSelected: setListingTypes,
+        onSetSelected: (value: string[]) => {
+            setListingTypes(value)
+            changePage(1)
+        },
     })
 
     const rarityChipFilter = useRef<ChipFilter>({
@@ -84,13 +112,19 @@ export const WarMachinesMarket = () => {
             { value: "TITAN", ...getRarityDeets("TITAN") },
         ],
         initialSelected: rarities,
-        onSetSelected: setRarities,
+        onSetSelected: (value: string[]) => {
+            setRarities(value)
+            changePage(1)
+        },
     })
 
     const priceRangeFilter = useRef<RangeFilter>({
         label: "PRICE RANGE",
         initialValue: price,
-        onSetValue: setPrice,
+        onSetValue: (value: (number | undefined)[]) => {
+            setPrice(value)
+            changePage(1)
+        },
     })
 
     const getItems = useCallback(async () => {
@@ -99,8 +133,16 @@ export const WarMachinesMarket = () => {
 
             let sortDir = "asc"
             let sortBy = "alphabetical"
-            if (sort === SortType.AlphabeticalReverse || sort === SortType.NewestFirst) sortDir = "desc"
-            if (sort === SortType.OldestFirst || sort === SortType.NewestFirst) sortBy = "created_at"
+            if (
+                sort === SortTypeLabel.AlphabeticalReverse ||
+                sort === SortTypeLabel.NewestFirst ||
+                sort === SortTypeLabel.ExpiringReverse ||
+                sort === SortTypeLabel.PriceHighest
+            )
+                sortDir = "desc"
+            if (sort === SortTypeLabel.OldestFirst || sort === SortTypeLabel.NewestFirst) sortBy = "created_at"
+            if (sort === SortTypeLabel.ExpiringFirst || sort === SortTypeLabel.ExpiringReverse) sortBy = "time"
+            if (sort === SortTypeLabel.PriceLowest || sort === SortTypeLabel.PriceHighest) sortBy = "price"
 
             const [min_price, max_price] = price
 
@@ -119,6 +161,17 @@ export const WarMachinesMarket = () => {
                 sold: status.length > 0,
             })
 
+            updateQuery({
+                sort,
+                page: page.toString(),
+                pageSize: pageSize.toString(),
+                statuses: status.join("||"),
+                ownedBy: ownedBy.join("||"),
+                listingTypes: listingTypes.join("||"),
+                rarities: rarities.join("||"),
+                priceRanges: price.join("||"),
+            })
+
             if (!resp) return
             setTotalItems(resp.total)
             setMechItems(resp.records)
@@ -131,7 +184,7 @@ export const WarMachinesMarket = () => {
         } finally {
             setIsLoading(false)
         }
-    }, [sort, price, send, page, pageSize, search, rarities, listingTypes, ownedBy, status.length, setTotalItems, newSnackbarMessage])
+    }, [sort, price, updateQuery, page, pageSize, status, ownedBy, listingTypes, rarities, send, search, setTotalItems, newSnackbarMessage])
 
     useEffect(() => {
         getItems()
@@ -232,10 +285,9 @@ export const WarMachinesMarket = () => {
             <SortAndFilters
                 initialSearch={search}
                 onSetSearch={setSearch}
-                initialSort={sort}
-                onSetSort={setSort}
                 chipFilters={[statusFilterSection.current, ownedByFilterSection.current, listingTypeFilterSection.current, rarityChipFilter.current]}
                 rangeFilters={[priceRangeFilter.current]}
+                changePage={changePage}
             />
 
             <ClipThing
@@ -250,47 +302,17 @@ export const WarMachinesMarket = () => {
             >
                 <Stack sx={{ position: "relative", height: "100%" }}>
                     <Stack sx={{ flex: 1 }}>
-                        <Stack
-                            direction="row"
-                            alignItems="center"
-                            sx={{
-                                px: "2rem",
-                                py: "2.2rem",
-                                backgroundColor: "#00000070",
-                                borderBottom: (theme) => `${theme.factionTheme.primary}70 1.5px solid`,
-                            }}
-                        >
-                            <Box
-                                sx={{
-                                    alignSelf: "flex-start",
-                                    flexShrink: 0,
-                                    mr: "1.6rem",
-                                    width: "7rem",
-                                    height: "5.2rem",
-                                    background: `url(${WarMachineIconPNG})`,
-                                    backgroundRepeat: "no-repeat",
-                                    backgroundPosition: "center",
-                                    backgroundSize: "cover",
-                                }}
-                            />
-                            <Box sx={{ mr: "2rem" }}>
-                                <Typography variant="h5" sx={{ fontFamily: fonts.nostromoBlack }}>
-                                    WAR MACHINES
-                                </Typography>
-                                <Typography sx={{ fontSize: "1.85rem" }}>Explore what other citizens have to offer.</Typography>
-                            </Box>
-
+                        <PageHeader title="WAR MACHINES" description="Explore what other citizens have to offer." imageUrl={WarMachineIconPNG}>
                             <FancyButton
-                                excludeCaret
                                 clipThingsProps={{
                                     clipSize: "9px",
                                     backgroundColor: colors.red,
                                     opacity: 1,
                                     border: { isFancy: true, borderColor: colors.red, borderThickness: "2px" },
-                                    sx: { position: "relative", ml: "auto" },
+                                    sx: { position: "relative" },
                                 }}
                                 sx={{ px: "1.6rem", py: ".4rem", color: "#FFFFFF" }}
-                                onClick={() => history.push(`/marketplace/sell${location.hash}`)}
+                                to={`/marketplace/sell${location.hash}`}
                             >
                                 <Typography
                                     variant="caption"
@@ -302,17 +324,21 @@ export const WarMachinesMarket = () => {
                                     SELL ITEM
                                 </Typography>
                             </FancyButton>
-                        </Stack>
+                        </PageHeader>
 
                         <TotalAndPageSizeOptions
                             countItems={mechItems?.length}
                             totalItems={totalItems}
                             pageSize={pageSize}
-                            setPageSize={setPageSize}
+                            changePageSize={changePageSize}
+                            pageSizeOptions={[10, 20, 40]}
                             changePage={changePage}
                             isGridView={isGridView}
                             toggleIsGridView={toggleIsGridView}
                             manualRefresh={getItems}
+                            sortOptions={sortOptions}
+                            selectedSort={sort}
+                            onSetSort={setSort}
                         />
 
                         <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>

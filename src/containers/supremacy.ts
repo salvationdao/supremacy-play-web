@@ -14,6 +14,7 @@ export const SupremacyContainer = createContainer(() => {
         URI: "/public/online",
         host: GAME_SERVER_HOSTNAME,
     })
+    const [mechDeployModalOpen, toggleMechDeployModalOpen] = useToggle()
     const [readyToCheckServerState, toggleReadyToCheckServerState] = useToggle()
     const [isServerUp, toggleIsServerUp] = useState<boolean | undefined>(undefined) // Needs 3 states: true, false, undefined. Undefined means it's not loaded yet.
     const [haveSups, toggleHaveSups] = useState<boolean>() // Needs 3 states: true, false, undefined. Undefined means it's not loaded yet.
@@ -60,7 +61,17 @@ export const SupremacyContainer = createContainer(() => {
         [factionsAll],
     )
 
-    return { isServerUp, factionsAll, getFaction, battleIdentifier, setBattleIdentifier, haveSups, toggleHaveSups }
+    return {
+        isServerUp,
+        factionsAll,
+        getFaction,
+        battleIdentifier,
+        setBattleIdentifier,
+        haveSups,
+        toggleHaveSups,
+        mechDeployModalOpen,
+        toggleMechDeployModalOpen,
+    }
 })
 
 export const SupremacyProvider = SupremacyContainer.Provider

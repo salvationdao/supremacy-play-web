@@ -4,6 +4,7 @@ import {
     BattleEndScreen,
     BattleHistory,
     Controls,
+    EarlyAccessWarning,
     LiveVotingChart,
     MiniMap,
     NoSupsModal,
@@ -13,6 +14,7 @@ import {
     WarMachineStats,
 } from "../components"
 import { TutorialModal } from "../components/HowToPlay/Tutorial/TutorialModal"
+import { QuickDeploy } from "../components/QuickDeploy/QuickDeploy"
 import { Trailer } from "../components/Stream/Trailer"
 import { DimensionProvider, GameProvider, OverlayTogglesProvider, StreamProvider, useAuth, useSupremacy } from "../containers"
 import { UserConsumablesProvider } from "../containers/consumables"
@@ -21,6 +23,10 @@ import { useToggle } from "../hooks"
 import { siteZIndex } from "../theme/theme"
 
 export const BattleArenaPage = () => {
+    const [understand, toggleUnderstand] = useToggle()
+
+    if (!understand) return <EarlyAccessWarning onAcknowledged={() => toggleUnderstand(true)} />
+
     return (
         <StreamProvider>
             <GameProvider>
@@ -40,7 +46,7 @@ export const BattleArenaPage = () => {
 
 const BattleArenaPageInner = () => {
     const { userID } = useAuth()
-    const { isServerUp, haveSups } = useSupremacy()
+    const { isServerUp, haveSups, mechDeployModalOpen, toggleMechDeployModalOpen } = useSupremacy()
     const [noSupsModalOpen, toggleNoSupsModalOpen] = useToggle(true)
     const [watchedTrailer, setWatchedTrailer] = useState(localStorage.getItem("watchedTrailer") == "true")
 
@@ -60,6 +66,7 @@ const BattleArenaPageInner = () => {
                             <BattleHistory />
                             <VotingSystem />
 
+                            {mechDeployModalOpen && <QuickDeploy open={mechDeployModalOpen} onClose={() => toggleMechDeployModalOpen(false)} />}
                             {isServerUp && userID && haveSups === false && noSupsModalOpen && <NoSupsModal onClose={() => toggleNoSupsModalOpen(false)} />}
                             {userID && !noSupsModalOpen && <TutorialModal />}
                         </>

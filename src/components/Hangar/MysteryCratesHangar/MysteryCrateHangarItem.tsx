@@ -1,5 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useHistory, useLocation } from "react-router-dom"
+import { useLocation } from "react-router-dom"
 import { SafePNG } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { useTimer } from "../../../hooks"
@@ -9,13 +9,13 @@ import { MysteryCrate } from "../../../types"
 import { ItemType } from "../../../types/marketplace"
 import { ClipThing } from "../../Common/ClipThing"
 import { FancyButton } from "../../Common/FancyButton"
+import { MediaPreview } from "../../Common/MediaPreview/MediaPreview"
 
 interface MysteryCrateStoreItemProps {
     crate: MysteryCrate
 }
 
 export const MysteryCrateHangarItem = ({ crate }: MysteryCrateStoreItemProps) => {
-    const history = useHistory()
     const location = useLocation()
     const theme = useTheme()
 
@@ -49,32 +49,10 @@ export const MysteryCrateHangarItem = ({ crate }: MysteryCrateStoreItemProps) =>
                         <Box
                             sx={{
                                 position: "relative",
-                                px: ".8rem",
-                                py: "2rem",
-                                borderRadius: 1,
                                 height: "20rem",
-                                boxShadow: "inset 0 0 12px 6px #00000040",
-                                background: `radial-gradient(#FFFFFF20 10px, ${backgroundColor})`,
-                                border: "#00000060 1px solid",
                             }}
                         >
-                            <Box
-                                component="video"
-                                sx={{
-                                    height: "100%",
-                                    width: "100%",
-                                    overflow: "hidden",
-                                    objectFit: "contain",
-                                    objectPosition: "center",
-                                }}
-                                loop
-                                muted
-                                autoPlay
-                                poster={`${crate.image_url || SafePNG}`}
-                            >
-                                <source src={crate.animation_url} type="video/mp4" />
-                                <source src={crate.card_animation_url} type="video/mp4" />
-                            </Box>
+                            <MediaPreview imageUrl={crate.image_url || SafePNG} videoUrls={[crate.animation_url, crate.card_animation_url]} />
 
                             <Stack
                                 alignItems="center"
@@ -96,7 +74,6 @@ export const MysteryCrateHangarItem = ({ crate }: MysteryCrateStoreItemProps) =>
                             <Stack alignItems="center" sx={{ mt: "auto !important", pt: ".8rem", alignSelf: "stretch" }}>
                                 <FancyButton
                                     disabled={new Date() < crate.locked_until}
-                                    excludeCaret
                                     onClick={() => {
                                         /*TODO: open crate function*/
                                         return
@@ -116,15 +93,13 @@ export const MysteryCrateHangarItem = ({ crate }: MysteryCrateStoreItemProps) =>
                                 </FancyButton>
 
                                 <FancyButton
-                                    excludeCaret
-                                    onClick={() => {
-                                        if (crate.locked_to_marketplace) {
-                                            if (!crate.item_sale_id) return
-                                            history.push(`/marketplace/${MARKETPLACE_TABS.MysteryCrates}/${crate.item_sale_id}${location.hash}`)
-                                        } else {
-                                            history.push(`/marketplace/sell?item-type=${ItemType.MysteryCrate}&asset-id=${crate.id}${location.hash}`)
-                                        }
-                                    }}
+                                    to={
+                                        crate.locked_to_marketplace
+                                            ? !crate.item_sale_id
+                                                ? undefined
+                                                : `/marketplace/${MARKETPLACE_TABS.MysteryCrates}/${crate.item_sale_id}${location.hash}`
+                                            : `/marketplace/sell?itemType=${ItemType.MysteryCrate}&assetID=${crate.id}${location.hash}`
+                                    }
                                     clipThingsProps={{
                                         clipSize: "5px",
                                         backgroundColor: crate.locked_to_marketplace ? backgroundColor : colors.red,

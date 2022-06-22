@@ -1,14 +1,16 @@
 import { Box, Pagination, Stack, Typography } from "@mui/material"
 import React, { useCallback, useEffect, useMemo, useState } from "react"
-import { useHistory, useLocation } from "react-router-dom"
+import { useLocation } from "react-router-dom"
 import { ClipThing, FancyButton } from "../.."
 import { PASSPORT_WEB } from "../../../constants"
 import { useTheme } from "../../../containers/theme"
-import { usePagination } from "../../../hooks"
+import { parseString } from "../../../helpers"
+import { usePagination, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { MechBasic, MechDetails } from "../../../types"
+import { SortTypeLabel } from "../../../types/marketplace"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { DeployModal } from "./DeployQueue/DeployModal"
 import { LeaveModal } from "./LeaveQueue/LeaveModal"
@@ -17,7 +19,13 @@ import { RentalModal } from "./MechRental/RentalModal"
 import { MechViewer } from "./MechViewer/MechViewer"
 import { WarMachineHangarItem, WarMachineHangarItemLoadingSkeleton } from "./WarMachineHangarItem/WarMachineHangarItem"
 
+const sortOptions = [
+    { label: SortTypeLabel.MechQueueAsc, value: SortTypeLabel.MechQueueAsc },
+    { label: SortTypeLabel.MechQueueDesc, value: SortTypeLabel.MechQueueDesc },
+]
+
 interface GetMechsRequest {
+    queue_sort: string
     page: number
     page_size: number
     include_market_listed: boolean
@@ -45,24 +53,24 @@ export const WarMachinesHangar = () => {
                 setHistoryMechModalOpen={setHistoryMechModalOpen}
                 setRentalMechModalOpen={setRentalMechModalOpen}
             />
-            {selectedMechDetails && (
+            {selectedMechDetails && deployMechModalOpen && (
                 <DeployModal
                     selectedMechDetails={selectedMechDetails}
                     deployMechModalOpen={deployMechModalOpen}
                     setDeployMechModalOpen={setDeployMechModalOpen}
                 />
             )}
-            {selectedMechDetails && (
+            {selectedMechDetails && leaveMechModalOpen && (
                 <LeaveModal selectedMechDetails={selectedMechDetails} leaveMechModalOpen={leaveMechModalOpen} setLeaveMechModalOpen={setLeaveMechModalOpen} />
             )}
-            {selectedMechDetails && (
+            {selectedMechDetails && historyMechModalOpen && (
                 <HistoryModal
                     selectedMechDetails={selectedMechDetails}
                     historyMechModalOpen={historyMechModalOpen}
                     setHistoryMechModalOpen={setHistoryMechModalOpen}
                 />
             )}
-            {selectedMechDetails && (
+            {selectedMechDetails && rentalMechModalOpen && (
                 <RentalModal
                     selectedMechDetails={selectedMechDetails}
                     rentalMechModalOpen={rentalMechModalOpen}
@@ -88,22 +96,38 @@ const WarMachinesHangarInner = ({
     setHistoryMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
     setRentalMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
 }) => {
-    const history = useHistory()
     const location = useLocation()
+    const [query, updateQuery] = useUrlQuery()
     const { send } = useGameServerCommandsUser("/user_commander")
     const theme = useTheme()
     const [mechs, setMechs] = useState<MechBasic[]>([])
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
-    const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, setPageSize } = usePagination({ pageSize: 5, page: 1 })
+
+    const [sort, setSort] = useState<string>(query.get("sort") || SortTypeLabel.MechQueueAsc)
+    const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({
+        pageSize: parseString(query.get("pageSize"), 5),
+        page: parseString(query.get("page"), 1),
+    })
 
     const getItems = useCallback(async () => {
         try {
             setIsLoading(true)
+
+            let sortDir = "asc"
+            if (sort === SortTypeLabel.MechQueueDesc) sortDir = "desc"
+
             const resp = await send<GetAssetsResponse, GetMechsRequest>(GameServerKeys.GetMechs, {
+                queue_sort: sortDir,
                 page,
                 page_size: pageSize,
                 include_market_listed: true,
+            })
+
+            updateQuery({
+                sort,
+                page: page.toString(),
+                pageSize: pageSize.toString(),
             })
 
             if (!resp) return
@@ -116,7 +140,7 @@ const WarMachinesHangarInner = ({
         } finally {
             setIsLoading(false)
         }
-    }, [send, page, pageSize, setTotalItems])
+    }, [send, page, pageSize, updateQuery, sort, setTotalItems])
 
     useEffect(() => {
         getItems()
@@ -125,7 +149,7 @@ const WarMachinesHangarInner = ({
     const content = useMemo(() => {
         return (
             <Box sx={{ direction: "ltr", height: 0 }}>
-                <Stack spacing="3.2rem" sx={{ px: "1rem", py: "1.5rem" }}>
+                <Stack spacing="2rem" sx={{ px: "1rem", py: "1.5rem" }}>
                     {mechs.map((mech, i) => (
                         <WarMachineHangarItem
                             key={`hangar-mech-${mech.id}`}
@@ -166,9 +190,12 @@ const WarMachinesHangarInner = ({
                         countItems={mechs?.length}
                         totalItems={totalItems}
                         pageSize={pageSize}
-                        setPageSize={setPageSize}
+                        changePageSize={changePageSize}
                         changePage={changePage}
                         manualRefresh={getItems}
+                        sortOptions={sortOptions}
+                        selectedSort={sort}
+                        onSetSort={setSort}
                     />
 
                     <Box
@@ -244,8 +271,7 @@ const WarMachinesHangarInner = ({
                                         {"You don't have any war machines, go to the Marketplace or go to Xsyn to transfer your assets to Supremacy."}
                                     </Typography>
                                     <FancyButton
-                                        onClick={() => history.push(`/marketplace/war-machines${location.hash}`)}
-                                        excludeCaret
+                                        to={`/marketplace/war-machines${location.hash}`}
                                         clipThingsProps={{
                                             clipSize: "9px",
                                             backgroundColor: theme.factionTheme.primary,
@@ -268,7 +294,6 @@ const WarMachinesHangarInner = ({
                                     <FancyButton
                                         href={`${PASSPORT_WEB}profile`}
                                         target="_blank"
-                                        excludeCaret
                                         clipThingsProps={{
                                             clipSize: "9px",
                                             backgroundColor: colors.neonPink,

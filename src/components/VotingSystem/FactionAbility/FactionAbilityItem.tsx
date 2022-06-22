@@ -3,9 +3,9 @@ import BigNumber from "bignumber.js"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { ClipThing, ContributionBar } from "../.."
 import { useGame } from "../../../containers"
+import { shadeColor } from "../../../helpers"
 import { useGameServerCommandsFaction, useGameServerSubscriptionAbilityFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
-import { colors } from "../../../theme/theme"
 import { GameAbility, GameAbilityProgress } from "../../../types"
 import { SupsBar } from "./SupsBar"
 import { TopText } from "./TopText"
@@ -112,11 +112,23 @@ interface InnerProps {
 export const FactionAbilityItemInner = ({ gameAbility, initialTargetCost, clipSlantSize, currentSups, supsCost, isVoting, onContribute }: InnerProps) => {
     const { label, colour, text_colour, image_url, description } = gameAbility
 
+    const backgroundColor = useMemo(() => shadeColor(colour, -75), [colour])
+
     return (
         <Box>
             <Fade in={true}>
                 <Box>
-                    <ClipThing clipSize="6px" clipSlantSize={clipSlantSize} backgroundColor={colour ? `${colour}` : `${colors.neonBlue}`} opacity={0.12}>
+                    <ClipThing
+                        clipSize="6px"
+                        clipSlantSize={clipSlantSize}
+                        border={{
+                            isFancy: true,
+                            borderColor: colour,
+                            borderThickness: ".3rem",
+                        }}
+                        backgroundColor={backgroundColor}
+                        opacity={0.7}
+                    >
                         <Stack
                             spacing=".8rem"
                             alignItems="flex-start"

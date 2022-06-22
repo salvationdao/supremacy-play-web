@@ -34,6 +34,7 @@ export const MapWarMachines = ({
     gridWidth,
     gridHeight,
     userID,
+    factionID,
     getFaction,
     map,
     warMachines,
@@ -59,6 +60,7 @@ export const MapWarMachines = ({
                     enlarged={enlarged}
                     targeting={targeting}
                     userID={userID}
+                    factionID={factionID}
                     playerAbility={playerAbility}
                     setSelection={setSelection}
                     highlightedMechHash={highlightedMechHash}
@@ -126,6 +128,7 @@ const MapWarMachine = ({
             URI: `/public/mech/${participantID}`,
             key: GameServerKeys.SubMechLiveStats,
             ready: !!participantID,
+            batchURI: "/public/mech",
         },
         (payload) => {
             if (payload?.health !== undefined) setHealth(payload.health)
@@ -168,7 +171,7 @@ const MapWarMachine = ({
                 transform: `translate(-50%, -50%) translate3d(${(position.x - map.left_pixels) * mapScale}px, ${
                     (position.y - map.top_pixels) * mapScale
                 }px, 0)`,
-                transition: "transform 0.2s linear",
+                transition: "transform 0.35s linear",
                 zIndex: isAlive ? 5 : 4,
                 opacity: 1,
                 border: highlightedMechHash === warMachine.hash ? `${primaryColor} 1rem dashed` : "unset",

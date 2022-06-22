@@ -46,6 +46,7 @@ export enum GameServerKeys {
     SubmitRepair = "ASSET:REPAIR:PAY:FEE",
     MechQueueUpdated = "PLAYER:ASSET:MECH:QUEUE:UPDATE",
     TriggerMechStatusUpdate = "PLAYER:ASSET:MECH:STATUS:UPDATE",
+    MechRename = "PLAYER:MECH:RENAME",
 
     // Player Abilities
     SaleAbilitiesPriceSubscribe = "SALE:ABILITIES:PRICE:SUBSCRIBE",
@@ -80,6 +81,7 @@ export enum GameServerKeys {
     GetBanPlayerCost = "PUNISH:VOTE:PRICE:QUOTE",
     SubmitBanProposal = "ISSUE:PUNISH:VOTE",
     SubBanProposals = "PUNISH:VOTE:SUBSCRIBE",
+    SubBanProposalCommandOverrideCount = "PUNISH:VOTE:COMMAND:OVERRIDE:COUNT:SUBSCRIBE",
     SubmitBanVote = "PUNISH:VOTE",
     SubmitInstantBan = "PUNISH:VOTE:INSTANT:PASS",
 
@@ -133,13 +135,6 @@ export enum PassportServerKeys {
     SubscribeWallet = "USER:SUPS:SUBSCRIBE",
     SubscribeUserTransactions = "USER:SUPS:TRANSACTIONS:SUBSCRIBE",
 
-    // Assets
-    SubAssetData = "ASSET:SUBSCRIBE",
-    UpdateAssetName = "ASSET:UPDATE:NAME",
-
     // Misc
     GetFreeSups = "GAMEBAR:GET:SUPS",
-
-    //User
-    UserUpdate = "USER:UPDATE",
 }

@@ -3,8 +3,10 @@ import { ReactNode } from "react"
 import { FancyButton, TooltipHelper } from "../../.."
 import { SvgIntroAnimation, SvgOutroAnimation, SvgPlus, SvgPowerCore, SvgSkin, SvgUtilities, SvgWeapons } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
+import { useToggle } from "../../../../hooks"
 import { colors } from "../../../../theme/theme"
 import { MechBasic, MechDetails } from "../../../../types"
+import { MediaPreviewModal } from "../../../Common/MediaPreview/MediaPreviewModal"
 
 const ITEM_WIDTH = 7.5 //rem
 
@@ -49,6 +51,7 @@ export const MechLoadout = ({ mech, mechDetails }: { mech: MechBasic; mechDetail
                 {power_core_id && (
                     <LoadoutItem
                         imageUrl={powerCore?.avatar_url}
+                        videoUrl={powerCore?.animation_url}
                         Icon={<SvgPowerCore fill={colors.powerCore} size="1.3rem" />}
                         primaryColor={primaryColor}
                         tooltipText={powerCore?.label}
@@ -58,6 +61,7 @@ export const MechLoadout = ({ mech, mechDetails }: { mech: MechBasic; mechDetail
                 {chassis_skin_id && (
                     <LoadoutItem
                         imageUrl={chassisSkin?.image_url}
+                        videoUrl={chassisSkin?.animation_url}
                         Icon={<SvgSkin fill={colors.chassisSkin} size="1.3rem" />}
                         primaryColor={primaryColor}
                         tooltipText={chassisSkin?.label}
@@ -67,6 +71,7 @@ export const MechLoadout = ({ mech, mechDetails }: { mech: MechBasic; mechDetail
                 {intro_animation_id && (
                     <LoadoutItem
                         imageUrl={introAnimation?.avatar_url}
+                        videoUrl={introAnimation?.animation_url}
                         Icon={<SvgIntroAnimation fill={colors.introAnimation} size="1.3rem" />}
                         primaryColor={primaryColor}
                         tooltipText={introAnimation?.label}
@@ -76,6 +81,7 @@ export const MechLoadout = ({ mech, mechDetails }: { mech: MechBasic; mechDetail
                 {outro_animation_id && (
                     <LoadoutItem
                         imageUrl={outroAnimation?.avatar_url}
+                        videoUrl={outroAnimation?.animation_url}
                         Icon={<SvgOutroAnimation fill={colors.outroAnimation} size="1.3rem" />}
                         primaryColor={primaryColor}
                         tooltipText={outroAnimation?.label}
@@ -86,6 +92,7 @@ export const MechLoadout = ({ mech, mechDetails }: { mech: MechBasic; mechDetail
                     <LoadoutItem
                         key={`mech-loadout-weapon-${w.id}`}
                         imageUrl={w?.avatar_url}
+                        videoUrl={w?.animation_url}
                         Icon={<SvgWeapons fill={colors.weapons} size="1.3rem" />}
                         primaryColor={primaryColor}
                         tooltipText={w.label}
@@ -96,6 +103,7 @@ export const MechLoadout = ({ mech, mechDetails }: { mech: MechBasic; mechDetail
                     <LoadoutItem
                         key={`mech-loadout-utility-${u.id}`}
                         imageUrl={u?.avatar_url}
+                        videoUrl={u?.animation_url}
                         Icon={<SvgUtilities fill={colors.utilities} size="1.3rem" />}
                         primaryColor={primaryColor}
                         tooltipText={u.label}
@@ -108,57 +116,74 @@ export const MechLoadout = ({ mech, mechDetails }: { mech: MechBasic; mechDetail
     )
 }
 
-const LoadoutItem = ({ imageUrl, primaryColor, tooltipText, Icon }: { imageUrl?: string; primaryColor: string; tooltipText?: string; Icon: ReactNode }) => {
-    return (
-        <Box sx={{ position: "relative", flexBasis: "50%", width: `${ITEM_WIDTH}rem`, p: ".3rem" }}>
-            <FancyButton
-                excludeCaret
-                clipThingsProps={{
-                    clipSize: "10px",
-                    backgroundColor: primaryColor,
-                    opacity: 0.1,
-                    border: {
-                        isFancy: true,
-                        borderColor: primaryColor,
-                        borderThickness: ".15rem",
-                    },
-                    sx: { height: "100%" },
-                }}
-                sx={{ height: "100%", color: primaryColor, p: ".8rem", minWidth: 0 }}
-                innerSx={{ p: 0 }}
-                // onClick={() => alert("TODO: open loadout menu modal.")}
-            >
-                <TooltipHelper placement="bottom" text={tooltipText}>
-                    <Box
-                        sx={{
-                            height: "100%",
-                            width: "100%",
-                            overflow: "hidden",
-                            background: `url(${imageUrl})`,
-                            backgroundRepeat: "no-repeat",
-                            backgroundPosition: "center",
-                            backgroundSize: "cover",
-                            borderRadius: 1,
-                        }}
-                    />
-                </TooltipHelper>
-            </FancyButton>
+const LoadoutItem = ({
+    imageUrl,
+    videoUrl,
+    primaryColor,
+    tooltipText,
+    Icon,
+}: {
+    imageUrl?: string
+    videoUrl?: string
+    primaryColor: string
+    tooltipText?: string
+    Icon: ReactNode
+}) => {
+    const [previewModalOpen, togglePreviewModalOpen] = useToggle()
 
-            <Box
-                sx={{
-                    position: "absolute",
-                    right: ".4rem",
-                    bottom: ".2rem",
-                    pl: ".3rem",
-                    pt: ".3rem",
-                    opacity: 0.82,
-                    borderTopLeftRadius: "50%",
-                    backgroundColor: "#000000DD",
-                }}
-            >
-                {Icon}
+    return (
+        <>
+            <Box sx={{ position: "relative", flexBasis: "50%", width: `${ITEM_WIDTH}rem`, p: ".3rem" }}>
+                <FancyButton
+                    clipThingsProps={{
+                        clipSize: "10px",
+                        backgroundColor: primaryColor,
+                        opacity: 0.1,
+                        border: {
+                            isFancy: true,
+                            borderColor: primaryColor,
+                            borderThickness: ".15rem",
+                        },
+                        sx: { height: "100%" },
+                    }}
+                    sx={{ height: "100%", color: primaryColor, p: ".8rem", minWidth: 0 }}
+                    innerSx={{ p: 0 }}
+                    onClick={() => togglePreviewModalOpen()}
+                >
+                    <TooltipHelper placement="bottom" text={tooltipText}>
+                        <Box
+                            sx={{
+                                height: "100%",
+                                width: "100%",
+                                overflow: "hidden",
+                                background: `url(${imageUrl})`,
+                                backgroundRepeat: "no-repeat",
+                                backgroundPosition: "center",
+                                backgroundSize: "cover",
+                                borderRadius: 1,
+                            }}
+                        />
+                    </TooltipHelper>
+                </FancyButton>
+
+                <Box
+                    sx={{
+                        position: "absolute",
+                        right: ".4rem",
+                        bottom: ".2rem",
+                        pl: ".3rem",
+                        pt: ".3rem",
+                        opacity: 0.82,
+                        borderTopLeftRadius: "50%",
+                        backgroundColor: "#000000DD",
+                    }}
+                >
+                    {Icon}
+                </Box>
             </Box>
-        </Box>
+
+            {previewModalOpen && <MediaPreviewModal imageUrl={imageUrl} videoUrls={[videoUrl]} onClose={() => togglePreviewModalOpen(false)} />}
+        </>
     )
 }
 
@@ -166,7 +191,6 @@ export const AddLoadoutItem = ({ primaryColor }: { primaryColor: string }) => {
     return (
         <Box sx={{ flexBasis: "50%", width: `${ITEM_WIDTH}rem`, p: ".2rem" }}>
             <FancyButton
-                excludeCaret
                 clipThingsProps={{
                     clipSize: "10px",
                     backgroundColor: primaryColor,

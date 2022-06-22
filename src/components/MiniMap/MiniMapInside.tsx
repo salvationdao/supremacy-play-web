@@ -34,7 +34,7 @@ interface PropsInner {
     getFaction: (factionID: string) => Faction
     // useMiniMap
     enlarged: boolean
-    targeting: boolean
+    isTargeting: boolean
     selection?: MapSelection
     setSelection: React.Dispatch<React.SetStateAction<MapSelection | undefined>>
     resetSelection: () => void
@@ -55,7 +55,7 @@ export const MiniMapInside = ({
     warMachines,
     getFaction,
     enlarged,
-    targeting,
+    isTargeting,
     selection,
     setSelection,
     resetSelection,
@@ -146,7 +146,7 @@ export const MiniMapInside = ({
             if (playerAbility?.ability.location_select_type === LocationSelectType.MECH_SELECT) {
                 setHighlightedMechHash(undefined)
             }
-            newSnackbarMessage(`Successfully submitted target location.`, "success")
+            newSnackbarMessage("Successfully submitted target location.", "success")
         } catch (e) {
             newSnackbarMessage(typeof e === "string" ? e : "Failed to submit target location.", "error")
             console.error(e)
@@ -349,13 +349,13 @@ export const MiniMapInside = ({
 
     // i.e. is battle ability or player ability of type LOCATION_SELECT
     const isLocationSelection =
-        targeting &&
+        isTargeting &&
         !(
             playerAbility?.ability.location_select_type === LocationSelectType.LINE_SELECT ||
             playerAbility?.ability.location_select_type === LocationSelectType.MECH_SELECT ||
             playerAbility?.ability.location_select_type === LocationSelectType.GLOBAL
         )
-    const isLineSelection = targeting && playerAbility?.ability.location_select_type === LocationSelectType.LINE_SELECT
+    const isLineSelection = isTargeting && playerAbility?.ability.location_select_type === LocationSelectType.LINE_SELECT
 
     return (
         <>
@@ -382,7 +382,7 @@ export const MiniMapInside = ({
                         gridHeight={gridHeight}
                         selection={selection}
                         setSelection={setSelection}
-                        targeting={targeting}
+                        targeting={isTargeting}
                     />
 
                     <MapWarMachines
@@ -394,7 +394,7 @@ export const MiniMapInside = ({
                         warMachines={warMachines}
                         getFaction={getFaction}
                         enlarged={enlarged}
-                        targeting={targeting}
+                        targeting={isTargeting}
                         setSelection={setSelection}
                         highlightedMechHash={highlightedMechHash}
                         setHighlightedMechHash={setHighlightedMechHash}
@@ -428,9 +428,8 @@ export const MiniMapInside = ({
                     </Box>
                 </Box>
             </Stack>
-            {targeting && !gameAbility && playerAbility && (
+            {isTargeting && !gameAbility && playerAbility && (
                 <FancyButton
-                    excludeCaret
                     clipThingsProps={{
                         clipSize: "4px",
                         backgroundColor: colors.red,
@@ -461,7 +460,7 @@ export const MiniMapInside = ({
                     </Typography>
                 </FancyButton>
             )}
-            {targeting && (gameAbility || playerAbility) && <CountdownText playerAbility={playerAbility} selection={selection} onConfirm={onConfirm} />}
+            {isTargeting && (gameAbility || playerAbility) && <CountdownText playerAbility={playerAbility} selection={selection} onConfirm={onConfirm} />}
         </>
     )
 }

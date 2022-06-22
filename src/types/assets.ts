@@ -56,6 +56,7 @@ export interface MechBasic extends Collection {
     faction_id: string
     model_id: string
     default_chassis_skin_id: string
+    market_locked: boolean
     chassis_skin_id: string
     intro_animation_id: string
     outro_animation_id: string
@@ -250,6 +251,7 @@ export interface UtilityAntiMissile {
     rate_of_fire: number
     fire_energy_cost: number
 }
+
 export interface BattleMechHistory {
     battle_id: string
     mech_id: string

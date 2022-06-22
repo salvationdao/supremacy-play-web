@@ -4,7 +4,7 @@ import { useCallback, useMemo, useState } from "react"
 import { ClipThing, FancyButton } from "../../.."
 import { SvgHammer, SvgSupToken } from "../../../../assets"
 import { useAuth, useSnackbar } from "../../../../containers"
-import { numberCommaFormatter, numFormatter, shadeColor } from "../../../../helpers"
+import { numberCommaFormatter, shadeColor } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
 import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
@@ -30,7 +30,9 @@ export const AuctionDetails = ({ id, owner, itemName, auctionCurrentPrice, aucti
     const [currentPrice, setCurrentPrice] = useState<BigNumber>(new BigNumber(auctionCurrentPrice).shiftedBy(-18))
     const [bidCount, setBidCount] = useState<number>(auctionBidCount)
     const [lastBidUser, setLastBidUser] = useState<MarketUser | undefined>(auctionLastBid)
-    const [inputBidPrice, setInputBidPrice] = useState<number>()
+    const [inputBidPrice, setInputBidPrice] = useState<number | undefined>(
+        auctionCurrentPrice ? new BigNumber(auctionCurrentPrice).shiftedBy(-18).plus(1).toNumber() : undefined,
+    )
 
     // Bidding
     const [isLoading, setIsLoading] = useState(false)
@@ -147,7 +149,7 @@ export const AuctionDetails = ({ id, owner, itemName, auctionCurrentPrice, aucti
                             variant="outlined"
                             hiddenLabel
                             disabled={isSelfItem}
-                            placeholder={currentPrice ? currentPrice.plus(1).toString() : "Enter your bid..."}
+                            placeholder={"Enter your bid..."}
                             InputProps={{
                                 startAdornment: (
                                     <InputAdornment position="start">
@@ -178,7 +180,6 @@ export const AuctionDetails = ({ id, owner, itemName, auctionCurrentPrice, aucti
                             }}
                         />
                         <FancyButton
-                            excludeCaret
                             disabled={isSelfItem || isTimeEnded || !currentPrice || !inputBidPrice || currentPrice.isGreaterThanOrEqualTo(inputBidPrice)}
                             clipThingsProps={{
                                 clipSize: "9px",
@@ -240,13 +241,13 @@ export const AuctionDetails = ({ id, owner, itemName, auctionCurrentPrice, aucti
                             </Typography>
                             <SvgSupToken size="1.8rem" />
                             <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
-                                {numFormatter(inputBidPrice)})
+                                {numberCommaFormatter(inputBidPrice)})
                             </Typography>
                         </Stack>
                     }
                 >
                     <Typography variant="h6">
-                        Do you wish to place a bid of <span>{numFormatter(inputBidPrice)}</span> SUPS on <strong>{itemName}</strong>?
+                        Do you wish to place a bid of <span>{numberCommaFormatter(inputBidPrice)}</span> SUPS on <strong>{itemName}</strong>?
                     </Typography>
                 </ConfirmModal>
             )}

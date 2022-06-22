@@ -85,6 +85,7 @@ import Search from "!react-svg-loader!./svg/Search.svg"
 import Settings from "!react-svg-loader!./svg/Settings.svg"
 import Skull from "!react-svg-loader!./svg/Skull.svg"
 import Skull2 from "!react-svg-loader!./svg/Skull2.svg"
+import Stats from "!react-svg-loader!./svg/Stats.svg"
 import Success from "!react-svg-loader!./svg/Success.svg"
 import Support from "!react-svg-loader!./svg/Support.svg"
 import SupToken from "!react-svg-loader!./svg/SupToken.svg"
@@ -125,9 +126,6 @@ import HangarBg from "./images/HangarBg.jpg"
 import KeycardPNG from "./images/Keycard.png"
 import LogoWEBP from "./images/Logo.webp"
 import MaintenancePNG from "./images/Maintenance.png"
-import SafePNG from "./images/Safe.png"
-import RainingSupsPNG from "./images/supsRain.png"
-import WarMachineIconPNG from "./images/WarMachineIcon.png"
 // Multiplier images (no spaces in file names, won't work!)
 import MultiplierAdmiral from "./images/Multipliers/Admiral.png"
 import MultiplierAFoolAndHisMoney from "./images/Multipliers/AFoolAndHisMoney.png"
@@ -146,9 +144,12 @@ import MultiplierSniper from "./images/Multipliers/Sniper.png"
 import MultiplierWonBattle from "./images/Multipliers/WonBattle.png"
 import MultiplierWonLastThreeBattles from "./images/Multipliers/WonLastThreeBattles.png"
 import RedMountainLogo from "./images/RedMountainLogo.png"
+import SafePNG from "./images/Safe.png"
 import SupBackground from "./images/SupBackground.webp"
 import SupremacyPNG from "./images/Supremacy.png"
+import RainingSupsPNG from "./images/supsRain.png"
 import TrailerThumbPNG from "./images/TrailerThumb.png"
+import WarMachineIconPNG from "./images/WarMachineIcon.png"
 import ZaibatsuLogo from "./images/ZaibatsuLogo.png"
 
 export {
@@ -905,5 +906,11 @@ export const SvgSearch: React.VoidFunctionComponent<SvgWrapperProps> = (props) =
 export const SvgAngle: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <Angle />
+    </SvgWrapper>
+)
+
+export const SvgStats: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Stats />
     </SvgWrapper>
 )

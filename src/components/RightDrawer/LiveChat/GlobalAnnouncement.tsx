@@ -45,8 +45,8 @@ export const GlobalAnnouncement = ({ globalAnnouncement }: { globalAnnouncement:
                 justifyContent="center"
                 spacing=".24rem"
                 sx={{
-                    px: "1.4rem",
-                    py: "1.8rem",
+                    px: "1.8rem",
+                    py: "1.2rem",
                     backgroundColor: bgColourFromSeverity(globalAnnouncement.severity),
                     boxShadow: 2,
                 }}

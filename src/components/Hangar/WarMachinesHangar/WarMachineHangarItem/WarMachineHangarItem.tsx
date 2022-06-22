@@ -1,8 +1,9 @@
 import { Box, Skeleton, Stack } from "@mui/material"
-import { useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { ClipThing } from "../../.."
+import { useSnackbar } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
-import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
+import { useGameServerCommandsFaction, useGameServerCommandsUser } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { MechBasic, MechDetails } from "../../../../types"
 import { MechBarStats } from "./MechBarStats"
@@ -35,6 +36,9 @@ export const WarMachineHangarItem = ({
     setRentalMechModalOpen,
 }: WarMachineHangarItemProps) => {
     const { send } = useGameServerCommandsFaction("/faction_commander")
+    const { send: userSend } = useGameServerCommandsUser("/user_commander")
+    const { newSnackbarMessage } = useSnackbar()
+
     const [mechDetails, setMechDetails] = useState<MechDetails>()
 
     useEffect(() => {
@@ -53,10 +57,31 @@ export const WarMachineHangarItem = ({
         })()
     }, [index, mech.id, send, setSelectedMechDetails])
 
+    const renameMech = useCallback(
+        async (newName: string) => {
+            try {
+                const resp = await userSend<string>(GameServerKeys.MechRename, {
+                    mech_id: mech.id,
+                    new_name: newName,
+                })
+
+                if (!resp || !mechDetails) return
+                setMechDetails({ ...mechDetails, name: newName })
+                newSnackbarMessage("Successfully updated war machine name.", "success")
+            } catch (err) {
+                const message = typeof err === "string" ? err : "Failed to update war machine name."
+                newSnackbarMessage(message, "error")
+                console.error(err)
+            }
+        },
+        [setMechDetails, mechDetails, mech.id, userSend, newSnackbarMessage],
+    )
+
     return useMemo(
         () => (
             <WarMachineHangarItemInner
                 mech={mech}
+                renameMech={renameMech}
                 isSelected={isSelected}
                 mechDetails={mechDetails}
                 setSelectedMechDetails={setSelectedMechDetails}
@@ -66,7 +91,17 @@ export const WarMachineHangarItem = ({
                 setRentalMechModalOpen={setRentalMechModalOpen}
             />
         ),
-        [mech, isSelected, mechDetails, setSelectedMechDetails, setDeployMechModalOpen, setLeaveMechModalOpen, setHistoryMechModalOpen, setRentalMechModalOpen],
+        [
+            mech,
+            isSelected,
+            mechDetails,
+            setSelectedMechDetails,
+            setDeployMechModalOpen,
+            setLeaveMechModalOpen,
+            setHistoryMechModalOpen,
+            setRentalMechModalOpen,
+            renameMech,
+        ],
     )
 }
 
@@ -74,6 +109,7 @@ const WarMachineHangarItemInner = ({
     mech,
     mechDetails,
     isSelected,
+    renameMech,
     setSelectedMechDetails,
     setDeployMechModalOpen,
     setLeaveMechModalOpen,
@@ -83,6 +119,7 @@ const WarMachineHangarItemInner = ({
     mech: MechBasic
     mechDetails?: MechDetails
     isSelected: boolean
+    renameMech: (newName: string) => Promise<void>
     setSelectedMechDetails: React.Dispatch<React.SetStateAction<MechDetails | undefined>>
     setDeployMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
     setLeaveMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
@@ -98,7 +135,7 @@ const WarMachineHangarItemInner = ({
 
     return (
         <Box sx={{ position: "relative", overflow: "visible" }} onClick={() => setSelectedMechDetails(mechDetails)}>
-            <MechTitle mech={mech} mechDetails={mechDetails} isSelected={isSelected} />
+            {mechDetails && <MechTitle renameMech={renameMech} mech={mech} mechDetails={mechDetails} isSelected={isSelected} />}
 
             <ClipThing
                 clipSize="10px"
@@ -111,7 +148,6 @@ const WarMachineHangarItemInner = ({
                     topRight: true,
                     bottomLeft: true,
                 }}
-                opacity={isSelected ? 1 : 0.7}
                 backgroundColor={theme.factionTheme.background}
             >
                 <Stack direction="row" alignItems="center" spacing="1.2rem" sx={{ height: "23rem", px: "1.8rem", pt: "2.6rem", pb: "1.4rem" }}>
@@ -135,6 +171,7 @@ const WarMachineHangarItemInner = ({
                                 setLeaveMechModalOpen={setLeaveMechModalOpen}
                                 setHistoryMechModalOpen={setHistoryMechModalOpen}
                                 setRentalMechModalOpen={setRentalMechModalOpen}
+                                marketLocked={mech.market_locked}
                             />
                         ) : (
                             <Box sx={{ height: "3rem" }} />

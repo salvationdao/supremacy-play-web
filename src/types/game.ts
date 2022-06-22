@@ -37,10 +37,16 @@ export interface Map {
     disabled_cells: number[]
 }
 
+export enum StreamService {
+    OvenMediaEngine = "OvenMediaEngine",
+    AntMedia = "AntMedia",
+    None = "None",
+}
 export interface Stream {
     host: string
     name: string
     url: string
+    service: StreamService
     stream_id: string
     region: string
     resolution: string
@@ -57,6 +63,11 @@ export interface Stream {
 export interface Dimension {
     width: number
     height: number
+}
+
+export interface Position {
+    x: number
+    y: number
 }
 
 export interface Vector2i {

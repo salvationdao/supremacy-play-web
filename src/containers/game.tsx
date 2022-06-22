@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { createContainer } from "unstated-next"
-import { useAuth, useSupremacy } from "."
+import { useSupremacy } from "."
 import { useGameServerCommandsUser, useGameServerSubscription, useGameServerSubscriptionUser } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
 import { BattleEndDetail, BribeStage, GameAbility, Map, WarMachineState } from "../types"
@@ -23,7 +23,6 @@ export interface WinnerAnnouncementResponse {
 
 // Game data that needs to be shared between different components
 export const GameContainer = createContainer(() => {
-    const { factionID } = useAuth()
     const { setBattleIdentifier } = useSupremacy()
     const { send } = useGameServerCommandsUser("/user_commander")
 

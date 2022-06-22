@@ -102,7 +102,6 @@ const ExtendedFactionEnlist = ({ faction }: { faction: Faction }) => {
                         </Typography>
 
                         <FancyButton
-                            excludeCaret
                             clipThingsProps={{
                                 clipSize: "9px",
                                 backgroundColor: faction.primary_color,

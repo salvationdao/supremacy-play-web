@@ -14,7 +14,6 @@ export const NavButton: React.FC<NavButtonProps> = ({ href, startIcon, text, onC
     return (
         <FancyButton
             tabIndex={0}
-            excludeCaret
             clipThingsProps={{
                 clipSize: "9px",
                 opacity: 1,

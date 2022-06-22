@@ -259,20 +259,13 @@ export const theme = createTheme({
         },
         MuiLink: {
             defaultProps: {
-                underline: "none",
-                color: "text.primary",
+                color: colors.neonBlue,
             },
             styleOverrides: {
                 root: {
+                    cursor: "pointer",
                     display: "inline-flex",
                     alignItems: "center",
-                    transition: "all .1s",
-                    "& *": {
-                        transition: "all .1s",
-                    },
-                    ":hover, :hover > *": {
-                        color: "#136ED6",
-                    },
                 },
             },
         },
@@ -286,6 +279,10 @@ export const theme = createTheme({
                 root: {
                     ".MuiPagination-ul": {
                         justifyContent: "center",
+                    },
+                    ".MuiButtonBase-root": {
+                        minWidth: "25px",
+                        height: "25px",
                     },
                 },
             },

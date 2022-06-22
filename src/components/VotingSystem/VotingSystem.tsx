@@ -1,13 +1,12 @@
-import { Box, Slide, Stack, Tab, Tabs } from "@mui/material"
+import { Box, Fade, Stack, Tab } from "@mui/material"
 import { TabProps } from "@mui/material/Tab"
-import { useCallback, useMemo, useState } from "react"
-import { BattleAbilityItem, ClipThing, FactionAbilities, ResizeBox } from ".."
+import { useMemo, useState } from "react"
+import { BattleAbilityItem, FactionAbilities, MoveableResizable } from ".."
 import { DEV_ONLY } from "../../constants"
-import { BribeStageResponse, useAuth, useDimension, useGame } from "../../containers"
+import { BribeStageResponse, useAuth, useGame } from "../../containers"
 import { useTheme } from "../../containers/theme"
-import { parseString } from "../../helpers"
-import { colors, siteZIndex } from "../../theme/theme"
-import { Dimension } from "../../types"
+import { colors } from "../../theme/theme"
+import { MoveableResizableConfig } from "../Common/MoveableResizable/MoveableResizableContainer"
 import { PlayerAbilities } from "../PlayerAbilities/PlayerAbilities"
 
 export const VotingSystem = () => {
@@ -25,157 +24,69 @@ interface VotingSystemInnerProps {
 
 const VotingSystemInner = ({ userID, bribeStage }: VotingSystemInnerProps) => {
     const theme = useTheme()
-    const initialSize = useMemo(() => ({ width: 390, height: 360, minWidth: 370 }), [])
-    const [containerWidth, setContainerWidth] = useState<number>(parseString(localStorage.getItem("votingSystemWidth"), initialSize.width))
-    const [containerHeight, setContainerHeight] = useState<number>(initialSize.height)
-    const {
-        remToPxRatio,
-        gameUIDimensions: { height },
-    } = useDimension()
-    const [currentTab, setCurrentTab] = useState(0)
-
+    const { factionID } = useAuth()
+    const [showPlayerAbilities, setShowPlayerAbilities] = useState(false)
     const isBattleStarted = useMemo(() => bribeStage && bribeStage.phase !== "HOLD", [bribeStage])
 
-    const adjustment = useMemo(() => Math.min(remToPxRatio, 9) / 9, [remToPxRatio])
-
-    const onResizeStop = useCallback(
-        (data: Dimension) => {
-            const size = data || { width: containerWidth, height: containerHeight }
-            setContainerWidth(size.width)
-            setContainerHeight(size.height)
-            localStorage.setItem("votingSystemWidth", size.width.toString())
-        },
-        [containerWidth, containerHeight],
+    const config: MoveableResizableConfig = useMemo(
+        () => ({
+            localStoragePrefix: "votingSystem",
+            // Defaults
+            defaultPosX: 10,
+            defaultPosY: 10,
+            defaultWidth: 390,
+            defaultHeight: 360,
+            // Size limits
+            minWidth: 300,
+            minHeight: 168,
+            maxWidth: 500,
+            maxHeight: 600,
+            // Others
+            infoTooltipText: "Vote for game abilities and fight for your Syndicate!",
+        }),
+        [],
     )
 
     if (!bribeStage) return null
 
     return (
-        <Stack
-            id="tutorial-vote"
-            sx={{
-                position: "absolute",
-                top: "1rem",
-                left: "1rem",
-                zIndex: siteZIndex.VotingSystem,
-                filter: "drop-shadow(0 3px 3px #00000050)",
-            }}
-        >
-            <Slide in={isBattleStarted} direction="right">
-                <Box sx={{ position: "relative" }}>
-                    <ResizeBox
-                        color={theme.factionTheme.primary}
-                        onResizeStop={onResizeStop}
-                        adjustment={adjustment}
-                        initialDimensions={[containerWidth, containerHeight]}
-                        minConstraints={[initialSize.minWidth, initialSize.height]}
-                        maxConstraints={[500, initialSize.height]}
-                        resizeHandles={["e"]}
-                        handle={() => (
-                            <Box
-                                sx={{
-                                    pointerEvents: "all",
-                                    position: "absolute",
-                                    top: 0,
-                                    right: 0,
-                                    cursor: "ew-resize",
-                                    zIndex: 50,
-                                    width: "10px",
-                                    height: containerHeight,
-                                }}
-                            />
-                        )}
-                    />
-
-                    {DEV_ONLY && (
-                        <Tabs
-                            defaultValue={0}
-                            value={currentTab}
-                            onChange={(_, value) => setCurrentTab(value)}
-                            TabIndicatorProps={{
-                                hidden: true,
-                            }}
-                            sx={{
-                                zIndex: 1,
-                                position: "relative",
-                                minHeight: 0,
-                            }}
-                        >
-                            <TabButton label="Game Abilities" backgroundColor={theme.factionTheme.background} borderColor={theme.factionTheme.primary} />
-                            {userID && (
-                                <TabButton label="Player Abilities" backgroundColor={theme.factionTheme.background} borderColor={theme.factionTheme.primary} />
-                            )}
-                        </Tabs>
-                    )}
-                    <ClipThing
-                        sx={{
-                            position: "relative",
-                            top: "-1px",
-                            width: containerWidth,
-                            height: "fit-content",
-                            transition: "all .2s",
-                        }}
-                        border={{
-                            borderThickness: ".2rem",
-                            borderColor: theme.factionTheme.primary,
-                        }}
-                        corners={{
-                            topRight: true,
-                            bottomLeft: true,
-                        }}
-                        clipSize="10px"
-                        backgroundColor={theme.factionTheme.background}
-                        opacity={0.8}
-                    >
+        <Fade in={isBattleStarted}>
+            <Box>
+                <MoveableResizable config={config}>
+                    <Stack sx={{ position: "relative", height: "100%" }}>
                         <Box
                             sx={{
-                                pl: ".72rem",
-                                pr: "1.6rem",
-                                pt: "1.44rem",
-                                pb: "1.6rem",
+                                height: "100%",
+                                overflowY: "auto",
+                                overflowX: "hidden",
+                                ml: "1.9rem",
+                                mr: ".5rem",
+                                pr: "1.4rem",
+                                mt: "1rem",
+                                direction: "ltr",
+                                "::-webkit-scrollbar": {
+                                    width: ".4rem",
+                                },
+                                "::-webkit-scrollbar-track": {
+                                    background: "#FFFFFF15",
+                                    borderRadius: 3,
+                                },
+                                "::-webkit-scrollbar-thumb": {
+                                    background: theme.factionTheme.primary,
+                                    borderRadius: 3,
+                                },
                             }}
                         >
-                            <TabPanel value={currentTab} index={0}>
-                                <Box
-                                    sx={{
-                                        flex: 1,
-                                        // 140px gap bottom, 10px gap above
-                                        maxHeight: `calc(${height}px - 140px - 10px)`,
-                                        overflowY: "auto",
-                                        overflowX: "hidden",
-                                        pl: ".88rem",
-                                        py: ".16rem",
-                                        direction: "rtl",
-
-                                        "::-webkit-scrollbar": {
-                                            width: ".4rem",
-                                        },
-                                        "::-webkit-scrollbar-track": {
-                                            background: "#FFFFFF15",
-                                            borderRadius: 3,
-                                        },
-                                        "::-webkit-scrollbar-thumb": {
-                                            background: theme.factionTheme.primary,
-                                            borderRadius: 3,
-                                        },
-                                    }}
-                                >
-                                    <Stack spacing="2rem" sx={{ direction: "ltr" }}>
-                                        <BattleAbilityItem />
-                                        <FactionAbilities />
-                                    </Stack>
-                                </Box>
-                            </TabPanel>
-                            {DEV_ONLY && (
-                                <TabPanel value={currentTab} index={1}>
-                                    <PlayerAbilities />
-                                </TabPanel>
-                            )}
+                            <Stack spacing="2rem" sx={{ direction: "ltr", py: ".4rem" }}>
+                                <BattleAbilityItem key={factionID} />
+                                <FactionAbilities />
+                                {DEV_ONLY && userID && <PlayerAbilities />}
+                            </Stack>
                         </Box>
-                    </ClipThing>
-                </Box>
-            </Slide>
-        </Stack>
+                    </Stack>
+                </MoveableResizable>
+            </Box>
+        </Fade>
     )
 }
 
@@ -184,7 +95,7 @@ interface TabButtonProps extends TabProps {
     borderColor: string
 }
 
-const TabButton = ({ backgroundColor, borderColor, ...props }: TabButtonProps) => {
+export const TabButton = ({ backgroundColor, borderColor, ...props }: TabButtonProps) => {
     return (
         <Tab
             sx={{
@@ -214,7 +125,7 @@ interface TabPanelProps {
     value: number
 }
 
-const TabPanel = (props: TabPanelProps) => {
+export const TabPanel = (props: TabPanelProps) => {
     const { children, value, index, ...other } = props
 
     return (
