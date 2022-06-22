@@ -116,7 +116,7 @@ export const NotificationPreferencesInner = ({ notificationPreferences, setNotif
 
     return (
         <Stack spacing=".3rem" sx={{ px: "1.5rem", py: ".8rem", backgroundColor: "#FFFFFF08" }}>
-            <Stack direction="row" alignItems="center" spacing=".4rem">
+            <Stack direction="row" alignItems="center" spacing=".7rem">
                 <Typography gutterBottom sx={{ color: colors.lightGrey }}>
                     NOTIFICATIONS
                 </Typography>
@@ -137,9 +137,9 @@ export const NotificationPreferencesInner = ({ notificationPreferences, setNotif
                 >
                     <Box>
                         <SvgInfoCircular
-                            size="1.2rem"
+                            size="1.3rem"
                             sx={{
-                                pb: ".7rem",
+                                pb: "1rem",
                                 opacity: 0.4,
                                 ":hover": { opacity: 1 },
                             }}
