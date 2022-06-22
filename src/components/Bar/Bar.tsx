@@ -1,7 +1,7 @@
 import { Box, Button, Stack, Typography } from "@mui/material"
 import { Enlist, Logo, ProfileCard, WalletDetails } from ".."
 import { SvgDisconnected } from "../../assets"
-import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT } from "../../constants"
+import { DEV_ONLY, DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT } from "../../constants"
 import { useAuth, useSupremacy } from "../../containers"
 import { useToggle } from "../../hooks"
 import { fonts, siteZIndex } from "../../theme/theme"
@@ -74,7 +74,7 @@ const BarContent = ({ userID, user }: { userID?: string; user: User }) => {
                 <>
                     <Enlist />
                     <WalletDetails />
-                    <Button onClick={() => toggleShowSaleAbilities(true)}>Purchase Abilities</Button>
+                    {DEV_ONLY && <Button onClick={() => toggleShowSaleAbilities(true)}>Purchase Abilities</Button>}
                 </>
             )}
             <ProfileCard userID={userID} user={user} />
