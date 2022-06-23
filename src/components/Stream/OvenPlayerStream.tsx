@@ -70,7 +70,7 @@ interface OvenPlayerInstance {
     remove(): void
 }
 
-export const OverPlayerStream = () => {
+export const OvenplayerStream = () => {
     const { newSnackbarMessage } = useSnackbar()
     const { iframeDimensions } = useDimension()
     const { isMute, volume, currentStream, setCurrentPlayingStreamHost } = useStream()
