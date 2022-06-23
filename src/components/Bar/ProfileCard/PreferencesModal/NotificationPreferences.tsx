@@ -195,16 +195,14 @@ export const NotificationPreferencesInner = ({ notificationPreferences, setNotif
                             <Typography>5</Typography>
                         </Stack>
 
-                        <Box>
-                            <Typography>
-                                You will be notified via your chosen notification preference(s) when your war machine is within the top 10 position in the
-                                battle queue. You will be charged when the notification has been delivered to you.
-                            </Typography>
-                        </Box>
+                        <Typography>
+                            You will be notified via your chosen notification preference(s) when your war machine is within the top 10 position in the battle
+                            queue. You will be charged when the notification has been delivered to you.
+                        </Typography>
 
                         <Stack direction="row" alignItems="center">
                             <Typography sx={{ fontWeight: "fontWeightBold", span: { color: colors.yellow } }}>
-                                Tick the box if you have read and agree to be charge <span>5</span> SUPS per notification.
+                                I have read and agree to be charge <span>5</span> SUPS per notification.
                             </Typography>
                             <Checkbox
                                 disabled={loading}
