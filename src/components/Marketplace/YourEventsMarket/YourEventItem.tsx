@@ -53,7 +53,7 @@ export const YourEventItem = ({ eventItem }: { eventItem: MarketplaceEvent }) =>
 
         if (eventItem.event_type === MarketplaceEventType.Purchased) {
             primaryColor = colors.buyout
-            statusText = "PURCHASED"
+            statusText = "PURCHASED ITEM"
         } else if (eventItem.event_type === MarketplaceEventType.Bid) {
             primaryColor = colors.auction
             statusText = "BID"
@@ -65,7 +65,7 @@ export const YourEventItem = ({ eventItem }: { eventItem: MarketplaceEvent }) =>
             statusText = "CREATED LISTING"
         } else if (eventItem.event_type === MarketplaceEventType.Sold) {
             primaryColor = colors.marketSold
-            statusText = "SOLD"
+            statusText = "SOLD ITEM"
         } else if (eventItem.event_type === MarketplaceEventType.Cancelled) {
             primaryColor = colors.lightGrey
             statusText = "CANCELLED LISTING"
@@ -152,7 +152,7 @@ export const YourEventItem = ({ eventItem }: { eventItem: MarketplaceEvent }) =>
                         </Typography>
                     </Stack>
 
-                    <General title="STATUS" text={itemRelatedData.statusText} textColor={itemRelatedData.primaryColor} />
+                    <General title="EVENT TYPE" text={itemRelatedData.statusText} textColor={itemRelatedData.primaryColor} />
 
                     <General title="AMOUNT">
                         <Stack direction="row" alignItems="center" flexWrap="wrap">
