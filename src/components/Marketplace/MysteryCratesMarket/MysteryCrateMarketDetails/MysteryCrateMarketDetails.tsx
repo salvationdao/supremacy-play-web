@@ -186,6 +186,7 @@ const WarMachineMarketDetailsInner = ({
                                     itemName={marketItem.mystery_crate?.label || "MYSTERY CRATE"}
                                     buyNowPrice={marketItem.buyout_price}
                                     dutchAuctionDropRate={marketItem.dutch_auction_drop_rate}
+                                    reservePrice={marketItem.auction_reserved_price}
                                     createdAt={marketItem.created_at}
                                     isTimeEnded={isTimeEnded}
                                 />

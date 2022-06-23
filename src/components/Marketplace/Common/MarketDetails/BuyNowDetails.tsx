@@ -22,11 +22,22 @@ interface BuyNowDetailsProps {
     itemName: string
     buyNowPrice: string
     dutchAuctionDropRate?: string
+    reservePrice?: string
     createdAt: Date
     isTimeEnded: boolean
 }
 
-export const BuyNowDetails = ({ id, itemType, owner, itemName, buyNowPrice, dutchAuctionDropRate, createdAt, isTimeEnded }: BuyNowDetailsProps) => {
+export const BuyNowDetails = ({
+    id,
+    itemType,
+    owner,
+    itemName,
+    buyNowPrice,
+    dutchAuctionDropRate,
+    reservePrice,
+    createdAt,
+    isTimeEnded,
+}: BuyNowDetailsProps) => {
     const { userID } = useAuth()
 
     const calculateNewPrice = useCallback(() => {
@@ -35,10 +46,10 @@ export const BuyNowDetails = ({ id, itemType, owner, itemName, buyNowPrice, dutc
         // Drop price
         if (dutchAuctionDropRate) {
             const dropRate = new BigNumber(dutchAuctionDropRate).shiftedBy(-18)
-            newPrice = BigNumber.max(calculateDutchAuctionCurrentPrice({ createdAt, dropRate, startPrice: newPrice }), new BigNumber(1))
+            newPrice = BigNumber.max(calculateDutchAuctionCurrentPrice({ createdAt, dropRate, startPrice: newPrice }), new BigNumber(reservePrice || 1))
         }
         return newPrice
-    }, [buyNowPrice, createdAt, dutchAuctionDropRate])
+    }, [buyNowPrice, createdAt, dutchAuctionDropRate, reservePrice])
 
     const history = useHistory()
     const location = useLocation()
