@@ -35,11 +35,11 @@ export const MarketItem = ({ imageUrl, animationUrl, cardAnimationUrl, backgroun
         if (item.dutch_auction_drop_rate) {
             buyoutPrice = BigNumber.max(
                 calculateDutchAuctionCurrentPrice({ createdAt: item.created_at, dropRate: dropPrice, startPrice: buyoutPrice }),
-                new BigNumber(1),
+                new BigNumber(item.auction_reserved_price || 1),
             )
         }
         return numFormatter(buyoutPrice.toNumber())
-    }, [item.buyout_price, item.created_at, item.dutch_auction_drop_rate])
+    }, [item.auction_reserved_price, item.buyout_price, item.created_at, item.dutch_auction_drop_rate])
     const formattedAuctionPrice = useMemo(() => {
         if (!item.auction_current_price) return ""
         const auctionPrice = new BigNumber(item.auction_current_price).shiftedBy(-18)

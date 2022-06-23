@@ -238,6 +238,7 @@ const WarMachineMarketDetailsInner = ({
                                     itemName={marketItem.mech?.name || marketItem.mech?.label || "WAR MACHINE"}
                                     buyNowPrice={marketItem.buyout_price}
                                     dutchAuctionDropRate={marketItem.dutch_auction_drop_rate}
+                                    reservePrice={marketItem.auction_reserved_price}
                                     createdAt={marketItem.created_at}
                                     isTimeEnded={isTimeEnded}
                                 />
