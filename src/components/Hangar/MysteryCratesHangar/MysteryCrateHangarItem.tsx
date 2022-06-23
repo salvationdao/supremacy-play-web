@@ -10,6 +10,9 @@ import { ItemType } from "../../../types/marketplace"
 import { ClipThing } from "../../Common/ClipThing"
 import { FancyButton } from "../../Common/FancyButton"
 import { MediaPreview } from "../../Common/MediaPreview/MediaPreview"
+import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
+import { useCallback } from "react"
+import { GameServerKeys } from "../../../keys"
 
 interface MysteryCrateStoreItemProps {
     crate: MysteryCrate
@@ -18,10 +21,27 @@ interface MysteryCrateStoreItemProps {
 export const MysteryCrateHangarItem = ({ crate }: MysteryCrateStoreItemProps) => {
     const location = useLocation()
     const theme = useTheme()
+    const { send } = useGameServerCommandsFaction("/faction_commander")
 
     const primaryColor = theme.factionTheme.primary
     const secondaryColor = theme.factionTheme.secondary
     const backgroundColor = theme.factionTheme.background
+
+    const openCrate = useCallback(async () => {
+        try {
+            //change these types obviously
+            const resp = await send<any, any>(GameServerKeys.OpenCrate, {
+                id: crate.id,
+            })
+
+            if (!resp) return
+            console.log(resp)
+        } catch (e) {
+            const message = typeof e === "string" ? e : "Failed to get mystery crates."
+            console.log(message)
+            console.error(e)
+        }
+    }, [send, crate.id])
 
     return (
         <>
@@ -54,12 +74,21 @@ export const MysteryCrateHangarItem = ({ crate }: MysteryCrateStoreItemProps) =>
                         >
                             <MediaPreview imageUrl={crate.image_url || SafePNG} videoUrls={[crate.animation_url, crate.card_animation_url]} />
 
-                            <Stack
-                                alignItems="center"
-                                sx={{ position: "absolute", bottom: "-.2rem", width: "100%", px: ".8rem", py: ".5rem", backgroundColor: "#00000010" }}
-                            >
-                                <Countdown dateTo={crate.locked_until} />
-                            </Stack>
+                            {new Date() < crate.locked_until && (
+                                <Stack
+                                    alignItems="center"
+                                    sx={{
+                                        position: "absolute",
+                                        bottom: "-.2rem",
+                                        width: "100%",
+                                        px: ".8rem",
+                                        py: ".5rem",
+                                        backgroundColor: "#00000010",
+                                    }}
+                                >
+                                    <Countdown dateTo={crate.locked_until} />
+                                </Stack>
+                            )}
                         </Box>
 
                         <Stack sx={{ flex: 1, px: ".4rem", py: ".3rem" }}>
@@ -75,7 +104,7 @@ export const MysteryCrateHangarItem = ({ crate }: MysteryCrateStoreItemProps) =>
                                 <FancyButton
                                     disabled={new Date() < crate.locked_until}
                                     onClick={() => {
-                                        /*TODO: open crate function*/
+                                        openCrate()
                                         return
                                     }}
                                     clipThingsProps={{
