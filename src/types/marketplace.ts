@@ -89,7 +89,7 @@ export enum MarketplaceEventType {
     // Buyer's POV
     Purchased = "purchase",
     Bid = "bid",
-    Outbid = "bid_refund",
+    BidReturned = "bid_refund",
     // Seller's POV
     Created = "created",
     Sold = "sold",

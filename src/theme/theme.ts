@@ -71,7 +71,7 @@ export const colors = {
     dutchAuction: "#D98D00",
     marketSold: "#2BA172",
     marketCreate: "#EDC945",
-    marketOutbid: "#D93434",
+    marketBidReturned: "#D93434",
 
     // Mech loadout
     chassisSkin: "#EBD110",

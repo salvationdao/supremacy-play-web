@@ -57,9 +57,9 @@ export const YourEventItem = ({ eventItem }: { eventItem: MarketplaceEvent }) =>
         } else if (eventItem.event_type === MarketplaceEventType.Bid) {
             primaryColor = colors.auction
             statusText = "BID"
-        } else if (eventItem.event_type === MarketplaceEventType.Outbid) {
-            primaryColor = colors.marketOutbid
-            statusText = "OUTBID"
+        } else if (eventItem.event_type === MarketplaceEventType.BidReturned) {
+            primaryColor = colors.marketBidReturned
+            statusText = "Bid RETURNED"
         } else if (eventItem.event_type === MarketplaceEventType.Created) {
             primaryColor = colors.marketCreate
             statusText = "CREATED LISTING"

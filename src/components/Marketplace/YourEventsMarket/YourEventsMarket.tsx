@@ -48,10 +48,10 @@ export const YourEventsMarket = () => {
     const eventTypeFilterSection = useRef<ChipFilter>({
         label: "EVENT TYPE",
         options: [
-            { value: MarketplaceEventType.Purchased, label: "PURCHASE", color: colors.buyout },
+            { value: MarketplaceEventType.Purchased, label: "PURCHASED", color: colors.buyout },
             { value: MarketplaceEventType.Bid, label: "BID", color: colors.auction },
-            { value: MarketplaceEventType.Outbid, label: "OUTBID", color: colors.marketOutbid },
-            { value: MarketplaceEventType.Created, label: "CREATE", color: colors.marketCreate },
+            { value: MarketplaceEventType.BidReturned, label: "BID RETURNED", color: colors.marketBidReturned },
+            { value: MarketplaceEventType.Created, label: "CREATED LSITING", color: colors.marketCreate },
             { value: MarketplaceEventType.Cancelled, label: "CANCEL", color: colors.lightGrey },
             { value: MarketplaceEventType.Sold, label: "SOLD", color: colors.marketSold },
         ],
