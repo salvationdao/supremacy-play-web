@@ -3,7 +3,6 @@ import BigNumber from "bignumber.js"
 import { useCallback, useEffect, useMemo, useRef } from "react"
 import { BoxSlanted, ClipThing, HealthShieldBars, SkillBar, TooltipHelper, WarMachineAbilitiesPopover, WarMachineDestroyedInfo } from ".."
 import { GenericWarMachinePNG, SvgInfoCircular, SvgSkull, SvgSupToken } from "../../assets"
-import { useGame, useAuth, useSupremacy } from "../../containers"
 import { getRarityDeets } from "../../helpers"
 import { useToggle } from "../../hooks"
 import { useGameServerSubscriptionAbilityFaction } from "../../hooks/useGameServer"
@@ -26,16 +25,20 @@ interface WarMachineItemProps {
     warMachine: WarMachineState
     scale: number
     shouldBeExpanded: boolean
+    // useAuth
+    userID?: string
+    factionID?: string
+    // useSupremacy
+    battleIdentifier?: number
+    getFaction: (factionID: string) => Faction
+    // useMiniMap
+    highlightedMechHash?: string
+    setHighlightedMechHash: React.Dispatch<React.SetStateAction<string | undefined>>
 }
 
 export const WarMachineItem = (props: WarMachineItemProps) => {
-    const { battleIdentifier, getFaction } = useSupremacy()
-    const { highlightedMechHash, setHighlightedMechHash } = useGame()
-    const { userID, factionID } = useAuth()
-
-    const {
-        warMachine: { participantID, factionID: warMachineFactionID },
-    } = props
+    const { warMachine, scale, shouldBeExpanded, userID, factionID, battleIdentifier, getFaction, highlightedMechHash, setHighlightedMechHash } = props
+    const { participantID, factionID: warMachineFactionID } = warMachine
 
     // Subscribe to war machine ability updates
     const gameAbilities = useGameServerSubscriptionAbilityFaction<GameAbility[] | undefined>({
@@ -46,26 +49,34 @@ export const WarMachineItem = (props: WarMachineItemProps) => {
 
     return (
         <WarMachineItemInner
-            {...props}
-            battleIdentifier={battleIdentifier}
-            getFaction={getFaction}
+            warMachine={warMachine}
+            scale={scale}
+            shouldBeExpanded={shouldBeExpanded}
+            gameAbilities={gameAbilities}
             userID={userID}
             factionID={factionID}
+            battleIdentifier={battleIdentifier}
+            getFaction={getFaction}
             highlightedMechHash={highlightedMechHash}
             setHighlightedMechHash={setHighlightedMechHash}
-            gameAbilities={gameAbilities}
         />
     )
 }
 
-interface WarMachineItemInnerProps extends WarMachineItemProps {
+interface WarMachineItemInnerProps {
+    warMachine: WarMachineState
+    scale: number
+    shouldBeExpanded: boolean
+    gameAbilities?: GameAbility[]
+    // useAuth
+    userID?: string
+    factionID?: string
+    // useSupremacy
     battleIdentifier?: number
     getFaction: (factionID: string) => Faction
-    userID: string
-    factionID?: string
+    // useMiniMap
     highlightedMechHash?: string
-    setHighlightedMechHash: (s?: string) => void
-    gameAbilities?: GameAbility[]
+    setHighlightedMechHash: React.Dispatch<React.SetStateAction<string | undefined>>
 }
 
 const WarMachineItemInner = ({

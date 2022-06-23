@@ -1,56 +1,69 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useGesture } from "@use-gesture/react"
 import moment from "moment"
-import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { MapWarMachines, SelectionIcon } from ".."
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { FancyButton, MapWarMachines, SelectionIcon } from ".."
 import { Crosshair } from "../../assets"
-import { Severity, useGame } from "../../containers"
-import { SendFunc } from "../../containers/ws"
+import { Severity } from "../../containers"
 import { useInterval, useToggle } from "../../hooks"
 import { useGameServerCommandsFaction } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
-import { fonts } from "../../theme/theme"
-import { Dimension, GameAbility, Map, WarMachineState } from "../../types"
+import { colors, fonts } from "../../theme/theme"
+import { CellCoords, Dimension, Faction, GameAbility, LocationSelectType, Map, PlayerAbility, WarMachineState } from "../../types"
+import { LineSelect } from "./MapInsideItems/LineSelect"
 
 export interface MapSelection {
-    x: number
-    y: number
+    // start coords (used for LINE_SELECT and LOCATION_SELECT abilities)
+    startCoords?: CellCoords
+    // end coords (only used for LINE_SELECT abilities)
+    endCoords?: CellCoords
+    // mech hash (only used for MECH_SELECT abilities)
+    mechHash?: string
 }
 
-interface Props {
+interface PropsInner {
     gameAbility?: GameAbility
     containerDimensions: Dimension
-    targeting?: boolean
-    setSubmitted?: Dispatch<SetStateAction<boolean>>
+    // useAuth
+    userID?: string
+    factionID?: string
+    // useGame
+    map?: Map
+    warMachines?: WarMachineState[]
+    // useSupremacy
+    getFaction: (factionID: string) => Faction
+    // useMiniMap
     enlarged: boolean
+    isTargeting: boolean
+    selection?: MapSelection
+    setSelection: React.Dispatch<React.SetStateAction<MapSelection | undefined>>
+    resetSelection: () => void
+    highlightedMechHash?: string
+    setHighlightedMechHash: React.Dispatch<React.SetStateAction<string | undefined>>
+    // useConsumables
+    playerAbility?: PlayerAbility
+    // useSnackbar
     newSnackbarMessage: (message: string, severity?: Severity) => void
 }
 
-export const MiniMapInside = (props: Props) => {
-    const { send } = useGameServerCommandsFaction("/faction_commander")
-    const { map, warMachines } = useGame()
-
-    return <MiniMapInsideInner {...props} send={send} map={map} warMachines={warMachines} />
-}
-
-interface PropsInner extends Props {
-    map?: Map
-    warMachines?: WarMachineState[]
-    send: SendFunc
-}
-
-const MiniMapInsideInner = ({
-    send,
+export const MiniMapInside = ({
     gameAbility,
     containerDimensions,
-    targeting,
-    setSubmitted,
-    enlarged,
+    userID,
+    factionID,
     map,
     warMachines,
+    getFaction,
+    enlarged,
+    isTargeting,
+    selection,
+    setSelection,
+    resetSelection,
+    highlightedMechHash,
+    setHighlightedMechHash,
+    playerAbility,
     newSnackbarMessage,
 }: PropsInner) => {
-    const [selection, setSelection] = useState<MapSelection>()
     const mapElement = useRef<HTMLDivElement>()
     // Setup use-gesture props
     const [dragX, setDragX] = useState(0)
@@ -61,26 +74,84 @@ const MiniMapInsideInner = ({
 
     const gridWidth = useMemo(() => (map ? map.width / map.cells_x : 50), [map])
     const gridHeight = useMemo(() => (map ? map.height / map.cells_y : 50), [map])
+    const { send } = useGameServerCommandsFaction("/faction_commander")
 
     const onConfirm = useCallback(async () => {
         if (!selection) return
-
         try {
-            const resp = await send<boolean, { x: number; y: number }>(GameServerKeys.SubmitAbilityLocationSelect, {
-                x: Math.floor(selection.x),
-                y: Math.floor(selection.y),
-            })
+            if (gameAbility) {
+                if (!selection.startCoords) {
+                    throw new Error("Something went wrong while activating this ability. Please try again, or contact support if the issue persists.")
+                }
+                await send<boolean, { x: number; y: number }>(GameServerKeys.SubmitAbilityLocationSelect, {
+                    x: Math.floor(selection.startCoords.x),
+                    y: Math.floor(selection.startCoords.y),
+                })
+            } else if (playerAbility) {
+                let payload: {
+                    blueprint_ability_id: string
+                    location_select_type: string
+                    start_coords?: CellCoords
+                    end_coords?: CellCoords
+                    mech_hash?: string
+                } | null = null
+                switch (playerAbility.ability.location_select_type) {
+                    case LocationSelectType.LINE_SELECT:
+                        if (!selection.startCoords || !selection.endCoords) {
+                            throw new Error("Something went wrong while activating this ability. Please try again, or contact support if the issue persists.")
+                        }
+                        payload = {
+                            blueprint_ability_id: playerAbility.ability.id,
+                            location_select_type: playerAbility.ability.location_select_type,
+                            start_coords: {
+                                x: Math.floor(selection.startCoords.x),
+                                y: Math.floor(selection.startCoords.y),
+                            },
+                            end_coords: {
+                                x: Math.floor(selection.endCoords.x),
+                                y: Math.floor(selection.endCoords.y),
+                            },
+                        }
+                        break
+                    case LocationSelectType.MECH_SELECT:
+                        payload = {
+                            blueprint_ability_id: playerAbility.ability.id,
+                            location_select_type: playerAbility.ability.location_select_type,
+                            mech_hash: selection.mechHash,
+                        }
+                        break
+                    case LocationSelectType.LOCATION_SELECT:
+                        if (!selection.startCoords) {
+                            throw new Error("Something went wrong while activating this ability. Please try again, or contact support if the issue persists.")
+                        }
+                        payload = {
+                            blueprint_ability_id: playerAbility.ability.id,
+                            location_select_type: playerAbility.ability.location_select_type,
+                            start_coords: {
+                                x: Math.floor(selection.startCoords.x),
+                                y: Math.floor(selection.startCoords.y),
+                            },
+                        }
+                        break
+                    case LocationSelectType.GLOBAL:
+                        break
+                }
 
-            newSnackbarMessage("Successfully submitted target location.", "success")
-            if (resp) {
-                setSubmitted && setSubmitted(true)
-                setSelection(undefined)
+                if (!payload) {
+                    throw new Error("Something went wrong while activating this ability. Please try again, or contact support if the issue persists.")
+                }
+                await send<boolean, typeof payload>(GameServerKeys.PlayerAbilityUse, payload)
             }
+            resetSelection()
+            if (playerAbility?.ability.location_select_type === LocationSelectType.MECH_SELECT) {
+                setHighlightedMechHash(undefined)
+            }
+            newSnackbarMessage("Successfully submitted target location.", "success")
         } catch (e) {
             newSnackbarMessage(typeof e === "string" ? e : "Failed to submit target location.", "error")
             console.error(e)
         }
-    }, [selection, send, setSubmitted, newSnackbarMessage])
+    }, [send, selection, resetSelection, gameAbility, playerAbility, newSnackbarMessage, setHighlightedMechHash])
 
     const handleSelection = useCallback(
         (e: React.MouseEvent<HTMLTableElement, MouseEvent>) => {
@@ -90,12 +161,14 @@ const MiniMapInsideInner = ({
                 const x = e.clientX - rect.left
                 const y = e.clientY - rect.top
                 setSelection({
-                    x: x / (gridWidth * mapScale),
-                    y: y / (gridHeight * mapScale),
+                    startCoords: {
+                        x: x / (gridWidth * mapScale),
+                        y: y / (gridHeight * mapScale),
+                    },
                 })
             }
         },
-        [mapElement, gridWidth, gridHeight, mapScale],
+        [mapElement, gridWidth, gridHeight, mapScale, setSelection],
     )
 
     // Set map scale to minimum scale while staying in-bounds
@@ -105,7 +178,7 @@ const MiniMapInsideInner = ({
         setDragX(0)
         setDragY(0)
         setMapScale(minScale)
-    }, [containerDimensions, map, enlarged])
+    }, [containerDimensions, map])
 
     // --------------- Minimap - useGesture setup -------------------
     // Prevents map zooming from interfering with the browsers' accessibility zoom
@@ -274,6 +347,16 @@ const MiniMapInsideInner = ({
 
     if (!map) return null
 
+    // i.e. is battle ability or player ability of type LOCATION_SELECT
+    const isLocationSelection =
+        isTargeting &&
+        !(
+            playerAbility?.ability.location_select_type === LocationSelectType.LINE_SELECT ||
+            playerAbility?.ability.location_select_type === LocationSelectType.MECH_SELECT ||
+            playerAbility?.ability.location_select_type === LocationSelectType.GLOBAL
+        )
+    const isLineSelection = isTargeting && playerAbility?.ability.location_select_type === LocationSelectType.LINE_SELECT
+
     return (
         <>
             <Stack
@@ -293,55 +376,123 @@ const MiniMapInsideInner = ({
                     }}
                 >
                     <SelectionIcon
-                        key={selection && `column-${selection.y}-row-${selection.x}`}
-                        gameAbility={gameAbility}
+                        key={selection?.startCoords && `column-${selection.startCoords.y}-row-${selection.startCoords.x}`}
+                        ability={gameAbility || playerAbility?.ability}
                         gridWidth={gridWidth}
                         gridHeight={gridHeight}
                         selection={selection}
                         setSelection={setSelection}
-                        targeting={targeting}
+                        targeting={isTargeting}
                     />
 
                     <MapWarMachines
-                        map={map}
                         gridWidth={gridWidth}
                         gridHeight={gridHeight}
-                        warMachines={warMachines || []}
+                        userID={userID}
+                        factionID={factionID}
+                        map={map}
+                        warMachines={warMachines}
+                        getFaction={getFaction}
                         enlarged={enlarged}
-                        targeting={targeting}
+                        targeting={isTargeting}
+                        setSelection={setSelection}
+                        highlightedMechHash={highlightedMechHash}
+                        setHighlightedMechHash={setHighlightedMechHash}
+                        playerAbility={playerAbility}
                     />
 
                     {/* Map Image */}
                     <Box
                         ref={mapElement}
-                        onClick={targeting ? handleSelection : undefined}
+                        onClick={isLocationSelection ? handleSelection : undefined}
                         sx={{
                             position: "absolute",
                             width: `${map.width}px`,
                             height: `${map.height}px`,
                             backgroundImage: `url(${map.image_url})`,
-                            cursor: targeting ? `url(${Crosshair}) 10 10, auto` : "move",
+                            cursor: isLocationSelection || isLineSelection ? `url(${Crosshair}) 10 10, auto` : "move",
                             borderSpacing: 0,
                         }}
-                    />
+                    >
+                        {isLineSelection && (
+                            <LineSelect
+                                selection={selection}
+                                setSelection={setSelection}
+                                mapElement={mapElement.current}
+                                gridWidth={gridWidth}
+                                gridHeight={gridHeight}
+                                map={map}
+                                mapScale={mapScale}
+                            />
+                        )}
+                    </Box>
                 </Box>
             </Stack>
-
-            <CountdownText selection={selection} onConfirm={onConfirm} />
+            {isTargeting && !gameAbility && playerAbility && (
+                <FancyButton
+                    clipThingsProps={{
+                        clipSize: "4px",
+                        backgroundColor: colors.red,
+                        border: { borderColor: colors.red },
+                        sx: {
+                            flex: 1,
+                            position: "absolute",
+                            bottom: "1rem",
+                            right: "1rem",
+                        },
+                    }}
+                    sx={{
+                        pt: ".32rem",
+                        pb: ".24rem",
+                        minWidth: "2rem",
+                    }}
+                    onClick={resetSelection}
+                >
+                    <Typography
+                        sx={{
+                            lineHeight: 1,
+                            fontWeight: "fontWeightBold",
+                            whiteSpace: "nowrap",
+                            color: "#FFFFFF",
+                        }}
+                    >
+                        Cancel
+                    </Typography>
+                </FancyButton>
+            )}
+            {isTargeting && (gameAbility || playerAbility) && <CountdownText playerAbility={playerAbility} selection={selection} onConfirm={onConfirm} />}
         </>
     )
 }
 
 // Count down timer for the selection
-const CountdownText = ({ selection, onConfirm }: { selection?: MapSelection; onConfirm: () => void }) => {
+const CountdownText = ({ playerAbility, selection, onConfirm }: { playerAbility?: PlayerAbility; selection?: MapSelection; onConfirm: () => void }) => {
     const [endMoment, setEndMoment] = useState<moment.Moment>()
     const [timeRemain, setTimeRemain] = useState<number>(-2)
     const [delay, setDelay] = useState<number | null>(null)
 
+    const hasSelected = useMemo(() => {
+        let hasSelected = !!selection
+        if (playerAbility) {
+            switch (playerAbility.ability.location_select_type) {
+                case LocationSelectType.LINE_SELECT:
+                    hasSelected = !!(selection?.startCoords && selection?.endCoords)
+                    break
+                case LocationSelectType.LOCATION_SELECT:
+                    hasSelected = !!selection?.startCoords
+                    break
+                case LocationSelectType.MECH_SELECT:
+                    hasSelected = !!selection?.mechHash
+                    break
+            }
+        }
+        return hasSelected
+    }, [selection, playerAbility])
+
     // Count down starts when user has selected a location, then fires if they don't change their mind
     useEffect(() => {
         setEndMoment((prev) => {
-            if (!selection) {
+            if (!hasSelected) {
                 setTimeRemain(-2)
                 return undefined
             }
@@ -350,7 +501,7 @@ const CountdownText = ({ selection, onConfirm }: { selection?: MapSelection; onC
 
             return prev
         })
-    }, [selection])
+    }, [hasSelected])
 
     useEffect(() => {
         setDelay(null)
@@ -367,8 +518,8 @@ const CountdownText = ({ selection, onConfirm }: { selection?: MapSelection; onC
     }, delay)
 
     useEffect(() => {
-        if (selection && timeRemain == -1) onConfirm()
-    }, [onConfirm, selection, timeRemain])
+        if (hasSelected && timeRemain == -1) onConfirm()
+    }, [hasSelected, timeRemain, onConfirm])
 
     if (timeRemain < 0) return null
 

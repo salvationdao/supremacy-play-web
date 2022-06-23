@@ -1,18 +1,23 @@
 import { Stack, Typography } from "@mui/material"
-import { Dispatch, SetStateAction, useEffect } from "react"
-import { GameAbility } from "../../../types"
+import { useEffect } from "react"
 import { useTimer } from "../../../hooks"
+import { GameAbility } from "../../../types"
 
 export const TargetTimerCountdown = ({
     gameAbility,
-    setTimeReachZero,
     endTime,
+    onCountdownExpired,
 }: {
     gameAbility: GameAbility
-    setTimeReachZero: Dispatch<SetStateAction<boolean>>
     endTime: Date
+    onCountdownExpired: () => void
 }) => {
     const { label, colour } = gameAbility
+    const { totalSecRemain } = useTimer(endTime)
+
+    useEffect(() => {
+        if (totalSecRemain <= 1) onCountdownExpired()
+    }, [totalSecRemain, onCountdownExpired])
 
     return (
         <Stack
@@ -34,19 +39,9 @@ export const TargetTimerCountdown = ({
         >
             <Typography variant="h6" sx={{ span: { lineHeight: 1, fontWeight: "fontWeightBold", color: colour } }}>
                 You have&nbsp;
-                <CountdownText endTime={endTime} setTimeReachZero={setTimeReachZero} />s to choose a location for&nbsp;
+                {Math.max(totalSecRemain - 2, 0)}s to choose a location for&nbsp;
                 <span>{`${label}`}</span>
             </Typography>
         </Stack>
     )
-}
-
-const CountdownText = ({ endTime, setTimeReachZero }: { endTime: Date; setTimeReachZero: Dispatch<SetStateAction<boolean>> }) => {
-    const { totalSecRemain } = useTimer(endTime)
-
-    useEffect(() => {
-        if (totalSecRemain <= 1) setTimeReachZero(true)
-    }, [setTimeReachZero, totalSecRemain])
-
-    return <>{Math.max(totalSecRemain - 2, 0)}</>
 }
