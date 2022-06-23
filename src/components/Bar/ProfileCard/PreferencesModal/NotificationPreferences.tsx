@@ -88,7 +88,7 @@ export const NotificationPreferencesInner = ({ notificationPreferences, setNotif
         }
 
         if (settingsChanged && hadNotificationsTurnedOff && hasAnyNotifications && !agreeToBeCharged) {
-            setError("Please agree to 'You have read and agreed to be charge 5 sups per notification'.")
+            setError("Please agree to 'You have read and agreed to be charge 5 SUPS per notification'.")
             return
         }
 
@@ -116,7 +116,7 @@ export const NotificationPreferencesInner = ({ notificationPreferences, setNotif
 
     return (
         <Stack spacing=".3rem" sx={{ px: "1.5rem", py: ".8rem", backgroundColor: "#FFFFFF08" }}>
-            <Stack direction="row" alignItems="center" spacing=".4rem">
+            <Stack direction="row" alignItems="center" spacing=".7rem">
                 <Typography gutterBottom sx={{ color: colors.lightGrey }}>
                     NOTIFICATIONS
                 </Typography>
@@ -127,18 +127,19 @@ export const NotificationPreferencesInner = ({ notificationPreferences, setNotif
                         <Box>
                             <Typography sx={{ display: "inline" }}>
                                 You will be notified via your chosen notification preference(s) when your war machine is within the top 10 position in the
-                                battle queue. You will be charged when the notification has been delivered to you.
+                                battle queue. You will be charged a
                             </Typography>
-                            <SvgSupToken sx={{ display: "inline" }} size="1.4rem" fill={colors.yellow} />
-                            <Typography sx={{ display: "inline" }}>5</Typography>
+                            <SvgSupToken sx={{ display: "inline", ml: ".4rem" }} size="1.5rem" fill={colors.yellow} />
+
+                            <Typography sx={{ display: "inline" }}>5 fee when the notification has been delivered to you.</Typography>
                         </Box>
                     }
                 >
                     <Box>
                         <SvgInfoCircular
-                            size="1.2rem"
+                            size="1.3rem"
                             sx={{
-                                pb: ".7rem",
+                                pb: "1rem",
                                 opacity: 0.4,
                                 ":hover": { opacity: 1 },
                             }}
@@ -187,23 +188,21 @@ export const NotificationPreferencesInner = ({ notificationPreferences, setNotif
                 />
 
                 {settingsChanged && hadNotificationsTurnedOff && hasAnyNotifications && (
-                    <Stack spacing=".4rem" sx={{ mt: ".3rem", px: "1.7rem", py: ".8rem", backgroundColor: `${colors.orange}20` }}>
+                    <Stack spacing=".8rem" sx={{ mt: ".8rem", px: "1.7rem", py: ".8rem", backgroundColor: `${colors.orange}20` }}>
                         <Stack direction="row" alignItems="center">
                             <Typography sx={{ fontWeight: "fontWeightBold" }}>NOTIFICATION FEE:&nbsp;</Typography>
-                            <SvgSupToken size="1.4rem" fill={colors.yellow} />
+                            <SvgSupToken size="1.5rem" fill={colors.yellow} />
                             <Typography>5</Typography>
                         </Stack>
 
-                        <Box>
-                            <Typography>
-                                You will be notified via your chosen notification preference(s) when your war machine is within the top 10 position in the
-                                battle queue. You will be charged when the notification has been delivered to you.
-                            </Typography>
-                        </Box>
+                        <Typography>
+                            You will be notified via your chosen notification preference(s) when your war machine is within the top 10 position in the battle
+                            queue. You will be charged when the notification has been delivered to you.
+                        </Typography>
 
                         <Stack direction="row" alignItems="center">
-                            <Typography sx={{ lineHeight: 1, fontWeight: "fontWeightBold", span: { color: colors.yellow } }}>
-                                You have read and agreed to be charge <span>5</span> sups per notification:
+                            <Typography sx={{ fontWeight: "fontWeightBold", span: { color: colors.yellow } }}>
+                                I have read and agree to be charge <span>5</span> SUPS per notification.
                             </Typography>
                             <Checkbox
                                 disabled={loading}
@@ -213,7 +212,7 @@ export const NotificationPreferencesInner = ({ notificationPreferences, setNotif
                                     setAgreeToBeCharged(e.currentTarget.checked)
                                 }}
                                 sx={{
-                                    transform: "scale(1.2)",
+                                    transform: "scale(1.4)",
                                     ".Mui-checked": { color: colors.neonBlue },
                                     ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${colors.neonBlue}50` },
                                 }}
@@ -222,6 +221,12 @@ export const NotificationPreferencesInner = ({ notificationPreferences, setNotif
                     </Stack>
                 )}
             </Stack>
+
+            {error && (
+                <Typography variant="body2" sx={{ color: colors.red, pt: "1rem" }}>
+                    {error}
+                </Typography>
+            )}
 
             <Stack direction="row" spacing="1rem" sx={{ pt: "1rem" }}>
                 <FancyButton
@@ -250,12 +255,6 @@ export const NotificationPreferencesInner = ({ notificationPreferences, setNotif
                     </Typography>
                 </FancyButton>
             </Stack>
-
-            {error && (
-                <Typography variant="body2" sx={{ color: colors.red }}>
-                    {error}
-                </Typography>
-            )}
         </Stack>
     )
 }
