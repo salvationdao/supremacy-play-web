@@ -3,6 +3,7 @@ import { SyntheticEvent, useCallback, useEffect, useState } from "react"
 import { useHistory, useLocation, useParams } from "react-router-dom"
 import { HangarBg } from "../assets"
 import { MysteryCratesStore } from "../components/Storefront/MysteryCratesStore/MysteryCratesStore"
+import { PlayerAbilitiesStore } from "../components/Storefront/PlayerAbilitiesStore/PlayerAbilitiesStore"
 import { useTheme } from "../containers/theme"
 import { ROUTES_MAP } from "../routes"
 import { siteZIndex } from "../theme/theme"
@@ -70,8 +71,8 @@ export const StorefrontPage = () => {
                         }}
                     >
                         <Tab label="MYSTERY CRATES" value={STOREFRONT_TABS.MysteryCrates} />
+                        <Tab label="ABILITIES" value={STOREFRONT_TABS.Abilities} />
                         {/* <Tab label="SKINS" value={STOREFRONT_TABS.Skins} disabled />
-                        <Tab label="ABILITIES" disabled value={STOREFRONT_TABS.Abilities} />
                         <Tab label="MERCHANDISE" disabled value={STOREFRONT_TABS.Merchandise} /> */}
                     </Tabs>
                 </Box>
@@ -83,7 +84,7 @@ export const StorefrontPage = () => {
                     COMING SOON!
                 </TabPanel>
                 <TabPanel currentValue={currentValue} value={STOREFRONT_TABS.Abilities}>
-                    COMING SOON!
+                    <PlayerAbilitiesStore />
                 </TabPanel>
                 <TabPanel currentValue={currentValue} value={STOREFRONT_TABS.Merchandise}>
                     COMING SOON!
