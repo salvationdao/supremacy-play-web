@@ -494,3 +494,8 @@ export const calculateDutchAuctionCurrentPrice = ({ createdAt, dropRate, startPr
     if (!dropRate) return startPrice
     return startPrice.minus(dropRate.multipliedBy(timeDiff(createdAt, new Date()).minutes))
 }
+
+export const calculateDutchAuctionEndPrice = ({ endAt, dropRate, startPrice }: { endAt: Date; dropRate?: number; startPrice: number }) => {
+    if (!dropRate) return startPrice
+    return Math.max(startPrice - dropRate * timeDiff(new Date(), endAt).minutes, 1)
+}

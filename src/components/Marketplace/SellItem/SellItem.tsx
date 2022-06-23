@@ -1,10 +1,10 @@
-import { Box, Stack, Typography } from "@mui/material"
+import { Box, Checkbox, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useState } from "react"
 import { useHistory, useLocation } from "react-router-dom"
 import { FancyButton } from "../.."
 import { SvgSupToken, WarMachineIconPNG } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
-import { numFormatter } from "../../../helpers"
+import { calculateDutchAuctionEndPrice, numFormatter } from "../../../helpers"
 import { useToggle, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
@@ -48,6 +48,7 @@ export const SellItemInner = ({ toggleReset }: { toggleReset: () => void }) => {
     const location = useLocation()
     const [query] = useUrlQuery()
     const { send } = useGameServerCommandsFaction("/faction_commander")
+    const [understantDropRisk, toggleUnderstantDropRisk] = useToggle()
 
     // Submitting
     const [confirmModalOpen, toggleConfirmModalOpen] = useToggle()
@@ -353,6 +354,7 @@ export const SellItemInner = ({ toggleReset }: { toggleReset: () => void }) => {
 
             {confirmModalOpen && (
                 <ConfirmModal
+                    disableConfirm={!!dropRate && !understantDropRisk}
                     title="CONFIRMATION"
                     onConfirm={submitHandler}
                     onClose={() => {
@@ -379,6 +381,46 @@ export const SellItemInner = ({ toggleReset }: { toggleReset: () => void }) => {
                         The listing fee is <span>{numFormatter(listingFee)}</span> SUPS and there will be a <span>10%</span> fee on the final sale value of your
                         item.
                     </Typography>
+
+                    {dropRate && buyoutPrice && (
+                        <Stack
+                            spacing=".4rem"
+                            sx={{ mt: ".8rem", px: "1.7rem", py: ".8rem", backgroundColor: `${colors.orange}20`, span: { color: colors.yellow } }}
+                        >
+                            <Typography variant="h6">
+                                You have set a <strong>price drop</strong> to your listing, this means the price could potentially fall down to{" "}
+                                <span>
+                                    {Math.max(
+                                        reservePrice || 1,
+                                        calculateDutchAuctionEndPrice({
+                                            endAt: new Date(new Date().getTime() + listingDurationHours * 60 * 60 * 1000),
+                                            startPrice: buyoutPrice,
+                                            dropRate,
+                                        }),
+                                    )}
+                                </span>{" "}
+                                SUP if nobody buys the item.
+                            </Typography>
+
+                            <Stack direction="row" alignItems="center">
+                                <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
+                                    I have read and understood the above.
+                                </Typography>
+                                <Checkbox
+                                    size="small"
+                                    checked={understantDropRisk}
+                                    onChange={(e) => {
+                                        toggleUnderstantDropRisk(e.currentTarget.checked)
+                                    }}
+                                    sx={{
+                                        transform: "scale(1.4)",
+                                        ".Mui-checked": { color: colors.neonBlue },
+                                        ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${colors.neonBlue}50` },
+                                    }}
+                                />
+                            </Stack>
+                        </Stack>
+                    )}
                 </ConfirmModal>
             )}
 
