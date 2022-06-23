@@ -24,10 +24,10 @@ const sortOptions = [
 ]
 
 export const YourEventsMarket = () => {
+    const theme = useTheme()
     const location = useLocation()
     const [query, updateQuery] = useUrlQuery()
     const { send } = useGameServerCommandsFaction("/faction_commander")
-    const theme = useTheme()
 
     // Items
     const [isLoading, setIsLoading] = useState(true)
@@ -104,6 +104,8 @@ export const YourEventsMarket = () => {
         getItems()
     }, [getItems])
 
+    const primaryColor = theme.factionTheme.primary
+
     const content = useMemo(() => {
         if (loadError) {
             return (
@@ -132,7 +134,7 @@ export const YourEventsMarket = () => {
             return (
                 <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                     <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
-                        <CircularProgress size="3rem" sx={{ color: colors.marketSold }} />
+                        <CircularProgress size="3rem" sx={{ color: primaryColor }} />
                     </Stack>
                 </Stack>
             )
@@ -192,7 +194,7 @@ export const YourEventsMarket = () => {
                 </Stack>
             </Stack>
         )
-    }, [loadError, eventItems, isLoading])
+    }, [loadError, eventItems, isLoading, primaryColor])
 
     return (
         <Stack direction="row" spacing="1rem" sx={{ height: "100%" }}>
@@ -201,13 +203,13 @@ export const YourEventsMarket = () => {
                 onSetSearch={setSearch}
                 chipFilters={[eventTypeFilterSection.current]}
                 changePage={changePage}
-                primaryColor={colors.marketSold}
+                primaryColor={primaryColor}
             />
 
             <ClipThing
                 clipSize="10px"
                 border={{
-                    borderColor: colors.marketSold,
+                    borderColor: primaryColor,
                     borderThickness: ".3rem",
                 }}
                 opacity={0.7}
@@ -220,7 +222,7 @@ export const YourEventsMarket = () => {
                             title="YOUR MARKETPLACE EVENTS"
                             description="See your marketplace events and logs here."
                             imageUrl={WarMachineIconPNG}
-                            primaryColor={colors.marketSold}
+                            primaryColor={primaryColor}
                         >
                             <FancyButton
                                 clipThingsProps={{
@@ -256,7 +258,7 @@ export const YourEventsMarket = () => {
                             sortOptions={sortOptions}
                             selectedSort={sort}
                             onSetSort={setSort}
-                            primaryColor={colors.marketSold}
+                            primaryColor={primaryColor}
                         />
 
                         <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
@@ -279,7 +281,7 @@ export const YourEventsMarket = () => {
                                         borderRadius: 3,
                                     },
                                     "::-webkit-scrollbar-thumb": {
-                                        background: colors.marketSold,
+                                        background: primaryColor,
                                         borderRadius: 3,
                                     },
                                 }}
@@ -294,7 +296,7 @@ export const YourEventsMarket = () => {
                             sx={{
                                 px: "1rem",
                                 py: ".7rem",
-                                borderTop: `${colors.marketSold}70 1.5px solid`,
+                                borderTop: `${primaryColor}70 1.5px solid`,
                                 backgroundColor: "#00000070",
                             }}
                         >
@@ -306,7 +308,7 @@ export const YourEventsMarket = () => {
                                     ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold },
                                     ".Mui-selected": {
                                         color: (theme) => theme.factionTheme.secondary,
-                                        backgroundColor: `${colors.marketSold} !important`,
+                                        backgroundColor: `${primaryColor} !important`,
                                     },
                                 }}
                                 onChange={(e, p) => changePage(p)}
