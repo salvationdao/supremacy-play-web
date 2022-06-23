@@ -29,6 +29,7 @@ export enum GameServerKeys {
     BribeBattleAbility = "BATTLE:ABILITY:BRIBE",
     SubmitAbilityLocationSelect = "ABILITY:LOCATION:SELECT",
 
+    SubMechCommands = "MECH:COMMANDS:SUBSCRIBE",
     SubMechMoveCommand = "MECH:MOVE:COMMAND:SUBSCRIBE",
     MechMoveCommandCreate = "MECH:MOVE:COMMAND:CREATE",
     MechMoveCommandCancel = "MECH:MOVE:COMMAND:CANCEL",

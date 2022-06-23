@@ -32,10 +32,6 @@ export const MiniMapContainer = createContainer(() => {
         setIsTargeting(false)
     }, [winner, playerAbility, setPlayerAbility])
 
-    useEffect(() => {
-        console.log(selection)
-    }, [selection])
-
     // Subscribe on winner announcements
     useGameServerSubscriptionUser<WinnerAnnouncementResponse | undefined>(
         {

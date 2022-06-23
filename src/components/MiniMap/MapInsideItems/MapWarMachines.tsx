@@ -1,13 +1,14 @@
 import { Box, Stack } from "@mui/material"
 import { useCallback, useMemo, useState } from "react"
 import { GenericWarMachinePNG, SvgMapSkull, SvgMapWarMachine } from "../../../assets"
-import { useGameServerSubscription } from "../../../hooks/useGameServer"
+import { useGameServerSubscription, useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
 import { LocationSelectType, Map, PlayerAbility, Vector2i, WarMachineState } from "../../../types"
 import { WarMachineLiveState } from "../../../types/game"
 import { Faction } from "../../../types/user"
 import { MapSelection } from "../MiniMapInside"
+import { MechMoveCommand } from "../../PlayerAbilities/MechMoveCommandCard"
 
 interface MapWarMachineProps {
     gridWidth: number
@@ -113,6 +114,9 @@ const MapWarMachine = ({
     // 0 is east, and goes CW, can be negative and above 360
     const [rotation, setRotation] = useState<number>(warMachine.rotation)
 
+    const [mechMoveCommandX, setMechMoveCommandX] = useState<number>()
+    const [mechMoveCommandY, setMechMoveCommandY] = useState<number>()
+
     const mapScale = useMemo(() => map.width / (map.cells_x * 2000), [map])
     const wmImageUrl = useMemo(() => imageAvatar || GenericWarMachinePNG, [imageAvatar])
     const SIZE = useMemo(() => Math.min(gridWidth, gridHeight) * 1.1, [gridWidth, gridHeight])
@@ -121,6 +125,9 @@ const MapWarMachine = ({
     const DOT_SIZE = useMemo(() => 1.2 * SIZE, [SIZE])
     const primaryColor = useMemo(() => getFaction(warMachineFactionID).primary_color || "#FFFFFF", [warMachineFactionID, getFaction])
     const isAlive = useMemo(() => health > 0, [health])
+
+    const sizeX = useMemo(() => gridWidth * 1.5, [gridWidth])
+    const sizeY = useMemo(() => gridHeight * 1.5, [gridHeight])
 
     // Listen on current war machine changes
     useGameServerSubscription<WarMachineLiveState | undefined>(
@@ -135,6 +142,26 @@ const MapWarMachine = ({
             if (payload?.shield !== undefined) setShield(payload.shield)
             if (payload?.position !== undefined) sePosition(payload.position)
             if (payload?.rotation !== undefined) setRotation(payload.rotation)
+        },
+    )
+
+    useGameServerSubscriptionFaction<MechMoveCommand>(
+        {
+            URI: `/mech_command/${hash}`,
+            key: GameServerKeys.SubMechMoveCommand,
+            ready: factionID === warMachineFactionID && !!participantID,
+        },
+        (payload) => {
+            if (!payload) return
+
+            if (payload.cell_x === undefined || payload.cell_y === undefined) {
+                setMechMoveCommandX(undefined)
+                setMechMoveCommandY(undefined)
+                return
+            }
+
+            setMechMoveCommandX(payload.cell_x)
+            setMechMoveCommandY(payload.cell_y)
         },
     )
 
@@ -154,6 +181,23 @@ const MapWarMachine = ({
             }
         }
     }, [hash, highlightedMechHash, setHighlightedMechHash, setSelection, playerAbility, factionID, warMachineFactionID])
+
+    const distance = useCallback(
+        (mechX: number, mechY: number, commandX: number, commandY: number): number => {
+            const mechMapX = (mechX - map.left_pixels) * mapScale
+            const mechMapY = (mechY - map.top_pixels) * mapScale
+            const commandMapX = commandX * gridWidth - sizeX / 2
+            const commandMapY = commandY * gridHeight - sizeY / 2
+
+            const x = Math.abs(mechMapX - commandMapX)
+            const y = Math.abs(mechMapY - commandMapY)
+
+            // cal rotation
+
+            return Math.sqrt(x * x + y * y)
+        },
+        [mapScale, gridHeight, gridWidth, map, sizeX, sizeY],
+    )
 
     if (!position) return null
 
@@ -262,7 +306,7 @@ const MapWarMachine = ({
                             left: "50%",
                             top: "50%",
                             transform: `translate(-50%, -50%) rotate(${rotation + 90}deg)`,
-                            transition: "all .2s",
+                            transition: "all .25s",
                             zIndex: 3,
                         }}
                     >
@@ -279,6 +323,46 @@ const MapWarMachine = ({
                             />
                         </Box>
                         <Box style={{ height: ARROW_LENGTH }} />
+                    </Box>
+                )}
+
+                {isAlive && mechMoveCommandX !== undefined && mechMoveCommandY !== undefined && enlarged && (
+                    <Box
+                        style={{
+                            position: "absolute",
+                            left: "50%",
+                            top: "50%",
+                            transform: `translate(-50%, -50%) rotate(${rotation + 90}deg)`,
+                            transition: "all .275s",
+                            zIndex: 3,
+                        }}
+                    >
+                        <Box
+                            style={{
+                                position: "relative",
+                                height: distance(position.x, position.y, mechMoveCommandX, mechMoveCommandY),
+                                transition: "all .275s",
+                            }}
+                        >
+                            <Box
+                                style={{
+                                    width: "10px",
+                                    height: "10px",
+                                    backgroundColor: "red",
+                                    position: "absolute",
+                                    top: -6,
+                                    left: "50%",
+                                    transform: "translateX(-50%)",
+                                }}
+                            />
+                        </Box>
+                        <Box
+                            style={{
+                                height: distance(position.x, position.y, mechMoveCommandX, mechMoveCommandY),
+                                // borderLeft: "red 2px dashed",
+                                transition: "all .275s",
+                            }}
+                        />
                     </Box>
                 )}
             </Box>

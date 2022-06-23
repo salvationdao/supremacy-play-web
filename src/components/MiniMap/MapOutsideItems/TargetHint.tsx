@@ -14,6 +14,7 @@ export const TargetHint = ({ ability }: TargetHintProps) => {
     useEffect(() => {
         switch (ability.location_select_type) {
             case LocationSelectType.LOCATION_SELECT:
+            case LocationSelectType.MECH_COMMAND:
                 setAbilityActionDescriptor("Select a location")
                 setAbilityTypeIcon(<SvgTarget size="1.6rem" />)
                 break

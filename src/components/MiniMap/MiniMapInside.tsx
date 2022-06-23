@@ -11,6 +11,7 @@ import { GameServerKeys } from "../../keys"
 import { colors, fonts } from "../../theme/theme"
 import { CellCoords, Dimension, Faction, GameAbility, LocationSelectType, Map, PlayerAbility, WarMachineState } from "../../types"
 import { LineSelect } from "./MapInsideItems/LineSelect"
+import { MechCommandLocations } from "./MapInsideItems/MechCommandLocations"
 
 export interface MapSelection {
     // start coords (used for LINE_SELECT and LOCATION_SELECT abilities)
@@ -121,6 +122,7 @@ export const MiniMapInside = ({
                         }
                         break
                     case LocationSelectType.LOCATION_SELECT:
+                    case LocationSelectType.MECH_COMMAND:
                         if (!selection.startCoords) {
                             throw new Error("Something went wrong while activating this ability. Please try again, or contact support if the issue persists.")
                         }
@@ -131,6 +133,7 @@ export const MiniMapInside = ({
                                 x: Math.floor(selection.startCoords.x),
                                 y: Math.floor(selection.startCoords.y),
                             },
+                            mech_hash: playerAbility.mechHash,
                         }
                         break
                     case LocationSelectType.GLOBAL:
@@ -384,6 +387,8 @@ export const MiniMapInside = ({
                         setSelection={setSelection}
                         targeting={isTargeting}
                     />
+
+                    <MechCommandLocations gridWidth={gridWidth} gridHeight={gridHeight} />
 
                     <MapWarMachines
                         gridWidth={gridWidth}

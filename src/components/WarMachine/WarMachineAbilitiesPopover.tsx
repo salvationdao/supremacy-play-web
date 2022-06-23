@@ -4,7 +4,7 @@ import { ClipThing, FactionAbilityItem } from ".."
 import { GenericWarMachinePNG } from "../../assets"
 import { Faction, GameAbility, WarMachineState } from "../../types"
 import { ContributorAmount } from "../BattleStats/ContributorAmount"
-import { MechMoveCommand } from "../PlayerAbilities/MechMoveCommand"
+import { MechMoveCommandCard } from "../PlayerAbilities/MechMoveCommandCard"
 import { useAuth } from "../../containers"
 
 interface WarMachineAbilitiesPopoverProps {
@@ -98,7 +98,9 @@ export const WarMachineAbilitiesPopover = ({
                                         />
                                     </Box>
                                 ))}
-                                {warMachine.ownedByID === userID && <MechMoveCommand warMachine={warMachine} faction={faction} clipSlantSize="5px" />}
+                                {warMachine.ownedByID === userID && (
+                                    <MechMoveCommandCard warMachine={warMachine} faction={faction} clipSlantSize="5px" onClose={onClose} />
+                                )}
                             </Stack>
                         </Stack>
                     </Box>

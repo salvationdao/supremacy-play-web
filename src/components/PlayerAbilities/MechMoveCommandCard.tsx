@@ -2,8 +2,8 @@ import { Box, Fade, Stack, Typography } from "@mui/material"
 import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { Faction, WarMachineState } from "../../types"
-import { useAuth } from "../../containers"
+import { BlueprintPlayerAbility, Faction, LocationSelectType, WarMachineState } from "../../types"
+import { useAuth, useConsumables } from "../../containers"
 import { ClipThing } from "../Common/ClipThing"
 import { TopText } from "../VotingSystem/FactionAbility/TopText"
 import { SupsBar } from "../VotingSystem/FactionAbility/SupsBar"
@@ -12,13 +12,14 @@ import { useInterval } from "../../hooks"
 import { colors } from "../../theme/theme"
 import { shadeColor } from "../../helpers"
 
-interface MechMoveCommand {
+export interface MechMoveCommand {
     id: string
     mech_id: string
     triggered_by_id: string
-    x: number
-    y: number
+    cell_x?: number
+    cell_y?: number
     cancelled_at?: string
+    reached_at?: string
     remain_cooldown_seconds: number
 }
 
@@ -26,9 +27,10 @@ interface MechMoveCommandProps {
     warMachine: WarMachineState
     faction: Faction
     clipSlantSize: string
+    onClose: () => void
 }
 
-export const MechMoveCommand = ({ warMachine, faction, clipSlantSize }: MechMoveCommandProps) => {
+export const MechMoveCommandCard = ({ warMachine, faction, clipSlantSize, onClose }: MechMoveCommandProps) => {
     const { factionID } = useAuth()
     const { hash, factionID: wmFactionID, participantID } = warMachine
     const [mechMoveCommand, setMechMoveCommand] = useState<MechMoveCommand>()
@@ -41,13 +43,12 @@ export const MechMoveCommand = ({ warMachine, faction, clipSlantSize }: MechMove
         (payload) => {
             if (!payload) return
             setMechMoveCommand(payload)
-            console.log(payload)
         },
     )
 
     if (!mechMoveCommand) return null
 
-    return <MechMoveCommandInner faction={faction} clipSlantSize={clipSlantSize} mechMoveCommand={mechMoveCommand} warMachine={warMachine} />
+    return <MechMoveCommandInner faction={faction} clipSlantSize={clipSlantSize} mechMoveCommand={mechMoveCommand} warMachine={warMachine} onClose={onClose} />
 }
 
 interface MechMoveCommandInnerProps {
@@ -55,14 +56,14 @@ interface MechMoveCommandInnerProps {
     clipSlantSize: string
     mechMoveCommand: MechMoveCommand
     warMachine: WarMachineState
+    onClose: () => void
 }
 
-export const MechMoveCommandInner = ({ faction, clipSlantSize, mechMoveCommand, warMachine }: MechMoveCommandInnerProps) => {
+export const MechMoveCommandInner = ({ faction, clipSlantSize, mechMoveCommand, warMachine, onClose }: MechMoveCommandInnerProps) => {
     const { hash } = warMachine
     const backgroundColor = useMemo(() => shadeColor(faction.primary_color, -70), [])
     const [remainSeconds, setRemainSeconds] = useState(mechMoveCommand.remain_cooldown_seconds)
     useEffect(() => {
-        console.log("triggered")
         setRemainSeconds(mechMoveCommand.remain_cooldown_seconds)
     }, [mechMoveCommand])
     useInterval(() => {
@@ -114,6 +115,7 @@ export const MechMoveCommandInner = ({ faction, clipSlantSize, mechMoveCommand, 
                                     isCancelled={!!mechMoveCommand.cancelled_at}
                                     hash={hash}
                                     mechMoveCommandID={mechMoveCommand.id}
+                                    onClose={onClose}
                                 />
                             </Stack>
                             <Box
@@ -140,13 +142,28 @@ interface MechCommandButton {
     remainCooldownSeconds: number
     isCancelled: boolean
     textColor?: string
+    onClose: () => void
 
     // delete afterward
     hash: string
     mechMoveCommandID: string
 }
-const MechCommandButton = ({ color, remainCooldownSeconds, isCancelled, textColor, hash, mechMoveCommandID }: MechCommandButton) => {
+
+const MechMoveCommandAbility: BlueprintPlayerAbility = {
+    id: "",
+    game_client_ability_id: 8,
+    label: "Mech Move Command",
+    colour: "#FFFFFF",
+    image_url: "",
+    description: "Force mech to move to certain spot",
+    text_colour: "",
+    location_select_type: LocationSelectType.MECH_COMMAND,
+    created_at: new Date(),
+}
+
+const MechCommandButton = ({ color, remainCooldownSeconds, isCancelled, textColor, hash, mechMoveCommandID, onClose }: MechCommandButton) => {
     const { send } = useGameServerCommandsFaction("/faction_commander")
+    const { setPlayerAbility } = useConsumables()
     const text = useMemo(() => {
         if (remainCooldownSeconds > 0 && !isCancelled) {
             return "Cancel"
@@ -169,15 +186,15 @@ const MechCommandButton = ({ color, remainCooldownSeconds, isCancelled, textColo
         return textColor || "#FFFFFF"
     }, [remainCooldownSeconds, isCancelled, textColor])
 
-    const onCreate = useCallback(
-        () =>
-            send(GameServerKeys.MechMoveCommandCreate, {
-                hash: hash,
-                x: 10,
-                y: 10,
-            }).catch((e) => console.log(e)),
-        [hash],
-    )
+    const onCreate = useCallback(() => {
+        setPlayerAbility({
+            count: 1,
+            last_purchased_at: new Date(),
+            mechHash: hash,
+            ability: { ...MechMoveCommandAbility, text_colour: colorText, colour: backgroundColor },
+        })
+        onClose()
+    }, [hash])
 
     const onCancel = useCallback(
         () =>
