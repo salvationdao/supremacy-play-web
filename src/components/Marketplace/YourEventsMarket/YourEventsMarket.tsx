@@ -14,6 +14,7 @@ import { PageHeader } from "../../Common/PageHeader"
 import { ChipFilter } from "../../Common/SortAndFilters/ChipFilterSection"
 import { SortAndFilters } from "../../Common/SortAndFilters/SortAndFilters"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
+import { YourEventItem } from "./YourEventItem"
 
 const sortOptions = [
     { label: "TIME: OLDEST FIRST", value: SortTypeLabel.CreateTimeOldestFirst },
@@ -49,8 +50,8 @@ export const YourEventsMarket = () => {
         options: [
             { value: MarketplaceEventType.Purchased, label: "PURCHASE", color: colors.buyout },
             { value: MarketplaceEventType.Bid, label: "BID", color: colors.auction },
-            { value: MarketplaceEventType.Outbid, label: "OUTBID", color: colors.red },
-            { value: MarketplaceEventType.Created, label: "CREATE", color: colors.yellow },
+            { value: MarketplaceEventType.Outbid, label: "OUTBID", color: colors.marketOutbid },
+            { value: MarketplaceEventType.Created, label: "CREATE", color: colors.marketCreate },
             { value: MarketplaceEventType.Cancelled, label: "CANCEL", color: colors.lightGrey },
             { value: MarketplaceEventType.Sold, label: "SOLD", color: colors.marketSold },
         ],
@@ -152,9 +153,9 @@ export const YourEventsMarket = () => {
                             overflow: "visible",
                         }}
                     >
-                        {/* {mechItems.map((item) => (
-                            <WarMachineMarketItem key={`marketplace-${item.id}`} item={item} isGridView={isGridView} />
-                        ))} */}
+                        {eventItems.map((eventItem) => (
+                            <YourEventItem key={`marketplace-${eventItem.id}`} eventItem={eventItem} />
+                        ))}
                     </Box>
                 </Box>
             )
