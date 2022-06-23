@@ -52,7 +52,7 @@ export const YourEventsMarket = () => {
             { value: MarketplaceEventType.Bid, label: "BID", color: colors.auction },
             { value: MarketplaceEventType.BidReturned, label: "BID RETURNED", color: colors.marketBidReturned },
             { value: MarketplaceEventType.Created, label: "CREATED LSITING", color: colors.marketCreate },
-            { value: MarketplaceEventType.Cancelled, label: "CANCEL", color: colors.lightGrey },
+            { value: MarketplaceEventType.Cancelled, label: "CANCELLED LISTING", color: colors.lightGrey },
             { value: MarketplaceEventType.Sold, label: "SOLD", color: colors.marketSold },
         ],
         initialSelected: eventType,
