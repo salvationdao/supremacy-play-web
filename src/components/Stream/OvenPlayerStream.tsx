@@ -80,7 +80,7 @@ export const OvenplayerStream = () => {
     useEffect(() => {
         if (document.getElementById("oven-player")) {
             // Uf already setup, then return
-            if (!currentStream || currentStream.service !== StreamService.OvenMediaEngine) return
+            if (!currentStream || ovenPlayer.current || currentStream.service !== StreamService.OvenMediaEngine) return
 
             // Load oven player
             const source: OvenPlayerSource = {

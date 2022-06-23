@@ -12,7 +12,8 @@ const MAX_OPTIONS = 10
 const newExperimental2: Stream = {
     host: "ws://45.77.238.234:8081/app1/fireplace",
     name: "Experimental2 🌟",
-    url: "ws://45.77.238.234:8081/app1/fireplace",
+    // url: "ws://45.77.238.234:8081/app1/fireplace",
+    url: "wss://vd1.wmspanel.com/video_demo_without_ads/stream",
     stream_id: "softvelum-experimental-2",
     region: "",
     resolution: "",
