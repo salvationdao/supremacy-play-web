@@ -1,4 +1,4 @@
-import { Box, Fade, Stack, Typography } from "@mui/material"
+import { Box, Fade, keyframes, Stack, Typography } from "@mui/material"
 import React, { useCallback, useEffect, useState } from "react"
 import { FancyButton } from "../.."
 import { SvgGlobal, SvgLine, SvgMicrochip, SvgQuestionMark, SvgSupToken, SvgTarget } from "../../../assets"
@@ -164,7 +164,14 @@ export const PlayerAbilityStoreItem = ({ saleAbility, updatedPrice }: PlayerAbil
                             }}
                             sx={{ px: "1.6rem", py: ".6rem" }}
                         >
-                            <Typography variant="body1" sx={{ fontFamily: fonts.nostromoBlack, color: theme.factionTheme.secondary }}>
+                            <Typography
+                                key={updatedPrice}
+                                variant="body1"
+                                sx={{
+                                    fontFamily: fonts.nostromoBlack,
+                                    color: theme.factionTheme.secondary,
+                                }}
+                            >
                                 BUY FOR {supFormatter(updatedPrice, 2)} SUPS
                             </Typography>
                         </FancyButton>
@@ -188,17 +195,39 @@ export const PlayerAbilityStoreItem = ({ saleAbility, updatedPrice }: PlayerAbil
                                 (
                             </Typography>
                             <SvgSupToken size="1.8rem" />
-                            <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
+                            <Typography key={updatedPrice} variant="h6" sx={{ fontWeight: "fontWeightBold", animation: `${scaleUpKeyframes} 0.1s ease-in` }}>
                                 {supFormatter(updatedPrice, 2)})
                             </Typography>
                         </Stack>
                     }
                 >
                     <Typography variant="h6">
-                        Do you wish to purchase one <strong>{saleAbility.ability.label}</strong> for <span>{supFormatter(updatedPrice, 2)}</span> SUPS?
+                        Do you wish to purchase one <strong>{saleAbility.ability.label}</strong> for{" "}
+                        <Box
+                            key={updatedPrice}
+                            component="span"
+                            sx={{
+                                animation: `${scaleUpKeyframes} 0.1s ease-in`,
+                            }}
+                        >
+                            {supFormatter(updatedPrice, 2)}
+                        </Box>{" "}
+                        SUPS?
                     </Typography>
                 </ConfirmModal>
             )}
         </>
     )
 }
+
+const scaleUpKeyframes = keyframes({
+    "0%": {
+        transform: "scale(1)",
+    },
+    "50%": {
+        transform: "scale(1.2)",
+    },
+    "100%": {
+        transform: "scale(1)",
+    },
+})
