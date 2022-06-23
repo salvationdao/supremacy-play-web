@@ -115,6 +115,7 @@ export const OvenplayerStream = () => {
             return () => {
                 newOvenPlayer.off("ready")
                 newOvenPlayer.off("error")
+                newOvenPlayer.remove()
             }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
