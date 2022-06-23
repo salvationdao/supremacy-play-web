@@ -1,5 +1,4 @@
 import { Stack } from "@mui/material"
-import OvenPlayer from "ovenplayer"
 import { useEffect, useRef, useState } from "react"
 import { STREAM_ASPECT_RATIO_W_H } from "../../constants"
 import { useDimension, useSnackbar, useStream } from "../../containers"
@@ -7,15 +6,10 @@ import { parseString } from "../../helpers"
 import { siteZIndex } from "../../theme/theme"
 import { StreamService } from "../../types"
 
-interface SLDPInterface {
-    init: (params: any) => void
-    destroy: () => void
-}
-
 declare global {
     interface Window {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        SLDP?: SLDPInterface
+        SLDP?: any
     }
 }
 
@@ -41,12 +35,13 @@ export const SLPDStream = () => {
 
     useEffect(() => {
         // Script not loaded or SLDP player not already set up
-        if (!isScriptLoaded || sldpPlayer.current || !window.SLDP || !currentStream || currentStream.service !== StreamService.Softvelum) return
+        if (!isScriptLoaded || sldpPlayer.current || vidRef.current || !window.SLDP || !currentStream || currentStream.service !== StreamService.Softvelum)
+            return
         sldpPlayer.current = window.SLDP.init({
             container: "sldp_player_wrapper",
             stream_url: currentStream.url,
             autoplay: true,
-            controls: true,
+            controls: false,
             muted: isMute,
         })
 
@@ -54,11 +49,13 @@ export const SLPDStream = () => {
         if (videoEl && videoEl.length > 0) {
             vidRef.current = videoEl[0]
             vidRef.current.volume = parseString(localStorage.getItem("streamVolume"), 0.3)
+            setCurrentPlayingStreamHost(currentStream.host)
+        } else {
+            newSnackbarMessage("Failed to initialize stream.", "error")
         }
 
         return () => sldpPlayer.current && sldpPlayer.current.destroy()
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isScriptLoaded, currentStream])
+    }, [isScriptLoaded, currentStream, newSnackbarMessage, isMute, setCurrentPlayingStreamHost])
 
     useEffect(() => {
         if (volume <= 0) return
@@ -69,37 +66,36 @@ export const SLPDStream = () => {
         if (vidRef && vidRef.current) vidRef.current.muted = isMute
     }, [isMute])
 
-    return <div id="sldp_player_wrapper"></div>
-
-    // return (
-    // 	<Stack
-    // 		key={currentStream?.stream_id}
-    // 		sx={{
-    // 			width: "100%",
-    // 			height: "100%",
-    // 			zIndex: siteZIndex.Stream,
-    // 			div: {
-    // 				height: "100% !important",
-    // 			},
-    // 			video: {
-    // 				position: "absolute !important",
-    // 				top: "50% !important",
-    // 				left: "50% !important",
-    // 				transform: "translate(-50%, -50%) !important",
-    // 				aspectRatio: `${STREAM_ASPECT_RATIO_W_H.toString()} !important`,
-    // 				width: `${iframeDimensions.width}${iframeDimensions.width == "unset" ? "" : "px "} !important`,
-    // 				height: `${iframeDimensions.height}${iframeDimensions.height == "unset" ? "" : "px "} !important`,
-    // 				zIndex: siteZIndex.Stream,
-    // 			},
-    // 			".op-ui": {
-    // 				display: "none !important",
-    // 			},
-    // 			".op-ratio": {
-    // 				pb: "0 !important",
-    // 			},
-    // 		}}
-    // 	>
-    // 		<div id="oven-player" />
-    // 	</Stack>
-    // )
+    return (
+        <Stack
+            key={currentStream?.stream_id}
+            sx={{
+                width: "100%",
+                height: "100%",
+                zIndex: siteZIndex.Stream,
+                div: {
+                    display: "block",
+                    height: "100% !important",
+                },
+                video: {
+                    position: "absolute !important",
+                    top: "50% !important",
+                    left: "50% !important",
+                    transform: "translate(-50%, -50%) !important",
+                    aspectRatio: `${STREAM_ASPECT_RATIO_W_H.toString()} !important`,
+                    width: `${iframeDimensions.width}${iframeDimensions.width == "unset" ? "" : "px "} !important`,
+                    height: `${iframeDimensions.height}${iframeDimensions.height == "unset" ? "" : "px "} !important`,
+                    zIndex: siteZIndex.Stream,
+                },
+                ".op-ui": {
+                    display: "none !important",
+                },
+                ".op-ratio": {
+                    pb: "0 !important",
+                },
+            }}
+        >
+            <div id="sldp_player_wrapper"></div>
+        </Stack>
+    )
 }
