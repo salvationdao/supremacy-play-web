@@ -75,7 +75,7 @@ export const YourEventsMarket = () => {
                 page: page - 1,
                 page_size: pageSize,
                 search,
-                eventType,
+                event_type: eventType,
                 sort_dir: sortDir,
                 sort_by: sortBy,
             })
