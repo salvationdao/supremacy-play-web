@@ -111,7 +111,7 @@ export const YourEventItem = ({ eventItem }: { eventItem: MarketplaceEvent }) =>
                         p: ".1rem .3rem",
                         display: "grid",
                         gridTemplateRows: "7rem",
-                        gridTemplateColumns: `8rem minmax(auto, 38rem) repeat(3, 1fr)`, // hard-coded to have 6 columns, adjust as required
+                        gridTemplateColumns: `8rem minmax(auto, 38rem) repeat(3, 1fr)`, // hard-coded to have 5 columns, adjust as required
                         gap: "1.4rem",
                     }}
                 >
