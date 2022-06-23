@@ -25,7 +25,7 @@ export const YourEventItem = ({ eventItem }: { eventItem: MarketplaceEvent }) =>
         let description = ""
         let primaryColor = colors.marketSold
         let statusText = ""
-        const formattedAmount = eventItem.amount ? numFormatter(new BigNumber(eventItem.amount).shiftedBy(-18).toNumber()) : "-"
+        const formattedAmount = eventItem.amount ? numFormatter(new BigNumber(eventItem.amount).shiftedBy(-18).toNumber()) : ""
 
         if (item.mech && item.collection_item) {
             const rarityDeets = getRarityDeets(item.collection_item.tier)
@@ -156,9 +156,11 @@ export const YourEventItem = ({ eventItem }: { eventItem: MarketplaceEvent }) =>
 
                     <General title="AMOUNT">
                         <Stack direction="row" alignItems="center" flexWrap="wrap">
-                            <SvgSupToken size="1.7rem" fill={itemRelatedData.primaryColor} />
-                            <Typography sx={{ color: itemRelatedData.primaryColor, fontWeight: "fontWeightBold" }}>
-                                {itemRelatedData.formattedAmount}
+                            {itemRelatedData.formattedAmount && <SvgSupToken size="1.7rem" fill={itemRelatedData.primaryColor} />}
+                            <Typography
+                                sx={{ color: itemRelatedData.formattedAmount ? itemRelatedData.primaryColor : colors.lightGrey, fontWeight: "fontWeightBold" }}
+                            >
+                                {itemRelatedData.formattedAmount || "---"}
                             </Typography>
                         </Stack>
                     </General>
