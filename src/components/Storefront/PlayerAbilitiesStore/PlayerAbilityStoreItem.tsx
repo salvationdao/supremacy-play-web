@@ -1,4 +1,4 @@
-import { Box, Stack, Typography } from "@mui/material"
+import { Box, Fade, Stack, Typography } from "@mui/material"
 import React, { useCallback, useEffect, useState } from "react"
 import { FancyButton } from "../.."
 import { SvgGlobal, SvgLine, SvgMicrochip, SvgQuestionMark, SvgSupToken, SvgTarget } from "../../../assets"
@@ -92,82 +92,84 @@ export const PlayerAbilityStoreItem = ({ saleAbility, updatedPrice }: PlayerAbil
                     },
                 }}
             >
-                <Stack
-                    sx={{
-                        height: "100%",
-                        p: "1.5rem",
-                    }}
-                >
-                    <Stack direction="row" spacing="1.5rem" mb="1rem">
-                        <ClipThing
-                            corners={{
-                                topLeft: true,
-                            }}
-                            sx={{
-                                position: "relative",
-                                width: "100px",
-                                height: "100px",
-                            }}
-                        >
-                            <Box
-                                component="img"
-                                src={saleAbility.ability.image_url}
-                                alt={`Thumbnail image for ${saleAbility.ability.label}`}
-                                sx={{
-                                    position: "absolute",
-                                    top: 0,
-                                    left: 0,
-                                    right: 0,
-                                    bottom: 0,
+                <Fade in={true} timeout={1000}>
+                    <Stack
+                        sx={{
+                            height: "100%",
+                            p: "1.5rem",
+                        }}
+                    >
+                        <Stack direction="row" spacing="1.5rem" mb="1rem">
+                            <ClipThing
+                                corners={{
+                                    topLeft: true,
                                 }}
-                            />
-                            <Box
                                 sx={{
-                                    position: "absolute",
-                                    right: 0,
-                                    bottom: 0,
-                                    display: "flex",
-                                    height: "3rem",
-                                    width: "3rem",
-                                    justifyContent: "center",
-                                    alignItems: "center",
-                                    backgroundColor: "rgba(0, 0, 0, 0.6)",
+                                    position: "relative",
+                                    width: "100px",
+                                    height: "100px",
                                 }}
                             >
-                                {abilityTypeIcon}
-                            </Box>
-                        </ClipThing>
-                        <Stack
-                            sx={{
-                                flex: 1,
-                                px: ".4rem",
-                                py: ".3rem",
-                            }}
-                        >
-                            <Typography gutterBottom variant="h4" sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack }}>
-                                {saleAbility.ability.label}
-                            </Typography>
-                            <Typography sx={{ fontSize: "2.1rem" }}>{saleAbility.ability.description}</Typography>
+                                <Box
+                                    component="img"
+                                    src={saleAbility.ability.image_url}
+                                    alt={`Thumbnail image for ${saleAbility.ability.label}`}
+                                    sx={{
+                                        position: "absolute",
+                                        top: 0,
+                                        left: 0,
+                                        right: 0,
+                                        bottom: 0,
+                                    }}
+                                />
+                                <Box
+                                    sx={{
+                                        position: "absolute",
+                                        right: 0,
+                                        bottom: 0,
+                                        display: "flex",
+                                        height: "3rem",
+                                        width: "3rem",
+                                        justifyContent: "center",
+                                        alignItems: "center",
+                                        backgroundColor: "rgba(0, 0, 0, 0.6)",
+                                    }}
+                                >
+                                    {abilityTypeIcon}
+                                </Box>
+                            </ClipThing>
+                            <Stack
+                                sx={{
+                                    flex: 1,
+                                    px: ".4rem",
+                                    py: ".3rem",
+                                }}
+                            >
+                                <Typography gutterBottom variant="h4" sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack }}>
+                                    {saleAbility.ability.label}
+                                </Typography>
+                                <Typography sx={{ fontSize: "2.1rem" }}>{saleAbility.ability.description}</Typography>
+                            </Stack>
                         </Stack>
+                        <FancyButton
+                            onClick={() => toggleShowPurchaseModal(true)}
+                            clipThingsProps={{
+                                clipSize: "5px",
+                                backgroundColor: primaryColor,
+                                opacity: 1,
+                                border: { isFancy: true, borderColor: primaryColor, borderThickness: "1.5px" },
+                                sx: {
+                                    marginTop: "auto",
+                                },
+                            }}
+                            sx={{ px: "1.6rem", py: ".6rem" }}
+                        >
+                            <Typography variant="body1" sx={{ fontFamily: fonts.nostromoBlack, color: theme.factionTheme.secondary }}>
+                                BUY FOR {supFormatter(updatedPrice, 2)} SUPS
+                            </Typography>
+                        </FancyButton>
                     </Stack>
-                    <FancyButton
-                        onClick={() => toggleShowPurchaseModal(true)}
-                        clipThingsProps={{
-                            clipSize: "5px",
-                            backgroundColor: primaryColor,
-                            opacity: 1,
-                            border: { isFancy: true, borderColor: primaryColor, borderThickness: "1.5px" },
-                            sx: {
-                                marginTop: "auto",
-                            },
-                        }}
-                        sx={{ px: "1.6rem", py: ".6rem" }}
-                    >
-                        <Typography variant="body1" sx={{ fontFamily: fonts.nostromoBlack, color: theme.factionTheme.secondary }}>
-                            BUY FOR {supFormatter(updatedPrice, 2)} SUPS
-                        </Typography>
-                    </FancyButton>
-                </Stack>
+                </Fade>
             </ClipThing>
 
             {showPurchaseModal && (

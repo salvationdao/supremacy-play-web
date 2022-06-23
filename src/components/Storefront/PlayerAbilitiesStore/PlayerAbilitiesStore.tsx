@@ -4,25 +4,31 @@ import { ClipThing, FancyButton } from "../.."
 import { useTheme } from "../../../containers/theme"
 import { useGameServerSubscriptionSecurePublic } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
-import { colors } from "../../../theme/theme"
+import { colors, fonts } from "../../../theme/theme"
 import { SaleAbility } from "../../../types"
 import { PageHeader } from "../../Common/PageHeader"
+import { Countdown } from "../../Hangar/MysteryCratesHangar/MysteryCrateHangarItem"
 import { PlayerAbilityStoreItem } from "./PlayerAbilityStoreItem"
 
 export const PlayerAbilitiesStore = () => {
     const theme = useTheme()
 
+    const [nextRefreshTime, setNextRefreshTime] = useState<Date>()
     const [saleAbilities, setSaleAbilities] = useState<SaleAbility[]>([])
     const [priceMap, setPriceMap] = useState<Map<string, string>>(new Map())
 
-    useGameServerSubscriptionSecurePublic<SaleAbility[]>(
+    useGameServerSubscriptionSecurePublic<{
+        next_refresh_time?: Date
+        sale_abilities: SaleAbility[]
+    }>(
         {
             URI: "sale_abilities",
             key: GameServerKeys.SaleAbilitiesList,
         },
         (payload) => {
             if (!payload) return
-            setSaleAbilities(payload)
+            setNextRefreshTime(payload.next_refresh_time)
+            setSaleAbilities(payload.sale_abilities)
         },
     )
 
@@ -106,10 +112,13 @@ export const PlayerAbilitiesStore = () => {
                             </Typography>
                         </FancyButton>
                     </PageHeader>
+                    <Stack direction="row" spacing="1rem" alignItems="center" justifyContent="end" py="2rem" px="4rem">
+                        <Typography variant="body1">Next refresh in:</Typography>
+                        {nextRefreshTime ? <Countdown dateTo={nextRefreshTime} /> : <Typography>Less than an hour</Typography>}
+                    </Stack>
                     <Stack
                         sx={{
                             px: "2rem",
-                            py: "1rem",
                             flex: 1,
                         }}
                     >
@@ -137,25 +146,49 @@ export const PlayerAbilitiesStore = () => {
                                 },
                             }}
                         >
-                            <Box sx={{ direction: "ltr", height: 0 }}>
+                            {saleAbilities.length > 0 ? (
+                                <Box sx={{ direction: "ltr", height: 0 }}>
+                                    <Box
+                                        sx={{
+                                            width: "100%",
+                                            display: "grid",
+                                            gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+                                            gridTemplateRows: "repeat(1, min-content)",
+                                            gap: "5rem",
+                                            alignItems: "stretch",
+                                            justifyContent: "center",
+                                            overflow: "visible",
+                                        }}
+                                    >
+                                        {saleAbilities.map((s) => (
+                                            <PlayerAbilityStoreItem key={s.id} saleAbility={s} updatedPrice={priceMap.get(s.id) || s.current_price} />
+                                        ))}
+                                    </Box>
+                                </Box>
+                            ) : (
                                 <Box
                                     sx={{
-                                        width: "100%",
-                                        pt: "2.5%",
-                                        display: "grid",
-                                        gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
-                                        gridTemplateRows: "repeat(1, min-content)",
-                                        gap: "5rem",
-                                        alignItems: "stretch",
+                                        display: "flex",
+                                        height: "100%",
+                                        alignItems: "center",
                                         justifyContent: "center",
-                                        overflow: "visible",
                                     }}
                                 >
-                                    {saleAbilities.map((s) => (
-                                        <PlayerAbilityStoreItem key={s.id} saleAbility={s} updatedPrice={priceMap.get(s.id) || s.current_price} />
-                                    ))}
+                                    <Typography
+                                        sx={{
+                                            px: "1.28rem",
+                                            pt: "1.28rem",
+                                            color: colors.grey,
+                                            fontFamily: fonts.nostromoBold,
+                                            userSelect: "text !important",
+                                            opacity: 0.9,
+                                            textAlign: "center",
+                                        }}
+                                    >
+                                        There are no abilities on sale at this time, come back later.
+                                    </Typography>
                                 </Box>
-                            </Box>
+                            )}
                         </Box>
                     </Stack>
                 </Stack>
