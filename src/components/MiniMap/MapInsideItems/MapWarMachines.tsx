@@ -199,6 +199,17 @@ const MapWarMachine = ({
         [mapScale, gridHeight, gridWidth, map, sizeX, sizeY],
     )
 
+    const angle = useCallback(
+        (mechX: number, mechY: number, commandX: number, commandY: number): number => {
+            const mechMapX = (mechX - map.left_pixels) * mapScale
+            const mechMapY = (mechY - map.top_pixels) * mapScale
+            const commandMapX = commandX * gridWidth - sizeX / 2
+            const commandMapY = commandY * gridHeight - sizeY / 2
+            return (Math.atan2(commandMapY - mechMapY, commandMapX - mechMapX) * 180) / Math.PI
+        },
+        [mapScale, gridHeight, gridWidth, map, sizeX, sizeY],
+    )
+
     if (!position) return null
 
     return (
@@ -332,7 +343,7 @@ const MapWarMachine = ({
                             position: "absolute",
                             left: "50%",
                             top: "50%",
-                            transform: `translate(-50%, -50%) rotate(${rotation + 90}deg)`,
+                            transform: `translate(-50%, -50%) rotate(${angle(position.x, position.y, mechMoveCommandX, mechMoveCommandY) + 90}deg)`,
                             transition: "all .275s",
                             zIndex: 3,
                         }}
@@ -341,6 +352,7 @@ const MapWarMachine = ({
                             style={{
                                 position: "relative",
                                 height: distance(position.x, position.y, mechMoveCommandX, mechMoveCommandY),
+                                borderLeft: "red 2px dashed",
                                 transition: "all .275s",
                             }}
                         >
@@ -348,7 +360,6 @@ const MapWarMachine = ({
                                 style={{
                                     width: "10px",
                                     height: "10px",
-                                    backgroundColor: "red",
                                     position: "absolute",
                                     top: -6,
                                     left: "50%",

@@ -388,7 +388,7 @@ export const MiniMapInside = ({
                         targeting={isTargeting}
                     />
 
-                    <MechCommandLocations gridWidth={gridWidth} gridHeight={gridHeight} />
+                    <MechCommandLocations gridWidth={gridWidth} gridHeight={gridHeight} getFaction={getFaction} />
 
                     <MapWarMachines
                         gridWidth={gridWidth}
