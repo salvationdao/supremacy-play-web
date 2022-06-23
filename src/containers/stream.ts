@@ -9,6 +9,23 @@ import { Stream, StreamService } from "../types"
 
 const MAX_OPTIONS = 10
 
+const newExperimental2: Stream = {
+    host: "ws://45.77.238.234:8081/app1/fireplace",
+    name: "Experimental2 🌟",
+    url: "ws://45.77.238.234:8081/app1/fireplace",
+    stream_id: "softvelum-experimental-2",
+    region: "",
+    resolution: "",
+    bit_rates_k_bits: 0,
+    user_max: 2,
+    users_now: 1,
+    active: true,
+    status: "online",
+    latitude: "0",
+    longitude: "0",
+    service: StreamService.Softvelum,
+}
+
 const blankOption: Stream = {
     host: "No Stream",
     name: "No Stream",
@@ -17,7 +34,7 @@ const blankOption: Stream = {
     region: "",
     resolution: "",
     bit_rates_k_bits: 0,
-    user_max: 999999,
+    user_max: 9999999,
     users_now: 0,
     active: true,
     status: "online",
@@ -52,7 +69,8 @@ export const StreamContainer = createContainer(() => {
             try {
                 const resp = await queryGetStreamList({})
                 if (resp.error || !resp.payload) return
-                setLoadedStreams([blankOption, ...resp.payload])
+                // setLoadedStreams([blankOption, ...resp.payload])
+                setLoadedStreams([blankOption, ...resp.payload, newExperimental2]) // TODO Remove hard-coded experimental2
             } catch (err) {
                 const message = typeof err === "string" ? err : "Failed to get the list of streams."
                 newSnackbarMessage(message, "error")
@@ -99,6 +117,7 @@ export const StreamContainer = createContainer(() => {
     const changeStream = useCallback((s: Stream) => {
         if (!s) return
         setCurrentStream(s)
+        setResolutions([])
         localStorage.setItem("new_stream_props", JSON.stringify(s))
     }, [])
 

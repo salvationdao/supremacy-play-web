@@ -28,6 +28,7 @@ export interface Map {
 export enum StreamService {
     OvenMediaEngine = "OvenMediaEngine",
     AntMedia = "AntMedia",
+    Softvelum = "Softvelum",
     None = "None",
 }
 

@@ -1,8 +1,12 @@
 import { MenuItem, Select, Stack, Typography } from "@mui/material"
-import { OVENPLAYER_STREAM } from "../../constants"
 import { useStream } from "../../containers"
 import { useTheme } from "../../containers/theme"
 import { colors } from "../../theme/theme"
+import { StreamService } from "../../types"
+
+const isExperimental = (service: StreamService) => {
+    return service === StreamService.OvenMediaEngine || service === StreamService.Softvelum
+}
 
 export const StreamSelect = () => {
     const theme = useTheme()
@@ -21,9 +25,6 @@ export const StreamSelect = () => {
                 sx={{
                     width: "15rem",
                     borderRadius: 0.5,
-                    "&:hover": {
-                        backgroundColor: colors.darkNavy,
-                    },
                     ".MuiTypography-root": {
                         px: ".8rem",
                         pt: ".48rem",
@@ -58,17 +59,12 @@ export const StreamSelect = () => {
                             onClick={() => {
                                 changeStream(x)
                             }}
-                            sx={{
-                                color: x.name === OVENPLAYER_STREAM ? "#E4E455" : "",
-                                "&:hover": {
-                                    backgroundColor: colors.darkNavyBlue,
-                                },
-                            }}
+                            sx={{ "&:hover": { backgroundColor: `#FFFFFF30` } }}
                         >
                             <Typography
                                 sx={{
-                                    color: x.name === OVENPLAYER_STREAM ? "#E4E455" : "",
-                                    fontWeight: x.name === OVENPLAYER_STREAM ? "bold" : "",
+                                    color: isExperimental(x.service) ? "#E4E455" : "unset",
+                                    fontWeight: isExperimental(x.service) ? "bold" : "unset",
                                 }}
                                 variant="body2"
                             >
