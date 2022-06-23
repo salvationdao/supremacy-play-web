@@ -103,7 +103,7 @@ export const YourEventItem = ({ eventItem }: { eventItem: MarketplaceEvent }) =>
                     sx: { position: "relative" },
                 }}
                 sx={{ color: itemRelatedData.primaryColor, textAlign: "start" }}
-                to={`/marketplace/${itemRelatedData.linkSubPath}/${eventItem.id}${location.hash}`}
+                to={`/marketplace/${itemRelatedData.linkSubPath}/${eventItem.item.id}${location.hash}`}
             >
                 <Box
                     sx={{
@@ -111,7 +111,7 @@ export const YourEventItem = ({ eventItem }: { eventItem: MarketplaceEvent }) =>
                         p: ".1rem .3rem",
                         display: "grid",
                         gridTemplateRows: "7rem",
-                        gridTemplateColumns: `8rem minmax(auto, 38rem) repeat(3, 1fr)`, // hard-coded to have 5 columns, adjust as required
+                        gridTemplateColumns: `8rem minmax(auto, 38rem) repeat(2, 1fr) 1.3fr`, // hard-coded to have 5 columns, adjust as required
                         gap: "1.4rem",
                     }}
                 >
