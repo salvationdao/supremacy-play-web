@@ -102,4 +102,5 @@ export interface MarketplaceEvent {
     event_type: MarketplaceEventType
     created_at: Date
     item: MarketplaceBuyAuctionItem
+    amount?: string
 }

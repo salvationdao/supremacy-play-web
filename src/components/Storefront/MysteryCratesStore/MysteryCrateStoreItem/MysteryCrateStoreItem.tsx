@@ -94,7 +94,7 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate }: MysteryCrateStore
                         <Box sx={{ position: "relative" }}>
                             <Box
                                 sx={{
-                                    height: enlargedView ? "37rem" : "25rem",
+                                    height: enlargedView ? "39rem" : "25rem",
                                 }}
                             >
                                 <MediaPreview

@@ -1,18 +1,15 @@
 import { Box, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
-import { useMemo, ReactNode, useState, useEffect } from "react"
+import { ReactNode, useEffect, useMemo, useState } from "react"
 import { FancyButton } from "../.."
+import { SvgSupToken } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
-import { getRarityDeets, numFormatter, shadeColor, timeDiff } from "../../../helpers"
+import { getRarityDeets, numFormatter } from "../../../helpers"
 import { MARKETPLACE_TABS } from "../../../pages"
 import { colors, fonts } from "../../../theme/theme"
 import { MarketplaceEvent, MarketplaceEventType } from "../../../types/marketplace"
-import { AuctionPrice } from "../Common/MarketItem/AuctionPrice"
-import { BuyoutPrice } from "../Common/MarketItem/BuyoutPrice"
-import { UserInfo } from "../Common/MarketItem/UserInfo"
+import { General } from "../Common/MarketItem/General"
 import { Thumbnail } from "../Common/MarketItem/Thumbnail"
-import { Timeframe } from "../Common/MarketItem/Timeframe"
-import { SoldPrice } from "../Common/MarketItem/SoldPrice"
 
 export const YourEventItem = ({ eventItem }: { eventItem: MarketplaceEvent }) => {
     const theme = useTheme()
@@ -65,33 +62,88 @@ export const YourEventItem = ({ eventItem }: { eventItem: MarketplaceEvent }) =>
     }, [eventItem.item])
 
     useEffect(() => {
-        // numFormatter( new BigNumber(item.auction_current_price).shiftedBy(-18).toNumber())
+        const formattedAmount = eventItem.amount ? numFormatter(new BigNumber(eventItem.amount).shiftedBy(-18).toNumber()) : "-"
 
-        switch (eventItem.event_type) {
-            case MarketplaceEventType.Purchased:
-                setPrimaryColor(colors.buyout)
-                setContent(<></>)
-                break
-            case MarketplaceEventType.Bid:
-                setPrimaryColor(colors.auction)
-                setContent(null)
-                break
-            case MarketplaceEventType.Outbid:
-                setPrimaryColor(colors.marketOutbid)
-                setContent(null)
-                break
-            case MarketplaceEventType.Created:
-                setPrimaryColor(colors.marketCreate)
-                setContent(null)
-                break
-            case MarketplaceEventType.Sold:
-                setPrimaryColor(colors.marketSold)
-                setContent(null)
-                break
-            case MarketplaceEventType.Cancelled:
-                setPrimaryColor(colors.lightGrey)
-                setContent(null)
-                break
+        if (eventItem.event_type === MarketplaceEventType.Purchased) {
+            const color = colors.buyout
+            setPrimaryColor(color)
+            setContent(
+                <>
+                    <General title="STATUS" text="PURCHASED" textColor={color} />
+                    <div />
+                    <General title="DATE" text={eventItem.created_at.toUTCString()} />
+                </>,
+            )
+        } else if (eventItem.event_type === MarketplaceEventType.Bid) {
+            const color = colors.auction
+            setPrimaryColor(color)
+            setContent(
+                <>
+                    <General title="STATUS" text="BID" textColor={color} />
+                    <General title="AMOUNT">
+                        <Stack direction="row" alignItems="center" flexWrap="wrap">
+                            <SvgSupToken size="1.7rem" fill={color} />
+                            <Typography sx={{ color, fontWeight: "fontWeightBold" }}>{formattedAmount}</Typography>
+                        </Stack>{" "}
+                    </General>
+                    <General title="DATE" text={eventItem.created_at.toUTCString()} />
+                </>,
+            )
+        } else if (eventItem.event_type === MarketplaceEventType.Outbid) {
+            const color = colors.marketOutbid
+            setPrimaryColor(color)
+            setContent(
+                <>
+                    <General title="STATUS" text="OUTBID" textColor={color} />
+                    <General title="AMOUNT">
+                        <Stack direction="row" alignItems="center" flexWrap="wrap">
+                            <SvgSupToken size="1.7rem" fill={color} />
+                            <Typography sx={{ color, fontWeight: "fontWeightBold" }}>{formattedAmount}</Typography>
+                        </Stack>{" "}
+                    </General>
+                    <General title="DATE" text={eventItem.created_at.toUTCString()} />
+                </>,
+            )
+        } else if (eventItem.event_type === MarketplaceEventType.Created) {
+            const color = colors.marketCreate
+            setPrimaryColor(color)
+            setContent(
+                <>
+                    <General title="STATUS" text="CREATED LISTING" textColor={color} />
+                    <General title="AMOUNT">
+                        <Stack direction="row" alignItems="center" flexWrap="wrap">
+                            <SvgSupToken size="1.7rem" fill={color} />
+                            <Typography sx={{ color, fontWeight: "fontWeightBold" }}>{formattedAmount}</Typography>
+                        </Stack>{" "}
+                    </General>
+                    <General title="DATE" text={eventItem.created_at.toUTCString()} />
+                </>,
+            )
+        } else if (eventItem.event_type === MarketplaceEventType.Sold) {
+            const color = colors.marketSold
+            setPrimaryColor(color)
+            setContent(
+                <>
+                    <General title="STATUS" text="SOLD" textColor={color} />
+                    <General title="AMOUNT">
+                        <Stack direction="row" alignItems="center" flexWrap="wrap">
+                            <SvgSupToken size="1.7rem" fill={color} />
+                            <Typography sx={{ color, fontWeight: "fontWeightBold" }}>{formattedAmount}</Typography>
+                        </Stack>{" "}
+                    </General>
+                    <General title="DATE" text={eventItem.created_at.toUTCString()} />
+                </>,
+            )
+        } else if (eventItem.event_type === MarketplaceEventType.Cancelled) {
+            const color = colors.lightGrey
+            setPrimaryColor(color)
+            setContent(
+                <>
+                    <General title="STATUS" text="CANCELLED LISTING" textColor={color} />
+                    <div />
+                    <General title="DATE" text={eventItem.created_at.toUTCString()} />
+                </>,
+            )
         }
     }, [eventItem])
 
@@ -121,7 +173,7 @@ export const YourEventItem = ({ eventItem }: { eventItem: MarketplaceEvent }) =>
                         p: ".1rem .3rem",
                         display: "grid",
                         gridTemplateRows: "7rem",
-                        gridTemplateColumns: `8rem minmax(auto, 38rem) 1.2fr repeat(3, 1fr)`, // hard-coded to have 6 columns, adjust as required
+                        gridTemplateColumns: `8rem minmax(auto, 38rem) repeat(3, 1fr)`, // hard-coded to have 6 columns, adjust as required
                         gap: "1.4rem",
                     }}
                 >

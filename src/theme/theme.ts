@@ -60,8 +60,8 @@ export const colors = {
     darkestNeonBlue: "#050c12",
 
     globalChat: "#35A679",
-    assetsBanner: "#4E1A61",
 
+    // Transactions
     supsCredit: "#01FF70",
     supsDebit: "#FF4136",
 
@@ -70,9 +70,10 @@ export const colors = {
     auction: "#E04F00",
     dutchAuction: "#D98D00",
     marketSold: "#2BA172",
-    marketCreate: "#FFC800",
+    marketCreate: "#EDC945",
     marketOutbid: "#D93434",
 
+    // Mech loadout
     chassisSkin: "#EBD110",
     introAnimation: "#C017EB",
     outroAnimation: "#C017EB",
