@@ -16,12 +16,12 @@ export const YourEventItem = ({ eventItem }: { eventItem: MarketplaceEvent }) =>
 
     const itemRelatedData = useMemo(() => {
         const item = eventItem.item
-        let linkSubPath = ""
+        let linkSubPath = MARKETPLACE_TABS.WarMachines
         let imageUrl = ""
         let animationUrl = ""
         let cardAnimationUrl = ""
         let label = ""
-        let labelColor = ""
+        let labelColor = "#FFFFFF"
         let description = ""
         let primaryColor = colors.marketSold
         let statusText = ""
