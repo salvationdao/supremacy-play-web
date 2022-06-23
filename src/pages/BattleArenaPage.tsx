@@ -1,4 +1,5 @@
 import { Box, Stack } from "@mui/material"
+import { useState } from "react"
 import {
     BattleEndScreen,
     BattleHistory,
@@ -12,13 +13,14 @@ import {
     VotingSystem,
     WarMachineStats,
 } from "../components"
-import { GameProvider, StreamProvider, useAuth, DimensionProvider, OverlayTogglesProvider, useSupremacy } from "../containers"
-import { siteZIndex } from "../theme/theme"
 import { TutorialModal } from "../components/HowToPlay/Tutorial/TutorialModal"
-import { useToggle } from "../hooks"
-import { useState } from "react"
-import { Trailer } from "../components/Stream/Trailer"
 import { QuickDeploy } from "../components/QuickDeploy/QuickDeploy"
+import { Trailer } from "../components/Stream/Trailer"
+import { DimensionProvider, GameProvider, OverlayTogglesProvider, StreamProvider, useAuth, useSupremacy } from "../containers"
+import { UserConsumablesProvider } from "../containers/consumables"
+import { MiniMapProvider } from "../containers/minimap"
+import { useToggle } from "../hooks"
+import { siteZIndex } from "../theme/theme"
 
 export const BattleArenaPage = () => {
     const [understand, toggleUnderstand] = useToggle()
@@ -28,11 +30,15 @@ export const BattleArenaPage = () => {
     return (
         <StreamProvider>
             <GameProvider>
-                <DimensionProvider>
-                    <OverlayTogglesProvider>
-                        <BattleArenaPageInner />
-                    </OverlayTogglesProvider>
-                </DimensionProvider>
+                <UserConsumablesProvider>
+                    <DimensionProvider>
+                        <OverlayTogglesProvider>
+                            <MiniMapProvider>
+                                <BattleArenaPageInner />
+                            </MiniMapProvider>
+                        </OverlayTogglesProvider>
+                    </DimensionProvider>
+                </UserConsumablesProvider>
             </GameProvider>
         </StreamProvider>
     )

@@ -2,20 +2,29 @@ import { Box, Fade, Stack, Tab } from "@mui/material"
 import { TabProps } from "@mui/material/Tab"
 import { useMemo } from "react"
 import { BattleAbilityItem, FactionAbilities, MoveableResizable } from ".."
+import { DEV_ONLY } from "../../constants"
 import { BribeStageResponse, useAuth, useGame } from "../../containers"
 import { useTheme } from "../../containers/theme"
 import { colors } from "../../theme/theme"
 import { MoveableResizableConfig } from "../Common/MoveableResizable/MoveableResizableContainer"
+import { PlayerAbilities } from "../PlayerAbilities/PlayerAbilities"
 
 export const VotingSystem = () => {
+    const { userID } = useAuth()
     const { bribeStage } = useGame()
-    return <VotingSystemInner bribeStage={bribeStage} />
+    return <VotingSystemInner userID={userID} bribeStage={bribeStage} />
 }
 
-const VotingSystemInner = ({ bribeStage }: { bribeStage?: BribeStageResponse }) => {
+interface VotingSystemInnerProps {
+    // useAuth
+    userID?: string
+    // useGame
+    bribeStage?: BribeStageResponse
+}
+
+const VotingSystemInner = ({ userID, bribeStage }: VotingSystemInnerProps) => {
     const theme = useTheme()
     const { factionID } = useAuth()
-    // const [currentTab, setCurrentTab] = useState(0)
     const isBattleStarted = useMemo(() => bribeStage && bribeStage.phase !== "HOLD", [bribeStage])
 
     const config: MoveableResizableConfig = useMemo(
@@ -44,25 +53,6 @@ const VotingSystemInner = ({ bribeStage }: { bribeStage?: BribeStageResponse }) 
             <Box>
                 <MoveableResizable config={config}>
                     <Stack sx={{ position: "relative", height: "100%" }}>
-                        {/* {DEV_ONLY && (
-                            <Tabs
-                                defaultValue={0}
-                                value={currentTab}
-                                onChange={(_, value) => setCurrentTab(value)}
-                                TabIndicatorProps={{
-                                    hidden: true,
-                                }}
-                                sx={{
-                                    zIndex: 1,
-                                    position: "relative",
-                                    minHeight: 0,
-                                }}
-                            >
-                                <TabButton label="Game Abilities" backgroundColor={theme.factionTheme.background} borderColor={theme.factionTheme.primary} />
-                                <TabButton label="Player Abilities" backgroundColor={theme.factionTheme.background} borderColor={theme.factionTheme.primary} />
-                            </Tabs>
-                        )} */}
-                        {/* <TabPanel value={currentTab} index={0}> */}
                         <Box
                             sx={{
                                 height: "100%",
@@ -89,14 +79,9 @@ const VotingSystemInner = ({ bribeStage }: { bribeStage?: BribeStageResponse }) 
                             <Stack spacing="2rem" sx={{ direction: "ltr", py: ".4rem" }}>
                                 <BattleAbilityItem key={factionID} />
                                 <FactionAbilities />
+                                {DEV_ONLY && userID && <PlayerAbilities />}
                             </Stack>
                         </Box>
-                        {/* </TabPanel>
-                            {DEV_ONLY && (
-                                <TabPanel value={currentTab} index={1}>
-                                    <PlayerAbilities />
-                                </TabPanel>
-                            )} */}
                     </Stack>
                 </MoveableResizable>
             </Box>

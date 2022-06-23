@@ -1,24 +1,40 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
-import { useEffect, useMemo, useRef, useState } from "react"
-import { MiniMapInside, MoveableResizable, TargetTimerCountdown } from ".."
+import { useEffect, useMemo, useRef } from "react"
+import { MapSelection, MiniMapInside, MoveableResizable, TargetTimerCountdown } from ".."
 import { MINI_MAP_DEFAULT_SIZE } from "../../constants"
-import { BribeStageResponse, useDimension, useGame, useOverlayToggles, useSnackbar, WinnerAnnouncementResponse } from "../../containers"
+import { Severity, useAuth, useDimension, useGame, useOverlayToggles, useSnackbar, useSupremacy, WinnerAnnouncementResponse } from "../../containers"
+import { useConsumables } from "../../containers/consumables"
+import { useMiniMap } from "../../containers/minimap"
 import { useTheme } from "../../containers/theme"
 import { useToggle } from "../../hooks"
 import { fonts } from "../../theme/theme"
-import { Map } from "../../types"
+import { Faction, Map, PlayerAbility, WarMachineState } from "../../types"
 import { MoveableResizableConfig, useMoveableResizable } from "../Common/MoveableResizable/MoveableResizableContainer"
+import { TargetHint } from "./MapOutsideItems/TargetHint"
 
 export const MiniMap = () => {
-    const { map, winner, setWinner, bribeStage } = useGame()
+    const theme = useTheme()
+    const { userID, factionID } = useAuth()
+    const { getFaction } = useSupremacy()
+    const { newSnackbarMessage } = useSnackbar()
+    const { map, bribeStage, warMachines } = useGame()
+    const { winner, setWinner, enlarged, setEnlarged, isTargeting, selection, setSelection, resetSelection, highlightedMechHash, setHighlightedMechHash } =
+        useMiniMap()
+    const { playerAbility, setPlayerAbility } = useConsumables()
     const { isMapOpen, toggleIsMapOpen } = useOverlayToggles()
     const [isRender, toggleIsRender] = useToggle(isMapOpen)
 
     // Temp hotfix ask james ****************************
     const [show, toggleShow] = useToggle(false)
     useEffect(() => {
-        toggleShow(bribeStage !== undefined && bribeStage.phase !== "HOLD")
-    }, [bribeStage, toggleShow])
+        if (bribeStage && bribeStage.phase !== "HOLD") {
+            toggleShow(true)
+        } else {
+            toggleShow(false)
+            setPlayerAbility(undefined)
+            setWinner(undefined)
+        }
+    }, [bribeStage, toggleShow, setPlayerAbility, setWinner])
     // End ****************************************
 
     // A little timeout so fade transition can play
@@ -32,10 +48,11 @@ export const MiniMap = () => {
     }, [isMapOpen, toggleIsRender])
 
     useEffect(() => {
-        if (winner && bribeStage?.phase == "LOCATION_SELECT") {
+        if ((winner && bribeStage?.phase == "LOCATION_SELECT") || playerAbility) {
             toggleIsMapOpen(true)
+            setHighlightedMechHash(undefined)
         }
-    }, [winner, bribeStage, toggleIsMapOpen])
+    }, [winner, bribeStage, playerAbility, toggleIsMapOpen, setHighlightedMechHash])
 
     // Map
     const config: MoveableResizableConfig = useMemo(
@@ -68,50 +85,115 @@ export const MiniMap = () => {
             <Fade in={isMapOpen && show}>
                 <Box>
                     <MoveableResizable config={config}>
-                        <MiniMapInner map={map} winner={winner} setWinner={setWinner} bribeStage={bribeStage} />
+                        <MiniMapInner
+                            // useGameServerAuth
+                            userID={userID}
+                            factionID={factionID}
+                            // useOverlay
+                            isMapOpen={isMapOpen && show}
+                            toggleIsMapOpen={toggleIsMapOpen}
+                            // useGame
+                            map={map}
+                            warMachines={warMachines}
+                            // useSupremacy
+                            getFaction={getFaction}
+                            // useMiniMap
+                            winner={winner}
+                            enlarged={enlarged}
+                            setEnlarged={setEnlarged}
+                            isTargeting={isTargeting}
+                            selection={selection}
+                            setSelection={setSelection}
+                            resetSelection={resetSelection}
+                            highlightedMechHash={highlightedMechHash}
+                            setHighlightedMechHash={setHighlightedMechHash}
+                            // useConsumables
+                            playerAbility={playerAbility}
+                            // useSnackbar
+                            newSnackbarMessage={newSnackbarMessage}
+                            // useTheme
+                            factionColor={theme.factionTheme.primary}
+                        />
                     </MoveableResizable>
                 </Box>
             </Fade>
         )
-    }, [map, isMapOpen, show, config, winner, setWinner, bribeStage])
+    }, [
+        config,
+        show,
+        userID,
+        factionID,
+        isMapOpen,
+        toggleIsMapOpen,
+        map,
+        warMachines,
+        getFaction,
+        winner,
+        enlarged,
+        setEnlarged,
+        isTargeting,
+        selection,
+        setSelection,
+        resetSelection,
+        highlightedMechHash,
+        setHighlightedMechHash,
+        playerAbility,
+        newSnackbarMessage,
+        theme,
+    ])
 
     if (!isRender) return null
     return mapRender
 }
 
-interface MiniMapInnerProps {
+interface InnerProps {
+    // useGameServerAuth
+    userID?: string
+    factionID?: string
+    // useOverlay
+    isMapOpen: boolean // *
+    toggleIsMapOpen: (open?: boolean) => void // *
+    // useGame
     map: Map
+    warMachines?: WarMachineState[]
+    // useSupremacy
+    getFaction: (factionID: string) => Faction
+    // useMiniMap
     winner?: WinnerAnnouncementResponse
-    setWinner: (winner?: WinnerAnnouncementResponse) => void
-    bribeStage?: BribeStageResponse
+    enlarged: boolean
+    setEnlarged: React.Dispatch<React.SetStateAction<boolean>> // *
+    isTargeting: boolean
+    selection?: MapSelection
+    setSelection: React.Dispatch<React.SetStateAction<MapSelection | undefined>>
+    resetSelection: () => void
+    highlightedMechHash?: string
+    setHighlightedMechHash: React.Dispatch<React.SetStateAction<string | undefined>>
+    // useConsumables
+    playerAbility?: PlayerAbility
+    // useSnackbar
+    newSnackbarMessage: (message: string, severity?: Severity) => void
+    // useTheme
+    factionColor: string
 }
 
-const MiniMapInner = ({ map, winner, setWinner, bribeStage }: MiniMapInnerProps) => {
-    const { newSnackbarMessage } = useSnackbar()
-
-    // For targeting map
-    const [timeReachZero, setTimeReachZero] = useState<boolean>(false)
-    const [submitted, setSubmitted] = useState<boolean>(false)
-
-    const isTargeting = useMemo(
-        () => winner && !timeReachZero && !submitted && bribeStage?.phase == "LOCATION_SELECT",
-        [winner, timeReachZero, submitted, bribeStage],
-    )
-
-    useEffect(() => {
-        if (winner?.end_time) {
-            setSubmitted(false)
-            setTimeReachZero(false)
-        }
-    }, [winner])
-
-    useEffect(() => {
-        if (timeReachZero || submitted) setWinner(undefined)
-        if (timeReachZero) newSnackbarMessage("Failed to submit target location on time.", "error")
-    }, [timeReachZero, submitted, setWinner, newSnackbarMessage])
-
-    // For map rendering
-    const theme = useTheme()
+const MiniMapInner = ({
+    userID,
+    factionID,
+    map,
+    warMachines,
+    getFaction,
+    winner,
+    enlarged,
+    isTargeting,
+    selection,
+    setSelection,
+    resetSelection,
+    highlightedMechHash,
+    setHighlightedMechHash,
+    playerAbility,
+    newSnackbarMessage,
+    factionColor,
+}: InnerProps) => {
     const {
         gameUIDimensions: { width, height },
     } = useDimension()
@@ -196,6 +278,46 @@ const MiniMapInner = ({ map, winner, setWinner, bribeStage }: MiniMapInnerProps)
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isTargeting, maxHeight, maxWidth, setCurHeight, setCurPosX, setCurPosY, setCurWidth])
 
+    const mapInsideRender = useMemo(() => {
+        return (
+            <MiniMapInside
+                gameAbility={winner?.game_ability}
+                containerDimensions={{ width: curWidth, height: curHeight }}
+                userID={userID}
+                factionID={factionID}
+                map={map}
+                warMachines={warMachines}
+                getFaction={getFaction}
+                enlarged={curWidth > 388 || curHeight > 400}
+                isTargeting={isTargeting}
+                selection={selection}
+                setSelection={setSelection}
+                resetSelection={resetSelection}
+                highlightedMechHash={highlightedMechHash}
+                setHighlightedMechHash={setHighlightedMechHash}
+                playerAbility={!winner?.game_ability ? playerAbility : undefined}
+                newSnackbarMessage={newSnackbarMessage}
+            />
+        )
+    }, [
+        userID,
+        factionID,
+        map,
+        warMachines,
+        getFaction,
+        winner,
+        isTargeting,
+        selection,
+        setSelection,
+        resetSelection,
+        highlightedMechHash,
+        setHighlightedMechHash,
+        playerAbility,
+        newSnackbarMessage,
+        curHeight,
+        curWidth,
+    ])
+
     let mapName = map.name
     if (mapName === "NeoTokyo") mapName = "City Block X2"
 
@@ -219,7 +341,7 @@ const MiniMapInner = ({ map, winner, setWinner, bribeStage }: MiniMapInnerProps)
                         height: "3.1rem",
                         px: "1.8rem",
                         backgroundColor: "#000000BF",
-                        borderBottom: `${theme.factionTheme.primary}80 .25rem solid`,
+                        borderBottom: `${factionColor}80 .25rem solid`,
                         zIndex: 99,
                     }}
                 >
@@ -238,28 +360,44 @@ const MiniMapInner = ({ map, winner, setWinner, bribeStage }: MiniMapInnerProps)
                     </Typography>
                 </Stack>
 
-                {isTargeting && winner ? (
-                    <>
-                        <MiniMapInside
-                            gameAbility={winner.game_ability}
-                            containerDimensions={{ width: curWidth, height: curHeight }}
-                            targeting
-                            setSubmitted={setSubmitted}
-                            enlarged={curWidth > 388 || curHeight > 400}
-                            newSnackbarMessage={newSnackbarMessage}
-                        />
+                {mapInsideRender}
 
-                        <TargetTimerCountdown gameAbility={winner.game_ability} setTimeReachZero={setTimeReachZero} endTime={winner.end_time} />
-                    </>
-                ) : (
-                    <MiniMapInside
-                        containerDimensions={{ width: curWidth, height: curHeight }}
-                        enlarged={curWidth > 388 || curHeight > 400}
-                        newSnackbarMessage={newSnackbarMessage}
+                {isTargeting && !winner && playerAbility && <TargetHint ability={playerAbility.ability} />}
+
+                {isTargeting && winner && (
+                    <TargetTimerCountdown
+                        gameAbility={winner.game_ability}
+                        endTime={winner.end_time}
+                        onCountdownExpired={() => {
+                            newSnackbarMessage("Failed to submit target location on time.", "error")
+                            resetSelection()
+                        }}
                     />
                 )}
             </Box>
         ),
-        [curHeight, curWidth, isTargeting, mapName, newSnackbarMessage, theme.factionTheme.primary, winner],
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [
+            mapName,
+            mapInsideRender,
+            factionColor,
+            userID,
+            factionID,
+            map,
+            warMachines,
+            getFaction,
+            winner,
+            enlarged,
+            isTargeting,
+            selection,
+            setSelection,
+            resetSelection,
+            highlightedMechHash,
+            setHighlightedMechHash,
+            playerAbility,
+            newSnackbarMessage,
+            curHeight,
+            curWidth,
+        ],
     )
 }
