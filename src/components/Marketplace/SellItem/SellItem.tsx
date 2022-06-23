@@ -388,7 +388,7 @@ export const SellItemInner = ({ toggleReset }: { toggleReset: () => void }) => {
                             sx={{ mt: ".8rem", px: "1.7rem", py: ".8rem", backgroundColor: `${colors.orange}20`, span: { color: colors.yellow } }}
                         >
                             <Typography variant="h6">
-                                You have set a <strong>price drop</strong> to your listing, this means the price could potentially fall down to{" "}
+                                You have set a <strong>price drop</strong>, this means the price could potentially fall down to{" "}
                                 <span>
                                     {Math.max(
                                         reservePrice || 1,
@@ -399,7 +399,7 @@ export const SellItemInner = ({ toggleReset }: { toggleReset: () => void }) => {
                                         }),
                                     )}
                                 </span>{" "}
-                                SUP if nobody buys the item.
+                                SUP by the end of the listing.
                             </Typography>
 
                             <Stack direction="row" alignItems="center">
