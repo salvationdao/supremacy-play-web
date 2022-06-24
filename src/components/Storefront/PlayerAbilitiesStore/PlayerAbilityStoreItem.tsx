@@ -1,6 +1,6 @@
 import { Box, Fade, keyframes, Stack, Typography } from "@mui/material"
-import React, { useCallback, useEffect, useState } from "react"
-import { FancyButton } from "../.."
+import React, { useCallback, useMemo, useState } from "react"
+import { FancyButton, TooltipHelper } from "../.."
 import { SvgGlobal, SvgLine, SvgMicrochip, SvgQuestionMark, SvgSupToken, SvgTarget } from "../../../assets"
 import { useSnackbar } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
@@ -23,8 +23,8 @@ export const PlayerAbilityStoreItem = ({ saleAbility, updatedPrice }: PlayerAbil
     const primaryColor = theme.factionTheme.primary
     const backgroundColor = theme.factionTheme.background
 
-    const [abilityTypeIcon, setAbilityTypeIcon] = useState<JSX.Element>(<SvgQuestionMark />)
-    const [abilityTypeDescription, setAbilityTypeDescription] = useState("Miscellaneous ability type.")
+    const [, setAbilityTypeIcon] = useState<JSX.Element>()
+    const [, setAbilityTypeDescription] = useState()
 
     // Purchasing
     const { newSnackbarMessage } = useSnackbar()
@@ -32,27 +32,6 @@ export const PlayerAbilityStoreItem = ({ saleAbility, updatedPrice }: PlayerAbil
     const [showPurchaseModal, toggleShowPurchaseModal] = useToggle(false)
     const [purchaseLoading, setPurchaseLoading] = useState(false)
     const [purchaseError, setPurchaseError] = useState<string>()
-
-    useEffect(() => {
-        switch (saleAbility.ability.location_select_type) {
-            case LocationSelectType.GLOBAL:
-                setAbilityTypeDescription("This ability will affect all units on the map.")
-                setAbilityTypeIcon(<SvgGlobal />)
-                break
-            case LocationSelectType.LOCATION_SELECT:
-                setAbilityTypeDescription("This ability will target a specific location on the map.")
-                setAbilityTypeIcon(<SvgTarget />)
-                break
-            case LocationSelectType.MECH_SELECT:
-                setAbilityTypeDescription("This ability will target a specific mech on the map.")
-                setAbilityTypeIcon(<SvgMicrochip />)
-                break
-            case LocationSelectType.LINE_SELECT:
-                setAbilityTypeDescription("This ability will target a straight line on the map.")
-                setAbilityTypeIcon(<SvgLine />)
-                break
-        }
-    }, [saleAbility])
 
     const onPurchase = useCallback(async () => {
         try {
@@ -74,6 +53,21 @@ export const PlayerAbilityStoreItem = ({ saleAbility, updatedPrice }: PlayerAbil
             setPurchaseLoading(false)
         }
     }, [send, saleAbility, updatedPrice, newSnackbarMessage, toggleShowPurchaseModal])
+
+    const [abilityTypeIcon, abilityTypeDescription] = useMemo(() => {
+        switch (saleAbility.ability.location_select_type) {
+            case LocationSelectType.GLOBAL:
+                return [<SvgGlobal key={LocationSelectType.GLOBAL} />, "This ability will affect all units on the map."]
+            case LocationSelectType.LOCATION_SELECT:
+                return [<SvgTarget key={LocationSelectType.LOCATION_SELECT} />, "This ability will target a specific location on the map."]
+            case LocationSelectType.MECH_SELECT:
+                return [<SvgMicrochip key={LocationSelectType.MECH_SELECT} />, "This ability will target a specific mech on the map."]
+            case LocationSelectType.LINE_SELECT:
+                return [<SvgLine key={LocationSelectType.LINE_SELECT} />, "This ability will target a straight line on the map."]
+        }
+
+        return [<SvgQuestionMark key="MISCELLANEOUS" />, "Miscellaneous ability type."]
+    }, [saleAbility])
 
     return (
         <>
@@ -122,21 +116,26 @@ export const PlayerAbilityStoreItem = ({ saleAbility, updatedPrice }: PlayerAbil
                                         bottom: 0,
                                     }}
                                 />
-                                <Box
-                                    sx={{
-                                        position: "absolute",
-                                        right: 0,
-                                        bottom: 0,
-                                        display: "flex",
-                                        height: "3rem",
-                                        width: "3rem",
-                                        justifyContent: "center",
-                                        alignItems: "center",
-                                        backgroundColor: "rgba(0, 0, 0, 0.6)",
-                                    }}
-                                >
-                                    {abilityTypeIcon}
-                                </Box>
+                                <TooltipHelper text={abilityTypeDescription}>
+                                    <Box
+                                        sx={{
+                                            position: "absolute",
+                                            right: 0,
+                                            bottom: 0,
+                                            display: "flex",
+                                            height: "3rem",
+                                            width: "3rem",
+                                            justifyContent: "center",
+                                            alignItems: "center",
+                                            backgroundColor: "rgba(0, 0, 0, 0.6)",
+                                            "& div": {
+                                                padding: 0,
+                                            },
+                                        }}
+                                    >
+                                        {abilityTypeIcon}
+                                    </Box>
+                                </TooltipHelper>
                             </ClipThing>
                             <Stack
                                 sx={{
