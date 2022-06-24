@@ -4,6 +4,7 @@ import { ClipThing, FancyButton } from "../.."
 import { useTheme } from "../../../containers/theme"
 import { useGameServerSubscriptionSecurePublic } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
+import { HANGAR_TABS } from "../../../pages"
 import { colors, fonts } from "../../../theme/theme"
 import { SaleAbility } from "../../../types"
 import { PageHeader } from "../../Common/PageHeader"
@@ -147,6 +148,7 @@ export const PlayerAbilitiesStore = () => {
                     }
                 >
                     <FancyButton
+                        to={`/fleet/${HANGAR_TABS.Abilities}`}
                         clipThingsProps={{
                             clipSize: "9px",
                             backgroundColor: theme.factionTheme.primary,
@@ -159,7 +161,6 @@ export const PlayerAbilitiesStore = () => {
                             px: "2rem",
                             py: ".3rem",
                         }}
-                        // onClick={() => {}}
                     >
                         <Typography
                             variant="body2"
@@ -168,7 +169,7 @@ export const PlayerAbilitiesStore = () => {
                                 whiteSpace: "nowrap",
                             }}
                         >
-                            OWNED ABILITIES: 1337
+                            VIEW OWNED ABILITIES
                         </Typography>
                     </FancyButton>
                 </PageHeader>
