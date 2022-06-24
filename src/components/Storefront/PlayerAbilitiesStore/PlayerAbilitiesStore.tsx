@@ -150,14 +150,15 @@ export const PlayerAbilitiesStore = () => {
                                 <Box sx={{ direction: "ltr", height: 0 }}>
                                     <Box
                                         sx={{
-                                            width: "100%",
+                                            overflow: "visible",
                                             display: "grid",
+                                            width: "100%",
                                             gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
                                             gridTemplateRows: "repeat(1, min-content)",
                                             gap: "5rem",
                                             alignItems: "stretch",
                                             justifyContent: "center",
-                                            overflow: "visible",
+                                            pt: "1rem",
                                         }}
                                     >
                                         {saleAbilities.map((s) => (
