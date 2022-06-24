@@ -16,13 +16,14 @@ export const Stream = () => {
         return <OvenplayerStream />
     }
 
-    if (currentStream?.service === StreamService.AntMedia) {
-        return <AntMediaStream />
-    }
-
     if (currentStream?.service === StreamService.Softvelum) {
         return <SLPDStream />
     }
 
+    if (currentStream?.service === StreamService.AntMedia) {
+        return <AntMediaStream />
+    }
+
+    return <AntMediaStream /> // TODO: remove later
     return <NoStreamScreen />
 }
