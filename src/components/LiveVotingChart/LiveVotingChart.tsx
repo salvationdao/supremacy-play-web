@@ -1,11 +1,9 @@
-import { Box, Fade, Stack, Typography } from "@mui/material"
+import { Box, Fade, Stack } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { MoveableResizable, MoveableResizableConfig } from ".."
 import { useOverlayToggles, useSupremacy } from "../../containers"
 import { parseString } from "../../helpers"
 import { useToggle } from "../../hooks"
-import { pulseEffect } from "../../theme/keyframes"
-import { colors } from "../../theme/theme"
 import { BattleStats } from "../BattleStats/BattleStats"
 import { LiveGraph } from "./LiveGraph"
 
@@ -89,32 +87,6 @@ export const LiveVotingChart = () => {
                                     borderRadius: 1,
                                 }}
                             >
-                                <Stack
-                                    direction="row"
-                                    alignItems="center"
-                                    justifyContent="center"
-                                    spacing=".4rem"
-                                    sx={{
-                                        position: "absolute",
-                                        top: ".5rem",
-                                        right: ".7rem",
-                                    }}
-                                >
-                                    <Box
-                                        sx={{
-                                            width: 7,
-                                            height: 7,
-                                            mb: ".32rem",
-                                            backgroundColor: colors.red,
-                                            borderRadius: "50%",
-                                            animation: `${pulseEffect} 3s infinite`,
-                                        }}
-                                    />
-                                    <Typography variant="body2" sx={{ lineHeight: 1 }}>
-                                        LIVE
-                                    </Typography>
-                                </Stack>
-
                                 <LiveGraph
                                     battleIdentifier={battleIdentifier}
                                     maxWidthPx={curWidth}
