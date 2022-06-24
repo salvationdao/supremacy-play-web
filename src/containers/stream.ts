@@ -28,19 +28,18 @@ const newExperimental2: Stream = {
 
 const experimental1: Stream = {
     host: "wss://stream2.supremacy.game:3334/app/stream2",
-    name: "Experimental2 🌟",
+    name: "Experimental 🌟",
     url: "wss://stream2.supremacy.game:3334/app/stream2",
     stream_id: "oven-player-experimental",
     region: "",
     resolution: "",
-    bit_rates_k_bits: 100,
-    user_max: 100,
-    users_now: 100,
+    bit_rates_k_bits: 0,
+    user_max: 2,
+    users_now: 1,
     active: true,
-    status: "",
+    status: "online",
     latitude: "0",
     longitude: "0",
-    distance: 100,
     service: StreamService.OvenMediaEngine,
 }
 
