@@ -42,7 +42,7 @@ export const colors = {
 
     neonPink: "#F72485",
     lightNeonBlue: "#8DE9FF",
-    neonBlue: "#00FFFF",
+    neonBlue: "#00FAFA",
     darkNeonBlue: "#176969",
     darkerNeonBlue: "#073339",
     darkNavyBlue: "#0C0C1A",
@@ -97,8 +97,8 @@ export const colors = {
 }
 
 const factionTheme: FactionTheme = {
-    primary: "#00FFFF",
-    secondary: "#00FFFF",
+    primary: "#00FAFA",
+    secondary: "#00FAFA",
     background: "#050c12",
 }
 

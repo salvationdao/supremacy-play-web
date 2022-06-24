@@ -489,3 +489,13 @@ export const equalsIgnoreOrder = (a: unknown[], b: unknown[]) => {
 export const numberCommaFormatter = (num: number): string => {
     return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
 }
+
+export const calculateDutchAuctionCurrentPrice = ({ createdAt, dropRate, startPrice }: { createdAt: Date; dropRate?: BigNumber; startPrice: BigNumber }) => {
+    if (!dropRate) return startPrice
+    return startPrice.minus(dropRate.multipliedBy(timeDiff(createdAt, new Date()).minutes))
+}
+
+export const calculateDutchAuctionEndPrice = ({ endAt, dropRate, startPrice }: { endAt: Date; dropRate?: number; startPrice: number }) => {
+    if (!dropRate) return startPrice
+    return Math.max(startPrice - dropRate * timeDiff(new Date(), endAt).minutes, 1)
+}

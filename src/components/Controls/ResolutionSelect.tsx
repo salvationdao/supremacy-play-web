@@ -22,9 +22,6 @@ export const ResolutionSelect = () => {
                 sx={{
                     width: "15rem",
                     borderRadius: 0.5,
-                    "&:hover": {
-                        backgroundColor: colors.darkNavy,
-                    },
                     ".MuiTypography-root": {
                         px: ".8rem",
                         pt: ".48rem",
@@ -32,7 +29,7 @@ export const ResolutionSelect = () => {
                     "& .MuiSelect-outlined": { p: 0 },
                 }}
                 defaultValue={resolutions[0]}
-                value={selectedResolution || resolutions[0] || -1}
+                value={selectedResolution || resolutions[0] || 0}
                 MenuProps={{
                     variant: "menu",
                     sx: {
@@ -53,16 +50,7 @@ export const ResolutionSelect = () => {
             >
                 {resolutions.map((x) => {
                     return (
-                        <MenuItem
-                            key={x}
-                            value={x}
-                            onClick={() => setSelectedResolution(x)}
-                            sx={{
-                                "&:hover": {
-                                    backgroundColor: `#FFFFFF30`,
-                                },
-                            }}
-                        >
+                        <MenuItem key={x} value={x} onClick={() => setSelectedResolution(x)} sx={{ "&:hover": { backgroundColor: `#FFFFFF30` } }}>
                             <Typography textTransform="uppercase" variant="body2" sx={{ lineHeight: 1 }}>
                                 {x === 0 ? "Automatic" : `${x}P`}
                             </Typography>

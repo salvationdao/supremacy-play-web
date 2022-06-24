@@ -3,7 +3,7 @@ import BigNumber from "bignumber.js"
 import { ReactNode, useMemo } from "react"
 import { FancyButton } from "../../.."
 import { useTheme } from "../../../../containers/theme"
-import { numFormatter, shadeColor, timeDiff } from "../../../../helpers"
+import { calculateDutchAuctionCurrentPrice, numFormatter, shadeColor } from "../../../../helpers"
 import { MARKETPLACE_TABS } from "../../../../pages"
 import { colors } from "../../../../theme/theme"
 import { MarketplaceBuyAuctionItem } from "../../../../types/marketplace"
@@ -33,10 +33,13 @@ export const MarketItem = ({ imageUrl, animationUrl, cardAnimationUrl, backgroun
         let buyoutPrice = new BigNumber(item.buyout_price).shiftedBy(-18)
         const dropPrice = new BigNumber(item.dutch_auction_drop_rate).shiftedBy(-18)
         if (item.dutch_auction_drop_rate) {
-            buyoutPrice = BigNumber.max(buyoutPrice.minus(dropPrice.multipliedBy(timeDiff(item.created_at, new Date()).minutes)), new BigNumber(1))
+            buyoutPrice = BigNumber.max(
+                calculateDutchAuctionCurrentPrice({ createdAt: item.created_at, dropRate: dropPrice, startPrice: buyoutPrice }),
+                new BigNumber(item.auction_reserved_price || 1),
+            )
         }
         return numFormatter(buyoutPrice.toNumber())
-    }, [item.buyout_price, item.created_at, item.dutch_auction_drop_rate])
+    }, [item.auction_reserved_price, item.buyout_price, item.created_at, item.dutch_auction_drop_rate])
     const formattedAuctionPrice = useMemo(() => {
         if (!item.auction_current_price) return ""
         const auctionPrice = new BigNumber(item.auction_current_price).shiftedBy(-18)
