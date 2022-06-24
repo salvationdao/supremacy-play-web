@@ -127,92 +127,87 @@ export const PlayerAbilitiesStore = () => {
         >
             <Stack
                 sx={{
+                    flex: 1,
                     position: "relative",
                     height: "100%",
                 }}
             >
+                <PageHeader
+                    title={
+                        <>
+                            PLAYER ABILITIES <span style={{ color: colors.neonBlue, fontFamily: "inherit", fontSize: "inherit" }}>(ROTATES EVERY 1H)</span>
+                        </>
+                    }
+                    description={
+                        <>
+                            Player abilities are abilities that can be bought and used on the battle arena. The price of a player ability is determined by how
+                            active it is at any given time. When players buy an ability, its price will go up. If an ability is not being bought, its price will
+                            go down.
+                        </>
+                    }
+                >
+                    <FancyButton
+                        clipThingsProps={{
+                            clipSize: "9px",
+                            backgroundColor: theme.factionTheme.primary,
+                            border: { isFancy: true, borderColor: theme.factionTheme.primary, borderThickness: "2px" },
+                            sx: { position: "relative" },
+                        }}
+                        sx={{
+                            display: "flex",
+                            flexWrap: "nowrap",
+                            px: "2rem",
+                            py: ".3rem",
+                        }}
+                        // onClick={() => {}}
+                    >
+                        <Typography
+                            variant="body2"
+                            sx={{
+                                color: theme.factionTheme.secondary,
+                                whiteSpace: "nowrap",
+                            }}
+                        >
+                            OWNED ABILITIES: 1337
+                        </Typography>
+                    </FancyButton>
+                </PageHeader>
+                <Stack direction="row" spacing="1rem" alignItems="center" justifyContent="end" py="2rem" px="4rem">
+                    <Typography variant="body1">Next refresh in:</Typography>
+                    {nextRefreshTime ? <Countdown dateTo={nextRefreshTime} /> : <Typography>Less than an hour</Typography>}
+                </Stack>
                 <Stack
                     sx={{
+                        px: "2rem",
                         flex: 1,
                     }}
                 >
-                    <PageHeader
-                        title={
-                            <>
-                                PLAYER ABILITIES <span style={{ color: colors.neonBlue, fontFamily: "inherit", fontSize: "inherit" }}>(ROTATES EVERY 1H)</span>
-                            </>
-                        }
-                        description={
-                            <>
-                                Player abilities are abilities that can be bought and used on the battle arena. The price of a player ability is determined by
-                                how active it is at any given time. When players buy an ability, its price will go up. If an ability is not being bought, its
-                                price will go down.
-                            </>
-                        }
-                    >
-                        <FancyButton
-                            clipThingsProps={{
-                                clipSize: "9px",
-                                backgroundColor: theme.factionTheme.primary,
-                                border: { isFancy: true, borderColor: theme.factionTheme.primary, borderThickness: "2px" },
-                                sx: { position: "relative" },
-                            }}
-                            sx={{
-                                display: "flex",
-                                flexWrap: "nowrap",
-                                px: "2rem",
-                                py: ".3rem",
-                            }}
-                            // onClick={() => {}}
-                        >
-                            <Typography
-                                variant="body2"
-                                sx={{
-                                    color: theme.factionTheme.secondary,
-                                    whiteSpace: "nowrap",
-                                }}
-                            >
-                                OWNED ABILITIES: 1337
-                            </Typography>
-                        </FancyButton>
-                    </PageHeader>
-                    <Stack direction="row" spacing="1rem" alignItems="center" justifyContent="end" py="2rem" px="4rem">
-                        <Typography variant="body1">Next refresh in:</Typography>
-                        {nextRefreshTime ? <Countdown dateTo={nextRefreshTime} /> : <Typography>Less than an hour</Typography>}
-                    </Stack>
-                    <Stack
+                    <Box
                         sx={{
-                            px: "2rem",
                             flex: 1,
+                            ml: "1.9rem",
+                            mr: ".5rem",
+                            pr: "1.4rem",
+                            my: "1rem",
+                            overflowY: "auto",
+                            overflowX: "hidden",
+                            direction: "ltr",
+
+                            "::-webkit-scrollbar": {
+                                width: ".4rem",
+                            },
+                            "::-webkit-scrollbar-track": {
+                                background: "#FFFFFF15",
+                                borderRadius: 3,
+                            },
+                            "::-webkit-scrollbar-thumb": {
+                                background: theme.factionTheme.primary,
+                                borderRadius: 3,
+                            },
                         }}
                     >
-                        <Box
-                            sx={{
-                                flex: 1,
-                                ml: "1.9rem",
-                                mr: ".5rem",
-                                pr: "1.4rem",
-                                my: "1rem",
-                                overflowY: "auto",
-                                overflowX: "hidden",
-                                direction: "ltr",
-
-                                "::-webkit-scrollbar": {
-                                    width: ".4rem",
-                                },
-                                "::-webkit-scrollbar-track": {
-                                    background: "#FFFFFF15",
-                                    borderRadius: 3,
-                                },
-                                "::-webkit-scrollbar-thumb": {
-                                    background: theme.factionTheme.primary,
-                                    borderRadius: 3,
-                                },
-                            }}
-                        >
-                            {content}
-                        </Box>
-                    </Stack>
+                        {content}
+                    </Box>
                 </Stack>
             </Stack>
         </ClipThing>
