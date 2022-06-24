@@ -23,9 +23,6 @@ export const PlayerAbilityStoreItem = ({ saleAbility, updatedPrice }: PlayerAbil
     const primaryColor = theme.factionTheme.primary
     const backgroundColor = theme.factionTheme.background
 
-    const [, setAbilityTypeIcon] = useState<JSX.Element>()
-    const [, setAbilityTypeDescription] = useState()
-
     // Purchasing
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsUser("/user_commander")
