@@ -112,6 +112,8 @@ export interface BlueprintPlayerAbility {
 }
 
 export interface PlayerAbility {
+    id: string
+    blueprint_id: string
     count: number
     last_purchased_at: Date
     ability: BlueprintPlayerAbility

@@ -17,14 +17,14 @@ import { PlayerAbilityHangarItem } from "./PlayerAbilityHangarItem"
 
 export const PlayerAbilitiesHangar = () => {
     const theme = useTheme()
-    const [query, updateQuery] = useUrlQuery()
+    const [query] = useUrlQuery()
 
     const [isLoaded, setIsLoaded] = useState(false)
     const [playerAbilities, setPlayerAbilities] = useState<PlayerAbility[]>([])
     const [shownPlayerAbilities, setShownPlayerAbilities] = useState<PlayerAbility[]>([])
 
     // Pagination
-    const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({
+    const { page, changePage, totalItems, setTotalItems, pageSize, changePageSize } = usePagination({
         pageSize: parseString(query.get("pageSize"), 10),
         page: parseString(query.get("page"), 1),
     })

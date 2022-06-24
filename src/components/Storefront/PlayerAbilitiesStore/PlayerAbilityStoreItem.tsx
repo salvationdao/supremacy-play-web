@@ -1,7 +1,7 @@
 import { Box, Fade, keyframes, Stack, Typography } from "@mui/material"
-import React, { useCallback, useMemo, useState } from "react"
+import React, { useCallback, useState } from "react"
 import { FancyButton } from "../.."
-import { SvgGlobal, SvgLine, SvgMicrochip, SvgQuestionMark, SvgSupToken, SvgTarget } from "../../../assets"
+import { SvgSupToken } from "../../../assets"
 import { useSnackbar } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { supFormatter } from "../../../helpers"
@@ -9,7 +9,7 @@ import { useToggle } from "../../../hooks"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { fonts } from "../../../theme/theme"
-import { LocationSelectType, SaleAbility } from "../../../types"
+import { SaleAbility } from "../../../types"
 import { ClipThing } from "../../Common/ClipThing"
 import { ConfirmModal } from "../../Common/ConfirmModal"
 
@@ -50,21 +50,6 @@ export const PlayerAbilityStoreItem = ({ saleAbility, updatedPrice }: PlayerAbil
             setPurchaseLoading(false)
         }
     }, [send, saleAbility, updatedPrice, newSnackbarMessage, toggleShowPurchaseModal])
-
-    const [abilityTypeIcon, abilityTypeDescription] = useMemo(() => {
-        switch (saleAbility.ability.location_select_type) {
-            case LocationSelectType.GLOBAL:
-                return [<SvgGlobal key={LocationSelectType.GLOBAL} />, "This ability will affect all units on the map."]
-            case LocationSelectType.LOCATION_SELECT:
-                return [<SvgTarget key={LocationSelectType.LOCATION_SELECT} />, "This ability will target a specific location on the map."]
-            case LocationSelectType.MECH_SELECT:
-                return [<SvgMicrochip key={LocationSelectType.MECH_SELECT} />, "This ability will target a specific mech on the map."]
-            case LocationSelectType.LINE_SELECT:
-                return [<SvgLine key={LocationSelectType.LINE_SELECT} />, "This ability will target a straight line on the map."]
-        }
-
-        return [<SvgQuestionMark key="MISCELLANEOUS" />, "Miscellaneous ability type."]
-    }, [saleAbility])
 
     return (
         <>
@@ -108,7 +93,9 @@ export const PlayerAbilityStoreItem = ({ saleAbility, updatedPrice }: PlayerAbil
                         <Typography sx={{ fontSize: "2.1rem" }}>{saleAbility.ability.description}</Typography>
                         <Box
                             sx={{
-                                mt: "auto",
+                                "&&": {
+                                    mt: "auto",
+                                },
                             }}
                         />
                         <FancyButton
