@@ -159,10 +159,6 @@ const MiniMapInner = ({ map, isTargeting }: { map: Map; isTargeting: boolean }) 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isTargeting, maxHeight, maxWidth, setCurHeight, setCurPosX, setCurPosY, setCurWidth])
 
-    const mapInsideRender = useMemo(() => {
-        return <MiniMapInside containerDimensions={{ width: curWidth, height: curHeight }} enlarged={curWidth > 388 || curHeight > 400} />
-    }, [curHeight, curWidth])
-
     let mapName = map.name
     if (mapName === "NeoTokyo") mapName = "City Block X2"
 
@@ -205,11 +201,11 @@ const MiniMapInner = ({ map, isTargeting }: { map: Map; isTargeting: boolean }) 
                     </Typography>
                 </Stack>
 
-                {mapInsideRender}
+                <MiniMapInside containerDimensions={{ width: curWidth, height: curHeight }} enlarged={curWidth > 388 || curHeight > 400} />
 
                 {<TargetHint />}
             </Box>
         ),
-        [curWidth, curHeight, theme.factionTheme.primary, mapName, mapInsideRender],
+        [curWidth, curHeight, theme.factionTheme.primary, mapName],
     )
 }

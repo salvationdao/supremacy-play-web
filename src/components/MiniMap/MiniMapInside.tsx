@@ -3,7 +3,7 @@ import { useCallback, useMemo, useRef } from "react"
 import { MapWarMachines, SelectionIcon } from ".."
 import { Crosshair } from "../../assets"
 import { useAuth, useGame, useMiniMap, useSupremacy } from "../../containers"
-import { CellCoords, Dimension, LocationSelectType } from "../../types"
+import { CellCoords, Dimension, LocationSelectType, PlayerAbility } from "../../types"
 import { CountdownSubmit } from "./MapInsideItems/CountdownSubmit"
 import { LineSelect } from "./MapInsideItems/LineSelect"
 import { MechCommandLocations } from "./MapInsideItems/MechCommandLocations"
@@ -23,11 +23,56 @@ interface MiniMapInsideProps {
     containerDimensions: Dimension
 }
 
-export const MiniMapInside = ({ containerDimensions, enlarged }: MiniMapInsideProps) => {
+export const MiniMapInside = (props: MiniMapInsideProps) => {
+    const { mapElement, gridWidth, gridHeight, isTargeting, selection, setSelection, highlightedMechHash, setHighlightedMechHash, playerAbility } = useMiniMap()
+
+    return useMemo(
+        () => (
+            <MiniMapInsideInner
+                {...props}
+                mapElement={mapElement}
+                gridWidth={gridWidth}
+                gridHeight={gridHeight}
+                isTargeting={isTargeting}
+                selection={selection}
+                setSelection={setSelection}
+                highlightedMechHash={highlightedMechHash}
+                setHighlightedMechHash={setHighlightedMechHash}
+                playerAbility={playerAbility}
+            />
+        ),
+        [gridHeight, gridWidth, highlightedMechHash, isTargeting, mapElement, playerAbility, props, selection, setHighlightedMechHash, setSelection],
+    )
+}
+
+interface MiniMapInsideInnerProps extends MiniMapInsideProps {
+    mapElement: React.MutableRefObject<HTMLDivElement | undefined>
+    gridWidth: number
+    gridHeight: number
+    isTargeting: boolean
+    selection?: MapSelection
+    setSelection: React.Dispatch<React.SetStateAction<MapSelection | undefined>>
+    highlightedMechHash?: string
+    setHighlightedMechHash: React.Dispatch<React.SetStateAction<string | undefined>>
+    playerAbility?: PlayerAbility
+}
+
+const MiniMapInsideInner = ({
+    containerDimensions,
+    enlarged,
+    mapElement,
+    gridWidth,
+    gridHeight,
+    isTargeting,
+    selection,
+    setSelection,
+    highlightedMechHash,
+    setHighlightedMechHash,
+    playerAbility,
+}: MiniMapInsideInnerProps) => {
     const { userID, factionID } = useAuth()
     const { getFaction } = useSupremacy()
     const { map, warMachines } = useGame()
-    const { mapElement, gridWidth, gridHeight, isTargeting, selection, setSelection, highlightedMechHash, setHighlightedMechHash, playerAbility } = useMiniMap()
 
     const gestureRef = useRef<HTMLDivElement>(null)
     const { mapScale, dragX, dragY } = useMiniMapGestures({ gestureRef, containerDimensions })
