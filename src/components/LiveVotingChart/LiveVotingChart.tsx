@@ -14,17 +14,6 @@ const DefaultMaxLiveVotingDataLength = 100
 
 export const LiveVotingChart = () => {
     const { isLiveChartOpen, toggleIsLiveChartOpen } = useOverlayToggles()
-    const [isRender, toggleIsRender] = useToggle(isLiveChartOpen)
-
-    // A little timeout so fade transition can play
-    useEffect(() => {
-        if (isLiveChartOpen) return toggleIsRender(true)
-        const timeout = setTimeout(() => {
-            toggleIsRender(false)
-        }, 250)
-
-        return () => clearTimeout(timeout)
-    }, [isLiveChartOpen, toggleIsRender])
 
     const config: MoveableResizableConfig = useMemo(
         () => ({
@@ -50,7 +39,7 @@ export const LiveVotingChart = () => {
         [toggleIsLiveChartOpen],
     )
 
-    if (!isRender) return null
+    if (!isLiveChartOpen) return null
 
     return (
         <Fade in={isLiveChartOpen}>

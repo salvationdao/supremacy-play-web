@@ -2,7 +2,7 @@ import { LoadingButton } from "@mui/lab"
 import { Box, ButtonBase, ButtonBaseProps, Fade, IconButton, Modal, Stack, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
 import { SvgClose, SvgGlobal, SvgLine, SvgMicrochip, SvgQuestionMark, SvgTarget } from "../../assets"
-import { useConsumables } from "../../containers/consumables"
+import { useMiniMap } from "../../containers"
 import { useToggle } from "../../hooks"
 import { colors, fonts } from "../../theme/theme"
 import { LocationSelectType, PlayerAbility } from "../../types"
@@ -16,7 +16,7 @@ interface PlayerAbilityCardProps extends ButtonBaseProps {
 const activateModalWidth = 400
 
 export const PlayerAbilityCard = ({ playerAbility, ...props }: PlayerAbilityCardProps) => {
-    const { setPlayerAbility: submitPlayerAbility } = useConsumables()
+    const { setPlayerAbility: submitPlayerAbility } = useMiniMap()
     const [abilityTypeIcon, setAbilityTypeIcon] = useState<JSX.Element>(<SvgQuestionMark />)
     const [abilityTypeDescription, setAbilityTypeDescription] = useState("Miscellaneous ability type.")
 

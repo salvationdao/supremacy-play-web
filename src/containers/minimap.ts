@@ -1,36 +1,24 @@
 import { useCallback, useEffect, useState } from "react"
 import { createContainer } from "unstated-next"
-import { useAuth, useConsumables } from "."
+import { useAuth } from "."
 import { MapSelection } from "../components"
 import { useGameServerSubscriptionUser } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
+import { PlayerAbility } from "../types"
 import { useGame, WinnerAnnouncementResponse } from "./game"
 
 export const MiniMapContainer = createContainer(() => {
     const { bribeStage } = useGame()
     const { factionID } = useAuth()
-    const { playerAbility, setPlayerAbility } = useConsumables()
 
-    // Map data
+    // Map triggers
     const [winner, setWinner] = useState<WinnerAnnouncementResponse>()
+    const [playerAbility, setPlayerAbility] = useState<PlayerAbility>()
     const [isTargeting, setIsTargeting] = useState(false)
+
+    // Other stuff
     const [highlightedMechHash, setHighlightedMechHash] = useState<string>()
-
-    // Map controls
-    const [enlarged, setEnlarged] = useState(false)
     const [selection, setSelection] = useState<MapSelection>()
-
-    const resetSelection = useCallback(() => {
-        if (winner && playerAbility) {
-            setWinner(undefined)
-        } else {
-            setWinner(undefined)
-            setPlayerAbility(undefined)
-            setEnlarged(false)
-        }
-        setSelection(undefined)
-        setIsTargeting(false)
-    }, [winner, playerAbility, setPlayerAbility])
 
     // Subscribe on winner announcements
     useGameServerSubscriptionUser<WinnerAnnouncementResponse | undefined>(
@@ -58,31 +46,35 @@ export const MiniMapContainer = createContainer(() => {
     // Toggle expand if user is using player ability or user is chosen to use battle ability
     useEffect(() => {
         if (winner && bribeStage?.phase === "LOCATION_SELECT") {
+            if (!playerAbility) return setIsTargeting(true)
             // If battle ability is overriding player ability selection
-            if (playerAbility) {
-                // Close the map
-                setIsTargeting(false)
-                setEnlarged(false)
-                setSelection(undefined)
-                const t = setTimeout(() => {
-                    // Then open the map again
-                    setEnlarged(true)
-                    setIsTargeting(true)
-                }, 1000)
-                return () => clearTimeout(t)
-            } else {
-                setEnlarged(true)
+            setIsTargeting(false)
+            setSelection(undefined)
+            const t = setTimeout(() => {
+                // Then open the map again
                 setIsTargeting(true)
-            }
+            }, 1000)
+            return () => clearTimeout(t)
         } else if (playerAbility) {
-            setEnlarged(true)
             setIsTargeting(true)
         }
     }, [winner, bribeStage, playerAbility])
 
+    const resetSelection = useCallback(
+        (resetAll?: boolean) => {
+            if (winner && playerAbility && !resetAll) {
+                setWinner(undefined)
+            } else {
+                setWinner(undefined)
+                setPlayerAbility(undefined)
+            }
+            setSelection(undefined)
+            setIsTargeting(false)
+        },
+        [winner, playerAbility, setPlayerAbility],
+    )
+
     return {
-        enlarged,
-        setEnlarged,
         winner,
         setWinner,
         highlightedMechHash,
@@ -91,6 +83,8 @@ export const MiniMapContainer = createContainer(() => {
         selection,
         setSelection,
         resetSelection,
+        playerAbility,
+        setPlayerAbility,
     }
 })
 

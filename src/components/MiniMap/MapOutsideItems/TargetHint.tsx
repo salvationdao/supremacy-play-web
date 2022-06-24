@@ -1,43 +1,54 @@
-import { Box, Stack, Typography } from "@mui/material"
-import { useEffect, useState } from "react"
+import { Stack, Typography } from "@mui/material"
+import { useEffect, useMemo } from "react"
 import { SvgLine, SvgMicrochip, SvgQuestionMark, SvgTarget } from "../../../assets"
-import { colors } from "../../../theme/theme"
-import { BlueprintPlayerAbility, LocationSelectType } from "../../../types"
-interface TargetHintProps {
-    ability: BlueprintPlayerAbility
+import { useMiniMap, useSnackbar } from "../../../containers"
+import { useTimer } from "../../../hooks"
+import { BlueprintPlayerAbility, GameAbility, LocationSelectType } from "../../../types"
+
+export const TargetHint = () => {
+    const { isTargeting, winner, playerAbility } = useMiniMap()
+
+    if (!isTargeting) return null
+    if (winner) return <WinnerTargetHint />
+    if (playerAbility) return <PlayerAbilityTargetHint ability={playerAbility.ability} />
+    return null
 }
 
-export const TargetHint = ({ ability }: TargetHintProps) => {
-    const [abilityTypeIcon, setAbilityTypeIcon] = useState<JSX.Element>(<SvgQuestionMark />)
-    const [abilityActionDescriptor, setAbilityActionDescriptor] = useState("Select a location")
+const WinnerTargetHint = () => {
+    const { newSnackbarMessage } = useSnackbar()
+    const { winner, resetSelection } = useMiniMap()
+
+    if (!winner) return null
+
+    return (
+        <WinnerTargetHintInner
+            gameAbility={winner.game_ability}
+            endTime={winner.end_time}
+            onCountdownExpired={() => {
+                newSnackbarMessage("Failed to submit target location on time.", "error")
+                resetSelection()
+            }}
+        />
+    )
+}
+
+const WinnerTargetHintInner = ({ gameAbility, endTime, onCountdownExpired }: { gameAbility: GameAbility; endTime: Date; onCountdownExpired: () => void }) => {
+    const { label, colour } = gameAbility
+    const { totalSecRemain } = useTimer(endTime)
 
     useEffect(() => {
-        switch (ability.location_select_type) {
-            case LocationSelectType.LOCATION_SELECT:
-            case LocationSelectType.MECH_COMMAND:
-                setAbilityActionDescriptor("Select a location")
-                setAbilityTypeIcon(<SvgTarget size="1.6rem" />)
-                break
-            case LocationSelectType.MECH_SELECT:
-                setAbilityActionDescriptor("Select an allied mech")
-                setAbilityTypeIcon(<SvgMicrochip size="1.6rem" />)
-                break
-            case LocationSelectType.LINE_SELECT:
-                setAbilityActionDescriptor("Draw a line by selecting two locations")
-                setAbilityTypeIcon(<SvgLine size="1.6rem" />)
-                break
-        }
-    }, [ability])
+        if (totalSecRemain <= 1) onCountdownExpired()
+    }, [totalSecRemain, onCountdownExpired])
 
     return (
         <Stack
-            alignItems="baseline"
+            alignItems="center"
             justifyContent="center"
             direction="row"
             spacing=".8rem"
             sx={{
                 position: "absolute",
-                top: 0,
+                bottom: 0,
                 left: 0,
                 right: 0,
                 px: "1.12rem",
@@ -47,33 +58,68 @@ export const TargetHint = ({ ability }: TargetHintProps) => {
                 zIndex: 98,
             }}
         >
-            <Typography variant="h6">
-                <Box
-                    component="span"
-                    sx={{
-                        fontWeight: "fontWeightBold",
-                    }}
-                >
-                    {abilityActionDescriptor}
-                </Box>
-                &nbsp;to deploy&nbsp;
-                <Box
-                    component="span"
-                    sx={{
-                        display: "inline-flex",
-                        alignItems: "center",
-                        marginLeft: ".5rem",
-                        textTransform: "uppercase",
-                        fontWeight: "fontWeightBold",
-                        color: colors.offWhite,
-                        lineHeight: 1,
-                    }}
-                >
-                    {abilityTypeIcon}
-                    &nbsp;
-                    {ability.label}
-                </Box>
+            <Typography variant="h6" sx={{ span: { lineHeight: 1, fontWeight: "fontWeightBold", color: colour } }}>
+                You have&nbsp;
+                {Math.max(totalSecRemain - 2, 0)}s to choose a location for&nbsp;
+                <span>{`${label}`}</span>
             </Typography>
+        </Stack>
+    )
+}
+
+const PlayerAbilityTargetHint = ({ ability }: { ability: BlueprintPlayerAbility }) => {
+    const data = useMemo(() => {
+        const iconProps = { size: "1.6rem", fill: ability.colour, sx: { display: "inline" } }
+
+        let icon = <SvgQuestionMark {...iconProps} />
+        let descriptor = "Select a location"
+
+        switch (ability.location_select_type) {
+            case LocationSelectType.LOCATION_SELECT:
+            case LocationSelectType.MECH_COMMAND:
+                icon = <SvgTarget {...iconProps} />
+                descriptor = "Select a location"
+                break
+            case LocationSelectType.MECH_SELECT:
+                icon = <SvgMicrochip {...iconProps} />
+                descriptor = "Select an allied mech"
+                break
+            case LocationSelectType.LINE_SELECT:
+                icon = <SvgLine {...iconProps} />
+                descriptor = "Draw a line by selecting two locations"
+                break
+        }
+
+        return { icon, descriptor }
+    }, [ability])
+
+    return (
+        <Stack
+            alignItems="center"
+            justifyContent="center"
+            direction="row"
+            spacing=".8rem"
+            sx={{
+                position: "absolute",
+                bottom: 0,
+                left: 0,
+                right: 0,
+                px: "1.12rem",
+                py: ".48rem",
+                backgroundColor: (theme) => `${theme.factionTheme.background}`,
+                borderRadius: 0.5,
+                zIndex: 98,
+            }}
+        >
+            <Stack direction="row" alignItems="center" spacing=".5rem">
+                <Typography variant="h6">{data.descriptor} to deploy</Typography>
+
+                {data.icon}
+
+                <Typography variant="h6" sx={{ lineHeight: 1, fontWeight: "fontWeightBold", color: ability.colour }}>
+                    {ability.label}
+                </Typography>
+            </Stack>
         </Stack>
     )
 }

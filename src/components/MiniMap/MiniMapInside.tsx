@@ -4,12 +4,12 @@ import moment from "moment"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { FancyButton, MapWarMachines, SelectionIcon } from ".."
 import { Crosshair } from "../../assets"
-import { Severity } from "../../containers"
+import { useAuth, useGame, useMiniMap, useSnackbar, useSupremacy } from "../../containers"
 import { useInterval, useToggle } from "../../hooks"
 import { useGameServerCommandsFaction } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { colors, fonts } from "../../theme/theme"
-import { CellCoords, Dimension, Faction, GameAbility, LocationSelectType, Map, PlayerAbility, WarMachineState } from "../../types"
+import { CellCoords, Dimension, LocationSelectType, PlayerAbility } from "../../types"
 import { LineSelect } from "./MapInsideItems/LineSelect"
 import { MechCommandLocations } from "./MapInsideItems/MechCommandLocations"
 
@@ -22,49 +22,20 @@ export interface MapSelection {
     mechHash?: string
 }
 
-interface PropsInner {
-    gameAbility?: GameAbility
-    containerDimensions: Dimension
-    // useAuth
-    userID?: string
-    factionID?: string
-    // useGame
-    map?: Map
-    warMachines?: WarMachineState[]
-    // useSupremacy
-    getFaction: (factionID: string) => Faction
-    // useMiniMap
+interface MiniMapInsideProps {
     enlarged: boolean
-    isTargeting: boolean
-    selection?: MapSelection
-    setSelection: React.Dispatch<React.SetStateAction<MapSelection | undefined>>
-    resetSelection: () => void
-    highlightedMechHash?: string
-    setHighlightedMechHash: React.Dispatch<React.SetStateAction<string | undefined>>
-    // useConsumables
-    playerAbility?: PlayerAbility
-    // useSnackbar
-    newSnackbarMessage: (message: string, severity?: Severity) => void
+    containerDimensions: Dimension
 }
 
-export const MiniMapInside = ({
-    gameAbility,
-    containerDimensions,
-    userID,
-    factionID,
-    map,
-    warMachines,
-    getFaction,
-    enlarged,
-    isTargeting,
-    selection,
-    setSelection,
-    resetSelection,
-    highlightedMechHash,
-    setHighlightedMechHash,
-    playerAbility,
-    newSnackbarMessage,
-}: PropsInner) => {
+export const MiniMapInside = ({ containerDimensions, enlarged }: MiniMapInsideProps) => {
+    const { userID, factionID } = useAuth()
+    const { getFaction } = useSupremacy()
+    const { newSnackbarMessage } = useSnackbar()
+    const { map, warMachines } = useGame()
+    const { winner, isTargeting, selection, setSelection, resetSelection, highlightedMechHash, setHighlightedMechHash, playerAbility } = useMiniMap()
+
+    const gameAbility = winner?.game_ability
+
     const mapElement = useRef<HTMLDivElement>()
     // Setup use-gesture props
     const [dragX, setDragX] = useState(0)
@@ -451,7 +422,7 @@ export const MiniMapInside = ({
                         pb: ".24rem",
                         minWidth: "2rem",
                     }}
-                    onClick={resetSelection}
+                    onClick={() => resetSelection()}
                 >
                     <Typography
                         sx={{

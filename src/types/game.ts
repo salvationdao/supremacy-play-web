@@ -116,7 +116,7 @@ export interface PlayerAbility {
     last_purchased_at: Date
     ability: BlueprintPlayerAbility
 
-    // currently used for mech command related abilities
+    // Used for mech command related abilities
     mechHash?: string
 }
 

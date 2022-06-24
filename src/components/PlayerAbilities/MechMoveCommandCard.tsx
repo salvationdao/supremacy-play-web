@@ -1,16 +1,15 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
+import { useCallback, useEffect, useMemo, useState } from "react"
+import { useAuth, useMiniMap } from "../../containers"
+import { shadeColor } from "../../helpers"
+import { useInterval } from "../../hooks"
 import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
-import { useCallback, useEffect, useMemo, useState } from "react"
-import { BlueprintPlayerAbility, Faction, LocationSelectType, WarMachineState } from "../../types"
-import { useAuth, useConsumables } from "../../containers"
-import { ClipThing } from "../Common/ClipThing"
-import { TopText } from "../VotingSystem/FactionAbility/TopText"
-import { SupsBar } from "../VotingSystem/FactionAbility/SupsBar"
-import { FancyButton } from "../Common/FancyButton"
-import { useInterval } from "../../hooks"
 import { colors } from "../../theme/theme"
-import { shadeColor } from "../../helpers"
+import { BlueprintPlayerAbility, Faction, LocationSelectType, WarMachineState } from "../../types"
+import { ClipThing } from "../Common/ClipThing"
+import { FancyButton } from "../Common/FancyButton"
+import { TopText } from "../VotingSystem/FactionAbility/TopText"
 
 export interface MechMoveCommand {
     id: string
@@ -163,7 +162,7 @@ const MechMoveCommandAbility: BlueprintPlayerAbility = {
 
 const MechCommandButton = ({ color, remainCooldownSeconds, isCancelled, textColor, hash, mechMoveCommandID, onClose }: MechCommandButton) => {
     const { send } = useGameServerCommandsFaction("/faction_commander")
-    const { setPlayerAbility } = useConsumables()
+    const { setPlayerAbility } = useMiniMap()
     const text = useMemo(() => {
         if (remainCooldownSeconds > 0 && !isCancelled) {
             return "Cancel"
