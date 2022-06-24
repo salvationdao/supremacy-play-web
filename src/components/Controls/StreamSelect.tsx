@@ -63,6 +63,7 @@ export const StreamSelect = () => {
                         >
                             <Typography
                                 sx={{
+                                    lineHeight: 1,
                                     color: isExperimental(x.service) ? "#E4E455" : "unset",
                                     fontWeight: isExperimental(x.service) ? "bold" : "unset",
                                 }}

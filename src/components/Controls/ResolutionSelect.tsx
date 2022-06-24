@@ -29,7 +29,7 @@ export const ResolutionSelect = () => {
                     "& .MuiSelect-outlined": { p: 0 },
                 }}
                 defaultValue={resolutions[0]}
-                value={selectedResolution || resolutions[0] || -1}
+                value={selectedResolution || resolutions[0] || 0}
                 MenuProps={{
                     variant: "menu",
                     sx: {

@@ -1,5 +1,5 @@
 import { Stack } from "@mui/material"
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { STREAM_ASPECT_RATIO_W_H } from "../../constants"
 import { useDimension, useSnackbar, useStream } from "../../containers"
 import { parseString } from "../../helpers"
@@ -16,14 +16,15 @@ declare global {
 export const SLPDStream = () => {
     const { newSnackbarMessage } = useSnackbar()
     const { iframeDimensions } = useDimension()
-    const { isMute, volume, currentStream, setCurrentPlayingStreamHost } = useStream()
+    const { isMute, volume, currentStream, setCurrentPlayingStreamHost, setResolutions, setSelectedResolution, selectedResolution, currentPlayingStreamHost } =
+        useStream()
     const [isScriptLoaded, setIsScriptLoaded] = useState(false)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const sldpPlayer = useRef<any>()
     const vidRef = useRef<HTMLVideoElement>()
 
     useEffect(() => {
-        if (window.SLDP) return
+        if (window.SLDP) return setIsScriptLoaded(true)
         // Load the Softvelum SLDP HTML playback script
         const script = document.createElement("script")
         script.src = "https://softvelum.com/player/releases/sldp-v2.20.0.min.js"
@@ -31,15 +32,25 @@ export const SLPDStream = () => {
         script.async = true
         script.onload = () => setIsScriptLoaded(true)
         document.body.appendChild(script)
+    }, [setResolutions, setSelectedResolution])
+
+    const cleanUpStream = useCallback(() => {
+        sldpPlayer.current && sldpPlayer.current.destroy()
+        vidRef.current = undefined
+        sldpPlayer.current = undefined
     }, [])
 
     useEffect(() => {
         // Script not loaded or SLDP player not already set up
-        if (!isScriptLoaded || sldpPlayer.current || vidRef.current || !window.SLDP || !currentStream || currentStream.service !== StreamService.Softvelum)
-            return
+        if (!isScriptLoaded || !window.SLDP || !currentStream || currentStream.service !== StreamService.Softvelum) return
+
+        const streamUrl = `${currentStream.url}${selectedResolution ? `_${selectedResolution}p` : ""}`
+        cleanUpStream()
+        console.log(streamUrl)
         sldpPlayer.current = window.SLDP.init({
             container: "sldp_player_wrapper",
-            stream_url: currentStream.url,
+            // If user has selected a resolution
+            stream_url: streamUrl,
             autoplay: true,
             controls: false,
             muted: isMute,
@@ -50,12 +61,34 @@ export const SLPDStream = () => {
             vidRef.current = videoEl[0]
             vidRef.current.volume = parseString(localStorage.getItem("streamVolume"), 0.3)
             setCurrentPlayingStreamHost(currentStream.host)
+
+            // Hard-coded resolutions for SLDP
+            setResolutions((prev) => {
+                if (!prev || prev.length <= 0) {
+                    const resolutions = [0, 1080, 720, 480, 360, 240]
+                    setSelectedResolution(Math.max.apply(null, resolutions))
+                    return resolutions
+                }
+                return prev
+            })
         } else {
             newSnackbarMessage("Failed to initialize stream.", "error")
         }
 
-        return () => sldpPlayer.current && sldpPlayer.current.destroy()
-    }, [isScriptLoaded, currentStream, newSnackbarMessage, isMute, setCurrentPlayingStreamHost])
+        // return () => cleanUpStream()
+        // Can't have isMute as deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [
+        cleanUpStream,
+        currentStream,
+        isScriptLoaded,
+        newSnackbarMessage,
+        setCurrentPlayingStreamHost,
+        setResolutions,
+        setSelectedResolution,
+        selectedResolution,
+        currentPlayingStreamHost,
+    ])
 
     useEffect(() => {
         if (volume <= 0) return
