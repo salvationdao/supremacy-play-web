@@ -46,7 +46,6 @@ export const SLPDStream = () => {
 
         const streamUrl = `${currentStream.url}${selectedResolution ? `_${selectedResolution}p` : ""}`
         cleanUpStream()
-        console.log(streamUrl)
         sldpPlayer.current = window.SLDP.init({
             container: "sldp_player_wrapper",
             // If user has selected a resolution
@@ -65,7 +64,7 @@ export const SLPDStream = () => {
             // Hard-coded resolutions for SLDP
             setResolutions((prev) => {
                 if (!prev || prev.length <= 0) {
-                    const resolutions = [0, 1080, 720, 480, 360, 240]
+                    const resolutions = [1080, 720, 480, 360, 240]
                     setSelectedResolution(Math.max.apply(null, resolutions))
                     return resolutions
                 }
