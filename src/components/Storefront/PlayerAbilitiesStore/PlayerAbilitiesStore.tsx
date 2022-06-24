@@ -72,7 +72,7 @@ export const PlayerAbilitiesStore = () => {
                             gap: "5rem",
                             alignItems: "stretch",
                             justifyContent: "center",
-                            pt: "1rem",
+                            py: "1rem",
                         }}
                     >
                         {saleAbilities.map((s) => (

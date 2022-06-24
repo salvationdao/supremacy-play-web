@@ -4,6 +4,7 @@ import { useHistory, useLocation, useParams } from "react-router-dom"
 import { HangarBg } from "../assets"
 import { KeycardsHangar } from "../components/Hangar/KeycardsHangar/KeycardsHangar"
 import { MysteryCratesHangar } from "../components/Hangar/MysteryCratesHangar/MysteryCratesHangar"
+import { PlayerAbilitiesHangar } from "../components/Hangar/PlayerAbilitiesHangar/PlayerAbilitiesHangar"
 import { WarMachinesHangar } from "../components/Hangar/WarMachinesHangar/WarMachinesHangar"
 import { useTheme } from "../containers/theme"
 import { ROUTES_MAP } from "../routes"
@@ -13,6 +14,7 @@ export enum HANGAR_TABS {
     WarMachines = "war-machines",
     MysteryCrates = "mystery-crates",
     Keycards = "key-cards",
+    Abilities = "abilities",
 }
 
 export const HangarPage = () => {
@@ -73,6 +75,7 @@ export const HangarPage = () => {
                         <Tab label="WAR MACHINES" value={HANGAR_TABS.WarMachines} />
                         <Tab label="KEY CARDS" value={HANGAR_TABS.Keycards} />
                         <Tab label="MYSTERY CRATES" value={HANGAR_TABS.MysteryCrates} />
+                        <Tab label="ABILITIES" value={HANGAR_TABS.Abilities} />
                     </Tabs>
                 </Box>
 
@@ -84,6 +87,9 @@ export const HangarPage = () => {
                 </TabPanel>
                 <TabPanel currentValue={currentValue} value={HANGAR_TABS.MysteryCrates}>
                     <MysteryCratesHangar />
+                </TabPanel>
+                <TabPanel currentValue={currentValue} value={HANGAR_TABS.Abilities}>
+                    <PlayerAbilitiesHangar />
                 </TabPanel>
             </Stack>
         </Stack>
