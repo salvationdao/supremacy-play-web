@@ -74,6 +74,8 @@ const MiniMapInsideInner = ({
     const { getFaction } = useSupremacy()
     const { map, warMachines } = useGame()
 
+    console.log("AAAAAAAAAAAAAAAAAAAAAAAAa")
+
     const gestureRef = useRef<HTMLDivElement>(null)
     const { mapScale, dragX, dragY } = useMiniMapGestures({ gestureRef, containerDimensions })
 
