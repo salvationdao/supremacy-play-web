@@ -3,7 +3,8 @@ import { useStream } from "../../containers"
 import { StreamService } from "../../types"
 import { AntMediaStream } from "./AntMediaStream"
 import { NoStreamScreen } from "./NoStreamScreen"
-import { OvenPlayerStream } from "./OvenPlayerStream"
+import { OvenplayerStream } from "./OvenPlayerStream"
+import { SLPDStream } from "./SLPDStream"
 
 export const Stream = () => {
     const { currentStream } = useStream()
@@ -12,11 +13,15 @@ export const Stream = () => {
     if (isOpen) return null
 
     if (currentStream?.service === StreamService.OvenMediaEngine) {
-        return <OvenPlayerStream />
+        return <OvenplayerStream />
     }
 
     if (currentStream?.service === StreamService.AntMedia) {
         return <AntMediaStream />
+    }
+
+    if (currentStream?.service === StreamService.Softvelum) {
+        return <SLPDStream />
     }
 
     return <NoStreamScreen />
