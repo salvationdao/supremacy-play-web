@@ -1,35 +1,29 @@
 import { Box } from "@mui/material"
-import { Dispatch, SetStateAction, useMemo } from "react"
-import { MapSelection } from "../.."
-import { BlueprintPlayerAbility, GameAbility, LocationSelectType } from "../../../types"
+import { useMemo } from "react"
+import { useMiniMap } from "../../../containers"
+import { LocationSelectType } from "../../../types"
 
-export const SelectionIcon = ({
-    selection,
-    setSelection,
-    ability,
-    gridWidth,
-    gridHeight,
-    targeting,
-}: {
-    selection: MapSelection | undefined
-    setSelection: Dispatch<SetStateAction<MapSelection | undefined>>
-    gridWidth: number
-    gridHeight: number
-    ability?: GameAbility | BlueprintPlayerAbility
-    targeting?: boolean
-}) => {
+export const SelectionIcon = () => {
+    const { gridWidth, gridHeight, selection, setSelection, isTargeting, playerAbility, winner } = useMiniMap()
+
     const sizeX = useMemo(() => gridWidth * 1.5, [gridWidth])
     const sizeY = useMemo(() => gridHeight * 1.5, [gridHeight])
 
+    const ability = winner?.game_ability || playerAbility?.ability
     const coords = selection?.startCoords
-    if (!coords || !ability || !targeting) return null
+
+    if (!coords || !ability || !isTargeting) return null
+
+    // Will return null if the ability doesnt involve selection icon.
     if (
         "location_select_type" in ability &&
         (ability.location_select_type === LocationSelectType.LINE_SELECT ||
             ability.location_select_type === LocationSelectType.MECH_SELECT ||
             ability.location_select_type === LocationSelectType.GLOBAL)
-    )
+    ) {
         return null
+    }
+
     const { colour, image_url } = ability
 
     return (

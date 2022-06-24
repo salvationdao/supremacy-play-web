@@ -1,15 +1,22 @@
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { createContainer } from "unstated-next"
-import { useAuth } from "."
+import { useAuth, useSnackbar } from "."
 import { MapSelection } from "../components"
-import { useGameServerSubscriptionUser } from "../hooks/useGameServer"
+import { useGameServerCommandsFaction, useGameServerSubscriptionUser } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
-import { PlayerAbility } from "../types"
+import { CellCoords, LocationSelectType, PlayerAbility } from "../types"
 import { useGame, WinnerAnnouncementResponse } from "./game"
 
 export const MiniMapContainer = createContainer(() => {
-    const { bribeStage } = useGame()
+    const { bribeStage, map } = useGame()
     const { factionID } = useAuth()
+    const { newSnackbarMessage } = useSnackbar()
+    const { send } = useGameServerCommandsFaction("/faction_commander")
+
+    // Map
+    const mapElement = useRef<HTMLDivElement>()
+    const gridWidth = useMemo(() => (map ? map.width / map.cells_x : 50), [map])
+    const gridHeight = useMemo(() => (map ? map.height / map.cells_y : 50), [map])
 
     // Map triggers
     const [winner, setWinner] = useState<WinnerAnnouncementResponse>()
@@ -74,7 +81,87 @@ export const MiniMapContainer = createContainer(() => {
         [winner, playerAbility, setPlayerAbility],
     )
 
+    const onTargetConfirm = useCallback(async () => {
+        if (!selection) return
+        try {
+            if (winner?.game_ability) {
+                if (!selection.startCoords) {
+                    throw new Error("Something went wrong while activating this ability. Please try again, or contact support if the issue persists.")
+                }
+                await send<boolean, { x: number; y: number }>(GameServerKeys.SubmitAbilityLocationSelect, {
+                    x: Math.floor(selection.startCoords.x),
+                    y: Math.floor(selection.startCoords.y),
+                })
+            } else if (playerAbility) {
+                let payload: {
+                    blueprint_ability_id: string
+                    location_select_type: string
+                    start_coords?: CellCoords
+                    end_coords?: CellCoords
+                    mech_hash?: string
+                } | null = null
+                switch (playerAbility.ability.location_select_type) {
+                    case LocationSelectType.LINE_SELECT:
+                        if (!selection.startCoords || !selection.endCoords) {
+                            throw new Error("Something went wrong while activating this ability. Please try again, or contact support if the issue persists.")
+                        }
+                        payload = {
+                            blueprint_ability_id: playerAbility.ability.id,
+                            location_select_type: playerAbility.ability.location_select_type,
+                            start_coords: {
+                                x: Math.floor(selection.startCoords.x),
+                                y: Math.floor(selection.startCoords.y),
+                            },
+                            end_coords: {
+                                x: Math.floor(selection.endCoords.x),
+                                y: Math.floor(selection.endCoords.y),
+                            },
+                        }
+                        break
+                    case LocationSelectType.MECH_SELECT:
+                        payload = {
+                            blueprint_ability_id: playerAbility.ability.id,
+                            location_select_type: playerAbility.ability.location_select_type,
+                            mech_hash: selection.mechHash,
+                        }
+                        break
+                    case LocationSelectType.LOCATION_SELECT:
+                    case LocationSelectType.MECH_COMMAND:
+                        if (!selection.startCoords) {
+                            throw new Error("Something went wrong while activating this ability. Please try again, or contact support if the issue persists.")
+                        }
+                        payload = {
+                            blueprint_ability_id: playerAbility.ability.id,
+                            location_select_type: playerAbility.ability.location_select_type,
+                            start_coords: {
+                                x: Math.floor(selection.startCoords.x),
+                                y: Math.floor(selection.startCoords.y),
+                            },
+                            mech_hash: playerAbility.mechHash,
+                        }
+                        break
+                    case LocationSelectType.GLOBAL:
+                        break
+                }
+
+                if (!payload) {
+                    throw new Error("Something went wrong while activating this ability. Please try again, or contact support if the issue persists.")
+                }
+                await send<boolean, typeof payload>(GameServerKeys.PlayerAbilityUse, payload)
+            }
+            resetSelection()
+            if (playerAbility?.ability.location_select_type === LocationSelectType.MECH_SELECT) {
+                setHighlightedMechHash(undefined)
+            }
+            newSnackbarMessage("Successfully submitted target location.", "success")
+        } catch (e) {
+            newSnackbarMessage(typeof e === "string" ? e : "Failed to submit target location.", "error")
+            console.error(e)
+        }
+    }, [send, selection, resetSelection, winner?.game_ability, playerAbility, newSnackbarMessage, setHighlightedMechHash])
+
     return {
+        mapElement,
         winner,
         setWinner,
         highlightedMechHash,
@@ -85,6 +172,9 @@ export const MiniMapContainer = createContainer(() => {
         resetSelection,
         playerAbility,
         setPlayerAbility,
+        onTargetConfirm,
+        gridWidth,
+        gridHeight,
     }
 })
 

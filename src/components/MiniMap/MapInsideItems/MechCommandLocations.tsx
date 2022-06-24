@@ -1,10 +1,9 @@
 import { Box } from "@mui/material"
-import { Dispatch, SetStateAction, useMemo, useState } from "react"
-import { MapSelection } from "../MiniMapInside"
-import { BlueprintPlayerAbility, Faction, GameAbility } from "../../../types"
-import { useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
+import { useMemo, useState } from "react"
 import { useAuth } from "../../../containers"
+import { useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
+import { Faction } from "../../../types"
 import { MechMoveCommand } from "../../PlayerAbilities/MechMoveCommandCard"
 
 export const MechCommandLocations = ({
@@ -24,7 +23,7 @@ export const MechCommandLocations = ({
     const borderColor = useMemo(() => {
         if (!factionID) return "#FFFFFF"
         return getFaction(factionID).primary_color
-    }, [factionID])
+    }, [factionID, getFaction])
 
     useGameServerSubscriptionFaction<MechMoveCommand[]>(
         {

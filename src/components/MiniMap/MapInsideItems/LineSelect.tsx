@@ -1,45 +1,30 @@
 import { Box } from "@mui/material"
-import React, { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useRef } from "react"
+import { useGame, useMiniMap } from "../../../containers"
 import { colors } from "../../../theme/theme"
-import { Map } from "../../../types"
-import { MapSelection } from "../MiniMapInside"
-
-interface LineSelectProps {
-    selection?: MapSelection
-    setSelection: Dispatch<SetStateAction<MapSelection | undefined>>
-    mapElement?: HTMLDivElement
-    gridWidth: number
-    gridHeight: number
-    map?: Map
-    mapScale: number
-}
 
 const minCanvasHeight = 700
 
-export const LineSelect = ({ selection, setSelection, mapElement, gridWidth, gridHeight, map, mapScale }: LineSelectProps) => {
-    const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null)
-    const canvasRef: React.RefCallback<HTMLCanvasElement> = useCallback((node) => {
-        if (node !== null) {
-            setCanvas(node)
-        }
-    }, [])
+export const LineSelect = ({ mapScale }: { mapScale: number }) => {
+    const { map } = useGame()
+    const { mapElement, gridWidth, gridHeight, selection, setSelection } = useMiniMap()
+    const canvasRef = useRef<HTMLCanvasElement>(null)
+
     const indicatorDiameter = useMemo(() => (map ? map.cells_x * 1.5 : 50), [map])
 
     useEffect(() => {
-        const c = canvas?.getContext("2d")
-        if (!c) return
-        if (!mapElement) return
+        const c = canvasRef.current?.getContext("2d")
+        if (!c || !mapElement.current) return
 
-        const { width, height } = mapElement.getBoundingClientRect()
+        const { width, height } = mapElement.current.getBoundingClientRect()
         c.canvas.width = (width / height) * minCanvasHeight
         c.canvas.height = minCanvasHeight
-    }, [canvas, mapElement])
+    }, [mapElement])
 
     // https://stackoverflow.com/questions/24376951/find-new-coordinates-of-point-on-line-in-javascript
     useEffect(() => {
-        const c = canvas?.getContext("2d")
-        if (!c) return
-        if (!map) return
+        const c = canvasRef.current?.getContext("2d")
+        if (!c || !map) return
 
         c.clearRect(0, 0, c.canvas.width, c.canvas.height)
         if (!selection?.startCoords || !selection?.endCoords) return
@@ -59,7 +44,7 @@ export const LineSelect = ({ selection, setSelection, mapElement, gridWidth, gri
         c.lineWidth = indicatorDiameter * 0.1
         c.strokeStyle = "#d40000"
         c.stroke()
-    }, [canvas, selection, map, indicatorDiameter])
+    }, [selection, map, indicatorDiameter])
 
     return (
         <>
@@ -88,6 +73,7 @@ export const LineSelect = ({ selection, setSelection, mapElement, gridWidth, gri
                     1
                 </Box>
             )}
+
             {selection?.endCoords && (
                 <Box
                     onClick={() =>
@@ -114,11 +100,22 @@ export const LineSelect = ({ selection, setSelection, mapElement, gridWidth, gri
                     2
                 </Box>
             )}
+
             <canvas
                 ref={canvasRef}
+                style={{
+                    zIndex: 6,
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    width: "100%",
+                    height: "100%",
+                }}
                 onClick={(e) => {
-                    if (mapElement) {
-                        const rect = mapElement.getBoundingClientRect()
+                    if (mapElement.current) {
+                        const rect = mapElement.current.getBoundingClientRect()
                         // Mouse position
                         const x = e.clientX - rect.left
                         const y = e.clientY - rect.top
@@ -144,16 +141,6 @@ export const LineSelect = ({ selection, setSelection, mapElement, gridWidth, gri
                             }
                         })
                     }
-                }}
-                style={{
-                    zIndex: 6,
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    width: "100%",
-                    height: "100%",
                 }}
             />
         </>
