@@ -3,14 +3,13 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useLocation } from "react-router-dom"
 import { ClipThing, FancyButton } from "../.."
 import { SafePNG } from "../../../assets"
-import { useSnackbar } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { parseString } from "../../../helpers"
 import { usePagination, useToggle, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { MarketplaceBuyAuctionItem, SortTypeLabel } from "../../../types/marketplace"
+import { MarketplaceBuyAuctionItem, MarketSaleType, SortTypeLabel } from "../../../types/marketplace"
 import { PageHeader } from "../../Common/PageHeader"
 import { ChipFilter } from "../../Common/SortAndFilters/ChipFilterSection"
 import { RangeFilter } from "../../Common/SortAndFilters/RangeFilterSection"
@@ -19,10 +18,10 @@ import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { MysteryCrateMarketItem } from "./MysteryCrateMarketItem"
 
 const sortOptions = [
-    { label: SortTypeLabel.OldestFirst, value: SortTypeLabel.OldestFirst },
-    { label: SortTypeLabel.NewestFirst, value: SortTypeLabel.NewestFirst },
-    { label: SortTypeLabel.ExpiringFirst, value: SortTypeLabel.ExpiringFirst },
-    { label: SortTypeLabel.ExpiringReverse, value: SortTypeLabel.ExpiringReverse },
+    { label: SortTypeLabel.CreateTimeOldestFirst, value: SortTypeLabel.CreateTimeOldestFirst },
+    { label: SortTypeLabel.CreateTimeNewestFirst, value: SortTypeLabel.CreateTimeNewestFirst },
+    { label: SortTypeLabel.EndTimeEndingSoon, value: SortTypeLabel.EndTimeEndingSoon },
+    { label: SortTypeLabel.EndTimeEndingLast, value: SortTypeLabel.EndTimeEndingLast },
     { label: SortTypeLabel.PriceLowest, value: SortTypeLabel.PriceLowest },
     { label: SortTypeLabel.PriceHighest, value: SortTypeLabel.PriceHighest },
     { label: SortTypeLabel.Alphabetical, value: SortTypeLabel.Alphabetical },
@@ -32,7 +31,6 @@ const sortOptions = [
 export const MysteryCratesMarket = () => {
     const location = useLocation()
     const [query, updateQuery] = useUrlQuery()
-    const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const theme = useTheme()
 
@@ -49,7 +47,7 @@ export const MysteryCratesMarket = () => {
 
     // Filters and sorts
     const [search, setSearch] = useState("")
-    const [sort, setSort] = useState<string>(query.get("sort") || SortTypeLabel.NewestFirst)
+    const [sort, setSort] = useState<string>(query.get("sort") || SortTypeLabel.CreateTimeNewestFirst)
     const [status, setStatus] = useState<string[]>((query.get("statuses") || undefined)?.split("||") || [])
     const [ownedBy, setOwnedBy] = useState<string[]>((query.get("ownedBy") || undefined)?.split("||") || [])
     const [listingTypes, setListingTypes] = useState<string[]>((query.get("listingTypes") || undefined)?.split("||") || [])
@@ -60,7 +58,7 @@ export const MysteryCratesMarket = () => {
     // Filters
     const statusFilterSection = useRef<ChipFilter>({
         label: "STATUS",
-        options: [{ value: "true", label: "SOLD", color: colors.green }],
+        options: [{ value: "true", label: "SOLD", color: colors.marketSold }],
         initialSelected: status,
         onSetSelected: (value: string[]) => {
             setStatus(value)
@@ -83,9 +81,9 @@ export const MysteryCratesMarket = () => {
     const listingTypeFilterSection = useRef<ChipFilter>({
         label: "LISTING TYPE",
         options: [
-            { value: "BUY_NOW", label: "BUY NOW", color: colors.buyout },
-            { value: "DUTCH_AUCTION", label: "DUTCH AUCTION", color: colors.dutchAuction },
-            { value: "AUCTION", label: "AUCTION", color: colors.auction },
+            { value: MarketSaleType.Buyout, label: "BUY NOW", color: colors.buyout },
+            { value: MarketSaleType.DutchAuction, label: "DUTCH AUCTION", color: colors.dutchAuction },
+            { value: MarketSaleType.Auction, label: "AUCTION", color: colors.auction },
         ],
         initialSelected: listingTypes,
         onSetSelected: (value: string[]) => {
@@ -111,13 +109,13 @@ export const MysteryCratesMarket = () => {
             let sortBy = "alphabetical"
             if (
                 sort === SortTypeLabel.AlphabeticalReverse ||
-                sort === SortTypeLabel.NewestFirst ||
-                sort === SortTypeLabel.ExpiringReverse ||
+                sort === SortTypeLabel.CreateTimeNewestFirst ||
+                sort === SortTypeLabel.EndTimeEndingLast ||
                 sort === SortTypeLabel.PriceHighest
             )
                 sortDir = "desc"
-            if (sort === SortTypeLabel.OldestFirst || sort === SortTypeLabel.NewestFirst) sortBy = "created_at"
-            if (sort === SortTypeLabel.ExpiringFirst || sort === SortTypeLabel.ExpiringReverse) sortBy = "time"
+            if (sort === SortTypeLabel.CreateTimeOldestFirst || sort === SortTypeLabel.CreateTimeNewestFirst) sortBy = "created_at"
+            if (sort === SortTypeLabel.EndTimeEndingSoon || sort === SortTypeLabel.EndTimeEndingLast) sortBy = "time"
             if (sort === SortTypeLabel.PriceLowest || sort === SortTypeLabel.PriceHighest) sortBy = "price"
 
             const [min_price, max_price] = price
@@ -125,7 +123,7 @@ export const MysteryCratesMarket = () => {
             const resp = await send<{ total: number; records: MarketplaceBuyAuctionItem[] }>(GameServerKeys.MarketplaceSalesList, {
                 page: page - 1,
                 page_size: pageSize,
-                search: search,
+                search,
                 listing_types: listingTypes,
                 item_type: "mystery_crate",
                 min_price,
@@ -152,13 +150,12 @@ export const MysteryCratesMarket = () => {
             setLoadError(undefined)
         } catch (err) {
             const message = typeof err === "string" ? err : "Failed to get mech listings."
-            newSnackbarMessage(message, "error")
             setLoadError(message)
             console.error(err)
         } finally {
             setIsLoading(false)
         }
-    }, [sort, price, send, page, pageSize, search, listingTypes, ownedBy, status, updateQuery, setTotalItems, newSnackbarMessage])
+    }, [sort, price, send, page, pageSize, search, listingTypes, ownedBy, status, updateQuery, setTotalItems])
 
     useEffect(() => {
         getItems()

@@ -52,11 +52,19 @@ export const MysteryCrateHangarItem = ({ crate }: MysteryCrateStoreItemProps) =>
                                 height: "20rem",
                             }}
                         >
-                            <MediaPreview imageUrl={crate.image_url || SafePNG} videoUrls={[crate.animation_url, crate.card_animation_url]} />
+                            <MediaPreview imageUrl={crate.image_url || SafePNG} videoUrls={[crate.animation_url, crate.card_animation_url]} objectFit="cover" />
 
                             <Stack
                                 alignItems="center"
-                                sx={{ position: "absolute", bottom: "-.2rem", width: "100%", px: ".8rem", py: ".5rem", backgroundColor: "#00000010" }}
+                                sx={{
+                                    position: "absolute",
+                                    bottom: "-.2rem",
+                                    width: "100%",
+                                    px: ".8rem",
+                                    py: ".5rem",
+                                    background: `linear-gradient(#000000CC 26%, #000000)`,
+                                    borderRadius: 0.5,
+                                }}
                             >
                                 <Countdown dateTo={crate.locked_until} />
                             </Stack>

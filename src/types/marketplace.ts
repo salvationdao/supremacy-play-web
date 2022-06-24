@@ -4,24 +4,23 @@ export enum ItemType {
     MysteryCrate = "MYSTERY_CRATE",
 }
 
-export enum SaleType {
+export enum MarketSaleType {
     Buyout = "BUYOUT",
     Auction = "AUCTION",
-    AuctionOrBuyout = "AUCTION_OR_BUYOUT",
     DutchAuction = "DUTCH_AUCTION",
 }
 
 export enum SortTypeLabel {
-    OldestFirst = "Create time: oldest",
-    NewestFirst = "Create time: newly listed",
-    ExpiringFirst = "End time: ending soon",
-    ExpiringReverse = "End time: ending last",
+    CreateTimeOldestFirst = "Create time: oldest",
+    CreateTimeNewestFirst = "Create time: newly listed",
+    EndTimeEndingSoon = "End time: ending soon",
+    EndTimeEndingLast = "End time: ending last",
     PriceLowest = "Price: lowest first",
     PriceHighest = "Price: highest first",
     Alphabetical = "Name: ascending",
     AlphabeticalReverse = "Name: descending",
-    MechQueueAsc = "Queue position: lowest first",
-    MechQueueDesc = "Queue position: highest first",
+    MechQueueAsc = "Queue: lowest first",
+    MechQueueDesc = "Queue: highest first",
 }
 
 export interface MarketUser {
@@ -83,4 +82,25 @@ export interface MarketplaceBuyAuctionItem {
     mystery_crate?: MarketCrate
     sold_for?: string
     sold_at?: Date
+    sold_to?: MarketUser
+}
+
+export enum MarketplaceEventType {
+    // Buyer's POV
+    Purchased = "purchase",
+    Bid = "bid",
+    BidReturned = "bid_refund",
+    // Seller's POV
+    Created = "created",
+    Sold = "sold",
+    // Common
+    Cancelled = "cancelled",
+}
+
+export interface MarketplaceEvent {
+    id: string
+    event_type: MarketplaceEventType
+    created_at: Date
+    item: MarketplaceBuyAuctionItem
+    amount?: string
 }

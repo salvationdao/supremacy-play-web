@@ -3,7 +3,7 @@ import { useStream } from "../../containers"
 import { StreamService } from "../../types"
 import { AntMediaStream } from "./AntMediaStream"
 import { NoStreamScreen } from "./NoStreamScreen"
-import { OverPlayerStream } from "./OverPlayerStream"
+import { OvenPlayerStream } from "./OvenPlayerStream"
 
 export const Stream = () => {
     const { currentStream } = useStream()
@@ -12,7 +12,7 @@ export const Stream = () => {
     if (isOpen) return null
 
     if (currentStream?.service === StreamService.OvenMediaEngine) {
-        return <OverPlayerStream />
+        return <OvenPlayerStream />
     }
 
     if (currentStream?.service === StreamService.AntMedia) {

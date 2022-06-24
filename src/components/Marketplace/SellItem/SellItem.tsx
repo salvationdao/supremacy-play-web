@@ -329,9 +329,9 @@ export const SellItemInner = ({ toggleReset }: { toggleReset: () => void }) => {
                             disabled={!isFormReady()}
                             clipThingsProps={{
                                 clipSize: "9px",
-                                backgroundColor: colors.green,
+                                backgroundColor: colors.marketSold,
                                 opacity: 1,
-                                border: { isFancy: true, borderColor: colors.green, borderThickness: "2px" },
+                                border: { isFancy: true, borderColor: colors.marketSold, borderThickness: "2px" },
                                 sx: { position: "relative" },
                             }}
                             sx={{ px: "4rem", py: ".6rem", color: "#FFFFFF" }}

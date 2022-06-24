@@ -7,7 +7,7 @@ import { numberCommaFormatter, shadeColor } from "../../../../helpers"
 import { colors, fonts } from "../../../../theme/theme"
 
 export const SoldDetails = ({ soldFor }: { soldFor: string }) => {
-    const soldBackgroundColor = useMemo(() => shadeColor(colors.green, -95), [])
+    const soldBackgroundColor = useMemo(() => shadeColor(colors.marketSold, -95), [])
     const formattedCommaPrice = useMemo(() => numberCommaFormatter(new BigNumber(soldFor).shiftedBy(-18).toNumber()), [soldFor])
 
     return (
@@ -22,7 +22,7 @@ export const SoldDetails = ({ soldFor }: { soldFor: string }) => {
                     clipSlantSize="3px"
                     border={{
                         isFancy: true,
-                        borderColor: colors.green,
+                        borderColor: colors.marketSold,
                         borderThickness: ".2rem",
                     }}
                     corners={{

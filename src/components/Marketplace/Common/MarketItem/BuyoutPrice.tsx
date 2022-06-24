@@ -8,7 +8,7 @@ export const BuyoutPrice = ({
     formattedPrice,
     formattedDropPrice,
 }: {
-    isGridView: boolean
+    isGridView?: boolean
     formattedPrice: string
     formattedDropPrice?: string
 }) => {
