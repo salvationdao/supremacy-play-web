@@ -102,33 +102,6 @@ export const PlayerAbilityStoreItem = ({ saleAbility, updatedPrice }: PlayerAbil
                             }}
                         />
 
-                        {/* <Box
-                            sx={{
-                                position: "relative",
-                                width: "100%",
-                            }}
-                        >
-                            <TooltipHelper text={abilityTypeDescription}>
-                                <Box
-                                    sx={{
-                                        position: "absolute",
-                                        right: 0,
-                                        bottom: 0,
-                                        display: "flex",
-                                        height: "3rem",
-                                        width: "3rem",
-                                        justifyContent: "center",
-                                        alignItems: "center",
-                                        backgroundColor: "rgba(0, 0, 0, 0.6)",
-                                        "& div": {
-                                            padding: 0,
-                                        },
-                                    }}
-                                >
-                                    {abilityTypeIcon}
-                                </Box>
-                            </TooltipHelper>
-                        </Box> */}
                         <Typography variant="h4" sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack }}>
                             {saleAbility.ability.label}
                         </Typography>
