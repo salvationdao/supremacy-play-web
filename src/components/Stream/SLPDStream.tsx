@@ -74,7 +74,7 @@ export const SLPDStream = () => {
             newSnackbarMessage("Failed to initialize stream.", "error")
         }
 
-        // return () => cleanUpStream()
+        return () => cleanUpStream()
         // Can't have isMute as deps
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [
