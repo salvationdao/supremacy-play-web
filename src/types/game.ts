@@ -58,7 +58,7 @@ export interface Stream {
     status: string
     latitude: string
     longitude: string
-    service?: StreamService
+    service: StreamService
     distance?: number
 }
 

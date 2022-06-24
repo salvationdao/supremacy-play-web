@@ -4,7 +4,7 @@ import { useTheme } from "../../containers/theme"
 import { colors } from "../../theme/theme"
 import { StreamService } from "../../types"
 
-const isExperimental = (service?: StreamService) => {
+const isExperimental = (service: StreamService) => {
     return service === StreamService.OvenMediaEngine || service === StreamService.Softvelum
 }
 

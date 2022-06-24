@@ -1,12 +1,13 @@
-import { WebRTCAdaptor } from "@antmedia/webrtc_adaptor"
 import { Stack } from "@mui/material"
 import { useCallback, useEffect, useRef } from "react"
 import { SupBackground } from "../../assets"
 import { STREAM_ASPECT_RATIO_W_H } from "../../constants"
+import { WebRTCAdaptor } from "@antmedia/webrtc_adaptor"
 import { useDimension, useSnackbar, useStream } from "../../containers"
 import { parseString } from "../../helpers"
 import { colors, siteZIndex } from "../../theme/theme"
 import { NoStreamScreen } from "./NoStreamScreen"
+import { StreamService } from "../../types"
 
 interface StreamInfoEntry {
     audioBitrate: number
@@ -94,7 +95,7 @@ export const AntMediaStream = () => {
 
     const vidRefCallback = useCallback(
         (vid: HTMLVideoElement) => {
-            if (!currentStream || !currentStream.url || !currentStream.stream_id) return
+            if (!currentStream || !currentStream.url || currentStream.service !== StreamService.AntMedia || !currentStream.stream_id) return
             if (!vid || !vid.parentNode) {
                 vidRef.current = undefined
                 return
