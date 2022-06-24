@@ -1,5 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import { ClipThing, FancyButton } from "../.."
 import { useTheme } from "../../../containers/theme"
 import { useGameServerSubscriptionSecurePublic } from "../../../hooks/useGameServer"
@@ -8,11 +8,12 @@ import { colors, fonts } from "../../../theme/theme"
 import { SaleAbility } from "../../../types"
 import { PageHeader } from "../../Common/PageHeader"
 import { Countdown } from "../../Hangar/MysteryCratesHangar/MysteryCrateHangarItem"
+import { MysteryCrateStoreItemLoadingSkeleton } from "../MysteryCratesStore/MysteryCrateStoreItem/MysteryCrateStoreItem"
 import { PlayerAbilityStoreItem } from "./PlayerAbilityStoreItem"
 
 export const PlayerAbilitiesStore = () => {
     const theme = useTheme()
-
+    const [isLoaded, setIsLoaded] = useState(false)
     const [nextRefreshTime, setNextRefreshTime] = useState<Date>()
     const [saleAbilities, setSaleAbilities] = useState<SaleAbility[]>([])
     const [priceMap, setPriceMap] = useState<Map<string, string>>(new Map())
@@ -29,6 +30,8 @@ export const PlayerAbilitiesStore = () => {
             if (!payload) return
             setNextRefreshTime(payload.next_refresh_time)
             setSaleAbilities(payload.sale_abilities)
+            if (isLoaded) return
+            setIsLoaded(true)
         },
     )
 
@@ -44,6 +47,67 @@ export const PlayerAbilitiesStore = () => {
             })
         },
     )
+
+    const content = useMemo(() => {
+        if (!isLoaded) {
+            return (
+                <Stack direction="row" flexWrap="wrap" sx={{ height: 0 }}>
+                    {new Array(10).fill(0).map((_, index) => (
+                        <MysteryCrateStoreItemLoadingSkeleton key={index} />
+                    ))}
+                </Stack>
+            )
+        }
+
+        if (saleAbilities.length > 0) {
+            return (
+                <Box sx={{ direction: "ltr", height: 0 }}>
+                    <Box
+                        sx={{
+                            overflow: "visible",
+                            display: "grid",
+                            width: "100%",
+                            gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+                            gridTemplateRows: "repeat(1, min-content)",
+                            gap: "5rem",
+                            alignItems: "stretch",
+                            justifyContent: "center",
+                            pt: "1rem",
+                        }}
+                    >
+                        {saleAbilities.map((s) => (
+                            <PlayerAbilityStoreItem key={s.id} saleAbility={s} updatedPrice={priceMap.get(s.id) || s.current_price} />
+                        ))}
+                    </Box>
+                </Box>
+            )
+        }
+
+        return (
+            <Box
+                sx={{
+                    display: "flex",
+                    height: "100%",
+                    alignItems: "center",
+                    justifyContent: "center",
+                }}
+            >
+                <Typography
+                    sx={{
+                        px: "1.28rem",
+                        pt: "1.28rem",
+                        color: colors.grey,
+                        fontFamily: fonts.nostromoBold,
+                        userSelect: "text !important",
+                        opacity: 0.9,
+                        textAlign: "center",
+                    }}
+                >
+                    There are no abilities on sale at this time, come back later.
+                </Typography>
+            </Box>
+        )
+    }, [isLoaded, priceMap, saleAbilities])
 
     return (
         <ClipThing
@@ -146,50 +210,7 @@ export const PlayerAbilitiesStore = () => {
                                 },
                             }}
                         >
-                            {saleAbilities.length > 0 ? (
-                                <Box sx={{ direction: "ltr", height: 0 }}>
-                                    <Box
-                                        sx={{
-                                            overflow: "visible",
-                                            display: "grid",
-                                            width: "100%",
-                                            gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
-                                            gridTemplateRows: "repeat(1, min-content)",
-                                            gap: "5rem",
-                                            alignItems: "stretch",
-                                            justifyContent: "center",
-                                            pt: "1rem",
-                                        }}
-                                    >
-                                        {saleAbilities.map((s) => (
-                                            <PlayerAbilityStoreItem key={s.id} saleAbility={s} updatedPrice={priceMap.get(s.id) || s.current_price} />
-                                        ))}
-                                    </Box>
-                                </Box>
-                            ) : (
-                                <Box
-                                    sx={{
-                                        display: "flex",
-                                        height: "100%",
-                                        alignItems: "center",
-                                        justifyContent: "center",
-                                    }}
-                                >
-                                    <Typography
-                                        sx={{
-                                            px: "1.28rem",
-                                            pt: "1.28rem",
-                                            color: colors.grey,
-                                            fontFamily: fonts.nostromoBold,
-                                            userSelect: "text !important",
-                                            opacity: 0.9,
-                                            textAlign: "center",
-                                        }}
-                                    >
-                                        There are no abilities on sale at this time, come back later.
-                                    </Typography>
-                                </Box>
-                            )}
+                            {content}
                         </Box>
                     </Stack>
                 </Stack>
