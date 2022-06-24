@@ -1,6 +1,5 @@
 import { Box, Stack } from "@mui/material"
-import { useGesture } from "@use-gesture/react"
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useMemo, useRef } from "react"
 import { MapWarMachines, SelectionIcon } from ".."
 import { Crosshair } from "../../assets"
 import { useAuth, useGame, useMiniMap, useSupremacy } from "../../containers"
@@ -8,6 +7,7 @@ import { CellCoords, Dimension, LocationSelectType } from "../../types"
 import { CountdownSubmit } from "./MapInsideItems/CountdownSubmit"
 import { LineSelect } from "./MapInsideItems/LineSelect"
 import { MechCommandLocations } from "./MapInsideItems/MechCommandLocations"
+import { useMiniMapGestures } from "./useMiniMapGestures"
 
 export interface MapSelection {
     // start coords (used for LINE_SELECT and LOCATION_SELECT abilities)
@@ -29,10 +29,8 @@ export const MiniMapInside = ({ containerDimensions, enlarged }: MiniMapInsidePr
     const { map, warMachines } = useGame()
     const { mapElement, gridWidth, gridHeight, isTargeting, selection, setSelection, highlightedMechHash, setHighlightedMechHash, playerAbility } = useMiniMap()
 
-    // Setup use-gesture props
     const gestureRef = useRef<HTMLDivElement>(null)
-
-    const {} = useMiniMapGestures({ gestureRef, containerDimensions })
+    const { mapScale, dragX, dragY } = useMiniMapGestures({ gestureRef, containerDimensions })
 
     // Click inside the map, converts to a selection
     const onMapClick = useCallback(
@@ -131,7 +129,4 @@ export const MiniMapInside = ({ containerDimensions, enlarged }: MiniMapInsidePr
             <CountdownSubmit />
         </>
     )
-}
-function useMiniMapGestures(arg0: { containerDimensions: Dimension }): {} {
-    throw new Error("Function not implemented.")
 }

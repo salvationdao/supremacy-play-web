@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from "react"
 import { useGame } from "../../containers"
 import { Dimension } from "../../types"
 
-const useMiniMapGesture = ({ gestureRef, containerDimensions }: { gestureRef: React.RefObject<HTMLDivElement>; containerDimensions: Dimension }) => {
+export const useMiniMapGestures = ({ gestureRef, containerDimensions }: { gestureRef: React.RefObject<HTMLDivElement>; containerDimensions: Dimension }) => {
     const { map } = useGame()
     const [dragX, setDragX] = useState(0)
     const [dragY, setDragY] = useState(0)
@@ -164,4 +164,10 @@ const useMiniMapGesture = ({ gestureRef, containerDimensions }: { gestureRef: Re
         },
         [map, containerDimensions, mapScale],
     )
+
+    return {
+        mapScale,
+        dragX,
+        dragY,
+    }
 }
