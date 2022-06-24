@@ -1,6 +1,6 @@
 import { Box, Fade, keyframes, Stack, Typography } from "@mui/material"
 import React, { useCallback, useMemo, useState } from "react"
-import { FancyButton, TooltipHelper } from "../.."
+import { FancyButton } from "../.."
 import { SvgGlobal, SvgLine, SvgMicrochip, SvgQuestionMark, SvgSupToken, SvgTarget } from "../../../assets"
 import { useSnackbar } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
@@ -85,68 +85,59 @@ export const PlayerAbilityStoreItem = ({ saleAbility, updatedPrice }: PlayerAbil
             >
                 <Fade in={true} timeout={1000}>
                     <Stack
+                        spacing="1rem"
                         sx={{
                             height: "100%",
-                            p: "1.5rem",
+                            p: "4rem",
                         }}
                     >
-                        <Stack direction="row" spacing="1.5rem" mb="1rem">
-                            <ClipThing
-                                corners={{
-                                    topLeft: true,
-                                }}
-                                sx={{
-                                    position: "relative",
-                                    width: "100px",
-                                    height: "100px",
-                                }}
-                            >
+                        <Box
+                            component="img"
+                            src={saleAbility.ability.image_url}
+                            alt={`Thumbnail image for ${saleAbility.ability.label}`}
+                            sx={{
+                                width: "100%",
+                                objectFit: "contain",
+                                border: `1px solid ${primaryColor}`,
+                            }}
+                        />
+
+                        {/* <Box
+                            sx={{
+                                position: "relative",
+                                width: "100%",
+                            }}
+                        >
+                            <TooltipHelper text={abilityTypeDescription}>
                                 <Box
-                                    component="img"
-                                    src={saleAbility.ability.image_url}
-                                    alt={`Thumbnail image for ${saleAbility.ability.label}`}
                                     sx={{
                                         position: "absolute",
-                                        top: 0,
-                                        left: 0,
                                         right: 0,
                                         bottom: 0,
+                                        display: "flex",
+                                        height: "3rem",
+                                        width: "3rem",
+                                        justifyContent: "center",
+                                        alignItems: "center",
+                                        backgroundColor: "rgba(0, 0, 0, 0.6)",
+                                        "& div": {
+                                            padding: 0,
+                                        },
                                     }}
-                                />
-                                <TooltipHelper text={abilityTypeDescription}>
-                                    <Box
-                                        sx={{
-                                            position: "absolute",
-                                            right: 0,
-                                            bottom: 0,
-                                            display: "flex",
-                                            height: "3rem",
-                                            width: "3rem",
-                                            justifyContent: "center",
-                                            alignItems: "center",
-                                            backgroundColor: "rgba(0, 0, 0, 0.6)",
-                                            "& div": {
-                                                padding: 0,
-                                            },
-                                        }}
-                                    >
-                                        {abilityTypeIcon}
-                                    </Box>
-                                </TooltipHelper>
-                            </ClipThing>
-                            <Stack
-                                sx={{
-                                    flex: 1,
-                                    px: ".4rem",
-                                    py: ".3rem",
-                                }}
-                            >
-                                <Typography gutterBottom variant="h4" sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack }}>
-                                    {saleAbility.ability.label}
-                                </Typography>
-                                <Typography sx={{ fontSize: "2.1rem" }}>{saleAbility.ability.description}</Typography>
-                            </Stack>
-                        </Stack>
+                                >
+                                    {abilityTypeIcon}
+                                </Box>
+                            </TooltipHelper>
+                        </Box> */}
+                        <Typography variant="h4" sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack }}>
+                            {saleAbility.ability.label}
+                        </Typography>
+                        <Typography sx={{ fontSize: "2.1rem" }}>{saleAbility.ability.description}</Typography>
+                        <Box
+                            sx={{
+                                mt: "auto",
+                            }}
+                        />
                         <FancyButton
                             onClick={() => toggleShowPurchaseModal(true)}
                             clipThingsProps={{
@@ -154,9 +145,6 @@ export const PlayerAbilityStoreItem = ({ saleAbility, updatedPrice }: PlayerAbil
                                 backgroundColor: primaryColor,
                                 opacity: 1,
                                 border: { isFancy: true, borderColor: primaryColor, borderThickness: "1.5px" },
-                                sx: {
-                                    marginTop: "auto",
-                                },
                             }}
                             sx={{ px: "1.6rem", py: ".6rem" }}
                         >

@@ -70,7 +70,7 @@ export const PlayerAbilitiesStore = () => {
                             width: "100%",
                             gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
                             gridTemplateRows: "repeat(1, min-content)",
-                            gap: "5rem",
+                            gap: "10rem",
                             alignItems: "stretch",
                             justifyContent: "center",
                             py: "1rem",
@@ -179,8 +179,12 @@ export const PlayerAbilitiesStore = () => {
                 </Stack>
                 <Stack
                     sx={{
-                        px: "2rem",
                         flex: 1,
+                        width: "100%",
+                        maxWidth: "1400px",
+                        mx: "auto",
+                        px: "2rem",
+                        justifyContent: "center",
                     }}
                 >
                     <Box

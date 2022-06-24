@@ -68,11 +68,8 @@ export const PlayerAbilityHangarItem = ({ playerAbility }: PlayerAbilityHangarIt
                             src={playerAbility.ability.image_url}
                             alt={`Thumbnail image for ${playerAbility.ability.label}`}
                             sx={{
-                                position: "absolute",
-                                top: 0,
-                                left: 0,
-                                right: 0,
-                                bottom: 0,
+                                height: "100%",
+                                width: "100%",
                             }}
                         />
                         <TooltipHelper text={abilityTypeDescription}>
