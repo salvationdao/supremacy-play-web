@@ -5,13 +5,13 @@ import { HangarBg } from "../assets"
 import { KeycardsMarket } from "../components/Marketplace/KeycardsMarket/KeycardsMarket"
 import { MysteryCratesMarket } from "../components/Marketplace/MysteryCratesMarket/MysteryCratesMarket"
 import { WarMachinesMarket } from "../components/Marketplace/WarMachinesMarket/WarMachinesMarket"
-import { YourEventsMarket } from "../components/Marketplace/YourEventsMarket/YourEventsMarket"
+import { HistoryMarket } from "../components/Marketplace/HistoryMarket/HistoryMarket"
 import { useTheme } from "../containers/theme"
 import { ROUTES_MAP } from "../routes"
 import { siteZIndex } from "../theme/theme"
 
 export enum MARKETPLACE_TABS {
-    YourEvents = "your-events",
+    History = "history",
     WarMachines = "war-machines",
     Keycards = "key-cards",
     MysteryCrates = "mystery-crates",
@@ -41,7 +41,7 @@ export const MarketplacePage = () => {
     if (!currentValue) return null
 
     const primaryColor = theme.factionTheme.primary
-    const secondaryColor = currentValue === MARKETPLACE_TABS.YourEvents ? "#FFFFFF" : theme.factionTheme.secondary
+    const secondaryColor = currentValue === MARKETPLACE_TABS.History ? "#FFFFFF" : theme.factionTheme.secondary
 
     return (
         <Stack
@@ -75,15 +75,15 @@ export const MarketplacePage = () => {
                             ".MuiTabs-indicator": { display: "none" },
                         }}
                     >
-                        <Tab label="YOUR EVENTS" value={MARKETPLACE_TABS.YourEvents} />
+                        <Tab label="HISTORY" value={MARKETPLACE_TABS.History} />
                         <Tab label="WAR MACHINES" value={MARKETPLACE_TABS.WarMachines} />
                         <Tab label="KEY CARDS" value={MARKETPLACE_TABS.Keycards} />
                         <Tab label="MYSTERY CRATES" value={MARKETPLACE_TABS.MysteryCrates} />
                     </Tabs>
                 </Box>
 
-                <TabPanel currentValue={currentValue} value={MARKETPLACE_TABS.YourEvents}>
-                    <YourEventsMarket />
+                <TabPanel currentValue={currentValue} value={MARKETPLACE_TABS.History}>
+                    <HistoryMarket />
                 </TabPanel>
                 <TabPanel currentValue={currentValue} value={MARKETPLACE_TABS.WarMachines}>
                     <WarMachinesMarket />

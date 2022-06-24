@@ -11,7 +11,7 @@ import { MarketplaceEvent, MarketplaceEventType } from "../../../types/marketpla
 import { General } from "../Common/MarketItem/General"
 import { Thumbnail } from "../Common/MarketItem/Thumbnail"
 
-export const YourEventItem = ({ eventItem }: { eventItem: MarketplaceEvent }) => {
+export const HistoryItem = ({ eventItem }: { eventItem: MarketplaceEvent }) => {
     const theme = useTheme()
 
     const itemRelatedData = useMemo(() => {

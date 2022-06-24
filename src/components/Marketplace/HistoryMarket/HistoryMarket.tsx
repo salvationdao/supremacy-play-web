@@ -14,7 +14,7 @@ import { PageHeader } from "../../Common/PageHeader"
 import { ChipFilter } from "../../Common/SortAndFilters/ChipFilterSection"
 import { SortAndFilters } from "../../Common/SortAndFilters/SortAndFilters"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
-import { YourEventItem } from "./YourEventItem"
+import { HistoryItem } from "./HistoryItem"
 
 const sortOptions = [
     { label: "TIME: OLDEST FIRST", value: SortTypeLabel.CreateTimeOldestFirst },
@@ -23,7 +23,7 @@ const sortOptions = [
     { label: SortTypeLabel.AlphabeticalReverse, value: SortTypeLabel.AlphabeticalReverse },
 ]
 
-export const YourEventsMarket = () => {
+export const HistoryMarket = () => {
     const theme = useTheme()
     const location = useLocation()
     const [query, updateQuery] = useUrlQuery()
@@ -156,7 +156,7 @@ export const YourEventsMarket = () => {
                         }}
                     >
                         {eventItems.map((eventItem) => (
-                            <YourEventItem key={`marketplace-${eventItem.id}`} eventItem={eventItem} />
+                            <HistoryItem key={`marketplace-${eventItem.id}`} eventItem={eventItem} />
                         ))}
                     </Box>
                 </Box>
