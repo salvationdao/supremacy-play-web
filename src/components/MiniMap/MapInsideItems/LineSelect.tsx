@@ -1,24 +1,24 @@
-import { Box } from "@mui/material"
+import { Box, useTheme } from "@mui/material"
 import { useEffect, useMemo, useRef } from "react"
 import { useGame, useMiniMap } from "../../../containers"
-import { colors } from "../../../theme/theme"
 
-const minCanvasHeight = 700
+const MIN_CANVAS_HEIGHT = 700
 
 export const LineSelect = ({ mapScale }: { mapScale: number }) => {
+    const theme = useTheme()
     const { map } = useGame()
     const { mapElement, gridWidth, gridHeight, selection, setSelection } = useMiniMap()
     const canvasRef = useRef<HTMLCanvasElement>(null)
 
-    const indicatorDiameter = useMemo(() => (map ? map.cells_x * 1.5 : 50), [map])
+    const indicatorDiameter = useMemo(() => map?.cells_x || 50, [map])
 
     useEffect(() => {
         const c = canvasRef.current?.getContext("2d")
         if (!c || !mapElement.current) return
 
         const { width, height } = mapElement.current.getBoundingClientRect()
-        c.canvas.width = (width / height) * minCanvasHeight
-        c.canvas.height = minCanvasHeight
+        c.canvas.width = (width / height) * MIN_CANVAS_HEIGHT
+        c.canvas.height = MIN_CANVAS_HEIGHT
     }, [mapElement])
 
     // https://stackoverflow.com/questions/24376951/find-new-coordinates-of-point-on-line-in-javascript
@@ -41,10 +41,10 @@ export const LineSelect = ({ mapScale }: { mapScale: number }) => {
         c.beginPath()
         c.moveTo(normalisedStartCoords.x, normalisedStartCoords.y)
         c.lineTo(normalisedEndCoords.x, normalisedEndCoords.y)
-        c.lineWidth = indicatorDiameter * 0.1
-        c.strokeStyle = "#d40000"
+        c.lineWidth = indicatorDiameter * 0.08
+        c.strokeStyle = theme.factionTheme.primary
         c.stroke()
-    }, [selection, map, indicatorDiameter])
+    }, [selection, map, indicatorDiameter, theme.factionTheme.primary])
 
     return (
         <>
@@ -61,9 +61,10 @@ export const LineSelect = ({ mapScale }: { mapScale: number }) => {
                         height: `${indicatorDiameter}px`,
                         width: `${indicatorDiameter}px`,
                         cursor: "pointer",
-                        border: `2px solid ${colors.black2}`,
                         borderRadius: "50%",
-                        backgroundColor: "white",
+                        backgroundColor: theme.factionTheme.primary,
+                        border: "#000000 2px solid",
+                        boxShadow: 2,
                         transform: `translate(${selection.startCoords.x * gridWidth - indicatorDiameter / 2}px, ${
                             selection.startCoords.y * gridHeight - indicatorDiameter / 2
                         }px)`,
@@ -87,10 +88,10 @@ export const LineSelect = ({ mapScale }: { mapScale: number }) => {
                         height: `${indicatorDiameter}px`,
                         width: `${indicatorDiameter}px`,
                         cursor: "pointer",
-                        border: `2px solid ${colors.black2}`,
                         borderRadius: "50%",
-                        backgroundColor: "white",
-                        color: colors.black2,
+                        backgroundColor: theme.factionTheme.primary,
+                        border: "#000000 2px solid",
+                        boxShadow: 2,
                         transform: `translate(${selection.endCoords.x * gridWidth - indicatorDiameter / 2}px, ${
                             selection.endCoords.y * gridHeight - indicatorDiameter / 2
                         }px)`,

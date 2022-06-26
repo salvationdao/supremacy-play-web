@@ -100,7 +100,7 @@ const MiniMapInner = ({ map, isTargeting }: { map: Map; isTargeting: boolean }) 
     const prevPosX = useRef(curPosX)
     const prevPosY = useRef(curPosY)
 
-    const isEnlarged = useMemo(() => curWidth > 388 || curHeight > 400, [curHeight, curWidth])
+    const isEnlarged = useMemo(() => curWidth > 350 || curHeight > 350, [curHeight, curWidth])
 
     // Set initial size
     useEffect(() => {

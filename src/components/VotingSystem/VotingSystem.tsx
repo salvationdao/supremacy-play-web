@@ -39,7 +39,7 @@ const VotingSystemInner = ({ userID, bribeStage }: VotingSystemInnerProps) => {
             minWidth: 300,
             minHeight: 168,
             maxWidth: 500,
-            maxHeight: 600,
+            maxHeight: 900,
             // Others
             infoTooltipText: "Vote for game abilities and fight for your Syndicate!",
         }),

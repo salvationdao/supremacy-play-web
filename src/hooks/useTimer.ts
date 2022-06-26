@@ -47,5 +47,6 @@ export const useTimer = (endTime: Date | undefined, speed: number = 1000) => {
         seconds,
         pause,
         resume,
+        delay,
     }
 }

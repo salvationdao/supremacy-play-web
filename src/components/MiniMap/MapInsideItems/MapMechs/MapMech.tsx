@@ -9,6 +9,8 @@ import { LocationSelectType, Map, Vector2i, WarMachineState } from "../../../../
 import { WarMachineLiveState } from "../../../../types/game"
 import { MechMoveCommand } from "../../../PlayerAbilities/MechMoveCommandCard"
 
+const TRANSITION_DURACTION = 0.275 // seconds
+
 interface MapMechProps {
     warMachine: WarMachineState
     isEnlarged: boolean
@@ -16,9 +18,7 @@ interface MapMechProps {
 
 export const MapMech = (props: MapMechProps) => {
     const { map } = useGame()
-
     if (!map) return null
-
     return <MapMechInner map={map} {...props} />
 }
 
@@ -27,34 +27,59 @@ interface MapMechInnerProps extends MapMechProps {
 }
 
 const MapMechInner = ({ warMachine, isEnlarged, map }: MapMechInnerProps) => {
-    const { userID, factionID } = useAuth()
+    const { factionID } = useAuth()
     const { getFaction } = useSupremacy()
-    const { isTargeting, gridWidth, gridHeight, playerAbility, highlightedMechHash, setHighlightedMechHash, setSelection } = useMiniMap()
+    const { isTargeting, gridWidth, gridHeight, playerAbility, highlightedMechHash, setHighlightedMechHash, selection, setSelection } = useMiniMap()
+    const { hash, participantID, factionID: warMachineFactionID, maxHealth, maxShield, imageAvatar } = warMachine
 
-    const { hash, participantID, factionID: warMachineFactionID, maxHealth, maxShield, imageAvatar, ownedByID } = warMachine
-
+    /**
+     * Mech stats
+     */
     const [health, setHealth] = useState<number>(warMachine.health)
     const [shield, setShield] = useState<number>(warMachine.shield)
     const [position, sePosition] = useState<Vector2i>(warMachine.position)
     // 0 is east, and goes CW, can be negative and above 360
     const [rotation, setRotation] = useState<number>(warMachine.rotation)
 
+    /**
+     * For rendering: size, colors etc.
+     */
+    const iconSize = useMemo(() => Math.min(gridWidth, gridHeight) * 1.1, [gridWidth, gridHeight])
+    const dirArrowLength = useMemo(() => iconSize / 2 + 0.6 * iconSize, [iconSize])
+    const primaryColor = useMemo(() => getFaction(warMachineFactionID).primary_color || colors.neonBlue, [warMachineFactionID, getFaction])
+    const isAlive = useMemo(() => health > 0, [health])
+    const mapScale = useMemo(() => map.width / (map.cells_x * 2000), [map])
+    const wmImageUrl = useMemo(() => imageAvatar || GenericWarMachinePNG, [imageAvatar])
+    const mechMapX = useMemo(() => ((position?.x || 0) - map.left_pixels) * mapScale, [map.left_pixels, mapScale, position?.x])
+    const mechMapY = useMemo(() => ((position?.y || 0) - map.top_pixels) * mapScale, [map.top_pixels, mapScale, position?.y])
+    const isMechHighligheted = useMemo(
+        () => highlightedMechHash === warMachine.hash || selection?.mechHash === hash,
+        [hash, highlightedMechHash, selection?.mechHash, warMachine.hash],
+    )
+
+    /**
+     * Mech move command related
+     */
     const [mechMoveCommandX, setMechMoveCommandX] = useState<number>()
     const [mechMoveCommandY, setMechMoveCommandY] = useState<number>()
 
-    const mapScale = useMemo(() => map.width / (map.cells_x * 2000), [map])
-    const wmImageUrl = useMemo(() => imageAvatar || GenericWarMachinePNG, [imageAvatar])
-    const SIZE = useMemo(() => Math.min(gridWidth, gridHeight) * 1.1, [gridWidth, gridHeight])
-    const ICON_SIZE = useMemo(() => 1 * SIZE, [SIZE])
-    const ARROW_LENGTH = useMemo(() => ICON_SIZE / 2 + 0.6 * SIZE, [ICON_SIZE, SIZE])
-    const DOT_SIZE = useMemo(() => 1.2 * SIZE, [SIZE])
-    const primaryColor = useMemo(() => getFaction(warMachineFactionID).primary_color || "#FFFFFF", [warMachineFactionID, getFaction])
-    const isAlive = useMemo(() => health > 0, [health])
+    const mechCommandDist = useMemo(() => {
+        if (!mechMoveCommandX || !mechMoveCommandY) return 0
+        const commandMapX = mechMoveCommandX * gridWidth
+        const commandMapY = mechMoveCommandY * gridHeight
+        const x = Math.abs(mechMapX - commandMapX)
+        const y = Math.abs(mechMapY - commandMapY)
+        return Math.sqrt(x * x + y * y)
+    }, [gridHeight, gridWidth, mechMapX, mechMapY, mechMoveCommandX, mechMoveCommandY])
 
-    const sizeX = useMemo(() => gridWidth * 1.5, [gridWidth])
-    const sizeY = useMemo(() => gridHeight * 1.5, [gridHeight])
+    const mechCommandAngle = useMemo(() => {
+        if (!mechMoveCommandX || !mechMoveCommandY) return 0
+        const commandMapX = mechMoveCommandX * gridWidth
+        const commandMapY = mechMoveCommandY * gridHeight
+        return (Math.atan2(commandMapY - mechMapY, commandMapX - mechMapX) * 180) / Math.PI
+    }, [gridHeight, gridWidth, mechMapX, mechMapY, mechMoveCommandX, mechMoveCommandY])
 
-    // Listen on current war machine changes
+    // Listen on mech stats
     useGameServerSubscription<WarMachineLiveState | undefined>(
         {
             URI: `/public/mech/${participantID}`,
@@ -70,6 +95,7 @@ const MapMechInner = ({ warMachine, isEnlarged, map }: MapMechInnerProps) => {
         },
     )
 
+    // Listen on mech move command positions for this mech
     useGameServerSubscriptionFaction<MechMoveCommand>(
         {
             URI: `/mech_command/${hash}`,
@@ -78,62 +104,27 @@ const MapMechInner = ({ warMachine, isEnlarged, map }: MapMechInnerProps) => {
         },
         (payload) => {
             if (!payload) return
-
-            if (payload.cell_x === undefined || payload.cell_y === undefined) {
-                setMechMoveCommandX(undefined)
-                setMechMoveCommandY(undefined)
-                return
-            }
-
             setMechMoveCommandX(payload.cell_x)
             setMechMoveCommandY(payload.cell_y)
         },
     )
 
     const handleClick = useCallback(() => {
+        if (playerAbility && factionID === warMachineFactionID) {
+            setSelection((prev) => {
+                if (prev?.mechHash === hash) return undefined
+                return { mechHash: hash }
+            })
+
+            return
+        }
+
         if (hash === highlightedMechHash) {
             setHighlightedMechHash(undefined)
-            if (playerAbility) {
-                setSelection(undefined)
-            }
         } else {
-            if (playerAbility && factionID !== warMachineFactionID) return
             setHighlightedMechHash(hash)
-            if (playerAbility) {
-                setSelection({
-                    mechHash: hash,
-                })
-            }
         }
     }, [hash, highlightedMechHash, setHighlightedMechHash, setSelection, playerAbility, factionID, warMachineFactionID])
-
-    const distance = useCallback(
-        (mechX: number, mechY: number, commandX: number, commandY: number): number => {
-            const mechMapX = (mechX - map.left_pixels) * mapScale
-            const mechMapY = (mechY - map.top_pixels) * mapScale
-            const commandMapX = commandX * gridWidth - sizeX / 2
-            const commandMapY = commandY * gridHeight - sizeY / 2
-
-            const x = Math.abs(mechMapX - commandMapX)
-            const y = Math.abs(mechMapY - commandMapY)
-
-            // cal rotation
-
-            return Math.sqrt(x * x + y * y)
-        },
-        [mapScale, gridHeight, gridWidth, map, sizeX, sizeY],
-    )
-
-    const angle = useCallback(
-        (mechX: number, mechY: number, commandX: number, commandY: number): number => {
-            const mechMapX = (mechX - map.left_pixels) * mapScale
-            const mechMapY = (mechY - map.top_pixels) * mapScale
-            const commandMapX = commandX * gridWidth - sizeX / 2
-            const commandMapY = commandY * gridHeight - sizeY / 2
-            return (Math.atan2(commandMapY - mechMapY, commandMapX - mechMapX) * 180) / Math.PI
-        },
-        [mapScale, gridHeight, gridWidth, map, sizeX, sizeY],
-    )
 
     if (!position) return null
 
@@ -142,36 +133,36 @@ const MapMechInner = ({ warMachine, isEnlarged, map }: MapMechInnerProps) => {
             key={`warMachine-${participantID}`}
             alignItems="center"
             justifyContent="center"
-            spacing="1rem"
+            spacing=".6rem"
             onClick={handleClick}
             style={{
                 position: "absolute",
                 pointerEvents: isTargeting && playerAbility?.ability.location_select_type !== LocationSelectType.MECH_SELECT ? "none" : "all",
                 cursor: "pointer",
-                transform: `translate(-50%, -50%) translate3d(${(position.x - map.left_pixels) * mapScale}px, ${
-                    (position.y - map.top_pixels) * mapScale
-                }px, 0)`,
-                transition: "transform 0.275s linear",
-                zIndex: isAlive ? 5 : 4,
-                opacity: 1,
-                border: highlightedMechHash === warMachine.hash ? `${primaryColor} 1rem dashed` : "unset",
-                backgroundColor: ownedByID === userID ? `${colors.neonBlue}65` : highlightedMechHash === warMachine.hash ? `${primaryColor}60` : "unset",
                 padding: "1rem 1.3rem",
+                transform: `translate(-50%, -50%) translate3d(${mechMapX}px, ${mechMapY}px, 0)`,
+                transition: `transform ${TRANSITION_DURACTION}s linear`,
+                border: isMechHighligheted ? `${primaryColor} 1rem dashed` : "unset",
+                backgroundColor: isMechHighligheted ? `${primaryColor}60` : "unset",
+                opacity: 1,
+                zIndex: isAlive ? 5 : 4,
             }}
         >
-            {playerAbility && playerAbility.ability.location_select_type === LocationSelectType.MECH_SELECT && hash === highlightedMechHash && (
+            {/* Show player ability icon above the mech */}
+            {playerAbility?.ability.location_select_type === LocationSelectType.MECH_SELECT && isMechHighligheted && (
                 <Box
                     onClick={() => setSelection(undefined)}
                     sx={{
                         position: "absolute",
                         top: "0",
                         left: "50%",
-                        transform: "translate(-50%, -50%)",
-                        height: `${SIZE}px`,
-                        width: `${SIZE}px`,
+                        transform: "translate(-50%, -80%)",
+                        height: `${iconSize}px`,
+                        width: `${iconSize}px`,
                         cursor: "pointer",
-                        border: `2px solid ${playerAbility.ability.colour}`,
+                        border: `3px solid ${playerAbility.ability.colour}`,
                         borderRadius: 1,
+                        boxShadow: 2,
                         backgroundImage: `url(${playerAbility.ability.image_url})`,
                         backgroundRepeat: "no-repeat",
                         backgroundPosition: "center",
@@ -180,13 +171,15 @@ const MapMechInner = ({ warMachine, isEnlarged, map }: MapMechInnerProps) => {
                     }}
                 />
             )}
+
+            {/* The mech icon and rotation arrow */}
             <Box
                 style={
                     isEnlarged
                         ? {
                               position: "relative",
-                              width: ICON_SIZE,
-                              height: ICON_SIZE,
+                              width: iconSize,
+                              height: iconSize,
                               overflow: "visible",
                               backgroundColor: primaryColor,
                               backgroundImage: `url(${wmImageUrl})`,
@@ -201,8 +194,8 @@ const MapMechInner = ({ warMachine, isEnlarged, map }: MapMechInnerProps) => {
                           }
                         : {
                               position: "relative",
-                              width: DOT_SIZE,
-                              height: DOT_SIZE,
+                              width: iconSize,
+                              height: iconSize,
                               overflow: "visible",
                               backgroundColor: `${primaryColor}${isAlive ? "" : "00"}`,
                               border: `9px solid #000000${isAlive ? "" : "00"}`,
@@ -211,6 +204,7 @@ const MapMechInner = ({ warMachine, isEnlarged, map }: MapMechInnerProps) => {
                           }
                 }
             >
+                {/* Skull icon */}
                 {!isAlive && (
                     <Stack
                         alignItems="center"
@@ -224,7 +218,7 @@ const MapMechInner = ({ warMachine, isEnlarged, map }: MapMechInnerProps) => {
                     >
                         <SvgMapSkull
                             fill="#000000"
-                            size={isEnlarged ? `${0.8 * SIZE}px` : `${1.3 * SIZE}px`}
+                            size={isEnlarged ? `${0.8 * iconSize}px` : `${1.3 * iconSize}px`}
                             style={{
                                 position: "absolute",
                                 top: "52%",
@@ -235,6 +229,7 @@ const MapMechInner = ({ warMachine, isEnlarged, map }: MapMechInnerProps) => {
                     </Stack>
                 )}
 
+                {/* Rotation arrow */}
                 {isAlive && isEnlarged && (
                     <Box
                         style={{
@@ -242,14 +237,14 @@ const MapMechInner = ({ warMachine, isEnlarged, map }: MapMechInnerProps) => {
                             left: "50%",
                             top: "50%",
                             transform: `translate(-50%, -50%) rotate(${rotation + 90}deg)`,
-                            transition: "all .25s",
+                            transition: `all ${TRANSITION_DURACTION}s`,
                             zIndex: 3,
                         }}
                     >
-                        <Box style={{ position: "relative", height: ARROW_LENGTH }}>
+                        <Box style={{ position: "relative", height: dirArrowLength }}>
                             <SvgMapWarMachine
                                 fill={primaryColor}
-                                size={`${0.6 * SIZE}px`}
+                                size={`${0.6 * iconSize}px`}
                                 style={{
                                     position: "absolute",
                                     top: -6,
@@ -258,65 +253,20 @@ const MapMechInner = ({ warMachine, isEnlarged, map }: MapMechInnerProps) => {
                                 }}
                             />
                         </Box>
-                        <Box style={{ height: ARROW_LENGTH }} />
-                    </Box>
-                )}
-
-                {isAlive && mechMoveCommandX !== undefined && mechMoveCommandY !== undefined && isEnlarged && (
-                    <Box
-                        style={{
-                            position: "absolute",
-                            left: "50%",
-                            top: "50%",
-                            transform: `translate(-50%, -50%) rotate(${angle(position.x, position.y, mechMoveCommandX, mechMoveCommandY) + 90}deg)`,
-                            transition: "all .275s",
-                            zIndex: 3,
-                        }}
-                    >
-                        <Box
-                            style={{
-                                position: "relative",
-                                height: distance(position.x, position.y, mechMoveCommandX, mechMoveCommandY),
-                                borderLeft: "red 2px dashed",
-                                transition: "all .275s",
-                            }}
-                        >
-                            <Box
-                                style={{
-                                    width: "10px",
-                                    height: "10px",
-                                    position: "absolute",
-                                    top: -6,
-                                    left: "50%",
-                                    transform: "translateX(-50%)",
-                                }}
-                            />
-                        </Box>
-                        <Box
-                            style={{
-                                height: distance(position.x, position.y, mechMoveCommandX, mechMoveCommandY),
-                                // borderLeft: "red 2px dashed",
-                                transition: "all .275s",
-                            }}
-                        />
+                        <Box style={{ height: dirArrowLength }} />
                     </Box>
                 )}
             </Box>
 
+            {/* Healh and sheidl bars */}
             {isAlive && (
-                <Stack
-                    spacing=".24rem"
-                    style={{
-                        width: SIZE * 1.2,
-                        zIndex: 1,
-                    }}
-                >
+                <Stack spacing=".2rem" style={{ width: iconSize * 1.2, zIndex: 1 }}>
                     {warMachine.maxShield > 0 && (
                         <Box
                             style={{
                                 width: "100%",
-                                height: `${0.3 * SIZE}px`,
-                                border: "1px solid #00000080",
+                                height: `${0.3 * iconSize}px`,
+                                border: "3px solid #00000080",
                                 overflow: "hidden",
                             }}
                         >
@@ -329,11 +279,12 @@ const MapMechInner = ({ warMachine, isEnlarged, map }: MapMechInnerProps) => {
                             />
                         </Box>
                     )}
+
                     <Box
                         style={{
                             width: "100%",
-                            height: `${0.3 * SIZE}px`,
-                            border: "1px solid #00000080",
+                            height: `${0.3 * iconSize}px`,
+                            border: "3px solid #00000080",
                             overflow: "hidden",
                         }}
                     >
@@ -346,6 +297,47 @@ const MapMechInner = ({ warMachine, isEnlarged, map }: MapMechInnerProps) => {
                         />
                     </Box>
                 </Stack>
+            )}
+
+            {/* Mech move command dashed line */}
+            {isAlive && mechMoveCommandX !== undefined && mechMoveCommandY !== undefined && (
+                <Box
+                    style={{
+                        position: "absolute",
+                        left: "50%",
+                        top: "50%",
+                        transform: `translate(-50%, -50%) rotate(${mechCommandAngle + 90}deg)`,
+                        transition: `all ${TRANSITION_DURACTION}s`,
+                        zIndex: 1,
+                    }}
+                >
+                    <Box
+                        style={{
+                            position: "relative",
+                            height: mechCommandDist,
+                            borderLeft: `${primaryColor} 2px dashed`,
+                            transition: `all ${TRANSITION_DURACTION}s`,
+                        }}
+                    >
+                        <Box
+                            style={{
+                                width: "10px",
+                                height: "10px",
+                                position: "absolute",
+                                left: "50%",
+                                transform: "translateX(-50%)",
+                                backgroundColor: primaryColor,
+                                borderRadius: "50%",
+                            }}
+                        />
+                    </Box>
+                    <Box
+                        style={{
+                            height: mechCommandDist,
+                            transition: `all ${TRANSITION_DURACTION}s`,
+                        }}
+                    />
+                </Box>
             )}
         </Stack>
     )

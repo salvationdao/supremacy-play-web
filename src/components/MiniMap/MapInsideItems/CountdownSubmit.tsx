@@ -6,8 +6,14 @@ import { fonts } from "../../../theme/theme"
 import { LocationSelectType } from "../../../types"
 
 export const CountdownSubmit = () => {
-    const { isTargeting, winner, playerAbility, selection, onTargetConfirm } = useMiniMap()
-    const { setEndTimeState, totalSecRemain } = useTimer(undefined, 600)
+    const { isTargeting, winner, playerAbility } = useMiniMap()
+    if (!isTargeting || (!winner?.game_ability && !playerAbility)) return null
+    return <CountdownSubmitInner />
+}
+
+const CountdownSubmitInner = () => {
+    const { playerAbility, selection, onTargetConfirm } = useMiniMap()
+    const { setEndTimeState, totalSecRemain, delay } = useTimer(undefined, 600)
 
     const hasSelected = useMemo(() => {
         let selected = !!selection
@@ -40,9 +46,7 @@ export const CountdownSubmit = () => {
         if (hasSelected && totalSecRemain === 0) onTargetConfirm()
     }, [hasSelected, totalSecRemain, onTargetConfirm])
 
-    if (!isTargeting || (!winner?.game_ability && !playerAbility)) return null
-
-    if (totalSecRemain < 0) return null
+    if (!delay || totalSecRemain < 0) return null
 
     return (
         <Box

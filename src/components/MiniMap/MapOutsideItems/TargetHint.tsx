@@ -87,15 +87,15 @@ const PlayerAbilityTargetHint = () => {
             case LocationSelectType.LOCATION_SELECT:
             case LocationSelectType.MECH_COMMAND:
                 icon = <SvgTarget {...iconProps} />
-                descriptor = "Select a location"
+                descriptor = "Select a location to deploy"
                 break
             case LocationSelectType.MECH_SELECT:
                 icon = <SvgMicrochip {...iconProps} />
-                descriptor = "Select an allied mech"
+                descriptor = "Select an allied mech to activate"
                 break
             case LocationSelectType.LINE_SELECT:
                 icon = <SvgLine {...iconProps} />
-                descriptor = "Draw a line by selecting two locations"
+                descriptor = "Draw a line by selecting two locations to deploy"
                 break
         }
 
@@ -121,7 +121,7 @@ const PlayerAbilityTargetHint = () => {
         >
             <Stack direction="row" alignItems="center" spacing=".5rem" sx={{ position: "relative", width: "100%" }}>
                 <Typography variant="h6" sx={{ lineHeight: 1 }}>
-                    {data?.descriptor} to deploy
+                    {data?.descriptor}
                 </Typography>
 
                 {data?.icon}
