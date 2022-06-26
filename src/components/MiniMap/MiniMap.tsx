@@ -113,7 +113,7 @@ const MiniMapInner = ({ map, isTargeting }: { map: Map; isTargeting: boolean }) 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [map, setDefaultWidth, setDefaultHeight, setCurHeight])
 
-    // When it's targetting, enlarge the map and move to center of screen, else restore to the prev dimensions
+    // When it's targeting, enlarge the map and move to center of screen, else restore to the prev dimensions
     useEffect(() => {
         if (isTargeting) {
             const maxW = Math.min(width - 25, maxWidth || width, 900)
@@ -203,7 +203,7 @@ const MiniMapInner = ({ map, isTargeting }: { map: Map; isTargeting: boolean }) 
 
                 <MiniMapInside containerDimensions={{ width: curWidth, height: curHeight }} enlarged={curWidth > 388 || curHeight > 400} />
 
-                {<TargetHint />}
+                <TargetHint />
             </Box>
         ),
         [curWidth, curHeight, theme.factionTheme.primary, mapName],

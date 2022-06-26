@@ -3,7 +3,7 @@ import { useCallback, useMemo, useRef } from "react"
 import { MapWarMachines, SelectionIcon } from ".."
 import { Crosshair } from "../../assets"
 import { useAuth, useGame, useMiniMap, useSupremacy } from "../../containers"
-import { CellCoords, Dimension, LocationSelectType, PlayerAbility } from "../../types"
+import { CellCoords, Dimension, LocationSelectType } from "../../types"
 import { CountdownSubmit } from "./MapInsideItems/CountdownSubmit"
 import { LineSelect } from "./MapInsideItems/LineSelect"
 import { MechCommandLocations } from "./MapInsideItems/MechCommandLocations"
@@ -23,58 +23,11 @@ interface MiniMapInsideProps {
     containerDimensions: Dimension
 }
 
-export const MiniMapInside = (props: MiniMapInsideProps) => {
-    const { mapElement, gridWidth, gridHeight, isTargeting, selection, setSelection, highlightedMechHash, setHighlightedMechHash, playerAbility } = useMiniMap()
-
-    return useMemo(
-        () => (
-            <MiniMapInsideInner
-                {...props}
-                mapElement={mapElement}
-                gridWidth={gridWidth}
-                gridHeight={gridHeight}
-                isTargeting={isTargeting}
-                selection={selection}
-                setSelection={setSelection}
-                highlightedMechHash={highlightedMechHash}
-                setHighlightedMechHash={setHighlightedMechHash}
-                playerAbility={playerAbility}
-            />
-        ),
-        [gridHeight, gridWidth, highlightedMechHash, isTargeting, mapElement, playerAbility, props, selection, setHighlightedMechHash, setSelection],
-    )
-}
-
-interface MiniMapInsideInnerProps extends MiniMapInsideProps {
-    mapElement: React.MutableRefObject<HTMLDivElement | undefined>
-    gridWidth: number
-    gridHeight: number
-    isTargeting: boolean
-    selection?: MapSelection
-    setSelection: React.Dispatch<React.SetStateAction<MapSelection | undefined>>
-    highlightedMechHash?: string
-    setHighlightedMechHash: React.Dispatch<React.SetStateAction<string | undefined>>
-    playerAbility?: PlayerAbility
-}
-
-const MiniMapInsideInner = ({
-    containerDimensions,
-    enlarged,
-    mapElement,
-    gridWidth,
-    gridHeight,
-    isTargeting,
-    selection,
-    setSelection,
-    highlightedMechHash,
-    setHighlightedMechHash,
-    playerAbility,
-}: MiniMapInsideInnerProps) => {
+export const MiniMapInside = ({ enlarged, containerDimensions }: MiniMapInsideProps) => {
     const { userID, factionID } = useAuth()
     const { getFaction } = useSupremacy()
     const { map, warMachines } = useGame()
-
-    console.log("AAAAAAAAAAAAAAAAAAAAAAAAa")
+    const { mapElement, gridWidth, gridHeight, isTargeting, selection, setSelection, highlightedMechHash, setHighlightedMechHash, playerAbility } = useMiniMap()
 
     const gestureRef = useRef<HTMLDivElement>(null)
     const { mapScale, dragX, dragY } = useMiniMapGestures({ gestureRef, containerDimensions })
@@ -112,68 +65,94 @@ const MiniMapInsideInner = ({
         [isTargeting, playerAbility?.ability.location_select_type],
     )
 
-    if (!map) return null
+    return useMemo(() => {
+        if (!map) return null
 
-    return (
-        <>
-            <Stack
-                sx={{
-                    position: "relative",
-                    width: containerDimensions.width,
-                    height: containerDimensions.height,
-                    overflow: "hidden",
-                }}
-            >
-                <Box
-                    ref={gestureRef}
+        return (
+            <>
+                <Stack
                     sx={{
-                        touchAction: "none",
-                        transformOrigin: "0% 0%",
-                        transform: `translate(${dragX}px, ${dragY}px) scale(${mapScale})`,
+                        position: "relative",
+                        width: containerDimensions.width,
+                        height: containerDimensions.height,
+                        overflow: "hidden",
                     }}
                 >
-                    {/* Render the user selection icon on the map */}
-                    <SelectionIcon key={selection?.startCoords && `column-${selection.startCoords.y}-row-${selection.startCoords.x}`} />
-
-                    {/* Render the mech command icons on the map */}
-                    <MechCommandLocations gridWidth={gridWidth} gridHeight={gridHeight} getFaction={getFaction} />
-
-                    {/* Rendering war machines on the map */}
-                    <MapWarMachines
-                        gridWidth={gridWidth}
-                        gridHeight={gridHeight}
-                        userID={userID}
-                        factionID={factionID}
-                        map={map}
-                        warMachines={warMachines}
-                        getFaction={getFaction}
-                        enlarged={enlarged}
-                        targeting={isTargeting}
-                        setSelection={setSelection}
-                        highlightedMechHash={highlightedMechHash}
-                        setHighlightedMechHash={setHighlightedMechHash}
-                        playerAbility={playerAbility}
-                    />
-
-                    {/* Map Image */}
                     <Box
-                        ref={mapElement}
-                        onClick={isLocationSelection ? onMapClick : undefined}
+                        ref={gestureRef}
                         sx={{
-                            position: "absolute",
-                            width: `${map.width}px`,
-                            height: `${map.height}px`,
-                            backgroundImage: `url(${map.image_url})`,
-                            cursor: isLocationSelection || isLineSelection ? `url(${Crosshair}) 10 10, auto` : "move",
-                            borderSpacing: 0,
+                            touchAction: "none",
+                            transformOrigin: "0% 0%",
+                            transform: `translate(${dragX}px, ${dragY}px) scale(${mapScale})`,
                         }}
                     >
-                        {isLineSelection && <LineSelect mapScale={mapScale} />}
-                    </Box>
-                </Box>
-            </Stack>
+                        {/* Render the user selection icon on the map */}
+                        <SelectionIcon key={selection?.startCoords && `column-${selection.startCoords.y}-row-${selection.startCoords.x}`} />
 
-            <CountdownSubmit />
-        </>
-    )
+                        {/* Render the mech command icons on the map */}
+                        <MechCommandLocations />
+
+                        {/* Rendering war machines on the map */}
+                        <MapWarMachines
+                            gridWidth={gridWidth}
+                            gridHeight={gridHeight}
+                            userID={userID}
+                            factionID={factionID}
+                            map={map}
+                            warMachines={warMachines}
+                            getFaction={getFaction}
+                            enlarged={enlarged}
+                            targeting={isTargeting}
+                            setSelection={setSelection}
+                            highlightedMechHash={highlightedMechHash}
+                            setHighlightedMechHash={setHighlightedMechHash}
+                            playerAbility={playerAbility}
+                        />
+
+                        {/* Map Image */}
+                        <Box
+                            ref={mapElement}
+                            onClick={isLocationSelection ? onMapClick : undefined}
+                            sx={{
+                                position: "absolute",
+                                width: `${map.width}px`,
+                                height: `${map.height}px`,
+                                backgroundImage: `url(${map.image_url})`,
+                                cursor: isLocationSelection || isLineSelection ? `url(${Crosshair}) 10 10, auto` : "move",
+                                borderSpacing: 0,
+                            }}
+                        >
+                            {isLineSelection && <LineSelect mapScale={mapScale} />}
+                        </Box>
+                    </Box>
+                </Stack>
+
+                <CountdownSubmit />
+            </>
+        )
+    }, [
+        containerDimensions.height,
+        containerDimensions.width,
+        dragX,
+        dragY,
+        enlarged,
+        factionID,
+        getFaction,
+        gridHeight,
+        gridWidth,
+        highlightedMechHash,
+        isLineSelection,
+        isLocationSelection,
+        isTargeting,
+        map,
+        mapElement,
+        mapScale,
+        onMapClick,
+        playerAbility,
+        selection?.startCoords,
+        setHighlightedMechHash,
+        setSelection,
+        userID,
+        warMachines,
+    ])
 }
