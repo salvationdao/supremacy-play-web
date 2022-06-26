@@ -1,12 +1,12 @@
 import { Box, Stack } from "@mui/material"
 import { useCallback, useMemo, useRef } from "react"
-import { MapWarMachines, SelectionIcon } from ".."
+import { MapMechs, SelectionIcon } from ".."
 import { Crosshair } from "../../assets"
-import { useAuth, useGame, useMiniMap, useSupremacy } from "../../containers"
+import { useGame, useMiniMap } from "../../containers"
 import { CellCoords, Dimension, LocationSelectType } from "../../types"
 import { CountdownSubmit } from "./MapInsideItems/CountdownSubmit"
 import { LineSelect } from "./MapInsideItems/LineSelect"
-import { MechCommandLocations } from "./MapInsideItems/MechCommandLocations"
+import { MechCommandIcons } from "./MapInsideItems/MapIcon/MechCommandIcons"
 import { useMiniMapGestures } from "./useMiniMapGestures"
 
 export interface MapSelection {
@@ -19,15 +19,13 @@ export interface MapSelection {
 }
 
 interface MiniMapInsideProps {
-    enlarged: boolean
     containerDimensions: Dimension
+    isEnlarged: boolean
 }
 
-export const MiniMapInside = ({ enlarged, containerDimensions }: MiniMapInsideProps) => {
-    const { userID, factionID } = useAuth()
-    const { getFaction } = useSupremacy()
-    const { map, warMachines } = useGame()
-    const { mapElement, gridWidth, gridHeight, isTargeting, selection, setSelection, highlightedMechHash, setHighlightedMechHash, playerAbility } = useMiniMap()
+export const MiniMapInside = ({ containerDimensions, isEnlarged }: MiniMapInsideProps) => {
+    const { map } = useGame()
+    const { mapElement, gridWidth, gridHeight, isTargeting, selection, setSelection, playerAbility } = useMiniMap()
 
     const gestureRef = useRef<HTMLDivElement>(null)
     const { mapScale, dragX, dragY } = useMiniMapGestures({ gestureRef, containerDimensions })
@@ -90,24 +88,10 @@ export const MiniMapInside = ({ enlarged, containerDimensions }: MiniMapInsidePr
                         <SelectionIcon key={selection?.startCoords && `column-${selection.startCoords.y}-row-${selection.startCoords.x}`} />
 
                         {/* Render the mech command icons on the map */}
-                        <MechCommandLocations />
+                        <MechCommandIcons />
 
                         {/* Rendering war machines on the map */}
-                        <MapWarMachines
-                            gridWidth={gridWidth}
-                            gridHeight={gridHeight}
-                            userID={userID}
-                            factionID={factionID}
-                            map={map}
-                            warMachines={warMachines}
-                            getFaction={getFaction}
-                            enlarged={enlarged}
-                            targeting={isTargeting}
-                            setSelection={setSelection}
-                            highlightedMechHash={highlightedMechHash}
-                            setHighlightedMechHash={setHighlightedMechHash}
-                            playerAbility={playerAbility}
-                        />
+                        <MapMechs isEnlarged={isEnlarged} />
 
                         {/* Map Image */}
                         <Box
@@ -135,24 +119,13 @@ export const MiniMapInside = ({ enlarged, containerDimensions }: MiniMapInsidePr
         containerDimensions.width,
         dragX,
         dragY,
-        enlarged,
-        factionID,
-        getFaction,
-        gridHeight,
-        gridWidth,
-        highlightedMechHash,
+        isEnlarged,
         isLineSelection,
         isLocationSelection,
-        isTargeting,
         map,
         mapElement,
         mapScale,
         onMapClick,
-        playerAbility,
         selection?.startCoords,
-        setHighlightedMechHash,
-        setSelection,
-        userID,
-        warMachines,
     ])
 }

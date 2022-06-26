@@ -1,11 +1,11 @@
 import { useMemo, useState } from "react"
-import { useTheme } from "../../../containers/theme"
-import { useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
-import { GameServerKeys } from "../../../keys"
-import { MechMoveCommand } from "../../PlayerAbilities/MechMoveCommandCard"
+import { useTheme } from "../../../../containers/theme"
+import { useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../../keys"
+import { MechMoveCommand } from "../../../PlayerAbilities/MechMoveCommandCard"
 import { MapIcon } from "./MapIcon"
 
-export const MechCommandLocations = () => {
+export const MechCommandIcons = () => {
     const theme = useTheme()
     const [mechMoveCommands, setMechMoveCommands] = useState<MechMoveCommand[]>([])
 

@@ -1,6 +1,6 @@
 import { useMemo } from "react"
-import { useMiniMap } from "../../../containers"
-import { LocationSelectType } from "../../../types"
+import { useMiniMap } from "../../../../containers"
+import { LocationSelectType } from "../../../../types"
 import { MapIcon } from "./MapIcon"
 
 export const SelectionIcon = () => {

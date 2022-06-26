@@ -1,111 +1,36 @@
 import { Box, Stack } from "@mui/material"
 import { useCallback, useMemo, useState } from "react"
-import { GenericWarMachinePNG, SvgMapSkull, SvgMapWarMachine } from "../../../assets"
-import { useGameServerSubscription, useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
-import { GameServerKeys } from "../../../keys"
-import { colors } from "../../../theme/theme"
-import { LocationSelectType, Map, PlayerAbility, Vector2i, WarMachineState } from "../../../types"
-import { WarMachineLiveState } from "../../../types/game"
-import { Faction } from "../../../types/user"
-import { MapSelection } from "../MiniMapInside"
-import { MechMoveCommand } from "../../PlayerAbilities/MechMoveCommandCard"
+import { GenericWarMachinePNG, SvgMapSkull, SvgMapWarMachine } from "../../../../assets"
+import { useAuth, useGame, useMiniMap, useSupremacy } from "../../../../containers"
+import { useGameServerSubscription, useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../../keys"
+import { colors } from "../../../../theme/theme"
+import { LocationSelectType, Map, Vector2i, WarMachineState } from "../../../../types"
+import { WarMachineLiveState } from "../../../../types/game"
+import { MechMoveCommand } from "../../../PlayerAbilities/MechMoveCommandCard"
 
-interface MapWarMachineProps {
-    gridWidth: number
-    gridHeight: number
-    // useAuth
-    userID?: string
-    factionID?: string
-    // useSupremacy
-    getFaction: (factionID: string) => Faction
-    // useGame
-    map?: Map
-    warMachines?: WarMachineState[]
-    // useMiniMap
-    enlarged: boolean
-    targeting: boolean
-    setSelection: React.Dispatch<React.SetStateAction<MapSelection | undefined>>
-    highlightedMechHash?: string
-    setHighlightedMechHash: React.Dispatch<React.SetStateAction<string | undefined>>
-    // useConsumables
-    playerAbility?: PlayerAbility
-}
-
-export const MapWarMachines = ({
-    gridWidth,
-    gridHeight,
-    userID,
-    factionID,
-    getFaction,
-    map,
-    warMachines,
-    enlarged,
-    targeting,
-    setSelection,
-    highlightedMechHash,
-    setHighlightedMechHash,
-    playerAbility,
-}: MapWarMachineProps) => {
-    if (!map || !warMachines || warMachines.length <= 0) return null
-
-    return (
-        <>
-            {warMachines.map((wm) => (
-                <MapWarMachine
-                    key={`${wm.participantID} - ${wm.hash}`}
-                    getFaction={getFaction}
-                    gridWidth={gridWidth}
-                    gridHeight={gridHeight}
-                    warMachine={wm}
-                    map={map}
-                    enlarged={enlarged}
-                    targeting={targeting}
-                    userID={userID}
-                    factionID={factionID}
-                    playerAbility={playerAbility}
-                    setSelection={setSelection}
-                    highlightedMechHash={highlightedMechHash}
-                    setHighlightedMechHash={setHighlightedMechHash}
-                />
-            ))}
-        </>
-    )
-}
-
-interface Props {
-    getFaction: (factionID: string) => Faction
-    gridWidth: number
-    gridHeight: number
+interface MapMechProps {
     warMachine: WarMachineState
-    map: Map
-    // useAuth
-    userID?: string
-    factionID?: string
-    // useMiniMap
-    enlarged: boolean
-    targeting: boolean
-    setSelection: React.Dispatch<React.SetStateAction<MapSelection | undefined>>
-    highlightedMechHash?: string
-    setHighlightedMechHash: React.Dispatch<React.SetStateAction<string | undefined>>
-    // useConsumables
-    playerAbility?: PlayerAbility
+    isEnlarged: boolean
 }
 
-const MapWarMachine = ({
-    getFaction,
-    gridWidth,
-    gridHeight,
-    warMachine,
-    map,
-    enlarged,
-    targeting,
-    userID,
-    factionID,
-    highlightedMechHash,
-    setHighlightedMechHash,
-    playerAbility,
-    setSelection,
-}: Props) => {
+export const MapMech = (props: MapMechProps) => {
+    const { map } = useGame()
+
+    if (!map) return null
+
+    return <MapMechInner map={map} {...props} />
+}
+
+interface MapMechInnerProps extends MapMechProps {
+    map: Map
+}
+
+const MapMechInner = ({ warMachine, isEnlarged, map }: MapMechInnerProps) => {
+    const { userID, factionID } = useAuth()
+    const { getFaction } = useSupremacy()
+    const { isTargeting, gridWidth, gridHeight, playerAbility, highlightedMechHash, setHighlightedMechHash, setSelection } = useMiniMap()
+
     const { hash, participantID, factionID: warMachineFactionID, maxHealth, maxShield, imageAvatar, ownedByID } = warMachine
 
     const [health, setHealth] = useState<number>(warMachine.health)
@@ -221,7 +146,7 @@ const MapWarMachine = ({
             onClick={handleClick}
             style={{
                 position: "absolute",
-                pointerEvents: targeting && playerAbility?.ability.location_select_type !== LocationSelectType.MECH_SELECT ? "none" : "all",
+                pointerEvents: isTargeting && playerAbility?.ability.location_select_type !== LocationSelectType.MECH_SELECT ? "none" : "all",
                 cursor: "pointer",
                 transform: `translate(-50%, -50%) translate3d(${(position.x - map.left_pixels) * mapScale}px, ${
                     (position.y - map.top_pixels) * mapScale
@@ -257,7 +182,7 @@ const MapWarMachine = ({
             )}
             <Box
                 style={
-                    enlarged
+                    isEnlarged
                         ? {
                               position: "relative",
                               width: ICON_SIZE,
@@ -294,12 +219,12 @@ const MapWarMachine = ({
                             width: "100%",
                             height: "100%",
                             background: "linear-gradient(#00000040, #00000090)",
-                            opacity: enlarged ? 1 : 0.6,
+                            opacity: isEnlarged ? 1 : 0.6,
                         }}
                     >
                         <SvgMapSkull
                             fill="#000000"
-                            size={enlarged ? `${0.8 * SIZE}px` : `${1.3 * SIZE}px`}
+                            size={isEnlarged ? `${0.8 * SIZE}px` : `${1.3 * SIZE}px`}
                             style={{
                                 position: "absolute",
                                 top: "52%",
@@ -310,7 +235,7 @@ const MapWarMachine = ({
                     </Stack>
                 )}
 
-                {isAlive && enlarged && (
+                {isAlive && isEnlarged && (
                     <Box
                         style={{
                             position: "absolute",
@@ -337,7 +262,7 @@ const MapWarMachine = ({
                     </Box>
                 )}
 
-                {isAlive && mechMoveCommandX !== undefined && mechMoveCommandY !== undefined && enlarged && (
+                {isAlive && mechMoveCommandX !== undefined && mechMoveCommandY !== undefined && isEnlarged && (
                     <Box
                         style={{
                             position: "absolute",

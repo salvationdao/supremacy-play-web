@@ -1,6 +1,6 @@
 import { Stack } from "@mui/material"
 import { ReactNode, useMemo } from "react"
-import { useMiniMap } from "../../../containers"
+import { useMiniMap } from "../../../../containers"
 
 export const MapIcon = ({
     primaryColor,
