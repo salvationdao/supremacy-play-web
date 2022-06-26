@@ -55,55 +55,53 @@ export const WarMachineAbilitiesPopover = ({
                     clipSize="5px"
                     clipSlantSize="8px"
                     border={{
-                        isFancy: true,
                         borderThickness: ".2rem",
                         borderColor: faction.primary_color,
                     }}
-                    opacity={0.99}
+                    opacity={0.9}
                     backgroundColor={faction.background_color}
                 >
-                    <Box sx={{ px: "1.28rem", pt: "1.28rem", pb: "1.28rem" }}>
-                        <Stack spacing=".72rem">
-                            <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ pr: ".3rem" }}>
-                                <Stack direction="row" spacing=".8rem" alignItems="center" sx={{ ml: ".88rem" }}>
-                                    <Box
-                                        sx={{
-                                            width: "1.7rem",
-                                            height: "1.7rem",
-                                            backgroundImage: `url(${warMachine.imageAvatar || GenericWarMachinePNG})`,
-                                            backgroundRepeat: "no-repeat",
-                                            backgroundPosition: "center",
-                                            backgroundSize: "cover",
-                                            backgroundColor: faction.primary_color,
-                                            mb: ".12rem",
-                                            border: `${faction.primary_color} 1px solid`,
-                                            borderRadius: 0.5,
-                                        }}
-                                    />
-                                    <Typography sx={{ lineHeight: 1, color: faction.primary_color, fontWeight: "fontWeightBold" }}>
-                                        WAR MACHINE UNIQUE SKILL{gameAbilities.length > 1 ? "S" : ""}
-                                    </Typography>
-                                </Stack>
-                                <ContributorAmount hideContributionTotal />
+                    <Stack spacing="1rem" sx={{ p: "1.6rem" }}>
+                        <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ pr: ".3rem" }}>
+                            <Stack direction="row" spacing=".8rem" alignItems="center" sx={{ ml: ".88rem" }}>
+                                <Box
+                                    sx={{
+                                        width: "1.7rem",
+                                        height: "1.7rem",
+                                        backgroundImage: `url(${warMachine.imageAvatar || GenericWarMachinePNG})`,
+                                        backgroundRepeat: "no-repeat",
+                                        backgroundPosition: "center",
+                                        backgroundSize: "cover",
+                                        backgroundColor: faction.primary_color,
+                                        mb: ".12rem",
+                                        border: `${faction.primary_color} 1px solid`,
+                                        borderRadius: 0.5,
+                                    }}
+                                />
+                                <Typography sx={{ lineHeight: 1, color: faction.primary_color, fontWeight: "fontWeightBold" }}>
+                                    WAR MACHINE UNIQUE SKILL{gameAbilities.length > 1 ? "S" : ""}
+                                </Typography>
                             </Stack>
-
-                            <Stack spacing=".9rem">
-                                {gameAbilities.map((ga, i) => (
-                                    <Box key={ga.identity} sx={{ ml: `${(i + 1) * 0.2 * 0.8}rem` }}>
-                                        <FactionAbilityItem
-                                            gameAbility={ga}
-                                            abilityMaxPrice={maxAbilityPriceMap?.current.get(ga.identity)}
-                                            clipSlantSize="5px"
-                                            progressWsURI={`/mech/${warMachine.participantID}`}
-                                        />
-                                    </Box>
-                                ))}
-                                {warMachine.ownedByID === userID && (
-                                    <MechMoveCommandCard warMachine={warMachine} faction={faction} clipSlantSize="5px" onClose={onClose} />
-                                )}
-                            </Stack>
+                            <ContributorAmount hideContributionTotal />
                         </Stack>
-                    </Box>
+
+                        <Stack spacing=".9rem">
+                            {gameAbilities.map((ga, i) => (
+                                <Box key={ga.identity} sx={{ ml: `${(i + 1) * 0.2 * 0.8}rem` }}>
+                                    <FactionAbilityItem
+                                        gameAbility={ga}
+                                        abilityMaxPrice={maxAbilityPriceMap?.current.get(ga.identity)}
+                                        clipSlantSize="5px"
+                                        progressWsURI={`/mech/${warMachine.participantID}`}
+                                    />
+                                </Box>
+                            ))}
+
+                            {warMachine.ownedByID === userID && (
+                                <MechMoveCommandCard warMachine={warMachine} faction={faction} clipSlantSize="5px" onClose={onClose} />
+                            )}
+                        </Stack>
+                    </Stack>
                 </ClipThing>
             </Box>
         </Popover>

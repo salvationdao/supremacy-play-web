@@ -1,15 +1,15 @@
 import { Box, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef } from "react"
 import { BoxSlanted, ClipThing, HealthShieldBars, SkillBar, TooltipHelper, WarMachineAbilitiesPopover, WarMachineDestroyedInfo } from ".."
-import { GenericWarMachinePNG, SvgInfoCircular, SvgSkull, SvgSupToken } from "../../assets"
+import { GenericWarMachinePNG, SvgInfoCircular, SvgSkull } from "../../assets"
+import { useAuth } from "../../containers"
 import { getRarityDeets } from "../../helpers"
 import { useToggle } from "../../hooks"
-import { useGameServerSubscriptionAbilityFaction, useGameServerSubscriptionFaction } from "../../hooks/useGameServer"
+import { useGameServerSubscriptionAbilityFaction } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
-import { fonts } from "../../theme/theme"
+import { colors, fonts } from "../../theme/theme"
 import { Faction, GameAbility, WarMachineState } from "../../types"
-import { useAuth } from "../../containers"
 
 // in rems
 const WIDTH_WM_IMAGE = 9.2
@@ -96,7 +96,6 @@ const WarMachineItemInner = ({
     const [isAlive, toggleIsAlive] = useToggle(true)
     const { hash, participantID, factionID: wmFactionID, name, imageAvatar, tier, ownedByID } = warMachine
     const faction = getFaction(wmFactionID)
-    const primaryColor = faction.primary_color
 
     const popoverRef = useRef(null)
     const [popoverOpen, togglePopoverOpen] = useToggle()
@@ -108,7 +107,10 @@ const WarMachineItemInner = ({
     const wmImageUrl = useMemo(() => imageAvatar || GenericWarMachinePNG, [imageAvatar])
     const isOwnFaction = useMemo(() => factionID == warMachine.factionID, [factionID, warMachine])
     const numSkillBars = useMemo(() => (gameAbilities ? gameAbilities.length : 0), [gameAbilities])
+
     const owned = useMemo(() => ownedByID === userID, [ownedByID, userID])
+    const primaryColor = owned ? colors.gold : faction.primary_color
+    const secondaryColor = owned ? "#000000" : faction.secondary_color
 
     const handleClick = useCallback(() => {
         if (hash === highlightedMechHash) {
@@ -186,22 +188,6 @@ const WarMachineItemInner = ({
                         }}
                     >
                         <SvgInfoCircular fill={"white"} size="1.5rem" />
-                    </Box>
-                )}
-
-                {owned && isAlive && (
-                    <Box
-                        sx={{
-                            position: "absolute",
-                            top: ".15rem",
-                            left: `${WIDTH_WM_IMAGE - 1.9}rem`,
-                            px: ".56rem",
-                            py: ".4rem",
-                            opacity: 0.83,
-                            zIndex: 99,
-                        }}
-                    >
-                        <SvgSupToken fill={"white"} size="1.5rem" />
                     </Box>
                 )}
 
@@ -410,7 +396,7 @@ const WarMachineItemInner = ({
                                         variant="body1"
                                         sx={{
                                             fontWeight: "fontWeightBold",
-                                            color: faction.secondary_color,
+                                            color: secondaryColor,
                                             letterSpacing: 1,
                                             transition: "all .2s",
                                         }}
