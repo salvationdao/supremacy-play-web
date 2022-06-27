@@ -155,13 +155,17 @@ export const PlayerAbilitiesStore = () => {
                 }}
             >
                 <PageHeader
-                    title={<>PLAYER ABILITIES</>}
+                    title={
+                        <Typography variant="h5" sx={{ fontFamily: fonts.nostromoBlack }}>
+                            PLAYER ABILITIES
+                        </Typography>
+                    }
                     description={
-                        <>
+                        <Typography sx={{ fontSize: "1.85rem" }}>
                             Player abilities are abilities that can be bought and used on the battle arena. The price of a player ability is determined by how
                             active it is at any given time. When players buy an ability, its price will go up. If an ability is not being bought, its price will
                             go down.
-                        </>
+                        </Typography>
                     }
                 >
                     <FancyButton
