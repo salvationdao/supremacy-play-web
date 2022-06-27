@@ -4,20 +4,20 @@ import { useAuth, useSupremacy } from "../../../../containers"
 import { colors, fonts } from "../../../../theme/theme"
 import { MarketUser } from "../../../../types/marketplace"
 
-export const Owner = ({ owner }: { owner?: MarketUser }) => {
+export const UserInfo = ({ marketUser, title, primaryColor }: { marketUser?: MarketUser; title?: string; primaryColor?: string }) => {
     const { userID } = useAuth()
     const { getFaction } = useSupremacy()
-    const ownerFactionDeets = useMemo(() => getFaction(owner?.faction_id || ""), [owner, getFaction])
+    const ownerFactionDeets = useMemo(() => getFaction(marketUser?.faction_id || ""), [marketUser, getFaction])
 
-    if (!owner) return null
+    if (!marketUser) return null
 
-    const { id, username, gid } = owner
+    const { id, username, gid } = marketUser
     const isSelfItem = userID === id
 
     return (
         <Box>
             <Typography gutterBottom sx={{ color: colors.lightGrey, fontFamily: fonts.nostromoBold }}>
-                OWNED BY:
+                {title || "USER:"}
             </Typography>
             <Stack direction="row" alignItems="center" spacing=".7rem">
                 {ownerFactionDeets && (
@@ -37,7 +37,7 @@ export const Owner = ({ owner }: { owner?: MarketUser }) => {
                         }}
                     />
                 )}
-                <Typography variant="h5" sx={{ color: ownerFactionDeets.primary_color, fontWeight: "fontWeightBold" }}>
+                <Typography variant="h5" sx={{ color: primaryColor || ownerFactionDeets.primary_color, fontWeight: "fontWeightBold" }}>
                     {username}
                     <span style={{ marginLeft: ".2rem", opacity: 0.8, fontFamily: "inherit" }}>{`#${gid}`}</span>
                     <span style={{ color: colors.neonBlue, fontFamily: "inherit" }}>{isSelfItem ? " (YOU)" : ""}</span>

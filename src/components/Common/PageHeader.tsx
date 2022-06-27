@@ -8,9 +8,10 @@ interface PageHeaderProps {
     imageUrl?: string
     children?: ReactNode
     smallSize?: boolean
+    primaryColor?: string
 }
 
-export const PageHeader = ({ title, description, imageUrl, children, smallSize }: PageHeaderProps) => {
+export const PageHeader = ({ title, description, imageUrl, children, smallSize, primaryColor }: PageHeaderProps) => {
     return (
         <Stack
             direction="row"
@@ -19,7 +20,7 @@ export const PageHeader = ({ title, description, imageUrl, children, smallSize }
                 px: smallSize ? "1.6rem" : "2rem",
                 py: smallSize ? "1rem" : "1.5rem",
                 backgroundColor: "#00000070",
-                borderBottom: (theme) => `${theme.factionTheme.primary}70 1.5px solid`,
+                borderBottom: (theme) => `${primaryColor || theme.factionTheme.primary}70 1.5px solid`,
             }}
         >
             {imageUrl && (
@@ -37,14 +38,21 @@ export const PageHeader = ({ title, description, imageUrl, children, smallSize }
                     }}
                 />
             )}
-            <Box sx={{ mr: "2rem" }}>
-                <Typography variant={smallSize ? "h6" : "h5"} sx={{ fontFamily: fonts.nostromoBlack }}>
-                    {title}
-                </Typography>
-                {description && <Typography sx={{ fontSize: "1.85rem" }}>{description}</Typography>}
+            <Box sx={{ flex: 1 }}>
+                {typeof title === "string" && (
+                    <Typography variant={smallSize ? "h6" : "h5"} sx={{ fontFamily: fonts.nostromoBlack }}>
+                        {title}
+                    </Typography>
+                )}
+
+                {typeof title !== "string" && title}
+
+                {description && typeof description === "string" && <Typography sx={{ fontSize: "1.85rem" }}>{description}</Typography>}
+
+                {description && typeof description !== "string" && description}
             </Box>
 
-            {children && <Box sx={{ ml: "auto !important" }}>{children}</Box>}
+            {children && <Box sx={{ ml: "2rem" }}>{children}</Box>}
         </Stack>
     )
 }

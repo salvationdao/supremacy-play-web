@@ -3,16 +3,16 @@ import { useAuth } from "../../../../containers"
 import { fonts, colors } from "../../../../theme/theme"
 import { MarketUser } from "../../../../types/marketplace"
 
-export const SellerInfo = ({ isGridView, owner }: { isGridView: boolean; owner: MarketUser }) => {
+export const UserInfo = ({ isGridView, marketUser, title }: { isGridView?: boolean; marketUser: MarketUser; title?: string }) => {
     const { userID } = useAuth()
 
-    const { id, username, gid } = owner
+    const { id, username, gid } = marketUser
     const isSelfItem = userID === id
 
     return (
         <Stack spacing={isGridView ? ".1rem" : ".6rem"}>
             <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack, color: colors.lightGrey }}>
-                SELLER
+                {title || "USER"}
             </Typography>
             <Typography
                 sx={{

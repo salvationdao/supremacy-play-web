@@ -1,5 +1,5 @@
 import { Box, Pagination, Stack, Typography } from "@mui/material"
-import { useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { Link } from "react-router-dom"
 import { ClipThing } from "../.."
 import { SafePNG } from "../../../assets"
@@ -14,6 +14,7 @@ import { colors, fonts } from "../../../theme/theme"
 import { StorefrontMysteryCrate } from "../../../types"
 import { PageHeader } from "../../Common/PageHeader"
 import { TooltipHelper } from "../../Common/TooltipHelper"
+import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { MysteryCrateStoreItem, MysteryCrateStoreItemLoadingSkeleton } from "./MysteryCrateStoreItem/MysteryCrateStoreItem"
 
 interface MysteryCrateOwnershipResp {
@@ -33,7 +34,7 @@ export const MysteryCratesStore = () => {
         allowed: 0,
         owned: 0,
     })
-    const { page, changePage, setTotalItems, totalPages, pageSize } = usePagination({
+    const { page, changePage, changePageSize, totalPages, pageSize } = usePagination({
         pageSize: parseString(query.get("pageSize"), 10),
         page: parseString(query.get("page"), 1),
     })
@@ -52,34 +53,36 @@ export const MysteryCratesStore = () => {
     )
 
     // Get mystery crates
+    const getItems = useCallback(async () => {
+        try {
+            setIsLoading(true)
+
+            const resp = await send<StorefrontMysteryCrate[]>(GameServerKeys.GetMysteryCrates, {
+                page,
+                page_size: pageSize,
+            })
+
+            updateQuery({
+                page: page.toString(),
+                pageSize: pageSize.toString(),
+            })
+
+            if (!resp) return
+            setLoadError(undefined)
+            setCrates(resp)
+        } catch (e) {
+            const message = typeof e === "string" ? e : "Failed to get mystery crates."
+            setLoadError(message)
+            newSnackbarMessage(message, "error")
+            console.error(e)
+        } finally {
+            setIsLoading(false)
+        }
+    }, [updateQuery, page, pageSize, send, newSnackbarMessage])
+
     useEffect(() => {
-        ;(async () => {
-            try {
-                setIsLoading(true)
-
-                const resp = await send<StorefrontMysteryCrate[]>(GameServerKeys.GetMysteryCrates, {
-                    page,
-                    page_size: pageSize,
-                })
-
-                updateQuery({
-                    page: page.toString(),
-                    pageSize: pageSize.toString(),
-                })
-
-                if (!resp) return
-                setLoadError(undefined)
-                setCrates(resp)
-            } catch (e) {
-                const message = typeof e === "string" ? e : "Failed to get mystery crates."
-                setLoadError(message)
-                newSnackbarMessage(message, "error")
-                console.error(e)
-            } finally {
-                setIsLoading(false)
-            }
-        })()
-    }, [send, page, pageSize, setTotalItems, newSnackbarMessage, updateQuery])
+        getItems()
+    }, [getItems])
 
     const content = useMemo(() => {
         if (loadError) {
@@ -192,21 +195,21 @@ export const MysteryCratesStore = () => {
                 <Stack sx={{ flex: 1 }}>
                     <PageHeader
                         title={
-                            <>
-                                MYSTERY CRATES <span style={{ color: colors.neonBlue, fontFamily: "inherit", fontSize: "inherit" }}>(LIMITED SUPPLY)</span>
-                            </>
+                            <Typography variant="h5" sx={{ fontFamily: fonts.nostromoBlack }}>
+                                MYSTERY CRATES <span style={{ color: colors.lightNeonBlue, fontFamily: "inherit", fontSize: "inherit" }}>(LIMITED SUPPLY)</span>
+                            </Typography>
                         }
                         description={
-                            <>
+                            <Typography sx={{ fontSize: "1.85rem" }}>
                                 Gear up for the battle arena with a variety of War Machines and Weapons. Each{" "}
                                 <Link to={`/fleet/${HANGAR_TABS.Keycards}`}>keycard</Link> you have on Supremacy allows you to purchase 10 mystery crates.
-                            </>
+                            </Typography>
                         }
                         imageUrl={SafePNG}
                     >
                         <Stack spacing="1rem">
                             <Stack direction="row" alignItems="center" justifyContent="flex-end" spacing=".8rem">
-                                <Typography variant="body2" sx={{ color: colors.neonBlue, fontFamily: fonts.nostromoHeavy }}>
+                                <Typography variant="body2" sx={{ color: colors.lightNeonBlue, fontFamily: fonts.nostromoHeavy }}>
                                     Total owned:
                                 </Typography>
 
@@ -214,7 +217,7 @@ export const MysteryCratesStore = () => {
                                     clipSize="8px"
                                     clipSlantSize="3px"
                                     border={{
-                                        borderColor: colors.neonBlue,
+                                        borderColor: colors.lightNeonBlue,
                                         borderThickness: ".15rem",
                                     }}
                                     corners={{
@@ -231,9 +234,9 @@ export const MysteryCratesStore = () => {
                                 </ClipThing>
                             </Stack>
 
-                            <TooltipHelper placement="bottom" text="Maximum capacity is dependent on the number of keycards you hold.">
+                            <TooltipHelper placement="bottom" text="The maximum capacity is dependent on the number of keycards you hold.">
                                 <Stack direction="row" alignItems="center" justifyContent="flex-end" spacing=".8rem">
-                                    <Typography variant="body2" sx={{ color: colors.neonBlue, fontFamily: fonts.nostromoBlack }}>
+                                    <Typography variant="body2" sx={{ color: colors.lightNeonBlue, fontFamily: fonts.nostromoBlack }}>
                                         Maximum capacity:
                                     </Typography>
 
@@ -241,7 +244,7 @@ export const MysteryCratesStore = () => {
                                         clipSize="8px"
                                         clipSlantSize="3px"
                                         border={{
-                                            borderColor: colors.neonBlue,
+                                            borderColor: colors.lightNeonBlue,
                                             borderThickness: ".15rem",
                                         }}
                                         corners={{
@@ -260,6 +263,15 @@ export const MysteryCratesStore = () => {
                             </TooltipHelper>
                         </Stack>
                     </PageHeader>
+
+                    <TotalAndPageSizeOptions
+                        countItems={crates?.length}
+                        pageSize={pageSize}
+                        changePageSize={changePageSize}
+                        pageSizeOptions={[10, 20, 40]}
+                        changePage={changePage}
+                        manualRefresh={getItems}
+                    />
 
                     <Stack sx={{ px: "2rem", py: "1rem", flex: 1 }}>
                         <Box

@@ -67,7 +67,7 @@ export const AntMediaStream = () => {
         setSelectedResolution,
     } = useStream()
     const webRtc = useRef<WebRTCAdaptorType>()
-    const vidRef = useRef<HTMLVideoElement | undefined>(undefined)
+    const vidRef = useRef<HTMLVideoElement>()
 
     useEffect(() => {
         if (volume <= 0) return
@@ -85,7 +85,11 @@ export const AntMediaStream = () => {
             currentStream &&
             currentStream.host === currentPlayingStreamHost
         ) {
-            webRtc.current.forceStreamQuality(currentStream.stream_id, selectedResolution)
+            try {
+                webRtc.current.forceStreamQuality(currentStream.stream_id, selectedResolution)
+            } catch (err) {
+                console.error(err)
+            }
         }
     }, [selectedResolution, currentStream, resolutions, currentPlayingStreamHost])
 

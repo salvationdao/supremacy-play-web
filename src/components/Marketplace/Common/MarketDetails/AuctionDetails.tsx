@@ -4,7 +4,7 @@ import { useCallback, useMemo, useState } from "react"
 import { ClipThing, FancyButton } from "../../.."
 import { SvgHammer, SvgSupToken } from "../../../../assets"
 import { useAuth, useSnackbar } from "../../../../containers"
-import { numberCommaFormatter, shadeColor } from "../../../../helpers"
+import { calculateDutchAuctionCurrentPrice, numberCommaFormatter, shadeColor } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
 import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
@@ -17,13 +17,27 @@ interface AuctionDetailsProps {
     itemType: ItemType
     owner?: MarketUser
     itemName: string
+    buyNowPrice: string
+    dutchAuctionDropRate?: string
+    createdAt: Date
     auctionCurrentPrice: string
     auctionBidCount: number
     auctionLastBid?: MarketUser
     isTimeEnded: boolean
 }
 
-export const AuctionDetails = ({ id, owner, itemName, auctionCurrentPrice, auctionBidCount, auctionLastBid, isTimeEnded }: AuctionDetailsProps) => {
+export const AuctionDetails = ({
+    id,
+    owner,
+    itemName,
+    buyNowPrice,
+    dutchAuctionDropRate,
+    createdAt,
+    auctionBidCount,
+    auctionCurrentPrice,
+    auctionLastBid,
+    isTimeEnded,
+}: AuctionDetailsProps) => {
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const { userID } = useAuth()
@@ -33,6 +47,14 @@ export const AuctionDetails = ({ id, owner, itemName, auctionCurrentPrice, aucti
     const [inputBidPrice, setInputBidPrice] = useState<number | undefined>(
         auctionCurrentPrice ? new BigNumber(auctionCurrentPrice).shiftedBy(-18).plus(1).toNumber() : undefined,
     )
+
+    const isLowerThanBuyOutPrice = useMemo(() => {
+        return calculateDutchAuctionCurrentPrice({
+            createdAt,
+            dropRate: dutchAuctionDropRate ? new BigNumber(dutchAuctionDropRate) : undefined,
+            startPrice: new BigNumber(buyNowPrice),
+        }).isLessThanOrEqualTo(currentPrice)
+    }, [buyNowPrice, createdAt, currentPrice, dutchAuctionDropRate])
 
     // Bidding
     const [isLoading, setIsLoading] = useState(false)
@@ -91,6 +113,8 @@ export const AuctionDetails = ({ id, owner, itemName, auctionCurrentPrice, aucti
     )
 
     const isSelfItem = userID === owner?.id
+
+    if (isLowerThanBuyOutPrice) return null
 
     return (
         <>
