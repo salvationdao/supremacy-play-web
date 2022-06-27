@@ -5,6 +5,7 @@ import { Crosshair } from "../../assets"
 import { useGame, useMiniMap } from "../../containers"
 import { CellCoords, Dimension, LocationSelectType } from "../../types"
 import { CountdownSubmit } from "./MapInsideItems/CountdownSubmit"
+import { DisabledCells } from "./MapInsideItems/DisabledCells"
 import { LineSelect } from "./MapInsideItems/LineSelect"
 import { MechCommandIcons } from "./MapInsideItems/MapIcon/MechCommandIcons"
 import { useMiniMapGestures } from "./useMiniMapGestures"
@@ -108,6 +109,9 @@ export const MiniMapInside = ({ containerDimensions, isEnlarged }: MiniMapInside
                         >
                             {isLineSelection && <LineSelect mapScale={mapScale} />}
                         </Box>
+
+                        {/* Shade disabled cells */}
+                        <DisabledCells />
                     </Box>
                 </Stack>
 
