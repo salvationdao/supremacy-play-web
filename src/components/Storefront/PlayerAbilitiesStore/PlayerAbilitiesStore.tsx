@@ -196,7 +196,11 @@ export const PlayerAbilitiesStore = () => {
                 </PageHeader>
                 <Stack direction="row" spacing="1rem" alignItems="center" justifyContent="end" py="2rem" px="4rem">
                     <Typography variant="body1">Next refresh in:</Typography>
-                    {nextRefreshTime ? <Countdown dateTo={nextRefreshTime} /> : <Typography>Less than an hour</Typography>}
+                    {saleAbilities.length > 0 ? (
+                        <Countdown dateTo={nextRefreshTime || saleAbilities[0].available_until} />
+                    ) : (
+                        <Typography>Less than an hour</Typography>
+                    )}
                 </Stack>
                 <Stack
                     sx={{

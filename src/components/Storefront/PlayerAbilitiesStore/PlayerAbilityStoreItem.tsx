@@ -25,6 +25,8 @@ export const PlayerAbilityStoreItem = ({ saleAbility, updatedPrice, totalAmount,
     const primaryColor = theme.factionTheme.primary
     const backgroundColor = theme.factionTheme.background
 
+    const amountLeft = totalAmount - amountSold
+
     // Purchasing
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsUser("/user_commander")
@@ -115,7 +117,7 @@ export const PlayerAbilityStoreItem = ({ saleAbility, updatedPrice, totalAmount,
                                         },
                                     }}
                                 >
-                                    <span>{numberCommaFormatter(totalAmount - amountSold)}</span> / {numberCommaFormatter(totalAmount)} left
+                                    <span>{numberCommaFormatter(amountLeft)}</span> / {numberCommaFormatter(totalAmount)} left
                                 </Typography>
                             </Box>
                         </Box>
@@ -140,6 +142,7 @@ export const PlayerAbilityStoreItem = ({ saleAbility, updatedPrice, totalAmount,
                                 border: { isFancy: true, borderColor: primaryColor, borderThickness: "1.5px" },
                             }}
                             sx={{ px: "1.6rem", py: ".6rem" }}
+                            disabled={amountLeft < 1}
                         >
                             <Typography
                                 key={updatedPrice}
@@ -149,7 +152,7 @@ export const PlayerAbilityStoreItem = ({ saleAbility, updatedPrice, totalAmount,
                                     color: theme.factionTheme.secondary,
                                 }}
                             >
-                                BUY FOR {supFormatter(updatedPrice, 2)} SUPS
+                                {amountLeft > 0 ? <>BUY FOR {supFormatter(updatedPrice, 2)} SUPS</> : <>OUT OF STOCK</>}
                             </Typography>
                         </FancyButton>
                     </Stack>
