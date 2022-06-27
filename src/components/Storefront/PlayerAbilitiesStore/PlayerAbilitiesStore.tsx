@@ -18,6 +18,7 @@ export const PlayerAbilitiesStore = () => {
     const [nextRefreshTime, setNextRefreshTime] = useState<Date>()
     const [saleAbilities, setSaleAbilities] = useState<SaleAbility[]>([])
     const [priceMap, setPriceMap] = useState<Map<string, string>>(new Map())
+    const [amountMap, setAmountMap] = useState<Map<string, number>>(new Map())
 
     useGameServerSubscriptionSecurePublic<{
         next_refresh_time?: Date
@@ -31,6 +32,7 @@ export const PlayerAbilitiesStore = () => {
             if (!payload) return
             setNextRefreshTime(payload.next_refresh_time)
             setSaleAbilities(payload.sale_abilities)
+            setAmountMap(new Map()) // reset amount map
             if (isLoaded) return
             setIsLoaded(true)
         },
@@ -45,6 +47,19 @@ export const PlayerAbilitiesStore = () => {
             if (!payload) return
             setPriceMap((prev) => {
                 return new Map(prev.set(payload.id, payload.current_price))
+            })
+        },
+    )
+
+    useGameServerSubscriptionSecurePublic<{ id: string; amount_left: number }>(
+        {
+            URI: "sale_abilities",
+            key: GameServerKeys.SaleAbilitiesAmountSubscribe,
+        },
+        (payload) => {
+            if (!payload) return
+            setAmountMap((prev) => {
+                return new Map(prev.set(payload.id, payload.amount_left))
             })
         },
     )
@@ -77,7 +92,12 @@ export const PlayerAbilitiesStore = () => {
                         }}
                     >
                         {saleAbilities.map((s) => (
-                            <PlayerAbilityStoreItem key={s.id} saleAbility={s} updatedPrice={priceMap.get(s.id) || s.current_price} />
+                            <PlayerAbilityStoreItem
+                                key={s.id}
+                                saleAbility={s}
+                                updatedPrice={priceMap.get(s.id) || s.current_price}
+                                amountLeft={s.sale_limit - (amountMap.get(s.id) || s.amount_sold)}
+                            />
                         ))}
                     </Box>
                 </Box>
@@ -108,7 +128,7 @@ export const PlayerAbilitiesStore = () => {
                 </Typography>
             </Box>
         )
-    }, [isLoaded, priceMap, saleAbilities])
+    }, [isLoaded, priceMap, amountMap, saleAbilities])
 
     return (
         <ClipThing

@@ -1,5 +1,5 @@
 import { Box, Fade, keyframes, Stack, Typography } from "@mui/material"
-import React, { useCallback, useState } from "react"
+import { useCallback, useState } from "react"
 import { FancyButton } from "../.."
 import { SvgSupToken } from "../../../assets"
 import { useSnackbar } from "../../../containers"
@@ -16,9 +16,10 @@ import { ConfirmModal } from "../../Common/ConfirmModal"
 export interface PlayerAbilityStoreItemProps {
     saleAbility: SaleAbility
     updatedPrice: string
+    amountLeft: number
 }
 
-export const PlayerAbilityStoreItem = ({ saleAbility, updatedPrice }: PlayerAbilityStoreItemProps) => {
+export const PlayerAbilityStoreItem = ({ saleAbility, updatedPrice, amountLeft }: PlayerAbilityStoreItemProps) => {
     const theme = useTheme()
     const primaryColor = theme.factionTheme.primary
     const backgroundColor = theme.factionTheme.background

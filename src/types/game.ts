@@ -123,6 +123,8 @@ export interface SaleAbility {
     id: string
     current_price: string
     available_until?: Date
+    sale_limit: number
+    amount_sold: number
     ability: BlueprintPlayerAbility
 }
 
