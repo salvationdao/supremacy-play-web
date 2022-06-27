@@ -4,10 +4,10 @@ import { useGame, useMiniMap } from "../../../containers"
 
 export const DisabledCells = () => {
     const { map } = useGame()
-    const { gridWidth, gridHeight } = useMiniMap()
+    const { isTargeting, gridWidth, gridHeight } = useMiniMap()
 
     return useMemo(() => {
-        if (!map?.disabled_cells || !map?.width || !map?.height) return null
+        if (!isTargeting || !map?.disabled_cells || !map?.width || !map?.height) return null
 
         return (
             <MapGrid width={map.width} height={map.height}>
@@ -27,7 +27,7 @@ export const DisabledCells = () => {
                 </tbody>
             </MapGrid>
         )
-    }, [gridHeight, gridWidth, map?.cells_x, map?.cells_y, map?.disabled_cells, map?.height, map?.width])
+    }, [gridHeight, gridWidth, isTargeting, map?.cells_x, map?.cells_y, map?.disabled_cells, map?.height, map?.width])
 }
 
 const MapGrid = styled("table", {
