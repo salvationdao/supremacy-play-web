@@ -17,7 +17,7 @@ const fake: MechMoveCommand = {
     id: "string",
     mech_id: "string",
     triggered_by_id: "string",
-    remain_cooldown_seconds: 26,
+    remain_cooldown_seconds: 3,
 }
 
 export interface MechMoveCommand {
@@ -87,7 +87,7 @@ export const MechMoveCommandCard = ({ warMachine, faction, clipSlantSize, onClos
                             <Stack spacing="2.4rem" direction="row" alignItems="center" justifyContent="space-between" alignSelf="stretch">
                                 <TopText
                                     description={"command mech to move to certain position"}
-                                    icon={<SvgDrag size="1.1rem" sx={{ pb: 0 }} />}
+                                    icon={<SvgDrag size="1rem" sx={{ pb: 0 }} fill={faction.primary_color} />}
                                     colour={faction.primary_color}
                                     label={"Move Command"}
                                 />
@@ -112,13 +112,15 @@ export const MechMoveCommandCard = ({ warMachine, faction, clipSlantSize, onClos
                             </Box>
 
                             <MechCommandButton
+                                hash={hash}
                                 color={faction.primary_color}
                                 remainCooldownSeconds={mechMoveCommand.remain_cooldown_seconds}
-                                textColor={faction.secondary_color}
-                                isCancelled={!!mechMoveCommand.cancelled_at}
-                                hash={hash}
+                                isMoving={mechMoveCommand.cell_x !== undefined && mechMoveCommand.cell_y !== undefined}
                                 mechMoveCommandID={mechMoveCommand.id}
                                 onClose={onClose}
+                                primaryColor={faction.primary_color}
+                                secondaryColor={faction.secondary_color}
+                                backgroundColor={faction.background_color}
                             />
                         </Stack>
                     </ClipThing>
@@ -131,8 +133,10 @@ export const MechMoveCommandCard = ({ warMachine, faction, clipSlantSize, onClos
 interface MechCommandButton {
     color: string
     remainCooldownSeconds: number
-    isCancelled: boolean
-    textColor?: string
+    isMoving: boolean
+    primaryColor?: string
+    secondaryColor?: string
+    backgroundColor?: string
     onClose: () => void
     hash: string
     mechMoveCommandID: string
@@ -144,42 +148,42 @@ const MechMoveCommandAbility: BlueprintPlayerAbility = {
     label: "Mech Move Command",
     colour: "#FFFFFF",
     image_url: "",
-    description: "Force mech to move to certain spot",
+    description: "Command the war machine to move to a specific location.",
     text_colour: "",
     location_select_type: LocationSelectType.MECH_COMMAND,
     created_at: new Date(),
 }
 
-const MechCommandButton = ({ color, remainCooldownSeconds, isCancelled, textColor, hash, mechMoveCommandID, onClose }: MechCommandButton) => {
+const MechCommandButton = ({
+    color,
+    remainCooldownSeconds,
+    isMoving,
+    primaryColor,
+    secondaryColor,
+    backgroundColor,
+    hash,
+    mechMoveCommandID,
+    onClose,
+}: MechCommandButton) => {
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const { setPlayerAbility } = useMiniMap()
     const { totalSecRemain } = useTimer(new Date(new Date().getTime() + remainCooldownSeconds * 1000))
 
     const text = useMemo(() => {
-        if (totalSecRemain > 0 && !isCancelled) return "CANCEL"
+        if (isMoving) return "CANCEL"
         return "ACTIVATE"
-    }, [totalSecRemain, isCancelled])
-
-    const backgroundColor = useMemo(() => {
-        if (totalSecRemain > 0) return "#14182B"
-        return color || "#14182B"
-    }, [totalSecRemain, color])
-
-    const colorText = useMemo(() => {
-        if (totalSecRemain > 0 && isCancelled) return "#FFFFFF20"
-        return textColor || "#FFFFFF"
-    }, [totalSecRemain, isCancelled, textColor])
+    }, [isMoving])
 
     const onActivate = useCallback(() => {
         setPlayerAbility({
             count: 1,
             last_purchased_at: new Date(),
             mechHash: hash,
-            ability: { ...MechMoveCommandAbility, text_colour: colorText, colour: backgroundColor },
+            ability: { ...MechMoveCommandAbility, text_colour: backgroundColor || "#222222", colour: primaryColor || "#FFFFFF" },
         })
         onClose()
-    }, [backgroundColor, colorText, hash, onClose, setPlayerAbility])
+    }, [backgroundColor, hash, onClose, primaryColor, setPlayerAbility])
 
     const onCancel = useCallback(async () => {
         try {
@@ -195,19 +199,19 @@ const MechCommandButton = ({ color, remainCooldownSeconds, isCancelled, textColo
     }, [hash, mechMoveCommandID, newSnackbarMessage, send])
 
     const onClick = useMemo(() => {
-        if (totalSecRemain > 0 && !isCancelled) return onCancel
+        if (isMoving) return onCancel
         return onActivate
-    }, [totalSecRemain, isCancelled, onActivate, onCancel])
+    }, [isMoving, onActivate, onCancel])
 
     return (
         <FancyButton
             clipThingsProps={{
                 clipSize: "5px",
-                backgroundColor: backgroundColor,
+                backgroundColor: isMoving ? backgroundColor : primaryColor,
                 border: { isFancy: true, borderColor: color || "#14182B" },
                 sx: { flex: 1, position: "relative", width: "100%" },
             }}
-            disabled={totalSecRemain > 0 && isCancelled}
+            disabled={totalSecRemain > 0}
             sx={{ py: ".45rem", minWidth: "2rem" }}
             onClick={onClick}
         >
@@ -218,7 +222,7 @@ const MechCommandButton = ({ color, remainCooldownSeconds, isCancelled, textColo
                         lineHeight: 1,
                         fontWeight: "fontWeightBold",
                         whiteSpace: "nowrap",
-                        color: colorText,
+                        color: isMoving ? primaryColor : secondaryColor,
                     }}
                 >
                     {text}

@@ -31,7 +31,7 @@ export const MechCommandIcons = () => {
                                 key={mmc.id}
                                 primaryColor={colors.gold}
                                 position={{ x: mmc.cell_x, y: mmc.cell_y }}
-                                icon={<SvgDrag size="4.5rem" sx={{ pb: 0 }} />}
+                                icon={<SvgDrag size="4.5rem" sx={{ pb: 0 }} fill={colors.gold} />}
                             />
                         )
                     })}

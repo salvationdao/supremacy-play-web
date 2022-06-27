@@ -31,7 +31,7 @@ export const SelectionIcon = () => {
                 imageUrl={ability.image_url}
                 onClick={() => setSelection(undefined)}
                 position={coords}
-                icon={isMechMoveCommand ? <SvgDrag size="4.5rem" /> : undefined}
+                icon={isMechMoveCommand ? <SvgDrag size="4.5rem" fill={ability.colour} /> : undefined}
             />
         )
     }, [ability, coords, isTargeting, setSelection])
