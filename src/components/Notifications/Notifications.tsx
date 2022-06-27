@@ -11,6 +11,7 @@ import {
     NotificationItem,
     TextAlert,
     WarMachineAbilityAlert,
+    LocationSelectAlertType,
 } from ".."
 import { MINI_MAP_DEFAULT_SIZE, NOTIFICATION_LINGER, NOTIFICATION_TIME } from "../../constants"
 import { useDimension, useSupremacy, useGame } from "../../containers"
@@ -34,6 +35,7 @@ import {
 import { siteZIndex } from "../../theme/theme"
 import { useGameServerSubscription } from "../../hooks/useGameServer"
 import { makeid } from "../../containers/ws/util"
+import { WarMachineCommandAlert, WarMachineCommandAlertProps } from "./Alerts/WarMachineCommandAlert"
 
 const SPAWN_TEST_NOTIFICATIONS = false
 
@@ -46,11 +48,19 @@ const SPAWN_TEST_NOTIFICATIONS = false
     TEXT: generic notification with no styles, just text
 */
 
-type NotificationType = "TEXT" | "LOCATION_SELECT" | "BATTLE_ABILITY" | "FACTION_ABILITY" | "WAR_MACHINE_ABILITY" | "WAR_MACHINE_DESTROYED"
+export enum NotificationType {
+    Text = "TEXT",
+    LocationSelect = "LOCATION_SELECT",
+    BattleAbility = "BATTLE_ABILITY",
+    FactionAbility = "FACTION_ABILITY",
+    WarMachineAbility = "WAR_MACHINE_ABILITY",
+    WarMachineDestroyed = "WAR_MACHINE_DESTROYED",
+    WarMachineCommand = "WAR_MACHINE_COMMAND",
+}
 
 export interface NotificationResponse {
     type: NotificationType
-    data: BattleFactionAbilityAlertProps | KillAlertProps | LocationSelectAlertProps | WarMachineAbilityAlertProps | string
+    data: BattleFactionAbilityAlertProps | KillAlertProps | LocationSelectAlertProps | WarMachineAbilityAlertProps | WarMachineCommandAlertProps | string
 }
 
 export const Notifications = () => {
@@ -80,18 +90,18 @@ export const Notifications = () => {
             if (justOne) return
 
             // These cases renders another notification (so two)
-            if (notification.type == "LOCATION_SELECT") {
+            if (notification.type === NotificationType.LocationSelect) {
                 const noti = notification as { type: NotificationType; data: LocationSelectAlertProps }
-                if (noti.data.type != "FAILED_TIMEOUT" && noti.data.type != "FAILED_DISCONNECTED") return
+                if (noti.data.type !== LocationSelectAlertType.FailedTimeOut && noti.data.type !== LocationSelectAlertType.FailedDisconnected) return
 
                 const {
                     data: { ability, nextUser },
                 } = noti
                 newNotification(
                     {
-                        type: "LOCATION_SELECT",
+                        type: NotificationType.LocationSelect,
                         data: {
-                            type: "ASSIGNED",
+                            type: LocationSelectAlertType.Assigned,
                             currentUser: nextUser,
                             ability,
                         },
@@ -100,15 +110,15 @@ export const Notifications = () => {
                 )
             }
 
-            if (notification.type == "BATTLE_ABILITY") {
+            if (notification.type === NotificationType.BattleAbility) {
                 const {
                     data: { ability, user },
                 } = notification as { type: NotificationType; data: BattleFactionAbilityAlertProps }
                 newNotification(
                     {
-                        type: "LOCATION_SELECT",
+                        type: NotificationType.LocationSelect,
                         data: {
-                            type: "ASSIGNED",
+                            type: LocationSelectAlertType.Assigned,
                             currentUser: user,
                             ability,
                         },
@@ -139,19 +149,21 @@ export const Notifications = () => {
     }, [newNotification])
 
     // Notifications
-    const incomingNotification = useGameServerSubscription<NotificationResponse | undefined>({
-        URI: "/public/notification",
-        key: GameServerKeys.SubGameNotification,
-    })
+    useGameServerSubscription<NotificationResponse | undefined>(
+        {
+            URI: "/public/notification",
+            key: GameServerKeys.SubGameNotification,
+        },
+        (payload) => {
+            if (!payload) return
+            newNotification(payload)
 
-    useEffect(() => {
-        newNotification(incomingNotification)
-
-        if (incomingNotification?.type === "BATTLE_ABILITY") {
-            const p = incomingNotification as { type: NotificationType; data: BattleFactionAbilityAlertProps }
-            setForceDisplay100Percentage(p?.data?.user?.faction_id || "")
-        }
-    }, [incomingNotification, newNotification, setForceDisplay100Percentage])
+            if (payload?.type === NotificationType.BattleAbility) {
+                const p = payload as { type: NotificationType; data: BattleFactionAbilityAlertProps }
+                setForceDisplay100Percentage(p?.data?.user?.faction_id || "")
+            }
+        },
+    )
 
     const notificationsJsx = useMemo(
         () =>
@@ -163,40 +175,46 @@ export const Notifications = () => {
                     if (!n) return null
 
                     switch (n.type) {
-                        case "TEXT":
+                        case NotificationType.Text:
                             return (
                                 <NotificationItem key={n.notiID} duration={n.duration}>
                                     <TextAlert data={n.data} />
                                 </NotificationItem>
                             )
-                        case "LOCATION_SELECT":
+                        case NotificationType.LocationSelect:
                             return (
                                 <NotificationItem key={n.notiID} duration={n.duration}>
                                     <LocationSelectAlert data={n.data} getFaction={getFaction} />
                                 </NotificationItem>
                             )
-                        case "BATTLE_ABILITY":
+                        case NotificationType.BattleAbility:
                             return (
                                 <NotificationItem key={n.notiID} duration={n.duration}>
                                     <BattleAbilityAlert data={n.data} getFaction={getFaction} />
                                 </NotificationItem>
                             )
-                        case "FACTION_ABILITY":
+                        case NotificationType.FactionAbility:
                             return (
                                 <NotificationItem key={n.notiID} duration={n.duration}>
                                     <FactionAbilityAlert data={n.data} getFaction={getFaction} />
                                 </NotificationItem>
                             )
-                        case "WAR_MACHINE_ABILITY":
+                        case NotificationType.WarMachineAbility:
                             return (
                                 <NotificationItem key={n.notiID} duration={n.duration}>
                                     <WarMachineAbilityAlert data={n.data} getFaction={getFaction} />
                                 </NotificationItem>
                             )
-                        case "WAR_MACHINE_DESTROYED":
+                        case NotificationType.WarMachineDestroyed:
                             return (
                                 <NotificationItem key={n.notiID} duration={n.duration}>
                                     <KillAlert data={n.data} getFaction={getFaction} />
+                                </NotificationItem>
+                            )
+                        case NotificationType.WarMachineCommand:
+                            return (
+                                <NotificationItem key={n.notiID} duration={n.duration}>
+                                    <WarMachineCommandAlert data={n.data} getFaction={getFaction} />
                                 </NotificationItem>
                             )
                     }

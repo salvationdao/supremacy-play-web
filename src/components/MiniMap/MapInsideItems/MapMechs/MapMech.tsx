@@ -319,14 +319,14 @@ const MapMechInner = ({ warMachine, isEnlarged, map }: MapMechInnerProps) => {
                             style={{
                                 position: "relative",
                                 height: mechCommandDist,
-                                borderLeft: `${primaryColor} 10px dashed`,
+                                borderLeft: `${primaryColor} 1.3rem dashed`,
                                 transition: `all ${TRANSITION_DURACTION}s`,
                             }}
                         >
                             <Box
                                 style={{
-                                    width: "10px",
-                                    height: "10px",
+                                    width: "1.6rem",
+                                    height: "1.6rem",
                                     position: "absolute",
                                     left: "50%",
                                     transform: "translateX(-50%)",
