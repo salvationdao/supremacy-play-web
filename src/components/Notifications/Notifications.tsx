@@ -1,41 +1,41 @@
 import { Box, Stack } from "@mui/material"
+import { useCallback, useEffect, useMemo } from "react"
 import {
     BattleAbilityAlert,
+    BattleFactionAbilityAlertProps,
     FactionAbilityAlert,
     KillAlert,
-    BattleFactionAbilityAlertProps,
-    LocationSelectAlertProps,
-    WarMachineAbilityAlertProps,
     KillAlertProps,
     LocationSelectAlert,
+    LocationSelectAlertProps,
+    LocationSelectAlertType,
     NotificationItem,
     TextAlert,
     WarMachineAbilityAlert,
-    LocationSelectAlertType,
+    WarMachineAbilityAlertProps,
 } from ".."
 import { MINI_MAP_DEFAULT_SIZE, NOTIFICATION_LINGER, NOTIFICATION_TIME } from "../../constants"
-import { useDimension, useSupremacy, useGame } from "../../containers"
-import { useCallback, useEffect, useMemo } from "react"
-import { GameServerKeys } from "../../keys"
+import { useDimension, useGame, useSupremacy } from "../../containers"
+import { makeid } from "../../containers/ws/util"
 import { useArray } from "../../hooks"
+import { useGameServerSubscription, useGameServerSubscriptionFaction } from "../../hooks/useGameServer"
+import { GameServerKeys } from "../../keys"
+import { siteZIndex } from "../../theme/theme"
+import { WarMachineCommandAlert, WarMachineCommandAlertProps } from "./Alerts/WarMachineCommandAlert"
 import {
+    battleAbilityNoti,
+    factionAbilityNoti,
+    killNoti,
+    killNoti2,
+    killNoti3,
     locationSelectNoti,
     locationSelectNoti2,
     locationSelectNoti3,
     locationSelectNoti4,
     locationSelectNoti5,
-    battleAbilityNoti,
-    factionAbilityNoti,
-    warMachineAbilityNoti,
     textNoti,
-    killNoti,
-    killNoti2,
-    killNoti3,
+    warMachineAbilityNoti,
 } from "./testData"
-import { siteZIndex } from "../../theme/theme"
-import { useGameServerSubscription } from "../../hooks/useGameServer"
-import { makeid } from "../../containers/ws/util"
-import { WarMachineCommandAlert, WarMachineCommandAlertProps } from "./Alerts/WarMachineCommandAlert"
 
 const SPAWN_TEST_NOTIFICATIONS = false
 
@@ -162,6 +162,18 @@ export const Notifications = () => {
                 const p = payload as { type: NotificationType; data: BattleFactionAbilityAlertProps }
                 setForceDisplay100Percentage(p?.data?.user?.faction_id || "")
             }
+        },
+    )
+
+    // Notifications
+    useGameServerSubscriptionFaction<NotificationResponse | undefined>(
+        {
+            URI: "/mech_command_notification",
+            key: GameServerKeys.SubGameNotification,
+        },
+        (payload) => {
+            if (!payload) return
+            newNotification(payload)
         },
     )
 

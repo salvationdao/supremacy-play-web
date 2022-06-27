@@ -22,8 +22,8 @@ export const WarMachineStats = () => {
 
     const adjustment = useMemo(() => Math.min(remToPxRatio, 10) / 10, [remToPxRatio])
 
-    const factionMechs = useMemo(() => (warMachines ? warMachines.filter((wm) => wm.factionID && wm.factionID == factionID) : []), [warMachines, factionID])
-    const otherMechs = useMemo(() => (warMachines ? warMachines.filter((wm) => wm.factionID && wm.factionID != factionID) : []), [warMachines, factionID])
+    const factionMechs = useMemo(() => (warMachines ? warMachines.filter((wm) => wm.factionID && wm.factionID === factionID) : []), [warMachines, factionID])
+    const otherMechs = useMemo(() => (warMachines ? warMachines.filter((wm) => wm.factionID && wm.factionID !== factionID) : []), [warMachines, factionID])
     const haveFactionMechs = useMemo(() => factionMechs.length > 0, [factionMechs])
 
     if (!warMachines || warMachines.length <= 0) return null
