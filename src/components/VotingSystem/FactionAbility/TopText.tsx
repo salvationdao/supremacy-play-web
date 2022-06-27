@@ -24,7 +24,7 @@ export const TopText = ({ description, image_url, colour, label, icon }: TopText
                     backgroundRepeat: "no-repeat",
                     backgroundPosition: "center",
                     backgroundSize: "cover",
-                    backgroundColor: colour || "#030409",
+                    backgroundColor: icon ? "#030409" : colour,
                     border: `${colour} 1px solid`,
                     borderRadius: 0.6,
                     mb: ".24rem",

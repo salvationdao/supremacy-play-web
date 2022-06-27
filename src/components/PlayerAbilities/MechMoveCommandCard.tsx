@@ -104,7 +104,7 @@ export const MechMoveCommandInner = ({ faction, clipSlantSize, mechMoveCommand, 
                             <Stack spacing="2.4rem" direction="row" alignItems="center" justifyContent="space-between" alignSelf="stretch">
                                 <TopText
                                     description={"command mech to move to certain position"}
-                                    icon={<SvgDrag size="1.2rem" sx={{ pb: 0 }} />}
+                                    icon={<SvgDrag size="1.1rem" sx={{ pb: 0 }} />}
                                     colour={faction.primary_color}
                                     label={"Move Command"}
                                 />

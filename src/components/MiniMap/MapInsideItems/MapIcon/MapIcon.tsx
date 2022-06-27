@@ -38,7 +38,7 @@ export const MapIcon = ({
                     backgroundRepeat: "no-repeat",
                     backgroundPosition: "center",
                     backgroundSize: "cover",
-                    backgroundColor: primaryColor || "#030409",
+                    backgroundColor: icon ? "#030409" : primaryColor,
                     transform: `translate(${position.x * gridWidth - sizeX / 2}px, ${position.y * gridHeight - sizeY / 2}px)`,
                     zIndex: 100,
                 }}
