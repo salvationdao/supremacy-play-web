@@ -32,7 +32,7 @@ export const VotingButton = ({ displayPercentage, cost, color, textColor, isVoti
                 border: { isFancy: true, borderColor: color || "#14182B" },
                 sx: { flex: 1, position: "relative" },
             }}
-            sx={{ py: ".2rem", minWidth: "2rem" }}
+            sx={{ pt: ".3rem", pb: ".4rem", minWidth: "2rem" }}
             onClick={onClick}
         >
             <Stack

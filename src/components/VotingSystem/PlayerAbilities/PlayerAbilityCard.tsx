@@ -61,7 +61,7 @@ export const PlayerAbilityCard = ({ playerAbility }: { playerAbility: PlayerAbil
                         border: { borderColor: playerAbility.ability.colour, borderThickness: "1px" },
                         sx: { position: "relative", px: ".4rem", py: ".3rem" },
                     }}
-                    sx={{ color: playerAbility.ability.colour, p: 0 }}
+                    sx={{ color: playerAbility.ability.colour, p: 0, minWidth: 0 }}
                     onClick={() => toggleShowActivateModal(true)}
                 >
                     <Stack
@@ -75,10 +75,10 @@ export const PlayerAbilityCard = ({ playerAbility }: { playerAbility: PlayerAbil
                     >
                         <Box
                             sx={{
-                                overflow: "hidden",
                                 position: "relative",
                                 width: "100%",
                                 pt: "100%", // 1:1 width-height ratio
+                                overflow: "hidden",
                             }}
                         >
                             <Box
