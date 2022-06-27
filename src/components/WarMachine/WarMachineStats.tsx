@@ -45,7 +45,7 @@ export const WarMachineStats = () => {
                     filter: "drop-shadow(0 3px 3px #00000020)",
                 }}
             >
-                <Stack direction="row" alignItems="flex-end" sx={{ transform: "skew(-6deg)" }}>
+                <Stack direction="row" alignItems="flex-end" sx={{ ml: "-3rem", pl: "2rem", transform: "skew(-6deg)" }}>
                     {haveFactionMechs && (
                         <ClipThing
                             clipSize="10px"
