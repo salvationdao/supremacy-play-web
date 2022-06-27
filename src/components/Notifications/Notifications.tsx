@@ -165,7 +165,7 @@ export const Notifications = () => {
         },
     )
 
-    // Notifications
+    // Faction specific notifications
     useGameServerSubscriptionFaction<NotificationResponse | undefined>(
         {
             URI: "/mech_command_notification",
