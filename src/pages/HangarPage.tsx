@@ -6,6 +6,7 @@ import { KeycardsHangar } from "../components/Hangar/KeycardsHangar/KeycardsHang
 import { MysteryCratesHangar } from "../components/Hangar/MysteryCratesHangar/MysteryCratesHangar"
 import { PlayerAbilitiesHangar } from "../components/Hangar/PlayerAbilitiesHangar/PlayerAbilitiesHangar"
 import { WarMachinesHangar } from "../components/Hangar/WarMachinesHangar/WarMachinesHangar"
+import { STAGING_OR_DEV_ONLY } from "../constants"
 import { useTheme } from "../containers/theme"
 import { ROUTES_MAP } from "../routes"
 import { siteZIndex } from "../theme/theme"
@@ -75,7 +76,7 @@ export const HangarPage = () => {
                         <Tab label="WAR MACHINES" value={HANGAR_TABS.WarMachines} />
                         <Tab label="KEY CARDS" value={HANGAR_TABS.Keycards} />
                         <Tab label="MYSTERY CRATES" value={HANGAR_TABS.MysteryCrates} />
-                        <Tab label="ABILITIES" value={HANGAR_TABS.Abilities} />
+                        {STAGING_OR_DEV_ONLY && <Tab label="ABILITIES" value={HANGAR_TABS.Abilities} />}
                     </Tabs>
                 </Box>
 

@@ -1,5 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { ClipThing, FancyButton } from "../.."
 import { useTheme } from "../../../containers/theme"
 import { useGameServerSubscriptionSecurePublic } from "../../../hooks/useGameServer"
@@ -63,6 +63,10 @@ export const PlayerAbilitiesStore = () => {
             })
         },
     )
+
+    useEffect(() => {
+        console.log(nextRefreshTime)
+    }, [nextRefreshTime])
 
     const content = useMemo(() => {
         if (!isLoaded) {
