@@ -9,23 +9,6 @@ import { Stream, StreamService } from "../types"
 
 const MAX_OPTIONS = 10
 
-const newExperimental2: Stream = {
-    host: "wss://video-experimental2.ninja-cdn.com/app1/livefeed",
-    name: "Experimental2 🌟",
-    url: "wss://video-experimental2.ninja-cdn.com/app1/livefeed",
-    stream_id: "softvelum-experimental",
-    region: "",
-    resolution: "",
-    bit_rates_k_bits: 0,
-    user_max: 2,
-    users_now: 1,
-    active: true,
-    status: "online",
-    latitude: "0",
-    longitude: "0",
-    service: StreamService.Softvelum,
-}
-
 const experimental1: Stream = {
     host: "wss://stream2.supremacy.game:3334/app/stream2",
     name: "Experimental 🌟",
@@ -87,7 +70,7 @@ export const StreamContainer = createContainer(() => {
                 const resp = await queryGetStreamList({})
                 if (resp.error || !resp.payload) return
                 // setLoadedStreams([blankOption, ...resp.payload])
-                setLoadedStreams([blankOption, ...resp.payload, experimental1, newExperimental2]) // TODO Remove hard-coded experimental
+                setLoadedStreams([blankOption, ...resp.payload, experimental1]) // TODO Remove hard-coded experimental
             } catch (err) {
                 const message = typeof err === "string" ? err : "Failed to get the list of streams."
                 newSnackbarMessage(message, "error")
