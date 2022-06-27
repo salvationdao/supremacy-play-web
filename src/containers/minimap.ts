@@ -157,7 +157,7 @@ export const MiniMapContainer = createContainer(() => {
         } catch (err) {
             newSnackbarMessage(typeof err === "string" ? err : "Failed to submit target location.", "error")
             console.error(err)
-            resetSelection()
+            setSelection(undefined)
         }
     }, [send, selection, resetSelection, winner?.game_ability, playerAbility, newSnackbarMessage, setHighlightedMechHash])
 
