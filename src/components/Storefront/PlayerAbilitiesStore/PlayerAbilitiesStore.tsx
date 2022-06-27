@@ -1,5 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useEffect, useMemo, useState } from "react"
+import { useMemo, useState } from "react"
 import { ClipThing, FancyButton } from "../.."
 import { useTheme } from "../../../containers/theme"
 import { useGameServerSubscriptionSecurePublic } from "../../../hooks/useGameServer"
@@ -15,13 +15,13 @@ import { PlayerAbilityStoreItem } from "./PlayerAbilityStoreItem"
 export const PlayerAbilitiesStore = () => {
     const theme = useTheme()
     const [isLoaded, setIsLoaded] = useState(false)
-    const [nextRefreshTime, setNextRefreshTime] = useState<Date>()
+    const [nextRefreshTime, setNextRefreshTime] = useState<Date | null>(null)
     const [saleAbilities, setSaleAbilities] = useState<SaleAbility[]>([])
     const [priceMap, setPriceMap] = useState<Map<string, string>>(new Map())
     const [amountMap, setAmountMap] = useState<Map<string, number>>(new Map())
 
     useGameServerSubscriptionSecurePublic<{
-        next_refresh_time?: Date
+        next_refresh_time: Date | null
         sale_abilities: SaleAbility[]
     }>(
         {
@@ -64,9 +64,15 @@ export const PlayerAbilitiesStore = () => {
         },
     )
 
-    useEffect(() => {
-        console.log(nextRefreshTime)
-    }, [nextRefreshTime])
+    const countdown = useMemo(() => {
+        if (nextRefreshTime) {
+            return <Countdown key={nextRefreshTime.getMilliseconds()} dateTo={nextRefreshTime} />
+        }
+        if (saleAbilities.length > 0) {
+            return <Countdown key={saleAbilities[0].available_until?.getMilliseconds()} dateTo={saleAbilities[0].available_until} />
+        }
+        return <Typography>Less than an hour</Typography>
+    }, [nextRefreshTime, saleAbilities])
 
     const content = useMemo(() => {
         if (!isLoaded) {
@@ -200,11 +206,7 @@ export const PlayerAbilitiesStore = () => {
                 </PageHeader>
                 <Stack direction="row" spacing="1rem" alignItems="center" justifyContent="end" py="2rem" px="4rem">
                     <Typography variant="body1">Next refresh in:</Typography>
-                    {saleAbilities.length > 0 ? (
-                        <Countdown dateTo={nextRefreshTime || saleAbilities[0].available_until} />
-                    ) : (
-                        <Typography>Less than an hour</Typography>
-                    )}
+                    {countdown}
                 </Stack>
                 <Stack
                     sx={{
