@@ -1,5 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
-import React, { useEffect, useMemo, useRef, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { ClipThing } from "../.."
 import { useTheme } from "../../../containers/theme"
 import { parseString } from "../../../helpers"
@@ -31,9 +31,9 @@ export const PlayerAbilitiesHangar = () => {
 
     // Filters
     const [search, setSearch] = useState("")
-    const [locationSelectTypes, setLocationSelectTypes] = useState<string[]>((query.get("listingTypes") || undefined)?.split("||") || [])
+    const [locationSelectTypes, setLocationSelectTypes] = useState<string[]>((query.get("abilityTypes") || undefined)?.split("||") || [])
     const locationSelectTypeFilterSection = useRef<ChipFilter>({
-        label: "LISTING TYPE",
+        label: "ABILITY TYPE",
         options: [
             { value: LocationSelectType.GLOBAL, label: LocationSelectType.GLOBAL.split("_").join(" "), color: colors.grey },
             { value: LocationSelectType.LOCATION_SELECT, label: LocationSelectType.LOCATION_SELECT.split("_").join(" "), color: colors.grey },
