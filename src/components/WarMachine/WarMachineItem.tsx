@@ -3,7 +3,7 @@ import BigNumber from "bignumber.js"
 import { useCallback, useEffect, useMemo, useRef } from "react"
 import { BoxSlanted, ClipThing, HealthShieldBars, SkillBar, TooltipHelper, WarMachineAbilitiesPopover, WarMachineDestroyedInfo } from ".."
 import { GenericWarMachinePNG, SvgInfoCircular, SvgSkull } from "../../assets"
-import { useAuth } from "../../containers"
+import { useAuth, useMiniMap, useSupremacy } from "../../containers"
 import { getRarityDeets } from "../../helpers"
 import { useToggle } from "../../hooks"
 import { useGameServerSubscriptionAbilityFaction } from "../../hooks/useGameServer"
@@ -22,84 +22,26 @@ const HEIGHT = 7.6
 const SKILL_BUTTON_TEXT_ROTATION = 78.5
 const DEAD_OPACITY = 0.6
 
-interface WarMachineItemProps {
-    warMachine: WarMachineState
-    scale: number
-    shouldBeExpanded: boolean
-    // useAuth
-    userID?: string
-    factionID?: string
-    // useSupremacy
-    battleIdentifier?: number
-    getFaction: (factionID: string) => Faction
-    // useMiniMap
-    highlightedMechHash?: string
-    setHighlightedMechHash: React.Dispatch<React.SetStateAction<string | undefined>>
-}
+export const WarMachineItem = ({ warMachine, scale }: { warMachine: WarMachineState; scale: number }) => {
+    const { userID, factionID } = useAuth()
+    const { battleIdentifier, getFaction } = useSupremacy()
+    const { highlightedMechHash, setHighlightedMechHash } = useMiniMap()
 
-export const WarMachineItem = (props: WarMachineItemProps) => {
-    const { factionID } = useAuth()
-    const { warMachine, scale, shouldBeExpanded, userID, battleIdentifier, getFaction, highlightedMechHash, setHighlightedMechHash } = props
-    const { participantID, factionID: warMachineFactionID } = warMachine
+    const { hash, participantID, factionID: wmFactionID, name, imageAvatar, tier, ownedByID } = warMachine
 
     // Subscribe to war machine ability updates
     const gameAbilities = useGameServerSubscriptionAbilityFaction<GameAbility[] | undefined>({
         URI: `/mech/${participantID}`,
         key: GameServerKeys.SubWarMachineAbilitiesUpdated,
-        ready: factionID === warMachineFactionID && !!participantID,
+        ready: factionID === wmFactionID && !!participantID,
     })
 
-    return (
-        <WarMachineItemInner
-            warMachine={warMachine}
-            scale={scale}
-            shouldBeExpanded={shouldBeExpanded}
-            gameAbilities={gameAbilities}
-            userID={userID}
-            factionID={factionID}
-            battleIdentifier={battleIdentifier}
-            getFaction={getFaction}
-            highlightedMechHash={highlightedMechHash}
-            setHighlightedMechHash={setHighlightedMechHash}
-        />
-    )
-}
-
-interface WarMachineItemInnerProps {
-    warMachine: WarMachineState
-    scale: number
-    shouldBeExpanded: boolean
-    gameAbilities?: GameAbility[]
-    // useAuth
-    userID?: string
-    factionID?: string
-    // useSupremacy
-    battleIdentifier?: number
-    getFaction: (factionID: string) => Faction
-    // useMiniMap
-    highlightedMechHash?: string
-    setHighlightedMechHash: React.Dispatch<React.SetStateAction<string | undefined>>
-}
-
-const WarMachineItemInner = ({
-    battleIdentifier,
-    getFaction,
-    warMachine,
-    scale,
-    shouldBeExpanded,
-    userID,
-    factionID,
-    highlightedMechHash,
-    setHighlightedMechHash,
-    gameAbilities,
-}: WarMachineItemInnerProps) => {
     const [isAlive, toggleIsAlive] = useToggle(true)
-    const { hash, participantID, factionID: wmFactionID, name, imageAvatar, tier, ownedByID } = warMachine
+    const [isExpanded, toggleIsExpanded] = useToggle(false)
     const faction = getFaction(wmFactionID)
 
     const popoverRef = useRef(null)
     const [popoverOpen, togglePopoverOpen] = useToggle()
-    const [isExpanded, toggleIsExpanded] = useToggle(false)
     const [isDestroyedInfoOpen, toggleIsDestroyedInfoOpen] = useToggle()
     const maxAbilityPriceMap = useRef<Map<string, BigNumber>>(new Map<string, BigNumber>())
 
@@ -132,16 +74,12 @@ const WarMachineItemInner = ({
     /* Toggle out isExpanded if other mech is highlighted */
     useEffect(() => {
         if (highlightedMechHash !== warMachine.hash) {
-            toggleIsExpanded(shouldBeExpanded)
+            toggleIsExpanded(false)
         } else {
             toggleIsExpanded(true)
             openSkillsPopover()
         }
-    }, [highlightedMechHash, openSkillsPopover, shouldBeExpanded, toggleIsExpanded, warMachine.hash])
-
-    useEffect(() => {
-        toggleIsExpanded(shouldBeExpanded)
-    }, [shouldBeExpanded, toggleIsExpanded])
+    }, [highlightedMechHash, openSkillsPopover, toggleIsExpanded, warMachine.hash])
 
     return (
         <BoxSlanted key={`WarMachineItem-${participantID}`} clipSlantSize="14px" sx={{ transform: `scale(${scale})` }}>
