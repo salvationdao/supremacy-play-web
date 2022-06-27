@@ -1,11 +1,11 @@
-import { Box, Fade, Stack } from "@mui/material"
+import { Box, Divider, Fade, Stack } from "@mui/material"
 import { useMemo } from "react"
 import { BattleAbilityItem, FactionAbilities, MoveableResizable } from ".."
 import { DEV_ONLY } from "../../constants"
 import { BribeStageResponse, useAuth, useGame } from "../../containers"
 import { useTheme } from "../../containers/theme"
 import { MoveableResizableConfig } from "../Common/MoveableResizable/MoveableResizableContainer"
-import { PlayerAbilities } from "../PlayerAbilities/PlayerAbilities"
+import { PlayerAbilities } from "./PlayerAbilities/PlayerAbilities"
 
 export const VotingSystem = () => {
     const { userID } = useAuth()
@@ -74,7 +74,15 @@ const VotingSystemInner = ({ userID, bribeStage }: VotingSystemInnerProps) => {
                                 },
                             }}
                         >
-                            <Stack spacing="2rem" sx={{ direction: "ltr", py: ".4rem" }}>
+                            <Stack
+                                spacing="2rem"
+                                sx={{ direction: "ltr", py: ".4rem" }}
+                                divider={
+                                    <Divider
+                                        sx={{ mb: "2rem", borderBottomWidth: ".25rem", borderColor: (theme) => theme.factionTheme.primary, opacity: 0.15 }}
+                                    />
+                                }
+                            >
                                 <BattleAbilityItem key={factionID} />
                                 <FactionAbilities />
                                 {DEV_ONLY && userID && <PlayerAbilities />}

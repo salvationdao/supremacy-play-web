@@ -1,11 +1,11 @@
 import { Box, Popover, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
-import { ClipThing, FactionAbilityItem } from ".."
-import { GenericWarMachinePNG } from "../../assets"
-import { Faction, GameAbility, WarMachineState } from "../../types"
-import { ContributorAmount } from "../BattleStats/ContributorAmount"
-import { MechMoveCommandCard } from "../PlayerAbilities/MechMoveCommandCard"
-import { useAuth } from "../../containers"
+import { ClipThing, FactionAbilityItem } from "../.."
+import { GenericWarMachinePNG } from "../../../assets"
+import { Faction, GameAbility, WarMachineState } from "../../../types"
+import { ContributorAmount } from "../../BattleStats/ContributorAmount"
+import { MechMoveCommandCard } from "./MechMoveCommandCard"
+import { useAuth } from "../../../containers"
 
 interface WarMachineAbilitiesPopoverProps {
     popoverRef: React.MutableRefObject<null>
