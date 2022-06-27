@@ -182,7 +182,7 @@ export const WarMachineItem = ({ warMachine, scale }: { warMachine: WarMachineSt
                                 px: ".8rem",
                                 py: ".6rem",
                                 cursor: "pointer",
-                                background: `linear-gradient(${backgroundColor}99 20%, ${backgroundColor}80, ${primaryColor}50)`,
+                                background: `linear-gradient(${backgroundColor}BB 20%, ${backgroundColor}90, ${rarityDeets.color || primaryColor}55)`,
                                 opacity: isAlive ? 1 : DEAD_OPACITY,
                                 zIndex: 1,
                             }}
