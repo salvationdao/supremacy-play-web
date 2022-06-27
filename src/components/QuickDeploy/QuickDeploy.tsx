@@ -51,7 +51,7 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
     const [loadError, setLoadError] = useState<string>()
 
     const [sort, setSort] = useState<string>(SortTypeLabel.MechQueueAsc)
-    const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({
+    const { page, changePage, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({
         pageSize: parseString(localStorage.getItem("quickDeployPageSize"), 5),
         page: 1,
     })
