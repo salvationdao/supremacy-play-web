@@ -20,7 +20,6 @@ export const DisabledCells = () => {
                                     .fill(1)
                                     .map((_el, x) => {
                                         const disabled = map?.disabled_cells.indexOf(Math.max(y, 0) * map.cells_x + x) != -1
-                                        if (!disabled) return null
                                         return <GridCell key={`column-${y}-row-${x}`} disabled={disabled} width={gridWidth} height={gridHeight} />
                                     })}
                             </tr>
@@ -47,5 +46,5 @@ const GridCell = styled("td", {
 })<{ disabled?: boolean; width: number; height: number }>(({ disabled, width, height }) => ({
     width: `${width}px`,
     height: `${height}px`,
-    backgroundColor: disabled ? "#00000092" : "unset",
+    backgroundColor: disabled ? "#00000095" : "unset",
 }))
