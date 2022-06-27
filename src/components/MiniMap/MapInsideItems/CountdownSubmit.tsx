@@ -6,8 +6,8 @@ import { fonts } from "../../../theme/theme"
 import { LocationSelectType } from "../../../types"
 
 export const CountdownSubmit = () => {
-    const { isTargeting, winner, playerAbility } = useMiniMap()
-    if (!isTargeting || (!winner?.game_ability && !playerAbility)) return null
+    const { isTargeting, winner, playerAbility, selection } = useMiniMap()
+    if (!isTargeting || !selection || (!winner?.game_ability && !playerAbility)) return null
     return <CountdownSubmitInner />
 }
 
