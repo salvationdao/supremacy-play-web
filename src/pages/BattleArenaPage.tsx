@@ -43,7 +43,7 @@ export const BattleArenaPage = () => {
 
 const BattleArenaPageInner = () => {
     const { userID } = useAuth()
-    const { isServerUp, haveSups, mechDeployModalOpen, toggleMechDeployModalOpen } = useSupremacy()
+    const { isServerUp, haveSups, isQuickDeployOpen, toggleIsQuickDeployOpen } = useSupremacy()
     const [noSupsModalOpen, toggleNoSupsModalOpen] = useToggle(true)
     const [watchedTrailer, setWatchedTrailer] = useState(localStorage.getItem("watchedTrailer") == "true")
 
@@ -63,7 +63,7 @@ const BattleArenaPageInner = () => {
                             <BattleHistory />
                             <VotingSystem />
 
-                            {mechDeployModalOpen && <QuickDeploy open={mechDeployModalOpen} onClose={() => toggleMechDeployModalOpen(false)} />}
+                            {isQuickDeployOpen && <QuickDeploy open={isQuickDeployOpen} onClose={() => toggleIsQuickDeployOpen(false)} />}
                             {isServerUp && userID && haveSups === false && noSupsModalOpen && <NoSupsModal onClose={() => toggleNoSupsModalOpen(false)} />}
                             {userID && !noSupsModalOpen && <TutorialModal />}
                         </>

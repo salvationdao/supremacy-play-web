@@ -319,7 +319,7 @@ const MapMechInner = ({ warMachine, isEnlarged, map }: MapMechInnerProps) => {
                             style={{
                                 position: "relative",
                                 height: mechCommandDist,
-                                borderLeft: `${primaryColor} 2px dashed`,
+                                borderLeft: `${primaryColor} 3.3px dashed`,
                                 transition: `all ${TRANSITION_DURACTION}s`,
                             }}
                         >
