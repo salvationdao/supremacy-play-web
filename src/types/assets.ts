@@ -402,3 +402,8 @@ export interface RewardResponse {
     locked_until: Date
     amount: string
 }
+
+export interface MysteryCrateOwnershipResp {
+    allowed: number
+    owned: number
+}

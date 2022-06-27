@@ -11,16 +11,11 @@ import { useGameServerCommandsFaction, useGameServerSubscriptionUser } from "../
 import { GameServerKeys } from "../../../keys"
 import { HANGAR_TABS } from "../../../pages"
 import { colors, fonts } from "../../../theme/theme"
-import { StorefrontMysteryCrate } from "../../../types"
+import { MysteryCrateOwnershipResp, StorefrontMysteryCrate } from "../../../types"
 import { PageHeader } from "../../Common/PageHeader"
 import { TooltipHelper } from "../../Common/TooltipHelper"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { MysteryCrateStoreItem, MysteryCrateStoreItemLoadingSkeleton } from "./MysteryCrateStoreItem/MysteryCrateStoreItem"
-
-interface MysteryCrateOwnershipResp {
-    allowed: number
-    owned: number
-}
 
 export const MysteryCratesStore = () => {
     const { newSnackbarMessage } = useSnackbar()
@@ -139,7 +134,7 @@ export const MysteryCratesStore = () => {
                                 key={`storefront-mystery-crate-${crate.id}-${index}`}
                                 enlargedView={enlargedView}
                                 crate={crate}
-                                isAllowedToBuy={ownershipDetails.allowed > ownershipDetails.owned}
+                                ownershipDetails={ownershipDetails}
                             />
                         ))}
                     </Box>
