@@ -10,7 +10,7 @@ import { colors, fonts } from "../../../theme/theme"
 import { LocationSelectType, PlayerAbility } from "../../../types"
 import { PlayerAbilityCard } from "./PlayerAbilityCard"
 
-const COLUMNS = 5
+const COLUMNS = 4
 const ROWS = 2
 const PAGE_SIZE = COLUMNS * ROWS
 
@@ -59,7 +59,7 @@ export const PlayerAbilities = () => {
         <Fade in={true}>
             <Box>
                 <Divider sx={{ mb: "2rem", borderBottomWidth: ".25rem", borderColor: (theme) => theme.factionTheme.primary, opacity: 0.15 }} />
-                <Stack spacing=".8rem">
+                <Stack spacing="1.2rem">
                     <Stack direction="row" spacing=".48rem" alignItems="center" justifyContent="space-between">
                         <Typography
                             sx={{
@@ -119,7 +119,7 @@ export const PlayerAbilities = () => {
                                     display: "grid",
                                     gridTemplateColumns: `repeat(${COLUMNS}, minmax(0, 1fr))`,
                                     gridTemplateRows: `repeat(${ROWS}, 1fr)`,
-                                    gap: ".5rem",
+                                    gap: ".6rem",
                                 }}
                             >
                                 {shownPlayerAbilities.map((p) => (

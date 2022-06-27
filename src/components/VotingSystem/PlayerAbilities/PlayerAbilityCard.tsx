@@ -1,74 +1,76 @@
-import { LoadingButton } from "@mui/lab"
-import { Box, ButtonBase, ButtonBaseProps, Fade, IconButton, Modal, Stack, Typography } from "@mui/material"
-import { useEffect, useState } from "react"
-import { SvgClose, SvgGlobal, SvgLine, SvgMicrochip, SvgQuestionMark, SvgTarget } from "../../../assets"
+import { Box, Stack, Typography } from "@mui/material"
+import { useCallback, useEffect, useState } from "react"
+import { SvgGlobal, SvgLine, SvgMicrochip, SvgQuestionMark, SvgTarget } from "../../../assets"
 import { useMiniMap } from "../../../containers"
 import { useToggle } from "../../../hooks"
 import { colors, fonts } from "../../../theme/theme"
 import { LocationSelectType, PlayerAbility } from "../../../types"
 import { ClipThing } from "../../Common/ClipThing"
+import { ConfirmModal } from "../../Common/ConfirmModal"
+import { FancyButton } from "../../Common/FancyButton"
 import { TooltipHelper } from "../../Common/TooltipHelper"
 
-interface PlayerAbilityCardProps extends ButtonBaseProps {
-    playerAbility: PlayerAbility
-}
-
-const activateModalWidth = 400
-
-export const PlayerAbilityCard = ({ playerAbility, ...props }: PlayerAbilityCardProps) => {
-    const { setPlayerAbility: submitPlayerAbility } = useMiniMap()
-    const [abilityTypeIcon, setAbilityTypeIcon] = useState<JSX.Element>(<SvgQuestionMark />)
+export const PlayerAbilityCard = ({ playerAbility }: { playerAbility: PlayerAbility }) => {
+    const { setPlayerAbility } = useMiniMap()
+    const [abilityTypeIcon, setAbilityTypeIcon] = useState<JSX.Element>(<SvgQuestionMark size="1.7rem" />)
     const [abilityTypeDescription, setAbilityTypeDescription] = useState("Miscellaneous ability type.")
-
-    // Activating
     const [showPurchaseModal, toggleShowActivateModal] = useToggle(false)
 
     useEffect(() => {
         switch (playerAbility.ability.location_select_type) {
             case LocationSelectType.GLOBAL:
                 setAbilityTypeDescription("This ability will affect all units on the map.")
-                setAbilityTypeIcon(<SvgGlobal />)
+                setAbilityTypeIcon(<SvgGlobal size="1.7rem" />)
                 break
             case LocationSelectType.LOCATION_SELECT:
                 setAbilityTypeDescription("This ability will target a specific location on the map.")
-                setAbilityTypeIcon(<SvgTarget />)
+                setAbilityTypeIcon(<SvgTarget size="1.7rem" />)
                 break
             case LocationSelectType.MECH_SELECT:
                 setAbilityTypeDescription("This ability will target a specific mech on the map.")
-                setAbilityTypeIcon(<SvgMicrochip />)
+                setAbilityTypeIcon(<SvgMicrochip size="1.7rem" />)
                 break
             case LocationSelectType.LINE_SELECT:
                 setAbilityTypeDescription("This ability will target a straight line on the map.")
-                setAbilityTypeIcon(<SvgLine />)
+                setAbilityTypeIcon(<SvgLine size="1.7rem" />)
                 break
         }
     }, [playerAbility])
 
-    const onActivate = () => {
+    const onActivate = useCallback(() => {
         if (!playerAbility) return
-        submitPlayerAbility(playerAbility)
+        setPlayerAbility(playerAbility)
         toggleShowActivateModal(false)
-    }
+    }, [playerAbility, setPlayerAbility, toggleShowActivateModal])
 
     return (
         <>
-            <TooltipHelper text={playerAbility.ability.description}>
-                <ButtonBase
-                    {...props}
-                    onClick={() => toggleShowActivateModal(true)}
-                    sx={{
-                        display: "block",
-                        textAlign: "left",
-                        backgroundColor: colors.navy,
-                        ":hover img": {
-                            transform: "scale(1.2)",
-                            filter: "brightness(2)",
+            <TooltipHelper text={playerAbility.ability.description} placement="bottom">
+                <FancyButton
+                    clipThingsProps={{
+                        clipSize: "6px",
+                        clipSlantSize: "0px",
+                        corners: {
+                            topLeft: true,
+                            topRight: true,
+                            bottomLeft: true,
+                            bottomRight: true,
                         },
+                        backgroundColor: colors.darkNavy,
+                        opacity: 1,
+                        border: { borderColor: playerAbility.ability.colour, borderThickness: "1px" },
+                        sx: { position: "relative", px: ".4rem", py: ".3rem" },
                     }}
+                    sx={{ color: playerAbility.ability.colour, p: 0 }}
+                    onClick={() => toggleShowActivateModal(true)}
                 >
-                    <Box
+                    <Stack
+                        spacing=".3rem"
                         sx={{
-                            padding: ".3rem",
+                            ":hover img": {
+                                transform: "scale(1.2)",
+                                filter: "brightness(2)",
+                            },
                         }}
                     >
                         <Box
@@ -76,19 +78,20 @@ export const PlayerAbilityCard = ({ playerAbility, ...props }: PlayerAbilityCard
                                 overflow: "hidden",
                                 position: "relative",
                                 width: "100%",
-                                paddingTop: "100%", // 1:1 width-height ratio
+                                pt: "100%", // 1:1 width-height ratio
                             }}
                         >
                             <Box
                                 sx={{
-                                    zIndex: 2,
                                     position: "absolute",
                                     top: ".2rem",
                                     right: ".2rem",
+                                    zIndex: 2,
                                 }}
                             >
                                 {abilityTypeIcon}
                             </Box>
+
                             <Box
                                 sx={{
                                     zIndex: 2,
@@ -98,15 +101,14 @@ export const PlayerAbilityCard = ({ playerAbility, ...props }: PlayerAbilityCard
                                 }}
                             >
                                 <Typography
-                                    variant="caption"
                                     sx={{
-                                        color: colors.gold,
-                                        fontWeight: "fontWeightBold",
+                                        fontFamily: fonts.nostromoBold,
                                     }}
                                 >
                                     {playerAbility.count}
                                 </Typography>
                             </Box>
+
                             <Box
                                 sx={{
                                     zIndex: 1,
@@ -116,10 +118,11 @@ export const PlayerAbilityCard = ({ playerAbility, ...props }: PlayerAbilityCard
                                     right: 0,
                                     bottom: 0,
                                     background: `center center`,
-                                    backgroundImage: `linear-gradient(to bottom, rgba(0, 0, 0, .6) 20%, rgba(255, 255, 255, 0.0))`,
+                                    backgroundImage: `linear-gradient(to bottom, rgba(0, 0, 0, .4) 15%, rgba(255, 255, 255, 0.0))`,
                                     backgroundSize: "cover",
                                 }}
                             />
+
                             <Box
                                 component="img"
                                 src={playerAbility.ability.image_url}
@@ -136,146 +139,84 @@ export const PlayerAbilityCard = ({ playerAbility, ...props }: PlayerAbilityCard
                                 }}
                             />
                         </Box>
-                    </Box>
-                    <Box
-                        sx={{
-                            padding: ".2rem",
-                        }}
-                    >
+
                         <Typography
-                            variant="caption"
+                            variant="body2"
                             sx={{
-                                overflowX: "hidden",
-                                width: "100%",
-                                whiteSpace: "nowrap",
-                                textDecoration: "ellipsis",
+                                lineHeight: 1.2,
+                                display: "-webkit-box",
+                                overflow: "hidden",
+                                overflowWrap: "anywhere",
+                                textOverflow: "ellipsis",
+                                WebkitLineClamp: 2,
+                                WebkitBoxOrient: "vertical",
+                                fontWeight: "fontWeightBold",
                             }}
                         >
                             {playerAbility.ability.label}
                         </Typography>
-                    </Box>
-                </ButtonBase>
+                    </Stack>
+                </FancyButton>
             </TooltipHelper>
 
-            <Modal open={showPurchaseModal} onClose={() => toggleShowActivateModal(false)} closeAfterTransition>
-                <Fade in={showPurchaseModal}>
-                    <Box
-                        sx={{
-                            position: "absolute",
-                            top: `50%`,
-                            left: `50%`,
-                            transform: "translate(-50%, -50%)",
-                            width: "100%",
-                            maxWidth: activateModalWidth,
-                        }}
-                    >
-                        <ClipThing
-                            border={{
-                                borderColor: playerAbility.ability.colour,
-                                borderThickness: ".15rem",
-                                isFancy: true,
-                            }}
-                            backgroundColor={colors.darkNavy}
-                            sx={{ position: "relative" }}
-                        >
-                            <IconButton size="small" onClick={() => toggleShowActivateModal(false)} sx={{ position: "absolute", top: ".2rem", right: ".2rem" }}>
-                                <SvgClose size="1.6rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
-                            </IconButton>
-                            <Box sx={{ px: "2rem", py: "1.5rem" }}>
-                                <Typography
-                                    variant="h5"
+            {showPurchaseModal && (
+                <ConfirmModal
+                    title={`Activate ${playerAbility.ability.label || "Ability"}`}
+                    onConfirm={onActivate}
+                    onClose={() => toggleShowActivateModal(false)}
+                >
+                    <Stack spacing="1rem">
+                        <Stack direction="row" spacing="1.5rem">
+                            <ClipThing
+                                clipSize="8px"
+                                border={{
+                                    borderColor: "#FF0000",
+                                    borderThickness: ".3rem",
+                                }}
+                                opacity={0.5}
+                                backgroundColor="#333333"
+                                sx={{ height: "100%", flexShrink: 0 }}
+                            >
+                                <Box
                                     sx={{
-                                        marginBottom: ".5rem",
-                                        fontFamily: fonts.nostromoBold,
-                                        textTransform: "uppercase",
+                                        position: "relative",
+                                        height: "60px",
+                                        width: "60px",
+                                        background: `center center`,
+                                        backgroundImage: `linear-gradient(to top, rgba(0, 0, 0, .8) 20%, rgba(255, 255, 255, 0.0)), url(${playerAbility.ability.image_url})`,
+                                        backgroundSize: "cover",
                                     }}
                                 >
-                                    Activate {playerAbility.ability.label || "Ability"}
-                                </Typography>
-                                <Stack direction="row" spacing="1rem">
-                                    <ClipThing sx={{ flexShrink: 0 }} backgroundColor={colors.darkNavy}>
+                                    <TooltipHelper text={abilityTypeDescription} placement="bottom">
                                         <Box
                                             sx={{
-                                                position: "relative",
-                                                height: "60px",
-                                                width: "60px",
-                                                background: `center center`,
-                                                backgroundImage: `linear-gradient(to top, rgba(0, 0, 0, .8) 20%, rgba(255, 255, 255, 0.0)), url(${playerAbility.ability.image_url})`,
-                                                backgroundSize: "cover",
+                                                position: "absolute",
+                                                right: ".4rem",
+                                                bottom: ".2rem",
+                                                zIndex: 1,
                                             }}
                                         >
-                                            <TooltipHelper text={abilityTypeDescription} placement="top-start">
-                                                <Box
-                                                    sx={{
-                                                        zIndex: 1,
-                                                        position: "absolute",
-                                                        bottom: ".2rem",
-                                                        right: ".2rem",
-                                                    }}
-                                                >
-                                                    {abilityTypeIcon}
-                                                </Box>
-                                            </TooltipHelper>
+                                            {abilityTypeIcon}
                                         </Box>
-                                    </ClipThing>
-                                    <Box
-                                        sx={{
-                                            alignSelf: "stretch",
-                                            display: "flex",
-                                            flexDirection: "column",
-                                            justifyContent: "space-between",
-                                        }}
-                                    >
-                                        <Typography>{playerAbility.ability.description}</Typography>
-                                        <Typography
-                                            variant="caption"
-                                            sx={{
-                                                alignSelf: "end",
-                                            }}
-                                        >
-                                            Remaining:
-                                            <Box
-                                                component="span"
-                                                sx={{
-                                                    ml: ".5rem",
-                                                    color: colors.offWhite,
-                                                }}
-                                            >
-                                                {playerAbility.count}
-                                            </Box>
-                                        </Typography>
-                                    </Box>
-                                </Stack>
-                                <LoadingButton
-                                    variant="contained"
-                                    size="small"
-                                    sx={{
-                                        width: "100%",
-                                        minWidth: 0,
-                                        mt: "1rem",
-                                        mb: ".5rem",
-                                        px: ".8rem",
-                                        py: ".6rem",
-                                        fontWeight: "fontWeightBold",
-                                        color: colors.offWhite,
-                                        lineHeight: 1,
-                                        textTransform: "uppercase",
-                                        backgroundColor: colors.green,
-                                        border: `${colors.green} 1px solid`,
-                                        borderRadius: 0.3,
-                                        ":hover": {
-                                            backgroundColor: `${colors.green}90`,
-                                        },
-                                    }}
-                                    onClick={() => onActivate()}
-                                >
-                                    <Typography variant="body2">Activate Ability</Typography>
-                                </LoadingButton>
-                            </Box>
-                        </ClipThing>
-                    </Box>
-                </Fade>
-            </Modal>
+                                    </TooltipHelper>
+                                </Box>
+                            </ClipThing>
+
+                            <Typography variant="h6">{playerAbility.ability.description}</Typography>
+                        </Stack>
+
+                        <Typography
+                            variant="body2"
+                            sx={{
+                                fontFamily: fonts.nostromoBold,
+                                alignSelf: "end",
+                            }}
+                        >
+                            Remaining: {playerAbility.count}
+                        </Typography>
+                    </Stack>
+                </ConfirmModal>
+            )}
         </>
     )
 }
