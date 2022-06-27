@@ -135,7 +135,12 @@ export const MysteryCratesStore = () => {
                         }}
                     >
                         {crates.map((crate, index) => (
-                            <MysteryCrateStoreItem key={`storefront-mystery-crate-${crate.id}-${index}`} enlargedView={enlargedView} crate={crate} />
+                            <MysteryCrateStoreItem
+                                key={`storefront-mystery-crate-${crate.id}-${index}`}
+                                enlargedView={enlargedView}
+                                crate={crate}
+                                isAllowedToBuy={ownershipDetails.allowed > ownershipDetails.owned}
+                            />
                         ))}
                     </Box>
                 </Box>
@@ -173,7 +178,7 @@ export const MysteryCratesStore = () => {
                 </Stack>
             </Stack>
         )
-    }, [crates, enlargedView, isLoading, loadError])
+    }, [crates, enlargedView, isLoading, loadError, ownershipDetails])
 
     return (
         <ClipThing
