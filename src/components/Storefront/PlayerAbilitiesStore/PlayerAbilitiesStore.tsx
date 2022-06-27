@@ -51,7 +51,7 @@ export const PlayerAbilitiesStore = () => {
         },
     )
 
-    useGameServerSubscriptionSecurePublic<{ id: string; amount_left: number }>(
+    useGameServerSubscriptionSecurePublic<{ id: string; amount_sold: number }>(
         {
             URI: "sale_abilities",
             key: GameServerKeys.SaleAbilitiesAmountSubscribe,
@@ -59,7 +59,7 @@ export const PlayerAbilitiesStore = () => {
         (payload) => {
             if (!payload) return
             setAmountMap((prev) => {
-                return new Map(prev.set(payload.id, payload.amount_left))
+                return new Map(prev.set(payload.id, payload.amount_sold))
             })
         },
     )
@@ -96,7 +96,8 @@ export const PlayerAbilitiesStore = () => {
                                 key={s.id}
                                 saleAbility={s}
                                 updatedPrice={priceMap.get(s.id) || s.current_price}
-                                amountLeft={s.sale_limit - (amountMap.get(s.id) || s.amount_sold)}
+                                totalAmount={s.sale_limit}
+                                amountSold={amountMap.get(s.id) || s.amount_sold}
                             />
                         ))}
                     </Box>
@@ -154,11 +155,7 @@ export const PlayerAbilitiesStore = () => {
                 }}
             >
                 <PageHeader
-                    title={
-                        <>
-                            PLAYER ABILITIES <span style={{ color: colors.neonBlue, fontFamily: "inherit", fontSize: "inherit" }}>(ROTATES EVERY 1H)</span>
-                        </>
-                    }
+                    title={<>PLAYER ABILITIES</>}
                     description={
                         <>
                             Player abilities are abilities that can be bought and used on the battle arena. The price of a player ability is determined by how

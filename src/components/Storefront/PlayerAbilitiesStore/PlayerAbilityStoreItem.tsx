@@ -4,11 +4,11 @@ import { FancyButton } from "../.."
 import { SvgSupToken } from "../../../assets"
 import { useSnackbar } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
-import { supFormatter } from "../../../helpers"
+import { numberCommaFormatter, supFormatter } from "../../../helpers"
 import { useToggle } from "../../../hooks"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
-import { fonts } from "../../../theme/theme"
+import { colors, fonts } from "../../../theme/theme"
 import { SaleAbility } from "../../../types"
 import { ClipThing } from "../../Common/ClipThing"
 import { ConfirmModal } from "../../Common/ConfirmModal"
@@ -16,10 +16,11 @@ import { ConfirmModal } from "../../Common/ConfirmModal"
 export interface PlayerAbilityStoreItemProps {
     saleAbility: SaleAbility
     updatedPrice: string
-    amountLeft: number
+    totalAmount: number
+    amountSold: number
 }
 
-export const PlayerAbilityStoreItem = ({ saleAbility, updatedPrice, amountLeft }: PlayerAbilityStoreItemProps) => {
+export const PlayerAbilityStoreItem = ({ saleAbility, updatedPrice, totalAmount, amountSold }: PlayerAbilityStoreItemProps) => {
     const theme = useTheme()
     const primaryColor = theme.factionTheme.primary
     const backgroundColor = theme.factionTheme.background
@@ -78,15 +79,46 @@ export const PlayerAbilityStoreItem = ({ saleAbility, updatedPrice, amountLeft }
                         }}
                     >
                         <Box
-                            component="img"
-                            src={saleAbility.ability.image_url}
-                            alt={`Thumbnail image for ${saleAbility.ability.label}`}
                             sx={{
+                                position: "relative",
                                 width: "100%",
-                                objectFit: "contain",
-                                border: `1px solid ${primaryColor}`,
                             }}
-                        />
+                        >
+                            <Box
+                                component="img"
+                                src={saleAbility.ability.image_url}
+                                alt={`Thumbnail image for ${saleAbility.ability.label}`}
+                                sx={{
+                                    width: "100%",
+                                    objectFit: "contain",
+                                    border: `1px solid ${primaryColor}`,
+                                }}
+                            />
+                            <Box
+                                sx={{
+                                    position: "absolute",
+                                    right: "1.4rem",
+                                    bottom: ".6rem",
+                                    px: ".2rem",
+                                    py: ".5rem",
+                                    backgroundColor: "#00000095",
+                                }}
+                            >
+                                <Typography
+                                    sx={{
+                                        lineHeight: 1,
+                                        fontSize: "1.5rem",
+                                        fontFamily: fonts.nostromoBold,
+                                        span: {
+                                            fontFamily: "inherit",
+                                            color: amountSold >= totalAmount ? colors.red : colors.neonBlue,
+                                        },
+                                    }}
+                                >
+                                    <span>{numberCommaFormatter(totalAmount - amountSold)}</span> / {numberCommaFormatter(totalAmount)} left
+                                </Typography>
+                            </Box>
+                        </Box>
 
                         <Typography variant="h4" sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack }}>
                             {saleAbility.ability.label}
