@@ -70,7 +70,7 @@ interface OvenPlayerInstance {
     remove(): void
 }
 
-export const OvenPlayerStream = () => {
+export const OvenplayerStream = () => {
     const { newSnackbarMessage } = useSnackbar()
     const { iframeDimensions } = useDimension()
     const { isMute, volume, currentStream, setCurrentPlayingStreamHost } = useStream()
@@ -80,7 +80,7 @@ export const OvenPlayerStream = () => {
     useEffect(() => {
         if (document.getElementById("oven-player")) {
             // Uf already setup, then return
-            if (!currentStream || currentStream.service !== StreamService.OvenMediaEngine) return
+            if (!currentStream || ovenPlayer.current || currentStream.service !== StreamService.OvenMediaEngine) return
 
             // Load oven player
             const source: OvenPlayerSource = {
@@ -115,6 +115,7 @@ export const OvenPlayerStream = () => {
             return () => {
                 newOvenPlayer.off("ready")
                 newOvenPlayer.off("error")
+                newOvenPlayer.remove()
             }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
