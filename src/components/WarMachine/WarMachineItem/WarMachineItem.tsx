@@ -179,10 +179,10 @@ export const WarMachineItem = ({ warMachine, scale }: { warMachine: WarMachineSt
                                 flex: 1,
                                 position: "relative",
                                 height: "100%",
-                                px: ".8rem",
+                                px: "1rem",
                                 py: ".6rem",
                                 cursor: "pointer",
-                                background: `linear-gradient(${backgroundColor}BB 25%, ${backgroundColor}90, ${rarityDeets.color || primaryColor}55)`,
+                                background: `linear-gradient(${backgroundColor}BB 25%, ${backgroundColor}90, ${primaryColor}55)`,
                                 opacity: isAlive ? 1 : DEAD_OPACITY,
                                 zIndex: 1,
                             }}
