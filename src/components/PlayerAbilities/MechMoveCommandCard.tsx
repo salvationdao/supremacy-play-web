@@ -1,5 +1,6 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
+import { SvgDrag } from "../../assets"
 import { useAuth, useMiniMap } from "../../containers"
 import { shadeColor } from "../../helpers"
 import { useInterval } from "../../hooks"
@@ -60,7 +61,7 @@ interface MechMoveCommandInnerProps {
 
 export const MechMoveCommandInner = ({ faction, clipSlantSize, mechMoveCommand, warMachine, onClose }: MechMoveCommandInnerProps) => {
     const { hash } = warMachine
-    const backgroundColor = useMemo(() => shadeColor(faction.primary_color, -70), [])
+    const backgroundColor = useMemo(() => shadeColor(faction.primary_color, -70), [faction.primary_color])
     const [remainSeconds, setRemainSeconds] = useState(mechMoveCommand.remain_cooldown_seconds)
     useEffect(() => {
         setRemainSeconds(mechMoveCommand.remain_cooldown_seconds)
@@ -103,7 +104,7 @@ export const MechMoveCommandInner = ({ faction, clipSlantSize, mechMoveCommand, 
                             <Stack spacing="2.4rem" direction="row" alignItems="center" justifyContent="space-between" alignSelf="stretch">
                                 <TopText
                                     description={"command mech to move to certain position"}
-                                    image_url={""}
+                                    icon={<SvgDrag size="1.2rem" sx={{ pb: 0 }} />}
                                     colour={faction.primary_color}
                                     label={"Move Command"}
                                 />
@@ -176,7 +177,7 @@ const MechCommandButton = ({ color, remainCooldownSeconds, isCancelled, textColo
         }
 
         return color || "#14182B"
-    }, [remainCooldownSeconds, isCancelled, color])
+    }, [remainCooldownSeconds, color])
 
     const colorText = useMemo(() => {
         if (remainCooldownSeconds > 0 && isCancelled) {
@@ -193,7 +194,7 @@ const MechCommandButton = ({ color, remainCooldownSeconds, isCancelled, textColo
             ability: { ...MechMoveCommandAbility, text_colour: colorText, colour: backgroundColor },
         })
         onClose()
-    }, [hash])
+    }, [backgroundColor, colorText, hash, onClose, setPlayerAbility])
 
     const onCancel = useCallback(
         () =>
@@ -201,13 +202,13 @@ const MechCommandButton = ({ color, remainCooldownSeconds, isCancelled, textColo
                 move_command_id: mechMoveCommandID,
                 hash,
             }).catch((e) => console.log(e)),
-        [mechMoveCommandID],
+        [hash, mechMoveCommandID, send],
     )
 
     const onClick = useMemo(() => {
         if (remainCooldownSeconds > 0 && !isCancelled) return onCancel
         return onCreate
-    }, [remainCooldownSeconds, isCancelled, textColor, onCreate, onCancel])
+    }, [remainCooldownSeconds, isCancelled, onCreate, onCancel])
 
     return (
         <FancyButton

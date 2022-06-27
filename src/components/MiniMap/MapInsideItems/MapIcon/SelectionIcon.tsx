@@ -1,4 +1,5 @@
 import { useMemo } from "react"
+import { SvgDrag } from "../../../../assets"
 import { useMiniMap } from "../../../../containers"
 import { LocationSelectType } from "../../../../types"
 import { MapIcon } from "./MapIcon"
@@ -22,6 +23,16 @@ export const SelectionIcon = () => {
             return null
         }
 
-        return <MapIcon primaryColor={ability.colour} imageUrl={ability.image_url} onClick={() => setSelection(undefined)} position={coords} />
+        const isMechMoveCommand = "location_select_type" in ability && ability.location_select_type === LocationSelectType.MECH_COMMAND
+
+        return (
+            <MapIcon
+                primaryColor={ability.colour}
+                imageUrl={ability.image_url}
+                onClick={() => setSelection(undefined)}
+                position={coords}
+                icon={isMechMoveCommand ? <SvgDrag size="4.5rem" /> : undefined}
+            />
+        )
     }, [ability, coords, isTargeting, setSelection])
 }

@@ -59,7 +59,7 @@ export const WarMachineStats = () => {
                             backgroundColor: (theme) => `${theme.factionTheme.background}95`,
                         }}
                     >
-                        <ScrollContainer>
+                        <HorizontalScrollContainer>
                             <Stack spacing="-3.8rem" direction="row" alignItems="center" justifyContent="center">
                                 {factionMechs.map((wm) => (
                                     <WarMachineItem
@@ -74,13 +74,13 @@ export const WarMachineStats = () => {
                                     />
                                 ))}
                             </Stack>
-                        </ScrollContainer>
+                        </HorizontalScrollContainer>
                     </BoxSlanted>
                 )}
 
                 {otherMechs.length > 0 && (
                     <Box sx={{ mb: ".48rem", pr: "1.6rem", pl: haveFactionMechs ? 0 : "1.28rem", overflow: "hidden" }}>
-                        <ScrollContainer>
+                        <HorizontalScrollContainer>
                             <Stack
                                 spacing={haveFactionMechs ? "-4.96rem" : "-4.4rem"}
                                 direction="row"
@@ -107,7 +107,7 @@ export const WarMachineStats = () => {
                                         </Box>
                                     ))}
                             </Stack>
-                        </ScrollContainer>
+                        </HorizontalScrollContainer>
                     </Box>
                 )}
             </Stack>
@@ -115,7 +115,7 @@ export const WarMachineStats = () => {
     )
 }
 
-const ScrollContainer = ({ children }: { children: ReactElement }) => {
+const HorizontalScrollContainer = ({ children }: { children: ReactElement }) => {
     return (
         <Box
             sx={{
