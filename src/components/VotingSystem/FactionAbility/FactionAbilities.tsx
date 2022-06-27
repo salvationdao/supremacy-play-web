@@ -21,7 +21,7 @@ export const FactionAbilities = () => {
     return (
         <Fade in={true}>
             <Stack spacing="1rem">
-                <Stack direction="row" spacing=".48rem" alignItems="center">
+                <Stack direction="row" spacing=".8rem" alignItems="center">
                     {factionID && (
                         <Box
                             sx={{

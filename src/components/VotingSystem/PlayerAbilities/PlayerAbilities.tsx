@@ -64,10 +64,9 @@ export const PlayerAbilities = () => {
                             lineHeight: 1,
                             color: colors.text,
                             fontWeight: "fontWeightBold",
-                            textTransform: "uppercase",
                         }}
                     >
-                        Player Abilities
+                        PLAYER ABILITIES
                     </Typography>
 
                     <ButtonGroup
