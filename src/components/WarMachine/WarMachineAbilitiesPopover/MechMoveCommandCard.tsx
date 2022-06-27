@@ -13,13 +13,6 @@ import { FancyButton } from "../../Common/FancyButton"
 import { ProgressBar } from "../../Common/ProgressBar"
 import { TopText } from "../../VotingSystem/FactionAbility/TopText"
 
-const fake: MechMoveCommand = {
-    id: "string",
-    mech_id: "string",
-    triggered_by_id: "string",
-    remain_cooldown_seconds: 3,
-}
-
 export interface MechMoveCommand {
     id: string
     mech_id: string
@@ -41,7 +34,7 @@ interface MechMoveCommandProps {
 export const MechMoveCommandCard = ({ warMachine, faction, clipSlantSize, onClose }: MechMoveCommandProps) => {
     const { factionID } = useAuth()
     const { hash, factionID: wmFactionID, participantID } = warMachine
-    const [mechMoveCommand, setMechMoveCommand] = useState<MechMoveCommand>(fake)
+    const [mechMoveCommand, setMechMoveCommand] = useState<MechMoveCommand>()
     const backgroundColor = useMemo(() => shadeColor(faction.primary_color, -70), [faction.primary_color])
 
     useGameServerSubscriptionFaction<MechMoveCommand>(

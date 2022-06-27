@@ -4,14 +4,14 @@ import { colors } from "../../theme/theme"
 
 export const ProgressBar = ({
     percent,
-    lineCercent,
+    linePercent,
     color,
     backgroundColor,
     thickness,
     orientation = "vertical",
 }: {
     percent: number
-    lineCercent?: number
+    linePercent?: number
     color: string
     backgroundColor: string
     thickness: string
@@ -30,11 +30,11 @@ export const ProgressBar = ({
                         }}
                     />
 
-                    {!!lineCercent && (
+                    {!!linePercent && (
                         <Box
                             style={{
                                 position: "absolute",
-                                bottom: `${lineCercent - 2.5}%`,
+                                left: `${linePercent - 2.5}%`,
                                 height: "100%",
                                 width: 3,
                                 backgroundColor: colors.lightRed,
@@ -57,11 +57,11 @@ export const ProgressBar = ({
                     }}
                 />
 
-                {!!lineCercent && (
+                {!!linePercent && (
                     <Box
                         style={{
                             position: "absolute",
-                            bottom: `${lineCercent - 2.5}%`,
+                            bottom: `${linePercent - 2.5}%`,
                             height: 3,
                             width: "100%",
                             backgroundColor: colors.lightRed,
@@ -71,5 +71,5 @@ export const ProgressBar = ({
                 )}
             </Stack>
         )
-    }, [backgroundColor, color, lineCercent, orientation, percent, thickness])
+    }, [backgroundColor, color, linePercent, orientation, percent, thickness])
 }
