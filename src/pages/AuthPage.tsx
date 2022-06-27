@@ -23,7 +23,7 @@ export const AuthPage = ({ authTitle, authDescription }: { authTitle?: string; a
                     borderColor: colors.neonBlue,
                     borderThickness: ".3rem",
                 }}
-                sx={{ position: "relative", maxWidth: "70rem", my: "auto" }}
+                sx={{ position: "relative", maxWidth: "70rem", my: "auto", mx: "2.6rem" }}
                 backgroundColor={colors.darkerNavy}
                 opacity={0.7}
             >

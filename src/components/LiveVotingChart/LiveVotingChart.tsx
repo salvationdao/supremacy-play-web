@@ -1,18 +1,40 @@
-import { Box, Fade, Stack, Typography } from "@mui/material"
-import { useEffect, useMemo, useState } from "react"
+import { Box, Fade, Stack } from "@mui/material"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { MoveableResizable } from ".."
 import { useOverlayToggles, useSupremacy } from "../../containers"
 import { parseString } from "../../helpers"
-import { pulseEffect } from "../../theme/keyframes"
-import { colors } from "../../theme/theme"
+import { useToggle } from "../../hooks"
 import { BattleStats } from "../BattleStats/BattleStats"
-import { MoveableResizableConfig, useMoveableResizable } from "../Common/MoveableResizable/MoveableResizableContainer"
+import { MoveableResizableConfig } from "../Common/MoveableResizable/MoveableResizableContainer"
 import { LiveGraph } from "./LiveGraph"
 
 const DefaultMaxLiveVotingDataLength = 100
 
 export const LiveVotingChart = () => {
     const { isLiveChartOpen, toggleIsLiveChartOpen } = useOverlayToggles()
+    const { battleIdentifier } = useSupremacy()
+    const [isRender, toggleIsRender] = useToggle(isLiveChartOpen)
+    const [curWidth, setCurWidth] = useState(0)
+    const [curHeight, setCurHeight] = useState(0)
+    const [maxLiveVotingDataLength, setMaxLiveVotingDataLength] = useState(
+        parseString(localStorage.getItem("liveVotingDataMax"), DefaultMaxLiveVotingDataLength),
+    )
+
+    // A little timeout so fade transition can play
+    useEffect(() => {
+        if (isLiveChartOpen) return toggleIsRender(true)
+        const timeout = setTimeout(() => {
+            toggleIsRender(false)
+        }, 250)
+
+        return () => clearTimeout(timeout)
+    }, [isLiveChartOpen, toggleIsRender])
+
+    const onResize = useCallback((width: number, height: number) => {
+        setCurWidth(width)
+        setCurHeight(height)
+        setMaxLiveVotingDataLength(width / 5)
+    }, [])
 
     const config: MoveableResizableConfig = useMemo(
         () => ({
@@ -30,98 +52,57 @@ export const LiveVotingChart = () => {
             minHeight: 120,
             maxHeight: 200,
             // Callbacks
+            onResizeCallback: onResize,
             onHideCallback: () => toggleIsLiveChartOpen(false),
             // Others
             infoTooltipText:
                 "The chart shows you the SUPS being spent into the battle arena in real time. All SUPS spent are accumulated into the SPOILS OF WAR, which are distributed back to the players in future battles based on the multipliers that they have earned. Contribute to the battle or be part of the winning Syndicate to increase your earnings.",
         }),
-        [toggleIsLiveChartOpen],
+        [onResize, toggleIsLiveChartOpen],
     )
 
-    if (!isLiveChartOpen) return null
+    if (!isRender) return null
 
     return (
         <Fade in={isLiveChartOpen}>
             <Box>
                 <MoveableResizable config={config}>
-                    <LiveVotingChartInner />
+                    <Stack sx={{ height: "100%", pt: "1.2rem" }}>
+                        <Box
+                            sx={{
+                                flex: 1,
+                                position: "relative",
+                                px: "1.3rem",
+                                pb: ".4rem",
+                            }}
+                        >
+                            <Box
+                                key={maxLiveVotingDataLength}
+                                sx={{
+                                    position: "relative",
+                                    height: "100%",
+                                    px: ".56rem",
+                                    pt: "1.6rem",
+                                    background: "#000000E6",
+                                    border: (theme) => `${theme.factionTheme.primary}10 1px solid`,
+                                    borderRadius: 1,
+                                }}
+                            >
+                                <LiveGraph
+                                    battleIdentifier={battleIdentifier}
+                                    maxWidthPx={curWidth}
+                                    maxHeightPx={curHeight}
+                                    maxLiveVotingDataLength={maxLiveVotingDataLength}
+                                />
+                            </Box>
+                        </Box>
+
+                        <Box sx={{ px: "1.5rem", pt: ".3rem", pb: ".5rem" }}>
+                            <BattleStats />
+                        </Box>
+                    </Stack>
                 </MoveableResizable>
             </Box>
         </Fade>
-    )
-}
-
-const LiveVotingChartInner = () => {
-    const { battleIdentifier } = useSupremacy()
-    const [maxLiveVotingDataLength, setMaxLiveVotingDataLength] = useState(
-        parseString(localStorage.getItem("liveVotingDataMax"), DefaultMaxLiveVotingDataLength),
-    )
-    const { curWidth, curHeight } = useMoveableResizable()
-
-    useEffect(() => {
-        setMaxLiveVotingDataLength(curWidth / 5)
-    }, [curWidth])
-
-    return (
-        <Stack sx={{ height: "100%", pt: "1.2rem" }}>
-            <Box
-                sx={{
-                    flex: 1,
-                    position: "relative",
-                    px: "1.3rem",
-                    pb: ".4rem",
-                }}
-            >
-                <Box
-                    key={maxLiveVotingDataLength}
-                    sx={{
-                        position: "relative",
-                        height: "100%",
-                        px: ".56rem",
-                        pt: "1.6rem",
-                        background: "#000000E6",
-                        border: (theme) => `${theme.factionTheme.primary}10 1px solid`,
-                        borderRadius: 1,
-                    }}
-                >
-                    <Stack
-                        direction="row"
-                        alignItems="center"
-                        justifyContent="center"
-                        spacing=".4rem"
-                        sx={{
-                            position: "absolute",
-                            top: ".5rem",
-                            right: ".7rem",
-                        }}
-                    >
-                        <Box
-                            sx={{
-                                width: 7,
-                                height: 7,
-                                mb: ".32rem",
-                                backgroundColor: colors.red,
-                                borderRadius: "50%",
-                                animation: `${pulseEffect} 3s infinite`,
-                            }}
-                        />
-                        <Typography variant="body2" sx={{ lineHeight: 1 }}>
-                            LIVE
-                        </Typography>
-                    </Stack>
-
-                    <LiveGraph
-                        battleIdentifier={battleIdentifier}
-                        maxWidthPx={curWidth}
-                        maxHeightPx={curHeight}
-                        maxLiveVotingDataLength={maxLiveVotingDataLength}
-                    />
-                </Box>
-            </Box>
-
-            <Box sx={{ px: "1.5rem", pt: ".3rem", pb: ".5rem" }}>
-                <BattleStats />
-            </Box>
-        </Stack>
     )
 }

@@ -1,10 +1,11 @@
 import { Box, Divider, IconButton, MenuItem, Select, Stack, Typography } from "@mui/material"
 import { SvgGridView, SvgListView, SvgRefresh } from "../../assets"
+import { useTheme } from "../../containers/theme"
 import { colors, fonts } from "../../theme/theme"
 
 interface TotalAndPageSizeOptionsProps {
     countItems?: number
-    totalItems: number
+    totalItems?: number
     pageSize: number
     pageSizeOptions?: number[]
     changePageSize: (value: number) => void
@@ -12,6 +13,7 @@ interface TotalAndPageSizeOptionsProps {
     isGridView?: boolean
     toggleIsGridView?: (value: boolean) => void
     manualRefresh?: () => void
+    primaryColor?: string
 
     // Sorting
     sortOptions?: {
@@ -22,7 +24,6 @@ interface TotalAndPageSizeOptionsProps {
     onSetSort?: React.Dispatch<React.SetStateAction<string>>
 
     // Hide stuff
-    hideTotal?: boolean
     hidePageSizeOptions?: boolean
 }
 
@@ -36,14 +37,18 @@ export const TotalAndPageSizeOptions = ({
     isGridView,
     toggleIsGridView,
     manualRefresh,
+    primaryColor: pColor,
 
     sortOptions,
     selectedSort,
     onSetSort,
 
-    hideTotal,
     hidePageSizeOptions,
 }: TotalAndPageSizeOptionsProps) => {
+    const theme = useTheme()
+
+    const primaryColor = pColor || theme.factionTheme.primary
+
     return (
         <Stack
             direction="row"
@@ -53,12 +58,12 @@ export const TotalAndPageSizeOptions = ({
                 pr: ".5rem",
                 py: ".3rem",
                 backgroundColor: "#00000070",
-                borderBottom: (theme) => `${theme.factionTheme.primary}70 1.5px solid`,
+                borderBottom: `${primaryColor}70 1.5px solid`,
                 span: { fontFamily: fonts.nostromoBold },
                 strong: { fontFamily: fonts.nostromoBlack },
             }}
         >
-            {!hideTotal && (
+            {totalItems && (
                 <Typography variant="caption" sx={{ lineHeight: 1 }}>
                     <strong>DISPLAYING:</strong> {countItems || 0} OF {totalItems}
                 </Typography>
@@ -77,7 +82,7 @@ export const TotalAndPageSizeOptions = ({
                         fontFamily: fonts.nostromoBold,
                         ".Mui-selected": {
                             color: (theme) => theme.factionTheme.secondary,
-                            backgroundColor: (theme) => `${theme.factionTheme.primary} !important`,
+                            backgroundColor: `${primaryColor} !important`,
                         },
                     },
                 }}
@@ -101,7 +106,7 @@ export const TotalAndPageSizeOptions = ({
                                     key={i}
                                     sx={{
                                         color: (theme) => (pageSize === size ? `${theme.factionTheme.secondary} !important` : "#FFFFFF60 !important"),
-                                        backgroundColor: (theme) => (pageSize === size ? `${theme.factionTheme.primary} !important` : "unset"),
+                                        backgroundColor: pageSize === size ? `${primaryColor} !important` : "unset",
                                     }}
                                     size="small"
                                     onClick={() => {
@@ -127,7 +132,8 @@ export const TotalAndPageSizeOptions = ({
                                 width: "100%",
                                 borderRadius: 0.5,
                                 "&:hover": {
-                                    backgroundColor: (theme) => theme.factionTheme.primary,
+                                    backgroundColor: primaryColor,
+                                    ".MuiTypography-root": { color: (theme) => theme.factionTheme.secondary },
                                 },
                                 ".MuiTypography-root": {
                                     px: ".1rem",
@@ -146,7 +152,7 @@ export const TotalAndPageSizeOptions = ({
                                         ".MuiTypography-root": {
                                             color: (theme) => theme.factionTheme.secondary,
                                         },
-                                        backgroundColor: (theme) => theme.factionTheme.primary,
+                                        backgroundColor: primaryColor,
                                     },
                                 },
                                 PaperProps: {

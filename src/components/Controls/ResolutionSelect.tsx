@@ -5,9 +5,9 @@ import { colors } from "../../theme/theme"
 
 export const ResolutionSelect = () => {
     const theme = useTheme()
-    const { streamResolutions, selectedResolution, setSelectedResolution } = useStream()
+    const { resolutions, selectedResolution, setSelectedResolution } = useStream()
 
-    if (!streamResolutions || streamResolutions.length <= 0) return null
+    if (!resolutions || resolutions.length <= 0) return null
 
     const primaryColor = theme.factionTheme.primary
     const secondaryColor = theme.factionTheme.secondary
@@ -22,17 +22,14 @@ export const ResolutionSelect = () => {
                 sx={{
                     width: "15rem",
                     borderRadius: 0.5,
-                    "&:hover": {
-                        backgroundColor: colors.darkNavy,
-                    },
                     ".MuiTypography-root": {
                         px: ".8rem",
                         pt: ".48rem",
                     },
                     "& .MuiSelect-outlined": { p: 0 },
                 }}
-                defaultValue={streamResolutions[0]}
-                value={selectedResolution || streamResolutions[0] || -1}
+                defaultValue={resolutions[0]}
+                value={selectedResolution || resolutions[0] || 0}
                 MenuProps={{
                     variant: "menu",
                     sx: {
@@ -51,18 +48,9 @@ export const ResolutionSelect = () => {
                     },
                 }}
             >
-                {streamResolutions.map((x) => {
+                {resolutions.map((x) => {
                     return (
-                        <MenuItem
-                            key={x}
-                            value={x}
-                            onClick={() => setSelectedResolution(x)}
-                            sx={{
-                                "&:hover": {
-                                    backgroundColor: `#FFFFFF30`,
-                                },
-                            }}
-                        >
+                        <MenuItem key={x} value={x} onClick={() => setSelectedResolution(x)} sx={{ "&:hover": { backgroundColor: `#FFFFFF30` } }}>
                             <Typography textTransform="uppercase" variant="body2" sx={{ lineHeight: 1 }}>
                                 {x === 0 ? "Automatic" : `${x}P`}
                             </Typography>
