@@ -1,10 +1,11 @@
 import { Box } from "@mui/material"
 import BigNumber from "bignumber.js"
 import { useEffect, useMemo, useState } from "react"
-import { SlantedBar, WIDTH_PER_SLANTED_BAR, WIDTH_PER_SLANTED_BAR_ACTUAL } from ".."
-import { useGameServerSubscriptionAbilityFaction } from "../../hooks/useGameServer"
-import { GameServerKeys } from "../../keys"
-import { GameAbility, GameAbilityProgress } from "../../types"
+import { useGameServerSubscriptionAbilityFaction } from "../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../keys"
+import { GameAbility, GameAbilityProgress } from "../../../types"
+import { ProgressBar } from "../../Common/ProgressBar"
+import { WIDTH_STAT_BAR } from "./WarMachineItem"
 
 export const SkillBar = ({
     index,
@@ -61,24 +62,26 @@ export const SkillBar = ({
         })
     }, [gameAbilityProgress, identity, maxAbilityPriceMap])
 
-    return <SkillBarInner index={index} colour={colour} progressPercent={progressPercent} costPercent={costPercent} />
-}
-
-const SkillBarInner = ({ index, colour, progressPercent, costPercent }: { index: number; colour: string; progressPercent: number; costPercent: number }) => {
-    return (
-        <Box
-            key={index}
-            style={{
-                position: "absolute",
-                bottom: 0,
-                right: `${index * WIDTH_PER_SLANTED_BAR - index * 0.2}rem`,
-                width: `${WIDTH_PER_SLANTED_BAR_ACTUAL}rem`,
-                height: "100%",
-                zIndex: 6,
-                pointerEvents: "none",
-            }}
-        >
-            <SlantedBar backgroundColor={colour} progressPercent={progressPercent} costPercent={costPercent} />
-        </Box>
+    return useMemo(
+        () => (
+            <Box
+                key={index}
+                style={{
+                    width: `${WIDTH_STAT_BAR}rem`,
+                    height: "100%",
+                    pointerEvents: "none",
+                    zIndex: 6,
+                }}
+            >
+                <ProgressBar
+                    percent={progressPercent}
+                    lineCercent={costPercent}
+                    color={colour}
+                    backgroundColor="#FFFFFF10"
+                    thickness={`${WIDTH_STAT_BAR}rem`}
+                />
+            </Box>
+        ),
+        [colour, costPercent, index, progressPercent],
     )
 }
