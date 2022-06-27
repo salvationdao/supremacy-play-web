@@ -26,7 +26,7 @@ export const MechCommandIcons = () => {
                 {mechMoveCommands &&
                     mechMoveCommands.length > 0 &&
                     mechMoveCommands.map((mmc) => {
-                        if (mmc.cell_x === undefined || mmc.cell_y === undefined) return null
+                        if (mmc.cell_x === undefined || mmc.cell_y === undefined || mmc.reached_at || mmc.cancelled_at) return null
                         return (
                             <MapIcon
                                 key={mmc.id}

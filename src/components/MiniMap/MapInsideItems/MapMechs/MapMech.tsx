@@ -63,24 +63,23 @@ const MapMechInner = ({ warMachine, isEnlarged, map }: MapMechInnerProps) => {
     /**
      * Mech move command related
      */
-    const [mechMoveCommandX, setMechMoveCommandX] = useState<number>()
-    const [mechMoveCommandY, setMechMoveCommandY] = useState<number>()
+    const [mechMoveCommand, setMechMoveCommand] = useState<MechMoveCommand>()
 
     const mechCommandDist = useMemo(() => {
-        if (!mechMoveCommandX || !mechMoveCommandY) return 0
-        const commandMapX = mechMoveCommandX * gridWidth
-        const commandMapY = mechMoveCommandY * gridHeight
+        if (!mechMoveCommand?.cell_x || !mechMoveCommand?.cell_y) return 0
+        const commandMapX = mechMoveCommand.cell_x * gridWidth
+        const commandMapY = mechMoveCommand.cell_y * gridHeight
         const x = Math.abs(mechMapX - commandMapX)
         const y = Math.abs(mechMapY - commandMapY)
         return Math.sqrt(x * x + y * y)
-    }, [gridHeight, gridWidth, mechMapX, mechMapY, mechMoveCommandX, mechMoveCommandY])
+    }, [gridHeight, gridWidth, mechMapX, mechMapY, mechMoveCommand?.cell_x, mechMoveCommand?.cell_y])
 
     const mechCommandAngle = useMemo(() => {
-        if (!mechMoveCommandX || !mechMoveCommandY) return 0
-        const commandMapX = mechMoveCommandX * gridWidth
-        const commandMapY = mechMoveCommandY * gridHeight
+        if (!mechMoveCommand?.cell_x || !mechMoveCommand?.cell_y) return 0
+        const commandMapX = mechMoveCommand.cell_x * gridWidth
+        const commandMapY = mechMoveCommand.cell_y * gridHeight
         return (Math.atan2(commandMapY - mechMapY, commandMapX - mechMapX) * 180) / Math.PI
-    }, [gridHeight, gridWidth, mechMapX, mechMapY, mechMoveCommandX, mechMoveCommandY])
+    }, [gridHeight, gridWidth, mechMapX, mechMapY, mechMoveCommand?.cell_x, mechMoveCommand?.cell_y])
 
     // Listen on mech stats
     useGameServerSubscription<WarMachineLiveState | undefined>(
@@ -107,8 +106,7 @@ const MapMechInner = ({ warMachine, isEnlarged, map }: MapMechInnerProps) => {
         },
         (payload) => {
             if (!payload) return
-            setMechMoveCommandX(payload.cell_x)
-            setMechMoveCommandY(payload.cell_y)
+            setMechMoveCommand(payload)
         },
     )
 
@@ -304,7 +302,7 @@ const MapMechInner = ({ warMachine, isEnlarged, map }: MapMechInnerProps) => {
                 )}
 
                 {/* Mech move command dashed line */}
-                {isAlive && mechMoveCommandX !== undefined && mechMoveCommandY !== undefined && (
+                {isAlive && !mechMoveCommand?.reached_at && !mechMoveCommand?.cancelled_at && (
                     <Box
                         style={{
                             position: "absolute",
@@ -360,8 +358,8 @@ const MapMechInner = ({ warMachine, isEnlarged, map }: MapMechInnerProps) => {
         mechCommandDist,
         mechMapX,
         mechMapY,
-        mechMoveCommandX,
-        mechMoveCommandY,
+        mechMoveCommand?.cancelled_at,
+        mechMoveCommand?.reached_at,
         participantID,
         playerAbility?.ability.colour,
         playerAbility?.ability.image_url,
