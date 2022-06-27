@@ -111,7 +111,7 @@ export const WarMachineItem = ({ warMachine, scale }: { warMachine: WarMachineSt
                     </IconButton>
                 )}
 
-                {/* The udnerline at the bottom */}
+                {/* The underline at the bottom */}
                 <Box
                     sx={{
                         position: "absolute",
@@ -182,7 +182,7 @@ export const WarMachineItem = ({ warMachine, scale }: { warMachine: WarMachineSt
                                 px: ".8rem",
                                 py: ".6rem",
                                 cursor: "pointer",
-                                background: `linear-gradient(${backgroundColor}BB 20%, ${backgroundColor}90, ${rarityDeets.color || primaryColor}55)`,
+                                background: `linear-gradient(${backgroundColor}BB 25%, ${backgroundColor}90, ${rarityDeets.color || primaryColor}55)`,
                                 opacity: isAlive ? 1 : DEAD_OPACITY,
                                 zIndex: 1,
                             }}

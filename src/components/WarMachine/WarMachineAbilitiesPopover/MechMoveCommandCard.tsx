@@ -1,16 +1,24 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 import { SvgDrag } from "../../../assets"
-import { useAuth, useMiniMap } from "../../../containers"
+import { useAuth, useMiniMap, useSnackbar } from "../../../containers"
 import { shadeColor } from "../../../helpers"
-import { useInterval } from "../../../hooks"
+import { useTimer } from "../../../hooks"
 import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
 import { BlueprintPlayerAbility, Faction, LocationSelectType, WarMachineState } from "../../../types"
 import { ClipThing } from "../../Common/ClipThing"
 import { FancyButton } from "../../Common/FancyButton"
+import { ProgressBar } from "../../Common/ProgressBar"
 import { TopText } from "../../VotingSystem/FactionAbility/TopText"
+
+const fake: MechMoveCommand = {
+    id: "string",
+    mech_id: "string",
+    triggered_by_id: "string",
+    remain_cooldown_seconds: 26,
+}
 
 export interface MechMoveCommand {
     id: string
@@ -33,7 +41,9 @@ interface MechMoveCommandProps {
 export const MechMoveCommandCard = ({ warMachine, faction, clipSlantSize, onClose }: MechMoveCommandProps) => {
     const { factionID } = useAuth()
     const { hash, factionID: wmFactionID, participantID } = warMachine
-    const [mechMoveCommand, setMechMoveCommand] = useState<MechMoveCommand>()
+    const [mechMoveCommand, setMechMoveCommand] = useState<MechMoveCommand>(fake)
+    const backgroundColor = useMemo(() => shadeColor(faction.primary_color, -70), [faction.primary_color])
+
     useGameServerSubscriptionFaction<MechMoveCommand>(
         {
             URI: `/mech_command/${hash}`,
@@ -47,33 +57,6 @@ export const MechMoveCommandCard = ({ warMachine, faction, clipSlantSize, onClos
     )
 
     if (!mechMoveCommand) return null
-
-    return <MechMoveCommandInner faction={faction} clipSlantSize={clipSlantSize} mechMoveCommand={mechMoveCommand} warMachine={warMachine} onClose={onClose} />
-}
-
-interface MechMoveCommandInnerProps {
-    faction: Faction
-    clipSlantSize: string
-    mechMoveCommand: MechMoveCommand
-    warMachine: WarMachineState
-    onClose: () => void
-}
-
-export const MechMoveCommandInner = ({ faction, clipSlantSize, mechMoveCommand, warMachine, onClose }: MechMoveCommandInnerProps) => {
-    const { hash } = warMachine
-    const backgroundColor = useMemo(() => shadeColor(faction.primary_color, -70), [faction.primary_color])
-    const [remainSeconds, setRemainSeconds] = useState(mechMoveCommand.remain_cooldown_seconds)
-    useEffect(() => {
-        setRemainSeconds(mechMoveCommand.remain_cooldown_seconds)
-    }, [mechMoveCommand])
-    useInterval(() => {
-        setRemainSeconds((rs) => {
-            if (rs == 0) {
-                return 0
-            }
-            return rs - 1
-        })
-    }, 1000)
 
     return (
         <Box>
@@ -108,15 +91,9 @@ export const MechMoveCommandInner = ({ faction, clipSlantSize, mechMoveCommand, 
                                     colour={faction.primary_color}
                                     label={"Move Command"}
                                 />
-                                <MechCommandButton
-                                    color={faction.primary_color}
-                                    remainCooldownSeconds={remainSeconds}
-                                    textColor={faction.secondary_color}
-                                    isCancelled={!!mechMoveCommand.cancelled_at}
-                                    hash={hash}
-                                    mechMoveCommandID={mechMoveCommand.id}
-                                    onClose={onClose}
-                                />
+                                <Typography variant="body2" style={{ lineHeight: 1, color: `${faction.primary_color} !important` }}>
+                                    10 SUPS
+                                </Typography>
                             </Stack>
                             <Box
                                 sx={{
@@ -127,8 +104,22 @@ export const MechMoveCommandInner = ({ faction, clipSlantSize, mechMoveCommand, 
                                     borderRadius: 1,
                                 }}
                             >
-                                <MechCommandChargingBar remainCooldownSecond={remainSeconds} color={faction.primary_color} />
+                                <MechCommandCooldownBar
+                                    key={mechMoveCommand.id}
+                                    remainCooldownSeconds={mechMoveCommand.remain_cooldown_seconds}
+                                    color={faction.primary_color}
+                                />
                             </Box>
+
+                            <MechCommandButton
+                                color={faction.primary_color}
+                                remainCooldownSeconds={mechMoveCommand.remain_cooldown_seconds}
+                                textColor={faction.secondary_color}
+                                isCancelled={!!mechMoveCommand.cancelled_at}
+                                hash={hash}
+                                mechMoveCommandID={mechMoveCommand.id}
+                                onClose={onClose}
+                            />
                         </Stack>
                     </ClipThing>
                 </Box>
@@ -143,8 +134,6 @@ interface MechCommandButton {
     isCancelled: boolean
     textColor?: string
     onClose: () => void
-
-    // delete afterward
     hash: string
     mechMoveCommandID: string
 }
@@ -162,31 +151,27 @@ const MechMoveCommandAbility: BlueprintPlayerAbility = {
 }
 
 const MechCommandButton = ({ color, remainCooldownSeconds, isCancelled, textColor, hash, mechMoveCommandID, onClose }: MechCommandButton) => {
+    const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const { setPlayerAbility } = useMiniMap()
+    const { totalSecRemain } = useTimer(new Date(new Date().getTime() + remainCooldownSeconds * 1000))
+
     const text = useMemo(() => {
-        if (remainCooldownSeconds > 0 && !isCancelled) {
-            return "Cancel"
-        }
-        return "Fire"
-    }, [remainCooldownSeconds, isCancelled])
+        if (totalSecRemain > 0 && !isCancelled) return "CANCEL"
+        return "ACTIVATE"
+    }, [totalSecRemain, isCancelled])
 
     const backgroundColor = useMemo(() => {
-        if (remainCooldownSeconds > 0) {
-            return "#14182B"
-        }
-
+        if (totalSecRemain > 0) return "#14182B"
         return color || "#14182B"
-    }, [remainCooldownSeconds, color])
+    }, [totalSecRemain, color])
 
     const colorText = useMemo(() => {
-        if (remainCooldownSeconds > 0 && isCancelled) {
-            return "#FFFFFF20"
-        }
+        if (totalSecRemain > 0 && isCancelled) return "#FFFFFF20"
         return textColor || "#FFFFFF"
-    }, [remainCooldownSeconds, isCancelled, textColor])
+    }, [totalSecRemain, isCancelled, textColor])
 
-    const onCreate = useCallback(() => {
+    const onActivate = useCallback(() => {
         setPlayerAbility({
             count: 1,
             last_purchased_at: new Date(),
@@ -196,19 +181,23 @@ const MechCommandButton = ({ color, remainCooldownSeconds, isCancelled, textColo
         onClose()
     }, [backgroundColor, colorText, hash, onClose, setPlayerAbility])
 
-    const onCancel = useCallback(
-        () =>
-            send(GameServerKeys.MechMoveCommandCancel, {
+    const onCancel = useCallback(async () => {
+        try {
+            await send(GameServerKeys.MechMoveCommandCancel, {
                 move_command_id: mechMoveCommandID,
                 hash,
-            }).catch((e) => console.log(e)),
-        [hash, mechMoveCommandID, send],
-    )
+            })
+        } catch (err) {
+            const message = typeof err === "string" ? err : "Failed cancel mech move command."
+            newSnackbarMessage(message, "error")
+            console.error(err)
+        }
+    }, [hash, mechMoveCommandID, newSnackbarMessage, send])
 
     const onClick = useMemo(() => {
-        if (remainCooldownSeconds > 0 && !isCancelled) return onCancel
-        return onCreate
-    }, [remainCooldownSeconds, isCancelled, onCreate, onCancel])
+        if (totalSecRemain > 0 && !isCancelled) return onCancel
+        return onActivate
+    }, [totalSecRemain, isCancelled, onActivate, onCancel])
 
     return (
         <FancyButton
@@ -216,14 +205,15 @@ const MechCommandButton = ({ color, remainCooldownSeconds, isCancelled, textColo
                 clipSize: "5px",
                 backgroundColor: backgroundColor,
                 border: { isFancy: true, borderColor: color || "#14182B" },
-                sx: { flex: 1, position: "relative" },
+                sx: { flex: 1, position: "relative", width: "100%" },
             }}
-            disabled={remainCooldownSeconds > 0 && isCancelled}
-            sx={{ py: ".2rem", minWidth: "2rem" }}
+            disabled={totalSecRemain > 0 && isCancelled}
+            sx={{ py: ".45rem", minWidth: "2rem" }}
             onClick={onClick}
         >
             <Stack alignItems="center" justifyContent="center" direction="row">
                 <Typography
+                    variant="body2"
                     sx={{
                         lineHeight: 1,
                         fontWeight: "fontWeightBold",
@@ -238,36 +228,15 @@ const MechCommandButton = ({ color, remainCooldownSeconds, isCancelled, textColo
     )
 }
 
-interface MechCommandCooldownBarProps {
-    remainCooldownSecond: number
-    color: string
-}
-const MechCommandChargingBar = ({ remainCooldownSecond, color }: MechCommandCooldownBarProps) => {
+const MechCommandCooldownBar = ({ remainCooldownSeconds, color }: { remainCooldownSeconds: number; color: string }) => {
+    const { totalSecRemain } = useTimer(new Date(new Date().getTime() + remainCooldownSeconds * 1000))
     return (
-        <Stack
-            direction="row"
-            alignItems="center"
-            justifyContent="flex-start"
-            style={{
-                flex: 1,
-                position: "relative",
-                alignSelf: "stretch",
-                height: ".7rem",
-                backgroundColor: `${color}10`,
-                overflow: "visible",
-                borderRadius: 0.4,
-            }}
-        >
-            <Box
-                style={{
-                    width: `${((30.0 - remainCooldownSecond) / 30.0) * 100}%`,
-                    height: "100%",
-                    transition: "all 1s",
-                    backgroundColor: color || colors.neonBlue,
-                    zIndex: 5,
-                    borderRadius: 0.4,
-                }}
-            />
-        </Stack>
+        <ProgressBar
+            percent={((30.0 - totalSecRemain) / 30.0) * 100}
+            color={color || colors.neonBlue}
+            backgroundColor="#FFFFFF10"
+            thickness=".7rem"
+            orientation="horizontal"
+        />
     )
 }

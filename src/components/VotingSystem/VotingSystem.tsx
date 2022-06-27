@@ -1,4 +1,4 @@
-import { Box, Divider, Fade, Stack } from "@mui/material"
+import { Box, Fade, Stack } from "@mui/material"
 import { useMemo } from "react"
 import { BattleAbilityItem, FactionAbilities, MoveableResizable } from ".."
 import { DEV_ONLY } from "../../constants"
@@ -74,15 +74,7 @@ const VotingSystemInner = ({ userID, bribeStage }: VotingSystemInnerProps) => {
                                 },
                             }}
                         >
-                            <Stack
-                                spacing="2rem"
-                                sx={{ direction: "ltr", py: ".4rem" }}
-                                divider={
-                                    <Divider
-                                        sx={{ mb: "2rem", borderBottomWidth: ".25rem", borderColor: (theme) => theme.factionTheme.primary, opacity: 0.15 }}
-                                    />
-                                }
-                            >
+                            <Stack spacing="2rem" sx={{ direction: "ltr", py: ".4rem" }}>
                                 <BattleAbilityItem key={factionID} />
                                 <FactionAbilities />
                                 {DEV_ONLY && userID && <PlayerAbilities />}

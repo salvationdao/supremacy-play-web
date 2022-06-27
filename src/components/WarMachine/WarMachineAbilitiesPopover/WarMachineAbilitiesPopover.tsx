@@ -85,7 +85,7 @@ export const WarMachineAbilitiesPopover = ({
                             <ContributorAmount hideContributionTotal />
                         </Stack>
 
-                        <Stack spacing=".9rem">
+                        <Stack spacing="1rem">
                             {gameAbilities.map((ga, i) => (
                                 <Box key={ga.identity} sx={{ ml: `${(i + 1) * 0.2 * 0.8}rem` }}>
                                     <FactionAbilityItem
@@ -97,6 +97,7 @@ export const WarMachineAbilitiesPopover = ({
                                 </Box>
                             ))}
 
+                            <MechMoveCommandCard warMachine={warMachine} faction={faction} clipSlantSize="5px" onClose={onClose} />
                             {warMachine.ownedByID === userID && (
                                 <MechMoveCommandCard warMachine={warMachine} faction={faction} clipSlantSize="5px" onClose={onClose} />
                             )}

@@ -77,7 +77,7 @@ export const SkillBar = ({
                     percent={progressPercent}
                     lineCercent={costPercent}
                     color={colour}
-                    backgroundColor="#FFFFFF10"
+                    backgroundColor="#FFFFFF06"
                     thickness={`${WIDTH_STAT_BAR}rem`}
                 />
             </Box>
