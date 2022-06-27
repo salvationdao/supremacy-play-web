@@ -68,6 +68,8 @@ export const WarMachineCommandAlert = ({ data, getFaction }: { data: WarMachineC
         return null
     }
 
+    if (action === MechCommandAction.MechCommandComplete) return null
+
     return (
         <ClipThing
             clipSize="6px"
