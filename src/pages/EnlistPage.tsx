@@ -72,7 +72,7 @@ const ExtendedFactionEnlist = ({ faction }: { faction: Faction }) => {
 
     return (
         <Fade in key={faction.id}>
-            <Box>
+            <Box sx={{ maxHeight: "65vh" }}>
                 <ClipThing
                     clipSize="10px"
                     corners={{
@@ -101,18 +101,45 @@ const ExtendedFactionEnlist = ({ faction }: { faction: Faction }) => {
                             height: "100%",
                         }}
                     >
-                        <Box component={"img"} src={faction.logo_url} alt={faction.label} sx={{ height: below1250 ? "10rem" : "15rem" }} />
+                        <Box component={"img"} src={faction.logo_url} alt={faction.label} sx={{ height: below1250 ? "10rem" : "13rem" }} />
 
                         <Typography variant={"h1"} sx={{ fontFamily: fonts.nostromoBlack, fontSize: "2rem" }}>
                             {faction.label}
                         </Typography>
 
-                        <Typography variant={"subtitle1"} sx={{ fontSize: "2rem", textAlign: "left" }}>
-                            {faction.description}
-                            <br />
-                            <br />
-                            {renderLastDescription(faction)}
-                        </Typography>
+                        <Box
+                            sx={{
+                                flex: 1,
+                                overflowY: "auto",
+                                overflowX: "hidden",
+                                ml: "1.9rem",
+                                mr: ".5rem",
+                                pr: "1.4rem",
+                                my: "1rem",
+                                direction: "ltr",
+                                scrollbarWidth: "none",
+                                "::-webkit-scrollbar": {
+                                    width: ".4rem",
+                                },
+                                "::-webkit-scrollbar-track": {
+                                    background: "#FFFFFF15",
+                                    borderRadius: 3,
+                                },
+                                "::-webkit-scrollbar-thumb": {
+                                    background: faction.primary_color,
+                                    borderRadius: 3,
+                                },
+                            }}
+                        >
+                            <Box sx={{ direction: "ltr", height: "0" }}>
+                                <Typography variant={"subtitle1"} sx={{ fontSize: "2rem", textAlign: "left" }}>
+                                    {faction.description}
+                                    <br />
+                                    <br />
+                                    {renderLastDescription(faction)}
+                                </Typography>
+                            </Box>
+                        </Box>
 
                         <FancyButton
                             clipThingsProps={{
