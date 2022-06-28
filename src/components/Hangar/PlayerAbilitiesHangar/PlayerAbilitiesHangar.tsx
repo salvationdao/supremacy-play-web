@@ -96,7 +96,7 @@ export const PlayerAbilitiesHangar = () => {
                             width: "100%",
                             gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
                             gridTemplateRows: "repeat(1, min-content)",
-                            gap: "5rem",
+                            gap: "3rem",
                             alignItems: "stretch",
                             justifyContent: "center",
                             py: "1rem",
