@@ -170,6 +170,8 @@ const MechCommandButton = ({
 
     const onActivate = useCallback(() => {
         setPlayerAbility({
+            id: "mech_move_command",
+            blueprint_id: "mech_move_command",
             count: 1,
             last_purchased_at: new Date(),
             mechHash: hash,

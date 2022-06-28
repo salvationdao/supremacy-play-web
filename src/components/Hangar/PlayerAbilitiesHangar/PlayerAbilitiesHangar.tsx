@@ -161,15 +161,12 @@ export const PlayerAbilitiesHangar = () => {
                     }}
                 >
                     <PageHeader
-                        title={<>PLAYER ABILITIES</>}
-                        description={
-                            <>
-                                Player abilities are abilities that can be bought and used on the battle arena. The price of a player ability is determined by
+                        title="PLAYER ABILITIES"
+                        description="Player abilities are abilities that can be bought and used on the battle arena. The price of a player ability is determined by
                                 how active it is at any given time. When players buy an ability, its price will go up. If an ability is not being bought, its
-                                price will go down.
-                            </>
-                        }
+                                price will go down."
                     />
+
                     <TotalAndPageSizeOptions
                         countItems={shownPlayerAbilities.length}
                         totalItems={totalItems}
@@ -177,16 +174,9 @@ export const PlayerAbilitiesHangar = () => {
                         changePageSize={changePageSize}
                         pageSizeOptions={[10, 20, 40]}
                         changePage={changePage}
-                        manualRefresh={() => {
-                            return
-                        }}
                     />
-                    <Stack
-                        sx={{
-                            px: "2rem",
-                            flex: 1,
-                        }}
-                    >
+
+                    <Stack sx={{ px: "2rem", flex: 1 }}>
                         <Box
                             sx={{
                                 flex: 1,
