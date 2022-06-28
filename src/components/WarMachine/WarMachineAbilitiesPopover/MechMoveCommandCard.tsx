@@ -109,6 +109,7 @@ export const MechMoveCommandCard = ({ warMachine, faction, clipSlantSize, onClos
                                 color={faction.primary_color}
                                 remainCooldownSeconds={mechMoveCommand.remain_cooldown_seconds}
                                 isMoving={mechMoveCommand.cell_x !== undefined && mechMoveCommand.cell_y !== undefined}
+                                isCancelled={!!mechMoveCommand.cancelled_at}
                                 mechMoveCommandID={mechMoveCommand.id}
                                 onClose={onClose}
                                 primaryColor={faction.primary_color}
@@ -127,6 +128,7 @@ interface MechCommandButton {
     color: string
     remainCooldownSeconds: number
     isMoving: boolean
+    isCancelled: boolean
     primaryColor?: string
     secondaryColor?: string
     backgroundColor?: string
@@ -151,6 +153,7 @@ const MechCommandButton = ({
     color,
     remainCooldownSeconds,
     isMoving,
+    isCancelled,
     primaryColor,
     secondaryColor,
     backgroundColor,
@@ -164,9 +167,9 @@ const MechCommandButton = ({
     const { totalSecRemain } = useTimer(new Date(new Date().getTime() + remainCooldownSeconds * 1000))
 
     const text = useMemo(() => {
-        if (isMoving) return "CANCEL"
+        if (isMoving && !isCancelled) return "CANCEL"
         return "ACTIVATE"
-    }, [isMoving])
+    }, [isMoving, isCancelled])
 
     const onActivate = useCallback(() => {
         setPlayerAbility({
@@ -194,9 +197,9 @@ const MechCommandButton = ({
     }, [hash, mechMoveCommandID, newSnackbarMessage, send])
 
     const onClick = useMemo(() => {
-        if (isMoving) return onCancel
+        if (isMoving && !isCancelled) return onCancel
         return onActivate
-    }, [isMoving, onActivate, onCancel])
+    }, [isMoving, isCancelled, onActivate, onCancel])
 
     return (
         <FancyButton
@@ -206,7 +209,7 @@ const MechCommandButton = ({
                 border: { isFancy: true, borderColor: color || "#14182B" },
                 sx: { flex: 1, position: "relative", width: "100%" },
             }}
-            disabled={totalSecRemain > 0}
+            disabled={totalSecRemain > 0 && isCancelled}
             sx={{ py: ".45rem", minWidth: "2rem" }}
             onClick={onClick}
         >
