@@ -67,19 +67,12 @@ export const MiniMapContainer = createContainer(() => {
         }
     }, [winner, bribeStage, playerAbility])
 
-    const resetSelection = useCallback(
-        (resetAll?: boolean) => {
-            if (winner && playerAbility && !resetAll) {
-                setWinner(undefined)
-            } else {
-                setWinner(undefined)
-                setPlayerAbility(undefined)
-            }
-            setSelection(undefined)
-            setIsTargeting(false)
-        },
-        [winner, playerAbility, setPlayerAbility],
-    )
+    const resetSelection = useCallback(() => {
+        setWinner(undefined)
+        setPlayerAbility(undefined)
+        setSelection(undefined)
+        setIsTargeting(false)
+    }, [setPlayerAbility])
 
     const onTargetConfirm = useCallback(async () => {
         if (!selection) return
@@ -92,6 +85,7 @@ export const MiniMapContainer = createContainer(() => {
                     x: Math.floor(selection.startCoords.x),
                     y: Math.floor(selection.startCoords.y),
                 })
+                setPlayerAbility(undefined)
             } else if (playerAbility) {
                 let payload: {
                     blueprint_ability_id: string

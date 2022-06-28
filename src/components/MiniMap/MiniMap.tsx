@@ -23,7 +23,7 @@ export const MiniMap = () => {
             toggleShow(true)
         } else {
             toggleShow(false)
-            resetSelection(true)
+            resetSelection()
         }
     }, [bribeStage, toggleShow, resetSelection])
     // End ****************************************
