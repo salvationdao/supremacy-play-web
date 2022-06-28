@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from "react"
 import { MoveableResizable, QueueFeed, TooltipHelper } from ".."
 import { SvgNotification, SvgSupToken } from "../../assets"
 import { useTheme } from "../../containers/theme"
-import { supFormatter } from "../../helpers"
+import { parseString, supFormatter } from "../../helpers"
 import { usePagination, useToggle } from "../../hooks"
 import { useGameServerCommandsUser, useGameServerSubscriptionFaction } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
@@ -51,7 +51,10 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
     const [loadError, setLoadError] = useState<string>()
 
     const [sort, setSort] = useState<string>(SortTypeLabel.MechQueueAsc)
-    const { page, changePage, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({ pageSize: 5, page: 1 })
+    const { page, changePage, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({
+        pageSize: parseString(localStorage.getItem("quickDeployPageSize"), 5),
+        page: 1,
+    })
 
     const primaryColor = theme.factionTheme.primary
     const secondaryColor = theme.factionTheme.secondary
@@ -61,6 +64,10 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
         URI: "/queue",
         key: GameServerKeys.SubQueueFeed,
     })
+
+    useEffect(() => {
+        localStorage.setItem("quickDeployPageSize", pageSize.toString())
+    }, [pageSize])
 
     const getItems = useCallback(async () => {
         try {

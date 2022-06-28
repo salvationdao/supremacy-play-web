@@ -156,7 +156,7 @@ const BattleAbilityItemInner = ({
 
     return (
         <Fade in={true}>
-            <Stack spacing=".8rem">
+            <Stack spacing="1rem">
                 <BattleAbilityCountdown bribeStage={bribeStage} />
 
                 <Stack key={fadeEffect.toString()} spacing="1.04rem">

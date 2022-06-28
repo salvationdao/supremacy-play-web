@@ -165,18 +165,10 @@ export const PlayerAbilitiesStore = () => {
                 }}
             >
                 <PageHeader
-                    title={
-                        <Typography variant="h5" sx={{ fontFamily: fonts.nostromoBlack }}>
-                            PLAYER ABILITIES
-                        </Typography>
-                    }
-                    description={
-                        <Typography sx={{ fontSize: "1.85rem" }}>
-                            Player abilities are abilities that can be bought and used on the battle arena. The price of a player ability is determined by how
+                    title="PLAYER ABILITIES"
+                    description="Player abilities are abilities that can be bought and used on the battle arena. The price of a player ability is determined by how
                             active it is at any given time. When players buy an ability, its price will go up. If an ability is not being bought, its price will
-                            go down.
-                        </Typography>
-                    }
+                            go down."
                 >
                     <FancyButton
                         to={`/fleet/${HANGAR_TABS.Abilities}`}
@@ -204,10 +196,12 @@ export const PlayerAbilitiesStore = () => {
                         </Typography>
                     </FancyButton>
                 </PageHeader>
+
                 <Stack direction="row" spacing="1rem" alignItems="center" justifyContent="end" py="2rem" px="4rem">
                     <Typography variant="body1">Next refresh in:</Typography>
                     {countdown}
                 </Stack>
+
                 <Stack
                     sx={{
                         flex: 1,

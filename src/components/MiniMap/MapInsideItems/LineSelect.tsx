@@ -1,45 +1,30 @@
-import { Box } from "@mui/material"
-import React, { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } from "react"
-import { colors } from "../../../theme/theme"
-import { Map } from "../../../types"
-import { MapSelection } from "../MiniMapInside"
+import { Box, useTheme } from "@mui/material"
+import { useEffect, useMemo, useRef } from "react"
+import { useGame, useMiniMap } from "../../../containers"
 
-interface LineSelectProps {
-    selection?: MapSelection
-    setSelection: Dispatch<SetStateAction<MapSelection | undefined>>
-    mapElement?: HTMLDivElement
-    gridWidth: number
-    gridHeight: number
-    map?: Map
-    mapScale: number
-}
+const MIN_CANVAS_HEIGHT = 700
 
-const minCanvasHeight = 700
+export const LineSelect = ({ mapScale }: { mapScale: number }) => {
+    const theme = useTheme()
+    const { map } = useGame()
+    const { mapElement, gridWidth, gridHeight, selection, setSelection } = useMiniMap()
+    const canvasRef = useRef<HTMLCanvasElement>(null)
 
-export const LineSelect = ({ selection, setSelection, mapElement, gridWidth, gridHeight, map, mapScale }: LineSelectProps) => {
-    const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null)
-    const canvasRef: React.RefCallback<HTMLCanvasElement> = useCallback((node) => {
-        if (node !== null) {
-            setCanvas(node)
-        }
-    }, [])
-    const indicatorDiameter = useMemo(() => (map ? map.cells_x * 1.5 : 50), [map])
+    const indicatorDiameter = useMemo(() => map?.cells_x || 50, [map])
 
     useEffect(() => {
-        const c = canvas?.getContext("2d")
-        if (!c) return
-        if (!mapElement) return
+        const c = canvasRef.current?.getContext("2d")
+        if (!c || !mapElement.current) return
 
-        const { width, height } = mapElement.getBoundingClientRect()
-        c.canvas.width = (width / height) * minCanvasHeight
-        c.canvas.height = minCanvasHeight
-    }, [canvas, mapElement])
+        const { width, height } = mapElement.current.getBoundingClientRect()
+        c.canvas.width = (width / height) * MIN_CANVAS_HEIGHT
+        c.canvas.height = MIN_CANVAS_HEIGHT
+    }, [mapElement])
 
     // https://stackoverflow.com/questions/24376951/find-new-coordinates-of-point-on-line-in-javascript
     useEffect(() => {
-        const c = canvas?.getContext("2d")
-        if (!c) return
-        if (!map) return
+        const c = canvasRef.current?.getContext("2d")
+        if (!c || !map) return
 
         c.clearRect(0, 0, c.canvas.width, c.canvas.height)
         if (!selection?.startCoords || !selection?.endCoords) return
@@ -56,10 +41,10 @@ export const LineSelect = ({ selection, setSelection, mapElement, gridWidth, gri
         c.beginPath()
         c.moveTo(normalisedStartCoords.x, normalisedStartCoords.y)
         c.lineTo(normalisedEndCoords.x, normalisedEndCoords.y)
-        c.lineWidth = indicatorDiameter * 0.1
-        c.strokeStyle = "#d40000"
+        c.lineWidth = indicatorDiameter * 0.08
+        c.strokeStyle = theme.factionTheme.primary
         c.stroke()
-    }, [canvas, selection, map, indicatorDiameter])
+    }, [selection, map, indicatorDiameter, theme.factionTheme.primary])
 
     return (
         <>
@@ -76,9 +61,10 @@ export const LineSelect = ({ selection, setSelection, mapElement, gridWidth, gri
                         height: `${indicatorDiameter}px`,
                         width: `${indicatorDiameter}px`,
                         cursor: "pointer",
-                        border: `2px solid ${colors.black2}`,
                         borderRadius: "50%",
-                        backgroundColor: "white",
+                        backgroundColor: theme.factionTheme.primary,
+                        border: "#000000 2px solid",
+                        boxShadow: 2,
                         transform: `translate(${selection.startCoords.x * gridWidth - indicatorDiameter / 2}px, ${
                             selection.startCoords.y * gridHeight - indicatorDiameter / 2
                         }px)`,
@@ -88,6 +74,7 @@ export const LineSelect = ({ selection, setSelection, mapElement, gridWidth, gri
                     1
                 </Box>
             )}
+
             {selection?.endCoords && (
                 <Box
                     onClick={() =>
@@ -101,10 +88,10 @@ export const LineSelect = ({ selection, setSelection, mapElement, gridWidth, gri
                         height: `${indicatorDiameter}px`,
                         width: `${indicatorDiameter}px`,
                         cursor: "pointer",
-                        border: `2px solid ${colors.black2}`,
                         borderRadius: "50%",
-                        backgroundColor: "white",
-                        color: colors.black2,
+                        backgroundColor: theme.factionTheme.primary,
+                        border: "#000000 2px solid",
+                        boxShadow: 2,
                         transform: `translate(${selection.endCoords.x * gridWidth - indicatorDiameter / 2}px, ${
                             selection.endCoords.y * gridHeight - indicatorDiameter / 2
                         }px)`,
@@ -114,11 +101,22 @@ export const LineSelect = ({ selection, setSelection, mapElement, gridWidth, gri
                     2
                 </Box>
             )}
+
             <canvas
                 ref={canvasRef}
+                style={{
+                    zIndex: 6,
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    width: "100%",
+                    height: "100%",
+                }}
                 onClick={(e) => {
-                    if (mapElement) {
-                        const rect = mapElement.getBoundingClientRect()
+                    if (mapElement.current) {
+                        const rect = mapElement.current.getBoundingClientRect()
                         // Mouse position
                         const x = e.clientX - rect.left
                         const y = e.clientY - rect.top
@@ -144,16 +142,6 @@ export const LineSelect = ({ selection, setSelection, mapElement, gridWidth, gri
                             }
                         })
                     }
-                }}
-                style={{
-                    zIndex: 6,
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    width: "100%",
-                    height: "100%",
                 }}
             />
         </>
