@@ -41,7 +41,8 @@ export const CrateRewards = ({ rewards, onClose }: CrateRewardsProps) => {
             avatarUrl: rewards.mech.avatar_url,
             label: rewards.mech.label,
         }
-        setArrayItems([...arrayItems, mech])
+
+        let newArr = [...arrayItems, mech]
 
         const mechSkin: ArrayItem = {
             id: rewards.mech_skin?.id,
@@ -51,7 +52,7 @@ export const CrateRewards = ({ rewards, onClose }: CrateRewardsProps) => {
             avatarUrl: rewards.mech_skin?.avatar_url,
             label: rewards.mech_skin?.label,
         }
-        setArrayItems([...arrayItems, mechSkin])
+        newArr = [...newArr, mechSkin]
 
         rewards.weapon.map((w) => {
             const weapon: ArrayItem = {
@@ -62,8 +63,10 @@ export const CrateRewards = ({ rewards, onClose }: CrateRewardsProps) => {
                 avatarUrl: w.avatar_url,
                 label: w.label,
             }
-            setArrayItems([...arrayItems, weapon])
+            newArr = [...newArr, weapon]
         })
+
+        setArrayItems(newArr)
 
         // const powercore: CarouselArrayItem = {
         //      id: rewards.power_core?.id,
@@ -95,11 +98,16 @@ export const CrateRewards = ({ rewards, onClose }: CrateRewardsProps) => {
                     You have received:
                 </Typography>
 
-                {rewards.mech ? (
-                    <MechCrateRewards items={arrayItems} />
-                ) : (
-                    arrayItems.map((item) => <CrateItem key={item.id} sizeCI={"large"} label={item.label} />)
-                )}
+                {/*{rewards.mech ? (*/}
+                {/*    <MechCrateRewards items={arrayItems} />*/}
+                {/*) : (*/}
+                {/*    <Box>*/}
+                {/*        {arrayItems.map((item) => (*/}
+                {/*            <CrateItem key={item.id} sizeCI={"large"} label={item.label} />*/}
+                {/*        ))}*/}
+                {/*    </Box>*/}
+                {/*)}*/}
+                <Carousel arrayItems={arrayItems} />
 
                 <FancyButton
                     clipThingsProps={{
@@ -134,10 +142,10 @@ export const CrateRewards = ({ rewards, onClose }: CrateRewardsProps) => {
 }
 
 const MechCrateRewards = ({ items }: { items: ArrayItem[] }) => {
-    const largeItem = items.filter((item) => (item.type = "mech"))
+    const largeItem = items.find((item) => (item.type = "mech"))
     return (
         <Stack direction={"row"}>
-            <CrateItem sizeCI="large" label={largeItem[0].label} imageUrl={largeItem[0].imageUrl} videoUrl={largeItem[0].animationUrl} />
+            <CrateItem sizeCI="large" label={largeItem?.label} imageUrl={largeItem?.imageUrl} videoUrl={largeItem?.animationUrl} />
             <Stack>
                 {items.map((item) => (
                     <CrateItem sizeCI="small" key={item.id} label={item.label} avatarUrl={item.avatarUrl} />
@@ -195,6 +203,45 @@ const CrateItem = ({ sizeCI, label, imageUrl, avatarUrl, tier }: CrateItemLargeP
                     </Typography>
                 )}
             </Stack>
+        </Stack>
+    )
+}
+
+const Carousel = ({ arrayItems }: { arrayItems: ArrayItem[] }) => {
+    const maxIndex = arrayItems.length - 1
+    const [currentIndex, setCurrentIndex] = useState(0)
+    const [nextIndex, setNextIndex] = useState(1)
+    const [prevIndex, setPrevIndex] = useState(maxIndex)
+
+    useEffect(() => {
+        if (currentIndex === maxIndex) {
+            setNextIndex(0)
+            setPrevIndex(currentIndex - 1)
+        } else if (currentIndex === 0) {
+            setNextIndex(currentIndex + 1)
+            setPrevIndex(maxIndex)
+        } else {
+            setNextIndex(currentIndex + 1)
+            setPrevIndex(currentIndex - 1)
+        }
+    }, [currentIndex, maxIndex])
+
+    const handleNext = () => {
+        setCurrentIndex(nextIndex)
+    }
+    const handlePrev = () => {
+        setCurrentIndex(prevIndex)
+    }
+    console.log(arrayItems[prevIndex], arrayItems[currentIndex], arrayItems[nextIndex])
+
+    if (!arrayItems[prevIndex] || !arrayItems[currentIndex] || !arrayItems[nextIndex]) return null
+    return (
+        <Stack direction={"row"}>
+            <Button onClick={() => handlePrev()}>Prev</Button>
+            <CrateItem sizeCI={"large"} label={arrayItems[prevIndex].label} />
+            <CrateItem sizeCI={"large"} label={arrayItems[currentIndex].label} />
+            <CrateItem sizeCI={"large"} label={arrayItems[nextIndex].label} />
+            <Button onClick={() => handleNext()}>Next</Button>
         </Stack>
     )
 }
