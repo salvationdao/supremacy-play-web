@@ -153,7 +153,7 @@ export const PlayerAbilities = () => {
                                         </Link>
                                     </>
                                 ) : (
-                                    "You do not own any abilities at the moment."
+                                    "You don't have any player abilities..."
                                 )}
                             </Typography>
                         )}

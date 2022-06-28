@@ -1,6 +1,7 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useRef, useState } from "react"
-import { ClipThing } from "../.."
+import { ClipThing, FancyButton } from "../.."
+import { PlayerAbilityPNG } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { parseString } from "../../../helpers"
 import { usePagination, useUrlQuery } from "../../../hooks"
@@ -35,10 +36,10 @@ export const PlayerAbilitiesHangar = () => {
     const locationSelectTypeFilterSection = useRef<ChipFilter>({
         label: "ABILITY TYPE",
         options: [
-            { value: LocationSelectType.GLOBAL, label: LocationSelectType.GLOBAL.split("_").join(" "), color: colors.grey },
-            { value: LocationSelectType.LOCATION_SELECT, label: LocationSelectType.LOCATION_SELECT.split("_").join(" "), color: colors.grey },
-            { value: LocationSelectType.MECH_SELECT, label: LocationSelectType.MECH_SELECT.split("_").join(" "), color: colors.grey },
-            { value: LocationSelectType.LINE_SELECT, label: LocationSelectType.LINE_SELECT.split("_").join(" "), color: colors.grey },
+            { value: LocationSelectType.GLOBAL, label: LocationSelectType.GLOBAL.split("_").join(" "), color: colors.green },
+            { value: LocationSelectType.LOCATION_SELECT, label: LocationSelectType.LOCATION_SELECT.split("_").join(" "), color: colors.blue2 },
+            { value: LocationSelectType.MECH_SELECT, label: LocationSelectType.MECH_SELECT.split("_").join(" "), color: colors.gold },
+            { value: LocationSelectType.LINE_SELECT, label: LocationSelectType.LINE_SELECT.split("_").join(" "), color: colors.purple },
         ],
         initialSelected: locationSelectTypes,
         onSetSelected: (value: string[]) => {
@@ -95,7 +96,7 @@ export const PlayerAbilitiesHangar = () => {
                             width: "100%",
                             gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
                             gridTemplateRows: "repeat(1, min-content)",
-                            gap: "5rem",
+                            gap: "3rem",
                             alignItems: "stretch",
                             justifyContent: "center",
                             py: "1rem",
@@ -110,34 +111,66 @@ export const PlayerAbilitiesHangar = () => {
         }
 
         return (
-            <Box
-                sx={{
-                    display: "flex",
-                    height: "100%",
-                    alignItems: "center",
-                    justifyContent: "center",
-                }}
-            >
-                <Typography
-                    sx={{
-                        px: "1.28rem",
-                        pt: "1.28rem",
-                        color: colors.grey,
-                        fontFamily: fonts.nostromoBold,
-                        userSelect: "text !important",
-                        opacity: 0.9,
-                        textAlign: "center",
-                    }}
-                >
-                    You do not own any abilities.
-                </Typography>
-            </Box>
+            <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", maxWidth: "43rem" }}>
+                    <Box
+                        sx={{
+                            width: "9rem",
+                            height: "9rem",
+                            opacity: 0.6,
+                            filter: "grayscale(100%)",
+                            border: "#FFFFFF10 1px solid",
+                            background: `url(${PlayerAbilityPNG})`,
+                            backgroundRepeat: "no-repeat",
+                            backgroundPosition: "top center",
+                            backgroundSize: "contain",
+                        }}
+                    />
+
+                    <Typography
+                        sx={{
+                            px: "1.28rem",
+                            pt: "1.28rem",
+                            color: colors.grey,
+                            fontFamily: fonts.nostromoBold,
+                            userSelect: "text !important",
+                            opacity: 0.9,
+                            textAlign: "center",
+                        }}
+                    >
+                        {"You don't have any abilities."}
+                    </Typography>
+
+                    <FancyButton
+                        to={`/storefront/abilities${location.hash}`}
+                        clipThingsProps={{
+                            clipSize: "9px",
+                            backgroundColor: theme.factionTheme.primary,
+                            border: { isFancy: true, borderColor: theme.factionTheme.primary },
+                            sx: { position: "relative", mt: "2rem" },
+                        }}
+                        sx={{ px: "1.8rem", py: ".8rem", color: theme.factionTheme.secondary }}
+                    >
+                        <Typography
+                            variant="body2"
+                            sx={{
+                                textAlign: "center",
+                                color: theme.factionTheme.secondary,
+                                fontFamily: fonts.nostromoBold,
+                            }}
+                        >
+                            GO TO STOREFRONT
+                        </Typography>
+                    </FancyButton>
+                </Stack>
+            </Stack>
         )
-    }, [isLoaded, shownPlayerAbilities])
+    }, [isLoaded, shownPlayerAbilities, theme.factionTheme.primary, theme.factionTheme.secondary])
 
     return (
         <Stack direction="row" spacing="1rem" sx={{ height: "100%" }}>
             <SortAndFilters initialSearch={search} onSetSearch={setSearch} chipFilters={[locationSelectTypeFilterSection.current]} changePage={changePage} />
+
             <ClipThing
                 clipSize="10px"
                 border={{
@@ -161,6 +194,7 @@ export const PlayerAbilitiesHangar = () => {
                     }}
                 >
                     <PageHeader
+                        imageUrl={PlayerAbilityPNG}
                         title="PLAYER ABILITIES"
                         description="Player abilities are abilities that can be bought and used on the battle arena. The price of a player ability is determined by
                                 how active it is at any given time. When players buy an ability, its price will go up. If an ability is not being bought, its

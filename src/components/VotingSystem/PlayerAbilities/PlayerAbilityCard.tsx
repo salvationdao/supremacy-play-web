@@ -12,7 +12,7 @@ import { TooltipHelper } from "../../Common/TooltipHelper"
 
 export const PlayerAbilityCard = ({ playerAbility }: { playerAbility: PlayerAbility }) => {
     const { setPlayerAbility } = useMiniMap()
-    const [abilityTypeIcon, setAbilityTypeIcon] = useState<JSX.Element>(<SvgQuestionMark size="1.7rem" />)
+    const [abilityTypeIcon, setAbilityTypeIcon] = useState<JSX.Element>(<SvgQuestionMark size="1.4rem" />)
     const [abilityTypeDescription, setAbilityTypeDescription] = useState("Miscellaneous ability type.")
     const [showPurchaseModal, toggleShowActivateModal] = useToggle(false)
 
@@ -20,19 +20,19 @@ export const PlayerAbilityCard = ({ playerAbility }: { playerAbility: PlayerAbil
         switch (playerAbility.ability.location_select_type) {
             case LocationSelectType.GLOBAL:
                 setAbilityTypeDescription("This ability will affect all units on the map.")
-                setAbilityTypeIcon(<SvgGlobal size="1.7rem" />)
+                setAbilityTypeIcon(<SvgGlobal size="1.4rem" />)
                 break
             case LocationSelectType.LOCATION_SELECT:
                 setAbilityTypeDescription("This ability will target a specific location on the map.")
-                setAbilityTypeIcon(<SvgTarget size="1.7rem" />)
+                setAbilityTypeIcon(<SvgTarget size="1.4rem" />)
                 break
             case LocationSelectType.MECH_SELECT:
                 setAbilityTypeDescription("This ability will target a specific mech on the map.")
-                setAbilityTypeIcon(<SvgMicrochip size="1.7rem" />)
+                setAbilityTypeIcon(<SvgMicrochip size="1.4rem" />)
                 break
             case LocationSelectType.LINE_SELECT:
                 setAbilityTypeDescription("This ability will target a straight line on the map.")
-                setAbilityTypeIcon(<SvgLine size="1.7rem" />)
+                setAbilityTypeIcon(<SvgLine size="1.4rem" />)
                 break
         }
     }, [playerAbility])
@@ -100,11 +100,7 @@ export const PlayerAbilityCard = ({ playerAbility }: { playerAbility: PlayerAbil
                                     left: ".2rem",
                                 }}
                             >
-                                <Typography
-                                    sx={{
-                                        fontFamily: fonts.nostromoBold,
-                                    }}
-                                >
+                                <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBold }}>
                                     {playerAbility.count}
                                 </Typography>
                             </Box>
@@ -170,7 +166,7 @@ export const PlayerAbilityCard = ({ playerAbility }: { playerAbility: PlayerAbil
                             <ClipThing
                                 clipSize="8px"
                                 border={{
-                                    borderColor: "#FF0000",
+                                    borderColor: playerAbility.ability.colour,
                                     borderThickness: ".3rem",
                                 }}
                                 opacity={0.5}

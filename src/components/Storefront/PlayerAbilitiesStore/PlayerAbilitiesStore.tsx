@@ -1,14 +1,16 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useMemo, useState } from "react"
 import { ClipThing, FancyButton } from "../.."
+import { PlayerAbilityPNG } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
+import { timeSinceInWords } from "../../../helpers"
+import { useTimer } from "../../../hooks"
 import { useGameServerSubscriptionSecurePublic } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { HANGAR_TABS } from "../../../pages"
 import { colors, fonts } from "../../../theme/theme"
 import { SaleAbility } from "../../../types"
 import { PageHeader } from "../../Common/PageHeader"
-import { Countdown } from "../../Hangar/MysteryCratesHangar/MysteryCrateHangarItem"
 import { MysteryCrateStoreItemLoadingSkeleton } from "../MysteryCratesStore/MysteryCrateStoreItem/MysteryCrateStoreItem"
 import { PlayerAbilityStoreItem } from "./PlayerAbilityStoreItem"
 
@@ -64,14 +66,24 @@ export const PlayerAbilitiesStore = () => {
         },
     )
 
-    const countdown = useMemo(() => {
+    const timeLeft = useMemo(() => {
         if (nextRefreshTime) {
-            return <Countdown key={nextRefreshTime.getMilliseconds()} dateTo={nextRefreshTime} />
+            return (
+                <Typography sx={{ color: colors.lightNeonBlue, fontFamily: fonts.nostromoBold }}>
+                    <TimeLeft key={nextRefreshTime.getMilliseconds()} dateTo={nextRefreshTime} />
+                </Typography>
+            )
         }
+
         if (saleAbilities.length > 0) {
-            return <Countdown key={saleAbilities[0].available_until?.getMilliseconds()} dateTo={saleAbilities[0].available_until} />
+            return (
+                <Typography sx={{ color: colors.lightNeonBlue, fontFamily: fonts.nostromoBold }}>
+                    <TimeLeft key={saleAbilities[0].available_until?.getMilliseconds()} dateTo={saleAbilities[0].available_until} />
+                </Typography>
+            )
         }
-        return <Typography>Less than an hour</Typography>
+
+        return <Typography sx={{ color: colors.lightNeonBlue, fontFamily: fonts.nostromoBold }}>Less than an hour</Typography>
     }, [nextRefreshTime, saleAbilities])
 
     const content = useMemo(() => {
@@ -116,28 +128,37 @@ export const PlayerAbilitiesStore = () => {
         }
 
         return (
-            <Box
-                sx={{
-                    display: "flex",
-                    height: "100%",
-                    alignItems: "center",
-                    justifyContent: "center",
-                }}
-            >
-                <Typography
-                    sx={{
-                        px: "1.28rem",
-                        pt: "1.28rem",
-                        color: colors.grey,
-                        fontFamily: fonts.nostromoBold,
-                        userSelect: "text !important",
-                        opacity: 0.9,
-                        textAlign: "center",
-                    }}
-                >
-                    There are no abilities on sale at this time, come back later.
-                </Typography>
-            </Box>
+            <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", maxWidth: "43rem" }}>
+                    <Box
+                        sx={{
+                            width: "9rem",
+                            height: "9rem",
+                            opacity: 0.6,
+                            filter: "grayscale(100%)",
+                            border: "#FFFFFF10 1px solid",
+                            background: `url(${PlayerAbilityPNG})`,
+                            backgroundRepeat: "no-repeat",
+                            backgroundPosition: "top center",
+                            backgroundSize: "contain",
+                        }}
+                    />
+
+                    <Typography
+                        sx={{
+                            px: "1.28rem",
+                            pt: "1.28rem",
+                            color: colors.grey,
+                            fontFamily: fonts.nostromoBold,
+                            userSelect: "text !important",
+                            opacity: 0.9,
+                            textAlign: "center",
+                        }}
+                    >
+                        There are no abilities on sale at this time, come back later.
+                    </Typography>
+                </Stack>
+            </Stack>
         )
     }, [isLoaded, priceMap, amountMap, saleAbilities])
 
@@ -165,9 +186,10 @@ export const PlayerAbilitiesStore = () => {
                 }}
             >
                 <PageHeader
+                    imageUrl={PlayerAbilityPNG}
                     title="PLAYER ABILITIES"
                     description="Player abilities are abilities that can be bought and used on the battle arena. The price of a player ability is determined by how
-                            active it is at any given time. When players buy an ability, its price will go up. If an ability is not being bought, its price will
+                            active it is at any given time. When players buy an ability, its price will go up, and if an ability is not being bought, its price will
                             go down."
                 >
                     <FancyButton
@@ -186,10 +208,11 @@ export const PlayerAbilitiesStore = () => {
                         }}
                     >
                         <Typography
-                            variant="body2"
+                            variant="caption"
                             sx={{
                                 color: theme.factionTheme.secondary,
                                 whiteSpace: "nowrap",
+                                fontFamily: fonts.nostromoBlack,
                             }}
                         >
                             VIEW OWNED ABILITIES
@@ -197,9 +220,9 @@ export const PlayerAbilitiesStore = () => {
                     </FancyButton>
                 </PageHeader>
 
-                <Stack direction="row" spacing="1rem" alignItems="center" justifyContent="end" py="2rem" px="4rem">
-                    <Typography variant="body1">Next refresh in:</Typography>
-                    {countdown}
+                <Stack direction="row" spacing=".6rem" alignItems="center" sx={{ ml: "3rem", mt: "2rem", mb: ".6rem" }}>
+                    <Typography sx={{ fontFamily: fonts.nostromoBlack }}>Next refresh in:</Typography>
+                    {timeLeft}
                 </Stack>
 
                 <Stack
@@ -242,4 +265,9 @@ export const PlayerAbilitiesStore = () => {
             </Stack>
         </ClipThing>
     )
+}
+
+const TimeLeft = ({ dateTo }: { dateTo: Date | undefined }) => {
+    const { totalSecRemain } = useTimer(dateTo)
+    return <>{timeSinceInWords(new Date(), new Date(new Date().getTime() + totalSecRemain * 1000))}</>
 }

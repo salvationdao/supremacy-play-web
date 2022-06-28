@@ -37,7 +37,7 @@ export const ProgressBar = ({
                                 left: `${linePercent - 2.5}%`,
                                 height: "100%",
                                 width: 3,
-                                backgroundColor: colors.lightRed,
+                                backgroundColor: colors.orange,
                                 zIndex: 6,
                             }}
                         />
@@ -64,7 +64,7 @@ export const ProgressBar = ({
                             bottom: `${linePercent - 2.5}%`,
                             height: 3,
                             width: "100%",
-                            backgroundColor: colors.lightRed,
+                            backgroundColor: colors.orange,
                             zIndex: 6,
                         }}
                     />
