@@ -3,7 +3,7 @@ import React, { useMemo } from "react"
 import { ClipThing, TooltipHelper } from "../.."
 import { SvgGlobal, SvgLine, SvgMicrochip, SvgQuestionMark, SvgTarget } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
-import { fonts } from "../../../theme/theme"
+import { colors, fonts } from "../../../theme/theme"
 import { LocationSelectType, PlayerAbility } from "../../../types"
 
 export interface PlayerAbilityHangarItemProps {
@@ -46,21 +46,16 @@ export const PlayerAbilityHangarItem = ({ playerAbility }: PlayerAbilityHangarIt
                 },
             }}
         >
-            <Stack
-                sx={{
-                    height: "100%",
-                    p: "1.5rem",
-                }}
-            >
-                <Stack direction="row" spacing="1.5rem" mb="1rem">
+            <Stack sx={{ height: "100%", px: "1.5rem", pt: "1.2rem", pb: ".6rem" }}>
+                <Stack direction="row" spacing="1.2rem" mb="1rem">
                     <ClipThing
                         corners={{
                             topLeft: true,
                         }}
                         sx={{
                             position: "relative",
-                            width: "100px",
-                            height: "100px",
+                            width: "10rem",
+                            height: "10rem",
                         }}
                     >
                         <Box
@@ -72,62 +67,41 @@ export const PlayerAbilityHangarItem = ({ playerAbility }: PlayerAbilityHangarIt
                                 width: "100%",
                             }}
                         />
-                        <TooltipHelper text={abilityTypeDescription}>
-                            <Box
+                        <TooltipHelper text={abilityTypeDescription} placement="bottom-start">
+                            <Stack
+                                justifyContent="center"
+                                alignItems="center"
                                 sx={{
                                     position: "absolute",
                                     right: 0,
                                     bottom: 0,
-                                    display: "flex",
                                     height: "3rem",
                                     width: "3rem",
-                                    justifyContent: "center",
-                                    alignItems: "center",
                                     backgroundColor: "rgba(0, 0, 0, 0.6)",
                                     "& div": {
-                                        padding: 0,
+                                        p: 0,
                                     },
                                 }}
                             >
                                 {abilityTypeIcon}
-                            </Box>
+                            </Stack>
                         </TooltipHelper>
                     </ClipThing>
-                    <Stack
-                        sx={{
-                            flex: 1,
-                            px: ".4rem",
-                            py: ".3rem",
-                        }}
-                    >
-                        <Typography gutterBottom variant="h4" sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack }}>
+
+                    <Stack sx={{ flex: 1 }}>
+                        <Typography gutterBottom variant="h5" sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack }}>
                             {playerAbility.ability.label}
                         </Typography>
-                        <TooltipHelper text={playerAbility.ability.description}>
-                            <Typography
-                                sx={{
-                                    overflowY: "hidden",
-                                    display: "-webkit-box",
-                                    WebkitLineClamp: 2,
-                                    WebkitBoxOrient: "vertical",
-                                    fontSize: "2.1rem",
-                                }}
-                            >
-                                {playerAbility.ability.description}
-                            </Typography>
-                        </TooltipHelper>
+
+                        <Typography variant="h6">{playerAbility.ability.description}</Typography>
                     </Stack>
                 </Stack>
-                <Stack direction="row" justifyContent="space-between" mt="auto">
-                    <Typography
-                        variant="h6"
-                        sx={{
-                            color: theme.palette.warning.light,
-                        }}
-                    >
+
+                <Box sx={{ mt: "auto" }}>
+                    <Typography variant="caption" sx={{ textAlign: "end", color: colors.neonBlue, fontFamily: fonts.nostromoBlack }}>
                         {playerAbility.count} in inventory
                     </Typography>
-                </Stack>
+                </Box>
             </Stack>
         </ClipThing>
     )
