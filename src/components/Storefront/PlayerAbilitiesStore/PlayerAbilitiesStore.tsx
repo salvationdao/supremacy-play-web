@@ -69,7 +69,7 @@ export const PlayerAbilitiesStore = () => {
     const timeLeft = useMemo(() => {
         if (nextRefreshTime) {
             return (
-                <Typography variant="body2" sx={{ color: colors.lightNeonBlue, fontFamily: fonts.nostromoBold }}>
+                <Typography sx={{ color: colors.lightNeonBlue, fontFamily: fonts.nostromoBold }}>
                     <TimeLeft key={nextRefreshTime.getMilliseconds()} dateTo={nextRefreshTime} />
                 </Typography>
             )
@@ -77,17 +77,13 @@ export const PlayerAbilitiesStore = () => {
 
         if (saleAbilities.length > 0) {
             return (
-                <Typography variant="body2" sx={{ color: colors.lightNeonBlue, fontFamily: fonts.nostromoBold }}>
+                <Typography sx={{ color: colors.lightNeonBlue, fontFamily: fonts.nostromoBold }}>
                     <TimeLeft key={saleAbilities[0].available_until?.getMilliseconds()} dateTo={saleAbilities[0].available_until} />
                 </Typography>
             )
         }
 
-        return (
-            <Typography variant="body2" sx={{ color: colors.lightNeonBlue, fontFamily: fonts.nostromoBold }}>
-                Less than an hour
-            </Typography>
-        )
+        return <Typography sx={{ color: colors.lightNeonBlue, fontFamily: fonts.nostromoBold }}>Less than an hour</Typography>
     }, [nextRefreshTime, saleAbilities])
 
     const content = useMemo(() => {
@@ -224,10 +220,8 @@ export const PlayerAbilitiesStore = () => {
                     </FancyButton>
                 </PageHeader>
 
-                <Stack direction="row" spacing=".6rem" alignItems="center" sx={{ px: "1.8rem", py: "1.2rem" }}>
-                    <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack }}>
-                        Next refresh in:
-                    </Typography>
+                <Stack direction="row" spacing=".6rem" alignItems="center" sx={{ ml: "3rem", mt: "1.8rem" }}>
+                    <Typography sx={{ fontFamily: fonts.nostromoBlack }}>Next refresh in:</Typography>
                     {timeLeft}
                 </Stack>
 
