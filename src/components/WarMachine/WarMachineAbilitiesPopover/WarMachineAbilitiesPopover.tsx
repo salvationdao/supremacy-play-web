@@ -6,6 +6,7 @@ import { Faction, GameAbility, WarMachineState } from "../../../types"
 import { ContributorAmount } from "../../BattleStats/ContributorAmount"
 import { MechMoveCommandCard } from "./MechMoveCommandCard"
 import { useAuth } from "../../../containers"
+import { STAGING_OR_DEV_ONLY } from "../../../constants"
 
 interface WarMachineAbilitiesPopoverProps {
     popoverRef: React.MutableRefObject<null>
@@ -97,7 +98,7 @@ export const WarMachineAbilitiesPopover = ({
                                 </Box>
                             ))}
 
-                            {warMachine.ownedByID === userID && (
+                            {STAGING_OR_DEV_ONLY && warMachine.ownedByID === userID && (
                                 <MechMoveCommandCard warMachine={warMachine} faction={faction} clipSlantSize="5px" onClose={onClose} />
                             )}
                         </Stack>
