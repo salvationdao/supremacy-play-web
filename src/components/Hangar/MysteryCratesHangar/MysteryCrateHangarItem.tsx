@@ -72,23 +72,24 @@ export const MysteryCrateHangarItem = ({ crate }: MysteryCrateStoreItemProps) =>
                                 height: "20rem",
                             }}
                         >
-                            <MediaPreview imageUrl={crate.image_url || SafePNG} videoUrls={[crate.animation_url, crate.card_animation_url]} />
+                            <MediaPreview imageUrl={crate.image_url || SafePNG} videoUrls={[crate.animation_url, crate.card_animation_url]} objectFit="cover" />
 
-                            {new Date() < crate.locked_until && (
-                                <Stack
-                                    alignItems="center"
-                                    sx={{
-                                        position: "absolute",
-                                        bottom: "-.2rem",
-                                        width: "100%",
-                                        px: ".8rem",
-                                        py: ".5rem",
-                                        backgroundColor: "#00000010",
-                                    }}
-                                >
-                                    <Countdown dateTo={crate.locked_until} />
-                                </Stack>
-                            )}
+                            {/*{new Date() < crate.locked_until && (*/}
+                            <Stack
+                                alignItems="center"
+                                sx={{
+                                    position: "absolute",
+                                    bottom: "-.2rem",
+                                    width: "100%",
+                                    px: ".8rem",
+                                    py: ".5rem",
+                                    background: `linear-gradient(#000000CC 26%, #000000)`,
+                                    borderRadius: 0.5,
+                                }}
+                            >
+                                <Countdown dateTo={crate.locked_until} />
+                            </Stack>
+                            {/*)}*/}
                         </Box>
 
                         <Stack sx={{ flex: 1, px: ".4rem", py: ".3rem" }}>
@@ -155,9 +156,9 @@ export const MysteryCrateHangarItem = ({ crate }: MysteryCrateStoreItemProps) =>
 }
 
 const Countdown = ({ dateTo }: { dateTo: Date | undefined }) => {
-    const { days, hours, minutes, seconds } = useTimer(dateTo)
+    const { days, hours, minutes, seconds, totalSecRemain } = useTimer(dateTo)
 
-    if (seconds === undefined) return null
+    if (seconds === undefined || totalSecRemain <= 0) return null
 
     return (
         <Stack direction="row">

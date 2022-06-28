@@ -14,9 +14,10 @@ interface ConfirmModalProps {
     error?: string
     confirmPrefix?: ReactNode
     confirmSuffix?: ReactNode
+    disableConfirm?: boolean
 }
 
-export const ConfirmModal = ({ title, children, onConfirm, onClose, isLoading, error, confirmPrefix, confirmSuffix }: ConfirmModalProps) => {
+export const ConfirmModal = ({ title, children, onConfirm, onClose, isLoading, error, confirmPrefix, confirmSuffix, disableConfirm }: ConfirmModalProps) => {
     const theme = useTheme()
 
     return (
@@ -87,6 +88,7 @@ export const ConfirmModal = ({ title, children, onConfirm, onClose, isLoading, e
                             </FancyButton>
 
                             <FancyButton
+                                disabled={disableConfirm}
                                 loading={isLoading}
                                 clipThingsProps={{
                                     clipSize: "5px",

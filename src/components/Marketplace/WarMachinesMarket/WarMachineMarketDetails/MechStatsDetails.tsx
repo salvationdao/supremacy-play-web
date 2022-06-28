@@ -1,21 +1,18 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { ClipThing } from "../../.."
 import { SvgStats, SvgIntroAnimation, SvgOutroAnimation, SvgPowerCore, SvgSkin, SvgUtilities, SvgWeapons } from "../../../../assets"
+import { useTheme } from "../../../../containers/theme"
 import { colors, fonts } from "../../../../theme/theme"
 import { MechDetails } from "../../../../types"
 import { MechBarStats } from "../../../Hangar/WarMachinesHangar/WarMachineHangarItem/MechBarStats"
 
-export const MechStatsDetails = ({
-    mechDetails,
-    primaryColor,
-    backgroundColor,
-}: {
-    mechDetails?: MechDetails
-    primaryColor: string
-    backgroundColor: string
-}) => {
+export const MechStatsDetails = ({ mechDetails }: { mechDetails?: MechDetails }) => {
+    const theme = useTheme()
+
     if (!mechDetails) return null
 
+    const primaryColor = theme.factionTheme.primary
+    const backgroundColor = theme.factionTheme.background
     const { weapon_hardpoints, utility_slots, chassis_skin_id, intro_animation_id, outro_animation_id, power_core_id } = mechDetails
 
     const chassisSkin = mechDetails?.chassis_skin
