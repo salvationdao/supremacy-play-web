@@ -37,7 +37,6 @@ export const MysteryCratesHangar = () => {
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
     const [crateOpen, setCrateOpen] = useState(false)
-    //change any meh
     const [crateReward, setCrateReward] = useState<OpenCrateResponse>()
 
     const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({

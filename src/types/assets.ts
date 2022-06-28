@@ -141,6 +141,7 @@ export interface BlueprintMechSkin extends Collection {
 }
 
 export interface MechSkin extends Collection {
+    id: string
     label: string
     image_url?: string
     animation_url?: string

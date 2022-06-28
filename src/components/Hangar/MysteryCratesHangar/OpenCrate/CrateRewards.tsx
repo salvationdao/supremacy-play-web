@@ -1,4 +1,4 @@
-import { Box, IconButton, Stack, Typography } from "@mui/material"
+import { Box, Button, IconButton, Stack, Typography } from "@mui/material"
 import { useLocation } from "react-router-dom"
 import { SvgClose } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
@@ -14,11 +14,67 @@ interface CrateRewardsProps {
     onClose?: () => void
 }
 
+interface ArrayItem {
+    id: string | undefined
+    imageUrl: string | undefined
+    type: string | undefined
+    animationUrl: string | undefined
+    avatarUrl: string | undefined
+    label: string | undefined
+    rarity?: string | undefined
+}
+
 export const CrateRewards = ({ rewards, onClose }: CrateRewardsProps) => {
     const theme = useTheme()
     const location = useLocation()
+    const [arrayItems, setArrayItems] = useState<ArrayItem[]>([])
 
     // const isMech = useMemo(() => rewards.find((reward) => reward.label === "MECH"), [rewards])
+
+    useEffect(() => {
+        if (!rewards.mech) return
+        const mech: ArrayItem = {
+            id: rewards.mech.id,
+            imageUrl: rewards.mech.image_url,
+            type: rewards.mech.item_type,
+            animationUrl: rewards.mech.animation_url,
+            avatarUrl: rewards.mech.avatar_url,
+            label: rewards.mech.label,
+        }
+        setArrayItems([...arrayItems, mech])
+
+        const mechSkin: ArrayItem = {
+            id: rewards.mech_skin?.id,
+            imageUrl: rewards.mech_skin?.image_url,
+            type: rewards.mech_skin?.item_type,
+            animationUrl: rewards.mech_skin?.animation_url,
+            avatarUrl: rewards.mech_skin?.avatar_url,
+            label: rewards.mech_skin?.label,
+        }
+        setArrayItems([...arrayItems, mechSkin])
+
+        rewards.weapon.map((w) => {
+            const weapon: ArrayItem = {
+                id: w.id,
+                imageUrl: w.image_url,
+                type: w.item_type,
+                animationUrl: w.animation_url,
+                avatarUrl: w.avatar_url,
+                label: w.label,
+            }
+            setArrayItems([...arrayItems, weapon])
+        })
+
+        // const powercore: CarouselArrayItem = {
+        //      id: rewards.power_core?.id,
+        //     imageUrl: rewards.power_core?.image_url,
+        //     type: rewards.power_core?.item_type,
+        //     animationUrl: rewards.power_core?.animation_url,
+        //     avatarUrl: rewards.power_core?.avatar_url,
+        //     label: rewards.power_core?.label,
+        // }
+        //setCarousel([...carousel, powercore])
+    }, [rewards])
 
     return (
         <ClipThing
@@ -39,28 +95,11 @@ export const CrateRewards = ({ rewards, onClose }: CrateRewardsProps) => {
                     You have received:
                 </Typography>
 
-                <Stack direction={"row"}>
-                    {rewards.mech && <CrateItem imageUrl={rewards.mech.image_url} label={rewards.mech.label} />}
-                    <Stack>
-                        {rewards.mech_skin && (
-                            <CrateItem
-                                direction={"row"}
-                                imageUrl={rewards.mech_skin.image_url}
-                                label={rewards.mech_skin.label + " Submodule"}
-                                tier={rewards.mech_skin?.tier}
-                            />
-                        )}
-                        {rewards.weapon && rewards.weapon.map((w) => <CrateItem key={w.id} direction={"row"} imageUrl={w.image_url} label={w.label} />)}
-                        {rewards.weapon_skin && (
-                            <CrateItem
-                                direction={"row"}
-                                imageUrl={rewards.weapon_skin.image_url}
-                                label={rewards.weapon_skin.label + "Submodule"}
-                                tier={rewards.mech_skin?.tier}
-                            />
-                        )}
-                    </Stack>
-                </Stack>
+                {rewards.mech ? (
+                    <MechCrateRewards items={arrayItems} />
+                ) : (
+                    arrayItems.map((item) => <CrateItem key={item.id} sizeCI={"large"} label={item.label} />)
+                )}
 
                 <FancyButton
                     clipThingsProps={{
@@ -94,13 +133,30 @@ export const CrateRewards = ({ rewards, onClose }: CrateRewardsProps) => {
     )
 }
 
-interface CrateItemProps {
-    direction?: "row" | "column"
+const MechCrateRewards = ({ items }: { items: ArrayItem[] }) => {
+    const largeItem = items.filter((item) => (item.type = "mech"))
+    return (
+        <Stack direction={"row"}>
+            <CrateItem sizeCI="large" label={largeItem[0].label} imageUrl={largeItem[0].imageUrl} videoUrl={largeItem[0].animationUrl} />
+            <Stack>
+                {items.map((item) => (
+                    <CrateItem sizeCI="small" key={item.id} label={item.label} avatarUrl={item.avatarUrl} />
+                ))}
+            </Stack>
+        </Stack>
+    )
+}
+
+interface CrateItemLargeProps {
+    sizeCI: "large" | "small"
     label: string | undefined
     imageUrl?: string | undefined
+    videoUrl?: string | undefined
+    avatarUrl?: string | undefined
     tier?: string | undefined
 }
-const CrateItem = ({ label, imageUrl, tier, direction = "column" }: CrateItemProps) => {
+
+const CrateItem = ({ sizeCI, label, imageUrl, avatarUrl, tier }: CrateItemLargeProps) => {
     const [rarityDeets, setRarityDeets] = useState<{
         label: string
         color: string
@@ -111,8 +167,13 @@ const CrateItem = ({ label, imageUrl, tier, direction = "column" }: CrateItemPro
     }, [setRarityDeets, getRarityDeets, tier])
 
     return (
-        <Stack direction={direction} alignItems={"center"} spacing="1rem" sx={{ flex: 1 }}>
-            <Box component={"img"} src={imageUrl} alt={label} sx={{ width: "55%", height: "auto", objectFit: "contain", objectPosition: "center" }} />
+        <Stack direction={sizeCI === "large" ? "column" : "row"} alignItems={"center"} spacing="1rem" sx={{ flex: 1 }}>
+            <Box
+                component={"img"}
+                src={sizeCI === "large" ? imageUrl : avatarUrl}
+                alt={label}
+                sx={{ width: sizeCI === "large" ? "15rem" : "5rem", height: "auto", objectFit: "contain", objectPosition: "center" }}
+            />
             <Stack>
                 <Typography variant="h5" sx={{ fontFamily: fonts.nostromoBlack }}>
                     {label}
