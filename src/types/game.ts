@@ -113,6 +113,8 @@ export interface BlueprintPlayerAbility {
 }
 
 export interface PlayerAbility {
+    id: string
+    blueprint_id: string
     count: number
     last_purchased_at: Date
     ability: BlueprintPlayerAbility
@@ -122,6 +124,8 @@ export interface SaleAbility {
     id: string
     current_price: string
     available_until?: Date
+    sale_limit: number
+    amount_sold: number
     ability: BlueprintPlayerAbility
 }
 

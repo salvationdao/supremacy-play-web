@@ -1,13 +1,11 @@
-import { Box, Button, Stack, Typography } from "@mui/material"
+import { Box, Stack, Typography } from "@mui/material"
 import { Enlist, Logo, ProfileCard, WalletDetails } from ".."
 import { SvgDisconnected } from "../../assets"
-import { DEV_ONLY, DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT } from "../../constants"
+import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT } from "../../constants"
 import { useAuth, useSupremacy } from "../../containers"
-import { useToggle } from "../../hooks"
 import { fonts, siteZIndex } from "../../theme/theme"
 import { User } from "../../types"
 import { HowToPlay } from "../HowToPlay/HowToPlay"
-import { SaleAbilitiesModal } from "../PlayerAbilities/SaleAbilitiesModal"
 
 export const Bar = () => {
     const { userID, user } = useAuth()
@@ -48,7 +46,6 @@ export const Bar = () => {
 
 const BarContent = ({ userID, user }: { userID?: string; user: User }) => {
     const { isServerUp } = useSupremacy()
-    const [showSaleAbilities, toggleShowSaleAbilities] = useToggle()
 
     if (isServerUp === false) {
         return (
@@ -74,12 +71,9 @@ const BarContent = ({ userID, user }: { userID?: string; user: User }) => {
                 <>
                     <Enlist />
                     <WalletDetails />
-                    {DEV_ONLY && <Button onClick={() => toggleShowSaleAbilities(true)}>Purchase Abilities</Button>}
                 </>
             )}
             <ProfileCard userID={userID} user={user} />
-
-            {showSaleAbilities && <SaleAbilitiesModal open={showSaleAbilities} onClose={() => toggleShowSaleAbilities(false)} />}
         </>
     )
 }

@@ -133,7 +133,7 @@ export const MysteryCrateHangarItem = ({ crate }: MysteryCrateStoreItemProps) =>
     )
 }
 
-const Countdown = ({ dateTo }: { dateTo: Date | undefined }) => {
+export const Countdown = ({ dateTo }: { dateTo: Date | undefined }) => {
     const { days, hours, minutes, seconds } = useTimer(dateTo)
 
     if (seconds === undefined) return null
