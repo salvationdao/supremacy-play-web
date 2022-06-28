@@ -166,11 +166,6 @@ const MechCommandButton = ({
     const { setPlayerAbility } = useMiniMap()
     const { totalSecRemain } = useTimer(new Date(new Date().getTime() + remainCooldownSeconds * 1000))
 
-    const text = useMemo(() => {
-        if (isMoving && !isCancelled) return "CANCEL"
-        return "ACTIVATE"
-    }, [isMoving, isCancelled])
-
     const onActivate = useCallback(() => {
         setPlayerAbility({
             id: "mech_move_command",
@@ -209,7 +204,7 @@ const MechCommandButton = ({
                 border: { isFancy: true, borderColor: color || "#14182B" },
                 sx: { flex: 1, position: "relative", width: "100%" },
             }}
-            disabled={totalSecRemain > 0 && isCancelled}
+            disabled={totalSecRemain > 0 || isCancelled}
             sx={{ py: ".45rem", minWidth: "2rem" }}
             onClick={onClick}
         >
@@ -223,7 +218,7 @@ const MechCommandButton = ({
                         color: isMoving ? primaryColor : secondaryColor,
                     }}
                 >
-                    {text}
+                    {isMoving ? "CANCEL" : "ACTIVATE"}
                 </Typography>
             </Stack>
         </FancyButton>
