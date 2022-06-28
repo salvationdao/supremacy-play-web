@@ -1,7 +1,6 @@
 export * from "./auth"
 export * from "./bar"
 export * from "./chat"
-export * from "./consumables"
 export * from "./dimension"
 export * from "./game"
 export * from "./minimap"
