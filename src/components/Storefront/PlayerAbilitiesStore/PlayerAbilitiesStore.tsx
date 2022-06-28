@@ -220,7 +220,7 @@ export const PlayerAbilitiesStore = () => {
                     </FancyButton>
                 </PageHeader>
 
-                <Stack direction="row" spacing=".6rem" alignItems="center" sx={{ ml: "3rem", mt: "1.8rem" }}>
+                <Stack direction="row" spacing=".6rem" alignItems="center" sx={{ ml: "3rem", mt: "2rem", mb: ".6rem" }}>
                     <Typography sx={{ fontFamily: fonts.nostromoBlack }}>Next refresh in:</Typography>
                     {timeLeft}
                 </Stack>

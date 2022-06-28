@@ -1,7 +1,7 @@
 import { Box, Fade, keyframes, Stack, Typography } from "@mui/material"
-import { useCallback, useState } from "react"
-import { FancyButton } from "../.."
-import { SvgSupToken } from "../../../assets"
+import { useCallback, useMemo, useState } from "react"
+import { FancyButton, TooltipHelper } from "../.."
+import { SvgGlobal, SvgLine, SvgMicrochip, SvgQuestionMark, SvgSupToken, SvgTarget } from "../../../assets"
 import { useSnackbar } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { numberCommaFormatter, supFormatter } from "../../../helpers"
@@ -9,7 +9,7 @@ import { useToggle } from "../../../hooks"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { SaleAbility } from "../../../types"
+import { LocationSelectType, SaleAbility } from "../../../types"
 import { ClipThing } from "../../Common/ClipThing"
 import { ConfirmModal } from "../../Common/ConfirmModal"
 
@@ -33,6 +33,21 @@ export const PlayerAbilityStoreItem = ({ saleAbility, updatedPrice, totalAmount,
     const [showPurchaseModal, toggleShowPurchaseModal] = useToggle(false)
     const [purchaseLoading, setPurchaseLoading] = useState(false)
     const [purchaseError, setPurchaseError] = useState<string>()
+
+    const [abilityTypeIcon, abilityTypeDescription] = useMemo(() => {
+        switch (saleAbility.ability.location_select_type) {
+            case LocationSelectType.GLOBAL:
+                return [<SvgGlobal key={LocationSelectType.GLOBAL} />, "This ability will affect all units on the map."]
+            case LocationSelectType.LOCATION_SELECT:
+                return [<SvgTarget key={LocationSelectType.LOCATION_SELECT} />, "This ability will target a specific location on the map."]
+            case LocationSelectType.MECH_SELECT:
+                return [<SvgMicrochip key={LocationSelectType.MECH_SELECT} />, "This ability will target a specific mech on the map."]
+            case LocationSelectType.LINE_SELECT:
+                return [<SvgLine key={LocationSelectType.LINE_SELECT} />, "This ability will target a straight line on the map."]
+        }
+
+        return [<SvgQuestionMark key="MISCELLANEOUS" />, "Miscellaneous ability type."]
+    }, [saleAbility])
 
     const onPurchase = useCallback(async () => {
         try {
@@ -74,7 +89,7 @@ export const PlayerAbilityStoreItem = ({ saleAbility, updatedPrice, totalAmount,
             >
                 <Fade in={true} timeout={1000}>
                     <Stack
-                        spacing="1rem"
+                        spacing=".8rem"
                         sx={{
                             height: "100%",
                             p: "4rem",
@@ -93,13 +108,33 @@ export const PlayerAbilityStoreItem = ({ saleAbility, updatedPrice, totalAmount,
                                 sx={{
                                     width: "100%",
                                     objectFit: "contain",
-                                    border: `1px solid ${primaryColor}`,
+                                    border: `1.5px solid ${primaryColor}20`,
                                 }}
                             />
+
+                            <TooltipHelper text={abilityTypeDescription} placement="bottom">
+                                <Stack
+                                    justifyContent="center"
+                                    alignItems="center"
+                                    sx={{
+                                        position: "absolute",
+                                        top: ".6rem",
+                                        right: ".6rem",
+                                        height: "3rem",
+                                        width: "3rem",
+                                        "& div": {
+                                            p: 0,
+                                        },
+                                    }}
+                                >
+                                    {abilityTypeIcon}
+                                </Stack>
+                            </TooltipHelper>
+
                             <Box
                                 sx={{
                                     position: "absolute",
-                                    right: "1.4rem",
+                                    right: ".6rem",
                                     bottom: ".6rem",
                                     px: ".2rem",
                                     py: ".5rem",
@@ -122,17 +157,14 @@ export const PlayerAbilityStoreItem = ({ saleAbility, updatedPrice, totalAmount,
                             </Box>
                         </Box>
 
-                        <Typography variant="h4" sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack }}>
+                        <Typography variant="h5" sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack }}>
                             {saleAbility.ability.label}
                         </Typography>
-                        <Typography sx={{ fontSize: "2.1rem" }}>{saleAbility.ability.description}</Typography>
-                        <Box
-                            sx={{
-                                "&&": {
-                                    mt: "auto",
-                                },
-                            }}
-                        />
+
+                        <Typography variant="h6">{saleAbility.ability.description}</Typography>
+
+                        <Box sx={{ "&&": { mt: "auto" } }} />
+
                         <FancyButton
                             onClick={() => toggleShowPurchaseModal(true)}
                             clipThingsProps={{
@@ -140,6 +172,7 @@ export const PlayerAbilityStoreItem = ({ saleAbility, updatedPrice, totalAmount,
                                 backgroundColor: primaryColor,
                                 opacity: 1,
                                 border: { isFancy: true, borderColor: primaryColor, borderThickness: "1.5px" },
+                                sx: {},
                             }}
                             sx={{ px: "1.6rem", py: ".6rem" }}
                             disabled={amountLeft < 1}
@@ -152,7 +185,7 @@ export const PlayerAbilityStoreItem = ({ saleAbility, updatedPrice, totalAmount,
                                     color: theme.factionTheme.secondary,
                                 }}
                             >
-                                {amountLeft > 0 ? <>BUY FOR {supFormatter(updatedPrice, 2)} SUPS</> : <>OUT OF STOCK</>}
+                                {amountLeft > 0 ? `BUY FOR ${supFormatter(updatedPrice, 2)} SUPS` : "OUT OF STOCK"}
                             </Typography>
                         </FancyButton>
                     </Stack>

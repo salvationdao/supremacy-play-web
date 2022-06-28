@@ -77,7 +77,6 @@ export const PlayerAbilityHangarItem = ({ playerAbility }: PlayerAbilityHangarIt
                                     bottom: 0,
                                     height: "3rem",
                                     width: "3rem",
-                                    backgroundColor: "rgba(0, 0, 0, 0.6)",
                                     "& div": {
                                         p: 0,
                                     },
