@@ -197,6 +197,18 @@ export interface Weapon extends Collection {
     created_at: Date
 }
 
+export interface WeaponSkin extends Collection {
+    id: string
+    blueprint_id: string
+    owner_id: string
+    label: string
+    weapon_type: string
+    equipped_on?: string
+    tier: string
+    created_at: string
+    weapon_model_id: Date
+}
+
 export interface Utility extends Collection {
     id: string
     brand_id?: string
@@ -401,4 +413,12 @@ export interface RewardResponse {
     image_url: string
     locked_until: Date
     amount: string
+}
+
+export interface OpenCrateResponse {
+    mech?: MechDetails
+    power_core?: PowerCore
+    mech_skin?: MechSkin
+    weapon: Weapon[]
+    weapon_skin?: WeaponSkin
 }

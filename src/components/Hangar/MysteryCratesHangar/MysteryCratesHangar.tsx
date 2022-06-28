@@ -9,11 +9,12 @@ import { usePagination, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { MysteryCrate } from "../../../types"
+import { MysteryCrate, OpenCrateResponse } from "../../../types"
 import { PageHeader } from "../../Common/PageHeader"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { MysteryCrateStoreItemLoadingSkeleton } from "../../Storefront/MysteryCratesStore/MysteryCrateStoreItem/MysteryCrateStoreItem"
 import { MysteryCrateHangarItem } from "./MysteryCrateHangarItem"
+import { CrateRewards } from "./OpenCrate/CrateRewards"
 
 interface GetCratesRequest {
     page: number
@@ -35,6 +36,9 @@ export const MysteryCratesHangar = () => {
     const [crates, setCrates] = useState<MysteryCrate[]>()
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
+    const [crateOpen, setCrateOpen] = useState(false)
+    //change any meh
+    const [crateReward, setCrateReward] = useState<OpenCrateResponse>()
 
     const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({
         pageSize: parseString(query.get("pageSize"), 10),
@@ -72,6 +76,10 @@ export const MysteryCratesHangar = () => {
     useEffect(() => {
         getItems()
     }, [getItems])
+
+    useEffect(() => {
+        console.log(crateOpen, crateReward)
+    }, [crateOpen, crateReward])
 
     const content = useMemo(() => {
         if (loadError) {
@@ -113,9 +121,24 @@ export const MysteryCratesHangar = () => {
                         }}
                     >
                         {crates.map((crate, index) => (
-                            <MysteryCrateHangarItem key={`storefront-mystery-crate-${crate.id}-${index}`} crate={crate} />
+                            <MysteryCrateHangarItem
+                                key={`storefront-mystery-crate-${crate.id}-${index}`}
+                                crate={crate}
+                                setCrateReward={setCrateReward}
+                                setCrateOpen={setCrateOpen}
+                            />
                         ))}
                     </Box>
+                    {crateOpen && crateReward && (
+                        <Box sx={{ height: "70vh", width: "70vw", position: "absolute", left: "50%", top: "50%", transform: "translate(-50%, -50%)" }}>
+                            <CrateRewards
+                                rewards={crateReward}
+                                onClose={() => {
+                                    setCrateOpen(false)
+                                }}
+                            />
+                        </Box>
+                    )}
                 </Box>
             )
         }
@@ -184,7 +207,7 @@ export const MysteryCratesHangar = () => {
                 </Stack>
             </Stack>
         )
-    }, [crates, isLoading, loadError, location.hash, theme.factionTheme.primary, theme.factionTheme.secondary])
+    }, [crates, isLoading, loadError, location.hash, theme.factionTheme.primary, theme.factionTheme.secondary, crateReward, crateOpen])
 
     return (
         <ClipThing

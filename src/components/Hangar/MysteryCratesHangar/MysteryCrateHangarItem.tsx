@@ -5,7 +5,7 @@ import { useTheme } from "../../../containers/theme"
 import { useTimer } from "../../../hooks"
 import { MARKETPLACE_TABS } from "../../../pages"
 import { colors, fonts } from "../../../theme/theme"
-import { MysteryCrate } from "../../../types"
+import { OpenCrateResponse, MysteryCrate } from "../../../types"
 import { ItemType } from "../../../types/marketplace"
 import { ClipThing } from "../../Common/ClipThing"
 import { FancyButton } from "../../Common/FancyButton"
@@ -16,9 +16,11 @@ import { GameServerKeys } from "../../../keys"
 
 interface MysteryCrateStoreItemProps {
     crate: MysteryCrate
+    setCrateOpen: (value: ((prevState: boolean) => boolean) | boolean) => void
+    setCrateReward: (value: ((prevState: OpenCrateResponse | undefined) => OpenCrateResponse | undefined) | OpenCrateResponse | undefined) => void
 }
 
-export const MysteryCrateHangarItem = ({ crate }: MysteryCrateStoreItemProps) => {
+export const MysteryCrateHangarItem = ({ crate, setCrateOpen, setCrateReward }: MysteryCrateStoreItemProps) => {
     const location = useLocation()
     const theme = useTheme()
     const { send } = useGameServerCommandsFaction("/faction_commander")
@@ -30,18 +32,20 @@ export const MysteryCrateHangarItem = ({ crate }: MysteryCrateStoreItemProps) =>
     const openCrate = useCallback(async () => {
         try {
             //change these types obviously
-            const resp = await send<any, any>(GameServerKeys.OpenCrate, {
+            const resp = await send<OpenCrateResponse>(GameServerKeys.OpenCrate, {
                 id: crate.id,
             })
 
-            if (!resp) return
             console.log(resp)
+            if (!resp) return
+            setCrateReward(resp)
+            setCrateOpen(true)
         } catch (e) {
             const message = typeof e === "string" ? e : "Failed to get mystery crates."
             console.log(message)
             console.error(e)
         }
-    }, [send, crate.id])
+    }, [send, crate.id, setCrateOpen, setCrateReward])
 
     return (
         <>
