@@ -151,7 +151,7 @@ const MapMechInner = ({ warMachine, isEnlarged, map }: MapMechInnerProps) => {
                 }}
             >
                 {/* Show player ability icon above the mech */}
-                {playerAbility?.ability.location_select_type === LocationSelectType.MECH_SELECT && isMechHighligheted && (
+                {playerAbility?.ability.location_select_type === LocationSelectType.MECH_SELECT && selection?.mechHash === hash && (
                     <Box
                         onClick={() => setSelection(undefined)}
                         sx={{
@@ -361,9 +361,6 @@ const MapMechInner = ({ warMachine, isEnlarged, map }: MapMechInnerProps) => {
         mechMoveCommand?.cancelled_at,
         mechMoveCommand?.reached_at,
         participantID,
-        playerAbility?.ability.colour,
-        playerAbility?.ability.image_url,
-        playerAbility?.ability.location_select_type,
         position,
         primaryColor,
         rotation,
@@ -371,5 +368,8 @@ const MapMechInner = ({ warMachine, isEnlarged, map }: MapMechInnerProps) => {
         shield,
         warMachine.maxShield,
         wmImageUrl,
+        hash,
+        playerAbility,
+        selection?.mechHash,
     ])
 }
