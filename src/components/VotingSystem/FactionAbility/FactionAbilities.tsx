@@ -1,6 +1,6 @@
-import { Box, Fade, Divider, Stack, Typography } from "@mui/material"
+import { Box, Divider, Fade, Stack, Typography } from "@mui/material"
 import { FactionAbilityItem } from "../.."
-import { useSupremacy, useAuth } from "../../../containers"
+import { useAuth, useSupremacy } from "../../../containers"
 import { useGameServerSubscriptionAbilityFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
@@ -22,9 +22,8 @@ export const FactionAbilities = () => {
         <Fade in={true}>
             <Box>
                 <Divider sx={{ mb: "2rem", borderBottomWidth: ".25rem", borderColor: (theme) => theme.factionTheme.primary, opacity: 0.15 }} />
-
-                <Stack spacing=".8rem">
-                    <Stack direction="row" spacing=".48rem" alignItems="center">
+                <Stack spacing="1rem">
+                    <Stack direction="row" spacing=".8rem" alignItems="center">
                         {factionID && (
                             <Box
                                 sx={{

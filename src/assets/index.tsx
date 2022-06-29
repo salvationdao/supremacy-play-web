@@ -151,6 +151,7 @@ import SupremacyPNG from "./images/Supremacy.png"
 import RainingSupsPNG from "./images/supsRain.png"
 import TrailerThumbPNG from "./images/TrailerThumb.png"
 import WarMachineIconPNG from "./images/WarMachineIcon.png"
+import PlayerAbilityPNG from "./images/PlayerAbility.png"
 import ZaibatsuLogo from "./images/ZaibatsuLogo.png"
 
 export {
@@ -193,6 +194,7 @@ export {
     SafePNG,
     RainingSupsPNG,
     WarMachineIconPNG,
+    PlayerAbilityPNG,
 }
 
 export interface SvgWrapperProps extends BoxProps {

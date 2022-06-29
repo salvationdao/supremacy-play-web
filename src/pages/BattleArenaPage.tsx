@@ -17,7 +17,6 @@ import { TutorialModal } from "../components/HowToPlay/Tutorial/TutorialModal"
 import { QuickDeploy } from "../components/QuickDeploy/QuickDeploy"
 import { Trailer } from "../components/Stream/Trailer"
 import { DimensionProvider, GameProvider, OverlayTogglesProvider, StreamProvider, useAuth, useSupremacy } from "../containers"
-import { UserConsumablesProvider } from "../containers/consumables"
 import { MiniMapProvider } from "../containers/minimap"
 import { useToggle } from "../hooks"
 import { siteZIndex } from "../theme/theme"
@@ -30,15 +29,13 @@ export const BattleArenaPage = () => {
     return (
         <StreamProvider>
             <GameProvider>
-                <UserConsumablesProvider>
-                    <DimensionProvider>
-                        <OverlayTogglesProvider>
-                            <MiniMapProvider>
-                                <BattleArenaPageInner />
-                            </MiniMapProvider>
-                        </OverlayTogglesProvider>
-                    </DimensionProvider>
-                </UserConsumablesProvider>
+                <DimensionProvider>
+                    <OverlayTogglesProvider>
+                        <MiniMapProvider>
+                            <BattleArenaPageInner />
+                        </MiniMapProvider>
+                    </OverlayTogglesProvider>
+                </DimensionProvider>
             </GameProvider>
         </StreamProvider>
     )
@@ -46,7 +43,7 @@ export const BattleArenaPage = () => {
 
 const BattleArenaPageInner = () => {
     const { userID } = useAuth()
-    const { isServerUp, haveSups, mechDeployModalOpen, toggleMechDeployModalOpen } = useSupremacy()
+    const { isServerUp, haveSups, isQuickDeployOpen, toggleIsQuickDeployOpen } = useSupremacy()
     const [noSupsModalOpen, toggleNoSupsModalOpen] = useToggle(true)
     const [watchedTrailer, setWatchedTrailer] = useState(localStorage.getItem("watchedTrailer") == "true")
 
@@ -66,7 +63,7 @@ const BattleArenaPageInner = () => {
                             <BattleHistory />
                             <VotingSystem />
 
-                            {mechDeployModalOpen && <QuickDeploy open={mechDeployModalOpen} onClose={() => toggleMechDeployModalOpen(false)} />}
+                            {isQuickDeployOpen && <QuickDeploy open={isQuickDeployOpen} onClose={() => toggleIsQuickDeployOpen(false)} />}
                             {isServerUp && userID && haveSups === false && noSupsModalOpen && <NoSupsModal onClose={() => toggleNoSupsModalOpen(false)} />}
                             {userID && !noSupsModalOpen && <TutorialModal />}
                         </>

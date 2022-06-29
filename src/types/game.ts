@@ -23,6 +23,7 @@ export enum LocationSelectType {
     MECH_SELECT = "MECH_SELECT",
     LOCATION_SELECT = "LOCATION_SELECT",
     GLOBAL = "GLOBAL",
+    MECH_COMMAND = "MECH_COMMAND",
 }
 
 export interface Map {
@@ -108,20 +109,27 @@ export interface BlueprintPlayerAbility {
     image_url: string
     description: string
     text_colour: string
-    location_select_type: string
+    location_select_type: LocationSelectType
     created_at: Date
 }
 
 export interface PlayerAbility {
+    id: string
+    blueprint_id: string
     count: number
     last_purchased_at: Date
     ability: BlueprintPlayerAbility
+
+    // Used for mech command related abilities
+    mechHash?: string
 }
 
 export interface SaleAbility {
     id: string
     current_price: string
     available_until?: Date
+    sale_limit: number
+    amount_sold: number
     ability: BlueprintPlayerAbility
 }
 

@@ -1,13 +1,11 @@
-import { Box, Fade, Stack, Tab } from "@mui/material"
-import { TabProps } from "@mui/material/Tab"
+import { Box, Fade, Stack } from "@mui/material"
 import { useMemo } from "react"
 import { BattleAbilityItem, FactionAbilities, MoveableResizable } from ".."
-import { DEV_ONLY } from "../../constants"
+import { STAGING_OR_DEV_ONLY } from "../../constants"
 import { BribeStageResponse, useAuth, useGame } from "../../containers"
 import { useTheme } from "../../containers/theme"
-import { colors } from "../../theme/theme"
 import { MoveableResizableConfig } from "../Common/MoveableResizable/MoveableResizableContainer"
-import { PlayerAbilities } from "../PlayerAbilities/PlayerAbilities"
+import { PlayerAbilities } from "./PlayerAbilities/PlayerAbilities"
 
 export const VotingSystem = () => {
     const { userID } = useAuth()
@@ -39,7 +37,7 @@ const VotingSystemInner = ({ userID, bribeStage }: VotingSystemInnerProps) => {
             minWidth: 300,
             minHeight: 168,
             maxWidth: 500,
-            maxHeight: 600,
+            maxHeight: 900,
             // Others
             infoTooltipText: "Vote for game abilities and fight for your Syndicate!",
         }),
@@ -79,57 +77,12 @@ const VotingSystemInner = ({ userID, bribeStage }: VotingSystemInnerProps) => {
                             <Stack spacing="2rem" sx={{ direction: "ltr", py: ".4rem" }}>
                                 <BattleAbilityItem key={factionID} />
                                 <FactionAbilities />
-                                {DEV_ONLY && userID && <PlayerAbilities />}
+                                {STAGING_OR_DEV_ONLY && userID && <PlayerAbilities />}
                             </Stack>
                         </Box>
                     </Stack>
                 </MoveableResizable>
             </Box>
         </Fade>
-    )
-}
-
-interface TabButtonProps extends TabProps {
-    backgroundColor: string
-    borderColor: string
-}
-
-export const TabButton = ({ backgroundColor, borderColor, ...props }: TabButtonProps) => {
-    return (
-        <Tab
-            sx={{
-                color: colors.grey,
-                "&.MuiButtonBase-root": {
-                    minHeight: 0,
-                    padding: ".5rem 1rem",
-                    border: `1px solid ${borderColor}`,
-                    backgroundColor,
-                },
-                "&.Mui-selected": {
-                    color: borderColor,
-                    borderBottom: `1px solid ${backgroundColor}`,
-                },
-                "&.Mui-focusVisible": {
-                    backgroundColor: "orangered",
-                },
-            }}
-            {...props}
-        />
-    )
-}
-
-interface TabPanelProps {
-    children?: React.ReactNode
-    index: number
-    value: number
-}
-
-export const TabPanel = (props: TabPanelProps) => {
-    const { children, value, index, ...other } = props
-
-    return (
-        <div role="tabpanel" hidden={value !== index} id={`simple-tabpanel-${index}`} aria-labelledby={`simple-tab-${index}`} {...other}>
-            {value === index && children}
-        </div>
     )
 }

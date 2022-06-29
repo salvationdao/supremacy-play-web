@@ -1,16 +1,14 @@
-import { Box, Stack, Typography } from "@mui/material"
-import { useGesture } from "@use-gesture/react"
-import moment from "moment"
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { FancyButton, MapWarMachines, SelectionIcon } from ".."
+import { Box, Stack } from "@mui/material"
+import { useCallback, useMemo, useRef } from "react"
+import { MapMechs, SelectionIcon } from ".."
 import { Crosshair } from "../../assets"
-import { Severity } from "../../containers"
-import { useInterval, useToggle } from "../../hooks"
-import { useGameServerCommandsFaction } from "../../hooks/useGameServer"
-import { GameServerKeys } from "../../keys"
-import { colors, fonts } from "../../theme/theme"
-import { CellCoords, Dimension, Faction, GameAbility, LocationSelectType, Map, PlayerAbility, WarMachineState } from "../../types"
+import { useGame, useMiniMap } from "../../containers"
+import { CellCoords, Dimension, LocationSelectType } from "../../types"
+import { CountdownSubmit } from "./MapInsideItems/CountdownSubmit"
+import { DisabledCells } from "./MapInsideItems/DisabledCells"
 import { LineSelect } from "./MapInsideItems/LineSelect"
+import { MechCommandIcons } from "./MapInsideItems/MapIcon/MechCommandIcons"
+import { useMiniMapGestures } from "./useMiniMapGestures"
 
 export interface MapSelection {
     // start coords (used for LINE_SELECT and LOCATION_SELECT abilities)
@@ -21,139 +19,20 @@ export interface MapSelection {
     mechHash?: string
 }
 
-interface PropsInner {
-    gameAbility?: GameAbility
+interface MiniMapInsideProps {
     containerDimensions: Dimension
-    // useAuth
-    userID?: string
-    factionID?: string
-    // useGame
-    map?: Map
-    warMachines?: WarMachineState[]
-    // useSupremacy
-    getFaction: (factionID: string) => Faction
-    // useMiniMap
-    enlarged: boolean
-    isTargeting: boolean
-    selection?: MapSelection
-    setSelection: React.Dispatch<React.SetStateAction<MapSelection | undefined>>
-    resetSelection: () => void
-    highlightedMechHash?: string
-    setHighlightedMechHash: React.Dispatch<React.SetStateAction<string | undefined>>
-    // useConsumables
-    playerAbility?: PlayerAbility
-    // useSnackbar
-    newSnackbarMessage: (message: string, severity?: Severity) => void
+    isEnlarged: boolean
 }
 
-export const MiniMapInside = ({
-    gameAbility,
-    containerDimensions,
-    userID,
-    factionID,
-    map,
-    warMachines,
-    getFaction,
-    enlarged,
-    isTargeting,
-    selection,
-    setSelection,
-    resetSelection,
-    highlightedMechHash,
-    setHighlightedMechHash,
-    playerAbility,
-    newSnackbarMessage,
-}: PropsInner) => {
-    const mapElement = useRef<HTMLDivElement>()
-    // Setup use-gesture props
-    const [dragX, setDragX] = useState(0)
-    const [dragY, setDragY] = useState(0)
-    const [mapScale, setMapScale] = useState(0)
+export const MiniMapInside = ({ containerDimensions, isEnlarged }: MiniMapInsideProps) => {
+    const { map } = useGame()
+    const { mapElement, gridWidth, gridHeight, isTargeting, selection, setSelection, playerAbility } = useMiniMap()
+
     const gestureRef = useRef<HTMLDivElement>(null)
-    const [, toggleIsGesturing] = useToggle()
+    const { mapScale, dragX, dragY } = useMiniMapGestures({ gestureRef, containerDimensions })
 
-    const gridWidth = useMemo(() => (map ? map.width / map.cells_x : 50), [map])
-    const gridHeight = useMemo(() => (map ? map.height / map.cells_y : 50), [map])
-    const { send } = useGameServerCommandsFaction("/faction_commander")
-
-    const onConfirm = useCallback(async () => {
-        if (!selection) return
-        try {
-            if (gameAbility) {
-                if (!selection.startCoords) {
-                    throw new Error("Something went wrong while activating this ability. Please try again, or contact support if the issue persists.")
-                }
-                await send<boolean, { x: number; y: number }>(GameServerKeys.SubmitAbilityLocationSelect, {
-                    x: Math.floor(selection.startCoords.x),
-                    y: Math.floor(selection.startCoords.y),
-                })
-            } else if (playerAbility) {
-                let payload: {
-                    blueprint_ability_id: string
-                    location_select_type: string
-                    start_coords?: CellCoords
-                    end_coords?: CellCoords
-                    mech_hash?: string
-                } | null = null
-                switch (playerAbility.ability.location_select_type) {
-                    case LocationSelectType.LINE_SELECT:
-                        if (!selection.startCoords || !selection.endCoords) {
-                            throw new Error("Something went wrong while activating this ability. Please try again, or contact support if the issue persists.")
-                        }
-                        payload = {
-                            blueprint_ability_id: playerAbility.ability.id,
-                            location_select_type: playerAbility.ability.location_select_type,
-                            start_coords: {
-                                x: Math.floor(selection.startCoords.x),
-                                y: Math.floor(selection.startCoords.y),
-                            },
-                            end_coords: {
-                                x: Math.floor(selection.endCoords.x),
-                                y: Math.floor(selection.endCoords.y),
-                            },
-                        }
-                        break
-                    case LocationSelectType.MECH_SELECT:
-                        payload = {
-                            blueprint_ability_id: playerAbility.ability.id,
-                            location_select_type: playerAbility.ability.location_select_type,
-                            mech_hash: selection.mechHash,
-                        }
-                        break
-                    case LocationSelectType.LOCATION_SELECT:
-                        if (!selection.startCoords) {
-                            throw new Error("Something went wrong while activating this ability. Please try again, or contact support if the issue persists.")
-                        }
-                        payload = {
-                            blueprint_ability_id: playerAbility.ability.id,
-                            location_select_type: playerAbility.ability.location_select_type,
-                            start_coords: {
-                                x: Math.floor(selection.startCoords.x),
-                                y: Math.floor(selection.startCoords.y),
-                            },
-                        }
-                        break
-                    case LocationSelectType.GLOBAL:
-                        break
-                }
-
-                if (!payload) {
-                    throw new Error("Something went wrong while activating this ability. Please try again, or contact support if the issue persists.")
-                }
-                await send<boolean, typeof payload>(GameServerKeys.PlayerAbilityUse, payload)
-            }
-            resetSelection()
-            if (playerAbility?.ability.location_select_type === LocationSelectType.MECH_SELECT) {
-                setHighlightedMechHash(undefined)
-            }
-            newSnackbarMessage("Successfully submitted target location.", "success")
-        } catch (e) {
-            newSnackbarMessage(typeof e === "string" ? e : "Failed to submit target location.", "error")
-            console.error(e)
-        }
-    }, [send, selection, resetSelection, gameAbility, playerAbility, newSnackbarMessage, setHighlightedMechHash])
-
-    const handleSelection = useCallback(
+    // Click inside the map, converts to a selection
+    const onMapClick = useCallback(
         (e: React.MouseEvent<HTMLTableElement, MouseEvent>) => {
             if (mapElement && mapElement.current) {
                 const rect = mapElement.current.getBoundingClientRect()
@@ -171,380 +50,86 @@ export const MiniMapInside = ({
         [mapElement, gridWidth, gridHeight, mapScale, setSelection],
     )
 
-    // Set map scale to minimum scale while staying in-bounds
-    useEffect(() => {
-        if (!map) return
-        const minScale = Math.max(containerDimensions.width / map.width, containerDimensions.height / map.height)
-        setDragX(0)
-        setDragY(0)
-        setMapScale(minScale)
-    }, [containerDimensions, map])
-
-    // --------------- Minimap - useGesture setup -------------------
-    // Prevents map zooming from interfering with the browsers' accessibility zoom
-    useEffect(() => {
-        const callback: EventListenerOrEventListenerObject = (e) => e.preventDefault()
-
-        document.addEventListener("gesturestart", callback)
-        document.addEventListener("gesturechange", callback)
-        document.addEventListener("gestureend", callback)
-
-        return () => {
-            document.removeEventListener("gesturestart", callback)
-            document.removeEventListener("gesturechange", callback)
-            document.removeEventListener("gestureend", callback)
-        }
-    }, [])
-
-    // Setup map drag
-    useGesture(
-        {
-            onDrag: ({ wheeling, cancel, offset: [x, y] }) => {
-                if (wheeling || !map) return cancel()
-
-                // Set [x,y] offset
-                setDragX(Math.round(x))
-                setDragY(Math.round(y))
-            },
-            onWheel: ({ delta: [, deltaY], pinching, wheeling, dragging, event: e }) => {
-                if (pinching || dragging || !map || !wheeling) return
-
-                const mapWidth = map.width
-                const mapHeight = map.height
-
-                // Calculate new scale
-                const curScale = mapScale
-                const newScale = curScale * (deltaY > 0 ? 0.96 : 1.04)
-
-                // Cursors position in relation to the image
-                const cursorX = e.offsetX
-                const cursorY = e.offsetY
-
-                // Change in x after scaling
-                const displacementX = mapWidth * curScale - mapWidth * newScale
-
-                // The ratio of image between the cursor and the side of the image (x)
-                const sideRatioX = cursorX / mapWidth
-
-                // The new position of x - keeps the ratio of image between the cursor and the edge
-                const newX = dragX + displacementX * sideRatioX
-
-                // Change in y after scaling
-                const displacementY = mapHeight * curScale - mapHeight * newScale
-
-                // The ratio of image between the cursor and the top of the image (y)
-                const topRatioY = cursorY / mapHeight
-
-                // The new position of y - keeps the ratio of image between the cursor and the top
-                const newY = dragY + displacementY * topRatioY
-
-                // Set new scale and positions
-                setScale(newScale, newX, newY)
-            },
-            onPinch: ({ movement: [ms], dragging, wheeling, pinching }) => {
-                if (dragging || wheeling || !pinching) return
-
-                // Calculate new scale
-                const curScale = mapScale
-                const newScale = curScale * (ms > 0 ? 0.96 : 1.04)
-
-                setScale(newScale, 0, 0)
-            },
-            onDragStart: () => {
-                toggleIsGesturing(true)
-            },
-            onDragEnd: () => {
-                toggleIsGesturing(false)
-            },
-            onWheelStart: () => {
-                toggleIsGesturing(true)
-            },
-            onWheelEnd: () => {
-                toggleIsGesturing(false)
-            },
-            onPinchStart: () => {
-                toggleIsGesturing(true)
-            },
-            onPinchEnd: () => {
-                toggleIsGesturing(false)
-            },
-        },
-        {
-            target: gestureRef,
-            eventOptions: { passive: false },
-            drag: {
-                from: () => [dragX, dragY],
-                filterTaps: true,
-                preventDefault: true,
-                bounds: () => {
-                    if (!map) return
-                    return {
-                        top:
-                            containerDimensions.height <= map.height * mapScale
-                                ? -(map.height * mapScale - containerDimensions.height)
-                                : (containerDimensions.height - map.height * mapScale) / 2,
-                        left:
-                            containerDimensions.width <= map.width * mapScale
-                                ? -(map.width * mapScale - containerDimensions.width)
-                                : (containerDimensions.width - map.width * mapScale) / 2,
-                        right: 0,
-                        bottom: 0,
-                    }
-                },
-            },
-            wheel: {
-                preventDefault: true,
-                filterTaps: true,
-                threshold: 20,
-            },
-            pinch: {
-                preventDefault: true,
-                filterTaps: true,
-                threshold: 20,
-            },
-        },
-    )
-
-    // Set the zoom of the map
-    const setScale = useCallback(
-        (newScale: number, newX: number, newY: number) => {
-            if (!map) return
-            const minScale = Math.max(containerDimensions.width / map.width, containerDimensions.height / map.height)
-            const maxScale = 1
-            const curScale = mapScale
-
-            // Keeps the map within scale bounds
-            if (newScale >= maxScale || minScale >= newScale) {
-                newScale >= maxScale ? (newScale = maxScale) : (newScale = minScale)
-            }
-
-            // Return if the map is already at zoom limit
-            if ((curScale === minScale || curScale === maxScale) && (newScale >= maxScale || minScale >= newScale)) {
-                return
-            }
-
-            // Calculate the new boundary
-            const xBound =
-                containerDimensions.width <= map.width * newScale
-                    ? -(map.width * newScale - containerDimensions.width)
-                    : (containerDimensions.width - map.width * newScale) / 2
-            const yBound =
-                containerDimensions.height <= map.height * newScale
-                    ? -(map.height * newScale - containerDimensions.height)
-                    : (containerDimensions.height - map.height * newScale) / 2
-
-            // Keep the map in-bounds
-            newX = xBound >= newX ? xBound : newX > 0 ? 0 : newX
-            newY = yBound >= newY ? yBound : newY > 0 ? 0 : newY
-
-            // Set scale and [x,y] offset
-            setDragX(Math.round(newX))
-            setDragY(Math.round(newY))
-            setMapScale(newScale)
-        },
-        [map, containerDimensions, mapScale],
-    )
-
-    if (!map) return null
-
     // i.e. is battle ability or player ability of type LOCATION_SELECT
-    const isLocationSelection =
-        isTargeting &&
-        !(
-            playerAbility?.ability.location_select_type === LocationSelectType.LINE_SELECT ||
-            playerAbility?.ability.location_select_type === LocationSelectType.MECH_SELECT ||
-            playerAbility?.ability.location_select_type === LocationSelectType.GLOBAL
-        )
-    const isLineSelection = isTargeting && playerAbility?.ability.location_select_type === LocationSelectType.LINE_SELECT
+    const isLocationSelection = useMemo(
+        () =>
+            isTargeting &&
+            (playerAbility?.ability.location_select_type === LocationSelectType.LOCATION_SELECT ||
+                playerAbility?.ability.location_select_type === LocationSelectType.MECH_COMMAND),
+        [isTargeting, playerAbility?.ability.location_select_type],
+    )
 
-    return (
-        <>
-            <Stack
-                sx={{
-                    position: "relative",
-                    width: containerDimensions.width,
-                    height: containerDimensions.height,
-                    overflow: "hidden",
-                }}
-            >
-                <Box
-                    ref={gestureRef}
+    const isLineSelection = useMemo(
+        () => isTargeting && playerAbility?.ability.location_select_type === LocationSelectType.LINE_SELECT,
+        [isTargeting, playerAbility?.ability.location_select_type],
+    )
+
+    return useMemo(() => {
+        if (!map) return null
+
+        return (
+            <>
+                <Stack
                     sx={{
-                        touchAction: "none",
-                        transformOrigin: "0% 0%",
-                        transform: `translate(${dragX}px, ${dragY}px) scale(${mapScale})`,
+                        position: "relative",
+                        width: containerDimensions.width,
+                        height: containerDimensions.height,
+                        overflow: "hidden",
                     }}
                 >
-                    <SelectionIcon
-                        key={selection?.startCoords && `column-${selection.startCoords.y}-row-${selection.startCoords.x}`}
-                        ability={gameAbility || playerAbility?.ability}
-                        gridWidth={gridWidth}
-                        gridHeight={gridHeight}
-                        selection={selection}
-                        setSelection={setSelection}
-                        targeting={isTargeting}
-                    />
-
-                    <MapWarMachines
-                        gridWidth={gridWidth}
-                        gridHeight={gridHeight}
-                        userID={userID}
-                        factionID={factionID}
-                        map={map}
-                        warMachines={warMachines}
-                        getFaction={getFaction}
-                        enlarged={enlarged}
-                        targeting={isTargeting}
-                        setSelection={setSelection}
-                        highlightedMechHash={highlightedMechHash}
-                        setHighlightedMechHash={setHighlightedMechHash}
-                        playerAbility={playerAbility}
-                    />
-
-                    {/* Map Image */}
                     <Box
-                        ref={mapElement}
-                        onClick={isLocationSelection ? handleSelection : undefined}
+                        ref={gestureRef}
                         sx={{
-                            position: "absolute",
-                            width: `${map.width}px`,
-                            height: `${map.height}px`,
-                            backgroundImage: `url(${map.image_url})`,
-                            cursor: isLocationSelection || isLineSelection ? `url(${Crosshair}) 10 10, auto` : "move",
-                            borderSpacing: 0,
+                            touchAction: "none",
+                            transformOrigin: "0% 0%",
+                            transform: `translate(${dragX}px, ${dragY}px) scale(${mapScale})`,
                         }}
                     >
-                        {isLineSelection && (
-                            <LineSelect
-                                selection={selection}
-                                setSelection={setSelection}
-                                mapElement={mapElement.current}
-                                gridWidth={gridWidth}
-                                gridHeight={gridHeight}
-                                map={map}
-                                mapScale={mapScale}
-                            />
-                        )}
+                        {/* Render the user selection icon on the map */}
+                        <SelectionIcon key={selection?.startCoords && `column-${selection.startCoords.y}-row-${selection.startCoords.x}`} />
+
+                        {/* Render the mech command icons on the map */}
+                        <MechCommandIcons />
+
+                        {/* Rendering war machines on the map */}
+                        <MapMechs isEnlarged={isEnlarged} />
+
+                        {/* Map Image */}
+                        <Box
+                            ref={mapElement}
+                            onClick={isLocationSelection ? onMapClick : undefined}
+                            sx={{
+                                position: "absolute",
+                                width: `${map.width}px`,
+                                height: `${map.height}px`,
+                                backgroundImage: `url(${map.image_url})`,
+                                cursor: isLocationSelection || isLineSelection ? `url(${Crosshair}) 10 10, auto` : "move",
+                                borderSpacing: 0,
+                            }}
+                        >
+                            {isLineSelection && <LineSelect mapScale={mapScale} />}
+                        </Box>
+
+                        {/* Shade disabled cells */}
+                        <DisabledCells />
                     </Box>
-                </Box>
-            </Stack>
-            {isTargeting && !gameAbility && playerAbility && (
-                <FancyButton
-                    clipThingsProps={{
-                        clipSize: "4px",
-                        backgroundColor: colors.red,
-                        border: { borderColor: colors.red },
-                        sx: {
-                            flex: 1,
-                            position: "absolute",
-                            bottom: "1rem",
-                            right: "1rem",
-                        },
-                    }}
-                    sx={{
-                        pt: ".32rem",
-                        pb: ".24rem",
-                        minWidth: "2rem",
-                    }}
-                    onClick={resetSelection}
-                >
-                    <Typography
-                        sx={{
-                            lineHeight: 1,
-                            fontWeight: "fontWeightBold",
-                            whiteSpace: "nowrap",
-                            color: "#FFFFFF",
-                        }}
-                    >
-                        Cancel
-                    </Typography>
-                </FancyButton>
-            )}
-            {isTargeting && (gameAbility || playerAbility) && <CountdownText playerAbility={playerAbility} selection={selection} onConfirm={onConfirm} />}
-        </>
-    )
-}
+                </Stack>
 
-// Count down timer for the selection
-const CountdownText = ({ playerAbility, selection, onConfirm }: { playerAbility?: PlayerAbility; selection?: MapSelection; onConfirm: () => void }) => {
-    const [endMoment, setEndMoment] = useState<moment.Moment>()
-    const [timeRemain, setTimeRemain] = useState<number>(-2)
-    const [delay, setDelay] = useState<number | null>(null)
-
-    const hasSelected = useMemo(() => {
-        let hasSelected = !!selection
-        if (playerAbility) {
-            switch (playerAbility.ability.location_select_type) {
-                case LocationSelectType.LINE_SELECT:
-                    hasSelected = !!(selection?.startCoords && selection?.endCoords)
-                    break
-                case LocationSelectType.LOCATION_SELECT:
-                    hasSelected = !!selection?.startCoords
-                    break
-                case LocationSelectType.MECH_SELECT:
-                    hasSelected = !!selection?.mechHash
-                    break
-            }
-        }
-        return hasSelected
-    }, [selection, playerAbility])
-
-    // Count down starts when user has selected a location, then fires if they don't change their mind
-    useEffect(() => {
-        setEndMoment((prev) => {
-            if (!hasSelected) {
-                setTimeRemain(-2)
-                return undefined
-            }
-
-            if (!prev) return moment().add(3, "seconds")
-
-            return prev
-        })
-    }, [hasSelected])
-
-    useEffect(() => {
-        setDelay(null)
-        if (endMoment) {
-            setDelay(600) // Counts faster than 1 second
-            const d = moment.duration(endMoment.diff(moment()))
-            setTimeRemain(Math.max(Math.round(d.asSeconds()), 0))
-            return
-        }
-    }, [endMoment])
-
-    useInterval(() => {
-        setTimeRemain((t) => Math.max(t - 1, -1))
-    }, delay)
-
-    useEffect(() => {
-        if (hasSelected && timeRemain == -1) onConfirm()
-    }, [hasSelected, timeRemain, onConfirm])
-
-    if (timeRemain < 0) return null
-
-    return (
-        <Box
-            sx={{
-                position: "absolute",
-                top: "50%",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
-                pointerEvents: "none",
-                zIndex: 99,
-            }}
-        >
-            <Typography
-                variant="h1"
-                sx={{
-                    fontFamily: fonts.nostromoBlack,
-                    color: "#D90000",
-                    opacity: 0.9,
-                    filter: "drop-shadow(0 3px 3px #00000050)",
-                }}
-            >
-                {timeRemain}
-            </Typography>
-        </Box>
-    )
+                <CountdownSubmit />
+            </>
+        )
+    }, [
+        containerDimensions.height,
+        containerDimensions.width,
+        dragX,
+        dragY,
+        isEnlarged,
+        isLineSelection,
+        isLocationSelection,
+        map,
+        mapElement,
+        mapScale,
+        onMapClick,
+        selection?.startCoords,
+    ])
 }
