@@ -113,7 +113,6 @@ const MiniMapInner = ({ map, isTargeting, isEnlarged }: { map: Map; isTargeting:
     const prevHeight = useRef(curHeight)
     const prevPosX = useRef(curPosX)
     const prevPosY = useRef(curPosY)
-    const prevRecorded = useRef(false)
 
     const isLargeMode = useMemo(() => curWidth > 350 || curHeight > 350, [curHeight, curWidth])
 
@@ -144,27 +143,25 @@ const MiniMapInner = ({ map, isTargeting, isEnlarged }: { map: Map; isTargeting:
             }
 
             setCurPosX((prev1) => {
-                if (!prevRecorded.current) prevPosX.current = prev1
+                prevPosX.current = prev1
 
                 setCurWidth((prev2) => {
-                    if (!prevRecorded.current) prevWidth.current = prev2
+                    prevWidth.current = prev2
                     return targetingWidth
                 })
 
                 return (width - targetingWidth) / 2
             })
             setCurPosY((prev1) => {
-                if (!prevRecorded.current) prevPosY.current = prev1
+                prevPosY.current = prev1
 
                 setCurHeight((prev2) => {
-                    if (!prevRecorded.current) prevHeight.current = prev2
+                    prevHeight.current = prev2
                     return targetingHeight
                 })
 
                 return (height - targetingHeight) / 2
             })
-
-            prevRecorded.current = true
         } else {
             setCurPosX(() => {
                 setCurWidth(prevWidth.current)
@@ -174,8 +171,6 @@ const MiniMapInner = ({ map, isTargeting, isEnlarged }: { map: Map; isTargeting:
                 setCurHeight(prevHeight.current)
                 return prevPosY.current
             })
-
-            prevRecorded.current = false
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isTargeting, isEnlarged, maxHeight, maxWidth, setCurHeight, setCurPosX, setCurPosY, setCurWidth])
