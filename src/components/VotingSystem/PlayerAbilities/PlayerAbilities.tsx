@@ -40,10 +40,6 @@ export const PlayerAbilities = () => {
     )
 
     useEffect(() => {
-        changePage(1)
-    }, [changePage, locationSelectType])
-
-    useEffect(() => {
         let result = playerAbilities.map((p) => p)
         if (locationSelectType) {
             result = result.filter((p) => p.ability.location_select_type === locationSelectType)
