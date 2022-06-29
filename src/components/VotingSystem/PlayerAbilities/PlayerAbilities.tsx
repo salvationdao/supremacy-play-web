@@ -10,7 +10,7 @@ import { colors, fonts } from "../../../theme/theme"
 import { LocationSelectType, PlayerAbility } from "../../../types"
 import { PlayerAbilityCard } from "./PlayerAbilityCard"
 
-const COLUMNS = 4
+const COLUMNS = 2
 const ROWS = 2
 const PAGE_SIZE = COLUMNS * ROWS
 
@@ -41,8 +41,7 @@ export const PlayerAbilities = () => {
 
     useEffect(() => {
         changePage(1)
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [locationSelectType])
+    }, [changePage, locationSelectType])
 
     useEffect(() => {
         let result = playerAbilities.map((p) => p)
