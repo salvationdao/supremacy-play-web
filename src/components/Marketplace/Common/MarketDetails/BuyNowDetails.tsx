@@ -78,6 +78,7 @@ export const BuyNowDetails = ({
 
             const resp = await send(isKeycard ? GameServerKeys.MarketplaceSalesKeycardBuy : GameServerKeys.MarketplaceSalesBuy, {
                 id,
+                amount: currentPrice,
             })
 
             if (!resp) return
