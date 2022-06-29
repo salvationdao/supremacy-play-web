@@ -41,7 +41,7 @@ export const MarketplacePage = () => {
     if (!currentValue) return null
 
     const primaryColor = theme.factionTheme.primary
-    const secondaryColor = currentValue === MARKETPLACE_TABS.History ? "#FFFFFF" : theme.factionTheme.secondary
+    const secondaryColor = theme.factionTheme.secondary
 
     return (
         <Stack
