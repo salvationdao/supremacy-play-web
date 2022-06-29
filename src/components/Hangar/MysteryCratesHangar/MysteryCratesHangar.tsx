@@ -70,7 +70,7 @@ export const MysteryCratesHangar = () => {
         } finally {
             setIsLoading(false)
         }
-    }, [send, page, pageSize, updateQuery, setTotalItems])
+    }, [send, page, pageSize, updateQuery, setTotalItems, crateOpen])
 
     useEffect(() => {
         getItems()

@@ -2,20 +2,19 @@ import { Box, IconButton, Modal, Stack, Typography } from "@mui/material"
 import { useLocation } from "react-router-dom"
 import { SvgClose } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
-import { colors, fonts, siteZIndex } from "../../../../theme/theme"
+import { fonts, siteZIndex } from "../../../../theme/theme"
 import { ClipThing } from "../../../Common/ClipThing"
 import { FancyButton } from "../../../Common/FancyButton"
 import { OpenCrateResponse } from "../../../../types"
 import { useEffect, useState } from "react"
-import { getRarityDeets } from "../../../../helpers"
-import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
+import { CrateItemLarge, CrateItemSmall } from "./CrateItems"
 
 interface CrateRewardsProps {
     rewards: OpenCrateResponse
     onClose?: () => void
 }
 
-interface ArrayItem {
+export interface ArrayItem {
     id: string | undefined
     imageUrl: string | undefined
     type: string | undefined
@@ -31,7 +30,6 @@ export const CrateRewards = ({ rewards, onClose }: CrateRewardsProps) => {
     const [arrayItems, setArrayItems] = useState<ArrayItem[]>([])
 
     useEffect(() => {
-        console.log(arrayItems)
         let newArr: ArrayItem[] = []
         if (rewards.mech) {
             const mech: ArrayItem = {
@@ -41,6 +39,7 @@ export const CrateRewards = ({ rewards, onClose }: CrateRewardsProps) => {
                 animationUrl: rewards.mech.animation_url,
                 avatarUrl: rewards.mech.avatar_url,
                 label: rewards.mech.label,
+                rarity: rewards.mech.tier,
             }
 
             newArr = [...newArr, mech]
@@ -54,6 +53,7 @@ export const CrateRewards = ({ rewards, onClose }: CrateRewardsProps) => {
                 animationUrl: rewards.mech_skin.animation_url,
                 avatarUrl: rewards.mech_skin.avatar_url,
                 label: rewards.mech_skin.label,
+                rarity: rewards.mech_skin.tier,
             }
 
             newArr = [...newArr, mechSkin]
@@ -68,6 +68,7 @@ export const CrateRewards = ({ rewards, onClose }: CrateRewardsProps) => {
                     animationUrl: w.animation_url,
                     avatarUrl: w.avatar_url,
                     label: w.label,
+                    rarity: w.tier,
                 }
 
                 newArr = [...newArr, weapon]
@@ -76,12 +77,13 @@ export const CrateRewards = ({ rewards, onClose }: CrateRewardsProps) => {
 
         if (rewards.weapon_skin) {
             const weaponSkin: ArrayItem = {
-                id: rewards.weapon_skin?.id,
-                imageUrl: rewards.weapon_skin?.image_url,
-                type: rewards.weapon_skin?.item_type,
-                animationUrl: rewards.weapon_skin?.animation_url,
-                avatarUrl: rewards.weapon_skin?.avatar_url,
-                label: rewards.weapon_skin?.label,
+                id: rewards.weapon_skin.id,
+                imageUrl: rewards.weapon_skin.image_url,
+                type: rewards.weapon_skin.item_type,
+                animationUrl: rewards.weapon_skin.animation_url,
+                avatarUrl: rewards.weapon_skin.avatar_url,
+                label: rewards.weapon_skin.label,
+                rarity: rewards.weapon_skin.tier,
             }
 
             newArr = [...newArr, weaponSkin]
@@ -95,12 +97,13 @@ export const CrateRewards = ({ rewards, onClose }: CrateRewardsProps) => {
         //     animationUrl: rewards.power_core?.animation_url,
         //     avatarUrl: rewards.power_core?.avatar_url,
         //     label: rewards.power_core?.label,
+        //      rarity: rewards.power_core.tier,
         // }
         //
         // newArr = [...newArr, powercore]
         //
         // }
-
+        console.log(newArr)
         setArrayItems(newArr)
     }, [rewards, setArrayItems])
 
@@ -112,7 +115,7 @@ export const CrateRewards = ({ rewards, onClose }: CrateRewardsProps) => {
                     top: "50%",
                     left: "50%",
                     transform: "translate(-50%, -50%)",
-                    width: "60vw",
+                    maxWidth: "110rem",
                     boxShadow: 6,
                     outline: "none",
                 }}
@@ -146,7 +149,6 @@ export const CrateRewards = ({ rewards, onClose }: CrateRewardsProps) => {
                                 ))}
                             </Stack>
                         )}
-                        {/*<Carousel array={arrayItems} />*/}
 
                         <FancyButton
                             clipThingsProps={{
@@ -157,7 +159,7 @@ export const CrateRewards = ({ rewards, onClose }: CrateRewardsProps) => {
                                 sx: { position: "relative", width: "32rem", mt: "auto" },
                             }}
                             sx={{ width: "100%", py: "1rem", color: theme.factionTheme.secondary }}
-                            to={`/fleet/mystery-crates${location.hash}`}
+                            to={`/fleet/${rewards.mech ? "war-machines" : "weapons"}`}
                         >
                             <Typography
                                 variant="h6"
@@ -194,106 +196,6 @@ const MechCrateRewards = ({ items }: { items: ArrayItem[] }) => {
                 {items.map((item) => (
                     <CrateItemSmall key={item.id} item={item} />
                 ))}
-            </Stack>
-        </Stack>
-    )
-}
-
-interface CrateItemProps {
-    item: ArrayItem | undefined
-}
-
-const CrateItemLarge = ({ item }: CrateItemProps) => {
-    const [rarityDeets, setRarityDeets] = useState<{
-        label: string
-        color: string
-    }>()
-
-    const theme = useTheme()
-
-    useEffect(() => {
-        setRarityDeets(item?.rarity ? getRarityDeets(item?.rarity) : undefined)
-    }, [setRarityDeets, getRarityDeets, item])
-
-    return (
-        <ClipThing
-            clipSize="6px"
-            border={{
-                borderColor: theme.factionTheme.primary,
-                isFancy: true,
-                borderThickness: ".2rem",
-            }}
-            opacity={0.8}
-            backgroundColor={colors.black3}
-        >
-            <Stack alignItems={"center"} spacing="1rem" sx={{ flex: 1, m: "1rem" }}>
-                <Box sx={{ width: "80%", maxWidth: "25rem", height: "auto" }}>
-                    <MediaPreview imageUrl={item?.imageUrl || ""} videoUrls={[item?.animationUrl]} />
-                </Box>
-
-                <Stack sx={{ marginTop: "auto", padding: "1rem" }}>
-                    <Typography variant="h5" sx={{ fontFamily: fonts.nostromoBlack }}>
-                        {item?.label} {item?.type === "mech_skin" || item?.type === "weapon_skin" ? "Submodel" : ""}
-                    </Typography>
-                    {rarityDeets && (
-                        <Typography
-                            variant="body2"
-                            sx={{
-                                color: rarityDeets.color,
-                                fontFamily: fonts.nostromoBlack,
-                                display: "-webkit-box",
-                                overflow: "hidden",
-                                overflowWrap: "anywhere",
-                                textOverflow: "ellipsis",
-                                WebkitBoxOrient: "vertical",
-                            }}
-                        >
-                            {rarityDeets.label}
-                        </Typography>
-                    )}
-                </Stack>
-            </Stack>
-        </ClipThing>
-    )
-}
-
-const CrateItemSmall = ({ item }: CrateItemProps) => {
-    const [rarityDeets, setRarityDeets] = useState<{
-        label: string
-        color: string
-    }>()
-
-    useEffect(() => {
-        setRarityDeets(item?.rarity ? getRarityDeets(item?.rarity) : undefined)
-    }, [setRarityDeets, getRarityDeets, item?.rarity])
-
-    if (!item?.avatarUrl) return null
-    return (
-        <Stack direction={"row"} sx={{ alignItems: "center" }}>
-            <Box sx={{ width: "7rem", height: "7rem", flexShrink: 0 }}>
-                <MediaPreview imageUrl={item?.avatarUrl || ""} videoUrls={[item?.animationUrl]} />
-            </Box>
-
-            <Stack>
-                <Typography variant="h5" sx={{ fontFamily: fonts.nostromoBlack, textAlign: "left" }}>
-                    {item?.label} {item?.type === "mech_skin" || item?.type === "weapon_skin" ? "Submodel" : ""}
-                </Typography>
-                {rarityDeets && (
-                    <Typography
-                        variant="body2"
-                        sx={{
-                            color: rarityDeets.color,
-                            fontFamily: fonts.nostromoBlack,
-                            display: "-webkit-box",
-                            overflow: "hidden",
-                            overflowWrap: "anywhere",
-                            textOverflow: "ellipsis",
-                            WebkitBoxOrient: "vertical",
-                        }}
-                    >
-                        {rarityDeets.label}
-                    </Typography>
-                )}
             </Stack>
         </Stack>
     )

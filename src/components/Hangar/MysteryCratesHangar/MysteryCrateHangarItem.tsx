@@ -1,4 +1,4 @@
-import { Box, Stack, Typography } from "@mui/material"
+import { Box, CircularProgress, Stack, Typography } from "@mui/material"
 import { useLocation } from "react-router-dom"
 import { SafePNG } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
@@ -11,7 +11,7 @@ import { ClipThing } from "../../Common/ClipThing"
 import { FancyButton } from "../../Common/FancyButton"
 import { MediaPreview } from "../../Common/MediaPreview/MediaPreview"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
-import { useCallback } from "react"
+import { useCallback, useState } from "react"
 import { GameServerKeys } from "../../../keys"
 
 interface MysteryCrateStoreItemProps {
@@ -24,6 +24,7 @@ export const MysteryCrateHangarItem = ({ crate, setCrateOpen, setCrateReward }: 
     const location = useLocation()
     const theme = useTheme()
     const { send } = useGameServerCommandsFaction("/faction_commander")
+    const [loading, setLoading] = useState(false)
 
     const primaryColor = theme.factionTheme.primary
     const secondaryColor = theme.factionTheme.secondary
@@ -31,6 +32,7 @@ export const MysteryCrateHangarItem = ({ crate, setCrateOpen, setCrateReward }: 
 
     const openCrate = useCallback(async () => {
         try {
+            setLoading(true)
             //change these types obviously
             const resp = await send<OpenCrateResponse>(GameServerKeys.OpenCrate, {
                 id: crate.id,
@@ -44,6 +46,8 @@ export const MysteryCrateHangarItem = ({ crate, setCrateOpen, setCrateReward }: 
             const message = typeof e === "string" ? e : "Failed to get mystery crates."
             console.log(message)
             console.error(e)
+        } finally {
+            setLoading(false)
         }
     }, [send, crate.id, setCrateOpen, setCrateReward])
 
@@ -107,7 +111,7 @@ export const MysteryCrateHangarItem = ({ crate, setCrateOpen, setCrateReward }: 
 
                             <Stack alignItems="center" sx={{ mt: "auto !important", pt: ".8rem", alignSelf: "stretch" }}>
                                 <FancyButton
-                                    disabled={new Date() < crate.locked_until}
+                                    disabled={new Date() < crate.locked_until || loading}
                                     onClick={() => {
                                         openCrate()
                                         return
@@ -122,7 +126,7 @@ export const MysteryCrateHangarItem = ({ crate, setCrateOpen, setCrateReward }: 
                                     sx={{ px: "1.6rem", py: ".6rem", color: secondaryColor }}
                                 >
                                     <Typography variant={"caption"} sx={{ fontFamily: fonts.nostromoBlack, color: secondaryColor }}>
-                                        OPEN
+                                        {loading ? <CircularProgress size={"1.5rem"} /> : "OPEN"}
                                     </Typography>
                                 </FancyButton>
 
