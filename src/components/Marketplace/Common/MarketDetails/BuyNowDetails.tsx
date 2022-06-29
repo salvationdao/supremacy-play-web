@@ -92,7 +92,7 @@ export const BuyNowDetails = ({
         } finally {
             setIsLoading(false)
         }
-    }, [id, itemType, send, toggleConfirmBuyModalOpen, toggleSuccessModalOpen])
+    }, [id, currentPrice, itemType, send, toggleConfirmBuyModalOpen, toggleSuccessModalOpen])
 
     const isSelfItem = userID === owner?.id
 
