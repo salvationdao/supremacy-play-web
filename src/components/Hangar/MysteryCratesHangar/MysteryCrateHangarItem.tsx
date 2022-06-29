@@ -43,7 +43,7 @@ export const MysteryCrateHangarItem = ({ crate, setCrateOpen, setCrateReward }: 
             setCrateOpen(true)
         } catch (e) {
             const message = typeof e === "string" ? e : "Failed to get mystery crates."
-            console.error(e)
+            console.error(message)
         } finally {
             setLoading(false)
         }

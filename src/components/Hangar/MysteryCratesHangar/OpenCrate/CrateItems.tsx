@@ -21,7 +21,7 @@ export const CrateItemLarge = ({ item }: CrateItemProps) => {
 
     useEffect(() => {
         setRarityDeets(item?.rarity ? getRarityDeets(item?.rarity) : undefined)
-    }, [setRarityDeets, getRarityDeets, item])
+    }, [setRarityDeets, item])
 
     return (
         <ClipThing
@@ -81,7 +81,7 @@ export const CrateItemSmall = ({ item }: CrateItemProps) => {
 
     useEffect(() => {
         setRarityDeets(item?.rarity ? getRarityDeets(item?.rarity) : undefined)
-    }, [setRarityDeets, getRarityDeets, item?.rarity])
+    }, [setRarityDeets, item?.rarity])
 
     if (!item?.avatarUrl) return null
     return (

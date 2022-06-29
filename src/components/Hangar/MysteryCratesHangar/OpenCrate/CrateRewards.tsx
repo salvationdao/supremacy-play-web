@@ -1,5 +1,4 @@
 import { Box, IconButton, Modal, Stack, Typography } from "@mui/material"
-import { useLocation } from "react-router-dom"
 import { SvgClose } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
 import { fonts, siteZIndex } from "../../../../theme/theme"
@@ -26,7 +25,6 @@ export interface ArrayItem {
 
 export const CrateRewards = ({ rewards, onClose }: CrateRewardsProps) => {
     const theme = useTheme()
-    const location = useLocation()
     const [arrayItems, setArrayItems] = useState<ArrayItem[]>([])
 
     useEffect(() => {

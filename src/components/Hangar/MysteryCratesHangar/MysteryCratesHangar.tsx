@@ -70,7 +70,7 @@ export const MysteryCratesHangar = () => {
         } finally {
             setIsLoading(false)
         }
-    }, [send, page, pageSize, updateQuery, setTotalItems, crateOpen])
+    }, [send, page, pageSize, updateQuery, setTotalItems])
 
     useEffect(() => {
         getItems()
@@ -192,7 +192,7 @@ export const MysteryCratesHangar = () => {
                 </Stack>
             </Stack>
         )
-    }, [crates, isLoading, loadError, location.hash, theme.factionTheme.primary, theme.factionTheme.secondary, crateReward, crateOpen])
+    }, [crates, isLoading, loadError, location.hash, theme.factionTheme.primary, theme.factionTheme.secondary])
 
     return (
         <>
