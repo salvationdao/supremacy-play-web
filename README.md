@@ -43,7 +43,7 @@
 >
 	<Typography
 		variant="body2"
-		sx={{ color: "#FF0000", }}
+		sx={{ fontWeight: "fontWeightBold", color: "#FF0000", }}
 	>
 		GO TO ASSET STORE
 	</Typography>
