@@ -1,14 +1,14 @@
-import { Box, Button, IconButton, Stack, Typography } from "@mui/material"
+import { Box, IconButton, Modal, Stack, Typography } from "@mui/material"
 import { useLocation } from "react-router-dom"
-import { SvgClose, SvgPowerCore } from "../../../../assets"
+import { SvgClose } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
-import { colors, fonts } from "../../../../theme/theme"
+import { colors, fonts, siteZIndex } from "../../../../theme/theme"
 import { ClipThing } from "../../../Common/ClipThing"
 import { FancyButton } from "../../../Common/FancyButton"
 import { OpenCrateResponse } from "../../../../types"
 import { useEffect, useState } from "react"
 import { getRarityDeets } from "../../../../helpers"
-import { LoadoutItem } from "../../WarMachinesHangar/WarMachineHangarItem/MechLoadout"
+import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
 
 interface CrateRewardsProps {
     rewards: OpenCrateResponse
@@ -31,7 +31,8 @@ export const CrateRewards = ({ rewards, onClose }: CrateRewardsProps) => {
     const [arrayItems, setArrayItems] = useState<ArrayItem[]>([])
 
     useEffect(() => {
-        let newArr = [...arrayItems]
+        console.log(arrayItems)
+        let newArr: ArrayItem[] = []
         if (rewards.mech) {
             const mech: ArrayItem = {
                 id: rewards.mech.id,
@@ -101,122 +102,179 @@ export const CrateRewards = ({ rewards, onClose }: CrateRewardsProps) => {
         // }
 
         setArrayItems(newArr)
-    }, [rewards])
+    }, [rewards, setArrayItems])
 
     return (
-        <ClipThing
-            clipSize="10px"
-            corners={{
-                topRight: true,
-                bottomLeft: true,
-            }}
-            border={{
-                borderColor: theme.factionTheme.primary,
-                borderThickness: ".3rem",
-            }}
-            sx={{ m: "4rem", width: "100%", height: "100%" }}
-            backgroundColor={theme.factionTheme.background}
-        >
-            <Stack spacing="3rem" justifyContent="center" alignItems="center" sx={{ py: "5rem", px: "5.5rem", textAlign: "center" }}>
-                <Typography variant={"h1"} sx={{ fontFamily: fonts.nostromoBlack, fontSize: "3rem" }}>
-                    You have received:
-                </Typography>
-
-                {rewards.mech ? (
-                    <MechCrateRewards items={arrayItems} />
-                ) : (
-                    <Stack direction={"row"} justifyContent={"space-between"} sx={{ mt: "1rem" }}>
-                        {arrayItems.map((item) => (
-                            <CrateItem key={item.id} sizeCI={"large"} item={item} />
-                        ))}
-                    </Stack>
-                )}
-                {/*<Carousel array={arrayItems} />*/}
-
-                <FancyButton
-                    clipThingsProps={{
-                        clipSize: "9px",
-                        backgroundColor: theme.factionTheme.primary,
-                        opacity: 1,
-                        border: { isFancy: true, borderColor: theme.factionTheme.primary, borderThickness: "2px" },
-                        sx: { position: "relative", width: "32rem", mt: "auto" },
+        <Modal open onClose={onClose} sx={{ zIndex: siteZIndex.Modal }}>
+            <Box
+                sx={{
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                    width: "70vw",
+                    boxShadow: 6,
+                    outline: "none",
+                }}
+            >
+                <ClipThing
+                    clipSize="10px"
+                    corners={{
+                        topRight: true,
+                        bottomLeft: true,
                     }}
-                    sx={{ width: "100%", py: "1rem", color: theme.factionTheme.secondary }}
-                    to={`/fleet/mystery-crates${location.hash}`}
+                    border={{
+                        borderColor: theme.factionTheme.primary,
+                        borderThickness: ".3rem",
+                    }}
+                    sx={{ m: "4rem", width: "100%" }}
+                    backgroundColor={theme.factionTheme.background}
                 >
-                    <Typography
-                        variant="h6"
-                        sx={{
-                            color: theme.factionTheme.secondary,
-                            fontFamily: fonts.nostromoBlack,
-                        }}
-                    >
-                        View in Hangar
-                    </Typography>
-                </FancyButton>
-            </Stack>
+                    <Stack spacing="3rem" justifyContent="center" alignItems="center" sx={{ py: "5rem", px: "5.5rem", textAlign: "center" }}>
+                        <Typography variant={"h1"} sx={{ fontFamily: fonts.nostromoBlack, fontSize: "3rem" }}>
+                            You have received:
+                        </Typography>
 
-            {onClose && (
-                <IconButton size="small" onClick={onClose} sx={{ position: "absolute", top: "1rem", right: "1rem" }}>
-                    <SvgClose size="3rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
-                </IconButton>
-            )}
-        </ClipThing>
+                        {rewards.mech ? (
+                            <MechCrateRewards items={arrayItems} />
+                        ) : (
+                            <Stack direction={"row"} justifyContent={"space-between"} sx={{ mt: "1rem" }}>
+                                {arrayItems.map((item) => (
+                                    <CrateItemLarge key={item.id} item={item} />
+                                ))}
+                            </Stack>
+                        )}
+                        {/*<Carousel array={arrayItems} />*/}
+
+                        <FancyButton
+                            clipThingsProps={{
+                                clipSize: "9px",
+                                backgroundColor: theme.factionTheme.primary,
+                                opacity: 1,
+                                border: { isFancy: true, borderColor: theme.factionTheme.primary, borderThickness: "2px" },
+                                sx: { position: "relative", width: "32rem", mt: "auto" },
+                            }}
+                            sx={{ width: "100%", py: "1rem", color: theme.factionTheme.secondary }}
+                            to={`/fleet/mystery-crates${location.hash}`}
+                        >
+                            <Typography
+                                variant="h6"
+                                sx={{
+                                    color: theme.factionTheme.secondary,
+                                    fontFamily: fonts.nostromoBlack,
+                                }}
+                            >
+                                View in Hangar
+                            </Typography>
+                        </FancyButton>
+                    </Stack>
+
+                    {onClose && (
+                        <IconButton size="small" onClick={onClose} sx={{ position: "absolute", top: "1rem", right: "1rem" }}>
+                            <SvgClose size="3rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
+                        </IconButton>
+                    )}
+                </ClipThing>
+            </Box>
+        </Modal>
     )
 }
 
 const MechCrateRewards = ({ items }: { items: ArrayItem[] }) => {
     const largeItem = items.find((item) => (item.type = "mech"))
+
     return (
-        <Stack direction={"row"}>
-            <CrateItem sizeCI="large" item={largeItem} />
-            <Stack>
+        <Stack direction={"row"} spacing={"2rem"}>
+            <Box sx={{ minWidth: "40%" }}>
+                <CrateItemLarge item={largeItem} />
+            </Box>
+            <Stack spacing={"1rem"} sx={{ height: "fit-content" }}>
                 {items.map((item) => (
-                    <CrateItem key={item.id} sizeCI="small" item={item} />
+                    <CrateItemSmall key={item.id} item={item} />
                 ))}
             </Stack>
         </Stack>
     )
 }
 
-interface CrateItemLargeProps {
+interface CrateItemProps {
     item: ArrayItem | undefined
-    sizeCI: "large" | "small"
 }
 
-const CrateItem = ({ item, sizeCI }: CrateItemLargeProps) => {
+const CrateItemLarge = ({ item }: CrateItemProps) => {
     const [rarityDeets, setRarityDeets] = useState<{
         label: string
         color: string
     }>()
+
     const theme = useTheme()
-    const primaryColor = theme.factionTheme.primary
+
+    useEffect(() => {
+        setRarityDeets(item?.rarity ? getRarityDeets(item?.rarity) : undefined)
+    }, [setRarityDeets, getRarityDeets, item])
+
+    return (
+        <ClipThing
+            clipSize="6px"
+            border={{
+                borderColor: theme.factionTheme.primary,
+                isFancy: true,
+                borderThickness: ".2rem",
+            }}
+            opacity={0.8}
+            backgroundColor={colors.black3}
+        >
+            <Stack alignItems={"center"} spacing="1rem" sx={{ flex: 1, my: "5rem" }}>
+                <Box sx={{ width: "100%", height: "auto" }}>
+                    <MediaPreview imageUrl={item?.imageUrl || ""} videoUrls={[item?.animationUrl]} />
+                </Box>
+
+                <Stack>
+                    <Typography variant="h5" sx={{ fontFamily: fonts.nostromoBlack }}>
+                        {item?.label} {item?.type === "mech_skin" || item?.type === "weapon_skin" ? "Submodel" : ""}
+                    </Typography>
+                    {rarityDeets && (
+                        <Typography
+                            variant="body2"
+                            sx={{
+                                color: rarityDeets.color,
+                                fontFamily: fonts.nostromoBlack,
+                                display: "-webkit-box",
+                                overflow: "hidden",
+                                overflowWrap: "anywhere",
+                                textOverflow: "ellipsis",
+                                WebkitBoxOrient: "vertical",
+                            }}
+                        >
+                            {rarityDeets.label}
+                        </Typography>
+                    )}
+                </Stack>
+            </Stack>
+        </ClipThing>
+    )
+}
+
+const CrateItemSmall = ({ item }: CrateItemProps) => {
+    const [rarityDeets, setRarityDeets] = useState<{
+        label: string
+        color: string
+    }>()
+
     useEffect(() => {
         setRarityDeets(item?.rarity ? getRarityDeets(item?.rarity) : undefined)
     }, [setRarityDeets, getRarityDeets, item?.rarity])
 
+    if (!item?.avatarUrl) return null
     return (
-        <Stack direction={sizeCI === "large" ? "column" : "row"} alignItems={"center"} spacing="1rem" sx={{ flex: 1, my: "5rem" }}>
-            {sizeCI === "large" ? (
-                <Box
-                    component={"img"}
-                    src={sizeCI === "large" ? item?.imageUrl : item?.avatarUrl}
-                    alt={item?.label}
-                    sx={{ width: sizeCI === "large" ? "20rem" : "5rem", height: "auto", objectFit: "contain", objectPosition: "center" }}
-                />
-            ) : (
-                <LoadoutItem
-                    imageUrl={item?.avatarUrl}
-                    videoUrl={item?.animationUrl}
-                    Icon={<SvgPowerCore fill={colors.powerCore} size="1.3rem" />}
-                    primaryColor={primaryColor}
-                    tooltipText={item?.label}
-                />
-            )}
+        <Stack direction={"row"} alignItems={"center"}>
+            <Box sx={{ width: "7rem", height: "7rem" }}>
+                <MediaPreview imageUrl={item?.avatarUrl || ""} videoUrls={[item?.animationUrl]} />
+            </Box>
 
             <Stack>
-                <Typography variant="h5" sx={{ fontFamily: fonts.nostromoBlack }}>
-                    {item?.label}
+                <Typography variant="h5" sx={{ fontFamily: fonts.nostromoBlack, textAlign: "left" }}>
+                    {item?.label} {item?.type === "mech_skin" || item?.type === "weapon_skin" ? "Submodel" : ""}
                 </Typography>
                 {rarityDeets && (
                     <Typography
@@ -238,45 +296,3 @@ const CrateItem = ({ item, sizeCI }: CrateItemLargeProps) => {
         </Stack>
     )
 }
-
-// interface CarouselProps<T> {
-//     array: T[]
-// }
-// const Carousel = <T>({ array }: CarouselProps) => {
-//     const maxIndex = array.length - 1
-//     const [currentIndex, setCurrentIndex] = useState(0)
-//     const [nextIndex, setNextIndex] = useState(1)
-//     const [prevIndex, setPrevIndex] = useState(maxIndex)
-//
-//     useEffect(() => {
-//         if (currentIndex === maxIndex) {
-//             setNextIndex(0)
-//             setPrevIndex(currentIndex - 1)
-//         } else if (currentIndex === 0) {
-//             setNextIndex(currentIndex + 1)
-//             setPrevIndex(maxIndex)
-//         } else {
-//             setNextIndex(currentIndex + 1)
-//             setPrevIndex(currentIndex - 1)
-//         }
-//     }, [currentIndex, maxIndex])
-//
-//     const handleNext = () => {
-//         setCurrentIndex(nextIndex)
-//     }
-//     const handlePrev = () => {
-//         setCurrentIndex(prevIndex)
-//     }
-//     console.log(array[prevIndex], array[currentIndex], array[nextIndex])
-//
-//     if (!array[prevIndex] || !array[currentIndex] || !array[nextIndex]) return null
-//     return (
-//         <Stack direction={"row"}>
-//             <Button onClick={() => handlePrev()}>Prev</Button>
-//             <CrateItem sizeCI={"large"} label={array[prevIndex].label} />
-//             <CrateItem sizeCI={"large"} label={array[currentIndex].label} />
-//             <CrateItem sizeCI={"large"} label={array[nextIndex].label} />
-//             <Button onClick={() => handleNext()}>Next</Button>
-//         </Stack>
-//     )
-// }
