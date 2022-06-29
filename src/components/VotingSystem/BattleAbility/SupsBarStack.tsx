@@ -66,7 +66,7 @@ const SupsBar = ({ forceDisplay100Percentage, getFaction, abilityProgress }: Sup
                 }}
             />
             <ProgressBar
-                percent={forceDisplay100Percentage ? 100 : sups_cost.isZero() ? 0 : +current_sups.dividedBy(sups_cost) * 100}
+                percent={forceDisplay100Percentage === faction_id ? 100 : sups_cost.isZero() ? 0 : +current_sups.dividedBy(sups_cost) * 100}
                 linePercent={sups_cost.isZero() ? 0 : sups_cost.dividedBy(sups_cost).toNumber() * 100}
                 color={primaryColor}
                 backgroundColor="#FFFFFF10"
