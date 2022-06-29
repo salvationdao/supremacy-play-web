@@ -1,13 +1,15 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { Dispatch, SetStateAction, useCallback, useRef } from "react"
+import { Dispatch, SetStateAction, useCallback, useEffect, useRef } from "react"
 import { FancyButton } from ".."
 import { SvgPlay, TrailerThumbPNG } from "../../assets"
 import { TRAILER_VIDEO } from "../../constants"
+import { useStream } from "../../containers"
 import { useToggle } from "../../hooks"
 import { colors, siteZIndex } from "../../theme/theme"
 
 export const Trailer = ({ watchedTrailer, setWatchedTrailer }: { watchedTrailer: boolean; setWatchedTrailer: Dispatch<SetStateAction<boolean>> }) => {
-    const videoRef = useRef<HTMLVideoElement>(null)
+    const vidRef = useRef<HTMLVideoElement>(null)
+    const { isMute, volume } = useStream()
     const [isPlaying, toggleIsPlaying] = useToggle()
 
     const onEnded = useCallback(() => {
@@ -15,12 +17,23 @@ export const Trailer = ({ watchedTrailer, setWatchedTrailer }: { watchedTrailer:
         if (!watchedTrailer) localStorage.setItem("watchedTrailer", "true")
     }, [setWatchedTrailer, watchedTrailer])
 
+    const onPlayClick = useCallback(() => {
+        vidRef.current && vidRef.current.play()
+    }, [])
+
+    useEffect(() => {
+        if (volume <= 0) return
+        if (vidRef && vidRef.current) vidRef.current.volume = volume
+    }, [volume])
+
+    useEffect(() => {
+        if (vidRef && vidRef.current) vidRef.current.muted = isMute
+    }, [isMute])
+
     return (
         <Box sx={{ position: "absolute", top: 0, left: 0, bottom: 0, right: 0 }}>
             <Stack
-                onClick={() => {
-                    videoRef.current && videoRef.current.play()
-                }}
+                onClick={onPlayClick}
                 alignItems="center"
                 justifyContent="center"
                 sx={{
@@ -47,29 +60,36 @@ export const Trailer = ({ watchedTrailer, setWatchedTrailer }: { watchedTrailer:
                             backgroundRepeat: "no-repeat",
                             backgroundPosition: "center",
                             backgroundSize: "contain",
+                            zIndex: 2,
                         }}
                     >
-                        <Stack
-                            direction="row"
-                            justifyContent="center"
-                            spacing=".96rem"
+                        <Box
                             sx={{
                                 position: "absolute",
                                 top: "50%",
                                 left: "50%",
                                 transform: "translate(-50%, -50%)",
-                                px: "2.08rem",
-                                py: ".8rem",
-                                borderRadius: 1,
-                                backgroundColor: colors.darkerNeonBlue,
-                                boxShadow: 10,
                             }}
                         >
-                            <SvgPlay size="1.9rem" />
-                            <Typography variant="h6" sx={{ lineHeight: 2, fontWeight: "fontWeightBold" }}>
-                                WATCH TRAILER TO ENTER
-                            </Typography>
-                        </Stack>
+                            <FancyButton
+                                clipThingsProps={{
+                                    clipSize: "9px",
+                                    backgroundColor: colors.darkNeonBlue,
+                                    opacity: 1,
+                                    border: { isFancy: true, borderColor: colors.darkNeonBlue, borderThickness: "2px" },
+                                    sx: { position: "relative" },
+                                }}
+                                sx={{ px: "1.6rem", py: ".6rem", color: "#FFFFFF" }}
+                                onClick={onPlayClick}
+                            >
+                                <Stack spacing=".9rem" direction="row" alignItems="center">
+                                    <SvgPlay size="1.9rem" />
+                                    <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
+                                        WATCH TRAILER TO ENTER
+                                    </Typography>
+                                </Stack>
+                            </FancyButton>
+                        </Box>
                     </Box>
                 ) : (
                     <FancyButton
@@ -90,7 +110,7 @@ export const Trailer = ({ watchedTrailer, setWatchedTrailer }: { watchedTrailer:
                 )}
 
                 <video
-                    ref={videoRef}
+                    ref={vidRef}
                     disablePictureInPicture
                     disableRemotePlayback
                     playsInline
