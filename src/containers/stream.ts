@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { useParameterizedQuery } from "react-fetching-library"
 import { createContainer } from "unstated-next"
 import { useSnackbar } from "."
@@ -55,13 +55,27 @@ export const StreamContainer = createContainer(() => {
 
     // Volume control
     const [volume, setVolume] = useState(parseString(localStorage.getItem("streamVolume"), 0.3))
-    const [isMute, toggleIsMute] = useToggle(localStorage.getItem("isMute") == "true")
+    const [isMute, toggleIsMute] = useToggle(true)
     const [musicVolume, setMusicVolume] = useState(parseString(localStorage.getItem("musicVolume"), 0.3))
-    const [isMusicMute, toggleIsMusicMute] = useToggle(localStorage.getItem("isMusicMute") == "true")
+    const [isMusicMute, toggleIsMusicMute] = useToggle(true)
 
     // Resolution control
     const [selectedResolution, setSelectedResolution] = useState<number>()
     const [resolutions, setResolutions] = useState<number[]>([])
+
+    const hasInteracted = useRef(false)
+
+    // Unmute stream / trailers etc. after user has interacted with the site.
+    // This is needed for autoplay to work
+    useEffect(() => {
+        const resetMute = () => {
+            toggleIsMute(localStorage.getItem("isMute") == "true")
+            toggleIsMusicMute(localStorage.getItem("isMusicMute") == "true")
+            hasInteracted.current = true
+        }
+
+        document.addEventListener("mousedown", resetMute, { once: true })
+    }, [toggleIsMusicMute, toggleIsMute])
 
     // Fetch stream list
     useEffect(() => {
@@ -80,16 +94,11 @@ export const StreamContainer = createContainer(() => {
     }, [newSnackbarMessage, queryGetStreamList])
 
     useEffect(() => {
-        if (localStorage.getItem("isMute") == "true") setVolume(0)
-        if (localStorage.getItem("isMusicMute") == "true") setMusicVolume(0)
-    }, [])
-
-    useEffect(() => {
-        localStorage.setItem("isMute", isMute ? "true" : "false")
+        if (hasInteracted.current) localStorage.setItem("isMute", isMute ? "true" : "false")
     }, [isMute])
 
     useEffect(() => {
-        localStorage.setItem("isMusicMute", isMusicMute ? "true" : "false")
+        if (hasInteracted.current) localStorage.setItem("isMusicMute", isMusicMute ? "true" : "false")
     }, [isMusicMute])
 
     useEffect(() => {
@@ -100,7 +109,7 @@ export const StreamContainer = createContainer(() => {
             return
         }
 
-        toggleIsMute(false)
+        if (hasInteracted.current) toggleIsMute(false)
     }, [toggleIsMute, volume])
 
     useEffect(() => {
