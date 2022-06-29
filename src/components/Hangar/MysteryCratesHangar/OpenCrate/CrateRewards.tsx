@@ -43,7 +43,7 @@ export const CrateRewards = ({ rewards, onClose }: CrateRewardsProps) => {
                 label: rewards.mech.label,
             }
 
-            newArr = [...arrayItems, mech]
+            newArr = [...newArr, mech]
         }
 
         if (rewards.mech_skin) {
@@ -112,7 +112,7 @@ export const CrateRewards = ({ rewards, onClose }: CrateRewardsProps) => {
                     top: "50%",
                     left: "50%",
                     transform: "translate(-50%, -50%)",
-                    width: "70vw",
+                    width: "60vw",
                     boxShadow: 6,
                     outline: "none",
                 }}
@@ -138,9 +138,11 @@ export const CrateRewards = ({ rewards, onClose }: CrateRewardsProps) => {
                         {rewards.mech ? (
                             <MechCrateRewards items={arrayItems} />
                         ) : (
-                            <Stack direction={"row"} justifyContent={"space-between"} sx={{ mt: "1rem" }}>
+                            <Stack direction={"row"} spacing={"2rem"} justifyContent={"space-between"} sx={{ mt: "1rem" }}>
                                 {arrayItems.map((item) => (
-                                    <CrateItemLarge key={item.id} item={item} />
+                                    <Box key={item.id} sx={{ flex: "1 0 0" }}>
+                                        <CrateItemLarge item={item} />
+                                    </Box>
                                 ))}
                             </Stack>
                         )}
@@ -184,8 +186,8 @@ const MechCrateRewards = ({ items }: { items: ArrayItem[] }) => {
     const largeItem = items.find((item) => (item.type = "mech"))
 
     return (
-        <Stack direction={"row"} spacing={"2rem"}>
-            <Box sx={{ minWidth: "40%" }}>
+        <Stack direction={"row"} spacing={"2rem"} alignItems={"center"}>
+            <Box sx={{ minWidth: "30%" }}>
                 <CrateItemLarge item={largeItem} />
             </Box>
             <Stack spacing={"1rem"} sx={{ height: "fit-content" }}>
@@ -224,12 +226,12 @@ const CrateItemLarge = ({ item }: CrateItemProps) => {
             opacity={0.8}
             backgroundColor={colors.black3}
         >
-            <Stack alignItems={"center"} spacing="1rem" sx={{ flex: 1, my: "5rem" }}>
-                <Box sx={{ width: "100%", height: "auto" }}>
+            <Stack alignItems={"center"} spacing="1rem" sx={{ flex: 1, m: "1rem" }}>
+                <Box sx={{ width: "80%", maxWidth: "25rem", height: "auto" }}>
                     <MediaPreview imageUrl={item?.imageUrl || ""} videoUrls={[item?.animationUrl]} />
                 </Box>
 
-                <Stack>
+                <Stack sx={{ marginTop: "auto", padding: "1rem" }}>
                     <Typography variant="h5" sx={{ fontFamily: fonts.nostromoBlack }}>
                         {item?.label} {item?.type === "mech_skin" || item?.type === "weapon_skin" ? "Submodel" : ""}
                     </Typography>
@@ -267,8 +269,8 @@ const CrateItemSmall = ({ item }: CrateItemProps) => {
 
     if (!item?.avatarUrl) return null
     return (
-        <Stack direction={"row"} alignItems={"center"}>
-            <Box sx={{ width: "7rem", height: "7rem" }}>
+        <Stack direction={"row"} sx={{ alignItems: "center" }}>
+            <Box sx={{ width: "7rem", height: "7rem", flexShrink: 0 }}>
                 <MediaPreview imageUrl={item?.avatarUrl || ""} videoUrls={[item?.animationUrl]} />
             </Box>
 

@@ -76,10 +76,6 @@ export const MysteryCratesHangar = () => {
         getItems()
     }, [getItems])
 
-    useEffect(() => {
-        console.log(crateOpen, crateReward)
-    }, [crateOpen, crateReward])
-
     const content = useMemo(() => {
         if (loadError) {
             return (
