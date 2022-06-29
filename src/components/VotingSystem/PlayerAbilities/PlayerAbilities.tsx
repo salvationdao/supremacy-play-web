@@ -10,7 +10,7 @@ import { colors, fonts } from "../../../theme/theme"
 import { LocationSelectType, PlayerAbility } from "../../../types"
 import { PlayerAbilityCard } from "./PlayerAbilityCard"
 
-const COLUMNS = 2
+const COLUMNS = 4
 const ROWS = 2
 const PAGE_SIZE = COLUMNS * ROWS
 
