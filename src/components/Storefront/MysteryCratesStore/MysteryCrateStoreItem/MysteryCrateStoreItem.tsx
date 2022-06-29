@@ -175,7 +175,7 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate, ownershipDetails }:
                             </Box>
                         </Box>
 
-                        <Stack alignItems={enlargedView ? "center" : "flex-start"} sx={{ flex: 1, px: ".4rem", py: ".3rem", flexShrink: 0, gap: "1rem" }}>
+                        <Stack alignItems={enlargedView ? "center" : "flex-start"} spacing="1rem" sx={{ flex: 1, px: ".4rem", py: ".3rem", flexShrink: 0 }}>
                             <Typography
                                 gutterBottom
                                 variant={enlargedView ? "h4" : "h6"}
@@ -211,7 +211,7 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate, ownershipDetails }:
                                         backgroundColor={backgroundColor}
                                         sx={{ height: "100%", width: "15rem" }}
                                     >
-                                        <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                                        <Stack direction="row" justifyContent="space-between">
                                             <TextField
                                                 variant="outlined"
                                                 hiddenLabel
@@ -268,7 +268,7 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate, ownershipDetails }:
                                                     }}
                                                 />
                                             </Stack>
-                                        </Box>
+                                        </Stack>
                                     </ClipThing>
                                 )}
                                 <FancyButton

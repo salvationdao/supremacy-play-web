@@ -111,8 +111,7 @@ const CrateItem = ({ label, imageUrl, quantity }: { label: string; imageUrl: str
                     <>
                         {quantity} <span>x</span>
                     </>
-                )}
-                &nbsp;
+                )}{" "}
                 {label}
             </Typography>
         </Stack>
