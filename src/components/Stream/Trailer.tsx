@@ -1,9 +1,10 @@
-import { Box, Button, Stack, Typography } from "@mui/material"
+import { Box, Stack, Typography } from "@mui/material"
 import { Dispatch, SetStateAction, useCallback, useRef } from "react"
+import { FancyButton } from ".."
 import { SvgPlay, TrailerThumbPNG } from "../../assets"
 import { TRAILER_VIDEO } from "../../constants"
 import { useToggle } from "../../hooks"
-import { colors, fonts, siteZIndex } from "../../theme/theme"
+import { colors, siteZIndex } from "../../theme/theme"
 
 export const Trailer = ({ watchedTrailer, setWatchedTrailer }: { watchedTrailer: boolean; setWatchedTrailer: Dispatch<SetStateAction<boolean>> }) => {
     const videoRef = useRef<HTMLVideoElement>(null)
@@ -71,27 +72,21 @@ export const Trailer = ({ watchedTrailer, setWatchedTrailer }: { watchedTrailer:
                         </Stack>
                     </Box>
                 ) : (
-                    <Button
-                        variant="contained"
-                        sx={{
-                            position: "absolute",
-                            top: "3rem",
-                            right: "3rem",
-                            zIndex: 9,
-                            backgroundColor: colors.darkNavy,
-                            borderRadius: 0.4,
-                            fontFamily: fonts.nostromoBold,
-                            ":hover": { opacity: 0.8, backgroundColor: colors.darkNavy },
-                            ":disabled": {
-                                color: "#FFFFFF80",
-                                backgroundColor: colors.darkNavy,
-                                opacity: 0.6,
-                            },
+                    <FancyButton
+                        clipThingsProps={{
+                            clipSize: "9px",
+                            backgroundColor: "#222222",
+                            opacity: 0.8,
+                            border: { isFancy: true, borderColor: colors.offWhite, borderThickness: "1px" },
+                            sx: { position: "absolute", bottom: "3rem", right: "3rem", zIndex: 9 },
                         }}
+                        sx={{ px: "1.6rem", py: ".3rem", color: colors.offWhite }}
                         onClick={onEnded}
                     >
-                        SKIP
-                    </Button>
+                        <Typography variant="body2" sx={{ fontWeight: "fontWeightBold", color: colors.offWhite }}>
+                            SKIP
+                        </Typography>
+                    </FancyButton>
                 )}
 
                 <video
