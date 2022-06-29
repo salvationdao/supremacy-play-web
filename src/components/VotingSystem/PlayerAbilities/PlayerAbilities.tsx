@@ -1,5 +1,5 @@
 import { Box, Button, ButtonGroup, Divider, Fade, Link, Pagination, Stack, Typography } from "@mui/material"
-import { ReactNode, useEffect, useState } from "react"
+import { ReactNode, useCallback, useEffect, useState } from "react"
 import { SvgGlobal, SvgLine, SvgMicrochip, SvgTarget } from "../../../assets"
 import { useAuth } from "../../../containers/auth"
 import { useTheme } from "../../../containers/theme"
@@ -40,10 +40,6 @@ export const PlayerAbilities = () => {
     )
 
     useEffect(() => {
-        changePage(1)
-    }, [changePage, locationSelectType])
-
-    useEffect(() => {
         let result = playerAbilities.map((p) => p)
         if (locationSelectType) {
             result = result.filter((p) => p.ability.location_select_type === locationSelectType)
@@ -52,6 +48,14 @@ export const PlayerAbilities = () => {
         setTotalItems(result.length)
         setShownPlayerAbilities(result.slice((page - 1) * pageSize, page * pageSize))
     }, [playerAbilities, locationSelectType, setTotalItems, pageSize, page])
+
+    const onLocationSelectTypeChange = useCallback(
+        (l: LocationSelectType | null) => {
+            changePage(1)
+            setLocationSelectType(l)
+        },
+        [changePage],
+    )
 
     if (!userID) return null
 
@@ -85,28 +89,28 @@ export const PlayerAbilities = () => {
                             <FilterButton
                                 value={LocationSelectType.GLOBAL}
                                 currentSelectedValue={locationSelectType}
-                                setLocationSelectType={setLocationSelectType}
+                                onChange={onLocationSelectTypeChange}
                                 icon={<SvgGlobal size="1.4rem" />}
                             />
 
                             <FilterButton
                                 value={LocationSelectType.LOCATION_SELECT}
                                 currentSelectedValue={locationSelectType}
-                                setLocationSelectType={setLocationSelectType}
+                                onChange={onLocationSelectTypeChange}
                                 icon={<SvgTarget size="1.4rem" />}
                             />
 
                             <FilterButton
                                 value={LocationSelectType.MECH_SELECT}
                                 currentSelectedValue={locationSelectType}
-                                setLocationSelectType={setLocationSelectType}
+                                onChange={onLocationSelectTypeChange}
                                 icon={<SvgMicrochip size="1.4rem" />}
                             />
 
                             <FilterButton
                                 value={LocationSelectType.LINE_SELECT}
                                 currentSelectedValue={locationSelectType}
-                                setLocationSelectType={setLocationSelectType}
+                                onChange={onLocationSelectTypeChange}
                                 icon={<SvgLine size="1.4rem" />}
                             />
                         </ButtonGroup>
@@ -194,12 +198,12 @@ export const PlayerAbilities = () => {
 const FilterButton = ({
     value,
     currentSelectedValue,
-    setLocationSelectType,
+    onChange: setLocationSelectType,
     icon,
 }: {
     value: LocationSelectType
     currentSelectedValue: LocationSelectType | null
-    setLocationSelectType: React.Dispatch<React.SetStateAction<LocationSelectType | null>>
+    onChange: (l: LocationSelectType | null) => void
     icon: ReactNode
 }) => {
     const theme = useTheme()
