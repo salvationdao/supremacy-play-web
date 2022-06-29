@@ -116,7 +116,7 @@ export const MechLoadout = ({ mech, mechDetails }: { mech: MechBasic; mechDetail
     )
 }
 
-const LoadoutItem = ({
+export const LoadoutItem = ({
     imageUrl,
     videoUrl,
     primaryColor,
