@@ -1,5 +1,6 @@
-import { Box, Button, ButtonGroup, Divider, Fade, Link, Pagination, Stack, Typography } from "@mui/material"
+import { Box, Button, ButtonGroup, Divider, Fade, Pagination, Stack, Typography } from "@mui/material"
 import { ReactNode, useCallback, useEffect, useState } from "react"
+import { Link } from "react-router-dom"
 import { SvgGlobal, SvgLine, SvgMicrochip, SvgTarget } from "../../../assets"
 import { useAuth } from "../../../containers/auth"
 import { useTheme } from "../../../containers/theme"
@@ -144,20 +145,19 @@ export const PlayerAbilities = () => {
                                 {locationSelectType ? (
                                     <>
                                         No results,&nbsp;
-                                        <Link
-                                            component="button"
-                                            variant="body1"
-                                            sx={{
-                                                marginTop: "-2px",
-                                                lineHeight: 1,
-                                            }}
-                                            onClick={() => setLocationSelectType(null)}
-                                        >
+                                        <strong style={{ color: colors.gold, textDecoration: "underline" }} onClick={() => setLocationSelectType(null)}>
                                             click here to clear filters.
-                                        </Link>
+                                        </strong>
                                     </>
                                 ) : (
-                                    "You don't have any player abilities..."
+                                    <>
+                                        You don&apos;t have any player abilities,&nbsp;
+                                        <strong>
+                                            <Link style={{ color: colors.gold, textDecoration: "underline" }} to={`/storefront/abilities`}>
+                                                go to storefront.
+                                            </Link>
+                                        </strong>
+                                    </>
                                 )}
                             </Typography>
                         )}

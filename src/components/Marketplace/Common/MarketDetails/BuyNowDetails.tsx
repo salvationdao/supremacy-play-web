@@ -78,6 +78,7 @@ export const BuyNowDetails = ({
 
             const resp = await send(isKeycard ? GameServerKeys.MarketplaceSalesKeycardBuy : GameServerKeys.MarketplaceSalesBuy, {
                 id,
+                amount: currentPrice,
             })
 
             if (!resp) return
@@ -91,7 +92,7 @@ export const BuyNowDetails = ({
         } finally {
             setIsLoading(false)
         }
-    }, [id, itemType, send, toggleConfirmBuyModalOpen, toggleSuccessModalOpen])
+    }, [id, currentPrice, itemType, send, toggleConfirmBuyModalOpen, toggleSuccessModalOpen])
 
     const isSelfItem = userID === owner?.id
 
