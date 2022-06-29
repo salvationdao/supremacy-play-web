@@ -74,7 +74,7 @@ export const MiniMapContainer = createContainer(() => {
         setPlayerAbility(undefined)
         setSelection(undefined)
         setIsTargeting(false)
-    }, [setPlayerAbility])
+    }, [])
 
     const onTargetConfirm = useCallback(async () => {
         if (!selection) return
