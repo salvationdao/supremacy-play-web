@@ -167,7 +167,7 @@ export const CrateRewards = ({ rewards, onClose }: CrateRewardsProps) => {
                                     fontFamily: fonts.nostromoBlack,
                                 }}
                             >
-                                View in Hangar
+                                {`View in ${rewards.mech ? "War Machine" : "Weapon"} Hangar`}
                             </Typography>
                         </FancyButton>
                     </Stack>
