@@ -18,9 +18,10 @@ interface MysteryCrateStoreItemProps {
     crate: MysteryCrate
     setCrateOpen: (value: ((prevState: boolean) => boolean) | boolean) => void
     setCrateReward: (value: ((prevState: OpenCrateResponse | undefined) => OpenCrateResponse | undefined) | OpenCrateResponse | undefined) => void
+    getCrates: () => Promise<void>
 }
 
-export const MysteryCrateHangarItem = ({ crate, setCrateOpen, setCrateReward }: MysteryCrateStoreItemProps) => {
+export const MysteryCrateHangarItem = ({ crate, setCrateOpen, setCrateReward, getCrates }: MysteryCrateStoreItemProps) => {
     const location = useLocation()
     const theme = useTheme()
     const { send } = useGameServerCommandsFaction("/faction_commander")
@@ -41,13 +42,14 @@ export const MysteryCrateHangarItem = ({ crate, setCrateOpen, setCrateReward }: 
             if (!resp) return
             setCrateReward(resp)
             setCrateOpen(true)
+            await getCrates()
         } catch (e) {
             const message = typeof e === "string" ? e : "Failed to get mystery crates."
             console.error(message)
         } finally {
             setLoading(false)
         }
-    }, [send, crate.id, setCrateOpen, setCrateReward])
+    }, [send, crate.id, setCrateOpen, setCrateReward, getCrates])
 
     return (
         <>

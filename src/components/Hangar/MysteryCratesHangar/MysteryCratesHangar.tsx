@@ -121,6 +121,7 @@ export const MysteryCratesHangar = () => {
                                 crate={crate}
                                 setCrateReward={setCrateReward}
                                 setCrateOpen={setCrateOpen}
+                                getCrates={getItems}
                             />
                         ))}
                     </Box>
@@ -192,7 +193,7 @@ export const MysteryCratesHangar = () => {
                 </Stack>
             </Stack>
         )
-    }, [crates, isLoading, loadError, location.hash, theme.factionTheme.primary, theme.factionTheme.secondary])
+    }, [crates, isLoading, loadError, location.hash, theme.factionTheme.primary, theme.factionTheme.secondary, getItems])
 
     return (
         <>
