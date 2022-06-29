@@ -22,9 +22,17 @@ import { useToggle } from "../hooks"
 import { siteZIndex } from "../theme/theme"
 
 export const BattleArenaPage = () => {
-    const [understand, toggleUnderstand] = useToggle()
+    const { userID } = useAuth()
+    const understand = localStorage.getItem(`understand-${userID}`) === "true"
 
-    if (!understand) return <EarlyAccessWarning onAcknowledged={() => toggleUnderstand(true)} />
+    if (!understand && userID)
+        return (
+            <EarlyAccessWarning
+                onAcknowledged={() => {
+                    localStorage.setItem(`understand-${userID}`, "true")
+                }}
+            />
+        )
 
     return (
         <StreamProvider>
