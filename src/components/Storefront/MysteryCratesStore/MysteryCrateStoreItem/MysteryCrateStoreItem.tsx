@@ -243,7 +243,6 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate, ownershipDetails }:
                                             <Stack
                                                 sx={{
                                                     height: "5rem",
-                                                    cursor: "pointer",
                                                     "& svg:active": {
                                                         transform: "scale(1.5)",
                                                         transition: "all .2s",
@@ -252,7 +251,7 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate, ownershipDetails }:
                                             >
                                                 <SvgPriceUpArrow
                                                     size="4rem"
-                                                    style={{ transform: "translateY(-5%)", position: "relative", zIndex: 1 }}
+                                                    sx={{ transform: "translateY(-5%)", cursor: "pointer", zIndex: 1 }}
                                                     fill={primaryColor}
                                                     onClick={() => {
                                                         const nAmountPurchasable = ownershipDetails.allowed - ownershipDetails.owned
@@ -261,7 +260,7 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate, ownershipDetails }:
                                                 />
                                                 <SvgPriceDownArrow
                                                     size="4rem"
-                                                    style={{ transform: "translateY(-60%)" }}
+                                                    sx={{ transform: "translateY(-60%)", cursor: "pointer" }}
                                                     fill={primaryColor}
                                                     onClick={() => {
                                                         if (quantity > 1) setQuantity(quantity - 1)
