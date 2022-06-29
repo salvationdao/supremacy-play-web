@@ -361,6 +361,8 @@ const MapMechInner = ({ warMachine, isEnlarged, map }: MapMechInnerProps) => {
             </Stack>
         )
     }, [
+        isHidden,
+        isSameFaction,
         dirArrowLength,
         handleClick,
         health,
