@@ -76,8 +76,6 @@ export const OvenplayerStream = () => {
     const { isMute, volume, currentStream, setCurrentPlayingStreamHost } = useStream()
     const ovenPlayer = useRef<OvenPlayerInstance>()
 
-    console.log({ isMute })
-
     // Load the stream when its changed
     useEffect(() => {
         if (document.getElementById("oven-player")) {
