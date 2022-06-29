@@ -143,20 +143,20 @@ const MiniMapInner = ({ map, isTargeting, isEnlarged }: { map: Map; isTargeting:
             }
 
             setCurPosX((prev1) => {
-                prevPosX.current = prev1
+                if (prevPosX.current !== prev1) prevPosX.current = prev1
 
                 setCurWidth((prev2) => {
-                    prevWidth.current = prev2
+                    if (prevWidth.current !== prev2) prevWidth.current = prev2
                     return targetingWidth
                 })
 
                 return (width - targetingWidth) / 2
             })
             setCurPosY((prev1) => {
-                prevPosY.current = prev1
+                if (prevPosY.current !== prev1) prevPosY.current = prev1
 
                 setCurHeight((prev2) => {
-                    prevHeight.current = prev2
+                    if (prevHeight.current !== prev2) prevHeight.current = prev2
                     return targetingHeight
                 })
 
