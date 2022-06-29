@@ -103,7 +103,6 @@ export const CrateRewards = ({ rewards, onClose }: CrateRewardsProps) => {
         // newArr = [...newArr, powercore]
         //
         // }
-        console.log(newArr)
         setArrayItems(newArr)
     }, [rewards, setArrayItems])
 

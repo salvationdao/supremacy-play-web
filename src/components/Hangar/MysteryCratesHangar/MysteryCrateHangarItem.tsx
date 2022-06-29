@@ -38,13 +38,11 @@ export const MysteryCrateHangarItem = ({ crate, setCrateOpen, setCrateReward }: 
                 id: crate.id,
             })
 
-            console.log(resp)
             if (!resp) return
             setCrateReward(resp)
             setCrateOpen(true)
         } catch (e) {
             const message = typeof e === "string" ? e : "Failed to get mystery crates."
-            console.log(message)
             console.error(e)
         } finally {
             setLoading(false)
