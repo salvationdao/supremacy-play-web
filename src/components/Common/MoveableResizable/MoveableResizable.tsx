@@ -43,6 +43,7 @@ const MoveableResizableInner = ({ children }: MoveableResizableProps) => {
         curHeight,
         onMovingStopped,
         onResizeStopped,
+        topRightContent,
     } = useMoveableResizable()
 
     const topRightBackgroundColor = useMemo(() => shadeColor(theme.factionTheme.primary, -90), [theme.factionTheme.primary])
@@ -166,6 +167,8 @@ const MoveableResizableInner = ({ children }: MoveableResizableProps) => {
                                     zIndex: 3,
                                 }}
                             >
+                                {topRightContent}
+
                                 {infoTooltipText && (
                                     <TooltipHelper text={infoTooltipText} placement="bottom">
                                         <Box

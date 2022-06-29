@@ -74,7 +74,7 @@ const VotingSystemInner = ({ userID, bribeStage }: VotingSystemInnerProps) => {
                                 },
                             }}
                         >
-                            <Stack spacing="2rem" sx={{ direction: "ltr", pt: ".4rem", pb: "1rem" }}>
+                            <Stack spacing="2rem" sx={{ direction: "ltr", pt: ".4rem", pb: "1.2rem" }}>
                                 <BattleAbilityItem key={factionID} />
                                 <FactionAbilities />
                                 {STAGING_OR_DEV_ONLY && userID && <PlayerAbilities />}

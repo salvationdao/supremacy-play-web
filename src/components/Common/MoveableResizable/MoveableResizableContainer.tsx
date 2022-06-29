@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react"
+import { ReactNode, useCallback, useState } from "react"
 import { createContainer } from "unstated-next"
 import { parseString } from "../../../helpers"
 import { Dimension, Position } from "../../../types"
@@ -33,6 +33,7 @@ export interface MoveableResizableConfig {
     onHideCallback?: () => void
     resizeHandlePlacement?: "topLeft" | "bottomRight"
     infoTooltipText?: string
+    topRightContent?: ReactNode
 }
 
 // Container for allowing children to set size and position
@@ -57,6 +58,7 @@ export const MoveableResizableContainer = createContainer((initialState: Moveabl
 
         onHideCallback,
         infoTooltipText,
+        topRightContent,
     } = initialState || defaultConfig
 
     const [curPosX, setCurPosX] = useState(parseString(localStorage.getItem(`${localStoragePrefix}PosX`), defaultPosX))
@@ -114,6 +116,7 @@ export const MoveableResizableContainer = createContainer((initialState: Moveabl
         setCurHeight,
         onMovingStopped,
         onResizeStopped,
+        topRightContent,
     }
 })
 
