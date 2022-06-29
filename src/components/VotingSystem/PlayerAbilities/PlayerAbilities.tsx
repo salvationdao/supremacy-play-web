@@ -1,5 +1,6 @@
-import { Box, Button, ButtonGroup, Divider, Fade, Link, Pagination, Stack, Typography } from "@mui/material"
-import { ReactNode, useEffect, useState } from "react"
+import { Box, Button, ButtonGroup, Divider, Fade, Pagination, Stack, Typography } from "@mui/material"
+import { ReactNode, useCallback, useEffect, useState } from "react"
+import { Link } from "react-router-dom"
 import { SvgGlobal, SvgLine, SvgMicrochip, SvgTarget } from "../../../assets"
 import { useAuth } from "../../../containers/auth"
 import { useTheme } from "../../../containers/theme"
@@ -40,10 +41,6 @@ export const PlayerAbilities = () => {
     )
 
     useEffect(() => {
-        changePage(1)
-    }, [changePage, locationSelectType])
-
-    useEffect(() => {
         let result = playerAbilities.map((p) => p)
         if (locationSelectType) {
             result = result.filter((p) => p.ability.location_select_type === locationSelectType)
@@ -52,6 +49,14 @@ export const PlayerAbilities = () => {
         setTotalItems(result.length)
         setShownPlayerAbilities(result.slice((page - 1) * pageSize, page * pageSize))
     }, [playerAbilities, locationSelectType, setTotalItems, pageSize, page])
+
+    const onLocationSelectTypeChange = useCallback(
+        (l: LocationSelectType | null) => {
+            changePage(1)
+            setLocationSelectType(l)
+        },
+        [changePage],
+    )
 
     if (!userID) return null
 
@@ -85,28 +90,28 @@ export const PlayerAbilities = () => {
                             <FilterButton
                                 value={LocationSelectType.GLOBAL}
                                 currentSelectedValue={locationSelectType}
-                                setLocationSelectType={setLocationSelectType}
+                                onChange={onLocationSelectTypeChange}
                                 icon={<SvgGlobal size="1.4rem" />}
                             />
 
                             <FilterButton
                                 value={LocationSelectType.LOCATION_SELECT}
                                 currentSelectedValue={locationSelectType}
-                                setLocationSelectType={setLocationSelectType}
+                                onChange={onLocationSelectTypeChange}
                                 icon={<SvgTarget size="1.4rem" />}
                             />
 
                             <FilterButton
                                 value={LocationSelectType.MECH_SELECT}
                                 currentSelectedValue={locationSelectType}
-                                setLocationSelectType={setLocationSelectType}
+                                onChange={onLocationSelectTypeChange}
                                 icon={<SvgMicrochip size="1.4rem" />}
                             />
 
                             <FilterButton
                                 value={LocationSelectType.LINE_SELECT}
                                 currentSelectedValue={locationSelectType}
-                                setLocationSelectType={setLocationSelectType}
+                                onChange={onLocationSelectTypeChange}
                                 icon={<SvgLine size="1.4rem" />}
                             />
                         </ButtonGroup>
@@ -140,20 +145,19 @@ export const PlayerAbilities = () => {
                                 {locationSelectType ? (
                                     <>
                                         No results,&nbsp;
-                                        <Link
-                                            component="button"
-                                            variant="body1"
-                                            sx={{
-                                                marginTop: "-2px",
-                                                lineHeight: 1,
-                                            }}
-                                            onClick={() => setLocationSelectType(null)}
-                                        >
+                                        <strong style={{ color: colors.gold, textDecoration: "underline" }} onClick={() => setLocationSelectType(null)}>
                                             click here to clear filters.
-                                        </Link>
+                                        </strong>
                                     </>
                                 ) : (
-                                    "You don't have any player abilities..."
+                                    <>
+                                        You don&apos;t have any player abilities,&nbsp;
+                                        <strong>
+                                            <Link style={{ color: colors.gold, textDecoration: "underline" }} to={`/storefront/abilities`}>
+                                                go to storefront.
+                                            </Link>
+                                        </strong>
+                                    </>
                                 )}
                             </Typography>
                         )}
@@ -194,12 +198,12 @@ export const PlayerAbilities = () => {
 const FilterButton = ({
     value,
     currentSelectedValue,
-    setLocationSelectType,
+    onChange: setLocationSelectType,
     icon,
 }: {
     value: LocationSelectType
     currentSelectedValue: LocationSelectType | null
-    setLocationSelectType: React.Dispatch<React.SetStateAction<LocationSelectType | null>>
+    onChange: (l: LocationSelectType | null) => void
     icon: ReactNode
 }) => {
     const theme = useTheme()

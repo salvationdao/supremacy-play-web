@@ -26,7 +26,7 @@ interface MiniMapInsideProps {
 
 export const MiniMapInside = ({ containerDimensions, isEnlarged }: MiniMapInsideProps) => {
     const { map } = useGame()
-    const { mapElement, gridWidth, gridHeight, isTargeting, selection, setSelection, playerAbility } = useMiniMap()
+    const { mapElement, gridWidth, gridHeight, isTargeting, selection, setSelection, playerAbility, winner } = useMiniMap()
 
     const gestureRef = useRef<HTMLDivElement>(null)
     const { mapScale, dragX, dragY } = useMiniMapGestures({ gestureRef, containerDimensions })
@@ -54,9 +54,10 @@ export const MiniMapInside = ({ containerDimensions, isEnlarged }: MiniMapInside
     const isLocationSelection = useMemo(
         () =>
             isTargeting &&
-            (playerAbility?.ability.location_select_type === LocationSelectType.LOCATION_SELECT ||
+            (winner ||
+                playerAbility?.ability.location_select_type === LocationSelectType.LOCATION_SELECT ||
                 playerAbility?.ability.location_select_type === LocationSelectType.MECH_COMMAND),
-        [isTargeting, playerAbility?.ability.location_select_type],
+        [isTargeting, winner, playerAbility?.ability.location_select_type],
     )
 
     const isLineSelection = useMemo(

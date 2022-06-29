@@ -11,16 +11,11 @@ import { useGameServerCommandsFaction, useGameServerSubscriptionUser } from "../
 import { GameServerKeys } from "../../../keys"
 import { HANGAR_TABS } from "../../../pages"
 import { colors, fonts } from "../../../theme/theme"
-import { StorefrontMysteryCrate } from "../../../types"
+import { MysteryCrateOwnershipResp, StorefrontMysteryCrate } from "../../../types"
 import { PageHeader } from "../../Common/PageHeader"
 import { TooltipHelper } from "../../Common/TooltipHelper"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { MysteryCrateStoreItem, MysteryCrateStoreItemLoadingSkeleton } from "./MysteryCrateStoreItem/MysteryCrateStoreItem"
-
-interface MysteryCrateOwnershipResp {
-    allowed: number
-    owned: number
-}
 
 export const MysteryCratesStore = () => {
     const { newSnackbarMessage } = useSnackbar()
@@ -135,7 +130,12 @@ export const MysteryCratesStore = () => {
                         }}
                     >
                         {crates.map((crate, index) => (
-                            <MysteryCrateStoreItem key={`storefront-mystery-crate-${crate.id}-${index}`} enlargedView={enlargedView} crate={crate} />
+                            <MysteryCrateStoreItem
+                                key={`storefront-mystery-crate-${crate.id}-${index}`}
+                                enlargedView={enlargedView}
+                                crate={crate}
+                                ownershipDetails={ownershipDetails}
+                            />
                         ))}
                     </Box>
                 </Box>
@@ -173,7 +173,7 @@ export const MysteryCratesStore = () => {
                 </Stack>
             </Stack>
         )
-    }, [crates, enlargedView, isLoading, loadError])
+    }, [crates, enlargedView, isLoading, loadError, ownershipDetails])
 
     return (
         <ClipThing

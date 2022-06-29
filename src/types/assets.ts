@@ -416,6 +416,11 @@ export interface RewardResponse {
     amount: string
 }
 
+export interface MysteryCrateOwnershipResp {
+    allowed: number
+    owned: number
+}
+
 export interface OpenCrateResponse {
     mech?: MechDetails
     power_core?: PowerCore
@@ -423,3 +428,4 @@ export interface OpenCrateResponse {
     weapon: Weapon[]
     weapon_skin?: WeaponSkin
 }
+

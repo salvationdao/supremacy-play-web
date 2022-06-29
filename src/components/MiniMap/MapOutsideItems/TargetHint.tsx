@@ -26,11 +26,7 @@ const WinnerTargetHint = () => {
     const { label, colour } = winner.game_ability
 
     return (
-        <Stack
-            alignItems="center"
-            justifyContent="center"
-            direction="row"
-            spacing=".8rem"
+        <Box
             sx={{
                 position: "absolute",
                 bottom: 0,
@@ -43,7 +39,7 @@ const WinnerTargetHint = () => {
                 zIndex: 98,
             }}
         >
-            <Typography variant="h6" sx={{ lineHeight: 1, span: { fontWeight: "fontWeightBold", color: colour } }}>
+            <Typography variant="h6" sx={{ textAlign: "center", lineHeight: 1, span: { fontWeight: "fontWeightBold", color: colour } }}>
                 You have{" "}
                 <WinnerTargetHintInner
                     endTime={winner.end_time}
@@ -55,7 +51,7 @@ const WinnerTargetHint = () => {
                 s to choose a location for&nbsp;
                 <span>{`${label}`}</span>
             </Typography>
-        </Stack>
+        </Box>
     )
 }
 

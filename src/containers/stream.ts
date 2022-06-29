@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { useParameterizedQuery } from "react-fetching-library"
 import { createContainer } from "unstated-next"
 import { useSnackbar } from "."
@@ -8,23 +8,6 @@ import { useToggle } from "../hooks"
 import { Stream, StreamService } from "../types"
 
 const MAX_OPTIONS = 10
-
-const newExperimental2: Stream = {
-    host: "wss://video-experimental2.ninja-cdn.com/app1/livefeed",
-    name: "Experimental2 🌟",
-    url: "wss://video-experimental2.ninja-cdn.com/app1/livefeed",
-    stream_id: "softvelum-experimental",
-    region: "",
-    resolution: "",
-    bit_rates_k_bits: 0,
-    user_max: 2,
-    users_now: 1,
-    active: true,
-    status: "online",
-    latitude: "0",
-    longitude: "0",
-    service: StreamService.Softvelum,
-}
 
 const blankOption: Stream = {
     host: "No Stream",
@@ -55,13 +38,27 @@ export const StreamContainer = createContainer(() => {
 
     // Volume control
     const [volume, setVolume] = useState(parseString(localStorage.getItem("streamVolume"), 0.3))
-    const [isMute, toggleIsMute] = useToggle(localStorage.getItem("isMute") == "true")
+    const [isMute, toggleIsMute] = useToggle(true)
     const [musicVolume, setMusicVolume] = useState(parseString(localStorage.getItem("musicVolume"), 0.3))
-    const [isMusicMute, toggleIsMusicMute] = useToggle(localStorage.getItem("isMusicMute") == "true")
+    const [isMusicMute, toggleIsMusicMute] = useToggle(true)
 
     // Resolution control
     const [selectedResolution, setSelectedResolution] = useState<number>()
     const [resolutions, setResolutions] = useState<number[]>([])
+
+    const hasInteracted = useRef(false)
+
+    // Unmute stream / trailers etc. after user has interacted with the site.
+    // This is needed for autoplay to work
+    useEffect(() => {
+        const resetMute = () => {
+            toggleIsMute(localStorage.getItem("isMute") == "true")
+            toggleIsMusicMute(localStorage.getItem("isMusicMute") == "true")
+            hasInteracted.current = true
+        }
+
+        document.addEventListener("mousedown", resetMute, { once: true })
+    }, [toggleIsMusicMute, toggleIsMute])
 
     // Fetch stream list
     useEffect(() => {
@@ -70,7 +67,7 @@ export const StreamContainer = createContainer(() => {
                 const resp = await queryGetStreamList({})
                 if (resp.error || !resp.payload) return
                 // setLoadedStreams([blankOption, ...resp.payload])
-                setLoadedStreams([blankOption, ...resp.payload, newExperimental2]) // TODO Remove hard-coded experimental
+                setLoadedStreams([blankOption, ...resp.payload])
             } catch (err) {
                 const message = typeof err === "string" ? err : "Failed to get the list of streams."
                 newSnackbarMessage(message, "error")
@@ -80,16 +77,11 @@ export const StreamContainer = createContainer(() => {
     }, [newSnackbarMessage, queryGetStreamList])
 
     useEffect(() => {
-        if (localStorage.getItem("isMute") == "true") setVolume(0)
-        if (localStorage.getItem("isMusicMute") == "true") setMusicVolume(0)
-    }, [])
-
-    useEffect(() => {
-        localStorage.setItem("isMute", isMute ? "true" : "false")
+        if (hasInteracted.current) localStorage.setItem("isMute", isMute ? "true" : "false")
     }, [isMute])
 
     useEffect(() => {
-        localStorage.setItem("isMusicMute", isMusicMute ? "true" : "false")
+        if (hasInteracted.current) localStorage.setItem("isMusicMute", isMusicMute ? "true" : "false")
     }, [isMusicMute])
 
     useEffect(() => {
@@ -100,7 +92,7 @@ export const StreamContainer = createContainer(() => {
             return
         }
 
-        toggleIsMute(false)
+        if (hasInteracted.current) toggleIsMute(false)
     }, [toggleIsMute, volume])
 
     useEffect(() => {

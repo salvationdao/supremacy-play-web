@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 
 interface Props {
     pageSize: number
@@ -19,21 +19,21 @@ export const usePagination = ({ pageSize: _pageSize = 10, page: _page = 1 }: Pro
 
     const hasPrev = useMemo(() => page - 1 > 0, [page])
 
-    const nextPage = () => {
-        if (hasNext) setPage(page + 1)
-    }
+    const nextPage = useCallback(() => {
+        if (hasNext) setPage((prev) => prev + 1)
+    }, [hasNext])
 
-    const prevPage = () => {
-        if (hasPrev) setPage(page - 1)
-    }
+    const prevPage = useCallback(() => {
+        if (hasPrev) setPage((prev) => prev - 1)
+    }, [hasPrev])
 
-    const changePageSize = (newPageSize: number) => {
+    const changePageSize = useCallback((newPageSize: number) => {
         setPageSize((curPageSize) => (newPageSize !== curPageSize ? newPageSize : curPageSize))
-    }
+    }, [])
 
-    const changePage = (newPage: number) => {
+    const changePage = useCallback((newPage: number) => {
         setPage((curPage) => (newPage !== curPage ? newPage : curPage))
-    }
+    }, [])
 
     return {
         page,

@@ -61,12 +61,13 @@ export const PlayerAbilityCard = ({ playerAbility }: { playerAbility: PlayerAbil
                         border: { borderColor: playerAbility.ability.colour, borderThickness: "1px" },
                         sx: { position: "relative", px: ".4rem", py: ".3rem" },
                     }}
-                    sx={{ color: playerAbility.ability.colour, p: 0, minWidth: 0 }}
+                    sx={{ color: playerAbility.ability.colour, p: 0, minWidth: 0, height: "100%" }}
                     onClick={() => toggleShowActivateModal(true)}
                 >
                     <Stack
                         spacing=".3rem"
                         sx={{
+                            height: "100%",
                             ":hover img": {
                                 transform: "scale(1.2)",
                                 filter: "brightness(2)",
