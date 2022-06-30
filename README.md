@@ -38,7 +38,7 @@
 		border: { isFancy: true, borderColor: "#FF0000", borderThickness: "2px" },
 		sx: { position: "relative" },
 	}}
-	sx={{ px: "1.6rem", py: ".6rem", color: "#FF0000" }}
+	sx={{ px: "1.6rem", py: ".6rem", color: "#FF0000" }} // color is the ripple color!
 	onClick={onClick}
 >
 	<Typography
