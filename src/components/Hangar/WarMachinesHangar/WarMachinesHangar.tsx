@@ -4,7 +4,7 @@ import { ClipThing } from "../.."
 import { EmptyWarMachinesPNG, WarMachineIconPNG } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { getRarityDeets, parseString } from "../../../helpers"
-import { usePagination, useUrlQuery } from "../../../hooks"
+import { usePagination, useToggle, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
@@ -53,6 +53,7 @@ export const WarMachinesHangar = () => {
     const [sort, setSort] = useState<string>(query.get("sort") || SortTypeLabel.MechQueueAsc)
     const [status, setStatus] = useState<string[]>((query.get("statuses") || undefined)?.split("||") || [])
     const [rarities, setRarities] = useState<string[]>((query.get("rarities") || undefined)?.split("||") || [])
+    const [isGridView, toggleIsGridView] = useToggle(false)
 
     // Filters
     const statusFilterSection = useRef<ChipFilter>({
@@ -170,7 +171,7 @@ export const WarMachinesHangar = () => {
                             width: "100%",
                             py: "1rem",
                             display: "grid",
-                            gridTemplateColumns: "repeat(auto-fill, minmax(29rem, 1fr))",
+                            gridTemplateColumns: isGridView ? "repeat(auto-fill, minmax(29rem, 1fr))" : "100%",
                             gap: "1.3rem",
                             alignItems: "center",
                             justifyContent: "center",
@@ -178,7 +179,7 @@ export const WarMachinesHangar = () => {
                         }}
                     >
                         {mechs.map((mech) => (
-                            <WarMachineHangarItem key={`marketplace-${mech.id}`} mech={mech} />
+                            <WarMachineHangarItem key={`marketplace-${mech.id}`} mech={mech} isGridView={isGridView} />
                         ))}
                     </Box>
                 </Box>
@@ -216,7 +217,7 @@ export const WarMachinesHangar = () => {
                 </Stack>
             </Stack>
         )
-    }, [loadError, mechs, isLoading, theme.factionTheme.primary])
+    }, [loadError, mechs, isLoading, isGridView, theme.factionTheme.primary])
 
     return (
         <Stack direction="row" spacing="1rem" sx={{ height: "100%" }}>
@@ -252,6 +253,8 @@ export const WarMachinesHangar = () => {
                             sortOptions={sortOptions}
                             selectedSort={sort}
                             onSetSort={setSort}
+                            isGridView={isGridView}
+                            toggleIsGridView={toggleIsGridView}
                         />
 
                         <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
