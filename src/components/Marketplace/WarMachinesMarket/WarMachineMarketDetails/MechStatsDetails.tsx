@@ -4,7 +4,7 @@ import { SvgStats, SvgIntroAnimation, SvgOutroAnimation, SvgPowerCore, SvgSkin, 
 import { useTheme } from "../../../../containers/theme"
 import { colors, fonts } from "../../../../theme/theme"
 import { MechDetails } from "../../../../types"
-import { MechBarStats } from "../../../Hangar/WarMachinesHangar/WarMachineHangarItem/MechBarStats"
+import { MechBarStats } from "../../../Hangar/WarMachinesHangar/Common/MechBarStats"
 
 export const MechStatsDetails = ({ mechDetails }: { mechDetails?: MechDetails }) => {
     const theme = useTheme()

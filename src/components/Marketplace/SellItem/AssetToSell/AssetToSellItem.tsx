@@ -8,7 +8,7 @@ import { fonts } from "../../../../theme/theme"
 import { Keycard, MechDetails, MysteryCrate } from "../../../../types"
 import { ItemType } from "../../../../types/marketplace"
 import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
-import { MechLoadoutIcons } from "../../WarMachinesMarket/WarMachineMarketItem"
+import { MechLoadoutIcons } from "../../../Hangar/WarMachinesHangar/Common/MechLoadoutIcons"
 import { AssetToSellStruct } from "../SellItem"
 
 export const AssetToSellItem = ({
