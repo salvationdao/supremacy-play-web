@@ -13,7 +13,7 @@ const TRANSITION_DURACTION = 0.275 // seconds
 
 interface MapMechProps {
     warMachine: WarMachineState
-    isEnlarged: boolean
+    isLargeMode: boolean
 }
 
 export const MapMech = (props: MapMechProps) => {
@@ -26,7 +26,7 @@ interface MapMechInnerProps extends MapMechProps {
     map: Map
 }
 
-const MapMechInner = ({ warMachine, isEnlarged, map }: MapMechInnerProps) => {
+const MapMechInner = ({ warMachine, isLargeMode, map }: MapMechInnerProps) => {
     const { userID, factionID } = useAuth()
     const { getFaction } = useSupremacy()
     const { isTargeting, gridWidth, gridHeight, playerAbility, highlightedMechHash, setHighlightedMechHash, selection, setSelection } = useMiniMap()
@@ -45,7 +45,6 @@ const MapMechInner = ({ warMachine, isEnlarged, map }: MapMechInnerProps) => {
     /**
      * For rendering: size, colors etc.
      */
-    const isSameFaction = useMemo(() => factionID === warMachineFactionID, [factionID, warMachineFactionID])
     const iconSize = useMemo(() => Math.min(gridWidth, gridHeight) * 1.1, [gridWidth, gridHeight])
     const dirArrowLength = useMemo(() => iconSize / 2 + 0.6 * iconSize, [iconSize])
     const primaryColor = useMemo(
@@ -133,17 +132,17 @@ const MapMechInner = ({ warMachine, isEnlarged, map }: MapMechInnerProps) => {
     return useMemo(() => {
         if (!position) return null
 
-        // Don't show on map if the mech is hidden and player is not part of the mech's faction
-        if (isHidden && !isSameFaction) return null
+        // Don't show on map if the mech is hidden
+        if (isHidden) return null
 
         let opacity = 1
-        if (isEnlarged) {
+        if (isLargeMode) {
             if (!isAlive) {
                 opacity = 0.7
             }
         }
         if (isHidden) {
-            opacity = 0.3
+            opacity = 0
         }
 
         return (
@@ -193,7 +192,7 @@ const MapMechInner = ({ warMachine, isEnlarged, map }: MapMechInnerProps) => {
                 {/* The mech icon and rotation arrow */}
                 <Box
                     style={{
-                        ...(isEnlarged
+                        ...(isLargeMode
                             ? {
                                   position: "relative",
                                   width: iconSize,
@@ -232,12 +231,12 @@ const MapMechInner = ({ warMachine, isEnlarged, map }: MapMechInnerProps) => {
                                 width: "100%",
                                 height: "100%",
                                 background: "linear-gradient(#00000040, #00000090)",
-                                opacity: isEnlarged ? 1 : 0.6,
+                                opacity: isLargeMode ? 1 : 0.6,
                             }}
                         >
                             <SvgMapSkull
                                 fill="#000000"
-                                size={isEnlarged ? `${0.8 * iconSize}px` : `${1.3 * iconSize}px`}
+                                size={isLargeMode ? `${0.8 * iconSize}px` : `${1.3 * iconSize}px`}
                                 style={{
                                     position: "absolute",
                                     top: "52%",
@@ -249,7 +248,7 @@ const MapMechInner = ({ warMachine, isEnlarged, map }: MapMechInnerProps) => {
                     )}
 
                     {/* Rotation arrow */}
-                    {isAlive && isEnlarged && (
+                    {isAlive && isLargeMode && (
                         <Box
                             style={{
                                 position: "absolute",
@@ -362,13 +361,12 @@ const MapMechInner = ({ warMachine, isEnlarged, map }: MapMechInnerProps) => {
         )
     }, [
         isHidden,
-        isSameFaction,
         dirArrowLength,
         handleClick,
         health,
         iconSize,
         isAlive,
-        isEnlarged,
+        isLargeMode,
         isMechHighligheted,
         isTargeting,
         maxHealth,

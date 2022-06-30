@@ -2,7 +2,7 @@ import { useMemo } from "react"
 import { useGame } from "../../../../containers"
 import { MapMech } from "./MapMech"
 
-export const MapMechs = ({ isEnlarged }: { isEnlarged: boolean }) => {
+export const MapMechs = ({ isLargeMode }: { isLargeMode: boolean }) => {
     const { map, warMachines } = useGame()
 
     return useMemo(() => {
@@ -10,9 +10,9 @@ export const MapMechs = ({ isEnlarged }: { isEnlarged: boolean }) => {
         return (
             <>
                 {warMachines.map((wm) => (
-                    <MapMech key={`${wm.participantID} - ${wm.hash}`} warMachine={wm} isEnlarged={isEnlarged} />
+                    <MapMech key={`${wm.participantID} - ${wm.hash}`} warMachine={wm} isLargeMode={isLargeMode} />
                 ))}
             </>
         )
-    }, [isEnlarged, map, warMachines])
+    }, [isLargeMode, map, warMachines])
 }
