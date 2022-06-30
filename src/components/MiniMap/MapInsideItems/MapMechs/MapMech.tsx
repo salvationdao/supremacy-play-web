@@ -136,14 +136,8 @@ const MapMechInner = ({ warMachine, isLargeMode, map }: MapMechInnerProps) => {
         if (isHidden) return null
 
         let opacity = 1
-        if (isLargeMode) {
-            if (!isAlive) {
-                opacity = 0.7
-            }
-        }
-        if (isHidden) {
-            opacity = 0
-        }
+        if (isLargeMode && !isAlive) opacity = 0.7
+        if (isHidden) opacity = 0
 
         return (
             <Stack
