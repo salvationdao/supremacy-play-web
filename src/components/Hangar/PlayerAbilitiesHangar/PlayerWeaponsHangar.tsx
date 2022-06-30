@@ -1,128 +1,185 @@
-import { Box, Stack, Typography } from "@mui/material"
-import { useEffect, useMemo, useRef, useState } from "react"
-import { ClipThing, FancyButton } from "../.."
-import { PlayerAbilityPNG } from "../../../assets"
+import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { ClipThing } from "../.."
+import { EmptyWarMachinesPNG, WarMachineIconPNG } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
-import { parseString } from "../../../helpers"
-import { usePagination, useUrlQuery } from "../../../hooks"
-import { useGameServerSubscriptionUser } from "../../../hooks/useGameServer"
+import { getRarityDeets, parseString } from "../../../helpers"
+import { usePagination, useToggle, useUrlQuery } from "../../../hooks"
+import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { LocationSelectType, PlayerAbility } from "../../../types"
+import { MechBasic, MechStatusEnum } from "../../../types"
+import { SortTypeLabel } from "../../../types/marketplace"
 import { PageHeader } from "../../Common/PageHeader"
 import { ChipFilter } from "../../Common/SortAndFilters/ChipFilterSection"
 import { SortAndFilters } from "../../Common/SortAndFilters/SortAndFilters"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
-import { MysteryCrateStoreItemLoadingSkeleton } from "../../Storefront/MysteryCratesStore/MysteryCrateStoreItem/MysteryCrateStoreItem"
-import { PlayerAbilityHangarItem } from "./PlayerAbilityHangarItem"
+import { WarMachineHangarItem } from "../WarMachinesHangar/WarMachineHangarItem"
+
+const sortOptions = [
+    { label: SortTypeLabel.MechQueueAsc, value: SortTypeLabel.MechQueueAsc },
+    { label: SortTypeLabel.MechQueueDesc, value: SortTypeLabel.MechQueueDesc },
+]
+
+interface GetMechsRequest {
+    queue_sort: string
+    page: number
+    page_size: number
+    include_market_listed: boolean
+}
+
+interface GetMechsResponse {
+    mechs: MechBasic[]
+    total: number
+}
 
 export const PlayerWeaponsHangar = () => {
+    const [query, updateQuery] = useUrlQuery()
+    const { send } = useGameServerCommandsUser("/user_commander")
     const theme = useTheme()
-    const [query] = useUrlQuery()
 
-    const [isLoaded, setIsLoaded] = useState(false)
-    const [playerAbilities, setPlayerAbilities] = useState<PlayerAbility[]>([])
-    const [shownPlayerAbilities, setShownPlayerAbilities] = useState<PlayerAbility[]>([])
+    // Items
+    const [isLoading, setIsLoading] = useState(true)
+    const [loadError, setLoadError] = useState<string>()
+    const [mechs, setMechs] = useState<MechBasic[]>([])
 
-    // Pagination
-    const { page, changePage, totalItems, setTotalItems, pageSize, changePageSize } = usePagination({
+    const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({
         pageSize: parseString(query.get("pageSize"), 10),
         page: parseString(query.get("page"), 1),
     })
 
-    // Filters
+    // Filters and sorts
     const [search, setSearch] = useState("")
-    const [locationSelectTypes, setLocationSelectTypes] = useState<string[]>((query.get("abilityTypes") || undefined)?.split("||") || [])
-    const locationSelectTypeFilterSection = useRef<ChipFilter>({
-        label: "ABILITY TYPE",
+    const [sort, setSort] = useState<string>(query.get("sort") || SortTypeLabel.MechQueueAsc)
+    const [status, setStatus] = useState<string[]>((query.get("statuses") || undefined)?.split("||") || [])
+    const [rarities, setRarities] = useState<string[]>((query.get("rarities") || undefined)?.split("||") || [])
+    const [isGridView, toggleIsGridView] = useToggle(false)
+
+    // Filters
+    const statusFilterSection = useRef<ChipFilter>({
+        label: "STATUS",
         options: [
-            { value: LocationSelectType.GLOBAL, label: LocationSelectType.GLOBAL.split("_").join(" "), color: colors.green },
-            { value: LocationSelectType.LOCATION_SELECT, label: LocationSelectType.LOCATION_SELECT.split("_").join(" "), color: colors.blue2 },
-            { value: LocationSelectType.MECH_SELECT, label: LocationSelectType.MECH_SELECT.split("_").join(" "), color: colors.gold },
-            { value: LocationSelectType.LINE_SELECT, label: LocationSelectType.LINE_SELECT.split("_").join(" "), color: colors.purple },
+            { value: MechStatusEnum.Idle, label: "IDLE", color: colors.green },
+            { value: MechStatusEnum.Battle, label: "IN BATTLE", color: colors.orange },
+            { value: MechStatusEnum.Market, label: "MARKETPLACE", color: colors.red },
+            { value: MechStatusEnum.Queue, label: "IN QUEUE", color: colors.yellow },
         ],
-        initialSelected: locationSelectTypes,
+        initialSelected: status,
         onSetSelected: (value: string[]) => {
-            setLocationSelectTypes(value)
+            setStatus(value)
             changePage(1)
         },
     })
 
-    useGameServerSubscriptionUser<any[]>(
-        {
-            URI: "/player_weapons",
-            key: GameServerKeys.PlayerWeaponsList,
+    const rarityChipFilter = useRef<ChipFilter>({
+        label: "RARITY",
+        options: [
+            { value: "MEGA", ...getRarityDeets("MEGA") },
+            { value: "COLOSSAL", ...getRarityDeets("COLOSSAL") },
+            { value: "RARE", ...getRarityDeets("RARE") },
+            { value: "LEGENDARY", ...getRarityDeets("LEGENDARY") },
+            { value: "ELITE_LEGENDARY", ...getRarityDeets("ELITE_LEGENDARY") },
+            { value: "ULTRA_RARE", ...getRarityDeets("ULTRA_RARE") },
+            { value: "EXOTIC", ...getRarityDeets("EXOTIC") },
+            { value: "GUARDIAN", ...getRarityDeets("GUARDIAN") },
+            { value: "MYTHIC", ...getRarityDeets("MYTHIC") },
+            { value: "DEUS_EX", ...getRarityDeets("DEUS_EX") },
+            { value: "TITAN", ...getRarityDeets("TITAN") },
+        ],
+        initialSelected: rarities,
+        onSetSelected: (value: string[]) => {
+            setRarities(value)
+            changePage(1)
         },
-        (payload) => {
-            console.log("this is weapons", payload)
+    })
 
-            if (!payload) return
+    const getItems = useCallback(async () => {
+        try {
+            setIsLoading(true)
 
-            // setPlayerAbilities(payload)
-            // setTotalItems(payload.length)
-            // if (isLoaded) return
-            // setIsLoaded(true)
-        },
-    )
+            let sortDir = "asc"
+            if (sort === SortTypeLabel.MechQueueDesc) sortDir = "desc"
 
-    // useGameServerSubscriptionUser<PlayerAbility[]>(
-    //     {
-    //         URI: "/player_abilities",
-    //         key: GameServerKeys.PlayerAbilitiesList,
-    //     },
-    //     (payload) => {
-    //         console.log("ss")
+            const resp = await send<GetMechsResponse, GetMechsRequest>(GameServerKeys.GetWeapons, {
+                queue_sort: sortDir,
+                page,
+                page_size: pageSize,
+                include_market_listed: true,
+            })
 
-    //         if (!payload) return
-    //         setPlayerAbilities(payload)
-    //         setTotalItems(payload.length)
-    //         if (isLoaded) return
-    //         setIsLoaded(true)
-    //     },
-    // )
+            updateQuery({
+                sort,
+                page: page.toString(),
+                pageSize: pageSize.toString(),
+            })
+
+            if (!resp) return
+            setLoadError(undefined)
+            setMechs(resp.mechs)
+            setTotalItems(resp.total)
+        } catch (e) {
+            setLoadError(typeof e === "string" ? e : "Failed to get war machines.")
+            console.error(e)
+        } finally {
+            setIsLoading(false)
+        }
+    }, [send, page, pageSize, updateQuery, sort, setTotalItems])
 
     useEffect(() => {
-        let result = playerAbilities.map((p) => p)
-        if (locationSelectTypes.length > 0) {
-            result = result.filter((p) => locationSelectTypes.includes(p.ability.location_select_type))
-        }
-        if (search !== "") {
-            result = result.filter((p) => p.ability.label.includes(search) || p.ability.description.includes(search))
-        }
-
-        setTotalItems(result.length)
-        setShownPlayerAbilities(result.slice((page - 1) * pageSize, page * pageSize))
-    }, [playerAbilities, page, setTotalItems, pageSize, locationSelectTypes, search])
+        getItems()
+    }, [getItems])
 
     const content = useMemo(() => {
-        if (!isLoaded) {
+        if (loadError) {
             return (
-                <Stack direction="row" flexWrap="wrap" sx={{ height: 0 }}>
-                    {new Array(10).fill(0).map((_, index) => (
-                        <MysteryCrateStoreItemLoadingSkeleton key={index} />
-                    ))}
+                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                    <Stack
+                        alignItems="center"
+                        justifyContent="center"
+                        sx={{ height: "100%", maxWidth: "100%", width: "75rem", px: "3rem", pt: "1.28rem" }}
+                        spacing="1.5rem"
+                    >
+                        <Typography
+                            sx={{
+                                color: colors.red,
+                                fontFamily: fonts.nostromoBold,
+                                textAlign: "center",
+                            }}
+                        >
+                            {loadError}
+                        </Typography>
+                    </Stack>
                 </Stack>
             )
         }
 
-        if (shownPlayerAbilities.length > 0) {
+        if (!mechs || isLoading) {
+            return (
+                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                    <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
+                        <CircularProgress size="3rem" sx={{ color: theme.factionTheme.primary }} />
+                    </Stack>
+                </Stack>
+            )
+        }
+
+        if (mechs && mechs.length > 0) {
             return (
                 <Box sx={{ direction: "ltr", height: 0 }}>
                     <Box
                         sx={{
-                            overflow: "visible",
-                            display: "grid",
                             width: "100%",
-                            gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
-                            gridTemplateRows: "repeat(1, min-content)",
-                            gap: "3rem",
-                            alignItems: "stretch",
-                            justifyContent: "center",
                             py: "1rem",
+                            display: "grid",
+                            gridTemplateColumns: isGridView ? "repeat(auto-fill, minmax(29rem, 1fr))" : "100%",
+                            gap: "1.3rem",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            overflow: "visible",
                         }}
                     >
-                        {shownPlayerAbilities.map((p) => (
-                            <PlayerAbilityHangarItem key={p.ability.id} playerAbility={p} />
+                        {mechs.map((mech) => (
+                            <WarMachineHangarItem key={`marketplace-${mech.id}`} mech={mech} isGridView={isGridView} />
                         ))}
                     </Box>
                 </Box>
@@ -131,21 +188,19 @@ export const PlayerWeaponsHangar = () => {
 
         return (
             <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
-                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", maxWidth: "43rem" }}>
+                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", maxWidth: "40rem" }}>
                     <Box
                         sx={{
-                            width: "9rem",
-                            height: "9rem",
-                            opacity: 0.6,
+                            width: "80%",
+                            height: "16rem",
+                            opacity: 0.7,
                             filter: "grayscale(100%)",
-                            border: "#FFFFFF10 1px solid",
-                            background: `url(${PlayerAbilityPNG})`,
+                            background: `url(${EmptyWarMachinesPNG})`,
                             backgroundRepeat: "no-repeat",
-                            backgroundPosition: "top center",
+                            backgroundPosition: "bottom center",
                             backgroundSize: "contain",
                         }}
                     />
-
                     <Typography
                         sx={{
                             px: "1.28rem",
@@ -157,38 +212,21 @@ export const PlayerWeaponsHangar = () => {
                             textAlign: "center",
                         }}
                     >
-                        {"You don't have any abilities."}
+                        {"There are no war machines found, please try again."}
                     </Typography>
-
-                    <FancyButton
-                        to={`/storefront/abilities${location.hash}`}
-                        clipThingsProps={{
-                            clipSize: "9px",
-                            backgroundColor: theme.factionTheme.primary,
-                            border: { isFancy: true, borderColor: theme.factionTheme.primary },
-                            sx: { position: "relative", mt: "2rem" },
-                        }}
-                        sx={{ px: "1.8rem", py: ".8rem", color: theme.factionTheme.secondary }}
-                    >
-                        <Typography
-                            variant="body2"
-                            sx={{
-                                textAlign: "center",
-                                color: theme.factionTheme.secondary,
-                                fontFamily: fonts.nostromoBold,
-                            }}
-                        >
-                            wepons
-                        </Typography>
-                    </FancyButton>
                 </Stack>
             </Stack>
         )
-    }, [isLoaded, shownPlayerAbilities, theme.factionTheme.primary, theme.factionTheme.secondary])
+    }, [loadError, mechs, isLoading, isGridView, theme.factionTheme.primary])
 
     return (
         <Stack direction="row" spacing="1rem" sx={{ height: "100%" }}>
-            <SortAndFilters initialSearch={search} onSetSearch={setSearch} chipFilters={[locationSelectTypeFilterSection.current]} changePage={changePage} />
+            <SortAndFilters
+                initialSearch={search}
+                onSetSearch={setSearch}
+                chipFilters={[statusFilterSection.current, rarityChipFilter.current]}
+                changePage={changePage}
+            />
 
             <ClipThing
                 clipSize="10px"
@@ -196,61 +234,85 @@ export const PlayerWeaponsHangar = () => {
                     borderColor: theme.factionTheme.primary,
                     borderThickness: ".3rem",
                 }}
-                corners={{
-                    topRight: true,
-                    bottomLeft: true,
-                    bottomRight: true,
-                }}
                 opacity={0.7}
                 backgroundColor={theme.factionTheme.background}
-                sx={{ height: "100%" }}
+                sx={{ height: "100%", flex: 1 }}
             >
-                <Stack
-                    sx={{
-                        flex: 1,
-                        position: "relative",
-                        height: "100%",
-                    }}
-                >
-                    <PageHeader imageUrl={PlayerAbilityPNG} title="Weapons" description="player weapons here." />
+                <Stack sx={{ position: "relative", height: "100%" }}>
+                    <Stack sx={{ flex: 1 }}>
+                        <PageHeader title="weapons" description="Your war machines." imageUrl={WarMachineIconPNG} />
 
-                    <TotalAndPageSizeOptions
-                        countItems={shownPlayerAbilities.length}
-                        totalItems={totalItems}
-                        pageSize={pageSize}
-                        changePageSize={changePageSize}
-                        pageSizeOptions={[10, 20, 40]}
-                        changePage={changePage}
-                    />
+                        <TotalAndPageSizeOptions
+                            countItems={mechs?.length}
+                            totalItems={totalItems}
+                            pageSize={pageSize}
+                            changePageSize={changePageSize}
+                            pageSizeOptions={[10, 20, 30]}
+                            changePage={changePage}
+                            manualRefresh={getItems}
+                            sortOptions={sortOptions}
+                            selectedSort={sort}
+                            onSetSort={setSort}
+                            isGridView={isGridView}
+                            toggleIsGridView={toggleIsGridView}
+                        />
 
-                    <Stack sx={{ px: "2rem", flex: 1 }}>
+                        <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
+                            <Box
+                                sx={{
+                                    ml: "1.9rem",
+                                    mr: ".5rem",
+                                    pr: "1.4rem",
+                                    my: "1rem",
+                                    flex: 1,
+                                    overflowY: "auto",
+                                    overflowX: "hidden",
+                                    direction: "ltr",
+
+                                    "::-webkit-scrollbar": {
+                                        width: ".4rem",
+                                    },
+                                    "::-webkit-scrollbar-track": {
+                                        background: "#FFFFFF15",
+                                        borderRadius: 3,
+                                    },
+                                    "::-webkit-scrollbar-thumb": {
+                                        background: theme.factionTheme.primary,
+                                        borderRadius: 3,
+                                    },
+                                }}
+                            >
+                                {content}
+                            </Box>
+                        </Stack>
+                    </Stack>
+
+                    {totalPages > 1 && (
                         <Box
                             sx={{
-                                flex: 1,
-                                ml: "1.9rem",
-                                mr: ".5rem",
-                                pr: "1.4rem",
-                                my: "1rem",
-                                overflowY: "auto",
-                                overflowX: "hidden",
-                                direction: "ltr",
-
-                                "::-webkit-scrollbar": {
-                                    width: ".4rem",
-                                },
-                                "::-webkit-scrollbar-track": {
-                                    background: "#FFFFFF15",
-                                    borderRadius: 3,
-                                },
-                                "::-webkit-scrollbar-thumb": {
-                                    background: theme.factionTheme.primary,
-                                    borderRadius: 3,
-                                },
+                                px: "1rem",
+                                py: ".7rem",
+                                borderTop: (theme) => `${theme.factionTheme.primary}70 1.5px solid`,
+                                backgroundColor: "#00000070",
                             }}
                         >
-                            {content}
+                            <Pagination
+                                size="medium"
+                                count={totalPages}
+                                page={page}
+                                sx={{
+                                    ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold },
+                                    ".Mui-selected": {
+                                        color: (theme) => theme.factionTheme.secondary,
+                                        backgroundColor: `${theme.factionTheme.primary} !important`,
+                                    },
+                                }}
+                                onChange={(e, p) => changePage(p)}
+                                showFirstButton
+                                showLastButton
+                            />
                         </Box>
-                    </Stack>
+                    )}
                 </Stack>
             </ClipThing>
         </Stack>

@@ -38,6 +38,11 @@ interface Collection {
     item_sale_id?: string
 }
 
+export interface Weapon {
+    label: string
+    id: string
+}
+
 export interface MechBasic extends Collection {
     id: string
     label: string
