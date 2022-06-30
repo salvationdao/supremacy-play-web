@@ -1,12 +1,12 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useCallback, useState } from "react"
-import { FancyButton } from "../../../.."
-import { useSnackbar } from "../../../../../containers"
-import { useGameServerCommandsFaction } from "../../../../../hooks/useGameServer"
-import { GameServerKeys } from "../../../../../keys"
-import { colors, fonts } from "../../../../../theme/theme"
-import { MechModal } from "../../Common/MechModal"
-import { MechDetails } from "../../../../../types"
+import { FancyButton } from "../../.."
+import { useSnackbar } from "../../../../containers"
+import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../../keys"
+import { colors, fonts } from "../../../../theme/theme"
+import { MechModal } from "../Common/MechModal"
+import { MechDetails } from "../../../../types"
 
 export const LeaveModal = ({
     selectedMechDetails: leaveMechDetails,

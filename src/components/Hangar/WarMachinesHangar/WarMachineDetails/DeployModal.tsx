@@ -1,14 +1,14 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useCallback, useState } from "react"
-import { FancyButton, TooltipHelper } from "../../../.."
-import { SvgInfoCircular, SvgSupToken } from "../../../../../assets"
-import { useSnackbar } from "../../../../../containers"
-import { supFormatter } from "../../../../../helpers"
-import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../../../hooks/useGameServer"
-import { GameServerKeys } from "../../../../../keys"
-import { colors, fonts } from "../../../../../theme/theme"
-import { MechModal } from "../../Common/MechModal"
-import { MechDetails } from "../../../../../types"
+import { FancyButton, TooltipHelper } from "../../.."
+import { SvgInfoCircular, SvgSupToken } from "../../../../assets"
+import { useSnackbar } from "../../../../containers"
+import { supFormatter } from "../../../../helpers"
+import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../../keys"
+import { colors, fonts } from "../../../../theme/theme"
+import { MechModal } from "../Common/MechModal"
+import { MechDetails } from "../../../../types"
 
 export interface QueueFeed {
     queue_length: number

@@ -11,7 +11,7 @@ import { colors, fonts } from "../../theme/theme"
 import { MechBasic, MechDetails, MechStatus, MechStatusEnum } from "../../types"
 import { MechGeneralStatus } from "../Hangar/WarMachinesHangar/Common/MechGeneralStatus"
 import { MechThumbnail } from "../Hangar/WarMachinesHangar/Common/MechThumbnail"
-import { QueueFeed } from "../Hangar/WarMachinesHangar/WarMachineDetails/DeployQueue/DeployModal"
+import { QueueFeed } from "../Hangar/WarMachinesHangar/WarMachineDetails/DeployModal"
 
 interface QuickDeployItemProps {
     mech: MechBasic
