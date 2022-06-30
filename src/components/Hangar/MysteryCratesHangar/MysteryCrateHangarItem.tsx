@@ -1,27 +1,58 @@
-import { Box, Stack, Typography } from "@mui/material"
+import { Box, CircularProgress, Stack, Typography } from "@mui/material"
 import { useLocation } from "react-router-dom"
 import { SafePNG } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { useTimer } from "../../../hooks"
 import { MARKETPLACE_TABS } from "../../../pages"
 import { colors, fonts } from "../../../theme/theme"
-import { MysteryCrate } from "../../../types"
+import { OpenCrateResponse, MysteryCrate } from "../../../types"
 import { ItemType } from "../../../types/marketplace"
 import { ClipThing } from "../../Common/ClipThing"
 import { FancyButton } from "../../Common/FancyButton"
 import { MediaPreview } from "../../Common/MediaPreview/MediaPreview"
+import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
+import { useCallback, useState } from "react"
+import { GameServerKeys } from "../../../keys"
+import { useSnackbar } from "../../../containers"
 
 interface MysteryCrateStoreItemProps {
     crate: MysteryCrate
+    setCrateOpen: (value: ((prevState: boolean) => boolean) | boolean) => void
+    setCrateReward: (value: ((prevState: OpenCrateResponse | undefined) => OpenCrateResponse | undefined) | OpenCrateResponse | undefined) => void
+    getCrates: () => Promise<void>
 }
 
-export const MysteryCrateHangarItem = ({ crate }: MysteryCrateStoreItemProps) => {
+export const MysteryCrateHangarItem = ({ crate, setCrateOpen, setCrateReward, getCrates }: MysteryCrateStoreItemProps) => {
     const location = useLocation()
     const theme = useTheme()
+    const { newSnackbarMessage } = useSnackbar()
+    const { send } = useGameServerCommandsFaction("/faction_commander")
+    const [loading, setLoading] = useState(false)
 
     const primaryColor = theme.factionTheme.primary
     const secondaryColor = theme.factionTheme.secondary
     const backgroundColor = theme.factionTheme.background
+
+    const openCrate = useCallback(async () => {
+        try {
+            setLoading(true)
+            //change these types obviously
+            const resp = await send<OpenCrateResponse>(GameServerKeys.OpenCrate, {
+                id: crate.id,
+            })
+
+            if (!resp) return
+            setCrateReward(resp)
+            setCrateOpen(true)
+            await getCrates()
+        } catch (e) {
+            const message = typeof e === "string" ? e : "Failed to get mystery crates."
+            newSnackbarMessage(message, "error")
+            console.error(message)
+        } finally {
+            setLoading(false)
+        }
+    }, [send, crate.id, setCrateOpen, setCrateReward, getCrates, newSnackbarMessage])
 
     return (
         <>
@@ -68,6 +99,7 @@ export const MysteryCrateHangarItem = ({ crate }: MysteryCrateStoreItemProps) =>
                             >
                                 <Countdown dateTo={crate.locked_until} />
                             </Stack>
+                            {/*)}*/}
                         </Box>
 
                         <Stack sx={{ flex: 1, px: ".4rem", py: ".3rem" }}>
@@ -81,11 +113,13 @@ export const MysteryCrateHangarItem = ({ crate }: MysteryCrateStoreItemProps) =>
 
                             <Stack alignItems="center" sx={{ mt: "auto !important", pt: ".8rem", alignSelf: "stretch" }}>
                                 <FancyButton
-                                    disabled={new Date() < crate.locked_until}
-                                    onClick={() => {
-                                        /*TODO: open crate function*/
-                                        return
-                                    }}
+                                    disabled={new Date() < crate.locked_until || loading}
+                                    onClick={
+                                        //TODO: open in hangar
+                                        () => {
+                                            return
+                                        }
+                                    }
                                     clipThingsProps={{
                                         clipSize: "5px",
                                         backgroundColor: primaryColor,
@@ -93,10 +127,26 @@ export const MysteryCrateHangarItem = ({ crate }: MysteryCrateStoreItemProps) =>
                                         border: { isFancy: true, borderColor: primaryColor, borderThickness: "1.5px" },
                                         sx: { position: "relative", mt: "1rem", width: "100%" },
                                     }}
-                                    sx={{ px: "1.6rem", py: ".6rem", color: secondaryColor }}
+                                    sx={{ px: "1.6rem", py: "1.5rem", color: secondaryColor }}
                                 >
                                     <Typography variant={"caption"} sx={{ fontFamily: fonts.nostromoBlack, color: secondaryColor }}>
-                                        OPEN
+                                        {loading ? <CircularProgress size={"1.75rem"} /> : "OPEN IN HANGAR"}
+                                    </Typography>
+                                </FancyButton>
+                                <FancyButton
+                                    disabled={new Date() < crate.locked_until || loading}
+                                    onClick={openCrate}
+                                    clipThingsProps={{
+                                        clipSize: "5px",
+                                        backgroundColor: secondaryColor,
+                                        opacity: 1,
+                                        border: { isFancy: true, borderColor: secondaryColor, borderThickness: "1.5px" },
+                                        sx: { position: "relative", mt: "1rem", width: "100%" },
+                                    }}
+                                    sx={{ px: "1.6rem", py: ".6rem", color: secondaryColor }}
+                                >
+                                    <Typography variant={"caption"} sx={{ fontFamily: fonts.nostromoBlack, color: primaryColor }}>
+                                        {loading ? <CircularProgress size={"1.5rem"} /> : "OPEN HERE"}
                                     </Typography>
                                 </FancyButton>
 
@@ -134,9 +184,9 @@ export const MysteryCrateHangarItem = ({ crate }: MysteryCrateStoreItemProps) =>
 }
 
 export const Countdown = ({ dateTo }: { dateTo: Date | undefined }) => {
-    const { days, hours, minutes, seconds } = useTimer(dateTo)
+    const { days, hours, minutes, seconds, totalSecRemain } = useTimer(dateTo)
 
-    if (seconds === undefined) return null
+    if (seconds === undefined || totalSecRemain <= 0) return null
 
     return (
         <Stack direction="row">

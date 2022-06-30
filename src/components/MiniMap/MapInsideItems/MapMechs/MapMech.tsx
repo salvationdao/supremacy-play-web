@@ -13,7 +13,7 @@ const TRANSITION_DURACTION = 0.275 // seconds
 
 interface MapMechProps {
     warMachine: WarMachineState
-    isEnlarged: boolean
+    isLargeMode: boolean
 }
 
 export const MapMech = (props: MapMechProps) => {
@@ -26,7 +26,7 @@ interface MapMechInnerProps extends MapMechProps {
     map: Map
 }
 
-const MapMechInner = ({ warMachine, isEnlarged, map }: MapMechInnerProps) => {
+const MapMechInner = ({ warMachine, isLargeMode, map }: MapMechInnerProps) => {
     const { userID, factionID } = useAuth()
     const { getFaction } = useSupremacy()
     const { isTargeting, gridWidth, gridHeight, playerAbility, highlightedMechHash, setHighlightedMechHash, selection, setSelection } = useMiniMap()
@@ -40,6 +40,7 @@ const MapMechInner = ({ warMachine, isEnlarged, map }: MapMechInnerProps) => {
     const [position, sePosition] = useState<Vector2i>(warMachine.position)
     // 0 is east, and goes CW, can be negative and above 360
     const [rotation, setRotation] = useState<number>(warMachine.rotation)
+    const [isHidden, setIsHidden] = useState<boolean>(warMachine.isHidden)
 
     /**
      * For rendering: size, colors etc.
@@ -94,6 +95,7 @@ const MapMechInner = ({ warMachine, isEnlarged, map }: MapMechInnerProps) => {
             if (payload?.shield !== undefined) setShield(payload.shield)
             if (payload?.position !== undefined) sePosition(payload.position)
             if (payload?.rotation !== undefined) setRotation(payload.rotation)
+            if (payload?.is_hidden !== undefined) setIsHidden(payload.is_hidden)
         },
     )
 
@@ -129,6 +131,19 @@ const MapMechInner = ({ warMachine, isEnlarged, map }: MapMechInnerProps) => {
 
     return useMemo(() => {
         if (!position) return null
+
+        // Don't show on map if the mech is hidden
+        if (isHidden) return null
+
+        let opacity = 1
+        if (isLargeMode) {
+            if (!isAlive) {
+                opacity = 0.7
+            }
+        }
+        if (isHidden) {
+            opacity = 0
+        }
 
         return (
             <Stack
@@ -176,8 +191,8 @@ const MapMechInner = ({ warMachine, isEnlarged, map }: MapMechInnerProps) => {
 
                 {/* The mech icon and rotation arrow */}
                 <Box
-                    style={
-                        isEnlarged
+                    style={{
+                        ...(isLargeMode
                             ? {
                                   position: "relative",
                                   width: iconSize,
@@ -190,7 +205,6 @@ const MapMechInner = ({ warMachine, isEnlarged, map }: MapMechInnerProps) => {
                                   backgroundSize: "cover",
                                   border: `${primaryColor} solid 7.5px`,
                                   borderRadius: 3,
-                                  opacity: isAlive ? 1 : 0.7,
                                   boxShadow: isAlive ? `0 0 8px 2px ${primaryColor}70` : "none",
                                   zIndex: 2,
                               }
@@ -203,8 +217,10 @@ const MapMechInner = ({ warMachine, isEnlarged, map }: MapMechInnerProps) => {
                                   border: `9px solid #000000${isAlive ? "" : "00"}`,
                                   borderRadius: "50%",
                                   zIndex: 2,
-                              }
-                    }
+                              }),
+                        opacity,
+                        transition: "opacity 0.2s ease-out",
+                    }}
                 >
                     {/* Skull icon */}
                     {!isAlive && (
@@ -215,12 +231,12 @@ const MapMechInner = ({ warMachine, isEnlarged, map }: MapMechInnerProps) => {
                                 width: "100%",
                                 height: "100%",
                                 background: "linear-gradient(#00000040, #00000090)",
-                                opacity: isEnlarged ? 1 : 0.6,
+                                opacity: isLargeMode ? 1 : 0.6,
                             }}
                         >
                             <SvgMapSkull
                                 fill="#000000"
-                                size={isEnlarged ? `${0.8 * iconSize}px` : `${1.3 * iconSize}px`}
+                                size={isLargeMode ? `${0.8 * iconSize}px` : `${1.3 * iconSize}px`}
                                 style={{
                                     position: "absolute",
                                     top: "52%",
@@ -232,7 +248,7 @@ const MapMechInner = ({ warMachine, isEnlarged, map }: MapMechInnerProps) => {
                     )}
 
                     {/* Rotation arrow */}
-                    {isAlive && isEnlarged && (
+                    {isAlive && isLargeMode && (
                         <Box
                             style={{
                                 position: "absolute",
@@ -344,12 +360,13 @@ const MapMechInner = ({ warMachine, isEnlarged, map }: MapMechInnerProps) => {
             </Stack>
         )
     }, [
+        isHidden,
         dirArrowLength,
         handleClick,
         health,
         iconSize,
         isAlive,
-        isEnlarged,
+        isLargeMode,
         isMechHighligheted,
         isTargeting,
         maxHealth,

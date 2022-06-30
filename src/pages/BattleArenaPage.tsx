@@ -63,15 +63,15 @@ const BattleArenaPageInner = () => {
 
                     {isServerUp && watchedTrailer && (
                         <>
-                            <MiniMap />
                             <Notifications />
                             <WarMachineStats />
                             <BattleEndScreen />
                             <LiveVotingChart />
                             <BattleHistory />
-                            <VotingSystem />
-
                             {isQuickDeployOpen && <QuickDeploy open={isQuickDeployOpen} onClose={() => toggleIsQuickDeployOpen(false)} />}
+                            <VotingSystem />
+                            <MiniMap />
+
                             {isServerUp && userID && haveSups === false && noSupsModalOpen && <NoSupsModal onClose={() => toggleNoSupsModalOpen(false)} />}
                             {userID && !noSupsModalOpen && <TutorialModal />}
                         </>

@@ -141,6 +141,7 @@ export interface BlueprintMechSkin extends Collection {
 }
 
 export interface MechSkin extends Collection {
+    id: string
     label: string
     image_url?: string
     animation_url?: string
@@ -195,6 +196,18 @@ export interface Weapon extends Collection {
     max_ammo?: number
     updated_at: Date
     created_at: Date
+}
+
+export interface WeaponSkin extends Collection {
+    id: string
+    blueprint_id: string
+    owner_id: string
+    label: string
+    weapon_type: string
+    equipped_on?: string
+    tier: string
+    created_at: string
+    weapon_model_id: Date
 }
 
 export interface Utility extends Collection {
@@ -320,6 +333,7 @@ export interface WarMachineState {
     shield: number
     position: Vector2i
     rotation: number
+    isHidden: boolean
 }
 
 export interface WarMachineMetadata {
@@ -406,4 +420,12 @@ export interface RewardResponse {
 export interface MysteryCrateOwnershipResp {
     allowed: number
     owned: number
+}
+
+export interface OpenCrateResponse {
+    mech?: MechDetails
+    power_core?: PowerCore
+    mech_skin?: MechSkin
+    weapon: Weapon[]
+    weapon_skin?: WeaponSkin
 }
