@@ -1,14 +1,17 @@
 import { Box, Slide, Stack } from "@mui/material"
 import { ReactElement, useEffect, useMemo } from "react"
-import { BoxSlanted } from ".."
+import { ClipThing } from ".."
 import { MINI_MAP_DEFAULT_SIZE } from "../../constants"
-import { useDimension, useGame, useAuth, useOverlayToggles } from "../../containers"
+import { useAuth, useDimension, useGame, useOverlayToggles, useSupremacy } from "../../containers"
+import { useTheme } from "../../containers/theme"
 import { useToggle } from "../../hooks"
 import { siteZIndex } from "../../theme/theme"
-import { WarMachineItem } from "./WarMachineItem"
+import { WarMachineItem } from "./WarMachineItem/WarMachineItem"
 
 export const WarMachineStats = () => {
+    const theme = useTheme()
     const { factionID } = useAuth()
+    const { battleIdentifier } = useSupremacy()
     const { warMachines, bribeStage } = useGame()
     const { remToPxRatio } = useDimension()
     const { isMapOpen } = useOverlayToggles()
@@ -16,24 +19,22 @@ export const WarMachineStats = () => {
     // Temp hotfix ask james ****************************
     const [show, toggleShow] = useToggle(false)
     useEffect(() => {
-        toggleShow(bribeStage !== undefined && bribeStage.phase !== "HOLD")
+        toggleShow(bribeStage && bribeStage.phase !== "HOLD")
     }, [bribeStage, toggleShow])
     // End ****************************************
 
     const adjustment = useMemo(() => Math.min(remToPxRatio, 10) / 10, [remToPxRatio])
 
-    const factionMechs = useMemo(() => (warMachines ? warMachines.filter((wm) => wm.factionID && wm.factionID == factionID) : []), [warMachines, factionID])
-    const otherMechs = useMemo(() => (warMachines ? warMachines.filter((wm) => wm.factionID && wm.factionID != factionID) : []), [warMachines, factionID])
+    const factionMechs = useMemo(() => (warMachines ? warMachines.filter((wm) => wm.factionID && wm.factionID === factionID) : []), [warMachines, factionID])
+    const otherMechs = useMemo(() => (warMachines ? warMachines.filter((wm) => wm.factionID && wm.factionID !== factionID) : []), [warMachines, factionID])
     const haveFactionMechs = useMemo(() => factionMechs.length > 0, [factionMechs])
 
     if (!warMachines || warMachines.length <= 0) return null
 
     return (
-        <Slide in={show} direction="up">
-            <Stack
+        <Slide in={show} direction="up" key={battleIdentifier}>
+            <Box
                 id="tutorial-mech-stats"
-                direction="row"
-                alignItems="flex-end"
                 sx={{
                     position: "absolute",
                     bottom: 0,
@@ -44,59 +45,43 @@ export const WarMachineStats = () => {
                     filter: "drop-shadow(0 3px 3px #00000020)",
                 }}
             >
-                {haveFactionMechs && (
-                    <BoxSlanted
-                        clipSize="9px"
-                        clipSlantSize="20px"
-                        skipLeft
-                        sx={{
-                            pl: ".5rem",
-                            pr: "1.2rem",
-                            pt: "2rem",
-                            pb: "1.6rem",
-                            backgroundColor: (theme) => `${theme.factionTheme.background}95`,
-                        }}
-                    >
-                        <ScrollContainer>
-                            <Stack spacing="-3.8rem" direction="row" alignItems="center" justifyContent="center">
-                                {factionMechs.map((wm) => (
-                                    <WarMachineItem key={`${wm.participantID} - ${wm.hash}`} warMachine={wm} scale={0.75} shouldBeExpanded={false} />
-                                ))}
-                            </Stack>
-                        </ScrollContainer>
-                    </BoxSlanted>
-                )}
+                <Stack direction="row" alignItems="flex-end" sx={{ ml: "-3rem", pl: "2rem", transform: "skew(-6deg)" }}>
+                    {haveFactionMechs && (
+                        <ClipThing
+                            clipSize="10px"
+                            corners={{ topRight: true }}
+                            opacity={0.7}
+                            backgroundColor={theme.factionTheme.background}
+                            sx={{ height: "100%" }}
+                        >
+                            <HorizontalScrollContainer>
+                                <Stack spacing="-.6rem" direction="row" alignItems="center" justifyContent="center" sx={{ px: "2rem", py: "2rem" }}>
+                                    {factionMechs.map((wm) => (
+                                        <WarMachineItem key={`${wm.participantID} - ${wm.hash}`} warMachine={wm} scale={0.75} />
+                                    ))}
+                                </Stack>
+                            </HorizontalScrollContainer>
+                        </ClipThing>
+                    )}
 
-                {otherMechs.length > 0 && (
-                    <Box sx={{ mb: ".48rem", pr: "1.6rem", pl: haveFactionMechs ? 0 : "1.28rem", overflow: "hidden" }}>
-                        <ScrollContainer>
-                            <Stack
-                                spacing={haveFactionMechs ? "-4.96rem" : "-4.4rem"}
-                                direction="row"
-                                alignItems="center"
-                                sx={{
-                                    flex: 1,
-                                    ml: haveFactionMechs ? "-1.8rem" : 0,
-                                    pb: haveFactionMechs ? 0 : ".48rem",
-                                }}
-                            >
+                    {otherMechs.length > 0 && (
+                        <HorizontalScrollContainer>
+                            <Stack spacing="-.8rem" direction="row" alignItems="center" sx={{ flex: 1, px: "2rem", py: "2rem" }}>
                                 {otherMechs
                                     .sort((a, b) => a.factionID.localeCompare(b.factionID))
                                     .map((wm) => (
-                                        <Box key={`${wm.participantID} - ${wm.hash}`} sx={{ ":not(:last-child)": { pr: "1.6rem" } }}>
-                                            <WarMachineItem warMachine={wm} scale={haveFactionMechs ? 0.7 : 0.7} shouldBeExpanded={false} />
-                                        </Box>
+                                        <WarMachineItem key={`${wm.participantID} - ${wm.hash}`} warMachine={wm} scale={0.7} />
                                     ))}
                             </Stack>
-                        </ScrollContainer>
-                    </Box>
-                )}
-            </Stack>
+                        </HorizontalScrollContainer>
+                    )}
+                </Stack>
+            </Box>
         </Slide>
     )
 }
 
-const ScrollContainer = ({ children }: { children: ReactElement }) => {
+const HorizontalScrollContainer = ({ children }: { children: ReactElement }) => {
     return (
         <Box
             sx={{

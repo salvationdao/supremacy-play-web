@@ -3,7 +3,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useLocation } from "react-router-dom"
 import { ClipThing, FancyButton } from "../.."
 import { KeycardPNG } from "../../../assets"
-import { useSnackbar } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { parseString } from "../../../helpers"
 import { usePagination, useToggle, useUrlQuery } from "../../../hooks"
@@ -19,10 +18,10 @@ import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { KeycardMarketItem } from "./KeycardMarketItem"
 
 const sortOptions = [
-    { label: SortTypeLabel.OldestFirst, value: SortTypeLabel.OldestFirst },
-    { label: SortTypeLabel.NewestFirst, value: SortTypeLabel.NewestFirst },
-    { label: SortTypeLabel.ExpiringFirst, value: SortTypeLabel.ExpiringFirst },
-    { label: SortTypeLabel.ExpiringReverse, value: SortTypeLabel.ExpiringReverse },
+    { label: SortTypeLabel.CreateTimeOldestFirst, value: SortTypeLabel.CreateTimeOldestFirst },
+    { label: SortTypeLabel.CreateTimeNewestFirst, value: SortTypeLabel.CreateTimeNewestFirst },
+    { label: SortTypeLabel.EndTimeEndingSoon, value: SortTypeLabel.EndTimeEndingSoon },
+    { label: SortTypeLabel.EndTimeEndingLast, value: SortTypeLabel.EndTimeEndingLast },
     { label: SortTypeLabel.PriceLowest, value: SortTypeLabel.PriceLowest },
     { label: SortTypeLabel.PriceHighest, value: SortTypeLabel.PriceHighest },
     { label: SortTypeLabel.Alphabetical, value: SortTypeLabel.Alphabetical },
@@ -32,7 +31,6 @@ const sortOptions = [
 export const KeycardsMarket = () => {
     const location = useLocation()
     const [query, updateQuery] = useUrlQuery()
-    const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const theme = useTheme()
 
@@ -49,7 +47,7 @@ export const KeycardsMarket = () => {
 
     // Filters and sorts
     const [search, setSearch] = useState("")
-    const [sort, setSort] = useState<string>(query.get("sort") || SortTypeLabel.NewestFirst)
+    const [sort, setSort] = useState<string>(query.get("sort") || SortTypeLabel.CreateTimeNewestFirst)
     const [status, setStatus] = useState<string[]>((query.get("statuses") || undefined)?.split("||") || [])
     const [ownedBy, setOwnedBy] = useState<string[]>((query.get("ownedBy") || undefined)?.split("||") || [])
     const [price, setPrice] = useState<(number | undefined)[]>(
@@ -59,7 +57,7 @@ export const KeycardsMarket = () => {
     // Filters
     const statusFilterSection = useRef<ChipFilter>({
         label: "STATUS",
-        options: [{ value: "true", label: "SOLD", color: colors.green }],
+        options: [{ value: "true", label: "SOLD", color: colors.marketSold }],
         initialSelected: status,
         onSetSelected: (value: string[]) => {
             setStatus(value)
@@ -96,13 +94,13 @@ export const KeycardsMarket = () => {
             let sortBy = "alphabetical"
             if (
                 sort === SortTypeLabel.AlphabeticalReverse ||
-                sort === SortTypeLabel.NewestFirst ||
-                sort === SortTypeLabel.ExpiringReverse ||
+                sort === SortTypeLabel.CreateTimeNewestFirst ||
+                sort === SortTypeLabel.EndTimeEndingLast ||
                 sort === SortTypeLabel.PriceHighest
             )
                 sortDir = "desc"
-            if (sort === SortTypeLabel.OldestFirst || sort === SortTypeLabel.NewestFirst) sortBy = "created_at"
-            if (sort === SortTypeLabel.ExpiringFirst || sort === SortTypeLabel.ExpiringReverse) sortBy = "time"
+            if (sort === SortTypeLabel.CreateTimeOldestFirst || sort === SortTypeLabel.CreateTimeNewestFirst) sortBy = "created_at"
+            if (sort === SortTypeLabel.EndTimeEndingSoon || sort === SortTypeLabel.EndTimeEndingLast) sortBy = "time"
             if (sort === SortTypeLabel.PriceLowest || sort === SortTypeLabel.PriceHighest) sortBy = "price"
 
             const [min_price, max_price] = price
@@ -110,7 +108,7 @@ export const KeycardsMarket = () => {
             const resp = await send<{ total: number; records: MarketplaceBuyAuctionItem[] }>(GameServerKeys.MarketplaceSalesKeycardList, {
                 page: page - 1,
                 page_size: pageSize,
-                search: search,
+                search,
                 min_price,
                 max_price,
                 sort_dir: sortDir,
@@ -134,13 +132,12 @@ export const KeycardsMarket = () => {
             setLoadError(undefined)
         } catch (err) {
             const message = typeof err === "string" ? err : "Failed to get key card listings."
-            newSnackbarMessage(message, "error")
             setLoadError(message)
             console.error(err)
         } finally {
             setIsLoading(false)
         }
-    }, [sort, price, send, page, pageSize, search, ownedBy, status, updateQuery, setTotalItems, newSnackbarMessage])
+    }, [sort, price, send, page, pageSize, search, ownedBy, status, updateQuery, setTotalItems])
 
     useEffect(() => {
         getItems()

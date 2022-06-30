@@ -1,21 +1,18 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { ClipThing } from "../../.."
-import { SvgInfoCircular, SvgIntroAnimation, SvgOutroAnimation, SvgPowerCore, SvgSkin, SvgUtilities, SvgWeapons } from "../../../../assets"
+import { SvgStats, SvgIntroAnimation, SvgOutroAnimation, SvgPowerCore, SvgSkin, SvgUtilities, SvgWeapons } from "../../../../assets"
+import { useTheme } from "../../../../containers/theme"
 import { colors, fonts } from "../../../../theme/theme"
 import { MechDetails } from "../../../../types"
 import { MechBarStats } from "../../../Hangar/WarMachinesHangar/WarMachineHangarItem/MechBarStats"
 
-export const MechStatsDetails = ({
-    mechDetails,
-    primaryColor,
-    backgroundColor,
-}: {
-    mechDetails?: MechDetails
-    primaryColor: string
-    backgroundColor: string
-}) => {
+export const MechStatsDetails = ({ mechDetails }: { mechDetails?: MechDetails }) => {
+    const theme = useTheme()
+
     if (!mechDetails) return null
 
+    const primaryColor = theme.factionTheme.primary
+    const backgroundColor = theme.factionTheme.background
     const { weapon_hardpoints, utility_slots, chassis_skin_id, intro_animation_id, outro_animation_id, power_core_id } = mechDetails
 
     const chassisSkin = mechDetails?.chassis_skin
@@ -29,7 +26,7 @@ export const MechStatsDetails = ({
         <Stack spacing="3rem">
             <Stack spacing="1rem">
                 <Stack direction="row" spacing=".8rem" alignItems="center">
-                    <SvgInfoCircular fill={primaryColor} size="1.8rem" />
+                    <SvgStats fill={primaryColor} size="1.8rem" />
                     <Typography variant="h5" sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack }}>
                         WAR MACHINE STATS
                     </Typography>

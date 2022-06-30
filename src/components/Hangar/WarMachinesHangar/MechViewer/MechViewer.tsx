@@ -1,6 +1,7 @@
 import { Box, Fade } from "@mui/material"
 import { useTheme } from "../../../../containers/theme"
 import { MechDetails } from "../../../../types"
+import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
 
 export const MechViewer = ({ selectedMechDetails }: { selectedMechDetails: MechDetails }) => {
     const theme = useTheme()
@@ -36,24 +37,16 @@ export const MechViewer = ({ selectedMechDetails }: { selectedMechDetails: MechD
                         }}
                     />
 
-                    <Box
-                        component="video"
+                    <MediaPreview
+                        imageUrl={imageUrl}
+                        videoUrls={[animationUrl, cardAnimationUrl]}
+                        objectFit="cover !important"
+                        objectPosition="50% 8%"
                         sx={{
                             position: "absolute",
-                            height: "100%",
-                            width: "100%",
-                            objectFit: "cover",
-                            objectPosition: "50% 8%",
                             zIndex: 3,
                         }}
-                        loop
-                        muted
-                        autoPlay
-                        poster={`${imageUrl}`}
-                    >
-                        <source src={animationUrl} type="video/mp4" />
-                        <source src={cardAnimationUrl} type="video/mp4" />
-                    </Box>
+                    />
                 </Box>
             </Fade>
         </Box>

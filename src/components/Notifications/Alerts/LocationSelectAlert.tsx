@@ -26,8 +26,17 @@ Some examples:
 => {currentUserName} has chosen a target location for {ability}
 */
 
+export enum LocationSelectAlertType {
+    CancelledNoPlayer = "CANCELLED_NO_PLAYER",
+    CancelledDisconnect = "CANCELLED_DISCONNECT",
+    FailedTimeOut = "FAILED_TIMEOUT",
+    FailedDisconnected = "FAILED_DISCONNECTED",
+    Trigger = "TRIGGER",
+    Assigned = "ASSIGNED",
+}
+
 export interface LocationSelectAlertProps {
-    type: "CANCELLED_NO_PLAYER" | "CANCELLED_DISCONNECT" | "FAILED_TIMEOUT" | "FAILED_DISCONNECTED" | "TRIGGER" | "ASSIGNED"
+    type: LocationSelectAlertType
     currentUser?: User
     nextUser?: User
     ability: BattleAbility
@@ -45,23 +54,23 @@ export const LocationSelectAlert = ({ data, getFaction }: { data: LocationSelect
     const mainColor = faction.primary_color
 
     const Icon = () => {
-        if (type == "CANCELLED_NO_PLAYER" || type == "CANCELLED_DISCONNECT") {
+        if (type === LocationSelectAlertType.CancelledNoPlayer || type === LocationSelectAlertType.CancelledDisconnect) {
             return <SvgCancelled fill="#FFFFFF" size="1.2rem" sx={{ display: "inline", mx: ".4rem" }} />
         }
 
-        if (type == "FAILED_TIMEOUT") {
+        if (type === LocationSelectAlertType.FailedTimeOut) {
             return <SvgHourglass fill="#FFFFFF" size="1.15rem" sx={{ display: "inline", mx: ".4rem" }} />
         }
 
-        if (type == "FAILED_DISCONNECTED") {
+        if (type === LocationSelectAlertType.FailedDisconnected) {
             return <SvgDisconnected fill="#FFFFFF" size="1.2rem" sx={{ display: "inline", mx: ".4rem" }} />
         }
 
-        if (type == "TRIGGER") {
+        if (type === LocationSelectAlertType.Trigger) {
             return <SvgDeath fill="#FFFFFF" size="1.25rem" sx={{ display: "inline", mx: ".4rem" }} />
         }
 
-        if (type == "ASSIGNED") {
+        if (type === LocationSelectAlertType.Assigned) {
             return <SvgLocation fill="#FFFFFF" size="1.2rem" sx={{ display: "inline", mx: ".4rem" }} />
         }
 
@@ -69,7 +78,7 @@ export const LocationSelectAlert = ({ data, getFaction }: { data: LocationSelect
     }
 
     const Content = () => {
-        if (type == "CANCELLED_NO_PLAYER" || type == "CANCELLED_DISCONNECT") {
+        if (type === LocationSelectAlertType.CancelledNoPlayer || type === LocationSelectAlertType.CancelledDisconnect) {
             return (
                 <Box>
                     <StyledNormalText text="Cancelled as there were no players available to choose a target." />
@@ -77,7 +86,7 @@ export const LocationSelectAlert = ({ data, getFaction }: { data: LocationSelect
             )
         }
 
-        if (type == "FAILED_TIMEOUT" || type == "FAILED_DISCONNECTED") {
+        if (type === LocationSelectAlertType.FailedTimeOut || type === LocationSelectAlertType.FailedDisconnected) {
             return (
                 <Box>
                     <StyledImageText
@@ -96,7 +105,7 @@ export const LocationSelectAlert = ({ data, getFaction }: { data: LocationSelect
             )
         }
 
-        if (type == "TRIGGER") {
+        if (type === LocationSelectAlertType.Trigger) {
             return (
                 <Box>
                     <StyledImageText
@@ -115,7 +124,7 @@ export const LocationSelectAlert = ({ data, getFaction }: { data: LocationSelect
             )
         }
 
-        if (type == "ASSIGNED") {
+        if (type === LocationSelectAlertType.Assigned) {
             return (
                 <Box>
                     <StyledImageText

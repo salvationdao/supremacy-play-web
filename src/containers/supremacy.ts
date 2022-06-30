@@ -14,12 +14,12 @@ export const SupremacyContainer = createContainer(() => {
         URI: "/public/online",
         host: GAME_SERVER_HOSTNAME,
     })
-    const [mechDeployModalOpen, toggleMechDeployModalOpen] = useToggle()
     const [readyToCheckServerState, toggleReadyToCheckServerState] = useToggle()
     const [isServerUp, toggleIsServerUp] = useState<boolean | undefined>(undefined) // Needs 3 states: true, false, undefined. Undefined means it's not loaded yet.
     const [haveSups, toggleHaveSups] = useState<boolean>() // Needs 3 states: true, false, undefined. Undefined means it's not loaded yet.
     const [factionsAll, setFactionsAll] = useState<FactionsAll>({})
     const [battleIdentifier, setBattleIdentifier] = useState<number>()
+    const [isQuickDeployOpen, toggleIsQuickDeployOpen] = useToggle(localStorage.getItem("quickDeployOpen") === "true")
 
     const { query: queryGetFactionsAll } = useParameterizedQuery(GetFactionsAll)
 
@@ -61,6 +61,10 @@ export const SupremacyContainer = createContainer(() => {
         [factionsAll],
     )
 
+    useEffect(() => {
+        localStorage.setItem("quickDeployOpen", isQuickDeployOpen.toString())
+    }, [isQuickDeployOpen])
+
     return {
         isServerUp,
         factionsAll,
@@ -69,8 +73,9 @@ export const SupremacyContainer = createContainer(() => {
         setBattleIdentifier,
         haveSups,
         toggleHaveSups,
-        mechDeployModalOpen,
-        toggleMechDeployModalOpen,
+
+        isQuickDeployOpen,
+        toggleIsQuickDeployOpen,
     }
 })
 

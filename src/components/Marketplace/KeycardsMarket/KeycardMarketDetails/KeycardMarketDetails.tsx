@@ -13,7 +13,7 @@ import { BuyNowDetails } from "../../Common/MarketDetails/BuyNowDetails"
 import { Dates } from "../../Common/MarketDetails/Dates"
 import { ImagesPreview } from "../../Common/MarketDetails/ImagesPreview"
 import { ManageListing } from "../../Common/MarketDetails/ManageListing"
-import { Owner } from "../../Common/MarketDetails/Owner"
+import { UserInfo } from "../../Common/MarketDetails/UserInfo"
 import { SoldDetails } from "../../Common/MarketDetails/SoldDetails"
 import { KeycardDetails } from "./KeycardDetails"
 
@@ -22,6 +22,11 @@ export const KeycardMarketDetails = ({ id }: { id: string }) => {
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [loadError, setLoadError] = useState<string>()
     const [marketItem, setMarketItem] = useState<MarketplaceBuyAuctionItem>()
+
+    const primaryColor = useMemo(
+        () => (marketItem?.sold_at ? colors.marketSold : theme.factionTheme.primary),
+        [marketItem?.sold_at, theme.factionTheme.primary],
+    )
 
     // Get listing details
     useEffect(() => {
@@ -71,20 +76,20 @@ export const KeycardMarketDetails = ({ id }: { id: string }) => {
             return (
                 <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                     <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
-                        <CircularProgress size="3rem" sx={{ color: theme.factionTheme.primary }} />
+                        <CircularProgress size="3rem" sx={{ color: primaryColor }} />
                     </Stack>
                 </Stack>
             )
         }
 
-        return <WarMachineMarketDetailsInner marketItem={marketItem} primaryColor={theme.factionTheme.primary} />
-    }, [loadError, marketItem, theme.factionTheme.primary])
+        return <WarMachineMarketDetailsInner marketItem={marketItem} primaryColor={primaryColor} />
+    }, [loadError, marketItem, primaryColor])
 
     return (
         <ClipThing
             clipSize="10px"
             border={{
-                borderColor: theme.factionTheme.primary,
+                borderColor: primaryColor,
                 borderThickness: ".3rem",
             }}
             corners={{
@@ -104,7 +109,7 @@ export const KeycardMarketDetails = ({ id }: { id: string }) => {
 const WarMachineMarketDetailsInner = ({ marketItem, primaryColor }: { marketItem: MarketplaceBuyAuctionItem; primaryColor: string }) => {
     const below780 = useMediaQuery("(max-width:780px)")
     const [isTimeEnded, toggleIsTimeEnded] = useToggle()
-    const { id, owner, keycard, created_at, end_at, sold_at, sold_for } = marketItem
+    const { id, owner, keycard, created_at, end_at, sold_at, sold_for, sold_to } = marketItem
 
     return (
         <Box
@@ -161,9 +166,11 @@ const WarMachineMarketDetailsInner = ({ marketItem, primaryColor }: { marketItem
                                 </Typography>
                             </Box>
 
-                            <Owner owner={owner} />
+                            <UserInfo marketUser={owner} title="OWNED BY:" />
 
                             <Dates createdAt={created_at} endAt={end_at} onTimeEnded={() => toggleIsTimeEnded(true)} soldAt={sold_at} />
+
+                            {sold_to && <UserInfo marketUser={sold_to} title="SOLD TO:" primaryColor={colors.marketSold} />}
 
                             {sold_for && <SoldDetails soldFor={sold_for} />}
 

@@ -13,6 +13,19 @@ export interface ViewerLiveCount {
     other: number
 }
 
+export interface CellCoords {
+    x: number
+    y: number
+}
+
+export enum LocationSelectType {
+    LINE_SELECT = "LINE_SELECT",
+    MECH_SELECT = "MECH_SELECT",
+    LOCATION_SELECT = "LOCATION_SELECT",
+    GLOBAL = "GLOBAL",
+    MECH_COMMAND = "MECH_COMMAND",
+}
+
 export interface Map {
     name: string
     image_url: string
@@ -46,7 +59,7 @@ export interface Stream {
     status: string
     latitude: string
     longitude: string
-    service?: StreamService
+    service: StreamService
     distance?: number
 }
 
@@ -88,25 +101,36 @@ export interface GameAbility {
     ability_offering_id: string
 }
 
-export interface PlayerAbility {
+export interface BlueprintPlayerAbility {
     id: string
-    owner_id: string
-    blueprint_id: string
-    game_client_ability_id: string
+    game_client_ability_id: number
     label: string
     colour: string
     image_url: string
     description: string
     text_colour: string
-    location_select_type: "MECH_SELECT" | "LOCATION_SELECT" | "GLOBAL"
-    purchased_at: string
+    location_select_type: LocationSelectType
+    created_at: Date
+}
+
+export interface PlayerAbility {
+    id: string
+    blueprint_id: string
+    count: number
+    last_purchased_at: Date
+    ability: BlueprintPlayerAbility
+
+    // Used for mech command related abilities
+    mechHash?: string
 }
 
 export interface SaleAbility {
     id: string
     current_price: string
     available_until?: Date
-    ability?: PlayerAbility
+    sale_limit: number
+    amount_sold: number
+    ability: BlueprintPlayerAbility
 }
 
 export interface GameAbilityProgress {
@@ -141,6 +165,7 @@ export interface WarMachineLiveState {
     health?: number
     shield?: number
     energy?: number
+    is_hidden: boolean
 }
 
 export interface BattleEndDetail {

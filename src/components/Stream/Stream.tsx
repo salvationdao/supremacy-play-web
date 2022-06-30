@@ -24,6 +24,5 @@ export const Stream = () => {
         return <AntMediaStream />
     }
 
-    return <AntMediaStream /> // TODO: remove later
     return <NoStreamScreen />
 }

@@ -59,16 +59,21 @@ export const colors = {
     battleQueueBanner: "#C24242",
     darkestNeonBlue: "#050c12",
 
-    globalChat: "#1A6044",
-    assetsBanner: "#4E1A61",
+    globalChat: "#35A679",
 
+    // Transactions
     supsCredit: "#01FF70",
     supsDebit: "#FF4136",
 
+    // Market
     buyout: "#309FFF",
     auction: "#E04F00",
     dutchAuction: "#D98D00",
+    marketSold: "#2BA172",
+    marketCreate: "#E6C85C",
+    marketBidReturned: "#CC3F3F",
 
+    // Mech loadout
     chassisSkin: "#EBD110",
     introAnimation: "#C017EB",
     outroAnimation: "#C017EB",

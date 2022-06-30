@@ -85,7 +85,7 @@ export const ChipFilterSection = ({ filter, primaryColor, secondaryColor }: { fi
                                     border: { borderColor: color, borderThickness: "1px" },
                                     sx: { position: "relative" },
                                 }}
-                                sx={{ px: "1rem", py: ".2rem", color: isSelected ? "#FFFFFF" : color }}
+                                sx={{ px: "1rem", pt: ".1rem", pb: ".2rem", color: isSelected ? "#FFFFFF" : color }}
                                 onClick={() => onSelect(value)}
                             >
                                 <Typography

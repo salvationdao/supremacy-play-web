@@ -29,6 +29,11 @@ export enum GameServerKeys {
     BribeBattleAbility = "BATTLE:ABILITY:BRIBE",
     SubmitAbilityLocationSelect = "ABILITY:LOCATION:SELECT",
 
+    SubMechCommands = "MECH:COMMANDS:SUBSCRIBE",
+    SubMechMoveCommand = "MECH:MOVE:COMMAND:SUBSCRIBE",
+    MechMoveCommandCreate = "MECH:MOVE:COMMAND:CREATE",
+    MechMoveCommandCancel = "MECH:MOVE:COMMAND:CANCEL",
+
     // Game Use
     GameUserOnline = "GAME:ONLINE",
 
@@ -49,19 +54,19 @@ export enum GameServerKeys {
     MechRename = "PLAYER:MECH:RENAME",
 
     // Player Abilities
-    TriggerSaleAbilitiesListUpdated = "SALE:ABILITIES:LIST:UPDATED",
-    SaleAbilityDetailed = "SALE:ABILITY:DETAILED",
-    PlayerAbilitySubscribe = "PLAYER:ABILITY:SUBSCRIBE",
-    SaleAbilityPriceSubscribe = "SALE:ABILITY:PRICE:SUBSCRIBE",
-    PlayerAbilitiesList = "PLAYER:ABILITIES:LIST",
-    SaleAbilitiesList = "SALE:ABILITIES:LIST",
+    SaleAbilitiesPriceSubscribe = "SALE:ABILITIES:PRICE:SUBSCRIBE",
+    SaleAbilitiesAmountSubscribe = "SALE:ABILITIES:AMOUNT:SUBSCRIBE",
+    PlayerAbilitiesList = "PLAYER:ABILITIES:LIST:SUBSCRIBE",
+    SaleAbilitiesList = "SALE:ABILITIES:LIST:SUBSCRIBE",
     SaleAbilityPurchase = "SALE:ABILITY:PURCHASE",
+    PlayerAbilityUse = "PLAYER:ABILITY:USE",
 
     // Chat
     SubscribeFactionChat = "FACTION:CHAT:SUBSCRIBE",
     SubscribeGlobalChat = "GLOBAL:CHAT:SUBSCRIBE",
     SendChatMessage = "CHAT:MESSAGE",
 
+    BattleMechHistoryDetailed = "BATTLE:MECH:HISTORY:DETAILED",
     BattleMechHistoryList = "BATTLE:MECH:HISTORY:LIST",
     BattleMechStats = "BATTLE:MECH:STATS",
 
@@ -114,6 +119,7 @@ export enum GameServerKeys {
     MarketplaceSalesBid = "MARKETPLACE:SALES:BID",
     SubMarketplaceSalesItem = "MARKETPLACE:SALES:ITEM:UPDATE",
     CancelMarketplaceListing = "MARKETPLACE:SALES:ARCHIVE",
+    GetMarketplaceEvents = "MARKETPLACE:EVENT:LIST",
 
     // Marketplace Keycards
     MarketplaceSalesKeycardList = "MARKETPLACE:SALES:KEYCARD:LIST",
@@ -125,6 +131,7 @@ export enum GameServerKeys {
     // Mystery Crates
     GetPlayerMysteryCrates = "PLAYER:ASSET:MYSTERY_CRATE:LIST",
     GetPlayerMysteryCrate = "PLAYER:ASSET:MYSTERY_CRATE:GET",
+    OpenCrate = "CRATE:OPEN",
 
     // Keycards
     GetPlayerKeycards = "PLAYER:ASSET:KEYCARD:LIST",

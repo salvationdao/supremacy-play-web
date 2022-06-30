@@ -1,8 +1,8 @@
-import { SubProps, useSubscription } from "../containers/ws"
 import { GAME_SERVER_HOSTNAME } from "../constants"
+import { useAuth } from "../containers/auth"
+import { SubProps, useSubscription } from "../containers/ws"
 import { useCommands } from "../containers/ws/useCommands"
 import { DataType } from "../containers/ws/util"
-import { useAuth } from "../containers/auth"
 
 // ***********
 // ** Fetch **
@@ -47,4 +47,9 @@ export function useGameServerSubscriptionAbilityFaction<T = DataType>({ URI, key
 
 export function useGameServerSubscription<T = DataType>({ URI, key, args, batchURI, ready = true }: SubProps, callback?: (payload: T) => void) {
     return useSubscription({ URI: `${URI}`, key, host: GAME_SERVER_HOSTNAME, batchURI: batchURI, args, ready }, callback)
+}
+
+export function useGameServerSubscriptionSecurePublic<T = DataType>({ URI, key, args, ready = true }: SubProps, callback?: (payload: T) => void) {
+    const { userID } = useAuth()
+    return useSubscription({ URI: `/secure_public/${URI}`, key, host: GAME_SERVER_HOSTNAME, args, ready: !!userID && ready }, callback)
 }

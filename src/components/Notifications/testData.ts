@@ -1,6 +1,24 @@
 import { NotificationResponse } from ".."
 import { User, UserRank } from "../../types"
 
+enum NotificationType {
+    Text = "TEXT",
+    LocationSelect = "LOCATION_SELECT",
+    BattleAbility = "BATTLE_ABILITY",
+    FactionAbility = "FACTION_ABILITY",
+    WarMachineAbility = "WAR_MACHINE_ABILITY",
+    WarMachineDestroyed = "WAR_MACHINE_DESTROYED",
+}
+
+export enum LocationSelectAlertType {
+    CancelledNoPlayer = "CANCELLED_NO_PLAYER",
+    CancelledDisconnect = "CANCELLED_DISCONNECT",
+    FailedTimeOut = "FAILED_TIMEOUT",
+    FailedDisconnected = "FAILED_DISCONNECTED",
+    Trigger = "TRIGGER",
+    Assigned = "ASSIGNED",
+}
+
 const faction1 = {
     id: "aaa",
     background_url: "aaa",
@@ -67,6 +85,7 @@ const wm1 = {
     shield: 1,
     position: { x: 1, y: 1 },
     rotation: 1,
+    isHidden: false,
     id: "a797a8c1-157c-4540-a0e6-4b944e07f383",
     energy: 0,
     ownedByID: "15f29ee9-e834-4f76-aff8-31e39faabe2d",
@@ -100,6 +119,7 @@ const wm2 = {
     shield: 1,
     position: { x: 1, y: 1 },
     rotation: 1,
+    isHidden: false,
     id: "a797a8c1-157c-4540-a0e6-4b944e07f383",
     energy: 0,
     ownedByID: "15f29ee9-e834-4f76-aff8-31e39faabe2d",
@@ -120,9 +140,9 @@ const wm2 = {
 
 // Notifications
 export const locationSelectNoti: NotificationResponse = {
-    type: "LOCATION_SELECT",
+    type: NotificationType.LocationSelect,
     data: {
-        type: "TRIGGER",
+        type: LocationSelectAlertType.Trigger,
         x: 7,
         y: 5,
         currentUser: user1,
@@ -131,9 +151,9 @@ export const locationSelectNoti: NotificationResponse = {
 }
 
 export const locationSelectNoti2: NotificationResponse = {
-    type: "LOCATION_SELECT",
+    type: NotificationType.LocationSelect,
     data: {
-        type: "FAILED_TIMEOUT",
+        type: LocationSelectAlertType.FailedTimeOut,
         x: 7,
         y: 5,
         currentUser: user1,
@@ -143,9 +163,9 @@ export const locationSelectNoti2: NotificationResponse = {
 }
 
 export const locationSelectNoti3: NotificationResponse = {
-    type: "LOCATION_SELECT",
+    type: NotificationType.LocationSelect,
     data: {
-        type: "FAILED_DISCONNECTED",
+        type: LocationSelectAlertType.FailedDisconnected,
         x: 7,
         y: 5,
         currentUser: user1,
@@ -155,9 +175,9 @@ export const locationSelectNoti3: NotificationResponse = {
 }
 
 export const locationSelectNoti4: NotificationResponse = {
-    type: "LOCATION_SELECT",
+    type: NotificationType.LocationSelect,
     data: {
-        type: "CANCELLED_NO_PLAYER",
+        type: LocationSelectAlertType.CancelledNoPlayer,
         x: 7,
         y: 5,
         currentUser: user1,
@@ -166,9 +186,9 @@ export const locationSelectNoti4: NotificationResponse = {
 }
 
 export const locationSelectNoti5: NotificationResponse = {
-    type: "LOCATION_SELECT",
+    type: NotificationType.LocationSelect,
     data: {
-        type: "CANCELLED_DISCONNECT",
+        type: LocationSelectAlertType.CancelledDisconnect,
         x: 7,
         y: 5,
         currentUser: user1,
@@ -177,7 +197,7 @@ export const locationSelectNoti5: NotificationResponse = {
 }
 
 export const battleAbilityNoti: NotificationResponse = {
-    type: "BATTLE_ABILITY",
+    type: NotificationType.BattleAbility,
     data: {
         user: user1,
         ability: ability1,
@@ -185,7 +205,7 @@ export const battleAbilityNoti: NotificationResponse = {
 }
 
 export const factionAbilityNoti: NotificationResponse = {
-    type: "FACTION_ABILITY",
+    type: NotificationType.FactionAbility,
     data: {
         user: user1,
         ability: ability1,
@@ -193,7 +213,7 @@ export const factionAbilityNoti: NotificationResponse = {
 }
 
 export const warMachineAbilityNoti: NotificationResponse = {
-    type: "WAR_MACHINE_ABILITY",
+    type: NotificationType.WarMachineAbility,
     data: {
         user: user1,
         ability: ability2,
@@ -202,12 +222,12 @@ export const warMachineAbilityNoti: NotificationResponse = {
 }
 
 export const textNoti: NotificationResponse = {
-    type: "TEXT",
+    type: NotificationType.Text,
     data: "Just a test notification text to see how it looks.",
 }
 
 export const killNoti: NotificationResponse = {
-    type: "WAR_MACHINE_DESTROYED",
+    type: NotificationType.WarMachineDestroyed,
     data: {
         destroyed_war_machine: wm2,
         killed_by_war_machine: wm1,
@@ -215,7 +235,7 @@ export const killNoti: NotificationResponse = {
 }
 
 export const killNoti2: NotificationResponse = {
-    type: "WAR_MACHINE_DESTROYED",
+    type: NotificationType.WarMachineDestroyed,
     data: {
         destroyed_war_machine: wm2,
         killed_by: "NUKE",
@@ -223,7 +243,7 @@ export const killNoti2: NotificationResponse = {
 }
 
 export const killNoti3: NotificationResponse = {
-    type: "WAR_MACHINE_DESTROYED",
+    type: NotificationType.WarMachineDestroyed,
     data: {
         destroyed_war_machine: wm2,
         killed_by: "NUKE",

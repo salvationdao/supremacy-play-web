@@ -15,13 +15,22 @@ interface SortAndFiltersProps {
     chipFilters?: ChipFilter[]
     rangeFilters?: RangeFilter[]
     changePage: (page: number) => void
+    primaryColor?: string
 }
 
-export const SortAndFilters = ({ initialSearch, onSetSearch, dropdownOptions, chipFilters, rangeFilters, changePage }: SortAndFiltersProps) => {
+export const SortAndFilters = ({
+    initialSearch,
+    onSetSearch,
+    dropdownOptions,
+    chipFilters,
+    rangeFilters,
+    changePage,
+    primaryColor: pColor,
+}: SortAndFiltersProps) => {
     const theme = useTheme()
     const [searchValue, setSearchValue] = useState(initialSearch)
 
-    const primaryColor = theme.factionTheme.primary
+    const primaryColor = pColor || theme.factionTheme.primary
     const secondaryColor = theme.factionTheme.secondary
     const backgroundColor = theme.factionTheme.background
 
@@ -29,7 +38,7 @@ export const SortAndFilters = ({ initialSearch, onSetSearch, dropdownOptions, ch
         <ClipThing
             clipSize="10px"
             border={{
-                borderColor: theme.factionTheme.primary,
+                borderColor: primaryColor,
                 borderThickness: ".3rem",
             }}
             corners={{
@@ -38,7 +47,7 @@ export const SortAndFilters = ({ initialSearch, onSetSearch, dropdownOptions, ch
                 bottomRight: true,
             }}
             opacity={0.7}
-            backgroundColor={theme.factionTheme.background}
+            backgroundColor={backgroundColor}
             sx={{ height: "100%", minWidth: "30rem", maxWidth: "38rem" }}
         >
             <Box
@@ -56,7 +65,7 @@ export const SortAndFilters = ({ initialSearch, onSetSearch, dropdownOptions, ch
                         borderRadius: 3,
                     },
                     "::-webkit-scrollbar-thumb": {
-                        background: (theme) => theme.factionTheme.primary,
+                        background: primaryColor,
                         borderRadius: 3,
                     },
                 }}

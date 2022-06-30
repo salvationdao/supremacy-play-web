@@ -88,7 +88,7 @@ export enum FactionIDs {
 // Other stuff
 export const NullUUID = "00000000-0000-0000-0000-000000000000"
 export const TRAILER_VIDEO =
-    "https://player.vimeo.com/progressive_redirect/playback/681913587/rendition/1080p?loc=external&signature=6d5bf3570be8bd5e9e57a6a786964a99d067957fbcf9e3a40b6914c085c9b3e9"
+    "https://player.vimeo.com/progressive_redirect/playback/681913587/rendition/1080p?loc=external&signature=6d5bf3570be8bd5e9e57a6a786964a99d067957fbcf9e3a40b6914c085c9b3e9#t=10"
 
 // Maintenance (ENVAR). The local stroage is a hack to let the team members in
 export const UNDER_MAINTENANCE = process.env.REACT_APP_MAINTENANCE_PAGE == "true" && !localStorage.getItem("NinjaSecrets@!")

@@ -1,8 +1,8 @@
-import { Box, Modal, Skeleton, Stack, Typography } from "@mui/material"
+import { Box, Modal, Skeleton, Stack, TextField, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
 import { useCallback, useMemo, useState } from "react"
 import { ClipThing, FancyButton } from "../../.."
-import { SafePNG, SvgSupToken } from "../../../../assets"
+import { SafePNG, SvgPriceDownArrow, SvgPriceUpArrow, SvgSupToken } from "../../../../assets"
 import { useSnackbar } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
 import { numberCommaFormatter, supFormatterNoFixed } from "../../../../helpers"
@@ -10,31 +10,41 @@ import { useToggle } from "../../../../hooks"
 import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts, siteZIndex } from "../../../../theme/theme"
-import { RewardResponse, StorefrontMysteryCrate } from "../../../../types"
+import { MysteryCrateOwnershipResp, RewardResponse, StorefrontMysteryCrate } from "../../../../types"
 import { ClaimedRewards } from "../../../Claims/ClaimedRewards"
 import { ConfirmModal } from "../../../Common/ConfirmModal"
+import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
 
 interface MysteryCrateStoreItemProps {
     enlargedView?: boolean
     crate: StorefrontMysteryCrate
+    ownershipDetails: MysteryCrateOwnershipResp
 }
 
-export const MysteryCrateStoreItem = ({ enlargedView, crate }: MysteryCrateStoreItemProps) => {
+export const MysteryCrateStoreItem = ({ enlargedView, crate, ownershipDetails }: MysteryCrateStoreItemProps) => {
     const theme = useTheme()
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [mysteryCrate, setMysteryCrate] = useState<StorefrontMysteryCrate>(crate)
-    const [reward, setReward] = useState<RewardResponse>()
+    const [reward, setReward] = useState<RewardResponse[]>()
 
     // Buying
     const [confirmModalOpen, toggleConfirmModalOpen] = useToggle()
     const [isLoading, setIsLoading] = useState(false)
     const [buyError, setBuyError] = useState<string>()
+    const [quantity, setQuantity] = useState(1)
+
+    let isAllowedToBuy = false
+    if (ownershipDetails.owned < ownershipDetails.allowed) {
+        isAllowedToBuy = true
+    }
 
     const primaryColor = theme.factionTheme.primary
     const backgroundColor = theme.factionTheme.background
 
-    const formattedPrice = useMemo(() => supFormatterNoFixed(mysteryCrate.price, 2), [mysteryCrate.price])
+    const priceStr = useMemo(() => (quantity * parseFloat(mysteryCrate.price)).toString(), [quantity, mysteryCrate.price])
+    const formattedPrice = useMemo(() => supFormatterNoFixed(priceStr, 2), [priceStr])
+    const singleCratePrice = useMemo(() => supFormatterNoFixed(mysteryCrate.price, 2), [mysteryCrate.price])
 
     useGameServerSubscriptionFaction<StorefrontMysteryCrate>(
         {
@@ -50,13 +60,14 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate }: MysteryCrateStore
     const confirmBuy = useCallback(async () => {
         try {
             setIsLoading(true)
-            const resp = await send<RewardResponse>(GameServerKeys.PurchaseMysteryCrate, {
+            const resp = await send<RewardResponse[]>(GameServerKeys.PurchaseMysteryCrate, {
                 type: mysteryCrate.mystery_crate_type,
+                quantity,
             })
 
             if (!resp) return
             setReward(resp)
-            newSnackbarMessage(`Successfully purchased ${mysteryCrate.mystery_crate_type} crate.`, "success")
+            newSnackbarMessage(`Successfully purchased ${quantity} ${mysteryCrate.mystery_crate_type} crate.`, "success")
             toggleConfirmModalOpen(false)
             setBuyError(undefined)
         } catch (err) {
@@ -65,7 +76,7 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate }: MysteryCrateStore
         } finally {
             setIsLoading(false)
         }
-    }, [send, mysteryCrate.mystery_crate_type, newSnackbarMessage, setReward, toggleConfirmModalOpen])
+    }, [send, mysteryCrate.mystery_crate_type, newSnackbarMessage, setReward, toggleConfirmModalOpen, quantity])
 
     return (
         <>
@@ -90,33 +101,17 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate }: MysteryCrateStore
                     sx={{ height: "100%" }}
                 >
                     <Stack spacing={enlargedView ? "2.5rem" : "1.5rem"} sx={{ height: "100%", p: enlargedView ? "3rem" : "1.5rem" }}>
-                        <Box
-                            sx={{
-                                position: "relative",
-                                px: enlargedView ? "4rem" : ".8rem",
-                                py: enlargedView ? "5rem" : "2rem",
-                                borderRadius: 1,
-                                boxShadow: "inset 0 0 12px 6px #00000040",
-                                background: `radial-gradient(#FFFFFF20 10px, ${backgroundColor})`,
-                                border: "#00000060 1px solid",
-                            }}
-                        >
+                        <Box sx={{ position: "relative" }}>
                             <Box
-                                component="video"
                                 sx={{
-                                    width: "100%",
-                                    height: enlargedView ? "30rem" : "22rem",
-                                    overflow: "hidden",
-                                    objectFit: "contain",
-                                    objectPosition: "center",
+                                    height: enlargedView ? "39rem" : "25rem",
                                 }}
-                                loop
-                                muted
-                                autoPlay
-                                poster={`${mysteryCrate.image_url || SafePNG}`}
                             >
-                                <source src={mysteryCrate.animation_url} type="video/mp4" />
-                                <source src={mysteryCrate.card_animation_url} type="video/mp4" />
+                                <MediaPreview
+                                    imageUrl={mysteryCrate.image_url || SafePNG}
+                                    videoUrls={[mysteryCrate.animation_url, mysteryCrate.card_animation_url]}
+                                    objectFit="cover"
+                                />
                             </Box>
 
                             <Stack
@@ -148,7 +143,7 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate }: MysteryCrateStore
                                 <Stack direction="row" alignItems="center" spacing=".1rem">
                                     <SvgSupToken size={enlargedView ? "2.6rem" : "1.9rem"} fill={colors.yellow} />
                                     <Typography sx={{ fontSize: enlargedView ? "2.2rem" : "1.9rem", fontFamily: fonts.nostromoBlack }}>
-                                        {formattedPrice}
+                                        {singleCratePrice}
                                     </Typography>
                                 </Stack>
                             </Stack>
@@ -180,7 +175,7 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate }: MysteryCrateStore
                             </Box>
                         </Box>
 
-                        <Stack alignItems={enlargedView ? "center" : "flex-start"} sx={{ flex: 1, px: ".4rem", py: ".3rem", flexShrink: 0 }}>
+                        <Stack alignItems={enlargedView ? "center" : "flex-start"} spacing="1rem" sx={{ flex: 1, px: ".4rem", py: ".3rem", flexShrink: 0 }}>
                             <Typography
                                 gutterBottom
                                 variant={enlargedView ? "h4" : "h6"}
@@ -193,15 +188,97 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate }: MysteryCrateStore
                                 {mysteryCrate.description}
                             </Typography>
 
-                            <Stack alignItems="center" sx={{ mt: "auto !important", pt: ".8rem", alignSelf: "stretch" }}>
+                            <Box
+                                sx={{
+                                    mt: "auto !important",
+                                    mx: "auto",
+                                    width: "100%",
+                                    display: "flex",
+                                    alignItems: "stretch",
+                                    justifyContent: "center",
+                                    gap: "2rem",
+                                }}
+                            >
+                                {isAllowedToBuy && (
+                                    <ClipThing
+                                        clipSize="5px"
+                                        clipSlantSize="2px"
+                                        border={{
+                                            borderColor: primaryColor,
+                                            borderThickness: "1.5px",
+                                        }}
+                                        opacity={0.9}
+                                        backgroundColor={backgroundColor}
+                                        sx={{ height: "100%", width: "15rem" }}
+                                    >
+                                        <Stack direction="row" justifyContent="space-between">
+                                            <TextField
+                                                variant="outlined"
+                                                hiddenLabel
+                                                placeholder={"1"}
+                                                onWheel={(event) => {
+                                                    event.currentTarget.getElementsByTagName("input")[0]?.blur()
+                                                }}
+                                                sx={{
+                                                    backgroundColor: "#00000090",
+                                                    ".MuiOutlinedInput-input": {
+                                                        px: "1.5rem",
+                                                        py: "1.5rem",
+                                                        fontSize: "2rem",
+                                                        height: "unset",
+                                                        "::-webkit-outer-spin-button, ::-webkit-inner-spin-button": {
+                                                            "-webkit-appearance": "none",
+                                                        },
+                                                    },
+                                                    ".MuiOutlinedInput-notchedOutline": { border: "unset" },
+                                                }}
+                                                type="number"
+                                                value={quantity}
+                                                onChange={(e) => {
+                                                    const newAmount = parseInt(e.target.value)
+                                                    if (newAmount <= 0) return
+                                                    setQuantity(newAmount)
+                                                }}
+                                            />
+                                            <Stack
+                                                sx={{
+                                                    height: "5rem",
+                                                    "& svg:active": {
+                                                        transform: "scale(1.5)",
+                                                        transition: "all .2s",
+                                                    },
+                                                }}
+                                            >
+                                                <SvgPriceUpArrow
+                                                    size="4rem"
+                                                    sx={{ transform: "translateY(-5%)", cursor: "pointer", zIndex: 1 }}
+                                                    fill={primaryColor}
+                                                    onClick={() => {
+                                                        const nAmountPurchasable = ownershipDetails.allowed - ownershipDetails.owned
+                                                        if (nAmountPurchasable > quantity) setQuantity(quantity + 1)
+                                                    }}
+                                                />
+                                                <SvgPriceDownArrow
+                                                    size="4rem"
+                                                    sx={{ transform: "translateY(-60%)", cursor: "pointer" }}
+                                                    fill={primaryColor}
+                                                    onClick={() => {
+                                                        if (quantity > 1) setQuantity(quantity - 1)
+                                                    }}
+                                                />
+                                            </Stack>
+                                        </Stack>
+                                    </ClipThing>
+                                )}
                                 <FancyButton
+                                    disabled={!isAllowedToBuy}
                                     onClick={() => toggleConfirmModalOpen(true)}
                                     clipThingsProps={{
                                         clipSize: "5px",
                                         backgroundColor: primaryColor,
                                         opacity: 1,
                                         border: { isFancy: true, borderColor: primaryColor, borderThickness: "1.5px" },
-                                        sx: { position: "relative", mt: "1rem", width: enlargedView ? "50%" : "100%" },
+                                        sx: { position: "relative", width: enlargedView && isAllowedToBuy ? "50%" : "100%", height: "100%" },
                                     }}
                                     sx={{ px: "1.6rem", py: enlargedView ? "1.1rem" : ".6rem" }}
                                 >
@@ -209,10 +286,12 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate }: MysteryCrateStore
                                         variant={enlargedView ? "body1" : "caption"}
                                         sx={{ fontFamily: fonts.nostromoBlack, color: theme.factionTheme.secondary }}
                                     >
-                                        BUY NOW
+                                        {isAllowedToBuy && "Buy Now"}
+                                        {!isAllowedToBuy && ownershipDetails.allowed > 0 && "Maximum capacity reached"}
+                                        {!isAllowedToBuy && ownershipDetails.allowed === 0 && "A keycard in-game is required"}
                                     </Typography>
                                 </FancyButton>
-                            </Stack>
+                            </Box>
                         </Stack>
                     </Stack>
                 </ClipThing>
@@ -241,7 +320,7 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate }: MysteryCrateStore
                     }
                 >
                     <Typography variant="h6">
-                        Do you wish to purchase a <strong>{mysteryCrate.mystery_crate_type}</strong> crate for <span>{formattedPrice}</span> SUPS?
+                        Do you wish to purchase {quantity} <strong>{mysteryCrate.mystery_crate_type}</strong> crate for <span>{formattedPrice}</span> SUPS?
                     </Typography>
                 </ConfirmModal>
             )}
@@ -251,7 +330,7 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate }: MysteryCrateStore
     )
 }
 
-const PurchaseSuccessModal = ({ reward, onClose }: { reward: RewardResponse | undefined; onClose: () => void }) => {
+const PurchaseSuccessModal = ({ reward, onClose }: { reward: RewardResponse[] | undefined; onClose: () => void }) => {
     return (
         <Modal open onClose={onClose} sx={{ zIndex: siteZIndex.Modal }}>
             <Box
@@ -263,7 +342,7 @@ const PurchaseSuccessModal = ({ reward, onClose }: { reward: RewardResponse | un
                     outline: "none",
                 }}
             >
-                <Box sx={{ position: "relative" }}>{reward && <ClaimedRewards rewards={[reward]} onClose={onClose} />}</Box>
+                <Box sx={{ position: "relative" }}>{reward && <ClaimedRewards rewards={reward} onClose={onClose} />}</Box>
             </Box>
         </Modal>
     )

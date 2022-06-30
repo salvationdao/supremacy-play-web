@@ -64,7 +64,7 @@ export const SectionMultipliers = ({ battleEndDetail }: { battleEndDetail: Battl
                             {multiplierList.map((m) => {
                                 const deets = getMultiplierDeets(m.key)
                                 return (
-                                    <TooltipHelper key={m.key} placement="right" text={m.description}>
+                                    <TooltipHelper key={`${m.key}`} placement="right" text={m.description}>
                                         <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ px: ".8rem" }}>
                                             <StyledImageText
                                                 color={colors.text}

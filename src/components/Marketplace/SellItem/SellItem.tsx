@@ -79,7 +79,7 @@ export const SellItemInner = ({ toggleReset }: { toggleReset: () => void }) => {
     useEffect(() => {
         let fee = 10
         if (reservePrice) fee += 5
-        if (buyoutPrice && !dropRate && itemType !== ItemType.Keycards) fee += 5
+        if (buyoutPrice && itemType !== ItemType.Keycards) fee += 5
         if (listingDurationHours !== ListingDurationHoursEnum.HalfDay && listingDurationHours !== ListingDurationHoursEnum.OneDay) {
             //listing duration from hours to days minus 1 day (to only account for additional days listed) * 5 sups
             const listingDurationFee = (listingDurationHours / 24 - 1) * 5
@@ -330,9 +330,9 @@ export const SellItemInner = ({ toggleReset }: { toggleReset: () => void }) => {
                             disabled={!isFormReady()}
                             clipThingsProps={{
                                 clipSize: "9px",
-                                backgroundColor: colors.green,
+                                backgroundColor: colors.marketSold,
                                 opacity: 1,
-                                border: { isFancy: true, borderColor: colors.green, borderThickness: "2px" },
+                                border: { isFancy: true, borderColor: colors.marketSold, borderThickness: "2px" },
                                 sx: { position: "relative" },
                             }}
                             sx={{ px: "4rem", py: ".6rem", color: "#FFFFFF" }}

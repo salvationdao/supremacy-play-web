@@ -1,8 +1,9 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useMemo } from "react"
-import { BattleAbilityProgressBigNum, ContributionBar } from "../.."
+import { BattleAbilityProgressBigNum } from "../.."
 import { zoomEffect } from "../../../theme/keyframes"
 import { Faction } from "../../../types"
+import { ProgressBar } from "../../Common/ProgressBar"
 
 interface SubsBarStackProps {
     battleAbilityProgress: BattleAbilityProgressBigNum[]
@@ -64,13 +65,13 @@ const SupsBar = ({ forceDisplay100Percentage, getFaction, abilityProgress }: Sup
                     mb: ".24rem",
                 }}
             />
-            <ContributionBar
+            <ProgressBar
+                percent={forceDisplay100Percentage === faction_id ? 100 : sups_cost.isZero() ? 0 : +current_sups.dividedBy(sups_cost) * 100}
+                linePercent={sups_cost.isZero() ? 0 : sups_cost.dividedBy(sups_cost).toNumber() * 100}
                 color={primaryColor}
-                initialTargetCost={sups_cost}
-                currentSups={current_sups}
-                supsCost={sups_cost}
-                hideRedBar
-                forceHundredPercent={forceDisplay100Percentage === faction_id}
+                backgroundColor="#FFFFFF10"
+                thickness=".7rem"
+                orientation="horizontal"
             />
 
             <Stack direction="row" alignItems="center" justifyContent="center" style={{ minWidth: "11rem" }}>

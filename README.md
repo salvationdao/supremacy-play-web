@@ -38,15 +38,12 @@
 		border: { isFancy: true, borderColor: "#FF0000", borderThickness: "2px" },
 		sx: { position: "relative" },
 	}}
-	sx={{ px: "1.6rem", py: ".6rem", color: "#FF0000" }}
+	sx={{ px: "1.6rem", py: ".6rem", color: "#FF0000" }} // color is the ripple color!
 	onClick={onClick}
 >
 	<Typography
-		variant="caption"
-		sx={{
-			color: "#FF0000",
-			fontFamily: fonts.nostromoBlack,
-		}}
+		variant="body2"
+		sx={{ fontWeight: "fontWeightBold", color: "#FF0000", }}
 	>
 		GO TO ASSET STORE
 	</Typography>
@@ -71,6 +68,7 @@ const { send } = useGameServerCommandsYYY("xxxxxxxxx")
 useEffect(() => {
 	;(async () => {
 		try {
+			setIsLoading(true)
 			const resp = await send<RESPONSE_TYPE>(GameServerKeys.XXXXXX, {
 				payload: something,
 			})
@@ -78,10 +76,12 @@ useEffect(() => {
 			if (!resp) return
 			setFactionsData(resp)
 		} catch (err) {
-            const message = typeof err === "string" ? err : "Failed to get key card listings."
-            newSnackbarMessage(message, "error")
-            setLoadError(message)
-            console.error(err)
+			const message = typeof err === "string" ? err : "Failed to get key card listings."
+			newSnackbarMessage(message, "error")
+			setLoadError(message)
+			console.error(err)
+		} finally {
+			setIsLoading(true)
 		}
 	})()
 }, [send])

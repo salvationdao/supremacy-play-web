@@ -1,12 +1,13 @@
 import { Box, Fade, Stack } from "@mui/material"
 import BigNumber from "bignumber.js"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { ClipThing, ContributionBar } from "../.."
+import { ClipThing } from "../.."
 import { useGame } from "../../../containers"
 import { shadeColor } from "../../../helpers"
 import { useGameServerCommandsFaction, useGameServerSubscriptionAbilityFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { GameAbility, GameAbilityProgress } from "../../../types"
+import { ProgressBar } from "../../Common/ProgressBar"
 import { SupsBar } from "./SupsBar"
 import { TopText } from "./TopText"
 import { VotingButtons } from "./VotingButtons"
@@ -154,12 +155,13 @@ export const FactionAbilityItemInner = ({ gameAbility, initialTargetCost, clipSl
                                     borderRadius: 1,
                                 }}
                             >
-                                <ContributionBar
+                                <ProgressBar
+                                    percent={initialTargetCost.isZero() ? 0 : +currentSups.dividedBy(initialTargetCost) * 100}
+                                    linePercent={initialTargetCost.isZero() ? 0 : supsCost.dividedBy(initialTargetCost).toNumber() * 100}
                                     color={colour}
-                                    initialTargetCost={initialTargetCost}
-                                    currentSups={currentSups}
-                                    supsCost={supsCost}
-                                    forceHundredPercent={false}
+                                    backgroundColor="#FFFFFF10"
+                                    thickness=".7rem"
+                                    orientation="horizontal"
                                 />
                             </Box>
 

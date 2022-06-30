@@ -131,40 +131,28 @@ const BarStatInner = ({
 
         return (
             <Box>
-                <Typography
-                    variant="caption"
-                    sx={{
-                        lineHeight: 1,
-                        fontSize,
-                        fontFamily: fonts.nostromoBlack,
-                        display: "-webkit-box",
-                        overflow: "hidden",
-                        overflowWrap: "anywhere",
-                        textOverflow: "ellipsis",
-                        WebkitLineClamp: 1,
-                        WebkitBoxOrient: "vertical",
-                    }}
-                >
-                    {label}
-                </Typography>
-
-                <Stack direction="row" alignItems="center" spacing=".6rem">
-                    <Box sx={{ flex: 1, height: barHeight || ".7rem", backgroundColor: "#FFFFFF25" }}>
-                        <Box
-                            sx={{
-                                width: `${(100 * current) / total}%`,
-                                height: "100%",
-                                backgroundColor: primaryColor,
-                                transition: "all .15s",
-                            }}
-                        />
-                    </Box>
+                <Stack direction="row" alignItems="center" justifyContent="space-between" spacing=".6rem">
+                    <Typography
+                        variant="caption"
+                        sx={{
+                            fontSize,
+                            fontFamily: fonts.nostromoBlack,
+                            display: "-webkit-box",
+                            overflow: "hidden",
+                            overflowWrap: "anywhere",
+                            textOverflow: "ellipsis",
+                            WebkitLineClamp: 1,
+                            WebkitBoxOrient: "vertical",
+                        }}
+                    >
+                        {label}
+                    </Typography>
 
                     <Typography
                         variant="caption"
                         sx={{
-                            width: "8.5rem",
                             fontSize,
+                            textAlign: "end",
                             fontFamily: fonts.nostromoBold,
                             display: "-webkit-box",
                             overflow: "hidden",
@@ -178,6 +166,17 @@ const BarStatInner = ({
                         {unit}
                     </Typography>
                 </Stack>
+
+                <Box sx={{ height: barHeight || ".7rem", backgroundColor: "#FFFFFF25" }}>
+                    <Box
+                        sx={{
+                            width: `${(100 * current) / total}%`,
+                            height: "100%",
+                            backgroundColor: primaryColor,
+                            transition: "all .15s",
+                        }}
+                    />
+                </Box>
             </Box>
         )
     }, [barHeight, current, fontSize, label, primaryColor, total, unit])

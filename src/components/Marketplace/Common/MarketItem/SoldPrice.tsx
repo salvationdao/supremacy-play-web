@@ -5,7 +5,7 @@ import { SvgSupToken } from "../../../../assets"
 import { numFormatter } from "../../../../helpers"
 import { colors, fonts } from "../../../../theme/theme"
 
-export const SoldPrice = ({ isGridView, soldFor }: { isGridView: boolean; soldFor: string }) => {
+export const SoldPrice = ({ isGridView, soldFor }: { isGridView?: boolean; soldFor: string }) => {
     const formattedPrice = useMemo(() => {
         return numFormatter(new BigNumber(soldFor).shiftedBy(-18).toNumber())
     }, [soldFor])
@@ -17,8 +17,8 @@ export const SoldPrice = ({ isGridView, soldFor }: { isGridView: boolean; soldFo
             </Typography>
 
             <Stack direction="row" alignItems="center" flexWrap="wrap">
-                <SvgSupToken size="1.7rem" fill={colors.green} />
-                <Typography sx={{ color: colors.green, fontWeight: "fontWeightBold" }}>{formattedPrice}</Typography>
+                <SvgSupToken size="1.7rem" fill={colors.marketSold} />
+                <Typography sx={{ color: colors.marketSold, fontWeight: "fontWeightBold" }}>{formattedPrice}</Typography>
             </Stack>
         </Stack>
     )
