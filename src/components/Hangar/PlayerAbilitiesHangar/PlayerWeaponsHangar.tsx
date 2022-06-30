@@ -16,7 +16,7 @@ import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { MysteryCrateStoreItemLoadingSkeleton } from "../../Storefront/MysteryCratesStore/MysteryCrateStoreItem/MysteryCrateStoreItem"
 import { PlayerAbilityHangarItem } from "./PlayerAbilityHangarItem"
 
-export const PlayerAbilitiesHangar = () => {
+export const PlayerWeaponsHangar = () => {
     const theme = useTheme()
     const [query] = useUrlQuery()
 
@@ -48,21 +48,38 @@ export const PlayerAbilitiesHangar = () => {
         },
     })
 
-    useGameServerSubscriptionUser<PlayerAbility[]>(
+    useGameServerSubscriptionUser<any[]>(
         {
-            URI: "/player_abilities",
-            key: GameServerKeys.PlayerAbilitiesList,
+            URI: "/player_weapons",
+            key: GameServerKeys.PlayerWeaponsList,
         },
         (payload) => {
-            console.log("sdfalksjfdjk")
+            console.log("this is weapons", payload)
 
             if (!payload) return
-            setPlayerAbilities(payload)
-            setTotalItems(payload.length)
-            if (isLoaded) return
-            setIsLoaded(true)
+
+            // setPlayerAbilities(payload)
+            // setTotalItems(payload.length)
+            // if (isLoaded) return
+            // setIsLoaded(true)
         },
     )
+
+    // useGameServerSubscriptionUser<PlayerAbility[]>(
+    //     {
+    //         URI: "/player_abilities",
+    //         key: GameServerKeys.PlayerAbilitiesList,
+    //     },
+    //     (payload) => {
+    //         console.log("ss")
+
+    //         if (!payload) return
+    //         setPlayerAbilities(payload)
+    //         setTotalItems(payload.length)
+    //         if (isLoaded) return
+    //         setIsLoaded(true)
+    //     },
+    // )
 
     useEffect(() => {
         let result = playerAbilities.map((p) => p)
@@ -161,7 +178,7 @@ export const PlayerAbilitiesHangar = () => {
                                 fontFamily: fonts.nostromoBold,
                             }}
                         >
-                            GO TO STOREFRONT
+                            wepons
                         </Typography>
                     </FancyButton>
                 </Stack>
@@ -195,13 +212,7 @@ export const PlayerAbilitiesHangar = () => {
                         height: "100%",
                     }}
                 >
-                    <PageHeader
-                        imageUrl={PlayerAbilityPNG}
-                        title="PLAYER ABILITIES"
-                        description="Player abilities are abilities that can be bought and used on the battle arena. The price of a player ability is determined by
-                                how active it is at any given time. When players buy an ability, its price will go up. If an ability is not being bought, its
-                                price will go down."
-                    />
+                    <PageHeader imageUrl={PlayerAbilityPNG} title="Weapons" description="player weapons here." />
 
                     <TotalAndPageSizeOptions
                         countItems={shownPlayerAbilities.length}
