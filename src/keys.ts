@@ -61,6 +61,9 @@ export enum GameServerKeys {
     SaleAbilityPurchase = "SALE:ABILITY:PURCHASE",
     PlayerAbilityUse = "PLAYER:ABILITY:USE",
 
+    // Minimap ability updates
+    MinimapUpdatesSubscribe = "MINIMAP:UPDATES:SUBSCRIBE",
+
     // Chat
     SubscribeFactionChat = "FACTION:CHAT:SUBSCRIBE",
     SubscribeGlobalChat = "GLOBAL:CHAT:SUBSCRIBE",

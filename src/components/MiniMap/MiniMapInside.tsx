@@ -3,21 +3,12 @@ import { useCallback, useMemo, useRef } from "react"
 import { MapMechs, SelectionIcon } from ".."
 import { Crosshair } from "../../assets"
 import { useGame, useMiniMap } from "../../containers"
-import { CellCoords, Dimension, LocationSelectType } from "../../types"
+import { Dimension, LocationSelectType } from "../../types"
 import { CountdownSubmit } from "./MapInsideItems/CountdownSubmit"
 import { DisabledCells } from "./MapInsideItems/DisabledCells"
 import { LineSelect } from "./MapInsideItems/LineSelect"
 import { MechCommandIcons } from "./MapInsideItems/MapIcon/MechCommandIcons"
 import { useMiniMapGestures } from "./useMiniMapGestures"
-
-export interface MapSelection {
-    // start coords (used for LINE_SELECT and LOCATION_SELECT abilities)
-    startCoords?: CellCoords
-    // end coords (only used for LINE_SELECT abilities)
-    endCoords?: CellCoords
-    // mech hash (only used for MECH_SELECT abilities)
-    mechHash?: string
-}
 
 interface MiniMapInsideProps {
     containerDimensions: Dimension
