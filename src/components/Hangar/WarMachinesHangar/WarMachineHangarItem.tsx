@@ -8,7 +8,6 @@ import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { fonts } from "../../../theme/theme"
 import { MechBasic, MechDetails } from "../../../types"
-import { ClipThing } from "../../Common/ClipThing"
 import { MediaPreview } from "../../Common/MediaPreview/MediaPreview"
 import { General } from "../../Marketplace/Common/MarketItem/General"
 import { MechGeneralStatus } from "./Common/MechGeneralStatus"
@@ -38,7 +37,6 @@ export const WarMachineHangarItem = ({ mech, isGridView }: { mech: MechBasic; is
     }, [mech.id, send])
 
     const primaryColor = theme.factionTheme.primary
-    const secondaryColor = theme.factionTheme.secondary
     const backgroundColor = theme.factionTheme.background
     const imageUrl = mechDetails?.avatar_url || mech.avatar_url
     const largeImageUrl = mechDetails?.large_image_url || mech.large_image_url
@@ -143,79 +141,5 @@ export const WarMachineHangarItem = ({ mech, isGridView }: { mech: MechBasic; is
                 />
             </FancyButton>
         </Box>
-    )
-
-    return (
-        <ClipThing
-            clipSize="12px"
-            border={{
-                borderColor: primaryColor,
-                borderThickness: ".2rem",
-            }}
-            opacity={0.9}
-            backgroundColor={backgroundColor}
-            sx={{ height: "100%", width: "100%" }}
-        >
-            <Stack spacing={"1.5rem"} direction={isGridView ? "column" : "row"} justifyContent="center" sx={{ height: "100%", p: "1.5rem" }}>
-                <Box
-                    sx={{
-                        position: "relative",
-                        height: isGridView ? "20rem" : "9rem",
-                    }}
-                >
-                    <MediaPreview imageUrl={imageUrl} objectFit={isGridView ? "cover" : "contain"} />
-
-                    <Box
-                        sx={
-                            isGridView
-                                ? {
-                                      position: "absolute",
-                                      bottom: ".4rem",
-                                      left: ".6rem",
-                                      minWidth: "10rem",
-                                      backgroundColor: `${backgroundColor}DF`,
-                                  }
-                                : { mt: ".8rem" }
-                        }
-                    >
-                        <MechGeneralStatus mechID={mech.id} />
-                    </Box>
-                </Box>
-
-                <Stack spacing=".2rem" sx={{ flex: 1, px: ".4rem", py: ".3rem" }}>
-                    <Typography variant="body2" sx={{ color: rarityDeets.color, fontFamily: fonts.nostromoHeavy }}>
-                        {rarityDeets.label}
-                    </Typography>
-
-                    <Typography sx={{ fontFamily: fonts.nostromoBlack }}>{mech.label}</Typography>
-
-                    <Typography variant="h6" sx={{}}>
-                        {mech.name}
-                    </Typography>
-
-                    <Box sx={{ pt: ".4rem" }}>
-                        <MechLoadoutIcons mechDetails={mechDetails} />
-                    </Box>
-
-                    <Stack alignItems="center" sx={{ mt: "auto !important", pt: ".8rem", alignSelf: "stretch" }}>
-                        <FancyButton
-                            to={`/mech/${mech.id}${location.hash}`}
-                            clipThingsProps={{
-                                clipSize: "5px",
-                                backgroundColor: primaryColor,
-                                opacity: 1,
-                                border: { isFancy: true, borderColor: primaryColor, borderThickness: "1.5px" },
-                                sx: { position: "relative", mt: "1rem", width: "100%" },
-                            }}
-                            sx={{ px: "1.6rem", py: ".6rem", color: secondaryColor }}
-                        >
-                            <Typography variant={"caption"} sx={{ fontFamily: fonts.nostromoBlack, color: secondaryColor }}>
-                                VIEW
-                            </Typography>
-                        </FancyButton>
-                    </Stack>
-                </Stack>
-            </Stack>
-        </ClipThing>
     )
 }

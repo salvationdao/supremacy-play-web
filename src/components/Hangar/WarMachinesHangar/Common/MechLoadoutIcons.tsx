@@ -34,13 +34,10 @@ export const MechLoadoutIcons = ({ mechDetails }: { mechDetails?: MechDetails })
 
             {hasPowerCore && <SvgPowerCore fill={colors.powerCore} size="1.3rem" />}
 
-            {new Array(weaponCount).fill(0).map((_, index) => (
-                <SvgWeapons key={`mech-info-${index}`} fill={colors.weapons} size="1.3rem" />
-            ))}
+            {weaponCount > 0 && new Array(weaponCount).fill(0).map((_, index) => <SvgWeapons key={`mech-info-${index}`} fill={colors.weapons} size="1.3rem" />)}
 
-            {new Array(utilityCount).fill(0).map((_, index) => (
-                <SvgUtilities key={`mech-info-${index}`} fill={colors.utilities} size="1.3rem" />
-            ))}
+            {utilityCount > 0 &&
+                new Array(utilityCount).fill(0).map((_, index) => <SvgUtilities key={`mech-info-${index}`} fill={colors.utilities} size="1.3rem" />)}
         </Stack>
     )
 }
