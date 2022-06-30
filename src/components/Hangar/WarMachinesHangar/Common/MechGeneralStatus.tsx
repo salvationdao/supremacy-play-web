@@ -6,7 +6,7 @@ import { GameServerKeys } from "../../../../keys"
 import { fonts, colors } from "../../../../theme/theme"
 import { MechStatus, MechStatusEnum } from "../../../../types"
 
-export const MechGeneralStatus = ({ mechID, smallSize }: { mechID: string; smallSize?: boolean }) => {
+export const MechGeneralStatus = ({ mechID }: { mechID: string }) => {
     const theme = useTheme()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [text, setText] = useState("LOADING...")
@@ -73,8 +73,8 @@ export const MechGeneralStatus = ({ mechID, smallSize }: { mechID: string; small
     )
 
     return (
-        <Box sx={{ p: smallSize ? ".1rem 1rem" : ".9rem 1.6rem .6rem 1.6rem", backgroundColor: `${color}20`, border: `${color} 1.5px dashed` }}>
-            <Typography variant={smallSize ? "caption" : "body2"} sx={{ color, textAlign: "center", fontFamily: fonts.nostromoBlack }}>
+        <Box sx={{ p: ".2rem 1rem", backgroundColor: `${color}20`, border: `${color} 1.5px dashed` }}>
+            <Typography variant="body2" sx={{ color, textAlign: "center", fontFamily: fonts.nostromoBlack }}>
                 {text}
             </Typography>
         </Box>

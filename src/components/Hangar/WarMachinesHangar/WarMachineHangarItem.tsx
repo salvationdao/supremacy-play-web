@@ -18,6 +18,7 @@ export const WarMachineHangarItem = ({ mech }: { mech: MechBasic }) => {
     const theme = useTheme()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [mechDetails, setMechDetails] = useState<MechDetails>()
+
     const rarityDeets = useMemo(() => getRarityDeets(mech.tier || mechDetails?.tier || ""), [mech, mechDetails])
 
     useEffect(() => {
@@ -70,12 +71,12 @@ export const WarMachineHangarItem = ({ mech }: { mech: MechBasic }) => {
                     >
                         <MediaPreview imageUrl={imageUrl} objectFit="cover" />
 
-                        <Box sx={{ position: "absolute", bottom: ".4rem", left: ".6rem", backgroundColor: `${backgroundColor}DD` }}>
-                            <MechGeneralStatus mechID={mech.id} smallSize />
+                        <Box sx={{ position: "absolute", bottom: ".4rem", left: ".6rem", minWidth: "10rem", backgroundColor: `${backgroundColor}DF` }}>
+                            <MechGeneralStatus mechID={mech.id} />
                         </Box>
                     </Box>
 
-                    <Stack spacing=".1rem" sx={{ flex: 1, px: ".4rem", py: ".3rem" }}>
+                    <Stack spacing=".2rem" sx={{ flex: 1, px: ".4rem", py: ".3rem" }}>
                         <Typography variant="body2" sx={{ color: rarityDeets.color, fontFamily: fonts.nostromoHeavy }}>
                             {rarityDeets.label}
                         </Typography>
@@ -92,7 +93,7 @@ export const WarMachineHangarItem = ({ mech }: { mech: MechBasic }) => {
 
                         <Stack alignItems="center" sx={{ mt: "auto !important", pt: ".8rem", alignSelf: "stretch" }}>
                             <FancyButton
-                                to={`/mech/${mech.hash}${location.hash}`}
+                                to={`/mech/${mech.id}${location.hash}`}
                                 clipThingsProps={{
                                     clipSize: "5px",
                                     backgroundColor: primaryColor,

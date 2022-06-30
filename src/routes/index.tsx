@@ -40,7 +40,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
 
     mech: {
         id: "mech",
-        path: "/mech/:mechHash?",
+        path: "/mech/:mechID?",
         exact: true,
         Component: MechPage,
         requireAuth: false,

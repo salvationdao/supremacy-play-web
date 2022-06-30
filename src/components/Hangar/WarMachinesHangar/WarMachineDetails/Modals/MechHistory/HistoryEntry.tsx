@@ -1,8 +1,8 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { ClipThing } from "../../../.."
-import { SvgDeath, SvgGoldBars } from "../../../../../assets"
-import { timeSinceInWords } from "../../../../../helpers"
-import { fonts, colors } from "../../../../../theme/theme"
+import { ClipThing } from "../../../../.."
+import { SvgDeath, SvgGoldBars } from "../../../../../../assets"
+import { timeSinceInWords } from "../../../../../../helpers"
+import { fonts, colors } from "../../../../../../theme/theme"
 
 interface HistoryEntryProps {
     mapName: string

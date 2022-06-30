@@ -9,16 +9,16 @@ import { fonts, siteZIndex } from "../theme/theme"
 export const MechPage = () => {
     const location = useLocation()
     const history = useHistory()
-    const { mechHash } = useParams<{ mechHash: string }>()
+    const { mechID } = useParams<{ mechID: string }>()
 
     const goBack = useCallback(() => {
         history.goBack()
     }, [history])
 
-    // Make sure we have a mechHash passed in, else redirect to /fleet page
+    // Make sure we have a mechID passed in, else redirect to /fleet page
     useEffect(() => {
-        if (!mechHash) history.replace(`/fleet${location.hash}`)
-    }, [history, location.hash, mechHash])
+        if (!mechID) history.replace(`/fleet${location.hash}`)
+    }, [history, location.hash, mechID])
 
     return (
         <Stack
@@ -58,7 +58,7 @@ export const MechPage = () => {
                     </Stack>
                 </FancyButton>
 
-                <WarMachineHangarDetails mechHash={mechHash} />
+                <WarMachineHangarDetails mechID={mechID} />
             </Stack>
         </Stack>
     )

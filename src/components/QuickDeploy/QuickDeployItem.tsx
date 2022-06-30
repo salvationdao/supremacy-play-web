@@ -11,7 +11,7 @@ import { colors, fonts } from "../../theme/theme"
 import { MechBasic, MechDetails, MechStatus, MechStatusEnum } from "../../types"
 import { MechGeneralStatus } from "../Hangar/WarMachinesHangar/Common/MechGeneralStatus"
 import { MechThumbnail } from "../Hangar/WarMachinesHangar/Common/MechThumbnail"
-import { QueueFeed } from "../Hangar/WarMachinesHangar/WarMachineDetails/DeployModal"
+import { QueueFeed } from "../Hangar/WarMachinesHangar/WarMachineDetails/Modals/DeployModal"
 
 interface QuickDeployItemProps {
     mech: MechBasic
@@ -135,7 +135,7 @@ export const QuickDeployItem = ({ mech, queueFeed }: QuickDeployItemProps) => {
                 </Typography>
 
                 <Stack direction="row" alignItems="center" spacing="1rem" justifyContent="space-between" sx={{ width: "100%" }}>
-                    <MechGeneralStatus mechID={mech.id} smallSize />
+                    <MechGeneralStatus mechID={mech.id} />
 
                     {!error && mechDetails && (mechState === MechStatusEnum.Idle || mechState === MechStatusEnum.Queue) && (
                         <FancyButton

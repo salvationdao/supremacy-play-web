@@ -15,7 +15,7 @@ import { TelegramRegisterModal } from "../Bar/ProfileCard/PreferencesModal/Teleg
 import { MoveableResizableConfig } from "../Common/MoveableResizable/MoveableResizableContainer"
 import { PageHeader } from "../Common/PageHeader"
 import { TotalAndPageSizeOptions } from "../Common/TotalAndPageSizeOptions"
-import { QueueFeed } from "../Hangar/WarMachinesHangar/WarMachineDetails/DeployModal"
+import { QueueFeed } from "../Hangar/WarMachinesHangar/WarMachineDetails/Modals/DeployModal"
 import { QuickDeployItem } from "./QuickDeployItem"
 
 const sortOptions = [
