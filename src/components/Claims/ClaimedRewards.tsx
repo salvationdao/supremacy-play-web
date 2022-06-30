@@ -88,7 +88,7 @@ export const ClaimedRewards = ({ rewards, onClose }: ClaimedRewardsProps) => {
                             fontFamily: fonts.nostromoBlack,
                         }}
                     >
-                        View in Hangar
+                        View in Fleet
                     </Typography>
                 </FancyButton>
             </Stack>
