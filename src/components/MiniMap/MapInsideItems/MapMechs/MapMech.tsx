@@ -40,6 +40,7 @@ const MapMechInner = ({ warMachine, isLargeMode, map }: MapMechInnerProps) => {
     const [position, sePosition] = useState<Vector2i>(warMachine.position)
     // 0 is east, and goes CW, can be negative and above 360
     const [rotation, setRotation] = useState<number>(warMachine.rotation)
+    const [isHidden, setIsHidden] = useState<boolean>(warMachine.isHidden)
 
     /**
      * For rendering: size, colors etc.
@@ -94,6 +95,7 @@ const MapMechInner = ({ warMachine, isLargeMode, map }: MapMechInnerProps) => {
             if (payload?.shield !== undefined) setShield(payload.shield)
             if (payload?.position !== undefined) sePosition(payload.position)
             if (payload?.rotation !== undefined) setRotation(payload.rotation)
+            if (payload?.is_hidden !== undefined) setIsHidden(payload.is_hidden)
         },
     )
 
@@ -129,6 +131,19 @@ const MapMechInner = ({ warMachine, isLargeMode, map }: MapMechInnerProps) => {
 
     return useMemo(() => {
         if (!position) return null
+
+        // Don't show on map if the mech is hidden
+        if (isHidden) return null
+
+        let opacity = 1
+        if (isLargeMode) {
+            if (!isAlive) {
+                opacity = 0.7
+            }
+        }
+        if (isHidden) {
+            opacity = 0
+        }
 
         return (
             <Stack
@@ -176,8 +191,8 @@ const MapMechInner = ({ warMachine, isLargeMode, map }: MapMechInnerProps) => {
 
                 {/* The mech icon and rotation arrow */}
                 <Box
-                    style={
-                        isLargeMode
+                    style={{
+                        ...(isLargeMode
                             ? {
                                   position: "relative",
                                   width: iconSize,
@@ -190,7 +205,6 @@ const MapMechInner = ({ warMachine, isLargeMode, map }: MapMechInnerProps) => {
                                   backgroundSize: "cover",
                                   border: `${primaryColor} solid 7.5px`,
                                   borderRadius: 3,
-                                  opacity: isAlive ? 1 : 0.7,
                                   boxShadow: isAlive ? `0 0 8px 2px ${primaryColor}70` : "none",
                                   zIndex: 2,
                               }
@@ -203,8 +217,10 @@ const MapMechInner = ({ warMachine, isLargeMode, map }: MapMechInnerProps) => {
                                   border: `9px solid #000000${isAlive ? "" : "00"}`,
                                   borderRadius: "50%",
                                   zIndex: 2,
-                              }
-                    }
+                              }),
+                        opacity,
+                        transition: "opacity 0.2s ease-out",
+                    }}
                 >
                     {/* Skull icon */}
                     {!isAlive && (
@@ -344,6 +360,7 @@ const MapMechInner = ({ warMachine, isLargeMode, map }: MapMechInnerProps) => {
             </Stack>
         )
     }, [
+        isHidden,
         dirArrowLength,
         handleClick,
         health,

@@ -320,6 +320,7 @@ export interface WarMachineState {
     shield: number
     position: Vector2i
     rotation: number
+    isHidden: boolean
 }
 
 export interface WarMachineMetadata {
