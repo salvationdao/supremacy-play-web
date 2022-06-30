@@ -45,7 +45,6 @@ const MapMechInner = ({ warMachine, isLargeMode, map }: MapMechInnerProps) => {
     /**
      * For rendering: size, colors etc.
      */
-    const isSameFaction = useMemo(() => factionID === warMachineFactionID, [factionID, warMachineFactionID])
     const iconSize = useMemo(() => Math.min(gridWidth, gridHeight) * 1.1, [gridWidth, gridHeight])
     const dirArrowLength = useMemo(() => iconSize / 2 + 0.6 * iconSize, [iconSize])
     const primaryColor = useMemo(
@@ -362,7 +361,6 @@ const MapMechInner = ({ warMachine, isLargeMode, map }: MapMechInnerProps) => {
         )
     }, [
         isHidden,
-        isSameFaction,
         dirArrowLength,
         handleClick,
         health,
