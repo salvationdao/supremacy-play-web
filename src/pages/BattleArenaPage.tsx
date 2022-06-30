@@ -23,13 +23,14 @@ import { siteZIndex } from "../theme/theme"
 
 export const BattleArenaPage = () => {
     const { userID } = useAuth()
-    const understand = localStorage.getItem(`understand-${userID}`) === "true"
+    const [understand, setUnderstand] = useState(localStorage.getItem(`understand-${userID}`) === "true")
 
     if (!understand && userID)
         return (
             <EarlyAccessWarning
                 onAcknowledged={() => {
                     localStorage.setItem(`understand-${userID}`, "true")
+                    setUnderstand(true)
                 }}
             />
         )
