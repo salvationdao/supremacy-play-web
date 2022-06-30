@@ -1,7 +1,7 @@
 import { Box, Fade } from "@mui/material"
-import { useTheme } from "../../../../containers/theme"
-import { MechDetails } from "../../../../types"
-import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
+import { useTheme } from "../../../../../containers/theme"
+import { MechDetails } from "../../../../../types"
+import { MediaPreview } from "../../../../Common/MediaPreview/MediaPreview"
 
 export const MechViewer = ({ selectedMechDetails }: { selectedMechDetails: MechDetails }) => {
     const theme = useTheme()

@@ -1,6 +1,6 @@
 import { Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { FancyButton, QueueFeed } from ".."
+import { FancyButton } from ".."
 import { SvgSupToken } from "../../assets"
 import { useSnackbar } from "../../containers"
 import { useTheme } from "../../containers/theme"
@@ -9,8 +9,9 @@ import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "
 import { GameServerKeys } from "../../keys"
 import { colors, fonts } from "../../theme/theme"
 import { MechBasic, MechDetails, MechStatus, MechStatusEnum } from "../../types"
-import { MechGeneralStatus } from "../Hangar/WarMachinesHangar/WarMachineHangarItem/MechGeneralStatus"
-import { MechThumbnail } from "../Hangar/WarMachinesHangar/WarMachineHangarItem/MechThumbnail"
+import { MechGeneralStatus } from "../Hangar/WarMachinesHangar/Common/MechGeneralStatus"
+import { MechThumbnail } from "../Hangar/WarMachinesHangar/Common/MechThumbnail"
+import { QueueFeed } from "../Hangar/WarMachinesHangar/WarMachineDetails/DeployQueue/DeployModal"
 
 interface QuickDeployItemProps {
     mech: MechBasic

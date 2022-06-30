@@ -7,8 +7,8 @@ import { useGameServerCommands } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
 import { BattleMechHistory, BattleMechStats, MechDetails } from "../../../../types"
-import { HistoryEntry } from "../../../Hangar/WarMachinesHangar/MechHistory/HistoryEntry"
-import { PercentageDisplay, PercentageDisplaySkeleton } from "../../../Hangar/WarMachinesHangar/MechHistory/PercentageDisplay"
+import { HistoryEntry } from "../../../Hangar/WarMachinesHangar/WarMachineDetails/MechHistory/HistoryEntry"
+import { PercentageDisplay, PercentageDisplaySkeleton } from "../../../Hangar/WarMachinesHangar/WarMachineDetails/MechHistory/PercentageDisplay"
 
 export const MechBattleHistoryDetails = ({ mechDetails }: { mechDetails?: MechDetails }) => {
     const theme = useTheme()

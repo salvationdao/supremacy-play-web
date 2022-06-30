@@ -1,12 +1,12 @@
 import { CircularProgress, IconButton, Link, Stack, TextField, Typography } from "@mui/material"
 import { useCallback, useEffect, useRef, useState } from "react"
-import { ClipThing } from "../../.."
-import { SvgExternalLink, SvgSave } from "../../../../assets"
-import { PASSPORT_WEB } from "../../../../constants"
-import { useAuth } from "../../../../containers"
-import { useTheme } from "../../../../containers/theme"
-import { colors, fonts } from "../../../../theme/theme"
-import { MechBasic, MechDetails } from "../../../../types"
+import { ClipThing } from "../../../.."
+import { SvgExternalLink, SvgSave } from "../../../../../assets"
+import { PASSPORT_WEB } from "../../../../../constants"
+import { useAuth } from "../../../../../containers"
+import { useTheme } from "../../../../../containers/theme"
+import { colors, fonts } from "../../../../../theme/theme"
+import { MechBasic, MechDetails } from "../../../../../types"
 
 export const MechTitle = ({
     mech,

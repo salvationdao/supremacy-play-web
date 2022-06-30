@@ -1,14 +1,14 @@
 import { Box, Typography } from "@mui/material"
 import { useState } from "react"
 import { useLocation } from "react-router-dom"
-import { FancyButton, TooltipHelper } from "../../.."
-import { useTheme } from "../../../../containers/theme"
-import { useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
-import { GameServerKeys } from "../../../../keys"
-import { MARKETPLACE_TABS } from "../../../../pages"
-import { colors, fonts } from "../../../../theme/theme"
-import { MechDetails, MechStatus, MechStatusEnum } from "../../../../types"
-import { ItemType } from "../../../../types/marketplace"
+import { FancyButton, TooltipHelper } from "../../../.."
+import { useTheme } from "../../../../../containers/theme"
+import { useGameServerSubscriptionFaction } from "../../../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../../../keys"
+import { MARKETPLACE_TABS } from "../../../../../pages"
+import { colors, fonts } from "../../../../../theme/theme"
+import { MechDetails, MechStatus, MechStatusEnum } from "../../../../../types"
+import { ItemType } from "../../../../../types/marketplace"
 
 export const MechButtons = ({
     mechDetails,

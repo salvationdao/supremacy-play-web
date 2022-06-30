@@ -1,6 +1,6 @@
 import { Box, CircularProgress, Fade, IconButton, Pagination, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { MoveableResizable, QueueFeed, TooltipHelper } from ".."
+import { MoveableResizable, TooltipHelper } from ".."
 import { SvgNotification, SvgSupToken } from "../../assets"
 import { useTheme } from "../../containers/theme"
 import { parseString, supFormatter } from "../../helpers"
@@ -15,6 +15,7 @@ import { TelegramRegisterModal } from "../Bar/ProfileCard/PreferencesModal/Teleg
 import { MoveableResizableConfig } from "../Common/MoveableResizable/MoveableResizableContainer"
 import { PageHeader } from "../Common/PageHeader"
 import { TotalAndPageSizeOptions } from "../Common/TotalAndPageSizeOptions"
+import { QueueFeed } from "../Hangar/WarMachinesHangar/WarMachineDetails/DeployQueue/DeployModal"
 import { QuickDeployItem } from "./QuickDeployItem"
 
 const sortOptions = [
