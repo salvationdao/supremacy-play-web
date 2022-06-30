@@ -52,7 +52,7 @@ export const MysteryCrateHangarItem = ({ crate, setCrateOpen, setCrateReward, ge
         } finally {
             setLoading(false)
         }
-    }, [send, crate.id, setCrateOpen, setCrateReward, getCrates])
+    }, [send, crate.id, setCrateOpen, setCrateReward, getCrates, newSnackbarMessage])
 
     return (
         <>
