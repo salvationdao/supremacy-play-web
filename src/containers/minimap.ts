@@ -1,3 +1,4 @@
+import { useToggle } from "./../hooks/useToggle"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { createContainer } from "unstated-next"
 import { useAuth, useSnackbar } from "."
@@ -21,6 +22,7 @@ export const MiniMapContainer = createContainer(() => {
     // Map triggers
     const [winner, setWinner] = useState<WinnerAnnouncementResponse>()
     const [playerAbility, setPlayerAbility] = useState<PlayerAbility>()
+    const [isEnlarged, toggleIsEnlarged] = useToggle()
     const [isTargeting, setIsTargeting] = useState(false)
 
     // Other stuff
@@ -72,7 +74,7 @@ export const MiniMapContainer = createContainer(() => {
         setPlayerAbility(undefined)
         setSelection(undefined)
         setIsTargeting(false)
-    }, [setPlayerAbility])
+    }, [])
 
     const onTargetConfirm = useCallback(async () => {
         if (!selection) return
@@ -170,6 +172,8 @@ export const MiniMapContainer = createContainer(() => {
         onTargetConfirm,
         gridWidth,
         gridHeight,
+        isEnlarged,
+        toggleIsEnlarged,
     }
 })
 
