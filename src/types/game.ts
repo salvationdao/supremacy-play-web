@@ -165,6 +165,7 @@ export interface WarMachineLiveState {
     health?: number
     shield?: number
     energy?: number
+    is_hidden: boolean
 }
 
 export interface BattleEndDetail {
