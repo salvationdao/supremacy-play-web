@@ -133,8 +133,8 @@ const MapMechInner = ({ warMachine, isLargeMode, map }: MapMechInnerProps) => {
     return useMemo(() => {
         if (!position) return null
 
-        // Don't show on map if the mech is hidden and player is not part of the mech's faction
-        if (isHidden && !isSameFaction) return null
+        // Don't show on map if the mech is hidden
+        if (isHidden) return null
 
         let opacity = 1
         if (isLargeMode) {
@@ -143,7 +143,7 @@ const MapMechInner = ({ warMachine, isLargeMode, map }: MapMechInnerProps) => {
             }
         }
         if (isHidden) {
-            opacity = 0.3
+            opacity = 0
         }
 
         return (
