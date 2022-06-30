@@ -18,6 +18,7 @@ import { MechButtons } from "./MechButtons"
 import { HistoryModal } from "./Modals/MechHistory/HistoryModal"
 import { MechName } from "./MechName"
 import { RentalModal } from "./Modals/RentalModal"
+import { MechViewer } from "./MechViewer"
 
 export const WarMachineHangarDetails = ({ mechID }: { mechID: string }) => {
     const [selectedMechDetails, setSelectedMechDetails] = useState<MechDetails>()
@@ -240,7 +241,9 @@ export const WarMachineHangarDetailsInner = ({
                 backgroundColor={backgroundColor}
                 sx={{ height: "100%", flex: 1 }}
             >
-                <Stack sx={{ height: "100%" }}>ttt</Stack>
+                <Stack sx={{ height: "100%" }}>
+                    <MechViewer mechDetails={mechDetails} />
+                </Stack>
             </ClipThing>
         </Stack>
     )
