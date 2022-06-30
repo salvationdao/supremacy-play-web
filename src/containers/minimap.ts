@@ -1,21 +1,15 @@
-import { useToggle } from "./../hooks/useToggle"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { createContainer } from "unstated-next"
 import { useAuth, useSnackbar } from "."
-import { useGameServerCommandsFaction, useGameServerSubscription, useGameServerSubscriptionUser } from "../hooks/useGameServer"
+import { useGameServerCommandsFaction, useGameServerSubscriptionUser } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
 import { CellCoords, GameAbility, LocationSelectType, PlayerAbility } from "../types"
+import { useToggle } from "./../hooks/useToggle"
 import { useGame } from "./game"
 
 interface WinnerAnnouncementResponse {
     game_ability: GameAbility
     end_time: Date
-}
-
-interface MinimapUpdateResponse {
-    duration: number
-    radius: number
-    coords: CellCoords
 }
 
 export interface MapSelection {
@@ -47,7 +41,6 @@ export const MiniMapContainer = createContainer(() => {
     // Other stuff
     const [highlightedMechHash, setHighlightedMechHash] = useState<string>()
     const [selection, setSelection] = useState<MapSelection>()
-    const [updates, setUpdates] = useState<MinimapUpdateResponse[]>([])
 
     // Subscribe on winner announcements
     useGameServerSubscriptionUser<WinnerAnnouncementResponse | undefined>(
@@ -69,17 +62,6 @@ export const MiniMapContainer = createContainer(() => {
                 endTime = new Date(dateNow.getTime() + 15000)
             }
             setWinner({ ...payload, end_time: endTime })
-        },
-    )
-
-    useGameServerSubscription<MinimapUpdateResponse | null>(
-        {
-            URI: "/public/minimap",
-            key: GameServerKeys.MinimapUpdatesSubscribe,
-        },
-        (payload) => {
-            if (!payload) return
-            setUpdates((prev) => [...prev, payload])
         },
     )
 

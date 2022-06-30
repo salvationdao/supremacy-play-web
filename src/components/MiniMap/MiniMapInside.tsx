@@ -4,6 +4,7 @@ import { MapMechs, SelectionIcon } from ".."
 import { Crosshair } from "../../assets"
 import { useGame, useMiniMap } from "../../containers"
 import { Dimension, LocationSelectType } from "../../types"
+import { Blackouts } from "./MapInsideItems/Blackouts"
 import { CountdownSubmit } from "./MapInsideItems/CountdownSubmit"
 import { DisabledCells } from "./MapInsideItems/DisabledCells"
 import { LineSelect } from "./MapInsideItems/LineSelect"
@@ -104,6 +105,9 @@ export const MiniMapInside = ({ containerDimensions, isLargeMode }: MiniMapInsid
 
                         {/* Shade disabled cells */}
                         <DisabledCells />
+
+                        {/* Blackouts */}
+                        <Blackouts />
                     </Box>
                 </Stack>
 
