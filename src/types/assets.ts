@@ -428,4 +428,3 @@ export interface OpenCrateResponse {
     weapon: Weapon[]
     weapon_skin?: WeaponSkin
 }
-
