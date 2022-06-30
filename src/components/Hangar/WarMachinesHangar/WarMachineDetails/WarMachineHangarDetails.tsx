@@ -149,13 +149,14 @@ export const WarMachineHangarDetailsInner = ({
                 sx={{ flexShrink: 0, height: "100%", width: "42rem" }}
             >
                 <Stack sx={{ height: "100%" }}>
-                    <ClipThing clipSize="10px" corners={{ topRight: true }} opacity={0.7} sx={{ flexShrink: 0, p: ".8rem" }}>
+                    <ClipThing clipSize="10px" corners={{ topRight: true }} opacity={0.7} sx={{ flexShrink: 0, p: "1rem" }}>
                         <Box sx={{ height: "12.5rem", position: "relative" }}>
                             <MediaPreview imageUrl={mechDetails.avatar_url} objectFit="cover" objectPosition="50% 40%" />
 
                             <Box sx={{ position: "absolute", bottom: ".6rem", left: ".8rem", minWidth: "10rem", backgroundColor: `${backgroundColor}DF` }}>
                                 <MechGeneralStatus mechID={mechID} />
                             </Box>
+
                             <Box sx={{ position: "absolute", top: 0, bottom: 0, left: 0, right: 0, background: `linear-gradient(#FFFFFF00 60%, #00000050)` }} />
                         </Box>
                     </ClipThing>
@@ -167,7 +168,8 @@ export const WarMachineHangarDetailsInner = ({
                             overflowX: "hidden",
                             ml: "1.9rem",
                             pr: "1.4rem",
-                            my: ".8rem",
+                            mt: ".4rem",
+                            mb: ".8rem",
                             direction: "ltr",
                             scrollbarWidth: "none",
                             "::-webkit-scrollbar": {
