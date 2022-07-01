@@ -32,6 +32,7 @@ export const itemTypes: {
     value: ItemType
 }[] = [
     { label: "War Machine", value: ItemType.WarMachine },
+    { label: "Weapon", value: ItemType.Weapon },
     { label: "Keycard", value: ItemType.Keycards },
     { label: "Mystery Crate", value: ItemType.MysteryCrate },
 ]

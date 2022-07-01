@@ -5,6 +5,7 @@ import { HangarBg } from "../assets"
 import { KeycardsMarket } from "../components/Marketplace/KeycardsMarket/KeycardsMarket"
 import { MysteryCratesMarket } from "../components/Marketplace/MysteryCratesMarket/MysteryCratesMarket"
 import { WarMachinesMarket } from "../components/Marketplace/WarMachinesMarket/WarMachinesMarket"
+import { WeaponsMarket } from "../components/Marketplace/WeaponsMarket/WeaponsMarket"
 import { HistoryMarket } from "../components/Marketplace/HistoryMarket/HistoryMarket"
 import { useTheme } from "../containers/theme"
 import { ROUTES_MAP } from "../routes"
@@ -91,7 +92,7 @@ export const MarketplacePage = () => {
                     <WarMachinesMarket />
                 </TabPanel>
                 <TabPanel currentValue={currentValue} value={MARKETPLACE_TABS.Weapons}>
-                    <WarMachinesMarket />
+                    <WeaponsMarket />
                 </TabPanel>
                 <TabPanel currentValue={currentValue} value={MARKETPLACE_TABS.Keycards}>
                     <KeycardsMarket />

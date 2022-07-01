@@ -81,6 +81,11 @@ export interface MarketplaceBuyAuctionItem {
     }
     keycard?: MarketKeycard
     mystery_crate?: MarketCrate
+    weapon?: {
+        id: string
+        label: string
+        avatar_url: string
+    }
     sold_for?: string
     sold_at?: Date
     sold_to?: MarketUser
