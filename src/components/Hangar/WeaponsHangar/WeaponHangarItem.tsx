@@ -7,26 +7,33 @@ import { getRarityDeets } from "../../../helpers"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { fonts } from "../../../theme/theme"
-import { MechDetails, Weapon } from "../../../types"
+import { Weapon } from "../../../types"
 import { MediaPreview } from "../../Common/MediaPreview/MediaPreview"
+import { General } from "../../Marketplace/Common/MarketItem/General"
 
+// move this
+export interface WeaponDetails {
+    tier: string
+}
 export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGridView?: boolean }) => {
     const location = useLocation()
     const theme = useTheme()
     const { send } = useGameServerCommandsFaction("/faction_commander")
-    const [mechDetails, setMechDetails] = useState<MechDetails>()
+    const [weaponDetails, setWeaponDetails] = useState<WeaponDetails>()
 
-    const rarityDeets = useMemo(() => getRarityDeets(weapon.tier || mechDetails?.tier || ""), [weapon, mechDetails])
+    const rarityDeets = useMemo(() => getRarityDeets(weapon.tier || weaponDetails?.tier || ""), [weapon, weaponDetails])
 
     useEffect(() => {
         ;(async () => {
             try {
-                const resp = await send<MechDetails>(GameServerKeys.GetMechDetails, {
+                const resp = await send<WeaponDetails>(GameServerKeys.GetWeaponDetails, {
                     mech_id: weapon.id,
                 })
 
+                console.log("this is resp", resp)
+
                 if (!resp) return
-                setMechDetails(resp)
+                setWeaponDetails(resp)
             } catch (e) {
                 console.error(e)
             }
@@ -35,8 +42,9 @@ export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGri
 
     const primaryColor = theme.factionTheme.primary
     const backgroundColor = theme.factionTheme.background
-    const imageUrl = mechDetails?.avatar_url || weapon.avatar_url
-    const largeImageUrl = mechDetails?.large_image_url || weapon.large_image_url
+
+    // const imageUrl = mechDetails?.avatar_url || weapon.avatar_url
+    // const largeImageUrl = mechDetails?.large_image_url || weapon.large_image_url
 
     return (
         <Box sx={{ position: "relative", overflow: "visible", height: "100%" }}>
@@ -83,16 +91,15 @@ export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGri
                             width: "100%",
                         }}
                     >
-                        <MediaPreview imageUrl={imageUrl} objectFit={isGridView ? "cover" : "contain"} />
+                        <MediaPreview imageUrl={weapon.image_url} objectFit={isGridView ? "cover" : "contain"} />
                     </Box>
 
                     <Stack>
-                        <Typography variant="body2" sx={{ color: rarityDeets.color, fontFamily: fonts.nostromoHeavy }}>
-                            {rarityDeets.label}
-                        </Typography>
-
                         <Typography sx={{ fontFamily: fonts.nostromoBlack }}>{weapon.label}</Typography>
                     </Stack>
+                    <General isGridView={isGridView} title="STATUS">
+                        {/* <MechGeneralStatus mechID={mech.id} hideBox /> */}
+                    </General>
                 </Box>
 
                 <Box
@@ -102,7 +109,7 @@ export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGri
                         right: 0,
                         top: 0,
                         bottom: 0,
-                        background: `url(${largeImageUrl})`,
+                        // background: `url(${largeImageUrl})`,
                         backgroundRepeat: "no-repeat",
                         backgroundPosition: "top",
                         backgroundSize: "cover",

@@ -45,6 +45,7 @@ export enum GameServerKeys {
     GetMechs = "PLAYER:ASSET:MECH:LIST",
     // Weapons
     GetWeapons = "PLAYER:ASSET:WEAPON:LIST",
+    GetWeaponDetails = "PLAYER:ASSET:WEAPON:DETAIL",
     GetMechDetails = "PLAYER:ASSET:MECH:DETAIL",
     SubMechQueuePosition = "PLAYER:ASSET:MECH:QUEUE:SUBSCRIBE",
     JoinQueue = "BATTLE:QUEUE:JOIN",

@@ -27,6 +27,7 @@ interface GetWeaponsRequest {
     page_size: number
     include_market_listed: boolean
     rarities: string[]
+    search: string
 }
 
 interface GetWeaponsResponse {
@@ -61,9 +62,7 @@ export const PlayerWeaponsHangar = () => {
         label: "STATUS",
         options: [
             { value: MechStatusEnum.Idle, label: "IDLE", color: colors.green },
-            { value: MechStatusEnum.Battle, label: "IN BATTLE", color: colors.orange },
             { value: MechStatusEnum.Market, label: "MARKETPLACE", color: colors.red },
-            { value: MechStatusEnum.Queue, label: "IN QUEUE", color: colors.yellow },
         ],
         initialSelected: status,
         onSetSelected: (value: string[]) => {
@@ -107,6 +106,7 @@ export const PlayerWeaponsHangar = () => {
                 page_size: pageSize,
                 include_market_listed: true,
                 rarities,
+                search,
             })
 
             updateQuery({
@@ -114,6 +114,7 @@ export const PlayerWeaponsHangar = () => {
                 page: page.toString(),
                 pageSize: pageSize.toString(),
                 rarities: rarities.join("||"),
+                search,
             })
 
             if (!resp) return
