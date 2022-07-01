@@ -1,8 +1,7 @@
-import { Box } from "@mui/material"
-import { useMemo, useState } from "react"
+import { Box, keyframes } from "@mui/material"
+import React, { useEffect, useMemo, useState } from "react"
 import { useMiniMap } from "../../../containers"
 
-import { useTimer } from "../../../hooks"
 import { useGameServerSubscription } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
@@ -16,8 +15,15 @@ interface MinimapEvent {
     coords: CellCoords
 }
 
+interface BlackoutWithAnimationState extends MinimapEvent {
+    isVisible: boolean
+}
+
 export const Blackouts = () => {
-    const [blackouts, setBlackouts] = useState<MinimapEvent[]>([])
+    // const [payload, setPayload] = useState<MinimapEvent[]>([])
+    const [payload, setPayload] = useState<MinimapEvent[]>([])
+    const [blackouts, setBlackouts] = useState<Map<string, BlackoutWithAnimationState>>(new Map())
+    const [removedBlackoutIDs, setRemovedBlackoutIDs] = useState<string[]>([])
 
     useGameServerSubscription<MinimapEvent[]>(
         {
@@ -26,34 +32,66 @@ export const Blackouts = () => {
         },
         (payload) => {
             if (!payload) return
-            console.log(payload)
-            setBlackouts(payload)
+            setPayload(payload)
         },
     )
 
-    return useMemo(() => {
-        return (
-            <>
-                {blackouts &&
-                    blackouts.length > 0 &&
-                    blackouts.map((b) => {
-                        return <Blackout key={b.id} {...b} />
-                    })}
-            </>
-        )
-    }, [blackouts])
+    useEffect(() => {
+        const payloadMap = new Map<string, MinimapEvent>()
+        setBlackouts((prev) => {
+            const newBlackouts = new Map(prev)
+            payload.forEach((m) => {
+                payloadMap.set(m.id, m)
+                if (!prev.has(m.id)) {
+                    newBlackouts.set(m.id, {
+                        ...m,
+                        isVisible: true,
+                    })
+                }
+            })
+
+            for (const [id, b] of newBlackouts.entries()) {
+                if (!payloadMap.has(id)) {
+                    newBlackouts.set(id, {
+                        ...b,
+                        isVisible: false,
+                    })
+
+                    setRemovedBlackoutIDs((prev) => {
+                        prev.push(id)
+                        return prev.map((p) => p)
+                    })
+                }
+            }
+            return newBlackouts
+        })
+    }, [payload])
+
+    useEffect(() => {
+        removedBlackoutIDs.forEach((r) => {
+            setTimeout(() => {
+                setBlackouts((prev) => {
+                    const newBlackouts = new Map(prev)
+                    newBlackouts.delete(r)
+                    return newBlackouts
+                })
+            }, BLACKOUT_TRANSITION_DURATION)
+        })
+    }, [removedBlackoutIDs])
+
+    return <>{blackouts.size > 0 && new Array(...blackouts).map(([id, b]) => <Blackout key={id} {...b} />)}</>
 }
 
-const Blackout = ({ duration, radius, coords }: MinimapEvent) => {
-    const { totalSecRemain } = useTimer(new Date(new Date().getTime() + duration * 1000), 1000, true)
+const BLACKOUT_TRANSITION_DURATION = 500
+
+const Blackout = React.forwardRef(function Blackout({ radius, coords, isVisible }: BlackoutWithAnimationState, ref) {
     const { gridHeight, gridWidth } = useMiniMap()
 
-    const diameter = useMemo(() => (radius / gridHeight) * 2.1, [gridHeight, radius])
-
-    if (totalSecRemain <= 0) return null
+    const diameter = useMemo(() => (radius / gridHeight) * 2.5, [gridHeight, radius])
 
     return (
         <Box
+            ref={ref}
             sx={{
                 zIndex: 900,
                 position: "absolute",
@@ -62,7 +100,27 @@ const Blackout = ({ duration, radius, coords }: MinimapEvent) => {
                 transform: `translate(${coords.x * gridWidth - diameter / 2}px, ${coords.y * gridHeight - diameter / 2}px)`,
                 borderRadius: "50%",
                 backgroundColor: `${colors.black2}DD`,
+                boxShadow: 20,
+                animation: `${isVisible ? fadeInKeyframes : fadeOutKeyframes} ${BLACKOUT_TRANSITION_DURATION}ms ease-in`,
             }}
         />
     )
-}
+})
+
+const fadeInKeyframes = keyframes({
+    "0%": {
+        opacity: 0,
+    },
+    "100%": {
+        opacity: 1,
+    },
+})
+
+const fadeOutKeyframes = keyframes({
+    "0%": {
+        opacity: 1,
+    },
+    "100%": {
+        opacity: 0,
+    },
+})
