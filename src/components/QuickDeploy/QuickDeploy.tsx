@@ -2,6 +2,7 @@ import { Box, CircularProgress, Fade, IconButton, Pagination, Stack, Typography 
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { MoveableResizable, QueueFeed, TooltipHelper } from ".."
 import { SvgNotification, SvgSupToken } from "../../assets"
+import { useAuth } from "../../containers"
 import { useTheme } from "../../containers/theme"
 import { parseString, supFormatter } from "../../helpers"
 import { usePagination, useToggle } from "../../hooks"
@@ -35,7 +36,8 @@ interface GetAssetsResponse {
 }
 
 export const QuickDeploy = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
-    if (!open) return null
+    const { userID } = useAuth()
+    if (!open || !userID) return null
     return <QuickDeployInner onClose={onClose} />
 }
 
@@ -103,13 +105,13 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
         () => ({
             localStoragePrefix: "quickDeploy",
             // Defaults
-            defaultPosX: 10,
-            defaultPosY: 10,
+            defaultPosX: 330,
+            defaultPosY: 0,
             defaultWidth: 420,
             defaultHeight: 580,
             // Position limits
-            minPosX: 10,
-            minPosY: 10,
+            minPosX: 0,
+            minPosY: 0,
             // Size limits
             minWidth: 360,
             minHeight: 280,

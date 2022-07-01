@@ -1,13 +1,17 @@
-import { ReactNode, useCallback, useState } from "react"
+import { ReactNode, useCallback, useEffect, useRef, useState } from "react"
+import { Rnd } from "react-rnd"
 import { createContainer } from "unstated-next"
-import { parseString } from "../../../helpers"
+import { useDimension } from "../../../containers"
+import { clamp, parseString } from "../../../helpers"
 import { Dimension, Position } from "../../../types"
+
+const PADDING = 10
 
 const defaultConfig: MoveableResizableConfig = {
     localStoragePrefix: "moveaberesizeable",
     // Defaults
-    defaultPosX: 10,
-    defaultPosY: 10,
+    defaultPosX: PADDING,
+    defaultPosY: PADDING,
     defaultWidth: 250,
     defaultHeight: 250,
 }
@@ -46,11 +50,6 @@ export const MoveableResizableContainer = createContainer((initialState: Moveabl
         defaultWidth: defaultW = 50,
         defaultHeight: defaultH = 50,
 
-        minPosX,
-        minPosY,
-        maxPosX,
-        maxPosY,
-
         minWidth,
         minHeight,
         maxWidth,
@@ -61,6 +60,10 @@ export const MoveableResizableContainer = createContainer((initialState: Moveabl
         topRightContent,
     } = initialState || defaultConfig
 
+    const {
+        gameUIDimensions: { width, height },
+    } = useDimension()
+    const rndRef = useRef<Rnd | null>(null)
     const [curPosX, setCurPosX] = useState(parseString(localStorage.getItem(`${localStoragePrefix}PosX`), defaultPosX))
     const [curPosY, setCurPosY] = useState(parseString(localStorage.getItem(`${localStoragePrefix}PosY`), defaultPosY))
     const [defaultWidth, setDefaultWidth] = useState(defaultW)
@@ -88,12 +91,42 @@ export const MoveableResizableContainer = createContainer((initialState: Moveabl
         [localStoragePrefix],
     )
 
+    const updateSize = useCallback(
+        (size: { width: number; height: number }) => {
+            rndRef.current?.updateSize(size)
+            onResizeStopped(size)
+        },
+        [onResizeStopped],
+    )
+
+    const updatePosition = useCallback(
+        (position: { x: number; y: number }) => {
+            rndRef.current?.updatePosition(position)
+            onMovingStopped(position)
+        },
+        [onMovingStopped],
+    )
+
+    // Set initial
+    useEffect(() => {
+        const newWidth = Math.min(curWidth, width - 2 * PADDING)
+        const newHeight = Math.min(curHeight, height - 2 * PADDING)
+
+        rndRef.current?.updateSize({ width: newWidth, height: newHeight })
+        rndRef.current?.updatePosition({
+            x: clamp(0, curPosX, width - newWidth),
+            y: clamp(0, curPosY, height - newHeight),
+        })
+        // Just run this once to set intial, no deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [width, height])
+
     return {
+        rndRef,
+        updateSize,
+        updatePosition,
+
         // From config
-        minPosX,
-        minPosY,
-        maxPosX,
-        maxPosY,
         minWidth,
         minHeight,
         maxWidth,
@@ -102,6 +135,8 @@ export const MoveableResizableContainer = createContainer((initialState: Moveabl
         infoTooltipText,
 
         // Own states
+        defaultPosX,
+        defaultPosY,
         defaultWidth,
         defaultHeight,
         setDefaultWidth,
@@ -110,10 +145,6 @@ export const MoveableResizableContainer = createContainer((initialState: Moveabl
         curPosY,
         curWidth,
         curHeight,
-        setCurPosX,
-        setCurPosY,
-        setCurWidth,
-        setCurHeight,
         onMovingStopped,
         onResizeStopped,
         topRightContent,
