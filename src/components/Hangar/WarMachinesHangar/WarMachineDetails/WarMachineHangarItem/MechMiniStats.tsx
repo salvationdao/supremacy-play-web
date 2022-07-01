@@ -1,9 +1,9 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { ReactNode } from "react"
-import { ClipThing, TooltipHelper } from "../../.."
-import { SvgIntroAnimation, SvgOutroAnimation, SvgPowerCore, SvgSkin, SvgUtilities, SvgWeapons } from "../../../../assets"
-import { colors, fonts } from "../../../../theme/theme"
-import { MechBasic, MechDetails } from "../../../../types"
+import { ClipThing, TooltipHelper } from "../../../.."
+import { SvgIntroAnimation, SvgOutroAnimation, SvgPowerCore, SvgSkin, SvgUtilities, SvgWeapons } from "../../../../../assets"
+import { colors, fonts } from "../../../../../theme/theme"
+import { MechBasic, MechDetails } from "../../../../../types"
 
 export const MechMiniStats = ({ mech, mechDetails }: { mech: MechBasic; mechDetails?: MechDetails }) => {
     const { weapon_hardpoints, utility_slots, chassis_skin_id, intro_animation_id, outro_animation_id, power_core_id } = mech

@@ -1,7 +1,7 @@
 import { Stack } from "@mui/material"
 import { useCallback } from "react"
-import { MechModal } from "../Common/MechModal"
-import { MechDetails } from "../../../../types"
+import { MechModal } from "../../Common/MechModal"
+import { MechDetails } from "../../../../../types"
 
 export const RentalModal = ({
     selectedMechDetails: rentalMechDetails,

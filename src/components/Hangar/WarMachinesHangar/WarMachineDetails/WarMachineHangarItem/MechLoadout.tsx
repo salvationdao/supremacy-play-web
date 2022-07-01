@@ -1,12 +1,12 @@
 import { Box, Stack } from "@mui/material"
 import { ReactNode } from "react"
-import { FancyButton, TooltipHelper } from "../../.."
-import { SvgIntroAnimation, SvgOutroAnimation, SvgPlus, SvgPowerCore, SvgSkin, SvgUtilities, SvgWeapons } from "../../../../assets"
-import { useTheme } from "../../../../containers/theme"
-import { useToggle } from "../../../../hooks"
-import { colors } from "../../../../theme/theme"
-import { MechBasic, MechDetails } from "../../../../types"
-import { MediaPreviewModal } from "../../../Common/MediaPreview/MediaPreviewModal"
+import { FancyButton, TooltipHelper } from "../../../.."
+import { SvgIntroAnimation, SvgOutroAnimation, SvgPlus, SvgPowerCore, SvgSkin, SvgUtilities, SvgWeapons } from "../../../../../assets"
+import { useTheme } from "../../../../../containers/theme"
+import { useToggle } from "../../../../../hooks"
+import { colors } from "../../../../../theme/theme"
+import { MechBasic, MechDetails } from "../../../../../types"
+import { MediaPreviewModal } from "../../../../Common/MediaPreview/MediaPreviewModal"
 
 const ITEM_WIDTH = 7.5 //rem
 

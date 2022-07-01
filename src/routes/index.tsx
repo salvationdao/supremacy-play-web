@@ -5,6 +5,7 @@ import { colors } from "../theme/theme"
 import { StorefrontPage } from "../pages/StorefrontPage"
 import { MarketplaceItemPage } from "../pages/MarketplaceItemPage"
 import { MarketplaceSellPage } from "../pages/MarketplaceSellPage"
+import { MechPage } from "../pages/MechPage"
 
 interface RouteStruct {
     id: string
@@ -35,6 +36,16 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
             label: "Battle Arena",
         },
         matchLeftDrawerID: "home",
+    },
+
+    mech: {
+        id: "mech",
+        path: "/mech/:mechID?",
+        exact: true,
+        Component: MechPage,
+        requireAuth: false,
+        requireFaction: false,
+        matchLeftDrawerID: "fleet",
     },
 
     // Fleet
