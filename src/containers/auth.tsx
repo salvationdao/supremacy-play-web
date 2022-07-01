@@ -232,7 +232,6 @@ export const UserUpdater = () => {
         },
         (payload) => {
             if (!payload) return
-            console.log(payload)
             setUser(payload)
             setUserRank(payload.rank)
         },
