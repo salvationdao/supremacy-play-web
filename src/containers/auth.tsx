@@ -20,6 +20,7 @@ export const FallbackUser: User = {
     gid: 0,
     avatar_id: "",
     rank: "NEW_RECRUIT",
+    features: [],
 }
 
 export const FallbackFaction: Faction = {
@@ -231,6 +232,7 @@ export const UserUpdater = () => {
         },
         (payload) => {
             if (!payload) return
+            console.log(payload)
             setUser(payload)
             setUserRank(payload.rank)
         },

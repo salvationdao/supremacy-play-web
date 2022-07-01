@@ -37,6 +37,7 @@ const user1: User = {
     faction_id: "123123",
     gid: 3871,
     rank: "NEW_RECRUIT" as UserRank,
+    features: [],
 }
 
 const user2 = {
@@ -46,6 +47,7 @@ const user2 = {
     faction_id: "123123",
     gid: 6519,
     rank: "NEW_RECRUIT" as UserRank,
+    features: [],
 }
 
 const ability1 = {
