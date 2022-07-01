@@ -2,7 +2,7 @@ import { Box, Stack } from "@mui/material"
 import { ReactNode, useMemo } from "react"
 import { Rnd } from "react-rnd"
 import { TooltipHelper } from "../.."
-import { SvgClose, SvgInfoCircular } from "../../../assets"
+import { SvgClose, SvgDrag, SvgInfoCircular } from "../../../assets"
 import { ClipThing } from "../../../components"
 import { useTheme } from "../../../containers/theme"
 import { shadeColor } from "../../../helpers"
@@ -68,6 +68,7 @@ const MoveableResizableInner = ({ children }: MoveableResizableProps) => {
                     height: defaultHeight,
                 }}
                 className="moveable-resizable"
+                dragHandleClassName="moveable-resizable-drag-handle"
                 minWidth={minWidth}
                 minHeight={minHeight}
                 maxWidth={maxWidth}
@@ -117,7 +118,7 @@ const MoveableResizableInner = ({ children }: MoveableResizableProps) => {
                                 <TooltipHelper text={infoTooltipText} placement="bottom">
                                     <Box
                                         sx={{
-                                            mr: onHideCallback ? ".9rem" : 0,
+                                            mr: ".9rem",
                                             opacity: 0.4,
                                             ":hover": { opacity: 1 },
                                         }}
@@ -126,6 +127,18 @@ const MoveableResizableInner = ({ children }: MoveableResizableProps) => {
                                     </Box>
                                 </TooltipHelper>
                             )}
+
+                            <Box
+                                className="moveable-resizable-drag-handle"
+                                sx={{
+                                    mr: onHideCallback ? ".9rem" : 0,
+                                    cursor: "move",
+                                    opacity: 0.4,
+                                    ":hover": { opacity: 1 },
+                                }}
+                            >
+                                <SvgDrag size="1.6rem" />
+                            </Box>
 
                             {onHideCallback && (
                                 <Box
@@ -171,6 +184,20 @@ const MoveableResizableInner = ({ children }: MoveableResizableProps) => {
                     >
                         {children}
                     </Box>
+
+                    <Box
+                        className="moveable-resizable-drag-handle"
+                        sx={{
+                            cursor: "move",
+                            position: "absolute",
+                            top: 0,
+                            left: 0,
+                            right: "12rem",
+                            height: "2rem",
+                            pointerEvents: "all",
+                            zIndex: 99,
+                        }}
+                    />
                 </ClipThing>
             </Rnd>
         </Box>
