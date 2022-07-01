@@ -8,28 +8,29 @@ import { usePagination, useToggle, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { MechBasic, MechStatusEnum } from "../../../types"
+import { MechStatusEnum, Weapon } from "../../../types"
 import { SortTypeLabel } from "../../../types/marketplace"
 import { PageHeader } from "../../Common/PageHeader"
 import { ChipFilter } from "../../Common/SortAndFilters/ChipFilterSection"
 import { SortAndFilters } from "../../Common/SortAndFilters/SortAndFilters"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
-import { WarMachineHangarItem } from "../WarMachinesHangar/WarMachineHangarItem"
+import { WeaponHangarItem } from "./WeaponHangarItem"
 
 const sortOptions = [
     { label: SortTypeLabel.MechQueueAsc, value: SortTypeLabel.MechQueueAsc },
     { label: SortTypeLabel.MechQueueDesc, value: SortTypeLabel.MechQueueDesc },
 ]
 
-interface GetMechsRequest {
+interface GetWeaponsRequest {
     queue_sort: string
     page: number
     page_size: number
     include_market_listed: boolean
+    rarities: string[]
 }
 
-interface GetMechsResponse {
-    mechs: MechBasic[]
+interface GetWeaponsResponse {
+    weapons: Weapon[]
     total: number
 }
 
@@ -41,7 +42,7 @@ export const PlayerWeaponsHangar = () => {
     // Items
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
-    const [mechs, setMechs] = useState<MechBasic[]>([])
+    const [weapons, setWeapons] = useState<Weapon[]>([])
 
     const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({
         pageSize: parseString(query.get("pageSize"), 10),
@@ -100,22 +101,24 @@ export const PlayerWeaponsHangar = () => {
             let sortDir = "asc"
             if (sort === SortTypeLabel.MechQueueDesc) sortDir = "desc"
 
-            const resp = await send<GetMechsResponse, GetMechsRequest>(GameServerKeys.GetWeapons, {
+            const resp = await send<GetWeaponsResponse, GetWeaponsRequest>(GameServerKeys.GetWeapons, {
                 queue_sort: sortDir,
                 page,
                 page_size: pageSize,
                 include_market_listed: true,
+                rarities,
             })
 
             updateQuery({
                 sort,
                 page: page.toString(),
                 pageSize: pageSize.toString(),
+                rarities: rarities.join("||"),
             })
 
             if (!resp) return
             setLoadError(undefined)
-            setMechs(resp.mechs)
+            setWeapons(resp.weapons)
             setTotalItems(resp.total)
         } catch (e) {
             setLoadError(typeof e === "string" ? e : "Failed to get war machines.")
@@ -123,7 +126,7 @@ export const PlayerWeaponsHangar = () => {
         } finally {
             setIsLoading(false)
         }
-    }, [send, page, pageSize, updateQuery, sort, setTotalItems])
+    }, [send, page, pageSize, updateQuery, sort, rarities, setTotalItems])
 
     useEffect(() => {
         getItems()
@@ -153,7 +156,7 @@ export const PlayerWeaponsHangar = () => {
             )
         }
 
-        if (!mechs || isLoading) {
+        if (!weapons || isLoading) {
             return (
                 <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                     <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
@@ -163,7 +166,7 @@ export const PlayerWeaponsHangar = () => {
             )
         }
 
-        if (mechs && mechs.length > 0) {
+        if (weapons && weapons.length > 0) {
             return (
                 <Box sx={{ direction: "ltr", height: 0 }}>
                     <Box
@@ -178,8 +181,8 @@ export const PlayerWeaponsHangar = () => {
                             overflow: "visible",
                         }}
                     >
-                        {mechs.map((mech) => (
-                            <WarMachineHangarItem key={`marketplace-${mech.id}`} mech={mech} isGridView={isGridView} />
+                        {weapons.map((weapon) => (
+                            <WeaponHangarItem key={`marketplace-${weapon.id}`} weapon={weapon} isGridView={isGridView} />
                         ))}
                     </Box>
                 </Box>
@@ -217,7 +220,7 @@ export const PlayerWeaponsHangar = () => {
                 </Stack>
             </Stack>
         )
-    }, [loadError, mechs, isLoading, isGridView, theme.factionTheme.primary])
+    }, [loadError, weapons, isLoading, isGridView, theme.factionTheme.primary])
 
     return (
         <Stack direction="row" spacing="1rem" sx={{ height: "100%" }}>
@@ -243,7 +246,7 @@ export const PlayerWeaponsHangar = () => {
                         <PageHeader title="weapons" description="Your war machines." imageUrl={WarMachineIconPNG} />
 
                         <TotalAndPageSizeOptions
-                            countItems={mechs?.length}
+                            countItems={weapons?.length}
                             totalItems={totalItems}
                             pageSize={pageSize}
                             changePageSize={changePageSize}

@@ -5,7 +5,7 @@ import { HangarBg } from "../assets"
 import { KeycardsHangar } from "../components/Hangar/KeycardsHangar/KeycardsHangar"
 import { MysteryCratesHangar } from "../components/Hangar/MysteryCratesHangar/MysteryCratesHangar"
 import { PlayerAbilitiesHangar } from "../components/Hangar/PlayerAbilitiesHangar/PlayerAbilitiesHangar"
-import { PlayerWeaponsHangar } from "../components/Hangar/PlayerAbilitiesHangar/PlayerWeaponsHangar"
+import { PlayerWeaponsHangar } from "../components/Hangar/WeaponsHangar/PlayerWeaponsHangar"
 
 import { WarMachinesHangar } from "../components/Hangar/WarMachinesHangar/WarMachinesHangar"
 import { STAGING_OR_DEV_ONLY } from "../constants"
