@@ -68,15 +68,21 @@ export const Blackouts = () => {
     }, [payload])
 
     useEffect(() => {
+        if (removedBlackoutIDs.length === 0) return
+        const timeouts: NodeJS.Timeout[] = []
+
         removedBlackoutIDs.forEach((r) => {
-            setTimeout(() => {
+            const t = setTimeout(() => {
                 setBlackouts((prev) => {
                     const newBlackouts = new Map(prev)
                     newBlackouts.delete(r)
                     return newBlackouts
                 })
             }, BLACKOUT_TRANSITION_DURATION)
+            timeouts.push(t)
         })
+
+        return () => timeouts.forEach((t) => clearTimeout(t))
     }, [removedBlackoutIDs])
 
     return <>{blackouts.size > 0 && new Array(...blackouts).map(([id, b]) => <Blackout key={id} {...b} />)}</>
