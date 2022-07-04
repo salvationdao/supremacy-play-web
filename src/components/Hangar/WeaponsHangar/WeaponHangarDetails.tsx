@@ -148,9 +148,9 @@ export const WeaponHangarDetailsInner = ({ weaponID }: WeaponHangarDetailsInnerP
 
 const WeaponViewer = ({ weapon }: { weapon: Weapon }) => {
     const theme = useTheme()
-    const imageUrl = weapon?.large_image_url || weapon.large_image_url
-    const animationUrl = weapon?.animation_url || weapon.animation_url
-    const cardAnimationUrl = weapon?.card_animation_url || weapon.card_animation_url
+    const imageUrl = weapon?.large_image_url
+    const animationUrl = weapon?.animation_url
+    const cardAnimationUrl = weapon?.card_animation_url
 
     return (
         <Box
