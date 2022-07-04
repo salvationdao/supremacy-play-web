@@ -20,7 +20,7 @@ export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGri
         ;(async () => {
             try {
                 const resp = await send<Weapon>(GameServerKeys.GetWeaponDetails, {
-                    mech_id: weapon.id,
+                    weapon_id: weapon.id,
                 })
                 if (!resp) return
                 setWeaponDetails(resp)
@@ -55,7 +55,7 @@ export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGri
                     sx: { position: "relative", height: "100%" },
                 }}
                 sx={{ color: primaryColor, textAlign: "start", height: "100%" }}
-                to={`/mech/${weapon.id}${location.hash}`}
+                to={`/weapon/${weapon.id}${location.hash}`}
             >
                 <Box
                     sx={{

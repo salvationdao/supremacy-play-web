@@ -54,8 +54,6 @@ export const PlayerAbilitiesHangar = () => {
             key: GameServerKeys.PlayerAbilitiesList,
         },
         (payload) => {
-            console.log("sdfalksjfdjk")
-
             if (!payload) return
             setPlayerAbilities(payload)
             setTotalItems(payload.length)

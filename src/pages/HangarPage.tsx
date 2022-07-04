@@ -79,7 +79,7 @@ export const HangarPage = () => {
                         <Tab label="WAR MACHINES" value={HANGAR_TABS.WarMachines} />
                         <Tab label="KEY CARDS" value={HANGAR_TABS.Keycards} />
                         <Tab label="MYSTERY CRATES" value={HANGAR_TABS.MysteryCrates} />
-                        <Tab label="Weapons" value={HANGAR_TABS.Weapons} />
+                        <Tab label="WEAPONS" value={HANGAR_TABS.Weapons} />
 
                         {STAGING_OR_DEV_ONLY && <Tab label="ABILITIES" value={HANGAR_TABS.Abilities} />}
                     </Tabs>
