@@ -45,7 +45,7 @@ const MapMechInner = ({ warMachine, isLargeMode, map }: MapMechInnerProps) => {
     /**
      * For rendering: size, colors etc.
      */
-    const iconSize = useMemo(() => Math.min(gridWidth, gridHeight) * 1.1, [gridWidth, gridHeight])
+    const iconSize = useMemo(() => Math.min(gridWidth, gridHeight) * 1.5, [gridWidth, gridHeight])
     const dirArrowLength = useMemo(() => iconSize / 2 + 0.6 * iconSize, [iconSize])
     const primaryColor = useMemo(
         () => (ownedByID === userID ? colors.gold : getFaction(warMachineFactionID).primary_color || colors.neonBlue),
@@ -81,7 +81,6 @@ const MapMechInner = ({ warMachine, isLargeMode, map }: MapMechInnerProps) => {
         const commandMapY = mechMoveCommand.cell_y * gridHeight
         return (Math.atan2(commandMapY - mechMapY, commandMapX - mechMapX) * 180) / Math.PI
     }, [gridHeight, gridWidth, mechMapX, mechMapY, mechMoveCommand?.cell_x, mechMoveCommand?.cell_y])
-
     // Listen on mech stats
     useGameServerSubscription<WarMachineLiveState | undefined>(
         {
@@ -136,14 +135,8 @@ const MapMechInner = ({ warMachine, isLargeMode, map }: MapMechInnerProps) => {
         if (isHidden) return null
 
         let opacity = 1
-        if (isLargeMode) {
-            if (!isAlive) {
-                opacity = 0.7
-            }
-        }
-        if (isHidden) {
-            opacity = 0
-        }
+        if (isLargeMode && !isAlive) opacity = 0.7
+        if (isHidden) opacity = 0
 
         return (
             <Stack
@@ -210,8 +203,8 @@ const MapMechInner = ({ warMachine, isLargeMode, map }: MapMechInnerProps) => {
                               }
                             : {
                                   position: "relative",
-                                  width: iconSize,
-                                  height: iconSize,
+                                  width: iconSize / 1.3,
+                                  height: iconSize / 1.3,
                                   overflow: "visible",
                                   backgroundColor: `${primaryColor}${isAlive ? "" : "00"}`,
                                   border: `9px solid #000000${isAlive ? "" : "00"}`,
