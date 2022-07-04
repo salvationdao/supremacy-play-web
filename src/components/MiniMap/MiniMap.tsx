@@ -29,6 +29,10 @@ export const MiniMap = () => {
     }, [bribeStage, toggleShow, resetSelection])
     // End ****************************************
 
+    useEffect(() => {
+        if (isTargeting) toggleIsMapOpen(true)
+    }, [isTargeting, toggleIsMapOpen])
+
     // Map config
     const config: MoveableResizableConfig = useMemo(
         () => ({
