@@ -18,12 +18,14 @@ import { Dates } from "../../Common/MarketDetails/Dates"
 import { ManageListing } from "../../Common/MarketDetails/ManageListing"
 import { WeaponStatsDetails } from "./WeaponStatsDetails"
 import { SafePNG } from "../../../../assets"
+import { Weapon } from "../../../../types"
 
-export const WeaponsMarketDetails = ({ id }: { id: string }) => {
+export const WeaponMarketDetails = ({ id }: { id: string }) => {
     const theme = useTheme()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [loadError, setLoadError] = useState<string>()
     const [marketItem, setMarketItem] = useState<MarketplaceBuyAuctionItem>()
+    const [weaponDetails, setWeaponDetails] = useState<Weapon>()
 
     const primaryColor = useMemo(
         () => (marketItem?.sold_at ? colors.marketSold : theme.factionTheme.primary),
@@ -47,6 +49,25 @@ export const WeaponsMarketDetails = ({ id }: { id: string }) => {
             }
         })()
     }, [id, send])
+
+    // // Get weapon details
+    useEffect(() => {
+        ;(async () => {
+            try {
+                if (!marketItem || !marketItem.weapon?.id) return
+                const resp = await send<Weapon>(GameServerKeys.GetWeaponDetails, {
+                    weapon_id: marketItem.weapon.id,
+                })
+
+                if (!resp) return
+                setWeaponDetails(resp)
+            } catch (err) {
+                const message = typeof err === "string" ? err : "Failed to get weapon details."
+                setLoadError(message)
+                console.error(err)
+            }
+        })()
+    }, [marketItem, send])
 
     const content = useMemo(() => {
         const validStruct = !marketItem || (marketItem.weapon && marketItem.owner)
@@ -83,8 +104,8 @@ export const WeaponsMarketDetails = ({ id }: { id: string }) => {
             )
         }
 
-        return <WeaponMarketDetailsInner marketItem={marketItem} primaryColor={primaryColor} />
-    }, [loadError, marketItem, primaryColor])
+        return <WeaponMarketDetailsInner marketItem={marketItem} weaponDetails={weaponDetails} primaryColor={primaryColor} />
+    }, [loadError, marketItem, weaponDetails, primaryColor])
 
     return (
         <ClipThing
@@ -109,10 +130,11 @@ export const WeaponsMarketDetails = ({ id }: { id: string }) => {
 
 interface WeaponMarketDetailsInnerProps {
     marketItem: MarketplaceBuyAuctionItem
+    weaponDetails?: Weapon
     primaryColor: string
 }
 
-const WeaponMarketDetailsInner = ({ marketItem, primaryColor }: WeaponMarketDetailsInnerProps) => {
+const WeaponMarketDetailsInner = ({ marketItem, weaponDetails, primaryColor }: WeaponMarketDetailsInnerProps) => {
     const below780 = useMediaQuery("(max-width:780px)")
     const [isTimeEnded, toggleIsTimeEnded] = useToggle()
     const rarityDeets = useMemo(() => getRarityDeets(marketItem.collection_item?.tier || ""), [marketItem.collection_item?.tier])
@@ -156,8 +178,8 @@ const WeaponMarketDetailsInner = ({ marketItem, primaryColor }: WeaponMarketDeta
                         <ImagesPreview
                             media={[
                                 {
-                                    imageUrl: SafePNG,
-                                    videoUrl: SafePNG,
+                                    imageUrl: weaponDetails?.image_url || SafePNG,
+                                    videoUrl: weaponDetails?.animation_url || SafePNG,
                                 },
                             ]}
                             primaryColor={primaryColor}
@@ -219,7 +241,7 @@ const WeaponMarketDetailsInner = ({ marketItem, primaryColor }: WeaponMarketDeta
                             <ManageListing id={id} owner={owner} isTimeEnded={isTimeEnded} />
                         </Stack>
 
-                        <WeaponStatsDetails />
+                        <WeaponStatsDetails weaponDetails={weaponDetails} />
                     </Masonry>
                 </Box>
             </Box>

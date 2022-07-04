@@ -7,7 +7,7 @@ import { FancyButton } from "../components"
 import { KeycardMarketDetails } from "../components/Marketplace/KeycardsMarket/KeycardMarketDetails/KeycardMarketDetails"
 import { MysteryCrateMarketDetails } from "../components/Marketplace/MysteryCratesMarket/MysteryCrateMarketDetails/MysteryCrateMarketDetails"
 import { WarMachineMarketDetails } from "../components/Marketplace/WarMachinesMarket/WarMachineMarketDetails/WarMachineMarketDetails"
-import { WeaponsMarketDetails } from "../components/Marketplace/WeaponsMarket/WeaponsMarketDetails/WeaponsMarketDetails"
+import { WeaponMarketDetails } from "../components/Marketplace/WeaponsMarket/WeaponMarketDetails/WeaponMarketDetails"
 import { fonts, siteZIndex } from "../theme/theme"
 
 export const MarketplaceItemPage = () => {
@@ -75,7 +75,7 @@ const MarketplaceItemPageInner = () => {
     }
 
     if (type === MARKETPLACE_TABS.Weapons && !!id) {
-        return <WeaponsMarketDetails id={id} />
+        return <WeaponMarketDetails id={id} />
     }
 
     if (type === MARKETPLACE_TABS.Keycards && !!id) {
