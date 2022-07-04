@@ -19,7 +19,6 @@ interface GetWeaponsRequest {
     page: number
     page_size: number
     include_market_listed: boolean
-    search: string
 }
 
 interface GetWeaponsResponse {
@@ -59,13 +58,11 @@ export const PlayerWeaponsHangar = () => {
                 page,
                 page_size: pageSize,
                 include_market_listed: true,
-                search,
             })
 
             updateQuery({
                 page: page.toString(),
                 pageSize: pageSize.toString(),
-                search,
             })
 
             if (!resp) return

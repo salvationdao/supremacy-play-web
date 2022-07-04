@@ -7,8 +7,6 @@ import { fonts } from "../../../theme/theme"
 import { Weapon } from "../../../types"
 import { ClipThing } from "../../Common/ClipThing"
 import { MediaPreview } from "../../Common/MediaPreview/MediaPreview"
-import { MechButtons } from "../WarMachinesHangar/WarMachineDetails/MechButtons"
-import { MechViewer } from "../WarMachinesHangar/WarMachineDetails/MechViewer"
 import { WeaponButtons } from "./WeaponHangarButtons"
 import { WeaponBarStats } from "./WeaponHangarStats"
 
