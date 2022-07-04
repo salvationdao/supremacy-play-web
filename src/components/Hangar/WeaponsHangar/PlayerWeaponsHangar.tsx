@@ -1,32 +1,24 @@
 import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { ClipThing } from "../.."
 import { EmptyWarMachinesPNG, WarMachineIconPNG } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
-import { getRarityDeets, parseString } from "../../../helpers"
+import { parseString } from "../../../helpers"
 import { usePagination, useToggle, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { MechStatusEnum, Weapon } from "../../../types"
-import { SortTypeLabel } from "../../../types/marketplace"
+import { Weapon } from "../../../types"
 import { PageHeader } from "../../Common/PageHeader"
-import { ChipFilter } from "../../Common/SortAndFilters/ChipFilterSection"
 import { SortAndFilters } from "../../Common/SortAndFilters/SortAndFilters"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { WeaponHangarItem } from "./WeaponHangarItem"
-
-const sortOptions = [
-    { label: SortTypeLabel.MechQueueAsc, value: SortTypeLabel.MechQueueAsc },
-    { label: SortTypeLabel.MechQueueDesc, value: SortTypeLabel.MechQueueDesc },
-]
 
 interface GetWeaponsRequest {
     queue_sort: string
     page: number
     page_size: number
     include_market_listed: boolean
-    rarities: string[]
     search: string
 }
 
@@ -52,68 +44,27 @@ export const PlayerWeaponsHangar = () => {
 
     // Filters and sorts
     const [search, setSearch] = useState("")
-    const [sort, setSort] = useState<string>(query.get("sort") || SortTypeLabel.MechQueueAsc)
-    const [status, setStatus] = useState<string[]>((query.get("statuses") || undefined)?.split("||") || [])
-    const [rarities, setRarities] = useState<string[]>((query.get("rarities") || undefined)?.split("||") || [])
     const [isGridView, toggleIsGridView] = useToggle(false)
 
-    // Filters
-    const statusFilterSection = useRef<ChipFilter>({
-        label: "STATUS",
-        options: [
-            { value: MechStatusEnum.Idle, label: "IDLE", color: colors.green },
-            { value: MechStatusEnum.Market, label: "MARKETPLACE", color: colors.red },
-        ],
-        initialSelected: status,
-        onSetSelected: (value: string[]) => {
-            setStatus(value)
-            changePage(1)
-        },
-    })
-
-    const rarityChipFilter = useRef<ChipFilter>({
-        label: "RARITY",
-        options: [
-            { value: "MEGA", ...getRarityDeets("MEGA") },
-            { value: "COLOSSAL", ...getRarityDeets("COLOSSAL") },
-            { value: "RARE", ...getRarityDeets("RARE") },
-            { value: "LEGENDARY", ...getRarityDeets("LEGENDARY") },
-            { value: "ELITE_LEGENDARY", ...getRarityDeets("ELITE_LEGENDARY") },
-            { value: "ULTRA_RARE", ...getRarityDeets("ULTRA_RARE") },
-            { value: "EXOTIC", ...getRarityDeets("EXOTIC") },
-            { value: "GUARDIAN", ...getRarityDeets("GUARDIAN") },
-            { value: "MYTHIC", ...getRarityDeets("MYTHIC") },
-            { value: "DEUS_EX", ...getRarityDeets("DEUS_EX") },
-            { value: "TITAN", ...getRarityDeets("TITAN") },
-        ],
-        initialSelected: rarities,
-        onSetSelected: (value: string[]) => {
-            setRarities(value)
-            changePage(1)
-        },
-    })
+    // TODO Filters
 
     const getItems = useCallback(async () => {
         try {
             setIsLoading(true)
 
-            let sortDir = "asc"
-            if (sort === SortTypeLabel.MechQueueDesc) sortDir = "desc"
+            const sortDir = "asc"
 
             const resp = await send<GetWeaponsResponse, GetWeaponsRequest>(GameServerKeys.GetWeapons, {
                 queue_sort: sortDir,
                 page,
                 page_size: pageSize,
                 include_market_listed: true,
-                rarities,
                 search,
             })
 
             updateQuery({
-                sort,
                 page: page.toString(),
                 pageSize: pageSize.toString(),
-                rarities: rarities.join("||"),
                 search,
             })
 
@@ -127,7 +78,7 @@ export const PlayerWeaponsHangar = () => {
         } finally {
             setIsLoading(false)
         }
-    }, [send, page, pageSize, updateQuery, sort, rarities, setTotalItems])
+    }, [send, page, pageSize, updateQuery, setTotalItems])
 
     useEffect(() => {
         getItems()
@@ -228,7 +179,7 @@ export const PlayerWeaponsHangar = () => {
             <SortAndFilters
                 initialSearch={search}
                 onSetSearch={setSearch}
-                chipFilters={[statusFilterSection.current, rarityChipFilter.current]}
+                // TODO filters
                 changePage={changePage}
             />
 
@@ -254,9 +205,7 @@ export const PlayerWeaponsHangar = () => {
                             pageSizeOptions={[10, 20, 30]}
                             changePage={changePage}
                             manualRefresh={getItems}
-                            sortOptions={sortOptions}
-                            selectedSort={sort}
-                            onSetSort={setSort}
+                            // TODO Sort
                             isGridView={isGridView}
                             toggleIsGridView={toggleIsGridView}
                         />
