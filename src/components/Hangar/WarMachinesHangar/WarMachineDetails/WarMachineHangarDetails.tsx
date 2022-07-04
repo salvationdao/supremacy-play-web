@@ -90,8 +90,6 @@ export const WarMachineHangarDetailsInner = ({
 
     const rarityDeets = useMemo(() => getRarityDeets(mechDetails?.tier || ""), [mechDetails])
 
-    console.log("bruh")
-
     useEffect(() => {
         ;(async () => {
             try {
