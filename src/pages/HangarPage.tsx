@@ -5,6 +5,8 @@ import { HangarBg } from "../assets"
 import { KeycardsHangar } from "../components/Hangar/KeycardsHangar/KeycardsHangar"
 import { MysteryCratesHangar } from "../components/Hangar/MysteryCratesHangar/MysteryCratesHangar"
 import { PlayerAbilitiesHangar } from "../components/Hangar/PlayerAbilitiesHangar/PlayerAbilitiesHangar"
+import { PlayerWeaponsHangar } from "../components/Hangar/WeaponsHangar/PlayerWeaponsHangar"
+
 import { WarMachinesHangar } from "../components/Hangar/WarMachinesHangar/WarMachinesHangar"
 import { STAGING_OR_DEV_ONLY } from "../constants"
 import { useTheme } from "../containers/theme"
@@ -16,6 +18,7 @@ export enum HANGAR_TABS {
     MysteryCrates = "mystery-crates",
     Keycards = "key-cards",
     Abilities = "abilities",
+    Weapons = "weapons",
 }
 
 export const HangarPage = () => {
@@ -76,6 +79,8 @@ export const HangarPage = () => {
                         <Tab label="WAR MACHINES" value={HANGAR_TABS.WarMachines} />
                         <Tab label="KEY CARDS" value={HANGAR_TABS.Keycards} />
                         <Tab label="MYSTERY CRATES" value={HANGAR_TABS.MysteryCrates} />
+                        <Tab label="WEAPONS" value={HANGAR_TABS.Weapons} />
+
                         {STAGING_OR_DEV_ONLY && <Tab label="ABILITIES" value={HANGAR_TABS.Abilities} />}
                     </Tabs>
                 </Box>
@@ -91,6 +96,10 @@ export const HangarPage = () => {
                 </TabPanel>
                 <TabPanel currentValue={currentValue} value={HANGAR_TABS.Abilities}>
                     <PlayerAbilitiesHangar />
+                </TabPanel>
+
+                <TabPanel currentValue={currentValue} value={HANGAR_TABS.Weapons}>
+                    <PlayerWeaponsHangar />
                 </TabPanel>
             </Stack>
         </Stack>
