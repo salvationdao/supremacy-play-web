@@ -83,9 +83,19 @@ export const MiniMapContainer = createContainer(() => {
                 if (!selection.startCoords) {
                     throw new Error("Something went wrong while activating this ability. Please try again, or contact support if the issue persists.")
                 }
-                await send<boolean, { x: number; y: number }>(GameServerKeys.SubmitAbilityLocationSelect, {
-                    x: Math.floor(selection.startCoords.x),
-                    y: Math.floor(selection.startCoords.y),
+
+                await send<boolean>(GameServerKeys.SubmitAbilityLocationSelect, {
+                    start_coords: {
+                        x: Math.floor(selection.startCoords.x),
+                        y: Math.floor(selection.startCoords.y),
+                    },
+                    end_coords:
+                        winner?.game_ability.location_select_type === LocationSelectType.LINE_SELECT && selection.endCoords
+                            ? {
+                                  x: Math.floor(selection.endCoords.x),
+                                  y: Math.floor(selection.endCoords.y),
+                              }
+                            : undefined,
                 })
                 setPlayerAbility(undefined)
             } else if (playerAbility) {

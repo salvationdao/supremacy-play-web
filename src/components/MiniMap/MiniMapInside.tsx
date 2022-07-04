@@ -54,15 +54,18 @@ export const MiniMapInside = ({ containerDimensions, isLargeMode }: MiniMapInsid
     const isLocationSelection = useMemo(
         () =>
             isTargeting &&
-            (winner ||
+            (winner?.game_ability.location_select_type === LocationSelectType.LOCATION_SELECT ||
                 playerAbility?.ability.location_select_type === LocationSelectType.LOCATION_SELECT ||
                 playerAbility?.ability.location_select_type === LocationSelectType.MECH_COMMAND),
-        [isTargeting, winner, playerAbility?.ability.location_select_type],
+        [isTargeting, winner?.game_ability.location_select_type, playerAbility?.ability.location_select_type],
     )
 
     const isLineSelection = useMemo(
-        () => isTargeting && playerAbility?.ability.location_select_type === LocationSelectType.LINE_SELECT,
-        [isTargeting, playerAbility?.ability.location_select_type],
+        () =>
+            isTargeting &&
+            (playerAbility?.ability.location_select_type === LocationSelectType.LINE_SELECT ||
+                winner?.game_ability.location_select_type === LocationSelectType.LINE_SELECT),
+        [isTargeting, playerAbility?.ability.location_select_type, winner?.game_ability.location_select_type],
     )
 
     return useMemo(() => {
