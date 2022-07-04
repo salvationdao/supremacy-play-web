@@ -122,7 +122,7 @@ export const PlayerWeaponsHangar = () => {
             setWeapons(resp.weapons)
             setTotalItems(resp.total)
         } catch (e) {
-            setLoadError(typeof e === "string" ? e : "Failed to get war machines.")
+            setLoadError(typeof e === "string" ? e : "Failed to get weapons.")
             console.error(e)
         } finally {
             setIsLoading(false)
@@ -216,7 +216,7 @@ export const PlayerWeaponsHangar = () => {
                             textAlign: "center",
                         }}
                     >
-                        {"There are no war machines found, please try again."}
+                        {"There are no weapons found, please try again."}
                     </Typography>
                 </Stack>
             </Stack>
@@ -244,7 +244,7 @@ export const PlayerWeaponsHangar = () => {
             >
                 <Stack sx={{ position: "relative", height: "100%" }}>
                     <Stack sx={{ flex: 1 }}>
-                        <PageHeader title="weapons" description="Your war machines." imageUrl={WarMachineIconPNG} />
+                        <PageHeader title="weapons" description="Your weapons." imageUrl={WarMachineIconPNG} />
 
                         <TotalAndPageSizeOptions
                             countItems={weapons?.length}
