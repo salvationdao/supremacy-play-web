@@ -63,7 +63,7 @@ export const InstantPunishConfirmModal = ({
                         </Stack>
 
                         <Typography>
-                            To initiate command override, there needs to be <span> 2x GENERALs </span> to punish a player instantly. Do you wish to spend{" "}
+                            To initiate command override, there needs to be <span> 5x GENERALs </span> to punish a player instantly. Do you wish to spend{" "}
                             <span>{supFormatterNoFixed(cost, 0)}</span> SUPS to initiate the command override to punish player [{punishPlayer}]?
                         </Typography>
 
