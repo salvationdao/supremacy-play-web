@@ -16,6 +16,8 @@ import { BuyNowDetails } from "../../Common/MarketDetails/BuyNowDetails"
 import { AuctionDetails } from "../../Common/MarketDetails/AuctionDetails"
 import { Dates } from "../../Common/MarketDetails/Dates"
 import { ManageListing } from "../../Common/MarketDetails/ManageListing"
+import { WeaponStatsDetails } from "./WeaponStatsDetails"
+import { SafePNG } from "../../../../assets"
 
 export const WeaponsMarketDetails = ({ id }: { id: string }) => {
     const theme = useTheme()
@@ -151,7 +153,15 @@ const WeaponMarketDetailsInner = ({ marketItem, primaryColor }: WeaponMarketDeta
                     }}
                 >
                     <Masonry columns={below780 ? 1 : 2} spacing={4}>
-                        {/* <ImagesPreview media={media} primaryColor={primaryColor} /> */}
+                        <ImagesPreview
+                            media={[
+                                {
+                                    imageUrl: SafePNG,
+                                    videoUrl: SafePNG,
+                                },
+                            ]}
+                            primaryColor={primaryColor}
+                        />
 
                         <Stack spacing="2rem" sx={{ pb: "1rem", minHeight: "65rem" }}>
                             <Box>
@@ -209,9 +219,7 @@ const WeaponMarketDetailsInner = ({ marketItem, primaryColor }: WeaponMarketDeta
                             <ManageListing id={id} owner={owner} isTimeEnded={isTimeEnded} />
                         </Stack>
 
-                        {/* <MechStatsDetails mechDetails={mechDetails} /> */}
-
-                        {/* <MechBattleHistoryDetails mechDetails={mechDetails} /> */}
+                        <WeaponStatsDetails />
                     </Masonry>
                 </Box>
             </Box>
