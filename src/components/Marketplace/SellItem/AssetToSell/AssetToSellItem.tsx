@@ -5,7 +5,7 @@ import { getRarityDeets } from "../../../../helpers"
 import { useGameServerCommandsFaction, useGameServerCommandsUser } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { fonts } from "../../../../theme/theme"
-import { Keycard, MechDetails, MysteryCrate } from "../../../../types"
+import { Keycard, MechDetails, MysteryCrate, Weapon } from "../../../../types"
 import { ItemType } from "../../../../types/marketplace"
 import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
 import { MechLoadoutIcons } from "../../../Hangar/WarMachinesHangar/Common/MechLoadoutIcons"
@@ -28,6 +28,7 @@ export const AssetToSellItem = ({
     const { send: sendUser } = useGameServerCommandsUser("/user_commander")
     // Additional fetched data
     const [mechDetails, setMechDetails] = useState<MechDetails>()
+    const [weaponDetails, setWeaponDetails] = useState<Weapon>()
     const [mysteryCrate, setMysteryCrate] = useState<MysteryCrate>()
     const [keycard, setKeycard] = useState<Keycard>()
 
@@ -60,6 +61,13 @@ export const AssetToSellItem = ({
             setVideoUrl2(assetToSell.mysteryCrate?.card_animation_url || mysteryCrate?.card_animation_url)
             setLabel(assetToSell.mysteryCrate?.label || mysteryCrate?.label)
             setDescription(assetToSell.mysteryCrate?.description || mysteryCrate?.description)
+        } else if (itemType === ItemType.Weapon) {
+            setAvatarUrl(assetToSell.weapon?.image_url || weaponDetails?.image_url || SafePNG)
+            setImageUrl(assetToSell.weapon?.image_url || weaponDetails?.image_url || SafePNG)
+            setVideoUrl(assetToSell.weapon?.animation_url || weaponDetails?.animation_url)
+            setVideoUrl2(assetToSell.weapon?.card_animation_url || weaponDetails?.card_animation_url)
+            setLabel(assetToSell.weapon?.label)
+            setDescription("")
         } else if (itemType === ItemType.Keycards) {
             setAvatarUrl(assetToSell.keycard?.blueprints.image_url || keycard?.blueprints.image_url || KeycardPNG)
             setImageUrl(assetToSell.keycard?.blueprints.image_url || keycard?.blueprints.image_url || KeycardPNG)
@@ -82,6 +90,23 @@ export const AssetToSellItem = ({
                 setMechDetails(resp)
             } catch (e) {
                 console.error(e)
+            }
+        })()
+    }, [assetToSell, itemType, send])
+
+    // Get additional weapon data
+    useEffect(() => {
+        ;(async () => {
+            try {
+                if (itemType !== ItemType.Weapon) return
+                const resp = await send<Weapon>(GameServerKeys.GetWeaponDetails, {
+                    weapon_id: assetToSell.id,
+                })
+
+                if (!resp) return
+                setWeaponDetails(resp)
+            } catch (err) {
+                console.error(err)
             }
         })()
     }, [assetToSell, itemType, send])

@@ -10,7 +10,7 @@ import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { MARKETPLACE_TABS } from "../../../pages"
 import { colors, fonts } from "../../../theme/theme"
-import { Keycard, MechBasic, MysteryCrate } from "../../../types"
+import { Keycard, MechBasic, MysteryCrate, Weapon } from "../../../types"
 import { ItemType, MarketplaceBuyAuctionItem } from "../../../types/marketplace"
 import { ClipThing } from "../../Common/ClipThing"
 import { ConfirmModal } from "../../Common/ConfirmModal"
@@ -24,6 +24,7 @@ export interface AssetToSellStruct {
     id: string
     mech?: MechBasic
     keycard?: Keycard
+    weapon?: Weapon
     mysteryCrate?: MysteryCrate
 }
 
@@ -129,6 +130,8 @@ export const SellItemInner = ({ toggleReset }: { toggleReset: () => void }) => {
         let itemTypePayload: string = ""
         if (itemType === ItemType.WarMachine) {
             itemTypePayload = "mech"
+        } else if (itemType === ItemType.Weapon) {
+            itemTypePayload = "weapon"
         } else if (itemType === ItemType.MysteryCrate) {
             itemTypePayload = "mystery_crate"
         }
