@@ -17,6 +17,7 @@ import Graph from "!@svgr/webpack!./svg/Graph.svg"
 import Hammer from "!@svgr/webpack!./svg/Hammer.svg"
 import IntroAnimation from "!@svgr/webpack!./svg/IntroAnimation.svg"
 import Logout from "!@svgr/webpack!./svg/Logout.svg"
+import Meteor from "!@svgr/webpack!./svg/Meteor.svg"
 import NinjaSyndicateLogo from "!@svgr/webpack!./svg/NinjaSyndicateLogo.svg"
 import OutroAnimation from "!@svgr/webpack!./svg/OutroAnimation.svg"
 import Plus from "!@svgr/webpack!./svg/Plus.svg"
@@ -922,6 +923,12 @@ export const SvgStats: React.VoidFunctionComponent<SvgWrapperProps> = (props) =>
 export const SvgNotification: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <Notification />
+    </SvgWrapper>
+)
+
+export const SvgMeteor: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Meteor />
     </SvgWrapper>
 )
 
