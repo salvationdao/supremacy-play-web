@@ -35,8 +35,8 @@ export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGri
 
     const primaryColor = theme.factionTheme.primary
     const backgroundColor = theme.factionTheme.background
-    const imageUrl = weapon.avatar_url
-    const largeImageUrl = weapon.large_image_url
+    const imageUrl = weaponDetails?.avatar_url || weapon.avatar_url
+    const largeImageUrl = weaponDetails?.large_image_url || weapon.large_image_url
 
     return (
         <Box sx={{ position: "relative", overflow: "visible", height: "100%" }}>
