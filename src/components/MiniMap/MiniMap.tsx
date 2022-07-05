@@ -70,27 +70,25 @@ export const MiniMap = () => {
         [toggleIsEnlarged, toggleIsMapOpen],
     )
 
-    const mapRender = useMemo(() => {
+    return useMemo(() => {
         if (!map) return null
 
+        const toRender = show && isMapOpen
+
         return (
-            <Fade in={show}>
+            <Fade in={toRender}>
                 <Box>
                     <MoveableResizable config={config}>
-                        <MiniMapInner map={map} isTargeting={isTargeting} isEnlarged={isEnlarged} />
+                        <MiniMapInner map={map} isTargeting={isTargeting} isEnlarged={isEnlarged} toRender={toRender} />
                     </MoveableResizable>
                 </Box>
             </Fade>
         )
-    }, [config, show, map, isTargeting, isEnlarged])
-
-    if (!isMapOpen) return null
-
-    return mapRender
+    }, [map, show, isMapOpen, config, isTargeting, isEnlarged])
 }
 
 // This inner component takes care of the resizing etc.
-const MiniMapInner = ({ map, isTargeting, isEnlarged }: { map: Map; isTargeting: boolean; isEnlarged: boolean }) => {
+const MiniMapInner = ({ map, isTargeting, isEnlarged, toRender }: { map: Map; isTargeting: boolean; isEnlarged: boolean; toRender: boolean }) => {
     const theme = useTheme()
     const {
         gameUIDimensions: { width, height },
@@ -160,8 +158,10 @@ const MiniMapInner = ({ map, isTargeting, isEnlarged }: { map: Map; isTargeting:
     let mapName = map.name
     if (mapName === "NeoTokyo") mapName = "City Block X2"
 
-    return useMemo(
-        () => (
+    return useMemo(() => {
+        if (!toRender) return null
+
+        return (
             <Box
                 sx={{
                     position: "relative",
@@ -203,7 +203,6 @@ const MiniMapInner = ({ map, isTargeting, isEnlarged }: { map: Map; isTargeting:
 
                 <TargetHint />
             </Box>
-        ),
-        [curWidth, curHeight, theme.factionTheme.primary, mapName, isLargeMode],
-    )
+        )
+    }, [toRender, theme.factionTheme.primary, mapName, curWidth, curHeight, isLargeMode])
 }
