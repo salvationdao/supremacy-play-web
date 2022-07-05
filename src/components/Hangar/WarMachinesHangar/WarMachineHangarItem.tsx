@@ -68,7 +68,7 @@ export const WarMachineHangarItem = ({ mech, isGridView }: { mech: MechBasic; is
                         p: isGridView ? ".5rem .6rem" : ".1rem .3rem",
                         display: isGridView ? "block" : "grid",
                         gridTemplateRows: "7rem",
-                        gridTemplateColumns: `8rem auto repeat(2, 20rem)`, // hard-coded to have 6 columns, adjust as required
+                        gridTemplateColumns: `8rem auto repeat(2, 20rem)`, // hard-coded to have 4 columns, adjust as required
                         gap: "1.4rem",
                         ...(isGridView
                             ? {
@@ -90,7 +90,7 @@ export const WarMachineHangarItem = ({ mech, isGridView }: { mech: MechBasic; is
                     </Box>
 
                     <Stack>
-                        <Typography variant="body2" sx={{ color: rarityDeets.color, fontFamily: fonts.nostromoHeavy }}>
+                        <Typography variant="body2" sx={{ mb: ".2rem", color: rarityDeets.color, fontFamily: fonts.nostromoHeavy }}>
                             {rarityDeets.label}
                         </Typography>
 

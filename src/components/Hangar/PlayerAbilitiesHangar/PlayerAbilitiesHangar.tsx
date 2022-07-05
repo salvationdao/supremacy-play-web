@@ -184,7 +184,7 @@ export const PlayerAbilitiesHangar = () => {
                 }}
                 opacity={0.7}
                 backgroundColor={theme.factionTheme.background}
-                sx={{ height: "100%" }}
+                sx={{ height: "100%", flex: 1 }}
             >
                 <Stack
                     sx={{
@@ -196,9 +196,7 @@ export const PlayerAbilitiesHangar = () => {
                     <PageHeader
                         imageUrl={PlayerAbilityPNG}
                         title="PLAYER ABILITIES"
-                        description="Player abilities are abilities that can be bought and used on the battle arena. The price of a player ability is determined by
-                                how active it is at any given time. When players buy an ability, its price will go up. If an ability is not being bought, its
-                                price will go down."
+                        description="Player abilities are abilities that can be bought and used on the battle arena."
                     />
 
                     <TotalAndPageSizeOptions

@@ -54,8 +54,7 @@ export const LeaveModal = ({
         <MechModal open={leaveMechModalOpen} mechDetails={leaveMechDetails} onClose={onClose}>
             <Stack spacing="1.5rem">
                 <Typography sx={{ strong: { color: colors.neonBlue } }}>
-                    Are you sure you&apos;d like to remove <strong>{name || label}</strong> from the battle queue? Your will be refunded the initial queuing
-                    fee.
+                    Are you sure you&apos;d like to remove <strong>{name || label}</strong> from the battle queue? You will be refunded the initial queuing fee.
                 </Typography>
 
                 <Box sx={{ mt: "auto" }}>

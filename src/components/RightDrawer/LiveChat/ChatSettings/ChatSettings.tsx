@@ -89,7 +89,6 @@ const SettingsPopover = ({
             <ClipThing
                 clipSize="10px"
                 border={{
-                    isFancy: true,
                     borderColor: primaryColor,
                     borderThickness: ".2rem",
                 }}

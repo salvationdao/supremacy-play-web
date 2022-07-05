@@ -182,4 +182,4 @@ const BarStatInner = ({
     }, [barHeight, current, fontSize, label, primaryColor, total, unit])
 }
 
-const BarStat = React.memo(BarStatInner)
+export const BarStat = React.memo(BarStatInner)

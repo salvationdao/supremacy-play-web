@@ -84,9 +84,6 @@ export const MechMoveCommandCard = ({ warMachine, faction, clipSlantSize, onClos
                                     colour={faction.primary_color}
                                     label={"Move Command"}
                                 />
-                                <Typography variant="body2" style={{ lineHeight: 1, color: `${faction.primary_color} !important` }}>
-                                    10 SUPS
-                                </Typography>
                             </Stack>
                             <Box
                                 sx={{

@@ -28,7 +28,7 @@ interface GetWeaponsResponse {
     total: number
 }
 
-export const PlayerWeaponsHangar = () => {
+export const WeaponsHangar = () => {
     const [query, updateQuery] = useUrlQuery()
     const { send } = useGameServerCommandsUser("/user_commander")
     const theme = useTheme()

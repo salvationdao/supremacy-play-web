@@ -28,7 +28,7 @@ export const MediaPreview = ({
                 ...sx,
             }}
         >
-            {!videoUrlsFilters || videoUrlsFilters.length <= 0 ? (
+            {(!videoUrlsFilters || videoUrlsFilters.length <= 0) && imageUrl ? (
                 <Box
                     component="img"
                     src={imageUrl}
