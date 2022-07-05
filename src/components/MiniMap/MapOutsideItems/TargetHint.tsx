@@ -1,8 +1,9 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo } from "react"
-import { FancyButton } from "../.."
+import { ClipThing, FancyButton } from "../.."
 import { SvgLine, SvgMicrochip, SvgQuestionMark, SvgTarget } from "../../../assets"
 import { useMiniMap, useSnackbar } from "../../../containers"
+import { useTheme } from "../../../containers/theme"
 import { useTimer } from "../../../hooks"
 import { colors } from "../../../theme/theme"
 import { LocationSelectType } from "../../../types"
@@ -68,13 +69,14 @@ const WinnerTargetHintInner = ({ endTime, onCountdownExpired }: { endTime: Date;
 // Player ability hint
 const PlayerAbilityTargetHint = () => {
     const { playerAbility, resetSelection } = useMiniMap()
+    const theme = useTheme()
 
     const data = useMemo(() => {
         const ability = playerAbility?.ability
 
         if (!ability) return null
 
-        const iconProps = { size: "1.6rem", fill: ability.colour, sx: { display: "inline", pb: 0 } }
+        const iconProps = { size: "30px", sx: { display: "inline", pb: 0 } }
 
         let icon = <SvgQuestionMark {...iconProps} />
         let descriptor = "Select a location"
@@ -102,43 +104,84 @@ const PlayerAbilityTargetHint = () => {
     if (!ability) return null
 
     return (
-        <Box
-            sx={{
-                position: "absolute",
-                bottom: 0,
-                left: 0,
-                right: 0,
-                px: "2rem",
-                py: ".6rem",
-                backgroundColor: (theme) => `${theme.factionTheme.background}`,
-                borderRadius: 0.5,
-                zIndex: 98,
-            }}
-        >
-            <Stack direction="row" alignItems="center" spacing=".5rem" sx={{ position: "relative", width: "100%" }}>
-                <Typography variant="h6" sx={{ lineHeight: 1 }}>
-                    {data?.descriptor}
-                </Typography>
-
-                {data?.icon}
-
-                <Typography variant="h6" sx={{ lineHeight: 1, fontWeight: "fontWeightBold", color: ability.colour }}>
-                    {ability.label}
-                </Typography>
-
-                <FancyButton
-                    clipThingsProps={{
-                        clipSize: "4px",
-                        backgroundColor: colors.red,
-                        border: { isFancy: true, borderColor: colors.red },
-                        sx: { ml: "auto !important" },
+        <>
+            <Box
+                sx={{
+                    zIndex: 98,
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    background: `radial-gradient(rgba(0, 0, 0, 0), ${playerAbility.ability.colour}aa)`,
+                    pointerEvents: "none",
+                    opacity: 0.5,
+                }}
+            />
+            <Box
+                sx={{
+                    position: "absolute",
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    display: "flex",
+                    alignItems: "end",
+                    borderRadius: 0.5,
+                    zIndex: 98,
+                }}
+            >
+                <ClipThing
+                    sx={{
+                        zIndex: 1,
+                        p: "1.2rem",
+                        backgroundColor: theme.factionTheme.background,
                     }}
-                    sx={{ py: ".2rem", px: "1.5rem" }}
-                    onClick={() => resetSelection()}
+                    border={{
+                        isFancy: true,
+                        borderColor: theme.factionTheme.secondary,
+                    }}
+                    corners={{
+                        topRight: true,
+                    }}
                 >
-                    <Typography sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>Cancel</Typography>
-                </FancyButton>
-            </Stack>
-        </Box>
+                    {data?.icon}
+                </ClipThing>
+                <Stack
+                    direction="row"
+                    alignItems="center"
+                    spacing=".5rem"
+                    sx={{
+                        position: "relative",
+                        width: "100%",
+                        px: "2rem",
+                        py: ".6rem",
+                        ml: "-2px",
+
+                        backgroundColor: (theme) => `${theme.factionTheme.background}`,
+                    }}
+                >
+                    <Typography variant="h5" sx={{ lineHeight: 1 }}>
+                        {data?.descriptor}
+                    </Typography>
+
+                    <Typography variant="h5" sx={{ lineHeight: 1, fontWeight: "fontWeightBold", color: ability.colour }}>
+                        {ability.label}
+                    </Typography>
+
+                    <FancyButton
+                        clipThingsProps={{
+                            clipSize: "4px",
+                            backgroundColor: colors.red,
+                            border: { isFancy: true, borderColor: colors.red },
+                            sx: { ml: "auto !important" },
+                        }}
+                        sx={{ py: ".2rem", px: "1.5rem" }}
+                        onClick={() => resetSelection()}
+                    >
+                        <Typography sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>Cancel</Typography>
+                    </FancyButton>
+                </Stack>
+            </Box>
+        </>
     )
 }
