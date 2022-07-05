@@ -81,7 +81,6 @@ const MapMechInner = ({ warMachine, isLargeMode, map }: MapMechInnerProps) => {
         const commandMapY = mechMoveCommand.cell_y * gridHeight
         return (Math.atan2(commandMapY - mechMapY, commandMapX - mechMapX) * 180) / Math.PI
     }, [gridHeight, gridWidth, mechMapX, mechMapY, mechMoveCommand?.cell_x, mechMoveCommand?.cell_y])
-
     // Listen on mech stats
     useGameServerSubscription<WarMachineLiveState | undefined>(
         {
