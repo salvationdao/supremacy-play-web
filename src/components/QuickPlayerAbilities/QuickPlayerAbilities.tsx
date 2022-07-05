@@ -117,13 +117,7 @@ const QuickPlayerAbilitiesInner = ({ onClose }: { onClose: () => void }) => {
 
     const content = useMemo(() => {
         if (!isLoaded) {
-            return (
-                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
-                    <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
-                        <CircularProgress size="3rem" sx={{ color: primaryColor }} />
-                    </Stack>
-                </Stack>
-            )
+            return <CircularProgress size="3rem" sx={{ color: primaryColor }} />
         }
 
         if (saleAbilities.length > 0) {
@@ -212,6 +206,7 @@ const QuickPlayerAbilitiesInner = ({ onClose }: { onClose: () => void }) => {
                                     flex: 1,
                                     display: "flex",
                                     alignItems: "center",
+                                    justifyContent: "center",
                                     overflowY: "auto",
                                     overflowX: "hidden",
                                     mx: "1rem",

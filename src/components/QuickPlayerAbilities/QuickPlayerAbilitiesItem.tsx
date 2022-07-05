@@ -91,7 +91,6 @@ export const QuickPlayerAbilitiesItem = ({ saleAbility, updatedPrice, totalAmoun
                         }}
                         onClick={onPurchase}
                         loading={purchaseLoading}
-                        disabled={true}
                     >
                         <Box
                             sx={{
