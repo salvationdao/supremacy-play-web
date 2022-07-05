@@ -183,7 +183,7 @@ const QuickPlayerAbilitiesInner = ({ onClose }: { onClose: () => void }) => {
                         >
                             <PageHeader
                                 smallSize
-                                title="PLAYER ABILITIES"
+                                title="BUY PLAYER ABILITIES"
                                 description={
                                     <Stack>
                                         <Stack direction="row" spacing=".6rem">
