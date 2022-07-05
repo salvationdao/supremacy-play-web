@@ -47,8 +47,8 @@ export const TutorialModal = () => {
                         <Divider sx={{ width: "100%", mt: "1rem", mb: "1.8rem" }} />
 
                         <Typography variant="h5" sx={{ width: "100%" }}>
-                            You are now in the Battle Arena where Syndicates will fight for glory. The Arena can be overwhelming if you don&apos;t know your way
-                            around, the tutorial can help you get your bearings.
+                            You are now in the Battle Arena where different Factions fight for glory. The Arena can be overwhelming if you don&apos;t know your
+                            way around, the tutorial can help you get your bearings.
                         </Typography>
 
                         <Stack direction="row" spacing="1.5rem" sx={{ width: "100%", mt: "2.8rem" }}>

@@ -58,7 +58,7 @@ const ContributorAmountInner = ({ rate, contributor, hideContributionTotal, hide
     return (
         <>
             {!hideContributionTotal && (
-                <TooltipHelper text="This contribution multiplier is applied at the end of the current battle if your syndicate is victorious.">
+                <TooltipHelper text="This contribution multiplier is applied at the end of the current battle if your faction is victorious.">
                     <Stack direction="row" alignItems="center" justifyContent="center">
                         <Box
                             sx={{
