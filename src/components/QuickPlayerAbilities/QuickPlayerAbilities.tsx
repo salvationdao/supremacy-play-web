@@ -98,7 +98,7 @@ const QuickPlayerAbilitiesInner = ({ onClose }: { onClose: () => void }) => {
     const timeLeft = useMemo(() => {
         if (nextRefreshTime) {
             return (
-                <Typography sx={{ color: colors.lightNeonBlue, fontFamily: fonts.nostromoBold }}>
+                <Typography sx={{ color: colors.lightNeonBlue, fontFamily: fonts.shareTech, textTransform: "uppercase" }}>
                     <TimeLeft key={nextRefreshTime.getMilliseconds()} dateTo={nextRefreshTime} />
                 </Typography>
             )
@@ -106,7 +106,7 @@ const QuickPlayerAbilitiesInner = ({ onClose }: { onClose: () => void }) => {
 
         if (saleAbilities.length > 0) {
             return (
-                <Typography sx={{ color: colors.lightNeonBlue, fontFamily: fonts.nostromoBold }}>
+                <Typography sx={{ color: colors.lightNeonBlue, fontFamily: fonts.shareTech, textTransform: "uppercase" }}>
                     <TimeLeft key={saleAbilities[0].available_until?.getMilliseconds()} dateTo={saleAbilities[0].available_until} />
                 </Typography>
             )
