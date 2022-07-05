@@ -70,18 +70,27 @@ const Contents = () => {
                     {isServerUp && watchedTrailer && (
                         <>
                             <Notifications />
+
                             <WarMachineStats />
+
                             <BattleEndScreen />
+
                             <LiveVotingChart />
+
                             <BattleHistory />
+
                             {isQuickDeployOpen && <QuickDeploy open={isQuickDeployOpen} onClose={() => toggleIsQuickDeployOpen(false)} />}
+
                             {isQuickPlayerAbilitiesOpen && (
                                 <QuickPlayerAbilities open={isQuickPlayerAbilitiesOpen} onClose={() => toggleIsQuickPlayerAbilitiesOpen(false)} />
                             )}
+
                             <VotingSystem />
+
                             <MiniMap />
 
                             {isServerUp && userID && haveSups === false && noSupsModalOpen && <NoSupsModal onClose={() => toggleNoSupsModalOpen(false)} />}
+
                             {userID && !noSupsModalOpen && <TutorialModal />}
                         </>
                     )}
