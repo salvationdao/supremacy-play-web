@@ -13,6 +13,8 @@ import { General } from "../../Marketplace/Common/MarketItem/General"
 import { MechGeneralStatus } from "./Common/MechGeneralStatus"
 import { MechLoadoutIcons } from "./Common/MechLoadoutIcons"
 
+const PlayerAssetMechDetailPublic = "PLAYER:ASSET:MECH:DETAIL:PUBLIC"
+
 export const PublicWarmachineItem = ({ mech, isGridView }: { mech: MechBasic; isGridView?: boolean }) => {
     const location = useLocation()
     const theme = useTheme()
@@ -24,7 +26,7 @@ export const PublicWarmachineItem = ({ mech, isGridView }: { mech: MechBasic; is
     useEffect(() => {
         ;(async () => {
             try {
-                const resp = await send<MechDetails>(GameServerKeys.GetMechDetails, {
+                const resp = await send<MechDetails>(PlayerAssetMechDetailPublic, {
                     mech_id: mech.id,
                 })
 
@@ -101,15 +103,15 @@ export const PublicWarmachineItem = ({ mech, isGridView }: { mech: MechBasic; is
                         </Typography>
                     </Stack>
 
-                    <General isGridView={isGridView} title="LOADOUT">
+                    {/* <General isGridView={isGridView} title="LOADOUT">
                         <Box sx={{ pt: ".4rem" }}>
                             <MechLoadoutIcons mechDetails={mechDetails} />
                         </Box>
-                    </General>
+                    </General> */}
 
-                    <General isGridView={isGridView} title="STATUS">
-                        <MechGeneralStatus mechID={mech.id} hideBox />
-                    </General>
+                    {/* <General isGridView={isGridView} title="STATUS"> */}
+                    {/* <MechGeneralStatus mechID={mech.id} hideBox /> */}
+                    {/* </General> */}
                 </Box>
 
                 <Box

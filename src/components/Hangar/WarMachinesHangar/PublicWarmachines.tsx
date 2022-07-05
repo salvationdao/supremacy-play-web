@@ -14,6 +14,7 @@ import { PageHeader } from "../../Common/PageHeader"
 import { ChipFilter } from "../../Common/SortAndFilters/ChipFilterSection"
 import { SortAndFilters } from "../../Common/SortAndFilters/SortAndFilters"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
+import { PublicWarmachineItem } from "./PublicMechDetails"
 import { WarMachineHangarItem } from "./WarMachineHangarItem"
 
 const PublicMechList = "PLAYER:ASSET:MECH:PUBLIC:LIST"
@@ -56,7 +57,7 @@ export const PublicWarmachines = ({ playerID }: { playerID: string }) => {
     const [sort, setSort] = useState<string>(query.get("sort") || SortTypeLabel.MechQueueAsc)
     const [status, setStatus] = useState<string[]>((query.get("statuses") || undefined)?.split("||") || [])
     const [rarities, setRarities] = useState<string[]>((query.get("rarities") || undefined)?.split("||") || [])
-    const [isGridView, toggleIsGridView] = useToggle(false)
+    const [isGridView, toggleIsGridView] = useToggle(true)
 
     // Filters
     const statusFilterSection = useRef<ChipFilter>({
@@ -183,7 +184,7 @@ export const PublicWarmachines = ({ playerID }: { playerID: string }) => {
                         }}
                     >
                         {mechs.map((mech) => (
-                            <WarMachineHangarItem key={`marketplace-${mech.id}`} mech={mech} isGridView={isGridView} />
+                            <PublicWarmachineItem key={`marketplace-${mech.id}`} mech={mech} isGridView={isGridView} />
                         ))}
                     </Box>
                 </Box>

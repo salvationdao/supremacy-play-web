@@ -35,8 +35,6 @@ interface PlayerProfile {
 
 export const PlayerProfilePage = () => {
     const { playerID } = useParams<{ playerID: string }>()
-    console.log("this is player id", playerID)
-
     const history = useHistory()
     const [loading, setLoading] = useState(false)
     const [profileError, setProfileError] = useState<string>()
@@ -48,15 +46,10 @@ export const PlayerProfilePage = () => {
     const fetchProfile = useCallback(
         async (id: string) => {
             try {
-                console.log("in here")
-
                 setLoading(true)
                 const resp = await send<PlayerProfile>(GameServerKeys.PlayerProfileGet, {
                     player_gid: id,
                 })
-
-                console.log("this is resp", resp.player)
-
                 setProfile(resp)
             } catch (e) {
                 if (typeof e === "string") {
@@ -78,8 +71,6 @@ export const PlayerProfilePage = () => {
     const faction = profile?.faction
     const primaryColor = faction?.primary_color || theme.factionTheme.primary
     const backgroundColor = faction?.background_color || theme.factionTheme.background
-
-    console.log("set player", profile)
 
     if (!profile) {
         return <div></div>
@@ -274,7 +265,7 @@ export const PlayerProfilePage = () => {
                         </Box>
                     </Stack>
 
-                    <Stack padding={"1.6rem"}>
+                    <Stack padding={"1.6rem"} height={"35rem"}>
                         <PublicWarmachines playerID={profile.player.id} />
                     </Stack>
                 </ClipThing>
