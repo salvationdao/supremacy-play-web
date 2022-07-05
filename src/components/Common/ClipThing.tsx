@@ -24,23 +24,30 @@ export interface ClipThingProps {
     backgroundColor?: string
 }
 
-export const ClipThing: React.FC<ClipThingProps> = ({
-    children,
-    clipSize = "1rem",
-    clipSlantSize = "0px",
-    border,
-    sx,
-    innerSx,
-    outerSx,
-    corners = {
-        topLeft: true,
-        topRight: true,
-        bottomLeft: true,
-        bottomRight: true,
-    },
-    opacity,
-    backgroundColor,
-}) => {
+interface ClipThingPropsWithChildren extends ClipThingProps {
+    children: React.ReactNode
+}
+
+export const ClipThing = React.forwardRef(function ClipThing(
+    {
+        children,
+        clipSize = "1rem",
+        clipSlantSize = "0px",
+        border,
+        sx,
+        innerSx,
+        outerSx,
+        corners = {
+            topLeft: true,
+            topRight: true,
+            bottomLeft: true,
+            bottomRight: true,
+        },
+        opacity,
+        backgroundColor,
+    }: ClipThingPropsWithChildren,
+    ref,
+) {
     const { topLeft, topRight, bottomLeft, bottomRight } = corners
     const isSlanted = useMemo(() => clipSlantSize !== "0" && clipSlantSize !== "0px", [clipSlantSize])
 
@@ -106,6 +113,7 @@ export const ClipThing: React.FC<ClipThingProps> = ({
 
     return (
         <Box
+            ref={ref}
             sx={{
                 position: "relative",
                 p: border && typeof border !== "boolean" ? border.borderThickness : 0,
@@ -146,4 +154,4 @@ export const ClipThing: React.FC<ClipThingProps> = ({
             <Box sx={{ height: "100%", ...innerClipStyles }}>{children}</Box>
         </Box>
     )
-}
+})
