@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { useParameterizedQuery } from "react-fetching-library"
 import { createContainer } from "unstated-next"
 import { FallbackFaction, useSnackbar } from "."
@@ -20,6 +20,7 @@ export const SupremacyContainer = createContainer(() => {
     const [factionsAll, setFactionsAll] = useState<FactionsAll>({})
     const [battleIdentifier, setBattleIdentifier] = useState<number>()
     const [isQuickDeployOpen, toggleIsQuickDeployOpen] = useToggle(localStorage.getItem("quickDeployOpen") === "true")
+    const [isQuickPlayerAbilitiesOpen, toggleIsQuickPlayerAbilitiesOpen] = useToggle(localStorage.getItem("quickPlayerAbilities") === "true")
 
     const { query: queryGetFactionsAll } = useParameterizedQuery(GetFactionsAll)
 
@@ -65,6 +66,10 @@ export const SupremacyContainer = createContainer(() => {
         localStorage.setItem("quickDeployOpen", isQuickDeployOpen.toString())
     }, [isQuickDeployOpen])
 
+    useEffect(() => {
+        localStorage.setItem("quickPlayerAbilitiesOpen", isQuickPlayerAbilitiesOpen.toString())
+    }, [isQuickPlayerAbilitiesOpen])
+
     return {
         isServerUp,
         factionsAll,
@@ -76,6 +81,9 @@ export const SupremacyContainer = createContainer(() => {
 
         isQuickDeployOpen,
         toggleIsQuickDeployOpen,
+
+        isQuickPlayerAbilitiesOpen,
+        toggleIsQuickPlayerAbilitiesOpen,
     }
 })
 

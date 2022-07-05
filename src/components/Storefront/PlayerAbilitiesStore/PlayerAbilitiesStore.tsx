@@ -69,7 +69,7 @@ export const PlayerAbilitiesStore = () => {
     const timeLeft = useMemo(() => {
         if (nextRefreshTime) {
             return (
-                <Typography sx={{ color: colors.lightNeonBlue, fontFamily: fonts.nostromoBold }}>
+                <Typography sx={{ color: colors.lightNeonBlue, fontFamily: fonts.shareTechMono, textTransform: "uppercase" }}>
                     <TimeLeft key={nextRefreshTime.getMilliseconds()} dateTo={nextRefreshTime} />
                 </Typography>
             )
@@ -77,7 +77,7 @@ export const PlayerAbilitiesStore = () => {
 
         if (saleAbilities.length > 0) {
             return (
-                <Typography sx={{ color: colors.lightNeonBlue, fontFamily: fonts.nostromoBold }}>
+                <Typography sx={{ color: colors.lightNeonBlue, fontFamily: fonts.shareTechMono, textTransform: "uppercase" }}>
                     <TimeLeft key={saleAbilities[0].available_until?.getMilliseconds()} dateTo={saleAbilities[0].available_until} />
                 </Typography>
             )
@@ -265,7 +265,7 @@ export const PlayerAbilitiesStore = () => {
     )
 }
 
-const TimeLeft = ({ dateTo }: { dateTo: Date | undefined }) => {
+export const TimeLeft = ({ dateTo }: { dateTo: Date | undefined }) => {
     const { totalSecRemain } = useTimer(dateTo)
     return <>{timeSinceInWords(new Date(), new Date(new Date().getTime() + totalSecRemain * 1000))}</>
 }
