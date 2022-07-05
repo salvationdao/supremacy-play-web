@@ -37,7 +37,7 @@ export const FactionAbilities = () => {
                                 }}
                             />
                         )}
-                        <Typography sx={{ lineHeight: 1, color: colors.text, fontWeight: "fontWeightBold" }}>SYNDICATE UNIQUE SKILLS</Typography>
+                        <Typography sx={{ lineHeight: 1, color: colors.text, fontWeight: "fontWeightBold" }}>FACTION UNIQUE SKILLS</Typography>
                     </Stack>
 
                     <Stack spacing="1.04rem">

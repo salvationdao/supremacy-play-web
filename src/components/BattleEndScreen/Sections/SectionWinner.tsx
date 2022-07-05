@@ -25,7 +25,7 @@ export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndD
                     }}
                 >
                     The Winner
-                    <BattleEndTooltip text={`The syndicate that had won the battle #${battle_identifier}.`} color={colors.neonBlue} />
+                    <BattleEndTooltip text={`The faction that had won the battle #${battle_identifier}.`} color={colors.neonBlue} />
                 </Typography>
             </Box>
 
