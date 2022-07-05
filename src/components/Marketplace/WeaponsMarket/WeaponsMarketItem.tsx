@@ -2,6 +2,7 @@ import { Stack, Typography } from "@mui/material"
 import { useMemo } from "react"
 import { getRarityDeets } from "../../../helpers"
 import { MARKETPLACE_TABS } from "../../../pages"
+import { useTheme } from "../../../containers/theme"
 import { fonts } from "../../../theme/theme"
 import { MarketplaceBuyAuctionItem } from "../../../types/marketplace"
 import { MarketItem } from "../Common/MarketItem/MarketItem"
@@ -27,6 +28,7 @@ export const WeaponsMarketItem = ({ item, isGridView }: WarMachineMarketItemProp
 }
 
 const WeaponInfo = ({ isGridView, label, weaponType, tier }: { isGridView: boolean; label: string; weaponType: string; tier: string }) => {
+    const theme = useTheme()
     const rarityDeets = useMemo(() => getRarityDeets(tier), [tier])
 
     return (
@@ -54,7 +56,7 @@ const WeaponInfo = ({ isGridView, label, weaponType, tier }: { isGridView: boole
             >
                 {label}
             </Typography>
-            <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack }}>
+            <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack, color: theme.factionTheme.primary }}>
                 {weaponType}
             </Typography>
         </Stack>
