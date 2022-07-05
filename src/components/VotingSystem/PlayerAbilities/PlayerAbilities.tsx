@@ -73,7 +73,7 @@ export const PlayerAbilities = () => {
                                 fontWeight: "fontWeightBold",
                             }}
                         >
-                            PLAYER ABILITIES
+                            OWNED ABILITIES
                         </Typography>
 
                         <ButtonGroup

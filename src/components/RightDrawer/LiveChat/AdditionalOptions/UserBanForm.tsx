@@ -302,7 +302,7 @@ export const UserBanForm = ({ user, open, onClose, prefillUser }: { user: User; 
                                                     <Typography>{snakeToTitle(x.key)}</Typography>
                                                     <Stack spacing=".24rem" direction="row" alignItems="center" justifyContent="center">
                                                         <SvgCooldown component="span" size="1.5rem" sx={{ pb: ".25rem" }} />
-                                                        <Typography>{x.punish_duration_hours} Hrs</Typography>
+                                                        <Typography>{x.punish_duration_hours} mins</Typography>
                                                     </Stack>
                                                 </Stack>
                                             </MenuItem>

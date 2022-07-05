@@ -1,12 +1,25 @@
-import { useToggle } from "./../hooks/useToggle"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { createContainer } from "unstated-next"
 import { useAuth, useSnackbar } from "."
-import { MapSelection } from "../components"
 import { useGameServerCommandsFaction, useGameServerSubscriptionUser } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
-import { CellCoords, LocationSelectType, PlayerAbility } from "../types"
-import { useGame, WinnerAnnouncementResponse } from "./game"
+import { CellCoords, GameAbility, LocationSelectType, PlayerAbility } from "../types"
+import { useToggle } from "./../hooks/useToggle"
+import { useGame } from "./game"
+
+interface WinnerAnnouncementResponse {
+    game_ability: GameAbility
+    end_time: Date
+}
+
+export interface MapSelection {
+    // start coords (used for LINE_SELECT and LOCATION_SELECT abilities)
+    startCoords?: CellCoords
+    // end coords (only used for LINE_SELECT abilities)
+    endCoords?: CellCoords
+    // mech hash (only used for MECH_SELECT abilities)
+    mechHash?: string
+}
 
 export const MiniMapContainer = createContainer(() => {
     const { bribeStage, map } = useGame()
