@@ -22,8 +22,7 @@ import { useToggle } from "../hooks"
 import { siteZIndex } from "../theme/theme"
 
 export const BattleArenaPage = () => {
-    const { arenaID } = useSupremacy()
-    return <BattleArenaPageInner key={arenaID} />
+    return <BattleArenaPageInner />
 }
 
 const BattleArenaPageInner = () => {
