@@ -95,8 +95,14 @@ export const MoveableResizableContainer = createContainer((initialState: Moveabl
         (size: { width: number; height: number }) => {
             rndRef.current?.updateSize(size)
             onResizeStopped(size)
+
+            // Make sure its within the parent container
+            rndRef.current?.updatePosition({
+                x: clamp(0, curPosX, width - size.width - 2 * PADDING),
+                y: clamp(0, curPosY, height - size.height - 2 * PADDING),
+            })
         },
-        [onResizeStopped],
+        [curPosX, curPosY, height, onResizeStopped, width],
     )
 
     const updatePosition = useCallback(
