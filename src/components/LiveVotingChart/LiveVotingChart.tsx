@@ -1,8 +1,9 @@
 import { Box, Fade, Stack } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
 import { MoveableResizable } from ".."
-import { useOverlayToggles, useSupremacy } from "../../containers"
+import { useGame, useOverlayToggles, useSupremacy } from "../../containers"
 import { parseString } from "../../helpers"
+import { useToggle } from "../../hooks"
 import { BattleStats } from "../BattleStats/BattleStats"
 import { MoveableResizableConfig, useMoveableResizable } from "../Common/MoveableResizable/MoveableResizableContainer"
 import { LiveGraph } from "./LiveGraph"
@@ -10,19 +11,31 @@ import { LiveGraph } from "./LiveGraph"
 const DefaultMaxLiveVotingDataLength = 100
 
 export const LiveVotingChart = () => {
+    const { bribeStage } = useGame()
     const { isLiveChartOpen, toggleIsLiveChartOpen } = useOverlayToggles()
+
+    // Temp hotfix ask james ****************************
+    const [show, toggleShow] = useToggle(false)
+    useEffect(() => {
+        if (bribeStage && bribeStage.phase !== "HOLD") {
+            toggleShow(true)
+        } else {
+            toggleShow(false)
+        }
+    }, [bribeStage, toggleShow])
+    // End ****************************************
 
     const config: MoveableResizableConfig = useMemo(
         () => ({
             localStoragePrefix: "liveVoting",
             // Defaults
             defaultPosX: 0,
-            defaultPosY: 400,
-            defaultWidth: 415,
+            defaultPosY: 490,
+            defaultWidth: 320,
             defaultHeight: 120,
             // Position limits
-            minPosX: 10,
-            minPosY: 10,
+            minPosX: 0,
+            minPosY: 0,
             // Size limits
             minWidth: 300,
             minHeight: 120,
@@ -39,7 +52,7 @@ export const LiveVotingChart = () => {
     if (!isLiveChartOpen) return null
 
     return (
-        <Fade in={isLiveChartOpen}>
+        <Fade in={isLiveChartOpen && show}>
             <Box>
                 <MoveableResizable config={config}>
                     <LiveVotingChartInner />

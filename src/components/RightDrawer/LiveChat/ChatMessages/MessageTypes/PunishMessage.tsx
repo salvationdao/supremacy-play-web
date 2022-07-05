@@ -204,7 +204,7 @@ export const PunishMessage = ({
                         </LineItem>
 
                         {instant_pass_by_users && instant_pass_by_users.length > 0 && (
-                            <LineItem title={"COMMAND OVERRIDE"} color={instant_pass_by_users.length >= 2 ? colors.green : colors.red}>
+                            <LineItem title={"COMMAND OVERRIDE"} color={instant_pass_by_users.length >= 5 ? colors.green : colors.red}>
                                 {commanderVoteRender}
                             </LineItem>
                         )}

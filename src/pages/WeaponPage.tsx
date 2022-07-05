@@ -3,7 +3,7 @@ import { useCallback, useEffect } from "react"
 import { useHistory, useLocation, useParams } from "react-router-dom"
 import { HangarBg, SvgBack } from "../assets"
 import { FancyButton } from "../components"
-import { WeaponHangarDetails } from "../components/Hangar/WeaponsHangar/WeaponHangarDetails"
+import { WeaponHangarDetailsInner } from "../components/Hangar/WeaponsHangar/WeaponDetails/WeaponHangarDetails"
 import { fonts, siteZIndex } from "../theme/theme"
 
 export const WeaponPage = () => {
@@ -33,7 +33,7 @@ export const WeaponPage = () => {
                 boxShadow: `inset 0 0 50px 60px #00000090`,
             }}
         >
-            <Stack spacing=".6rem" sx={{ mt: "1.5rem", mb: "2rem", height: "100%", width: "calc(100% - 3rem)", maxWidth: "193rem" }}>
+            <Stack spacing=".6rem" sx={{ mt: "1.5rem", mb: "2rem", height: "100%", width: "calc(100% - 3rem)", maxWidth: "150rem" }}>
                 <FancyButton
                     clipThingsProps={{
                         clipSize: "9px",
@@ -58,7 +58,7 @@ export const WeaponPage = () => {
                     </Stack>
                 </FancyButton>
 
-                <WeaponHangarDetails weaponID={weaponID} />
+                <WeaponHangarDetailsInner weaponID={weaponID} />
             </Stack>
         </Stack>
     )

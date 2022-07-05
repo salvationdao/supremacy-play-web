@@ -26,18 +26,18 @@ export const MechLoadoutIcons = ({ mechDetails }: { mechDetails?: MechDetails })
 
     return (
         <Stack direction="row" spacing=".5rem">
-            {hasSkin && <SvgSkin fill={colors.chassisSkin} size="1.3rem" />}
+            {hasSkin && <SvgSkin fill={colors.chassisSkin} size="1.5rem" />}
 
-            {hasIntroAnimation && <SvgIntroAnimation fill={colors.introAnimation} size="1.3rem" />}
+            {hasIntroAnimation && <SvgIntroAnimation fill={colors.introAnimation} size="1.5rem" />}
 
-            {hasOutroAnimation && <SvgOutroAnimation fill={colors.outroAnimation} size="1.3rem" />}
+            {hasOutroAnimation && <SvgOutroAnimation fill={colors.outroAnimation} size="1.5rem" />}
 
-            {hasPowerCore && <SvgPowerCore fill={colors.powerCore} size="1.3rem" />}
+            {hasPowerCore && <SvgPowerCore fill={colors.powerCore} size="1.5rem" />}
 
-            {weaponCount > 0 && new Array(weaponCount).fill(0).map((_, index) => <SvgWeapons key={`mech-info-${index}`} fill={colors.weapons} size="1.3rem" />)}
+            {weaponCount > 0 && new Array(weaponCount).fill(0).map((_, index) => <SvgWeapons key={`mech-info-${index}`} fill={colors.weapons} size="1.5rem" />)}
 
             {utilityCount > 0 &&
-                new Array(utilityCount).fill(0).map((_, index) => <SvgUtilities key={`mech-info-${index}`} fill={colors.utilities} size="1.3rem" />)}
+                new Array(utilityCount).fill(0).map((_, index) => <SvgUtilities key={`mech-info-${index}`} fill={colors.utilities} size="1.5rem" />)}
         </Stack>
     )
 }

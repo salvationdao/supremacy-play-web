@@ -13,7 +13,7 @@ import { siteZIndex } from "../theme/theme"
 
 export enum MARKETPLACE_TABS {
     History = "history",
-    Weapon = "weapon",
+    Weapons = "weapons",
     WarMachines = "war-machines",
     Weapons = "weapons",
     Keycards = "key-cards",

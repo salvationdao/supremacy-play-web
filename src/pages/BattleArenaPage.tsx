@@ -22,14 +22,19 @@ import { useToggle } from "../hooks"
 import { siteZIndex } from "../theme/theme"
 
 export const BattleArenaPage = () => {
+    return <BattleArenaPageInner />
+}
+
+const BattleArenaPageInner = () => {
     const { userID } = useAuth()
-    const understand = localStorage.getItem(`understand-${userID}`) === "true"
+    const [understand, setUnderstand] = useState(localStorage.getItem(`understand-${userID}`) === "true")
 
     if (!understand && userID)
         return (
             <EarlyAccessWarning
                 onAcknowledged={() => {
                     localStorage.setItem(`understand-${userID}`, "true")
+                    setUnderstand(true)
                 }}
             />
         )
@@ -40,7 +45,7 @@ export const BattleArenaPage = () => {
                 <DimensionProvider>
                     <OverlayTogglesProvider>
                         <MiniMapProvider>
-                            <BattleArenaPageInner />
+                            <Contents />
                         </MiniMapProvider>
                     </OverlayTogglesProvider>
                 </DimensionProvider>
@@ -49,7 +54,7 @@ export const BattleArenaPage = () => {
     )
 }
 
-const BattleArenaPageInner = () => {
+const Contents = () => {
     const { userID } = useAuth()
     const { isServerUp, haveSups, isQuickDeployOpen, toggleIsQuickDeployOpen } = useSupremacy()
     const [noSupsModalOpen, toggleNoSupsModalOpen] = useToggle(true)

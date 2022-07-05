@@ -45,7 +45,7 @@ const MapMechInner = ({ warMachine, isLargeMode, map }: MapMechInnerProps) => {
     /**
      * For rendering: size, colors etc.
      */
-    const iconSize = useMemo(() => Math.min(gridWidth, gridHeight) * 1.1, [gridWidth, gridHeight])
+    const iconSize = useMemo(() => Math.min(gridWidth, gridHeight) * 1.5, [gridWidth, gridHeight])
     const dirArrowLength = useMemo(() => iconSize / 2 + 0.6 * iconSize, [iconSize])
     const primaryColor = useMemo(
         () => (ownedByID === userID ? colors.gold : getFaction(warMachineFactionID).primary_color || colors.neonBlue),
@@ -204,8 +204,8 @@ const MapMechInner = ({ warMachine, isLargeMode, map }: MapMechInnerProps) => {
                               }
                             : {
                                   position: "relative",
-                                  width: iconSize,
-                                  height: iconSize,
+                                  width: iconSize / 1.3,
+                                  height: iconSize / 1.3,
                                   overflow: "visible",
                                   backgroundColor: `${primaryColor}${isAlive ? "" : "00"}`,
                                   border: `9px solid #000000${isAlive ? "" : "00"}`,

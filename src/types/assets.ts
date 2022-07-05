@@ -8,6 +8,15 @@ export enum MechStatusEnum {
     Sold = "SOLD",
 }
 
+export enum WeaponType {
+    Cannon = "Cannon",
+    Sword = "Sword",
+    Minigun = "Minigun",
+    MissileLauncher = "Missile Launcher",
+    PlasmaGun = "Plasma Gun",
+    SniperRifle = "Sniper Rifle",
+}
+
 export interface MechStatus {
     status: MechStatusEnum
     queue_position?: number

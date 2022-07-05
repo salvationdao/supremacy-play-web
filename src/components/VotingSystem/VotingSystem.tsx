@@ -29,10 +29,13 @@ const VotingSystemInner = ({ userID, bribeStage }: VotingSystemInnerProps) => {
         () => ({
             localStoragePrefix: "votingSystem",
             // Defaults
-            defaultPosX: 10,
-            defaultPosY: 10,
-            defaultWidth: 390,
-            defaultHeight: 360,
+            defaultPosX: 0,
+            defaultPosY: 0,
+            defaultWidth: 320,
+            defaultHeight: 480,
+            // Position limits
+            minPosX: 0,
+            minPosY: 0,
             // Size limits
             minWidth: 300,
             minHeight: 168,
