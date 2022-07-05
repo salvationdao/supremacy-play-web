@@ -1,4 +1,4 @@
-import { Box, Stack, Typography } from "@mui/material"
+import { Box, Typography } from "@mui/material"
 import { useState } from "react"
 import { useLocation } from "react-router-dom"
 import { ClipThing, FancyButton, TooltipHelper } from "../../.."
@@ -15,7 +15,6 @@ export const MechButtons = ({
     setSelectedMechDetails,
     setDeployMechModalOpen,
     setLeaveMechModalOpen,
-    setHistoryMechModalOpen,
     setRentalMechModalOpen,
     marketLocked,
 }: {
@@ -23,7 +22,6 @@ export const MechButtons = ({
     setSelectedMechDetails: React.Dispatch<React.SetStateAction<MechDetails | undefined>>
     setDeployMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
     setLeaveMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
-    setHistoryMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
     setRentalMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
     marketLocked: boolean
 }) => {
@@ -47,19 +45,19 @@ export const MechButtons = ({
             clipSize="10px"
             border={{
                 borderColor: theme.factionTheme.primary,
-                borderThickness: ".25rem",
+                borderThickness: "2.2px",
             }}
             opacity={0.7}
             backgroundColor={theme.factionTheme.background}
             sx={{ m: "-.3rem" }}
         >
-            <Stack spacing="1.2rem" sx={{ p: "2.5rem 2.8rem" }}>
+            <Box sx={{ p: "1rem", gap: ".8rem", display: "grid", gridTemplateColumns: "repeat(2, 1fr)" }}>
                 {/* Button 1 */}
                 {mechState === MechStatusEnum.Battle || mechState === MechStatusEnum.Queue ? (
                     <ReusableButton
-                        primaryColor={colors.yellow}
-                        secondaryColor={colors.yellow}
-                        backgroundColor={theme.factionTheme.background}
+                        primaryColor="#E0B61B"
+                        secondaryColor="#111111"
+                        backgroundColor="#E0B61B"
                         label="UNDEPLOY"
                         disabled={!mechState || mechState === MechStatusEnum.Battle}
                         onClick={() => {
@@ -84,19 +82,6 @@ export const MechButtons = ({
                 {/* Button 2 */}
                 <ReusableButton isFancy primaryColor={colors.orange} backgroundColor={colors.orange} label="REPAIR" disabled={!mechState} />
 
-                {/* Button 3 */}
-                <ReusableButton
-                    isFancy
-                    primaryColor={theme.factionTheme.primary}
-                    secondaryColor={theme.factionTheme.secondary}
-                    backgroundColor={theme.factionTheme.primary}
-                    label="HISTORY"
-                    onClick={() => {
-                        setSelectedMechDetails(mechDetails)
-                        setHistoryMechModalOpen(true)
-                    }}
-                />
-
                 {/* Button 4 */}
                 <ReusableButton
                     isFancy
@@ -113,7 +98,7 @@ export const MechButtons = ({
                 {/* Button 5 */}
                 <TooltipHelper
                     placement={"right"}
-                    text={marketLocked ? "Unfortunately assets on the old staking contract cannot be listed on our marketplace." : ""}
+                    text={marketLocked ? "Unfortunately assets on the old staking contract cannot be listed on the marketplace." : ""}
                 >
                     <Box>
                         <ReusableButton
@@ -133,12 +118,12 @@ export const MechButtons = ({
                         />
                     </Box>
                 </TooltipHelper>
-            </Stack>
+            </Box>
         </ClipThing>
     )
 }
 
-const ReusableButton = ({
+export const ReusableButton = ({
     primaryColor,
     secondaryColor,
     backgroundColor,
@@ -164,13 +149,14 @@ const ReusableButton = ({
             href={href}
             disabled={(!onClick && !to) || disabled}
             clipThingsProps={{
-                clipSize: "8px",
-                clipSlantSize: ".5px",
+                clipSize: "6px",
+                clipSlantSize: "0px",
+                corners: { topLeft: true, topRight: true, bottomLeft: true, bottomRight: true },
                 backgroundColor: backgroundColor,
                 border: { isFancy: false, borderColor: primaryColor, borderThickness: "1.5px" },
                 sx: { position: "relative", minWidth: "10rem" },
             }}
-            sx={{ px: "1.3rem", py: ".5rem", color: secondaryColor || primaryColor }}
+            sx={{ px: "1.3rem", py: ".9rem", color: secondaryColor || primaryColor }}
             onClick={onClick}
         >
             <Typography

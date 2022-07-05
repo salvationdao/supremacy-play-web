@@ -188,9 +188,7 @@ export const PlayerAbilitiesStore = () => {
                 <PageHeader
                     imageUrl={PlayerAbilityPNG}
                     title="PLAYER ABILITIES"
-                    description="Player abilities are abilities that can be bought and used on the battle arena. The price of a player ability is determined by how
-                            active it is at any given time. When players buy an ability, its price will go up, and if an ability is not being bought, its price will
-                            go down."
+                    description="Player abilities are abilities that can be bought and used on the battle arena."
                 >
                     <FancyButton
                         to={`/fleet/${HANGAR_TABS.Abilities}`}

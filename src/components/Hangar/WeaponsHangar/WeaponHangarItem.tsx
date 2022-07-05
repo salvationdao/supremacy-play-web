@@ -32,10 +32,8 @@ export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGri
 
     const primaryColor = theme.factionTheme.primary
     const backgroundColor = theme.factionTheme.background
-
-    // todo images
-    // const imageUrl = mechDetails?.avatar_url || weapon.avatar_url
-    // const largeImageUrl = mechDetails?.large_image_url || weapon.large_image_url
+    const imageUrl = weapon.avatar_url
+    const largeImageUrl = weapon.large_image_url
 
     return (
         <Box sx={{ position: "relative", overflow: "visible", height: "100%" }}>
@@ -64,7 +62,7 @@ export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGri
                         p: isGridView ? ".5rem .6rem" : ".1rem .3rem",
                         display: isGridView ? "block" : "grid",
                         gridTemplateRows: "7rem",
-                        gridTemplateColumns: `8rem auto repeat(2, 20rem)`, // hard-coded to have 6 columns, adjust as required
+                        gridTemplateColumns: `8rem auto repeat(3, 20rem)`, // hard-coded to have 7 columns, adjust as required
                         gap: "1.4rem",
                         ...(isGridView
                             ? {
@@ -82,15 +80,32 @@ export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGri
                             width: "100%",
                         }}
                     >
-                        <MediaPreview imageUrl={weaponDetails?.image_url} objectFit={isGridView ? "cover" : "contain"} />
+                        <MediaPreview imageUrl={imageUrl || largeImageUrl} objectFit={isGridView ? "cover" : "contain"} />
                     </Box>
 
                     <Stack>
+                        <Typography variant="body2" sx={{ mb: ".2rem", color: primaryColor, fontFamily: fonts.nostromoHeavy }}>
+                            {weaponDetails?.weapon_type}
+                        </Typography>
                         <Typography sx={{ fontFamily: fonts.nostromoBlack }}>{weaponDetails?.label}</Typography>
                     </Stack>
 
-                    <General title="Type">
-                        <Typography sx={{ fontFamily: fonts.nostromoBlack }}>{weaponDetails?.weapon_type}</Typography>
+                    <General title="DAMAGE">
+                        <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
+                            {weaponDetails?.damage}
+                        </Typography>
+                    </General>
+
+                    <General title="RADIUS">
+                        <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
+                            {weaponDetails?.radius}
+                        </Typography>
+                    </General>
+
+                    <General title="RATE OF FIRE">
+                        <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
+                            {weaponDetails?.rate_of_fire}
+                        </Typography>
                     </General>
                 </Box>
 
@@ -101,6 +116,7 @@ export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGri
                         right: 0,
                         top: 0,
                         bottom: 0,
+                        background: `url(${largeImageUrl})`,
                         backgroundRepeat: "no-repeat",
                         backgroundPosition: "top",
                         backgroundSize: "cover",
