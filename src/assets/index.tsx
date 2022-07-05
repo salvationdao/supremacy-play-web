@@ -40,6 +40,7 @@ import ZaibatsuMechKillIcon from "!@svgr/webpack!./svg/ZaibatsuKillIcon.svg"
 import Angle from "!react-svg-loader!./svg/Angle.svg"
 import Announcement from "!react-svg-loader!./svg/Announcement.svg"
 import Applause from "!react-svg-loader!./svg/Applause.svg"
+import Arrow from "!react-svg-loader!./svg/Arrow.svg"
 import Back from "!react-svg-loader!./svg/Back.svg"
 import Cancelled from "!react-svg-loader!./svg/Cancelled.svg"
 import Chat from "!react-svg-loader!./svg/Chat.svg"
@@ -928,5 +929,11 @@ export const SvgNotification: React.VoidFunctionComponent<SvgWrapperProps> = (pr
 export const SvgMeteor: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <Meteor />
+        </SvgWrapper>
+)
+
+export const SvgArrow: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Arrow />
     </SvgWrapper>
 )

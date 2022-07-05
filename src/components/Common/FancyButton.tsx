@@ -18,15 +18,22 @@ export const FancyButton = React.forwardRef(function FancyButton(
     { sx, innerSx, disabled, clipThingsProps, children, loading, to, href, target, ...props }: FancyButtonProps,
     ref,
 ) {
+    const isDisabled = loading || disabled
+
     return (
         <ClipThing
             corners={{
                 topRight: true,
                 bottomLeft: true,
             }}
-            {...mergeDeep({ clipSlantSize: "2px" }, clipThingsProps, { opacity: disabled ? 0.5 : clipThingsProps?.opacity })}
+            {...mergeDeep(
+                { clipSlantSize: "2px" },
+                clipThingsProps,
+                { opacity: disabled ? 0.5 : clipThingsProps?.opacity },
+                isDisabled ? { sx: { filter: "grayscale(60%)" } } : {},
+            )}
         >
-            {(loading || disabled) && (
+            {isDisabled && (
                 <Box
                     sx={{
                         position: "absolute",
@@ -40,9 +47,11 @@ export const FancyButton = React.forwardRef(function FancyButton(
                     }}
                 />
             )}
+
             <LoadingButton
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 ref={ref as any}
+                disabled={isDisabled}
                 sx={{
                     borderRadius: 0,
                     fontFamily: fonts.shareTech,

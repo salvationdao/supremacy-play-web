@@ -1,5 +1,6 @@
-import { Box, Button, Divider, Modal, Stack, Typography } from "@mui/material"
+import { Box, Divider, Modal, Stack, Typography } from "@mui/material"
 import { useTour } from "@reactour/tour"
+import { FancyButton } from "../.."
 import { useToggle } from "../../../hooks"
 import { colors, fonts } from "../../../theme/theme"
 import { ClipThing } from "../../Common/ClipThing"
@@ -31,11 +32,9 @@ export const TutorialModal = () => {
                     }}
                     backgroundColor={colors.darkNavyBlue}
                 >
-                    <Box
+                    <Stack
+                        alignItems="center"
                         sx={{
-                            display: "flex",
-                            flexDirection: "column",
-                            alignItems: "center",
                             px: "3.2rem",
                             py: "2.4rem",
                             width: "100%",
@@ -45,58 +44,53 @@ export const TutorialModal = () => {
                             WELCOME NEW CITIZEN
                         </Typography>
 
-                        <Divider sx={{ width: "100%", mt: "1rem", mb: "2rem" }} />
+                        <Divider sx={{ width: "100%", mt: "1rem", mb: "1.8rem" }} />
 
-                        <Typography sx={{ fontFamily: fonts.nostromoBold, width: "100%" }}>
+                        <Typography variant="h5" sx={{ width: "100%" }}>
                             You are now in the Battle Arena where Syndicates will fight for glory. The Arena can be overwhelming if you don&apos;t know your way
                             around, the tutorial can help you get your bearings.
                         </Typography>
 
-                        <Stack direction="row" spacing="1.5rem" sx={{ width: "100%", mt: "2rem" }}>
-                            <Button
-                                variant="contained"
+                        <Stack direction="row" spacing="1.5rem" sx={{ width: "100%", mt: "2.8rem" }}>
+                            <FancyButton
+                                clipThingsProps={{
+                                    clipSize: "9px",
+                                    backgroundColor: colors.neonBlue,
+                                    opacity: 1,
+                                    border: { isFancy: true, borderColor: colors.neonBlue, borderThickness: "2px" },
+                                    sx: { position: "relative" },
+                                }}
+                                sx={{ px: "1.6rem", py: ".6rem", color: colors.darkNavy }}
                                 onClick={() => {
                                     setVisited(true)
                                     setIsOpen(true)
                                 }}
-                                sx={{
-                                    pt: ".7rem",
-                                    pb: ".4rem",
-                                    backgroundColor: colors.neonBlue,
-                                    color: colors.darkNavy,
-                                    borderRadius: 0.7,
-                                    ":hover": {
-                                        backgroundColor: colors.neonBlue,
-                                    },
-                                }}
                             >
-                                <Typography sx={{ color: colors.darkNavy, fontFamily: fonts.nostromoBlack }}>Tutorial</Typography>
-                            </Button>
+                                <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack, color: colors.darkNavy }}>
+                                    Tutorial
+                                </Typography>
+                            </FancyButton>
 
-                            <Button
-                                variant="outlined"
+                            <FancyButton
+                                clipThingsProps={{
+                                    clipSize: "9px",
+                                    backgroundColor: colors.darkNavy,
+                                    opacity: 1,
+                                    border: { borderColor: colors.neonBlue, borderThickness: "2px" },
+                                    sx: { position: "relative" },
+                                }}
+                                sx={{ px: "1.6rem", py: ".6rem", color: colors.neonBlue }}
                                 onClick={() => {
                                     setVisited(true)
                                     localStorage.setItem("visited", "true")
                                 }}
-                                sx={{
-                                    alignSelf: "flex-end",
-                                    pt: ".7rem",
-                                    pb: ".4rem",
-                                    color: colors.neonBlue,
-                                    backgroundColor: colors.darkNavy,
-                                    borderRadius: 0.7,
-                                    border: `${colors.neonBlue} 1px solid`,
-                                    ":hover": {
-                                        backgroundColor: colors.darkNavy,
-                                        border: `${colors.neonBlue} 1px solid`,
-                                    },
-                                }}
                             >
-                                <Typography sx={{ color: colors.neonBlue, fontFamily: fonts.nostromoBold }}>Skip</Typography>
-                            </Button>
+                                <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack, color: colors.neonBlue }}>
+                                    Skip
+                                </Typography>
+                            </FancyButton>
                         </Stack>
-                    </Box>
+                    </Stack>
                 </ClipThing>
             </Box>
         </Modal>

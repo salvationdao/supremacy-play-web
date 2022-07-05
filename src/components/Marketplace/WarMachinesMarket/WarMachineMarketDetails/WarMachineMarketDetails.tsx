@@ -18,7 +18,7 @@ import { ManageListing } from "../../Common/MarketDetails/ManageListing"
 import { UserInfo } from "../../Common/MarketDetails/UserInfo"
 import { SoldDetails } from "../../Common/MarketDetails/SoldDetails"
 import { MechBattleHistoryDetails } from "./MechBattleHistoryDetails"
-import { MechStatsDetails } from "./MechStatsDetails"
+import { MechStatsDetails } from "../../../Hangar/WarMachinesHangar/Common/MechHistory/MechStatsDetails"
 
 export const WarMachineMarketDetails = ({ id }: { id: string }) => {
     const theme = useTheme()

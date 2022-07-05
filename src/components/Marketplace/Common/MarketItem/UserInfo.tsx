@@ -11,7 +11,7 @@ export const UserInfo = ({ isGridView, marketUser, title }: { isGridView?: boole
 
     return (
         <Stack spacing={isGridView ? ".1rem" : ".6rem"}>
-            <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack, color: colors.lightGrey }}>
+            <Typography variant="subtitle2" sx={{ fontFamily: fonts.nostromoBlack, color: colors.grey }}>
                 {title || "USER"}
             </Typography>
             <Typography

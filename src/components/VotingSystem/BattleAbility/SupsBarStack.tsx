@@ -53,6 +53,7 @@ const SupsBar = ({ forceDisplay100Percentage, getFaction, abilityProgress }: Sup
         <Stack key={faction_id} spacing=".96rem" direction="row" alignItems="center">
             <Box
                 sx={{
+                    flexShrink: 0,
                     height: "1.6rem",
                     width: "1.6rem",
                     backgroundImage: `url(${getFaction(faction_id).logo_url})`,
