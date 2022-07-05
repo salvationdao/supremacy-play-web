@@ -1,8 +1,9 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { useLocation } from "react-router-dom"
 import { FancyButton } from "../.."
 import { useTheme } from "../../../containers/theme"
+import { getRarityDeets } from "../../../helpers"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { fonts } from "../../../theme/theme"
@@ -15,6 +16,8 @@ export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGri
     const theme = useTheme()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [weaponDetails, setWeaponDetails] = useState<Weapon>()
+
+    const rarityDeets = useMemo(() => getRarityDeets(weaponDetails?.tier || ""), [weaponDetails])
 
     useEffect(() => {
         ;(async () => {
@@ -84,10 +87,15 @@ export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGri
                     </Box>
 
                     <Stack>
+                        <Typography variant="body2" sx={{ mb: ".2rem", color: rarityDeets.color, fontFamily: fonts.nostromoHeavy }}>
+                            {rarityDeets.label}
+                        </Typography>
+
+                        <Typography sx={{ fontFamily: fonts.nostromoBlack }}>{weaponDetails?.label}</Typography>
+
                         <Typography variant="body2" sx={{ mb: ".2rem", color: primaryColor, fontFamily: fonts.nostromoHeavy }}>
                             {weaponDetails?.weapon_type}
                         </Typography>
-                        <Typography sx={{ fontFamily: fonts.nostromoBlack }}>{weaponDetails?.label}</Typography>
                     </Stack>
 
                     <General title="DAMAGE">
