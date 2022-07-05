@@ -48,7 +48,7 @@ export const SupremacyContainer = createContainer(() => {
                 })
                 setFactionsAll(currentData)
             } catch (e) {
-                newSnackbarMessage(typeof e === "string" ? e : "Failed to retrieve syndicate data.", "error")
+                newSnackbarMessage(typeof e === "string" ? e : "Failed to retrieve faction data.", "error")
                 console.error(e)
                 return false
             }
