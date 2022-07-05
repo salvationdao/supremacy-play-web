@@ -1,5 +1,5 @@
 import { Box, Fade, keyframes, Stack, Typography } from "@mui/material"
-import { useCallback, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { FancyButton, TooltipHelper } from "../.."
 import { SvgGlobal, SvgLine, SvgMicrochip, SvgQuestionMark, SvgSupToken, SvgTarget } from "../../../assets"
 import { useSnackbar } from "../../../containers"
@@ -18,9 +18,10 @@ export interface PlayerAbilityStoreItemProps {
     updatedPrice: string
     totalAmount: number
     amountSold: number
+    nextSalePeriodTime: Date | null
 }
 
-export const PlayerAbilityStoreItem = ({ saleAbility, updatedPrice, totalAmount, amountSold }: PlayerAbilityStoreItemProps) => {
+export const PlayerAbilityStoreItem = ({ saleAbility, updatedPrice, totalAmount, amountSold, nextSalePeriodTime }: PlayerAbilityStoreItemProps) => {
     const theme = useTheme()
     const primaryColor = theme.factionTheme.primary
     const backgroundColor = theme.factionTheme.background
@@ -33,6 +34,7 @@ export const PlayerAbilityStoreItem = ({ saleAbility, updatedPrice, totalAmount,
     const [showPurchaseModal, toggleShowPurchaseModal] = useToggle(false)
     const [purchaseLoading, setPurchaseLoading] = useState(false)
     const [purchaseError, setPurchaseError] = useState<string>()
+    const [canPurchase, setCanPurchase] = useState(true)
 
     const [abilityTypeIcon, abilityTypeDescription] = useMemo(() => {
         switch (saleAbility.ability.location_select_type) {
@@ -58,6 +60,7 @@ export const PlayerAbilityStoreItem = ({ saleAbility, updatedPrice, totalAmount,
             })
             newSnackbarMessage(`Successfully purchased 1 ${saleAbility.ability.label || "ability"}`, "success")
             toggleShowPurchaseModal(false)
+            setCanPurchase(false)
             setPurchaseError(undefined)
         } catch (e) {
             if (e instanceof Error) {
@@ -69,6 +72,11 @@ export const PlayerAbilityStoreItem = ({ saleAbility, updatedPrice, totalAmount,
             setPurchaseLoading(false)
         }
     }, [send, saleAbility, updatedPrice, newSnackbarMessage, toggleShowPurchaseModal])
+
+    useEffect(() => {
+        if (!nextSalePeriodTime) return
+        setCanPurchase(true)
+    }, [nextSalePeriodTime])
 
     return (
         <>
@@ -82,6 +90,7 @@ export const PlayerAbilityStoreItem = ({ saleAbility, updatedPrice, totalAmount,
                 backgroundColor={backgroundColor}
                 sx={{
                     transition: "all .15s",
+                    filter: canPurchase ? "grayScale(0)" : "grayscale(1)",
                     ":hover": {
                         transform: "translateY(-.4rem)",
                     },
@@ -175,7 +184,7 @@ export const PlayerAbilityStoreItem = ({ saleAbility, updatedPrice, totalAmount,
                                 sx: {},
                             }}
                             sx={{ px: "1.6rem", py: ".6rem" }}
-                            disabled={amountLeft < 1}
+                            disabled={amountLeft < 1 || !canPurchase}
                         >
                             <Typography
                                 key={updatedPrice}

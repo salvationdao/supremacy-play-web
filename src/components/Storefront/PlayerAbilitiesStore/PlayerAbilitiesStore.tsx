@@ -19,6 +19,7 @@ export const PlayerAbilitiesStore = () => {
     const [isLoaded, setIsLoaded] = useState(false)
     const [nextRefreshTime, setNextRefreshTime] = useState<Date | null>(null)
     const [saleAbilities, setSaleAbilities] = useState<SaleAbility[]>([])
+    const [nextSalePeriodTime, setNextSalePeriodTime] = useState<Date | null>(null)
     const [priceMap, setPriceMap] = useState<Map<string, string>>(new Map())
     const [amountMap, setAmountMap] = useState<Map<string, number>>(new Map())
 
@@ -37,6 +38,22 @@ export const PlayerAbilitiesStore = () => {
             setAmountMap(new Map()) // reset amount map
             if (isLoaded) return
             setIsLoaded(true)
+        },
+    )
+
+    useGameServerSubscriptionSecurePublic<{
+        next_sale_period_time: Date | null
+        sale_period_duration_seconds: number
+    }>(
+        {
+            URI: "sale_abilities",
+            key: GameServerKeys.SaleAbilitiesSalePeriodSubscribe,
+        },
+        (payload) => {
+            if (!payload) return
+            const t = new Date()
+            t.setSeconds(t.getSeconds() + payload.sale_period_duration_seconds)
+            setNextSalePeriodTime(payload.next_sale_period_time || t)
         },
     )
 
@@ -120,6 +137,7 @@ export const PlayerAbilitiesStore = () => {
                                 updatedPrice={priceMap.get(s.id) || s.current_price}
                                 totalAmount={s.sale_limit}
                                 amountSold={amountMap.get(s.id) || s.amount_sold}
+                                nextSalePeriodTime={nextSalePeriodTime}
                             />
                         ))}
                     </Box>
@@ -160,7 +178,7 @@ export const PlayerAbilitiesStore = () => {
                 </Stack>
             </Stack>
         )
-    }, [isLoaded, priceMap, amountMap, saleAbilities])
+    }, [isLoaded, saleAbilities, priceMap, amountMap, nextSalePeriodTime])
 
     return (
         <ClipThing
