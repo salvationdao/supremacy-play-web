@@ -9,6 +9,7 @@ import { usePagination, useToggle, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
+import { WeaponType } from "../../../types"
 import { MarketplaceBuyAuctionItem, MarketSaleType, SortTypeLabel } from "../../../types/marketplace"
 import { PageHeader } from "../../Common/PageHeader"
 import { ChipFilter } from "../../Common/SortAndFilters/ChipFilterSection"
@@ -52,6 +53,7 @@ export const WeaponsMarket = () => {
     const [ownedBy, setOwnedBy] = useState<string[]>((query.get("ownedBy") || undefined)?.split("||") || [])
     const [listingTypes, setListingTypes] = useState<string[]>((query.get("listingTypes") || undefined)?.split("||") || [])
     const [rarities, setRarities] = useState<string[]>((query.get("rarities") || undefined)?.split("||") || [])
+    const [weaponTypes, setWeaponTypes] = useState<string[]>((query.get("weaponTypes") || undefined)?.split("||") || [])
     const [price, setPrice] = useState<(number | undefined)[]>(
         (query.get("priceRanges") || undefined)?.split("||").map((p) => (p ? parseInt(p) : undefined)) || [undefined, undefined],
     )
@@ -116,6 +118,23 @@ export const WeaponsMarket = () => {
         },
     })
 
+    const weaponTypeChipFilter = useRef<ChipFilter>({
+        label: "WEAPON TYPE",
+        options: [
+            { value: WeaponType.Cannon, label: WeaponType.Cannon, color: colors.green },
+            { value: WeaponType.Sword, label: WeaponType.Sword, color: colors.red },
+            { value: WeaponType.Minigun, label: WeaponType.Minigun, color: colors.yellow },
+            { value: WeaponType.MissileLauncher, label: WeaponType.MissileLauncher, color: colors.purple },
+            { value: WeaponType.PlasmaGun, label: WeaponType.PlasmaGun, color: colors.blue },
+            { value: WeaponType.SniperRifle, label: WeaponType.SniperRifle, color: colors.orange },
+        ],
+        initialSelected: weaponTypes,
+        onSetSelected: (value: string[]) => {
+            setWeaponTypes(value)
+            changePage(1)
+        },
+    })
+
     const priceRangeFilter = useRef<RangeFilter>({
         label: "PRICE RANGE",
         initialValue: price,
@@ -150,6 +169,7 @@ export const WeaponsMarket = () => {
                 search,
                 rarities,
                 listing_types: listingTypes,
+                weapon_types: weaponTypes,
                 item_type: "weapon",
                 min_price,
                 max_price,
@@ -181,7 +201,7 @@ export const WeaponsMarket = () => {
         } finally {
             setIsLoading(false)
         }
-    }, [sort, price, updateQuery, page, pageSize, status, ownedBy, listingTypes, rarities, send, search, setTotalItems])
+    }, [sort, price, updateQuery, page, pageSize, status, ownedBy, listingTypes, rarities, weaponTypes, send, search, setTotalItems])
 
     useEffect(() => {
         getItems()
@@ -282,7 +302,13 @@ export const WeaponsMarket = () => {
             <SortAndFilters
                 initialSearch={search}
                 onSetSearch={setSearch}
-                chipFilters={[statusFilterSection.current, ownedByFilterSection.current, listingTypeFilterSection.current, rarityChipFilter.current]}
+                chipFilters={[
+                    statusFilterSection.current,
+                    ownedByFilterSection.current,
+                    listingTypeFilterSection.current,
+                    rarityChipFilter.current,
+                    weaponTypeChipFilter.current,
+                ]}
                 rangeFilters={[priceRangeFilter.current]}
                 changePage={changePage}
             />
