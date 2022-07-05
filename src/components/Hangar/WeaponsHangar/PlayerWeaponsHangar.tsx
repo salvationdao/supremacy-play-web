@@ -1,5 +1,5 @@
 import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { ClipThing } from "../.."
 import { EmptyWarMachinesPNG, WarMachineIconPNG } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
@@ -8,17 +8,19 @@ import { usePagination, useToggle, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { Weapon } from "../../../types"
+import { Weapon, WeaponType } from "../../../types"
 import { PageHeader } from "../../Common/PageHeader"
+import { ChipFilter } from "../../Common/SortAndFilters/ChipFilterSection"
 import { SortAndFilters } from "../../Common/SortAndFilters/SortAndFilters"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { WeaponHangarItem } from "./WeaponHangarItem"
 
 interface GetWeaponsRequest {
-    queue_sort: string
     page: number
     page_size: number
     include_market_listed: boolean
+    weapon_types: string[]
+    search: string
 }
 
 interface GetWeaponsResponse {
@@ -43,26 +45,43 @@ export const PlayerWeaponsHangar = () => {
 
     // Filters and sorts
     const [search, setSearch] = useState("")
+    const [weaponTypes, setWeaponTypes] = useState<string[]>((query.get("weapon_types") || undefined)?.split("||") || [])
     const [isGridView, toggleIsGridView] = useToggle(false)
 
-    // TODO Filters
+    const weaponTypeFilterSection = useRef<ChipFilter>({
+        label: "WEAPON TYPE",
+        options: [
+            { value: WeaponType.Cannon, label: WeaponType.Cannon, color: colors.green },
+            { value: WeaponType.Sword, label: WeaponType.Sword, color: colors.red },
+            { value: WeaponType.Minigun, label: WeaponType.Minigun, color: colors.yellow },
+            { value: WeaponType.MissileLauncher, label: WeaponType.MissileLauncher, color: colors.purple },
+            { value: WeaponType.PlasmaGun, label: WeaponType.PlasmaGun, color: colors.blue },
+            { value: WeaponType.SniperRifle, label: WeaponType.SniperRifle, color: colors.orange },
+        ],
+        initialSelected: weaponTypes,
+        onSetSelected: (value: string[]) => {
+            setWeaponTypes(value)
+            changePage(1)
+        },
+    })
 
     const getItems = useCallback(async () => {
         try {
             setIsLoading(true)
 
-            const sortDir = "asc"
-
             const resp = await send<GetWeaponsResponse, GetWeaponsRequest>(GameServerKeys.GetWeapons, {
-                queue_sort: sortDir,
                 page,
                 page_size: pageSize,
                 include_market_listed: true,
+                weapon_types: weaponTypes,
+                search,
             })
 
             updateQuery({
                 page: page.toString(),
                 pageSize: pageSize.toString(),
+                weapon_types: weaponTypes.join("||"),
+                search,
             })
 
             if (!resp) return
@@ -75,7 +94,7 @@ export const PlayerWeaponsHangar = () => {
         } finally {
             setIsLoading(false)
         }
-    }, [send, page, pageSize, updateQuery, setTotalItems])
+    }, [send, page, pageSize, search, updateQuery, setTotalItems, weaponTypes])
 
     useEffect(() => {
         getItems()
@@ -173,12 +192,7 @@ export const PlayerWeaponsHangar = () => {
 
     return (
         <Stack direction="row" spacing="1rem" sx={{ height: "100%" }}>
-            <SortAndFilters
-                initialSearch={search}
-                onSetSearch={setSearch}
-                // TODO filters
-                changePage={changePage}
-            />
+            <SortAndFilters initialSearch={search} onSetSearch={setSearch} chipFilters={[weaponTypeFilterSection.current]} changePage={changePage} />
 
             <ClipThing
                 clipSize="10px"
@@ -202,7 +216,6 @@ export const PlayerWeaponsHangar = () => {
                             pageSizeOptions={[10, 20, 30]}
                             changePage={changePage}
                             manualRefresh={getItems}
-                            // TODO Sort
                             isGridView={isGridView}
                             toggleIsGridView={toggleIsGridView}
                         />
