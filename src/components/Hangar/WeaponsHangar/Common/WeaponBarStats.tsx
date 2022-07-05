@@ -63,8 +63,8 @@ export const WeaponBarStats = ({
                 }}
             >
                 <BarStat primaryColor={primaryColor} fontSize={fontSize} barHeight={barHeight} label="AMMO" current={ammo} total={3000} />
-                <BarStat primaryColor={primaryColor} fontSize={fontSize} barHeight={barHeight} label="DAMAGE" current={damage} total={100} />
-                <BarStat primaryColor={primaryColor} fontSize={fontSize} barHeight={barHeight} label="RADIUS" current={radius} total={500} />
+                <BarStat primaryColor={primaryColor} fontSize={fontSize} barHeight={barHeight} label="DAMAGE" current={damage} total={1000} />
+                <BarStat primaryColor={primaryColor} fontSize={fontSize} barHeight={barHeight} label="RADIUS" current={radius} total={2000} />
                 <BarStat primaryColor={primaryColor} fontSize={fontSize} barHeight={barHeight} label="RATE OF FIRE" current={rateOfFire} total={1000} />
                 <BarStat primaryColor={primaryColor} fontSize={fontSize} barHeight={barHeight} label="ENERGY COST" current={energyCost} total={100} />
                 <BarStat
