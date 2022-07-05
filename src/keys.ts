@@ -139,6 +139,9 @@ export enum GameServerKeys {
     // Keycards
     GetPlayerKeycards = "PLAYER:ASSET:KEYCARD:LIST",
     GetPlayerKeycard = "PLAYER:ASSET:KEYCARD:GET",
+
+    // player profile
+    PlayerProfileGet = "PLAYER:PROFILE:GET",
 }
 
 export enum PassportServerKeys {
