@@ -16,7 +16,6 @@ import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { WeaponHangarItem } from "./WeaponHangarItem"
 
 interface GetWeaponsRequest {
-    queue_sort: string
     page: number
     page_size: number
     include_market_listed: boolean
@@ -49,7 +48,6 @@ export const PlayerWeaponsHangar = () => {
     const [weaponTypes, setWeaponTypes] = useState<string[]>((query.get("weapon_types") || undefined)?.split("||") || [])
     const [isGridView, toggleIsGridView] = useToggle(false)
 
-    // TODO More Filters
     const weaponTypeFilterSection = useRef<ChipFilter>({
         label: "WEAPON TYPE",
         options: [
@@ -72,7 +70,6 @@ export const PlayerWeaponsHangar = () => {
             setIsLoading(true)
 
             const resp = await send<GetWeaponsResponse, GetWeaponsRequest>(GameServerKeys.GetWeapons, {
-                queue_sort: "asc",
                 page,
                 page_size: pageSize,
                 include_market_listed: true,
