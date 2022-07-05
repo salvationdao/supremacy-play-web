@@ -193,7 +193,7 @@ const MoveableResizableInner = ({ children }: MoveableResizableProps) => {
                             top: 0,
                             left: 0,
                             right: "12rem",
-                            height: "2rem",
+                            height: "2.8rem",
                             pointerEvents: "all",
                             zIndex: 99,
                         }}
