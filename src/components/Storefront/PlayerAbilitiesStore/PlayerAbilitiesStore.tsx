@@ -267,7 +267,7 @@ export const PlayerAbilitiesStore = () => {
     )
 }
 
-const TimeLeft = ({ dateTo }: { dateTo: Date | undefined }) => {
+export const TimeLeft = ({ dateTo }: { dateTo: Date | undefined }) => {
     const { totalSecRemain } = useTimer(dateTo)
     return <>{timeSinceInWords(new Date(), new Date(new Date().getTime() + totalSecRemain * 1000))}</>
 }

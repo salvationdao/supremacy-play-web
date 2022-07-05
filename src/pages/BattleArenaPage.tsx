@@ -11,10 +11,11 @@ import {
     Notifications,
     Stream,
     VotingSystem,
-    WarMachineStats,
+    WarMachineStats
 } from "../components"
 import { TutorialModal } from "../components/HowToPlay/Tutorial/TutorialModal"
 import { QuickDeploy } from "../components/QuickDeploy/QuickDeploy"
+import { QuickPlayerAbilities } from "../components/QuickPlayerAbilities/QuickPlayerAbilities"
 import { Trailer } from "../components/Stream/Trailer"
 import { DimensionProvider, GameProvider, OverlayTogglesProvider, StreamProvider, useAuth, useSupremacy } from "../containers"
 import { MiniMapProvider } from "../containers/minimap"
@@ -51,7 +52,7 @@ export const BattleArenaPage = () => {
 
 const BattleArenaPageInner = () => {
     const { userID } = useAuth()
-    const { isServerUp, haveSups, isQuickDeployOpen, toggleIsQuickDeployOpen } = useSupremacy()
+    const { isServerUp, haveSups, isQuickDeployOpen, toggleIsQuickDeployOpen, isQuickPlayerAbilitiesOpen, toggleIsQuickPlayerAbilitiesOpen } = useSupremacy()
     const [noSupsModalOpen, toggleNoSupsModalOpen] = useToggle(true)
     const [watchedTrailer, setWatchedTrailer] = useState(localStorage.getItem("watchedTrailer") == "true")
 
@@ -69,6 +70,7 @@ const BattleArenaPageInner = () => {
                             <LiveVotingChart />
                             <BattleHistory />
                             {isQuickDeployOpen && <QuickDeploy open={isQuickDeployOpen} onClose={() => toggleIsQuickDeployOpen(false)} />}
+                            {isQuickPlayerAbilitiesOpen && <QuickPlayerAbilities open={isQuickPlayerAbilitiesOpen} onClose={() => toggleIsQuickPlayerAbilitiesOpen(false)} />}
                             <VotingSystem />
                             <MiniMap />
 
