@@ -11,7 +11,7 @@ import {
     Notifications,
     Stream,
     VotingSystem,
-    WarMachineStats
+    WarMachineStats,
 } from "../components"
 import { TutorialModal } from "../components/HowToPlay/Tutorial/TutorialModal"
 import { QuickDeploy } from "../components/QuickDeploy/QuickDeploy"
@@ -75,7 +75,9 @@ const Contents = () => {
                             <LiveVotingChart />
                             <BattleHistory />
                             {isQuickDeployOpen && <QuickDeploy open={isQuickDeployOpen} onClose={() => toggleIsQuickDeployOpen(false)} />}
-                            {isQuickPlayerAbilitiesOpen && <QuickPlayerAbilities open={isQuickPlayerAbilitiesOpen} onClose={() => toggleIsQuickPlayerAbilitiesOpen(false)} />}
+                            {isQuickPlayerAbilitiesOpen && (
+                                <QuickPlayerAbilities open={isQuickPlayerAbilitiesOpen} onClose={() => toggleIsQuickPlayerAbilitiesOpen(false)} />
+                            )}
                             <VotingSystem />
                             <MiniMap />
 

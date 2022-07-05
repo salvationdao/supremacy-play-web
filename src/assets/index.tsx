@@ -929,7 +929,7 @@ export const SvgNotification: React.VoidFunctionComponent<SvgWrapperProps> = (pr
 export const SvgMeteor: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <Meteor />
-        </SvgWrapper>
+    </SvgWrapper>
 )
 
 export const SvgArrow: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
