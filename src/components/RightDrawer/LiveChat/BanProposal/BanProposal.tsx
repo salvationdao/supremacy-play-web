@@ -238,7 +238,7 @@ const BanProposalInner = ({
                             <LineItem title="DURATION">
                                 <Stack spacing=".24rem" direction="row" alignItems="center" justifyContent="center">
                                     <SvgCooldown component="span" size="1.4rem" sx={{ pb: ".25rem" }} />
-                                    <Typography sx={{ lineHeight: 1 }}>{banProposal.punish_option.punish_duration_hours} Hrs</Typography>
+                                    <Typography sx={{ lineHeight: 1 }}>{banProposal.punish_option.punish_duration_hours} mins</Typography>
                                 </Stack>
                             </LineItem>
 

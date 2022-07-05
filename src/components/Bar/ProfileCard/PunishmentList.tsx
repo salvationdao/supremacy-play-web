@@ -59,7 +59,7 @@ export const PunishmentList = ({ open, onClose, punishments }: Props) => {
                                             </Typography>
                                         </Stack>
                                         <Typography sx={{ strong: { color: colors.offWhite } }}>
-                                            <strong>DURATION:</strong> {p.punish_option.punish_duration_hours} hours
+                                            <strong>DURATION:</strong> {p.punish_option.punish_duration_hours} mins
                                         </Typography>
                                         <Typography sx={{ strong: { color: colors.offWhite } }}>
                                             <strong>DESCRIPTION:</strong> {p.punish_option.description}
