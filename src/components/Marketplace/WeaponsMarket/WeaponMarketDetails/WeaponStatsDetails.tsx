@@ -3,7 +3,7 @@ import { Stack, Typography } from "@mui/material"
 import { SvgStats } from "../../../../assets"
 import { fonts } from "../../../../theme/theme"
 import { Weapon } from "../../../../types"
-import { WeaponBarStats } from "../../../Hangar/WeaponsHangar/WeaponHangarStats"
+import { WeaponBarStats } from "../../../Hangar/WeaponsHangar/Common/WeaponBarStats"
 
 interface Props {
     weaponDetails?: Weapon

@@ -84,6 +84,7 @@ export interface MarketplaceBuyAuctionItem {
     weapon?: {
         id: string
         label: string
+        weapon_type: string
         avatar_url: string
     }
     sold_for?: string

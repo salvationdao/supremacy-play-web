@@ -16,17 +16,17 @@ export const WeaponsMarketItem = ({ item, isGridView }: WarMachineMarketItemProp
 
     if (!weapon || !collection_item) return null
 
-    const { label, avatar_url } = weapon
+    const { label, weapon_type, avatar_url } = weapon
     const { tier } = collection_item
 
     return (
         <MarketItem item={item} imageUrl={avatar_url} backgroundImageUrl={avatar_url} isGridView={isGridView} linkSubPath={MARKETPLACE_TABS.Weapons}>
-            <WeaponInfo isGridView={isGridView} label={label} tier={tier} />
+            <WeaponInfo isGridView={isGridView} label={label} weaponType={weapon_type} tier={tier} />
         </MarketItem>
     )
 }
 
-const WeaponInfo = ({ isGridView, label, tier }: { isGridView: boolean; label: string; tier: string }) => {
+const WeaponInfo = ({ isGridView, label, weaponType, tier }: { isGridView: boolean; label: string; weaponType: string; tier: string }) => {
     const rarityDeets = useMemo(() => getRarityDeets(tier), [tier])
 
     return (
@@ -53,6 +53,9 @@ const WeaponInfo = ({ isGridView, label, tier }: { isGridView: boolean; label: s
                 }}
             >
                 {label}
+            </Typography>
+            <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack }}>
+                {weaponType}
             </Typography>
         </Stack>
     )
