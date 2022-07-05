@@ -49,7 +49,7 @@ export const SetupTutorial = () => {
                 selector: user.faction_id ? "#tutorial-enlisted" : "#tutorial-enlist",
                 content: user.faction_id
                     ? "You can see your personal game stats here."
-                    : "Here you can enlist into a Syndicate. Take care with who you choose to align yourself with- this will be the Syndicate you stay with for a while.",
+                    : "Here you can enlist into a Faction. Take care with who you choose to align yourself with- this will be the Faction you stay with for a while.",
                 action: () => {
                     toggleActiveBar("enlist", true)
                 },
@@ -58,7 +58,7 @@ export const SetupTutorial = () => {
             {
                 selector: "#tutorial-sups",
                 content:
-                    "This is the amount of $SUPS you have in your on-world wallet. Choose wisely how you spend them as you can turn the tides of war in your syndicate's favor. You will be able to see information on your current session and most recent transactions here.",
+                    "This is the amount of $SUPS you have in your on-world wallet. Choose wisely how you spend them as you can turn the tides of war in your faction's favor. You will be able to see information on your current session and most recent transactions here.",
                 action: () => {
                     toggleActiveBar("wallet", true)
                 },
@@ -117,7 +117,7 @@ export const SetupTutorial = () => {
             },
             {
                 selector: ".tutorial-global-chat",
-                content: "Global Chat includes everyone from all syndicates.",
+                content: "Global Chat includes everyone from all factions.",
                 action: () => {
                     history.push(`${location.pathname}${RightDrawerHashes.LiveChat}`)
                 },
@@ -125,7 +125,7 @@ export const SetupTutorial = () => {
             {
                 selector: ".tutorial-faction-chat",
                 content:
-                    "Syndicate chat only includes others that are part of the same syndicate as yourself. This is the best place to get to know your fellow syndicate members, strategize and plan the best avenue of assault.",
+                    "Faction chat only includes others that are part of the same faction as yourself. This is the best place to get to know your fellow faction members, strategize and plan the best avenue of assault.",
                 action: () => {
                     history.push(`${location.pathname}${RightDrawerHashes.LiveChat}`)
                 },
@@ -139,7 +139,7 @@ export const SetupTutorial = () => {
             {
                 selector: "#tutorial-vote",
                 content:
-                    "Game abilities will show up here throughout the round. Work with your syndicate to contribute and win these abilities to aid your syndicate's mechs and lead them to victory.",
+                    "Game abilities will show up here throughout the round. Work with your faction to contribute and win these abilities to aid your faction's mechs and lead them to victory.",
             },
             {
                 selector: "#tutorial-mech-stats",
@@ -157,7 +157,7 @@ export const SetupTutorial = () => {
                 content: (
                     <Box>
                         <Typography>
-                            Start contributing to your syndicate&apos;s battle effort to ensure it&apos;s supremacy and reap the Spoils of War!
+                            Start contributing to your faction&apos;s battle effort to ensure it&apos;s supremacy and reap the Spoils of War!
                         </Typography>
                         <FancyButton
                             clipThingsProps={{

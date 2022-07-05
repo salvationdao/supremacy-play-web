@@ -20,7 +20,7 @@ export const SupremacyContainer = createContainer(() => {
     const [factionsAll, setFactionsAll] = useState<FactionsAll>({})
     const [battleIdentifier, setBattleIdentifier] = useState<number>()
     const [isQuickDeployOpen, toggleIsQuickDeployOpen] = useToggle(localStorage.getItem("quickDeployOpen") === "true")
-    const [isQuickPlayerAbilitiesOpen, toggleIsQuickPlayerAbilitiesOpen] = useToggle(localStorage.getItem("quickPlayerAbilities") === "true")
+    const [isQuickPlayerAbilitiesOpen, toggleIsQuickPlayerAbilitiesOpen] = useToggle(localStorage.getItem("quickPlayerAbilitiesOpen") === "true")
 
     const { query: queryGetFactionsAll } = useParameterizedQuery(GetFactionsAll)
 
@@ -48,7 +48,7 @@ export const SupremacyContainer = createContainer(() => {
                 })
                 setFactionsAll(currentData)
             } catch (e) {
-                newSnackbarMessage(typeof e === "string" ? e : "Failed to retrieve syndicate data.", "error")
+                newSnackbarMessage(typeof e === "string" ? e : "Failed to retrieve faction data.", "error")
                 console.error(e)
                 return false
             }

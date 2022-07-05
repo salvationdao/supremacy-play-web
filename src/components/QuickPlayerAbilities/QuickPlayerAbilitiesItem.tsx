@@ -1,11 +1,12 @@
-import { Box, Fade, keyframes, Stack, Typography } from "@mui/material"
+import { Box, Fade, Stack, Typography } from "@mui/material"
 import React, { useCallback, useMemo, useState } from "react"
 import { SvgGlobal, SvgLine, SvgMicrochip, SvgQuestionMark, SvgTarget } from "../../assets"
 import { useSnackbar } from "../../containers"
 import { supFormatter } from "../../helpers"
 import { useGameServerCommandsUser } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
-import { colors, fonts } from "../../theme/theme"
+import { scaleUpKeyframes } from "../../theme/keyframes"
+import { colors } from "../../theme/theme"
 import { LocationSelectType, SaleAbility } from "../../types"
 import { FancyButton } from "../Common/FancyButton"
 import { TooltipHelper } from "../Common/TooltipHelper"
@@ -117,6 +118,8 @@ export const QuickPlayerAbilitiesItem = ({ saleAbility, updatedPrice, totalAmoun
                                     key={updatedPrice}
                                     component="span"
                                     sx={{
+                                        color: colors.neonBlue,
+                                        fontWeight: "fontWeightBold",
                                         animation: `${scaleUpKeyframes} 0.1s ease-in`,
                                     }}
                                 >
@@ -125,12 +128,8 @@ export const QuickPlayerAbilitiesItem = ({ saleAbility, updatedPrice, totalAmoun
                                 SUPS
                             </Typography>
                         </Box>
-                        <Stack
-                            spacing=".3rem"
-                            sx={{
-                                height: "100%",
-                            }}
-                        >
+
+                        <Stack spacing=".3rem" sx={{ height: "100%" }}>
                             <Box
                                 sx={{
                                     position: "relative",
@@ -156,9 +155,11 @@ export const QuickPlayerAbilitiesItem = ({ saleAbility, updatedPrice, totalAmoun
                                         position: "absolute",
                                         bottom: ".2rem",
                                         left: ".2rem",
+                                        backgroundColor: "#000000DD",
+                                        p: ".2rem .4rem",
                                     }}
                                 >
-                                    <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBold }}>
+                                    <Typography variant="body2" sx={{ lineHeight: 1 }}>
                                         {amountLeft} left
                                     </Typography>
                                 </Box>
@@ -216,15 +217,3 @@ export const QuickPlayerAbilitiesItem = ({ saleAbility, updatedPrice, totalAmoun
         </>
     )
 }
-
-const scaleUpKeyframes = keyframes({
-    "0%": {
-        transform: "scale(1)",
-    },
-    "50%": {
-        transform: "scale(1.2)",
-    },
-    "100%": {
-        transform: "scale(1)",
-    },
-})

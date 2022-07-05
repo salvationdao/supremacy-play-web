@@ -132,7 +132,7 @@ const EnlistBannerInner = ({ userID, user, battleIdentifier, getFaction, userSta
                     />
                     <BannerInfo
                         title={`ABILITY KILLS`}
-                        tooltip="The number of times your triggered ability destroyed another war machine. Destroying your own syndicate's war machine will bring down your kill count. The count shows the lifetime total and the total from the past 7 days."
+                        tooltip="The number of times your triggered ability destroyed another war machine. Destroying your own faction's war machine will bring down your kill count. The count shows the lifetime total and the total from the past 7 days."
                         content={`${ability_kill_count || 0} | ${last_seven_days_kills || 0}`}
                         PrefixSvg={<SvgDeath size="1.1rem" />}
                     />

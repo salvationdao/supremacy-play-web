@@ -44,7 +44,7 @@ export const LiveVotingChart = () => {
             onHideCallback: () => toggleIsLiveChartOpen(false),
             // Others
             infoTooltipText:
-                "The chart shows you the SUPS being spent into the battle arena in real time. All SUPS spent are accumulated into the SPOILS OF WAR, which are distributed back to the players in future battles based on the multipliers that they have earned. Contribute to the battle or be part of the winning Syndicate to increase your earnings.",
+                "The chart shows you the SUPS being spent into the battle arena in real time. All SUPS spent are accumulated into the SPOILS OF WAR, which are distributed back to the players in future battles based on the multipliers that they have earned. Contribute to the battle or be part of the winning Faction to increase your earnings.",
         }),
         [toggleIsLiveChartOpen],
     )

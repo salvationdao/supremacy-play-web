@@ -163,7 +163,7 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
                                                 title={"REWARD: "}
                                                 color={colors.yellow}
                                                 value={supFormatter(contractReward, 2)}
-                                                tooltip="Your reward if your mech survives the battle giving your syndicate a victory."
+                                                tooltip="Your reward if your mech survives the battle giving your faction a victory."
                                             />
                                         )}
 

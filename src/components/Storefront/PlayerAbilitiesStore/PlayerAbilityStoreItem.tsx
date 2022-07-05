@@ -1,4 +1,4 @@
-import { Box, Fade, keyframes, Stack, Typography } from "@mui/material"
+import { Box, Fade, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { FancyButton, TooltipHelper } from "../.."
 import { SvgGlobal, SvgLine, SvgMicrochip, SvgQuestionMark, SvgSupToken, SvgTarget } from "../../../assets"
@@ -8,6 +8,7 @@ import { numberCommaFormatter, supFormatter } from "../../../helpers"
 import { useToggle } from "../../../hooks"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
+import { scaleUpKeyframes } from "../../../theme/keyframes"
 import { colors, fonts } from "../../../theme/theme"
 import { LocationSelectType, SaleAbility } from "../../../types"
 import { ClipThing } from "../../Common/ClipThing"
@@ -241,15 +242,3 @@ export const PlayerAbilityStoreItem = ({ saleAbility, updatedPrice, totalAmount,
         </>
     )
 }
-
-const scaleUpKeyframes = keyframes({
-    "0%": {
-        transform: "scale(1)",
-    },
-    "50%": {
-        transform: "scale(1.2)",
-    },
-    "100%": {
-        transform: "scale(1)",
-    },
-})
