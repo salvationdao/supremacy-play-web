@@ -1,13 +1,14 @@
-import { Avatar, Box, Stack, Typography, useTheme } from "@mui/material"
+import { Avatar, Box, colors, Stack, Typography, useTheme } from "@mui/material"
 import { useCallback, useEffect, useState } from "react"
 import { useHistory, useParams } from "react-router-dom"
-import { SvgCake } from "../../assets"
+import { SafePNG, SvgCake, WarMachineIconPNG } from "../../assets"
 import { camelToTitle, snakeToTitle } from "../../helpers"
 import { useGameServerCommands } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { fonts, theme } from "../../theme/theme"
 import { BattleMechHistory, Faction, UserRank } from "../../types"
 import { ClipThing } from "../Common/ClipThing"
+import { PageHeader } from "../Common/PageHeader"
 import { HistoryEntry } from "../Hangar/WarMachinesHangar/WarMachineDetails/Modals/MechHistory/HistoryEntry"
 // import { HistoryEntry } from "./HistoryEntry"
 import { PublicWarmachines } from "./PublicWarmachines"
@@ -193,10 +194,10 @@ export const PlayerProfilePage = () => {
                 </Stack>
 
                 {/* Right side */}
-                <Stack sx={{ height: "100%", flex: 1, backgroundColor: backgroundColor }}>
+                <Stack padding="1.6rem" spacing="1rem" sx={{ height: "100%", flex: 1, backgroundColor: backgroundColor }}>
                     <Stack spacing="1rem" direction="row" flexWrap={"wrap"}>
                         {/* Stats box */}
-                        <Box sx={{ padding: "2rem", width: "60.5rem", position: "relative" }}>
+                        <Stack direction="row" spacing="1rem" sx={{ height: "100%" }}>
                             <ClipThing
                                 clipSize="10px"
                                 border={{
@@ -205,38 +206,69 @@ export const PlayerProfilePage = () => {
                                 }}
                                 opacity={0.7}
                                 backgroundColor={backgroundColor}
-                                sx={{ padding: "2rem", height: "100%", flex: 1 }}
+                                sx={{ height: "100%", flex: 1 }}
                             >
-                                <Box sx={{ height: "8rem", width: "100%", position: "relative" }}>
-                                    <Typography sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack }}>
-                                        Mech Kills: {profile.stats.mech_kill_count}
-                                    </Typography>
-                                </Box>
+                                <Stack sx={{ position: "relative", height: "100%" }}>
+                                    <Stack sx={{ flex: 1 }}>
+                                        <PageHeader title="Stats" description="" primaryColor={primaryColor} imageUrl={WarMachineIconPNG} />
 
-                                <Box sx={{ height: "8rem", width: "100%", position: "relative" }}>
-                                    <Typography sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack }}>
-                                        Abilities: {profile.stats.total_ability_triggered}
-                                    </Typography>
-                                </Box>
-                                <Box sx={{ height: "8rem", width: "100%", position: "relative" }}>
-                                    <Typography sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack }}>
-                                        Ability Kills: {profile.stats.ability_kill_count}
-                                    </Typography>
-                                </Box>
+                                        <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
+                                            <Box
+                                                sx={{
+                                                    ml: "1.9rem",
+                                                    mr: ".5rem",
+                                                    pr: "1.4rem",
+                                                    my: "1rem",
+                                                    flex: 1,
+                                                    overflowY: "auto",
+                                                    overflowX: "hidden",
+                                                    direction: "ltr",
 
-                                <Box sx={{ height: "8rem", width: "100%", position: "relative" }}>
-                                    <Typography sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack }}>
-                                        Battles Spectated: {profile.stats.view_battle_count}
-                                    </Typography>
-                                </Box>
+                                                    "::-webkit-scrollbar": {
+                                                        width: ".4rem",
+                                                    },
+                                                    "::-webkit-scrollbar-track": {
+                                                        background: "#FFFFFF15",
+                                                        borderRadius: 3,
+                                                    },
+                                                    "::-webkit-scrollbar-thumb": {
+                                                        background: primaryColor,
+                                                        borderRadius: 3,
+                                                    },
+                                                }}
+                                            >
+                                                <Box sx={{ height: "3rem", width: "100%", position: "relative" }}>
+                                                    <Typography sx={{ color: "white", fontFamily: fonts.nostromoBlack }}>
+                                                        Mech Kills: {profile.stats.mech_kill_count}
+                                                    </Typography>
+                                                </Box>
+
+                                                <Box sx={{ height: "3rem", width: "100%", position: "relative" }}>
+                                                    <Typography sx={{ color: "white", fontFamily: fonts.nostromoBlack }}>
+                                                        Abilities: {profile.stats.total_ability_triggered}
+                                                    </Typography>
+                                                </Box>
+                                                <Box sx={{ height: "3rem", width: "100%", position: "relative" }}>
+                                                    <Typography sx={{ color: "white", fontFamily: fonts.nostromoBlack }}>
+                                                        Ability Kills: {profile.stats.ability_kill_count}
+                                                    </Typography>
+                                                </Box>
+
+                                                <Box sx={{ height: "3rem", width: "100%", position: "relative" }}>
+                                                    <Typography sx={{ color: "white", fontFamily: fonts.nostromoBlack }}>
+                                                        Battles Spectated: {profile.stats.view_battle_count}
+                                                    </Typography>
+                                                </Box>
+                                            </Box>
+                                        </Stack>
+                                    </Stack>
+                                </Stack>
                             </ClipThing>
-                        </Box>
+                        </Stack>
                     </Stack>
 
                     {/* war machines */}
-                    <Stack paddingX={"1.6rem"} height={"46rem"}>
-                        <PublicWarmachines playerID={profile.player.id} backgroundColour={backgroundColor} primaryColour={primaryColor} />
-                    </Stack>
+                    <PublicWarmachines playerID={profile.player.id} backgroundColour={backgroundColor} primaryColour={primaryColor} />
                 </Stack>
             </Stack>
         </Stack>
@@ -244,7 +276,6 @@ export const PlayerProfilePage = () => {
 }
 
 const PlayerMechHistory = ({ playerID }: { playerID: string }) => {
-    const theme = useTheme()
     const { send } = useGameServerCommands("/public/commander")
 
     // Battle history
@@ -262,8 +293,6 @@ const PlayerMechHistory = ({ playerID }: { playerID: string }) => {
             }>(GameServerKeys.PlayerBattleMechHistoryList, {
                 player_id: playerID,
             })
-
-            console.log("this is resp", resp)
 
             setHistory(resp.battle_history)
         } catch (e) {
