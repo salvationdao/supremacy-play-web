@@ -1,5 +1,6 @@
 import { Box, Stack } from "@mui/material"
 import { SvgIntroAnimation, SvgOutroAnimation, SvgPowerCore, SvgSkin, SvgUtilities, SvgWeapons } from "../../../../assets"
+import { getRarityDeets } from "../../../../helpers"
 import { colors } from "../../../../theme/theme"
 import { MechDetails } from "../../../../types"
 import { MechLoadoutItem } from "../Common/MechLoadoutItem"
@@ -72,7 +73,13 @@ export const MechLoadout = ({ mechDetails }: { mechDetails: MechDetails }) => {
                 }}
             >
                 {chassisSkin ? (
-                    <MechLoadoutItem imageUrl={chassisSkin.image_url} label={chassisSkin.label} primaryColor={colors.chassisSkin} Icon={SvgSkin} />
+                    <MechLoadoutItem
+                        imageUrl={chassisSkin.image_url}
+                        label={chassisSkin.label}
+                        primaryColor={colors.chassisSkin}
+                        Icon={SvgSkin}
+                        rarity={getRarityDeets(chassisSkin.tier)}
+                    />
                 ) : (
                     <MechLoadoutItem label="SUBMODEL" primaryColor={colors.chassisSkin} onClick={() => console.log("AAAAA")} isEmpty />
                 )}

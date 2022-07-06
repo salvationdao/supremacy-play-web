@@ -439,3 +439,9 @@ export interface OpenCrateResponse {
     weapon: Weapon[]
     weapon_skin?: WeaponSkin
 }
+
+export interface Rarity {
+    label: string
+    color: string
+    textColor: string
+}

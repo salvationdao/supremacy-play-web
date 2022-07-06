@@ -25,7 +25,7 @@ import {
     SvgWrapperProps,
 } from "../assets"
 import { colors } from "../theme/theme"
-import { MysteryCrateType, UserRank } from "../types"
+import { MysteryCrateType, Rarity, UserRank } from "../types"
 
 // Capitalize convert a string "example" to "Example"
 export const Capitalize = (str: string): string => str[0].toUpperCase() + str.substring(1).toLowerCase()
@@ -182,7 +182,7 @@ export const hexToRGB = (hex: string, alpha?: number): string => {
     else return "rgb(" + r + ", " + g + ", " + b + ")"
 }
 
-export const getRarityDeets = (rarityKey: string): { label: string; color: string; textColor: string } => {
+export const getRarityDeets = (rarityKey: string): Rarity => {
     switch (rarityKey) {
         case "COLOSSAL":
             return { label: "Colossal", color: colors.rarity.COLOSSAL, textColor: "#FFFFFF" }

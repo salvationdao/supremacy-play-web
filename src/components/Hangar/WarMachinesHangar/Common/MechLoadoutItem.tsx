@@ -4,6 +4,7 @@ import { FancyButton } from "../../.."
 import { SvgPlus, SvgWrapperProps } from "../../../../assets"
 import { shadeColor } from "../../../../helpers"
 import { fonts } from "../../../../theme/theme"
+import { Rarity } from "../../../../types"
 import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
 
 export const MechLoadoutItem = ({
@@ -13,6 +14,7 @@ export const MechLoadoutItem = ({
     onClick,
     isEmpty,
     Icon,
+    rarity,
 }: {
     imageUrl?: string
     label: string
@@ -20,6 +22,7 @@ export const MechLoadoutItem = ({
     onClick?: () => void
     isEmpty?: boolean
     Icon?: React.VoidFunctionComponent<SvgWrapperProps>
+    rarity?: Rarity
 }) => {
     const backgroundColor = useMemo(() => shadeColor(primaryColor, -90), [primaryColor])
 
@@ -47,6 +50,15 @@ export const MechLoadoutItem = ({
                         )}
 
                         {Icon && <Icon fill={primaryColor} size="2rem" sx={{ position: "absolute", top: ".1rem", left: ".5rem" }} />}
+
+                        {rarity && (
+                            <Typography
+                                variant="caption"
+                                sx={{ position: "absolute", bottom: ".3rem", left: 0, right: 0, color: rarity.color, fontFamily: fonts.nostromoBlack }}
+                            >
+                                {rarity.label}
+                            </Typography>
+                        )}
                     </Stack>
 
                     <Typography
