@@ -17,9 +17,19 @@ export interface QuickPlayerAbilitiesItemProps {
     totalAmount: number
     amountSold: number
     setError: React.Dispatch<React.SetStateAction<string | undefined>>
+    onPurchase: () => void
+    disabled?: boolean
 }
 
-export const QuickPlayerAbilitiesItem = ({ saleAbility, updatedPrice, totalAmount, amountSold, setError }: QuickPlayerAbilitiesItemProps) => {
+export const QuickPlayerAbilitiesItem = ({
+    saleAbility,
+    updatedPrice,
+    totalAmount,
+    amountSold,
+    setError,
+    onPurchase: onPurchaseCallback,
+    disabled,
+}: QuickPlayerAbilitiesItemProps) => {
     const amountLeft = totalAmount - amountSold
 
     // Purchasing
@@ -50,6 +60,7 @@ export const QuickPlayerAbilitiesItem = ({ saleAbility, updatedPrice, totalAmoun
                 amount: updatedPrice,
             })
             newSnackbarMessage(`Successfully purchased 1 ${saleAbility.ability.label || "ability"}`, "success")
+            onPurchaseCallback()
             setError(undefined)
         } catch (e) {
             if (e instanceof Error) {
@@ -60,160 +71,166 @@ export const QuickPlayerAbilitiesItem = ({ saleAbility, updatedPrice, totalAmoun
         } finally {
             setPurchaseLoading(false)
         }
-    }, [send, saleAbility, updatedPrice, newSnackbarMessage, setError])
+    }, [send, saleAbility.id, saleAbility.ability.label, updatedPrice, newSnackbarMessage, onPurchaseCallback, setError])
 
     return (
         <>
-            <TooltipHelper text={saleAbility.ability.description} placement="bottom">
-                <Fade in={true} timeout={1000}>
-                    <FancyButton
-                        clipThingsProps={{
-                            clipSize: "6px",
-                            clipSlantSize: "0px",
-                            corners: {
-                                topLeft: true,
-                                topRight: true,
-                                bottomLeft: true,
-                                bottomRight: true,
-                            },
-                            backgroundColor: colors.darkNavy,
-                            opacity: 1,
-                            border: { borderColor: saleAbility.ability.colour, borderThickness: "1px" },
-                            sx: { position: "relative", px: ".4rem", py: ".3rem" },
-                        }}
-                        sx={{
-                            color: saleAbility.ability.colour,
-                            p: 0,
-                            minWidth: 0,
-                            height: "100%",
-                            "&:disabled": {
-                                filter: "grayscale(1)",
-                            },
-                        }}
-                        onClick={onPurchase}
-                        loading={purchaseLoading}
-                    >
+            <Fade in={true} timeout={1000}>
+                <FancyButton
+                    clipThingsProps={{
+                        clipSize: "6px",
+                        clipSlantSize: "0px",
+                        corners: {
+                            topLeft: true,
+                            topRight: true,
+                            bottomLeft: true,
+                            bottomRight: true,
+                        },
+                        backgroundColor: colors.darkNavy,
+                        opacity: 1,
+                        border: { borderColor: saleAbility.ability.colour, borderThickness: "1px" },
+                    }}
+                    sx={{
+                        color: saleAbility.ability.colour,
+                        p: 0,
+                        minWidth: 0,
+                        height: "100%",
+                        filter: !disabled ? "grayScale(0)" : "grayscale(1)",
+                    }}
+                    onClick={onPurchase}
+                    loading={purchaseLoading}
+                    disabled={amountLeft < 1 || disabled}
+                >
+                    <TooltipHelper text={saleAbility.ability.description} placement="bottom">
                         <Box
                             sx={{
-                                zIndex: 10,
-                                position: "absolute",
-                                top: 0,
-                                left: 0,
-                                right: 0,
-                                bottom: 0,
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                backgroundColor: "rgba(0, 0, 0, 0.9)",
-                                opacity: 0,
-                                transition: "opacity .2s ease-out",
-                                "&:hover": {
-                                    opacity: 1,
-                                },
+                                position: "relative",
+                                px: ".4rem",
+                                py: ".3rem",
                             }}
                         >
-                            <Typography>
-                                Purchase for{" "}
-                                <Box
-                                    key={updatedPrice}
-                                    component="span"
-                                    sx={{
-                                        color: colors.neonBlue,
-                                        fontWeight: "fontWeightBold",
-                                        animation: `${scaleUpKeyframes} 0.1s ease-in`,
-                                    }}
-                                >
-                                    {supFormatter(updatedPrice, 2)}
-                                </Box>{" "}
-                                SUPS
-                            </Typography>
-                        </Box>
-
-                        <Stack spacing=".3rem" sx={{ height: "100%" }}>
                             <Box
                                 sx={{
-                                    position: "relative",
-                                    width: "100%",
-                                    pt: "100%", // 1:1 width-height ratio
-                                    overflow: "hidden",
+                                    zIndex: 10,
+                                    position: "absolute",
+                                    top: 0,
+                                    left: 0,
+                                    right: 0,
+                                    bottom: 0,
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    backgroundColor: "rgba(0, 0, 0, 0.9)",
+                                    opacity: 0,
+                                    transition: "opacity .2s ease-out",
+                                    "&:hover": {
+                                        opacity: 1,
+                                    },
                                 }}
                             >
-                                <Box
-                                    sx={{
-                                        position: "absolute",
-                                        top: ".2rem",
-                                        right: ".2rem",
-                                        zIndex: 2,
-                                    }}
-                                >
-                                    {abilityTypeIcon}
-                                </Box>
-
-                                <Box
-                                    sx={{
-                                        zIndex: 2,
-                                        position: "absolute",
-                                        bottom: ".2rem",
-                                        left: ".2rem",
-                                        backgroundColor: "#000000DD",
-                                        p: ".2rem .4rem",
-                                    }}
-                                >
-                                    <Typography variant="body2" sx={{ lineHeight: 1 }}>
-                                        {amountLeft} left
-                                    </Typography>
-                                </Box>
-
-                                <Box
-                                    sx={{
-                                        zIndex: 1,
-                                        position: "absolute",
-                                        top: 0,
-                                        left: 0,
-                                        right: 0,
-                                        bottom: 0,
-                                        background: `center center`,
-                                        backgroundImage: `linear-gradient(to bottom, rgba(0, 0, 0, .4) 15%, rgba(255, 255, 255, 0.0))`,
-                                        backgroundSize: "cover",
-                                    }}
-                                />
-
-                                <Box
-                                    component="img"
-                                    src={saleAbility.ability.image_url}
-                                    alt={`Thumbnail image for ${saleAbility.ability.label}`}
-                                    sx={{
-                                        position: "absolute",
-                                        top: 0,
-                                        left: 0,
-                                        width: "100%",
-                                        height: "100%",
-                                        objectFit: "cover",
-                                        transformOrigin: "center",
-                                        transition: "transform .1s ease-out, filter .1s ease-out",
-                                    }}
-                                />
+                                <Typography>
+                                    Purchase for{" "}
+                                    <Box
+                                        key={updatedPrice}
+                                        component="span"
+                                        sx={{
+                                            color: colors.neonBlue,
+                                            fontWeight: "fontWeightBold",
+                                            animation: `${scaleUpKeyframes} 0.1s ease-in`,
+                                        }}
+                                    >
+                                        {supFormatter(updatedPrice, 2)}
+                                    </Box>{" "}
+                                    SUPS
+                                </Typography>
                             </Box>
 
-                            <Typography
-                                variant="body2"
-                                sx={{
-                                    lineHeight: 1.2,
-                                    display: "-webkit-box",
-                                    overflow: "hidden",
-                                    overflowWrap: "anywhere",
-                                    textOverflow: "ellipsis",
-                                    WebkitLineClamp: 2,
-                                    WebkitBoxOrient: "vertical",
-                                    fontWeight: "fontWeightBold",
-                                }}
-                            >
-                                {saleAbility.ability.label}
-                            </Typography>
-                        </Stack>
-                    </FancyButton>
-                </Fade>
-            </TooltipHelper>
+                            <Stack spacing=".3rem" sx={{ height: "100%" }}>
+                                <Box
+                                    sx={{
+                                        position: "relative",
+                                        width: "100%",
+                                        pt: "100%", // 1:1 width-height ratio
+                                        overflow: "hidden",
+                                    }}
+                                >
+                                    <Box
+                                        sx={{
+                                            position: "absolute",
+                                            top: ".2rem",
+                                            right: ".2rem",
+                                            zIndex: 2,
+                                        }}
+                                    >
+                                        {abilityTypeIcon}
+                                    </Box>
+
+                                    <Box
+                                        sx={{
+                                            zIndex: 2,
+                                            position: "absolute",
+                                            bottom: ".2rem",
+                                            left: ".2rem",
+                                            backgroundColor: "#000000DD",
+                                            p: ".2rem .4rem",
+                                        }}
+                                    >
+                                        <Typography variant="body2" sx={{ lineHeight: 1 }}>
+                                            {amountLeft} left
+                                        </Typography>
+                                    </Box>
+
+                                    <Box
+                                        sx={{
+                                            zIndex: 1,
+                                            position: "absolute",
+                                            top: 0,
+                                            left: 0,
+                                            right: 0,
+                                            bottom: 0,
+                                            background: `center center`,
+                                            backgroundImage: `linear-gradient(to bottom, rgba(0, 0, 0, .4) 15%, rgba(255, 255, 255, 0.0))`,
+                                            backgroundSize: "cover",
+                                        }}
+                                    />
+
+                                    <Box
+                                        component="img"
+                                        src={saleAbility.ability.image_url}
+                                        alt={`Thumbnail image for ${saleAbility.ability.label}`}
+                                        sx={{
+                                            position: "absolute",
+                                            top: 0,
+                                            left: 0,
+                                            width: "100%",
+                                            height: "100%",
+                                            objectFit: "cover",
+                                            transformOrigin: "center",
+                                            transition: "transform .1s ease-out, filter .1s ease-out",
+                                        }}
+                                    />
+                                </Box>
+
+                                <Typography
+                                    variant="body2"
+                                    sx={{
+                                        lineHeight: 1.2,
+                                        display: "-webkit-box",
+                                        overflow: "hidden",
+                                        overflowWrap: "anywhere",
+                                        textOverflow: "ellipsis",
+                                        WebkitLineClamp: 2,
+                                        WebkitBoxOrient: "vertical",
+                                        fontWeight: "fontWeightBold",
+                                    }}
+                                >
+                                    {saleAbility.ability.label}
+                                </Typography>
+                            </Stack>
+                        </Box>
+                    </TooltipHelper>
+                </FancyButton>
+            </Fade>
         </>
     )
 }
