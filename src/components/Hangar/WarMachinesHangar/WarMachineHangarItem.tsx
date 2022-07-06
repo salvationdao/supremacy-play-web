@@ -38,8 +38,8 @@ export const WarMachineHangarItem = ({ mech, isGridView }: { mech: MechBasic; is
 
     const primaryColor = theme.factionTheme.primary
     const backgroundColor = theme.factionTheme.background
-    const imageUrl = mechDetails?.avatar_url || mech.avatar_url
-    const largeImageUrl = mechDetails?.large_image_url || mech.large_image_url
+    const imageUrl = mechDetails?.chassis_skin?.avatar_url || mech.avatar_url
+    const largeImageUrl = mechDetails?.chassis_skin?.large_image_url || mech.large_image_url
 
     return (
         <Box sx={{ position: "relative", overflow: "visible", height: "100%" }}>
