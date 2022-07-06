@@ -1,20 +1,23 @@
 import { Box, CircularProgress, Stack, Typography, useTheme } from "@mui/material"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { SvgStats } from "../../../../assets"
 import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
-import { fonts } from "../../../../theme/theme"
+import { colors, fonts } from "../../../../theme/theme"
 import { Weapon } from "../../../../types"
 import { ClipThing } from "../../../Common/ClipThing"
 import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
 import { WeaponButtons } from "./WeaponHangarButtons"
 import { WeaponBarStats } from "../Common/WeaponBarStats"
 import { WeaponViewer } from "./WeaponViewer"
+import { getRarityDeets } from "../../../../helpers"
 
 export const WeaponHangarDetailsInner = ({ weaponID }: { weaponID: string }) => {
     const theme = useTheme()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [weaponDetails, setWeaponDetails] = useState<Weapon>()
+
+    const rarityDeets = useMemo(() => getRarityDeets(weaponDetails?.tier || ""), [weaponDetails])
 
     useEffect(() => {
         ;(async () => {
@@ -90,11 +93,15 @@ export const WeaponHangarDetailsInner = ({ weaponID }: { weaponID: string }) => 
                                 <Stack spacing="1.6rem" sx={{ p: "1rem 1rem" }}>
                                     {/* Weapon avatar, label, name etc */}
                                     <Stack spacing=".5rem">
-                                        <Typography variant="body2" sx={{ color: primaryColor, fontFamily: fonts.nostromoHeavy }}>
-                                            {weaponDetails.weapon_type}
+                                        <Typography variant="body2" sx={{ color: rarityDeets.color, fontFamily: fonts.nostromoHeavy }}>
+                                            {rarityDeets.label}
                                         </Typography>
 
                                         <Typography sx={{ fontFamily: fonts.nostromoBlack }}>{weaponDetails.label}</Typography>
+
+                                        <Typography variant="caption" sx={{ lineHeight: 1, color: colors.offWhite, fontFamily: fonts.nostromoBold }}>
+                                            {weaponDetails.weapon_type}
+                                        </Typography>
                                     </Stack>
 
                                     {/* Bar stats */}

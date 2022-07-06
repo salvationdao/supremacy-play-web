@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react"
 import { useLocation } from "react-router-dom"
 import { FancyButton } from "../.."
 import { useTheme } from "../../../containers/theme"
-import { getRarityDeets } from "../../../helpers"
+import { getRarityDeets, getWeaponDamageTypeColor, getWeaponTypeColor } from "../../../helpers"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { fonts } from "../../../theme/theme"
@@ -65,7 +65,7 @@ export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGri
                         p: isGridView ? ".5rem .6rem" : ".1rem .3rem",
                         display: isGridView ? "block" : "grid",
                         gridTemplateRows: "7rem",
-                        gridTemplateColumns: `8rem auto repeat(3, 20rem)`, // hard-coded to have 7 columns, adjust as required
+                        gridTemplateColumns: `8rem auto repeat(4, 20rem)`, // hard-coded to have 7 columns, adjust as required
                         gap: "1.4rem",
                         ...(isGridView
                             ? {
@@ -93,10 +93,19 @@ export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGri
 
                         <Typography sx={{ fontFamily: fonts.nostromoBlack }}>{weaponDetails?.label}</Typography>
 
-                        <Typography variant="body2" sx={{ mb: ".2rem", color: primaryColor, fontFamily: fonts.nostromoHeavy }}>
+                        <Typography
+                            variant="caption"
+                            sx={{ mb: ".2rem", color: getWeaponTypeColor(weaponDetails?.weapon_type), fontFamily: fonts.nostromoBold }}
+                        >
                             {weaponDetails?.weapon_type}
                         </Typography>
                     </Stack>
+
+                    <General title="DAMAGE TYPE">
+                        <Typography variant="h6" sx={{ color: getWeaponDamageTypeColor(weaponDetails?.default_damage_type), fontWeight: "fontWeightBold" }}>
+                            {weaponDetails?.default_damage_type}
+                        </Typography>
+                    </General>
 
                     <General title="DAMAGE">
                         <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
