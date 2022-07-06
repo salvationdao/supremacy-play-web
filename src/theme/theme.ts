@@ -56,6 +56,7 @@ export const colors = {
 
     lightGrey: "#999999",
     grey: "#89898d",
+    darkGrey: "#444444",
     battleQueueBanner: "#C24242",
     darkestNeonBlue: "#050c12",
 

@@ -203,6 +203,7 @@ export interface Weapon extends Collection {
     projectile_speed?: number
     energy_cost?: number
     max_ammo?: number
+    weaponSkin?: WeaponSkin
     updated_at: Date
     created_at: Date
 }
