@@ -13,10 +13,9 @@ import { useMiniMapGestures } from "./useMiniMapGestures"
 
 interface MiniMapInsideProps {
     containerDimensions: Dimension
-    isLargeMode: boolean
 }
 
-export const MiniMapInside = ({ containerDimensions, isLargeMode }: MiniMapInsideProps) => {
+export const MiniMapInside = ({ containerDimensions }: MiniMapInsideProps) => {
     const { map } = useGame()
     const { mapElement, gridWidth, gridHeight, isTargeting, selection, setSelection, playerAbility, winner } = useMiniMap()
 
@@ -88,7 +87,7 @@ export const MiniMapInside = ({ containerDimensions, isLargeMode }: MiniMapInsid
                         <MechCommandIcons />
 
                         {/* Rendering war machines on the map */}
-                        <MapMechs isLargeMode={isLargeMode} />
+                        <MapMechs />
 
                         {/* Map Image */}
                         <Box
@@ -122,7 +121,6 @@ export const MiniMapInside = ({ containerDimensions, isLargeMode }: MiniMapInsid
         containerDimensions.width,
         dragX,
         dragY,
-        isLargeMode,
         isLineSelection,
         isLocationSelection,
         map,

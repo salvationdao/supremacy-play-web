@@ -105,8 +105,6 @@ const MiniMapInner = ({ map, isTargeting, isEnlarged, toRender }: { map: Map; is
     const prevPosX = useRef(curPosX)
     const prevPosY = useRef(curPosY)
 
-    const isLargeMode = useMemo(() => curWidth > 200 || curHeight > 200, [curHeight, curWidth])
-
     // Set initial size
     useEffect(() => {
         const ratio = map.height / map.width
@@ -190,10 +188,10 @@ const MiniMapInner = ({ map, isTargeting, isEnlarged, toRender }: { map: Map; is
                     </Typography>
                 </Stack>
 
-                <MiniMapInside containerDimensions={{ width: curWidth, height: curHeight - TOP_BAR_HEIGHT * remToPxRatio }} isLargeMode={isLargeMode} />
+                <MiniMapInside containerDimensions={{ width: curWidth, height: curHeight - TOP_BAR_HEIGHT * remToPxRatio }} />
 
                 <TargetHint />
             </Box>
         )
-    }, [toRender, theme.factionTheme.primary, mapName, curWidth, curHeight, isLargeMode, remToPxRatio])
+    }, [toRender, theme.factionTheme.primary, mapName, curWidth, curHeight, remToPxRatio])
 }

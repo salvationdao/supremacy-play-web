@@ -115,6 +115,8 @@ export const MoveableResizableContainer = createContainer((initialState: Moveabl
 
     // Set initial
     useEffect(() => {
+        if (!width || !height) return
+
         const newWidth = Math.min(curWidth, width - 2 * PADDING)
         const newHeight = Math.min(curHeight, height - 2 * PADDING)
 
