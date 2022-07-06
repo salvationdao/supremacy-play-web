@@ -47,8 +47,8 @@ const WinnerTargetHint = () => {
             >
                 <Box
                     sx={{
-                        width: "40px",
-                        height: "40px",
+                        width: "45px",
+                        height: "45px",
                         background: `url(${image_url})`,
                         backgroundRepeat: "no-repeat",
                         backgroundPosition: "center",
@@ -66,7 +66,7 @@ const WinnerTargetHint = () => {
                     backgroundColor: (theme) => `${theme.factionTheme.background}`,
                 }}
             >
-                <Typography variant="h6" sx={{ textAlign: "center", lineHeight: 1, span: { fontWeight: "fontWeightBold", color: colour } }}>
+                <Typography variant="h5" sx={{ lineHeight: 1, span: { fontWeight: "fontWeightBold", color: colour } }}>
                     You have{" "}
                     <WinnerTargetHintInner
                         endTime={winner.end_time}
