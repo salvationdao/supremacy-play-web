@@ -10,6 +10,7 @@ import { ClipThing } from "../../../Common/ClipThing"
 import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
 import { WeaponBarStats } from "../Common/WeaponBarStats"
 import { WeaponButtons } from "./WeaponHangarButtons"
+import { WeaponLoadout } from "./WeaponLoadout"
 import { WeaponViewer } from "./WeaponViewer"
 
 export const WeaponHangarDetailsInner = ({ weaponID }: { weaponID: string }) => {
@@ -165,7 +166,10 @@ export const WeaponHangarDetailsInner = ({ weaponID }: { weaponID: string }) => 
                 sx={{ height: "100%", flex: 1 }}
             >
                 {weaponDetails ? (
-                    <WeaponViewer weaponDetails={weaponDetails} />
+                    <>
+                        <WeaponLoadout weaponDetails={weaponDetails} />
+                        <WeaponViewer weaponDetails={weaponDetails} />
+                    </>
                 ) : (
                     <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                         <CircularProgress size="3rem" sx={{ color: primaryColor }} />
