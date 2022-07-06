@@ -1,5 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { ClipThing, FancyButton } from "../.."
 import { PlayerAbilityPNG } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
@@ -21,6 +21,7 @@ export const PlayerAbilitiesStore = () => {
     const [saleAbilities, setSaleAbilities] = useState<SaleAbility[]>([])
     const [priceMap, setPriceMap] = useState<Map<string, string>>(new Map())
     const [amountMap, setAmountMap] = useState<Map<string, number>>(new Map())
+    const [canPurchase, setCanPurchase] = useState(true)
 
     useGameServerSubscriptionSecurePublic<{
         next_refresh_time: Date | null
@@ -68,6 +69,11 @@ export const PlayerAbilitiesStore = () => {
             })
         },
     )
+
+    useEffect(() => {
+        if (!nextRefreshTime) return
+        setCanPurchase(true)
+    }, [nextRefreshTime])
 
     const timeLeft = useMemo(() => {
         if (nextRefreshTime) {
@@ -123,7 +129,8 @@ export const PlayerAbilitiesStore = () => {
                                 updatedPrice={priceMap.get(s.id) || s.current_price}
                                 totalAmount={s.sale_limit}
                                 amountSold={amountMap.get(s.id) || s.amount_sold}
-                                nextSalePeriodTime={nextRefreshTime}
+                                onPurchase={() => setCanPurchase(false)}
+                                disabled={!canPurchase}
                             />
                         ))}
                     </Box>
