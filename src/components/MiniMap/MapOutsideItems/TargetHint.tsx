@@ -19,40 +19,67 @@ export const TargetHint = () => {
 
 // Winner hint
 const WinnerTargetHint = () => {
+    const theme = useTheme()
     const { newSnackbarMessage } = useSnackbar()
     const { winner, resetSelection } = useMiniMap()
 
     if (!winner) return null
 
-    const { label, colour } = winner.game_ability
+    const { label, colour, image_url } = winner.game_ability
 
     return (
-        <Box
+        <Stack
+            direction="row"
+            alignItems="flex-end"
             sx={{
                 position: "absolute",
                 bottom: 0,
                 left: 0,
                 right: 0,
-                px: "2rem",
-                py: ".6rem",
-                backgroundColor: (theme) => `${theme.factionTheme.background}`,
-                borderRadius: 0.5,
                 zIndex: 98,
             }}
         >
-            <Typography variant="h6" sx={{ textAlign: "center", lineHeight: 1, span: { fontWeight: "fontWeightBold", color: colour } }}>
-                You have{" "}
-                <WinnerTargetHintInner
-                    endTime={winner.end_time}
-                    onCountdownExpired={() => {
-                        newSnackbarMessage("Failed to submit target location on time.", "error")
-                        resetSelection()
+            <ClipThing
+                backgroundColor={colour}
+                corners={{ topRight: true }}
+                border={{ borderColor: theme.factionTheme.primary, borderThickness: ".25rem" }}
+                sx={{ zIndex: 1 }}
+            >
+                <Box
+                    sx={{
+                        width: "40px",
+                        height: "40px",
+                        background: `url(${image_url})`,
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "center",
+                        backgroundSize: "contain",
                     }}
                 />
-                s to choose a location for&nbsp;
-                <span>{`${label}`}</span>
-            </Typography>
-        </Box>
+            </ClipThing>
+
+            <Box
+                sx={{
+                    position: "relative",
+                    flex: 1,
+                    px: "2rem",
+                    py: ".6rem",
+                    backgroundColor: (theme) => `${theme.factionTheme.background}`,
+                }}
+            >
+                <Typography variant="h6" sx={{ textAlign: "center", lineHeight: 1, span: { fontWeight: "fontWeightBold", color: colour } }}>
+                    You have{" "}
+                    <WinnerTargetHintInner
+                        endTime={winner.end_time}
+                        onCountdownExpired={() => {
+                            newSnackbarMessage("Failed to submit target location on time.", "error")
+                            resetSelection()
+                        }}
+                    />
+                    s to choose a location for&nbsp;
+                    <span>{`${label}`}</span>
+                </Typography>
+            </Box>
+        </Stack>
     )
 }
 
@@ -118,32 +145,30 @@ const PlayerAbilityTargetHint = () => {
                     opacity: 0.5,
                 }}
             />
-            <Box
+            <Stack
+                direction="row"
+                alignItems="flex-end"
                 sx={{
                     position: "absolute",
                     bottom: 0,
                     left: 0,
                     right: 0,
-                    display: "flex",
-                    alignItems: "end",
-                    borderRadius: 0.5,
                     zIndex: 98,
                 }}
             >
                 <ClipThing backgroundColor={theme.factionTheme.primary} corners={{ topRight: true }} sx={{ zIndex: 1, p: ".9rem 1.1rem" }}>
                     {data?.icon}
                 </ClipThing>
+
                 <Stack
                     direction="row"
                     alignItems="center"
                     spacing=".5rem"
                     sx={{
                         position: "relative",
-                        width: "100%",
+                        flex: 1,
                         px: "2rem",
                         py: ".6rem",
-                        ml: "-2px",
-
                         backgroundColor: (theme) => `${theme.factionTheme.background}`,
                     }}
                 >
@@ -168,7 +193,7 @@ const PlayerAbilityTargetHint = () => {
                         <Typography sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>Cancel</Typography>
                     </FancyButton>
                 </Stack>
-            </Box>
+            </Stack>
         </>
     )
 }
