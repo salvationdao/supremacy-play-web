@@ -1,7 +1,7 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useMemo } from "react"
 import { FancyButton } from "../../.."
-import { SvgPlus } from "../../../../assets"
+import { SvgPlus, SvgWrapperProps } from "../../../../assets"
 import { shadeColor } from "../../../../helpers"
 import { fonts } from "../../../../theme/theme"
 import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
@@ -12,12 +12,14 @@ export const MechLoadoutItem = ({
     primaryColor,
     onClick,
     isEmpty,
+    Icon,
 }: {
     imageUrl?: string
     label: string
     primaryColor: string
     onClick?: () => void
     isEmpty?: boolean
+    Icon?: React.VoidFunctionComponent<SvgWrapperProps>
 }) => {
     const backgroundColor = useMemo(() => shadeColor(primaryColor, -90), [primaryColor])
 
@@ -37,12 +39,14 @@ export const MechLoadoutItem = ({
                 onClick={onClick}
             >
                 <Stack spacing="1rem" alignItems="center" sx={{ height: "16rem", width: "16rem", p: "1rem", textAlign: "center" }}>
-                    <Stack justifyContent="center" sx={{ height: "9rem", alignSelf: "stretch", backgroundColor: "#00000060" }}>
+                    <Stack justifyContent="center" sx={{ position: "relative", height: "9rem", alignSelf: "stretch", backgroundColor: "#00000060" }}>
                         {isEmpty ? (
                             <SvgPlus fill={`${primaryColor}80`} size="2rem" />
                         ) : (
                             <MediaPreview imageUrl={imageUrl} objectFit="contain" sx={{ p: ".5rem" }} />
                         )}
+
+                        {Icon && <Icon fill={primaryColor} size="2rem" sx={{ position: "absolute", top: ".1rem", left: ".5rem" }} />}
                     </Stack>
 
                     <Typography
