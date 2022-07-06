@@ -14,6 +14,7 @@ export interface GameSettingsResponse {
     battle_identifier: number
     game_map: Map
     war_machines: WarMachineState[]
+    spawned_ai: WarMachineState[]
 }
 
 // Game data that needs to be shared between different components
@@ -24,6 +25,7 @@ export const GameContainer = createContainer(() => {
     // States
     const [map, setMap] = useState<Map>()
     const [warMachines, setWarMachines] = useState<WarMachineState[] | undefined>([])
+    const [spawnedAI, setSpawnedAI] = useState<WarMachineState[] | undefined>([])
     const [bribeStage, setBribeStage] = useState<BribeStageResponse | undefined>()
     const [battleEndDetail, setBattleEndDetail] = useState<BattleEndDetail>()
     const [forceDisplay100Percentage, setForceDisplay100Percentage] = useState<string>("")
@@ -39,6 +41,19 @@ export const GameContainer = createContainer(() => {
             if (payload.battle_identifier > 0) setBattleIdentifier(payload.battle_identifier)
             setMap(payload.game_map)
             setWarMachines(payload.war_machines)
+            setSpawnedAI(payload.spawned_ai)
+        },
+    )
+
+    // Subscribe for spawned AI
+    useGameServerSubscription<WarMachineState[] | undefined>(
+        {
+            URI: "/battle",
+            key: GameServerKeys.SubBattleAISpawned,
+        },
+        (payload) => {
+            if (!payload) return
+            setSpawnedAI(payload)
         },
     )
 
@@ -77,6 +92,7 @@ export const GameContainer = createContainer(() => {
         map,
         setMap,
         warMachines,
+        spawnedAI,
         battleEndDetail,
         setBattleEndDetail,
         forceDisplay100Percentage,

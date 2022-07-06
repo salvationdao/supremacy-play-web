@@ -13,6 +13,7 @@ const TRANSITION_DURACTION = 0.275 // seconds
 
 interface MapMechProps {
     warMachine: WarMachineState
+    isAI?: boolean
 }
 
 export const MapMech = (props: MapMechProps) => {
