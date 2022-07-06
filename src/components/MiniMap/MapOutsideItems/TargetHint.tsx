@@ -43,7 +43,7 @@ const WinnerTargetHint = () => {
                 backgroundColor={colour}
                 corners={{ topRight: true }}
                 border={{ borderColor: theme.factionTheme.primary, borderThickness: ".25rem" }}
-                sx={{ zIndex: 1 }}
+                sx={{ zIndex: 1, m: "-.3rem" }}
             >
                 <Box
                     sx={{
@@ -156,7 +156,7 @@ const PlayerAbilityTargetHint = () => {
                     zIndex: 98,
                 }}
             >
-                <ClipThing backgroundColor={theme.factionTheme.primary} corners={{ topRight: true }} sx={{ zIndex: 1, p: ".9rem 1.1rem" }}>
+                <ClipThing backgroundColor={theme.factionTheme.primary} corners={{ topRight: true }} sx={{ zIndex: 1, m: "-.3rem", p: ".9rem 1.1rem" }}>
                     {data?.icon}
                 </ClipThing>
 
