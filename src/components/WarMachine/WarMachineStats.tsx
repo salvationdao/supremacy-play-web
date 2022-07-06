@@ -1,8 +1,7 @@
 import { Box, Slide, Stack } from "@mui/material"
 import { ReactElement, useEffect, useMemo } from "react"
 import { ClipThing } from ".."
-import { MINI_MAP_DEFAULT_SIZE } from "../../constants"
-import { useAuth, useDimension, useGame, useOverlayToggles, useSupremacy } from "../../containers"
+import { useAuth, useGame, useSupremacy } from "../../containers"
 import { useTheme } from "../../containers/theme"
 import { useToggle } from "../../hooks"
 import { siteZIndex } from "../../theme/theme"
@@ -13,8 +12,6 @@ export const WarMachineStats = () => {
     const { factionID } = useAuth()
     const { battleIdentifier } = useSupremacy()
     const { warMachines, bribeStage } = useGame()
-    const { remToPxRatio } = useDimension()
-    const { isMapOpen } = useOverlayToggles()
 
     // Temp hotfix ask james ****************************
     const [show, toggleShow] = useToggle(false)
@@ -22,8 +19,6 @@ export const WarMachineStats = () => {
         toggleShow(bribeStage && bribeStage.phase !== "HOLD")
     }, [bribeStage, toggleShow])
     // End ****************************************
-
-    const adjustment = useMemo(() => Math.min(remToPxRatio, 10) / 10, [remToPxRatio])
 
     const factionMechs = useMemo(() => (warMachines ? warMachines.filter((wm) => wm.factionID && wm.factionID === factionID) : []), [warMachines, factionID])
     const otherMechs = useMemo(() => (warMachines ? warMachines.filter((wm) => wm.factionID && wm.factionID !== factionID) : []), [warMachines, factionID])
@@ -39,7 +34,7 @@ export const WarMachineStats = () => {
                     position: "absolute",
                     bottom: 0,
                     left: 0,
-                    right: isMapOpen ? `calc(${MINI_MAP_DEFAULT_SIZE * adjustment}px + 2rem)` : 0,
+                    right: 0,
                     zIndex: siteZIndex.MechStats,
                     overflow: "hidden",
                     filter: "drop-shadow(0 3px 3px #00000020)",
