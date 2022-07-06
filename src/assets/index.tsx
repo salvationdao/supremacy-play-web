@@ -153,6 +153,7 @@ import TrailerThumbPNG from "./images/TrailerThumb.png"
 import WarMachineIconPNG from "./images/WarMachineIcon.png"
 import PlayerAbilityPNG from "./images/PlayerAbility.png"
 import ZaibatsuLogo from "./images/ZaibatsuLogo.png"
+import { Cake } from "@mui/icons-material"
 
 export {
     MultiplierAdmiral,
@@ -921,5 +922,11 @@ export const SvgStats: React.VoidFunctionComponent<SvgWrapperProps> = (props) =>
 export const SvgNotification: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <Notification />
+    </SvgWrapper>
+)
+
+export const SvgCake: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Cake />
     </SvgWrapper>
 )

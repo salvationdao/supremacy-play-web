@@ -1,9 +1,9 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { ClipThing } from "../../../../.."
-import { SvgDeath, SvgGoldBars } from "../../../../../../assets"
-import { timeSinceInWords } from "../../../../../../helpers"
-import { fonts, colors } from "../../../../../../theme/theme"
-import { MechDetails } from "../../../../../../types"
+import { SvgDeath, SvgGoldBars } from "../../assets"
+import { timeSinceInWords } from "../../helpers"
+import { colors, fonts } from "../../theme/theme"
+import { MechDetails } from "../../types"
+import { ClipThing } from "../Common/ClipThing"
 
 interface HistoryEntryProps {
     mapName: string
@@ -31,6 +31,7 @@ export const HistoryEntry = ({ status, mapName, mechSurvived, backgroundImage, k
         default:
     }
 
+    if (!mech) return <div></div>
     return (
         <ClipThing
             clipSize="10px"
@@ -84,14 +85,13 @@ export const HistoryEntry = ({ status, mapName, mechSurvived, backgroundImage, k
 
                 <Box>
                     <Typography variant="body2" sx={{ textTransform: "uppercase" }}>
+                        {mech.name || mech.label}
+                    </Typography>
+
+                    <Typography variant="body2" sx={{ textTransform: "uppercase" }}>
                         {mapName}
                     </Typography>
 
-                    {mech && (
-                        <Typography variant="body1" sx={{ ontFamily: fonts.nostromoBlack, textTransform: "uppercase" }}>
-                            {mech.name || mech.label}
-                        </Typography>
-                    )}
                     <Typography variant="h6" sx={{ fontFamily: fonts.nostromoBlack }}>
                         {statusText}
                     </Typography>

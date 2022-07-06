@@ -7,7 +7,7 @@ import { MarketplaceItemPage } from "../pages/MarketplaceItemPage"
 import { MarketplaceSellPage } from "../pages/MarketplaceSellPage"
 import { MechPage } from "../pages/MechPage"
 import { WeaponPage } from "../pages/WeaponPage"
-import { PlayerProfilePage } from "../pages/PlayerProfile"
+import { PlayerProfilePage } from "../components/PublicProfile/PlayerProfile"
 
 interface RouteStruct {
     id: string
@@ -110,6 +110,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         requireFaction: true,
         matchLeftDrawerID: "marketplace",
     },
+
     // Player profile
     player_profile: {
         id: "player_profile",

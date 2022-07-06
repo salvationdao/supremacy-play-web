@@ -142,6 +142,9 @@ export enum GameServerKeys {
 
     // player profile
     PlayerProfileGet = "PLAYER:PROFILE:GET",
+    PlayerAssetMechListPublic = "PLAYER:ASSET:MECH:LIST:PUBLIC",
+    PlayerAssetMechDetailPublic = "PLAYER:ASSET:MECH:DETAIL:PUBLIC",
+    PlayerBattleMechHistoryList = "PLAYER:BATTLE:MECH:HISTORY:LIST",
 }
 
 export enum PassportServerKeys {

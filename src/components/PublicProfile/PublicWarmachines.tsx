@@ -1,28 +1,15 @@
 import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { ClipThing } from "../.."
-import { EmptyWarMachinesPNG, WarMachineIconPNG } from "../../../assets"
-import { useTheme } from "../../../containers/theme"
-import { getRarityDeets, parseString } from "../../../helpers"
-import { usePagination, useToggle, useUrlQuery } from "../../../hooks"
-import { useGameServerCommands, useGameServerCommandsUser } from "../../../hooks/useGameServer"
-import { GameServerKeys } from "../../../keys"
-import { colors, fonts } from "../../../theme/theme"
-import { MechBasic, MechStatusEnum } from "../../../types"
-import { SortTypeLabel } from "../../../types/marketplace"
-import { PageHeader } from "../../Common/PageHeader"
-import { ChipFilter } from "../../Common/SortAndFilters/ChipFilterSection"
-import { SortAndFilters } from "../../Common/SortAndFilters/SortAndFilters"
-import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
+import { useCallback, useEffect, useMemo, useState } from "react"
+import { EmptyWarMachinesPNG, WarMachineIconPNG } from "../../assets"
+import { parseString } from "../../helpers"
+import { usePagination, useUrlQuery } from "../../hooks"
+import { useGameServerCommands } from "../../hooks/useGameServer"
+import { GameServerKeys } from "../../keys"
+import { colors, fonts } from "../../theme/theme"
+import { MechBasic } from "../../types"
+import { ClipThing } from "../Common/ClipThing"
+import { PageHeader } from "../Common/PageHeader"
 import { PublicWarmachineItem } from "./PublicMechDetails"
-import { WarMachineHangarItem } from "./WarMachineHangarItem"
-
-const PublicMechList = "PLAYER:ASSET:MECH:PUBLIC:LIST"
-
-const sortOptions = [
-    { label: SortTypeLabel.MechQueueAsc, value: SortTypeLabel.MechQueueAsc },
-    { label: SortTypeLabel.MechQueueDesc, value: SortTypeLabel.MechQueueDesc },
-]
 
 interface GetMechsRequest {
     player_id: string
@@ -37,85 +24,31 @@ interface GetMechsResponse {
     total: number
 }
 
-export const PublicWarmachines = ({ playerID }: { playerID: string }) => {
+export const PublicWarmachines = ({ playerID, primaryColour, backgroundColour }: { playerID: string; primaryColour: string; backgroundColour: string }) => {
     const [query, updateQuery] = useUrlQuery()
     const { send } = useGameServerCommands("/public/commander")
-    const theme = useTheme()
 
     // Items
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
     const [mechs, setMechs] = useState<MechBasic[]>([])
 
-    const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({
+    const { page, changePage, setTotalItems, totalPages, pageSize } = usePagination({
         pageSize: parseString(query.get("pageSize"), 10),
         page: parseString(query.get("page"), 1),
-    })
-
-    // Filters and sorts
-    const [search, setSearch] = useState("")
-    const [sort, setSort] = useState<string>(query.get("sort") || SortTypeLabel.MechQueueAsc)
-    const [status, setStatus] = useState<string[]>((query.get("statuses") || undefined)?.split("||") || [])
-    const [rarities, setRarities] = useState<string[]>((query.get("rarities") || undefined)?.split("||") || [])
-    const [isGridView, toggleIsGridView] = useToggle(true)
-
-    // Filters
-    const statusFilterSection = useRef<ChipFilter>({
-        label: "STATUS",
-        options: [
-            { value: MechStatusEnum.Idle, label: "IDLE", color: colors.green },
-            { value: MechStatusEnum.Battle, label: "IN BATTLE", color: colors.orange },
-            { value: MechStatusEnum.Market, label: "MARKETPLACE", color: colors.red },
-            { value: MechStatusEnum.Queue, label: "IN QUEUE", color: colors.yellow },
-        ],
-        initialSelected: status,
-        onSetSelected: (value: string[]) => {
-            setStatus(value)
-            changePage(1)
-        },
-    })
-
-    const rarityChipFilter = useRef<ChipFilter>({
-        label: "RARITY",
-        options: [
-            { value: "MEGA", ...getRarityDeets("MEGA") },
-            { value: "COLOSSAL", ...getRarityDeets("COLOSSAL") },
-            { value: "RARE", ...getRarityDeets("RARE") },
-            { value: "LEGENDARY", ...getRarityDeets("LEGENDARY") },
-            { value: "ELITE_LEGENDARY", ...getRarityDeets("ELITE_LEGENDARY") },
-            { value: "ULTRA_RARE", ...getRarityDeets("ULTRA_RARE") },
-            { value: "EXOTIC", ...getRarityDeets("EXOTIC") },
-            { value: "GUARDIAN", ...getRarityDeets("GUARDIAN") },
-            { value: "MYTHIC", ...getRarityDeets("MYTHIC") },
-            { value: "DEUS_EX", ...getRarityDeets("DEUS_EX") },
-            { value: "TITAN", ...getRarityDeets("TITAN") },
-        ],
-        initialSelected: rarities,
-        onSetSelected: (value: string[]) => {
-            setRarities(value)
-            changePage(1)
-        },
     })
 
     const getItems = useCallback(async () => {
         try {
             setIsLoading(true)
 
-            let sortDir = "asc"
-            if (sort === SortTypeLabel.MechQueueDesc) sortDir = "desc"
-
-            const resp = await send<GetMechsResponse, GetMechsRequest>(PublicMechList, {
+            const sortDir = "asc"
+            const resp = await send<GetMechsResponse, GetMechsRequest>(GameServerKeys.PlayerAssetMechListPublic, {
                 player_id: playerID,
                 queue_sort: sortDir,
                 page,
                 page_size: pageSize,
                 include_market_listed: true,
-            })
-
-            updateQuery({
-                sort,
-                page: page.toString(),
-                pageSize: pageSize.toString(),
             })
 
             if (!resp) return
@@ -128,7 +61,7 @@ export const PublicWarmachines = ({ playerID }: { playerID: string }) => {
         } finally {
             setIsLoading(false)
         }
-    }, [send, page, pageSize, updateQuery, sort, setTotalItems])
+    }, [send, page, pageSize, updateQuery, setTotalItems])
 
     useEffect(() => {
         getItems()
@@ -162,7 +95,7 @@ export const PublicWarmachines = ({ playerID }: { playerID: string }) => {
             return (
                 <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                     <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
-                        <CircularProgress size="3rem" sx={{ color: theme.factionTheme.primary }} />
+                        <CircularProgress size="3rem" sx={{ color: primaryColour }} />
                     </Stack>
                 </Stack>
             )
@@ -176,7 +109,7 @@ export const PublicWarmachines = ({ playerID }: { playerID: string }) => {
                             width: "100%",
                             py: "1rem",
                             display: "grid",
-                            gridTemplateColumns: isGridView ? "repeat(auto-fill, minmax(29rem, 1fr))" : "100%",
+                            gridTemplateColumns: "repeat(auto-fill, minmax(29rem, 1fr))",
                             gap: "1.3rem",
                             alignItems: "center",
                             justifyContent: "center",
@@ -184,7 +117,13 @@ export const PublicWarmachines = ({ playerID }: { playerID: string }) => {
                         }}
                     >
                         {mechs.map((mech) => (
-                            <PublicWarmachineItem key={`marketplace-${mech.id}`} mech={mech} isGridView={isGridView} />
+                            <PublicWarmachineItem
+                                key={`marketplace-${mech.id}`}
+                                mech={mech}
+                                isGridView={true}
+                                primaryColour={primaryColour}
+                                backgroundColour={backgroundColour}
+                            />
                         ))}
                     </Box>
                 </Box>
@@ -222,45 +161,23 @@ export const PublicWarmachines = ({ playerID }: { playerID: string }) => {
                 </Stack>
             </Stack>
         )
-    }, [loadError, mechs, isLoading, isGridView, theme.factionTheme.primary])
+    }, [loadError, mechs, isLoading, primaryColour])
 
     return (
         <Stack direction="row" spacing="1rem" sx={{ height: "100%" }}>
-            {/* <SortAndFilters
-                initialSearch={search}
-                onSetSearch={setSearch}
-                chipFilters={[statusFilterSection.current, rarityChipFilter.current]}
-                changePage={changePage}
-            /> */}
-
             <ClipThing
                 clipSize="10px"
                 border={{
-                    borderColor: theme.factionTheme.primary,
+                    borderColor: primaryColour,
                     borderThickness: ".3rem",
                 }}
                 opacity={0.7}
-                backgroundColor={theme.factionTheme.background}
+                backgroundColor={backgroundColour}
                 sx={{ height: "100%", flex: 1 }}
             >
                 <Stack sx={{ position: "relative", height: "100%" }}>
                     <Stack sx={{ flex: 1 }}>
-                        <PageHeader title="WAR MACHINES" description="" imageUrl={WarMachineIconPNG} />
-
-                        {/* <TotalAndPageSizeOptions
-                            countItems={mechs?.length}
-                            totalItems={totalItems}
-                            pageSize={pageSize}
-                            changePageSize={changePageSize}
-                            pageSizeOptions={[10, 20, 30]}
-                            changePage={changePage}
-                            manualRefresh={getItems}
-                            sortOptions={sortOptions}
-                            selectedSort={sort}
-                            onSetSort={setSort}
-                            isGridView={isGridView}
-                            toggleIsGridView={toggleIsGridView}
-                        /> */}
+                        <PageHeader title="WAR MACHINES" description="" primaryColor={primaryColour} imageUrl={WarMachineIconPNG} />
 
                         <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
                             <Box
@@ -282,7 +199,7 @@ export const PublicWarmachines = ({ playerID }: { playerID: string }) => {
                                         borderRadius: 3,
                                     },
                                     "::-webkit-scrollbar-thumb": {
-                                        background: theme.factionTheme.primary,
+                                        background: primaryColour,
                                         borderRadius: 3,
                                     },
                                 }}
@@ -297,7 +214,7 @@ export const PublicWarmachines = ({ playerID }: { playerID: string }) => {
                             sx={{
                                 px: "1rem",
                                 py: ".7rem",
-                                borderTop: (theme) => `${theme.factionTheme.primary}70 1.5px solid`,
+                                borderTop: `${primaryColour}70 1.5px solid`,
                                 backgroundColor: "#00000070",
                             }}
                         >
@@ -308,8 +225,8 @@ export const PublicWarmachines = ({ playerID }: { playerID: string }) => {
                                 sx={{
                                     ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold },
                                     ".Mui-selected": {
-                                        color: (theme) => theme.factionTheme.secondary,
-                                        backgroundColor: `${theme.factionTheme.primary} !important`,
+                                        color: primaryColour,
+                                        backgroundColor: `${primaryColour} !important`,
                                     },
                                 }}
                                 onChange={(e, p) => changePage(p)}
