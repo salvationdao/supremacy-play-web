@@ -1,7 +1,7 @@
 import { Box, Button, ButtonGroup, Divider, Fade, Pagination, Stack, Typography } from "@mui/material"
 import { ReactNode, useCallback, useEffect, useState } from "react"
 import { Link } from "react-router-dom"
-import { SvgGlobal, SvgLine, SvgMicrochip, SvgTarget } from "../../../assets"
+import { PlayerAbilityPNG, SvgGlobal, SvgLine, SvgMicrochip, SvgTarget } from "../../../assets"
 import { useAuth } from "../../../containers/auth"
 import { useTheme } from "../../../containers/theme"
 import { usePagination } from "../../../hooks"
@@ -65,7 +65,19 @@ export const PlayerAbilities = () => {
             <Box>
                 <Divider sx={{ mb: "2rem", borderBottomWidth: ".25rem", borderColor: (theme) => theme.factionTheme.primary, opacity: 0.15 }} />
                 <Stack spacing="1.2rem">
-                    <Stack direction="row" spacing=".48rem" alignItems="center" justifyContent="space-between">
+                    <Stack direction="row" spacing=".8rem" alignItems="center">
+                        <Box
+                            sx={{
+                                width: "1.9rem",
+                                height: "1.9rem",
+                                backgroundImage: `url(${PlayerAbilityPNG})`,
+                                backgroundRepeat: "no-repeat",
+                                backgroundPosition: "center",
+                                backgroundSize: "cover",
+                                mb: ".24rem",
+                            }}
+                        />
+
                         <Typography
                             sx={{
                                 lineHeight: 1,
@@ -79,6 +91,7 @@ export const PlayerAbilities = () => {
                         <ButtonGroup
                             size="small"
                             sx={(theme) => ({
+                                ml: "auto !important",
                                 "& .MuiButton-root": {
                                     borderRadius: 0.8,
                                     "&:hover": {
