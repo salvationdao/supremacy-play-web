@@ -19,7 +19,6 @@ export const TargetHint = () => {
 
 // Winner hint
 const WinnerTargetHint = () => {
-    const theme = useTheme()
     const { newSnackbarMessage } = useSnackbar()
     const { winner, resetSelection } = useMiniMap()
 
@@ -42,7 +41,7 @@ const WinnerTargetHint = () => {
             <ClipThing
                 backgroundColor={colour}
                 corners={{ topRight: true }}
-                border={{ borderColor: theme.factionTheme.primary, borderThickness: ".25rem" }}
+                border={{ borderColor: colour, borderThickness: ".25rem" }}
                 sx={{ zIndex: 1, m: "-.3rem" }}
             >
                 <Box
