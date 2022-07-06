@@ -171,7 +171,7 @@ export const PlayerAbilitiesStore = () => {
                 </Stack>
             </Stack>
         )
-    }, [isLoaded, saleAbilities, priceMap, amountMap, nextRefreshTime])
+    }, [isLoaded, saleAbilities, priceMap, amountMap, canPurchase])
 
     return (
         <ClipThing
