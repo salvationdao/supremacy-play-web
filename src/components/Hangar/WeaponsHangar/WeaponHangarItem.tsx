@@ -6,7 +6,7 @@ import { useTheme } from "../../../containers/theme"
 import { getRarityDeets, getWeaponDamageTypeColor, getWeaponTypeColor } from "../../../helpers"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
-import { fonts } from "../../../theme/theme"
+import { colors, fonts } from "../../../theme/theme"
 import { Weapon } from "../../../types"
 import { MediaPreview } from "../../Common/MediaPreview/MediaPreview"
 import { General } from "../../Marketplace/Common/MarketItem/General"
@@ -108,20 +108,20 @@ export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGri
                     </General>
 
                     <General title="DAMAGE">
-                        <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
+                        <Typography variant="h6" sx={{ color: colors.lightNeonBlue, fontWeight: "fontWeightBold" }}>
                             {weaponDetails?.damage}
                         </Typography>
                     </General>
 
-                    <General title="RADIUS">
-                        <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
-                            {weaponDetails?.radius}
+                    <General title="RATE OF FIRE">
+                        <Typography variant="h6" sx={{ color: colors.lightNeonBlue, fontWeight: "fontWeightBold" }}>
+                            {weaponDetails?.rate_of_fire}
                         </Typography>
                     </General>
 
-                    <General title="RATE OF FIRE">
-                        <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
-                            {weaponDetails?.rate_of_fire}
+                    <General title="ENERGY COST">
+                        <Typography variant="h6" sx={{ color: colors.lightNeonBlue, fontWeight: "fontWeightBold" }}>
+                            {weaponDetails?.energy_cost}
                         </Typography>
                     </General>
                 </Box>
