@@ -108,7 +108,7 @@ export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGri
                         </Typography>
                     </General>
 
-                    <General isGridView={isGridView} title="EQUIPPED">
+                    <General isGridView={isGridView} title="WEAPON SKIN">
                         <Stack direction="row" sx={{ pt: ".4rem" }}>
                             <TooltipHelper text="Weapon skin" placement="bottom">
                                 <Box>
