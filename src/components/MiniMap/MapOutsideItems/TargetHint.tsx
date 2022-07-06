@@ -130,20 +130,7 @@ const PlayerAbilityTargetHint = () => {
                     zIndex: 98,
                 }}
             >
-                <ClipThing
-                    sx={{
-                        zIndex: 1,
-                        p: "1.2rem",
-                        backgroundColor: theme.factionTheme.background,
-                    }}
-                    border={{
-                        isFancy: true,
-                        borderColor: theme.factionTheme.secondary,
-                    }}
-                    corners={{
-                        topRight: true,
-                    }}
-                >
+                <ClipThing backgroundColor={theme.factionTheme.primary} corners={{ topRight: true }} sx={{ zIndex: 1, p: ".9rem 1.1rem" }}>
                     {data?.icon}
                 </ClipThing>
                 <Stack
