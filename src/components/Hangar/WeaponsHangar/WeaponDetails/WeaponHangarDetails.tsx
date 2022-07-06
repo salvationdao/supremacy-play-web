@@ -1,16 +1,16 @@
 import { Box, CircularProgress, Stack, Typography, useTheme } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
 import { SvgStats } from "../../../../assets"
+import { getRarityDeets, getWeaponDamageTypeColor, getWeaponTypeColor } from "../../../../helpers"
 import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
-import { colors, fonts } from "../../../../theme/theme"
+import { fonts } from "../../../../theme/theme"
 import { Weapon } from "../../../../types"
 import { ClipThing } from "../../../Common/ClipThing"
 import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
-import { WeaponButtons } from "./WeaponHangarButtons"
 import { WeaponBarStats } from "../Common/WeaponBarStats"
+import { WeaponButtons } from "./WeaponHangarButtons"
 import { WeaponViewer } from "./WeaponViewer"
-import { getRarityDeets } from "../../../../helpers"
 
 export const WeaponHangarDetailsInner = ({ weaponID }: { weaponID: string }) => {
     const theme = useTheme()
@@ -98,9 +98,26 @@ export const WeaponHangarDetailsInner = ({ weaponID }: { weaponID: string }) => 
                                         </Typography>
 
                                         <Typography sx={{ fontFamily: fonts.nostromoBlack }}>{weaponDetails.label}</Typography>
+                                    </Stack>
 
-                                        <Typography variant="caption" sx={{ lineHeight: 1, color: colors.offWhite, fontFamily: fonts.nostromoBold }}>
+                                    {/* General info */}
+                                    <Stack spacing=".2rem">
+                                        <Typography sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack }}>WEAPON TYPE</Typography>
+                                        <Typography
+                                            variant="body2"
+                                            sx={{ color: getWeaponTypeColor(weaponDetails?.weapon_type), fontFamily: fonts.nostromoBlack }}
+                                        >
                                             {weaponDetails.weapon_type}
+                                        </Typography>
+                                    </Stack>
+
+                                    <Stack spacing=".2rem">
+                                        <Typography sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack }}>DAMAGE TYPE</Typography>
+                                        <Typography
+                                            variant="body2"
+                                            sx={{ color: getWeaponDamageTypeColor(weaponDetails?.default_damage_type), fontFamily: fonts.nostromoBlack }}
+                                        >
+                                            {weaponDetails.default_damage_type}
                                         </Typography>
                                     </Stack>
 
