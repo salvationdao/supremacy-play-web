@@ -7,11 +7,13 @@ export const WeaponViewer = ({ weaponDetails }: { weaponDetails: Weapon }) => {
     const theme = useTheme()
 
     const backgroundColor = theme.factionTheme.background
-    const avatarUrl = weaponDetails?.avatar_url
-    const imageUrl = weaponDetails?.image_url
-    const largeImageUrl = weaponDetails?.large_image_url
-    const animationUrl = weaponDetails?.animation_url
-    const cardAnimationUrl = weaponDetails?.card_animation_url
+
+    const skin = weaponDetails.weaponSkin
+    const avatarUrl = skin?.avatar_url || weaponDetails?.avatar_url
+    const imageUrl = skin?.image_url || weaponDetails?.image_url
+    const largeImageUrl = skin?.large_image_url || weaponDetails?.large_image_url
+    const animationUrl = skin?.animation_url || weaponDetails?.animation_url
+    const cardAnimationUrl = skin?.card_animation_url || weaponDetails?.card_animation_url
 
     return (
         <Box

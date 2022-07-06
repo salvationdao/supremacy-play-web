@@ -36,6 +36,7 @@ export const WeaponHangarDetailsInner = ({ weaponID }: { weaponID: string }) => 
 
     const primaryColor = theme.factionTheme.primary
     const backgroundColor = theme.factionTheme.background
+    const avatarUrl = weaponDetails?.weaponSkin?.avatar_url || weaponDetails?.avatar_url
 
     return (
         <Stack direction="row" spacing="1rem" sx={{ height: "100%" }}>
@@ -58,7 +59,7 @@ export const WeaponHangarDetailsInner = ({ weaponID }: { weaponID: string }) => 
                 <Stack sx={{ height: "100%" }}>
                     <ClipThing clipSize="10px" corners={{ topRight: true }} opacity={0.7} sx={{ flexShrink: 0 }}>
                         <Box sx={{ height: "12.5rem", position: "relative", borderBottom: `${primaryColor}60 1.5px solid` }}>
-                            <MediaPreview imageUrl={weaponDetails?.avatar_url} objectFit="cover" objectPosition="50% 40%" />
+                            <MediaPreview imageUrl={avatarUrl} objectFit="cover" objectPosition="50% 40%" />
 
                             <Box sx={{ position: "absolute", top: 0, bottom: 0, left: 0, right: 0, background: `linear-gradient(#FFFFFF00 60%, #00000050)` }} />
                         </Box>
