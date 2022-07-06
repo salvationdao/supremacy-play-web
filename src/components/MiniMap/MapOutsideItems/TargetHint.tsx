@@ -42,7 +42,7 @@ const WinnerTargetHint = () => {
                 backgroundColor={colour}
                 corners={{ topRight: true }}
                 border={{ borderColor: colour, borderThickness: ".25rem" }}
-                sx={{ zIndex: 1, m: "-.3rem" }}
+                sx={{ zIndex: 99, m: "-.3rem" }}
             >
                 <Box
                     sx={{
