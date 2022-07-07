@@ -43,24 +43,24 @@ export const MechLoadout = ({ mechDetails }: { mechDetails: MechDetails }) => {
                     <MechLoadoutItem label="POWER CORE" primaryColor={colors.powerCore} onClick={() => console.log("AAAAA")} isEmpty />
                 )}
 
-                {weapons.length > 0 &&
+                {weapons && weapons.length > 0 &&
                     weapons.map((w) => {
                         return <MechLoadoutItem key={w.id} imageUrl={w.avatar_url} label={w.label} primaryColor={colors.weapons} Icon={SvgWeapons} />
                     })}
 
-                {weaponSlots - weapons.length > 0 &&
+                {weaponSlots && weapons && weaponSlots - weapons.length > 0 &&
                     new Array(weaponSlots - weapons.length)
                         .fill(0)
                         .map((_, index) => (
                             <MechLoadoutItem key={index} label="WEAPON" primaryColor={colors.weapons} onClick={() => console.log("AAAAA")} isEmpty />
                         ))}
 
-                {utilities.length > 0 &&
+                {utilities && utilities.length > 0 &&
                     utilities.map((w) => {
                         return <MechLoadoutItem key={w.id} imageUrl={w.avatar_url} label={w.label} primaryColor={colors.utilities} Icon={SvgUtilities} />
                     })}
 
-                {utilitySlots - utilities.length &&
+                {utilitySlots && utilities && utilitySlots - utilities.length &&
                     new Array(utilitySlots - utilities.length)
                         .fill(0)
                         .map((_, index) => (
