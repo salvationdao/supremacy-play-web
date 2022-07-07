@@ -6,7 +6,7 @@ import { Weapon } from "../../../../types"
 import { MechLoadoutItem } from "../../WarMachinesHangar/Common/MechLoadoutItem"
 
 export const WeaponLoadout = ({ weaponDetails }: { weaponDetails: Weapon }) => {
-    const skin = weaponDetails.weaponSkin
+    const skin = weaponDetails.weapon_skin
 
     return (
         <Box
@@ -39,7 +39,7 @@ export const WeaponLoadout = ({ weaponDetails }: { weaponDetails: Weapon }) => {
                         rarity={getRarityDeets(skin.tier)}
                     />
                 ) : (
-                    <MechLoadoutItem label="WEAPON SKIN" primaryColor={colors.chassisSkin} onClick={() => console.log("AAAAA")} isEmpty />
+                    <MechLoadoutItem label="SUBMODEL" primaryColor={colors.chassisSkin} onClick={() => console.log("AAAAA")} isEmpty />
                 )}
             </Stack>
         </Box>

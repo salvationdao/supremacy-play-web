@@ -1,7 +1,6 @@
 export interface User {
     id: string
     username: string
-    avatar_id: string
     faction_id: string
     gid: number
     mobile_number?: string
