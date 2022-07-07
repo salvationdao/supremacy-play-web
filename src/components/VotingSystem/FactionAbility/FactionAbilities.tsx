@@ -54,7 +54,7 @@ export const FactionAbilities = () => {
                                     }}
                                 />
                             )}
-                            <Typography sx={{ lineHeight: 1, color: colors.text, fontWeight: "fontWeightBold" }}>FACTION UNIQUE SKILLS</Typography>
+                            <Typography sx={{ lineHeight: 1, color: colors.text, fontWeight: "fontWeightBold" }}>FACTION UNIQUE ABILITIES</Typography>
 
                             <SvgDropdownArrow size="1.3rem" sx={{ ml: "auto !important", transform: isCollapsed ? "scaleY(-1) translateY(2px)" : "unset" }} />
                         </Stack>
