@@ -48,18 +48,24 @@ export const MechLoadout = ({ mechDetails }: { mechDetails: MechDetails }) => {
                         return <MechLoadoutItem key={w.id} imageUrl={w.avatar_url} label={w.label} primaryColor={colors.weapons} Icon={SvgWeapons} />
                     })}
 
-                {new Array(weaponSlots - weapons.length).fill(0).map((_, index) => (
-                    <MechLoadoutItem key={index} label="WEAPON" primaryColor={colors.weapons} onClick={() => console.log("AAAAA")} isEmpty />
-                ))}
+                {weaponSlots - weapons.length > 0 &&
+                    new Array(weaponSlots - weapons.length)
+                        .fill(0)
+                        .map((_, index) => (
+                            <MechLoadoutItem key={index} label="WEAPON" primaryColor={colors.weapons} onClick={() => console.log("AAAAA")} isEmpty />
+                        ))}
 
                 {utilities.length > 0 &&
                     utilities.map((w) => {
                         return <MechLoadoutItem key={w.id} imageUrl={w.avatar_url} label={w.label} primaryColor={colors.utilities} Icon={SvgUtilities} />
                     })}
 
-                {new Array(utilitySlots - utilities.length).fill(0).map((_, index) => (
-                    <MechLoadoutItem key={index} label="UTILITY" primaryColor={colors.utilities} onClick={() => console.log("AAAAA")} isEmpty />
-                ))}
+                {utilitySlots - utilities.length &&
+                    new Array(utilitySlots - utilities.length)
+                        .fill(0)
+                        .map((_, index) => (
+                            <MechLoadoutItem key={index} label="UTILITY" primaryColor={colors.utilities} onClick={() => console.log("AAAAA")} isEmpty />
+                        ))}
             </Stack>
 
             {/* Right side */}
