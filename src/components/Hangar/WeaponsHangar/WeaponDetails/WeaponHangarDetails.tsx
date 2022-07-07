@@ -56,7 +56,7 @@ export const WeaponHangarDetailsInner = ({ weaponID }: { weaponID: string }) => 
                 }}
                 opacity={0.7}
                 backgroundColor={backgroundColor}
-                sx={{ flexShrink: 0, height: "100%", width: "41rem" }}
+                sx={{ flexShrink: 0, height: "100%", width: "36rem" }}
             >
                 <Stack sx={{ height: "100%" }}>
                     <ClipThing clipSize="10px" corners={{ topRight: true }} opacity={0.7} sx={{ flexShrink: 0 }}>
