@@ -127,7 +127,7 @@ export const PunishMessage = ({
                             <>
                                 <Typography>&nbsp;for&nbsp;</Typography>
                                 <Typography sx={{ color: colors.lightNeonBlue }}>{punish_option.punish_duration_hours}</Typography>
-                                <Typography>&nbsp;hours</Typography>
+                                <Typography>&nbsp;mins</Typography>
                             </>
                         )}
 
@@ -191,7 +191,7 @@ export const PunishMessage = ({
                         <LineItem title="DURATION">
                             <Stack spacing=".24rem" direction="row" alignItems="center" justifyContent="center">
                                 <SvgCooldown component="span" size="1.4rem" sx={{ pb: ".25rem" }} />
-                                <Typography>{punish_option.punish_duration_hours} Hrs</Typography>
+                                <Typography>{punish_option.punish_duration_hours} mins</Typography>
                             </Stack>
                         </LineItem>
 
@@ -204,7 +204,7 @@ export const PunishMessage = ({
                         </LineItem>
 
                         {instant_pass_by_users && instant_pass_by_users.length > 0 && (
-                            <LineItem title={"COMMAND OVERRIDE"} color={instant_pass_by_users.length >= 2 ? colors.green : colors.red}>
+                            <LineItem title={"COMMAND OVERRIDE"} color={instant_pass_by_users.length >= 5 ? colors.green : colors.red}>
                                 {commanderVoteRender}
                             </LineItem>
                         )}

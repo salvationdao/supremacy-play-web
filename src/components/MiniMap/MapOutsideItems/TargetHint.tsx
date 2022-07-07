@@ -1,8 +1,9 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo } from "react"
-import { FancyButton } from "../.."
+import { ClipThing, FancyButton } from "../.."
 import { SvgLine, SvgMicrochip, SvgQuestionMark, SvgTarget } from "../../../assets"
 import { useMiniMap, useSnackbar } from "../../../containers"
+import { useTheme } from "../../../containers/theme"
 import { useTimer } from "../../../hooks"
 import { colors } from "../../../theme/theme"
 import { LocationSelectType } from "../../../types"
@@ -23,35 +24,61 @@ const WinnerTargetHint = () => {
 
     if (!winner) return null
 
-    const { label, colour } = winner.game_ability
+    const { label, colour, image_url } = winner.game_ability
 
     return (
-        <Box
+        <Stack
+            direction="row"
+            alignItems="flex-end"
             sx={{
                 position: "absolute",
                 bottom: 0,
                 left: 0,
                 right: 0,
-                px: "2rem",
-                py: ".6rem",
-                backgroundColor: (theme) => `${theme.factionTheme.background}`,
-                borderRadius: 0.5,
                 zIndex: 98,
             }}
         >
-            <Typography variant="h6" sx={{ textAlign: "center", lineHeight: 1, span: { fontWeight: "fontWeightBold", color: colour } }}>
-                You have{" "}
-                <WinnerTargetHintInner
-                    endTime={winner.end_time}
-                    onCountdownExpired={() => {
-                        newSnackbarMessage("Failed to submit target location on time.", "error")
-                        resetSelection()
+            <ClipThing
+                backgroundColor={colour}
+                corners={{ topRight: true }}
+                border={{ borderColor: colour, borderThickness: ".25rem" }}
+                sx={{ zIndex: 99, m: "-.3rem" }}
+            >
+                <Box
+                    sx={{
+                        width: "45px",
+                        height: "45px",
+                        background: `url(${image_url})`,
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "center",
+                        backgroundSize: "contain",
                     }}
                 />
-                s to choose a location for&nbsp;
-                <span>{`${label}`}</span>
-            </Typography>
-        </Box>
+            </ClipThing>
+
+            <Box
+                sx={{
+                    position: "relative",
+                    flex: 1,
+                    px: "2rem",
+                    py: ".6rem",
+                    backgroundColor: (theme) => `${theme.factionTheme.background}`,
+                }}
+            >
+                <Typography variant="h5" sx={{ lineHeight: 1, span: { fontWeight: "fontWeightBold", color: colour } }}>
+                    You have{" "}
+                    <WinnerTargetHintInner
+                        endTime={winner.end_time}
+                        onCountdownExpired={() => {
+                            newSnackbarMessage("Failed to submit target location on time.", "error")
+                            resetSelection()
+                        }}
+                    />
+                    s to choose a location for&nbsp;
+                    <span>{`${label}`}</span>
+                </Typography>
+            </Box>
+        </Stack>
     )
 }
 
@@ -68,13 +95,14 @@ const WinnerTargetHintInner = ({ endTime, onCountdownExpired }: { endTime: Date;
 // Player ability hint
 const PlayerAbilityTargetHint = () => {
     const { playerAbility, resetSelection } = useMiniMap()
+    const theme = useTheme()
 
     const data = useMemo(() => {
         const ability = playerAbility?.ability
 
         if (!ability) return null
 
-        const iconProps = { size: "1.6rem", fill: ability.colour, sx: { display: "inline", pb: 0 } }
+        const iconProps = { size: "30px", sx: { display: "inline", pb: 0 } }
 
         let icon = <SvgQuestionMark {...iconProps} />
         let descriptor = "Select a location"
@@ -102,43 +130,69 @@ const PlayerAbilityTargetHint = () => {
     if (!ability) return null
 
     return (
-        <Box
-            sx={{
-                position: "absolute",
-                bottom: 0,
-                left: 0,
-                right: 0,
-                px: "2rem",
-                py: ".6rem",
-                backgroundColor: (theme) => `${theme.factionTheme.background}`,
-                borderRadius: 0.5,
-                zIndex: 98,
-            }}
-        >
-            <Stack direction="row" alignItems="center" spacing=".5rem" sx={{ position: "relative", width: "100%" }}>
-                <Typography variant="h6" sx={{ lineHeight: 1 }}>
-                    {data?.descriptor}
-                </Typography>
+        <>
+            <Box
+                sx={{
+                    zIndex: 98,
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    background: `radial-gradient(rgba(0, 0, 0, 0), ${playerAbility.ability.colour}aa)`,
+                    pointerEvents: "none",
+                    opacity: 0.5,
+                }}
+            />
+            <Stack
+                direction="row"
+                alignItems="flex-end"
+                sx={{
+                    position: "absolute",
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    zIndex: 98,
+                }}
+            >
+                <ClipThing backgroundColor={theme.factionTheme.primary} corners={{ topRight: true }} sx={{ zIndex: 1, m: "-.3rem", p: ".9rem 1.1rem" }}>
+                    {data?.icon}
+                </ClipThing>
 
-                {data?.icon}
-
-                <Typography variant="h6" sx={{ lineHeight: 1, fontWeight: "fontWeightBold", color: ability.colour }}>
-                    {ability.label}
-                </Typography>
-
-                <FancyButton
-                    clipThingsProps={{
-                        clipSize: "4px",
-                        backgroundColor: colors.red,
-                        border: { isFancy: true, borderColor: colors.red },
-                        sx: { ml: "auto !important" },
+                <Stack
+                    direction="row"
+                    alignItems="center"
+                    spacing=".5rem"
+                    sx={{
+                        position: "relative",
+                        flex: 1,
+                        px: "2rem",
+                        py: ".6rem",
+                        backgroundColor: (theme) => `${theme.factionTheme.background}`,
                     }}
-                    sx={{ py: ".2rem", px: "1.5rem" }}
-                    onClick={() => resetSelection()}
                 >
-                    <Typography sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>Cancel</Typography>
-                </FancyButton>
+                    <Typography variant="h5" sx={{ lineHeight: 1 }}>
+                        {data?.descriptor}
+                    </Typography>
+
+                    <Typography variant="h5" sx={{ lineHeight: 1, fontWeight: "fontWeightBold", color: ability.colour }}>
+                        {ability.label}
+                    </Typography>
+
+                    <FancyButton
+                        clipThingsProps={{
+                            clipSize: "4px",
+                            backgroundColor: colors.red,
+                            border: { isFancy: true, borderColor: colors.red },
+                            sx: { ml: "auto !important" },
+                        }}
+                        sx={{ py: ".2rem", px: "1.5rem" }}
+                        onClick={() => resetSelection()}
+                    >
+                        <Typography sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>Cancel</Typography>
+                    </FancyButton>
+                </Stack>
             </Stack>
-        </Box>
+        </>
     )
 }

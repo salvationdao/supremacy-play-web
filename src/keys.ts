@@ -43,6 +43,9 @@ export enum GameServerKeys {
     // Asset / queue
     SubQueueFeed = "BATTLE:QUEUE:STATUS:SUBSCRIBE",
     GetMechs = "PLAYER:ASSET:MECH:LIST",
+    // Weapons
+    GetWeapons = "PLAYER:ASSET:WEAPON:LIST",
+    GetWeaponDetails = "PLAYER:ASSET:WEAPON:DETAIL",
     GetMechDetails = "PLAYER:ASSET:MECH:DETAIL",
     SubMechQueuePosition = "PLAYER:ASSET:MECH:QUEUE:SUBSCRIBE",
     JoinQueue = "BATTLE:QUEUE:JOIN",
@@ -60,6 +63,9 @@ export enum GameServerKeys {
     SaleAbilitiesList = "SALE:ABILITIES:LIST:SUBSCRIBE",
     SaleAbilityPurchase = "SALE:ABILITY:PURCHASE",
     PlayerAbilityUse = "PLAYER:ABILITY:USE",
+
+    // Minimap ability updates
+    MinimapUpdatesSubscribe = "MINIMAP:UPDATES:SUBSCRIBE",
 
     // Chat
     SubscribeFactionChat = "FACTION:CHAT:SUBSCRIBE",

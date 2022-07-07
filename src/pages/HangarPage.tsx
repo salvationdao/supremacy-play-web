@@ -5,6 +5,8 @@ import { HangarBg } from "../assets"
 import { KeycardsHangar } from "../components/Hangar/KeycardsHangar/KeycardsHangar"
 import { MysteryCratesHangar } from "../components/Hangar/MysteryCratesHangar/MysteryCratesHangar"
 import { PlayerAbilitiesHangar } from "../components/Hangar/PlayerAbilitiesHangar/PlayerAbilitiesHangar"
+import { WeaponsHangar } from "../components/Hangar/WeaponsHangar/WeaponsHangar"
+
 import { WarMachinesHangar } from "../components/Hangar/WarMachinesHangar/WarMachinesHangar"
 import { useTheme } from "../containers/theme"
 import { ROUTES_MAP } from "../routes"
@@ -17,6 +19,7 @@ export enum HANGAR_TABS {
     MysteryCrates = "mystery-crates",
     Keycards = "key-cards",
     Abilities = "abilities",
+    Weapons = "weapons",
 }
 
 export const HangarPage = () => {
@@ -76,6 +79,7 @@ export const HangarPage = () => {
                         }}
                     >
                         <Tab label="WAR MACHINES" value={HANGAR_TABS.WarMachines} />
+                        <Tab label="WEAPONS" value={HANGAR_TABS.Weapons} />
                         <Tab label="KEY CARDS" value={HANGAR_TABS.Keycards} />
                         <Tab label="MYSTERY CRATES" value={HANGAR_TABS.MysteryCrates} />
                         {userHasFeature(FeatureType.playerAbility) && <Tab label="ABILITIES" value={HANGAR_TABS.Abilities} />}
@@ -85,12 +89,19 @@ export const HangarPage = () => {
                 <TabPanel currentValue={currentValue} value={HANGAR_TABS.WarMachines}>
                     <WarMachinesHangar />
                 </TabPanel>
+
+                <TabPanel currentValue={currentValue} value={HANGAR_TABS.Weapons}>
+                    <WeaponsHangar />
+                </TabPanel>
+
                 <TabPanel currentValue={currentValue} value={HANGAR_TABS.Keycards}>
                     <KeycardsHangar />
                 </TabPanel>
+
                 <TabPanel currentValue={currentValue} value={HANGAR_TABS.MysteryCrates}>
                     <MysteryCratesHangar />
                 </TabPanel>
+
                 <TabPanel currentValue={currentValue} value={HANGAR_TABS.Abilities}>
                     <PlayerAbilitiesHangar />
                 </TabPanel>

@@ -3,7 +3,7 @@ import { createContainer } from "unstated-next"
 import { useSupremacy } from "."
 import { useGameServerCommandsUser, useGameServerSubscription, useGameServerSubscriptionUser } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
-import { BattleEndDetail, BribeStage, GameAbility, Map, WarMachineState } from "../types"
+import { BattleEndDetail, BribeStage, Map, WarMachineState } from "../types"
 
 export interface BribeStageResponse {
     phase: BribeStage
@@ -14,11 +14,6 @@ export interface GameSettingsResponse {
     battle_identifier: number
     game_map: Map
     war_machines: WarMachineState[]
-}
-
-export interface WinnerAnnouncementResponse {
-    game_ability: GameAbility
-    end_time: Date
 }
 
 // Game data that needs to be shared between different components

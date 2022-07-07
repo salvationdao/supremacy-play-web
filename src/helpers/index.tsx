@@ -25,7 +25,7 @@ import {
     SvgWrapperProps,
 } from "../assets"
 import { colors } from "../theme/theme"
-import { MysteryCrateType, UserRank } from "../types"
+import { MysteryCrateType, Rarity, UserRank } from "../types"
 
 // Capitalize convert a string "example" to "Example"
 export const Capitalize = (str: string): string => str[0].toUpperCase() + str.substring(1).toLowerCase()
@@ -182,7 +182,7 @@ export const hexToRGB = (hex: string, alpha?: number): string => {
     else return "rgb(" + r + ", " + g + ", " + b + ")"
 }
 
-export const getRarityDeets = (rarityKey: string): { label: string; color: string; textColor: string } => {
+export const getRarityDeets = (rarityKey: string): Rarity => {
     switch (rarityKey) {
         case "COLOSSAL":
             return { label: "Colossal", color: colors.rarity.COLOSSAL, textColor: "#FFFFFF" }
@@ -328,7 +328,7 @@ export const getUserRankDeets = (rank: UserRank, width: string, height: string):
         case "GENERAL":
             icon = <SvgGeneral width={width} height={height} />
             title = "GENERAL"
-            desc = 'User has achieved previous rank "Corporal" and contributed top 20% of ability kills for their Syndicate in the past 7 days.'
+            desc = 'User has achieved previous rank "Corporal" and contributed top 20% of ability kills for their Faction in the past 7 days.'
             break
         case "NEW_RECRUIT":
         default:
@@ -498,4 +498,40 @@ export const calculateDutchAuctionCurrentPrice = ({ createdAt, dropRate, startPr
 export const calculateDutchAuctionEndPrice = ({ endAt, dropRate, startPrice }: { endAt: Date; dropRate?: number; startPrice: number }) => {
     if (!dropRate) return startPrice
     return Math.max(startPrice - dropRate * timeDiff(new Date(), endAt).minutes, 1)
+}
+
+export const getWeaponTypeColor = (weaponType: string | undefined) => {
+    if (!weaponType) return colors.neonBlue
+
+    switch (weaponType.toUpperCase()) {
+        case "CANNON":
+            return colors.green
+        case "SWORD":
+            return colors.red
+        case "MINIGUN":
+            return colors.yellow
+        case "MISSILE LAUNCHER":
+            return colors.purple
+        case "PLASMA GUN":
+            return colors.blue
+        case "SNIPER RIFLE":
+            return colors.orange
+        default:
+            return colors.neonBlue
+    }
+}
+
+export const getWeaponDamageTypeColor = (damageType: string | undefined) => {
+    if (!damageType) return colors.neonBlue
+
+    switch (damageType.toUpperCase()) {
+        case "KINETIC":
+            return colors.blue2
+        case "EXPLOSIVE":
+            return colors.orange
+        case "ENERGY":
+            return colors.gold
+        default:
+            return colors.neonBlue
+    }
 }

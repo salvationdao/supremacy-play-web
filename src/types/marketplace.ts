@@ -1,5 +1,6 @@
 export enum ItemType {
     WarMachine = "WAR_MACHINE",
+    Weapon = "WEAPON",
     Keycards = "KEY_CARDS",
     MysteryCrate = "MYSTERY_CRATE",
 }

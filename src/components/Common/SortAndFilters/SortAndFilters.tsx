@@ -48,7 +48,7 @@ export const SortAndFilters = ({
             }}
             opacity={0.7}
             backgroundColor={backgroundColor}
-            sx={{ height: "100%", minWidth: "30rem", maxWidth: "38rem" }}
+            sx={{ height: "100%", width: "38rem" }}
         >
             <Box
                 sx={{
