@@ -1,19 +1,16 @@
 import { Box, Pagination, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { Link } from "react-router-dom"
 import { ClipThing } from "../.."
 import { SafePNG } from "../../../assets"
 import { useSnackbar } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { parseString } from "../../../helpers"
 import { usePagination, useUrlQuery } from "../../../hooks"
-import { useGameServerCommandsFaction, useGameServerSubscriptionUser } from "../../../hooks/useGameServer"
+import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
-import { HANGAR_TABS } from "../../../pages"
 import { colors, fonts } from "../../../theme/theme"
-import { MysteryCrateOwnershipResp, StorefrontMysteryCrate } from "../../../types"
+import {  StorefrontMysteryCrate } from "../../../types"
 import { PageHeader } from "../../Common/PageHeader"
-import { TooltipHelper } from "../../Common/TooltipHelper"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { MysteryCrateStoreItem, MysteryCrateStoreItemLoadingSkeleton } from "./MysteryCrateStoreItem/MysteryCrateStoreItem"
 
@@ -25,27 +22,12 @@ export const MysteryCratesStore = () => {
     const [crates, setCrates] = useState<StorefrontMysteryCrate[]>()
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
-    const [ownershipDetails, setOwnershipDetails] = useState<MysteryCrateOwnershipResp>({
-        allowed: 0,
-        owned: 0,
-    })
     const { page, changePage, changePageSize, totalPages, pageSize } = usePagination({
         pageSize: parseString(query.get("pageSize"), 10),
         page: parseString(query.get("page"), 1),
     })
 
     const enlargedView = crates ? crates.length <= 2 : false
-
-    useGameServerSubscriptionUser<MysteryCrateOwnershipResp>(
-        {
-            URI: "/mystery_crates",
-            key: GameServerKeys.SubMysteryCrateOwnership,
-        },
-        (payload) => {
-            if (!payload) return
-            setOwnershipDetails(payload)
-        },
-    )
 
     // Get mystery crates
     const getItems = useCallback(async () => {
@@ -134,7 +116,6 @@ export const MysteryCratesStore = () => {
                                 key={`storefront-mystery-crate-${crate.id}-${index}`}
                                 enlargedView={enlargedView}
                                 crate={crate}
-                                ownershipDetails={ownershipDetails}
                             />
                         ))}
                     </Box>
@@ -173,7 +154,7 @@ export const MysteryCratesStore = () => {
                 </Stack>
             </Stack>
         )
-    }, [crates, enlargedView, isLoading, loadError, ownershipDetails])
+    }, [crates, enlargedView, isLoading, loadError])
 
     return (
         <ClipThing
@@ -201,67 +182,11 @@ export const MysteryCratesStore = () => {
                         }
                         description={
                             <Typography sx={{ fontSize: "1.85rem" }}>
-                                Gear up for the battle arena with a variety of War Machines and Weapons. Each{" "}
-                                <Link to={`/fleet/${HANGAR_TABS.Keycards}`}>keycard</Link> you have on Supremacy allows you to purchase 10 mystery crates.
+                                Gear up for the battle arena with a variety of War Machines and Weapons.
                             </Typography>
                         }
                         imageUrl={SafePNG}
                     >
-                        <Stack spacing="1rem">
-                            <Stack direction="row" alignItems="center" justifyContent="flex-end" spacing=".8rem">
-                                <Typography variant="body2" sx={{ color: colors.lightNeonBlue, fontFamily: fonts.nostromoHeavy }}>
-                                    Total owned:
-                                </Typography>
-
-                                <ClipThing
-                                    clipSize="8px"
-                                    clipSlantSize="3px"
-                                    border={{
-                                        borderColor: colors.lightNeonBlue,
-                                        borderThickness: ".15rem",
-                                    }}
-                                    corners={{
-                                        topRight: true,
-                                        bottomLeft: true,
-                                    }}
-                                    backgroundColor={colors.darkerNavy}
-                                >
-                                    <Stack direction="row" justifyContent="center" spacing=".2rem" sx={{ px: "2rem", pt: ".3rem", width: "8rem" }}>
-                                        <Typography variant="body2" sx={{ textAlign: "center", fontWeight: "fontWeightBold" }}>
-                                            {ownershipDetails.owned}
-                                        </Typography>
-                                    </Stack>
-                                </ClipThing>
-                            </Stack>
-
-                            <TooltipHelper placement="bottom" text="The maximum capacity is dependent on the number of keycards you hold.">
-                                <Stack direction="row" alignItems="center" justifyContent="flex-end" spacing=".8rem">
-                                    <Typography variant="body2" sx={{ color: colors.lightNeonBlue, fontFamily: fonts.nostromoBlack }}>
-                                        Maximum capacity:
-                                    </Typography>
-
-                                    <ClipThing
-                                        clipSize="8px"
-                                        clipSlantSize="3px"
-                                        border={{
-                                            borderColor: colors.lightNeonBlue,
-                                            borderThickness: ".15rem",
-                                        }}
-                                        corners={{
-                                            topRight: true,
-                                            bottomLeft: true,
-                                        }}
-                                        backgroundColor={colors.darkerNavy}
-                                    >
-                                        <Stack direction="row" justifyContent="center" spacing=".2rem" sx={{ px: "2rem", pt: ".3rem", width: "8rem" }}>
-                                            <Typography variant="body2" sx={{ textAlign: "center", fontWeight: "fontWeightBold" }}>
-                                                {ownershipDetails.allowed}
-                                            </Typography>
-                                        </Stack>
-                                    </ClipThing>
-                                </Stack>
-                            </TooltipHelper>
-                        </Stack>
                     </PageHeader>
 
                     <TotalAndPageSizeOptions

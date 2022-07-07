@@ -10,7 +10,7 @@ import { useToggle } from "../../../../hooks"
 import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts, siteZIndex } from "../../../../theme/theme"
-import { MysteryCrateOwnershipResp, RewardResponse, StorefrontMysteryCrate } from "../../../../types"
+import { RewardResponse, StorefrontMysteryCrate } from "../../../../types"
 import { ClaimedRewards } from "../../../Claims/ClaimedRewards"
 import { ConfirmModal } from "../../../Common/ConfirmModal"
 import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
@@ -18,10 +18,9 @@ import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
 interface MysteryCrateStoreItemProps {
     enlargedView?: boolean
     crate: StorefrontMysteryCrate
-    ownershipDetails: MysteryCrateOwnershipResp
 }
 
-export const MysteryCrateStoreItem = ({ enlargedView, crate, ownershipDetails }: MysteryCrateStoreItemProps) => {
+export const MysteryCrateStoreItem = ({ enlargedView, crate }: MysteryCrateStoreItemProps) => {
     const theme = useTheme()
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsFaction("/faction_commander")
@@ -33,11 +32,6 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate, ownershipDetails }:
     const [isLoading, setIsLoading] = useState(false)
     const [buyError, setBuyError] = useState<string>()
     const [quantity, setQuantity] = useState(1)
-
-    let isAllowedToBuy = false
-    if (ownershipDetails.owned < ownershipDetails.allowed) {
-        isAllowedToBuy = true
-    }
 
     const primaryColor = theme.factionTheme.primary
     const backgroundColor = theme.factionTheme.background
@@ -199,7 +193,6 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate, ownershipDetails }:
                                     gap: "2rem",
                                 }}
                             >
-                                {isAllowedToBuy && (
                                     <ClipThing
                                         clipSize="5px"
                                         clipSlantSize="2px"
@@ -237,19 +230,7 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate, ownershipDetails }:
                                                 value={quantity}
                                                 onChange={(e) => {
                                                     const newAmount = parseInt(e.target.value)
-                                                    if (newAmount <= 0) return
-                                                    const nAmountPurchasable = ownershipDetails.allowed - ownershipDetails.owned
-                                                    if (quantity > nAmountPurchasable) {
-                                                        setQuantity(nAmountPurchasable)
-                                                    } else {
-                                                        setQuantity(newAmount)
-                                                    }
-                                                }}
-                                                onBlur={() => {
-                                                    const nAmountPurchasable = ownershipDetails.allowed - ownershipDetails.owned
-                                                    if (quantity > nAmountPurchasable) {
-                                                        setQuantity(nAmountPurchasable)
-                                                    }
+                                                    setQuantity(newAmount)
                                                 }}
                                             />
                                             <Stack
@@ -267,8 +248,7 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate, ownershipDetails }:
                                                     sx={{ cursor: "pointer", zIndex: 1 }}
                                                     fill={primaryColor}
                                                     onClick={() => {
-                                                        const nAmountPurchasable = ownershipDetails.allowed - ownershipDetails.owned
-                                                        if (nAmountPurchasable > quantity) setQuantity(quantity + 1)
+                                                         setQuantity(quantity + 1)
                                                     }}
                                                 />
                                                 <SvgArrow
@@ -282,16 +262,15 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate, ownershipDetails }:
                                             </Stack>
                                         </Stack>
                                     </ClipThing>
-                                )}
+
                                 <FancyButton
-                                    disabled={!isAllowedToBuy}
                                     onClick={() => toggleConfirmModalOpen(true)}
                                     clipThingsProps={{
                                         clipSize: "5px",
                                         backgroundColor: primaryColor,
                                         opacity: 1,
                                         border: { isFancy: true, borderColor: primaryColor, borderThickness: "1.5px" },
-                                        sx: { position: "relative", width: enlargedView && isAllowedToBuy ? "50%" : "100%", height: "100%" },
+                                        sx: { position: "relative", width: enlargedView ? "50%" : "100%", height: "100%" },
                                     }}
                                     sx={{ px: "1.6rem", py: enlargedView ? "1.1rem" : ".6rem" }}
                                 >
@@ -299,9 +278,7 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate, ownershipDetails }:
                                         variant={enlargedView ? "body1" : "caption"}
                                         sx={{ fontFamily: fonts.nostromoBlack, color: theme.factionTheme.secondary }}
                                     >
-                                        {isAllowedToBuy && "Buy Now"}
-                                        {!isAllowedToBuy && ownershipDetails.allowed > 0 && "Maximum capacity reached"}
-                                        {!isAllowedToBuy && ownershipDetails.allowed === 0 && "A keycard in-game is required"}
+                                        Buy Now
                                     </Typography>
                                 </FancyButton>
                             </Box>
