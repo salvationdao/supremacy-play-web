@@ -33,7 +33,7 @@ export const MechLoadoutIcons = ({ mechDetails }: { mechDetails?: MechDetails })
 
     return (
         <Stack direction="row" spacing=".5rem">
-            <TooltipHelper text="Weapon skin" placement="bottom">
+            <TooltipHelper text="Submodel" placement="bottom">
                 <Box>
                     <SvgSkin fill={hasSkin ? colors.chassisSkin : `${colors.darkGrey}80`} size="1.5rem" />
                 </Box>
@@ -66,13 +66,14 @@ export const MechLoadoutIcons = ({ mechDetails }: { mechDetails?: MechDetails })
                     </TooltipHelper>
                 ))}
 
-            {new Array(weaponSlots - weaponCount).fill(0).map((_, index) => (
-                <TooltipHelper key={`mech-info-${index}`} text="Weapon" placement="bottom">
-                    <Box>
-                        <SvgWeapons fill={`${colors.darkGrey}80`} size="1.5rem" />
-                    </Box>
-                </TooltipHelper>
-            ))}
+            {weaponSlots - weaponCount > 0 &&
+                new Array(weaponSlots - weaponCount).fill(0).map((_, index) => (
+                    <TooltipHelper key={`mech-info-${index}`} text="Weapon" placement="bottom">
+                        <Box>
+                            <SvgWeapons fill={`${colors.darkGrey}80`} size="1.5rem" />
+                        </Box>
+                    </TooltipHelper>
+                ))}
 
             {utilityCount > 0 &&
                 new Array(utilityCount).fill(0).map((_, index) => (
@@ -83,13 +84,14 @@ export const MechLoadoutIcons = ({ mechDetails }: { mechDetails?: MechDetails })
                     </TooltipHelper>
                 ))}
 
-            {new Array(utilitySlots - utilityCount).fill(0).map((_, index) => (
-                <TooltipHelper key={`mech-info-${index}`} text="Utility" placement="bottom">
-                    <Box>
-                        <SvgUtilities fill={`${colors.darkGrey}80`} size="1.5rem" />
-                    </Box>
-                </TooltipHelper>
-            ))}
+            {utilitySlots - utilityCount > 0 &&
+                new Array(utilitySlots - utilityCount).fill(0).map((_, index) => (
+                    <TooltipHelper key={`mech-info-${index}`} text="Utility" placement="bottom">
+                        <Box>
+                            <SvgUtilities fill={`${colors.darkGrey}80`} size="1.5rem" />
+                        </Box>
+                    </TooltipHelper>
+                ))}
         </Stack>
     )
 }

@@ -108,9 +108,9 @@ export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGri
                         </Typography>
                     </General>
 
-                    <General isGridView={isGridView} title="WEAPON SKIN">
+                    <General isGridView={isGridView} title="WEAPON SUBMODEL">
                         <Stack direction="row" sx={{ pt: ".4rem" }}>
-                            <TooltipHelper text="Weapon skin" placement="bottom">
+                            <TooltipHelper text="Weapon submodel" placement="bottom">
                                 <Box>
                                     <SvgSkin fill={weapon.weaponSkin ? colors.chassisSkin : `${colors.darkGrey}80`} size="1.5rem" />
                                 </Box>

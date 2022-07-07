@@ -154,8 +154,7 @@ export const PlayerAbilities = () => {
                             <Box
                                 sx={{
                                     display: "grid",
-                                    gridTemplateColumns: `repeat(${COLUMNS}, minmax(0, 1fr))`,
-                                    gridTemplateRows: `repeat(${ROWS}, 1fr)`,
+                                    gridTemplateColumns: `repeat(${COLUMNS}, minmax(0, 9rem))`,
                                     gap: ".6rem",
                                 }}
                             >

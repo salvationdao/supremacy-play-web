@@ -91,7 +91,7 @@ const QuickPlayerAbilitiesInner = ({ onClose }: { onClose: () => void }) => {
             defaultPosX: 760,
             defaultPosY: 0,
             defaultWidth: 360,
-            defaultHeight: 220,
+            defaultHeight: 245,
             // Position limits
             minPosX: 0,
             minPosY: 0,
