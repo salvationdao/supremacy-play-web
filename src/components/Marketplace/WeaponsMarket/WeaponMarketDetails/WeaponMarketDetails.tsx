@@ -17,7 +17,6 @@ import { AuctionDetails } from "../../Common/MarketDetails/AuctionDetails"
 import { Dates } from "../../Common/MarketDetails/Dates"
 import { ManageListing } from "../../Common/MarketDetails/ManageListing"
 import { WeaponStatsDetails } from "./WeaponStatsDetails"
-import { SafePNG } from "../../../../assets"
 import { Weapon } from "../../../../types"
 
 export const WeaponMarketDetails = ({ id }: { id: string }) => {
@@ -50,7 +49,7 @@ export const WeaponMarketDetails = ({ id }: { id: string }) => {
         })()
     }, [id, send])
 
-    // // Get weapon details
+    // Get weapon details
     useEffect(() => {
         ;(async () => {
             try {
@@ -178,8 +177,8 @@ const WeaponMarketDetailsInner = ({ marketItem, weaponDetails, primaryColor }: W
                         <ImagesPreview
                             media={[
                                 {
-                                    imageUrl: weaponDetails?.image_url || SafePNG,
-                                    videoUrl: weaponDetails?.animation_url || SafePNG,
+                                    imageUrl: weaponDetails?.image_url,
+                                    videoUrl: weaponDetails?.animation_url,
                                 },
                             ]}
                             primaryColor={primaryColor}
