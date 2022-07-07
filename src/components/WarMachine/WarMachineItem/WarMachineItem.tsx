@@ -148,6 +148,21 @@ export const WarMachineItem = ({ warMachine, scale }: { warMachine: WarMachineSt
                             cursor: "pointer",
                         }}
                     >
+                        {/* Number */}
+                        <Box
+                            sx={{
+                                position: "absolute",
+                                bottom: 0,
+                                right: ".8rem",
+                                px: ".3rem",
+                                backgroundColor: "#00000090",
+                            }}
+                        >
+                            <Typography variant="h5" sx={{ fontFamily: fonts.nostromoBlack }}>
+                                {warMachine.participantID}
+                            </Typography>
+                        </Box>
+
                         {!isAlive && (
                             <Stack
                                 alignItems="center"

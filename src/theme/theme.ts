@@ -56,6 +56,7 @@ export const colors = {
 
     lightGrey: "#999999",
     grey: "#89898d",
+    darkGrey: "#444444",
     battleQueueBanner: "#C24242",
     darkestNeonBlue: "#050c12",
 
@@ -74,7 +75,7 @@ export const colors = {
     marketBidReturned: "#CC3F3F",
 
     // Mech loadout
-    chassisSkin: "#DBC625",
+    chassisSkin: "#D45613",
     introAnimation: "#B63DD4",
     outroAnimation: "#B63DD4",
     weapons: "#EB2300",

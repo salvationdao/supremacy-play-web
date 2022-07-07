@@ -1,10 +1,10 @@
-import { Box, Stack } from "@mui/material"
+import { Box, Stack, Typography } from "@mui/material"
 import { useCallback, useMemo, useState } from "react"
-import { GenericWarMachinePNG, SvgMapSkull, SvgMapWarMachine } from "../../../../assets"
+import { SvgMapSkull, SvgMapWarMachine } from "../../../../assets"
 import { useAuth, useGame, useMiniMap, useSupremacy } from "../../../../containers"
 import { useGameServerSubscription, useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
-import { colors } from "../../../../theme/theme"
+import { colors, fonts } from "../../../../theme/theme"
 import { LocationSelectType, Map, Vector2i, WarMachineState } from "../../../../types"
 import { WarMachineLiveState } from "../../../../types/game"
 import { MechMoveCommand } from "../../../WarMachine/WarMachineAbilitiesPopover/MechMoveCommandCard"
@@ -29,7 +29,7 @@ const MapMechInner = ({ warMachine, map }: MapMechInnerProps) => {
     const { userID, factionID } = useAuth()
     const { getFaction } = useSupremacy()
     const { isTargeting, gridWidth, gridHeight, playerAbility, highlightedMechHash, setHighlightedMechHash, selection, setSelection } = useMiniMap()
-    const { hash, participantID, factionID: warMachineFactionID, maxHealth, maxShield, imageAvatar, ownedByID } = warMachine
+    const { hash, participantID, factionID: warMachineFactionID, maxHealth, maxShield, ownedByID } = warMachine
 
     /**
      * Mech stats
@@ -44,7 +44,7 @@ const MapMechInner = ({ warMachine, map }: MapMechInnerProps) => {
     /**
      * For rendering: size, colors etc.
      */
-    const iconSize = useMemo(() => Math.min(gridWidth, gridHeight) * 1.5, [gridWidth, gridHeight])
+    const iconSize = useMemo(() => Math.min(gridWidth, gridHeight) * 1.8, [gridWidth, gridHeight])
     const dirArrowLength = useMemo(() => iconSize / 2 + 0.6 * iconSize, [iconSize])
     const primaryColor = useMemo(
         () => (ownedByID === userID ? colors.gold : getFaction(warMachineFactionID).primary_color || colors.neonBlue),
@@ -53,7 +53,6 @@ const MapMechInner = ({ warMachine, map }: MapMechInnerProps) => {
     const factionLogoUrl = useMemo(() => getFaction(warMachineFactionID).logo_url, [getFaction, warMachineFactionID])
     const isAlive = useMemo(() => health > 0, [health])
     const mapScale = useMemo(() => map.width / (map.cells_x * 2000), [map])
-    const wmImageUrl = useMemo(() => imageAvatar || GenericWarMachinePNG, [imageAvatar])
     const mechMapX = useMemo(() => ((position?.x || 0) - map.left_pixels) * mapScale, [map.left_pixels, mapScale, position?.x])
     const mechMapY = useMemo(() => ((position?.y || 0) - map.top_pixels) * mapScale, [map.top_pixels, mapScale, position?.y])
     const isMechHighligheted = useMemo(
@@ -174,7 +173,7 @@ const MapMechInner = ({ warMachine, map }: MapMechInnerProps) => {
                             border: `3px solid ${playerAbility.ability.colour}`,
                             borderRadius: 1,
                             boxShadow: 2,
-                            backgroundImage: `url(${factionLogoUrl})`,
+                            backgroundImage: `url(${playerAbility.ability.image_url})`,
                             backgroundRepeat: "no-repeat",
                             backgroundPosition: "center",
                             backgroundSize: "cover",
@@ -191,11 +190,10 @@ const MapMechInner = ({ warMachine, map }: MapMechInnerProps) => {
                         height: iconSize,
                         overflow: "visible",
                         backgroundColor: primaryColor,
-                        backgroundImage: `url(${wmImageUrl})`,
+                        backgroundImage: `url(${factionLogoUrl})`,
                         backgroundRepeat: "no-repeat",
                         backgroundPosition: "center",
-                        backgroundSize: "cover",
-                        border: `${primaryColor} solid 7.5px`,
+                        backgroundSize: "contain",
                         borderRadius: 3,
                         boxShadow: isAlive ? `0 0 8px 2px ${primaryColor}70` : "none",
                         zIndex: 2,
@@ -203,6 +201,27 @@ const MapMechInner = ({ warMachine, map }: MapMechInnerProps) => {
                         transition: "opacity 0.2s ease-out",
                     }}
                 >
+                    {/* Number */}
+                    <Box
+                        sx={{
+                            position: "absolute",
+                            top: "50%",
+                            left: "50%",
+                            transform: "translate(-50%, -50%)",
+                            px: "1rem",
+                            backgroundColor: "#00000090",
+                        }}
+                    >
+                        <Typography
+                            variant="h1"
+                            sx={{
+                                fontFamily: fonts.nostromoBlack,
+                            }}
+                        >
+                            {warMachine.participantID}
+                        </Typography>
+                    </Box>
+
                     {/* Skull icon */}
                     {!isAlive && (
                         <Stack
@@ -364,10 +383,10 @@ const MapMechInner = ({ warMachine, map }: MapMechInnerProps) => {
         setSelection,
         shield,
         warMachine.maxShield,
-        wmImageUrl,
         hash,
         playerAbility,
         selection?.mechHash,
         factionLogoUrl,
+        warMachine.participantID,
     ])
 }
