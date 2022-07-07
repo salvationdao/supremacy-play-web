@@ -193,6 +193,7 @@ export const AuthProvider: React.FC = ({ children }) => {
 
     const userHasFeature = useCallback(
         (featureType: string) => {
+            if (!user || !user.features) return false
             const index = user.features.findIndex((el) => el.type === featureType)
 
             return index !== -1
