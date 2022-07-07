@@ -1,16 +1,16 @@
-import { Avatar, Box, colors, Stack, Typography, useTheme } from "@mui/material"
+import { Avatar, Box, CircularProgress, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useState } from "react"
 import { useHistory, useParams } from "react-router-dom"
-import { SafePNG, SvgCake, WarMachineIconPNG } from "../../assets"
+import { SvgAbility, SvgCake, SvgDeath, SvgSkull2, SvgView, WarMachineIconPNG } from "../../assets"
 import { camelToTitle, snakeToTitle } from "../../helpers"
+import { useToggle } from "../../hooks"
 import { useGameServerCommands } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
-import { fonts, theme } from "../../theme/theme"
+import { colors, fonts, theme } from "../../theme/theme"
 import { BattleMechHistory, Faction, UserRank } from "../../types"
 import { ClipThing } from "../Common/ClipThing"
 import { PageHeader } from "../Common/PageHeader"
 import { HistoryEntry } from "../Hangar/WarMachinesHangar/WarMachineDetails/Modals/MechHistory/HistoryEntry"
-// import { HistoryEntry } from "./HistoryEntry"
 import { PublicWarmachines } from "./PublicWarmachines"
 
 interface Player {
@@ -48,6 +48,18 @@ export const PlayerProfilePage = () => {
     const [profileError, setProfileError] = useState<string>()
     const [profile, setProfile] = useState<PlayerProfile>()
 
+    const [copySuccess, toggleCopySuccess] = useToggle()
+
+    useEffect(() => {
+        if (copySuccess) {
+            const timeout = setTimeout(() => {
+                toggleCopySuccess(false)
+            }, 900)
+
+            return () => clearTimeout(timeout)
+        }
+    }, [copySuccess, toggleCopySuccess])
+
     const { send } = useGameServerCommands("/public/commander")
 
     // sub to player profile
@@ -58,41 +70,53 @@ export const PlayerProfilePage = () => {
                 const resp = await send<PlayerProfile>(GameServerKeys.PlayerProfileGet, {
                     player_gid: id,
                 })
+
                 setProfile(resp)
                 setLoading(false)
             } catch (e) {
+                let errorMessage = ""
                 if (typeof e === "string") {
-                    setProfileError(e)
+                    errorMessage = e
                 } else if (e instanceof Error) {
-                    setProfileError(e.message)
+                    errorMessage = e.message
                 }
+                setProfileError(errorMessage)
                 setLoading(false)
+
+                // push to /404 if player doesnt exist
+                if (errorMessage.toLowerCase() === "sql: no rows in result set") {
+                    history.push("/404")
+                }
             } finally {
                 setLoading(false)
             }
         },
-        [send],
+        [send, history],
     )
 
     useEffect(() => {
         fetchProfile(playerID)
-    }, [playerID])
+    }, [playerID, fetchProfile])
 
     const faction = profile?.faction
     const primaryColor = faction?.primary_color || theme.factionTheme.primary
     const backgroundColor = faction?.background_color || theme.factionTheme.background
 
-    // if (loading) {
-    //     return (
-    //         <Stack alignItems="center" sx={{ width: "13rem" }}>
-    //             <CircularProgress size="1.8rem" sx={{ color: primaryColor }} />
-    //         </Stack>
-    //     )
-    // }
-    if (!profile) {
-        return <div></div>
+    if (loading) {
+        return (
+            <Stack alignItems="center" justifyContent={"center"} sx={{ width: "100%", height: "100%" }}>
+                <CircularProgress size="3rem" sx={{ color: primaryColor }} />
+                <Typography sx={{ fontFamily: fonts.nostromoBlack, mr: "1rem" }}>Loading Profile</Typography>
+            </Stack>
+        )
     }
-
+    if ((!loading && profileError) || !profile) {
+        return (
+            <Stack sx={{ flex: 1, px: "1rem" }}>
+                <Typography sx={{ color: colors.red, textTransform: "uppercase" }}>{profileError}</Typography>
+            </Stack>
+        )
+    }
     return (
         <Stack direction="column" sx={{ height: "100%" }}>
             {/* top part */}
@@ -108,10 +132,7 @@ export const PlayerProfilePage = () => {
                 }}
             >
                 <Stack spacing="1.6rem" sx={{ p: "1rem 1rem" }}>
-                    {/* Mech avatar, label, name etc */}
                     <Stack spacing=".5rem"></Stack>
-
-                    {/* Bar stats */}
                     <Stack spacing="1.8rem">
                         <Stack>
                             <Avatar
@@ -126,9 +147,32 @@ export const PlayerProfilePage = () => {
                                 }}
                                 variant="square"
                             />
-                            <Stack direction="row">
+                            <Stack
+                                direction="row"
+                                alignItems={"center"}
+                                sx={{ cursor: "pointer", ":hover": { opacity: 0.8 } }}
+                                onClick={() => {
+                                    navigator.clipboard.writeText(window.location.href).then(
+                                        () => toggleCopySuccess(true),
+                                        () => toggleCopySuccess(false),
+                                    )
+                                }}
+                            >
                                 <Typography sx={{ fontFamily: fonts.nostromoBlack, fontSize: "5rem" }}>{profile.player.username}</Typography>
                                 <Typography sx={{ fontFamily: fonts.nostromoBlack, fontSize: "5rem", color: primaryColor }}>#{profile.player.gid}</Typography>
+
+                                {copySuccess && (
+                                    <Typography
+                                        sx={{
+                                            fontFamily: fonts.nostromoBold,
+                                            marginTop: ".5rem",
+                                            marginLeft: "1rem",
+                                            fontSize: "2rem",
+                                        }}
+                                    >
+                                        profile link copied
+                                    </Typography>
+                                )}
                             </Stack>
                         </Stack>
                         <Typography sx={{ fontFamily: fonts.nostromoBlack }}>{snakeToTitle(profile.player.rank)}</Typography>
@@ -159,7 +203,6 @@ export const PlayerProfilePage = () => {
                             flex: 1,
                             overflowY: "auto",
                             overflowX: "hidden",
-                            ml: "1.9rem",
                             mt: ".4rem",
                             mb: ".8rem",
                             direction: "ltr",
@@ -178,15 +221,10 @@ export const PlayerProfilePage = () => {
                         }}
                     >
                         <Box sx={{ direction: "ltr", height: 0 }}>
-                            <Stack sx={{ p: "1rem 1rem" }}>
-                                <Stack spacing=".5rem"></Stack>
-
-                                <Stack>
-                                    <Stack direction="column" spacing=".8rem">
-                                        {/* <SvgStats fill={primaryColor} size="1.6rem" /> */}
-                                        <Typography sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack }}>Battle History</Typography>
-                                        <PlayerMechHistory playerID={profile.player.id} />
-                                    </Stack>
+                            <Stack direction="column" spacing="1.6rem">
+                                <PageHeader title="BATTLE HISTORY" description="" primaryColor={primaryColor} imageUrl={WarMachineIconPNG} />
+                                <Stack sx={{ p: "1rem 1rem" }}>
+                                    <PlayerMechHistory playerID={profile.player.id} />
                                 </Stack>
                             </Stack>
                         </Box>
@@ -194,10 +232,10 @@ export const PlayerProfilePage = () => {
                 </Stack>
 
                 {/* Right side */}
-                <Stack padding="1.6rem" spacing="1rem" sx={{ height: "100%", flex: 1, backgroundColor: backgroundColor }}>
+                <Stack direction="row" padding="1.6rem" spacing="1rem" sx={{ height: "100%", flex: 1, backgroundColor: backgroundColor }}>
                     <Stack spacing="1rem" direction="row" flexWrap={"wrap"}>
                         {/* Stats box */}
-                        <Stack direction="row" spacing="1rem" sx={{ height: "100%" }}>
+                        <Stack direction="row" spacing="1rem" sx={{ height: "100%", width: "40rem" }}>
                             <ClipThing
                                 clipSize="10px"
                                 border={{
@@ -211,14 +249,9 @@ export const PlayerProfilePage = () => {
                                 <Stack sx={{ position: "relative", height: "100%" }}>
                                     <Stack sx={{ flex: 1 }}>
                                         <PageHeader title="Stats" description="" primaryColor={primaryColor} imageUrl={WarMachineIconPNG} />
-
-                                        <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
-                                            <Box
+                                        <Stack sx={{ flex: 1 }}>
+                                            <Stack
                                                 sx={{
-                                                    ml: "1.9rem",
-                                                    mr: ".5rem",
-                                                    pr: "1.4rem",
-                                                    my: "1rem",
                                                     flex: 1,
                                                     overflowY: "auto",
                                                     overflowX: "hidden",
@@ -237,29 +270,27 @@ export const PlayerProfilePage = () => {
                                                     },
                                                 }}
                                             >
-                                                <Box sx={{ height: "3rem", width: "100%", position: "relative" }}>
-                                                    <Typography sx={{ color: "white", fontFamily: fonts.nostromoBlack }}>
-                                                        Mech Kills: {profile.stats.mech_kill_count}
-                                                    </Typography>
-                                                </Box>
-
-                                                <Box sx={{ height: "3rem", width: "100%", position: "relative" }}>
-                                                    <Typography sx={{ color: "white", fontFamily: fonts.nostromoBlack }}>
-                                                        Abilities: {profile.stats.total_ability_triggered}
-                                                    </Typography>
-                                                </Box>
-                                                <Box sx={{ height: "3rem", width: "100%", position: "relative" }}>
-                                                    <Typography sx={{ color: "white", fontFamily: fonts.nostromoBlack }}>
-                                                        Ability Kills: {profile.stats.ability_kill_count}
-                                                    </Typography>
-                                                </Box>
-
-                                                <Box sx={{ height: "3rem", width: "100%", position: "relative" }}>
-                                                    <Typography sx={{ color: "white", fontFamily: fonts.nostromoBlack }}>
-                                                        Battles Spectated: {profile.stats.view_battle_count}
-                                                    </Typography>
-                                                </Box>
-                                            </Box>
+                                                <StatItem
+                                                    label="Abilities"
+                                                    value={profile.stats.total_ability_triggered}
+                                                    icon={<SvgAbility size="1.1rem" sx={{ pb: ".4rem" }} />}
+                                                />
+                                                <StatItem
+                                                    label="Mech Kills"
+                                                    value={profile.stats.mech_kill_count}
+                                                    icon={<SvgSkull2 size="1.1rem" sx={{ pb: ".4rem" }} />}
+                                                />
+                                                <StatItem
+                                                    label="Ability Kills"
+                                                    value={profile.stats.ability_kill_count}
+                                                    icon={<SvgDeath size="1.1rem" sx={{ pb: ".4rem" }} />}
+                                                />
+                                                <StatItem
+                                                    label="Spectated"
+                                                    value={profile.stats.view_battle_count}
+                                                    icon={<SvgView size="1.1rem" sx={{ pb: ".4rem" }} />}
+                                                />
+                                            </Stack>
                                         </Stack>
                                     </Stack>
                                 </Stack>
@@ -268,7 +299,9 @@ export const PlayerProfilePage = () => {
                     </Stack>
 
                     {/* war machines */}
-                    <PublicWarmachines playerID={profile.player.id} backgroundColour={backgroundColor} primaryColour={primaryColor} />
+                    <Stack direction="row" spacing="1rem" sx={{ height: "100%", width: "100%" }}>
+                        <PublicWarmachines playerID={profile.player.id} backgroundColour={backgroundColor} primaryColour={primaryColor} />
+                    </Stack>
                 </Stack>
             </Stack>
         </Stack>
@@ -310,6 +343,21 @@ const PlayerMechHistory = ({ playerID }: { playerID: string }) => {
         fetchHistory()
     }, [send, fetchHistory])
 
+    if (historyLoading) {
+        return (
+            <Stack justifyContent="center" alignItems="center" sx={{ height: "6rem" }}>
+                <CircularProgress size="2rem" sx={{ mt: "2rem", color: theme.factionTheme.primary }} />
+            </Stack>
+        )
+    }
+    if (!historyLoading && historyError) {
+        return (
+            <Stack sx={{ flex: 1, px: "1rem" }}>
+                <Typography sx={{ color: colors.red, textTransform: "uppercase" }}>{historyError}</Typography>
+            </Stack>
+        )
+    }
+
     return (
         <Stack sx={{ height: "100%" }}>
             <Stack spacing="1.6rem">
@@ -329,5 +377,86 @@ const PlayerMechHistory = ({ playerID }: { playerID: string }) => {
                 })}
             </Stack>
         </Stack>
+    )
+}
+
+interface StatItemProps {
+    label: string
+    value: number
+    icon: React.ReactNode
+}
+
+export const StatItem = ({ label, value, icon }: StatItemProps) => {
+    const statusColor = colors.grey
+
+    return (
+        <ClipThing
+            clipSize="10px"
+            border={{
+                isFancy: true,
+                borderColor: statusColor,
+                borderThickness: ".2rem",
+            }}
+            corners={{}}
+            opacity={0.7}
+            backgroundColor="#000000"
+            sx={{ flexShrink: 0 }}
+        >
+            <Stack
+                spacing="2rem"
+                direction="row"
+                sx={{
+                    position: "relative",
+                    p: "1rem 1.6rem",
+                }}
+            >
+                <Stack
+                    sx={{
+                        position: "absolute",
+                        top: 0,
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        background: `linear-gradient(60deg, rgba(0, 0, 0, 0.6) 30%, ${statusColor}60)`,
+                        zIndex: -1,
+                    }}
+                />
+
+                <Stack
+                    alignContent={"space-between"}
+                    sx={{
+                        width: "100%",
+                        position: "absolute",
+                        top: 0,
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        opacity: 0.2,
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "center",
+                        backgroundSize: "cover",
+                        zIndex: -2,
+                    }}
+                />
+                {icon}
+
+                <Box>
+                    <Typography variant="h6" sx={{ fontFamily: fonts.nostromoBlack }}>
+                        {label}
+                    </Typography>
+                </Box>
+
+                <Stack alignItems="flex-end" alignSelf="center" sx={{ ml: "auto" }}>
+                    <Typography
+                        sx={{
+                            fontFamily: fonts.nostromoBlack,
+                            color: colors.lightGrey,
+                        }}
+                    >
+                        {value}
+                    </Typography>
+                </Stack>
+            </Stack>
+        </ClipThing>
     )
 }

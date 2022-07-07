@@ -113,8 +113,8 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
 
     // Player profile
     player_profile: {
-        id: "player_profile",
-        path: "/player_profile/:playerID",
+        id: "profile",
+        path: "/profile/:playerID",
         exact: true,
         Component: PlayerProfilePage,
         requireAuth: false,

@@ -103,7 +103,7 @@ export const PublicWarmachines = ({ playerID, primaryColour, backgroundColour }:
 
         if (mechs && mechs.length > 0) {
             return (
-                <Box sx={{ direction: "ltr", height: 0 }}>
+                <Box sx={{ direction: "ltr", height: 0, width: "100%" }}>
                     <Box
                         sx={{
                             width: "100%",
@@ -164,7 +164,7 @@ export const PublicWarmachines = ({ playerID, primaryColour, backgroundColour }:
     }, [loadError, mechs, isLoading, primaryColour])
 
     return (
-        <Stack direction="row" spacing="1rem" sx={{ height: "100%" }}>
+        <Stack direction="row" spacing="1rem" sx={{ height: "100%", width: "100%" }}>
             <ClipThing
                 clipSize="10px"
                 border={{

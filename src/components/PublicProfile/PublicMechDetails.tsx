@@ -21,7 +21,6 @@ export const PublicWarmachineItem = ({
     backgroundColour: string
 }) => {
     const location = useLocation()
-    const theme = useTheme()
     const { send } = useGameServerCommands("/public/commander")
     const [mechDetails, setMechDetails] = useState<MechDetails>()
 
