@@ -1,17 +1,18 @@
-import { Box, Slide, Stack } from "@mui/material"
+import { Box, Fade, Slide, Stack } from "@mui/material"
 import { ReactElement, useEffect, useMemo } from "react"
 import { ClipThing } from ".."
 import { useAuth, useGame, useSupremacy } from "../../containers"
 import { useTheme } from "../../containers/theme"
 import { useToggle } from "../../hooks"
 import { siteZIndex } from "../../theme/theme"
+import { AIType } from "../../types"
 import { WarMachineItem } from "./WarMachineItem/WarMachineItem"
 
 export const WarMachineStats = () => {
     const theme = useTheme()
-    const { factionID } = useAuth()
+    const { factionID, userID } = useAuth()
     const { battleIdentifier } = useSupremacy()
-    const { warMachines, bribeStage } = useGame()
+    const { warMachines, spawnedAI, bribeStage } = useGame()
 
     // Temp hotfix ask james ****************************
     const [show, toggleShow] = useToggle(false)
@@ -23,6 +24,10 @@ export const WarMachineStats = () => {
     const factionMechs = useMemo(() => (warMachines ? warMachines.filter((wm) => wm.factionID && wm.factionID === factionID) : []), [warMachines, factionID])
     const otherMechs = useMemo(() => (warMachines ? warMachines.filter((wm) => wm.factionID && wm.factionID !== factionID) : []), [warMachines, factionID])
     const haveFactionMechs = useMemo(() => factionMechs.length > 0, [factionMechs])
+    const ownedMiniMechs = useMemo(
+        () => (spawnedAI ? spawnedAI.filter((sa) => sa.aiType === AIType.MiniMech && sa.ownedByID === userID) : []),
+        [spawnedAI, userID],
+    )
 
     if (!warMachines || warMachines.length <= 0) return null
 
@@ -40,6 +45,25 @@ export const WarMachineStats = () => {
                     filter: "drop-shadow(0 3px 3px #00000020)",
                 }}
             >
+                <Fade in={ownedMiniMechs.length > 0}>
+                    <Stack direction="row" alignItems="flex-end" sx={{ ml: "-3rem", pl: "2rem", transform: "skew(-6deg)" }}>
+                        <ClipThing
+                            clipSize="10px"
+                            corners={{ topRight: true }}
+                            opacity={0.7}
+                            backgroundColor={theme.factionTheme.background}
+                            sx={{ height: "100%" }}
+                        >
+                            <HorizontalScrollContainer>
+                                <Stack spacing="-.6rem" direction="row" alignItems="center" justifyContent="center" sx={{ px: "2rem", py: "2rem" }}>
+                                    {ownedMiniMechs.map((mm) => (
+                                        <WarMachineItem key={`${mm.participantID}`} warMachine={mm} scale={0.5} />
+                                    ))}
+                                </Stack>
+                            </HorizontalScrollContainer>
+                        </ClipThing>
+                    </Stack>
+                </Fade>
                 <Stack direction="row" alignItems="flex-end" sx={{ ml: "-3rem", pl: "2rem", transform: "skew(-6deg)" }}>
                     {haveFactionMechs && (
                         <ClipThing

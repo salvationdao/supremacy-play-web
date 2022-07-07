@@ -214,7 +214,7 @@ const MapMechInner = ({ warMachine, map, isAI }: MapMechInnerProps) => {
                         }}
                     >
                         <Typography
-                            variant="h1"
+                            variant={isAI ? "h4" : "h1"}
                             sx={{
                                 fontFamily: fonts.nostromoBlack,
                             }}
