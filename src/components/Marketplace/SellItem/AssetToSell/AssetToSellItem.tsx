@@ -62,8 +62,8 @@ export const AssetToSellItem = ({
             setLabel(assetToSell.mysteryCrate?.label || mysteryCrate?.label)
             setDescription(assetToSell.mysteryCrate?.description || mysteryCrate?.description)
         } else if (itemType === ItemType.Weapon) {
-            setAvatarUrl(assetToSell.weapon?.image_url || weaponDetails?.image_url || SafePNG)
-            setImageUrl(assetToSell.weapon?.image_url || weaponDetails?.image_url || SafePNG)
+            setAvatarUrl(assetToSell.weapon?.avatar_url || weaponDetails?.avatar_url)
+            setImageUrl(assetToSell.weapon?.large_image_url || weaponDetails?.large_image_url)
             setVideoUrl(assetToSell.weapon?.animation_url || weaponDetails?.animation_url)
             setVideoUrl2(assetToSell.weapon?.card_animation_url || weaponDetails?.card_animation_url)
             setLabel(assetToSell.weapon?.label)
