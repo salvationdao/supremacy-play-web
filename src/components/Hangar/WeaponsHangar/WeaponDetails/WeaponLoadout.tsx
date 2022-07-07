@@ -6,7 +6,7 @@ import { Weapon } from "../../../../types"
 import { MechLoadoutItem } from "../../WarMachinesHangar/Common/MechLoadoutItem"
 
 export const WeaponLoadout = ({ weaponDetails }: { weaponDetails: Weapon }) => {
-    const skin = weaponDetails.weaponSkin
+    const skin = weaponDetails.weapon_skin
 
     return (
         <Box

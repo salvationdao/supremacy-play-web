@@ -36,8 +36,8 @@ export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGri
 
     const primaryColor = theme.factionTheme.primary
     const backgroundColor = theme.factionTheme.background
-    const imageUrl = weaponDetails?.weaponSkin?.avatar_url || weaponDetails?.avatar_url || weapon.avatar_url
-    const largeImageUrl = weaponDetails?.weaponSkin?.large_image_url || weaponDetails?.large_image_url || weapon.large_image_url
+    const imageUrl = weaponDetails?.weapon_skin?.avatar_url || weaponDetails?.avatar_url || weapon.avatar_url
+    const largeImageUrl = weaponDetails?.weapon_skin?.large_image_url || weaponDetails?.large_image_url || weapon.large_image_url
 
     return (
         <Box sx={{ position: "relative", overflow: "visible", height: "100%" }}>
@@ -112,7 +112,7 @@ export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGri
                         <Stack direction="row" sx={{ pt: ".4rem" }}>
                             <TooltipHelper text="Weapon submodel" placement="bottom">
                                 <Box>
-                                    <SvgSkin fill={weapon.weaponSkin ? colors.chassisSkin : `${colors.darkGrey}80`} size="1.5rem" />
+                                    <SvgSkin fill={weaponDetails?.weapon_skin ? colors.chassisSkin : `${colors.darkGrey}80`} size="1.5rem" />
                                 </Box>
                             </TooltipHelper>
                         </Stack>
