@@ -198,7 +198,7 @@ export const AuthProvider: React.FC = ({ children }) => {
 
             return index !== -1
         },
-        [user, user.features],
+        [user],
     )
     return (
         <AuthContext.Provider
