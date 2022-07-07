@@ -6,10 +6,11 @@ import { KeycardsHangar } from "../components/Hangar/KeycardsHangar/KeycardsHang
 import { MysteryCratesHangar } from "../components/Hangar/MysteryCratesHangar/MysteryCratesHangar"
 import { PlayerAbilitiesHangar } from "../components/Hangar/PlayerAbilitiesHangar/PlayerAbilitiesHangar"
 import { WarMachinesHangar } from "../components/Hangar/WarMachinesHangar/WarMachinesHangar"
-import { STAGING_OR_DEV_ONLY } from "../constants"
 import { useTheme } from "../containers/theme"
 import { ROUTES_MAP } from "../routes"
 import { siteZIndex } from "../theme/theme"
+import { useAuth } from "../containers"
+import { FeatureType } from "../types"
 
 export enum HANGAR_TABS {
     WarMachines = "war-machines",
@@ -22,6 +23,7 @@ export const HangarPage = () => {
     const theme = useTheme()
     const location = useLocation()
     const history = useHistory()
+    const { userHasFeature } = useAuth()
     const { type } = useParams<{ type: HANGAR_TABS }>()
     const [currentValue, setCurrentValue] = useState<HANGAR_TABS>()
 
@@ -76,7 +78,7 @@ export const HangarPage = () => {
                         <Tab label="WAR MACHINES" value={HANGAR_TABS.WarMachines} />
                         <Tab label="KEY CARDS" value={HANGAR_TABS.Keycards} />
                         <Tab label="MYSTERY CRATES" value={HANGAR_TABS.MysteryCrates} />
-                        {STAGING_OR_DEV_ONLY && <Tab label="ABILITIES" value={HANGAR_TABS.Abilities} />}
+                        {userHasFeature(FeatureType.playerAbility) && <Tab label="ABILITIES" value={HANGAR_TABS.Abilities} />}
                     </Tabs>
                 </Box>
 

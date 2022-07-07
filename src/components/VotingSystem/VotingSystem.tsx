@@ -1,11 +1,11 @@
 import { Box, Fade, Stack } from "@mui/material"
 import { useMemo } from "react"
 import { BattleAbilityItem, FactionAbilities, MoveableResizable } from ".."
-import { STAGING_OR_DEV_ONLY } from "../../constants"
 import { BribeStageResponse, useAuth, useGame } from "../../containers"
 import { useTheme } from "../../containers/theme"
 import { MoveableResizableConfig } from "../Common/MoveableResizable/MoveableResizableContainer"
 import { PlayerAbilities } from "./PlayerAbilities/PlayerAbilities"
+import { FeatureType } from "../../types"
 
 export const VotingSystem = () => {
     const { userID } = useAuth()
@@ -22,7 +22,7 @@ interface VotingSystemInnerProps {
 
 const VotingSystemInner = ({ userID, bribeStage }: VotingSystemInnerProps) => {
     const theme = useTheme()
-    const { factionID } = useAuth()
+    const { factionID, userHasFeature } = useAuth()
     const isBattleStarted = useMemo(() => bribeStage && bribeStage.phase !== "HOLD", [bribeStage])
 
     const config: MoveableResizableConfig = useMemo(
@@ -77,7 +77,7 @@ const VotingSystemInner = ({ userID, bribeStage }: VotingSystemInnerProps) => {
                             <Stack spacing="2rem" sx={{ direction: "ltr", pt: ".4rem", pb: "1.2rem" }}>
                                 <BattleAbilityItem key={factionID} />
                                 <FactionAbilities />
-                                {STAGING_OR_DEV_ONLY && userID && <PlayerAbilities />}
+                                {userHasFeature(FeatureType.playerAbility) && userID && <PlayerAbilities />}
                             </Stack>
                         </Box>
                     </Stack>

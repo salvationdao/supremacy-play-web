@@ -75,3 +75,8 @@ export interface Feature {
     id: string
     type: string
 }
+
+export enum FeatureType {
+    mechMove = "MECH_MOVE",
+    playerAbility = "PLAYER_ABILITY",
+}

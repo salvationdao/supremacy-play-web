@@ -37,7 +37,7 @@ export const FallbackFaction: Faction = {
 export interface AuthState {
     isLoggingIn: boolean
     onLogInClick: () => void
-
+    userHasFeature: (featureType: string) => boolean
     user: User
     userID: string
     factionID: string
@@ -55,7 +55,9 @@ const initialState: AuthState = {
     onLogInClick: () => {
         return
     },
-
+    userHasFeature: () => {
+        return false
+    },
     user: FallbackUser,
     userID: FallbackUser.id,
     factionID: FallbackUser.faction_id,
@@ -189,11 +191,20 @@ export const AuthProvider: React.FC = ({ children }) => {
         setPassportPopup(popup)
     }, [isLoggingIn])
 
+    const userHasFeature = useCallback(
+        (featureType: string) => {
+            const index = user.features.findIndex((el) => el.type === featureType)
+
+            return index !== -1
+        },
+        [user, user.features],
+    )
     return (
         <AuthContext.Provider
             value={{
                 isLoggingIn,
                 onLogInClick,
+                userHasFeature,
                 user,
                 userID,
                 factionID,
