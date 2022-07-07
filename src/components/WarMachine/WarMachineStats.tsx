@@ -46,22 +46,16 @@ export const WarMachineStats = () => {
                 }}
             >
                 <Fade in={ownedMiniMechs.length > 0}>
-                    <Stack direction="row" alignItems="flex-end" sx={{ ml: "-3rem", pl: "2rem", transform: "skew(-6deg)" }}>
-                        <ClipThing
-                            clipSize="10px"
-                            corners={{ topRight: true }}
-                            opacity={0.7}
-                            backgroundColor={theme.factionTheme.background}
-                            sx={{ height: "100%" }}
-                        >
+                    <Stack direction="row" sx={{ ml: "-3rem", pl: "2rem", transform: "skew(-6deg)" }}>
+                        <Box>
                             <HorizontalScrollContainer>
-                                <Stack spacing="-.6rem" direction="row" alignItems="center" justifyContent="center" sx={{ px: ".6rem", py: ".6rem" }}>
+                                <Stack spacing="-3rem" direction="row" alignItems="center" justifyContent="center" sx={{ px: ".6rem", py: ".6rem" }}>
                                     {ownedMiniMechs.map((mm) => (
-                                        <WarMachineItem key={`${mm.participantID}`} warMachine={mm} scale={0.5} />
+                                        <WarMachineItem key={`${mm.participantID}`} warMachine={mm} scale={0.6} />
                                     ))}
                                 </Stack>
                             </HorizontalScrollContainer>
-                        </ClipThing>
+                        </Box>
                     </Stack>
                 </Fade>
                 <Stack direction="row" alignItems="flex-end" sx={{ ml: "-3rem", pl: "2rem", transform: "skew(-6deg)" }}>

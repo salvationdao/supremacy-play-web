@@ -170,7 +170,6 @@ const MiniMapInner = ({ map, isTargeting, isEnlarged, toRender }: { map: Map; is
                         px: "1.8rem",
                         backgroundColor: "#000000BF",
                         borderBottom: `${theme.factionTheme.primary}80 .25rem solid`,
-                        zIndex: 99,
                     }}
                 >
                     <Typography
@@ -188,9 +187,10 @@ const MiniMapInner = ({ map, isTargeting, isEnlarged, toRender }: { map: Map; is
                     </Typography>
                 </Stack>
 
-                <MiniMapInside containerDimensions={{ width: curWidth, height: curHeight - TOP_BAR_HEIGHT * remToPxRatio }} />
-
-                <TargetHint />
+                <Box sx={{ position: "relative" }}>
+                    <MiniMapInside containerDimensions={{ width: curWidth, height: curHeight - TOP_BAR_HEIGHT * remToPxRatio }} />
+                    <TargetHint />
+                </Box>
             </Box>
         )
     }, [toRender, theme.factionTheme.primary, mapName, curWidth, curHeight, remToPxRatio])

@@ -134,7 +134,7 @@ interface MechCommandButton {
     mechMoveCommandID: string
 }
 
-const MechMoveCommandAbility: BlueprintPlayerAbility = {
+export const MechMoveCommandAbility: BlueprintPlayerAbility = {
     id: "",
     game_client_ability_id: 8,
     label: "Mech Move Command",

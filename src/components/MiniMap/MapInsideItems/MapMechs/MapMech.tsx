@@ -361,6 +361,7 @@ const MapMechInner = ({ warMachine, map, isAI }: MapMechInnerProps) => {
             </Stack>
         )
     }, [
+        isAI,
         isHidden,
         dirArrowLength,
         handleClick,
