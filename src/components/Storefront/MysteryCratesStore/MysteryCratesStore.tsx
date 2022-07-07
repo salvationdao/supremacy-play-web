@@ -9,7 +9,7 @@ import { usePagination, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import {  StorefrontMysteryCrate } from "../../../types"
+import { StorefrontMysteryCrate } from "../../../types"
 import { PageHeader } from "../../Common/PageHeader"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { MysteryCrateStoreItem, MysteryCrateStoreItemLoadingSkeleton } from "./MysteryCrateStoreItem/MysteryCrateStoreItem"
@@ -112,11 +112,7 @@ export const MysteryCratesStore = () => {
                         }}
                     >
                         {crates.map((crate, index) => (
-                            <MysteryCrateStoreItem
-                                key={`storefront-mystery-crate-${crate.id}-${index}`}
-                                enlargedView={enlargedView}
-                                crate={crate}
-                            />
+                            <MysteryCrateStoreItem key={`storefront-mystery-crate-${crate.id}-${index}`} enlargedView={enlargedView} crate={crate} />
                         ))}
                     </Box>
                 </Box>
@@ -181,13 +177,10 @@ export const MysteryCratesStore = () => {
                             </Typography>
                         }
                         description={
-                            <Typography sx={{ fontSize: "1.85rem" }}>
-                                Gear up for the battle arena with a variety of War Machines and Weapons.
-                            </Typography>
+                            <Typography sx={{ fontSize: "1.85rem" }}>Gear up for the battle arena with a variety of War Machines and Weapons.</Typography>
                         }
                         imageUrl={SafePNG}
-                    >
-                    </PageHeader>
+                    ></PageHeader>
 
                     <TotalAndPageSizeOptions
                         countItems={crates?.length}

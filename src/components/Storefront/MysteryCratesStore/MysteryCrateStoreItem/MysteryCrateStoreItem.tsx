@@ -193,75 +193,75 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate }: MysteryCrateStore
                                     gap: "2rem",
                                 }}
                             >
-                                    <ClipThing
-                                        clipSize="5px"
-                                        clipSlantSize="2px"
-                                        border={{
-                                            borderColor: primaryColor,
-                                            borderThickness: "1.5px",
-                                        }}
-                                        opacity={0.9}
-                                        backgroundColor={backgroundColor}
-                                        sx={{ height: "100%", width: "15rem" }}
-                                    >
-                                        <Stack direction="row" justifyContent="space-between">
-                                            <TextField
-                                                variant="outlined"
-                                                hiddenLabel
-                                                placeholder={"1"}
-                                                onWheel={(event) => {
-                                                    event.currentTarget.getElementsByTagName("input")[0]?.blur()
-                                                }}
-                                                sx={{
-                                                    backgroundColor: "#00000090",
-                                                    ".MuiOutlinedInput-input": {
-                                                        px: "1.5rem",
-                                                        py: "1.5rem",
-                                                        fontSize: "2rem",
-                                                        height: "unset",
-                                                        "::-webkit-outer-spin-button, ::-webkit-inner-spin-button": {
-                                                            "-webkit-appearance": "none",
-                                                        },
-                                                        appearance: "textfield",
+                                <ClipThing
+                                    clipSize="5px"
+                                    clipSlantSize="2px"
+                                    border={{
+                                        borderColor: primaryColor,
+                                        borderThickness: "1.5px",
+                                    }}
+                                    opacity={0.9}
+                                    backgroundColor={backgroundColor}
+                                    sx={{ height: "100%", width: "15rem" }}
+                                >
+                                    <Stack direction="row" justifyContent="space-between">
+                                        <TextField
+                                            variant="outlined"
+                                            hiddenLabel
+                                            placeholder={"1"}
+                                            onWheel={(event) => {
+                                                event.currentTarget.getElementsByTagName("input")[0]?.blur()
+                                            }}
+                                            sx={{
+                                                backgroundColor: "#00000090",
+                                                ".MuiOutlinedInput-input": {
+                                                    px: "1.5rem",
+                                                    py: "1.5rem",
+                                                    fontSize: "2rem",
+                                                    height: "unset",
+                                                    "::-webkit-outer-spin-button, ::-webkit-inner-spin-button": {
+                                                        "-webkit-appearance": "none",
                                                     },
-                                                    ".MuiOutlinedInput-notchedOutline": { border: "unset" },
-                                                }}
-                                                type="number"
-                                                value={quantity}
-                                                onChange={(e) => {
-                                                    const newAmount = parseInt(e.target.value)
-                                                    setQuantity(newAmount)
+                                                    appearance: "textfield",
+                                                },
+                                                ".MuiOutlinedInput-notchedOutline": { border: "unset" },
+                                            }}
+                                            type="number"
+                                            value={quantity}
+                                            onChange={(e) => {
+                                                const newAmount = parseInt(e.target.value)
+                                                setQuantity(newAmount)
+                                            }}
+                                        />
+                                        <Stack
+                                            sx={{
+                                                height: "5rem",
+                                                p: "1em",
+                                                "& svg:active": {
+                                                    transform: "scale(1.5)",
+                                                    transition: "all .2s",
+                                                },
+                                            }}
+                                        >
+                                            <SvgArrow
+                                                size="1.5rem"
+                                                sx={{ cursor: "pointer", zIndex: 1 }}
+                                                fill={primaryColor}
+                                                onClick={() => {
+                                                    setQuantity(quantity + 1)
                                                 }}
                                             />
-                                            <Stack
-                                                sx={{
-                                                    height: "5rem",
-                                                    p: "1em",
-                                                    "& svg:active": {
-                                                        transform: "scale(1.5)",
-                                                        transition: "all .2s",
-                                                    },
+                                            <SvgArrow
+                                                size="1.5rem"
+                                                sx={{ transform: "rotate(180deg)", cursor: "pointer" }}
+                                                fill={primaryColor}
+                                                onClick={() => {
+                                                    if (quantity > 1) setQuantity(quantity - 1)
                                                 }}
-                                            >
-                                                <SvgArrow
-                                                    size="1.5rem"
-                                                    sx={{ cursor: "pointer", zIndex: 1 }}
-                                                    fill={primaryColor}
-                                                    onClick={() => {
-                                                         setQuantity(quantity + 1)
-                                                    }}
-                                                />
-                                                <SvgArrow
-                                                    size="1.5rem"
-                                                    sx={{ transform: "rotate(180deg)", cursor: "pointer" }}
-                                                    fill={primaryColor}
-                                                    onClick={() => {
-                                                        if (quantity > 1) setQuantity(quantity - 1)
-                                                    }}
-                                                />
-                                            </Stack>
+                                            />
                                         </Stack>
-                                    </ClipThing>
+                                    </Stack>
+                                </ClipThing>
 
                                 <FancyButton
                                     onClick={() => toggleConfirmModalOpen(true)}
