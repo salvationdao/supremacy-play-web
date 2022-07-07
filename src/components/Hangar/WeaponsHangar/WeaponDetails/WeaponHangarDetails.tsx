@@ -1,7 +1,7 @@
 import { Box, CircularProgress, Stack, Typography, useTheme } from "@mui/material"
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useState } from "react"
 import { SvgStats } from "../../../../assets"
-import { getRarityDeets, getWeaponDamageTypeColor, getWeaponTypeColor } from "../../../../helpers"
+import { getWeaponDamageTypeColor, getWeaponTypeColor } from "../../../../helpers"
 import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { fonts } from "../../../../theme/theme"
@@ -17,8 +17,6 @@ export const WeaponHangarDetailsInner = ({ weaponID }: { weaponID: string }) => 
     const theme = useTheme()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [weaponDetails, setWeaponDetails] = useState<Weapon>()
-
-    const rarityDeets = useMemo(() => getRarityDeets(weaponDetails?.weapon_skin?.tier || ""), [weaponDetails])
 
     useEffect(() => {
         ;(async () => {
@@ -96,10 +94,6 @@ export const WeaponHangarDetailsInner = ({ weaponID }: { weaponID: string }) => 
                                 <Stack spacing="1.6rem" sx={{ p: "1rem 1rem" }}>
                                     {/* Weapon avatar, label, name etc */}
                                     <Stack spacing=".5rem">
-                                        <Typography variant="body2" sx={{ color: rarityDeets.color, fontFamily: fonts.nostromoHeavy }}>
-                                            {rarityDeets.label}
-                                        </Typography>
-
                                         <Typography sx={{ fontFamily: fonts.nostromoBlack }}>{weaponDetails.label}</Typography>
                                     </Stack>
 

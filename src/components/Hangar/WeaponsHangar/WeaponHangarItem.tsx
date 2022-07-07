@@ -1,9 +1,9 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { useLocation } from "react-router-dom"
 import { FancyButton } from "../.."
 import { useTheme } from "../../../containers/theme"
-import { getWeaponDamageTypeColor, getWeaponTypeColor } from "../../../helpers"
+import { getRarityDeets, getWeaponDamageTypeColor, getWeaponTypeColor } from "../../../helpers"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
@@ -16,6 +16,8 @@ export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGri
     const theme = useTheme()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [weaponDetails, setWeaponDetails] = useState<Weapon>()
+
+    const rarityDeets = useMemo(() => getRarityDeets(weaponDetails?.tier || ""), [weaponDetails])
 
     useEffect(() => {
         ;(async () => {
@@ -114,12 +116,18 @@ export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGri
                     </General>
 
                     <General isGridView={isGridView} title="SUBMODEL">
-                        <Typography
-                            variant="h6"
-                            sx={{ color: weaponDetails?.weapon_skin ? colors.chassisSkin : colors.darkGrey, fontWeight: "fontWeightBold" }}
-                        >
-                            {weaponDetails?.weapon_skin ? weaponDetails?.weapon_skin.label : "NOT EQUIPPED"}
-                        </Typography>
+                        {weaponDetails?.weapon_skin ? (
+                            <Stack spacing=".5rem">
+                                <Typography sx={{ lineHeight: 1, color: rarityDeets.color, fontWeight: "fontWeightBold" }}>{rarityDeets.label}</Typography>
+                                <Typography variant="h6" sx={{ lineHeight: 1, color: colors.chassisSkin, fontWeight: "fontWeightBold" }}>
+                                    {weaponDetails?.weapon_skin.label}
+                                </Typography>
+                            </Stack>
+                        ) : (
+                            <Typography variant="h6" sx={{ color: colors.darkGrey, fontWeight: "fontWeightBold" }}>
+                                NOT EQUIPPED
+                            </Typography>
+                        )}
                     </General>
 
                     <General title="DAMAGE">
