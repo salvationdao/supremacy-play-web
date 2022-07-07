@@ -39,7 +39,7 @@ export const WeaponLoadout = ({ weaponDetails }: { weaponDetails: Weapon }) => {
                         rarity={getRarityDeets(skin.tier)}
                     />
                 ) : (
-                    <MechLoadoutItem label="WEAPON SUBMODEL" primaryColor={colors.chassisSkin} onClick={() => console.log("AAAAA")} isEmpty />
+                    <MechLoadoutItem label="SUBMODEL" primaryColor={colors.chassisSkin} onClick={() => console.log("AAAAA")} isEmpty />
                 )}
             </Stack>
         </Box>

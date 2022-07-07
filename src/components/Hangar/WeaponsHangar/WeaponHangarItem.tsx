@@ -1,8 +1,7 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
 import { useLocation } from "react-router-dom"
-import { FancyButton, TooltipHelper } from "../.."
-import { SvgSkin } from "../../../assets"
+import { FancyButton } from "../.."
 import { useTheme } from "../../../containers/theme"
 import { getRarityDeets, getWeaponDamageTypeColor, getWeaponTypeColor } from "../../../helpers"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
@@ -92,11 +91,33 @@ export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGri
                             {rarityDeets.label}
                         </Typography>
 
-                        <Typography sx={{ fontFamily: fonts.nostromoBlack }}>{weaponDetails?.label}</Typography>
+                        <Typography
+                            sx={{
+                                fontFamily: fonts.nostromoBlack,
+                                display: "-webkit-box",
+                                overflow: "hidden",
+                                overflowWrap: "anywhere",
+                                textOverflow: "ellipsis",
+                                WebkitLineClamp: 1, // change to max number of lines
+                                WebkitBoxOrient: "vertical",
+                            }}
+                        >
+                            {weaponDetails?.label}
+                        </Typography>
 
                         <Typography
                             variant="caption"
-                            sx={{ mb: ".2rem", color: getWeaponTypeColor(weaponDetails?.weapon_type), fontFamily: fonts.nostromoBold }}
+                            sx={{
+                                mb: ".2rem",
+                                color: getWeaponTypeColor(weaponDetails?.weapon_type),
+                                fontFamily: fonts.nostromoBold,
+                                display: "-webkit-box",
+                                overflow: "hidden",
+                                overflowWrap: "anywhere",
+                                textOverflow: "ellipsis",
+                                WebkitLineClamp: 1, // change to max number of lines
+                                WebkitBoxOrient: "vertical",
+                            }}
                         >
                             {weaponDetails?.weapon_type}
                         </Typography>
@@ -108,14 +129,10 @@ export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGri
                         </Typography>
                     </General>
 
-                    <General isGridView={isGridView} title="WEAPON SUBMODEL">
-                        <Stack direction="row" sx={{ pt: ".4rem" }}>
-                            <TooltipHelper text="Weapon submodel" placement="bottom">
-                                <Box>
-                                    <SvgSkin fill={weapon.weaponSkin ? colors.chassisSkin : `${colors.darkGrey}80`} size="1.5rem" />
-                                </Box>
-                            </TooltipHelper>
-                        </Stack>
+                    <General isGridView={isGridView} title="SUBMODEL">
+                        <Typography variant="h6" sx={{ color: weaponDetails?.weaponSkin ? colors.chassisSkin : colors.darkGrey, fontWeight: "fontWeightBold" }}>
+                            {weaponDetails?.weaponSkin ? weaponDetails?.weaponSkin.label : "NOT EQUIPPED"}
+                        </Typography>
                     </General>
 
                     <General title="DAMAGE">
