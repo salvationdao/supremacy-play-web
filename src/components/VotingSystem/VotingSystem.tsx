@@ -39,11 +39,12 @@ const VotingSystemInner = ({ userID, bribeStage }: VotingSystemInnerProps) => {
             minPosY: 0,
             // Size limits
             minWidth: 320,
-            minHeight: 168,
+            // minHeight: 168,
             maxWidth: 500,
-            maxHeight: 900,
+            // maxHeight: 900,
             // Others
             infoTooltipText: "Vote for game abilities and fight for your Faction!",
+            autoFit: true,
         }),
         [],
     )
@@ -54,7 +55,7 @@ const VotingSystemInner = ({ userID, bribeStage }: VotingSystemInnerProps) => {
         <Fade in={isBattleStarted}>
             <Box>
                 <MoveableResizable config={config}>
-                    <Stack sx={{ position: "relative", height: "100%" }}>
+                    <Stack sx={{ position: "relative" }}>
                         <Stack
                             direction="row"
                             alignItems="center"
@@ -72,7 +73,7 @@ const VotingSystemInner = ({ userID, bribeStage }: VotingSystemInnerProps) => {
 
                         <Box
                             sx={{
-                                height: "100%",
+                                maxHeight: "60rem",
                                 overflowY: "auto",
                                 overflowX: "hidden",
                                 ml: "1.9rem",
