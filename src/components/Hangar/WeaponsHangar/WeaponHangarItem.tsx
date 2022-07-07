@@ -118,7 +118,7 @@ export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGri
                     <General isGridView={isGridView} title="SUBMODEL">
                         {weaponDetails?.weapon_skin ? (
                             <Stack spacing=".5rem">
-                                <Typography variant="h6" sx={{ lineHeight: 1, color: primaryColor, fontWeight: "fontWeightBold" }}>
+                                <Typography variant="h6" sx={{ lineHeight: 1, color: colors.chassisSkin, fontWeight: "fontWeightBold" }}>
                                     {weaponDetails?.weapon_skin.label}
                                 </Typography>
                                 <Typography sx={{ lineHeight: 1, color: rarityDeets.color, fontWeight: "fontWeightBold" }}>{rarityDeets.label}</Typography>
