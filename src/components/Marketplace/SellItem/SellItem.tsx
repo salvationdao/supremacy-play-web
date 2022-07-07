@@ -446,6 +446,9 @@ export const SellItemInner = ({ toggleReset }: { toggleReset: () => void }) => {
                             case ItemType.MysteryCrate:
                                 subPath = MARKETPLACE_TABS.MysteryCrates
                                 break
+                            case ItemType.Weapon:
+                                subPath = MARKETPLACE_TABS.Weapons
+                                break
                             case ItemType.Keycards:
                                 subPath = MARKETPLACE_TABS.Keycards
                                 break
