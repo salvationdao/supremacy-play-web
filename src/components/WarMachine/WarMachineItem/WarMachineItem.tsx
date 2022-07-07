@@ -55,7 +55,7 @@ export const WarMachineItem = ({ warMachine, scale }: { warMachine: WarMachineSt
     const openSkillsPopover = useCallback(() => {
         setTimeout(() => {
             togglePopoverOpen(true)
-        }, 120)
+        }, 110)
     }, [togglePopoverOpen])
 
     // Highlighting on the map
