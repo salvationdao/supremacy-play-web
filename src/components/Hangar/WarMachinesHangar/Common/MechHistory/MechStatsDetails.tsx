@@ -1,6 +1,7 @@
 import { Stack, Typography } from "@mui/material"
 import { SvgIntroAnimation, SvgOutroAnimation, SvgPowerCore, SvgSkin, SvgStats, SvgUtilities, SvgWeapons } from "../../../../../assets"
 import { useTheme } from "../../../../../containers/theme"
+import { getRarityDeets } from "../../../../../helpers"
 import { colors, fonts } from "../../../../../theme/theme"
 import { MechDetails } from "../../../../../types"
 import { MechBarStats } from "../MechBarStats"
@@ -43,6 +44,21 @@ export const MechStatsDetails = ({ mechDetails }: { mechDetails?: MechDetails })
 
             <Stack spacing="1rem">
                 <Stack direction="row" spacing=".8rem" alignItems="center">
+                    <SvgPowerCore fill={colors.powerCore} size="2.5rem" />
+                    <Typography variant="h5" sx={{ color: colors.powerCore, fontFamily: fonts.nostromoBlack }}>
+                        POWER CORE ({power_core_id ? 1 : 0}/1)
+                    </Typography>
+                </Stack>
+
+                {powerCore ? (
+                    <MechLoadoutItem imageUrl={powerCore.avatar_url} label={powerCore.label} primaryColor={colors.powerCore} Icon={SvgPowerCore} />
+                ) : (
+                    <Typography sx={{ color: colors.lightGrey, fontFamily: fonts.nostromoBold }}>NOT EQUIPPED</Typography>
+                )}
+            </Stack>
+
+            <Stack spacing="1rem">
+                <Stack direction="row" spacing=".8rem" alignItems="center">
                     <SvgWeapons fill={colors.weapons} size="2.5rem" />
                     <Typography variant="h5" sx={{ color: colors.weapons, fontFamily: fonts.nostromoBlack }}>
                         WEAPONS ({weapons.length}/{weapon_hardpoints})
@@ -52,24 +68,9 @@ export const MechStatsDetails = ({ mechDetails }: { mechDetails?: MechDetails })
                 {weapons.length > 0 ? (
                     <Stack direction="row" flexWrap="wrap">
                         {weapons.map((w) => {
-                            return <MechLoadoutItem key={w.id} imageUrl={w.avatar_url} label={w.label} primaryColor={colors.weapons} />
+                            return <MechLoadoutItem key={w.id} imageUrl={w.avatar_url} label={w.label} primaryColor={colors.weapons} Icon={SvgWeapons} />
                         })}
                     </Stack>
-                ) : (
-                    <Typography sx={{ color: colors.lightGrey, fontFamily: fonts.nostromoBold }}>NOT EQUIPPED</Typography>
-                )}
-            </Stack>
-
-            <Stack spacing="1rem">
-                <Stack direction="row" spacing=".8rem" alignItems="center">
-                    <SvgPowerCore fill={colors.powerCore} size="2.5rem" />
-                    <Typography variant="h5" sx={{ color: colors.powerCore, fontFamily: fonts.nostromoBlack }}>
-                        POWER CORE ({power_core_id ? 1 : 0}/1)
-                    </Typography>
-                </Stack>
-
-                {powerCore ? (
-                    <MechLoadoutItem imageUrl={powerCore.avatar_url} label={powerCore.label} primaryColor={colors.powerCore} />
                 ) : (
                     <Typography sx={{ color: colors.lightGrey, fontFamily: fonts.nostromoBold }}>NOT EQUIPPED</Typography>
                 )}
@@ -86,7 +87,7 @@ export const MechStatsDetails = ({ mechDetails }: { mechDetails?: MechDetails })
                 {utilities.length > 0 ? (
                     <Stack direction="row" flexWrap="wrap">
                         {utilities.map((w) => {
-                            return <MechLoadoutItem key={w.id} imageUrl={w.avatar_url} label={w.label} primaryColor={colors.utilities} />
+                            return <MechLoadoutItem key={w.id} imageUrl={w.avatar_url} label={w.label} primaryColor={colors.utilities} Icon={SvgUtilities} />
                         })}
                     </Stack>
                 ) : (
@@ -103,7 +104,13 @@ export const MechStatsDetails = ({ mechDetails }: { mechDetails?: MechDetails })
                 </Stack>
 
                 {chassisSkin ? (
-                    <MechLoadoutItem imageUrl={chassisSkin.image_url} label={chassisSkin.label} primaryColor={colors.chassisSkin} />
+                    <MechLoadoutItem
+                        imageUrl={chassisSkin.image_url}
+                        label={chassisSkin.label}
+                        primaryColor={colors.chassisSkin}
+                        Icon={SvgSkin}
+                        rarity={getRarityDeets(chassisSkin.tier)}
+                    />
                 ) : (
                     <Typography sx={{ color: colors.lightGrey, fontFamily: fonts.nostromoBold }}>NOT EQUIPPED</Typography>
                 )}
@@ -118,7 +125,12 @@ export const MechStatsDetails = ({ mechDetails }: { mechDetails?: MechDetails })
                 </Stack>
 
                 {introAnimation ? (
-                    <MechLoadoutItem imageUrl={introAnimation.avatar_url} label={introAnimation.label} primaryColor={colors.introAnimation} />
+                    <MechLoadoutItem
+                        imageUrl={introAnimation.avatar_url}
+                        label={introAnimation.label}
+                        primaryColor={colors.introAnimation}
+                        Icon={SvgIntroAnimation}
+                    />
                 ) : (
                     <Typography sx={{ color: colors.lightGrey, fontFamily: fonts.nostromoBold }}>NOT EQUIPPED</Typography>
                 )}
@@ -133,7 +145,12 @@ export const MechStatsDetails = ({ mechDetails }: { mechDetails?: MechDetails })
                 </Stack>
 
                 {outroAnimation ? (
-                    <MechLoadoutItem imageUrl={outroAnimation.avatar_url} label={outroAnimation.label} primaryColor={colors.outroAnimation} />
+                    <MechLoadoutItem
+                        imageUrl={outroAnimation.avatar_url}
+                        label={outroAnimation.label}
+                        primaryColor={colors.outroAnimation}
+                        Icon={SvgOutroAnimation}
+                    />
                 ) : (
                     <Typography sx={{ color: colors.lightGrey, fontFamily: fonts.nostromoBold }}>NOT EQUIPPED</Typography>
                 )}

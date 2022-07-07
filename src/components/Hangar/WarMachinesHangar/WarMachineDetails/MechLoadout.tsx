@@ -1,4 +1,6 @@
 import { Box, Stack } from "@mui/material"
+import { SvgIntroAnimation, SvgOutroAnimation, SvgPowerCore, SvgSkin, SvgUtilities, SvgWeapons } from "../../../../assets"
+import { getRarityDeets } from "../../../../helpers"
 import { colors } from "../../../../theme/theme"
 import { MechDetails } from "../../../../types"
 import { MechLoadoutItem } from "../Common/MechLoadoutItem"
@@ -36,14 +38,14 @@ export const MechLoadout = ({ mechDetails }: { mechDetails: MechDetails }) => {
                 }}
             >
                 {powerCore ? (
-                    <MechLoadoutItem imageUrl={powerCore.avatar_url} label={powerCore.label} primaryColor={colors.powerCore} />
+                    <MechLoadoutItem imageUrl={powerCore.avatar_url} label={powerCore.label} primaryColor={colors.powerCore} Icon={SvgPowerCore} />
                 ) : (
                     <MechLoadoutItem label="POWER CORE" primaryColor={colors.powerCore} onClick={() => console.log("AAAAA")} isEmpty />
                 )}
 
                 {weapons.length > 0 &&
                     weapons.map((w) => {
-                        return <MechLoadoutItem key={w.id} imageUrl={w.avatar_url} label={w.label} primaryColor={colors.weapons} />
+                        return <MechLoadoutItem key={w.id} imageUrl={w.avatar_url} label={w.label} primaryColor={colors.weapons} Icon={SvgWeapons} />
                     })}
 
                 {new Array(weaponSlots - weapons.length).fill(0).map((_, index) => (
@@ -52,7 +54,7 @@ export const MechLoadout = ({ mechDetails }: { mechDetails: MechDetails }) => {
 
                 {utilities.length > 0 &&
                     utilities.map((w) => {
-                        return <MechLoadoutItem key={w.id} imageUrl={w.avatar_url} label={w.label} primaryColor={colors.utilities} />
+                        return <MechLoadoutItem key={w.id} imageUrl={w.avatar_url} label={w.label} primaryColor={colors.utilities} Icon={SvgUtilities} />
                     })}
 
                 {new Array(utilitySlots - utilities.length).fill(0).map((_, index) => (
@@ -71,19 +73,35 @@ export const MechLoadout = ({ mechDetails }: { mechDetails: MechDetails }) => {
                 }}
             >
                 {chassisSkin ? (
-                    <MechLoadoutItem imageUrl={chassisSkin.image_url} label={chassisSkin.label} primaryColor={colors.chassisSkin} />
+                    <MechLoadoutItem
+                        imageUrl={chassisSkin.image_url}
+                        label={chassisSkin.label}
+                        primaryColor={colors.chassisSkin}
+                        Icon={SvgSkin}
+                        rarity={getRarityDeets(chassisSkin.tier)}
+                    />
                 ) : (
                     <MechLoadoutItem label="SUBMODEL" primaryColor={colors.chassisSkin} onClick={() => console.log("AAAAA")} isEmpty />
                 )}
 
                 {introAnimation ? (
-                    <MechLoadoutItem imageUrl={introAnimation.avatar_url} label={introAnimation.label} primaryColor={colors.introAnimation} />
+                    <MechLoadoutItem
+                        imageUrl={introAnimation.avatar_url}
+                        label={introAnimation.label}
+                        primaryColor={colors.introAnimation}
+                        Icon={SvgIntroAnimation}
+                    />
                 ) : (
                     <MechLoadoutItem label="INTRO ANIMATION" primaryColor={colors.introAnimation} onClick={() => console.log("AAAAA")} isEmpty />
                 )}
 
                 {outroAnimation ? (
-                    <MechLoadoutItem imageUrl={outroAnimation.avatar_url} label={outroAnimation.label} primaryColor={colors.outroAnimation} />
+                    <MechLoadoutItem
+                        imageUrl={outroAnimation.avatar_url}
+                        label={outroAnimation.label}
+                        primaryColor={colors.outroAnimation}
+                        Icon={SvgOutroAnimation}
+                    />
                 ) : (
                     <MechLoadoutItem label="OUTRO ANIMATION" primaryColor={colors.outroAnimation} onClick={() => console.log("AAAAA")} isEmpty />
                 )}
