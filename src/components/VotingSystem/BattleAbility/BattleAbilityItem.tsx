@@ -1,7 +1,8 @@
-import { Box, Fade, Stack, Typography } from "@mui/material"
+import { Box, Collapse, Fade, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
 import { useCallback, useMemo, useState } from "react"
-import { BattleAbilityCountdown, ClipThing } from "../.."
+import { BattleAbilityCountdown, ClipThing, FancyButton } from "../.."
+import { SvgDropdownArrow } from "../../../assets"
 import { BribeStageResponse, useGame, useAuth, useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { shadeColor } from "../../../helpers"
@@ -152,68 +153,91 @@ const BattleAbilityItemInner = ({
     const { label, colour, image_url, description, cooldown_duration_second } = battleAbility
     const battleAbilityFactionProgress = battleAbilityProgress.find((a) => a.faction_id === currentFactionID)
 
+    const [isCollapsed, setIsCollapsed] = useState(localStorage.getItem("isBattleAbilitiesCollapsed") === "true")
+
     const backgroundColor = useMemo(() => shadeColor(colour, -75), [colour])
 
     return (
         <Fade in={true}>
-            <Stack spacing="1rem">
-                <BattleAbilityCountdown bribeStage={bribeStage} />
+            <Box>
+                <FancyButton
+                    clipThingsProps={{
+                        clipSize: "0",
+                        backgroundColor: "#FFFFFF",
+                        opacity: 0.05,
+                        sx: { position: "relative" },
+                    }}
+                    sx={{ px: "1rem", py: ".4rem", color: "#FFFFFF" }}
+                    onClick={() => {
+                        setIsCollapsed((prev) => {
+                            localStorage.setItem("isBattleAbilitiesCollapsed", (!prev).toString())
+                            return !prev
+                        })
+                    }}
+                >
+                    <Stack direction="row">
+                        <BattleAbilityCountdown bribeStage={bribeStage} />
+                        <SvgDropdownArrow size="1.3rem" sx={{ ml: "auto !important", transform: isCollapsed ? "scaleY(-1) translateY(2px)" : "unset" }} />
+                    </Stack>
+                </FancyButton>
 
-                <Stack key={fadeEffect.toString()} spacing="1.04rem">
-                    <Fade in={true}>
-                        <Box>
-                            <ClipThing
-                                clipSize="6px"
-                                border={{
-                                    isFancy: true,
-                                    borderColor: colour,
-                                    borderThickness: ".3rem",
-                                }}
-                                backgroundColor={backgroundColor}
-                                opacity={0.7}
-                            >
-                                <Stack
-                                    spacing=".8rem"
-                                    alignItems="flex-start"
-                                    sx={{
-                                        flex: 1,
-                                        minWidth: "32.5rem",
-                                        px: "1.6rem",
-                                        pt: "1.12rem",
-                                        pb: "1.28rem",
-                                        opacity: isVoting ? 1 : 0.7,
+                <Collapse in={isCollapsed}>
+                    <Stack key={fadeEffect.toString()} spacing="1.04rem" sx={{ my: "1rem" }}>
+                        <Fade in={true}>
+                            <Box>
+                                <ClipThing
+                                    clipSize="6px"
+                                    border={{
+                                        isFancy: true,
+                                        borderColor: colour,
+                                        borderThickness: ".3rem",
                                     }}
+                                    backgroundColor={backgroundColor}
+                                    opacity={0.7}
                                 >
-                                    <BattleAbilityTextTop
-                                        label={label}
-                                        description={description}
-                                        image_url={image_url}
-                                        colour={colour}
-                                        cooldown_duration_second={cooldown_duration_second}
-                                    />
-
-                                    <SupsBarStack
-                                        battleAbilityProgress={battleAbilityProgress}
-                                        getFaction={getFaction}
-                                        forceDisplay100Percentage={forceDisplay100Percentage}
-                                    />
-
-                                    {battleAbilityFactionProgress && (
-                                        <VotingButtons
-                                            key={battleAbility.ability_offering_id}
-                                            battleAbilityProgress={battleAbilityFactionProgress}
-                                            buttonColor={buttonColor}
-                                            buttonTextColor={buttonTextColor}
-                                            isVoting={isVoting}
-                                            onBribe={onBribe}
+                                    <Stack
+                                        spacing=".8rem"
+                                        alignItems="flex-start"
+                                        sx={{
+                                            flex: 1,
+                                            minWidth: "32.5rem",
+                                            px: "1.6rem",
+                                            pt: "1.12rem",
+                                            pb: "1.28rem",
+                                            opacity: isVoting ? 1 : 0.7,
+                                        }}
+                                    >
+                                        <BattleAbilityTextTop
+                                            label={label}
+                                            description={description}
+                                            image_url={image_url}
+                                            colour={colour}
+                                            cooldown_duration_second={cooldown_duration_second}
                                         />
-                                    )}
-                                </Stack>
-                            </ClipThing>
-                        </Box>
-                    </Fade>
-                </Stack>
-            </Stack>
+
+                                        <SupsBarStack
+                                            battleAbilityProgress={battleAbilityProgress}
+                                            getFaction={getFaction}
+                                            forceDisplay100Percentage={forceDisplay100Percentage}
+                                        />
+
+                                        {battleAbilityFactionProgress && (
+                                            <VotingButtons
+                                                key={battleAbility.ability_offering_id}
+                                                battleAbilityProgress={battleAbilityFactionProgress}
+                                                buttonColor={buttonColor}
+                                                buttonTextColor={buttonTextColor}
+                                                isVoting={isVoting}
+                                                onBribe={onBribe}
+                                            />
+                                        )}
+                                    </Stack>
+                                </ClipThing>
+                            </Box>
+                        </Fade>
+                    </Stack>
+                </Collapse>
+            </Box>
         </Fade>
     )
 }

@@ -4,6 +4,7 @@ import { BattleAbilityItem, FactionAbilities, MoveableResizable } from ".."
 import { STAGING_OR_DEV_ONLY } from "../../constants"
 import { BribeStageResponse, useAuth, useGame } from "../../containers"
 import { useTheme } from "../../containers/theme"
+import { ContributorAmount } from "../BattleStats/ContributorAmount"
 import { MoveableResizableConfig } from "../Common/MoveableResizable/MoveableResizableContainer"
 import { PlayerAbilities } from "./PlayerAbilities/PlayerAbilities"
 
@@ -37,7 +38,7 @@ const VotingSystemInner = ({ userID, bribeStage }: VotingSystemInnerProps) => {
             minPosX: 0,
             minPosY: 0,
             // Size limits
-            minWidth: 300,
+            minWidth: 320,
             minHeight: 168,
             maxWidth: 500,
             maxHeight: 900,
@@ -54,6 +55,21 @@ const VotingSystemInner = ({ userID, bribeStage }: VotingSystemInnerProps) => {
             <Box>
                 <MoveableResizable config={config}>
                     <Stack sx={{ position: "relative", height: "100%" }}>
+                        <Stack
+                            direction="row"
+                            alignItems="center"
+                            spacing="1.2rem"
+                            sx={{
+                                height: "3.1rem",
+                                pt: ".4rem",
+                                px: "1.8rem",
+                                backgroundColor: "#000000BF",
+                                borderBottom: `${theme.factionTheme.primary}80 .25rem solid`,
+                            }}
+                        >
+                            <ContributorAmount />
+                        </Stack>
+
                         <Box
                             sx={{
                                 height: "100%",
@@ -77,7 +93,7 @@ const VotingSystemInner = ({ userID, bribeStage }: VotingSystemInnerProps) => {
                                 },
                             }}
                         >
-                            <Stack spacing="2rem" sx={{ direction: "ltr", pt: ".4rem", pb: "1.2rem" }}>
+                            <Stack spacing="1rem" sx={{ direction: "ltr", pt: ".4rem", pb: "1.2rem" }}>
                                 <BattleAbilityItem key={factionID} />
                                 <FactionAbilities />
                                 {STAGING_OR_DEV_ONLY && userID && <PlayerAbilities />}
