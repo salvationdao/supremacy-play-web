@@ -1,7 +1,8 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
 import { useLocation } from "react-router-dom"
-import { FancyButton } from "../.."
+import { FancyButton, TooltipHelper } from "../.."
+import { SvgSkin } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { getRarityDeets, getWeaponDamageTypeColor, getWeaponTypeColor } from "../../../helpers"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
@@ -35,8 +36,8 @@ export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGri
 
     const primaryColor = theme.factionTheme.primary
     const backgroundColor = theme.factionTheme.background
-    const imageUrl = weaponDetails?.avatar_url || weapon.avatar_url
-    const largeImageUrl = weaponDetails?.large_image_url || weapon.large_image_url
+    const imageUrl = weaponDetails?.weaponSkin?.avatar_url || weaponDetails?.avatar_url || weapon.avatar_url
+    const largeImageUrl = weaponDetails?.weaponSkin?.large_image_url || weaponDetails?.large_image_url || weapon.large_image_url
 
     return (
         <Box sx={{ position: "relative", overflow: "visible", height: "100%" }}>
@@ -107,15 +108,19 @@ export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGri
                         </Typography>
                     </General>
 
+                    <General isGridView={isGridView} title="WEAPON SKIN">
+                        <Stack direction="row" sx={{ pt: ".4rem" }}>
+                            <TooltipHelper text="Weapon skin" placement="bottom">
+                                <Box>
+                                    <SvgSkin fill={weapon.weaponSkin ? colors.chassisSkin : `${colors.darkGrey}80`} size="1.5rem" />
+                                </Box>
+                            </TooltipHelper>
+                        </Stack>
+                    </General>
+
                     <General title="DAMAGE">
                         <Typography variant="h6" sx={{ color: colors.lightNeonBlue, fontWeight: "fontWeightBold" }}>
                             {weaponDetails?.damage}
-                        </Typography>
-                    </General>
-
-                    <General title="RATE OF FIRE">
-                        <Typography variant="h6" sx={{ color: colors.lightNeonBlue, fontWeight: "fontWeightBold" }}>
-                            {weaponDetails?.rate_of_fire}
                         </Typography>
                     </General>
 

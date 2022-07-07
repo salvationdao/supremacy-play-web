@@ -101,7 +101,7 @@ export const WarMachineHangarItem = ({ mech, isGridView }: { mech: MechBasic; is
                         </Typography>
                     </Stack>
 
-                    <General isGridView={isGridView} title="LOADOUT">
+                    <General isGridView={isGridView} title="EQUIPPED">
                         <Box sx={{ pt: ".4rem" }}>
                             <MechLoadoutIcons mechDetails={mechDetails} />
                         </Box>

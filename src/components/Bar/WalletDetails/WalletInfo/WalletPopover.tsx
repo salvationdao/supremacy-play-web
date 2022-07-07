@@ -71,7 +71,6 @@ export const WalletPopover = ({
             <ClipThing
                 clipSize="10px"
                 border={{
-                    isFancy: true,
                     borderColor: theme.factionTheme.primary,
                     borderThickness: ".3rem",
                 }}

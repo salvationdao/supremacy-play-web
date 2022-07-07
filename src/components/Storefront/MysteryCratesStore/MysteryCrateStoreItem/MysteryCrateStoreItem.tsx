@@ -188,15 +188,16 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate, ownershipDetails }:
                                 {mysteryCrate.description}
                             </Typography>
 
-                            <Box
+                            <Stack
+                                direction="row"
+                                alignItems="stretch"
+                                justifyContent="center"
+                                spacing="2rem"
                                 sx={{
                                     mt: "auto !important",
                                     mx: "auto",
                                     width: "100%",
-                                    display: "flex",
-                                    alignItems: "stretch",
-                                    justifyContent: "center",
-                                    gap: "2rem",
+                                    pt: "1.8rem",
                                 }}
                             >
                                 {isAllowedToBuy && (
@@ -283,6 +284,7 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate, ownershipDetails }:
                                         </Stack>
                                     </ClipThing>
                                 )}
+
                                 <FancyButton
                                     disabled={!isAllowedToBuy}
                                     onClick={() => toggleConfirmModalOpen(true)}
@@ -304,7 +306,7 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate, ownershipDetails }:
                                         {!isAllowedToBuy && ownershipDetails.allowed === 0 && "A keycard in-game is required"}
                                     </Typography>
                                 </FancyButton>
-                            </Box>
+                            </Stack>
                         </Stack>
                     </Stack>
                 </ClipThing>

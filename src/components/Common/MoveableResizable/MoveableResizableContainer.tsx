@@ -38,6 +38,7 @@ export interface MoveableResizableConfig {
     resizeHandlePlacement?: "topLeft" | "bottomRight"
     infoTooltipText?: string
     topRightContent?: ReactNode
+    autoFit?: boolean
 }
 
 // Container for allowing children to set size and position
@@ -58,6 +59,7 @@ export const MoveableResizableContainer = createContainer((initialState: Moveabl
         onHideCallback,
         infoTooltipText,
         topRightContent,
+        autoFit,
     } = initialState || defaultConfig
 
     const {
@@ -163,6 +165,7 @@ export const MoveableResizableContainer = createContainer((initialState: Moveabl
         onMovingStopped,
         onResizeStopped,
         topRightContent,
+        autoFit,
     }
 })
 
