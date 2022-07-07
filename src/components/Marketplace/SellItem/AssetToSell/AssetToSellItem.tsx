@@ -1,7 +1,7 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
 import { KeycardPNG, SafePNG } from "../../../../assets"
-import { getRarityDeets } from "../../../../helpers"
+import { getRarityDeets, getWeaponTypeColor } from "../../../../helpers"
 import { useGameServerCommandsFaction, useGameServerCommandsUser } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { fonts } from "../../../../theme/theme"
@@ -38,6 +38,7 @@ export const AssetToSellItem = ({
     const [videoUrl, setVideoUrl] = useState<string>()
     const [videoUrl2, setVideoUrl2] = useState<string>()
     const [label, setLabel] = useState<string>()
+    const [weaponType, setWeaponType] = useState<string>()
     const [description, setDescription] = useState<string>()
     const [rarityDeets, setRarityDeets] = useState<{
         label: string
@@ -52,6 +53,8 @@ export const AssetToSellItem = ({
             setVideoUrl(assetToSell.mech?.animation_url || mechDetails?.chassis_skin?.animation_url)
             setVideoUrl2(assetToSell.mech?.card_animation_url || mechDetails?.chassis_skin?.card_animation_url)
             setLabel(assetToSell.mech?.name || assetToSell.mech?.label || mechDetails?.name || mechDetails?.label)
+            setWeaponType("")
+            setDescription("")
             const tier = assetToSell.mech?.tier || mechDetails?.tier
             setRarityDeets(tier ? getRarityDeets(tier) : undefined)
         } else if (itemType === ItemType.MysteryCrate) {
@@ -61,6 +64,7 @@ export const AssetToSellItem = ({
             setVideoUrl2(assetToSell.mysteryCrate?.card_animation_url || mysteryCrate?.card_animation_url)
             setLabel(assetToSell.mysteryCrate?.label || mysteryCrate?.label)
             setDescription(assetToSell.mysteryCrate?.description || mysteryCrate?.description)
+            setWeaponType("")
         } else if (itemType === ItemType.Weapon) {
             setAvatarUrl(assetToSell.weapon?.avatar_url || weaponDetails?.avatar_url)
             setImageUrl(assetToSell.weapon?.large_image_url || weaponDetails?.large_image_url)
@@ -68,6 +72,7 @@ export const AssetToSellItem = ({
             setVideoUrl2(assetToSell.weapon?.card_animation_url || weaponDetails?.card_animation_url)
             setLabel(assetToSell.weapon?.label)
             setDescription("")
+            setWeaponType(assetToSell.weapon?.weapon_type || weaponDetails?.weapon_type)
             const tier = assetToSell.weapon?.tier || weaponDetails?.tier
             setRarityDeets(tier ? getRarityDeets(tier) : undefined)
         } else if (itemType === ItemType.Keycards) {
@@ -77,6 +82,7 @@ export const AssetToSellItem = ({
             setVideoUrl2(assetToSell.keycard?.blueprints.card_animation_url || keycard?.blueprints.card_animation_url)
             setLabel(assetToSell.keycard?.blueprints.label || keycard?.blueprints.label)
             setDescription(assetToSell.keycard?.blueprints.description || keycard?.blueprints.description)
+            setWeaponType("")
         }
     }, [assetToSell, mechDetails, weaponDetails, mysteryCrate, keycard, itemType])
 
@@ -204,6 +210,12 @@ export const AssetToSellItem = ({
                         }}
                     >
                         {label}
+                    </Typography>
+                )}
+
+                {weaponType && (
+                    <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBlack, color: getWeaponTypeColor(weaponType) }}>
+                        {weaponType}
                     </Typography>
                 )}
 
