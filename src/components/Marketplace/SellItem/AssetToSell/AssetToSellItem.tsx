@@ -76,7 +76,7 @@ export const AssetToSellItem = ({
             setLabel(assetToSell.keycard?.blueprints.label || keycard?.blueprints.label)
             setDescription(assetToSell.keycard?.blueprints.description || keycard?.blueprints.description)
         }
-    }, [assetToSell, mechDetails, mysteryCrate, keycard, itemType])
+    }, [assetToSell, mechDetails, weaponDetails, mysteryCrate, keycard, itemType])
 
     // Get addition mech data
     useEffect(() => {
