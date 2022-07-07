@@ -310,6 +310,12 @@ export interface BattleMechStats {
     }
 }
 
+export enum AIType {
+    Reinforcement = "Reinforcement",
+    MiniMech = "Mini Mech",
+    RobotDog = "Robot Dog",
+}
+
 export interface WarMachineState {
     // One off fetch on initial load
     id: string
@@ -336,6 +342,7 @@ export interface WarMachineState {
     turretHardpoint: number
     utilitySlots: number
     weaponNames: string[]
+    aiType?: AIType | null // If null/undefined, it is a regular mech
 
     // Updated in subscription
     health: number
