@@ -68,6 +68,8 @@ export const AssetToSellItem = ({
             setVideoUrl2(assetToSell.weapon?.card_animation_url || weaponDetails?.card_animation_url)
             setLabel(assetToSell.weapon?.label)
             setDescription("")
+            const tier = assetToSell.weapon?.tier || weaponDetails?.tier
+            setRarityDeets(tier ? getRarityDeets(tier) : undefined)
         } else if (itemType === ItemType.Keycards) {
             setAvatarUrl(assetToSell.keycard?.blueprints.image_url || keycard?.blueprints.image_url || KeycardPNG)
             setImageUrl(assetToSell.keycard?.blueprints.image_url || keycard?.blueprints.image_url || KeycardPNG)
