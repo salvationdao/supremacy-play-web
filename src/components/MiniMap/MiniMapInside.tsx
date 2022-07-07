@@ -3,28 +3,19 @@ import { useCallback, useMemo, useRef } from "react"
 import { MapMechs, SelectionIcon } from ".."
 import { Crosshair } from "../../assets"
 import { useGame, useMiniMap } from "../../containers"
-import { CellCoords, Dimension, LocationSelectType } from "../../types"
+import { Dimension, LocationSelectType } from "../../types"
+import { Blackouts } from "./MapInsideItems/Blackouts"
 import { CountdownSubmit } from "./MapInsideItems/CountdownSubmit"
 import { DisabledCells } from "./MapInsideItems/DisabledCells"
 import { LineSelect } from "./MapInsideItems/LineSelect"
 import { MechCommandIcons } from "./MapInsideItems/MapIcon/MechCommandIcons"
 import { useMiniMapGestures } from "./useMiniMapGestures"
 
-export interface MapSelection {
-    // start coords (used for LINE_SELECT and LOCATION_SELECT abilities)
-    startCoords?: CellCoords
-    // end coords (only used for LINE_SELECT abilities)
-    endCoords?: CellCoords
-    // mech hash (only used for MECH_SELECT abilities)
-    mechHash?: string
-}
-
 interface MiniMapInsideProps {
     containerDimensions: Dimension
-    isLargeMode: boolean
 }
 
-export const MiniMapInside = ({ containerDimensions, isLargeMode }: MiniMapInsideProps) => {
+export const MiniMapInside = ({ containerDimensions }: MiniMapInsideProps) => {
     const { map } = useGame()
     const { mapElement, gridWidth, gridHeight, isTargeting, selection, setSelection, playerAbility, winner } = useMiniMap()
 
@@ -54,15 +45,18 @@ export const MiniMapInside = ({ containerDimensions, isLargeMode }: MiniMapInsid
     const isLocationSelection = useMemo(
         () =>
             isTargeting &&
-            (winner ||
+            (winner?.game_ability.location_select_type === LocationSelectType.LOCATION_SELECT ||
                 playerAbility?.ability.location_select_type === LocationSelectType.LOCATION_SELECT ||
                 playerAbility?.ability.location_select_type === LocationSelectType.MECH_COMMAND),
-        [isTargeting, winner, playerAbility?.ability.location_select_type],
+        [isTargeting, winner?.game_ability.location_select_type, playerAbility?.ability.location_select_type],
     )
 
     const isLineSelection = useMemo(
-        () => isTargeting && playerAbility?.ability.location_select_type === LocationSelectType.LINE_SELECT,
-        [isTargeting, playerAbility?.ability.location_select_type],
+        () =>
+            isTargeting &&
+            (playerAbility?.ability.location_select_type === LocationSelectType.LINE_SELECT ||
+                winner?.game_ability.location_select_type === LocationSelectType.LINE_SELECT),
+        [isTargeting, playerAbility?.ability.location_select_type, winner?.game_ability.location_select_type],
     )
 
     return useMemo(() => {
@@ -93,7 +87,7 @@ export const MiniMapInside = ({ containerDimensions, isLargeMode }: MiniMapInsid
                         <MechCommandIcons />
 
                         {/* Rendering war machines on the map */}
-                        <MapMechs isLargeMode={isLargeMode} />
+                        <MapMechs />
 
                         {/* Map Image */}
                         <Box
@@ -113,6 +107,9 @@ export const MiniMapInside = ({ containerDimensions, isLargeMode }: MiniMapInsid
 
                         {/* Shade disabled cells */}
                         <DisabledCells />
+
+                        {/* Blackouts */}
+                        <Blackouts />
                     </Box>
                 </Stack>
 
@@ -124,7 +121,6 @@ export const MiniMapInside = ({ containerDimensions, isLargeMode }: MiniMapInsid
         containerDimensions.width,
         dragX,
         dragY,
-        isLargeMode,
         isLineSelection,
         isLocationSelection,
         map,

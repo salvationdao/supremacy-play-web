@@ -38,8 +38,8 @@ export const WarMachineHangarItem = ({ mech, isGridView }: { mech: MechBasic; is
 
     const primaryColor = theme.factionTheme.primary
     const backgroundColor = theme.factionTheme.background
-    const imageUrl = mechDetails?.avatar_url || mech.avatar_url
-    const largeImageUrl = mechDetails?.large_image_url || mech.large_image_url
+    const imageUrl = mechDetails?.chassis_skin?.avatar_url || mech.avatar_url
+    const largeImageUrl = mechDetails?.chassis_skin?.large_image_url || mech.large_image_url
 
     return (
         <Box sx={{ position: "relative", overflow: "visible", height: "100%" }}>
@@ -68,7 +68,7 @@ export const WarMachineHangarItem = ({ mech, isGridView }: { mech: MechBasic; is
                         p: isGridView ? ".5rem .6rem" : ".1rem .3rem",
                         display: isGridView ? "block" : "grid",
                         gridTemplateRows: "7rem",
-                        gridTemplateColumns: `8rem auto repeat(2, 20rem)`, // hard-coded to have 6 columns, adjust as required
+                        gridTemplateColumns: `8rem auto repeat(2, 20rem)`, // hard-coded to have 4 columns, adjust as required
                         gap: "1.4rem",
                         ...(isGridView
                             ? {
@@ -90,7 +90,7 @@ export const WarMachineHangarItem = ({ mech, isGridView }: { mech: MechBasic; is
                     </Box>
 
                     <Stack>
-                        <Typography variant="body2" sx={{ color: rarityDeets.color, fontFamily: fonts.nostromoHeavy }}>
+                        <Typography variant="body2" sx={{ mb: ".2rem", color: rarityDeets.color, fontFamily: fonts.nostromoHeavy }}>
                             {rarityDeets.label}
                         </Typography>
 
@@ -101,7 +101,7 @@ export const WarMachineHangarItem = ({ mech, isGridView }: { mech: MechBasic; is
                         </Typography>
                     </Stack>
 
-                    <General isGridView={isGridView} title="LOADOUT">
+                    <General isGridView={isGridView} title="EQUIPPED">
                         <Box sx={{ pt: ".4rem" }}>
                             <MechLoadoutIcons mechDetails={mechDetails} />
                         </Box>

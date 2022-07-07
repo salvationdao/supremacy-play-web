@@ -40,13 +40,14 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         matchLeftDrawerID: "home",
     },
 
+    // Mech
     mech: {
         id: "mech",
         path: "/mech/:mechID?",
         exact: true,
         Component: MechPage,
-        requireAuth: false,
-        requireFaction: false,
+        requireAuth: true,
+        requireFaction: true,
         matchLeftDrawerID: "fleet",
     },
 
@@ -56,8 +57,8 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         path: "/weapon/:weaponID?",
         exact: true,
         Component: WeaponPage,
-        requireAuth: false,
-        requireFaction: false,
+        requireAuth: true,
+        requireFaction: true,
         matchLeftDrawerID: "fleet",
     },
 
@@ -114,7 +115,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
     // Player profile
     player_profile: {
         id: "profile",
-        path: "/profile/:playerID",
+        path: "/profile/:playerGID",
         exact: true,
         Component: PlayerProfilePage,
         requireAuth: false,
@@ -177,7 +178,6 @@ export enum RightDrawerHashes {
     None = "",
     LiveChat = "#live_chat",
     PlayerList = "#player_list",
-    Socials = "#socials",
 }
 
 interface HashRouteStruct {
@@ -190,12 +190,12 @@ interface HashRouteStruct {
 }
 
 const HASH_ROUTES_MAP: { [name: string]: HashRouteStruct } = {
-    war_room: {
-        id: "war_room",
+    live_chat: {
+        id: "live_chat",
         hash: RightDrawerHashes.LiveChat,
         icon: <SvgChat size="1rem" sx={{ pt: ".3rem" }} />,
         enable: true,
-        label: "War Room",
+        label: "Live Chat",
     },
     active_players: {
         id: "active_players",
@@ -208,13 +208,6 @@ const HASH_ROUTES_MAP: { [name: string]: HashRouteStruct } = {
         enable: true,
         label: "Active Players",
     },
-    // socials: {
-    //     id: "socials",
-    //     hash: RightDrawerHashes.Socials,
-    //     enable: true,
-    //     label: "Socials",
-    //     icon: "",
-    // },
 }
 
 export const ROUTES_ARRAY: RouteStruct[] = []

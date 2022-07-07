@@ -12,6 +12,8 @@ import { Map } from "../../types"
 import { MoveableResizableConfig, useMoveableResizable } from "../Common/MoveableResizable/MoveableResizableContainer"
 import { TargetHint } from "./MapOutsideItems/TargetHint"
 
+const TOP_BAR_HEIGHT = 3.1 // rems
+
 export const MiniMap = () => {
     const { map, bribeStage } = useGame()
     const { isTargeting, isEnlarged, resetSelection, toggleIsEnlarged } = useMiniMap()
@@ -29,18 +31,22 @@ export const MiniMap = () => {
     }, [bribeStage, toggleShow, resetSelection])
     // End ****************************************
 
+    useEffect(() => {
+        if (isTargeting) toggleIsMapOpen(true)
+    }, [isTargeting, toggleIsMapOpen])
+
     // Map config
     const config: MoveableResizableConfig = useMemo(
         () => ({
             localStoragePrefix: "minimap",
             // Defaults
-            defaultPosX: 10,
-            defaultPosY: 10,
+            defaultPosX: 330,
+            defaultPosY: 0,
             defaultWidth: MINI_MAP_DEFAULT_SIZE,
             defaultHeight: MINI_MAP_DEFAULT_SIZE,
             // Position limits
-            minPosX: 10,
-            minPosY: 10,
+            minPosX: 0,
+            minPosY: 0,
             // Size limits
             minWidth: 225,
             minHeight: 225,
@@ -66,47 +72,32 @@ export const MiniMap = () => {
         [toggleIsEnlarged, toggleIsMapOpen],
     )
 
-    const mapRender = useMemo(() => {
+    return useMemo(() => {
         if (!map) return null
 
+        const toRender = show && isMapOpen
+
         return (
-            <Fade in={show}>
+            <Fade in={toRender}>
                 <Box>
                     <MoveableResizable config={config}>
-                        <MiniMapInner map={map} isTargeting={isTargeting} isEnlarged={isEnlarged} />
+                        <MiniMapInner map={map} isTargeting={isTargeting} isEnlarged={isEnlarged} toRender={toRender} />
                     </MoveableResizable>
                 </Box>
             </Fade>
         )
-    }, [config, show, map, isTargeting, isEnlarged])
-
-    if (!isMapOpen) return null
-
-    return mapRender
+    }, [map, show, isMapOpen, config, isTargeting, isEnlarged])
 }
 
 // This inner component takes care of the resizing etc.
-const MiniMapInner = ({ map, isTargeting, isEnlarged }: { map: Map; isTargeting: boolean; isEnlarged: boolean }) => {
+const MiniMapInner = ({ map, isTargeting, isEnlarged, toRender }: { map: Map; isTargeting: boolean; isEnlarged: boolean; toRender: boolean }) => {
     const theme = useTheme()
     const {
+        remToPxRatio,
         gameUIDimensions: { width, height },
     } = useDimension()
-    const {
-        curWidth,
-        curHeight,
-        curPosX,
-        curPosY,
-        defaultWidth,
-        defaultHeight,
-        maxWidth,
-        maxHeight,
-        setCurWidth,
-        setCurHeight,
-        setCurPosX,
-        setCurPosY,
-        setDefaultWidth,
-        setDefaultHeight,
-    } = useMoveableResizable()
+    const { updateSize, updatePosition, curWidth, curHeight, curPosX, curPosY, defaultWidth, maxWidth, maxHeight, setDefaultWidth, setDefaultHeight } =
+        useMoveableResizable()
 
     const mapHeightWidthRatio = useRef(1)
     const prevWidth = useRef(curWidth)
@@ -114,20 +105,18 @@ const MiniMapInner = ({ map, isTargeting, isEnlarged }: { map: Map; isTargeting:
     const prevPosX = useRef(curPosX)
     const prevPosY = useRef(curPosY)
 
-    const isLargeMode = useMemo(() => curWidth > 350 || curHeight > 350, [curHeight, curWidth])
-
     // Set initial size
     useEffect(() => {
         const ratio = map.height / map.width
         const defaultW = defaultWidth
-        const defaultH = defaultHeight * ratio
+        const defaultH = defaultWidth * ratio + TOP_BAR_HEIGHT * remToPxRatio
 
         setDefaultWidth(defaultW)
         setDefaultHeight(defaultH)
-        setCurHeight(curWidth * ratio)
+        updateSize({ width: curWidth, height: curWidth * ratio + TOP_BAR_HEIGHT * remToPxRatio })
         mapHeightWidthRatio.current = ratio
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [map, setDefaultWidth, setDefaultHeight, setCurHeight])
+    }, [map, setDefaultWidth, setDefaultHeight])
 
     // When it's targeting, enlarge the map and move to center of screen, else restore to the prev dimensions
     useEffect(() => {
@@ -142,50 +131,32 @@ const MiniMapInner = ({ map, isTargeting, isEnlarged }: { map: Map; isTargeting:
                 targetingWidth = targetingHeight / mapHeightWidthRatio.current
             }
 
-            setCurPosX((prev1) => {
-                prevPosX.current = prev1
-
-                setCurWidth((prev2) => {
-                    prevWidth.current = prev2
-                    return targetingWidth
-                })
-
-                return (width - targetingWidth) / 2
-            })
-            setCurPosY((prev1) => {
-                prevPosY.current = prev1
-
-                setCurHeight((prev2) => {
-                    prevHeight.current = prev2
-                    return targetingHeight
-                })
-
-                return (height - targetingHeight) / 2
-            })
+            prevPosX.current = curPosX
+            prevPosY.current = curPosY
+            prevWidth.current = curWidth
+            prevHeight.current = curHeight
+            updateSize({ width: targetingWidth, height: targetingHeight })
+            updatePosition({ x: (width - targetingWidth) / 2, y: (height - targetingHeight) / 2 })
         } else {
-            setCurPosX(() => {
-                setCurWidth(prevWidth.current)
-                return prevPosX.current
-            })
-            setCurPosY(() => {
-                setCurHeight(prevHeight.current)
-                return prevPosY.current
-            })
+            updateSize({ width: prevWidth.current, height: prevHeight.current })
+            updatePosition({ x: prevPosX.current, y: prevPosY.current })
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isTargeting, isEnlarged, maxHeight, maxWidth, setCurHeight, setCurPosX, setCurPosY, setCurWidth])
+    }, [isTargeting, isEnlarged, maxHeight, maxWidth])
 
     let mapName = map.name
     if (mapName === "NeoTokyo") mapName = "City Block X2"
 
-    return useMemo(
-        () => (
+    return useMemo(() => {
+        if (!toRender) return null
+
+        return (
             <Box
                 sx={{
                     position: "relative",
                     boxShadow: 1,
-                    width: curWidth,
-                    height: curHeight,
+                    width: "100%",
+                    height: "100%",
                     transition: "all .2s",
                     overflow: "hidden",
                     pointerEvents: "all",
@@ -195,7 +166,7 @@ const MiniMapInner = ({ map, isTargeting, isEnlarged }: { map: Map; isTargeting:
                     direction="row"
                     alignItems="center"
                     sx={{
-                        height: "3.1rem",
+                        height: `${TOP_BAR_HEIGHT}rem`,
                         px: "1.8rem",
                         backgroundColor: "#000000BF",
                         borderBottom: `${theme.factionTheme.primary}80 .25rem solid`,
@@ -217,11 +188,10 @@ const MiniMapInner = ({ map, isTargeting, isEnlarged }: { map: Map; isTargeting:
                     </Typography>
                 </Stack>
 
-                <MiniMapInside containerDimensions={{ width: curWidth, height: curHeight }} isLargeMode={isLargeMode} />
+                <MiniMapInside containerDimensions={{ width: curWidth, height: curHeight - TOP_BAR_HEIGHT * remToPxRatio }} />
 
                 <TargetHint />
             </Box>
-        ),
-        [curWidth, curHeight, theme.factionTheme.primary, mapName, isLargeMode],
-    )
+        )
+    }, [toRender, theme.factionTheme.primary, mapName, curWidth, curHeight, remToPxRatio])
 }

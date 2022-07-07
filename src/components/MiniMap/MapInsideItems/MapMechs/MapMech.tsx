@@ -1,10 +1,10 @@
-import { Box, Stack } from "@mui/material"
+import { Box, Stack, Typography } from "@mui/material"
 import { useCallback, useMemo, useState } from "react"
-import { GenericWarMachinePNG, SvgMapSkull, SvgMapWarMachine } from "../../../../assets"
+import { SvgMapSkull, SvgMapWarMachine } from "../../../../assets"
 import { useAuth, useGame, useMiniMap, useSupremacy } from "../../../../containers"
 import { useGameServerSubscription, useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
-import { colors } from "../../../../theme/theme"
+import { colors, fonts } from "../../../../theme/theme"
 import { LocationSelectType, Map, Vector2i, WarMachineState } from "../../../../types"
 import { WarMachineLiveState } from "../../../../types/game"
 import { MechMoveCommand } from "../../../WarMachine/WarMachineAbilitiesPopover/MechMoveCommandCard"
@@ -13,7 +13,6 @@ const TRANSITION_DURACTION = 0.275 // seconds
 
 interface MapMechProps {
     warMachine: WarMachineState
-    isLargeMode: boolean
 }
 
 export const MapMech = (props: MapMechProps) => {
@@ -26,11 +25,11 @@ interface MapMechInnerProps extends MapMechProps {
     map: Map
 }
 
-const MapMechInner = ({ warMachine, isLargeMode, map }: MapMechInnerProps) => {
+const MapMechInner = ({ warMachine, map }: MapMechInnerProps) => {
     const { userID, factionID } = useAuth()
     const { getFaction } = useSupremacy()
     const { isTargeting, gridWidth, gridHeight, playerAbility, highlightedMechHash, setHighlightedMechHash, selection, setSelection } = useMiniMap()
-    const { hash, participantID, factionID: warMachineFactionID, maxHealth, maxShield, imageAvatar, ownedByID } = warMachine
+    const { hash, participantID, factionID: warMachineFactionID, maxHealth, maxShield, ownedByID } = warMachine
 
     /**
      * Mech stats
@@ -45,15 +44,15 @@ const MapMechInner = ({ warMachine, isLargeMode, map }: MapMechInnerProps) => {
     /**
      * For rendering: size, colors etc.
      */
-    const iconSize = useMemo(() => Math.min(gridWidth, gridHeight) * 1.1, [gridWidth, gridHeight])
+    const iconSize = useMemo(() => Math.min(gridWidth, gridHeight) * 1.8, [gridWidth, gridHeight])
     const dirArrowLength = useMemo(() => iconSize / 2 + 0.6 * iconSize, [iconSize])
     const primaryColor = useMemo(
         () => (ownedByID === userID ? colors.gold : getFaction(warMachineFactionID).primary_color || colors.neonBlue),
         [ownedByID, userID, getFaction, warMachineFactionID],
     )
+    const factionLogoUrl = useMemo(() => getFaction(warMachineFactionID).logo_url, [getFaction, warMachineFactionID])
     const isAlive = useMemo(() => health > 0, [health])
     const mapScale = useMemo(() => map.width / (map.cells_x * 2000), [map])
-    const wmImageUrl = useMemo(() => imageAvatar || GenericWarMachinePNG, [imageAvatar])
     const mechMapX = useMemo(() => ((position?.x || 0) - map.left_pixels) * mapScale, [map.left_pixels, mapScale, position?.x])
     const mechMapY = useMemo(() => ((position?.y || 0) - map.top_pixels) * mapScale, [map.top_pixels, mapScale, position?.y])
     const isMechHighligheted = useMemo(
@@ -136,7 +135,7 @@ const MapMechInner = ({ warMachine, isLargeMode, map }: MapMechInnerProps) => {
         if (isHidden) return null
 
         let opacity = 1
-        if (isLargeMode && !isAlive) opacity = 0.7
+        if (!isAlive) opacity = 0.7
         if (isHidden) opacity = 0
 
         return (
@@ -186,36 +185,43 @@ const MapMechInner = ({ warMachine, isLargeMode, map }: MapMechInnerProps) => {
                 {/* The mech icon and rotation arrow */}
                 <Box
                     style={{
-                        ...(isLargeMode
-                            ? {
-                                  position: "relative",
-                                  width: iconSize,
-                                  height: iconSize,
-                                  overflow: "visible",
-                                  backgroundColor: primaryColor,
-                                  backgroundImage: `url(${wmImageUrl})`,
-                                  backgroundRepeat: "no-repeat",
-                                  backgroundPosition: "center",
-                                  backgroundSize: "cover",
-                                  border: `${primaryColor} solid 7.5px`,
-                                  borderRadius: 3,
-                                  boxShadow: isAlive ? `0 0 8px 2px ${primaryColor}70` : "none",
-                                  zIndex: 2,
-                              }
-                            : {
-                                  position: "relative",
-                                  width: iconSize,
-                                  height: iconSize,
-                                  overflow: "visible",
-                                  backgroundColor: `${primaryColor}${isAlive ? "" : "00"}`,
-                                  border: `9px solid #000000${isAlive ? "" : "00"}`,
-                                  borderRadius: "50%",
-                                  zIndex: 2,
-                              }),
+                        position: "relative",
+                        width: iconSize,
+                        height: iconSize,
+                        overflow: "visible",
+                        backgroundColor: primaryColor,
+                        backgroundImage: `url(${factionLogoUrl})`,
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "center",
+                        backgroundSize: "contain",
+                        borderRadius: 3,
+                        boxShadow: isAlive ? `0 0 8px 2px ${primaryColor}70` : "none",
+                        zIndex: 2,
                         opacity,
                         transition: "opacity 0.2s ease-out",
                     }}
                 >
+                    {/* Number */}
+                    <Box
+                        sx={{
+                            position: "absolute",
+                            top: "50%",
+                            left: "50%",
+                            transform: "translate(-50%, -50%)",
+                            px: "1rem",
+                            backgroundColor: "#00000090",
+                        }}
+                    >
+                        <Typography
+                            variant="h1"
+                            sx={{
+                                fontFamily: fonts.nostromoBlack,
+                            }}
+                        >
+                            {warMachine.participantID}
+                        </Typography>
+                    </Box>
+
                     {/* Skull icon */}
                     {!isAlive && (
                         <Stack
@@ -225,12 +231,12 @@ const MapMechInner = ({ warMachine, isLargeMode, map }: MapMechInnerProps) => {
                                 width: "100%",
                                 height: "100%",
                                 background: "linear-gradient(#00000040, #00000090)",
-                                opacity: isLargeMode ? 1 : 0.6,
+                                opacity: 1,
                             }}
                         >
                             <SvgMapSkull
                                 fill="#000000"
-                                size={isLargeMode ? `${0.8 * iconSize}px` : `${1.3 * iconSize}px`}
+                                size={`${0.8 * iconSize}px`}
                                 style={{
                                     position: "absolute",
                                     top: "52%",
@@ -242,7 +248,7 @@ const MapMechInner = ({ warMachine, isLargeMode, map }: MapMechInnerProps) => {
                     )}
 
                     {/* Rotation arrow */}
-                    {isAlive && isLargeMode && (
+                    {isAlive && (
                         <Box
                             style={{
                                 position: "absolute",
@@ -360,7 +366,6 @@ const MapMechInner = ({ warMachine, isLargeMode, map }: MapMechInnerProps) => {
         health,
         iconSize,
         isAlive,
-        isLargeMode,
         isMechHighligheted,
         isTargeting,
         maxHealth,
@@ -378,9 +383,10 @@ const MapMechInner = ({ warMachine, isLargeMode, map }: MapMechInnerProps) => {
         setSelection,
         shield,
         warMachine.maxShield,
-        wmImageUrl,
         hash,
         playerAbility,
         selection?.mechHash,
+        factionLogoUrl,
+        warMachine.participantID,
     ])
 }

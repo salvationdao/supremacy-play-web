@@ -51,7 +51,6 @@ export const EnlistDetailsPopover = ({ popoverRef, open, onClose, faction }: Enl
                 <ClipThing
                     clipSize="10px"
                     border={{
-                        isFancy: true,
                         borderColor: primary_color,
                         borderThickness: ".3rem",
                     }}
@@ -93,9 +92,9 @@ const PopoverContent = ({ faction }: { faction: Faction }) => {
     const enlistFaction = useCallback(async () => {
         try {
             await send<null, { faction_id: string }>(GameServerKeys.EnlistFaction, { faction_id: faction.id })
-            newSnackbarMessage("Successfully enlisted into syndicate.", "success")
+            newSnackbarMessage("Successfully enlisted into faction.", "success")
         } catch (e) {
-            newSnackbarMessage(typeof e === "string" ? e : "Failed to enlist into syndicate.", "error")
+            newSnackbarMessage(typeof e === "string" ? e : "Failed to enlist into faction.", "error")
             console.error(e)
         }
         return

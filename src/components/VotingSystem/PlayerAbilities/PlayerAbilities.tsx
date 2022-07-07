@@ -1,7 +1,8 @@
-import { Box, Button, ButtonGroup, Divider, Fade, Pagination, Stack, Typography } from "@mui/material"
+import { Box, Button, ButtonGroup, Collapse, Fade, Pagination, Stack, Typography } from "@mui/material"
 import { ReactNode, useCallback, useEffect, useState } from "react"
 import { Link } from "react-router-dom"
-import { SvgGlobal, SvgLine, SvgMicrochip, SvgTarget } from "../../../assets"
+import { FancyButton } from "../.."
+import { PlayerAbilityPNG, SvgDropdownArrow, SvgGlobal, SvgLine, SvgMicrochip, SvgTarget } from "../../../assets"
 import { useAuth } from "../../../containers/auth"
 import { useTheme } from "../../../containers/theme"
 import { usePagination } from "../../../hooks"
@@ -18,6 +19,7 @@ const PAGE_SIZE = COLUMNS * ROWS
 export const PlayerAbilities = () => {
     const theme = useTheme()
     const { userID } = useAuth()
+    const [isCollapsed, setIsCollapsed] = useState(localStorage.getItem("isPlayerAbilitiesCollapsed") === "true")
 
     const [playerAbilities, setPlayerAbilities] = useState<PlayerAbility[]>([])
     const [shownPlayerAbilities, setShownPlayerAbilities] = useState<PlayerAbility[]>([])
@@ -63,9 +65,34 @@ export const PlayerAbilities = () => {
     return (
         <Fade in={true}>
             <Box>
-                <Divider sx={{ mb: "2rem", borderBottomWidth: ".25rem", borderColor: (theme) => theme.factionTheme.primary, opacity: 0.15 }} />
-                <Stack spacing="1.2rem">
-                    <Stack direction="row" spacing=".48rem" alignItems="center" justifyContent="space-between">
+                <FancyButton
+                    clipThingsProps={{
+                        clipSize: "0",
+                        backgroundColor: "#FFFFFF",
+                        opacity: 0.05,
+                        sx: { position: "relative" },
+                    }}
+                    sx={{ px: "1rem", py: ".4rem", color: "#FFFFFF" }}
+                    onClick={() => {
+                        setIsCollapsed((prev) => {
+                            localStorage.setItem("isPlayerAbilitiesCollapsed", (!prev).toString())
+                            return !prev
+                        })
+                    }}
+                >
+                    <Stack direction="row" spacing=".8rem" alignItems="center">
+                        <Box
+                            sx={{
+                                width: "1.9rem",
+                                height: "1.9rem",
+                                backgroundImage: `url(${PlayerAbilityPNG})`,
+                                backgroundRepeat: "no-repeat",
+                                backgroundPosition: "center",
+                                backgroundSize: "cover",
+                                mb: ".24rem",
+                            }}
+                        />
+
                         <Typography
                             sx={{
                                 lineHeight: 1,
@@ -73,13 +100,20 @@ export const PlayerAbilities = () => {
                                 fontWeight: "fontWeightBold",
                             }}
                         >
-                            PLAYER ABILITIES
+                            OWNED ABILITIES
                         </Typography>
 
+                        <SvgDropdownArrow size="1.3rem" sx={{ ml: "auto !important", transform: isCollapsed ? "scaleY(-1) translateY(2px)" : "unset" }} />
+                    </Stack>
+                </FancyButton>
+
+                <Collapse in={isCollapsed}>
+                    <Stack spacing="1rem" sx={{ my: "1rem", px: ".6rem" }}>
                         <ButtonGroup
                             size="small"
                             sx={(theme) => ({
                                 "& .MuiButton-root": {
+                                    flex: 1,
                                     borderRadius: 0.8,
                                     "&:hover": {
                                         border: `1px solid ${theme.factionTheme.primary}65`,
@@ -115,15 +149,12 @@ export const PlayerAbilities = () => {
                                 icon={<SvgLine size="1.4rem" />}
                             />
                         </ButtonGroup>
-                    </Stack>
 
-                    <Box>
                         {shownPlayerAbilities && shownPlayerAbilities.length > 0 ? (
                             <Box
                                 sx={{
                                     display: "grid",
-                                    gridTemplateColumns: `repeat(${COLUMNS}, minmax(0, 1fr))`,
-                                    gridTemplateRows: `repeat(${ROWS}, 1fr)`,
+                                    gridTemplateColumns: `repeat(${COLUMNS}, minmax(0, 9rem))`,
                                     gap: ".6rem",
                                 }}
                             >
@@ -161,35 +192,35 @@ export const PlayerAbilities = () => {
                                 )}
                             </Typography>
                         )}
-                    </Box>
 
-                    {totalPages > 1 && (
-                        <Box
-                            sx={{
-                                px: "1rem",
-                                py: ".7rem",
-                                borderTop: (theme) => `${theme.factionTheme.primary}70 1.5px solid`,
-                                backgroundColor: "#00000070",
-                            }}
-                        >
-                            <Pagination
-                                size="medium"
-                                count={totalPages}
-                                page={page}
+                        {totalPages > 1 && (
+                            <Box
                                 sx={{
-                                    ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold },
-                                    ".Mui-selected": {
-                                        color: (theme) => theme.factionTheme.secondary,
-                                        backgroundColor: `${theme.factionTheme.primary} !important`,
-                                    },
+                                    px: "1rem",
+                                    py: ".7rem",
+                                    borderTop: (theme) => `${theme.factionTheme.primary}70 1.5px solid`,
+                                    backgroundColor: "#00000070",
                                 }}
-                                onChange={(e, p) => changePage(p)}
-                                showFirstButton
-                                showLastButton
-                            />
-                        </Box>
-                    )}
-                </Stack>
+                            >
+                                <Pagination
+                                    size="medium"
+                                    count={totalPages}
+                                    page={page}
+                                    sx={{
+                                        ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold },
+                                        ".Mui-selected": {
+                                            color: (theme) => theme.factionTheme.secondary,
+                                            backgroundColor: `${theme.factionTheme.primary} !important`,
+                                        },
+                                    }}
+                                    onChange={(e, p) => changePage(p)}
+                                    showFirstButton
+                                    showLastButton
+                                />
+                            </Box>
+                        )}
+                    </Stack>
+                </Collapse>
             </Box>
         </Fade>
     )

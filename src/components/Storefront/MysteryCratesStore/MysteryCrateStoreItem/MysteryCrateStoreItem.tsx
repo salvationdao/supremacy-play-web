@@ -2,7 +2,7 @@ import { Box, Modal, Skeleton, Stack, TextField, Typography } from "@mui/materia
 import BigNumber from "bignumber.js"
 import { useCallback, useMemo, useState } from "react"
 import { ClipThing, FancyButton } from "../../.."
-import { SafePNG, SvgPriceDownArrow, SvgPriceUpArrow, SvgSupToken } from "../../../../assets"
+import { SafePNG, SvgArrow, SvgSupToken } from "../../../../assets"
 import { useSnackbar } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
 import { numberCommaFormatter, supFormatterNoFixed } from "../../../../helpers"
@@ -188,15 +188,16 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate, ownershipDetails }:
                                 {mysteryCrate.description}
                             </Typography>
 
-                            <Box
+                            <Stack
+                                direction="row"
+                                alignItems="stretch"
+                                justifyContent="center"
+                                spacing="2rem"
                                 sx={{
                                     mt: "auto !important",
                                     mx: "auto",
                                     width: "100%",
-                                    display: "flex",
-                                    alignItems: "stretch",
-                                    justifyContent: "center",
-                                    gap: "2rem",
+                                    pt: "1.8rem",
                                 }}
                             >
                                 {isAllowedToBuy && (
@@ -229,6 +230,7 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate, ownershipDetails }:
                                                         "::-webkit-outer-spin-button, ::-webkit-inner-spin-button": {
                                                             "-webkit-appearance": "none",
                                                         },
+                                                        appearance: "textfield",
                                                     },
                                                     ".MuiOutlinedInput-notchedOutline": { border: "unset" },
                                                 }}
@@ -237,30 +239,42 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate, ownershipDetails }:
                                                 onChange={(e) => {
                                                     const newAmount = parseInt(e.target.value)
                                                     if (newAmount <= 0) return
-                                                    setQuantity(newAmount)
+                                                    const nAmountPurchasable = ownershipDetails.allowed - ownershipDetails.owned
+                                                    if (quantity > nAmountPurchasable) {
+                                                        setQuantity(nAmountPurchasable)
+                                                    } else {
+                                                        setQuantity(newAmount)
+                                                    }
+                                                }}
+                                                onBlur={() => {
+                                                    const nAmountPurchasable = ownershipDetails.allowed - ownershipDetails.owned
+                                                    if (quantity > nAmountPurchasable) {
+                                                        setQuantity(nAmountPurchasable)
+                                                    }
                                                 }}
                                             />
                                             <Stack
                                                 sx={{
                                                     height: "5rem",
+                                                    p: "1em",
                                                     "& svg:active": {
-                                                        transform: "scale(1.5)",
+                                                        transform: "scale(1.2)",
                                                         transition: "all .2s",
                                                     },
                                                 }}
                                             >
-                                                <SvgPriceUpArrow
-                                                    size="4rem"
-                                                    sx={{ transform: "translateY(-5%)", cursor: "pointer", zIndex: 1 }}
+                                                <SvgArrow
+                                                    size="1.5rem"
+                                                    sx={{ cursor: "pointer", zIndex: 1 }}
                                                     fill={primaryColor}
                                                     onClick={() => {
                                                         const nAmountPurchasable = ownershipDetails.allowed - ownershipDetails.owned
                                                         if (nAmountPurchasable > quantity) setQuantity(quantity + 1)
                                                     }}
                                                 />
-                                                <SvgPriceDownArrow
-                                                    size="4rem"
-                                                    sx={{ transform: "translateY(-60%)", cursor: "pointer" }}
+                                                <SvgArrow
+                                                    size="1.5rem"
+                                                    sx={{ transform: "rotate(180deg)", cursor: "pointer" }}
                                                     fill={primaryColor}
                                                     onClick={() => {
                                                         if (quantity > 1) setQuantity(quantity - 1)
@@ -270,6 +284,7 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate, ownershipDetails }:
                                         </Stack>
                                     </ClipThing>
                                 )}
+
                                 <FancyButton
                                     disabled={!isAllowedToBuy}
                                     onClick={() => toggleConfirmModalOpen(true)}
@@ -291,7 +306,7 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate, ownershipDetails }:
                                         {!isAllowedToBuy && ownershipDetails.allowed === 0 && "A keycard in-game is required"}
                                     </Typography>
                                 </FancyButton>
-                            </Box>
+                            </Stack>
                         </Stack>
                     </Stack>
                 </ClipThing>
@@ -320,7 +335,7 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate, ownershipDetails }:
                     }
                 >
                     <Typography variant="h6">
-                        Do you wish to purchase {quantity} <strong>{mysteryCrate.mystery_crate_type}</strong> crate for <span>{formattedPrice}</span> SUPS?
+                        Do you wish to purchase {quantity} x <strong>{mysteryCrate.mystery_crate_type}</strong> crate for <span>{formattedPrice}</span> SUPS?
                     </Typography>
                 </ConfirmModal>
             )}

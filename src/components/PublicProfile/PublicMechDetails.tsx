@@ -1,4 +1,4 @@
-import { Box, Stack, Typography, useTheme } from "@mui/material"
+import { Box, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
 import { useLocation } from "react-router-dom"
 import { getRarityDeets } from "../../helpers"
@@ -41,7 +41,7 @@ export const PublicWarmachineItem = ({
         })()
     }, [mech.id, send])
 
-    const imageUrl = mechDetails?.avatar_url || mech.avatar_url
+    const imageUrl = mechDetails?.chassis_skin?.avatar_url || mech.avatar_url
     const largeImageUrl = mechDetails?.large_image_url || mech.large_image_url
 
     return (

@@ -4,6 +4,7 @@ import { BattleAbilityItem, FactionAbilities, MoveableResizable } from ".."
 import { STAGING_OR_DEV_ONLY } from "../../constants"
 import { BribeStageResponse, useAuth, useGame } from "../../containers"
 import { useTheme } from "../../containers/theme"
+import { ContributorAmount } from "../BattleStats/ContributorAmount"
 import { MoveableResizableConfig } from "../Common/MoveableResizable/MoveableResizableContainer"
 import { PlayerAbilities } from "./PlayerAbilities/PlayerAbilities"
 
@@ -29,17 +30,21 @@ const VotingSystemInner = ({ userID, bribeStage }: VotingSystemInnerProps) => {
         () => ({
             localStoragePrefix: "votingSystem",
             // Defaults
-            defaultPosX: 10,
-            defaultPosY: 10,
-            defaultWidth: 390,
-            defaultHeight: 360,
+            defaultPosX: 0,
+            defaultPosY: 0,
+            defaultWidth: 320,
+            defaultHeight: 480,
+            // Position limits
+            minPosX: 0,
+            minPosY: 0,
             // Size limits
-            minWidth: 300,
-            minHeight: 168,
+            minWidth: 320,
+            // minHeight: 168,
             maxWidth: 500,
-            maxHeight: 900,
+            // maxHeight: 900,
             // Others
-            infoTooltipText: "Vote for game abilities and fight for your Syndicate!",
+            infoTooltipText: "Vote for game abilities and fight for your Faction!",
+            autoFit: true,
         }),
         [],
     )
@@ -50,10 +55,25 @@ const VotingSystemInner = ({ userID, bribeStage }: VotingSystemInnerProps) => {
         <Fade in={isBattleStarted}>
             <Box>
                 <MoveableResizable config={config}>
-                    <Stack sx={{ position: "relative", height: "100%" }}>
+                    <Stack sx={{ position: "relative" }}>
+                        <Stack
+                            direction="row"
+                            alignItems="center"
+                            spacing="1.2rem"
+                            sx={{
+                                height: "3.1rem",
+                                pt: ".4rem",
+                                px: "1.8rem",
+                                backgroundColor: "#000000BF",
+                                borderBottom: `${theme.factionTheme.primary}80 .25rem solid`,
+                            }}
+                        >
+                            <ContributorAmount />
+                        </Stack>
+
                         <Box
                             sx={{
-                                height: "100%",
+                                maxHeight: "100vh",
                                 overflowY: "auto",
                                 overflowX: "hidden",
                                 ml: "1.9rem",
@@ -74,7 +94,7 @@ const VotingSystemInner = ({ userID, bribeStage }: VotingSystemInnerProps) => {
                                 },
                             }}
                         >
-                            <Stack spacing="2rem" sx={{ direction: "ltr", pt: ".4rem", pb: "1.2rem" }}>
+                            <Stack spacing="1rem" sx={{ direction: "ltr", pt: ".4rem", pb: "1.2rem" }}>
                                 <BattleAbilityItem key={factionID} />
                                 <FactionAbilities />
                                 {STAGING_OR_DEV_ONLY && userID && <PlayerAbilities />}

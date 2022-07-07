@@ -121,13 +121,14 @@ const BarStatInner = ({
     primaryColor: string
     fontSize: string
     label: string
-    current: number
+    current: number | string
     total: number
     unit?: string
     barHeight?: string
 }) => {
     return useMemo(() => {
-        if (!current) return null
+        const parsedCurrent = typeof current === "string" ? parseFloat(current) : current
+        if (!parsedCurrent) return null
 
         return (
             <Box>
@@ -162,7 +163,7 @@ const BarStatInner = ({
                             WebkitBoxOrient: "vertical",
                         }}
                     >
-                        {current}
+                        {parsedCurrent}
                         {unit}
                     </Typography>
                 </Stack>
@@ -170,7 +171,7 @@ const BarStatInner = ({
                 <Box sx={{ height: barHeight || ".7rem", backgroundColor: "#FFFFFF25" }}>
                     <Box
                         sx={{
-                            width: `${(100 * current) / total}%`,
+                            width: `${(100 * parsedCurrent) / total}%`,
                             height: "100%",
                             backgroundColor: primaryColor,
                             transition: "all .15s",
@@ -182,4 +183,4 @@ const BarStatInner = ({
     }, [barHeight, current, fontSize, label, primaryColor, total, unit])
 }
 
-const BarStat = React.memo(BarStatInner)
+export const BarStat = React.memo(BarStatInner)

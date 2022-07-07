@@ -99,6 +99,7 @@ export interface GameAbility {
     sups_cost: string
     current_sups: string
     ability_offering_id: string
+    location_select_type: string
 }
 
 export interface BlueprintPlayerAbility {

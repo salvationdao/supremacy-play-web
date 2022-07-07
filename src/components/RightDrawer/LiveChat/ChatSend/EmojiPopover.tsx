@@ -47,7 +47,6 @@ export const EmojiPopover = ({ primaryColor, setMessage, popoverRef, isEmojiOpen
             <ClipThing
                 clipSize="10px"
                 border={{
-                    isFancy: true,
                     borderColor: primaryColor,
                     borderThickness: ".2rem",
                 }}

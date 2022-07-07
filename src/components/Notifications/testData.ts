@@ -33,7 +33,6 @@ const faction1 = {
 const user1: User = {
     id: "aaa",
     username: "johnsmith",
-    avatar_id: "949fd2b8-1c8f-4938-8c78-d4d40f8e12ef",
     faction_id: "123123",
     gid: 3871,
     rank: "NEW_RECRUIT" as UserRank,
@@ -42,7 +41,6 @@ const user1: User = {
 const user2 = {
     id: "aaa",
     username: "didNot_write65",
-    avatar_id: "949fd2b8-1c8f-4938-8c78-d4d40f8e12ef",
     faction_id: "123123",
     gid: 6519,
     rank: "NEW_RECRUIT" as UserRank,

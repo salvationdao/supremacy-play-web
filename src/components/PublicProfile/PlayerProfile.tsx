@@ -1,16 +1,17 @@
-import { Avatar, Box, CircularProgress, Stack, Typography } from "@mui/material"
-import { useCallback, useEffect, useState } from "react"
+import { Avatar, Box, Button, CircularProgress, IconButton, Stack, TextField, Typography } from "@mui/material"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { useHistory, useParams } from "react-router-dom"
-import { SvgAbility, SvgCake, SvgDeath, SvgSkull2, SvgView, WarMachineIconPNG } from "../../assets"
+import { SvgAbility, SvgCake, SvgDeath, SvgEdit, SvgSave, SvgSkull2, SvgView, WarMachineIconPNG } from "../../assets"
+import { useAuth } from "../../containers"
 import { camelToTitle, snakeToTitle } from "../../helpers"
 import { useToggle } from "../../hooks"
-import { useGameServerCommands } from "../../hooks/useGameServer"
+import { useGameServerCommands, useGameServerCommandsUser } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { colors, fonts, theme } from "../../theme/theme"
-import { BattleMechHistory, Faction, UserRank } from "../../types"
+import { BattleMechHistory, Faction, MechDetails, UserRank } from "../../types"
 import { ClipThing } from "../Common/ClipThing"
 import { PageHeader } from "../Common/PageHeader"
-import { HistoryEntry } from "../Hangar/WarMachinesHangar/WarMachineDetails/Modals/MechHistory/HistoryEntry"
+import { HistoryEntry } from "../Hangar/WarMachinesHangar/Common/MechHistory/HistoryEntry"
 import { PublicWarmachines } from "./PublicWarmachines"
 
 interface Player {
@@ -36,19 +37,29 @@ interface PlayerProfile {
     faction?: Faction
 }
 
+const UpdateUsername = "PLAYER:UPDATE_USERNAME"
+
 const cakeDay = (d: Date) => {
     const now = new Date()
     const result = d.getDate() === now.getDate() && d.getMonth() === now.getMonth()
     return result
 }
 export const PlayerProfilePage = () => {
-    const { playerID } = useParams<{ playerID: string }>()
+    const { playerGID } = useParams<{ playerGID: string }>()
+    const { user } = useAuth()
     const history = useHistory()
     const [loading, setLoading] = useState(false)
+    const [updateLoading, setUpdateLoading] = useState(false)
+    const [updateError, setUpdateError] = useState<string>()
+
     const [profileError, setProfileError] = useState<string>()
+    const [username, setNewUsername] = useState<string>()
+
     const [profile, setProfile] = useState<PlayerProfile>()
 
     const [copySuccess, toggleCopySuccess] = useToggle()
+
+    const isMe = `${user?.gid}` === playerGID
 
     useEffect(() => {
         if (copySuccess) {
@@ -61,7 +72,31 @@ export const PlayerProfilePage = () => {
     }, [copySuccess, toggleCopySuccess])
 
     const { send } = useGameServerCommands("/public/commander")
+    const { send: userSend } = useGameServerCommandsUser("/user_commander")
 
+    const updateUsername = useCallback(async (newUsername: string) => {
+        try {
+            setUpdateLoading(true)
+            const resp = await userSend<PlayerProfile>(UpdateUsername, {
+                player_id: profile?.player.id,
+                new_username: newUsername,
+            })
+
+            setProfile(resp)
+            setUpdateLoading(false)
+        } catch (e) {
+            let errorMessage = ""
+            if (typeof e === "string") {
+                errorMessage = e
+            } else if (e instanceof Error) {
+                errorMessage = e.message
+            }
+            setUpdateError(errorMessage)
+            setLoading(false)
+        } finally {
+            setUpdateLoading(false)
+        }
+    }, [])
     // sub to player profile
     const fetchProfile = useCallback(
         async (id: string) => {
@@ -95,8 +130,8 @@ export const PlayerProfilePage = () => {
     )
 
     useEffect(() => {
-        fetchProfile(playerID)
-    }, [playerID, fetchProfile])
+        fetchProfile(playerGID)
+    }, [playerGID, fetchProfile, user])
 
     const faction = profile?.faction
     const primaryColor = faction?.primary_color || theme.factionTheme.primary
@@ -106,7 +141,7 @@ export const PlayerProfilePage = () => {
         return (
             <Stack alignItems="center" justifyContent={"center"} sx={{ width: "100%", height: "100%" }}>
                 <CircularProgress size="3rem" sx={{ color: primaryColor }} />
-                <Typography sx={{ fontFamily: fonts.nostromoBlack, mr: "1rem" }}>Loading Profile</Typography>
+                <Typography sx={{ fontFamily: fonts.nostromoBlack, mr: "1rem", mt: "3rem" }}>Loading Profile</Typography>
             </Stack>
         )
     }
@@ -117,6 +152,9 @@ export const PlayerProfilePage = () => {
             </Stack>
         )
     }
+
+    console.log("is me", isMe)
+
     return (
         <Stack direction="column" sx={{ height: "100%" }}>
             {/* top part */}
@@ -135,31 +173,54 @@ export const PlayerProfilePage = () => {
                     <Stack spacing=".5rem"></Stack>
                     <Stack spacing="1.8rem">
                         <Stack>
-                            <Avatar
-                                src={faction?.logo_url}
-                                alt={`${profile.player.username}'s Avatar`}
-                                sx={{
-                                    height: "7rem",
-                                    width: "7rem",
-                                    borderRadius: 1,
-                                    border: `${primaryColor} 2px solid`,
-                                    backgroundColor: primaryColor,
-                                }}
-                                variant="square"
-                            />
-                            <Stack
-                                direction="row"
-                                alignItems={"center"}
-                                sx={{ cursor: "pointer", ":hover": { opacity: 0.8 } }}
-                                onClick={() => {
-                                    navigator.clipboard.writeText(window.location.href).then(
-                                        () => toggleCopySuccess(true),
-                                        () => toggleCopySuccess(false),
-                                    )
-                                }}
-                            >
-                                <Typography sx={{ fontFamily: fonts.nostromoBlack, fontSize: "5rem" }}>{profile.player.username}</Typography>
-                                <Typography sx={{ fontFamily: fonts.nostromoBlack, fontSize: "5rem", color: primaryColor }}>#{profile.player.gid}</Typography>
+                            <Stack direction={"row"}>
+                                <Avatar
+                                    src={faction?.logo_url}
+                                    alt={`${profile.player.username}'s Avatar`}
+                                    sx={{
+                                        mr: "1rem",
+                                        height: "7rem",
+                                        width: "7rem",
+                                        borderRadius: 1,
+                                        border: `${primaryColor} 2px solid`,
+                                        backgroundColor: primaryColor,
+                                    }}
+                                    variant="square"
+                                />
+                                {isMe && <Typography sx={{ fontFamily: fonts.nostromoBlack, fontSize: "5rem", color: primaryColor }}>my profile</Typography>}
+                            </Stack>
+
+                            <Stack direction="row" alignItems={"center"}>
+                                {/* <Stack
+                                    direction="row"
+                                    sx={{ cursor: "pointer", ":hover": { opacity: 0.5 } }}
+                                    onClick={() => {
+                                        navigator.clipboard.writeText(window.location.href).then(
+                                            () => toggleCopySuccess(true),
+                                            () => toggleCopySuccess(false),
+                                        )
+                                    }}
+                                >
+                                    <Typography sx={{ fontFamily: fonts.nostromoBlack, fontSize: "5rem" }}>{profile.player.username}</Typography>
+                                    <Typography sx={{ fontFamily: fonts.nostromoBlack, fontSize: "5rem", color: primaryColor }}>
+                                        #{profile.player.gid}
+                                    </Typography>
+                                </Stack> */}
+                                <Username
+                                    userID={profile.player.id}
+                                    updateUsername={async (name: string) => {
+                                        updateUsername(name)
+                                    }}
+                                    username={profile.player.username}
+                                />
+
+                                <Button
+                                    onClick={() => {
+                                        console.log("click")
+                                    }}
+                                >
+                                    Edit
+                                </Button>
 
                                 {copySuccess && (
                                     <Typography
@@ -459,5 +520,116 @@ export const StatItem = ({ label, value, icon }: StatItemProps) => {
                 </Stack>
             </Stack>
         </ClipThing>
+    )
+}
+
+const Username = ({ username, updateUsername, userID }: { updateUsername: (newNaem: string) => Promise<void>; username: string; userID: string }) => {
+    // Rename
+    const renamingRef = useRef<HTMLInputElement>()
+    const [editing, setEditing] = useState(false)
+    const [submitting, setSubmitting] = useState(false)
+    const [newMechName, setNewMechName] = useState<string>(username || "")
+
+    const renameMechHandler = useCallback(async () => {
+        try {
+            setSubmitting(true)
+            renamingRef.current?.blur()
+            await updateUsername(newMechName)
+        } finally {
+            setSubmitting(false)
+            setEditing(false)
+        }
+    }, [newMechName, updateUsername])
+
+    return (
+        <Stack direction="row" alignItems="center">
+            <Stack direction="row" alignItems="center" sx={{ cursor: "text" }}>
+                <TextField
+                    inputRef={renamingRef}
+                    variant="standard"
+                    sx={{
+                        flex: 1,
+                        m: 0,
+                        py: ".2rem",
+                        opacity: editing ? "unset" : 0,
+                        height: editing ? "unset" : 0,
+                        width: editing ? "unset" : 0,
+                        position: "relative",
+                        "& .MuiInput-root": {
+                            p: 0,
+                            fontSize: "1.8rem",
+                            color: "#FFFFFF",
+                        },
+                        "& .MuiInputBase-input": {
+                            p: 0,
+                            display: "inline",
+                            px: "1.4rem",
+                            py: ".4rem",
+                            wordBreak: "break-word",
+                            border: `#FFFFFF99 1.5px dashed`,
+                            borderRadius: 0.5,
+                            backgroundColor: "#FFFFFF12",
+                        },
+                    }}
+                    spellCheck={false}
+                    InputProps={{
+                        disableUnderline: true,
+                    }}
+                    value={newMechName}
+                    placeholder="Enter a name..."
+                    onChange={(e) => setNewMechName(e.target.value)}
+                    onFocus={() => renamingRef.current?.setSelectionRange(0, newMechName.length)}
+                    // onBlur={() => (newMechName === name ? setEditing(false) : undefined)}
+                    onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                            e.preventDefault()
+                            renameMechHandler()
+                        }
+                    }}
+                />
+
+                {editing && (
+                    <>
+                        {!submitting && (
+                            <IconButton size="small" sx={{ ml: ".5rem" }} onClick={renameMechHandler}>
+                                <SvgSave size="1.4rem" />
+                            </IconButton>
+                        )}
+
+                        {submitting && <CircularProgress size="1.4rem" sx={{ ml: "1rem", color: "#FFFFFF" }} />}
+                    </>
+                )}
+
+                {!editing && (
+                    <Typography
+                        sx={{
+                            fontSize: "1.8rem",
+                            color: "#FFFFFF",
+                            display: "-webkit-box",
+                            overflow: "hidden",
+                            overflowWrap: "anywhere",
+                            textOverflow: "ellipsis",
+                            WebkitLineClamp: 1,
+                            WebkitBoxOrient: "vertical",
+                        }}
+                    >
+                        {username}
+                    </Typography>
+                )}
+
+                {!editing && (
+                    <IconButton
+                        size="small"
+                        sx={{ ml: ".5rem", opacity: 0.6, ":hover": { opacity: 1 } }}
+                        onClick={() => {
+                            setEditing(true)
+                            renamingRef.current?.focus()
+                        }}
+                    >
+                        <SvgEdit size="1.2rem" />
+                    </IconButton>
+                )}
+            </Stack>
+        </Stack>
     )
 }

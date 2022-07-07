@@ -17,8 +17,8 @@ export const MapIcon = ({
 }) => {
     const { gridWidth, gridHeight } = useMiniMap()
 
-    const sizeX = useMemo(() => gridWidth * 1.5, [gridWidth])
-    const sizeY = useMemo(() => gridHeight * 1.5, [gridHeight])
+    const sizeX = useMemo(() => gridWidth * 1.8, [gridWidth])
+    const sizeY = useMemo(() => gridHeight * 1.8, [gridHeight])
 
     return useMemo(() => {
         return (

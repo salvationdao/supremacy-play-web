@@ -9,7 +9,6 @@ import { colors, siteZIndex } from "../../theme/theme"
 import { DrawerButtons } from "./DrawerButtons"
 import { LiveChat } from "./LiveChat/LiveChat"
 import { PlayerList } from "./PlayerList/PlayerList"
-import { Socials } from "./Social/Social"
 
 export const RightDrawer = () => {
     const [isDrawerOpen, toggleIsDrawerOpen] = useToggle()
@@ -23,8 +22,6 @@ export const RightDrawer = () => {
         switch (location.hash) {
             case RightDrawerHashes.PlayerList:
                 return <PlayerList />
-            case RightDrawerHashes.Socials:
-                return <Socials />
             case RightDrawerHashes.LiveChat:
             default:
                 return <LiveChat />

@@ -25,7 +25,7 @@ interface GetMechsResponse {
 }
 
 export const PublicWarmachines = ({ playerID, primaryColour, backgroundColour }: { playerID: string; primaryColour: string; backgroundColour: string }) => {
-    const [query, updateQuery] = useUrlQuery()
+    const [query] = useUrlQuery()
     const { send } = useGameServerCommands("/public/commander")
 
     // Items
@@ -61,7 +61,7 @@ export const PublicWarmachines = ({ playerID, primaryColour, backgroundColour }:
         } finally {
             setIsLoading(false)
         }
-    }, [send, page, pageSize, updateQuery, setTotalItems])
+    }, [send, page, pageSize, setTotalItems, playerID])
 
     useEffect(() => {
         getItems()
@@ -161,7 +161,7 @@ export const PublicWarmachines = ({ playerID, primaryColour, backgroundColour }:
                 </Stack>
             </Stack>
         )
-    }, [loadError, mechs, isLoading, primaryColour])
+    }, [loadError, mechs, isLoading, primaryColour, backgroundColour])
 
     return (
         <Stack direction="row" spacing="1rem" sx={{ height: "100%", width: "100%" }}>
