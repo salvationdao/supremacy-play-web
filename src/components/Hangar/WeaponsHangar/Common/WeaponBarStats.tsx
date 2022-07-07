@@ -26,10 +26,14 @@ export const WeaponBarStats = ({
 
     const ammo = weapon.max_ammo || 0
     const damage = weapon.damage
+    const damageFalloff = weapon.damage_falloff || 0
+    const damageFalloffRate = weapon.damage_falloff_rate || 0
     const radius = weapon.radius || 0
+    const radiusDamageFalloff = weapon.radius_damage_falloff || 0
     const rateOfFire = weapon.rate_of_fire || 0
     const energyCost = weapon.energy_cost || 0
     const projectileSpeed = weapon.projectile_speed || 0
+    const spread = weapon.spread || 0
 
     return (
         <Box
@@ -64,7 +68,24 @@ export const WeaponBarStats = ({
             >
                 <BarStat primaryColor={primaryColor} fontSize={fontSize} barHeight={barHeight} label="AMMO" current={ammo} total={3000} />
                 <BarStat primaryColor={primaryColor} fontSize={fontSize} barHeight={barHeight} label="DAMAGE" current={damage} total={1000} />
+                <BarStat primaryColor={primaryColor} fontSize={fontSize} barHeight={barHeight} label="DAMAGE FALLOFF" current={damageFalloff} total={1000} />
+                <BarStat
+                    primaryColor={primaryColor}
+                    fontSize={fontSize}
+                    barHeight={barHeight}
+                    label="DAMAGE FALLOFF RATE"
+                    current={damageFalloffRate}
+                    total={1000}
+                />
                 <BarStat primaryColor={primaryColor} fontSize={fontSize} barHeight={barHeight} label="RADIUS" current={radius} total={2000} />
+                <BarStat
+                    primaryColor={primaryColor}
+                    fontSize={fontSize}
+                    barHeight={barHeight}
+                    label="RADIUS DAMAGE FALLOFF"
+                    current={radiusDamageFalloff}
+                    total={2000}
+                />
                 <BarStat primaryColor={primaryColor} fontSize={fontSize} barHeight={barHeight} label="RATE OF FIRE" current={rateOfFire} total={1000} />
                 <BarStat primaryColor={primaryColor} fontSize={fontSize} barHeight={barHeight} label="ENERGY COST" current={energyCost} total={100} />
                 <BarStat
@@ -75,6 +96,7 @@ export const WeaponBarStats = ({
                     current={projectileSpeed}
                     total={200000}
                 />
+                <BarStat primaryColor={primaryColor} fontSize={fontSize} barHeight={barHeight} label="SPREAD" current={spread} total={100} />
             </Stack>
         </Box>
     )

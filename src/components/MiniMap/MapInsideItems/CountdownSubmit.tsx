@@ -15,6 +15,17 @@ const CountdownSubmitInner = () => {
     const { playerAbility, selection, onTargetConfirm } = useMiniMap()
     const { setEndTimeState, totalSecRemain, delay } = useTimer(undefined, 600)
 
+    const isInstant = useMemo(() => {
+        if (playerAbility) {
+            switch (playerAbility.ability.location_select_type) {
+                case LocationSelectType.LINE_SELECT:
+                case LocationSelectType.LOCATION_SELECT:
+                    return true
+            }
+        }
+        return false
+    }, [playerAbility])
+
     const hasSelected = useMemo(() => {
         let selected = !!selection
         if (playerAbility) {
@@ -37,10 +48,11 @@ const CountdownSubmitInner = () => {
     useEffect(() => {
         setEndTimeState((prev) => {
             if (!hasSelected) return undefined
+            if (isInstant) return new Date(new Date().getTime())
             if (!prev) return new Date(new Date().getTime() + 3000)
             return prev
         })
-    }, [hasSelected, setEndTimeState])
+    }, [hasSelected, setEndTimeState, isInstant])
 
     useEffect(() => {
         if (hasSelected && totalSecRemain === 0) onTargetConfirm()
@@ -66,9 +78,10 @@ const CountdownSubmitInner = () => {
                     color: "#D90000",
                     opacity: 0.9,
                     filter: "drop-shadow(0 3px 3px #00000050)",
+                    textTransform: "uppercase",
                 }}
             >
-                {totalSecRemain}
+                {!(totalSecRemain === 0 && isInstant) && totalSecRemain}
             </Typography>
         </Box>
     )

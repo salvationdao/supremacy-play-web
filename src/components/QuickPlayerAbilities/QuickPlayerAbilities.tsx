@@ -1,5 +1,5 @@
 import { Box, CircularProgress, Fade, Stack, Typography } from "@mui/material"
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { MoveableResizable } from ".."
 import { useAuth } from "../../containers"
 import { useTheme } from "../../containers/theme"
@@ -26,10 +26,12 @@ const QuickPlayerAbilitiesInner = ({ onClose }: { onClose: () => void }) => {
     const [saleAbilities, setSaleAbilities] = useState<SaleAbility[]>([])
     const [priceMap, setPriceMap] = useState<Map<string, string>>(new Map())
     const [amountMap, setAmountMap] = useState<Map<string, number>>(new Map())
+    const [canPurchase, setCanPurchase] = useState(true)
     const [purchaseError, setPurchaseError] = useState<string>()
 
     useGameServerSubscriptionSecurePublic<{
         next_refresh_time: Date | null
+        refresh_period_duration_seconds: number
         sale_abilities: SaleAbility[]
     }>(
         {
@@ -38,7 +40,9 @@ const QuickPlayerAbilitiesInner = ({ onClose }: { onClose: () => void }) => {
         },
         (payload) => {
             if (!payload) return
-            setNextRefreshTime(payload.next_refresh_time)
+            const t = new Date()
+            t.setSeconds(t.getSeconds() + payload.refresh_period_duration_seconds)
+            setNextRefreshTime(payload.next_refresh_time || t)
             setSaleAbilities(payload.sale_abilities)
             setAmountMap(new Map()) // reset amount map
             if (isLoaded) return
@@ -72,6 +76,12 @@ const QuickPlayerAbilitiesInner = ({ onClose }: { onClose: () => void }) => {
         },
     )
 
+    useEffect(() => {
+        if (!nextRefreshTime) return
+        setCanPurchase(true)
+        setPurchaseError(undefined)
+    }, [nextRefreshTime])
+
     const primaryColor = theme.factionTheme.primary
 
     const config: MoveableResizableConfig = useMemo(
@@ -87,9 +97,9 @@ const QuickPlayerAbilitiesInner = ({ onClose }: { onClose: () => void }) => {
             minPosY: 0,
             // Size limits
             minWidth: 360,
-            minHeight: 220,
+            minHeight: 245,
             maxWidth: 500,
-            maxHeight: 300,
+            maxHeight: 245,
             // Others
             infoTooltipText: "Quickly view and purchase abilities that are currently on sale",
             onHideCallback: onClose,
@@ -185,7 +195,7 @@ const QuickPlayerAbilitiesInner = ({ onClose }: { onClose: () => void }) => {
                                         <Box
                                             sx={{
                                                 display: "grid",
-                                                gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+                                                gridTemplateColumns: "repeat(3, minmax(0, 100px))",
                                                 gridTemplateRows: "repeat(1, fr)",
                                                 gap: "1rem",
                                                 justifyContent: "center",
@@ -201,6 +211,8 @@ const QuickPlayerAbilitiesInner = ({ onClose }: { onClose: () => void }) => {
                                                     totalAmount={s.sale_limit}
                                                     amountSold={amountMap.get(s.id) || s.amount_sold}
                                                     setError={setPurchaseError}
+                                                    onPurchase={() => setCanPurchase(false)}
+                                                    disabled={!canPurchase}
                                                 />
                                             ))}
                                         </Box>

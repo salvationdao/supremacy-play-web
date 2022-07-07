@@ -1,5 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { ClipThing, FancyButton } from "../.."
 import { PlayerAbilityPNG } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
@@ -21,9 +21,11 @@ export const PlayerAbilitiesStore = () => {
     const [saleAbilities, setSaleAbilities] = useState<SaleAbility[]>([])
     const [priceMap, setPriceMap] = useState<Map<string, string>>(new Map())
     const [amountMap, setAmountMap] = useState<Map<string, number>>(new Map())
+    const [canPurchase, setCanPurchase] = useState(true)
 
     useGameServerSubscriptionSecurePublic<{
         next_refresh_time: Date | null
+        refresh_period_duration_seconds: number
         sale_abilities: SaleAbility[]
     }>(
         {
@@ -32,7 +34,9 @@ export const PlayerAbilitiesStore = () => {
         },
         (payload) => {
             if (!payload) return
-            setNextRefreshTime(payload.next_refresh_time)
+            const t = new Date()
+            t.setSeconds(t.getSeconds() + payload.refresh_period_duration_seconds)
+            setNextRefreshTime(payload.next_refresh_time || t)
             setSaleAbilities(payload.sale_abilities)
             setAmountMap(new Map()) // reset amount map
             if (isLoaded) return
@@ -65,6 +69,11 @@ export const PlayerAbilitiesStore = () => {
             })
         },
     )
+
+    useEffect(() => {
+        if (!nextRefreshTime) return
+        setCanPurchase(true)
+    }, [nextRefreshTime])
 
     const timeLeft = useMemo(() => {
         if (nextRefreshTime) {
@@ -120,6 +129,8 @@ export const PlayerAbilitiesStore = () => {
                                 updatedPrice={priceMap.get(s.id) || s.current_price}
                                 totalAmount={s.sale_limit}
                                 amountSold={amountMap.get(s.id) || s.amount_sold}
+                                onPurchase={() => setCanPurchase(false)}
+                                disabled={!canPurchase}
                             />
                         ))}
                     </Box>
@@ -160,7 +171,7 @@ export const PlayerAbilitiesStore = () => {
                 </Stack>
             </Stack>
         )
-    }, [isLoaded, priceMap, amountMap, saleAbilities])
+    }, [isLoaded, saleAbilities, priceMap, amountMap, canPurchase])
 
     return (
         <ClipThing
