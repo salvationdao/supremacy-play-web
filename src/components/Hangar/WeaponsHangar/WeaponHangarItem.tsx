@@ -1,9 +1,9 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useState } from "react"
 import { useLocation } from "react-router-dom"
 import { FancyButton } from "../.."
 import { useTheme } from "../../../containers/theme"
-import { getRarityDeets, getWeaponDamageTypeColor, getWeaponTypeColor } from "../../../helpers"
+import { getWeaponDamageTypeColor, getWeaponTypeColor } from "../../../helpers"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
@@ -16,8 +16,6 @@ export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGri
     const theme = useTheme()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [weaponDetails, setWeaponDetails] = useState<Weapon>()
-
-    const rarityDeets = useMemo(() => getRarityDeets(weaponDetails?.tier || ""), [weaponDetails])
 
     useEffect(() => {
         ;(async () => {
@@ -87,8 +85,11 @@ export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGri
                     </Box>
 
                     <Stack>
-                        <Typography variant="body2" sx={{ mb: ".2rem", color: rarityDeets.color, fontFamily: fonts.nostromoHeavy }}>
-                            {rarityDeets.label}
+                        <Typography
+                            variant="body2"
+                            sx={{ mb: ".2rem", color: getWeaponTypeColor(weaponDetails?.weapon_type), fontFamily: fonts.nostromoBlack }}
+                        >
+                            {weaponDetails?.weapon_type}
                         </Typography>
 
                         <Typography
@@ -103,23 +104,6 @@ export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGri
                             }}
                         >
                             {weaponDetails?.label}
-                        </Typography>
-
-                        <Typography
-                            variant="caption"
-                            sx={{
-                                mb: ".2rem",
-                                color: getWeaponTypeColor(weaponDetails?.weapon_type),
-                                fontFamily: fonts.nostromoBold,
-                                display: "-webkit-box",
-                                overflow: "hidden",
-                                overflowWrap: "anywhere",
-                                textOverflow: "ellipsis",
-                                WebkitLineClamp: 1, // change to max number of lines
-                                WebkitBoxOrient: "vertical",
-                            }}
-                        >
-                            {weaponDetails?.weapon_type}
                         </Typography>
                     </Stack>
 
