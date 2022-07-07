@@ -55,7 +55,7 @@ export const WarMachineStats = () => {
                             sx={{ height: "100%" }}
                         >
                             <HorizontalScrollContainer>
-                                <Stack spacing="-.6rem" direction="row" alignItems="center" justifyContent="center" sx={{ px: "2rem", py: "2rem" }}>
+                                <Stack spacing="-.6rem" direction="row" alignItems="center" justifyContent="center" sx={{ px: ".6rem", py: ".6rem" }}>
                                     {ownedMiniMechs.map((mm) => (
                                         <WarMachineItem key={`${mm.participantID}`} warMachine={mm} scale={0.5} />
                                     ))}
