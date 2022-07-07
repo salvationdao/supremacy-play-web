@@ -273,22 +273,22 @@ export const PlayerProfilePage = () => {
                                                 <StatItem
                                                     label="Abilities"
                                                     value={profile.stats.total_ability_triggered}
-                                                    icon={<SvgAbility size="1.1rem" sx={{ pb: ".4rem" }} />}
+                                                    icon={<SvgAbility size="1.7rem" sx={{ pb: ".4rem" }} />}
                                                 />
                                                 <StatItem
                                                     label="Mech Kills"
                                                     value={profile.stats.mech_kill_count}
-                                                    icon={<SvgSkull2 size="1.1rem" sx={{ pb: ".4rem" }} />}
+                                                    icon={<SvgSkull2 size="1.7rem" sx={{ pb: ".4rem" }} />}
                                                 />
                                                 <StatItem
                                                     label="Ability Kills"
                                                     value={profile.stats.ability_kill_count}
-                                                    icon={<SvgDeath size="1.1rem" sx={{ pb: ".4rem" }} />}
+                                                    icon={<SvgDeath size="1.7rem" sx={{ pb: ".4rem" }} />}
                                                 />
                                                 <StatItem
                                                     label="Spectated"
                                                     value={profile.stats.view_battle_count}
-                                                    icon={<SvgView size="1.1rem" sx={{ pb: ".4rem" }} />}
+                                                    icon={<SvgView size="1.7rem" sx={{ pb: ".4rem" }} />}
                                                 />
                                             </Stack>
                                         </Stack>
@@ -438,6 +438,7 @@ export const StatItem = ({ label, value, icon }: StatItemProps) => {
                         zIndex: -2,
                     }}
                 />
+
                 {icon}
 
                 <Box>
