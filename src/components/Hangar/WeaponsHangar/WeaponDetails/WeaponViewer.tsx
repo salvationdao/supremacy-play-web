@@ -8,7 +8,7 @@ export const WeaponViewer = ({ weaponDetails }: { weaponDetails: Weapon }) => {
 
     const backgroundColor = theme.factionTheme.background
 
-    const skin = weaponDetails.weaponSkin
+    const skin = weaponDetails.weapon_skin
     const avatarUrl = skin?.avatar_url || weaponDetails?.avatar_url
     const imageUrl = skin?.image_url || weaponDetails?.image_url
     const largeImageUrl = skin?.large_image_url || weaponDetails?.large_image_url

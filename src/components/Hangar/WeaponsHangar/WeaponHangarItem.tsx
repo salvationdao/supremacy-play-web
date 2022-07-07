@@ -35,8 +35,8 @@ export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGri
 
     const primaryColor = theme.factionTheme.primary
     const backgroundColor = theme.factionTheme.background
-    const imageUrl = weaponDetails?.weaponSkin?.avatar_url || weaponDetails?.avatar_url || weapon.avatar_url
-    const largeImageUrl = weaponDetails?.weaponSkin?.large_image_url || weaponDetails?.large_image_url || weapon.large_image_url
+    const imageUrl = weaponDetails?.weapon_skin?.avatar_url || weaponDetails?.avatar_url || weapon.avatar_url
+    const largeImageUrl = weaponDetails?.weapon_skin?.large_image_url || weaponDetails?.large_image_url || weapon.large_image_url
 
     return (
         <Box sx={{ position: "relative", overflow: "visible", height: "100%" }}>
@@ -130,8 +130,11 @@ export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGri
                     </General>
 
                     <General isGridView={isGridView} title="SUBMODEL">
-                        <Typography variant="h6" sx={{ color: weaponDetails?.weaponSkin ? colors.chassisSkin : colors.darkGrey, fontWeight: "fontWeightBold" }}>
-                            {weaponDetails?.weaponSkin ? weaponDetails?.weaponSkin.label : "NOT EQUIPPED"}
+                        <Typography
+                            variant="h6"
+                            sx={{ color: weaponDetails?.weapon_skin ? colors.chassisSkin : colors.darkGrey, fontWeight: "fontWeightBold" }}
+                        >
+                            {weaponDetails?.weapon_skin ? weaponDetails?.weapon_skin.label : "NOT EQUIPPED"}
                         </Typography>
                     </General>
 
