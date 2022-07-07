@@ -51,7 +51,6 @@ export const EnlistDetailsPopover = ({ popoverRef, open, onClose, faction }: Enl
                 <ClipThing
                     clipSize="10px"
                     border={{
-                        isFancy: true,
                         borderColor: primary_color,
                         borderThickness: ".3rem",
                     }}
