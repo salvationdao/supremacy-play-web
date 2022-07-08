@@ -7,7 +7,6 @@ import {
     EarlyAccessWarning,
     LiveVotingChart,
     MiniMap,
-    NoSupsModal,
     Notifications,
     Stream,
     VotingSystem,
@@ -19,7 +18,6 @@ import { QuickPlayerAbilities } from "../components/QuickPlayerAbilities/QuickPl
 import { Trailer } from "../components/Stream/Trailer"
 import { DimensionProvider, GameProvider, OverlayTogglesProvider, StreamProvider, useAuth, useSupremacy } from "../containers"
 import { MiniMapProvider } from "../containers/minimap"
-import { useToggle } from "../hooks"
 import { siteZIndex } from "../theme/theme"
 
 export const BattleArenaPage = () => {
@@ -57,6 +55,7 @@ const BattleArenaPageInner = () => {
 
 const Contents = () => {
     const { userID } = useAuth()
+    const { isServerUp, isQuickDeployOpen, toggleIsQuickDeployOpen } = useSupremacy()
     const { isServerUp, haveSups, isQuickDeployOpen, toggleIsQuickDeployOpen, isQuickPlayerAbilitiesOpen, toggleIsQuickPlayerAbilitiesOpen } = useSupremacy()
     const [noSupsModalOpen, toggleNoSupsModalOpen] = useToggle(true)
     const [watchedTrailer, setWatchedTrailer] = useState(localStorage.getItem("watchedTrailer") == "true")
@@ -70,15 +69,10 @@ const Contents = () => {
                     {isServerUp && watchedTrailer && (
                         <>
                             <Notifications />
-
                             <WarMachineStats />
-
                             <BattleEndScreen />
-
                             <LiveVotingChart />
-
                             <BattleHistory />
-
                             {isQuickDeployOpen && <QuickDeploy open={isQuickDeployOpen} onClose={() => toggleIsQuickDeployOpen(false)} />}
 
                             {isQuickPlayerAbilitiesOpen && (
@@ -86,12 +80,9 @@ const Contents = () => {
                             )}
 
                             <VotingSystem />
-
                             <MiniMap />
 
-                            {isServerUp && userID && haveSups === false && noSupsModalOpen && <NoSupsModal onClose={() => toggleNoSupsModalOpen(false)} />}
-
-                            {userID && !noSupsModalOpen && <TutorialModal />}
+                            {userID && <TutorialModal />}
                         </>
                     )}
                 </Box>
