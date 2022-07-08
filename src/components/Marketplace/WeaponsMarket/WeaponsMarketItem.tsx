@@ -83,25 +83,29 @@ const WeaponInfo = ({ isGridView, label, weaponType, weaponDetails }: { isGridVi
             </Typography>
 
             <Stack direction="row" spacing=".5rem">
-                {skin ? (
-                    <>
-                        <Typography variant="body2" sx={{ lineHeight: 1, color: colors.chassisSkin, fontFamily: fonts.nostromoBold }}>
-                            SUBMODEL: {skin.label}
-                        </Typography>
-                        <Typography variant="body2" sx={{ lineHeight: 1, color: rarityDeets.color, fontFamily: fonts.nostromoBold }}>
-                            ({rarityDeets.label})
-                        </Typography>
-                    </>
-                ) : (
-                    <>
-                        <Typography variant="body2" sx={{ lineHeight: 1, color: colors.chassisSkin, fontFamily: fonts.nostromoBold }}>
-                            SUBMODEL:
-                        </Typography>
-                        <Typography variant="body2" sx={{ lineHeight: 1, color: colors.darkGrey, fontFamily: fonts.nostromoBold }}>
-                            NOT EQUIPPED
-                        </Typography>
-                    </>
-                )}
+                <Typography
+                    variant="body2"
+                    sx={{
+                        lineHeight: 1,
+                        color: colors.chassisSkin,
+                        fontFamily: fonts.nostromoBold,
+                        display: "-webkit-box",
+                        overflow: "hidden",
+                        overflowWrap: "anywhere",
+                        textOverflow: "ellipsis",
+                        WebkitLineClamp: 1,
+                        WebkitBoxOrient: "vertical",
+                    }}
+                >
+                    SUBMODEL:{" "}
+                    {skin ? (
+                        <>
+                            {skin.label} <span style={{ color: rarityDeets.color }}>({rarityDeets.label})</span>
+                        </>
+                    ) : (
+                        <span style={{ color: colors.darkGrey }}>NOT EQUIPPED</span>
+                    )}
+                </Typography>
             </Stack>
         </Stack>
     )
