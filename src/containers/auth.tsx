@@ -26,6 +26,7 @@ export const FallbackFaction: Faction = {
     label: "",
     logo_url: "",
     background_url: "",
+    wallpaper_url: "",
     primary_color: colors.neonBlue,
     secondary_color: "#000000",
     background_color: shadeColor(colors.neonBlue, -95),

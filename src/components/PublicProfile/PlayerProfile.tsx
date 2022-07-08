@@ -14,6 +14,13 @@ import { PageHeader } from "../Common/PageHeader"
 import { HistoryEntry } from "../Hangar/WarMachinesHangar/Common/MechHistory/HistoryEntry"
 import { PublicWarmachines } from "./PublicWarmachines"
 
+// import bgImageBC1 from "../../assets/factionWallpapers/bc1.png"
+// import bgImageBC2 from "../../assets/factionWallpapers/bc2.jpg"
+// import bgImageRM1 from "../../assets/factionWallpapers/rm1.png"
+// import bgImageRM2 from "../../assets/factionWallpapers/rm2.png"
+// import bgImageZHI1 from "../../assets/factionWallpapers/zhi1.png"
+// import bgImageZHI2 from "../../assets/factionWallpapers/zhi2.png"
+
 interface Player {
     id: string
     username: string
@@ -159,7 +166,7 @@ export const PlayerProfilePage = () => {
             <Stack
                 padding="1rem"
                 sx={{
-                    backgroundImage: `url(${faction?.background_url})`,
+                    backgroundImage: `url(${faction?.wallpaper_url})`,
                     backgroundRepeat: "no-repeat",
                     backgroundPosition: "center",
                     backgroundSize: "cover",
@@ -205,6 +212,7 @@ export const PlayerProfilePage = () => {
                                     </Typography>
                                 </Stack> */}
                                 <Username
+                                    hide={!isMe}
                                     userID={profile.player.id}
                                     updateUsername={async (name: string) => {
                                         updateUsername(name)
@@ -243,14 +251,47 @@ export const PlayerProfilePage = () => {
             <Stack direction="row" sx={{ height: "100%", background: primaryColor }}>
                 {/* left side */}
                 <Stack
+                    direction="row"
                     sx={{
                         backgroundColor: "rgba(0, 0, 0, .97)",
 
                         flexShrink: 0,
                         height: "100%",
-                        width: "62rem",
+                        width: "72rem",
                     }}
                 >
+                    <Box
+                        sx={{
+                            flex: 1,
+                            overflowY: "auto",
+                            overflowX: "hidden",
+                            mt: ".4rem",
+                            mb: ".8rem",
+                            direction: "ltr",
+                            scrollbarWidth: "none",
+                            "::-webkit-scrollbar": {
+                                width: ".4rem",
+                            },
+                            "::-webkit-scrollbar-track": {
+                                background: "#FFFFFF15",
+                                borderRadius: 3,
+                            },
+                            "::-webkit-scrollbar-thumb": {
+                                background: primaryColor,
+                                borderRadius: 3,
+                            },
+                        }}
+                    >
+                        <Box sx={{ direction: "ltr", height: 0 }}>
+                            <Stack direction="column" spacing="1.6rem">
+                                <PageHeader title="ABOUT ME" description="" primaryColor={primaryColor} imageUrl={WarMachineIconPNG} />
+                                <Stack sx={{ p: "1rem 1rem" }}>
+                                    <PlayerMechHistory playerID={profile.player.id} />
+                                </Stack>
+                            </Stack>
+                        </Box>
+                    </Box>
+
                     <Box
                         sx={{
                             flex: 1,
@@ -516,11 +557,13 @@ export const StatItem = ({ label, value, icon }: StatItemProps) => {
 }
 
 const Username = ({
+    hide,
     username,
     updateUsername,
     primaryColour,
     gid,
 }: {
+    hide: boolean
     updateUsername: (newName: string) => Promise<void>
     username: string
     userID: string
@@ -612,7 +655,7 @@ const Username = ({
                     </Stack>
                 )}
 
-                {!editing && (
+                {!hide && !editing && (
                     <IconButton
                         size="small"
                         sx={{ ml: ".5rem", opacity: 0.6, ":hover": { opacity: 1 } }}
@@ -621,7 +664,7 @@ const Username = ({
                             renamingRef.current?.focus()
                         }}
                     >
-                        <SvgEdit size="1.2rem" />
+                        <SvgEdit size="2.2rem" />
                     </IconButton>
                 )}
             </Stack>
