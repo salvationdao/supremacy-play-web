@@ -147,7 +147,7 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate }: MysteryCrateStore
                                     position: "absolute",
                                     right: enlargedView ? "1.4rem" : ".5rem",
                                     bottom: enlargedView ? ".6rem" : ".2rem",
-                                    px: ".2rem",
+                                    px: ".6rem",
                                     py: ".5rem",
                                     backgroundColor: "#00000095",
                                 }}
@@ -156,15 +156,14 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate }: MysteryCrateStore
                                     sx={{
                                         lineHeight: 1,
                                         fontSize: enlargedView ? "1.5rem" : "1.22rem",
-                                        fontFamily: fonts.nostromoBold,
+                                        fontFamily: fonts.nostromoBlack,
                                         span: {
                                             fontFamily: "inherit",
                                             color: mysteryCrate.amount_sold >= mysteryCrate.amount ? colors.red : colors.neonBlue,
                                         },
                                     }}
                                 >
-                                    <span>{numberCommaFormatter(mysteryCrate.amount - mysteryCrate.amount_sold)}</span> /{" "}
-                                    {numberCommaFormatter(mysteryCrate.amount)} left
+                                    {numberCommaFormatter(mysteryCrate.amount)} LIMITED SUPPLY
                                 </Typography>
                             </Box>
                         </Box>

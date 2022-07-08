@@ -7,7 +7,6 @@ import {
     EarlyAccessWarning,
     LiveVotingChart,
     MiniMap,
-    NoSupsModal,
     Notifications,
     Stream,
     VotingSystem,
@@ -18,7 +17,6 @@ import { QuickDeploy } from "../components/QuickDeploy/QuickDeploy"
 import { Trailer } from "../components/Stream/Trailer"
 import { DimensionProvider, GameProvider, OverlayTogglesProvider, StreamProvider, useAuth, useSupremacy } from "../containers"
 import { MiniMapProvider } from "../containers/minimap"
-import { useToggle } from "../hooks"
 import { siteZIndex } from "../theme/theme"
 
 export const BattleArenaPage = () => {
@@ -52,8 +50,7 @@ export const BattleArenaPage = () => {
 
 const BattleArenaPageInner = () => {
     const { userID } = useAuth()
-    const { isServerUp, haveSups, isQuickDeployOpen, toggleIsQuickDeployOpen } = useSupremacy()
-    const [noSupsModalOpen, toggleNoSupsModalOpen] = useToggle(true)
+    const { isServerUp, isQuickDeployOpen, toggleIsQuickDeployOpen } = useSupremacy()
     const [watchedTrailer, setWatchedTrailer] = useState(localStorage.getItem("watchedTrailer") == "true")
 
     return (
@@ -73,8 +70,7 @@ const BattleArenaPageInner = () => {
                             <VotingSystem />
                             <MiniMap />
 
-                            {isServerUp && userID && haveSups === false && noSupsModalOpen && <NoSupsModal onClose={() => toggleNoSupsModalOpen(false)} />}
-                            {userID && !noSupsModalOpen && <TutorialModal />}
+                            {userID && <TutorialModal />}
                         </>
                     )}
                 </Box>
