@@ -5,10 +5,11 @@ import { SvgScrolldown } from "../../../../assets"
 import { FontSizeType, SplitOptionType, useChat, useSupremacy, useAuth } from "../../../../containers"
 import { checkIfIsEmoji } from "../../../../helpers"
 import { colors } from "../../../../theme/theme"
-import { Faction, User } from "../../../../types"
+import { Faction, SystemBanMessageData, User } from "../../../../types"
 import { ChatMessageType, PunishMessageData, TextMessageData } from "../../../../types/chat"
 import { BanProposal } from "../BanProposal/BanProposal"
 import { GlobalAnnouncement, GlobalAnnouncementType } from "../GlobalAnnouncement"
+import { SystemBanMessage } from "./MessageTypes/SystemBanMessage"
 
 interface ChatMessagesProps {
     primaryColor: string
@@ -169,6 +170,16 @@ const ChatMessagesInner = ({
                                     />
                                 )
                             } else if (message.type == "SYSTEM_BAN") {
+                                const data = message.data as SystemBanMessageData
+                                return (
+                                    <SystemBanMessage
+                                        key={`${data.banned_user.id} - ${message.sent_at.toISOString()}`}
+                                        data={data}
+                                        sentAt={message.sent_at}
+                                        fontSize={fontSize}
+                                        getFaction={getFaction}
+                                    />
+                                )
                             }
 
                             return null

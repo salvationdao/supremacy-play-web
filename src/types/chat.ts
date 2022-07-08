@@ -105,6 +105,7 @@ export interface SystemBanMessageData {
     banned_by_user: User
     banned_user: User
     faction_id: string
+    battle_number?: number
     reason: string
     ban_until: string
     is_permanent_ban: boolean
