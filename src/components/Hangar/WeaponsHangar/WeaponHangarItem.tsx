@@ -1,8 +1,7 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
 import { useLocation } from "react-router-dom"
-import { FancyButton, TooltipHelper } from "../.."
-import { SvgSkin } from "../../../assets"
+import { FancyButton } from "../.."
 import { useTheme } from "../../../containers/theme"
 import { getRarityDeets, getWeaponDamageTypeColor, getWeaponTypeColor } from "../../../helpers"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
@@ -18,7 +17,7 @@ export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGri
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [weaponDetails, setWeaponDetails] = useState<Weapon>()
 
-    const rarityDeets = useMemo(() => getRarityDeets(weaponDetails?.tier || ""), [weaponDetails])
+    const rarityDeets = useMemo(() => getRarityDeets(weaponDetails?.weapon_skin?.tier || ""), [weaponDetails])
 
     useEffect(() => {
         ;(async () => {
@@ -36,8 +35,8 @@ export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGri
 
     const primaryColor = theme.factionTheme.primary
     const backgroundColor = theme.factionTheme.background
-    const imageUrl = weaponDetails?.weaponSkin?.avatar_url || weaponDetails?.avatar_url || weapon.avatar_url
-    const largeImageUrl = weaponDetails?.weaponSkin?.large_image_url || weaponDetails?.large_image_url || weapon.large_image_url
+    const imageUrl = weaponDetails?.weapon_skin?.avatar_url || weaponDetails?.avatar_url || weapon.avatar_url
+    const largeImageUrl = weaponDetails?.weapon_skin?.large_image_url || weaponDetails?.large_image_url || weapon.large_image_url
 
     return (
         <Box sx={{ position: "relative", overflow: "visible", height: "100%" }}>
@@ -88,17 +87,25 @@ export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGri
                     </Box>
 
                     <Stack>
-                        <Typography variant="body2" sx={{ mb: ".2rem", color: rarityDeets.color, fontFamily: fonts.nostromoHeavy }}>
-                            {rarityDeets.label}
-                        </Typography>
-
-                        <Typography sx={{ fontFamily: fonts.nostromoBlack }}>{weaponDetails?.label}</Typography>
-
                         <Typography
-                            variant="caption"
-                            sx={{ mb: ".2rem", color: getWeaponTypeColor(weaponDetails?.weapon_type), fontFamily: fonts.nostromoBold }}
+                            variant="body2"
+                            sx={{ mb: ".2rem", color: getWeaponTypeColor(weaponDetails?.weapon_type), fontFamily: fonts.nostromoBlack }}
                         >
                             {weaponDetails?.weapon_type}
+                        </Typography>
+
+                        <Typography
+                            sx={{
+                                fontFamily: fonts.nostromoBlack,
+                                display: "-webkit-box",
+                                overflow: "hidden",
+                                overflowWrap: "anywhere",
+                                textOverflow: "ellipsis",
+                                WebkitLineClamp: 1, // change to max number of lines
+                                WebkitBoxOrient: "vertical",
+                            }}
+                        >
+                            {weaponDetails?.label}
                         </Typography>
                     </Stack>
 
@@ -108,14 +115,19 @@ export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGri
                         </Typography>
                     </General>
 
-                    <General isGridView={isGridView} title="WEAPON SKIN">
-                        <Stack direction="row" sx={{ pt: ".4rem" }}>
-                            <TooltipHelper text="Weapon skin" placement="bottom">
-                                <Box>
-                                    <SvgSkin fill={weapon.weaponSkin ? colors.chassisSkin : `${colors.darkGrey}80`} size="1.5rem" />
-                                </Box>
-                            </TooltipHelper>
-                        </Stack>
+                    <General isGridView={isGridView} title="SUBMODEL">
+                        {weaponDetails?.weapon_skin ? (
+                            <Stack spacing=".5rem">
+                                <Typography variant="h6" sx={{ lineHeight: 1, color: colors.chassisSkin, fontWeight: "fontWeightBold" }}>
+                                    {weaponDetails?.weapon_skin.label}
+                                </Typography>
+                                <Typography sx={{ lineHeight: 1, color: rarityDeets.color, fontWeight: "fontWeightBold" }}>{rarityDeets.label}</Typography>
+                            </Stack>
+                        ) : (
+                            <Typography variant="h6" sx={{ color: colors.darkGrey, fontWeight: "fontWeightBold" }}>
+                                NOT EQUIPPED
+                            </Typography>
+                        )}
                     </General>
 
                     <General title="DAMAGE">

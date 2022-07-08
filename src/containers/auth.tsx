@@ -18,7 +18,6 @@ export const FallbackUser: User = {
     faction_id: "",
     username: "UNKNOWN",
     gid: 0,
-    avatar_id: "",
     rank: "NEW_RECRUIT",
 }
 

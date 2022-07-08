@@ -135,11 +135,11 @@ export const WarMachineHangarDetailsInner = ({
                 }}
                 opacity={0.7}
                 backgroundColor={backgroundColor}
-                sx={{ flexShrink: 0, height: "100%", width: "41rem" }}
+                sx={{ flexShrink: 0, height: "100%", width: "36rem" }}
             >
                 <Stack sx={{ height: "100%" }}>
                     <ClipThing clipSize="10px" corners={{ topRight: true }} opacity={0.7} sx={{ flexShrink: 0 }}>
-                        <Box sx={{ height: "13.5rem", position: "relative", borderBottom: `${primaryColor}60 2.2px solid` }}>
+                        <Box sx={{ position: "relative", borderBottom: `${primaryColor}60 2.2px solid` }}>
                             <MediaPreview imageUrl={avatarUrl} objectFit="cover" objectPosition="50% 40%" />
 
                             <Box sx={{ position: "absolute", bottom: ".8rem", left: "1.2rem", minWidth: "10rem", backgroundColor: `${backgroundColor}DF` }}>

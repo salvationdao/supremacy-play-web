@@ -73,7 +73,7 @@ const VotingSystemInner = ({ userID, bribeStage }: VotingSystemInnerProps) => {
 
                         <Box
                             sx={{
-                                maxHeight: "60rem",
+                                maxHeight: "100vh",
                                 overflowY: "auto",
                                 overflowX: "hidden",
                                 ml: "1.9rem",

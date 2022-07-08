@@ -87,7 +87,6 @@ const ChatSendInner = ({ primaryColor, faction_id, send, user, userRank, onSentM
                         from_user: user,
                         user_rank: userRank,
                         message_color: messageColor,
-                        avatar_id: user.avatar_id,
                         message,
                     },
                     type: "TEXT",
