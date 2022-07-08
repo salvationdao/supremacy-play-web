@@ -82,7 +82,7 @@ const WeaponInfo = ({ isGridView, label, weaponType, weaponDetails }: { isGridVi
                 {label}
             </Typography>
 
-            <Stack direction="row" spacing=".5rem" sx={{ pt: ".4rem" }}>
+            <Stack direction="row" spacing=".5rem">
                 {skin ? (
                     <>
                         <Typography variant="body2" sx={{ lineHeight: 1, color: colors.chassisSkin, fontFamily: fonts.nostromoBold }}>
