@@ -107,7 +107,7 @@ export interface SystemBanMessageData {
     faction_id: string
     battle_number?: number
     reason: string
-    ban_until: string
+    ban_until: Date
     is_permanent_ban: boolean
     restrictions: string[]
 }
