@@ -37,7 +37,7 @@ export const FallbackFaction: Faction = {
 export interface AuthState {
     isLoggingIn: boolean
     onLogInClick: () => void
-    userHasFeature: (featureType: string) => boolean
+    userHasFeature: (featureName: string) => boolean
     user: User
     userID: string
     factionID: string
@@ -192,9 +192,9 @@ export const AuthProvider: React.FC = ({ children }) => {
     }, [isLoggingIn])
 
     const userHasFeature = useCallback(
-        (featureType: string) => {
+        (featureName: string) => {
             if (!user || !user.features) return false
-            const index = user.features.findIndex((el) => el.type === featureType)
+            const index = user.features.findIndex((el) => el.name === featureName)
 
             return index !== -1
         },
