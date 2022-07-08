@@ -1,55 +1,101 @@
 import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { ClipThing } from "../.."
+import { useLocation } from "react-router-dom"
+import { ClipThing, FancyButton } from "../.."
 import { EmptyWarMachinesPNG, WarMachineIconPNG } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { parseString } from "../../../helpers"
 import { usePagination, useToggle, useUrlQuery } from "../../../hooks"
-import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
+import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { Weapon, WeaponType } from "../../../types"
+import { WeaponType } from "../../../types"
+import { MarketplaceBuyAuctionItem, MarketSaleType, SortTypeLabel } from "../../../types/marketplace"
 import { PageHeader } from "../../Common/PageHeader"
 import { ChipFilter } from "../../Common/SortAndFilters/ChipFilterSection"
+import { RangeFilter } from "../../Common/SortAndFilters/RangeFilterSection"
 import { SortAndFilters } from "../../Common/SortAndFilters/SortAndFilters"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
-import { WeaponHangarItem } from "./WeaponHangarItem"
+import { WeaponsMarketItem } from "./WeaponsMarketItem"
 
-interface GetWeaponsRequest {
-    page: number
-    page_size: number
-    include_market_listed: boolean
-    exclude_equipped?: boolean
-    weapon_types: string[]
-    search: string
-}
+const sortOptions = [
+    { label: SortTypeLabel.CreateTimeOldestFirst, value: SortTypeLabel.CreateTimeOldestFirst },
+    { label: SortTypeLabel.CreateTimeNewestFirst, value: SortTypeLabel.CreateTimeNewestFirst },
+    { label: SortTypeLabel.EndTimeEndingSoon, value: SortTypeLabel.EndTimeEndingSoon },
+    { label: SortTypeLabel.EndTimeEndingLast, value: SortTypeLabel.EndTimeEndingLast },
+    { label: SortTypeLabel.PriceLowest, value: SortTypeLabel.PriceLowest },
+    { label: SortTypeLabel.PriceHighest, value: SortTypeLabel.PriceHighest },
+    { label: SortTypeLabel.Alphabetical, value: SortTypeLabel.Alphabetical },
+    { label: SortTypeLabel.AlphabeticalReverse, value: SortTypeLabel.AlphabeticalReverse },
+]
 
-interface GetWeaponsResponse {
-    weapons: Weapon[]
-    total: number
-}
-
-export const WeaponsHangar = () => {
+export const WeaponsMarket = () => {
+    const location = useLocation()
     const [query, updateQuery] = useUrlQuery()
-    const { send } = useGameServerCommandsUser("/user_commander")
+    const { send } = useGameServerCommandsFaction("/faction_commander")
     const theme = useTheme()
 
     // Items
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
-    const [weapons, setWeapons] = useState<Weapon[]>([])
+    const [mechItems, setMechItems] = useState<MarketplaceBuyAuctionItem[]>()
 
     const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({
         pageSize: parseString(query.get("pageSize"), 10),
         page: parseString(query.get("page"), 1),
     })
+    const [isGridView, toggleIsGridView] = useToggle(false)
 
     // Filters and sorts
     const [search, setSearch] = useState("")
-    const [weaponTypes, setWeaponTypes] = useState<string[]>((query.get("weapon_types") || undefined)?.split("||") || [])
-    const [isGridView, toggleIsGridView] = useToggle(false)
+    const [sort, setSort] = useState<string>(query.get("sort") || SortTypeLabel.CreateTimeNewestFirst)
+    const [status, setStatus] = useState<string[]>((query.get("statuses") || undefined)?.split("||") || [])
+    const [ownedBy, setOwnedBy] = useState<string[]>((query.get("ownedBy") || undefined)?.split("||") || [])
+    const [listingTypes, setListingTypes] = useState<string[]>((query.get("listingTypes") || undefined)?.split("||") || [])
+    const [weaponTypes, setWeaponTypes] = useState<string[]>((query.get("weaponTypes") || undefined)?.split("||") || [])
+    const [price, setPrice] = useState<(number | undefined)[]>(
+        (query.get("priceRanges") || undefined)?.split("||").map((p) => (p ? parseInt(p) : undefined)) || [undefined, undefined],
+    )
 
-    const weaponTypeFilterSection = useRef<ChipFilter>({
+    // Filters
+    const statusFilterSection = useRef<ChipFilter>({
+        label: "STATUS",
+        options: [{ value: "true", label: "SOLD", color: colors.marketSold }],
+        initialSelected: status,
+        onSetSelected: (value: string[]) => {
+            setStatus(value)
+            changePage(1)
+        },
+    })
+
+    const ownedByFilterSection = useRef<ChipFilter>({
+        label: "OWNED BY",
+        options: [
+            { value: "self", label: "YOU", color: theme.factionTheme.primary, textColor: theme.factionTheme.secondary },
+            { value: "others", label: "OTHERS", color: theme.factionTheme.primary, textColor: theme.factionTheme.secondary },
+        ],
+        initialSelected: ownedBy,
+        onSetSelected: (value: string[]) => {
+            setOwnedBy(value)
+            changePage(1)
+        },
+    })
+
+    const listingTypeFilterSection = useRef<ChipFilter>({
+        label: "LISTING TYPE",
+        options: [
+            { value: MarketSaleType.Buyout, label: "BUY NOW", color: colors.buyout },
+            { value: MarketSaleType.DutchAuction, label: "DUTCH AUCTION", color: colors.dutchAuction },
+            { value: MarketSaleType.Auction, label: "AUCTION", color: colors.auction },
+        ],
+        initialSelected: listingTypes,
+        onSetSelected: (value: string[]) => {
+            setListingTypes(value)
+            changePage(1)
+        },
+    })
+
+    const weaponTypeChipFilter = useRef<ChipFilter>({
         label: "WEAPON TYPE",
         options: [
             { value: WeaponType.Cannon, label: WeaponType.Cannon, color: colors.green },
@@ -66,36 +112,71 @@ export const WeaponsHangar = () => {
         },
     })
 
+    const priceRangeFilter = useRef<RangeFilter>({
+        label: "PRICE RANGE",
+        initialValue: price,
+        onSetValue: (value: (number | undefined)[]) => {
+            setPrice(value)
+            changePage(1)
+        },
+    })
+
     const getItems = useCallback(async () => {
         try {
             setIsLoading(true)
 
-            const resp = await send<GetWeaponsResponse, GetWeaponsRequest>(GameServerKeys.GetWeapons, {
-                page,
+            let sortDir = "asc"
+            let sortBy = "alphabetical"
+            if (
+                sort === SortTypeLabel.AlphabeticalReverse ||
+                sort === SortTypeLabel.CreateTimeNewestFirst ||
+                sort === SortTypeLabel.EndTimeEndingLast ||
+                sort === SortTypeLabel.PriceHighest
+            )
+                sortDir = "desc"
+            if (sort === SortTypeLabel.CreateTimeOldestFirst || sort === SortTypeLabel.CreateTimeNewestFirst) sortBy = "created_at"
+            if (sort === SortTypeLabel.EndTimeEndingSoon || sort === SortTypeLabel.EndTimeEndingLast) sortBy = "time"
+            if (sort === SortTypeLabel.PriceLowest || sort === SortTypeLabel.PriceHighest) sortBy = "price"
+
+            const [min_price, max_price] = price
+
+            const resp = await send<{ total: number; records: MarketplaceBuyAuctionItem[] }>(GameServerKeys.MarketplaceSalesList, {
+                page: page - 1,
                 page_size: pageSize,
-                include_market_listed: true,
-                weapon_types: weaponTypes,
                 search,
+                listing_types: listingTypes,
+                weapon_types: weaponTypes,
+                item_type: "weapon",
+                min_price,
+                max_price,
+                sort_dir: sortDir,
+                sort_by: sortBy,
+                owned_by: ownedBy,
+                sold: status.length > 0,
             })
 
             updateQuery({
+                sort,
                 page: page.toString(),
                 pageSize: pageSize.toString(),
-                weapon_types: weaponTypes.join("||"),
-                search,
+                statuses: status.join("||"),
+                ownedBy: ownedBy.join("||"),
+                listingTypes: listingTypes.join("||"),
+                priceRanges: price.join("||"),
             })
 
             if (!resp) return
-            setLoadError(undefined)
-            setWeapons(resp.weapons)
             setTotalItems(resp.total)
-        } catch (e) {
-            setLoadError(typeof e === "string" ? e : "Failed to get weapons.")
-            console.error(e)
+            setMechItems(resp.records)
+            setLoadError(undefined)
+        } catch (err) {
+            const message = typeof err === "string" ? err : "Failed to get mech listings."
+            setLoadError(message)
+            console.error(err)
         } finally {
             setIsLoading(false)
         }
-    }, [send, page, pageSize, search, updateQuery, setTotalItems, weaponTypes])
+    }, [sort, price, updateQuery, page, pageSize, status, ownedBy, listingTypes, weaponTypes, send, search, setTotalItems])
 
     useEffect(() => {
         getItems()
@@ -125,7 +206,7 @@ export const WeaponsHangar = () => {
             )
         }
 
-        if (!weapons || isLoading) {
+        if (!mechItems || isLoading) {
             return (
                 <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                     <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
@@ -135,7 +216,7 @@ export const WeaponsHangar = () => {
             )
         }
 
-        if (weapons && weapons.length > 0) {
+        if (mechItems && mechItems.length > 0) {
             return (
                 <Box sx={{ direction: "ltr", height: 0 }}>
                     <Box
@@ -150,8 +231,8 @@ export const WeaponsHangar = () => {
                             overflow: "visible",
                         }}
                     >
-                        {weapons.map((weapon) => (
-                            <WeaponHangarItem key={`marketplace-${weapon.id}`} weapon={weapon} isGridView={isGridView} />
+                        {mechItems.map((item) => (
+                            <WeaponsMarketItem key={`marketplace-${item.id}`} item={item} isGridView={isGridView} />
                         ))}
                     </Box>
                 </Box>
@@ -189,11 +270,17 @@ export const WeaponsHangar = () => {
                 </Stack>
             </Stack>
         )
-    }, [loadError, weapons, isLoading, isGridView, theme.factionTheme.primary])
+    }, [loadError, mechItems, isLoading, theme.factionTheme.primary, isGridView])
 
     return (
         <Stack direction="row" spacing="1rem" sx={{ height: "100%" }}>
-            <SortAndFilters initialSearch={search} onSetSearch={setSearch} chipFilters={[weaponTypeFilterSection.current]} changePage={changePage} />
+            <SortAndFilters
+                initialSearch={search}
+                onSetSearch={setSearch}
+                chipFilters={[statusFilterSection.current, ownedByFilterSection.current, listingTypeFilterSection.current, weaponTypeChipFilter.current]}
+                rangeFilters={[priceRangeFilter.current]}
+                changePage={changePage}
+            />
 
             <ClipThing
                 clipSize="10px"
@@ -207,18 +294,43 @@ export const WeaponsHangar = () => {
             >
                 <Stack sx={{ position: "relative", height: "100%" }}>
                     <Stack sx={{ flex: 1 }}>
-                        <PageHeader title="weapons" description="Your weapons." imageUrl={WarMachineIconPNG} />
+                        <PageHeader title="WEAPONS" description="Explore what other citizens have to offer." imageUrl={WarMachineIconPNG}>
+                            <FancyButton
+                                clipThingsProps={{
+                                    clipSize: "9px",
+                                    backgroundColor: colors.red,
+                                    opacity: 1,
+                                    border: { isFancy: true, borderColor: colors.red, borderThickness: "2px" },
+                                    sx: { position: "relative" },
+                                }}
+                                sx={{ px: "1.6rem", py: ".4rem", color: "#FFFFFF" }}
+                                to={`/marketplace/sell${location.hash}`}
+                            >
+                                <Typography
+                                    variant="caption"
+                                    sx={{
+                                        color: "#FFFFFF",
+                                        fontFamily: fonts.nostromoBlack,
+                                    }}
+                                >
+                                    SELL ITEM
+                                </Typography>
+                            </FancyButton>
+                        </PageHeader>
 
                         <TotalAndPageSizeOptions
-                            countItems={weapons?.length}
+                            countItems={mechItems?.length}
                             totalItems={totalItems}
                             pageSize={pageSize}
                             changePageSize={changePageSize}
-                            pageSizeOptions={[10, 20, 30]}
+                            pageSizeOptions={[10, 20, 40]}
                             changePage={changePage}
-                            manualRefresh={getItems}
                             isGridView={isGridView}
                             toggleIsGridView={toggleIsGridView}
+                            manualRefresh={getItems}
+                            sortOptions={sortOptions}
+                            selectedSort={sort}
+                            onSetSort={setSort}
                         />
 
                         <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>

@@ -5,6 +5,7 @@ import { HangarBg } from "../assets"
 import { KeycardsMarket } from "../components/Marketplace/KeycardsMarket/KeycardsMarket"
 import { MysteryCratesMarket } from "../components/Marketplace/MysteryCratesMarket/MysteryCratesMarket"
 import { WarMachinesMarket } from "../components/Marketplace/WarMachinesMarket/WarMachinesMarket"
+import { WeaponsMarket } from "../components/Marketplace/WeaponsMarket/WeaponsMarket"
 import { HistoryMarket } from "../components/Marketplace/HistoryMarket/HistoryMarket"
 import { useTheme } from "../containers/theme"
 import { ROUTES_MAP } from "../routes"
@@ -12,8 +13,8 @@ import { siteZIndex } from "../theme/theme"
 
 export enum MARKETPLACE_TABS {
     History = "history",
-    Weapons = "weapons",
     WarMachines = "war-machines",
+    Weapons = "weapons",
     Keycards = "key-cards",
     MysteryCrates = "mystery-crates",
 }
@@ -78,6 +79,7 @@ export const MarketplacePage = () => {
                     >
                         <Tab label="HISTORY" value={MARKETPLACE_TABS.History} />
                         <Tab label="WAR MACHINES" value={MARKETPLACE_TABS.WarMachines} />
+                        <Tab label="WEAPONS" value={MARKETPLACE_TABS.Weapons} />
                         <Tab label="KEY CARDS" value={MARKETPLACE_TABS.Keycards} />
                         <Tab label="MYSTERY CRATES" value={MARKETPLACE_TABS.MysteryCrates} />
                     </Tabs>
@@ -88,6 +90,9 @@ export const MarketplacePage = () => {
                 </TabPanel>
                 <TabPanel currentValue={currentValue} value={MARKETPLACE_TABS.WarMachines}>
                     <WarMachinesMarket />
+                </TabPanel>
+                <TabPanel currentValue={currentValue} value={MARKETPLACE_TABS.Weapons}>
+                    <WeaponsMarket />
                 </TabPanel>
                 <TabPanel currentValue={currentValue} value={MARKETPLACE_TABS.Keycards}>
                     <KeycardsMarket />
