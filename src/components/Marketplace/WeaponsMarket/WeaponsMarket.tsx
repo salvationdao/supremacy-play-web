@@ -4,7 +4,7 @@ import { useLocation } from "react-router-dom"
 import { ClipThing, FancyButton } from "../.."
 import { EmptyWarMachinesPNG, WarMachineIconPNG } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
-import { getRarityDeets, parseString } from "../../../helpers"
+import { parseString } from "../../../helpers"
 import { usePagination, useToggle, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
@@ -52,7 +52,6 @@ export const WeaponsMarket = () => {
     const [status, setStatus] = useState<string[]>((query.get("statuses") || undefined)?.split("||") || [])
     const [ownedBy, setOwnedBy] = useState<string[]>((query.get("ownedBy") || undefined)?.split("||") || [])
     const [listingTypes, setListingTypes] = useState<string[]>((query.get("listingTypes") || undefined)?.split("||") || [])
-    const [rarities, setRarities] = useState<string[]>((query.get("rarities") || undefined)?.split("||") || [])
     const [weaponTypes, setWeaponTypes] = useState<string[]>((query.get("weaponTypes") || undefined)?.split("||") || [])
     const [price, setPrice] = useState<(number | undefined)[]>(
         (query.get("priceRanges") || undefined)?.split("||").map((p) => (p ? parseInt(p) : undefined)) || [undefined, undefined],
@@ -92,28 +91,6 @@ export const WeaponsMarket = () => {
         initialSelected: listingTypes,
         onSetSelected: (value: string[]) => {
             setListingTypes(value)
-            changePage(1)
-        },
-    })
-
-    const rarityChipFilter = useRef<ChipFilter>({
-        label: "RARITY",
-        options: [
-            { value: "MEGA", ...getRarityDeets("MEGA") },
-            { value: "COLOSSAL", ...getRarityDeets("COLOSSAL") },
-            { value: "RARE", ...getRarityDeets("RARE") },
-            { value: "LEGENDARY", ...getRarityDeets("LEGENDARY") },
-            { value: "ELITE_LEGENDARY", ...getRarityDeets("ELITE_LEGENDARY") },
-            { value: "ULTRA_RARE", ...getRarityDeets("ULTRA_RARE") },
-            { value: "EXOTIC", ...getRarityDeets("EXOTIC") },
-            { value: "GUARDIAN", ...getRarityDeets("GUARDIAN") },
-            { value: "MYTHIC", ...getRarityDeets("MYTHIC") },
-            { value: "DEUS_EX", ...getRarityDeets("DEUS_EX") },
-            { value: "TITAN", ...getRarityDeets("TITAN") },
-        ],
-        initialSelected: rarities,
-        onSetSelected: (value: string[]) => {
-            setRarities(value)
             changePage(1)
         },
     })
@@ -167,7 +144,6 @@ export const WeaponsMarket = () => {
                 page: page - 1,
                 page_size: pageSize,
                 search,
-                rarities,
                 listing_types: listingTypes,
                 weapon_types: weaponTypes,
                 item_type: "weapon",
@@ -186,7 +162,6 @@ export const WeaponsMarket = () => {
                 statuses: status.join("||"),
                 ownedBy: ownedBy.join("||"),
                 listingTypes: listingTypes.join("||"),
-                rarities: rarities.join("||"),
                 priceRanges: price.join("||"),
             })
 
@@ -201,7 +176,7 @@ export const WeaponsMarket = () => {
         } finally {
             setIsLoading(false)
         }
-    }, [sort, price, updateQuery, page, pageSize, status, ownedBy, listingTypes, rarities, weaponTypes, send, search, setTotalItems])
+    }, [sort, price, updateQuery, page, pageSize, status, ownedBy, listingTypes, weaponTypes, send, search, setTotalItems])
 
     useEffect(() => {
         getItems()
@@ -302,13 +277,7 @@ export const WeaponsMarket = () => {
             <SortAndFilters
                 initialSearch={search}
                 onSetSearch={setSearch}
-                chipFilters={[
-                    statusFilterSection.current,
-                    ownedByFilterSection.current,
-                    listingTypeFilterSection.current,
-                    rarityChipFilter.current,
-                    weaponTypeChipFilter.current,
-                ]}
+                chipFilters={[statusFilterSection.current, ownedByFilterSection.current, listingTypeFilterSection.current, weaponTypeChipFilter.current]}
                 rangeFilters={[priceRangeFilter.current]}
                 changePage={changePage}
             />
