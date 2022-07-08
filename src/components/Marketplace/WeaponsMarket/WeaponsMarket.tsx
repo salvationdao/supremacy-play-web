@@ -4,7 +4,7 @@ import { useLocation } from "react-router-dom"
 import { ClipThing, FancyButton } from "../.."
 import { EmptyWarMachinesPNG, WarMachineIconPNG } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
-import { parseString } from "../../../helpers"
+import { getWeaponTypeColor, parseString } from "../../../helpers"
 import { usePagination, useToggle, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
@@ -98,12 +98,12 @@ export const WeaponsMarket = () => {
     const weaponTypeChipFilter = useRef<ChipFilter>({
         label: "WEAPON TYPE",
         options: [
-            { value: WeaponType.Cannon, label: WeaponType.Cannon, color: colors.green },
-            { value: WeaponType.Sword, label: WeaponType.Sword, color: colors.red },
-            { value: WeaponType.Minigun, label: WeaponType.Minigun, color: colors.yellow },
-            { value: WeaponType.MissileLauncher, label: WeaponType.MissileLauncher, color: colors.purple },
-            { value: WeaponType.PlasmaGun, label: WeaponType.PlasmaGun, color: colors.blue },
-            { value: WeaponType.SniperRifle, label: WeaponType.SniperRifle, color: colors.orange },
+            { value: WeaponType.Cannon, label: WeaponType.Cannon, color: getWeaponTypeColor(WeaponType.Cannon) },
+            { value: WeaponType.Sword, label: WeaponType.Sword, color: getWeaponTypeColor(WeaponType.Sword) },
+            { value: WeaponType.Minigun, label: WeaponType.Minigun, color: getWeaponTypeColor(WeaponType.Minigun) },
+            { value: WeaponType.MissileLauncher, label: WeaponType.MissileLauncher, color: getWeaponTypeColor(WeaponType.MissileLauncher) },
+            { value: WeaponType.PlasmaGun, label: WeaponType.PlasmaGun, color: getWeaponTypeColor(WeaponType.PlasmaGun) },
+            { value: WeaponType.SniperRifle, label: WeaponType.SniperRifle, color: getWeaponTypeColor(WeaponType.SniperRifle) },
         ],
         initialSelected: weaponTypes,
         onSetSelected: (value: string[]) => {
