@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import { useHistory, useParams } from "react-router-dom"
 import { SvgAbility, SvgCake, SvgDeath, SvgEdit, SvgSave, SvgSkull2, SvgView, WarMachineIconPNG } from "../../assets"
 import { useAuth, useSnackbar } from "../../containers"
-import { camelToTitle, snakeToTitle } from "../../helpers"
+import { camelToTitle, snakeToTitle, timeSinceInWords } from "../../helpers"
 import { useToggle } from "../../hooks"
 import { useGameServerCommands, useGameServerCommandsUser } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
@@ -42,6 +42,9 @@ interface PlayerProfile {
     player: Player
     stats: Stats
     faction?: Faction
+    active_log?: {
+        active_at: Date
+    }
 }
 
 const UpdateUsername = "PLAYER:UPDATE_USERNAME"
@@ -158,7 +161,7 @@ export const PlayerProfilePage = () => {
         )
     }
 
-    console.log("is uesrname in outer", username)
+    console.log("is uesrname in outer", profile)
 
     return (
         <Stack direction="column" sx={{ height: "100%" }}>
@@ -237,7 +240,11 @@ export const PlayerProfilePage = () => {
                             </Stack>
                         </Stack>
                         <Typography sx={{ fontFamily: fonts.nostromoBlack }}>{snakeToTitle(profile.player.rank)}</Typography>
-
+                        {profile.active_log?.active_at && (
+                            <Typography sx={{ fontFamily: fonts.nostromoBlack }}>
+                                Last Online: {timeSinceInWords(profile.active_log?.active_at, new Date())}
+                            </Typography>
+                        )}
                         <Stack direction="row" alignItems="center">
                             <Typography sx={{ fontFamily: fonts.nostromoBlack, mr: "1rem" }}>
                                 Joined {profile.player.created_at.toLocaleDateString()}
