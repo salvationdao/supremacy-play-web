@@ -73,7 +73,7 @@ export interface BanOption {
 
 export interface ChatMessageType {
     type: "TEXT" | "PUNISH_VOTE"
-    data: TextMessageData | PunishMessageData
+    data: TextMessageData | PunishMessageData | SystemBanMessageData
     sent_at: Date
     locallySent?: boolean
 }
@@ -99,4 +99,14 @@ export interface PunishMessageData {
     punish_option: BanOption
     punish_reason: string
     instant_pass_by_users: User[]
+}
+
+export interface SystemBanMessageData {
+    banned_by_user: User
+    banned_user: User
+    faction_id: string
+    reason: string
+    ban_until: string
+    is_permanent_ban: boolean
+    restrictions: string[]
 }

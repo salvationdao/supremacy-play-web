@@ -138,19 +138,6 @@ const ChatMessagesInner = ({
                 <Stack spacing="1rem" sx={{ mt: ".88rem" }}>
                     {chatMessages && chatMessages.length > 0 ? (
                         chatMessages.map((message) => {
-                            if (message.type == "PUNISH_VOTE") {
-                                const data = message.data as PunishMessageData
-                                return (
-                                    <PunishMessage
-                                        key={`${data.issued_by_user.id} - ${message.sent_at.toISOString()}`}
-                                        data={data}
-                                        sentAt={message.sent_at}
-                                        fontSize={fontSize}
-                                        getFaction={getFaction}
-                                    />
-                                )
-                            }
-
                             if (message.type == "TEXT") {
                                 const data = message.data as TextMessageData
                                 const isEmoji: boolean = checkIfIsEmoji(data.message)
@@ -170,6 +157,18 @@ const ChatMessagesInner = ({
                                         locallySent={message.locallySent}
                                     />
                                 )
+                            } else if (message.type == "PUNISH_VOTE") {
+                                const data = message.data as PunishMessageData
+                                return (
+                                    <PunishMessage
+                                        key={`${data.issued_by_user.id} - ${message.sent_at.toISOString()}`}
+                                        data={data}
+                                        sentAt={message.sent_at}
+                                        fontSize={fontSize}
+                                        getFaction={getFaction}
+                                    />
+                                )
+                            } else if (message.type == "SYSTEM_BAN") {
                             }
 
                             return null
