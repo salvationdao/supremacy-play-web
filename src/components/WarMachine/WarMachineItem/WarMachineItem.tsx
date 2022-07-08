@@ -1,16 +1,16 @@
 import { Box, IconButton, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef } from "react"
 import { ClipThing, HealthShieldBars, SkillBar, WarMachineAbilitiesPopover, WarMachineDestroyedInfo } from "../.."
 import { GenericWarMachinePNG, SvgInfoCircular, SvgSkull } from "../../../assets"
-import { useAuth, useMiniMap, useSnackbar, useSupremacy } from "../../../containers"
+import { useAuth, useMiniMap, useSupremacy } from "../../../containers"
 import { getRarityDeets } from "../../../helpers"
 import { useToggle } from "../../../hooks"
-import { useGameServerCommandsFaction, useGameServerSubscriptionAbilityFaction, useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
+import { useGameServerSubscriptionAbilityFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { AIType, GameAbility, WarMachineState } from "../../../types"
-import { MechMoveCommand, MechMoveCommandAbility } from "../WarMachineAbilitiesPopover/MechMoveCommandCard"
+import { MechMoveCommandAbility } from "../WarMachineAbilitiesPopover/MechMoveCommandCard"
 
 // in rems
 const WIDTH_AVATAR = 8.6
@@ -84,7 +84,6 @@ export const WarMachineItem = ({ warMachine, scale }: { warMachine: WarMachineSt
                     onClick={handleClick}
                     openSkillsPopover={openSkillsPopover}
                     warMachine={warMachine}
-                    factionID={factionID}
                     isAlive={isAlive}
                     isMiniMech={isMiniMech}
                     isExpanded={isExpanded}
@@ -93,7 +92,7 @@ export const WarMachineItem = ({ warMachine, scale }: { warMachine: WarMachineSt
                     backgroundColor={backgroundColor}
                 />
             ),
-        [backgroundColor, factionID, gameAbilities, handleClick, isAlive, isExpanded, isMiniMech, openSkillsPopover, primaryColor, secondaryColor, warMachine],
+        [backgroundColor, gameAbilities, handleClick, isAlive, isExpanded, isMiniMech, openSkillsPopover, primaryColor, secondaryColor, warMachine],
     )
 
     return (
@@ -295,7 +294,6 @@ interface MechAbilityButtonProps {
     onClick: () => void
     openSkillsPopover: () => void
     warMachine: WarMachineState
-    factionID: string
     isAlive: boolean
     isMiniMech: boolean
     isExpanded: boolean
@@ -308,7 +306,6 @@ const MechAbilityButton = ({
     onClick: handleClick,
     openSkillsPopover,
     warMachine,
-    factionID,
     isAlive,
     isMiniMech,
     isExpanded,
@@ -316,27 +313,8 @@ const MechAbilityButton = ({
     secondaryColor,
     backgroundColor,
 }: MechAbilityButtonProps) => {
-    const { send } = useGameServerCommandsFaction("/faction_commander")
-    const { newSnackbarMessage } = useSnackbar()
     const { setPlayerAbility } = useMiniMap()
-
-    const [mechMoveCommand, setMechMoveCommand] = useState<MechMoveCommand>()
-    const isMoving = useMemo(() => mechMoveCommand && mechMoveCommand.cell_x !== undefined && mechMoveCommand.cell_y !== undefined, [mechMoveCommand])
-    const isCancelled = useMemo(() => mechMoveCommand && !!mechMoveCommand.cancelled_at, [mechMoveCommand])
-
-    const { hash, factionID: wmFactionID, participantID } = warMachine
-
-    useGameServerSubscriptionFaction<MechMoveCommand>(
-        {
-            URI: `/mech_command/${hash}`,
-            key: GameServerKeys.SubMechMoveCommand,
-            ready: factionID === wmFactionID && !!participantID,
-        },
-        (payload) => {
-            if (!payload) return
-            setMechMoveCommand(payload)
-        },
-    )
+    const { hash } = warMachine
 
     const onActivate = useCallback(() => {
         setPlayerAbility({
@@ -348,26 +326,6 @@ const MechAbilityButton = ({
             ability: { ...MechMoveCommandAbility, text_colour: backgroundColor || "#222222", colour: primaryColor || "#FFFFFF" },
         })
     }, [backgroundColor, hash, primaryColor, setPlayerAbility])
-
-    const onCancel = useCallback(async () => {
-        if (!mechMoveCommand) return
-        try {
-            await send(GameServerKeys.MechMoveCommandCancel, {
-                move_command_id: mechMoveCommand.id,
-                hash,
-            })
-        } catch (err) {
-            const message = typeof err === "string" ? err : "Failed cancel mech move command."
-            newSnackbarMessage(message, "error")
-            console.error(err)
-        }
-    }, [hash, mechMoveCommand, newSnackbarMessage, send])
-
-    const onClick = useCallback(() => {
-        handleClick()
-        if (isMoving && !isCancelled) return onCancel()
-        return onActivate()
-    }, [handleClick, isMoving, isCancelled, onCancel, onActivate])
 
     return (
         <Box
@@ -387,7 +345,8 @@ const MechAbilityButton = ({
             onClick={() => {
                 if (!isAlive) return
                 if (isMiniMech) {
-                    onClick()
+                    handleClick()
+                    onActivate()
                     return
                 }
                 if (!isExpanded) handleClick()
