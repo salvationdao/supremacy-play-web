@@ -1,9 +1,11 @@
 import { useTheme } from "../../../../containers/theme"
 import { Stack, Typography } from "@mui/material"
-import { SvgStats } from "../../../../assets"
-import { fonts } from "../../../../theme/theme"
+import { SvgSkin, SvgStats } from "../../../../assets"
+import { colors, fonts } from "../../../../theme/theme"
 import { Weapon } from "../../../../types"
 import { WeaponBarStats } from "../../../Hangar/WeaponsHangar/Common/WeaponBarStats"
+import { MechLoadoutItem } from "../../../Hangar/WarMachinesHangar/Common/MechLoadoutItem"
+import { getRarityDeets } from "../../../../helpers"
 
 interface Props {
     weaponDetails?: Weapon
@@ -12,9 +14,10 @@ interface Props {
 export const WeaponStatsDetails = ({ weaponDetails }: Props) => {
     const theme = useTheme()
 
-    const primaryColor = theme.factionTheme.primary
-
     if (!weaponDetails) return null
+
+    const primaryColor = theme.factionTheme.primary
+    const skin = weaponDetails?.weapon_skin
 
     return (
         <Stack spacing="3rem">
@@ -25,6 +28,7 @@ export const WeaponStatsDetails = ({ weaponDetails }: Props) => {
                         WEAPON STATS
                     </Typography>
                 </Stack>
+
                 <WeaponBarStats
                     weapon={weaponDetails}
                     weaponDetails={weaponDetails}
@@ -34,6 +38,27 @@ export const WeaponStatsDetails = ({ weaponDetails }: Props) => {
                     spacing="1.2rem"
                     barHeight=".8rem"
                 />
+            </Stack>
+
+            <Stack spacing="1rem">
+                <Stack direction="row" spacing=".8rem" alignItems="center">
+                    <SvgSkin fill={colors.chassisSkin} size="2.5rem" />
+                    <Typography variant="h5" sx={{ color: colors.chassisSkin, fontFamily: fonts.nostromoBlack }}>
+                        SUBMODEL ({skin ? 1 : 0}/1)
+                    </Typography>
+                </Stack>
+
+                {skin ? (
+                    <MechLoadoutItem
+                        imageUrl={skin.image_url}
+                        label={skin.label}
+                        primaryColor={colors.chassisSkin}
+                        Icon={SvgSkin}
+                        rarity={getRarityDeets(skin.tier)}
+                    />
+                ) : (
+                    <Typography sx={{ color: colors.lightGrey, fontFamily: fonts.nostromoBold }}>NOT EQUIPPED</Typography>
+                )}
             </Stack>
         </Stack>
     )

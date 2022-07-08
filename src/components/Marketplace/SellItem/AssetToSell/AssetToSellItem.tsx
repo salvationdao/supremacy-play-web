@@ -4,7 +4,7 @@ import { KeycardPNG, SafePNG } from "../../../../assets"
 import { getRarityDeets, getWeaponTypeColor } from "../../../../helpers"
 import { useGameServerCommandsFaction, useGameServerCommandsUser } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
-import { fonts } from "../../../../theme/theme"
+import { colors, fonts } from "../../../../theme/theme"
 import { Keycard, MechDetails, MysteryCrate, Weapon } from "../../../../types"
 import { ItemType } from "../../../../types/marketplace"
 import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
@@ -53,8 +53,6 @@ export const AssetToSellItem = ({
             setVideoUrl(assetToSell.mech?.animation_url || mechDetails?.chassis_skin?.animation_url)
             setVideoUrl2(assetToSell.mech?.card_animation_url || mechDetails?.chassis_skin?.card_animation_url)
             setLabel(assetToSell.mech?.name || assetToSell.mech?.label || mechDetails?.name || mechDetails?.label)
-            setWeaponType("")
-            setDescription("")
             const tier = assetToSell.mech?.tier || mechDetails?.tier
             setRarityDeets(tier ? getRarityDeets(tier) : undefined)
         } else if (itemType === ItemType.MysteryCrate) {
@@ -64,14 +62,12 @@ export const AssetToSellItem = ({
             setVideoUrl2(assetToSell.mysteryCrate?.card_animation_url || mysteryCrate?.card_animation_url)
             setLabel(assetToSell.mysteryCrate?.label || mysteryCrate?.label)
             setDescription(assetToSell.mysteryCrate?.description || mysteryCrate?.description)
-            setWeaponType("")
         } else if (itemType === ItemType.Weapon) {
             setAvatarUrl(assetToSell.weapon?.avatar_url || weaponDetails?.avatar_url)
             setImageUrl(assetToSell.weapon?.large_image_url || weaponDetails?.large_image_url)
             setVideoUrl(assetToSell.weapon?.animation_url || weaponDetails?.animation_url)
             setVideoUrl2(assetToSell.weapon?.card_animation_url || weaponDetails?.card_animation_url)
             setLabel(assetToSell.weapon?.label)
-            setDescription("")
             setWeaponType(assetToSell.weapon?.weapon_type || weaponDetails?.weapon_type)
             const tier = assetToSell.weapon?.tier || weaponDetails?.tier
             setRarityDeets(tier ? getRarityDeets(tier) : undefined)
@@ -82,7 +78,6 @@ export const AssetToSellItem = ({
             setVideoUrl2(assetToSell.keycard?.blueprints.card_animation_url || keycard?.blueprints.card_animation_url)
             setLabel(assetToSell.keycard?.blueprints.label || keycard?.blueprints.label)
             setDescription(assetToSell.keycard?.blueprints.description || keycard?.blueprints.description)
-            setWeaponType("")
         }
     }, [assetToSell, mechDetails, weaponDetails, mysteryCrate, keycard, itemType])
 
@@ -170,6 +165,7 @@ export const AssetToSellItem = ({
         >
             <Box
                 sx={{
+                    flexShrink: 0,
                     height: orientation === "horizontal" ? "7rem" : "28rem",
                     width: orientation === "horizontal" ? "7rem" : "100%",
                 }}
@@ -178,7 +174,7 @@ export const AssetToSellItem = ({
             </Box>
 
             <Stack spacing=".3rem">
-                {rarityDeets && (
+                {itemType !== ItemType.Weapon && rarityDeets && (
                     <Typography
                         variant="body2"
                         sx={{
@@ -193,6 +189,12 @@ export const AssetToSellItem = ({
                         }}
                     >
                         {rarityDeets.label}
+                    </Typography>
+                )}
+
+                {weaponType && (
+                    <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBlack, color: getWeaponTypeColor(weaponType) }}>
+                        {weaponType}
                     </Typography>
                 )}
 
@@ -213,12 +215,6 @@ export const AssetToSellItem = ({
                     </Typography>
                 )}
 
-                {weaponType && (
-                    <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBlack, color: getWeaponTypeColor(weaponType) }}>
-                        {weaponType}
-                    </Typography>
-                )}
-
                 {description && (
                     <Typography
                         sx={{
@@ -232,6 +228,30 @@ export const AssetToSellItem = ({
                     >
                         {description}
                     </Typography>
+                )}
+
+                {weaponDetails && (
+                    <Stack direction="row" spacing=".5rem" sx={{ pt: ".4rem" }}>
+                        {weaponDetails?.weapon_skin && rarityDeets ? (
+                            <>
+                                <Typography variant="caption" sx={{ lineHeight: 1, color: colors.chassisSkin, fontFamily: fonts.nostromoBold }}>
+                                    SUBMODEL: {weaponDetails?.weapon_skin.label}
+                                </Typography>
+                                <Typography variant="caption" sx={{ lineHeight: 1, color: rarityDeets.color, fontFamily: fonts.nostromoBold }}>
+                                    ({rarityDeets.label})
+                                </Typography>
+                            </>
+                        ) : (
+                            <>
+                                <Typography variant="caption" sx={{ lineHeight: 1, color: colors.chassisSkin, fontFamily: fonts.nostromoBold }}>
+                                    SUBMODEL:
+                                </Typography>
+                                <Typography variant="caption" sx={{ lineHeight: 1, color: colors.darkGrey, fontFamily: fonts.nostromoBold }}>
+                                    NOT EQUIPPED
+                                </Typography>
+                            </>
+                        )}
+                    </Stack>
                 )}
 
                 {mechDetails && (

@@ -61,7 +61,7 @@ export const MechStatsDetails = ({ mechDetails }: { mechDetails?: MechDetails })
                 <Stack direction="row" spacing=".8rem" alignItems="center">
                     <SvgWeapons fill={colors.weapons} size="2.5rem" />
                     <Typography variant="h5" sx={{ color: colors.weapons, fontFamily: fonts.nostromoBlack }}>
-                        WEAPONS ({weapons.length}/{weapon_hardpoints})
+                        WEAPONS ({weapons?.length || 0}/{weapon_hardpoints})
                     </Typography>
                 </Stack>
 
@@ -80,7 +80,7 @@ export const MechStatsDetails = ({ mechDetails }: { mechDetails?: MechDetails })
                 <Stack direction="row" spacing=".8rem" alignItems="center">
                     <SvgUtilities fill={colors.utilities} size="2.5rem" />
                     <Typography variant="h5" sx={{ color: colors.utilities, fontFamily: fonts.nostromoBlack }}>
-                        UTILITIES ({utilities ? utilities.length : 0}/{utility_slots})
+                        UTILITIES ({utilities?.length || 0}/{utility_slots})
                     </Typography>
                 </Stack>
 

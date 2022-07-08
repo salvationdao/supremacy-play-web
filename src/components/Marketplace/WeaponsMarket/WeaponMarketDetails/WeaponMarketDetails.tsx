@@ -9,7 +9,7 @@ import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
 import { ClipThing } from "../../../Common/ClipThing"
 import { Masonry } from "@mui/lab"
-import { ImagesPreview } from "../../Common/MarketDetails/ImagesPreview"
+import { ImagesPreview, MarketMedia } from "../../Common/MarketDetails/ImagesPreview"
 import { UserInfo } from "../../Common/MarketDetails/UserInfo"
 import { SoldDetails } from "../../Common/MarketDetails/SoldDetails"
 import { BuyNowDetails } from "../../Common/MarketDetails/BuyNowDetails"
@@ -127,16 +127,43 @@ export const WeaponMarketDetails = ({ id }: { id: string }) => {
     )
 }
 
-interface WeaponMarketDetailsInnerProps {
+const WeaponMarketDetailsInner = ({
+    marketItem,
+    weaponDetails,
+    primaryColor,
+}: {
     marketItem: MarketplaceBuyAuctionItem
     weaponDetails?: Weapon
     primaryColor: string
-}
-
-const WeaponMarketDetailsInner = ({ marketItem, weaponDetails, primaryColor }: WeaponMarketDetailsInnerProps) => {
+}) => {
     const below780 = useMediaQuery("(max-width:780px)")
     const [isTimeEnded, toggleIsTimeEnded] = useToggle()
     const rarityDeets = useMemo(() => getRarityDeets(marketItem.collection_item?.tier || ""), [marketItem.collection_item?.tier])
+
+    const media: MarketMedia[] = useMemo(() => {
+        const skin = weaponDetails?.weapon_skin
+        if (!skin) return []
+
+        const avatarUrl = skin.avatar_url // avatar
+        const imageUrl = skin.image_url // poster for card_animation_url
+        const cardAnimationUrl = skin.card_animation_url // smaller one, transparent bg
+        const largeImageUrl = skin.large_image_url // poster for animation_url
+        const animationUrl = skin.animation_url // big one
+
+        return [
+            {
+                imageUrl: largeImageUrl,
+                videoUrl: animationUrl,
+            },
+            {
+                imageUrl: imageUrl,
+                videoUrl: cardAnimationUrl,
+            },
+            {
+                imageUrl: avatarUrl,
+            },
+        ]
+    }, [weaponDetails])
 
     const { id, owner, weapon, created_at, end_at, sold_at, sold_for, sold_to } = marketItem
 
@@ -174,15 +201,7 @@ const WeaponMarketDetailsInner = ({ marketItem, weaponDetails, primaryColor }: W
                     }}
                 >
                     <Masonry columns={below780 ? 1 : 2} spacing={4}>
-                        <ImagesPreview
-                            media={[
-                                {
-                                    imageUrl: weaponDetails?.image_url,
-                                    videoUrl: weaponDetails?.animation_url,
-                                },
-                            ]}
-                            primaryColor={primaryColor}
-                        />
+                        <ImagesPreview media={media} primaryColor={primaryColor} />
 
                         <Stack spacing="2rem" sx={{ pb: "1rem", minHeight: "65rem" }}>
                             <Box>
