@@ -22,7 +22,6 @@ export const MechCommandIcons = () => {
         },
         (payload) => {
             setMechMoveCommands(payload || [])
-            console.log(payload)
         },
     )
 
