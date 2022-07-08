@@ -24,7 +24,7 @@ export const SystemBanMessage = ({
 
     if (!data) return null
 
-    const { banned_user, ban_until, is_permanent_ban, reason, battle_number, restrictions } = data
+    const { banned_user, ban_until, is_permanent_ban, reason, restrictions } = data
 
     return (
         <Box>
@@ -86,8 +86,14 @@ export const SystemBanMessage = ({
                             imageSize={1.4}
                         />
 
-                        <Typography>&nbsp;is banned until&nbsp;</Typography>
-                        <Typography sx={{ color: colors.lightNeonBlue }}>{moment(ban_until).format("DD/MM/YYYY HH:MM:SS")}</Typography>
+                        {is_permanent_ban ? (
+                            <Typography>&nbsp;is permanently banned&nbsp;</Typography>
+                        ) : (
+                            <>
+                                <Typography>&nbsp;is banned until&nbsp;</Typography>
+                                <Typography sx={{ color: colors.lightNeonBlue }}>{moment(ban_until).format("DD/MM/YYYY HH:MM:SS")}</Typography>
+                            </>
+                        )}
 
                         <Typography>.</Typography>
                     </Box>
