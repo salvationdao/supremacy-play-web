@@ -8,7 +8,7 @@ import { useTheme } from "../containers/theme"
 import { ROUTES_MAP } from "../routes"
 import { siteZIndex } from "../theme/theme"
 import { useAuth } from "../containers"
-import { FeatureType } from "../types"
+import { FeatureName } from "../types"
 
 export enum STOREFRONT_TABS {
     MysteryCrates = "mystery-crates",
@@ -74,7 +74,7 @@ export const StorefrontPage = () => {
                         }}
                     >
                         <Tab label="MYSTERY CRATES" value={STOREFRONT_TABS.MysteryCrates} />
-                        {userHasFeature(FeatureType.playerAbility) && <Tab label="ABILITIES" value={STOREFRONT_TABS.Abilities} />}
+                        {userHasFeature(FeatureName.playerAbility) && <Tab label="ABILITIES" value={STOREFRONT_TABS.Abilities} />}
                         {/* <Tab label="SKINS" value={STOREFRONT_TABS.Skins} disabled />
                         <Tab label="MERCHANDISE" disabled value={STOREFRONT_TABS.Merchandise} /> */}
                     </Tabs>

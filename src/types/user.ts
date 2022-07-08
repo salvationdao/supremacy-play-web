@@ -73,10 +73,10 @@ export interface UserStat {
 
 export interface Feature {
     id: string
-    type: string
+    name: string
 }
 
-export enum FeatureType {
+export enum FeatureName {
     mechMove = "MECH_MOVE",
     playerAbility = "PLAYER_ABILITY",
 }

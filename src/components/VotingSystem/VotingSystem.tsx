@@ -6,7 +6,7 @@ import { useTheme } from "../../containers/theme"
 import { ContributorAmount } from "../BattleStats/ContributorAmount"
 import { MoveableResizableConfig } from "../Common/MoveableResizable/MoveableResizableContainer"
 import { PlayerAbilities } from "./PlayerAbilities/PlayerAbilities"
-import { FeatureType } from "../../types"
+import { FeatureName } from "../../types"
 
 export const VotingSystem = () => {
     const { userID } = useAuth()
@@ -97,7 +97,7 @@ const VotingSystemInner = ({ userID, bribeStage }: VotingSystemInnerProps) => {
                             <Stack spacing="1rem" sx={{ direction: "ltr", pt: ".4rem", pb: "1.2rem" }}>
                                 <BattleAbilityItem key={factionID} />
                                 <FactionAbilities />
-                                {userHasFeature(FeatureType.playerAbility) && userID && <PlayerAbilities />}
+                                {userHasFeature(FeatureName.playerAbility) && userID && <PlayerAbilities />}
                             </Stack>
                         </Box>
                     </Stack>

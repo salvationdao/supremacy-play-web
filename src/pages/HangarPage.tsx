@@ -12,7 +12,7 @@ import { useTheme } from "../containers/theme"
 import { ROUTES_MAP } from "../routes"
 import { siteZIndex } from "../theme/theme"
 import { useAuth } from "../containers"
-import { FeatureType } from "../types"
+import { FeatureName } from "../types"
 
 export enum HANGAR_TABS {
     WarMachines = "war-machines",
@@ -82,7 +82,7 @@ export const HangarPage = () => {
                         <Tab label="WEAPONS" value={HANGAR_TABS.Weapons} />
                         <Tab label="KEY CARDS" value={HANGAR_TABS.Keycards} />
                         <Tab label="MYSTERY CRATES" value={HANGAR_TABS.MysteryCrates} />
-                        {userHasFeature(FeatureType.playerAbility) && <Tab label="ABILITIES" value={HANGAR_TABS.Abilities} />}
+                        {userHasFeature(FeatureName.playerAbility) && <Tab label="ABILITIES" value={HANGAR_TABS.Abilities} />}
                     </Tabs>
                 </Box>
 
