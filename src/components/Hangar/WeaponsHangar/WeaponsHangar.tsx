@@ -19,6 +19,7 @@ interface GetWeaponsRequest {
     page: number
     page_size: number
     include_market_listed: boolean
+    exclude_equipped?: boolean
     weapon_types: string[]
     search: string
 }
