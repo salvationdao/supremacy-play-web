@@ -2,13 +2,13 @@ import { Avatar, Box, Button, CircularProgress, IconButton, Stack, TextField, Ty
 import { useCallback, useEffect, useRef, useState } from "react"
 import { useHistory, useParams } from "react-router-dom"
 import { SvgAbility, SvgCake, SvgDeath, SvgEdit, SvgSave, SvgSkull2, SvgView, WarMachineIconPNG } from "../../assets"
-import { useAuth } from "../../containers"
+import { useAuth, useSnackbar } from "../../containers"
 import { camelToTitle, snakeToTitle } from "../../helpers"
 import { useToggle } from "../../hooks"
 import { useGameServerCommands, useGameServerCommandsUser } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { colors, fonts, theme } from "../../theme/theme"
-import { BattleMechHistory, Faction, MechDetails, UserRank } from "../../types"
+import { BattleMechHistory, Faction, UserRank } from "../../types"
 import { ClipThing } from "../Common/ClipThing"
 import { PageHeader } from "../Common/PageHeader"
 import { HistoryEntry } from "../Hangar/WarMachinesHangar/Common/MechHistory/HistoryEntry"
@@ -49,13 +49,11 @@ export const PlayerProfilePage = () => {
     const { user } = useAuth()
     const history = useHistory()
     const [loading, setLoading] = useState(false)
-    const [updateLoading, setUpdateLoading] = useState(false)
-    const [updateError, setUpdateError] = useState<string>()
 
     const [profileError, setProfileError] = useState<string>()
-    const [username, setNewUsername] = useState<string>()
 
     const [profile, setProfile] = useState<PlayerProfile>()
+    const [username, setUsername] = useState<string>()
 
     const [copySuccess, toggleCopySuccess] = useToggle()
 
@@ -73,30 +71,30 @@ export const PlayerProfilePage = () => {
 
     const { send } = useGameServerCommands("/public/commander")
     const { send: userSend } = useGameServerCommandsUser("/user_commander")
+    const { newSnackbarMessage } = useSnackbar()
 
-    const updateUsername = useCallback(async (newUsername: string) => {
-        try {
-            setUpdateLoading(true)
-            const resp = await userSend<PlayerProfile>(UpdateUsername, {
-                player_id: profile?.player.id,
-                new_username: newUsername,
-            })
-
-            setProfile(resp)
-            setUpdateLoading(false)
-        } catch (e) {
-            let errorMessage = ""
-            if (typeof e === "string") {
-                errorMessage = e
-            } else if (e instanceof Error) {
-                errorMessage = e.message
+    const updateUsername = useCallback(
+        async (newUsername: string) => {
+            try {
+                const resp = await userSend<{ Username: string }>(UpdateUsername, {
+                    player_id: profile?.player.id,
+                    new_username: newUsername,
+                })
+                setUsername(resp.Username)
+                newSnackbarMessage("username updated successfully.", "success")
+            } catch (e) {
+                let errorMessage = ""
+                if (typeof e === "string") {
+                    errorMessage = e
+                } else if (e instanceof Error) {
+                    errorMessage = e.message
+                }
+                newSnackbarMessage(errorMessage, "error")
             }
-            setUpdateError(errorMessage)
-            setLoading(false)
-        } finally {
-            setUpdateLoading(false)
-        }
-    }, [])
+        },
+        [userSend, profile?.player.id],
+    )
+
     // sub to player profile
     const fetchProfile = useCallback(
         async (id: string) => {
@@ -105,8 +103,8 @@ export const PlayerProfilePage = () => {
                 const resp = await send<PlayerProfile>(GameServerKeys.PlayerProfileGet, {
                     player_gid: id,
                 })
-
                 setProfile(resp)
+                setUsername(resp.player.username)
                 setLoading(false)
             } catch (e) {
                 let errorMessage = ""
@@ -131,7 +129,7 @@ export const PlayerProfilePage = () => {
 
     useEffect(() => {
         fetchProfile(playerGID)
-    }, [playerGID, fetchProfile, user])
+    }, [playerGID, fetchProfile])
 
     const faction = profile?.faction
     const primaryColor = faction?.primary_color || theme.factionTheme.primary
@@ -153,7 +151,7 @@ export const PlayerProfilePage = () => {
         )
     }
 
-    console.log("is me", isMe)
+    console.log("is uesrname in outer", username)
 
     return (
         <Stack direction="column" sx={{ height: "100%" }}>
@@ -211,16 +209,10 @@ export const PlayerProfilePage = () => {
                                     updateUsername={async (name: string) => {
                                         updateUsername(name)
                                     }}
-                                    username={profile.player.username}
+                                    primaryColour={primaryColor}
+                                    gid={profile.player.gid}
+                                    username={username || ""}
                                 />
-
-                                <Button
-                                    onClick={() => {
-                                        console.log("click")
-                                    }}
-                                >
-                                    Edit
-                                </Button>
 
                                 {copySuccess && (
                                     <Typography
@@ -523,23 +515,36 @@ export const StatItem = ({ label, value, icon }: StatItemProps) => {
     )
 }
 
-const Username = ({ username, updateUsername, userID }: { updateUsername: (newNaem: string) => Promise<void>; username: string; userID: string }) => {
+const Username = ({
+    username,
+    updateUsername,
+    primaryColour,
+    gid,
+}: {
+    updateUsername: (newName: string) => Promise<void>
+    username: string
+    userID: string
+    primaryColour: string
+    gid: number
+}) => {
     // Rename
     const renamingRef = useRef<HTMLInputElement>()
     const [editing, setEditing] = useState(false)
     const [submitting, setSubmitting] = useState(false)
-    const [newMechName, setNewMechName] = useState<string>(username || "")
+    const [newUsername, setNewUsername] = useState<string>(username || "")
 
     const renameMechHandler = useCallback(async () => {
         try {
             setSubmitting(true)
             renamingRef.current?.blur()
-            await updateUsername(newMechName)
+            await updateUsername(newUsername)
         } finally {
             setSubmitting(false)
             setEditing(false)
         }
-    }, [newMechName, updateUsername])
+    }, [newUsername, updateUsername])
+
+    console.log("this is username", username)
 
     return (
         <Stack direction="row" alignItems="center">
@@ -563,6 +568,7 @@ const Username = ({ username, updateUsername, userID }: { updateUsername: (newNa
                         "& .MuiInputBase-input": {
                             p: 0,
                             display: "inline",
+                            fontSize: "4rem",
                             px: "1.4rem",
                             py: ".4rem",
                             wordBreak: "break-word",
@@ -575,11 +581,10 @@ const Username = ({ username, updateUsername, userID }: { updateUsername: (newNa
                     InputProps={{
                         disableUnderline: true,
                     }}
-                    value={newMechName}
+                    value={newUsername}
                     placeholder="Enter a name..."
-                    onChange={(e) => setNewMechName(e.target.value)}
-                    onFocus={() => renamingRef.current?.setSelectionRange(0, newMechName.length)}
-                    // onBlur={() => (newMechName === name ? setEditing(false) : undefined)}
+                    onChange={(e) => setNewUsername(e.target.value)}
+                    onFocus={() => renamingRef.current?.setSelectionRange(0, newUsername.length)}
                     onKeyDown={(e) => {
                         if (e.key === "Enter") {
                             e.preventDefault()
@@ -601,20 +606,10 @@ const Username = ({ username, updateUsername, userID }: { updateUsername: (newNa
                 )}
 
                 {!editing && (
-                    <Typography
-                        sx={{
-                            fontSize: "1.8rem",
-                            color: "#FFFFFF",
-                            display: "-webkit-box",
-                            overflow: "hidden",
-                            overflowWrap: "anywhere",
-                            textOverflow: "ellipsis",
-                            WebkitLineClamp: 1,
-                            WebkitBoxOrient: "vertical",
-                        }}
-                    >
-                        {username}
-                    </Typography>
+                    <Stack direction="row">
+                        <Typography sx={{ fontFamily: fonts.nostromoBlack, fontSize: "5rem" }}>{username}</Typography>
+                        <Typography sx={{ fontFamily: fonts.nostromoBlack, fontSize: "5rem", color: primaryColour }}>#{gid}</Typography>
+                    </Stack>
                 )}
 
                 {!editing && (
