@@ -31,16 +31,9 @@ const WeaponInfo = ({ isGridView, label, weaponType, tier }: { isGridView: boole
 
     return (
         <Stack spacing={isGridView ? ".1rem" : ".6rem"}>
-            <Typography
-                variant="body2"
-                sx={{
-                    fontFamily: fonts.nostromoBlack,
-                    color: rarityDeets.color,
-                }}
-            >
-                {rarityDeets.label}
+            <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack, color: getWeaponTypeColor(weaponType) }}>
+                {weaponType}
             </Typography>
-
             <Typography
                 sx={{
                     fontWeight: "fontWeightBold",
@@ -53,9 +46,6 @@ const WeaponInfo = ({ isGridView, label, weaponType, tier }: { isGridView: boole
                 }}
             >
                 {label}
-            </Typography>
-            <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBlack, color: getWeaponTypeColor(weaponType) }}>
-                {weaponType}
             </Typography>
         </Stack>
     )
