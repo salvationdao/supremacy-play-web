@@ -67,12 +67,8 @@ const BarContent = ({ userID, user }: { userID?: string; user: User }) => {
             <Logo />
             <Box sx={{ flexGrow: 1 }} />
             <HowToPlay />
-            {userID && (
-                <>
-                    <Enlist />
-                    <WalletDetails />
-                </>
-            )}
+            {userID && <Enlist />}
+            {userID && <WalletDetails />}
             <ProfileCard userID={userID} user={user} />
         </>
     )

@@ -9,6 +9,7 @@ import { siteZIndex } from "../../theme/theme"
 import { BattleStats } from "../BattleStats/BattleStats"
 import { PreviousBattle } from "./PreviousBattle"
 import { ResolutionSelect } from "./ResolutionSelect"
+import { ShowTrailerButton } from "./ShowTrailerButton"
 import { StreamSelect } from "./StreamSelect"
 
 export const Controls = () => {
@@ -56,6 +57,7 @@ export const Controls = () => {
             </Stack>
 
             <Stack id="tutorial-stream-options" direction="row" spacing="1.6rem" sx={{ flexShrink: 0, height: "100%" }}>
+                <ShowTrailerButton />
                 <StreamSelect />
                 <ResolutionSelect />
                 <VideoPlayerControls />

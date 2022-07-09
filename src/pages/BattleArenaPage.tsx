@@ -57,15 +57,15 @@ export const BattleArenaPage = () => {
 const BattleArenaPageInner = () => {
     const { userID } = useAuth()
     const { isServerUp, isQuickDeployOpen, toggleIsQuickDeployOpen } = useSupremacy()
-    const [watchedTrailer, setWatchedTrailer] = useState(localStorage.getItem("watchedTrailer") == "true")
 
     return (
         <>
             <Stack sx={{ height: "100%", zIndex: siteZIndex.RoutePage }}>
                 <Box id="game-ui-container" sx={{ position: "relative", flex: 1 }}>
-                    {!watchedTrailer ? <Trailer watchedTrailer={watchedTrailer} setWatchedTrailer={setWatchedTrailer} /> : <Stream />}
+                    <Trailer />
+                    <Stream />
 
-                    {isServerUp && watchedTrailer && (
+                    {isServerUp && (
                         <>
                             <Notifications />
                             <WarMachineStats />

@@ -11,6 +11,7 @@ enum LeftDrawerPanels {
 const OverlayTogglesContainer = createContainer(() => {
     const [activePanel, setActivePanel] = useState<LeftDrawerPanels>(LeftDrawerPanels.None)
 
+    const [showTrailer, toggleShowTrailer] = useToggle()
     const [isEndBattleDetailEnabled, toggleIsEndBattleDetailEnabled] = useToggle()
     const [isLiveChartOpen, toggleIsLiveChartOpen] = useToggle(localStorage.getItem("liveChartOverlay") === "true")
     const [isMapOpen, toggleIsMapOpen] = useToggle(localStorage.getItem("mapOverlay") === "true")
@@ -41,10 +42,12 @@ const OverlayTogglesContainer = createContainer(() => {
         isEndBattleDetailOpen: activePanel == LeftDrawerPanels.EndBattleDetail,
         toggleIsEndBattleDetailOpen,
 
+        showTrailer,
         isLiveChartOpen,
         isEndBattleDetailEnabled,
         isMapOpen,
         isBattleHistoryOpen,
+        toggleShowTrailer,
         toggleIsEndBattleDetailEnabled,
         toggleIsLiveChartOpen,
         toggleIsMapOpen,
