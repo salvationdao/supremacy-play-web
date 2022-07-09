@@ -1,5 +1,5 @@
 import { Box, Stack } from "@mui/material"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import {
     BattleEndScreen,
     BattleHistory,
@@ -21,9 +21,14 @@ import { siteZIndex } from "../theme/theme"
 
 export const BattleArenaPage = () => {
     const { userID } = useAuth()
-    const [understand, setUnderstand] = useState(localStorage.getItem(`understand-${userID}`) === "true")
+    const [understand, setUnderstand] = useState(true)
 
-    if (!understand && userID)
+    useEffect(() => {
+        if (!userID) return
+        setUnderstand(localStorage.getItem(`understand-${userID}`) === "true")
+    }, [userID])
+
+    if (!understand && userID) {
         return (
             <EarlyAccessWarning
                 onAcknowledged={() => {
@@ -32,6 +37,7 @@ export const BattleArenaPage = () => {
                 }}
             />
         )
+    }
 
     return (
         <StreamProvider>
