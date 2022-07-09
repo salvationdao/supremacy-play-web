@@ -1,4 +1,4 @@
-import { Box, Stack, Typography } from "@mui/material"
+import { Box, Stack, Typography, useMediaQuery } from "@mui/material"
 import { Enlist, Logo, ProfileCard, WalletDetails } from ".."
 import { SvgDisconnected } from "../../assets"
 import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT } from "../../constants"
@@ -45,6 +45,7 @@ export const Bar = () => {
 }
 
 const BarContent = ({ userID, user }: { userID?: string; user: User }) => {
+    const below580 = useMediaQuery("(max-width:580px)")
     const { isServerUp } = useSupremacy()
 
     if (isServerUp === false) {
@@ -64,7 +65,7 @@ const BarContent = ({ userID, user }: { userID?: string; user: User }) => {
 
     return (
         <>
-            <Logo />
+            {!below580 && <Logo />}
             <Box sx={{ flexGrow: 1 }} />
             <HowToPlay />
             {userID && <Enlist />}

@@ -1,10 +1,10 @@
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, useMemo } from "react"
 import { useParameterizedQuery } from "react-fetching-library"
 import { createContainer } from "unstated-next"
 import { FallbackFaction, useSnackbar } from "."
 import { GAME_SERVER_HOSTNAME } from "../constants"
 import { GetFactionsAll } from "../fetching"
-import { useToggle } from "../hooks"
+import { useToggle, useWindowDimensions } from "../hooks"
 import { FactionsAll } from "../types"
 import { useWS } from "./ws/useWS"
 
@@ -14,6 +14,7 @@ export const SupremacyContainer = createContainer(() => {
         URI: "/public/online",
         host: GAME_SERVER_HOSTNAME,
     })
+    const { width } = useWindowDimensions(900)
     const [readyToCheckServerState, toggleReadyToCheckServerState] = useToggle()
     const [isServerUp, toggleIsServerUp] = useState<boolean | undefined>(undefined) // Needs 3 states: true, false, undefined. Undefined means it's not loaded yet.
     const [haveSups, toggleHaveSups] = useState<boolean>() // Needs 3 states: true, false, undefined. Undefined means it's not loaded yet.
@@ -22,6 +23,9 @@ export const SupremacyContainer = createContainer(() => {
     const [isQuickDeployOpen, toggleIsQuickDeployOpen] = useToggle(localStorage.getItem("quickDeployOpen") === "true")
 
     const { query: queryGetFactionsAll } = useParameterizedQuery(GetFactionsAll)
+
+    // For displaying a mobile layout
+    const isMobile = useMemo(() => width <= 650, [width])
 
     // Listens on the server status
     useEffect(() => {
@@ -66,6 +70,7 @@ export const SupremacyContainer = createContainer(() => {
     }, [isQuickDeployOpen])
 
     return {
+        isMobile,
         isServerUp,
         factionsAll,
         getFaction,
