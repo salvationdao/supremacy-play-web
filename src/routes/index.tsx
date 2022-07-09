@@ -6,6 +6,9 @@ import { StorefrontPage } from "../pages/StorefrontPage"
 import { MarketplaceItemPage } from "../pages/MarketplaceItemPage"
 import { MarketplaceSellPage } from "../pages/MarketplaceSellPage"
 
+/**
+ * Left drawer
+ */
 interface RouteStruct {
     id: string
     path: string
@@ -137,8 +140,14 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
     },
 }
 
-// Specifically used for right drawer navigation
+export const ROUTES_ARRAY: RouteStruct[] = []
+for (const [, value] of Object.entries(ROUTES_MAP)) {
+    ROUTES_ARRAY.push(value)
+}
 
+/**
+ * Right drawer
+ */
 export enum RightDrawerHashes {
     None = "",
     LiveChat = "#live_chat",
@@ -174,18 +183,6 @@ const HASH_ROUTES_MAP: { [name: string]: HashRouteStruct } = {
         enable: true,
         label: "Active Players",
     },
-    // socials: {
-    //     id: "socials",
-    //     hash: RightDrawerHashes.Socials,
-    //     enable: true,
-    //     label: "Socials",
-    //     icon: "",
-    // },
-}
-
-export const ROUTES_ARRAY: RouteStruct[] = []
-for (const [, value] of Object.entries(ROUTES_MAP)) {
-    ROUTES_ARRAY.push(value)
 }
 
 export const HASH_ROUTES_ARRAY: HashRouteStruct[] = []
