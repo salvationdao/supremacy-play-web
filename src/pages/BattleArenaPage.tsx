@@ -33,7 +33,7 @@ const BattleArenaPageInner = () => {
         setUnderstand(localStorage.getItem(`understand-${userID}`) === "true")
     }, [userID])
 
-    if (!understand && userID)
+    if (!understand && userID) {
         return (
             <EarlyAccessWarning
                 onAcknowledged={() => {
@@ -42,6 +42,7 @@ const BattleArenaPageInner = () => {
                 }}
             />
         )
+    }
 
     return (
         <StreamProvider>
