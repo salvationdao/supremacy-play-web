@@ -6,10 +6,11 @@ import ReactDOM from "react-dom"
 import { Action, ClientContextProvider, createClient } from "react-fetching-library"
 import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom"
 import { Bar, GlobalSnackbar, Maintenance, RightDrawer } from "./components"
+import { BottomNav } from "./components/BottomNav/BottomNav"
 import { tourStyles } from "./components/HowToPlay/Tutorial/SetupTutorial"
 import { LeftDrawer } from "./components/LeftDrawer/LeftDrawer"
 import { GAME_SERVER_HOSTNAME, SENTRY_CONFIG, UNDER_MAINTENANCE } from "./constants"
-import { BarProvider, SnackBarProvider, SupremacyProvider, useSupremacy, WalletProvider } from "./containers"
+import { BarProvider, MobileProvider, SnackBarProvider, SupremacyProvider, useMobile, useSupremacy, WalletProvider } from "./containers"
 import { AuthProvider, useAuth, UserUpdater } from "./containers/auth"
 import { FingerprintProvider } from "./containers/fingerprint"
 import { ThemeProvider } from "./containers/theme"
@@ -23,6 +24,7 @@ import { colors } from "./theme/theme"
 
 const AppInner = () => {
     const { isServerUp } = useSupremacy()
+    const { isMobile } = useMobile()
     const { userID, factionID } = useAuth()
 
     return (
@@ -52,7 +54,7 @@ const AppInner = () => {
                 >
                     <LeftDrawer />
 
-                    <Box
+                    <Stack
                         sx={{
                             flex: 1,
                             position: "relative",
@@ -61,27 +63,31 @@ const AppInner = () => {
                             overflow: "hidden",
                         }}
                     >
-                        {isServerUp && !UNDER_MAINTENANCE && (
-                            <Switch>
-                                {ROUTES_ARRAY.map((r) => {
-                                    const { id, path, exact, Component, requireAuth, requireFaction, authTitle, authDescription } = r
-                                    let component = Component
-                                    if (requireAuth && !userID) {
-                                        const Comp = () => <AuthPage authTitle={authTitle} authDescription={authDescription} />
-                                        component = Comp
-                                    } else if (requireFaction && !factionID) {
-                                        component = EnlistPage
-                                    }
-                                    return <Route key={id} path={path} exact={exact} component={component} />
-                                })}
-                                <Redirect to={ROUTES_MAP.not_found_page.path} />
-                            </Switch>
-                        )}
+                        <Box sx={{ flex: 1, position: "relative", overflow: "hidden" }}>
+                            {isServerUp && !UNDER_MAINTENANCE && (
+                                <Switch>
+                                    {ROUTES_ARRAY.map((r) => {
+                                        const { id, path, exact, Component, requireAuth, requireFaction, authTitle, authDescription } = r
+                                        let component = Component
+                                        if (requireAuth && !userID) {
+                                            const Comp = () => <AuthPage authTitle={authTitle} authDescription={authDescription} />
+                                            component = Comp
+                                        } else if (requireFaction && !factionID) {
+                                            component = EnlistPage
+                                        }
+                                        return <Route key={id} path={path} exact={exact} component={component} />
+                                    })}
+                                    <Redirect to={ROUTES_MAP.not_found_page.path} />
+                                </Switch>
+                            )}
 
-                        {(isServerUp === false || UNDER_MAINTENANCE) && <Maintenance />}
-                    </Box>
+                            {(isServerUp === false || UNDER_MAINTENANCE) && <Maintenance />}
+                        </Box>
 
-                    <RightDrawer />
+                        {isMobile && <BottomNav />}
+                    </Stack>
+
+                    {!isMobile && <RightDrawer />}
                 </Stack>
             </Stack>
 
@@ -143,20 +149,22 @@ const App = () => {
                     <ClientContextProvider client={client}>
                         <AuthProvider>
                             <SupremacyProvider>
-                                <WalletProvider>
-                                    <BarProvider>
-                                        <TourProvider {...tourProviderProps}>
-                                            <UserUpdater />
-                                            <BrowserRouter>
-                                                <Switch>
-                                                    <Route path="/404" exact component={NotFoundPage} />
-                                                    <Route path="/login-redirect" exact component={LoginRedirect} />
-                                                    <Route path="" component={AppInner} />
-                                                </Switch>
-                                            </BrowserRouter>
-                                        </TourProvider>
-                                    </BarProvider>
-                                </WalletProvider>
+                                <MobileProvider>
+                                    <WalletProvider>
+                                        <BarProvider>
+                                            <TourProvider {...tourProviderProps}>
+                                                <UserUpdater />
+                                                <BrowserRouter>
+                                                    <Switch>
+                                                        <Route path="/404" exact component={NotFoundPage} />
+                                                        <Route path="/login-redirect" exact component={LoginRedirect} />
+                                                        <Route path="" component={AppInner} />
+                                                    </Switch>
+                                                </BrowserRouter>
+                                            </TourProvider>
+                                        </BarProvider>
+                                    </WalletProvider>
+                                </MobileProvider>
                             </SupremacyProvider>
                         </AuthProvider>
                     </ClientContextProvider>

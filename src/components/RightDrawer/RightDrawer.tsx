@@ -2,7 +2,7 @@ import { Drawer } from "@mui/material"
 import { useEffect, useMemo } from "react"
 import { useLocation } from "react-router-dom"
 import { DRAWER_TRANSITION_DURATION, RIGHT_DRAWER_WIDTH } from "../../constants"
-import { ChatProvider } from "../../containers"
+import { ChatProvider, useMobile } from "../../containers"
 import { useToggle } from "../../hooks"
 import { RightDrawerHashes } from "../../routes"
 import { colors, siteZIndex } from "../../theme/theme"
@@ -12,6 +12,13 @@ import { PlayerList } from "./PlayerList/PlayerList"
 import { Socials } from "./Social/Social"
 
 export const RightDrawer = () => {
+    const { isMobile } = useMobile()
+    if (isMobile) return null
+    // For non mobile only
+    return <RightDrawerInner />
+}
+
+const RightDrawerInner = () => {
     const [isDrawerOpen, toggleIsDrawerOpen] = useToggle()
     const location = useLocation()
 

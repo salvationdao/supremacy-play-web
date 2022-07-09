@@ -3,11 +3,11 @@ import React, { useState } from "react"
 import { Link } from "react-router-dom"
 import { SvgSupremacyLogo } from "../../assets"
 import { VERSION } from "../../constants"
-import { useSupremacy } from "../../containers"
+import { useMobile } from "../../containers"
 import { colors, fonts } from "../../theme/theme"
 
 export const Logo = React.memo(function Logo() {
-    const { isMobile } = useSupremacy()
+    const { isMobile } = useMobile()
     const [text, setText] = useState<string>("EARLY ACCESS")
 
     return (
