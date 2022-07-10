@@ -165,7 +165,7 @@ export interface HashRouteStruct {
     label: string
 }
 
-const HASH_ROUTES_MAP: { [name: string]: HashRouteStruct } = {
+export const HASH_ROUTES_MAP: { [name: string]: HashRouteStruct } = {
     live_chat: {
         id: "live_chat",
         hash: RightDrawerHashes.LiveChat,

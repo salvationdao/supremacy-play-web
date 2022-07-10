@@ -1,9 +1,9 @@
 import { Box, Fade, Stack, Tab, Tabs, Typography } from "@mui/material"
 import { useCallback, useState } from "react"
 import { BOTTOM_NAV_HEIGHT } from "../../constants"
-import { useMobile } from "../../containers"
+import { useAuth, useMobile } from "../../containers"
 import { useTheme } from "../../containers/theme"
-import { HASH_ROUTES_ARRAY } from "../../routes"
+import { HASH_ROUTES_MAP } from "../../routes"
 import { fonts } from "../../theme/theme"
 
 export const BottomNav = () => {
@@ -14,6 +14,7 @@ export const BottomNav = () => {
 }
 
 const BottomNavInner = () => {
+    const { userID } = useAuth()
     const theme = useTheme()
     const { isNavOpen, toggleIsNavOpen, additionalTabs } = useMobile()
     const [currentValue, setCurrentValue] = useState(0)
@@ -29,6 +30,9 @@ const BottomNavInner = () => {
     const primaryColor = theme.factionTheme.primary
     const secondaryColor = theme.factionTheme.secondary
     const backgroundColor = theme.factionTheme.background
+
+    const tabs = [HASH_ROUTES_MAP.live_chat, ...additionalTabs]
+    if (userID) tabs.push(HASH_ROUTES_MAP.active_players)
 
     return (
         <Stack
@@ -66,7 +70,7 @@ const BottomNavInner = () => {
                             : {}),
                     }}
                 >
-                    {[...HASH_ROUTES_ARRAY, ...additionalTabs].map((item, i) => {
+                    {tabs.map((item, i) => {
                         return (
                             <Tab
                                 key={i}
@@ -90,7 +94,7 @@ const BottomNavInner = () => {
 
             <Box id="game-ui-container" sx={{ flex: 1, backgroundColor }}>
                 {isNavOpen &&
-                    [...HASH_ROUTES_ARRAY, ...additionalTabs].map((item, i) => {
+                    tabs.map((item, i) => {
                         return (
                             <TabPanel key={i} currentValue={currentValue} value={i}>
                                 {item.Component && <item.Component />}
