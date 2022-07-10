@@ -1,4 +1,4 @@
-import { Box, Stack } from "@mui/material"
+import { Box, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo } from "react"
 import {
     BattleAbilityAlert,
@@ -20,7 +20,7 @@ import { makeid } from "../../containers/ws/util"
 import { useArray } from "../../hooks"
 import { useGameServerSubscription, useGameServerSubscriptionFaction } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
-import { siteZIndex } from "../../theme/theme"
+import { fonts, siteZIndex } from "../../theme/theme"
 import { WarMachineCommandAlert, WarMachineCommandAlertProps } from "./Alerts/WarMachineCommandAlert"
 import {
     battleAbilityNoti,
@@ -64,6 +64,7 @@ export interface NotificationResponse {
 }
 
 export const Notifications = () => {
+    const { isMobile } = useMobile()
     const { getFaction } = useSupremacy()
     const { setForceDisplay100Percentage } = useGame()
 
@@ -230,6 +231,23 @@ export const Notifications = () => {
                 }),
         [getFaction, notifications],
     )
+
+    if (isMobile) {
+        return (
+            <Stack sx={{ backgroundColor: "#FFFFFF12", boxShadow: 2, border: "#FFFFFF20 1px solid", p: "1rem 1.2rem", height: "20rem" }}>
+                <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBlack }}>
+                    NOTIFICATIONS
+                </Typography>
+                {notificationsJsx.filter((n) => !!n).length > 0 ? (
+                    <NotificationsInner notificationsJsx={notificationsJsx} />
+                ) : (
+                    <Stack alignItems="center" justifyContent="center" sx={{ flex: 1 }}>
+                        <Typography>There are no battle notifications yet...</Typography>
+                    </Stack>
+                )}
+            </Stack>
+        )
+    }
 
     return <NotificationsInner notificationsJsx={notificationsJsx} />
 }

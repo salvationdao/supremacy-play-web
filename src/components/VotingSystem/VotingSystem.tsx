@@ -2,12 +2,13 @@ import { Box, Fade, Stack } from "@mui/material"
 import { useMemo } from "react"
 import { BattleAbilityItem, FactionAbilities, MoveableResizable } from ".."
 import { STAGING_OR_DEV_ONLY } from "../../constants"
-import { useAuth, useGame } from "../../containers"
+import { useAuth, useGame, useMobile } from "../../containers"
 import { useTheme } from "../../containers/theme"
 import { MoveableResizableConfig } from "../Common/MoveableResizable/MoveableResizableContainer"
 import { PlayerAbilities } from "./PlayerAbilities/PlayerAbilities"
 
 export const VotingSystem = () => {
+    const { isMobile } = useMobile()
     const { bribeStage } = useGame()
     const isBattleStarted = useMemo(() => bribeStage && bribeStage.phase !== "HOLD", [bribeStage])
 
@@ -37,7 +38,7 @@ export const VotingSystem = () => {
 
     return (
         <Fade in={isBattleStarted}>
-            <Box>
+            <Box sx={{ ...(isMobile ? { backgroundColor: "#FFFFFF12", boxShadow: 2, border: "#FFFFFF20 1px solid" } : {}) }}>
                 <MoveableResizable config={config}>
                     <VotingSystemInner />
                 </MoveableResizable>

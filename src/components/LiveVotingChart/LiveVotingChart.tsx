@@ -11,6 +11,7 @@ import { LiveGraph } from "./LiveGraph"
 const DefaultMaxLiveVotingDataLength = 100
 
 export const LiveVotingChart = () => {
+    const { isMobile } = useMobile()
     const { bribeStage } = useGame()
     const { isLiveChartOpen, toggleIsLiveChartOpen } = useOverlayToggles()
 
@@ -53,7 +54,7 @@ export const LiveVotingChart = () => {
 
     return (
         <Fade in={isLiveChartOpen && show}>
-            <Box>
+            <Box sx={{ ...(isMobile ? { backgroundColor: "#FFFFFF12", boxShadow: 2, border: "#FFFFFF20 1px solid" } : {}) }}>
                 <MoveableResizable config={config}>
                     <LiveVotingChartInner />
                 </MoveableResizable>

@@ -19,7 +19,7 @@ const DEAD_OPACITY = 0.6
 const WIDTH_SKILL_BUTTON = 3.8
 export const WIDTH_STAT_BAR = 1.5
 
-export const WarMachineItem = ({ warMachine, scale }: { warMachine: WarMachineState; scale: number }) => {
+export const WarMachineItem = ({ warMachine, scale, initialExpanded = false }: { warMachine: WarMachineState; scale: number; initialExpanded?: boolean }) => {
     const { userID, factionID } = useAuth()
     const { getFaction } = useSupremacy()
     const { highlightedMechHash, setHighlightedMechHash } = useMiniMap()
@@ -34,7 +34,7 @@ export const WarMachineItem = ({ warMachine, scale }: { warMachine: WarMachineSt
     })
 
     const [isAlive, toggleIsAlive] = useToggle(true)
-    const [isExpanded, toggleIsExpanded] = useToggle(false)
+    const [isExpanded, toggleIsExpanded] = useToggle(initialExpanded)
     const faction = getFaction(wmFactionID)
 
     const popoverRef = useRef(null)
@@ -68,12 +68,12 @@ export const WarMachineItem = ({ warMachine, scale }: { warMachine: WarMachineSt
     // Toggle out isExpanded if other mech is highlighted
     useEffect(() => {
         if (highlightedMechHash !== warMachine.hash) {
-            toggleIsExpanded(false)
+            toggleIsExpanded(initialExpanded)
         } else {
             toggleIsExpanded(true)
             openSkillsPopover()
         }
-    }, [highlightedMechHash, openSkillsPopover, toggleIsExpanded, warMachine.hash])
+    }, [highlightedMechHash, initialExpanded, openSkillsPopover, toggleIsExpanded, warMachine.hash])
 
     return (
         <>
@@ -90,6 +90,7 @@ export const WarMachineItem = ({ warMachine, scale }: { warMachine: WarMachineSt
                     }rem`,
                     transition: "width .3s",
                     transform: `scale(${scale})`,
+                    transformOrigin: "0 0",
                 }}
             >
                 {/* Little info button to show the mech destroyed info */}

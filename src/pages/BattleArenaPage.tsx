@@ -66,7 +66,7 @@ const BattleArenaPageInner = () => {
                                 mr: ".3rem",
                                 pr: ".1rem",
                                 mt: ".6rem",
-                                mb: "1rem",
+                                mb: "2rem",
                                 direction: "ltr",
                                 scrollbarWidth: "none",
                                 "::-webkit-scrollbar": {
@@ -84,18 +84,11 @@ const BattleArenaPageInner = () => {
                         >
                             <Box sx={{ direction: "ltr", height: 0 }}>
                                 <Stack spacing="1.5rem" sx={{ position: "relative", p: ".8rem 1rem" }}>
-                                    <Box sx={{ backgroundColor: "#FFFFFF12", boxShadow: 2, border: "#FFFFFF20 1px solid", p: "1rem 1.2rem", height: "20rem" }}>
-                                        <Notifications />
-                                    </Box>
-                                    <Box sx={{ backgroundColor: "#FFFFFF12", boxShadow: 2, border: "#FFFFFF20 1px solid" }}>
-                                        <LiveVotingChart />
-                                    </Box>
-                                    <Box sx={{ backgroundColor: "#FFFFFF12", boxShadow: 2, border: "#FFFFFF20 1px solid" }}>
-                                        <VotingSystem />
-                                    </Box>
-                                    <Box sx={{ backgroundColor: "#FFFFFF12", boxShadow: 2, border: "#FFFFFF20 1px solid" }}>
-                                        <MiniMap />
-                                    </Box>
+                                    <Notifications />
+                                    <WarMachineStats />
+                                    <MiniMap />
+                                    <VotingSystem />
+                                    <LiveVotingChart />
                                 </Stack>
                             </Box>
                         </Box>

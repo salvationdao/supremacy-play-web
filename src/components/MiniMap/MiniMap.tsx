@@ -15,6 +15,7 @@ import { TargetHint } from "./MapOutsideItems/TargetHint"
 const TOP_BAR_HEIGHT = 3.1 // rems
 
 export const MiniMap = () => {
+    const { isMobile } = useMobile()
     const { map, bribeStage } = useGame()
     const { isTargeting, isEnlarged, resetSelection, toggleIsEnlarged } = useMiniMap()
     const { isMapOpen, toggleIsMapOpen } = useOverlayToggles()
@@ -79,14 +80,14 @@ export const MiniMap = () => {
 
         return (
             <Fade in={toRender}>
-                <Box>
+                <Box sx={{ ...(isMobile ? { backgroundColor: "#FFFFFF12", boxShadow: 2, border: "#FFFFFF20 1px solid" } : {}) }}>
                     <MoveableResizable config={config}>
                         <MiniMapInner map={map} isTargeting={isTargeting} isEnlarged={isEnlarged} toRender={toRender} />
                     </MoveableResizable>
                 </Box>
             </Fade>
         )
-    }, [map, show, isMapOpen, config, isTargeting, isEnlarged])
+    }, [map, show, isMapOpen, isMobile, config, isTargeting, isEnlarged])
 }
 
 // This inner component takes care of the resizing etc.

@@ -110,10 +110,14 @@ interface TabPanelProps {
 
 const TabPanel = (props: TabPanelProps) => {
     const { children, currentValue, value } = props
+    const isActive = currentValue === value
 
     return (
-        <Fade in={currentValue === value}>
-            <Box id={`bottom-nav-tabpanel-${value}`} sx={{ height: "100%", display: currentValue === value ? "block" : "none" }}>
+        <Fade in={isActive}>
+            <Box
+                id={`bottom-nav-tabpanel-${value}`}
+                sx={{ height: isActive ? "100%" : 0, visibility: isActive ? "visible" : "hidden", pointerEvents: isActive ? "all" : "none" }}
+            >
                 {children}
             </Box>
         </Fade>
