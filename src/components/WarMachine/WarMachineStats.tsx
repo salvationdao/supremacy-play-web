@@ -28,6 +28,7 @@ export const WarMachineStats = () => {
     if (!warMachines || warMachines.length <= 0) return null
 
     if (isMobile) {
+        if (!show) return null
         return (
             <>
                 {haveFactionMechs && (
