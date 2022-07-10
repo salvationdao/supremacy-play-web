@@ -1,4 +1,4 @@
-import { Box, Fade, Stack, Typography } from "@mui/material"
+import { Box, Stack, Typography } from "@mui/material"
 import { Dispatch, useMemo, useState } from "react"
 import { PlayerListContent } from "../.."
 import { useAuth, useSupremacy } from "../../../containers"
@@ -13,11 +13,9 @@ export const PlayerList = () => {
     const [activePlayers, setActivePlayers] = useState<User[]>([])
 
     return (
-        <Fade in>
-            <Stack direction="row" sx={{ width: "100%", height: "100%" }}>
-                <Content getFaction={getFaction} user={user} activePlayers={activePlayers} setActivePlayers={setActivePlayers} />
-            </Stack>
-        </Fade>
+        <Stack direction="row" sx={{ width: "100%", height: "100%" }}>
+            <Content getFaction={getFaction} user={user} activePlayers={activePlayers} setActivePlayers={setActivePlayers} />
+        </Stack>
     )
 }
 

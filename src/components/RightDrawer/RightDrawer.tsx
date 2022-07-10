@@ -1,24 +1,15 @@
-import { Drawer } from "@mui/material"
-import { useEffect, useMemo } from "react"
+import { Box, Drawer, Fade } from "@mui/material"
+import { ReactNode, useEffect } from "react"
 import { useLocation } from "react-router-dom"
 import { DRAWER_TRANSITION_DURATION, RIGHT_DRAWER_WIDTH } from "../../constants"
-import { ChatProvider, useMobile } from "../../containers"
+import { useMobile } from "../../containers"
 import { useToggle } from "../../hooks"
-import { RightDrawerHashes } from "../../routes"
+import { HASH_ROUTES_ARRAY, RightDrawerHashes } from "../../routes"
 import { colors, siteZIndex } from "../../theme/theme"
 import { DrawerButtons } from "./DrawerButtons"
-import { LiveChat } from "./LiveChat/LiveChat"
-import { PlayerList } from "./PlayerList/PlayerList"
-import { Socials } from "./Social/Social"
 
 export const RightDrawer = () => {
     const { isMobile } = useMobile()
-    if (isMobile) return null
-    // For non mobile only
-    return <RightDrawerInner />
-}
-
-const RightDrawerInner = () => {
     const [isDrawerOpen, toggleIsDrawerOpen] = useToggle()
     const location = useLocation()
 
@@ -26,20 +17,10 @@ const RightDrawerInner = () => {
         toggleIsDrawerOpen(location.hash !== RightDrawerHashes.None)
     }, [location.hash, toggleIsDrawerOpen])
 
-    const drawerContent = useMemo(() => {
-        switch (location.hash) {
-            case RightDrawerHashes.PlayerList:
-                return <PlayerList />
-            case RightDrawerHashes.Socials:
-                return <Socials />
-            case RightDrawerHashes.LiveChat:
-            default:
-                return <LiveChat />
-        }
-    }, [location.hash])
+    if (isMobile) return <DrawerButtons />
 
     return (
-        <ChatProvider>
+        <>
             <DrawerButtons />
             <Drawer
                 transitionDuration={DRAWER_TRANSITION_DURATION}
@@ -59,8 +40,28 @@ const RightDrawerInner = () => {
                     },
                 }}
             >
-                {drawerContent}
+                {HASH_ROUTES_ARRAY.map((r) => {
+                    return (
+                        <Content key={r.id} currentHash={location.hash} hash={r.hash}>
+                            {r.Component && <r.Component />}
+                        </Content>
+                    )
+                })}
             </Drawer>
-        </ChatProvider>
+        </>
     )
+}
+
+const Content = ({ currentHash, hash, children }: { currentHash: string; hash: string; children: ReactNode }) => {
+    if (currentHash === hash) {
+        return (
+            <Fade in>
+                <Box id={`right-drawer-content-${hash}`} sx={{ height: "100%" }}>
+                    {children}
+                </Box>
+            </Fade>
+        )
+    }
+
+    return null
 }

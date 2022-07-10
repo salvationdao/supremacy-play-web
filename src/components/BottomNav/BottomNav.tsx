@@ -1,24 +1,11 @@
 import { Box, Fade, Stack, Tab, Tabs, Typography } from "@mui/material"
-import { useState } from "react"
-import { SvgChat } from "../../assets"
+import { useCallback, useState } from "react"
 import { BOTTOM_NAV_HEIGHT } from "../../constants"
 import { useMobile } from "../../containers"
 import { useTheme } from "../../containers/theme"
+import { useToggle } from "../../hooks"
+import { HASH_ROUTES_ARRAY } from "../../routes"
 import { fonts } from "../../theme/theme"
-
-export interface BottomNavStruct {
-    icon: string | React.ReactElement<unknown, string | React.JSXElementConstructor<unknown>>
-    label: string
-    Component?: () => JSX.Element
-}
-
-const BOTTOM_NAV_ARRAY: BottomNavStruct[] = [
-    {
-        icon: <SvgChat size="1.2rem" sx={{ pt: ".1rem" }} />,
-        label: "LIVE CHAT",
-        Component: () => <></>,
-    },
-]
 
 export const BottomNav = () => {
     const { isMobile } = useMobile()
@@ -30,17 +17,29 @@ export const BottomNav = () => {
 const BottomNavInner = () => {
     const theme = useTheme()
     const { additionalTabs } = useMobile()
+    const [isNavOpen, toggleIsNavOpen] = useToggle(true)
     const [currentValue, setCurrentValue] = useState(0)
 
-    const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-        setCurrentValue(newValue)
-    }
+    const handleChange = useCallback(
+        (event: React.SyntheticEvent, newValue: number) => {
+            setCurrentValue(newValue)
+            toggleIsNavOpen(true)
+        },
+        [toggleIsNavOpen],
+    )
 
     const primaryColor = theme.factionTheme.primary
     const secondaryColor = theme.factionTheme.secondary
 
     return (
-        <Stack sx={{ maxHeight: "60vh", height: `${BOTTOM_NAV_HEIGHT}rem`, backgroundColor: `${primaryColor}08` }}>
+        <Stack
+            sx={{
+                maxHeight: "70vh",
+                height: isNavOpen ? `${BOTTOM_NAV_HEIGHT}rem` : "3.2rem",
+                backgroundColor: `${primaryColor}08`,
+                transition: "all .3s",
+            }}
+        >
             <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
                 <Tabs
                     value={currentValue}
@@ -53,22 +52,33 @@ const BottomNavInner = () => {
                         color: primaryColor,
                         minHeight: 0,
                         backgroundColor: `${primaryColor}12`,
-                        ".MuiTab-root": { minHeight: 0, fontSize: "1.3rem", py: ".6rem" },
-                        ".Mui-selected": {
-                            color: `${secondaryColor} !important`,
-                            background: `linear-gradient(${primaryColor} 26%, ${primaryColor}BB)`,
-                        },
+                        ".MuiTab-root, .Mui-selected": { color: "#FFFFFF", minHeight: 0, fontSize: "1.3rem", py: ".6rem" },
                         ".MuiTabs-indicator": { backgroundColor: primaryColor },
+                        ...(isNavOpen
+                            ? {
+                                  ".Mui-selected": {
+                                      color: `${secondaryColor} !important`,
+                                      background: `linear-gradient(${primaryColor} 26%, ${primaryColor}BB)`,
+                                      svg: {
+                                          fill: `${secondaryColor} !important`,
+                                      },
+                                  },
+                              }
+                            : {}),
                     }}
                 >
-                    {[...BOTTOM_NAV_ARRAY, ...additionalTabs].map((item, i) => {
+                    {[...HASH_ROUTES_ARRAY, ...additionalTabs].map((item, i) => {
                         return (
                             <Tab
                                 key={i}
+                                value={i}
+                                onClick={() => {
+                                    if (currentValue === i) toggleIsNavOpen()
+                                }}
                                 label={
                                     <Stack direction="row" alignItems="center" spacing="1rem">
                                         {item.icon}
-                                        <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBold }}>
+                                        <Typography variant="caption" sx={{ color: "inherit", fontFamily: fonts.nostromoBold }}>
                                             {item.label}
                                         </Typography>
                                     </Stack>
@@ -79,13 +89,14 @@ const BottomNavInner = () => {
                 </Tabs>
             </Box>
 
-            {BOTTOM_NAV_ARRAY.map((item, i) => {
-                return (
-                    <TabPanel key={i} currentValue={currentValue} value={i}>
-                        {item.Component}
-                    </TabPanel>
-                )
-            })}
+            {isNavOpen &&
+                [...HASH_ROUTES_ARRAY, ...additionalTabs].map((item, i) => {
+                    return (
+                        <TabPanel key={i} currentValue={currentValue} value={i}>
+                            {item.Component && <item.Component />}
+                        </TabPanel>
+                    )
+                })}
         </Stack>
     )
 }
@@ -99,15 +110,11 @@ interface TabPanelProps {
 const TabPanel = (props: TabPanelProps) => {
     const { children, currentValue, value } = props
 
-    if (currentValue === value) {
-        return (
-            <Fade in>
-                <Box id={`marketplace-tabpanel-${value}`} sx={{ flex: 1 }}>
-                    {children}
-                </Box>
-            </Fade>
-        )
-    }
-
-    return null
+    return (
+        <Fade in={currentValue === value}>
+            <Box id={`bottom-nav-tabpanel-${value}`} sx={{ flex: 1, display: currentValue === value ? "unset" : "none" }}>
+                {children}
+            </Box>
+        </Fade>
+    )
 }

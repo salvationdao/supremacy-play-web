@@ -1,5 +1,6 @@
 import { Box, Stack } from "@mui/material"
 import { useEffect, useState } from "react"
+import { SvgChat } from "../assets"
 import {
     BattleEndScreen,
     BattleHistory,
@@ -15,8 +16,7 @@ import {
 import { TutorialModal } from "../components/HowToPlay/Tutorial/TutorialModal"
 import { QuickDeploy } from "../components/QuickDeploy/QuickDeploy"
 import { Trailer } from "../components/Stream/Trailer"
-import { DimensionProvider, GameProvider, OverlayTogglesProvider, StreamProvider, useAuth, useSupremacy } from "../containers"
-import { MiniMapProvider } from "../containers/minimap"
+import { useAuth, useMobile, useSupremacy } from "../containers"
 import { siteZIndex } from "../theme/theme"
 
 export const BattleArenaPage = () => {
@@ -39,33 +39,45 @@ export const BattleArenaPage = () => {
         )
     }
 
-    return (
-        <StreamProvider>
-            <GameProvider>
-                <DimensionProvider>
-                    <OverlayTogglesProvider>
-                        <MiniMapProvider>
-                            <BattleArenaPageInner />
-                        </MiniMapProvider>
-                    </OverlayTogglesProvider>
-                </DimensionProvider>
-            </GameProvider>
-        </StreamProvider>
-    )
+    return <BattleArenaPageInner />
 }
 
 const BattleArenaPageInner = () => {
     const { userID } = useAuth()
+    const { isMobile, setAdditionalTabs } = useMobile()
     const { isServerUp, isQuickDeployOpen, toggleIsQuickDeployOpen } = useSupremacy()
+
+    useEffect(() => {
+        if (!isMobile) return
+        setAdditionalTabs([
+            {
+                id: "battle-arena",
+                hash: "#battle-arena",
+                icon: <SvgChat size="1.2rem" sx={{ pt: ".1rem" }} />,
+                label: "BATTLE ARENA",
+                Component: () => (
+                    <Box id={isMobile ? "game-ui-container" : ""} sx={{ position: "relative", height: "100%" }}>
+                        <Notifications />
+                        <WarMachineStats />
+                        <BattleEndScreen />
+                        <LiveVotingChart />
+                        <BattleHistory />
+                        <VotingSystem />
+                        <MiniMap />
+                    </Box>
+                ),
+            },
+        ])
+    }, [isMobile, setAdditionalTabs])
 
     return (
         <>
             <Stack sx={{ height: "100%", zIndex: siteZIndex.RoutePage }}>
-                <Box id="game-ui-container" sx={{ position: "relative", flex: 1 }}>
+                <Box id={isMobile ? "" : "game-ui-container"} sx={{ position: "relative", flex: 1 }}>
                     <Trailer />
                     <Stream />
 
-                    {isServerUp && (
+                    {isServerUp && !isMobile && (
                         <>
                             <Notifications />
                             <WarMachineStats />
@@ -75,10 +87,10 @@ const BattleArenaPageInner = () => {
                             {isQuickDeployOpen && <QuickDeploy open={isQuickDeployOpen} onClose={() => toggleIsQuickDeployOpen(false)} />}
                             <VotingSystem />
                             <MiniMap />
-
-                            {userID && <TutorialModal />}
                         </>
                     )}
+
+                    {isServerUp && userID && <TutorialModal />}
                 </Box>
 
                 <Controls />
