@@ -207,5 +207,6 @@ const MiniMapInner = ({ map, isTargeting, isEnlarged, toRender }: { map: Map; is
                 <TargetHint />
             </Box>
         )
-    }, [toRender, theme.factionTheme.primary, mapName, curWidth, curHeight, isLargeMode, remToPxRatio, isMobile])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [toRender, theme.factionTheme.primary, mapName, curWidth, curHeight, isLargeMode, remToPxRatio, isMobile, width])
 }
