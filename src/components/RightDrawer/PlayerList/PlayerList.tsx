@@ -105,7 +105,9 @@ const Content = ({
                     },
                 }}
             >
-                <PlayerListContent user={user} activePlayers={activePlayers} setActivePlayers={setActivePlayers} />
+                <Box sx={{ height: 0 }}>
+                    <PlayerListContent user={user} activePlayers={activePlayers} setActivePlayers={setActivePlayers} />
+                </Box>
             </Box>
         </Stack>
     )

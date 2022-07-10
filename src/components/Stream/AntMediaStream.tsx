@@ -168,10 +168,10 @@ export const AntMediaStream = () => {
                 controls={false}
                 playsInline
                 style={{
-                    width: "100% !important",
-                    height: "100% !important",
+                    width: "100%",
+                    height: "100%",
                     objectFit: "cover",
-                    objectPosition: "center !important",
+                    objectPosition: "center",
                     zIndex: siteZIndex.Stream,
                     background: isPlaying ? "unset" : `center url(${SupBackground}) ${colors.darkNavy} cover no-repeat`,
                 }}
