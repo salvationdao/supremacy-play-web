@@ -15,7 +15,7 @@ import {
 } from "../components"
 import { TutorialModal } from "../components/HowToPlay/Tutorial/TutorialModal"
 import { QuickDeploy } from "../components/QuickDeploy/QuickDeploy"
-import { DimensionProvider, useAuth, useMobile, useSupremacy } from "../containers"
+import { useAuth, useDimension, useMobile, useSupremacy } from "../containers"
 import { siteZIndex } from "../theme/theme"
 
 export const BattleArenaPage = () => {
@@ -38,20 +38,19 @@ export const BattleArenaPage = () => {
         )
     }
 
-    return (
-        <DimensionProvider>
-            <BattleArenaPageInner />
-        </DimensionProvider>
-    )
+    return <BattleArenaPageInner />
 }
 
 const BattleArenaPageInner = () => {
     const { userID } = useAuth()
     const { isMobile, setAdditionalTabs, toggleIsNavOpen } = useMobile()
     const { isServerUp, isQuickDeployOpen, toggleIsQuickDeployOpen } = useSupremacy()
+    const { recalculateDimensions } = useDimension()
 
     // When its mobile, we have tabs
     useEffect(() => {
+        recalculateDimensions()
+
         if (!isMobile) return
         setAdditionalTabs([
             {
@@ -144,7 +143,7 @@ const BattleArenaPageInner = () => {
             setAdditionalTabs([])
             toggleIsNavOpen(false)
         }
-    }, [isMobile, setAdditionalTabs, toggleIsNavOpen])
+    }, [isMobile, recalculateDimensions, setAdditionalTabs, toggleIsNavOpen])
 
     return (
         <>

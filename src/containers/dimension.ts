@@ -1,5 +1,5 @@
 import { useMediaQuery } from "@mui/material"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { createContainer } from "unstated-next"
 import { useDebounce } from "../hooks"
 import { Dimension } from "../types"
@@ -50,7 +50,7 @@ export const DimensionContainer = createContainer(() => {
         }
     }, [setGameUIDimensions])
 
-    useEffect(() => {
+    const recalculateDimensions = useCallback(() => {
         const gameUIContainer = document.getElementById("game-ui-container")
         if (!gameUIContainer) {
             console.error("Please assign #game-ui-container to the game UI.")
@@ -61,11 +61,16 @@ export const DimensionContainer = createContainer(() => {
         const containerHeight = gameUIContainer.offsetHeight
 
         setGameUIDimensions({ width: containerWidth, height: containerHeight })
-    }, [remToPxRatio, setGameUIDimensions])
+    }, [setGameUIDimensions])
+
+    useEffect(() => {
+        recalculateDimensions()
+    }, [recalculateDimensions, remToPxRatio])
 
     return {
         remToPxRatio,
         gameUIDimensions,
+        recalculateDimensions,
     }
 })
 
