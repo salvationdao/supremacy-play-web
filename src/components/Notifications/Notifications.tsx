@@ -1,4 +1,4 @@
-import { Box, Stack } from "@mui/material"
+import { Box, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo } from "react"
 import {
     BattleAbilityAlert,
@@ -14,13 +14,13 @@ import {
     WarMachineAbilityAlert,
     WarMachineAbilityAlertProps,
 } from ".."
-import { MINI_MAP_DEFAULT_SIZE, NOTIFICATION_LINGER, NOTIFICATION_TIME } from "../../constants"
-import { useDimension, useGame, useSupremacy } from "../../containers"
+import { NOTIFICATION_LINGER, NOTIFICATION_TIME } from "../../constants"
+import { useGame, useMobile, useSupremacy } from "../../containers"
 import { makeid } from "../../containers/ws/util"
 import { useArray } from "../../hooks"
 import { useGameServerSubscription, useGameServerSubscriptionFaction } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
-import { siteZIndex } from "../../theme/theme"
+import { fonts, siteZIndex } from "../../theme/theme"
 import { WarMachineCommandAlert, WarMachineCommandAlertProps } from "./Alerts/WarMachineCommandAlert"
 import {
     battleAbilityNoti,
@@ -64,11 +64,9 @@ export interface NotificationResponse {
 }
 
 export const Notifications = () => {
+    const { isMobile } = useMobile()
     const { getFaction } = useSupremacy()
     const { setForceDisplay100Percentage } = useGame()
-    const {
-        gameUIDimensions: { height },
-    } = useDimension()
 
     // Notification array
     const { value: notifications, add: addNotification, removeByID } = useArray([], "notiID")
@@ -234,47 +232,64 @@ export const Notifications = () => {
         [getFaction, notifications],
     )
 
-    return <NotificationsInner height={height} notificationsJsx={notificationsJsx} />
+    if (isMobile) {
+        return (
+            <Stack spacing=".6rem" sx={{ backgroundColor: "#FFFFFF12", boxShadow: 2, border: "#FFFFFF20 1px solid", p: "1rem 1.2rem", height: "23rem" }}>
+                <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBlack }}>
+                    NOTIFICATIONS
+                </Typography>
+                {notificationsJsx.filter((n) => !!n).length > 0 ? (
+                    <NotificationsInner notificationsJsx={notificationsJsx} />
+                ) : (
+                    <Stack alignItems="center" justifyContent="center" sx={{ flex: 1 }}>
+                        <Typography>There are no battle notifications yet...</Typography>
+                    </Stack>
+                )}
+            </Stack>
+        )
+    }
+
+    return <NotificationsInner notificationsJsx={notificationsJsx} />
 }
 
-const NotificationsInner = ({ height, notificationsJsx }: { height: number; notificationsJsx: (JSX.Element | undefined | null)[] }) => {
+const NotificationsInner = ({ notificationsJsx }: { notificationsJsx: (JSX.Element | undefined | null)[] }) => {
+    const { isMobile } = useMobile()
     return (
         <Stack
             sx={{
-                position: "absolute",
+                position: isMobile ? "unset" : "absolute",
+                height: "100%",
                 top: "1rem",
                 right: "1rem",
                 zIndex: siteZIndex.Notifications,
                 overflow: "hidden",
             }}
         >
-            <Box>
-                <Box
-                    sx={{
-                        flex: 1,
-                        maxHeight: `calc(${height}px - ${MINI_MAP_DEFAULT_SIZE + 40 + 30}px)`,
-                        overflowY: "auto",
-                        overflowX: "hidden",
-                        pr: ".8rem",
-                        py: ".16rem",
-                        direction: "ltr",
+            <Box
+                sx={{
+                    flex: 1,
+                    height: "100%",
+                    overflowY: "auto",
+                    overflowX: "hidden",
+                    pr: ".8rem",
+                    py: ".16rem",
+                    direction: "ltr",
 
-                        "::-webkit-scrollbar": {
-                            width: ".4rem",
-                        },
-                        "::-webkit-scrollbar-track": {
-                            background: "#FFFFFF15",
-                            borderRadius: 3,
-                        },
-                        "::-webkit-scrollbar-thumb": {
-                            background: (theme) => theme.factionTheme.primary,
-                            borderRadius: 3,
-                        },
-                    }}
-                >
-                    <Box sx={{ direction: "ltr" }}>
-                        <Stack spacing=".48rem">{notificationsJsx}</Stack>
-                    </Box>
+                    "::-webkit-scrollbar": {
+                        width: ".4rem",
+                    },
+                    "::-webkit-scrollbar-track": {
+                        background: "#FFFFFF15",
+                        borderRadius: 3,
+                    },
+                    "::-webkit-scrollbar-thumb": {
+                        background: (theme) => theme.factionTheme.primary,
+                        borderRadius: 3,
+                    },
+                }}
+            >
+                <Box sx={{ direction: "ltr", height: 0 }}>
+                    <Stack spacing=".5rem">{notificationsJsx}</Stack>
                 </Box>
             </Box>
         </Stack>

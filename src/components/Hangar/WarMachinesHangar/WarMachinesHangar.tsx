@@ -183,7 +183,7 @@ const WarMachinesHangarInner = ({
                 }}
                 opacity={0.7}
                 backgroundColor={theme.factionTheme.background}
-                sx={{ height: "100%", width: "fit-content", minWidth: "80rem" }}
+                sx={{ height: "100%" }}
             >
                 <Stack sx={{ position: "relative", height: "100%" }}>
                     <TotalAndPageSizeOptions

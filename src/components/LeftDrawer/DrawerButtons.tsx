@@ -1,7 +1,7 @@
 import { Box, Button, Stack, Tab, Tabs } from "@mui/material"
 import { useHistory, useLocation, useRouteMatch } from "react-router-dom"
 import { SvgNext } from "../../assets"
-import { useAuth } from "../../containers"
+import { useAuth, useMobile } from "../../containers"
 import { useTheme } from "../../containers/theme"
 import { ROUTES_ARRAY } from "../../routes"
 import { colors, fonts, siteZIndex } from "../../theme/theme"
@@ -11,6 +11,7 @@ const DRAWER_BAR_WIDTH = 3 // rem
 const BUTTON_WIDTH = 17 //rem
 
 export const DrawerButtons = ({ openLeftDrawer }: { openLeftDrawer: () => void }) => {
+    const { isMobile } = useMobile()
     const { userID } = useAuth()
     const theme = useTheme()
     const location = useLocation()
@@ -56,7 +57,7 @@ export const DrawerButtons = ({ openLeftDrawer }: { openLeftDrawer: () => void }
 
                     const toRender = []
 
-                    if (id === "fleet") toRender.push(<QuickDeployButton />)
+                    if (id === "fleet" && !isMobile) toRender.push(<QuickDeployButton />)
                     toRender.push(
                         <TabButton
                             key={r.id}

@@ -2,11 +2,12 @@ import { Stack, Typography } from "@mui/material"
 import moment from "moment"
 import { useMemo } from "react"
 import { BOTTOM_BUTTONS_HEIGHT, FancyButton } from "../.."
-import { useOverlayToggles } from "../../../containers"
+import { useMobile, useOverlayToggles } from "../../../containers"
 import { colors, fonts } from "../../../theme/theme"
 import { BattleEndDetail } from "../../../types"
 
 export const SectionBottom = ({ battleEndDetail }: { battleEndDetail: BattleEndDetail }) => {
+    const { isMobile } = useMobile()
     const { toggleIsEndBattleDetailOpen } = useOverlayToggles()
     const { battle_identifier, started_at, ended_at } = battleEndDetail
 
@@ -26,7 +27,7 @@ export const SectionBottom = ({ battleEndDetail }: { battleEndDetail: BattleEndD
             justifyContent="flex-end"
             alignItems="flex-start"
             sx={{
-                position: "absolute",
+                position: isMobile ? "unset" : "absolute",
                 bottom: 0,
                 left: 0,
                 right: 0,
@@ -41,31 +42,33 @@ export const SectionBottom = ({ battleEndDetail }: { battleEndDetail: BattleEndD
                 </Typography>
             </Stack>
 
-            <FancyButton
-                clipThingsProps={{
-                    clipSize: "8px",
-                    backgroundColor: primaryColor,
-                    border: {
-                        isFancy: true,
-                        borderColor: primaryColor,
-                    },
-                }}
-                sx={{
-                    py: ".2rem",
-                    width: "9rem",
-                }}
-                onClick={() => toggleIsEndBattleDetailOpen(false)}
-            >
-                <Typography
-                    variant="caption"
-                    sx={{
-                        color: secondaryColor,
-                        fontFamily: fonts.nostromoBlack,
+            {!isMobile && (
+                <FancyButton
+                    clipThingsProps={{
+                        clipSize: "8px",
+                        backgroundColor: primaryColor,
+                        border: {
+                            isFancy: true,
+                            borderColor: primaryColor,
+                        },
                     }}
+                    sx={{
+                        py: ".2rem",
+                        width: "9rem",
+                    }}
+                    onClick={() => toggleIsEndBattleDetailOpen(false)}
                 >
-                    CLOSE
-                </Typography>
-            </FancyButton>
+                    <Typography
+                        variant="caption"
+                        sx={{
+                            color: secondaryColor,
+                            fontFamily: fonts.nostromoBlack,
+                        }}
+                    >
+                        CLOSE
+                    </Typography>
+                </FancyButton>
+            )}
         </Stack>
     )
 }

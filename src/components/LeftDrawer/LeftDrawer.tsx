@@ -61,7 +61,8 @@ export const LeftDrawer = () => {
                                 <MenuButton
                                     key={r.id}
                                     label={label}
-                                    enable={enable && !disable}
+                                    disable={!enable || disable}
+                                    enable={enable}
                                     onClick={() => history.push(`${navigateTo}${location.hash}`)}
                                     isActive={activeTabID === r.matchLeftDrawerID || location.pathname === r.path}
                                     primaryColor={theme.factionTheme.primary}
@@ -100,6 +101,7 @@ export const LeftDrawer = () => {
 
 const MenuButton = ({
     label,
+    disable,
     enable,
     isActive,
     primaryColor,
@@ -107,6 +109,7 @@ const MenuButton = ({
     onClick,
 }: {
     label: string
+    disable?: boolean
     enable?: boolean
     icon?: string | React.ReactElement<unknown, string | React.JSXElementConstructor<unknown>>
     isActive?: boolean
@@ -116,7 +119,7 @@ const MenuButton = ({
 }) => {
     return (
         <Button
-            disabled={!enable}
+            disabled={disable}
             onClick={onClick}
             sx={{
                 px: "2.3rem",
@@ -126,7 +129,7 @@ const MenuButton = ({
                 backgroundColor: isActive ? primaryColor : `${primaryColor}30`,
                 borderRadius: 0,
                 borderBottom: `#FFFFFF20 2px solid`,
-                opacity: enable ? 1 : 0.6,
+                opacity: disable ? 0.6 : 1,
                 ":hover": {
                     backgroundColor: isActive ? primaryColor : `${primaryColor}50`,
                 },
