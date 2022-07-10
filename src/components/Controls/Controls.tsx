@@ -52,7 +52,6 @@ export const Controls = () => {
         >
             <Stack direction="row" spacing="1.6rem" sx={{ flexShrink: 0, height: "100%" }}>
                 {!isMobile && <PreviousBattle />}
-                <PreviousBattle />
                 <LiveCounts />
                 {!isMobile && <OverlayToggles />}
                 {!isMobile && <BattleStats hideContributionTotal={isLiveChartOpen} hideContributorAmount={isLiveChartOpen} />}

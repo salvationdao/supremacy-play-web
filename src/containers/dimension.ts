@@ -1,7 +1,6 @@
 import { useMediaQuery } from "@mui/material"
 import { useEffect, useState } from "react"
 import { createContainer } from "unstated-next"
-import { STREAM_ASPECT_RATIO_W_H } from "../constants"
 import { useDebounce } from "../hooks"
 import { Dimension } from "../types"
 
@@ -20,10 +19,6 @@ export const DimensionContainer = createContainer(() => {
         },
         300,
     )
-    const [iframeDimensions, setIframeDimensions] = useState<{ width: number | string; height: number | string }>({
-        width: 0,
-        height: 0,
-    })
 
     // Please refer to `src/theme/global.css`
     useEffect(() => {
@@ -65,24 +60,12 @@ export const DimensionContainer = createContainer(() => {
         const containerWidth = gameUIContainer.offsetWidth
         const containerHeight = gameUIContainer.offsetHeight
 
-        // Work out iframe width and height based on its aspect ratio and stream width and height
-        let iframeWidth: number | string = containerWidth
-        let iframeHeight: number | string = containerHeight
-        const iframeRatio = iframeWidth / iframeHeight
-        if (iframeRatio >= STREAM_ASPECT_RATIO_W_H) {
-            iframeHeight = "unset"
-        } else {
-            iframeWidth = "unset"
-        }
-
         setGameUIDimensions({ width: containerWidth, height: containerHeight })
-        setIframeDimensions({ width: iframeWidth, height: iframeHeight })
     }, [remToPxRatio, setGameUIDimensions])
 
     return {
         remToPxRatio,
         gameUIDimensions,
-        iframeDimensions,
     }
 })
 

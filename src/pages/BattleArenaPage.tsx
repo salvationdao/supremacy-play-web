@@ -1,6 +1,6 @@
 import { Box, Stack } from "@mui/material"
 import { useEffect, useState } from "react"
-import { SvgAbility, SvgHistory, SvgHistoryClock, SvgNotification } from "../assets"
+import { SvgAbility, SvgHistory, SvgHistoryClock } from "../assets"
 import {
     BattleEndScreen,
     BattleHistory,
@@ -13,10 +13,8 @@ import {
     VotingSystem,
     WarMachineStats,
 } from "../components"
-import { BattleStats } from "../components/BattleStats/BattleStats"
 import { TutorialModal } from "../components/HowToPlay/Tutorial/TutorialModal"
 import { QuickDeploy } from "../components/QuickDeploy/QuickDeploy"
-import { Trailer } from "../components/Stream/Trailer"
 import { useAuth, useMobile, useSupremacy } from "../containers"
 import { siteZIndex } from "../theme/theme"
 
@@ -53,17 +51,6 @@ const BattleArenaPageInner = () => {
         if (!isMobile) return
         setAdditionalTabs([
             {
-                id: "notifications",
-                hash: "#notifications",
-                icon: <SvgNotification size="1.2rem" sx={{ pt: ".1rem" }} />,
-                label: "NOTIFICATIONS",
-                Component: () => (
-                    <Stack sx={{ height: "100%", p: "1rem 1.2rem" }}>
-                        <Notifications />
-                    </Stack>
-                ),
-            },
-            {
                 id: "battle-arena",
                 hash: "#battle-arena",
                 icon: <SvgAbility size="1.2rem" sx={{ pt: ".1rem" }} />,
@@ -97,17 +84,17 @@ const BattleArenaPageInner = () => {
                         >
                             <Box sx={{ direction: "ltr", height: 0 }}>
                                 <Stack spacing="1.5rem" sx={{ position: "relative", p: ".8rem 1rem" }}>
-                                    <Box sx={{ p: ".8rem 1.5rem", backgroundColor: "#FFFFFF12", boxShadow: 2, border: "#FFFFFF20 1px solid" }}>
-                                        <BattleStats />
+                                    <Box sx={{ backgroundColor: "#FFFFFF12", boxShadow: 2, border: "#FFFFFF20 1px solid", p: "1rem 1.2rem", height: "20rem" }}>
+                                        <Notifications />
+                                    </Box>
+                                    <Box sx={{ backgroundColor: "#FFFFFF12", boxShadow: 2, border: "#FFFFFF20 1px solid" }}>
+                                        <LiveVotingChart />
                                     </Box>
                                     <Box sx={{ backgroundColor: "#FFFFFF12", boxShadow: 2, border: "#FFFFFF20 1px solid" }}>
                                         <VotingSystem />
                                     </Box>
                                     <Box sx={{ backgroundColor: "#FFFFFF12", boxShadow: 2, border: "#FFFFFF20 1px solid" }}>
                                         <MiniMap />
-                                    </Box>
-                                    <Box sx={{ backgroundColor: "#FFFFFF12", boxShadow: 2, border: "#FFFFFF20 1px solid" }}>
-                                        <LiveVotingChart />
                                     </Box>
                                 </Stack>
                             </Box>
@@ -144,7 +131,6 @@ const BattleArenaPageInner = () => {
         <>
             <Stack sx={{ height: "100%", zIndex: siteZIndex.RoutePage }}>
                 <Box id={isMobile ? "" : "game-ui-container"} sx={{ position: "relative", flex: 1 }}>
-                    <Trailer />
                     <Stream />
 
                     {isServerUp && !isMobile && (

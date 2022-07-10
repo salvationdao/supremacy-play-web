@@ -240,38 +240,38 @@ const NotificationsInner = ({ notificationsJsx }: { notificationsJsx: (JSX.Eleme
         <Stack
             sx={{
                 position: isMobile ? "unset" : "absolute",
+                height: "100%",
                 top: "1rem",
                 right: "1rem",
                 zIndex: siteZIndex.Notifications,
                 overflow: "hidden",
             }}
         >
-            <Box>
-                <Box
-                    sx={{
-                        flex: 1,
-                        overflowY: "auto",
-                        overflowX: "hidden",
-                        pr: ".8rem",
-                        py: ".16rem",
-                        direction: "ltr",
+            <Box
+                sx={{
+                    flex: 1,
+                    height: "100%",
+                    overflowY: "auto",
+                    overflowX: "hidden",
+                    pr: ".8rem",
+                    py: ".16rem",
+                    direction: "ltr",
 
-                        "::-webkit-scrollbar": {
-                            width: ".4rem",
-                        },
-                        "::-webkit-scrollbar-track": {
-                            background: "#FFFFFF15",
-                            borderRadius: 3,
-                        },
-                        "::-webkit-scrollbar-thumb": {
-                            background: (theme) => theme.factionTheme.primary,
-                            borderRadius: 3,
-                        },
-                    }}
-                >
-                    <Box sx={{ direction: "ltr" }}>
-                        <Stack spacing=".8rem">{notificationsJsx}</Stack>
-                    </Box>
+                    "::-webkit-scrollbar": {
+                        width: ".4rem",
+                    },
+                    "::-webkit-scrollbar-track": {
+                        background: "#FFFFFF15",
+                        borderRadius: 3,
+                    },
+                    "::-webkit-scrollbar-thumb": {
+                        background: (theme) => theme.factionTheme.primary,
+                        borderRadius: 3,
+                    },
+                }}
+            >
+                <Box sx={{ direction: "ltr", height: 0 }}>
+                    <Stack spacing=".5rem">{notificationsJsx}</Stack>
                 </Box>
             </Box>
         </Stack>

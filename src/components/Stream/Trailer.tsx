@@ -8,14 +8,6 @@ import { useToggle } from "../../hooks"
 import { siteZIndex } from "../../theme/theme"
 
 export const Trailer = () => {
-    const { showTrailer } = useOverlayToggles()
-
-    if (!showTrailer) return null
-
-    return <TrailerInner />
-}
-
-const TrailerInner = () => {
     const { toggleShowTrailer } = useOverlayToggles()
     const vidRef = useRef<HTMLVideoElement>(null)
     const { isMute, volume } = useStream()

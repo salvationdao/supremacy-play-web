@@ -1,7 +1,7 @@
 import { Box, Fade, Stack } from "@mui/material"
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { MoveableResizable } from ".."
-import { useGame, useOverlayToggles, useSupremacy } from "../../containers"
+import { useGame, useMobile, useOverlayToggles, useSupremacy } from "../../containers"
 import { parseString } from "../../helpers"
 import { useToggle } from "../../hooks"
 import { BattleStats } from "../BattleStats/BattleStats"
@@ -63,50 +63,62 @@ export const LiveVotingChart = () => {
 }
 
 const LiveVotingChartInner = () => {
+    const { isMobile } = useMobile()
     const { battleIdentifier } = useSupremacy()
     const [maxLiveVotingDataLength, setMaxLiveVotingDataLength] = useState(
         parseString(localStorage.getItem("liveVotingDataMax"), DefaultMaxLiveVotingDataLength),
     )
     const { curWidth, curHeight } = useMoveableResizable()
+    const ref = useRef<HTMLDivElement>()
 
     useEffect(() => {
-        setMaxLiveVotingDataLength(curWidth / 5)
-    }, [curWidth])
+        if (isMobile && ref.current?.parentElement) {
+            setMaxLiveVotingDataLength(ref.current.parentElement.offsetWidth / 5)
+        } else {
+            setMaxLiveVotingDataLength(curWidth / 5)
+        }
+    }, [curWidth, isMobile])
 
-    return (
-        <Stack sx={{ height: "100%", pt: "1.2rem" }}>
-            <Box
-                sx={{
-                    flex: 1,
-                    position: "relative",
-                    px: "1.3rem",
-                    pb: ".4rem",
-                }}
-            >
+    return useMemo(() => {
+        const parentDiv = ref.current?.parentElement
+        const insideWidth = isMobile ? parentDiv?.offsetWidth || 300 : curWidth
+        const insideHeight = isMobile ? 120 : curHeight
+
+        return (
+            <Stack ref={ref} sx={{ height: "100%", pt: "1.2rem" }}>
                 <Box
-                    key={maxLiveVotingDataLength}
                     sx={{
+                        flex: 1,
                         position: "relative",
-                        height: "100%",
-                        px: ".56rem",
-                        pt: "1.6rem",
-                        background: "#000000E6",
-                        border: (theme) => `${theme.factionTheme.primary}10 1px solid`,
-                        borderRadius: 1,
+                        px: "1.3rem",
+                        pb: ".4rem",
                     }}
                 >
-                    <LiveGraph
-                        battleIdentifier={battleIdentifier}
-                        maxWidthPx={curWidth}
-                        maxHeightPx={curHeight}
-                        maxLiveVotingDataLength={maxLiveVotingDataLength}
-                    />
+                    <Box
+                        key={maxLiveVotingDataLength}
+                        sx={{
+                            position: "relative",
+                            height: "100%",
+                            px: ".56rem",
+                            pt: "1.6rem",
+                            background: "#000000E6",
+                            border: (theme) => `${theme.factionTheme.primary}10 1px solid`,
+                            borderRadius: 1,
+                        }}
+                    >
+                        <LiveGraph
+                            battleIdentifier={battleIdentifier}
+                            maxWidthPx={insideWidth}
+                            maxHeightPx={insideHeight}
+                            maxLiveVotingDataLength={maxLiveVotingDataLength}
+                        />
+                    </Box>
                 </Box>
-            </Box>
 
-            <Box sx={{ px: "1.5rem", pt: ".3rem", pb: ".5rem" }}>
-                <BattleStats />
-            </Box>
-        </Stack>
-    )
+                <Box sx={{ px: "1.5rem", pt: ".3rem", pb: ".5rem" }}>
+                    <BattleStats />
+                </Box>
+            </Stack>
+        )
+    }, [battleIdentifier, curHeight, curWidth, isMobile, maxLiveVotingDataLength])
 }
