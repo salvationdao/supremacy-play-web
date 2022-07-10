@@ -49,6 +49,7 @@ export const BattleEndScreen = () => {
                     pr: ".8rem",
                     pt: "2.4rem",
                     pb: "1.2rem",
+                    height: "100%",
                     boxShadow: 20,
                     zIndex: siteZIndex.Popover,
                     maxWidth: isMobile ? "unset" : "48rem",
@@ -78,11 +79,13 @@ export const BattleEndScreen = () => {
                         },
                     }}
                 >
-                    <SectionMultipliers battleEndDetail={battleEndDetail} />
-                    <SectionWinner battleEndDetail={battleEndDetail} />
-                    <SectionTopSups battleEndDetail={battleEndDetail} />
-                    <SectionMostFrequentAbilityExecutor battleEndDetail={battleEndDetail} />
-                    <SectionTopSupsFaction battleEndDetail={battleEndDetail} />
+                    <Box sx={{ height: 0 }}>
+                        <SectionMultipliers battleEndDetail={battleEndDetail} />
+                        <SectionWinner battleEndDetail={battleEndDetail} />
+                        <SectionTopSups battleEndDetail={battleEndDetail} />
+                        <SectionMostFrequentAbilityExecutor battleEndDetail={battleEndDetail} />
+                        <SectionTopSupsFaction battleEndDetail={battleEndDetail} />
+                    </Box>
                 </Stack>
 
                 <SectionBottom battleEndDetail={battleEndDetail} />
