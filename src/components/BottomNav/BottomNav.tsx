@@ -3,7 +3,6 @@ import { useCallback, useState } from "react"
 import { BOTTOM_NAV_HEIGHT } from "../../constants"
 import { useMobile } from "../../containers"
 import { useTheme } from "../../containers/theme"
-import { useToggle } from "../../hooks"
 import { HASH_ROUTES_ARRAY } from "../../routes"
 import { fonts } from "../../theme/theme"
 
@@ -16,8 +15,7 @@ export const BottomNav = () => {
 
 const BottomNavInner = () => {
     const theme = useTheme()
-    const { additionalTabs } = useMobile()
-    const [isNavOpen, toggleIsNavOpen] = useToggle(true)
+    const { isNavOpen, toggleIsNavOpen, additionalTabs } = useMobile()
     const [currentValue, setCurrentValue] = useState(0)
 
     const handleChange = useCallback(
@@ -30,17 +28,18 @@ const BottomNavInner = () => {
 
     const primaryColor = theme.factionTheme.primary
     const secondaryColor = theme.factionTheme.secondary
+    const backgroundColor = theme.factionTheme.background
 
     return (
         <Stack
             sx={{
                 maxHeight: "70vh",
-                height: isNavOpen ? `${BOTTOM_NAV_HEIGHT}rem` : "3.2rem",
+                height: isNavOpen ? `${BOTTOM_NAV_HEIGHT}rem` : "4.2rem",
                 backgroundColor: `${primaryColor}08`,
                 transition: "all .3s",
             }}
         >
-            <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+            <Box sx={{ borderBottom: 1, borderColor: "divider", height: "4.2rem" }}>
                 <Tabs
                     value={currentValue}
                     onChange={handleChange}
@@ -52,7 +51,7 @@ const BottomNavInner = () => {
                         color: primaryColor,
                         minHeight: 0,
                         backgroundColor: `${primaryColor}12`,
-                        ".MuiTab-root, .Mui-selected": { color: "#FFFFFF", minHeight: 0, fontSize: "1.3rem", py: ".6rem" },
+                        ".MuiTab-root, .Mui-selected": { color: "#FFFFFF", minHeight: 0, fontSize: "1.3rem", py: "1rem" },
                         ".MuiTabs-indicator": { backgroundColor: primaryColor },
                         ...(isNavOpen
                             ? {
@@ -89,14 +88,16 @@ const BottomNavInner = () => {
                 </Tabs>
             </Box>
 
-            {isNavOpen &&
-                [...HASH_ROUTES_ARRAY, ...additionalTabs].map((item, i) => {
-                    return (
-                        <TabPanel key={i} currentValue={currentValue} value={i}>
-                            {item.Component && <item.Component />}
-                        </TabPanel>
-                    )
-                })}
+            <Box id="game-ui-container" sx={{ flex: 1, backgroundColor }}>
+                {isNavOpen &&
+                    [...HASH_ROUTES_ARRAY, ...additionalTabs].map((item, i) => {
+                        return (
+                            <TabPanel key={i} currentValue={currentValue} value={i}>
+                                {item.Component && <item.Component />}
+                            </TabPanel>
+                        )
+                    })}
+            </Box>
         </Stack>
     )
 }
@@ -112,7 +113,7 @@ const TabPanel = (props: TabPanelProps) => {
 
     return (
         <Fade in={currentValue === value}>
-            <Box id={`bottom-nav-tabpanel-${value}`} sx={{ flex: 1, display: currentValue === value ? "unset" : "none" }}>
+            <Box id={`bottom-nav-tabpanel-${value}`} sx={{ height: "100%", display: currentValue === value ? "block" : "none" }}>
                 {children}
             </Box>
         </Fade>

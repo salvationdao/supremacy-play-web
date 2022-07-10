@@ -1,10 +1,11 @@
 import { useMemo, useState } from "react"
 import { createContainer } from "unstated-next"
-import { useWindowDimensions } from "../hooks"
+import { useToggle, useWindowDimensions } from "../hooks"
 import { HashRouteStruct } from "../routes"
 
 export const MobileContainer = createContainer(() => {
     const { width, height } = useWindowDimensions()
+    const [isNavOpen, toggleIsNavOpen] = useToggle(true)
     const [additionalTabs, setAdditionalTabs] = useState<HashRouteStruct[]>([])
 
     // For displaying a mobile layout
@@ -12,6 +13,8 @@ export const MobileContainer = createContainer(() => {
 
     return {
         isMobile,
+        isNavOpen,
+        toggleIsNavOpen,
         additionalTabs,
         setAdditionalTabs,
     }

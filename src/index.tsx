@@ -170,9 +170,9 @@ const App = () => {
                                                 <StreamProvider>
                                                     <GameProvider>
                                                         <DimensionProvider>
-                                                            <OverlayTogglesProvider>
-                                                                <MiniMapProvider>
-                                                                    <MobileProvider>
+                                                            <MobileProvider>
+                                                                <OverlayTogglesProvider>
+                                                                    <MiniMapProvider>
                                                                         <UserUpdater />
                                                                         <BrowserRouter>
                                                                             <Switch>
@@ -181,9 +181,9 @@ const App = () => {
                                                                                 <Route path="" component={AppInner} />
                                                                             </Switch>
                                                                         </BrowserRouter>
-                                                                    </MobileProvider>
-                                                                </MiniMapProvider>
-                                                            </OverlayTogglesProvider>
+                                                                    </MiniMapProvider>
+                                                                </OverlayTogglesProvider>
+                                                            </MobileProvider>
                                                         </DimensionProvider>
                                                     </GameProvider>
                                                 </StreamProvider>

@@ -14,8 +14,8 @@ import {
     WarMachineAbilityAlert,
     WarMachineAbilityAlertProps,
 } from ".."
-import { MINI_MAP_DEFAULT_SIZE, NOTIFICATION_LINGER, NOTIFICATION_TIME } from "../../constants"
-import { useDimension, useGame, useSupremacy } from "../../containers"
+import { NOTIFICATION_LINGER, NOTIFICATION_TIME } from "../../constants"
+import { useDimension, useGame, useMobile, useSupremacy } from "../../containers"
 import { makeid } from "../../containers/ws/util"
 import { useArray } from "../../hooks"
 import { useGameServerSubscription, useGameServerSubscriptionFaction } from "../../hooks/useGameServer"
@@ -238,10 +238,11 @@ export const Notifications = () => {
 }
 
 const NotificationsInner = ({ height, notificationsJsx }: { height: number; notificationsJsx: (JSX.Element | undefined | null)[] }) => {
+    const { isMobile } = useMobile()
     return (
         <Stack
             sx={{
-                position: "absolute",
+                position: isMobile ? "unset" : "absolute",
                 top: "1rem",
                 right: "1rem",
                 zIndex: siteZIndex.Notifications,
@@ -252,7 +253,7 @@ const NotificationsInner = ({ height, notificationsJsx }: { height: number; noti
                 <Box
                     sx={{
                         flex: 1,
-                        maxHeight: `calc(${height}px - ${MINI_MAP_DEFAULT_SIZE + 40 + 30}px)`,
+                        maxHeight: height,
                         overflowY: "auto",
                         overflowX: "hidden",
                         pr: ".8rem",
@@ -273,7 +274,7 @@ const NotificationsInner = ({ height, notificationsJsx }: { height: number; noti
                     }}
                 >
                     <Box sx={{ direction: "ltr" }}>
-                        <Stack spacing=".48rem">{notificationsJsx}</Stack>
+                        <Stack spacing=".8rem">{notificationsJsx}</Stack>
                     </Box>
                 </Box>
             </Box>
