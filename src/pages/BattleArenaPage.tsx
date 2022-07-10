@@ -15,7 +15,7 @@ import {
 } from "../components"
 import { TutorialModal } from "../components/HowToPlay/Tutorial/TutorialModal"
 import { QuickDeploy } from "../components/QuickDeploy/QuickDeploy"
-import { useAuth, useMobile, useSupremacy } from "../containers"
+import { DimensionProvider, useAuth, useMobile, useSupremacy } from "../containers"
 import { siteZIndex } from "../theme/theme"
 
 export const BattleArenaPage = () => {
@@ -38,7 +38,11 @@ export const BattleArenaPage = () => {
         )
     }
 
-    return <BattleArenaPageInner />
+    return (
+        <DimensionProvider>
+            <BattleArenaPageInner />
+        </DimensionProvider>
+    )
 }
 
 const BattleArenaPageInner = () => {

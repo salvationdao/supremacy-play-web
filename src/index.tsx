@@ -169,8 +169,8 @@ const App = () => {
                                             <TourProvider {...tourProviderProps}>
                                                 <StreamProvider>
                                                     <GameProvider>
-                                                        <DimensionProvider>
-                                                            <MobileProvider>
+                                                        <MobileProvider>
+                                                            <DimensionProvider>
                                                                 <OverlayTogglesProvider>
                                                                     <MiniMapProvider>
                                                                         <UserUpdater />
@@ -183,8 +183,8 @@ const App = () => {
                                                                         </BrowserRouter>
                                                                     </MiniMapProvider>
                                                                 </OverlayTogglesProvider>
-                                                            </MobileProvider>
-                                                        </DimensionProvider>
+                                                            </DimensionProvider>
+                                                        </MobileProvider>
                                                     </GameProvider>
                                                 </StreamProvider>
                                             </TourProvider>

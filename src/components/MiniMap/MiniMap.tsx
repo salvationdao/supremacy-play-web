@@ -156,7 +156,7 @@ const MiniMapInner = ({ map, isTargeting, isEnlarged, toRender }: { map: Map; is
     let mapName = map.name
     if (mapName === "NeoTokyo") mapName = "City Block X2"
 
-    const content = useMemo(() => {
+    return useMemo(() => {
         if (!toRender) return null
 
         const parentDiv = ref.current?.parentElement
@@ -164,7 +164,18 @@ const MiniMapInner = ({ map, isTargeting, isEnlarged, toRender }: { map: Map; is
         const insideHeight = isMobile ? parentDiv?.offsetWidth || 300 * mapHeightWidthRatio.current : curHeight - TOP_BAR_HEIGHT * remToPxRatio
 
         return (
-            <>
+            <Box
+                ref={ref}
+                sx={{
+                    position: "relative",
+                    boxShadow: 1,
+                    width: "100%",
+                    height: "100%",
+                    transition: "all .2s",
+                    overflow: "hidden",
+                    pointerEvents: "all",
+                }}
+            >
                 <Stack
                     direction="row"
                     alignItems="center"
@@ -194,24 +205,7 @@ const MiniMapInner = ({ map, isTargeting, isEnlarged, toRender }: { map: Map; is
                 <MiniMapInside containerDimensions={{ width: insideWidth, height: insideHeight }} isLargeMode={isLargeMode} />
 
                 <TargetHint />
-            </>
+            </Box>
         )
     }, [toRender, theme.factionTheme.primary, mapName, curWidth, curHeight, isLargeMode, remToPxRatio, isMobile])
-
-    return (
-        <Box
-            ref={ref}
-            sx={{
-                position: "relative",
-                boxShadow: 1,
-                width: "100%",
-                height: "100%",
-                transition: "all .2s",
-                overflow: "hidden",
-                pointerEvents: "all",
-            }}
-        >
-            {content}
-        </Box>
-    )
 }
