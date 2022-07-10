@@ -3,7 +3,7 @@ import BigNumber from "bignumber.js"
 import { useCallback, useEffect, useMemo, useRef } from "react"
 import { ClipThing, HealthShieldBars, SkillBar, WarMachineAbilitiesPopover, WarMachineDestroyedInfo } from "../.."
 import { GenericWarMachinePNG, SvgInfoCircular, SvgSkull } from "../../../assets"
-import { useAuth, useMiniMap, useSupremacy } from "../../../containers"
+import { useAuth, useMiniMap, useMobile, useSupremacy } from "../../../containers"
 import { getRarityDeets } from "../../../helpers"
 import { useToggle } from "../../../hooks"
 import { useGameServerSubscriptionAbilityFaction } from "../../../hooks/useGameServer"
@@ -20,6 +20,7 @@ const WIDTH_SKILL_BUTTON = 3.8
 export const WIDTH_STAT_BAR = 1.5
 
 export const WarMachineItem = ({ warMachine, scale, initialExpanded = false }: { warMachine: WarMachineState; scale: number; initialExpanded?: boolean }) => {
+    const { isMobile } = useMobile()
     const { userID, factionID } = useAuth()
     const { getFaction } = useSupremacy()
     const { highlightedMechHash, setHighlightedMechHash } = useMiniMap()
@@ -90,7 +91,7 @@ export const WarMachineItem = ({ warMachine, scale, initialExpanded = false }: {
                     }rem`,
                     transition: "width .3s",
                     transform: `scale(${scale})`,
-                    transformOrigin: "0 0",
+                    transformOrigin: isMobile ? "0 0" : "center",
                 }}
             >
                 {/* Little info button to show the mech destroyed info */}
