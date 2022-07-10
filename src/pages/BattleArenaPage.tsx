@@ -69,48 +69,50 @@ const BattleArenaPageInner = () => {
                 icon: <SvgAbility size="1.2rem" sx={{ pt: ".1rem" }} />,
                 label: "BATTLE ARENA",
                 Component: () => (
-                    <Box
-                        sx={{
-                            height: "100%",
-                            overflowY: "auto",
-                            overflowX: "hidden",
-                            ml: ".4rem",
-                            mr: ".3rem",
-                            pr: ".1rem",
-                            mt: ".6rem",
-                            mb: "1rem",
-                            direction: "ltr",
-                            scrollbarWidth: "none",
-                            "::-webkit-scrollbar": {
-                                width: ".4rem",
-                            },
-                            "::-webkit-scrollbar-track": {
-                                background: "#FFFFFF15",
-                                borderRadius: 3,
-                            },
-                            "::-webkit-scrollbar-thumb": {
-                                background: (theme) => theme.factionTheme.primary,
-                                borderRadius: 3,
-                            },
-                        }}
-                    >
-                        <Box sx={{ direction: "ltr", height: 0 }}>
-                            <Stack spacing="1.5rem" sx={{ position: "relative", p: ".8rem 1rem" }}>
-                                <Box sx={{ p: ".8rem 1.5rem", backgroundColor: "#FFFFFF12", boxShadow: 2, border: "#FFFFFF20 1px solid" }}>
-                                    <BattleStats />
-                                </Box>
-                                <Box sx={{ backgroundColor: "#FFFFFF12", boxShadow: 2, border: "#FFFFFF20 1px solid" }}>
-                                    <VotingSystem />
-                                </Box>
-                                <Box sx={{ backgroundColor: "#FFFFFF12", boxShadow: 2, border: "#FFFFFF20 1px solid" }}>
-                                    <MiniMap />
-                                </Box>
-                                <Box sx={{ backgroundColor: "#FFFFFF12", boxShadow: 2, border: "#FFFFFF20 1px solid" }}>
-                                    <LiveVotingChart />
-                                </Box>
-                            </Stack>
+                    <Stack sx={{ height: "100%" }}>
+                        <Box
+                            sx={{
+                                flex: 1,
+                                overflowY: "auto",
+                                overflowX: "hidden",
+                                ml: ".4rem",
+                                mr: ".3rem",
+                                pr: ".1rem",
+                                mt: ".6rem",
+                                mb: "1rem",
+                                direction: "ltr",
+                                scrollbarWidth: "none",
+                                "::-webkit-scrollbar": {
+                                    width: ".4rem",
+                                },
+                                "::-webkit-scrollbar-track": {
+                                    background: "#FFFFFF15",
+                                    borderRadius: 3,
+                                },
+                                "::-webkit-scrollbar-thumb": {
+                                    background: (theme) => theme.factionTheme.primary,
+                                    borderRadius: 3,
+                                },
+                            }}
+                        >
+                            <Box sx={{ direction: "ltr", height: 0 }}>
+                                <Stack spacing="1.5rem" sx={{ position: "relative", p: ".8rem 1rem" }}>
+                                    <Box sx={{ p: ".8rem 1.5rem", backgroundColor: "#FFFFFF12", boxShadow: 2, border: "#FFFFFF20 1px solid" }}>
+                                        <BattleStats />
+                                    </Box>
+                                    <Box sx={{ backgroundColor: "#FFFFFF12", boxShadow: 2, border: "#FFFFFF20 1px solid" }}>
+                                        <VotingSystem />
+                                    </Box>
+                                    <Box sx={{ backgroundColor: "#FFFFFF12", boxShadow: 2, border: "#FFFFFF20 1px solid" }}>
+                                        <MiniMap />
+                                    </Box>
+                                    <Box sx={{ backgroundColor: "#FFFFFF12", boxShadow: 2, border: "#FFFFFF20 1px solid" }}>
+                                        <LiveVotingChart />
+                                    </Box>
+                                </Stack>
+                            </Box>
                         </Box>
-                    </Box>
+                    </Stack>
                 ),
             },
             {

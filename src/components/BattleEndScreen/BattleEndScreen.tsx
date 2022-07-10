@@ -38,7 +38,7 @@ export const BattleEndScreen = () => {
     if (!battleEndDetail || !battleEndDetail.winning_faction) return null
 
     return (
-        <Slide key={battleEndDetail.battle_id} in={isEndBattleDetailOpen && !isMobile} direction="right">
+        <Slide key={battleEndDetail.battle_id} in={isEndBattleDetailOpen || isMobile} direction="right">
             <Box
                 sx={{
                     position: isMobile ? "unset" : "absolute",

@@ -15,7 +15,7 @@ import {
     WarMachineAbilityAlertProps,
 } from ".."
 import { NOTIFICATION_LINGER, NOTIFICATION_TIME } from "../../constants"
-import { useDimension, useGame, useMobile, useSupremacy } from "../../containers"
+import { useGame, useMobile, useSupremacy } from "../../containers"
 import { makeid } from "../../containers/ws/util"
 import { useArray } from "../../hooks"
 import { useGameServerSubscription, useGameServerSubscriptionFaction } from "../../hooks/useGameServer"
@@ -66,9 +66,6 @@ export interface NotificationResponse {
 export const Notifications = () => {
     const { getFaction } = useSupremacy()
     const { setForceDisplay100Percentage } = useGame()
-    const {
-        gameUIDimensions: { height },
-    } = useDimension()
 
     // Notification array
     const { value: notifications, add: addNotification, removeByID } = useArray([], "notiID")
@@ -234,10 +231,10 @@ export const Notifications = () => {
         [getFaction, notifications],
     )
 
-    return <NotificationsInner height={height} notificationsJsx={notificationsJsx} />
+    return <NotificationsInner notificationsJsx={notificationsJsx} />
 }
 
-const NotificationsInner = ({ height, notificationsJsx }: { height: number; notificationsJsx: (JSX.Element | undefined | null)[] }) => {
+const NotificationsInner = ({ notificationsJsx }: { notificationsJsx: (JSX.Element | undefined | null)[] }) => {
     const { isMobile } = useMobile()
     return (
         <Stack
@@ -253,7 +250,6 @@ const NotificationsInner = ({ height, notificationsJsx }: { height: number; noti
                 <Box
                     sx={{
                         flex: 1,
-                        maxHeight: height,
                         overflowY: "auto",
                         overflowX: "hidden",
                         pr: ".8rem",

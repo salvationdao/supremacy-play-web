@@ -3,7 +3,7 @@ import { useEffect, useMemo, useRef } from "react"
 import { MiniMapInside, MoveableResizable } from ".."
 import { SvgFullscreen } from "../../assets"
 import { MINI_MAP_DEFAULT_SIZE } from "../../constants"
-import { useDimension, useGame, useOverlayToggles } from "../../containers"
+import { useDimension, useGame, useMobile, useOverlayToggles } from "../../containers"
 import { useMiniMap } from "../../containers/minimap"
 import { useTheme } from "../../containers/theme"
 import { useToggle } from "../../hooks"
@@ -91,6 +91,7 @@ export const MiniMap = () => {
 
 // This inner component takes care of the resizing etc.
 const MiniMapInner = ({ map, isTargeting, isEnlarged, toRender }: { map: Map; isTargeting: boolean; isEnlarged: boolean; toRender: boolean }) => {
+    const { isMobile } = useMobile()
     const theme = useTheme()
     const {
         remToPxRatio,
@@ -99,6 +100,7 @@ const MiniMapInner = ({ map, isTargeting, isEnlarged, toRender }: { map: Map; is
     const { updateSize, updatePosition, curWidth, curHeight, curPosX, curPosY, defaultWidth, maxWidth, maxHeight, setDefaultWidth, setDefaultHeight } =
         useMoveableResizable()
 
+    const ref = useRef<HTMLDivElement>()
     const mapHeightWidthRatio = useRef(1)
     const prevWidth = useRef(curWidth)
     const prevHeight = useRef(curHeight)
@@ -143,27 +145,25 @@ const MiniMapInner = ({ map, isTargeting, isEnlarged, toRender }: { map: Map; is
             updateSize({ width: prevWidth.current, height: prevHeight.current })
             updatePosition({ x: prevPosX.current, y: prevPosY.current })
         }
+
+        if (isTargeting && isMobile && ref.current) {
+            ref.current.scrollIntoView()
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isTargeting, isEnlarged, maxHeight, maxWidth])
+    }, [isTargeting, isEnlarged, maxHeight, maxWidth, isMobile])
 
     let mapName = map.name
     if (mapName === "NeoTokyo") mapName = "City Block X2"
 
-    return useMemo(() => {
+    const content = useMemo(() => {
         if (!toRender) return null
 
+        const parentDiv = ref.current?.parentElement
+        const insideWidth = isMobile ? parentDiv?.offsetWidth || 300 : curWidth
+        const insideHeight = isMobile ? parentDiv?.offsetWidth || 300 * mapHeightWidthRatio.current : curHeight - TOP_BAR_HEIGHT * remToPxRatio
+
         return (
-            <Box
-                sx={{
-                    position: "relative",
-                    boxShadow: 1,
-                    width: "100%",
-                    height: "100%",
-                    transition: "all .2s",
-                    overflow: "hidden",
-                    pointerEvents: "all",
-                }}
-            >
+            <>
                 <Stack
                     direction="row"
                     alignItems="center"
@@ -190,10 +190,27 @@ const MiniMapInner = ({ map, isTargeting, isEnlarged, toRender }: { map: Map; is
                     </Typography>
                 </Stack>
 
-                <MiniMapInside containerDimensions={{ width: curWidth, height: curHeight - TOP_BAR_HEIGHT * remToPxRatio }} isLargeMode={isLargeMode} />
+                <MiniMapInside containerDimensions={{ width: insideWidth, height: insideHeight }} isLargeMode={isLargeMode} />
 
                 <TargetHint />
-            </Box>
+            </>
         )
-    }, [toRender, theme.factionTheme.primary, mapName, curWidth, curHeight, isLargeMode, remToPxRatio])
+    }, [toRender, theme.factionTheme.primary, mapName, curWidth, curHeight, isLargeMode, remToPxRatio, isMobile])
+
+    return (
+        <Box
+            ref={ref}
+            sx={{
+                position: "relative",
+                boxShadow: 1,
+                width: "100%",
+                height: "100%",
+                transition: "all .2s",
+                overflow: "hidden",
+                pointerEvents: "all",
+            }}
+        >
+            {content}
+        </Box>
+    )
 }
