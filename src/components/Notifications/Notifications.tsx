@@ -234,7 +234,7 @@ export const Notifications = () => {
 
     if (isMobile) {
         return (
-            <Stack spacing=".6rem" sx={{ backgroundColor: "#FFFFFF12", boxShadow: 2, border: "#FFFFFF20 1px solid", p: "1rem 1.2rem", height: "23rem" }}>
+            <Stack spacing=".6rem" sx={{ backgroundColor: "#FFFFFF12", boxShadow: 2, border: "#FFFFFF20 1px solid", p: "1rem 1.2rem", height: "24rem" }}>
                 <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBlack }}>
                     NOTIFICATIONS
                 </Typography>
