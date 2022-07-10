@@ -1,6 +1,6 @@
 import { Box, Stack } from "@mui/material"
 import { useEffect, useState } from "react"
-import { SvgAbility, SvgHistory, SvgHistoryClock } from "../assets"
+import { SvgAbility, SvgHistory, SvgHistoryClock, SvgRobot } from "../assets"
 import {
     BattleEndScreen,
     BattleHistory,
@@ -43,7 +43,7 @@ export const BattleArenaPage = () => {
 
 const BattleArenaPageInner = () => {
     const { userID } = useAuth()
-    const { isMobile, setAdditionalTabs } = useMobile()
+    const { isMobile, setAdditionalTabs, toggleIsNavOpen } = useMobile()
     const { isServerUp, isQuickDeployOpen, toggleIsQuickDeployOpen } = useSupremacy()
 
     // When its mobile, we have tabs
@@ -96,6 +96,22 @@ const BattleArenaPageInner = () => {
                 ),
             },
             {
+                id: "quick-deploy",
+                hash: "#quick-deploy",
+                icon: <SvgRobot size="1.2rem" sx={{ pt: ".1rem" }} />,
+                label: "QUICK DEPLOY",
+                Component: () => (
+                    <Stack sx={{ position: "relative", height: "100%" }}>
+                        <QuickDeploy
+                            open
+                            onClose={() => {
+                                return
+                            }}
+                        />
+                    </Stack>
+                ),
+            },
+            {
                 id: "prev-battle",
                 hash: "#prev-battle",
                 icon: <SvgHistoryClock size="1.2rem" sx={{ pt: ".1rem" }} />,
@@ -118,7 +134,13 @@ const BattleArenaPageInner = () => {
                 ),
             },
         ])
-    }, [isMobile, setAdditionalTabs])
+
+        // Remove tabs on unmount
+        return () => {
+            setAdditionalTabs([])
+            toggleIsNavOpen(false)
+        }
+    }, [isMobile, setAdditionalTabs, toggleIsNavOpen])
 
     return (
         <>
