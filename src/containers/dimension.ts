@@ -3,9 +3,11 @@ import { useCallback, useEffect, useState } from "react"
 import { createContainer } from "unstated-next"
 import { useDebounce } from "../hooks"
 import { Dimension } from "../types"
+import { useMobile } from "./mobile"
 
 // Contains dimensions for the overall layout of the divs, iframe etc.
 export const DimensionContainer = createContainer(() => {
+    const { isNavOpen } = useMobile()
     const [remToPxRatio, setRemToPxRatio] = useState(10)
     const below600 = useMediaQuery("(max-width:600px)")
     const below900 = useMediaQuery("(max-width:900px)")
@@ -54,6 +56,7 @@ export const DimensionContainer = createContainer(() => {
         const gameUIContainer = document.getElementById("game-ui-container")
         if (!gameUIContainer) {
             console.error("Please assign #game-ui-container to the game UI.")
+            setGameUIDimensions({ width: 100, height: 100 })
             return
         }
 
@@ -65,7 +68,7 @@ export const DimensionContainer = createContainer(() => {
 
     useEffect(() => {
         recalculateDimensions()
-    }, [recalculateDimensions, remToPxRatio])
+    }, [recalculateDimensions, remToPxRatio, isNavOpen])
 
     return {
         remToPxRatio,
