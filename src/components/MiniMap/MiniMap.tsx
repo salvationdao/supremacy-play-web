@@ -201,7 +201,6 @@ const MiniMapInner = ({ map, isTargeting, isEnlarged, toRender }: { map: Map; is
 
                 <Box sx={{ position: "relative" }}>
                     <MiniMapInside containerDimensions={{ width: insideWidth, height: insideHeight }} />
-
                     <TargetHint />
                 </Box>
             </Box>
