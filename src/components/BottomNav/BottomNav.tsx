@@ -16,15 +16,15 @@ export const BottomNav = () => {
 const BottomNavInner = () => {
     const { userID } = useAuth()
     const theme = useTheme()
-    const { isNavOpen, toggleIsNavOpen, additionalTabs } = useMobile()
+    const { isNavOpen, setIsNavOpen, additionalTabs, allowCloseNav } = useMobile()
     const [currentValue, setCurrentValue] = useState(0)
 
     const handleChange = useCallback(
         (event: React.SyntheticEvent, newValue: number) => {
             setCurrentValue(newValue)
-            toggleIsNavOpen(true)
+            setIsNavOpen(true)
         },
-        [toggleIsNavOpen],
+        [setIsNavOpen],
     )
 
     const primaryColor = theme.factionTheme.primary
@@ -77,7 +77,12 @@ const BottomNavInner = () => {
                                 key={i}
                                 value={i}
                                 onClick={() => {
-                                    if (currentValue === i) toggleIsNavOpen()
+                                    if (currentValue === i) {
+                                        setIsNavOpen((prev) => {
+                                            if (!!prev && !allowCloseNav.current) return prev
+                                            return !prev
+                                        })
+                                    }
                                 }}
                                 label={
                                     <Stack direction="row" alignItems="center" spacing="1rem">
