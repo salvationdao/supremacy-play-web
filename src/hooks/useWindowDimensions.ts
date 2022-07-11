@@ -9,8 +9,8 @@ const getWindowDimensions = () => {
     }
 }
 
-export const useWindowDimensions = () => {
-    const [windowDimensions, setWindowDimensions] = useDebounce(getWindowDimensions(), 300)
+export const useWindowDimensions = (debounceValue = 300) => {
+    const [windowDimensions, setWindowDimensions] = useDebounce(getWindowDimensions(), debounceValue)
 
     useEffect(() => {
         const handleResize = () => {
