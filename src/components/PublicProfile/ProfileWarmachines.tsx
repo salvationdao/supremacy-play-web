@@ -9,7 +9,7 @@ import { colors, fonts } from "../../theme/theme"
 import { MechBasic } from "../../types"
 import { ClipThing } from "../Common/ClipThing"
 import { PageHeader } from "../Common/PageHeader"
-import { PublicWarmachineItem } from "./PublicMechDetails"
+import { ProfileWarmachineItem } from "./ProfileMechDetails"
 
 interface GetMechsRequest {
     player_id: string
@@ -24,7 +24,7 @@ interface GetMechsResponse {
     total: number
 }
 
-export const PublicWarmachines = ({ playerID, primaryColour, backgroundColour }: { playerID: string; primaryColour: string; backgroundColour: string }) => {
+export const ProfileWarmachines = ({ playerID, primaryColour, backgroundColour }: { playerID: string; primaryColour: string; backgroundColour: string }) => {
     const [query] = useUrlQuery()
     const { send } = useGameServerCommands("/public/commander")
 
@@ -117,7 +117,7 @@ export const PublicWarmachines = ({ playerID, primaryColour, backgroundColour }:
                         }}
                     >
                         {mechs.map((mech) => (
-                            <PublicWarmachineItem
+                            <ProfileWarmachineItem
                                 key={`marketplace-${mech.id}`}
                                 mech={mech}
                                 isGridView={true}

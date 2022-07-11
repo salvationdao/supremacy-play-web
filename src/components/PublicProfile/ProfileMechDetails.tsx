@@ -9,7 +9,7 @@ import { MechBasic, MechDetails } from "../../types"
 import { FancyButton } from "../Common/FancyButton"
 import { MediaPreview } from "../Common/MediaPreview/MediaPreview"
 
-export const PublicWarmachineItem = ({
+export const ProfileWarmachineItem = ({
     mech,
     isGridView,
     primaryColour,

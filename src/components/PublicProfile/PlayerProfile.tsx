@@ -1,25 +1,18 @@
-import { Avatar, Box, Button, CircularProgress, IconButton, Stack, TextField, Typography } from "@mui/material"
-import { useCallback, useEffect, useRef, useState } from "react"
+import { Avatar, Box, CircularProgress, Stack, Typography } from "@mui/material"
+import { useCallback, useEffect, useState } from "react"
 import { useHistory, useParams } from "react-router-dom"
-import { SvgAbility, SvgCake, SvgDeath, SvgEdit, SvgSave, SvgSkull2, SvgView, WarMachineIconPNG } from "../../assets"
+import { SvgAbility, SvgCake, SvgDeath, SvgSkull2, SvgView, WarMachineIconPNG } from "../../assets"
 import { useAuth, useSnackbar } from "../../containers"
-import { camelToTitle, snakeToTitle, timeSinceInWords } from "../../helpers"
-import { useToggle } from "../../hooks"
+import { snakeToTitle, timeSinceInWords } from "../../helpers"
 import { useGameServerCommands, useGameServerCommandsUser } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { colors, fonts, theme } from "../../theme/theme"
-import { BattleMechHistory, Faction, UserRank } from "../../types"
+import { Faction, UserRank } from "../../types"
 import { ClipThing } from "../Common/ClipThing"
 import { PageHeader } from "../Common/PageHeader"
-import { HistoryEntry } from "../Hangar/WarMachinesHangar/Common/MechHistory/HistoryEntry"
-import { PublicWarmachines } from "./PublicWarmachines"
-
-// import bgImageBC1 from "../../assets/factionWallpapers/bc1.png"
-// import bgImageBC2 from "../../assets/factionWallpapers/bc2.jpg"
-// import bgImageRM1 from "../../assets/factionWallpapers/rm1.png"
-// import bgImageRM2 from "../../assets/factionWallpapers/rm2.png"
-// import bgImageZHI1 from "../../assets/factionWallpapers/zhi1.png"
-// import bgImageZHI2 from "../../assets/factionWallpapers/zhi2.png"
+import { ProfileMechHistory } from "./ProfileBattleHistory"
+import { Username } from "./ProfileUsername"
+import { ProfileWarmachines } from "./ProfileWarmachines"
 
 interface Player {
     id: string
@@ -47,8 +40,6 @@ interface PlayerProfile {
     }
 }
 
-const UpdateUsername = "PLAYER:UPDATE_USERNAME"
-
 const cakeDay = (d: Date) => {
     const now = new Date()
     const result = d.getDate() === now.getDate() && d.getMonth() === now.getMonth()
@@ -65,19 +56,7 @@ export const PlayerProfilePage = () => {
     const [profile, setProfile] = useState<PlayerProfile>()
     const [username, setUsername] = useState<string>()
 
-    const [copySuccess, toggleCopySuccess] = useToggle()
-
     const isMe = `${user?.gid}` === playerGID
-
-    useEffect(() => {
-        if (copySuccess) {
-            const timeout = setTimeout(() => {
-                toggleCopySuccess(false)
-            }, 900)
-
-            return () => clearTimeout(timeout)
-        }
-    }, [copySuccess, toggleCopySuccess])
 
     const { send } = useGameServerCommands("/public/commander")
     const { send: userSend } = useGameServerCommandsUser("/user_commander")
@@ -86,7 +65,7 @@ export const PlayerProfilePage = () => {
     const updateUsername = useCallback(
         async (newUsername: string) => {
             try {
-                const resp = await userSend<{ Username: string }>(UpdateUsername, {
+                const resp = await userSend<{ Username: string }>(GameServerKeys.PlayerProfileUpdateUsername, {
                     player_id: profile?.player.id,
                     new_username: newUsername,
                 })
@@ -161,8 +140,6 @@ export const PlayerProfilePage = () => {
         )
     }
 
-    console.log("is uesrname in outer", profile)
-
     return (
         <Stack direction="column" sx={{ height: "100%" }}>
             {/* top part */}
@@ -173,7 +150,7 @@ export const PlayerProfilePage = () => {
                     backgroundRepeat: "no-repeat",
                     backgroundPosition: "center",
                     backgroundSize: "cover",
-                    height: "60.5rem",
+                    height: "55.5rem",
                     position: "relative",
                 }}
             >
@@ -199,21 +176,6 @@ export const PlayerProfilePage = () => {
                             </Stack>
 
                             <Stack direction="row" alignItems={"center"}>
-                                {/* <Stack
-                                    direction="row"
-                                    sx={{ cursor: "pointer", ":hover": { opacity: 0.5 } }}
-                                    onClick={() => {
-                                        navigator.clipboard.writeText(window.location.href).then(
-                                            () => toggleCopySuccess(true),
-                                            () => toggleCopySuccess(false),
-                                        )
-                                    }}
-                                >
-                                    <Typography sx={{ fontFamily: fonts.nostromoBlack, fontSize: "5rem" }}>{profile.player.username}</Typography>
-                                    <Typography sx={{ fontFamily: fonts.nostromoBlack, fontSize: "5rem", color: primaryColor }}>
-                                        #{profile.player.gid}
-                                    </Typography>
-                                </Stack> */}
                                 <Username
                                     hide={!isMe}
                                     userID={profile.player.id}
@@ -224,25 +186,12 @@ export const PlayerProfilePage = () => {
                                     gid={profile.player.gid}
                                     username={username || ""}
                                 />
-
-                                {copySuccess && (
-                                    <Typography
-                                        sx={{
-                                            fontFamily: fonts.nostromoBold,
-                                            marginTop: ".5rem",
-                                            marginLeft: "1rem",
-                                            fontSize: "2rem",
-                                        }}
-                                    >
-                                        profile link copied
-                                    </Typography>
-                                )}
                             </Stack>
                         </Stack>
                         <Typography sx={{ fontFamily: fonts.nostromoBlack }}>{snakeToTitle(profile.player.rank)}</Typography>
                         {profile.active_log?.active_at && (
                             <Typography sx={{ fontFamily: fonts.nostromoBlack }}>
-                                Last Online: {timeSinceInWords(profile.active_log?.active_at, new Date())}
+                                Last Online: {timeSinceInWords(profile.active_log?.active_at, new Date())} ago
                             </Typography>
                         )}
                         <Stack direction="row" alignItems="center">
@@ -264,9 +213,10 @@ export const PlayerProfilePage = () => {
 
                         flexShrink: 0,
                         height: "100%",
-                        width: "72rem",
+                        width: "62rem",
                     }}
                 >
+                    {/* About me */}
                     <Box
                         sx={{
                             flex: 1,
@@ -292,40 +242,8 @@ export const PlayerProfilePage = () => {
                         <Box sx={{ direction: "ltr", height: 0 }}>
                             <Stack direction="column" spacing="1.6rem">
                                 <PageHeader title="ABOUT ME" description="" primaryColor={primaryColor} imageUrl={WarMachineIconPNG} />
-                                <Stack sx={{ p: "1rem 1rem" }}>
-                                    <PlayerMechHistory playerID={profile.player.id} />
-                                </Stack>
-                            </Stack>
-                        </Box>
-                    </Box>
-
-                    <Box
-                        sx={{
-                            flex: 1,
-                            overflowY: "auto",
-                            overflowX: "hidden",
-                            mt: ".4rem",
-                            mb: ".8rem",
-                            direction: "ltr",
-                            scrollbarWidth: "none",
-                            "::-webkit-scrollbar": {
-                                width: ".4rem",
-                            },
-                            "::-webkit-scrollbar-track": {
-                                background: "#FFFFFF15",
-                                borderRadius: 3,
-                            },
-                            "::-webkit-scrollbar-thumb": {
-                                background: primaryColor,
-                                borderRadius: 3,
-                            },
-                        }}
-                    >
-                        <Box sx={{ direction: "ltr", height: 0 }}>
-                            <Stack direction="column" spacing="1.6rem">
-                                <PageHeader title="BATTLE HISTORY" description="" primaryColor={primaryColor} imageUrl={WarMachineIconPNG} />
-                                <Stack sx={{ p: "1rem 1rem" }}>
-                                    <PlayerMechHistory playerID={profile.player.id} />
+                                <Stack sx={{ p: "1rem 3rem" }}>
+                                    <Typography sx={{ fontFamily: fonts.nostromoBlack }}>Hi my name is owen.</Typography>
                                 </Stack>
                             </Stack>
                         </Box>
@@ -336,7 +254,7 @@ export const PlayerProfilePage = () => {
                 <Stack direction="row" padding="1.6rem" spacing="1rem" sx={{ height: "100%", flex: 1, backgroundColor: backgroundColor }}>
                     <Stack spacing="1rem" direction="row" flexWrap={"wrap"}>
                         {/* Stats box */}
-                        <Stack direction="row" spacing="1rem" sx={{ height: "100%", width: "40rem" }}>
+                        <Stack direction="row" spacing="1rem" sx={{ width: "40rem" }}>
                             <ClipThing
                                 clipSize="10px"
                                 border={{
@@ -399,83 +317,54 @@ export const PlayerProfilePage = () => {
                         </Stack>
                     </Stack>
 
+                    <Stack spacing="1rem" direction="row" flexWrap={"wrap"}>
+                        {/* Stats box */}
+                        <Stack direction="row" spacing="1rem" sx={{ width: "40rem" }}>
+                            <ClipThing
+                                clipSize="10px"
+                                border={{
+                                    borderColor: primaryColor,
+                                    borderThickness: ".3rem",
+                                }}
+                                opacity={0.7}
+                                backgroundColor={backgroundColor}
+                                sx={{ height: "100%", flex: 1 }}
+                            >
+                                <Stack spacing="1rem" sx={{ height: "100%", width: "100%" }}>
+                                    <PageHeader title="Battle History" description="" primaryColor={primaryColor} imageUrl={WarMachineIconPNG} />
+                                    <Stack
+                                        sx={{
+                                            flex: 1,
+                                            overflowY: "auto",
+                                            overflowX: "hidden",
+                                            direction: "ltr",
+                                            px: "1rem",
+
+                                            "::-webkit-scrollbar": {
+                                                width: ".4rem",
+                                            },
+                                            "::-webkit-scrollbar-track": {
+                                                background: "#FFFFFF15",
+                                                borderRadius: 3,
+                                            },
+                                            "::-webkit-scrollbar-thumb": {
+                                                background: primaryColor,
+                                                borderRadius: 3,
+                                            },
+                                        }}
+                                    >
+                                        <ProfileMechHistory playerID={profile.player.id} />
+                                    </Stack>
+                                </Stack>
+                            </ClipThing>
+                        </Stack>
+                    </Stack>
+
                     {/* war machines */}
                     <Stack direction="row" spacing="1rem" sx={{ height: "100%", width: "100%" }}>
-                        <PublicWarmachines playerID={profile.player.id} backgroundColour={backgroundColor} primaryColour={primaryColor} />
+                        <ProfileWarmachines playerID={profile.player.id} backgroundColour={backgroundColor} primaryColour={primaryColor} />
                     </Stack>
                 </Stack>
-            </Stack>
-        </Stack>
-    )
-}
-
-const PlayerMechHistory = ({ playerID }: { playerID: string }) => {
-    const { send } = useGameServerCommands("/public/commander")
-
-    // Battle history
-    const [history, setHistory] = useState<BattleMechHistory[]>([])
-    const [historyLoading, setHistoryLoading] = useState(false)
-    const [historyError, setHistoryError] = useState<string>()
-
-    // get history
-    const fetchHistory = useCallback(async () => {
-        try {
-            setHistoryLoading(true)
-            const resp = await send<{
-                total: number
-                battle_history: BattleMechHistory[]
-            }>(GameServerKeys.PlayerBattleMechHistoryList, {
-                player_id: playerID,
-            })
-
-            setHistory(resp.battle_history)
-        } catch (e) {
-            if (typeof e === "string") {
-                setHistoryError(e)
-            } else if (e instanceof Error) {
-                setHistoryError(e.message)
-            }
-        } finally {
-            setHistoryLoading(false)
-        }
-    }, [playerID, send])
-
-    useEffect(() => {
-        fetchHistory()
-    }, [send, fetchHistory])
-
-    if (historyLoading) {
-        return (
-            <Stack justifyContent="center" alignItems="center" sx={{ height: "6rem" }}>
-                <CircularProgress size="2rem" sx={{ mt: "2rem", color: theme.factionTheme.primary }} />
-            </Stack>
-        )
-    }
-    if (!historyLoading && historyError) {
-        return (
-            <Stack sx={{ flex: 1, px: "1rem" }}>
-                <Typography sx={{ color: colors.red, textTransform: "uppercase" }}>{historyError}</Typography>
-            </Stack>
-        )
-    }
-
-    return (
-        <Stack sx={{ height: "100%" }}>
-            <Stack spacing="1.6rem">
-                {history.map((h, idx) => {
-                    return (
-                        <HistoryEntry
-                            mech={h.mech}
-                            key={idx}
-                            mapName={camelToTitle(h.battle?.game_map?.name || "Unknown")}
-                            backgroundImage={h.battle?.game_map?.image_url}
-                            mechSurvived={!!h.mech_survived}
-                            status={!h.battle?.battle?.ended_at ? "pending" : h.faction_won ? "won" : "lost"}
-                            kills={h.kills}
-                            date={h.created_at}
-                        />
-                    )
-                })}
             </Stack>
         </Stack>
     )
@@ -560,121 +449,5 @@ export const StatItem = ({ label, value, icon }: StatItemProps) => {
                 </Stack>
             </Stack>
         </ClipThing>
-    )
-}
-
-const Username = ({
-    hide,
-    username,
-    updateUsername,
-    primaryColour,
-    gid,
-}: {
-    hide: boolean
-    updateUsername: (newName: string) => Promise<void>
-    username: string
-    userID: string
-    primaryColour: string
-    gid: number
-}) => {
-    // Rename
-    const renamingRef = useRef<HTMLInputElement>()
-    const [editing, setEditing] = useState(false)
-    const [submitting, setSubmitting] = useState(false)
-    const [newUsername, setNewUsername] = useState<string>(username || "")
-
-    const renameMechHandler = useCallback(async () => {
-        try {
-            setSubmitting(true)
-            renamingRef.current?.blur()
-            await updateUsername(newUsername)
-        } finally {
-            setSubmitting(false)
-            setEditing(false)
-        }
-    }, [newUsername, updateUsername])
-
-    console.log("this is username", username)
-
-    return (
-        <Stack direction="row" alignItems="center">
-            <Stack direction="row" alignItems="center" sx={{ cursor: "text" }}>
-                <TextField
-                    inputRef={renamingRef}
-                    variant="standard"
-                    sx={{
-                        flex: 1,
-                        m: 0,
-                        py: ".2rem",
-                        opacity: editing ? "unset" : 0,
-                        height: editing ? "unset" : 0,
-                        width: editing ? "unset" : 0,
-                        position: "relative",
-                        "& .MuiInput-root": {
-                            p: 0,
-                            fontSize: "1.8rem",
-                            color: "#FFFFFF",
-                        },
-                        "& .MuiInputBase-input": {
-                            p: 0,
-                            display: "inline",
-                            fontSize: "4rem",
-                            px: "1.4rem",
-                            py: ".4rem",
-                            wordBreak: "break-word",
-                            border: `#FFFFFF99 1.5px dashed`,
-                            borderRadius: 0.5,
-                            backgroundColor: "#FFFFFF12",
-                        },
-                    }}
-                    spellCheck={false}
-                    InputProps={{
-                        disableUnderline: true,
-                    }}
-                    value={newUsername}
-                    placeholder="Enter a name..."
-                    onChange={(e) => setNewUsername(e.target.value)}
-                    onFocus={() => renamingRef.current?.setSelectionRange(0, newUsername.length)}
-                    onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                            e.preventDefault()
-                            renameMechHandler()
-                        }
-                    }}
-                />
-
-                {editing && (
-                    <>
-                        {!submitting && (
-                            <IconButton size="small" sx={{ ml: ".5rem" }} onClick={renameMechHandler}>
-                                <SvgSave size="1.4rem" />
-                            </IconButton>
-                        )}
-
-                        {submitting && <CircularProgress size="1.4rem" sx={{ ml: "1rem", color: "#FFFFFF" }} />}
-                    </>
-                )}
-
-                {!editing && (
-                    <Stack direction="row">
-                        <Typography sx={{ fontFamily: fonts.nostromoBlack, fontSize: "5rem" }}>{username}</Typography>
-                        <Typography sx={{ fontFamily: fonts.nostromoBlack, fontSize: "5rem", color: primaryColour }}>#{gid}</Typography>
-                    </Stack>
-                )}
-
-                {!hide && !editing && (
-                    <IconButton
-                        size="small"
-                        sx={{ ml: ".5rem", opacity: 0.6, ":hover": { opacity: 1 } }}
-                        onClick={() => {
-                            setEditing(true)
-                            renamingRef.current?.focus()
-                        }}
-                    >
-                        <SvgEdit size="2.2rem" />
-                    </IconButton>
-                )}
-            </Stack>
-        </Stack>
     )
 }
