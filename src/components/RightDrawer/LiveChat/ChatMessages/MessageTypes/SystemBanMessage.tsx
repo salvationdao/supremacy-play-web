@@ -25,6 +25,7 @@ export const SystemBanMessage = ({
         <Box>
             <Box sx={{ mx: "-0.6rem", mb: ".5rem", backgroundColor: "#00000040" }}>
                 <Stack
+                    spacing={".4rem"}
                     sx={{
                         pt: "1rem",
                         pb: ".6rem",
@@ -52,8 +53,6 @@ export const SystemBanMessage = ({
                     <Stack
                         spacing=".3rem"
                         sx={{
-                            py: "1rem",
-                            px: "1.5rem",
                             backgroundColor: "#00000020",
                             ".MuiTypography-root": {
                                 display: "inline",
