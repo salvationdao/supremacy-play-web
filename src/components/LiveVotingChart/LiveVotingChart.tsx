@@ -28,11 +28,11 @@ export const LiveVotingChart = () => {
 
     const config: MoveableResizableConfig = useMemo(
         () => ({
-            localStoragePrefix: "liveVoting",
+            localStoragePrefix: "liveVoting1",
             // Defaults
             defaultPosX: 0,
-            defaultPosY: 490,
-            defaultWidth: 320,
+            defaultPosY: 125,
+            defaultWidth: 340,
             defaultHeight: 120,
             // Position limits
             minPosX: 0,
