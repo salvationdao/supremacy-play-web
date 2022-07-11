@@ -1,11 +1,10 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { Faction, SystemBanMessageData } from "../../../../../types"
-import { dateFormatter, snakeToTitle } from "../../../../../helpers"
+import { dateFormatter } from "../../../../../helpers"
 import { SvgAnnouncement } from "../../../../../assets"
 import { StyledImageText } from "../../../../Notifications/Common/StyledImageText"
 import { colors } from "../../../../../theme/theme"
 import { useMemo } from "react"
-import moment from "moment"
 
 export const SystemBanMessage = ({
     data,
@@ -23,7 +22,7 @@ export const SystemBanMessage = ({
 
     if (!data) return null
 
-    const { banned_user, ban_until, is_permanent_ban, reason, restrictions } = data
+    const { banned_user, ban_duration, is_permanent_ban, reason, restrictions } = data
 
     return (
         <Box>
@@ -61,7 +60,9 @@ export const SystemBanMessage = ({
                             },
                         }}
                     >
-                        <Typography sx={{ color: colors.lightNeonBlue, ":hover": { opacity: 0.8 } }}>{snakeToTitle(reason, true)}</Typography>
+                        <Typography sx={{ strong: { color: colors.offWhite } }}>
+                            <strong>REASON:</strong> {reason}
+                        </Typography>
                     </Box>
 
                     <Box
@@ -72,29 +73,36 @@ export const SystemBanMessage = ({
                             },
                         }}
                     >
-                        <StyledImageText
-                            text={
-                                <>
-                                    {`${banned_user.username}`}
-                                    <span style={{ marginLeft: ".2rem", opacity: 0.7 }}>{`#${banned_user.gid}`}</span>
-                                </>
-                            }
-                            color={factionColor || "#FFFFFF"}
-                            imageUrl={factionLogoUrl}
-                            imageMb={-0.2}
-                            imageSize={1.4}
-                        />
-
-                        {is_permanent_ban ? (
-                            <Typography>&nbsp;is permanently banned&nbsp;</Typography>
-                        ) : (
-                            <>
-                                <Typography>&nbsp;is banned until&nbsp;</Typography>
-                                <Typography sx={{ color: colors.lightNeonBlue }}>{moment(ban_until).format("DD/MM/YYYY HH:MM:SS")}</Typography>
-                            </>
-                        )}
-
-                        <Typography>.</Typography>
+                        <Typography sx={{ strong: { color: colors.offWhite } }}>
+                            <strong>PLAYER:</strong>{" "}
+                            <StyledImageText
+                                text={
+                                    <>
+                                        {`${banned_user.username}`}
+                                        <span style={{ marginLeft: ".2rem", opacity: 0.7 }}>{`#${banned_user.gid}`}</span>
+                                    </>
+                                }
+                                color={factionColor || "#FFFFFF"}
+                                imageUrl={factionLogoUrl}
+                                imageMb={-0.2}
+                                imageSize={1.4}
+                            />
+                        </Typography>
+                    </Box>
+                    <Box>
+                        <Typography sx={{ strong: { color: colors.offWhite } }}>
+                            <strong>DURATION:</strong> {is_permanent_ban ? "PERMANENT" : ban_duration}
+                        </Typography>
+                    </Box>
+                    <Typography sx={{ strong: { color: colors.offWhite } }}>
+                        <strong>RESTRICTION{restrictions.length === 1 ? "" : "S"}:</strong>
+                    </Typography>
+                    <Box>
+                        {restrictions.map((res, i) => (
+                            <Typography key={res + i} sx={{ pl: 1.5 }}>
+                                • {res}
+                            </Typography>
+                        ))}
                     </Box>
                 </Stack>
             </Box>
