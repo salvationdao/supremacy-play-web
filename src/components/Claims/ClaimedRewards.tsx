@@ -37,7 +37,7 @@ export const ClaimedRewards = ({ rewards, onClose }: ClaimedRewardsProps) => {
             sx={{ m: "4rem", width: "110rem", maxWidth: "80%" }}
             backgroundColor={theme.factionTheme.background}
         >
-            <Stack spacing="3rem" justifyContent="center" alignItems="center" sx={{ py: "5rem", px: "5.5rem", textAlign: "center" }}>
+            <Stack spacing="2.5rem" justifyContent="center" alignItems="center" sx={{ py: "5rem", px: "5.5rem", textAlign: "center" }}>
                 <Typography variant={"h1"} sx={{ fontFamily: fonts.nostromoBlack, fontSize: "3rem" }}>
                     CONGRATULATIONS!
                 </Typography>
@@ -104,8 +104,8 @@ export const ClaimedRewards = ({ rewards, onClose }: ClaimedRewardsProps) => {
 
 const CrateItem = ({ label, imageUrl, quantity }: { label: string; imageUrl: string; quantity?: number }) => {
     return (
-        <Stack alignItems={"center"} spacing="1rem" sx={{ flex: 1 }}>
-            <Box component={"img"} src={imageUrl} alt={label} sx={{ width: "55%", height: "auto", objectFit: "contain", objectPosition: "center" }} />
+        <Stack alignItems="center" spacing=".8rem" sx={{ flex: 1 }}>
+            <Box component="img" src={imageUrl} alt={label} sx={{ width: "55%", height: "auto", objectFit: "contain", objectPosition: "center" }} />
             <Typography variant="h5" sx={{ fontFamily: fonts.nostromoBlack }}>
                 {quantity && (
                     <>

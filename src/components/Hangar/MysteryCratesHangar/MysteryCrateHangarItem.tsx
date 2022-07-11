@@ -99,7 +99,6 @@ export const MysteryCrateHangarItem = ({ crate, setCrateOpen, setCrateReward, ge
                             >
                                 <Countdown dateTo={crate.locked_until} />
                             </Stack>
-                            {/*)}*/}
                         </Box>
 
                         <Stack sx={{ flex: 1, px: ".4rem", py: ".3rem" }}>
@@ -112,27 +111,6 @@ export const MysteryCrateHangarItem = ({ crate, setCrateOpen, setCrateReward, ge
                             </Typography>
 
                             <Stack alignItems="center" sx={{ mt: "auto !important", pt: ".8rem", alignSelf: "stretch" }}>
-                                <FancyButton
-                                    disabled={new Date() < crate.locked_until || loading}
-                                    onClick={
-                                        //TODO: open in hangar
-                                        () => {
-                                            return
-                                        }
-                                    }
-                                    clipThingsProps={{
-                                        clipSize: "5px",
-                                        backgroundColor: primaryColor,
-                                        opacity: 1,
-                                        border: { isFancy: true, borderColor: primaryColor, borderThickness: "1.5px" },
-                                        sx: { position: "relative", mt: "1rem", width: "100%" },
-                                    }}
-                                    sx={{ px: "1.6rem", py: "1.5rem", color: secondaryColor }}
-                                >
-                                    <Typography variant={"caption"} sx={{ fontFamily: fonts.nostromoBlack, color: secondaryColor }}>
-                                        {loading ? <CircularProgress size={"1.75rem"} /> : "OPEN IN HANGAR"}
-                                    </Typography>
-                                </FancyButton>
                                 <FancyButton
                                     disabled={new Date() < crate.locked_until || loading}
                                     onClick={openCrate}

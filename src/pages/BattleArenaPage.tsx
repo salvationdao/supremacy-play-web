@@ -138,6 +138,7 @@ const BattleArenaPageInner = () => {
                 ),
             },
         ])
+        setIsNavOpen(true)
 
         // Remove tabs on unmount
         return () => {

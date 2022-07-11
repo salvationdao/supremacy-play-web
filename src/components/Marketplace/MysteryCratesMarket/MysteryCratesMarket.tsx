@@ -259,7 +259,33 @@ export const MysteryCratesMarket = () => {
                 chipFilters={[statusFilterSection.current, ownedByFilterSection.current, listingTypeFilterSection.current]}
                 rangeFilters={[priceRangeFilter.current]}
                 changePage={changePage}
-            />
+            >
+                <Box sx={{ p: ".8rem 1rem" }}>
+                    <FancyButton
+                        clipThingsProps={{
+                            clipSize: "6px",
+                            clipSlantSize: "0px",
+                            corners: { topLeft: true, topRight: true, bottomLeft: true, bottomRight: true },
+                            backgroundColor: colors.red,
+                            opacity: 1,
+                            border: { isFancy: true, borderColor: colors.red, borderThickness: "2px" },
+                            sx: { position: "relative" },
+                        }}
+                        sx={{ px: "1.6rem", py: ".4rem", color: "#FFFFFF" }}
+                        to={`/marketplace/sell${location.hash}`}
+                    >
+                        <Typography
+                            variant="caption"
+                            sx={{
+                                color: "#FFFFFF",
+                                fontFamily: fonts.nostromoBlack,
+                            }}
+                        >
+                            SELL ITEM
+                        </Typography>
+                    </FancyButton>
+                </Box>
+            </SortAndFilters>
 
             <ClipThing
                 clipSize="10px"
@@ -273,29 +299,7 @@ export const MysteryCratesMarket = () => {
             >
                 <Stack sx={{ position: "relative", height: "100%" }}>
                     <Stack sx={{ flex: 1 }}>
-                        <PageHeader title="MYSTERY CRATES" description="Explore what other citizens have to offer." imageUrl={SafePNG}>
-                            <FancyButton
-                                clipThingsProps={{
-                                    clipSize: "9px",
-                                    backgroundColor: colors.red,
-                                    opacity: 1,
-                                    border: { isFancy: true, borderColor: colors.red, borderThickness: "2px" },
-                                    sx: { position: "relative" },
-                                }}
-                                sx={{ px: "1.6rem", py: ".4rem", color: "#FFFFFF" }}
-                                to={`/marketplace/sell${location.hash}`}
-                            >
-                                <Typography
-                                    variant="caption"
-                                    sx={{
-                                        color: "#FFFFFF",
-                                        fontFamily: fonts.nostromoBlack,
-                                    }}
-                                >
-                                    SELL ITEM
-                                </Typography>
-                            </FancyButton>
-                        </PageHeader>
+                        <PageHeader title="MYSTERY CRATES" description="Explore what other citizens have to offer." imageUrl={SafePNG}></PageHeader>
 
                         <TotalAndPageSizeOptions
                             countItems={crateItems?.length}
