@@ -6,15 +6,15 @@ import { useTheme } from "../../containers/theme"
 import { useGameServerSubscriptionSecurePublic } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { colors, fonts } from "../../theme/theme"
-import { SaleAbility } from "../../types"
+import { FeatureName, SaleAbility } from "../../types"
 import { MoveableResizableConfig } from "../Common/MoveableResizable/MoveableResizableContainer"
 import { PageHeader } from "../Common/PageHeader"
 import { TimeLeft } from "../Storefront/PlayerAbilitiesStore/PlayerAbilitiesStore"
 import { QuickPlayerAbilitiesItem } from "./QuickPlayerAbilitiesItem"
 
 export const QuickPlayerAbilities = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
-    const { userID } = useAuth()
-    if (!open || !userID) return null
+    const { userHasFeature } = useAuth()
+    if (!open || !userHasFeature(FeatureName.playerAbility)) return null
     return <QuickPlayerAbilitiesInner onClose={onClose} />
 }
 
