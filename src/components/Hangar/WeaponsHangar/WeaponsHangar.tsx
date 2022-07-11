@@ -21,6 +21,7 @@ interface GetWeaponsRequest {
     include_market_listed: boolean
     exclude_equipped?: boolean
     weapon_types: string[]
+    equipped_statuses: string[]
     search: string
 }
 
@@ -47,6 +48,7 @@ export const WeaponsHangar = () => {
     // Filters and sorts
     const [search, setSearch] = useState("")
     const [weaponTypes, setWeaponTypes] = useState<string[]>((query.get("weapon_types") || undefined)?.split("||") || [])
+    const [equippedStatuses, setEquippedStatuses] = useState<string[]>((query.get("equipped_status") || undefined)?.split("||") || [])
     const [isGridView, toggleIsGridView] = useToggle(false)
 
     const weaponTypeFilterSection = useRef<ChipFilter>({
@@ -66,6 +68,19 @@ export const WeaponsHangar = () => {
         },
     })
 
+    const weaponEquippedFilterSection = useRef<ChipFilter>({
+        label: "EQUIPPED STATUS",
+        options: [
+            { value: "equipped", label: "EQUIPPED", color: theme.factionTheme.primary, textColor: theme.factionTheme.secondary },
+            { value: "unequipped", label: "UNEQUIPPED", color: theme.factionTheme.primary, textColor: theme.factionTheme.secondary },
+        ],
+        initialSelected: equippedStatuses,
+        onSetSelected: (value: string[]) => {
+            setEquippedStatuses(value)
+            changePage(1)
+        },
+    })
+
     const getItems = useCallback(async () => {
         try {
             setIsLoading(true)
@@ -75,6 +90,7 @@ export const WeaponsHangar = () => {
                 page_size: pageSize,
                 include_market_listed: true,
                 weapon_types: weaponTypes,
+                equipped_statuses: equippedStatuses,
                 search,
             })
 
@@ -82,6 +98,7 @@ export const WeaponsHangar = () => {
                 page: page.toString(),
                 pageSize: pageSize.toString(),
                 weapon_types: weaponTypes.join("||"),
+                equipped_statuses: equippedStatuses.join("||"),
                 search,
             })
 
@@ -95,7 +112,7 @@ export const WeaponsHangar = () => {
         } finally {
             setIsLoading(false)
         }
-    }, [send, page, pageSize, search, updateQuery, setTotalItems, weaponTypes])
+    }, [send, page, pageSize, search, updateQuery, setTotalItems, weaponTypes, equippedStatuses])
 
     useEffect(() => {
         getItems()
@@ -193,7 +210,12 @@ export const WeaponsHangar = () => {
 
     return (
         <Stack direction="row" spacing="1rem" sx={{ height: "100%" }}>
-            <SortAndFilters initialSearch={search} onSetSearch={setSearch} chipFilters={[weaponTypeFilterSection.current]} changePage={changePage} />
+            <SortAndFilters
+                initialSearch={search}
+                onSetSearch={setSearch}
+                chipFilters={[weaponTypeFilterSection.current, weaponEquippedFilterSection.current]}
+                changePage={changePage}
+            />
 
             <ClipThing
                 clipSize="10px"
