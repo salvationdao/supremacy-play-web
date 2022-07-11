@@ -90,7 +90,20 @@ export const WarMachineHangarItem = ({ mech, isGridView }: { mech: MechBasic; is
                     </Box>
 
                     <Stack>
-                        <Typography variant="body2" sx={{ mb: ".2rem", color: rarityDeets.color, fontFamily: fonts.nostromoHeavy }}>
+                        <Typography
+                            variant="body2"
+                            sx={{
+                                mb: ".2rem",
+                                color: rarityDeets.color,
+                                fontFamily: fonts.nostromoHeavy,
+                                display: "-webkit-box",
+                                overflow: "hidden",
+                                overflowWrap: "anywhere",
+                                textOverflow: "ellipsis",
+                                WebkitLineClamp: 1, // change to max number of lines
+                                WebkitBoxOrient: "vertical",
+                            }}
+                        >
                             {rarityDeets.label}
                         </Typography>
 

@@ -89,7 +89,17 @@ export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGri
                     <Stack>
                         <Typography
                             variant="body2"
-                            sx={{ mb: ".2rem", color: getWeaponTypeColor(weaponDetails?.weapon_type), fontFamily: fonts.nostromoBlack }}
+                            sx={{
+                                mb: ".2rem",
+                                color: getWeaponTypeColor(weaponDetails?.weapon_type),
+                                fontFamily: fonts.nostromoBlack,
+                                display: "-webkit-box",
+                                overflow: "hidden",
+                                overflowWrap: "anywhere",
+                                textOverflow: "ellipsis",
+                                WebkitLineClamp: 1, // change to max number of lines
+                                WebkitBoxOrient: "vertical",
+                            }}
                         >
                             {weaponDetails?.weapon_type}
                         </Typography>

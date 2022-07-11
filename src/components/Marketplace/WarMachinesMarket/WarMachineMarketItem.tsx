@@ -74,6 +74,12 @@ const MechInfo = ({
                 sx={{
                     fontFamily: fonts.nostromoBlack,
                     color: rarityDeets.color,
+                    display: "-webkit-box",
+                    overflow: "hidden",
+                    overflowWrap: "anywhere",
+                    textOverflow: "ellipsis",
+                    WebkitLineClamp: 1, // change to max number of lines
+                    WebkitBoxOrient: "vertical",
                 }}
             >
                 {rarityDeets.label}
