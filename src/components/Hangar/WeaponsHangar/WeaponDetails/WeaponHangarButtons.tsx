@@ -15,6 +15,9 @@ export const WeaponButtons = ({ weaponDetails }: { weaponDetails: Weapon }) => {
     const marketLocked = weaponDetails.locked_to_marketplace
     const isInMarketplace = false // TODO
 
+    if (weaponDetails.equipped_on) {
+        return null
+    }
     return (
         <ClipThing
             clipSize="10px"
