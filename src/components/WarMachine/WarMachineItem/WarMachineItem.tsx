@@ -70,15 +70,13 @@ export const WarMachineItem = ({ warMachine, scale, initialExpanded = false }: {
 
     // Toggle out isExpanded if other mech is highlighted
     useEffect(() => {
-        if (highlightedMechHash !== warMachine.hash) {
+        if (highlightedMechHash !== hash) {
             toggleIsExpanded(initialExpanded)
         } else {
             toggleIsExpanded(true)
             openSkillsPopover()
         }
-
-        if (isMobile) return () => setHighlightedMechHash(undefined)
-    }, [highlightedMechHash, initialExpanded, isMobile, openSkillsPopover, setHighlightedMechHash, toggleIsExpanded, warMachine.hash])
+    }, [highlightedMechHash, initialExpanded, isMobile, openSkillsPopover, setHighlightedMechHash, toggleIsExpanded, hash])
 
     return (
         <>
@@ -94,7 +92,7 @@ export const WarMachineItem = ({ warMachine, scale, initialExpanded = false }: {
                         WIDTH_AVATAR + (isExpanded ? WIDTH_BODY : 2 * WIDTH_STAT_BAR) + (isOwnFaction ? WIDTH_SKILL_BUTTON + numSkillBars * WIDTH_STAT_BAR : 0)
                     }rem`,
                     transition: "width .1s",
-                    transform: `scale(${scale})`,
+                    transform: highlightedMechHash === hash ? `scale(${scale * 1.08})` : `scale(${scale})`,
                     transformOrigin: isMobile ? "0 0" : "center",
                 }}
             >

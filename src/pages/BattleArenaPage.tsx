@@ -18,6 +18,7 @@ import { QuickDeploy } from "../components/QuickDeploy/QuickDeploy"
 import { QuickPlayerAbilities } from "../components/QuickPlayerAbilities/QuickPlayerAbilities"
 import { useAuth, useDimension, useMobile, useSupremacy } from "../containers"
 import { siteZIndex } from "../theme/theme"
+import { FeatureName } from "../types"
 
 export const BattleArenaPage = () => {
     const { userID } = useAuth()
@@ -43,8 +44,8 @@ export const BattleArenaPage = () => {
 }
 
 const BattleArenaPageInner = () => {
-    const { userID } = useAuth()
-    const { isMobile, setAdditionalTabs, toggleIsNavOpen } = useMobile()
+    const { userID, userHasFeature } = useAuth()
+    const { isMobile, setAdditionalTabs, setIsNavOpen, allowCloseNav } = useMobile()
     const { isServerUp, isQuickDeployOpen, toggleIsQuickDeployOpen, isQuickPlayerAbilitiesOpen, toggleIsQuickPlayerAbilitiesOpen } = useSupremacy()
     const { recalculateDimensions } = useDimension()
 
@@ -53,7 +54,9 @@ const BattleArenaPageInner = () => {
         recalculateDimensions()
 
         if (!isMobile) return
-        setAdditionalTabs([
+        allowCloseNav.current = false
+
+        const tabs = [
             {
                 id: "battle-arena",
                 hash: "#battle-arena",
@@ -67,7 +70,7 @@ const BattleArenaPageInner = () => {
                                 overflowY: "auto",
                                 overflowX: "hidden",
                                 ml: ".4rem",
-                                mr: ".3rem",
+                                mr: ".8rem",
                                 pr: ".1rem",
                                 mt: ".6rem",
                                 mb: "2rem",
@@ -99,7 +102,10 @@ const BattleArenaPageInner = () => {
                     </Stack>
                 ),
             },
-            {
+        ]
+
+        if (userID) {
+            tabs.push({
                 id: "quick-deploy",
                 hash: "#quick-deploy",
                 icon: <SvgRobot size="1.2rem" sx={{ pt: ".1rem" }} />,
@@ -114,37 +120,61 @@ const BattleArenaPageInner = () => {
                         />
                     </Stack>
                 ),
-            },
-            {
-                id: "prev-battle",
-                hash: "#prev-battle",
-                icon: <SvgHistoryClock size="1.2rem" sx={{ pt: ".1rem" }} />,
-                label: "PREVIOUS BATTLE",
+            })
+        }
+
+        if (userHasFeature(FeatureName.playerAbility)) {
+            tabs.push({
+                id: "buy-abilities",
+                hash: "#buy-abilities",
+                icon: <SvgAbility size="1.2rem" sx={{ pt: ".1rem" }} />,
+                label: "BUY ABILITIES",
                 Component: () => (
                     <Stack sx={{ position: "relative", height: "100%" }}>
-                        <BattleEndScreen />
+                        <QuickPlayerAbilities
+                            open
+                            onClose={() => {
+                                return
+                            }}
+                        />
                     </Stack>
                 ),
-            },
-            {
-                id: "history",
-                hash: "#history",
-                icon: <SvgHistory size="1.2rem" sx={{ pt: ".1rem" }} />,
-                label: "HISTORY",
-                Component: () => (
-                    <Stack sx={{ position: "relative", height: "100%" }}>
-                        <BattleHistory />
-                    </Stack>
-                ),
-            },
-        ])
+            })
+        }
+
+        tabs.push({
+            id: "prev-battle",
+            hash: "#prev-battle",
+            icon: <SvgHistoryClock size="1.2rem" sx={{ pt: ".1rem" }} />,
+            label: "PREVIOUS BATTLE",
+            Component: () => (
+                <Stack sx={{ position: "relative", height: "100%" }}>
+                    <BattleEndScreen />
+                </Stack>
+            ),
+        })
+
+        tabs.push({
+            id: "history",
+            hash: "#history",
+            icon: <SvgHistory size="1.2rem" sx={{ pt: ".1rem" }} />,
+            label: "HISTORY",
+            Component: () => (
+                <Stack sx={{ position: "relative", height: "100%" }}>
+                    <BattleHistory />
+                </Stack>
+            ),
+        })
+
+        setAdditionalTabs(tabs)
 
         // Remove tabs on unmount
         return () => {
+            allowCloseNav.current = true
             setAdditionalTabs([])
-            toggleIsNavOpen(false)
+            setIsNavOpen(false)
         }
-    }, [isMobile, recalculateDimensions, setAdditionalTabs, toggleIsNavOpen])
+    }, [allowCloseNav, isMobile, recalculateDimensions, setAdditionalTabs, setIsNavOpen, userHasFeature, userID])
 
     return (
         <>

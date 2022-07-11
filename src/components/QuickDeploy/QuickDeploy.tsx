@@ -133,7 +133,13 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
     return (
         <>
             <Fade in>
-                <Box sx={{ ...(isMobile ? { m: "1rem", backgroundColor: "#FFFFFF12", boxShadow: 2, border: "#FFFFFF20 1px solid", height: "100%" } : {}) }}>
+                <Box
+                    sx={{
+                        ...(isMobile
+                            ? { m: "1rem", mb: "2rem", backgroundColor: "#FFFFFF12", boxShadow: 2, border: "#FFFFFF20 1px solid", height: "100%" }
+                            : {}),
+                    }}
+                >
                     <MoveableResizable config={config}>
                         <Stack
                             sx={{

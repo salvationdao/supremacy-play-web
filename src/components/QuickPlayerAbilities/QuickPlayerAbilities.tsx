@@ -1,24 +1,25 @@
 import { Box, CircularProgress, Fade, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
 import { MoveableResizable } from ".."
-import { useAuth } from "../../containers"
+import { useAuth, useMobile } from "../../containers"
 import { useTheme } from "../../containers/theme"
 import { useGameServerSubscriptionSecurePublic } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { colors, fonts } from "../../theme/theme"
-import { SaleAbility } from "../../types"
+import { FeatureName, SaleAbility } from "../../types"
 import { MoveableResizableConfig } from "../Common/MoveableResizable/MoveableResizableContainer"
 import { PageHeader } from "../Common/PageHeader"
 import { TimeLeft } from "../Storefront/PlayerAbilitiesStore/PlayerAbilitiesStore"
 import { QuickPlayerAbilitiesItem } from "./QuickPlayerAbilitiesItem"
 
 export const QuickPlayerAbilities = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
-    const { userID } = useAuth()
-    if (!open || !userID) return null
+    const { userHasFeature } = useAuth()
+    if (!open || !userHasFeature(FeatureName.playerAbility)) return null
     return <QuickPlayerAbilitiesInner onClose={onClose} />
 }
 
 const QuickPlayerAbilitiesInner = ({ onClose }: { onClose: () => void }) => {
+    const { isMobile } = useMobile()
     const theme = useTheme()
 
     const [isLoaded, setIsLoaded] = useState(false)
@@ -130,7 +131,13 @@ const QuickPlayerAbilitiesInner = ({ onClose }: { onClose: () => void }) => {
     return (
         <>
             <Fade in>
-                <Box>
+                <Box
+                    sx={{
+                        ...(isMobile
+                            ? { m: "1rem", mb: "2rem", backgroundColor: "#FFFFFF12", boxShadow: 2, border: "#FFFFFF20 1px solid", height: "100%" }
+                            : {}),
+                    }}
+                >
                     <MoveableResizable config={config}>
                         <Stack
                             sx={{
