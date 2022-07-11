@@ -107,8 +107,8 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
         () => ({
             localStoragePrefix: "quickDeploy1",
             // Defaults
-            defaultPosX: 330,
-            defaultPosY: 0,
+            defaultPosX: 370,
+            defaultPosY: 20,
             defaultWidth: 420,
             defaultHeight: 580,
             // Position limits
