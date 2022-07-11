@@ -138,7 +138,7 @@ export const MoveableResizableContainer = createContainer((initialState: Moveabl
         onResizeStopped(newDimension)
         onMovingStopped(newPosition)
 
-        // Just run this once to set intial, no deps
+        // Just run this once to set initial, no deps
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [width, height])
 

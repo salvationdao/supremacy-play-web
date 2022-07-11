@@ -2,16 +2,18 @@ import { Stack } from "@mui/material"
 import { useMemo } from "react"
 import { LiveCounts, OverlayToggles, VideoPlayerControls } from ".."
 import { CONTROLS_HEIGHT } from "../../constants"
-import { useOverlayToggles } from "../../containers"
+import { useMobile, useOverlayToggles } from "../../containers"
 import { useTheme } from "../../containers/theme"
 import { shadeColor } from "../../helpers"
 import { siteZIndex } from "../../theme/theme"
 import { BattleStats } from "../BattleStats/BattleStats"
 import { PreviousBattle } from "./PreviousBattle"
 import { ResolutionSelect } from "./ResolutionSelect"
+import { ShowTrailerButton } from "./ShowTrailerButton"
 import { StreamSelect } from "./StreamSelect"
 
 export const Controls = () => {
+    const { isMobile } = useMobile()
     const theme = useTheme()
     const { isLiveChartOpen } = useOverlayToggles()
 
@@ -49,13 +51,14 @@ export const Controls = () => {
             }}
         >
             <Stack direction="row" spacing="1.6rem" sx={{ flexShrink: 0, height: "100%" }}>
-                <PreviousBattle />
+                {!isMobile && <PreviousBattle />}
                 <LiveCounts />
-                <OverlayToggles />
-                <BattleStats hideContributionTotal={isLiveChartOpen} hideContributorAmount={isLiveChartOpen} />
+                {!isMobile && <OverlayToggles />}
+                {!isMobile && <BattleStats hideContributionTotal={isLiveChartOpen} hideContributorAmount={isLiveChartOpen} />}
             </Stack>
 
             <Stack id="tutorial-stream-options" direction="row" spacing="1.6rem" sx={{ flexShrink: 0, height: "100%" }}>
+                <ShowTrailerButton />
                 <StreamSelect />
                 <ResolutionSelect />
                 <VideoPlayerControls />
