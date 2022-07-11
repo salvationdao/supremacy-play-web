@@ -76,8 +76,6 @@ export const WarMachineItem = ({ warMachine, scale, initialExpanded = false }: {
             toggleIsExpanded(true)
             openSkillsPopover()
         }
-
-        if (isMobile) return () => setHighlightedMechHash(undefined)
     }, [highlightedMechHash, initialExpanded, isMobile, openSkillsPopover, setHighlightedMechHash, toggleIsExpanded, hash])
 
     return (
