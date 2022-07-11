@@ -26,7 +26,7 @@ export const Username = ({
 
     const [copySuccess, toggleCopySuccess] = useToggle()
 
-    const renameMechHandler = useCallback(async () => {
+    const updatehHandler = useCallback(async () => {
         try {
             setSubmitting(true)
             renamingRef.current?.blur()
@@ -49,17 +49,7 @@ export const Username = ({
 
     return (
         <Stack direction="row" alignItems="center">
-            <Stack
-                onClick={() => {
-                    navigator.clipboard.writeText(window.location.href).then(
-                        () => toggleCopySuccess(true),
-                        () => toggleCopySuccess(false),
-                    )
-                }}
-                direction="row"
-                alignItems="center"
-                sx={{ cursor: "pointer", ":hover": { opacity: 0.5 } }}
-            >
+            <Stack direction="row" alignItems="center" sx={{ cursor: "pointer", ":hover": { opacity: 0.5 } }}>
                 <TextField
                     inputRef={renamingRef}
                     variant="standard"
@@ -99,7 +89,7 @@ export const Username = ({
                     onKeyDown={(e) => {
                         if (e.key === "Enter") {
                             e.preventDefault()
-                            renameMechHandler()
+                            updatehHandler()
                         }
                     }}
                 />
@@ -107,7 +97,7 @@ export const Username = ({
                 {editing && (
                     <>
                         {!submitting && (
-                            <IconButton size="small" sx={{ ml: ".5rem" }} onClick={renameMechHandler}>
+                            <IconButton size="small" sx={{ ml: ".5rem" }} onClick={updatehHandler}>
                                 <SvgSave size="1.4rem" />
                             </IconButton>
                         )}
@@ -117,9 +107,19 @@ export const Username = ({
                 )}
 
                 {!editing && (
-                    <Stack direction="row">
-                        <Typography sx={{ fontFamily: fonts.nostromoBlack, fontSize: "5rem" }}>{username}</Typography>
-                        <Typography sx={{ fontFamily: fonts.nostromoBlack, fontSize: "5rem", color: primaryColour }}>#{gid}</Typography>
+                    <Stack
+                        direction="row"
+                        onClick={() => {
+                            navigator.clipboard.writeText(window.location.href).then(
+                                () => toggleCopySuccess(true),
+                                () => toggleCopySuccess(false),
+                            )
+                        }}
+                    >
+                        <Typography sx={{ WebkitTextStroke: "1px black", fontFamily: fonts.nostromoBlack, fontSize: "5rem" }}>{username}</Typography>
+                        <Typography sx={{ WebkitTextStroke: "1px black", fontFamily: fonts.nostromoBlack, fontSize: "5rem", color: primaryColour }}>
+                            #{gid}
+                        </Typography>
                     </Stack>
                 )}
 

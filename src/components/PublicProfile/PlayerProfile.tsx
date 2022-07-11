@@ -1,15 +1,17 @@
 import { Avatar, Box, CircularProgress, Stack, Typography } from "@mui/material"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { useHistory, useParams } from "react-router-dom"
 import { SvgAbility, SvgCake, SvgDeath, SvgSkull2, SvgView, WarMachineIconPNG } from "../../assets"
 import { useAuth, useSnackbar } from "../../containers"
-import { snakeToTitle, timeSinceInWords } from "../../helpers"
+import { getUserRankDeets, snakeToTitle, timeSince, timeSinceHoursInWords, timeSinceHoursMinsInWords, timeSinceInWords } from "../../helpers"
 import { useGameServerCommands, useGameServerCommandsUser } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { colors, fonts, theme } from "../../theme/theme"
 import { Faction, UserRank } from "../../types"
+import { BannerInfo } from "../Bar/Enlist/EnlistBanner"
 import { ClipThing } from "../Common/ClipThing"
 import { PageHeader } from "../Common/PageHeader"
+import { AboutMe } from "./ProfileAboutMe"
 import { ProfileMechHistory } from "./ProfileBattleHistory"
 import { Username } from "./ProfileUsername"
 import { ProfileWarmachines } from "./ProfileWarmachines"
@@ -17,6 +19,7 @@ import { ProfileWarmachines } from "./ProfileWarmachines"
 interface Player {
     id: string
     username: string
+    about_me: string
     avatar_id: string
     faction_id: string
     gid: number
@@ -45,6 +48,31 @@ const cakeDay = (d: Date) => {
     const result = d.getDate() === now.getDate() && d.getMonth() === now.getMonth()
     return result
 }
+
+const getOnlineStatus = (time: Date): { status: string; colour: string } => {
+    const { minutes, hours } = timeSince(time, new Date())
+
+    console.log("timesince", timeSince(time, new Date()))
+
+    if (minutes <= 5) {
+        return { status: "Online", colour: colors.green }
+    }
+
+    if (minutes > 5 && minutes <= 15) {
+        return { status: "Online 10 minutes ago", colour: colors.orange }
+    }
+
+    if (minutes > 15 && minutes <= 30) {
+        return { status: "Online 30 minutes ago", colour: colors.orange }
+    }
+
+    if (minutes > 30 && minutes <= 60) {
+        return { status: "Online 1 hour ago", colour: colors.orange }
+    }
+
+    return { status: `Online ${hours} hour(s) ago`, colour: colors.red }
+}
+
 export const PlayerProfilePage = () => {
     const { playerGID } = useParams<{ playerGID: string }>()
     const { user } = useAuth()
@@ -55,13 +83,23 @@ export const PlayerProfilePage = () => {
 
     const [profile, setProfile] = useState<PlayerProfile>()
     const [username, setUsername] = useState<string>()
-
-    const isMe = `${user?.gid}` === playerGID
+    const [aboutMe, setAboutMe] = useState<string>()
 
     const { send } = useGameServerCommands("/public/commander")
     const { send: userSend } = useGameServerCommandsUser("/user_commander")
     const { newSnackbarMessage } = useSnackbar()
+    const isMe = `${user?.gid}` === playerGID
 
+    const rankDeets = useMemo(() => (profile?.player.rank ? getUserRankDeets(profile?.player.rank, "1.6rem", "1.6rem") : undefined), [profile?.player.rank])
+
+    const onlineStatus = useMemo(
+        () => (profile?.active_log?.active_at ? getOnlineStatus(profile?.active_log?.active_at) : undefined),
+        [profile?.active_log?.active_at],
+    )
+
+    console.log("rank", onlineStatus)
+
+    // username
     const updateUsername = useCallback(
         async (newUsername: string) => {
             try {
@@ -70,7 +108,31 @@ export const PlayerProfilePage = () => {
                     new_username: newUsername,
                 })
                 setUsername(resp.Username)
+
                 newSnackbarMessage("username updated successfully.", "success")
+            } catch (e) {
+                let errorMessage = ""
+                if (typeof e === "string") {
+                    errorMessage = e
+                } else if (e instanceof Error) {
+                    errorMessage = e.message
+                }
+                newSnackbarMessage(errorMessage, "error")
+            }
+        },
+        [userSend, profile?.player.id],
+    )
+
+    // about me
+    const updateAboutMe = useCallback(
+        async (newAboutMe: string) => {
+            try {
+                const resp = await userSend<{ about_me: string }>(GameServerKeys.PlayerProfileUpdateAboutMe, {
+                    player_id: profile?.player.id,
+                    about_me: newAboutMe,
+                })
+                setAboutMe(resp.about_me)
+                newSnackbarMessage("about me updated successfully.", "success")
             } catch (e) {
                 let errorMessage = ""
                 if (typeof e === "string") {
@@ -94,6 +156,7 @@ export const PlayerProfilePage = () => {
                 })
                 setProfile(resp)
                 setUsername(resp.player.username)
+                setAboutMe(resp.player.about_me)
                 setLoading(false)
             } catch (e) {
                 let errorMessage = ""
@@ -172,7 +235,11 @@ export const PlayerProfilePage = () => {
                                     }}
                                     variant="square"
                                 />
-                                {isMe && <Typography sx={{ fontFamily: fonts.nostromoBlack, fontSize: "5rem", color: primaryColor }}>my profile</Typography>}
+                                {isMe && (
+                                    <Typography sx={{ WebkitTextStroke: "1px black", fontFamily: fonts.nostromoBlack, fontSize: "5rem", color: primaryColor }}>
+                                        my profile
+                                    </Typography>
+                                )}
                             </Stack>
 
                             <Stack direction="row" alignItems={"center"}>
@@ -188,17 +255,29 @@ export const PlayerProfilePage = () => {
                                 />
                             </Stack>
                         </Stack>
-                        <Typography sx={{ fontFamily: fonts.nostromoBlack }}>{snakeToTitle(profile.player.rank)}</Typography>
+
+                        <Stack direction="row" spacing="1rem">
+                            {rankDeets?.icon}
+                            <Typography sx={{ fontFamily: fonts.nostromoBlack }}>{snakeToTitle(profile.player.rank)}</Typography>
+                        </Stack>
+
                         {profile.active_log?.active_at && (
-                            <Typography sx={{ fontFamily: fonts.nostromoBlack }}>
-                                Last Online: {timeSinceInWords(profile.active_log?.active_at, new Date())} ago
-                            </Typography>
+                            <Stack direction="row" spacing="1rem" alignItems={"center"}>
+                                <Box
+                                    width="1rem"
+                                    height="1rem"
+                                    ml="3px"
+                                    sx={{
+                                        borderRadius: "100%",
+                                        backgroundColor: onlineStatus?.colour,
+                                    }}
+                                />
+                                <Typography sx={{ fontFamily: fonts.nostromoBlack }}>{onlineStatus?.status}</Typography>
+                            </Stack>
                         )}
-                        <Stack direction="row" alignItems="center">
-                            <Typography sx={{ fontFamily: fonts.nostromoBlack, mr: "1rem" }}>
-                                Joined {profile.player.created_at.toLocaleDateString()}
-                            </Typography>
-                            {cakeDay(profile.player.created_at) && <SvgCake size="2.5rem" sx={{ mb: ".8rem" }} />}
+                        <Stack direction="row" spacing="1rem">
+                            {cakeDay(profile.player.created_at) && <SvgCake size="1.9rem" sx={{ mb: "2rem" }} />}
+                            <Typography sx={{ fontFamily: fonts.nostromoBlack }}>Joined {profile.player.created_at.toLocaleDateString()}</Typography>
                         </Stack>
                     </Stack>
                 </Stack>
@@ -239,11 +318,20 @@ export const PlayerProfilePage = () => {
                             },
                         }}
                     >
-                        <Box sx={{ direction: "ltr", height: 0 }}>
+                        <Box sx={{ direction: "ltr", height: 0, width: "100%" }}>
                             <Stack direction="column" spacing="1.6rem">
                                 <PageHeader title="ABOUT ME" description="" primaryColor={primaryColor} imageUrl={WarMachineIconPNG} />
                                 <Stack sx={{ p: "1rem 3rem" }}>
-                                    <Typography sx={{ fontFamily: fonts.nostromoBlack }}>Hi my name is owen.</Typography>
+                                    <AboutMe
+                                        hide={!isMe}
+                                        userID={profile.player.id}
+                                        updateAboutMe={async (name: string) => {
+                                            updateAboutMe(name)
+                                        }}
+                                        primaryColour={primaryColor}
+                                        gid={profile.player.gid}
+                                        aboutMe={aboutMe || ""}
+                                    />
                                 </Stack>
                             </Stack>
                         </Box>
