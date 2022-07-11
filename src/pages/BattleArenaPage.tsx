@@ -43,7 +43,7 @@ export const BattleArenaPage = () => {
 
 const BattleArenaPageInner = () => {
     const { userID } = useAuth()
-    const { isMobile, setAdditionalTabs, toggleIsNavOpen } = useMobile()
+    const { isMobile, setAdditionalTabs, setIsNavOpen, allowCloseNav } = useMobile()
     const { isServerUp, isQuickDeployOpen, toggleIsQuickDeployOpen } = useSupremacy()
     const { recalculateDimensions } = useDimension()
 
@@ -52,6 +52,7 @@ const BattleArenaPageInner = () => {
         recalculateDimensions()
 
         if (!isMobile) return
+        allowCloseNav.current = false
         setAdditionalTabs([
             {
                 id: "battle-arena",
@@ -140,10 +141,11 @@ const BattleArenaPageInner = () => {
 
         // Remove tabs on unmount
         return () => {
+            allowCloseNav.current = true
             setAdditionalTabs([])
-            toggleIsNavOpen(false)
+            setIsNavOpen(false)
         }
-    }, [isMobile, recalculateDimensions, setAdditionalTabs, toggleIsNavOpen])
+    }, [allowCloseNav, isMobile, recalculateDimensions, setAdditionalTabs, setIsNavOpen])
 
     return (
         <>
