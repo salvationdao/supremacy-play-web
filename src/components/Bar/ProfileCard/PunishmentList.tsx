@@ -2,7 +2,7 @@ import { Box, IconButton, Modal, Stack, Typography } from "@mui/material"
 import { ClipThing } from "../.."
 import { SvgClose } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
-import { dateFormatter, snakeToTitle } from "../../../helpers"
+import { dateFormatter } from "../../../helpers"
 import { colors, fonts } from "../../../theme/theme"
 import { PunishListItem } from "../../../types/chat"
 
@@ -47,12 +47,8 @@ export const PunishmentList = ({ open, onClose, punishments }: Props) => {
 
                         <Stack spacing=".6rem">
                             {punishments.map((p) => {
-                                let banFrom = "PUNISH VOTE"
-                                if (p.ban_from === "SYSTEM") {
-                                    banFrom = "SYSTEM BAN"
-                                } else {
-                                    banFrom = "ADMIN BAN"
-                                }
+                                let banFrom = "PLAYER BAN"
+                                if (p.ban_from === "SYSTEM") banFrom = "SYSTEM BAN"
 
                                 return (
                                     <Stack key={p.id} spacing=".5rem" sx={{ px: "1.2rem", py: ".8rem", backgroundColor: "#FFFFFF08" }}>
@@ -71,10 +67,10 @@ export const PunishmentList = ({ open, onClose, punishments }: Props) => {
                                             <strong>INITIATED BY:</strong> {p.ban_by_user.username}
                                             <span style={{ marginLeft: ".2rem", opacity: 0.7 }}>#{p.ban_by_user.gid}</span>
                                         </Typography>
-                                        <Typography sx={{ strong: { color: colors.offWhite } }}>
-                                            <strong>RESTRICTION{p.restrictions.length === 1 ? "" : "S"}:</strong>
-                                        </Typography>
                                         <Box>
+                                            <Typography sx={{ strong: { color: colors.offWhite } }}>
+                                                <strong>RESTRICTION{p.restrictions.length === 1 ? "" : "S"}:</strong>
+                                            </Typography>
                                             {p.restrictions.map((res, i) => (
                                                 <Typography key={res + i} sx={{ pl: 1.5 }}>
                                                     • {res}
