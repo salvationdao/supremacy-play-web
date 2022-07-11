@@ -75,6 +75,7 @@ export const MoveableResizableContainer = createContainer((initialState: Moveabl
 
     const onMovingStopped = useCallback(
         (data: Position) => {
+            if (!data.x || !data.y) return
             const newX = isNaN(data.x) ? defaultPosX : data.x
             const newY = isNaN(data.y) ? defaultPosY : data.y
             setCurPosX(newX)
@@ -87,6 +88,7 @@ export const MoveableResizableContainer = createContainer((initialState: Moveabl
 
     const onResizeStopped = useCallback(
         (data: Dimension) => {
+            if (!data.width || !data.height) return
             const newW = isNaN(data.width) ? defaultPosX : data.width
             const newH = isNaN(data.height) ? defaultPosY : data.height
             setCurWidth(newW)
