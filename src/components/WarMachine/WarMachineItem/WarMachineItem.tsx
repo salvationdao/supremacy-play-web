@@ -56,7 +56,7 @@ export const WarMachineItem = ({ warMachine, scale, initialExpanded = false }: {
     const openSkillsPopover = useCallback(() => {
         setTimeout(() => {
             togglePopoverOpen(true)
-        }, 300)
+        }, 110)
     }, [togglePopoverOpen])
 
     // Highlighting on the map
@@ -91,7 +91,7 @@ export const WarMachineItem = ({ warMachine, scale, initialExpanded = false }: {
                     width: `${
                         WIDTH_AVATAR + (isExpanded ? WIDTH_BODY : 2 * WIDTH_STAT_BAR) + (isOwnFaction ? WIDTH_SKILL_BUTTON + numSkillBars * WIDTH_STAT_BAR : 0)
                     }rem`,
-                    transition: "width .3s",
+                    transition: "width .1s",
                     transform: highlightedMechHash === hash ? `scale(${scale * 1.08})` : `scale(${scale})`,
                     transformOrigin: isMobile ? "0 0" : "center",
                 }}

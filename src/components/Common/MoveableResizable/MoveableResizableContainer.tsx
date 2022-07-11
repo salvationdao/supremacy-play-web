@@ -74,23 +74,27 @@ export const MoveableResizableContainer = createContainer((initialState: Moveabl
     const onMovingStopped = useCallback(
         (data: Position) => {
             if (!data.x || !data.y) return
-            setCurPosX(data.x)
-            setCurPosY(data.y)
-            localStorage.setItem(`${localStoragePrefix}PosX`, data.x.toString())
-            localStorage.setItem(`${localStoragePrefix}PosY`, data.y.toString())
+            const newX = isNaN(data.x) ? defaultPosX : data.x
+            const newY = isNaN(data.y) ? defaultPosY : data.y
+            setCurPosX(newX)
+            setCurPosY(newY)
+            localStorage.setItem(`${localStoragePrefix}PosX`, newX.toString())
+            localStorage.setItem(`${localStoragePrefix}PosY`, newY.toString())
         },
-        [localStoragePrefix],
+        [defaultPosX, defaultPosY, localStoragePrefix],
     )
 
     const onResizeStopped = useCallback(
         (data: Dimension) => {
             if (!data.width || !data.height) return
-            setCurWidth(data.width)
-            setCurHeight(data.height)
-            localStorage.setItem(`${localStoragePrefix}SizeX`, data.width.toString())
-            localStorage.setItem(`${localStoragePrefix}SizeY`, data.height.toString())
+            const newW = isNaN(data.width) ? defaultPosX : data.width
+            const newH = isNaN(data.height) ? defaultPosY : data.height
+            setCurWidth(newW)
+            setCurHeight(newH)
+            localStorage.setItem(`${localStoragePrefix}SizeX`, newW.toString())
+            localStorage.setItem(`${localStoragePrefix}SizeY`, newH.toString())
         },
-        [localStoragePrefix],
+        [defaultPosX, defaultPosY, localStoragePrefix],
     )
 
     const updateSize = useCallback(
