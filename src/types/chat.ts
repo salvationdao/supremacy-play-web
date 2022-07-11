@@ -22,14 +22,27 @@ export interface BanProposalStruct {
 
 export interface PunishListItem {
     id: string
-    player_id: string
-    punish_option_id: string
-    punish_until: Date
     related_punish_vote_id: string
+    ban_from: string
+    battle_number?: number
+    banned_player_id: string
+    banned_by_id: string
+    reason: string
+    banned_at: Date
+    end_at: Date
+    manually_unban_by_id?: string
+    manually_unban_reason?: string
+    manually_unban_at?: Date
+    ban_sups_contribute: boolean
+    ban_location_select: boolean
+    ban_send_chat: boolean
+    ban_view_chat: boolean
+    restrictions: string[]
+    ban_by_user: User
     created_at: Date
     updated_at: Date
     deleted_at: Date
-    related_punish_vote: {
+    related_punish_vote?: {
         id: string
         punish_option_id: string
         reason: string
@@ -43,15 +56,6 @@ export interface PunishListItem {
         status: "PASSED" | "FAILED" | "PENDING"
         started_at: Date
         ended_at: Date
-        created_at: Date
-        updated_at: Date
-        deleted_at: Date
-    }
-    punish_option: {
-        id: string
-        description: string
-        key: string
-        punish_duration_hours: 24
         created_at: Date
         updated_at: Date
         deleted_at: Date
