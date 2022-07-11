@@ -72,7 +72,7 @@ export const WarMachineCommandAlert = ({ data, getFaction }: { data: WarMachineC
 
     return (
         <ClipThing
-            clipSize="6px"
+            clipSize="3px"
             border={{
                 borderColor: mainColor || colors.grey,
                 isFancy: true,
