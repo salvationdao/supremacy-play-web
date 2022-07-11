@@ -81,10 +81,10 @@ export const SystemBanMessage = ({
                             />
                         </LineItem>
 
-                        <LineItem title="RESTRICTION">
+                        <LineItem title="RESTRICTED">
                             <Box>
                                 {restrictions.map((res, i) => (
-                                    <Typography key={res + i} sx={{ pl: 1.5 }}>
+                                    <Typography key={res + i} sx={{ display: "block !important" }}>
                                         • {res}
                                     </Typography>
                                 ))}
