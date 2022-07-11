@@ -105,7 +105,7 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
 
     const config: MoveableResizableConfig = useMemo(
         () => ({
-            localStoragePrefix: "quickDeploy",
+            localStoragePrefix: "quickDeploy1",
             // Defaults
             defaultPosX: 330,
             defaultPosY: 0,

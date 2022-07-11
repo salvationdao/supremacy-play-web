@@ -39,7 +39,7 @@ export const MiniMap = () => {
     // Map config
     const config: MoveableResizableConfig = useMemo(
         () => ({
-            localStoragePrefix: "minimap",
+            localStoragePrefix: "miniMap1",
             // Defaults
             defaultPosX: 330,
             defaultPosY: 0,

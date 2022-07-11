@@ -17,7 +17,7 @@ export const VotingSystem = () => {
 
     const config: MoveableResizableConfig = useMemo(
         () => ({
-            localStoragePrefix: "votingSystem",
+            localStoragePrefix: "votingSystem1",
             // Defaults
             defaultPosX: 0,
             defaultPosY: 0,
