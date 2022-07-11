@@ -31,7 +31,7 @@ export const SystemBanMessage = ({
                         px: "1.5rem",
                     }}
                 >
-                    <Stack direction="row" spacing=".8rem" sx={{ mb: ".5rem", opacity: 0.7 }} alignItems="center">
+                    <Stack direction="row" spacing=".8rem" sx={{ opacity: 0.7 }} alignItems="center">
                         <SvgAnnouncement size="1.1rem" sx={{ pb: ".35rem" }} />
                         <Typography sx={{ fontWeight: "fontWeightBold" }}>SYSTEM BAN</Typography>
 
