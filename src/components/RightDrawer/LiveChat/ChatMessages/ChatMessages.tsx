@@ -135,57 +135,59 @@ const ChatMessagesInner = ({
                     },
                 }}
             >
-                <Stack spacing="1rem" sx={{ mt: ".88rem" }}>
-                    {chatMessages && chatMessages.length > 0 ? (
-                        chatMessages.map((message) => {
-                            if (message.type == "PUNISH_VOTE") {
-                                const data = message.data as PunishMessageData
-                                return (
-                                    <PunishMessage
-                                        key={`${data.issued_by_user.id} - ${message.sent_at.toISOString()}`}
-                                        data={data}
-                                        sentAt={message.sent_at}
-                                        fontSize={fontSize}
-                                        getFaction={getFaction}
-                                    />
-                                )
-                            }
+                <Box sx={{ height: 0 }}>
+                    <Stack spacing="1rem" sx={{ mt: ".88rem" }}>
+                        {chatMessages && chatMessages.length > 0 ? (
+                            chatMessages.map((message) => {
+                                if (message.type == "PUNISH_VOTE") {
+                                    const data = message.data as PunishMessageData
+                                    return (
+                                        <PunishMessage
+                                            key={`${data.issued_by_user.id} - ${message.sent_at.toISOString()}`}
+                                            data={data}
+                                            sentAt={message.sent_at}
+                                            fontSize={fontSize}
+                                            getFaction={getFaction}
+                                        />
+                                    )
+                                }
 
-                            if (message.type == "TEXT") {
-                                const data = message.data as TextMessageData
-                                const isEmoji: boolean = checkIfIsEmoji(data.message)
-                                return (
-                                    <TextMessage
-                                        key={`${data.from_user.id} - ${message.sent_at.toISOString()}`}
-                                        data={data}
-                                        sentAt={message.sent_at}
-                                        fontSize={fontSize}
-                                        filterZeros={filterZeros}
-                                        filterSystemMessages={filterSystemMessages}
-                                        isSent={message.locallySent ? sentMessages.includes(message.sent_at) : true}
-                                        isFailed={data.from_user.id === user?.id ? failedMessages.includes(message.sent_at) : false}
-                                        getFaction={getFaction}
-                                        user={user}
-                                        isEmoji={isEmoji}
-                                        locallySent={message.locallySent}
-                                    />
-                                )
-                            }
+                                if (message.type == "TEXT") {
+                                    const data = message.data as TextMessageData
+                                    const isEmoji: boolean = checkIfIsEmoji(data.message)
+                                    return (
+                                        <TextMessage
+                                            key={`${data.from_user.id} - ${message.sent_at.toISOString()}`}
+                                            data={data}
+                                            sentAt={message.sent_at}
+                                            fontSize={fontSize}
+                                            filterZeros={filterZeros}
+                                            filterSystemMessages={filterSystemMessages}
+                                            isSent={message.locallySent ? sentMessages.includes(message.sent_at) : true}
+                                            isFailed={data.from_user.id === user?.id ? failedMessages.includes(message.sent_at) : false}
+                                            getFaction={getFaction}
+                                            user={user}
+                                            isEmoji={isEmoji}
+                                            locallySent={message.locallySent}
+                                        />
+                                    )
+                                }
 
-                            return null
-                        })
-                    ) : (
-                        <Typography
-                            sx={{
-                                color: colors.grey,
-                                textAlign: "center",
-                                userSelect: "tex !important",
-                            }}
-                        >
-                            There are no messages yet.
-                        </Typography>
-                    )}
-                </Stack>
+                                return null
+                            })
+                        ) : (
+                            <Typography
+                                sx={{
+                                    color: colors.grey,
+                                    textAlign: "center",
+                                    userSelect: "tex !important",
+                                }}
+                            >
+                                There are no messages yet.
+                            </Typography>
+                        )}
+                    </Stack>
+                </Box>
             </Box>
 
             <Fade in={!autoScroll} timeout={2200} easing={{ exit: "cubic-bezier(0,.99,.28,1.01)" }}>

@@ -40,7 +40,7 @@ export const DrawerButtons = () => {
                         <TabButton
                             key={r.id}
                             label={r.label}
-                            enable={!!r.enable}
+                            enable={true}
                             icon={r.icon}
                             onClick={() => {
                                 if (location.hash === r.hash) {
