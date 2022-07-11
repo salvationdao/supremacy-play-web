@@ -47,8 +47,12 @@ export const PunishmentList = ({ open, onClose, punishments }: Props) => {
 
                         <Stack spacing=".6rem">
                             {punishments.map((p) => {
-                                let banFrom = "PLAYER BAN"
-                                if (p.ban_from === "SYSTEM") banFrom = "SYSTEM BAN"
+                                let banFrom = "PUNISHED BY PLAYERS"
+                                if (p.ban_from === "SYSTEM") {
+                                    banFrom = "PUNISHED BY SYSTEM"
+                                } else if (p.ban_from === "ADMIN") {
+                                    banFrom = "PUNISHED BY ADMIN"
+                                }
 
                                 return (
                                     <Stack key={p.id} spacing=".5rem" sx={{ px: "1.2rem", py: ".8rem", backgroundColor: "#FFFFFF08" }}>

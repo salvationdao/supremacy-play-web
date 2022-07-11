@@ -1,10 +1,10 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { Faction, SystemBanMessageData } from "../../../../../types"
+import { StyledImageText } from "../../../.."
+import { SvgAnnouncement, SvgCooldown } from "../../../../../assets"
 import { dateFormatter } from "../../../../../helpers"
-import { SvgAnnouncement } from "../../../../../assets"
-import { StyledImageText } from "../../../../Notifications/Common/StyledImageText"
 import { colors } from "../../../../../theme/theme"
-import { useMemo } from "react"
+import { Faction, SystemBanMessageData } from "../../../../../types"
+import { LineItem } from "../../BanProposal/BanProposal"
 
 export const SystemBanMessage = ({
     data,
@@ -17,9 +17,6 @@ export const SystemBanMessage = ({
     fontSize: number
     getFaction: (factionID: string) => Faction
 }) => {
-    const factionColor = useMemo(() => (data?.faction_id ? getFaction(data.faction_id).primary_color : "#FFFFFF"), [data?.faction_id, getFaction])
-    const factionLogoUrl = useMemo(() => (data?.faction_id ? getFaction(data.faction_id).logo_url : ""), [data?.faction_id, getFaction])
-
     if (!data) return null
 
     const { banned_user, ban_duration, is_permanent_ban, reason, restrictions } = data
@@ -34,7 +31,7 @@ export const SystemBanMessage = ({
                         px: "1.5rem",
                     }}
                 >
-                    <Stack direction="row" spacing=".6rem" sx={{ mb: ".5rem", opacity: 0.7 }} alignItems="center">
+                    <Stack direction="row" spacing=".8rem" sx={{ mb: ".5rem", opacity: 0.7 }} alignItems="center">
                         <SvgAnnouncement size="1.1rem" sx={{ pb: ".35rem" }} />
                         <Typography sx={{ fontWeight: "fontWeightBold" }}>SYSTEM BAN</Typography>
 
@@ -52,29 +49,24 @@ export const SystemBanMessage = ({
                         </Typography>
                     </Stack>
 
-                    <Box
+                    <Stack
+                        spacing=".3rem"
                         sx={{
+                            py: "1rem",
+                            px: "1.5rem",
+                            backgroundColor: "#00000020",
                             ".MuiTypography-root": {
                                 display: "inline",
-                                fontSize: fontSize ? `${1.3 * fontSize}rem` : "1.3rem",
+                                lineHeight: 1,
+                                fontSize: fontSize ? `${1.35 * fontSize}rem` : "1.35rem",
                             },
                         }}
                     >
-                        <Typography sx={{ strong: { color: colors.offWhite } }}>
-                            <strong>REASON:</strong> {reason}
-                        </Typography>
-                    </Box>
+                        <LineItem title="REASON" color={colors.green}>
+                            <Typography>{reason}</Typography>
+                        </LineItem>
 
-                    <Box
-                        sx={{
-                            ".MuiTypography-root": {
-                                display: "inline",
-                                fontSize: fontSize ? `${1.3 * fontSize}rem` : "1.3rem",
-                            },
-                        }}
-                    >
-                        <Typography sx={{ strong: { color: colors.offWhite } }}>
-                            <strong>PLAYER:</strong>{" "}
+                        <LineItem title="AGAINST">
                             <StyledImageText
                                 text={
                                     <>
@@ -82,28 +74,30 @@ export const SystemBanMessage = ({
                                         <span style={{ marginLeft: ".2rem", opacity: 0.7 }}>{`#${banned_user.gid}`}</span>
                                     </>
                                 }
-                                color={factionColor || "#FFFFFF"}
-                                imageUrl={factionLogoUrl}
+                                color={getFaction(banned_user.faction_id).primary_color || "#FFFFFF"}
+                                imageUrl={getFaction(banned_user.faction_id).logo_url}
                                 imageMb={-0.2}
                                 imageSize={1.4}
                             />
-                        </Typography>
-                    </Box>
-                    <Box>
-                        <Typography sx={{ strong: { color: colors.offWhite } }}>
-                            <strong>DURATION:</strong> {is_permanent_ban ? "PERMANENT" : ban_duration}
-                        </Typography>
-                    </Box>
-                    <Typography sx={{ strong: { color: colors.offWhite } }}>
-                        <strong>RESTRICTION{restrictions.length === 1 ? "" : "S"}:</strong>
-                    </Typography>
-                    <Box>
-                        {restrictions.map((res, i) => (
-                            <Typography key={res + i} sx={{ pl: 1.5 }}>
-                                • {res}
-                            </Typography>
-                        ))}
-                    </Box>
+                        </LineItem>
+
+                        <LineItem title="RESTRICTION">
+                            <Box>
+                                {restrictions.map((res, i) => (
+                                    <Typography key={res + i} sx={{ pl: 1.5 }}>
+                                        • {res}
+                                    </Typography>
+                                ))}
+                            </Box>
+                        </LineItem>
+
+                        <LineItem title="DURATION">
+                            <Stack spacing=".24rem" direction="row" alignItems="center" justifyContent="center">
+                                <SvgCooldown component="span" size="1.4rem" sx={{ pb: ".25rem" }} />
+                                <Typography>{is_permanent_ban ? "PERMANENT" : ban_duration}</Typography>
+                            </Stack>
+                        </LineItem>
+                    </Stack>
                 </Stack>
             </Box>
         </Box>
