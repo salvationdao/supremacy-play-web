@@ -22,6 +22,7 @@ export interface MechMoveCommand {
     cancelled_at?: string
     reached_at?: string
     remain_cooldown_seconds: number
+    is_mini_mech?: boolean
 }
 
 interface MechMoveCommandProps {
