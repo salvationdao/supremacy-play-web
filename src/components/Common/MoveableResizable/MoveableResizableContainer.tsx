@@ -73,6 +73,7 @@ export const MoveableResizableContainer = createContainer((initialState: Moveabl
 
     const onMovingStopped = useCallback(
         (data: Position) => {
+            if (!data.x || !data.y) return
             setCurPosX(data.x)
             setCurPosY(data.y)
             localStorage.setItem(`${localStoragePrefix}PosX`, data.x.toString())
@@ -83,6 +84,7 @@ export const MoveableResizableContainer = createContainer((initialState: Moveabl
 
     const onResizeStopped = useCallback(
         (data: Dimension) => {
+            if (!data.width || !data.height) return
             setCurWidth(data.width)
             setCurHeight(data.height)
             localStorage.setItem(`${localStoragePrefix}SizeX`, data.width.toString())
