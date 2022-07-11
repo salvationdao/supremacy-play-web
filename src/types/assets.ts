@@ -207,6 +207,8 @@ export interface Weapon extends Collection {
     weapon_skin?: WeaponSkin
     updated_at: Date
     created_at: Date
+    market_locked: boolean
+    item_sale_id?: string
 }
 
 export interface WeaponSkin extends Collection {

@@ -12,8 +12,8 @@ export const WeaponButtons = ({ weaponDetails }: { weaponDetails: Weapon }) => {
     const location = useLocation()
     const theme = useTheme()
 
-    const marketLocked = weaponDetails.locked_to_marketplace
-    const isInMarketplace = false // TODO
+    const marketLocked = weaponDetails.market_locked
+    const isInMarketplace = !!weaponDetails.item_sale_id
 
     if (weaponDetails.equipped_on) {
         return null
