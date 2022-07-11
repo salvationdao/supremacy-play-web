@@ -1,16 +1,16 @@
 import { Box, Fade, Stack } from "@mui/material"
 import { useMemo } from "react"
 import { BattleAbilityItem, FactionAbilities, MoveableResizable } from ".."
-import { STAGING_OR_DEV_ONLY } from "../../constants"
 import { useAuth, useGame, useMobile } from "../../containers"
 import { useTheme } from "../../containers/theme"
+import { FeatureName } from "../../types"
 import { ContributorAmount } from "../BattleStats/ContributorAmount"
 import { MoveableResizableConfig } from "../Common/MoveableResizable/MoveableResizableContainer"
 import { PlayerAbilities } from "./PlayerAbilities/PlayerAbilities"
 
 export const VotingSystem = () => {
     const theme = useTheme()
-    const { userID, factionID } = useAuth()
+    const { userID, factionID, userHasFeature } = useAuth()
     const { isMobile } = useMobile()
     const { bribeStage } = useGame()
     const isBattleStarted = useMemo(() => bribeStage && bribeStage.phase !== "HOLD", [bribeStage])
@@ -86,7 +86,7 @@ export const VotingSystem = () => {
                             <Stack spacing="1rem" sx={{ direction: "ltr", pt: ".4rem", pb: "1.2rem" }}>
                                 <BattleAbilityItem key={factionID} />
                                 <FactionAbilities />
-                                {STAGING_OR_DEV_ONLY && userID && <PlayerAbilities />}
+                                {userHasFeature(FeatureName.playerAbility) && userID && <PlayerAbilities />}
                             </Stack>
                         </Box>
                     </Stack>
