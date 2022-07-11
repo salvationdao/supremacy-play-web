@@ -116,6 +116,22 @@ const BattleArenaPageInner = () => {
                 ),
             },
             {
+                id: "buy-abilities",
+                hash: "#buy-abilities",
+                icon: <SvgAbility size="1.2rem" sx={{ pt: ".1rem" }} />,
+                label: "BUY ABILITIES",
+                Component: () => (
+                    <Stack sx={{ position: "relative", height: "100%" }}>
+                        <QuickPlayerAbilities
+                            open
+                            onClose={() => {
+                                return
+                            }}
+                        />
+                    </Stack>
+                ),
+            },
+            {
                 id: "prev-battle",
                 hash: "#prev-battle",
                 icon: <SvgHistoryClock size="1.2rem" sx={{ pt: ".1rem" }} />,
@@ -151,6 +167,8 @@ const BattleArenaPageInner = () => {
             <Stack sx={{ height: "100%", zIndex: siteZIndex.RoutePage }}>
                 <Box id={isMobile ? "" : "game-ui-container"} sx={{ position: "relative", flex: 1 }}>
                     <Stream />
+
+                    <Notifications />
 
                     {isServerUp && !isMobile && (
                         <>
