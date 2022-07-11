@@ -72,7 +72,7 @@ export interface UserStat {
 
 export interface Feature {
     id: string
-    name: string
+    name: FeatureName
 }
 
 export enum FeatureName {

@@ -1,17 +1,17 @@
 import { createContext, Dispatch, useCallback, useContext, useEffect, useRef, useState } from "react"
 import { useQuery } from "react-fetching-library"
-import { Faction, User, UserRank, UserStat } from "../types"
-import { GAME_SERVER_HOSTNAME, PASSPORT_WEB } from "../constants"
-import { PunishListItem } from "../types/chat"
-import { shadeColor } from "../helpers"
-import { useInactivity } from "../hooks/useInactivity"
-import { useGameServerCommandsUser, useGameServerSubscriptionUser } from "../hooks/useGameServer"
-import { GameServerKeys } from "../keys"
-import { useTheme } from "./theme"
-import { GameServerLoginCheck, PassportLoginCheck } from "../fetching"
 import { useSupremacy } from "."
+import { GAME_SERVER_HOSTNAME, PASSPORT_WEB } from "../constants"
+import { GameServerLoginCheck, PassportLoginCheck } from "../fetching"
+import { shadeColor } from "../helpers"
+import { useGameServerCommandsUser, useGameServerSubscriptionUser } from "../hooks/useGameServer"
+import { useInactivity } from "../hooks/useInactivity"
+import { GameServerKeys } from "../keys"
 import { colors } from "../theme/theme"
+import { Faction, FeatureName, User, UserRank, UserStat } from "../types"
+import { PunishListItem } from "../types/chat"
 import { useFingerprint } from "./fingerprint"
+import { useTheme } from "./theme"
 
 export const FallbackUser: User = {
     id: "",
@@ -36,7 +36,7 @@ export const FallbackFaction: Faction = {
 export interface AuthState {
     isLoggingIn: boolean
     onLogInClick: () => void
-    userHasFeature: (featureName: string) => boolean
+    userHasFeature: (featureName: FeatureName) => boolean
     user: User
     userID: string
     factionID: string
@@ -191,13 +191,12 @@ export const AuthProvider: React.FC = ({ children }) => {
     }, [isLoggingIn])
 
     const userHasFeature = useCallback(
-        (featureName: string) => {
-            if (!user || !user.features) return false
+        (featureName: FeatureName) => {
+            if (!userID || !user.features) return false
             const index = user.features.findIndex((el) => el.name === featureName)
-
             return index !== -1
         },
-        [user],
+        [user.features, userID],
     )
     return (
         <AuthContext.Provider
