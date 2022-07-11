@@ -57,6 +57,7 @@ const BottomNavInner = () => {
                         backgroundColor: `${primaryColor}12`,
                         ".MuiTab-root, .Mui-selected": { color: "#FFFFFF", minHeight: 0, fontSize: "1.3rem", py: "1rem" },
                         ".MuiTabs-indicator": { backgroundColor: primaryColor },
+                        ".MuiTabScrollButton-root": { display: "none" },
                         ...(isNavOpen
                             ? {
                                   ".Mui-selected": {
