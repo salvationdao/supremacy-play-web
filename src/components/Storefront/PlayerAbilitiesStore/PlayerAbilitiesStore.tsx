@@ -192,32 +192,34 @@ export const PlayerAbilitiesStore = () => {
                             active it is at any given time. When players buy an ability, its price will go up, and if an ability is not being bought, its price will
                             go down."
                 >
-                    <FancyButton
-                        to={`/fleet/${HANGAR_TABS.Abilities}`}
-                        clipThingsProps={{
-                            clipSize: "9px",
-                            backgroundColor: theme.factionTheme.primary,
-                            border: { isFancy: true, borderColor: theme.factionTheme.primary, borderThickness: "2px" },
-                            sx: { position: "relative" },
-                        }}
-                        sx={{
-                            display: "flex",
-                            flexWrap: "nowrap",
-                            px: "2rem",
-                            py: ".3rem",
-                        }}
-                    >
-                        <Typography
-                            variant="caption"
+                    <Box sx={{ flexShrink: 0, pr: "1.5rem" }}>
+                        <FancyButton
+                            to={`/fleet/${HANGAR_TABS.Abilities}`}
+                            clipThingsProps={{
+                                clipSize: "9px",
+                                backgroundColor: theme.factionTheme.primary,
+                                border: { isFancy: true, borderColor: theme.factionTheme.primary, borderThickness: "2px" },
+                                sx: { position: "relative" },
+                            }}
                             sx={{
-                                color: theme.factionTheme.secondary,
-                                whiteSpace: "nowrap",
-                                fontFamily: fonts.nostromoBlack,
+                                display: "flex",
+                                flexWrap: "nowrap",
+                                px: "2rem",
+                                py: ".3rem",
                             }}
                         >
-                            VIEW OWNED ABILITIES
-                        </Typography>
-                    </FancyButton>
+                            <Typography
+                                variant="caption"
+                                sx={{
+                                    color: theme.factionTheme.secondary,
+                                    whiteSpace: "nowrap",
+                                    fontFamily: fonts.nostromoBlack,
+                                }}
+                            >
+                                VIEW OWNED ABILITIES
+                            </Typography>
+                        </FancyButton>
+                    </Box>
                 </PageHeader>
 
                 <Stack direction="row" spacing=".6rem" alignItems="center" sx={{ ml: "3rem", mt: "2rem", mb: ".6rem" }}>

@@ -55,7 +55,6 @@ export const DimensionContainer = createContainer(() => {
     const recalculateDimensions = useCallback(() => {
         const gameUIContainer = document.getElementById("game-ui-container")
         if (!gameUIContainer) {
-            console.error("Please assign #game-ui-container to the game UI.")
             setGameUIDimensions({ width: 0, height: 0 })
             return
         }
