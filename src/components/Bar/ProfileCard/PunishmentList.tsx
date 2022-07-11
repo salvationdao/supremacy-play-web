@@ -67,7 +67,13 @@ export const PunishmentList = ({ open, onClose, punishments }: Props) => {
                                                 <strong>{banFrom}</strong>
                                             </Typography>
                                             <Typography sx={{ color: theme.factionTheme.secondary }}>
-                                                <strong>UNTIL:</strong> {dateFormatter(p.end_at, false, true)}
+                                                {p.is_permanent ? (
+                                                    <strong>PERMANENT</strong>
+                                                ) : (
+                                                    <>
+                                                        <strong>UNTIL:</strong> {dateFormatter(p.end_at, false, true)}
+                                                    </>
+                                                )}
                                             </Typography>
                                         </Stack>
 

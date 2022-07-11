@@ -42,6 +42,7 @@ export interface PunishListItem {
     created_at: Date
     updated_at: Date
     deleted_at: Date
+    is_permanent: boolean
     related_punish_vote?: {
         id: string
         punish_option_id: string
