@@ -92,16 +92,17 @@ const BottomNavInner = () => {
                 </Tabs>
             </Box>
 
-            <Box id="game-ui-container" sx={{ flex: 1, backgroundColor }}>
-                {isNavOpen &&
-                    tabs.map((item, i) => {
+            {isNavOpen && (
+                <Box id="game-ui-container" sx={{ flex: 1, backgroundColor }}>
+                    {tabs.map((item, i) => {
                         return (
                             <TabPanel key={i} currentValue={currentValue} value={i}>
                                 {item.Component && <item.Component />}
                             </TabPanel>
                         )
                     })}
-            </Box>
+                </Box>
+            )}
         </Stack>
     )
 }

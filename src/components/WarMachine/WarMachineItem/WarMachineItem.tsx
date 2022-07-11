@@ -63,7 +63,9 @@ export const WarMachineItem = ({ warMachine, scale, initialExpanded = false }: {
     const handleClick = useCallback(() => {
         if (hash === highlightedMechHash) {
             setHighlightedMechHash(undefined)
-        } else setHighlightedMechHash(hash)
+        } else {
+            setHighlightedMechHash(hash)
+        }
     }, [hash, highlightedMechHash, setHighlightedMechHash])
 
     // Toggle out isExpanded if other mech is highlighted
@@ -74,7 +76,9 @@ export const WarMachineItem = ({ warMachine, scale, initialExpanded = false }: {
             toggleIsExpanded(true)
             openSkillsPopover()
         }
-    }, [highlightedMechHash, initialExpanded, openSkillsPopover, toggleIsExpanded, warMachine.hash])
+
+        if (isMobile) return () => setHighlightedMechHash(undefined)
+    }, [highlightedMechHash, initialExpanded, isMobile, openSkillsPopover, setHighlightedMechHash, toggleIsExpanded, warMachine.hash])
 
     return (
         <>

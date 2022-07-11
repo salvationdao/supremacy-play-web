@@ -45,9 +45,9 @@ const AppInner = () => {
         <>
             <Stack
                 sx={{
-                    position: "relative",
+                    position: "fixed",
                     width: "100vw",
-                    height: "100vh",
+                    height: "100%",
                     backgroundColor: (theme) => theme.factionTheme.background,
                 }}
             >
