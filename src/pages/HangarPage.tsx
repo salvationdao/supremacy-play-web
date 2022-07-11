@@ -3,6 +3,7 @@ import { SyntheticEvent, useCallback, useEffect, useState } from "react"
 import { useHistory, useLocation, useParams } from "react-router-dom"
 import { HangarBg } from "../assets"
 import { ClipThing } from "../components"
+import { MysteryCrateBanner } from "../components/Common/PageHeaderBanners/MysteryCrateBanner"
 import { KeycardsHangar } from "../components/Hangar/KeycardsHangar/KeycardsHangar"
 import { MysteryCratesHangar } from "../components/Hangar/MysteryCratesHangar/MysteryCratesHangar"
 import { PlayerAbilitiesHangar } from "../components/Hangar/PlayerAbilitiesHangar/PlayerAbilitiesHangar"
@@ -98,7 +99,7 @@ export const HangarPage = () => {
                         </Box>
                     </ClipThing>
 
-                    {/* <MysteryCrateBanner /> */}
+                    <MysteryCrateBanner />
                 </Stack>
 
                 <TabPanel currentValue={currentValue} value={HANGAR_TABS.WarMachines}>
