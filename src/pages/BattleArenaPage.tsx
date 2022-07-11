@@ -168,8 +168,6 @@ const BattleArenaPageInner = () => {
                 <Box id={isMobile ? "" : "game-ui-container"} sx={{ position: "relative", flex: 1 }}>
                     <Stream />
 
-                    <Notifications />
-
                     {isServerUp && !isMobile && (
                         <>
                             <Notifications />
