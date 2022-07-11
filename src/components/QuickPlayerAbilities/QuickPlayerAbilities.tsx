@@ -87,10 +87,10 @@ const QuickPlayerAbilitiesInner = ({ onClose }: { onClose: () => void }) => {
 
     const config: MoveableResizableConfig = useMemo(
         () => ({
-            localStoragePrefix: "quickPlayerAbilities",
+            localStoragePrefix: "quickPlayerAbilities1",
             // Defaults
-            defaultPosX: 760,
-            defaultPosY: 0,
+            defaultPosX: 390,
+            defaultPosY: 40,
             defaultWidth: 360,
             defaultHeight: 245,
             // Position limits
