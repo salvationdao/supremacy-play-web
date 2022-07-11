@@ -16,15 +16,15 @@ export const BottomNav = () => {
 const BottomNavInner = () => {
     const { userID } = useAuth()
     const theme = useTheme()
-    const { isNavOpen, toggleIsNavOpen, additionalTabs } = useMobile()
+    const { isNavOpen, setIsNavOpen, additionalTabs, allowCloseNav } = useMobile()
     const [currentValue, setCurrentValue] = useState(0)
 
     const handleChange = useCallback(
         (event: React.SyntheticEvent, newValue: number) => {
             setCurrentValue(newValue)
-            toggleIsNavOpen(true)
+            setIsNavOpen(true)
         },
-        [toggleIsNavOpen],
+        [setIsNavOpen],
     )
 
     const primaryColor = theme.factionTheme.primary
@@ -57,6 +57,7 @@ const BottomNavInner = () => {
                         backgroundColor: `${primaryColor}12`,
                         ".MuiTab-root, .Mui-selected": { color: "#FFFFFF", minHeight: 0, fontSize: "1.3rem", py: "1rem" },
                         ".MuiTabs-indicator": { backgroundColor: primaryColor },
+                        ".MuiTabScrollButton-root": { display: "none" },
                         ...(isNavOpen
                             ? {
                                   ".Mui-selected": {
@@ -76,7 +77,12 @@ const BottomNavInner = () => {
                                 key={i}
                                 value={i}
                                 onClick={() => {
-                                    if (currentValue === i) toggleIsNavOpen()
+                                    if (currentValue === i) {
+                                        setIsNavOpen((prev) => {
+                                            if (!!prev && !allowCloseNav.current) return prev
+                                            return !prev
+                                        })
+                                    }
                                 }}
                                 label={
                                     <Stack direction="row" alignItems="center" spacing="1rem">

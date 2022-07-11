@@ -17,7 +17,7 @@ export const RightDrawer = () => {
         toggleIsDrawerOpen(location.hash !== RightDrawerHashes.None)
     }, [location.hash, toggleIsDrawerOpen])
 
-    if (isMobile) return <DrawerButtons />
+    if (isMobile) return null
 
     return (
         <>
