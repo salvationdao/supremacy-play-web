@@ -278,10 +278,12 @@ export const getMultiplierDeets = (multiplierKey: string): { image: string } => 
     return { image }
 }
 
-export const dateFormatter = (date: Date, showSeconds?: boolean): string => {
+export const dateFormatter = (date: Date, showSeconds?: boolean, showDate?: boolean): string => {
     let hours = date.getHours()
     const minutes = date.getMinutes()
     const seconds = date.getSeconds()
+    const day = date.getDate()
+    const month = date.getMonth()
 
     // Check whether AM or PM
     const suffix = hours >= 12 ? "PM" : "AM"
@@ -295,6 +297,8 @@ export const dateFormatter = (date: Date, showSeconds?: boolean): string => {
     const seconds2 = seconds < 10 ? "0" + seconds : seconds
 
     if (showSeconds) return `${hours}:${minutes2}:${seconds2} ${suffix}`
+
+    if (showDate) return `${hours}:${minutes2} ${suffix} ${day}/${month}`
 
     return `${hours}:${minutes2} ${suffix}`
 }

@@ -55,33 +55,42 @@ export const PunishmentList = ({ open, onClose, punishments }: Props) => {
                                 }
 
                                 return (
-                                    <Stack key={p.id} spacing=".5rem" sx={{ px: "1.2rem", py: ".8rem", backgroundColor: "#FFFFFF08" }}>
-                                        <Stack direction="row" alignItems="center" justifyContent="space-between" spacing="1rem">
-                                            <Typography sx={{ color: colors.lightNeonBlue }}>
+                                    <Box key={p.id} sx={{ backgroundColor: "#FFFFFF08" }}>
+                                        <Stack
+                                            direction="row"
+                                            alignItems="center"
+                                            justifyContent="space-between"
+                                            spacing="1rem"
+                                            sx={{ backgroundColor: theme.factionTheme.primary, p: ".2rem .8rem" }}
+                                        >
+                                            <Typography sx={{ color: theme.factionTheme.secondary }}>
                                                 <strong>{banFrom}</strong>
                                             </Typography>
-                                            <Typography sx={{ color: colors.lightNeonBlue }}>
-                                                <strong>UNTIL:</strong> {dateFormatter(p.end_at)}
+                                            <Typography sx={{ color: theme.factionTheme.secondary }}>
+                                                <strong>UNTIL:</strong> {dateFormatter(p.end_at, false, true)}
                                             </Typography>
                                         </Stack>
-                                        <Typography sx={{ strong: { color: colors.offWhite } }}>
-                                            <strong>REASON:</strong> {p.reason}
-                                        </Typography>
-                                        <Typography sx={{ strong: { color: colors.offWhite } }}>
-                                            <strong>INITIATED BY:</strong> {p.ban_by_user.username}
-                                            <span style={{ marginLeft: ".2rem", opacity: 0.7 }}>#{p.ban_by_user.gid}</span>
-                                        </Typography>
-                                        <Box>
+
+                                        <Stack spacing=".5rem" sx={{ px: "1.2rem", py: ".8rem", backgroundColor: "#FFFFFF08" }}>
                                             <Typography sx={{ strong: { color: colors.offWhite } }}>
-                                                <strong>RESTRICTION{p.restrictions.length === 1 ? "" : "S"}:</strong>
+                                                <strong>REASON:</strong> {p.reason}
                                             </Typography>
-                                            {p.restrictions.map((res, i) => (
-                                                <Typography key={res + i} sx={{ pl: 1.5 }}>
-                                                    • {res}
+                                            <Typography sx={{ strong: { color: colors.offWhite } }}>
+                                                <strong>INITIATED BY:</strong> {p.ban_by_user.username}
+                                                <span style={{ marginLeft: ".2rem", opacity: 0.7 }}>#{p.ban_by_user.gid}</span>
+                                            </Typography>
+                                            <Box>
+                                                <Typography sx={{ strong: { color: colors.offWhite } }}>
+                                                    <strong>RESTRICTION{p.restrictions.length === 1 ? "" : "S"}:</strong>
                                                 </Typography>
-                                            ))}
-                                        </Box>
-                                    </Stack>
+                                                {p.restrictions.map((res, i) => (
+                                                    <Typography key={res + i} sx={{ pl: 1.5 }}>
+                                                        • {res}
+                                                    </Typography>
+                                                ))}
+                                            </Box>
+                                        </Stack>
+                                    </Box>
                                 )
                             })}
                         </Stack>
