@@ -16,7 +16,6 @@ export const ProfileCard = ({ userID, user }: { userID?: string; user: User }) =
     const [isPunishmentsOpen, toggleIsPunishmentsOpen] = useToggle()
 
     if (!userID) return <ConnectButton />
-    console.log(punishments)
     const { username, faction_id } = user
 
     return (

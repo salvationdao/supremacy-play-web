@@ -2,7 +2,7 @@ import { Box, IconButton, Modal, Stack, Typography } from "@mui/material"
 import { ClipThing } from "../.."
 import { SvgClose } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
-import { dateFormatter, snakeToTitle } from "../../../helpers"
+import { dateFormatter } from "../../../helpers"
 import { colors, fonts } from "../../../theme/theme"
 import { PunishListItem } from "../../../types/chat"
 
