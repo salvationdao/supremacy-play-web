@@ -1,18 +1,24 @@
 import { Box } from "@mui/material"
 import { useTour } from "@reactour/tour"
-import { useStream } from "../../containers"
+import { useOverlayToggles, useStream } from "../../containers"
 import { siteZIndex } from "../../theme/theme"
 import { StreamService } from "../../types"
 import { AntMediaStream } from "./AntMediaStream"
 import { NoStreamScreen } from "./NoStreamScreen"
 import { OvenplayerStream } from "./OvenPlayerStream"
 import { SLPDStream } from "./SLPDStream"
+import { Trailer } from "./Trailer"
 
 export const Stream = () => {
+    const { showTrailer } = useOverlayToggles()
     const { currentStream } = useStream()
     const { isOpen } = useTour()
 
     const isGreenScreen = localStorage.getItem("greenScreen") === "true"
+
+    if (showTrailer) {
+        return <Trailer />
+    }
 
     if (isGreenScreen) {
         return (

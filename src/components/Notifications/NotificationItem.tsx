@@ -1,8 +1,10 @@
 import { Box, Slide } from "@mui/material"
 import { ReactElement, useEffect } from "react"
+import { useMobile } from "../../containers"
 import { useToggle } from "../../hooks"
 
 export const NotificationItem = ({ duration, children }: { duration: number; children: ReactElement }) => {
+    const { isMobile } = useMobile()
     const [isShowing, toggleIsShowing] = useToggle(true)
 
     useEffect(() => {
@@ -15,7 +17,7 @@ export const NotificationItem = ({ duration, children }: { duration: number; chi
 
     return (
         <Slide in={isShowing} direction="left">
-            <Box sx={{ width: "32rem", opacity: 1, filter: "drop-shadow(0 3px 3px #00000050)" }}>{children}</Box>
+            <Box sx={{ width: isMobile ? "100%" : "32rem", opacity: 1, filter: "drop-shadow(0 3px 3px #00000050)" }}>{children}</Box>
         </Slide>
     )
 }

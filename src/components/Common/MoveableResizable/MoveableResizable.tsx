@@ -4,6 +4,7 @@ import { Rnd } from "react-rnd"
 import { TooltipHelper } from "../.."
 import { SvgClose, SvgDrag, SvgInfoCircular } from "../../../assets"
 import { ClipThing } from "../../../components"
+import { useMobile } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { shadeColor } from "../../../helpers"
 import { colors, siteZIndex } from "../../../theme/theme"
@@ -15,9 +16,11 @@ interface MoveableResizableProps {
 }
 
 export const MoveableResizable = (props: MoveableResizableProps) => {
+    const { isMobile } = useMobile()
+
     return (
         <MoveableResizableProvider initialState={props.config}>
-            <MoveableResizableInner {...props} />
+            {isMobile ? <>{props.children}</> : <MoveableResizableInner {...props} />}
         </MoveableResizableProvider>
     )
 }

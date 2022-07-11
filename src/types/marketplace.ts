@@ -52,6 +52,13 @@ export interface MarketCrate {
     description: string
 }
 
+export interface MarketWeapon {
+    id: string
+    label: string
+    weapon_type: string
+    avatar_url: string
+}
+
 export interface MarketplaceBuyAuctionItem {
     id: string
     item_id: string
@@ -81,6 +88,7 @@ export interface MarketplaceBuyAuctionItem {
     }
     keycard?: MarketKeycard
     mystery_crate?: MarketCrate
+    weapon?: MarketWeapon
     sold_for?: string
     sold_at?: Date
     sold_to?: MarketUser

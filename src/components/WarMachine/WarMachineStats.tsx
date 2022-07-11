@@ -1,7 +1,7 @@
 import { Box, Fade, Slide, Stack } from "@mui/material"
 import { ReactElement, useEffect, useMemo } from "react"
 import { ClipThing } from ".."
-import { useAuth, useGame, useSupremacy } from "../../containers"
+import { useAuth, useGame, useMobile, useSupremacy } from "../../containers"
 import { useTheme } from "../../containers/theme"
 import { useToggle } from "../../hooks"
 import { siteZIndex } from "../../theme/theme"
@@ -9,6 +9,7 @@ import { AIType } from "../../types"
 import { WarMachineItem } from "./WarMachineItem/WarMachineItem"
 
 export const WarMachineStats = () => {
+    const { isMobile } = useMobile()
     const theme = useTheme()
     const { factionID, userID } = useAuth()
     const { battleIdentifier } = useSupremacy()
@@ -30,6 +31,49 @@ export const WarMachineStats = () => {
     )
 
     if (!warMachines || warMachines.length <= 0) return null
+
+    if (isMobile) {
+        if (!show) return null
+        return (
+            <>
+                {haveFactionMechs && (
+                    <Box
+                        sx={{
+                            backgroundColor: "#FFFFFF12",
+                            boxShadow: 2,
+                            border: "#FFFFFF20 1px solid",
+                            p: "1.2rem 1.4rem",
+                            display: "grid",
+                            gridTemplateColumns: "repeat(2, 50%)",
+                        }}
+                    >
+                        {factionMechs.map((wm) => (
+                            <WarMachineItem key={`${wm.participantID} - ${wm.hash}`} warMachine={wm} scale={0.7} initialExpanded />
+                        ))}
+                    </Box>
+                )}
+
+                {otherMechs.length > 0 && (
+                    <Box
+                        sx={{
+                            backgroundColor: "#FFFFFF12",
+                            boxShadow: 2,
+                            border: "#FFFFFF20 1px solid",
+                            p: "1.2rem 1.4rem",
+                            display: "grid",
+                            gridTemplateColumns: "repeat(2, 50%)",
+                        }}
+                    >
+                        {otherMechs
+                            .sort((a, b) => a.factionID.localeCompare(b.factionID))
+                            .map((wm) => (
+                                <WarMachineItem key={`${wm.participantID} - ${wm.hash}`} warMachine={wm} scale={0.7} initialExpanded />
+                            ))}
+                    </Box>
+                )}
+            </>
+        )
+    }
 
     return (
         <Slide in={show} direction="up" key={battleIdentifier}>

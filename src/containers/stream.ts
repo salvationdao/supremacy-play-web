@@ -160,6 +160,8 @@ export const StreamContainer = createContainer(() => {
                 setNewStreamOptions(quietestStreams, true)
                 return
             }
+        } else if (quietestStreams.length > 0) {
+            setCurrentStream(quietestStreams[quietestStreams.length - 1])
         }
 
         setNewStreamOptions(quietestStreams)
