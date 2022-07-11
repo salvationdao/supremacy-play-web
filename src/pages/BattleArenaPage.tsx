@@ -67,7 +67,7 @@ const BattleArenaPageInner = () => {
                                 overflowY: "auto",
                                 overflowX: "hidden",
                                 ml: ".4rem",
-                                mr: ".3rem",
+                                mr: ".8rem",
                                 pr: ".1rem",
                                 mt: ".6rem",
                                 mb: "2rem",
