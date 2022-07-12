@@ -41,12 +41,9 @@ export const WeaponButtons = ({ weaponDetails }: { weaponDetails: Weapon }) => {
                             secondaryColor={isInMarketplace ? colors.red : undefined}
                             backgroundColor={isInMarketplace ? theme.factionTheme.background : colors.red}
                             label={isInMarketplace ? "VIEW LISTING" : "SELL"}
-                            disabled={isInMarketplace}
                             to={
-                                weaponDetails.locked_to_marketplace
-                                    ? !weaponDetails.item_sale_id
-                                        ? undefined
-                                        : `/marketplace/${MARKETPLACE_TABS.Weapons}/${weaponDetails.item_sale_id}${location.hash}`
+                                weaponDetails.item_sale_id
+                                    ? `/marketplace/${MARKETPLACE_TABS.Weapons}/${weaponDetails.item_sale_id}${location.hash}`
                                     : `/marketplace/sell?itemType=${ItemType.Weapon}&assetID=${weaponDetails.id}${location.hash}`
                             }
                         />
