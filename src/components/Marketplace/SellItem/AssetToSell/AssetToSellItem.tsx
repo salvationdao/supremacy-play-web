@@ -35,8 +35,8 @@ export const AssetToSellItem = ({
     // Things for render
     const [avatarUrl, setAvatarUrl] = useState<string>()
     const [imageUrl, setImageUrl] = useState<string>()
-    const [videoUrl, setVideoUrl] = useState<string>()
-    const [videoUrl2, setVideoUrl2] = useState<string>()
+    const [animationUrl, setAnimationUrl] = useState<string>()
+    const [cardAnimationUrl, setCardAnimationUrl] = useState<string>()
     const [label, setLabel] = useState<string>()
     const [weaponType, setWeaponType] = useState<string>()
     const [description, setDescription] = useState<string>()
@@ -50,23 +50,23 @@ export const AssetToSellItem = ({
         if (itemType === ItemType.WarMachine) {
             setAvatarUrl(assetToSell.mech?.avatar_url || mechDetails?.chassis_skin?.avatar_url)
             setImageUrl(assetToSell.mech?.large_image_url || mechDetails?.chassis_skin?.large_image_url)
-            setVideoUrl(assetToSell.mech?.animation_url || mechDetails?.chassis_skin?.animation_url)
-            setVideoUrl2(assetToSell.mech?.card_animation_url || mechDetails?.chassis_skin?.card_animation_url)
+            setAnimationUrl(assetToSell.mech?.animation_url || mechDetails?.chassis_skin?.animation_url)
+            setCardAnimationUrl(assetToSell.mech?.card_animation_url || mechDetails?.chassis_skin?.card_animation_url)
             setLabel(assetToSell.mech?.name || assetToSell.mech?.label || mechDetails?.name || mechDetails?.label)
             const tier = assetToSell.mech?.tier || mechDetails?.tier
             setRarityDeets(tier ? getRarityDeets(tier) : undefined)
         } else if (itemType === ItemType.MysteryCrate) {
             setAvatarUrl(assetToSell.mysteryCrate?.image_url || mysteryCrate?.image_url || SafePNG)
             setImageUrl(assetToSell.mysteryCrate?.image_url || mysteryCrate?.image_url || SafePNG)
-            setVideoUrl(assetToSell.mysteryCrate?.animation_url || mysteryCrate?.animation_url)
-            setVideoUrl2(assetToSell.mysteryCrate?.card_animation_url || mysteryCrate?.card_animation_url)
+            setAnimationUrl(assetToSell.mysteryCrate?.animation_url || mysteryCrate?.animation_url)
+            setCardAnimationUrl(assetToSell.mysteryCrate?.card_animation_url || mysteryCrate?.card_animation_url)
             setLabel(assetToSell.mysteryCrate?.label || mysteryCrate?.label)
             setDescription(assetToSell.mysteryCrate?.description || mysteryCrate?.description)
         } else if (itemType === ItemType.Weapon) {
-            setAvatarUrl(assetToSell.weapon?.avatar_url || weaponDetails?.avatar_url)
-            setImageUrl(assetToSell.weapon?.large_image_url || weaponDetails?.large_image_url)
-            setVideoUrl(assetToSell.weapon?.animation_url || weaponDetails?.animation_url)
-            setVideoUrl2(assetToSell.weapon?.card_animation_url || weaponDetails?.card_animation_url)
+            setAvatarUrl(assetToSell.weapon?.image_url || weaponDetails?.image_url)
+            setImageUrl(assetToSell.weapon?.image_url || weaponDetails?.image_url)
+            setAnimationUrl(assetToSell.weapon?.animation_url || weaponDetails?.animation_url)
+            setCardAnimationUrl(assetToSell.weapon?.card_animation_url || weaponDetails?.card_animation_url)
             setLabel(assetToSell.weapon?.label)
             setWeaponType(assetToSell.weapon?.weapon_type || weaponDetails?.weapon_type)
             const tier = assetToSell.weapon?.tier || weaponDetails?.tier
@@ -74,8 +74,8 @@ export const AssetToSellItem = ({
         } else if (itemType === ItemType.Keycards) {
             setAvatarUrl(assetToSell.keycard?.blueprints.image_url || keycard?.blueprints.image_url || KeycardPNG)
             setImageUrl(assetToSell.keycard?.blueprints.image_url || keycard?.blueprints.image_url || KeycardPNG)
-            setVideoUrl(assetToSell.keycard?.blueprints.animation_url || keycard?.blueprints.animation_url)
-            setVideoUrl2(assetToSell.keycard?.blueprints.card_animation_url || keycard?.blueprints.card_animation_url)
+            setAnimationUrl(assetToSell.keycard?.blueprints.animation_url || keycard?.blueprints.animation_url)
+            setCardAnimationUrl(assetToSell.keycard?.blueprints.card_animation_url || keycard?.blueprints.card_animation_url)
             setLabel(assetToSell.keycard?.blueprints.label || keycard?.blueprints.label)
             setDescription(assetToSell.keycard?.blueprints.description || keycard?.blueprints.description)
         }
@@ -170,7 +170,7 @@ export const AssetToSellItem = ({
                     width: orientation === "horizontal" ? "7rem" : "100%",
                 }}
             >
-                <MediaPreview imageUrl={playVideo ? imageUrl : avatarUrl} {...{ videoUrls: playVideo ? [videoUrl, videoUrl2] : [] }} />
+                <MediaPreview imageUrl={playVideo ? imageUrl : avatarUrl} {...{ videoUrls: playVideo ? [animationUrl, cardAnimationUrl] : [] }} />
             </Box>
 
             <Stack spacing=".3rem">

@@ -9,6 +9,7 @@ import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
 
 export const MechLoadoutItem = ({
     imageUrl,
+    videoUrls,
     label,
     primaryColor,
     onClick,
@@ -17,6 +18,7 @@ export const MechLoadoutItem = ({
     rarity,
 }: {
     imageUrl?: string
+    videoUrls?: (string | undefined)[] | undefined
     label: string
     primaryColor: string
     onClick?: () => void
@@ -46,7 +48,7 @@ export const MechLoadoutItem = ({
                         {isEmpty ? (
                             <SvgPlus fill={`${primaryColor}80`} size="2rem" />
                         ) : (
-                            <MediaPreview imageUrl={imageUrl} objectFit="contain" sx={{ p: ".5rem" }} />
+                            <MediaPreview imageUrl={imageUrl} videoUrls={videoUrls} objectFit="contain" sx={{ p: ".5rem" }} />
                         )}
 
                         {Icon && <Icon fill={primaryColor} size="2rem" sx={{ position: "absolute", top: ".1rem", left: ".5rem" }} />}

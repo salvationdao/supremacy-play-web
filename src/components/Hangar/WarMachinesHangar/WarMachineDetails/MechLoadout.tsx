@@ -38,7 +38,13 @@ export const MechLoadout = ({ mechDetails }: { mechDetails: MechDetails }) => {
                 }}
             >
                 {powerCore ? (
-                    <MechLoadoutItem imageUrl={powerCore.avatar_url} label={powerCore.label} primaryColor={colors.powerCore} Icon={SvgPowerCore} />
+                    <MechLoadoutItem
+                        imageUrl={powerCore.image_url}
+                        videoUrls={[powerCore.card_animation_url]}
+                        label={powerCore.label}
+                        primaryColor={colors.powerCore}
+                        Icon={SvgPowerCore}
+                    />
                 ) : (
                     <MechLoadoutItem label="POWER CORE" primaryColor={colors.powerCore} onClick={() => console.log("AAAAA")} isEmpty />
                 )}
@@ -46,7 +52,16 @@ export const MechLoadout = ({ mechDetails }: { mechDetails: MechDetails }) => {
                 {weapons &&
                     weapons.length > 0 &&
                     weapons.map((w) => {
-                        return <MechLoadoutItem key={w.id} imageUrl={w.avatar_url} label={w.label} primaryColor={colors.weapons} Icon={SvgWeapons} />
+                        return (
+                            <MechLoadoutItem
+                                key={w.id}
+                                imageUrl={w.image_url}
+                                videoUrls={[w.card_animation_url]}
+                                label={w.label}
+                                primaryColor={colors.weapons}
+                                Icon={SvgWeapons}
+                            />
+                        )
                     })}
 
                 {weaponSlots &&
@@ -61,7 +76,16 @@ export const MechLoadout = ({ mechDetails }: { mechDetails: MechDetails }) => {
                 {utilities &&
                     utilities.length > 0 &&
                     utilities.map((w) => {
-                        return <MechLoadoutItem key={w.id} imageUrl={w.avatar_url} label={w.label} primaryColor={colors.utilities} Icon={SvgUtilities} />
+                        return (
+                            <MechLoadoutItem
+                                key={w.id}
+                                imageUrl={w.image_url}
+                                videoUrls={[w.card_animation_url]}
+                                label={w.label}
+                                primaryColor={colors.utilities}
+                                Icon={SvgUtilities}
+                            />
+                        )
                     })}
 
                 {utilitySlots &&
@@ -87,6 +111,7 @@ export const MechLoadout = ({ mechDetails }: { mechDetails: MechDetails }) => {
                 {chassisSkin ? (
                     <MechLoadoutItem
                         imageUrl={chassisSkin.image_url}
+                        videoUrls={[chassisSkin.card_animation_url]}
                         label={chassisSkin.label}
                         primaryColor={colors.chassisSkin}
                         Icon={SvgSkin}
@@ -98,7 +123,8 @@ export const MechLoadout = ({ mechDetails }: { mechDetails: MechDetails }) => {
 
                 {introAnimation ? (
                     <MechLoadoutItem
-                        imageUrl={introAnimation.avatar_url}
+                        imageUrl={introAnimation.image_url}
+                        videoUrls={[introAnimation.card_animation_url]}
                         label={introAnimation.label}
                         primaryColor={colors.introAnimation}
                         Icon={SvgIntroAnimation}
@@ -109,7 +135,8 @@ export const MechLoadout = ({ mechDetails }: { mechDetails: MechDetails }) => {
 
                 {outroAnimation ? (
                     <MechLoadoutItem
-                        imageUrl={outroAnimation.avatar_url}
+                        imageUrl={outroAnimation.image_url}
+                        videoUrls={[outroAnimation.card_animation_url]}
                         label={outroAnimation.label}
                         primaryColor={colors.outroAnimation}
                         Icon={SvgOutroAnimation}

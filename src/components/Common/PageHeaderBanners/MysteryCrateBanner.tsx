@@ -53,7 +53,7 @@ export const MysteryCrateBanner = () => {
                 borderThickness: ".3rem",
             }}
             backgroundColor={backgroundColor}
-            sx={{ flex: 1, alignSelf: "stretch" }}
+            sx={{ flex: 1, alignSelf: "stretch", flexShrink: 0 }}
         >
             <Stack
                 direction="row"
