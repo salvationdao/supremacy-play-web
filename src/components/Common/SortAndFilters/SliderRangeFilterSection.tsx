@@ -38,7 +38,7 @@ export const SliderRangeFilterSection = ({
     }
 
     const resetButton = useMemo(() => {
-        if (value[0] === initialValue[0] && value[1] === initialValue[1]) return null
+        if (value[0] === minMax[0] && value[1] === minMax[1]) return null
 
         return (
             <FancyButton
@@ -49,7 +49,7 @@ export const SliderRangeFilterSection = ({
                 }}
                 sx={{ px: "1.2rem", pt: ".0rem", pb: ".2rem", color: secondaryColor }}
                 onClick={() => {
-                    setValueInstant(initialValue)
+                    setValueInstant(minMax)
                     calledCallback.current = false
                 }}
             >
@@ -65,7 +65,7 @@ export const SliderRangeFilterSection = ({
                 </Typography>
             </FancyButton>
         )
-    }, [initialValue, secondaryColor, setValueInstant, value])
+    }, [minMax, secondaryColor, setValueInstant, value])
 
     return (
         <Section label={label} primaryColor={primaryColor} secondaryColor={secondaryColor} endComponent={resetButton} initialExpanded={initialExpanded}>
