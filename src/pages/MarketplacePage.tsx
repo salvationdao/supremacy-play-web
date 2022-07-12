@@ -10,6 +10,8 @@ import { HistoryMarket } from "../components/Marketplace/HistoryMarket/HistoryMa
 import { useTheme } from "../containers/theme"
 import { ROUTES_MAP } from "../routes"
 import { siteZIndex } from "../theme/theme"
+import { MysteryCrateBanner } from "../components/Common/PageHeaderBanners/MysteryCrateBanner"
+import { ClipThing } from "../components"
 
 export enum MARKETPLACE_TABS {
     History = "history",
@@ -44,6 +46,7 @@ export const MarketplacePage = () => {
 
     const primaryColor = theme.factionTheme.primary
     const secondaryColor = theme.factionTheme.secondary
+    const backgroundColor = theme.factionTheme.background
 
     return (
         <Stack
@@ -59,44 +62,66 @@ export const MarketplacePage = () => {
             }}
         >
             <Stack sx={{ mt: "1.5rem", mb: "2rem", height: "100%", width: "calc(100% - 3rem)", maxWidth: "190rem" }}>
-                <Box sx={{ maxWidth: "fit-content", mb: "1.1rem", border: `${primaryColor}CC .4rem solid` }}>
-                    <Tabs
-                        value={currentValue}
-                        onChange={handleChange}
-                        variant="scrollable"
-                        scrollButtons="auto"
-                        sx={{
-                            flexShrink: 0,
-                            color: primaryColor,
-                            minHeight: 0,
-                            ".MuiTab-root": { minHeight: 0, fontSize: "1.3rem", py: ".8rem" },
-                            ".Mui-selected": {
-                                color: `${secondaryColor} !important`,
-                                background: `linear-gradient(${primaryColor} 26%, ${primaryColor}BB)`,
-                            },
-                            ".MuiTabs-indicator": { display: "none" },
+                <Stack direction="row" flexWrap="wrap" sx={{ mb: "1.1rem", gap: "1.2rem" }}>
+                    <ClipThing
+                        clipSize="10px"
+                        border={{
+                            borderColor: primaryColor,
+                            borderThickness: ".3rem",
                         }}
+                        corners={{ topRight: true, bottomRight: true }}
+                        backgroundColor={backgroundColor}
+                        sx={{ maxWidth: "fit-content" }}
                     >
-                        <Tab label="HISTORY" value={MARKETPLACE_TABS.History} />
-                        <Tab label="WAR MACHINES" value={MARKETPLACE_TABS.WarMachines} />
-                        <Tab label="WEAPONS" value={MARKETPLACE_TABS.Weapons} />
-                        <Tab label="KEY CARDS" value={MARKETPLACE_TABS.Keycards} />
-                        <Tab label="MYSTERY CRATES" value={MARKETPLACE_TABS.MysteryCrates} />
-                    </Tabs>
-                </Box>
+                        <Box sx={{ height: "100%" }}>
+                            <Tabs
+                                value={currentValue}
+                                onChange={handleChange}
+                                variant="scrollable"
+                                scrollButtons="auto"
+                                sx={{
+                                    flexShrink: 0,
+                                    color: primaryColor,
+                                    minHeight: 0,
+                                    ".MuiTab-root": { minHeight: 0, fontSize: "1.3rem", height: "8rem", width: "10rem" },
+                                    ".Mui-selected": {
+                                        color: `${secondaryColor} !important`,
+                                        background: `linear-gradient(${primaryColor} 26%, ${primaryColor}BB)`,
+                                    },
+                                    ".MuiTabs-indicator": { display: "none" },
+                                    ".MuiTabScrollButton-root": { display: "none" },
+                                }}
+                            >
+                                <Tab label="HISTORY" value={MARKETPLACE_TABS.History} />
+
+                                <Tab label="WAR MACHINES" value={MARKETPLACE_TABS.WarMachines} />
+
+                                <Tab label="KEY CARDS" value={MARKETPLACE_TABS.Keycards} />
+
+                                <Tab label="MYSTERY CRATES" value={MARKETPLACE_TABS.MysteryCrates} />
+                            </Tabs>
+                        </Box>
+                    </ClipThing>
+
+                    <MysteryCrateBanner />
+                </Stack>
 
                 <TabPanel currentValue={currentValue} value={MARKETPLACE_TABS.History}>
                     <HistoryMarket />
                 </TabPanel>
+
                 <TabPanel currentValue={currentValue} value={MARKETPLACE_TABS.WarMachines}>
                     <WarMachinesMarket />
                 </TabPanel>
+
                 <TabPanel currentValue={currentValue} value={MARKETPLACE_TABS.Weapons}>
                     <WeaponsMarket />
                 </TabPanel>
+
                 <TabPanel currentValue={currentValue} value={MARKETPLACE_TABS.Keycards}>
                     <KeycardsMarket />
                 </TabPanel>
+
                 <TabPanel currentValue={currentValue} value={MARKETPLACE_TABS.MysteryCrates}>
                     <MysteryCratesMarket />
                 </TabPanel>
