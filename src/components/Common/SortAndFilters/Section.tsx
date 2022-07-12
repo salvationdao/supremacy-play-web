@@ -45,7 +45,7 @@ export const Section = ({
                 onClick={() => toggleIsExpanded()}
             >
                 <Stack direction="row" alignItems="center" sx={{ height: "100%", pl: "1.8rem", pr: "1.4rem", pt: ".5rem", pb: ".4rem" }}>
-                    <SvgDropdownArrow size="1.3rem" sx={{ mr: ".5rem", transform: isExpanded ? "scaleY(-1) translateY(2px)" : "unset" }} />
+                    <SvgDropdownArrow size="1.3rem" sx={{ mr: ".6rem", transform: isExpanded ? "scaleY(-1) translateY(2px)" : "unset" }} />
                     <Typography variant="caption" sx={{ color: secondaryColor, fontFamily: fonts.nostromoBlack }}>
                         {label}
                     </Typography>
