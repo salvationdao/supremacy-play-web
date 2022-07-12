@@ -61,6 +61,7 @@ export const WarMachinesMarket = () => {
         label: "STATUS",
         options: [{ value: "true", label: "SOLD", color: colors.marketSold }],
         initialSelected: status,
+        initialExpanded: true,
         onSetSelected: (value: string[]) => {
             setStatus(value)
             changePage(1)
@@ -74,6 +75,7 @@ export const WarMachinesMarket = () => {
             { value: "others", label: "OTHERS", color: theme.factionTheme.primary, textColor: theme.factionTheme.secondary },
         ],
         initialSelected: ownedBy,
+        initialExpanded: true,
         onSetSelected: (value: string[]) => {
             setOwnedBy(value)
             changePage(1)
@@ -88,6 +90,7 @@ export const WarMachinesMarket = () => {
             { value: MarketSaleType.Auction, label: "AUCTION", color: colors.auction },
         ],
         initialSelected: listingTypes,
+        initialExpanded: true,
         onSetSelected: (value: string[]) => {
             setListingTypes(value)
             changePage(1)
@@ -110,6 +113,7 @@ export const WarMachinesMarket = () => {
             { value: "TITAN", ...getRarityDeets("TITAN") },
         ],
         initialSelected: rarities,
+        initialExpanded: true,
         onSetSelected: (value: string[]) => {
             setRarities(value)
             changePage(1)
@@ -119,6 +123,7 @@ export const WarMachinesMarket = () => {
     const priceRangeFilter = useRef<RangeFilter>({
         label: "PRICE RANGE",
         initialValue: price,
+        initialExpanded: true,
         onSetValue: (value: (number | undefined)[]) => {
             setPrice(value)
             changePage(1)

@@ -88,6 +88,7 @@ export const WeaponsHangar = () => {
             { value: WeaponType.SniperRifle, label: WeaponType.SniperRifle, color: getWeaponTypeColor(WeaponType.SniperRifle) },
         ],
         initialSelected: weaponTypes,
+        initialExpanded: true,
         onSetSelected: (value: string[]) => {
             setWeaponTypes(value)
             changePage(1)
@@ -100,6 +101,7 @@ export const WeaponsHangar = () => {
             { value: "equipped", label: "EQUIPPED", color: theme.factionTheme.primary, textColor: theme.factionTheme.secondary },
             { value: "unequipped", label: "UNEQUIPPED", color: theme.factionTheme.primary, textColor: theme.factionTheme.secondary },
         ],
+        initialExpanded: true,
         initialSelected: equippedStatuses,
         onSetSelected: (value: string[]) => {
             setEquippedStatuses(value)

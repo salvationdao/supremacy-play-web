@@ -8,6 +8,7 @@ export interface SliderRangeFilter {
     label: string
     initialValue: number[]
     onSetValue: (value: number[]) => void
+    initialExpanded?: boolean
 }
 
 export const SliderRangeFilterSection = ({
@@ -19,7 +20,7 @@ export const SliderRangeFilterSection = ({
     primaryColor: string
     secondaryColor: string
 }) => {
-    const { label, initialValue, onSetValue } = filter
+    const { label, initialValue, onSetValue, initialExpanded } = filter
     const [value, setValue, valueInstant, setValueInstant] = useDebounce<number[]>(initialValue, 700)
     const calledCallback = useRef(true)
 
@@ -36,7 +37,7 @@ export const SliderRangeFilterSection = ({
     }
 
     const resetButton = useMemo(() => {
-        if (value[0] === undefined && value[1] === undefined) return null
+        if (value == initialValue) return null
 
         return (
             <FancyButton
@@ -66,7 +67,7 @@ export const SliderRangeFilterSection = ({
     }, [initialValue, secondaryColor, setValueInstant, value])
 
     return (
-        <Section label={label} primaryColor={primaryColor} secondaryColor={secondaryColor} endComponent={resetButton}>
+        <Section label={label} primaryColor={primaryColor} secondaryColor={secondaryColor} endComponent={resetButton} initialExpanded={initialExpanded}>
             <Stack alignItems="center" spacing="2rem" direction="row" sx={{ px: "2rem" }}>
                 <ShowValue primaryColor={primaryColor} value={valueInstant[0]} />
 

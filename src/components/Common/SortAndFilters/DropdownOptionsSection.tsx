@@ -12,6 +12,7 @@ export interface DropdownOptions {
     }[]
     initialSelected: string
     onSetSelected: (value: string) => void
+    initialExpanded?: boolean
 }
 
 export const DropdownOptionsSection = ({
@@ -27,11 +28,11 @@ export const DropdownOptionsSection = ({
     backgroundColor: string
     changePage: (page: number) => void
 }) => {
-    const { label, options, initialSelected, onSetSelected } = dropdownOptions
+    const { label, options, initialSelected, onSetSelected, initialExpanded } = dropdownOptions
     const [selected, setSelected] = useState<string>(initialSelected)
 
     return (
-        <Section label={label} primaryColor={primaryColor} secondaryColor={secondaryColor}>
+        <Section label={label} primaryColor={primaryColor} secondaryColor={secondaryColor} initialExpanded={initialExpanded}>
             <ClipThing
                 clipSize="5px"
                 clipSlantSize="2px"

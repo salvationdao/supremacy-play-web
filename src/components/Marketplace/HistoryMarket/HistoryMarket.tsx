@@ -56,6 +56,7 @@ export const HistoryMarket = () => {
             { value: MarketplaceEventType.Sold, label: "SOLD", color: colors.marketSold },
         ],
         initialSelected: eventType,
+        initialExpanded: true,
         onSetSelected: (value: string[]) => {
             setEventType(value)
             changePage(1)

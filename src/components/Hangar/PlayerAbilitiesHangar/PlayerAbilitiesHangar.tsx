@@ -42,6 +42,7 @@ export const PlayerAbilitiesHangar = () => {
             { value: LocationSelectType.LINE_SELECT, label: LocationSelectType.LINE_SELECT.split("_").join(" "), color: colors.purple },
         ],
         initialSelected: locationSelectTypes,
+        initialExpanded: true,
         onSetSelected: (value: string[]) => {
             setLocationSelectTypes(value)
             changePage(1)

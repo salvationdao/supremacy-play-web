@@ -65,6 +65,7 @@ export const WarMachinesHangar = () => {
             { value: MechStatusEnum.Queue, label: "IN QUEUE", color: colors.yellow },
         ],
         initialSelected: status,
+        initialExpanded: true,
         onSetSelected: (value: string[]) => {
             setStatus(value)
             changePage(1)
@@ -87,6 +88,7 @@ export const WarMachinesHangar = () => {
             { value: "TITAN", ...getRarityDeets("TITAN") },
         ],
         initialSelected: rarities,
+        initialExpanded: true,
         onSetSelected: (value: string[]) => {
             setRarities(value)
             changePage(1)
