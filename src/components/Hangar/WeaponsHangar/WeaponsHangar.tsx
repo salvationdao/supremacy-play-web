@@ -65,16 +65,36 @@ export const WeaponsHangar = () => {
     const [search, setSearch] = useState("")
     const [weaponTypes, setWeaponTypes] = useState<string[]>((query.get("weapon_types") || undefined)?.split("||") || [])
     const [equippedStatuses, setEquippedStatuses] = useState<string[]>((query.get("equipped_status") || undefined)?.split("||") || [])
-    const [ammoRange, setAmmoRange] = useState<number[]>([0, 3000])
-    const [damageRange, setDamageRange] = useState<number[]>([0, 1000])
-    const [damageFalloffRange, setDamageFalloffRange] = useState<number[]>([0, 1000])
-    const [damageFalloffRateRange, setDamageFalloffRateRange] = useState<number[]>([0, 1000])
-    const [radiusRange, setRadiusRange] = useState<number[]>([0, 2000])
-    const [radiusDamageFalloffRange, setRadiusDamageFalloffRange] = useState<number[]>([0, 2000])
-    const [rateOfFireRange, setRateOfFireRange] = useState<number[]>([0, 1000])
-    const [energyCostRange, setEnergyCostRange] = useState<number[]>([0, 100])
-    const [projectileSpeedRange, setProjectileSpeedRange] = useState<number[]>([0, 200000])
-    const [spreadRange, setSpreadRange] = useState<number[]>([0, 100])
+    const [ammoRange, setAmmoRange] = useState<number[]>(
+        (query.get("ammo") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 3000)) || [0, 3000],
+    )
+    const [damageRange, setDamageRange] = useState<number[]>(
+        (query.get("damage") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 1000)) || [0, 1000],
+    )
+    const [damageFalloffRange, setDamageFalloffRange] = useState<number[]>(
+        (query.get("damageFalloff") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 1000)) || [0, 1000],
+    )
+    const [damageFalloffRateRange, setDamageFalloffRateRange] = useState<number[]>(
+        (query.get("damageFalloffRate") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 1000)) || [0, 1000],
+    )
+    const [radiusRange, setRadiusRange] = useState<number[]>(
+        (query.get("radius") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 2000)) || [0, 2000],
+    )
+    const [radiusDamageFalloffRange, setRadiusDamageFalloffRange] = useState<number[]>(
+        (query.get("radiusDamageFalloff") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 2000)) || [0, 2000],
+    )
+    const [rateOfFireRange, setRateOfFireRange] = useState<number[]>(
+        (query.get("rateOfFire") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 1000)) || [0, 1000],
+    )
+    const [energyCostRange, setEnergyCostRange] = useState<number[]>(
+        (query.get("energyCost") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 100)) || [0, 100],
+    )
+    const [projectileSpeedRange, setProjectileSpeedRange] = useState<number[]>(
+        (query.get("projectileSpeed") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 200000)) || [0, 200000],
+    )
+    const [spreadRange, setSpreadRange] = useState<number[]>(
+        (query.get("spread") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 100)) || [0, 100],
+    )
     const [isGridView, toggleIsGridView] = useToggle(false)
 
     const weaponTypeFilterSection = useRef<ChipFilter>({
@@ -112,6 +132,7 @@ export const WeaponsHangar = () => {
     const ammoRangeFilter = useRef<SliderRangeFilter>({
         label: "AMMO",
         initialValue: ammoRange,
+        minMax: [0, 3000],
         onSetValue: (value: number[]) => {
             setAmmoRange(value)
             changePage(1)
@@ -121,6 +142,7 @@ export const WeaponsHangar = () => {
     const damageRangeFilter = useRef<SliderRangeFilter>({
         label: "DAMAGE",
         initialValue: damageRange,
+        minMax: [0, 1000],
         onSetValue: (value: number[]) => {
             setDamageRange(value)
             changePage(1)
@@ -130,6 +152,7 @@ export const WeaponsHangar = () => {
     const damageFalloffRangeFilter = useRef<SliderRangeFilter>({
         label: "DAMAGE FALLOFF",
         initialValue: damageFalloffRange,
+        minMax: [0, 1000],
         onSetValue: (value: number[]) => {
             setDamageFalloffRange(value)
             changePage(1)
@@ -139,6 +162,7 @@ export const WeaponsHangar = () => {
     const damageFalloffRateRangeFilter = useRef<SliderRangeFilter>({
         label: "DAMAGE FALLOFF RATE",
         initialValue: damageFalloffRateRange,
+        minMax: [0, 1000],
         onSetValue: (value: number[]) => {
             setDamageFalloffRateRange(value)
             changePage(1)
@@ -148,6 +172,7 @@ export const WeaponsHangar = () => {
     const radiusRangeFilter = useRef<SliderRangeFilter>({
         label: "RADIUS",
         initialValue: radiusRange,
+        minMax: [0, 2000],
         onSetValue: (value: number[]) => {
             setRadiusRange(value)
             changePage(1)
@@ -157,6 +182,7 @@ export const WeaponsHangar = () => {
     const radiusDamageFalloffRangeFilter = useRef<SliderRangeFilter>({
         label: "RADIUS DAMAGE FALLOFF",
         initialValue: radiusDamageFalloffRange,
+        minMax: [0, 2000],
         onSetValue: (value: number[]) => {
             setRadiusDamageFalloffRange(value)
             changePage(1)
@@ -166,6 +192,7 @@ export const WeaponsHangar = () => {
     const rateOfFireRangeFilter = useRef<SliderRangeFilter>({
         label: "RATE OF FIRE",
         initialValue: rateOfFireRange,
+        minMax: [0, 1000],
         onSetValue: (value: number[]) => {
             setRateOfFireRange(value)
             changePage(1)
@@ -175,6 +202,7 @@ export const WeaponsHangar = () => {
     const energyCostRangeFilter = useRef<SliderRangeFilter>({
         label: "ENERGY COST",
         initialValue: energyCostRange,
+        minMax: [0, 100],
         onSetValue: (value: number[]) => {
             setEnergyCostRange(value)
             changePage(1)
@@ -184,6 +212,7 @@ export const WeaponsHangar = () => {
     const projectileSpeedRangeFilter = useRef<SliderRangeFilter>({
         label: "PROJECTIVE SPEED",
         initialValue: projectileSpeedRange,
+        minMax: [0, 200000],
         onSetValue: (value: number[]) => {
             setProjectileSpeedRange(value)
             changePage(1)
@@ -193,6 +222,7 @@ export const WeaponsHangar = () => {
     const spreadRangeFilter = useRef<SliderRangeFilter>({
         label: "SPREAD",
         initialValue: spreadRange,
+        minMax: [0, 100],
         onSetValue: (value: number[]) => {
             setSpreadRange(value)
             changePage(1)
@@ -287,6 +317,16 @@ export const WeaponsHangar = () => {
                 pageSize: pageSize.toString(),
                 weapon_types: weaponTypes.join("||"),
                 equipped_statuses: equippedStatuses.join("||"),
+                ammo: ammoRange.join("||"),
+                damage: damageRange.join("||"),
+                damageFalloff: damageFalloffRange.join("||"),
+                damageFalloffRate: damageFalloffRateRange.join("||"),
+                radius: radiusRange.join("||"),
+                radiusDamageFalloff: radiusDamageFalloffRange.join("||"),
+                rateOfFire: rateOfFireRange.join("||"),
+                energyCost: energyCostRange.join("||"),
+                projectileSpeed: projectileSpeedRange.join("||"),
+                spread: spreadRange.join("||"),
                 search,
             })
 

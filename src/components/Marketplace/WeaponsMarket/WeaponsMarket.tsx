@@ -58,7 +58,7 @@ export const WeaponsMarket = () => {
         (query.get("priceRanges") || undefined)?.split("||").map((p) => (p ? parseInt(p) : undefined)) || [undefined, undefined],
     )
     const [damageRange, setDamageRange] = useState<number[]>(
-        (query.get("priceRanges") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 10000)) || [0, 10000],
+        (query.get("damageRange") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 10000)) || [0, 10000],
     )
 
     // Filters
