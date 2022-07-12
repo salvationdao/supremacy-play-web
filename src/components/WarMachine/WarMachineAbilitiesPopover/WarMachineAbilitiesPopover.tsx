@@ -1,11 +1,11 @@
-import { Box, Popover, Stack, Typography } from "@mui/material"
+import {Box, Popover, Stack, Typography} from "@mui/material"
 import BigNumber from "bignumber.js"
-import { ClipThing, FactionAbilityItem } from "../.."
-import { GenericWarMachinePNG } from "../../../assets"
-import { Faction, FeatureName, GameAbility, WarMachineState } from "../../../types"
-import { ContributorAmount } from "../../BattleStats/ContributorAmount"
-import { MechMoveCommandCard } from "./MechMoveCommandCard"
-import { useAuth } from "../../../containers"
+import {ClipThing, FactionAbilityItem} from "../.."
+import {GenericWarMachinePNG} from "../../../assets"
+import {Faction, GameAbility, WarMachineState} from "../../../types"
+import {ContributorAmount} from "../../BattleStats/ContributorAmount"
+import {MechMoveCommandCard} from "./MechMoveCommandCard"
+import {useAuth} from "../../../containers"
 
 interface WarMachineAbilitiesPopoverProps {
     popoverRef: React.MutableRefObject<null>
@@ -18,15 +18,15 @@ interface WarMachineAbilitiesPopoverProps {
 }
 
 export const WarMachineAbilitiesPopover = ({
-    popoverRef,
-    open,
-    onClose,
-    warMachine,
-    gameAbilities,
-    maxAbilityPriceMap,
-    getFaction,
-}: WarMachineAbilitiesPopoverProps) => {
-    const { userID, userHasFeature } = useAuth()
+                                               popoverRef,
+                                               open,
+                                               onClose,
+                                               warMachine,
+                                               gameAbilities,
+                                               maxAbilityPriceMap,
+                                               getFaction,
+                                           }: WarMachineAbilitiesPopoverProps) => {
+    const {userID, userHasFeature} = useAuth()
     const faction = getFaction(warMachine.factionID)
 
     return (
@@ -42,7 +42,7 @@ export const WarMachineAbilitiesPopover = ({
                 vertical: "bottom",
                 horizontal: "left",
             }}
-            PaperProps={{ sx: { background: "none", boxShadow: 0 } }}
+            PaperProps={{sx: {background: "none", boxShadow: 0}}}
             transitionDuration={100}
         >
             <Box
@@ -62,9 +62,9 @@ export const WarMachineAbilitiesPopover = ({
                     opacity={0.9}
                     backgroundColor={faction.background_color}
                 >
-                    <Stack spacing="1rem" sx={{ p: "1.6rem" }}>
-                        <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ pr: ".3rem" }}>
-                            <Stack direction="row" spacing=".8rem" alignItems="center" sx={{ ml: ".88rem" }}>
+                    <Stack spacing="1rem" sx={{p: "1.6rem"}}>
+                        <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{pr: ".3rem"}}>
+                            <Stack direction="row" spacing=".8rem" alignItems="center" sx={{ml: ".88rem"}}>
                                 <Box
                                     sx={{
                                         width: "1.7rem",
@@ -79,16 +79,17 @@ export const WarMachineAbilitiesPopover = ({
                                         borderRadius: 0.5,
                                     }}
                                 />
-                                <Typography sx={{ lineHeight: 1, color: faction.primary_color, fontWeight: "fontWeightBold" }}>
+                                <Typography
+                                    sx={{lineHeight: 1, color: faction.primary_color, fontWeight: "fontWeightBold"}}>
                                     WAR MACHINE UNIQUE SKILL{gameAbilities.length > 1 ? "S" : ""}
                                 </Typography>
                             </Stack>
-                            <ContributorAmount hideContributionTotal />
+                            <ContributorAmount hideContributionTotal/>
                         </Stack>
 
                         <Stack spacing="1rem">
                             {gameAbilities.map((ga, i) => (
-                                <Box key={ga.identity} sx={{ ml: `${(i + 1) * 0.2 * 0.8}rem` }}>
+                                <Box key={ga.identity} sx={{ml: `${(i + 1) * 0.2 * 0.8}rem`}}>
                                     <FactionAbilityItem
                                         gameAbility={ga}
                                         abilityMaxPrice={maxAbilityPriceMap?.current.get(ga.identity)}
@@ -98,9 +99,9 @@ export const WarMachineAbilitiesPopover = ({
                                 </Box>
                             ))}
 
-                            {userHasFeature(FeatureName.mechMove) && warMachine.ownedByID === userID && (
-                                <MechMoveCommandCard warMachine={warMachine} faction={faction} clipSlantSize="5px" onClose={onClose} />
-                            )}
+                            <MechMoveCommandCard warMachine={warMachine} faction={faction} clipSlantSize="5px"
+                                                 onClose={onClose}/>
+
                         </Stack>
                     </Stack>
                 </ClipThing>
