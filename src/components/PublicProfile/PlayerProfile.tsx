@@ -49,27 +49,34 @@ const cakeDay = (d: Date) => {
 }
 
 const getOnlineStatus = (time: Date): { status: string; colour: string } => {
-    const { minutes, hours } = timeSince(time, new Date())
+    const { days, minutes, hours } = timeSince(time, new Date())
 
-    console.log("timesince", timeSince(time, new Date()))
-
-    if (minutes <= 5) {
+    // online less then 5 mins ago
+    if (hours < 1 && minutes <= 5) {
         return { status: "Online", colour: colors.green }
     }
 
-    if (minutes > 5 && minutes <= 15) {
+    // online between 5 mins and 15 mins ago
+    if (hours < 1 && minutes > 5 && minutes <= 15) {
         return { status: "Online 10 minutes ago", colour: colors.orange }
     }
 
-    if (minutes > 15 && minutes <= 30) {
+    // online between 15 mins and 30 mins ago
+    if (hours < 1 && minutes > 15 && minutes <= 30) {
         return { status: "Online 30 minutes ago", colour: colors.orange }
     }
 
+    // online between 30 mins and 60 mins ago
     if (minutes > 30 && minutes <= 60) {
         return { status: "Online 1 hour ago", colour: colors.orange }
     }
 
-    return { status: `Online ${hours} hour(s) ago`, colour: colors.red }
+    // offline for more than an hour
+    if (hours >= 1 && hours <= 24) {
+        return { status: `Online ${hours} hour(s) ago`, colour: colors.red }
+    }
+
+    return { status: `Online ${days} day(s) ago`, colour: colors.red }
 }
 
 export const PlayerProfilePage = () => {
