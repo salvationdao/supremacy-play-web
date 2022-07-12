@@ -64,7 +64,7 @@ export const SLPDStream = () => {
                 if (!prev || prev.length <= 0) {
                     const resolutions = [1080, 720, 480, 360, 240]
                     const prevResolution = parseInt(localStorage.getItem(`${currentStream.host}-resolution`) || "0")
-                    if (prevResolution && prevResolution in resolutions) {
+                    if (prevResolution && resolutions.includes(prevResolution)) {
                         setSelectedResolution(prevResolution)
                     } else {
                         setSelectedResolution(Math.max.apply(null, resolutions))

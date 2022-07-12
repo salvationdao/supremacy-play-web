@@ -130,7 +130,7 @@ export const AntMediaStream = () => {
                             })
                             setResolutions(resolutions)
                             const prevResolution = parseInt(localStorage.getItem(`${currentStream.host}-resolution`) || "0")
-                            if (prevResolution && prevResolution in resolutions) {
+                            if (prevResolution && resolutions.includes(prevResolution)) {
                                 setSelectedResolution(prevResolution)
                             } else {
                                 setSelectedResolution(Math.max.apply(null, resolutions))
