@@ -16,7 +16,7 @@ export const ShowTrailerButton = () => {
             sx={{ px: "1rem", pt: ".1rem", pb: 0, color: "#FFFFFF" }}
             onClick={() => toggleShowTrailer()}
         >
-            <Typography variant="body2" sx={{ lineHeight: 1, color: "#FFFFFF" }}>
+            <Typography variant="body2" sx={{ color: "#FFFFFF" }}>
                 WATCH TRAILER
             </Typography>
         </FancyButton>

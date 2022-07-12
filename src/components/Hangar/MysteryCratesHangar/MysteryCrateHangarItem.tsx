@@ -83,7 +83,11 @@ export const MysteryCrateHangarItem = ({ crate, setCrateOpen, setCrateReward, ge
                                 height: "20rem",
                             }}
                         >
-                            <MediaPreview imageUrl={crate.image_url || SafePNG} videoUrls={[crate.animation_url, crate.card_animation_url]} objectFit="cover" />
+                            <MediaPreview
+                                imageUrl={crate.large_image_url || crate.image_url || crate.avatar_url || SafePNG}
+                                videoUrls={[crate.animation_url, crate.card_animation_url]}
+                                objectFit="cover"
+                            />
 
                             {new Date() < (crate.locked_until || Date.now) && (
                                 <Stack
@@ -114,14 +118,13 @@ export const MysteryCrateHangarItem = ({ crate, setCrateOpen, setCrateReward, ge
 
                             <Stack alignItems="center" sx={{ mt: "auto !important", pt: ".8rem", alignSelf: "stretch" }}>
                                 <FancyButton
-                                    loading={loading}
-                                    disabled={new Date() < crate.locked_until}
+                                    disabled={new Date() < crate.locked_until || loading}
                                     onClick={openCrate}
                                     clipThingsProps={{
                                         clipSize: "5px",
-                                        backgroundColor: primaryColor,
+                                        backgroundColor: secondaryColor,
                                         opacity: 1,
-                                        border: { isFancy: true, borderColor: primaryColor, borderThickness: "1.5px" },
+                                        border: { isFancy: true, borderColor: secondaryColor, borderThickness: "1.5px" },
                                         sx: { position: "relative", mt: "1rem", width: "100%" },
                                     }}
                                     sx={{ px: "1.6rem", py: ".6rem", color: secondaryColor }}

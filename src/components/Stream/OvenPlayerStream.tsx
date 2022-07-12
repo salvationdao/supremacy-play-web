@@ -132,6 +132,7 @@ export const OvenplayerStream = () => {
         <Stack
             key={currentStream?.stream_id}
             sx={{
+                position: "relative",
                 width: "100%",
                 height: "100%",
                 zIndex: siteZIndex.Stream,
@@ -139,6 +140,7 @@ export const OvenplayerStream = () => {
                     height: "100% !important",
                 },
                 video: {
+                    position: "absolute !important",
                     width: "100% !important",
                     height: "100% !important",
                     objectFit: "cover !important",

@@ -98,7 +98,7 @@ export const WarMachineAbilitiesPopover = ({
                                 </Box>
                             ))}
 
-                            {userHasFeature(FeatureName.mechMove) && warMachine.ownedByID === userID && (
+                            {warMachine.ownedByID === userID && (
                                 <MechMoveCommandCard warMachine={warMachine} faction={faction} clipSlantSize="5px" onClose={onClose} />
                             )}
                         </Stack>
