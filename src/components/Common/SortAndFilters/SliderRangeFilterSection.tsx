@@ -7,6 +7,7 @@ import { Section } from "./Section"
 export interface SliderRangeFilter {
     label: string
     initialValue: number[]
+    minMax: number[]
     onSetValue: (value: number[]) => void
     initialExpanded?: boolean
 }
@@ -20,7 +21,7 @@ export const SliderRangeFilterSection = ({
     primaryColor: string
     secondaryColor: string
 }) => {
-    const { label, initialValue, onSetValue, initialExpanded } = filter
+    const { label, initialValue, minMax, onSetValue, initialExpanded } = filter
     const [value, setValue, valueInstant, setValueInstant] = useDebounce<number[]>(initialValue, 700)
     const calledCallback = useRef(true)
 
@@ -76,6 +77,8 @@ export const SliderRangeFilterSection = ({
                         value={valueInstant}
                         onChange={handleChange}
                         valueLabelDisplay="auto"
+                        min={minMax[0]}
+                        max={minMax[1]}
                         sx={{ color: primaryColor, ".MuiSlider-thumb": { borderRadius: "6px" } }}
                     />
                 </Box>

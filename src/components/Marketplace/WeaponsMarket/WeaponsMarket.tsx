@@ -133,6 +133,7 @@ export const WeaponsMarket = () => {
     const damageRangeFilter = useRef<SliderRangeFilter>({
         label: "DAMAGE",
         initialValue: damageRange,
+        minMax: [0, 10000],
         onSetValue: (value: number[]) => {
             setDamageRange(value)
             changePage(1)
