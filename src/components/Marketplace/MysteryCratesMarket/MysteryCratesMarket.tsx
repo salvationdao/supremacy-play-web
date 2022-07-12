@@ -271,7 +271,7 @@ export const MysteryCratesMarket = () => {
                             border: { isFancy: true, borderColor: colors.red, borderThickness: "2px" },
                             sx: { position: "relative" },
                         }}
-                        sx={{ px: "1.6rem", py: ".4rem", color: "#FFFFFF" }}
+                        sx={{ px: "1.6rem", py: ".7rem", color: "#FFFFFF" }}
                         to={`/marketplace/sell${location.hash}`}
                     >
                         <Typography
