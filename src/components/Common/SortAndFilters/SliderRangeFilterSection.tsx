@@ -32,6 +32,7 @@ export const SliderRangeFilterSection = ({
 
     const handleChange = (event: Event, newValue: number | number[]) => {
         setValue(newValue as number[])
+        calledCallback.current = false
     }
 
     const resetButton = useMemo(() => {
