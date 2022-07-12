@@ -149,7 +149,7 @@ const EnlistBannerInner = ({ userID, user, battleIdentifier, getFaction, userSta
     )
 }
 
-export const BannerInfo = ({ title, tooltip, content, PrefixSvg }: { title: string; tooltip: ReactNode; content: string; PrefixSvg?: SvgWrapperProps }) => {
+const BannerInfo = ({ title, tooltip, content, PrefixSvg }: { title: string; tooltip: ReactNode; content: string; PrefixSvg?: SvgWrapperProps }) => {
     return (
         <TooltipHelper text={tooltip}>
             <Box>

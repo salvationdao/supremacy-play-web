@@ -2,7 +2,7 @@ import { Popover, Stack } from "@mui/material"
 import { MutableRefObject, useEffect, useState } from "react"
 import { ClipThing } from "../../.."
 import { SvgAssets, SvgProfile, SvgSettings, SvgSupport } from "../../../../assets"
-import { PASSPORT_WEB, SUPREMACY_PAGE } from "../../../../constants"
+import { PASSPORT_WEB } from "../../../../constants"
 import { useTheme } from "../../../../containers/theme"
 import { useToggle } from "../../../../hooks"
 import { siteZIndex } from "../../../../theme/theme"
@@ -63,7 +63,7 @@ export const ProfilePopover = ({ open, popoverRef, onClose, user }: { open: bool
                     <Stack spacing=".32rem" sx={{ p: ".8rem" }}>
                         <NavButton href={`${PASSPORT_WEB}profile`} startIcon={<SvgAssets sx={{ pb: ".5rem" }} size="1.6rem" />} text="My Inventory" />
 
-                        <NavButton href={`/profile/${user.gid}`} startIcon={<SvgProfile sx={{ pb: ".5rem" }} size="1.6rem" />} text="Your Profile" />
+                        <NavButton href={`/profile/${user.gid}`} startIcon={<SvgProfile sx={{ pb: ".5rem" }} size="1.6rem" />} text="Profile" />
 
                         <NavButton href="https://supremacyhelp.zendesk.com/" startIcon={<SvgSupport sx={{ pb: ".5rem" }} size="1.6rem" />} text="SUPPORT" />
 
