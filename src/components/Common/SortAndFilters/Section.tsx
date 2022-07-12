@@ -38,7 +38,7 @@ export const Section = ({
                     },
                     corners: { topRight: isExpanded },
                     backgroundColor: primaryColor,
-                    opacity: 0.8,
+                    opacity: isExpanded ? 0.8 : 0.1,
                     sx: { position: "relative" },
                 }}
                 sx={{ p: 0, color: "#FFFFFF" }}
