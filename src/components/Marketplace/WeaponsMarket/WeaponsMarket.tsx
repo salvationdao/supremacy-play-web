@@ -299,6 +299,78 @@ export const WeaponsMarket = () => {
                 sort_by: sortBy,
                 owned_by: ownedBy,
                 sold: status.length > 0,
+                weapon_stats: {
+                    ammo:
+                        ammoRange[0] > 0 || ammoRange[1] > 0
+                            ? {
+                                  min: ammoRange[0],
+                                  max: ammoRange[1],
+                              }
+                            : undefined,
+                    damage:
+                        damageRange[0] > 0 || damageRange[1] > 0
+                            ? {
+                                  min: damageRange[0],
+                                  max: damageRange[1],
+                              }
+                            : undefined,
+                    damage_falloff:
+                        damageFalloffRange[0] > 0 || damageFalloffRange[1] > 0
+                            ? {
+                                  min: damageFalloffRange[0],
+                                  max: damageFalloffRange[1],
+                              }
+                            : undefined,
+                    damage_falloff_rate:
+                        damageFalloffRateRange[0] > 0 || damageFalloffRateRange[1] > 0
+                            ? {
+                                  min: damageFalloffRateRange[0],
+                                  max: damageFalloffRateRange[1],
+                              }
+                            : undefined,
+                    radius:
+                        radiusRange[0] > 0 || radiusRange[1] > 0
+                            ? {
+                                  min: radiusRange[0],
+                                  max: radiusRange[1],
+                              }
+                            : undefined,
+                    radius_damage_falloff:
+                        radiusDamageFalloffRange[0] > 0 || radiusDamageFalloffRange[1] > 0
+                            ? {
+                                  min: radiusDamageFalloffRange[0],
+                                  max: radiusDamageFalloffRange[1],
+                              }
+                            : undefined,
+                    rate_of_fire:
+                        rateOfFireRange[0] > 0 || rateOfFireRange[1] > 0
+                            ? {
+                                  min: rateOfFireRange[0],
+                                  max: rateOfFireRange[1],
+                              }
+                            : undefined,
+                    energy_cost:
+                        energyCostRange[0] > 0 || energyCostRange[1] > 0
+                            ? {
+                                  min: energyCostRange[0],
+                                  max: energyCostRange[1],
+                              }
+                            : undefined,
+                    projectile_speed:
+                        projectileSpeedRange[0] > 0 || projectileSpeedRange[1] > 0
+                            ? {
+                                  min: projectileSpeedRange[0],
+                                  max: projectileSpeedRange[1],
+                              }
+                            : undefined,
+                    spread:
+                        spreadRange[0] > 0 || spreadRange[1] > 0
+                            ? {
+                                  min: spreadRange[0],
+                                  max: spreadRange[1],
+                              }
+                            : undefined,
+                },
             })
 
             updateQuery({
