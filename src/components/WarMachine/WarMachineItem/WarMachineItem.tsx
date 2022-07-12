@@ -10,13 +10,14 @@ import { useGameServerSubscriptionAbilityFaction } from "../../../hooks/useGameS
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { GameAbility, WarMachineState } from "../../../types"
+import { MoveCommand } from "./MoveCommand"
 
 // in rems
 const WIDTH_AVATAR = 8.6
 const WIDTH_BODY = 17
 const HEIGHT = 8
-const DEAD_OPACITY = 0.6
-const WIDTH_SKILL_BUTTON = 3.8
+export const DEAD_OPACITY = 0.6
+export const WIDTH_SKILL_BUTTON = 3.8
 export const WIDTH_STAT_BAR = 1.5
 
 export const WarMachineItem = ({ warMachine, scale, initialExpanded = false }: { warMachine: WarMachineState; scale: number; initialExpanded?: boolean }) => {
@@ -291,6 +292,8 @@ export const WarMachineItem = ({ warMachine, scale, initialExpanded = false }: {
                                 ))}
                         </>
                     )}
+
+                    <MoveCommand isAlive={isAlive} warMachine={warMachine} />
                 </Stack>
             </Stack>
 
