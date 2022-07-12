@@ -100,6 +100,7 @@ export const SLPDStream = () => {
         <Stack
             key={currentStream?.stream_id}
             sx={{
+                position: "relative",
                 width: "100%",
                 height: "100%",
                 zIndex: siteZIndex.Stream,

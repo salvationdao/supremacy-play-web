@@ -156,7 +156,14 @@ export const AntMediaStream = () => {
     const isPlaying = resolutions && resolutions.length > 0
 
     return (
-        <Stack sx={{ width: "100%", height: "100%", zIndex: siteZIndex.Stream }}>
+        <Stack
+            sx={{
+                position: "relative",
+                width: "100%",
+                height: "100%",
+                zIndex: siteZIndex.Stream,
+            }}
+        >
             {!isPlaying && <NoStreamScreen />}
 
             <video
