@@ -77,7 +77,7 @@ export const SortAndFilters = ({
                     }}
                 >
                     <Stack sx={{ position: "relative", height: 0, mt: "-.3rem", mx: "-.3rem" }}>
-                        <Section label="SEARCH" primaryColor={primaryColor} secondaryColor={secondaryColor}>
+                        <Section label="SEARCH" primaryColor={primaryColor} secondaryColor={secondaryColor} initialExpanded={true}>
                             <Stack direction="row" spacing=".5rem">
                                 <ClipThing
                                     clipSize="5px"
