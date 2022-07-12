@@ -79,9 +79,9 @@ export const PunishMessage = ({
                         px: "1.5rem",
                     }}
                 >
-                    <Stack direction="row" spacing=".6rem" sx={{ mb: ".5rem", opacity: 0.7 }} alignItems="center">
+                    <Stack direction="row" spacing=".8rem" sx={{ mb: ".5rem", opacity: 0.7 }} alignItems="center">
                         <SvgAnnouncement size="1.1rem" sx={{ pb: ".35rem" }} />
-                        <Typography sx={{ fontWeight: "fontWeightBold" }}>SYSTEM</Typography>
+                        <Typography sx={{ fontWeight: "fontWeightBold" }}>PLAYER BAN</Typography>
 
                         <Typography
                             variant="caption"
@@ -166,17 +166,33 @@ export const PunishMessage = ({
                         }}
                     >
                         <LineItem title="INITIATOR" color={colors.green}>
-                            <Typography>
-                                {`${issued_by_user.username}`}
-                                <span style={{ marginLeft: ".2rem", opacity: 0.7 }}>{`#${issued_by_user.gid}`}</span>
-                            </Typography>
+                            <StyledImageText
+                                text={
+                                    <>
+                                        {`${issued_by_user.username}`}
+                                        <span style={{ marginLeft: ".2rem", opacity: 0.7 }}>{`#${issued_by_user.gid}`}</span>
+                                    </>
+                                }
+                                color={factionColor || "#FFFFFF"}
+                                imageUrl={getFaction(issued_by_user.faction_id).logo_url}
+                                imageMb={-0.2}
+                                imageSize={1.4}
+                            />
                         </LineItem>
 
                         <LineItem title="AGAINST">
-                            <Typography>
-                                {`${reported_user.username}`}
-                                <span style={{ marginLeft: ".2rem", opacity: 0.7 }}>{`#${reported_user.gid}`}</span>
-                            </Typography>
+                            <StyledImageText
+                                text={
+                                    <>
+                                        {`${reported_user.username}`}
+                                        <span style={{ marginLeft: ".2rem", opacity: 0.7 }}>{`#${reported_user.gid}`}</span>
+                                    </>
+                                }
+                                color={factionColor || "#FFFFFF"}
+                                imageUrl={getFaction(reported_user.faction_id).logo_url}
+                                imageMb={-0.2}
+                                imageSize={1.4}
+                            />
                         </LineItem>
 
                         <LineItem title="PUNISH">

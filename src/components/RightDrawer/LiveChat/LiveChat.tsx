@@ -76,12 +76,14 @@ const TabbedLayout = () => {
                 value={tabValue}
                 variant="fullWidth"
                 sx={{
-                    height: `${5}rem`,
+                    height: `${4.8}rem`,
                     background: `linear-gradient(${bannerBackgroundColor} 26%, ${bannerBackgroundColor}95)`,
                     boxShadow: 1,
                     zIndex: 9,
+                    minHeight: 0,
                     ".MuiButtonBase-root": {
-                        height: `${5}rem`,
+                        height: `${4.8}rem`,
+                        minHeight: 0,
                     },
                     ".MuiTabs-indicator": {
                         height: "3px",
