@@ -9,6 +9,7 @@ import { CountdownSubmit } from "./MapInsideItems/CountdownSubmit"
 import { DisabledCells } from "./MapInsideItems/DisabledCells"
 import { LineSelect } from "./MapInsideItems/LineSelect"
 import { MechCommandIcons } from "./MapInsideItems/MapIcon/MechCommandIcons"
+import { RangeIndicator } from "./MapInsideItems/RangeIndicator"
 import { useMiniMapGestures } from "./useMiniMapGestures"
 
 interface MiniMapInsideProps {
@@ -19,6 +20,7 @@ export const MiniMapInside = ({ containerDimensions }: MiniMapInsideProps) => {
     const { map } = useGame()
     const { mapElement, gridWidth, gridHeight, isTargeting, selection, setSelection, playerAbility, winner } = useMiniMap()
 
+    const mapRef = useRef<HTMLDivElement>(null)
     const gestureRef = useRef<HTMLDivElement>(null)
     const { mapScale, dragX, dragY } = useMiniMapGestures({ gestureRef, containerDimensions })
 
@@ -65,6 +67,7 @@ export const MiniMapInside = ({ containerDimensions }: MiniMapInsideProps) => {
         return (
             <>
                 <Stack
+                    ref={mapRef}
                     sx={{
                         position: "relative",
                         width: containerDimensions.width,
@@ -72,6 +75,9 @@ export const MiniMapInside = ({ containerDimensions }: MiniMapInsideProps) => {
                         overflow: "hidden",
                     }}
                 >
+                    {/* Range indicator */}
+                    <RangeIndicator parentRef={mapRef} mapScale={mapScale} />
+
                     <Box
                         ref={gestureRef}
                         sx={{
