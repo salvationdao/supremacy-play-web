@@ -79,4 +79,5 @@ export interface Feature {
 export enum FeatureName {
     mechMove = "MECH_MOVE",
     playerAbility = "PLAYER_ABILITY",
+    publicProfilePage = "PUBLIC_PROFILE",
 }

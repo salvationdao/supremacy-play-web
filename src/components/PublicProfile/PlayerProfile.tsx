@@ -7,7 +7,7 @@ import { getUserRankDeets, snakeToTitle, timeSince } from "../../helpers"
 import { useGameServerCommands, useGameServerCommandsUser } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { colors, fonts, theme } from "../../theme/theme"
-import { Faction, UserRank } from "../../types"
+import { Faction, FeatureName, UserRank } from "../../types"
 import { ClipThing } from "../Common/ClipThing"
 import { PageHeader } from "../Common/PageHeader"
 import { AboutMe } from "./ProfileAboutMe"
@@ -81,12 +81,11 @@ const getOnlineStatus = (time: Date): { status: string; colour: string } => {
 
 export const PlayerProfilePage = () => {
     const { playerGID } = useParams<{ playerGID: string }>()
-    const { user } = useAuth()
+    const { user, userHasFeature } = useAuth()
     const history = useHistory()
+
     const [loading, setLoading] = useState(false)
-
     const [profileError, setProfileError] = useState<string>()
-
     const [profile, setProfile] = useState<PlayerProfile>()
     const [username, setUsername] = useState<string>()
     const [aboutMe, setAboutMe] = useState<string>()
@@ -95,6 +94,7 @@ export const PlayerProfilePage = () => {
     const { send: userSend } = useGameServerCommandsUser("/user_commander")
     const { newSnackbarMessage } = useSnackbar()
     const isMe = `${user?.gid}` === playerGID
+    const hasFeature = userHasFeature(FeatureName.publicProfilePage)
 
     const rankDeets = useMemo(() => (profile?.player.rank ? getUserRankDeets(profile?.player.rank, "1.6rem", "1.6rem") : undefined), [profile?.player.rank])
 
@@ -204,6 +204,11 @@ export const PlayerProfilePage = () => {
                 <Typography sx={{ color: colors.red, textTransform: "uppercase" }}>{profileError}</Typography>
             </Stack>
         )
+    }
+
+    if (!hasFeature) {
+        history.push("/404")
+        return <></>
     }
 
     return (
