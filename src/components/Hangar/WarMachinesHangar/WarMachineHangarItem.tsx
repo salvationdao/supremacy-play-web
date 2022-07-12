@@ -38,7 +38,8 @@ export const WarMachineHangarItem = ({ mech, isGridView }: { mech: MechBasic; is
 
     const primaryColor = theme.factionTheme.primary
     const backgroundColor = theme.factionTheme.background
-    const imageUrl = mechDetails?.chassis_skin?.avatar_url || mech.avatar_url
+    const avatarUrl = mechDetails?.chassis_skin?.avatar_url || mech.avatar_url
+    const imageUrl = mechDetails?.chassis_skin?.image_url || mech.image_url
     const largeImageUrl = mechDetails?.chassis_skin?.large_image_url || mech.large_image_url
 
     return (
@@ -86,17 +87,52 @@ export const WarMachineHangarItem = ({ mech, isGridView }: { mech: MechBasic; is
                             width: "100%",
                         }}
                     >
-                        <MediaPreview imageUrl={imageUrl} objectFit={isGridView ? "cover" : "contain"} />
+                        <MediaPreview imageUrl={avatarUrl || imageUrl || largeImageUrl} objectFit={isGridView ? "cover" : "contain"} />
                     </Box>
 
                     <Stack>
-                        <Typography variant="body2" sx={{ mb: ".2rem", color: rarityDeets.color, fontFamily: fonts.nostromoHeavy }}>
+                        <Typography
+                            variant="body2"
+                            sx={{
+                                mb: ".2rem",
+                                color: rarityDeets.color,
+                                fontFamily: fonts.nostromoHeavy,
+                                display: "-webkit-box",
+                                overflow: "hidden",
+                                overflowWrap: "anywhere",
+                                textOverflow: "ellipsis",
+                                WebkitLineClamp: 1, // change to max number of lines
+                                WebkitBoxOrient: "vertical",
+                            }}
+                        >
                             {rarityDeets.label}
                         </Typography>
 
-                        <Typography sx={{ fontFamily: fonts.nostromoBlack }}>{mech.label}</Typography>
+                        <Typography
+                            sx={{
+                                fontFamily: fonts.nostromoBlack,
+                                display: "-webkit-box",
+                                overflow: "hidden",
+                                overflowWrap: "anywhere",
+                                textOverflow: "ellipsis",
+                                WebkitLineClamp: 1, // change to max number of lines
+                                WebkitBoxOrient: "vertical",
+                            }}
+                        >
+                            {mech.label}
+                        </Typography>
 
-                        <Typography variant="h6" sx={{}}>
+                        <Typography
+                            variant="h6"
+                            sx={{
+                                display: "-webkit-box",
+                                overflow: "hidden",
+                                overflowWrap: "anywhere",
+                                textOverflow: "ellipsis",
+                                WebkitLineClamp: 1, // change to max number of lines
+                                WebkitBoxOrient: "vertical",
+                            }}
+                        >
                             {mech.name}
                         </Typography>
                     </Stack>

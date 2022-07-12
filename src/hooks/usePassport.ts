@@ -19,11 +19,11 @@ export const usePassportCommands = (URI: string) => {
 // ******************
 // ** Subscription **
 // ******************
-export function usePassportSubscriptionUser<T = DataType>({ URI, key, args, ready = true }: SubProps, callback?: (payload: T) => void) {
+export function usePassportSubscriptionUser<T = DataType>({ URI, key, ready = true }: SubProps, callback?: (payload: T) => void) {
     const { userID } = useAuth()
-    return useSubscription({ URI: `/user/${userID}${URI}`, key, host: PASSPORT_SERVER_HOST, args, ready: !!userID && ready }, callback)
+    return useSubscription({ URI: `/user/${userID}${URI}`, key, host: PASSPORT_SERVER_HOST, ready: !!userID && ready }, callback)
 }
 
-export function usePassportSubscription<T = DataType>({ URI, key, args, ready = true }: SubProps, callback?: (payload: T) => void) {
-    return useSubscription({ URI: `${URI}`, key, host: PASSPORT_SERVER_HOST, args, ready }, callback)
+export function usePassportSubscription<T = DataType>({ URI, key, ready = true }: SubProps, callback?: (payload: T) => void) {
+    return useSubscription({ URI: `${URI}`, key, host: PASSPORT_SERVER_HOST, ready }, callback)
 }

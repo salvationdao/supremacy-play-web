@@ -2,12 +2,15 @@ import { Box, Fade, Stack, Tab, Tabs } from "@mui/material"
 import { SyntheticEvent, useCallback, useEffect, useState } from "react"
 import { useHistory, useLocation, useParams } from "react-router-dom"
 import { HangarBg } from "../assets"
+import { ClipThing } from "../components"
+import { MysteryCrateBanner } from "../components/Common/PageHeaderBanners/MysteryCrateBanner"
 import { MysteryCratesStore } from "../components/Storefront/MysteryCratesStore/MysteryCratesStore"
 import { PlayerAbilitiesStore } from "../components/Storefront/PlayerAbilitiesStore/PlayerAbilitiesStore"
-import { STAGING_OR_DEV_ONLY } from "../constants"
 import { useTheme } from "../containers/theme"
 import { ROUTES_MAP } from "../routes"
 import { siteZIndex } from "../theme/theme"
+import { useAuth } from "../containers"
+import { FeatureName } from "../types"
 
 export enum STOREFRONT_TABS {
     MysteryCrates = "mystery-crates",
@@ -20,6 +23,7 @@ export const StorefrontPage = () => {
     const theme = useTheme()
     const location = useLocation()
     const history = useHistory()
+    const { userHasFeature } = useAuth()
     const { type } = useParams<{ type: STOREFRONT_TABS }>()
     const [currentValue, setCurrentValue] = useState<STOREFRONT_TABS>()
 
@@ -39,6 +43,10 @@ export const StorefrontPage = () => {
 
     if (!currentValue) return null
 
+    const primaryColor = theme.factionTheme.primary
+    const secondaryColor = theme.factionTheme.secondary
+    const backgroundColor = theme.factionTheme.background
+
     return (
         <Stack
             alignItems="center"
@@ -53,43 +61,55 @@ export const StorefrontPage = () => {
             }}
         >
             <Stack sx={{ mt: "1.5rem", mb: "2rem", height: "100%", width: "calc(100% - 3rem)", maxWidth: "190rem" }}>
-                <Box sx={{ maxWidth: "fit-content", mb: "1.1rem", border: `${theme.factionTheme.primary}CC .4rem solid` }}>
-                    <Tabs
-                        value={currentValue}
-                        onChange={handleChange}
-                        variant="scrollable"
-                        scrollButtons="auto"
-                        sx={{
-                            flexShrink: 0,
-                            color: (theme) => theme.factionTheme.primary,
-                            minHeight: 0,
-                            ".MuiTab-root": { minHeight: 0, fontSize: "1.3rem", py: ".8rem" },
-                            ".Mui-selected": {
-                                color: (theme) => `${theme.factionTheme.secondary} !important`,
-                                background: (theme) => `linear-gradient(${theme.factionTheme.primary} 26%, ${theme.factionTheme.primary}BB)`,
-                            },
-                            ".MuiTabs-indicator": { display: "none" },
+                <Stack direction="row" sx={{ mb: "1.1rem", gap: "1.2rem" }}>
+                    <ClipThing
+                        clipSize="10px"
+                        border={{
+                            borderColor: primaryColor,
+                            borderThickness: ".3rem",
                         }}
+                        corners={{ topRight: true, bottomRight: true }}
+                        backgroundColor={backgroundColor}
+                        sx={{ maxWidth: "fit-content" }}
                     >
-                        <Tab label="MYSTERY CRATES" value={STOREFRONT_TABS.MysteryCrates} />
-                        {STAGING_OR_DEV_ONLY && <Tab label="ABILITIES" value={STOREFRONT_TABS.Abilities} />}
-                        {/* <Tab label="SKINS" value={STOREFRONT_TABS.Skins} disabled />
-                        <Tab label="MERCHANDISE" disabled value={STOREFRONT_TABS.Merchandise} /> */}
-                    </Tabs>
-                </Box>
+                        <Box sx={{ height: "100%" }}>
+                            <Tabs
+                                value={currentValue}
+                                onChange={handleChange}
+                                variant="scrollable"
+                                scrollButtons="auto"
+                                sx={{
+                                    flexShrink: 0,
+                                    color: primaryColor,
+                                    minHeight: 0,
+                                    ".MuiTab-root": { minHeight: 0, fontSize: "1.3rem", height: "6rem", width: "10rem" },
+                                    ".Mui-selected": {
+                                        color: `${secondaryColor} !important`,
+                                        background: `linear-gradient(${primaryColor} 26%, ${primaryColor}BB)`,
+                                    },
+                                    ".MuiTabs-indicator": { display: "none" },
+                                    ".MuiTabScrollButton-root": { display: "none" },
+                                }}
+                            >
+                                <Tab label="MYSTERY CRATES" value={STOREFRONT_TABS.MysteryCrates} />
+
+                                {userHasFeature(FeatureName.playerAbility) && <Tab label="ABILITIES" value={STOREFRONT_TABS.Abilities} />}
+                            </Tabs>
+                        </Box>
+                    </ClipThing>
+
+                    <MysteryCrateBanner />
+                </Stack>
 
                 <TabPanel currentValue={currentValue} value={STOREFRONT_TABS.MysteryCrates}>
                     <MysteryCratesStore />
                 </TabPanel>
-                <TabPanel currentValue={currentValue} value={STOREFRONT_TABS.Skins}>
-                    COMING SOON!
-                </TabPanel>
-                <TabPanel currentValue={currentValue} value={STOREFRONT_TABS.Abilities}>
-                    <PlayerAbilitiesStore />
-                </TabPanel>
-                <TabPanel currentValue={currentValue} value={STOREFRONT_TABS.Merchandise}>
-                    COMING SOON!
-                </TabPanel>
+
+                {userHasFeature(FeatureName.playerAbility) && (
+                    <TabPanel currentValue={currentValue} value={STOREFRONT_TABS.Abilities}>
+                        <PlayerAbilitiesStore />
+                    </TabPanel>
+                )}
             </Stack>
         </Stack>
     )

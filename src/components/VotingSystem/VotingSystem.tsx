@@ -1,34 +1,23 @@
 import { Box, Fade, Stack } from "@mui/material"
 import { useMemo } from "react"
 import { BattleAbilityItem, FactionAbilities, MoveableResizable } from ".."
-import { STAGING_OR_DEV_ONLY } from "../../constants"
-import { BribeStageResponse, useAuth, useGame } from "../../containers"
+import { useAuth, useGame, useMobile } from "../../containers"
 import { useTheme } from "../../containers/theme"
+import { FeatureName } from "../../types"
 import { ContributorAmount } from "../BattleStats/ContributorAmount"
 import { MoveableResizableConfig } from "../Common/MoveableResizable/MoveableResizableContainer"
 import { PlayerAbilities } from "./PlayerAbilities/PlayerAbilities"
 
 export const VotingSystem = () => {
-    const { userID } = useAuth()
-    const { bribeStage } = useGame()
-    return <VotingSystemInner userID={userID} bribeStage={bribeStage} />
-}
-
-interface VotingSystemInnerProps {
-    // useAuth
-    userID?: string
-    // useGame
-    bribeStage?: BribeStageResponse
-}
-
-const VotingSystemInner = ({ userID, bribeStage }: VotingSystemInnerProps) => {
     const theme = useTheme()
-    const { factionID } = useAuth()
+    const { userID, factionID, userHasFeature } = useAuth()
+    const { isMobile } = useMobile()
+    const { bribeStage } = useGame()
     const isBattleStarted = useMemo(() => bribeStage && bribeStage.phase !== "HOLD", [bribeStage])
 
     const config: MoveableResizableConfig = useMemo(
         () => ({
-            localStoragePrefix: "votingSystem",
+            localStoragePrefix: "votingSystem1",
             // Defaults
             defaultPosX: 0,
             defaultPosY: 0,
@@ -53,7 +42,7 @@ const VotingSystemInner = ({ userID, bribeStage }: VotingSystemInnerProps) => {
 
     return (
         <Fade in={isBattleStarted}>
-            <Box>
+            <Box sx={{ ...(isMobile ? { backgroundColor: "#FFFFFF12", boxShadow: 2, border: "#FFFFFF20 1px solid" } : {}) }}>
                 <MoveableResizable config={config}>
                     <Stack sx={{ position: "relative" }}>
                         <Stack
@@ -97,7 +86,7 @@ const VotingSystemInner = ({ userID, bribeStage }: VotingSystemInnerProps) => {
                             <Stack spacing="1rem" sx={{ direction: "ltr", pt: ".4rem", pb: "1.2rem" }}>
                                 <BattleAbilityItem key={factionID} />
                                 <FactionAbilities />
-                                {STAGING_OR_DEV_ONLY && userID && <PlayerAbilities />}
+                                {userHasFeature(FeatureName.playerAbility) && userID && <PlayerAbilities />}
                             </Stack>
                         </Box>
                     </Stack>

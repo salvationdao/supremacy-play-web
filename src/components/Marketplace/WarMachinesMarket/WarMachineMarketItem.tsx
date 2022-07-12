@@ -39,14 +39,15 @@ export const WarMachineMarketItem = ({ item, isGridView }: WarMachineMarketItemP
 
     if (!mech || !collection_item) return null
 
-    const { name, label, avatar_url } = mech
+    const { name, label } = mech
     const { tier } = collection_item
 
     const skin = mechDetails ? mechDetails.chassis_skin || mechDetails.default_chassis_skin : undefined
-    const imageUrl = skin?.large_image_url
+    const avatarUrl = skin?.avatar_url || mech.avatar_url
+    const largeImageUrl = skin?.large_image_url
 
     return (
-        <MarketItem item={item} imageUrl={avatar_url} backgroundImageUrl={imageUrl} isGridView={isGridView} linkSubPath={MARKETPLACE_TABS.WarMachines}>
+        <MarketItem item={item} imageUrl={avatarUrl} backgroundImageUrl={largeImageUrl} isGridView={isGridView} linkSubPath={MARKETPLACE_TABS.WarMachines}>
             <MechInfo isGridView={isGridView} name={name} label={label} tier={tier} mechDetails={mechDetails} />
         </MarketItem>
     )
@@ -74,6 +75,12 @@ const MechInfo = ({
                 sx={{
                     fontFamily: fonts.nostromoBlack,
                     color: rarityDeets.color,
+                    display: "-webkit-box",
+                    overflow: "hidden",
+                    overflowWrap: "anywhere",
+                    textOverflow: "ellipsis",
+                    WebkitLineClamp: 1, // change to max number of lines
+                    WebkitBoxOrient: "vertical",
                 }}
             >
                 {rarityDeets.label}

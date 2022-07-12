@@ -286,18 +286,20 @@ const BanProposalInner = ({
 export const LineItem = ({ title, children, color }: { title: string; children: ReactNode; color?: string }) => {
     return (
         <Stack direction="row" spacing=".7rem" alignItems="start">
-            <Typography
+            <Stack
+                alignItems="center"
+                justifyContent="center"
                 sx={{
-                    py: ".2rem",
+                    alignSelf: "stretch",
                     flexShrink: 0,
-                    width: "7rem",
+                    py: ".2rem",
+                    width: "8rem",
                     textAlign: "center",
-                    lineHeight: 1,
                     backgroundColor: `${color || colors.red}BB`,
                 }}
             >
-                {title}
-            </Typography>
+                <Typography sx={{ lineHeight: 1 }}>{title}</Typography>
+            </Stack>
             <Stack direction="row" spacing=".7rem" alignItems="center" sx={{ mt: ".2rem !important", alignSelf: "stretch" }}>
                 {children}
             </Stack>

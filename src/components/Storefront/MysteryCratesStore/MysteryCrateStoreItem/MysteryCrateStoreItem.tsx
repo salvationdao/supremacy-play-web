@@ -10,7 +10,7 @@ import { useToggle } from "../../../../hooks"
 import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts, siteZIndex } from "../../../../theme/theme"
-import { MysteryCrateOwnershipResp, RewardResponse, StorefrontMysteryCrate } from "../../../../types"
+import { RewardResponse, StorefrontMysteryCrate } from "../../../../types"
 import { ClaimedRewards } from "../../../Claims/ClaimedRewards"
 import { ConfirmModal } from "../../../Common/ConfirmModal"
 import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
@@ -18,10 +18,9 @@ import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
 interface MysteryCrateStoreItemProps {
     enlargedView?: boolean
     crate: StorefrontMysteryCrate
-    ownershipDetails: MysteryCrateOwnershipResp
 }
 
-export const MysteryCrateStoreItem = ({ enlargedView, crate, ownershipDetails }: MysteryCrateStoreItemProps) => {
+export const MysteryCrateStoreItem = ({ enlargedView, crate }: MysteryCrateStoreItemProps) => {
     const theme = useTheme()
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsFaction("/faction_commander")
@@ -33,11 +32,6 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate, ownershipDetails }:
     const [isLoading, setIsLoading] = useState(false)
     const [buyError, setBuyError] = useState<string>()
     const [quantity, setQuantity] = useState(1)
-
-    let isAllowedToBuy = false
-    if (ownershipDetails.owned < ownershipDetails.allowed) {
-        isAllowedToBuy = true
-    }
 
     const primaryColor = theme.factionTheme.primary
     const backgroundColor = theme.factionTheme.background
@@ -153,7 +147,7 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate, ownershipDetails }:
                                     position: "absolute",
                                     right: enlargedView ? "1.4rem" : ".5rem",
                                     bottom: enlargedView ? ".6rem" : ".2rem",
-                                    px: ".2rem",
+                                    px: ".6rem",
                                     py: ".5rem",
                                     backgroundColor: "#00000095",
                                 }}
@@ -162,15 +156,14 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate, ownershipDetails }:
                                     sx={{
                                         lineHeight: 1,
                                         fontSize: enlargedView ? "1.5rem" : "1.22rem",
-                                        fontFamily: fonts.nostromoBold,
+                                        fontFamily: fonts.nostromoBlack,
                                         span: {
                                             fontFamily: "inherit",
                                             color: mysteryCrate.amount_sold >= mysteryCrate.amount ? colors.red : colors.neonBlue,
                                         },
                                     }}
                                 >
-                                    <span>{numberCommaFormatter(mysteryCrate.amount - mysteryCrate.amount_sold)}</span> /{" "}
-                                    {numberCommaFormatter(mysteryCrate.amount)} left
+                                    {numberCommaFormatter(mysteryCrate.amount)} LIMITED SUPPLY
                                 </Typography>
                             </Box>
                         </Box>
@@ -188,112 +181,95 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate, ownershipDetails }:
                                 {mysteryCrate.description}
                             </Typography>
 
-                            <Stack
-                                direction="row"
-                                alignItems="stretch"
-                                justifyContent="center"
-                                spacing="2rem"
+                            <Box
                                 sx={{
                                     mt: "auto !important",
                                     mx: "auto",
                                     width: "100%",
-                                    pt: "1.8rem",
+                                    display: "flex",
+                                    alignItems: "stretch",
+                                    justifyContent: "center",
+                                    gap: "2rem",
                                 }}
                             >
-                                {isAllowedToBuy && (
-                                    <ClipThing
-                                        clipSize="5px"
-                                        clipSlantSize="2px"
-                                        border={{
-                                            borderColor: primaryColor,
-                                            borderThickness: "1.5px",
-                                        }}
-                                        opacity={0.9}
-                                        backgroundColor={backgroundColor}
-                                        sx={{ height: "100%", width: "15rem" }}
-                                    >
-                                        <Stack direction="row" justifyContent="space-between">
-                                            <TextField
-                                                variant="outlined"
-                                                hiddenLabel
-                                                placeholder={"1"}
-                                                onWheel={(event) => {
-                                                    event.currentTarget.getElementsByTagName("input")[0]?.blur()
-                                                }}
-                                                sx={{
-                                                    backgroundColor: "#00000090",
-                                                    ".MuiOutlinedInput-input": {
-                                                        px: "1.5rem",
-                                                        py: "1.5rem",
-                                                        fontSize: "2rem",
-                                                        height: "unset",
-                                                        "::-webkit-outer-spin-button, ::-webkit-inner-spin-button": {
-                                                            "-webkit-appearance": "none",
-                                                        },
-                                                        appearance: "textfield",
+                                <ClipThing
+                                    clipSize="5px"
+                                    clipSlantSize="2px"
+                                    border={{
+                                        borderColor: primaryColor,
+                                        borderThickness: "1.5px",
+                                    }}
+                                    opacity={0.9}
+                                    backgroundColor={backgroundColor}
+                                    sx={{ height: "100%", width: "15rem" }}
+                                >
+                                    <Stack direction="row" justifyContent="space-between">
+                                        <TextField
+                                            variant="outlined"
+                                            hiddenLabel
+                                            placeholder={"1"}
+                                            onWheel={(event) => {
+                                                event.currentTarget.getElementsByTagName("input")[0]?.blur()
+                                            }}
+                                            sx={{
+                                                backgroundColor: "#00000090",
+                                                ".MuiOutlinedInput-input": {
+                                                    px: "1.5rem",
+                                                    py: "1.5rem",
+                                                    fontSize: "2rem",
+                                                    height: "unset",
+                                                    "::-webkit-outer-spin-button, ::-webkit-inner-spin-button": {
+                                                        "-webkit-appearance": "none",
                                                     },
-                                                    ".MuiOutlinedInput-notchedOutline": { border: "unset" },
-                                                }}
-                                                type="number"
-                                                value={quantity}
-                                                onChange={(e) => {
-                                                    const newAmount = parseInt(e.target.value)
-                                                    if (newAmount <= 0) return
-                                                    const nAmountPurchasable = ownershipDetails.allowed - ownershipDetails.owned
-                                                    if (quantity > nAmountPurchasable) {
-                                                        setQuantity(nAmountPurchasable)
-                                                    } else {
-                                                        setQuantity(newAmount)
-                                                    }
-                                                }}
-                                                onBlur={() => {
-                                                    const nAmountPurchasable = ownershipDetails.allowed - ownershipDetails.owned
-                                                    if (quantity > nAmountPurchasable) {
-                                                        setQuantity(nAmountPurchasable)
-                                                    }
+                                                    appearance: "textfield",
+                                                },
+                                                ".MuiOutlinedInput-notchedOutline": { border: "unset" },
+                                            }}
+                                            type="number"
+                                            value={quantity}
+                                            onChange={(e) => {
+                                                const newAmount = parseInt(e.target.value)
+                                                setQuantity(newAmount)
+                                            }}
+                                        />
+                                        <Stack
+                                            sx={{
+                                                height: "5rem",
+                                                p: "1em",
+                                                "& svg:active": {
+                                                    transform: "scale(1.5)",
+                                                    transition: "all .2s",
+                                                },
+                                            }}
+                                        >
+                                            <SvgArrow
+                                                size="1.5rem"
+                                                sx={{ cursor: "pointer", zIndex: 1 }}
+                                                fill={primaryColor}
+                                                onClick={() => {
+                                                    setQuantity(quantity + 1)
                                                 }}
                                             />
-                                            <Stack
-                                                sx={{
-                                                    height: "5rem",
-                                                    p: "1em",
-                                                    "& svg:active": {
-                                                        transform: "scale(1.2)",
-                                                        transition: "all .2s",
-                                                    },
+                                            <SvgArrow
+                                                size="1.5rem"
+                                                sx={{ transform: "rotate(180deg)", cursor: "pointer" }}
+                                                fill={primaryColor}
+                                                onClick={() => {
+                                                    if (quantity > 1) setQuantity(quantity - 1)
                                                 }}
-                                            >
-                                                <SvgArrow
-                                                    size="1.5rem"
-                                                    sx={{ cursor: "pointer", zIndex: 1 }}
-                                                    fill={primaryColor}
-                                                    onClick={() => {
-                                                        const nAmountPurchasable = ownershipDetails.allowed - ownershipDetails.owned
-                                                        if (nAmountPurchasable > quantity) setQuantity(quantity + 1)
-                                                    }}
-                                                />
-                                                <SvgArrow
-                                                    size="1.5rem"
-                                                    sx={{ transform: "rotate(180deg)", cursor: "pointer" }}
-                                                    fill={primaryColor}
-                                                    onClick={() => {
-                                                        if (quantity > 1) setQuantity(quantity - 1)
-                                                    }}
-                                                />
-                                            </Stack>
+                                            />
                                         </Stack>
-                                    </ClipThing>
-                                )}
+                                    </Stack>
+                                </ClipThing>
 
                                 <FancyButton
-                                    disabled={!isAllowedToBuy}
                                     onClick={() => toggleConfirmModalOpen(true)}
                                     clipThingsProps={{
                                         clipSize: "5px",
                                         backgroundColor: primaryColor,
                                         opacity: 1,
                                         border: { isFancy: true, borderColor: primaryColor, borderThickness: "1.5px" },
-                                        sx: { position: "relative", width: enlargedView && isAllowedToBuy ? "50%" : "100%", height: "100%" },
+                                        sx: { position: "relative", width: enlargedView ? "50%" : "100%", height: "100%" },
                                     }}
                                     sx={{ px: "1.6rem", py: enlargedView ? "1.1rem" : ".6rem" }}
                                 >
@@ -301,12 +277,10 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate, ownershipDetails }:
                                         variant={enlargedView ? "body1" : "caption"}
                                         sx={{ fontFamily: fonts.nostromoBlack, color: theme.factionTheme.secondary }}
                                     >
-                                        {isAllowedToBuy && "Buy Now"}
-                                        {!isAllowedToBuy && ownershipDetails.allowed > 0 && "Maximum capacity reached"}
-                                        {!isAllowedToBuy && ownershipDetails.allowed === 0 && "A keycard in-game is required"}
+                                        Buy Now
                                     </Typography>
                                 </FancyButton>
-                            </Stack>
+                            </Box>
                         </Stack>
                     </Stack>
                 </ClipThing>

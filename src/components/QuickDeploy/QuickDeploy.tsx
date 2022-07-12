@@ -2,7 +2,7 @@ import { Box, CircularProgress, Fade, IconButton, Pagination, Stack, Typography 
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { MoveableResizable, TooltipHelper } from ".."
 import { SvgNotification, SvgSupToken } from "../../assets"
-import { useAuth } from "../../containers"
+import { useAuth, useMobile } from "../../containers"
 import { useTheme } from "../../containers/theme"
 import { parseString, supFormatter } from "../../helpers"
 import { usePagination, useToggle } from "../../hooks"
@@ -43,6 +43,7 @@ export const QuickDeploy = ({ open, onClose }: { open: boolean; onClose: () => v
 }
 
 const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
+    const { isMobile } = useMobile()
     const theme = useTheme()
     const { send } = useGameServerCommandsUser("/user_commander")
     const [preferencesModalOpen, togglePreferencesModalOpen] = useToggle()
@@ -104,10 +105,10 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
 
     const config: MoveableResizableConfig = useMemo(
         () => ({
-            localStoragePrefix: "quickDeploy",
+            localStoragePrefix: "quickDeploy1",
             // Defaults
-            defaultPosX: 330,
-            defaultPosY: 0,
+            defaultPosX: 370,
+            defaultPosY: 20,
             defaultWidth: 420,
             defaultHeight: 580,
             // Position limits
@@ -132,7 +133,13 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
     return (
         <>
             <Fade in>
-                <Box>
+                <Box
+                    sx={{
+                        ...(isMobile
+                            ? { m: "1rem", mb: "2rem", backgroundColor: "#FFFFFF12", boxShadow: 2, border: "#FFFFFF20 1px solid", height: "100%" }
+                            : {}),
+                    }}
+                >
                     <MoveableResizable config={config}>
                         <Stack
                             sx={{

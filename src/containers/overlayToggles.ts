@@ -1,3 +1,4 @@
+import { useMobile } from "./mobile"
 import { useCallback, useEffect, useState } from "react"
 import { createContainer } from "unstated-next"
 import { useToggle } from "../hooks"
@@ -9,8 +10,10 @@ enum LeftDrawerPanels {
 
 // Control left side bar button and open states
 const OverlayTogglesContainer = createContainer(() => {
+    const { isMobile } = useMobile()
     const [activePanel, setActivePanel] = useState<LeftDrawerPanels>(LeftDrawerPanels.None)
 
+    const [showTrailer, toggleShowTrailer] = useToggle()
     const [isEndBattleDetailEnabled, toggleIsEndBattleDetailEnabled] = useToggle()
     const [isLiveChartOpen, toggleIsLiveChartOpen] = useToggle(localStorage.getItem("liveChartOverlay") === "true")
     const [isMapOpen, toggleIsMapOpen] = useToggle(localStorage.getItem("mapOverlay") === "true")
@@ -36,15 +39,25 @@ const OverlayTogglesContainer = createContainer(() => {
 
     const toggleIsEndBattleDetailOpen = useCallback((value?: boolean) => togglePanel(LeftDrawerPanels.EndBattleDetail, value), [togglePanel])
 
+    useEffect(() => {
+        if (isMobile) {
+            toggleIsLiveChartOpen(true)
+            toggleIsMapOpen(true)
+            toggleIsBattleHistoryOpen(true)
+        }
+    }, [isMobile, toggleIsBattleHistoryOpen, toggleIsLiveChartOpen, toggleIsMapOpen])
+
     return {
         // Left side panels are a little different, only 1 can be open at a time
         isEndBattleDetailOpen: activePanel == LeftDrawerPanels.EndBattleDetail,
         toggleIsEndBattleDetailOpen,
 
+        showTrailer,
         isLiveChartOpen,
         isEndBattleDetailEnabled,
         isMapOpen,
         isBattleHistoryOpen,
+        toggleShowTrailer,
         toggleIsEndBattleDetailEnabled,
         toggleIsLiveChartOpen,
         toggleIsMapOpen,

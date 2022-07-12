@@ -2,9 +2,10 @@ import { IconButton, Slider, Stack } from "@mui/material"
 import { useCallback } from "react"
 import { SvgFullscreen, SvgMusic, SvgMusicMute, SvgVolume, SvgVolumeMute } from "../../assets"
 import { DEV_ONLY } from "../../constants"
-import { useStream } from "../../containers"
+import { useMobile, useStream } from "../../containers"
 
 export const VideoPlayerControls = () => {
+    const { isMobile } = useMobile()
     const { toggleIsMute, isMute, toggleIsMusicMute, isMusicMute, musicVolume, setMusicVolume, volume, setVolume } = useStream()
 
     const handleVolumeChange = useCallback(
@@ -80,9 +81,11 @@ export const VideoPlayerControls = () => {
                 )}
             </Stack>
 
-            <IconButton size="small" onClick={toggleFullscreen} sx={{ opacity: 0.5, transition: "all .2s", ":hover": { opacity: 1 } }}>
-                <SvgFullscreen size="1.4rem" />
-            </IconButton>
+            {!isMobile && (
+                <IconButton size="small" onClick={toggleFullscreen} sx={{ opacity: 0.5, transition: "all .2s", ":hover": { opacity: 1 } }}>
+                    <SvgFullscreen size="1.4rem" />
+                </IconButton>
+            )}
         </Stack>
     )
 }

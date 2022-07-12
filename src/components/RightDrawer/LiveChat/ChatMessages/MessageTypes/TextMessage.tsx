@@ -231,7 +231,7 @@ export const TextMessage = ({
                             flexShrink: 0,
                             ml: "auto",
                             pt: ".2rem",
-                            color: "grey",
+                            color: "#FFFFFF",
                             opacity: 0.4,
                             ":hover": { opacity: 1 },
                             fontSize: fontSize ? `${0.98 * fontSize}rem` : "0.98rem",

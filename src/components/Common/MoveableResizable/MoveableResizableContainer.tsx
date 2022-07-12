@@ -75,6 +75,7 @@ export const MoveableResizableContainer = createContainer((initialState: Moveabl
 
     const onMovingStopped = useCallback(
         (data: Position) => {
+            if ((!data.x && data.x !== 0) || (!data.y && data.y !== 0)) return
             const newX = isNaN(data.x) ? defaultPosX : data.x
             const newY = isNaN(data.y) ? defaultPosY : data.y
             setCurPosX(newX)
@@ -87,6 +88,7 @@ export const MoveableResizableContainer = createContainer((initialState: Moveabl
 
     const onResizeStopped = useCallback(
         (data: Dimension) => {
+            if ((!data.width && data.width !== 0) || (!data.height && data.height !== 0)) return
             const newW = isNaN(data.width) ? defaultPosX : data.width
             const newH = isNaN(data.height) ? defaultPosY : data.height
             setCurWidth(newW)
@@ -138,7 +140,7 @@ export const MoveableResizableContainer = createContainer((initialState: Moveabl
         onResizeStopped(newDimension)
         onMovingStopped(newPosition)
 
-        // Just run this once to set intial, no deps
+        // Just run this once to set initial, no deps
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [width, height])
 

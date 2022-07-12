@@ -7,8 +7,13 @@ import { MarketplaceItemPage } from "../pages/MarketplaceItemPage"
 import { MarketplaceSellPage } from "../pages/MarketplaceSellPage"
 import { MechPage } from "../pages/MechPage"
 import { WeaponPage } from "../pages/WeaponPage"
+import { LiveChat } from "../components/RightDrawer/LiveChat/LiveChat"
+import { PlayerList } from "../components/RightDrawer/PlayerList/PlayerList"
 import { PlayerProfilePage } from "../components/PublicProfile/PlayerProfile"
 
+/**
+ * Left drawer
+ */
 interface RouteStruct {
     id: string
     path: string
@@ -172,30 +177,35 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
     },
 }
 
-// Specifically used for right drawer navigation
+export const ROUTES_ARRAY: RouteStruct[] = []
+for (const [, value] of Object.entries(ROUTES_MAP)) {
+    ROUTES_ARRAY.push(value)
+}
 
+/**
+ * Right drawer
+ */
 export enum RightDrawerHashes {
     None = "",
     LiveChat = "#live_chat",
     PlayerList = "#player_list",
 }
 
-interface HashRouteStruct {
+export interface HashRouteStruct {
     id: string
     hash: string
     Component?: () => JSX.Element
     icon: string | React.ReactElement<unknown, string | React.JSXElementConstructor<unknown>>
-    enable: boolean
     label: string
 }
 
-const HASH_ROUTES_MAP: { [name: string]: HashRouteStruct } = {
+export const HASH_ROUTES_MAP: { [name: string]: HashRouteStruct } = {
     live_chat: {
         id: "live_chat",
         hash: RightDrawerHashes.LiveChat,
         icon: <SvgChat size="1rem" sx={{ pt: ".3rem" }} />,
-        enable: true,
         label: "Live Chat",
+        Component: LiveChat,
     },
     active_players: {
         id: "active_players",
@@ -205,14 +215,9 @@ const HASH_ROUTES_MAP: { [name: string]: HashRouteStruct } = {
                 <Box sx={{ width: ".8rem", height: ".8rem", borderRadius: "50%", backgroundColor: colors.green }} />
             </Box>
         ),
-        enable: true,
         label: "Active Players",
+        Component: PlayerList,
     },
-}
-
-export const ROUTES_ARRAY: RouteStruct[] = []
-for (const [, value] of Object.entries(ROUTES_MAP)) {
-    ROUTES_ARRAY.push(value)
 }
 
 export const HASH_ROUTES_ARRAY: HashRouteStruct[] = []

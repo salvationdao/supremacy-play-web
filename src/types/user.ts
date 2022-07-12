@@ -5,6 +5,7 @@ export interface User {
     gid: number
     mobile_number?: string
     rank: UserRank
+    features: Feature[]
 }
 
 export interface FactionStat {
@@ -68,4 +69,14 @@ export interface UserStat {
     total_ability_triggered: number
     ability_kill_count: number
     mech_kill_count: number
+}
+
+export interface Feature {
+    id: string
+    name: FeatureName
+}
+
+export enum FeatureName {
+    mechMove = "MECH_MOVE",
+    playerAbility = "PLAYER_ABILITY",
 }

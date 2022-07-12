@@ -33,13 +33,14 @@ export const WeaponLoadout = ({ weaponDetails }: { weaponDetails: Weapon }) => {
                 {skin ? (
                     <MechLoadoutItem
                         imageUrl={skin.image_url}
+                        videoUrls={[skin.card_animation_url]}
                         label={skin.label}
                         primaryColor={colors.chassisSkin}
                         Icon={SvgSkin}
                         rarity={getRarityDeets(skin.tier)}
                     />
                 ) : (
-                    <MechLoadoutItem label="WEAPON SUBMODEL" primaryColor={colors.chassisSkin} onClick={() => console.log("AAAAA")} isEmpty />
+                    <MechLoadoutItem label="SUBMODEL" primaryColor={colors.chassisSkin} onClick={() => console.log("AAAAA")} isEmpty />
                 )}
             </Stack>
         </Box>

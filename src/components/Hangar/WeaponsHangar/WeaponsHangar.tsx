@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { ClipThing } from "../.."
 import { EmptyWarMachinesPNG, WarMachineIconPNG } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
-import { parseString } from "../../../helpers"
+import { getWeaponTypeColor, parseString } from "../../../helpers"
 import { usePagination, useToggle, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
@@ -19,6 +19,7 @@ interface GetWeaponsRequest {
     page: number
     page_size: number
     include_market_listed: boolean
+    exclude_equipped?: boolean
     weapon_types: string[]
     search: string
 }
@@ -51,12 +52,12 @@ export const WeaponsHangar = () => {
     const weaponTypeFilterSection = useRef<ChipFilter>({
         label: "WEAPON TYPE",
         options: [
-            { value: WeaponType.Cannon, label: WeaponType.Cannon, color: colors.green },
-            { value: WeaponType.Sword, label: WeaponType.Sword, color: colors.red },
-            { value: WeaponType.Minigun, label: WeaponType.Minigun, color: colors.yellow },
-            { value: WeaponType.MissileLauncher, label: WeaponType.MissileLauncher, color: colors.purple },
-            { value: WeaponType.PlasmaGun, label: WeaponType.PlasmaGun, color: colors.blue },
-            { value: WeaponType.SniperRifle, label: WeaponType.SniperRifle, color: colors.orange },
+            { value: WeaponType.Cannon, label: WeaponType.Cannon, color: getWeaponTypeColor(WeaponType.Cannon) },
+            { value: WeaponType.Sword, label: WeaponType.Sword, color: getWeaponTypeColor(WeaponType.Sword) },
+            { value: WeaponType.Minigun, label: WeaponType.Minigun, color: getWeaponTypeColor(WeaponType.Minigun) },
+            { value: WeaponType.MissileLauncher, label: WeaponType.MissileLauncher, color: getWeaponTypeColor(WeaponType.MissileLauncher) },
+            { value: WeaponType.PlasmaGun, label: WeaponType.PlasmaGun, color: getWeaponTypeColor(WeaponType.PlasmaGun) },
+            { value: WeaponType.SniperRifle, label: WeaponType.SniperRifle, color: getWeaponTypeColor(WeaponType.SniperRifle) },
         ],
         initialSelected: weaponTypes,
         onSetSelected: (value: string[]) => {

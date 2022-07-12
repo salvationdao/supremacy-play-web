@@ -1,25 +1,23 @@
-import { Badge, Box, Fade, Stack, Tab, Tabs, Typography } from "@mui/material"
+import { Badge, Box, Stack, Tab, Tabs, Typography } from "@mui/material"
 import { useMemo } from "react"
 import { AdditionalOptionsButton, TooltipHelper } from "../.."
 import { SvgGlobal, SvgInfoCircular } from "../../../assets"
-import { useChat, useAuth, useSupremacy } from "../../../containers"
+import { useAuth, useChat, useSupremacy } from "../../../containers"
+import { useTheme } from "../../../containers/theme"
 import { acronym, shadeColor } from "../../../helpers"
 import { zoomEffect } from "../../../theme/keyframes"
 import { colors, fonts } from "../../../theme/theme"
 import { ChatMessageType } from "../../../types/chat"
 import { ChatMessages } from "./ChatMessages/ChatMessages"
 import { ChatSend } from "./ChatSend/ChatSend"
-import { useTheme } from "../../../containers/theme"
 
 export const LiveChat = () => {
     const { splitOption } = useChat()
     return (
-        <Fade in>
-            <Stack id="tutorial-chat" sx={{ width: "100%", height: "100%", overflow: "hidden" }}>
-                {splitOption == "split" ? <SplitLayout /> : <TabbedLayout />}
-                <AdditionalOptionsButton />
-            </Stack>
-        </Fade>
+        <Stack id="tutorial-chat" sx={{ width: "100%", height: "100%", overflow: "hidden" }}>
+            {splitOption == "split" ? <SplitLayout /> : <TabbedLayout />}
+            <AdditionalOptionsButton />
+        </Stack>
     )
 }
 
@@ -78,12 +76,14 @@ const TabbedLayout = () => {
                 value={tabValue}
                 variant="fullWidth"
                 sx={{
-                    height: `${5}rem`,
+                    height: `${4.8}rem`,
                     background: `linear-gradient(${bannerBackgroundColor} 26%, ${bannerBackgroundColor}95)`,
                     boxShadow: 1,
                     zIndex: 9,
+                    minHeight: 0,
                     ".MuiButtonBase-root": {
-                        height: `${5}rem`,
+                        height: `${4.8}rem`,
+                        minHeight: 0,
                     },
                     ".MuiTabs-indicator": {
                         height: "3px",

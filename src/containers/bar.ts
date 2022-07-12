@@ -28,14 +28,14 @@ export const BarContainer = createContainer(() => {
             if (below650) {
                 setActiveBars({
                     enlist: false,
-                    wallet: false,
+                    wallet: true,
                     profile: false,
                 })
             } else if (below750) {
                 setActiveBars({
                     enlist: false,
-                    wallet: false,
-                    profile: true,
+                    wallet: true,
+                    profile: false,
                 })
             } else if (below980) {
                 setActiveBars({
