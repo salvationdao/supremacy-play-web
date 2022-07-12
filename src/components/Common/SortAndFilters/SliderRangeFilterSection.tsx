@@ -66,7 +66,7 @@ export const SliderRangeFilterSection = ({
 
     return (
         <Section label={label} primaryColor={primaryColor} secondaryColor={secondaryColor} endComponent={resetButton}>
-            <Stack alignItems="center" spacing="2.8rem" direction="row" sx={{ px: "2rem" }}>
+            <Stack alignItems="center" spacing="2rem" direction="row" sx={{ px: "2rem" }}>
                 <ShowValue primaryColor={primaryColor} value={valueInstant[0]} />
 
                 <Box sx={{ flex: 1 }}>
