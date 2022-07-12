@@ -26,7 +26,7 @@ export const WarMachineAbilitiesPopover = ({
     maxAbilityPriceMap,
     getFaction,
 }: WarMachineAbilitiesPopoverProps) => {
-    const { userID, userHasFeature } = useAuth()
+    const { userID } = useAuth()
     const faction = getFaction(warMachine.factionID)
 
     return (
