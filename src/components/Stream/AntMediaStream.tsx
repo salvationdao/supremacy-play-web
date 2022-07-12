@@ -129,7 +129,12 @@ export const AntMediaStream = () => {
                                 }
                             })
                             setResolutions(resolutions)
-                            setSelectedResolution(Math.max.apply(null, resolutions))
+                            const prevResolution = parseInt(localStorage.getItem(`${currentStream.host}-resolution`) || "0")
+                            if (prevResolution && prevResolution in resolutions) {
+                                setSelectedResolution(prevResolution)
+                            } else {
+                                setSelectedResolution(Math.max.apply(null, resolutions))
+                            }
                             setCurrentPlayingStreamHost(currentStream.host)
                         } else if (info == "closed") {
                             webRtc.current = undefined
