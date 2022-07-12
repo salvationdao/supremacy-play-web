@@ -32,7 +32,6 @@ export const ProfileWarmachineItem = ({
                 const resp = await send<MechDetails>(GameServerKeys.PlayerAssetMechDetailPublic, {
                     mech_id: mech.id,
                 })
-
                 if (!resp) return
                 setMechDetails(resp)
             } catch (e) {
