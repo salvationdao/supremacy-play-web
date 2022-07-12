@@ -37,10 +37,10 @@ export const WeaponsMarketItem = ({ item, isGridView }: WarMachineMarketItemProp
 
     if (!weapon || !collection_item) return null
 
-    const { label, weapon_type, avatar_url } = weapon
+    const { label, weapon_type, avatar_url, image_url, large_image_url } = weapon
 
     return (
-        <MarketItem item={item} imageUrl={avatar_url} isGridView={isGridView} linkSubPath={MARKETPLACE_TABS.Weapons}>
+        <MarketItem item={item} imageUrl={image_url || large_image_url || avatar_url} isGridView={isGridView} linkSubPath={MARKETPLACE_TABS.Weapons}>
             <WeaponInfo isGridView={isGridView} label={label} weaponType={weapon_type} weaponDetails={weaponDetails} />
         </MarketItem>
     )

@@ -104,8 +104,8 @@ export const ClaimedRewards = ({ rewards, onClose }: ClaimedRewardsProps) => {
 
 const CrateItem = ({ label, imageUrl, quantity }: { label: string; imageUrl: string; quantity?: number }) => {
     return (
-        <Stack alignItems={"center"} spacing="1rem" sx={{ flex: 1 }}>
-            <Box component={"img"} src={imageUrl} alt={label} sx={{ width: "55%", height: "auto", objectFit: "contain", objectPosition: "center" }} />
+        <Stack alignItems="center" spacing=".8rem" sx={{ flex: 1 }}>
+            <Box component="img" src={imageUrl} alt={label} sx={{ width: "55%", height: "auto", objectFit: "contain", objectPosition: "center" }} />
             <Typography variant="h5" sx={{ fontFamily: fonts.nostromoBlack }}>
                 {quantity && (
                     <>

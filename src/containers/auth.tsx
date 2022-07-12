@@ -274,7 +274,7 @@ export const UserUpdater = () => {
     // Listen on user punishments
     useGameServerSubscriptionUser<PunishListItem[]>(
         {
-            URI: "",
+            URI: "/punishment_list",
             key: GameServerKeys.ListPunishments,
         },
         (payload) => {
