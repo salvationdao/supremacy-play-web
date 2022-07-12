@@ -13,6 +13,18 @@ import { FancyButton } from "../../Common/FancyButton"
 import { ProgressBar } from "../../Common/ProgressBar"
 import { TopText } from "../../VotingSystem/FactionAbility/TopText"
 
+const MechMoveCommandAbility: BlueprintPlayerAbility = {
+    id: "",
+    game_client_ability_id: 8,
+    label: "Move Command",
+    colour: "#FFFFFF",
+    image_url: "",
+    description: "Command the war machine to move to a specific location.",
+    text_colour: "",
+    location_select_type: LocationSelectType.MECH_COMMAND,
+    created_at: new Date(),
+}
+
 export interface MechMoveCommand {
     id: string
     mech_id: string
@@ -79,10 +91,10 @@ export const MechMoveCommandCard = ({ warMachine, faction, clipSlantSize, onClos
                         >
                             <Stack spacing="2.4rem" direction="row" alignItems="center" justifyContent="space-between" alignSelf="stretch">
                                 <TopText
-                                    description={"command mech to move to certain position"}
+                                    description={MechMoveCommandAbility.description}
                                     icon={<SvgDrag size="1rem" sx={{ pb: 0 }} fill={faction.primary_color} />}
                                     colour={faction.primary_color}
-                                    label={"Move Command"}
+                                    label={MechMoveCommandAbility.label}
                                 />
                             </Stack>
                             <Box
@@ -132,18 +144,6 @@ interface MechCommandButton {
     onClose: () => void
     hash: string
     mechMoveCommandID: string
-}
-
-const MechMoveCommandAbility: BlueprintPlayerAbility = {
-    id: "",
-    game_client_ability_id: 8,
-    label: "Mech Move Command",
-    colour: "#FFFFFF",
-    image_url: "",
-    description: "Command the war machine to move to a specific location.",
-    text_colour: "",
-    location_select_type: LocationSelectType.MECH_COMMAND,
-    created_at: new Date(),
 }
 
 const MechCommandButton = ({
