@@ -108,6 +108,7 @@ export const SLPDStream = () => {
                     height: "100% !important",
                 },
                 video: {
+                    position: "absolute !important",
                     width: "100% !important",
                     height: "100% !important",
                     objectFit: "cover !important",

@@ -26,6 +26,7 @@ export const Controls = () => {
             justifyContent="space-between"
             spacing="1.6rem"
             sx={{
+                flexShrink: 0,
                 position: "relative",
                 width: "100%",
                 height: `${CONTROLS_HEIGHT}rem`,
