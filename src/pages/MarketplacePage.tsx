@@ -83,7 +83,7 @@ export const MarketplacePage = () => {
                                     flexShrink: 0,
                                     color: primaryColor,
                                     minHeight: 0,
-                                    ".MuiTab-root": { minHeight: 0, fontSize: "1.3rem", height: "8rem", width: "10rem" },
+                                    ".MuiTab-root": { minHeight: 0, fontSize: "1.3rem", height: "6rem", width: "10rem" },
                                     ".Mui-selected": {
                                         color: `${secondaryColor} !important`,
                                         background: `linear-gradient(${primaryColor} 26%, ${primaryColor}BB)`,
