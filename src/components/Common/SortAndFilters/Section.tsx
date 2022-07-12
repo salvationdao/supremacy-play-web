@@ -20,11 +20,11 @@ export const Section = ({
     endComponent?: ReactNode
     initialExpanded?: boolean
 }) => {
-    const [isCollapsed, toggleIsCollapsed] = useToggle(initialExpanded || !!endComponent)
+    const [isExpanded, toggleIsExpanded] = useToggle(initialExpanded || !!endComponent)
 
     useEffect(() => {
-        if (endComponent) toggleIsCollapsed(true)
-    }, [endComponent, toggleIsCollapsed])
+        if (endComponent) toggleIsExpanded(true)
+    }, [endComponent, toggleIsExpanded])
 
     return (
         <Box>
@@ -32,29 +32,31 @@ export const Section = ({
                 clipThingsProps={{
                     clipSize: "10px",
                     border: {
-                        isFancy: isCollapsed,
+                        isFancy: isExpanded,
                         borderColor: primaryColor,
                         borderThickness: ".25rem",
                     },
-                    corners: { topRight: isCollapsed },
+                    corners: { topRight: isExpanded },
                     backgroundColor: primaryColor,
                     opacity: 0.8,
                     sx: { position: "relative" },
                 }}
                 sx={{ p: 0, color: "#FFFFFF" }}
-                onClick={() => toggleIsCollapsed()}
+                onClick={() => toggleIsExpanded()}
             >
                 <Stack direction="row" alignItems="center" sx={{ height: "100%", pl: "1.8rem", pr: "1.4rem", pt: ".7rem", pb: ".6rem" }}>
-                    <SvgDropdownArrow size="1.3rem" sx={{ mr: ".5rem", transform: isCollapsed ? "scaleY(-1) translateY(2px)" : "unset" }} />
+                    <SvgDropdownArrow size="1.3rem" sx={{ mr: ".5rem", transform: isExpanded ? "scaleY(-1) translateY(2px)" : "unset" }} />
                     <Typography variant="caption" sx={{ color: secondaryColor, fontFamily: fonts.nostromoBlack }}>
                         {label}
                     </Typography>
 
-                    <Box sx={{ ml: "auto" }}>{endComponent}</Box>
+                    <Box onClick={(e) => e.stopPropagation()} sx={{ ml: "auto" }}>
+                        {endComponent}
+                    </Box>
                 </Stack>
             </FancyButton>
 
-            <Collapse in={isCollapsed}>
+            <Collapse in={isExpanded}>
                 <Box sx={{ px: "2rem", pt: "1.4rem", pb: "1.8rem" }}>{children}</Box>
             </Collapse>
         </Box>
