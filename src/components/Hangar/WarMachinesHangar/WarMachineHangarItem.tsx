@@ -38,7 +38,8 @@ export const WarMachineHangarItem = ({ mech, isGridView }: { mech: MechBasic; is
 
     const primaryColor = theme.factionTheme.primary
     const backgroundColor = theme.factionTheme.background
-    const imageUrl = mechDetails?.chassis_skin?.avatar_url || mech.avatar_url
+    const avatarUrl = mechDetails?.chassis_skin?.avatar_url || mech.avatar_url
+    const imageUrl = mechDetails?.chassis_skin?.image_url || mech.image_url
     const largeImageUrl = mechDetails?.chassis_skin?.large_image_url || mech.large_image_url
 
     return (
@@ -86,7 +87,7 @@ export const WarMachineHangarItem = ({ mech, isGridView }: { mech: MechBasic; is
                             width: "100%",
                         }}
                     >
-                        <MediaPreview imageUrl={imageUrl} objectFit={isGridView ? "cover" : "contain"} />
+                        <MediaPreview imageUrl={avatarUrl || imageUrl || largeImageUrl} objectFit={isGridView ? "cover" : "contain"} />
                     </Box>
 
                     <Stack>

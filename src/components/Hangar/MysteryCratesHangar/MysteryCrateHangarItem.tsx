@@ -83,7 +83,11 @@ export const MysteryCrateHangarItem = ({ crate, setCrateOpen, setCrateReward, ge
                                 height: "20rem",
                             }}
                         >
-                            <MediaPreview imageUrl={crate.image_url || SafePNG} videoUrls={[crate.animation_url, crate.card_animation_url]} objectFit="cover" />
+                            <MediaPreview
+                                imageUrl={crate.large_image_url || crate.image_url || crate.avatar_url || SafePNG}
+                                videoUrls={[crate.animation_url, crate.card_animation_url]}
+                                objectFit="cover"
+                            />
 
                             {new Date() < (crate.locked_until || Date.now) && (
                                 <Stack
