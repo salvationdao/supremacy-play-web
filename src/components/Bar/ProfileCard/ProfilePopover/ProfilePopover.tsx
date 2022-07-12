@@ -3,10 +3,11 @@ import { MutableRefObject, useEffect, useState } from "react"
 import { ClipThing } from "../../.."
 import { SvgAssets, SvgProfile, SvgSettings, SvgSupport } from "../../../../assets"
 import { PASSPORT_WEB } from "../../../../constants"
+import { useAuth } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
 import { useToggle } from "../../../../hooks"
 import { siteZIndex } from "../../../../theme/theme"
-import { User } from "../../../../types"
+import { FeatureName, User } from "../../../../types"
 import { PreferencesModal } from "../PreferencesModal/PreferencesModal"
 import { TelegramRegisterModal } from "../PreferencesModal/TelegramRegisterModal"
 import { LogoutButton } from "./LogoutButton"
@@ -14,9 +15,12 @@ import { NavButton } from "./NavButton"
 
 export const ProfilePopover = ({ open, popoverRef, onClose, user }: { open: boolean; popoverRef: MutableRefObject<null>; onClose: () => void; user: User }) => {
     const theme = useTheme()
+    const { userHasFeature } = useAuth()
+
     const [localOpen, toggleLocalOpen] = useToggle(open)
     const [preferencesModalOpen, togglePreferencesModalOpen] = useToggle()
     const [telegramShortcode, setTelegramShortcode] = useState<string>("")
+    const canViewProfilePage = userHasFeature(FeatureName.publicProfilePage)
 
     useEffect(() => {
         if (!localOpen && !preferencesModalOpen) {
@@ -63,7 +67,15 @@ export const ProfilePopover = ({ open, popoverRef, onClose, user }: { open: bool
                     <Stack spacing=".32rem" sx={{ p: ".8rem" }}>
                         <NavButton href={`${PASSPORT_WEB}profile`} startIcon={<SvgAssets sx={{ pb: ".5rem" }} size="1.6rem" />} text="My Inventory" />
 
-                        <NavButton href={`/profile/${user.gid}`} startIcon={<SvgProfile sx={{ pb: ".5rem" }} size="1.6rem" />} text="Profile" />
+                        {canViewProfilePage ? (
+                            <NavButton href={`/profile/${user.gid}`} startIcon={<SvgProfile sx={{ pb: ".5rem" }} size="1.6rem" />} text="Profile" />
+                        ) : (
+                            <NavButton
+                                href={`${PASSPORT_WEB}profile/${user.username}/edit`}
+                                startIcon={<SvgProfile sx={{ pb: ".5rem" }} size="1.6rem" />}
+                                text="Edit Profile"
+                            />
+                        )}
 
                         <NavButton href="https://supremacyhelp.zendesk.com/" startIcon={<SvgSupport sx={{ pb: ".5rem" }} size="1.6rem" />} text="SUPPORT" />
 
