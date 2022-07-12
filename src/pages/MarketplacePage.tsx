@@ -96,6 +96,8 @@ export const MarketplacePage = () => {
 
                                 <Tab label="WAR MACHINES" value={MARKETPLACE_TABS.WarMachines} />
 
+                                <Tab label="WAR MACHINES" value={MARKETPLACE_TABS.WarMachines} />
+
                                 <Tab label="KEY CARDS" value={MARKETPLACE_TABS.Keycards} />
 
                                 <Tab label="MYSTERY CRATES" value={MARKETPLACE_TABS.MysteryCrates} />
