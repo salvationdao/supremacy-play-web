@@ -37,7 +37,7 @@ const BottomNavInner = () => {
     return (
         <Stack
             sx={{
-                maxHeight: "calc(100vh - 200px)",
+                maxHeight: "calc(100% - 200px)",
                 height: isNavOpen ? `${BOTTOM_NAV_HEIGHT}rem` : "4.2rem",
                 backgroundColor: `${primaryColor}08`,
                 transition: "all .3s",

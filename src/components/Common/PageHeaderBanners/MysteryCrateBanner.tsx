@@ -68,7 +68,7 @@ export const MysteryCrateBanner = () => {
             >
                 {/* Images */}
                 {!isMobile && crates && crates.length > 0 && (
-                    <Stack direction="row" alignItems="stretch" spacing="-1.4rem">
+                    <Stack direction="row" alignItems="stretch" spacing="-1.3rem">
                         {crates.map((c) => {
                             return (
                                 <Box
@@ -81,6 +81,7 @@ export const MysteryCrateBanner = () => {
                                         backgroundRepeat: "no-repeat",
                                         backgroundPosition: "center",
                                         backgroundSize: "contain",
+                                        transform: "scale(1.1)",
                                     }}
                                 />
                             )
@@ -95,25 +96,23 @@ export const MysteryCrateBanner = () => {
                         <Countdown dateTo={new Date(LOCKED_UNTIL)} />
                     </Stack>
 
-                    <Box sx={{ alignSelf: "stretch", py: "1rem" }}>
-                        <FancyButton
-                            clipThingsProps={{
-                                clipSize: "6px",
-                                backgroundColor: primaryColor,
-                                opacity: 1,
-                                border: { isFancy: true, borderColor: primaryColor, borderThickness: "1.5px" },
-                                sx: { position: "relative", height: "100%" },
-                            }}
-                            sx={{ px: "4rem", py: 0, color: secondaryColor, height: "100%" }}
-                            to={`/storefront/mystery-crates${location.hash}`}
-                        >
-                            <Stack justifyContent="center" sx={{ height: "100%" }}>
-                                <Typography variant="body2" sx={{ fontWeight: "fontWeightBold", color: secondaryColor }}>
-                                    SHOP NOW
-                                </Typography>
-                            </Stack>
-                        </FancyButton>
-                    </Box>
+                    <FancyButton
+                        clipThingsProps={{
+                            clipSize: "6px",
+                            backgroundColor: primaryColor,
+                            opacity: 1,
+                            border: { isFancy: true, borderColor: primaryColor, borderThickness: "1.5px" },
+                            sx: { position: "relative" },
+                        }}
+                        sx={{ px: "4rem", py: ".8rem", color: secondaryColor }}
+                        to={`/storefront/mystery-crates${location.hash}`}
+                    >
+                        <Stack justifyContent="center" sx={{ height: "100%" }}>
+                            <Typography variant="body2" sx={{ fontWeight: "fontWeightBold", color: secondaryColor }}>
+                                SHOP NOW
+                            </Typography>
+                        </Stack>
+                    </FancyButton>
                 </Stack>
 
                 {/* Background */}

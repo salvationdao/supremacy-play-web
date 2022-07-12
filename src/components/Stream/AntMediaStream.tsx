@@ -129,7 +129,12 @@ export const AntMediaStream = () => {
                                 }
                             })
                             setResolutions(resolutions)
-                            setSelectedResolution(Math.max.apply(null, resolutions))
+                            const prevResolution = parseInt(localStorage.getItem(`${currentStream.host}-resolution`) || "0")
+                            if (prevResolution && resolutions.includes(prevResolution)) {
+                                setSelectedResolution(prevResolution)
+                            } else {
+                                setSelectedResolution(Math.max.apply(null, resolutions))
+                            }
                             setCurrentPlayingStreamHost(currentStream.host)
                         } else if (info == "closed") {
                             webRtc.current = undefined
@@ -156,7 +161,14 @@ export const AntMediaStream = () => {
     const isPlaying = resolutions && resolutions.length > 0
 
     return (
-        <Stack sx={{ width: "100%", height: "100%", zIndex: siteZIndex.Stream }}>
+        <Stack
+            sx={{
+                position: "relative",
+                width: "100%",
+                height: "100%",
+                zIndex: siteZIndex.Stream,
+            }}
+        >
             {!isPlaying && <NoStreamScreen />}
 
             <video
@@ -168,6 +180,7 @@ export const AntMediaStream = () => {
                 controls={false}
                 playsInline
                 style={{
+                    position: "absolute",
                     width: "100%",
                     height: "100%",
                     objectFit: "cover",

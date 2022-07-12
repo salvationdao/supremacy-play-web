@@ -53,7 +53,8 @@ const BattleArenaPageInner = () => {
 
         if (!isMobile) return
         allowCloseNav.current = false
-        setAdditionalTabs([
+
+        const tabs = [
             {
                 id: "battle-arena",
                 hash: "#battle-arena",
@@ -99,7 +100,10 @@ const BattleArenaPageInner = () => {
                     </Stack>
                 ),
             },
-            {
+        ]
+
+        if (userID) {
+            tabs.push({
                 id: "quick-deploy",
                 hash: "#quick-deploy",
                 icon: <SvgRobot size="1.2rem" sx={{ pt: ".1rem" }} />,
@@ -114,30 +118,34 @@ const BattleArenaPageInner = () => {
                         />
                     </Stack>
                 ),
-            },
-            {
-                id: "prev-battle",
-                hash: "#prev-battle",
-                icon: <SvgHistoryClock size="1.2rem" sx={{ pt: ".1rem" }} />,
-                label: "PREVIOUS BATTLE",
-                Component: () => (
-                    <Stack sx={{ position: "relative", height: "100%" }}>
-                        <BattleEndScreen />
-                    </Stack>
-                ),
-            },
-            {
-                id: "history",
-                hash: "#history",
-                icon: <SvgHistory size="1.2rem" sx={{ pt: ".1rem" }} />,
-                label: "HISTORY",
-                Component: () => (
-                    <Stack sx={{ position: "relative", height: "100%" }}>
-                        <BattleHistory />
-                    </Stack>
-                ),
-            },
-        ])
+            })
+        }
+
+        tabs.push({
+            id: "prev-battle",
+            hash: "#prev-battle",
+            icon: <SvgHistoryClock size="1.2rem" sx={{ pt: ".1rem" }} />,
+            label: "PREVIOUS BATTLE",
+            Component: () => (
+                <Stack sx={{ position: "relative", height: "100%" }}>
+                    <BattleEndScreen />
+                </Stack>
+            ),
+        })
+
+        tabs.push({
+            id: "history",
+            hash: "#history",
+            icon: <SvgHistory size="1.2rem" sx={{ pt: ".1rem" }} />,
+            label: "HISTORY",
+            Component: () => (
+                <Stack sx={{ position: "relative", height: "100%" }}>
+                    <BattleHistory />
+                </Stack>
+            ),
+        })
+
+        setAdditionalTabs(tabs)
         setIsNavOpen(true)
 
         // Remove tabs on unmount
@@ -146,7 +154,7 @@ const BattleArenaPageInner = () => {
             setAdditionalTabs([])
             setIsNavOpen(false)
         }
-    }, [allowCloseNav, isMobile, recalculateDimensions, setAdditionalTabs, setIsNavOpen])
+    }, [allowCloseNav, isMobile, recalculateDimensions, setAdditionalTabs, setIsNavOpen, userID])
 
     return (
         <>

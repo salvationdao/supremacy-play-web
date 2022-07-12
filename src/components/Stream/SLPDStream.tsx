@@ -63,7 +63,12 @@ export const SLPDStream = () => {
             setResolutions((prev) => {
                 if (!prev || prev.length <= 0) {
                     const resolutions = [1080, 720, 480, 360, 240]
-                    setSelectedResolution(Math.max.apply(null, resolutions))
+                    const prevResolution = parseInt(localStorage.getItem(`${currentStream.host}-resolution`) || "0")
+                    if (prevResolution && resolutions.includes(prevResolution)) {
+                        setSelectedResolution(prevResolution)
+                    } else {
+                        setSelectedResolution(Math.max.apply(null, resolutions))
+                    }
                     return resolutions
                 }
                 return prev
@@ -100,6 +105,7 @@ export const SLPDStream = () => {
         <Stack
             key={currentStream?.stream_id}
             sx={{
+                position: "relative",
                 width: "100%",
                 height: "100%",
                 zIndex: siteZIndex.Stream,
@@ -108,6 +114,7 @@ export const SLPDStream = () => {
                     height: "100% !important",
                 },
                 video: {
+                    position: "absolute !important",
                     width: "100% !important",
                     height: "100% !important",
                     objectFit: "cover !important",
