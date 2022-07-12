@@ -38,7 +38,7 @@ export const SliderRangeFilterSection = ({
     }
 
     const resetButton = useMemo(() => {
-        if (value == initialValue) return null
+        if (value[0] === initialValue[0] && value[1] === initialValue[1]) return null
 
         return (
             <FancyButton

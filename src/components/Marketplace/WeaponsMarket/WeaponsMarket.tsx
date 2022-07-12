@@ -160,7 +160,6 @@ export const WeaponsMarket = () => {
     const ammoRangeFilter = useRef<SliderRangeFilter>({
         label: "AMMO",
         initialValue: ammoRange,
-        initialExpanded: ammoRange[0] !== 0 || ammoRange[1] !== 3000,
         minMax: [0, 3000],
         onSetValue: (value: number[]) => {
             setAmmoRange(value)
@@ -171,7 +170,6 @@ export const WeaponsMarket = () => {
     const damageRangeFilter = useRef<SliderRangeFilter>({
         label: "DAMAGE",
         initialValue: damageRange,
-        initialExpanded: damageRange[0] !== 0 || damageRange[1] !== 1000,
         minMax: [0, 1000],
         onSetValue: (value: number[]) => {
             setDamageRange(value)
@@ -182,7 +180,6 @@ export const WeaponsMarket = () => {
     const damageFalloffRangeFilter = useRef<SliderRangeFilter>({
         label: "DAMAGE FALLOFF",
         initialValue: damageFalloffRange,
-        initialExpanded: damageFalloffRange[0] !== 0 || damageFalloffRange[1] !== 1000,
         minMax: [0, 1000],
         onSetValue: (value: number[]) => {
             setDamageFalloffRange(value)
@@ -193,7 +190,6 @@ export const WeaponsMarket = () => {
     const damageFalloffRateRangeFilter = useRef<SliderRangeFilter>({
         label: "DAMAGE FALLOFF RATE",
         initialValue: damageFalloffRateRange,
-        initialExpanded: damageFalloffRateRange[0] !== 0 || damageFalloffRateRange[1] !== 1000,
         minMax: [0, 1000],
         onSetValue: (value: number[]) => {
             setDamageFalloffRateRange(value)
@@ -204,7 +200,6 @@ export const WeaponsMarket = () => {
     const radiusRangeFilter = useRef<SliderRangeFilter>({
         label: "RADIUS",
         initialValue: radiusRange,
-        initialExpanded: radiusRange[0] !== 0 || radiusRange[1] !== 2000,
         minMax: [0, 2000],
         onSetValue: (value: number[]) => {
             setRadiusRange(value)
@@ -215,7 +210,6 @@ export const WeaponsMarket = () => {
     const radiusDamageFalloffRangeFilter = useRef<SliderRangeFilter>({
         label: "RADIUS DAMAGE FALLOFF",
         initialValue: radiusDamageFalloffRange,
-        initialExpanded: radiusDamageFalloffRange[0] !== 0 || radiusDamageFalloffRange[1] !== 2000,
         minMax: [0, 2000],
         onSetValue: (value: number[]) => {
             setRadiusDamageFalloffRange(value)
@@ -226,7 +220,6 @@ export const WeaponsMarket = () => {
     const rateOfFireRangeFilter = useRef<SliderRangeFilter>({
         label: "RATE OF FIRE",
         initialValue: rateOfFireRange,
-        initialExpanded: rateOfFireRange[0] !== 0 || rateOfFireRange[1] !== 1000,
         minMax: [0, 1000],
         onSetValue: (value: number[]) => {
             setRateOfFireRange(value)
@@ -237,7 +230,6 @@ export const WeaponsMarket = () => {
     const energyCostRangeFilter = useRef<SliderRangeFilter>({
         label: "ENERGY COST",
         initialValue: energyCostRange,
-        initialExpanded: energyCostRange[0] !== 0 || energyCostRange[1] !== 100,
         minMax: [0, 100],
         onSetValue: (value: number[]) => {
             setEnergyCostRange(value)
@@ -248,7 +240,6 @@ export const WeaponsMarket = () => {
     const projectileSpeedRangeFilter = useRef<SliderRangeFilter>({
         label: "PROJECTIVE SPEED",
         initialValue: projectileSpeedRange,
-        initialExpanded: projectileSpeedRange[0] !== 0 || projectileSpeedRange[1] !== 200000,
         minMax: [0, 200000],
         onSetValue: (value: number[]) => {
             setProjectileSpeedRange(value)
@@ -259,7 +250,6 @@ export const WeaponsMarket = () => {
     const spreadRangeFilter = useRef<SliderRangeFilter>({
         label: "SPREAD",
         initialValue: spreadRange,
-        initialExpanded: spreadRange[0] !== 0 || spreadRange[1] !== 100,
         minMax: [0, 100],
         onSetValue: (value: number[]) => {
             setSpreadRange(value)
