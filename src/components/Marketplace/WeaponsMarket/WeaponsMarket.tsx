@@ -57,8 +57,35 @@ export const WeaponsMarket = () => {
     const [price, setPrice] = useState<(number | undefined)[]>(
         (query.get("priceRanges") || undefined)?.split("||").map((p) => (p ? parseInt(p) : undefined)) || [undefined, undefined],
     )
+    const [ammoRange, setAmmoRange] = useState<number[]>(
+        (query.get("ammo") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 3000)) || [0, 3000],
+    )
     const [damageRange, setDamageRange] = useState<number[]>(
-        (query.get("damageRange") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 10000)) || [0, 10000],
+        (query.get("damage") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 1000)) || [0, 1000],
+    )
+    const [damageFalloffRange, setDamageFalloffRange] = useState<number[]>(
+        (query.get("damageFalloff") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 1000)) || [0, 1000],
+    )
+    const [damageFalloffRateRange, setDamageFalloffRateRange] = useState<number[]>(
+        (query.get("damageFalloffRate") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 1000)) || [0, 1000],
+    )
+    const [radiusRange, setRadiusRange] = useState<number[]>(
+        (query.get("radius") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 2000)) || [0, 2000],
+    )
+    const [radiusDamageFalloffRange, setRadiusDamageFalloffRange] = useState<number[]>(
+        (query.get("radiusDamageFalloff") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 2000)) || [0, 2000],
+    )
+    const [rateOfFireRange, setRateOfFireRange] = useState<number[]>(
+        (query.get("rateOfFire") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 1000)) || [0, 1000],
+    )
+    const [energyCostRange, setEnergyCostRange] = useState<number[]>(
+        (query.get("energyCost") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 100)) || [0, 100],
+    )
+    const [projectileSpeedRange, setProjectileSpeedRange] = useState<number[]>(
+        (query.get("projectileSpeed") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 200000)) || [0, 200000],
+    )
+    const [spreadRange, setSpreadRange] = useState<number[]>(
+        (query.get("spread") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 100)) || [0, 100],
     )
 
     // Filters
@@ -130,12 +157,112 @@ export const WeaponsMarket = () => {
         },
     })
 
+    const ammoRangeFilter = useRef<SliderRangeFilter>({
+        label: "AMMO",
+        initialValue: ammoRange,
+        initialExpanded: ammoRange[0] !== 0 || ammoRange[1] !== 3000,
+        minMax: [0, 3000],
+        onSetValue: (value: number[]) => {
+            setAmmoRange(value)
+            changePage(1)
+        },
+    })
+
     const damageRangeFilter = useRef<SliderRangeFilter>({
         label: "DAMAGE",
         initialValue: damageRange,
-        minMax: [0, 10000],
+        initialExpanded: damageRange[0] !== 0 || damageRange[1] !== 1000,
+        minMax: [0, 1000],
         onSetValue: (value: number[]) => {
             setDamageRange(value)
+            changePage(1)
+        },
+    })
+
+    const damageFalloffRangeFilter = useRef<SliderRangeFilter>({
+        label: "DAMAGE FALLOFF",
+        initialValue: damageFalloffRange,
+        initialExpanded: damageFalloffRange[0] !== 0 || damageFalloffRange[1] !== 1000,
+        minMax: [0, 1000],
+        onSetValue: (value: number[]) => {
+            setDamageFalloffRange(value)
+            changePage(1)
+        },
+    })
+
+    const damageFalloffRateRangeFilter = useRef<SliderRangeFilter>({
+        label: "DAMAGE FALLOFF RATE",
+        initialValue: damageFalloffRateRange,
+        initialExpanded: damageFalloffRateRange[0] !== 0 || damageFalloffRateRange[1] !== 1000,
+        minMax: [0, 1000],
+        onSetValue: (value: number[]) => {
+            setDamageFalloffRateRange(value)
+            changePage(1)
+        },
+    })
+
+    const radiusRangeFilter = useRef<SliderRangeFilter>({
+        label: "RADIUS",
+        initialValue: radiusRange,
+        initialExpanded: radiusRange[0] !== 0 || radiusRange[1] !== 2000,
+        minMax: [0, 2000],
+        onSetValue: (value: number[]) => {
+            setRadiusRange(value)
+            changePage(1)
+        },
+    })
+
+    const radiusDamageFalloffRangeFilter = useRef<SliderRangeFilter>({
+        label: "RADIUS DAMAGE FALLOFF",
+        initialValue: radiusDamageFalloffRange,
+        initialExpanded: radiusDamageFalloffRange[0] !== 0 || radiusDamageFalloffRange[1] !== 2000,
+        minMax: [0, 2000],
+        onSetValue: (value: number[]) => {
+            setRadiusDamageFalloffRange(value)
+            changePage(1)
+        },
+    })
+
+    const rateOfFireRangeFilter = useRef<SliderRangeFilter>({
+        label: "RATE OF FIRE",
+        initialValue: rateOfFireRange,
+        initialExpanded: rateOfFireRange[0] !== 0 || rateOfFireRange[1] !== 1000,
+        minMax: [0, 1000],
+        onSetValue: (value: number[]) => {
+            setRateOfFireRange(value)
+            changePage(1)
+        },
+    })
+
+    const energyCostRangeFilter = useRef<SliderRangeFilter>({
+        label: "ENERGY COST",
+        initialValue: energyCostRange,
+        initialExpanded: energyCostRange[0] !== 0 || energyCostRange[1] !== 100,
+        minMax: [0, 100],
+        onSetValue: (value: number[]) => {
+            setEnergyCostRange(value)
+            changePage(1)
+        },
+    })
+
+    const projectileSpeedRangeFilter = useRef<SliderRangeFilter>({
+        label: "PROJECTIVE SPEED",
+        initialValue: projectileSpeedRange,
+        initialExpanded: projectileSpeedRange[0] !== 0 || projectileSpeedRange[1] !== 200000,
+        minMax: [0, 200000],
+        onSetValue: (value: number[]) => {
+            setProjectileSpeedRange(value)
+            changePage(1)
+        },
+    })
+
+    const spreadRangeFilter = useRef<SliderRangeFilter>({
+        label: "SPREAD",
+        initialValue: spreadRange,
+        initialExpanded: spreadRange[0] !== 0 || spreadRange[1] !== 100,
+        minMax: [0, 100],
+        onSetValue: (value: number[]) => {
+            setSpreadRange(value)
             changePage(1)
         },
     })
@@ -182,6 +309,16 @@ export const WeaponsMarket = () => {
                 ownedBy: ownedBy.join("||"),
                 listingTypes: listingTypes.join("||"),
                 priceRanges: price.join("||"),
+                ammo: ammoRange.join("||"),
+                damage: damageRange.join("||"),
+                damageFalloff: damageFalloffRange.join("||"),
+                damageFalloffRate: damageFalloffRateRange.join("||"),
+                radius: radiusRange.join("||"),
+                radiusDamageFalloff: radiusDamageFalloffRange.join("||"),
+                rateOfFire: rateOfFireRange.join("||"),
+                energyCost: energyCostRange.join("||"),
+                projectileSpeed: projectileSpeedRange.join("||"),
+                spread: spreadRange.join("||"),
             })
 
             if (!resp) return
@@ -195,7 +332,30 @@ export const WeaponsMarket = () => {
         } finally {
             setIsLoading(false)
         }
-    }, [sort, price, updateQuery, page, pageSize, status, ownedBy, listingTypes, weaponTypes, send, search, setTotalItems])
+    }, [
+        sort,
+        price,
+        updateQuery,
+        page,
+        pageSize,
+        status,
+        ownedBy,
+        listingTypes,
+        weaponTypes,
+        ammoRange,
+        damageRange,
+        damageFalloffRange,
+        damageFalloffRateRange,
+        radiusRange,
+        radiusDamageFalloffRange,
+        rateOfFireRange,
+        energyCostRange,
+        projectileSpeedRange,
+        spreadRange,
+        send,
+        search,
+        setTotalItems,
+    ])
 
     useEffect(() => {
         getItems()
@@ -298,7 +458,18 @@ export const WeaponsMarket = () => {
                 onSetSearch={setSearch}
                 chipFilters={[statusFilterSection.current, ownedByFilterSection.current, listingTypeFilterSection.current, weaponTypeChipFilter.current]}
                 rangeFilters={[priceRangeFilter.current]}
-                sliderRangeFilters={[damageRangeFilter.current]}
+                sliderRangeFilters={[
+                    ammoRangeFilter.current,
+                    damageRangeFilter.current,
+                    damageFalloffRangeFilter.current,
+                    damageFalloffRateRangeFilter.current,
+                    radiusRangeFilter.current,
+                    radiusDamageFalloffRangeFilter.current,
+                    rateOfFireRangeFilter.current,
+                    energyCostRangeFilter.current,
+                    projectileSpeedRangeFilter.current,
+                    spreadRangeFilter.current,
+                ]}
                 changePage={changePage}
             />
 
