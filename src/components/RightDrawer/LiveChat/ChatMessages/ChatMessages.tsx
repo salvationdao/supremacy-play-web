@@ -5,10 +5,11 @@ import { SvgScrolldown } from "../../../../assets"
 import { FontSizeType, SplitOptionType, useChat, useSupremacy, useAuth } from "../../../../containers"
 import { checkIfIsEmoji } from "../../../../helpers"
 import { colors } from "../../../../theme/theme"
-import { Faction, User } from "../../../../types"
+import { Faction, SystemBanMessageData, User } from "../../../../types"
 import { ChatMessageType, PunishMessageData, TextMessageData } from "../../../../types/chat"
 import { BanProposal } from "../BanProposal/BanProposal"
 import { GlobalAnnouncement, GlobalAnnouncementType } from "../GlobalAnnouncement"
+import { SystemBanMessage } from "./MessageTypes/SystemBanMessage"
 
 interface ChatMessagesProps {
     primaryColor: string
@@ -139,19 +140,6 @@ const ChatMessagesInner = ({
                     <Stack spacing="1rem" sx={{ mt: ".88rem" }}>
                         {chatMessages && chatMessages.length > 0 ? (
                             chatMessages.map((message) => {
-                                if (message.type == "PUNISH_VOTE") {
-                                    const data = message.data as PunishMessageData
-                                    return (
-                                        <PunishMessage
-                                            key={`${data.issued_by_user.id} - ${message.sent_at.toISOString()}`}
-                                            data={data}
-                                            sentAt={message.sent_at}
-                                            fontSize={fontSize}
-                                            getFaction={getFaction}
-                                        />
-                                    )
-                                }
-
                                 if (message.type == "TEXT") {
                                     const data = message.data as TextMessageData
                                     const isEmoji: boolean = checkIfIsEmoji(data.message)
@@ -169,6 +157,28 @@ const ChatMessagesInner = ({
                                             user={user}
                                             isEmoji={isEmoji}
                                             locallySent={message.locallySent}
+                                        />
+                                    )
+                                } else if (message.type == "PUNISH_VOTE") {
+                                    const data = message.data as PunishMessageData
+                                    return (
+                                        <PunishMessage
+                                            key={`${data.issued_by_user.id} - ${message.sent_at.toISOString()}`}
+                                            data={data}
+                                            sentAt={message.sent_at}
+                                            fontSize={fontSize}
+                                            getFaction={getFaction}
+                                        />
+                                    )
+                                } else if (message.type == "SYSTEM_BAN") {
+                                    const data = message.data as SystemBanMessageData
+                                    return (
+                                        <SystemBanMessage
+                                            key={`${data.banned_user.id} - ${message.sent_at.toISOString()}`}
+                                            data={data}
+                                            sentAt={message.sent_at}
+                                            fontSize={fontSize}
+                                            getFaction={getFaction}
                                         />
                                     )
                                 }

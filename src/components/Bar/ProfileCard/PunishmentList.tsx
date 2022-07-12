@@ -2,7 +2,7 @@ import { Box, IconButton, Modal, Stack, Typography } from "@mui/material"
 import { ClipThing } from "../.."
 import { SvgClose } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
-import { dateFormatter, snakeToTitle } from "../../../helpers"
+import { dateFormatter } from "../../../helpers"
 import { colors, fonts } from "../../../theme/theme"
 import { PunishListItem } from "../../../types/chat"
 
@@ -47,31 +47,56 @@ export const PunishmentList = ({ open, onClose, punishments }: Props) => {
 
                         <Stack spacing=".6rem">
                             {punishments.map((p) => {
-                                if (p.related_punish_vote.status !== "PASSED") return null
+                                let banFrom = "PUNISHED BY PLAYERS"
+                                if (p.ban_from === "SYSTEM") {
+                                    banFrom = "PUNISHED BY SYSTEM"
+                                } else if (p.ban_from === "ADMIN") {
+                                    banFrom = "PUNISHED BY ADMIN"
+                                }
+
                                 return (
-                                    <Stack key={p.id} spacing=".5rem" sx={{ px: "1.2rem", py: ".8rem", backgroundColor: "#FFFFFF08" }}>
-                                        <Stack direction="row" alignItems="center" justifyContent="space-between" spacing="1rem">
-                                            <Typography sx={{ color: colors.lightNeonBlue }}>
-                                                <strong>{snakeToTitle(p.punish_option.key).toUpperCase()}</strong>
+                                    <Box key={p.id} sx={{ backgroundColor: "#FFFFFF08" }}>
+                                        <Stack
+                                            direction="row"
+                                            alignItems="center"
+                                            justifyContent="space-between"
+                                            spacing="1rem"
+                                            sx={{ backgroundColor: theme.factionTheme.primary, p: ".2rem .8rem" }}
+                                        >
+                                            <Typography sx={{ color: theme.factionTheme.secondary }}>
+                                                <strong>{banFrom}</strong>
                                             </Typography>
-                                            <Typography sx={{ color: colors.lightNeonBlue }}>
-                                                <strong>UNTIL:</strong> {dateFormatter(p.punish_until)}
+                                            <Typography sx={{ color: theme.factionTheme.secondary }}>
+                                                {p.is_permanent ? (
+                                                    <strong>PERMANENT</strong>
+                                                ) : (
+                                                    <>
+                                                        <strong>UNTIL:</strong> {dateFormatter(p.end_at, false, true)}
+                                                    </>
+                                                )}
                                             </Typography>
                                         </Stack>
-                                        <Typography sx={{ strong: { color: colors.offWhite } }}>
-                                            <strong>DURATION:</strong> {p.punish_option.punish_duration_hours} mins
-                                        </Typography>
-                                        <Typography sx={{ strong: { color: colors.offWhite } }}>
-                                            <strong>DESCRIPTION:</strong> {p.punish_option.description}
-                                        </Typography>
-                                        <Typography sx={{ strong: { color: colors.offWhite } }}>
-                                            <strong>INITIATED BY:</strong> {p.related_punish_vote.issued_by_username}
-                                            <span style={{ marginLeft: ".2rem", opacity: 0.7 }}>#{p.related_punish_vote.issued_by_gid}</span>
-                                        </Typography>
-                                        <Typography sx={{ strong: { color: colors.offWhite } }}>
-                                            <strong>REASON:</strong> {p.related_punish_vote.reason}
-                                        </Typography>
-                                    </Stack>
+
+                                        <Stack spacing=".5rem" sx={{ px: "1.2rem", py: ".8rem", backgroundColor: "#FFFFFF08" }}>
+                                            <Typography sx={{ strong: { color: colors.offWhite } }}>
+                                                <strong>REASON:</strong> {p.reason}
+                                            </Typography>
+                                            <Typography sx={{ strong: { color: colors.offWhite } }}>
+                                                <strong>INITIATED BY:</strong> {p.ban_by_user.username}
+                                                <span style={{ marginLeft: ".2rem", opacity: 0.7 }}>#{p.ban_by_user.gid}</span>
+                                            </Typography>
+                                            <Box>
+                                                <Typography sx={{ strong: { color: colors.offWhite } }}>
+                                                    <strong>RESTRICTION{p.restrictions.length === 1 ? "" : "S"}:</strong>
+                                                </Typography>
+                                                {p.restrictions.map((res, i) => (
+                                                    <Typography key={res + i} sx={{ pl: 1.5 }}>
+                                                        • {res}
+                                                    </Typography>
+                                                ))}
+                                            </Box>
+                                        </Stack>
+                                    </Box>
                                 )
                             })}
                         </Stack>
