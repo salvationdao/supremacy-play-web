@@ -91,7 +91,7 @@ export const MysteryCrateBanner = () => {
 
                 {/* Countdown and CTA button */}
                 <Stack direction="row" alignItems="center" spacing="2.2rem" sx={{ py: ".5rem" }}>
-                    <Stack alignItems="center">
+                    <Stack alignItems="center" spacing="-.5rem">
                         <Typography sx={{ fontFamily: fonts.nostromoBlack }}>MYSTERY CRATE OPENING IN </Typography>
                         <Countdown dateTo={new Date(LOCKED_UNTIL)} />
                     </Stack>
