@@ -14,6 +14,7 @@ import { MarketplaceBuyAuctionItem, MarketSaleType, SortTypeLabel } from "../../
 import { PageHeader } from "../../Common/PageHeader"
 import { ChipFilter } from "../../Common/SortAndFilters/ChipFilterSection"
 import { RangeFilter } from "../../Common/SortAndFilters/RangeFilterSection"
+import { SliderRangeFilter } from "../../Common/SortAndFilters/SliderRangeFilterSection"
 import { SortAndFilters } from "../../Common/SortAndFilters/SortAndFilters"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { WeaponsMarketItem } from "./WeaponsMarketItem"
@@ -56,6 +57,7 @@ export const WeaponsMarket = () => {
     const [price, setPrice] = useState<(number | undefined)[]>(
         (query.get("priceRanges") || undefined)?.split("||").map((p) => (p ? parseInt(p) : undefined)) || [undefined, undefined],
     )
+    const [damageRange, setDamageRange] = useState<number[]>([0, 10000])
 
     // Filters
     const statusFilterSection = useRef<ChipFilter>({
@@ -117,6 +119,15 @@ export const WeaponsMarket = () => {
         initialValue: price,
         onSetValue: (value: (number | undefined)[]) => {
             setPrice(value)
+            changePage(1)
+        },
+    })
+
+    const damageRangeFilter = useRef<SliderRangeFilter>({
+        label: "DAMAGE",
+        initialValue: damageRange,
+        onSetValue: (value: number[]) => {
+            setDamageRange(value)
             changePage(1)
         },
     })
@@ -279,6 +290,7 @@ export const WeaponsMarket = () => {
                 onSetSearch={setSearch}
                 chipFilters={[statusFilterSection.current, ownedByFilterSection.current, listingTypeFilterSection.current, weaponTypeChipFilter.current]}
                 rangeFilters={[priceRangeFilter.current]}
+                sliderRangeFilters={[damageRangeFilter.current]}
                 changePage={changePage}
             />
 

@@ -7,6 +7,7 @@ import { ChipFilter, ChipFilterSection } from "./ChipFilterSection"
 import { DropdownOptions, DropdownOptionsSection } from "./DropdownOptionsSection"
 import { RangeFilter, RangeFilterSection } from "./RangeFilterSection"
 import { Section } from "./Section"
+import { SliderRangeFilter, SliderRangeFilterSection } from "./SliderRangeFilterSection"
 
 interface SortAndFiltersProps {
     initialSearch: string
@@ -14,6 +15,7 @@ interface SortAndFiltersProps {
     dropdownOptions?: DropdownOptions[]
     chipFilters?: ChipFilter[]
     rangeFilters?: RangeFilter[]
+    sliderRangeFilters?: SliderRangeFilter[]
     changePage: (page: number) => void
     primaryColor?: string
     children?: ReactNode
@@ -25,6 +27,7 @@ export const SortAndFilters = ({
     dropdownOptions,
     chipFilters,
     rangeFilters,
+    sliderRangeFilters,
     changePage,
     primaryColor: pColor,
     children,
@@ -167,6 +170,12 @@ export const SortAndFilters = ({
                         {!!rangeFilters &&
                             rangeFilters.length > 0 &&
                             rangeFilters.map((f, i) => <RangeFilterSection key={i} filter={f} primaryColor={primaryColor} secondaryColor={secondaryColor} />)}
+
+                        {!!sliderRangeFilters &&
+                            sliderRangeFilters.length > 0 &&
+                            sliderRangeFilters.map((f, i) => (
+                                <SliderRangeFilterSection key={i} filter={f} primaryColor={primaryColor} secondaryColor={secondaryColor} />
+                            ))}
                     </Stack>
                 </Box>
 
