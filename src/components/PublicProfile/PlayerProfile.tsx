@@ -3,12 +3,11 @@ import { useCallback, useEffect, useMemo, useState } from "react"
 import { useHistory, useParams } from "react-router-dom"
 import { SvgAbility, SvgCake, SvgDeath, SvgSkull2, SvgView, WarMachineIconPNG } from "../../assets"
 import { useAuth, useSnackbar } from "../../containers"
-import { getUserRankDeets, snakeToTitle, timeSince, timeSinceHoursInWords, timeSinceHoursMinsInWords, timeSinceInWords } from "../../helpers"
+import { getUserRankDeets, snakeToTitle, timeSince } from "../../helpers"
 import { useGameServerCommands, useGameServerCommandsUser } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { colors, fonts, theme } from "../../theme/theme"
 import { Faction, UserRank } from "../../types"
-import { BannerInfo } from "../Bar/Enlist/EnlistBanner"
 import { ClipThing } from "../Common/ClipThing"
 import { PageHeader } from "../Common/PageHeader"
 import { AboutMe } from "./ProfileAboutMe"
@@ -97,8 +96,6 @@ export const PlayerProfilePage = () => {
         [profile?.active_log?.active_at],
     )
 
-    console.log("rank", onlineStatus)
-
     // username
     const updateUsername = useCallback(
         async (newUsername: string) => {
@@ -108,7 +105,6 @@ export const PlayerProfilePage = () => {
                     new_username: newUsername,
                 })
                 setUsername(resp.Username)
-
                 newSnackbarMessage("username updated successfully.", "success")
             } catch (e) {
                 let errorMessage = ""
@@ -120,7 +116,7 @@ export const PlayerProfilePage = () => {
                 newSnackbarMessage(errorMessage, "error")
             }
         },
-        [userSend, profile?.player.id],
+        [userSend, profile?.player.id, newSnackbarMessage],
     )
 
     // about me
@@ -143,7 +139,7 @@ export const PlayerProfilePage = () => {
                 newSnackbarMessage(errorMessage, "error")
             }
         },
-        [userSend, profile?.player.id],
+        [userSend, profile?.player.id, newSnackbarMessage],
     )
 
     // sub to player profile
@@ -204,7 +200,15 @@ export const PlayerProfilePage = () => {
     }
 
     return (
-        <Stack direction="column" sx={{ height: "100%" }}>
+        <Stack
+            direction="column"
+            sx={{
+                height: "100%",
+                "@media (max-width:1300px)": {
+                    overflowY: "auto",
+                },
+            }}
+        >
             {/* top part */}
             <Stack
                 padding="1rem"
@@ -283,7 +287,17 @@ export const PlayerProfilePage = () => {
                 </Stack>
             </Stack>
 
-            <Stack direction="row" sx={{ height: "100%", background: primaryColor }}>
+            <Stack
+                direction="row"
+                sx={{
+                    height: "100%",
+                    background: primaryColor,
+
+                    "@media (max-width:1300px)": {
+                        flexDirection: "column",
+                    },
+                }}
+            >
                 {/* left side */}
                 <Stack
                     direction="row"
@@ -293,6 +307,10 @@ export const PlayerProfilePage = () => {
                         flexShrink: 0,
                         height: "100%",
                         width: "62rem",
+                        "@media (max-width:1300px)": {
+                            width: "100%",
+                            height: "50%",
+                        },
                     }}
                 >
                     {/* About me */}
@@ -324,12 +342,9 @@ export const PlayerProfilePage = () => {
                                 <Stack sx={{ p: "1rem 3rem" }}>
                                     <AboutMe
                                         hide={!isMe}
-                                        userID={profile.player.id}
                                         updateAboutMe={async (name: string) => {
                                             updateAboutMe(name)
                                         }}
-                                        primaryColour={primaryColor}
-                                        gid={profile.player.gid}
                                         aboutMe={aboutMe || ""}
                                     />
                                 </Stack>
@@ -339,117 +354,152 @@ export const PlayerProfilePage = () => {
                 </Stack>
 
                 {/* Right side */}
-                <Stack direction="row" padding="1.6rem" spacing="1rem" sx={{ height: "100%", flex: 1, backgroundColor: backgroundColor }}>
-                    <Stack spacing="1rem" direction="row" flexWrap={"wrap"}>
-                        {/* Stats box */}
-                        <Stack direction="row" spacing="1rem" sx={{ width: "40rem" }}>
-                            <ClipThing
-                                clipSize="10px"
-                                border={{
-                                    borderColor: primaryColor,
-                                    borderThickness: ".3rem",
-                                }}
-                                opacity={0.7}
-                                backgroundColor={backgroundColor}
-                                sx={{ height: "100%", flex: 1 }}
-                            >
-                                <Stack sx={{ position: "relative", height: "100%" }}>
+                <Stack
+                    direction="row"
+                    padding="1.6rem"
+                    alignItems="flex-start"
+                    spacing="1rem"
+                    sx={{
+                        flex: 1,
+                        backgroundColor: backgroundColor,
+                        "@media (max-width:900px)": {
+                            flexDirection: "column",
+                        },
+                    }}
+                >
+                    <Stack
+                        direction="column"
+                        spacing="1rem"
+                        sx={{
+                            alignItems: "stretch",
+                            justifyContent: "flex-start",
+                            width: "45rem",
+                            "@media (max-width:900px)": {
+                                width: "100%",
+                                pt: "1rem !important",
+                            },
+                        }}
+                    >
+                        <ClipThing
+                            clipSize="10px"
+                            border={{
+                                borderColor: primaryColor,
+                                borderThickness: ".3rem",
+                            }}
+                            opacity={0.7}
+                            backgroundColor={backgroundColor}
+                            sx={{ flex: 1 }}
+                        >
+                            <Stack sx={{ position: "relative", height: "100%" }}>
+                                <Stack sx={{ flex: 1 }}>
+                                    <PageHeader title="Stats" description="" primaryColor={primaryColor} imageUrl={WarMachineIconPNG} />
                                     <Stack sx={{ flex: 1 }}>
-                                        <PageHeader title="Stats" description="" primaryColor={primaryColor} imageUrl={WarMachineIconPNG} />
-                                        <Stack sx={{ flex: 1 }}>
-                                            <Stack
-                                                sx={{
-                                                    flex: 1,
-                                                    overflowY: "auto",
-                                                    overflowX: "hidden",
-                                                    direction: "ltr",
+                                        <Stack
+                                            sx={{
+                                                flex: 1,
+                                                overflowY: "auto",
+                                                overflowX: "hidden",
+                                                direction: "ltr",
 
-                                                    "::-webkit-scrollbar": {
-                                                        width: ".4rem",
-                                                    },
-                                                    "::-webkit-scrollbar-track": {
-                                                        background: "#FFFFFF15",
-                                                        borderRadius: 3,
-                                                    },
-                                                    "::-webkit-scrollbar-thumb": {
-                                                        background: primaryColor,
-                                                        borderRadius: 3,
-                                                    },
-                                                }}
-                                            >
-                                                <StatItem
-                                                    label="Abilities"
-                                                    value={profile.stats.total_ability_triggered}
-                                                    icon={<SvgAbility size="1.7rem" sx={{ pb: ".4rem" }} />}
-                                                />
-                                                <StatItem
-                                                    label="Mech Kills"
-                                                    value={profile.stats.mech_kill_count}
-                                                    icon={<SvgSkull2 size="1.7rem" sx={{ pb: ".4rem" }} />}
-                                                />
-                                                <StatItem
-                                                    label="Ability Kills"
-                                                    value={profile.stats.ability_kill_count}
-                                                    icon={<SvgDeath size="1.7rem" sx={{ pb: ".4rem" }} />}
-                                                />
-                                                <StatItem
-                                                    label="Spectated"
-                                                    value={profile.stats.view_battle_count}
-                                                    icon={<SvgView size="1.7rem" sx={{ pb: ".4rem" }} />}
-                                                />
-                                            </Stack>
+                                                "::-webkit-scrollbar": {
+                                                    width: ".4rem",
+                                                },
+                                                "::-webkit-scrollbar-track": {
+                                                    background: "#FFFFFF15",
+                                                    borderRadius: 3,
+                                                },
+                                                "::-webkit-scrollbar-thumb": {
+                                                    background: primaryColor,
+                                                    borderRadius: 3,
+                                                },
+                                            }}
+                                        >
+                                            <StatItem
+                                                label="Abilities"
+                                                value={profile.stats.total_ability_triggered}
+                                                icon={<SvgAbility size="1.7rem" sx={{ pb: ".4rem" }} />}
+                                            />
+                                            <StatItem
+                                                label="Mech Kills"
+                                                value={profile.stats.mech_kill_count}
+                                                icon={<SvgSkull2 size="1.7rem" sx={{ pb: ".4rem" }} />}
+                                            />
+                                            <StatItem
+                                                label="Ability Kills"
+                                                value={profile.stats.ability_kill_count}
+                                                icon={<SvgDeath size="1.7rem" sx={{ pb: ".4rem" }} />}
+                                            />
+                                            <StatItem
+                                                label="Spectated"
+                                                value={profile.stats.view_battle_count}
+                                                icon={<SvgView size="1.7rem" sx={{ pb: ".4rem" }} />}
+                                            />
                                         </Stack>
                                     </Stack>
                                 </Stack>
-                            </ClipThing>
-                        </Stack>
-                    </Stack>
+                            </Stack>
+                        </ClipThing>
 
-                    <Stack spacing="1rem" direction="row" flexWrap={"wrap"}>
-                        {/* Stats box */}
-                        <Stack direction="row" spacing="1rem" sx={{ width: "40rem" }}>
-                            <ClipThing
-                                clipSize="10px"
-                                border={{
-                                    borderColor: primaryColor,
-                                    borderThickness: ".3rem",
-                                }}
-                                opacity={0.7}
-                                backgroundColor={backgroundColor}
-                                sx={{ height: "100%", flex: 1 }}
-                            >
-                                <Stack spacing="1rem" sx={{ height: "100%", width: "100%" }}>
+                        <ClipThing
+                            clipSize="10px"
+                            border={{
+                                borderColor: primaryColor,
+                                borderThickness: ".3rem",
+                            }}
+                            opacity={0.7}
+                            backgroundColor={backgroundColor}
+                            sx={{ flex: 1 }}
+                        >
+                            <Stack sx={{ position: "relative" }}>
+                                <Stack sx={{ flex: 1 }}>
                                     <PageHeader title="Battle History" description="" primaryColor={primaryColor} imageUrl={WarMachineIconPNG} />
-                                    <Stack
-                                        sx={{
-                                            flex: 1,
-                                            overflowY: "auto",
-                                            overflowX: "hidden",
-                                            direction: "ltr",
-                                            px: "1rem",
+                                    <Stack sx={{ flex: 1 }}>
+                                        <Stack
+                                            spacing="1rem"
+                                            sx={{
+                                                maxHeight: "40rem",
+                                                px: "1rem",
+                                                flex: 1,
 
-                                            "::-webkit-scrollbar": {
-                                                width: ".4rem",
-                                            },
-                                            "::-webkit-scrollbar-track": {
-                                                background: "#FFFFFF15",
-                                                borderRadius: 3,
-                                            },
-                                            "::-webkit-scrollbar-thumb": {
-                                                background: primaryColor,
-                                                borderRadius: 3,
-                                            },
-                                        }}
-                                    >
-                                        <ProfileMechHistory playerID={profile.player.id} />
+                                                overflowY: "auto",
+                                                overflowX: "hidden",
+                                                direction: "ltr",
+
+                                                "::-webkit-scrollbar": {
+                                                    width: ".4rem",
+                                                },
+                                                "::-webkit-scrollbar-track": {
+                                                    background: "#FFFFFF15",
+                                                    borderRadius: 3,
+                                                },
+                                                "::-webkit-scrollbar-thumb": {
+                                                    background: primaryColor,
+                                                    borderRadius: 3,
+                                                },
+                                            }}
+                                        >
+                                            <ProfileMechHistory playerID={profile.player.id} />
+                                        </Stack>
                                     </Stack>
                                 </Stack>
-                            </ClipThing>
-                        </Stack>
+                            </Stack>
+                        </ClipThing>
                     </Stack>
 
                     {/* war machines */}
-                    <Stack direction="row" spacing="1rem" sx={{ height: "100%", width: "100%" }}>
+                    <Stack
+                        direction="row"
+                        spacing="1rem"
+                        sx={{
+                            height: "100%",
+                            width: "100%",
+                            "@media (max-width:900px)": {
+                                marginTop: "1rem !important",
+                                marginLeft: "0 !important",
+                                height: "60rem",
+                            },
+                        }}
+                    >
                         <ProfileWarmachines playerID={profile.player.id} backgroundColour={backgroundColor} primaryColour={primaryColor} />
                     </Stack>
                 </Stack>

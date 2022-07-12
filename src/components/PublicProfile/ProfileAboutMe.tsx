@@ -3,20 +3,7 @@ import { useCallback, useRef, useState } from "react"
 import { SvgEdit, SvgSave } from "../../assets"
 import { fonts } from "../../theme/theme"
 
-export const AboutMe = ({
-    hide,
-    aboutMe,
-    updateAboutMe,
-    primaryColour,
-    gid,
-}: {
-    hide: boolean
-    updateAboutMe: (aboutMe: string) => Promise<void>
-    aboutMe: string
-    userID: string
-    primaryColour: string
-    gid: number
-}) => {
+export const AboutMe = ({ hide, aboutMe, updateAboutMe }: { hide: boolean; updateAboutMe: (aboutMe: string) => Promise<void>; aboutMe: string }) => {
     const aboutMeRef = useRef<HTMLInputElement>()
     const [editing, setEditing] = useState(false)
     const [submitting, setSubmitting] = useState(false)
@@ -34,8 +21,8 @@ export const AboutMe = ({
     }, [newAboutMe, updateAboutMe])
 
     return (
-        <Stack direction="row" alignItems="center">
-            <Stack direction="row" alignItems="center">
+        <Stack direction="row" alignItems="stretch">
+            <Stack direction="row" alignItems="stretch" width={editing ? "100%" : "unset"}>
                 <TextField
                     multiline
                     inputRef={aboutMeRef}

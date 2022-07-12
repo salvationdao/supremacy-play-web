@@ -1,9 +1,10 @@
-import { Stack, CircularProgress, Typography, colors, Box } from "@mui/material"
-import { useState, useCallback, useEffect } from "react"
+import { Stack, CircularProgress, Box, Typography } from "@mui/material"
+import { useState, useCallback, useEffect, useMemo } from "react"
+import { EmptyWarMachinesPNG } from "../../assets"
 import { camelToTitle } from "../../helpers"
 import { useGameServerCommands } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
-import { theme } from "../../theme/theme"
+import { colors, fonts, theme } from "../../theme/theme"
 import { BattleMechHistory } from "../../types"
 import { HistoryEntry } from "../Hangar/WarMachinesHangar/Common/MechHistory/HistoryEntry"
 
@@ -42,50 +43,93 @@ export const ProfileMechHistory = ({ playerID }: { playerID: string }) => {
         fetchHistory()
     }, [send, fetchHistory])
 
-    if (historyLoading) {
-        return (
-            <Stack justifyContent="center" alignItems="center" sx={{ height: "6rem" }}>
-                <CircularProgress size="2rem" sx={{ mt: "2rem", color: theme.factionTheme.primary }} />
-            </Stack>
-        )
-    }
-    if (!historyLoading && historyError) {
-        return (
-            <Stack sx={{ flex: 1, px: "1rem" }}>
-                <Typography sx={{ color: colors.red, textTransform: "uppercase" }}>{historyError}</Typography>
-            </Stack>
-        )
-    }
+    const content = useMemo(() => {
+        if (historyError) {
+            return (
+                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                    <Stack
+                        alignItems="center"
+                        justifyContent="center"
+                        sx={{ height: "100%", maxWidth: "100%", width: "75rem", px: "3rem", pt: "1.28rem" }}
+                        spacing="1.5rem"
+                    >
+                        <Typography
+                            sx={{
+                                color: colors.red,
+                                fontFamily: fonts.nostromoBold,
+                                textAlign: "center",
+                            }}
+                        >
+                            {historyError}
+                        </Typography>
+                    </Stack>
+                </Stack>
+            )
+        }
 
-    return (
-        <Box sx={{ direction: "ltr", height: 0, width: "100%" }}>
-            <Box
-                sx={{
-                    width: "100%",
-                    py: "1rem",
-                    display: "grid",
-                    gridTemplateColumns: "repeat(auto-fill, minmax(29rem, 1fr))",
-                    gap: "1.3rem",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    overflow: "visible",
-                }}
-            >
-                {history.map((h, idx) => {
-                    return (
-                        <HistoryEntry
-                            mech={h.mech}
-                            key={idx}
-                            mapName={camelToTitle(h.battle?.game_map?.name || "Unknown")}
-                            backgroundImage={h.battle?.game_map?.image_url}
-                            mechSurvived={!!h.mech_survived}
-                            status={!h.battle?.battle?.ended_at ? "pending" : h.faction_won ? "won" : "lost"}
-                            kills={h.kills}
-                            date={h.created_at}
-                        />
-                    )
-                })}
-            </Box>
-        </Box>
-    )
+        if (!history || historyLoading) {
+            return (
+                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                    <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
+                        <CircularProgress size="3rem" sx={{ color: theme.factionTheme.primary }} />
+                    </Stack>
+                </Stack>
+            )
+        }
+
+        if (history && history.length > 0) {
+            return (
+                <>
+                    {history.map((h, idx) => {
+                        return (
+                            <HistoryEntry
+                                mech={h.mech}
+                                key={idx}
+                                mapName={camelToTitle(h.battle?.game_map?.name || "Unknown")}
+                                backgroundImage={h.battle?.game_map?.image_url}
+                                mechSurvived={!!h.mech_survived}
+                                status={!h.battle?.battle?.ended_at ? "pending" : h.faction_won ? "won" : "lost"}
+                                kills={h.kills}
+                                date={h.created_at}
+                            />
+                        )
+                    })}
+                </>
+            )
+        }
+
+        return (
+            <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", maxWidth: "40rem", mb: "2rem" }}>
+                    <Box
+                        sx={{
+                            width: "80%",
+                            height: "16rem",
+                            opacity: 0.7,
+                            filter: "grayscale(100%)",
+                            background: `url(${EmptyWarMachinesPNG})`,
+                            backgroundRepeat: "no-repeat",
+                            backgroundPosition: "bottom center",
+                            backgroundSize: "contain",
+                        }}
+                    />
+                    <Typography
+                        sx={{
+                            px: "1.28rem",
+                            pt: "1.28rem",
+                            color: colors.grey,
+                            fontFamily: fonts.nostromoBold,
+                            userSelect: "text !important",
+                            opacity: 0.9,
+                            textAlign: "center",
+                        }}
+                    >
+                        {"no battle history found."}
+                    </Typography>
+                </Stack>
+            </Stack>
+        )
+    }, [historyError, history, historyLoading])
+
+    return <>{content}</>
 }
