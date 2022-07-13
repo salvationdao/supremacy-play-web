@@ -273,7 +273,7 @@ export const IconStat = ({
                     alignItems="center"
                     spacing=".2rem"
                     sx={{
-                        mr: ".6rem",
+                        mr: ".8rem",
                         mb: ".4rem",
                         px: ".4rem",
                         pt: ".1rem",
