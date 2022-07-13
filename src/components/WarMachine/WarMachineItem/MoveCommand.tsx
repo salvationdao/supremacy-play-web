@@ -10,6 +10,8 @@ import { BlueprintPlayerAbility, LocationSelectType, WarMachineState } from "../
 import { ProgressBar } from "../../Common/ProgressBar"
 import { DEAD_OPACITY, WIDTH_SKILL_BUTTON, WIDTH_STAT_BAR } from "./WarMachineItem"
 
+const MECH_MOVE_COOLDOWN_SECONDS = 5
+
 const MechMoveCommandAbility: BlueprintPlayerAbility = {
     id: "",
     game_client_ability_id: 8,
@@ -73,8 +75,6 @@ interface MoveCommandInnerProps {
     isCancelled: boolean
     remainCooldownSeconds: number
 }
-
-const MECH_MOVE_COOLDOWN_SECONDS = 5
 
 const MoveCommandInner = ({ isAlive, remainCooldownSeconds, isMoving, isCancelled, hash, mechMoveCommandID }: MoveCommandInnerProps) => {
     const theme = useTheme()
