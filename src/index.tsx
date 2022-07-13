@@ -1,10 +1,12 @@
-import { Box, Stack } from "@mui/material"
+import { Box, LinearProgress, Stack } from "@mui/material"
 import { TourProvider } from "@reactour/tour"
 import * as Sentry from "@sentry/react"
 import { Buffer } from "buffer"
+import { useEffect } from "react"
 import ReactDOM from "react-dom"
 import { Action, ClientContextProvider, createClient } from "react-fetching-library"
 import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom"
+import { SupremacyPNG } from "./assets"
 import { Bar, GlobalSnackbar, Maintenance, RightDrawer } from "./components"
 import { BottomNav } from "./components/BottomNav/BottomNav"
 import { tourStyles } from "./components/HowToPlay/Tutorial/SetupTutorial"
@@ -29,6 +31,7 @@ import { AuthProvider, useAuth, UserUpdater } from "./containers/auth"
 import { FingerprintProvider } from "./containers/fingerprint"
 import { ThemeProvider } from "./containers/theme"
 import { ws } from "./containers/ws"
+import { useToggle } from "./hooks"
 import { NotFoundPage } from "./pages"
 import { AuthPage } from "./pages/AuthPage"
 import { EnlistPage } from "./pages/EnlistPage"
@@ -37,9 +40,54 @@ import { ROUTES_ARRAY, ROUTES_MAP } from "./routes"
 import { colors } from "./theme/theme"
 
 const AppInner = () => {
-    const { isServerUp } = useSupremacy()
+    const { serverConnectedBefore, isServerUp } = useSupremacy()
     const { isMobile } = useMobile()
     const { userID, factionID } = useAuth()
+    const [showLoading, toggleShowLoading] = useToggle(true)
+
+    // Makes the loading screen to show for AT LEAST 1 second
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            toggleShowLoading(false)
+        }, 1500)
+
+        return () => clearTimeout(timeout)
+    }, [toggleShowLoading])
+
+    if (!serverConnectedBefore || showLoading) {
+        return (
+            <Stack
+                spacing="4rem"
+                alignItems="center"
+                justifyContent="center"
+                sx={{
+                    position: "fixed",
+                    width: "100vw",
+                    height: "100%",
+                    backgroundColor: (theme) => theme.factionTheme.background,
+                }}
+            >
+                <Box
+                    sx={{
+                        width: "9rem",
+                        height: "9rem",
+                        background: `url(${SupremacyPNG})`,
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "center",
+                        backgroundSize: "contain",
+                    }}
+                />
+                <LinearProgress
+                    sx={{
+                        width: "12rem",
+                        height: "8px",
+                        backgroundColor: `${colors.gold}15`,
+                        ".MuiLinearProgress-bar": { backgroundColor: colors.gold },
+                    }}
+                />
+            </Stack>
+        )
+    }
 
     return (
         <>
