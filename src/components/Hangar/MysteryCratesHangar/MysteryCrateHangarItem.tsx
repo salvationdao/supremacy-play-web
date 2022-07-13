@@ -118,7 +118,8 @@ export const MysteryCrateHangarItem = ({ crate, setCrateOpen, setCrateReward, ge
 
                             <Stack alignItems="center" sx={{ mt: "auto !important", pt: ".8rem", alignSelf: "stretch" }}>
                                 <FancyButton
-                                    disabled={new Date() < crate.locked_until || loading}
+                                    disabled={new Date() < crate.locked_until}
+                                    loading={loading}
                                     onClick={openCrate}
                                     clipThingsProps={{
                                         clipSize: "5px",
