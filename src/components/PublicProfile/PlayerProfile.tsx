@@ -1,7 +1,7 @@
 import { Avatar, Box, CircularProgress, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { useHistory, useParams } from "react-router-dom"
-import { SvgAbility, SvgCake, SvgDeath, SvgSkull2, SvgView, WarMachineIconPNG } from "../../assets"
+import { AboutMeSVG, BattleHistorySVG, StatsSVG, SvgAbility, SvgCake, SvgDeath, SvgSkull2, SvgView, WarMachineIconPNG } from "../../assets"
 import { useAuth, useSnackbar } from "../../containers"
 import { getUserRankDeets, snakeToTitle, timeSince } from "../../helpers"
 import { useGameServerCommands, useGameServerCommandsUser } from "../../hooks/useGameServer"
@@ -350,7 +350,14 @@ export const PlayerProfilePage = () => {
                     >
                         <Box sx={{ direction: "ltr", height: 0, width: "100%" }}>
                             <Stack direction="column" spacing="1.6rem">
-                                <PageHeader title="ABOUT ME" description="" primaryColor={primaryColor} imageUrl={WarMachineIconPNG} />
+                                <PageHeader
+                                    title="ABOUT ME"
+                                    description=""
+                                    imageHeight="4rem"
+                                    imageWidth="4rem"
+                                    primaryColor={primaryColor}
+                                    imageUrl={AboutMeSVG}
+                                />
                                 <Stack sx={{ p: "1rem 3rem" }}>
                                     <AboutMe
                                         hide={!isMe}
@@ -404,7 +411,14 @@ export const PlayerProfilePage = () => {
                         >
                             <Stack sx={{ position: "relative", height: "100%" }}>
                                 <Stack sx={{ flex: 1 }}>
-                                    <PageHeader title="Stats" description="" primaryColor={primaryColor} imageUrl={WarMachineIconPNG} />
+                                    <PageHeader
+                                        title="Stats"
+                                        imageHeight="4rem"
+                                        imageWidth="4rem"
+                                        description=""
+                                        primaryColor={primaryColor}
+                                        imageUrl={StatsSVG}
+                                    />
                                     <Stack sx={{ flex: 1 }}>
                                         <Stack
                                             sx={{
@@ -464,7 +478,14 @@ export const PlayerProfilePage = () => {
                         >
                             <Stack sx={{ position: "relative" }}>
                                 <Stack sx={{ flex: 1 }}>
-                                    <PageHeader title="Battle History" description="" primaryColor={primaryColor} imageUrl={WarMachineIconPNG} />
+                                    <PageHeader
+                                        title="Battle History"
+                                        imageHeight="4rem"
+                                        imageWidth="4rem"
+                                        description=""
+                                        primaryColor={primaryColor}
+                                        imageUrl={BattleHistorySVG}
+                                    />
                                     <Stack sx={{ flex: 1 }}>
                                         <Stack
                                             spacing="1rem"
@@ -512,7 +533,12 @@ export const PlayerProfilePage = () => {
                             },
                         }}
                     >
-                        <ProfileWarmachines playerID={profile.player.id} backgroundColour={backgroundColor} primaryColour={primaryColor} />
+                        <ProfileWarmachines
+                            factionName={profile.faction?.label || ""}
+                            playerID={profile.player.id}
+                            backgroundColour={backgroundColor}
+                            primaryColour={primaryColor}
+                        />
                     </Stack>
                 </Stack>
             </Stack>

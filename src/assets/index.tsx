@@ -155,6 +155,14 @@ import RainingSupsPNG from "./images/supsRain.png"
 import TrailerThumbPNG from "./images/TrailerThumb.png"
 import WarMachineIconPNG from "./images/WarMachineIcon.png"
 import ZaibatsuLogo from "./images/ZaibatsuLogo.png"
+
+import AboutMeSVG from "./images/profileIcons/AboutMe.svg"
+import BattleHistorySVG from "./images/profileIcons/BattleHistory.svg"
+import StatsSVG from "./images/profileIcons/Stats.svg"
+import WarMachineBCPNG from "./images/profileIcons/warMachines/WMBC.png"
+import WarMachineRMPNG from "./images/profileIcons/warMachines/WMRM.png"
+import WarMachineZAIPNG from "./images/profileIcons/warMachines/WMZAI.png"
+
 import { Cake } from "@mui/icons-material"
 
 export {
@@ -198,6 +206,12 @@ export {
     RainingSupsPNG,
     WarMachineIconPNG,
     PlayerAbilityPNG,
+    AboutMeSVG,
+    BattleHistorySVG,
+    StatsSVG,
+    WarMachineBCPNG,
+    WarMachineRMPNG,
+    WarMachineZAIPNG,
 }
 
 export interface SvgWrapperProps extends BoxProps {
