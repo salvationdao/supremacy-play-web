@@ -296,9 +296,7 @@ export const WarMachineItem = ({ warMachine, scale, initialExpanded = false }: {
                         </>
                     )}
 
-                    {/* {warMachine.ownedByID === userID && ( */}
-                    <MoveCommand isAlive={isAlive} warMachine={warMachine} />
-                    {/* )} */}
+                    {warMachine.ownedByID === userID && <MoveCommand isAlive={isAlive} warMachine={warMachine} />}
                 </Stack>
             </Stack>
 
