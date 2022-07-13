@@ -47,11 +47,11 @@ const BattleArenaPageInner = () => {
     const { userID, userHasFeature } = useAuth()
     const { isMobile, setAdditionalTabs, setIsNavOpen, allowCloseNav } = useMobile()
     const { isQuickDeployOpen, toggleIsQuickDeployOpen, isQuickPlayerAbilitiesOpen, toggleIsQuickPlayerAbilitiesOpen } = useSupremacy()
-    const { recalculateDimensions } = useDimension()
+    const { triggerReset } = useDimension()
 
     // When its mobile, we have tabs
     useEffect(() => {
-        recalculateDimensions()
+        triggerReset()
 
         if (!isMobile) return
         allowCloseNav.current = false
@@ -175,7 +175,7 @@ const BattleArenaPageInner = () => {
             setAdditionalTabs([])
             setIsNavOpen(false)
         }
-    }, [allowCloseNav, isMobile, recalculateDimensions, setAdditionalTabs, setIsNavOpen, userHasFeature, userID])
+    }, [allowCloseNav, isMobile, triggerReset, setAdditionalTabs, setIsNavOpen, userHasFeature, userID])
 
     return (
         <>
