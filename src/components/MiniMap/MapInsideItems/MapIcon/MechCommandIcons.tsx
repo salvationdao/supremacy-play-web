@@ -3,7 +3,7 @@ import { SvgDrag } from "../../../../assets"
 import { useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors } from "../../../../theme/theme"
-import { MechMoveCommand } from "../../../WarMachine/WarMachineAbilitiesPopover/MechMoveCommandCard"
+import { MechMoveCommand } from "../../../WarMachine/WarMachineItem/MoveCommand"
 import { MapIcon } from "./MapIcon"
 
 export const MechCommandIcons = () => {

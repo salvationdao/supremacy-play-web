@@ -5,6 +5,7 @@ import { useTheme } from "../../../containers/theme"
 import { useTimer } from "../../../hooks"
 import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
+import { colors } from "../../../theme/theme"
 import { BlueprintPlayerAbility, LocationSelectType, WarMachineState } from "../../../types"
 import { ProgressBar } from "../../Common/ProgressBar"
 import { DEAD_OPACITY, WIDTH_SKILL_BUTTON, WIDTH_STAT_BAR } from "./WarMachineItem"
@@ -82,7 +83,6 @@ const MoveCommandInner = ({ isAlive, remainCooldownSeconds, isMoving, isCancelle
 
     const primaryColor = theme.factionTheme.primary
     const secondaryColor = theme.factionTheme.secondary
-    const backgroundColor = theme.factionTheme.background
 
     const onClick = useCallback(async () => {
         if (!isAlive) return
@@ -105,10 +105,10 @@ const MoveCommandInner = ({ isAlive, remainCooldownSeconds, isMoving, isCancelle
                 count: 1,
                 last_purchased_at: new Date(),
                 mechHash: hash,
-                ability: { ...MechMoveCommandAbility, text_colour: backgroundColor || "#222222", colour: primaryColor || "#FFFFFF" },
+                ability: { ...MechMoveCommandAbility, text_colour: secondaryColor, colour: primaryColor || "#FFFFFF" },
             })
         }
-    }, [isAlive, isMoving, isCancelled, send, mechMoveCommandID, hash, newSnackbarMessage, setPlayerAbility, backgroundColor, primaryColor])
+    }, [isAlive, isMoving, isCancelled, send, mechMoveCommandID, hash, newSnackbarMessage, setPlayerAbility, secondaryColor, primaryColor])
 
     return (
         <>
@@ -117,7 +117,7 @@ const MoveCommandInner = ({ isAlive, remainCooldownSeconds, isMoving, isCancelle
                     position: "relative",
                     width: `${WIDTH_SKILL_BUTTON}rem`,
                     height: "100%",
-                    backgroundColor: primaryColor,
+                    backgroundColor: isMoving ? colors.lightGrey : primaryColor,
                     boxShadow: 2,
                     cursor: isAlive ? "pointer" : "auto",
                     zIndex: 3,
@@ -142,7 +142,7 @@ const MoveCommandInner = ({ isAlive, remainCooldownSeconds, isMoving, isCancelle
                         variant="body1"
                         sx={{
                             fontWeight: "fontWeightBold",
-                            color: secondaryColor,
+                            color: isMoving ? "#000000" : secondaryColor,
                             letterSpacing: 1,
                             transition: "all .2s",
                         }}
@@ -155,7 +155,7 @@ const MoveCommandInner = ({ isAlive, remainCooldownSeconds, isMoving, isCancelle
             <Box style={{ height: "100%" }}>
                 <ProgressBar
                     percent={((30.0 - totalSecRemain) / 30.0) * 100}
-                    color={`${primaryColor}50`}
+                    color={colors.gold}
                     backgroundColor="#FFFFFF06"
                     thickness={`${WIDTH_STAT_BAR}rem`}
                 />

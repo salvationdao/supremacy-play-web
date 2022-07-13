@@ -90,7 +90,10 @@ export const WarMachineItem = ({ warMachine, scale, initialExpanded = false }: {
                     height: "100%",
                     opacity: isAlive ? 1 : 0.8,
                     width: `${
-                        WIDTH_AVATAR + (isExpanded ? WIDTH_BODY : 2 * WIDTH_STAT_BAR) + (isOwnFaction ? WIDTH_SKILL_BUTTON + numSkillBars * WIDTH_STAT_BAR : 0)
+                        WIDTH_AVATAR +
+                        (isExpanded ? WIDTH_BODY : 2 * WIDTH_STAT_BAR) +
+                        (isOwnFaction ? WIDTH_SKILL_BUTTON + numSkillBars * WIDTH_STAT_BAR : 0) +
+                        (WIDTH_SKILL_BUTTON + WIDTH_STAT_BAR)
                     }rem`,
                     transition: "width .1s",
                     transform: highlightedMechHash === hash ? `scale(${scale * 1.08})` : `scale(${scale})`,
@@ -293,7 +296,9 @@ export const WarMachineItem = ({ warMachine, scale, initialExpanded = false }: {
                         </>
                     )}
 
+                    {/* {warMachine.ownedByID === userID && ( */}
                     <MoveCommand isAlive={isAlive} warMachine={warMachine} />
+                    {/* )} */}
                 </Stack>
             </Stack>
 
