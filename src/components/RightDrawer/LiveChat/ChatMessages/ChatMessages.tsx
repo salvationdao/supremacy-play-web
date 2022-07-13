@@ -1,11 +1,11 @@
-import { Box, Fade, IconButton, Stack, Typography } from "@mui/material"
-import { useCallback, useLayoutEffect, useRef, useState } from "react"
+import { Box, Divider, Fade, IconButton, Stack, Typography } from "@mui/material"
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react"
 import { PunishMessage, TextMessage } from "../../.."
 import { SvgScrolldown } from "../../../../assets"
 import { FontSizeType, SplitOptionType, useAuth, useChat, useSupremacy } from "../../../../containers"
-import { checkIfIsEmoji } from "../../../../helpers"
+import { checkIfIsEmoji, dateFormatter } from "../../../../helpers"
 import { colors } from "../../../../theme/theme"
-import { ChatMessageType, Faction, PunishMessageData, SystemBanMessageData, TextMessageData, User } from "../../../../types"
+import { ChatMessageType, Faction, NewBattleMessageData, PunishMessageData, SystemBanMessageData, TextMessageData, User } from "../../../../types"
 import { BanProposal } from "../BanProposal/BanProposal"
 import { GlobalAnnouncement, GlobalAnnouncementType } from "../GlobalAnnouncement"
 import { SystemBanMessage } from "./MessageTypes/SystemBanMessage"
@@ -77,6 +77,9 @@ const ChatMessagesInner = ({
         scrollableRef.current.scrollTop = scrollableRef.current.scrollHeight
     }, [chatMessages, autoScroll, user])
 
+    useEffect(() => {
+        console.log(chatMessages)
+    }, [chatMessages])
     const onClickScrollToBottom = useCallback(() => {
         if (!scrollableRef.current) return
         scrollableRef.current.scrollTop = scrollableRef.current.scrollHeight
@@ -180,6 +183,17 @@ const ChatMessagesInner = ({
                                             fontSize={fontSize}
                                             getFaction={getFaction}
                                         />
+                                    )
+                                } else if (message.type === "NEW_BATTLE") {
+                                    const data = message.data as NewBattleMessageData
+                                    return (
+                                        <Stack direction={"row"} alignItems={"center"} sx={{ pb: "0.5rem" }}>
+                                            <Divider sx={{ flex: "1" }} />
+                                            <Typography variant={"body2"} sx={{ color: colors.grey, flexShrink: "0", px: "1rem" }}>
+                                                Battle #{data ? data.battle_number : null}: {dateFormatter(data.battle_start)}
+                                            </Typography>
+                                            <Divider sx={{ flex: "1" }} />
+                                        </Stack>
                                     )
                                 }
 

@@ -77,8 +77,8 @@ export interface BanOption {
 }
 
 export interface ChatMessageType {
-    type: "TEXT" | "PUNISH_VOTE"
-    data: TextMessageData | PunishMessageData | SystemBanMessageData
+    type: "TEXT" | "PUNISH_VOTE" | "SYSTEM_BAN" | "NEW_BATTLE"
+    data: TextMessageData | PunishMessageData | SystemBanMessageData | NewBattleMessageData
     sent_at: Date
     locallySent?: boolean
 }
@@ -115,4 +115,9 @@ export interface SystemBanMessageData {
     ban_duration: string
     is_permanent_ban: boolean
     restrictions: string[]
+}
+
+export interface NewBattleMessageData {
+    battle_number: number
+    battle_start: Date
 }

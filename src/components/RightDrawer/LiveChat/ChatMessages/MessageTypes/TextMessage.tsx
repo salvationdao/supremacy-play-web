@@ -82,7 +82,7 @@ export const TextMessage = ({
     }, [message, renderFontSize])
 
     useEffect(() => {
-        if (!previousMessage) return
+        if (!previousMessage || previousMessage.type != "TEXT") return
         const prev = previousMessage.data as TextMessageData
         if (prev.from_user.id === data.from_user.id) {
             setIsPreviousMessager(true)
