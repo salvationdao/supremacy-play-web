@@ -3,6 +3,7 @@ import { ClipThing } from "../../../.."
 import { SvgDeath, SvgGoldBars } from "../../../../../assets"
 import { timeSinceInWords } from "../../../../../helpers"
 import { fonts, colors } from "../../../../../theme/theme"
+import { MechDetails } from "../../../../../types"
 
 interface HistoryEntryProps {
     mapName: string
@@ -11,9 +12,10 @@ interface HistoryEntryProps {
     status: "won" | "lost" | "pending"
     kills: number
     date: Date
+    mech?: MechDetails
 }
 
-export const HistoryEntry = ({ status, mapName, mechSurvived, backgroundImage, kills, date }: HistoryEntryProps) => {
+export const HistoryEntry = ({ status, mapName, mechSurvived, backgroundImage, kills, date, mech }: HistoryEntryProps) => {
     let statusColor = colors.grey
     let statusText = "In Progress"
     switch (status) {
@@ -85,6 +87,11 @@ export const HistoryEntry = ({ status, mapName, mechSurvived, backgroundImage, k
                         {mapName}
                     </Typography>
 
+                    {mech && (
+                        <Typography variant="body1" sx={{ ontFamily: fonts.nostromoBlack, textTransform: "uppercase" }}>
+                            {mech.name || mech.label}
+                        </Typography>
+                    )}
                     <Typography variant="h6" sx={{ fontFamily: fonts.nostromoBlack }}>
                         {statusText}
                     </Typography>

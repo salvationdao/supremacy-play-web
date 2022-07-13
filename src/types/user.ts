@@ -37,6 +37,7 @@ export interface Faction {
     label: string
     logo_url: string
     background_url: string
+    wallpaper_url: string
     primary_color: string
     secondary_color: string
     background_color: string
@@ -78,4 +79,5 @@ export interface Feature {
 export enum FeatureName {
     mechMove = "MECH_MOVE",
     playerAbility = "PLAYER_ABILITY",
+    publicProfilePage = "PUBLIC_PROFILE",
 }
