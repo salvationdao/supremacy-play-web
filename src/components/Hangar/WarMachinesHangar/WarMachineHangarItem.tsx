@@ -152,6 +152,7 @@ export const MechCommonArea = ({
     const rarityDeets = useMemo(() => getRarityDeets(mech?.tier || mechDetails?.tier || ""), [mech, mechDetails])
 
     const primaryColor = theme.factionTheme.primary
+    const mechh = mech || mechDetails
 
     return (
         <Stack
@@ -256,20 +257,13 @@ export const MechCommonArea = ({
                         }}
                     >
                         <Stack direction="row" spacing="4rem" sx={{ p: "1.5rem 2.1rem" }}>
-                            {mech ||
-                                (mechDetails && (
-                                    <General isGridView={isGridView} title="STATS">
-                                        <Box sx={{ width: "40rem" }}>
-                                            <MechBarStats
-                                                fontSize="1.5rem"
-                                                mech={mech || mechDetails}
-                                                mechDetails={mechDetails}
-                                                color={primaryColor}
-                                                iconVersion
-                                            />
-                                        </Box>
-                                    </General>
-                                ))}
+                            {mechh && (
+                                <General isGridView={isGridView} title="STATS">
+                                    <Box sx={{ width: "40rem" }}>
+                                        <MechBarStats fontSize="1.5rem" mech={mechh} mechDetails={mechDetails} color={primaryColor} iconVersion />
+                                    </Box>
+                                </General>
+                            )}
                         </Stack>
                     </Box>
                 </Stack>

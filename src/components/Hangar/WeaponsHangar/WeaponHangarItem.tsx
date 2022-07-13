@@ -95,7 +95,7 @@ export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGri
                     </General>
 
                     <General isGridView={isGridView} title="STATS">
-                        <WeaponBarStats fontSize="1.5rem" weapon={weapon} weaponDetails={weaponDetails} color={primaryColor} iconVersion />
+                        <WeaponBarStats fontSize="1.5rem" weapon={weapon} color={primaryColor} iconVersion />
                     </General>
                 </Box>
 
@@ -148,6 +148,7 @@ export const WeaponCommonArea = ({
     const rarityDeets = useMemo(() => getRarityDeets(weaponDetails?.weapon_skin?.tier || ""), [weaponDetails])
 
     const primaryColor = theme.factionTheme.primary
+    const weap = weapon || weaponDetails
 
     return (
         <Stack
@@ -268,20 +269,13 @@ export const WeaponCommonArea = ({
                                 </Typography>
                             </General>
 
-                            {weapon ||
-                                (weaponDetails && (
-                                    <General isGridView={isGridView} title="STATS">
-                                        <Box sx={{ width: "40rem" }}>
-                                            <WeaponBarStats
-                                                fontSize="1.4rem"
-                                                weapon={weapon || weaponDetails}
-                                                weaponDetails={weaponDetails}
-                                                color={primaryColor}
-                                                iconVersion
-                                            />
-                                        </Box>
-                                    </General>
-                                ))}
+                            {weap && (
+                                <General isGridView={isGridView} title="STATS">
+                                    <Box sx={{ width: "40rem" }}>
+                                        <WeaponBarStats fontSize="1.4rem" weapon={weap} color={primaryColor} iconVersion />
+                                    </Box>
+                                </General>
+                            )}
                         </Stack>
                     </Box>
                 </Stack>

@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react"
-import { useToggle } from "../../../hooks"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { MARKETPLACE_TABS } from "../../../pages"
@@ -11,12 +10,13 @@ import { MarketItem } from "../Common/MarketItem/MarketItem"
 interface WarMachineMarketItemProps {
     item: MarketplaceBuyAuctionItem
     isGridView: boolean
+    isExpanded: boolean
+    toggleIsExpanded: (value?: boolean) => void
 }
 
-export const WeaponsMarketItem = ({ item, isGridView }: WarMachineMarketItemProps) => {
+export const WeaponsMarketItem = ({ item, isGridView, isExpanded, toggleIsExpanded }: WarMachineMarketItemProps) => {
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [weaponDetails, setWeaponDetails] = useState<Weapon>()
-    const [isExpanded, toggleIsExpanded] = useToggle(false)
 
     useEffect(() => {
         ;(async () => {

@@ -25,7 +25,6 @@ export const WeaponBarStats = ({
     iconVersion,
 }: {
     weapon: Weapon
-    weaponDetails?: Weapon
     color?: string
     fontSize?: string
     width?: string

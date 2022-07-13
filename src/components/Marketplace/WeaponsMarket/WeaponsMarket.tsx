@@ -46,6 +46,7 @@ export const WeaponsMarket = () => {
         page: parseString(query.get("page"), 1),
     })
     const [isGridView, toggleIsGridView] = useToggle(false)
+    const [isExpanded, toggleIsExpanded] = useToggle(false)
 
     // Filters and sorts
     const [search, setSearch] = useState("")
@@ -473,7 +474,13 @@ export const WeaponsMarket = () => {
                         }}
                     >
                         {mechItems.map((item) => (
-                            <WeaponsMarketItem key={`marketplace-${item.id}`} item={item} isGridView={isGridView} />
+                            <WeaponsMarketItem
+                                key={`marketplace-${item.id}`}
+                                item={item}
+                                isGridView={isGridView}
+                                isExpanded={isExpanded}
+                                toggleIsExpanded={toggleIsExpanded}
+                            />
                         ))}
                     </Box>
                 </Box>
@@ -511,7 +518,7 @@ export const WeaponsMarket = () => {
                 </Stack>
             </Stack>
         )
-    }, [loadError, mechItems, isLoading, theme.factionTheme.primary, isGridView])
+    }, [loadError, mechItems, isLoading, theme.factionTheme.primary, isGridView, isExpanded, toggleIsExpanded])
 
     return (
         <Stack direction="row" spacing="1rem" sx={{ height: "100%" }}>
