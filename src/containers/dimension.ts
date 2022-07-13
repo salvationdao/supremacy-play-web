@@ -33,10 +33,7 @@ export const DimensionContainer = createContainer(() => {
 
     useEffect(() => {
         const gameUIContainer = document.getElementById("game-ui-container")
-        if (!gameUIContainer) {
-            console.error("Please assign #game-ui-container to the game UI.")
-            return
-        }
+        if (!gameUIContainer) return
 
         const resize_ob = new ResizeObserver((entries) => {
             const rect = entries[0].contentRect

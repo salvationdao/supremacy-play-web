@@ -48,7 +48,7 @@ const BarContent = ({ userID, user }: { userID?: string; user: User }) => {
     const below580 = useMediaQuery("(max-width:580px)")
     const { isServerUp } = useSupremacy()
 
-    if (isServerUp === false) {
+    if (!isServerUp) {
         return (
             <>
                 <Logo />

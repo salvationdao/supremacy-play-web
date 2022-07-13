@@ -10,6 +10,8 @@ import { BlueprintPlayerAbility, LocationSelectType, WarMachineState } from "../
 import { ProgressBar } from "../../Common/ProgressBar"
 import { DEAD_OPACITY, WIDTH_SKILL_BUTTON, WIDTH_STAT_BAR } from "./WarMachineItem"
 
+const MECH_MOVE_COOLDOWN_SECONDS = 5
+
 const MechMoveCommandAbility: BlueprintPlayerAbility = {
     id: "",
     game_client_ability_id: 8,
@@ -54,10 +56,11 @@ export const MoveCommand = ({ warMachine, isAlive }: { warMachine: WarMachineSta
 
     return (
         <MoveCommandInner
+            key={mechMoveCommand.id}
             isAlive={isAlive}
             hash={hash}
             remainCooldownSeconds={mechMoveCommand.remain_cooldown_seconds}
-            isMoving={mechMoveCommand.cell_x !== undefined && mechMoveCommand.cell_y !== undefined}
+            isMoving={!mechMoveCommand?.reached_at && !mechMoveCommand?.cancelled_at && mechMoveCommand.remain_cooldown_seconds !== 0}
             isCancelled={!!mechMoveCommand.cancelled_at}
             mechMoveCommandID={mechMoveCommand.id}
         />
@@ -154,7 +157,7 @@ const MoveCommandInner = ({ isAlive, remainCooldownSeconds, isMoving, isCancelle
 
             <Box style={{ height: "100%" }}>
                 <ProgressBar
-                    percent={((30.0 - totalSecRemain) / 30.0) * 100}
+                    percent={((MECH_MOVE_COOLDOWN_SECONDS - totalSecRemain) / MECH_MOVE_COOLDOWN_SECONDS) * 100}
                     color={colors.gold}
                     backgroundColor="#FFFFFF06"
                     thickness={`${WIDTH_STAT_BAR}rem`}
