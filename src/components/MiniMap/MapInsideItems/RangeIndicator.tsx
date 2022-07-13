@@ -14,7 +14,7 @@ export const RangeIndicator = ({ parentRef, mapScale }: RangeIndicatorProps) => 
     const indicatorRef = useRef<HTMLDivElement>(null)
 
     const ability = useMemo(() => winner?.game_ability || playerAbility?.ability, [winner, playerAbility])
-    const abilityDetail = ability?.game_client_ability_id ? abilityDetails[ability.game_client_ability_id] : undefined
+    const abilityDetail = typeof ability?.game_client_ability_id !== "undefined" ? abilityDetails[ability.game_client_ability_id] : undefined
     const diameter = useMemo(() => (abilityDetail ? ((mapScale * abilityDetail.radius) / gridHeight) * 2.5 : undefined), [abilityDetail, gridHeight, mapScale])
 
     const handleMouseMove = useCallback(

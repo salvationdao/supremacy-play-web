@@ -104,7 +104,7 @@ export const MiniMapInside = ({ containerDimensions }: MiniMapInsideProps) => {
                                 width: `${map.width}px`,
                                 height: `${map.height}px`,
                                 backgroundImage: `url(${map.image_url})`,
-                                cursor: isLocationSelection || isLineSelection ? `url(${Crosshair}) 10 10, auto` : "move",
+                                cursor: isLocationSelection || isLineSelection ? `url(${Crosshair}) 14.5 14.5, auto` : "move",
                                 borderSpacing: 0,
                             }}
                         >
