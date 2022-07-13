@@ -26,6 +26,7 @@ interface GetMechsRequest {
     search: string
     page: number
     page_size: number
+    rarities: string[]
     include_market_listed: boolean
 }
 
@@ -106,6 +107,7 @@ export const WarMachinesHangar = () => {
             const resp = await send<GetMechsResponse, GetMechsRequest>(GameServerKeys.GetMechs, {
                 queue_sort: sortDir,
                 search,
+                rarities,
                 page,
                 page_size: pageSize,
                 include_market_listed: true,
@@ -113,6 +115,8 @@ export const WarMachinesHangar = () => {
 
             updateQuery({
                 sort,
+                search,
+                rarities: rarities.join("||"),
                 page: page.toString(),
                 pageSize: pageSize.toString(),
             })
@@ -127,7 +131,7 @@ export const WarMachinesHangar = () => {
         } finally {
             setIsLoading(false)
         }
-    }, [send, page, pageSize, search, updateQuery, sort, setTotalItems])
+    }, [send, page, pageSize, search, rarities, updateQuery, sort, setTotalItems])
 
     useEffect(() => {
         getItems()
