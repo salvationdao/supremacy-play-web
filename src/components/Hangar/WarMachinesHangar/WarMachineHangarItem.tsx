@@ -67,7 +67,7 @@ export const WarMachineHangarItem = ({ mech, isGridView }: { mech: MechBasic; is
                         p: isGridView ? ".5rem .6rem" : ".1rem .3rem",
                         display: isGridView ? "block" : "grid",
                         gridTemplateRows: "7rem",
-                        gridTemplateColumns: `8rem auto repeat(2, 20rem)`, // hard-coded to have 4 columns, adjust as required
+                        gridTemplateColumns: `8rem auto repeat(1, 20rem)`, // hard-coded to have 4 columns, adjust as required
                         gap: "1.4rem",
                         ...(isGridView
                             ? {
@@ -89,12 +89,6 @@ export const WarMachineHangarItem = ({ mech, isGridView }: { mech: MechBasic; is
                     </Box>
 
                     <MechCommonArea isGridView={isGridView} mech={mech} mechDetails={mechDetails} />
-
-                    <General isGridView={isGridView} title="EQUIPPED">
-                        <Box sx={{ pt: ".4rem" }}>
-                            <MechLoadoutIcons mechDetails={mechDetails} />
-                        </Box>
-                    </General>
 
                     <General isGridView={isGridView} title="STATUS">
                         <MechGeneralStatus mechID={mech.id} hideBox />
