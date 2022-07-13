@@ -5,8 +5,6 @@ import { useMiniMap } from "../../../containers"
 import { useToggle } from "../../../hooks"
 import { colors, fonts } from "../../../theme/theme"
 import { LocationSelectType, PlayerAbility } from "../../../types"
-import { ClipThing } from "../../Common/ClipThing"
-import { ConfirmModal } from "../../Common/ConfirmModal"
 import { FancyButton } from "../../Common/FancyButton"
 import { TooltipHelper } from "../../Common/TooltipHelper"
 
@@ -62,7 +60,7 @@ export const PlayerAbilityCard = ({ playerAbility }: { playerAbility: PlayerAbil
                         sx: { position: "relative", px: ".4rem", py: ".3rem" },
                     }}
                     sx={{ color: playerAbility.ability.colour, p: 0, minWidth: 0, height: "100%" }}
-                    onClick={() => toggleShowActivateModal(true)}
+                    onClick={onActivate}
                 >
                     <Stack
                         spacing=".3rem"
@@ -155,65 +153,6 @@ export const PlayerAbilityCard = ({ playerAbility }: { playerAbility: PlayerAbil
                     </Stack>
                 </FancyButton>
             </TooltipHelper>
-
-            {showPurchaseModal && (
-                <ConfirmModal
-                    title={`Activate ${playerAbility.ability.label || "Ability"}`}
-                    onConfirm={onActivate}
-                    onClose={() => toggleShowActivateModal(false)}
-                >
-                    <Stack spacing="1rem">
-                        <Stack direction="row" spacing="1.5rem">
-                            <ClipThing
-                                clipSize="8px"
-                                border={{
-                                    borderColor: playerAbility.ability.colour,
-                                    borderThickness: ".3rem",
-                                }}
-                                opacity={0.5}
-                                backgroundColor="#333333"
-                                sx={{ height: "100%", flexShrink: 0 }}
-                            >
-                                <Box
-                                    sx={{
-                                        position: "relative",
-                                        height: "60px",
-                                        width: "60px",
-                                        background: `center center`,
-                                        backgroundImage: `linear-gradient(to top, rgba(0, 0, 0, .8) 20%, rgba(255, 255, 255, 0.0)), url(${playerAbility.ability.image_url})`,
-                                        backgroundSize: "cover",
-                                    }}
-                                >
-                                    <TooltipHelper text={abilityTypeDescription} placement="bottom">
-                                        <Box
-                                            sx={{
-                                                position: "absolute",
-                                                right: ".4rem",
-                                                bottom: ".2rem",
-                                                zIndex: 1,
-                                            }}
-                                        >
-                                            {abilityTypeIcon}
-                                        </Box>
-                                    </TooltipHelper>
-                                </Box>
-                            </ClipThing>
-
-                            <Typography variant="h6">{playerAbility.ability.description}</Typography>
-                        </Stack>
-
-                        <Typography
-                            variant="body2"
-                            sx={{
-                                fontFamily: fonts.nostromoBold,
-                                alignSelf: "end",
-                            }}
-                        >
-                            Remaining: {playerAbility.count}
-                        </Typography>
-                    </Stack>
-                </ConfirmModal>
-            )}
         </>
     )
 }
