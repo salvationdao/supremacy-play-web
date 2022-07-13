@@ -42,6 +42,13 @@ export const HistoryItem = ({ eventItem }: { eventItem: MarketplaceEvent }) => {
             cardAnimationUrl = item.collection_item.card_animation_url || ""
             label = item.mystery_crate.label
             description = item.mystery_crate.description
+        } else if (item.weapon && item.collection_item) {
+            linkSubPath = MARKETPLACE_TABS.Weapons
+            imageUrl = item.collection_item.image_url || item.weapon?.avatar_url || ""
+            animationUrl = item.collection_item.animation_url || ""
+            cardAnimationUrl = item.collection_item.card_animation_url || ""
+            label = item.weapon.label
+            description = item.weapon.label
         } else if (item.keycard) {
             linkSubPath = MARKETPLACE_TABS.Keycards
             imageUrl = item.keycard.image_url
