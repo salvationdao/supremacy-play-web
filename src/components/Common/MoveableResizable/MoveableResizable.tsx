@@ -2,13 +2,15 @@ import { Box, Stack } from "@mui/material"
 import { ReactNode, useMemo } from "react"
 import { Rnd } from "react-rnd"
 import { TooltipHelper } from "../.."
-import { SvgClose, SvgDrag, SvgInfoCircular } from "../../../assets"
+import { SvgClose, SvgDrag, SvgExternalLink, SvgInfoCircular } from "../../../assets"
 import { ClipThing } from "../../../components"
 import { useMobile } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { shadeColor } from "../../../helpers"
 import { colors, siteZIndex } from "../../../theme/theme"
 import { MoveableResizableConfig, MoveableResizableProvider, useMoveableResizable } from "./MoveableResizableContainer"
+import { WindowPortal } from "../WindowPortal"
+import { MoveableResizablePoppedOut } from "./MoveableResizablePoppedOut"
 
 interface MoveableResizableProps {
     config: MoveableResizableConfig
@@ -28,6 +30,9 @@ export const MoveableResizable = (props: MoveableResizableProps) => {
 const MoveableResizableInner = ({ children }: MoveableResizableProps) => {
     const theme = useTheme()
     const {
+        isPoppedOut,
+        toggleIsPoppedOut,
+
         rndRef,
         defaultWidth,
         defaultHeight,
@@ -47,6 +52,14 @@ const MoveableResizableInner = ({ children }: MoveableResizableProps) => {
     } = useMoveableResizable()
 
     const topRightBackgroundColor = useMemo(() => shadeColor(theme.factionTheme.primary, -90), [theme.factionTheme.primary])
+
+    if (isPoppedOut) {
+        return (
+            <WindowPortal title="Supremacy" onClose={() => toggleIsPoppedOut(false)}>
+                <MoveableResizablePoppedOut>{children}</MoveableResizablePoppedOut>
+            </WindowPortal>
+        )
+    }
 
     return (
         <Box
@@ -107,6 +120,7 @@ const MoveableResizableInner = ({ children }: MoveableResizableProps) => {
                             right: 0,
                         }}
                     >
+                        {/* Top right icon buttons */}
                         <Stack
                             direction="row"
                             alignItems="center"
@@ -138,13 +152,25 @@ const MoveableResizableInner = ({ children }: MoveableResizableProps) => {
                             <Box
                                 className="moveable-resizable-drag-handle"
                                 sx={{
-                                    mr: onHideCallback ? ".9rem" : 0,
+                                    mr: ".9rem",
                                     cursor: "move",
                                     opacity: 0.4,
                                     ":hover": { opacity: 1 },
                                 }}
                             >
                                 <SvgDrag size="1.6rem" />
+                            </Box>
+
+                            <Box
+                                onClick={() => toggleIsPoppedOut()}
+                                sx={{
+                                    mr: onHideCallback ? ".9rem" : 0,
+                                    cursor: "pointer",
+                                    opacity: 0.4,
+                                    ":hover": { opacity: 1 },
+                                }}
+                            >
+                                <SvgExternalLink size="1.6rem" />
                             </Box>
 
                             {onHideCallback && (
@@ -192,6 +218,7 @@ const MoveableResizableInner = ({ children }: MoveableResizableProps) => {
                         {children}
                     </Box>
 
+                    {/* Invisible at the top, handle for dragging */}
                     <Box
                         className="moveable-resizable-drag-handle"
                         sx={{
