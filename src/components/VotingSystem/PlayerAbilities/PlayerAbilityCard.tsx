@@ -1,8 +1,7 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useMemo } from "react"
 import { SvgGlobal, SvgLine, SvgMicrochip, SvgQuestionMark, SvgTarget } from "../../../assets"
 import { useMiniMap } from "../../../containers"
-import { useToggle } from "../../../hooks"
 import { colors, fonts } from "../../../theme/theme"
 import { LocationSelectType, PlayerAbility } from "../../../types"
 import { FancyButton } from "../../Common/FancyButton"
@@ -10,36 +9,25 @@ import { TooltipHelper } from "../../Common/TooltipHelper"
 
 export const PlayerAbilityCard = ({ playerAbility }: { playerAbility: PlayerAbility }) => {
     const { setPlayerAbility } = useMiniMap()
-    const [abilityTypeIcon, setAbilityTypeIcon] = useState<JSX.Element>(<SvgQuestionMark size="1.4rem" />)
-    const [abilityTypeDescription, setAbilityTypeDescription] = useState("Miscellaneous ability type.")
-    const [showPurchaseModal, toggleShowActivateModal] = useToggle(false)
 
-    useEffect(() => {
+    const abilityTypeIcon = useMemo(() => {
         switch (playerAbility.ability.location_select_type) {
             case LocationSelectType.GLOBAL:
-                setAbilityTypeDescription("This ability will affect all units on the map.")
-                setAbilityTypeIcon(<SvgGlobal size="1.4rem" />)
-                break
+                return <SvgGlobal size="1.4rem" />
             case LocationSelectType.LOCATION_SELECT:
-                setAbilityTypeDescription("This ability will target a specific location on the map.")
-                setAbilityTypeIcon(<SvgTarget size="1.4rem" />)
-                break
+                return <SvgTarget size="1.4rem" />
             case LocationSelectType.MECH_SELECT:
-                setAbilityTypeDescription("This ability will target a specific mech on the map.")
-                setAbilityTypeIcon(<SvgMicrochip size="1.4rem" />)
-                break
+                return <SvgMicrochip size="1.4rem" />
             case LocationSelectType.LINE_SELECT:
-                setAbilityTypeDescription("This ability will target a straight line on the map.")
-                setAbilityTypeIcon(<SvgLine size="1.4rem" />)
-                break
+                return <SvgLine size="1.4rem" />
         }
+        return <SvgQuestionMark size="1.4rem" />
     }, [playerAbility])
 
     const onActivate = useCallback(() => {
         if (!playerAbility) return
         setPlayerAbility(playerAbility)
-        toggleShowActivateModal(false)
-    }, [playerAbility, setPlayerAbility, toggleShowActivateModal])
+    }, [playerAbility, setPlayerAbility])
 
     return (
         <>
