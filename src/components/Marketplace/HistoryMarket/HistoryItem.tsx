@@ -1,18 +1,39 @@
 import { Box, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
-import { useMemo } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { FancyButton } from "../.."
 import { SvgSupToken } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { getRarityDeets, getWeaponTypeColor, numFormatter } from "../../../helpers"
+import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../keys"
 import { MARKETPLACE_TABS } from "../../../pages"
 import { colors, fonts } from "../../../theme/theme"
+import { Weapon } from "../../../types/assets"
 import { MarketplaceEvent, MarketplaceEventType } from "../../../types/marketplace"
 import { General } from "../Common/MarketItem/General"
 import { Thumbnail } from "../Common/MarketItem/Thumbnail"
 
 export const HistoryItem = ({ eventItem }: { eventItem: MarketplaceEvent }) => {
     const theme = useTheme()
+
+    const { send } = useGameServerCommandsFaction("/faction_commander")
+    const [weaponDetails, setWeaponDetails] = useState<Weapon>()
+
+    useEffect(() => {
+        ;(async () => {
+            try {
+                if (!eventItem.item.weapon) return
+                const resp = await send<Weapon>(GameServerKeys.GetWeaponDetails, {
+                    weapon_id: eventItem.item.weapon.id,
+                })
+                if (!resp) return
+                setWeaponDetails(resp)
+            } catch (e) {
+                console.error(e)
+            }
+        })()
+    }, [eventItem.item.weapon, send])
 
     const itemRelatedData = useMemo(() => {
         const item = eventItem.item
@@ -43,11 +64,13 @@ export const HistoryItem = ({ eventItem }: { eventItem: MarketplaceEvent }) => {
             label = item.mystery_crate.label
             description = item.mystery_crate.description
         } else if (item.weapon && item.collection_item) {
+            const rarityDeets = getRarityDeets(weaponDetails?.weapon_skin?.tier || "")
             linkSubPath = MARKETPLACE_TABS.Weapons
             imageUrl = item.collection_item.image_url || item.weapon?.avatar_url || ""
             animationUrl = item.collection_item.animation_url || ""
             cardAnimationUrl = item.collection_item.card_animation_url || ""
-            label = item.weapon.label
+            label = rarityDeets.label
+            labelColor = rarityDeets.color
             description = item.weapon.label
         } else if (item.keycard) {
             linkSubPath = MARKETPLACE_TABS.Keycards
@@ -90,7 +113,7 @@ export const HistoryItem = ({ eventItem }: { eventItem: MarketplaceEvent }) => {
             statusText,
             formattedAmount,
         }
-    }, [eventItem])
+    }, [eventItem, weaponDetails?.weapon_skin])
 
     return (
         <Box sx={{ position: "relative", overflow: "visible" }}>
@@ -157,7 +180,32 @@ export const HistoryItem = ({ eventItem }: { eventItem: MarketplaceEvent }) => {
                                         WebkitBoxOrient: "vertical",
                                     }}
                                 >
-                                    {itemRelatedData.label}
+                                    {itemRelatedData.description}
+                                </Typography>
+
+                                <Typography
+                                    variant="body2"
+                                    sx={{
+                                        lineHeight: 1,
+                                        color: colors.chassisSkin,
+                                        fontFamily: fonts.nostromoBold,
+                                        display: "-webkit-box",
+                                        overflow: "hidden",
+                                        overflowWrap: "anywhere",
+                                        textOverflow: "ellipsis",
+                                        WebkitLineClamp: 1,
+                                        WebkitBoxOrient: "vertical",
+                                    }}
+                                >
+                                    SUBMODEL:{" "}
+                                    {weaponDetails?.weapon_skin ? (
+                                        <>
+                                            {weaponDetails?.weapon_skin.label}{" "}
+                                            <span style={{ color: itemRelatedData.labelColor }}>({itemRelatedData.label})</span>
+                                        </>
+                                    ) : (
+                                        <span style={{ color: colors.darkGrey }}>NOT EQUIPPED</span>
+                                    )}
                                 </Typography>
                             </>
                         )}
