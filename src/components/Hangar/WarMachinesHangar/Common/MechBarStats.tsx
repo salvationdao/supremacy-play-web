@@ -52,7 +52,7 @@ export const MechBarStats = ({
     if (iconVersion) {
         return (
             <Stack alignItems="center" justifyContent="flex-start" direction="row" flexWrap="wrap">
-                <IconStat primaryColor={primaryColor} fontSize={fontSize} label="HEALTH" current={health} total={3000} Icon={SvgAmmo} />
+                <IconStat primaryColor={primaryColor} fontSize={fontSize} label="HEALTH" current={health} total={3000} Icon={SvgPowerCore} />
                 <IconStat primaryColor={primaryColor} fontSize={fontSize} label="SPEED" current={speed} total={5000} unit="CM/S" Icon={SvgSpeed} />
                 <IconStat
                     primaryColor={primaryColor}
@@ -252,7 +252,6 @@ export const IconStat = ({
     fontSize,
     label,
     current,
-    total,
     Icon,
 }: {
     primaryColor: string
@@ -268,17 +267,25 @@ export const IconStat = ({
         if (!parsedCurrent) return null
 
         return (
-            <TooltipHelper text={`${label}: ${current}/${total}`} placement="bottom">
+            <TooltipHelper text={`${label}: ${current}`} placement="bottom">
                 <Stack
                     direction="row"
                     alignItems="center"
                     spacing=".2rem"
-                    sx={{ mr: ".6rem", mb: ".4rem", px: ".4rem", pt: ".1rem", backgroundColor: `${primaryColor}38`, borderRadius: 0.6 }}
+                    sx={{
+                        mr: ".6rem",
+                        mb: ".4rem",
+                        px: ".4rem",
+                        pt: ".1rem",
+                        backgroundColor: `${primaryColor}10`,
+                        borderRadius: 0.4,
+                        borderLeft: `${primaryColor} 2px solid`,
+                    }}
                 >
                     <Icon size={fontSize} sx={{ pb: "3px" }} />
                     <Typography sx={{ lineHeight: 1, fontSize }}>{parsedCurrent}</Typography>
                 </Stack>
             </TooltipHelper>
         )
-    }, [Icon, current, fontSize, label, primaryColor, total])
+    }, [Icon, current, fontSize, label, primaryColor])
 }
