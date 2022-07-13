@@ -86,7 +86,7 @@ export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGri
                         <MediaPreview imageUrl={imageUrl} objectFit={isGridView ? "cover" : "contain"} />
                     </Box>
 
-                    <WeaponCommonArea isGridView={isGridView} weapon={weapon} weaponDetails={weaponDetails} />
+                    <WeaponCommonArea isGridView={isGridView} weapon={weapon} weaponDetails={weaponDetails} primaryColor={primaryColor} />
 
                     <General title="DAMAGE TYPE">
                         <Typography variant="h6" sx={{ color: getWeaponDamageTypeColor(weaponDetails?.default_damage_type), fontWeight: "fontWeightBold" }}>
@@ -132,12 +132,14 @@ export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGri
 }
 
 export const WeaponCommonArea = ({
+    primaryColor,
     isGridView,
     weapon,
     weaponDetails,
     isExpanded,
     toggleIsExpanded,
 }: {
+    primaryColor: string
     isGridView?: boolean
     weapon?: Weapon
     weaponDetails?: Weapon
@@ -147,7 +149,6 @@ export const WeaponCommonArea = ({
     const theme = useTheme()
     const rarityDeets = useMemo(() => getRarityDeets(weaponDetails?.weapon_skin?.tier || ""), [weaponDetails])
 
-    const primaryColor = theme.factionTheme.primary
     const weap = weapon || weaponDetails
 
     return (

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { useTheme } from "../../../containers/theme"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { MARKETPLACE_TABS } from "../../../pages"
@@ -15,6 +16,7 @@ interface WarMachineMarketItemProps {
 }
 
 export const WeaponsMarketItem = ({ item, isGridView, isExpanded, toggleIsExpanded }: WarMachineMarketItemProps) => {
+    const theme = useTheme()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [weaponDetails, setWeaponDetails] = useState<Weapon>()
 
@@ -41,7 +43,13 @@ export const WeaponsMarketItem = ({ item, isGridView, isExpanded, toggleIsExpand
 
     return (
         <MarketItem item={item} imageUrl={image_url || large_image_url || avatar_url} isGridView={isGridView} linkSubPath={MARKETPLACE_TABS.Weapons}>
-            <WeaponCommonArea isGridView={isGridView} weaponDetails={weaponDetails} isExpanded={isExpanded} toggleIsExpanded={toggleIsExpanded} />
+            <WeaponCommonArea
+                primaryColor={theme.factionTheme.primary}
+                isGridView={isGridView}
+                weaponDetails={weaponDetails}
+                isExpanded={isExpanded}
+                toggleIsExpanded={toggleIsExpanded}
+            />
         </MarketItem>
     )
 }

@@ -5,6 +5,7 @@ import { FancyButton } from "../.."
 import { SvgSupToken } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { numFormatter } from "../../../helpers"
+import { useToggle } from "../../../hooks"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { MARKETPLACE_TABS } from "../../../pages"
@@ -20,6 +21,7 @@ import { Thumbnail } from "../Common/MarketItem/Thumbnail"
 
 export const HistoryItem = ({ eventItem, isGridView }: { eventItem: MarketplaceEvent; isGridView: boolean }) => {
     const theme = useTheme()
+    const [isExpanded, toggleIsExpanded] = useToggle(false)
 
     const itemRelatedData = useMemo(() => {
         const item = eventItem.item
@@ -140,7 +142,13 @@ export const HistoryItem = ({ eventItem, isGridView }: { eventItem: MarketplaceE
                         cardAnimationUrl={itemRelatedData.cardAnimationUrl}
                     />
 
-                    <ItemCommonArea item={eventItem.item} isGridView={isGridView} />
+                    <ItemCommonArea
+                        item={eventItem.item}
+                        isGridView={isGridView}
+                        isExpanded={isExpanded}
+                        toggleIsExpanded={toggleIsExpanded}
+                        primaryColor={itemRelatedData.primaryColor}
+                    />
 
                     <General title="EVENT TYPE" text={itemRelatedData.statusText} textColor={itemRelatedData.primaryColor} isGridView={isGridView} />
 
@@ -174,7 +182,19 @@ export const HistoryItem = ({ eventItem, isGridView }: { eventItem: MarketplaceE
     )
 }
 
-const ItemCommonArea = ({ item, isGridView }: { item: MarketplaceBuyAuctionItem; isGridView: boolean }) => {
+const ItemCommonArea = ({
+    primaryColor,
+    item,
+    isGridView,
+    isExpanded,
+    toggleIsExpanded,
+}: {
+    primaryColor: string
+    item: MarketplaceBuyAuctionItem
+    isGridView: boolean
+    isExpanded: boolean
+    toggleIsExpanded: (value?: boolean) => void
+}) => {
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [mechDetails, setMechDetails] = useState<MechDetails>()
     const [weaponDetails, setWeaponDetails] = useState<Weapon>()
@@ -211,11 +231,27 @@ const ItemCommonArea = ({ item, isGridView }: { item: MarketplaceBuyAuctionItem;
     }, [item.weapon, send])
 
     if (item.mech) {
-        return <MechCommonArea isGridView={isGridView} mechDetails={mechDetails} />
+        return (
+            <MechCommonArea
+                primaryColor={primaryColor}
+                isGridView={isGridView}
+                mechDetails={mechDetails}
+                isExpanded={isExpanded}
+                toggleIsExpanded={toggleIsExpanded}
+            />
+        )
     }
 
     if (item.weapon) {
-        return <WeaponCommonArea isGridView={isGridView} weaponDetails={weaponDetails} />
+        return (
+            <WeaponCommonArea
+                primaryColor={primaryColor}
+                isGridView={isGridView}
+                weaponDetails={weaponDetails}
+                isExpanded={isExpanded}
+                toggleIsExpanded={toggleIsExpanded}
+            />
+        )
     }
 
     if (item.mystery_crate) {

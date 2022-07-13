@@ -90,7 +90,7 @@ export const WarMachineHangarItem = ({ mech, isGridView }: { mech: MechBasic; is
                         <MediaPreview imageUrl={avatarUrl || imageUrl || largeImageUrl} objectFit={isGridView ? "cover" : "contain"} />
                     </Box>
 
-                    <MechCommonArea isGridView={isGridView} mech={mech} mechDetails={mechDetails} />
+                    <MechCommonArea isGridView={isGridView} mech={mech} mechDetails={mechDetails} primaryColor={primaryColor} />
 
                     <General isGridView={isGridView} title="STATS">
                         <MechBarStats fontSize="1.5rem" mech={mech} mechDetails={mechDetails} color={primaryColor} iconVersion />
@@ -134,6 +134,7 @@ export const WarMachineHangarItem = ({ mech, isGridView }: { mech: MechBasic; is
 }
 
 export const MechCommonArea = ({
+    primaryColor,
     isGridView,
     mech,
     mechDetails,
@@ -141,6 +142,7 @@ export const MechCommonArea = ({
     toggleIsExpanded,
     label,
 }: {
+    primaryColor: string
     isGridView?: boolean
     mech?: MechBasic
     mechDetails?: MechDetails
@@ -151,7 +153,6 @@ export const MechCommonArea = ({
     const theme = useTheme()
     const rarityDeets = useMemo(() => getRarityDeets(mech?.tier || mechDetails?.tier || ""), [mech, mechDetails])
 
-    const primaryColor = theme.factionTheme.primary
     const mechh = mech || mechDetails
 
     return (

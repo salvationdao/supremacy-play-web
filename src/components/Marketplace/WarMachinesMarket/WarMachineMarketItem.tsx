@@ -1,3 +1,4 @@
+import { useTheme } from "@mui/material"
 import { useEffect, useState } from "react"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
@@ -15,6 +16,7 @@ interface WarMachineMarketItemProps {
 }
 
 export const WarMachineMarketItem = ({ item, isGridView, isExpanded, toggleIsExpanded }: WarMachineMarketItemProps) => {
+    const theme = useTheme()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [mechDetails, setMechDetails] = useState<MechDetails>()
 
@@ -44,7 +46,14 @@ export const WarMachineMarketItem = ({ item, isGridView, isExpanded, toggleIsExp
 
     return (
         <MarketItem item={item} imageUrl={avatarUrl} backgroundImageUrl={largeImageUrl} isGridView={isGridView} linkSubPath={MARKETPLACE_TABS.WarMachines}>
-            <MechCommonArea isGridView={isGridView} mechDetails={mechDetails} isExpanded={isExpanded} toggleIsExpanded={toggleIsExpanded} label={mech.label} />
+            <MechCommonArea
+                primaryColor={theme.factionTheme.primary}
+                isGridView={isGridView}
+                mechDetails={mechDetails}
+                isExpanded={isExpanded}
+                toggleIsExpanded={toggleIsExpanded}
+                label={mech.label}
+            />
         </MarketItem>
     )
 }
