@@ -23,6 +23,7 @@ const sortOptions = [
 
 interface GetMechsRequest {
     queue_sort: string
+    search: string
     page: number
     page_size: number
     include_market_listed: boolean
@@ -104,6 +105,7 @@ export const WarMachinesHangar = () => {
 
             const resp = await send<GetMechsResponse, GetMechsRequest>(GameServerKeys.GetMechs, {
                 queue_sort: sortDir,
+                search,
                 page,
                 page_size: pageSize,
                 include_market_listed: true,
@@ -125,7 +127,7 @@ export const WarMachinesHangar = () => {
         } finally {
             setIsLoading(false)
         }
-    }, [send, page, pageSize, updateQuery, sort, setTotalItems])
+    }, [send, page, pageSize, search, updateQuery, sort, setTotalItems])
 
     useEffect(() => {
         getItems()
