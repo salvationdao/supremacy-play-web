@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { useToggle } from "../../../hooks"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { MARKETPLACE_TABS } from "../../../pages"
@@ -15,6 +16,7 @@ interface WarMachineMarketItemProps {
 export const WarMachineMarketItem = ({ item, isGridView }: WarMachineMarketItemProps) => {
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [mechDetails, setMechDetails] = useState<MechDetails>()
+    const [isExpanded, toggleIsExpanded] = useToggle(false)
 
     useEffect(() => {
         ;(async () => {
@@ -42,7 +44,7 @@ export const WarMachineMarketItem = ({ item, isGridView }: WarMachineMarketItemP
 
     return (
         <MarketItem item={item} imageUrl={avatarUrl} backgroundImageUrl={largeImageUrl} isGridView={isGridView} linkSubPath={MARKETPLACE_TABS.WarMachines}>
-            <MechCommonArea isGridView={isGridView} mechDetails={mechDetails} />
+            <MechCommonArea isGridView={isGridView} mechDetails={mechDetails} isExpanded={isExpanded} toggleIsExpanded={toggleIsExpanded} label={mech.label} />
         </MarketItem>
     )
 }

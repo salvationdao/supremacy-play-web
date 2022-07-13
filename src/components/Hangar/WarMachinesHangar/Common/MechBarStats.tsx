@@ -277,12 +277,12 @@ export const IconStat = ({
                         mb: ".4rem",
                         px: ".4rem",
                         pt: ".1rem",
-                        backgroundColor: `${primaryColor}10`,
+                        backgroundColor: `${primaryColor}28`,
                         borderRadius: 0.4,
                         borderLeft: `${primaryColor} 2px solid`,
                     }}
                 >
-                    <Icon size={fontSize} sx={{ pb: "3px" }} />
+                    <Icon size={`calc(${fontSize} * 0.9)`} sx={{ pb: "3px" }} />
                     <Typography sx={{ lineHeight: 1, fontSize }}>{parsedCurrent}</Typography>
                 </Stack>
             </TooltipHelper>

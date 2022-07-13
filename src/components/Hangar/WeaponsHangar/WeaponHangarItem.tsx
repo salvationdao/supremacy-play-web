@@ -2,6 +2,7 @@ import { Box, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
 import { useLocation } from "react-router-dom"
 import { FancyButton } from "../.."
+import { SvgDropdownArrow } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { getRarityDeets, getWeaponDamageTypeColor, getWeaponTypeColor } from "../../../helpers"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
@@ -85,7 +86,7 @@ export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGri
                         <MediaPreview imageUrl={imageUrl} objectFit={isGridView ? "cover" : "contain"} />
                     </Box>
 
-                    <WeaponCommonArea isGridView={isGridView} weaponDetails={weaponDetails} />
+                    <WeaponCommonArea isGridView={isGridView} weapon={weapon} weaponDetails={weaponDetails} />
 
                     <General title="DAMAGE TYPE">
                         <Typography variant="h6" sx={{ color: getWeaponDamageTypeColor(weaponDetails?.default_damage_type), fontWeight: "fontWeightBold" }}>
@@ -94,7 +95,7 @@ export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGri
                     </General>
 
                     <General isGridView={isGridView} title="STATS">
-                        <WeaponBarStats fontSize="1.4rem" weapon={weapon} weaponDetails={weaponDetails} color={primaryColor} iconVersion />
+                        <WeaponBarStats fontSize="1.5rem" weapon={weapon} weaponDetails={weaponDetails} color={primaryColor} iconVersion />
                     </General>
                 </Box>
 
@@ -130,11 +131,43 @@ export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGri
     )
 }
 
-export const WeaponCommonArea = ({ isGridView, weaponDetails }: { isGridView?: boolean; weaponDetails?: Weapon }) => {
+export const WeaponCommonArea = ({
+    isGridView,
+    weapon,
+    weaponDetails,
+    isExpanded,
+    toggleIsExpanded,
+}: {
+    isGridView?: boolean
+    weapon?: Weapon
+    weaponDetails?: Weapon
+    isExpanded?: boolean
+    toggleIsExpanded?: (value?: boolean) => void
+}) => {
+    const theme = useTheme()
     const rarityDeets = useMemo(() => getRarityDeets(weaponDetails?.weapon_skin?.tier || ""), [weaponDetails])
 
+    const primaryColor = theme.factionTheme.primary
+
     return (
-        <Stack spacing={isGridView ? ".1rem" : ".6rem"}>
+        <Stack
+            spacing={isGridView ? ".1rem" : ".6rem"}
+            sx={{
+                position: "relative",
+                pr: toggleIsExpanded ? "3rem" : "unset",
+                ":hover": {
+                    ".expandArrow": {
+                        transform: "translateX(4px)",
+                    },
+                },
+            }}
+            onClick={(e) => {
+                if (!toggleIsExpanded) return
+                e.preventDefault()
+                e.stopPropagation()
+                toggleIsExpanded()
+            }}
+        >
             <Typography
                 variant="body2"
                 sx={{
@@ -190,6 +223,69 @@ export const WeaponCommonArea = ({ isGridView, weaponDetails }: { isGridView?: b
                     )}
                 </Typography>
             </Stack>
+
+            {toggleIsExpanded && !isGridView && (
+                <Stack
+                    direction="row"
+                    sx={{
+                        position: "absolute",
+                        top: "-2rem",
+                        left: "calc(100% - 3rem)",
+                        bottom: "-1rem",
+                    }}
+                >
+                    <Stack
+                        className="expandArrow"
+                        alignItems="center"
+                        justifyContent="center"
+                        sx={{
+                            px: ".6rem",
+                            background: isExpanded ? `${primaryColor}CC` : `linear-gradient(to right, #FFFFFF00, ${primaryColor}50 80%, #FFFFFF00)`,
+                            transition: "all .2s",
+                        }}
+                    >
+                        <SvgDropdownArrow size="1.3rem" fill="#FFFFFF95" sx={{ transform: isExpanded ? "rotate(90deg)" : "rotate(-90deg)" }} />
+                    </Stack>
+
+                    <Box
+                        sx={{
+                            backgroundColor: theme.factionTheme.background,
+                            zIndex: 99,
+                            width: isExpanded ? "100%" : 0,
+                            overflow: "hidden",
+                            transition: "all .3s",
+                            border: isExpanded ? `${primaryColor}CC 1px solid` : "unset",
+                            borderLeft: "unset",
+                        }}
+                    >
+                        <Stack direction="row" spacing="4rem" sx={{ p: "1.5rem 2.1rem" }}>
+                            <General title="DAMAGE TYPE">
+                                <Typography
+                                    variant="h6"
+                                    sx={{ color: getWeaponDamageTypeColor(weaponDetails?.default_damage_type), fontWeight: "fontWeightBold" }}
+                                >
+                                    {weaponDetails?.default_damage_type}
+                                </Typography>
+                            </General>
+
+                            {weapon ||
+                                (weaponDetails && (
+                                    <General isGridView={isGridView} title="STATS">
+                                        <Box sx={{ width: "40rem" }}>
+                                            <WeaponBarStats
+                                                fontSize="1.4rem"
+                                                weapon={weapon || weaponDetails}
+                                                weaponDetails={weaponDetails}
+                                                color={primaryColor}
+                                                iconVersion
+                                            />
+                                        </Box>
+                                    </General>
+                                ))}
+                        </Stack>
+                    </Box>
+                </Stack>
+            )}
         </Stack>
     )
 }
