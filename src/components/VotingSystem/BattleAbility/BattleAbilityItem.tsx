@@ -188,7 +188,6 @@ const BattleAbilityItemInner = ({
                                 <ClipThing
                                     clipSize="6px"
                                     border={{
-                                        isFancy: true,
                                         borderColor: colour,
                                         borderThickness: ".3rem",
                                     }}

@@ -123,7 +123,6 @@ export const FactionAbilityItemInner = ({ gameAbility, initialTargetCost, clipSl
                         clipSize="6px"
                         clipSlantSize={clipSlantSize}
                         border={{
-                            isFancy: true,
                             borderColor: colour,
                             borderThickness: ".3rem",
                         }}
