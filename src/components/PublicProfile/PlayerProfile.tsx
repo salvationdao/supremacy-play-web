@@ -107,11 +107,11 @@ export const PlayerProfilePage = () => {
     const updateUsername = useCallback(
         async (newUsername: string) => {
             try {
-                const resp = await userSend<{ Username: string }>(GameServerKeys.PlayerProfileUpdateUsername, {
+                const resp = await userSend<string>(GameServerKeys.PlayerProfileUpdateUsername, {
                     player_id: profile?.player.id,
                     new_username: newUsername,
                 })
-                setUsername(resp.Username)
+                setUsername(resp)
                 newSnackbarMessage("username updated successfully.", "success")
             } catch (e) {
                 let errorMessage = ""
