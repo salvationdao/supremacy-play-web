@@ -2,10 +2,8 @@ import { Box, Popover, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
 import { ClipThing, FactionAbilityItem } from "../.."
 import { GenericWarMachinePNG } from "../../../assets"
-import { Faction, FeatureName, GameAbility, WarMachineState } from "../../../types"
+import { Faction, GameAbility, WarMachineState } from "../../../types"
 import { ContributorAmount } from "../../BattleStats/ContributorAmount"
-import { MechMoveCommandCard } from "./MechMoveCommandCard"
-import { useAuth } from "../../../containers"
 
 interface WarMachineAbilitiesPopoverProps {
     popoverRef: React.MutableRefObject<null>
@@ -26,7 +24,6 @@ export const WarMachineAbilitiesPopover = ({
     maxAbilityPriceMap,
     getFaction,
 }: WarMachineAbilitiesPopoverProps) => {
-    const { userID, userHasFeature } = useAuth()
     const faction = getFaction(warMachine.factionID)
 
     return (
@@ -97,10 +94,6 @@ export const WarMachineAbilitiesPopover = ({
                                     />
                                 </Box>
                             ))}
-
-                            {userHasFeature(FeatureName.mechMove) && warMachine.ownedByID === userID && (
-                                <MechMoveCommandCard warMachine={warMachine} faction={faction} clipSlantSize="5px" onClose={onClose} />
-                            )}
                         </Stack>
                     </Stack>
                 </ClipThing>

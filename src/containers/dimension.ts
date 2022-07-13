@@ -24,7 +24,7 @@ export const DimensionContainer = createContainer(() => {
 
     // Please refer to `src/theme/global.css`
     useEffect(() => {
-        if (below600) return setRemToPxRatio(0.42 * 16)
+        if (below600) return setRemToPxRatio(0.39 * 16)
         if (below900) return setRemToPxRatio(0.44 * 16)
         if (below1500) return setRemToPxRatio(0.5 * 16)
         if (below1922) return setRemToPxRatio(0.52 * 16)

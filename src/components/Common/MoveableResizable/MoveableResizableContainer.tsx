@@ -51,8 +51,8 @@ export const MoveableResizableContainer = createContainer((initialState: Moveabl
         defaultWidth: defaultW = 50,
         defaultHeight: defaultH = 50,
 
-        minWidth,
-        minHeight,
+        minWidth: minW,
+        minHeight: minH,
         maxWidth,
         maxHeight,
 
@@ -70,6 +70,8 @@ export const MoveableResizableContainer = createContainer((initialState: Moveabl
     const [curPosY, setCurPosY] = useState(parseString(localStorage.getItem(`${localStoragePrefix}PosY`), defaultPosY))
     const [defaultWidth, setDefaultWidth] = useState(defaultW)
     const [defaultHeight, setDefaultHeight] = useState(defaultH)
+    const [minWidth, setMinWidth] = useState(minW)
+    const [minHeight, setMinHeight] = useState(minH)
     const [curWidth, setCurWidth] = useState(parseString(localStorage.getItem(`${localStoragePrefix}SizeX`), defaultWidth))
     const [curHeight, setCurHeight] = useState(parseString(localStorage.getItem(`${localStoragePrefix}SizeY`), defaultHeight))
 
@@ -152,6 +154,8 @@ export const MoveableResizableContainer = createContainer((initialState: Moveabl
         // From config
         minWidth,
         minHeight,
+        setMinWidth,
+        setMinHeight,
         maxWidth,
         maxHeight,
         onHideCallback,
