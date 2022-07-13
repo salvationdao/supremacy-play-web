@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { useParameterizedQuery } from "react-fetching-library"
 import { createContainer } from "unstated-next"
 import { FallbackFaction, useSnackbar } from "."
@@ -14,8 +14,7 @@ export const SupremacyContainer = createContainer(() => {
         URI: "/public/online",
         host: GAME_SERVER_HOSTNAME,
     })
-    const [readyToCheckServerState, toggleReadyToCheckServerState] = useToggle()
-    const [isServerUp, toggleIsServerUp] = useState<boolean | undefined>(undefined) // Needs 3 states: true, false, undefined. Undefined means it's not loaded yet.
+    const serverConnectedBefore = useRef(false)
     const [haveSups, toggleHaveSups] = useState<boolean>() // Needs 3 states: true, false, undefined. Undefined means it's not loaded yet.
     const [factionsAll, setFactionsAll] = useState<FactionsAll>({})
     const [battleIdentifier, setBattleIdentifier] = useState<number>()
@@ -24,17 +23,10 @@ export const SupremacyContainer = createContainer(() => {
 
     const { query: queryGetFactionsAll } = useParameterizedQuery(GetFactionsAll)
 
-    // Listens on the server status
     useEffect(() => {
-        if (!readyToCheckServerState && state !== WebSocket.OPEN) {
-            setTimeout(() => {
-                toggleReadyToCheckServerState(true)
-            }, 3600)
-            return
-        }
-
-        toggleIsServerUp(state === WebSocket.OPEN)
-    }, [readyToCheckServerState, state, toggleIsServerUp, toggleReadyToCheckServerState])
+        if (serverConnectedBefore.current) return
+        if (state === WebSocket.OPEN) serverConnectedBefore.current = true
+    }, [state])
 
     // Get main color of each factions
     useEffect(() => {
@@ -71,7 +63,9 @@ export const SupremacyContainer = createContainer(() => {
     }, [isQuickPlayerAbilitiesOpen])
 
     return {
-        isServerUp,
+        serverConnectedBefore: serverConnectedBefore.current,
+        isServerUp: state === WebSocket.OPEN,
+
         factionsAll,
         getFaction,
         battleIdentifier,

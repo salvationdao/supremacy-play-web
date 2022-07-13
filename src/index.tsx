@@ -78,7 +78,7 @@ const AppInner = () => {
                         }}
                     >
                         <Box sx={{ flex: 1, position: "relative", overflow: "hidden" }}>
-                            {isServerUp && !UNDER_MAINTENANCE && (
+                            {isServerUp && !UNDER_MAINTENANCE ? (
                                 <Switch>
                                     {ROUTES_ARRAY.map((r) => {
                                         const { id, path, exact, Component, requireAuth, requireFaction, authTitle, authDescription } = r
@@ -93,9 +93,9 @@ const AppInner = () => {
                                     })}
                                     <Redirect to={ROUTES_MAP.not_found_page.path} />
                                 </Switch>
+                            ) : (
+                                <Maintenance />
                             )}
-
-                            {(isServerUp === false || UNDER_MAINTENANCE) && <Maintenance />}
                         </Box>
 
                         {isMobile && <BottomNav />}
