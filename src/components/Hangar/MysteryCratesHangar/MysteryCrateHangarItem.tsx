@@ -122,9 +122,9 @@ export const MysteryCrateHangarItem = ({ crate, setCrateOpen, setCrateReward, ge
                                     onClick={openCrate}
                                     clipThingsProps={{
                                         clipSize: "5px",
-                                        backgroundColor: secondaryColor,
+                                        backgroundColor: primaryColor,
                                         opacity: 1,
-                                        border: { isFancy: true, borderColor: secondaryColor, borderThickness: "1.5px" },
+                                        border: { isFancy: true, borderColor: primaryColor, borderThickness: "1.5px" },
                                         sx: { position: "relative", mt: "1rem", width: "100%" },
                                     }}
                                     sx={{ px: "1.6rem", py: ".6rem", color: secondaryColor }}
