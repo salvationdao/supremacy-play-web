@@ -2,19 +2,15 @@ import { Stack } from "@mui/material"
 import { ReactNode, useMemo } from "react"
 import { useMiniMap } from "../../../../containers"
 
-export const MapIcon = ({
-    primaryColor,
-    imageUrl,
-    icon,
-    onClick,
-    position,
-}: {
+interface MapIconProps {
     primaryColor: string
     imageUrl?: string
     icon?: ReactNode
     onClick?: () => void
     position: { x: number; y: number }
-}) => {
+}
+
+export const MapIcon = ({ primaryColor, imageUrl, icon, onClick, position }: MapIconProps) => {
     const { gridWidth, gridHeight } = useMiniMap()
 
     const sizeX = useMemo(() => gridWidth * 1.8, [gridWidth])
