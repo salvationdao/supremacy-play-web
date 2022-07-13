@@ -206,7 +206,7 @@ export const IconStat = ({
         if (!parsedCurrent) return null
 
         return (
-            <TooltipHelper text={`${label}: ${current}/${total}`} placement="right">
+            <TooltipHelper text={`${label}: ${current}/${total}`} placement="bottom">
                 <Stack
                     direction="row"
                     alignItems="center"

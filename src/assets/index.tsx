@@ -18,6 +18,20 @@ import Hammer from "!@svgr/webpack!./svg/Hammer.svg"
 import IntroAnimation from "!@svgr/webpack!./svg/IntroAnimation.svg"
 import Logout from "!@svgr/webpack!./svg/Logout.svg"
 import Meteor from "!@svgr/webpack!./svg/Meteor.svg"
+import Armor from "!@svgr/webpack!./svg/Armor.svg"
+import Energy from "!@svgr/webpack!./svg/Energy.svg"
+import Mobility from "!@svgr/webpack!./svg/Mobility.svg"
+import Shield from "!@svgr/webpack!./svg/Shield.svg"
+import Speed from "!@svgr/webpack!./svg/Speed.svg"
+import Ammo from "!@svgr/webpack!./svg/Ammo.svg"
+import Damage1 from "!@svgr/webpack!./svg/Damage1.svg"
+import DamageFalloff from "!@svgr/webpack!./svg/DamageFalloff.svg"
+import DamageFalloffRate from "!@svgr/webpack!./svg/DamageFalloffRate.svg"
+import Radius from "!@svgr/webpack!./svg/Radius.svg"
+import RadiusDamageFalloffRate from "!@svgr/webpack!./svg/RadiusDamageFalloffRate.svg"
+import RateOfFire from "!@svgr/webpack!./svg/RateOfFire.svg"
+import ProjectileSpeed from "!@svgr/webpack!./svg/ProjectileSpeed.svg"
+import Spread from "!@svgr/webpack!./svg/Spread.svg"
 import NinjaSyndicateLogo from "!@svgr/webpack!./svg/NinjaSyndicateLogo.svg"
 import OutroAnimation from "!@svgr/webpack!./svg/OutroAnimation.svg"
 import Plus from "!@svgr/webpack!./svg/Plus.svg"
@@ -935,5 +949,89 @@ export const SvgMeteor: React.VoidFunctionComponent<SvgWrapperProps> = (props) =
 export const SvgArrow: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <Arrow />
+    </SvgWrapper>
+)
+
+export const SvgAmmo: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Ammo />
+    </SvgWrapper>
+)
+
+export const SvgDamage1: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Damage1 />
+    </SvgWrapper>
+)
+
+export const SvgDamageFalloff: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <DamageFalloff />
+    </SvgWrapper>
+)
+
+export const SvgDamageFalloffRate: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <DamageFalloffRate />
+    </SvgWrapper>
+)
+
+export const SvgRadius: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Radius />
+    </SvgWrapper>
+)
+
+export const SvgRadiusDamageFalloffRate: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <RadiusDamageFalloffRate />
+    </SvgWrapper>
+)
+
+export const SvgRateOfFire: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <RateOfFire />
+    </SvgWrapper>
+)
+
+export const SvgProjectileSpeed: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <ProjectileSpeed />
+    </SvgWrapper>
+)
+
+export const SvgSpread: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Spread />
+    </SvgWrapper>
+)
+
+export const SvgArmor: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Armor />
+    </SvgWrapper>
+)
+
+export const SvgEnergy: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Energy />
+    </SvgWrapper>
+)
+
+export const SvgMobility: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Mobility />
+    </SvgWrapper>
+)
+
+export const SvgShield: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Shield />
+    </SvgWrapper>
+)
+
+export const SvgSpeed: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Speed />
     </SvgWrapper>
 )
