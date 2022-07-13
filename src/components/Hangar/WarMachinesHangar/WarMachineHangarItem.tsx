@@ -4,7 +4,7 @@ import { useLocation } from "react-router-dom"
 import { FancyButton } from "../.."
 import { SvgDropdownArrow } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
-import { getRarityDeets } from "../../../helpers"
+import { getRarityDeets, shadeColor } from "../../../helpers"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { fonts } from "../../../theme/theme"
@@ -150,8 +150,8 @@ export const MechCommonArea = ({
     toggleIsExpanded?: (value?: boolean) => void
     label?: string
 }) => {
-    const theme = useTheme()
     const rarityDeets = useMemo(() => getRarityDeets(mech?.tier || mechDetails?.tier || ""), [mech, mechDetails])
+    const backgroundColor = useMemo(() => shadeColor(primaryColor, -90), [primaryColor])
 
     const mechh = mech || mechDetails
 
@@ -248,7 +248,7 @@ export const MechCommonArea = ({
 
                     <Box
                         sx={{
-                            backgroundColor: theme.factionTheme.background,
+                            backgroundColor,
                             zIndex: 99,
                             width: isExpanded ? "100%" : 0,
                             minWidth: isExpanded ? "100%" : 0,

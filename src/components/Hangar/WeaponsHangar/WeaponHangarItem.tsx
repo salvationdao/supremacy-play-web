@@ -4,7 +4,7 @@ import { useLocation } from "react-router-dom"
 import { FancyButton } from "../.."
 import { SvgDropdownArrow } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
-import { getRarityDeets, getWeaponDamageTypeColor, getWeaponTypeColor } from "../../../helpers"
+import { getRarityDeets, getWeaponDamageTypeColor, getWeaponTypeColor, shadeColor } from "../../../helpers"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
@@ -146,8 +146,8 @@ export const WeaponCommonArea = ({
     isExpanded?: boolean
     toggleIsExpanded?: (value?: boolean) => void
 }) => {
-    const theme = useTheme()
     const rarityDeets = useMemo(() => getRarityDeets(weaponDetails?.weapon_skin?.tier || ""), [weaponDetails])
+    const backgroundColor = useMemo(() => shadeColor(primaryColor, -90), [primaryColor])
 
     const weap = weapon || weaponDetails
 
@@ -251,7 +251,7 @@ export const WeaponCommonArea = ({
 
                     <Box
                         sx={{
-                            backgroundColor: theme.factionTheme.background,
+                            backgroundColor,
                             zIndex: 99,
                             width: isExpanded ? "100%" : 0,
                             minWidth: isExpanded ? "100%" : 0,
