@@ -226,5 +226,5 @@ const ItemCommonArea = ({ item, isGridView }: { item: MarketplaceBuyAuctionItem;
         return <KeycardCommonArea isGridView={isGridView} label={item.keycard.label} description={item.keycard.description} />
     }
 
-    return <Typography>LISTING</Typography>
+    return <Typography>MARKET ITEM</Typography>
 }
