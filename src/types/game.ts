@@ -90,6 +90,7 @@ export interface BattleAbility {
 }
 
 export interface GameAbility {
+    game_client_ability_id: number
     identity: string
     label: string
     colour: string
