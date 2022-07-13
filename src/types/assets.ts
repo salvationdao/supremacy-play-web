@@ -292,6 +292,7 @@ export interface BattleMechHistory {
     faction_won?: boolean
     mech_survived?: boolean
     battle?: Battle
+    mech?: MechDetails
 }
 
 export interface BattleMechHistoryIdentifier {

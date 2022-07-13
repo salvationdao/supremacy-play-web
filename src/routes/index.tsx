@@ -9,6 +9,7 @@ import { MechPage } from "../pages/MechPage"
 import { WeaponPage } from "../pages/WeaponPage"
 import { LiveChat } from "../components/RightDrawer/LiveChat/LiveChat"
 import { PlayerList } from "../components/RightDrawer/PlayerList/PlayerList"
+import { PlayerProfilePage } from "../components/PublicProfile/PlayerProfile"
 
 /**
  * Left drawer
@@ -127,6 +128,16 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
             label: "Marketplace",
         },
         matchLeftDrawerID: "marketplace",
+    },
+
+    // Player profile
+    player_profile: {
+        id: "profile",
+        path: "/profile/:playerGID",
+        exact: true,
+        Component: PlayerProfilePage,
+        requireAuth: false,
+        requireFaction: false,
     },
 
     // Contract
