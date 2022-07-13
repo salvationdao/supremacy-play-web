@@ -46,7 +46,7 @@ export const BattleArenaPage = () => {
 const BattleArenaPageInner = () => {
     const { userID, userHasFeature } = useAuth()
     const { isMobile, setAdditionalTabs, setIsNavOpen, allowCloseNav } = useMobile()
-    const { isServerUp, isQuickDeployOpen, toggleIsQuickDeployOpen, isQuickPlayerAbilitiesOpen, toggleIsQuickPlayerAbilitiesOpen } = useSupremacy()
+    const { isQuickDeployOpen, toggleIsQuickDeployOpen, isQuickPlayerAbilitiesOpen, toggleIsQuickPlayerAbilitiesOpen } = useSupremacy()
     const { recalculateDimensions } = useDimension()
 
     // When its mobile, we have tabs
@@ -183,7 +183,7 @@ const BattleArenaPageInner = () => {
                 <Box id={isMobile ? "" : "game-ui-container"} sx={{ position: "relative", flex: 1 }}>
                     <Stream />
 
-                    {isServerUp && !isMobile && (
+                    {!isMobile && (
                         <>
                             <Notifications />
                             <WarMachineStats />
@@ -201,7 +201,7 @@ const BattleArenaPageInner = () => {
                         </>
                     )}
 
-                    {isServerUp && userID && <TutorialModal />}
+                    {userID && <TutorialModal />}
                 </Box>
 
                 <Controls />

@@ -98,8 +98,21 @@ const MiniMapInner = ({ map, isTargeting, isEnlarged, toRender }: { map: Map; is
         remToPxRatio,
         gameUIDimensions: { width, height },
     } = useDimension()
-    const { updateSize, updatePosition, curWidth, curHeight, curPosX, curPosY, defaultWidth, maxWidth, maxHeight, setDefaultWidth, setDefaultHeight } =
-        useMoveableResizable()
+    const {
+        updateSize,
+        updatePosition,
+        curWidth,
+        curHeight,
+        curPosX,
+        curPosY,
+        defaultWidth,
+        maxWidth,
+        maxHeight,
+        setDefaultWidth,
+        setDefaultHeight,
+        minWidth,
+        setMinHeight,
+    } = useMoveableResizable()
 
     const ref = useRef<HTMLDivElement>()
     const mapHeightWidthRatio = useRef(1)
@@ -113,9 +126,11 @@ const MiniMapInner = ({ map, isTargeting, isEnlarged, toRender }: { map: Map; is
         const ratio = map.height / map.width
         const defaultW = defaultWidth
         const defaultH = defaultWidth * ratio + TOP_BAR_HEIGHT * remToPxRatio
+        const minH = (minWidth || defaultWidth) * ratio + TOP_BAR_HEIGHT * remToPxRatio
 
         setDefaultWidth(defaultW)
         setDefaultHeight(defaultH)
+        setMinHeight(minH)
         updateSize({ width: curWidth, height: curWidth * ratio + TOP_BAR_HEIGHT * remToPxRatio })
         mapHeightWidthRatio.current = ratio
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -139,7 +154,7 @@ const MiniMapInner = ({ map, isTargeting, isEnlarged, toRender }: { map: Map; is
             prevWidth.current = curWidth
             prevHeight.current = curHeight
             updateSize({ width: targetingWidth, height: targetingHeight })
-            updatePosition({ x: (width - targetingWidth) / 2, y: (height - targetingHeight) / 2 })
+            updatePosition({ x: (width - targetingWidth) / 2, y: (height - targetingHeight) / 2 - 55 })
         } else {
             updateSize({ width: prevWidth.current, height: prevHeight.current })
             updatePosition({ x: prevPosX.current, y: prevPosY.current })

@@ -312,6 +312,10 @@ export interface BattleMechStats {
     }
 }
 
+export interface AbilityDetail {
+    radius: number
+}
+
 export interface WarMachineState {
     // One off fetch on initial load
     id: string

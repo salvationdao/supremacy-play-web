@@ -7,7 +7,7 @@ import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
 import { LocationSelectType, Map, Vector2i, WarMachineState } from "../../../../types"
 import { WarMachineLiveState } from "../../../../types/game"
-import { MechMoveCommand } from "../../../WarMachine/WarMachineAbilitiesPopover/MechMoveCommandCard"
+import { MechMoveCommand } from "../../../WarMachine/WarMachineItem/MoveCommand"
 
 const TRANSITION_DURACTION = 0.275 // seconds
 
@@ -93,7 +93,24 @@ const MapMechInner = ({ warMachine, map }: MapMechInnerProps) => {
             if (payload?.health !== undefined) setHealth(payload.health)
             if (payload?.shield !== undefined) setShield(payload.shield)
             if (payload?.position !== undefined) sePosition(payload.position)
-            if (payload?.rotation !== undefined) setRotation(payload.rotation)
+            if (payload?.rotation !== undefined) {
+                setRotation((prev) => {
+                    const rot = payload.rotation || 0
+                    let newRot = prev
+                    let aparentRot = prev % 360
+                    if (aparentRot < 0) {
+                        aparentRot += 360
+                    }
+                    if (aparentRot < 180 && rot > aparentRot + 180) {
+                        newRot -= 360
+                    }
+                    if (aparentRot >= 180 && rot <= aparentRot - 180) {
+                        newRot += 360
+                    }
+                    newRot += rot - aparentRot
+                    return newRot
+                })
+            }
             if (payload?.is_hidden !== undefined) setIsHidden(payload.is_hidden)
         },
     )
