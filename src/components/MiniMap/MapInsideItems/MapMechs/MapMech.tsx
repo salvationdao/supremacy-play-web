@@ -2,6 +2,7 @@ import { Box, Stack, Typography } from "@mui/material"
 import { useCallback, useMemo, useState } from "react"
 import { SvgMapSkull, SvgMapWarMachine } from "../../../../assets"
 import { useAuth, useGame, useMiniMap, useSupremacy } from "../../../../containers"
+import { closestAngle } from "../../../../helpers"
 import { useGameServerSubscription, useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
@@ -93,24 +94,7 @@ const MapMechInner = ({ warMachine, map }: MapMechInnerProps) => {
             if (payload?.health !== undefined) setHealth(payload.health)
             if (payload?.shield !== undefined) setShield(payload.shield)
             if (payload?.position !== undefined) sePosition(payload.position)
-            if (payload?.rotation !== undefined) {
-                setRotation((prev) => {
-                    const rot = payload.rotation || 0
-                    let newRot = prev
-                    let aparentRot = prev % 360
-                    if (aparentRot < 0) {
-                        aparentRot += 360
-                    }
-                    if (aparentRot < 180 && rot > aparentRot + 180) {
-                        newRot -= 360
-                    }
-                    if (aparentRot >= 180 && rot <= aparentRot - 180) {
-                        newRot += 360
-                    }
-                    newRot += rot - aparentRot
-                    return newRot
-                })
-            }
+            if (payload?.rotation !== undefined) setRotation((prev) => closestAngle(prev, payload.rotation || 0))
             if (payload?.is_hidden !== undefined) setIsHidden(payload.is_hidden)
         },
     )
