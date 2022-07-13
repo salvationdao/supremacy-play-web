@@ -15,9 +15,11 @@ const CountdownSubmitInner = () => {
     const { winner, playerAbility, selection, onTargetConfirm } = useMiniMap()
     const { setEndTimeState, totalSecRemain, delay } = useTimer(undefined, 600)
 
+    const ability = useMemo(() => winner?.game_ability || playerAbility?.ability, [winner?.game_ability, playerAbility?.ability])
+
     const isInstant = useMemo(() => {
-        if (playerAbility) {
-            switch (playerAbility.ability.location_select_type) {
+        if (ability) {
+            switch (ability.location_select_type) {
                 case LocationSelectType.LINE_SELECT:
                 case LocationSelectType.LOCATION_SELECT:
                 case LocationSelectType.MECH_COMMAND:
@@ -25,11 +27,10 @@ const CountdownSubmitInner = () => {
             }
         }
         return false
-    }, [playerAbility])
+    }, [ability])
 
     const hasSelected = useMemo(() => {
         let selected = !!selection
-        const ability = winner?.game_ability || playerAbility?.ability
         if (ability) {
             switch (ability.location_select_type) {
                 case LocationSelectType.LINE_SELECT:
@@ -44,7 +45,7 @@ const CountdownSubmitInner = () => {
             }
         }
         return selected
-    }, [selection, winner?.game_ability, playerAbility?.ability])
+    }, [selection, ability])
 
     // Count down starts when user has selected a location, then fires if they don't change their mind
     useEffect(() => {
