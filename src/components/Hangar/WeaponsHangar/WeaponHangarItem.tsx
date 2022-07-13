@@ -170,7 +170,7 @@ export const WeaponCommonArea = ({ isGridView, weaponDetails }: { isGridView?: b
                     sx={{
                         lineHeight: 1,
                         fontWeight: "fontWeightBold",
-                        color: colors.chassisSkin,
+                        color: colors.offWhite,
                         display: "-webkit-box",
                         overflow: "hidden",
                         overflowWrap: "anywhere",
@@ -182,7 +182,8 @@ export const WeaponCommonArea = ({ isGridView, weaponDetails }: { isGridView?: b
                     SUBMODEL:{" "}
                     {weaponDetails?.weapon_skin ? (
                         <>
-                            {weaponDetails?.weapon_skin.label} <span style={{ color: rarityDeets.color }}>({rarityDeets.label})</span>
+                            <span style={{ color: colors.chassisSkin }}>{weaponDetails?.weapon_skin.label}</span>{" "}
+                            <span style={{ color: rarityDeets.color }}>({rarityDeets.label})</span>
                         </>
                     ) : (
                         <span style={{ color: colors.darkGrey }}>NOT EQUIPPED</span>
