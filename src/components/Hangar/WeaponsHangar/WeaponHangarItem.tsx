@@ -253,6 +253,7 @@ export const WeaponCommonArea = ({
                             backgroundColor: theme.factionTheme.background,
                             zIndex: 99,
                             width: isExpanded ? "100%" : 0,
+                            minWidth: isExpanded ? "100%" : 0,
                             overflow: "hidden",
                             transition: "all .3s",
                             border: isExpanded ? `${primaryColor}CC 1px solid` : "unset",
