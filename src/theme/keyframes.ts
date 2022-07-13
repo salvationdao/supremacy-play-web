@@ -24,6 +24,11 @@ export const overlayPulseEffect = keyframes`
 	100% { filter: grayscale(0); }
 `
 
+export const spinEffect = keyframes`
+    0% { transform: rotate(0deg) }
+    100% { transform: rotate(360deg) }
+`
+
 export const scaleUpKeyframes = keyframes({
     "0%": { transform: "scale(1)" },
     "50%": { transform: "scale(1.2)" },
