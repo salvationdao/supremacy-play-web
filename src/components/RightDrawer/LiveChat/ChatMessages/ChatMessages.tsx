@@ -77,9 +77,6 @@ const ChatMessagesInner = ({
         scrollableRef.current.scrollTop = scrollableRef.current.scrollHeight
     }, [chatMessages, autoScroll, user])
 
-    useEffect(() => {
-        console.log(chatMessages)
-    }, [chatMessages])
     const onClickScrollToBottom = useCallback(() => {
         if (!scrollableRef.current) return
         scrollableRef.current.scrollTop = scrollableRef.current.scrollHeight
@@ -190,7 +187,7 @@ const ChatMessagesInner = ({
                                         <Stack direction={"row"} alignItems={"center"} sx={{ pb: "0.5rem" }}>
                                             <Divider sx={{ flex: "1" }} />
                                             <Typography variant={"body2"} sx={{ color: colors.grey, flexShrink: "0", px: "1rem" }}>
-                                                Battle #{data ? data.battle_number : null}: {dateFormatter(data.battle_start)}
+                                                Battle #{data ? data.battle_number : null}: {dateFormatter(message.sent_at)}
                                             </Typography>
                                             <Divider sx={{ flex: "1" }} />
                                         </Stack>

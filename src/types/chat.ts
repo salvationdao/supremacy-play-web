@@ -119,5 +119,4 @@ export interface SystemBanMessageData {
 
 export interface NewBattleMessageData {
     battle_number: number
-    battle_start: Date
 }

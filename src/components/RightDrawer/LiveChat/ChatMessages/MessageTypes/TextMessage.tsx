@@ -1,12 +1,12 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef } from "react"
 import { UserBanForm } from "../../../.."
-import { SvgSkull2, SvgInfoCircular } from "../../../../../assets"
+import { SvgInfoCircular, SvgSkull2 } from "../../../../../assets"
 import { PASSPORT_SERVER_HOST_IMAGES } from "../../../../../constants"
 import { dateFormatter, getUserRankDeets, shadeColor, truncate } from "../../../../../helpers"
 import { useToggle } from "../../../../../hooks"
 import { colors, fonts } from "../../../../../theme/theme"
-import { Faction, User, TextMessageData, ChatMessageType } from "../../../../../types"
+import { ChatMessageType, Faction, TextMessageData, User } from "../../../../../types"
 import { TooltipHelper } from "../../../../Common/TooltipHelper"
 import { UserDetailsPopover } from "./UserDetailsPopover"
 
@@ -87,7 +87,7 @@ export const TextMessage = ({
         if (prev.from_user.id === data.from_user.id) {
             setIsPreviousMessager(true)
         }
-    }, [previousMessage, data])
+    }, [previousMessage, setIsPreviousMessager, data])
 
     // For the hide zero multi setting
     if ((!locallySent && filterZeros && (!total_multiplier || total_multiplier <= 0)) || filterSystemMessages) return null
