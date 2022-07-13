@@ -19,8 +19,6 @@ export const WarMachineHangarItem = ({ mech, isGridView }: { mech: MechBasic; is
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [mechDetails, setMechDetails] = useState<MechDetails>()
 
-    const rarityDeets = useMemo(() => getRarityDeets(mech.tier || mechDetails?.tier || ""), [mech, mechDetails])
-
     useEffect(() => {
         ;(async () => {
             try {
@@ -90,52 +88,7 @@ export const WarMachineHangarItem = ({ mech, isGridView }: { mech: MechBasic; is
                         <MediaPreview imageUrl={avatarUrl || imageUrl || largeImageUrl} objectFit={isGridView ? "cover" : "contain"} />
                     </Box>
 
-                    <Stack>
-                        <Typography
-                            variant="body2"
-                            sx={{
-                                mb: ".2rem",
-                                color: rarityDeets.color,
-                                fontFamily: fonts.nostromoHeavy,
-                                display: "-webkit-box",
-                                overflow: "hidden",
-                                overflowWrap: "anywhere",
-                                textOverflow: "ellipsis",
-                                WebkitLineClamp: 1, // change to max number of lines
-                                WebkitBoxOrient: "vertical",
-                            }}
-                        >
-                            {rarityDeets.label}
-                        </Typography>
-
-                        <Typography
-                            sx={{
-                                fontFamily: fonts.nostromoBlack,
-                                display: "-webkit-box",
-                                overflow: "hidden",
-                                overflowWrap: "anywhere",
-                                textOverflow: "ellipsis",
-                                WebkitLineClamp: 1, // change to max number of lines
-                                WebkitBoxOrient: "vertical",
-                            }}
-                        >
-                            {mech.label}
-                        </Typography>
-
-                        <Typography
-                            variant="h6"
-                            sx={{
-                                display: "-webkit-box",
-                                overflow: "hidden",
-                                overflowWrap: "anywhere",
-                                textOverflow: "ellipsis",
-                                WebkitLineClamp: 1, // change to max number of lines
-                                WebkitBoxOrient: "vertical",
-                            }}
-                        >
-                            {mech.name}
-                        </Typography>
-                    </Stack>
+                    <MechCommonArea isGridView={isGridView} mech={mech} mechDetails={mechDetails} />
 
                     <General isGridView={isGridView} title="EQUIPPED">
                         <Box sx={{ pt: ".4rem" }}>
@@ -177,5 +130,61 @@ export const WarMachineHangarItem = ({ mech, isGridView }: { mech: MechBasic; is
                 />
             </FancyButton>
         </Box>
+    )
+}
+
+export const MechCommonArea = ({ isGridView, mech, mechDetails }: { isGridView?: boolean; mech?: MechBasic; mechDetails?: MechDetails }) => {
+    const rarityDeets = useMemo(() => getRarityDeets(mech?.tier || mechDetails?.tier || ""), [mech, mechDetails])
+
+    return (
+        <Stack spacing={isGridView ? ".1rem" : ".6rem"}>
+            <Stack alignItems="center" direction="row" spacing="1rem">
+                <Typography
+                    variant="body2"
+                    sx={{
+                        mb: ".2rem",
+                        color: rarityDeets.color,
+                        fontFamily: fonts.nostromoBold,
+                        display: "-webkit-box",
+                        overflow: "hidden",
+                        overflowWrap: "anywhere",
+                        textOverflow: "ellipsis",
+                        WebkitLineClamp: 1, // change to max number of lines
+                        WebkitBoxOrient: "vertical",
+                    }}
+                >
+                    {rarityDeets.label}
+                </Typography>
+                <MechLoadoutIcons mechDetails={mechDetails} />
+            </Stack>
+
+            <Typography
+                sx={{
+                    fontFamily: fonts.nostromoBlack,
+                    display: "-webkit-box",
+                    overflow: "hidden",
+                    overflowWrap: "anywhere",
+                    textOverflow: "ellipsis",
+                    WebkitLineClamp: 1, // change to max number of lines
+                    WebkitBoxOrient: "vertical",
+                }}
+            >
+                {mech?.label || mechDetails?.label}
+            </Typography>
+
+            <Typography
+                variant="h6"
+                sx={{
+                    display: "-webkit-box",
+                    overflow: "hidden",
+                    overflowWrap: "anywhere",
+                    textOverflow: "ellipsis",
+                    WebkitLineClamp: 1, // change to max number of lines
+                    WebkitBoxOrient: "vertical",
+                }}
+            >
+                {mech?.name || mechDetails?.name}
+            </Typography>
+        </Stack>
     )
 }

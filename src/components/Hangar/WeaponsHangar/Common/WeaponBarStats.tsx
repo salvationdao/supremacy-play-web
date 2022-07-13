@@ -1,7 +1,8 @@
 import { Box, Stack, useTheme } from "@mui/material"
 import React from "react"
+import { SvgSupToken } from "../../../../assets"
 import { Weapon } from "../../../../types"
-import { BarStat } from "../../WarMachinesHangar/Common/MechBarStats"
+import { BarStat, IconStat } from "../../WarMachinesHangar/Common/MechBarStats"
 
 export const WeaponBarStats = ({
     weapon,
@@ -10,6 +11,7 @@ export const WeaponBarStats = ({
     width,
     spacing,
     barHeight,
+    iconVersion,
 }: {
     weapon: Weapon
     weaponDetails?: Weapon
@@ -18,6 +20,7 @@ export const WeaponBarStats = ({
     width?: string
     spacing?: string
     barHeight?: string
+    iconVersion?: boolean
 }) => {
     const theme = useTheme()
 
@@ -34,6 +37,20 @@ export const WeaponBarStats = ({
     const energyCost = weapon.energy_cost || 0
     const projectileSpeed = weapon.projectile_speed || 0
     const spread = weapon.spread || 0
+
+    if (iconVersion) {
+        return (
+            <Stack alignItems="center" justifyContent="flex-start" direction="row" flexWrap="wrap">
+                <IconStat primaryColor={primaryColor} fontSize={fontSize} label="AMMO" current={200} total={3000} Icon={SvgSupToken} />
+                <IconStat primaryColor={primaryColor} fontSize={fontSize} label="AMMO" current={200} total={3000} Icon={SvgSupToken} />
+                <IconStat primaryColor={primaryColor} fontSize={fontSize} label="AMMO" current={200} total={3000} Icon={SvgSupToken} />
+                <IconStat primaryColor={primaryColor} fontSize={fontSize} label="AMMO" current={200} total={3000} Icon={SvgSupToken} />
+                <IconStat primaryColor={primaryColor} fontSize={fontSize} label="AMMO" current={200} total={3000} Icon={SvgSupToken} />
+                <IconStat primaryColor={primaryColor} fontSize={fontSize} label="AMMO" current={200} total={3000} Icon={SvgSupToken} />
+                <IconStat primaryColor={primaryColor} fontSize={fontSize} label="AMMO" current={200} total={3000} Icon={SvgSupToken} />
+            </Stack>
+        )
+    }
 
     return (
         <Box

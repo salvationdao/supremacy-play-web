@@ -10,14 +10,13 @@ import { colors, fonts } from "../../../theme/theme"
 import { Weapon } from "../../../types"
 import { MediaPreview } from "../../Common/MediaPreview/MediaPreview"
 import { General } from "../../Marketplace/Common/MarketItem/General"
+import { WeaponBarStats } from "./Common/WeaponBarStats"
 
 export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGridView?: boolean }) => {
     const location = useLocation()
     const theme = useTheme()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [weaponDetails, setWeaponDetails] = useState<Weapon>()
-
-    const rarityDeets = useMemo(() => getRarityDeets(weaponDetails?.weapon_skin?.tier || ""), [weaponDetails])
 
     useEffect(() => {
         ;(async () => {
@@ -65,7 +64,7 @@ export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGri
                         p: isGridView ? ".5rem .6rem" : ".1rem .3rem",
                         display: isGridView ? "block" : "grid",
                         gridTemplateRows: "7rem",
-                        gridTemplateColumns: `8rem auto repeat(4, 20rem)`, // hard-coded to have 7 columns, adjust as required
+                        gridTemplateColumns: `8rem auto 20rem 30rem`, // hard-coded to have 7 columns, adjust as required
                         gap: "1.4rem",
                         ...(isGridView
                             ? {
@@ -86,38 +85,7 @@ export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGri
                         <MediaPreview imageUrl={imageUrl} objectFit={isGridView ? "cover" : "contain"} />
                     </Box>
 
-                    <Stack>
-                        <Typography
-                            variant="body2"
-                            sx={{
-                                mb: ".2rem",
-                                color: getWeaponTypeColor(weaponDetails?.weapon_type),
-                                fontFamily: fonts.nostromoBlack,
-                                display: "-webkit-box",
-                                overflow: "hidden",
-                                overflowWrap: "anywhere",
-                                textOverflow: "ellipsis",
-                                WebkitLineClamp: 1, // change to max number of lines
-                                WebkitBoxOrient: "vertical",
-                            }}
-                        >
-                            {weaponDetails?.weapon_type}
-                        </Typography>
-
-                        <Typography
-                            sx={{
-                                fontFamily: fonts.nostromoBlack,
-                                display: "-webkit-box",
-                                overflow: "hidden",
-                                overflowWrap: "anywhere",
-                                textOverflow: "ellipsis",
-                                WebkitLineClamp: 1, // change to max number of lines
-                                WebkitBoxOrient: "vertical",
-                            }}
-                        >
-                            {weaponDetails?.label}
-                        </Typography>
-                    </Stack>
+                    <WeaponCommonArea isGridView={isGridView} weaponDetails={weaponDetails} />
 
                     <General title="DAMAGE TYPE">
                         <Typography variant="h6" sx={{ color: getWeaponDamageTypeColor(weaponDetails?.default_damage_type), fontWeight: "fontWeightBold" }}>
@@ -125,31 +93,8 @@ export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGri
                         </Typography>
                     </General>
 
-                    <General isGridView={isGridView} title="SUBMODEL">
-                        {weaponDetails?.weapon_skin ? (
-                            <Stack spacing=".5rem">
-                                <Typography variant="h6" sx={{ lineHeight: 1, color: colors.chassisSkin, fontWeight: "fontWeightBold" }}>
-                                    {weaponDetails?.weapon_skin.label}
-                                </Typography>
-                                <Typography sx={{ lineHeight: 1, color: rarityDeets.color, fontWeight: "fontWeightBold" }}>{rarityDeets.label}</Typography>
-                            </Stack>
-                        ) : (
-                            <Typography variant="h6" sx={{ color: colors.darkGrey, fontWeight: "fontWeightBold" }}>
-                                NOT EQUIPPED
-                            </Typography>
-                        )}
-                    </General>
-
-                    <General title="DAMAGE">
-                        <Typography variant="h6" sx={{ color: colors.lightNeonBlue, fontWeight: "fontWeightBold" }}>
-                            {weaponDetails?.damage}
-                        </Typography>
-                    </General>
-
-                    <General title="ENERGY COST">
-                        <Typography variant="h6" sx={{ color: colors.lightNeonBlue, fontWeight: "fontWeightBold" }}>
-                            {weaponDetails?.energy_cost}
-                        </Typography>
+                    <General isGridView={isGridView} title="STATS">
+                        <WeaponBarStats fontSize="1.4rem" weapon={weapon} weaponDetails={weaponDetails} color={primaryColor} iconVersion />
                     </General>
                 </Box>
 
@@ -182,5 +127,68 @@ export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGri
                 />
             </FancyButton>
         </Box>
+    )
+}
+
+export const WeaponCommonArea = ({ isGridView, weaponDetails }: { isGridView?: boolean; weaponDetails?: Weapon }) => {
+    const rarityDeets = useMemo(() => getRarityDeets(weaponDetails?.weapon_skin?.tier || ""), [weaponDetails])
+
+    return (
+        <Stack spacing={isGridView ? ".1rem" : ".6rem"}>
+            <Typography
+                variant="body2"
+                sx={{
+                    color: getWeaponTypeColor(weaponDetails?.weapon_type),
+                    fontFamily: fonts.nostromoBold,
+                    display: "-webkit-box",
+                    overflow: "hidden",
+                    overflowWrap: "anywhere",
+                    textOverflow: "ellipsis",
+                    WebkitLineClamp: 1, // change to max number of lines
+                    WebkitBoxOrient: "vertical",
+                }}
+            >
+                {weaponDetails?.weapon_type}
+            </Typography>
+
+            <Typography
+                sx={{
+                    fontFamily: fonts.nostromoBlack,
+                    display: "-webkit-box",
+                    overflow: "hidden",
+                    overflowWrap: "anywhere",
+                    textOverflow: "ellipsis",
+                    WebkitLineClamp: 1, // change to max number of lines
+                    WebkitBoxOrient: "vertical",
+                }}
+            >
+                {weaponDetails?.label}
+            </Typography>
+
+            <Stack direction="row" spacing=".5rem">
+                <Typography
+                    sx={{
+                        lineHeight: 1,
+                        fontWeight: "fontWeightBold",
+                        color: colors.chassisSkin,
+                        display: "-webkit-box",
+                        overflow: "hidden",
+                        overflowWrap: "anywhere",
+                        textOverflow: "ellipsis",
+                        WebkitLineClamp: 1,
+                        WebkitBoxOrient: "vertical",
+                    }}
+                >
+                    SUBMODEL:{" "}
+                    {weaponDetails?.weapon_skin ? (
+                        <>
+                            {weaponDetails?.weapon_skin.label} <span style={{ color: rarityDeets.color }}>({rarityDeets.label})</span>
+                        </>
+                    ) : (
+                        <span style={{ color: colors.darkGrey }}>NOT EQUIPPED</span>
+                    )}
+                </Typography>
+            </Stack>
+        </Stack>
     )
 }

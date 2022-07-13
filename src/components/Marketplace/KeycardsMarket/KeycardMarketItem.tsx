@@ -1,8 +1,6 @@
-import { Stack, Typography } from "@mui/material"
-import { useTheme } from "../../../containers/theme"
 import { MARKETPLACE_TABS } from "../../../pages"
-import { fonts } from "../../../theme/theme"
 import { MarketplaceBuyAuctionItem } from "../../../types/marketplace"
+import { KeycardCommonArea } from "../../Hangar/KeycardsHangar/KeycardHangarItem"
 import { MarketItem } from "../Common/MarketItem/MarketItem"
 
 interface KeycardMarketItemProps {
@@ -26,44 +24,7 @@ export const KeycardMarketItem = ({ item, isGridView }: KeycardMarketItemProps) 
             isGridView={isGridView}
             linkSubPath={MARKETPLACE_TABS.Keycards}
         >
-            <KeycardInfo isGridView={isGridView} label={label} description={description} />
+            <KeycardCommonArea isGridView={isGridView} label={label} description={description} />
         </MarketItem>
-    )
-}
-
-const KeycardInfo = ({ isGridView, label, description }: { isGridView: boolean; label: string; description: string }) => {
-    const theme = useTheme()
-
-    return (
-        <Stack spacing={isGridView ? ".1rem" : ".6rem"}>
-            <Typography
-                variant="body2"
-                sx={{
-                    fontFamily: fonts.nostromoBlack,
-                    color: theme.factionTheme.primary,
-                    display: "-webkit-box",
-                    overflow: "hidden",
-                    overflowWrap: "anywhere",
-                    textOverflow: "ellipsis",
-                    WebkitLineClamp: 1,
-                    WebkitBoxOrient: "vertical",
-                }}
-            >
-                {label}
-            </Typography>
-
-            <Typography
-                sx={{
-                    display: "-webkit-box",
-                    overflow: "hidden",
-                    overflowWrap: "anywhere",
-                    textOverflow: "ellipsis",
-                    WebkitLineClamp: 2,
-                    WebkitBoxOrient: "vertical",
-                }}
-            >
-                {description}
-            </Typography>
-        </Stack>
     )
 }

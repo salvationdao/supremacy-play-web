@@ -1,39 +1,25 @@
 import { Box, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
-import { useState, useEffect, useMemo } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { FancyButton } from "../.."
 import { SvgSupToken } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
-import { getRarityDeets, getWeaponTypeColor, numFormatter } from "../../../helpers"
+import { numFormatter } from "../../../helpers"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { MARKETPLACE_TABS } from "../../../pages"
-import { colors, fonts } from "../../../theme/theme"
-import { Weapon } from "../../../types/assets"
-import { MarketplaceEvent, MarketplaceEventType } from "../../../types/marketplace"
+import { colors } from "../../../theme/theme"
+import { MechDetails, Weapon } from "../../../types/assets"
+import { MarketplaceBuyAuctionItem, MarketplaceEvent, MarketplaceEventType } from "../../../types/marketplace"
+import { KeycardCommonArea } from "../../Hangar/KeycardsHangar/KeycardHangarItem"
+import { CrateCommonArea } from "../../Hangar/MysteryCratesHangar/MysteryCrateHangarItem"
+import { MechCommonArea } from "../../Hangar/WarMachinesHangar/WarMachineHangarItem"
+import { WeaponCommonArea } from "../../Hangar/WeaponsHangar/WeaponHangarItem"
 import { General } from "../Common/MarketItem/General"
 import { Thumbnail } from "../Common/MarketItem/Thumbnail"
 
-export const HistoryItem = ({ eventItem }: { eventItem: MarketplaceEvent }) => {
+export const HistoryItem = ({ eventItem, isGridView }: { eventItem: MarketplaceEvent; isGridView: boolean }) => {
     const theme = useTheme()
-
-    const { send } = useGameServerCommandsFaction("/faction_commander")
-    const [weaponDetails, setWeaponDetails] = useState<Weapon>()
-
-    useEffect(() => {
-        ;(async () => {
-            try {
-                if (!eventItem.item.weapon) return
-                const resp = await send<Weapon>(GameServerKeys.GetWeaponDetails, {
-                    weapon_id: eventItem.item.weapon.id,
-                })
-                if (!resp) return
-                setWeaponDetails(resp)
-            } catch (e) {
-                console.error(e)
-            }
-        })()
-    }, [eventItem.item.weapon, send])
 
     const itemRelatedData = useMemo(() => {
         const item = eventItem.item
@@ -41,44 +27,41 @@ export const HistoryItem = ({ eventItem }: { eventItem: MarketplaceEvent }) => {
         let imageUrl = ""
         let animationUrl = ""
         let cardAnimationUrl = ""
-        let label = ""
-        let labelColor = "#FFFFFF"
-        let description = ""
         let primaryColor = colors.marketSold
         let statusText = ""
         const formattedAmount = eventItem.amount ? numFormatter(new BigNumber(eventItem.amount).shiftedBy(-18).toNumber()) : ""
 
         if (item.mech && item.collection_item) {
-            const rarityDeets = getRarityDeets(item.collection_item.tier)
+            // const rarityDeets = getRarityDeets(item.collection_item.tier)
 
             linkSubPath = MARKETPLACE_TABS.WarMachines
             imageUrl = item.mech.avatar_url
-            label = rarityDeets.label
-            labelColor = rarityDeets.color
-            description = item.mech.name || item.mech.label
+            // label = rarityDeets.label
+            // labelColor = rarityDeets.color
+            // description = item.mech.name || item.mech.label
         } else if (item.mystery_crate && item.collection_item) {
             linkSubPath = MARKETPLACE_TABS.MysteryCrates
             imageUrl = item.collection_item.image_url || ""
             animationUrl = item.collection_item.animation_url || ""
             cardAnimationUrl = item.collection_item.card_animation_url || ""
-            label = item.mystery_crate.label
-            description = item.mystery_crate.description
+            // label = item.mystery_crate.label
+            // description = item.mystery_crate.description
         } else if (item.weapon && item.collection_item) {
-            const rarityDeets = getRarityDeets(weaponDetails?.weapon_skin?.tier || "")
+            // const rarityDeets = getRarityDeets(weaponDetails?.weapon_skin?.tier || "")
             linkSubPath = MARKETPLACE_TABS.Weapons
             imageUrl = item.collection_item.image_url || item.weapon?.avatar_url || ""
             animationUrl = item.collection_item.animation_url || ""
             cardAnimationUrl = item.collection_item.card_animation_url || ""
-            label = rarityDeets.label
-            labelColor = rarityDeets.color
-            description = item.weapon.label
+            // label = rarityDeets.label
+            // labelColor = rarityDeets.color
+            // description = item.weapon.label
         } else if (item.keycard) {
             linkSubPath = MARKETPLACE_TABS.Keycards
             imageUrl = item.keycard.image_url
             animationUrl = item.keycard.animation_url
             cardAnimationUrl = item.keycard.card_animation_url
-            label = item.keycard.label
-            description = item.keycard.description
+            // label = item.keycard.label
+            // description = item.keycard.description
         }
 
         if (eventItem.event_type === MarketplaceEventType.Purchased) {
@@ -106,14 +89,11 @@ export const HistoryItem = ({ eventItem }: { eventItem: MarketplaceEvent }) => {
             imageUrl,
             animationUrl,
             cardAnimationUrl,
-            label,
-            labelColor,
-            description,
             primaryColor,
             statusText,
             formattedAmount,
         }
-    }, [eventItem, weaponDetails?.weapon_skin])
+    }, [eventItem])
 
     return (
         <Box sx={{ position: "relative", overflow: "visible" }}>
@@ -151,97 +131,7 @@ export const HistoryItem = ({ eventItem }: { eventItem: MarketplaceEvent }) => {
                         cardAnimationUrl={itemRelatedData.cardAnimationUrl}
                     />
 
-                    <Stack spacing=".6rem">
-                        {eventItem?.item?.weapon && (
-                            <>
-                                <Typography
-                                    variant="body2"
-                                    sx={{
-                                        fontFamily: fonts.nostromoBlack,
-                                        color: getWeaponTypeColor(eventItem.item.weapon.weapon_type),
-                                        display: "-webkit-box",
-                                        overflow: "hidden",
-                                        overflowWrap: "anywhere",
-                                        textOverflow: "ellipsis",
-                                        WebkitLineClamp: 1,
-                                        WebkitBoxOrient: "vertical",
-                                    }}
-                                >
-                                    {eventItem.item.weapon.weapon_type}
-                                </Typography>
-
-                                <Typography
-                                    sx={{
-                                        display: "-webkit-box",
-                                        overflow: "hidden",
-                                        overflowWrap: "anywhere",
-                                        textOverflow: "ellipsis",
-                                        WebkitLineClamp: 2,
-                                        WebkitBoxOrient: "vertical",
-                                    }}
-                                >
-                                    {itemRelatedData.description}
-                                </Typography>
-
-                                <Typography
-                                    variant="body2"
-                                    sx={{
-                                        lineHeight: 1,
-                                        color: colors.chassisSkin,
-                                        fontFamily: fonts.nostromoBold,
-                                        display: "-webkit-box",
-                                        overflow: "hidden",
-                                        overflowWrap: "anywhere",
-                                        textOverflow: "ellipsis",
-                                        WebkitLineClamp: 1,
-                                        WebkitBoxOrient: "vertical",
-                                    }}
-                                >
-                                    SUBMODEL:{" "}
-                                    {weaponDetails?.weapon_skin ? (
-                                        <>
-                                            {weaponDetails?.weapon_skin.label}{" "}
-                                            <span style={{ color: itemRelatedData.labelColor }}>({itemRelatedData.label})</span>
-                                        </>
-                                    ) : (
-                                        <span style={{ color: colors.darkGrey }}>NOT EQUIPPED</span>
-                                    )}
-                                </Typography>
-                            </>
-                        )}
-                        {!eventItem?.item?.weapon && (
-                            <>
-                                <Typography
-                                    variant="body2"
-                                    sx={{
-                                        fontFamily: fonts.nostromoBlack,
-                                        color: itemRelatedData.labelColor,
-                                        display: "-webkit-box",
-                                        overflow: "hidden",
-                                        overflowWrap: "anywhere",
-                                        textOverflow: "ellipsis",
-                                        WebkitLineClamp: 1,
-                                        WebkitBoxOrient: "vertical",
-                                    }}
-                                >
-                                    {itemRelatedData.label}
-                                </Typography>
-
-                                <Typography
-                                    sx={{
-                                        display: "-webkit-box",
-                                        overflow: "hidden",
-                                        overflowWrap: "anywhere",
-                                        textOverflow: "ellipsis",
-                                        WebkitLineClamp: 2,
-                                        WebkitBoxOrient: "vertical",
-                                    }}
-                                >
-                                    {itemRelatedData.description}
-                                </Typography>
-                            </>
-                        )}
-                    </Stack>
+                    <ItemCommonArea item={eventItem.item} isGridView={isGridView} />
 
                     <General title="EVENT TYPE" text={itemRelatedData.statusText} textColor={itemRelatedData.primaryColor} />
 
@@ -273,4 +163,59 @@ export const HistoryItem = ({ eventItem }: { eventItem: MarketplaceEvent }) => {
             </FancyButton>
         </Box>
     )
+}
+
+const ItemCommonArea = ({ item, isGridView }: { item: MarketplaceBuyAuctionItem; isGridView: boolean }) => {
+    const { send } = useGameServerCommandsFaction("/faction_commander")
+    const [mechDetails, setMechDetails] = useState<MechDetails>()
+    const [weaponDetails, setWeaponDetails] = useState<Weapon>()
+
+    useEffect(() => {
+        ;(async () => {
+            try {
+                if (!item.mech) return
+                const resp = await send<MechDetails>(GameServerKeys.GetMechDetails, {
+                    mech_id: item.mech.id,
+                })
+
+                if (!resp) return
+                setMechDetails(resp)
+            } catch (e) {
+                console.error(e)
+            }
+        })()
+    }, [item.mech, send])
+
+    useEffect(() => {
+        ;(async () => {
+            try {
+                if (!item.weapon) return
+                const resp = await send<Weapon>(GameServerKeys.GetWeaponDetails, {
+                    weapon_id: item.weapon.id,
+                })
+                if (!resp) return
+                setWeaponDetails(resp)
+            } catch (e) {
+                console.error(e)
+            }
+        })()
+    }, [item.weapon, send])
+
+    if (item.mech) {
+        return <MechCommonArea isGridView={isGridView} mechDetails={mechDetails} />
+    }
+
+    if (item.weapon) {
+        return <WeaponCommonArea isGridView={isGridView} weaponDetails={weaponDetails} />
+    }
+
+    if (item.mystery_crate) {
+        return <CrateCommonArea isGridView={isGridView} label={item.mystery_crate.label} description={item.mystery_crate.description} />
+    }
+
+    if (item.keycard) {
+        return <KeycardCommonArea isGridView={isGridView} label={item.keycard.label} description={item.keycard.description} />
+    }
+
+    return null
 }

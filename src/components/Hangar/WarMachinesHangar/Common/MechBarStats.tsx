@@ -1,5 +1,7 @@
 import { Box, Stack, Typography } from "@mui/material"
 import React, { useMemo } from "react"
+import { TooltipHelper } from "../../.."
+import { SvgWrapperProps } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
 import { fonts } from "../../../../theme/theme"
 import { MechBasic, MechDetails } from "../../../../types"
@@ -109,7 +111,7 @@ export const MechBarStats = ({
     )
 }
 
-const BarStatInner = ({
+export const BarStat = ({
     primaryColor,
     fontSize,
     label,
@@ -183,4 +185,38 @@ const BarStatInner = ({
     }, [barHeight, current, fontSize, label, primaryColor, total, unit])
 }
 
-export const BarStat = React.memo(BarStatInner)
+export const IconStat = ({
+    primaryColor,
+    fontSize,
+    label,
+    current,
+    total,
+    Icon,
+}: {
+    primaryColor: string
+    fontSize: string
+    label: string
+    current: number | string
+    total: number
+    unit?: string
+    Icon: React.VoidFunctionComponent<SvgWrapperProps>
+}) => {
+    return useMemo(() => {
+        const parsedCurrent = typeof current === "string" ? parseFloat(current) : current
+        if (!parsedCurrent) return null
+
+        return (
+            <TooltipHelper text={`${label}: ${current}/${total}`} placement="right">
+                <Stack
+                    direction="row"
+                    alignItems="center"
+                    spacing=".2rem"
+                    sx={{ mr: ".6rem", mb: ".4rem", px: ".4rem", pt: ".1rem", backgroundColor: `${primaryColor}38`, borderRadius: 0.6 }}
+                >
+                    <Icon size={fontSize} sx={{ pb: "3px", height: "unset" }} />
+                    <Typography sx={{ lineHeight: 1, fontSize }}>{parsedCurrent}</Typography>
+                </Stack>
+            </TooltipHelper>
+        )
+    }, [Icon, current, fontSize, label, primaryColor, total])
+}
