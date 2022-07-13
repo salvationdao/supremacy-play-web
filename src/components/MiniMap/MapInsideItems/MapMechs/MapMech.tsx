@@ -7,7 +7,7 @@ import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
 import { LocationSelectType, Map, Vector2i, WarMachineState } from "../../../../types"
 import { WarMachineLiveState } from "../../../../types/game"
-import { MechMoveCommand } from "../../../WarMachine/WarMachineAbilitiesPopover/MechMoveCommandCard"
+import { MechMoveCommand } from "../../../WarMachine/WarMachineItem/MoveCommand"
 
 const TRANSITION_DURACTION = 0.275 // seconds
 

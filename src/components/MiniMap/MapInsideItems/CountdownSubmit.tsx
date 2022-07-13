@@ -20,6 +20,7 @@ const CountdownSubmitInner = () => {
             switch (playerAbility.ability.location_select_type) {
                 case LocationSelectType.LINE_SELECT:
                 case LocationSelectType.LOCATION_SELECT:
+                case LocationSelectType.MECH_COMMAND:
                     return true
             }
         }
