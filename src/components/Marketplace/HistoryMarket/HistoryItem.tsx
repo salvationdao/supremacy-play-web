@@ -4,7 +4,7 @@ import { useMemo } from "react"
 import { FancyButton } from "../.."
 import { SvgSupToken } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
-import { getRarityDeets, numFormatter } from "../../../helpers"
+import { getRarityDeets, getWeaponTypeColor, numFormatter } from "../../../helpers"
 import { MARKETPLACE_TABS } from "../../../pages"
 import { colors, fonts } from "../../../theme/theme"
 import { MarketplaceEvent, MarketplaceEventType } from "../../../types/marketplace"
@@ -129,34 +129,70 @@ export const HistoryItem = ({ eventItem }: { eventItem: MarketplaceEvent }) => {
                     />
 
                     <Stack spacing=".6rem">
-                        <Typography
-                            variant="body2"
-                            sx={{
-                                fontFamily: fonts.nostromoBlack,
-                                color: itemRelatedData.labelColor,
-                                display: "-webkit-box",
-                                overflow: "hidden",
-                                overflowWrap: "anywhere",
-                                textOverflow: "ellipsis",
-                                WebkitLineClamp: 1,
-                                WebkitBoxOrient: "vertical",
-                            }}
-                        >
-                            {itemRelatedData.label}
-                        </Typography>
+                        {eventItem?.item?.weapon && (
+                            <>
+                                <Typography
+                                    variant="body2"
+                                    sx={{
+                                        fontFamily: fonts.nostromoBlack,
+                                        color: getWeaponTypeColor(eventItem.item.weapon.weapon_type),
+                                        display: "-webkit-box",
+                                        overflow: "hidden",
+                                        overflowWrap: "anywhere",
+                                        textOverflow: "ellipsis",
+                                        WebkitLineClamp: 1,
+                                        WebkitBoxOrient: "vertical",
+                                    }}
+                                >
+                                    {eventItem.item.weapon.weapon_type}
+                                </Typography>
 
-                        <Typography
-                            sx={{
-                                display: "-webkit-box",
-                                overflow: "hidden",
-                                overflowWrap: "anywhere",
-                                textOverflow: "ellipsis",
-                                WebkitLineClamp: 2,
-                                WebkitBoxOrient: "vertical",
-                            }}
-                        >
-                            {itemRelatedData.description}
-                        </Typography>
+                                <Typography
+                                    sx={{
+                                        display: "-webkit-box",
+                                        overflow: "hidden",
+                                        overflowWrap: "anywhere",
+                                        textOverflow: "ellipsis",
+                                        WebkitLineClamp: 2,
+                                        WebkitBoxOrient: "vertical",
+                                    }}
+                                >
+                                    {itemRelatedData.label}
+                                </Typography>
+                            </>
+                        )}
+                        {!eventItem?.item?.weapon && (
+                            <>
+                                <Typography
+                                    variant="body2"
+                                    sx={{
+                                        fontFamily: fonts.nostromoBlack,
+                                        color: itemRelatedData.labelColor,
+                                        display: "-webkit-box",
+                                        overflow: "hidden",
+                                        overflowWrap: "anywhere",
+                                        textOverflow: "ellipsis",
+                                        WebkitLineClamp: 1,
+                                        WebkitBoxOrient: "vertical",
+                                    }}
+                                >
+                                    {itemRelatedData.label}
+                                </Typography>
+
+                                <Typography
+                                    sx={{
+                                        display: "-webkit-box",
+                                        overflow: "hidden",
+                                        overflowWrap: "anywhere",
+                                        textOverflow: "ellipsis",
+                                        WebkitLineClamp: 2,
+                                        WebkitBoxOrient: "vertical",
+                                    }}
+                                >
+                                    {itemRelatedData.description}
+                                </Typography>
+                            </>
+                        )}
                     </Stack>
 
                     <General title="EVENT TYPE" text={itemRelatedData.statusText} textColor={itemRelatedData.primaryColor} />
