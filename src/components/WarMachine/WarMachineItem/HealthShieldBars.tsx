@@ -33,7 +33,7 @@ export const HealthShieldBars = ({ warMachine, toggleIsAlive }: { warMachine: Wa
     )
 
     return (
-        <Stack direction="row" style={{ position: "relative", opacity: 0.8, height: "100%" }}>
+        <Stack direction="row" style={{ height: "100%" }}>
             <ProgressBar percent={shieldPercent} color={colors.shield} backgroundColor="#FFFFFF06" thickness={`${WIDTH_STAT_BAR}rem`} />
 
             <ProgressBar

@@ -94,7 +94,7 @@ export const WarMachineStats = () => {
                             sx={{ height: "100%" }}
                         >
                             <HorizontalScrollContainer>
-                                <Stack spacing="-.6rem" direction="row" alignItems="center" justifyContent="center" sx={{ px: "2rem", py: "2rem" }}>
+                                <Stack spacing="-2.5rem" direction="row" alignItems="center" justifyContent="center" sx={{ px: "1rem", py: "2rem" }}>
                                     {factionMechs.map((wm) => (
                                         <WarMachineItem key={`${wm.participantID} - ${wm.hash}`} warMachine={wm} scale={0.75} />
                                     ))}
@@ -105,7 +105,7 @@ export const WarMachineStats = () => {
 
                     {otherMechs.length > 0 && (
                         <HorizontalScrollContainer>
-                            <Stack spacing="-.8rem" direction="row" alignItems="center" sx={{ flex: 1, px: "2rem", py: "2rem" }}>
+                            <Stack spacing="-1.8rem" direction="row" alignItems="center" sx={{ flex: 1, px: "1rem", py: "2rem" }}>
                                 {otherMechs
                                     .sort((a, b) => a.factionID.localeCompare(b.factionID))
                                     .map((wm) => (
