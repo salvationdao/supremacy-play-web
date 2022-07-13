@@ -62,7 +62,7 @@ export const MarketplacePage = () => {
             }}
         >
             <Stack sx={{ mt: "1.5rem", mb: "2rem", height: "100%", width: "calc(100% - 3rem)", maxWidth: "190rem" }}>
-                <Stack direction="row" flexWrap="wrap" sx={{ mb: "1.1rem", gap: "1.2rem" }}>
+                <Stack direction="row" alignItems="center" flexWrap="wrap" sx={{ mb: "1.1rem", gap: "1.2rem" }}>
                     <ClipThing
                         clipSize="10px"
                         border={{
