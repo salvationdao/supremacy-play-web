@@ -62,7 +62,6 @@ export const ProfileWarmachineItem = ({
                 }}
                 sx={{ color: primaryColour, textAlign: "start", height: "100%" }}
                 // TODO create public mech view
-                // to={`/mech/${mech.id}${location.hash}`}
             >
                 <Box
                     sx={{
