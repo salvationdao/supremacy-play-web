@@ -154,7 +154,7 @@ const MiniMapInner = ({ map, isTargeting, isEnlarged, toRender }: { map: Map; is
             prevWidth.current = curWidth
             prevHeight.current = curHeight
             updateSize({ width: targetingWidth, height: targetingHeight })
-            updatePosition({ x: (width - targetingWidth) / 2, y: (height - targetingHeight) / 2 - 55 })
+            updatePosition({ x: (width - targetingWidth) / 2, y: Math.max((height - targetingHeight) / 2 - 55, 25) })
         } else {
             updateSize({ width: prevWidth.current, height: prevHeight.current })
             updatePosition({ x: prevPosX.current, y: prevPosY.current })

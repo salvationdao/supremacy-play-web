@@ -225,8 +225,9 @@ const MapMechInner = ({ warMachine, map }: MapMechInnerProps) => {
                                     border: `${primaryColor}80 1.5rem dashed`,
                                     borderStyle: "dashed solid",
                                     borderRadius: "50%",
-                                    backgroundColor: `${primaryColor}60`,
+                                    backgroundColor: `${primaryColor}20`,
                                     animation: `${spinEffect} 3s infinite`,
+                                    boxShadow: "0 0 12px 9px #FFFFFF40",
                                 }}
                             />
                         </Box>

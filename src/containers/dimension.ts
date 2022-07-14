@@ -14,8 +14,8 @@ export const DimensionContainer = createContainer(() => {
     const below1500 = useMediaQuery("(max-width:1500px)")
     const below1922 = useMediaQuery("(max-width:1922px)")
 
-    const resizeObserver = useRef<ResizeObserver>()
     const gameUIContainer = useRef<HTMLElement | null>(null)
+    const resizeObserver = useRef<ResizeObserver>()
 
     const [gameUIDimensions, setGameUIDimensions] = useDebounce<Dimension>(
         {
