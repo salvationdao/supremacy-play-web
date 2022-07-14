@@ -21,6 +21,10 @@ import Meteor from "!@svgr/webpack!./svg/Meteor.svg"
 import Armor from "!@svgr/webpack!./svg/Armor.svg"
 import Energy from "!@svgr/webpack!./svg/Energy.svg"
 import Mobility from "!@svgr/webpack!./svg/Mobility.svg"
+import Health from "!@svgr/webpack!./svg/Health.svg"
+import PowerCoreCapacity from "!@svgr/webpack!./svg/PowerCoreCapacity.svg"
+import PowerCoreRegen from "!@svgr/webpack!./svg/PowerCoreRegen.svg"
+import ShieldRegen from "!@svgr/webpack!./svg/ShieldRegen.svg"
 import Shield from "!@svgr/webpack!./svg/Shield.svg"
 import Speed from "!@svgr/webpack!./svg/Speed.svg"
 import Ammo from "!@svgr/webpack!./svg/Ammo.svg"
@@ -1040,5 +1044,29 @@ export const SvgSpeed: React.VoidFunctionComponent<SvgWrapperProps> = (props) =>
 export const SvgCake: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <Cake />
+    </SvgWrapper>
+)
+
+export const SvgHealth: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Health />
+    </SvgWrapper>
+)
+
+export const SvgPowerCoreCapacity: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <PowerCoreCapacity />
+    </SvgWrapper>
+)
+
+export const SvgPowerCoreRegen: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <PowerCoreRegen />
+    </SvgWrapper>
+)
+
+export const SvgShieldRegen: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <ShieldRegen />
     </SvgWrapper>
 )

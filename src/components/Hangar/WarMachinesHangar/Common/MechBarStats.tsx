@@ -1,7 +1,17 @@
 import { Box, Stack, Typography } from "@mui/material"
 import React, { useMemo } from "react"
 import { TooltipHelper } from "../../.."
-import { SvgAmmo, SvgPowerCore, SvgShield, SvgSpeed, SvgWrapperProps } from "../../../../assets"
+import {
+    SvgAmmo,
+    SvgHealth,
+    SvgPowerCore,
+    SvgPowerCoreCapacity,
+    SvgPowerCoreRegen,
+    SvgShield,
+    SvgShieldRegen,
+    SvgSpeed,
+    SvgWrapperProps,
+} from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
 import { fonts } from "../../../../theme/theme"
 import { MechBasic, MechDetails } from "../../../../types"
@@ -52,7 +62,7 @@ export const MechBarStats = ({
     if (iconVersion) {
         return (
             <Stack alignItems="center" justifyContent="flex-start" direction="row" flexWrap="wrap">
-                <IconStat primaryColor={primaryColor} fontSize={fontSize} label="HEALTH" current={health} total={3000} Icon={SvgPowerCore} />
+                <IconStat primaryColor={primaryColor} fontSize={fontSize} label="HEALTH" current={health} total={3000} Icon={SvgHealth} />
                 <IconStat primaryColor={primaryColor} fontSize={fontSize} label="SPEED" current={speed} total={5000} unit="CM/S" Icon={SvgSpeed} />
                 <IconStat
                     primaryColor={primaryColor}
@@ -60,7 +70,7 @@ export const MechBarStats = ({
                     label="Power Core CAPACITY"
                     current={powerCoreCapacity}
                     total={3000}
-                    Icon={SvgPowerCore}
+                    Icon={SvgPowerCoreCapacity}
                 />
                 <IconStat
                     primaryColor={primaryColor}
@@ -69,7 +79,7 @@ export const MechBarStats = ({
                     current={powerCoreRechargeRate}
                     total={500}
                     unit="/S"
-                    Icon={SvgPowerCore}
+                    Icon={SvgPowerCoreRegen}
                 />
                 <IconStat primaryColor={primaryColor} fontSize={fontSize} label="SHIELD" current={totalShield} total={3000} Icon={SvgShield} />
                 <IconStat
@@ -78,7 +88,7 @@ export const MechBarStats = ({
                     label="SHIELD REGEN"
                     current={totalShieldRechargeRate}
                     total={1000}
-                    Icon={SvgShield}
+                    Icon={SvgShieldRegen}
                 />
             </Stack>
         )
