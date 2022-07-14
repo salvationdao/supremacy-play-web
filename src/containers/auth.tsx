@@ -199,6 +199,7 @@ export const AuthProvider: React.FC = ({ children }) => {
         },
         [user.features, userID],
     )
+
     return (
         <AuthContext.Provider
             value={{
