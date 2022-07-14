@@ -52,6 +52,7 @@ const MoveableResizableInner = ({ children }: MoveableResizableProps) => {
         topRightContent,
 
         autoFit,
+        hidePopoutBorder,
     } = useMoveableResizable()
 
     const topRightBackgroundColor = useMemo(() => shadeColor(theme.factionTheme.primary, -90), [theme.factionTheme.primary])
@@ -74,7 +75,7 @@ const MoveableResizableInner = ({ children }: MoveableResizableProps) => {
                     sx={{
                         width: "100%",
                         height: "100%",
-                        border: `${theme.factionTheme.primary} 1.5px solid`,
+                        border: hidePopoutBorder ? "unset" : `${theme.factionTheme.primary} 1.5px solid`,
                     }}
                 >
                     {children}

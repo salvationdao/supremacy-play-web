@@ -56,6 +56,7 @@ export const MiniMap = () => {
             // Others
             infoTooltipText: "Battle arena minimap.",
             onHideCallback: () => toggleIsMapOpen(false),
+            hidePopoutBorder: true,
             topRightContent: (
                 <Box
                     onClick={() => toggleIsEnlarged()}
@@ -99,6 +100,7 @@ const MiniMapInner = ({ map, isTargeting, isEnlarged, toRender }: { map: Map; is
         gameUIDimensions: { width, height },
     } = useDimension()
     const {
+        isPoppedout,
         updateSize,
         updatePosition,
         curWidth,
@@ -172,54 +174,86 @@ const MiniMapInner = ({ map, isTargeting, isEnlarged, toRender }: { map: Map; is
     return useMemo(() => {
         if (!toRender) return null
 
-        const parentDiv = ref.current?.parentElement
-        const insideWidth = isMobile ? parentDiv?.offsetWidth || 300 : curWidth
-        const insideHeight = isMobile ? parentDiv?.offsetWidth || 300 * mapHeightWidthRatio.current : curHeight - TOP_BAR_HEIGHT * remToPxRatio
+        let outsideWidth = curWidth
+        let outsideHeight = curHeight
+        let insideWidth = outsideWidth
+        let insideHeight = outsideHeight - TOP_BAR_HEIGHT * remToPxRatio
+
+        if (isPoppedout) {
+            const maxHeight = outsideWidth * mapHeightWidthRatio.current
+            const maxWidth = outsideHeight / mapHeightWidthRatio.current
+
+            if (outsideHeight > maxHeight) {
+                outsideHeight = maxHeight
+            }
+            insideHeight = outsideHeight
+
+            if (outsideWidth > maxWidth) {
+                outsideWidth = maxWidth
+                insideWidth = outsideWidth
+            }
+        }
+
+        if (isMobile) {
+            const parentDiv = ref.current?.parentElement
+            insideWidth = parentDiv?.offsetWidth || 300
+            insideHeight = parentDiv?.offsetWidth || 300 * mapHeightWidthRatio.current
+        }
 
         return (
-            <Box
-                ref={ref}
+            <Stack
+                alignItems="center"
+                justifyContent="center"
                 sx={{
-                    position: "relative",
-                    boxShadow: 1,
                     width: "100%",
                     height: "100%",
-                    transition: "all .2s",
-                    overflow: "hidden",
-                    pointerEvents: "all",
                 }}
             >
-                <Stack
-                    direction="row"
-                    alignItems="center"
+                <Box
+                    ref={ref}
                     sx={{
-                        height: `${TOP_BAR_HEIGHT}rem`,
-                        px: "1.8rem",
-                        backgroundColor: "#000000BF",
-                        borderBottom: `${theme.factionTheme.primary}80 .25rem solid`,
-                        zIndex: 99,
+                        position: "relative",
+                        boxShadow: 1,
+                        width: outsideWidth,
+                        height: outsideHeight,
+                        transition: "all .2s",
+                        overflow: "hidden",
+                        pointerEvents: "all",
+                        border: `${theme.factionTheme.primary} 1.5px solid`,
                     }}
                 >
-                    <Typography
-                        variant="caption"
+                    <Stack
+                        direction="row"
+                        alignItems="center"
                         sx={{
-                            fontFamily: fonts.nostromoBlack,
-                            lineHeight: 1,
-                            opacity: 0.8,
+                            height: `${TOP_BAR_HEIGHT}rem`,
+                            px: "1.8rem",
+                            backgroundColor: "#000000BF",
+                            borderBottom: `${theme.factionTheme.primary}80 .25rem solid`,
+                            zIndex: 99,
                         }}
                     >
-                        {mapName
-                            .replace(/([A-Z])/g, " $1")
-                            .trim()
-                            .toUpperCase()}
-                    </Typography>
-                </Stack>
+                        <Typography
+                            variant="caption"
+                            sx={{
+                                fontFamily: fonts.nostromoBlack,
+                                lineHeight: 1,
+                                opacity: 0.8,
+                            }}
+                        >
+                            {mapName
+                                .replace(/([A-Z])/g, " $1")
+                                .trim()
+                                .toUpperCase()}
+                        </Typography>
+                    </Stack>
 
-                <MiniMapInside containerDimensions={{ width: insideWidth, height: insideHeight }} />
+                    <MiniMapInside containerDimensions={{ width: insideWidth, height: insideHeight }} />
 
-                <TargetHint />
-            </Box>
+                    <TargetHint />
+                </Box>
+            </Stack>
         )
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [toRender, theme.factionTheme.primary, mapName, curWidth, curHeight, remToPxRatio, isMobile, width])
+    }, [toRender, theme.factionTheme.primary, mapName, curWidth, curHeight, remToPxRatio, isMobile, width, height, isPoppedout])
 }
