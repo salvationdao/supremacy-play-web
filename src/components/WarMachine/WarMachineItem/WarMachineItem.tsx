@@ -73,11 +73,12 @@ export const WarMachineItem = ({ warMachine, scale, initialExpanded = false }: {
     useEffect(() => {
         if (highlightedMechHash !== hash) {
             toggleIsExpanded(initialExpanded)
+            togglePopoverOpen(false)
         } else {
             toggleIsExpanded(true)
             openSkillsPopover()
         }
-    }, [highlightedMechHash, initialExpanded, isMobile, openSkillsPopover, setHighlightedMechHash, toggleIsExpanded, hash])
+    }, [highlightedMechHash, initialExpanded, isMobile, openSkillsPopover, setHighlightedMechHash, toggleIsExpanded, hash, togglePopoverOpen])
 
     return (
         <>

@@ -2,8 +2,10 @@ import { Box, Stack, Typography } from "@mui/material"
 import { useCallback, useMemo, useState } from "react"
 import { SvgMapSkull, SvgMapWarMachine } from "../../../../assets"
 import { useAuth, useGame, useMiniMap, useSupremacy } from "../../../../containers"
+import { closestAngle } from "../../../../helpers"
 import { useGameServerSubscription, useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
+import { spinEffect } from "../../../../theme/keyframes"
 import { colors, fonts } from "../../../../theme/theme"
 import { LocationSelectType, Map, Vector2i, WarMachineState } from "../../../../types"
 import { WarMachineLiveState } from "../../../../types/game"
@@ -56,8 +58,8 @@ const MapMechInner = ({ warMachine, map }: MapMechInnerProps) => {
     const mechMapX = useMemo(() => ((position?.x || 0) - map.left_pixels) * mapScale, [map.left_pixels, mapScale, position?.x])
     const mechMapY = useMemo(() => ((position?.y || 0) - map.top_pixels) * mapScale, [map.top_pixels, mapScale, position?.y])
     const isMechHighligheted = useMemo(
-        () => highlightedMechHash === warMachine.hash || selection?.mechHash === hash,
-        [hash, highlightedMechHash, selection?.mechHash, warMachine.hash],
+        () => highlightedMechHash === warMachine.hash || selection?.mechHash === hash || playerAbility?.mechHash === hash,
+        [hash, highlightedMechHash, playerAbility?.mechHash, selection?.mechHash, warMachine.hash],
     )
 
     /**
@@ -93,24 +95,7 @@ const MapMechInner = ({ warMachine, map }: MapMechInnerProps) => {
             if (payload?.health !== undefined) setHealth(payload.health)
             if (payload?.shield !== undefined) setShield(payload.shield)
             if (payload?.position !== undefined) sePosition(payload.position)
-            if (payload?.rotation !== undefined) {
-                setRotation((prev) => {
-                    const rot = payload.rotation || 0
-                    let newRot = prev
-                    let aparentRot = prev % 360
-                    if (aparentRot < 0) {
-                        aparentRot += 360
-                    }
-                    if (aparentRot < 180 && rot > aparentRot + 180) {
-                        newRot -= 360
-                    }
-                    if (aparentRot >= 180 && rot <= aparentRot - 180) {
-                        newRot += 360
-                    }
-                    newRot += rot - aparentRot
-                    return newRot
-                })
-            }
+            if (payload?.rotation !== undefined) setRotation((prev) => closestAngle(prev, payload.rotation || 0))
             if (payload?.is_hidden !== undefined) setIsHidden(payload.is_hidden)
         },
     )
@@ -169,8 +154,6 @@ const MapMechInner = ({ warMachine, map }: MapMechInnerProps) => {
                     padding: "1rem 1.3rem",
                     transform: `translate(-50%, -50%) translate3d(${mechMapX}px, ${mechMapY}px, 0)`,
                     transition: `transform ${TRANSITION_DURACTION}s linear`,
-                    border: isMechHighligheted ? `${primaryColor} 1rem dashed` : "unset",
-                    backgroundColor: isMechHighligheted ? `${primaryColor}60` : "unset",
                     opacity: 1,
                     zIndex: isAlive ? 5 : 4,
                 }}
@@ -218,6 +201,33 @@ const MapMechInner = ({ warMachine, map }: MapMechInnerProps) => {
                         transition: "opacity 0.2s ease-out",
                     }}
                 >
+                    {/* Highlighted mech */}
+                    {isMechHighligheted && (
+                        <Box
+                            sx={{
+                                position: "absolute",
+                                top: "50%",
+                                left: "50%",
+                                transform: "translate(-50%, -50%)",
+                                zIndex: 999,
+                            }}
+                        >
+                            <Box
+                                sx={{
+                                    width: iconSize * 1.8,
+                                    height: iconSize * 1.8,
+                                    borderLeft: `${primaryColor}80 1.5rem dashed`,
+                                    borderRight: `${primaryColor}80 1.5rem dashed`,
+                                    borderTop: `${primaryColor} 1.5rem solid`,
+                                    borderBottom: `${primaryColor} 1.5rem solid`,
+                                    borderRadius: "50%",
+                                    backgroundColor: `${primaryColor}60`,
+                                    animation: `${spinEffect} 3s infinite`,
+                                }}
+                            />
+                        </Box>
+                    )}
+
                     {/* Number */}
                     <Box
                         sx={{
