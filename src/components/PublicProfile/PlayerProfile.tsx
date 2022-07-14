@@ -10,6 +10,7 @@ import { colors, fonts, theme } from "../../theme/theme"
 import { Faction, FeatureName, UserRank } from "../../types"
 import { ClipThing } from "../Common/ClipThing"
 import { PageHeader } from "../Common/PageHeader"
+import { ProfileAvatar } from "./AvatarSelect"
 import { AboutMe } from "./ProfileAboutMe"
 import { ProfileMechHistory } from "./ProfileBattleHistory"
 import { Username } from "./ProfileUsername"
@@ -251,6 +252,7 @@ export const PlayerProfilePage = () => {
                                     }}
                                     variant="square"
                                 />
+                                <ProfileAvatar />
                                 {isMe && (
                                     <Typography sx={{ WebkitTextStroke: "1px black", fontFamily: fonts.nostromoBlack, fontSize: "5rem", color: primaryColor }}>
                                         my profile
