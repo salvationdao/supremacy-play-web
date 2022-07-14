@@ -84,7 +84,7 @@ export const LineSelect = ({ mapScale }: { mapScale: number }) => {
                             top: "calc(100% + 2rem)",
                             width: "30rem",
                             p: ".2rem .4rem",
-                            backgroundColor: `${theme.factionTheme.background}80`,
+                            backgroundColor: `${theme.factionTheme.background}CC`,
                             borderRadius: 2,
                             border: `${theme.factionTheme.primary} .6rem solid`,
                         }}
