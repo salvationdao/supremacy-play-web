@@ -65,8 +65,8 @@ export const ClaimedRewards = ({ rewards, onClose }: ClaimedRewardsProps) => {
                 )}
 
                 <Stack direction="row" justifyContent="space-around" alignItems="center">
-                    {isWeaponCrateReward && <CrateItem quantity={rewards.length} label="Weapon Crate" imageUrl={isWeaponCrateReward.image_url || SafePNG} />}
-                    {isMechCrateReward && <CrateItem quantity={rewards.length} label="Mech Crate" imageUrl={isMechCrateReward.image_url || SafePNG} />}
+                    {isWeaponCrateReward && <CrateItem quantity={1} label="Weapon Crate" imageUrl={isWeaponCrateReward.image_url || SafePNG} />}
+                    {isMechCrateReward && <CrateItem quantity={1} label="Mech Crate" imageUrl={isMechCrateReward.image_url || SafePNG} />}
                     {isSupReward && <CrateItem label={`${supFormatter(isSupReward.amount)} $SUPS`} imageUrl={RainingSupsPNG} />}
                 </Stack>
 
