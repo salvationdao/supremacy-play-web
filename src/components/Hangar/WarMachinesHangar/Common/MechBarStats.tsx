@@ -1,17 +1,7 @@
 import { Box, Stack, Typography } from "@mui/material"
 import React, { useMemo } from "react"
 import { TooltipHelper } from "../../.."
-import {
-    SvgAmmo,
-    SvgHealth,
-    SvgPowerCore,
-    SvgPowerCoreCapacity,
-    SvgPowerCoreRegen,
-    SvgShield,
-    SvgShieldRegen,
-    SvgSpeed,
-    SvgWrapperProps,
-} from "../../../../assets"
+import { SvgHealth, SvgPowerCoreCapacity, SvgPowerCoreRegen, SvgShield, SvgShieldRegen, SvgSpeed, SvgWrapperProps } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
 import { fonts } from "../../../../theme/theme"
 import { MechBasic, MechDetails } from "../../../../types"
@@ -125,7 +115,7 @@ export const MechBarStats = ({
                     flexShrink: 0,
                 }}
             >
-                <BarStat primaryColor={primaryColor} fontSize={fontSize} barHeight={barHeight} label="HEALTH" current={health} total={3000} Icon={SvgAmmo} />
+                <BarStat primaryColor={primaryColor} fontSize={fontSize} barHeight={barHeight} label="HEALTH" current={health} total={3000} Icon={SvgHealth} />
                 <BarStat
                     primaryColor={primaryColor}
                     fontSize={fontSize}
@@ -143,7 +133,7 @@ export const MechBarStats = ({
                     label="Power Core CAPACITY"
                     current={powerCoreCapacity}
                     total={3000}
-                    Icon={SvgPowerCore}
+                    Icon={SvgPowerCoreCapacity}
                 />
                 <BarStat
                     primaryColor={primaryColor}
@@ -153,7 +143,7 @@ export const MechBarStats = ({
                     current={powerCoreRechargeRate}
                     total={500}
                     unit="/S"
-                    Icon={SvgPowerCore}
+                    Icon={SvgPowerCoreRegen}
                 />
                 <BarStat
                     primaryColor={primaryColor}
@@ -171,7 +161,7 @@ export const MechBarStats = ({
                     label="SHIELD REGEN"
                     current={totalShieldRechargeRate}
                     total={1000}
-                    Icon={SvgShield}
+                    Icon={SvgShieldRegen}
                 />
             </Stack>
         </Box>
