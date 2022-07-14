@@ -222,10 +222,8 @@ const MapMechInner = ({ warMachine, map }: MapMechInnerProps) => {
                                 sx={{
                                     width: iconSize * 1.8,
                                     height: iconSize * 1.8,
-                                    borderLeft: `${primaryColor}80 1.5rem dashed`,
-                                    borderRight: `${primaryColor}80 1.5rem dashed`,
-                                    borderTop: `${primaryColor} 1.5rem solid`,
-                                    borderBottom: `${primaryColor} 1.5rem solid`,
+                                    border: `${primaryColor}80 1.5rem dashed`,
+                                    borderStyle: "dashed solid",
                                     borderRadius: "50%",
                                     backgroundColor: `${primaryColor}20`,
                                     animation: `${spinEffect} 3s infinite`,
