@@ -52,7 +52,7 @@ export const MechStatsDetails = ({ mechDetails }: { mechDetails?: MechDetails })
 
                 {powerCore ? (
                     <MechLoadoutItem
-                        imageUrl={powerCore.image_url}
+                        imageUrl={powerCore.image_url || powerCore.avatar_url}
                         videoUrls={[powerCore.card_animation_url]}
                         label={powerCore.label}
                         primaryColor={colors.powerCore}
@@ -77,7 +77,7 @@ export const MechStatsDetails = ({ mechDetails }: { mechDetails?: MechDetails })
                             return (
                                 <MechLoadoutItem
                                     key={w.id}
-                                    imageUrl={w.image_url}
+                                    imageUrl={w.image_url || w.avatar_url}
                                     videoUrls={[w.card_animation_url]}
                                     label={w.label}
                                     primaryColor={colors.weapons}
@@ -105,7 +105,7 @@ export const MechStatsDetails = ({ mechDetails }: { mechDetails?: MechDetails })
                             return (
                                 <MechLoadoutItem
                                     key={w.id}
-                                    imageUrl={w.image_url}
+                                    imageUrl={w.image_url || w.avatar_url}
                                     videoUrls={[w.card_animation_url]}
                                     label={w.label}
                                     primaryColor={colors.utilities}
@@ -129,7 +129,7 @@ export const MechStatsDetails = ({ mechDetails }: { mechDetails?: MechDetails })
 
                 {chassisSkin ? (
                     <MechLoadoutItem
-                        imageUrl={chassisSkin.image_url}
+                        imageUrl={chassisSkin.image_url || chassisSkin.avatar_url}
                         videoUrls={[chassisSkin.card_animation_url]}
                         label={chassisSkin.label}
                         primaryColor={colors.chassisSkin}
@@ -151,7 +151,7 @@ export const MechStatsDetails = ({ mechDetails }: { mechDetails?: MechDetails })
 
                 {introAnimation ? (
                     <MechLoadoutItem
-                        imageUrl={introAnimation.image_url}
+                        imageUrl={introAnimation.image_url || introAnimation.avatar_url}
                         videoUrls={[introAnimation.card_animation_url]}
                         label={introAnimation.label}
                         primaryColor={colors.introAnimation}
@@ -172,7 +172,7 @@ export const MechStatsDetails = ({ mechDetails }: { mechDetails?: MechDetails })
 
                 {outroAnimation ? (
                     <MechLoadoutItem
-                        imageUrl={outroAnimation.image_url}
+                        imageUrl={outroAnimation.image_url || outroAnimation.avatar_url}
                         videoUrls={[outroAnimation.card_animation_url]}
                         label={outroAnimation.label}
                         primaryColor={colors.outroAnimation}

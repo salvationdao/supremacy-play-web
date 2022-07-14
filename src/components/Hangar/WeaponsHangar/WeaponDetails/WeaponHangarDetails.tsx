@@ -36,6 +36,7 @@ export const WeaponHangarDetailsInner = ({ weaponID }: { weaponID: string }) => 
 
     const primaryColor = theme.factionTheme.primary
     const backgroundColor = theme.factionTheme.background
+    const avatarUrl = weaponDetails?.weapon_skin?.avatar_url || weaponDetails?.avatar_url
     const imageUrl = weaponDetails?.weapon_skin?.image_url || weaponDetails?.image_url
     const cardAnimationUrl = weaponDetails?.weapon_skin?.card_animation_url || weaponDetails?.card_animation_url
 
@@ -60,7 +61,7 @@ export const WeaponHangarDetailsInner = ({ weaponID }: { weaponID: string }) => 
                 <Stack sx={{ height: "100%" }}>
                     <ClipThing clipSize="10px" corners={{ topRight: true }} opacity={0.7} sx={{ flexShrink: 0 }}>
                         <Box sx={{ position: "relative", borderBottom: `${primaryColor}60 1.5px solid` }}>
-                            <MediaPreview imageUrl={imageUrl} videoUrls={[cardAnimationUrl]} objectFit="cover" objectPosition="50% 40%" />
+                            <MediaPreview imageUrl={imageUrl || avatarUrl} videoUrls={[cardAnimationUrl]} objectFit="cover" objectPosition="50% 40%" />
 
                             <Box sx={{ position: "absolute", top: 0, bottom: 0, left: 0, right: 0, background: `linear-gradient(#FFFFFF00 60%, #00000050)` }} />
                         </Box>
