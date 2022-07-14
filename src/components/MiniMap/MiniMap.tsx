@@ -174,6 +174,7 @@ const MiniMapInner = ({ map, isTargeting, isEnlarged, toRender }: { map: Map; is
     return useMemo(() => {
         if (!toRender) return null
 
+        // All for the popped out window black bars
         let outsideWidth = curWidth
         let outsideHeight = curHeight
         let insideWidth = outsideWidth
@@ -214,12 +215,12 @@ const MiniMapInner = ({ map, isTargeting, isEnlarged, toRender }: { map: Map; is
                     sx={{
                         position: "relative",
                         boxShadow: 1,
-                        width: outsideWidth,
-                        height: outsideHeight,
+                        width: isPoppedout ? outsideWidth : "100%",
+                        height: isPoppedout ? outsideHeight : "100%",
                         transition: "all .2s",
                         overflow: "hidden",
                         pointerEvents: "all",
-                        border: `${theme.factionTheme.primary} 1.5px solid`,
+                        border: isPoppedout ? `${theme.factionTheme.primary} 1.5px solid` : "unset",
                     }}
                 >
                     <Stack
