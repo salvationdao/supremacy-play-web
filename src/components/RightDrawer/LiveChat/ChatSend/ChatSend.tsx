@@ -2,9 +2,9 @@ import { Box, IconButton, InputAdornment, Stack, TextField, Typography } from "@
 import { BaseEmoji, emojiIndex } from "emoji-mart"
 import { useCallback, useMemo, useRef, useState } from "react"
 import { ChatSettings, ClipThing, EmojiPopover } from "../../.."
-import { SvgEmoji, SvgEmojiSelector, SvgSend } from "../../../../assets"
+import { SvgEmoji, SvgEmojiSelector, SvgExternalLink, SvgSend } from "../../../../assets"
 import { MAX_CHAT_MESSAGE_LENGTH } from "../../../../constants"
-import { useChat, useAuth, useSnackbar, IncomingMessages } from "../../../../containers"
+import { useChat, useAuth, useSnackbar, IncomingMessages, useMobile } from "../../../../containers"
 import { SendFunc } from "../../../../containers/ws"
 import { getRandomColor } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
@@ -22,7 +22,7 @@ interface ChatSendProps {
 export const ChatSend = (props: ChatSendProps) => {
     const { send } = useGameServerCommandsUser("/user_commander")
     const { user, userRank } = useAuth()
-    const { onSentMessage, onFailedMessage, newMessageHandler } = useChat()
+    const { onSentMessage, onFailedMessage, newMessageHandler, isPoppedout, toggleIsPoppedout } = useChat()
 
     return (
         <ChatSendInner
@@ -33,6 +33,8 @@ export const ChatSend = (props: ChatSendProps) => {
             onSentMessage={onSentMessage}
             onFailedMessage={onFailedMessage}
             newMessageHandler={newMessageHandler}
+            isPoppedout={isPoppedout}
+            toggleIsPoppedout={toggleIsPoppedout}
         />
     )
 }
@@ -44,10 +46,25 @@ interface ChatSendInnerProps extends ChatSendProps {
     onFailedMessage: (sentAt: Date) => void
     newMessageHandler: ({ messages, faction }: IncomingMessages) => void
     send: SendFunc
+    isPoppedout: boolean
+    toggleIsPoppedout: (value?: boolean) => void
 }
 
-const ChatSendInner = ({ primaryColor, faction_id, send, user, userRank, onSentMessage, onFailedMessage, newMessageHandler }: ChatSendInnerProps) => {
+const ChatSendInner = ({
+    primaryColor,
+    faction_id,
+    send,
+    user,
+    userRank,
+    onSentMessage,
+    onFailedMessage,
+    newMessageHandler,
+    isPoppedout,
+    toggleIsPoppedout,
+}: ChatSendInnerProps) => {
     const { newSnackbarMessage } = useSnackbar()
+    const { isMobile } = useMobile()
+
     // Message field
     const [message, setMessage] = useState("")
 
@@ -390,6 +407,18 @@ const ChatSendInner = ({ primaryColor, faction_id, send, user, userRank, onSentM
                                 endAdornment: (
                                     <InputAdornment position="end">
                                         <ChatSettings primaryColor={primaryColor} faction_id={faction_id} />
+
+                                        {!isPoppedout && !isMobile && (
+                                            <IconButton
+                                                onClick={() => toggleIsPoppedout()}
+                                                edge="end"
+                                                size="small"
+                                                sx={{ opacity: 0.5, ":hover": { opacity: 1 }, transition: "all .1s" }}
+                                            >
+                                                <SvgExternalLink size="1.4rem" fill="#FFFFFF" sx={{ pb: 0 }} />
+                                            </IconButton>
+                                        )}
+
                                         <TooltipHelper placement="top-end" text="Use keyboard shortcut ' : '">
                                             <IconButton
                                                 ref={popoverRef}
@@ -406,6 +435,7 @@ const ChatSendInner = ({ primaryColor, faction_id, send, user, userRank, onSentM
                                                 <SvgEmoji size="1.4rem" fill="#FFFFFF" sx={{ pb: 0 }} />
                                             </IconButton>
                                         </TooltipHelper>
+
                                         <IconButton
                                             onClick={sendMessage}
                                             edge="end"

@@ -8,11 +8,31 @@ import { acronym, shadeColor } from "../../../helpers"
 import { zoomEffect } from "../../../theme/keyframes"
 import { colors, fonts } from "../../../theme/theme"
 import { ChatMessageType } from "../../../types/chat"
+import { WindowPortal } from "../../Common/WindowPortal"
 import { ChatMessages } from "./ChatMessages/ChatMessages"
 import { ChatSend } from "./ChatSend/ChatSend"
 
 export const LiveChat = () => {
-    const { splitOption } = useChat()
+    const { splitOption, isPoppedout, toggleIsPoppedout } = useChat()
+
+    if (isPoppedout) {
+        return (
+            <WindowPortal
+                title="Supremacy - Live Chat"
+                onClose={() => toggleIsPoppedout(false)}
+                features={{
+                    width: 400,
+                    height: 600, // this is the top bar height,
+                }}
+            >
+                <Stack id="tutorial-chat" sx={{ width: "100%", height: "100%", overflow: "hidden" }}>
+                    {splitOption == "split" ? <SplitLayout /> : <TabbedLayout />}
+                    <AdditionalOptionsButton />
+                </Stack>
+            </WindowPortal>
+        )
+    }
+
     return (
         <Stack id="tutorial-chat" sx={{ width: "100%", height: "100%", overflow: "hidden" }}>
             {splitOption == "split" ? <SplitLayout /> : <TabbedLayout />}

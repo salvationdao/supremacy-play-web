@@ -6,17 +6,21 @@ import NewWindow, { IWindowFeatures } from "react-new-window"
 
 export interface WindowPortalProps {
     title: string
+    backgroundColor?: string
     onClose: () => void
     children: ReactNode
     features?: IWindowFeatures
 }
 
-export const WindowPortal = React.forwardRef(function WindowPortal({ title, children, onClose, features }: WindowPortalProps, ref) {
+export const WindowPortal = React.forwardRef(function WindowPortal({ title, backgroundColor, children, onClose, features }: WindowPortalProps, ref) {
     const [container, setContainer] = useState<HTMLElement | null>(null)
 
     return (
         <NewWindow title={title} onUnload={onClose} features={features}>
-            <Box ref={(ref: HTMLElement) => setContainer(ref)} sx={{ width: "100%", height: "100%" }}>
+            <Box
+                ref={(ref: HTMLElement) => setContainer(ref)}
+                sx={{ width: "100%", height: "100%", backgroundColor: (theme) => backgroundColor || theme.factionTheme.background }}
+            >
                 <Box ref={ref} sx={{ width: "100%", height: "100%" }}>
                     {container && <CacheWrapper container={container}>{children}</CacheWrapper>}
                 </Box>

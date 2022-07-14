@@ -60,21 +60,20 @@ const MoveableResizableInner = ({ children }: MoveableResizableProps) => {
         return (
             <WindowPortal
                 ref={(ref: HTMLDivElement) => setPopoutRef(ref)}
-                title="Supremacy"
-                features={{
-                    width: curWidth / (remToPxRatio / 11),
-                    height: curHeight / (remToPxRatio / 11) + 30, // this is the top bar height,
-                }}
+                title="Supremacy - Battle Arena"
                 onClose={() => {
                     toggleIsPoppedout(false)
                     setPopoutRef(null)
+                }}
+                features={{
+                    width: curWidth / (remToPxRatio / 11),
+                    height: curHeight / (remToPxRatio / 11) + 30, // this is the top bar height,
                 }}
             >
                 <Box
                     sx={{
                         width: "100%",
                         height: "100%",
-                        backgroundColor: theme.factionTheme.background,
                         border: `${theme.factionTheme.primary} 1.5px solid`,
                     }}
                 >
