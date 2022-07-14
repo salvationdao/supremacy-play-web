@@ -120,7 +120,7 @@ export const HistoryModal = ({
                                 percentage={stats.extra_stats.survival_rate * 100}
                                 size={86}
                                 circleSize={55}
-                                label="Survival %"
+                                label="Survive %"
                                 color={colors.green}
                             />
                             <PercentageDisplay
@@ -136,7 +136,7 @@ export const HistoryModal = ({
                         <>
                             <PercentageDisplay displayValue={`?`} percentage={0} size={86} circleSize={55} label="Win %" />
                             <PercentageDisplay displayValue={`?`} percentage={0} size={86} circleSize={55} label="Kills" color={colors.gold} />
-                            <PercentageDisplay displayValue={`?`} percentage={0} size={86} circleSize={55} label="Survival %" color={colors.green} />
+                            <PercentageDisplay displayValue={`?`} percentage={0} size={86} circleSize={55} label="Survive %" color={colors.green} />
                             <PercentageDisplay displayValue={`?`} percentage={0} size={86} circleSize={55} label="Deaths" color={colors.red} />
                         </>
                     )}

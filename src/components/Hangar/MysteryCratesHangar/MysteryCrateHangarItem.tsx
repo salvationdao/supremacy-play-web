@@ -118,13 +118,14 @@ export const MysteryCrateHangarItem = ({ crate, setCrateOpen, setCrateReward, ge
 
                             <Stack alignItems="center" sx={{ mt: "auto !important", pt: ".8rem", alignSelf: "stretch" }}>
                                 <FancyButton
-                                    disabled={new Date() < crate.locked_until || loading}
+                                    disabled={new Date() < crate.locked_until}
+                                    loading={loading}
                                     onClick={openCrate}
                                     clipThingsProps={{
                                         clipSize: "5px",
-                                        backgroundColor: secondaryColor,
+                                        backgroundColor: primaryColor,
                                         opacity: 1,
-                                        border: { isFancy: true, borderColor: secondaryColor, borderThickness: "1.5px" },
+                                        border: { isFancy: true, borderColor: primaryColor, borderThickness: "1.5px" },
                                         sx: { position: "relative", mt: "1rem", width: "100%" },
                                     }}
                                     sx={{ px: "1.6rem", py: ".6rem", color: secondaryColor }}
@@ -193,6 +194,43 @@ const SingleCountDown = ({ value, label }: { value: string; label: string }) => 
             </Typography>
             <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBold }}>
                 {label}
+            </Typography>
+        </Stack>
+    )
+}
+
+export const CrateCommonArea = ({ isGridView, label, description }: { isGridView: boolean; label: string; description: string }) => {
+    const theme = useTheme()
+
+    return (
+        <Stack spacing={isGridView ? ".1rem" : ".6rem"}>
+            <Typography
+                variant="body2"
+                sx={{
+                    fontFamily: fonts.nostromoBlack,
+                    color: theme.factionTheme.primary,
+                    display: "-webkit-box",
+                    overflow: "hidden",
+                    overflowWrap: "anywhere",
+                    textOverflow: "ellipsis",
+                    WebkitLineClamp: 1,
+                    WebkitBoxOrient: "vertical",
+                }}
+            >
+                {label}
+            </Typography>
+
+            <Typography
+                sx={{
+                    display: "-webkit-box",
+                    overflow: "hidden",
+                    overflowWrap: "anywhere",
+                    textOverflow: "ellipsis",
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: "vertical",
+                }}
+            >
+                {description}
             </Typography>
         </Stack>
     )

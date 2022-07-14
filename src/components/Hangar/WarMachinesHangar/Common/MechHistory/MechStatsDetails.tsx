@@ -130,6 +130,7 @@ export const MechStatsDetails = ({ mechDetails }: { mechDetails?: MechDetails })
                 {chassisSkin ? (
                     <MechLoadoutItem
                         imageUrl={chassisSkin.image_url}
+                        videoUrls={[chassisSkin.card_animation_url]}
                         label={chassisSkin.label}
                         primaryColor={colors.chassisSkin}
                         Icon={SvgSkin}
