@@ -8,9 +8,8 @@ import { useMobile } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { shadeColor } from "../../../helpers"
 import { colors, siteZIndex } from "../../../theme/theme"
-import { MoveableResizableConfig, MoveableResizableProvider, useMoveableResizable } from "./MoveableResizableContainer"
 import { WindowPortal } from "../WindowPortal"
-import { MoveableResizablePoppedOut } from "./MoveableResizablePoppedOut"
+import { MoveableResizableConfig, MoveableResizableProvider, useMoveableResizable } from "./MoveableResizableContainer"
 
 interface MoveableResizableProps {
     config: MoveableResizableConfig
@@ -30,8 +29,9 @@ export const MoveableResizable = (props: MoveableResizableProps) => {
 const MoveableResizableInner = ({ children }: MoveableResizableProps) => {
     const theme = useTheme()
     const {
-        isPoppedOut,
-        toggleIsPoppedOut,
+        setPopoutRef,
+        isPoppedout,
+        toggleIsPoppedout,
 
         rndRef,
         defaultWidth,
@@ -53,10 +53,10 @@ const MoveableResizableInner = ({ children }: MoveableResizableProps) => {
 
     const topRightBackgroundColor = useMemo(() => shadeColor(theme.factionTheme.primary, -90), [theme.factionTheme.primary])
 
-    if (isPoppedOut) {
+    if (isPoppedout) {
         return (
-            <WindowPortal title="Supremacy" onClose={() => toggleIsPoppedOut(false)}>
-                <MoveableResizablePoppedOut>{children}</MoveableResizablePoppedOut>
+            <WindowPortal ref={(ref: HTMLDivElement) => setPopoutRef(ref)} title="Supremacy" onClose={() => toggleIsPoppedout(false)}>
+                <Box sx={{ width: "100%", height: "100%" }}>{children}</Box>
             </WindowPortal>
         )
     }
@@ -162,7 +162,7 @@ const MoveableResizableInner = ({ children }: MoveableResizableProps) => {
                             </Box>
 
                             <Box
-                                onClick={() => toggleIsPoppedOut()}
+                                onClick={() => toggleIsPoppedout()}
                                 sx={{
                                     mr: onHideCallback ? ".9rem" : 0,
                                     cursor: "pointer",
@@ -226,7 +226,7 @@ const MoveableResizableInner = ({ children }: MoveableResizableProps) => {
                             position: "absolute",
                             top: 0,
                             left: 0,
-                            right: "12rem",
+                            right: "15rem",
                             height: "2.8rem",
                             pointerEvents: "all",
                             zIndex: 99,

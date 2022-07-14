@@ -1,18 +1,21 @@
 import createCache from "@emotion/cache"
 import { CacheProvider } from "@emotion/react"
-import { useEffect, useRef, useState } from "react"
+import { Box } from "@mui/material"
+import React from "react"
+import { ReactNode, useEffect, useRef, useState } from "react"
 import ReactDOM from "react-dom"
 import "../../theme/global.css"
 
 export interface WindowPortalProps {
     title: string
     onClose: () => void
+    children: ReactNode
     config?: { top?: number; left?: number; width?: number; height?: number }
 }
 
-export function WindowPortal({ title, children, onClose, config }: React.PropsWithChildren<WindowPortalProps>) {
-    const titleEl = useRef(document.createElement("title"))
+export const WindowPortal = React.forwardRef(function WindowPortal({ title, children, onClose, config }: WindowPortalProps, ref) {
     const containerEl = useRef(document.createElement("div"))
+    const titleEl = useRef(document.createElement("title"))
     const cache = useRef(createCache({ key: "external", container: containerEl.current }))
     const [isOpened, setOpened] = useState(false)
 
@@ -49,5 +52,12 @@ export function WindowPortal({ title, children, onClose, config }: React.PropsWi
 
     if (!isOpened) return null
 
-    return ReactDOM.createPortal(<CacheProvider value={cache.current}>{children}</CacheProvider>, containerEl.current)
-}
+    return ReactDOM.createPortal(
+        <CacheProvider value={cache.current}>
+            <Box ref={ref} sx={{ width: "100%", height: "100%" }}>
+                {children}
+            </Box>
+        </CacheProvider>,
+        containerEl.current,
+    )
+})
