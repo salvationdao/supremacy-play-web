@@ -4,7 +4,7 @@ import { PunishMessage, TextMessage } from "../../.."
 import { SvgScrolldown } from "../../../../assets"
 import { FontSizeType, SplitOptionType, useAuth, useChat, useSupremacy } from "../../../../containers"
 import { checkIfIsEmoji, dateFormatter } from "../../../../helpers"
-import { colors } from "../../../../theme/theme"
+import { colors, fonts } from "../../../../theme/theme"
 import { ChatMessageType, Faction, NewBattleMessageData, PunishMessageData, SystemBanMessageData, TextMessageData, User } from "../../../../types"
 import { BanProposal } from "../BanProposal/BanProposal"
 import { GlobalAnnouncement, GlobalAnnouncementType } from "../GlobalAnnouncement"
@@ -184,10 +184,13 @@ const ChatMessagesInner = ({
                                 } else if (message.type === "NEW_BATTLE") {
                                     const data = message.data as NewBattleMessageData
                                     return (
-                                        <Stack direction={"row"} alignItems={"center"} sx={{ pb: "0.5rem" }}>
+                                        <Stack key={data.battle_number} direction={"row"} alignItems={"center"} sx={{ pb: "0.5rem" }}>
                                             <Divider sx={{ flex: "1" }} />
-                                            <Typography variant={"body2"} sx={{ color: colors.grey, flexShrink: "0", px: "1rem" }}>
-                                                Battle #{data ? data.battle_number : null}: {dateFormatter(message.sent_at)}
+                                            <Typography
+                                                variant={"caption"}
+                                                sx={{ color: colors.grey, flexShrink: "0", px: "1rem", fontFamily: fonts.nostromoBold }}
+                                            >
+                                                BATTLE #{data ? data.battle_number : null} ({dateFormatter(message.sent_at)})
                                             </Typography>
                                             <Divider sx={{ flex: "1" }} />
                                         </Stack>

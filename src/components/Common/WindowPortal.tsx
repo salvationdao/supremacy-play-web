@@ -1,7 +1,7 @@
 import createCache from "@emotion/cache"
 import { CacheProvider } from "@emotion/react"
 import { Box } from "@mui/material"
-import React, { ReactNode, useRef, useState } from "react"
+import React, { ReactNode, useEffect, useRef, useState } from "react"
 import NewWindow, { IWindowFeatures } from "react-new-window"
 
 export interface WindowPortalProps {
@@ -27,6 +27,13 @@ export const WindowPortal = React.forwardRef(function WindowPortal({ title, chil
 
 const CacheWrapper = ({ container, children }: { container: HTMLElement; children: ReactNode }) => {
     const cache = useRef(createCache({ key: "external", container }))
+
+    useEffect(() => {
+        const htmls = container.ownerDocument.getElementsByTagName("html")
+        if (htmls.length > 0) {
+            htmls[0].style.fontSize = window.getComputedStyle(document.body).fontSize
+        }
+    }, [container.ownerDocument])
 
     return <CacheProvider value={cache.current}>{children}</CacheProvider>
 }

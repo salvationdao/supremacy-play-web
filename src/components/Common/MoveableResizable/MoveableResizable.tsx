@@ -4,7 +4,7 @@ import { Rnd } from "react-rnd"
 import { TooltipHelper } from "../.."
 import { SvgClose, SvgDrag, SvgExternalLink, SvgInfoCircular } from "../../../assets"
 import { ClipThing } from "../../../components"
-import { useMobile } from "../../../containers"
+import { useDimension, useMobile } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { shadeColor } from "../../../helpers"
 import { colors, siteZIndex } from "../../../theme/theme"
@@ -28,6 +28,7 @@ export const MoveableResizable = (props: MoveableResizableProps) => {
 
 const MoveableResizableInner = ({ children }: MoveableResizableProps) => {
     const theme = useTheme()
+    const { remToPxRatio } = useDimension()
     const {
         setPopoutRef,
         isPoppedout,
@@ -61,15 +62,24 @@ const MoveableResizableInner = ({ children }: MoveableResizableProps) => {
                 ref={(ref: HTMLDivElement) => setPopoutRef(ref)}
                 title="Supremacy"
                 features={{
-                    width: curWidth,
-                    height: curHeight,
+                    width: curWidth / (remToPxRatio / 11),
+                    height: curHeight / (remToPxRatio / 11) + 30, // this is the top bar height,
                 }}
                 onClose={() => {
                     toggleIsPoppedout(false)
                     setPopoutRef(null)
                 }}
             >
-                <Box sx={{ width: "100%", height: "100%", backgroundColor: theme.factionTheme.background }}>{children}</Box>
+                <Box
+                    sx={{
+                        width: "100%",
+                        height: "100%",
+                        backgroundColor: theme.factionTheme.background,
+                        border: `${theme.factionTheme.primary} 1.5px solid`,
+                    }}
+                >
+                    {children}
+                </Box>
             </WindowPortal>
         )
     }
