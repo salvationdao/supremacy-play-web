@@ -6,22 +6,28 @@ import { useTimer } from "../../../hooks"
 import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
-import { BlueprintPlayerAbility, LocationSelectType, WarMachineState } from "../../../types"
+import { PlayerAbility, LocationSelectType, WarMachineState } from "../../../types"
 import { ProgressBar } from "../../Common/ProgressBar"
 import { DEAD_OPACITY, WIDTH_SKILL_BUTTON, WIDTH_STAT_BAR } from "./WarMachineItem"
 
 const MECH_MOVE_COOLDOWN_SECONDS = 5
 
-const MechMoveCommandAbility: BlueprintPlayerAbility = {
-    id: "",
-    game_client_ability_id: 8,
-    label: "Move Command",
-    colour: "#FFFFFF",
-    image_url: "",
-    description: "Command the war machine to move to a specific location.",
-    text_colour: "",
-    location_select_type: LocationSelectType.MECH_COMMAND,
-    created_at: new Date(),
+export const MechMoveCommandAbility: PlayerAbility = {
+    id: "mech_move_command",
+    blueprint_id: "mech_move_command",
+    count: 1,
+    last_purchased_at: new Date(),
+    ability: {
+        id: "",
+        game_client_ability_id: 8,
+        label: "Move Command",
+        image_url: "",
+        description: "Command the war machine to move to a specific location.",
+        text_colour: "#000000",
+        colour: colors.gold,
+        location_select_type: LocationSelectType.MECH_COMMAND,
+        created_at: new Date(),
+    },
 }
 
 export interface MechMoveCommand {
@@ -103,15 +109,11 @@ const MoveCommandInner = ({ isAlive, remainCooldownSeconds, isMoving, isCancelle
             }
         } else {
             setPlayerAbility({
-                id: "mech_move_command",
-                blueprint_id: "mech_move_command",
-                count: 1,
-                last_purchased_at: new Date(),
+                ...MechMoveCommandAbility,
                 mechHash: hash,
-                ability: { ...MechMoveCommandAbility, text_colour: secondaryColor, colour: primaryColor || "#FFFFFF" },
             })
         }
-    }, [isAlive, isMoving, isCancelled, send, mechMoveCommandID, hash, newSnackbarMessage, setPlayerAbility, secondaryColor, primaryColor])
+    }, [isAlive, isMoving, isCancelled, send, mechMoveCommandID, hash, newSnackbarMessage, setPlayerAbility])
 
     return (
         <>
