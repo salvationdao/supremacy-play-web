@@ -1,6 +1,7 @@
-import { Box, useTheme } from "@mui/material"
+import { Box, Stack, Typography, useTheme } from "@mui/material"
 import { useEffect, useMemo, useRef } from "react"
 import { useGame, useMiniMap } from "../../../containers"
+import { fonts } from "../../../theme/theme"
 
 const MIN_CANVAS_HEIGHT = 700
 
@@ -49,7 +50,9 @@ export const LineSelect = ({ mapScale }: { mapScale: number }) => {
     return (
         <>
             {selection?.startCoords && (
-                <Box
+                <Stack
+                    alignItems="center"
+                    justifyContent="center"
                     onClick={() =>
                         setSelection((prev) => ({
                             ...prev,
@@ -63,7 +66,7 @@ export const LineSelect = ({ mapScale }: { mapScale: number }) => {
                         cursor: "pointer",
                         borderRadius: "50%",
                         backgroundColor: theme.factionTheme.primary,
-                        border: "#000000 2px solid",
+                        border: `${theme.factionTheme.background} 3px solid`,
                         boxShadow: 2,
                         transform: `translate(${selection.startCoords.x * gridWidth - indicatorDiameter / 2}px, ${
                             selection.startCoords.y * gridHeight - indicatorDiameter / 2
@@ -71,12 +74,32 @@ export const LineSelect = ({ mapScale }: { mapScale: number }) => {
                         zIndex: 100,
                     }}
                 >
-                    1
-                </Box>
+                    <Typography sx={{ fontSize: `${indicatorDiameter / 2}px`, fontFamily: fonts.nostromoBlack, color: theme.factionTheme.secondary }}>
+                        1
+                    </Typography>
+
+                    <Box
+                        sx={{
+                            position: "absolute",
+                            top: "calc(100% + 2rem)",
+                            width: "30rem",
+                            p: ".2rem .4rem",
+                            backgroundColor: `${theme.factionTheme.background}CC`,
+                            borderRadius: 2,
+                            border: `${theme.factionTheme.primary} .6rem solid`,
+                        }}
+                    >
+                        <Typography variant="h3" sx={{ textAlign: "center", fontFamily: fonts.shareTech }}>
+                            SELECT ANOTHER LOCATION TO DRAW A LINE
+                        </Typography>
+                    </Box>
+                </Stack>
             )}
 
             {selection?.endCoords && (
-                <Box
+                <Stack
+                    alignItems="center"
+                    justifyContent="center"
                     onClick={() =>
                         setSelection((prev) => ({
                             ...prev,
@@ -90,7 +113,7 @@ export const LineSelect = ({ mapScale }: { mapScale: number }) => {
                         cursor: "pointer",
                         borderRadius: "50%",
                         backgroundColor: theme.factionTheme.primary,
-                        border: "#000000 2px solid",
+                        border: `${theme.factionTheme.background} 3px solid`,
                         boxShadow: 2,
                         transform: `translate(${selection.endCoords.x * gridWidth - indicatorDiameter / 2}px, ${
                             selection.endCoords.y * gridHeight - indicatorDiameter / 2
@@ -98,8 +121,10 @@ export const LineSelect = ({ mapScale }: { mapScale: number }) => {
                         zIndex: 100,
                     }}
                 >
-                    2
-                </Box>
+                    <Typography sx={{ fontSize: `${indicatorDiameter / 2}px`, fontFamily: fonts.nostromoBlack, color: theme.factionTheme.secondary }}>
+                        2
+                    </Typography>
+                </Stack>
             )}
 
             <canvas

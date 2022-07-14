@@ -210,36 +210,36 @@ const App = () => {
                 <SnackBarProvider>
                     <ClientContextProvider client={client}>
                         <AuthProvider>
-                            <SupremacyProvider>
-                                <ChatProvider>
-                                    <WalletProvider>
-                                        <BarProvider>
-                                            <TourProvider {...tourProviderProps}>
-                                                <StreamProvider>
-                                                    <GameProvider>
-                                                        <MobileProvider>
-                                                            <DimensionProvider>
-                                                                <OverlayTogglesProvider>
-                                                                    <MiniMapProvider>
-                                                                        <UserUpdater />
-                                                                        <BrowserRouter>
+                            <BrowserRouter>
+                                <SupremacyProvider>
+                                    <ChatProvider>
+                                        <WalletProvider>
+                                            <BarProvider>
+                                                <TourProvider {...tourProviderProps}>
+                                                    <StreamProvider>
+                                                        <GameProvider>
+                                                            <MobileProvider>
+                                                                <DimensionProvider>
+                                                                    <OverlayTogglesProvider>
+                                                                        <MiniMapProvider>
+                                                                            <UserUpdater />
                                                                             <Switch>
                                                                                 <Route path="/404" exact component={NotFoundPage} />
                                                                                 <Route path="/login-redirect" exact component={LoginRedirect} />
                                                                                 <Route path="" component={AppInner} />
                                                                             </Switch>
-                                                                        </BrowserRouter>
-                                                                    </MiniMapProvider>
-                                                                </OverlayTogglesProvider>
-                                                            </DimensionProvider>
-                                                        </MobileProvider>
-                                                    </GameProvider>
-                                                </StreamProvider>
-                                            </TourProvider>
-                                        </BarProvider>
-                                    </WalletProvider>
-                                </ChatProvider>
-                            </SupremacyProvider>
+                                                                        </MiniMapProvider>
+                                                                    </OverlayTogglesProvider>
+                                                                </DimensionProvider>
+                                                            </MobileProvider>
+                                                        </GameProvider>
+                                                    </StreamProvider>
+                                                </TourProvider>
+                                            </BarProvider>
+                                        </WalletProvider>
+                                    </ChatProvider>
+                                </SupremacyProvider>
+                            </BrowserRouter>
                         </AuthProvider>
                     </ClientContextProvider>
                 </SnackBarProvider>
