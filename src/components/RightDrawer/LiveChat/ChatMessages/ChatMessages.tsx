@@ -184,7 +184,12 @@ const ChatMessagesInner = ({
                                 } else if (message.type === "NEW_BATTLE") {
                                     const data = message.data as NewBattleMessageData
                                     return (
-                                        <Stack key={data.battle_number} direction={"row"} alignItems={"center"} sx={{ pb: "0.5rem" }}>
+                                        <Stack
+                                            key={`${data.battle_number} - ${message.sent_at.toISOString()}`}
+                                            direction={"row"}
+                                            alignItems={"center"}
+                                            sx={{ pb: "0.5rem" }}
+                                        >
                                             <Divider sx={{ flex: "1" }} />
                                             <Typography
                                                 variant={"caption"}

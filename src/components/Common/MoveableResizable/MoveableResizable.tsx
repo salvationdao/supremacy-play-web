@@ -135,14 +135,15 @@ const MoveableResizableInner = ({ children }: MoveableResizableProps) => {
                     opacity={0.8}
                     sx={{ position: "relative", width: "100%", height: "100%", transition: "all .2s" }}
                 >
+                    {/* Top right icon buttons */}
                     <Box
                         sx={{
                             position: "absolute",
                             top: 0,
                             right: 0,
+                            zIndex: 999,
                         }}
                     >
-                        {/* Top right icon buttons */}
                         <Stack
                             direction="row"
                             alignItems="center"
@@ -152,7 +153,6 @@ const MoveableResizableInner = ({ children }: MoveableResizableProps) => {
                                 pl: "1rem",
                                 pr: "1.7rem",
                                 height: "3.3rem",
-                                zIndex: 3,
                             }}
                         >
                             {topRightContent}
@@ -248,7 +248,8 @@ const MoveableResizableInner = ({ children }: MoveableResizableProps) => {
                             position: "absolute",
                             top: 0,
                             left: 0,
-                            right: "15rem",
+                            right: 0,
+                            width: "100%",
                             height: "2.8rem",
                             pointerEvents: "all",
                             zIndex: 99,
