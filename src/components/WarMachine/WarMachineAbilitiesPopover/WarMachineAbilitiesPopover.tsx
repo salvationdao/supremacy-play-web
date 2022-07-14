@@ -4,9 +4,6 @@ import { ClipThing, FactionAbilityItem } from "../.."
 import { GenericWarMachinePNG } from "../../../assets"
 import { Faction, GameAbility, WarMachineState } from "../../../types"
 import { ContributorAmount } from "../../BattleStats/ContributorAmount"
-import { MechMoveCommandCard } from "./MechMoveCommandCard"
-import { useAuth } from "../../../containers"
-import { STAGING_OR_DEV_ONLY } from "../../../constants"
 
 interface WarMachineAbilitiesPopoverProps {
     popoverRef: React.MutableRefObject<null>
@@ -27,7 +24,6 @@ export const WarMachineAbilitiesPopover = ({
     maxAbilityPriceMap,
     getFaction,
 }: WarMachineAbilitiesPopoverProps) => {
-    const { userID } = useAuth()
     const faction = getFaction(warMachine.factionID)
 
     return (
@@ -44,6 +40,7 @@ export const WarMachineAbilitiesPopover = ({
                 horizontal: "left",
             }}
             PaperProps={{ sx: { background: "none", boxShadow: 0 } }}
+            transitionDuration={100}
         >
             <Box
                 sx={{
@@ -97,10 +94,6 @@ export const WarMachineAbilitiesPopover = ({
                                     />
                                 </Box>
                             ))}
-
-                            {STAGING_OR_DEV_ONLY && warMachine.ownedByID === userID && (
-                                <MechMoveCommandCard warMachine={warMachine} faction={faction} clipSlantSize="5px" onClose={onClose} />
-                            )}
                         </Stack>
                     </Stack>
                 </ClipThing>

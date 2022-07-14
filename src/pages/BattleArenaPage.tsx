@@ -15,8 +15,10 @@ import {
 } from "../components"
 import { TutorialModal } from "../components/HowToPlay/Tutorial/TutorialModal"
 import { QuickDeploy } from "../components/QuickDeploy/QuickDeploy"
+import { QuickPlayerAbilities } from "../components/QuickPlayerAbilities/QuickPlayerAbilities"
 import { useAuth, useDimension, useMobile, useSupremacy } from "../containers"
 import { siteZIndex } from "../theme/theme"
+import { FeatureName } from "../types"
 
 export const BattleArenaPage = () => {
     const { userID } = useAuth()
@@ -42,14 +44,14 @@ export const BattleArenaPage = () => {
 }
 
 const BattleArenaPageInner = () => {
-    const { userID } = useAuth()
+    const { userID, userHasFeature } = useAuth()
     const { isMobile, setAdditionalTabs, setIsNavOpen, allowCloseNav } = useMobile()
-    const { isServerUp, isQuickDeployOpen, toggleIsQuickDeployOpen } = useSupremacy()
-    const { recalculateDimensions } = useDimension()
+    const { isQuickDeployOpen, toggleIsQuickDeployOpen, isQuickPlayerAbilitiesOpen, toggleIsQuickPlayerAbilitiesOpen } = useSupremacy()
+    const { triggerReset } = useDimension()
 
     // When its mobile, we have tabs
     useEffect(() => {
-        recalculateDimensions()
+        triggerReset()
 
         if (!isMobile) return
         allowCloseNav.current = false
@@ -121,6 +123,25 @@ const BattleArenaPageInner = () => {
             })
         }
 
+        if (userHasFeature(FeatureName.playerAbility)) {
+            tabs.push({
+                id: "buy-abilities",
+                hash: "#buy-abilities",
+                icon: <SvgAbility size="1.2rem" sx={{ pt: ".1rem" }} />,
+                label: "BUY ABILITIES",
+                Component: () => (
+                    <Stack sx={{ position: "relative", height: "100%" }}>
+                        <QuickPlayerAbilities
+                            open
+                            onClose={() => {
+                                return
+                            }}
+                        />
+                    </Stack>
+                ),
+            })
+        }
+
         tabs.push({
             id: "prev-battle",
             hash: "#prev-battle",
@@ -154,7 +175,7 @@ const BattleArenaPageInner = () => {
             setAdditionalTabs([])
             setIsNavOpen(false)
         }
-    }, [allowCloseNav, isMobile, recalculateDimensions, setAdditionalTabs, setIsNavOpen, userID])
+    }, [allowCloseNav, isMobile, triggerReset, setAdditionalTabs, setIsNavOpen, userHasFeature, userID])
 
     return (
         <>
@@ -162,7 +183,7 @@ const BattleArenaPageInner = () => {
                 <Box id={isMobile ? "" : "game-ui-container"} sx={{ position: "relative", flex: 1 }}>
                     <Stream />
 
-                    {isServerUp && !isMobile && (
+                    {!isMobile && (
                         <>
                             <Notifications />
                             <WarMachineStats />
@@ -170,12 +191,17 @@ const BattleArenaPageInner = () => {
                             <LiveVotingChart />
                             <BattleHistory />
                             {isQuickDeployOpen && <QuickDeploy open={isQuickDeployOpen} onClose={() => toggleIsQuickDeployOpen(false)} />}
+
+                            {isQuickPlayerAbilitiesOpen && (
+                                <QuickPlayerAbilities open={isQuickPlayerAbilitiesOpen} onClose={() => toggleIsQuickPlayerAbilitiesOpen(false)} />
+                            )}
+
                             <VotingSystem />
                             <MiniMap />
                         </>
                     )}
 
-                    {isServerUp && userID && <TutorialModal />}
+                    {userID && <TutorialModal />}
                 </Box>
 
                 <Controls />

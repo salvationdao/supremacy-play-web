@@ -1,5 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { ClipThing, FancyButton } from "../.."
 import { PlayerAbilityPNG } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
@@ -21,9 +21,11 @@ export const PlayerAbilitiesStore = () => {
     const [saleAbilities, setSaleAbilities] = useState<SaleAbility[]>([])
     const [priceMap, setPriceMap] = useState<Map<string, string>>(new Map())
     const [amountMap, setAmountMap] = useState<Map<string, number>>(new Map())
+    const [canPurchase, setCanPurchase] = useState(true)
 
     useGameServerSubscriptionSecurePublic<{
         next_refresh_time: Date | null
+        refresh_period_duration_seconds: number
         sale_abilities: SaleAbility[]
     }>(
         {
@@ -32,7 +34,9 @@ export const PlayerAbilitiesStore = () => {
         },
         (payload) => {
             if (!payload) return
-            setNextRefreshTime(payload.next_refresh_time)
+            const t = new Date()
+            t.setSeconds(t.getSeconds() + payload.refresh_period_duration_seconds)
+            setNextRefreshTime(payload.next_refresh_time || t)
             setSaleAbilities(payload.sale_abilities)
             setAmountMap(new Map()) // reset amount map
             if (isLoaded) return
@@ -66,10 +70,15 @@ export const PlayerAbilitiesStore = () => {
         },
     )
 
+    useEffect(() => {
+        if (!nextRefreshTime) return
+        setCanPurchase(true)
+    }, [nextRefreshTime])
+
     const timeLeft = useMemo(() => {
         if (nextRefreshTime) {
             return (
-                <Typography sx={{ color: colors.lightNeonBlue, fontFamily: fonts.nostromoBold }}>
+                <Typography sx={{ color: colors.lightNeonBlue, fontFamily: fonts.nostromoBold, textTransform: "uppercase" }}>
                     <TimeLeft key={nextRefreshTime.getMilliseconds()} dateTo={nextRefreshTime} />
                 </Typography>
             )
@@ -77,7 +86,7 @@ export const PlayerAbilitiesStore = () => {
 
         if (saleAbilities.length > 0) {
             return (
-                <Typography sx={{ color: colors.lightNeonBlue, fontFamily: fonts.nostromoBold }}>
+                <Typography sx={{ color: colors.lightNeonBlue, fontFamily: fonts.nostromoBold, textTransform: "uppercase" }}>
                     <TimeLeft key={saleAbilities[0].available_until?.getMilliseconds()} dateTo={saleAbilities[0].available_until} />
                 </Typography>
             )
@@ -120,6 +129,8 @@ export const PlayerAbilitiesStore = () => {
                                 updatedPrice={priceMap.get(s.id) || s.current_price}
                                 totalAmount={s.sale_limit}
                                 amountSold={amountMap.get(s.id) || s.amount_sold}
+                                onPurchase={() => setCanPurchase(false)}
+                                disabled={!canPurchase}
                             />
                         ))}
                     </Box>
@@ -160,7 +171,7 @@ export const PlayerAbilitiesStore = () => {
                 </Stack>
             </Stack>
         )
-    }, [isLoaded, priceMap, amountMap, saleAbilities])
+    }, [isLoaded, saleAbilities, priceMap, amountMap, canPurchase])
 
     return (
         <ClipThing
@@ -188,9 +199,7 @@ export const PlayerAbilitiesStore = () => {
                 <PageHeader
                     imageUrl={PlayerAbilityPNG}
                     title="PLAYER ABILITIES"
-                    description="Player abilities are abilities that can be bought and used on the battle arena. The price of a player ability is determined by how
-                            active it is at any given time. When players buy an ability, its price will go up, and if an ability is not being bought, its price will
-                            go down."
+                    description="Player abilities are abilities that can be bought and used on the battle arena."
                 >
                     <Box sx={{ flexShrink: 0, pr: "1.5rem" }}>
                         <FancyButton
@@ -269,7 +278,7 @@ export const PlayerAbilitiesStore = () => {
     )
 }
 
-const TimeLeft = ({ dateTo }: { dateTo: Date | undefined }) => {
+export const TimeLeft = ({ dateTo }: { dateTo: Date | undefined }) => {
     const { totalSecRemain } = useTimer(dateTo)
     return <>{timeSinceInWords(new Date(), new Date(new Date().getTime() + totalSecRemain * 1000))}</>
 }

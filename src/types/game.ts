@@ -90,6 +90,7 @@ export interface BattleAbility {
 }
 
 export interface GameAbility {
+    game_client_ability_id: number
     identity: string
     label: string
     colour: string
@@ -99,6 +100,7 @@ export interface GameAbility {
     sups_cost: string
     current_sups: string
     ability_offering_id: string
+    location_select_type: string
 }
 
 export interface BlueprintPlayerAbility {

@@ -7,6 +7,7 @@ import { ChipFilter, ChipFilterSection } from "./ChipFilterSection"
 import { DropdownOptions, DropdownOptionsSection } from "./DropdownOptionsSection"
 import { RangeFilter, RangeFilterSection } from "./RangeFilterSection"
 import { Section } from "./Section"
+import { SliderRangeFilter, SliderRangeFilterSection } from "./SliderRangeFilterSection"
 
 interface SortAndFiltersProps {
     initialSearch: string
@@ -14,6 +15,7 @@ interface SortAndFiltersProps {
     dropdownOptions?: DropdownOptions[]
     chipFilters?: ChipFilter[]
     rangeFilters?: RangeFilter[]
+    sliderRangeFilters?: SliderRangeFilter[]
     changePage: (page: number) => void
     primaryColor?: string
     children?: ReactNode
@@ -25,6 +27,7 @@ export const SortAndFilters = ({
     dropdownOptions,
     chipFilters,
     rangeFilters,
+    sliderRangeFilters,
     changePage,
     primaryColor: pColor,
     children,
@@ -50,7 +53,7 @@ export const SortAndFilters = ({
             }}
             opacity={0.7}
             backgroundColor={backgroundColor}
-            sx={{ height: "100%", minWidth: "30rem", maxWidth: "38rem" }}
+            sx={{ height: "100%", width: "38rem" }}
         >
             <Stack sx={{ height: "100%" }}>
                 <Box
@@ -74,7 +77,7 @@ export const SortAndFilters = ({
                     }}
                 >
                     <Stack sx={{ position: "relative", height: 0, mt: "-.3rem", mx: "-.3rem" }}>
-                        <Section label="SEARCH" primaryColor={primaryColor} secondaryColor={secondaryColor}>
+                        <Section label="SEARCH" primaryColor={primaryColor} secondaryColor={secondaryColor} initialExpanded={true}>
                             <Stack direction="row" spacing=".5rem">
                                 <ClipThing
                                     clipSize="5px"
@@ -167,6 +170,12 @@ export const SortAndFilters = ({
                         {!!rangeFilters &&
                             rangeFilters.length > 0 &&
                             rangeFilters.map((f, i) => <RangeFilterSection key={i} filter={f} primaryColor={primaryColor} secondaryColor={secondaryColor} />)}
+
+                        {!!sliderRangeFilters &&
+                            sliderRangeFilters.length > 0 &&
+                            sliderRangeFilters.map((f, i) => (
+                                <SliderRangeFilterSection key={i} filter={f} primaryColor={primaryColor} secondaryColor={secondaryColor} />
+                            ))}
                     </Stack>
                 </Box>
 

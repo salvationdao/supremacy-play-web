@@ -14,26 +14,21 @@ export const SupremacyContainer = createContainer(() => {
         URI: "/public/online",
         host: GAME_SERVER_HOSTNAME,
     })
-    const [readyToCheckServerState, toggleReadyToCheckServerState] = useToggle()
-    const [isServerUp, toggleIsServerUp] = useState<boolean | undefined>(undefined) // Needs 3 states: true, false, undefined. Undefined means it's not loaded yet.
+    const [serverConnectedBefore, setServerConnectedBefore] = useState(false)
     const [haveSups, toggleHaveSups] = useState<boolean>() // Needs 3 states: true, false, undefined. Undefined means it's not loaded yet.
     const [factionsAll, setFactionsAll] = useState<FactionsAll>({})
     const [battleIdentifier, setBattleIdentifier] = useState<number>()
     const [isQuickDeployOpen, toggleIsQuickDeployOpen] = useToggle(localStorage.getItem("quickDeployOpen") === "true")
+    const [isQuickPlayerAbilitiesOpen, toggleIsQuickPlayerAbilitiesOpen] = useToggle(localStorage.getItem("quickPlayerAbilitiesOpen") === "true")
 
     const { query: queryGetFactionsAll } = useParameterizedQuery(GetFactionsAll)
 
-    // Listens on the server status
     useEffect(() => {
-        if (!readyToCheckServerState && state !== WebSocket.OPEN) {
-            setTimeout(() => {
-                toggleReadyToCheckServerState(true)
-            }, 3600)
-            return
-        }
-
-        toggleIsServerUp(state === WebSocket.OPEN)
-    }, [readyToCheckServerState, state, toggleIsServerUp, toggleReadyToCheckServerState])
+        setServerConnectedBefore((prev) => {
+            if (state === WebSocket.OPEN && !prev) return true
+            return prev
+        })
+    }, [state])
 
     // Get main color of each factions
     useEffect(() => {
@@ -47,7 +42,7 @@ export const SupremacyContainer = createContainer(() => {
                 })
                 setFactionsAll(currentData)
             } catch (e) {
-                newSnackbarMessage(typeof e === "string" ? e : "Failed to retrieve syndicate data.", "error")
+                newSnackbarMessage(typeof e === "string" ? e : "Failed to retrieve faction data.", "error")
                 console.error(e)
                 return false
             }
@@ -65,8 +60,14 @@ export const SupremacyContainer = createContainer(() => {
         localStorage.setItem("quickDeployOpen", isQuickDeployOpen.toString())
     }, [isQuickDeployOpen])
 
+    useEffect(() => {
+        localStorage.setItem("quickPlayerAbilitiesOpen", isQuickPlayerAbilitiesOpen.toString())
+    }, [isQuickPlayerAbilitiesOpen])
+
     return {
-        isServerUp,
+        serverConnectedBefore,
+        isServerUp: state === WebSocket.OPEN,
+
         factionsAll,
         getFaction,
         battleIdentifier,
@@ -76,6 +77,9 @@ export const SupremacyContainer = createContainer(() => {
 
         isQuickDeployOpen,
         toggleIsQuickDeployOpen,
+
+        isQuickPlayerAbilitiesOpen,
+        toggleIsQuickPlayerAbilitiesOpen,
     }
 })
 

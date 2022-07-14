@@ -1,23 +1,20 @@
-import { Box, Pagination, Stack, Typography } from "@mui/material"
-import React, { useCallback, useEffect, useMemo, useState } from "react"
-import { useLocation } from "react-router-dom"
-import { ClipThing, FancyButton } from "../.."
-import { PASSPORT_WEB } from "../../../constants"
+import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { ClipThing } from "../.."
+import { EmptyWarMachinesPNG, WarMachineIconPNG } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
-import { parseString } from "../../../helpers"
-import { usePagination, useUrlQuery } from "../../../hooks"
+import { getRarityDeets, parseString } from "../../../helpers"
+import { usePagination, useToggle, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { MechBasic, MechDetails } from "../../../types"
+import { MechBasic, MechStatusEnum } from "../../../types"
 import { SortTypeLabel } from "../../../types/marketplace"
+import { PageHeader } from "../../Common/PageHeader"
+import { ChipFilter } from "../../Common/SortAndFilters/ChipFilterSection"
+import { SortAndFilters } from "../../Common/SortAndFilters/SortAndFilters"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
-import { DeployModal } from "./DeployQueue/DeployModal"
-import { LeaveModal } from "./LeaveQueue/LeaveModal"
-import { HistoryModal } from "./MechHistory/HistoryModal"
-import { RentalModal } from "./MechRental/RentalModal"
-import { MechViewer } from "./MechViewer/MechViewer"
-import { WarMachineHangarItem, WarMachineHangarItemLoadingSkeleton } from "./WarMachineHangarItem/WarMachineHangarItem"
+import { WarMachineHangarItem } from "./WarMachineHangarItem"
 
 const sortOptions = [
     { label: SortTypeLabel.MechQueueAsc, value: SortTypeLabel.MechQueueAsc },
@@ -26,88 +23,79 @@ const sortOptions = [
 
 interface GetMechsRequest {
     queue_sort: string
+    search: string
     page: number
     page_size: number
+    rarities: string[]
+    statuses: string[]
     include_market_listed: boolean
 }
 
-interface GetAssetsResponse {
+interface GetMechsResponse {
     mechs: MechBasic[]
     total: number
 }
 
 export const WarMachinesHangar = () => {
-    const [selectedMechDetails, setSelectedMechDetails] = useState<MechDetails>()
-    const [deployMechModalOpen, setDeployMechModalOpen] = useState<boolean>(false)
-    const [leaveMechModalOpen, setLeaveMechModalOpen] = useState<boolean>(false)
-    const [historyMechModalOpen, setHistoryMechModalOpen] = useState<boolean>(false)
-    const [rentalMechModalOpen, setRentalMechModalOpen] = useState<boolean>(false)
-
-    return (
-        <>
-            <WarMachinesHangarInner
-                selectedMechDetails={selectedMechDetails}
-                setSelectedMechDetails={setSelectedMechDetails}
-                setDeployMechModalOpen={setDeployMechModalOpen}
-                setLeaveMechModalOpen={setLeaveMechModalOpen}
-                setHistoryMechModalOpen={setHistoryMechModalOpen}
-                setRentalMechModalOpen={setRentalMechModalOpen}
-            />
-            {selectedMechDetails && deployMechModalOpen && (
-                <DeployModal
-                    selectedMechDetails={selectedMechDetails}
-                    deployMechModalOpen={deployMechModalOpen}
-                    setDeployMechModalOpen={setDeployMechModalOpen}
-                />
-            )}
-            {selectedMechDetails && leaveMechModalOpen && (
-                <LeaveModal selectedMechDetails={selectedMechDetails} leaveMechModalOpen={leaveMechModalOpen} setLeaveMechModalOpen={setLeaveMechModalOpen} />
-            )}
-            {selectedMechDetails && historyMechModalOpen && (
-                <HistoryModal
-                    selectedMechDetails={selectedMechDetails}
-                    historyMechModalOpen={historyMechModalOpen}
-                    setHistoryMechModalOpen={setHistoryMechModalOpen}
-                />
-            )}
-            {selectedMechDetails && rentalMechModalOpen && (
-                <RentalModal
-                    selectedMechDetails={selectedMechDetails}
-                    rentalMechModalOpen={rentalMechModalOpen}
-                    setRentalMechModalOpen={setRentalMechModalOpen}
-                />
-            )}
-        </>
-    )
-}
-
-const WarMachinesHangarInner = ({
-    selectedMechDetails,
-    setSelectedMechDetails,
-    setDeployMechModalOpen,
-    setLeaveMechModalOpen,
-    setHistoryMechModalOpen,
-    setRentalMechModalOpen,
-}: {
-    selectedMechDetails?: MechDetails
-    setSelectedMechDetails: React.Dispatch<React.SetStateAction<MechDetails | undefined>>
-    setDeployMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
-    setLeaveMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
-    setHistoryMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
-    setRentalMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
-}) => {
-    const location = useLocation()
     const [query, updateQuery] = useUrlQuery()
     const { send } = useGameServerCommandsUser("/user_commander")
     const theme = useTheme()
-    const [mechs, setMechs] = useState<MechBasic[]>([])
+
+    // Items
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
+    const [mechs, setMechs] = useState<MechBasic[]>([])
 
-    const [sort, setSort] = useState<string>(query.get("sort") || SortTypeLabel.MechQueueAsc)
     const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({
-        pageSize: parseString(query.get("pageSize"), 5),
+        pageSize: parseString(query.get("pageSize"), 10),
         page: parseString(query.get("page"), 1),
+    })
+
+    // Filters and sorts
+    const [search, setSearch] = useState("")
+    const [sort, setSort] = useState<string>(query.get("sort") || SortTypeLabel.MechQueueAsc)
+    const [status, setStatus] = useState<string[]>((query.get("statuses") || undefined)?.split("||") || [])
+    const [rarities, setRarities] = useState<string[]>((query.get("rarities") || undefined)?.split("||") || [])
+    const [isGridView, toggleIsGridView] = useToggle(false)
+
+    // Filters
+    const statusFilterSection = useRef<ChipFilter>({
+        label: "STATUS",
+        options: [
+            { value: MechStatusEnum.Idle, label: "IDLE", color: colors.green },
+            { value: MechStatusEnum.Battle, label: "IN BATTLE", color: colors.orange },
+            { value: MechStatusEnum.Market, label: "MARKETPLACE", color: colors.red },
+            { value: MechStatusEnum.Queue, label: "IN QUEUE", color: colors.yellow },
+        ],
+        initialSelected: status,
+        initialExpanded: true,
+        onSetSelected: (value: string[]) => {
+            setStatus(value)
+            changePage(1)
+        },
+    })
+
+    const rarityChipFilter = useRef<ChipFilter>({
+        label: "RARITY",
+        options: [
+            { value: "MEGA", ...getRarityDeets("MEGA") },
+            { value: "COLOSSAL", ...getRarityDeets("COLOSSAL") },
+            { value: "RARE", ...getRarityDeets("RARE") },
+            { value: "LEGENDARY", ...getRarityDeets("LEGENDARY") },
+            { value: "ELITE_LEGENDARY", ...getRarityDeets("ELITE_LEGENDARY") },
+            { value: "ULTRA_RARE", ...getRarityDeets("ULTRA_RARE") },
+            { value: "EXOTIC", ...getRarityDeets("EXOTIC") },
+            { value: "GUARDIAN", ...getRarityDeets("GUARDIAN") },
+            { value: "MYTHIC", ...getRarityDeets("MYTHIC") },
+            { value: "DEUS_EX", ...getRarityDeets("DEUS_EX") },
+            { value: "TITAN", ...getRarityDeets("TITAN") },
+        ],
+        initialSelected: rarities,
+        initialExpanded: true,
+        onSetSelected: (value: string[]) => {
+            setRarities(value)
+            changePage(1)
+        },
     })
 
     const getItems = useCallback(async () => {
@@ -117,8 +105,11 @@ const WarMachinesHangarInner = ({
             let sortDir = "asc"
             if (sort === SortTypeLabel.MechQueueDesc) sortDir = "desc"
 
-            const resp = await send<GetAssetsResponse, GetMechsRequest>(GameServerKeys.GetMechs, {
+            const resp = await send<GetMechsResponse, GetMechsRequest>(GameServerKeys.GetMechs, {
                 queue_sort: sortDir,
+                search,
+                rarities,
+                statuses: status,
                 page,
                 page_size: pageSize,
                 include_market_listed: true,
@@ -126,6 +117,9 @@ const WarMachinesHangarInner = ({
 
             updateQuery({
                 sort,
+                search,
+                rarities: rarities.join("||"),
+                statuses: status.join("||"),
                 page: page.toString(),
                 pageSize: pageSize.toString(),
             })
@@ -140,185 +134,169 @@ const WarMachinesHangarInner = ({
         } finally {
             setIsLoading(false)
         }
-    }, [send, page, pageSize, updateQuery, sort, setTotalItems])
+    }, [send, page, pageSize, search, rarities, status, updateQuery, sort, setTotalItems])
 
     useEffect(() => {
         getItems()
     }, [getItems])
 
     const content = useMemo(() => {
-        return (
-            <Box sx={{ direction: "ltr", height: 0 }}>
-                <Stack spacing="2rem" sx={{ px: "1rem", py: "1.5rem" }}>
-                    {mechs.map((mech, i) => (
-                        <WarMachineHangarItem
-                            key={`hangar-mech-${mech.id}`}
-                            index={i}
-                            mech={mech}
-                            isSelected={mech.id === selectedMechDetails?.id}
-                            setSelectedMechDetails={setSelectedMechDetails}
-                            setDeployMechModalOpen={setDeployMechModalOpen}
-                            setLeaveMechModalOpen={setLeaveMechModalOpen}
-                            setHistoryMechModalOpen={setHistoryMechModalOpen}
-                            setRentalMechModalOpen={setRentalMechModalOpen}
-                        />
-                    ))}
+        if (loadError) {
+            return (
+                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                    <Stack
+                        alignItems="center"
+                        justifyContent="center"
+                        sx={{ height: "100%", maxWidth: "100%", width: "75rem", px: "3rem", pt: "1.28rem" }}
+                        spacing="1.5rem"
+                    >
+                        <Typography
+                            sx={{
+                                color: colors.red,
+                                fontFamily: fonts.nostromoBold,
+                                textAlign: "center",
+                            }}
+                        >
+                            {loadError}
+                        </Typography>
+                    </Stack>
                 </Stack>
-            </Box>
+            )
+        }
+
+        if (!mechs || isLoading) {
+            return (
+                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                    <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
+                        <CircularProgress size="3rem" sx={{ color: theme.factionTheme.primary }} />
+                    </Stack>
+                </Stack>
+            )
+        }
+
+        if (mechs && mechs.length > 0) {
+            return (
+                <Box sx={{ direction: "ltr", height: 0 }}>
+                    <Box
+                        sx={{
+                            width: "100%",
+                            py: "1rem",
+                            display: "grid",
+                            gridTemplateColumns: isGridView ? "repeat(auto-fill, minmax(29rem, 1fr))" : "100%",
+                            gap: "1.3rem",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            overflow: "visible",
+                        }}
+                    >
+                        {mechs.map((mech) => (
+                            <WarMachineHangarItem key={`marketplace-${mech.id}`} mech={mech} isGridView={isGridView} />
+                        ))}
+                    </Box>
+                </Box>
+            )
+        }
+
+        return (
+            <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", maxWidth: "40rem" }}>
+                    <Box
+                        sx={{
+                            width: "80%",
+                            height: "16rem",
+                            opacity: 0.7,
+                            filter: "grayscale(100%)",
+                            background: `url(${EmptyWarMachinesPNG})`,
+                            backgroundRepeat: "no-repeat",
+                            backgroundPosition: "bottom center",
+                            backgroundSize: "contain",
+                        }}
+                    />
+                    <Typography
+                        sx={{
+                            px: "1.28rem",
+                            pt: "1.28rem",
+                            color: colors.grey,
+                            fontFamily: fonts.nostromoBold,
+                            userSelect: "text !important",
+                            opacity: 0.9,
+                            textAlign: "center",
+                        }}
+                    >
+                        {"There are no war machines found, please try again."}
+                    </Typography>
+                </Stack>
+            </Stack>
         )
-    }, [mechs, selectedMechDetails, setSelectedMechDetails, setDeployMechModalOpen, setLeaveMechModalOpen, setHistoryMechModalOpen, setRentalMechModalOpen])
+    }, [loadError, mechs, isLoading, isGridView, theme.factionTheme.primary])
 
     return (
-        <Stack direction="row" sx={{ height: "100%" }}>
+        <Stack direction="row" spacing="1rem" sx={{ height: "100%" }}>
+            <SortAndFilters
+                initialSearch={search}
+                onSetSearch={setSearch}
+                chipFilters={[statusFilterSection.current, rarityChipFilter.current]}
+                changePage={changePage}
+            />
+
             <ClipThing
                 clipSize="10px"
                 border={{
                     borderColor: theme.factionTheme.primary,
                     borderThickness: ".3rem",
                 }}
-                corners={{
-                    topRight: true,
-                    bottomLeft: true,
-                    bottomRight: true,
-                }}
                 opacity={0.7}
                 backgroundColor={theme.factionTheme.background}
-                sx={{ height: "100%" }}
+                sx={{ height: "100%", flex: 1 }}
             >
                 <Stack sx={{ position: "relative", height: "100%" }}>
-                    <TotalAndPageSizeOptions
-                        countItems={mechs?.length}
-                        totalItems={totalItems}
-                        pageSize={pageSize}
-                        changePageSize={changePageSize}
-                        changePage={changePage}
-                        manualRefresh={getItems}
-                        sortOptions={sortOptions}
-                        selectedSort={sort}
-                        onSetSort={setSort}
-                    />
+                    <Stack sx={{ flex: 1 }}>
+                        <PageHeader title="WAR MACHINES" description="Your war machines." imageUrl={WarMachineIconPNG} />
 
-                    <Box
-                        sx={{
-                            ml: "1.2rem",
-                            mr: ".7rem",
-                            pr: ".5rem",
-                            my: "1rem",
-                            flex: 1,
-                            overflowY: "auto",
-                            overflowX: "hidden",
-                            direction: "ltr",
+                        <TotalAndPageSizeOptions
+                            countItems={mechs?.length}
+                            totalItems={totalItems}
+                            pageSize={pageSize}
+                            changePageSize={changePageSize}
+                            pageSizeOptions={[10, 20, 30]}
+                            changePage={changePage}
+                            manualRefresh={getItems}
+                            sortOptions={sortOptions}
+                            selectedSort={sort}
+                            onSetSort={setSort}
+                            isGridView={isGridView}
+                            toggleIsGridView={toggleIsGridView}
+                        />
 
-                            "::-webkit-scrollbar": {
-                                width: ".4rem",
-                            },
-                            "::-webkit-scrollbar-track": {
-                                background: "#FFFFFF15",
-                                borderRadius: 3,
-                            },
-                            "::-webkit-scrollbar-thumb": {
-                                background: theme.factionTheme.primary,
-                                borderRadius: 3,
-                            },
-                        }}
-                    >
-                        {loadError && (
-                            <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
-                                <Stack
-                                    alignItems="center"
-                                    justifyContent="center"
-                                    sx={{ height: "100%", maxWidth: "100%", width: "75rem", px: "3rem", pt: "1.28rem" }}
-                                    spacing="1.5rem"
-                                >
-                                    <Typography
-                                        sx={{
-                                            color: colors.red,
-                                            fontFamily: fonts.nostromoBold,
-                                            textAlign: "center",
-                                        }}
-                                    >
-                                        {loadError}
-                                    </Typography>
-                                </Stack>
-                            </Stack>
-                        )}
+                        <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
+                            <Box
+                                sx={{
+                                    ml: "1.9rem",
+                                    mr: ".5rem",
+                                    pr: "1.4rem",
+                                    my: "1rem",
+                                    flex: 1,
+                                    overflowY: "auto",
+                                    overflowX: "hidden",
+                                    direction: "ltr",
 
-                        {isLoading && (
-                            <Stack spacing="2rem" sx={{ width: "100%", px: "1rem", py: ".8rem", height: 0 }}>
-                                {new Array(5).fill(0).map((_, index) => (
-                                    <WarMachineHangarItemLoadingSkeleton key={index} />
-                                ))}
-                            </Stack>
-                        )}
-
-                        {!isLoading && mechs.length <= 0 && (
-                            <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
-                                <Stack
-                                    alignItems="center"
-                                    justifyContent="center"
-                                    sx={{ height: "100%", maxWidth: "100%", width: "75rem", px: "3rem", pt: "1.28rem" }}
-                                    spacing="1.5rem"
-                                >
-                                    <Typography
-                                        sx={{
-                                            color: colors.grey,
-                                            fontFamily: fonts.nostromoBold,
-                                            userSelect: "text !important",
-                                            opacity: 0.9,
-                                            textAlign: "center",
-                                        }}
-                                    >
-                                        {"You don't have any war machines, go to the Marketplace or go to Xsyn to transfer your assets to Supremacy."}
-                                    </Typography>
-                                    <FancyButton
-                                        to={`/marketplace/war-machines${location.hash}`}
-                                        clipThingsProps={{
-                                            clipSize: "9px",
-                                            backgroundColor: theme.factionTheme.primary,
-                                            border: { isFancy: true, borderColor: theme.factionTheme.primary },
-                                            sx: { position: "relative", width: "50%" },
-                                        }}
-                                        sx={{ px: "1.8rem", py: ".8rem", color: theme.factionTheme.secondary }}
-                                    >
-                                        <Typography
-                                            variant="body2"
-                                            sx={{
-                                                textAlign: "center",
-                                                color: theme.factionTheme.secondary,
-                                                fontFamily: fonts.nostromoBold,
-                                            }}
-                                        >
-                                            GO TO MARKETPLACE
-                                        </Typography>
-                                    </FancyButton>
-                                    <FancyButton
-                                        href={`${PASSPORT_WEB}profile`}
-                                        target="_blank"
-                                        clipThingsProps={{
-                                            clipSize: "9px",
-                                            backgroundColor: colors.neonPink,
-                                            border: { isFancy: true, borderColor: colors.neonPink },
-                                            sx: { position: "relative", width: "50%" },
-                                        }}
-                                        sx={{ px: "1.8rem", py: ".8rem", color: "#FFFFFF" }}
-                                    >
-                                        <Typography
-                                            variant="body2"
-                                            sx={{
-                                                textAlign: "center",
-                                                color: "#FFFFFF",
-                                                fontFamily: fonts.nostromoBold,
-                                            }}
-                                        >
-                                            GO TO XSYN
-                                        </Typography>
-                                    </FancyButton>
-                                </Stack>
-                            </Stack>
-                        )}
-
-                        {!loadError && !isLoading && mechs.length > 0 && content}
-                    </Box>
+                                    "::-webkit-scrollbar": {
+                                        width: ".4rem",
+                                    },
+                                    "::-webkit-scrollbar-track": {
+                                        background: "#FFFFFF15",
+                                        borderRadius: 3,
+                                    },
+                                    "::-webkit-scrollbar-thumb": {
+                                        background: theme.factionTheme.primary,
+                                        borderRadius: 3,
+                                    },
+                                }}
+                            >
+                                {content}
+                            </Box>
+                        </Stack>
+                    </Stack>
 
                     {totalPages > 1 && (
                         <Box
@@ -348,8 +326,6 @@ const WarMachinesHangarInner = ({
                     )}
                 </Stack>
             </ClipThing>
-
-            {selectedMechDetails && <MechViewer selectedMechDetails={selectedMechDetails} />}
         </Stack>
     )
 }

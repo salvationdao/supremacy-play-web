@@ -15,10 +15,11 @@ export interface ChipFilter {
     }[]
     initialSelected: string[]
     onSetSelected: (value: string[]) => void
+    initialExpanded?: boolean
 }
 
 export const ChipFilterSection = ({ filter, primaryColor, secondaryColor }: { filter: ChipFilter; primaryColor: string; secondaryColor: string }) => {
-    const { label, options, initialSelected, onSetSelected } = filter
+    const { label, options, initialSelected, onSetSelected, initialExpanded } = filter
     const [selectedOptions, setSelectedOptions, selectedOptionsInstant, setSelectedOptionsInstant] = useDebounce<string[]>(initialSelected, 700)
     const calledCallback = useRef(true)
 
@@ -70,7 +71,7 @@ export const ChipFilterSection = ({ filter, primaryColor, secondaryColor }: { fi
     if (!options || options.length <= 0) return null
 
     return (
-        <Section label={label} primaryColor={primaryColor} secondaryColor={secondaryColor} endComponent={resetButton}>
+        <Section label={label} primaryColor={primaryColor} secondaryColor={secondaryColor} endComponent={resetButton} initialExpanded={initialExpanded}>
             <Stack direction="row" flexWrap="wrap">
                 {options.map((o, i) => {
                     const { label, value, color, textColor } = o

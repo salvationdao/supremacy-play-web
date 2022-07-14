@@ -5,6 +5,7 @@ import { HangarBg } from "../assets"
 import { KeycardsMarket } from "../components/Marketplace/KeycardsMarket/KeycardsMarket"
 import { MysteryCratesMarket } from "../components/Marketplace/MysteryCratesMarket/MysteryCratesMarket"
 import { WarMachinesMarket } from "../components/Marketplace/WarMachinesMarket/WarMachinesMarket"
+import { WeaponsMarket } from "../components/Marketplace/WeaponsMarket/WeaponsMarket"
 import { HistoryMarket } from "../components/Marketplace/HistoryMarket/HistoryMarket"
 import { useTheme } from "../containers/theme"
 import { ROUTES_MAP } from "../routes"
@@ -15,6 +16,7 @@ import { ClipThing } from "../components"
 export enum MARKETPLACE_TABS {
     History = "history",
     WarMachines = "war-machines",
+    Weapons = "weapons",
     Keycards = "key-cards",
     MysteryCrates = "mystery-crates",
 }
@@ -60,7 +62,7 @@ export const MarketplacePage = () => {
             }}
         >
             <Stack sx={{ mt: "1.5rem", mb: "2rem", height: "100%", width: "calc(100% - 3rem)", maxWidth: "190rem" }}>
-                <Stack direction="row" flexWrap="wrap" sx={{ mb: "1.1rem", gap: "1.2rem" }}>
+                <Stack direction="row" alignItems="center" flexWrap="wrap" sx={{ mb: "1.1rem", gap: "1.2rem" }}>
                     <ClipThing
                         clipSize="10px"
                         border={{
@@ -81,7 +83,7 @@ export const MarketplacePage = () => {
                                     flexShrink: 0,
                                     color: primaryColor,
                                     minHeight: 0,
-                                    ".MuiTab-root": { minHeight: 0, fontSize: "1.3rem", height: "8rem", width: "10rem" },
+                                    ".MuiTab-root": { minHeight: 0, fontSize: "1.3rem", height: "6rem", width: "10rem" },
                                     ".Mui-selected": {
                                         color: `${secondaryColor} !important`,
                                         background: `linear-gradient(${primaryColor} 26%, ${primaryColor}BB)`,
@@ -91,8 +93,13 @@ export const MarketplacePage = () => {
                                 }}
                             >
                                 <Tab label="HISTORY" value={MARKETPLACE_TABS.History} />
+
                                 <Tab label="WAR MACHINES" value={MARKETPLACE_TABS.WarMachines} />
+
+                                <Tab label="Weapons" value={MARKETPLACE_TABS.Weapons} />
+
                                 <Tab label="KEY CARDS" value={MARKETPLACE_TABS.Keycards} />
+
                                 <Tab label="MYSTERY CRATES" value={MARKETPLACE_TABS.MysteryCrates} />
                             </Tabs>
                         </Box>
@@ -104,12 +111,19 @@ export const MarketplacePage = () => {
                 <TabPanel currentValue={currentValue} value={MARKETPLACE_TABS.History}>
                     <HistoryMarket />
                 </TabPanel>
+
                 <TabPanel currentValue={currentValue} value={MARKETPLACE_TABS.WarMachines}>
                     <WarMachinesMarket />
                 </TabPanel>
+
+                <TabPanel currentValue={currentValue} value={MARKETPLACE_TABS.Weapons}>
+                    <WeaponsMarket />
+                </TabPanel>
+
                 <TabPanel currentValue={currentValue} value={MARKETPLACE_TABS.Keycards}>
                     <KeycardsMarket />
                 </TabPanel>
+
                 <TabPanel currentValue={currentValue} value={MARKETPLACE_TABS.MysteryCrates}>
                     <MysteryCratesMarket />
                 </TabPanel>

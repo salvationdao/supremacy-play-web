@@ -10,13 +10,14 @@ import { useGameServerSubscriptionAbilityFaction } from "../../../hooks/useGameS
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { GameAbility, WarMachineState } from "../../../types"
+import { MoveCommand } from "./MoveCommand"
 
 // in rems
 const WIDTH_AVATAR = 8.6
 const WIDTH_BODY = 17
 const HEIGHT = 8
-const DEAD_OPACITY = 0.6
-const WIDTH_SKILL_BUTTON = 3.8
+export const DEAD_OPACITY = 0.6
+export const WIDTH_SKILL_BUTTON = 3.8
 export const WIDTH_STAT_BAR = 1.5
 
 export const WarMachineItem = ({ warMachine, scale, initialExpanded = false }: { warMachine: WarMachineState; scale: number; initialExpanded?: boolean }) => {
@@ -72,11 +73,12 @@ export const WarMachineItem = ({ warMachine, scale, initialExpanded = false }: {
     useEffect(() => {
         if (highlightedMechHash !== hash) {
             toggleIsExpanded(initialExpanded)
+            togglePopoverOpen(false)
         } else {
             toggleIsExpanded(true)
             openSkillsPopover()
         }
-    }, [highlightedMechHash, initialExpanded, isMobile, openSkillsPopover, setHighlightedMechHash, toggleIsExpanded, hash])
+    }, [highlightedMechHash, initialExpanded, isMobile, openSkillsPopover, setHighlightedMechHash, toggleIsExpanded, hash, togglePopoverOpen])
 
     return (
         <>
@@ -89,7 +91,10 @@ export const WarMachineItem = ({ warMachine, scale, initialExpanded = false }: {
                     height: "100%",
                     opacity: isAlive ? 1 : 0.8,
                     width: `${
-                        WIDTH_AVATAR + (isExpanded ? WIDTH_BODY : 2 * WIDTH_STAT_BAR) + (isOwnFaction ? WIDTH_SKILL_BUTTON + numSkillBars * WIDTH_STAT_BAR : 0)
+                        WIDTH_AVATAR +
+                        (isExpanded ? WIDTH_BODY : 2 * WIDTH_STAT_BAR) +
+                        (isOwnFaction ? WIDTH_SKILL_BUTTON + numSkillBars * WIDTH_STAT_BAR : 0) +
+                        (warMachine.ownedByID === userID ? WIDTH_SKILL_BUTTON + WIDTH_STAT_BAR : 0)
                     }rem`,
                     transition: "width .1s",
                     transform: highlightedMechHash === hash ? `scale(${scale * 1.08})` : `scale(${scale})`,
@@ -152,6 +157,21 @@ export const WarMachineItem = ({ warMachine, scale, initialExpanded = false }: {
                             cursor: "pointer",
                         }}
                     >
+                        {/* Number */}
+                        <Box
+                            sx={{
+                                position: "absolute",
+                                bottom: 0,
+                                right: ".8rem",
+                                px: ".3rem",
+                                backgroundColor: "#00000090",
+                            }}
+                        >
+                            <Typography variant="h5" sx={{ fontFamily: fonts.nostromoBlack }}>
+                                {warMachine.participantID}
+                            </Typography>
+                        </Box>
+
                         {!isAlive && (
                             <Stack
                                 alignItems="center"
@@ -276,6 +296,8 @@ export const WarMachineItem = ({ warMachine, scale, initialExpanded = false }: {
                                 ))}
                         </>
                     )}
+
+                    {warMachine.ownedByID === userID && <MoveCommand isAlive={isAlive} warMachine={warMachine} />}
                 </Stack>
             </Stack>
 

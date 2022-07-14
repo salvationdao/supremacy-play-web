@@ -1,6 +1,6 @@
 import { Box, CircularProgress, Fade, IconButton, Pagination, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { MoveableResizable, QueueFeed, TooltipHelper } from ".."
+import { MoveableResizable, TooltipHelper } from ".."
 import { SvgNotification, SvgSupToken } from "../../assets"
 import { useAuth, useMobile } from "../../containers"
 import { useTheme } from "../../containers/theme"
@@ -16,6 +16,7 @@ import { TelegramRegisterModal } from "../Bar/ProfileCard/PreferencesModal/Teleg
 import { MoveableResizableConfig } from "../Common/MoveableResizable/MoveableResizableContainer"
 import { PageHeader } from "../Common/PageHeader"
 import { TotalAndPageSizeOptions } from "../Common/TotalAndPageSizeOptions"
+import { QueueFeed } from "../Hangar/WarMachinesHangar/WarMachineDetails/Modals/DeployModal"
 import { QuickDeployItem } from "./QuickDeployItem"
 
 const sortOptions = [
@@ -104,10 +105,10 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
 
     const config: MoveableResizableConfig = useMemo(
         () => ({
-            localStoragePrefix: "quickDeploy",
+            localStoragePrefix: "quickDeploy1",
             // Defaults
-            defaultPosX: 330,
-            defaultPosY: 0,
+            defaultPosX: 370,
+            defaultPosY: 20,
             defaultWidth: 420,
             defaultHeight: 580,
             // Position limits
@@ -132,7 +133,13 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
     return (
         <>
             <Fade in>
-                <Box sx={{ ...(isMobile ? { m: "1rem", backgroundColor: "#FFFFFF12", boxShadow: 2, border: "#FFFFFF20 1px solid", height: "100%" } : {}) }}>
+                <Box
+                    sx={{
+                        ...(isMobile
+                            ? { m: "1rem", mb: "2rem", backgroundColor: "#FFFFFF12", boxShadow: 2, border: "#FFFFFF20 1px solid", height: "100%" }
+                            : {}),
+                    }}
+                >
                     <MoveableResizable config={config}>
                         <Stack
                             sx={{
@@ -163,7 +170,7 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
                                                 title={"REWARD: "}
                                                 color={colors.yellow}
                                                 value={supFormatter(contractReward, 2)}
-                                                tooltip="Your reward if your mech survives the battle giving your syndicate a victory."
+                                                tooltip="Your reward if your mech survives the battle giving your faction a victory."
                                             />
                                         )}
 

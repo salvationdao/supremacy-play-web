@@ -64,15 +64,7 @@ export const SkillBar = ({
 
     return useMemo(
         () => (
-            <Box
-                key={index}
-                style={{
-                    width: `${WIDTH_STAT_BAR}rem`,
-                    height: "100%",
-                    pointerEvents: "none",
-                    zIndex: 6,
-                }}
-            >
+            <Box key={index} style={{ height: "100%" }}>
                 <ProgressBar
                     percent={progressPercent}
                     linePercent={costPercent}

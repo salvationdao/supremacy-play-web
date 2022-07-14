@@ -1,5 +1,5 @@
 import { useMediaQuery } from "@mui/material"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { createContainer } from "unstated-next"
 import { useDebounce } from "../hooks"
 import { Dimension } from "../types"
@@ -14,6 +14,9 @@ export const DimensionContainer = createContainer(() => {
     const below1500 = useMediaQuery("(max-width:1500px)")
     const below1922 = useMediaQuery("(max-width:1922px)")
 
+    const resizeObserver = useRef<ResizeObserver>()
+    const gameUIContainer = useRef<HTMLElement | null>(null)
+
     const [gameUIDimensions, setGameUIDimensions] = useDebounce<Dimension>(
         {
             width: 0,
@@ -24,55 +27,60 @@ export const DimensionContainer = createContainer(() => {
 
     // Please refer to `src/theme/global.css`
     useEffect(() => {
-        if (below600) return setRemToPxRatio(0.42 * 16)
+        if (below600) return setRemToPxRatio(0.39 * 16)
         if (below900) return setRemToPxRatio(0.44 * 16)
         if (below1500) return setRemToPxRatio(0.5 * 16)
         if (below1922) return setRemToPxRatio(0.52 * 16)
         setRemToPxRatio(0.6 * 16)
     }, [below1922, below1500, below900, below600])
 
-    useEffect(() => {
-        const gameUIContainer = document.getElementById("game-ui-container")
-        if (!gameUIContainer) {
-            console.error("Please assign #game-ui-container to the game UI.")
-            return
-        }
+    const setupResizeObserver = useCallback(() => {
+        gameUIContainer.current = document.getElementById("game-ui-container")
+        if (!gameUIContainer.current) return
 
-        const resize_ob = new ResizeObserver((entries) => {
+        resizeObserver.current = new ResizeObserver((entries) => {
             const rect = entries[0].contentRect
             setGameUIDimensions({
                 width: rect.width,
                 height: rect.height,
             })
         })
-
-        resize_ob.observe(gameUIContainer)
-        return () => {
-            resize_ob.unobserve(gameUIContainer)
-        }
+        resizeObserver.current.observe(gameUIContainer.current)
     }, [setGameUIDimensions])
 
     const recalculateDimensions = useCallback(() => {
-        const gameUIContainer = document.getElementById("game-ui-container")
-        if (!gameUIContainer) {
+        gameUIContainer.current = document.getElementById("game-ui-container")
+        if (!gameUIContainer.current) {
             setGameUIDimensions({ width: 0, height: 0 })
             return
         }
 
-        const containerWidth = gameUIContainer.offsetWidth
-        const containerHeight = gameUIContainer.offsetHeight
+        const containerWidth = gameUIContainer.current.offsetWidth
+        const containerHeight = gameUIContainer.current.offsetHeight
 
         setGameUIDimensions({ width: containerWidth, height: containerHeight })
     }, [setGameUIDimensions])
 
+    const triggerReset = useCallback(() => {
+        recalculateDimensions()
+        setupResizeObserver()
+    }, [recalculateDimensions, setupResizeObserver])
+
     useEffect(() => {
         recalculateDimensions()
-    }, [recalculateDimensions, remToPxRatio, isNavOpen])
+        setupResizeObserver()
+    }, [remToPxRatio, isNavOpen, recalculateDimensions, setupResizeObserver])
+
+    useEffect(() => {
+        return () => {
+            resizeObserver.current && gameUIContainer.current && resizeObserver.current.unobserve(gameUIContainer.current)
+        }
+    }, [])
 
     return {
         remToPxRatio,
         gameUIDimensions,
-        recalculateDimensions,
+        triggerReset,
     }
 })
 

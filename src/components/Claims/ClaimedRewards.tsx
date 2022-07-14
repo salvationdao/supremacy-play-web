@@ -37,31 +37,31 @@ export const ClaimedRewards = ({ rewards, onClose }: ClaimedRewardsProps) => {
             sx={{ m: "4rem", width: "110rem", maxWidth: "80%" }}
             backgroundColor={theme.factionTheme.background}
         >
-            <Stack spacing="2.5rem" justifyContent="center" alignItems="center" sx={{ py: "5rem", px: "5.5rem", textAlign: "center" }}>
+            <Stack spacing="2rem" justifyContent="center" alignItems="center" sx={{ py: "5rem", px: "5.5rem", textAlign: "center" }}>
                 <Typography variant={"h1"} sx={{ fontFamily: fonts.nostromoBlack, fontSize: "3rem" }}>
                     CONGRATULATIONS!
                 </Typography>
 
-                {(isMechCrateReward || isWeaponCrateReward) && (
+                {(isMechCrateReward || isWeaponCrateReward) &&
+                new Date() < (isMechCrateReward?.locked_until || isWeaponCrateReward?.locked_until || Date.now) ? (
                     <Stack spacing="1.8rem" alignItems="center">
                         <Typography sx={{ fontFamily: fonts.nostromoBold }}>Your crates will be ready to open in:</Typography>
-
-                        {(isMechCrateReward?.locked_until || isWeaponCrateReward?.locked_until) && (
-                            <ClipThing
-                                clipSize="8px"
-                                border={{
-                                    borderColor: theme.factionTheme.primary,
-                                    borderThickness: ".2rem",
-                                }}
-                                sx={{ position: "relative" }}
-                                backgroundColor={theme.factionTheme.background}
-                            >
-                                <Box sx={{ py: "2rem", px: "3rem" }}>
-                                    <Countdown dateTo={isMechCrateReward?.locked_until || isWeaponCrateReward?.locked_until} />
-                                </Box>
-                            </ClipThing>
-                        )}
+                        <ClipThing
+                            clipSize="8px"
+                            border={{
+                                borderColor: theme.factionTheme.primary,
+                                borderThickness: ".2rem",
+                            }}
+                            sx={{ position: "relative" }}
+                            backgroundColor={theme.factionTheme.background}
+                        >
+                            <Box sx={{ py: "2rem", px: "3rem" }}>
+                                <Countdown dateTo={isMechCrateReward?.locked_until || isWeaponCrateReward?.locked_until} />
+                            </Box>
+                        </ClipThing>
                     </Stack>
+                ) : (
+                    <Typography sx={{ fontFamily: fonts.nostromoBold }}>You have purchased:</Typography>
                 )}
 
                 <Stack direction="row" justifyContent="space-around" alignItems="center">
@@ -119,9 +119,9 @@ const CrateItem = ({ label, imageUrl, quantity }: { label: string; imageUrl: str
 }
 
 const Countdown = ({ dateTo }: { dateTo: Date | undefined }) => {
-    const { days, hours, minutes, seconds } = useTimer(dateTo)
+    const { days, hours, minutes, seconds, totalSecRemain } = useTimer(dateTo)
 
-    if (seconds === undefined) return null
+    if (seconds === undefined || totalSecRemain <= 0) return null
 
     return (
         <Stack direction="row">

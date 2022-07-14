@@ -7,23 +7,28 @@ import { MysteryCrateBanner } from "../components/Common/PageHeaderBanners/Myste
 import { KeycardsHangar } from "../components/Hangar/KeycardsHangar/KeycardsHangar"
 import { MysteryCratesHangar } from "../components/Hangar/MysteryCratesHangar/MysteryCratesHangar"
 import { PlayerAbilitiesHangar } from "../components/Hangar/PlayerAbilitiesHangar/PlayerAbilitiesHangar"
+import { WeaponsHangar } from "../components/Hangar/WeaponsHangar/WeaponsHangar"
+
 import { WarMachinesHangar } from "../components/Hangar/WarMachinesHangar/WarMachinesHangar"
-import { STAGING_OR_DEV_ONLY } from "../constants"
 import { useTheme } from "../containers/theme"
 import { ROUTES_MAP } from "../routes"
 import { siteZIndex } from "../theme/theme"
+import { useAuth } from "../containers"
+import { FeatureName } from "../types"
 
 export enum HANGAR_TABS {
     WarMachines = "war-machines",
     MysteryCrates = "mystery-crates",
     Keycards = "key-cards",
     Abilities = "abilities",
+    Weapons = "weapons",
 }
 
 export const HangarPage = () => {
     const theme = useTheme()
     const location = useLocation()
     const history = useHistory()
+    const { userHasFeature } = useAuth()
     const { type } = useParams<{ type: HANGAR_TABS }>()
     const [currentValue, setCurrentValue] = useState<HANGAR_TABS>()
 
@@ -61,7 +66,7 @@ export const HangarPage = () => {
             }}
         >
             <Stack sx={{ mt: "1.5rem", mb: "2rem", height: "100%", width: "calc(100% - 3rem)", maxWidth: "193rem" }}>
-                <Stack direction="row" sx={{ mb: "1.1rem", gap: "1.2rem" }}>
+                <Stack direction="row" alignItems="center" sx={{ mb: "1.1rem", gap: "1.2rem" }}>
                     <ClipThing
                         clipSize="10px"
                         border={{
@@ -82,7 +87,7 @@ export const HangarPage = () => {
                                     flexShrink: 0,
                                     color: primaryColor,
                                     minHeight: 0,
-                                    ".MuiTab-root": { minHeight: 0, fontSize: "1.3rem", height: "8rem", width: "10rem" },
+                                    ".MuiTab-root": { minHeight: 0, fontSize: "1.3rem", height: "6rem", width: "10rem" },
                                     ".Mui-selected": {
                                         color: `${secondaryColor} !important`,
                                         background: `linear-gradient(${primaryColor} 26%, ${primaryColor}BB)`,
@@ -92,9 +97,14 @@ export const HangarPage = () => {
                                 }}
                             >
                                 <Tab label="WAR MACHINES" value={HANGAR_TABS.WarMachines} />
+
+                                <Tab label="WEAPONS" value={HANGAR_TABS.Weapons} />
+
                                 <Tab label="KEY CARDS" value={HANGAR_TABS.Keycards} />
+
                                 <Tab label="MYSTERY CRATES" value={HANGAR_TABS.MysteryCrates} />
-                                {STAGING_OR_DEV_ONLY && <Tab label="ABILITIES" value={HANGAR_TABS.Abilities} />}
+
+                                {userHasFeature(FeatureName.playerAbility) && <Tab label="ABILITIES" value={HANGAR_TABS.Abilities} />}
                             </Tabs>
                         </Box>
                     </ClipThing>
@@ -105,15 +115,24 @@ export const HangarPage = () => {
                 <TabPanel currentValue={currentValue} value={HANGAR_TABS.WarMachines}>
                     <WarMachinesHangar />
                 </TabPanel>
+
+                <TabPanel currentValue={currentValue} value={HANGAR_TABS.Weapons}>
+                    <WeaponsHangar />
+                </TabPanel>
+
                 <TabPanel currentValue={currentValue} value={HANGAR_TABS.Keycards}>
                     <KeycardsHangar />
                 </TabPanel>
+
                 <TabPanel currentValue={currentValue} value={HANGAR_TABS.MysteryCrates}>
                     <MysteryCratesHangar />
                 </TabPanel>
-                <TabPanel currentValue={currentValue} value={HANGAR_TABS.Abilities}>
-                    <PlayerAbilitiesHangar />
-                </TabPanel>
+
+                {userHasFeature(FeatureName.playerAbility) && (
+                    <TabPanel currentValue={currentValue} value={HANGAR_TABS.Abilities}>
+                        <PlayerAbilitiesHangar />
+                    </TabPanel>
+                )}
             </Stack>
         </Stack>
     )

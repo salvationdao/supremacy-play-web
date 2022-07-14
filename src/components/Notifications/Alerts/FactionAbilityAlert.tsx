@@ -42,7 +42,7 @@ export const FactionAbilityAlert = ({ data, getFaction }: { data: BattleFactionA
                     <StyledImageText text={label} color={colour} imageUrl={`${image_url}`} imageMb={-0.2} />
                 </Box>
                 <Box>
-                    <StyledNormalText text="Syndicate ability has been initiated." />
+                    <StyledNormalText text="Faction ability has been initiated." />
                 </Box>
             </Stack>
         </ClipThing>

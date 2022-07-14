@@ -1,24 +1,18 @@
 import { Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useState } from "react"
+import { SvgBattleAbilityIcon } from "../../../assets"
 import { BribeStageResponse } from "../../../containers"
 import { useInterval, useTimer } from "../../../hooks"
-import { SvgBattleAbilityIcon } from "../../../assets"
 import { colors } from "../../../theme/theme"
-import { ContributorAmount } from "../../BattleStats/ContributorAmount"
 
 export const BattleAbilityCountdown = ({ bribeStage }: { bribeStage?: BribeStageResponse }) => {
     return (
-        <>
-            <Stack direction="row" alignItems="center" spacing="1.2rem" sx={{ pr: ".3rem" }}>
-                <Stack direction="row" spacing=".6rem" alignItems="center">
-                    <SvgBattleAbilityIcon size="1.8rem" fill={colors.text} />
-                    <Typography sx={{ lineHeight: 1, color: colors.text, fontWeight: "fontWeightBold" }}>
-                        <CountdownText bribeStage={bribeStage} />
-                    </Typography>
-                </Stack>
-                <ContributorAmount hideContributionTotal />
-            </Stack>
-        </>
+        <Stack direction="row" spacing=".6rem" alignItems="center">
+            <SvgBattleAbilityIcon size="1.8rem" fill={colors.text} />
+            <Typography sx={{ lineHeight: 1, color: colors.text, fontWeight: "fontWeightBold", textTransform: "initial" }}>
+                <CountdownText bribeStage={bribeStage} />
+            </Typography>
+        </Stack>
     )
 }
 

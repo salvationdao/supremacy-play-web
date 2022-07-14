@@ -39,9 +39,9 @@ export const MiniMap = () => {
     // Map config
     const config: MoveableResizableConfig = useMemo(
         () => ({
-            localStoragePrefix: "minimap",
+            localStoragePrefix: "miniMap1",
             // Defaults
-            defaultPosX: 330,
+            defaultPosX: 350,
             defaultPosY: 0,
             defaultWidth: MINI_MAP_DEFAULT_SIZE,
             defaultHeight: MINI_MAP_DEFAULT_SIZE,
@@ -98,8 +98,21 @@ const MiniMapInner = ({ map, isTargeting, isEnlarged, toRender }: { map: Map; is
         remToPxRatio,
         gameUIDimensions: { width, height },
     } = useDimension()
-    const { updateSize, updatePosition, curWidth, curHeight, curPosX, curPosY, defaultWidth, maxWidth, maxHeight, setDefaultWidth, setDefaultHeight } =
-        useMoveableResizable()
+    const {
+        updateSize,
+        updatePosition,
+        curWidth,
+        curHeight,
+        curPosX,
+        curPosY,
+        defaultWidth,
+        maxWidth,
+        maxHeight,
+        setDefaultWidth,
+        setDefaultHeight,
+        minWidth,
+        setMinHeight,
+    } = useMoveableResizable()
 
     const ref = useRef<HTMLDivElement>()
     const mapHeightWidthRatio = useRef(1)
@@ -108,16 +121,16 @@ const MiniMapInner = ({ map, isTargeting, isEnlarged, toRender }: { map: Map; is
     const prevPosX = useRef(curPosX)
     const prevPosY = useRef(curPosY)
 
-    const isLargeMode = useMemo(() => curWidth > 200 || curHeight > 200, [curHeight, curWidth])
-
     // Set initial size
     useEffect(() => {
         const ratio = map.height / map.width
         const defaultW = defaultWidth
         const defaultH = defaultWidth * ratio + TOP_BAR_HEIGHT * remToPxRatio
+        const minH = (minWidth || defaultWidth) * ratio + TOP_BAR_HEIGHT * remToPxRatio
 
         setDefaultWidth(defaultW)
         setDefaultHeight(defaultH)
+        setMinHeight(minH)
         updateSize({ width: curWidth, height: curWidth * ratio + TOP_BAR_HEIGHT * remToPxRatio })
         mapHeightWidthRatio.current = ratio
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -141,7 +154,7 @@ const MiniMapInner = ({ map, isTargeting, isEnlarged, toRender }: { map: Map; is
             prevWidth.current = curWidth
             prevHeight.current = curHeight
             updateSize({ width: targetingWidth, height: targetingHeight })
-            updatePosition({ x: (width - targetingWidth) / 2, y: (height - targetingHeight) / 2 })
+            updatePosition({ x: (width - targetingWidth) / 2, y: (height - targetingHeight) / 2 - 55 })
         } else {
             updateSize({ width: prevWidth.current, height: prevHeight.current })
             updatePosition({ x: prevPosX.current, y: prevPosY.current })
@@ -202,11 +215,11 @@ const MiniMapInner = ({ map, isTargeting, isEnlarged, toRender }: { map: Map; is
                     </Typography>
                 </Stack>
 
-                <MiniMapInside containerDimensions={{ width: insideWidth, height: insideHeight }} isLargeMode={isLargeMode} />
+                <MiniMapInside containerDimensions={{ width: insideWidth, height: insideHeight }} />
 
                 <TargetHint />
             </Box>
         )
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [toRender, theme.factionTheme.primary, mapName, curWidth, curHeight, isLargeMode, remToPxRatio, isMobile, width])
+    }, [toRender, theme.factionTheme.primary, mapName, curWidth, curHeight, remToPxRatio, isMobile, width])
 }

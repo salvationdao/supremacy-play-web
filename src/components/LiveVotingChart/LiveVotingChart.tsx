@@ -28,11 +28,11 @@ export const LiveVotingChart = () => {
 
     const config: MoveableResizableConfig = useMemo(
         () => ({
-            localStoragePrefix: "liveVoting",
+            localStoragePrefix: "liveVoting1",
             // Defaults
             defaultPosX: 0,
-            defaultPosY: 490,
-            defaultWidth: 320,
+            defaultPosY: 125,
+            defaultWidth: 340,
             defaultHeight: 120,
             // Position limits
             minPosX: 0,
@@ -45,7 +45,7 @@ export const LiveVotingChart = () => {
             onHideCallback: () => toggleIsLiveChartOpen(false),
             // Others
             infoTooltipText:
-                "The chart shows you the SUPS being spent into the battle arena in real time. All SUPS spent are accumulated into the SPOILS OF WAR, which are distributed back to the players in future battles based on the multipliers that they have earned. Contribute to the battle or be part of the winning Syndicate to increase your earnings.",
+                "The chart shows you the SUPS being spent into the battle arena in real time. All SUPS spent are accumulated into the SPOILS OF WAR, which are distributed back to the players in future battles based on the multipliers that they have earned. Contribute to the battle or be part of the winning Faction to increase your earnings.",
         }),
         [toggleIsLiveChartOpen],
     )

@@ -14,7 +14,7 @@ import { PageHeader } from "../../Common/PageHeader"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { MysteryCrateStoreItemLoadingSkeleton } from "../../Storefront/MysteryCratesStore/MysteryCrateStoreItem/MysteryCrateStoreItem"
 import { MysteryCrateHangarItem } from "./MysteryCrateHangarItem"
-import { CrateRewards } from "./OpenCrate/CrateRewards"
+import { CrateRewardsModal } from "./OpenCrate/CrateRewardsModal"
 
 interface GetCratesRequest {
     page: number
@@ -285,7 +285,7 @@ export const MysteryCratesHangar = () => {
             </ClipThing>
 
             {crateOpen && crateReward && (
-                <CrateRewards
+                <CrateRewardsModal
                     rewards={crateReward}
                     onClose={() => {
                         setCrateOpen(false)

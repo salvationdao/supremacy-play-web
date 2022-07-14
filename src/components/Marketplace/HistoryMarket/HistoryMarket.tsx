@@ -5,7 +5,7 @@ import { ClipThing, FancyButton } from "../.."
 import { EmptyWarMachinesPNG, WarMachineIconPNG } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { parseString } from "../../../helpers"
-import { usePagination, useUrlQuery } from "../../../hooks"
+import { usePagination, useToggle, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
@@ -38,6 +38,7 @@ export const HistoryMarket = () => {
         pageSize: parseString(query.get("pageSize"), 10),
         page: parseString(query.get("page"), 1),
     })
+    const [isGridView, toggleIsGridView] = useToggle(false)
 
     // Filters and sorts
     const [search, setSearch] = useState("")
@@ -56,6 +57,7 @@ export const HistoryMarket = () => {
             { value: MarketplaceEventType.Sold, label: "SOLD", color: colors.marketSold },
         ],
         initialSelected: eventType,
+        initialExpanded: true,
         onSetSelected: (value: string[]) => {
             setEventType(value)
             changePage(1)
@@ -148,7 +150,7 @@ export const HistoryMarket = () => {
                             width: "100%",
                             py: "1rem",
                             display: "grid",
-                            gridTemplateColumns: "100%",
+                            gridTemplateColumns: isGridView ? "repeat(auto-fill, minmax(29rem, 1fr))" : "100%",
                             gap: "1.3rem",
                             alignItems: "center",
                             justifyContent: "center",
@@ -156,7 +158,7 @@ export const HistoryMarket = () => {
                         }}
                     >
                         {eventItems.map((eventItem) => (
-                            <HistoryItem key={`marketplace-${eventItem.id}`} eventItem={eventItem} />
+                            <HistoryItem key={`marketplace-${eventItem.id}`} eventItem={eventItem} isGridView={isGridView} />
                         ))}
                     </Box>
                 </Box>
@@ -194,7 +196,7 @@ export const HistoryMarket = () => {
                 </Stack>
             </Stack>
         )
-    }, [loadError, eventItems, isLoading, primaryColor])
+    }, [loadError, eventItems, isLoading, primaryColor, isGridView])
 
     return (
         <Stack direction="row" spacing="1rem" sx={{ height: "100%" }}>
@@ -258,6 +260,8 @@ export const HistoryMarket = () => {
                             changePageSize={changePageSize}
                             pageSizeOptions={[10, 20, 40]}
                             changePage={changePage}
+                            isGridView={isGridView}
+                            toggleIsGridView={toggleIsGridView}
                             manualRefresh={getItems}
                             sortOptions={sortOptions}
                             selectedSort={sort}

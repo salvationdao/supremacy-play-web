@@ -20,7 +20,7 @@ export const Thumbnail = ({
                 width: "100%",
             }}
         >
-            <MediaPreview imageUrl={imageUrl} videoUrls={[animationUrl, cardAnimationUrl]} />
+            <MediaPreview imageUrl={imageUrl} videoUrls={[animationUrl, cardAnimationUrl]} objectFit={isGridView ? "cover" : "contain"} />
         </Box>
     )
 }

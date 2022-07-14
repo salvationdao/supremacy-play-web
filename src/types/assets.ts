@@ -8,6 +8,15 @@ export enum MechStatusEnum {
     Sold = "SOLD",
 }
 
+export enum WeaponType {
+    Cannon = "Cannon",
+    Sword = "Sword",
+    Minigun = "Minigun",
+    MissileLauncher = "Missile Launcher",
+    PlasmaGun = "Plasma Gun",
+    SniperRifle = "Sniper Rifle",
+}
+
 export interface MechStatus {
     status: MechStatusEnum
     queue_position?: number
@@ -184,6 +193,7 @@ export interface Weapon extends Collection {
     blueprint_id: string
     default_damage_type: string
     genesis_token_id?: number
+    equipped_on?: string
     weapon_type: string
     damage_falloff?: number
     damage_falloff_rate?: number
@@ -194,8 +204,11 @@ export interface Weapon extends Collection {
     projectile_speed?: number
     energy_cost?: number
     max_ammo?: number
+    weapon_skin?: WeaponSkin
     updated_at: Date
     created_at: Date
+    market_locked: boolean
+    item_sale_id?: string
 }
 
 export interface WeaponSkin extends Collection {
@@ -279,6 +292,7 @@ export interface BattleMechHistory {
     faction_won?: boolean
     mech_survived?: boolean
     battle?: Battle
+    mech?: MechDetails
 }
 
 export interface BattleMechHistoryIdentifier {
@@ -299,6 +313,10 @@ export interface BattleMechStats {
         kill_percentile: number
         survival_percentile: number
     }
+}
+
+export interface AbilityDetail {
+    radius: number
 }
 
 export interface WarMachineState {
@@ -428,4 +446,10 @@ export interface OpenCrateResponse {
     mech_skin?: MechSkin
     weapon: Weapon[]
     weapon_skin?: WeaponSkin
+}
+
+export interface Rarity {
+    label: string
+    color: string
+    textColor: string
 }

@@ -3,7 +3,7 @@ import { createContainer } from "unstated-next"
 import { useSupremacy } from "."
 import { useGameServerCommandsUser, useGameServerSubscription, useGameServerSubscriptionUser } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
-import { BattleEndDetail, BribeStage, GameAbility, Map, WarMachineState } from "../types"
+import { AbilityDetail, BattleEndDetail, BribeStage, Map, WarMachineState } from "../types"
 
 export interface BribeStageResponse {
     phase: BribeStage
@@ -14,11 +14,7 @@ export interface GameSettingsResponse {
     battle_identifier: number
     game_map: Map
     war_machines: WarMachineState[]
-}
-
-export interface WinnerAnnouncementResponse {
-    game_ability: GameAbility
-    end_time: Date
+    ability_details: AbilityDetail[]
 }
 
 // Game data that needs to be shared between different components
@@ -28,6 +24,7 @@ export const GameContainer = createContainer(() => {
 
     // States
     const [map, setMap] = useState<Map>()
+    const [abilityDetails, setAbilityDetails] = useState<AbilityDetail[]>([])
     const [warMachines, setWarMachines] = useState<WarMachineState[] | undefined>([])
     const [bribeStage, setBribeStage] = useState<BribeStageResponse | undefined>()
     const [battleEndDetail, setBattleEndDetail] = useState<BattleEndDetail>()
@@ -43,6 +40,7 @@ export const GameContainer = createContainer(() => {
             if (!payload) return
             if (payload.battle_identifier > 0) setBattleIdentifier(payload.battle_identifier)
             setMap(payload.game_map)
+            setAbilityDetails(payload.ability_details)
             setWarMachines(payload.war_machines)
         },
     )
@@ -81,6 +79,7 @@ export const GameContainer = createContainer(() => {
         bribeStage,
         map,
         setMap,
+        abilityDetails,
         warMachines,
         battleEndDetail,
         setBattleEndDetail,

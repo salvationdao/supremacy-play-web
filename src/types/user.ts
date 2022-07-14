@@ -1,11 +1,11 @@
 export interface User {
     id: string
     username: string
-    avatar_id: string
     faction_id: string
     gid: number
     mobile_number?: string
     rank: UserRank
+    features: Feature[]
 }
 
 export interface FactionStat {
@@ -37,6 +37,7 @@ export interface Faction {
     label: string
     logo_url: string
     background_url: string
+    wallpaper_url: string
     primary_color: string
     secondary_color: string
     background_color: string
@@ -68,4 +69,15 @@ export interface UserStat {
     total_ability_triggered: number
     ability_kill_count: number
     mech_kill_count: number
+}
+
+export interface Feature {
+    id: string
+    name: FeatureName
+}
+
+export enum FeatureName {
+    mechMove = "MECH_MOVE",
+    playerAbility = "PLAYER_ABILITY",
+    publicProfilePage = "PUBLIC_PROFILE",
 }

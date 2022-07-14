@@ -5,8 +5,11 @@ import { colors } from "../theme/theme"
 import { StorefrontPage } from "../pages/StorefrontPage"
 import { MarketplaceItemPage } from "../pages/MarketplaceItemPage"
 import { MarketplaceSellPage } from "../pages/MarketplaceSellPage"
+import { MechPage } from "../pages/MechPage"
+import { WeaponPage } from "../pages/WeaponPage"
 import { LiveChat } from "../components/RightDrawer/LiveChat/LiveChat"
 import { PlayerList } from "../components/RightDrawer/PlayerList/PlayerList"
+import { PlayerProfilePage } from "../components/PublicProfile/PlayerProfile"
 
 /**
  * Left drawer
@@ -40,6 +43,28 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
             label: "Battle Arena",
         },
         matchLeftDrawerID: "home",
+    },
+
+    // Mech
+    mech: {
+        id: "mech",
+        path: "/mech/:mechID?",
+        exact: true,
+        Component: MechPage,
+        requireAuth: true,
+        requireFaction: true,
+        matchLeftDrawerID: "fleet",
+    },
+
+    // Weapon
+    weapon: {
+        id: "weapon",
+        path: "/weapon/:weaponID?",
+        exact: true,
+        Component: WeaponPage,
+        requireAuth: true,
+        requireFaction: true,
+        matchLeftDrawerID: "fleet",
     },
 
     // Fleet
@@ -105,6 +130,16 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         matchLeftDrawerID: "marketplace",
     },
 
+    // Player profile
+    player_profile: {
+        id: "profile",
+        path: "/profile/:playerGID",
+        exact: true,
+        Component: PlayerProfilePage,
+        requireAuth: false,
+        requireFaction: false,
+    },
+
     // Contract
     contracts: {
         id: "contracts",
@@ -154,7 +189,6 @@ export enum RightDrawerHashes {
     None = "",
     LiveChat = "#live_chat",
     PlayerList = "#player_list",
-    Socials = "#socials",
 }
 
 export interface HashRouteStruct {

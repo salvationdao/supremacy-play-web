@@ -53,7 +53,7 @@ export const MysteryCrateBanner = () => {
                 borderThickness: ".3rem",
             }}
             backgroundColor={backgroundColor}
-            sx={{ flex: 1, alignSelf: "stretch" }}
+            sx={{ flex: 1, alignSelf: "stretch", flexShrink: 0 }}
         >
             <Stack
                 direction="row"
@@ -91,7 +91,7 @@ export const MysteryCrateBanner = () => {
 
                 {/* Countdown and CTA button */}
                 <Stack direction="row" alignItems="center" spacing="2.2rem" sx={{ py: ".5rem" }}>
-                    <Stack alignItems="center">
+                    <Stack alignItems="center" spacing="-.5rem">
                         <Typography sx={{ fontFamily: fonts.nostromoBlack }}>MYSTERY CRATE OPENING IN </Typography>
                         <Countdown dateTo={new Date(LOCKED_UNTIL)} />
                     </Stack>
@@ -104,11 +104,11 @@ export const MysteryCrateBanner = () => {
                             border: { isFancy: true, borderColor: primaryColor, borderThickness: "1.5px" },
                             sx: { position: "relative" },
                         }}
-                        sx={{ px: "4rem", py: ".8rem", color: secondaryColor }}
+                        sx={{ px: "3.4rem", py: ".8rem", color: secondaryColor }}
                         to={`/storefront/mystery-crates${location.hash}`}
                     >
                         <Stack justifyContent="center" sx={{ height: "100%" }}>
-                            <Typography variant="body2" sx={{ fontWeight: "fontWeightBold", color: secondaryColor }}>
+                            <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBlack, color: secondaryColor }}>
                                 SHOP NOW
                             </Typography>
                         </Stack>

@@ -102,7 +102,7 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate }: MysteryCrateStore
                                 }}
                             >
                                 <MediaPreview
-                                    imageUrl={mysteryCrate.image_url || SafePNG}
+                                    imageUrl={mysteryCrate.image_url || mysteryCrate.avatar_url || SafePNG}
                                     videoUrls={[mysteryCrate.animation_url, mysteryCrate.card_animation_url]}
                                     objectFit="cover"
                                 />
@@ -309,7 +309,7 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate }: MysteryCrateStore
                     }
                 >
                     <Typography variant="h6">
-                        Do you wish to purchase {quantity} <strong>{mysteryCrate.mystery_crate_type}</strong> crate for <span>{formattedPrice}</span> SUPS?
+                        Do you wish to purchase {quantity} x <strong>{mysteryCrate.mystery_crate_type}</strong> crate for <span>{formattedPrice}</span> SUPS?
                     </Typography>
                 </ConfirmModal>
             )}

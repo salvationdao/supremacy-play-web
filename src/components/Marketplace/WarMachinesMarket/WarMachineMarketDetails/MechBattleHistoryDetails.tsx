@@ -7,10 +7,10 @@ import { useGameServerCommands } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
 import { BattleMechHistory, BattleMechStats, MechDetails } from "../../../../types"
-import { HistoryEntry } from "../../../Hangar/WarMachinesHangar/MechHistory/HistoryEntry"
-import { PercentageDisplay, PercentageDisplaySkeleton } from "../../../Hangar/WarMachinesHangar/MechHistory/PercentageDisplay"
+import { HistoryEntry } from "../../../Hangar/WarMachinesHangar/Common/MechHistory/HistoryEntry"
+import { PercentageDisplay, PercentageDisplaySkeleton } from "../../../Hangar/WarMachinesHangar/Common/MechHistory/PercentageDisplay"
 
-export const MechBattleHistoryDetails = ({ mechDetails }: { mechDetails?: MechDetails }) => {
+export const MechBattleHistoryDetails = ({ mechDetails, smallSize }: { mechDetails?: MechDetails; smallSize?: boolean }) => {
     const theme = useTheme()
     const { send } = useGameServerCommands("/public/commander")
     // Mech stats
@@ -70,64 +70,82 @@ export const MechBattleHistoryDetails = ({ mechDetails }: { mechDetails?: MechDe
 
     if (!mechDetails) return null
 
+    const size = smallSize ? 70 : 86
+    const circleSize = smallSize ? 50 : 70
+    const unknownCircleSize = smallSize ? 40 : 55
+
     return (
-        <Stack spacing="3.8rem">
-            <Stack direction="row" justifyContent="space-between" sx={{ px: "2rem" }}>
+        <Stack spacing={smallSize ? "1.9rem" : "3.8rem"}>
+            <Stack direction="row" justifyContent="space-between" sx={{ px: smallSize ? ".5rem" : "2rem" }}>
                 {statsLoading ? (
                     <>
-                        <PercentageDisplaySkeleton circleSize={70} />
-                        <PercentageDisplaySkeleton circleSize={70} />
-                        <PercentageDisplaySkeleton circleSize={70} />
-                        <PercentageDisplaySkeleton circleSize={70} />
+                        <PercentageDisplaySkeleton circleSize={circleSize} />
+                        <PercentageDisplaySkeleton circleSize={circleSize} />
+                        <PercentageDisplaySkeleton circleSize={circleSize} />
+                        <PercentageDisplaySkeleton circleSize={circleSize} />
                     </>
                 ) : stats ? (
                     <>
                         <PercentageDisplay
                             displayValue={`${(stats.extra_stats.win_rate * 100).toFixed(0)}%`}
                             percentage={stats.extra_stats.win_rate * 100}
-                            size={86}
-                            circleSize={70}
+                            size={size}
+                            circleSize={circleSize}
                             label="Win %"
                         />
-                        <PercentageDisplay displayValue={`${stats.total_kills}`} percentage={100} size={86} circleSize={70} label="Kills" color={colors.gold} />
+                        <PercentageDisplay
+                            displayValue={`${stats.total_kills}`}
+                            percentage={100}
+                            size={size}
+                            circleSize={circleSize}
+                            label="Kills"
+                            color={colors.gold}
+                        />
                         <PercentageDisplay
                             displayValue={`${(stats.extra_stats.survival_rate * 100).toFixed(0)}%`}
                             percentage={stats.extra_stats.survival_rate * 100}
-                            size={86}
-                            circleSize={70}
-                            label="Survival %"
+                            size={size}
+                            circleSize={circleSize}
+                            label="Survive %"
                             color={colors.green}
                         />
                         <PercentageDisplay
                             displayValue={`${stats.total_deaths}`}
                             percentage={100}
-                            size={86}
-                            circleSize={70}
+                            size={size}
+                            circleSize={circleSize}
                             label="Deaths"
                             color={colors.red}
                         />
                     </>
                 ) : (
                     <>
-                        <PercentageDisplay displayValue={`?`} percentage={0} size={86} circleSize={55} label="Win %" />
-                        <PercentageDisplay displayValue={`?`} percentage={0} size={86} circleSize={55} label="Kills" color={colors.gold} />
-                        <PercentageDisplay displayValue={`?`} percentage={0} size={86} circleSize={55} label="Survival %" color={colors.green} />
-                        <PercentageDisplay displayValue={`?`} percentage={0} size={86} circleSize={55} label="Deaths" color={colors.red} />
+                        <PercentageDisplay displayValue={`?`} percentage={0} size={size} circleSize={unknownCircleSize} label="Win %" />
+                        <PercentageDisplay displayValue={`?`} percentage={0} size={size} circleSize={unknownCircleSize} label="Kills" color={colors.gold} />
+                        <PercentageDisplay
+                            displayValue={`?`}
+                            percentage={0}
+                            size={size}
+                            circleSize={unknownCircleSize}
+                            label="Survive %"
+                            color={colors.green}
+                        />
+                        <PercentageDisplay displayValue={`?`} percentage={0} size={size} circleSize={unknownCircleSize} label="Deaths" color={colors.red} />
                     </>
                 )}
             </Stack>
 
             <Stack spacing="1.8rem">
                 <Stack direction="row" alignItems="center" spacing=".5rem">
-                    <Stack direction="row" spacing=".6rem" alignItems="center">
-                        <SvgHistory fill={theme.factionTheme.primary} size="2.5rem" />
-                        <Typography variant="h5" sx={{ color: theme.factionTheme.primary, fontFamily: fonts.nostromoBlack }}>
+                    <Stack direction="row" spacing=".8rem" alignItems="center">
+                        <SvgHistory fill={theme.factionTheme.primary} size={smallSize ? "1.8rem" : "2.5rem"} />
+                        <Typography variant={smallSize ? "body1" : "h5"} sx={{ color: theme.factionTheme.primary, fontFamily: fonts.nostromoBlack }}>
                             RECENT 10 BATTLES
                         </Typography>
                     </Stack>
 
                     <IconButton size="small" sx={{ opacity: 0.4, "&:hover": { cursor: "pointer", opacity: 1 } }} onClick={() => fetchHistory()}>
-                        <SvgRefresh size="1.5rem" />
+                        <SvgRefresh size={smallSize ? "1.2rem" : "1.5rem"} />
                     </IconButton>
                 </Stack>
 
@@ -160,7 +178,7 @@ export const MechBattleHistoryDetails = ({ mechDetails }: { mechDetails?: MechDe
                 )}
 
                 {!historyLoading && !historyError && history.length <= 0 && (
-                    <Typography variant="body2" sx={{ color: colors.grey, fontFamily: fonts.nostromoBold }}>
+                    <Typography variant={smallSize ? "caption" : "body2"} sx={{ color: colors.grey, fontFamily: fonts.nostromoBold }}>
                         NO RECENT BATTLE HISTORY...
                     </Typography>
                 )}

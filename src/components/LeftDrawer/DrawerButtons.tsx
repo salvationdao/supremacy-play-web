@@ -6,6 +6,7 @@ import { useTheme } from "../../containers/theme"
 import { ROUTES_ARRAY } from "../../routes"
 import { colors, fonts, siteZIndex } from "../../theme/theme"
 import { QuickDeployButton } from "../QuickDeploy/QuickDeployButton"
+import { QuickPlayerAbilitiesButton } from "../QuickPlayerAbilities/QuickPlayerAbilitiesButton"
 
 const DRAWER_BAR_WIDTH = 3 // rem
 const BUTTON_WIDTH = 17 //rem
@@ -57,7 +58,10 @@ export const DrawerButtons = ({ openLeftDrawer }: { openLeftDrawer: () => void }
 
                     const toRender = []
 
-                    if (id === "fleet" && !isMobile) toRender.push(<QuickDeployButton />)
+                    if (id === "fleet" && !isMobile) {
+                        toRender.push(<QuickDeployButton />)
+                        toRender.push(<QuickPlayerAbilitiesButton />)
+                    }
                     toRender.push(
                         <TabButton
                             key={r.id}

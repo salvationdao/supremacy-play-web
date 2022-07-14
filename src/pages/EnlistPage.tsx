@@ -29,7 +29,7 @@ export const EnlistPage = () => {
         >
             <Stack alignItems="center" sx={{ my: "auto" }}>
                 <Typography variant="h1" sx={{ fontFamily: fonts.nostromoBlack, fontSize: "3rem" }}>
-                    Choose Your Syndicate
+                    Choose Your Faction
                 </Typography>
                 <Stack direction="row" spacing="3rem" justifyContent="space-between" sx={{ p: "5rem" }}>
                     {below1200 ? (
@@ -50,7 +50,7 @@ const renderLastDescription = (faction: Faction) => {
         case "Zaibatsu Heavy Industries":
             return "By enlisting in Zaibatsu, you are joining a powerhouse in city construction and industrial production."
         case "Red Mountain Offworld Mining Corporation":
-            return "By enlisting in Red Mountain, you are joining the greatest interplanetary mining syndicate ever assembled."
+            return "By enlisting in Red Mountain, you are joining the greatest interplanetary mining faction ever assembled."
     }
 }
 
@@ -62,9 +62,9 @@ const ExtendedFactionEnlist = ({ faction }: { faction: Faction }) => {
     const enlistFaction = useCallback(async () => {
         try {
             await send<null, { faction_id: string }>(GameServerKeys.EnlistFaction, { faction_id: faction.id })
-            newSnackbarMessage("Successfully enlisted into syndicate.", "success")
+            newSnackbarMessage("Successfully enlisted into faction.", "success")
         } catch (err) {
-            newSnackbarMessage(typeof err === "string" ? err : "Failed to enlist into syndicate.", "error")
+            newSnackbarMessage(typeof err === "string" ? err : "Failed to enlist into faction.", "error")
             console.error(err)
         }
         return

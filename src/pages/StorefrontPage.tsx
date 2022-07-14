@@ -6,10 +6,11 @@ import { ClipThing } from "../components"
 import { MysteryCrateBanner } from "../components/Common/PageHeaderBanners/MysteryCrateBanner"
 import { MysteryCratesStore } from "../components/Storefront/MysteryCratesStore/MysteryCratesStore"
 import { PlayerAbilitiesStore } from "../components/Storefront/PlayerAbilitiesStore/PlayerAbilitiesStore"
-import { STAGING_OR_DEV_ONLY } from "../constants"
 import { useTheme } from "../containers/theme"
 import { ROUTES_MAP } from "../routes"
 import { siteZIndex } from "../theme/theme"
+import { useAuth } from "../containers"
+import { FeatureName } from "../types"
 
 export enum STOREFRONT_TABS {
     MysteryCrates = "mystery-crates",
@@ -22,6 +23,7 @@ export const StorefrontPage = () => {
     const theme = useTheme()
     const location = useLocation()
     const history = useHistory()
+    const { userHasFeature } = useAuth()
     const { type } = useParams<{ type: STOREFRONT_TABS }>()
     const [currentValue, setCurrentValue] = useState<STOREFRONT_TABS>()
 
@@ -59,7 +61,7 @@ export const StorefrontPage = () => {
             }}
         >
             <Stack sx={{ mt: "1.5rem", mb: "2rem", height: "100%", width: "calc(100% - 3rem)", maxWidth: "190rem" }}>
-                <Stack direction="row" sx={{ mb: "1.1rem", gap: "1.2rem" }}>
+                <Stack direction="row" alignItems="center" sx={{ mb: "1.1rem", gap: "1.2rem" }}>
                     <ClipThing
                         clipSize="10px"
                         border={{
@@ -80,7 +82,7 @@ export const StorefrontPage = () => {
                                     flexShrink: 0,
                                     color: primaryColor,
                                     minHeight: 0,
-                                    ".MuiTab-root": { minHeight: 0, fontSize: "1.3rem", height: "8rem", width: "10rem" },
+                                    ".MuiTab-root": { minHeight: 0, fontSize: "1.3rem", height: "6rem", width: "10rem" },
                                     ".Mui-selected": {
                                         color: `${secondaryColor} !important`,
                                         background: `linear-gradient(${primaryColor} 26%, ${primaryColor}BB)`,
@@ -90,7 +92,8 @@ export const StorefrontPage = () => {
                                 }}
                             >
                                 <Tab label="MYSTERY CRATES" value={STOREFRONT_TABS.MysteryCrates} />
-                                {STAGING_OR_DEV_ONLY && <Tab label="ABILITIES" value={STOREFRONT_TABS.Abilities} />}
+
+                                {userHasFeature(FeatureName.playerAbility) && <Tab label="ABILITIES" value={STOREFRONT_TABS.Abilities} />}
                             </Tabs>
                         </Box>
                     </ClipThing>
@@ -101,15 +104,12 @@ export const StorefrontPage = () => {
                 <TabPanel currentValue={currentValue} value={STOREFRONT_TABS.MysteryCrates}>
                     <MysteryCratesStore />
                 </TabPanel>
-                <TabPanel currentValue={currentValue} value={STOREFRONT_TABS.Skins}>
-                    COMING SOON!
-                </TabPanel>
-                <TabPanel currentValue={currentValue} value={STOREFRONT_TABS.Abilities}>
-                    <PlayerAbilitiesStore />
-                </TabPanel>
-                <TabPanel currentValue={currentValue} value={STOREFRONT_TABS.Merchandise}>
-                    COMING SOON!
-                </TabPanel>
+
+                {userHasFeature(FeatureName.playerAbility) && (
+                    <TabPanel currentValue={currentValue} value={STOREFRONT_TABS.Abilities}>
+                        <PlayerAbilitiesStore />
+                    </TabPanel>
+                )}
             </Stack>
         </Stack>
     )

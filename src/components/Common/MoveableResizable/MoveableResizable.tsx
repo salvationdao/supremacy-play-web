@@ -42,6 +42,8 @@ const MoveableResizableInner = ({ children }: MoveableResizableProps) => {
         onMovingStopped,
         onResizeStopped,
         topRightContent,
+
+        autoFit,
     } = useMoveableResizable()
 
     const topRightBackgroundColor = useMemo(() => shadeColor(theme.factionTheme.primary, -90), [theme.factionTheme.primary])
@@ -70,6 +72,8 @@ const MoveableResizableInner = ({ children }: MoveableResizableProps) => {
                     width: defaultWidth,
                     height: defaultHeight,
                 }}
+                size={autoFit ? { width: "unset", height: "unset" } : undefined}
+                enableResizing={autoFit ? {} : undefined}
                 className="moveable-resizable"
                 dragHandleClassName="moveable-resizable-drag-handle"
                 minWidth={minWidth}

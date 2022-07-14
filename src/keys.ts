@@ -43,6 +43,9 @@ export enum GameServerKeys {
     // Asset / queue
     SubQueueFeed = "BATTLE:QUEUE:STATUS:SUBSCRIBE",
     GetMechs = "PLAYER:ASSET:MECH:LIST",
+    // Weapons
+    GetWeapons = "PLAYER:ASSET:WEAPON:LIST",
+    GetWeaponDetails = "PLAYER:ASSET:WEAPON:DETAIL",
     GetMechDetails = "PLAYER:ASSET:MECH:DETAIL",
     SubMechQueuePosition = "PLAYER:ASSET:MECH:QUEUE:SUBSCRIBE",
     JoinQueue = "BATTLE:QUEUE:JOIN",
@@ -60,6 +63,9 @@ export enum GameServerKeys {
     SaleAbilitiesList = "SALE:ABILITIES:LIST:SUBSCRIBE",
     SaleAbilityPurchase = "SALE:ABILITY:PURCHASE",
     PlayerAbilityUse = "PLAYER:ABILITY:USE",
+
+    // Minimap ability updates
+    MinimapUpdatesSubscribe = "MINIMAP:UPDATES:SUBSCRIBE",
 
     // Chat
     SubscribeFactionChat = "FACTION:CHAT:SUBSCRIBE",
@@ -135,6 +141,14 @@ export enum GameServerKeys {
     // Keycards
     GetPlayerKeycards = "PLAYER:ASSET:KEYCARD:LIST",
     GetPlayerKeycard = "PLAYER:ASSET:KEYCARD:GET",
+
+    // Player profile
+    PlayerProfileGet = "PLAYER:PROFILE:GET",
+    PlayerProfileUpdateUsername = "PLAYER:UPDATE:USERNAME",
+    PlayerProfileUpdateAboutMe = "PLAYER:UPDATE:ABOUT_ME",
+    PlayerAssetMechListPublic = "PLAYER:ASSET:MECH:LIST:PUBLIC",
+    PlayerAssetMechDetailPublic = "PLAYER:ASSET:MECH:DETAIL:PUBLIC",
+    PlayerBattleMechHistoryList = "PLAYER:BATTLE:MECH:HISTORY:LIST",
 }
 
 export enum PassportServerKeys {

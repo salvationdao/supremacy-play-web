@@ -1,25 +1,25 @@
 import { createContext, Dispatch, useCallback, useContext, useEffect, useRef, useState } from "react"
 import { useQuery } from "react-fetching-library"
-import { Faction, User, UserRank, UserStat } from "../types"
-import { GAME_SERVER_HOSTNAME, PASSPORT_WEB } from "../constants"
-import { PunishListItem } from "../types/chat"
-import { shadeColor } from "../helpers"
-import { useInactivity } from "../hooks/useInactivity"
-import { useGameServerCommandsUser, useGameServerSubscriptionUser } from "../hooks/useGameServer"
-import { GameServerKeys } from "../keys"
-import { useTheme } from "./theme"
-import { GameServerLoginCheck, PassportLoginCheck } from "../fetching"
 import { useSupremacy } from "."
+import { GAME_SERVER_HOSTNAME, PASSPORT_WEB } from "../constants"
+import { GameServerLoginCheck, PassportLoginCheck } from "../fetching"
+import { shadeColor } from "../helpers"
+import { useGameServerCommandsUser, useGameServerSubscriptionUser } from "../hooks/useGameServer"
+import { useInactivity } from "../hooks/useInactivity"
+import { GameServerKeys } from "../keys"
 import { colors } from "../theme/theme"
+import { Faction, FeatureName, User, UserRank, UserStat } from "../types"
+import { PunishListItem } from "../types/chat"
 import { useFingerprint } from "./fingerprint"
+import { useTheme } from "./theme"
 
 export const FallbackUser: User = {
     id: "",
     faction_id: "",
     username: "UNKNOWN",
     gid: 0,
-    avatar_id: "",
     rank: "NEW_RECRUIT",
+    features: [],
 }
 
 export const FallbackFaction: Faction = {
@@ -27,6 +27,7 @@ export const FallbackFaction: Faction = {
     label: "",
     logo_url: "",
     background_url: "",
+    wallpaper_url: "",
     primary_color: colors.neonBlue,
     secondary_color: "#000000",
     background_color: shadeColor(colors.neonBlue, -95),
@@ -36,7 +37,7 @@ export const FallbackFaction: Faction = {
 export interface AuthState {
     isLoggingIn: boolean
     onLogInClick: () => void
-
+    userHasFeature: (featureName: FeatureName) => boolean
     user: User
     userID: string
     factionID: string
@@ -54,7 +55,9 @@ const initialState: AuthState = {
     onLogInClick: () => {
         return
     },
-
+    userHasFeature: () => {
+        return false
+    },
     user: FallbackUser,
     userID: FallbackUser.id,
     factionID: FallbackUser.faction_id,
@@ -188,11 +191,20 @@ export const AuthProvider: React.FC = ({ children }) => {
         setPassportPopup(popup)
     }, [isLoggingIn])
 
+    const userHasFeature = useCallback(
+        (featureName: FeatureName) => {
+            if (!userID || !user.features) return false
+            const index = user.features.findIndex((el) => el.name === featureName)
+            return index !== -1
+        },
+        [user.features, userID],
+    )
     return (
         <AuthContext.Provider
             value={{
                 isLoggingIn,
                 onLogInClick,
+                userHasFeature,
                 user,
                 userID,
                 factionID,

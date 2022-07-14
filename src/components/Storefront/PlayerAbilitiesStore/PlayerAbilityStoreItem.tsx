@@ -1,4 +1,4 @@
-import { Box, Fade, keyframes, Stack, Typography } from "@mui/material"
+import { Box, Fade, Stack, Typography } from "@mui/material"
 import { useCallback, useMemo, useState } from "react"
 import { FancyButton, TooltipHelper } from "../.."
 import { SvgGlobal, SvgLine, SvgMicrochip, SvgQuestionMark, SvgSupToken, SvgTarget } from "../../../assets"
@@ -8,6 +8,7 @@ import { numberCommaFormatter, supFormatter } from "../../../helpers"
 import { useToggle } from "../../../hooks"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
+import { scaleUpKeyframes } from "../../../theme/keyframes"
 import { colors, fonts } from "../../../theme/theme"
 import { LocationSelectType, SaleAbility } from "../../../types"
 import { ClipThing } from "../../Common/ClipThing"
@@ -18,9 +19,18 @@ export interface PlayerAbilityStoreItemProps {
     updatedPrice: string
     totalAmount: number
     amountSold: number
+    onPurchase: () => void
+    disabled?: boolean
 }
 
-export const PlayerAbilityStoreItem = ({ saleAbility, updatedPrice, totalAmount, amountSold }: PlayerAbilityStoreItemProps) => {
+export const PlayerAbilityStoreItem = ({
+    saleAbility,
+    updatedPrice,
+    totalAmount,
+    amountSold,
+    onPurchase: onPurchaseCallback,
+    disabled,
+}: PlayerAbilityStoreItemProps) => {
     const theme = useTheme()
     const primaryColor = theme.factionTheme.primary
     const backgroundColor = theme.factionTheme.background
@@ -58,6 +68,7 @@ export const PlayerAbilityStoreItem = ({ saleAbility, updatedPrice, totalAmount,
             })
             newSnackbarMessage(`Successfully purchased 1 ${saleAbility.ability.label || "ability"}`, "success")
             toggleShowPurchaseModal(false)
+            onPurchaseCallback()
             setPurchaseError(undefined)
         } catch (e) {
             if (e instanceof Error) {
@@ -68,7 +79,7 @@ export const PlayerAbilityStoreItem = ({ saleAbility, updatedPrice, totalAmount,
         } finally {
             setPurchaseLoading(false)
         }
-    }, [send, saleAbility, updatedPrice, newSnackbarMessage, toggleShowPurchaseModal])
+    }, [send, saleAbility.id, saleAbility.ability.label, updatedPrice, newSnackbarMessage, toggleShowPurchaseModal, onPurchaseCallback])
 
     return (
         <>
@@ -82,6 +93,7 @@ export const PlayerAbilityStoreItem = ({ saleAbility, updatedPrice, totalAmount,
                 backgroundColor={backgroundColor}
                 sx={{
                     transition: "all .15s",
+                    filter: !disabled ? "grayScale(0)" : "grayscale(1)",
                     ":hover": {
                         transform: "translateY(-.4rem)",
                     },
@@ -175,7 +187,7 @@ export const PlayerAbilityStoreItem = ({ saleAbility, updatedPrice, totalAmount,
                                 sx: {},
                             }}
                             sx={{ px: "1.6rem", py: ".6rem" }}
-                            disabled={amountLeft < 1}
+                            disabled={amountLeft < 1 || disabled}
                         >
                             <Typography
                                 key={updatedPrice}
@@ -232,15 +244,3 @@ export const PlayerAbilityStoreItem = ({ saleAbility, updatedPrice, totalAmount,
         </>
     )
 }
-
-const scaleUpKeyframes = keyframes({
-    "0%": {
-        transform: "scale(1)",
-    },
-    "50%": {
-        transform: "scale(1.2)",
-    },
-    "100%": {
-        transform: "scale(1)",
-    },
-})
