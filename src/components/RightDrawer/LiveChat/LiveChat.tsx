@@ -1,6 +1,6 @@
 import { Badge, Box, Stack, Tab, Tabs, Typography } from "@mui/material"
 import { useMemo } from "react"
-import { AdditionalOptionsButton, TooltipHelper } from "../.."
+import { AdditionalOptionsButton, FancyButton, TooltipHelper } from "../.."
 import { SvgGlobal, SvgInfoCircular } from "../../../assets"
 import { useAuth, useChat, useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
@@ -17,19 +17,40 @@ export const LiveChat = () => {
 
     if (isPoppedout) {
         return (
-            <WindowPortal
-                title="Supremacy - Live Chat"
-                onClose={() => toggleIsPoppedout(false)}
-                features={{
-                    width: 400,
-                    height: 600, // this is the top bar height,
-                }}
-            >
-                <Stack id="tutorial-chat" sx={{ width: "100%", height: "100%", overflow: "hidden" }}>
-                    {splitOption == "split" ? <SplitLayout /> : <TabbedLayout />}
-                    <AdditionalOptionsButton />
+            <>
+                <WindowPortal
+                    title="Supremacy - Live Chat"
+                    onClose={() => toggleIsPoppedout(false)}
+                    features={{
+                        width: 360,
+                        height: 650,
+                    }}
+                >
+                    <Stack id="tutorial-chat" sx={{ width: "100%", height: "100%", overflow: "hidden" }}>
+                        {splitOption == "split" ? <SplitLayout /> : <TabbedLayout />}
+                        <AdditionalOptionsButton />
+                    </Stack>
+                </WindowPortal>
+
+                <Stack spacing=".6rem" alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                    <Typography sx={{ color: colors.grey, textAlign: "center" }}>Live chat has been opened in a new window.</Typography>
+                    <FancyButton
+                        clipThingsProps={{
+                            clipSize: "6px",
+                            clipSlantSize: "0px",
+                            backgroundColor: "#333333",
+                            opacity: 1,
+                            sx: { position: "relative" },
+                        }}
+                        sx={{ px: "2rem", py: ".2rem", color: "#FFFFFF" }}
+                        onClick={() => toggleIsPoppedout(false)}
+                    >
+                        <Typography variant="caption" sx={{ fontWeight: "fontWeightBold", color: "#FFFFFF" }}>
+                            CLOSE WINDOW
+                        </Typography>
+                    </FancyButton>
                 </Stack>
-            </WindowPortal>
+            </>
         )
     }
 

@@ -55,7 +55,7 @@ export const colors = {
     warMachineSkillBar: "#9669FF",
 
     lightGrey: "#999999",
-    grey: "#89898d",
+    grey: "#777777",
     darkGrey: "#444444",
     battleQueueBanner: "#C24242",
     darkestNeonBlue: "#050c12",
