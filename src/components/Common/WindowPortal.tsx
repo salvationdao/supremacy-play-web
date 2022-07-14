@@ -4,7 +4,6 @@ import { Box } from "@mui/material"
 import React from "react"
 import { ReactNode, useEffect, useRef, useState } from "react"
 import ReactDOM from "react-dom"
-import "../../theme/global.css"
 
 export interface WindowPortalProps {
     title: string
@@ -38,9 +37,8 @@ export const WindowPortal = React.forwardRef(function WindowPortal({ title, chil
         if (!externalWindow) return onClose()
 
         externalWindow.addEventListener("beforeunload", onClose)
-        externalWindow.document.head.appendChild(titleEl.current)
-        containerEl.current.id = "testtt"
         externalWindow.document.body.appendChild(containerEl.current)
+        externalWindow.document.head.appendChild(titleEl.current)
 
         setOpened(true)
 
@@ -54,7 +52,18 @@ export const WindowPortal = React.forwardRef(function WindowPortal({ title, chil
 
     return ReactDOM.createPortal(
         <CacheProvider value={cache.current}>
-            <Box ref={ref} sx={{ width: "100%", height: "100%" }}>
+            <Box
+                ref={ref}
+                sx={{
+                    width: "100%",
+                    height: "100%",
+                    "*": {
+                        margin: 0,
+                        padding: 0,
+                        boxSizing: "inherit",
+                    },
+                }}
+            >
                 {children}
             </Box>
         </CacheProvider>,
