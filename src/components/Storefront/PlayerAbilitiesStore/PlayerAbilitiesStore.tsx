@@ -201,7 +201,7 @@ export const PlayerAbilitiesStore = () => {
                     title="PLAYER ABILITIES"
                     description="Player abilities are abilities that can be bought and used on the battle arena."
                 >
-                    <Box sx={{ flexShrink: 0, pr: "1.5rem" }}>
+                    <Box sx={{ flexShrink: 0, pr: "1.5rem", ml: "auto !important" }}>
                         <FancyButton
                             to={`/fleet/${HANGAR_TABS.Abilities}`}
                             clipThingsProps={{
