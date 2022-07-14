@@ -32,6 +32,8 @@ const MoveableResizableInner = ({ children }: MoveableResizableProps) => {
         setPopoutRef,
         isPoppedout,
         toggleIsPoppedout,
+        curWidth,
+        curHeight,
 
         rndRef,
         defaultWidth,
@@ -58,12 +60,16 @@ const MoveableResizableInner = ({ children }: MoveableResizableProps) => {
             <WindowPortal
                 ref={(ref: HTMLDivElement) => setPopoutRef(ref)}
                 title="Supremacy"
+                features={{
+                    width: curWidth,
+                    height: curHeight,
+                }}
                 onClose={() => {
                     toggleIsPoppedout(false)
                     setPopoutRef(null)
                 }}
             >
-                {children}
+                <Box sx={{ width: "100%", height: "100%", backgroundColor: theme.factionTheme.background }}>{children}</Box>
             </WindowPortal>
         )
     }
