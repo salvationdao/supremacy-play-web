@@ -1,72 +1,31 @@
 import createCache from "@emotion/cache"
 import { CacheProvider } from "@emotion/react"
 import { Box } from "@mui/material"
-import React from "react"
-import { ReactNode, useEffect, useRef, useState } from "react"
-import ReactDOM from "react-dom"
+import React, { ReactNode, useRef, useState } from "react"
+import NewWindow from "react-new-window"
 
 export interface WindowPortalProps {
     title: string
     onClose: () => void
     children: ReactNode
-    config?: { top?: number; left?: number; width?: number; height?: number }
 }
 
-export const WindowPortal = React.forwardRef(function WindowPortal({ title, children, onClose, config }: WindowPortalProps, ref) {
-    const containerEl = useRef(document.createElement("div"))
-    const titleEl = useRef(document.createElement("title"))
-    const cache = useRef(createCache({ key: "external", container: containerEl.current }))
-    const [isOpened, setOpened] = useState(false)
+export const WindowPortal = React.forwardRef(function WindowPortal({ title, children, onClose }: WindowPortalProps, ref) {
+    const [container, setContainer] = useState<HTMLElement | null>(null)
 
-    // Update the title if changed
-    useEffect(() => {
-        titleEl.current.innerText = title
-    }, [title])
-
-    // Create the new window
-    useEffect(() => {
-        const externalWindow = window.open(
-            "",
-            "",
-            `width=${config?.width || 600},height=${config?.height || 400},left=${config?.left || 200},top=${
-                config?.top || 200
-            },scrollbars=on,resizable=on,dependent=on,menubar=off,toolbar=off,location=off`,
-        )
-
-        // if window.open fails
-        if (!externalWindow) return onClose()
-
-        externalWindow.addEventListener("beforeunload", onClose)
-        externalWindow.document.body.appendChild(containerEl.current)
-        externalWindow.document.head.appendChild(titleEl.current)
-
-        setOpened(true)
-
-        return () => {
-            externalWindow.close()
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
-
-    if (!isOpened) return null
-
-    return ReactDOM.createPortal(
-        <CacheProvider value={cache.current}>
-            <Box
-                ref={ref}
-                sx={{
-                    width: "100%",
-                    height: "100%",
-                    "*": {
-                        margin: 0,
-                        padding: 0,
-                        boxSizing: "inherit",
-                    },
-                }}
-            >
-                {children}
+    return (
+        <NewWindow title={title} onUnload={onClose}>
+            <Box ref={(ref: HTMLElement) => setContainer(ref)} sx={{ width: "100%", height: "100%" }}>
+                <Box ref={ref} sx={{ width: "100%", height: "100%" }}>
+                    {container && <CacheWrapper container={container}>{children}</CacheWrapper>}
+                </Box>
             </Box>
-        </CacheProvider>,
-        containerEl.current,
+        </NewWindow>
     )
 })
+
+const CacheWrapper = ({ container, children }: { container: HTMLElement; children: ReactNode }) => {
+    const cache = useRef(createCache({ key: "external", container }))
+
+    return <CacheProvider value={cache.current}>{children}</CacheProvider>
+}

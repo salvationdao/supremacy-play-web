@@ -55,8 +55,15 @@ const MoveableResizableInner = ({ children }: MoveableResizableProps) => {
 
     if (isPoppedout) {
         return (
-            <WindowPortal ref={(ref: HTMLDivElement) => setPopoutRef(ref)} title="Supremacy" onClose={() => toggleIsPoppedout(false)}>
-                <Box sx={{ width: "100%", height: "100%" }}>{children}</Box>
+            <WindowPortal
+                ref={(ref: HTMLDivElement) => setPopoutRef(ref)}
+                title="Supremacy"
+                onClose={() => {
+                    toggleIsPoppedout(false)
+                    setPopoutRef(null)
+                }}
+            >
+                {children}
             </WindowPortal>
         )
     }

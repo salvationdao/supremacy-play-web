@@ -66,7 +66,7 @@ export const MoveableResizableContainer = createContainer((initialState: Moveabl
     const {
         gameUIDimensions: { width, height },
     } = useDimension()
-    const [popoutRef, setPopoutRef] = useState<HTMLDivElement | null>(null)
+    const [popoutRef, setPopoutRef] = useState<HTMLElement | null>(null)
     const [isPoppedout, toggleIsPoppedout] = useToggle()
 
     const rndRef = useRef<Rnd | null>(null)
@@ -85,6 +85,8 @@ export const MoveableResizableContainer = createContainer((initialState: Moveabl
     useEffect(() => {
         const cleanup = () => {
             resizeObserver.current && popoutRef && resizeObserver.current.unobserve(popoutRef)
+            setCurWidth(parseString(localStorage.getItem(`${localStoragePrefix}SizeX`), defaultWidth))
+            setCurHeight(parseString(localStorage.getItem(`${localStoragePrefix}SizeY`), defaultHeight))
         }
 
         if (!isPoppedout) {
@@ -102,11 +104,11 @@ export const MoveableResizableContainer = createContainer((initialState: Moveabl
         resizeObserver.current.observe(popoutRef)
 
         return cleanup
-    }, [isPoppedout, popoutRef])
+    }, [defaultHeight, defaultWidth, isPoppedout, localStoragePrefix, popoutRef])
 
     const onMovingStopped = useCallback(
         (data: Position) => {
-            if (isPoppedout) return
+            if (isPoppedout || popoutRef) return
 
             if ((!data.x && data.x !== 0) || (!data.y && data.y !== 0)) return
             const newX = isNaN(data.x) ? defaultPosX : data.x
@@ -116,12 +118,12 @@ export const MoveableResizableContainer = createContainer((initialState: Moveabl
             localStorage.setItem(`${localStoragePrefix}PosX`, newX.toString())
             localStorage.setItem(`${localStoragePrefix}PosY`, newY.toString())
         },
-        [defaultPosX, defaultPosY, isPoppedout, localStoragePrefix],
+        [defaultPosX, defaultPosY, isPoppedout, localStoragePrefix, popoutRef],
     )
 
     const onResizeStopped = useCallback(
         (data: Dimension) => {
-            if (isPoppedout) return
+            if (isPoppedout || popoutRef) return
 
             if ((!data.width && data.width !== 0) || (!data.height && data.height !== 0)) return
             const newW = isNaN(data.width) ? defaultPosX : data.width
@@ -131,12 +133,12 @@ export const MoveableResizableContainer = createContainer((initialState: Moveabl
             localStorage.setItem(`${localStoragePrefix}SizeX`, newW.toString())
             localStorage.setItem(`${localStoragePrefix}SizeY`, newH.toString())
         },
-        [defaultPosX, defaultPosY, isPoppedout, localStoragePrefix],
+        [defaultPosX, defaultPosY, isPoppedout, localStoragePrefix, popoutRef],
     )
 
     const updateSize = useCallback(
         (size: { width: number; height: number }) => {
-            if (isPoppedout) return
+            if (isPoppedout || popoutRef) return
 
             rndRef.current?.updateSize(size)
             onResizeStopped(size)
@@ -147,22 +149,22 @@ export const MoveableResizableContainer = createContainer((initialState: Moveabl
                 y: clamp(0, curPosY, height - size.height - 2 * PADDING),
             })
         },
-        [curPosX, curPosY, height, isPoppedout, onResizeStopped, width],
+        [curPosX, curPosY, height, isPoppedout, onResizeStopped, popoutRef, width],
     )
 
     const updatePosition = useCallback(
         (position: { x: number; y: number }) => {
-            if (isPoppedout) return
+            if (isPoppedout || popoutRef) return
 
             rndRef.current?.updatePosition(position)
             onMovingStopped(position)
         },
-        [isPoppedout, onMovingStopped],
+        [isPoppedout, onMovingStopped, popoutRef],
     )
 
     // Set initial size and position
     useEffect(() => {
-        if (isPoppedout || !width || !height) return
+        if (isPoppedout || popoutRef || !width || !height) return
 
         const newWidth = Math.min(curWidth, width - 2 * PADDING)
         const newHeight = Math.min(curHeight, height - 2 * PADDING)
@@ -181,7 +183,7 @@ export const MoveableResizableContainer = createContainer((initialState: Moveabl
 
         // Just run this once to set initial, no deps
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [width, height, isPoppedout])
+    }, [width, height, isPoppedout, popoutRef])
 
     return {
         setPopoutRef,
