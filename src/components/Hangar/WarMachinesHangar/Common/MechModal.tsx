@@ -26,6 +26,7 @@ export const MechModal = ({
     const { name, label, tier } = mechDetails
     const rarityDeets = useMemo(() => getRarityDeets(tier || ""), [tier])
     const skin = mechDetails ? mechDetails.chassis_skin || mechDetails.default_chassis_skin : undefined
+    const avatarUrl = skin?.avatar_url || mechDetails.avatar_url
     const imageUrl = skin?.image_url || mechDetails.image_url
     const cardAnimationUrl = skin?.card_animation_url || mechDetails.card_animation_url
 
@@ -68,7 +69,7 @@ export const MechModal = ({
                         }}
                     >
                         <Box sx={{ height: "19rem" }}>
-                            <MediaPreview imageUrl={imageUrl} videoUrls={[cardAnimationUrl]} />
+                            <MediaPreview imageUrl={imageUrl || avatarUrl} videoUrls={[cardAnimationUrl]} />
                         </Box>
 
                         <Box>

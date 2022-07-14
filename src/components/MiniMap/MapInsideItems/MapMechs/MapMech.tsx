@@ -9,7 +9,7 @@ import { spinEffect } from "../../../../theme/keyframes"
 import { colors, fonts } from "../../../../theme/theme"
 import { LocationSelectType, Map, Vector2i, WarMachineState } from "../../../../types"
 import { WarMachineLiveState } from "../../../../types/game"
-import { MechMoveCommand } from "../../../WarMachine/WarMachineItem/MoveCommand"
+import { MechMoveCommand, MechMoveCommandAbility } from "../../../WarMachine/WarMachineItem/MoveCommand"
 
 const TRANSITION_DURACTION = 0.275 // seconds
 
@@ -30,7 +30,8 @@ interface MapMechInnerProps extends MapMechProps {
 const MapMechInner = ({ warMachine, map }: MapMechInnerProps) => {
     const { userID, factionID } = useAuth()
     const { getFaction } = useSupremacy()
-    const { isTargeting, gridWidth, gridHeight, playerAbility, highlightedMechHash, setHighlightedMechHash, selection, setSelection } = useMiniMap()
+    const { isTargeting, gridWidth, gridHeight, playerAbility, setPlayerAbility, highlightedMechHash, setHighlightedMechHash, selection, setSelection } =
+        useMiniMap()
     const { hash, participantID, factionID: warMachineFactionID, maxHealth, maxShield, ownedByID } = warMachine
 
     /**
@@ -123,12 +124,17 @@ const MapMechInner = ({ warMachine, map }: MapMechInnerProps) => {
             return
         }
 
-        if (hash === highlightedMechHash) {
+        if (ownedByID === userID) {
+            setPlayerAbility({
+                ...MechMoveCommandAbility,
+                mechHash: hash,
+            })
+        } else if (hash === highlightedMechHash) {
             setHighlightedMechHash(undefined)
         } else {
             setHighlightedMechHash(hash)
         }
-    }, [hash, highlightedMechHash, setHighlightedMechHash, setSelection, playerAbility, factionID, warMachineFactionID])
+    }, [playerAbility, factionID, warMachineFactionID, ownedByID, userID, hash, highlightedMechHash, setSelection, setPlayerAbility, setHighlightedMechHash])
 
     return useMemo(() => {
         if (!position) return null
