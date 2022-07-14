@@ -59,6 +59,7 @@ export const KeycardsMarket = () => {
         label: "STATUS",
         options: [{ value: "true", label: "SOLD", color: colors.marketSold }],
         initialSelected: status,
+        initialExpanded: true,
         onSetSelected: (value: string[]) => {
             setStatus(value)
             changePage(1)
@@ -71,6 +72,7 @@ export const KeycardsMarket = () => {
             { value: "others", label: "OTHERS", color: theme.factionTheme.primary, textColor: theme.factionTheme.secondary },
         ],
         initialSelected: ownedBy,
+        initialExpanded: true,
         onSetSelected: (value: string[]) => {
             setOwnedBy(value)
             changePage(1)
@@ -80,6 +82,7 @@ export const KeycardsMarket = () => {
     const priceRangeFilter = useRef<RangeFilter>({
         label: "PRICE RANGE",
         initialValue: price,
+        initialExpanded: true,
         onSetValue: (value: (number | undefined)[]) => {
             setPrice(value)
             changePage(1)

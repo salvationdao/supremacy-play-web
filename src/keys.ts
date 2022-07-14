@@ -142,7 +142,7 @@ export enum GameServerKeys {
     GetPlayerKeycards = "PLAYER:ASSET:KEYCARD:LIST",
     GetPlayerKeycard = "PLAYER:ASSET:KEYCARD:GET",
 
-    // player profile
+    // Player profile
     PlayerProfileGet = "PLAYER:PROFILE:GET",
     PlayerProfileUpdateUsername = "PLAYER:UPDATE:USERNAME",
     PlayerProfileUpdateAboutMe = "PLAYER:UPDATE:ABOUT_ME",

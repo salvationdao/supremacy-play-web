@@ -193,6 +193,7 @@ export interface Weapon extends Collection {
     blueprint_id: string
     default_damage_type: string
     genesis_token_id?: number
+    equipped_on?: string
     weapon_type: string
     damage_falloff?: number
     damage_falloff_rate?: number
@@ -206,6 +207,8 @@ export interface Weapon extends Collection {
     weapon_skin?: WeaponSkin
     updated_at: Date
     created_at: Date
+    market_locked: boolean
+    item_sale_id?: string
 }
 
 export interface WeaponSkin extends Collection {

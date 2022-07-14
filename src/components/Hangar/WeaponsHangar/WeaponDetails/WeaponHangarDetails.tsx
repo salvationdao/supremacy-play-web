@@ -128,7 +128,6 @@ export const WeaponHangarDetailsInner = ({ weaponID }: { weaponID: string }) => 
 
                                         <WeaponBarStats
                                             weapon={weaponDetails}
-                                            weaponDetails={weaponDetails}
                                             color={primaryColor}
                                             fontSize="1.2rem"
                                             width="100%"

@@ -116,16 +116,6 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         requireFaction: true,
         matchLeftDrawerID: "marketplace",
     },
-
-    // Player profile
-    player_profile: {
-        id: "profile",
-        path: "/profile/:playerGID",
-        exact: true,
-        Component: PlayerProfilePage,
-        requireAuth: false,
-        requireFaction: false,
-    },
     marketplace: {
         id: "marketplace",
         path: "/marketplace/:type?",
@@ -138,6 +128,16 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
             label: "Marketplace",
         },
         matchLeftDrawerID: "marketplace",
+    },
+
+    // Player profile
+    player_profile: {
+        id: "profile",
+        path: "/profile/:playerGID",
+        exact: true,
+        Component: PlayerProfilePage,
+        requireAuth: false,
+        requireFaction: false,
     },
 
     // Contract

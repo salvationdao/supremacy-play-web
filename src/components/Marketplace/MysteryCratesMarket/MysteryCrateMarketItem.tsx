@@ -1,9 +1,7 @@
-import { Stack, Typography } from "@mui/material"
 import { SafePNG } from "../../../assets"
-import { useTheme } from "../../../containers/theme"
 import { MARKETPLACE_TABS } from "../../../pages"
-import { fonts } from "../../../theme/theme"
 import { MarketplaceBuyAuctionItem } from "../../../types/marketplace"
+import { CrateCommonArea } from "../../Hangar/MysteryCratesHangar/MysteryCrateHangarItem"
 import { MarketItem } from "../Common/MarketItem/MarketItem"
 
 interface MysteryCratesMarketItemProps {
@@ -28,44 +26,7 @@ export const MysteryCrateMarketItem = ({ item, isGridView }: MysteryCratesMarket
             isGridView={isGridView}
             linkSubPath={MARKETPLACE_TABS.MysteryCrates}
         >
-            <MysteryCrateInfo isGridView={isGridView} label={label} description={description} />
+            <CrateCommonArea isGridView={isGridView} label={label} description={description} />
         </MarketItem>
-    )
-}
-
-const MysteryCrateInfo = ({ isGridView, label, description }: { isGridView: boolean; label: string; description: string }) => {
-    const theme = useTheme()
-
-    return (
-        <Stack spacing={isGridView ? ".1rem" : ".6rem"}>
-            <Typography
-                variant="body2"
-                sx={{
-                    fontFamily: fonts.nostromoBlack,
-                    color: theme.factionTheme.primary,
-                    display: "-webkit-box",
-                    overflow: "hidden",
-                    overflowWrap: "anywhere",
-                    textOverflow: "ellipsis",
-                    WebkitLineClamp: 1,
-                    WebkitBoxOrient: "vertical",
-                }}
-            >
-                {label}
-            </Typography>
-
-            <Typography
-                sx={{
-                    display: "-webkit-box",
-                    overflow: "hidden",
-                    overflowWrap: "anywhere",
-                    textOverflow: "ellipsis",
-                    WebkitLineClamp: 2,
-                    WebkitBoxOrient: "vertical",
-                }}
-            >
-                {description}
-            </Typography>
-        </Stack>
     )
 }
