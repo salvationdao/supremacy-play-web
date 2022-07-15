@@ -53,13 +53,6 @@ export const WarMachineItem = ({ warMachine, scale, initialExpanded = false }: {
     const secondaryColor = useMemo(() => (selfOwned ? "#000000" : faction.secondary_color), [faction.secondary_color, selfOwned])
     const backgroundColor = useMemo(() => faction.background_color, [faction.background_color])
 
-    // Need this time out so that it waits for it expand first then popover, else positioning is wrong
-    const openSkillsPopover = useCallback(() => {
-        setTimeout(() => {
-            togglePopoverOpen(true)
-        }, 110)
-    }, [togglePopoverOpen])
-
     // Highlighting on the map
     const handleClick = useCallback(() => {
         if (hash === highlightedMechHash) {
@@ -73,12 +66,10 @@ export const WarMachineItem = ({ warMachine, scale, initialExpanded = false }: {
     useEffect(() => {
         if (highlightedMechHash !== hash) {
             toggleIsExpanded(initialExpanded)
-            togglePopoverOpen(false)
         } else {
             toggleIsExpanded(true)
-            openSkillsPopover()
         }
-    }, [highlightedMechHash, initialExpanded, isMobile, openSkillsPopover, setHighlightedMechHash, toggleIsExpanded, hash, togglePopoverOpen])
+    }, [highlightedMechHash, initialExpanded, isMobile, setHighlightedMechHash, toggleIsExpanded, hash])
 
     return (
         <>
@@ -255,7 +246,8 @@ export const WarMachineItem = ({ warMachine, scale, initialExpanded = false }: {
                                 onClick={() => {
                                     if (!isAlive) return
                                     if (!isExpanded) handleClick()
-                                    openSkillsPopover()
+                                    // Need this time out so that it waits for it expand first then popover, else positioning is wrong
+                                    setTimeout(() => togglePopoverOpen(true), 110)
                                 }}
                             >
                                 <Box
