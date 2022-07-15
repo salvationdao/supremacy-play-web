@@ -71,7 +71,7 @@ export const MechButtons = ({
                         primaryColor={colors.green}
                         backgroundColor={colors.green}
                         label="DEPLOY"
-                        disabled={!mechState || mechState !== MechStatusEnum.Idle}
+                        disabled={!mechState || mechState !== MechStatusEnum.Idle || !mechDetails.battle_ready}
                         onClick={() => {
                             setSelectedMechDetails(mechDetails)
                             setDeployMechModalOpen(true)
