@@ -50,8 +50,8 @@ export const MiniMap = () => {
             minPosX: 0,
             minPosY: 0,
             // Size limits
-            minWidth: 225,
-            minHeight: 225,
+            minWidth: 300,
+            minHeight: 300,
             maxWidth: 1000,
             maxHeight: 1000,
             // Others

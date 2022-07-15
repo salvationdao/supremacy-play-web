@@ -1,11 +1,13 @@
-import { Box, Fade, Stack } from "@mui/material"
+import { Box, Fade, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
 import { useCallback, useMemo, useState } from "react"
-import { ContributeFactionUniqueAbilityRequest } from "../../.."
+import { ClipThing, ContributeFactionUniqueAbilityRequest } from "../../.."
 import { useAuth, useGame, useMiniMap } from "../../../../containers"
+import { useTheme } from "../../../../containers/theme"
 import { useGameServerCommandsFaction, useGameServerSubscriptionAbilityFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
-import { GameAbility, GameAbilityProgress } from "../../../../types"
+import { colors } from "../../../../theme/theme"
+import { GameAbility, GameAbilityProgress, WarMachineState } from "../../../../types"
 import { ProgressBar } from "../../../Common/ProgressBar"
 
 export const HighlightedMechAbilities = () => {
@@ -15,19 +17,22 @@ export const HighlightedMechAbilities = () => {
 
     const isVoting = useMemo(() => bribeStage && bribeStage?.phase != "HOLD", [bribeStage])
 
-    const isFactionMech = useMemo(() => {
-        const mech = warMachines?.find((m) => m.participantID === highlightedMechParticipantID)
-        return mech?.factionID === factionID
-    }, [factionID, highlightedMechParticipantID, warMachines])
+    const highlightedMech = useMemo(() => {
+        return warMachines?.find((m) => m.participantID === highlightedMechParticipantID)
+    }, [highlightedMechParticipantID, warMachines])
 
-    if (!highlightedMechParticipantID || !isFactionMech || !isVoting) {
+    if (!highlightedMechParticipantID || !highlightedMech || highlightedMech?.factionID !== factionID || !isVoting) {
         return null
     }
 
-    return <HighlightedMechAbilitiesInner key={highlightedMechParticipantID} participantID={highlightedMechParticipantID} />
+    return <HighlightedMechAbilitiesInner key={highlightedMechParticipantID} mech={highlightedMech} />
 }
 
-const HighlightedMechAbilitiesInner = ({ participantID }: { participantID: number }) => {
+const HighlightedMechAbilitiesInner = ({ mech }: { mech: WarMachineState }) => {
+    const { userID } = useAuth()
+    const theme = useTheme()
+    const { participantID, ownedByID } = mech
+
     // Subscribe to war machine ability updates
     const gameAbilities = useGameServerSubscriptionAbilityFaction<GameAbility[] | undefined>({
         URI: `/mech/${participantID}`,
@@ -41,18 +46,30 @@ const HighlightedMechAbilitiesInner = ({ participantID }: { participantID: numbe
 
     return (
         <Fade in>
-            <Stack
-                spacing=".8rem"
-                onClick={(e) => {
-                    e.preventDefault()
-                    e.stopPropagation()
+            <ClipThing
+                clipSize="8px"
+                border={{
+                    borderColor: userID === ownedByID ? colors.gold : theme.factionTheme.primary,
+                    borderThickness: "2px",
                 }}
-                sx={{ position: "absolute", top: "4rem", left: "1.4rem" }}
+                corners={{ bottomLeft: true }}
+                opacity={0.3}
+                backgroundColor={theme.factionTheme.background}
+                sx={{ position: "absolute", top: "3.5rem", right: ".4rem" }}
             >
-                {gameAbilities.map((ga) => {
-                    return <AbilityItem key={ga.identity} participantID={participantID} ability={ga} />
-                })}
-            </Stack>
+                <Stack
+                    spacing=".8rem"
+                    onClick={(e) => {
+                        e.preventDefault()
+                        e.stopPropagation()
+                    }}
+                    sx={{ p: ".8rem .9rem", width: "12rem" }}
+                >
+                    {gameAbilities.map((ga) => {
+                        return <AbilityItem key={ga.identity} participantID={participantID} ability={ga} />
+                    })}
+                </Stack>
+            </ClipThing>
         </Fade>
     )
 }
@@ -65,7 +82,7 @@ const AbilityItem = ({ participantID, ability }: { participantID: number; abilit
     const [supsCost, setSupsCost] = useState(new BigNumber(ability.sups_cost).dividedBy("1000000000000000000"))
     const [initialTargetCost, setInitialTargetCost] = useState<BigNumber>(new BigNumber(ability.sups_cost).dividedBy("1000000000000000000"))
 
-    const { identity, colour, image_url } = ability
+    const { identity, colour, image_url, label } = ability
 
     // Listen on the progress of the votes
     useGameServerSubscriptionAbilityFaction<GameAbilityProgress | undefined>(
@@ -110,11 +127,13 @@ const AbilityItem = ({ participantID, ability }: { participantID: number; abilit
             sx={{
                 position: "relative",
                 height: "2.6rem",
+                width: "100%",
             }}
         >
             {/* Image */}
             <Box
                 sx={{
+                    flexShrink: 0,
                     width: "2.6rem",
                     height: "100%",
                     cursor: "pointer",
@@ -128,13 +147,29 @@ const AbilityItem = ({ participantID, ability }: { participantID: number; abilit
                 onClick={onContribute}
             />
 
-            <Box sx={{ width: "5rem" }}>
+            <Box sx={{ flex: 1 }}>
+                <Typography
+                    variant="caption"
+                    sx={{
+                        mb: "1px",
+                        lineHeight: 1,
+                        fontWeight: "fontWeightBold",
+                        display: "-webkit-box",
+                        overflow: "hidden",
+                        overflowWrap: "anywhere",
+                        textOverflow: "ellipsis",
+                        WebkitLineClamp: 1, // change to max number of lines
+                        WebkitBoxOrient: "vertical",
+                    }}
+                >
+                    {label}
+                </Typography>
                 <ProgressBar
                     percent={initialTargetCost.isZero() ? 0 : +currentSups.dividedBy(initialTargetCost) * 100}
                     linePercent={initialTargetCost.isZero() ? 0 : supsCost.dividedBy(initialTargetCost).toNumber() * 100}
                     color={colour}
                     backgroundColor="#00000040"
-                    thickness="1.2rem"
+                    thickness=".9rem"
                     orientation="horizontal"
                 />
             </Box>
