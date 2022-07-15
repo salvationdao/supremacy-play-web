@@ -9,11 +9,12 @@ import { GameServerKeys } from "../../../../keys"
 import { colors } from "../../../../theme/theme"
 import { GameAbility, GameAbilityProgress, WarMachineState } from "../../../../types"
 import { ProgressBar } from "../../../Common/ProgressBar"
+import { MoveCommand } from "../../../WarMachine/WarMachineItem/MoveCommand"
 
 export const HighlightedMechAbilities = () => {
     const { factionID } = useAuth()
     const { bribeStage, warMachines } = useGame()
-    const { highlightedMechParticipantID } = useMiniMap()
+    const { highlightedMechParticipantID, isTargeting } = useMiniMap()
 
     const isVoting = useMemo(() => bribeStage && bribeStage?.phase != "HOLD", [bribeStage])
 
@@ -21,17 +22,17 @@ export const HighlightedMechAbilities = () => {
         return warMachines?.find((m) => m.participantID === highlightedMechParticipantID)
     }, [highlightedMechParticipantID, warMachines])
 
-    if (!highlightedMechParticipantID || !highlightedMech || highlightedMech?.factionID !== factionID || !isVoting) {
+    if (isTargeting || !highlightedMechParticipantID || !highlightedMech || highlightedMech?.factionID !== factionID || !isVoting) {
         return null
     }
 
-    return <HighlightedMechAbilitiesInner key={highlightedMechParticipantID} mech={highlightedMech} />
+    return <HighlightedMechAbilitiesInner key={highlightedMechParticipantID} warMachine={highlightedMech} />
 }
 
-const HighlightedMechAbilitiesInner = ({ mech }: { mech: WarMachineState }) => {
+const HighlightedMechAbilitiesInner = ({ warMachine }: { warMachine: WarMachineState }) => {
     const { userID } = useAuth()
     const theme = useTheme()
-    const { participantID, ownedByID } = mech
+    const { participantID, ownedByID } = warMachine
 
     // Subscribe to war machine ability updates
     const gameAbilities = useGameServerSubscriptionAbilityFaction<GameAbility[] | undefined>({
@@ -43,6 +44,8 @@ const HighlightedMechAbilitiesInner = ({ mech }: { mech: WarMachineState }) => {
     if (!gameAbilities || gameAbilities.length <= 0) {
         return null
     }
+
+    const isAlive = true
 
     return (
         <Fade in>
@@ -68,6 +71,8 @@ const HighlightedMechAbilitiesInner = ({ mech }: { mech: WarMachineState }) => {
                     {gameAbilities.map((ga) => {
                         return <AbilityItem key={ga.identity} participantID={participantID} ability={ga} />
                     })}
+
+                    {userID === ownedByID && <MoveCommand isAlive={isAlive} warMachine={warMachine} smallVersion />}
                 </Stack>
             </ClipThing>
         </Fade>

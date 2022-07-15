@@ -9,7 +9,7 @@ import { spinEffect } from "../../../../theme/keyframes"
 import { colors, fonts } from "../../../../theme/theme"
 import { LocationSelectType, Map, Vector2i, WarMachineState } from "../../../../types"
 import { WarMachineLiveState } from "../../../../types/game"
-import { MechMoveCommand, MechMoveCommandAbility } from "../../../WarMachine/WarMachineItem/MoveCommand"
+import { MechMoveCommand } from "../../../WarMachine/WarMachineItem/MoveCommand"
 
 const TRANSITION_DURACTION = 0.275 // seconds
 
@@ -30,17 +30,8 @@ interface MapMechInnerProps extends MapMechProps {
 const MapMechInner = ({ warMachine, map }: MapMechInnerProps) => {
     const { userID, factionID } = useAuth()
     const { getFaction } = useSupremacy()
-    const {
-        isTargeting,
-        gridWidth,
-        gridHeight,
-        playerAbility,
-        setPlayerAbility,
-        highlightedMechParticipantID,
-        setHighlightedMechParticipantID,
-        selection,
-        setSelection,
-    } = useMiniMap()
+    const { isTargeting, gridWidth, gridHeight, playerAbility, highlightedMechParticipantID, setHighlightedMechParticipantID, selection, setSelection } =
+        useMiniMap()
     const { hash, participantID, factionID: warMachineFactionID, maxHealth, maxShield, ownedByID } = warMachine
 
     /**
@@ -139,29 +130,12 @@ const MapMechInner = ({ warMachine, map }: MapMechInnerProps) => {
             return
         }
 
-        if (ownedByID === userID) {
-            setPlayerAbility({
-                ...MechMoveCommandAbility,
-                mechHash: hash,
-            })
-        } else if (participantID === highlightedMechParticipantID) {
+        if (participantID === highlightedMechParticipantID) {
             setHighlightedMechParticipantID(undefined)
         } else {
             setHighlightedMechParticipantID(participantID)
         }
-    }, [
-        playerAbility,
-        factionID,
-        warMachineFactionID,
-        ownedByID,
-        userID,
-        hash,
-        participantID,
-        highlightedMechParticipantID,
-        setSelection,
-        setPlayerAbility,
-        setHighlightedMechParticipantID,
-    ])
+    }, [playerAbility, factionID, warMachineFactionID, hash, participantID, highlightedMechParticipantID, setSelection, setHighlightedMechParticipantID])
 
     return useMemo(() => {
         if (!position) return null
