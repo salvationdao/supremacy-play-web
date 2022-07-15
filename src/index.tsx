@@ -49,7 +49,7 @@ const AppInner = () => {
     useEffect(() => {
         const timeout = setTimeout(() => {
             toggleShowLoading(false)
-        }, 200000)
+        }, 2000)
 
         return () => clearTimeout(timeout)
     }, [toggleShowLoading])
