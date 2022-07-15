@@ -9,13 +9,14 @@ interface MapIconProps {
     onClick?: () => void
     position: { x: number; y: number }
     sx?: SxProps
+    sizeGrid?: number
 }
 
-export const MapIcon = ({ primaryColor, imageUrl, icon, onClick, position, sx }: MapIconProps) => {
+export const MapIcon = ({ primaryColor, imageUrl, icon, onClick, position, sx, sizeGrid }: MapIconProps) => {
     const { gridWidth, gridHeight } = useMiniMap()
 
-    const sizeX = useMemo(() => gridWidth * 1.8, [gridWidth])
-    const sizeY = useMemo(() => gridHeight * 1.8, [gridHeight])
+    const sizeX = useMemo(() => gridWidth * (sizeGrid || 1.8), [sizeGrid, gridWidth])
+    const sizeY = useMemo(() => gridHeight * (sizeGrid || 1.8), [sizeGrid, gridHeight])
 
     return useMemo(() => {
         return (
