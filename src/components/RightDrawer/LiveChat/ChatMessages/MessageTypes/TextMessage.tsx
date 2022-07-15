@@ -242,28 +242,7 @@ export const TextMessage = ({
                             </Stack>
 
                             <Box>
-                                <Typography
-                                    onClick={() => toggleIsPopoverOpen()}
-                                    sx={{
-                                        display: "inline",
-                                        color: message_color,
-                                        fontWeight: 700,
-                                        fontSize: fontSize ? `${1.33 * fontSize}rem` : "1.33rem",
-                                        verticalAlign: "middle",
-                                        ":hover": {
-                                            cursor: "pointer",
-                                            textDecoration: "underline",
-                                        },
-                                        ":active": {
-                                            opacity: 0.7,
-                                        },
-                                    }}
-                                >
-                                    {`${truncate(username, 20)}`}
-                                    <span
-                                        style={{ marginLeft: ".2rem", opacity: 0.7, fontSize: fontSize ? `${1.1 * fontSize}rem` : "1.1rem" }}
-                                    >{`#${gid}`}</span>
-                                </Typography>
+                                <UsernameJSX data={data} fontSize={fontSize} user={from_user} toggleIsPopoverOpen={toggleIsPopoverOpen} />
 
                                 {from_user_stat && (
                                     <Box sx={{ flexShrink: 0, display: "inline-block", ml: ".4rem", cursor: "default" }}>
@@ -390,7 +369,7 @@ interface UsernameJSXProps {
     data: TextMessageData
     fontSize: number
     toggleIsPopoverOpen?: (value?: boolean) => void
-    user?: User
+    user: User | undefined
 }
 
 export const UsernameJSX = ({ data, fontSize, toggleIsPopoverOpen, user }: UsernameJSXProps) => {
