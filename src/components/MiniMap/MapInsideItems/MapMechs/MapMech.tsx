@@ -62,6 +62,12 @@ const MapMechInner = ({ warMachine, map }: MapMechInnerProps) => {
         () => highlightedMechHash === warMachine.hash || selection?.mechHash === hash || playerAbility?.mechHash === hash,
         [hash, highlightedMechHash, playerAbility?.mechHash, selection?.mechHash, warMachine.hash],
     )
+    const zIndex = useMemo(() => {
+        if (isMechHighligheted) return 7
+        if (isAlive && factionID === warMachineFactionID) return 6
+        if (isAlive) return 5
+        return 4
+    }, [factionID, isAlive, isMechHighligheted, warMachineFactionID])
 
     /**
      * Mech move command related
@@ -161,7 +167,7 @@ const MapMechInner = ({ warMachine, map }: MapMechInnerProps) => {
                     transform: `translate(-50%, -50%) translate3d(${mechMapX}px, ${mechMapY}px, 0)`,
                     transition: `transform ${TRANSITION_DURACTION}s linear`,
                     opacity: 1,
-                    zIndex: isAlive ? (factionID === warMachineFactionID ? 6 : 5) : 4,
+                    zIndex,
                 }}
             >
                 {/* Show player ability icon above the mech */}
@@ -420,7 +426,6 @@ const MapMechInner = ({ warMachine, map }: MapMechInnerProps) => {
         selection?.mechHash,
         factionLogoUrl,
         warMachine.participantID,
-        warMachineFactionID,
-        factionID,
+        zIndex,
     ])
 }
