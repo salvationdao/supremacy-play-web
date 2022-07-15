@@ -1,4 +1,4 @@
-import { Stack } from "@mui/material"
+import { Stack, SxProps } from "@mui/material"
 import { ReactNode, useMemo } from "react"
 import { useMiniMap } from "../../../../containers"
 
@@ -8,9 +8,10 @@ interface MapIconProps {
     icon?: ReactNode
     onClick?: () => void
     position: { x: number; y: number }
+    sx?: SxProps
 }
 
-export const MapIcon = ({ primaryColor, imageUrl, icon, onClick, position }: MapIconProps) => {
+export const MapIcon = ({ primaryColor, imageUrl, icon, onClick, position, sx }: MapIconProps) => {
     const { gridWidth, gridHeight } = useMiniMap()
 
     const sizeX = useMemo(() => gridWidth * 1.8, [gridWidth])
@@ -37,10 +38,11 @@ export const MapIcon = ({ primaryColor, imageUrl, icon, onClick, position }: Map
                     backgroundColor: icon ? "#030409" : primaryColor,
                     transform: `translate(${position.x * gridWidth - sizeX / 2}px, ${position.y * gridHeight - sizeY / 2}px)`,
                     zIndex: 100,
+                    ...sx,
                 }}
             >
                 {icon}
             </Stack>
         )
-    }, [gridHeight, gridWidth, icon, imageUrl, onClick, position.x, position.y, primaryColor, sizeX, sizeY])
+    }, [gridHeight, gridWidth, icon, imageUrl, onClick, position.x, position.y, primaryColor, sizeX, sizeY, sx])
 }
