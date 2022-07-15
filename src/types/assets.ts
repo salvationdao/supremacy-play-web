@@ -88,6 +88,7 @@ export interface MechDetails extends MechBasic {
     power_core?: PowerCore
     weapons: Weapon[]
     utility: Utility[]
+    battle_ready: boolean
 }
 
 export interface BlueprintMech {
