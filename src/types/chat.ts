@@ -92,6 +92,7 @@ export interface TextMessageData {
     total_multiplier?: number
     is_citizen?: boolean
     from_user_stat?: UserStat
+    tagged_users_gids: number[]
 }
 
 export interface PunishMessageData {

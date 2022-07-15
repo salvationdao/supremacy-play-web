@@ -101,11 +101,23 @@ const ChatSendInner = ({
         [setMessage],
     )
 
+    const handleTaggedUsers = (msg: string): number[] => {
+        const taggedStrings = [...msg.matchAll(/#\d+/g)]
+        let taggedGids: number[] = []
+        taggedStrings.map((s) => {
+            const gid = parseInt(s[0].substring(1))
+            taggedGids = [...taggedGids, gid]
+        })
+        console.log(taggedGids)
+        return taggedGids
+    }
+
     const sendMessage = useCallback(async () => {
         if (!message.trim()) return
 
         const sentAt = new Date()
 
+        const taggedUserGids = handleTaggedUsers(renderedMsg)
         newMessageHandler({
             messages: [
                 {
@@ -113,7 +125,8 @@ const ChatSendInner = ({
                         from_user: user,
                         user_rank: userRank,
                         message_color: messageColor,
-                        message,
+                        message: renderedMsg,
+                        tagged_users_gids: taggedUserGids,
                     },
                     type: "TEXT",
                     sent_at: sentAt,
@@ -129,6 +142,7 @@ const ChatSendInner = ({
                 faction_id,
                 message: renderedMsg,
                 message_color: messageColor,
+                tagged_users_gids: taggedUserGids,
             })
             if (resp) onSentMessage(sentAt)
         } catch (e) {
