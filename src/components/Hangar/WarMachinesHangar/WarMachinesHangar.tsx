@@ -66,7 +66,7 @@ export const WarMachinesHangar = () => {
             { value: MechStatusEnum.Battle, label: "IN BATTLE", color: colors.orange },
             { value: MechStatusEnum.Market, label: "MARKETPLACE", color: colors.red },
             { value: MechStatusEnum.Queue, label: "IN QUEUE", color: colors.yellow },
-            { value: MechStatusEnum.Queue, label: "BATTLE READY", color: colors.purple },
+            { value: MechStatusEnum.BattleReady, label: "BATTLE READY", color: colors.purple },
         ],
         initialSelected: status,
         initialExpanded: true,
