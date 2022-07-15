@@ -6,6 +6,7 @@ export enum MechStatusEnum {
     Battle = "BATTLE",
     Market = "MARKET",
     Sold = "SOLD",
+    BattleReady = "BATTLE_READY",
 }
 
 export enum WeaponType {
