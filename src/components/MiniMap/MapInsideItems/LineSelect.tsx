@@ -34,6 +34,7 @@ export const LineSelect = ({ mapScale }: { mapScale: number }) => {
                 x: (point1.x * c.canvas.width) / map.cells_x,
                 y: (point1.y * c.canvas.height) / map.cells_y,
             }
+
             const normalisedEndCoords = {
                 x: (point2.x * c.canvas.width) / map.cells_x,
                 y: (point2.y * c.canvas.height) / map.cells_y,
@@ -50,35 +51,73 @@ export const LineSelect = ({ mapScale }: { mapScale: number }) => {
     )
 
     // Draw line when both points are selected
+    const onCanvasClick = useCallback(
+        (e) => {
+            if (mapElement.current) {
+                const rect = mapElement.current.getBoundingClientRect()
+
+                // Mouse position
+                const x = e.clientX - rect.left
+                const y = e.clientY - rect.top
+                const coords = {
+                    x: x / (gridWidth * mapScale),
+                    y: y / (gridHeight * mapScale),
+                }
+
+                setSelection((prev) => {
+                    if (prev?.startCoords) {
+                        return {
+                            ...prev,
+                            endCoords: coords,
+                        }
+                    } else if (prev?.endCoords) {
+                        return {
+                            ...prev,
+                            startCoords: coords,
+                        }
+                    }
+                    return {
+                        startCoords: coords,
+                    }
+                })
+            }
+        },
+        [gridHeight, gridWidth, mapElement, mapScale, setSelection],
+    )
+
     useEffect(() => {
         if (!selection?.startCoords || !selection?.endCoords) return
         drawCanvasLine(selection.startCoords, selection.endCoords)
     }, [drawCanvasLine, selection])
 
+    // Draw line from 1 point to mouse
     const handleMouseMove = useCallback(
         (e: MouseEvent) => {
-            if (!selection) return
-
+            if (!selection || !mapElement.current) return
             // Make sure only 1 point is selected
             const start = selection.startCoords
             const end = selection.endCoords
             if ((!start && end) || (start && !end)) {
-                const el = e.currentTarget as HTMLDivElement
-                const rect = el.getBoundingClientRect()
-                const x = e.clientX - rect.left
-                const y = e.clientY - rect.top
-
-                drawCanvasLine(start || end || { x: 0, y: 0 }, { x, y })
+                const rect = mapElement.current.getBoundingClientRect()
+                const x = (e.clientX - rect.left) / (gridWidth * mapScale)
+                const y = (e.clientY - rect.top) / (gridHeight * mapScale)
+                drawCanvasLine(start || end || { x: 0, y: 0 }, { x, y }, 0.04)
             }
         },
-        [drawCanvasLine, selection],
+        [drawCanvasLine, gridHeight, gridWidth, mapElement, mapScale, selection],
     )
 
-    // Draw line from 1 point to mouse
     useEffect(() => {
-        window.addEventListener("mousemove", handleMouseMove, false)
-        return () => window.removeEventListener("mousemove", handleMouseMove, false)
-    }, [handleMouseMove, selection])
+        const ref = mapElement.current
+        if (!selection || !ref) return
+        // Make sure only 1 point is selected
+        const start = selection.startCoords
+        const end = selection.endCoords
+        if ((!start && end) || (start && !end)) {
+            ref.addEventListener("mousemove", handleMouseMove, false)
+            return () => ref?.removeEventListener("mousemove", handleMouseMove, false)
+        }
+    }, [handleMouseMove, mapElement, selection])
 
     return (
         <>
@@ -172,35 +211,7 @@ export const LineSelect = ({ mapScale }: { mapScale: number }) => {
                     width: "100%",
                     height: "100%",
                 }}
-                onClick={(e) => {
-                    if (mapElement.current) {
-                        const rect = mapElement.current.getBoundingClientRect()
-                        // Mouse position
-                        const x = e.clientX - rect.left
-                        const y = e.clientY - rect.top
-                        const coords = {
-                            x: x / (gridWidth * mapScale),
-                            y: y / (gridHeight * mapScale),
-                        }
-
-                        setSelection((prev) => {
-                            if (prev?.startCoords) {
-                                return {
-                                    ...prev,
-                                    endCoords: coords,
-                                }
-                            } else if (prev?.endCoords) {
-                                return {
-                                    ...prev,
-                                    startCoords: coords,
-                                }
-                            }
-                            return {
-                                startCoords: coords,
-                            }
-                        })
-                    }
-                }}
+                onClick={onCanvasClick}
             />
         </>
     )
