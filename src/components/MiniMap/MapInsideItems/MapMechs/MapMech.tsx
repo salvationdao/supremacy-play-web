@@ -161,7 +161,7 @@ const MapMechInner = ({ warMachine, map }: MapMechInnerProps) => {
                     transform: `translate(-50%, -50%) translate3d(${mechMapX}px, ${mechMapY}px, 0)`,
                     transition: `transform ${TRANSITION_DURACTION}s linear`,
                     opacity: 1,
-                    zIndex: isAlive ? 5 : 4,
+                    zIndex: isAlive ? (factionID === warMachineFactionID ? 6 : 5) : 4,
                 }}
             >
                 {/* Show player ability icon above the mech */}
@@ -420,5 +420,7 @@ const MapMechInner = ({ warMachine, map }: MapMechInnerProps) => {
         selection?.mechHash,
         factionLogoUrl,
         warMachine.participantID,
+        warMachineFactionID,
+        factionID,
     ])
 }
