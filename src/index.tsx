@@ -80,7 +80,7 @@ const AppInner = () => {
                 <LinearProgress
                     sx={{
                         width: "12rem",
-                        height: "8px",
+                        height: "8.5px",
                         backgroundColor: `${colors.gold}15`,
                         ".MuiLinearProgress-bar": { backgroundColor: colors.gold },
                     }}
