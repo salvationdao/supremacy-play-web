@@ -78,8 +78,8 @@ const AppInner = () => {
                     }}
                 />
 
-                <Box>
-                    <Typography variant="body2" sx={{ mb: ".8rem", textAlign: "center", fontFamily: fonts.nostromoBlack }}>
+                <Stack alignItems="center" spacing=".8rem">
+                    <Typography variant="body2" sx={{ textAlign: "center", fontFamily: fonts.nostromoBlack }}>
                         CONNECTING...
                     </Typography>
                     <LinearProgress
@@ -90,7 +90,7 @@ const AppInner = () => {
                             ".MuiLinearProgress-bar": { backgroundColor: colors.gold },
                         }}
                     />
-                </Box>
+                </Stack>
             </Stack>
         )
     }
