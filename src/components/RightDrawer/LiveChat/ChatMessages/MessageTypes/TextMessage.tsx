@@ -1,5 +1,5 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
-import { useCallback, useEffect, useMemo, useRef } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { UserBanForm } from "../../../.."
 import { SvgInfoCircular, SvgSkull2 } from "../../../../../assets"
 import { PASSPORT_SERVER_HOST_IMAGES } from "../../../../../constants"
@@ -9,6 +9,10 @@ import { colors, fonts } from "../../../../../theme/theme"
 import { ChatMessageType, Faction, TextMessageData, User } from "../../../../../types"
 import { TooltipHelper } from "../../../../Common/TooltipHelper"
 import { UserDetailsPopover } from "./UserDetailsPopover"
+import { useChat } from "../../../../../containers"
+import { GameServerKeys } from "../../../../../keys"
+import { ReactJSXElement } from "@emotion/react/types/jsx-namespace"
+import { useGameServerCommandsUser } from "../../../../../hooks/useGameServer"
 
 const getMultiplierColor = (multiplierInt: number): string => {
     if (multiplierInt >= 2800) return "#3BFFDE"
@@ -22,6 +26,17 @@ const getMultiplierColor = (multiplierInt: number): string => {
     if (multiplierInt >= 50) return "#FF4242"
     return "#9791FF"
 }
+
+// const isVisible = (el: React.RefObject<HTMLDivElement>) => {
+//     const rect = el.current?.getBoundingClientRect()
+//     if (rect) {
+//         const elemTop = rect.top
+//         const elemBottom = rect.bottom
+//
+//         // Only completely visible elements return true:
+//         const isVisible = elemTop >= 0 && elemBottom <= window.innerHeight
+//     }
+// }
 
 export const TextMessage = ({
     data,
@@ -52,12 +67,15 @@ export const TextMessage = ({
 }) => {
     const { from_user, user_rank, message_color, avatar_id, message, total_multiplier, is_citizen, from_user_stat } = data
     const { id, username, gid, faction_id } = from_user
+    const { userGidRecord, addToUserGidRecord } = useChat()
+    const { send } = useGameServerCommandsUser("/user_commander")
 
     const popoverRef = useRef(null)
     const [isPopoverOpen, toggleIsPopoverOpen] = useToggle()
     const [banModalOpen, toggleBanModalOpen] = useToggle()
     const [displayTimestamp, setDisplayTimestamp] = useToggle()
     const [isPreviousMessager, setIsPreviousMessager] = useToggle()
+    const [highlightMsg, setHighlightMsg] = useState(false)
 
     const multiplierColor = useMemo(() => getMultiplierColor(total_multiplier || 0), [total_multiplier])
     const abilityKillColor = useMemo(() => {
@@ -76,10 +94,81 @@ export const TextMessage = ({
         return (fontSize || 1.1) * 1.35
     }, [isEmoji, fontSize])
 
+    useEffect(() => {
+        if (!highlightMsg) return
+        setTimeout(() => {
+            setHighlightMsg(false)
+        }, 4000)
+    }, [])
+
+    const renderJSXMessage = useCallback(
+        (msg: string) => {
+            let newMsgStr: string = ""
+            //initializing new array of jsx elements which will allow for different styles for tagged users
+            const newMsgArr: ReactJSXElement[] = []
+            //splitting each message into its words
+            const msgArr = msg.split(" ")
+
+            msgArr.map(async (word, i) => {
+                let taggedUser: User | undefined
+                //matching word based on if it matches a tagged pattern
+                if (word.match(/#\d+/)) {
+                    //push the created string before the tagged user to new message array
+                    newMsgArr.push(<Box component={"span"}>{newMsgStr}</Box>)
+                    //start new string for after tagged user
+                    newMsgStr = ""
+                    //get the int type from the #gid
+                    const gid = parseInt(word.substring(1))
+                    //check record if we have a user
+                    taggedUser = userGidRecord.current ? userGidRecord.current[gid] : undefined
+                    //if not make a call to the backend to find the user and add to record
+                    if (!taggedUser) {
+                        try {
+                            const resp = await send<User>(GameServerKeys.GetPlayerByGid, {
+                                gid: gid,
+                            })
+                            if (!resp) return
+                            addToUserGidRecord(resp)
+                        } catch (err) {
+                            console.error(err)
+                        }
+                    }
+                    if (taggedUser?.id === user.id) {
+                        setHighlightMsg(true)
+                    }
+                    //push to the JSX array with necessary styles
+                    newMsgArr.push(
+                        <Box component={"span"}>
+                            <Box sx={{ display: "inline" }}> </Box>
+                            <UsernameJSX data={data} fontSize={fontSize} user={taggedUser} />
+                        </Box>,
+                    )
+                    //else concat the string with the next word
+                } else {
+                    newMsgStr = newMsgStr.concat(" ", word)
+                }
+                //if the array is finished, push the last string
+                if (i === msgArr.length - 1) {
+                    newMsgArr.push(<Box component={"span"}>{newMsgStr}</Box>)
+                }
+            })
+            return (
+                <>
+                    {newMsgArr.map((x, i) => (
+                        <Box component={"span"} key={i}>
+                            {x}
+                        </Box>
+                    ))}
+                </>
+            )
+        },
+        [addToUserGidRecord, userGidRecord],
+    )
+
     const chatMessage = useMemo(() => {
         const messageFontSize = renderFontSize()
-        return <Typography sx={{ fontSize: `${messageFontSize}rem` }}>{message}</Typography>
-    }, [message, renderFontSize])
+        return <Box sx={{ fontSize: `${messageFontSize}rem` }}>{renderJSXMessage(message)}</Box>
+    }, [message, renderFontSize, renderJSXMessage])
 
     useEffect(() => {
         if (!previousMessage || previousMessage.type != "TEXT") return
@@ -293,6 +382,52 @@ export const TextMessage = ({
                     }}
                 />
             )}
+        </>
+    )
+}
+
+interface UsernameJSXProps {
+    data: TextMessageData
+    fontSize: number
+    toggleIsPopoverOpen?: (value?: boolean) => void
+    user?: User
+}
+
+export const UsernameJSX = ({ data, fontSize, toggleIsPopoverOpen, user }: UsernameJSXProps) => {
+    const { message_color } = data
+
+    return (
+        <>
+            <Typography
+                onClick={() => (toggleIsPopoverOpen ? toggleIsPopoverOpen() : null)}
+                sx={{
+                    display: "inline",
+                    color: toggleIsPopoverOpen ? message_color : colors.blue,
+                    backgroundColor: toggleIsPopoverOpen ? "unset" : colors.darkNavyBlue,
+                    borderRadius: toggleIsPopoverOpen ? "unset" : 0.5,
+                    fontWeight: 700,
+                    fontSize: fontSize ? `${1.33 * fontSize}rem` : "1.33rem",
+                    verticalAlign: "middle",
+                    ":hover": toggleIsPopoverOpen
+                        ? {
+                              cursor: "pointer",
+                              textDecoration: "underline",
+                          }
+                        : "unset",
+                    ":active": {
+                        opacity: 0.7,
+                    },
+                }}
+            >
+                {`${truncate(user?.username || "", 20)}`}
+                <span
+                    style={{
+                        marginLeft: ".2rem",
+                        opacity: 0.7,
+                        fontSize: fontSize ? `${1.1 * fontSize}rem` : "1.1rem",
+                    }}
+                >{`#${user?.gid}`}</span>
+            </Typography>
         </>
     )
 }

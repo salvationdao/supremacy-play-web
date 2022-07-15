@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useState, useRef } from "react"
 import { useHistory, useLocation } from "react-router"
 import { createContainer } from "unstated-next"
 import { useAuth } from "."
@@ -7,9 +7,10 @@ import { GlobalAnnouncementType } from "../components/RightDrawer/LiveChat/Globa
 import { MESSAGES_BUFFER_SIZE } from "../constants"
 import { parseString } from "../helpers"
 import { useToggle } from "../hooks"
-import { useGameServerSubscription, useGameServerSubscriptionFaction } from "../hooks/useGameServer"
+import { useGameServerSubscription, useGameServerSubscriptionFaction, useGameServerSubscriptionUser } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
-import { BanProposalStruct, ChatMessageType, TextMessageData } from "../types/chat"
+import { BanProposalStruct, BanUser, ChatMessageType, TextMessageData } from "../types/chat"
+import { User } from "../types"
 
 export interface IncomingMessages {
     faction: string | null
@@ -51,6 +52,17 @@ export const ChatContainer = createContainer(() => {
     // Store list of messages that were successfully sent or failed
     const [sentMessages, setSentMessages] = useState<Date[]>([])
     const [failedMessages, setFailedMessages] = useState<Date[]>([])
+
+    //active users
+    const [activePlayers, setActivePlayers] = useState<User[]>([])
+    const [globalActivePlayers, setGlobalActivePlayers] = useState<User[]>([])
+
+    //dictionary to store users gid to username
+    const userGidRecord = useRef<{ [gid: number]: User }>()
+
+    const addToUserGidRecord = (user: User) => {
+        userGidRecord.current = { ...userGidRecord, [user.gid]: user }
+    }
 
     // Save chat settings to local storage
     useEffect(() => {
@@ -246,6 +258,30 @@ export const ChatContainer = createContainer(() => {
         },
     )
 
+    //subscribe active faction users
+    useGameServerSubscriptionFaction<User[]>(
+        {
+            URI: "",
+            key: GameServerKeys.SubPlayerList,
+        },
+        (payload) => {
+            if (!payload) return
+            setActivePlayers(payload.sort((a, b) => a.username.localeCompare(b.username)))
+        },
+    )
+
+    //subscribe active global users
+    useGameServerSubscriptionUser<User[]>(
+        {
+            URI: "",
+            key: GameServerKeys.SubGlobalPlayerList,
+        },
+        (payload) => {
+            if (!payload) return
+            setGlobalActivePlayers(payload.sort((a, b) => a.username.localeCompare(b.username)))
+        },
+    )
+
     // Close right drawer when chat is popped out
     useEffect(() => {
         if (isPoppedout) {
@@ -279,6 +315,10 @@ export const ChatContainer = createContainer(() => {
         setFontSize,
         globalAnnouncement,
         banProposal,
+        userGidRecord,
+        addToUserGidRecord,
+        activePlayers,
+        globalActivePlayers,
     }
 })
 
