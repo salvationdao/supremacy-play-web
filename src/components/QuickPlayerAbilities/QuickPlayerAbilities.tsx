@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react"
 import { MoveableResizable } from ".."
 import { useAuth, useMobile } from "../../containers"
 import { useTheme } from "../../containers/theme"
-import { useGameServerSubscriptionSecurePublic } from "../../hooks/useGameServer"
+import { useGameServerSubscription } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { colors, fonts } from "../../theme/theme"
 import { FeatureName, SaleAbility } from "../../types"
@@ -13,12 +13,12 @@ import { TimeLeft } from "../Storefront/PlayerAbilitiesStore/PlayerAbilitiesStor
 import { QuickPlayerAbilitiesItem } from "./QuickPlayerAbilitiesItem"
 
 export const QuickPlayerAbilities = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
-    const { userHasFeature } = useAuth()
+    const { userHasFeature, userID } = useAuth()
     if (!open || !userHasFeature(FeatureName.playerAbility)) return null
-    return <QuickPlayerAbilitiesInner onClose={onClose} />
+    return <QuickPlayerAbilitiesInner onClose={onClose} userID={userID} />
 }
 
-const QuickPlayerAbilitiesInner = ({ onClose }: { onClose: () => void }) => {
+const QuickPlayerAbilitiesInner = ({ onClose, userID }: { onClose: () => void; userID: string }) => {
     const { isMobile } = useMobile()
     const theme = useTheme()
 
@@ -30,14 +30,15 @@ const QuickPlayerAbilitiesInner = ({ onClose }: { onClose: () => void }) => {
     const [canPurchase, setCanPurchase] = useState(true)
     const [purchaseError, setPurchaseError] = useState<string>()
 
-    useGameServerSubscriptionSecurePublic<{
+    useGameServerSubscription<{
         next_refresh_time: Date | null
         refresh_period_duration_seconds: number
         sale_abilities: SaleAbility[]
     }>(
         {
-            URI: "sale_abilities",
+            URI: "/public/sale_abilities",
             key: GameServerKeys.SaleAbilitiesList,
+            ready: !!userID,
         },
         (payload) => {
             if (!payload) return
@@ -51,10 +52,11 @@ const QuickPlayerAbilitiesInner = ({ onClose }: { onClose: () => void }) => {
         },
     )
 
-    useGameServerSubscriptionSecurePublic<{ id: string; current_price: string }>(
+    useGameServerSubscription<{ id: string; current_price: string }>(
         {
-            URI: "sale_abilities",
+            URI: "/public/sale_abilities",
             key: GameServerKeys.SaleAbilitiesPriceSubscribe,
+            ready: !!userID,
         },
         (payload) => {
             if (!payload) return
@@ -64,10 +66,11 @@ const QuickPlayerAbilitiesInner = ({ onClose }: { onClose: () => void }) => {
         },
     )
 
-    useGameServerSubscriptionSecurePublic<{ id: string; amount_sold: number }>(
+    useGameServerSubscription<{ id: string; amount_sold: number }>(
         {
-            URI: "sale_abilities",
+            URI: "/public/sale_abilities",
             key: GameServerKeys.SaleAbilitiesAmountSubscribe,
+            ready: !!userID,
         },
         (payload) => {
             if (!payload) return
@@ -99,7 +102,7 @@ const QuickPlayerAbilitiesInner = ({ onClose }: { onClose: () => void }) => {
             // Size limits
             minWidth: 360,
             minHeight: 245,
-            maxWidth: 500,
+            maxWidth: 360,
             maxHeight: 245,
             // Others
             infoTooltipText: "Quickly view and purchase abilities that are currently on sale",
