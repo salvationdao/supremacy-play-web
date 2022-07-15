@@ -3,7 +3,7 @@ import { createContainer } from "unstated-next"
 import { useAuth, useSnackbar } from "."
 import { useGameServerCommandsFaction, useGameServerSubscriptionUser } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
-import { CellCoords, GameAbility, LocationSelectType, PlayerAbility } from "../types"
+import { Position, GameAbility, LocationSelectType, PlayerAbility } from "../types"
 import { useToggle } from "./../hooks/useToggle"
 import { useGame } from "./game"
 
@@ -14,9 +14,9 @@ interface WinnerAnnouncementResponse {
 
 export interface MapSelection {
     // start coords (used for LINE_SELECT and LOCATION_SELECT abilities)
-    startCoords?: CellCoords
+    startCoords?: Position
     // end coords (only used for LINE_SELECT abilities)
-    endCoords?: CellCoords
+    endCoords?: Position
     // mech hash (only used for MECH_SELECT abilities)
     mechHash?: string
 }
@@ -115,8 +115,8 @@ export const MiniMapContainer = createContainer(() => {
                 let payload: {
                     blueprint_ability_id: string
                     location_select_type: string
-                    start_coords?: CellCoords
-                    end_coords?: CellCoords
+                    start_coords?: Position
+                    end_coords?: Position
                     mech_hash?: string
                 } | null = null
                 switch (playerAbility.ability.location_select_type) {

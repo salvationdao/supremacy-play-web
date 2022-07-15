@@ -1,7 +1,8 @@
 import { Box, Stack, Typography, useTheme } from "@mui/material"
-import { useEffect, useMemo, useRef } from "react"
+import { useCallback, useEffect, useMemo, useRef } from "react"
 import { useGame, useMiniMap } from "../../../containers"
 import { fonts } from "../../../theme/theme"
+import { Position } from "../../../types"
 
 const MIN_CANVAS_HEIGHT = 700
 
@@ -22,30 +23,62 @@ export const LineSelect = ({ mapScale }: { mapScale: number }) => {
         c.canvas.height = MIN_CANVAS_HEIGHT
     }, [mapElement])
 
-    // https://stackoverflow.com/questions/24376951/find-new-coordinates-of-point-on-line-in-javascript
+    const drawCanvasLine = useCallback(
+        (point1: Position, point2: Position, lineWidthMultiplier = 0.09) => {
+            const c = canvasRef.current?.getContext("2d")
+            if (!c || !map) return
+
+            c.clearRect(0, 0, c.canvas.width, c.canvas.height)
+
+            const normalisedStartCoords = {
+                x: (point1.x * c.canvas.width) / map.cells_x,
+                y: (point1.y * c.canvas.height) / map.cells_y,
+            }
+            const normalisedEndCoords = {
+                x: (point2.x * c.canvas.width) / map.cells_x,
+                y: (point2.y * c.canvas.height) / map.cells_y,
+            }
+
+            c.beginPath()
+            c.moveTo(normalisedStartCoords.x, normalisedStartCoords.y)
+            c.lineTo(normalisedEndCoords.x, normalisedEndCoords.y)
+            c.lineWidth = indicatorDiameter * lineWidthMultiplier
+            c.strokeStyle = theme.factionTheme.primary
+            c.stroke()
+        },
+        [indicatorDiameter, map, theme.factionTheme.primary],
+    )
+
+    // Draw line when both points are selected
     useEffect(() => {
-        const c = canvasRef.current?.getContext("2d")
-        if (!c || !map) return
-
-        c.clearRect(0, 0, c.canvas.width, c.canvas.height)
         if (!selection?.startCoords || !selection?.endCoords) return
+        drawCanvasLine(selection.startCoords, selection.endCoords)
+    }, [drawCanvasLine, selection])
 
-        const normalisedStartCoords = {
-            x: (selection.startCoords.x * c.canvas.width) / map.cells_x,
-            y: (selection.startCoords.y * c.canvas.height) / map.cells_y,
-        }
-        const normalisedEndCoords = {
-            x: (selection.endCoords.x * c.canvas.width) / map.cells_x,
-            y: (selection.endCoords.y * c.canvas.height) / map.cells_y,
-        }
+    const handleMouseMove = useCallback(
+        (e: MouseEvent) => {
+            if (!selection) return
 
-        c.beginPath()
-        c.moveTo(normalisedStartCoords.x, normalisedStartCoords.y)
-        c.lineTo(normalisedEndCoords.x, normalisedEndCoords.y)
-        c.lineWidth = indicatorDiameter * 0.08
-        c.strokeStyle = theme.factionTheme.primary
-        c.stroke()
-    }, [selection, map, indicatorDiameter, theme.factionTheme.primary])
+            // Make sure only 1 point is selected
+            const start = selection.startCoords
+            const end = selection.endCoords
+            if ((!start && end) || (start && !end)) {
+                const el = e.currentTarget as HTMLDivElement
+                const rect = el.getBoundingClientRect()
+                const x = e.clientX - rect.left
+                const y = e.clientY - rect.top
+
+                drawCanvasLine(start || end || { x: 0, y: 0 }, { x, y })
+            }
+        },
+        [drawCanvasLine, selection],
+    )
+
+    // Draw line from 1 point to mouse
+    useEffect(() => {
+        window.addEventListener("mousemove", handleMouseMove, false)
+        return () => window.removeEventListener("mousemove", handleMouseMove, false)
+    }, [handleMouseMove, selection])
 
     return (
         <>
