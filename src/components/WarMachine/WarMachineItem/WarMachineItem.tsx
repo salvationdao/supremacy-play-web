@@ -24,7 +24,7 @@ export const WarMachineItem = ({ warMachine, scale, initialExpanded = false }: {
     const { isMobile } = useMobile()
     const { userID, factionID } = useAuth()
     const { getFaction } = useSupremacy()
-    const { highlightedMechHash, setHighlightedMechHash } = useMiniMap()
+    const { highlightedMechParticipantID, setHighlightedMechParticipantID } = useMiniMap()
 
     const { hash, participantID, factionID: wmFactionID, name, imageAvatar, tier, ownedByID } = warMachine
 
@@ -55,21 +55,21 @@ export const WarMachineItem = ({ warMachine, scale, initialExpanded = false }: {
 
     // Highlighting on the map
     const handleClick = useCallback(() => {
-        if (hash === highlightedMechHash) {
-            setHighlightedMechHash(undefined)
+        if (participantID === highlightedMechParticipantID) {
+            setHighlightedMechParticipantID(undefined)
         } else {
-            setHighlightedMechHash(hash)
+            setHighlightedMechParticipantID(participantID)
         }
-    }, [hash, highlightedMechHash, setHighlightedMechHash])
+    }, [participantID, highlightedMechParticipantID, setHighlightedMechParticipantID])
 
     // Toggle out isExpanded if other mech is highlighted
     useEffect(() => {
-        if (highlightedMechHash !== hash) {
+        if (highlightedMechParticipantID !== participantID) {
             toggleIsExpanded(initialExpanded)
         } else {
             toggleIsExpanded(true)
         }
-    }, [highlightedMechHash, initialExpanded, isMobile, setHighlightedMechHash, toggleIsExpanded, hash])
+    }, [highlightedMechParticipantID, initialExpanded, isMobile, setHighlightedMechParticipantID, toggleIsExpanded, participantID])
 
     return (
         <>
@@ -88,7 +88,7 @@ export const WarMachineItem = ({ warMachine, scale, initialExpanded = false }: {
                         (warMachine.ownedByID === userID ? WIDTH_SKILL_BUTTON + WIDTH_STAT_BAR : 0)
                     }rem`,
                     transition: "width .1s",
-                    transform: highlightedMechHash === hash ? `scale(${scale * 1.08})` : `scale(${scale})`,
+                    transform: highlightedMechParticipantID === participantID ? `scale(${scale * 1.08})` : `scale(${scale})`,
                     transformOrigin: isMobile ? "0 0" : "center",
                 }}
             >

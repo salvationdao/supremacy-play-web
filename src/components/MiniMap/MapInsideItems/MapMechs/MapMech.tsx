@@ -30,8 +30,17 @@ interface MapMechInnerProps extends MapMechProps {
 const MapMechInner = ({ warMachine, map }: MapMechInnerProps) => {
     const { userID, factionID } = useAuth()
     const { getFaction } = useSupremacy()
-    const { isTargeting, gridWidth, gridHeight, playerAbility, setPlayerAbility, highlightedMechHash, setHighlightedMechHash, selection, setSelection } =
-        useMiniMap()
+    const {
+        isTargeting,
+        gridWidth,
+        gridHeight,
+        playerAbility,
+        setPlayerAbility,
+        highlightedMechParticipantID,
+        setHighlightedMechParticipantID,
+        selection,
+        setSelection,
+    } = useMiniMap()
     const { hash, participantID, factionID: warMachineFactionID, maxHealth, maxShield, ownedByID } = warMachine
 
     /**
@@ -59,8 +68,8 @@ const MapMechInner = ({ warMachine, map }: MapMechInnerProps) => {
     const mechMapX = useMemo(() => ((position?.x || 0) - map.left_pixels) * mapScale, [map.left_pixels, mapScale, position?.x])
     const mechMapY = useMemo(() => ((position?.y || 0) - map.top_pixels) * mapScale, [map.top_pixels, mapScale, position?.y])
     const isMechHighligheted = useMemo(
-        () => highlightedMechHash === warMachine.hash || selection?.mechHash === hash || playerAbility?.mechHash === hash,
-        [hash, highlightedMechHash, playerAbility?.mechHash, selection?.mechHash, warMachine.hash],
+        () => highlightedMechParticipantID === warMachine.participantID || selection?.mechHash === hash || playerAbility?.mechHash === hash,
+        [hash, highlightedMechParticipantID, playerAbility?.mechHash, selection?.mechHash, warMachine.participantID],
     )
     const zIndex = useMemo(() => {
         if (isMechHighligheted) return 7
@@ -135,12 +144,24 @@ const MapMechInner = ({ warMachine, map }: MapMechInnerProps) => {
                 ...MechMoveCommandAbility,
                 mechHash: hash,
             })
-        } else if (hash === highlightedMechHash) {
-            setHighlightedMechHash(undefined)
+        } else if (participantID === highlightedMechParticipantID) {
+            setHighlightedMechParticipantID(undefined)
         } else {
-            setHighlightedMechHash(hash)
+            setHighlightedMechParticipantID(participantID)
         }
-    }, [playerAbility, factionID, warMachineFactionID, ownedByID, userID, hash, highlightedMechHash, setSelection, setPlayerAbility, setHighlightedMechHash])
+    }, [
+        playerAbility,
+        factionID,
+        warMachineFactionID,
+        ownedByID,
+        userID,
+        hash,
+        participantID,
+        highlightedMechParticipantID,
+        setSelection,
+        setPlayerAbility,
+        setHighlightedMechParticipantID,
+    ])
 
     return useMemo(() => {
         if (!position) return null
@@ -221,13 +242,13 @@ const MapMechInner = ({ warMachine, map }: MapMechInnerProps) => {
                                 top: "50%",
                                 left: "50%",
                                 transform: "translate(-50%, -50%)",
-                                zIndex: 999,
+                                zIndex: 99,
                             }}
                         >
                             <Box
                                 sx={{
-                                    width: iconSize * 1.8,
-                                    height: iconSize * 1.8,
+                                    width: iconSize * 1.6,
+                                    height: iconSize * 1.6,
                                     border: `${primaryColor} 1.5rem dashed`,
                                     borderStyle: "dashed solid",
                                     borderRadius: "50%",

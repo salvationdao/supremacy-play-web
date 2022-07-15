@@ -39,7 +39,7 @@ export const MiniMapContainer = createContainer(() => {
     const [isTargeting, setIsTargeting] = useState(false)
 
     // Other stuff
-    const [highlightedMechHash, setHighlightedMechHash] = useState<string>()
+    const [highlightedMechParticipantID, setHighlightedMechParticipantID] = useState<number>()
     const [selection, setSelection] = useState<MapSelection>()
 
     // Subscribe on winner announcements
@@ -170,7 +170,7 @@ export const MiniMapContainer = createContainer(() => {
             }
             resetSelection()
             if (playerAbility?.ability.location_select_type === LocationSelectType.MECH_SELECT) {
-                setHighlightedMechHash(undefined)
+                setHighlightedMechParticipantID(undefined)
             }
             newSnackbarMessage("Successfully submitted target location.", "success")
         } catch (err) {
@@ -178,14 +178,14 @@ export const MiniMapContainer = createContainer(() => {
             console.error(err)
             setSelection(undefined)
         }
-    }, [send, selection, resetSelection, winner?.game_ability, playerAbility, newSnackbarMessage, setHighlightedMechHash])
+    }, [send, selection, resetSelection, winner?.game_ability, playerAbility, newSnackbarMessage, setHighlightedMechParticipantID])
 
     return {
         mapElement,
         winner,
         setWinner,
-        highlightedMechHash,
-        setHighlightedMechHash,
+        highlightedMechParticipantID,
+        setHighlightedMechParticipantID,
         isTargeting,
         selection,
         setSelection,

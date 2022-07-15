@@ -10,6 +10,7 @@ import { useToggle } from "../../hooks"
 import { fonts } from "../../theme/theme"
 import { Map } from "../../types"
 import { MoveableResizableConfig, useMoveableResizable } from "../Common/MoveableResizable/MoveableResizableContainer"
+import { HighlightedMechAbilities } from "./MapInsideItems/MapMechs/HighlightedMechAbilities"
 import { TargetHint } from "./MapOutsideItems/TargetHint"
 
 const TOP_BAR_HEIGHT = 3.1 // rems
@@ -252,6 +253,8 @@ const MiniMapInner = ({ map, isTargeting, isEnlarged, toRender }: { map: Map; is
                     <MiniMapInside containerDimensions={{ width: insideWidth, height: insideHeight }} />
 
                     <TargetHint />
+
+                    <HighlightedMechAbilities />
                 </Box>
             </Stack>
         )
