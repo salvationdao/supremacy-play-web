@@ -53,10 +53,15 @@ export const RightDrawer = () => {
 }
 
 const Content = ({ currentHash, hash, children, mountAllTime }: { currentHash: string; hash: string; children: ReactNode; mountAllTime?: boolean }) => {
-    if (currentHash === hash || mountAllTime) {
+    const isActive = currentHash === hash
+
+    if (isActive || mountAllTime) {
         return (
             <Fade in>
-                <Box id={`right-drawer-content-${hash}`} sx={{ height: "100%" }}>
+                <Box
+                    id={`right-drawer-content-${hash}`}
+                    sx={{ height: isActive ? "100%" : 0, visibility: isActive ? "visible" : "hidden", pointerEvents: isActive ? "all" : "none" }}
+                >
                     {children}
                 </Box>
             </Fade>
