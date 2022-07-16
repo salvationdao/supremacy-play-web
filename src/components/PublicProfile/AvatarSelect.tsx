@@ -145,7 +145,6 @@ export const ProfileAvatar = ({ primaryColor, backgroundColor, avatarURL, update
                             <Box
                                 key={idx}
                                 onClick={() => {
-                                    console.log("click")
                                     updatehHandler(a.id)
                                 }}
                             >
@@ -237,7 +236,7 @@ export const ProfileAvatar = ({ primaryColor, backgroundColor, avatarURL, update
                 />
             </FancyButton>
 
-            <Modal open={modalOpen} sx={{ zIndex: siteZIndex.Modal, margin: "auto", height: "70vh", width: "70vw" }}>
+            <Modal onClose={() => setModalOpen(false)} open={modalOpen} sx={{ zIndex: siteZIndex.Modal, margin: "auto", height: "70vh", width: "70vw" }}>
                 <Stack direction="row" spacing="1rem" sx={{ height: "100%", width: "100%" }}>
                     <ClipThing
                         clipSize="10px"
