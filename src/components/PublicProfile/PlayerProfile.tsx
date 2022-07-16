@@ -16,6 +16,8 @@ import { ProfileMechHistory } from "./ProfileBattleHistory"
 import { Username } from "./ProfileUsername"
 import { ProfileWarmachines } from "./ProfileWarmachines"
 
+const HubKeyPlayerAvatarUpadate = "PLAYER:AVATAR:UPDATE"
+
 interface Player {
     id: string
     username: string
@@ -34,8 +36,15 @@ interface Stats {
     total_ability_triggered: number
     mech_kill_count: number
 }
+
+interface AvatarType {
+    avatar_url: string
+    tier: string
+}
+
 interface PlayerProfile {
     player: Player
+    avatar: AvatarType
     stats: Stats
     faction?: Faction
     active_log?: {
@@ -90,6 +99,7 @@ export const PlayerProfilePage = () => {
     const [profile, setProfile] = useState<PlayerProfile>()
     const [username, setUsername] = useState<string>()
     const [aboutMe, setAboutMe] = useState<string>()
+    const [avatar, setAvatar] = useState<AvatarType>()
 
     const { send } = useGameServerCommands("/public/commander")
     const { send: userSend } = useGameServerCommandsUser("/user_commander")
@@ -114,6 +124,29 @@ export const PlayerProfilePage = () => {
                 })
                 setUsername(resp)
                 newSnackbarMessage("username updated successfully.", "success")
+            } catch (e) {
+                let errorMessage = ""
+                if (typeof e === "string") {
+                    errorMessage = e
+                } else if (e instanceof Error) {
+                    errorMessage = e.message
+                }
+                newSnackbarMessage(errorMessage, "error")
+            }
+        },
+        [userSend, profile?.player.id, newSnackbarMessage],
+    )
+
+    // avatar
+    const updateAvatar = useCallback(
+        async (avatar_id: string) => {
+            try {
+                const resp = await userSend<AvatarType>(HubKeyPlayerAvatarUpadate, {
+                    player_id: profile?.player.id,
+                    profile_avatar_id: avatar_id,
+                })
+                setAvatar(resp)
+                newSnackbarMessage("avatar updated successfully.", "success")
             } catch (e) {
                 let errorMessage = ""
                 if (typeof e === "string") {
@@ -161,6 +194,7 @@ export const PlayerProfilePage = () => {
                 setProfile(resp)
                 setUsername(resp.player.username)
                 setAboutMe(resp.player.about_me)
+                setAvatar(resp.avatar)
                 setLoading(false)
             } catch (e) {
                 let errorMessage = ""
@@ -252,7 +286,14 @@ export const PlayerProfilePage = () => {
                                     }}
                                     variant="square"
                                 />
-                                <ProfileAvatar />
+                                <ProfileAvatar
+                                    updateAvatar={async (avatar_id: string) => {
+                                        updateAvatar(avatar_id)
+                                    }}
+                                    avatarURL={avatar?.avatar_url || ""}
+                                    primaryColor={primaryColor}
+                                    backgroundColor={backgroundColor}
+                                />
                                 {isMe && (
                                     <Typography sx={{ WebkitTextStroke: "1px black", fontFamily: fonts.nostromoBlack, fontSize: "5rem", color: primaryColor }}>
                                         my profile
