@@ -32,7 +32,7 @@ export const WeaponLoadout = ({ weaponDetails }: { weaponDetails: Weapon }) => {
             >
                 {skin ? (
                     <MechLoadoutItem
-                        imageUrl={skin.image_url}
+                        imageUrl={skin.image_url || skin.avatar_url}
                         videoUrls={[skin.card_animation_url]}
                         label={skin.label}
                         primaryColor={colors.chassisSkin}

@@ -83,15 +83,12 @@ export const HistoryEntry = ({ status, mapName, mechSurvived, backgroundImage, k
                 />
 
                 <Box>
-                    <Typography variant="body2" sx={{ textTransform: "uppercase" }}>
-                        {mapName}
-                    </Typography>
-
                     {mech && (
                         <Typography variant="body1" sx={{ ontFamily: fonts.nostromoBlack, textTransform: "uppercase" }}>
                             {mech.name || mech.label}
                         </Typography>
                     )}
+
                     <Typography variant="h6" sx={{ fontFamily: fonts.nostromoBlack }}>
                         {statusText}
                     </Typography>
@@ -113,6 +110,10 @@ export const HistoryEntry = ({ status, mapName, mechSurvived, backgroundImage, k
                 </Box>
 
                 <Stack alignItems="flex-end" alignSelf="center" sx={{ ml: "auto" }}>
+                    <Typography variant="body2" sx={{ textTransform: "uppercase" }}>
+                        {mapName}
+                    </Typography>
+
                     <Stack direction="row" spacing=".5rem" alignItems="center">
                         <Typography
                             sx={{

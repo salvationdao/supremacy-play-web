@@ -55,7 +55,7 @@ export const colors = {
     warMachineSkillBar: "#9669FF",
 
     lightGrey: "#999999",
-    grey: "#89898d",
+    grey: "#777777",
     darkGrey: "#444444",
     battleQueueBanner: "#C24242",
     darkestNeonBlue: "#050c12",
@@ -134,7 +134,7 @@ export enum siteZIndex {
     BattleEnd = 60,
     MiniMap = 50,
     MoveableResizableHover = 51,
-    MoveableResizable = 20,
+    MoveableResizable = 42,
     Notifications = 40,
     MechStats = 30,
     VotingSystem = 30,

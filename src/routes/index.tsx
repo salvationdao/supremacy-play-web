@@ -116,16 +116,6 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         requireFaction: true,
         matchLeftDrawerID: "marketplace",
     },
-
-    // Player profile
-    player_profile: {
-        id: "profile",
-        path: "/profile/:playerGID",
-        exact: true,
-        Component: PlayerProfilePage,
-        requireAuth: false,
-        requireFaction: false,
-    },
     marketplace: {
         id: "marketplace",
         path: "/marketplace/:type?",
@@ -138,6 +128,16 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
             label: "Marketplace",
         },
         matchLeftDrawerID: "marketplace",
+    },
+
+    // Player profile
+    player_profile: {
+        id: "profile",
+        path: "/profile/:playerGID",
+        exact: true,
+        Component: PlayerProfilePage,
+        requireAuth: false,
+        requireFaction: false,
     },
 
     // Contract
@@ -197,6 +197,7 @@ export interface HashRouteStruct {
     Component?: () => JSX.Element
     icon: string | React.ReactElement<unknown, string | React.JSXElementConstructor<unknown>>
     label: string
+    mountAllTime?: boolean
 }
 
 export const HASH_ROUTES_MAP: { [name: string]: HashRouteStruct } = {
@@ -206,6 +207,7 @@ export const HASH_ROUTES_MAP: { [name: string]: HashRouteStruct } = {
         icon: <SvgChat size="1rem" sx={{ pt: ".3rem" }} />,
         label: "Live Chat",
         Component: LiveChat,
+        mountAllTime: true,
     },
     active_players: {
         id: "active_players",
@@ -217,6 +219,7 @@ export const HASH_ROUTES_MAP: { [name: string]: HashRouteStruct } = {
         ),
         label: "Active Players",
         Component: PlayerList,
+        mountAllTime: false,
     },
 }
 

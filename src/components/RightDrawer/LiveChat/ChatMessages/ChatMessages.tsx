@@ -1,12 +1,11 @@
-import { Box, Fade, IconButton, Stack, Typography } from "@mui/material"
+import { Box, Divider, Fade, IconButton, Stack, Typography } from "@mui/material"
 import { useCallback, useLayoutEffect, useRef, useState } from "react"
 import { PunishMessage, TextMessage } from "../../.."
 import { SvgScrolldown } from "../../../../assets"
-import { FontSizeType, SplitOptionType, useChat, useSupremacy, useAuth } from "../../../../containers"
-import { checkIfIsEmoji } from "../../../../helpers"
-import { colors } from "../../../../theme/theme"
-import { Faction, SystemBanMessageData, User } from "../../../../types"
-import { ChatMessageType, PunishMessageData, TextMessageData } from "../../../../types/chat"
+import { FontSizeType, SplitOptionType, useAuth, useChat, useSupremacy } from "../../../../containers"
+import { checkIfIsEmoji, dateFormatter } from "../../../../helpers"
+import { colors, fonts } from "../../../../theme/theme"
+import { ChatMessageType, Faction, NewBattleMessageData, PunishMessageData, SystemBanMessageData, TextMessageData, User } from "../../../../types"
 import { BanProposal } from "../BanProposal/BanProposal"
 import { GlobalAnnouncement, GlobalAnnouncementType } from "../GlobalAnnouncement"
 import { SystemBanMessage } from "./MessageTypes/SystemBanMessage"
@@ -139,7 +138,7 @@ const ChatMessagesInner = ({
                 <Box sx={{ height: 0 }}>
                     <Stack spacing="1rem" sx={{ mt: ".88rem" }}>
                         {chatMessages && chatMessages.length > 0 ? (
-                            chatMessages.map((message) => {
+                            chatMessages.map((message, i) => {
                                 if (message.type == "TEXT") {
                                     const data = message.data as TextMessageData
                                     const isEmoji: boolean = checkIfIsEmoji(data.message)
@@ -157,6 +156,7 @@ const ChatMessagesInner = ({
                                             user={user}
                                             isEmoji={isEmoji}
                                             locallySent={message.locallySent}
+                                            previousMessage={chatMessages[i - 1]}
                                         />
                                     )
                                 } else if (message.type == "PUNISH_VOTE") {
@@ -180,6 +180,25 @@ const ChatMessagesInner = ({
                                             fontSize={fontSize}
                                             getFaction={getFaction}
                                         />
+                                    )
+                                } else if (message.type === "NEW_BATTLE") {
+                                    const data = message.data as NewBattleMessageData
+                                    return (
+                                        <Stack
+                                            key={`${data.battle_number} - ${message.sent_at.toISOString()}`}
+                                            direction={"row"}
+                                            alignItems={"center"}
+                                            sx={{ pb: "0.5rem" }}
+                                        >
+                                            <Divider sx={{ flex: "1" }} />
+                                            <Typography
+                                                variant={"caption"}
+                                                sx={{ color: colors.grey, flexShrink: "0", px: "1rem", fontFamily: fonts.nostromoBold }}
+                                            >
+                                                BATTLE #{data ? data.battle_number : null} ({dateFormatter(message.sent_at)})
+                                            </Typography>
+                                            <Divider sx={{ flex: "1" }} />
+                                        </Stack>
                                     )
                                 }
 

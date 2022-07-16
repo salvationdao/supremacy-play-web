@@ -1,5 +1,7 @@
 import { Box, Stack, Typography } from "@mui/material"
 import React, { useMemo } from "react"
+import { TooltipHelper } from "../../.."
+import { SvgHealth, SvgPowerCoreCapacity, SvgPowerCoreRegen, SvgShield, SvgShieldRegen, SvgSpeed, SvgWrapperProps } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
 import { fonts } from "../../../../theme/theme"
 import { MechBasic, MechDetails } from "../../../../types"
@@ -12,6 +14,7 @@ export const MechBarStats = ({
     width,
     spacing,
     barHeight,
+    iconVersion,
 }: {
     mech: MechBasic
     mechDetails?: MechDetails
@@ -20,6 +23,7 @@ export const MechBarStats = ({
     width?: string
     spacing?: string
     barHeight?: string
+    iconVersion?: boolean
 }) => {
     const theme = useTheme()
 
@@ -43,6 +47,41 @@ export const MechBarStats = ({
                 totalShieldRechargeRate += utility.shield.recharge_rate
             }
         })
+    }
+
+    if (iconVersion) {
+        return (
+            <Stack alignItems="center" justifyContent="flex-start" direction="row" flexWrap="wrap">
+                <IconStat primaryColor={primaryColor} fontSize={fontSize} label="HEALTH" current={health} total={3000} Icon={SvgHealth} />
+                <IconStat primaryColor={primaryColor} fontSize={fontSize} label="SPEED" current={speed} total={5000} unit="CM/S" Icon={SvgSpeed} />
+                <IconStat
+                    primaryColor={primaryColor}
+                    fontSize={fontSize}
+                    label="Power Core CAPACITY"
+                    current={powerCoreCapacity}
+                    total={3000}
+                    Icon={SvgPowerCoreCapacity}
+                />
+                <IconStat
+                    primaryColor={primaryColor}
+                    fontSize={fontSize}
+                    label="Power Core REGEN"
+                    current={powerCoreRechargeRate}
+                    total={500}
+                    unit="/S"
+                    Icon={SvgPowerCoreRegen}
+                />
+                <IconStat primaryColor={primaryColor} fontSize={fontSize} label="SHIELD" current={totalShield} total={3000} Icon={SvgShield} />
+                <IconStat
+                    primaryColor={primaryColor}
+                    fontSize={fontSize}
+                    label="SHIELD REGEN"
+                    current={totalShieldRechargeRate}
+                    total={1000}
+                    Icon={SvgShieldRegen}
+                />
+            </Stack>
+        )
     }
 
     return (
@@ -76,8 +115,17 @@ export const MechBarStats = ({
                     flexShrink: 0,
                 }}
             >
-                <BarStat primaryColor={primaryColor} fontSize={fontSize} barHeight={barHeight} label="HEALTH" current={health} total={3000} />
-                <BarStat primaryColor={primaryColor} fontSize={fontSize} barHeight={barHeight} label="SPEED" current={speed} total={5000} unit="CM/S" />
+                <BarStat primaryColor={primaryColor} fontSize={fontSize} barHeight={barHeight} label="HEALTH" current={health} total={3000} Icon={SvgHealth} />
+                <BarStat
+                    primaryColor={primaryColor}
+                    fontSize={fontSize}
+                    barHeight={barHeight}
+                    label="SPEED"
+                    current={speed}
+                    total={5000}
+                    unit="CM/S"
+                    Icon={SvgSpeed}
+                />
                 <BarStat
                     primaryColor={primaryColor}
                     fontSize={fontSize}
@@ -85,6 +133,7 @@ export const MechBarStats = ({
                     label="Power Core CAPACITY"
                     current={powerCoreCapacity}
                     total={3000}
+                    Icon={SvgPowerCoreCapacity}
                 />
                 <BarStat
                     primaryColor={primaryColor}
@@ -94,8 +143,17 @@ export const MechBarStats = ({
                     current={powerCoreRechargeRate}
                     total={500}
                     unit="/S"
+                    Icon={SvgPowerCoreRegen}
                 />
-                <BarStat primaryColor={primaryColor} fontSize={fontSize} barHeight={barHeight} label="SHIELD" current={totalShield} total={3000} />
+                <BarStat
+                    primaryColor={primaryColor}
+                    fontSize={fontSize}
+                    barHeight={barHeight}
+                    label="SHIELD"
+                    current={totalShield}
+                    total={3000}
+                    Icon={SvgShield}
+                />
                 <BarStat
                     primaryColor={primaryColor}
                     fontSize={fontSize}
@@ -103,13 +161,14 @@ export const MechBarStats = ({
                     label="SHIELD REGEN"
                     current={totalShieldRechargeRate}
                     total={1000}
+                    Icon={SvgShieldRegen}
                 />
             </Stack>
         </Box>
     )
 }
 
-const BarStatInner = ({
+export const BarStat = ({
     primaryColor,
     fontSize,
     label,
@@ -117,6 +176,7 @@ const BarStatInner = ({
     total,
     unit,
     barHeight,
+    Icon,
 }: {
     primaryColor: string
     fontSize: string
@@ -125,6 +185,7 @@ const BarStatInner = ({
     total: number
     unit?: string
     barHeight?: string
+    Icon: React.VoidFunctionComponent<SvgWrapperProps>
 }) => {
     return useMemo(() => {
         const parsedCurrent = typeof current === "string" ? parseFloat(current) : current
@@ -133,21 +194,24 @@ const BarStatInner = ({
         return (
             <Box>
                 <Stack direction="row" alignItems="center" justifyContent="space-between" spacing=".6rem">
-                    <Typography
-                        variant="caption"
-                        sx={{
-                            fontSize,
-                            fontFamily: fonts.nostromoBlack,
-                            display: "-webkit-box",
-                            overflow: "hidden",
-                            overflowWrap: "anywhere",
-                            textOverflow: "ellipsis",
-                            WebkitLineClamp: 1,
-                            WebkitBoxOrient: "vertical",
-                        }}
-                    >
-                        {label}
-                    </Typography>
+                    <Stack spacing=".5rem" direction="row" alignItems="center">
+                        <Icon size={fontSize} sx={{ pb: "3px", height: "unset" }} />
+                        <Typography
+                            variant="caption"
+                            sx={{
+                                fontSize,
+                                fontFamily: fonts.nostromoBlack,
+                                display: "-webkit-box",
+                                overflow: "hidden",
+                                overflowWrap: "anywhere",
+                                textOverflow: "ellipsis",
+                                WebkitLineClamp: 1,
+                                WebkitBoxOrient: "vertical",
+                            }}
+                        >
+                            {label}
+                        </Typography>
+                    </Stack>
 
                     <Typography
                         variant="caption"
@@ -180,7 +244,48 @@ const BarStatInner = ({
                 </Box>
             </Box>
         )
-    }, [barHeight, current, fontSize, label, primaryColor, total, unit])
+    }, [Icon, barHeight, current, fontSize, label, primaryColor, total, unit])
 }
 
-export const BarStat = React.memo(BarStatInner)
+export const IconStat = ({
+    primaryColor,
+    fontSize,
+    label,
+    current,
+    Icon,
+}: {
+    primaryColor: string
+    fontSize: string
+    label: string
+    current: number | string
+    total: number
+    unit?: string
+    Icon: React.VoidFunctionComponent<SvgWrapperProps>
+}) => {
+    return useMemo(() => {
+        const parsedCurrent = typeof current === "string" ? parseFloat(current) : current
+        if (!parsedCurrent) return null
+
+        return (
+            <TooltipHelper text={`${label}: ${current}`} placement="bottom">
+                <Stack
+                    direction="row"
+                    alignItems="center"
+                    spacing=".2rem"
+                    sx={{
+                        mr: ".8rem",
+                        mb: ".4rem",
+                        px: ".4rem",
+                        pt: ".1rem",
+                        backgroundColor: `${primaryColor}28`,
+                        borderRadius: 0.4,
+                        borderLeft: `${primaryColor} 2px solid`,
+                    }}
+                >
+                    <Icon size={`calc(${fontSize} * 0.9)`} sx={{ pb: "3px" }} />
+                    <Typography sx={{ lineHeight: 1, fontSize }}>{parsedCurrent}</Typography>
+                </Stack>
+            </TooltipHelper>
+        )
+    }, [Icon, current, fontSize, label, primaryColor])
+}

@@ -102,7 +102,7 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate }: MysteryCrateStore
                                 }}
                             >
                                 <MediaPreview
-                                    imageUrl={mysteryCrate.image_url || SafePNG}
+                                    imageUrl={mysteryCrate.image_url || mysteryCrate.avatar_url || SafePNG}
                                     videoUrls={[mysteryCrate.animation_url, mysteryCrate.card_animation_url]}
                                     objectFit="cover"
                                 />
