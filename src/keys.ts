@@ -144,8 +144,10 @@ export enum GameServerKeys {
 
     // Player profile
     PlayerProfileGet = "PLAYER:PROFILE:GET",
-    PlayerProfileUpdateUsername = "PLAYER:UPDATE:USERNAME",
-    PlayerProfileUpdateAboutMe = "PLAYER:UPDATE:ABOUT_ME",
+    PlayerProfileAvatarUpdate = "PLAYER:AVATAR:UPDATE",
+    PlayerProfileAvatarList = "PLAYER:AVATAR:LIST",
+    PlayerProfileUsernameUpate = "PLAYER:UPDATE:USERNAME",
+    PlayerProfileAboutMeUpdate = "PLAYER:UPDATE:ABOUT_ME",
     PlayerAssetMechListPublic = "PLAYER:ASSET:MECH:LIST:PUBLIC",
     PlayerAssetMechDetailPublic = "PLAYER:ASSET:MECH:DETAIL:PUBLIC",
     PlayerBattleMechHistoryList = "PLAYER:BATTLE:MECH:HISTORY:LIST",

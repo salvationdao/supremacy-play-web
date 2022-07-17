@@ -1,12 +1,11 @@
-import { Tune } from "@mui/icons-material"
-import { Avatar, Box, CircularProgress, Modal, Pagination, Stack, Typography, Zoom } from "@mui/material"
-import { send } from "process"
+import { Avatar, Box, CircularProgress, Modal, Pagination, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { EmptyWarMachinesPNG } from "../../assets"
 import { parseString } from "../../helpers"
 import { usePagination, useUrlQuery } from "../../hooks"
 import { useGameServerCommandsUser } from "../../hooks/useGameServer"
-import { colors, fonts, siteZIndex, theme } from "../../theme/theme"
+import { GameServerKeys } from "../../keys"
+import { colors, fonts, siteZIndex } from "../../theme/theme"
 import { ClipThing } from "../Common/ClipThing"
 import { FancyButton } from "../Common/FancyButton"
 import { PageHeader } from "../Common/PageHeader"
@@ -27,8 +26,6 @@ interface ProfileAvatar {
     avatar_url: string
     tier: string
 }
-
-const HubKeyPlayerAvatarList = "PLAYER:AVATAR:LIST"
 
 interface ProfileAvatarProps {
     primaryColor: string
@@ -71,14 +68,14 @@ export const ProfileAvatar = ({ primaryColor, backgroundColor, avatarURL, update
             setIsLoading(true)
 
             const sortDir = "asc"
-            const resp = await send<GetAvatarsResponse, GetAvatarsRequest>(HubKeyPlayerAvatarList, {
+            const resp = await send<GetAvatarsResponse, GetAvatarsRequest>(GameServerKeys.PlayerProfileAvatarList, {
                 queue_sort: sortDir,
                 page,
                 page_size: pageSize,
             })
             if (!resp) return
             setLoadError(undefined)
-            setAvatars(resp.avatars)
+            setAvatars([{ avatar_url: "", id: "", tier: "MEGA" }, ...resp.avatars])
             setTotalItems(resp.total)
         } catch (e) {
             setLoadError(typeof e === "string" ? e : "Failed to get avatars.")
@@ -236,6 +233,7 @@ export const ProfileAvatar = ({ primaryColor, backgroundColor, avatarURL, update
                 />
             </FancyButton>
 
+            {/* avatar select modal */}
             <Modal onClose={() => setModalOpen(false)} open={modalOpen} sx={{ zIndex: siteZIndex.Modal, margin: "auto", height: "70vh", width: "70vw" }}>
                 <Stack direction="row" spacing="1rem" sx={{ height: "100%", width: "100%" }}>
                     <ClipThing
@@ -282,6 +280,14 @@ export const ProfileAvatar = ({ primaryColor, backgroundColor, avatarURL, update
                                 </Stack>
                             </Stack>
 
+                            <FancyButton
+                                disabled={submitting}
+                                onClick={() => {
+                                    setModalOpen(false)
+                                }}
+                            >
+                                CLOSE
+                            </FancyButton>
                             {totalPages > 1 && (
                                 <Box
                                     sx={{

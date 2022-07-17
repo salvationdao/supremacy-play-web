@@ -1,6 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
-import { useLocation } from "react-router-dom"
 import { getRarityDeets } from "../../helpers"
 import { useGameServerCommands } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
@@ -20,7 +19,6 @@ export const ProfileWarmachineItem = ({
     primaryColour: string
     backgroundColour: string
 }) => {
-    const location = useLocation()
     const { send } = useGameServerCommands("/public/commander")
     const [mechDetails, setMechDetails] = useState<MechDetails>()
 

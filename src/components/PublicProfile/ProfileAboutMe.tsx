@@ -14,6 +14,11 @@ export const AboutMe = ({ hide, aboutMe, updateAboutMe }: { hide: boolean; updat
             setSubmitting(true)
             aboutMeRef.current?.blur()
             await updateAboutMe(newAboutMe)
+        } catch (e) {
+            console.log({ e, aboutMe })
+            setNewAboutMe(aboutMe)
+            setSubmitting(false)
+            setEditing(false)
         } finally {
             setSubmitting(false)
             setEditing(false)
@@ -24,56 +29,69 @@ export const AboutMe = ({ hide, aboutMe, updateAboutMe }: { hide: boolean; updat
         <Stack direction="row" alignItems="stretch">
             <Stack direction="row" alignItems="stretch" width={editing ? "100%" : "unset"}>
                 <Stack width={editing ? "100%" : "unset"}>
-                    <Stack>
-                        <TextField
-                            multiline
-                            inputRef={aboutMeRef}
-                            variant="standard"
-                            sx={{
-                                flex: 1,
-                                m: 0,
-                                py: ".2rem",
-                                opacity: editing ? "unset" : 0,
-                                height: editing ? "unset" : 0,
-                                width: editing ? "unset" : 0,
-                                position: "relative",
-                                "& .MuiInput-root": {
-                                    p: 0,
-                                    fontSize: "1.8rem",
-                                    color: "#FFFFFF",
-                                    width: "100%",
-                                },
-                                "& .MuiInputBase-input": {
-                                    p: 0,
-                                    display: "flex",
-                                    flexGrow: 1,
-                                    fontSize: "2rem",
-                                    px: "1.4rem",
-                                    py: ".4rem",
-                                    wordBreak: "break-word",
-                                    border: `#FFFFFF99 1.5px dashed`,
-                                    width: "100%",
-                                    borderRadius: 0.5,
-                                    backgroundColor: "#FFFFFF12",
-                                },
-                            }}
-                            spellCheck={false}
-                            InputProps={{
-                                disableUnderline: true,
-                            }}
-                            value={newAboutMe}
-                            placeholder="Enter about me..."
-                            onChange={(e) => {
-                                setNewAboutMe(e.target.value)
-                            }}
-                            onFocus={() => aboutMeRef.current?.setSelectionRange(0, newAboutMe.length)}
-                            onKeyDown={(e) => {
-                                if (e.key === "Enter") {
-                                    e.preventDefault()
-                                    updateHandler()
-                                }
-                            }}
-                        />
+                    <Stack direction="row">
+                        {editing && (
+                            <TextField
+                                multiline
+                                inputRef={aboutMeRef}
+                                variant="standard"
+                                sx={{
+                                    flex: 1,
+                                    m: 0,
+                                    py: ".2rem",
+                                    opacity: editing ? "unset" : 0,
+                                    height: editing ? "unset" : 0,
+                                    width: editing ? "unset" : 0,
+                                    position: "relative",
+                                    "& .MuiInput-root": {
+                                        p: 0,
+                                        fontSize: "1.8rem",
+                                        color: "#FFFFFF",
+                                        width: "100%",
+                                    },
+                                    "& .MuiInputBase-input": {
+                                        p: 0,
+                                        display: "flex",
+                                        flexGrow: 1,
+                                        fontSize: "2rem",
+                                        px: "1.4rem",
+                                        py: ".4rem",
+                                        wordBreak: "break-word",
+                                        border: `#FFFFFF99 1.5px dashed`,
+                                        width: "100%",
+                                        borderRadius: 0.5,
+                                        backgroundColor: "#FFFFFF12",
+                                    },
+                                }}
+                                spellCheck={false}
+                                InputProps={{
+                                    disableUnderline: true,
+                                }}
+                                value={newAboutMe}
+                                placeholder="Enter about me..."
+                                onChange={(e) => {
+                                    setNewAboutMe(e.target.value)
+                                }}
+                                onFocus={() => aboutMeRef.current?.setSelectionRange(0, newAboutMe.length)}
+                                onKeyDown={(e) => {
+                                    if (e.key === "Enter") {
+                                        e.preventDefault()
+                                        updateHandler()
+                                    }
+                                }}
+                            />
+                        )}
+                        {editing && (
+                            <>
+                                {!submitting && (
+                                    <IconButton size="small" sx={{ ml: ".5rem", "&:hover": { backgroundColor: "transparent" } }} onClick={updateHandler}>
+                                        <SvgSave size="1.4rem" />
+                                    </IconButton>
+                                )}
+
+                                {submitting && <CircularProgress size="1.4rem" sx={{ ml: "1rem", color: "#FFFFFF" }} />}
+                            </>
+                        )}
                     </Stack>
 
                     {editing && (
@@ -93,18 +111,6 @@ export const AboutMe = ({ hide, aboutMe, updateAboutMe }: { hide: boolean; updat
                     )}
                 </Stack>
 
-                {editing && (
-                    <>
-                        {!submitting && (
-                            <IconButton size="small" sx={{ ml: ".5rem" }} onClick={updateHandler}>
-                                <SvgSave size="1.4rem" />
-                            </IconButton>
-                        )}
-
-                        {submitting && <CircularProgress size="1.4rem" sx={{ ml: "1rem", color: "#FFFFFF" }} />}
-                    </>
-                )}
-
                 {!editing && (
                     <Stack direction="row">
                         <Typography
@@ -122,7 +128,7 @@ export const AboutMe = ({ hide, aboutMe, updateAboutMe }: { hide: boolean; updat
                 {!hide && !editing && (
                     <IconButton
                         size="small"
-                        sx={{ ml: ".5rem", opacity: 0.6, ":hover": { opacity: 1 } }}
+                        sx={{ ml: ".5rem", opacity: 0.6, ":hover": { opacity: 1, backgroundColor: "transparent" } }}
                         onClick={() => {
                             setEditing(true)
                             aboutMeRef.current?.focus()

@@ -1,7 +1,7 @@
-import { Avatar, Box, CircularProgress, Stack, Typography } from "@mui/material"
+import { Box, CircularProgress, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { useHistory, useParams } from "react-router-dom"
-import { AboutMeSVG, BattleHistorySVG, StatsSVG, SvgAbility, SvgCake, SvgDeath, SvgSkull2, SvgView, WarMachineIconPNG } from "../../assets"
+import { AboutMeSVG, BattleHistorySVG, StatsSVG, SvgAbility, SvgCake, SvgDeath, SvgSkull2, SvgView } from "../../assets"
 import { useAuth, useSnackbar } from "../../containers"
 import { getUserRankDeets, snakeToTitle, timeSince } from "../../helpers"
 import { useGameServerCommands, useGameServerCommandsUser } from "../../hooks/useGameServer"
@@ -15,8 +15,6 @@ import { AboutMe } from "./ProfileAboutMe"
 import { ProfileMechHistory } from "./ProfileBattleHistory"
 import { Username } from "./ProfileUsername"
 import { ProfileWarmachines } from "./ProfileWarmachines"
-
-const HubKeyPlayerAvatarUpadate = "PLAYER:AVATAR:UPDATE"
 
 interface Player {
     id: string
@@ -52,7 +50,7 @@ interface PlayerProfile {
     }
 }
 
-const cakeDay = (d: Date) => {
+const sameDay = (d: Date) => {
     const now = new Date()
     const result = d.getDate() === now.getDate() && d.getMonth() === now.getMonth()
     return result
@@ -118,7 +116,7 @@ export const PlayerProfilePage = () => {
     const updateUsername = useCallback(
         async (newUsername: string) => {
             try {
-                const resp = await userSend<string>(GameServerKeys.PlayerProfileUpdateUsername, {
+                const resp = await userSend<string>(GameServerKeys.PlayerProfileUsernameUpate, {
                     player_id: profile?.player.id,
                     new_username: newUsername,
                 })
@@ -141,7 +139,7 @@ export const PlayerProfilePage = () => {
     const updateAvatar = useCallback(
         async (avatar_id: string) => {
             try {
-                const resp = await userSend<AvatarType>(HubKeyPlayerAvatarUpadate, {
+                const resp = await userSend<AvatarType>(GameServerKeys.PlayerProfileAvatarUpdate, {
                     player_id: profile?.player.id,
                     profile_avatar_id: avatar_id,
                 })
@@ -164,13 +162,15 @@ export const PlayerProfilePage = () => {
     const updateAboutMe = useCallback(
         async (newAboutMe: string) => {
             try {
-                const resp = await userSend<{ about_me: string }>(GameServerKeys.PlayerProfileUpdateAboutMe, {
+                const resp = await userSend<{ about_me: string }>(GameServerKeys.PlayerProfileAboutMeUpdate, {
                     player_id: profile?.player.id,
                     about_me: newAboutMe,
                 })
                 setAboutMe(resp.about_me)
                 newSnackbarMessage("about me updated successfully.", "success")
             } catch (e) {
+                console.log("what")
+
                 let errorMessage = ""
                 if (typeof e === "string") {
                     errorMessage = e
@@ -273,19 +273,6 @@ export const PlayerProfilePage = () => {
                     <Stack spacing="1.8rem">
                         <Stack>
                             <Stack direction={"row"}>
-                                <Avatar
-                                    src={faction?.logo_url}
-                                    alt={`${profile.player.username}'s Avatar`}
-                                    sx={{
-                                        mr: "1rem",
-                                        height: "7rem",
-                                        width: "7rem",
-                                        borderRadius: 1,
-                                        border: `${primaryColor} 2px solid`,
-                                        backgroundColor: primaryColor,
-                                    }}
-                                    variant="square"
-                                />
                                 <ProfileAvatar
                                     updateAvatar={async (avatar_id: string) => {
                                         updateAvatar(avatar_id)
@@ -335,7 +322,7 @@ export const PlayerProfilePage = () => {
                             </Stack>
                         )}
                         <Stack direction="row" spacing="1rem">
-                            {cakeDay(profile.player.created_at) && <SvgCake size="1.9rem" sx={{ mb: "2rem" }} />}
+                            {sameDay(profile.player.created_at) && <SvgCake size="1.9rem" sx={{ mb: "2rem" }} />}
                             <Typography sx={{ fontFamily: fonts.nostromoBlack }}>Joined {profile.player.created_at.toLocaleDateString()}</Typography>
                         </Stack>
                     </Stack>
