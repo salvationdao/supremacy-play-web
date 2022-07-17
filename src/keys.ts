@@ -100,6 +100,7 @@ export enum GameServerKeys {
     SubPlayerList = "FACTION:ACTIVE:PLAYER:SUBSCRIBE",
     SubGlobalPlayerList = "GLOBAL:ACTIVE:PLAYER:SUBSCRIBE",
     GetPlayerByGid = "GET:PLAYER:GID",
+    ReadTaggedMessage = "READ:TAGGED:MESSAGE",
 
     // Telegram
     UserTelegramShortcodeRegistered = "USER:TELEGRAM_SHORTCODE_REGISTERED",
