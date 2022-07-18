@@ -162,7 +162,7 @@ export const TabButton = ({
                         minHeight: `${DRAWER_BAR_WIDTH}rem`,
                     },
                     "& svg": {
-                        fill: isActive ? secondaryColor : "#FFFFFF",
+                        fill: isActive ? `${secondaryColor} !important` : "#FFFFFF",
                     },
                 }}
             />

@@ -62,6 +62,7 @@ const BattleArenaPageInner = () => {
                 hash: "#battle-arena",
                 icon: <SvgAbility size="1.2rem" sx={{ pt: ".1rem" }} />,
                 label: "BATTLE ARENA",
+                requireAuth: false,
                 Component: () => (
                     <Stack sx={{ height: "100%" }}>
                         {/* <Notifications /> */}
@@ -102,14 +103,12 @@ const BattleArenaPageInner = () => {
                     </Stack>
                 ),
             },
-        ]
-
-        if (userID) {
-            tabs.push({
+            {
                 id: "quick-deploy",
                 hash: "#quick-deploy",
                 icon: <SvgRobot size="1.2rem" sx={{ pt: ".1rem" }} />,
                 label: "QUICK DEPLOY",
+                requireAuth: true,
                 Component: () => (
                     <Stack sx={{ position: "relative", height: "100%" }}>
                         <QuickDeploy
@@ -120,8 +119,8 @@ const BattleArenaPageInner = () => {
                         />
                     </Stack>
                 ),
-            })
-        }
+            },
+        ]
 
         if (userHasFeature(FeatureName.playerAbility)) {
             tabs.push({
@@ -129,6 +128,7 @@ const BattleArenaPageInner = () => {
                 hash: "#buy-abilities",
                 icon: <SvgAbility size="1.2rem" sx={{ pt: ".1rem" }} />,
                 label: "BUY ABILITIES",
+                requireAuth: true,
                 Component: () => (
                     <Stack sx={{ position: "relative", height: "100%" }}>
                         <QuickPlayerAbilities
@@ -147,6 +147,7 @@ const BattleArenaPageInner = () => {
             hash: "#prev-battle",
             icon: <SvgHistoryClock size="1.2rem" sx={{ pt: ".1rem" }} />,
             label: "PREVIOUS BATTLE",
+            requireAuth: false,
             Component: () => (
                 <Stack sx={{ position: "relative", height: "100%" }}>
                     <BattleEndScreen />
@@ -159,6 +160,7 @@ const BattleArenaPageInner = () => {
             hash: "#history",
             icon: <SvgHistory size="1.2rem" sx={{ pt: ".1rem" }} />,
             label: "HISTORY",
+            requireAuth: false,
             Component: () => (
                 <Stack sx={{ position: "relative", height: "100%" }}>
                     <BattleHistory />
@@ -176,7 +178,7 @@ const BattleArenaPageInner = () => {
             setIsNavOpen(false)
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [allowCloseNav, isMobile, triggerReset, setAdditionalTabs, setIsNavOpen, userID])
+    }, [allowCloseNav, isMobile, triggerReset, setAdditionalTabs, setIsNavOpen])
 
     return (
         <>

@@ -198,6 +198,7 @@ export interface HashRouteStruct {
     icon: string | React.ReactElement<unknown, string | React.JSXElementConstructor<unknown>>
     label: string
     mountAllTime?: boolean
+    requireAuth: boolean
 }
 
 export const HASH_ROUTES_MAP: { [name: string]: HashRouteStruct } = {
@@ -207,6 +208,7 @@ export const HASH_ROUTES_MAP: { [name: string]: HashRouteStruct } = {
         icon: <SvgChat size="1rem" sx={{ pt: ".3rem" }} />,
         label: "Live Chat",
         Component: LiveChat,
+        requireAuth: false,
         mountAllTime: true,
     },
     active_players: {
@@ -219,6 +221,7 @@ export const HASH_ROUTES_MAP: { [name: string]: HashRouteStruct } = {
         ),
         label: "Active Players",
         Component: PlayerList,
+        requireAuth: true,
         mountAllTime: false,
     },
 }
