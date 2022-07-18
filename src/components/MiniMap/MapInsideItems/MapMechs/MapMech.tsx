@@ -11,7 +11,7 @@ import { LocationSelectType, Map, Vector2i, WarMachineState } from "../../../../
 import { WarMachineLiveState } from "../../../../types/game"
 import { MechMoveCommand } from "../../../WarMachine/WarMachineItem/MoveCommand"
 
-const TRANSITION_DURACTION = 0.275 // seconds
+const TRANSITION_DURATION = 0.275 // seconds
 
 interface MapMechProps {
     warMachine: WarMachineState
@@ -53,21 +53,21 @@ const MapMechInner = ({ warMachine, map }: MapMechInnerProps) => {
         () => (ownedByID === userID ? colors.gold : getFaction(warMachineFactionID).primary_color || colors.neonBlue),
         [ownedByID, userID, getFaction, warMachineFactionID],
     )
-    const factionLogoUrl = useMemo(() => getFaction(warMachineFactionID).logo_url, [getFaction, warMachineFactionID])
+    // const factionLogoUrl = useMemo(() => getFaction(warMachineFactionID).logo_url, [getFaction, warMachineFactionID])
     const isAlive = useMemo(() => health > 0, [health])
     const mapScale = useMemo(() => map.width / (map.cells_x * 2000), [map])
     const mechMapX = useMemo(() => ((position?.x || 0) - map.left_pixels) * mapScale, [map.left_pixels, mapScale, position?.x])
     const mechMapY = useMemo(() => ((position?.y || 0) - map.top_pixels) * mapScale, [map.top_pixels, mapScale, position?.y])
-    const isMechHighligheted = useMemo(
+    const isMechHighlighted = useMemo(
         () => highlightedMechParticipantID === warMachine.participantID || selection?.mechHash === hash || playerAbility?.mechHash === hash,
         [hash, highlightedMechParticipantID, playerAbility?.mechHash, selection?.mechHash, warMachine.participantID],
     )
     const zIndex = useMemo(() => {
-        if (isMechHighligheted) return 7
+        if (isMechHighlighted) return 7
         if (isAlive && factionID === warMachineFactionID) return 6
         if (isAlive) return 5
         return 4
-    }, [factionID, isAlive, isMechHighligheted, warMachineFactionID])
+    }, [factionID, isAlive, isMechHighlighted, warMachineFactionID])
 
     /**
      * Mech move command related
@@ -160,7 +160,7 @@ const MapMechInner = ({ warMachine, map }: MapMechInnerProps) => {
                     cursor: "pointer",
                     padding: "1rem 1.3rem",
                     transform: `translate(-50%, -50%) translate3d(${mechMapX}px, ${mechMapY}px, 0)`,
-                    transition: `transform ${TRANSITION_DURACTION}s linear`,
+                    transition: `transform ${TRANSITION_DURATION}s linear`,
                     opacity: 1,
                     zIndex,
                 }}
@@ -197,10 +197,10 @@ const MapMechInner = ({ warMachine, map }: MapMechInnerProps) => {
                         height: iconSize,
                         overflow: "visible",
                         backgroundColor: primaryColor,
-                        backgroundImage: `url(${factionLogoUrl})`,
-                        backgroundRepeat: "no-repeat",
-                        backgroundPosition: "center",
-                        backgroundSize: "contain",
+                        // backgroundImage: `url(${factionLogoUrl})`,
+                        // backgroundRepeat: "no-repeat",
+                        // backgroundPosition: "center",
+                        // backgroundSize: "contain",
                         borderRadius: 3,
                         boxShadow: isAlive ? `0 0 8px 2px ${primaryColor}70` : "none",
                         zIndex: 2,
@@ -209,7 +209,7 @@ const MapMechInner = ({ warMachine, map }: MapMechInnerProps) => {
                     }}
                 >
                     {/* Highlighted mech */}
-                    {isMechHighligheted && (
+                    {isMechHighlighted && (
                         <Box
                             sx={{
                                 position: "absolute",
@@ -242,12 +242,13 @@ const MapMechInner = ({ warMachine, map }: MapMechInnerProps) => {
                             left: "50%",
                             transform: "translate(-50%, -50%)",
                             px: "1rem",
-                            backgroundColor: "#00000090",
+                            backgroundColor: "#000000DD",
                         }}
                     >
                         <Typography
                             variant="h1"
                             sx={{
+                                color: primaryColor,
                                 fontFamily: fonts.nostromoBlack,
                             }}
                         >
@@ -288,7 +289,7 @@ const MapMechInner = ({ warMachine, map }: MapMechInnerProps) => {
                                 left: "50%",
                                 top: "50%",
                                 transform: `translate(-50%, -50%) rotate(${rotation + 90}deg)`,
-                                transition: `all ${TRANSITION_DURACTION}s`,
+                                transition: `all ${TRANSITION_DURATION}s`,
                                 zIndex: 3,
                             }}
                         >
@@ -309,7 +310,7 @@ const MapMechInner = ({ warMachine, map }: MapMechInnerProps) => {
                     )}
                 </Box>
 
-                {/* Healh and sheidl bars */}
+                {/* Health and shield bars */}
                 {isAlive && (
                     <Stack spacing=".2rem" style={{ width: iconSize * 1.2, zIndex: 1 }}>
                         {warMachine.maxShield > 0 && (
@@ -358,7 +359,7 @@ const MapMechInner = ({ warMachine, map }: MapMechInnerProps) => {
                             left: "50%",
                             top: "50%",
                             transform: `translate(-50%, -50%) rotate(${mechCommandAngle + 90}deg)`,
-                            transition: `all ${TRANSITION_DURACTION}s`,
+                            transition: `all ${TRANSITION_DURATION}s`,
                             zIndex: 1,
                         }}
                     >
@@ -367,7 +368,7 @@ const MapMechInner = ({ warMachine, map }: MapMechInnerProps) => {
                                 position: "relative",
                                 height: mechCommandDist,
                                 borderLeft: `${primaryColor} 1.3rem dashed`,
-                                transition: `all ${TRANSITION_DURACTION}s`,
+                                transition: `all ${TRANSITION_DURATION}s`,
                             }}
                         >
                             <Box
@@ -382,10 +383,11 @@ const MapMechInner = ({ warMachine, map }: MapMechInnerProps) => {
                                 }}
                             />
                         </Box>
+
                         <Box
                             style={{
                                 height: mechCommandDist,
-                                transition: `all ${TRANSITION_DURACTION}s`,
+                                transition: `all ${TRANSITION_DURATION}s`,
                             }}
                         />
                     </Box>
@@ -399,7 +401,7 @@ const MapMechInner = ({ warMachine, map }: MapMechInnerProps) => {
         health,
         iconSize,
         isAlive,
-        isMechHighligheted,
+        isMechHighlighted,
         isTargeting,
         maxHealth,
         maxShield,
@@ -419,7 +421,6 @@ const MapMechInner = ({ warMachine, map }: MapMechInnerProps) => {
         hash,
         playerAbility,
         selection?.mechHash,
-        factionLogoUrl,
         warMachine.participantID,
         zIndex,
     ])
