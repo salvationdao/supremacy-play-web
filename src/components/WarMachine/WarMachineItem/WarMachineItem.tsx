@@ -24,7 +24,7 @@ export const WarMachineItem = ({ warMachine, scale, initialExpanded = false }: {
     const { isMobile } = useMobile()
     const { userID, factionID } = useAuth()
     const { getFaction } = useSupremacy()
-    const { highlightedMechHash, setHighlightedMechHash } = useMiniMap()
+    const { highlightedMechParticipantID, setHighlightedMechParticipantID } = useMiniMap()
 
     const { hash, participantID, factionID: wmFactionID, name, imageAvatar, tier, ownedByID } = warMachine
 
@@ -53,32 +53,23 @@ export const WarMachineItem = ({ warMachine, scale, initialExpanded = false }: {
     const secondaryColor = useMemo(() => (selfOwned ? "#000000" : faction.secondary_color), [faction.secondary_color, selfOwned])
     const backgroundColor = useMemo(() => faction.background_color, [faction.background_color])
 
-    // Need this time out so that it waits for it expand first then popover, else positioning is wrong
-    const openSkillsPopover = useCallback(() => {
-        setTimeout(() => {
-            togglePopoverOpen(true)
-        }, 110)
-    }, [togglePopoverOpen])
-
     // Highlighting on the map
     const handleClick = useCallback(() => {
-        if (hash === highlightedMechHash) {
-            setHighlightedMechHash(undefined)
+        if (participantID === highlightedMechParticipantID) {
+            setHighlightedMechParticipantID(undefined)
         } else {
-            setHighlightedMechHash(hash)
+            setHighlightedMechParticipantID(participantID)
         }
-    }, [hash, highlightedMechHash, setHighlightedMechHash])
+    }, [participantID, highlightedMechParticipantID, setHighlightedMechParticipantID])
 
     // Toggle out isExpanded if other mech is highlighted
     useEffect(() => {
-        if (highlightedMechHash !== hash) {
+        if (highlightedMechParticipantID !== participantID) {
             toggleIsExpanded(initialExpanded)
-            togglePopoverOpen(false)
         } else {
             toggleIsExpanded(true)
-            openSkillsPopover()
         }
-    }, [highlightedMechHash, initialExpanded, isMobile, openSkillsPopover, setHighlightedMechHash, toggleIsExpanded, hash, togglePopoverOpen])
+    }, [highlightedMechParticipantID, initialExpanded, isMobile, setHighlightedMechParticipantID, toggleIsExpanded, participantID])
 
     return (
         <>
@@ -97,7 +88,7 @@ export const WarMachineItem = ({ warMachine, scale, initialExpanded = false }: {
                         (warMachine.ownedByID === userID ? WIDTH_SKILL_BUTTON + WIDTH_STAT_BAR : 0)
                     }rem`,
                     transition: "width .1s",
-                    transform: highlightedMechHash === hash ? `scale(${scale * 1.08})` : `scale(${scale})`,
+                    transform: highlightedMechParticipantID === participantID ? `scale(${scale * 1.08})` : `scale(${scale})`,
                     transformOrigin: isMobile ? "0 0" : "center",
                 }}
             >
@@ -255,7 +246,8 @@ export const WarMachineItem = ({ warMachine, scale, initialExpanded = false }: {
                                 onClick={() => {
                                     if (!isAlive) return
                                     if (!isExpanded) handleClick()
-                                    openSkillsPopover()
+                                    // Need this time out so that it waits for it expand first then popover, else positioning is wrong
+                                    setTimeout(() => togglePopoverOpen(true), 110)
                                 }}
                             >
                                 <Box
