@@ -1,12 +1,13 @@
 import { useMemo, useState } from "react"
 import { SvgDrag } from "../../../../assets"
+import { useTheme } from "../../../../containers/theme"
 import { useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
-import { colors } from "../../../../theme/theme"
 import { MechMoveCommand } from "../../../WarMachine/WarMachineItem/MoveCommand"
 import { MapIcon } from "./MapIcon"
 
 export const MechCommandIcons = () => {
+    const theme = useTheme()
     const [mechMoveCommands, setMechMoveCommands] = useState<MechMoveCommand[]>([])
 
     useGameServerSubscriptionFaction<MechMoveCommand[]>(
@@ -29,13 +30,15 @@ export const MechCommandIcons = () => {
                         return (
                             <MapIcon
                                 key={mmc.id}
-                                primaryColor={colors.gold}
+                                primaryColor={theme.factionTheme.primary}
                                 position={{ x: mmc.cell_x, y: mmc.cell_y }}
-                                icon={<SvgDrag size="4.5rem" sx={{ pb: 0 }} fill={colors.gold} />}
+                                sx={{ zIndex: 3, borderRadius: "50%" }}
+                                sizeGrid={1.2}
+                                icon={<SvgDrag size="3rem" sx={{ pb: 0 }} fill={theme.factionTheme.primary} />}
                             />
                         )
                     })}
             </>
         )
-    }, [mechMoveCommands])
+    }, [mechMoveCommands, theme.factionTheme.primary])
 }

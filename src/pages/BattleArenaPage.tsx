@@ -175,7 +175,8 @@ const BattleArenaPageInner = () => {
             setAdditionalTabs([])
             setIsNavOpen(false)
         }
-    }, [allowCloseNav, isMobile, triggerReset, setAdditionalTabs, setIsNavOpen, userHasFeature, userID])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [allowCloseNav, isMobile, triggerReset, setAdditionalTabs, setIsNavOpen, userID])
 
     return (
         <>

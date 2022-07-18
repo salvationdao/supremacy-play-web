@@ -42,7 +42,7 @@ export const RightDrawer = () => {
             >
                 {HASH_ROUTES_ARRAY.map((r) => {
                     return (
-                        <Content key={r.id} currentHash={location.hash} hash={r.hash}>
+                        <Content key={r.id} currentHash={location.hash} hash={r.hash} mountAllTime={r.mountAllTime}>
                             {r.Component && <r.Component />}
                         </Content>
                     )
@@ -52,11 +52,16 @@ export const RightDrawer = () => {
     )
 }
 
-const Content = ({ currentHash, hash, children }: { currentHash: string; hash: string; children: ReactNode }) => {
-    if (currentHash === hash) {
+const Content = ({ currentHash, hash, children, mountAllTime }: { currentHash: string; hash: string; children: ReactNode; mountAllTime?: boolean }) => {
+    const isActive = currentHash === hash
+
+    if (isActive || mountAllTime) {
         return (
             <Fade in>
-                <Box id={`right-drawer-content-${hash}`} sx={{ height: "100%" }}>
+                <Box
+                    id={`right-drawer-content-${hash}`}
+                    sx={{ height: isActive ? "100%" : 0, visibility: isActive ? "visible" : "hidden", pointerEvents: isActive ? "all" : "none" }}
+                >
                     {children}
                 </Box>
             </Fade>

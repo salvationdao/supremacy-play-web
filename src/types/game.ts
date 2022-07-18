@@ -13,11 +13,6 @@ export interface ViewerLiveCount {
     other: number
 }
 
-export interface CellCoords {
-    x: number
-    y: number
-}
-
 export enum LocationSelectType {
     LINE_SELECT = "LINE_SELECT",
     MECH_SELECT = "MECH_SELECT",

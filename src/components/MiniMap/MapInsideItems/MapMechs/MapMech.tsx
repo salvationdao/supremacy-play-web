@@ -9,7 +9,7 @@ import { spinEffect } from "../../../../theme/keyframes"
 import { colors, fonts } from "../../../../theme/theme"
 import { LocationSelectType, Map, Vector2i, WarMachineState } from "../../../../types"
 import { WarMachineLiveState } from "../../../../types/game"
-import { MechMoveCommand, MechMoveCommandAbility } from "../../../WarMachine/WarMachineItem/MoveCommand"
+import { MechMoveCommand } from "../../../WarMachine/WarMachineItem/MoveCommand"
 
 const TRANSITION_DURACTION = 0.275 // seconds
 
@@ -30,7 +30,7 @@ interface MapMechInnerProps extends MapMechProps {
 const MapMechInner = ({ warMachine, map }: MapMechInnerProps) => {
     const { userID, factionID } = useAuth()
     const { getFaction } = useSupremacy()
-    const { isTargeting, gridWidth, gridHeight, playerAbility, setPlayerAbility, highlightedMechHash, setHighlightedMechHash, selection, setSelection } =
+    const { isTargeting, gridWidth, gridHeight, playerAbility, highlightedMechParticipantID, setHighlightedMechParticipantID, selection, setSelection } =
         useMiniMap()
     const { hash, participantID, factionID: warMachineFactionID, maxHealth, maxShield, ownedByID } = warMachine
 
@@ -59,9 +59,15 @@ const MapMechInner = ({ warMachine, map }: MapMechInnerProps) => {
     const mechMapX = useMemo(() => ((position?.x || 0) - map.left_pixels) * mapScale, [map.left_pixels, mapScale, position?.x])
     const mechMapY = useMemo(() => ((position?.y || 0) - map.top_pixels) * mapScale, [map.top_pixels, mapScale, position?.y])
     const isMechHighligheted = useMemo(
-        () => highlightedMechHash === warMachine.hash || selection?.mechHash === hash || playerAbility?.mechHash === hash,
-        [hash, highlightedMechHash, playerAbility?.mechHash, selection?.mechHash, warMachine.hash],
+        () => highlightedMechParticipantID === warMachine.participantID || selection?.mechHash === hash || playerAbility?.mechHash === hash,
+        [hash, highlightedMechParticipantID, playerAbility?.mechHash, selection?.mechHash, warMachine.participantID],
     )
+    const zIndex = useMemo(() => {
+        if (isMechHighligheted) return 7
+        if (isAlive && factionID === warMachineFactionID) return 6
+        if (isAlive) return 5
+        return 4
+    }, [factionID, isAlive, isMechHighligheted, warMachineFactionID])
 
     /**
      * Mech move command related
@@ -124,17 +130,12 @@ const MapMechInner = ({ warMachine, map }: MapMechInnerProps) => {
             return
         }
 
-        if (ownedByID === userID) {
-            setPlayerAbility({
-                ...MechMoveCommandAbility,
-                mechHash: hash,
-            })
-        } else if (hash === highlightedMechHash) {
-            setHighlightedMechHash(undefined)
+        if (participantID === highlightedMechParticipantID) {
+            setHighlightedMechParticipantID(undefined)
         } else {
-            setHighlightedMechHash(hash)
+            setHighlightedMechParticipantID(participantID)
         }
-    }, [playerAbility, factionID, warMachineFactionID, ownedByID, userID, hash, highlightedMechHash, setSelection, setPlayerAbility, setHighlightedMechHash])
+    }, [playerAbility, factionID, warMachineFactionID, hash, participantID, highlightedMechParticipantID, setSelection, setHighlightedMechParticipantID])
 
     return useMemo(() => {
         if (!position) return null
@@ -161,7 +162,7 @@ const MapMechInner = ({ warMachine, map }: MapMechInnerProps) => {
                     transform: `translate(-50%, -50%) translate3d(${mechMapX}px, ${mechMapY}px, 0)`,
                     transition: `transform ${TRANSITION_DURACTION}s linear`,
                     opacity: 1,
-                    zIndex: isAlive ? 5 : 4,
+                    zIndex,
                 }}
             >
                 {/* Show player ability icon above the mech */}
@@ -215,20 +216,19 @@ const MapMechInner = ({ warMachine, map }: MapMechInnerProps) => {
                                 top: "50%",
                                 left: "50%",
                                 transform: "translate(-50%, -50%)",
-                                zIndex: 999,
+                                zIndex: 99,
                             }}
                         >
                             <Box
                                 sx={{
-                                    width: iconSize * 1.8,
-                                    height: iconSize * 1.8,
-                                    borderLeft: `${primaryColor}80 1.5rem dashed`,
-                                    borderRight: `${primaryColor}80 1.5rem dashed`,
-                                    borderTop: `${primaryColor} 1.5rem solid`,
-                                    borderBottom: `${primaryColor} 1.5rem solid`,
+                                    width: iconSize * 1.6,
+                                    height: iconSize * 1.6,
+                                    border: `${primaryColor} 1.5rem dashed`,
+                                    borderStyle: "dashed solid",
                                     borderRadius: "50%",
-                                    backgroundColor: `${primaryColor}60`,
+                                    backgroundColor: `${primaryColor}20`,
                                     animation: `${spinEffect} 3s infinite`,
+                                    boxShadow: "0 0 12px 9px #FFFFFF40",
                                 }}
                             />
                         </Box>
@@ -421,5 +421,6 @@ const MapMechInner = ({ warMachine, map }: MapMechInnerProps) => {
         selection?.mechHash,
         factionLogoUrl,
         warMachine.participantID,
+        zIndex,
     ])
 }

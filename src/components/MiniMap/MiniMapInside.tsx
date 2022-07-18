@@ -18,7 +18,7 @@ interface MiniMapInsideProps {
 
 export const MiniMapInside = ({ containerDimensions }: MiniMapInsideProps) => {
     const { map } = useGame()
-    const { mapElement, gridWidth, gridHeight, isTargeting, selection, setSelection, playerAbility, winner } = useMiniMap()
+    const { mapElement, gridWidth, gridHeight, isTargeting, selection, setSelection, playerAbility, winner, setHighlightedMechParticipantID } = useMiniMap()
 
     const mapRef = useRef<HTMLDivElement>(null)
     const gestureRef = useRef<HTMLDivElement>(null)
@@ -98,7 +98,7 @@ export const MiniMapInside = ({ containerDimensions }: MiniMapInsideProps) => {
                         {/* Map Image */}
                         <Box
                             ref={mapElement}
-                            onClick={isLocationSelection ? onMapClick : undefined}
+                            onClick={isLocationSelection ? onMapClick : () => setHighlightedMechParticipantID(undefined)}
                             sx={{
                                 position: "absolute",
                                 width: `${map.width}px`,
@@ -134,5 +134,6 @@ export const MiniMapInside = ({ containerDimensions }: MiniMapInsideProps) => {
         mapScale,
         onMapClick,
         selection?.startCoords,
+        setHighlightedMechParticipantID,
     ])
 }

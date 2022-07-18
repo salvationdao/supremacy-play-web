@@ -2,10 +2,11 @@ import { Box, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
 import { ClipThing, FancyButton } from "../.."
 import { PlayerAbilityPNG } from "../../../assets"
+import { useAuth } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { timeSinceInWords } from "../../../helpers"
 import { useTimer } from "../../../hooks"
-import { useGameServerSubscriptionSecurePublic } from "../../../hooks/useGameServer"
+import { useGameServerSubscription } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { HANGAR_TABS } from "../../../pages"
 import { colors, fonts } from "../../../theme/theme"
@@ -15,6 +16,7 @@ import { MysteryCrateStoreItemLoadingSkeleton } from "../MysteryCratesStore/Myst
 import { PlayerAbilityStoreItem } from "./PlayerAbilityStoreItem"
 
 export const PlayerAbilitiesStore = () => {
+    const { userID } = useAuth()
     const theme = useTheme()
     const [isLoaded, setIsLoaded] = useState(false)
     const [nextRefreshTime, setNextRefreshTime] = useState<Date | null>(null)
@@ -23,14 +25,15 @@ export const PlayerAbilitiesStore = () => {
     const [amountMap, setAmountMap] = useState<Map<string, number>>(new Map())
     const [canPurchase, setCanPurchase] = useState(true)
 
-    useGameServerSubscriptionSecurePublic<{
+    useGameServerSubscription<{
         next_refresh_time: Date | null
         refresh_period_duration_seconds: number
         sale_abilities: SaleAbility[]
     }>(
         {
-            URI: "sale_abilities",
+            URI: "/public/sale_abilities",
             key: GameServerKeys.SaleAbilitiesList,
+            ready: !!userID,
         },
         (payload) => {
             if (!payload) return
@@ -44,10 +47,11 @@ export const PlayerAbilitiesStore = () => {
         },
     )
 
-    useGameServerSubscriptionSecurePublic<{ id: string; current_price: string }>(
+    useGameServerSubscription<{ id: string; current_price: string }>(
         {
-            URI: "sale_abilities",
+            URI: "/public/sale_abilities",
             key: GameServerKeys.SaleAbilitiesPriceSubscribe,
+            ready: !!userID,
         },
         (payload) => {
             if (!payload) return
@@ -57,10 +61,11 @@ export const PlayerAbilitiesStore = () => {
         },
     )
 
-    useGameServerSubscriptionSecurePublic<{ id: string; amount_sold: number }>(
+    useGameServerSubscription<{ id: string; amount_sold: number }>(
         {
-            URI: "sale_abilities",
+            URI: "/public/sale_abilities",
             key: GameServerKeys.SaleAbilitiesAmountSubscribe,
+            ready: !!userID,
         },
         (payload) => {
             if (!payload) return
@@ -201,7 +206,7 @@ export const PlayerAbilitiesStore = () => {
                     title="PLAYER ABILITIES"
                     description="Player abilities are abilities that can be bought and used on the battle arena."
                 >
-                    <Box sx={{ flexShrink: 0, pr: "1.5rem" }}>
+                    <Box sx={{ flexShrink: 0, pr: "1.5rem", ml: "auto !important" }}>
                         <FancyButton
                             to={`/fleet/${HANGAR_TABS.Abilities}`}
                             clipThingsProps={{

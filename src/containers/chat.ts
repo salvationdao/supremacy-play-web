@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react"
+import { useHistory, useLocation } from "react-router"
 import { createContainer } from "unstated-next"
 import { useAuth } from "."
 import { SupremacyPNG } from "../assets"
@@ -21,6 +22,9 @@ export type FontSizeType = 0.8 | 1.2 | 1.35
 
 export const ChatContainer = createContainer(() => {
     const { userID } = useAuth()
+    const history = useHistory()
+    const location = useLocation()
+    const [isPoppedout, toggleIsPoppedout] = useToggle()
 
     // Tabs: 0 is global chat, 1 is faction chat
     const [tabValue, setTabValue] = useState(0)
@@ -242,7 +246,16 @@ export const ChatContainer = createContainer(() => {
         },
     )
 
+    // Close right drawer when chat is popped out
+    useEffect(() => {
+        if (isPoppedout) {
+            history.replace(location.pathname)
+        }
+    }, [history, isPoppedout, location.pathname])
+
     return {
+        isPoppedout,
+        toggleIsPoppedout,
         tabValue,
         setTabValue,
         newMessageHandler,
