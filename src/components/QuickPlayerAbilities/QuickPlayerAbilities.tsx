@@ -92,8 +92,8 @@ const QuickPlayerAbilitiesInner = ({ onClose, userID }: { onClose: () => void; u
         () => ({
             localStoragePrefix: "quickPlayerAbilities1",
             // Defaults
-            defaultPosX: 390,
-            defaultPosY: 40,
+            defaultPosX: 9999,
+            defaultPosY: 0,
             defaultWidth: 360,
             defaultHeight: 245,
             // Position limits
