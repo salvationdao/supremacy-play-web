@@ -191,6 +191,7 @@ const ItemCommonArea = ({
     toggleIsExpanded,
 }: {
     primaryColor: string
+
     item: MarketplaceBuyAuctionItem
     isGridView: boolean
     isExpanded: boolean
@@ -235,6 +236,7 @@ const ItemCommonArea = ({
         return (
             <MechCommonArea
                 primaryColor={primaryColor}
+                secondaryColor="#FFFFFF"
                 isGridView={isGridView}
                 mechDetails={mechDetails}
                 isExpanded={isExpanded}
@@ -247,6 +249,7 @@ const ItemCommonArea = ({
         return (
             <WeaponCommonArea
                 primaryColor={primaryColor}
+                secondaryColor="#FFFFFF"
                 isGridView={isGridView}
                 weaponDetails={weaponDetails}
                 isExpanded={isExpanded}
