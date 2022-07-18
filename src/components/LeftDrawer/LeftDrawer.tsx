@@ -61,7 +61,7 @@ export const LeftDrawer = () => {
                                 <MenuButton
                                     key={r.id}
                                     label={label}
-                                    disable={!enable || disable}
+                                    enable={enable && !disable}
                                     isComingSoon={!enable}
                                     comingSoonLabel={r.leftDrawer.comingSoonLabel}
                                     onClick={() => history.push(`${navigateTo}${location.hash}`)}
@@ -102,7 +102,7 @@ export const LeftDrawer = () => {
 
 const MenuButton = ({
     label,
-    disable,
+    enable,
     isComingSoon,
     isActive,
     primaryColor,
@@ -111,7 +111,7 @@ const MenuButton = ({
     comingSoonLabel,
 }: {
     label: string
-    disable?: boolean
+    enable?: boolean
     isComingSoon?: boolean
     icon?: string | React.ReactElement<unknown, string | React.JSXElementConstructor<unknown>>
     isActive?: boolean
@@ -122,7 +122,7 @@ const MenuButton = ({
 }) => {
     return (
         <Button
-            disabled={disable}
+            disabled={!enable}
             onClick={onClick}
             sx={{
                 px: "2.3rem",
@@ -132,7 +132,7 @@ const MenuButton = ({
                 backgroundColor: isActive ? primaryColor : `${primaryColor}30`,
                 borderRadius: 0,
                 borderBottom: `#FFFFFF20 2px solid`,
-                opacity: disable ? 0.6 : 1,
+                opacity: enable ? 1 : 0.6,
                 ":hover": {
                     backgroundColor: isActive ? primaryColor : `${primaryColor}50`,
                 },
