@@ -89,16 +89,8 @@ export const PlayerAbilitiesStore = () => {
             )
         }
 
-        if (saleAbilities.length > 0) {
-            return (
-                <Typography sx={{ color: colors.lightNeonBlue, fontFamily: fonts.nostromoBold, textTransform: "uppercase" }}>
-                    <TimeLeft key={saleAbilities[0].available_until?.getMilliseconds()} dateTo={saleAbilities[0].available_until} />
-                </Typography>
-            )
-        }
-
         return <Typography sx={{ color: colors.lightNeonBlue, fontFamily: fonts.nostromoBold }}>Less than an hour</Typography>
-    }, [nextRefreshTime, saleAbilities])
+    }, [nextRefreshTime])
 
     const content = useMemo(() => {
         if (!isLoaded) {
@@ -127,9 +119,9 @@ export const PlayerAbilitiesStore = () => {
                             py: "1rem",
                         }}
                     >
-                        {saleAbilities.map((s) => (
+                        {saleAbilities.map((s, index) => (
                             <PlayerAbilityStoreItem
-                                key={s.id}
+                                key={`${s.id}-${index}`}
                                 saleAbility={s}
                                 updatedPrice={priceMap.get(s.id) || s.current_price}
                                 totalAmount={s.sale_limit}
