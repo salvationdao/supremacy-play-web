@@ -20,7 +20,17 @@ export const DEAD_OPACITY = 0.6
 export const WIDTH_SKILL_BUTTON = 3.8
 export const WIDTH_STAT_BAR = 1.5
 
-export const WarMachineItem = ({ warMachine, scale, initialExpanded = false }: { warMachine: WarMachineState; scale: number; initialExpanded?: boolean }) => {
+export const WarMachineItem = ({
+    warMachine,
+    scale,
+    initialExpanded = false,
+    transformOrigin,
+}: {
+    warMachine: WarMachineState
+    scale: number
+    initialExpanded?: boolean
+    transformOrigin?: string
+}) => {
     const { isMobile } = useMobile()
     const { userID, factionID } = useAuth()
     const { getFaction } = useSupremacy()
@@ -89,7 +99,7 @@ export const WarMachineItem = ({ warMachine, scale, initialExpanded = false }: {
                     }rem`,
                     transition: "width .1s",
                     transform: highlightedMechParticipantID === participantID ? `scale(${scale * 1.08})` : `scale(${scale})`,
-                    transformOrigin: isMobile ? "0 0" : "center",
+                    transformOrigin: transformOrigin || "center",
                 }}
             >
                 {/* Little info button to show the mech destroyed info */}
@@ -153,7 +163,7 @@ export const WarMachineItem = ({ warMachine, scale, initialExpanded = false }: {
                             sx={{
                                 position: "absolute",
                                 bottom: 0,
-                                right: ".8rem",
+                                right: ".2rem",
                                 px: ".3rem",
                                 backgroundColor: "#00000090",
                             }}
@@ -247,7 +257,7 @@ export const WarMachineItem = ({ warMachine, scale, initialExpanded = false }: {
                                     if (!isAlive) return
                                     if (!isExpanded) handleClick()
                                     // Need this time out so that it waits for it expand first then popover, else positioning is wrong
-                                    setTimeout(() => togglePopoverOpen(true), 110)
+                                    initialExpanded ? togglePopoverOpen(true) : setTimeout(() => togglePopoverOpen(true), 110)
                                 }}
                             >
                                 <Box
