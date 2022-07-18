@@ -64,6 +64,7 @@ const BattleArenaPageInner = () => {
                 label: "BATTLE ARENA",
                 Component: () => (
                     <Stack sx={{ height: "100%" }}>
+                        {/* <Notifications /> */}
                         <Box
                             sx={{
                                 flex: 1,
@@ -91,11 +92,10 @@ const BattleArenaPageInner = () => {
                         >
                             <Box sx={{ direction: "ltr", height: 0 }}>
                                 <Stack spacing="1.5rem" sx={{ position: "relative", p: ".8rem 1rem" }}>
-                                    <Notifications />
-                                    <WarMachineStats />
-                                    <MiniMap />
-                                    <VotingSystem />
                                     <LiveVotingChart />
+                                    <VotingSystem />
+                                    <MiniMap />
+                                    <WarMachineStats />
                                 </Stack>
                             </Box>
                         </Box>
@@ -186,7 +186,6 @@ const BattleArenaPageInner = () => {
 
                     {!isMobile && (
                         <>
-                            <Notifications />
                             <WarMachineStats />
                             <BattleEndScreen />
                             <LiveVotingChart />
@@ -201,6 +200,8 @@ const BattleArenaPageInner = () => {
                             <MiniMap />
                         </>
                     )}
+
+                    <Notifications />
 
                     {userID && <TutorialModal />}
                 </Box>
