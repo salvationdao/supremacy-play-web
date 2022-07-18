@@ -10,7 +10,7 @@ import { useToggle } from "../../hooks"
 import { fonts } from "../../theme/theme"
 import { LocationSelectType, Map, PlayerAbility } from "../../types"
 import { MoveableResizableConfig, useMoveableResizable } from "../Common/MoveableResizable/MoveableResizableContainer"
-import { HighlightedMechAbilities } from "./MapInsideItems/MapMechs/HighlightedMechAbilities"
+import { HighlightedMechAbilities } from "./MapOutsideItems/HighlightedMechAbilities"
 import { TargetHint } from "./MapOutsideItems/TargetHint"
 
 export const TOP_BAR_HEIGHT = 3.1 // rems

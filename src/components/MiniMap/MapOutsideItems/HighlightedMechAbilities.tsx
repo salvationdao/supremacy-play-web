@@ -1,15 +1,16 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
 import { useCallback, useMemo, useState } from "react"
-import { ClipThing, ContributeFactionUniqueAbilityRequest } from "../../.."
-import { useAuth, useGame, useMiniMap } from "../../../../containers"
-import { useTheme } from "../../../../containers/theme"
-import { useGameServerCommandsFaction, useGameServerSubscriptionAbilityFaction } from "../../../../hooks/useGameServer"
-import { GameServerKeys } from "../../../../keys"
-import { colors } from "../../../../theme/theme"
-import { GameAbility, GameAbilityProgress, WarMachineState } from "../../../../types"
-import { ProgressBar } from "../../../Common/ProgressBar"
-import { MoveCommand } from "../../../WarMachine/WarMachineItem/MoveCommand"
+import { ClipThing, ContributeFactionUniqueAbilityRequest } from "../.."
+import { useAuth, useGame, useMiniMap, useSnackbar } from "../../../containers"
+import { useTheme } from "../../../containers/theme"
+import { useToggle } from "../../../hooks"
+import { useGameServerCommandsFaction, useGameServerSubscription, useGameServerSubscriptionAbilityFaction } from "../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../keys"
+import { colors } from "../../../theme/theme"
+import { GameAbility, GameAbilityProgress, WarMachineLiveState, WarMachineState } from "../../../types"
+import { ProgressBar } from "../../Common/ProgressBar"
+import { MoveCommand } from "../../WarMachine/WarMachineItem/MoveCommand"
 
 export const HighlightedMechAbilities = () => {
     const { factionID } = useAuth()
@@ -33,6 +34,7 @@ const HighlightedMechAbilitiesInner = ({ warMachine }: { warMachine: WarMachineS
     const { userID } = useAuth()
     const theme = useTheme()
     const { participantID, ownedByID } = warMachine
+    const [isAlive, toggleIsAlive] = useToggle(warMachine.health > 0)
 
     // Subscribe to war machine ability updates
     const gameAbilities = useGameServerSubscriptionAbilityFaction<GameAbility[] | undefined>({
@@ -41,11 +43,24 @@ const HighlightedMechAbilitiesInner = ({ warMachine }: { warMachine: WarMachineS
         ready: !!participantID,
     })
 
-    if (!gameAbilities || gameAbilities.length <= 0) {
+    // Listen on current war machine changes
+    useGameServerSubscription<WarMachineLiveState | undefined>(
+        {
+            URI: `/public/mech/${participantID}`,
+            key: GameServerKeys.SubMechLiveStats,
+            ready: !!participantID,
+            batchURI: "/public/mech",
+        },
+        (payload) => {
+            if (payload?.health !== undefined) {
+                if (payload.health <= 0) toggleIsAlive(false)
+            }
+        },
+    )
+
+    if (!gameAbilities || gameAbilities.length <= 0 || !isAlive) {
         return null
     }
-
-    const isAlive = true
 
     return (
         <Fade in>
@@ -80,6 +95,7 @@ const HighlightedMechAbilitiesInner = ({ warMachine }: { warMachine: WarMachineS
 }
 
 const AbilityItem = ({ participantID, ability }: { participantID: number; ability: GameAbility }) => {
+    const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsFaction("/faction_commander")
 
     const [offeringID, setOfferingID] = useState<string>(ability.ability_offering_id)
@@ -119,10 +135,12 @@ const AbilityItem = ({ participantID, ability }: { participantID: number; abilit
                 ability_offering_id: offeringID,
                 percentage: 1,
             })
-        } catch (e) {
-            console.error(e)
+        } catch (err) {
+            const message = typeof err === "string" ? err : "Failed to contribute."
+            newSnackbarMessage(message, "error")
+            console.error(message)
         }
-    }, [send, identity, offeringID])
+    }, [send, identity, offeringID, newSnackbarMessage])
 
     return (
         <Stack

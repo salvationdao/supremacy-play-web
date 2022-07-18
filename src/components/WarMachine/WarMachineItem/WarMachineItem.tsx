@@ -35,7 +35,7 @@ export const WarMachineItem = ({ warMachine, scale, initialExpanded = false }: {
         ready: factionID === wmFactionID && !!participantID,
     })
 
-    const [isAlive, toggleIsAlive] = useToggle(true)
+    const [isAlive, toggleIsAlive] = useToggle(warMachine.health > 0)
     const [isExpanded, toggleIsExpanded] = useToggle(initialExpanded)
     const faction = getFaction(wmFactionID)
 
@@ -84,7 +84,7 @@ export const WarMachineItem = ({ warMachine, scale, initialExpanded = false }: {
                     width: `${
                         WIDTH_AVATAR +
                         (isExpanded ? WIDTH_BODY : 2 * WIDTH_STAT_BAR) +
-                        (isOwnFaction ? WIDTH_SKILL_BUTTON + numSkillBars * WIDTH_STAT_BAR : 0) +
+                        (isOwnFaction && isAlive ? WIDTH_SKILL_BUTTON + numSkillBars * WIDTH_STAT_BAR : 0) +
                         (warMachine.ownedByID === userID ? WIDTH_SKILL_BUTTON + WIDTH_STAT_BAR : 0)
                     }rem`,
                     transition: "width .1s",
@@ -227,7 +227,7 @@ export const WarMachineItem = ({ warMachine, scale, initialExpanded = false }: {
                     <HealthShieldBars warMachine={warMachine} toggleIsAlive={toggleIsAlive} />
 
                     {/* Mech abilities */}
-                    {gameAbilities && gameAbilities.length > 0 && (
+                    {isAlive && gameAbilities && gameAbilities.length > 0 && (
                         <>
                             <Box
                                 sx={{
