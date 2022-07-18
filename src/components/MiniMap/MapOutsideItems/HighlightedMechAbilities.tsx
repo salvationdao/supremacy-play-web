@@ -81,7 +81,7 @@ const HighlightedMechAbilitiesInner = ({ warMachine }: { warMachine: WarMachineS
                         e.preventDefault()
                         e.stopPropagation()
                     }}
-                    sx={{ p: ".8rem .9rem", width: "12rem" }}
+                    sx={{ p: ".8rem .9rem", width: "15rem" }}
                 >
                     {gameAbilities.map((ga) => {
                         return <AbilityItem key={ga.identity} participantID={participantID} ability={ga} />
@@ -149,7 +149,7 @@ const AbilityItem = ({ participantID, ability }: { participantID: number; abilit
             spacing=".4rem"
             sx={{
                 position: "relative",
-                height: "2.6rem",
+                height: "3rem",
                 width: "100%",
             }}
         >
@@ -157,7 +157,7 @@ const AbilityItem = ({ participantID, ability }: { participantID: number; abilit
             <Box
                 sx={{
                     flexShrink: 0,
-                    width: "2.6rem",
+                    width: "3rem",
                     height: "100%",
                     cursor: "pointer",
                     background: `url(${image_url})`,
@@ -172,7 +172,7 @@ const AbilityItem = ({ participantID, ability }: { participantID: number; abilit
 
             <Box sx={{ flex: 1 }}>
                 <Typography
-                    variant="caption"
+                    variant="body2"
                     sx={{
                         mb: "1px",
                         lineHeight: 1,
@@ -187,12 +187,13 @@ const AbilityItem = ({ participantID, ability }: { participantID: number; abilit
                 >
                     {label}
                 </Typography>
+
                 <ProgressBar
                     percent={initialTargetCost.isZero() ? 0 : +currentSups.dividedBy(initialTargetCost) * 100}
                     linePercent={initialTargetCost.isZero() ? 0 : supsCost.dividedBy(initialTargetCost).toNumber() * 100}
                     color={colour}
                     backgroundColor="#00000040"
-                    thickness=".9rem"
+                    thickness="1.1rem"
                     orientation="horizontal"
                 />
             </Box>
