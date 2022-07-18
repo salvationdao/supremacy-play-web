@@ -97,3 +97,5 @@ export const PRISMIC_ACCESS_TOKEN = process.env.REACT_APP_PRISMIC_ACCESS_TOKEN
 
 // note: telegram notifications does not work on develop
 export const TELEGRAM_BOT_URL = process.env.REACT_APP_TELEGRAM_BOT_URL || "https://t.me/SupremacyNotifyBot"
+
+export const BATTLE_ARENA_OPEN = false
