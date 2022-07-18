@@ -89,8 +89,10 @@ export interface TextMessageMetadata {
         dislikes: number
         net: number
     }
-    tagged_users_read: { [gid: number]: boolean }
+    tagged_users_read: TaggedUsersRead
 }
+
+export type TaggedUsersRead = { [gid: number]: boolean }
 
 export interface TextMessageData {
     id?: string

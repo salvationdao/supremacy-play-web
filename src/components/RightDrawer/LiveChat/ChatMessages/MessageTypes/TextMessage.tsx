@@ -132,63 +132,42 @@ export const TextMessage = ({
 
     const renderJSXMessage = useCallback(
         (msg: string) => {
-            let newMsgStr: string = ""
-            //initializing new array of jsx elements which will allow for different styles for tagged users
-            const newMsgArr: ReactJSXElement[] = []
-            //splitting each message into its words
-            const msgArr = msg.split(" ")
+            if (data.metadata && Object.keys(data.metadata?.tagged_users_read).length === 0) return <Box component={"span"}>{msg}</Box>
 
-            msgArr.map(async (word, i) => {
-                let taggedUser: User | undefined
-                //matching word based on if it matches a tagged pattern
-                if (word.match(/#\d+/)) {
-                    //push the created string before the tagged user to new message array
-                    newMsgArr.push(<Box component={"span"}>{newMsgStr}</Box>)
-                    //start new string for after tagged user
-                    newMsgStr = ""
-                    //get the int type from the #gid
-                    const gid = parseInt(word.substring(1))
-                    //check record if we have a user
-                    taggedUser = userGidRecord[gid] ?? undefined
-                    //if not make a call to the backend to find the user and add to record
-                    if (!taggedUser) {
-                        try {
-                            const resp = await send<User>(GameServerKeys.GetPlayerByGid, {
-                                gid: gid,
-                            })
-                            if (!resp) return
-                            console.log(resp)
-                            addToUserGidRecord(resp)
-                        } catch (err) {
-                            console.error(err)
-                        }
+            const newMsgArr: ReactJSXElement[] = []
+
+            const matchedArr = msg.match(/#\d+/g)
+            matchedArr?.map(async (match) => {
+                const gidSubstring = parseInt(match.substring(1))
+                const taggedUser = userGidRecord[gidSubstring] ?? undefined
+                //if not make a call to the backend to find the user and add to record
+                if (!taggedUser) {
+                    try {
+                        const resp = await send<User>(GameServerKeys.GetPlayerByGid, {
+                            gid: gid,
+                        })
+                        if (!resp) return
+                        addToUserGidRecord(resp)
+                    } catch (err) {
+                        console.error(err)
                     }
-                    if (taggedUser?.id === user.id) {
-                        setHighlightMsg(true)
-                    }
-                    //push to the JSX array with necessary styles
-                    newMsgArr.push(
-                        <Box component={"span"}>
-                            <Box sx={{ display: "inline" }}> </Box>
-                            <UsernameJSX data={data} fontSize={fontSize} user={taggedUser} />
-                        </Box>,
-                    )
-                    //else concat the string with the next word
-                } else {
-                    newMsgStr = newMsgStr.concat(" ", word)
-                }
-                //if the array is finished, push the last string
-                if (i === msgArr.length - 1) {
-                    newMsgArr.push(<Box component={"span"}>{newMsgStr}</Box>)
                 }
             })
 
-            console.log(userGidRecord)
-            // const matchedArr = msg.match(/#\d+/g)
-            // matchedArr?.map((match) => {
-            //     const gidSubstring = match.substring(1)
-            //     msg.replace(match, gidSubstring)
-            // })
+            const stringsArr = msg.split(/#\d+/)
+
+            stringsArr.map((str, i) => {
+                newMsgArr.push(<Box component={"span"}>{str}</Box>)
+                if (matchedArr && matchedArr[i]) {
+                    const gidSubstring = parseInt(matchedArr[i].substring(1))
+                    newMsgArr.push(
+                        <Box component={"span"}>
+                            <Box sx={{ display: "inline" }}> </Box>
+                            <UsernameJSX data={data} fontSize={fontSize} user={userGidRecord[gidSubstring]} />
+                        </Box>,
+                    )
+                }
+            })
 
             return (
                 <>

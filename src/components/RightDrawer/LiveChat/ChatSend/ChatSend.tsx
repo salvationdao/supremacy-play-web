@@ -89,7 +89,7 @@ const ChatSendInner = ({
     const popoverRef = useRef(null)
 
     const messageColor = useMemo(() => getRandomColor(), [])
-    const renderedMsg = message.replace(/@[a-zA-Z0-9-_]+#/, "#")
+    const renderedMsg = message.replace(/@[a-zA-Z0-9-_]+#/g, "#")
     const setMessageWithCheck = useCallback(
         (newMessage: string, append?: boolean) => {
             setMessage((prev) => {
