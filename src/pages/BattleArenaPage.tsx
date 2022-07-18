@@ -43,7 +43,7 @@ export const BattleArenaPage = () => {
     }
 
     if (!BATTLE_ARENA_OPEN) {
-        return <Redirect to="/fleet" />
+        return <Redirect to="/fleet#live_chat" />
     }
 
     return <BattleArenaPageInner />

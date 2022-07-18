@@ -27,6 +27,7 @@ interface RouteStruct {
     leftDrawer?: {
         enable: boolean
         label: string
+        comingSoonLabel?: string
     }
     matchLeftDrawerID?: string
 }
@@ -42,6 +43,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         leftDrawer: {
             enable: BATTLE_ARENA_OPEN,
             label: "Battle Arena",
+            comingSoonLabel: "Returning Soon",
         },
         matchLeftDrawerID: "home",
     },

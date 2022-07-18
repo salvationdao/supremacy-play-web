@@ -62,6 +62,7 @@ export const LeftDrawer = () => {
                                     key={r.id}
                                     label={label}
                                     disable={!enable || disable}
+                                    comingSoonLabel={r.leftDrawer.comingSoonLabel}
                                     enable={enable}
                                     onClick={() => history.push(`${navigateTo}${location.hash}`)}
                                     isActive={activeTabID === r.matchLeftDrawerID || location.pathname === r.path}
@@ -107,6 +108,7 @@ const MenuButton = ({
     primaryColor,
     secondaryColor,
     onClick,
+    comingSoonLabel,
 }: {
     label: string
     disable?: boolean
@@ -116,6 +118,7 @@ const MenuButton = ({
     primaryColor: string
     secondaryColor: string
     onClick: () => void
+    comingSoonLabel?: string
 }) => {
     return (
         <Button
@@ -140,7 +143,7 @@ const MenuButton = ({
             </Typography>
             {!enable && (
                 <Typography variant="caption" sx={{ color: colors.neonBlue, fontFamily: fonts.nostromoBold, whiteSpace: "nowrap", lineHeight: 1 }}>
-                    &nbsp;(COMING SOON)
+                    &nbsp;({comingSoonLabel || "COMING SOON"})
                 </Typography>
             )}
         </Button>
