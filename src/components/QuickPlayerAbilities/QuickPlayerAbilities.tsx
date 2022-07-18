@@ -120,16 +120,8 @@ const QuickPlayerAbilitiesInner = ({ onClose, userID }: { onClose: () => void; u
             )
         }
 
-        if (saleAbilities.length > 0) {
-            return (
-                <Typography sx={{ color: colors.lightNeonBlue, fontFamily: fonts.shareTech, textTransform: "uppercase" }}>
-                    <TimeLeft key={saleAbilities[0].available_until?.getMilliseconds()} dateTo={saleAbilities[0].available_until} />
-                </Typography>
-            )
-        }
-
         return <Typography sx={{ color: colors.lightNeonBlue, fontFamily: fonts.shareTech, textTransform: "uppercase" }}>Less than an hour</Typography>
-    }, [nextRefreshTime, saleAbilities])
+    }, [nextRefreshTime])
 
     return (
         <>
@@ -213,9 +205,9 @@ const QuickPlayerAbilitiesInner = ({ onClose, userID }: { onClose: () => void; u
                                                 width: "100%",
                                             }}
                                         >
-                                            {saleAbilities.map((s) => (
+                                            {saleAbilities.map((s, index) => (
                                                 <QuickPlayerAbilitiesItem
-                                                    key={s.id}
+                                                    key={`${s.id}-${index}`}
                                                     saleAbility={s}
                                                     updatedPrice={priceMap.get(s.id) || s.current_price}
                                                     totalAmount={s.sale_limit}
