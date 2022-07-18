@@ -10,6 +10,7 @@ import { WeaponPage } from "../pages/WeaponPage"
 import { LiveChat } from "../components/RightDrawer/LiveChat/LiveChat"
 import { PlayerList } from "../components/RightDrawer/PlayerList/PlayerList"
 import { PlayerProfilePage } from "../components/PublicProfile/PlayerProfile"
+import { BATTLE_ARENA_OPEN } from "../constants"
 
 /**
  * Left drawer
@@ -26,6 +27,7 @@ interface RouteStruct {
     leftDrawer?: {
         enable: boolean
         label: string
+        comingSoonLabel?: string
     }
     matchLeftDrawerID?: string
 }
@@ -39,8 +41,9 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         requireAuth: false,
         requireFaction: false,
         leftDrawer: {
-            enable: true,
+            enable: BATTLE_ARENA_OPEN,
             label: "Battle Arena",
+            comingSoonLabel: "Returning Soon",
         },
         matchLeftDrawerID: "home",
     },
