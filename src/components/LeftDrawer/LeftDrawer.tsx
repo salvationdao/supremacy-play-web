@@ -9,7 +9,7 @@ import { DrawerButtons } from "./DrawerButtons"
 import { useTheme } from "../../containers/theme"
 import { useAuth } from "../../containers"
 
-const EXPAND_DRAWER_WIDTH = 30 //rem
+const EXPAND_DRAWER_WIDTH = 34 //rem
 
 export const LeftDrawer = () => {
     const { userID } = useAuth()
