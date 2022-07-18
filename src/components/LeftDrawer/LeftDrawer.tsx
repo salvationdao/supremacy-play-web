@@ -62,8 +62,8 @@ export const LeftDrawer = () => {
                                     key={r.id}
                                     label={label}
                                     disable={!enable || disable}
+                                    isComingSoon={!enable}
                                     comingSoonLabel={r.leftDrawer.comingSoonLabel}
-                                    enable={enable}
                                     onClick={() => history.push(`${navigateTo}${location.hash}`)}
                                     isActive={activeTabID === r.matchLeftDrawerID || location.pathname === r.path}
                                     primaryColor={theme.factionTheme.primary}
@@ -103,7 +103,7 @@ export const LeftDrawer = () => {
 const MenuButton = ({
     label,
     disable,
-    enable,
+    isComingSoon,
     isActive,
     primaryColor,
     secondaryColor,
@@ -112,7 +112,7 @@ const MenuButton = ({
 }: {
     label: string
     disable?: boolean
-    enable?: boolean
+    isComingSoon?: boolean
     icon?: string | React.ReactElement<unknown, string | React.JSXElementConstructor<unknown>>
     isActive?: boolean
     primaryColor: string
@@ -141,7 +141,7 @@ const MenuButton = ({
             <Typography sx={{ color: isActive ? secondaryColor : "#FFFFFF", fontFamily: fonts.nostromoHeavy, whiteSpace: "nowrap", lineHeight: 1 }}>
                 {label}
             </Typography>
-            {!enable && (
+            {!isComingSoon && (
                 <Typography variant="caption" sx={{ color: colors.neonBlue, fontFamily: fonts.nostromoBold, whiteSpace: "nowrap", lineHeight: 1 }}>
                     &nbsp;({comingSoonLabel || "COMING SOON"})
                 </Typography>
