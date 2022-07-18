@@ -11,8 +11,8 @@ import { TooltipHelper } from "../../../../Common/TooltipHelper"
 import { UserDetailsPopover } from "./UserDetailsPopover"
 import { useChat } from "../../../../../containers"
 import { GameServerKeys } from "../../../../../keys"
-import { ReactJSXElement } from "@emotion/react/types/jsx-namespace"
 import { useGameServerCommandsUser } from "../../../../../hooks/useGameServer"
+import { ReactJSXElement } from "@emotion/react/types/jsx-namespace"
 
 const getMultiplierColor = (multiplierInt: number): string => {
     if (multiplierInt >= 2800) return "#3BFFDE"
@@ -149,7 +149,7 @@ export const TextMessage = ({
                     //get the int type from the #gid
                     const gid = parseInt(word.substring(1))
                     //check record if we have a user
-                    taggedUser = userGidRecord.current ? userGidRecord.current[gid] : undefined
+                    taggedUser = userGidRecord[gid] ?? undefined
                     //if not make a call to the backend to find the user and add to record
                     if (!taggedUser) {
                         try {
@@ -157,6 +157,7 @@ export const TextMessage = ({
                                 gid: gid,
                             })
                             if (!resp) return
+                            console.log(resp)
                             addToUserGidRecord(resp)
                         } catch (err) {
                             console.error(err)
@@ -181,6 +182,14 @@ export const TextMessage = ({
                     newMsgArr.push(<Box component={"span"}>{newMsgStr}</Box>)
                 }
             })
+
+            console.log(userGidRecord)
+            // const matchedArr = msg.match(/#\d+/g)
+            // matchedArr?.map((match) => {
+            //     const gidSubstring = match.substring(1)
+            //     msg.replace(match, gidSubstring)
+            // })
+
             return (
                 <>
                     {newMsgArr.map((x, i) => (

@@ -46,6 +46,7 @@ export const ChatContainer = createContainer(() => {
     const [factionChatUnread, setFactionChatUnread] = useState<number>(0)
     const [globalChatUnread, setGlobalChatUnread] = useState<number>(0)
     const [incomingMessages, setIncomingMessages] = useState<IncomingMessages>()
+    const [userGidRecord, setUserGidRecord] = useState<{ [gid: number]: User }>({})
 
     const [banProposal, setBanProposal] = useState<BanProposalStruct>()
 
@@ -57,11 +58,10 @@ export const ChatContainer = createContainer(() => {
     const [activePlayers, setActivePlayers] = useState<User[]>([])
     const [globalActivePlayers, setGlobalActivePlayers] = useState<User[]>([])
 
-    //dictionary to store users gid to username
-    const userGidRecord = useRef<{ [gid: number]: User }>()
-
     const addToUserGidRecord = (user: User) => {
-        userGidRecord.current = { ...userGidRecord, [user.gid]: user }
+        setUserGidRecord((prev) => {
+            return { ...prev, [user.gid]: user }
+        })
     }
 
     // Save chat settings to local storage
