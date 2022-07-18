@@ -221,6 +221,7 @@ const MiniMapInner = ({
                 alignItems="center"
                 justifyContent="center"
                 sx={{
+                    position: "relative",
                     width: "100%",
                     height: "100%",
                 }}
@@ -236,6 +237,7 @@ const MiniMapInner = ({
                         overflow: "hidden",
                         pointerEvents: "all",
                         border: isPoppedout ? `${theme.factionTheme.primary} 1.5px solid` : "unset",
+                        zIndex: 2,
                     }}
                 >
                     <Stack
@@ -270,6 +272,21 @@ const MiniMapInner = ({
 
                     <HighlightedMechAbilities />
                 </Box>
+
+                {/* not scaled map background image, for background only */}
+                <Box
+                    sx={{
+                        position: "absolute",
+                        width: "100%",
+                        height: "100%",
+                        background: `url(${map?.image_url})`,
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "center",
+                        backgroundSize: "cover",
+                        opacity: 0.15,
+                        zIndex: 1,
+                    }}
+                />
             </Stack>
         )
         // eslint-disable-next-line react-hooks/exhaustive-deps

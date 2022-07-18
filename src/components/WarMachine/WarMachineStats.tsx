@@ -1,4 +1,4 @@
-import { Box, IconButton, Slide, Stack } from "@mui/material"
+import { Box, Divider, IconButton, Slide, Stack } from "@mui/material"
 import { ReactElement, useEffect, useMemo } from "react"
 import { ClipThing } from ".."
 import { SvgExternalLink } from "../../assets"
@@ -14,7 +14,7 @@ export const WarMachineStats = () => {
     const theme = useTheme()
     const { factionID } = useAuth()
     const { battleIdentifier } = useSupremacy()
-    const { warMachines, bribeStage } = useGame()
+    const { warMachines, bribeStage, map } = useGame()
     const [isPoppedout, toggleIsPoppedout] = useToggle()
 
     // Temp hotfix ask james ****************************
@@ -34,18 +34,33 @@ export const WarMachineStats = () => {
                 title="Supremacy - Live Chat"
                 onClose={() => toggleIsPoppedout(false)}
                 features={{
-                    width: 350,
-                    height: 700,
+                    width: 345,
+                    height: 892,
                 }}
             >
                 <Stack
                     alignItems="center"
                     justifyContent="flex-start"
                     sx={{
+                        position: "relative",
                         width: "100%",
                         height: "100%",
                     }}
                 >
+                    {/* map background image */}
+                    <Box
+                        sx={{
+                            position: "absolute",
+                            width: "100%",
+                            height: "100%",
+                            background: `url(${map?.image_url})`,
+                            backgroundRepeat: "no-repeat",
+                            backgroundPosition: "center",
+                            backgroundSize: "cover",
+                            opacity: 0.15,
+                        }}
+                    />
+
                     <ClipThing
                         clipSize="10px"
                         border={{
@@ -88,14 +103,16 @@ export const WarMachineStats = () => {
                                                 .sort((a, b) => a.factionID.localeCompare(b.factionID))
                                                 .map((wm) => (
                                                     <Box key={`${wm.participantID} - ${wm.hash}`}>
-                                                        <WarMachineItem warMachine={wm} scale={1} initialExpanded />
+                                                        <WarMachineItem warMachine={wm} scale={1} initialExpanded isPoppedout />
                                                     </Box>
                                                 ))}
+
+                                        <Divider orientation="horizontal" />
 
                                         {haveFactionMechs &&
                                             factionMechs.map((wm) => (
                                                 <Box key={`${wm.participantID} - ${wm.hash}`}>
-                                                    <WarMachineItem warMachine={wm} scale={1} initialExpanded />
+                                                    <WarMachineItem warMachine={wm} scale={1} initialExpanded isPoppedout />
                                                 </Box>
                                             ))}
                                     </Stack>

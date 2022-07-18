@@ -25,11 +25,13 @@ export const WarMachineItem = ({
     scale,
     initialExpanded = false,
     transformOrigin,
+    isPoppedout,
 }: {
     warMachine: WarMachineState
     scale: number
     initialExpanded?: boolean
     transformOrigin?: string
+    isPoppedout?: boolean
 }) => {
     const { isMobile } = useMobile()
     const { userID, factionID } = useAuth()
@@ -255,7 +257,7 @@ export const WarMachineItem = ({
                                 }}
                                 onClick={() => {
                                     if (!isAlive) return
-                                    if (!isExpanded) handleClick()
+                                    setHighlightedMechParticipantID(participantID)
                                     // Need this time out so that it waits for it expand first then popover, else positioning is wrong
                                     initialExpanded ? togglePopoverOpen(true) : setTimeout(() => togglePopoverOpen(true), 110)
                                 }}
@@ -312,6 +314,7 @@ export const WarMachineItem = ({
                     gameAbilities={gameAbilities}
                     maxAbilityPriceMap={maxAbilityPriceMap}
                     getFaction={getFaction}
+                    isPoppedout={isPoppedout}
                 />
             )}
 
