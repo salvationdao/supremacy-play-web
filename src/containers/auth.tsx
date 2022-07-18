@@ -2,14 +2,13 @@ import { createContext, Dispatch, useCallback, useContext, useEffect, useRef, us
 import { useQuery } from "react-fetching-library"
 import { useSupremacy } from "."
 import { GAME_SERVER_HOSTNAME, PASSPORT_WEB } from "../constants"
-import { GameServerLoginCheck, PassportLoginCheck } from "../fetching"
+import { GameServerLoginCheck, PassportLoginCheck, GetGameServerPlayer } from "../fetching"
 import { shadeColor } from "../helpers"
 import { useGameServerCommandsUser, useGameServerSubscriptionUser } from "../hooks/useGameServer"
 import { useInactivity } from "../hooks/useInactivity"
 import { GameServerKeys } from "../keys"
 import { colors } from "../theme/theme"
-import { Faction, FeatureName, User, UserRank, UserStat } from "../types"
-import { PunishListItem } from "../types/chat"
+import { Faction, FeatureName, User, UserFromPassport, UserRank, UserStat, PunishListItem } from "../types"
 import { useFingerprint } from "./fingerprint"
 import { useTheme } from "./theme"
 
@@ -94,7 +93,7 @@ export const AuthProvider: React.FC = ({ children }) => {
     const [passportPopup, setPassportPopup] = useState<Window | null>(null)
     const popupCheckInterval = useRef<NodeJS.Timer>()
 
-    const [userFromPassport, setUserFromPassport] = useState<User>()
+    const [userFromPassport, setUserFromPassport] = useState<UserFromPassport>()
     const [isLoginGameServer, setIsLoginGameServer] = useState(false)
     const [user, setUser] = useState<User>(initialState.user)
     const userID = user.id
@@ -106,6 +105,7 @@ export const AuthProvider: React.FC = ({ children }) => {
 
     const { query: passportLoginCheck } = useQuery(PassportLoginCheck(), false)
     const { query: gameServerLoginCheck } = useQuery(GameServerLoginCheck(fingerprint), false)
+    const { query: getGameServerPlayer } = useQuery(GetGameServerPlayer(userFromPassport?.id), false)
 
     const authCheckCallback = useCallback(
         (event?: MessageEvent) => {
@@ -140,7 +140,14 @@ export const AuthProvider: React.FC = ({ children }) => {
             setIsLoggingIn(false)
             return
         }
-        setUser(userFromPassport)
+
+        getGameServerPlayer().then((resp) => {
+            if (resp.error || !resp.payload) {
+                setUser(initialState.user)
+                return
+            }
+            setUser(resp.payload)
+        })
         setIsLoggingIn(false)
     }, [userFromPassport, isLoginGameServer, setIsLoggingIn])
 

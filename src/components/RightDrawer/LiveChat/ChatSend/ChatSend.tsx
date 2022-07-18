@@ -108,7 +108,6 @@ const ChatSendInner = ({
             const gid = parseInt(s[0].substring(1))
             taggedGids = [...taggedGids, gid]
         })
-        console.log(taggedGids)
         return taggedGids
     }
 

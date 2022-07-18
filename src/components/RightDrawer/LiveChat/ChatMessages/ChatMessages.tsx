@@ -1,5 +1,5 @@
 import { Box, Divider, Fade, IconButton, Stack, Typography } from "@mui/material"
-import { useCallback, useLayoutEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react"
 import { PunishMessage, TextMessage } from "../../.."
 import { SvgScrolldown } from "../../../../assets"
 import { FontSizeType, SplitOptionType, useAuth, useChat, useSupremacy } from "../../../../containers"
@@ -68,6 +68,7 @@ const ChatMessagesInner = ({
 }: ChatMessagesInnerProps) => {
     const scrollableRef = useRef<HTMLDivElement>(null)
     const [autoScroll, setAutoScroll] = useState(true)
+    const [isScrolling, setIsScrolling] = useState(false)
 
     useLayoutEffect(() => {
         // Auto scroll to the bottom if enabled, has messages and user login/logout state changed
@@ -84,6 +85,7 @@ const ChatMessagesInner = ({
 
     const scrollHandler = useCallback(
         (e: React.UIEvent<HTMLDivElement, UIEvent>) => {
+            setIsScrolling(true)
             const { currentTarget } = e
             const extraHeight = currentTarget.scrollHeight - currentTarget.offsetHeight
             const scrollUpTooMuch = currentTarget.scrollTop < extraHeight - 0.5 * currentTarget.offsetHeight
@@ -94,6 +96,10 @@ const ChatMessagesInner = ({
             } else if (!autoScroll && !scrollUpTooMuch) {
                 setAutoScroll(true)
             }
+
+            setTimeout(() => {
+                setIsScrolling(false)
+            }, 150)
         },
         [autoScroll],
     )
@@ -157,6 +163,8 @@ const ChatMessagesInner = ({
                                             isEmoji={isEmoji}
                                             locallySent={message.locallySent}
                                             previousMessage={chatMessages[i - 1]}
+                                            containerRef={scrollableRef}
+                                            isScrolling={isScrolling}
                                         />
                                     )
                                 } else if (message.type == "PUNISH_VOTE") {

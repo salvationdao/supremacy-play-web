@@ -1,5 +1,5 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { UserBanForm } from "../../../.."
 import { SvgInfoCircular, SvgSkull2 } from "../../../../../assets"
 import { PASSPORT_SERVER_HOST_IMAGES } from "../../../../../constants"
@@ -27,17 +27,6 @@ const getMultiplierColor = (multiplierInt: number): string => {
     return "#9791FF"
 }
 
-// const isVisible = (el: React.RefObject<HTMLDivElement>) => {
-//     const rect = el.current?.getBoundingClientRect()
-//     if (rect) {
-//         const elemTop = rect.top
-//         const elemBottom = rect.bottom
-//
-//         // Only completely visible elements return true:
-//         const isVisible = elemTop >= 0 && elemBottom <= window.innerHeight
-//     }
-// }
-
 export const TextMessage = ({
     data,
     sentAt,
@@ -51,6 +40,8 @@ export const TextMessage = ({
     isEmoji,
     locallySent,
     previousMessage,
+    containerRef,
+    isScrolling,
 }: {
     data: TextMessageData
     sentAt: Date
@@ -64,6 +55,8 @@ export const TextMessage = ({
     isEmoji: boolean
     locallySent?: boolean
     previousMessage: ChatMessageType | undefined
+    containerRef: React.RefObject<HTMLDivElement>
+    isScrolling: boolean
 }) => {
     const { from_user, user_rank, message_color, avatar_id, message, total_multiplier, is_citizen, from_user_stat } = data
     const { id, username, gid, faction_id } = from_user
@@ -71,6 +64,7 @@ export const TextMessage = ({
     const { send } = useGameServerCommandsUser("/user_commander")
 
     const popoverRef = useRef(null)
+    const textMessageRef = useRef<HTMLDivElement>(null)
     const [isPopoverOpen, toggleIsPopoverOpen] = useToggle()
     const [banModalOpen, toggleBanModalOpen] = useToggle()
     const [displayTimestamp, setDisplayTimestamp] = useToggle()
@@ -93,6 +87,41 @@ export const TextMessage = ({
         if (isEmoji) return (fontSize || 1.1) * 3
         return (fontSize || 1.1) * 1.35
     }, [isEmoji, fontSize])
+
+    const isVisible = useCallback(() => {
+        if (!containerRef.current || !textMessageRef.current || !isScrolling) return
+
+        //Get container properties
+        const cTop = containerRef.current?.scrollTop
+        const cBottom = cTop + containerRef.current?.clientHeight
+
+        //Get element properties
+        const eTop = textMessageRef.current?.offsetTop
+        const eBottom = textMessageRef.current?.clientHeight
+
+        // if (!cTop || !cBottom || !eTop || !eBottom) return
+        //Check if in view
+        return eTop >= cTop && eBottom <= cBottom
+    }, [containerRef, textMessageRef, isScrolling])
+
+    useEffect(() => {
+        ;(async () => {
+            if (data.metadata && Object.keys(data.metadata?.tagged_users_read).length === 0) return
+            const visibleBool = isVisible()
+            const isRead = data.metadata?.tagged_users_read[user.gid]
+            if (visibleBool && isRead === false) {
+                try {
+                    const resp = await send<User>(GameServerKeys.ReadTaggedMessage, {
+                        chat_history_id: data.id,
+                    })
+                    if (!resp) return
+                    console.log(resp)
+                } catch (err) {
+                    console.error(err)
+                }
+            }
+        })()
+    }, [isVisible, data])
 
     useEffect(() => {
         if (!highlightMsg) return
@@ -183,7 +212,7 @@ export const TextMessage = ({
 
     return (
         <>
-            <Box sx={{ opacity: isSent ? 1 : 0.45, wordBreak: "break-word", "*": { userSelect: "text !important" } }}>
+            <Box sx={{ opacity: isSent ? 1 : 0.45, wordBreak: "break-word", "*": { userSelect: "text !important" } }} ref={textMessageRef}>
                 {(!isPreviousMessager || (previousMessage && sentAt > new Date(previousMessage.sent_at.getTime() + 2 * 60000))) && (
                     <Stack direction="row" justifyContent="space-between">
                         <Stack ref={popoverRef} direction="row" spacing=".3rem">

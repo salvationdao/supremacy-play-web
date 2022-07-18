@@ -83,7 +83,17 @@ export interface ChatMessageType {
     locallySent?: boolean
 }
 
+export interface TextMessageMetadata {
+    likes: {
+        likes: number
+        dislikes: number
+        net: number
+    }
+    tagged_users_read: { [gid: number]: boolean }
+}
+
 export interface TextMessageData {
+    id?: string
     from_user: User
     message_color?: string
     avatar_id?: string
@@ -92,7 +102,8 @@ export interface TextMessageData {
     total_multiplier?: number
     is_citizen?: boolean
     from_user_stat?: UserStat
-    tagged_users_gids: number[]
+    tagged_users_gids?: number[]
+    metadata?: TextMessageMetadata
 }
 
 export interface PunishMessageData {
