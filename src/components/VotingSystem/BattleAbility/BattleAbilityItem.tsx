@@ -35,7 +35,7 @@ export const BattleAbilityItem = () => {
     // Subscribe to battle ability updates
     useGameServerSubscription<BattleAbilityType>(
         {
-            URI: factionID ? `/ability/${factionID}` : "/public/battle_ability",
+            URI: factionID ? `/faction/${factionID}/battle_ability` : "/public/battle_ability",
             key: GameServerKeys.SubBattleAbility,
         },
         (payload) => {

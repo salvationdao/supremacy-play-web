@@ -4,7 +4,7 @@ import { useCallback, useMemo, useState } from "react"
 import { ClipThing, ContributeFactionUniqueAbilityRequest } from "../../.."
 import { useAuth, useGame, useMiniMap } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
-import { useGameServerCommandsFaction, useGameServerSubscriptionAbilityFaction } from "../../../../hooks/useGameServer"
+import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors } from "../../../../theme/theme"
 import { GameAbility, GameAbilityProgress, WarMachineState } from "../../../../types"
@@ -35,8 +35,8 @@ const HighlightedMechAbilitiesInner = ({ warMachine }: { warMachine: WarMachineS
     const { participantID, ownedByID } = warMachine
 
     // Subscribe to war machine ability updates
-    const gameAbilities = useGameServerSubscriptionAbilityFaction<GameAbility[] | undefined>({
-        URI: `/mech/${participantID}`,
+    const gameAbilities = useGameServerSubscriptionFaction<GameAbility[] | undefined>({
+        URI: `/mech/${participantID}/abilities`,
         key: GameServerKeys.SubWarMachineAbilitiesUpdated,
         ready: !!participantID,
     })
@@ -69,10 +69,8 @@ const HighlightedMechAbilitiesInner = ({ warMachine }: { warMachine: WarMachineS
                     sx={{ p: ".8rem .9rem", width: "12rem" }}
                 >
                     {gameAbilities.map((ga) => {
-                        return <AbilityItem key={ga.identity} participantID={participantID} ability={ga} />
+                        return <AbilityItem key={ga.id} participantID={participantID} ability={ga} />
                     })}
-
-                    {userID === ownedByID && <MoveCommand isAlive={isAlive} warMachine={warMachine} smallVersion />}
                 </Stack>
             </ClipThing>
         </Fade>
@@ -90,9 +88,9 @@ const AbilityItem = ({ participantID, ability }: { participantID: number; abilit
     const { identity, colour, image_url, label } = ability
 
     // Listen on the progress of the votes
-    useGameServerSubscriptionAbilityFaction<GameAbilityProgress | undefined>(
+    useGameServerSubscriptionFaction<GameAbilityProgress | undefined>(
         {
-            URI: `/mech/${participantID}`,
+            URI: `/mech/${participantID}/abilities`,
             key: GameServerKeys.SubAbilityProgress,
         },
         (payload) => {

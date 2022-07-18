@@ -6,7 +6,7 @@ import { GenericWarMachinePNG, SvgInfoCircular, SvgSkull } from "../../../assets
 import { useAuth, useMiniMap, useMobile, useSupremacy } from "../../../containers"
 import { getRarityDeets } from "../../../helpers"
 import { useToggle } from "../../../hooks"
-import { useGameServerSubscriptionAbilityFaction } from "../../../hooks/useGameServer"
+import { useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { GameAbility, WarMachineState } from "../../../types"
@@ -29,8 +29,8 @@ export const WarMachineItem = ({ warMachine, scale, initialExpanded = false }: {
     const { hash, participantID, factionID: wmFactionID, name, imageAvatar, tier, ownedByID } = warMachine
 
     // Subscribe to war machine ability updates
-    const gameAbilities = useGameServerSubscriptionAbilityFaction<GameAbility[] | undefined>({
-        URI: `/mech/${participantID}`,
+    const gameAbilities = useGameServerSubscriptionFaction<GameAbility[] | undefined>({
+        URI: `/mech/${participantID}/abilities`,
         key: GameServerKeys.SubWarMachineAbilitiesUpdated,
         ready: factionID === wmFactionID && !!participantID,
     })
@@ -273,19 +273,6 @@ export const WarMachineItem = ({ warMachine, scale, initialExpanded = false }: {
                                     </Typography>
                                 </Box>
                             </Box>
-
-                            {gameAbilities
-                                .slice()
-                                .reverse()
-                                .map((ga, index) => (
-                                    <SkillBar
-                                        key={ga.identity}
-                                        participantID={warMachine.participantID}
-                                        index={index}
-                                        gameAbility={ga}
-                                        maxAbilityPriceMap={maxAbilityPriceMap}
-                                    />
-                                ))}
                         </>
                     )}
 

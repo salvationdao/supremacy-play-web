@@ -5,6 +5,7 @@ export enum GameServerKeys {
     SubMechLiveStats = "WAR:MACHINE:STAT:UPDATED",
     SubBattleAbilityProgress = "BATTLE:ABILITY:PROGRESS:BAR:UPDATED",
     SubAbilityProgress = "ABILITY:PRICE:UPDATED",
+    SubMechAbilityCoolDown = "WAR:MACHINE:ABILITY:SUBSCRIBE",
 
     // Auth container
     UserSubscribe = "USER:SUBSCRIBE",
@@ -27,6 +28,7 @@ export enum GameServerKeys {
     SubWarMachineAbilitiesUpdated = "WAR:MACHINE:ABILITIES:UPDATED",
     ContributeFactionUniqueAbility = "FACTION:UNIQUE:ABILITY:CONTRIBUTE",
     BribeBattleAbility = "BATTLE:ABILITY:BRIBE",
+    TriggerWarMachineAbility = "WAR:MACHINE:ABILITY:TRIGGER",
     SubmitAbilityLocationSelect = "ABILITY:LOCATION:SELECT",
 
     SubMechCommands = "MECH:COMMANDS:SUBSCRIBE",
