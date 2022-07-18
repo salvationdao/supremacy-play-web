@@ -89,7 +89,7 @@ export const NullUUID = "00000000-0000-0000-0000-000000000000"
 export const TRAILER_VIDEO =
     "https://player.vimeo.com/progressive_redirect/playback/681913587/rendition/1080p?loc=external&signature=6d5bf3570be8bd5e9e57a6a786964a99d067957fbcf9e3a40b6914c085c9b3e9#t=10"
 
-// Maintenance (ENVAR). The local stroage is a hack to let the team members in
+// Maintenance (ENVAR). The local storage is a hack to let the team members in
 export const UNDER_MAINTENANCE = process.env.REACT_APP_MAINTENANCE_PAGE === "true" && !localStorage.getItem("NinjaSecrets@!")
 
 export const PRISMIC_ACCESS_TOKEN = process.env.REACT_APP_PRISMIC_ACCESS_TOKEN
@@ -97,4 +97,4 @@ export const PRISMIC_ACCESS_TOKEN = process.env.REACT_APP_PRISMIC_ACCESS_TOKEN
 // note: telegram notifications does not work on develop
 export const TELEGRAM_BOT_URL = process.env.REACT_APP_TELEGRAM_BOT_URL || "https://t.me/SupremacyNotifyBot"
 
-export const BATTLE_ARENA_OPEN = false
+export const BATTLE_ARENA_OPEN = true
