@@ -158,7 +158,7 @@ export const WarMachineItem = ({ warMachine, scale, initialExpanded = false }: {
                                 backgroundColor: "#00000090",
                             }}
                         >
-                            <Typography variant="h5" sx={{ fontFamily: fonts.nostromoBlack }}>
+                            <Typography variant="h4" sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack }}>
                                 {warMachine.participantID}
                             </Typography>
                         </Box>
