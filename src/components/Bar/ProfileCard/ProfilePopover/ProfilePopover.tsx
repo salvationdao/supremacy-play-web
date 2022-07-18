@@ -12,6 +12,7 @@ import { PreferencesModal } from "../PreferencesModal/PreferencesModal"
 import { TelegramRegisterModal } from "../PreferencesModal/TelegramRegisterModal"
 import { LogoutButton } from "./LogoutButton"
 import { NavButton } from "./NavButton"
+import { QrCodeModal } from "./QrCodeModal"
 
 export const ProfilePopover = ({ open, popoverRef, onClose, user }: { open: boolean; popoverRef: MutableRefObject<null>; onClose: () => void; user: User }) => {
     const theme = useTheme()
@@ -19,6 +20,8 @@ export const ProfilePopover = ({ open, popoverRef, onClose, user }: { open: bool
 
     const [localOpen, toggleLocalOpen] = useToggle(open)
     const [preferencesModalOpen, togglePreferencesModalOpen] = useToggle()
+    const [qrModalOpen, toggleQRModalOpen] = useToggle()
+
     const [telegramShortcode, setTelegramShortcode] = useState<string>("")
     const canViewProfilePage = userHasFeature(FeatureName.publicProfilePage)
 
@@ -87,6 +90,14 @@ export const ProfilePopover = ({ open, popoverRef, onClose, user }: { open: bool
                             text="Preferences"
                         />
 
+                        <NavButton
+                            onClick={() => {
+                                toggleQRModalOpen(true)
+                            }}
+                            startIcon={<SvgSettings sx={{ pb: ".5rem" }} size="1.6rem" />}
+                            text="QR Code Generator"
+                        />
+
                         <LogoutButton />
                     </Stack>
                 </ClipThing>
@@ -100,6 +111,16 @@ export const ProfilePopover = ({ open, popoverRef, onClose, user }: { open: bool
                         toggleLocalOpen(false)
                     }}
                     setTelegramShortcode={setTelegramShortcode}
+                />
+            )}
+
+            {/* preferences modal */}
+            {qrModalOpen && (
+                <QrCodeModal
+                    onClose={() => {
+                        toggleQRModalOpen(false)
+                        toggleLocalOpen(false)
+                    }}
                 />
             )}
 
