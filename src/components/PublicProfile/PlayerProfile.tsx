@@ -274,6 +274,7 @@ export const PlayerProfilePage = () => {
                         <Stack>
                             <Stack direction={"row"}>
                                 <ProfileAvatar
+                                    isOwner={isMe}
                                     updateAvatar={async (avatar_id: string) => {
                                         updateAvatar(avatar_id)
                                     }}
@@ -472,22 +473,22 @@ export const PlayerProfilePage = () => {
                                         >
                                             <StatItem
                                                 label="Abilities"
-                                                value={profile.stats.total_ability_triggered}
+                                                value={profile.stats?.total_ability_triggered || 0}
                                                 icon={<SvgAbility size="1.7rem" sx={{ pb: ".4rem" }} />}
                                             />
                                             <StatItem
                                                 label="Mech Kills"
-                                                value={profile.stats.mech_kill_count}
+                                                value={profile.stats?.mech_kill_count || 0}
                                                 icon={<SvgSkull2 size="1.7rem" sx={{ pb: ".4rem" }} />}
                                             />
                                             <StatItem
                                                 label="Ability Kills"
-                                                value={profile.stats.ability_kill_count}
+                                                value={profile.stats?.ability_kill_count || 0}
                                                 icon={<SvgDeath size="1.7rem" sx={{ pb: ".4rem" }} />}
                                             />
                                             <StatItem
                                                 label="Spectated"
-                                                value={profile.stats.view_battle_count}
+                                                value={profile.stats?.view_battle_count || 0}
                                                 icon={<SvgView size="1.7rem" sx={{ pb: ".4rem" }} />}
                                             />
                                         </Stack>

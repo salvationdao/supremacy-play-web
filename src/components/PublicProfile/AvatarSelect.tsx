@@ -1,6 +1,6 @@
 import { Avatar, Box, CircularProgress, Modal, Pagination, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { EmptyWarMachinesPNG } from "../../assets"
+import { EmptyWarMachinesPNG, SvgEdit } from "../../assets"
 import { parseString } from "../../helpers"
 import { usePagination, useUrlQuery } from "../../hooks"
 import { useGameServerCommandsUser } from "../../hooks/useGameServer"
@@ -15,26 +15,24 @@ interface GetAvatarsRequest {
     page: number
     page_size: number
 }
-
 interface GetAvatarsResponse {
     avatars: ProfileAvatar[]
     total: number
 }
-
 interface ProfileAvatar {
     id: string
     avatar_url: string
     tier: string
 }
-
 interface ProfileAvatarProps {
+    isOwner: boolean
     primaryColor: string
     backgroundColor: string
     avatarURL: string
     updateAvatar: (avatarID: string) => Promise<void>
 }
 
-export const ProfileAvatar = ({ primaryColor, backgroundColor, avatarURL, updateAvatar }: ProfileAvatarProps) => {
+export const ProfileAvatar = ({ isOwner, primaryColor, backgroundColor, avatarURL, updateAvatar }: ProfileAvatarProps) => {
     const [query] = useUrlQuery()
     const { send } = useGameServerCommandsUser("/user_commander")
 
@@ -131,7 +129,7 @@ export const ProfileAvatar = ({ primaryColor, backgroundColor, avatarURL, update
                             width: "100%",
                             py: "1rem",
                             display: "grid",
-                            gridTemplateColumns: "repeat(auto-fill, minmax(29rem, 1fr))",
+                            gridTemplateColumns: "repeat(auto-fill, minmax(13rem, 1fr))",
                             gap: "1.3rem",
                             alignItems: "center",
                             justifyContent: "center",
@@ -141,6 +139,11 @@ export const ProfileAvatar = ({ primaryColor, backgroundColor, avatarURL, update
                         {avatars.map((a, idx) => (
                             <Box
                                 key={idx}
+                                sx={{
+                                    ":hover": {
+                                        opacity: ".7",
+                                    },
+                                }}
                                 onClick={() => {
                                     updatehHandler(a.id)
                                 }}
@@ -150,8 +153,8 @@ export const ProfileAvatar = ({ primaryColor, backgroundColor, avatarURL, update
                                     alt="Avatar"
                                     sx={{
                                         mr: "1rem",
-                                        height: "9rem",
-                                        width: "9rem",
+                                        height: "13rem",
+                                        width: "13rem",
                                         borderRadius: 1,
                                         border: `${primaryColor} 2px solid`,
                                         backgroundColor: primaryColor,
@@ -175,7 +178,7 @@ export const ProfileAvatar = ({ primaryColor, backgroundColor, avatarURL, update
                             height: "16rem",
                             opacity: 0.7,
                             filter: "grayscale(100%)",
-                            // TODO repace with empty war machine
+                            // TODO repace with empty avatar image
                             background: `url(${EmptyWarMachinesPNG})`,
                             backgroundRepeat: "no-repeat",
                             backgroundPosition: "bottom center",
@@ -214,16 +217,34 @@ export const ProfileAvatar = ({ primaryColor, backgroundColor, avatarURL, update
         >
             <FancyButton
                 onClick={() => {
+                    if (!isOwner) return
                     setModalOpen(true)
                 }}
             >
+                {isOwner && (
+                    <Box
+                        sx={{
+                            position: "absolute",
+                            height: "11rem",
+                            width: "11rem",
+                            zIndex: 5,
+                            backgroundColor: "black",
+                            opacity: "0",
+                            ":hover": {
+                                opacity: "0.5",
+                            },
+                        }}
+                    >
+                        <SvgEdit size="4.2rem" sx={{ mt: "2rem" }} />
+                    </Box>
+                )}
                 <Avatar
                     src={avatarURL}
                     alt="Avatar"
                     sx={{
                         mr: "1rem",
-                        height: "9rem",
-                        width: "9rem",
+                        height: "11rem",
+                        width: "11rem",
                         borderRadius: 1,
                         border: `${primaryColor} 2px solid`,
                         backgroundColor: primaryColor,
@@ -248,7 +269,11 @@ export const ProfileAvatar = ({ primaryColor, backgroundColor, avatarURL, update
                     >
                         <Stack sx={{ position: "relative", height: "100%" }}>
                             <Stack sx={{ flex: 1 }}>
-                                <PageHeader title="Select avatar" description="" primaryColor={primaryColor} />
+                                <PageHeader
+                                    title="Select avatar"
+                                    description="Avatar options are based off your faction and owned war machines"
+                                    primaryColor={primaryColor}
+                                />
 
                                 <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
                                     <Box
