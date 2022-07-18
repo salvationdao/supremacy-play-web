@@ -1,9 +1,11 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
+import { useParameterizedQuery } from "react-fetching-library"
 import { ClipThing, FancyButton } from "../.."
 import { PlayerAbilityPNG } from "../../../assets"
 import { useAuth } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
+import { CanPlayerPurchase } from "../../../fetching"
 import { timeSinceInWords } from "../../../helpers"
 import { useTimer } from "../../../hooks"
 import { useGameServerSubscription } from "../../../hooks/useGameServer"
@@ -18,12 +20,26 @@ import { PlayerAbilityStoreItem } from "./PlayerAbilityStoreItem"
 export const PlayerAbilitiesStore = () => {
     const { userID } = useAuth()
     const theme = useTheme()
+    const { query: queryCanPurchase } = useParameterizedQuery(CanPlayerPurchase)
+
     const [isLoaded, setIsLoaded] = useState(false)
     const [nextRefreshTime, setNextRefreshTime] = useState<Date | null>(null)
     const [saleAbilities, setSaleAbilities] = useState<SaleAbility[]>([])
     const [priceMap, setPriceMap] = useState<Map<string, string>>(new Map())
     const [amountMap, setAmountMap] = useState<Map<string, number>>(new Map())
     const [canPurchase, setCanPurchase] = useState(true)
+
+    useEffect(() => {
+        ;(async () => {
+            try {
+                const resp = await queryCanPurchase(userID)
+                if (resp.error || !resp.payload) return
+                setCanPurchase(resp.payload.can_purchase)
+            } catch (e) {
+                console.error(e)
+            }
+        })()
+    }, [queryCanPurchase, userID])
 
     useGameServerSubscription<{
         next_refresh_time: Date | null
@@ -42,6 +58,7 @@ export const PlayerAbilitiesStore = () => {
             setNextRefreshTime(payload.next_refresh_time || t)
             setSaleAbilities(payload.sale_abilities)
             setAmountMap(new Map()) // reset amount map
+            setCanPurchase(true)
             if (isLoaded) return
             setIsLoaded(true)
         },
@@ -74,11 +91,6 @@ export const PlayerAbilitiesStore = () => {
             })
         },
     )
-
-    useEffect(() => {
-        if (!nextRefreshTime) return
-        setCanPurchase(true)
-    }, [nextRefreshTime])
 
     const timeLeft = useMemo(() => {
         if (nextRefreshTime) {

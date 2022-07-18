@@ -1,8 +1,10 @@
 import { Box, CircularProgress, Fade, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
+import { useParameterizedQuery } from "react-fetching-library"
 import { MoveableResizable } from ".."
 import { useAuth, useMobile } from "../../containers"
 import { useTheme } from "../../containers/theme"
+import { CanPlayerPurchase } from "../../fetching"
 import { useGameServerSubscription } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { colors, fonts } from "../../theme/theme"
@@ -21,6 +23,7 @@ export const QuickPlayerAbilities = ({ open, onClose }: { open: boolean; onClose
 const QuickPlayerAbilitiesInner = ({ onClose, userID }: { onClose: () => void; userID: string }) => {
     const { isMobile } = useMobile()
     const theme = useTheme()
+    const { query: queryCanPurchase } = useParameterizedQuery(CanPlayerPurchase)
 
     const [isLoaded, setIsLoaded] = useState(false)
     const [nextRefreshTime, setNextRefreshTime] = useState<Date | null>(null)
@@ -29,6 +32,18 @@ const QuickPlayerAbilitiesInner = ({ onClose, userID }: { onClose: () => void; u
     const [amountMap, setAmountMap] = useState<Map<string, number>>(new Map())
     const [canPurchase, setCanPurchase] = useState(true)
     const [purchaseError, setPurchaseError] = useState<string>()
+
+    useEffect(() => {
+        ;(async () => {
+            try {
+                const resp = await queryCanPurchase(userID)
+                if (resp.error || !resp.payload) return
+                setCanPurchase(resp.payload.can_purchase)
+            } catch (e) {
+                console.error(e)
+            }
+        })()
+    }, [queryCanPurchase, userID])
 
     useGameServerSubscription<{
         next_refresh_time: Date | null
@@ -47,6 +62,8 @@ const QuickPlayerAbilitiesInner = ({ onClose, userID }: { onClose: () => void; u
             setNextRefreshTime(payload.next_refresh_time || t)
             setSaleAbilities(payload.sale_abilities)
             setAmountMap(new Map()) // reset amount map
+            setCanPurchase(true)
+            setPurchaseError(undefined)
             if (isLoaded) return
             setIsLoaded(true)
         },
@@ -79,12 +96,6 @@ const QuickPlayerAbilitiesInner = ({ onClose, userID }: { onClose: () => void; u
             })
         },
     )
-
-    useEffect(() => {
-        if (!nextRefreshTime) return
-        setCanPurchase(true)
-        setPurchaseError(undefined)
-    }, [nextRefreshTime])
 
     const primaryColor = theme.factionTheme.primary
 
