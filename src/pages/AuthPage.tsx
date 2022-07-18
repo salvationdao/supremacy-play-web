@@ -1,5 +1,5 @@
 import { Stack, Typography } from "@mui/material"
-import { HangarBg } from "../assets"
+import { HangarBg, SvgSupremacyLogo } from "../assets"
 import { ClipThing, ConnectButton } from "../components"
 import { colors, fonts, siteZIndex } from "../theme/theme"
 
@@ -28,6 +28,8 @@ export const AuthPage = ({ authTitle, authDescription }: { authTitle?: string; a
                 opacity={0.7}
             >
                 <Stack spacing="1.8rem" alignItems="center" sx={{ px: "3.6rem", py: "2.8rem", textAlign: "center" }}>
+                    <SvgSupremacyLogo width="100%" height="3rem" />
+
                     <Typography variant="h6" sx={{ fontFamily: fonts.nostromoBlack }}>
                         {authTitle || "PLEASE CONNECT YOUR WALLET TO CONTINUE"}
                     </Typography>

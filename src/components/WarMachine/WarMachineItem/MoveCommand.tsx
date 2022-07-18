@@ -1,12 +1,13 @@
 import { Box, Typography } from "@mui/material"
 import { useCallback, useState } from "react"
+import { FancyButton } from "../.."
 import { useAuth, useMiniMap, useSnackbar } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { useTimer } from "../../../hooks"
 import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
-import { PlayerAbility, LocationSelectType, WarMachineState } from "../../../types"
+import { LocationSelectType, PlayerAbility, WarMachineState } from "../../../types"
 import { ProgressBar } from "../../Common/ProgressBar"
 import { DEAD_OPACITY, WIDTH_SKILL_BUTTON, WIDTH_STAT_BAR } from "./WarMachineItem"
 
@@ -41,7 +42,7 @@ export interface MechMoveCommand {
     remain_cooldown_seconds: number
 }
 
-export const MoveCommand = ({ warMachine, isAlive }: { warMachine: WarMachineState; isAlive: boolean }) => {
+export const MoveCommand = ({ warMachine, isAlive, smallVersion }: { warMachine: WarMachineState; isAlive: boolean; smallVersion?: boolean }) => {
     const { factionID } = useAuth()
     const { hash, factionID: wmFactionID, participantID } = warMachine
     const [mechMoveCommand, setMechMoveCommand] = useState<MechMoveCommand>()
@@ -69,6 +70,7 @@ export const MoveCommand = ({ warMachine, isAlive }: { warMachine: WarMachineSta
             isMoving={!mechMoveCommand?.reached_at && !mechMoveCommand?.cancelled_at && mechMoveCommand.remain_cooldown_seconds !== 0}
             isCancelled={!!mechMoveCommand.cancelled_at}
             mechMoveCommandID={mechMoveCommand.id}
+            smallVersion={smallVersion}
         />
     )
 }
@@ -80,9 +82,10 @@ interface MoveCommandInnerProps {
     isMoving: boolean
     isCancelled: boolean
     remainCooldownSeconds: number
+    smallVersion?: boolean
 }
 
-const MoveCommandInner = ({ isAlive, remainCooldownSeconds, isMoving, isCancelled, hash, mechMoveCommandID }: MoveCommandInnerProps) => {
+const MoveCommandInner = ({ isAlive, remainCooldownSeconds, isMoving, isCancelled, hash, mechMoveCommandID, smallVersion }: MoveCommandInnerProps) => {
     const theme = useTheme()
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsFaction("/faction_commander")
@@ -114,6 +117,35 @@ const MoveCommandInner = ({ isAlive, remainCooldownSeconds, isMoving, isCancelle
             })
         }
     }, [isAlive, isMoving, isCancelled, send, mechMoveCommandID, hash, newSnackbarMessage, setPlayerAbility])
+
+    if (smallVersion) {
+        return (
+            <FancyButton
+                clipThingsProps={{
+                    clipSize: "3px",
+                    clipSlantSize: "0px",
+                    backgroundColor: isMoving ? colors.lightGrey : colors.gold,
+                    opacity: 1,
+                    border: { isFancy: true, borderColor: isMoving ? colors.lightGrey : colors.gold, borderThickness: "1px" },
+                    sx: { position: "relative", width: "100%" },
+                }}
+                sx={{ px: ".2rem", py: 0, color: "#000000" }}
+                onClick={onClick}
+            >
+                <Typography
+                    variant="caption"
+                    sx={{
+                        textAlign: "center",
+                        fontWeight: "fontWeightBold",
+                        color: isMoving ? "#000000" : "#000000",
+                        transition: "all .2s",
+                    }}
+                >
+                    {isMoving ? "CANCEL" : "MOVE"}
+                </Typography>
+            </FancyButton>
+        )
+    }
 
     return (
         <>

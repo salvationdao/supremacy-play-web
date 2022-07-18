@@ -1,7 +1,7 @@
-import { CircularProgress, Stack, Typography } from "@mui/material"
+import { CircularProgress, IconButton, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
 import { MutableRefObject, useRef, useState } from "react"
-import { SvgSupToken } from "../../../../assets"
+import { SvgHide, SvgSupToken, SvgUnhide } from "../../../../assets"
 import { useAuth, useWallet } from "../../../../containers"
 import { supFormatterNoFixed } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
@@ -85,6 +85,7 @@ const WalletInfoInner = ({
 }) => {
     const walletPopoverRef = useRef(null)
     const [isWalletPopoverOpen, toggleIsWalletPopoverOpen] = useToggle()
+    const [isHideValue, setIsHideValue] = useState(localStorage.getItem("walletHide") === "true")
 
     if (!onWorldSupsRaw) {
         return (
@@ -119,9 +120,23 @@ const WalletInfoInner = ({
             >
                 <SvgSupToken size="1.9rem" fill={colors.yellow} sx={{ mr: ".2rem", pb: ".4rem" }} />
                 <Typography sx={{ fontFamily: fonts.nostromoBold, lineHeight: 1 }}>
-                    {onWorldSupsRaw ? supFormatterNoFixed(onWorldSupsRaw, 2) : "0.00"}
+                    {!isHideValue && (onWorldSupsRaw ? supFormatterNoFixed(onWorldSupsRaw, 2) : "0.00")}
+                    {isHideValue && "---"}
                 </Typography>
             </Stack>
+
+            <IconButton
+                size="small"
+                sx={{ ml: "-.4rem", opacity: 0.4, ":hover": { opacity: 1 } }}
+                onClick={() => {
+                    setIsHideValue((prev) => {
+                        localStorage.setItem("walletHide", (!prev).toString())
+                        return !prev
+                    })
+                }}
+            >
+                {isHideValue ? <SvgUnhide size="1.3rem" /> : <SvgHide size="1.3rem" />}
+            </IconButton>
 
             {isWalletPopoverOpen && user && (
                 <WalletPopover
