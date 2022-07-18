@@ -35,7 +35,7 @@ export const WarMachineStats = () => {
                 onClose={() => toggleIsPoppedout(false)}
                 features={{
                     width: 345,
-                    height: 892,
+                    height: 896,
                 }}
             >
                 <Stack
