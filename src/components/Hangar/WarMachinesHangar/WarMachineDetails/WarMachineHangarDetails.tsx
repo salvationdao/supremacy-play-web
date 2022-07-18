@@ -20,6 +20,7 @@ import { RentalModal } from "./Modals/RentalModal"
 import { MechViewer } from "./MechViewer"
 import { MechLoadout } from "./MechLoadout"
 import { MechBattleHistoryDetails } from "../../../Marketplace/WarMachinesMarket/WarMachineMarketDetails/MechBattleHistoryDetails"
+import { BATTLE_ARENA_OPEN } from "../../../../constants"
 
 export const WarMachineHangarDetails = ({ mechID }: { mechID: string }) => {
     const [selectedMechDetails, setSelectedMechDetails] = useState<MechDetails>()
@@ -36,7 +37,7 @@ export const WarMachineHangarDetails = ({ mechID }: { mechID: string }) => {
                 setLeaveMechModalOpen={setLeaveMechModalOpen}
                 setRentalMechModalOpen={setRentalMechModalOpen}
             />
-            {selectedMechDetails && deployMechModalOpen && (
+            {BATTLE_ARENA_OPEN && selectedMechDetails && deployMechModalOpen && (
                 <DeployModal
                     selectedMechDetails={selectedMechDetails}
                     deployMechModalOpen={deployMechModalOpen}

@@ -45,6 +45,7 @@ export const WeaponsMarketItem = ({ item, isGridView, isExpanded, toggleIsExpand
         <MarketItem item={item} imageUrl={image_url || large_image_url || avatar_url} isGridView={isGridView} linkSubPath={MARKETPLACE_TABS.Weapons}>
             <WeaponCommonArea
                 primaryColor={theme.factionTheme.primary}
+                secondaryColor={theme.factionTheme.secondary}
                 isGridView={isGridView}
                 weaponDetails={weaponDetails}
                 isExpanded={isExpanded}

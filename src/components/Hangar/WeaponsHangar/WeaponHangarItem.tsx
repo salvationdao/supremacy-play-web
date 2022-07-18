@@ -34,6 +34,7 @@ export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGri
     }, [weapon.id, send])
 
     const primaryColor = theme.factionTheme.primary
+    const secondaryColor = theme.factionTheme.secondary
     const backgroundColor = theme.factionTheme.background
     const avatarUrl = weaponDetails?.weapon_skin?.avatar_url || weaponDetails?.avatar_url || weapon.avatar_url
     const imageUrl = weaponDetails?.weapon_skin?.image_url || weaponDetails?.image_url || weapon.image_url
@@ -88,7 +89,13 @@ export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGri
                         <MediaPreview imageUrl={imageUrl || avatarUrl} objectFit={isGridView ? "cover" : "contain"} />
                     </Box>
 
-                    <WeaponCommonArea isGridView={isGridView} weapon={weapon} weaponDetails={weaponDetails} primaryColor={primaryColor} />
+                    <WeaponCommonArea
+                        isGridView={isGridView}
+                        weapon={weapon}
+                        weaponDetails={weaponDetails}
+                        primaryColor={primaryColor}
+                        secondaryColor={secondaryColor}
+                    />
 
                     <General title="DAMAGE TYPE">
                         <Typography variant="h6" sx={{ color: getWeaponDamageTypeColor(weaponDetails?.default_damage_type), fontWeight: "fontWeightBold" }}>
@@ -135,6 +142,7 @@ export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGri
 
 export const WeaponCommonArea = ({
     primaryColor,
+    secondaryColor,
     isGridView,
     weapon,
     weaponDetails,
@@ -142,6 +150,7 @@ export const WeaponCommonArea = ({
     toggleIsExpanded,
 }: {
     primaryColor: string
+    secondaryColor: string
     isGridView?: boolean
     weapon?: Weapon
     weaponDetails?: Weapon
@@ -248,7 +257,11 @@ export const WeaponCommonArea = ({
                             transition: "all .2s",
                         }}
                     >
-                        <SvgDropdownArrow size="1.3rem" fill="#FFFFFF95" sx={{ transform: isExpanded ? "rotate(90deg)" : "rotate(-90deg)" }} />
+                        <SvgDropdownArrow
+                            size="1.3rem"
+                            fill={isExpanded ? secondaryColor : "#FFFFFF95"}
+                            sx={{ transform: isExpanded ? "rotate(90deg)" : "rotate(-90deg)" }}
+                        />
                     </Stack>
 
                     <Box

@@ -37,6 +37,7 @@ export const WarMachineHangarItem = ({ mech, isGridView }: { mech: MechBasic; is
     }, [mech.id, send])
 
     const primaryColor = theme.factionTheme.primary
+    const secondaryColor = theme.factionTheme.secondary
     const backgroundColor = theme.factionTheme.background
     const avatarUrl = mechDetails?.chassis_skin?.avatar_url || mech.avatar_url
     const imageUrl = mechDetails?.chassis_skin?.image_url || mech.image_url
@@ -91,7 +92,7 @@ export const WarMachineHangarItem = ({ mech, isGridView }: { mech: MechBasic; is
                         <MediaPreview imageUrl={avatarUrl || imageUrl || largeImageUrl} objectFit={isGridView ? "cover" : "contain"} />
                     </Box>
 
-                    <MechCommonArea isGridView={isGridView} mech={mech} mechDetails={mechDetails} primaryColor={primaryColor} />
+                    <MechCommonArea isGridView={isGridView} mech={mech} mechDetails={mechDetails} primaryColor={primaryColor} secondaryColor={secondaryColor} />
 
                     <General isGridView={isGridView} title="STATS">
                         <MechBarStats fontSize="1.5rem" mech={mech} mechDetails={mechDetails} color={primaryColor} iconVersion />
@@ -136,6 +137,7 @@ export const WarMachineHangarItem = ({ mech, isGridView }: { mech: MechBasic; is
 
 export const MechCommonArea = ({
     primaryColor,
+    secondaryColor,
     isGridView,
     mech,
     mechDetails,
@@ -144,6 +146,7 @@ export const MechCommonArea = ({
     label,
 }: {
     primaryColor: string
+    secondaryColor: string
     isGridView?: boolean
     mech?: MechBasic
     mechDetails?: MechDetails
@@ -244,7 +247,11 @@ export const MechCommonArea = ({
                             transition: "all .2s",
                         }}
                     >
-                        <SvgDropdownArrow size="1.3rem" fill="#FFFFFF95" sx={{ transform: isExpanded ? "rotate(90deg)" : "rotate(-90deg)" }} />
+                        <SvgDropdownArrow
+                            size="1.3rem"
+                            fill={isExpanded ? secondaryColor : "#FFFFFF95"}
+                            sx={{ transform: isExpanded ? "rotate(90deg)" : "rotate(-90deg)" }}
+                        />
                     </Stack>
 
                     <Box
