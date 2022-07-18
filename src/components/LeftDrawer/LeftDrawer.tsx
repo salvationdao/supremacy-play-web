@@ -141,6 +141,7 @@ const MenuButton = ({
             <Typography sx={{ color: isActive ? secondaryColor : "#FFFFFF", fontFamily: fonts.nostromoHeavy, whiteSpace: "nowrap", lineHeight: 1 }}>
                 {label}
             </Typography>
+
             {isComingSoon && (
                 <Typography variant="caption" sx={{ color: colors.neonBlue, fontFamily: fonts.nostromoBold, whiteSpace: "nowrap", lineHeight: 1 }}>
                     &nbsp;({comingSoonLabel || "COMING SOON"})
