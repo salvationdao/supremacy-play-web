@@ -8,11 +8,11 @@ import { useTheme } from "../../../containers/theme"
 import { CanPlayerPurchase } from "../../../fetching"
 import { timeSinceInWords } from "../../../helpers"
 import { useTimer } from "../../../hooks"
-import { useGameServerSubscription } from "../../../hooks/useGameServer"
+import { useGameServerSubscription, useGameServerSubscriptionUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { HANGAR_TABS } from "../../../pages"
 import { colors, fonts } from "../../../theme/theme"
-import { SaleAbility } from "../../../types"
+import { PlayerAbility, SaleAbility } from "../../../types"
 import { PageHeader } from "../../Common/PageHeader"
 import { MysteryCrateStoreItemLoadingSkeleton } from "../MysteryCratesStore/MysteryCrateStoreItem/MysteryCrateStoreItem"
 import { PlayerAbilityStoreItem } from "./PlayerAbilityStoreItem"
@@ -28,6 +28,8 @@ export const PlayerAbilitiesStore = () => {
     const [isLoaded, setIsLoaded] = useState(false)
     const [nextRefreshTime, setNextRefreshTime] = useState<Date | null>(null)
     const [saleAbilities, setSaleAbilities] = useState<SaleAbility[]>([])
+
+    const [ownedAbilities, setOwnedAbilities] = useState<Map<string, number>>(new Map())
 
     useEffect(() => {
         ;(async () => {
@@ -71,6 +73,23 @@ export const PlayerAbilitiesStore = () => {
         },
     )
 
+    useGameServerSubscriptionUser<PlayerAbility[]>(
+        {
+            URI: "/player_abilities",
+            key: GameServerKeys.PlayerAbilitiesList,
+        },
+        (payload) => {
+            if (!payload) return
+            setOwnedAbilities((prev) => {
+                const updated = new Map(prev)
+                for (const p of payload) {
+                    updated.set(p.blueprint_id, p.count)
+                }
+                return updated
+            })
+        },
+    )
+
     const timeLeft = useMemo(() => {
         if (nextRefreshTime) {
             return (
@@ -111,7 +130,13 @@ export const PlayerAbilitiesStore = () => {
                         }}
                     >
                         {saleAbilities.map((s, index) => (
-                            <PlayerAbilityStoreItem key={`${s.id}-${index}`} saleAbility={s} onPurchase={() => setCanPurchase(false)} disabled={!canPurchase} />
+                            <PlayerAbilityStoreItem
+                                key={`${s.id}-${index}`}
+                                saleAbility={s}
+                                amount={ownedAbilities.get(s.blueprint_id)}
+                                onPurchase={() => setCanPurchase(false)}
+                                disabled={!canPurchase}
+                            />
                         ))}
                     </Box>
                 </Box>
@@ -151,7 +176,7 @@ export const PlayerAbilitiesStore = () => {
                 </Stack>
             </Stack>
         )
-    }, [isLoaded, saleAbilities, canPurchase])
+    }, [isLoaded, saleAbilities, ownedAbilities, canPurchase])
 
     return (
         <ClipThing

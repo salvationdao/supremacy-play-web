@@ -5,10 +5,10 @@ import { MoveableResizable } from ".."
 import { useAuth, useMobile } from "../../containers"
 import { useTheme } from "../../containers/theme"
 import { CanPlayerPurchase } from "../../fetching"
-import { useGameServerSubscription } from "../../hooks/useGameServer"
+import { useGameServerSubscription, useGameServerSubscriptionUser } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { colors, fonts } from "../../theme/theme"
-import { FeatureName, SaleAbility } from "../../types"
+import { FeatureName, PlayerAbility, SaleAbility } from "../../types"
 import { MoveableResizableConfig } from "../Common/MoveableResizable/MoveableResizableContainer"
 import { PageHeader } from "../Common/PageHeader"
 import { TimeLeft } from "../Storefront/PlayerAbilitiesStore/PlayerAbilitiesStore"
@@ -32,6 +32,8 @@ const QuickPlayerAbilitiesInner = ({ onClose, userID }: { onClose: () => void; u
     const [nextRefreshTime, setNextRefreshTime] = useState<Date | null>(null)
     const [saleAbilities, setSaleAbilities] = useState<SaleAbility[]>([])
     const [purchaseError, setPurchaseError] = useState<string>()
+
+    const [ownedAbilities, setOwnedAbilities] = useState<Map<string, number>>(new Map())
 
     useEffect(() => {
         ;(async () => {
@@ -73,6 +75,23 @@ const QuickPlayerAbilitiesInner = ({ onClose, userID }: { onClose: () => void; u
             setCanPurchaseError(undefined)
             if (isLoaded) return
             setIsLoaded(true)
+        },
+    )
+
+    useGameServerSubscriptionUser<PlayerAbility[]>(
+        {
+            URI: "/player_abilities",
+            key: GameServerKeys.PlayerAbilitiesList,
+        },
+        (payload) => {
+            if (!payload) return
+            setOwnedAbilities((prev) => {
+                const updated = new Map(prev)
+                for (const p of payload) {
+                    updated.set(p.blueprint_id, p.count)
+                }
+                return updated
+            })
         },
     )
 
@@ -204,6 +223,7 @@ const QuickPlayerAbilitiesInner = ({ onClose, userID }: { onClose: () => void; u
                                                 <QuickPlayerAbilitiesItem
                                                     key={`${s.id}-${index}`}
                                                     saleAbility={s}
+                                                    amount={ownedAbilities.get(s.blueprint_id)}
                                                     setError={setPurchaseError}
                                                     onPurchase={() => setCanPurchase(false)}
                                                     disabled={!canPurchase}

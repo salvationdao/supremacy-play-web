@@ -15,11 +15,12 @@ import { ConfirmModal } from "../../Common/ConfirmModal"
 
 export interface PlayerAbilityStoreItemProps {
     saleAbility: SaleAbility
+    amount?: number
     onPurchase: () => void
     disabled?: boolean
 }
 
-export const PlayerAbilityStoreItem = ({ saleAbility, onPurchase: onPurchaseCallback, disabled }: PlayerAbilityStoreItemProps) => {
+export const PlayerAbilityStoreItem = ({ saleAbility, amount = 0, onPurchase: onPurchaseCallback, disabled }: PlayerAbilityStoreItemProps) => {
     const theme = useTheme()
     const primaryColor = theme.factionTheme.primary
     const backgroundColor = theme.factionTheme.background
@@ -150,7 +151,7 @@ export const PlayerAbilityStoreItem = ({ saleAbility, onPurchase: onPurchaseCall
                                         },
                                     }}
                                 >
-                                    <span>{numberCommaFormatter(0)}</span> Owned
+                                    <span>{numberCommaFormatter(amount)}</span> Owned
                                 </Typography>
                             </Box>
                         </Box>

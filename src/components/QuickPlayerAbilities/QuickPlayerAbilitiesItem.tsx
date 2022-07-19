@@ -11,12 +11,13 @@ import { TooltipHelper } from "../Common/TooltipHelper"
 
 export interface QuickPlayerAbilitiesItemProps {
     saleAbility: SaleAbility
+    amount?: number
     setError: React.Dispatch<React.SetStateAction<string | undefined>>
     onPurchase: () => void
     disabled?: boolean
 }
 
-export const QuickPlayerAbilitiesItem = ({ saleAbility, setError, onPurchase: onPurchaseCallback, disabled }: QuickPlayerAbilitiesItemProps) => {
+export const QuickPlayerAbilitiesItem = ({ saleAbility, amount = 0, setError, onPurchase: onPurchaseCallback, disabled }: QuickPlayerAbilitiesItemProps) => {
     // Purchasing
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsUser("/user_commander")
@@ -146,7 +147,7 @@ export const QuickPlayerAbilitiesItem = ({ saleAbility, setError, onPurchase: on
                                         }}
                                     >
                                         <Typography variant="body2" sx={{ lineHeight: 1 }}>
-                                            0 Owned
+                                            {amount} Owned
                                         </Typography>
                                     </Box>
 

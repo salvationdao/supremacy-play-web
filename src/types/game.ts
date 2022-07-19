@@ -124,6 +124,7 @@ export interface PlayerAbility {
 
 export interface SaleAbility {
     id: string
+    blueprint_id: string
     amount_sold: number
     ability: BlueprintPlayerAbility
 }
