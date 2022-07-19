@@ -8,10 +8,7 @@ import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "
 import { GameServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
 import { LocationSelectType, PlayerAbility, WarMachineState } from "../../../types"
-import { ProgressBar } from "../../Common/ProgressBar"
-import { DEAD_OPACITY, WIDTH_SKILL_BUTTON, WIDTH_STAT_BAR } from "./WarMachineItem"
-
-const MECH_MOVE_COOLDOWN_SECONDS = 5
+import { DEAD_OPACITY, WIDTH_SKILL_BUTTON } from "./WarMachineItem"
 
 export const MechMoveCommandAbility: PlayerAbility = {
     id: "mech_move_command",
@@ -171,55 +168,44 @@ const MoveCommandInner = ({ isAlive, remainCooldownSeconds, isMoving, isCancelle
     }
 
     return (
-        <>
+        <Box
+            sx={{
+                position: "relative",
+                width: `${WIDTH_SKILL_BUTTON}rem`,
+                height: "100%",
+                backgroundColor: isMoving ? colors.lightGrey : primaryColor,
+                boxShadow: 2,
+                cursor: isAlive ? "pointer" : "auto",
+                zIndex: 3,
+                opacity: isAlive ? 1 : DEAD_OPACITY,
+                ":hover #warMachineSkillsText": {
+                    letterSpacing: isAlive ? 2.3 : 1,
+                },
+            }}
+            onClick={onClick}
+        >
             <Box
                 sx={{
-                    position: "relative",
-                    width: `${WIDTH_SKILL_BUTTON}rem`,
-                    height: "100%",
-                    backgroundColor: isMoving ? colors.lightGrey : primaryColor,
-                    boxShadow: 2,
-                    cursor: isAlive ? "pointer" : "auto",
-                    zIndex: 3,
-                    opacity: isAlive ? 1 : DEAD_OPACITY,
-                    ":hover #warMachineSkillsText": {
-                        letterSpacing: isAlive ? 2.3 : 1,
-                    },
+                    position: "absolute",
+                    left: "2rem",
+                    top: "50%",
+                    transform: `translate(-50%, -50%) rotate(-${90}deg)`,
+                    zIndex: 2,
                 }}
-                onClick={onClick}
             >
-                <Box
+                <Typography
+                    id="warMachineSkillsText"
+                    variant="body1"
                     sx={{
-                        position: "absolute",
-                        left: "2rem",
-                        top: "50%",
-                        transform: `translate(-50%, -50%) rotate(-${90}deg)`,
-                        zIndex: 2,
+                        fontWeight: "fontWeightBold",
+                        color: isMoving ? "#000000" : secondaryColor,
+                        letterSpacing: 1,
+                        transition: "all .2s",
                     }}
                 >
-                    <Typography
-                        id="warMachineSkillsText"
-                        variant="body1"
-                        sx={{
-                            fontWeight: "fontWeightBold",
-                            color: isMoving ? "#000000" : secondaryColor,
-                            letterSpacing: 1,
-                            transition: "all .2s",
-                        }}
-                    >
-                        {isMoving ? "CANCEL" : "MOVE"}
-                    </Typography>
-                </Box>
+                    {isMoving ? "CANCEL" : "MOVE"}
+                </Typography>
             </Box>
-
-            <Box style={{ height: "100%" }}>
-                <ProgressBar
-                    percent={((MECH_MOVE_COOLDOWN_SECONDS - totalSecRemain) / MECH_MOVE_COOLDOWN_SECONDS) * 100}
-                    color={colors.gold}
-                    backgroundColor="#FFFFFF06"
-                    thickness={`${WIDTH_STAT_BAR}rem`}
-                />
-            </Box>
-        </>
+        </Box>
     )
 }
