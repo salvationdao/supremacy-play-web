@@ -19,8 +19,8 @@ export const ClaimedRewards = ({ rewards, onClose }: ClaimedRewardsProps) => {
     const theme = useTheme()
     const location = useLocation()
 
-    const isMechCrateReward = useMemo(() => rewards.find((reward) => reward.label === "MECH"), [rewards])
-    const isWeaponCrateReward = useMemo(() => rewards.find((reward) => reward.label === "WEAPON"), [rewards])
+    const mechRewards = useMemo(() => rewards.filter((reward) => reward.label === "MECH"), [rewards])
+    const weaponRewards = useMemo(() => rewards.filter((reward) => reward.label === "WEAPON"), [rewards])
     const isSupReward = useMemo(() => rewards.find((reward) => reward.label === "Sups"), [rewards])
 
     return (
@@ -42,8 +42,8 @@ export const ClaimedRewards = ({ rewards, onClose }: ClaimedRewardsProps) => {
                     CONGRATULATIONS!
                 </Typography>
 
-                {(isMechCrateReward || isWeaponCrateReward) &&
-                new Date() < (isMechCrateReward?.locked_until || isWeaponCrateReward?.locked_until || Date.now) ? (
+                {(mechRewards.length > 0 || weaponRewards.length > 0) &&
+                new Date() < (mechRewards[0]?.locked_until || weaponRewards[0]?.locked_until || Date.now) ? (
                     <Stack spacing="1.8rem" alignItems="center">
                         <Typography sx={{ fontFamily: fonts.nostromoBold }}>Your crates will be ready to open in:</Typography>
                         <ClipThing
@@ -56,7 +56,7 @@ export const ClaimedRewards = ({ rewards, onClose }: ClaimedRewardsProps) => {
                             backgroundColor={theme.factionTheme.background}
                         >
                             <Box sx={{ py: "2rem", px: "3rem" }}>
-                                <Countdown dateTo={isMechCrateReward?.locked_until || isWeaponCrateReward?.locked_until} />
+                                <Countdown dateTo={mechRewards[0]?.locked_until || weaponRewards[0]?.locked_until} />
                             </Box>
                         </ClipThing>
                     </Stack>
@@ -65,8 +65,10 @@ export const ClaimedRewards = ({ rewards, onClose }: ClaimedRewardsProps) => {
                 )}
 
                 <Stack direction="row" justifyContent="space-around" alignItems="center">
-                    {isWeaponCrateReward && <CrateItem quantity={1} label="Weapon Crate" imageUrl={isWeaponCrateReward.image_url || SafePNG} />}
-                    {isMechCrateReward && <CrateItem quantity={1} label="Mech Crate" imageUrl={isMechCrateReward.image_url || SafePNG} />}
+                    {weaponRewards.length > 0 && (
+                        <CrateItem quantity={weaponRewards.length} label="Weapon Crate" imageUrl={weaponRewards[0]?.image_url || SafePNG} />
+                    )}
+                    {mechRewards.length > 0 && <CrateItem quantity={mechRewards.length} label="Mech Crate" imageUrl={mechRewards[0]?.image_url || SafePNG} />}
                     {isSupReward && <CrateItem label={`${supFormatter(isSupReward.amount)} $SUPS`} imageUrl={RainingSupsPNG} />}
                 </Stack>
 
