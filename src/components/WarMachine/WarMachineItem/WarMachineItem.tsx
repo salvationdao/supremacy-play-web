@@ -94,7 +94,7 @@ export const WarMachineItem = ({
                         WIDTH_AVATAR +
                         (isExpanded ? WIDTH_BODY : 2 * WIDTH_STAT_BAR) +
                         (gameAbilities && gameAbilities.length > 0 && isAlive ? WIDTH_SKILL_BUTTON : 0) +
-                        (warMachine.ownedByID === userID ? WIDTH_SKILL_BUTTON + WIDTH_STAT_BAR : 0)
+                        (warMachine.ownedByID === userID ? WIDTH_SKILL_BUTTON : 0)
                     }rem`,
                     transition: "width .1s",
                     transform: highlightedMechParticipantID === participantID ? `scale(${scale * 1.08})` : `scale(${scale})`,
