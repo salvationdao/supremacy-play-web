@@ -1,9 +1,11 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
+import { useParameterizedQuery } from "react-fetching-library"
 import { ClipThing, FancyButton } from "../.."
 import { PlayerAbilityPNG } from "../../../assets"
 import { useAuth } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
+import { CanPlayerPurchase } from "../../../fetching"
 import { timeSinceInWords } from "../../../helpers"
 import { useTimer } from "../../../hooks"
 import { useGameServerSubscription } from "../../../hooks/useGameServer"
@@ -16,12 +18,35 @@ import { MysteryCrateStoreItemLoadingSkeleton } from "../MysteryCratesStore/Myst
 import { PlayerAbilityStoreItem } from "./PlayerAbilityStoreItem"
 
 export const PlayerAbilitiesStore = () => {
-    const { userID } = useAuth()
     const theme = useTheme()
+    const { userID } = useAuth()
+
+    const { query: queryCanPurchase } = useParameterizedQuery(CanPlayerPurchase)
+    const [canPurchase, setCanPurchase] = useState(true)
+    const [canPurchaseError, setCanPurchaseError] = useState<string>()
+
     const [isLoaded, setIsLoaded] = useState(false)
     const [nextRefreshTime, setNextRefreshTime] = useState<Date | null>(null)
     const [saleAbilities, setSaleAbilities] = useState<SaleAbility[]>([])
-    const [canPurchase, setCanPurchase] = useState(true)
+
+    useEffect(() => {
+        ;(async () => {
+            try {
+                const resp = await queryCanPurchase(userID)
+                if (resp.error || !resp.payload) return
+                setCanPurchase(resp.payload.can_purchase)
+            } catch (e) {
+                let message = "Failed to obtain purchase availability during this sale period."
+                if (typeof e === "string") {
+                    message = e
+                } else if (e instanceof Error) {
+                    message = e.message
+                }
+                console.error(e)
+                setCanPurchaseError(message)
+            }
+        })()
+    }, [queryCanPurchase, userID])
 
     useGameServerSubscription<{
         next_refresh_time: Date | null
@@ -39,15 +64,12 @@ export const PlayerAbilitiesStore = () => {
             t.setSeconds(t.getSeconds() + payload.refresh_period_duration_seconds)
             setNextRefreshTime(payload.next_refresh_time || t)
             setSaleAbilities(payload.sale_abilities)
+            setCanPurchase(true)
+            setCanPurchaseError(undefined)
             if (isLoaded) return
             setIsLoaded(true)
         },
     )
-
-    useEffect(() => {
-        if (!nextRefreshTime) return
-        setCanPurchase(true)
-    }, [nextRefreshTime])
 
     const timeLeft = useMemo(() => {
         if (nextRefreshTime) {
@@ -157,7 +179,18 @@ export const PlayerAbilitiesStore = () => {
                 <PageHeader
                     imageUrl={PlayerAbilityPNG}
                     title="PLAYER ABILITIES"
-                    description="Player abilities are abilities that can be bought and used on the battle arena."
+                    description={
+                        <Stack>
+                            <Typography sx={{ fontSize: "1.85rem" }}>
+                                Player abilities are abilities that can be bought and used on the battle arena.
+                            </Typography>
+                            {canPurchaseError && (
+                                <Typography variant="body2" sx={{ color: colors.red }}>
+                                    {canPurchaseError}
+                                </Typography>
+                            )}
+                        </Stack>
+                    }
                 >
                     <Box sx={{ flexShrink: 0, pr: "1.5rem", ml: "auto !important" }}>
                         <FancyButton

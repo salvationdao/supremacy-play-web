@@ -4,7 +4,7 @@ import { MoveableResizable, TooltipHelper } from ".."
 import { SvgNotification, SvgSupToken } from "../../assets"
 import { useAuth, useMobile } from "../../containers"
 import { useTheme } from "../../containers/theme"
-import { parseString, supFormatter } from "../../helpers"
+import { parseString } from "../../helpers"
 import { usePagination, useToggle } from "../../hooks"
 import { useGameServerCommandsUser, useGameServerSubscriptionFaction } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
@@ -127,8 +127,6 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
     )
 
     const queueLength = queueFeed?.queue_length || 0
-    const contractReward = queueFeed?.contract_reward || ""
-    const queueCost = queueFeed?.queue_cost || ""
 
     return (
         <>
@@ -163,27 +161,7 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
                                                 disableIcon
                                             />
                                         )}
-
-                                        {contractReward && (
-                                            <AmountItem
-                                                key={`${contractReward}-contract_reward`}
-                                                title={"REWARD: "}
-                                                color={colors.yellow}
-                                                value={supFormatter(contractReward, 2)}
-                                                tooltip="Your reward if your mech survives the battle giving your faction a victory."
-                                            />
-                                        )}
-
-                                        {queueCost && (
-                                            <AmountItem
-                                                title={"FEE: "}
-                                                color={colors.orange}
-                                                value={supFormatter(queueCost || "0", 2)}
-                                                tooltip="The cost to place your war machine into the battle queue."
-                                            />
-                                        )}
-
-                                        <IconButton size="small" sx={{ ml: "auto !important" }} onClick={() => togglePreferencesModalOpen(true)}>
+                                        <IconButton size="small" onClick={() => togglePreferencesModalOpen(true)}>
                                             <SvgNotification size="1.3rem" />
                                         </IconButton>
                                     </Stack>

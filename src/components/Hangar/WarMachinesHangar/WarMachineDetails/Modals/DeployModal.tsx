@@ -3,7 +3,6 @@ import { useCallback, useState } from "react"
 import { FancyButton, TooltipHelper } from "../../../.."
 import { SvgInfoCircular, SvgSupToken } from "../../../../../assets"
 import { useSnackbar } from "../../../../../containers"
-import { supFormatter } from "../../../../../helpers"
 import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../keys"
 import { colors, fonts } from "../../../../../theme/theme"
@@ -12,8 +11,6 @@ import { MechDetails } from "../../../../../types"
 
 export interface QueueFeed {
     queue_length: number
-    queue_cost: string
-    contract_reward: string
 }
 
 export const DeployModal = ({
@@ -67,7 +64,6 @@ export const DeployModal = ({
     if (!deployMechDetails) return null
 
     const queueLength = queueFeed?.queue_length || 0
-    const contractReward = queueFeed?.contract_reward || ""
     const { hash } = deployMechDetails
 
     return (
@@ -84,21 +80,6 @@ export const DeployModal = ({
                             disableIcon
                         />
                     )}
-
-                    <AmountItem
-                        key={`${contractReward}-contract_reward`}
-                        title={"Contract reward: "}
-                        color={colors.yellow}
-                        value={supFormatter(contractReward, 2)}
-                        tooltip="Your reward if your mech survives the battle giving your faction a victory."
-                    />
-
-                    <AmountItem
-                        title={"Fee: "}
-                        color={colors.orange}
-                        value={supFormatter(queueFeed?.queue_cost || "0", 2)}
-                        tooltip="The cost to place your war machine into the battle queue."
-                    />
                 </Stack>
 
                 <Box sx={{ mt: "auto" }}>

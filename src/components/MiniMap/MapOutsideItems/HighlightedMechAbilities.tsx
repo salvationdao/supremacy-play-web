@@ -1,15 +1,13 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
-import BigNumber from "bignumber.js"
 import { useCallback, useMemo, useState } from "react"
-import { ClipThing, ContributeFactionUniqueAbilityRequest } from "../.."
-import { useAuth, useGame, useMiniMap, useSnackbar } from "../../../containers"
+import { ClipThing } from "../.."
+import { useAuth, useGame, useMiniMap } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
-import { useToggle } from "../../../hooks"
-import { useGameServerCommandsFaction, useGameServerSubscription, useGameServerSubscriptionAbilityFaction } from "../../../hooks/useGameServer"
+import { useInterval, useToggle } from "../../../hooks"
+import { useGameServerCommandsFaction, useGameServerSubscription, useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
-import { GameAbility, GameAbilityProgress, WarMachineLiveState, WarMachineState } from "../../../types"
-import { ProgressBar } from "../../Common/ProgressBar"
+import { GameAbility, WarMachineLiveState, WarMachineState } from "../../../types"
 import { MoveCommand } from "../../WarMachine/WarMachineItem/MoveCommand"
 
 export const HighlightedMechAbilities = () => {
@@ -37,8 +35,8 @@ const HighlightedMechAbilitiesInner = ({ warMachine }: { warMachine: WarMachineS
     const [isAlive, toggleIsAlive] = useToggle(warMachine.health > 0)
 
     // Subscribe to war machine ability updates
-    const gameAbilities = useGameServerSubscriptionAbilityFaction<GameAbility[] | undefined>({
-        URI: `/mech/${participantID}`,
+    const gameAbilities = useGameServerSubscriptionFaction<GameAbility[] | undefined>({
+        URI: `/mech/${participantID}/abilities`,
         key: GameServerKeys.SubWarMachineAbilitiesUpdated,
         ready: !!participantID,
     })
@@ -84,7 +82,7 @@ const HighlightedMechAbilitiesInner = ({ warMachine }: { warMachine: WarMachineS
                     sx={{ p: ".8rem .9rem", width: "15rem" }}
                 >
                     {gameAbilities.map((ga) => {
-                        return <AbilityItem key={ga.identity} participantID={participantID} ability={ga} />
+                        return <AbilityItem key={ga.id} hash={warMachine.hash} participantID={participantID} ability={ga} />
                     })}
 
                     {userID === ownedByID && <MoveCommand isAlive={isAlive} warMachine={warMachine} smallVersion />}
@@ -94,53 +92,46 @@ const HighlightedMechAbilitiesInner = ({ warMachine }: { warMachine: WarMachineS
     )
 }
 
-const AbilityItem = ({ participantID, ability }: { participantID: number; ability: GameAbility }) => {
-    const { newSnackbarMessage } = useSnackbar()
+const AbilityItem = ({ hash, participantID, ability }: { hash: string; participantID: number; ability: GameAbility }) => {
     const { send } = useGameServerCommandsFaction("/faction_commander")
 
-    const [offeringID, setOfferingID] = useState<string>(ability.ability_offering_id)
-    const [currentSups, setCurrentSups] = useState(new BigNumber(ability.current_sups).dividedBy("1000000000000000000"))
-    const [supsCost, setSupsCost] = useState(new BigNumber(ability.sups_cost).dividedBy("1000000000000000000"))
-    const [initialTargetCost, setInitialTargetCost] = useState<BigNumber>(new BigNumber(ability.sups_cost).dividedBy("1000000000000000000"))
+    const { id, colour, image_url, label } = ability
 
-    const { identity, colour, image_url, label } = ability
+    const [remainSeconds, setRemainSeconds] = useState(30)
 
     // Listen on the progress of the votes
-    useGameServerSubscriptionAbilityFaction<GameAbilityProgress | undefined>(
+    useGameServerSubscriptionFaction<number | undefined>(
         {
-            URI: `/mech/${participantID}`,
-            key: GameServerKeys.SubAbilityProgress,
+            URI: `/mech/${participantID}/abilities/${id}/cool_down_seconds`,
+            key: GameServerKeys.SubMechAbilityCoolDown,
         },
         (payload) => {
-            if (!payload || payload.id !== identity) return
-            const currentSups = new BigNumber(payload.current_sups).dividedBy("1000000000000000000")
-            const supsCost = new BigNumber(payload.sups_cost).dividedBy("1000000000000000000")
-            setCurrentSups(currentSups)
-            setSupsCost(supsCost)
-            setOfferingID(payload.offering_id)
-
-            setInitialTargetCost((prev) => {
-                if (payload.should_reset || prev.isZero()) {
-                    return supsCost
-                }
-                return prev
-            })
+            if (payload === undefined) return
+            setRemainSeconds(payload)
         },
     )
 
-    const onContribute = useCallback(async () => {
+    useInterval(() => {
+        setRemainSeconds((rs) => {
+            if (rs === 0) {
+                return 0
+            }
+            return rs - 1
+        })
+    }, 1000)
+
+    const ready = useMemo(() => remainSeconds === 0, [remainSeconds])
+
+    const onTrigger = useCallback(async () => {
         try {
-            await send<boolean, ContributeFactionUniqueAbilityRequest>(GameServerKeys.ContributeFactionUniqueAbility, {
-                ability_identity: identity,
-                ability_offering_id: offeringID,
-                percentage: 1,
+            await send<boolean, { mech_hash: string; game_ability_id: string }>(GameServerKeys.TriggerWarMachineAbility, {
+                mech_hash: hash,
+                game_ability_id: id,
             })
-        } catch (err) {
-            const message = typeof err === "string" ? err : "Failed to contribute."
-            newSnackbarMessage(message, "error")
-            console.error(message)
+        } catch (e) {
+            console.error(e)
         }
-    }, [send, identity, offeringID, newSnackbarMessage])
+    }, [hash, id, send])
 
     return (
         <Stack
@@ -165,9 +156,10 @@ const AbilityItem = ({ participantID, ability }: { participantID: number; abilit
                     backgroundPosition: "center",
                     backgroundSize: "cover",
                     border: `${colour} 1.5px solid`,
-                    ":hover": { borderWidth: "3px", transform: "scale(1.04)" },
+                    opacity: ready ? 1 : 0.6,
+                    ":hover": ready ? { borderWidth: "3px", transform: "scale(1.04)" } : undefined,
                 }}
-                onClick={onContribute}
+                onClick={ready ? onTrigger : undefined}
             />
 
             <Box sx={{ flex: 1 }}>
@@ -183,19 +175,11 @@ const AbilityItem = ({ participantID, ability }: { participantID: number; abilit
                         textOverflow: "ellipsis",
                         WebkitLineClamp: 1, // change to max number of lines
                         WebkitBoxOrient: "vertical",
+                        opacity: ready ? 1 : 0.6,
                     }}
                 >
-                    {label}
+                    {ready ? label : `${remainSeconds} s`}
                 </Typography>
-
-                <ProgressBar
-                    percent={initialTargetCost.isZero() ? 0 : +currentSups.dividedBy(initialTargetCost) * 100}
-                    linePercent={initialTargetCost.isZero() ? 0 : supsCost.dividedBy(initialTargetCost).toNumber() * 100}
-                    color={colour}
-                    backgroundColor="#00000040"
-                    thickness="1.1rem"
-                    orientation="horizontal"
-                />
             </Box>
         </Stack>
     )
