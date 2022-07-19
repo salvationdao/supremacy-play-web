@@ -283,23 +283,27 @@ export const PlayerProfilePage = () => {
                                     backgroundColor={backgroundColor}
                                 />
                                 {isMe && (
-                                    <Typography sx={{ WebkitTextStroke: "1px black", fontFamily: fonts.nostromoBlack, fontSize: "5rem", color: primaryColor }}>
-                                        my profile
-                                    </Typography>
-                                )}
-                            </Stack>
+                                    <Stack>
+                                        <Typography
+                                            sx={{ WebkitTextStroke: "1px black", fontFamily: fonts.nostromoBlack, fontSize: "5rem", color: primaryColor }}
+                                        >
+                                            my profile
+                                        </Typography>
 
-                            <Stack direction="row" alignItems={"center"}>
-                                <Username
-                                    hide={!isMe}
-                                    userID={profile.player.id}
-                                    updateUsername={async (name: string) => {
-                                        updateUsername(name)
-                                    }}
-                                    primaryColour={primaryColor}
-                                    gid={profile.player.gid}
-                                    username={username || ""}
-                                />
+                                        <Stack direction="row" alignItems={"center"}>
+                                            <Username
+                                                hide={!isMe}
+                                                userID={profile.player.id}
+                                                updateUsername={async (name: string) => {
+                                                    updateUsername(name)
+                                                }}
+                                                primaryColour={primaryColor}
+                                                gid={profile.player.gid}
+                                                username={username || ""}
+                                            />
+                                        </Stack>
+                                    </Stack>
+                                )}
                             </Stack>
                         </Stack>
 

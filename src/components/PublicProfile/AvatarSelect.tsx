@@ -73,7 +73,11 @@ export const ProfileAvatar = ({ isOwner, primaryColor, backgroundColor, avatarUR
             })
             if (!resp) return
             setLoadError(undefined)
-            setAvatars([{ avatar_url: "", id: "", tier: "MEGA" }, ...resp.avatars])
+            if (page === 1) {
+                setAvatars([{ avatar_url: "", id: "", tier: "MEGA" }, ...resp.avatars])
+            } else {
+                setAvatars(resp.avatars)
+            }
             setTotalItems(resp.total)
         } catch (e) {
             setLoadError(typeof e === "string" ? e : "Failed to get avatars.")
@@ -129,7 +133,7 @@ export const ProfileAvatar = ({ isOwner, primaryColor, backgroundColor, avatarUR
                             width: "100%",
                             py: "1rem",
                             display: "grid",
-                            gridTemplateColumns: "repeat(auto-fill, minmax(13rem, 1fr))",
+                            gridTemplateColumns: "repeat(auto-fill, minmax(21rem, 1fr))",
                             gap: "1.3rem",
                             alignItems: "center",
                             justifyContent: "center",
@@ -153,8 +157,8 @@ export const ProfileAvatar = ({ isOwner, primaryColor, backgroundColor, avatarUR
                                     alt="Avatar"
                                     sx={{
                                         mr: "1rem",
-                                        height: "13rem",
-                                        width: "13rem",
+                                        height: "21rem",
+                                        width: "21rem",
                                         borderRadius: 1,
                                         border: `${primaryColor} 2px solid`,
                                         backgroundColor: primaryColor,
@@ -225,8 +229,8 @@ export const ProfileAvatar = ({ isOwner, primaryColor, backgroundColor, avatarUR
                     <Box
                         sx={{
                             position: "absolute",
-                            height: "11rem",
-                            width: "11rem",
+                            height: "25rem",
+                            width: "25rem",
                             zIndex: 5,
                             backgroundColor: "black",
                             opacity: "0",
@@ -243,8 +247,8 @@ export const ProfileAvatar = ({ isOwner, primaryColor, backgroundColor, avatarUR
                     alt="Avatar"
                     sx={{
                         mr: "1rem",
-                        height: "11rem",
-                        width: "11rem",
+                        height: "25rem",
+                        width: "25rem",
                         borderRadius: 1,
                         border: `${primaryColor} 2px solid`,
                         backgroundColor: primaryColor,
@@ -255,7 +259,7 @@ export const ProfileAvatar = ({ isOwner, primaryColor, backgroundColor, avatarUR
             </FancyButton>
 
             {/* avatar select modal */}
-            <Modal onClose={() => setModalOpen(false)} open={modalOpen} sx={{ zIndex: siteZIndex.Modal, margin: "auto", height: "70vh", width: "70vw" }}>
+            <Modal onClose={() => setModalOpen(false)} open={modalOpen} sx={{ zIndex: siteZIndex.Modal, margin: "auto", height: "60vh", width: "60vw" }}>
                 <Stack direction="row" spacing="1rem" sx={{ height: "100%", width: "100%" }}>
                     <ClipThing
                         clipSize="10px"
