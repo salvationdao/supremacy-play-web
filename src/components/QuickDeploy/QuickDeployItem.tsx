@@ -1,10 +1,9 @@
 import { Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { FancyButton } from ".."
-import { SvgSupToken } from "../../assets"
 import { useSnackbar } from "../../containers"
 import { useTheme } from "../../containers/theme"
-import { getRarityDeets, supFormatter } from "../../helpers"
+import { getRarityDeets } from "../../helpers"
 import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { colors, fonts } from "../../theme/theme"
@@ -18,7 +17,7 @@ interface QuickDeployItemProps {
     queueFeed?: QueueFeed
 }
 
-export const QuickDeployItem = ({ mech, queueFeed }: QuickDeployItemProps) => {
+export const QuickDeployItem = ({ mech }: QuickDeployItemProps) => {
     const { newSnackbarMessage } = useSnackbar()
     const theme = useTheme()
     const { send } = useGameServerCommandsFaction("/faction_commander")
@@ -171,20 +170,6 @@ export const QuickDeployItem = ({ mech, queueFeed }: QuickDeployItemProps) => {
                                 >
                                     {mechState === MechStatusEnum.Idle ? "DEPLOY" : "UNDEPLOY"}
                                 </Typography>
-
-                                {mechState === MechStatusEnum.Idle && queueFeed?.queue_cost && (
-                                    <Stack direction="row" alignItems="center">
-                                        <SvgSupToken size="1.6rem" />
-                                        <Typography
-                                            sx={{
-                                                color: mechState === MechStatusEnum.Idle ? "#FFFFFF" : colors.yellow,
-                                                fontWeight: "fontWeightBold",
-                                            }}
-                                        >
-                                            {supFormatter(queueFeed.queue_cost, 2)}
-                                        </Typography>
-                                    </Stack>
-                                )}
                             </Stack>
                         </FancyButton>
                     )}

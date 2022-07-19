@@ -1,9 +1,10 @@
 import { Box, Popover, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
-import { ClipThing, FactionAbilityItem } from "../.."
+import { ClipThing } from "../.."
 import { GenericWarMachinePNG } from "../../../assets"
 import { Faction, GameAbility, WarMachineState } from "../../../types"
 import { ContributorAmount } from "../../BattleStats/ContributorAmount"
+import { WarMachineAbilityItem } from "../WarMachineItem/WarMachineAbilityItem"
 
 interface WarMachineAbilitiesPopoverProps {
     popoverRef: React.MutableRefObject<null>
@@ -22,7 +23,6 @@ export const WarMachineAbilitiesPopover = ({
     onClose,
     warMachine,
     gameAbilities,
-    maxAbilityPriceMap,
     getFaction,
     isPoppedout,
 }: WarMachineAbilitiesPopoverProps) => {
@@ -88,13 +88,8 @@ export const WarMachineAbilitiesPopover = ({
 
                         <Stack spacing="1rem">
                             {gameAbilities.map((ga, i) => (
-                                <Box key={ga.identity} sx={{ ml: `${(i + 1) * 0.2 * 0.8}rem` }}>
-                                    <FactionAbilityItem
-                                        gameAbility={ga}
-                                        abilityMaxPrice={maxAbilityPriceMap?.current.get(ga.identity)}
-                                        clipSlantSize={isPoppedout ? "0px" : "5px"}
-                                        progressWsURI={`/mech/${warMachine.participantID}`}
-                                    />
+                                <Box key={ga.id} sx={{ ml: `${(i + 1) * 0.2 * 0.8}rem` }}>
+                                    <WarMachineAbilityItem warMachine={warMachine} gameAbility={ga} clipSlantSize="5px" />
                                 </Box>
                             ))}
                         </Stack>
