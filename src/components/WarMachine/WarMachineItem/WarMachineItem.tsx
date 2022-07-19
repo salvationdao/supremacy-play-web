@@ -1,7 +1,7 @@
 import { Box, IconButton, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
 import { useCallback, useEffect, useMemo, useRef } from "react"
-import { ClipThing, HealthShieldBars, SkillBar, WarMachineAbilitiesPopover, WarMachineDestroyedInfo } from "../.."
+import { ClipThing, HealthShieldBars, WarMachineAbilitiesPopover, WarMachineDestroyedInfo } from "../.."
 import { GenericWarMachinePNG, SvgInfoCircular, SvgSkull } from "../../../assets"
 import { useAuth, useMiniMap, useMobile, useSupremacy } from "../../../containers"
 import { getRarityDeets } from "../../../helpers"

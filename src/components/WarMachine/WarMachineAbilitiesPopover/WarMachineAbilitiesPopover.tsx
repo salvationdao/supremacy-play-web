@@ -1,6 +1,6 @@
 import { Box, Popover, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
-import { ClipThing, FactionAbilityItem } from "../.."
+import { ClipThing } from "../.."
 import { GenericWarMachinePNG } from "../../../assets"
 import { Faction, GameAbility, WarMachineState } from "../../../types"
 import { ContributorAmount } from "../../BattleStats/ContributorAmount"
@@ -23,7 +23,6 @@ export const WarMachineAbilitiesPopover = ({
     onClose,
     warMachine,
     gameAbilities,
-    maxAbilityPriceMap,
     getFaction,
     isPoppedout,
 }: WarMachineAbilitiesPopoverProps) => {
