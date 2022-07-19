@@ -89,7 +89,7 @@ export const TextMessage = ({
     }, [isEmoji, fontSize])
 
     const isVisible = useCallback(() => {
-        if (!containerRef.current || !textMessageRef.current || !isScrolling) return
+        if (!containerRef.current || !textMessageRef.current || isScrolling) return
 
         //Get container properties
         const cTop = containerRef.current?.scrollTop
@@ -108,6 +108,7 @@ export const TextMessage = ({
         ;(async () => {
             if (data.metadata && Object.keys(data.metadata?.tagged_users_read).length === 0) return
             const visibleBool = isVisible()
+            console.log(data.message, visibleBool)
             const isRead = data.metadata?.tagged_users_read[user.gid]
             if (visibleBool && isRead === false) {
                 try {
@@ -115,7 +116,6 @@ export const TextMessage = ({
                         chat_history_id: data.id,
                     })
                     if (!resp) return
-                    console.log(resp)
                 } catch (err) {
                     console.error(err)
                 }
@@ -326,8 +326,12 @@ export const TextMessage = ({
                     </Stack>
                 )}
 
-                <Stack direction={"row"} sx={{ ml: "2.1rem" }} onMouseEnter={() => setDisplayTimestamp(true)} onMouseLeave={() => setDisplayTimestamp(false)}>
-                    {chatMessage}
+                <Stack
+                    direction={"column"}
+                    sx={{ ml: "2.1rem", position: "relative", mt: "1rem", mb: ".2rem" }}
+                    onMouseEnter={() => setDisplayTimestamp(true)}
+                    onMouseLeave={() => setDisplayTimestamp(false)}
+                >
                     <Fade in>
                         <Typography
                             sx={{
@@ -335,16 +339,18 @@ export const TextMessage = ({
                                 alignSelf: "flex-start",
                                 flexShrink: 0,
                                 ml: "auto",
-                                pt: ".2rem",
                                 color: "#FFFFFF",
-                                opacity: 0.4,
-                                ":hover": { opacity: 1 },
                                 fontSize: fontSize ? `${0.98 * fontSize}rem` : "0.98rem",
+                                position: "absolute",
+                                backgroundColor: "rgba(18, 18, 18, .6)",
+                                right: 0,
+                                bottom: 0,
                             }}
                         >
                             {dateFormatter(sentAt)}
                         </Typography>
                     </Fade>
+                    {chatMessage}
                 </Stack>
             </Box>
 
