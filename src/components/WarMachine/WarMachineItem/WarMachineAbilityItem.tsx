@@ -22,13 +22,14 @@ interface MechAbilityItemProps {
 
 export const WarMachineAbilityItem = ({ warMachine, gameAbility, clipSlantSize }: MechAbilityItemProps) => {
     const { participantID, hash } = warMachine
-    const { id } = gameAbility
     const [remainSeconds, setRemainSeconds] = useState(30)
+    const { id, label, colour, text_colour, image_url, description } = gameAbility
+    const { send } = useGameServerCommandsFaction("/faction_commander")
 
     // Listen on the progress of the votes
     useGameServerSubscriptionFaction<number | undefined>(
         {
-            URI: `/mech/${participantID}/abilities/${gameAbility.id}/cool_down_seconds`,
+            URI: `/mech/${participantID}/abilities/${id}/cool_down_seconds`,
             key: GameServerKeys.SubMechAbilityCoolDown,
         },
         (payload) => {
@@ -37,8 +38,6 @@ export const WarMachineAbilityItem = ({ warMachine, gameAbility, clipSlantSize }
         },
     )
 
-    const { label, colour, text_colour, image_url, description } = gameAbility
-    const { send } = useGameServerCommandsFaction("/faction_commander")
     const onTrigger = useCallback(async () => {
         try {
             await send<boolean, { mech_hash: string; game_ability_id: string }>(GameServerKeys.TriggerWarMachineAbility, {
