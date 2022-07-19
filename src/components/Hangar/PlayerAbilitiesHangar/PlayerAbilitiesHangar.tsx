@@ -197,7 +197,7 @@ export const PlayerAbilitiesHangar = () => {
                     <PageHeader
                         imageUrl={PlayerAbilityPNG}
                         title="PLAYER ABILITIES"
-                        description="Player abilities are abilities that can be bought and used on the battle arena."
+                        description="Player abilities are abilities that can be claimed and used on the battle arena."
                     />
 
                     <TotalAndPageSizeOptions

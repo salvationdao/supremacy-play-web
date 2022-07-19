@@ -207,7 +207,7 @@ export const PlayerAbilitiesStore = () => {
                     description={
                         <Stack>
                             <Typography sx={{ fontSize: "1.85rem" }}>
-                                Player abilities are abilities that can be bought and used on the battle arena.
+                                Player abilities are abilities that can be claimed and used on the battle arena.
                             </Typography>
                             {canPurchaseError && (
                                 <Typography variant="body2" sx={{ color: colors.red }}>
