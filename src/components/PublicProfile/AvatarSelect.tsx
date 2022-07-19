@@ -64,7 +64,6 @@ export const ProfileAvatar = ({ isOwner, primaryColor, backgroundColor, avatarUR
     const getItems = useCallback(async () => {
         try {
             setIsLoading(true)
-
             const sortDir = "asc"
             const resp = await send<GetAvatarsResponse, GetAvatarsRequest>(GameServerKeys.PlayerProfileAvatarList, {
                 queue_sort: sortDir,
@@ -229,8 +228,8 @@ export const ProfileAvatar = ({ isOwner, primaryColor, backgroundColor, avatarUR
                     <Box
                         sx={{
                             position: "absolute",
-                            height: "25rem",
-                            width: "25rem",
+                            height: "21rem",
+                            width: "21rem",
                             zIndex: 5,
                             backgroundColor: "black",
                             opacity: "0",
@@ -247,8 +246,8 @@ export const ProfileAvatar = ({ isOwner, primaryColor, backgroundColor, avatarUR
                     alt="Avatar"
                     sx={{
                         mr: "1rem",
-                        height: "25rem",
-                        width: "25rem",
+                        height: "21rem",
+                        width: "21rem",
                         borderRadius: 1,
                         border: `${primaryColor} 2px solid`,
                         backgroundColor: primaryColor,
