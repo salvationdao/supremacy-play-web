@@ -1,10 +1,10 @@
-import { Stack, Typography } from "@mui/material"
+import { Typography } from "@mui/material"
 import { useEffect, useState } from "react"
-import { useSnackbar } from "../../../containers"
-import { useTheme } from "../../../containers/theme"
+import { useSnackbar, useSupremacy } from "../../../containers"
 import { useGameServerCommands } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { User } from "../../../types"
+import { Player } from "../../Common/Player"
 import { RanksTable } from "../Common/RanksTable"
 
 interface RankItem {
@@ -13,16 +13,12 @@ interface RankItem {
 }
 
 export const PlayerBattlesSpectated = () => {
-    const theme = useTheme()
+    const { getFaction } = useSupremacy()
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommands("/public/commander")
     const [rankItems, setRankItems] = useState<RankItem[]>()
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
-
-    const primaryColor = theme.factionTheme.primary
-    const secondaryColor = theme.factionTheme.secondary
-    const backgroundColor = theme.factionTheme.background
 
     useEffect(() => {
         ;(async () => {
@@ -49,20 +45,26 @@ export const PlayerBattlesSpectated = () => {
         <RanksTable
             title="MOST BATTLES SPECTATED"
             tableHeadings={["RANK", "PLAYER", "FACTION", "BATTLES SPECTATED"]}
+            alignments={["center", "left", "left", "center"]}
+            widths={["19rem", "auto", "auto", "auto"]}
             rankItems={rankItems}
             isLoading={isLoading}
             loadError={loadError}
             renderItem={(item, index) => {
+                const faction = getFaction(item.player.faction_id)
                 return [
-                    <Typography key={1}>{index + 1}</Typography>,
-                    <Typography key={2}>
-                        {index}: {item.player.username}
+                    <Typography variant="h6" key={1} sx={{ fontWeight: "fontWeightBold", textAlign: "center" }}>
+                        #{index + 1}
                     </Typography>,
-                    <Typography key={3}>
-                        {index}: {item.player.username}
+
+                    <Player key={2} player={item.player} styledImageTextProps={{ variant: "h6", imageSize: 2.4 }} />,
+
+                    <Typography variant="h6" key={3} sx={{ fontWeight: "fontWeightBold", color: faction.primary_color, textTransform: "uppercase" }}>
+                        {faction.label}
                     </Typography>,
-                    <Typography key={4}>
-                        {index}: {item.player.username}
+
+                    <Typography variant="h6" key={4} sx={{ textAlign: "center" }}>
+                        {item.view_battle_count}
                     </Typography>,
                 ]
             }}

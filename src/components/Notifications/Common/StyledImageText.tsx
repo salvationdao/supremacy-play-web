@@ -7,6 +7,7 @@ export interface StyledImageTextProps {
     imageUrl?: string
     text?: string | ReactNode
     variant?: OverridableStringUnion<Variant | "inherit", TypographyPropsVariantOverrides>
+    textColor?: string
     color?: string
     truncateLine?: boolean
     textSx?: SxProps
@@ -26,6 +27,7 @@ export const StyledImageText = ({
     imageUrl,
     text,
     variant = "body1",
+    textColor,
     color,
     truncateLine,
     textSx,
@@ -80,7 +82,7 @@ export const StyledImageText = ({
                     display: "inline",
                     fontFamily,
                     fontWeight,
-                    color,
+                    color: textColor || color,
                     wordBreak: "break-word",
                     ...truncateStyle,
                     ...textSx,

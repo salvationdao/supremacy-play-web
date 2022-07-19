@@ -24,7 +24,7 @@ const UserItem = ({ user, banUser, sx }: { user: User; banUser: BanUser; sx?: Sx
     const banUserMore = useMemo(() => mergeDeep(user, banUser), [banUser, user])
     return (
         <Stack direction="row" spacing=".6rem" alignItems="center" sx={sx}>
-            <Player player={banUserMore} />
+            <Player player={banUserMore} styledImageTextProps={{ textColor: "#FFFFFF" }} />
         </Stack>
     )
 }
