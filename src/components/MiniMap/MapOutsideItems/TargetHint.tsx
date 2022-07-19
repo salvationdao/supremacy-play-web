@@ -7,6 +7,7 @@ import { useTheme } from "../../../containers/theme"
 import { useTimer } from "../../../hooks"
 import { colors } from "../../../theme/theme"
 import { LocationSelectType } from "../../../types"
+import { TOP_BAR_HEIGHT } from "../MiniMap"
 
 export const TargetHint = () => {
     const { isTargeting, winner, playerAbility } = useMiniMap()
@@ -145,15 +146,16 @@ const PlayerAbilityTargetHint = () => {
                 sx={{
                     zIndex: 98,
                     position: "absolute",
-                    top: 0,
+                    top: `${TOP_BAR_HEIGHT}rem`,
                     left: 0,
                     right: 0,
                     bottom: 0,
                     background: `radial-gradient(rgba(0, 0, 0, 0), ${playerAbility.ability.colour}aa)`,
                     pointerEvents: "none",
-                    opacity: 0.5,
+                    opacity: 0.2,
                 }}
             />
+
             <Stack
                 direction="row"
                 alignItems="flex-end"

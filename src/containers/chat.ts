@@ -159,7 +159,7 @@ export const ChatContainer = createContainer(() => {
             messages.forEach((message) => {
                 if (!message.locallySent && !isPastMessages && message.type === "TEXT" && (message.data as TextMessageData).from_user.id === userID) return
                 newMessages = [...newMessages, message]
-                newMessagesCount++
+                if (message.type !== "NEW_BATTLE") newMessagesCount++
             })
 
             if (faction === null) {
