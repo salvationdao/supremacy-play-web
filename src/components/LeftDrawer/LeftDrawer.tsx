@@ -9,7 +9,7 @@ import { DrawerButtons } from "./DrawerButtons"
 import { useTheme } from "../../containers/theme"
 import { useAuth } from "../../containers"
 
-const EXPAND_DRAWER_WIDTH = 30 //rem
+const EXPAND_DRAWER_WIDTH = 34 //rem
 
 export const LeftDrawer = () => {
     const { userID } = useAuth()
@@ -61,8 +61,9 @@ export const LeftDrawer = () => {
                                 <MenuButton
                                     key={r.id}
                                     label={label}
-                                    disable={!enable || disable}
-                                    enable={enable}
+                                    enable={enable && !disable}
+                                    isComingSoon={!enable}
+                                    comingSoonLabel={r.leftDrawer.comingSoonLabel}
                                     onClick={() => history.push(`${navigateTo}${location.hash}`)}
                                     isActive={activeTabID === r.matchLeftDrawerID || location.pathname === r.path}
                                     primaryColor={theme.factionTheme.primary}
@@ -101,25 +102,27 @@ export const LeftDrawer = () => {
 
 const MenuButton = ({
     label,
-    disable,
     enable,
+    isComingSoon,
     isActive,
     primaryColor,
     secondaryColor,
     onClick,
+    comingSoonLabel,
 }: {
     label: string
-    disable?: boolean
     enable?: boolean
+    isComingSoon?: boolean
     icon?: string | React.ReactElement<unknown, string | React.JSXElementConstructor<unknown>>
     isActive?: boolean
     primaryColor: string
     secondaryColor: string
     onClick: () => void
+    comingSoonLabel?: string
 }) => {
     return (
         <Button
-            disabled={disable}
+            disabled={!enable}
             onClick={onClick}
             sx={{
                 px: "2.3rem",
@@ -129,7 +132,7 @@ const MenuButton = ({
                 backgroundColor: isActive ? primaryColor : `${primaryColor}30`,
                 borderRadius: 0,
                 borderBottom: `#FFFFFF20 2px solid`,
-                opacity: disable ? 0.6 : 1,
+                opacity: enable ? 1 : 0.6,
                 ":hover": {
                     backgroundColor: isActive ? primaryColor : `${primaryColor}50`,
                 },
@@ -138,9 +141,10 @@ const MenuButton = ({
             <Typography sx={{ color: isActive ? secondaryColor : "#FFFFFF", fontFamily: fonts.nostromoHeavy, whiteSpace: "nowrap", lineHeight: 1 }}>
                 {label}
             </Typography>
-            {!enable && (
+
+            {isComingSoon && (
                 <Typography variant="caption" sx={{ color: colors.neonBlue, fontFamily: fonts.nostromoBold, whiteSpace: "nowrap", lineHeight: 1 }}>
-                    &nbsp;(COMING SOON)
+                    &nbsp;({comingSoonLabel || "COMING SOON"})
                 </Typography>
             )}
         </Button>
