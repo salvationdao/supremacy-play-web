@@ -3,6 +3,25 @@ import { Variant } from "@mui/material/styles/createTypography"
 import { OverridableStringUnion } from "@mui/types"
 import { ReactNode, useMemo } from "react"
 
+export interface StyledImageTextProps {
+    imageUrl?: string
+    text?: string | ReactNode
+    variant?: OverridableStringUnion<Variant | "inherit", TypographyPropsVariantOverrides>
+    color?: string
+    truncateLine?: boolean
+    textSx?: SxProps
+
+    fontWeight?: string
+    fontFamily?: string
+    imageSize?: number
+    imageBorderColor?: string
+    imageBackgroundColor?: string
+    imageBorderThickness?: string
+    imageBackgroundSize?: string
+    noImageBackgroundColor?: boolean
+    imageMb?: number
+}
+
 export const StyledImageText = ({
     imageUrl,
     text,
@@ -20,24 +39,7 @@ export const StyledImageText = ({
     imageBackgroundSize = "cover",
     noImageBackgroundColor,
     imageMb,
-}: {
-    imageUrl?: string
-    text: string | ReactNode
-    variant?: OverridableStringUnion<Variant | "inherit", TypographyPropsVariantOverrides>
-    color: string
-    truncateLine?: boolean
-    textSx?: SxProps
-
-    fontWeight?: string
-    fontFamily?: string
-    imageSize?: number
-    imageBorderColor?: string
-    imageBackgroundColor?: string
-    imageBorderThickness?: string
-    imageBackgroundSize?: string
-    noImageBackgroundColor?: boolean
-    imageMb?: number
-}) => {
+}: StyledImageTextProps) => {
     const truncateStyle: SxProps = useMemo(
         () =>
             truncateLine
@@ -55,6 +57,7 @@ export const StyledImageText = ({
             {imageUrl && (
                 <Box
                     sx={{
+                        flexShrink: 0,
                         display: "inline-block",
                         width: `${imageSize}rem`,
                         height: `${imageSize}rem`,

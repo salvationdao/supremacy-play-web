@@ -1,8 +1,9 @@
 import { Box, Stack } from "@mui/material"
-import { ClipThing, StyledImageText, StyledNormalText } from "../.."
+import { ClipThing, StyledNormalText } from "../.."
 import { FallbackUser } from "../../../containers"
 import { colors } from "../../../theme/theme"
 import { Faction, User } from "../../../types"
+import { Player } from "../../Common/Player"
 
 export enum MechCommandAction {
     MechCommandFired = "MECH_COMMAND_FIRED",
@@ -21,7 +22,7 @@ export interface WarMachineCommandAlertProps {
 
 export const WarMachineCommandAlert = ({ data, getFaction }: { data: WarMachineCommandAlertProps; getFaction: (factionID: string) => Faction }) => {
     const { action, fired_by_user } = data
-    const { username, gid, faction_id } = fired_by_user || FallbackUser
+    const { faction_id } = fired_by_user || FallbackUser
 
     const faction = getFaction(faction_id)
     const mainColor = faction.primary_color
@@ -31,17 +32,7 @@ export const WarMachineCommandAlert = ({ data, getFaction }: { data: WarMachineC
             return (
                 <Box>
                     <StyledNormalText text="War machine move command has been cancelled by " />
-                    <StyledImageText
-                        text={
-                            <>
-                                {`${username}`}
-                                <span style={{ marginLeft: ".2rem", opacity: 0.7 }}>{`#${gid}`}</span>
-                            </>
-                        }
-                        color={mainColor}
-                        imageUrl={faction.logo_url}
-                        imageMb={-0.2}
-                    />
+                    <Player player={fired_by_user || FallbackUser} />
                 </Box>
             )
         }
@@ -49,17 +40,7 @@ export const WarMachineCommandAlert = ({ data, getFaction }: { data: WarMachineC
         if (action === MechCommandAction.MechCommandFired) {
             return (
                 <Box>
-                    <StyledImageText
-                        text={
-                            <>
-                                {`${username}`}
-                                <span style={{ marginLeft: ".2rem", opacity: 0.7 }}>{`#${gid}`}</span>
-                            </>
-                        }
-                        color={mainColor}
-                        imageUrl={faction.logo_url}
-                        imageMb={-0.2}
-                    />
+                    <Player player={fired_by_user || FallbackUser} />
                     <StyledNormalText text=" has triggered the war machine move command." />
                 </Box>
             )

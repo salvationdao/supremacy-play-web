@@ -1,35 +1,28 @@
-import { Box, CircularProgress, Stack, Typography } from "@mui/material"
+import { CircularProgress, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material"
 import { ReactNode, useMemo } from "react"
-import { EmptyWarMachinesPNG } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { colors, fonts } from "../../../theme/theme"
-import { ClipThing } from "../../Common/ClipThing"
 
 interface RanksTableProps<T> {
     title: string
+    tableHeadings: string[]
     rankItems?: T[]
-    renderItem: (rankItem: T, index: number) => ReactNode
+    renderItem: (rankItem: T, index: number) => ReactNode[]
     isLoading: boolean
     loadError?: string
 }
 
-export const RanksTable = <T,>({ title, rankItems, renderItem, isLoading, loadError }: RanksTableProps<T>) => {
+export const RanksTable = <T,>({ title, tableHeadings, rankItems, renderItem, isLoading, loadError }: RanksTableProps<T>) => {
     const theme = useTheme()
 
     const primaryColor = theme.factionTheme.primary
     const secondaryColor = theme.factionTheme.secondary
-    const backgroundColor = theme.factionTheme.background
 
     const content = useMemo(() => {
         if (loadError) {
             return (
-                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
-                    <Stack
-                        alignItems="center"
-                        justifyContent="center"
-                        sx={{ height: "100%", maxWidth: "100%", width: "75rem", px: "3rem", pt: "1.28rem" }}
-                        spacing="1.5rem"
-                    >
+                <TableCell colSpan={tableHeadings.length}>
+                    <Stack alignItems="center" justifyContent="center" sx={{ height: "8rem" }}>
                         <Typography
                             sx={{
                                 color: colors.red,
@@ -40,39 +33,39 @@ export const RanksTable = <T,>({ title, rankItems, renderItem, isLoading, loadEr
                             {loadError}
                         </Typography>
                     </Stack>
-                </Stack>
+                </TableCell>
             )
         }
 
         if (!rankItems || isLoading) {
             return (
-                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
-                    <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
+                <TableCell colSpan={tableHeadings.length}>
+                    <Stack alignItems="center" justifyContent="center" sx={{ height: "8rem" }}>
                         <CircularProgress size="3rem" sx={{ color: primaryColor }} />
                     </Stack>
-                </Stack>
+                </TableCell>
             )
         }
 
         if (rankItems && rankItems.length > 0) {
-            return <Stack>{rankItems.map((item, index) => renderItem(item, index))}</Stack>
+            return (
+                <TableBody>
+                    {rankItems.map((item, i) => {
+                        return (
+                            <TableRow key={i} sx={{ "&:nth-of-type(odd)": { backgroundColor: "#FFFFFF10" } }}>
+                                {renderItem(item, i).map((node, j) => {
+                                    return <TableCell key={j}>{node}</TableCell>
+                                })}
+                            </TableRow>
+                        )
+                    })}
+                </TableBody>
+            )
         }
 
         return (
-            <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
-                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", maxWidth: "40rem" }}>
-                    <Box
-                        sx={{
-                            width: "80%",
-                            height: "16rem",
-                            opacity: 0.7,
-                            filter: "grayscale(100%)",
-                            background: `url(${EmptyWarMachinesPNG})`,
-                            backgroundRepeat: "no-repeat",
-                            backgroundPosition: "bottom center",
-                            backgroundSize: "contain",
-                        }}
-                    />
+            <TableCell colSpan={tableHeadings.length}>
+                <Stack alignItems="center" justifyContent="center" sx={{ height: "8rem" }}>
                     <Typography
                         sx={{
                             px: "1.28rem",
@@ -84,12 +77,12 @@ export const RanksTable = <T,>({ title, rankItems, renderItem, isLoading, loadEr
                             textAlign: "center",
                         }}
                     >
-                        {"There's nothing to show, please contact support'."}
+                        {"There's nothing to show, please contact support."}
                     </Typography>
                 </Stack>
-            </Stack>
+            </TableCell>
         )
-    }, [loadError, rankItems, isLoading, primaryColor, renderItem])
+    }, [loadError, rankItems, isLoading, tableHeadings.length, primaryColor, renderItem])
 
     return (
         <Stack spacing="2rem">
@@ -99,7 +92,24 @@ export const RanksTable = <T,>({ title, rankItems, renderItem, isLoading, loadEr
                 </Typography>
             </Stack>
 
-            <Box>{content}</Box>
+            <TableContainer>
+                <Table sx={{ borderRadius: 0.5, overflow: "hidden", ".MuiTableCell-root": { p: "1.6rem" } }}>
+                    <TableHead sx={{ backgroundColor: primaryColor, boxShadow: 5 }}>
+                        <TableRow>
+                            {tableHeadings.map((heading, i) => {
+                                return (
+                                    <TableCell key={i}>
+                                        <Typography variant="body2" sx={{ color: secondaryColor, fontFamily: fonts.nostromoBlack }}>
+                                            {heading}
+                                        </Typography>
+                                    </TableCell>
+                                )
+                            })}
+                        </TableRow>
+                    </TableHead>
+                    {content}
+                </Table>
+            </TableContainer>
         </Stack>
     )
 }

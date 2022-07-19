@@ -6,6 +6,7 @@ import { FallbackUser } from "../../../containers"
 import { acronym } from "../../../helpers"
 import { colors } from "../../../theme/theme"
 import { BattleAbility, Faction, User } from "../../../types"
+import { Player } from "../../Common/Player"
 
 /*
 NOTE:
@@ -47,7 +48,7 @@ export interface LocationSelectAlertProps {
 export const LocationSelectAlert = ({ data, getFaction }: { data: LocationSelectAlertProps; getFaction: (factionID: string) => Faction }) => {
     const { type, currentUser, ability } = data
     const { label, colour, image_url } = ability
-    const { username, gid, faction_id } = currentUser || FallbackUser
+    const { faction_id } = currentUser || FallbackUser
 
     const faction = getFaction(faction_id)
     const abilityImageUrl = useMemo(() => `${image_url}`, [image_url])
@@ -89,17 +90,7 @@ export const LocationSelectAlert = ({ data, getFaction }: { data: LocationSelect
         if (type === LocationSelectAlertType.FailedTimeOut || type === LocationSelectAlertType.FailedDisconnected) {
             return (
                 <Box>
-                    <StyledImageText
-                        text={
-                            <>
-                                {`${username}`}
-                                <span style={{ marginLeft: ".2rem", opacity: 0.7 }}>{`#${gid}`}</span>
-                            </>
-                        }
-                        color={mainColor}
-                        imageUrl={faction.logo_url}
-                        imageMb={-0.2}
-                    />
+                    <Player player={currentUser || FallbackUser} />
                     <StyledNormalText text=" failed to choose a target." />
                 </Box>
             )
@@ -108,17 +99,7 @@ export const LocationSelectAlert = ({ data, getFaction }: { data: LocationSelect
         if (type === LocationSelectAlertType.Trigger) {
             return (
                 <Box>
-                    <StyledImageText
-                        text={
-                            <>
-                                {`${username}`}
-                                <span style={{ marginLeft: ".2rem", opacity: 0.7 }}>{`#${gid}`}</span>
-                            </>
-                        }
-                        color={mainColor}
-                        imageUrl={faction.logo_url}
-                        imageMb={-0.2}
-                    />
+                    <Player player={currentUser || FallbackUser} />
                     <StyledNormalText text=" has confirmed target." />
                 </Box>
             )
@@ -127,17 +108,7 @@ export const LocationSelectAlert = ({ data, getFaction }: { data: LocationSelect
         if (type === LocationSelectAlertType.Assigned) {
             return (
                 <Box>
-                    <StyledImageText
-                        text={
-                            <>
-                                {`${username}`}
-                                <span style={{ marginLeft: ".2rem", opacity: 0.7 }}>{`#${gid}`}</span>
-                            </>
-                        }
-                        color={mainColor}
-                        imageUrl={faction.logo_url}
-                        imageMb={-0.2}
-                    />
+                    <Player player={currentUser || FallbackUser} />
                     <StyledNormalText text=" is assigned to choose a target." />
                 </Box>
             )

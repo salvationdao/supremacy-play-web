@@ -48,22 +48,23 @@ export const PlayerBattlesSpectated = () => {
     return (
         <RanksTable
             title="MOST BATTLES SPECTATED"
+            tableHeadings={["RANK", "PLAYER", "FACTION", "BATTLES SPECTATED"]}
             rankItems={rankItems}
             isLoading={isLoading}
             loadError={loadError}
             renderItem={(item, index) => {
-                return (
-                    <Stack
-                        key={item.player.id}
-                        direction="row"
-                        alignItems="center"
-                        sx={{ backgroundColor: index % 2 === 0 ? "#FFFFFF10" : "unset", p: ".6rem 2rem" }}
-                    >
-                        <Typography>
-                            {index}: {item.player.username}
-                        </Typography>
-                    </Stack>
-                )
+                return [
+                    <Typography key={1}>{index + 1}</Typography>,
+                    <Typography key={2}>
+                        {index}: {item.player.username}
+                    </Typography>,
+                    <Typography key={3}>
+                        {index}: {item.player.username}
+                    </Typography>,
+                    <Typography key={4}>
+                        {index}: {item.player.username}
+                    </Typography>,
+                ]
             }}
         />
     )
