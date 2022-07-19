@@ -120,7 +120,7 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate }: MysteryCrateStore
                                     <SvgSupToken size={enlargedView ? "2rem" : "1.3rem"} fill={colors.yellow} />
                                     <Typography sx={{ fontSize: enlargedView ? "1.6rem" : "1.3rem", fontFamily: fonts.nostromoBold }}>
                                         {supFormatterNoFixed(
-                                            new BigNumber(mysteryCrate.mystery_crate_type === "WEAPON" ? 3800 : 5000).shiftedBy(-18).toString(),
+                                            new BigNumber(mysteryCrate.mystery_crate_type === "WEAPON" ? 3800 : 5000).shiftedBy(18).toString(),
                                             2,
                                         )}
                                     </Typography>
