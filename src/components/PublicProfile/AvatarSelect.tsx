@@ -9,6 +9,7 @@ import { colors, fonts, siteZIndex } from "../../theme/theme"
 import { ClipThing } from "../Common/ClipThing"
 import { FancyButton } from "../Common/FancyButton"
 import { PageHeader } from "../Common/PageHeader"
+import { TotalAndPageSizeOptions } from "../Common/TotalAndPageSizeOptions"
 
 interface GetAvatarsRequest {
     queue_sort: string
@@ -42,7 +43,7 @@ export const ProfileAvatar = ({ isOwner, primaryColor, backgroundColor, avatarUR
     const [avatars, setAvatars] = useState<ProfileAvatar[]>([])
     const [submitting, setSubmitting] = useState(false)
 
-    const { page, changePage, setTotalItems, totalPages, pageSize } = usePagination({
+    const { page, changePage, setTotalItems, totalPages, pageSize, totalItems, changePageSize } = usePagination({
         pageSize: parseString(query.get("pageSize"), 10),
         page: parseString(query.get("page"), 1),
     })
@@ -278,6 +279,15 @@ export const ProfileAvatar = ({ isOwner, primaryColor, backgroundColor, avatarUR
                                     primaryColor={primaryColor}
                                 />
 
+                                <TotalAndPageSizeOptions
+                                    countItems={avatars?.length}
+                                    totalItems={totalItems + 1}
+                                    pageSize={pageSize}
+                                    changePageSize={changePageSize}
+                                    pageSizeOptions={[10, 20, 30]}
+                                    changePage={changePage}
+                                    manualRefresh={getItems}
+                                />
                                 <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
                                     <Box
                                         sx={{

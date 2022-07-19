@@ -9,6 +9,7 @@ import { colors, fonts } from "../../theme/theme"
 import { FactionName, MechBasic } from "../../types"
 import { ClipThing } from "../Common/ClipThing"
 import { PageHeader } from "../Common/PageHeader"
+import { TotalAndPageSizeOptions } from "../Common/TotalAndPageSizeOptions"
 import { ProfileWarmachineItem } from "./ProfileMechDetails"
 
 interface GetMechsRequest {
@@ -57,7 +58,7 @@ export const ProfileWarmachines = ({ playerID, primaryColour, backgroundColour, 
     const [loadError, setLoadError] = useState<string>()
     const [mechs, setMechs] = useState<MechBasic[]>([])
 
-    const { page, changePage, setTotalItems, totalPages, pageSize } = usePagination({
+    const { page, changePage, setTotalItems, totalItems, totalPages, changePageSize, pageSize } = usePagination({
         pageSize: parseString(query.get("pageSize"), 10),
         page: parseString(query.get("page"), 1),
     })
@@ -203,6 +204,15 @@ export const ProfileWarmachines = ({ playerID, primaryColour, backgroundColour, 
                     <Stack sx={{ flex: 1 }}>
                         <PageHeader title="WAR MACHINES" description="" primaryColor={primaryColour} imageUrl={getIcon(factionName as FactionName)} />
 
+                        <TotalAndPageSizeOptions
+                            countItems={mechs?.length}
+                            totalItems={totalItems}
+                            pageSize={pageSize}
+                            changePageSize={changePageSize}
+                            pageSizeOptions={[10, 20, 30]}
+                            changePage={changePage}
+                            manualRefresh={getItems}
+                        />
                         <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
                             <Box
                                 sx={{
