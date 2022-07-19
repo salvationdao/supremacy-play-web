@@ -9,20 +9,21 @@ import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { MARKETPLACE_TABS } from "../../../pages"
 import { colors, fonts } from "../../../theme/theme"
-import { MysteryCrate, OpenCrateResponse } from "../../../types"
+import { MysteryCrate, MysteryCrateType, OpenCrateResponse } from "../../../types"
 import { ItemType } from "../../../types/marketplace"
 import { ClipThing } from "../../Common/ClipThing"
 import { FancyButton } from "../../Common/FancyButton"
 import { MediaPreview } from "../../Common/MediaPreview/MediaPreview"
+import { OpeningCrate } from "./MysteryCratesHangar"
 
 interface MysteryCrateStoreItemProps {
     crate: MysteryCrate
-    setCrateOpen: (value: ((prevState: boolean) => boolean) | boolean) => void
-    setCrateReward: (value: ((prevState: OpenCrateResponse | undefined) => OpenCrateResponse | undefined) | OpenCrateResponse | undefined) => void
+    setOpeningCrate: React.Dispatch<React.SetStateAction<OpeningCrate | undefined>>
+    setOpenedRewards: React.Dispatch<React.SetStateAction<OpenCrateResponse | undefined>>
     getCrates: () => Promise<void>
 }
 
-export const MysteryCrateHangarItem = ({ crate, setCrateOpen, setCrateReward, getCrates }: MysteryCrateStoreItemProps) => {
+export const MysteryCrateHangarItem = ({ crate, setOpeningCrate, setOpenedRewards, getCrates }: MysteryCrateStoreItemProps) => {
     const location = useLocation()
     const theme = useTheme()
     const { newSnackbarMessage } = useSnackbar()
@@ -35,6 +36,10 @@ export const MysteryCrateHangarItem = ({ crate, setCrateOpen, setCrateReward, ge
 
     const openCrate = useCallback(async () => {
         try {
+            setOpeningCrate({
+                factionID: crate.faction_id,
+                crateType: crate.label.toLowerCase().includes("weapon") ? MysteryCrateType.Weapon : MysteryCrateType.Mech,
+            })
             setLoading(true)
             //change these types obviously
             const resp = await send<OpenCrateResponse>(GameServerKeys.OpenCrate, {
@@ -42,8 +47,7 @@ export const MysteryCrateHangarItem = ({ crate, setCrateOpen, setCrateReward, ge
             })
 
             if (!resp) return
-            setCrateReward(resp)
-            setCrateOpen(true)
+            setOpenedRewards({ ...resp })
             getCrates()
         } catch (e) {
             const message = typeof e === "string" ? e : "Failed to get mystery crates."
@@ -52,7 +56,7 @@ export const MysteryCrateHangarItem = ({ crate, setCrateOpen, setCrateReward, ge
         } finally {
             setLoading(false)
         }
-    }, [send, crate.id, setCrateOpen, setCrateReward, getCrates, newSnackbarMessage])
+    }, [setOpeningCrate, crate.faction_id, crate.label, crate.id, send, setOpenedRewards, getCrates, newSnackbarMessage])
 
     return (
         <>
@@ -83,7 +87,11 @@ export const MysteryCrateHangarItem = ({ crate, setCrateOpen, setCrateReward, ge
                                 height: "20rem",
                             }}
                         >
-                            <MediaPreview imageUrl={crate.image_url || SafePNG} videoUrls={[crate.animation_url, crate.card_animation_url]} objectFit="cover" />
+                            <MediaPreview
+                                imageUrl={crate.large_image_url || crate.image_url || crate.avatar_url || SafePNG}
+                                videoUrls={[crate.animation_url, crate.card_animation_url]}
+                                objectFit="cover"
+                            />
 
                             {new Date() < (crate.locked_until || Date.now) && (
                                 <Stack
@@ -112,10 +120,10 @@ export const MysteryCrateHangarItem = ({ crate, setCrateOpen, setCrateReward, ge
                                 {crate.description}
                             </Typography>
 
-                            <Stack alignItems="center" sx={{ mt: "auto !important", pt: ".8rem", alignSelf: "stretch" }}>
+                            <Stack alignItems="center" sx={{ mt: "auto !important", alignSelf: "stretch" }}>
                                 <FancyButton
-                                    loading={loading}
                                     disabled={new Date() < crate.locked_until}
+                                    loading={loading}
                                     onClick={openCrate}
                                     clipThingsProps={{
                                         clipSize: "5px",
@@ -190,6 +198,43 @@ const SingleCountDown = ({ value, label }: { value: string; label: string }) => 
             </Typography>
             <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBold }}>
                 {label}
+            </Typography>
+        </Stack>
+    )
+}
+
+export const CrateCommonArea = ({ isGridView, label, description }: { isGridView: boolean; label: string; description: string }) => {
+    const theme = useTheme()
+
+    return (
+        <Stack spacing={isGridView ? ".1rem" : ".6rem"}>
+            <Typography
+                variant="body2"
+                sx={{
+                    fontFamily: fonts.nostromoBlack,
+                    color: theme.factionTheme.primary,
+                    display: "-webkit-box",
+                    overflow: "hidden",
+                    overflowWrap: "anywhere",
+                    textOverflow: "ellipsis",
+                    WebkitLineClamp: 1,
+                    WebkitBoxOrient: "vertical",
+                }}
+            >
+                {label}
+            </Typography>
+
+            <Typography
+                sx={{
+                    display: "-webkit-box",
+                    overflow: "hidden",
+                    overflowWrap: "anywhere",
+                    textOverflow: "ellipsis",
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: "vertical",
+                }}
+            >
+                {description}
             </Typography>
         </Stack>
     )

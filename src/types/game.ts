@@ -13,11 +13,6 @@ export interface ViewerLiveCount {
     other: number
 }
 
-export interface CellCoords {
-    x: number
-    y: number
-}
-
 export enum LocationSelectType {
     LINE_SELECT = "LINE_SELECT",
     MECH_SELECT = "MECH_SELECT",
@@ -90,6 +85,8 @@ export interface BattleAbility {
 }
 
 export interface GameAbility {
+    id: string
+    game_client_ability_id: number
     identity: string
     label: string
     colour: string
@@ -128,7 +125,6 @@ export interface PlayerAbility {
 export interface SaleAbility {
     id: string
     current_price: string
-    available_until?: Date
     sale_limit: number
     amount_sold: number
     ability: BlueprintPlayerAbility

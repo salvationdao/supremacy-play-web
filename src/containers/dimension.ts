@@ -1,16 +1,21 @@
 import { useMediaQuery } from "@mui/material"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { createContainer } from "unstated-next"
-import { STREAM_ASPECT_RATIO_W_H } from "../constants"
 import { useDebounce } from "../hooks"
 import { Dimension } from "../types"
+import { useMobile } from "./mobile"
 
 // Contains dimensions for the overall layout of the divs, iframe etc.
 export const DimensionContainer = createContainer(() => {
+    const { isNavOpen } = useMobile()
     const [remToPxRatio, setRemToPxRatio] = useState(10)
+    const below600 = useMediaQuery("(max-width:600px)")
     const below900 = useMediaQuery("(max-width:900px)")
     const below1500 = useMediaQuery("(max-width:1500px)")
     const below1922 = useMediaQuery("(max-width:1922px)")
+
+    const gameUIContainer = useRef<HTMLElement | null>(null)
+    const resizeObserver = useRef<ResizeObserver>()
 
     const [gameUIDimensions, setGameUIDimensions] = useDebounce<Dimension>(
         {
@@ -19,68 +24,63 @@ export const DimensionContainer = createContainer(() => {
         },
         300,
     )
-    const [iframeDimensions, setIframeDimensions] = useState<{ width: number | string; height: number | string }>({
-        width: 0,
-        height: 0,
-    })
 
     // Please refer to `src/theme/global.css`
     useEffect(() => {
+        if (below600) return setRemToPxRatio(0.39 * 16)
         if (below900) return setRemToPxRatio(0.44 * 16)
         if (below1500) return setRemToPxRatio(0.5 * 16)
         if (below1922) return setRemToPxRatio(0.52 * 16)
         setRemToPxRatio(0.6 * 16)
-    }, [below1922, below1500, below900])
+    }, [below1922, below1500, below900, below600])
 
-    useEffect(() => {
-        const gameUIContainer = document.getElementById("game-ui-container")
-        if (!gameUIContainer) {
-            console.error("Please assign #game-ui-container to the game UI.")
-            return
-        }
+    const setupResizeObserver = useCallback(() => {
+        gameUIContainer.current = document.getElementById("game-ui-container")
+        if (!gameUIContainer.current) return
 
-        const resize_ob = new ResizeObserver((entries) => {
+        resizeObserver.current = new ResizeObserver((entries) => {
             const rect = entries[0].contentRect
             setGameUIDimensions({
                 width: rect.width,
                 height: rect.height,
             })
         })
-
-        resize_ob.observe(gameUIContainer)
-        return () => {
-            resize_ob.unobserve(gameUIContainer)
-        }
+        resizeObserver.current.observe(gameUIContainer.current)
     }, [setGameUIDimensions])
 
-    useEffect(() => {
-        const gameUIContainer = document.getElementById("game-ui-container")
-        if (!gameUIContainer) {
-            console.error("Please assign #game-ui-container to the game UI.")
+    const recalculateDimensions = useCallback(() => {
+        gameUIContainer.current = document.getElementById("game-ui-container")
+        if (!gameUIContainer.current) {
+            setGameUIDimensions({ width: 0, height: 0 })
             return
         }
 
-        const containerWidth = gameUIContainer.offsetWidth
-        const containerHeight = gameUIContainer.offsetHeight
-
-        // Work out iframe width and height based on its aspect ratio and stream width and height
-        let iframeWidth: number | string = containerWidth
-        let iframeHeight: number | string = containerHeight
-        const iframeRatio = iframeWidth / iframeHeight
-        if (iframeRatio >= STREAM_ASPECT_RATIO_W_H) {
-            iframeHeight = "unset"
-        } else {
-            iframeWidth = "unset"
-        }
+        const containerWidth = gameUIContainer.current.offsetWidth
+        const containerHeight = gameUIContainer.current.offsetHeight
 
         setGameUIDimensions({ width: containerWidth, height: containerHeight })
-        setIframeDimensions({ width: iframeWidth, height: iframeHeight })
-    }, [remToPxRatio, setGameUIDimensions])
+    }, [setGameUIDimensions])
+
+    const triggerReset = useCallback(() => {
+        recalculateDimensions()
+        setupResizeObserver()
+    }, [recalculateDimensions, setupResizeObserver])
+
+    useEffect(() => {
+        recalculateDimensions()
+        setupResizeObserver()
+    }, [remToPxRatio, isNavOpen, recalculateDimensions, setupResizeObserver])
+
+    useEffect(() => {
+        return () => {
+            resizeObserver.current && gameUIContainer.current && resizeObserver.current.unobserve(gameUIContainer.current)
+        }
+    }, [])
 
     return {
         remToPxRatio,
         gameUIDimensions,
-        iframeDimensions,
+        triggerReset,
     }
 })
 

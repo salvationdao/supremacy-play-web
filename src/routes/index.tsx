@@ -7,7 +7,14 @@ import { MarketplaceItemPage } from "../pages/MarketplaceItemPage"
 import { MarketplaceSellPage } from "../pages/MarketplaceSellPage"
 import { MechPage } from "../pages/MechPage"
 import { WeaponPage } from "../pages/WeaponPage"
+import { LiveChat } from "../components/RightDrawer/LiveChat/LiveChat"
+import { PlayerList } from "../components/RightDrawer/PlayerList/PlayerList"
+import { PlayerProfilePage } from "../components/PublicProfile/PlayerProfile"
+import { BATTLE_ARENA_OPEN } from "../constants"
 
+/**
+ * Left drawer
+ */
 interface RouteStruct {
     id: string
     path: string
@@ -20,6 +27,7 @@ interface RouteStruct {
     leftDrawer?: {
         enable: boolean
         label: string
+        comingSoonLabel?: string
     }
     matchLeftDrawerID?: string
 }
@@ -33,8 +41,9 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         requireAuth: false,
         requireFaction: false,
         leftDrawer: {
-            enable: true,
+            enable: BATTLE_ARENA_OPEN,
             label: "Battle Arena",
+            comingSoonLabel: "Returning Soon",
         },
         matchLeftDrawerID: "home",
     },
@@ -124,6 +133,16 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         matchLeftDrawerID: "marketplace",
     },
 
+    // Player profile
+    player_profile: {
+        id: "profile",
+        path: "/profile/:playerGID",
+        exact: true,
+        Component: PlayerProfilePage,
+        requireAuth: false,
+        requireFaction: false,
+    },
+
     // Contract
     contracts: {
         id: "contracts",
@@ -161,30 +180,39 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
     },
 }
 
-// Specifically used for right drawer navigation
+export const ROUTES_ARRAY: RouteStruct[] = []
+for (const [, value] of Object.entries(ROUTES_MAP)) {
+    ROUTES_ARRAY.push(value)
+}
 
+/**
+ * Right drawer
+ */
 export enum RightDrawerHashes {
     None = "",
     LiveChat = "#live_chat",
     PlayerList = "#player_list",
 }
 
-interface HashRouteStruct {
+export interface HashRouteStruct {
     id: string
     hash: string
     Component?: () => JSX.Element
     icon: string | React.ReactElement<unknown, string | React.JSXElementConstructor<unknown>>
-    enable: boolean
     label: string
+    mountAllTime?: boolean
+    requireAuth: boolean
 }
 
-const HASH_ROUTES_MAP: { [name: string]: HashRouteStruct } = {
+export const HASH_ROUTES_MAP: { [name: string]: HashRouteStruct } = {
     live_chat: {
         id: "live_chat",
         hash: RightDrawerHashes.LiveChat,
         icon: <SvgChat size="1rem" sx={{ pt: ".3rem" }} />,
-        enable: true,
         label: "Live Chat",
+        Component: LiveChat,
+        requireAuth: false,
+        mountAllTime: true,
     },
     active_players: {
         id: "active_players",
@@ -194,14 +222,11 @@ const HASH_ROUTES_MAP: { [name: string]: HashRouteStruct } = {
                 <Box sx={{ width: ".8rem", height: ".8rem", borderRadius: "50%", backgroundColor: colors.green }} />
             </Box>
         ),
-        enable: true,
         label: "Active Players",
+        Component: PlayerList,
+        requireAuth: true,
+        mountAllTime: false,
     },
-}
-
-export const ROUTES_ARRAY: RouteStruct[] = []
-for (const [, value] of Object.entries(ROUTES_MAP)) {
-    ROUTES_ARRAY.push(value)
 }
 
 export const HASH_ROUTES_ARRAY: HashRouteStruct[] = []

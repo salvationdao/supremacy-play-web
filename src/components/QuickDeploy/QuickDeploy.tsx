@@ -2,9 +2,9 @@ import { Box, CircularProgress, Fade, IconButton, Pagination, Stack, Typography 
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { MoveableResizable, TooltipHelper } from ".."
 import { SvgNotification, SvgSupToken } from "../../assets"
-import { useAuth } from "../../containers"
+import { useAuth, useMobile } from "../../containers"
 import { useTheme } from "../../containers/theme"
-import { parseString, supFormatter } from "../../helpers"
+import { parseString } from "../../helpers"
 import { usePagination, useToggle } from "../../hooks"
 import { useGameServerCommandsUser, useGameServerSubscriptionFaction } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
@@ -43,6 +43,7 @@ export const QuickDeploy = ({ open, onClose }: { open: boolean; onClose: () => v
 }
 
 const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
+    const { isMobile } = useMobile()
     const theme = useTheme()
     const { send } = useGameServerCommandsUser("/user_commander")
     const [preferencesModalOpen, togglePreferencesModalOpen] = useToggle()
@@ -104,9 +105,9 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
 
     const config: MoveableResizableConfig = useMemo(
         () => ({
-            localStoragePrefix: "quickDeploy",
+            localStoragePrefix: "quickDeploy1",
             // Defaults
-            defaultPosX: 330,
+            defaultPosX: 9999,
             defaultPosY: 0,
             defaultWidth: 420,
             defaultHeight: 580,
@@ -126,13 +127,17 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
     )
 
     const queueLength = queueFeed?.queue_length || 0
-    const contractReward = queueFeed?.contract_reward || ""
-    const queueCost = queueFeed?.queue_cost || ""
 
     return (
         <>
             <Fade in>
-                <Box>
+                <Box
+                    sx={{
+                        ...(isMobile
+                            ? { m: "1rem", mb: "2rem", backgroundColor: "#FFFFFF12", boxShadow: 2, border: "#FFFFFF20 1px solid", height: "100%" }
+                            : {}),
+                    }}
+                >
                     <MoveableResizable config={config}>
                         <Stack
                             sx={{
@@ -156,27 +161,7 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
                                                 disableIcon
                                             />
                                         )}
-
-                                        {contractReward && (
-                                            <AmountItem
-                                                key={`${contractReward}-contract_reward`}
-                                                title={"REWARD: "}
-                                                color={colors.yellow}
-                                                value={supFormatter(contractReward, 2)}
-                                                tooltip="Your reward if your mech survives the battle giving your faction a victory."
-                                            />
-                                        )}
-
-                                        {queueCost && (
-                                            <AmountItem
-                                                title={"FEE: "}
-                                                color={colors.orange}
-                                                value={supFormatter(queueCost || "0", 2)}
-                                                tooltip="The cost to place your war machine into the battle queue."
-                                            />
-                                        )}
-
-                                        <IconButton size="small" sx={{ ml: "auto !important" }} onClick={() => togglePreferencesModalOpen(true)}>
+                                        <IconButton size="small" onClick={() => togglePreferencesModalOpen(true)}>
                                             <SvgNotification size="1.3rem" />
                                         </IconButton>
                                     </Stack>

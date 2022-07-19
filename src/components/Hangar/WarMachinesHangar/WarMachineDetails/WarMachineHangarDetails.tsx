@@ -20,6 +20,7 @@ import { RentalModal } from "./Modals/RentalModal"
 import { MechViewer } from "./MechViewer"
 import { MechLoadout } from "./MechLoadout"
 import { MechBattleHistoryDetails } from "../../../Marketplace/WarMachinesMarket/WarMachineMarketDetails/MechBattleHistoryDetails"
+import { BATTLE_ARENA_OPEN } from "../../../../constants"
 
 export const WarMachineHangarDetails = ({ mechID }: { mechID: string }) => {
     const [selectedMechDetails, setSelectedMechDetails] = useState<MechDetails>()
@@ -36,7 +37,7 @@ export const WarMachineHangarDetails = ({ mechID }: { mechID: string }) => {
                 setLeaveMechModalOpen={setLeaveMechModalOpen}
                 setRentalMechModalOpen={setRentalMechModalOpen}
             />
-            {selectedMechDetails && deployMechModalOpen && (
+            {BATTLE_ARENA_OPEN && selectedMechDetails && deployMechModalOpen && (
                 <DeployModal
                     selectedMechDetails={selectedMechDetails}
                     deployMechModalOpen={deployMechModalOpen}
@@ -118,6 +119,7 @@ export const WarMachineHangarDetailsInner = ({
     const primaryColor = theme.factionTheme.primary
     const backgroundColor = theme.factionTheme.background
     const avatarUrl = mechDetails?.chassis_skin?.avatar_url || mechDetails?.avatar_url
+    const imageUrl = mechDetails?.chassis_skin?.image_url || mechDetails?.image_url
 
     return (
         <Stack direction="row" spacing="1rem" sx={{ height: "100%" }}>
@@ -140,7 +142,7 @@ export const WarMachineHangarDetailsInner = ({
                 <Stack sx={{ height: "100%" }}>
                     <ClipThing clipSize="10px" corners={{ topRight: true }} opacity={0.7} sx={{ flexShrink: 0 }}>
                         <Box sx={{ position: "relative", borderBottom: `${primaryColor}60 2.2px solid` }}>
-                            <MediaPreview imageUrl={avatarUrl} objectFit="cover" objectPosition="50% 40%" />
+                            <MediaPreview imageUrl={avatarUrl || imageUrl} objectFit="cover" objectPosition="50% 40%" />
 
                             <Box sx={{ position: "absolute", bottom: ".8rem", left: "1.2rem", minWidth: "10rem", backgroundColor: `${backgroundColor}DF` }}>
                                 <MechGeneralStatus mechID={mechID} />

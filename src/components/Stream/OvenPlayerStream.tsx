@@ -1,8 +1,7 @@
 import { Stack } from "@mui/material"
 import OvenPlayer from "ovenplayer"
 import { useEffect, useRef } from "react"
-import { STREAM_ASPECT_RATIO_W_H } from "../../constants"
-import { useDimension, useSnackbar, useStream } from "../../containers"
+import { useSnackbar, useStream } from "../../containers"
 import { parseString } from "../../helpers"
 import { siteZIndex } from "../../theme/theme"
 import { StreamService } from "../../types"
@@ -72,7 +71,6 @@ interface OvenPlayerInstance {
 
 export const OvenplayerStream = () => {
     const { newSnackbarMessage } = useSnackbar()
-    const { iframeDimensions } = useDimension()
     const { isMute, volume, currentStream, setCurrentPlayingStreamHost } = useStream()
     const ovenPlayer = useRef<OvenPlayerInstance>()
 
@@ -134,6 +132,7 @@ export const OvenplayerStream = () => {
         <Stack
             key={currentStream?.stream_id}
             sx={{
+                position: "relative",
                 width: "100%",
                 height: "100%",
                 zIndex: siteZIndex.Stream,
@@ -142,12 +141,10 @@ export const OvenplayerStream = () => {
                 },
                 video: {
                     position: "absolute !important",
-                    top: "50% !important",
-                    left: "50% !important",
-                    transform: "translate(-50%, -50%) !important",
-                    aspectRatio: `${STREAM_ASPECT_RATIO_W_H.toString()} !important`,
-                    width: `${iframeDimensions.width}${iframeDimensions.width == "unset" ? "" : "px "} !important`,
-                    height: `${iframeDimensions.height}${iframeDimensions.height == "unset" ? "" : "px "} !important`,
+                    width: "100% !important",
+                    height: "100% !important",
+                    objectFit: "cover !important",
+                    objectPosition: "center !important",
                     zIndex: siteZIndex.Stream,
                 },
                 ".op-ui": {

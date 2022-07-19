@@ -1,7 +1,7 @@
 import { Box } from "@mui/material"
 import BigNumber from "bignumber.js"
 import { useEffect, useMemo, useState } from "react"
-import { useGameServerSubscriptionAbilityFaction } from "../../../hooks/useGameServer"
+import { useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { GameAbility, GameAbilityProgress } from "../../../types"
 import { ProgressBar } from "../../Common/ProgressBar"
@@ -33,9 +33,9 @@ export const SkillBar = ({
     const costPercent = useMemo(() => (initialTargetCost.isZero() ? 0 : supsCost.dividedBy(initialTargetCost).toNumber() * 100), [initialTargetCost, supsCost])
 
     // Listen on current faction ability price change
-    useGameServerSubscriptionAbilityFaction<GameAbilityProgress | undefined>(
+    useGameServerSubscriptionFaction<GameAbilityProgress | undefined>(
         {
-            URI: `/mech/${participantID}`,
+            URI: `/mech/${participantID}/abilities`,
             key: GameServerKeys.SubAbilityProgress,
             ready: !!participantID,
         },
@@ -64,15 +64,7 @@ export const SkillBar = ({
 
     return useMemo(
         () => (
-            <Box
-                key={index}
-                style={{
-                    width: `${WIDTH_STAT_BAR}rem`,
-                    height: "100%",
-                    pointerEvents: "none",
-                    zIndex: 6,
-                }}
-            >
+            <Box key={index} style={{ height: "100%" }}>
                 <ProgressBar
                     percent={progressPercent}
                     linePercent={costPercent}

@@ -278,10 +278,12 @@ export const getMultiplierDeets = (multiplierKey: string): { image: string } => 
     return { image }
 }
 
-export const dateFormatter = (date: Date, showSeconds?: boolean): string => {
+export const dateFormatter = (date: Date, showSeconds?: boolean, showDate?: boolean): string => {
     let hours = date.getHours()
     const minutes = date.getMinutes()
     const seconds = date.getSeconds()
+    const day = date.getDate()
+    const month = date.getMonth()
 
     // Check whether AM or PM
     const suffix = hours >= 12 ? "PM" : "AM"
@@ -295,6 +297,8 @@ export const dateFormatter = (date: Date, showSeconds?: boolean): string => {
     const seconds2 = seconds < 10 ? "0" + seconds : seconds
 
     if (showSeconds) return `${hours}:${minutes2}:${seconds2} ${suffix}`
+
+    if (showDate) return `${hours}:${minutes2} ${suffix} ${day}/${month}`
 
     return `${hours}:${minutes2} ${suffix}`
 }
@@ -347,12 +351,12 @@ export const getMysteryCrateDeets = (mysteryCrateType: MysteryCrateType): { imag
     let desc = "Open a mystery crate to receive random weapon / war machine!"
 
     switch (mysteryCrateType) {
-        case "MECH":
+        case MysteryCrateType.Mech:
             image = SafePNG
             label = "WAR MACHINE CRATE"
             desc = "Get a random war machine to participate in the battle arena."
             break
-        case "WEAPON":
+        case MysteryCrateType.Weapon:
             image = SafePNG
             label = "WEAPON CRATE"
             desc = "Get a random weapon to equip onto your war machine."
@@ -535,3 +539,5 @@ export const getWeaponDamageTypeColor = (damageType: string | undefined) => {
             return colors.neonBlue
     }
 }
+
+export const closestAngle = (from: number, to: number) => from + ((((to - from) % 360) + 540) % 360) - 180

@@ -1,7 +1,7 @@
 import { Action } from "react-fetching-library"
-import { PASSPORT_SERVER_HOST, GAME_SERVER_HOSTNAME } from "../constants"
+import { GAME_SERVER_HOSTNAME, PASSPORT_SERVER_HOST } from "../constants"
 import { Fingerprint } from "../containers/fingerprint"
-import { Faction, Stream, User, WarMachineDestroyedRecord } from "../types"
+import { Faction, SaleAbilitiesAvailabilityResponse, Stream, User, WarMachineDestroyedRecord } from "../types"
 
 export const PassportLoginCheck = (): Action<User> => {
     return {
@@ -44,6 +44,15 @@ export const GetMechDestroyedInfo = (mechID: string): Action<WarMachineDestroyed
     return {
         method: "GET",
         endpoint: `/battle/mech/${mechID}/destroyed_detail`,
+        credentials: "include",
+        responseType: "json",
+    }
+}
+
+export const CanPlayerPurchase = (playerID: string): Action<SaleAbilitiesAvailabilityResponse> => {
+    return {
+        method: "GET",
+        endpoint: `/sale_abilities/availability/${playerID}`,
         credentials: "include",
         responseType: "json",
     }

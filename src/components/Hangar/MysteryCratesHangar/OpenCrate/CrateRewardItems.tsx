@@ -24,10 +24,11 @@ export const CrateRewardItemsLarge = ({ item }: CrateRewardItemsProps) => {
             }}
             opacity={0.8}
             backgroundColor={colors.black3}
+            sx={{ height: "100%" }}
         >
             <Stack sx={{ m: "1rem", width: "25rem" }}>
                 <Box sx={{ width: "100%", height: "22rem", mb: "1rem" }}>
-                    <MediaPreview imageUrl={item?.imageUrl || ""} videoUrls={[item?.animationUrl]} objectFit="cover" />
+                    <MediaPreview imageUrl={item?.imageUrl || item?.avatarUrl || ""} videoUrls={[item?.animationUrl]} objectFit="cover" />
                 </Box>
 
                 {rarityDeets && (item?.type === "mech_skin" || item?.type === "weapon_skin") && (
@@ -56,7 +57,7 @@ export const CrateRewardItemsSmall = ({ item }: CrateRewardItemsProps) => {
     return (
         <Stack direction="row" spacing="1rem">
             <Box sx={{ width: "6rem", height: "6rem", flexShrink: 0 }}>
-                <MediaPreview imageUrl={item?.avatarUrl || ""} videoUrls={[item?.animationUrl]} showBorder />
+                <MediaPreview imageUrl={item?.avatarUrl || item?.avatarUrl || ""} videoUrls={[item?.animationUrl]} showBorder />
             </Box>
 
             <Stack sx={{ py: ".6rem", maxWidth: "28rem" }}>

@@ -8,6 +8,7 @@ export const MechViewer = ({ mechDetails }: { mechDetails: MechDetails }) => {
 
     const backgroundColor = theme.factionTheme.background
     const skin = mechDetails.chassis_skin || mechDetails.default_chassis_skin
+    const avatarUrl = skin?.avatar_url || mechDetails.avatar_url
     const imageUrl = skin?.image_url || mechDetails.image_url
     const largeImageUrl = skin?.large_image_url || mechDetails.large_image_url
     const animationUrl = skin?.animation_url || mechDetails.animation_url
@@ -50,7 +51,12 @@ export const MechViewer = ({ mechDetails }: { mechDetails: MechDetails }) => {
                 }}
             >
                 <FeatherFade color={backgroundColor} />
-                <MediaPreview imageUrl={largeImageUrl || imageUrl} videoUrls={[animationUrl, cardAnimationUrl]} objectFit="contain" objectPosition="50% 8%" />
+                <MediaPreview
+                    imageUrl={largeImageUrl || imageUrl || avatarUrl}
+                    videoUrls={[animationUrl, cardAnimationUrl]}
+                    objectFit="contain"
+                    objectPosition="50% 8%"
+                />
             </Box>
         </Box>
     )

@@ -2,13 +2,14 @@ import { Slide, Stack } from "@mui/material"
 import { Box } from "@mui/system"
 import { useEffect, useMemo } from "react"
 import { SectionBottom, SectionMostFrequentAbilityExecutor, SectionMultipliers, SectionTopSups, SectionTopSupsFaction, SectionWinner } from ".."
-import { useGame, useOverlayToggles } from "../../containers"
+import { useGame, useMobile, useOverlayToggles } from "../../containers"
 import { shadeColor } from "../../helpers"
 import { colors, siteZIndex } from "../../theme/theme"
 
 export const BOTTOM_BUTTONS_HEIGHT = 5 //rems
 
 export const BattleEndScreen = () => {
+    const { isMobile } = useMobile()
     const { map, battleEndDetail } = useGame()
     const { isEndBattleDetailOpen, toggleIsEndBattleDetailOpen, toggleIsEndBattleDetailEnabled } = useOverlayToggles()
 
@@ -37,10 +38,10 @@ export const BattleEndScreen = () => {
     if (!battleEndDetail || !battleEndDetail.winning_faction) return null
 
     return (
-        <Slide key={battleEndDetail.battle_id} in={isEndBattleDetailOpen} direction="right">
+        <Slide key={battleEndDetail.battle_id} in={isEndBattleDetailOpen || isMobile} direction="right">
             <Box
                 sx={{
-                    position: "absolute",
+                    position: isMobile ? "unset" : "absolute",
                     top: 0,
                     bottom: 0,
                     left: 0,
@@ -48,14 +49,14 @@ export const BattleEndScreen = () => {
                     pr: ".8rem",
                     pt: "2.4rem",
                     pb: "1.2rem",
+                    height: "100%",
                     boxShadow: 20,
                     zIndex: siteZIndex.Popover,
-                    maxWidth: "48rem",
+                    maxWidth: isMobile ? "unset" : "48rem",
                     background: `linear-gradient(65deg, ${backgroundColor} 3%, ${backgroundColor}FF 50%, ${backgroundColor}EE)`,
                 }}
             >
                 <Stack
-                    spacing="3.2rem"
                     sx={{
                         height: `calc(100% - ${BOTTOM_BUTTONS_HEIGHT}rem)`,
                         pr: "1.76rem",
@@ -77,11 +78,15 @@ export const BattleEndScreen = () => {
                         },
                     }}
                 >
-                    <SectionMultipliers battleEndDetail={battleEndDetail} />
-                    <SectionWinner battleEndDetail={battleEndDetail} />
-                    <SectionTopSups battleEndDetail={battleEndDetail} />
-                    <SectionMostFrequentAbilityExecutor battleEndDetail={battleEndDetail} />
-                    <SectionTopSupsFaction battleEndDetail={battleEndDetail} />
+                    <Box sx={{ height: 0 }}>
+                        <Stack spacing="3.2rem">
+                            <SectionMultipliers battleEndDetail={battleEndDetail} />
+                            <SectionWinner battleEndDetail={battleEndDetail} />
+                            <SectionTopSups battleEndDetail={battleEndDetail} />
+                            <SectionMostFrequentAbilityExecutor battleEndDetail={battleEndDetail} />
+                            <SectionTopSupsFaction battleEndDetail={battleEndDetail} />
+                        </Stack>
+                    </Box>
                 </Stack>
 
                 <SectionBottom battleEndDetail={battleEndDetail} />

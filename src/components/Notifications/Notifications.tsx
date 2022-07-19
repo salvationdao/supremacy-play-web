@@ -14,8 +14,8 @@ import {
     WarMachineAbilityAlert,
     WarMachineAbilityAlertProps,
 } from ".."
-import { MINI_MAP_DEFAULT_SIZE, NOTIFICATION_LINGER, NOTIFICATION_TIME } from "../../constants"
-import { useDimension, useGame, useSupremacy } from "../../containers"
+import { NOTIFICATION_LINGER, NOTIFICATION_TIME } from "../../constants"
+import { useGame, useMobile, useSupremacy } from "../../containers"
 import { makeid } from "../../containers/ws/util"
 import { useArray } from "../../hooks"
 import { useGameServerSubscription, useGameServerSubscriptionFaction } from "../../hooks/useGameServer"
@@ -64,11 +64,9 @@ export interface NotificationResponse {
 }
 
 export const Notifications = () => {
+    const { isMobile } = useMobile()
     const { getFaction } = useSupremacy()
     const { setForceDisplay100Percentage } = useGame()
-    const {
-        gameUIDimensions: { height },
-    } = useDimension()
 
     // Notification array
     const { value: notifications, add: addNotification, removeByID } = useArray([], "notiID")
@@ -182,7 +180,7 @@ export const Notifications = () => {
             notifications
                 .filter((n) => !!n)
                 .reverse()
-                .slice(0, 5)
+                .slice(0, isMobile ? 2 : 5)
                 .map((n) => {
                     if (!n) return null
 
@@ -231,50 +229,52 @@ export const Notifications = () => {
                             )
                     }
                 }),
-        [getFaction, notifications],
+        [getFaction, isMobile, notifications],
     )
 
-    return <NotificationsInner height={height} notificationsJsx={notificationsJsx} />
+    return <NotificationsInner notificationsJsx={notificationsJsx} />
 }
 
-const NotificationsInner = ({ height, notificationsJsx }: { height: number; notificationsJsx: (JSX.Element | undefined | null)[] }) => {
+const NotificationsInner = ({ notificationsJsx }: { notificationsJsx: (JSX.Element | undefined | null)[] }) => {
+    const { isMobile } = useMobile()
     return (
         <Stack
             sx={{
                 position: "absolute",
+                height: "100%",
                 top: "1rem",
                 right: "1rem",
                 zIndex: siteZIndex.Notifications,
                 overflow: "hidden",
+                transform: isMobile ? "scale(.9)" : "unset",
+                transformOrigin: "top right",
             }}
         >
-            <Box>
-                <Box
-                    sx={{
-                        flex: 1,
-                        maxHeight: `calc(${height}px - ${MINI_MAP_DEFAULT_SIZE + 40 + 30}px)`,
-                        overflowY: "auto",
-                        overflowX: "hidden",
-                        pr: ".8rem",
-                        py: ".16rem",
-                        direction: "ltr",
+            <Box
+                sx={{
+                    flex: 1,
+                    height: "100%",
+                    overflowY: "auto",
+                    overflowX: "hidden",
+                    pr: ".8rem",
+                    py: ".16rem",
+                    direction: "ltr",
 
-                        "::-webkit-scrollbar": {
-                            width: ".4rem",
-                        },
-                        "::-webkit-scrollbar-track": {
-                            background: "#FFFFFF15",
-                            borderRadius: 3,
-                        },
-                        "::-webkit-scrollbar-thumb": {
-                            background: (theme) => theme.factionTheme.primary,
-                            borderRadius: 3,
-                        },
-                    }}
-                >
-                    <Box sx={{ direction: "ltr" }}>
-                        <Stack spacing=".48rem">{notificationsJsx}</Stack>
-                    </Box>
+                    "::-webkit-scrollbar": {
+                        width: ".4rem",
+                    },
+                    "::-webkit-scrollbar-track": {
+                        background: "#FFFFFF15",
+                        borderRadius: 3,
+                    },
+                    "::-webkit-scrollbar-thumb": {
+                        background: (theme) => theme.factionTheme.primary,
+                        borderRadius: 3,
+                    },
+                }}
+            >
+                <Box sx={{ direction: "ltr", height: 0 }}>
+                    <Stack spacing=".5rem">{notificationsJsx}</Stack>
                 </Box>
             </Box>
         </Stack>

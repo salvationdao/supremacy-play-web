@@ -23,8 +23,11 @@ const sortOptions = [
 
 interface GetMechsRequest {
     queue_sort: string
+    search: string
     page: number
     page_size: number
+    rarities: string[]
+    statuses: string[]
     include_market_listed: boolean
 }
 
@@ -63,8 +66,10 @@ export const WarMachinesHangar = () => {
             { value: MechStatusEnum.Battle, label: "IN BATTLE", color: colors.orange },
             { value: MechStatusEnum.Market, label: "MARKETPLACE", color: colors.red },
             { value: MechStatusEnum.Queue, label: "IN QUEUE", color: colors.yellow },
+            { value: MechStatusEnum.BattleReady, label: "BATTLE READY", color: colors.purple },
         ],
         initialSelected: status,
+        initialExpanded: true,
         onSetSelected: (value: string[]) => {
             setStatus(value)
             changePage(1)
@@ -87,6 +92,7 @@ export const WarMachinesHangar = () => {
             { value: "TITAN", ...getRarityDeets("TITAN") },
         ],
         initialSelected: rarities,
+        initialExpanded: true,
         onSetSelected: (value: string[]) => {
             setRarities(value)
             changePage(1)
@@ -102,6 +108,9 @@ export const WarMachinesHangar = () => {
 
             const resp = await send<GetMechsResponse, GetMechsRequest>(GameServerKeys.GetMechs, {
                 queue_sort: sortDir,
+                search,
+                rarities,
+                statuses: status,
                 page,
                 page_size: pageSize,
                 include_market_listed: true,
@@ -109,6 +118,9 @@ export const WarMachinesHangar = () => {
 
             updateQuery({
                 sort,
+                search,
+                rarities: rarities.join("||"),
+                statuses: status.join("||"),
                 page: page.toString(),
                 pageSize: pageSize.toString(),
             })
@@ -123,7 +135,7 @@ export const WarMachinesHangar = () => {
         } finally {
             setIsLoading(false)
         }
-    }, [send, page, pageSize, updateQuery, sort, setTotalItems])
+    }, [send, page, pageSize, search, rarities, status, updateQuery, sort, setTotalItems])
 
     useEffect(() => {
         getItems()

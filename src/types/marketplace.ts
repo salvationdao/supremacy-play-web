@@ -52,11 +52,22 @@ export interface MarketCrate {
     description: string
 }
 
+export interface MarketMech {
+    id: string
+    name: string
+    label: string
+    avatar_url: string
+}
+
 export interface MarketWeapon {
     id: string
     label: string
     weapon_type: string
     avatar_url: string
+    image_url: string
+    large_image_url: string
+    animation_url: string
+    large_animation_url: string
 }
 
 export interface MarketplaceBuyAuctionItem {
@@ -80,12 +91,7 @@ export interface MarketplaceBuyAuctionItem {
         avatar_url?: string
         large_image_url?: string
     }
-    mech?: {
-        id: string
-        name: string
-        label: string
-        avatar_url: string
-    }
+    mech?: MarketMech
     keycard?: MarketKeycard
     mystery_crate?: MarketCrate
     weapon?: MarketWeapon

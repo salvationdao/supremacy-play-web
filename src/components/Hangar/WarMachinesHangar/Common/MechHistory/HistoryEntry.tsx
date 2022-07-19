@@ -3,6 +3,7 @@ import { ClipThing } from "../../../.."
 import { SvgDeath, SvgGoldBars } from "../../../../../assets"
 import { timeSinceInWords } from "../../../../../helpers"
 import { fonts, colors } from "../../../../../theme/theme"
+import { MechDetails } from "../../../../../types"
 
 interface HistoryEntryProps {
     mapName: string
@@ -11,9 +12,10 @@ interface HistoryEntryProps {
     status: "won" | "lost" | "pending"
     kills: number
     date: Date
+    mech?: MechDetails
 }
 
-export const HistoryEntry = ({ status, mapName, mechSurvived, backgroundImage, kills, date }: HistoryEntryProps) => {
+export const HistoryEntry = ({ status, mapName, mechSurvived, backgroundImage, kills, date, mech }: HistoryEntryProps) => {
     let statusColor = colors.grey
     let statusText = "In Progress"
     switch (status) {
@@ -81,9 +83,11 @@ export const HistoryEntry = ({ status, mapName, mechSurvived, backgroundImage, k
                 />
 
                 <Box>
-                    <Typography variant="body2" sx={{ textTransform: "uppercase" }}>
-                        {mapName}
-                    </Typography>
+                    {mech && (
+                        <Typography variant="body1" sx={{ ontFamily: fonts.nostromoBlack, textTransform: "uppercase" }}>
+                            {mech.name || mech.label}
+                        </Typography>
+                    )}
 
                     <Typography variant="h6" sx={{ fontFamily: fonts.nostromoBlack }}>
                         {statusText}
@@ -106,6 +110,10 @@ export const HistoryEntry = ({ status, mapName, mechSurvived, backgroundImage, k
                 </Box>
 
                 <Stack alignItems="flex-end" alignSelf="center" sx={{ ml: "auto" }}>
+                    <Typography variant="body2" sx={{ textTransform: "uppercase" }}>
+                        {mapName}
+                    </Typography>
+
                     <Stack direction="row" spacing=".5rem" alignItems="center">
                         <Typography
                             sx={{

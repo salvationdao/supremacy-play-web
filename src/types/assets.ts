@@ -1,11 +1,16 @@
 import { Battle, Faction, User, Vector2i } from "."
 
+export interface SaleAbilitiesAvailabilityResponse {
+    can_purchase: boolean
+}
+
 export enum MechStatusEnum {
     Idle = "IDLE",
     Queue = "QUEUE",
     Battle = "BATTLE",
     Market = "MARKET",
     Sold = "SOLD",
+    BattleReady = "BATTLE_READY",
 }
 
 export enum WeaponType {
@@ -87,6 +92,7 @@ export interface MechDetails extends MechBasic {
     power_core?: PowerCore
     weapons: Weapon[]
     utility: Utility[]
+    battle_ready: boolean
 }
 
 export interface BlueprintMech {
@@ -193,6 +199,7 @@ export interface Weapon extends Collection {
     blueprint_id: string
     default_damage_type: string
     genesis_token_id?: number
+    equipped_on?: string
     weapon_type: string
     damage_falloff?: number
     damage_falloff_rate?: number
@@ -206,6 +213,8 @@ export interface Weapon extends Collection {
     weapon_skin?: WeaponSkin
     updated_at: Date
     created_at: Date
+    market_locked: boolean
+    item_sale_id?: string
 }
 
 export interface WeaponSkin extends Collection {
@@ -289,6 +298,7 @@ export interface BattleMechHistory {
     faction_won?: boolean
     mech_survived?: boolean
     battle?: Battle
+    mech?: MechDetails
 }
 
 export interface BattleMechHistoryIdentifier {
@@ -309,6 +319,10 @@ export interface BattleMechStats {
         kill_percentile: number
         survival_percentile: number
     }
+}
+
+export interface AbilityDetail {
+    radius: number
 }
 
 export interface WarMachineState {
@@ -361,7 +375,10 @@ export interface RepairStatus {
     full_repair_fee: string
 }
 
-export type MysteryCrateType = "MECH" | "WEAPON"
+export enum MysteryCrateType {
+    Mech = "MECH",
+    Weapon = "WEAPON",
+}
 
 export interface StorefrontMysteryCrate {
     id: string

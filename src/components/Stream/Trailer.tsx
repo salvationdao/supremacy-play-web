@@ -1,21 +1,21 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { Dispatch, SetStateAction, useCallback, useEffect, useRef } from "react"
+import { useCallback, useEffect, useRef } from "react"
 import { FancyButton } from ".."
-import { SvgPlay, TrailerThumbPNG } from "../../assets"
+import { TrailerThumbPNG } from "../../assets"
 import { TRAILER_VIDEO } from "../../constants"
-import { useStream } from "../../containers"
+import { useOverlayToggles, useStream } from "../../containers"
 import { useToggle } from "../../hooks"
-import { colors, siteZIndex } from "../../theme/theme"
+import { fonts, siteZIndex } from "../../theme/theme"
 
-export const Trailer = ({ watchedTrailer, setWatchedTrailer }: { watchedTrailer: boolean; setWatchedTrailer: Dispatch<SetStateAction<boolean>> }) => {
+export const Trailer = () => {
+    const { toggleShowTrailer } = useOverlayToggles()
     const vidRef = useRef<HTMLVideoElement>(null)
     const { isMute, volume } = useStream()
     const [isPlaying, toggleIsPlaying] = useToggle()
 
     const onEnded = useCallback(() => {
-        setWatchedTrailer(true)
-        if (!watchedTrailer) localStorage.setItem("watchedTrailer", "true")
-    }, [setWatchedTrailer, watchedTrailer])
+        toggleShowTrailer(false)
+    }, [toggleShowTrailer])
 
     const onPlayClick = useCallback(() => {
         vidRef.current && vidRef.current.play()
@@ -50,6 +50,7 @@ export const Trailer = ({ watchedTrailer, setWatchedTrailer }: { watchedTrailer:
             >
                 {!isPlaying ? (
                     <Box
+                        onClick={onPlayClick}
                         sx={{
                             position: "absolute",
                             top: 0,
@@ -62,49 +63,21 @@ export const Trailer = ({ watchedTrailer, setWatchedTrailer }: { watchedTrailer:
                             backgroundSize: "contain",
                             zIndex: 2,
                         }}
-                    >
-                        <Box
-                            sx={{
-                                position: "absolute",
-                                top: "50%",
-                                left: "50%",
-                                transform: "translate(-50%, -50%)",
-                            }}
-                        >
-                            <FancyButton
-                                clipThingsProps={{
-                                    clipSize: "9px",
-                                    backgroundColor: colors.darkNeonBlue,
-                                    opacity: 1,
-                                    border: { isFancy: true, borderColor: colors.darkNeonBlue, borderThickness: "2px" },
-                                    sx: { position: "relative" },
-                                }}
-                                sx={{ px: "1.6rem", py: ".6rem", color: "#FFFFFF" }}
-                                onClick={onPlayClick}
-                            >
-                                <Stack spacing=".9rem" direction="row" alignItems="center">
-                                    <SvgPlay size="1.9rem" />
-                                    <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
-                                        WATCH TRAILER TO ENTER
-                                    </Typography>
-                                </Stack>
-                            </FancyButton>
-                        </Box>
-                    </Box>
+                    />
                 ) : (
                     <FancyButton
                         clipThingsProps={{
                             clipSize: "9px",
                             backgroundColor: "#222222",
                             opacity: 0.8,
-                            border: { isFancy: true, borderColor: colors.offWhite, borderThickness: "1px" },
+                            border: { borderColor: "#FFFFFF", borderThickness: "1px" },
                             sx: { position: "absolute", bottom: "3rem", right: "3rem", zIndex: 9 },
                         }}
-                        sx={{ px: "1.6rem", py: ".3rem", color: colors.offWhite }}
+                        sx={{ px: "1.6rem", py: ".3rem", color: "#FFFFFF" }}
                         onClick={onEnded}
                     >
-                        <Typography variant="body2" sx={{ fontWeight: "fontWeightBold", color: colors.offWhite }}>
-                            SKIP
+                        <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack, color: "#FFFFFF" }}>
+                            CLOSE
                         </Typography>
                     </FancyButton>
                 )}

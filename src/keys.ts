@@ -5,6 +5,7 @@ export enum GameServerKeys {
     SubMechLiveStats = "WAR:MACHINE:STAT:UPDATED",
     SubBattleAbilityProgress = "BATTLE:ABILITY:PROGRESS:BAR:UPDATED",
     SubAbilityProgress = "ABILITY:PRICE:UPDATED",
+    SubMechAbilityCoolDown = "WAR:MACHINE:ABILITY:SUBSCRIBE",
 
     // Auth container
     UserSubscribe = "USER:SUBSCRIBE",
@@ -27,6 +28,7 @@ export enum GameServerKeys {
     SubWarMachineAbilitiesUpdated = "WAR:MACHINE:ABILITIES:UPDATED",
     ContributeFactionUniqueAbility = "FACTION:UNIQUE:ABILITY:CONTRIBUTE",
     BribeBattleAbility = "BATTLE:ABILITY:BRIBE",
+    TriggerWarMachineAbility = "WAR:MACHINE:ABILITY:TRIGGER",
     SubmitAbilityLocationSelect = "ABILITY:LOCATION:SELECT",
 
     SubMechCommands = "MECH:COMMANDS:SUBSCRIBE",
@@ -141,6 +143,14 @@ export enum GameServerKeys {
     // Keycards
     GetPlayerKeycards = "PLAYER:ASSET:KEYCARD:LIST",
     GetPlayerKeycard = "PLAYER:ASSET:KEYCARD:GET",
+
+    // Player profile
+    PlayerProfileGet = "PLAYER:PROFILE:GET",
+    PlayerProfileUpdateUsername = "PLAYER:UPDATE:USERNAME",
+    PlayerProfileUpdateAboutMe = "PLAYER:UPDATE:ABOUT_ME",
+    PlayerAssetMechListPublic = "PLAYER:ASSET:MECH:LIST:PUBLIC",
+    PlayerAssetMechDetailPublic = "PLAYER:ASSET:MECH:DETAIL:PUBLIC",
+    PlayerBattleMechHistoryList = "PLAYER:BATTLE:MECH:HISTORY:LIST",
 }
 
 export enum PassportServerKeys {

@@ -1,7 +1,6 @@
 import { Stack } from "@mui/material"
 import { useCallback, useEffect, useRef, useState } from "react"
-import { STREAM_ASPECT_RATIO_W_H } from "../../constants"
-import { useDimension, useSnackbar, useStream } from "../../containers"
+import { useSnackbar, useStream } from "../../containers"
 import { parseString } from "../../helpers"
 import { siteZIndex } from "../../theme/theme"
 import { StreamService } from "../../types"
@@ -15,7 +14,6 @@ declare global {
 
 export const SLPDStream = () => {
     const { newSnackbarMessage } = useSnackbar()
-    const { iframeDimensions } = useDimension()
     const { isMute, volume, currentStream, setCurrentPlayingStreamHost, setResolutions, setSelectedResolution, selectedResolution, currentPlayingStreamHost } =
         useStream()
     const [isScriptLoaded, setIsScriptLoaded] = useState(false)
@@ -65,7 +63,12 @@ export const SLPDStream = () => {
             setResolutions((prev) => {
                 if (!prev || prev.length <= 0) {
                     const resolutions = [1080, 720, 480, 360, 240]
-                    setSelectedResolution(Math.max.apply(null, resolutions))
+                    const prevResolution = parseInt(localStorage.getItem(`${currentStream.host}-resolution`) || "0")
+                    if (prevResolution && resolutions.includes(prevResolution)) {
+                        setSelectedResolution(prevResolution)
+                    } else {
+                        setSelectedResolution(Math.max.apply(null, resolutions))
+                    }
                     return resolutions
                 }
                 return prev
@@ -102,6 +105,7 @@ export const SLPDStream = () => {
         <Stack
             key={currentStream?.stream_id}
             sx={{
+                position: "relative",
                 width: "100%",
                 height: "100%",
                 zIndex: siteZIndex.Stream,
@@ -111,12 +115,10 @@ export const SLPDStream = () => {
                 },
                 video: {
                     position: "absolute !important",
-                    top: "50% !important",
-                    left: "50% !important",
-                    transform: "translate(-50%, -50%) !important",
-                    aspectRatio: `${STREAM_ASPECT_RATIO_W_H.toString()} !important`,
-                    width: `${iframeDimensions.width}${iframeDimensions.width == "unset" ? "" : "px "} !important`,
-                    height: `${iframeDimensions.height}${iframeDimensions.height == "unset" ? "" : "px "} !important`,
+                    width: "100% !important",
+                    height: "100% !important",
+                    objectFit: "cover !important",
+                    objectPosition: "center !important",
                     zIndex: siteZIndex.Stream,
                 },
                 ".op-ui": {

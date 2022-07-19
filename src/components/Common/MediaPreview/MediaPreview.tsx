@@ -49,9 +49,12 @@ export const MediaPreview = ({
                         objectFit: objectFit || "contain",
                         objectPosition: objectPosition || "center",
                     }}
+                    disablePictureInPicture
+                    disableRemotePlayback
                     loop
                     muted
                     autoPlay
+                    controls={false}
                     poster={`${imageUrl}`}
                 >
                     {videoUrlsFilters.map((videoUrl, i) => videoUrl && <source key={videoUrl + i} src={videoUrl} type="video/mp4" />)}

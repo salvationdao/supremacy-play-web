@@ -2,22 +2,22 @@ import { Box, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
 import { useLocation } from "react-router-dom"
 import { FancyButton } from "../.."
+import { SvgDropdownArrow } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
-import { getRarityDeets, getWeaponDamageTypeColor, getWeaponTypeColor } from "../../../helpers"
+import { getRarityDeets, getWeaponDamageTypeColor, getWeaponTypeColor, shadeColor } from "../../../helpers"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { Weapon } from "../../../types"
 import { MediaPreview } from "../../Common/MediaPreview/MediaPreview"
 import { General } from "../../Marketplace/Common/MarketItem/General"
+import { WeaponBarStats } from "./Common/WeaponBarStats"
 
 export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGridView?: boolean }) => {
     const location = useLocation()
     const theme = useTheme()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [weaponDetails, setWeaponDetails] = useState<Weapon>()
-
-    const rarityDeets = useMemo(() => getRarityDeets(weaponDetails?.weapon_skin?.tier || ""), [weaponDetails])
 
     useEffect(() => {
         ;(async () => {
@@ -34,13 +34,16 @@ export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGri
     }, [weapon.id, send])
 
     const primaryColor = theme.factionTheme.primary
+    const secondaryColor = theme.factionTheme.secondary
     const backgroundColor = theme.factionTheme.background
-    const imageUrl = weaponDetails?.weapon_skin?.avatar_url || weaponDetails?.avatar_url || weapon.avatar_url
+    const avatarUrl = weaponDetails?.weapon_skin?.avatar_url || weaponDetails?.avatar_url || weapon.avatar_url
+    const imageUrl = weaponDetails?.weapon_skin?.image_url || weaponDetails?.image_url || weapon.image_url
     const largeImageUrl = weaponDetails?.weapon_skin?.large_image_url || weaponDetails?.large_image_url || weapon.large_image_url
 
     return (
         <Box sx={{ position: "relative", overflow: "visible", height: "100%" }}>
             <FancyButton
+                disableRipple
                 clipThingsProps={{
                     clipSize: "7px",
                     clipSlantSize: "0px",
@@ -65,7 +68,7 @@ export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGri
                         p: isGridView ? ".5rem .6rem" : ".1rem .3rem",
                         display: isGridView ? "block" : "grid",
                         gridTemplateRows: "7rem",
-                        gridTemplateColumns: `8rem auto repeat(4, 20rem)`, // hard-coded to have 7 columns, adjust as required
+                        gridTemplateColumns: `8rem auto 20rem 30rem`, // hard-coded to have 7 columns, adjust as required
                         gap: "1.4rem",
                         ...(isGridView
                             ? {
@@ -83,41 +86,16 @@ export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGri
                             width: "100%",
                         }}
                     >
-                        <MediaPreview imageUrl={imageUrl || largeImageUrl} objectFit={isGridView ? "cover" : "contain"} />
+                        <MediaPreview imageUrl={imageUrl || avatarUrl} objectFit={isGridView ? "cover" : "contain"} />
                     </Box>
 
-                    <Stack>
-                        <Typography
-                            variant="body2"
-                            sx={{
-                                mb: ".2rem",
-                                color: getWeaponTypeColor(weaponDetails?.weapon_type),
-                                fontFamily: fonts.nostromoBlack,
-                                display: "-webkit-box",
-                                overflow: "hidden",
-                                overflowWrap: "anywhere",
-                                textOverflow: "ellipsis",
-                                WebkitLineClamp: 1, // change to max number of lines
-                                WebkitBoxOrient: "vertical",
-                            }}
-                        >
-                            {weaponDetails?.weapon_type}
-                        </Typography>
-
-                        <Typography
-                            sx={{
-                                fontFamily: fonts.nostromoBlack,
-                                display: "-webkit-box",
-                                overflow: "hidden",
-                                overflowWrap: "anywhere",
-                                textOverflow: "ellipsis",
-                                WebkitLineClamp: 1, // change to max number of lines
-                                WebkitBoxOrient: "vertical",
-                            }}
-                        >
-                            {weaponDetails?.label}
-                        </Typography>
-                    </Stack>
+                    <WeaponCommonArea
+                        isGridView={isGridView}
+                        weapon={weapon}
+                        weaponDetails={weaponDetails}
+                        primaryColor={primaryColor}
+                        secondaryColor={secondaryColor}
+                    />
 
                     <General title="DAMAGE TYPE">
                         <Typography variant="h6" sx={{ color: getWeaponDamageTypeColor(weaponDetails?.default_damage_type), fontWeight: "fontWeightBold" }}>
@@ -125,31 +103,8 @@ export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGri
                         </Typography>
                     </General>
 
-                    <General isGridView={isGridView} title="SUBMODEL">
-                        {weaponDetails?.weapon_skin ? (
-                            <Stack spacing=".5rem">
-                                <Typography variant="h6" sx={{ lineHeight: 1, color: colors.chassisSkin, fontWeight: "fontWeightBold" }}>
-                                    {weaponDetails?.weapon_skin.label}
-                                </Typography>
-                                <Typography sx={{ lineHeight: 1, color: rarityDeets.color, fontWeight: "fontWeightBold" }}>{rarityDeets.label}</Typography>
-                            </Stack>
-                        ) : (
-                            <Typography variant="h6" sx={{ color: colors.darkGrey, fontWeight: "fontWeightBold" }}>
-                                NOT EQUIPPED
-                            </Typography>
-                        )}
-                    </General>
-
-                    <General title="DAMAGE">
-                        <Typography variant="h6" sx={{ color: colors.lightNeonBlue, fontWeight: "fontWeightBold" }}>
-                            {weaponDetails?.damage}
-                        </Typography>
-                    </General>
-
-                    <General title="ENERGY COST">
-                        <Typography variant="h6" sx={{ color: colors.lightNeonBlue, fontWeight: "fontWeightBold" }}>
-                            {weaponDetails?.energy_cost}
-                        </Typography>
+                    <General isGridView={isGridView} title="STATS">
+                        <WeaponBarStats fontSize="1.5rem" weapon={weapon} color={primaryColor} iconVersion />
                     </General>
                 </Box>
 
@@ -182,5 +137,166 @@ export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGri
                 />
             </FancyButton>
         </Box>
+    )
+}
+
+export const WeaponCommonArea = ({
+    primaryColor,
+    secondaryColor,
+    isGridView,
+    weapon,
+    weaponDetails,
+    isExpanded,
+    toggleIsExpanded,
+}: {
+    primaryColor: string
+    secondaryColor: string
+    isGridView?: boolean
+    weapon?: Weapon
+    weaponDetails?: Weapon
+    isExpanded?: boolean
+    toggleIsExpanded?: (value?: boolean) => void
+}) => {
+    const rarityDeets = useMemo(() => getRarityDeets(weaponDetails?.weapon_skin?.tier || ""), [weaponDetails])
+    const backgroundColor = useMemo(() => shadeColor(primaryColor, -90), [primaryColor])
+
+    const weap = weapon || weaponDetails
+
+    return (
+        <Stack
+            spacing={isGridView ? ".1rem" : ".6rem"}
+            sx={{
+                position: "relative",
+                pr: toggleIsExpanded ? "3rem" : "unset",
+                ":hover": {
+                    ".expandArrow": {
+                        transform: "translateX(4px)",
+                    },
+                },
+            }}
+            onClick={(e) => {
+                if (!toggleIsExpanded) return
+                e.preventDefault()
+                e.stopPropagation()
+                toggleIsExpanded()
+            }}
+        >
+            <Typography
+                variant="body2"
+                sx={{
+                    color: getWeaponTypeColor(weaponDetails?.weapon_type),
+                    fontFamily: fonts.nostromoBold,
+                    display: "-webkit-box",
+                    overflow: "hidden",
+                    overflowWrap: "anywhere",
+                    textOverflow: "ellipsis",
+                    WebkitLineClamp: 1, // change to max number of lines
+                    WebkitBoxOrient: "vertical",
+                }}
+            >
+                {weaponDetails?.weapon_type}
+            </Typography>
+
+            <Typography
+                sx={{
+                    fontFamily: fonts.nostromoBlack,
+                    display: "-webkit-box",
+                    overflow: "hidden",
+                    overflowWrap: "anywhere",
+                    textOverflow: "ellipsis",
+                    WebkitLineClamp: 1, // change to max number of lines
+                    WebkitBoxOrient: "vertical",
+                }}
+            >
+                {weaponDetails?.label}
+            </Typography>
+
+            <Stack direction="row" spacing=".5rem">
+                <Typography
+                    sx={{
+                        lineHeight: 1,
+                        fontWeight: "fontWeightBold",
+                        color: colors.offWhite,
+                        display: "-webkit-box",
+                        overflow: "hidden",
+                        overflowWrap: "anywhere",
+                        textOverflow: "ellipsis",
+                        WebkitLineClamp: 1,
+                        WebkitBoxOrient: "vertical",
+                    }}
+                >
+                    SUBMODEL:{" "}
+                    {weaponDetails?.weapon_skin ? (
+                        <>
+                            <span style={{ color: colors.chassisSkin }}>{weaponDetails?.weapon_skin.label}</span>{" "}
+                            <span style={{ color: rarityDeets.color }}>({rarityDeets.label})</span>
+                        </>
+                    ) : (
+                        <span style={{ color: colors.darkGrey }}>NOT EQUIPPED</span>
+                    )}
+                </Typography>
+            </Stack>
+
+            {toggleIsExpanded && !isGridView && (
+                <Stack
+                    direction="row"
+                    sx={{
+                        position: "absolute",
+                        top: "-2rem",
+                        left: "calc(100% - 3rem)",
+                        bottom: "-1rem",
+                    }}
+                >
+                    <Stack
+                        className="expandArrow"
+                        alignItems="center"
+                        justifyContent="center"
+                        sx={{
+                            px: ".6rem",
+                            background: isExpanded ? `${primaryColor}CC` : `linear-gradient(to right, #FFFFFF00, ${primaryColor}50 80%, #FFFFFF00)`,
+                            transition: "all .2s",
+                        }}
+                    >
+                        <SvgDropdownArrow
+                            size="1.3rem"
+                            fill={isExpanded ? secondaryColor : "#FFFFFF95"}
+                            sx={{ transform: isExpanded ? "rotate(90deg)" : "rotate(-90deg)" }}
+                        />
+                    </Stack>
+
+                    <Box
+                        sx={{
+                            backgroundColor,
+                            zIndex: 99,
+                            width: isExpanded ? "100%" : 0,
+                            minWidth: isExpanded ? "100%" : 0,
+                            overflow: "hidden",
+                            transition: "all .3s",
+                            border: isExpanded ? `${primaryColor}CC 1px solid` : "unset",
+                            borderLeft: "unset",
+                        }}
+                    >
+                        <Stack direction="row" spacing="4rem" sx={{ p: "1.5rem 2.1rem" }}>
+                            <General title="DAMAGE TYPE">
+                                <Typography
+                                    variant="h6"
+                                    sx={{ color: getWeaponDamageTypeColor(weaponDetails?.default_damage_type), fontWeight: "fontWeightBold" }}
+                                >
+                                    {weaponDetails?.default_damage_type}
+                                </Typography>
+                            </General>
+
+                            {weap && (
+                                <General isGridView={isGridView} title="STATS">
+                                    <Box sx={{ width: "40rem" }}>
+                                        <WeaponBarStats fontSize="1.4rem" weapon={weap} color={primaryColor} iconVersion />
+                                    </Box>
+                                </General>
+                            )}
+                        </Stack>
+                    </Box>
+                </Stack>
+            )}
+        </Stack>
     )
 }

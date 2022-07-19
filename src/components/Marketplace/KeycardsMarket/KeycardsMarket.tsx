@@ -59,6 +59,7 @@ export const KeycardsMarket = () => {
         label: "STATUS",
         options: [{ value: "true", label: "SOLD", color: colors.marketSold }],
         initialSelected: status,
+        initialExpanded: true,
         onSetSelected: (value: string[]) => {
             setStatus(value)
             changePage(1)
@@ -71,6 +72,7 @@ export const KeycardsMarket = () => {
             { value: "others", label: "OTHERS", color: theme.factionTheme.primary, textColor: theme.factionTheme.secondary },
         ],
         initialSelected: ownedBy,
+        initialExpanded: true,
         onSetSelected: (value: string[]) => {
             setOwnedBy(value)
             changePage(1)
@@ -80,6 +82,7 @@ export const KeycardsMarket = () => {
     const priceRangeFilter = useRef<RangeFilter>({
         label: "PRICE RANGE",
         initialValue: price,
+        initialExpanded: true,
         onSetValue: (value: (number | undefined)[]) => {
             setPrice(value)
             changePage(1)
@@ -241,7 +244,33 @@ export const KeycardsMarket = () => {
                 chipFilters={[statusFilterSection.current, ownedByFilterSection.current]}
                 rangeFilters={[priceRangeFilter.current]}
                 changePage={changePage}
-            />
+            >
+                <Box sx={{ p: ".8rem 1rem" }}>
+                    <FancyButton
+                        clipThingsProps={{
+                            clipSize: "6px",
+                            clipSlantSize: "0px",
+                            corners: { topLeft: true, topRight: true, bottomLeft: true, bottomRight: true },
+                            backgroundColor: colors.red,
+                            opacity: 1,
+                            border: { isFancy: true, borderColor: colors.red, borderThickness: "2px" },
+                            sx: { position: "relative" },
+                        }}
+                        sx={{ px: "1.6rem", py: ".7rem", color: "#FFFFFF" }}
+                        to={`/marketplace/sell${location.hash}`}
+                    >
+                        <Typography
+                            variant="caption"
+                            sx={{
+                                color: "#FFFFFF",
+                                fontFamily: fonts.nostromoBlack,
+                            }}
+                        >
+                            SELL ITEM
+                        </Typography>
+                    </FancyButton>
+                </Box>
+            </SortAndFilters>
 
             <ClipThing
                 clipSize="10px"
@@ -255,29 +284,7 @@ export const KeycardsMarket = () => {
             >
                 <Stack sx={{ position: "relative", height: "100%" }}>
                     <Stack sx={{ flex: 1 }}>
-                        <PageHeader title="KEY CARDS" description="Explore what other citizens have to offer." imageUrl={KeycardPNG}>
-                            <FancyButton
-                                clipThingsProps={{
-                                    clipSize: "9px",
-                                    backgroundColor: colors.red,
-                                    opacity: 1,
-                                    border: { isFancy: true, borderColor: colors.red, borderThickness: "2px" },
-                                    sx: { position: "relative" },
-                                }}
-                                sx={{ px: "1.6rem", py: ".4rem", color: "#FFFFFF" }}
-                                to={`/marketplace/sell${location.hash}`}
-                            >
-                                <Typography
-                                    variant="caption"
-                                    sx={{
-                                        color: "#FFFFFF",
-                                        fontFamily: fonts.nostromoBlack,
-                                    }}
-                                >
-                                    SELL ITEM
-                                </Typography>
-                            </FancyButton>
-                        </PageHeader>
+                        <PageHeader title="KEY CARDS" description="Explore what other citizens have to offer." imageUrl={KeycardPNG}></PageHeader>
 
                         <TotalAndPageSizeOptions
                             countItems={keycardItems?.length}

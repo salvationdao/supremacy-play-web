@@ -102,7 +102,7 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate }: MysteryCrateStore
                                 }}
                             >
                                 <MediaPreview
-                                    imageUrl={mysteryCrate.image_url || SafePNG}
+                                    imageUrl={mysteryCrate.image_url || mysteryCrate.avatar_url || SafePNG}
                                     videoUrls={[mysteryCrate.animation_url, mysteryCrate.card_animation_url]}
                                     objectFit="cover"
                                 />
@@ -119,7 +119,10 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate }: MysteryCrateStore
                                 <Stack direction="row" alignItems="center" spacing=".1rem" sx={{ position: "relative", opacity: 0.9 }}>
                                     <SvgSupToken size={enlargedView ? "2rem" : "1.3rem"} fill={colors.yellow} />
                                     <Typography sx={{ fontSize: enlargedView ? "1.6rem" : "1.3rem", fontFamily: fonts.nostromoBold }}>
-                                        {supFormatterNoFixed(new BigNumber(mysteryCrate.price).plus(Math.pow(10, 21)).toString(), 2)}
+                                        {supFormatterNoFixed(
+                                            new BigNumber(mysteryCrate.mystery_crate_type === "WEAPON" ? 3800 : 5000).shiftedBy(18).toString(),
+                                            2,
+                                        )}
                                     </Typography>
                                     <Box
                                         sx={{

@@ -9,7 +9,7 @@ export const BattleAbilityCountdown = ({ bribeStage }: { bribeStage?: BribeStage
     return (
         <Stack direction="row" spacing=".6rem" alignItems="center">
             <SvgBattleAbilityIcon size="1.8rem" fill={colors.text} />
-            <Typography sx={{ lineHeight: 1, color: colors.text, fontWeight: "fontWeightBold" }}>
+            <Typography sx={{ lineHeight: 1, color: colors.text, fontWeight: "fontWeightBold", textTransform: "initial" }}>
                 <CountdownText bribeStage={bribeStage} />
             </Typography>
         </Stack>

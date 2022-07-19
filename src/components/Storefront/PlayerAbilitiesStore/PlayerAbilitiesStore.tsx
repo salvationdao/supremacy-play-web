@@ -1,11 +1,14 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
+import { useParameterizedQuery } from "react-fetching-library"
 import { ClipThing, FancyButton } from "../.."
 import { PlayerAbilityPNG } from "../../../assets"
+import { useAuth } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
+import { CanPlayerPurchase } from "../../../fetching"
 import { timeSinceInWords } from "../../../helpers"
 import { useTimer } from "../../../hooks"
-import { useGameServerSubscriptionSecurePublic } from "../../../hooks/useGameServer"
+import { useGameServerSubscription } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { HANGAR_TABS } from "../../../pages"
 import { colors, fonts } from "../../../theme/theme"
@@ -16,21 +19,46 @@ import { PlayerAbilityStoreItem } from "./PlayerAbilityStoreItem"
 
 export const PlayerAbilitiesStore = () => {
     const theme = useTheme()
+    const { userID } = useAuth()
+
+    const { query: queryCanPurchase } = useParameterizedQuery(CanPlayerPurchase)
+    const [canPurchase, setCanPurchase] = useState(true)
+    const [canPurchaseError, setCanPurchaseError] = useState<string>()
+
     const [isLoaded, setIsLoaded] = useState(false)
     const [nextRefreshTime, setNextRefreshTime] = useState<Date | null>(null)
     const [saleAbilities, setSaleAbilities] = useState<SaleAbility[]>([])
     const [priceMap, setPriceMap] = useState<Map<string, string>>(new Map())
     const [amountMap, setAmountMap] = useState<Map<string, number>>(new Map())
-    const [canPurchase, setCanPurchase] = useState(true)
 
-    useGameServerSubscriptionSecurePublic<{
+    useEffect(() => {
+        ;(async () => {
+            try {
+                const resp = await queryCanPurchase(userID)
+                if (resp.error || !resp.payload) return
+                setCanPurchase(resp.payload.can_purchase)
+            } catch (e) {
+                let message = "Failed to obtain purchase availability during this sale period."
+                if (typeof e === "string") {
+                    message = e
+                } else if (e instanceof Error) {
+                    message = e.message
+                }
+                console.error(e)
+                setCanPurchaseError(message)
+            }
+        })()
+    }, [queryCanPurchase, userID])
+
+    useGameServerSubscription<{
         next_refresh_time: Date | null
         refresh_period_duration_seconds: number
         sale_abilities: SaleAbility[]
     }>(
         {
-            URI: "sale_abilities",
+            URI: "/public/sale_abilities",
             key: GameServerKeys.SaleAbilitiesList,
+            ready: !!userID,
         },
         (payload) => {
             if (!payload) return
@@ -39,15 +67,18 @@ export const PlayerAbilitiesStore = () => {
             setNextRefreshTime(payload.next_refresh_time || t)
             setSaleAbilities(payload.sale_abilities)
             setAmountMap(new Map()) // reset amount map
+            setCanPurchase(true)
+            setCanPurchaseError(undefined)
             if (isLoaded) return
             setIsLoaded(true)
         },
     )
 
-    useGameServerSubscriptionSecurePublic<{ id: string; current_price: string }>(
+    useGameServerSubscription<{ id: string; current_price: string }>(
         {
-            URI: "sale_abilities",
+            URI: "/public/sale_abilities",
             key: GameServerKeys.SaleAbilitiesPriceSubscribe,
+            ready: !!userID,
         },
         (payload) => {
             if (!payload) return
@@ -57,10 +88,11 @@ export const PlayerAbilitiesStore = () => {
         },
     )
 
-    useGameServerSubscriptionSecurePublic<{ id: string; amount_sold: number }>(
+    useGameServerSubscription<{ id: string; amount_sold: number }>(
         {
-            URI: "sale_abilities",
+            URI: "/public/sale_abilities",
             key: GameServerKeys.SaleAbilitiesAmountSubscribe,
+            ready: !!userID,
         },
         (payload) => {
             if (!payload) return
@@ -69,11 +101,6 @@ export const PlayerAbilitiesStore = () => {
             })
         },
     )
-
-    useEffect(() => {
-        if (!nextRefreshTime) return
-        setCanPurchase(true)
-    }, [nextRefreshTime])
 
     const timeLeft = useMemo(() => {
         if (nextRefreshTime) {
@@ -84,16 +111,8 @@ export const PlayerAbilitiesStore = () => {
             )
         }
 
-        if (saleAbilities.length > 0) {
-            return (
-                <Typography sx={{ color: colors.lightNeonBlue, fontFamily: fonts.nostromoBold, textTransform: "uppercase" }}>
-                    <TimeLeft key={saleAbilities[0].available_until?.getMilliseconds()} dateTo={saleAbilities[0].available_until} />
-                </Typography>
-            )
-        }
-
         return <Typography sx={{ color: colors.lightNeonBlue, fontFamily: fonts.nostromoBold }}>Less than an hour</Typography>
-    }, [nextRefreshTime, saleAbilities])
+    }, [nextRefreshTime])
 
     const content = useMemo(() => {
         if (!isLoaded) {
@@ -122,9 +141,9 @@ export const PlayerAbilitiesStore = () => {
                             py: "1rem",
                         }}
                     >
-                        {saleAbilities.map((s) => (
+                        {saleAbilities.map((s, index) => (
                             <PlayerAbilityStoreItem
-                                key={s.id}
+                                key={`${s.id}-${index}`}
                                 saleAbility={s}
                                 updatedPrice={priceMap.get(s.id) || s.current_price}
                                 totalAmount={s.sale_limit}
@@ -199,34 +218,47 @@ export const PlayerAbilitiesStore = () => {
                 <PageHeader
                     imageUrl={PlayerAbilityPNG}
                     title="PLAYER ABILITIES"
-                    description="Player abilities are abilities that can be bought and used on the battle arena."
+                    description={
+                        <Stack>
+                            <Typography sx={{ fontSize: "1.85rem" }}>
+                                Player abilities are abilities that can be bought and used on the battle arena.
+                            </Typography>
+                            {canPurchaseError && (
+                                <Typography variant="body2" sx={{ color: colors.red }}>
+                                    {canPurchaseError}
+                                </Typography>
+                            )}
+                        </Stack>
+                    }
                 >
-                    <FancyButton
-                        to={`/fleet/${HANGAR_TABS.Abilities}`}
-                        clipThingsProps={{
-                            clipSize: "9px",
-                            backgroundColor: theme.factionTheme.primary,
-                            border: { isFancy: true, borderColor: theme.factionTheme.primary, borderThickness: "2px" },
-                            sx: { position: "relative" },
-                        }}
-                        sx={{
-                            display: "flex",
-                            flexWrap: "nowrap",
-                            px: "2rem",
-                            py: ".3rem",
-                        }}
-                    >
-                        <Typography
-                            variant="caption"
+                    <Box sx={{ flexShrink: 0, pr: "1.5rem", ml: "auto !important" }}>
+                        <FancyButton
+                            to={`/fleet/${HANGAR_TABS.Abilities}`}
+                            clipThingsProps={{
+                                clipSize: "9px",
+                                backgroundColor: theme.factionTheme.primary,
+                                border: { isFancy: true, borderColor: theme.factionTheme.primary, borderThickness: "2px" },
+                                sx: { position: "relative" },
+                            }}
                             sx={{
-                                color: theme.factionTheme.secondary,
-                                whiteSpace: "nowrap",
-                                fontFamily: fonts.nostromoBlack,
+                                display: "flex",
+                                flexWrap: "nowrap",
+                                px: "2rem",
+                                py: ".3rem",
                             }}
                         >
-                            VIEW OWNED ABILITIES
-                        </Typography>
-                    </FancyButton>
+                            <Typography
+                                variant="caption"
+                                sx={{
+                                    color: theme.factionTheme.secondary,
+                                    whiteSpace: "nowrap",
+                                    fontFamily: fonts.nostromoBlack,
+                                }}
+                            >
+                                VIEW OWNED ABILITIES
+                            </Typography>
+                        </FancyButton>
+                    </Box>
                 </PageHeader>
 
                 <Stack direction="row" spacing=".6rem" alignItems="center" sx={{ ml: "3rem", mt: "2rem", mb: ".6rem" }}>

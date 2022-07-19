@@ -62,6 +62,7 @@ export const MarketItem = ({ imageUrl, animationUrl, cardAnimationUrl, backgroun
     return (
         <Box sx={{ position: "relative", overflow: "visible", height: "100%" }}>
             <FancyButton
+                disableRipple
                 clipThingsProps={{
                     clipSize: "7px",
                     clipSlantSize: "0px",
@@ -76,7 +77,7 @@ export const MarketItem = ({ imageUrl, animationUrl, cardAnimationUrl, backgroun
                     border: { isFancy: !isGridView, borderColor: sold_at ? colors.marketSold : primaryColor, borderThickness: ".25rem" },
                     sx: { position: "relative", height: "100%" },
                 }}
-                sx={{ color: primaryColor, textAlign: "start" }}
+                sx={{ color: primaryColor, textAlign: "start", height: "100%" }}
                 to={`/marketplace/${linkSubPath}/${id}${location.hash}`}
             >
                 <Box
@@ -86,7 +87,7 @@ export const MarketItem = ({ imageUrl, animationUrl, cardAnimationUrl, backgroun
                         p: isGridView ? ".5rem .6rem" : ".1rem .3rem",
                         display: isGridView ? "block" : "grid",
                         gridTemplateRows: "7rem",
-                        gridTemplateColumns: `8rem minmax(auto, 38rem) 1.2fr ${sold_to ? "1.2fr" : "1fr"} repeat(2, 1fr)`, // hard-coded to have 6 columns, adjust as required
+                        gridTemplateColumns: `8rem minmax(auto, 38rem) 1.5fr ${sold_to ? "1.2fr" : "1fr"} repeat(2, 1fr)`, // hard-coded to have 6 columns, adjust as required
                         gap: "1.4rem",
                         ...(isGridView
                             ? {

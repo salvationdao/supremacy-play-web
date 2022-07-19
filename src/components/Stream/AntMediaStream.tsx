@@ -1,13 +1,12 @@
+import { WebRTCAdaptor } from "@antmedia/webrtc_adaptor"
 import { Stack } from "@mui/material"
 import { useCallback, useEffect, useRef } from "react"
 import { SupBackground } from "../../assets"
-import { STREAM_ASPECT_RATIO_W_H } from "../../constants"
-import { WebRTCAdaptor } from "@antmedia/webrtc_adaptor"
-import { useDimension, useSnackbar, useStream } from "../../containers"
+import { useSnackbar, useStream } from "../../containers"
 import { parseString } from "../../helpers"
 import { colors, siteZIndex } from "../../theme/theme"
-import { NoStreamScreen } from "./NoStreamScreen"
 import { StreamService } from "../../types"
+import { NoStreamScreen } from "./NoStreamScreen"
 
 interface StreamInfoEntry {
     audioBitrate: number
@@ -54,7 +53,6 @@ interface WebRTCAdaptorType {
 
 export const AntMediaStream = () => {
     const { newSnackbarMessage } = useSnackbar()
-    const { iframeDimensions } = useDimension()
     const {
         isMute,
         volume,
@@ -131,7 +129,12 @@ export const AntMediaStream = () => {
                                 }
                             })
                             setResolutions(resolutions)
-                            setSelectedResolution(Math.max.apply(null, resolutions))
+                            const prevResolution = parseInt(localStorage.getItem(`${currentStream.host}-resolution`) || "0")
+                            if (prevResolution && resolutions.includes(prevResolution)) {
+                                setSelectedResolution(prevResolution)
+                            } else {
+                                setSelectedResolution(Math.max.apply(null, resolutions))
+                            }
                             setCurrentPlayingStreamHost(currentStream.host)
                         } else if (info == "closed") {
                             webRtc.current = undefined
@@ -158,7 +161,14 @@ export const AntMediaStream = () => {
     const isPlaying = resolutions && resolutions.length > 0
 
     return (
-        <Stack sx={{ width: "100%", height: "100%", zIndex: siteZIndex.Stream }}>
+        <Stack
+            sx={{
+                position: "relative",
+                width: "100%",
+                height: "100%",
+                zIndex: siteZIndex.Stream,
+            }}
+        >
             {!isPlaying && <NoStreamScreen />}
 
             <video
@@ -171,12 +181,10 @@ export const AntMediaStream = () => {
                 playsInline
                 style={{
                     position: "absolute",
-                    top: "50%",
-                    left: "50%",
-                    transform: "translate(-50%, -50%)",
-                    aspectRatio: STREAM_ASPECT_RATIO_W_H.toString(),
-                    width: iframeDimensions.width,
-                    height: iframeDimensions.height,
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    objectPosition: "center",
                     zIndex: siteZIndex.Stream,
                     background: isPlaying ? "unset" : `center url(${SupBackground}) ${colors.darkNavy} cover no-repeat`,
                 }}
