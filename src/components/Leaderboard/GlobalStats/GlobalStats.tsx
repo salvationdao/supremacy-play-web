@@ -1,8 +1,8 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { ClipThing } from "../.."
-import { SafePNG } from "../../../assets"
+import { Gabs } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
-import { colors, fonts } from "../../../theme/theme"
+import { fonts } from "../../../theme/theme"
 import { PageHeader } from "../../Common/PageHeader"
 import { PlayerBattlesSpectated } from "./PlayerBattlesSpectated"
 
@@ -33,8 +33,12 @@ export const GlobalStats = () => {
                                 GLOBAL LEADERBOARD
                             </Typography>
                         }
-                        description={<Typography sx={{ fontSize: "1.85rem" }}>See yourself among the top players in Supremacy.</Typography>}
-                        imageUrl={SafePNG}
+                        description={
+                            <Typography sx={{ fontSize: "1.85rem" }}>
+                                GABS monitors all players in Supremacy, explore the ranks and see who is on top.
+                            </Typography>
+                        }
+                        imageUrl={Gabs}
                     ></PageHeader>
 
                     <Stack sx={{ px: "2rem", py: "1rem", flex: 1 }}>
