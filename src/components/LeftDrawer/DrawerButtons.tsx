@@ -68,6 +68,7 @@ export const DrawerButtons = ({ openLeftDrawer }: { openLeftDrawer: () => void }
                             label={label}
                             enable={enable && !disable}
                             isComingSoon={!enable}
+                            comingSoonLabel={r.leftDrawer.comingSoonLabel}
                             onClick={() => history.push(`${navigateTo}${location.hash}`)}
                             isActive={activeTabID === r.matchLeftDrawerID || location.pathname === r.path}
                             primaryColor={theme.factionTheme.primary}
@@ -107,6 +108,7 @@ export const TabButton = ({
     primaryColor,
     secondaryColor,
     onClick,
+    comingSoonLabel,
 }: {
     label: string
     enable?: boolean
@@ -116,6 +118,7 @@ export const TabButton = ({
     primaryColor: string
     secondaryColor: string
     onClick: () => void
+    comingSoonLabel?: string
 }) => {
     return (
         <Box
@@ -133,7 +136,7 @@ export const TabButton = ({
                         <Stack>
                             {label}
                             <br />
-                            <span style={{ color: colors.neonBlue }}>(COMING SOON)</span>
+                            <span style={{ color: colors.neonBlue }}>({comingSoonLabel || "COMING SOON"})</span>
                         </Stack>
                     )
                 }
@@ -162,7 +165,7 @@ export const TabButton = ({
                         minHeight: `${DRAWER_BAR_WIDTH}rem`,
                     },
                     "& svg": {
-                        fill: isActive ? secondaryColor : "#FFFFFF",
+                        fill: isActive ? `${secondaryColor} !important` : "#FFFFFF",
                     },
                 }}
             />

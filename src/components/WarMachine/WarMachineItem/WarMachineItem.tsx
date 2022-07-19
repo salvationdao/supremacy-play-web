@@ -20,11 +20,23 @@ export const DEAD_OPACITY = 0.6
 export const WIDTH_SKILL_BUTTON = 3.8
 export const WIDTH_STAT_BAR = 1.5
 
-export const WarMachineItem = ({ warMachine, scale, initialExpanded = false }: { warMachine: WarMachineState; scale: number; initialExpanded?: boolean }) => {
+export const WarMachineItem = ({
+    warMachine,
+    scale,
+    initialExpanded = false,
+    transformOrigin,
+    isPoppedout,
+}: {
+    warMachine: WarMachineState
+    scale: number
+    initialExpanded?: boolean
+    transformOrigin?: string
+    isPoppedout?: boolean
+}) => {
     const { isMobile } = useMobile()
     const { userID, factionID } = useAuth()
     const { getFaction } = useSupremacy()
-    const { highlightedMechHash, setHighlightedMechHash } = useMiniMap()
+    const { highlightedMechParticipantID, setHighlightedMechParticipantID } = useMiniMap()
 
     const { hash, participantID, factionID: wmFactionID, name, imageAvatar, tier, ownedByID } = warMachine
 
@@ -35,7 +47,7 @@ export const WarMachineItem = ({ warMachine, scale, initialExpanded = false }: {
         ready: factionID === wmFactionID && !!participantID,
     })
 
-    const [isAlive, toggleIsAlive] = useToggle(true)
+    const [isAlive, toggleIsAlive] = useToggle(warMachine.health > 0)
     const [isExpanded, toggleIsExpanded] = useToggle(initialExpanded)
     const faction = getFaction(wmFactionID)
 
@@ -53,32 +65,23 @@ export const WarMachineItem = ({ warMachine, scale, initialExpanded = false }: {
     const secondaryColor = useMemo(() => (selfOwned ? "#000000" : faction.secondary_color), [faction.secondary_color, selfOwned])
     const backgroundColor = useMemo(() => faction.background_color, [faction.background_color])
 
-    // Need this time out so that it waits for it expand first then popover, else positioning is wrong
-    const openSkillsPopover = useCallback(() => {
-        setTimeout(() => {
-            togglePopoverOpen(true)
-        }, 110)
-    }, [togglePopoverOpen])
-
     // Highlighting on the map
     const handleClick = useCallback(() => {
-        if (hash === highlightedMechHash) {
-            setHighlightedMechHash(undefined)
+        if (participantID === highlightedMechParticipantID) {
+            setHighlightedMechParticipantID(undefined)
         } else {
-            setHighlightedMechHash(hash)
+            setHighlightedMechParticipantID(participantID)
         }
-    }, [hash, highlightedMechHash, setHighlightedMechHash])
+    }, [participantID, highlightedMechParticipantID, setHighlightedMechParticipantID])
 
     // Toggle out isExpanded if other mech is highlighted
     useEffect(() => {
-        if (highlightedMechHash !== hash) {
+        if (highlightedMechParticipantID !== participantID) {
             toggleIsExpanded(initialExpanded)
-            togglePopoverOpen(false)
         } else {
             toggleIsExpanded(true)
-            openSkillsPopover()
         }
-    }, [highlightedMechHash, initialExpanded, isMobile, openSkillsPopover, setHighlightedMechHash, toggleIsExpanded, hash, togglePopoverOpen])
+    }, [highlightedMechParticipantID, initialExpanded, isMobile, setHighlightedMechParticipantID, toggleIsExpanded, participantID])
 
     return (
         <>
@@ -93,12 +96,12 @@ export const WarMachineItem = ({ warMachine, scale, initialExpanded = false }: {
                     width: `${
                         WIDTH_AVATAR +
                         (isExpanded ? WIDTH_BODY : 2 * WIDTH_STAT_BAR) +
-                        (isOwnFaction ? WIDTH_SKILL_BUTTON + numSkillBars * WIDTH_STAT_BAR : 0) +
+                        (isOwnFaction && isAlive ? WIDTH_SKILL_BUTTON + numSkillBars * WIDTH_STAT_BAR : 0) +
                         (warMachine.ownedByID === userID ? WIDTH_SKILL_BUTTON + WIDTH_STAT_BAR : 0)
                     }rem`,
                     transition: "width .1s",
-                    transform: highlightedMechHash === hash ? `scale(${scale * 1.08})` : `scale(${scale})`,
-                    transformOrigin: isMobile ? "0 0" : "center",
+                    transform: highlightedMechParticipantID === participantID ? `scale(${scale * 1.08})` : `scale(${scale})`,
+                    transformOrigin: transformOrigin || "center",
                 }}
             >
                 {/* Little info button to show the mech destroyed info */}
@@ -162,12 +165,12 @@ export const WarMachineItem = ({ warMachine, scale, initialExpanded = false }: {
                             sx={{
                                 position: "absolute",
                                 bottom: 0,
-                                right: ".8rem",
+                                right: ".2rem",
                                 px: ".3rem",
                                 backgroundColor: "#00000090",
                             }}
                         >
-                            <Typography variant="h5" sx={{ fontFamily: fonts.nostromoBlack }}>
+                            <Typography variant="h4" sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack }}>
                                 {warMachine.participantID}
                             </Typography>
                         </Box>
@@ -236,7 +239,7 @@ export const WarMachineItem = ({ warMachine, scale, initialExpanded = false }: {
                     <HealthShieldBars warMachine={warMachine} toggleIsAlive={toggleIsAlive} />
 
                     {/* Mech abilities */}
-                    {gameAbilities && gameAbilities.length > 0 && (
+                    {isAlive && gameAbilities && gameAbilities.length > 0 && (
                         <>
                             <Box
                                 sx={{
@@ -254,8 +257,9 @@ export const WarMachineItem = ({ warMachine, scale, initialExpanded = false }: {
                                 }}
                                 onClick={() => {
                                     if (!isAlive) return
-                                    if (!isExpanded) handleClick()
-                                    openSkillsPopover()
+                                    setHighlightedMechParticipantID(participantID)
+                                    // Need this time out so that it waits for it expand first then popover, else positioning is wrong
+                                    initialExpanded ? togglePopoverOpen(true) : setTimeout(() => togglePopoverOpen(true), 110)
                                 }}
                             >
                                 <Box
@@ -310,6 +314,7 @@ export const WarMachineItem = ({ warMachine, scale, initialExpanded = false }: {
                     gameAbilities={gameAbilities}
                     maxAbilityPriceMap={maxAbilityPriceMap}
                     getFaction={getFaction}
+                    isPoppedout={isPoppedout}
                 />
             )}
 

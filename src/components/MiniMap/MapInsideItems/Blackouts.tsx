@@ -5,14 +5,14 @@ import { useMiniMap } from "../../../containers"
 import { useGameServerSubscription } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
-import { CellCoords } from "../../../types"
+import { Position } from "../../../types"
 
 interface MinimapEvent {
     id: string
     game_ability_id: number
     duration: number
     radius: number
-    coords: CellCoords
+    coords: Position
 }
 
 interface BlackoutWithAnimationState extends MinimapEvent {

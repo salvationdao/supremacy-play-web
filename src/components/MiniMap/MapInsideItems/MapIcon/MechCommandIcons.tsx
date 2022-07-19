@@ -32,7 +32,9 @@ export const MechCommandIcons = () => {
                                 key={mmc.id}
                                 primaryColor={theme.factionTheme.primary}
                                 position={{ x: mmc.cell_x, y: mmc.cell_y }}
-                                icon={<SvgDrag size="4.5rem" sx={{ pb: 0 }} fill={theme.factionTheme.primary} />}
+                                sx={{ zIndex: 9, borderRadius: "50%" }}
+                                sizeGrid={1.2}
+                                icon={<SvgDrag size="3rem" sx={{ pb: 0 }} fill={theme.factionTheme.primary} />}
                             />
                         )
                     })}
