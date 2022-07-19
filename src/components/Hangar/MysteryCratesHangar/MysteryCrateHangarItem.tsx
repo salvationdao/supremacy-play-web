@@ -120,7 +120,7 @@ export const MysteryCrateHangarItem = ({ crate, setOpeningCrate, setOpenedReward
                                 {crate.description}
                             </Typography>
 
-                            <Stack alignItems="center" sx={{ mt: "auto !important", pt: ".8rem", alignSelf: "stretch" }}>
+                            <Stack alignItems="center" sx={{ mt: "auto !important", alignSelf: "stretch" }}>
                                 <FancyButton
                                     disabled={new Date() < crate.locked_until}
                                     loading={loading}
