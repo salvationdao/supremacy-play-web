@@ -57,11 +57,9 @@ export enum GameServerKeys {
     MechRename = "PLAYER:MECH:RENAME",
 
     // Player Abilities
-    SaleAbilitiesPriceSubscribe = "SALE:ABILITIES:PRICE:SUBSCRIBE",
-    SaleAbilitiesAmountSubscribe = "SALE:ABILITIES:AMOUNT:SUBSCRIBE",
     PlayerAbilitiesList = "PLAYER:ABILITIES:LIST:SUBSCRIBE",
     SaleAbilitiesList = "SALE:ABILITIES:LIST:SUBSCRIBE",
-    SaleAbilityPurchase = "SALE:ABILITY:PURCHASE",
+    SaleAbilityClaim = "SALE:ABILITY:CLAIM",
     PlayerAbilityUse = "PLAYER:ABILITY:USE",
 
     // Minimap ability updates

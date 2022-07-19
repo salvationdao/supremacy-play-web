@@ -21,8 +21,6 @@ export const PlayerAbilitiesStore = () => {
     const [isLoaded, setIsLoaded] = useState(false)
     const [nextRefreshTime, setNextRefreshTime] = useState<Date | null>(null)
     const [saleAbilities, setSaleAbilities] = useState<SaleAbility[]>([])
-    const [priceMap, setPriceMap] = useState<Map<string, string>>(new Map())
-    const [amountMap, setAmountMap] = useState<Map<string, number>>(new Map())
     const [canPurchase, setCanPurchase] = useState(true)
 
     useGameServerSubscription<{
@@ -41,37 +39,8 @@ export const PlayerAbilitiesStore = () => {
             t.setSeconds(t.getSeconds() + payload.refresh_period_duration_seconds)
             setNextRefreshTime(payload.next_refresh_time || t)
             setSaleAbilities(payload.sale_abilities)
-            setAmountMap(new Map()) // reset amount map
             if (isLoaded) return
             setIsLoaded(true)
-        },
-    )
-
-    useGameServerSubscription<{ id: string; current_price: string }>(
-        {
-            URI: "/public/sale_abilities",
-            key: GameServerKeys.SaleAbilitiesPriceSubscribe,
-            ready: !!userID,
-        },
-        (payload) => {
-            if (!payload) return
-            setPriceMap((prev) => {
-                return new Map(prev.set(payload.id, payload.current_price))
-            })
-        },
-    )
-
-    useGameServerSubscription<{ id: string; amount_sold: number }>(
-        {
-            URI: "/public/sale_abilities",
-            key: GameServerKeys.SaleAbilitiesAmountSubscribe,
-            ready: !!userID,
-        },
-        (payload) => {
-            if (!payload) return
-            setAmountMap((prev) => {
-                return new Map(prev.set(payload.id, payload.amount_sold))
-            })
         },
     )
 
@@ -120,15 +89,7 @@ export const PlayerAbilitiesStore = () => {
                         }}
                     >
                         {saleAbilities.map((s, index) => (
-                            <PlayerAbilityStoreItem
-                                key={`${s.id}-${index}`}
-                                saleAbility={s}
-                                updatedPrice={priceMap.get(s.id) || s.current_price}
-                                totalAmount={s.sale_limit}
-                                amountSold={amountMap.get(s.id) || s.amount_sold}
-                                onPurchase={() => setCanPurchase(false)}
-                                disabled={!canPurchase}
-                            />
+                            <PlayerAbilityStoreItem key={`${s.id}-${index}`} saleAbility={s} onPurchase={() => setCanPurchase(false)} disabled={!canPurchase} />
                         ))}
                     </Box>
                 </Box>
@@ -168,7 +129,7 @@ export const PlayerAbilitiesStore = () => {
                 </Stack>
             </Stack>
         )
-    }, [isLoaded, saleAbilities, priceMap, amountMap, canPurchase])
+    }, [isLoaded, saleAbilities, canPurchase])
 
     return (
         <ClipThing

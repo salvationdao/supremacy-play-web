@@ -2,10 +2,8 @@ import { Box, Fade, Stack, Typography } from "@mui/material"
 import React, { useCallback, useMemo, useState } from "react"
 import { SvgGlobal, SvgLine, SvgMicrochip, SvgQuestionMark, SvgTarget } from "../../assets"
 import { useSnackbar } from "../../containers"
-import { supFormatter } from "../../helpers"
 import { useGameServerCommandsUser } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
-import { scaleUpKeyframes } from "../../theme/keyframes"
 import { colors } from "../../theme/theme"
 import { LocationSelectType, SaleAbility } from "../../types"
 import { FancyButton } from "../Common/FancyButton"
@@ -13,25 +11,12 @@ import { TooltipHelper } from "../Common/TooltipHelper"
 
 export interface QuickPlayerAbilitiesItemProps {
     saleAbility: SaleAbility
-    updatedPrice: string
-    totalAmount: number
-    amountSold: number
     setError: React.Dispatch<React.SetStateAction<string | undefined>>
     onPurchase: () => void
     disabled?: boolean
 }
 
-export const QuickPlayerAbilitiesItem = ({
-    saleAbility,
-    updatedPrice,
-    totalAmount,
-    amountSold,
-    setError,
-    onPurchase: onPurchaseCallback,
-    disabled,
-}: QuickPlayerAbilitiesItemProps) => {
-    const amountLeft = totalAmount - amountSold
-
+export const QuickPlayerAbilitiesItem = ({ saleAbility, setError, onPurchase: onPurchaseCallback, disabled }: QuickPlayerAbilitiesItemProps) => {
     // Purchasing
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsUser("/user_commander")
@@ -55,11 +40,10 @@ export const QuickPlayerAbilitiesItem = ({
     const onPurchase = useCallback(async () => {
         try {
             setPurchaseLoading(true)
-            await send(GameServerKeys.SaleAbilityPurchase, {
+            await send(GameServerKeys.SaleAbilityClaim, {
                 ability_id: saleAbility.id,
-                amount: updatedPrice,
             })
-            newSnackbarMessage(`Successfully purchased 1 ${saleAbility.ability.label || "ability"}`, "success")
+            newSnackbarMessage(`Successfully claimed 1 ${saleAbility.ability.label || "ability"}`, "success")
             onPurchaseCallback()
             setError(undefined)
         } catch (e) {
@@ -71,7 +55,7 @@ export const QuickPlayerAbilitiesItem = ({
         } finally {
             setPurchaseLoading(false)
         }
-    }, [send, saleAbility.id, saleAbility.ability.label, updatedPrice, newSnackbarMessage, onPurchaseCallback, setError])
+    }, [send, saleAbility.id, saleAbility.ability.label, newSnackbarMessage, onPurchaseCallback, setError])
 
     return (
         <>
@@ -99,7 +83,7 @@ export const QuickPlayerAbilitiesItem = ({
                     }}
                     onClick={onPurchase}
                     loading={purchaseLoading}
-                    disabled={amountLeft < 1 || disabled}
+                    disabled={disabled}
                 >
                     <TooltipHelper text={saleAbility.ability.description} placement="bottom">
                         <Box
@@ -128,21 +112,7 @@ export const QuickPlayerAbilitiesItem = ({
                                     },
                                 }}
                             >
-                                <Typography>
-                                    Purchase for{" "}
-                                    <Box
-                                        key={updatedPrice}
-                                        component="span"
-                                        sx={{
-                                            color: colors.neonBlue,
-                                            fontWeight: "fontWeightBold",
-                                            animation: `${scaleUpKeyframes} 0.1s ease-in`,
-                                        }}
-                                    >
-                                        {supFormatter(updatedPrice, 2)}
-                                    </Box>{" "}
-                                    SUPS
-                                </Typography>
+                                <Typography>Claim Ability</Typography>
                             </Box>
 
                             <Stack spacing=".3rem" sx={{ height: "100%" }}>
@@ -176,7 +146,7 @@ export const QuickPlayerAbilitiesItem = ({
                                         }}
                                     >
                                         <Typography variant="body2" sx={{ lineHeight: 1 }}>
-                                            {amountLeft} left
+                                            0 Owned
                                         </Typography>
                                     </Box>
 
