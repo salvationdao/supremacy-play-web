@@ -1,6 +1,7 @@
-import { Typography } from "@mui/material"
+import { Stack, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
 import { useSnackbar } from "../../../containers"
+import { useTheme } from "../../../containers/theme"
 import { useGameServerCommands } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { User } from "../../../types"
@@ -12,11 +13,16 @@ interface RankItem {
 }
 
 export const PlayerBattlesSpectated = () => {
+    const theme = useTheme()
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommands("/public/commander")
     const [rankItems, setRankItems] = useState<RankItem[]>()
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
+
+    const primaryColor = theme.factionTheme.primary
+    const secondaryColor = theme.factionTheme.secondary
+    const backgroundColor = theme.factionTheme.background
 
     useEffect(() => {
         ;(async () => {
@@ -41,10 +47,24 @@ export const PlayerBattlesSpectated = () => {
 
     return (
         <RanksTable
+            title="MOST BATTLES SPECTATED"
             rankItems={rankItems}
-            renderItem={(item) => <Typography key={item.player.id}>{item.player.username}</Typography>}
             isLoading={isLoading}
             loadError={loadError}
+            renderItem={(item, index) => {
+                return (
+                    <Stack
+                        key={item.player.id}
+                        direction="row"
+                        alignItems="center"
+                        sx={{ backgroundColor: index % 2 === 0 ? "#FFFFFF10" : "unset", p: ".6rem 2rem" }}
+                    >
+                        <Typography>
+                            {index}: {item.player.username}
+                        </Typography>
+                    </Stack>
+                )
+            }}
         />
     )
 }

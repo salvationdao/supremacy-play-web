@@ -6,13 +6,14 @@ import { colors, fonts } from "../../../theme/theme"
 import { ClipThing } from "../../Common/ClipThing"
 
 interface RanksTableProps<T> {
+    title: string
     rankItems?: T[]
-    renderItem: (rankItem: T) => ReactNode
+    renderItem: (rankItem: T, index: number) => ReactNode
     isLoading: boolean
     loadError?: string
 }
 
-export const RanksTable = <T,>({ rankItems, renderItem, isLoading, loadError }: RanksTableProps<T>) => {
+export const RanksTable = <T,>({ title, rankItems, renderItem, isLoading, loadError }: RanksTableProps<T>) => {
     const theme = useTheme()
 
     const primaryColor = theme.factionTheme.primary
@@ -54,23 +55,7 @@ export const RanksTable = <T,>({ rankItems, renderItem, isLoading, loadError }: 
         }
 
         if (rankItems && rankItems.length > 0) {
-            return (
-                <Box
-                    sx={{
-                        width: "100%",
-                        pt: "1rem",
-                        display: "grid",
-                        gridTemplateColumns: "repeat(auto-fill, minmax(32rem, 1fr))",
-                        gap: "2.4rem",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        overflow: "visible",
-                        height: "100%",
-                    }}
-                >
-                    {rankItems.map((item) => renderItem(item))}
-                </Box>
-            )
+            return <Stack>{rankItems.map((item, index) => renderItem(item, index))}</Stack>
         }
 
         return (
@@ -107,17 +92,14 @@ export const RanksTable = <T,>({ rankItems, renderItem, isLoading, loadError }: 
     }, [loadError, rankItems, isLoading, primaryColor, renderItem])
 
     return (
-        <ClipThing
-            clipSize="10px"
-            border={{
-                isFancy: true,
-                borderColor: primaryColor,
-                borderThickness: ".3rem",
-            }}
-            opacity={0.7}
-            backgroundColor={backgroundColor}
-        >
-            <Stack sx={{ height: "100%" }}>{content}</Stack>
-        </ClipThing>
+        <Stack spacing="2rem">
+            <Stack direction="row" alignItems="center" sx={{}}>
+                <Typography variant="h5" sx={{ fontFamily: fonts.nostromoHeavy }}>
+                    {title}
+                </Typography>
+            </Stack>
+
+            <Box>{content}</Box>
+        </Stack>
     )
 }
