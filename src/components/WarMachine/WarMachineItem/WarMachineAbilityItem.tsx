@@ -1,5 +1,5 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 import { ClipThing, FancyButton } from "../.."
 import { shadeColor } from "../../../helpers"
 import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
@@ -21,7 +21,6 @@ interface MechAbilityItemProps {
 }
 
 export const WarMachineAbilityItem = ({ warMachine, gameAbility, clipSlantSize }: MechAbilityItemProps) => {
-    // const [gameAbilityProgress, setGameAbilityProgress] = useState<GameAbilityProgress>()
     const { participantID, hash } = warMachine
     const { id } = gameAbility
     const [remainSeconds, setRemainSeconds] = useState(30)
@@ -87,7 +86,7 @@ export const WarMachineAbilityItem = ({ warMachine, gameAbility, clipSlantSize }
                                 pb: "1.28rem",
                             }}
                         >
-                            <Stack spacing="2.4rem" direction="row" alignItems="center" justifyContent="space-between" alignSelf="stretch">
+                            <Stack direction="row" alignItems="center" justifyContent="space-between" alignSelf="stretch">
                                 <TopText description={description} image_url={image_url} colour={colour} label={label} />
 
                                 <MechAbilityButton remainSeconds={remainSeconds} color={colour} textColor={text_colour} onClick={onTrigger} />
@@ -117,7 +116,7 @@ export const MechAbilityButton = ({ remainSeconds, color, textColor, onClick }: 
                 border: { isFancy: true, borderColor: color || "#14182B" },
                 sx: { position: "relative" },
             }}
-            sx={{ pt: ".3rem", pb: ".4rem", minWidth: "3rem" }}
+            sx={{ pt: ".4rem", pb: ".5rem", minWidth: "3rem" }}
             onClick={onClick}
         >
             <Stack alignItems="center" justifyContent="center" direction="row">
@@ -129,7 +128,7 @@ export const MechAbilityButton = ({ remainSeconds, color, textColor, onClick }: 
                         color: textColor || "#FFFFFF",
                     }}
                 >
-                    {remainSeconds > 0 ? `${remainSeconds}s` : `FIRE`}
+                    {remainSeconds > 0 ? `${remainSeconds} s` : `FIRE`}
                 </Typography>
             </Stack>
         </FancyButton>
