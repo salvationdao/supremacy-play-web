@@ -1,15 +1,16 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
 import { useCallback, useMemo, useState } from "react"
-import { ClipThing, ContributeFactionUniqueAbilityRequest } from "../../.."
-import { useAuth, useGame, useMiniMap } from "../../../../containers"
-import { useTheme } from "../../../../containers/theme"
-import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
-import { GameServerKeys } from "../../../../keys"
-import { colors } from "../../../../theme/theme"
-import { GameAbility, GameAbilityProgress, WarMachineState } from "../../../../types"
-import { ProgressBar } from "../../../Common/ProgressBar"
-import { MoveCommand } from "../../../WarMachine/WarMachineItem/MoveCommand"
+import { ClipThing, ContributeFactionUniqueAbilityRequest } from "../.."
+import { useAuth, useGame, useMiniMap, useSnackbar } from "../../../containers"
+import { useTheme } from "../../../containers/theme"
+import { useToggle } from "../../../hooks"
+import { useGameServerCommandsFaction, useGameServerSubscription, useGameServerSubscriptionAbilityFaction } from "../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../keys"
+import { colors } from "../../../theme/theme"
+import { GameAbility, GameAbilityProgress, WarMachineLiveState, WarMachineState } from "../../../types"
+import { ProgressBar } from "../../Common/ProgressBar"
+import { MoveCommand } from "../../WarMachine/WarMachineItem/MoveCommand"
 
 export const HighlightedMechAbilities = () => {
     const { factionID } = useAuth()
@@ -33,6 +34,7 @@ const HighlightedMechAbilitiesInner = ({ warMachine }: { warMachine: WarMachineS
     const { userID } = useAuth()
     const theme = useTheme()
     const { participantID, ownedByID } = warMachine
+    const [isAlive, toggleIsAlive] = useToggle(warMachine.health > 0)
 
     // Subscribe to war machine ability updates
     const gameAbilities = useGameServerSubscriptionFaction<GameAbility[] | undefined>({
@@ -41,11 +43,24 @@ const HighlightedMechAbilitiesInner = ({ warMachine }: { warMachine: WarMachineS
         ready: !!participantID,
     })
 
-    if (!gameAbilities || gameAbilities.length <= 0) {
+    // Listen on current war machine changes
+    useGameServerSubscription<WarMachineLiveState | undefined>(
+        {
+            URI: `/public/mech/${participantID}`,
+            key: GameServerKeys.SubMechLiveStats,
+            ready: !!participantID,
+            batchURI: "/public/mech",
+        },
+        (payload) => {
+            if (payload?.health !== undefined) {
+                if (payload.health <= 0) toggleIsAlive(false)
+            }
+        },
+    )
+
+    if (!gameAbilities || gameAbilities.length <= 0 || !isAlive) {
         return null
     }
-
-    const isAlive = true
 
     return (
         <Fade in>
@@ -66,11 +81,13 @@ const HighlightedMechAbilitiesInner = ({ warMachine }: { warMachine: WarMachineS
                         e.preventDefault()
                         e.stopPropagation()
                     }}
-                    sx={{ p: ".8rem .9rem", width: "12rem" }}
+                    sx={{ p: ".8rem .9rem", width: "15rem" }}
                 >
                     {gameAbilities.map((ga) => {
                         return <AbilityItem key={ga.id} participantID={participantID} ability={ga} />
                     })}
+
+                    {userID === ownedByID && <MoveCommand isAlive={isAlive} warMachine={warMachine} smallVersion />}
                 </Stack>
             </ClipThing>
         </Fade>
@@ -78,6 +95,7 @@ const HighlightedMechAbilitiesInner = ({ warMachine }: { warMachine: WarMachineS
 }
 
 const AbilityItem = ({ participantID, ability }: { participantID: number; ability: GameAbility }) => {
+    const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsFaction("/faction_commander")
 
     const [offeringID, setOfferingID] = useState<string>(ability.ability_offering_id)
@@ -117,10 +135,12 @@ const AbilityItem = ({ participantID, ability }: { participantID: number; abilit
                 ability_offering_id: offeringID,
                 percentage: 1,
             })
-        } catch (e) {
-            console.error(e)
+        } catch (err) {
+            const message = typeof err === "string" ? err : "Failed to contribute."
+            newSnackbarMessage(message, "error")
+            console.error(message)
         }
-    }, [send, identity, offeringID])
+    }, [send, identity, offeringID, newSnackbarMessage])
 
     return (
         <Stack
@@ -129,7 +149,7 @@ const AbilityItem = ({ participantID, ability }: { participantID: number; abilit
             spacing=".4rem"
             sx={{
                 position: "relative",
-                height: "2.6rem",
+                height: "3rem",
                 width: "100%",
             }}
         >
@@ -137,7 +157,7 @@ const AbilityItem = ({ participantID, ability }: { participantID: number; abilit
             <Box
                 sx={{
                     flexShrink: 0,
-                    width: "2.6rem",
+                    width: "3rem",
                     height: "100%",
                     cursor: "pointer",
                     background: `url(${image_url})`,
@@ -152,7 +172,7 @@ const AbilityItem = ({ participantID, ability }: { participantID: number; abilit
 
             <Box sx={{ flex: 1 }}>
                 <Typography
-                    variant="caption"
+                    variant="body2"
                     sx={{
                         mb: "1px",
                         lineHeight: 1,
@@ -167,12 +187,13 @@ const AbilityItem = ({ participantID, ability }: { participantID: number; abilit
                 >
                     {label}
                 </Typography>
+
                 <ProgressBar
                     percent={initialTargetCost.isZero() ? 0 : +currentSups.dividedBy(initialTargetCost) * 100}
                     linePercent={initialTargetCost.isZero() ? 0 : supsCost.dividedBy(initialTargetCost).toNumber() * 100}
                     color={colour}
                     backgroundColor="#00000040"
-                    thickness=".9rem"
+                    thickness="1.1rem"
                     orientation="horizontal"
                 />
             </Box>

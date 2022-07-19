@@ -14,6 +14,7 @@ interface WarMachineAbilitiesPopoverProps {
     gameAbilities: GameAbility[]
     maxAbilityPriceMap: React.MutableRefObject<Map<string, BigNumber>>
     getFaction: (factionID: string) => Faction
+    isPoppedout?: boolean
 }
 
 export const WarMachineAbilitiesPopover = ({
@@ -24,6 +25,7 @@ export const WarMachineAbilitiesPopover = ({
     gameAbilities,
     maxAbilityPriceMap,
     getFaction,
+    isPoppedout,
 }: WarMachineAbilitiesPopoverProps) => {
     const faction = getFaction(warMachine.factionID)
 
@@ -42,6 +44,7 @@ export const WarMachineAbilitiesPopover = ({
             }}
             PaperProps={{ sx: { background: "none", boxShadow: 0 } }}
             transitionDuration={100}
+            sx={{ ".MuiBackdrop-root": { backgroundColor: isPoppedout ? "#00000070" : "transparent" } }}
         >
             <Box
                 sx={{
@@ -52,7 +55,7 @@ export const WarMachineAbilitiesPopover = ({
             >
                 <ClipThing
                     clipSize="5px"
-                    clipSlantSize="8px"
+                    clipSlantSize={isPoppedout ? "0px" : "8px"}
                     border={{
                         borderThickness: ".2rem",
                         borderColor: faction.primary_color,
