@@ -148,16 +148,7 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
                         >
                             <PageHeader
                                 smallSize
-                                title={
-                                    <Stack direction="row">
-                                        <Typography variant={"h6"} sx={{ fontFamily: fonts.nostromoBlack }}>
-                                            QUICK DEPLOY
-                                        </Typography>
-                                        <IconButton size="small" sx={{ ml: "auto !important" }} onClick={() => togglePreferencesModalOpen(true)}>
-                                            <SvgNotification size="1.3rem" />
-                                        </IconButton>
-                                    </Stack>
-                                }
+                                title="QUICK DEPLOY"
                                 description={
                                     <Stack spacing="1.5rem" direction="row" sx={{ width: "100%" }}>
                                         {queueLength > 0 && (
@@ -170,6 +161,9 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
                                                 disableIcon
                                             />
                                         )}
+                                        <IconButton size="small" onClick={() => togglePreferencesModalOpen(true)}>
+                                            <SvgNotification size="1.3rem" />
+                                        </IconButton>
                                     </Stack>
                                 }
                             ></PageHeader>
