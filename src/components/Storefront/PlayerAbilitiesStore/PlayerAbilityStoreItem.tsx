@@ -1,14 +1,13 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
 import { useCallback, useMemo, useState } from "react"
 import { FancyButton, TooltipHelper } from "../.."
-import { SvgGlobal, SvgLine, SvgMicrochip, SvgQuestionMark, SvgSupToken, SvgTarget } from "../../../assets"
+import { SvgGlobal, SvgLine, SvgMicrochip, SvgQuestionMark, SvgTarget } from "../../../assets"
 import { useSnackbar } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
-import { numberCommaFormatter, supFormatter } from "../../../helpers"
+import { numberCommaFormatter } from "../../../helpers"
 import { useToggle } from "../../../hooks"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
-import { scaleUpKeyframes } from "../../../theme/keyframes"
 import { colors, fonts } from "../../../theme/theme"
 import { LocationSelectType, SaleAbility } from "../../../types"
 import { ClipThing } from "../../Common/ClipThing"
@@ -16,26 +15,15 @@ import { ConfirmModal } from "../../Common/ConfirmModal"
 
 export interface PlayerAbilityStoreItemProps {
     saleAbility: SaleAbility
-    updatedPrice: string
-    totalAmount: number
-    amountSold: number
+    amount?: number
     onPurchase: () => void
     disabled?: boolean
 }
 
-export const PlayerAbilityStoreItem = ({
-    saleAbility,
-    updatedPrice,
-    totalAmount,
-    amountSold,
-    onPurchase: onPurchaseCallback,
-    disabled,
-}: PlayerAbilityStoreItemProps) => {
+export const PlayerAbilityStoreItem = ({ saleAbility, amount = 0, onPurchase: onPurchaseCallback, disabled }: PlayerAbilityStoreItemProps) => {
     const theme = useTheme()
     const primaryColor = theme.factionTheme.primary
     const backgroundColor = theme.factionTheme.background
-
-    const amountLeft = totalAmount - amountSold
 
     // Purchasing
     const { newSnackbarMessage } = useSnackbar()
@@ -62,11 +50,10 @@ export const PlayerAbilityStoreItem = ({
     const onPurchase = useCallback(async () => {
         try {
             setPurchaseLoading(true)
-            await send(GameServerKeys.SaleAbilityPurchase, {
+            await send(GameServerKeys.SaleAbilityClaim, {
                 ability_id: saleAbility.id,
-                amount: updatedPrice,
             })
-            newSnackbarMessage(`Successfully purchased 1 ${saleAbility.ability.label || "ability"}`, "success")
+            newSnackbarMessage(`Successfully claimed 1 ${saleAbility.ability.label || "ability"}`, "success")
             toggleShowPurchaseModal(false)
             onPurchaseCallback()
             setPurchaseError(undefined)
@@ -79,7 +66,7 @@ export const PlayerAbilityStoreItem = ({
         } finally {
             setPurchaseLoading(false)
         }
-    }, [send, saleAbility.id, saleAbility.ability.label, updatedPrice, newSnackbarMessage, toggleShowPurchaseModal, onPurchaseCallback])
+    }, [send, saleAbility.id, saleAbility.ability.label, newSnackbarMessage, toggleShowPurchaseModal, onPurchaseCallback])
 
     return (
         <>
@@ -160,11 +147,11 @@ export const PlayerAbilityStoreItem = ({
                                         fontFamily: fonts.nostromoBold,
                                         span: {
                                             fontFamily: "inherit",
-                                            color: amountSold >= totalAmount ? colors.red : colors.neonBlue,
+                                            color: colors.neonBlue,
                                         },
                                     }}
                                 >
-                                    <span>{numberCommaFormatter(amountLeft)}</span> / {numberCommaFormatter(totalAmount)} left
+                                    <span>{numberCommaFormatter(amount)}</span> Owned
                                 </Typography>
                             </Box>
                         </Box>
@@ -184,20 +171,18 @@ export const PlayerAbilityStoreItem = ({
                                 backgroundColor: primaryColor,
                                 opacity: 1,
                                 border: { isFancy: true, borderColor: primaryColor, borderThickness: "1.5px" },
-                                sx: {},
                             }}
                             sx={{ px: "1.6rem", py: ".6rem" }}
-                            disabled={amountLeft < 1 || disabled}
+                            disabled={disabled}
                         >
                             <Typography
-                                key={updatedPrice}
                                 variant="body1"
                                 sx={{
                                     fontFamily: fonts.nostromoBlack,
                                     color: theme.factionTheme.secondary,
                                 }}
                             >
-                                {amountLeft > 0 ? `BUY FOR ${supFormatter(updatedPrice, 2)} SUPS` : "OUT OF STOCK"}
+                                CLAIM ABILITY
                             </Typography>
                         </FancyButton>
                     </Stack>
@@ -215,29 +200,13 @@ export const PlayerAbilityStoreItem = ({
                     isLoading={purchaseLoading}
                     error={purchaseError}
                     confirmSuffix={
-                        <Stack direction="row" sx={{ ml: ".4rem" }}>
-                            <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
-                                (
-                            </Typography>
-                            <SvgSupToken size="1.8rem" />
-                            <Typography key={updatedPrice} variant="h6" sx={{ fontWeight: "fontWeightBold", animation: `${scaleUpKeyframes} 0.1s ease-in` }}>
-                                {supFormatter(updatedPrice, 2)})
-                            </Typography>
-                        </Stack>
+                        <Typography variant="h6" sx={{ fontWeight: "fontWeightBold", ml: ".4rem" }}>
+                            CLAIM
+                        </Typography>
                     }
                 >
                     <Typography variant="h6">
-                        Do you wish to purchase one <strong>{saleAbility.ability.label}</strong> for{" "}
-                        <Box
-                            key={updatedPrice}
-                            component="span"
-                            sx={{
-                                animation: `${scaleUpKeyframes} 0.1s ease-in`,
-                            }}
-                        >
-                            {supFormatter(updatedPrice, 2)}
-                        </Box>{" "}
-                        SUPS?
+                        Do you wish to claim one <strong>{saleAbility.ability.label}</strong>?
                     </Typography>
                 </ConfirmModal>
             )}
