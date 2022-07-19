@@ -60,7 +60,6 @@ export const WarMachineItem = ({
     const wmImageUrl = useMemo(() => imageAvatar || GenericWarMachinePNG, [imageAvatar])
     const selfOwned = useMemo(() => ownedByID === userID, [ownedByID, userID])
     const primaryColor = useMemo(() => (selfOwned ? colors.gold : faction.primary_color), [faction.primary_color, selfOwned])
-    const secondaryColor = useMemo(() => (selfOwned ? "#000000" : faction.secondary_color), [faction.secondary_color, selfOwned])
     const backgroundColor = useMemo(() => faction.background_color, [faction.background_color])
 
     // Highlighting on the map
@@ -244,7 +243,7 @@ export const WarMachineItem = ({
                                     position: "relative",
                                     width: `${WIDTH_SKILL_BUTTON}rem`,
                                     height: "100%",
-                                    backgroundColor: primaryColor,
+                                    backgroundColor: (theme) => theme.factionTheme.primary,
                                     boxShadow: 2,
                                     cursor: isAlive ? "pointer" : "auto",
                                     zIndex: 3,
@@ -274,7 +273,7 @@ export const WarMachineItem = ({
                                         variant="body1"
                                         sx={{
                                             fontWeight: "fontWeightBold",
-                                            color: secondaryColor,
+                                            color: (theme) => theme.factionTheme.secondary,
                                             letterSpacing: 1,
                                             transition: "all .2s",
                                         }}

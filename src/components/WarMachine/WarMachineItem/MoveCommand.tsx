@@ -1,8 +1,8 @@
-import { Box, Typography } from "@mui/material"
-import { useCallback, useState } from "react"
-import { FancyButton } from "../.."
+import { Box, Stack, Typography } from "@mui/material"
+import { useCallback, useMemo, useState } from "react"
+import { SvgClose2, SvgDrag } from "../../../assets"
 import { useAuth, useMiniMap, useSnackbar } from "../../../containers"
-import { useTheme } from "../../../containers/theme"
+import { shadeColor } from "../../../helpers"
 import { useTimer } from "../../../hooks"
 import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
@@ -21,7 +21,7 @@ export const MechMoveCommandAbility: PlayerAbility = {
     ability: {
         id: "",
         game_client_ability_id: 8,
-        label: "Move Command",
+        label: "MOVE COMMAND",
         image_url: "",
         description: "Command the war machine to move to a specific location.",
         text_colour: "#000000",
@@ -86,15 +86,16 @@ interface MoveCommandInnerProps {
 }
 
 const MoveCommandInner = ({ isAlive, remainCooldownSeconds, isMoving, isCancelled, hash, mechMoveCommandID, smallVersion }: MoveCommandInnerProps) => {
-    const theme = useTheme()
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const { setPlayerAbility } = useMiniMap()
 
     const { totalSecRemain } = useTimer(new Date(new Date().getTime() + remainCooldownSeconds * 1000))
+    const ready = useMemo(() => totalSecRemain <= 0, [totalSecRemain])
 
-    const primaryColor = theme.factionTheme.primary
-    const secondaryColor = theme.factionTheme.secondary
+    const primaryColor = isMoving ? colors.grey : MechMoveCommandAbility.ability.colour
+    const secondaryColor = isMoving ? "#FFFFFF" : MechMoveCommandAbility.ability.text_colour
+    const backgroundColor = useMemo(() => shadeColor(primaryColor, -84), [primaryColor])
 
     const onClick = useCallback(async () => {
         if (!isAlive) return
@@ -120,31 +121,52 @@ const MoveCommandInner = ({ isAlive, remainCooldownSeconds, isMoving, isCancelle
 
     if (smallVersion) {
         return (
-            <FancyButton
-                clipThingsProps={{
-                    clipSize: "3px",
-                    clipSlantSize: "0px",
-                    backgroundColor: isMoving ? colors.lightGrey : colors.gold,
-                    opacity: 1,
-                    border: { isFancy: true, borderColor: isMoving ? colors.lightGrey : colors.gold, borderThickness: "1px" },
-                    sx: { position: "relative", width: "100%" },
+            <Stack
+                direction="row"
+                alignItems="center"
+                spacing=".4rem"
+                sx={{
+                    position: "relative",
+                    height: "3rem",
+                    width: "100%",
                 }}
-                sx={{ px: ".2rem", py: ".3rem", color: "#000000" }}
-                onClick={onClick}
             >
-                <Typography
-                    variant="caption"
+                {/* Image */}
+                <Stack
+                    alignItems="center"
+                    justifyContent="center"
                     sx={{
-                        textAlign: "center",
+                        flexShrink: 0,
+                        width: "3rem",
+                        height: "100%",
+                        cursor: "pointer",
+                        backgroundColor: backgroundColor,
+                        border: `${primaryColor} 1.5px solid`,
+                        ":hover": { borderWidth: "3px" },
+                    }}
+                    onClick={onClick}
+                >
+                    {isMoving ? <SvgClose2 size="1.6rem" sx={{ pb: 0 }} fill={primaryColor} /> : <SvgDrag size="1.6rem" sx={{ pb: 0 }} fill={primaryColor} />}
+                </Stack>
+
+                <Typography
+                    variant="body2"
+                    sx={{
+                        pt: ".2rem",
+                        opacity: ready ? 1 : 0.6,
                         lineHeight: 1,
                         fontWeight: "fontWeightBold",
-                        color: isMoving ? "#000000" : "#000000",
-                        transition: "all .2s",
+                        display: "-webkit-box",
+                        overflow: "hidden",
+                        overflowWrap: "anywhere",
+                        textOverflow: "ellipsis",
+                        WebkitLineClamp: 1, // change to max number of lines
+                        WebkitBoxOrient: "vertical",
                     }}
                 >
-                    {isMoving ? "CANCEL" : "MOVE"}
+                    {ready ? MechMoveCommandAbility.ability.label : `${totalSecRemain}s`}
                 </Typography>
-            </FancyButton>
+            </Stack>
         )
     }
 

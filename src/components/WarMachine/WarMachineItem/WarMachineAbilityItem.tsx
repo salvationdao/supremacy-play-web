@@ -108,15 +108,17 @@ export const MechAbilityButton = ({ warMachine, gameAbility }: { warMachine: War
                 border: { isFancy: true, borderColor: colour || "#14182B" },
                 sx: { position: "relative" },
             }}
-            sx={{ px: "1.2rem", pt: ".4rem", pb: ".5rem", minWidth: "6rem" }}
+            sx={{ px: "1.2rem", pt: ".4rem", pb: ".5rem", minWidth: "7rem" }}
             onClick={onTrigger}
         >
             <Stack alignItems="center" justifyContent="center" direction="row">
                 <Typography
+                    variant="body2"
                     sx={{
                         lineHeight: 1,
                         fontWeight: "fontWeightBold",
                         whiteSpace: "nowrap",
+                        textTransform: "none",
                         color: remainSeconds > 0 || !text_colour ? "#FFFFFF" : text_colour,
                     }}
                 >
