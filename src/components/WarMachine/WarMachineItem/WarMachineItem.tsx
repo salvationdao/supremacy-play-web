@@ -58,8 +58,6 @@ export const WarMachineItem = ({
 
     const rarityDeets = useMemo(() => getRarityDeets(tier), [tier])
     const wmImageUrl = useMemo(() => imageAvatar || GenericWarMachinePNG, [imageAvatar])
-    const isOwnFaction = useMemo(() => factionID == warMachine.factionID, [factionID, warMachine])
-    const numSkillBars = useMemo(() => gameAbilities?.length || 0, [gameAbilities])
     const selfOwned = useMemo(() => ownedByID === userID, [ownedByID, userID])
     const primaryColor = useMemo(() => (selfOwned ? colors.gold : faction.primary_color), [faction.primary_color, selfOwned])
     const secondaryColor = useMemo(() => (selfOwned ? "#000000" : faction.secondary_color), [faction.secondary_color, selfOwned])
@@ -96,7 +94,7 @@ export const WarMachineItem = ({
                     width: `${
                         WIDTH_AVATAR +
                         (isExpanded ? WIDTH_BODY : 2 * WIDTH_STAT_BAR) +
-                        (isOwnFaction && isAlive ? WIDTH_SKILL_BUTTON + numSkillBars * WIDTH_STAT_BAR : 0) +
+                        (gameAbilities && gameAbilities.length > 0 && isAlive ? WIDTH_SKILL_BUTTON : 0) +
                         (warMachine.ownedByID === userID ? WIDTH_SKILL_BUTTON + WIDTH_STAT_BAR : 0)
                     }rem`,
                     transition: "width .1s",

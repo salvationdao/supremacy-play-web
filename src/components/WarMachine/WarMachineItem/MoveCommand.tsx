@@ -129,13 +129,14 @@ const MoveCommandInner = ({ isAlive, remainCooldownSeconds, isMoving, isCancelle
                     border: { isFancy: true, borderColor: isMoving ? colors.lightGrey : colors.gold, borderThickness: "1px" },
                     sx: { position: "relative", width: "100%" },
                 }}
-                sx={{ px: ".2rem", py: 0, color: "#000000" }}
+                sx={{ px: ".2rem", py: ".3rem", color: "#000000" }}
                 onClick={onClick}
             >
                 <Typography
                     variant="caption"
                     sx={{
                         textAlign: "center",
+                        lineHeight: 1,
                         fontWeight: "fontWeightBold",
                         color: isMoving ? "#000000" : "#000000",
                         transition: "all .2s",

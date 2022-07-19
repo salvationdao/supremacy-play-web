@@ -164,7 +164,6 @@ export const QuickDeployItem = ({ mech }: QuickDeployItemProps) => {
                                     variant="caption"
                                     sx={{
                                         color: mechState === MechStatusEnum.Idle ? "#FFFFFF" : colors.yellow,
-                                        fontSize: "1.15rem",
                                         fontFamily: fonts.nostromoBlack,
                                     }}
                                 >
