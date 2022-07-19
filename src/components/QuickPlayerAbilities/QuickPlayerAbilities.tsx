@@ -21,16 +21,18 @@ export const QuickPlayerAbilities = ({ open, onClose }: { open: boolean; onClose
 }
 
 const QuickPlayerAbilitiesInner = ({ onClose, userID }: { onClose: () => void; userID: string }) => {
-    const { isMobile } = useMobile()
     const theme = useTheme()
+    const { isMobile } = useMobile()
+
     const { query: queryCanPurchase } = useParameterizedQuery(CanPlayerPurchase)
+    const [canPurchase, setCanPurchase] = useState(true)
+    const [canPurchaseError, setCanPurchaseError] = useState<string>()
 
     const [isLoaded, setIsLoaded] = useState(false)
     const [nextRefreshTime, setNextRefreshTime] = useState<Date | null>(null)
     const [saleAbilities, setSaleAbilities] = useState<SaleAbility[]>([])
     const [priceMap, setPriceMap] = useState<Map<string, string>>(new Map())
     const [amountMap, setAmountMap] = useState<Map<string, number>>(new Map())
-    const [canPurchase, setCanPurchase] = useState(true)
     const [purchaseError, setPurchaseError] = useState<string>()
 
     useEffect(() => {
@@ -40,7 +42,14 @@ const QuickPlayerAbilitiesInner = ({ onClose, userID }: { onClose: () => void; u
                 if (resp.error || !resp.payload) return
                 setCanPurchase(resp.payload.can_purchase)
             } catch (e) {
+                let message = "Failed to obtain purchase availability during this sale period."
+                if (typeof e === "string") {
+                    message = e
+                } else if (e instanceof Error) {
+                    message = e.message
+                }
                 console.error(e)
+                setCanPurchaseError(message)
             }
         })()
     }, [queryCanPurchase, userID])
@@ -64,6 +73,7 @@ const QuickPlayerAbilitiesInner = ({ onClose, userID }: { onClose: () => void; u
             setAmountMap(new Map()) // reset amount map
             setCanPurchase(true)
             setPurchaseError(undefined)
+            setCanPurchaseError(undefined)
             if (isLoaded) return
             setIsLoaded(true)
         },
@@ -164,6 +174,11 @@ const QuickPlayerAbilitiesInner = ({ onClose, userID }: { onClose: () => void; u
                                         {purchaseError && (
                                             <Typography variant="body2" sx={{ color: colors.red }}>
                                                 {purchaseError}
+                                            </Typography>
+                                        )}
+                                        {canPurchaseError && (
+                                            <Typography variant="body2" sx={{ color: colors.red }}>
+                                                {canPurchaseError}
                                             </Typography>
                                         )}
                                     </Stack>

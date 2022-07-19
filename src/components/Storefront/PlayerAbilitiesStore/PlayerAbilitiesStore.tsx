@@ -18,16 +18,18 @@ import { MysteryCrateStoreItemLoadingSkeleton } from "../MysteryCratesStore/Myst
 import { PlayerAbilityStoreItem } from "./PlayerAbilityStoreItem"
 
 export const PlayerAbilitiesStore = () => {
-    const { userID } = useAuth()
     const theme = useTheme()
+    const { userID } = useAuth()
+
     const { query: queryCanPurchase } = useParameterizedQuery(CanPlayerPurchase)
+    const [canPurchase, setCanPurchase] = useState(true)
+    const [canPurchaseError, setCanPurchaseError] = useState<string>()
 
     const [isLoaded, setIsLoaded] = useState(false)
     const [nextRefreshTime, setNextRefreshTime] = useState<Date | null>(null)
     const [saleAbilities, setSaleAbilities] = useState<SaleAbility[]>([])
     const [priceMap, setPriceMap] = useState<Map<string, string>>(new Map())
     const [amountMap, setAmountMap] = useState<Map<string, number>>(new Map())
-    const [canPurchase, setCanPurchase] = useState(true)
 
     useEffect(() => {
         ;(async () => {
@@ -36,7 +38,14 @@ export const PlayerAbilitiesStore = () => {
                 if (resp.error || !resp.payload) return
                 setCanPurchase(resp.payload.can_purchase)
             } catch (e) {
+                let message = "Failed to obtain purchase availability during this sale period."
+                if (typeof e === "string") {
+                    message = e
+                } else if (e instanceof Error) {
+                    message = e.message
+                }
                 console.error(e)
+                setCanPurchaseError(message)
             }
         })()
     }, [queryCanPurchase, userID])
@@ -59,6 +68,7 @@ export const PlayerAbilitiesStore = () => {
             setSaleAbilities(payload.sale_abilities)
             setAmountMap(new Map()) // reset amount map
             setCanPurchase(true)
+            setCanPurchaseError(undefined)
             if (isLoaded) return
             setIsLoaded(true)
         },
@@ -208,7 +218,18 @@ export const PlayerAbilitiesStore = () => {
                 <PageHeader
                     imageUrl={PlayerAbilityPNG}
                     title="PLAYER ABILITIES"
-                    description="Player abilities are abilities that can be bought and used on the battle arena."
+                    description={
+                        <Stack>
+                            <Typography sx={{ fontSize: "1.85rem" }}>
+                                Player abilities are abilities that can be bought and used on the battle arena.
+                            </Typography>
+                            {canPurchaseError && (
+                                <Typography variant="body2" sx={{ color: colors.red }}>
+                                    {canPurchaseError}
+                                </Typography>
+                            )}
+                        </Stack>
+                    }
                 >
                     <Box sx={{ flexShrink: 0, pr: "1.5rem", ml: "auto !important" }}>
                         <FancyButton
