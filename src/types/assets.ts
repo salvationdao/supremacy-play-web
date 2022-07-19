@@ -375,7 +375,10 @@ export interface RepairStatus {
     full_repair_fee: string
 }
 
-export type MysteryCrateType = "MECH" | "WEAPON"
+export enum MysteryCrateType {
+    Mech = "MECH",
+    Weapon = "WEAPON",
+}
 
 export interface StorefrontMysteryCrate {
     id: string
@@ -447,6 +450,7 @@ export interface MysteryCrateOwnershipResp {
 }
 
 export interface OpenCrateResponse {
+    factionID: string
     mech?: MechDetails
     power_core?: PowerCore
     mech_skin?: MechSkin

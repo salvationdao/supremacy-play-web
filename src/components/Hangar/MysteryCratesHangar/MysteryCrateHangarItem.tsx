@@ -17,12 +17,11 @@ import { MediaPreview } from "../../Common/MediaPreview/MediaPreview"
 
 interface MysteryCrateStoreItemProps {
     crate: MysteryCrate
-    setCrateOpen: (value: ((prevState: boolean) => boolean) | boolean) => void
-    setCrateReward: (value: ((prevState: OpenCrateResponse | undefined) => OpenCrateResponse | undefined) | OpenCrateResponse | undefined) => void
+    setOpenedRewards: (value: ((prevState: OpenCrateResponse | undefined) => OpenCrateResponse | undefined) | OpenCrateResponse | undefined) => void
     getCrates: () => Promise<void>
 }
 
-export const MysteryCrateHangarItem = ({ crate, setCrateOpen, setCrateReward, getCrates }: MysteryCrateStoreItemProps) => {
+export const MysteryCrateHangarItem = ({ crate, setOpenedRewards, getCrates }: MysteryCrateStoreItemProps) => {
     const location = useLocation()
     const theme = useTheme()
     const { newSnackbarMessage } = useSnackbar()
@@ -42,8 +41,7 @@ export const MysteryCrateHangarItem = ({ crate, setCrateOpen, setCrateReward, ge
             })
 
             if (!resp) return
-            setCrateReward(resp)
-            setCrateOpen(true)
+            setOpenedRewards({ ...resp, factionID: crate.faction_id })
             getCrates()
         } catch (e) {
             const message = typeof e === "string" ? e : "Failed to get mystery crates."
@@ -52,7 +50,7 @@ export const MysteryCrateHangarItem = ({ crate, setCrateOpen, setCrateReward, ge
         } finally {
             setLoading(false)
         }
-    }, [send, crate.id, setCrateOpen, setCrateReward, getCrates, newSnackbarMessage])
+    }, [send, crate.id, crate.faction_id, setOpenedRewards, getCrates, newSnackbarMessage])
 
     return (
         <>

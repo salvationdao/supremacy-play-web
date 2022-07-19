@@ -107,7 +107,7 @@ export const MysteryCrateBanner = () => {
                         to={`/storefront/mystery-crates${location.hash}`}
                     >
                         <Stack justifyContent="center" sx={{ height: "100%" }}>
-                            <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBlack }}>
+                            <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack }}>
                                 ⚡️ 24H FLASH SALE ⚡️
                             </Typography>
                         </Stack>

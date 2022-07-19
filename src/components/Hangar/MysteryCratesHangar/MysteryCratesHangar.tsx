@@ -36,10 +36,9 @@ export const MysteryCratesHangar = () => {
     const [crates, setCrates] = useState<MysteryCrate[]>()
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
-    const [crateOpen, setCrateOpen] = useState(false)
-    const [crateReward, setCrateReward] = useState<OpenCrateResponse>()
+    const [openedRewards, setOpenedRewards] = useState<OpenCrateResponse>()
 
-    const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({
+    const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, changePageSize, prevPage } = usePagination({
         pageSize: parseString(query.get("pageSize"), 10),
         page: parseString(query.get("page"), 1),
     })
@@ -119,8 +118,7 @@ export const MysteryCratesHangar = () => {
                             <MysteryCrateHangarItem
                                 key={`storefront-mystery-crate-${crate.id}-${index}`}
                                 crate={crate}
-                                setCrateReward={setCrateReward}
-                                setCrateOpen={setCrateOpen}
+                                setOpenedRewards={setOpenedRewards}
                                 getCrates={getItems}
                             />
                         ))}
@@ -284,11 +282,13 @@ export const MysteryCratesHangar = () => {
                 </Stack>
             </ClipThing>
 
-            {crateOpen && crateReward && (
+            {openedRewards && (
                 <CrateRewardsModal
-                    rewards={crateReward}
+                    openedRewards={openedRewards}
                     onClose={() => {
-                        setCrateOpen(false)
+                        setOpenedRewards(undefined)
+                        // If user opened the last one on page, then go back a page
+                        if (crates && crates.length <= 1) prevPage()
                     }}
                 />
             )}

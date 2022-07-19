@@ -351,12 +351,12 @@ export const getMysteryCrateDeets = (mysteryCrateType: MysteryCrateType): { imag
     let desc = "Open a mystery crate to receive random weapon / war machine!"
 
     switch (mysteryCrateType) {
-        case "MECH":
+        case MysteryCrateType.Mech:
             image = SafePNG
             label = "WAR MACHINE CRATE"
             desc = "Get a random war machine to participate in the battle arena."
             break
-        case "WEAPON":
+        case MysteryCrateType.Weapon:
             image = SafePNG
             label = "WEAPON CRATE"
             desc = "Get a random weapon to equip onto your war machine."
