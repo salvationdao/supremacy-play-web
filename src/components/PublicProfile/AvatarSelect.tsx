@@ -204,7 +204,7 @@ export const ProfileAvatar = ({ isOwner, primaryColor, backgroundColor, avatarUR
                 </Stack>
             </Stack>
         )
-    }, [loadError, avatars, isLoading, primaryColor, backgroundColor])
+    }, [loadError, avatars, isLoading, primaryColor, updatehHandler])
 
     return (
         <Stack

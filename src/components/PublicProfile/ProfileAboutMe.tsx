@@ -14,11 +14,6 @@ export const AboutMe = ({ hide, aboutMe, updateAboutMe }: { hide: boolean; updat
             setSubmitting(true)
             aboutMeRef.current?.blur()
             await updateAboutMe(newAboutMe)
-        } catch (e) {
-            console.log({ e, aboutMe })
-            setNewAboutMe(aboutMe)
-            setSubmitting(false)
-            setEditing(false)
         } finally {
             setSubmitting(false)
             setEditing(false)
