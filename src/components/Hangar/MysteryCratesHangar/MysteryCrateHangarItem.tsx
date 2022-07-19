@@ -9,19 +9,21 @@ import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { MARKETPLACE_TABS } from "../../../pages"
 import { colors, fonts } from "../../../theme/theme"
-import { MysteryCrate, OpenCrateResponse } from "../../../types"
+import { MysteryCrate, MysteryCrateType, OpenCrateResponse } from "../../../types"
 import { ItemType } from "../../../types/marketplace"
 import { ClipThing } from "../../Common/ClipThing"
 import { FancyButton } from "../../Common/FancyButton"
 import { MediaPreview } from "../../Common/MediaPreview/MediaPreview"
+import { OpeningCrate } from "./MysteryCratesHangar"
 
 interface MysteryCrateStoreItemProps {
     crate: MysteryCrate
-    setOpenedRewards: (value: ((prevState: OpenCrateResponse | undefined) => OpenCrateResponse | undefined) | OpenCrateResponse | undefined) => void
+    setOpeningCrate: React.Dispatch<React.SetStateAction<OpeningCrate | undefined>>
+    setOpenedRewards: React.Dispatch<React.SetStateAction<OpenCrateResponse | undefined>>
     getCrates: () => Promise<void>
 }
 
-export const MysteryCrateHangarItem = ({ crate, setOpenedRewards, getCrates }: MysteryCrateStoreItemProps) => {
+export const MysteryCrateHangarItem = ({ crate, setOpeningCrate, setOpenedRewards, getCrates }: MysteryCrateStoreItemProps) => {
     const location = useLocation()
     const theme = useTheme()
     const { newSnackbarMessage } = useSnackbar()
@@ -34,6 +36,10 @@ export const MysteryCrateHangarItem = ({ crate, setOpenedRewards, getCrates }: M
 
     const openCrate = useCallback(async () => {
         try {
+            setOpeningCrate({
+                factionID: crate.faction_id,
+                crateType: crate.label.toLowerCase().includes("weapon") ? MysteryCrateType.Weapon : MysteryCrateType.Mech,
+            })
             setLoading(true)
             //change these types obviously
             const resp = await send<OpenCrateResponse>(GameServerKeys.OpenCrate, {
@@ -41,7 +47,7 @@ export const MysteryCrateHangarItem = ({ crate, setOpenedRewards, getCrates }: M
             })
 
             if (!resp) return
-            setOpenedRewards({ ...resp, factionID: crate.faction_id })
+            setOpenedRewards({ ...resp })
             getCrates()
         } catch (e) {
             const message = typeof e === "string" ? e : "Failed to get mystery crates."
@@ -50,7 +56,7 @@ export const MysteryCrateHangarItem = ({ crate, setOpenedRewards, getCrates }: M
         } finally {
             setLoading(false)
         }
-    }, [send, crate.id, crate.faction_id, setOpenedRewards, getCrates, newSnackbarMessage])
+    }, [setOpeningCrate, crate.faction_id, crate.label, crate.id, send, setOpenedRewards, getCrates, newSnackbarMessage])
 
     return (
         <>

@@ -450,7 +450,6 @@ export interface MysteryCrateOwnershipResp {
 }
 
 export interface OpenCrateResponse {
-    factionID: string
     mech?: MechDetails
     power_core?: PowerCore
     mech_skin?: MechSkin

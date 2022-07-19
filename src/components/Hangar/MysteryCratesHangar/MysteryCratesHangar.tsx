@@ -9,12 +9,13 @@ import { usePagination, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { MysteryCrate, OpenCrateResponse } from "../../../types"
+import { MysteryCrate, MysteryCrateType, OpenCrateResponse } from "../../../types"
 import { PageHeader } from "../../Common/PageHeader"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { MysteryCrateStoreItemLoadingSkeleton } from "../../Storefront/MysteryCratesStore/MysteryCrateStoreItem/MysteryCrateStoreItem"
 import { MysteryCrateHangarItem } from "./MysteryCrateHangarItem"
 import { CrateRewardsModal } from "./OpenCrate/CrateRewardsModal"
+import { CrateRewardVideo } from "./OpenCrate/CrateRewardVideo"
 
 interface GetCratesRequest {
     page: number
@@ -28,6 +29,11 @@ interface GetAssetsResponse {
     total: number
 }
 
+export interface OpeningCrate {
+    factionID: string
+    crateType: MysteryCrateType
+}
+
 export const MysteryCratesHangar = () => {
     const location = useLocation()
     const [query, updateQuery] = useUrlQuery()
@@ -36,6 +42,7 @@ export const MysteryCratesHangar = () => {
     const [crates, setCrates] = useState<MysteryCrate[]>()
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
+    const [openingCrate, setOpeningCrate] = useState<OpeningCrate>()
     const [openedRewards, setOpenedRewards] = useState<OpenCrateResponse>()
 
     const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, changePageSize, prevPage } = usePagination({
@@ -118,6 +125,7 @@ export const MysteryCratesHangar = () => {
                             <MysteryCrateHangarItem
                                 key={`storefront-mystery-crate-${crate.id}-${index}`}
                                 crate={crate}
+                                setOpeningCrate={setOpeningCrate}
                                 setOpenedRewards={setOpenedRewards}
                                 getCrates={getItems}
                             />
@@ -282,7 +290,11 @@ export const MysteryCratesHangar = () => {
                 </Stack>
             </ClipThing>
 
-            {openedRewards && (
+            {openingCrate && (
+                <CrateRewardVideo factionID={openingCrate.factionID} crateType={openingCrate.crateType} onClose={() => setOpeningCrate(undefined)} />
+            )}
+
+            {!openingCrate && openedRewards && (
                 <CrateRewardsModal
                     openedRewards={openedRewards}
                     onClose={() => {

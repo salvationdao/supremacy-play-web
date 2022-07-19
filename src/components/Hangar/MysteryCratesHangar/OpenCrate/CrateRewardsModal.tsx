@@ -3,11 +3,10 @@ import { useEffect, useState } from "react"
 import { SvgClose } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
 import { fonts, siteZIndex } from "../../../../theme/theme"
-import { MysteryCrateType, OpenCrateResponse } from "../../../../types"
+import { OpenCrateResponse } from "../../../../types"
 import { ClipThing } from "../../../Common/ClipThing"
 import { FancyButton } from "../../../Common/FancyButton"
 import { CrateRewardItemsLarge, CrateRewardItemsSmall } from "./CrateRewardItems"
-import { CrateRewardVideo } from "./CrateRewardVideo"
 
 interface CrateRewardsModalProps {
     openedRewards: OpenCrateResponse
@@ -26,7 +25,6 @@ export interface ArrayItem {
 
 export const CrateRewardsModal = ({ openedRewards, onClose }: CrateRewardsModalProps) => {
     const theme = useTheme()
-    const [showingVideo, setShowingVideo] = useState(true)
     const [arrayItems, setArrayItems] = useState<ArrayItem[]>([])
 
     useEffect(() => {
@@ -91,16 +89,6 @@ export const CrateRewardsModal = ({ openedRewards, onClose }: CrateRewardsModalP
 
         setArrayItems(newArr)
     }, [openedRewards, setArrayItems])
-
-    if (showingVideo) {
-        return (
-            <CrateRewardVideo
-                factionID={openedRewards.factionID}
-                crateType={openedRewards.mech ? MysteryCrateType.Mech : MysteryCrateType.Weapon}
-                onClose={() => setShowingVideo(false)}
-            />
-        )
-    }
 
     return (
         <Modal open onClose={onClose} sx={{ zIndex: siteZIndex.Modal }}>
