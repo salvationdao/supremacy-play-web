@@ -77,6 +77,7 @@ export interface BanOption {
 }
 
 export interface ChatMessageType {
+    id?: string
     type: "TEXT" | "PUNISH_VOTE" | "SYSTEM_BAN" | "NEW_BATTLE"
     data: TextMessageData | PunishMessageData | SystemBanMessageData | NewBattleMessageData
     sent_at: Date

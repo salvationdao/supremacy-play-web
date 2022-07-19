@@ -42,6 +42,7 @@ export const TextMessage = ({
     previousMessage,
     containerRef,
     isScrolling,
+    chatMessages,
 }: {
     data: TextMessageData
     sentAt: Date
@@ -57,6 +58,7 @@ export const TextMessage = ({
     previousMessage: ChatMessageType | undefined
     containerRef: React.RefObject<HTMLDivElement>
     isScrolling: boolean
+    chatMessages: ChatMessageType[]
 }) => {
     const { from_user, user_rank, message_color, avatar_id, message, total_multiplier, is_citizen, from_user_stat, metadata } = data
     const { id, username, gid, faction_id } = from_user
@@ -121,9 +123,16 @@ export const TextMessage = ({
                 } catch (err) {
                     console.error(err)
                 }
+
+                const msg = chatMessages.find((msg) => (msg.data as TextMessageData).id === data.id)
+                if (!msg || !msg.data || !(msg.data as TextMessageData).metadata) return
+                const msgData = msg.data as TextMessageData
+                if (msgData && msgData.metadata && "tagged_users_read" in msgData.metadata) {
+                    msgData.metadata.tagged_users_read[user.gid] = true
+                }
             }, 2000)
         }
-    }, [isVisible, data])
+    }, [isVisible, data, chatMessages])
 
     const renderJSXMessage = useCallback(
         (msg: string) => {

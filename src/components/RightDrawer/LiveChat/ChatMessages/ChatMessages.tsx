@@ -165,6 +165,7 @@ const ChatMessagesInner = ({
                                             previousMessage={chatMessages[i - 1]}
                                             containerRef={scrollableRef}
                                             isScrolling={isScrolling}
+                                            chatMessages={chatMessages}
                                         />
                                     )
                                 } else if (message.type == "PUNISH_VOTE") {
