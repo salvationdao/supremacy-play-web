@@ -272,7 +272,14 @@ export const PlayerProfilePage = () => {
                     <Stack spacing=".5rem"></Stack>
                     <Stack spacing="1.8rem">
                         <Stack>
-                            <Stack direction={"row"}>
+                            <Stack
+                                sx={{
+                                    flexDirection: "row",
+                                    "@media (max-width:900px)": {
+                                        flexDirection: "column",
+                                    },
+                                }}
+                            >
                                 <ProfileAvatar
                                     isOwner={isMe}
                                     updateAvatar={async (avatar_id: string) => {
@@ -283,10 +290,25 @@ export const PlayerProfilePage = () => {
                                     backgroundColor={backgroundColor}
                                 />
 
-                                <Stack>
+                                <Stack
+                                    sx={{
+                                        "@media (max-width:900px)": {
+                                            justifyContent: "center",
+                                            alignItems: "center",
+                                        },
+                                    }}
+                                >
                                     {isMe && (
                                         <Typography
-                                            sx={{ WebkitTextStroke: "1px black", fontFamily: fonts.nostromoBlack, fontSize: "5rem", color: primaryColor }}
+                                            sx={{
+                                                WebkitTextStroke: "1px black",
+                                                fontFamily: fonts.nostromoBlack,
+                                                fontSize: "5rem",
+                                                color: primaryColor,
+                                                "@media (max-width:900px)": {
+                                                    fontSize: "4rem",
+                                                },
+                                            }}
                                         >
                                             my profile
                                         </Typography>
