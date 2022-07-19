@@ -58,7 +58,7 @@ export const TextMessage = ({
     containerRef: React.RefObject<HTMLDivElement>
     isScrolling: boolean
 }) => {
-    const { from_user, user_rank, message_color, avatar_id, message, total_multiplier, is_citizen, from_user_stat } = data
+    const { from_user, user_rank, message_color, avatar_id, message, total_multiplier, is_citizen, from_user_stat, metadata } = data
     const { id, username, gid, faction_id } = from_user
     const { userGidRecord, addToUserGidRecord } = useChat()
     const { send } = useGameServerCommandsUser("/user_commander")
@@ -69,7 +69,6 @@ export const TextMessage = ({
     const [banModalOpen, toggleBanModalOpen] = useToggle()
     const [displayTimestamp, setDisplayTimestamp] = useToggle()
     const [isPreviousMessager, setIsPreviousMessager] = useToggle()
-    const [highlightMsg, setHighlightMsg] = useState(false)
 
     const multiplierColor = useMemo(() => getMultiplierColor(total_multiplier || 0), [total_multiplier])
     const abilityKillColor = useMemo(() => {
@@ -82,6 +81,10 @@ export const TextMessage = ({
     const faction_logo_url = useMemo(() => (faction_id ? getFaction(faction_id).logo_url : ""), [faction_id, getFaction])
     const rankDeets = useMemo(() => (user_rank ? getUserRankDeets(user_rank, ".8rem", "1.8rem") : undefined), [user_rank])
     const smallFontSize = useMemo(() => (fontSize ? `${0.9 * fontSize}rem` : "0.9rem"), [fontSize])
+    const shouldNotify = useMemo(
+        () => metadata && user.gid in metadata.tagged_users_read && !metadata.tagged_users_read[user.gid],
+        [metadata?.tagged_users_read],
+    )
 
     const renderFontSize = useCallback(() => {
         if (isEmoji) return (fontSize || 1.1) * 3
@@ -105,12 +108,11 @@ export const TextMessage = ({
     }, [containerRef, textMessageRef, isScrolling])
 
     useEffect(() => {
-        ;(async () => {
-            if (data.metadata && Object.keys(data.metadata?.tagged_users_read).length === 0) return
-            const visibleBool = isVisible()
-            console.log(data.message, visibleBool)
-            const isRead = data.metadata?.tagged_users_read[user.gid]
-            if (visibleBool && isRead === false) {
+        if (metadata && Object.keys(metadata?.tagged_users_read).length === 0) return
+        const visibleBool = isVisible()
+        const isRead = metadata?.tagged_users_read[user.gid]
+        if (visibleBool && isRead === false) {
+            setTimeout(async () => {
                 try {
                     const resp = await send<User>(GameServerKeys.ReadTaggedMessage, {
                         chat_history_id: data.id,
@@ -119,20 +121,13 @@ export const TextMessage = ({
                 } catch (err) {
                     console.error(err)
                 }
-            }
-        })()
+            }, 2000)
+        }
     }, [isVisible, data])
-
-    useEffect(() => {
-        if (!highlightMsg) return
-        setTimeout(() => {
-            setHighlightMsg(false)
-        }, 4000)
-    }, [])
 
     const renderJSXMessage = useCallback(
         (msg: string) => {
-            if (data.metadata && Object.keys(data.metadata?.tagged_users_read).length === 0) return <Box component={"span"}>{msg}</Box>
+            if (metadata && Object.keys(metadata?.tagged_users_read).length === 0) return <Box component={"span"}>{msg}</Box>
 
             const newMsgArr: ReactJSXElement[] = []
 
@@ -350,7 +345,7 @@ export const TextMessage = ({
                             {dateFormatter(sentAt)}
                         </Typography>
                     </Fade>
-                    {chatMessage}
+                    <Box sx={{ backgroundColor: shouldNotify ? colors.darkerNavy : "unset" }}>{chatMessage}</Box>
                 </Stack>
             </Box>
 
