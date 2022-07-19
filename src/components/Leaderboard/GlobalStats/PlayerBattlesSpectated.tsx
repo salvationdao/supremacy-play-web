@@ -46,7 +46,7 @@ export const PlayerBattlesSpectated = () => {
             title="MOST BATTLES SPECTATED"
             tableHeadings={["RANK", "PLAYER", "FACTION", "BATTLES SPECTATED"]}
             alignments={["center", "left", "left", "center"]}
-            widths={["19rem", "auto", "auto", "auto"]}
+            widths={["19rem", "auto", "auto", "23rem"]}
             rankItems={rankItems}
             isLoading={isLoading}
             loadError={loadError}

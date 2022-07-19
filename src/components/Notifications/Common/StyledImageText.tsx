@@ -58,6 +58,7 @@ export const StyledImageText = ({
         <span style={{ display: "inline-block" }}>
             {imageUrl && (
                 <Box
+                    component="span"
                     sx={{
                         flexShrink: 0,
                         display: "inline-block",
@@ -83,7 +84,7 @@ export const StyledImageText = ({
                     fontFamily,
                     fontWeight,
                     color: textColor || color,
-                    wordBreak: "break-word",
+                    wordBreak: "break-all",
                     ...truncateStyle,
                     ...textSx,
                 }}
