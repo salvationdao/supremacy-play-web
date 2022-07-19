@@ -13,6 +13,7 @@ interface ConnectWalletProps {
     clipBorderColor?: string
     clipBackgroundColor?: string
 }
+
 export const ConnectButton = ({ width, label, loadingLabel, sx, typeSx, clipBorderColor, clipBackgroundColor }: ConnectWalletProps) => {
     const { isLoggingIn, onLogInClick } = useAuth()
     const { setIsOpen } = useTour()

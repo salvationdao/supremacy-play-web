@@ -1,9 +1,11 @@
 import { Box, CircularProgress, Fade, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
+import { useParameterizedQuery } from "react-fetching-library"
 import { MoveableResizable } from ".."
 import { useAuth, useMobile } from "../../containers"
 import { useTheme } from "../../containers/theme"
-import { useGameServerSubscriptionSecurePublic } from "../../hooks/useGameServer"
+import { CanPlayerPurchase } from "../../fetching"
+import { useGameServerSubscription } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { colors, fonts } from "../../theme/theme"
 import { FeatureName, SaleAbility } from "../../types"
@@ -13,31 +15,54 @@ import { TimeLeft } from "../Storefront/PlayerAbilitiesStore/PlayerAbilitiesStor
 import { QuickPlayerAbilitiesItem } from "./QuickPlayerAbilitiesItem"
 
 export const QuickPlayerAbilities = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
-    const { userHasFeature } = useAuth()
+    const { userHasFeature, userID } = useAuth()
     if (!open || !userHasFeature(FeatureName.playerAbility)) return null
-    return <QuickPlayerAbilitiesInner onClose={onClose} />
+    return <QuickPlayerAbilitiesInner onClose={onClose} userID={userID} />
 }
 
-const QuickPlayerAbilitiesInner = ({ onClose }: { onClose: () => void }) => {
-    const { isMobile } = useMobile()
+const QuickPlayerAbilitiesInner = ({ onClose, userID }: { onClose: () => void; userID: string }) => {
     const theme = useTheme()
+    const { isMobile } = useMobile()
+
+    const { query: queryCanPurchase } = useParameterizedQuery(CanPlayerPurchase)
+    const [canPurchase, setCanPurchase] = useState(true)
+    const [canPurchaseError, setCanPurchaseError] = useState<string>()
 
     const [isLoaded, setIsLoaded] = useState(false)
     const [nextRefreshTime, setNextRefreshTime] = useState<Date | null>(null)
     const [saleAbilities, setSaleAbilities] = useState<SaleAbility[]>([])
     const [priceMap, setPriceMap] = useState<Map<string, string>>(new Map())
     const [amountMap, setAmountMap] = useState<Map<string, number>>(new Map())
-    const [canPurchase, setCanPurchase] = useState(true)
     const [purchaseError, setPurchaseError] = useState<string>()
 
-    useGameServerSubscriptionSecurePublic<{
+    useEffect(() => {
+        ;(async () => {
+            try {
+                const resp = await queryCanPurchase(userID)
+                if (resp.error || !resp.payload) return
+                setCanPurchase(resp.payload.can_purchase)
+            } catch (e) {
+                let message = "Failed to obtain purchase availability during this sale period."
+                if (typeof e === "string") {
+                    message = e
+                } else if (e instanceof Error) {
+                    message = e.message
+                }
+                console.error(e)
+                setCanPurchaseError(message)
+            }
+        })()
+    }, [queryCanPurchase, userID])
+
+    useGameServerSubscription<{
         next_refresh_time: Date | null
         refresh_period_duration_seconds: number
         sale_abilities: SaleAbility[]
     }>(
         {
-            URI: "sale_abilities",
+            URI: "/public/sale_abilities",
             key: GameServerKeys.SaleAbilitiesList,
+            ready: !!userID,
         },
         (payload) => {
             if (!payload) return
@@ -46,15 +71,19 @@ const QuickPlayerAbilitiesInner = ({ onClose }: { onClose: () => void }) => {
             setNextRefreshTime(payload.next_refresh_time || t)
             setSaleAbilities(payload.sale_abilities)
             setAmountMap(new Map()) // reset amount map
+            setCanPurchase(true)
+            setPurchaseError(undefined)
+            setCanPurchaseError(undefined)
             if (isLoaded) return
             setIsLoaded(true)
         },
     )
 
-    useGameServerSubscriptionSecurePublic<{ id: string; current_price: string }>(
+    useGameServerSubscription<{ id: string; current_price: string }>(
         {
-            URI: "sale_abilities",
+            URI: "/public/sale_abilities",
             key: GameServerKeys.SaleAbilitiesPriceSubscribe,
+            ready: !!userID,
         },
         (payload) => {
             if (!payload) return
@@ -64,10 +93,11 @@ const QuickPlayerAbilitiesInner = ({ onClose }: { onClose: () => void }) => {
         },
     )
 
-    useGameServerSubscriptionSecurePublic<{ id: string; amount_sold: number }>(
+    useGameServerSubscription<{ id: string; amount_sold: number }>(
         {
-            URI: "sale_abilities",
+            URI: "/public/sale_abilities",
             key: GameServerKeys.SaleAbilitiesAmountSubscribe,
+            ready: !!userID,
         },
         (payload) => {
             if (!payload) return
@@ -77,20 +107,14 @@ const QuickPlayerAbilitiesInner = ({ onClose }: { onClose: () => void }) => {
         },
     )
 
-    useEffect(() => {
-        if (!nextRefreshTime) return
-        setCanPurchase(true)
-        setPurchaseError(undefined)
-    }, [nextRefreshTime])
-
     const primaryColor = theme.factionTheme.primary
 
     const config: MoveableResizableConfig = useMemo(
         () => ({
             localStoragePrefix: "quickPlayerAbilities1",
             // Defaults
-            defaultPosX: 390,
-            defaultPosY: 40,
+            defaultPosX: 9999,
+            defaultPosY: 0,
             defaultWidth: 360,
             defaultHeight: 245,
             // Position limits
@@ -99,7 +123,7 @@ const QuickPlayerAbilitiesInner = ({ onClose }: { onClose: () => void }) => {
             // Size limits
             minWidth: 360,
             minHeight: 245,
-            maxWidth: 500,
+            maxWidth: 360,
             maxHeight: 245,
             // Others
             infoTooltipText: "Quickly view and purchase abilities that are currently on sale",
@@ -117,16 +141,8 @@ const QuickPlayerAbilitiesInner = ({ onClose }: { onClose: () => void }) => {
             )
         }
 
-        if (saleAbilities.length > 0) {
-            return (
-                <Typography sx={{ color: colors.lightNeonBlue, fontFamily: fonts.shareTech, textTransform: "uppercase" }}>
-                    <TimeLeft key={saleAbilities[0].available_until?.getMilliseconds()} dateTo={saleAbilities[0].available_until} />
-                </Typography>
-            )
-        }
-
         return <Typography sx={{ color: colors.lightNeonBlue, fontFamily: fonts.shareTech, textTransform: "uppercase" }}>Less than an hour</Typography>
-    }, [nextRefreshTime, saleAbilities])
+    }, [nextRefreshTime])
 
     return (
         <>
@@ -158,6 +174,11 @@ const QuickPlayerAbilitiesInner = ({ onClose }: { onClose: () => void }) => {
                                         {purchaseError && (
                                             <Typography variant="body2" sx={{ color: colors.red }}>
                                                 {purchaseError}
+                                            </Typography>
+                                        )}
+                                        {canPurchaseError && (
+                                            <Typography variant="body2" sx={{ color: colors.red }}>
+                                                {canPurchaseError}
                                             </Typography>
                                         )}
                                     </Stack>
@@ -210,9 +231,9 @@ const QuickPlayerAbilitiesInner = ({ onClose }: { onClose: () => void }) => {
                                                 width: "100%",
                                             }}
                                         >
-                                            {saleAbilities.map((s) => (
+                                            {saleAbilities.map((s, index) => (
                                                 <QuickPlayerAbilitiesItem
-                                                    key={s.id}
+                                                    key={`${s.id}-${index}`}
                                                     saleAbility={s}
                                                     updatedPrice={priceMap.get(s.id) || s.current_price}
                                                     totalAmount={s.sale_limit}

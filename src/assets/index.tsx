@@ -16,6 +16,7 @@ import Global from "!@svgr/webpack!./svg/Global.svg"
 import Graph from "!@svgr/webpack!./svg/Graph.svg"
 import Hammer from "!@svgr/webpack!./svg/Hammer.svg"
 import IntroAnimation from "!@svgr/webpack!./svg/IntroAnimation.svg"
+import Unhide from "!@svgr/webpack!./svg/Unhide.svg"
 import Logout from "!@svgr/webpack!./svg/Logout.svg"
 import Meteor from "!@svgr/webpack!./svg/Meteor.svg"
 import Armor from "!@svgr/webpack!./svg/Armor.svg"
@@ -1082,5 +1083,11 @@ export const SvgPowerCoreRegen: React.VoidFunctionComponent<SvgWrapperProps> = (
 export const SvgShieldRegen: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <ShieldRegen />
+    </SvgWrapper>
+)
+
+export const SvgUnhide: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Unhide />
     </SvgWrapper>
 )

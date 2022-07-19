@@ -1,11 +1,16 @@
 import { Battle, Faction, User, Vector2i } from "."
 
+export interface SaleAbilitiesAvailabilityResponse {
+    can_purchase: boolean
+}
+
 export enum MechStatusEnum {
     Idle = "IDLE",
     Queue = "QUEUE",
     Battle = "BATTLE",
     Market = "MARKET",
     Sold = "SOLD",
+    BattleReady = "BATTLE_READY",
 }
 
 export enum WeaponType {
@@ -87,6 +92,7 @@ export interface MechDetails extends MechBasic {
     power_core?: PowerCore
     weapons: Weapon[]
     utility: Utility[]
+    battle_ready: boolean
 }
 
 export interface BlueprintMech {

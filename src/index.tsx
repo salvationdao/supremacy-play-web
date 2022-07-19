@@ -1,4 +1,4 @@
-import { Box, LinearProgress, Stack } from "@mui/material"
+import { Box, LinearProgress, Stack, Typography } from "@mui/material"
 import { TourProvider } from "@reactour/tour"
 import * as Sentry from "@sentry/react"
 import { Buffer } from "buffer"
@@ -37,7 +37,7 @@ import { AuthPage } from "./pages/AuthPage"
 import { EnlistPage } from "./pages/EnlistPage"
 import { LoginRedirect } from "./pages/LoginRedirect"
 import { ROUTES_ARRAY, ROUTES_MAP } from "./routes"
-import { colors } from "./theme/theme"
+import { colors, fonts } from "./theme/theme"
 
 const AppInner = () => {
     const { serverConnectedBefore, isServerUp } = useSupremacy()
@@ -49,7 +49,7 @@ const AppInner = () => {
     useEffect(() => {
         const timeout = setTimeout(() => {
             toggleShowLoading(false)
-        }, 1500)
+        }, 2000)
 
         return () => clearTimeout(timeout)
     }, [toggleShowLoading])
@@ -57,7 +57,7 @@ const AppInner = () => {
     if (!serverConnectedBefore || showLoading) {
         return (
             <Stack
-                spacing="4rem"
+                spacing="3rem"
                 alignItems="center"
                 justifyContent="center"
                 sx={{
@@ -77,14 +77,20 @@ const AppInner = () => {
                         backgroundSize: "contain",
                     }}
                 />
-                <LinearProgress
-                    sx={{
-                        width: "12rem",
-                        height: "8px",
-                        backgroundColor: `${colors.gold}15`,
-                        ".MuiLinearProgress-bar": { backgroundColor: colors.gold },
-                    }}
-                />
+
+                <Stack alignItems="center" spacing=".8rem">
+                    <Typography variant="body2" sx={{ textAlign: "center", fontFamily: fonts.nostromoBlack }}>
+                        CONNECTING...
+                    </Typography>
+                    <LinearProgress
+                        sx={{
+                            width: "13rem",
+                            height: "9px",
+                            backgroundColor: `${colors.gold}15`,
+                            ".MuiLinearProgress-bar": { backgroundColor: colors.gold },
+                        }}
+                    />
+                </Stack>
             </Stack>
         )
     }

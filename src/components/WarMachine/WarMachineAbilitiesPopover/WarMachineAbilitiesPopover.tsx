@@ -1,9 +1,10 @@
 import { Box, Popover, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
-import { ClipThing, FactionAbilityItem } from "../.."
+import { ClipThing } from "../.."
 import { GenericWarMachinePNG } from "../../../assets"
 import { Faction, GameAbility, WarMachineState } from "../../../types"
 import { ContributorAmount } from "../../BattleStats/ContributorAmount"
+import { WarMachineAbilityItem } from "../WarMachineItem/WarMachineAbilityItem"
 
 interface WarMachineAbilitiesPopoverProps {
     popoverRef: React.MutableRefObject<null>
@@ -13,6 +14,7 @@ interface WarMachineAbilitiesPopoverProps {
     gameAbilities: GameAbility[]
     maxAbilityPriceMap: React.MutableRefObject<Map<string, BigNumber>>
     getFaction: (factionID: string) => Faction
+    isPoppedout?: boolean
 }
 
 export const WarMachineAbilitiesPopover = ({
@@ -21,8 +23,8 @@ export const WarMachineAbilitiesPopover = ({
     onClose,
     warMachine,
     gameAbilities,
-    maxAbilityPriceMap,
     getFaction,
+    isPoppedout,
 }: WarMachineAbilitiesPopoverProps) => {
     const faction = getFaction(warMachine.factionID)
 
@@ -41,6 +43,7 @@ export const WarMachineAbilitiesPopover = ({
             }}
             PaperProps={{ sx: { background: "none", boxShadow: 0 } }}
             transitionDuration={100}
+            sx={{ ".MuiBackdrop-root": { backgroundColor: isPoppedout ? "#00000070" : "transparent" } }}
         >
             <Box
                 sx={{
@@ -51,7 +54,7 @@ export const WarMachineAbilitiesPopover = ({
             >
                 <ClipThing
                     clipSize="5px"
-                    clipSlantSize="8px"
+                    clipSlantSize={isPoppedout ? "0px" : "8px"}
                     border={{
                         borderThickness: ".2rem",
                         borderColor: faction.primary_color,
@@ -85,13 +88,8 @@ export const WarMachineAbilitiesPopover = ({
 
                         <Stack spacing="1rem">
                             {gameAbilities.map((ga, i) => (
-                                <Box key={ga.identity} sx={{ ml: `${(i + 1) * 0.2 * 0.8}rem` }}>
-                                    <FactionAbilityItem
-                                        gameAbility={ga}
-                                        abilityMaxPrice={maxAbilityPriceMap?.current.get(ga.identity)}
-                                        clipSlantSize="5px"
-                                        progressWsURI={`/mech/${warMachine.participantID}`}
-                                    />
+                                <Box key={ga.id} sx={{ ml: `${(i + 1) * 0.2 * 0.8}rem` }}>
+                                    <WarMachineAbilityItem warMachine={warMachine} gameAbility={ga} clipSlantSize="5px" />
                                 </Box>
                             ))}
                         </Stack>

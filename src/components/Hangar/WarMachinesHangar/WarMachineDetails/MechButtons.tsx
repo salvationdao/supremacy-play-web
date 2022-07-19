@@ -2,6 +2,7 @@ import { Box, Typography } from "@mui/material"
 import { useState } from "react"
 import { useLocation } from "react-router-dom"
 import { ClipThing, FancyButton, TooltipHelper } from "../../.."
+import { BATTLE_ARENA_OPEN } from "../../../../constants"
 import { useTheme } from "../../../../containers/theme"
 import { useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
@@ -71,7 +72,7 @@ export const MechButtons = ({
                         primaryColor={colors.green}
                         backgroundColor={colors.green}
                         label="DEPLOY"
-                        disabled={!mechState || mechState !== MechStatusEnum.Idle}
+                        disabled={!BATTLE_ARENA_OPEN || !mechState || mechState !== MechStatusEnum.Idle || !mechDetails.battle_ready}
                         onClick={() => {
                             setSelectedMechDetails(mechDetails)
                             setDeployMechModalOpen(true)

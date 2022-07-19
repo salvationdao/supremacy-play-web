@@ -30,8 +30,8 @@ export const LiveVotingChart = () => {
         () => ({
             localStoragePrefix: "liveVoting1",
             // Defaults
-            defaultPosX: 0,
-            defaultPosY: 125,
+            defaultPosX: 360,
+            defaultPosY: 0,
             defaultWidth: 340,
             defaultHeight: 120,
             // Position limits

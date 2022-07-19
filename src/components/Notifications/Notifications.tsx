@@ -1,4 +1,4 @@
-import { Box, Stack, Typography } from "@mui/material"
+import { Box, Stack } from "@mui/material"
 import { useCallback, useEffect, useMemo } from "react"
 import {
     BattleAbilityAlert,
@@ -20,7 +20,7 @@ import { makeid } from "../../containers/ws/util"
 import { useArray } from "../../hooks"
 import { useGameServerSubscription, useGameServerSubscriptionFaction } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
-import { fonts, siteZIndex } from "../../theme/theme"
+import { siteZIndex } from "../../theme/theme"
 import { WarMachineCommandAlert, WarMachineCommandAlertProps } from "./Alerts/WarMachineCommandAlert"
 import {
     battleAbilityNoti,
@@ -180,7 +180,7 @@ export const Notifications = () => {
             notifications
                 .filter((n) => !!n)
                 .reverse()
-                .slice(0, 5)
+                .slice(0, isMobile ? 2 : 5)
                 .map((n) => {
                     if (!n) return null
 
@@ -229,25 +229,8 @@ export const Notifications = () => {
                             )
                     }
                 }),
-        [getFaction, notifications],
+        [getFaction, isMobile, notifications],
     )
-
-    if (isMobile) {
-        return (
-            <Stack spacing=".6rem" sx={{ backgroundColor: "#FFFFFF12", boxShadow: 2, border: "#FFFFFF20 1px solid", p: "1rem 1.2rem", height: "24rem" }}>
-                <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBlack }}>
-                    NOTIFICATIONS
-                </Typography>
-                {notificationsJsx.filter((n) => !!n).length > 0 ? (
-                    <NotificationsInner notificationsJsx={notificationsJsx} />
-                ) : (
-                    <Stack alignItems="center" justifyContent="center" sx={{ flex: 1 }}>
-                        <Typography>There are no battle notifications yet...</Typography>
-                    </Stack>
-                )}
-            </Stack>
-        )
-    }
 
     return <NotificationsInner notificationsJsx={notificationsJsx} />
 }
@@ -257,12 +240,14 @@ const NotificationsInner = ({ notificationsJsx }: { notificationsJsx: (JSX.Eleme
     return (
         <Stack
             sx={{
-                position: isMobile ? "unset" : "absolute",
+                position: "absolute",
                 height: "100%",
                 top: "1rem",
                 right: "1rem",
                 zIndex: siteZIndex.Notifications,
                 overflow: "hidden",
+                transform: isMobile ? "scale(.9)" : "unset",
+                transformOrigin: "top right",
             }}
         >
             <Box
