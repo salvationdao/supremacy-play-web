@@ -15,13 +15,15 @@ interface CrateRewardsModalProps {
 }
 
 export interface ArrayItem {
-    id: string | undefined
-    imageUrl: string | undefined
-    type: string | undefined
-    animationUrl: string | undefined
-    avatarUrl: string | undefined
-    label: string | undefined
-    rarity?: string | undefined
+    id?: string
+    imageUrl?: string
+    largeImageUrl?: string
+    type?: string
+    animationUrl?: string
+    cardAnimationUrl?: string
+    avatarUrl?: string
+    label?: string
+    rarity?: string
 }
 
 export const CrateRewardsModal = ({ openedRewards, onClose }: CrateRewardsModalProps) => {
@@ -38,8 +40,10 @@ export const CrateRewardsModal = ({ openedRewards, onClose }: CrateRewardsModalP
             const mech: ArrayItem = {
                 id: openedRewards.mech.id,
                 imageUrl: openedRewards.mech.image_url,
+                largeImageUrl: openedRewards.mech.large_image_url,
                 type: openedRewards.mech.item_type,
                 animationUrl: openedRewards.mech.animation_url,
+                cardAnimationUrl: openedRewards.mech.card_animation_url,
                 avatarUrl: openedRewards.mech.avatar_url,
                 label: openedRewards.mech.label,
                 rarity: openedRewards.mech.tier,
@@ -52,8 +56,10 @@ export const CrateRewardsModal = ({ openedRewards, onClose }: CrateRewardsModalP
             const mechSkin: ArrayItem = {
                 id: openedRewards.mech_skin.id,
                 imageUrl: openedRewards.mech_skin.image_url,
+                largeImageUrl: openedRewards.mech_skin.large_image_url,
                 type: openedRewards.mech_skin.item_type,
                 animationUrl: openedRewards.mech_skin.animation_url,
+                cardAnimationUrl: openedRewards.mech_skin.card_animation_url,
                 avatarUrl: openedRewards.mech_skin.avatar_url,
                 label: openedRewards.mech_skin.label,
                 rarity: openedRewards.mech_skin.tier,
@@ -67,8 +73,10 @@ export const CrateRewardsModal = ({ openedRewards, onClose }: CrateRewardsModalP
                 const weapon: ArrayItem = {
                     id: w.id,
                     imageUrl: w.image_url,
+                    largeImageUrl: w.large_image_url,
                     type: w.item_type,
                     animationUrl: w.animation_url,
+                    cardAnimationUrl: w.card_animation_url,
                     avatarUrl: w.avatar_url,
                     label: w.label,
                     rarity: w.tier,
@@ -82,8 +90,10 @@ export const CrateRewardsModal = ({ openedRewards, onClose }: CrateRewardsModalP
             const weaponSkin: ArrayItem = {
                 id: openedRewards.weapon_skin.id,
                 imageUrl: openedRewards.weapon_skin.image_url,
+                largeImageUrl: openedRewards.weapon_skin.large_image_url,
                 type: openedRewards.weapon_skin.item_type,
                 animationUrl: openedRewards.weapon_skin.animation_url,
+                cardAnimationUrl: openedRewards.weapon_skin.card_animation_url,
                 avatarUrl: openedRewards.weapon_skin.avatar_url,
                 label: openedRewards.weapon_skin.label,
                 rarity: openedRewards.weapon_skin.tier,
@@ -128,7 +138,7 @@ export const CrateRewardsModal = ({ openedRewards, onClose }: CrateRewardsModalP
                                         left: 0,
                                         width: "100%",
                                         height: "100%",
-                                        opacity: 0.2,
+                                        opacity: 0.12,
                                         background: `url(${faction.background_url})`,
                                         backgroundRepeat: "no-repeat",
                                         backgroundPosition: "center",
@@ -179,13 +189,14 @@ export const CrateRewardsModal = ({ openedRewards, onClose }: CrateRewardsModalP
 }
 
 const MechCrateRewards = ({ items }: { items: ArrayItem[] }) => {
-    const largeItem = items.find((item) => (item.type = "mech"))
+    const mechs = items.filter((item) => item.type === "mech")
+    const notMechs = items.filter((item) => item.type !== "mech")
 
     return (
         <Stack direction="row" spacing="2.2rem" alignItems={"center"}>
-            <CrateRewardItemsLarge item={largeItem} />
+            {mechs.length > 0 && <CrateRewardItemsLarge item={mechs[0]} />}
             <Stack spacing={"1rem"}>
-                {items.map((item) => (
+                {[...mechs.slice(1), ...notMechs].map((item) => (
                     <CrateRewardItemsSmall key={item.id} item={item} />
                 ))}
             </Stack>

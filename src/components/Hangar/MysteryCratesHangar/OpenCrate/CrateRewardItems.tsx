@@ -28,7 +28,11 @@ export const CrateRewardItemsLarge = ({ item }: CrateRewardItemsProps) => {
         >
             <Stack sx={{ m: "1rem", width: "25rem" }}>
                 <Box sx={{ width: "100%", height: "22rem", mb: "1rem" }}>
-                    <MediaPreview imageUrl={item?.imageUrl || item?.avatarUrl || ""} videoUrls={[item?.animationUrl]} objectFit="cover" />
+                    <MediaPreview
+                        imageUrl={item?.avatarUrl || item?.imageUrl || item?.largeImageUrl || ""}
+                        videoUrls={[item?.animationUrl, item?.cardAnimationUrl]}
+                        objectFit="cover"
+                    />
                 </Box>
 
                 {rarityDeets && (item?.type === "mech_skin" || item?.type === "weapon_skin") && (
@@ -44,7 +48,7 @@ export const CrateRewardItemsLarge = ({ item }: CrateRewardItemsProps) => {
                 )}
 
                 <Typography sx={{ fontFamily: fonts.nostromoBlack }}>
-                    {item?.label} {item?.type === "mech_skin" || item?.type === "weapon_skin" ? "Submodel" : ""}
+                    {item?.type === "mech_skin" || item?.type === "weapon_skin" ? "Submodel: " : ""} {item?.label}
                 </Typography>
             </Stack>
         </ClipThing>
@@ -57,7 +61,11 @@ export const CrateRewardItemsSmall = ({ item }: CrateRewardItemsProps) => {
     return (
         <Stack direction="row" spacing="1rem">
             <Box sx={{ width: "6rem", height: "6rem", flexShrink: 0 }}>
-                <MediaPreview imageUrl={item?.avatarUrl || item?.avatarUrl || ""} videoUrls={[item?.animationUrl]} showBorder />
+                <MediaPreview
+                    imageUrl={item?.avatarUrl || item?.imageUrl || item?.largeImageUrl || ""}
+                    videoUrls={[item?.animationUrl, item?.cardAnimationUrl]}
+                    showBorder
+                />
             </Box>
 
             <Stack sx={{ py: ".6rem", maxWidth: "28rem" }}>
@@ -81,7 +89,7 @@ export const CrateRewardItemsSmall = ({ item }: CrateRewardItemsProps) => {
                 )}
 
                 <Typography sx={{ fontFamily: fonts.nostromoBlack, textAlign: "start" }}>
-                    {item?.label} {item?.type === "mech_skin" || item?.type === "weapon_skin" ? "Submodel" : ""}
+                    {item?.type === "mech_skin" || item?.type === "weapon_skin" ? "Submodel: " : ""} {item?.label}
                 </Typography>
             </Stack>
         </Stack>
