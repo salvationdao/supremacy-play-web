@@ -73,7 +73,7 @@ export const GlobalStats = () => {
                             }}
                         >
                             <Box sx={{ direction: "ltr", height: 0 }}>
-                                <Stack spacing="6rem" sx={{ p: "3rem 1.8rem" }}>
+                                <Stack spacing="5rem" sx={{ p: "3rem 1.8rem" }}>
                                     <PlayerBattlesSpectated />
                                     <PlayerMechSurvives />
                                     <PlayerMechKills />
