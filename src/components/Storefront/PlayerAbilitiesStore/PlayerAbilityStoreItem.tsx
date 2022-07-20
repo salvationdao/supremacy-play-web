@@ -53,7 +53,7 @@ export const PlayerAbilityStoreItem = ({ saleAbility, amount = 0, onPurchase: on
             await send(GameServerKeys.SaleAbilityClaim, {
                 ability_id: saleAbility.id,
             })
-            newSnackbarMessage(`Successfully claimed 1 ${saleAbility.ability.label || "ability"}`, "success")
+            newSnackbarMessage(`Successfully claimed 1 x ${saleAbility.ability.label || "ability"}`, "success")
             toggleShowPurchaseModal(false)
             onPurchaseCallback()
             setPurchaseError(undefined)

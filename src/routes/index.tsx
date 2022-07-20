@@ -11,6 +11,7 @@ import { LiveChat } from "../components/RightDrawer/LiveChat/LiveChat"
 import { PlayerList } from "../components/RightDrawer/PlayerList/PlayerList"
 import { PlayerProfilePage } from "../components/PublicProfile/PlayerProfile"
 import { BATTLE_ARENA_OPEN } from "../constants"
+import { LeaderboardPage } from "../pages/LeaderboardPage"
 
 /**
  * Left drawer
@@ -29,7 +30,7 @@ interface RouteStruct {
         label: string
         comingSoonLabel?: string
     }
-    matchLeftDrawerID?: string
+    matchLeftDrawerID?: string // The /route which will make this button highlighted
 }
 
 export const ROUTES_MAP: { [name: string]: RouteStruct } = {
@@ -46,6 +47,21 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
             comingSoonLabel: "Returning Soon",
         },
         matchLeftDrawerID: "home",
+    },
+
+    // Leaderboard
+    leaderboard: {
+        id: "leaderboard",
+        path: "/leaderboard/:type?",
+        exact: true,
+        Component: LeaderboardPage,
+        requireAuth: false,
+        requireFaction: false,
+        leftDrawer: {
+            enable: true,
+            label: "Leaderboard",
+        },
+        matchLeftDrawerID: "leaderboard",
     },
 
     // Mech

@@ -418,21 +418,21 @@ export const timeSince = (
     }
 }
 
-export const timeSinceInWords = (fromDate: Date, toDate: Date): string => {
+export const timeSinceInWords = (fromDate: Date, toDate: Date, abbreviated = false): string => {
     const { days, hours, minutes, seconds } = timeSince(fromDate, toDate)
 
     let result = days > 0 ? days + " day" + (days === 1 ? "" : "s") : ""
-    result = (result ? result + " " : "") + (hours > 0 ? hours + " hour" + (hours === 1 ? "" : "s") : "")
+    result = (result ? result + " " : "") + (hours > 0 ? hours + (abbreviated ? "hr" : " hour") + (hours === 1 ? "" : "s") : "")
 
     // Return result if more than a day, else too long
     if (days > 0) return result
 
-    result = (result ? result + " " : "") + (minutes > 0 ? minutes + " minute" + (minutes === 1 ? "" : "s") : "")
+    result = (result ? result + " " : "") + (minutes > 0 ? minutes + (abbreviated ? "min" : " minute") + (minutes === 1 ? "" : "s") : "")
 
     // Return result if more than a day, else too long
     if (hours > 0) return result
 
-    result = (result ? result + " " : "") + (seconds > 0 ? seconds + " second" + (seconds === 1 ? "" : "s") : "")
+    result = (result ? result + " " : "") + (seconds > 0 ? seconds + (abbreviated ? "sec" : " second") + (seconds === 1 ? "" : "s") : "")
     return result
 }
 
