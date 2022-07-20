@@ -1,7 +1,9 @@
 import { CircularProgress, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material"
 import { ReactNode, useMemo } from "react"
+import { SvgAngle } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { colors, fonts } from "../../../theme/theme"
+import { ClipThing } from "../../Common/ClipThing"
 
 interface RanksTableProps<T> {
     title: string
@@ -18,6 +20,7 @@ export const RanksTable = <T,>({ title, tableHeadings, alignments, widths, rankI
     const theme = useTheme()
 
     const primaryColor = theme.factionTheme.primary
+    const backgroundColor = theme.factionTheme.background
     const secondaryColor = theme.factionTheme.secondary
 
     const content = useMemo(() => {
@@ -104,30 +107,45 @@ export const RanksTable = <T,>({ title, tableHeadings, alignments, widths, rankI
 
     return (
         <Stack spacing="2rem">
-            <Stack direction="row" alignItems="center" sx={{}}>
+            <Stack spacing="1.3rem" direction="row" alignItems="center" justifyContent="center" sx={{}}>
+                <SvgAngle />
                 <Typography variant="h5" sx={{ fontFamily: fonts.nostromoHeavy }}>
                     {title}
                 </Typography>
+                <SvgAngle sx={{ transform: "scaleX(-1)" }} />
             </Stack>
 
-            <TableContainer>
-                <Table sx={{ borderRadius: 0.5, overflow: "hidden", ".MuiTableCell-root": { p: "1.2rem" } }}>
-                    <TableHead sx={{ backgroundColor: primaryColor, boxShadow: 5 }}>
-                        <TableRow>
-                            {tableHeadings.map((heading, i) => {
-                                return (
-                                    <TableCell key={i} align={alignments ? alignments[i] : "left"} sx={{ width: widths ? widths[i] : undefined }}>
-                                        <Typography variant="body2" sx={{ py: ".3rem", color: secondaryColor, fontFamily: fonts.nostromoBlack }}>
-                                            {heading}
-                                        </Typography>
-                                    </TableCell>
-                                )
-                            })}
-                        </TableRow>
-                    </TableHead>
-                    {content}
-                </Table>
-            </TableContainer>
+            <ClipThing
+                clipSize="10px"
+                border={{
+                    borderColor: primaryColor,
+                    borderThickness: ".3rem",
+                }}
+                backgroundColor={backgroundColor}
+            >
+                <TableContainer>
+                    <Table sx={{ borderRadius: 0.5, overflow: "hidden", ".MuiTableCell-root": { p: "1.2rem" } }}>
+                        <TableHead sx={{ backgroundColor: primaryColor, boxShadow: 5 }}>
+                            <TableRow>
+                                {tableHeadings.map((heading, i) => {
+                                    return (
+                                        <TableCell
+                                            key={i}
+                                            align={alignments ? alignments[i] : "left"}
+                                            sx={{ height: "5.5rem", py: "0 !important", width: widths ? widths[i] : undefined }}
+                                        >
+                                            <Typography variant="body2" sx={{ py: ".3rem", color: secondaryColor, fontFamily: fonts.nostromoBlack }}>
+                                                {heading}
+                                            </Typography>
+                                        </TableCell>
+                                    )
+                                })}
+                            </TableRow>
+                        </TableHead>
+                        {content}
+                    </Table>
+                </TableContainer>
+            </ClipThing>
         </Stack>
     )
 }

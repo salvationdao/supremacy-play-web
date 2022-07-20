@@ -43,8 +43,8 @@ export const PlayerAbilityKills = () => {
 
     return (
         <RanksTable
-            title="MOST BATTLES SPECTATED"
-            tableHeadings={["TOP 10", "PLAYER", "FACTION", "BATTLES SPECTATED"]}
+            title="MOST ABILITY KILLS"
+            tableHeadings={["TOP 10", "PLAYER", "FACTION", "ABILITY KILLS"]}
             alignments={["center", "left", "left", "center"]}
             widths={["19rem", "auto", "auto", "23rem"]}
             rankItems={rankItems}

@@ -43,8 +43,8 @@ export const PlayerMechsOwned = () => {
 
     return (
         <RanksTable
-            title="MOST BATTLES SPECTATED"
-            tableHeadings={["TOP 10", "PLAYER", "FACTION", "BATTLES SPECTATED"]}
+            title="MOST MECHS OWNED"
+            tableHeadings={["TOP 10", "PLAYER", "FACTION", "MECHS OWNED"]}
             alignments={["center", "left", "left", "center"]}
             widths={["19rem", "auto", "auto", "23rem"]}
             rankItems={rankItems}

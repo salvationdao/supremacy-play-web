@@ -43,8 +43,8 @@ export const PlayerAbilityTriggers = () => {
 
     return (
         <RanksTable
-            title="MOST BATTLES SPECTATED"
-            tableHeadings={["TOP 10", "PLAYER", "FACTION", "BATTLES SPECTATED"]}
+            title="MOST ABILITIES TRIGGERED"
+            tableHeadings={["TOP 10", "PLAYER", "FACTION", "ABILITIES TRIGGERED"]}
             alignments={["center", "left", "left", "center"]}
             widths={["19rem", "auto", "auto", "23rem"]}
             rankItems={rankItems}
