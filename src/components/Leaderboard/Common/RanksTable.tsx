@@ -109,6 +109,7 @@ export const RanksTable = <T,>({ title, tableHeadings, alignments, widths, rankI
         <ClipThing
             clipSize="8px"
             border={{
+                isFancy: true,
                 borderColor: primaryColor,
                 borderThickness: ".3rem",
             }}
