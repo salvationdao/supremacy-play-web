@@ -52,20 +52,22 @@ export const CrateRewardsModal = ({ openedRewards, onClose }: CrateRewardsModalP
             newArr = [...newArr, mech]
         }
 
-        if (openedRewards.mech_skin) {
-            const mechSkin: ArrayItem = {
-                id: openedRewards.mech_skin.id,
-                imageUrl: openedRewards.mech_skin.image_url,
-                largeImageUrl: openedRewards.mech_skin.large_image_url,
-                type: openedRewards.mech_skin.item_type,
-                animationUrl: openedRewards.mech_skin.animation_url,
-                cardAnimationUrl: openedRewards.mech_skin.card_animation_url,
-                avatarUrl: openedRewards.mech_skin.avatar_url,
-                label: openedRewards.mech_skin.label,
-                rarity: openedRewards.mech_skin.tier,
-            }
+        if (openedRewards.mech_skins) {
+            openedRewards.mech_skins.map((w) => {
+                const mechSkin: ArrayItem = {
+                    id: w.id,
+                    imageUrl: w.image_url,
+                    largeImageUrl: w.large_image_url,
+                    type: w.item_type,
+                    animationUrl: w.animation_url,
+                    cardAnimationUrl: w.card_animation_url,
+                    avatarUrl: w.avatar_url,
+                    label: w.label,
+                    rarity: w.tier,
+                }
 
-            newArr = [...newArr, mechSkin]
+                newArr = [...newArr, mechSkin]
+            })
         }
 
         if (openedRewards.weapon) {
@@ -86,20 +88,22 @@ export const CrateRewardsModal = ({ openedRewards, onClose }: CrateRewardsModalP
             })
         }
 
-        if (openedRewards.weapon_skin) {
-            const weaponSkin: ArrayItem = {
-                id: openedRewards.weapon_skin.id,
-                imageUrl: openedRewards.weapon_skin.image_url,
-                largeImageUrl: openedRewards.weapon_skin.large_image_url,
-                type: openedRewards.weapon_skin.item_type,
-                animationUrl: openedRewards.weapon_skin.animation_url,
-                cardAnimationUrl: openedRewards.weapon_skin.card_animation_url,
-                avatarUrl: openedRewards.weapon_skin.avatar_url,
-                label: openedRewards.weapon_skin.label,
-                rarity: openedRewards.weapon_skin.tier,
-            }
+        if (openedRewards.weapon_skins) {
+            openedRewards.weapon_skins.map((w) => {
+                const weaponSkin: ArrayItem = {
+                    id: w.id,
+                    imageUrl: w.image_url,
+                    largeImageUrl: w.large_image_url,
+                    type: w.item_type,
+                    animationUrl: w.animation_url,
+                    cardAnimationUrl: w.card_animation_url,
+                    avatarUrl: w.avatar_url,
+                    label: w.label,
+                    rarity: w.tier,
+                }
 
-            newArr = [...newArr, weaponSkin]
+                newArr = [...newArr, weaponSkin]
+            })
         }
 
         setArrayItems(newArr)
