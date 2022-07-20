@@ -274,9 +274,9 @@ export const IconStat = ({
                     spacing=".2rem"
                     sx={{
                         mr: ".8rem",
-                        mb: ".4rem",
+                        mb: ".6rem",
                         px: ".6rem",
-                        pt: ".15rem",
+                        pt: ".2rem",
                         backgroundColor: `${primaryColor}28`,
                         borderRadius: 0.4,
                     }}
