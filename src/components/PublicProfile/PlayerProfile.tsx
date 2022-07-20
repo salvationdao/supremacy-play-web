@@ -116,7 +116,7 @@ export const PlayerProfilePage = () => {
     const updateUsername = useCallback(
         async (newUsername: string) => {
             try {
-                const resp = await userSend<string>(GameServerKeys.PlayerProfileUsernameUpate, {
+                const resp = await userSend<string>(GameServerKeys.PlayerProfileUsernameUpdate, {
                     player_id: profile?.player.id,
                     new_username: newUsername,
                 })
