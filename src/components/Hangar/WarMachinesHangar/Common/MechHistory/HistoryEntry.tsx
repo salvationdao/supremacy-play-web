@@ -83,15 +83,9 @@ export const HistoryEntry = ({ status, mapName, mechSurvived, backgroundImage, k
                 />
 
                 <Box>
-                    {mech && (
-                        <Typography variant="body1" sx={{ ontFamily: fonts.nostromoBlack, textTransform: "uppercase" }}>
-                            {mech.name || mech.label}
-                        </Typography>
-                    )}
+                    {mech && <Typography sx={{ fontFamily: fonts.nostromoBlack, textTransform: "uppercase" }}>{mech.name || mech.label}</Typography>}
 
-                    <Typography variant="h6" sx={{ fontFamily: fonts.nostromoBlack }}>
-                        {statusText}
-                    </Typography>
+                    <Typography sx={{ fontFamily: fonts.nostromoBlack }}>{statusText}</Typography>
 
                     {status !== "pending" && (
                         <Stack direction="row" alignItems="center" spacing=".5rem">
@@ -116,6 +110,7 @@ export const HistoryEntry = ({ status, mapName, mechSurvived, backgroundImage, k
 
                     <Stack direction="row" spacing=".5rem" alignItems="center">
                         <Typography
+                            variant="body2"
                             sx={{
                                 fontFamily: fonts.nostromoBlack,
                                 color: kills > 0 ? colors.gold : colors.lightGrey,
@@ -126,7 +121,7 @@ export const HistoryEntry = ({ status, mapName, mechSurvived, backgroundImage, k
                         <SvgDeath fill={kills > 0 ? colors.gold : colors.lightGrey} size="1.8rem" />
                     </Stack>
 
-                    <Typography sx={{ color: colors.offWhite }}>{timeSinceInWords(date, new Date())} ago</Typography>
+                    <Typography sx={{ color: colors.offWhite }}>{timeSinceInWords(date, new Date(), true)} ago</Typography>
                 </Stack>
             </Stack>
         </ClipThing>

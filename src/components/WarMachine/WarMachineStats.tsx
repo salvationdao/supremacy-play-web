@@ -203,7 +203,7 @@ export const WarMachineStats = () => {
                             sx={{ height: "100%" }}
                         >
                             <HorizontalScrollContainer>
-                                <Stack spacing="-1.8rem" direction="row" alignItems="center" justifyContent="center" sx={{ px: "1.2rem", py: "2rem" }}>
+                                <Stack spacing="-.9rem" direction="row" alignItems="center" justifyContent="center" sx={{ px: "1.2rem", py: "2rem" }}>
                                     {factionMechs.map((wm) => (
                                         <WarMachineItem key={`${wm.participantID} - ${wm.hash}`} warMachine={wm} scale={0.75} />
                                     ))}

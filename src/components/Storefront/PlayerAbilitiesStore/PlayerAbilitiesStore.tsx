@@ -8,11 +8,11 @@ import { useTheme } from "../../../containers/theme"
 import { CanPlayerPurchase } from "../../../fetching"
 import { timeSinceInWords } from "../../../helpers"
 import { useTimer } from "../../../hooks"
-import { useGameServerSubscription } from "../../../hooks/useGameServer"
+import { useGameServerSubscription, useGameServerSubscriptionUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { HANGAR_TABS } from "../../../pages"
 import { colors, fonts } from "../../../theme/theme"
-import { SaleAbility } from "../../../types"
+import { PlayerAbility, SaleAbility } from "../../../types"
 import { PageHeader } from "../../Common/PageHeader"
 import { MysteryCrateStoreItemLoadingSkeleton } from "../MysteryCratesStore/MysteryCrateStoreItem/MysteryCrateStoreItem"
 import { PlayerAbilityStoreItem } from "./PlayerAbilityStoreItem"
@@ -28,8 +28,8 @@ export const PlayerAbilitiesStore = () => {
     const [isLoaded, setIsLoaded] = useState(false)
     const [nextRefreshTime, setNextRefreshTime] = useState<Date | null>(null)
     const [saleAbilities, setSaleAbilities] = useState<SaleAbility[]>([])
-    const [priceMap, setPriceMap] = useState<Map<string, string>>(new Map())
-    const [amountMap, setAmountMap] = useState<Map<string, number>>(new Map())
+
+    const [ownedAbilities, setOwnedAbilities] = useState<Map<string, number>>(new Map())
 
     useEffect(() => {
         ;(async () => {
@@ -66,7 +66,6 @@ export const PlayerAbilitiesStore = () => {
             t.setSeconds(t.getSeconds() + payload.refresh_period_duration_seconds)
             setNextRefreshTime(payload.next_refresh_time || t)
             setSaleAbilities(payload.sale_abilities)
-            setAmountMap(new Map()) // reset amount map
             setCanPurchase(true)
             setCanPurchaseError(undefined)
             if (isLoaded) return
@@ -74,30 +73,19 @@ export const PlayerAbilitiesStore = () => {
         },
     )
 
-    useGameServerSubscription<{ id: string; current_price: string }>(
+    useGameServerSubscriptionUser<PlayerAbility[]>(
         {
-            URI: "/public/sale_abilities",
-            key: GameServerKeys.SaleAbilitiesPriceSubscribe,
-            ready: !!userID,
+            URI: "/player_abilities",
+            key: GameServerKeys.PlayerAbilitiesList,
         },
         (payload) => {
             if (!payload) return
-            setPriceMap((prev) => {
-                return new Map(prev.set(payload.id, payload.current_price))
-            })
-        },
-    )
-
-    useGameServerSubscription<{ id: string; amount_sold: number }>(
-        {
-            URI: "/public/sale_abilities",
-            key: GameServerKeys.SaleAbilitiesAmountSubscribe,
-            ready: !!userID,
-        },
-        (payload) => {
-            if (!payload) return
-            setAmountMap((prev) => {
-                return new Map(prev.set(payload.id, payload.amount_sold))
+            setOwnedAbilities((prev) => {
+                const updated = new Map(prev)
+                for (const p of payload) {
+                    updated.set(p.blueprint_id, p.count)
+                }
+                return updated
             })
         },
     )
@@ -145,9 +133,7 @@ export const PlayerAbilitiesStore = () => {
                             <PlayerAbilityStoreItem
                                 key={`${s.id}-${index}`}
                                 saleAbility={s}
-                                updatedPrice={priceMap.get(s.id) || s.current_price}
-                                totalAmount={s.sale_limit}
-                                amountSold={amountMap.get(s.id) || s.amount_sold}
+                                amount={ownedAbilities.get(s.blueprint_id)}
                                 onPurchase={() => setCanPurchase(false)}
                                 disabled={!canPurchase}
                             />
@@ -190,7 +176,7 @@ export const PlayerAbilitiesStore = () => {
                 </Stack>
             </Stack>
         )
-    }, [isLoaded, saleAbilities, priceMap, amountMap, canPurchase])
+    }, [isLoaded, saleAbilities, ownedAbilities, canPurchase])
 
     return (
         <ClipThing
@@ -221,7 +207,7 @@ export const PlayerAbilitiesStore = () => {
                     description={
                         <Stack>
                             <Typography sx={{ fontSize: "1.85rem" }}>
-                                Player abilities are abilities that can be bought and used on the battle arena.
+                                Player abilities are abilities that can be claimed and used on the battle arena.
                             </Typography>
                             {canPurchaseError && (
                                 <Typography variant="body2" sx={{ color: colors.red }}>

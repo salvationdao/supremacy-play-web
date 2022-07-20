@@ -59,11 +59,9 @@ export enum GameServerKeys {
     MechRename = "PLAYER:MECH:RENAME",
 
     // Player Abilities
-    SaleAbilitiesPriceSubscribe = "SALE:ABILITIES:PRICE:SUBSCRIBE",
-    SaleAbilitiesAmountSubscribe = "SALE:ABILITIES:AMOUNT:SUBSCRIBE",
     PlayerAbilitiesList = "PLAYER:ABILITIES:LIST:SUBSCRIBE",
     SaleAbilitiesList = "SALE:ABILITIES:LIST:SUBSCRIBE",
-    SaleAbilityPurchase = "SALE:ABILITY:PURCHASE",
+    SaleAbilityClaim = "SALE:ABILITY:CLAIM",
     PlayerAbilityUse = "PLAYER:ABILITY:USE",
 
     // Minimap ability updates
@@ -153,6 +151,15 @@ export enum GameServerKeys {
     PlayerAssetMechListPublic = "PLAYER:ASSET:MECH:LIST:PUBLIC",
     PlayerAssetMechDetailPublic = "PLAYER:ASSET:MECH:DETAIL:PUBLIC",
     PlayerBattleMechHistoryList = "PLAYER:BATTLE:MECH:HISTORY:LIST",
+
+    // Leaderboard
+    GetPlayerBattlesSpectated = "LEADERBOARD:PLAYER:BATTLE:SPECTATED",
+    GetPlayerMechSurvives = "LEADERBOARD:PLAYER:MECH:SURVIVES",
+    GetPlayerMechKills = "LEADERBOARD:PLAYER:MECH:KILLS",
+    GetPlayerAbilityKills = "LEADERBOARD:PLAYER:ABILITY:KILLS",
+    GetPlayerAbilityTriggers = "LEADERBOARD:PLAYER:ABILITY:TRIGGERS",
+    GetPlayerBattleContributions = "LEADERBOARD:PLAYER:BATTLE:CONTRIBUTIONS",
+    GetPlayerMechsOwned = "LEADERBOARD:PLAYER:MECHS:OWNED",
 }
 
 export enum PassportServerKeys {

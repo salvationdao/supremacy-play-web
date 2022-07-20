@@ -5,7 +5,7 @@ import { TrailerThumbPNG } from "../../assets"
 import { TRAILER_VIDEO } from "../../constants"
 import { useOverlayToggles, useStream } from "../../containers"
 import { useToggle } from "../../hooks"
-import { siteZIndex } from "../../theme/theme"
+import { fonts, siteZIndex } from "../../theme/theme"
 
 export const Trailer = () => {
     const { toggleShowTrailer } = useOverlayToggles()
@@ -76,7 +76,7 @@ export const Trailer = () => {
                         sx={{ px: "1.6rem", py: ".3rem", color: "#FFFFFF" }}
                         onClick={onEnded}
                     >
-                        <Typography variant="body2" sx={{ fontWeight: "fontWeightBold", color: "#FFFFFF" }}>
+                        <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack, color: "#FFFFFF" }}>
                             CLOSE
                         </Typography>
                     </FancyButton>

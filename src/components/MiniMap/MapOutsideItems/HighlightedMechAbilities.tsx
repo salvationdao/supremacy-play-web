@@ -94,12 +94,10 @@ const HighlightedMechAbilitiesInner = ({ warMachine }: { warMachine: WarMachineS
 
 const AbilityItem = ({ hash, participantID, ability }: { hash: string; participantID: number; ability: GameAbility }) => {
     const { send } = useGameServerCommandsFaction("/faction_commander")
-
     const { id, colour, image_url, label } = ability
-
     const [remainSeconds, setRemainSeconds] = useState(30)
+    const ready = useMemo(() => remainSeconds === 0, [remainSeconds])
 
-    // Listen on the progress of the votes
     useGameServerSubscriptionFaction<number | undefined>(
         {
             URI: `/mech/${participantID}/abilities/${id}/cool_down_seconds`,
@@ -119,8 +117,6 @@ const AbilityItem = ({ hash, participantID, ability }: { hash: string; participa
             return rs - 1
         })
     }, 1000)
-
-    const ready = useMemo(() => remainSeconds === 0, [remainSeconds])
 
     const onTrigger = useCallback(async () => {
         try {
@@ -142,6 +138,8 @@ const AbilityItem = ({ hash, participantID, ability }: { hash: string; participa
                 position: "relative",
                 height: "3rem",
                 width: "100%",
+                opacity: ready ? 1 : 0.6,
+                pointerEvents: ready ? "all" : "none",
             }}
         >
             {/* Image */}
@@ -156,31 +154,27 @@ const AbilityItem = ({ hash, participantID, ability }: { hash: string; participa
                     backgroundPosition: "center",
                     backgroundSize: "cover",
                     border: `${colour} 1.5px solid`,
-                    opacity: ready ? 1 : 0.6,
                     ":hover": ready ? { borderWidth: "3px", transform: "scale(1.04)" } : undefined,
                 }}
                 onClick={ready ? onTrigger : undefined}
             />
 
-            <Box sx={{ flex: 1 }}>
-                <Typography
-                    variant="body2"
-                    sx={{
-                        mb: "1px",
-                        lineHeight: 1,
-                        fontWeight: "fontWeightBold",
-                        display: "-webkit-box",
-                        overflow: "hidden",
-                        overflowWrap: "anywhere",
-                        textOverflow: "ellipsis",
-                        WebkitLineClamp: 1, // change to max number of lines
-                        WebkitBoxOrient: "vertical",
-                        opacity: ready ? 1 : 0.6,
-                    }}
-                >
-                    {ready ? label : `${remainSeconds} s`}
-                </Typography>
-            </Box>
+            <Typography
+                variant="body2"
+                sx={{
+                    pt: ".4rem",
+                    lineHeight: 1,
+                    fontWeight: "fontWeightBold",
+                    display: "-webkit-box",
+                    overflow: "hidden",
+                    overflowWrap: "anywhere",
+                    textOverflow: "ellipsis",
+                    WebkitLineClamp: 1, // change to max number of lines
+                    WebkitBoxOrient: "vertical",
+                }}
+            >
+                {ready ? label : `${remainSeconds}s`}
+            </Typography>
         </Stack>
     )
 }
