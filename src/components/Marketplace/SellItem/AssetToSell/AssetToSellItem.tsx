@@ -170,7 +170,11 @@ export const AssetToSellItem = ({
                     width: orientation === "horizontal" ? "7rem" : "100%",
                 }}
             >
-                <MediaPreview imageUrl={playVideo ? imageUrl : avatarUrl} {...{ videoUrls: playVideo ? [animationUrl, cardAnimationUrl] : [] }} />
+                <MediaPreview
+                    imageUrl={playVideo ? imageUrl : avatarUrl}
+                    {...{ videoUrls: playVideo ? [animationUrl, cardAnimationUrl] : [] }}
+                    imageTransform={weaponDetails ? "rotate(-30deg) scale(.95)" : ""}
+                />
             </Box>
 
             <Stack spacing=".3rem">

@@ -60,6 +60,7 @@ export const MechLoadout = ({ mechDetails }: { mechDetails: MechDetails }) => {
                                 label={w.label}
                                 primaryColor={colors.weapons}
                                 Icon={SvgWeapons}
+                                imageTransform="rotate(-30deg) scale(.95)"
                             />
                         )
                     })}

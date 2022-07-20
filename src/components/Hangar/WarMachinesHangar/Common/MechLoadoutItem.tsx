@@ -16,6 +16,7 @@ export const MechLoadoutItem = ({
     isEmpty,
     Icon,
     rarity,
+    imageTransform,
 }: {
     imageUrl?: string
     videoUrls?: (string | undefined)[] | undefined
@@ -25,6 +26,7 @@ export const MechLoadoutItem = ({
     isEmpty?: boolean
     Icon?: React.VoidFunctionComponent<SvgWrapperProps>
     rarity?: Rarity
+    imageTransform?: string
 }) => {
     const backgroundColor = useMemo(() => shadeColor(primaryColor, -90), [primaryColor])
 
@@ -48,7 +50,7 @@ export const MechLoadoutItem = ({
                         {isEmpty ? (
                             <SvgPlus fill={`${primaryColor}80`} size="2rem" />
                         ) : (
-                            <MediaPreview imageUrl={imageUrl} videoUrls={videoUrls} objectFit="contain" sx={{ p: ".5rem" }} />
+                            <MediaPreview imageUrl={imageUrl} videoUrls={videoUrls} objectFit="contain" sx={{ p: ".5rem" }} imageTransform={imageTransform} />
                         )}
 
                         {Icon && <Icon fill={primaryColor} size="2rem" sx={{ position: "absolute", top: ".1rem", left: ".5rem" }} />}

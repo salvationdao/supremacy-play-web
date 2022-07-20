@@ -86,7 +86,11 @@ export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGri
                             width: "100%",
                         }}
                     >
-                        <MediaPreview imageUrl={imageUrl || avatarUrl} objectFit={isGridView ? "cover" : "contain"} />
+                        <MediaPreview
+                            imageUrl={imageUrl || avatarUrl}
+                            objectFit={isGridView ? "cover" : "contain"}
+                            imageTransform="rotate(-30deg) scale(.95)"
+                        />
                     </Box>
 
                     <WeaponCommonArea

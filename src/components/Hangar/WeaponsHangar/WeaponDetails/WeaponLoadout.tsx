@@ -38,6 +38,7 @@ export const WeaponLoadout = ({ weaponDetails }: { weaponDetails: Weapon }) => {
                         primaryColor={colors.chassisSkin}
                         Icon={SvgSkin}
                         rarity={getRarityDeets(skin.tier)}
+                        imageTransform="rotate(-30deg) scale(.95)"
                     />
                 ) : (
                     <MechLoadoutItem label="SUBMODEL" primaryColor={colors.chassisSkin} onClick={() => console.log("AAAAA")} isEmpty />
