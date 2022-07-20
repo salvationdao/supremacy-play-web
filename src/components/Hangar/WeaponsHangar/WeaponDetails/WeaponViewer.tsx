@@ -2,7 +2,6 @@ import { Box } from "@mui/material"
 import { useTheme } from "../../../../containers/theme"
 import { Weapon } from "../../../../types"
 import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
-import { FeatherFade } from "../../WarMachinesHangar/WarMachineDetails/MechViewer"
 
 export const WeaponViewer = ({ weaponDetails }: { weaponDetails: Weapon }) => {
     const theme = useTheme()
@@ -45,14 +44,19 @@ export const WeaponViewer = ({ weaponDetails }: { weaponDetails: Weapon }) => {
                     position: "absolute",
                     zIndex: 3,
                     width: "100%",
-                    height: "unset",
+                    height: "100%",
                     left: "50%",
-                    top: "52%",
+                    top: "50%",
                     transform: "translate(-50%, -50%)",
+                    overflow: "hidden",
                 }}
             >
-                <FeatherFade color={backgroundColor} />
-                <MediaPreview imageUrl={largeImageUrl || imageUrl || avatarUrl} videoUrls={[animationUrl, cardAnimationUrl]} objectFit="cover" />
+                <MediaPreview
+                    imageUrl={largeImageUrl || imageUrl || avatarUrl}
+                    videoUrls={[animationUrl, cardAnimationUrl]}
+                    objectFit="contain"
+                    blurBackground
+                />
             </Box>
         </Box>
     )
