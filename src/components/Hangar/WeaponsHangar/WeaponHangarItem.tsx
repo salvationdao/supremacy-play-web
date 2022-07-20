@@ -216,29 +216,27 @@ export const WeaponCommonArea = ({
             </Typography>
 
             <Stack direction="row" alignItems="center" spacing=".5rem">
-                <SvgSkin fill={colors.chassisSkin} />
-                <Typography
-                    sx={{
-                        lineHeight: 1,
-                        fontWeight: "fontWeightBold",
-                        color: colors.offWhite,
-                        display: "-webkit-box",
-                        overflow: "hidden",
-                        overflowWrap: "anywhere",
-                        textOverflow: "ellipsis",
-                        WebkitLineClamp: 1,
-                        WebkitBoxOrient: "vertical",
-                    }}
-                >
-                    {weaponDetails?.weapon_skin ? (
-                        <>
-                            <span style={{ color: colors.chassisSkin }}>{weaponDetails?.weapon_skin.label}</span>{" "}
-                            <span style={{ color: rarityDeets.color }}>({rarityDeets.label})</span>
-                        </>
-                    ) : (
-                        <span style={{ color: colors.darkGrey }}>NOT EQUIPPED</span>
-                    )}
-                </Typography>
+                <SvgSkin fill={weaponDetails?.weapon_skin ? colors.chassisSkin : `${colors.darkGrey}80`} size="1.5rem" />
+
+                {weaponDetails?.weapon_skin && (
+                    <Typography
+                        variant="caption"
+                        sx={{
+                            fontFamily: fonts.nostromoBold,
+                            fontWeight: "fontWeightBold",
+                            color: colors.offWhite,
+                            display: "-webkit-box",
+                            overflow: "hidden",
+                            overflowWrap: "anywhere",
+                            textOverflow: "ellipsis",
+                            WebkitLineClamp: 1,
+                            WebkitBoxOrient: "vertical",
+                        }}
+                    >
+                        <span style={{ color: colors.chassisSkin, fontFamily: "inherit" }}>{weaponDetails?.weapon_skin.label}</span>{" "}
+                        <span style={{ color: rarityDeets.color, fontFamily: "inherit" }}>[{rarityDeets.label}]</span>
+                    </Typography>
+                )}
             </Stack>
 
             {toggleIsExpanded && !isGridView && (

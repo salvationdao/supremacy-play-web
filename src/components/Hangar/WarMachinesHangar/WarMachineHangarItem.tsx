@@ -7,7 +7,7 @@ import { useTheme } from "../../../containers/theme"
 import { getRarityDeets, shadeColor } from "../../../helpers"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
-import { fonts } from "../../../theme/theme"
+import { colors, fonts } from "../../../theme/theme"
 import { MechBasic, MechDetails } from "../../../types"
 import { MediaPreview } from "../../Common/MediaPreview/MediaPreview"
 import { General } from "../../Marketplace/Common/MarketItem/General"
@@ -178,23 +178,21 @@ export const MechCommonArea = ({
                 toggleIsExpanded()
             }}
         >
-            <Stack alignItems="center" direction="row" spacing="1rem">
-                <Typography
-                    variant="body2"
-                    sx={{
-                        color: rarityDeets.color,
-                        fontFamily: fonts.nostromoBold,
-                        display: "-webkit-box",
-                        overflow: "hidden",
-                        overflowWrap: "anywhere",
-                        textOverflow: "ellipsis",
-                        WebkitLineClamp: 1, // change to max number of lines
-                        WebkitBoxOrient: "vertical",
-                    }}
-                >
-                    {rarityDeets.label}
-                </Typography>
-            </Stack>
+            <Typography
+                variant="body2"
+                sx={{
+                    color: mech?.name || mechDetails?.name ? primaryColor : colors.grey,
+                    fontFamily: fonts.nostromoBlack,
+                    display: "-webkit-box",
+                    overflow: "hidden",
+                    overflowWrap: "anywhere",
+                    textOverflow: "ellipsis",
+                    WebkitLineClamp: 1, // change to max number of lines
+                    WebkitBoxOrient: "vertical",
+                }}
+            >
+                {mech?.name || mechDetails?.name || "Unnamed"}
+            </Typography>
 
             <Typography
                 sx={{
@@ -207,10 +205,27 @@ export const MechCommonArea = ({
                     WebkitBoxOrient: "vertical",
                 }}
             >
-                {mech?.name || mechDetails?.name || mech?.label || mechDetails?.label || label}
+                {mech?.label || mechDetails?.label || label}
             </Typography>
 
-            <MechLoadoutIcons mechDetails={mechDetails} />
+            <Stack direction="row" spacing=".8rem" alignItems="center">
+                <MechLoadoutIcons mechDetails={mechDetails} />
+                <Typography
+                    variant="caption"
+                    sx={{
+                        color: rarityDeets.color,
+                        fontFamily: fonts.nostromoBold,
+                        display: "-webkit-box",
+                        overflow: "hidden",
+                        overflowWrap: "anywhere",
+                        textOverflow: "ellipsis",
+                        WebkitLineClamp: 1, // change to max number of lines
+                        WebkitBoxOrient: "vertical",
+                    }}
+                >
+                    [{rarityDeets.label}]
+                </Typography>
+            </Stack>
             {/* <Typography
                 variant="h6"
                 sx={{
