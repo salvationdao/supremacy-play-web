@@ -1,5 +1,9 @@
 import { Battle, Faction, User, Vector2i } from "."
 
+export interface SaleAbilitiesAvailabilityResponse {
+    can_purchase: boolean
+}
+
 export enum MechStatusEnum {
     Idle = "IDLE",
     Queue = "QUEUE",
@@ -371,7 +375,10 @@ export interface RepairStatus {
     full_repair_fee: string
 }
 
-export type MysteryCrateType = "MECH" | "WEAPON"
+export enum MysteryCrateType {
+    Mech = "MECH",
+    Weapon = "WEAPON",
+}
 
 export interface StorefrontMysteryCrate {
     id: string

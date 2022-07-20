@@ -1,22 +1,12 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { StyledImageText } from "../../../.."
 import { SvgAnnouncement, SvgCooldown } from "../../../../../assets"
 import { dateFormatter } from "../../../../../helpers"
 import { colors } from "../../../../../theme/theme"
-import { Faction, SystemBanMessageData } from "../../../../../types"
+import { SystemBanMessageData } from "../../../../../types"
+import { Player } from "../../../../Common/Player"
 import { LineItem } from "../../BanProposal/BanProposal"
 
-export const SystemBanMessage = ({
-    data,
-    sentAt,
-    fontSize,
-    getFaction,
-}: {
-    data?: SystemBanMessageData
-    sentAt: Date
-    fontSize: number
-    getFaction: (factionID: string) => Faction
-}) => {
+export const SystemBanMessage = ({ data, sentAt, fontSize }: { data?: SystemBanMessageData; sentAt: Date; fontSize: number }) => {
     if (!data) return null
 
     const { banned_user, ban_duration, is_permanent_ban, reason, restrictions } = data
@@ -66,18 +56,7 @@ export const SystemBanMessage = ({
                         </LineItem>
 
                         <LineItem title="AGAINST">
-                            <StyledImageText
-                                text={
-                                    <>
-                                        {`${banned_user.username}`}
-                                        <span style={{ marginLeft: ".2rem", opacity: 0.7 }}>{`#${banned_user.gid}`}</span>
-                                    </>
-                                }
-                                color={getFaction(banned_user.faction_id).primary_color || "#FFFFFF"}
-                                imageUrl={getFaction(banned_user.faction_id).logo_url}
-                                imageMb={-0.2}
-                                imageSize={1.4}
-                            />
+                            <Player player={banned_user} />
                         </LineItem>
 
                         <LineItem title="RESTRICTED">

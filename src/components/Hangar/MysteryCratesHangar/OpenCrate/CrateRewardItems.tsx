@@ -24,6 +24,7 @@ export const CrateRewardItemsLarge = ({ item }: CrateRewardItemsProps) => {
             }}
             opacity={0.8}
             backgroundColor={colors.black3}
+            sx={{ height: "100%" }}
         >
             <Stack sx={{ m: "1rem", width: "25rem" }}>
                 <Box sx={{ width: "100%", height: "22rem", mb: "1rem" }}>

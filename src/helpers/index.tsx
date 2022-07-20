@@ -351,12 +351,12 @@ export const getMysteryCrateDeets = (mysteryCrateType: MysteryCrateType): { imag
     let desc = "Open a mystery crate to receive random weapon / war machine!"
 
     switch (mysteryCrateType) {
-        case "MECH":
+        case MysteryCrateType.Mech:
             image = SafePNG
             label = "WAR MACHINE CRATE"
             desc = "Get a random war machine to participate in the battle arena."
             break
-        case "WEAPON":
+        case MysteryCrateType.Weapon:
             image = SafePNG
             label = "WEAPON CRATE"
             desc = "Get a random weapon to equip onto your war machine."
@@ -418,21 +418,21 @@ export const timeSince = (
     }
 }
 
-export const timeSinceInWords = (fromDate: Date, toDate: Date): string => {
+export const timeSinceInWords = (fromDate: Date, toDate: Date, abbreviated = false): string => {
     const { days, hours, minutes, seconds } = timeSince(fromDate, toDate)
 
     let result = days > 0 ? days + " day" + (days === 1 ? "" : "s") : ""
-    result = (result ? result + " " : "") + (hours > 0 ? hours + " hour" + (hours === 1 ? "" : "s") : "")
+    result = (result ? result + " " : "") + (hours > 0 ? hours + (abbreviated ? "hr" : " hour") + (hours === 1 ? "" : "s") : "")
 
     // Return result if more than a day, else too long
     if (days > 0) return result
 
-    result = (result ? result + " " : "") + (minutes > 0 ? minutes + " minute" + (minutes === 1 ? "" : "s") : "")
+    result = (result ? result + " " : "") + (minutes > 0 ? minutes + (abbreviated ? "min" : " minute") + (minutes === 1 ? "" : "s") : "")
 
     // Return result if more than a day, else too long
     if (hours > 0) return result
 
-    result = (result ? result + " " : "") + (seconds > 0 ? seconds + " second" + (seconds === 1 ? "" : "s") : "")
+    result = (result ? result + " " : "") + (seconds > 0 ? seconds + (abbreviated ? "sec" : " second") + (seconds === 1 ? "" : "s") : "")
     return result
 }
 

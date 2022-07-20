@@ -58,11 +58,8 @@ export const WarMachineItem = ({
 
     const rarityDeets = useMemo(() => getRarityDeets(tier), [tier])
     const wmImageUrl = useMemo(() => imageAvatar || GenericWarMachinePNG, [imageAvatar])
-    const isOwnFaction = useMemo(() => factionID == warMachine.factionID, [factionID, warMachine])
-    const numSkillBars = useMemo(() => gameAbilities?.length || 0, [gameAbilities])
     const selfOwned = useMemo(() => ownedByID === userID, [ownedByID, userID])
     const primaryColor = useMemo(() => (selfOwned ? colors.gold : faction.primary_color), [faction.primary_color, selfOwned])
-    const secondaryColor = useMemo(() => (selfOwned ? "#000000" : faction.secondary_color), [faction.secondary_color, selfOwned])
     const backgroundColor = useMemo(() => faction.background_color, [faction.background_color])
 
     // Highlighting on the map
@@ -96,8 +93,8 @@ export const WarMachineItem = ({
                     width: `${
                         WIDTH_AVATAR +
                         (isExpanded ? WIDTH_BODY : 2 * WIDTH_STAT_BAR) +
-                        (isOwnFaction && isAlive ? WIDTH_SKILL_BUTTON + numSkillBars * WIDTH_STAT_BAR : 0) +
-                        (warMachine.ownedByID === userID ? WIDTH_SKILL_BUTTON + WIDTH_STAT_BAR : 0)
+                        (gameAbilities && gameAbilities.length > 0 && isAlive ? WIDTH_SKILL_BUTTON : 0) +
+                        (warMachine.ownedByID === userID ? WIDTH_SKILL_BUTTON : 0)
                     }rem`,
                     transition: "width .1s",
                     transform: highlightedMechParticipantID === participantID ? `scale(${scale * 1.08})` : `scale(${scale})`,
@@ -246,7 +243,7 @@ export const WarMachineItem = ({
                                     position: "relative",
                                     width: `${WIDTH_SKILL_BUTTON}rem`,
                                     height: "100%",
-                                    backgroundColor: primaryColor,
+                                    backgroundColor: (theme) => theme.factionTheme.primary,
                                     boxShadow: 2,
                                     cursor: isAlive ? "pointer" : "auto",
                                     zIndex: 3,
@@ -276,7 +273,7 @@ export const WarMachineItem = ({
                                         variant="body1"
                                         sx={{
                                             fontWeight: "fontWeightBold",
-                                            color: secondaryColor,
+                                            color: (theme) => theme.factionTheme.secondary,
                                             letterSpacing: 1,
                                             transition: "all .2s",
                                         }}

@@ -265,19 +265,15 @@ export const TextMessage = ({
 
             {isPopoverOpen && (
                 <UserDetailsPopover
-                    faction_logo_url={faction_logo_url}
                     factionColor={factionColor}
                     factionSecondaryColor={factionSecondaryColor}
-                    messageColor={message_color}
                     fromUserFactionID={faction_id}
-                    username={username}
                     userStat={from_user_stat}
                     popoverRef={popoverRef}
                     open={isPopoverOpen}
                     onClose={() => toggleIsPopoverOpen(false)}
                     toggleBanModalOpen={toggleBanModalOpen}
                     user={user}
-                    gid={gid}
                 />
             )}
 

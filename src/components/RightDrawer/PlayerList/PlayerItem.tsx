@@ -1,13 +1,12 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { FancyButton, StyledImageText, UserBanForm } from "../.."
-import { truncate } from "../../../helpers"
+import { FancyButton, UserBanForm } from "../.."
+import { useTheme } from "../../../containers/theme"
 import { useToggle } from "../../../hooks"
 import { colors, fonts } from "../../../theme/theme"
 import { User } from "../../../types"
-import { Faction } from "../../../types"
-import { useTheme } from "../../../containers/theme"
+import { Player } from "../../Common/Player"
 
-export const PlayerItem = ({ player, faction, user, isActive }: { player: User; faction: Faction; user: User; isActive?: boolean }) => {
+export const PlayerItem = ({ player, user, isActive }: { player: User; user: User; isActive?: boolean }) => {
     const theme = useTheme()
     const [banModalOpen, toggleBanModalOpen] = useToggle()
 
@@ -26,17 +25,7 @@ export const PlayerItem = ({ player, faction, user, isActive }: { player: User; 
                 <Box sx={{ width: ".8rem", height: ".8rem", borderRadius: "50%", backgroundColor: isActive ? colors.green : colors.yellow }} />
 
                 <Box sx={{ pt: ".3rem", ml: "1.1rem" }}>
-                    <StyledImageText
-                        text={
-                            <>
-                                {`${truncate(player.username, 20)}`}
-                                <span style={{ marginLeft: ".2rem", opacity: 0.7 }}>{`#${player.gid}`}</span>
-                            </>
-                        }
-                        color={theme.factionTheme.primary}
-                        imageUrl={faction.logo_url}
-                        imageMb={-0.2}
-                    />
+                    <Player player={player} />
                 </Box>
 
                 <FancyButton
