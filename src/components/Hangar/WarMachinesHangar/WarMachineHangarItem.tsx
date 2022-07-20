@@ -208,7 +208,7 @@ export const MechCommonArea = ({
                 {mech?.label || mechDetails?.label || label}
             </Typography>
 
-            <Stack direction="row" spacing=".8rem" alignItems="center">
+            <Stack direction={isGridView ? "column-reverse" : "row"} spacing={isGridView ? ".2rem" : ".8rem"} alignItems={isGridView ? "flex-start" : "center"}>
                 <MechLoadoutIcons mechDetails={mechDetails} />
                 <Typography
                     variant="caption"
