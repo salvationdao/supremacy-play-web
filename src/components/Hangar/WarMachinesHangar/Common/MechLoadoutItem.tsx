@@ -36,7 +36,7 @@ export const MechLoadoutItem = ({
                     clipSlantSize: "0px",
                     corners: { topLeft: true, topRight: true, bottomLeft: true, bottomRight: true },
                     backgroundColor,
-                    opacity: 0.7,
+                    opacity: 0.9,
                     border: { isFancy: false, borderColor: primaryColor, borderThickness: ".3rem" },
                     sx: { position: "relative" },
                 }}
