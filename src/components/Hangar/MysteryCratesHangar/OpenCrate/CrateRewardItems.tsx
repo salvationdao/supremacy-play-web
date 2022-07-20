@@ -57,7 +57,7 @@ export const CrateRewardItemsSmall = ({ item }: CrateRewardItemsProps) => {
     return (
         <Stack direction="row" spacing="1rem">
             <Box sx={{ width: "6rem", height: "6rem", flexShrink: 0 }}>
-                <MediaPreview imageUrl={item?.avatarUrl || item?.avatarUrl || ""} videoUrls={[item?.animationUrl]} showBorder />
+                <MediaPreview imageUrl={item?.avatarUrl || item?.avatarUrl || item?.imageUrl || ""} videoUrls={[item?.animationUrl]} showBorder />
             </Box>
 
             <Stack sx={{ py: ".6rem", maxWidth: "28rem" }}>
