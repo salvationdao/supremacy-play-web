@@ -106,44 +106,44 @@ export const RanksTable = <T,>({ title, tableHeadings, alignments, widths, rankI
     }, [loadError, rankItems, isLoading, tableHeadings.length, primaryColor, renderItem, alignments, widths])
 
     return (
-        <Stack spacing="1.3rem">
-            <Stack spacing="1.3rem" direction="row" alignItems="center" justifyContent="center">
-                <Typography variant="h5" sx={{ p: "1.2rem 2rem", fontFamily: fonts.nostromoHeavy, backgroundColor, border: `${primaryColor} 2px solid` }}>
-                    {title}
-                </Typography>
-            </Stack>
+        <ClipThing
+            clipSize="8px"
+            border={{
+                borderColor: primaryColor,
+                borderThickness: ".3rem",
+            }}
+            backgroundColor={backgroundColor}
+        >
+            <TableContainer>
+                <Table sx={{ borderRadius: 0.5, overflow: "hidden", ".MuiTableCell-root": { p: "1.2rem" } }}>
+                    <TableHead sx={{ boxShadow: 5 }}>
+                        <TableRow sx={{ backgroundColor: primaryColor }}>
+                            <TableCell colSpan={tableHeadings.length} align="center">
+                                <Typography variant="h6" sx={{ fontFamily: fonts.nostromoHeavy }}>
+                                    {title}
+                                </Typography>
+                            </TableCell>
+                        </TableRow>
 
-            <ClipThing
-                clipSize="8px"
-                border={{
-                    borderColor: primaryColor,
-                    borderThickness: ".3rem",
-                }}
-                backgroundColor={backgroundColor}
-            >
-                <TableContainer>
-                    <Table sx={{ borderRadius: 0.5, overflow: "hidden", ".MuiTableCell-root": { p: "1.2rem" } }}>
-                        <TableHead sx={{ backgroundColor: primaryColor, boxShadow: 5 }}>
-                            <TableRow>
-                                {tableHeadings.map((heading, i) => {
-                                    return (
-                                        <TableCell
-                                            key={i}
-                                            align={alignments ? alignments[i] : "left"}
-                                            sx={{ height: "5.5rem", py: "0 !important", width: widths ? widths[i] : undefined }}
-                                        >
-                                            <Typography variant="body2" sx={{ py: ".3rem", color: secondaryColor, fontFamily: fonts.nostromoBlack }}>
-                                                {heading}
-                                            </Typography>
-                                        </TableCell>
-                                    )
-                                })}
-                            </TableRow>
-                        </TableHead>
-                        {content}
-                    </Table>
-                </TableContainer>
-            </ClipThing>
-        </Stack>
+                        <TableRow sx={{ backgroundColor: `${primaryColor}40` }}>
+                            {tableHeadings.map((heading, i) => {
+                                return (
+                                    <TableCell
+                                        key={i}
+                                        align={alignments ? alignments[i] : "left"}
+                                        sx={{ borderRight: "#FFFFFF20 1px solid", height: "5.5rem", py: "0 !important", width: widths ? widths[i] : undefined }}
+                                    >
+                                        <Typography variant="body2" sx={{ py: ".3rem", color: secondaryColor, fontFamily: fonts.nostromoBlack }}>
+                                            {heading}
+                                        </Typography>
+                                    </TableCell>
+                                )
+                            })}
+                        </TableRow>
+                    </TableHead>
+                    {content}
+                </Table>
+            </TableContainer>
+        </ClipThing>
     )
 }
