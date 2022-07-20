@@ -3,6 +3,7 @@ import { useMemo } from "react"
 import { useTheme } from "../../../../containers/theme"
 import { getAssetItemDeets, getRarityDeets } from "../../../../helpers"
 import { colors, fonts } from "../../../../theme/theme"
+import { AssetItemType } from "../../../../types"
 import { ClipThing } from "../../../Common/ClipThing"
 import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
 import { TooltipHelper } from "../../../Common/TooltipHelper"
@@ -34,6 +35,7 @@ export const CrateRewardItemsLarge = ({ item }: CrateRewardItemsProps) => {
                         imageUrl={item?.avatarUrl || item?.imageUrl || item?.largeImageUrl || ""}
                         videoUrls={[item?.animationUrl, item?.cardAnimationUrl]}
                         objectFit="cover"
+                        imageTransform={item?.type === AssetItemType.Weapon || item?.type === AssetItemType.WeaponSkin ? "rotate(-30deg) scale(.95)" : ""}
                     />
 
                     <TooltipHelper placement="right" text={assetItemDeets.label}>
@@ -81,6 +83,7 @@ export const CrateRewardItemsSmall = ({ item }: CrateRewardItemsProps) => {
                     imageUrl={item?.avatarUrl || item?.imageUrl || item?.largeImageUrl || ""}
                     videoUrls={[item?.animationUrl, item?.cardAnimationUrl]}
                     showBorder
+                    imageTransform={item?.type === AssetItemType.Weapon || item?.type === AssetItemType.WeaponSkin ? "rotate(-30deg) scale(.95)" : ""}
                 />
 
                 <TooltipHelper placement="right" text={assetItemDeets.label}>

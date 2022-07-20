@@ -5,6 +5,7 @@ export const MediaPreview = ({
     videoUrls,
     showBorder,
     sx,
+    imageTransform,
     objectFit,
     objectPosition,
 }: {
@@ -12,6 +13,7 @@ export const MediaPreview = ({
     videoUrls?: (string | undefined)[]
     showBorder?: boolean
     sx?: SxProps
+    imageTransform?: string
     objectFit?: string
     objectPosition?: string
 }) => {
@@ -37,6 +39,7 @@ export const MediaPreview = ({
                         width: "100%",
                         objectFit: objectFit || "contain",
                         objectPosition: objectPosition || "center",
+                        transform: imageTransform || "",
                     }}
                 />
             ) : (
