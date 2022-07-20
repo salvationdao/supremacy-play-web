@@ -1,15 +1,14 @@
-import { Box, Collapse, Fade, Stack, Typography } from "@mui/material"
+import { Box, Collapse, Fade, Stack } from "@mui/material"
 import BigNumber from "bignumber.js"
 import { useCallback, useMemo, useState } from "react"
 import { BattleAbilityCountdown, ClipThing, FancyButton } from "../.."
 import { SvgDropdownArrow } from "../../../assets"
-import { BribeStageResponse, useGame, useAuth, useSupremacy } from "../../../containers"
+import { BribeStageResponse, useAuth, useGame, useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { shadeColor } from "../../../helpers"
 import { useToggle } from "../../../hooks"
 import { useGameServerCommandsFaction, useGameServerSubscription } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
-import { colors } from "../../../theme/theme"
 import { BattleAbility as BattleAbilityType, BattleAbilityProgress, Faction } from "../../../types"
 import { BattleAbilityTextTop } from "./BattleAbilityTextTop"
 import { SupsBarStack } from "./SupsBarStack"
@@ -90,19 +89,7 @@ export const BattleAbilityItem = () => {
     )
 
     if (!battleAbility) {
-        return (
-            <Typography
-                sx={{
-                    mt: ".5rem",
-                    lineHeight: 1,
-                    color: colors.text,
-                    opacity: 0.6,
-                    fontWeight: "fontWeightBold",
-                }}
-            >
-                LOADING BATTLE ABILITY...
-            </Typography>
-        )
+        return null
     }
 
     return (

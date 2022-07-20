@@ -2,7 +2,7 @@ import { Stack, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
 import { SvgSupToken } from "../../../assets"
 import { useSnackbar, useSupremacy } from "../../../containers"
-import { supFormatter } from "../../../helpers"
+import { supFormatterNoFixed } from "../../../helpers"
 import { useGameServerCommands } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
@@ -80,7 +80,7 @@ export const PlayerBattleContributions = () => {
                     <Stack key={4} direction="row" alignItems="center" justifyContent="center">
                         <SvgSupToken size="2.2rem" fill={colors.yellow} />
                         <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
-                            {supFormatter(item.total_contributions)}
+                            {supFormatterNoFixed(item.total_contributions, 0)}
                         </Typography>
                     </Stack>,
                 ]

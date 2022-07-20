@@ -22,6 +22,17 @@ export enum WeaponType {
     SniperRifle = "Sniper Rifle",
 }
 
+export enum AssetItemType {
+    Mech = "mech",
+    Weapon = "weapon",
+    MechSkin = "mech_skin",
+    WeaponSkin = "weapon_skin",
+    PowerCore = "power_core",
+    Utility = "utilities",
+    IntroAnimation = "intro_animation",
+    OutroAnimation = "outro_animation",
+}
+
 export interface MechStatus {
     status: MechStatusEnum
     queue_position?: number
@@ -38,7 +49,7 @@ interface Collection {
     collection_slug: string
     hash: string
     token_id: number
-    item_type: string
+    item_type: AssetItemType
     item_id: string
     tier: string
     owner_id: string

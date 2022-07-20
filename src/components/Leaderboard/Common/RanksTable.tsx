@@ -68,7 +68,11 @@ export const RanksTable = <T,>({ title, tableHeadings, alignments, widths, rankI
                             <TableRow key={i} sx={{ "&:nth-of-type(odd)": { backgroundColor: "#FFFFFF10", animation: `${zoomEffect(1.05)} 300ms ease-out` } }}>
                                 {renderItem(item, i).map((node, j) => {
                                     return (
-                                        <TableCell key={j} align={alignments ? alignments[j] : "left"} sx={{ width: widths ? widths[j] : undefined }}>
+                                        <TableCell
+                                            key={j}
+                                            align={alignments ? alignments[j] : "left"}
+                                            sx={{ width: widths ? widths[j] : undefined, borderBottom: "none" }}
+                                        >
                                             {node}
                                         </TableCell>
                                     )
@@ -120,7 +124,7 @@ export const RanksTable = <T,>({ title, tableHeadings, alignments, widths, rankI
                     <TableHead sx={{ boxShadow: 5 }}>
                         <TableRow sx={{ backgroundColor: primaryColor }}>
                             <TableCell colSpan={tableHeadings.length} align="center">
-                                <Typography variant="h6" sx={{ fontFamily: fonts.nostromoHeavy }}>
+                                <Typography variant="h6" sx={{ color: secondaryColor, fontFamily: fonts.nostromoHeavy }}>
                                     {title}
                                 </Typography>
                             </TableCell>
@@ -134,7 +138,7 @@ export const RanksTable = <T,>({ title, tableHeadings, alignments, widths, rankI
                                         align={alignments ? alignments[i] : "left"}
                                         sx={{ borderRight: "#FFFFFF20 1px solid", height: "5.5rem", py: "0 !important", width: widths ? widths[i] : undefined }}
                                     >
-                                        <Typography variant="body2" sx={{ py: ".3rem", color: secondaryColor, fontFamily: fonts.nostromoBlack }}>
+                                        <Typography variant="body2" sx={{ py: ".3rem", fontFamily: fonts.nostromoBlack }}>
                                             {heading}
                                         </Typography>
                                     </TableCell>
@@ -142,6 +146,7 @@ export const RanksTable = <T,>({ title, tableHeadings, alignments, widths, rankI
                             })}
                         </TableRow>
                     </TableHead>
+
                     {content}
                 </Table>
             </TableContainer>
