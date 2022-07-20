@@ -1,6 +1,8 @@
 import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useLocation } from "react-router-dom"
+import { useParameterizedQuery } from "react-fetching-library"
+import { GetWeaponMaxStats } from "../../../fetching"
 import { ClipThing, FancyButton } from "../.."
 import { EmptyWarMachinesPNG, WarMachineIconPNG } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
@@ -9,7 +11,7 @@ import { usePagination, useToggle, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { WeaponType } from "../../../types"
+import { WeaponMaxStats, WeaponType } from "../../../types"
 import { MarketplaceBuyAuctionItem, MarketSaleType, SortTypeLabel } from "../../../types/marketplace"
 import { PageHeader } from "../../Common/PageHeader"
 import { ChipFilter } from "../../Common/SortAndFilters/ChipFilterSection"
@@ -257,6 +259,30 @@ export const WeaponsMarket = () => {
             changePage(1)
         },
     })
+
+    const { query: queryGetWeaponMaxStats } = useParameterizedQuery(GetWeaponMaxStats)
+
+    useEffect(() => {
+        ;(async () => {
+            try {
+                const resp = await queryGetWeaponMaxStats({})
+                if (resp.error || !resp.payload) return
+                if (resp.payload.max_ammo) ammoRangeFilter.current.minMax[1] = resp.payload.max_ammo
+                if (resp.payload.damage) damageRangeFilter.current.minMax[1] = resp.payload.damage
+                if (resp.payload.damage_falloff) damageFalloffRangeFilter.current.minMax[1] = resp.payload.damage_falloff
+                if (resp.payload.damage_falloff_rate) damageFalloffRateRangeFilter.current.minMax[1] = resp.payload.damage_falloff_rate
+                if (resp.payload.radius) radiusRangeFilter.current.minMax[1] = resp.payload.radius
+                if (resp.payload.radius_damage_falloff) radiusDamageFalloffRangeFilter.current.minMax[1] = resp.payload.radius_damage_falloff
+                if (resp.payload.rate_of_fire) rateOfFireRangeFilter.current.minMax[1] = resp.payload.rate_of_fire
+                if (resp.payload.energy_cost) energyCostRangeFilter.current.minMax[1] = resp.payload.energy_cost
+                if (resp.payload.projectile_speed) projectileSpeedRangeFilter.current.minMax[1] = resp.payload.projectile_speed
+                if (resp.payload.spread) spreadRangeFilter.current.minMax[1] = resp.payload.spread
+            } catch (err) {
+                const message = typeof err === "string" ? err : "Failed to get the list of streams."
+                console.error(message)
+            }
+        })()
+    }, [queryGetWeaponMaxStats])
 
     const getItems = useCallback(async () => {
         try {
