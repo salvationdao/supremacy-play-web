@@ -231,8 +231,10 @@ export const WeaponsHangar = () => {
         },
     })
 
+    const [sortFilterReRender, toggleSortFilterReRender] = useToggle()
     const { query: queryGetWeaponMaxStats } = useParameterizedQuery(GetWeaponMaxStats)
 
+    // Get the max for each category for better filtering
     useEffect(() => {
         ;(async () => {
             try {
@@ -249,82 +251,85 @@ export const WeaponsHangar = () => {
                 projectileSpeedRangeFilter.current.minMax[1] = resp.payload.projectile_speed || 0
                 spreadRangeFilter.current.minMax[1] = resp.payload.spread || 0
 
+                // Make current values dont exceed the max, otherwise adjust
                 setAmmoRange((prev) => {
+                    let newValue = prev
                     const value = resp.payload?.max_ammo || 0
-                    if (prev[1] > value) {
-                        return [prev[0], value]
-                    }
-                    return prev
+                    if (prev[1] > value) newValue = [prev[0], value]
+                    ammoRangeFilter.current.initialValue = newValue
+                    return newValue
                 })
                 setDamageRange((prev) => {
+                    let newValue = prev
                     const value = resp.payload?.damage || 0
-                    if (prev[1] > value) {
-                        return [prev[0], value]
-                    }
-                    return prev
+                    if (prev[1] > value) newValue = [prev[0], value]
+                    damageRangeFilter.current.initialValue = newValue
+                    return newValue
                 })
                 setDamageFalloffRange((prev) => {
-                    const value = resp.payload?.damage_falloff_rate || 0
-                    if (prev[1] > value) {
-                        return [prev[0], value]
-                    }
-                    return prev
+                    let newValue = prev
+                    const value = resp.payload?.damage_falloff || 0
+                    if (prev[1] > value) newValue = [prev[0], value]
+                    damageFalloffRangeFilter.current.initialValue = newValue
+                    return newValue
                 })
                 setDamageFalloffRateRange((prev) => {
+                    let newValue = prev
                     const value = resp.payload?.damage_falloff_rate || 0
-                    if (prev[1] > value) {
-                        return [prev[0], value]
-                    }
-                    return prev
+                    if (prev[1] > value) newValue = [prev[0], value]
+                    damageFalloffRateRangeFilter.current.initialValue = newValue
+                    return newValue
                 })
                 setRadiusRange((prev) => {
+                    let newValue = prev
                     const value = resp.payload?.radius || 0
-                    if (prev[1] > value) {
-                        return [prev[0], value]
-                    }
-                    return prev
+                    if (prev[1] > value) newValue = [prev[0], value]
+                    radiusRangeFilter.current.initialValue = newValue
+                    return newValue
                 })
                 setRadiusDamageFalloffRange((prev) => {
+                    let newValue = prev
                     const value = resp.payload?.radius_damage_falloff || 0
-                    if (prev[1] > value) {
-                        return [prev[0], value]
-                    }
-                    return prev
+                    if (prev[1] > value) newValue = [prev[0], value]
+                    radiusDamageFalloffRangeFilter.current.initialValue = newValue
+                    return newValue
                 })
                 setRateOfFireRange((prev) => {
+                    let newValue = prev
                     const value = resp.payload?.rate_of_fire || 0
-                    if (prev[1] > value) {
-                        return [prev[0], value]
-                    }
-                    return prev
+                    if (prev[1] > value) newValue = [prev[0], value]
+                    rateOfFireRangeFilter.current.initialValue = newValue
+                    return newValue
                 })
                 setEnergyCostRange((prev) => {
+                    let newValue = prev
                     const value = resp.payload?.energy_cost || 0
-                    if (prev[1] > value) {
-                        return [prev[0], value]
-                    }
-                    return prev
+                    if (prev[1] > value) newValue = [prev[0], value]
+                    energyCostRangeFilter.current.initialValue = newValue
+                    return newValue
                 })
                 setProjectileSpeedRange((prev) => {
+                    let newValue = prev
                     const value = resp.payload?.projectile_speed || 0
-                    if (prev[1] > value) {
-                        return [prev[0], value]
-                    }
-                    return prev
+                    if (prev[1] > value) newValue = [prev[0], value]
+                    projectileSpeedRangeFilter.current.initialValue = newValue
+                    return newValue
                 })
                 setSpreadRange((prev) => {
+                    let newValue = prev
                     const value = resp.payload?.spread || 0
-                    if (prev[1] > value) {
-                        return [prev[0], value]
-                    }
-                    return prev
+                    if (prev[1] > value) newValue = [prev[0], value]
+                    spreadRangeFilter.current.initialValue = newValue
+                    return newValue
                 })
+
+                toggleSortFilterReRender()
             } catch (err) {
                 const message = typeof err === "string" ? err : "Failed to get the list of streams."
                 console.error(message)
             }
         })()
-    }, [queryGetWeaponMaxStats])
+    }, [queryGetWeaponMaxStats, toggleSortFilterReRender])
 
     const getItems = useCallback(async () => {
         try {
@@ -555,6 +560,7 @@ export const WeaponsHangar = () => {
     return (
         <Stack direction="row" spacing="1rem" sx={{ height: "100%" }}>
             <SortAndFilters
+                key={sortFilterReRender.toString()}
                 initialSearch={search}
                 onSetSearch={setSearch}
                 chipFilters={[weaponTypeFilterSection.current, weaponEquippedFilterSection.current]}
