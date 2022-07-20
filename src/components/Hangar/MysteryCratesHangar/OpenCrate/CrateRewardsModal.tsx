@@ -1,6 +1,7 @@
 import { Box, Grow, IconButton, Modal, Stack, Typography } from "@mui/material"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { SvgClose } from "../../../../assets"
+import { useAuth, useSupremacy } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
 import { fonts, siteZIndex } from "../../../../theme/theme"
 import { OpenCrateResponse } from "../../../../types"
@@ -24,8 +25,12 @@ export interface ArrayItem {
 }
 
 export const CrateRewardsModal = ({ openedRewards, onClose }: CrateRewardsModalProps) => {
+    const { getFaction } = useSupremacy()
+    const { factionID } = useAuth()
     const theme = useTheme()
     const [arrayItems, setArrayItems] = useState<ArrayItem[]>([])
+
+    const faction = useMemo(() => getFaction(factionID), [getFaction, factionID])
 
     useEffect(() => {
         let newArr: ArrayItem[] = []
@@ -114,7 +119,24 @@ export const CrateRewardsModal = ({ openedRewards, onClose }: CrateRewardsModalP
                             sx={{ m: "4rem", width: "100%" }}
                             backgroundColor={theme.factionTheme.background}
                         >
-                            <Stack spacing="3rem" justifyContent="center" alignItems="center" sx={{ py: "5rem", px: "5.5rem" }}>
+                            <Stack spacing="3rem" justifyContent="center" alignItems="center" sx={{ position: "relative", py: "5rem", px: "5.5rem" }}>
+                                {/* Background image */}
+                                <Box
+                                    sx={{
+                                        position: "absolute",
+                                        top: 0,
+                                        left: 0,
+                                        width: "100%",
+                                        height: "100%",
+                                        opacity: 0.2,
+                                        background: `url(${faction.background_url})`,
+                                        backgroundRepeat: "no-repeat",
+                                        backgroundPosition: "center",
+                                        backgroundSize: "cover",
+                                        zIndex: -1,
+                                    }}
+                                />
+
                                 <Typography variant={"h4"} sx={{ fontFamily: fonts.nostromoBlack }}>
                                     You have received:
                                 </Typography>
