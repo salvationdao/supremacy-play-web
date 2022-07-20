@@ -20,6 +20,9 @@ export enum WeaponType {
     MissileLauncher = "Missile Launcher",
     PlasmaGun = "Plasma Gun",
     SniperRifle = "Sniper Rifle",
+    GrenadeLauncher = "Grenade Launcher",
+    MachineGun = "Machine Gun",
+    Flak = "Flak",
 }
 
 export enum AssetItemType {
