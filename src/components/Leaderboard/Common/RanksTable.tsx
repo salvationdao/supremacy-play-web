@@ -111,7 +111,7 @@ export const RanksTable = <T,>({ title, tableHeadings, alignments, widths, rankI
             border={{
                 isFancy: true,
                 borderColor: primaryColor,
-                borderThickness: ".3rem",
+                borderThickness: ".2rem",
             }}
             backgroundColor={backgroundColor}
         >
