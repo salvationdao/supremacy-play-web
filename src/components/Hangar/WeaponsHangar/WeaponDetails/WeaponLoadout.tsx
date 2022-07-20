@@ -41,7 +41,7 @@ export const WeaponLoadout = ({ weaponDetails }: { weaponDetails: Weapon }) => {
                         imageTransform="rotate(-30deg) scale(.95)"
                     />
                 ) : (
-                    <MechLoadoutItem label="SUBMODEL" primaryColor={colors.chassisSkin} onClick={() => console.log("AAAAA")} isEmpty />
+                    <MechLoadoutItem label="SUBMODEL" primaryColor={colors.chassisSkin} onClick={() => console.log("AAAAA")} isEmpty disabled />
                 )}
             </Stack>
         </Box>

@@ -17,6 +17,7 @@ export const MechLoadoutItem = ({
     Icon,
     rarity,
     imageTransform,
+    disabled,
 }: {
     imageUrl?: string
     videoUrls?: (string | undefined)[] | undefined
@@ -27,12 +28,14 @@ export const MechLoadoutItem = ({
     Icon?: React.VoidFunctionComponent<SvgWrapperProps>
     rarity?: Rarity
     imageTransform?: string
+    disabled?: boolean
 }) => {
     const backgroundColor = useMemo(() => shadeColor(primaryColor, -90), [primaryColor])
 
     return (
         <Box sx={{ p: ".8rem", width: "fit-content", pointerEvents: onClick ? "all" : "none" }}>
             <FancyButton
+                disabled={disabled}
                 clipThingsProps={{
                     clipSize: "10px",
                     clipSlantSize: "0px",

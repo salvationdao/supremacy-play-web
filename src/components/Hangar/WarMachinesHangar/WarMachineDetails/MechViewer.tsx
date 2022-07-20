@@ -43,12 +43,11 @@ export const MechViewer = ({ mechDetails }: { mechDetails: MechDetails }) => {
                 sx={{
                     position: "absolute",
                     zIndex: 3,
-                    aspectRatio: "1",
-                    width: "unset",
-                    height: "80%",
+                    width: "90%",
                     left: "50%",
-                    top: "52%",
+                    top: "50%",
                     transform: "translate(-50%, -50%)",
+                    overflow: "hidden",
                 }}
             >
                 <FeatherFade color={backgroundColor} />
