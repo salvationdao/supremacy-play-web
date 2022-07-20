@@ -4,7 +4,13 @@ import { Gabs } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { fonts } from "../../../theme/theme"
 import { PageHeader } from "../../Common/PageHeader"
+import { PlayerAbilityKills } from "./PlayerAbilityKills"
+import { PlayerAbilityTriggers } from "./PlayerAbilityTriggers"
+import { PlayerBattleContributions } from "./PlayerBattleContributions"
 import { PlayerBattlesSpectated } from "./PlayerBattlesSpectated"
+import { PlayerMechKills } from "./PlayerMechKills"
+import { PlayerMechsOwned } from "./PlayerMechsOwned"
+import { PlayerMechSurvives } from "./PlayerMechSurvives"
 
 export const GlobalStats = () => {
     const theme = useTheme()
@@ -67,7 +73,15 @@ export const GlobalStats = () => {
                             }}
                         >
                             <Box sx={{ direction: "ltr", height: 0 }}>
-                                <PlayerBattlesSpectated />
+                                <Stack spacing="6rem">
+                                    <PlayerBattlesSpectated />
+                                    <PlayerMechSurvives />
+                                    <PlayerMechKills />
+                                    <PlayerAbilityKills />
+                                    <PlayerAbilityTriggers />
+                                    <PlayerBattleContributions />
+                                    <PlayerMechsOwned />
+                                </Stack>
                             </Box>
                         </Box>
                     </Stack>

@@ -152,6 +152,12 @@ export enum GameServerKeys {
 
     // Leaderboard
     GetPlayerBattlesSpectated = "LEADERBOARD:PLAYER:BATTLE:SPECTATED",
+    GetPlayerMechSurvives = "LEADERBOARD:PLAYER:MECH:SURVIVES",
+    GetPlayerMechKills = "LEADERBOARD:PLAYER:MECH:KILLS",
+    GetPlayerAbilityKills = "LEADERBOARD:PLAYER:ABILITY:KILLS",
+    GetPlayerAbilityTriggers = "LEADERBOARD:PLAYER:ABILITY:TRIGGERS",
+    GetPlayerBattleContributions = "LEADERBOARD:PLAYER:BATTLE:CONTRIBUTIONS",
+    GetPlayerMechsOwned = "LEADERBOARD:PLAYER:MECHS:OWNED",
 }
 
 export enum PassportServerKeys {
