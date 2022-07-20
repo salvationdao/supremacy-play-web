@@ -47,7 +47,7 @@ export const GlobalStats = () => {
                         imageUrl={Gabs}
                     ></PageHeader>
 
-                    <Stack sx={{ px: "2rem", py: "1rem", flex: 1 }}>
+                    <Stack sx={{ px: "2rem", pb: "1rem", flex: 1 }}>
                         <Box
                             sx={{
                                 flex: 1,
@@ -73,7 +73,7 @@ export const GlobalStats = () => {
                             }}
                         >
                             <Box sx={{ direction: "ltr", height: 0 }}>
-                                <Stack spacing="6rem">
+                                <Stack spacing="6rem" sx={{ p: "3rem 1.8rem" }}>
                                     <PlayerBattlesSpectated />
                                     <PlayerMechSurvives />
                                     <PlayerMechKills />

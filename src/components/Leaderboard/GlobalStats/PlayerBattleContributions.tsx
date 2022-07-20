@@ -1,15 +1,18 @@
-import { Typography } from "@mui/material"
+import { Stack, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
+import { SvgSupToken } from "../../../assets"
 import { useSnackbar, useSupremacy } from "../../../containers"
+import { supFormatter } from "../../../helpers"
 import { useGameServerCommands } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
+import { colors, fonts } from "../../../theme/theme"
 import { User } from "../../../types"
 import { Player } from "../../Common/Player"
 import { RanksTable } from "../Common/RanksTable"
 
 interface RankItem {
     player: User
-    total_contributions: number
+    total_contributions: string
 }
 
 export const PlayerBattleContributions = () => {
@@ -51,10 +54,21 @@ export const PlayerBattleContributions = () => {
             isLoading={isLoading}
             loadError={loadError}
             renderItem={(item, index) => {
+                const rank = index + 1
                 const faction = getFaction(item.player.faction_id)
+
+                let color = "#FFFFFF"
+                if (rank === 1) color = colors.yellow
+                if (rank === 2) color = colors.silver
+                if (rank === 3) color = colors.bronze
+
                 return [
-                    <Typography variant="h6" key={1} sx={{ fontWeight: "fontWeightBold", textAlign: "center" }}>
-                        #{index + 1}
+                    <Typography
+                        key={1}
+                        variant="h6"
+                        sx={{ textAlign: "center", fontWeight: "fontWeightBold", color, fontFamily: rank <= 3 ? fonts.nostromoBlack : "inherit" }}
+                    >
+                        {index + 1}
                     </Typography>,
 
                     <Player key={2} player={item.player} styledImageTextProps={{ variant: "h6", imageSize: 2.4 }} />,
@@ -63,9 +77,12 @@ export const PlayerBattleContributions = () => {
                         {faction.label}
                     </Typography>,
 
-                    <Typography variant="h6" key={4} sx={{ textAlign: "center" }}>
-                        {item.total_contributions}
-                    </Typography>,
+                    <Stack key={4} direction="row" alignItems="center" justifyContent="center">
+                        <SvgSupToken size="2.2rem" fill={colors.yellow} />
+                        <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
+                            {supFormatter(item.total_contributions)}
+                        </Typography>
+                    </Stack>,
                 ]
             }}
         />

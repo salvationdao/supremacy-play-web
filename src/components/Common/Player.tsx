@@ -15,7 +15,7 @@ export const Player = ({ player, styledImageTextProps }: { player: User; styledI
             text={
                 <>
                     {`${username}`}
-                    <span style={{ marginLeft: ".2rem", opacity: 0.7 }}>{`#${gid}`}</span>
+                    <span style={{ marginLeft: ".2rem", opacity: 0.8 }}>{`#${gid}`}</span>
                 </>
             }
             color={primaryColor}

@@ -1,7 +1,7 @@
 import { CircularProgress, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material"
 import { ReactNode, useMemo } from "react"
-import { SvgAngle } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
+import { zoomEffect } from "../../../theme/keyframes"
 import { colors, fonts } from "../../../theme/theme"
 import { ClipThing } from "../../Common/ClipThing"
 
@@ -65,7 +65,7 @@ export const RanksTable = <T,>({ title, tableHeadings, alignments, widths, rankI
                 <TableBody>
                     {rankItems.map((item, i) => {
                         return (
-                            <TableRow key={i} sx={{ "&:nth-of-type(odd)": { backgroundColor: "#FFFFFF10" } }}>
+                            <TableRow key={i} sx={{ "&:nth-of-type(odd)": { backgroundColor: "#FFFFFF10", animation: `${zoomEffect(1.05)} 300ms ease-out` } }}>
                                 {renderItem(item, i).map((node, j) => {
                                     return (
                                         <TableCell key={j} align={alignments ? alignments[j] : "left"} sx={{ width: widths ? widths[j] : undefined }}>
@@ -106,17 +106,17 @@ export const RanksTable = <T,>({ title, tableHeadings, alignments, widths, rankI
     }, [loadError, rankItems, isLoading, tableHeadings.length, primaryColor, renderItem, alignments, widths])
 
     return (
-        <Stack spacing="2rem">
+        <Stack spacing="1.3rem">
             <Stack spacing="1.3rem" direction="row" alignItems="center" justifyContent="center" sx={{}}>
-                <SvgAngle />
-                <Typography variant="h5" sx={{ fontFamily: fonts.nostromoHeavy }}>
+                {/* <SvgAngle /> */}
+                <Typography variant="h5" sx={{ p: "1.2rem 2rem", fontFamily: fonts.nostromoHeavy, backgroundColor, border: `${primaryColor} 2px solid` }}>
                     {title}
                 </Typography>
-                <SvgAngle sx={{ transform: "scaleX(-1)" }} />
+                {/* <SvgAngle sx={{ transform: "scaleX(-1)" }} /> */}
             </Stack>
 
             <ClipThing
-                clipSize="10px"
+                clipSize="8px"
                 border={{
                     borderColor: primaryColor,
                     borderThickness: ".3rem",
