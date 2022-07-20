@@ -42,6 +42,7 @@ export const MysteryCrateBanner = () => {
     const faction = useMemo(() => getFaction(factionID), [factionID, getFaction])
 
     const primaryColor = theme.factionTheme.primary
+    const secondaryColor = theme.factionTheme.secondary
     const backgroundColor = theme.factionTheme.background
 
     return (
@@ -98,17 +99,17 @@ export const MysteryCrateBanner = () => {
                     <FancyButton
                         clipThingsProps={{
                             clipSize: "6px",
-                            backgroundColor: colors.red,
+                            backgroundColor: primaryColor,
                             opacity: 1,
-                            border: { isFancy: true, borderColor: colors.red, borderThickness: "1.5px" },
+                            border: { isFancy: true, borderColor: primaryColor, borderThickness: "1.5px" },
                             sx: { position: "relative" },
                         }}
-                        sx={{ px: "3.4rem", py: ".8rem", color: "#FFFFFF" }}
+                        sx={{ px: "3.4rem", py: ".8rem", color: secondaryColor }}
                         to={`/storefront/mystery-crates${location.hash}`}
                     >
                         <Stack justifyContent="center" sx={{ height: "100%" }}>
-                            <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBlack }}>
-                                ⚡️ 24H FLASH SALE ⚡️
+                            <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBlack, color: secondaryColor }}>
+                                SHOP NOW
                             </Typography>
                         </Stack>
                     </FancyButton>
