@@ -1,17 +1,18 @@
 import { Autocomplete, Box, CircularProgress, IconButton, MenuItem, Modal, Select, Stack, SxProps, TextField, Typography } from "@mui/material"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { ClipThing, FancyButton } from "../../.."
 import { SvgClose, SvgCooldown, SvgSupToken } from "../../../../assets"
 import { MAX_BAN_PROPOSAL_REASON_LENGTH } from "../../../../constants"
-import { useAuth, useSnackbar, useSupremacy } from "../../../../containers"
-import { snakeToTitle } from "../../../../helpers"
+import { useAuth, useSnackbar } from "../../../../containers"
+import { useTheme } from "../../../../containers/theme"
+import { mergeDeep, snakeToTitle } from "../../../../helpers"
 import { useDebounce, useToggle } from "../../../../hooks"
+import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts, siteZIndex } from "../../../../theme/theme"
+import { User } from "../../../../types"
 import { BanOption, BanUser } from "../../../../types/chat"
-import { Faction, User } from "../../../../types"
-import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
-import { useTheme } from "../../../../containers/theme"
+import { Player } from "../../../Common/Player"
 
 interface SubmitRequest {
     intend_to_punish_player_id: string
@@ -19,34 +20,16 @@ interface SubmitRequest {
     reason: string
 }
 
-const UserItem = ({ getFaction, user, banUser, sx }: { getFaction: (factionID: string) => Faction; user: User; banUser: BanUser; sx?: SxProps }) => {
+const UserItem = ({ user, banUser, sx }: { user: User; banUser: BanUser; sx?: SxProps }) => {
+    const banUserMore = useMemo(() => mergeDeep(user, banUser), [banUser, user])
     return (
         <Stack direction="row" spacing=".6rem" alignItems="center" sx={sx}>
-            <Box
-                sx={{
-                    mt: "-0.1rem !important",
-                    width: "1.7rem",
-                    height: "1.7rem",
-                    flexShrink: 0,
-                    backgroundImage: `url(${getFaction(user.faction_id).logo_url})`,
-                    backgroundRepeat: "no-repeat",
-                    backgroundPosition: "center",
-                    backgroundSize: "contain",
-                    backgroundColor: (theme) => theme.factionTheme.primary,
-                    borderRadius: 0.8,
-                    border: (theme) => `${theme.factionTheme.primary} 1px solid`,
-                }}
-            />
-            <Typography>
-                {`${banUser.username}`}
-                <span style={{ marginLeft: ".2rem", opacity: 0.7 }}>{`#${banUser.gid}`}</span>
-            </Typography>
+            <Player player={banUserMore} styledImageTextProps={{ textColor: "#FFFFFF" }} />
         </Stack>
     )
 }
 
 export const UserBanForm = ({ user, open, onClose, prefillUser }: { user: User; open: boolean; onClose: () => void; prefillUser?: BanUser }) => {
-    const { getFaction } = useSupremacy()
     const theme = useTheme()
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsFaction("/faction_commander")
@@ -188,7 +171,7 @@ export const UserBanForm = ({ user, open, onClose, prefillUser }: { user: User; 
                             onChange={(e, value) => setSelectedUser(value)}
                             renderOption={(props, u) => (
                                 <Box key={u.id} component="li" {...props}>
-                                    <UserItem getFaction={getFaction} user={user} banUser={u} />
+                                    <UserItem user={user} banUser={u} />
                                 </Box>
                             )}
                             getOptionLabel={(u) => `${u.username}#${u.gid}`}
@@ -243,7 +226,7 @@ export const UserBanForm = ({ user, open, onClose, prefillUser }: { user: User; 
                             <Stack spacing=".1rem">
                                 <Typography sx={{ color: primaryColor, fontWeight: "fontWeightBold" }}>USER:</Typography>
                                 {selectedUser ? (
-                                    <UserItem getFaction={getFaction} user={user} banUser={selectedUser} sx={{ pl: ".2rem" }} />
+                                    <UserItem user={user} banUser={selectedUser} sx={{ pl: ".2rem" }} />
                                 ) : (
                                     <Typography sx={{ opacity: 0.6 }}>
                                         <i>Use the search box to find a user...</i>

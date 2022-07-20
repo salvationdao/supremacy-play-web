@@ -3,6 +3,7 @@ import { ClipThing, StyledImageText, StyledNormalText } from "../.."
 import { SvgDeath, SvgSkull2 } from "../../../assets"
 import { colors } from "../../../theme/theme"
 import { Faction, User, WarMachineState } from "../../../types"
+import { Player } from "../../Common/Player"
 
 export interface KillAlertProps {
     destroyed_war_machine: WarMachineState
@@ -29,20 +30,7 @@ export const KillAlert = ({ data, getFaction }: { data: KillAlertProps; getFacti
             />
         )
     } else if (killed_by_user) {
-        killedBy = (
-            <StyledImageText
-                text={
-                    <>
-                        {`${killed_by_user.username}`}
-                        <span style={{ marginLeft: ".2rem", opacity: 0.7 }}>{`#${killed_by_user.gid}`}</span>
-                        {`${killed_by ? ` ${killed_by}` : ""}`}
-                    </>
-                }
-                color={getFaction(killed_by_user.faction_id).primary_color}
-                imageUrl={getFaction(killed_by_user.faction_id).logo_url}
-                imageMb={-0.2}
-            />
-        )
+        killedBy = <Player player={killed_by_user} />
     } else {
         killedBy = <StyledNormalText sx={{ fontWeight: "fontWeightBold" }} text={killed_by || "UNKNOWN"} />
     }
