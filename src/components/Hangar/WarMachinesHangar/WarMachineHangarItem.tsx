@@ -71,7 +71,7 @@ export const WarMachineHangarItem = ({ mech, isGridView }: { mech: MechBasic; is
                         p: isGridView ? ".5rem .6rem" : ".1rem .3rem",
                         display: isGridView ? "block" : "grid",
                         gridTemplateRows: "7rem",
-                        gridTemplateColumns: `8rem auto 30rem 20rem`, // hard-coded to have 4 columns, adjust as required
+                        gridTemplateColumns: `8rem auto 35rem 20rem`, // hard-coded to have 4 columns, adjust as required
                         gap: "1.4rem",
                         ...(isGridView
                             ? {
@@ -213,7 +213,6 @@ export const MechCommonArea = ({
                 <Typography
                     variant="caption"
                     sx={{
-                        color: rarityDeets.color,
                         fontFamily: fonts.nostromoBold,
                         display: "-webkit-box",
                         overflow: "hidden",
@@ -223,22 +222,10 @@ export const MechCommonArea = ({
                         WebkitBoxOrient: "vertical",
                     }}
                 >
-                    [{rarityDeets.label}]
+                    <span style={{ color: colors.chassisSkin, fontFamily: "inherit" }}>{mechDetails?.chassis_skin?.label}</span>{" "}
+                    <span style={{ color: rarityDeets.color, fontFamily: "inherit" }}>[{rarityDeets.label}]</span>
                 </Typography>
             </Stack>
-            {/* <Typography
-                variant="h6"
-                sx={{
-                    display: "-webkit-box",
-                    overflow: "hidden",
-                    overflowWrap: "anywhere",
-                    textOverflow: "ellipsis",
-                    WebkitLineClamp: 1, // change to max number of lines
-                    WebkitBoxOrient: "vertical",
-                }}
-            >
-                {mech?.name || mechDetails?.name}
-            </Typography> */}
 
             {toggleIsExpanded && !isGridView && (
                 <Stack

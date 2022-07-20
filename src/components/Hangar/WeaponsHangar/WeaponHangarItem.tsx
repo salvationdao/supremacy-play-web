@@ -68,7 +68,7 @@ export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGri
                         p: isGridView ? ".5rem .6rem" : ".1rem .3rem",
                         display: isGridView ? "block" : "grid",
                         gridTemplateRows: "7rem",
-                        gridTemplateColumns: `8rem auto 20rem 30rem`, // hard-coded to have 7 columns, adjust as required
+                        gridTemplateColumns: `8rem auto 20rem 35rem`, // hard-coded to have 7 columns, adjust as required
                         gap: "1.4rem",
                         ...(isGridView
                             ? {
@@ -223,8 +223,6 @@ export const WeaponCommonArea = ({
                         variant="caption"
                         sx={{
                             fontFamily: fonts.nostromoBold,
-                            fontWeight: "fontWeightBold",
-                            color: colors.offWhite,
                             display: "-webkit-box",
                             overflow: "hidden",
                             overflowWrap: "anywhere",

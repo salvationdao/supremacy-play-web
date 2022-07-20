@@ -121,8 +121,8 @@ export const WeaponsHangar = () => {
     const weaponEquippedFilterSection = useRef<ChipFilter>({
         label: "EQUIPPED STATUS",
         options: [
-            { value: "equipped", label: "EQUIPPED", color: theme.factionTheme.primary, textColor: theme.factionTheme.secondary },
-            { value: "unequipped", label: "UNEQUIPPED", color: theme.factionTheme.primary, textColor: theme.factionTheme.secondary },
+            { value: "equipped", label: "EQUIPPED", color: colors.green, textColor: "#FFFFFF" },
+            { value: "unequipped", label: "UNEQUIPPED", color: colors.yellow, textColor: "#000000" },
         ],
         initialExpanded: true,
         initialSelected: equippedStatuses,
