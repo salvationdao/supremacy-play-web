@@ -242,7 +242,7 @@ export const WarMachineHangarDetailsInner = ({
                     borderColor: primaryColor,
                     borderThickness: ".3rem",
                 }}
-                opacity={0.7}
+                // opacity={0.7}
                 backgroundColor={backgroundColor}
                 sx={{ height: "100%", flex: 1 }}
             >
