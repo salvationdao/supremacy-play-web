@@ -107,9 +107,7 @@ export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGri
                         </Typography>
                     </General>
 
-                    <General isGridView={isGridView} title="STATS">
-                        <WeaponBarStats fontSize="1.5rem" weapon={weapon} color={primaryColor} iconVersion />
-                    </General>
+                    <WeaponBarStats fontSize="1.5rem" weapon={weapon} color={primaryColor} iconVersion />
                 </Box>
 
                 <Box
@@ -276,7 +274,7 @@ export const WeaponCommonArea = ({
                             borderLeft: "unset",
                         }}
                     >
-                        <Stack direction="row" spacing="4rem" sx={{ p: "1.5rem 2.1rem" }}>
+                        <Stack direction="row" spacing="4rem" sx={{ p: "1.5rem 2.1rem", height: "100%" }}>
                             <General title="DAMAGE TYPE">
                                 <Typography
                                     variant="h6"
@@ -287,11 +285,9 @@ export const WeaponCommonArea = ({
                             </General>
 
                             {weap && (
-                                <General isGridView={isGridView} title="STATS">
-                                    <Box sx={{ width: "40rem" }}>
-                                        <WeaponBarStats fontSize="1.4rem" weapon={weap} color={primaryColor} iconVersion />
-                                    </Box>
-                                </General>
+                                <Stack justifyContent="center" sx={{ width: "40rem" }}>
+                                    <WeaponBarStats fontSize="1.4rem" weapon={weap} color={primaryColor} iconVersion />
+                                </Stack>
                             )}
                         </Stack>
                     </Box>
