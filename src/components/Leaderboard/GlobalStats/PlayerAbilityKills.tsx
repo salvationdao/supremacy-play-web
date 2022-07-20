@@ -1,5 +1,6 @@
-import { Typography } from "@mui/material"
+import { Stack, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
+import { SvgDeath } from "../../../assets"
 import { useSnackbar, useSupremacy } from "../../../containers"
 import { useGameServerCommands } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
@@ -75,9 +76,12 @@ export const PlayerAbilityKills = () => {
                         {faction.label}
                     </Typography>,
 
-                    <Typography variant="h6" key={4} sx={{ fontWeight: "fontWeightBold", textAlign: "center" }}>
-                        {item.ability_kill_count}
-                    </Typography>,
+                    <Stack key={4} direction="row" spacing=".4rem" alignItems="center" justifyContent="center">
+                        <SvgDeath size="1.6rem" />
+                        <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
+                            {item.ability_kill_count}
+                        </Typography>
+                    </Stack>,
                 ]
             }}
         />

@@ -107,12 +107,10 @@ export const RanksTable = <T,>({ title, tableHeadings, alignments, widths, rankI
 
     return (
         <Stack spacing="1.3rem">
-            <Stack spacing="1.3rem" direction="row" alignItems="center" justifyContent="center" sx={{}}>
-                {/* <SvgAngle /> */}
+            <Stack spacing="1.3rem" direction="row" alignItems="center" justifyContent="center">
                 <Typography variant="h5" sx={{ p: "1.2rem 2rem", fontFamily: fonts.nostromoHeavy, backgroundColor, border: `${primaryColor} 2px solid` }}>
                     {title}
                 </Typography>
-                {/* <SvgAngle sx={{ transform: "scaleX(-1)" }} /> */}
             </Stack>
 
             <ClipThing
