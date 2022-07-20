@@ -452,9 +452,9 @@ export interface MysteryCrateOwnershipResp {
 export interface OpenCrateResponse {
     mech?: MechDetails
     power_core?: PowerCore
-    mech_skin?: MechSkin
+    mech_skins?: MechSkin[]
     weapon: Weapon[]
-    weapon_skin?: WeaponSkin
+    weapon_skins?: WeaponSkin[]
 }
 
 export interface Rarity {
