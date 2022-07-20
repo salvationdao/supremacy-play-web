@@ -1,11 +1,12 @@
-import { Badge, Box, Button, IconButton, Popover, Stack, Typography } from "@mui/material"
+import { Badge, Box, IconButton, Popover, Stack, Typography } from "@mui/material"
 import { useMemo, useRef } from "react"
-import { SvgMail } from "../../assets"
-import { useSystemMessaging } from "../../containers/systemMessaging"
-import { useTheme } from "../../containers/theme"
-import { useToggle } from "../../hooks"
-import { colors, fonts, siteZIndex } from "../../theme/theme"
-import { ClipThing } from "../Common/ClipThing"
+import { SvgMail } from "../../../assets"
+import { useSystemMessaging } from "../../../containers/systemMessaging"
+import { useTheme } from "../../../containers/theme"
+import { useToggle } from "../../../hooks"
+import { colors, fonts, siteZIndex } from "../../../theme/theme"
+import { ClipThing } from "../../Common/ClipThing"
+import { MessageItem } from "./MessageItem"
 
 export const Messages = () => {
     const theme = useTheme()
@@ -35,14 +36,10 @@ export const Messages = () => {
         }
 
         return (
-            <Stack spacing=".32rem" sx={{ p: ".8rem" }}>
-                {messages.map((m, index) => {
-                    return (
-                        <Button key={index} onClick={() => dismissMessage(index)}>
-                            {m.message}
-                        </Button>
-                    )
-                })}
+            <Stack spacing=".8rem" sx={{ p: "1.4rem" }}>
+                {messages.map((m, index) => (
+                    <MessageItem key={m.id} message={m} onDismiss={() => dismissMessage(index)} />
+                ))}
             </Stack>
         )
     }, [messages, dismissMessage])

@@ -6,7 +6,7 @@ import { useAuth, useSupremacy } from "../../containers"
 import { fonts, siteZIndex } from "../../theme/theme"
 import { User } from "../../types"
 import { HowToPlay } from "../HowToPlay/HowToPlay"
-import { Messages } from "./Messages"
+import { Messages } from "./Messages/Messages"
 
 export const Bar = () => {
     const { userID, user } = useAuth()

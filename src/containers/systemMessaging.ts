@@ -1,15 +1,17 @@
-import { useCallback, useState } from "react"
+import React, { useCallback, useState } from "react"
 import { createContainer } from "unstated-next"
+import { SvgAnnouncement, SvgDamage1, SvgListView, SvgWrapperProps } from "../assets"
 import { useGameServerSubscriptionUser } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
-import { SystemMessage } from "../types"
+import { SystemMessage, SystemMessageType } from "../types"
 
-interface SystemMessageDismissable extends SystemMessage {
-    isDismissed?: boolean
+export interface SystemMessageDisplayable extends SystemMessage {
+    id: number
+    icon: React.VoidFunctionComponent<SvgWrapperProps>
 }
 
 const SystemMessagingContainer = createContainer(() => {
-    const [messages, setMessages] = useState<SystemMessageDismissable[]>([])
+    const [messages, setMessages] = useState<SystemMessageDisplayable[]>([])
 
     useGameServerSubscriptionUser<SystemMessage>(
         {
@@ -18,9 +20,25 @@ const SystemMessagingContainer = createContainer(() => {
         },
         (payload) => {
             if (!payload) return
-
-            console.log(payload)
-            setMessages((prev) => [...prev, payload])
+            setMessages((prev) => {
+                let icon = SvgAnnouncement
+                switch (payload.type) {
+                    case SystemMessageType.MechQueue:
+                        icon = SvgListView
+                        break
+                    case SystemMessageType.MechBattleComplete:
+                        icon = SvgDamage1
+                        break
+                }
+                return [
+                    ...prev,
+                    {
+                        ...payload,
+                        id: prev.length,
+                        icon,
+                    },
+                ]
+            })
         },
     )
 
