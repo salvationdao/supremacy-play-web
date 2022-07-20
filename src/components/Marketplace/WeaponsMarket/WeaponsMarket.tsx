@@ -267,16 +267,87 @@ export const WeaponsMarket = () => {
             try {
                 const resp = await queryGetWeaponMaxStats({})
                 if (resp.error || !resp.payload) return
-                if (resp.payload.max_ammo) ammoRangeFilter.current.minMax[1] = resp.payload.max_ammo
-                if (resp.payload.damage) damageRangeFilter.current.minMax[1] = resp.payload.damage
-                if (resp.payload.damage_falloff) damageFalloffRangeFilter.current.minMax[1] = resp.payload.damage_falloff
-                if (resp.payload.damage_falloff_rate) damageFalloffRateRangeFilter.current.minMax[1] = resp.payload.damage_falloff_rate
-                if (resp.payload.radius) radiusRangeFilter.current.minMax[1] = resp.payload.radius
-                if (resp.payload.radius_damage_falloff) radiusDamageFalloffRangeFilter.current.minMax[1] = resp.payload.radius_damage_falloff
-                if (resp.payload.rate_of_fire) rateOfFireRangeFilter.current.minMax[1] = resp.payload.rate_of_fire
-                if (resp.payload.energy_cost) energyCostRangeFilter.current.minMax[1] = resp.payload.energy_cost
-                if (resp.payload.projectile_speed) projectileSpeedRangeFilter.current.minMax[1] = resp.payload.projectile_speed
-                if (resp.payload.spread) spreadRangeFilter.current.minMax[1] = resp.payload.spread
+                ammoRangeFilter.current.minMax[1] = resp.payload.max_ammo || 0
+                damageRangeFilter.current.minMax[1] = resp.payload.damage || 0
+                damageFalloffRangeFilter.current.minMax[1] = resp.payload.damage_falloff || 0
+                damageFalloffRateRangeFilter.current.minMax[1] = resp.payload.damage_falloff_rate || 0
+                radiusRangeFilter.current.minMax[1] = resp.payload.radius || 0
+                radiusDamageFalloffRangeFilter.current.minMax[1] = resp.payload.radius_damage_falloff || 0
+                rateOfFireRangeFilter.current.minMax[1] = resp.payload.rate_of_fire || 0
+                energyCostRangeFilter.current.minMax[1] = resp.payload.energy_cost || 0
+                projectileSpeedRangeFilter.current.minMax[1] = resp.payload.projectile_speed || 0
+                spreadRangeFilter.current.minMax[1] = resp.payload.spread || 0
+
+                setAmmoRange((prev) => {
+                    const value = resp.payload?.max_ammo || 0
+                    if (prev[1] > value) {
+                        return [prev[0], value]
+                    }
+                    return prev
+                })
+                setDamageRange((prev) => {
+                    const value = resp.payload?.damage || 0
+                    if (prev[1] > value) {
+                        return [prev[0], value]
+                    }
+                    return prev
+                })
+                setDamageFalloffRange((prev) => {
+                    const value = resp.payload?.damage_falloff_rate || 0
+                    if (prev[1] > value) {
+                        return [prev[0], value]
+                    }
+                    return prev
+                })
+                setDamageFalloffRateRange((prev) => {
+                    const value = resp.payload?.damage_falloff_rate || 0
+                    if (prev[1] > value) {
+                        return [prev[0], value]
+                    }
+                    return prev
+                })
+                setRadiusRange((prev) => {
+                    const value = resp.payload?.radius || 0
+                    if (prev[1] > value) {
+                        return [prev[0], value]
+                    }
+                    return prev
+                })
+                setRadiusDamageFalloffRange((prev) => {
+                    const value = resp.payload?.radius_damage_falloff || 0
+                    if (prev[1] > value) {
+                        return [prev[0], value]
+                    }
+                    return prev
+                })
+                setRateOfFireRange((prev) => {
+                    const value = resp.payload?.rate_of_fire || 0
+                    if (prev[1] > value) {
+                        return [prev[0], value]
+                    }
+                    return prev
+                })
+                setEnergyCostRange((prev) => {
+                    const value = resp.payload?.energy_cost || 0
+                    if (prev[1] > value) {
+                        return [prev[0], value]
+                    }
+                    return prev
+                })
+                setProjectileSpeedRange((prev) => {
+                    const value = resp.payload?.projectile_speed || 0
+                    if (prev[1] > value) {
+                        return [prev[0], value]
+                    }
+                    return prev
+                })
+                setSpreadRange((prev) => {
+                    const value = resp.payload?.spread || 0
+                    if (prev[1] > value) {
+                        return [prev[0], value]
+                    }
+                    return prev
+                })
             } catch (err) {
                 const message = typeof err === "string" ? err : "Failed to get the list of streams."
                 console.error(message)
