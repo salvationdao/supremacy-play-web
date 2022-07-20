@@ -161,7 +161,7 @@ export const MechCommonArea = ({
 
     return (
         <Stack
-            spacing={isGridView ? ".1rem" : ".6rem"}
+            spacing={isGridView ? ".1rem" : ".2rem"}
             sx={{
                 position: "relative",
                 pr: toggleIsExpanded ? "3rem" : "unset",
@@ -182,7 +182,6 @@ export const MechCommonArea = ({
                 <Typography
                     variant="body2"
                     sx={{
-                        mb: ".2rem",
                         color: rarityDeets.color,
                         fontFamily: fonts.nostromoBold,
                         display: "-webkit-box",
@@ -195,8 +194,6 @@ export const MechCommonArea = ({
                 >
                     {rarityDeets.label}
                 </Typography>
-
-                <MechLoadoutIcons mechDetails={mechDetails} />
             </Stack>
 
             <Typography
@@ -210,10 +207,11 @@ export const MechCommonArea = ({
                     WebkitBoxOrient: "vertical",
                 }}
             >
-                {mech?.label || mechDetails?.label || label}
+                {mech?.name || mechDetails?.name || mech?.label || mechDetails?.label || label}
             </Typography>
 
-            <Typography
+            <MechLoadoutIcons mechDetails={mechDetails} />
+            {/* <Typography
                 variant="h6"
                 sx={{
                     display: "-webkit-box",
@@ -225,7 +223,7 @@ export const MechCommonArea = ({
                 }}
             >
                 {mech?.name || mechDetails?.name}
-            </Typography>
+            </Typography> */}
 
             {toggleIsExpanded && !isGridView && (
                 <Stack

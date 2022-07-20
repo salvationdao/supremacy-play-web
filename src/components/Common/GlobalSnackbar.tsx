@@ -69,7 +69,7 @@ export const GlobalSnackbar = () => {
                         ml: "1.9rem",
                     }}
                     backgroundColor={severityDeets.color}
-                    opacity={0.9}
+                    opacity={0.99}
                 >
                     <Stack
                         direction="row"
@@ -86,7 +86,7 @@ export const GlobalSnackbar = () => {
                     >
                         {severityDeets.icon}
 
-                        <Typography variant="h6" sx={{ lineHeight: 1 }}>
+                        <Typography variant="h6" sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>
                             {messageInfo ? messageInfo.message : undefined}
                         </Typography>
 
