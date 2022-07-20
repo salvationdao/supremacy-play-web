@@ -81,3 +81,13 @@ export enum FeatureName {
     playerAbility = "PLAYER_ABILITY",
     publicProfilePage = "PUBLIC_PROFILE",
 }
+
+export enum SystemMessageType {
+    MechQueue = "MECH_QUEUE",
+    MechBattleComplete = "MECH_BATTLE_COMPLETE",
+}
+
+export interface SystemMessage {
+    type: SystemMessageType
+    message: string
+}
