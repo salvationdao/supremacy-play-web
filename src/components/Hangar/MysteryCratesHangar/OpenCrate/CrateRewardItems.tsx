@@ -67,7 +67,7 @@ export const CrateRewardItemsSmall = ({ item }: CrateRewardItemsProps) => {
     const assetItemDeets = useMemo(() => getAssetItemDeets(item?.type), [item?.type])
 
     return (
-        <Stack direction="row" spacing="1rem">
+        <Stack direction="row" alignItems="center" spacing="1rem">
             <Box
                 sx={{
                     position: "relative",
