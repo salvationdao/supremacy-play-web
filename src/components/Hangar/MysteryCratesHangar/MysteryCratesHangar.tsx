@@ -320,8 +320,9 @@ export const MysteryCratesHangar = () => {
                 <CrateRewardVideo factionID={openingCrate.factionID} crateType={openingCrate.crateType} onClose={() => setOpeningCrate(undefined)} />
             )}
 
-            {!openingCrate && openedRewards && (
+            {openedRewards && (
                 <CrateRewardsModal
+                    open={!openingCrate}
                     openedRewards={openedRewards}
                     onClose={() => {
                         setOpenedRewards(undefined)
