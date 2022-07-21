@@ -265,6 +265,7 @@ export const WarMachinesHangar = () => {
                                     }}
                                     sx={{ px: "1.6rem", py: ".6rem", color: "#000000" }}
                                     href={HANGAR_PAGE}
+                                    target="_blank"
                                 >
                                     <Typography
                                         variant="caption"
