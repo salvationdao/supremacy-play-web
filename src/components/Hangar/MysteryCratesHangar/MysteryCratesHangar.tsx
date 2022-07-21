@@ -179,7 +179,7 @@ export const MysteryCratesHangar = () => {
                     </Typography>
 
                     <FancyButton
-                        to={`/marketplace/mystery-crates${location.hash}`}
+                        to={`/storefront/mystery-crates${location.hash}`}
                         clipThingsProps={{
                             clipSize: "9px",
                             backgroundColor: theme.factionTheme.primary,
@@ -196,7 +196,7 @@ export const MysteryCratesHangar = () => {
                                 fontFamily: fonts.nostromoBold,
                             }}
                         >
-                            GO TO MARKETPLACE
+                            GO TO STOREFRONT
                         </Typography>
                     </FancyButton>
                 </Stack>
