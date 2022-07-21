@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { useLocation } from "react-router-dom"
 import { ClipThing, FancyButton } from "../.."
 import { SafePNG } from "../../../assets"
+import { HANGAR_PAGE } from "../../../constants"
 import { useTheme } from "../../../containers/theme"
 import { parseString } from "../../../helpers"
 import { usePagination, useUrlQuery } from "../../../hooks"
@@ -220,7 +221,31 @@ export const MysteryCratesHangar = () => {
             >
                 <Stack sx={{ position: "relative", height: "100%" }}>
                     <Stack sx={{ flex: 1 }}>
-                        <PageHeader title="MYSTERY CRATES" description="The mystery crates that you own are shown here." imageUrl={SafePNG}></PageHeader>
+                        <PageHeader title="MYSTERY CRATES" description="The mystery crates that you own are shown here." imageUrl={SafePNG}>
+                            <Box sx={{ ml: "auto !important", pr: "2rem" }}>
+                                <FancyButton
+                                    clipThingsProps={{
+                                        clipSize: "9px",
+                                        backgroundColor: colors.gold,
+                                        opacity: 1,
+                                        border: { isFancy: true, borderColor: colors.gold, borderThickness: "2px" },
+                                        sx: { position: "relative" },
+                                    }}
+                                    sx={{ px: "1.6rem", py: ".6rem", color: "#000000" }}
+                                    href={HANGAR_PAGE}
+                                >
+                                    <Typography
+                                        variant="caption"
+                                        sx={{
+                                            color: "#000000",
+                                            fontFamily: fonts.nostromoBlack,
+                                        }}
+                                    >
+                                        WALKABLE HANGAR
+                                    </Typography>
+                                </FancyButton>
+                            </Box>
+                        </PageHeader>
 
                         <TotalAndPageSizeOptions
                             countItems={crates?.length}
