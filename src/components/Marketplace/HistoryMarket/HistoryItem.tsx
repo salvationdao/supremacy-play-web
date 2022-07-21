@@ -95,7 +95,7 @@ export const HistoryItem = ({ eventItem, isGridView }: { eventItem: MarketplaceE
                         p: isGridView ? ".5rem .6rem" : ".1rem .3rem",
                         display: isGridView ? "block" : "grid",
                         gridTemplateRows: "7rem",
-                        gridTemplateColumns: `minmax(36rem, auto) repeat(2, 17rem) 20rem`, // hard-coded to have 5 columns, adjust as required
+                        gridTemplateColumns: `minmax(36rem, auto) repeat(2, 17rem) 23rem`, // hard-coded to have 5 columns, adjust as required
                         gap: "1.4rem",
                         ...(isGridView
                             ? {

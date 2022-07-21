@@ -165,6 +165,7 @@ export const WeaponCommonArea = ({
             <Stack
                 spacing={isGridView ? ".1rem" : ".2rem"}
                 sx={{
+                    flex: 1,
                     pr: toggleIsExpanded ? "3rem" : "unset",
                     ":hover": {
                         ".expandArrow": {
@@ -237,7 +238,7 @@ export const WeaponCommonArea = ({
                         sx={{
                             position: "absolute",
                             top: "-2rem",
-                            left: "calc(100% - 3rem)",
+                            left: "calc(100% - 5rem)",
                             bottom: "-1rem",
                         }}
                     >
