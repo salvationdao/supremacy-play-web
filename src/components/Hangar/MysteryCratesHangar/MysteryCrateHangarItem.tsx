@@ -203,39 +203,64 @@ const SingleCountDown = ({ value, label }: { value: string; label: string }) => 
     )
 }
 
-export const CrateCommonArea = ({ isGridView, label, description }: { isGridView: boolean; label: string; description: string }) => {
+export const CrateCommonArea = ({
+    isGridView,
+    label,
+    description,
+    imageUrl,
+    videoUrls,
+}: {
+    isGridView: boolean
+    label: string
+    description: string
+    imageUrl?: string
+    videoUrls?: (string | undefined)[]
+}) => {
     const theme = useTheme()
 
     return (
-        <Stack spacing={isGridView ? ".1rem" : ".6rem"}>
-            <Typography
-                variant="body2"
+        <Stack direction={isGridView ? "column" : "row"} alignItems="center" spacing="1.4rem" sx={{ position: "relative" }}>
+            <Box
                 sx={{
-                    fontFamily: fonts.nostromoBlack,
-                    color: theme.factionTheme.primary,
-                    display: "-webkit-box",
-                    overflow: "hidden",
-                    overflowWrap: "anywhere",
-                    textOverflow: "ellipsis",
-                    WebkitLineClamp: 1,
-                    WebkitBoxOrient: "vertical",
+                    position: "relative",
+                    height: isGridView ? "20rem" : "100%",
+                    width: isGridView ? "100%" : "8rem",
+                    flexShrink: 0,
                 }}
             >
-                {label}
-            </Typography>
+                <MediaPreview imageUrl={imageUrl} videoUrls={videoUrls} objectFit={isGridView ? "cover" : "contain"} />
+            </Box>
 
-            <Typography
-                sx={{
-                    display: "-webkit-box",
-                    overflow: "hidden",
-                    overflowWrap: "anywhere",
-                    textOverflow: "ellipsis",
-                    WebkitLineClamp: 2,
-                    WebkitBoxOrient: "vertical",
-                }}
-            >
-                {description}
-            </Typography>
+            <Stack spacing={isGridView ? ".1rem" : ".6rem"}>
+                <Typography
+                    variant="body2"
+                    sx={{
+                        fontFamily: fonts.nostromoBlack,
+                        color: theme.factionTheme.primary,
+                        display: "-webkit-box",
+                        overflow: "hidden",
+                        overflowWrap: "anywhere",
+                        textOverflow: "ellipsis",
+                        WebkitLineClamp: 1,
+                        WebkitBoxOrient: "vertical",
+                    }}
+                >
+                    {label}
+                </Typography>
+
+                <Typography
+                    sx={{
+                        display: "-webkit-box",
+                        overflow: "hidden",
+                        overflowWrap: "anywhere",
+                        textOverflow: "ellipsis",
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: "vertical",
+                    }}
+                >
+                    {description}
+                </Typography>
+            </Stack>
         </Stack>
     )
 }

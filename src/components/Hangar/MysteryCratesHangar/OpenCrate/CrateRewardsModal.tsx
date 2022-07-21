@@ -183,7 +183,7 @@ export const CrateRewardsModal = ({ open, openedRewards, onClose }: CrateRewards
                                                 fontFamily: fonts.nostromoBlack,
                                             }}
                                         >
-                                            BUY MORE CRATES
+                                            BUY CRATE
                                         </Typography>
                                     </FancyButton>
 
@@ -200,7 +200,7 @@ export const CrateRewardsModal = ({ open, openedRewards, onClose }: CrateRewards
                                     >
                                         <Typography
                                             sx={{
-                                                color: theme.factionTheme.secondary,
+                                                color: theme.factionTheme.primary,
                                                 fontFamily: fonts.nostromoBlack,
                                             }}
                                         >

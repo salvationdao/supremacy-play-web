@@ -39,13 +39,8 @@ export const WeaponsMarketItem = ({ item, isGridView, isExpanded, toggleIsExpand
 
     if (!weapon || !collection_item) return null
 
-    const avatarUrl = weaponDetails?.weapon_skin?.avatar_url || weaponDetails?.avatar_url || weapon.avatar_url || collection_item.avatar_url || ""
-    const imageUrl = weaponDetails?.weapon_skin?.image_url || weaponDetails?.image_url || weapon.image_url || collection_item.image_url || ""
-    const largeImageUrl =
-        weaponDetails?.weapon_skin?.large_image_url || weaponDetails?.large_image_url || weapon.large_image_url || collection_item.large_image_url || ""
-
     return (
-        <MarketItem item={item} imageUrl={imageUrl || largeImageUrl || avatarUrl} isGridView={isGridView} linkSubPath={MARKETPLACE_TABS.Weapons}>
+        <MarketItem item={item} isGridView={isGridView} linkSubPath={MARKETPLACE_TABS.Weapons}>
             <WeaponCommonArea
                 primaryColor={theme.factionTheme.primary}
                 secondaryColor={theme.factionTheme.secondary}

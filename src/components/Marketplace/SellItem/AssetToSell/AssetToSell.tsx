@@ -49,7 +49,7 @@ export const AssetToSell = ({
                             backgroundColor={backgroundColor}
                         >
                             <Stack sx={{ height: "100%", px: ".9rem", py: ".9rem" }}>
-                                <AssetToSellItem key={assetToSell.id} itemType={itemType} assetToSell={assetToSell} playVideo orientation="vertical" />
+                                <AssetToSellItem key={assetToSell.id} itemType={itemType} assetToSell={assetToSell} orientation="vertical" />
                             </Stack>
                         </ClipThing>
                     )}
