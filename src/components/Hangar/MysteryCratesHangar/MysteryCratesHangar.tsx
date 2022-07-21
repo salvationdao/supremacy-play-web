@@ -82,8 +82,13 @@ export const MysteryCratesHangar = () => {
     }, [send, page, pageSize, updateQuery, setTotalItems])
 
     useEffect(() => {
-        getItems()
-    }, [getItems])
+        if (crates && crates.length <= 0 && page > 1) {
+            prevPage()
+        } else {
+            getItems()
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [getItems, futureCratesToOpen.length])
 
     const content = useMemo(() => {
         if (loadError) {
@@ -230,7 +235,7 @@ export const MysteryCratesHangar = () => {
                                         clipSize: "9px",
                                         backgroundColor: colors.gold,
                                         opacity: 1,
-                                        border: { isFancy: true, borderColor: colors.gold, borderThickness: "2px" },
+                                        border: { borderColor: colors.gold, borderThickness: "2px" },
                                         sx: { position: "relative" },
                                     }}
                                     sx={{ px: "1.6rem", py: ".6rem", color: "#000000" }}
@@ -333,11 +338,11 @@ export const MysteryCratesHangar = () => {
                     onClose={() => {
                         setOpenedRewards(undefined)
                         // If user opened the last one on page, then go back a page
-                        if (futureCratesToOpen.length <= 0 && page > 1) {
-                            prevPage()
-                        } else {
-                            getItems()
-                        }
+                        // if (futureCratesToOpen.length <= 0 && page > 1) {
+                        //     prevPage()
+                        // } else {
+                        //     getItems()
+                        // }
                     }}
                 />
             )}
