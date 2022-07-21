@@ -2,7 +2,7 @@ import { createContext, Dispatch, useCallback, useContext, useEffect, useRef, us
 import { useQuery } from "react-fetching-library"
 import { useSupremacy } from "."
 import { PASSPORT_WEB } from "../constants"
-import { PassportLoginCheck } from "../fetching"
+import { PassportLoginCheck, GetGameServerPlayer } from "../fetching"
 import { shadeColor } from "../helpers"
 import { useGameServerCommandsUser, useGameServerSubscriptionUser } from "../hooks/useGameServer"
 import { useInactivity } from "../hooks/useInactivity"

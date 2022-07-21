@@ -12,7 +12,7 @@ export const PlayerListContent = ({ user, activePlayers }: { user: User; activeP
     return (
         <Stack spacing=".5rem">
             {activePlayers.map((p) => (
-                <PlayerItem key={`active-player-${p.id}`} player={p} faction={faction} user={user} isActive />
+                <PlayerItem key={`active-player-${p.id}`} player={p} user={user} isActive />
             ))}
         </Stack>
     )
