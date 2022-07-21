@@ -322,6 +322,7 @@ export const MysteryCratesHangar = () => {
 
             {openedRewards && (
                 <CrateRewardsModal
+                    key={JSON.stringify(openedRewards)}
                     open={!openingCrate}
                     openedRewards={openedRewards}
                     onClose={() => {

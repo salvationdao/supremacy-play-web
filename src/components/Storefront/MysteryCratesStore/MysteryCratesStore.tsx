@@ -292,7 +292,14 @@ export const MysteryCratesStore = () => {
                 <CrateRewardVideo factionID={openingCrate.factionID} crateType={openingCrate.crateType} onClose={() => setOpeningCrate(undefined)} />
             )}
 
-            {openedRewards && <CrateRewardsModal open={!openingCrate} openedRewards={openedRewards} onClose={() => setOpenedRewards(undefined)} />}
+            {openedRewards && (
+                <CrateRewardsModal
+                    key={JSON.stringify(openedRewards)}
+                    open={!openingCrate}
+                    openedRewards={openedRewards}
+                    onClose={() => setOpenedRewards(undefined)}
+                />
+            )}
         </>
     )
 }
