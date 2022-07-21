@@ -170,10 +170,10 @@ export const CrateRewardsModal = ({ openedRewards, onClose }: CrateRewardsModalP
                                         backgroundColor: theme.factionTheme.primary,
                                         opacity: 1,
                                         border: { isFancy: true, borderColor: theme.factionTheme.primary, borderThickness: "2px" },
-                                        sx: { position: "relative", width: "32rem", mt: "auto" },
+                                        sx: { position: "relative", width: "28rem", mt: "auto" },
                                     }}
                                     sx={{ width: "100%", py: "1rem", color: theme.factionTheme.secondary }}
-                                    to={`/fleet/${openedRewards.mech ? "war-machines" : "weapons"}`}
+                                    onClick={onClose}
                                 >
                                     <Typography
                                         sx={{
@@ -181,7 +181,7 @@ export const CrateRewardsModal = ({ openedRewards, onClose }: CrateRewardsModalP
                                             fontFamily: fonts.nostromoBlack,
                                         }}
                                     >
-                                        VIEW IN FLEET
+                                        CONTINUE
                                     </Typography>
                                 </FancyButton>
                             </Stack>
