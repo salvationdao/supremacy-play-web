@@ -26,7 +26,7 @@ export const CrateRewardItemsLarge = ({ item, largerVersion }: CrateRewardItemsP
     const cardAnimationUrl = item?.skin?.card_animation_url || item?.cardAnimationUrl
 
     return (
-        <Box sx={{ filter: `drop-shadow(0 0 9px ${theme.factionTheme.primary})` }}>
+        <Box sx={{ filter: `drop-shadow(0 0 9px ${assetItemDeets.color || theme.factionTheme.primary})` }}>
             <ClipThing
                 clipSize="6px"
                 border={{
