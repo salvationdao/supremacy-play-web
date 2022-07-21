@@ -91,7 +91,7 @@ export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGri
                         </Typography>
                     </General>
 
-                    <WeaponBarStats fontSize="1.5rem" weapon={weapon} color={primaryColor} iconVersion />
+                    {weaponDetails && <WeaponBarStats fontSize="1.5rem" weapon={weaponDetails} color={primaryColor} iconVersion />}
                 </Box>
 
                 <Box
