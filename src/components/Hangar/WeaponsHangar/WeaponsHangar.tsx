@@ -2,7 +2,7 @@ import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/mater
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useParameterizedQuery } from "react-fetching-library"
 import { GetWeaponMaxStats } from "../../../fetching"
-import { ClipThing } from "../.."
+import { ClipThing, FancyButton } from "../.."
 import { EmptyWarMachinesPNG, WarMachineIconPNG } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { getWeaponTypeColor, parseString } from "../../../helpers"
@@ -17,6 +17,7 @@ import { SliderRangeFilter } from "../../Common/SortAndFilters/SliderRangeFilter
 import { SortAndFilters } from "../../Common/SortAndFilters/SortAndFilters"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { WeaponHangarItem } from "./WeaponHangarItem"
+import { HANGAR_PAGE } from "../../../constants"
 
 interface GetWeaponsRequest {
     page: number
@@ -594,7 +595,32 @@ export const WeaponsHangar = () => {
             >
                 <Stack sx={{ position: "relative", height: "100%" }}>
                     <Stack sx={{ flex: 1 }}>
-                        <PageHeader title="weapons" description="Your weapons." imageUrl={WarMachineIconPNG} />
+                        <PageHeader title="weapons" description="Your weapons." imageUrl={WarMachineIconPNG}>
+                            <Box sx={{ ml: "auto !important", pr: "2rem" }}>
+                                <FancyButton
+                                    clipThingsProps={{
+                                        clipSize: "9px",
+                                        backgroundColor: colors.gold,
+                                        opacity: 1,
+                                        border: { borderColor: colors.gold, borderThickness: "2px" },
+                                        sx: { position: "relative" },
+                                    }}
+                                    sx={{ px: "1.6rem", py: ".6rem", color: "#000000" }}
+                                    href={HANGAR_PAGE}
+                                    target="_blank"
+                                >
+                                    <Typography
+                                        variant="caption"
+                                        sx={{
+                                            color: "#000000",
+                                            fontFamily: fonts.nostromoBlack,
+                                        }}
+                                    >
+                                        WALKABLE HANGAR
+                                    </Typography>
+                                </FancyButton>
+                            </Box>
+                        </PageHeader>
 
                         <TotalAndPageSizeOptions
                             countItems={weapons?.length}
