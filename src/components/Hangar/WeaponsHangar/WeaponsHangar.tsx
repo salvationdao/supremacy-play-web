@@ -2,7 +2,7 @@ import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/mater
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useParameterizedQuery } from "react-fetching-library"
 import { GetWeaponMaxStats } from "../../../fetching"
-import { ClipThing } from "../.."
+import { ClipThing, FancyButton } from "../.."
 import { EmptyWarMachinesPNG, WarMachineIconPNG } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { getWeaponTypeColor, parseString } from "../../../helpers"
@@ -17,6 +17,7 @@ import { SliderRangeFilter } from "../../Common/SortAndFilters/SliderRangeFilter
 import { SortAndFilters } from "../../Common/SortAndFilters/SortAndFilters"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { WeaponHangarItem } from "./WeaponHangarItem"
+import { HANGAR_PAGE } from "../../../constants"
 
 interface GetWeaponsRequest {
     page: number
@@ -68,34 +69,34 @@ export const WeaponsHangar = () => {
     const [weaponTypes, setWeaponTypes] = useState<string[]>((query.get("weapon_types") || undefined)?.split("||") || [])
     const [equippedStatuses, setEquippedStatuses] = useState<string[]>((query.get("equipped_status") || undefined)?.split("||") || [])
     const [ammoRange, setAmmoRange] = useState<number[]>(
-        (query.get("ammo") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 3000)) || [0, 3000],
+        (query.get("ammo") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 30000)) || [0, 30000],
     )
     const [damageRange, setDamageRange] = useState<number[]>(
-        (query.get("damage") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 1000)) || [0, 1000],
+        (query.get("damage") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 10000)) || [0, 10000],
     )
     const [damageFalloffRange, setDamageFalloffRange] = useState<number[]>(
-        (query.get("damageFalloff") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 1000)) || [0, 1000],
+        (query.get("damageFalloff") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 10000)) || [0, 10000],
     )
     const [damageFalloffRateRange, setDamageFalloffRateRange] = useState<number[]>(
-        (query.get("damageFalloffRate") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 1000)) || [0, 1000],
+        (query.get("damageFalloffRate") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 10000)) || [0, 10000],
     )
     const [radiusRange, setRadiusRange] = useState<number[]>(
-        (query.get("radius") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 2000)) || [0, 2000],
+        (query.get("radius") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 20000)) || [0, 20000],
     )
     const [radiusDamageFalloffRange, setRadiusDamageFalloffRange] = useState<number[]>(
-        (query.get("radiusDamageFalloff") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 2000)) || [0, 2000],
+        (query.get("radiusDamageFalloff") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 20000)) || [0, 20000],
     )
     const [rateOfFireRange, setRateOfFireRange] = useState<number[]>(
-        (query.get("rateOfFire") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 1000)) || [0, 1000],
+        (query.get("rateOfFire") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 10000)) || [0, 10000],
     )
     const [energyCostRange, setEnergyCostRange] = useState<number[]>(
-        (query.get("energyCost") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 100)) || [0, 100],
+        (query.get("energyCost") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 10000)) || [0, 10000],
     )
     const [projectileSpeedRange, setProjectileSpeedRange] = useState<number[]>(
-        (query.get("projectileSpeed") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 200000)) || [0, 200000],
+        (query.get("projectileSpeed") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 2000000)) || [0, 2000000],
     )
     const [spreadRange, setSpreadRange] = useState<number[]>(
-        (query.get("spread") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 100)) || [0, 100],
+        (query.get("spread") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 100)) || [0, 10000],
     )
     const [isGridView, toggleIsGridView] = useToggle(false)
 
@@ -594,7 +595,32 @@ export const WeaponsHangar = () => {
             >
                 <Stack sx={{ position: "relative", height: "100%" }}>
                     <Stack sx={{ flex: 1 }}>
-                        <PageHeader title="weapons" description="Your weapons." imageUrl={WarMachineIconPNG} />
+                        <PageHeader title="weapons" description="Your weapons." imageUrl={WarMachineIconPNG}>
+                            <Box sx={{ ml: "auto !important", pr: "2rem" }}>
+                                <FancyButton
+                                    clipThingsProps={{
+                                        clipSize: "9px",
+                                        backgroundColor: colors.gold,
+                                        opacity: 1,
+                                        border: { borderColor: colors.gold, borderThickness: "2px" },
+                                        sx: { position: "relative" },
+                                    }}
+                                    sx={{ px: "1.6rem", py: ".6rem", color: "#000000" }}
+                                    href={HANGAR_PAGE}
+                                    target="_blank"
+                                >
+                                    <Typography
+                                        variant="caption"
+                                        sx={{
+                                            color: "#000000",
+                                            fontFamily: fonts.nostromoBlack,
+                                        }}
+                                    >
+                                        WALKABLE HANGAR
+                                    </Typography>
+                                </FancyButton>
+                            </Box>
+                        </PageHeader>
 
                         <TotalAndPageSizeOptions
                             countItems={weapons?.length}

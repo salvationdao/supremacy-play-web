@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from "react"
 import { useLocation } from "react-router-dom"
 import { ClipThing, FancyButton } from "../.."
 import { SafePNG } from "../../../assets"
+import { HANGAR_PAGE } from "../../../constants"
 import { useTheme } from "../../../containers/theme"
 import { parseString } from "../../../helpers"
 import { usePagination, useUrlQuery } from "../../../hooks"
@@ -81,8 +82,13 @@ export const MysteryCratesHangar = () => {
     }, [send, page, pageSize, updateQuery, setTotalItems])
 
     useEffect(() => {
-        getItems()
-    }, [getItems])
+        if (crates && crates.length <= 0 && page > 1) {
+            prevPage()
+        } else {
+            getItems()
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [getItems, futureCratesToOpen.length])
 
     const content = useMemo(() => {
         if (loadError) {
@@ -223,13 +229,13 @@ export const MysteryCratesHangar = () => {
                 <Stack sx={{ position: "relative", height: "100%" }}>
                     <Stack sx={{ flex: 1 }}>
                         <PageHeader title="MYSTERY CRATES" description="The mystery crates that you own are shown here." imageUrl={SafePNG}>
-                            {/* <Box sx={{ ml: "auto !important", pr: "2rem" }}>
+                            <Box sx={{ ml: "auto !important", pr: "2rem" }}>
                                 <FancyButton
                                     clipThingsProps={{
                                         clipSize: "9px",
                                         backgroundColor: colors.gold,
                                         opacity: 1,
-                                        border: { isFancy: true, borderColor: colors.gold, borderThickness: "2px" },
+                                        border: { borderColor: colors.gold, borderThickness: "2px" },
                                         sx: { position: "relative" },
                                     }}
                                     sx={{ px: "1.6rem", py: ".6rem", color: "#000000" }}
@@ -246,7 +252,7 @@ export const MysteryCratesHangar = () => {
                                         WALKABLE HANGAR
                                     </Typography>
                                 </FancyButton>
-                            </Box> */}
+                            </Box>
                         </PageHeader>
 
                         <TotalAndPageSizeOptions
@@ -332,11 +338,11 @@ export const MysteryCratesHangar = () => {
                     onClose={() => {
                         setOpenedRewards(undefined)
                         // If user opened the last one on page, then go back a page
-                        if (futureCratesToOpen.length <= 0 && page > 1) {
-                            prevPage()
-                        } else {
-                            getItems()
-                        }
+                        // if (futureCratesToOpen.length <= 0 && page > 1) {
+                        //     prevPage()
+                        // } else {
+                        //     getItems()
+                        // }
                     }}
                 />
             )}
