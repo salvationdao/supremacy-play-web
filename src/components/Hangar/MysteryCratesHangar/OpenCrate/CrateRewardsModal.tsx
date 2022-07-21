@@ -4,7 +4,7 @@ import { SvgClose } from "../../../../assets"
 import { useAuth, useSupremacy } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
 import { fonts, siteZIndex } from "../../../../theme/theme"
-import { AssetItemType, OpenCrateResponse } from "../../../../types"
+import { AssetItemType, OpenCrateResponse, WeaponSkin } from "../../../../types"
 import { ClipThing } from "../../../Common/ClipThing"
 import { FancyButton } from "../../../Common/FancyButton"
 import { CrateRewardItemsLarge, CrateRewardItemsSmall } from "./CrateRewardItems"
@@ -24,6 +24,7 @@ export interface ArrayItem {
     avatarUrl?: string
     label?: string
     rarity?: string
+    skin?: WeaponSkin
 }
 
 export const CrateRewardsModal = ({ openedRewards, onClose }: CrateRewardsModalProps) => {
@@ -50,22 +51,6 @@ export const CrateRewardsModal = ({ openedRewards, onClose }: CrateRewardsModalP
             }
 
             newArr = [...newArr, mech]
-        }
-
-        if (openedRewards.power_core) {
-            const powerCore: ArrayItem = {
-                id: openedRewards.power_core.id,
-                imageUrl: openedRewards.power_core.image_url,
-                largeImageUrl: openedRewards.power_core.large_image_url,
-                type: openedRewards.power_core.item_type,
-                animationUrl: openedRewards.power_core.animation_url,
-                cardAnimationUrl: openedRewards.power_core.card_animation_url,
-                avatarUrl: openedRewards.power_core.avatar_url,
-                label: openedRewards.power_core.label,
-                rarity: openedRewards.power_core.tier,
-            }
-
-            newArr = [...newArr, powerCore]
         }
 
         if (openedRewards.mech_skins) {
