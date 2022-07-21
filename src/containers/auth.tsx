@@ -2,13 +2,14 @@ import { createContext, Dispatch, useCallback, useContext, useEffect, useRef, us
 import { useQuery } from "react-fetching-library"
 import { useSupremacy } from "."
 import { PASSPORT_WEB } from "../constants"
-import { PassportLoginCheck, GetGameServerPlayer } from "../fetching"
+import { PassportLoginCheck } from "../fetching"
 import { shadeColor } from "../helpers"
 import { useGameServerCommandsUser, useGameServerSubscriptionUser } from "../hooks/useGameServer"
 import { useInactivity } from "../hooks/useInactivity"
 import { GameServerKeys } from "../keys"
 import { colors } from "../theme/theme"
-import { Faction, FeatureName, User, UserRank, UserStat, UserFromPassport, PunishListItem } from "../types"
+import { Faction, FeatureName, User, UserRank, UserStat } from "../types"
+import { PunishListItem } from "../types/chat"
 import { useTheme } from "./theme"
 
 export const FallbackUser: User = {
@@ -90,7 +91,7 @@ export const AuthProvider: React.FC = ({ children }) => {
     const [passportPopup, setPassportPopup] = useState<Window | null>(null)
     const popupCheckInterval = useRef<NodeJS.Timer>()
 
-    const [userFromPassport, setUserFromPassport] = useState<UserFromPassport>()
+    const [userFromPassport, setUserFromPassport] = useState<User>()
     const [user, setUser] = useState<User>(initialState.user)
     const userID = user.id
     const factionID = user.faction_id
@@ -100,7 +101,6 @@ export const AuthProvider: React.FC = ({ children }) => {
     const [punishments, setPunishments] = useState<PunishListItem[]>(initialState.punishments)
 
     const { query: passportLoginCheck } = useQuery(PassportLoginCheck(), false)
-    const { query: getGameServerPlayer } = useQuery(GetGameServerPlayer(userFromPassport?.id), false)
 
     const authCheckCallback = useCallback(
         async (event?: MessageEvent) => {
@@ -127,14 +127,7 @@ export const AuthProvider: React.FC = ({ children }) => {
             setIsLoggingIn(false)
             return
         }
-
-        getGameServerPlayer().then((resp) => {
-            if (resp.error || !resp.payload) {
-                setUser(initialState.user)
-                return
-            }
-            setUser(resp.payload)
-        })
+        setUser(userFromPassport)
         setIsLoggingIn(false)
     }, [userFromPassport, setIsLoggingIn])
 
