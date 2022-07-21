@@ -238,7 +238,7 @@ export const WeaponCommonArea = ({
                         sx={{
                             position: "absolute",
                             top: "-2rem",
-                            left: "calc(100% - 5rem)",
+                            left: "calc(100% - 2.5rem)",
                             bottom: "-1rem",
                         }}
                     >
