@@ -10,17 +10,20 @@ import { useToggle } from "../../../../hooks"
 import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts, siteZIndex } from "../../../../theme/theme"
-import { RewardResponse, StorefrontMysteryCrate } from "../../../../types"
+import { OpenCrateResponse, RewardResponse, StorefrontMysteryCrate } from "../../../../types"
 import { ClaimedRewards } from "../../../Claims/ClaimedRewards"
 import { ConfirmModal } from "../../../Common/ConfirmModal"
 import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
+import { OpeningCrate } from "../../../Hangar/MysteryCratesHangar/MysteryCratesHangar"
 
 interface MysteryCrateStoreItemProps {
     enlargedView?: boolean
     crate: StorefrontMysteryCrate
+    setOpeningCrate: React.Dispatch<React.SetStateAction<OpeningCrate | undefined>>
+    setOpenedRewards: React.Dispatch<React.SetStateAction<OpenCrateResponse | undefined>>
 }
 
-export const MysteryCrateStoreItem = ({ enlargedView, crate }: MysteryCrateStoreItemProps) => {
+export const MysteryCrateStoreItem = ({ enlargedView, crate, setOpeningCrate, setOpenedRewards }: MysteryCrateStoreItemProps) => {
     const theme = useTheme()
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsFaction("/faction_commander")
@@ -317,12 +320,29 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate }: MysteryCrateStore
                 </ConfirmModal>
             )}
 
-            {reward && <PurchaseSuccessModal reward={reward} onClose={() => setReward(undefined)} />}
+            {reward && (
+                <PurchaseSuccessModal
+                    reward={reward}
+                    onClose={() => setReward(undefined)}
+                    setOpeningCrate={setOpeningCrate}
+                    setOpenedRewards={setOpenedRewards}
+                />
+            )}
         </>
     )
 }
 
-const PurchaseSuccessModal = ({ reward, onClose }: { reward: RewardResponse[] | undefined; onClose: () => void }) => {
+const PurchaseSuccessModal = ({
+    reward,
+    onClose,
+    setOpeningCrate,
+    setOpenedRewards,
+}: {
+    reward: RewardResponse[] | undefined
+    onClose: () => void
+    setOpeningCrate: React.Dispatch<React.SetStateAction<OpeningCrate | undefined>>
+    setOpenedRewards: React.Dispatch<React.SetStateAction<OpenCrateResponse | undefined>>
+}) => {
     return (
         <Modal open onClose={onClose} sx={{ zIndex: siteZIndex.Modal }}>
             <Box
@@ -334,7 +354,9 @@ const PurchaseSuccessModal = ({ reward, onClose }: { reward: RewardResponse[] | 
                     outline: "none",
                 }}
             >
-                <Box sx={{ position: "relative" }}>{reward && <ClaimedRewards rewards={reward} onClose={onClose} />}</Box>
+                <Box sx={{ position: "relative" }}>
+                    {reward && <ClaimedRewards rewards={reward} onClose={onClose} setOpeningCrate={setOpeningCrate} setOpenedRewards={setOpenedRewards} />}
+                </Box>
             </Box>
         </Modal>
     )

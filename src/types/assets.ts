@@ -466,6 +466,7 @@ export interface KeycardBlueprint {
 }
 
 export interface RewardResponse {
+    mystery_crate?: StorefrontMysteryCrate
     label: string
     image_url: string
     locked_until: Date

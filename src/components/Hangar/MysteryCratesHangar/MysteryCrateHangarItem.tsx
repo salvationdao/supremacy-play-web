@@ -40,8 +40,9 @@ export const MysteryCrateHangarItem = ({ crate, setOpeningCrate, setOpenedReward
                 factionID: crate.faction_id,
                 crateType: crate.label.toLowerCase().includes("weapon") ? MysteryCrateType.Weapon : MysteryCrateType.Mech,
             })
+
             setLoading(true)
-            //change these types obviously
+
             const resp = await send<OpenCrateResponse>(GameServerKeys.OpenCrate, {
                 id: crate.id,
             })
