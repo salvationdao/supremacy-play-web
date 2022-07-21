@@ -90,4 +90,20 @@ export enum SystemMessageType {
 export interface SystemMessage {
     type: SystemMessageType
     message: string
+    data: unknown | null
+}
+
+export interface SystemMessageDataMechBattleComplete {
+    mech_id: string
+    faction_won: boolean
+    briefs: MechBattleBrief[]
+}
+
+export interface MechBattleBrief {
+    mech_id: string
+    faction_id: string
+    kills: number
+    killed: Date | null
+    label: string
+    name: string
 }

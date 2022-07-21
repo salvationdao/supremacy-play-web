@@ -20,6 +20,7 @@ const SystemMessagingContainer = createContainer(() => {
         },
         (payload) => {
             if (!payload) return
+            console.log(payload)
             setMessages((prev) => {
                 let icon = SvgAnnouncement
                 switch (payload.type) {

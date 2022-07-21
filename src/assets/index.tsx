@@ -7,6 +7,7 @@ import Chest from "!@svgr/webpack!./svg/Chest.svg"
 import Close from "!@svgr/webpack!./svg/Close.svg"
 import Close2 from "!@svgr/webpack!./svg/Close2.svg"
 import Copy from "!@svgr/webpack!./svg/Copy.svg"
+import Crown from "!@svgr/webpack!./svg/Crown.svg"
 import Damage1 from "!@svgr/webpack!./svg/Damage1.svg"
 import DamageFalloff from "!@svgr/webpack!./svg/DamageFalloff.svg"
 import DamageFalloffRate from "!@svgr/webpack!./svg/DamageFalloffRate.svg"
@@ -1092,3 +1093,8 @@ export const SvgMail: React.VoidFunctionComponent<SvgWrapperProps> = (props) => 
     </SvgWrapper>
 )
 
+export const SvgCrown: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Crown />
+    </SvgWrapper>
+)

@@ -1,8 +1,11 @@
+/* eslint-disable no-case-declarations */
 import { Box, Collapse, Fade, Stack, Typography } from "@mui/material"
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import { SystemMessageDisplayable } from "../../../containers/systemMessaging"
 import { colors } from "../../../theme/theme"
+import { SystemMessageDataMechBattleComplete, SystemMessageType } from "../../../types"
 import { FancyButton } from "../../Common/FancyButton"
+import { MechBattleCompleteDetails } from "./MessageItem/MechBattleCompleteDetails"
 
 export interface MessageItemProps {
     message: SystemMessageDisplayable
@@ -11,6 +14,18 @@ export interface MessageItemProps {
 
 export const MessageItem = ({ message, onDismiss }: MessageItemProps) => {
     const [isCollapsed, setIsCollapsed] = useState(true)
+
+    const details = useMemo(() => {
+        switch (message.type) {
+            case SystemMessageType.MechBattleComplete:
+                if (!message.data) break
+                const data = message.data as SystemMessageDataMechBattleComplete
+
+                return <MechBattleCompleteDetails data={data} />
+        }
+
+        return <Typography variant="h6">{message.message}</Typography>
+    }, [message])
 
     return (
         <Box>
@@ -63,9 +78,7 @@ export const MessageItem = ({ message, onDismiss }: MessageItemProps) => {
             </Stack>
             <Collapse in={!isCollapsed}>
                 <Fade in={true}>
-                    <Stack>
-                        <Typography variant="h6">{message.message}</Typography>
-                    </Stack>
+                    <Box>{details}</Box>
                 </Fade>
             </Collapse>
         </Box>
