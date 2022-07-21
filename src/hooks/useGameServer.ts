@@ -37,14 +37,6 @@ export function useGameServerSubscriptionFaction<T = DataType>({ URI, key, batch
     )
 }
 
-export function useGameServerSubscriptionAbilityFaction<T = DataType>({ URI, key, batchURI, ready = true }: SubProps, callback?: (payload: T) => void) {
-    const { userID, factionID } = useAuth()
-    return useSubscription(
-        { URI: `/ability/${factionID}${URI}`, key, host: GAME_SERVER_HOSTNAME, batchURI: batchURI, ready: !!userID && !!factionID && ready },
-        callback,
-    )
-}
-
 export function useGameServerSubscription<T = DataType>({ URI, key, batchURI, ready = true }: SubProps, callback?: (payload: T) => void) {
     return useSubscription({ URI: `${URI}`, key, host: GAME_SERVER_HOSTNAME, batchURI: batchURI, ready }, callback)
 }

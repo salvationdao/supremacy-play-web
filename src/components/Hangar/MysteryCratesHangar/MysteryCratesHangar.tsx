@@ -3,18 +3,20 @@ import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { useLocation } from "react-router-dom"
 import { ClipThing, FancyButton } from "../.."
 import { SafePNG } from "../../../assets"
+import { HANGAR_PAGE } from "../../../constants"
 import { useTheme } from "../../../containers/theme"
 import { parseString } from "../../../helpers"
 import { usePagination, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { MysteryCrate, OpenCrateResponse } from "../../../types"
+import { MysteryCrate, MysteryCrateType, OpenCrateResponse } from "../../../types"
 import { PageHeader } from "../../Common/PageHeader"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { MysteryCrateStoreItemLoadingSkeleton } from "../../Storefront/MysteryCratesStore/MysteryCrateStoreItem/MysteryCrateStoreItem"
 import { MysteryCrateHangarItem } from "./MysteryCrateHangarItem"
 import { CrateRewardsModal } from "./OpenCrate/CrateRewardsModal"
+import { CrateRewardVideo } from "./OpenCrate/CrateRewardVideo"
 
 interface GetCratesRequest {
     page: number
@@ -28,6 +30,11 @@ interface GetAssetsResponse {
     total: number
 }
 
+export interface OpeningCrate {
+    factionID: string
+    crateType: MysteryCrateType
+}
+
 export const MysteryCratesHangar = () => {
     const location = useLocation()
     const [query, updateQuery] = useUrlQuery()
@@ -36,10 +43,10 @@ export const MysteryCratesHangar = () => {
     const [crates, setCrates] = useState<MysteryCrate[]>()
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
-    const [crateOpen, setCrateOpen] = useState(false)
-    const [crateReward, setCrateReward] = useState<OpenCrateResponse>()
+    const [openingCrate, setOpeningCrate] = useState<OpeningCrate>()
+    const [openedRewards, setOpenedRewards] = useState<OpenCrateResponse>()
 
-    const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({
+    const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, changePageSize, prevPage } = usePagination({
         pageSize: parseString(query.get("pageSize"), 10),
         page: parseString(query.get("page"), 1),
     })
@@ -119,8 +126,8 @@ export const MysteryCratesHangar = () => {
                             <MysteryCrateHangarItem
                                 key={`storefront-mystery-crate-${crate.id}-${index}`}
                                 crate={crate}
-                                setCrateReward={setCrateReward}
-                                setCrateOpen={setCrateOpen}
+                                setOpeningCrate={setOpeningCrate}
+                                setOpenedRewards={setOpenedRewards}
                                 getCrates={getItems}
                             />
                         ))}
@@ -214,7 +221,32 @@ export const MysteryCratesHangar = () => {
             >
                 <Stack sx={{ position: "relative", height: "100%" }}>
                     <Stack sx={{ flex: 1 }}>
-                        <PageHeader title="MYSTERY CRATES" description="The mystery crates that you own are shown here." imageUrl={SafePNG}></PageHeader>
+                        <PageHeader title="MYSTERY CRATES" description="The mystery crates that you own are shown here." imageUrl={SafePNG}>
+                            <Box sx={{ ml: "auto !important", pr: "2rem" }}>
+                                <FancyButton
+                                    clipThingsProps={{
+                                        clipSize: "9px",
+                                        backgroundColor: colors.gold,
+                                        opacity: 1,
+                                        border: { isFancy: true, borderColor: colors.gold, borderThickness: "2px" },
+                                        sx: { position: "relative" },
+                                    }}
+                                    sx={{ px: "1.6rem", py: ".6rem", color: "#000000" }}
+                                    href={HANGAR_PAGE}
+                                    target="_blank"
+                                >
+                                    <Typography
+                                        variant="caption"
+                                        sx={{
+                                            color: "#000000",
+                                            fontFamily: fonts.nostromoBlack,
+                                        }}
+                                    >
+                                        WALKABLE HANGAR
+                                    </Typography>
+                                </FancyButton>
+                            </Box>
+                        </PageHeader>
 
                         <TotalAndPageSizeOptions
                             countItems={crates?.length}
@@ -284,11 +316,18 @@ export const MysteryCratesHangar = () => {
                 </Stack>
             </ClipThing>
 
-            {crateOpen && crateReward && (
+            {openingCrate && (
+                <CrateRewardVideo factionID={openingCrate.factionID} crateType={openingCrate.crateType} onClose={() => setOpeningCrate(undefined)} />
+            )}
+
+            {openedRewards && (
                 <CrateRewardsModal
-                    rewards={crateReward}
+                    open={!openingCrate}
+                    openedRewards={openedRewards}
                     onClose={() => {
-                        setCrateOpen(false)
+                        setOpenedRewards(undefined)
+                        // If user opened the last one on page, then go back a page
+                        if (crates && crates.length <= 1) prevPage()
                     }}
                 />
             )}

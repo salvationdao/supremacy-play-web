@@ -1,5 +1,6 @@
 import { Box, Stack, useTheme } from "@mui/material"
-import React from "react"
+import { useState, useEffect } from "react"
+import { useParameterizedQuery } from "react-fetching-library"
 import {
     SvgAmmo,
     SvgDamage1,
@@ -12,8 +13,9 @@ import {
     SvgRateOfFire,
     SvgSpread,
 } from "../../../../assets"
-import { Weapon } from "../../../../types"
+import { Weapon, WeaponMaxStats } from "../../../../types"
 import { BarStat, IconStat } from "../../WarMachinesHangar/Common/MechBarStats"
+import { GetWeaponMaxStats } from "../../../../fetching"
 
 export const WeaponBarStats = ({
     weapon,
@@ -37,6 +39,22 @@ export const WeaponBarStats = ({
     const primaryColor = color || theme.factionTheme.primary
     const fontSize = fs || "1.1rem"
 
+    const [weaponMaxStats, setWeaponMaxStats] = useState<WeaponMaxStats>()
+    const { query: queryGetWeaponMaxStats } = useParameterizedQuery(GetWeaponMaxStats)
+
+    useEffect(() => {
+        ;(async () => {
+            try {
+                const resp = await queryGetWeaponMaxStats({})
+                if (resp.error || !resp.payload) return
+                setWeaponMaxStats(resp.payload)
+            } catch (err) {
+                const message = typeof err === "string" ? err : "Failed to get the list of streams."
+                console.error(message)
+            }
+        })()
+    }, [queryGetWeaponMaxStats])
+
     const ammo = weapon.max_ammo || 0
     const damage = weapon.damage
     const damageFalloff = weapon.damage_falloff || 0
@@ -51,37 +69,79 @@ export const WeaponBarStats = ({
     if (iconVersion) {
         return (
             <Stack alignItems="center" justifyContent="flex-start" direction="row" flexWrap="wrap">
-                <IconStat primaryColor={primaryColor} fontSize={fontSize} label="AMMO" current={ammo} total={3000} Icon={SvgAmmo} />
-                <IconStat primaryColor={primaryColor} fontSize={fontSize} label="DAMAGE" current={damage} total={1000} Icon={SvgDamage1} />
-                <IconStat primaryColor={primaryColor} fontSize={fontSize} label="DAMAGE FALLOFF" current={damageFalloff} total={1000} Icon={SvgDamageFalloff} />
+                <IconStat primaryColor={primaryColor} fontSize={fontSize} label="AMMO" current={ammo} total={weaponMaxStats?.max_ammo || 3000} Icon={SvgAmmo} />
+                <IconStat
+                    primaryColor={primaryColor}
+                    fontSize={fontSize}
+                    label="DAMAGE"
+                    current={damage}
+                    total={weaponMaxStats?.damage || 1000}
+                    Icon={SvgDamage1}
+                />
+                <IconStat
+                    primaryColor={primaryColor}
+                    fontSize={fontSize}
+                    label="DAMAGE FALLOFF"
+                    current={damageFalloff}
+                    total={weaponMaxStats?.damage_falloff || 1000}
+                    Icon={SvgDamageFalloff}
+                />
                 <IconStat
                     primaryColor={primaryColor}
                     fontSize={fontSize}
                     label="DAMAGE FALLOFF RATE"
                     current={damageFalloffRate}
-                    total={1000}
+                    total={weaponMaxStats?.damage_falloff_rate || 1000}
                     Icon={SvgDamageFalloffRate}
                 />
-                <IconStat primaryColor={primaryColor} fontSize={fontSize} label="RADIUS" current={radius} total={2000} Icon={SvgRadius} />
+                <IconStat
+                    primaryColor={primaryColor}
+                    fontSize={fontSize}
+                    label="RADIUS"
+                    current={radius}
+                    total={weaponMaxStats?.radius || 2000}
+                    Icon={SvgRadius}
+                />
                 <IconStat
                     primaryColor={primaryColor}
                     fontSize={fontSize}
                     label="RADIUS DAMAGE FALLOFF"
                     current={radiusDamageFalloff}
-                    total={2000}
+                    total={weaponMaxStats?.radius_damage_falloff || 2000}
                     Icon={SvgRadiusDamageFalloffRate}
                 />
-                <IconStat primaryColor={primaryColor} fontSize={fontSize} label="RATE OF FIRE" current={rateOfFire} total={1000} Icon={SvgRateOfFire} />
-                <IconStat primaryColor={primaryColor} fontSize={fontSize} label="ENERGY COST" current={energyCost} total={100} Icon={SvgEnergy} />
+                <IconStat
+                    primaryColor={primaryColor}
+                    fontSize={fontSize}
+                    label="RATE OF FIRE"
+                    current={rateOfFire}
+                    total={weaponMaxStats?.rate_of_fire || 1000}
+                    Icon={SvgRateOfFire}
+                />
+                <IconStat
+                    primaryColor={primaryColor}
+                    fontSize={fontSize}
+                    label="ENERGY COST"
+                    current={energyCost}
+                    total={weaponMaxStats?.energy_cost || 100}
+                    Icon={SvgEnergy}
+                />
                 <IconStat
                     primaryColor={primaryColor}
                     fontSize={fontSize}
                     label="PROJECTILE SPEED"
                     current={projectileSpeed}
-                    total={200000}
+                    total={weaponMaxStats?.projectile_speed || 200000}
                     Icon={SvgProjectileSpeed}
                 />
-                <IconStat primaryColor={primaryColor} fontSize={fontSize} label="SPREAD" current={spread} total={100} Icon={SvgSpread} />
+                <IconStat
+                    primaryColor={primaryColor}
+                    fontSize={fontSize}
+                    label="SPREAD"
+                    current={spread}
+                    total={weaponMaxStats?.spread || 100}
+                    Icon={SvgSpread}
+                />
             </Stack>
         )
     }

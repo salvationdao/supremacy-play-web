@@ -58,10 +58,6 @@ export const DrawerButtons = ({ openLeftDrawer }: { openLeftDrawer: () => void }
 
                     const toRender = []
 
-                    if (id === "fleet" && !isMobile) {
-                        toRender.push(<QuickDeployButton />)
-                        toRender.push(<QuickPlayerAbilitiesButton />)
-                    }
                     toRender.push(
                         <TabButton
                             key={r.id}
@@ -75,6 +71,12 @@ export const DrawerButtons = ({ openLeftDrawer }: { openLeftDrawer: () => void }
                             secondaryColor={theme.factionTheme.secondary}
                         />,
                     )
+
+                    if (id === "home" && !isMobile) {
+                        toRender.push(<QuickDeployButton />)
+                        toRender.push(<QuickPlayerAbilitiesButton />)
+                    }
+
                     return toRender
                 })}
             </Tabs>
@@ -165,7 +167,7 @@ export const TabButton = ({
                         minHeight: `${DRAWER_BAR_WIDTH}rem`,
                     },
                     "& svg": {
-                        fill: isActive ? secondaryColor : "#FFFFFF",
+                        fill: isActive ? `${secondaryColor} !important` : "#FFFFFF",
                     },
                 }}
             />

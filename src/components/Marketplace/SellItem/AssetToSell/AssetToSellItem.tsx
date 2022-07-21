@@ -1,6 +1,6 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
-import { KeycardPNG, SafePNG } from "../../../../assets"
+import { KeycardPNG, SafePNG, SvgSkin } from "../../../../assets"
 import { getRarityDeets, getWeaponTypeColor } from "../../../../helpers"
 import { useGameServerCommandsFaction, useGameServerCommandsUser } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
@@ -48,28 +48,28 @@ export const AssetToSellItem = ({
     // Initial populate
     useEffect(() => {
         if (itemType === ItemType.WarMachine) {
-            setAvatarUrl(assetToSell.mech?.avatar_url || mechDetails?.chassis_skin?.avatar_url)
-            setImageUrl(assetToSell.mech?.large_image_url || mechDetails?.chassis_skin?.large_image_url)
-            setAnimationUrl(assetToSell.mech?.animation_url || mechDetails?.chassis_skin?.animation_url)
-            setCardAnimationUrl(assetToSell.mech?.card_animation_url || mechDetails?.chassis_skin?.card_animation_url)
-            setLabel(assetToSell.mech?.name || assetToSell.mech?.label || mechDetails?.name || mechDetails?.label)
-            const tier = assetToSell.mech?.tier || mechDetails?.tier
+            setAvatarUrl(mechDetails?.chassis_skin?.avatar_url || mechDetails?.avatar_url || assetToSell.mech?.avatar_url)
+            setImageUrl(mechDetails?.chassis_skin?.large_image_url || mechDetails?.large_image_url || assetToSell.mech?.large_image_url)
+            setAnimationUrl(mechDetails?.chassis_skin?.animation_url || mechDetails?.animation_url || assetToSell.mech?.animation_url)
+            setCardAnimationUrl(mechDetails?.chassis_skin?.card_animation_url || mechDetails?.card_animation_url || assetToSell.mech?.card_animation_url)
+            setLabel(mechDetails?.name || assetToSell.mech?.name || mechDetails?.label || assetToSell.mech?.label)
+            const tier = mechDetails?.tier || assetToSell.mech?.tier
             setRarityDeets(tier ? getRarityDeets(tier) : undefined)
         } else if (itemType === ItemType.MysteryCrate) {
-            setAvatarUrl(assetToSell.mysteryCrate?.image_url || mysteryCrate?.image_url || SafePNG)
-            setImageUrl(assetToSell.mysteryCrate?.image_url || mysteryCrate?.image_url || SafePNG)
-            setAnimationUrl(assetToSell.mysteryCrate?.animation_url || mysteryCrate?.animation_url)
-            setCardAnimationUrl(assetToSell.mysteryCrate?.card_animation_url || mysteryCrate?.card_animation_url)
-            setLabel(assetToSell.mysteryCrate?.label || mysteryCrate?.label)
-            setDescription(assetToSell.mysteryCrate?.description || mysteryCrate?.description)
+            setAvatarUrl(mysteryCrate?.image_url || assetToSell.mysteryCrate?.image_url || SafePNG)
+            setImageUrl(mysteryCrate?.image_url || assetToSell.mysteryCrate?.image_url || SafePNG)
+            setAnimationUrl(mysteryCrate?.animation_url || assetToSell.mysteryCrate?.animation_url)
+            setCardAnimationUrl(mysteryCrate?.card_animation_url || assetToSell.mysteryCrate?.card_animation_url)
+            setLabel(mysteryCrate?.label || assetToSell.mysteryCrate?.label)
+            setDescription(mysteryCrate?.description || assetToSell.mysteryCrate?.description)
         } else if (itemType === ItemType.Weapon) {
-            setAvatarUrl(assetToSell.weapon?.image_url || weaponDetails?.image_url)
-            setImageUrl(assetToSell.weapon?.image_url || weaponDetails?.image_url)
-            setAnimationUrl(assetToSell.weapon?.animation_url || weaponDetails?.animation_url)
-            setCardAnimationUrl(assetToSell.weapon?.card_animation_url || weaponDetails?.card_animation_url)
-            setLabel(assetToSell.weapon?.label)
-            setWeaponType(assetToSell.weapon?.weapon_type || weaponDetails?.weapon_type)
-            const tier = assetToSell.weapon?.tier || weaponDetails?.tier
+            setAvatarUrl(weaponDetails?.weapon_skin?.image_url || weaponDetails?.image_url || assetToSell.weapon?.image_url)
+            setImageUrl(weaponDetails?.weapon_skin?.image_url || weaponDetails?.image_url || assetToSell.weapon?.image_url)
+            setAnimationUrl(weaponDetails?.weapon_skin?.animation_url || weaponDetails?.animation_url || assetToSell.weapon?.animation_url)
+            setCardAnimationUrl(weaponDetails?.weapon_skin?.card_animation_url || weaponDetails?.card_animation_url || assetToSell.weapon?.card_animation_url)
+            setLabel(weaponDetails?.label || assetToSell.weapon?.label)
+            setWeaponType(weaponDetails?.weapon_type || assetToSell.weapon?.weapon_type)
+            const tier = weaponDetails?.tier || assetToSell.weapon?.tier
             setRarityDeets(tier ? getRarityDeets(tier) : undefined)
         } else if (itemType === ItemType.Keycards) {
             setAvatarUrl(assetToSell.keycard?.blueprints.image_url || keycard?.blueprints.image_url || KeycardPNG)
@@ -170,7 +170,11 @@ export const AssetToSellItem = ({
                     width: orientation === "horizontal" ? "7rem" : "100%",
                 }}
             >
-                <MediaPreview imageUrl={playVideo ? imageUrl : avatarUrl} {...{ videoUrls: playVideo ? [animationUrl, cardAnimationUrl] : [] }} />
+                <MediaPreview
+                    imageUrl={playVideo ? imageUrl : avatarUrl}
+                    {...{ videoUrls: playVideo ? [animationUrl, cardAnimationUrl] : [] }}
+                    imageTransform={weaponDetails ? "rotate(-30deg) scale(.95)" : ""}
+                />
             </Box>
 
             <Stack spacing=".3rem">
@@ -231,33 +235,56 @@ export const AssetToSellItem = ({
                 )}
 
                 {weaponDetails && (
-                    <Stack direction="row" spacing=".5rem" sx={{ pt: ".4rem" }}>
-                        {weaponDetails?.weapon_skin && rarityDeets ? (
-                            <>
-                                <Typography variant="caption" sx={{ lineHeight: 1, color: colors.chassisSkin, fontFamily: fonts.nostromoBold }}>
-                                    SUBMODEL: {weaponDetails?.weapon_skin.label}
-                                </Typography>
-                                <Typography variant="caption" sx={{ lineHeight: 1, color: rarityDeets.color, fontFamily: fonts.nostromoBold }}>
-                                    ({rarityDeets.label})
-                                </Typography>
-                            </>
-                        ) : (
-                            <>
-                                <Typography variant="caption" sx={{ lineHeight: 1, color: colors.chassisSkin, fontFamily: fonts.nostromoBold }}>
-                                    SUBMODEL:
-                                </Typography>
-                                <Typography variant="caption" sx={{ lineHeight: 1, color: colors.darkGrey, fontFamily: fonts.nostromoBold }}>
-                                    NOT EQUIPPED
-                                </Typography>
-                            </>
+                    <Stack direction="row" alignItems="center" spacing=".5rem">
+                        <SvgSkin fill={weaponDetails.weapon_skin ? colors.chassisSkin : `${colors.darkGrey}80`} size="1.5rem" />
+
+                        {weaponDetails.weapon_skin && (
+                            <Typography
+                                variant="caption"
+                                sx={{
+                                    fontFamily: fonts.nostromoBold,
+                                    display: "-webkit-box",
+                                    overflow: "hidden",
+                                    overflowWrap: "anywhere",
+                                    textOverflow: "ellipsis",
+                                    WebkitLineClamp: 1,
+                                    WebkitBoxOrient: "vertical",
+                                }}
+                            >
+                                <span style={{ color: colors.chassisSkin, fontFamily: "inherit" }}>{weaponDetails.weapon_skin.label}</span>{" "}
+                                <span style={{ color: rarityDeets?.color, fontFamily: "inherit" }}>[{rarityDeets?.label}]</span>
+                            </Typography>
                         )}
                     </Stack>
                 )}
 
                 {mechDetails && (
-                    <Box sx={{ pt: ".4rem" }}>
+                    <Stack
+                        direction={orientation === "vertical" ? "column-reverse" : "row"}
+                        spacing={orientation === "vertical" ? ".2rem" : ".8rem"}
+                        alignItems={orientation === "vertical" ? "flex-start" : "center"}
+                        sx={{ pt: ".4rem" }}
+                    >
                         <MechLoadoutIcons mechDetails={mechDetails} />
-                    </Box>
+
+                        {mechDetails?.chassis_skin && (
+                            <Typography
+                                variant="caption"
+                                sx={{
+                                    fontFamily: fonts.nostromoBold,
+                                    display: "-webkit-box",
+                                    overflow: "hidden",
+                                    overflowWrap: "anywhere",
+                                    textOverflow: "ellipsis",
+                                    WebkitLineClamp: 1, // change to max number of lines
+                                    WebkitBoxOrient: "vertical",
+                                }}
+                            >
+                                <span style={{ color: colors.chassisSkin, fontFamily: "inherit" }}>{mechDetails?.chassis_skin?.label}</span>{" "}
+                                <span style={{ color: rarityDeets?.color, fontFamily: "inherit" }}>[{rarityDeets?.label}]</span>
+                            </Typography>
+                        )}
+                    </Stack>
                 )}
             </Stack>
         </Stack>

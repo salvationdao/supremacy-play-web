@@ -57,7 +57,6 @@ export const GlobalSnackbar = () => {
                 <ClipThing
                     clipSize="9px"
                     border={{
-                        isFancy: true,
                         borderThickness: ".25rem",
                         borderColor: "#FFFFFF",
                     }}
@@ -70,7 +69,7 @@ export const GlobalSnackbar = () => {
                         ml: "1.9rem",
                     }}
                     backgroundColor={severityDeets.color}
-                    opacity={0.9}
+                    opacity={0.99}
                 >
                     <Stack
                         direction="row"
@@ -87,7 +86,9 @@ export const GlobalSnackbar = () => {
                     >
                         {severityDeets.icon}
 
-                        <Typography sx={{ lineHeight: 1 }}>{messageInfo ? messageInfo.message : undefined}</Typography>
+                        <Typography variant="h6" sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>
+                            {messageInfo ? messageInfo.message : undefined}
+                        </Typography>
 
                         <IconButton size="small" onClick={handleClose}>
                             <SvgClose2 size="1.4rem" sx={{ opacity: 0.8, ":hover": { opacity: 1 } }} />

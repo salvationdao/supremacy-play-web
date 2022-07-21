@@ -21,6 +21,7 @@ import Logout from "!@svgr/webpack!./svg/Logout.svg"
 import Meteor from "!@svgr/webpack!./svg/Meteor.svg"
 import Armor from "!@svgr/webpack!./svg/Armor.svg"
 import Energy from "!@svgr/webpack!./svg/Energy.svg"
+import RankingStar from "!@svgr/webpack!./svg/RankingStar.svg"
 import Mobility from "!@svgr/webpack!./svg/Mobility.svg"
 import Health from "!@svgr/webpack!./svg/Health.svg"
 import PowerCoreCapacity from "!@svgr/webpack!./svg/PowerCoreCapacity.svg"
@@ -1075,5 +1076,11 @@ export const SvgShieldRegen: React.VoidFunctionComponent<SvgWrapperProps> = (pro
 export const SvgUnhide: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <Unhide />
+    </SvgWrapper>
+)
+
+export const SvgRankingStar: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <RankingStar />
     </SvgWrapper>
 )

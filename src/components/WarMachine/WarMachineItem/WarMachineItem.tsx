@@ -1,12 +1,12 @@
 import { Box, IconButton, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
 import { useCallback, useEffect, useMemo, useRef } from "react"
-import { ClipThing, HealthShieldBars, SkillBar, WarMachineAbilitiesPopover, WarMachineDestroyedInfo } from "../.."
+import { ClipThing, HealthShieldBars, WarMachineAbilitiesPopover, WarMachineDestroyedInfo } from "../.."
 import { GenericWarMachinePNG, SvgInfoCircular, SvgSkull } from "../../../assets"
 import { useAuth, useMiniMap, useMobile, useSupremacy } from "../../../containers"
 import { getRarityDeets } from "../../../helpers"
 import { useToggle } from "../../../hooks"
-import { useGameServerSubscriptionAbilityFaction } from "../../../hooks/useGameServer"
+import { useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { GameAbility, WarMachineState } from "../../../types"
@@ -20,7 +20,19 @@ export const DEAD_OPACITY = 0.6
 export const WIDTH_SKILL_BUTTON = 3.8
 export const WIDTH_STAT_BAR = 1.5
 
-export const WarMachineItem = ({ warMachine, scale, initialExpanded = false }: { warMachine: WarMachineState; scale: number; initialExpanded?: boolean }) => {
+export const WarMachineItem = ({
+    warMachine,
+    scale,
+    initialExpanded = false,
+    transformOrigin,
+    isPoppedout,
+}: {
+    warMachine: WarMachineState
+    scale: number
+    initialExpanded?: boolean
+    transformOrigin?: string
+    isPoppedout?: boolean
+}) => {
     const { isMobile } = useMobile()
     const { userID, factionID } = useAuth()
     const { getFaction } = useSupremacy()
@@ -29,13 +41,13 @@ export const WarMachineItem = ({ warMachine, scale, initialExpanded = false }: {
     const { hash, participantID, factionID: wmFactionID, name, imageAvatar, tier, ownedByID } = warMachine
 
     // Subscribe to war machine ability updates
-    const gameAbilities = useGameServerSubscriptionAbilityFaction<GameAbility[] | undefined>({
-        URI: `/mech/${participantID}`,
+    const gameAbilities = useGameServerSubscriptionFaction<GameAbility[] | undefined>({
+        URI: `/mech/${participantID}/abilities`,
         key: GameServerKeys.SubWarMachineAbilitiesUpdated,
         ready: factionID === wmFactionID && !!participantID,
     })
 
-    const [isAlive, toggleIsAlive] = useToggle(true)
+    const [isAlive, toggleIsAlive] = useToggle(warMachine.health > 0)
     const [isExpanded, toggleIsExpanded] = useToggle(initialExpanded)
     const faction = getFaction(wmFactionID)
 
@@ -46,11 +58,8 @@ export const WarMachineItem = ({ warMachine, scale, initialExpanded = false }: {
 
     const rarityDeets = useMemo(() => getRarityDeets(tier), [tier])
     const wmImageUrl = useMemo(() => imageAvatar || GenericWarMachinePNG, [imageAvatar])
-    const isOwnFaction = useMemo(() => factionID == warMachine.factionID, [factionID, warMachine])
-    const numSkillBars = useMemo(() => gameAbilities?.length || 0, [gameAbilities])
     const selfOwned = useMemo(() => ownedByID === userID, [ownedByID, userID])
     const primaryColor = useMemo(() => (selfOwned ? colors.gold : faction.primary_color), [faction.primary_color, selfOwned])
-    const secondaryColor = useMemo(() => (selfOwned ? "#000000" : faction.secondary_color), [faction.secondary_color, selfOwned])
     const backgroundColor = useMemo(() => faction.background_color, [faction.background_color])
 
     // Highlighting on the map
@@ -84,12 +93,12 @@ export const WarMachineItem = ({ warMachine, scale, initialExpanded = false }: {
                     width: `${
                         WIDTH_AVATAR +
                         (isExpanded ? WIDTH_BODY : 2 * WIDTH_STAT_BAR) +
-                        (isOwnFaction ? WIDTH_SKILL_BUTTON + numSkillBars * WIDTH_STAT_BAR : 0) +
-                        (warMachine.ownedByID === userID ? WIDTH_SKILL_BUTTON + WIDTH_STAT_BAR : 0)
+                        (gameAbilities && gameAbilities.length > 0 && isAlive ? WIDTH_SKILL_BUTTON : 0) +
+                        (warMachine.ownedByID === userID ? WIDTH_SKILL_BUTTON : 0)
                     }rem`,
                     transition: "width .1s",
                     transform: highlightedMechParticipantID === participantID ? `scale(${scale * 1.08})` : `scale(${scale})`,
-                    transformOrigin: isMobile ? "0 0" : "center",
+                    transformOrigin: transformOrigin || "center",
                 }}
             >
                 {/* Little info button to show the mech destroyed info */}
@@ -153,12 +162,12 @@ export const WarMachineItem = ({ warMachine, scale, initialExpanded = false }: {
                             sx={{
                                 position: "absolute",
                                 bottom: 0,
-                                right: ".8rem",
+                                right: ".2rem",
                                 px: ".3rem",
                                 backgroundColor: "#00000090",
                             }}
                         >
-                            <Typography variant="h5" sx={{ fontFamily: fonts.nostromoBlack }}>
+                            <Typography variant="h4" sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack }}>
                                 {warMachine.participantID}
                             </Typography>
                         </Box>
@@ -227,14 +236,14 @@ export const WarMachineItem = ({ warMachine, scale, initialExpanded = false }: {
                     <HealthShieldBars warMachine={warMachine} toggleIsAlive={toggleIsAlive} />
 
                     {/* Mech abilities */}
-                    {gameAbilities && gameAbilities.length > 0 && (
+                    {isAlive && gameAbilities && gameAbilities.length > 0 && (
                         <>
                             <Box
                                 sx={{
                                     position: "relative",
                                     width: `${WIDTH_SKILL_BUTTON}rem`,
                                     height: "100%",
-                                    backgroundColor: primaryColor,
+                                    backgroundColor: (theme) => theme.factionTheme.primary,
                                     boxShadow: 2,
                                     cursor: isAlive ? "pointer" : "auto",
                                     zIndex: 3,
@@ -245,9 +254,9 @@ export const WarMachineItem = ({ warMachine, scale, initialExpanded = false }: {
                                 }}
                                 onClick={() => {
                                     if (!isAlive) return
-                                    if (!isExpanded) handleClick()
+                                    setHighlightedMechParticipantID(participantID)
                                     // Need this time out so that it waits for it expand first then popover, else positioning is wrong
-                                    setTimeout(() => togglePopoverOpen(true), 110)
+                                    initialExpanded ? togglePopoverOpen(true) : setTimeout(() => togglePopoverOpen(true), 110)
                                 }}
                             >
                                 <Box
@@ -264,7 +273,7 @@ export const WarMachineItem = ({ warMachine, scale, initialExpanded = false }: {
                                         variant="body1"
                                         sx={{
                                             fontWeight: "fontWeightBold",
-                                            color: secondaryColor,
+                                            color: (theme) => theme.factionTheme.secondary,
                                             letterSpacing: 1,
                                             transition: "all .2s",
                                         }}
@@ -273,19 +282,6 @@ export const WarMachineItem = ({ warMachine, scale, initialExpanded = false }: {
                                     </Typography>
                                 </Box>
                             </Box>
-
-                            {gameAbilities
-                                .slice()
-                                .reverse()
-                                .map((ga, index) => (
-                                    <SkillBar
-                                        key={ga.identity}
-                                        participantID={warMachine.participantID}
-                                        index={index}
-                                        gameAbility={ga}
-                                        maxAbilityPriceMap={maxAbilityPriceMap}
-                                    />
-                                ))}
                         </>
                     )}
 
@@ -302,6 +298,7 @@ export const WarMachineItem = ({ warMachine, scale, initialExpanded = false }: {
                     gameAbilities={gameAbilities}
                     maxAbilityPriceMap={maxAbilityPriceMap}
                     getFaction={getFaction}
+                    isPoppedout={isPoppedout}
                 />
             )}
 

@@ -2,7 +2,6 @@ import { Box, Fade, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useRef } from "react"
 import { MiniMapInside, MoveableResizable } from ".."
 import { SvgFullscreen } from "../../assets"
-import { MINI_MAP_DEFAULT_SIZE } from "../../constants"
 import { useDimension, useGame, useMobile, useOverlayToggles } from "../../containers"
 import { useMiniMap } from "../../containers/minimap"
 import { useTheme } from "../../containers/theme"
@@ -10,7 +9,7 @@ import { useToggle } from "../../hooks"
 import { fonts } from "../../theme/theme"
 import { LocationSelectType, Map, PlayerAbility } from "../../types"
 import { MoveableResizableConfig, useMoveableResizable } from "../Common/MoveableResizable/MoveableResizableContainer"
-import { HighlightedMechAbilities } from "./MapInsideItems/MapMechs/HighlightedMechAbilities"
+import { HighlightedMechAbilities } from "./MapOutsideItems/HighlightedMechAbilities"
 import { TargetHint } from "./MapOutsideItems/TargetHint"
 
 export const TOP_BAR_HEIGHT = 3.1 // rems
@@ -42,10 +41,10 @@ export const MiniMap = () => {
         () => ({
             localStoragePrefix: "miniMap1",
             // Defaults
-            defaultPosX: 350,
-            defaultPosY: 0,
-            defaultWidth: MINI_MAP_DEFAULT_SIZE,
-            defaultHeight: MINI_MAP_DEFAULT_SIZE,
+            defaultPosX: 9999,
+            defaultPosY: 9999,
+            defaultWidth: 300,
+            defaultHeight: 300,
             // Position limits
             minPosX: 0,
             minPosY: 0,
@@ -136,21 +135,6 @@ const MiniMapInner = ({
     const prevPosX = useRef(curPosX)
     const prevPosY = useRef(curPosY)
 
-    // Set initial size
-    useEffect(() => {
-        const ratio = map.height / map.width
-        const defaultW = defaultWidth
-        const defaultH = defaultWidth * ratio + TOP_BAR_HEIGHT * remToPxRatio
-        const minH = (minWidth || defaultWidth) * ratio + TOP_BAR_HEIGHT * remToPxRatio
-
-        setDefaultWidth(defaultW)
-        setDefaultHeight(defaultH)
-        setMinHeight(minH)
-        updateSize({ width: curWidth, height: curWidth * ratio + TOP_BAR_HEIGHT * remToPxRatio })
-        mapHeightWidthRatio.current = ratio
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [map, setDefaultWidth, setDefaultHeight])
-
     // When it's targeting, enlarge the map and move to center of screen, else restore to the prev dimensions
     useEffect(() => {
         if (isTargeting || isEnlarged) {
@@ -183,6 +167,21 @@ const MiniMapInner = ({
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isTargeting, isEnlarged, maxHeight, maxWidth, isMobile])
+
+    // Set initial size
+    useEffect(() => {
+        const ratio = map.height / map.width
+        const defaultW = defaultWidth
+        const defaultH = defaultWidth * ratio + TOP_BAR_HEIGHT * remToPxRatio
+        const minH = (minWidth || defaultWidth) * ratio + TOP_BAR_HEIGHT * remToPxRatio
+
+        setDefaultWidth(defaultW)
+        setDefaultHeight(defaultH)
+        setMinHeight(minH)
+        updateSize({ width: curWidth, height: curWidth * ratio + TOP_BAR_HEIGHT * remToPxRatio })
+        mapHeightWidthRatio.current = ratio
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [map, setDefaultWidth, setDefaultHeight])
 
     let mapName = map.name
     if (mapName === "NeoTokyo") mapName = "City Block X2"
@@ -222,6 +221,7 @@ const MiniMapInner = ({
                 alignItems="center"
                 justifyContent="center"
                 sx={{
+                    position: "relative",
                     width: "100%",
                     height: "100%",
                 }}
@@ -237,6 +237,7 @@ const MiniMapInner = ({
                         overflow: "hidden",
                         pointerEvents: "all",
                         border: isPoppedout ? `${theme.factionTheme.primary} 1.5px solid` : "unset",
+                        zIndex: 2,
                     }}
                 >
                     <Stack
@@ -271,6 +272,21 @@ const MiniMapInner = ({
 
                     <HighlightedMechAbilities />
                 </Box>
+
+                {/* not scaled map background image, for background only */}
+                <Box
+                    sx={{
+                        position: "absolute",
+                        width: "100%",
+                        height: "100%",
+                        background: `url(${map?.image_url})`,
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "center",
+                        backgroundSize: "cover",
+                        opacity: 0.15,
+                        zIndex: 1,
+                    }}
+                />
             </Stack>
         )
         // eslint-disable-next-line react-hooks/exhaustive-deps

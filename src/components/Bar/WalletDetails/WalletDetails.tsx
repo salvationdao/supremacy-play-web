@@ -15,8 +15,8 @@ export const WalletDetails = () => {
             noDivider
             barName={barName}
             iconComponent={
-                <Box id="tutorial-wallet-icon" sx={{ p: ".32rem", backgroundColor: colors.grey, borderRadius: 1 }}>
-                    <SvgSupToken size="2rem" />
+                <Box id="tutorial-wallet-icon" sx={{ p: ".32rem", backgroundColor: colors.gold, borderRadius: 1 }}>
+                    <SvgSupToken size="2.2rem" fill="#000000" sx={{ pb: 0 }} />
                 </Box>
             }
         >
