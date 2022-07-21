@@ -146,7 +146,7 @@ export const WeaponCommonArea = ({
     const rarityDeets = useMemo(() => getRarityDeets(weaponDetails?.weapon_skin?.tier || ""), [weaponDetails])
     const backgroundColor = useMemo(() => shadeColor(primaryColor, -90), [primaryColor])
 
-    const weap = weapon || weaponDetails
+    const weap = weaponDetails || weapon
     const avatarUrl = weaponDetails?.weapon_skin?.avatar_url || weaponDetails?.avatar_url || weapon?.avatar_url || ""
     const imageUrl = weaponDetails?.weapon_skin?.image_url || weaponDetails?.image_url || weapon?.image_url || ""
 
@@ -192,7 +192,7 @@ export const WeaponCommonArea = ({
                         WebkitBoxOrient: "vertical",
                     }}
                 >
-                    {weaponDetails?.weapon_type}
+                    {weap?.weapon_type}
                 </Typography>
 
                 <Typography
@@ -206,13 +206,13 @@ export const WeaponCommonArea = ({
                         WebkitBoxOrient: "vertical",
                     }}
                 >
-                    {weaponDetails?.label}
+                    {weap?.label}
                 </Typography>
 
                 <Stack direction="row" alignItems="center" spacing=".5rem">
-                    <SvgSkin fill={weaponDetails?.weapon_skin ? colors.chassisSkin : `${colors.darkGrey}80`} size="1.5rem" />
+                    <SvgSkin fill={weap?.weapon_skin ? colors.chassisSkin : `${colors.darkGrey}80`} size="1.5rem" />
 
-                    {weaponDetails?.weapon_skin && (
+                    {weap?.weapon_skin && (
                         <Typography
                             variant="caption"
                             sx={{
@@ -225,7 +225,7 @@ export const WeaponCommonArea = ({
                                 WebkitBoxOrient: "vertical",
                             }}
                         >
-                            <span style={{ color: colors.chassisSkin, fontFamily: "inherit" }}>{weaponDetails?.weapon_skin.label}</span>{" "}
+                            <span style={{ color: colors.chassisSkin, fontFamily: "inherit" }}>{weap?.weapon_skin.label}</span>{" "}
                             <span style={{ color: rarityDeets.color, fontFamily: "inherit" }}>[{rarityDeets.label}]</span>
                         </Typography>
                     )}
@@ -272,11 +272,8 @@ export const WeaponCommonArea = ({
                         >
                             <Stack direction="row" spacing="4rem" sx={{ p: "1.5rem 2.1rem", height: "100%" }}>
                                 <General title="DAMAGE TYPE">
-                                    <Typography
-                                        variant="h6"
-                                        sx={{ color: getWeaponDamageTypeColor(weaponDetails?.default_damage_type), fontWeight: "fontWeightBold" }}
-                                    >
-                                        {weaponDetails?.default_damage_type}
+                                    <Typography variant="h6" sx={{ color: getWeaponDamageTypeColor(weap?.default_damage_type), fontWeight: "fontWeightBold" }}>
+                                        {weap?.default_damage_type}
                                     </Typography>
                                 </General>
 

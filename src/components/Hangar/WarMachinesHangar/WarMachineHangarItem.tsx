@@ -143,7 +143,7 @@ export const MechCommonArea = ({
     const rarityDeets = useMemo(() => getRarityDeets(mech?.tier || mechDetails?.tier || ""), [mech, mechDetails])
     const backgroundColor = useMemo(() => shadeColor(primaryColor, -90), [primaryColor])
 
-    const mechh = mech || mechDetails
+    const mechh = mechDetails || mech
 
     const avatarUrl = mechDetails?.chassis_skin?.avatar_url || mech?.avatar_url || ""
     const imageUrl = mechDetails?.chassis_skin?.image_url || mech?.image_url || ""
@@ -182,7 +182,7 @@ export const MechCommonArea = ({
                 <Typography
                     variant="body2"
                     sx={{
-                        color: mech?.name || mechDetails?.name ? primaryColor : colors.grey,
+                        color: mechh?.name ? primaryColor : colors.grey,
                         fontFamily: fonts.nostromoBlack,
                         display: "-webkit-box",
                         overflow: "hidden",
@@ -192,7 +192,7 @@ export const MechCommonArea = ({
                         WebkitBoxOrient: "vertical",
                     }}
                 >
-                    {mech?.name || mechDetails?.name || "Unnamed"}
+                    {mechh?.name || "Unnamed"}
                 </Typography>
 
                 <Typography
@@ -206,7 +206,7 @@ export const MechCommonArea = ({
                         WebkitBoxOrient: "vertical",
                     }}
                 >
-                    {mech?.label || mechDetails?.label || label}
+                    {mechh?.label || label}
                 </Typography>
 
                 <Stack
