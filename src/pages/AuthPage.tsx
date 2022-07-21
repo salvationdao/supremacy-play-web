@@ -36,7 +36,7 @@ export const AuthPage = ({ authTitle, authDescription }: { authTitle?: string; a
 
                     {authDescription && <Typography>{authDescription}</Typography>}
 
-                    <ConnectButton label="LOG IN" loadingLabel="LOGGING IN..." sx={{ px: "3rem", py: ".8rem" }} />
+                    <ConnectButton label="LOG IN" loadingLabel="LOGGING IN..." sx={{ px: "6rem", py: ".8rem" }} />
                 </Stack>
             </ClipThing>
         </Stack>
