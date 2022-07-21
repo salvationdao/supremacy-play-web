@@ -48,7 +48,7 @@ export interface AssetDurability {
     repair_type: "FAST" | "STANDARD" | ""
 }
 
-interface Collection {
+export interface Collection {
     collection_slug: string
     hash: string
     token_id: number
@@ -178,6 +178,7 @@ export interface MechSkin extends Collection {
     large_image_url?: string
     avatar_url?: string
     created_at: Date
+    equipped_on?: string
 }
 
 export interface MechAnimation extends Collection {
