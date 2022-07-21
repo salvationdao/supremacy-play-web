@@ -39,8 +39,6 @@ export const WarMachineHangarItem = ({ mech, isGridView }: { mech: MechBasic; is
     const primaryColor = theme.factionTheme.primary
     const secondaryColor = theme.factionTheme.secondary
     const backgroundColor = theme.factionTheme.background
-    const avatarUrl = mechDetails?.chassis_skin?.avatar_url || mech.avatar_url
-    const imageUrl = mechDetails?.chassis_skin?.image_url || mech.image_url
     const largeImageUrl = mechDetails?.chassis_skin?.large_image_url || mech.large_image_url
 
     return (
@@ -71,7 +69,7 @@ export const WarMachineHangarItem = ({ mech, isGridView }: { mech: MechBasic; is
                         p: isGridView ? ".5rem .6rem" : ".1rem .3rem",
                         display: isGridView ? "block" : "grid",
                         gridTemplateRows: "7rem",
-                        gridTemplateColumns: `8rem auto 20rem 32rem`, // hard-coded to have 4 columns, adjust as required
+                        gridTemplateColumns: `auto 20rem 32rem`, // hard-coded to have 4 columns, adjust as required
                         gap: "1.4rem",
                         ...(isGridView
                             ? {
@@ -82,16 +80,6 @@ export const WarMachineHangarItem = ({ mech, isGridView }: { mech: MechBasic; is
                             : {}),
                     }}
                 >
-                    <Box
-                        sx={{
-                            position: "relative",
-                            height: isGridView ? "15rem" : "100%",
-                            width: "100%",
-                        }}
-                    >
-                        <MediaPreview imageUrl={avatarUrl || imageUrl || largeImageUrl} objectFit={isGridView ? "cover" : "contain"} />
-                    </Box>
-
                     <MechCommonArea isGridView={isGridView} mech={mech} mechDetails={mechDetails} primaryColor={primaryColor} secondaryColor={secondaryColor} />
 
                     <General isGridView={isGridView} title="STATUS">
@@ -155,128 +143,148 @@ export const MechCommonArea = ({
     const rarityDeets = useMemo(() => getRarityDeets(mech?.tier || mechDetails?.tier || ""), [mech, mechDetails])
     const backgroundColor = useMemo(() => shadeColor(primaryColor, -90), [primaryColor])
 
-    const mechh = mech || mechDetails
+    const mechh = mechDetails || mech
+
+    const avatarUrl = mechDetails?.chassis_skin?.avatar_url || mech?.avatar_url || ""
+    const imageUrl = mechDetails?.chassis_skin?.image_url || mech?.image_url || ""
+    const largeImageUrl = mechDetails?.chassis_skin?.large_image_url || mech?.large_image_url || ""
 
     return (
-        <Stack
-            spacing={isGridView ? ".1rem" : ".2rem"}
-            sx={{
-                position: "relative",
-                pr: toggleIsExpanded ? "3rem" : "unset",
-                ":hover": {
-                    ".expandArrow": {
-                        transform: "translateX(4px)",
+        <Stack direction={isGridView ? "column" : "row"} alignItems="center" spacing="1.4rem" sx={{ position: "relative" }}>
+            <Box
+                sx={{
+                    position: "relative",
+                    height: isGridView ? "20rem" : "100%",
+                    width: isGridView ? "100%" : "8rem",
+                    flexShrink: 0,
+                }}
+            >
+                <MediaPreview imageUrl={avatarUrl || imageUrl || largeImageUrl} objectFit={isGridView ? "cover" : "contain"} />
+            </Box>
+
+            <Stack
+                spacing={isGridView ? ".1rem" : ".2rem"}
+                sx={{
+                    pr: toggleIsExpanded ? "3rem" : "unset",
+                    ":hover": {
+                        ".expandArrow": {
+                            transform: "translateX(4px)",
+                        },
                     },
-                },
-            }}
-            onClick={(e) => {
-                if (!toggleIsExpanded) return
-                e.preventDefault()
-                e.stopPropagation()
-                toggleIsExpanded()
-            }}
-        >
-            <Typography
-                variant="body2"
-                sx={{
-                    color: mech?.name || mechDetails?.name ? primaryColor : colors.grey,
-                    fontFamily: fonts.nostromoBlack,
-                    display: "-webkit-box",
-                    overflow: "hidden",
-                    overflowWrap: "anywhere",
-                    textOverflow: "ellipsis",
-                    WebkitLineClamp: 1, // change to max number of lines
-                    WebkitBoxOrient: "vertical",
+                }}
+                onClick={(e) => {
+                    if (!toggleIsExpanded) return
+                    e.preventDefault()
+                    e.stopPropagation()
+                    toggleIsExpanded()
                 }}
             >
-                {mech?.name || mechDetails?.name || "Unnamed"}
-            </Typography>
-
-            <Typography
-                sx={{
-                    fontFamily: fonts.nostromoBlack,
-                    display: "-webkit-box",
-                    overflow: "hidden",
-                    overflowWrap: "anywhere",
-                    textOverflow: "ellipsis",
-                    WebkitLineClamp: 1, // change to max number of lines
-                    WebkitBoxOrient: "vertical",
-                }}
-            >
-                {mech?.label || mechDetails?.label || label}
-            </Typography>
-
-            <Stack direction={isGridView ? "column-reverse" : "row"} spacing={isGridView ? ".2rem" : ".8rem"} alignItems={isGridView ? "flex-start" : "center"}>
-                <MechLoadoutIcons mechDetails={mechDetails} />
-
-                {mechDetails?.chassis_skin && (
-                    <Typography
-                        variant="caption"
-                        sx={{
-                            fontFamily: fonts.nostromoBold,
-                            display: "-webkit-box",
-                            overflow: "hidden",
-                            overflowWrap: "anywhere",
-                            textOverflow: "ellipsis",
-                            WebkitLineClamp: 1, // change to max number of lines
-                            WebkitBoxOrient: "vertical",
-                        }}
-                    >
-                        <span style={{ color: colors.chassisSkin, fontFamily: "inherit" }}>{mechDetails?.chassis_skin?.label}</span>{" "}
-                        <span style={{ color: rarityDeets.color, fontFamily: "inherit" }}>[{rarityDeets.label}]</span>
-                    </Typography>
-                )}
-            </Stack>
-
-            {toggleIsExpanded && !isGridView && (
-                <Stack
-                    direction="row"
+                <Typography
+                    variant="body2"
                     sx={{
-                        position: "absolute",
-                        top: "-2rem",
-                        left: "calc(100% - 3rem)",
-                        bottom: "-1rem",
+                        color: mechh?.name ? primaryColor : colors.grey,
+                        fontFamily: fonts.nostromoBlack,
+                        display: "-webkit-box",
+                        overflow: "hidden",
+                        overflowWrap: "anywhere",
+                        textOverflow: "ellipsis",
+                        WebkitLineClamp: 1, // change to max number of lines
+                        WebkitBoxOrient: "vertical",
                     }}
                 >
-                    <Stack
-                        className="expandArrow"
-                        alignItems="center"
-                        justifyContent="center"
-                        sx={{
-                            px: ".6rem",
-                            background: isExpanded ? `${primaryColor}CC` : `linear-gradient(to right, #FFFFFF00, ${primaryColor}50 80%, #FFFFFF00)`,
-                            transition: "all .2s",
-                        }}
-                    >
-                        <SvgDropdownArrow
-                            size="1.3rem"
-                            fill={isExpanded ? secondaryColor : "#FFFFFF95"}
-                            sx={{ transform: isExpanded ? "rotate(90deg)" : "rotate(-90deg)" }}
-                        />
-                    </Stack>
+                    {mechh?.name || "Unnamed"}
+                </Typography>
 
-                    <Box
+                <Typography
+                    sx={{
+                        fontFamily: fonts.nostromoBlack,
+                        display: "-webkit-box",
+                        overflow: "hidden",
+                        overflowWrap: "anywhere",
+                        textOverflow: "ellipsis",
+                        WebkitLineClamp: 1, // change to max number of lines
+                        WebkitBoxOrient: "vertical",
+                    }}
+                >
+                    {mechh?.label || label}
+                </Typography>
+
+                <Stack
+                    direction={isGridView ? "column-reverse" : "row"}
+                    spacing={isGridView ? ".2rem" : ".8rem"}
+                    alignItems={isGridView ? "flex-start" : "center"}
+                >
+                    <MechLoadoutIcons mechDetails={mechDetails} />
+
+                    {mechDetails?.chassis_skin && (
+                        <Typography
+                            variant="caption"
+                            sx={{
+                                fontFamily: fonts.nostromoBold,
+                                display: "-webkit-box",
+                                overflow: "hidden",
+                                overflowWrap: "anywhere",
+                                textOverflow: "ellipsis",
+                                WebkitLineClamp: 1, // change to max number of lines
+                                WebkitBoxOrient: "vertical",
+                            }}
+                        >
+                            <span style={{ color: colors.chassisSkin, fontFamily: "inherit" }}>{mechDetails?.chassis_skin?.label}</span>{" "}
+                            <span style={{ color: rarityDeets.color, fontFamily: "inherit" }}>[{rarityDeets.label}]</span>
+                        </Typography>
+                    )}
+                </Stack>
+
+                {toggleIsExpanded && !isGridView && (
+                    <Stack
+                        direction="row"
                         sx={{
-                            backgroundColor,
-                            zIndex: 99,
-                            width: isExpanded ? "100%" : 0,
-                            minWidth: isExpanded ? "100%" : 0,
-                            overflow: "hidden",
-                            transition: "all .3s",
-                            border: isExpanded ? `${primaryColor}CC 1px solid` : "unset",
-                            borderLeft: "unset",
+                            position: "absolute",
+                            top: "-2rem",
+                            left: "calc(100% - 3rem)",
+                            bottom: "-1rem",
                         }}
                     >
-                        <Stack direction="row" spacing="4rem" sx={{ p: "1.5rem 2.1rem", height: "100%" }}>
-                            {mechh && (
-                                <Stack justifyContent="center" sx={{ width: "40rem" }}>
-                                    <MechBarStats fontSize="1.5rem" mech={mechh} mechDetails={mechDetails} color={primaryColor} iconVersion />
-                                </Stack>
-                            )}
+                        <Stack
+                            className="expandArrow"
+                            alignItems="center"
+                            justifyContent="center"
+                            sx={{
+                                px: ".6rem",
+                                background: isExpanded ? `${primaryColor}CC` : `linear-gradient(to right, #FFFFFF00, ${primaryColor}50 80%, #FFFFFF00)`,
+                                transition: "all .2s",
+                            }}
+                        >
+                            <SvgDropdownArrow
+                                size="1.3rem"
+                                fill={isExpanded ? secondaryColor : "#FFFFFF95"}
+                                sx={{ transform: isExpanded ? "rotate(90deg)" : "rotate(-90deg)" }}
+                            />
                         </Stack>
-                    </Box>
-                </Stack>
-            )}
+
+                        <Box
+                            sx={{
+                                backgroundColor,
+                                zIndex: 99,
+                                width: isExpanded ? "100%" : 0,
+                                minWidth: isExpanded ? "100%" : 0,
+                                overflow: "hidden",
+                                transition: "all .3s",
+                                border: isExpanded ? `${primaryColor}CC 1px solid` : "unset",
+                                borderLeft: "unset",
+                            }}
+                        >
+                            <Stack direction="row" spacing="4rem" sx={{ p: "1.5rem 2.1rem", height: "100%" }}>
+                                {mechh && (
+                                    <Stack justifyContent="center" sx={{ width: "40rem" }}>
+                                        <MechBarStats fontSize="1.5rem" mech={mechh} mechDetails={mechDetails} color={primaryColor} iconVersion />
+                                    </Stack>
+                                )}
+                            </Stack>
+                        </Box>
+                    </Stack>
+                )}
+            </Stack>
         </Stack>
     )
 }

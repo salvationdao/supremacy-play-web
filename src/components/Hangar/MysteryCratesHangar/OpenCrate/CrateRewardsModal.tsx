@@ -1,18 +1,24 @@
 import { Box, Grow, IconButton, Modal, Stack, Typography } from "@mui/material"
-import { useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { SvgClose } from "../../../../assets"
-import { useAuth, useSupremacy } from "../../../../containers"
+import { useAuth, useSnackbar, useSupremacy } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
+import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../../keys"
 import { fonts, siteZIndex } from "../../../../theme/theme"
-import { AssetItemType, WeaponSkin, MechSkin, OpenCrateResponse } from "../../../../types"
+import { AssetItemType, MechSkin, MysteryCrate, MysteryCrateType, OpenCrateResponse, StorefrontMysteryCrate, WeaponSkin } from "../../../../types"
 import { ClipThing } from "../../../Common/ClipThing"
 import { FancyButton } from "../../../Common/FancyButton"
+import { OpeningCrate } from "../MysteryCratesHangar"
 import { CrateRewardItemsLarge, CrateRewardItemsSmall } from "./CrateRewardItems"
 
 interface CrateRewardsModalProps {
-    open: boolean
     openedRewards: OpenCrateResponse
     onClose?: () => void
+    setOpeningCrate: React.Dispatch<React.SetStateAction<OpeningCrate | undefined>>
+    setOpenedRewards: React.Dispatch<React.SetStateAction<OpenCrateResponse | undefined>>
+    futureCratesToOpen: (StorefrontMysteryCrate | MysteryCrate)[]
+    setFutureCratesToOpen: React.Dispatch<React.SetStateAction<(StorefrontMysteryCrate | MysteryCrate)[]>>
 }
 
 export interface ArrayItem {
@@ -28,13 +34,53 @@ export interface ArrayItem {
     skin?: MechSkin | WeaponSkin
 }
 
-export const CrateRewardsModal = ({ open, openedRewards, onClose }: CrateRewardsModalProps) => {
+export const CrateRewardsModal = ({
+    openedRewards,
+    onClose,
+    setOpeningCrate,
+    setOpenedRewards,
+    futureCratesToOpen,
+    setFutureCratesToOpen,
+}: CrateRewardsModalProps) => {
     const { getFaction } = useSupremacy()
+    const { newSnackbarMessage } = useSnackbar()
+    const { send } = useGameServerCommandsFaction("/faction_commander")
     const { factionID } = useAuth()
     const theme = useTheme()
+    const [loading, setLoading] = useState(false)
     const [arrayItems, setArrayItems] = useState<ArrayItem[]>([])
 
+    const validFutureCrates = futureCratesToOpen.filter((c) => c.id !== openedRewards.id)
     const faction = useMemo(() => getFaction(factionID), [getFaction, factionID])
+
+    const openNextCrate = useCallback(async () => {
+        try {
+            if (!validFutureCrates || validFutureCrates.length <= 0) return
+            const crateToOpen = validFutureCrates[0]
+            const remainCrates = validFutureCrates.slice(1)
+
+            setOpeningCrate({
+                factionID: crateToOpen.faction_id,
+                crateType: crateToOpen.label.toLowerCase().includes("weapon") ? MysteryCrateType.Weapon : MysteryCrateType.Mech,
+            })
+
+            setLoading(true)
+
+            const resp = await send<OpenCrateResponse>(GameServerKeys.OpenCrate, {
+                id: crateToOpen.id,
+            })
+
+            if (!resp) return
+            setOpenedRewards({ ...resp })
+            setFutureCratesToOpen(remainCrates)
+        } catch (e) {
+            const message = typeof e === "string" ? e : "Failed to get mystery crates."
+            newSnackbarMessage(message, "error")
+            console.error(message)
+        } finally {
+            setLoading(false)
+        }
+    }, [validFutureCrates, setOpeningCrate, send, setOpenedRewards, setFutureCratesToOpen, newSnackbarMessage])
 
     useEffect(() => {
         let newArr: ArrayItem[] = []
@@ -118,7 +164,7 @@ export const CrateRewardsModal = ({ open, openedRewards, onClose }: CrateRewards
     }, [openedRewards, setArrayItems])
 
     return (
-        <Modal open={open} onClose={onClose} sx={{ zIndex: siteZIndex.Modal }}>
+        <Modal open onClose={onClose} sx={{ zIndex: siteZIndex.Modal }}>
             <Box
                 sx={{
                     position: "absolute",
@@ -166,45 +212,47 @@ export const CrateRewardsModal = ({ open, openedRewards, onClose }: CrateRewards
                                 {openedRewards.mech ? <MechCrateRewards items={arrayItems} /> : <WeaponCrateRewards items={arrayItems} />}
 
                                 <Stack alignItems="center" spacing="1.4rem" sx={{ mt: "auto" }}>
-                                    <FancyButton
-                                        clipThingsProps={{
-                                            clipSize: "9px",
-                                            backgroundColor: theme.factionTheme.primary,
-                                            opacity: 1,
-                                            border: { isFancy: true, borderColor: theme.factionTheme.primary, borderThickness: "2px" },
-                                            sx: { position: "relative", width: "28rem" },
-                                        }}
-                                        sx={{ width: "100%", py: "1rem", color: theme.factionTheme.secondary }}
-                                        to="/storefront/mystery-crates"
-                                    >
-                                        <Typography
-                                            sx={{
-                                                color: theme.factionTheme.secondary,
-                                                fontFamily: fonts.nostromoBlack,
+                                    {validFutureCrates && validFutureCrates.length > 0 && (
+                                        <FancyButton
+                                            loading={loading}
+                                            clipThingsProps={{
+                                                clipSize: "9px",
+                                                backgroundColor: theme.factionTheme.primary,
+                                                opacity: 1,
+                                                border: { isFancy: true, borderColor: theme.factionTheme.primary, borderThickness: "2px" },
+                                                sx: { position: "relative", width: "32rem" },
                                             }}
+                                            sx={{ width: "100%", py: "1rem", color: theme.factionTheme.secondary }}
+                                            onClick={openNextCrate}
                                         >
-                                            BUY MORE CRATES
-                                        </Typography>
-                                    </FancyButton>
-
+                                            <Typography
+                                                sx={{
+                                                    color: theme.factionTheme.secondary,
+                                                    fontFamily: fonts.nostromoBlack,
+                                                }}
+                                            >
+                                                OPEN NEXT CRATE
+                                            </Typography>
+                                        </FancyButton>
+                                    )}
                                     <FancyButton
                                         clipThingsProps={{
                                             clipSize: "9px",
                                             backgroundColor: theme.factionTheme.background,
                                             opacity: 1,
                                             border: { borderColor: theme.factionTheme.primary, borderThickness: "2px" },
-                                            sx: { position: "relative", width: "28rem" },
+                                            sx: { position: "relative", width: "32rem" },
                                         }}
                                         sx={{ width: "100%", py: "1rem", color: theme.factionTheme.secondary }}
                                         onClick={onClose}
                                     >
                                         <Typography
                                             sx={{
-                                                color: theme.factionTheme.secondary,
+                                                color: theme.factionTheme.primary,
                                                 fontFamily: fonts.nostromoBlack,
                                             }}
                                         >
-                                            CONTINUE
+                                            CLOSE
                                         </Typography>
                                     </FancyButton>
                                 </Stack>
