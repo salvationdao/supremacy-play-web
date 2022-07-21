@@ -66,7 +66,7 @@ export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGri
                         p: isGridView ? ".5rem .6rem" : ".1rem .3rem",
                         display: isGridView ? "block" : "grid",
                         gridTemplateRows: "7rem",
-                        gridTemplateColumns: `auto 20rem 35rem`, // hard-coded to have 7 columns, adjust as required
+                        gridTemplateColumns: `minmax(36rem, auto) 20rem 32rem`,
                         gap: "1.4rem",
                         ...(isGridView
                             ? {
