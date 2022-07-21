@@ -140,7 +140,7 @@ export const MechCommonArea = ({
     toggleIsExpanded?: (value?: boolean) => void
     label?: string
 }) => {
-    const rarityDeets = useMemo(() => getRarityDeets(mech?.tier || mechDetails?.tier || ""), [mech, mechDetails])
+    const rarityDeets = useMemo(() => getRarityDeets(mechDetails?.chassis_skin?.tier || mechDetails?.tier || mech?.tier || ""), [mech, mechDetails])
     const backgroundColor = useMemo(() => shadeColor(primaryColor, -90), [primaryColor])
 
     const mechh = mechDetails || mech
