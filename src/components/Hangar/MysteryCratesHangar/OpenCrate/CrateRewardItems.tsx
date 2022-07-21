@@ -1,5 +1,6 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useMemo } from "react"
+import { SvgSkin } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
 import { getAssetItemDeets, getRarityDeets } from "../../../../helpers"
 import { colors, fonts } from "../../../../theme/theme"
@@ -11,62 +12,90 @@ import { ArrayItem } from "./CrateRewardsModal"
 
 interface CrateRewardItemsProps {
     item: ArrayItem | undefined
+    largerVersion?: boolean
 }
 
-export const CrateRewardItemsLarge = ({ item }: CrateRewardItemsProps) => {
+export const CrateRewardItemsLarge = ({ item, largerVersion }: CrateRewardItemsProps) => {
     const theme = useTheme()
-    const rarityDeets = useMemo(() => getRarityDeets(item?.rarity || ""), [item?.rarity])
+    const rarityDeets = useMemo(() => getRarityDeets(item?.skin?.tier || item?.rarity || ""), [item?.rarity, item?.skin?.tier])
     const assetItemDeets = useMemo(() => getAssetItemDeets(item?.type), [item?.type])
 
+    const imageUrl =
+        item?.skin?.avatar_url || item?.skin?.image_url || item?.skin?.large_image_url || item?.avatarUrl || item?.imageUrl || item?.largeImageUrl || ""
+    const animationUrl = item?.skin?.animation_url || item?.animationUrl
+    const cardAnimationUrl = item?.skin?.card_animation_url || item?.cardAnimationUrl
+
     return (
-        <ClipThing
-            clipSize="6px"
-            border={{
-                borderColor: assetItemDeets.color || theme.factionTheme.primary,
-                borderThickness: ".2rem",
-            }}
-            opacity={0.8}
-            backgroundColor={colors.black3}
-            sx={{ height: "100%" }}
-        >
-            <Stack sx={{ m: "1rem", width: "25rem" }}>
-                <Box sx={{ position: "relative", width: "100%", height: "22rem", mb: "1rem" }}>
-                    <MediaPreview
-                        imageUrl={item?.avatarUrl || item?.imageUrl || item?.largeImageUrl || ""}
-                        videoUrls={[item?.animationUrl, item?.cardAnimationUrl]}
-                        objectFit="cover"
-                        imageTransform={item?.type === AssetItemType.Weapon || item?.type === AssetItemType.WeaponSkin ? "rotate(-30deg) scale(.95)" : ""}
-                    />
+        <Box sx={{ filter: `drop-shadow(0 0 9px ${assetItemDeets.color || theme.factionTheme.primary})` }}>
+            <ClipThing
+                clipSize="6px"
+                border={{
+                    borderColor: assetItemDeets.color || theme.factionTheme.primary,
+                    borderThickness: ".2rem",
+                }}
+                opacity={0.8}
+                backgroundColor={colors.black3}
+                sx={{ height: "100%" }}
+            >
+                <Stack sx={{ m: "1rem", width: largerVersion ? "30rem" : "25rem" }}>
+                    <Box sx={{ position: "relative", width: "100%", height: largerVersion ? "30rem" : "22rem", mb: "1rem" }}>
+                        <MediaPreview
+                            imageUrl={imageUrl}
+                            videoUrls={[animationUrl, cardAnimationUrl]}
+                            objectFit="cover"
+                            imageTransform={item?.type === AssetItemType.Weapon || item?.type === AssetItemType.WeaponSkin ? "rotate(-30deg) scale(.95)" : ""}
+                        />
 
-                    <TooltipHelper placement="right" text={assetItemDeets.label}>
-                        <Box sx={{ position: "absolute", top: ".1rem", left: ".1rem" }}>
-                            {assetItemDeets.icon && <assetItemDeets.icon size="2rem" fill={assetItemDeets.color} />}
-                        </Box>
-                    </TooltipHelper>
-                </Box>
+                        <TooltipHelper placement="right" text={assetItemDeets.label}>
+                            <Box sx={{ position: "absolute", top: ".1rem", left: ".1rem" }}>
+                                {assetItemDeets.icon && <assetItemDeets.icon size="2rem" fill={assetItemDeets.color} />}
+                            </Box>
+                        </TooltipHelper>
+                    </Box>
 
-                {rarityDeets && (item?.type === "mech_skin" || item?.type === "weapon_skin") && (
-                    <Typography
-                        variant="body2"
-                        sx={{
-                            color: rarityDeets.color,
-                            fontFamily: fonts.nostromoHeavy,
-                        }}
-                    >
-                        {rarityDeets.label}
-                    </Typography>
-                )}
+                    {rarityDeets && (item?.skin || item?.type === "mech_skin" || item?.type === "weapon_skin") && (
+                        <Typography
+                            variant="body2"
+                            sx={{
+                                color: rarityDeets.color,
+                                fontFamily: fonts.nostromoBlack,
+                            }}
+                        >
+                            {rarityDeets.label}
+                        </Typography>
+                    )}
 
-                <Typography sx={{ fontFamily: fonts.nostromoBlack }}>{item?.label}</Typography>
-            </Stack>
-        </ClipThing>
+                    {item?.skin && (
+                        <Stack direction="row" spacing=".3rem" alignItems="center" sx={{ mb: ".4rem" }}>
+                            <SvgSkin size="1.8rem" fill={colors.chassisSkin} />
+                            <Typography
+                                variant="body2"
+                                sx={{
+                                    color: colors.chassisSkin,
+                                    fontFamily: fonts.nostromoBlack,
+                                }}
+                            >
+                                {item.skin.label}
+                            </Typography>
+                        </Stack>
+                    )}
+
+                    <Typography sx={{ fontFamily: fonts.nostromoHeavy }}>{item?.label}</Typography>
+                </Stack>
+            </ClipThing>
+        </Box>
     )
 }
 
 export const CrateRewardItemsSmall = ({ item }: CrateRewardItemsProps) => {
     const theme = useTheme()
-    const rarityDeets = useMemo(() => getRarityDeets(item?.rarity || ""), [item?.rarity])
+    const rarityDeets = useMemo(() => getRarityDeets(item?.skin?.tier || item?.rarity || ""), [item?.rarity, item?.skin?.tier])
     const assetItemDeets = useMemo(() => getAssetItemDeets(item?.type), [item?.type])
+
+    const imageUrl =
+        item?.skin?.avatar_url || item?.skin?.image_url || item?.skin?.large_image_url || item?.avatarUrl || item?.imageUrl || item?.largeImageUrl || ""
+    const animationUrl = item?.skin?.animation_url || item?.animationUrl
+    const cardAnimationUrl = item?.skin?.card_animation_url || item?.cardAnimationUrl
 
     return (
         <Stack direction="row" alignItems="center" spacing="1rem">
@@ -80,8 +109,8 @@ export const CrateRewardItemsSmall = ({ item }: CrateRewardItemsProps) => {
                 }}
             >
                 <MediaPreview
-                    imageUrl={item?.avatarUrl || item?.imageUrl || item?.largeImageUrl || ""}
-                    videoUrls={[item?.animationUrl, item?.cardAnimationUrl]}
+                    imageUrl={imageUrl}
+                    videoUrls={[animationUrl, cardAnimationUrl]}
                     showBorder
                     imageTransform={item?.type === AssetItemType.Weapon || item?.type === AssetItemType.WeaponSkin ? "rotate(-30deg) scale(.95)" : ""}
                 />
@@ -94,13 +123,13 @@ export const CrateRewardItemsSmall = ({ item }: CrateRewardItemsProps) => {
             </Box>
 
             <Stack sx={{ py: ".6rem", maxWidth: "28rem" }}>
-                {rarityDeets && (item?.type === "mech_skin" || item?.type === "weapon_skin") && (
+                {rarityDeets && (item?.skin || item?.type === "mech_skin" || item?.type === "weapon_skin") && (
                     <Typography
                         variant="caption"
                         sx={{
                             textAlign: "start",
                             color: rarityDeets.color,
-                            fontFamily: fonts.nostromoHeavy,
+                            fontFamily: fonts.nostromoBlack,
                             display: "-webkit-box",
                             overflow: "hidden",
                             overflowWrap: "anywhere",
@@ -113,7 +142,22 @@ export const CrateRewardItemsSmall = ({ item }: CrateRewardItemsProps) => {
                     </Typography>
                 )}
 
-                <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack, textAlign: "start" }}>
+                {item?.skin && (
+                    <Stack direction="row" spacing=".3rem" alignItems="center" sx={{ mb: ".4rem" }}>
+                        <SvgSkin size="1.8rem" fill={colors.chassisSkin} />
+                        <Typography
+                            variant="body2"
+                            sx={{
+                                color: colors.chassisSkin,
+                                fontFamily: fonts.nostromoBlack,
+                            }}
+                        >
+                            {item.skin.label}
+                        </Typography>
+                    </Stack>
+                )}
+
+                <Typography variant="body2" sx={{ fontFamily: fonts.nostromoHeavy, textAlign: "start" }}>
                     {item?.label}
                 </Typography>
             </Stack>

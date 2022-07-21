@@ -4,7 +4,7 @@ import { SvgClose } from "../../../../assets"
 import { useAuth, useSupremacy } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
 import { fonts, siteZIndex } from "../../../../theme/theme"
-import { AssetItemType, OpenCrateResponse } from "../../../../types"
+import { AssetItemType, WeaponSkin, MechSkin, OpenCrateResponse } from "../../../../types"
 import { ClipThing } from "../../../Common/ClipThing"
 import { FancyButton } from "../../../Common/FancyButton"
 import { CrateRewardItemsLarge, CrateRewardItemsSmall } from "./CrateRewardItems"
@@ -24,6 +24,7 @@ export interface ArrayItem {
     avatarUrl?: string
     label?: string
     rarity?: string
+    skin?: MechSkin | WeaponSkin
 }
 
 export const CrateRewardsModal = ({ openedRewards, onClose }: CrateRewardsModalProps) => {
@@ -37,6 +38,7 @@ export const CrateRewardsModal = ({ openedRewards, onClose }: CrateRewardsModalP
     useEffect(() => {
         let newArr: ArrayItem[] = []
         if (openedRewards.mech) {
+            const skin = openedRewards.mech_skins?.find((s) => s.equipped_on === openedRewards.mech?.id)
             const mech: ArrayItem = {
                 id: openedRewards.mech.id,
                 imageUrl: openedRewards.mech.image_url,
@@ -47,78 +49,67 @@ export const CrateRewardsModal = ({ openedRewards, onClose }: CrateRewardsModalP
                 avatarUrl: openedRewards.mech.avatar_url,
                 label: openedRewards.mech.label,
                 rarity: openedRewards.mech.tier,
+                skin,
             }
 
             newArr = [...newArr, mech]
         }
 
-        if (openedRewards.power_core) {
-            const powerCore: ArrayItem = {
-                id: openedRewards.power_core.id,
-                imageUrl: openedRewards.power_core.image_url,
-                largeImageUrl: openedRewards.power_core.large_image_url,
-                type: openedRewards.power_core.item_type,
-                animationUrl: openedRewards.power_core.animation_url,
-                cardAnimationUrl: openedRewards.power_core.card_animation_url,
-                avatarUrl: openedRewards.power_core.avatar_url,
-                label: openedRewards.power_core.label,
-                rarity: openedRewards.power_core.tier,
-            }
-
-            newArr = [...newArr, powerCore]
-        }
-
-        if (openedRewards.mech_skins) {
-            openedRewards.mech_skins.map((w) => {
-                const mechSkin: ArrayItem = {
-                    id: w.id,
-                    imageUrl: w.image_url,
-                    largeImageUrl: w.large_image_url,
-                    type: w.item_type,
-                    animationUrl: w.animation_url,
-                    cardAnimationUrl: w.card_animation_url,
-                    avatarUrl: w.avatar_url,
-                    label: w.label,
-                    rarity: w.tier,
+        if (openedRewards.weapon) {
+            openedRewards.weapon.map((weapon) => {
+                const skin = openedRewards.weapon_skins?.find((s) => s.equipped_on === weapon.id)
+                const newItem: ArrayItem = {
+                    id: weapon.id,
+                    imageUrl: weapon.image_url,
+                    largeImageUrl: weapon.large_image_url,
+                    type: weapon.item_type,
+                    animationUrl: weapon.animation_url,
+                    cardAnimationUrl: weapon.card_animation_url,
+                    avatarUrl: weapon.avatar_url,
+                    label: weapon.label,
+                    rarity: weapon.tier,
+                    skin,
                 }
 
-                newArr = [...newArr, mechSkin]
+                newArr = [...newArr, newItem]
             })
         }
 
-        if (openedRewards.weapon) {
-            openedRewards.weapon.map((w) => {
-                const weapon: ArrayItem = {
-                    id: w.id,
-                    imageUrl: w.image_url,
-                    largeImageUrl: w.large_image_url,
-                    type: w.item_type,
-                    animationUrl: w.animation_url,
-                    cardAnimationUrl: w.card_animation_url,
-                    avatarUrl: w.avatar_url,
-                    label: w.label,
-                    rarity: w.tier,
+        if (openedRewards.mech_skins) {
+            openedRewards.mech_skins.map((mechSkin) => {
+                if (mechSkin.equipped_on) return
+                const newItem: ArrayItem = {
+                    id: mechSkin.id,
+                    imageUrl: mechSkin.image_url,
+                    largeImageUrl: mechSkin.large_image_url,
+                    type: mechSkin.item_type,
+                    animationUrl: mechSkin.animation_url,
+                    cardAnimationUrl: mechSkin.card_animation_url,
+                    avatarUrl: mechSkin.avatar_url,
+                    label: mechSkin.label,
+                    rarity: mechSkin.tier,
                 }
 
-                newArr = [...newArr, weapon]
+                newArr = [...newArr, newItem]
             })
         }
 
         if (openedRewards.weapon_skins) {
-            openedRewards.weapon_skins.map((w) => {
-                const weaponSkin: ArrayItem = {
-                    id: w.id,
-                    imageUrl: w.image_url,
-                    largeImageUrl: w.large_image_url,
-                    type: w.item_type,
-                    animationUrl: w.animation_url,
-                    cardAnimationUrl: w.card_animation_url,
-                    avatarUrl: w.avatar_url,
-                    label: w.label,
-                    rarity: w.tier,
+            openedRewards.weapon_skins.map((weaponSkin) => {
+                if (weaponSkin.equipped_on) return
+                const newItem: ArrayItem = {
+                    id: weaponSkin.id,
+                    imageUrl: weaponSkin.image_url,
+                    largeImageUrl: weaponSkin.large_image_url,
+                    type: weaponSkin.item_type,
+                    animationUrl: weaponSkin.animation_url,
+                    cardAnimationUrl: weaponSkin.card_animation_url,
+                    avatarUrl: weaponSkin.avatar_url,
+                    label: weaponSkin.label,
+                    rarity: weaponSkin.tier,
                 }
 
-                newArr = [...newArr, weaponSkin]
+                newArr = [...newArr, newItem]
             })
         }
 
@@ -214,7 +205,7 @@ const MechCrateRewards = ({ items }: { items: ArrayItem[] }) => {
 
     return (
         <Stack direction="row" spacing="2.2rem" alignItems={"center"}>
-            {mechs.length > 0 && <CrateRewardItemsLarge item={mechs[0]} />}
+            {mechs.length > 0 && <CrateRewardItemsLarge item={mechs[0]} largerVersion />}
             <Stack spacing={"1rem"}>
                 {[...mechs.slice(1), ...notMechs].map((item) => (
                     <CrateRewardItemsSmall key={item.id} item={item} />
