@@ -79,7 +79,7 @@ export const WarMachineHangarDetailsInner = ({
     const { send: userSend } = useGameServerCommandsUser("/user_commander")
     const [mechDetails, setMechDetails] = useState<MechDetails>()
 
-    const rarityDeets = useMemo(() => getRarityDeets(mechDetails?.tier || ""), [mechDetails])
+    const rarityDeets = useMemo(() => getRarityDeets(mechDetails?.chassis_skin?.tier || mechDetails?.tier || ""), [mechDetails])
 
     useEffect(() => {
         ;(async () => {

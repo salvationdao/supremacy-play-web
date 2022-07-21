@@ -69,7 +69,7 @@ export const WarMachineHangarItem = ({ mech, isGridView }: { mech: MechBasic; is
                         p: isGridView ? ".5rem .6rem" : ".1rem .3rem",
                         display: isGridView ? "block" : "grid",
                         gridTemplateRows: "7rem",
-                        gridTemplateColumns: `minmax(36rem, auto) 20rem 32rem`,
+                        gridTemplateColumns: `minmax(38rem, auto) 20rem 32rem`,
                         gap: "1.4rem",
                         ...(isGridView
                             ? {
@@ -140,7 +140,7 @@ export const MechCommonArea = ({
     toggleIsExpanded?: (value?: boolean) => void
     label?: string
 }) => {
-    const rarityDeets = useMemo(() => getRarityDeets(mech?.tier || mechDetails?.tier || ""), [mech, mechDetails])
+    const rarityDeets = useMemo(() => getRarityDeets(mechDetails?.chassis_skin?.tier || mechDetails?.tier || mech?.tier || ""), [mech, mechDetails])
     const backgroundColor = useMemo(() => shadeColor(primaryColor, -90), [primaryColor])
 
     const mechh = mechDetails || mech
@@ -165,6 +165,7 @@ export const MechCommonArea = ({
             <Stack
                 spacing={isGridView ? ".1rem" : ".2rem"}
                 sx={{
+                    flex: 1,
                     pr: toggleIsExpanded ? "3rem" : "unset",
                     ":hover": {
                         ".expandArrow": {
@@ -241,7 +242,7 @@ export const MechCommonArea = ({
                         sx={{
                             position: "absolute",
                             top: "-2rem",
-                            left: "calc(100% - 3rem)",
+                            left: "calc(100% - 5rem)",
                             bottom: "-1rem",
                         }}
                     >
