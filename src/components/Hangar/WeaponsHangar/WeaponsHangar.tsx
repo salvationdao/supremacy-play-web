@@ -98,7 +98,11 @@ export const WeaponsHangar = () => {
     const [spreadRange, setSpreadRange] = useState<number[]>(
         (query.get("spread") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 100)) || [0, 10000],
     )
-    const [isGridView, toggleIsGridView] = useToggle(false)
+    const [isGridView, toggleIsGridView] = useToggle(localStorage.getItem("fleetWeaponGrid") === "true")
+
+    useEffect(() => {
+        localStorage.setItem("fleetWeaponGrid", isGridView.toString())
+    }, [isGridView])
 
     const weaponTypeFilterSection = useRef<ChipFilter>({
         label: "WEAPON TYPE",
