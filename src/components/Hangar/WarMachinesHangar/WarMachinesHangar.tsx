@@ -57,7 +57,7 @@ export const WarMachinesHangar = () => {
     const [sort, setSort] = useState<string>(query.get("sort") || SortTypeLabel.MechQueueAsc)
     const [status, setStatus] = useState<string[]>((query.get("statuses") || undefined)?.split("||") || [])
     const [rarities, setRarities] = useState<string[]>((query.get("rarities") || undefined)?.split("||") || [])
-    const [isGridView, toggleIsGridView] = useToggle(localStorage.getItem("fleetMechGrid") === "true")
+    const [isGridView, toggleIsGridView] = useToggle((localStorage.getItem("fleetMechGrid") || "true") === "true")
 
     useEffect(() => {
         localStorage.setItem("fleetMechGrid", isGridView.toString())

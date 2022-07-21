@@ -98,7 +98,7 @@ export const WeaponsHangar = () => {
     const [spreadRange, setSpreadRange] = useState<number[]>(
         (query.get("spread") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 100)) || [0, 10000],
     )
-    const [isGridView, toggleIsGridView] = useToggle(localStorage.getItem("fleetWeaponGrid") === "true")
+    const [isGridView, toggleIsGridView] = useToggle((localStorage.getItem("fleetWeaponGrid") || "true") === "true")
 
     useEffect(() => {
         localStorage.setItem("fleetWeaponGrid", isGridView.toString())
