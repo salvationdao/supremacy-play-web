@@ -4,7 +4,7 @@ import { useTheme } from "../../../../containers/theme"
 import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { fonts, colors } from "../../../../theme/theme"
-import { MechStatus, MechStatusEnum } from "../../../../types"
+import { MechRepairStatus, MechStatus, MechStatusEnum } from "../../../../types"
 
 export const MechGeneralStatus = ({ mechID, hideBox }: { mechID: string; hideBox?: boolean }) => {
     const theme = useTheme()
@@ -19,6 +19,7 @@ export const MechGeneralStatus = ({ mechID, hideBox }: { mechID: string; hideBox
         },
         (payload) => {
             if (!payload || text === "SOLD") return
+            console.log(payload)
             switch (payload.status) {
                 case MechStatusEnum.Idle:
                     setText("IDLE")
@@ -40,6 +41,18 @@ export const MechGeneralStatus = ({ mechID, hideBox }: { mechID: string; hideBox
                     setText("SOLD")
                     setColour(colors.lightGrey)
                     break
+                case MechStatusEnum.Damaged:
+                    setText("DAMAGED")
+                    setColour(colors.red)
+                    break
+                case MechStatusEnum.StandardRepairing:
+                    setText("REPAIRING")
+                    setColour(colors.red)
+                    break
+                case MechStatusEnum.FastRepairing:
+                    setText("REPAIRING (FAST)")
+                    setColour(colors.red)
+                    break
             }
         },
     )
@@ -49,6 +62,7 @@ export const MechGeneralStatus = ({ mechID, hideBox }: { mechID: string; hideBox
         async (currentStatus: string) => {
             try {
                 if (currentStatus.includes("QUEUE")) return
+                console.log("send status update")
                 await send(GameServerKeys.TriggerMechStatusUpdate, {
                     mech_id: mechID,
                 })
@@ -57,6 +71,20 @@ export const MechGeneralStatus = ({ mechID, hideBox }: { mechID: string; hideBox
             }
         },
         [mechID, send],
+    )
+
+    // When the battle queue is updated, tell the server to send the mech status to us again
+    useGameServerSubscriptionFaction<boolean>(
+        {
+            URI: `/mech/${mechID}/repair-update`,
+            key: GameServerKeys.MechQueueUpdated,
+        },
+        (payload) => {
+            if (!payload) return
+
+            console.log("trigger repair state update")
+            triggerStatusUpdate("")
+        },
     )
 
     // When the battle queue is updated, tell the server to send the mech status to us again

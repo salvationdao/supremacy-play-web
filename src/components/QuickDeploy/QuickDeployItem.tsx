@@ -89,6 +89,22 @@ export const QuickDeployItem = ({ mech }: QuickDeployItemProps) => {
         }
     }, [send, mech.hash, newSnackbarMessage])
 
+    const onRepair = useCallback(async () => {
+        try {
+            setIsLoading(true)
+            const resp = await send(GameServerKeys.RepairWarMachine, { mech_id: mech.id, repair_type: "START_STANDARD_REPAIR" })
+            if (resp) {
+                newSnackbarMessage("Successfully submit repair request", "success")
+                setError(undefined)
+            }
+        } catch (e) {
+            setError(typeof e === "string" ? e : "Failed to leave queue.")
+            console.error(e)
+        } finally {
+            setIsLoading(false)
+        }
+    }, [send, mech.id, newSnackbarMessage])
+
     return (
         <Stack
             direction="row"
@@ -168,6 +184,37 @@ export const QuickDeployItem = ({ mech }: QuickDeployItemProps) => {
                                     }}
                                 >
                                     {mechState === MechStatusEnum.Idle ? "DEPLOY" : "UNDEPLOY"}
+                                </Typography>
+                            </Stack>
+                        </FancyButton>
+                    )}
+
+                    {!error && mechDetails && mechState === MechStatusEnum.Damaged && (
+                        <FancyButton
+                            loading={isLoading}
+                            clipThingsProps={{
+                                clipSize: "5px",
+                                backgroundColor: colors.green,
+                                opacity: 1,
+                                border: {
+                                    isFancy: true,
+                                    borderColor: colors.green,
+                                    borderThickness: "1px",
+                                },
+                                sx: { position: "relative" },
+                            }}
+                            sx={{ px: "1rem", pt: 0, pb: ".1rem", color: theme.factionTheme.primary }}
+                            onClick={onRepair}
+                        >
+                            <Stack direction="row" alignItems="center" spacing=".5rem">
+                                <Typography
+                                    variant="caption"
+                                    sx={{
+                                        color: "#FFFFFF",
+                                        fontFamily: fonts.nostromoBlack,
+                                    }}
+                                >
+                                    REPAIR
                                 </Typography>
                             </Stack>
                         </FancyButton>

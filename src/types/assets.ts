@@ -11,6 +11,9 @@ export enum MechStatusEnum {
     Market = "MARKET",
     Sold = "SOLD",
     BattleReady = "BATTLE_READY",
+    Damaged = "DAMAGED",
+    StandardRepairing = "REPAIRING (STANDARD)",
+    FastRepairing = "REPAIRING (FAST)",
 }
 
 export enum WeaponType {
@@ -20,6 +23,17 @@ export enum WeaponType {
     MissileLauncher = "Missile Launcher",
     PlasmaGun = "Plasma Gun",
     SniperRifle = "Sniper Rifle",
+}
+
+export enum MechRepairStatEnum {
+    Pending = "PENDING",
+    StandardRepair = "STANDARD_REPAIR",
+    FastRepair = "FAST_REPAIR",
+}
+
+export interface MechRepairStatus {
+    repair_status: MechRepairStatEnum
+    remain_seconds?: number
 }
 
 export interface MechStatus {

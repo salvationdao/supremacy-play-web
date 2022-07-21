@@ -20,10 +20,10 @@ const CountdownText = ({ bribeStage }: { bribeStage?: BribeStageResponse }) => {
     const [sentence, setSentence] = useState<string>("Loading...")
     const { setEndTimeState, totalSecRemain } = useTimer(undefined)
 
+    const phase = bribeStage?.phase || ""
     const doSentence = useCallback(() => {
-        switch (bribeStage?.phase) {
+        switch (phase) {
             case "OPT_IN":
-                console.log("hit here")
                 setSentence(`BATTLE ABILITY (${totalSecRemain} s)`)
                 break
 
@@ -35,7 +35,7 @@ const CountdownText = ({ bribeStage }: { bribeStage?: BribeStageResponse }) => {
                 setSentence(`NEXT BATTLE ABILITY (${totalSecRemain} s)`)
                 break
         }
-    }, [bribeStage?.phase, totalSecRemain])
+    }, [phase, totalSecRemain])
 
     useEffect(() => {
         if (!bribeStage) return
@@ -53,10 +53,6 @@ const CountdownText = ({ bribeStage }: { bribeStage?: BribeStageResponse }) => {
         setEndTimeState(endTime)
         doSentence()
     }, [bribeStage, doSentence, setEndTimeState])
-
-    useInterval(() => {
-        doSentence()
-    }, totalSecRemain)
 
     return <>{sentence}</>
 }

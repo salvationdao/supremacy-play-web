@@ -81,7 +81,13 @@ export const MechButtons = ({
                 )}
 
                 {/* Button 2 */}
-                <ReusableButton isFancy primaryColor={colors.orange} backgroundColor={colors.orange} label="REPAIR" disabled={!mechState} />
+                <ReusableButton
+                    isFancy
+                    primaryColor={colors.orange}
+                    backgroundColor={colors.orange}
+                    label="REPAIR"
+                    disabled={mechState != MechStatusEnum.Damaged}
+                />
 
                 {/* Button 4 */}
                 <ReusableButton
