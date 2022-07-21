@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from "react"
 import { useLocation } from "react-router-dom"
 import { ClipThing, FancyButton } from "../.."
 import { SafePNG } from "../../../assets"
+import { HANGAR_PAGE } from "../../../constants"
 import { useTheme } from "../../../containers/theme"
 import { parseString } from "../../../helpers"
 import { usePagination, useUrlQuery } from "../../../hooks"
@@ -223,7 +224,7 @@ export const MysteryCratesHangar = () => {
                 <Stack sx={{ position: "relative", height: "100%" }}>
                     <Stack sx={{ flex: 1 }}>
                         <PageHeader title="MYSTERY CRATES" description="The mystery crates that you own are shown here." imageUrl={SafePNG}>
-                            {/* <Box sx={{ ml: "auto !important", pr: "2rem" }}>
+                            <Box sx={{ ml: "auto !important", pr: "2rem" }}>
                                 <FancyButton
                                     clipThingsProps={{
                                         clipSize: "9px",
@@ -246,7 +247,7 @@ export const MysteryCratesHangar = () => {
                                         WALKABLE HANGAR
                                     </Typography>
                                 </FancyButton>
-                            </Box> */}
+                            </Box>
                         </PageHeader>
 
                         <TotalAndPageSizeOptions
