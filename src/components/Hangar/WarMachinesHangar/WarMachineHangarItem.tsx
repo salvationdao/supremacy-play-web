@@ -7,7 +7,7 @@ import { useTheme } from "../../../containers/theme"
 import { getRarityDeets, shadeColor } from "../../../helpers"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
-import { fonts } from "../../../theme/theme"
+import { colors, fonts } from "../../../theme/theme"
 import { MechBasic, MechDetails } from "../../../types"
 import { MediaPreview } from "../../Common/MediaPreview/MediaPreview"
 import { General } from "../../Marketplace/Common/MarketItem/General"
@@ -71,7 +71,7 @@ export const WarMachineHangarItem = ({ mech, isGridView }: { mech: MechBasic; is
                         p: isGridView ? ".5rem .6rem" : ".1rem .3rem",
                         display: isGridView ? "block" : "grid",
                         gridTemplateRows: "7rem",
-                        gridTemplateColumns: `8rem auto 30rem 20rem`, // hard-coded to have 4 columns, adjust as required
+                        gridTemplateColumns: `8rem auto 20rem 32rem`, // hard-coded to have 4 columns, adjust as required
                         gap: "1.4rem",
                         ...(isGridView
                             ? {
@@ -94,13 +94,11 @@ export const WarMachineHangarItem = ({ mech, isGridView }: { mech: MechBasic; is
 
                     <MechCommonArea isGridView={isGridView} mech={mech} mechDetails={mechDetails} primaryColor={primaryColor} secondaryColor={secondaryColor} />
 
-                    <General isGridView={isGridView} title="STATS">
-                        <MechBarStats fontSize="1.5rem" mech={mech} mechDetails={mechDetails} color={primaryColor} iconVersion />
-                    </General>
-
                     <General isGridView={isGridView} title="STATUS">
                         <MechGeneralStatus mechID={mech.id} hideBox />
                     </General>
+
+                    <MechBarStats fontSize="1.5rem" mech={mech} mechDetails={mechDetails} color={primaryColor} iconVersion />
                 </Box>
 
                 <Box
@@ -161,7 +159,7 @@ export const MechCommonArea = ({
 
     return (
         <Stack
-            spacing={isGridView ? ".1rem" : ".6rem"}
+            spacing={isGridView ? ".1rem" : ".2rem"}
             sx={{
                 position: "relative",
                 pr: toggleIsExpanded ? "3rem" : "unset",
@@ -178,26 +176,21 @@ export const MechCommonArea = ({
                 toggleIsExpanded()
             }}
         >
-            <Stack alignItems="center" direction="row" spacing="1rem">
-                <Typography
-                    variant="body2"
-                    sx={{
-                        mb: ".2rem",
-                        color: rarityDeets.color,
-                        fontFamily: fonts.nostromoBold,
-                        display: "-webkit-box",
-                        overflow: "hidden",
-                        overflowWrap: "anywhere",
-                        textOverflow: "ellipsis",
-                        WebkitLineClamp: 1, // change to max number of lines
-                        WebkitBoxOrient: "vertical",
-                    }}
-                >
-                    {rarityDeets.label}
-                </Typography>
-
-                <MechLoadoutIcons mechDetails={mechDetails} />
-            </Stack>
+            <Typography
+                variant="body2"
+                sx={{
+                    color: mech?.name || mechDetails?.name ? primaryColor : colors.grey,
+                    fontFamily: fonts.nostromoBlack,
+                    display: "-webkit-box",
+                    overflow: "hidden",
+                    overflowWrap: "anywhere",
+                    textOverflow: "ellipsis",
+                    WebkitLineClamp: 1, // change to max number of lines
+                    WebkitBoxOrient: "vertical",
+                }}
+            >
+                {mech?.name || mechDetails?.name || "Unnamed"}
+            </Typography>
 
             <Typography
                 sx={{
@@ -213,19 +206,27 @@ export const MechCommonArea = ({
                 {mech?.label || mechDetails?.label || label}
             </Typography>
 
-            <Typography
-                variant="h6"
-                sx={{
-                    display: "-webkit-box",
-                    overflow: "hidden",
-                    overflowWrap: "anywhere",
-                    textOverflow: "ellipsis",
-                    WebkitLineClamp: 1, // change to max number of lines
-                    WebkitBoxOrient: "vertical",
-                }}
-            >
-                {mech?.name || mechDetails?.name}
-            </Typography>
+            <Stack direction={isGridView ? "column-reverse" : "row"} spacing={isGridView ? ".2rem" : ".8rem"} alignItems={isGridView ? "flex-start" : "center"}>
+                <MechLoadoutIcons mechDetails={mechDetails} />
+
+                {mechDetails?.chassis_skin && (
+                    <Typography
+                        variant="caption"
+                        sx={{
+                            fontFamily: fonts.nostromoBold,
+                            display: "-webkit-box",
+                            overflow: "hidden",
+                            overflowWrap: "anywhere",
+                            textOverflow: "ellipsis",
+                            WebkitLineClamp: 1, // change to max number of lines
+                            WebkitBoxOrient: "vertical",
+                        }}
+                    >
+                        <span style={{ color: colors.chassisSkin, fontFamily: "inherit" }}>{mechDetails?.chassis_skin?.label}</span>{" "}
+                        <span style={{ color: rarityDeets.color, fontFamily: "inherit" }}>[{rarityDeets.label}]</span>
+                    </Typography>
+                )}
+            </Stack>
 
             {toggleIsExpanded && !isGridView && (
                 <Stack
@@ -266,13 +267,11 @@ export const MechCommonArea = ({
                             borderLeft: "unset",
                         }}
                     >
-                        <Stack direction="row" spacing="4rem" sx={{ p: "1.5rem 2.1rem" }}>
+                        <Stack direction="row" spacing="4rem" sx={{ p: "1.5rem 2.1rem", height: "100%" }}>
                             {mechh && (
-                                <General isGridView={isGridView} title="STATS">
-                                    <Box sx={{ width: "40rem" }}>
-                                        <MechBarStats fontSize="1.5rem" mech={mechh} mechDetails={mechDetails} color={primaryColor} iconVersion />
-                                    </Box>
-                                </General>
+                                <Stack justifyContent="center" sx={{ width: "40rem" }}>
+                                    <MechBarStats fontSize="1.5rem" mech={mechh} mechDetails={mechDetails} color={primaryColor} iconVersion />
+                                </Stack>
                             )}
                         </Stack>
                     </Box>

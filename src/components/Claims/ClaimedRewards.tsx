@@ -2,6 +2,7 @@ import { Box, IconButton, Stack, Typography } from "@mui/material"
 import { useMemo } from "react"
 import { useLocation } from "react-router-dom"
 import { RainingSupsPNG, SafePNG, SvgClose } from "../../assets"
+import { useAuth, useSupremacy } from "../../containers"
 import { useTheme } from "../../containers/theme"
 import { supFormatter } from "../../helpers"
 import { useTimer } from "../../hooks"
@@ -16,9 +17,12 @@ interface ClaimedRewardsProps {
 }
 
 export const ClaimedRewards = ({ rewards, onClose }: ClaimedRewardsProps) => {
+    const { getFaction } = useSupremacy()
+    const { factionID } = useAuth()
     const theme = useTheme()
     const location = useLocation()
 
+    const faction = useMemo(() => getFaction(factionID), [getFaction, factionID])
     const mechRewards = useMemo(() => rewards.filter((reward) => reward.label === "MECH"), [rewards])
     const weaponRewards = useMemo(() => rewards.filter((reward) => reward.label === "WEAPON"), [rewards])
     const isSupReward = useMemo(() => rewards.find((reward) => reward.label === "Sups"), [rewards])
@@ -37,7 +41,24 @@ export const ClaimedRewards = ({ rewards, onClose }: ClaimedRewardsProps) => {
             sx={{ m: "4rem", width: "110rem", maxWidth: "80%" }}
             backgroundColor={theme.factionTheme.background}
         >
-            <Stack spacing="2rem" justifyContent="center" alignItems="center" sx={{ py: "5rem", px: "5.5rem", textAlign: "center" }}>
+            <Stack spacing="2rem" justifyContent="center" alignItems="center" sx={{ position: "relative", py: "5rem", px: "5.5rem", textAlign: "center" }}>
+                {/* Background image */}
+                <Box
+                    sx={{
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        width: "100%",
+                        height: "100%",
+                        opacity: 0.12,
+                        background: `url(${faction.background_url})`,
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "center",
+                        backgroundSize: "cover",
+                        zIndex: -1,
+                    }}
+                />
+
                 <Typography variant={"h1"} sx={{ fontFamily: fonts.nostromoBlack, fontSize: "3rem" }}>
                     CONGRATULATIONS!
                 </Typography>
