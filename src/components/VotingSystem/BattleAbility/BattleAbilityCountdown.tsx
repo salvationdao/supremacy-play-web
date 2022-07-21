@@ -22,16 +22,17 @@ const CountdownText = ({ bribeStage }: { bribeStage?: BribeStageResponse }) => {
 
     const doSentence = useCallback(() => {
         switch (bribeStage?.phase) {
-            case "BRIBE":
-                setSentence(`BATTLE ABILITY (${totalSecRemain}s)`)
+            case "OPT_IN":
+                console.log("hit here")
+                setSentence(`BATTLE ABILITY (${totalSecRemain} s)`)
                 break
 
             case "LOCATION_SELECT":
-                setSentence("BATTLE ABILITY INITIATED...")
+                setSentence(`BATTLE ABILITY INITIATED (${totalSecRemain} s)`)
                 break
 
             case "COOLDOWN":
-                setSentence(`NEXT BATTLE ABILITY (${totalSecRemain}s)`)
+                setSentence(`NEXT BATTLE ABILITY (${totalSecRemain} s)`)
                 break
         }
     }, [bribeStage?.phase, totalSecRemain])
@@ -46,7 +47,7 @@ const CountdownText = ({ bribeStage }: { bribeStage?: BribeStageResponse }) => {
         // Just a temp fix, if user's pc time is not correct then at least set for them
         // Checked by seeing if they have at least 8s to do stuff
         if (endTime < dateNow || diff > 40000) {
-            endTime = new Date(dateNow.getTime() + (bribeStage.phase == "BRIBE" ? 30000 : 20000))
+            endTime = new Date(dateNow.getTime() + (bribeStage.phase == "OPT_IN" ? 30000 : 20000))
         }
 
         setEndTimeState(endTime)

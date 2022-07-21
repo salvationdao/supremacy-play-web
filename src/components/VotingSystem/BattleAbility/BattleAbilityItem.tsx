@@ -23,10 +23,8 @@ export interface BattleAbilityProgressBigNum {
 
 export const BattleAbilityItem = () => {
     const theme = useTheme()
-    const { factionID } = useAuth()
     const { send } = useGameServerCommandsFaction("/faction_commander")
-    const { bribeStage, forceDisplay100Percentage } = useGame()
-    const { getFaction } = useSupremacy()
+    const { bribeStage } = useGame()
 
     const [fadeEffect, toggleFadeEffect] = useToggle()
     const [battleAbility, setBattleAbility] = useState<BattleAbilityType>()
@@ -35,7 +33,7 @@ export const BattleAbilityItem = () => {
     // Subscribe to battle ability updates
     useGameServerSubscription<BattleAbilityType>(
         {
-            URI: factionID ? `/faction/${factionID}/battle_ability` : "/public/battle_ability",
+            URI: "/public/battle_ability",
             key: GameServerKeys.SubBattleAbility,
         },
         (payload) => {
@@ -48,7 +46,7 @@ export const BattleAbilityItem = () => {
     // Listen on the progress of the votes
     useGameServerSubscription<BattleAbilityProgress[] | undefined>(
         {
-            URI: "/battle/live_data",
+            URI: "/public/live_data",
             key: GameServerKeys.SubBattleAbilityProgress,
         },
         (payload) => {
@@ -85,7 +83,7 @@ export const BattleAbilityItem = () => {
     )
 
     const isVoting = useMemo(
-        () => bribeStage?.phase == "BRIBE" && battleAbilityProgress && battleAbilityProgress.length > 0,
+        () => bribeStage?.phase == "OPT_IN" && battleAbilityProgress && battleAbilityProgress.length > 0,
         [battleAbilityProgress, bribeStage],
     )
 
@@ -112,13 +110,8 @@ export const BattleAbilityItem = () => {
             battleAbility={battleAbility}
             isVoting={isVoting}
             fadeEffect={fadeEffect}
-            getFaction={getFaction}
-            currentFactionID={factionID}
-            forceDisplay100Percentage={forceDisplay100Percentage}
-            battleAbilityProgress={battleAbilityProgress}
             buttonColor={theme.factionTheme.primary}
             buttonTextColor={theme.factionTheme.secondary}
-            onBribe={onBribe}
         />
     )
 }
@@ -128,30 +121,13 @@ interface InnerProps {
     battleAbility: BattleAbilityType
     isVoting: boolean
     fadeEffect: boolean
-    currentFactionID?: string
-    getFaction: (factionID: string) => Faction
-    forceDisplay100Percentage: string
-    battleAbilityProgress: BattleAbilityProgressBigNum[]
     buttonColor: string
     buttonTextColor: string
-    onBribe: (c: BigNumber, ob: number) => void
 }
 
-const BattleAbilityItemInner = ({
-    bribeStage,
-    battleAbility,
-    getFaction,
-    currentFactionID,
-    forceDisplay100Percentage,
-    fadeEffect,
-    isVoting,
-    buttonColor,
-    buttonTextColor,
-    battleAbilityProgress,
-    onBribe,
-}: InnerProps) => {
-    const { label, colour, image_url, description, cooldown_duration_second } = battleAbility
-    const battleAbilityFactionProgress = battleAbilityProgress.find((a) => a.faction_id === currentFactionID)
+const BattleAbilityItemInner = ({ bribeStage, battleAbility, fadeEffect, isVoting }: InnerProps) => {
+    const { label, colour, image_url, description } = battleAbility
+    const { factionID } = useAuth()
 
     const [isCollapsed, setIsCollapsed] = useState(localStorage.getItem("isBattleAbilitiesCollapsed") === "true")
 
@@ -211,25 +187,8 @@ const BattleAbilityItemInner = ({
                                             description={description}
                                             image_url={image_url}
                                             colour={colour}
-                                            cooldown_duration_second={cooldown_duration_second}
+                                            showButton={!!factionID && bribeStage?.phase === "OPT_IN"}
                                         />
-
-                                        <SupsBarStack
-                                            battleAbilityProgress={battleAbilityProgress}
-                                            getFaction={getFaction}
-                                            forceDisplay100Percentage={forceDisplay100Percentage}
-                                        />
-
-                                        {battleAbilityFactionProgress && (
-                                            <VotingButtons
-                                                key={battleAbility.ability_offering_id}
-                                                battleAbilityProgress={battleAbilityFactionProgress}
-                                                buttonColor={buttonColor}
-                                                buttonTextColor={buttonTextColor}
-                                                isVoting={isVoting}
-                                                onBribe={onBribe}
-                                            />
-                                        )}
                                     </Stack>
                                 </ClipThing>
                             </Box>
