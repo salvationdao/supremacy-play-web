@@ -176,7 +176,6 @@ const ChatMessagesInner = ({
                                             data={data}
                                             sentAt={message.sent_at}
                                             fontSize={fontSize}
-                                            getFaction={getFaction}
                                         />
                                     )
                                 } else if (message.type == "SYSTEM_BAN") {
@@ -187,7 +186,6 @@ const ChatMessagesInner = ({
                                             data={data}
                                             sentAt={message.sent_at}
                                             fontSize={fontSize}
-                                            getFaction={getFaction}
                                         />
                                     )
                                 } else if (message.type === "NEW_BATTLE") {

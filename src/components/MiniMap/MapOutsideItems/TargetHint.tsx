@@ -167,7 +167,11 @@ const PlayerAbilityTargetHint = () => {
                     zIndex: 98,
                 }}
             >
-                <ClipThing backgroundColor={theme.factionTheme.primary} corners={{ topRight: true }} sx={{ zIndex: 1, p: ".9rem 1.1rem" }}>
+                <ClipThing
+                    backgroundColor={theme.factionTheme.primary}
+                    corners={{ topRight: true }}
+                    sx={{ zIndex: 1, p: ".9rem 1.1rem", svg: { fill: theme.factionTheme.secondary } }}
+                >
                     {data?.icon}
                 </ClipThing>
 
@@ -183,12 +187,9 @@ const PlayerAbilityTargetHint = () => {
                         backgroundColor: (theme) => `${theme.factionTheme.background}`,
                     }}
                 >
-                    <Typography variant="h5" sx={{ lineHeight: 1 }}>
-                        {data?.descriptor}
-                    </Typography>
-
-                    <Typography variant="h5" sx={{ lineHeight: 1, fontWeight: "fontWeightBold", color: ability.colour }}>
-                        {ability.label}
+                    <Typography variant="h5" sx={{ lineHeight: 1, span: { fontWeight: "fontWeightBold", color: ability.colour } }}>
+                        {data?.descriptor}&nbsp;
+                        <span>{`${ability.label}`}</span>
                     </Typography>
 
                     <FancyButton

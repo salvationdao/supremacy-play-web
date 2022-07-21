@@ -3,7 +3,7 @@ import { useState } from "react"
 import { FactionAbilityItem, FancyButton } from "../.."
 import { SvgDropdownArrow } from "../../../assets"
 import { useAuth, useSupremacy } from "../../../containers"
-import { useGameServerSubscriptionAbilityFaction } from "../../../hooks/useGameServer"
+import { useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
 import { GameAbility } from "../../../types"
@@ -14,8 +14,8 @@ export const FactionAbilities = () => {
     const [isCollapsed, setIsCollapsed] = useState(localStorage.getItem("isFactionAbilitiesCollapsed") === "true")
 
     // Subscribe to faction ability updates
-    const factionAbilities = useGameServerSubscriptionAbilityFaction<GameAbility[] | undefined>({
-        URI: "/faction",
+    const factionAbilities = useGameServerSubscriptionFaction<GameAbility[] | undefined>({
+        URI: "/faction_ability",
         key: GameServerKeys.SubFactionUniqueAbilities,
     })
 

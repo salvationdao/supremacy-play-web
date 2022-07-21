@@ -7,6 +7,7 @@ export const MechViewer = ({ mechDetails }: { mechDetails: MechDetails }) => {
     const theme = useTheme()
 
     const backgroundColor = theme.factionTheme.background
+
     const skin = mechDetails.chassis_skin || mechDetails.default_chassis_skin
     const avatarUrl = skin?.avatar_url || mechDetails.avatar_url
     const imageUrl = skin?.image_url || mechDetails.image_url
@@ -42,76 +43,21 @@ export const MechViewer = ({ mechDetails }: { mechDetails: MechDetails }) => {
                 sx={{
                     position: "absolute",
                     zIndex: 3,
-                    aspectRatio: "1",
-                    width: "unset",
-                    height: "80%",
+                    width: "100%",
+                    height: "100%",
                     left: "50%",
-                    top: "52%",
+                    top: "50%",
                     transform: "translate(-50%, -50%)",
+                    overflow: "hidden",
                 }}
             >
-                <FeatherFade color={backgroundColor} />
                 <MediaPreview
                     imageUrl={largeImageUrl || imageUrl || avatarUrl}
                     videoUrls={[animationUrl, cardAnimationUrl]}
                     objectFit="contain"
-                    objectPosition="50% 8%"
+                    blurBackground
                 />
             </Box>
-        </Box>
-    )
-}
-
-export const FeatherFade = ({ color }: { color: string }) => {
-    return (
-        <Box
-            sx={{
-                position: "absolute",
-                top: -1,
-                bottom: -1,
-                left: -1,
-                right: -1,
-                boxShadow: `0 0 60px 50px ${color}`,
-            }}
-        >
-            <Box
-                sx={{
-                    position: "absolute",
-                    top: 0,
-                    width: "100%",
-                    height: "15rem",
-                    background: `linear-gradient(to top, transparent 40%, ${color})`,
-                }}
-            />
-
-            <Box
-                sx={{
-                    position: "absolute",
-                    bottom: 0,
-                    width: "100%",
-                    height: "15rem",
-                    background: `linear-gradient(to bottom, transparent 40%, ${color})`,
-                }}
-            />
-
-            <Box
-                sx={{
-                    position: "absolute",
-                    width: "15rem",
-                    height: "100%",
-                    background: `linear-gradient(to left, transparent 40%, ${color})`,
-                }}
-            />
-
-            <Box
-                sx={{
-                    position: "absolute",
-                    right: 0,
-                    width: "15rem",
-                    height: "100%",
-                    background: `linear-gradient(to right, transparent 40%, ${color})`,
-                }}
-            />
         </Box>
     )
 }

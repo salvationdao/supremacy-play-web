@@ -2,7 +2,7 @@ import { Box, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
 import { useLocation } from "react-router-dom"
 import { FancyButton } from "../.."
-import { SvgDropdownArrow } from "../../../assets"
+import { SvgDropdownArrow, SvgSkin } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { getRarityDeets, getWeaponDamageTypeColor, getWeaponTypeColor, shadeColor } from "../../../helpers"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
@@ -68,7 +68,7 @@ export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGri
                         p: isGridView ? ".5rem .6rem" : ".1rem .3rem",
                         display: isGridView ? "block" : "grid",
                         gridTemplateRows: "7rem",
-                        gridTemplateColumns: `8rem auto 20rem 30rem`, // hard-coded to have 7 columns, adjust as required
+                        gridTemplateColumns: `8rem auto 20rem 35rem`, // hard-coded to have 7 columns, adjust as required
                         gap: "1.4rem",
                         ...(isGridView
                             ? {
@@ -86,7 +86,11 @@ export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGri
                             width: "100%",
                         }}
                     >
-                        <MediaPreview imageUrl={imageUrl || avatarUrl} objectFit={isGridView ? "cover" : "contain"} />
+                        <MediaPreview
+                            imageUrl={imageUrl || avatarUrl}
+                            objectFit={isGridView ? "cover" : "contain"}
+                            imageTransform="rotate(-30deg) scale(.95)"
+                        />
                     </Box>
 
                     <WeaponCommonArea
@@ -103,9 +107,7 @@ export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGri
                         </Typography>
                     </General>
 
-                    <General isGridView={isGridView} title="STATS">
-                        <WeaponBarStats fontSize="1.5rem" weapon={weapon} color={primaryColor} iconVersion />
-                    </General>
+                    <WeaponBarStats fontSize="1.5rem" weapon={weapon} color={primaryColor} iconVersion />
                 </Box>
 
                 <Box
@@ -164,7 +166,7 @@ export const WeaponCommonArea = ({
 
     return (
         <Stack
-            spacing={isGridView ? ".1rem" : ".6rem"}
+            spacing={isGridView ? ".1rem" : ".2rem"}
             sx={{
                 position: "relative",
                 pr: toggleIsExpanded ? "3rem" : "unset",
@@ -211,30 +213,26 @@ export const WeaponCommonArea = ({
                 {weaponDetails?.label}
             </Typography>
 
-            <Stack direction="row" spacing=".5rem">
-                <Typography
-                    sx={{
-                        lineHeight: 1,
-                        fontWeight: "fontWeightBold",
-                        color: colors.offWhite,
-                        display: "-webkit-box",
-                        overflow: "hidden",
-                        overflowWrap: "anywhere",
-                        textOverflow: "ellipsis",
-                        WebkitLineClamp: 1,
-                        WebkitBoxOrient: "vertical",
-                    }}
-                >
-                    SUBMODEL:{" "}
-                    {weaponDetails?.weapon_skin ? (
-                        <>
-                            <span style={{ color: colors.chassisSkin }}>{weaponDetails?.weapon_skin.label}</span>{" "}
-                            <span style={{ color: rarityDeets.color }}>({rarityDeets.label})</span>
-                        </>
-                    ) : (
-                        <span style={{ color: colors.darkGrey }}>NOT EQUIPPED</span>
-                    )}
-                </Typography>
+            <Stack direction="row" alignItems="center" spacing=".5rem">
+                <SvgSkin fill={weaponDetails?.weapon_skin ? colors.chassisSkin : `${colors.darkGrey}80`} size="1.5rem" />
+
+                {weaponDetails?.weapon_skin && (
+                    <Typography
+                        variant="caption"
+                        sx={{
+                            fontFamily: fonts.nostromoBold,
+                            display: "-webkit-box",
+                            overflow: "hidden",
+                            overflowWrap: "anywhere",
+                            textOverflow: "ellipsis",
+                            WebkitLineClamp: 1,
+                            WebkitBoxOrient: "vertical",
+                        }}
+                    >
+                        <span style={{ color: colors.chassisSkin, fontFamily: "inherit" }}>{weaponDetails?.weapon_skin.label}</span>{" "}
+                        <span style={{ color: rarityDeets.color, fontFamily: "inherit" }}>[{rarityDeets.label}]</span>
+                    </Typography>
+                )}
             </Stack>
 
             {toggleIsExpanded && !isGridView && (
@@ -276,7 +274,7 @@ export const WeaponCommonArea = ({
                             borderLeft: "unset",
                         }}
                     >
-                        <Stack direction="row" spacing="4rem" sx={{ p: "1.5rem 2.1rem" }}>
+                        <Stack direction="row" spacing="4rem" sx={{ p: "1.5rem 2.1rem", height: "100%" }}>
                             <General title="DAMAGE TYPE">
                                 <Typography
                                     variant="h6"
@@ -287,11 +285,9 @@ export const WeaponCommonArea = ({
                             </General>
 
                             {weap && (
-                                <General isGridView={isGridView} title="STATS">
-                                    <Box sx={{ width: "40rem" }}>
-                                        <WeaponBarStats fontSize="1.4rem" weapon={weap} color={primaryColor} iconVersion />
-                                    </Box>
-                                </General>
+                                <Stack justifyContent="center" sx={{ width: "40rem" }}>
+                                    <WeaponBarStats fontSize="1.4rem" weapon={weap} color={primaryColor} iconVersion />
+                                </Stack>
                             )}
                         </Stack>
                     </Box>
