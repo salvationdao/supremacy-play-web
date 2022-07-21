@@ -1,8 +1,7 @@
 import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { ClipThing, FancyButton } from "../.."
+import { ClipThing } from "../.."
 import { EmptyWarMachinesPNG, WarMachineIconPNG } from "../../../assets"
-import { HANGAR_PAGE } from "../../../constants"
 import { useTheme } from "../../../containers/theme"
 import { getRarityDeets, parseString } from "../../../helpers"
 import { usePagination, useToggle, useUrlQuery } from "../../../hooks"
@@ -254,7 +253,7 @@ export const WarMachinesHangar = () => {
                 <Stack sx={{ position: "relative", height: "100%" }}>
                     <Stack sx={{ flex: 1 }}>
                         <PageHeader title="WAR MACHINES" description="Your war machines." imageUrl={WarMachineIconPNG}>
-                            <Box sx={{ ml: "auto !important", pr: "2rem" }}>
+                            {/* <Box sx={{ ml: "auto !important", pr: "2rem" }}>
                                 <FancyButton
                                     clipThingsProps={{
                                         clipSize: "9px",
@@ -277,7 +276,7 @@ export const WarMachinesHangar = () => {
                                         WALKABLE HANGAR
                                     </Typography>
                                 </FancyButton>
-                            </Box>
+                            </Box> */}
                         </PageHeader>
 
                         <TotalAndPageSizeOptions
