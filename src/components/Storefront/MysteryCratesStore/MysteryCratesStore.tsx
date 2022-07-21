@@ -190,13 +190,13 @@ export const MysteryCratesStore = () => {
                                     border: { isFancy: true, borderColor: theme.factionTheme.primary, borderThickness: "2px" },
                                     sx: { position: "relative" },
                                 }}
-                                sx={{ px: "1.6rem", py: ".6rem", color: "#FFFFFF" }}
+                                sx={{ px: "1.6rem", py: ".6rem", color: theme.factionTheme.secondary }}
                                 to={`/fleet/mystery-crates${location.hash}`}
                             >
                                 <Typography
                                     variant="caption"
                                     sx={{
-                                        color: "#FFFFFF",
+                                        color: theme.factionTheme.secondary,
                                         fontFamily: fonts.nostromoBlack,
                                     }}
                                 >
