@@ -479,6 +479,7 @@ export interface MysteryCrateOwnershipResp {
 }
 
 export interface OpenCrateResponse {
+    id: string
     mech?: MechDetails
     power_core?: PowerCore
     mech_skins?: MechSkin[]

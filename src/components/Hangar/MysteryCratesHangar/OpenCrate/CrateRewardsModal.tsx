@@ -50,13 +50,14 @@ export const CrateRewardsModal = ({
     const [loading, setLoading] = useState(false)
     const [arrayItems, setArrayItems] = useState<ArrayItem[]>([])
 
+    const validFutureCrates = futureCratesToOpen.filter((c) => c.id !== openedRewards.id)
     const faction = useMemo(() => getFaction(factionID), [getFaction, factionID])
 
     const openNextCrate = useCallback(async () => {
         try {
-            if (!futureCratesToOpen || futureCratesToOpen.length <= 0) return
-            const crateToOpen = futureCratesToOpen[0]
-            const remainCrates = futureCratesToOpen.slice(1)
+            if (!validFutureCrates || validFutureCrates.length <= 0) return
+            const crateToOpen = validFutureCrates[0]
+            const remainCrates = validFutureCrates.slice(1)
 
             setOpeningCrate({
                 factionID: crateToOpen.faction_id,
@@ -79,7 +80,7 @@ export const CrateRewardsModal = ({
         } finally {
             setLoading(false)
         }
-    }, [futureCratesToOpen, setOpeningCrate, send, setOpenedRewards, setFutureCratesToOpen, newSnackbarMessage])
+    }, [validFutureCrates, setOpeningCrate, send, setOpenedRewards, setFutureCratesToOpen, newSnackbarMessage])
 
     useEffect(() => {
         let newArr: ArrayItem[] = []
@@ -211,7 +212,7 @@ export const CrateRewardsModal = ({
                                 {openedRewards.mech ? <MechCrateRewards items={arrayItems} /> : <WeaponCrateRewards items={arrayItems} />}
 
                                 <Stack alignItems="center" spacing="1.4rem" sx={{ mt: "auto" }}>
-                                    {futureCratesToOpen && futureCratesToOpen.length > 0 ? (
+                                    {validFutureCrates && validFutureCrates.length > 0 && (
                                         <FancyButton
                                             loading={loading}
                                             clipThingsProps={{
@@ -231,27 +232,6 @@ export const CrateRewardsModal = ({
                                                 }}
                                             >
                                                 OPEN NEXT CRATE
-                                            </Typography>
-                                        </FancyButton>
-                                    ) : (
-                                        <FancyButton
-                                            clipThingsProps={{
-                                                clipSize: "9px",
-                                                backgroundColor: theme.factionTheme.primary,
-                                                opacity: 1,
-                                                border: { isFancy: true, borderColor: theme.factionTheme.primary, borderThickness: "2px" },
-                                                sx: { position: "relative", width: "32rem" },
-                                            }}
-                                            sx={{ width: "100%", py: "1rem", color: theme.factionTheme.secondary }}
-                                            to="/storefront/mystery-crates"
-                                        >
-                                            <Typography
-                                                sx={{
-                                                    color: theme.factionTheme.secondary,
-                                                    fontFamily: fonts.nostromoBlack,
-                                                }}
-                                            >
-                                                BUY CRATES
                                             </Typography>
                                         </FancyButton>
                                     )}
