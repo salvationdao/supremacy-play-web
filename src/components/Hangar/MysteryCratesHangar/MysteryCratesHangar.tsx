@@ -333,7 +333,7 @@ export const MysteryCratesHangar = () => {
                     onClose={() => {
                         setOpenedRewards(undefined)
                         // If user opened the last one on page, then go back a page
-                        if (futureCratesToOpen.length <= 0) {
+                        if (futureCratesToOpen.length <= 0 && page > 1) {
                             prevPage()
                         } else {
                             getItems()
