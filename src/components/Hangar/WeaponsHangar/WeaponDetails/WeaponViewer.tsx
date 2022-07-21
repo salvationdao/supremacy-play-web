@@ -6,7 +6,6 @@ import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
 export const WeaponViewer = ({ weaponDetails }: { weaponDetails: Weapon }) => {
     const theme = useTheme()
 
-    const primaryColor = theme.factionTheme.primary
     const backgroundColor = theme.factionTheme.background
 
     const skin = weaponDetails.weapon_skin
@@ -49,10 +48,15 @@ export const WeaponViewer = ({ weaponDetails }: { weaponDetails: Weapon }) => {
                     left: "50%",
                     top: "50%",
                     transform: "translate(-50%, -50%)",
-                    border: `${primaryColor} 1.5px solid`,
+                    overflow: "hidden",
                 }}
             >
-                <MediaPreview imageUrl={largeImageUrl || imageUrl || avatarUrl} videoUrls={[animationUrl, cardAnimationUrl]} objectFit="contain" />
+                <MediaPreview
+                    imageUrl={largeImageUrl || imageUrl || avatarUrl}
+                    videoUrls={[animationUrl, cardAnimationUrl]}
+                    objectFit="contain"
+                    blurBackground
+                />
             </Box>
         </Box>
     )

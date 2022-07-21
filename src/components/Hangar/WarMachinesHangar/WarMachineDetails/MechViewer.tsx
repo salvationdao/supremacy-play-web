@@ -6,7 +6,6 @@ import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
 export const MechViewer = ({ mechDetails }: { mechDetails: MechDetails }) => {
     const theme = useTheme()
 
-    const primaryColor = theme.factionTheme.primary
     const backgroundColor = theme.factionTheme.background
 
     const skin = mechDetails.chassis_skin || mechDetails.default_chassis_skin
@@ -49,14 +48,14 @@ export const MechViewer = ({ mechDetails }: { mechDetails: MechDetails }) => {
                     left: "50%",
                     top: "50%",
                     transform: "translate(-50%, -50%)",
-                    border: `${primaryColor} 1.5px solid`,
+                    overflow: "hidden",
                 }}
             >
                 <MediaPreview
                     imageUrl={largeImageUrl || imageUrl || avatarUrl}
                     videoUrls={[animationUrl, cardAnimationUrl]}
-                    objectFit="cover"
-                    objectPosition="50% 8%"
+                    objectFit="contain"
+                    blurBackground
                 />
             </Box>
         </Box>

@@ -520,12 +520,18 @@ export const getWeaponTypeColor = (weaponType: string | undefined) => {
         case "SWORD":
             return colors.red
         case "MINIGUN":
-            return colors.yellow
-        case "MISSILE LAUNCHER":
-            return colors.purple
-        case "PLASMA GUN":
             return colors.blue
+        case "MISSILE LAUNCHER":
+            return colors.orange
+        case "GRENADE LAUNCHER":
+            return colors.orange
+        case "MACHINE GUN":
+            return colors.blue
+        case "PLASMA GUN":
+            return colors.purple
         case "SNIPER RIFLE":
+            return colors.blue
+        case "FLAK":
             return colors.orange
         default:
             return colors.neonBlue
