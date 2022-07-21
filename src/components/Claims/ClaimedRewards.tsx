@@ -171,7 +171,7 @@ export const ClaimedRewards = ({ rewards, onClose, setOpeningCrate, setOpenedRew
                                 fontFamily: fonts.nostromoBlack,
                             }}
                         >
-                            View in Fleet
+                            VIEW IN FLEET
                         </Typography>
                     </FancyButton>
                 </Stack>

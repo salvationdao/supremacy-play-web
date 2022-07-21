@@ -9,7 +9,7 @@ import { usePagination, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { OpenCrateResponse, StorefrontMysteryCrate } from "../../../types"
+import { MysteryCrate, OpenCrateResponse, StorefrontMysteryCrate } from "../../../types"
 import { PageHeader } from "../../Common/PageHeader"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { OpeningCrate } from "../../Hangar/MysteryCratesHangar/MysteryCratesHangar"
@@ -32,6 +32,7 @@ export const MysteryCratesStore = () => {
 
     const [openingCrate, setOpeningCrate] = useState<OpeningCrate>()
     const [openedRewards, setOpenedRewards] = useState<OpenCrateResponse>()
+    const [futureCratesToOpen, setFutureCratesToOpen] = useState<(StorefrontMysteryCrate | MysteryCrate)[]>([])
 
     const enlargedView = crates ? crates.length <= 2 : false
 
@@ -124,6 +125,7 @@ export const MysteryCratesStore = () => {
                                 crate={crate}
                                 setOpeningCrate={setOpeningCrate}
                                 setOpenedRewards={setOpenedRewards}
+                                setFutureCratesToOpen={setFutureCratesToOpen}
                             />
                         ))}
                     </Box>
@@ -295,8 +297,11 @@ export const MysteryCratesStore = () => {
             {openedRewards && (
                 <CrateRewardsModal
                     key={JSON.stringify(openedRewards)}
-                    open={!openingCrate}
                     openedRewards={openedRewards}
+                    setOpeningCrate={setOpeningCrate}
+                    setOpenedRewards={setOpenedRewards}
+                    futureCratesToOpen={futureCratesToOpen}
+                    setFutureCratesToOpen={setFutureCratesToOpen}
                     onClose={() => setOpenedRewards(undefined)}
                 />
             )}

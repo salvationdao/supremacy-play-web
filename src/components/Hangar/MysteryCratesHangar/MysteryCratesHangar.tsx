@@ -10,7 +10,7 @@ import { usePagination, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { MysteryCrate, MysteryCrateType, OpenCrateResponse } from "../../../types"
+import { MysteryCrate, MysteryCrateType, OpenCrateResponse, StorefrontMysteryCrate } from "../../../types"
 import { PageHeader } from "../../Common/PageHeader"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { MysteryCrateStoreItemLoadingSkeleton } from "../../Storefront/MysteryCratesStore/MysteryCrateStoreItem/MysteryCrateStoreItem"
@@ -45,6 +45,7 @@ export const MysteryCratesHangar = () => {
     const [loadError, setLoadError] = useState<string>()
     const [openingCrate, setOpeningCrate] = useState<OpeningCrate>()
     const [openedRewards, setOpenedRewards] = useState<OpenCrateResponse>()
+    const [futureCratesToOpen, setFutureCratesToOpen] = useState<(StorefrontMysteryCrate | MysteryCrate)[]>([])
 
     const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, changePageSize, prevPage } = usePagination({
         pageSize: parseString(query.get("pageSize"), 10),
@@ -69,6 +70,7 @@ export const MysteryCratesHangar = () => {
             if (!resp) return
             setLoadError(undefined)
             setCrates(resp.mystery_crates)
+            setFutureCratesToOpen(resp.mystery_crates)
             setTotalItems(resp.total)
         } catch (e) {
             const message = typeof e === "string" ? e : "Failed to get mystery crates."
@@ -323,8 +325,11 @@ export const MysteryCratesHangar = () => {
             {openedRewards && (
                 <CrateRewardsModal
                     key={JSON.stringify(openedRewards)}
-                    open={!openingCrate}
                     openedRewards={openedRewards}
+                    setOpeningCrate={setOpeningCrate}
+                    setOpenedRewards={setOpenedRewards}
+                    futureCratesToOpen={futureCratesToOpen}
+                    setFutureCratesToOpen={setFutureCratesToOpen}
                     onClose={() => {
                         setOpenedRewards(undefined)
                         // If user opened the last one on page, then go back a page
