@@ -7,15 +7,15 @@ import { MysteryCrateType } from "../../../../types"
 import { FancyButton } from "../../../Common/FancyButton"
 
 const CRATE_OPENING_VIDEOS_MECH: { [factionID: string]: string } = {
-    [FactionIDs.ZHI]: "https://afiles.ninja-cdn.com/passport/nexus/lootbox/opening/mech/X3_Crate_OpeningVideo.mov",
-    [FactionIDs.BC]: "https://afiles.ninja-cdn.com/passport/nexus/lootbox/opening/mech/Daison_Crate_OpeningVideo.mov",
-    [FactionIDs.RM]: "https://afiles.ninja-cdn.com/passport/nexus/lootbox/opening/mech/UMC_Crate_OpeningVideo.mov",
+    [FactionIDs.ZHI]: "https://afiles.ninja-cdn.com/passport/nexus/lootbox/opening/mech/X3_Crate_OpeningVideo.mp4",
+    [FactionIDs.RM]: "https://afiles.ninja-cdn.com/passport/nexus/lootbox/opening/mech/UMC_Crate_OpeningVideo.mp4",
+    [FactionIDs.BC]: "https://afiles.ninja-cdn.com/passport/nexus/lootbox/opening/mech/Daison_Crate_OpeningVideo.mp4",
 }
 
 const CRATE_OPENING_VIDEOS_WEAPON: { [factionID: string]: string } = {
-    [FactionIDs.ZHI]: "https://afiles.ninja-cdn.com/passport/nexus/lootbox/opening/weapon/Warsui_Crate_OpeningVideo.mov",
-    [FactionIDs.BC]: "https://afiles.ninja-cdn.com/passport/nexus/lootbox/opening/weapon/Archon_Crate_OpeningVideo.mov",
-    [FactionIDs.RM]: "https://afiles.ninja-cdn.com/passport/nexus/lootbox/opening/weapon/Pyro_Crate_OpeningVideo.mov",
+    [FactionIDs.ZHI]: "https://afiles.ninja-cdn.com/passport/nexus/lootbox/opening/weapon/Warsui_Crate_OpeningVideo.mp4",
+    [FactionIDs.RM]: "https://afiles.ninja-cdn.com/passport/nexus/lootbox/opening/weapon/Pyro_Crate_OpeningVideo.mp4",
+    [FactionIDs.BC]: "https://afiles.ninja-cdn.com/passport/nexus/lootbox/opening/weapon/Archon_Crate_OpeningVideo.mp4",
 }
 
 export const CrateRewardVideo = ({ factionID, crateType, onClose }: { factionID: string; crateType: MysteryCrateType; onClose: () => void }) => {
