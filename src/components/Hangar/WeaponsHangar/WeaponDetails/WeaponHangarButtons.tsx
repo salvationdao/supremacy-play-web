@@ -15,9 +15,6 @@ export const WeaponButtons = ({ weaponDetails }: { weaponDetails: Weapon }) => {
     const marketLocked = weaponDetails.market_locked
     const isInMarketplace = !!weaponDetails.item_sale_id
 
-    if (weaponDetails.equipped_on) {
-        return null
-    }
     return (
         <ClipThing
             clipSize="10px"
@@ -36,6 +33,7 @@ export const WeaponButtons = ({ weaponDetails }: { weaponDetails: Weapon }) => {
                 >
                     <Box>
                         <ReusableButton
+                            disabled={!!weaponDetails.equipped_on}
                             isFancy={!isInMarketplace}
                             primaryColor={colors.red}
                             secondaryColor={isInMarketplace ? colors.red : undefined}

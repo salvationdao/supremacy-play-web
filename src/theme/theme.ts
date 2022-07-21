@@ -77,7 +77,7 @@ export const colors = {
     marketBidReturned: "#CC3F3F",
 
     // Mech loadout
-    chassisSkin: "#D45613",
+    chassisSkin: "#D4AA13",
     introAnimation: "#B63DD4",
     outroAnimation: "#B63DD4",
     weapons: "#EB2300",

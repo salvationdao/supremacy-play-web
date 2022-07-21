@@ -33,12 +33,6 @@ export const MechLoadoutIcons = ({ mechDetails }: { mechDetails?: MechDetails })
 
     return (
         <Stack direction="row" spacing=".5rem">
-            <TooltipHelper text="Submodel" placement="bottom">
-                <Box>
-                    <SvgSkin fill={hasSkin ? colors.chassisSkin : `${colors.darkGrey}80`} size="1.5rem" />
-                </Box>
-            </TooltipHelper>
-
             <TooltipHelper text="Outro animation" placement="bottom">
                 <Box>
                     <SvgIntroAnimation fill={hasIntroAnimation ? colors.introAnimation : `${colors.darkGrey}80`} size="1.5rem" />
@@ -92,6 +86,12 @@ export const MechLoadoutIcons = ({ mechDetails }: { mechDetails?: MechDetails })
                         </Box>
                     </TooltipHelper>
                 ))}
+
+            <TooltipHelper text="Submodel" placement="bottom">
+                <Box>
+                    <SvgSkin fill={hasSkin ? colors.chassisSkin : `${colors.darkGrey}80`} size="1.5rem" />
+                </Box>
+            </TooltipHelper>
         </Stack>
     )
 }

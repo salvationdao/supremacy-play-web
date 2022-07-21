@@ -1,5 +1,7 @@
 import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useParameterizedQuery } from "react-fetching-library"
+import { GetWeaponMaxStats } from "../../../fetching"
 import { ClipThing } from "../.."
 import { EmptyWarMachinesPNG, WarMachineIconPNG } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
@@ -101,6 +103,9 @@ export const WeaponsHangar = () => {
         label: "WEAPON TYPE",
         options: [
             { value: WeaponType.Cannon, label: WeaponType.Cannon, color: getWeaponTypeColor(WeaponType.Cannon) },
+            { value: WeaponType.GrenadeLauncher, label: WeaponType.GrenadeLauncher, color: getWeaponTypeColor(WeaponType.GrenadeLauncher) },
+            { value: WeaponType.MachineGun, label: WeaponType.MachineGun, color: getWeaponTypeColor(WeaponType.MachineGun) },
+            { value: WeaponType.Flak, label: WeaponType.Flak, color: getWeaponTypeColor(WeaponType.Flak) },
             { value: WeaponType.Sword, label: WeaponType.Sword, color: getWeaponTypeColor(WeaponType.Sword) },
             { value: WeaponType.Minigun, label: WeaponType.Minigun, color: getWeaponTypeColor(WeaponType.Minigun) },
             { value: WeaponType.MissileLauncher, label: WeaponType.MissileLauncher, color: getWeaponTypeColor(WeaponType.MissileLauncher) },
@@ -118,8 +123,8 @@ export const WeaponsHangar = () => {
     const weaponEquippedFilterSection = useRef<ChipFilter>({
         label: "EQUIPPED STATUS",
         options: [
-            { value: "equipped", label: "EQUIPPED", color: theme.factionTheme.primary, textColor: theme.factionTheme.secondary },
-            { value: "unequipped", label: "UNEQUIPPED", color: theme.factionTheme.primary, textColor: theme.factionTheme.secondary },
+            { value: "equipped", label: "EQUIPPED", color: colors.green, textColor: "#FFFFFF" },
+            { value: "unequipped", label: "UNEQUIPPED", color: colors.yellow, textColor: "#000000" },
         ],
         initialExpanded: true,
         initialSelected: equippedStatuses,
@@ -228,6 +233,106 @@ export const WeaponsHangar = () => {
             changePage(1)
         },
     })
+
+    const [sortFilterReRender, toggleSortFilterReRender] = useToggle()
+    const { query: queryGetWeaponMaxStats } = useParameterizedQuery(GetWeaponMaxStats)
+
+    // Get the max for each category for better filtering
+    useEffect(() => {
+        ;(async () => {
+            try {
+                const resp = await queryGetWeaponMaxStats({})
+                if (resp.error || !resp.payload) return
+                ammoRangeFilter.current.minMax[1] = resp.payload.max_ammo || 0
+                damageRangeFilter.current.minMax[1] = resp.payload.damage || 0
+                damageFalloffRangeFilter.current.minMax[1] = resp.payload.damage_falloff || 0
+                damageFalloffRateRangeFilter.current.minMax[1] = resp.payload.damage_falloff_rate || 0
+                radiusRangeFilter.current.minMax[1] = resp.payload.radius || 0
+                radiusDamageFalloffRangeFilter.current.minMax[1] = resp.payload.radius_damage_falloff || 0
+                rateOfFireRangeFilter.current.minMax[1] = resp.payload.rate_of_fire || 0
+                energyCostRangeFilter.current.minMax[1] = resp.payload.energy_cost || 0
+                projectileSpeedRangeFilter.current.minMax[1] = resp.payload.projectile_speed || 0
+                spreadRangeFilter.current.minMax[1] = resp.payload.spread || 0
+
+                // Make current values dont exceed the max, otherwise adjust
+                setAmmoRange((prev) => {
+                    let newValue = prev
+                    const value = resp.payload?.max_ammo || 0
+                    if (prev[1] > value) newValue = [prev[0], value]
+                    ammoRangeFilter.current.initialValue = newValue
+                    return newValue
+                })
+                setDamageRange((prev) => {
+                    let newValue = prev
+                    const value = resp.payload?.damage || 0
+                    if (prev[1] > value) newValue = [prev[0], value]
+                    damageRangeFilter.current.initialValue = newValue
+                    return newValue
+                })
+                setDamageFalloffRange((prev) => {
+                    let newValue = prev
+                    const value = resp.payload?.damage_falloff || 0
+                    if (prev[1] > value) newValue = [prev[0], value]
+                    damageFalloffRangeFilter.current.initialValue = newValue
+                    return newValue
+                })
+                setDamageFalloffRateRange((prev) => {
+                    let newValue = prev
+                    const value = resp.payload?.damage_falloff_rate || 0
+                    if (prev[1] > value) newValue = [prev[0], value]
+                    damageFalloffRateRangeFilter.current.initialValue = newValue
+                    return newValue
+                })
+                setRadiusRange((prev) => {
+                    let newValue = prev
+                    const value = resp.payload?.radius || 0
+                    if (prev[1] > value) newValue = [prev[0], value]
+                    radiusRangeFilter.current.initialValue = newValue
+                    return newValue
+                })
+                setRadiusDamageFalloffRange((prev) => {
+                    let newValue = prev
+                    const value = resp.payload?.radius_damage_falloff || 0
+                    if (prev[1] > value) newValue = [prev[0], value]
+                    radiusDamageFalloffRangeFilter.current.initialValue = newValue
+                    return newValue
+                })
+                setRateOfFireRange((prev) => {
+                    let newValue = prev
+                    const value = resp.payload?.rate_of_fire || 0
+                    if (prev[1] > value) newValue = [prev[0], value]
+                    rateOfFireRangeFilter.current.initialValue = newValue
+                    return newValue
+                })
+                setEnergyCostRange((prev) => {
+                    let newValue = prev
+                    const value = resp.payload?.energy_cost || 0
+                    if (prev[1] > value) newValue = [prev[0], value]
+                    energyCostRangeFilter.current.initialValue = newValue
+                    return newValue
+                })
+                setProjectileSpeedRange((prev) => {
+                    let newValue = prev
+                    const value = resp.payload?.projectile_speed || 0
+                    if (prev[1] > value) newValue = [prev[0], value]
+                    projectileSpeedRangeFilter.current.initialValue = newValue
+                    return newValue
+                })
+                setSpreadRange((prev) => {
+                    let newValue = prev
+                    const value = resp.payload?.spread || 0
+                    if (prev[1] > value) newValue = [prev[0], value]
+                    spreadRangeFilter.current.initialValue = newValue
+                    return newValue
+                })
+
+                toggleSortFilterReRender()
+            } catch (err) {
+                const message = typeof err === "string" ? err : "Failed to get the list of streams."
+                console.error(message)
+            }
+        })()
+    }, [queryGetWeaponMaxStats, toggleSortFilterReRender])
 
     const getItems = useCallback(async () => {
         try {
@@ -458,6 +563,7 @@ export const WeaponsHangar = () => {
     return (
         <Stack direction="row" spacing="1rem" sx={{ height: "100%" }}>
             <SortAndFilters
+                key={sortFilterReRender.toString()}
                 initialSearch={search}
                 onSetSearch={setSearch}
                 chipFilters={[weaponTypeFilterSection.current, weaponEquippedFilterSection.current]}

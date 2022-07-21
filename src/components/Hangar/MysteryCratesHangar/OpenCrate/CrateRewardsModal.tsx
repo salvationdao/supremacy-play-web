@@ -1,9 +1,10 @@
 import { Box, Grow, IconButton, Modal, Stack, Typography } from "@mui/material"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { SvgClose } from "../../../../assets"
+import { useAuth, useSupremacy } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
 import { fonts, siteZIndex } from "../../../../theme/theme"
-import { OpenCrateResponse } from "../../../../types"
+import { AssetItemType, OpenCrateResponse } from "../../../../types"
 import { ClipThing } from "../../../Common/ClipThing"
 import { FancyButton } from "../../../Common/FancyButton"
 import { CrateRewardItemsLarge, CrateRewardItemsSmall } from "./CrateRewardItems"
@@ -14,18 +15,24 @@ interface CrateRewardsModalProps {
 }
 
 export interface ArrayItem {
-    id: string | undefined
-    imageUrl: string | undefined
-    type: string | undefined
-    animationUrl: string | undefined
-    avatarUrl: string | undefined
-    label: string | undefined
-    rarity?: string | undefined
+    id?: string
+    imageUrl?: string
+    largeImageUrl?: string
+    type?: AssetItemType
+    animationUrl?: string
+    cardAnimationUrl?: string
+    avatarUrl?: string
+    label?: string
+    rarity?: string
 }
 
 export const CrateRewardsModal = ({ openedRewards, onClose }: CrateRewardsModalProps) => {
+    const { getFaction } = useSupremacy()
+    const { factionID } = useAuth()
     const theme = useTheme()
     const [arrayItems, setArrayItems] = useState<ArrayItem[]>([])
+
+    const faction = useMemo(() => getFaction(factionID), [getFaction, factionID])
 
     useEffect(() => {
         let newArr: ArrayItem[] = []
@@ -33,8 +40,10 @@ export const CrateRewardsModal = ({ openedRewards, onClose }: CrateRewardsModalP
             const mech: ArrayItem = {
                 id: openedRewards.mech.id,
                 imageUrl: openedRewards.mech.image_url,
+                largeImageUrl: openedRewards.mech.large_image_url,
                 type: openedRewards.mech.item_type,
                 animationUrl: openedRewards.mech.animation_url,
+                cardAnimationUrl: openedRewards.mech.card_animation_url,
                 avatarUrl: openedRewards.mech.avatar_url,
                 label: openedRewards.mech.label,
                 rarity: openedRewards.mech.tier,
@@ -43,18 +52,38 @@ export const CrateRewardsModal = ({ openedRewards, onClose }: CrateRewardsModalP
             newArr = [...newArr, mech]
         }
 
-        if (openedRewards.mech_skin) {
-            const mechSkin: ArrayItem = {
-                id: openedRewards.mech_skin.id,
-                imageUrl: openedRewards.mech_skin.image_url,
-                type: openedRewards.mech_skin.item_type,
-                animationUrl: openedRewards.mech_skin.animation_url,
-                avatarUrl: openedRewards.mech_skin.avatar_url,
-                label: openedRewards.mech_skin.label,
-                rarity: openedRewards.mech_skin.tier,
+        if (openedRewards.power_core) {
+            const powerCore: ArrayItem = {
+                id: openedRewards.power_core.id,
+                imageUrl: openedRewards.power_core.image_url,
+                largeImageUrl: openedRewards.power_core.large_image_url,
+                type: openedRewards.power_core.item_type,
+                animationUrl: openedRewards.power_core.animation_url,
+                cardAnimationUrl: openedRewards.power_core.card_animation_url,
+                avatarUrl: openedRewards.power_core.avatar_url,
+                label: openedRewards.power_core.label,
+                rarity: openedRewards.power_core.tier,
             }
 
-            newArr = [...newArr, mechSkin]
+            newArr = [...newArr, powerCore]
+        }
+
+        if (openedRewards.mech_skins) {
+            openedRewards.mech_skins.map((w) => {
+                const mechSkin: ArrayItem = {
+                    id: w.id,
+                    imageUrl: w.image_url,
+                    largeImageUrl: w.large_image_url,
+                    type: w.item_type,
+                    animationUrl: w.animation_url,
+                    cardAnimationUrl: w.card_animation_url,
+                    avatarUrl: w.avatar_url,
+                    label: w.label,
+                    rarity: w.tier,
+                }
+
+                newArr = [...newArr, mechSkin]
+            })
         }
 
         if (openedRewards.weapon) {
@@ -62,8 +91,10 @@ export const CrateRewardsModal = ({ openedRewards, onClose }: CrateRewardsModalP
                 const weapon: ArrayItem = {
                     id: w.id,
                     imageUrl: w.image_url,
+                    largeImageUrl: w.large_image_url,
                     type: w.item_type,
                     animationUrl: w.animation_url,
+                    cardAnimationUrl: w.card_animation_url,
                     avatarUrl: w.avatar_url,
                     label: w.label,
                     rarity: w.tier,
@@ -73,18 +104,22 @@ export const CrateRewardsModal = ({ openedRewards, onClose }: CrateRewardsModalP
             })
         }
 
-        if (openedRewards.weapon_skin) {
-            const weaponSkin: ArrayItem = {
-                id: openedRewards.weapon_skin.id,
-                imageUrl: openedRewards.weapon_skin.image_url,
-                type: openedRewards.weapon_skin.item_type,
-                animationUrl: openedRewards.weapon_skin.animation_url,
-                avatarUrl: openedRewards.weapon_skin.avatar_url,
-                label: openedRewards.weapon_skin.label,
-                rarity: openedRewards.weapon_skin.tier,
-            }
+        if (openedRewards.weapon_skins) {
+            openedRewards.weapon_skins.map((w) => {
+                const weaponSkin: ArrayItem = {
+                    id: w.id,
+                    imageUrl: w.image_url,
+                    largeImageUrl: w.large_image_url,
+                    type: w.item_type,
+                    animationUrl: w.animation_url,
+                    cardAnimationUrl: w.card_animation_url,
+                    avatarUrl: w.avatar_url,
+                    label: w.label,
+                    rarity: w.tier,
+                }
 
-            newArr = [...newArr, weaponSkin]
+                newArr = [...newArr, weaponSkin]
+            })
         }
 
         setArrayItems(newArr)
@@ -114,7 +149,24 @@ export const CrateRewardsModal = ({ openedRewards, onClose }: CrateRewardsModalP
                             sx={{ m: "4rem", width: "100%" }}
                             backgroundColor={theme.factionTheme.background}
                         >
-                            <Stack spacing="3rem" justifyContent="center" alignItems="center" sx={{ py: "5rem", px: "5.5rem" }}>
+                            <Stack spacing="3rem" justifyContent="center" alignItems="center" sx={{ position: "relative", py: "5rem", px: "5.5rem" }}>
+                                {/* Background image */}
+                                <Box
+                                    sx={{
+                                        position: "absolute",
+                                        top: 0,
+                                        left: 0,
+                                        width: "100%",
+                                        height: "100%",
+                                        opacity: 0.12,
+                                        background: `url(${faction.background_url})`,
+                                        backgroundRepeat: "no-repeat",
+                                        backgroundPosition: "center",
+                                        backgroundSize: "cover",
+                                        zIndex: -1,
+                                    }}
+                                />
+
                                 <Typography variant={"h4"} sx={{ fontFamily: fonts.nostromoBlack }}>
                                     You have received:
                                 </Typography>
@@ -157,13 +209,14 @@ export const CrateRewardsModal = ({ openedRewards, onClose }: CrateRewardsModalP
 }
 
 const MechCrateRewards = ({ items }: { items: ArrayItem[] }) => {
-    const largeItem = items.find((item) => (item.type = "mech"))
+    const mechs = items.filter((item) => item.type === "mech")
+    const notMechs = items.filter((item) => item.type !== "mech")
 
     return (
         <Stack direction="row" spacing="2.2rem" alignItems={"center"}>
-            <CrateRewardItemsLarge item={largeItem} />
+            {mechs.length > 0 && <CrateRewardItemsLarge item={mechs[0]} />}
             <Stack spacing={"1rem"}>
-                {items.map((item) => (
+                {[...mechs.slice(1), ...notMechs].map((item) => (
                     <CrateRewardItemsSmall key={item.id} item={item} />
                 ))}
             </Stack>

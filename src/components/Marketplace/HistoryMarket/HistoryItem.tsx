@@ -137,6 +137,7 @@ export const HistoryItem = ({ eventItem, isGridView }: { eventItem: MarketplaceE
                     }}
                 >
                     <Thumbnail
+                        item={eventItem.item}
                         isGridView={isGridView}
                         imageUrl={itemRelatedData.imageUrl}
                         animationUrl={itemRelatedData.animationUrl}
