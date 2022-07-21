@@ -1,6 +1,6 @@
 import { Box, Pagination, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { ClipThing } from "../.."
+import { ClipThing, FancyButton } from "../.."
 import { SafePNG } from "../../../assets"
 import { useSnackbar } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
@@ -180,7 +180,31 @@ export const MysteryCratesStore = () => {
                             <Typography sx={{ fontSize: "1.85rem" }}>Gear up for the battle arena with a variety of War Machines and Weapons.</Typography>
                         }
                         imageUrl={SafePNG}
-                    ></PageHeader>
+                    >
+                        <Box sx={{ ml: "auto !important", pr: "2rem" }}>
+                            <FancyButton
+                                clipThingsProps={{
+                                    clipSize: "9px",
+                                    backgroundColor: theme.factionTheme.primary,
+                                    opacity: 1,
+                                    border: { isFancy: true, borderColor: theme.factionTheme.primary, borderThickness: "2px" },
+                                    sx: { position: "relative" },
+                                }}
+                                sx={{ px: "1.6rem", py: ".6rem", color: "#FFFFFF" }}
+                                to={`/fleet/mystery-crates${location.hash}`}
+                            >
+                                <Typography
+                                    variant="caption"
+                                    sx={{
+                                        color: "#FFFFFF",
+                                        fontFamily: fonts.nostromoBlack,
+                                    }}
+                                >
+                                    OPEN CRATES IN FLEET
+                                </Typography>
+                            </FancyButton>
+                        </Box>
+                    </PageHeader>
 
                     <TotalAndPageSizeOptions
                         countItems={crates?.length}
