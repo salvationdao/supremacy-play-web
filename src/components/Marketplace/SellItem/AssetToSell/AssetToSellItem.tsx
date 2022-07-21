@@ -1,29 +1,29 @@
-import { Box, Stack, Typography } from "@mui/material"
-import { useEffect, useState } from "react"
+import { Stack } from "@mui/material"
+import { useEffect, useMemo, useState } from "react"
 import { KeycardPNG, SafePNG } from "../../../../assets"
-import { getRarityDeets, getWeaponTypeColor } from "../../../../helpers"
+import { useTheme } from "../../../../containers/theme"
 import { useGameServerCommandsFaction, useGameServerCommandsUser } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
-import { colors, fonts } from "../../../../theme/theme"
 import { Keycard, MechDetails, MysteryCrate, Weapon } from "../../../../types"
 import { ItemType } from "../../../../types/marketplace"
-import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
-import { MechLoadoutIcons } from "../../../Hangar/WarMachinesHangar/Common/MechLoadoutIcons"
+import { KeycardCommonArea } from "../../../Hangar/KeycardsHangar/KeycardHangarItem"
+import { CrateCommonArea } from "../../../Hangar/MysteryCratesHangar/MysteryCrateHangarItem"
+import { MechCommonArea } from "../../../Hangar/WarMachinesHangar/WarMachineHangarItem"
+import { WeaponCommonArea } from "../../../Hangar/WeaponsHangar/WeaponHangarItem"
 import { AssetToSellStruct } from "../SellItem"
 
 export const AssetToSellItem = ({
     itemType,
     assetToSell,
-    playVideo,
     onClick,
     orientation,
 }: {
     itemType: ItemType
     assetToSell: AssetToSellStruct
-    playVideo?: boolean
     onClick?: () => void
     orientation?: "horizontal" | "vertical"
 }) => {
+    const theme = useTheme()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const { send: sendUser } = useGameServerCommandsUser("/user_commander")
     // Additional fetched data
@@ -31,55 +31,6 @@ export const AssetToSellItem = ({
     const [weaponDetails, setWeaponDetails] = useState<Weapon>()
     const [mysteryCrate, setMysteryCrate] = useState<MysteryCrate>()
     const [keycard, setKeycard] = useState<Keycard>()
-
-    // Things for render
-    const [avatarUrl, setAvatarUrl] = useState<string>()
-    const [imageUrl, setImageUrl] = useState<string>()
-    const [animationUrl, setAnimationUrl] = useState<string>()
-    const [cardAnimationUrl, setCardAnimationUrl] = useState<string>()
-    const [label, setLabel] = useState<string>()
-    const [weaponType, setWeaponType] = useState<string>()
-    const [description, setDescription] = useState<string>()
-    const [rarityDeets, setRarityDeets] = useState<{
-        label: string
-        color: string
-    }>()
-
-    // Initial populate
-    useEffect(() => {
-        if (itemType === ItemType.WarMachine) {
-            setAvatarUrl(assetToSell.mech?.avatar_url || mechDetails?.chassis_skin?.avatar_url)
-            setImageUrl(assetToSell.mech?.large_image_url || mechDetails?.chassis_skin?.large_image_url)
-            setAnimationUrl(assetToSell.mech?.animation_url || mechDetails?.chassis_skin?.animation_url)
-            setCardAnimationUrl(assetToSell.mech?.card_animation_url || mechDetails?.chassis_skin?.card_animation_url)
-            setLabel(assetToSell.mech?.name || assetToSell.mech?.label || mechDetails?.name || mechDetails?.label)
-            const tier = assetToSell.mech?.tier || mechDetails?.tier
-            setRarityDeets(tier ? getRarityDeets(tier) : undefined)
-        } else if (itemType === ItemType.MysteryCrate) {
-            setAvatarUrl(assetToSell.mysteryCrate?.image_url || mysteryCrate?.image_url || SafePNG)
-            setImageUrl(assetToSell.mysteryCrate?.image_url || mysteryCrate?.image_url || SafePNG)
-            setAnimationUrl(assetToSell.mysteryCrate?.animation_url || mysteryCrate?.animation_url)
-            setCardAnimationUrl(assetToSell.mysteryCrate?.card_animation_url || mysteryCrate?.card_animation_url)
-            setLabel(assetToSell.mysteryCrate?.label || mysteryCrate?.label)
-            setDescription(assetToSell.mysteryCrate?.description || mysteryCrate?.description)
-        } else if (itemType === ItemType.Weapon) {
-            setAvatarUrl(assetToSell.weapon?.image_url || weaponDetails?.image_url)
-            setImageUrl(assetToSell.weapon?.image_url || weaponDetails?.image_url)
-            setAnimationUrl(assetToSell.weapon?.animation_url || weaponDetails?.animation_url)
-            setCardAnimationUrl(assetToSell.weapon?.card_animation_url || weaponDetails?.card_animation_url)
-            setLabel(assetToSell.weapon?.label)
-            setWeaponType(assetToSell.weapon?.weapon_type || weaponDetails?.weapon_type)
-            const tier = assetToSell.weapon?.tier || weaponDetails?.tier
-            setRarityDeets(tier ? getRarityDeets(tier) : undefined)
-        } else if (itemType === ItemType.Keycards) {
-            setAvatarUrl(assetToSell.keycard?.blueprints.image_url || keycard?.blueprints.image_url || KeycardPNG)
-            setImageUrl(assetToSell.keycard?.blueprints.image_url || keycard?.blueprints.image_url || KeycardPNG)
-            setAnimationUrl(assetToSell.keycard?.blueprints.animation_url || keycard?.blueprints.animation_url)
-            setCardAnimationUrl(assetToSell.keycard?.blueprints.card_animation_url || keycard?.blueprints.card_animation_url)
-            setLabel(assetToSell.keycard?.blueprints.label || keycard?.blueprints.label)
-            setDescription(assetToSell.keycard?.blueprints.description || keycard?.blueprints.description)
-        }
-    }, [assetToSell, mechDetails, weaponDetails, mysteryCrate, keycard, itemType])
 
     // Get addition mech data
     useEffect(() => {
@@ -148,6 +99,96 @@ export const AssetToSellItem = ({
         })()
     }, [assetToSell, itemType, sendUser])
 
+    const commonArea = useMemo(() => {
+        if (itemType === ItemType.WarMachine) {
+            return (
+                <MechCommonArea
+                    primaryColor={theme.factionTheme.primary}
+                    secondaryColor={theme.factionTheme.secondary}
+                    isGridView={orientation === "vertical"}
+                    mech={assetToSell.mech}
+                    mechDetails={mechDetails}
+                />
+            )
+        }
+
+        if (itemType === ItemType.Weapon) {
+            return (
+                <WeaponCommonArea
+                    primaryColor={theme.factionTheme.primary}
+                    secondaryColor={theme.factionTheme.secondary}
+                    isGridView={orientation === "vertical"}
+                    weapon={assetToSell.weapon}
+                    weaponDetails={weaponDetails}
+                />
+            )
+        }
+
+        if (itemType === ItemType.MysteryCrate) {
+            const imageUrl = mysteryCrate?.image_url || assetToSell.mysteryCrate?.image_url || SafePNG
+            const animationUrl = mysteryCrate?.animation_url || assetToSell.mysteryCrate?.animation_url
+            const cardAnimationUrl = mysteryCrate?.card_animation_url || assetToSell.mysteryCrate?.card_animation_url
+
+            return (
+                <CrateCommonArea
+                    isGridView={orientation === "vertical"}
+                    label={mysteryCrate?.label || assetToSell.mysteryCrate?.label || "Mystery Crate"}
+                    description={mysteryCrate?.description || assetToSell.mysteryCrate?.description || ""}
+                    imageUrl={imageUrl}
+                    videoUrls={[animationUrl, cardAnimationUrl]}
+                />
+            )
+        }
+
+        if (itemType === ItemType.Keycards) {
+            const avatarUrl = assetToSell.keycard?.blueprints.image_url || keycard?.blueprints.image_url || KeycardPNG
+            const ImageUrl = assetToSell.keycard?.blueprints.image_url || keycard?.blueprints.image_url || KeycardPNG
+            const animationUrl = assetToSell.keycard?.blueprints.animation_url || keycard?.blueprints.animation_url
+            const cardAnimationUrl = assetToSell.keycard?.blueprints.card_animation_url || keycard?.blueprints.card_animation_url
+
+            return (
+                <KeycardCommonArea
+                    isGridView={orientation === "vertical"}
+                    label={assetToSell.keycard?.blueprints.label || keycard?.blueprints.label || "Keycard"}
+                    description={assetToSell.keycard?.blueprints.description || keycard?.blueprints.description || ""}
+                    imageUrl={avatarUrl || ImageUrl}
+                    videoUrls={[animationUrl, cardAnimationUrl]}
+                />
+            )
+        }
+
+        return null
+    }, [
+        assetToSell.keycard?.blueprints.animation_url,
+        assetToSell.keycard?.blueprints.card_animation_url,
+        assetToSell.keycard?.blueprints.description,
+        assetToSell.keycard?.blueprints.image_url,
+        assetToSell.keycard?.blueprints.label,
+        assetToSell.mech,
+        assetToSell.mysteryCrate?.animation_url,
+        assetToSell.mysteryCrate?.card_animation_url,
+        assetToSell.mysteryCrate?.description,
+        assetToSell.mysteryCrate?.image_url,
+        assetToSell.mysteryCrate?.label,
+        assetToSell.weapon,
+        itemType,
+        keycard?.blueprints.animation_url,
+        keycard?.blueprints.card_animation_url,
+        keycard?.blueprints.description,
+        keycard?.blueprints.image_url,
+        keycard?.blueprints.label,
+        mechDetails,
+        mysteryCrate?.animation_url,
+        mysteryCrate?.card_animation_url,
+        mysteryCrate?.description,
+        mysteryCrate?.image_url,
+        mysteryCrate?.label,
+        orientation,
+        theme.factionTheme.primary,
+        theme.factionTheme.secondary,
+        weaponDetails,
+    ])
+
     return (
         <Stack
             direction={orientation === "horizontal" ? "row" : "column"}
@@ -163,103 +204,7 @@ export const AssetToSellItem = ({
             }}
             onClick={onClick}
         >
-            <Box
-                sx={{
-                    flexShrink: 0,
-                    height: orientation === "horizontal" ? "7rem" : "28rem",
-                    width: orientation === "horizontal" ? "7rem" : "100%",
-                }}
-            >
-                <MediaPreview imageUrl={playVideo ? imageUrl : avatarUrl} {...{ videoUrls: playVideo ? [animationUrl, cardAnimationUrl] : [] }} />
-            </Box>
-
-            <Stack spacing=".3rem">
-                {itemType !== ItemType.Weapon && rarityDeets && (
-                    <Typography
-                        variant="body2"
-                        sx={{
-                            color: rarityDeets.color,
-                            fontFamily: fonts.nostromoBlack,
-                            display: "-webkit-box",
-                            overflow: "hidden",
-                            overflowWrap: "anywhere",
-                            textOverflow: "ellipsis",
-                            WebkitLineClamp: orientation === "horizontal" ? 1 : 2,
-                            WebkitBoxOrient: "vertical",
-                        }}
-                    >
-                        {rarityDeets.label}
-                    </Typography>
-                )}
-
-                {weaponType && (
-                    <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBlack, color: getWeaponTypeColor(weaponType) }}>
-                        {weaponType}
-                    </Typography>
-                )}
-
-                {label && (
-                    <Typography
-                        variant="body2"
-                        sx={{
-                            fontFamily: fonts.nostromoBlack,
-                            display: "-webkit-box",
-                            overflow: "hidden",
-                            overflowWrap: "anywhere",
-                            textOverflow: "ellipsis",
-                            WebkitLineClamp: orientation === "horizontal" ? 1 : 2,
-                            WebkitBoxOrient: "vertical",
-                        }}
-                    >
-                        {label}
-                    </Typography>
-                )}
-
-                {description && (
-                    <Typography
-                        sx={{
-                            display: "-webkit-box",
-                            overflow: "hidden",
-                            overflowWrap: "anywhere",
-                            textOverflow: "ellipsis",
-                            WebkitLineClamp: orientation === "horizontal" ? 1 : 2,
-                            WebkitBoxOrient: "vertical",
-                        }}
-                    >
-                        {description}
-                    </Typography>
-                )}
-
-                {weaponDetails && (
-                    <Stack direction="row" spacing=".5rem" sx={{ pt: ".4rem" }}>
-                        {weaponDetails?.weapon_skin && rarityDeets ? (
-                            <>
-                                <Typography variant="caption" sx={{ lineHeight: 1, color: colors.chassisSkin, fontFamily: fonts.nostromoBold }}>
-                                    SUBMODEL: {weaponDetails?.weapon_skin.label}
-                                </Typography>
-                                <Typography variant="caption" sx={{ lineHeight: 1, color: rarityDeets.color, fontFamily: fonts.nostromoBold }}>
-                                    ({rarityDeets.label})
-                                </Typography>
-                            </>
-                        ) : (
-                            <>
-                                <Typography variant="caption" sx={{ lineHeight: 1, color: colors.chassisSkin, fontFamily: fonts.nostromoBold }}>
-                                    SUBMODEL:
-                                </Typography>
-                                <Typography variant="caption" sx={{ lineHeight: 1, color: colors.darkGrey, fontFamily: fonts.nostromoBold }}>
-                                    NOT EQUIPPED
-                                </Typography>
-                            </>
-                        )}
-                    </Stack>
-                )}
-
-                {mechDetails && (
-                    <Box sx={{ pt: ".4rem" }}>
-                        <MechLoadoutIcons mechDetails={mechDetails} />
-                    </Box>
-                )}
-            </Stack>
+            {commonArea}
         </Stack>
     )
 }

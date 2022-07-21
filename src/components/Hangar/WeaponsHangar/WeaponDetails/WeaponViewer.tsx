@@ -45,9 +45,18 @@ export const WeaponViewer = ({ weaponDetails }: { weaponDetails: Weapon }) => {
                     zIndex: 3,
                     width: "100%",
                     height: "100%",
+                    left: "50%",
+                    top: "50%",
+                    transform: "translate(-50%, -50%)",
+                    overflow: "hidden",
                 }}
             >
-                <MediaPreview imageUrl={largeImageUrl || imageUrl || avatarUrl} videoUrls={[animationUrl, cardAnimationUrl]} objectFit="contain" />
+                <MediaPreview
+                    imageUrl={largeImageUrl || imageUrl || avatarUrl}
+                    videoUrls={[animationUrl, cardAnimationUrl]}
+                    objectFit="contain"
+                    blurBackground
+                />
             </Box>
         </Box>
     )
