@@ -57,6 +57,10 @@ export interface MarketMech {
     name: string
     label: string
     avatar_url: string
+    image_url: string
+    large_image_url: string
+    animation_url: string
+    large_animation_url: string
 }
 
 export interface MarketWeapon {
