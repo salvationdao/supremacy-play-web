@@ -243,6 +243,19 @@ export interface WeaponSkin extends Collection {
     weapon_model_id: Date
 }
 
+export interface WeaponMaxStats {
+    max_ammo?: number
+    damage: number
+    damage_falloff?: number
+    damage_falloff_rate?: number
+    spread?: number
+    rate_of_fire?: number
+    radius?: number
+    radius_damage_falloff?: number
+    projectile_speed?: number
+    energy_cost?: number
+}
+
 export interface Utility extends Collection {
     id: string
     brand_id?: string
