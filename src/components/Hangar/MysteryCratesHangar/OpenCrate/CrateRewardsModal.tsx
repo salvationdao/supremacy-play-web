@@ -204,9 +204,9 @@ const MechCrateRewards = ({ items }: { items: ArrayItem[] }) => {
     const notMechs = items.filter((item) => item.type !== "mech")
 
     return (
-        <Stack direction="row" spacing="2.2rem" alignItems={"center"}>
+        <Stack direction="row" spacing="2rem" alignItems={"center"}>
             {mechs.length > 0 && <CrateRewardItemsLarge item={mechs[0]} largerVersion />}
-            <Stack spacing={"1rem"}>
+            <Stack spacing=".5rem">
                 {[...mechs.slice(1), ...notMechs].map((item) => (
                     <CrateRewardItemsSmall key={item.id} item={item} />
                 ))}
