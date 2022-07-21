@@ -10,6 +10,7 @@ import { FancyButton } from "../../../Common/FancyButton"
 import { CrateRewardItemsLarge, CrateRewardItemsSmall } from "./CrateRewardItems"
 
 interface CrateRewardsModalProps {
+    open: boolean
     openedRewards: OpenCrateResponse
     onClose?: () => void
 }
@@ -27,7 +28,7 @@ export interface ArrayItem {
     skin?: MechSkin | WeaponSkin
 }
 
-export const CrateRewardsModal = ({ openedRewards, onClose }: CrateRewardsModalProps) => {
+export const CrateRewardsModal = ({ open, openedRewards, onClose }: CrateRewardsModalProps) => {
     const { getFaction } = useSupremacy()
     const { factionID } = useAuth()
     const theme = useTheme()
@@ -117,7 +118,7 @@ export const CrateRewardsModal = ({ openedRewards, onClose }: CrateRewardsModalP
     }, [openedRewards, setArrayItems])
 
     return (
-        <Modal open onClose={onClose} sx={{ zIndex: siteZIndex.Modal }}>
+        <Modal open={open} onClose={onClose} sx={{ zIndex: siteZIndex.Modal }}>
             <Box
                 sx={{
                     position: "absolute",
@@ -164,26 +165,49 @@ export const CrateRewardsModal = ({ openedRewards, onClose }: CrateRewardsModalP
 
                                 {openedRewards.mech ? <MechCrateRewards items={arrayItems} /> : <WeaponCrateRewards items={arrayItems} />}
 
-                                <FancyButton
-                                    clipThingsProps={{
-                                        clipSize: "9px",
-                                        backgroundColor: theme.factionTheme.primary,
-                                        opacity: 1,
-                                        border: { isFancy: true, borderColor: theme.factionTheme.primary, borderThickness: "2px" },
-                                        sx: { position: "relative", width: "28rem", mt: "auto" },
-                                    }}
-                                    sx={{ width: "100%", py: "1rem", color: theme.factionTheme.secondary }}
-                                    onClick={onClose}
-                                >
-                                    <Typography
-                                        sx={{
-                                            color: theme.factionTheme.secondary,
-                                            fontFamily: fonts.nostromoBlack,
+                                <Stack alignItems="center" spacing="1.4rem" sx={{ mt: "auto" }}>
+                                    <FancyButton
+                                        clipThingsProps={{
+                                            clipSize: "9px",
+                                            backgroundColor: theme.factionTheme.primary,
+                                            opacity: 1,
+                                            border: { isFancy: true, borderColor: theme.factionTheme.primary, borderThickness: "2px" },
+                                            sx: { position: "relative", width: "28rem" },
                                         }}
+                                        sx={{ width: "100%", py: "1rem", color: theme.factionTheme.secondary }}
+                                        to="/storefront/mystery-crates"
                                     >
-                                        CONTINUE
-                                    </Typography>
-                                </FancyButton>
+                                        <Typography
+                                            sx={{
+                                                color: theme.factionTheme.secondary,
+                                                fontFamily: fonts.nostromoBlack,
+                                            }}
+                                        >
+                                            BUY MORE CRATES
+                                        </Typography>
+                                    </FancyButton>
+
+                                    <FancyButton
+                                        clipThingsProps={{
+                                            clipSize: "9px",
+                                            backgroundColor: theme.factionTheme.background,
+                                            opacity: 1,
+                                            border: { borderColor: theme.factionTheme.primary, borderThickness: "2px" },
+                                            sx: { position: "relative", width: "28rem" },
+                                        }}
+                                        sx={{ width: "100%", py: "1rem", color: theme.factionTheme.secondary }}
+                                        onClick={onClose}
+                                    >
+                                        <Typography
+                                            sx={{
+                                                color: theme.factionTheme.secondary,
+                                                fontFamily: fonts.nostromoBlack,
+                                            }}
+                                        >
+                                            CONTINUE
+                                        </Typography>
+                                    </FancyButton>
+                                </Stack>
                             </Stack>
 
                             {onClose && (
