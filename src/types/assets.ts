@@ -466,6 +466,7 @@ export interface KeycardBlueprint {
 }
 
 export interface RewardResponse {
+    mystery_crate?: StorefrontMysteryCrate
     label: string
     image_url: string
     locked_until: Date
@@ -478,6 +479,7 @@ export interface MysteryCrateOwnershipResp {
 }
 
 export interface OpenCrateResponse {
+    id: string
     mech?: MechDetails
     power_core?: PowerCore
     mech_skins?: MechSkin[]
