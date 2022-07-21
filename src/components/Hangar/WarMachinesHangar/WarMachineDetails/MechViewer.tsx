@@ -43,8 +43,8 @@ export const MechViewer = ({ mechDetails }: { mechDetails: MechDetails }) => {
                 sx={{
                     position: "absolute",
                     zIndex: 3,
-                    aspectRatio: "1",
-                    height: "90%",
+                    aspectRatio: "1.1",
+                    height: "80%",
                     left: "50%",
                     top: "50%",
                     transform: "translate(-50%, -50%)",
