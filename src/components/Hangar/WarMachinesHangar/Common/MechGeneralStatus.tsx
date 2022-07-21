@@ -4,7 +4,7 @@ import { useTheme } from "../../../../containers/theme"
 import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { fonts, colors } from "../../../../theme/theme"
-import { MechRepairStatus, MechStatus, MechStatusEnum } from "../../../../types"
+import { MechStatus, MechStatusEnum } from "../../../../types"
 
 export const MechGeneralStatus = ({ mechID, hideBox }: { mechID: string; hideBox?: boolean }) => {
     const theme = useTheme()
@@ -19,7 +19,6 @@ export const MechGeneralStatus = ({ mechID, hideBox }: { mechID: string; hideBox
         },
         (payload) => {
             if (!payload || text === "SOLD") return
-            console.log(payload)
             switch (payload.status) {
                 case MechStatusEnum.Idle:
                     setText("IDLE")
@@ -82,7 +81,7 @@ export const MechGeneralStatus = ({ mechID, hideBox }: { mechID: string; hideBox
         (payload) => {
             if (!payload) return
 
-            console.log("trigger repair state update")
+            // force update status
             triggerStatusUpdate("")
         },
     )

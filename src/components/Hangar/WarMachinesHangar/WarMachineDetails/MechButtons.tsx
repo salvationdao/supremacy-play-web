@@ -1,15 +1,16 @@
 import { Box, Typography } from "@mui/material"
-import { useState } from "react"
+import { useCallback, useState } from "react"
 import { useLocation } from "react-router-dom"
 import { ClipThing, FancyButton, TooltipHelper } from "../../.."
 import { BATTLE_ARENA_OPEN } from "../../../../constants"
 import { useTheme } from "../../../../containers/theme"
-import { useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
+import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { MARKETPLACE_TABS } from "../../../../pages"
 import { colors, fonts } from "../../../../theme/theme"
-import { MechDetails, MechStatus, MechStatusEnum } from "../../../../types"
+import { MechDetails, MechStatus, MechStatusEnum, RepairType } from "../../../../types"
 import { ItemType } from "../../../../types/marketplace"
+import { useSnackbar } from "../../../../containers"
 
 export const MechButtons = ({
     mechDetails,
@@ -30,6 +31,9 @@ export const MechButtons = ({
     const theme = useTheme()
     const [mechState, setMechState] = useState<MechStatusEnum>()
 
+    const { newSnackbarMessage } = useSnackbar()
+    const { send } = useGameServerCommandsFaction("/faction_commander")
+
     useGameServerSubscriptionFaction<MechStatus>(
         {
             URI: `/queue/${mechDetails.id}`,
@@ -39,6 +43,20 @@ export const MechButtons = ({
             if (!payload || mechState === MechStatusEnum.Sold) return
             setMechState(payload.status)
         },
+    )
+
+    const onRepair = useCallback(
+        async (repairType: string) => {
+            try {
+                const resp = await send(GameServerKeys.RepairWarMachine, { mech_id: mechDetails.id, repair_type: repairType })
+                if (resp) {
+                    newSnackbarMessage("Successfully submit repair request", "success")
+                }
+            } catch (e) {
+                console.error(e)
+            }
+        },
+        [send, mechDetails.id, newSnackbarMessage],
     )
 
     return (
@@ -84,9 +102,20 @@ export const MechButtons = ({
                 <ReusableButton
                     isFancy
                     primaryColor={colors.orange}
+                    disabled={mechState !== MechStatusEnum.StandardRepairing && mechState !== MechStatusEnum.Damaged}
                     backgroundColor={colors.orange}
-                    label="REPAIR"
-                    disabled={mechState != MechStatusEnum.Damaged}
+                    label={mechState === MechStatusEnum.StandardRepairing ? "FAST REPAIR" : "REPAIR"}
+                    onClick={() => {
+                        switch (mechState) {
+                            case MechStatusEnum.Damaged:
+                                onRepair(RepairType.Standard)
+
+                                break
+                            case MechStatusEnum.StandardRepairing:
+                                onRepair(RepairType.Fast)
+                                break
+                        }
+                    }}
                 />
 
                 {/* Button 4 */}

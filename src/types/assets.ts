@@ -16,6 +16,11 @@ export enum MechStatusEnum {
     FastRepairing = "REPAIRING (FAST)",
 }
 
+export enum RepairType {
+    Standard = "START_STANDARD_REPAIR",
+    Fast = "START_FAST_REPAIR",
+}
+
 export enum WeaponType {
     Cannon = "Cannon",
     Sword = "Sword",
