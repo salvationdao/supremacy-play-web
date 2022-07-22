@@ -153,6 +153,15 @@ export const Messages = () => {
                         sx={{
                             ml: 0,
                             fontSize: "1rem",
+                            "& .MuiSwitch-switchBase.Mui-checked": {
+                                color: theme.factionTheme.primary,
+                                "&:hover": {
+                                    backgroundColor: `${theme.factionTheme.primary}dd`,
+                                },
+                            },
+                            "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track": {
+                                backgroundColor: theme.factionTheme.primary,
+                            },
                         }}
                     />
 
