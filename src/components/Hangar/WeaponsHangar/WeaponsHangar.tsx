@@ -1,10 +1,12 @@
 import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useParameterizedQuery } from "react-fetching-library"
-import { GetWeaponMaxStats } from "../../../fetching"
 import { ClipThing, FancyButton } from "../.."
 import { EmptyWarMachinesPNG, WarMachineIconPNG } from "../../../assets"
+import { HANGAR_PAGE } from "../../../constants"
+import { useAuth } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
+import { GetWeaponMaxStats } from "../../../fetching"
 import { getWeaponTypeColor, parseString } from "../../../helpers"
 import { usePagination, useToggle, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
@@ -17,8 +19,6 @@ import { SliderRangeFilter } from "../../Common/SortAndFilters/SliderRangeFilter
 import { SortAndFilters } from "../../Common/SortAndFilters/SortAndFilters"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { WeaponHangarItem } from "./WeaponHangarItem"
-import { HANGAR_PAGE } from "../../../constants"
-import {useAuth} from "../../../containers";
 
 interface GetWeaponsRequest {
     page: number
