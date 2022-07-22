@@ -1,19 +1,20 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useCallback, useState } from "react"
 import { FancyButton, TooltipHelper } from "../.."
+import { useSnackbar } from "../../../containers"
 import { useGameServerCommandsFaction, useGameServerSubscriptionUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
-import { fonts } from "../../../theme/theme"
+import { colors, fonts } from "../../../theme/theme"
 
 interface BattleAbilityTextTopProps {
     label: string
     description: string
     image_url: string
     colour: string
-    showButton: boolean
+    disableButton: boolean
 }
 
-export const BattleAbilityTextTop = ({ label, description, image_url, colour, showButton }: BattleAbilityTextTopProps) => {
+export const BattleAbilityTextTop = ({ label, description, image_url, colour, disableButton }: BattleAbilityTextTopProps) => {
     const [isOptedIn, setIsOptedIn] = useState(true)
 
     useGameServerSubscriptionUser<boolean | undefined>(
@@ -61,53 +62,49 @@ export const BattleAbilityTextTop = ({ label, description, image_url, colour, sh
                     </Typography>
                 </Stack>
             </TooltipHelper>
-            {showButton && <OptInButton isOptedIn={isOptedIn} />}
+            <OptInButton disable={disableButton || isOptedIn} />
         </Stack>
     )
 }
 
-interface OptInButtonProps {
-    colour?: string
-    text_colour?: string
-    isOptedIn: boolean
-}
-
-const OptInButton = ({ isOptedIn, colour, text_colour }: OptInButtonProps) => {
+const OptInButton = ({ disable }: { disable: boolean }) => {
+    const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsFaction("/faction_commander")
 
     const onTrigger = useCallback(async () => {
         try {
-            if (isOptedIn) return
+            if (disable) return
             await send(GameServerKeys.OptInBattleAbility)
-        } catch (e) {
-            console.error(e)
+        } catch (err) {
+            const message = typeof err === "string" ? err : "Failed to opt in battle ability."
+            newSnackbarMessage(message, "error")
+            console.error(message)
         }
-    }, [isOptedIn, send])
+    }, [disable, newSnackbarMessage, send])
 
     return (
         <FancyButton
-            disabled={isOptedIn}
+            disabled={disable}
             clipThingsProps={{
                 clipSize: "5px",
-                backgroundColor: colour || "#14182B",
-                border: { isFancy: true, borderColor: colour || "#14182B" },
+                backgroundColor: colors.green,
+                border: { isFancy: true, borderColor: colors.green },
                 sx: { position: "relative" },
             }}
-            sx={{ px: "1.2rem", pt: ".4rem", pb: ".5rem", minWidth: "7rem" }}
+            sx={{ px: "2rem", pt: ".4rem", pb: ".5rem", minWidth: "7rem", color: "#FFFFFF" }}
             onClick={onTrigger}
         >
             <Stack alignItems="center" justifyContent="center" direction="row">
                 <Typography
-                    variant="body2"
                     sx={{
                         lineHeight: 1,
                         fontWeight: "fontWeightBold",
                         whiteSpace: "nowrap",
                         textTransform: "none",
-                        color: text_colour || "#FFFFFF",
+                        color: "#FFFFFF",
                     }}
                 >
-                    {isOptedIn ? `CLAIMED` : `OPT IN`}
+                    OPT IN
                 </Typography>
             </Stack>
         </FancyButton>

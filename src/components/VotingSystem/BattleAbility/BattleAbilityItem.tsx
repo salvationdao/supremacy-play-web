@@ -153,7 +153,7 @@ const BattleAbilityItemInner = ({ bribeStage, battleAbility, fadeEffect, isVotin
                                             description={description}
                                             image_url={image_url}
                                             colour={colour}
-                                            showButton={!!factionID && bribeStage?.phase === "OPT_IN"}
+                                            disableButton={!factionID || bribeStage?.phase !== "OPT_IN"}
                                         />
                                     </Stack>
                                 </ClipThing>

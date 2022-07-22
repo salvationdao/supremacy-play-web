@@ -24,15 +24,15 @@ const CountdownText = ({ bribeStage }: { bribeStage?: BribeStageResponse }) => {
     const doSentence = useCallback(() => {
         switch (phase) {
             case "OPT_IN":
-                setSentence(`BATTLE ABILITY (${totalSecRemain} s)`)
+                setSentence(`BATTLE ABILITY (${totalSecRemain}s)`)
                 break
 
             case "LOCATION_SELECT":
-                setSentence(`BATTLE ABILITY INITIATED (${totalSecRemain} s)`)
+                setSentence(`BATTLE ABILITY INITIATED (${totalSecRemain}s)`)
                 break
 
             case "COOLDOWN":
-                setSentence(`NEXT BATTLE ABILITY (${totalSecRemain} s)`)
+                setSentence(`NEXT BATTLE ABILITY (${totalSecRemain}s)`)
                 break
         }
     }, [phase, totalSecRemain])
