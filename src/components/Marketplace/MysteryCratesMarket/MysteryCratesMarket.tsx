@@ -43,7 +43,11 @@ export const MysteryCratesMarket = () => {
         pageSize: parseString(query.get("pageSize"), 10),
         page: parseString(query.get("page"), 1),
     })
-    const [isGridView, toggleIsGridView] = useToggle(false)
+    const [isGridView, toggleIsGridView] = useToggle(localStorage.getItem("marketCrateGrid") === "true")
+
+    useEffect(() => {
+        localStorage.setItem("marketCrateGrid", isGridView.toString())
+    }, [isGridView])
 
     // Filters and sorts
     const [search, setSearch] = useState("")

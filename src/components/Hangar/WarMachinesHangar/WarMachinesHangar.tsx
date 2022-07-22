@@ -57,7 +57,11 @@ export const WarMachinesHangar = () => {
     const [sort, setSort] = useState<string>(query.get("sort") || SortTypeLabel.MechQueueAsc)
     const [status, setStatus] = useState<string[]>((query.get("statuses") || undefined)?.split("||") || [])
     const [rarities, setRarities] = useState<string[]>((query.get("rarities") || undefined)?.split("||") || [])
-    const [isGridView, toggleIsGridView] = useToggle(false)
+    const [isGridView, toggleIsGridView] = useToggle((localStorage.getItem("fleetMechGrid") || "true") === "true")
+
+    useEffect(() => {
+        localStorage.setItem("fleetMechGrid", isGridView.toString())
+    }, [isGridView])
 
     // Filters
     const statusFilterSection = useRef<ChipFilter>({
@@ -260,7 +264,7 @@ export const WarMachinesHangar = () => {
                                         clipSize: "9px",
                                         backgroundColor: colors.gold,
                                         opacity: 1,
-                                        border: { isFancy: true, borderColor: colors.gold, borderThickness: "2px" },
+                                        border: { borderColor: colors.gold, borderThickness: "2px" },
                                         sx: { position: "relative" },
                                     }}
                                     sx={{ px: "1.6rem", py: ".6rem", color: "#000000" }}

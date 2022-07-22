@@ -47,8 +47,12 @@ export const WeaponsMarket = () => {
         pageSize: parseString(query.get("pageSize"), 10),
         page: parseString(query.get("page"), 1),
     })
-    const [isGridView, toggleIsGridView] = useToggle(false)
+    const [isGridView, toggleIsGridView] = useToggle(localStorage.getItem("marketWeaponGrid") === "true")
     const [isExpanded, toggleIsExpanded] = useToggle(false)
+
+    useEffect(() => {
+        localStorage.setItem("marketWeaponGrid", isGridView.toString())
+    }, [isGridView])
 
     // Filters and sorts
     const [search, setSearch] = useState("")
@@ -61,34 +65,34 @@ export const WeaponsMarket = () => {
         (query.get("priceRanges") || undefined)?.split("||").map((p) => (p ? parseInt(p) : undefined)) || [undefined, undefined],
     )
     const [ammoRange, setAmmoRange] = useState<number[]>(
-        (query.get("ammo") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 3000)) || [0, 3000],
+        (query.get("ammo") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 30000)) || [0, 30000],
     )
     const [damageRange, setDamageRange] = useState<number[]>(
-        (query.get("damage") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 1000)) || [0, 1000],
+        (query.get("damage") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 10000)) || [0, 10000],
     )
     const [damageFalloffRange, setDamageFalloffRange] = useState<number[]>(
-        (query.get("damageFalloff") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 1000)) || [0, 1000],
+        (query.get("damageFalloff") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 10000)) || [0, 10000],
     )
     const [damageFalloffRateRange, setDamageFalloffRateRange] = useState<number[]>(
-        (query.get("damageFalloffRate") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 1000)) || [0, 1000],
+        (query.get("damageFalloffRate") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 10000)) || [0, 10000],
     )
     const [radiusRange, setRadiusRange] = useState<number[]>(
-        (query.get("radius") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 2000)) || [0, 2000],
+        (query.get("radius") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 20000)) || [0, 20000],
     )
     const [radiusDamageFalloffRange, setRadiusDamageFalloffRange] = useState<number[]>(
-        (query.get("radiusDamageFalloff") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 2000)) || [0, 2000],
+        (query.get("radiusDamageFalloff") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 20000)) || [0, 20000],
     )
     const [rateOfFireRange, setRateOfFireRange] = useState<number[]>(
-        (query.get("rateOfFire") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 1000)) || [0, 1000],
+        (query.get("rateOfFire") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 10000)) || [0, 10000],
     )
     const [energyCostRange, setEnergyCostRange] = useState<number[]>(
-        (query.get("energyCost") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 100)) || [0, 100],
+        (query.get("energyCost") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 10000)) || [0, 10000],
     )
     const [projectileSpeedRange, setProjectileSpeedRange] = useState<number[]>(
-        (query.get("projectileSpeed") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 200000)) || [0, 200000],
+        (query.get("projectileSpeed") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 2000000)) || [0, 2000000],
     )
     const [spreadRange, setSpreadRange] = useState<number[]>(
-        (query.get("spread") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 100)) || [0, 100],
+        (query.get("spread") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 100)) || [0, 10000],
     )
 
     // Filters
@@ -270,7 +274,7 @@ export const WeaponsMarket = () => {
     useEffect(() => {
         ;(async () => {
             try {
-                const resp = await queryGetWeaponMaxStats({})
+                const resp = await queryGetWeaponMaxStats(undefined)
                 if (resp.error || !resp.payload) return
                 ammoRangeFilter.current.minMax[1] = resp.payload.max_ammo || 0
                 damageRangeFilter.current.minMax[1] = resp.payload.damage || 0

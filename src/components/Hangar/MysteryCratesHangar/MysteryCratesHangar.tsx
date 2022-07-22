@@ -1,5 +1,5 @@
 import { Box, Pagination, Stack, Typography } from "@mui/material"
-import React, { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { useLocation } from "react-router-dom"
 import { ClipThing, FancyButton } from "../.."
 import { SafePNG } from "../../../assets"
@@ -10,7 +10,7 @@ import { usePagination, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { MysteryCrate, MysteryCrateType, OpenCrateResponse } from "../../../types"
+import { MysteryCrate, MysteryCrateType, OpenCrateResponse, StorefrontMysteryCrate } from "../../../types"
 import { PageHeader } from "../../Common/PageHeader"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { MysteryCrateStoreItemLoadingSkeleton } from "../../Storefront/MysteryCratesStore/MysteryCrateStoreItem/MysteryCrateStoreItem"
@@ -45,6 +45,7 @@ export const MysteryCratesHangar = () => {
     const [loadError, setLoadError] = useState<string>()
     const [openingCrate, setOpeningCrate] = useState<OpeningCrate>()
     const [openedRewards, setOpenedRewards] = useState<OpenCrateResponse>()
+    const [futureCratesToOpen, setFutureCratesToOpen] = useState<(StorefrontMysteryCrate | MysteryCrate)[]>([])
 
     const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, changePageSize, prevPage } = usePagination({
         pageSize: parseString(query.get("pageSize"), 10),
@@ -69,6 +70,7 @@ export const MysteryCratesHangar = () => {
             if (!resp) return
             setLoadError(undefined)
             setCrates(resp.mystery_crates)
+            setFutureCratesToOpen(resp.mystery_crates)
             setTotalItems(resp.total)
         } catch (e) {
             const message = typeof e === "string" ? e : "Failed to get mystery crates."
@@ -80,8 +82,13 @@ export const MysteryCratesHangar = () => {
     }, [send, page, pageSize, updateQuery, setTotalItems])
 
     useEffect(() => {
-        getItems()
-    }, [getItems])
+        if (crates && crates.length <= 0 && page > 1) {
+            prevPage()
+        } else {
+            getItems()
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [getItems, futureCratesToOpen.length])
 
     const content = useMemo(() => {
         if (loadError) {
@@ -177,7 +184,7 @@ export const MysteryCratesHangar = () => {
                     </Typography>
 
                     <FancyButton
-                        to={`/marketplace/mystery-crates${location.hash}`}
+                        to={`/storefront/mystery-crates${location.hash}`}
                         clipThingsProps={{
                             clipSize: "9px",
                             backgroundColor: theme.factionTheme.primary,
@@ -194,7 +201,7 @@ export const MysteryCratesHangar = () => {
                                 fontFamily: fonts.nostromoBold,
                             }}
                         >
-                            GO TO MARKETPLACE
+                            GO TO STOREFRONT
                         </Typography>
                     </FancyButton>
                 </Stack>
@@ -228,7 +235,7 @@ export const MysteryCratesHangar = () => {
                                         clipSize: "9px",
                                         backgroundColor: colors.gold,
                                         opacity: 1,
-                                        border: { isFancy: true, borderColor: colors.gold, borderThickness: "2px" },
+                                        border: { borderColor: colors.gold, borderThickness: "2px" },
                                         sx: { position: "relative" },
                                     }}
                                     sx={{ px: "1.6rem", py: ".6rem", color: "#000000" }}
@@ -322,12 +329,20 @@ export const MysteryCratesHangar = () => {
 
             {openedRewards && (
                 <CrateRewardsModal
-                    open={!openingCrate}
+                    key={JSON.stringify(openedRewards)}
                     openedRewards={openedRewards}
+                    setOpeningCrate={setOpeningCrate}
+                    setOpenedRewards={setOpenedRewards}
+                    futureCratesToOpen={futureCratesToOpen}
+                    setFutureCratesToOpen={setFutureCratesToOpen}
                     onClose={() => {
                         setOpenedRewards(undefined)
                         // If user opened the last one on page, then go back a page
-                        if (crates && crates.length <= 1) prevPage()
+                        // if (futureCratesToOpen.length <= 0 && page > 1) {
+                        //     prevPage()
+                        // } else {
+                        //     getItems()
+                        // }
                     }}
                 />
             )}
