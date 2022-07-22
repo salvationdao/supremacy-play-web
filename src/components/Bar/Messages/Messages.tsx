@@ -2,7 +2,6 @@ import { Badge, Box, IconButton, Pagination, Popover, Stack, Typography } from "
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { SvgAnnouncement, SvgDamage1, SvgHistoryClock, SvgListView, SvgMail, SvgWrapperProps } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
-import { timeSinceInWords } from "../../../helpers"
 import { usePagination, useToggle } from "../../../hooks"
 import { useGameServerCommandsUser, useGameServerSubscriptionUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
@@ -15,10 +14,44 @@ export interface SystemMessageDisplayable extends SystemMessage {
     icon: React.VoidFunctionComponent<SvgWrapperProps>
 }
 
+const test: SystemMessageDisplayable[] = [
+    {
+        id: "CCCCCCCCCCCCCCC",
+        player_id: "AAAAAAAAAAAAAAAA",
+        icon: SvgDamage1,
+        type: SystemMessageType.MechBattleComplete,
+        message: "Your mech has been queued!",
+        data: {
+            mech_id: "nnnnnnnnnnnnnnnn",
+            faction_won: true,
+            briefs: [
+                {
+                    mech_id: "nnnnnnnnnnnnnnnn",
+                    faction_id: "nnnnnnnnnnnnnnnn",
+                    kills: 3,
+                    killed: null,
+                    label: "Mech Tenshi",
+                    name: "My Baby",
+                },
+            ],
+        },
+        sent_at: new Date(),
+    },
+    {
+        id: "BBBBBBBBBBBBBB",
+        icon: SvgListView,
+        player_id: "AAAAAAAAAAAAAAAA",
+        type: SystemMessageType.MechBattleComplete,
+        message: "Your mech has been queued! Your mech has been queued! Your mech has been queued!",
+        data: null,
+        sent_at: new Date(),
+    },
+]
+
 export const Messages = () => {
     const theme = useTheme()
     const { send } = useGameServerCommandsUser("/user_commander")
-    const [messages, setMessages] = useState<SystemMessageDisplayable[]>([])
+    const [messages, setMessages] = useState<SystemMessageDisplayable[]>([...test])
     const [lastUpdated, setLastUpdated] = useState<Date>(new Date())
 
     const popoverRef = useRef(null)
@@ -127,44 +160,39 @@ export const Messages = () => {
         }
 
         return (
-            <Stack sx={{ p: "1rem" }} spacing="1rem">
-                <Stack spacing=".8rem">
-                    <Stack direction="row" alignItems="center" justifyContent="end" spacing=".4rem">
-                        <SvgHistoryClock size="1rem" fill={colors.grey} />
-                        <Typography variant="body2" sx={{ opacity: 0.5, ":hover": { opacity: 1 } }}>
-                            Last updated: {timeSinceInWords(new Date(), lastUpdated, true)} ago
-                        </Typography>
-                    </Stack>
-
+            <Stack spacing="1rem">
+                <Stack spacing=".8rem" sx={{ p: "1rem 2rem", pb: "1.5rem" }}>
                     {messages.map((m) => (
                         <MessageItem key={m.id} message={m} onDismiss={() => dismissMessage(m.id)} />
                     ))}
                 </Stack>
 
-                <Box
-                    sx={{
-                        pt: "1rem",
-                        borderTop: `${theme.factionTheme.primary}70 1.5px solid`,
-                        backgroundColor: "#00000070",
-                    }}
-                >
-                    <Pagination
-                        size="small"
-                        count={totalPages}
-                        page={page}
+                {totalPages > 1 && (
+                    <Box
                         sx={{
-                            ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold, fontSize: "1.2rem" },
-                            ".Mui-selected": {
-                                color: theme.factionTheme.secondary,
-                                backgroundColor: `${theme.factionTheme.primary} !important`,
-                            },
+                            pt: "1rem",
+                            borderTop: `${theme.factionTheme.primary}70 1.5px solid`,
+                            backgroundColor: "#00000070",
                         }}
-                        onChange={(e, p) => changePage(p)}
-                    />
-                </Box>
+                    >
+                        <Pagination
+                            size="small"
+                            count={totalPages}
+                            page={page}
+                            sx={{
+                                ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold, fontSize: "1.2rem" },
+                                ".Mui-selected": {
+                                    color: theme.factionTheme.secondary,
+                                    backgroundColor: `${theme.factionTheme.primary} !important`,
+                                },
+                            }}
+                            onChange={(e, p) => changePage(p)}
+                        />
+                    </Box>
+                )}
             </Stack>
         )
-    }, [messages, theme.factionTheme.primary, theme.factionTheme.secondary, lastUpdated, totalPages, page, dismissMessage, changePage])
+    }, [messages, theme.factionTheme.primary, theme.factionTheme.secondary, totalPages, page, dismissMessage, changePage])
 
     return (
         <>
@@ -232,7 +260,6 @@ export const Messages = () => {
                     }}
                 >
                     <Stack
-                        spacing=".5rem"
                         sx={{
                             p: "1rem 2rem",
                             borderBottom: `${theme.factionTheme.primary}70 1.5px solid`,
@@ -242,6 +269,11 @@ export const Messages = () => {
                             <Typography variant="h6" sx={{ fontFamily: fonts.nostromoBlack }}>
                                 SYSTEM MESSAGES
                             </Typography>
+                        </Stack>
+
+                        <Stack direction="row" alignItems="center" spacing=".4rem" sx={{ opacity: 0.5, ":hover": { opacity: 1 } }}>
+                            <SvgHistoryClock size="1.2rem" />
+                            <Typography>Last updated: {lastUpdated.toISOString()}</Typography>
                         </Stack>
 
                         {error && (
