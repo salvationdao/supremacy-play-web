@@ -18,6 +18,7 @@ import { SortAndFilters } from "../../Common/SortAndFilters/SortAndFilters"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { WeaponHangarItem } from "./WeaponHangarItem"
 import { HANGAR_PAGE } from "../../../constants"
+import {useAuth} from "../../../containers";
 
 interface GetWeaponsRequest {
     page: number
@@ -51,6 +52,7 @@ interface GetWeaponsResponse {
 
 export const WeaponsHangar = () => {
     const [query, updateQuery] = useUrlQuery()
+    const { userID } = useAuth()
     const { send } = useGameServerCommandsUser("/user_commander")
     const theme = useTheme()
 
@@ -246,7 +248,7 @@ export const WeaponsHangar = () => {
     useEffect(() => {
         ;(async () => {
             try {
-                const resp = await queryGetWeaponMaxStats({})
+                const resp = await queryGetWeaponMaxStats(userID)
                 if (resp.error || !resp.payload) return
                 ammoRangeFilter.current.minMax[1] = resp.payload.max_ammo || 0
                 damageRangeFilter.current.minMax[1] = resp.payload.damage || 0
@@ -264,7 +266,7 @@ export const WeaponsHangar = () => {
                 console.error(message)
             }
         })()
-    }, [queryGetWeaponMaxStats, toggleSortFilterReRender])
+    }, [queryGetWeaponMaxStats, toggleSortFilterReRender, userID])
 
     const getItems = useCallback(async () => {
         try {
@@ -500,15 +502,15 @@ export const WeaponsHangar = () => {
                 onSetSearch={setSearch}
                 chipFilters={[weaponTypeFilterSection.current, weaponEquippedFilterSection.current]}
                 sliderRangeFilters={[
-                    ammoRangeFilter.current,
+                    // ammoRangeFilter.current,
                     damageRangeFilter.current,
-                    damageFalloffRangeFilter.current,
-                    damageFalloffRateRangeFilter.current,
+                    // damageFalloffRangeFilter.current,
+                    // damageFalloffRateRangeFilter.current,
                     radiusRangeFilter.current,
-                    radiusDamageFalloffRangeFilter.current,
+                    // radiusDamageFalloffRangeFilter.current,
                     rateOfFireRangeFilter.current,
                     energyCostRangeFilter.current,
-                    projectileSpeedRangeFilter.current,
+                    // projectileSpeedRangeFilter.current,
                     spreadRangeFilter.current,
                 ]}
                 changePage={changePage}
