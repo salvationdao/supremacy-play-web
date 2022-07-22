@@ -1,4 +1,4 @@
-import { Badge, Box, IconButton, Pagination, Popover, Stack, Typography } from "@mui/material"
+import { Badge, Box, FormControlLabel, IconButton, Pagination, Popover, Stack, Switch, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { SvgAnnouncement, SvgDamage1, SvgHistoryClock, SvgListView, SvgMail, SvgWrapperProps } from "../../../assets"
 import { FactionIDs } from "../../../constants"
@@ -79,6 +79,7 @@ export const Messages = () => {
 
     const popoverRef = useRef(null)
     const [modalOpen, toggleModalOpen] = useToggle(false)
+    const [showTimestamps, setShowTimestamps] = useState(false)
     const [error, setError] = useState<string>()
     const { page, changePage, totalPages, totalItems, setTotalItems, pageSize } = usePagination({
         pageSize: 10,
@@ -186,7 +187,7 @@ export const Messages = () => {
             <Stack spacing="1rem">
                 <Stack spacing=".8rem" sx={{ p: "1rem 2rem", pb: "1.5rem" }}>
                     {messages.map((m) => (
-                        <MessageItem key={m.id} message={m} onDismiss={() => dismissMessage(m.id)} />
+                        <MessageItem key={m.id} message={m} onDismiss={() => dismissMessage(m.id)} showTimestamps={showTimestamps} />
                     ))}
                 </Stack>
 
@@ -215,7 +216,7 @@ export const Messages = () => {
                 )}
             </Stack>
         )
-    }, [messages, theme.factionTheme.primary, theme.factionTheme.secondary, totalPages, page, dismissMessage, changePage])
+    }, [messages, totalPages, theme.factionTheme.primary, theme.factionTheme.secondary, page, showTimestamps, dismissMessage, changePage])
 
     return (
         <>
@@ -292,6 +293,24 @@ export const Messages = () => {
                             <Typography variant="h6" sx={{ fontFamily: fonts.nostromoBlack }}>
                                 SYSTEM MESSAGES
                             </Typography>
+
+                            <FormControlLabel
+                                control={<Switch size="small" checked={showTimestamps} onChange={(e, c) => setShowTimestamps(c)} />}
+                                label="Show Timestamps"
+                                sx={{
+                                    ml: 0,
+                                    fontSize: "1rem",
+                                    "& .MuiSwitch-switchBase.Mui-checked": {
+                                        color: theme.factionTheme.primary,
+                                        "&:hover": {
+                                            backgroundColor: `${theme.factionTheme.primary}dd`,
+                                        },
+                                    },
+                                    "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track": {
+                                        backgroundColor: theme.factionTheme.primary,
+                                    },
+                                }}
+                            />
                         </Stack>
 
                         <Stack direction="row" alignItems="center" spacing=".4rem" sx={{ opacity: 0.5, ":hover": { opacity: 1 } }}>
