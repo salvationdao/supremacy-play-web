@@ -134,7 +134,7 @@ export const WeaponCommonArea = ({
     const imageUrl = weaponDetails?.weapon_skin?.image_url || weaponDetails?.image_url || weapon?.image_url || ""
 
     return (
-        <Stack direction={isGridView ? "column" : "row"} alignItems="center" spacing="1.4rem" sx={{ position: "relative" }}>
+        <Stack direction={isGridView ? "column" : "row"} alignItems={isGridView ? "flex-start" : "center"} spacing="1.4rem" sx={{ position: "relative" }}>
             <Box
                 sx={{
                     position: "relative",
