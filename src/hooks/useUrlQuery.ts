@@ -9,8 +9,7 @@ export const useUrlQuery = (): [URLSearchParams, (newQuery: { [key: string]: str
 
     const updateQuery = useRef((newQuery: { [key: string]: string | undefined }) => {
         for (const [key, value] of Object.entries(newQuery)) {
-            if (!value) return
-            query.set(key, value)
+            query.set(key, value || "")
         }
         history.replace(`${pathname}?${query.toString()}${hash}`)
     })
