@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { useTheme } from "../../../containers/theme"
-import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
+import { useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { MARKETPLACE_TABS } from "../../../pages"
 import { Weapon } from "../../../types"
@@ -17,23 +17,19 @@ interface WarMachineMarketItemProps {
 
 export const WeaponsMarketItem = ({ item, isGridView, isExpanded, toggleIsExpanded }: WarMachineMarketItemProps) => {
     const theme = useTheme()
-    const { send } = useGameServerCommandsFaction("/faction_commander")
     const [weaponDetails, setWeaponDetails] = useState<Weapon>()
 
-    useEffect(() => {
-        ;(async () => {
-            try {
-                if (!item.weapon) return
-                const resp = await send<Weapon>(GameServerKeys.GetWeaponDetails, {
-                    weapon_id: item.weapon.id,
-                })
-                if (!resp) return
-                setWeaponDetails(resp)
-            } catch (e) {
-                console.error(e)
-            }
-        })()
-    }, [item.weapon, send])
+    useGameServerSubscriptionFaction<Weapon>(
+        {
+            URI: `/weapon/${item.weapon?.id}/details`,
+            key: GameServerKeys.GetWeaponDetails,
+            ready: !!item.weapon,
+        },
+        (payload) => {
+            if (!payload) return
+            setWeaponDetails(payload)
+        },
+    )
 
     const { weapon, collection_item } = item
 

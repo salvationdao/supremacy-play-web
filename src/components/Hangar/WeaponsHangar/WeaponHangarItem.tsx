@@ -1,11 +1,11 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useEffect, useMemo, useState } from "react"
+import { useMemo, useState } from "react"
 import { useLocation } from "react-router-dom"
 import { FancyButton } from "../.."
 import { SvgDropdownArrow, SvgSkin } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { getRarityDeets, getWeaponDamageTypeColor, getWeaponTypeColor, shadeColor } from "../../../helpers"
-import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
+import { useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { Weapon } from "../../../types"
@@ -16,22 +16,18 @@ import { WeaponBarStats } from "./Common/WeaponBarStats"
 export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGridView?: boolean }) => {
     const location = useLocation()
     const theme = useTheme()
-    const { send } = useGameServerCommandsFaction("/faction_commander")
     const [weaponDetails, setWeaponDetails] = useState<Weapon>()
 
-    useEffect(() => {
-        ;(async () => {
-            try {
-                const resp = await send<Weapon>(GameServerKeys.GetWeaponDetails, {
-                    weapon_id: weapon.id,
-                })
-                if (!resp) return
-                setWeaponDetails(resp)
-            } catch (e) {
-                console.error(e)
-            }
-        })()
-    }, [weapon.id, send])
+    useGameServerSubscriptionFaction<Weapon>(
+        {
+            URI: `/weapon/${weapon.id}/details`,
+            key: GameServerKeys.GetWeaponDetails,
+        },
+        (payload) => {
+            if (!payload) return
+            setWeaponDetails(payload)
+        },
+    )
 
     const primaryColor = theme.factionTheme.primary
     const secondaryColor = theme.factionTheme.secondary
@@ -134,7 +130,7 @@ export const WeaponCommonArea = ({
     const imageUrl = weaponDetails?.weapon_skin?.image_url || weaponDetails?.image_url || weapon?.image_url || ""
 
     return (
-        <Stack direction={isGridView ? "column" : "row"} alignItems="center" spacing="1.4rem" sx={{ position: "relative" }}>
+        <Stack direction={isGridView ? "column" : "row"} alignItems={isGridView ? "flex-start" : "center"} spacing="1.4rem" sx={{ position: "relative" }}>
             <Box
                 sx={{
                     position: "relative",

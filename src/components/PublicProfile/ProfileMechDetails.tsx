@@ -1,8 +1,8 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useEffect, useMemo, useState } from "react"
+import { useMemo, useState } from "react"
 import { useLocation } from "react-router-dom"
 import { getRarityDeets } from "../../helpers"
-import { useGameServerCommands } from "../../hooks/useGameServer"
+import { useGameServerSubscription } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { fonts } from "../../theme/theme"
 import { MechBasic, MechDetails } from "../../types"
@@ -21,24 +21,20 @@ export const ProfileWarmachineItem = ({
     backgroundColour: string
 }) => {
     const location = useLocation()
-    const { send } = useGameServerCommands("/public/commander")
     const [mechDetails, setMechDetails] = useState<MechDetails>()
 
     const rarityDeets = useMemo(() => getRarityDeets(mech.tier || mechDetails?.tier || ""), [mech, mechDetails])
 
-    useEffect(() => {
-        ;(async () => {
-            try {
-                const resp = await send<MechDetails>(GameServerKeys.PlayerAssetMechDetailPublic, {
-                    mech_id: mech.id,
-                })
-                if (!resp) return
-                setMechDetails(resp)
-            } catch (e) {
-                console.error(e)
-            }
-        })()
-    }, [mech.id, send])
+    useGameServerSubscription<MechDetails>(
+        {
+            URI: `/public/mech/${mech.id}/details`,
+            key: GameServerKeys.GetMechDetails,
+        },
+        (payload) => {
+            if (!payload) return
+            setMechDetails(payload)
+        },
+    )
 
     const imageUrl = mechDetails?.chassis_skin?.avatar_url || mech.avatar_url
     const largeImageUrl = mechDetails?.large_image_url || mech.large_image_url

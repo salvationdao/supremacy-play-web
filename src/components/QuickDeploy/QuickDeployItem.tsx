@@ -1,5 +1,5 @@
 import { Stack, Typography } from "@mui/material"
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 import { FancyButton } from ".."
 import { useSnackbar } from "../../containers"
 import { useTheme } from "../../containers/theme"
@@ -28,19 +28,16 @@ export const QuickDeployItem = ({ mech }: QuickDeployItemProps) => {
     const [error, setError] = useState<string>()
 
     // Get addition mech data
-    useEffect(() => {
-        ;(async () => {
-            try {
-                const resp = await send<MechDetails>(GameServerKeys.GetMechDetails, {
-                    mech_id: mech.id,
-                })
-                if (!resp) return
-                setMechDetails(resp)
-            } catch (e) {
-                console.error(e)
-            }
-        })()
-    }, [mech.id, send])
+    useGameServerSubscriptionFaction<MechDetails>(
+        {
+            URI: `/mech/${mech.id}/details`,
+            key: GameServerKeys.GetMechDetails,
+        },
+        (payload) => {
+            if (!payload) return
+            setMechDetails(payload)
+        },
+    )
 
     useGameServerSubscriptionFaction<MechStatus>(
         {
