@@ -6,9 +6,9 @@ import { Section } from "./Section"
 
 export interface SliderRangeFilter {
     label: string
-    initialValue: number[]
+    initialValue?: number[]
     minMax: number[]
-    onSetValue: (value: number[]) => void
+    onSetValue: (value: number[] | undefined) => void
     initialExpanded?: boolean
 }
 
@@ -22,7 +22,7 @@ export const SliderRangeFilterSection = ({
     secondaryColor: string
 }) => {
     const { label, initialValue, minMax, onSetValue, initialExpanded } = filter
-    const [value, setValue, valueInstant, setValueInstant] = useDebounce<number[]>(initialValue, 700)
+    const [value, setValue, valueInstant, setValueInstant] = useDebounce<number[] | undefined>(initialValue, 700)
     const calledCallback = useRef(true)
 
     // Set the value on the parent
@@ -38,7 +38,7 @@ export const SliderRangeFilterSection = ({
     }
 
     const resetButton = useMemo(() => {
-        if (value[0] === minMax[0] && value[1] === minMax[1]) return null
+        if (!value || (value[0] === minMax[0] && value[1] === minMax[1])) return null
 
         return (
             <FancyButton
@@ -70,11 +70,11 @@ export const SliderRangeFilterSection = ({
     return (
         <Section label={label} primaryColor={primaryColor} secondaryColor={secondaryColor} endComponent={resetButton} initialExpanded={initialExpanded}>
             <Stack alignItems="center" spacing="2rem" direction="row" sx={{ px: "2rem" }}>
-                <ShowValue primaryColor={primaryColor} value={valueInstant[0]} />
+                <ShowValue primaryColor={primaryColor} value={valueInstant ? valueInstant[0] : minMax[0]} />
 
                 <Box sx={{ flex: 1 }}>
                     <Slider
-                        value={valueInstant}
+                        value={valueInstant || minMax}
                         onChange={handleChange}
                         valueLabelDisplay="auto"
                         min={minMax[0]}
@@ -83,7 +83,7 @@ export const SliderRangeFilterSection = ({
                     />
                 </Box>
 
-                <ShowValue primaryColor={primaryColor} value={valueInstant[1]} />
+                <ShowValue primaryColor={primaryColor} value={valueInstant ? valueInstant[1] : minMax[1]} />
             </Stack>
         </Section>
     )
