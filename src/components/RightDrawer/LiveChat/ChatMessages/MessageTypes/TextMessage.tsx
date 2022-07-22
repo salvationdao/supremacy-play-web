@@ -399,7 +399,6 @@ interface UsernameJSXProps {
 export const UsernameJSX = ({ data, fontSize, toggleIsPopoverOpen, user, factionColor }: UsernameJSXProps) => {
     const { message_color } = data
 
-    console.log(fontSize)
     return (
         <>
             <Typography

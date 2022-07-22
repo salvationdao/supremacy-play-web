@@ -241,6 +241,7 @@ const ChatSendInner = ({
                 setMessageWithCheck(fullString)
                 //setting Emojis Array, to close out the Emoji selector
                 setPlayersResults([])
+                setSearchPlayersQuery("")
                 document.getElementById(`message-textfield-${faction_id}`)?.focus()
             }
         },
@@ -457,6 +458,12 @@ const ChatSendInner = ({
                                                     document.getElementById(`message-textfield-${faction_id}`)?.focus()
                                                     break
                                                 }
+                                                case "Enter": {
+                                                    document.getElementById(`message-textfield-${faction_id}`)?.focus()
+                                                    setPlayersResults([])
+                                                    setSearchPlayersQuery("")
+                                                    break
+                                                }
                                             }
                                         }}
                                     >
@@ -510,6 +517,7 @@ const ChatSendInner = ({
                                         sendMessage()
                                         setEmojis([])
                                         setPlayersResults([])
+                                        setSearchPlayersQuery("")
                                         break
                                     }
                                     case "ArrowUp": {
