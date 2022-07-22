@@ -64,35 +64,35 @@ export const WeaponsMarket = () => {
     const [price, setPrice] = useState<(number | undefined)[]>(
         (query.get("priceRanges") || undefined)?.split("||").map((p) => (p ? parseInt(p) : undefined)) || [undefined, undefined],
     )
-    const [ammoRange, setAmmoRange] = useState<number[]>(
-        (query.get("ammo") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 30000)) || [0, 30000],
+    const [ammoRange, setAmmoRange] = useState<number[] | undefined>(
+        (query.get("ammo") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 30000)),
     )
-    const [damageRange, setDamageRange] = useState<number[]>(
-        (query.get("damage") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 10000)) || [0, 10000],
+    const [damageRange, setDamageRange] = useState<number[] | undefined>(
+        (query.get("damage") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 10000)),
     )
-    const [damageFalloffRange, setDamageFalloffRange] = useState<number[]>(
-        (query.get("damageFalloff") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 10000)) || [0, 10000],
+    const [damageFalloffRange, setDamageFalloffRange] = useState<number[] | undefined>(
+        (query.get("damageFalloff") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 10000)),
     )
-    const [damageFalloffRateRange, setDamageFalloffRateRange] = useState<number[]>(
-        (query.get("damageFalloffRate") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 10000)) || [0, 10000],
+    const [damageFalloffRateRange, setDamageFalloffRateRange] = useState<number[] | undefined>(
+        (query.get("damageFalloffRate") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 10000)),
     )
-    const [radiusRange, setRadiusRange] = useState<number[]>(
-        (query.get("radius") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 20000)) || [0, 20000],
+    const [radiusRange, setRadiusRange] = useState<number[] | undefined>(
+        (query.get("radius") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 20000)),
     )
-    const [radiusDamageFalloffRange, setRadiusDamageFalloffRange] = useState<number[]>(
-        (query.get("radiusDamageFalloff") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 20000)) || [0, 20000],
+    const [radiusDamageFalloffRange, setRadiusDamageFalloffRange] = useState<number[] | undefined>(
+        (query.get("radiusDamageFalloff") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 20000)),
     )
-    const [rateOfFireRange, setRateOfFireRange] = useState<number[]>(
-        (query.get("rateOfFire") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 10000)) || [0, 10000],
+    const [rateOfFireRange, setRateOfFireRange] = useState<number[] | undefined>(
+        (query.get("rateOfFire") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 10000)),
     )
-    const [energyCostRange, setEnergyCostRange] = useState<number[]>(
-        (query.get("energyCost") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 10000)) || [0, 10000],
+    const [energyCostRange, setEnergyCostRange] = useState<number[] | undefined>(
+        (query.get("energyCost") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 10000)),
     )
-    const [projectileSpeedRange, setProjectileSpeedRange] = useState<number[]>(
-        (query.get("projectileSpeed") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 2000000)) || [0, 2000000],
+    const [projectileSpeedRange, setProjectileSpeedRange] = useState<number[] | undefined>(
+        (query.get("projectileSpeed") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 2000000)),
     )
-    const [spreadRange, setSpreadRange] = useState<number[]>(
-        (query.get("spread") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 100)) || [0, 10000],
+    const [spreadRange, setSpreadRange] = useState<number[] | undefined>(
+        (query.get("spread") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 100)),
     )
 
     // Filters
@@ -171,7 +171,7 @@ export const WeaponsMarket = () => {
         label: "AMMO",
         initialValue: ammoRange,
         minMax: [0, 3000],
-        onSetValue: (value: number[]) => {
+        onSetValue: (value: number[] | undefined) => {
             setAmmoRange(value)
             changePage(1)
         },
@@ -181,7 +181,7 @@ export const WeaponsMarket = () => {
         label: "DAMAGE",
         initialValue: damageRange,
         minMax: [0, 1000],
-        onSetValue: (value: number[]) => {
+        onSetValue: (value: number[] | undefined) => {
             setDamageRange(value)
             changePage(1)
         },
@@ -191,7 +191,7 @@ export const WeaponsMarket = () => {
         label: "DAMAGE FALLOFF",
         initialValue: damageFalloffRange,
         minMax: [0, 1000],
-        onSetValue: (value: number[]) => {
+        onSetValue: (value: number[] | undefined) => {
             setDamageFalloffRange(value)
             changePage(1)
         },
@@ -201,7 +201,7 @@ export const WeaponsMarket = () => {
         label: "DAMAGE FALLOFF RATE",
         initialValue: damageFalloffRateRange,
         minMax: [0, 1000],
-        onSetValue: (value: number[]) => {
+        onSetValue: (value: number[] | undefined) => {
             setDamageFalloffRateRange(value)
             changePage(1)
         },
@@ -211,7 +211,7 @@ export const WeaponsMarket = () => {
         label: "RADIUS",
         initialValue: radiusRange,
         minMax: [0, 2000],
-        onSetValue: (value: number[]) => {
+        onSetValue: (value: number[] | undefined) => {
             setRadiusRange(value)
             changePage(1)
         },
@@ -221,7 +221,7 @@ export const WeaponsMarket = () => {
         label: "RADIUS DAMAGE FALLOFF",
         initialValue: radiusDamageFalloffRange,
         minMax: [0, 2000],
-        onSetValue: (value: number[]) => {
+        onSetValue: (value: number[] | undefined) => {
             setRadiusDamageFalloffRange(value)
             changePage(1)
         },
@@ -231,7 +231,7 @@ export const WeaponsMarket = () => {
         label: "RATE OF FIRE",
         initialValue: rateOfFireRange,
         minMax: [0, 1000],
-        onSetValue: (value: number[]) => {
+        onSetValue: (value: number[] | undefined) => {
             setRateOfFireRange(value)
             changePage(1)
         },
@@ -241,7 +241,7 @@ export const WeaponsMarket = () => {
         label: "ENERGY COST",
         initialValue: energyCostRange,
         minMax: [0, 100],
-        onSetValue: (value: number[]) => {
+        onSetValue: (value: number[] | undefined) => {
             setEnergyCostRange(value)
             changePage(1)
         },
@@ -251,7 +251,7 @@ export const WeaponsMarket = () => {
         label: "PROJECTIVE SPEED",
         initialValue: projectileSpeedRange,
         minMax: [0, 200000],
-        onSetValue: (value: number[]) => {
+        onSetValue: (value: number[] | undefined) => {
             setProjectileSpeedRange(value)
             changePage(1)
         },
@@ -261,7 +261,7 @@ export const WeaponsMarket = () => {
         label: "SPREAD",
         initialValue: spreadRange,
         minMax: [0, 100],
-        onSetValue: (value: number[]) => {
+        onSetValue: (value: number[] | undefined) => {
             setSpreadRange(value)
             changePage(1)
         },
@@ -286,79 +286,6 @@ export const WeaponsMarket = () => {
                 energyCostRangeFilter.current.minMax[1] = resp.payload.energy_cost || 0
                 projectileSpeedRangeFilter.current.minMax[1] = resp.payload.projectile_speed || 0
                 spreadRangeFilter.current.minMax[1] = resp.payload.spread || 0
-
-                // Make current values dont exceed the max, otherwise adjust
-                setAmmoRange((prev) => {
-                    let newValue = prev
-                    const value = resp.payload?.max_ammo || 0
-                    if (prev[1] > value) newValue = [prev[0], value]
-                    ammoRangeFilter.current.initialValue = newValue
-                    return newValue
-                })
-                setDamageRange((prev) => {
-                    let newValue = prev
-                    const value = resp.payload?.damage || 0
-                    if (prev[1] > value) newValue = [prev[0], value]
-                    damageRangeFilter.current.initialValue = newValue
-                    return newValue
-                })
-                setDamageFalloffRange((prev) => {
-                    let newValue = prev
-                    const value = resp.payload?.damage_falloff || 0
-                    if (prev[1] > value) newValue = [prev[0], value]
-                    damageFalloffRangeFilter.current.initialValue = newValue
-                    return newValue
-                })
-                setDamageFalloffRateRange((prev) => {
-                    let newValue = prev
-                    const value = resp.payload?.damage_falloff_rate || 0
-                    if (prev[1] > value) newValue = [prev[0], value]
-                    damageFalloffRateRangeFilter.current.initialValue = newValue
-                    return newValue
-                })
-                setRadiusRange((prev) => {
-                    let newValue = prev
-                    const value = resp.payload?.radius || 0
-                    if (prev[1] > value) newValue = [prev[0], value]
-                    radiusRangeFilter.current.initialValue = newValue
-                    return newValue
-                })
-                setRadiusDamageFalloffRange((prev) => {
-                    let newValue = prev
-                    const value = resp.payload?.radius_damage_falloff || 0
-                    if (prev[1] > value) newValue = [prev[0], value]
-                    radiusDamageFalloffRangeFilter.current.initialValue = newValue
-                    return newValue
-                })
-                setRateOfFireRange((prev) => {
-                    let newValue = prev
-                    const value = resp.payload?.rate_of_fire || 0
-                    if (prev[1] > value) newValue = [prev[0], value]
-                    rateOfFireRangeFilter.current.initialValue = newValue
-                    return newValue
-                })
-                setEnergyCostRange((prev) => {
-                    let newValue = prev
-                    const value = resp.payload?.energy_cost || 0
-                    if (prev[1] > value) newValue = [prev[0], value]
-                    energyCostRangeFilter.current.initialValue = newValue
-                    return newValue
-                })
-                setProjectileSpeedRange((prev) => {
-                    let newValue = prev
-                    const value = resp.payload?.projectile_speed || 0
-                    if (prev[1] > value) newValue = [prev[0], value]
-                    projectileSpeedRangeFilter.current.initialValue = newValue
-                    return newValue
-                })
-                setSpreadRange((prev) => {
-                    let newValue = prev
-                    const value = resp.payload?.spread || 0
-                    if (prev[1] > value) newValue = [prev[0], value]
-                    spreadRangeFilter.current.initialValue = newValue
-                    return newValue
-                })
-
                 toggleSortFilterReRender()
             } catch (err) {
                 const message = typeof err === "string" ? err : "Failed to get the list of streams."
@@ -401,70 +328,70 @@ export const WeaponsMarket = () => {
                 sold: status.length > 0,
                 weapon_stats: {
                     ammo:
-                        ammoRange[0] > 0 || ammoRange[1] > 0
+                        ammoRange && (ammoRange[0] > 0 || ammoRange[1] > 0)
                             ? {
                                   min: ammoRange[0],
                                   max: ammoRange[1],
                               }
                             : undefined,
                     damage:
-                        damageRange[0] > 0 || damageRange[1] > 0
+                        damageRange && (damageRange[0] > 0 || damageRange[1] > 0)
                             ? {
                                   min: damageRange[0],
                                   max: damageRange[1],
                               }
                             : undefined,
                     damage_falloff:
-                        damageFalloffRange[0] > 0 || damageFalloffRange[1] > 0
+                        damageFalloffRange && (damageFalloffRange[0] > 0 || damageFalloffRange[1] > 0)
                             ? {
                                   min: damageFalloffRange[0],
                                   max: damageFalloffRange[1],
                               }
                             : undefined,
                     damage_falloff_rate:
-                        damageFalloffRateRange[0] > 0 || damageFalloffRateRange[1] > 0
+                        damageFalloffRateRange && (damageFalloffRateRange[0] > 0 || damageFalloffRateRange[1] > 0)
                             ? {
                                   min: damageFalloffRateRange[0],
                                   max: damageFalloffRateRange[1],
                               }
                             : undefined,
                     radius:
-                        radiusRange[0] > 0 || radiusRange[1] > 0
+                        radiusRange && (radiusRange[0] > 0 || radiusRange[1] > 0)
                             ? {
                                   min: radiusRange[0],
                                   max: radiusRange[1],
                               }
                             : undefined,
                     radius_damage_falloff:
-                        radiusDamageFalloffRange[0] > 0 || radiusDamageFalloffRange[1] > 0
+                        radiusDamageFalloffRange && (radiusDamageFalloffRange[0] > 0 || radiusDamageFalloffRange[1] > 0)
                             ? {
                                   min: radiusDamageFalloffRange[0],
                                   max: radiusDamageFalloffRange[1],
                               }
                             : undefined,
                     rate_of_fire:
-                        rateOfFireRange[0] > 0 || rateOfFireRange[1] > 0
+                        rateOfFireRange && (rateOfFireRange[0] > 0 || rateOfFireRange[1] > 0)
                             ? {
                                   min: rateOfFireRange[0],
                                   max: rateOfFireRange[1],
                               }
                             : undefined,
                     energy_cost:
-                        energyCostRange[0] > 0 || energyCostRange[1] > 0
+                        energyCostRange && (energyCostRange[0] > 0 || energyCostRange[1] > 0)
                             ? {
                                   min: energyCostRange[0],
                                   max: energyCostRange[1],
                               }
                             : undefined,
                     projectile_speed:
-                        projectileSpeedRange[0] > 0 || projectileSpeedRange[1] > 0
+                        projectileSpeedRange && (projectileSpeedRange[0] > 0 || projectileSpeedRange[1] > 0)
                             ? {
                                   min: projectileSpeedRange[0],
                                   max: projectileSpeedRange[1],
                               }
                             : undefined,
                     spread:
-                        spreadRange[0] > 0 || spreadRange[1] > 0
+                        spreadRange && (spreadRange[0] > 0 || spreadRange[1] > 0)
                             ? {
                                   min: spreadRange[0],
                                   max: spreadRange[1],
@@ -481,16 +408,16 @@ export const WeaponsMarket = () => {
                 ownedBy: ownedBy.join("||"),
                 listingTypes: listingTypes.join("||"),
                 priceRanges: price.join("||"),
-                ammo: ammoRange.join("||"),
-                damage: damageRange.join("||"),
-                damageFalloff: damageFalloffRange.join("||"),
-                damageFalloffRate: damageFalloffRateRange.join("||"),
-                radius: radiusRange.join("||"),
-                radiusDamageFalloff: radiusDamageFalloffRange.join("||"),
-                rateOfFire: rateOfFireRange.join("||"),
-                energyCost: energyCostRange.join("||"),
-                projectileSpeed: projectileSpeedRange.join("||"),
-                spread: spreadRange.join("||"),
+                ammo: ammoRange?.join("||"),
+                damage: damageRange?.join("||"),
+                damageFalloff: damageFalloffRange?.join("||"),
+                damageFalloffRate: damageFalloffRateRange?.join("||"),
+                radius: radiusRange?.join("||"),
+                radiusDamageFalloff: radiusDamageFalloffRange?.join("||"),
+                rateOfFire: rateOfFireRange?.join("||"),
+                energyCost: energyCostRange?.join("||"),
+                projectileSpeed: projectileSpeedRange?.join("||"),
+                spread: spreadRange?.join("||"),
             })
 
             if (!resp) return
