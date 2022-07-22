@@ -10,9 +10,10 @@ import { SystemMessageDisplayable } from "./Messages"
 export interface MessageItemProps {
     message: SystemMessageDisplayable
     onDismiss: () => void
+    showTimestamps: boolean
 }
 
-export const MessageItem = ({ message, onDismiss }: MessageItemProps) => {
+export const MessageItem = ({ message, onDismiss, showTimestamps }: MessageItemProps) => {
     const [isCollapsed, setIsCollapsed] = useState(true)
 
     const details = useMemo(() => {
@@ -30,6 +31,17 @@ export const MessageItem = ({ message, onDismiss }: MessageItemProps) => {
     return (
         <Box>
             <Stack direction="row" alignItems="center" spacing=".5rem">
+                {showTimestamps && (
+                    <Typography
+                        sx={{
+                            color: colors.grey,
+                        }}
+                        variant="body2"
+                    >
+                        {message.sent_at.getHours()}
+                        {message.sent_at.getMinutes()}
+                    </Typography>
+                )}
                 {message.icon({})}
                 <Typography
                     variant="h6"
