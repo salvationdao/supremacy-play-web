@@ -37,8 +37,8 @@ export const Messages = () => {
 
         return (
             <Stack spacing=".8rem" sx={{ p: "1.4rem" }}>
-                {messages.map((m, index) => (
-                    <MessageItem key={m.id} message={m} onDismiss={() => dismissMessage(index)} />
+                {messages.map((m) => (
+                    <MessageItem key={m.id} message={m} onDismiss={() => dismissMessage(m.id)} />
                 ))}
             </Stack>
         )

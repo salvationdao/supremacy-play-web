@@ -38,17 +38,42 @@ const SystemMessagingContainer = createContainer(() => {
                 }
             })
             setMessages(displayables)
-        } catch (err) {
+        } catch (e) {
             let message = "Failed to get system messages."
-            if (typeof err === "string") {
-                message = err
-            } else if (err instanceof Error) {
-                message = err.message
+            if (typeof e === "string") {
+                message = e
+            } else if (e instanceof Error) {
+                message = e.message
             }
             setError(message)
-            console.error(err)
+            console.error(e)
         }
     }, [send])
+
+    const dismissMessage = useCallback(
+        async (id: string) => {
+            try {
+                await send<
+                    SystemMessage[],
+                    {
+                        id: string
+                    }
+                >(GameServerKeys.SystemMessageDismiss, {
+                    id,
+                })
+            } catch (e) {
+                let message = "Failed to dismiss system message."
+                if (typeof e === "string") {
+                    message = e
+                } else if (e instanceof Error) {
+                    message = e.message
+                }
+                setError(message)
+                console.error(e)
+            }
+        },
+        [send],
+    )
 
     useEffect(() => {
         fetchMessages()
@@ -63,18 +88,6 @@ const SystemMessagingContainer = createContainer(() => {
             if (!payload) return
             fetchMessages()
         },
-    )
-
-    const dismissMessage = useCallback(
-        (index: number) => {
-            if (typeof messages[index] === "undefined") return
-
-            setMessages((prev) => {
-                prev.splice(index, 1)
-                return [...prev]
-            })
-        },
-        [messages],
     )
 
     return {
