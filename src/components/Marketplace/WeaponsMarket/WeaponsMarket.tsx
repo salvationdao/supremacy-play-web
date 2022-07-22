@@ -47,8 +47,12 @@ export const WeaponsMarket = () => {
         pageSize: parseString(query.get("pageSize"), 10),
         page: parseString(query.get("page"), 1),
     })
-    const [isGridView, toggleIsGridView] = useToggle(false)
+    const [isGridView, toggleIsGridView] = useToggle(localStorage.getItem("marketWeaponGrid") === "true")
     const [isExpanded, toggleIsExpanded] = useToggle(false)
+
+    useEffect(() => {
+        localStorage.setItem("marketWeaponGrid", isGridView.toString())
+    }, [isGridView])
 
     // Filters and sorts
     const [search, setSearch] = useState("")
