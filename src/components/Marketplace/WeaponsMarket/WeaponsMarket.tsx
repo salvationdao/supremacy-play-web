@@ -274,7 +274,7 @@ export const WeaponsMarket = () => {
     useEffect(() => {
         ;(async () => {
             try {
-                const resp = await queryGetWeaponMaxStats({})
+                const resp = await queryGetWeaponMaxStats(undefined)
                 if (resp.error || !resp.payload) return
                 ammoRangeFilter.current.minMax[1] = resp.payload.max_ammo || 0
                 damageRangeFilter.current.minMax[1] = resp.payload.damage || 0

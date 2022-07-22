@@ -45,7 +45,7 @@ export const WeaponBarStats = ({
     useEffect(() => {
         ;(async () => {
             try {
-                const resp = await queryGetWeaponMaxStats({})
+                const resp = await queryGetWeaponMaxStats(undefined)
                 if (resp.error || !resp.payload) return
                 setWeaponMaxStats(resp.payload)
             } catch (err) {
