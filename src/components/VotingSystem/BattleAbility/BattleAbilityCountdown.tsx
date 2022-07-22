@@ -38,6 +38,10 @@ const CountdownText = ({ bribeStage }: { bribeStage?: BribeStageResponse }) => {
     }, [phase, totalSecRemain])
 
     useEffect(() => {
+        doSentence()
+    }, [doSentence, totalSecRemain])
+
+    useEffect(() => {
         if (!bribeStage) return
 
         let endTime = bribeStage.end_time

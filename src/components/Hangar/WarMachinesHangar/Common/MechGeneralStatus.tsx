@@ -80,8 +80,7 @@ export const MechGeneralStatus = ({ mechID, hideBox }: { mechID: string; hideBox
         },
         (payload) => {
             if (!payload) return
-
-            // force update status
+            // Force update status
             triggerStatusUpdate("")
         },
     )

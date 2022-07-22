@@ -1,18 +1,16 @@
 import { Box, Collapse, Fade, Stack } from "@mui/material"
 import BigNumber from "bignumber.js"
-import { useCallback, useMemo, useState } from "react"
+import { useMemo, useState } from "react"
 import { BattleAbilityCountdown, ClipThing, FancyButton } from "../.."
 import { SvgDropdownArrow } from "../../../assets"
-import { BribeStageResponse, useAuth, useGame, useSupremacy } from "../../../containers"
+import { BribeStageResponse, useAuth, useGame } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { shadeColor } from "../../../helpers"
 import { useToggle } from "../../../hooks"
-import { useGameServerCommandsFaction, useGameServerSubscription } from "../../../hooks/useGameServer"
+import { useGameServerSubscription } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
-import { BattleAbility as BattleAbilityType, BattleAbilityProgress, Faction } from "../../../types"
+import { BattleAbility as BattleAbilityType, BattleAbilityProgress } from "../../../types"
 import { BattleAbilityTextTop } from "./BattleAbilityTextTop"
-import { SupsBarStack } from "./SupsBarStack"
-import { VotingButtons } from "./VotingButtons"
 
 export interface BattleAbilityProgressBigNum {
     faction_id: string
@@ -22,7 +20,6 @@ export interface BattleAbilityProgressBigNum {
 
 export const BattleAbilityItem = () => {
     const theme = useTheme()
-    const { send } = useGameServerCommandsFaction("/faction_commander")
     const { bribeStage } = useGame()
 
     const [fadeEffect, toggleFadeEffect] = useToggle()
@@ -61,24 +58,6 @@ export const BattleAbilityItem = () => {
                     })),
             )
         },
-    )
-
-    const onBribe = useCallback(
-        async (amount: BigNumber, percentage: number) => {
-            if (!battleAbility) return
-
-            if (!send || percentage > 1 || percentage < 0) return
-
-            try {
-                await send<boolean, { ability_offering_id: string; percentage: number }>(GameServerKeys.BribeBattleAbility, {
-                    ability_offering_id: battleAbility.ability_offering_id,
-                    percentage: percentage,
-                })
-            } catch (e) {
-                console.error(e)
-            }
-        },
-        [battleAbility, send],
     )
 
     const isVoting = useMemo(

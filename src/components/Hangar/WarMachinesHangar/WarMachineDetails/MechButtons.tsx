@@ -49,11 +49,12 @@ export const MechButtons = ({
         async (repairType: string) => {
             try {
                 const resp = await send(GameServerKeys.RepairWarMachine, { mech_id: mechDetails.id, repair_type: repairType })
-                if (resp) {
-                    newSnackbarMessage("Successfully submit repair request", "success")
-                }
-            } catch (e) {
-                console.error(e)
+                if (!resp) return
+                newSnackbarMessage("Successfully submitted repair request.", "success")
+            } catch (err) {
+                const message = typeof err === "string" ? err : "Failed to submit repair request."
+                newSnackbarMessage(message, "error")
+                console.error(message)
             }
         },
         [send, mechDetails.id, newSnackbarMessage],
@@ -101,9 +102,9 @@ export const MechButtons = ({
                 {/* Button 2 */}
                 <ReusableButton
                     isFancy
-                    primaryColor={colors.orange}
+                    primaryColor={colors.blue2}
                     disabled={mechState !== MechStatusEnum.StandardRepairing && mechState !== MechStatusEnum.Damaged}
-                    backgroundColor={colors.orange}
+                    backgroundColor={colors.blue2}
                     label={mechState === MechStatusEnum.StandardRepairing ? "FAST REPAIR" : "REPAIR"}
                     onClick={() => {
                         switch (mechState) {

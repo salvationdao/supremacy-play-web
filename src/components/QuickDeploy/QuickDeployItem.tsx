@@ -197,16 +197,16 @@ export const QuickDeployItem = ({ mech }: QuickDeployItemProps) => {
                             loading={isLoading}
                             clipThingsProps={{
                                 clipSize: "5px",
-                                backgroundColor: colors.green,
+                                backgroundColor: colors.blue2,
                                 opacity: 1,
                                 border: {
                                     isFancy: true,
-                                    borderColor: colors.green,
+                                    borderColor: colors.blue2,
                                     borderThickness: "1px",
                                 },
                                 sx: { position: "relative" },
                             }}
-                            sx={{ px: "1rem", pt: 0, pb: ".1rem", color: theme.factionTheme.primary }}
+                            sx={{ px: "1rem", pt: 0, pb: ".1rem", color: "#FFFFFF" }}
                             onClick={() => {
                                 switch (mechState) {
                                     case MechStatusEnum.Damaged:

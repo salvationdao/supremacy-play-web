@@ -1,10 +1,9 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { FancyButton, TooltipHelper } from "../.."
-import { SvgCooldown } from "../../../assets"
-import { fonts } from "../../../theme/theme"
 import { useCallback, useState } from "react"
-import { useGameServerCommandsFaction, useGameServerSubscriptionFaction, useGameServerSubscriptionUser } from "../../../hooks/useGameServer"
+import { FancyButton, TooltipHelper } from "../.."
+import { useGameServerCommandsFaction, useGameServerSubscriptionUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
+import { fonts } from "../../../theme/theme"
 
 interface BattleAbilityTextTopProps {
     label: string
@@ -16,6 +15,7 @@ interface BattleAbilityTextTopProps {
 
 export const BattleAbilityTextTop = ({ label, description, image_url, colour, showButton }: BattleAbilityTextTopProps) => {
     const [isOptedIn, setIsOptedIn] = useState(true)
+
     useGameServerSubscriptionUser<boolean | undefined>(
         {
             URI: `/battle_ability/check_opt_in`,
@@ -26,6 +26,7 @@ export const BattleAbilityTextTop = ({ label, description, image_url, colour, sh
             setIsOptedIn(payload)
         },
     )
+
     return (
         <Stack spacing="2.4rem" direction="row" alignItems="center" justifyContent="space-between" alignSelf="stretch">
             <TooltipHelper placement="right" text={description}>
@@ -73,6 +74,7 @@ interface OptInButtonProps {
 
 const OptInButton = ({ isOptedIn, colour, text_colour }: OptInButtonProps) => {
     const { send } = useGameServerCommandsFaction("/faction_commander")
+
     const onTrigger = useCallback(async () => {
         try {
             if (isOptedIn) return
