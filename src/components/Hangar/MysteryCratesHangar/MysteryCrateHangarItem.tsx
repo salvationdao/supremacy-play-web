@@ -220,7 +220,7 @@ export const CrateCommonArea = ({
     const theme = useTheme()
 
     return (
-        <Stack direction={isGridView ? "column" : "row"} alignItems="center" spacing="1.4rem" sx={{ position: "relative" }}>
+        <Stack direction={isGridView ? "column" : "row"} alignItems={isGridView ? "flex-start" : "center"} spacing="1.4rem" sx={{ position: "relative" }}>
             <Box
                 sx={{
                     position: "relative",

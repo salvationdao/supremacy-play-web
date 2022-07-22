@@ -133,7 +133,7 @@ export const MechCommonArea = ({
     const largeImageUrl = mechDetails?.chassis_skin?.large_image_url || mech?.large_image_url || ""
 
     return (
-        <Stack direction={isGridView ? "column" : "row"} alignItems="center" spacing="1.4rem" sx={{ position: "relative" }}>
+        <Stack direction={isGridView ? "column" : "row"} alignItems={isGridView ? "flex-start" : "center"} spacing="1.4rem" sx={{ position: "relative" }}>
             <Box
                 sx={{
                     position: "relative",

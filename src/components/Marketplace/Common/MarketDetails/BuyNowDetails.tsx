@@ -46,7 +46,10 @@ export const BuyNowDetails = ({
         // Drop price
         if (dutchAuctionDropRate) {
             const dropRate = new BigNumber(dutchAuctionDropRate).shiftedBy(-18)
-            newPrice = BigNumber.max(calculateDutchAuctionCurrentPrice({ createdAt, dropRate, startPrice: newPrice }), new BigNumber(reservePrice || 1))
+            newPrice = BigNumber.max(
+                calculateDutchAuctionCurrentPrice({ createdAt, dropRate, startPrice: newPrice }),
+                new BigNumber(reservePrice || 1000000000000000000).shiftedBy(-18),
+            )
         }
         return newPrice
     }, [buyNowPrice, createdAt, dutchAuctionDropRate, reservePrice])
