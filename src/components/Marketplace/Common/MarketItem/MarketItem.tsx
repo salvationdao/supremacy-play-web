@@ -73,7 +73,7 @@ export const MarketItem = ({ backgroundImageUrl, item, isGridView, children, lin
                     border: { isFancy: !isGridView, borderColor: sold_at ? colors.marketSold : primaryColor, borderThickness: ".25rem" },
                     sx: { position: "relative", height: "100%" },
                 }}
-                sx={{ color: primaryColor, textAlign: "start", height: "100%" }}
+                sx={{ color: primaryColor, textAlign: "start", height: "100%", ":hover": { opacity: 1 } }}
                 to={`/marketplace/${linkSubPath}/${id}${location.hash}`}
             >
                 <Box

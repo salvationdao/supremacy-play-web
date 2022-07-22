@@ -53,7 +53,7 @@ export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGri
                     backgroundColor: backgroundColor,
                     opacity: 0.9,
                     border: { isFancy: !isGridView, borderColor: primaryColor, borderThickness: ".25rem" },
-                    sx: { position: "relative", height: "100%" },
+                    sx: { position: "relative", height: "100%", ":hover": { opacity: 1 } },
                 }}
                 sx={{ color: primaryColor, textAlign: "start", height: "100%" }}
                 to={`/weapon/${weapon.id}${location.hash}`}
