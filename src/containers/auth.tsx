@@ -35,6 +35,7 @@ export const FallbackFaction: Faction = {
 export interface AuthState {
     isActive: boolean
     setIsActive: Dispatch<React.SetStateAction<boolean>>
+    isVisible: boolean
     isLoggingIn: boolean
     onLogInClick: () => void
     userHasFeature: (featureName: FeatureName) => boolean
@@ -55,6 +56,7 @@ const initialState: AuthState = {
     setIsActive: () => {
         return
     },
+    isVisible: true,
     isLoggingIn: false,
     onLogInClick: () => {
         return
@@ -104,9 +106,29 @@ export const AuthProvider: React.FC = ({ children }) => {
     const [userStat, setUserStat] = useState<UserStat>(initialState.userStat)
     const [userRank, setUserRank] = useState<UserRank>(initialState.userRank)
     const [punishments, setPunishments] = useState<PunishListItem[]>(initialState.punishments)
+    //checks if supremacy tab is open
+    const [isHidden, setIsHidden] = useState(false)
 
     const { query: passportLoginCheck } = useQuery(PassportLoginCheck(), false)
     const { query: getGameServerPlayer } = useQuery(GetGameServerPlayer(userFromPassport?.id), false)
+
+    function handleVisibilityChange() {
+        if (document["hidden"]) {
+            setIsHidden(true)
+        } else {
+            setIsHidden(false)
+        }
+    }
+    useEffect(() => {
+        if (typeof document.hidden !== "undefined" && typeof document.addEventListener !== "undefined") {
+            document.addEventListener("visibilitychange", handleVisibilityChange)
+        } else {
+            console.error("Failed to get visibility.")
+        }
+        return () => {
+            document.removeEventListener("visibilitychange", handleVisibilityChange)
+        }
+    }, [])
 
     const authCheckCallback = useCallback(
         async (event?: MessageEvent) => {
@@ -199,11 +221,13 @@ export const AuthProvider: React.FC = ({ children }) => {
         },
         [user.features, userID],
     )
+
     return (
         <AuthContext.Provider
             value={{
                 isActive,
                 setIsActive,
+                isVisible: isHidden,
                 isLoggingIn,
                 onLogInClick,
                 userHasFeature,
