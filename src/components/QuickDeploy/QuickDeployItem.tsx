@@ -7,7 +7,7 @@ import { getRarityDeets } from "../../helpers"
 import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { colors, fonts } from "../../theme/theme"
-import { MechBasic, MechDetails, MechStatus, MechStatusEnum } from "../../types"
+import { MechBasic, MechDetails, MechStatus, MechStatusEnum, RepairType } from "../../types"
 import { MechGeneralStatus } from "../Hangar/WarMachinesHangar/Common/MechGeneralStatus"
 import { MechThumbnail } from "../Hangar/WarMachinesHangar/Common/MechThumbnail"
 import { QueueFeed } from "../Hangar/WarMachinesHangar/WarMachineDetails/Modals/DeployModal"
@@ -89,6 +89,25 @@ export const QuickDeployItem = ({ mech }: QuickDeployItemProps) => {
         }
     }, [send, mech.hash, newSnackbarMessage])
 
+    const onRepair = useCallback(
+        async (repairType: string) => {
+            try {
+                setIsLoading(true)
+                const resp = await send(GameServerKeys.RepairWarMachine, { mech_id: mech.id, repair_type: repairType })
+                if (resp) {
+                    newSnackbarMessage("Successfully submit repair request", "success")
+                    setError(undefined)
+                }
+            } catch (e) {
+                setError(typeof e === "string" ? e : "Failed to submit repair request.")
+                console.error(e)
+            } finally {
+                setIsLoading(false)
+            }
+        },
+        [send, mech.id, newSnackbarMessage],
+    )
+
     return (
         <Stack
             direction="row"
@@ -168,6 +187,46 @@ export const QuickDeployItem = ({ mech }: QuickDeployItemProps) => {
                                     }}
                                 >
                                     {mechState === MechStatusEnum.Idle ? "DEPLOY" : "UNDEPLOY"}
+                                </Typography>
+                            </Stack>
+                        </FancyButton>
+                    )}
+
+                    {!error && mechDetails && (mechState === MechStatusEnum.Damaged || mechState === MechStatusEnum.StandardRepairing) && (
+                        <FancyButton
+                            loading={isLoading}
+                            clipThingsProps={{
+                                clipSize: "5px",
+                                backgroundColor: colors.green,
+                                opacity: 1,
+                                border: {
+                                    isFancy: true,
+                                    borderColor: colors.green,
+                                    borderThickness: "1px",
+                                },
+                                sx: { position: "relative" },
+                            }}
+                            sx={{ px: "1rem", pt: 0, pb: ".1rem", color: theme.factionTheme.primary }}
+                            onClick={() => {
+                                switch (mechState) {
+                                    case MechStatusEnum.Damaged:
+                                        onRepair(RepairType.Standard)
+                                        break
+                                    case MechStatusEnum.StandardRepairing:
+                                        onRepair(RepairType.Fast)
+                                        break
+                                }
+                            }}
+                        >
+                            <Stack direction="row" alignItems="center" spacing=".5rem">
+                                <Typography
+                                    variant="caption"
+                                    sx={{
+                                        color: "#FFFFFF",
+                                        fontFamily: fonts.nostromoBlack,
+                                    }}
+                                >
+                                    {mechState === MechStatusEnum.StandardRepairing ? "SPEED UP" : "REPAIR"}
                                 </Typography>
                             </Stack>
                         </FancyButton>
