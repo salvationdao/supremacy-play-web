@@ -33,6 +33,8 @@ export const FallbackFaction: Faction = {
 }
 
 export interface AuthState {
+    isActive: boolean
+    setIsActive: Dispatch<React.SetStateAction<boolean>>
     isLoggingIn: boolean
     onLogInClick: () => void
     userHasFeature: (featureName: FeatureName) => boolean
@@ -49,6 +51,10 @@ export interface AuthState {
 }
 
 const initialState: AuthState = {
+    isActive: true,
+    setIsActive: () => {
+        return
+    },
     isLoggingIn: false,
     onLogInClick: () => {
         return
@@ -94,7 +100,7 @@ export const AuthProvider: React.FC = ({ children }) => {
     const [user, setUser] = useState<User>(initialState.user)
     const userID = user.id
     const factionID = user.faction_id
-
+    const [isActive, setIsActive] = useState(true)
     const [userStat, setUserStat] = useState<UserStat>(initialState.userStat)
     const [userRank, setUserRank] = useState<UserRank>(initialState.userRank)
     const [punishments, setPunishments] = useState<PunishListItem[]>(initialState.punishments)
@@ -196,6 +202,8 @@ export const AuthProvider: React.FC = ({ children }) => {
     return (
         <AuthContext.Provider
             value={{
+                isActive,
+                setIsActive,
                 isLoggingIn,
                 onLogInClick,
                 userHasFeature,
@@ -221,7 +229,7 @@ export const useAuth = () => {
 }
 
 export const UserUpdater = () => {
-    const { userID, factionID, setUser, setUserStat, setUserRank, setPunishments } = useAuth()
+    const { userID, factionID, setUser, setUserStat, setUserRank, setPunishments, setIsActive } = useAuth()
     const { getFaction } = useSupremacy()
     const { setFactionColors } = useTheme()
     const { send } = useGameServerCommandsUser("/user_commander")
@@ -289,6 +297,7 @@ export const UserUpdater = () => {
     const sendFruit = useCallback(
         async (a: boolean) => {
             try {
+                setIsActive(a)
                 await send<null, { fruit: "APPLE" | "BANANA" }>(GameServerKeys.ToggleGojiBerryTea, {
                     fruit: a ? "APPLE" : "BANANA",
                 })
