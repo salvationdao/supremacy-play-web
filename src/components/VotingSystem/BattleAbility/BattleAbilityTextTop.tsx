@@ -1,6 +1,6 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useCallback, useState } from "react"
-import { FancyButton, TooltipHelper } from "../.."
+import { FancyButton } from "../.."
 import { useSnackbar } from "../../../containers"
 import { useGameServerCommandsFaction, useGameServerSubscriptionUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
@@ -8,13 +8,12 @@ import { colors, fonts } from "../../../theme/theme"
 
 interface BattleAbilityTextTopProps {
     label: string
-    description: string
     image_url: string
     colour: string
     disableButton: boolean
 }
 
-export const BattleAbilityTextTop = ({ label, description, image_url, colour, disableButton }: BattleAbilityTextTopProps) => {
+export const BattleAbilityTextTop = ({ label, image_url, colour, disableButton }: BattleAbilityTextTopProps) => {
     const [isOptedIn, setIsOptedIn] = useState(true)
 
     useGameServerSubscriptionUser<boolean | undefined>(
@@ -30,38 +29,36 @@ export const BattleAbilityTextTop = ({ label, description, image_url, colour, di
 
     return (
         <Stack spacing="2.4rem" direction="row" alignItems="center" justifyContent="space-between" alignSelf="stretch">
-            <TooltipHelper placement="right" text={description}>
-                <Stack spacing=".8rem" direction="row" alignItems="center" justifyContent="center">
-                    <Box
-                        sx={{
-                            height: "1.9rem",
-                            width: "1.9rem",
-                            backgroundImage: `url(${image_url})`,
-                            backgroundRepeat: "no-repeat",
-                            backgroundPosition: "center",
-                            backgroundSize: "cover",
-                            backgroundColor: colour || "#030409",
-                            border: `${colour} 1px solid`,
-                            borderRadius: 0.6,
-                            mb: ".24rem",
-                        }}
-                    />
-                    <Typography
-                        sx={{
-                            lineHeight: 1,
-                            fontWeight: "fontWeightBold",
-                            fontFamily: fonts.nostromoBold,
-                            color: colour,
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            whiteSpace: "nowrap",
-                            maxWidth: "20rem",
-                        }}
-                    >
-                        {label}
-                    </Typography>
-                </Stack>
-            </TooltipHelper>
+            <Stack spacing=".8rem" direction="row" alignItems="center" justifyContent="center">
+                <Box
+                    sx={{
+                        height: "1.9rem",
+                        width: "1.9rem",
+                        backgroundImage: `url(${image_url})`,
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "center",
+                        backgroundSize: "cover",
+                        backgroundColor: colour || "#030409",
+                        border: `${colour} 1px solid`,
+                        borderRadius: 0.6,
+                        mb: ".24rem",
+                    }}
+                />
+                <Typography
+                    sx={{
+                        lineHeight: 1,
+                        fontWeight: "fontWeightBold",
+                        fontFamily: fonts.nostromoBold,
+                        color: colour,
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                        maxWidth: "20rem",
+                    }}
+                >
+                    {label}
+                </Typography>
+            </Stack>
             <OptInButton disable={disableButton || isOptedIn} />
         </Stack>
     )
@@ -91,7 +88,7 @@ const OptInButton = ({ disable }: { disable: boolean }) => {
                 border: { isFancy: true, borderColor: colors.green },
                 sx: { position: "relative" },
             }}
-            sx={{ px: "2rem", pt: ".4rem", pb: ".5rem", minWidth: "7rem", color: "#FFFFFF" }}
+            sx={{ px: "3rem", pt: ".4rem", pb: ".5rem", minWidth: "7rem", color: "#FFFFFF" }}
             onClick={onTrigger}
         >
             <Stack alignItems="center" justifyContent="center" direction="row">

@@ -1,4 +1,4 @@
-import { Box, Collapse, Fade, Stack } from "@mui/material"
+import { Box, Collapse, Fade, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
 import { useMemo, useState } from "react"
 import { BattleAbilityCountdown, ClipThing, FancyButton } from "../.."
@@ -9,7 +9,7 @@ import { shadeColor } from "../../../helpers"
 import { useToggle } from "../../../hooks"
 import { useGameServerSubscription } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
-import { BattleAbility as BattleAbilityType, BattleAbilityProgress } from "../../../types"
+import { BattleAbility as BattleAbilityType } from "../../../types"
 import { BattleAbilityTextTop } from "./BattleAbilityTextTop"
 
 export interface BattleAbilityProgressBigNum {
@@ -24,7 +24,6 @@ export const BattleAbilityItem = () => {
 
     const [fadeEffect, toggleFadeEffect] = useToggle()
     const [battleAbility, setBattleAbility] = useState<BattleAbilityType>()
-    const [battleAbilityProgress, setBattleAbilityProgress] = useState<BattleAbilityProgressBigNum[]>([])
 
     // Subscribe to battle ability updates
     useGameServerSubscription<BattleAbilityType>(
@@ -39,32 +38,6 @@ export const BattleAbilityItem = () => {
         },
     )
 
-    // Listen on the progress of the votes
-    useGameServerSubscription<BattleAbilityProgress[] | undefined>(
-        {
-            URI: "/public/live_data",
-            key: GameServerKeys.SubBattleAbilityProgress,
-        },
-        (payload) => {
-            if (!payload) return
-
-            setBattleAbilityProgress(
-                payload
-                    .sort((a, b) => a.faction_id.localeCompare(b.faction_id))
-                    .map((a) => ({
-                        faction_id: a.faction_id,
-                        sups_cost: new BigNumber(a.sups_cost).dividedBy("1000000000000000000"),
-                        current_sups: new BigNumber(a.current_sups).dividedBy("1000000000000000000"),
-                    })),
-            )
-        },
-    )
-
-    const isVoting = useMemo(
-        () => bribeStage?.phase == "OPT_IN" && battleAbilityProgress && battleAbilityProgress.length > 0,
-        [battleAbilityProgress, bribeStage],
-    )
-
     if (!battleAbility) {
         return null
     }
@@ -74,7 +47,6 @@ export const BattleAbilityItem = () => {
             key={battleAbility.ability_offering_id}
             bribeStage={bribeStage}
             battleAbility={battleAbility}
-            isVoting={isVoting}
             fadeEffect={fadeEffect}
             buttonColor={theme.factionTheme.primary}
             buttonTextColor={theme.factionTheme.secondary}
@@ -85,13 +57,12 @@ export const BattleAbilityItem = () => {
 interface InnerProps {
     bribeStage?: BribeStageResponse
     battleAbility: BattleAbilityType
-    isVoting: boolean
     fadeEffect: boolean
     buttonColor: string
     buttonTextColor: string
 }
 
-const BattleAbilityItemInner = ({ bribeStage, battleAbility, fadeEffect, isVoting }: InnerProps) => {
+const BattleAbilityItemInner = ({ bribeStage, battleAbility, fadeEffect }: InnerProps) => {
     const { label, colour, image_url, description } = battleAbility
     const { factionID } = useAuth()
 
@@ -145,16 +116,16 @@ const BattleAbilityItemInner = ({ bribeStage, battleAbility, fadeEffect, isVotin
                                             px: "1.6rem",
                                             pt: "1.12rem",
                                             pb: "1.28rem",
-                                            opacity: isVoting ? 1 : 0.7,
                                         }}
                                     >
                                         <BattleAbilityTextTop
                                             label={label}
-                                            description={description}
                                             image_url={image_url}
                                             colour={colour}
                                             disableButton={!factionID || bribeStage?.phase !== "OPT_IN"}
                                         />
+
+                                        <Typography variant="h6">{description}</Typography>
                                     </Stack>
                                 </ClipThing>
                             </Box>

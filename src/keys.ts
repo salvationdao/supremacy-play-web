@@ -3,7 +3,6 @@ export enum GameServerKeys {
     SubSpoilsOfWar = "SPOIL:OF:WAR:UPDATED",
     SubLiveGraph = "LIVE:VOTE:COUNT:UPDATED",
     SubMechLiveStats = "WAR:MACHINE:STAT:UPDATED",
-    SubBattleAbilityProgress = "BATTLE:ABILITY:PROGRESS:BAR:UPDATED",
     SubAbilityProgress = "ABILITY:PRICE:UPDATED",
     SubMechAbilityCoolDown = "WAR:MACHINE:ABILITY:SUBSCRIBE",
     SubBattleAbilityOptInCheck = "BATTLE:ABILITY:OPT:IN:CHECK",

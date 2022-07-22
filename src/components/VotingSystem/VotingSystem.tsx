@@ -29,7 +29,7 @@ export const VotingSystem = () => {
             // Size limits
             minWidth: 320,
             // minHeight: 168,
-            maxWidth: 500,
+            maxWidth: 400,
             // maxHeight: 900,
             // Others
             infoTooltipText: "Vote for game abilities and fight for your Faction!",
