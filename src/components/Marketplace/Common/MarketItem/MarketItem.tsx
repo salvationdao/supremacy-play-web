@@ -31,7 +31,7 @@ export const MarketItem = ({ backgroundImageUrl, item, isGridView, children, lin
         if (item.dutch_auction_drop_rate) {
             buyoutPrice = BigNumber.max(
                 calculateDutchAuctionCurrentPrice({ createdAt: item.created_at, dropRate: dropPrice, startPrice: buyoutPrice }),
-                new BigNumber(item.auction_reserved_price || 1),
+                new BigNumber(item.auction_reserved_price || 1000000000000000000).shiftedBy(-18),
             )
         }
         return numFormatter(buyoutPrice.toNumber())
