@@ -134,7 +134,6 @@ export const AuthProvider: React.FC = ({ children }) => {
                 setUser(initialState.user)
                 return
             }
-            console.log(resp.payload)
 
             setUser(resp.payload)
         })

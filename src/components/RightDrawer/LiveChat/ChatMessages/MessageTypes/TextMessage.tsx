@@ -167,7 +167,7 @@ export const TextMessage = ({
                     newMsgArr.push(
                         <Box component={"span"}>
                             <Box sx={{ display: "inline" }}> </Box>
-                            <UsernameJSX data={data} fontSize={fontSize} user={userGidRecord[gidSubstring]} />
+                            <UsernameJSX data={data} fontSize={fontSize} user={userGidRecord[gidSubstring]} factionColor={factionColor} />
                         </Box>,
                     )
                 }
@@ -206,7 +206,7 @@ export const TextMessage = ({
         <>
             <Box sx={{ opacity: isSent ? 1 : 0.45, wordBreak: "break-word", "*": { userSelect: "text !important" } }} ref={textMessageRef}>
                 {(!isPreviousMessager || (previousMessage && sentAt > new Date(previousMessage.sent_at.getTime() + 2 * 60000))) && (
-                    <Stack direction="row" justifyContent="space-between">
+                    <Stack direction="row" justifyContent="space-between" sx={{ mb: ".5rem" }}>
                         <Stack ref={popoverRef} direction="row" spacing=".3rem">
                             <Stack direction="row" spacing=".4rem" alignItems="flex-start">
                                 {isFailed && <SvgInfoCircular size="1.2rem" fill={colors.red} sx={{ mt: ".2rem" }} />}
@@ -332,7 +332,7 @@ export const TextMessage = ({
 
                 <Stack
                     direction={"column"}
-                    sx={{ ml: "2.1rem", position: "relative", mt: "1rem", mb: ".2rem" }}
+                    sx={{ ml: "2.1rem", position: "relative" }}
                     onMouseEnter={() => setDisplayTimestamp(true)}
                     onMouseLeave={() => setDisplayTimestamp(false)}
                 >
@@ -354,7 +354,7 @@ export const TextMessage = ({
                             {dateFormatter(sentAt)}
                         </Typography>
                     </Fade>
-                    <Box sx={{ backgroundColor: shouldNotify ? colors.darkerNavy : "unset" }}>{chatMessage}</Box>
+                    <Box sx={{ backgroundColor: shouldNotify ? "rgba(0,116,217, .4)" : "unset", borderRadius: ".3rem" }}>{chatMessage}</Box>
                 </Stack>
             </Box>
 
@@ -392,23 +392,25 @@ interface UsernameJSXProps {
     data: TextMessageData
     fontSize: number
     toggleIsPopoverOpen?: (value?: boolean) => void
+    factionColor?: string
     user: User | undefined
 }
 
-export const UsernameJSX = ({ data, fontSize, toggleIsPopoverOpen, user }: UsernameJSXProps) => {
+export const UsernameJSX = ({ data, fontSize, toggleIsPopoverOpen, user, factionColor }: UsernameJSXProps) => {
     const { message_color } = data
 
+    console.log(fontSize)
     return (
         <>
             <Typography
                 onClick={() => (toggleIsPopoverOpen ? toggleIsPopoverOpen() : null)}
                 sx={{
                     display: "inline",
-                    color: toggleIsPopoverOpen ? message_color : colors.blue,
+                    color: toggleIsPopoverOpen ? message_color : factionColor,
                     backgroundColor: toggleIsPopoverOpen ? "unset" : colors.darkNavyBlue,
                     borderRadius: toggleIsPopoverOpen ? "unset" : 0.5,
-                    fontWeight: 700,
-                    fontSize: fontSize ? `${1.33 * fontSize}rem` : "1.33rem",
+                    fontWeight: toggleIsPopoverOpen ? 700 : "unset",
+                    fontSize: toggleIsPopoverOpen && fontSize ? `${1.33 * fontSize}rem` : `${1.2 * fontSize}rem`,
                     verticalAlign: "middle",
                     ":hover": toggleIsPopoverOpen
                         ? {
