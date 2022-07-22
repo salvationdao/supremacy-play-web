@@ -43,7 +43,8 @@ export enum GameServerKeys {
     SubGlobalAnnouncement = "GLOBAL_ANNOUNCEMENT:SUBSCRIBE",
 
     // System messages
-    SubSystemMessages = "SYSTEM:MESSAGE:SUBSCRIBE",
+    SystemMessageList = "SYSTEM:MESSAGE:LIST",
+    SubSystemMessageListUpdated = "SYSTEM:MESSAGE:LIST:UPDATED",
 
     // Asset / queue
     SubQueueFeed = "BATTLE:QUEUE:STATUS:SUBSCRIBE",

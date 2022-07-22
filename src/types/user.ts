@@ -88,9 +88,12 @@ export enum SystemMessageType {
 }
 
 export interface SystemMessage {
+    id: string
+    player_id: string
     type: SystemMessageType
     message: string
     data: unknown | null
+    sent_at: Date
 }
 
 export interface SystemMessageDataMechBattleComplete {
