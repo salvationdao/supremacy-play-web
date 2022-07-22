@@ -93,8 +93,10 @@ const OptInButton = ({ disable }: { disable: boolean }) => {
         >
             <Stack alignItems="center" justifyContent="center" direction="row">
                 <Typography
+                    variant="body2"
                     sx={{
                         lineHeight: 1,
+                        letterSpacing: ".6px",
                         fontWeight: "fontWeightBold",
                         whiteSpace: "nowrap",
                         textTransform: "none",
