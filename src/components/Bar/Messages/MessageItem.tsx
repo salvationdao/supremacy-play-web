@@ -33,14 +33,8 @@ export const MessageItem = ({ message, onDismiss, showTimestamps }: MessageItemP
             <Stack direction="row" alignItems="center" spacing=".5rem">
                 <Stack direction="row" alignItems="center" spacing="1rem" sx={{ flex: 1 }}>
                     {showTimestamps && (
-                        <Typography
-                            sx={{
-                                color: colors.grey,
-                            }}
-                            variant="body2"
-                        >
-                            {message.sent_at.getHours()}
-                            {message.sent_at.getMinutes()}
+                        <Typography variant="body2" sx={{ color: colors.grey }}>
+                            {message.sent_at.getHours()}:{message.sent_at.getMinutes()}
                         </Typography>
                     )}
 
