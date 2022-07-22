@@ -125,7 +125,7 @@ const BattleAbilityItemInner = ({ bribeStage, battleAbility, fadeEffect }: Inner
                                             disableButton={!factionID || bribeStage?.phase !== "OPT_IN"}
                                         />
 
-                                        <Typography variant="h6">{description}</Typography>
+                                        <Typography>{description}</Typography>
                                     </Stack>
                                 </ClipThing>
                             </Box>

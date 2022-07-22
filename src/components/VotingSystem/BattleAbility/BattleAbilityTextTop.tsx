@@ -32,8 +32,8 @@ export const BattleAbilityTextTop = ({ label, image_url, colour, disableButton }
             <Stack spacing=".8rem" direction="row" alignItems="center" justifyContent="center">
                 <Box
                     sx={{
-                        height: "1.9rem",
-                        width: "1.9rem",
+                        height: "2.2rem",
+                        width: "2.2rem",
                         backgroundImage: `url(${image_url})`,
                         backgroundRepeat: "no-repeat",
                         backgroundPosition: "center",
@@ -45,10 +45,10 @@ export const BattleAbilityTextTop = ({ label, image_url, colour, disableButton }
                     }}
                 />
                 <Typography
+                    variant="h6"
                     sx={{
                         lineHeight: 1,
-                        fontWeight: "fontWeightBold",
-                        fontFamily: fonts.nostromoBold,
+                        fontFamily: fonts.nostromoBlack,
                         color: colour,
                         overflow: "hidden",
                         textOverflow: "ellipsis",
