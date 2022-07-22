@@ -1,11 +1,11 @@
 /* eslint-disable no-case-declarations */
 import { Box, Collapse, Fade, Stack, Typography } from "@mui/material"
 import { useMemo, useState } from "react"
-import { SystemMessageDisplayable } from "../../../containers/systemMessaging"
 import { colors } from "../../../theme/theme"
 import { SystemMessageDataMechBattleComplete, SystemMessageType } from "../../../types"
 import { FancyButton } from "../../Common/FancyButton"
 import { MechBattleCompleteDetails } from "./MessageItem/MechBattleCompleteDetails"
+import { SystemMessageDisplayable } from "./Messages"
 
 export interface MessageItemProps {
     message: SystemMessageDisplayable
@@ -21,7 +21,7 @@ export const MessageItem = ({ message, onDismiss }: MessageItemProps) => {
                 if (!message.data) break
                 const data = message.data as SystemMessageDataMechBattleComplete
 
-                return <MechBattleCompleteDetails data={data} />
+                return <MechBattleCompleteDetails message={message.message} data={data} />
         }
 
         return <Typography variant="h6">{message.message}</Typography>

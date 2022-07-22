@@ -5,10 +5,11 @@ import { colors, fonts } from "../../../../theme/theme"
 import { MechBattleBrief, SystemMessageDataMechBattleComplete } from "../../../../types"
 
 export interface MechBattleCompleteDetailsProps {
+    message: string
     data: SystemMessageDataMechBattleComplete
 }
 
-export const MechBattleCompleteDetails = ({ data }: MechBattleCompleteDetailsProps) => {
+export const MechBattleCompleteDetails = ({ message, data }: MechBattleCompleteDetailsProps) => {
     const [ownedMechBrief, restOfTheBriefs] = useMemo(() => {
         let ownedMechBrief: MechBattleBrief | null = null
         const restOfTheBriefs: MechBattleBrief[] = []
@@ -27,6 +28,7 @@ export const MechBattleCompleteDetails = ({ data }: MechBattleCompleteDetailsPro
 
     return (
         <Stack spacing=".3rem">
+            <Typography>{message}</Typography>
             <Typography
                 sx={{
                     fontFamily: fonts.nostromoBold,

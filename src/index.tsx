@@ -29,7 +29,6 @@ import {
 } from "./containers"
 import { AuthProvider, useAuth, UserUpdater } from "./containers/auth"
 import { FingerprintProvider } from "./containers/fingerprint"
-import { SystemMessagingProvider } from "./containers/systemMessaging"
 import { ThemeProvider } from "./containers/theme"
 import { ws } from "./containers/ws"
 import { useToggle } from "./hooks"
@@ -229,14 +228,12 @@ const App = () => {
                                                                 <DimensionProvider>
                                                                     <OverlayTogglesProvider>
                                                                         <MiniMapProvider>
-                                                                            <SystemMessagingProvider>
-                                                                                <UserUpdater />
-                                                                                <Switch>
-                                                                                    <Route path="/404" exact component={NotFoundPage} />
-                                                                                    <Route path="/login-redirect" exact component={LoginRedirect} />
-                                                                                    <Route path="" component={AppInner} />
-                                                                                </Switch>
-                                                                            </SystemMessagingProvider>
+                                                                            <UserUpdater />
+                                                                            <Switch>
+                                                                                <Route path="/404" exact component={NotFoundPage} />
+                                                                                <Route path="/login-redirect" exact component={LoginRedirect} />
+                                                                                <Route path="" component={AppInner} />
+                                                                            </Switch>
                                                                         </MiniMapProvider>
                                                                     </OverlayTogglesProvider>
                                                                 </DimensionProvider>
