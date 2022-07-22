@@ -244,7 +244,7 @@ export const BuyNowDetails = ({
                         history.replace(`/fleet/${subPath}${location.hash}`)
                     }}
                 >
-                    <Typography variant="h6">Your item has been removed from the marketplace.</Typography>
+                    <Typography variant="h6">You have successfully purchased the item.</Typography>
                 </SuccessModal>
             )}
         </>

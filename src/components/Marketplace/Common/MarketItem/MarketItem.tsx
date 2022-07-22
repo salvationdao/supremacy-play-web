@@ -10,14 +10,10 @@ import { MarketplaceBuyAuctionItem } from "../../../../types/marketplace"
 import { AuctionPrice } from "../../Common/MarketItem/AuctionPrice"
 import { BuyoutPrice } from "../../Common/MarketItem/BuyoutPrice"
 import { UserInfo } from "./UserInfo"
-import { Thumbnail } from "../../Common/MarketItem/Thumbnail"
 import { Timeframe } from "../../Common/MarketItem/Timeframe"
 import { SoldPrice } from "./SoldPrice"
 
 interface MarketItemProps {
-    imageUrl: string
-    animationUrl?: string
-    cardAnimationUrl?: string
     backgroundImageUrl?: string
     item: MarketplaceBuyAuctionItem
     isGridView: boolean
@@ -25,7 +21,7 @@ interface MarketItemProps {
     linkSubPath: MARKETPLACE_TABS
 }
 
-export const MarketItem = ({ imageUrl, animationUrl, cardAnimationUrl, backgroundImageUrl, item, isGridView, children, linkSubPath }: MarketItemProps) => {
+export const MarketItem = ({ backgroundImageUrl, item, isGridView, children, linkSubPath }: MarketItemProps) => {
     const theme = useTheme()
 
     const formattedBuyoutPrice = useMemo(() => {
@@ -87,7 +83,7 @@ export const MarketItem = ({ imageUrl, animationUrl, cardAnimationUrl, backgroun
                         p: isGridView ? ".5rem .6rem" : ".1rem .3rem",
                         display: isGridView ? "block" : "grid",
                         gridTemplateRows: "7rem",
-                        gridTemplateColumns: `8rem minmax(auto, 38rem) 1.5fr ${sold_to ? "1.2fr" : "1fr"} repeat(2, 1fr)`, // hard-coded to have 6 columns, adjust as required
+                        gridTemplateColumns: `minmax(36rem, auto) 23rem repeat(3, 17rem)`, // hard-coded to have 6 columns, adjust as required
                         gap: "1.4rem",
                         ...(isGridView
                             ? {
@@ -98,8 +94,6 @@ export const MarketItem = ({ imageUrl, animationUrl, cardAnimationUrl, backgroun
                             : {}),
                     }}
                 >
-                    <Thumbnail item={item} isGridView={isGridView} imageUrl={imageUrl} animationUrl={animationUrl} cardAnimationUrl={cardAnimationUrl} />
-
                     {children}
 
                     <UserInfo isGridView={isGridView} marketUser={owner} title="SELLER" />

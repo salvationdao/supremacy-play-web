@@ -158,7 +158,6 @@ export enum GameServerKeys {
     GetPlayerMechKills = "LEADERBOARD:PLAYER:MECH:KILLS",
     GetPlayerAbilityKills = "LEADERBOARD:PLAYER:ABILITY:KILLS",
     GetPlayerAbilityTriggers = "LEADERBOARD:PLAYER:ABILITY:TRIGGERS",
-    GetPlayerBattleContributions = "LEADERBOARD:PLAYER:BATTLE:CONTRIBUTIONS",
     GetPlayerMechsOwned = "LEADERBOARD:PLAYER:MECHS:OWNED",
 }
 

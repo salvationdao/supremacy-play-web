@@ -533,6 +533,8 @@ export const getWeaponTypeColor = (weaponType: string | undefined) => {
             return colors.blue
         case "FLAK":
             return colors.orange
+        case "LASER BEAM":
+            return colors.purple
         default:
             return colors.neonBlue
     }
@@ -555,20 +557,25 @@ export const getWeaponDamageTypeColor = (damageType: string | undefined) => {
 
 export const closestAngle = (from: number, to: number) => from + ((((to - from) % 360) + 540) % 360) - 180
 
-export const getAssetItemDeets = (assetItemType?: AssetItemType): { icon: VoidFunctionComponent<SvgWrapperProps> | null; color: string; label: string } => {
+export const getAssetItemDeets = (
+    assetItemType?: AssetItemType,
+): { icon: VoidFunctionComponent<SvgWrapperProps> | null; color: string; label: string; subRoute: string } => {
     let icon = null
     let color = ""
     let label = ""
+    let subRoute = ""
 
-    if (!assetItemType) return { icon, color, label }
+    if (!assetItemType) return { icon, color, label, subRoute }
 
     switch (assetItemType) {
         case AssetItemType.Mech:
+            subRoute = "mech"
             break
         case AssetItemType.Weapon:
             icon = SvgWeapons
             color = colors.weapons
             label = "Weapon"
+            subRoute = "weapon"
             break
         case AssetItemType.MechSkin:
             icon = SvgSkin
@@ -602,5 +609,5 @@ export const getAssetItemDeets = (assetItemType?: AssetItemType): { icon: VoidFu
             break
     }
 
-    return { icon, color, label }
+    return { icon, color, label, subRoute }
 }

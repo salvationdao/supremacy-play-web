@@ -6,7 +6,6 @@ import { fonts } from "../../../theme/theme"
 import { PageHeader } from "../../Common/PageHeader"
 import { PlayerAbilityKills } from "./PlayerAbilityKills"
 import { PlayerAbilityTriggers } from "./PlayerAbilityTriggers"
-import { PlayerBattleContributions } from "./PlayerBattleContributions"
 import { PlayerBattlesSpectated } from "./PlayerBattlesSpectated"
 import { PlayerMechKills } from "./PlayerMechKills"
 import { PlayerMechsOwned } from "./PlayerMechsOwned"
@@ -79,7 +78,6 @@ export const GlobalStats = () => {
                                     <PlayerMechKills />
                                     <PlayerAbilityKills />
                                     <PlayerAbilityTriggers />
-                                    <PlayerBattleContributions />
                                     <PlayerMechsOwned />
                                 </Stack>
                             </Box>
