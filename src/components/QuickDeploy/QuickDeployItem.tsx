@@ -1,5 +1,5 @@
 import { Stack, Typography } from "@mui/material"
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 import { FancyButton } from ".."
 import { useSnackbar } from "../../containers"
 import { useTheme } from "../../containers/theme"
