@@ -250,7 +250,9 @@ export const Messages = () => {
                                     }}
                                 />
 
-                                <Typography sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>Show Timestamps</Typography>
+                                <Typography sx={{ lineHeight: 1, fontWeight: "fontWeightBold", opacity: messages.length === 0 ? 0.6 : 1 }}>
+                                    Show Timestamps
+                                </Typography>
                             </Stack>
                         </Stack>
 
