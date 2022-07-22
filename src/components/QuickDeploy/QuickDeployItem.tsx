@@ -226,7 +226,7 @@ export const QuickDeployItem = ({ mech }: QuickDeployItemProps) => {
                                         fontFamily: fonts.nostromoBlack,
                                     }}
                                 >
-                                    {MechStatusEnum.StandardRepairing ? "SPEED UP" : "REPAIR"}
+                                    {mechState === MechStatusEnum.StandardRepairing ? "SPEED UP" : "REPAIR"}
                                 </Typography>
                             </Stack>
                         </FancyButton>
