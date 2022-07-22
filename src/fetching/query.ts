@@ -58,10 +58,10 @@ export const CanPlayerPurchase = (playerID: string): Action<SaleAbilitiesAvailab
     }
 }
 
-export const GetWeaponMaxStats = (): Action<WeaponMaxStats> => {
+export const GetWeaponMaxStats = (playerID?: string | undefined): Action<WeaponMaxStats> => {
     return {
         method: "GET",
-        endpoint: `/max_weapon_stats`,
+        endpoint: `/max_weapon_stats?user_id=${playerID || ""}`,
         credentials: "include",
         responseType: "json",
     }

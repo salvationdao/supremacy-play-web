@@ -1,7 +1,8 @@
 import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { ClipThing } from "../.."
+import { ClipThing, FancyButton } from "../.."
 import { EmptyWarMachinesPNG, WarMachineIconPNG } from "../../../assets"
+import { HANGAR_PAGE } from "../../../constants"
 import { useTheme } from "../../../containers/theme"
 import { getRarityDeets, parseString } from "../../../helpers"
 import { usePagination, useToggle, useUrlQuery } from "../../../hooks"
@@ -56,7 +57,11 @@ export const WarMachinesHangar = () => {
     const [sort, setSort] = useState<string>(query.get("sort") || SortTypeLabel.MechQueueAsc)
     const [status, setStatus] = useState<string[]>((query.get("statuses") || undefined)?.split("||") || [])
     const [rarities, setRarities] = useState<string[]>((query.get("rarities") || undefined)?.split("||") || [])
-    const [isGridView, toggleIsGridView] = useToggle(false)
+    const [isGridView, toggleIsGridView] = useToggle((localStorage.getItem("fleetMechGrid") || "true") === "true")
+
+    useEffect(() => {
+        localStorage.setItem("fleetMechGrid", isGridView.toString())
+    }, [isGridView])
 
     // Filters
     const statusFilterSection = useRef<ChipFilter>({
@@ -253,13 +258,13 @@ export const WarMachinesHangar = () => {
                 <Stack sx={{ position: "relative", height: "100%" }}>
                     <Stack sx={{ flex: 1 }}>
                         <PageHeader title="WAR MACHINES" description="Your war machines." imageUrl={WarMachineIconPNG}>
-                            {/* <Box sx={{ ml: "auto !important", pr: "2rem" }}>
+                            <Box sx={{ ml: "auto !important", pr: "2rem" }}>
                                 <FancyButton
                                     clipThingsProps={{
                                         clipSize: "9px",
                                         backgroundColor: colors.gold,
                                         opacity: 1,
-                                        border: { isFancy: true, borderColor: colors.gold, borderThickness: "2px" },
+                                        border: { borderColor: colors.gold, borderThickness: "2px" },
                                         sx: { position: "relative" },
                                     }}
                                     sx={{ px: "1.6rem", py: ".6rem", color: "#000000" }}
@@ -276,7 +281,7 @@ export const WarMachinesHangar = () => {
                                         WALKABLE HANGAR
                                     </Typography>
                                 </FancyButton>
-                            </Box> */}
+                            </Box>
                         </PageHeader>
 
                         <TotalAndPageSizeOptions

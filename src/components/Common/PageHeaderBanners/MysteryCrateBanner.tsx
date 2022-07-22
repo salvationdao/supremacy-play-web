@@ -153,11 +153,11 @@ export const MysteryCrateBanner = () => {
 }
 
 const Countdown = ({ dateTo, setUnlocked }: { dateTo: Date | undefined; setUnlocked: React.Dispatch<React.SetStateAction<boolean>> }) => {
-    const { days, hours, minutes, seconds } = useTimer(dateTo)
+    const { days, hours, minutes, seconds, totalSecRemain } = useTimer(dateTo)
 
     useEffect(() => {
-        if (seconds === 0) setUnlocked(true)
-    }, [seconds, setUnlocked])
+        if (totalSecRemain <= 0) setUnlocked(true)
+    }, [seconds, setUnlocked, totalSecRemain])
 
     if (seconds === undefined) return null
 

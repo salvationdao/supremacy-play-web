@@ -196,7 +196,7 @@ export const CrateRewardsModal = ({
                                         left: 0,
                                         width: "100%",
                                         height: "100%",
-                                        opacity: 0.12,
+                                        opacity: 0.08,
                                         background: `url(${faction.background_url})`,
                                         backgroundRepeat: "no-repeat",
                                         backgroundPosition: "center",
@@ -212,7 +212,7 @@ export const CrateRewardsModal = ({
                                 {openedRewards.mech ? <MechCrateRewards items={arrayItems} /> : <WeaponCrateRewards items={arrayItems} />}
 
                                 <Stack alignItems="center" spacing="1.4rem" sx={{ mt: "auto" }}>
-                                    {validFutureCrates && validFutureCrates.length > 0 && (
+                                    {validFutureCrates && validFutureCrates.length > 0 ? (
                                         <FancyButton
                                             loading={loading}
                                             clipThingsProps={{
@@ -234,7 +234,31 @@ export const CrateRewardsModal = ({
                                                 OPEN NEXT CRATE
                                             </Typography>
                                         </FancyButton>
+                                    ) : (
+                                        <FancyButton
+                                            loading={loading}
+                                            clipThingsProps={{
+                                                clipSize: "9px",
+                                                backgroundColor: theme.factionTheme.primary,
+                                                opacity: 1,
+                                                border: { isFancy: true, borderColor: theme.factionTheme.primary, borderThickness: "2px" },
+                                                sx: { position: "relative", width: "32rem" },
+                                            }}
+                                            sx={{ width: "100%", py: "1rem", color: theme.factionTheme.secondary }}
+                                            to="/storefront/mystery-crates"
+                                            onClick={onClose}
+                                        >
+                                            <Typography
+                                                sx={{
+                                                    color: theme.factionTheme.secondary,
+                                                    fontFamily: fonts.nostromoBlack,
+                                                }}
+                                            >
+                                                BUY CRATES
+                                            </Typography>
+                                        </FancyButton>
                                     )}
+
                                     <FancyButton
                                         clipThingsProps={{
                                             clipSize: "9px",

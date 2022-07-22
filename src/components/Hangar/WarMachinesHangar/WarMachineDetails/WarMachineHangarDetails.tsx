@@ -79,7 +79,7 @@ export const WarMachineHangarDetailsInner = ({
     const { send: userSend } = useGameServerCommandsUser("/user_commander")
     const [mechDetails, setMechDetails] = useState<MechDetails>()
 
-    const rarityDeets = useMemo(() => getRarityDeets(mechDetails?.tier || ""), [mechDetails])
+    const rarityDeets = useMemo(() => getRarityDeets(mechDetails?.chassis_skin?.tier || mechDetails?.tier || ""), [mechDetails])
 
     useEffect(() => {
         ;(async () => {
@@ -242,7 +242,6 @@ export const WarMachineHangarDetailsInner = ({
                     borderColor: primaryColor,
                     borderThickness: ".3rem",
                 }}
-                opacity={0.7}
                 backgroundColor={backgroundColor}
                 sx={{ height: "100%", flex: 1 }}
             >
