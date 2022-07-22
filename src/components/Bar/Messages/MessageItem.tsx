@@ -30,7 +30,8 @@ export const MessageItem = ({ message, onDismiss }: MessageItemProps) => {
     return (
         <Box>
             <Stack direction="row" alignItems="center" spacing=".5rem">
-                {message.icon({})}
+                <message.icon size="1.8rem" />
+
                 <Typography
                     variant="h6"
                     sx={{
@@ -43,6 +44,7 @@ export const MessageItem = ({ message, onDismiss }: MessageItemProps) => {
                 >
                     {message.message}
                 </Typography>
+
                 <Box
                     sx={{
                         flex: 1,
@@ -59,6 +61,7 @@ export const MessageItem = ({ message, onDismiss }: MessageItemProps) => {
                         {isCollapsed ? "View" : "Hide"}
                     </FancyButton>
                 </Box>
+
                 <Box
                     sx={{
                         flex: 1,
@@ -76,6 +79,7 @@ export const MessageItem = ({ message, onDismiss }: MessageItemProps) => {
                     </FancyButton>
                 </Box>
             </Stack>
+
             <Collapse in={!isCollapsed}>
                 <Fade in={true}>
                     <Box>{details}</Box>

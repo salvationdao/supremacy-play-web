@@ -2,6 +2,7 @@ import { Badge, Box, IconButton, Pagination, Popover, Stack, Typography } from "
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { SvgAnnouncement, SvgDamage1, SvgHistoryClock, SvgListView, SvgMail, SvgWrapperProps } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
+import { timeSinceInWords } from "../../../helpers"
 import { usePagination, useToggle } from "../../../hooks"
 import { useGameServerCommandsUser, useGameServerSubscriptionUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
@@ -16,12 +17,12 @@ export interface SystemMessageDisplayable extends SystemMessage {
 
 export const Messages = () => {
     const theme = useTheme()
-    const popoverRef = useRef(null)
-    const [localOpen, toggleLocalOpen] = useToggle(false)
-
     const { send } = useGameServerCommandsUser("/user_commander")
     const [messages, setMessages] = useState<SystemMessageDisplayable[]>([])
     const [lastUpdated, setLastUpdated] = useState<Date>(new Date())
+
+    const popoverRef = useRef(null)
+    const [modalOpen, toggleModalOpen] = useToggle(false)
     const [error, setError] = useState<string>()
     const { page, changePage, totalPages, totalItems, setTotalItems, pageSize } = usePagination({
         pageSize: 10,
@@ -75,31 +76,6 @@ export const Messages = () => {
         }
     }, [page, pageSize, send, setTotalItems])
 
-    const dismissMessage = useCallback(
-        async (id: string) => {
-            try {
-                await send<
-                    SystemMessage[],
-                    {
-                        id: string
-                    }
-                >(GameServerKeys.SystemMessageDismiss, {
-                    id,
-                })
-            } catch (e) {
-                let message = "Failed to dismiss system message."
-                if (typeof e === "string") {
-                    message = e
-                } else if (e instanceof Error) {
-                    message = e.message
-                }
-                setError(message)
-                console.error(e)
-            }
-        },
-        [send],
-    )
-
     useEffect(() => {
         fetchMessages()
     }, [fetchMessages, lastUpdated])
@@ -113,6 +89,21 @@ export const Messages = () => {
             if (!payload) return
             setLastUpdated(new Date())
         },
+    )
+
+    const dismissMessage = useCallback(
+        async (id: string) => {
+            try {
+                await send<SystemMessage[], { id: string }>(GameServerKeys.SystemMessageDismiss, {
+                    id,
+                })
+            } catch (err) {
+                const message = typeof err === "string" ? err : "Failed to dismiss system message."
+                setError(message)
+                console.error(err)
+            }
+        },
+        [send],
     )
 
     const content = useMemo(() => {
@@ -129,7 +120,7 @@ export const Messages = () => {
                             textTransform: "uppercase",
                         }}
                     >
-                        You do not have any messages at the moment.
+                        YOUR INBOX IS EMPTY.
                     </Typography>
                 </Stack>
             )
@@ -137,35 +128,19 @@ export const Messages = () => {
 
         return (
             <Stack sx={{ p: "1rem" }} spacing="1rem">
-                <Box
-                    sx={{
-                        pb: "1rem",
-                        borderBottom: `${theme.factionTheme.primary}70 1.5px solid`,
-                    }}
-                >
-                    <Typography variant="h6" sx={{ fontFamily: fonts.nostromoBlack, textTransform: "uppercase" }}>
-                        System Messages
-                    </Typography>
-                    <Typography variant="body2" sx={{ color: colors.red }}>
-                        {error}
-                    </Typography>
-                </Box>
                 <Stack spacing=".8rem">
                     <Stack direction="row" alignItems="center" justifyContent="end" spacing=".4rem">
                         <SvgHistoryClock size="1rem" fill={colors.grey} />
-                        <Typography
-                            variant="caption"
-                            sx={{
-                                color: colors.grey,
-                            }}
-                        >
-                            Last updated: {lastUpdated.toISOString()}
+                        <Typography variant="body2" sx={{ opacity: 0.5, ":hover": { opacity: 1 } }}>
+                            Last updated: {timeSinceInWords(new Date(), lastUpdated, true)} ago
                         </Typography>
                     </Stack>
+
                     {messages.map((m) => (
                         <MessageItem key={m.id} message={m} onDismiss={() => dismissMessage(m.id)} />
                     ))}
                 </Stack>
+
                 <Box
                     sx={{
                         pt: "1rem",
@@ -189,7 +164,7 @@ export const Messages = () => {
                 </Box>
             </Stack>
         )
-    }, [messages, theme.factionTheme.primary, theme.factionTheme.secondary, error, lastUpdated, totalPages, page, dismissMessage, changePage])
+    }, [messages, theme.factionTheme.primary, theme.factionTheme.secondary, lastUpdated, totalPages, page, dismissMessage, changePage])
 
     return (
         <>
@@ -216,23 +191,24 @@ export const Messages = () => {
                             },
                         }}
                     >
-                        <IconButton onClick={() => toggleLocalOpen(true)}>
+                        <IconButton onClick={() => toggleModalOpen(true)}>
                             <SvgMail size="2.2rem" />
                         </IconButton>
                     </Badge>
                 </Box>
             </Stack>
+
             <Popover
-                open={localOpen}
+                open={modalOpen}
                 anchorEl={popoverRef.current}
-                onClose={() => toggleLocalOpen(false)}
+                onClose={() => toggleModalOpen(false)}
                 anchorOrigin={{
                     vertical: "bottom",
-                    horizontal: "left",
+                    horizontal: "center",
                 }}
                 transformOrigin={{
                     vertical: "top",
-                    horizontal: "left",
+                    horizontal: "center",
                 }}
                 sx={{
                     mt: ".5rem",
@@ -251,11 +227,30 @@ export const Messages = () => {
                     }}
                     backgroundColor={theme.factionTheme.background}
                     sx={{
-                        height: "100%",
-                        width: "100%",
-                        maxWidth: "40rem",
+                        width: "52rem",
+                        maxWidth: "80vw",
                     }}
                 >
+                    <Stack
+                        spacing=".5rem"
+                        sx={{
+                            p: "1rem 2rem",
+                            borderBottom: `${theme.factionTheme.primary}70 1.5px solid`,
+                        }}
+                    >
+                        <Stack direction="row" alignItems="center" justifyContent="space-between" spacing="1.5rem">
+                            <Typography variant="h6" sx={{ fontFamily: fonts.nostromoBlack }}>
+                                SYSTEM MESSAGES
+                            </Typography>
+                        </Stack>
+
+                        {error && (
+                            <Typography variant="body2" sx={{ color: colors.red }}>
+                                {error}
+                            </Typography>
+                        )}
+                    </Stack>
+
                     {content}
                 </ClipThing>
             </Popover>
