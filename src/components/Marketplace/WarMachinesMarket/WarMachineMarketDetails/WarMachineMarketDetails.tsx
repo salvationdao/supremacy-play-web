@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react"
 import { useTheme } from "../../../../containers/theme"
 import { getRarityDeets } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
-import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
+import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
 import { MechDetails } from "../../../../types"
@@ -51,23 +51,17 @@ export const WarMachineMarketDetails = ({ id }: { id: string }) => {
     }, [id, send])
 
     // Get mech details
-    useEffect(() => {
-        ;(async () => {
-            try {
-                if (!marketItem || !marketItem.mech?.id) return
-                const resp = await send<MechDetails>(GameServerKeys.GetMechDetails, {
-                    mech_id: marketItem.mech.id,
-                })
-
-                if (!resp) return
-                setMechDetails(resp)
-            } catch (err) {
-                const message = typeof err === "string" ? err : "Failed to get war machine details."
-                setLoadError(message)
-                console.error(err)
-            }
-        })()
-    }, [marketItem, send])
+    useGameServerSubscriptionFaction<MechDetails>(
+        {
+            URI: `/mech/${marketItem?.mech?.id}/details`,
+            key: GameServerKeys.GetMechDetails,
+            ready: !!marketItem?.mech?.id,
+        },
+        (payload) => {
+            if (!payload) return
+            setMechDetails(payload)
+        },
+    )
 
     const content = useMemo(() => {
         const validStruct = !marketItem || (marketItem.mech && marketItem.owner)
