@@ -1,6 +1,7 @@
 import { Badge, Box, IconButton, Pagination, Popover, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { SvgAnnouncement, SvgDamage1, SvgHistoryClock, SvgListView, SvgMail, SvgWrapperProps } from "../../../assets"
+import { FactionIDs } from "../../../constants"
 import { useTheme } from "../../../containers/theme"
 import { usePagination, useToggle } from "../../../hooks"
 import { useGameServerCommandsUser, useGameServerSubscriptionUser } from "../../../hooks/useGameServer"
@@ -14,10 +15,66 @@ export interface SystemMessageDisplayable extends SystemMessage {
     icon: React.VoidFunctionComponent<SvgWrapperProps>
 }
 
+const test: SystemMessageDisplayable[] = [
+    {
+        id: "CCCCCCCCCCCCCCC",
+        player_id: "AAAAAAAAAAAAAAAA",
+        icon: SvgDamage1,
+        type: SystemMessageType.MechBattleComplete,
+        message: "Your mech has been queued!",
+        data: {
+            mech_id: "nnnnnnnnnnnnnnnn",
+            faction_won: true,
+            briefs: [
+                {
+                    mech_id: "nnnnnnnnnnnnnnnn",
+                    faction_id: FactionIDs.RM,
+                    kills: 3,
+                    killed: null,
+                    label: "Mech Tenshi",
+                    name: "My Baby",
+                },
+            ],
+        },
+        sent_at: new Date(),
+    },
+    {
+        id: "CCCCCCCCCCCCCCC",
+        player_id: "AAAAAAAAAAAAAAAA",
+        icon: SvgDamage1,
+        type: SystemMessageType.MechBattleComplete,
+        message: "Your mech has been queued!",
+        data: {
+            mech_id: "nnnnnnnnnnnnnnnn",
+            faction_won: false,
+            briefs: [
+                {
+                    mech_id: "nnnnnnznnnnnnnnnn",
+                    faction_id: FactionIDs.ZHI,
+                    kills: 3,
+                    killed: new Date(),
+                    label: "Mech Tenshi",
+                    name: "My Baby",
+                },
+            ],
+        },
+        sent_at: new Date(),
+    },
+    {
+        id: "BBBBBBBBBBBBBB",
+        icon: SvgListView,
+        player_id: "AAAAAAAAAAAAAAAA",
+        type: SystemMessageType.MechBattleComplete,
+        message: "Your mech has been queued! Your mech has been queued! Your mech has been queued!",
+        data: null,
+        sent_at: new Date(),
+    },
+]
+
 export const Messages = () => {
     const theme = useTheme()
     const { send } = useGameServerCommandsUser("/user_commander")
-    const [messages, setMessages] = useState<SystemMessageDisplayable[]>([])
+    const [messages, setMessages] = useState<SystemMessageDisplayable[]>([...test])
     const [lastUpdated, setLastUpdated] = useState<Date>(new Date())
 
     const popoverRef = useRef(null)
