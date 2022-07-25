@@ -2,7 +2,7 @@ import { Stack } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
 import { KeycardPNG, SafePNG } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
-import { useGameServerCommandsFaction, useGameServerCommandsUser } from "../../../../hooks/useGameServer"
+import { useGameServerCommandsUser, useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { Keycard, MechDetails, MysteryCrate, Weapon } from "../../../../types"
 import { ItemType } from "../../../../types/marketplace"
@@ -24,7 +24,6 @@ export const AssetToSellItem = ({
     orientation?: "horizontal" | "vertical"
 }) => {
     const theme = useTheme()
-    const { send } = useGameServerCommandsFaction("/faction_commander")
     const { send: sendUser } = useGameServerCommandsUser("/user_commander")
     // Additional fetched data
     const [mechDetails, setMechDetails] = useState<MechDetails>()
@@ -33,37 +32,30 @@ export const AssetToSellItem = ({
     const [keycard, setKeycard] = useState<Keycard>()
 
     // Get addition mech data
-    useEffect(() => {
-        ;(async () => {
-            try {
-                if (itemType !== ItemType.WarMachine) return
-                const resp = await send<MechDetails>(GameServerKeys.GetMechDetails, {
-                    mech_id: assetToSell.id,
-                })
-                if (!resp) return
-                setMechDetails(resp)
-            } catch (e) {
-                console.error(e)
-            }
-        })()
-    }, [assetToSell, itemType, send])
+    useGameServerSubscriptionFaction<MechDetails>(
+        {
+            URI: `/mech/${assetToSell.id}/details`,
+            key: GameServerKeys.GetMechDetails,
+            ready: itemType === ItemType.WarMachine,
+        },
+        (payload) => {
+            if (!payload) return
+            setMechDetails(payload)
+        },
+    )
 
     // Get additional weapon data
-    useEffect(() => {
-        ;(async () => {
-            try {
-                if (itemType !== ItemType.Weapon) return
-                const resp = await send<Weapon>(GameServerKeys.GetWeaponDetails, {
-                    weapon_id: assetToSell.id,
-                })
-
-                if (!resp) return
-                setWeaponDetails(resp)
-            } catch (err) {
-                console.error(err)
-            }
-        })()
-    }, [assetToSell, itemType, send])
+    useGameServerSubscriptionFaction<Weapon>(
+        {
+            URI: `/weapon/${assetToSell.id}/details`,
+            key: GameServerKeys.GetWeaponDetails,
+            ready: itemType === ItemType.Weapon,
+        },
+        (payload) => {
+            if (!payload) return
+            setWeaponDetails(payload)
+        },
+    )
 
     // Get additional mystery crate data
     useEffect(() => {

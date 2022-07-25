@@ -127,27 +127,6 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate, setOpeningCrate, se
                                     bottom: enlargedView ? ".6rem" : ".2rem",
                                 }}
                             >
-                                <Stack direction="row" alignItems="center" spacing=".1rem" sx={{ position: "relative", opacity: 0.9 }}>
-                                    <SvgSupToken size={enlargedView ? "2rem" : "1.3rem"} fill={colors.yellow} />
-                                    <Typography sx={{ fontSize: enlargedView ? "1.6rem" : "1.3rem", fontFamily: fonts.nostromoBold }}>
-                                        {supFormatterNoFixed(
-                                            new BigNumber(mysteryCrate.mystery_crate_type === "WEAPON" ? 3800 : 5000).shiftedBy(18).toString(),
-                                            2,
-                                        )}
-                                    </Typography>
-                                    <Box
-                                        sx={{
-                                            position: "absolute",
-                                            left: "-1px",
-                                            right: "-3px",
-                                            top: "50%",
-                                            transform: "translateY(-110%)",
-                                            height: "2px",
-                                            backgroundColor: colors.lightNeonBlue,
-                                        }}
-                                    />
-                                </Stack>
-
                                 <Stack direction="row" alignItems="center" spacing=".1rem">
                                     <SvgSupToken size={enlargedView ? "2.6rem" : "1.9rem"} fill={colors.yellow} />
                                     <Typography sx={{ fontSize: enlargedView ? "2.2rem" : "1.9rem", fontFamily: fonts.nostromoBlack }}>

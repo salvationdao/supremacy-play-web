@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react"
-import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
+import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { useTheme } from "../../../../containers/theme"
 import { useToggle } from "../../../../hooks"
 import { getRarityDeets } from "../../../../helpers"
@@ -50,23 +50,17 @@ export const WeaponMarketDetails = ({ id }: { id: string }) => {
     }, [id, send])
 
     // Get weapon details
-    useEffect(() => {
-        ;(async () => {
-            try {
-                if (!marketItem || !marketItem.weapon?.id) return
-                const resp = await send<Weapon>(GameServerKeys.GetWeaponDetails, {
-                    weapon_id: marketItem.weapon.id,
-                })
-
-                if (!resp) return
-                setWeaponDetails(resp)
-            } catch (err) {
-                const message = typeof err === "string" ? err : "Failed to get weapon details."
-                setLoadError(message)
-                console.error(err)
-            }
-        })()
-    }, [marketItem, send])
+    useGameServerSubscriptionFaction<Weapon>(
+        {
+            URI: `/weapon/${marketItem?.weapon?.id}/details`,
+            key: GameServerKeys.GetWeaponDetails,
+            ready: !!marketItem?.weapon?.id,
+        },
+        (payload) => {
+            if (!payload) return
+            setWeaponDetails(payload)
+        },
+    )
 
     const content = useMemo(() => {
         const validStruct = !marketItem || (marketItem.weapon && marketItem.owner)
