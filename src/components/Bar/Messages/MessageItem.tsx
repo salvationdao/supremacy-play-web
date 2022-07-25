@@ -42,7 +42,7 @@ export const MessageItem = ({ message, selected, onSelect }: MessageItemProps) =
                                 WebkitBoxOrient: "vertical",
                                 textAlign: "left",
                                 textTransform: "none",
-                                color: !message.read_at ? "white" : colors.grey,
+                                color: !message.read_at || selected ? "white" : colors.grey,
                             }}
                         >
                             {message.message}

@@ -1,14 +1,9 @@
 import { Badge, Box, IconButton, Pagination, Popover, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { SvgAnnouncement, SvgDamage1, SvgGlobal, SvgHistoryClock, SvgListView, SvgMail, SvgSyndicateFlag, SvgWrapperProps } from "../../../assets"
+import { SvgAnnouncement, SvgDamage1, SvgHistoryClock, SvgListView, SvgMail, SvgWrapperProps } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { usePagination, useToggle } from "../../../hooks"
-import {
-    useGameServerCommandsUser,
-    useGameServerSubscription,
-    useGameServerSubscriptionFaction,
-    useGameServerSubscriptionUser,
-} from "../../../hooks/useGameServer"
+import { useGameServerCommandsUser, useGameServerSubscriptionUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
 import { SystemMessage, SystemMessageDataType } from "../../../types"
@@ -34,12 +29,6 @@ export const Messages = () => {
         pageSize: 10,
         page: 1,
     })
-
-    // global system messages
-    const [globalMessages, setGlobalMessages] = useState<SystemMessageDisplayable[]>([])
-
-    // faction system messages
-    const [factionMessages, setFactionMessages] = useState<SystemMessageDisplayable[]>([])
 
     const fetchMessages = useCallback(async () => {
         try {
@@ -103,54 +92,20 @@ export const Messages = () => {
         },
     )
 
-    // Subscribe to global system messages
-    useGameServerSubscription<SystemMessage[]>(
-        {
-            URI: "/public/system_messages",
-            key: GameServerKeys.SubSystemMessageGlobalList,
+    const readMessage = useCallback(
+        async (id: string) => {
+            try {
+                await send<SystemMessage[], { id: string }>(GameServerKeys.SystemMessageDismiss, {
+                    id,
+                })
+            } catch (err) {
+                const message = typeof err === "string" ? err : "Failed to dismiss system message."
+                setError(message)
+                console.error(err)
+            }
         },
-        (payload) => {
-            if (!payload) return
-            setGlobalMessages(
-                payload.map<SystemMessageDisplayable>((p) => ({
-                    ...p,
-                    icon: SvgGlobal,
-                })),
-            )
-        },
+        [send],
     )
-
-    // Subscribe to faction system messages
-    useGameServerSubscriptionFaction<SystemMessage[]>(
-        {
-            URI: "/system_messages",
-            key: GameServerKeys.SubSystemMessageFactionList,
-        },
-        (payload) => {
-            if (!payload) return
-            setFactionMessages(
-                payload.map<SystemMessageDisplayable>((p) => ({
-                    ...p,
-                    icon: SvgSyndicateFlag,
-                })),
-            )
-        },
-    )
-
-    // const dismissMessage = useCallback(
-    //     async (id: string) => {
-    //         try {
-    //             await send<SystemMessage[], { id: string }>(GameServerKeys.SystemMessageDismiss, {
-    //                 id,
-    //             })
-    //         } catch (err) {
-    //             const message = typeof err === "string" ? err : "Failed to dismiss system message."
-    //             setError(message)
-    //             console.error(err)
-    //         }
-    //     },
-    //     [send],
-    // )
 
     const content = useMemo(() => {
         let messagesRender = null
@@ -183,7 +138,17 @@ export const Messages = () => {
                         )}
 
                         {messages.map((m) => (
-                            <MessageItem key={m.id} message={m} selected={focusedMessage?.id === m.id} onSelect={() => setFocusedMessage(m)} />
+                            <MessageItem
+                                key={m.id}
+                                message={m}
+                                selected={focusedMessage?.id === m.id}
+                                onSelect={() => {
+                                    if (!m.read_at) {
+                                        readMessage(m.id)
+                                    }
+                                    setFocusedMessage(m)
+                                }}
+                            />
                         ))}
                     </Stack>
                     {totalPages > 1 && (
@@ -246,7 +211,7 @@ export const Messages = () => {
                 </Box>
             </Stack>
         )
-    }, [messages, theme.factionTheme.primary, theme.factionTheme.secondary, focusedMessage, error, totalPages, page, changePage])
+    }, [messages, focusedMessage, error, totalPages, theme.factionTheme.primary, theme.factionTheme.secondary, page, readMessage, changePage])
 
     return (
         <>
