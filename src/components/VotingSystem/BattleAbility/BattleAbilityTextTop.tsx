@@ -105,7 +105,7 @@ const OptInButton = ({ disable, isOptedIn }: { disable: boolean; isOptedIn: bool
                         color: "#FFFFFF",
                     }}
                 >
-                    {isOptedIn ? "CLAIMED" : "OPT IN"}
+                    {isOptedIn ? "OPTED IN" : "OPT IN"}
                 </Typography>
             </Stack>
         </FancyButton>
