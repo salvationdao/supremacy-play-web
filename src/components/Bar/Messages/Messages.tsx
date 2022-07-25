@@ -130,7 +130,7 @@ export const Messages = () => {
             <Stack spacing="1rem">
                 <Stack spacing=".8rem" sx={{ p: "1rem 2rem 1.5rem 1.5rem" }}>
                     {messages.map((m) => (
-                        <MessageItem key={m.id} message={m} onDismiss={() => dismissMessage(m.id)} showTimestamps={showTimestamps} />
+                        <MessageItem key={m.id} message={m} onDismiss={() => dismissMessage(m.id)} />
                     ))}
                 </Stack>
 
@@ -182,7 +182,8 @@ export const Messages = () => {
                                 right: 6,
                                 height: 14,
                                 minWidth: 14,
-                                fontSize: "1.2rem",
+                                fontSize: "1.5rem",
+                                fontWeight: "fontWeightBold",
                             },
                         }}
                     >

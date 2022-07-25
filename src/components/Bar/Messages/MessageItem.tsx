@@ -10,10 +10,9 @@ import { SystemMessageDisplayable } from "./Messages"
 export interface MessageItemProps {
     message: SystemMessageDisplayable
     onDismiss: () => void
-    showTimestamps: boolean
 }
 
-export const MessageItem = ({ message, onDismiss, showTimestamps }: MessageItemProps) => {
+export const MessageItem = ({ message, onDismiss }: MessageItemProps) => {
     const [isCollapsed, setIsCollapsed] = useState(true)
 
     const details = useMemo(() => {
