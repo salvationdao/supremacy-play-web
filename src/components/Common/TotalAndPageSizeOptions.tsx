@@ -1,5 +1,5 @@
-import { Box, Divider, IconButton, MenuItem, Select, Stack, Typography } from "@mui/material"
-import { SvgGridView, SvgListView, SvgRefresh, SvgFilter } from "../../assets"
+import { Box, Button, Divider, IconButton, MenuItem, Select, Stack, Typography } from "@mui/material"
+import { SvgFilter, SvgGridView, SvgListView, SvgRefresh } from "../../assets"
 import { useTheme } from "../../containers/theme"
 import { colors, fonts } from "../../theme/theme"
 
@@ -40,7 +40,6 @@ export const TotalAndPageSizeOptions = ({
     toggleIsGridView,
     manualRefresh,
     primaryColor: pColor,
-    isFiltersExpanded,
     toggleIsFiltersExpanded,
 
     sortOptions,
@@ -52,6 +51,7 @@ export const TotalAndPageSizeOptions = ({
     const theme = useTheme()
 
     const primaryColor = pColor || theme.factionTheme.primary
+    const secondaryColor = pColor || theme.factionTheme.secondary
 
     return (
         <Stack
@@ -69,9 +69,19 @@ export const TotalAndPageSizeOptions = ({
             }}
         >
             {toggleIsFiltersExpanded && (
-                <IconButton size="small" onClick={() => toggleIsFiltersExpanded()}>
-                    <SvgFilter size="1.2rem" fill={isFiltersExpanded ? "#FFFFFF" : primaryColor} />
-                </IconButton>
+                <Button
+                    variant="contained"
+                    onClick={() => toggleIsFiltersExpanded()}
+                    sx={{
+                        minWidth: 0,
+                        borderRadius: 1,
+                        backgroundColor: primaryColor,
+                        color: secondaryColor,
+                        ":hover": { backgroundColor: primaryColor },
+                    }}
+                >
+                    <SvgFilter size="1.2rem" fill={secondaryColor} />
+                </Button>
             )}
 
             {totalItems && (
