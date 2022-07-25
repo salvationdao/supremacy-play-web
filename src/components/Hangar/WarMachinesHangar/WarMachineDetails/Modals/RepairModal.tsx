@@ -9,79 +9,66 @@ import { colors, fonts } from "../../../../../theme/theme"
 import { MechModal } from "../../Common/MechModal"
 import { MechDetails } from "../../../../../types"
 
-export interface QueueFeed {
-    queue_length: number
-}
-
-export const DeployModal = ({
-    selectedMechDetails: deployMechDetails,
-    deployMechModalOpen,
-    setDeployMechModalOpen,
+export const RepairModal = ({
+    selectedMechDetails,
+    repairMechModalOpen,
+    setRepairMechModalOpen,
 }: {
     selectedMechDetails: MechDetails
-    deployMechModalOpen: boolean
-    setDeployMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
+    repairMechModalOpen: boolean
+    setRepairMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
 }) => {
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [isLoading, setIsLoading] = useState(false)
-    const [deployQueueError, setDeployQueueError] = useState<string>()
-
-    // Queuing cost, queue length win reward etc.
-    const queueFeed = useGameServerSubscriptionFaction<QueueFeed>({
-        URI: "/queue",
-        key: GameServerKeys.SubQueueFeed,
-    })
+    const [repairError, setRepairError] = useState<string>()
 
     const onClose = useCallback(() => {
-        setDeployQueueError(undefined)
-        setDeployMechModalOpen(false)
-    }, [setDeployQueueError, setDeployMechModalOpen])
+        setRepairError(undefined)
+        setRepairMechModalOpen(false)
+    }, [setRepairError, setRepairMechModalOpen])
 
-    const onDeployQueue = useCallback(
-        async ({ hash }: { hash: string }) => {
-            try {
-                setIsLoading(true)
-                const resp = await send<{ success: boolean; code: string }>(GameServerKeys.JoinQueue, {
-                    asset_hash: hash,
-                })
-
-                if (resp && resp.success) {
-                    newSnackbarMessage("Successfully deployed war machine.", "success")
-                    onClose()
-                }
-            } catch (e) {
-                setDeployQueueError(typeof e === "string" ? e : "Failed to deploy war machine.")
-                console.error(e)
-                return
-            } finally {
-                setIsLoading(false)
+    const onAgentRepair = useCallback(async () => {
+        try {
+            setIsLoading(true)
+            const resp = await send(GameServerKeys.AgentRepairWarMachine, { mech_id: selectedMechDetails.id })
+            if (resp) {
+                newSnackbarMessage("Successfully submitted agent repair request.", "success")
+                setRepairError(undefined)
+                onClose()
             }
-        },
-        [newSnackbarMessage, send, onClose],
-    )
+        } catch (e) {
+            setRepairError(typeof e === "string" ? e : "Failed to submit agent repair request.")
+            console.error(e)
+        } finally {
+            setIsLoading(false)
+        }
+    }, [send, selectedMechDetails.id, newSnackbarMessage, onClose])
 
-    if (!deployMechDetails) return null
+    const onInstantRepair = useCallback(async () => {
+        try {
+            setIsLoading(true)
+            const resp = await send(GameServerKeys.InstantRepairWarMachine, { mech_id: selectedMechDetails.id })
+            if (resp) {
+                newSnackbarMessage("Successfully submitted instant repair request.", "success")
+                setRepairError(undefined)
+                onClose()
+            }
+        } catch (e) {
+            setRepairError(typeof e === "string" ? e : "Failed to submit instant repair request.")
+            console.error(e)
+        } finally {
+            setIsLoading(false)
+        }
+    }, [send, selectedMechDetails.id, newSnackbarMessage, onClose])
 
-    const queueLength = queueFeed?.queue_length || 0
-    const { hash } = deployMechDetails
+    if (!selectedMechDetails) return null
+
+    const { hash } = selectedMechDetails
 
     return (
-        <MechModal open={deployMechModalOpen} mechDetails={deployMechDetails} onClose={onClose}>
+        <MechModal open={repairMechModalOpen} mechDetails={selectedMechDetails} onClose={onClose}>
             <Stack spacing="1.5rem">
-                <Stack spacing=".2rem">
-                    {queueLength >= 0 && (
-                        <AmountItem
-                            key={`${queueLength}-queue_length`}
-                            title={"Position: "}
-                            color="#FFFFFF"
-                            value={`${queueLength + 1}`}
-                            tooltip="The queue position of your war machine if you deploy now."
-                            disableIcon
-                        />
-                    )}
-                </Stack>
-
                 <Box sx={{ mt: "auto" }}>
                     <FancyButton
                         loading={isLoading}
@@ -92,15 +79,15 @@ export const DeployModal = ({
                             sx: { position: "relative", width: "100%" },
                         }}
                         sx={{ px: "1.6rem", py: ".6rem", color: "#FFFFFF" }}
-                        onClick={() => onDeployQueue({ hash })}
+                        // onClick={() => onDeployQueue({ hash })}
                     >
                         <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBlack }}>
-                            DEPLOY
+                            AGENT REPAIR
                         </Typography>
                     </FancyButton>
                 </Box>
 
-                {deployQueueError && (
+                {repairError && (
                     <Typography
                         variant="body2"
                         sx={{
@@ -108,7 +95,7 @@ export const DeployModal = ({
                             color: "red",
                         }}
                     >
-                        {deployQueueError}
+                        {repairError}
                     </Typography>
                 )}
             </Stack>

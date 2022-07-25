@@ -15,7 +15,7 @@ export const LeaveModal = ({
 }: {
     selectedMechDetails: MechDetails
     leaveMechModalOpen: boolean
-    setLeaveMechModalOpen: (close: boolean) => void
+    setLeaveMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
 }) => {
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsFaction("/faction_commander")

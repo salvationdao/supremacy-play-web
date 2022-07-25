@@ -21,12 +21,14 @@ import { MechViewer } from "./MechViewer"
 import { MechLoadout } from "./MechLoadout"
 import { MechBattleHistoryDetails } from "../../../Marketplace/WarMachinesMarket/WarMachineMarketDetails/MechBattleHistoryDetails"
 import { BATTLE_ARENA_OPEN } from "../../../../constants"
+import { RepairModal } from "./Modals/RepairModal"
 
 export const WarMachineHangarDetails = ({ mechID }: { mechID: string }) => {
     const [selectedMechDetails, setSelectedMechDetails] = useState<MechDetails>()
     const [deployMechModalOpen, setDeployMechModalOpen] = useState<boolean>(false)
     const [leaveMechModalOpen, setLeaveMechModalOpen] = useState<boolean>(false)
     const [rentalMechModalOpen, setRentalMechModalOpen] = useState<boolean>(false)
+    const [repairMechModalOpen, setRepairMechModalOpen] = useState<boolean>(false)
 
     return (
         <>
@@ -36,7 +38,9 @@ export const WarMachineHangarDetails = ({ mechID }: { mechID: string }) => {
                 setDeployMechModalOpen={setDeployMechModalOpen}
                 setLeaveMechModalOpen={setLeaveMechModalOpen}
                 setRentalMechModalOpen={setRentalMechModalOpen}
+                setRepairMechModalOpen={setRepairMechModalOpen}
             />
+
             {BATTLE_ARENA_OPEN && selectedMechDetails && deployMechModalOpen && (
                 <DeployModal
                     selectedMechDetails={selectedMechDetails}
@@ -44,14 +48,24 @@ export const WarMachineHangarDetails = ({ mechID }: { mechID: string }) => {
                     setDeployMechModalOpen={setDeployMechModalOpen}
                 />
             )}
+
             {selectedMechDetails && leaveMechModalOpen && (
                 <LeaveModal selectedMechDetails={selectedMechDetails} leaveMechModalOpen={leaveMechModalOpen} setLeaveMechModalOpen={setLeaveMechModalOpen} />
             )}
+
             {selectedMechDetails && rentalMechModalOpen && (
                 <RentalModal
                     selectedMechDetails={selectedMechDetails}
                     rentalMechModalOpen={rentalMechModalOpen}
                     setRentalMechModalOpen={setRentalMechModalOpen}
+                />
+            )}
+
+            {selectedMechDetails && rentalMechModalOpen && (
+                <RepairModal
+                    selectedMechDetails={selectedMechDetails}
+                    repairMechModalOpen={repairMechModalOpen}
+                    setRepairMechModalOpen={setRepairMechModalOpen}
                 />
             )}
         </>
@@ -64,6 +78,7 @@ interface WarMachineHangarDetailsInnerProps {
     setDeployMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
     setLeaveMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
     setRentalMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
+    setRepairMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 export const WarMachineHangarDetailsInner = ({
@@ -72,6 +87,7 @@ export const WarMachineHangarDetailsInner = ({
     setDeployMechModalOpen,
     setLeaveMechModalOpen,
     setRentalMechModalOpen,
+    setRepairMechModalOpen,
 }: WarMachineHangarDetailsInnerProps) => {
     const { newSnackbarMessage } = useSnackbar()
     const theme = useTheme()
@@ -139,11 +155,30 @@ export const WarMachineHangarDetailsInner = ({
                         <Box sx={{ position: "relative", borderBottom: `${primaryColor}60 2.2px solid` }}>
                             <MediaPreview imageUrl={avatarUrl || imageUrl} objectFit="cover" objectPosition="50% 40%" sx={{ minHeight: "20rem" }} />
 
-                            <Box sx={{ position: "absolute", bottom: ".8rem", left: "1.2rem", minWidth: "10rem", backgroundColor: `${backgroundColor}DF` }}>
+                            <Box
+                                sx={{
+                                    position: "absolute",
+                                    bottom: ".8rem",
+                                    left: "1.2rem",
+                                    minWidth: "10rem",
+                                    backgroundColor: `${backgroundColor}DF`,
+                                    zIndex: 2,
+                                }}
+                            >
                                 <MechGeneralStatus mechID={mechID} />
                             </Box>
 
-                            <Box sx={{ position: "absolute", top: 0, bottom: 0, left: 0, right: 0, background: `linear-gradient(#FFFFFF00 60%, #00000050)` }} />
+                            <Box
+                                sx={{
+                                    position: "absolute",
+                                    top: 0,
+                                    bottom: 0,
+                                    left: 0,
+                                    right: 0,
+                                    background: `linear-gradient(#FFFFFF00 60%, #000000)`,
+                                    zIndex: 1,
+                                }}
+                            />
                         </Box>
                     </ClipThing>
 
@@ -224,6 +259,7 @@ export const WarMachineHangarDetailsInner = ({
                             setDeployMechModalOpen={setDeployMechModalOpen}
                             setLeaveMechModalOpen={setLeaveMechModalOpen}
                             setRentalMechModalOpen={setRentalMechModalOpen}
+                            setRepairMechModalOpen={setRepairMechModalOpen}
                             marketLocked={mechDetails.market_locked}
                         />
                     )}

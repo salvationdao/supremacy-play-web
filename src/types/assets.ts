@@ -13,7 +13,6 @@ export enum MechStatusEnum {
     BattleReady = "BATTLE_READY",
     Damaged = "DAMAGED",
     StandardRepairing = "REPAIRING (STANDARD)",
-    FastRepairing = "REPAIRING (FAST)",
 }
 
 export enum RepairType {

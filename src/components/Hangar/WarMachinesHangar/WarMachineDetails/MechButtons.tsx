@@ -1,16 +1,15 @@
 import { Box, Typography } from "@mui/material"
-import { useCallback, useState } from "react"
+import { useState } from "react"
 import { useLocation } from "react-router-dom"
 import { ClipThing, FancyButton, TooltipHelper } from "../../.."
 import { BATTLE_ARENA_OPEN } from "../../../../constants"
 import { useTheme } from "../../../../containers/theme"
-import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
+import { useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { MARKETPLACE_TABS } from "../../../../pages"
 import { colors, fonts } from "../../../../theme/theme"
-import { MechDetails, MechStatus, MechStatusEnum, RepairType } from "../../../../types"
+import { MechDetails, MechStatus, MechStatusEnum } from "../../../../types"
 import { ItemType } from "../../../../types/marketplace"
-import { useSnackbar } from "../../../../containers"
 
 export const MechButtons = ({
     mechDetails,
@@ -18,6 +17,7 @@ export const MechButtons = ({
     setDeployMechModalOpen,
     setLeaveMechModalOpen,
     setRentalMechModalOpen,
+    setRepairMechModalOpen,
     marketLocked,
 }: {
     mechDetails: MechDetails
@@ -25,14 +25,12 @@ export const MechButtons = ({
     setDeployMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
     setLeaveMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
     setRentalMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
+    setRepairMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
     marketLocked: boolean
 }) => {
     const location = useLocation()
     const theme = useTheme()
     const [mechState, setMechState] = useState<MechStatusEnum>()
-
-    const { newSnackbarMessage } = useSnackbar()
-    const { send } = useGameServerCommandsFaction("/faction_commander")
 
     useGameServerSubscriptionFaction<MechStatus>(
         {
@@ -43,21 +41,6 @@ export const MechButtons = ({
             if (!payload || mechState === MechStatusEnum.Sold) return
             setMechState(payload.status)
         },
-    )
-
-    const onRepair = useCallback(
-        async (repairType: string) => {
-            try {
-                const resp = await send(GameServerKeys.RepairWarMachine, { mech_id: mechDetails.id, repair_type: repairType })
-                if (!resp) return
-                newSnackbarMessage("Successfully submitted repair request.", "success")
-            } catch (err) {
-                const message = typeof err === "string" ? err : "Failed to submit repair request."
-                newSnackbarMessage(message, "error")
-                console.error(message)
-            }
-        },
-        [send, mechDetails.id, newSnackbarMessage],
     )
 
     return (
@@ -103,19 +86,12 @@ export const MechButtons = ({
                 <ReusableButton
                     isFancy
                     primaryColor={colors.blue2}
-                    disabled={mechState !== MechStatusEnum.StandardRepairing && mechState !== MechStatusEnum.Damaged}
+                    disabled={mechState !== MechStatusEnum.Damaged}
                     backgroundColor={colors.blue2}
-                    label={mechState === MechStatusEnum.StandardRepairing ? "FAST REPAIR" : "REPAIR"}
+                    label={"REPAIR"}
                     onClick={() => {
-                        switch (mechState) {
-                            case MechStatusEnum.Damaged:
-                                onRepair(RepairType.Standard)
-
-                                break
-                            case MechStatusEnum.StandardRepairing:
-                                onRepair(RepairType.Fast)
-                                break
-                        }
+                        setSelectedMechDetails(mechDetails)
+                        setRepairMechModalOpen(true)
                     }}
                 />
 
