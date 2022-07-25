@@ -2,22 +2,22 @@
 import { Box, Collapse, Fade, Stack, Typography } from "@mui/material"
 import { useMemo, useState } from "react"
 import { colors } from "../../../theme/theme"
-import { SystemMessageDataMechBattleComplete, SystemMessageType } from "../../../types"
+import { SystemMessageDataMechBattleComplete, SystemMessageDataType } from "../../../types"
 import { FancyButton } from "../../Common/FancyButton"
 import { MechBattleCompleteDetails } from "./MessageItem/MechBattleCompleteDetails"
 import { SystemMessageDisplayable } from "./Messages"
 
 export interface MessageItemProps {
     message: SystemMessageDisplayable
-    onDismiss: () => void
+    onDismiss?: () => void
 }
 
 export const MessageItem = ({ message, onDismiss }: MessageItemProps) => {
     const [isCollapsed, setIsCollapsed] = useState(true)
 
     const details = useMemo(() => {
-        switch (message.type) {
-            case SystemMessageType.MechBattleComplete:
+        switch (message.data_type) {
+            case SystemMessageDataType.MechBattleComplete:
                 if (!message.data) break
                 const data = message.data as SystemMessageDataMechBattleComplete
 
@@ -43,9 +43,10 @@ export const MessageItem = ({ message, onDismiss }: MessageItemProps) => {
                 >
                     {message.message}
                 </Typography>
+                <Box flex={1} />
                 <Box
                     sx={{
-                        flex: 1,
+                        flexShrink: 1,
                         width: "fit-content",
                     }}
                 >
@@ -59,22 +60,24 @@ export const MessageItem = ({ message, onDismiss }: MessageItemProps) => {
                         {isCollapsed ? "View" : "Hide"}
                     </FancyButton>
                 </Box>
-                <Box
-                    sx={{
-                        flex: 1,
-                        width: "fit-content",
-                    }}
-                >
-                    <FancyButton
-                        clipThingsProps={{
-                            backgroundColor: colors.lightRed,
+                {onDismiss && (
+                    <Box
+                        sx={{
+                            flexShrink: 1,
+                            width: "fit-content",
                         }}
-                        size="small"
-                        onClick={() => onDismiss()}
                     >
-                        Dismiss
-                    </FancyButton>
-                </Box>
+                        <FancyButton
+                            clipThingsProps={{
+                                backgroundColor: colors.lightRed,
+                            }}
+                            size="small"
+                            onClick={() => onDismiss()}
+                        >
+                            Dismiss
+                        </FancyButton>
+                    </Box>
+                )}
             </Stack>
             <Collapse in={!isCollapsed}>
                 <Fade in={true}>

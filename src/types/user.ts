@@ -82,15 +82,16 @@ export enum FeatureName {
     publicProfilePage = "PUBLIC_PROFILE",
 }
 
-export enum SystemMessageType {
+export enum SystemMessageDataType {
     MechQueue = "MECH_QUEUE",
     MechBattleComplete = "MECH_BATTLE_COMPLETE",
 }
 
 export interface SystemMessage {
     id: string
-    player_id: string
-    type: SystemMessageType
+    player_id?: string
+    faction_id?: string
+    data_type: SystemMessageDataType
     message: string
     data: unknown | null
     sent_at: Date
