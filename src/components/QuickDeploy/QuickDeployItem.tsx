@@ -160,7 +160,6 @@ export const QuickDeployItem = ({ mech }: QuickDeployItemProps) => {
                                 backgroundColor: mechState === MechStatusEnum.Idle ? colors.green : theme.factionTheme.background,
                                 opacity: 1,
                                 border: {
-                                    isFancy: true,
                                     borderColor: mechState === MechStatusEnum.Idle ? colors.green : colors.yellow,
                                     borderThickness: "1px",
                                 },
@@ -197,7 +196,6 @@ export const QuickDeployItem = ({ mech }: QuickDeployItemProps) => {
                                 backgroundColor: colors.blue2,
                                 opacity: 1,
                                 border: {
-                                    isFancy: true,
                                     borderColor: colors.blue2,
                                     borderThickness: "1px",
                                 },
