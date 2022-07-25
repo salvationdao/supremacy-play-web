@@ -1,5 +1,5 @@
 /* eslint-disable no-case-declarations */
-import { Box, Collapse, Fade, Stack, Typography } from "@mui/material"
+import { Box, Collapse, Stack, Typography } from "@mui/material"
 import { useMemo, useState } from "react"
 import { colors } from "../../../theme/theme"
 import { SystemMessageDataMechBattleComplete, SystemMessageType } from "../../../types"
@@ -30,56 +30,61 @@ export const MessageItem = ({ message, onDismiss }: MessageItemProps) => {
     return (
         <Box>
             <Stack direction="row" alignItems="center" spacing=".5rem">
-                {message.icon({})}
-                <Typography
-                    variant="h6"
-                    sx={{
-                        flexShrink: 1,
-                        overflowX: "hidden",
-                        minWidth: 0,
-                        whiteSpace: "nowrap",
-                        textOverflow: "ellipsis",
-                    }}
-                >
-                    {message.message}
-                </Typography>
-                <Box
-                    sx={{
-                        flex: 1,
-                        width: "fit-content",
-                    }}
-                >
-                    <FancyButton
-                        clipThingsProps={{
-                            backgroundColor: colors.darkGrey,
+                <Stack direction="row" alignItems="center" spacing="1rem" sx={{ flex: 1 }}>
+                    <Typography variant="body2" sx={{ color: colors.grey }}>
+                        {message.sent_at.getHours()}:{message.sent_at.getMinutes()}
+                    </Typography>
+
+                    <message.icon size="1.8rem" />
+
+                    <Typography
+                        variant="h6"
+                        sx={{
+                            display: "-webkit-box",
+                            overflow: "hidden",
+                            overflowWrap: "anywhere",
+                            textOverflow: "ellipsis",
+                            WebkitLineClamp: 1, // change to max number of lines
+                            WebkitBoxOrient: "vertical",
                         }}
-                        size="small"
-                        onClick={() => setIsCollapsed((prev) => !prev)}
                     >
+                        {message.message}
+                    </Typography>
+                </Stack>
+
+                <FancyButton
+                    clipThingsProps={{
+                        clipSize: "6px",
+                        backgroundColor: isCollapsed ? colors.green : colors.lightGrey,
+                        border: { isFancy: true, borderColor: isCollapsed ? colors.green : colors.lightGrey, borderThickness: "1px" },
+                        sx: { width: "8rem" },
+                    }}
+                    onClick={() => setIsCollapsed((prev) => !prev)}
+                    sx={{ py: ".1rem", color: "#FFFFFF" }}
+                >
+                    <Typography variant="body2" sx={{ fontWeight: "fontWeightBold" }}>
                         {isCollapsed ? "View" : "Hide"}
-                    </FancyButton>
-                </Box>
-                <Box
-                    sx={{
-                        flex: 1,
-                        width: "fit-content",
+                    </Typography>
+                </FancyButton>
+
+                <FancyButton
+                    clipThingsProps={{
+                        clipSize: "6px",
+                        backgroundColor: colors.red,
+                        border: { isFancy: true, borderColor: colors.red, borderThickness: "1px" },
+                        sx: { width: "8rem" },
                     }}
+                    onClick={onDismiss}
+                    sx={{ py: ".1rem", color: "#FFFFFF" }}
                 >
-                    <FancyButton
-                        clipThingsProps={{
-                            backgroundColor: colors.lightRed,
-                        }}
-                        size="small"
-                        onClick={() => onDismiss()}
-                    >
+                    <Typography variant="body2" sx={{ fontWeight: "fontWeightBold" }}>
                         Dismiss
-                    </FancyButton>
-                </Box>
+                    </Typography>
+                </FancyButton>
             </Stack>
+
             <Collapse in={!isCollapsed}>
-                <Fade in={true}>
-                    <Box>{details}</Box>
-                </Fade>
+                <Box sx={{ my: "1rem", p: ".6rem 1.2rem", backgroundColor: "#FFFFFF10" }}>{details}</Box>
             </Collapse>
         </Box>
     )

@@ -40,11 +40,11 @@ export const MultipliersPopover = ({
             onClose={() => toggleLocalOpen(false)}
             anchorOrigin={{
                 vertical: "bottom",
-                horizontal: "right",
+                horizontal: "center",
             }}
             transformOrigin={{
                 vertical: "top",
-                horizontal: "right",
+                horizontal: "center",
             }}
             sx={{
                 mt: ".8rem",

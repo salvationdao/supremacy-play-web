@@ -53,7 +53,7 @@ export const WarMachineHangarItem = ({ mech, isGridView }: { mech: MechBasic; is
                     border: { isFancy: !isGridView, borderColor: primaryColor, borderThickness: ".25rem" },
                     sx: { position: "relative", height: "100%" },
                 }}
-                sx={{ color: primaryColor, textAlign: "start", height: "100%" }}
+                sx={{ color: primaryColor, textAlign: "start", height: "100%", ":hover": { opacity: 1 } }}
                 to={`/mech/${mech.id}${location.hash}`}
             >
                 <Box

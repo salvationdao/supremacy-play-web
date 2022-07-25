@@ -57,6 +57,7 @@ export const WeaponPage = () => {
                         </Typography>
                     </Stack>
                 </FancyButton>
+
                 <WeaponHangarDetailsInner weaponID={weaponID} />
             </Stack>
         </Stack>

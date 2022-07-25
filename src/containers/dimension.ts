@@ -31,7 +31,7 @@ export const DimensionContainer = createContainer(() => {
         if (below900) return setRemToPxRatio(0.44 * 16)
         if (below1500) return setRemToPxRatio(0.5 * 16)
         if (below1922) return setRemToPxRatio(0.52 * 16)
-        setRemToPxRatio(0.6 * 16)
+        setRemToPxRatio(0.59 * 16)
     }, [below1922, below1500, below900, below600])
 
     const setupResizeObserver = useCallback(() => {

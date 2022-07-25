@@ -85,7 +85,7 @@ export const HistoryItem = ({ eventItem, isGridView }: { eventItem: MarketplaceE
                     border: { isFancy: !isGridView, borderColor: itemRelatedData.primaryColor, borderThickness: ".25rem" },
                     sx: { position: "relative", height: "100%" },
                 }}
-                sx={{ color: itemRelatedData.primaryColor, textAlign: "start", height: "100%" }}
+                sx={{ color: itemRelatedData.primaryColor, textAlign: "start", height: "100%", ":hover": { opacity: 1 } }}
                 to={`/marketplace/${itemRelatedData.linkSubPath}/${eventItem.item.id}${location.hash}`}
             >
                 <Box
