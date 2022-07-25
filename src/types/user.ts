@@ -32,6 +32,12 @@ export interface Transaction {
 
 export type UserRank = "NEW_RECRUIT" | "PRIVATE" | "CORPORAL" | "GENERAL"
 
+export enum FactionName {
+    RedMountainOffworldMiningCorporation = "Red Mountain Offworld Mining Corporation",
+    BostonCybernetics = "Boston Cybernetics",
+    ZaibatsuHeavyIndustries = "Zaibatsu Heavy Industries",
+}
+
 export interface Faction {
     id: string
     label: string
@@ -79,7 +85,7 @@ export interface Feature {
 export enum FeatureName {
     mechMove = "MECH_MOVE",
     playerAbility = "PLAYER_ABILITY",
-    publicProfilePage = "PUBLIC_PROFILE",
+    systemMessages = "SYSTEM_MESSAGES",
 }
 
 export enum SystemMessageDataType {

@@ -1,4 +1,4 @@
-import { Box, Stack, Typography, useTheme } from "@mui/material"
+import { Stack, Typography, useTheme } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef } from "react"
 import { useGame, useMiniMap } from "../../../containers"
 import { fonts } from "../../../theme/theme"
@@ -149,22 +149,6 @@ export const LineSelect = ({ mapScale }: { mapScale: number }) => {
                     <Typography sx={{ fontSize: `${indicatorDiameter / 2}px`, fontFamily: fonts.nostromoBlack, color: theme.factionTheme.secondary }}>
                         1
                     </Typography>
-
-                    <Box
-                        sx={{
-                            position: "absolute",
-                            top: "calc(100% + 2rem)",
-                            width: "30rem",
-                            p: ".2rem .4rem",
-                            backgroundColor: `${theme.factionTheme.background}CC`,
-                            borderRadius: 2,
-                            border: `${theme.factionTheme.primary} .6rem solid`,
-                        }}
-                    >
-                        <Typography variant="h3" sx={{ textAlign: "center", fontFamily: fonts.shareTech }}>
-                            SELECT ANOTHER LOCATION TO DRAW A LINE
-                        </Typography>
-                    </Box>
                 </Stack>
             )}
 

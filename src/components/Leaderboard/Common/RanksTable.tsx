@@ -1,7 +1,6 @@
 import { CircularProgress, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material"
 import { ReactNode, useMemo } from "react"
 import { useTheme } from "../../../containers/theme"
-import { zoomEffect } from "../../../theme/keyframes"
 import { colors, fonts } from "../../../theme/theme"
 import { ClipThing } from "../../Common/ClipThing"
 
@@ -65,7 +64,7 @@ export const RanksTable = <T,>({ title, tableHeadings, alignments, widths, rankI
                 <TableBody>
                     {rankItems.map((item, i) => {
                         return (
-                            <TableRow key={i} sx={{ "&:nth-of-type(odd)": { backgroundColor: "#FFFFFF10", animation: `${zoomEffect(1.05)} 300ms ease-out` } }}>
+                            <TableRow key={i} sx={{ "&:nth-of-type(odd)": { backgroundColor: "#FFFFFF10" } }}>
                                 {renderItem(item, i).map((node, j) => {
                                     return (
                                         <TableCell
