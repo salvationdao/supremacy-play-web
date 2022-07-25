@@ -1,4 +1,4 @@
-import { InputAdornment, Stack, TextField, Typography } from "@mui/material"
+import { Stack, Typography } from "@mui/material"
 import { useCallback, useState } from "react"
 import { FancyButton } from "../../../.."
 import { SvgSupToken } from "../../../../../assets"
@@ -22,7 +22,6 @@ export const RepairModal = ({
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [isLoading, setIsLoading] = useState(false)
     const [repairError, setRepairError] = useState<string>()
-    const [agentReward, setAgentReward] = useState<number>(10)
 
     const onClose = useCallback(() => {
         setRepairError(undefined)
@@ -69,50 +68,11 @@ export const RepairModal = ({
         <MechModal open={repairMechModalOpen} mechDetails={selectedMechDetails} onClose={onClose}>
             <Stack spacing="1.5rem">
                 <Stack sx={{ p: "1.2rem 1.6rem 1.6rem 1.6rem", backgroundColor: "#FFFFFF20" }}>
-                    <Typography sx={{ mb: ".5rem", fontFamily: fonts.nostromoBlack, color: colors.blue2 }}>AGENT REPAIR</Typography>
+                    <Typography sx={{ mb: ".5rem", fontFamily: fonts.nostromoBlack, color: colors.blue2 }}>3RD PARTY REPAIR</Typography>
 
-                    <Typography>Citizens work together and complete challenges to repair your mech, in return they receive a reward.</Typography>
-
-                    <Stack spacing=".3rem" sx={{ mt: "1rem" }}>
-                        <Typography variant="caption" sx={{ color: colors.blue2, fontFamily: fonts.nostromoBlack }}>
-                            REWARD TO OFFER:
-                        </Typography>
-                        <TextField
-                            variant="outlined"
-                            hiddenLabel
-                            placeholder="ANY"
-                            InputProps={{
-                                startAdornment: (
-                                    <InputAdornment position="start">
-                                        <SvgSupToken fill={colors.yellow} size="1.9rem" />
-                                    </InputAdornment>
-                                ),
-                            }}
-                            sx={{
-                                backgroundColor: "#00000090",
-                                ".MuiOutlinedInput-root": { borderRadius: 0.5, border: `${colors.blue2}99 2px dashed` },
-                                ".MuiOutlinedInput-input": {
-                                    px: "1.5rem",
-                                    py: ".3rem",
-                                    fontSize: "1.7rem",
-                                    height: "unset",
-                                    "::-webkit-outer-spin-button, ::-webkit-inner-spin-button": {
-                                        "-webkit-appearance": "none",
-                                    },
-                                },
-                                ".MuiOutlinedInput-notchedOutline": { border: "unset" },
-                            }}
-                            type="number"
-                            value={agentReward}
-                            onChange={(e) => {
-                                const value = parseInt(e.target.value)
-                                setAgentReward(value)
-                            }}
-                        />
-                    </Stack>
+                    <Typography>Citizens work together and complete challenges to repair your mech.</Typography>
 
                     <FancyButton
-                        disabled={!agentReward || agentReward <= 0}
                         loading={isLoading}
                         clipThingsProps={{
                             clipSize: "5px",
@@ -124,7 +84,7 @@ export const RepairModal = ({
                         onClick={() => onAgentRepair()}
                     >
                         <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBlack }}>
-                            SUBMIT
+                            HIRE CONTRACTORS
                         </Typography>
                     </FancyButton>
                 </Stack>
@@ -153,7 +113,7 @@ export const RepairModal = ({
                         onClick={() => onInstantRepair()}
                     >
                         <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBlack }}>
-                            SUBMIT
+                            INSTANT REPAIR
                         </Typography>
                     </FancyButton>
                 </Stack>
