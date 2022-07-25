@@ -1,11 +1,11 @@
 import { Stack } from "@mui/material"
-import { ContributorAmountProps, ContributorAmount } from "./ContributorAmount"
+import { ContributorAmount } from "./ContributorAmount"
 import { SpoilOfWarAmount } from "./SpoilOfWarAmount"
 
-export const BattleStats = (props: ContributorAmountProps) => {
+export const BattleStats = () => {
     return (
         <Stack direction="row" alignItems="center" spacing="1.6rem">
-            <ContributorAmount {...props} />
+            <ContributorAmount />
             <SpoilOfWarAmount />
         </Stack>
     )

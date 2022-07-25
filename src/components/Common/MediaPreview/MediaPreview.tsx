@@ -21,6 +21,8 @@ export const MediaPreview = ({
 }) => {
     const videoUrlsFilters = videoUrls ? videoUrls.filter((videoUrl) => !!videoUrl) : []
 
+    const isTransparentVideo = !videoUrlsFilters[0] || videoUrlsFilters[0].endsWith("webm")
+
     return (
         <Box
             sx={{
@@ -29,7 +31,7 @@ export const MediaPreview = ({
                 width: "100%",
                 border: showBorder ? "#FFFFFF18 1.5px solid" : "unset",
                 boxShadow: "inset 0 0 12px 6px #00000040",
-                background: `radial-gradient(#FFFFFF20 10px, #00000080)`,
+                background: isTransparentVideo ? `radial-gradient(#FFFFFF20 10px, #00000080)` : "#000000",
                 ...sx,
             }}
         >
