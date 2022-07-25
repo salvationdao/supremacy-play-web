@@ -4,9 +4,10 @@ import { ClipThing } from "../../.."
 import { SvgClose } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
 import { getRarityDeets } from "../../../../helpers"
-import { fonts, siteZIndex } from "../../../../theme/theme"
+import { colors, fonts, siteZIndex } from "../../../../theme/theme"
 import { MechDetails } from "../../../../types"
 import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
+import { MechLoadoutIcons } from "./MechLoadoutIcons"
 
 export const MechModal = ({
     open,
@@ -72,21 +73,31 @@ export const MechModal = ({
                             <MediaPreview imageUrl={imageUrl || avatarUrl} videoUrls={[cardAnimationUrl]} />
                         </Box>
 
-                        <Box>
-                            <Typography sx={{ fontFamily: fonts.nostromoBlack, letterSpacing: "1px" }}>{name || label}</Typography>
+                        <Stack spacing=".8rem">
+                            <Stack spacing=".2rem" alignItems="flex-start">
+                                <MechLoadoutIcons mechDetails={mechDetails} />
 
-                            <Typography
-                                variant="body2"
-                                sx={{
-                                    mt: ".4rem",
-                                    lineHeight: 1,
-                                    color: rarityDeets.color,
-                                    fontFamily: fonts.nostromoHeavy,
-                                }}
-                            >
-                                {rarityDeets.label}
-                            </Typography>
-                        </Box>
+                                {mechDetails?.chassis_skin && (
+                                    <Typography
+                                        variant="body2"
+                                        sx={{
+                                            fontFamily: fonts.nostromoBold,
+                                            display: "-webkit-box",
+                                            overflow: "hidden",
+                                            overflowWrap: "anywhere",
+                                            textOverflow: "ellipsis",
+                                            WebkitLineClamp: 1, // change to max number of lines
+                                            WebkitBoxOrient: "vertical",
+                                        }}
+                                    >
+                                        <span style={{ color: colors.chassisSkin, fontFamily: "inherit" }}>{mechDetails?.chassis_skin?.label}</span>{" "}
+                                        <span style={{ color: rarityDeets.color, fontFamily: "inherit" }}>[{rarityDeets.label}]</span>
+                                    </Typography>
+                                )}
+                            </Stack>
+
+                            <Typography sx={{ fontFamily: fonts.nostromoBlack, letterSpacing: "1px" }}>{name || label}</Typography>
+                        </Stack>
 
                         {children}
                     </Stack>

@@ -1,13 +1,12 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useCallback, useState } from "react"
-import { FancyButton, TooltipHelper } from "../../../.."
-import { SvgInfoCircular, SvgSupToken } from "../../../../../assets"
+import { FancyButton } from "../../../.."
 import { useSnackbar } from "../../../../../containers"
-import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../../../hooks/useGameServer"
+import { useGameServerCommandsFaction } from "../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../keys"
 import { colors, fonts } from "../../../../../theme/theme"
-import { MechModal } from "../../Common/MechModal"
 import { MechDetails } from "../../../../../types"
+import { MechModal } from "../../Common/MechModal"
 
 export const RepairModal = ({
     selectedMechDetails,
@@ -64,8 +63,6 @@ export const RepairModal = ({
 
     if (!selectedMechDetails) return null
 
-    const { hash } = selectedMechDetails
-
     return (
         <MechModal open={repairMechModalOpen} mechDetails={selectedMechDetails} onClose={onClose}>
             <Stack spacing="1.5rem">
@@ -100,39 +97,5 @@ export const RepairModal = ({
                 )}
             </Stack>
         </MechModal>
-    )
-}
-
-const AmountItem = ({
-    title,
-    color,
-    value,
-    tooltip,
-    disableIcon,
-}: {
-    title: string
-    color: string
-    value: string | number
-    tooltip: string
-    disableIcon?: boolean
-}) => {
-    return (
-        <Stack direction="row" alignItems="center">
-            <Typography variant="caption" sx={{ mr: ".4rem", fontFamily: fonts.nostromoBlack }}>
-                {title}
-            </Typography>
-
-            {!disableIcon && <SvgSupToken size="1.4rem" fill={color} sx={{ mr: ".1rem", pb: ".4rem" }} />}
-
-            <Typography variant="caption" sx={{ mr: "3.2rem", color: color, fontFamily: fonts.nostromoBold }}>
-                {value || "---"}
-            </Typography>
-
-            <TooltipHelper placement="right-start" text={tooltip}>
-                <Box sx={{ ml: "auto" }}>
-                    <SvgInfoCircular size="1.2rem" sx={{ opacity: 0.4, ":hover": { opacity: 1 } }} />
-                </Box>
-            </TooltipHelper>
-        </Stack>
     )
 }
