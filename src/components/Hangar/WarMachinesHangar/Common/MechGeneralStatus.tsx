@@ -49,7 +49,7 @@ export const MechGeneralStatus = ({ mechID, hideBox }: { mechID: string; hideBox
                     setColour(colors.blue2)
                     break
                 case MechStatusEnum.FastRepairing:
-                    setText("REPAIRING (FAST)")
+                    setText("FAST REPAIRING")
                     setColour(colors.blue)
                     break
             }
