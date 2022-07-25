@@ -25,7 +25,8 @@ export const Messages = () => {
     const [focusedMessage, setFocusedMessage] = useState<SystemMessageDisplayable>()
     const [lastUpdated, setLastUpdated] = useState<Date>(new Date())
     const [error, setError] = useState<string>()
-    const { page, changePage, totalPages, totalItems, setTotalItems, pageSize } = usePagination({
+    const [totalUnread, setTotalUnread] = useState<number>()
+    const { page, changePage, totalPages, setTotalItems, pageSize } = usePagination({
         pageSize: 10,
         page: 1,
     })
@@ -35,6 +36,7 @@ export const Messages = () => {
             const resp = await send<
                 {
                     total: number
+                    total_unread: number
                     system_messages: SystemMessage[] | null
                 },
                 {
@@ -63,6 +65,7 @@ export const Messages = () => {
                     icon,
                 }
             })
+            setTotalUnread(resp.total_unread)
             setTotalItems(resp.total)
             setMessages(displayables)
         } catch (e) {
@@ -226,7 +229,7 @@ export const Messages = () => {
             >
                 <Box>
                     <Badge
-                        badgeContent={totalItems}
+                        badgeContent={totalUnread}
                         color="error"
                         sx={{
                             "& .MuiBadge-badge": {
