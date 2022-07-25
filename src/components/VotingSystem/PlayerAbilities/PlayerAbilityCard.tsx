@@ -2,7 +2,7 @@ import { Box, Stack, Typography } from "@mui/material"
 import { useCallback, useMemo } from "react"
 import { SvgGlobal, SvgLine, SvgMicrochip, SvgQuestionMark, SvgTarget } from "../../../assets"
 import { useMiniMap } from "../../../containers"
-import { colors, fonts } from "../../../theme/theme"
+import { colors } from "../../../theme/theme"
 import { LocationSelectType, PlayerAbility } from "../../../types"
 import { FancyButton } from "../../Common/FancyButton"
 import { TooltipHelper } from "../../Common/TooltipHelper"
@@ -13,15 +13,15 @@ export const PlayerAbilityCard = ({ playerAbility }: { playerAbility: PlayerAbil
     const abilityTypeIcon = useMemo(() => {
         switch (playerAbility.ability.location_select_type) {
             case LocationSelectType.GLOBAL:
-                return <SvgGlobal size="1.4rem" />
+                return <SvgGlobal size="1.5rem" />
             case LocationSelectType.LOCATION_SELECT:
-                return <SvgTarget size="1.4rem" />
+                return <SvgTarget size="1.5rem" />
             case LocationSelectType.MECH_SELECT:
-                return <SvgMicrochip size="1.4rem" />
+                return <SvgMicrochip size="1.5rem" />
             case LocationSelectType.LINE_SELECT:
-                return <SvgLine size="1.4rem" />
+                return <SvgLine size="1.5rem" />
         }
-        return <SvgQuestionMark size="1.4rem" />
+        return <SvgQuestionMark size="1.5rem" />
     }, [playerAbility])
 
     const onActivate = useCallback(() => {
@@ -44,7 +44,7 @@ export const PlayerAbilityCard = ({ playerAbility }: { playerAbility: PlayerAbil
                         },
                         backgroundColor: colors.darkNavy,
                         opacity: 1,
-                        border: { borderColor: playerAbility.ability.colour, borderThickness: "1px" },
+                        border: { borderColor: playerAbility.ability.colour, borderThickness: "1.5px" },
                         sx: { position: "relative", px: ".4rem", py: ".3rem" },
                     }}
                     sx={{ color: playerAbility.ability.colour, p: 0, minWidth: 0, height: "100%" }}
@@ -71,8 +71,8 @@ export const PlayerAbilityCard = ({ playerAbility }: { playerAbility: PlayerAbil
                             <Box
                                 sx={{
                                     position: "absolute",
-                                    top: ".2rem",
-                                    right: ".2rem",
+                                    top: ".5rem",
+                                    left: ".5rem",
                                     zIndex: 2,
                                 }}
                             >
@@ -81,15 +81,13 @@ export const PlayerAbilityCard = ({ playerAbility }: { playerAbility: PlayerAbil
 
                             <Box
                                 sx={{
-                                    zIndex: 2,
                                     position: "absolute",
                                     top: ".2rem",
-                                    left: ".2rem",
+                                    right: ".2rem",
+                                    zIndex: 2,
                                 }}
                             >
-                                <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBold }}>
-                                    {playerAbility.count}
-                                </Typography>
+                                <Typography sx={{ textTransform: "none" }}>{playerAbility.count}x</Typography>
                             </Box>
 
                             <Box

@@ -1,6 +1,7 @@
 import { Box, Divider, Stack, Typography } from "@mui/material"
 import { useMemo } from "react"
 import { SvgCrown } from "../../../../assets"
+import { useSupremacy } from "../../../../containers"
 import { colors, fonts } from "../../../../theme/theme"
 import { MechBattleBrief, SystemMessageDataMechBattleComplete } from "../../../../types"
 
@@ -10,6 +11,8 @@ export interface MechBattleCompleteDetailsProps {
 }
 
 export const MechBattleCompleteDetails = ({ message, data }: MechBattleCompleteDetailsProps) => {
+    const { getFaction } = useSupremacy()
+
     const [ownedMechBrief, restOfTheBriefs] = useMemo(() => {
         let ownedMechBrief: MechBattleBrief | null = null
         const restOfTheBriefs: MechBattleBrief[] = []
@@ -28,15 +31,17 @@ export const MechBattleCompleteDetails = ({ message, data }: MechBattleCompleteD
 
     return (
         <Stack spacing=".3rem">
-            <Typography>{message}</Typography>
+            <Typography variant="h6">{message}</Typography>
+
             <Typography
                 sx={{
-                    fontFamily: fonts.nostromoBold,
+                    fontFamily: fonts.nostromoBlack,
                     color: data.faction_won ? colors.green : colors.red,
                 }}
             >
-                {data.faction_won ? "FACTION WIN" : "LOST"}
+                {data.faction_won ? "FACTION WIN!" : "FACTION DEFEATED!"}
             </Typography>
+
             <Box
                 sx={{
                     display: "grid",
@@ -47,13 +52,15 @@ export const MechBattleCompleteDetails = ({ message, data }: MechBattleCompleteD
                 {restOfTheBriefs.map((d, index) => (
                     <Stack key={index} direction="row" spacing=".3rem" alignItems="center">
                         {!d.killed && <SvgCrown size="1.2rem" fill={colors.gold} />}
+
                         <Typography
                             sx={{
                                 overflowX: "hidden",
                                 whiteSpace: "nowrap",
                                 textOverflow: "ellipsis",
+                                color: getFaction(d.faction_id).primary_color,
                                 textDecoration: d.killed ? "line-through" : "none",
-                                color: d.killed ? colors.grey : colors.gold,
+                                opacity: d.killed ? 0.6 : 1,
                             }}
                         >
                             {d.name || d.label}
@@ -61,74 +68,28 @@ export const MechBattleCompleteDetails = ({ message, data }: MechBattleCompleteD
                     </Stack>
                 ))}
             </Box>
+
             {ownedMechBrief && (
                 <>
-                    <Divider
-                        sx={{
-                            my: ".5rem !important",
-                            borderColor: colors.darkGrey,
-                        }}
-                    />
-                    <Stack direction="row" spacing=".2rem" alignItems="baseline">
-                        <Typography
-                            sx={{
-                                mr: ".2rem",
-                                fontFamily: fonts.nostromoBold,
-                                whiteSpace: "nowrap",
-                                textTransform: "uppercase",
-                                color: colors.lightGrey,
-                            }}
-                        >
-                            Your Mech:
-                        </Typography>
-                        <Stack direction="row" spacing=".3rem" alignItems="center">
-                            {!ownedMechBrief.killed && <SvgCrown size="1.2rem" fill={colors.gold} />}
-                            <Typography
-                                sx={{
-                                    overflowX: "hidden",
-                                    whiteSpace: "nowrap",
-                                    textOverflow: "ellipsis",
-                                }}
-                            >
-                                {ownedMechBrief.name || ownedMechBrief.label}
-                            </Typography>
-                        </Stack>
+                    <Divider sx={{ borderColor: "#FFFFFF28" }} />
+
+                    <Stack direction="row" spacing=".6rem" alignItems="center" sx={{ pt: ".8rem" }}>
+                        {!ownedMechBrief.killed && <SvgCrown size="1.7rem" fill={colors.gold} />}
+                        <Typography variant="h6">{ownedMechBrief.name || ownedMechBrief.label}</Typography>
                     </Stack>
-                    <Stack direction="row" spacing=".2rem" alignItems="baseline">
-                        <Typography
-                            sx={{
-                                whiteSpace: "nowrap",
-                                textTransform: "uppercase",
-                                color: colors.lightGrey,
-                            }}
-                        >
-                            Status:
-                        </Typography>
-                        <Typography
-                            sx={{
-                                whiteSpace: "nowrap",
-                                color: ownedMechBrief.killed ? colors.red : colors.green,
-                            }}
-                        >
-                            {ownedMechBrief.killed ? "OUT OF COMMISION" : "SURVIVED"}
+
+                    <Stack direction="row" spacing=".2rem" alignItems="center">
+                        <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBlack }}>
+                            STATUS:{" "}
+                            <span style={{ color: ownedMechBrief.killed ? colors.red : colors.green, fontFamily: "inherit" }}>
+                                {ownedMechBrief.killed ? "OUT OF COMMISSION" : "SURVIVED"}
+                            </span>
                         </Typography>
                     </Stack>
-                    <Stack direction="row" spacing=".2rem" alignItems="baseline">
-                        <Typography
-                            sx={{
-                                whiteSpace: "nowrap",
-                                textTransform: "uppercase",
-                                color: colors.lightGrey,
-                            }}
-                        >
-                            Kills:
-                        </Typography>
-                        <Typography
-                            sx={{
-                                whiteSpace: "nowrap",
-                            }}
-                        >
-                            {ownedMechBrief.kills}
+
+                    <Stack direction="row" spacing=".2rem" alignItems="center">
+                        <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBlack }}>
+                            KILLS: {ownedMechBrief.kills}
                         </Typography>
                     </Stack>
                 </>

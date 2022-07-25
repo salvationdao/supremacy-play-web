@@ -3,9 +3,10 @@ export enum GameServerKeys {
     SubSpoilsOfWar = "SPOIL:OF:WAR:UPDATED",
     SubLiveGraph = "LIVE:VOTE:COUNT:UPDATED",
     SubMechLiveStats = "WAR:MACHINE:STAT:UPDATED",
-    SubBattleAbilityProgress = "BATTLE:ABILITY:PROGRESS:BAR:UPDATED",
     SubAbilityProgress = "ABILITY:PRICE:UPDATED",
     SubMechAbilityCoolDown = "WAR:MACHINE:ABILITY:SUBSCRIBE",
+    SubBattleAbilityOptInCheck = "BATTLE:ABILITY:OPT:IN:CHECK",
+    OptInBattleAbility = "BATTLE:ABILITY:OPT:IN",
 
     // Auth container
     UserSubscribe = "USER:SUBSCRIBE",
@@ -55,10 +56,10 @@ export enum GameServerKeys {
     GetWeaponDetails = "PLAYER:ASSET:WEAPON:DETAIL",
     GetMechDetails = "PLAYER:ASSET:MECH:DETAIL",
     SubMechQueuePosition = "PLAYER:ASSET:MECH:QUEUE:SUBSCRIBE",
+    SubMechRepairStatus = "WAR:MACHINE:REPAIR:STATUS:SUBSCRIBE",
     JoinQueue = "BATTLE:QUEUE:JOIN",
     LeaveQueue = "BATTLE:QUEUE:LEAVE",
-    SubRepairStatus = "ASSET:REPAIR:STATUS",
-    SubmitRepair = "ASSET:REPAIR:PAY:FEE",
+    RepairWarMachine = "WAR:MACHINE:REPAIR",
     MechQueueUpdated = "PLAYER:ASSET:MECH:QUEUE:UPDATE",
     TriggerMechStatusUpdate = "PLAYER:ASSET:MECH:STATUS:UPDATE",
     MechRename = "PLAYER:MECH:RENAME",
@@ -152,8 +153,10 @@ export enum GameServerKeys {
 
     // Player profile
     PlayerProfileGet = "PLAYER:PROFILE:GET",
-    PlayerProfileUpdateUsername = "PLAYER:UPDATE:USERNAME",
-    PlayerProfileUpdateAboutMe = "PLAYER:UPDATE:ABOUT_ME",
+    PlayerProfileAvatarUpdate = "PLAYER:AVATAR:UPDATE",
+    PlayerProfileAvatarList = "PLAYER:AVATAR:LIST",
+    PlayerProfileUsernameUpdate = "PLAYER:UPDATE:USERNAME",
+    PlayerProfileAboutMeUpdate = "PLAYER:UPDATE:ABOUT_ME",
     PlayerAssetMechListPublic = "PLAYER:ASSET:MECH:LIST:PUBLIC",
     PlayerAssetMechDetailPublic = "PLAYER:ASSET:MECH:DETAIL:PUBLIC",
     PlayerBattleMechHistoryList = "PLAYER:BATTLE:MECH:HISTORY:LIST",
