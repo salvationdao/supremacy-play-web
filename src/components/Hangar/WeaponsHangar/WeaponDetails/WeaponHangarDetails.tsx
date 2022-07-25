@@ -49,7 +49,7 @@ export const WeaponHangarDetailsInner = ({ weaponID }: { weaponID: string }) => 
                 }}
                 opacity={0.7}
                 backgroundColor={backgroundColor}
-                sx={{ flexShrink: 0, height: "100%", width: "36rem" }}
+                sx={{ flexShrink: 0, height: "100%", width: "38rem" }}
             >
                 <Stack sx={{ height: "100%" }}>
                     <ClipThing clipSize="10px" corners={{ topRight: true }} opacity={0.7} sx={{ flexShrink: 0 }}>
@@ -57,8 +57,7 @@ export const WeaponHangarDetailsInner = ({ weaponID }: { weaponID: string }) => 
                             <MediaPreview
                                 imageUrl={imageUrl || avatarUrl}
                                 objectFit="cover"
-                                objectPosition="50% 40%"
-                                sx={{ minHeight: "20rem" }}
+                                sx={{ height: "32rem" }}
                                 imageTransform="rotate(-30deg) scale(.95)"
                             />
 
