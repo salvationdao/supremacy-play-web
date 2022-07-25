@@ -131,7 +131,7 @@ export const QuickDeployItem = ({ mech }: QuickDeployItemProps) => {
                 </Typography>
 
                 <Stack direction="row" alignItems="center" spacing="1rem" justifyContent="space-between" sx={{ width: "100%" }}>
-                    <MechGeneralStatus mechID={mech.id} />
+                    <MechGeneralStatus mechID={mech.id} smallVersion />
 
                     {!error && mechDetails && (mechState === MechStatusEnum.Idle || mechState === MechStatusEnum.Queue) && (
                         <FancyButton

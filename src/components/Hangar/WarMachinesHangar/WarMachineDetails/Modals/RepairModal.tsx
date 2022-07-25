@@ -65,7 +65,7 @@ export const RepairModal = ({
     if (!selectedMechDetails) return null
 
     return (
-        <MechModal open={repairMechModalOpen} mechDetails={selectedMechDetails} onClose={onClose}>
+        <MechModal open={repairMechModalOpen} mechDetails={selectedMechDetails} onClose={onClose} width="48rem">
             <Stack spacing="1.5rem">
                 <Stack sx={{ p: "1.2rem 1.6rem 1.6rem 1.6rem", backgroundColor: "#FFFFFF20" }}>
                     <Typography sx={{ mb: ".5rem", fontFamily: fonts.nostromoBlack, color: colors.blue2 }}>3RD PARTY REPAIR</Typography>
