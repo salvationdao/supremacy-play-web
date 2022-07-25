@@ -4,7 +4,7 @@ export interface FactionsAll {
     [faction_id: string]: Faction
 }
 
-export type BribeStage = "BRIBE" | "LOCATION_SELECT" | "COOLDOWN" | "HOLD"
+export type BribeStage = "OPT_IN" | "LOCATION_SELECT" | "COOLDOWN" | "HOLD"
 
 export interface ViewerLiveCount {
     red_mountain: number

@@ -18,8 +18,8 @@ export const TopText = ({ description, image_url, colour, label, icon }: TopText
                 alignItems="center"
                 justifyContent="center"
                 sx={{
-                    height: "1.9rem",
-                    width: "1.9rem",
+                    height: "2.2rem",
+                    width: "2.2rem",
                     backgroundImage: `url(${image_url})`,
                     backgroundRepeat: "no-repeat",
                     backgroundPosition: "center",
@@ -34,11 +34,10 @@ export const TopText = ({ description, image_url, colour, label, icon }: TopText
             </Stack>
 
             <Typography
-                variant="body1"
+                variant="h6"
                 sx={{
                     lineHeight: 1,
-                    fontWeight: "fontWeightBold",
-                    fontFamily: fonts.nostromoBold,
+                    fontFamily: fonts.nostromoBlack,
                     color: colour,
                     overflow: "hidden",
                     textOverflow: "ellipsis",

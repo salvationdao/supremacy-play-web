@@ -49,7 +49,7 @@ body {
 
 /* Update `src/containers/dimensions.ts` */
 html {
-    font-size: 60%; /* 62.5% of 16px is 10px */
+    font-size: 59%; /* 62.5% of 16px is 10px */
 }
 
 @media only screen and (max-width: 1922px) {
