@@ -30,6 +30,7 @@ import Meteor from "!@svgr/webpack!./svg/Meteor.svg"
 import Mobility from "!@svgr/webpack!./svg/Mobility.svg"
 import NinjaSyndicateLogo from "!@svgr/webpack!./svg/NinjaSyndicateLogo.svg"
 import OutroAnimation from "!@svgr/webpack!./svg/OutroAnimation.svg"
+import Hamburger from "!@svgr/webpack!./svg/Hamburger.svg"
 import Plus from "!@svgr/webpack!./svg/Plus.svg"
 import PowerCore from "!@svgr/webpack!./svg/PowerCore.svg"
 import PowerCoreCapacity from "!@svgr/webpack!./svg/PowerCoreCapacity.svg"
@@ -1108,5 +1109,11 @@ export const SvgMail: React.VoidFunctionComponent<SvgWrapperProps> = (props) => 
 export const SvgCrown: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <Crown />
+    </SvgWrapper>
+)
+
+export const SvgHamburger: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Hamburger />
     </SvgWrapper>
 )

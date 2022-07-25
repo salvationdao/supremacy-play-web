@@ -11,7 +11,6 @@ import { MechBasic, MechDetails, MechStatus, MechStatusEnum } from "../../types"
 import { MechGeneralStatus } from "../Hangar/WarMachinesHangar/Common/MechGeneralStatus"
 import { MechThumbnail } from "../Hangar/WarMachinesHangar/Common/MechThumbnail"
 import { QueueFeed } from "../Hangar/WarMachinesHangar/WarMachineDetails/Modals/DeployModal"
-import { RepairModal } from "../Hangar/WarMachinesHangar/WarMachineDetails/Modals/RepairModal"
 
 interface QuickDeployItemProps {
     mech: MechBasic
@@ -27,7 +26,6 @@ export const QuickDeployItem = ({ mech }: QuickDeployItemProps) => {
     const [mechState, setMechState] = useState<MechStatusEnum>()
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState<string>()
-    const [repairMechModalOpen, setRepairMechModalOpen] = useState<boolean>(false)
 
     // Get addition mech data
     useGameServerSubscriptionFaction<MechDetails>(
@@ -89,131 +87,95 @@ export const QuickDeployItem = ({ mech }: QuickDeployItemProps) => {
     }, [send, mech.hash, newSnackbarMessage])
 
     return (
-        <>
-            <Stack
-                direction="row"
-                spacing="1.2rem"
-                alignItems="flex-start"
-                sx={{
-                    position: "relative",
-                    py: ".7rem",
-                    pl: ".5rem",
-                    pr: ".7rem",
-                }}
-            >
-                <Stack sx={{ height: "8rem" }}>
-                    <MechThumbnail mech={mech} mechDetails={mechDetails} smallSize />
-                </Stack>
-
-                <Stack alignItems="flex-start" sx={{ py: ".2rem", flex: 1 }}>
-                    <Typography
-                        variant="caption"
-                        sx={{
-                            fontFamily: fonts.nostromoHeavy,
-                            color: rarityDeets.color,
-                        }}
-                    >
-                        {rarityDeets.label}
-                    </Typography>
-
-                    <Typography
-                        variant="body2"
-                        gutterBottom
-                        sx={{
-                            fontFamily: fonts.nostromoBlack,
-                            fontWeight: "fontWeightBold",
-                            display: "-webkit-box",
-                            overflow: "hidden",
-                            overflowWrap: "anywhere",
-                            textOverflow: "ellipsis",
-                            WebkitLineClamp: 1,
-                            WebkitBoxOrient: "vertical",
-                        }}
-                    >
-                        {mech.name || mech.label}
-                    </Typography>
-
-                    <Stack direction="row" alignItems="center" spacing="1rem" justifyContent="space-between" sx={{ width: "100%" }}>
-                        <MechGeneralStatus mechID={mech.id} />
-
-                        {!error && mechDetails && (mechState === MechStatusEnum.Idle || mechState === MechStatusEnum.Queue) && (
-                            <FancyButton
-                                loading={isLoading}
-                                clipThingsProps={{
-                                    clipSize: "5px",
-                                    backgroundColor: mechState === MechStatusEnum.Idle ? colors.green : theme.factionTheme.background,
-                                    opacity: 1,
-                                    border: {
-                                        borderColor: mechState === MechStatusEnum.Idle ? colors.green : colors.yellow,
-                                        borderThickness: "1px",
-                                    },
-                                    sx: { position: "relative" },
-                                }}
-                                sx={{ px: "1rem", pt: 0, pb: ".1rem", color: theme.factionTheme.primary }}
-                                onClick={() => {
-                                    if (mechState === MechStatusEnum.Idle) {
-                                        onDeployQueue()
-                                    } else {
-                                        onLeaveQueue()
-                                    }
-                                }}
-                            >
-                                <Stack direction="row" alignItems="center" spacing=".5rem">
-                                    <Typography
-                                        variant="caption"
-                                        sx={{
-                                            color: mechState === MechStatusEnum.Idle ? "#FFFFFF" : colors.yellow,
-                                            fontFamily: fonts.nostromoBlack,
-                                        }}
-                                    >
-                                        {mechState === MechStatusEnum.Idle ? "DEPLOY" : "UNDEPLOY"}
-                                    </Typography>
-                                </Stack>
-                            </FancyButton>
-                        )}
-
-                        {!error && mechDetails && mechState === MechStatusEnum.Damaged && (
-                            <FancyButton
-                                loading={isLoading}
-                                clipThingsProps={{
-                                    clipSize: "5px",
-                                    backgroundColor: colors.blue2,
-                                    opacity: 1,
-                                    border: {
-                                        borderColor: colors.blue2,
-                                        borderThickness: "1px",
-                                    },
-                                    sx: { position: "relative" },
-                                }}
-                                sx={{ px: "1rem", pt: 0, pb: ".1rem", color: "#FFFFFF" }}
-                                onClick={() => setRepairMechModalOpen(true)}
-                            >
-                                <Stack direction="row" alignItems="center" spacing=".5rem">
-                                    <Typography
-                                        variant="caption"
-                                        sx={{
-                                            color: "#FFFFFF",
-                                            fontFamily: fonts.nostromoBlack,
-                                        }}
-                                    >
-                                        REPAIR
-                                    </Typography>
-                                </Stack>
-                            </FancyButton>
-                        )}
-
-                        {error && (
-                            <Typography variant="body2" sx={{ color: colors.red }}>
-                                {error}
-                            </Typography>
-                        )}
-                    </Stack>
-                </Stack>
+        <Stack
+            direction="row"
+            spacing="1.2rem"
+            alignItems="flex-start"
+            sx={{
+                position: "relative",
+                py: ".7rem",
+                pl: ".5rem",
+                pr: ".7rem",
+            }}
+        >
+            <Stack sx={{ height: "8rem" }}>
+                <MechThumbnail mech={mech} mechDetails={mechDetails} smallSize />
             </Stack>
 
-            {repairMechModalOpen && mechDetails && mechState === MechStatusEnum.Damaged && (
-                <RepairModal selectedMechDetails={mechDetails} repairMechModalOpen={repairMechModalOpen} setRepairMechModalOpen={setRepairMechModalOpen} />
-            )}
-        </>
+            <Stack alignItems="flex-start" sx={{ py: ".2rem", flex: 1 }}>
+                <Typography
+                    variant="caption"
+                    sx={{
+                        fontFamily: fonts.nostromoHeavy,
+                        color: rarityDeets.color,
+                    }}
+                >
+                    {rarityDeets.label}
+                </Typography>
+
+                <Typography
+                    variant="body2"
+                    gutterBottom
+                    sx={{
+                        fontFamily: fonts.nostromoBlack,
+                        fontWeight: "fontWeightBold",
+                        display: "-webkit-box",
+                        overflow: "hidden",
+                        overflowWrap: "anywhere",
+                        textOverflow: "ellipsis",
+                        WebkitLineClamp: 1,
+                        WebkitBoxOrient: "vertical",
+                    }}
+                >
+                    {mech.name || mech.label}
+                </Typography>
+
+                <Stack direction="row" alignItems="center" spacing="1rem" justifyContent="space-between" sx={{ width: "100%" }}>
+                    <MechGeneralStatus mechID={mech.id} />
+
+                    {!error && mechDetails && (mechState === MechStatusEnum.Idle || mechState === MechStatusEnum.Queue) && (
+                        <FancyButton
+                            loading={isLoading}
+                            clipThingsProps={{
+                                clipSize: "5px",
+                                backgroundColor: mechState === MechStatusEnum.Idle ? colors.green : theme.factionTheme.background,
+                                opacity: 1,
+                                border: {
+                                    borderColor: mechState === MechStatusEnum.Idle ? colors.green : colors.yellow,
+                                    borderThickness: "1px",
+                                },
+                                sx: { position: "relative" },
+                            }}
+                            sx={{ px: "1rem", pt: 0, pb: ".1rem", color: theme.factionTheme.primary }}
+                            onClick={() => {
+                                if (mechState === MechStatusEnum.Idle) {
+                                    onDeployQueue()
+                                } else {
+                                    onLeaveQueue()
+                                }
+                            }}
+                        >
+                            <Stack direction="row" alignItems="center" spacing=".5rem">
+                                <Typography
+                                    variant="caption"
+                                    sx={{
+                                        color: mechState === MechStatusEnum.Idle ? "#FFFFFF" : colors.yellow,
+                                        fontFamily: fonts.nostromoBlack,
+                                    }}
+                                >
+                                    {mechState === MechStatusEnum.Idle ? "DEPLOY" : "UNDEPLOY"}
+                                </Typography>
+                            </Stack>
+                        </FancyButton>
+                    )}
+
+                    {error && (
+                        <Typography variant="body2" sx={{ color: colors.red }}>
+                            {error}
+                        </Typography>
+                    )}
+                </Stack>
+            </Stack>
+        </Stack>
     )
 }

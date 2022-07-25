@@ -1,20 +1,26 @@
-import { Box, Stack, Typography } from "@mui/material"
+import { Box, IconButton, Stack, Typography } from "@mui/material"
 import React, { useState } from "react"
 import { Link } from "react-router-dom"
-import { SvgSupremacyLogo } from "../../assets"
+import { SvgHamburger, SvgSupremacyLogo } from "../../assets"
 import { VERSION } from "../../constants"
-import { useMobile } from "../../containers"
+import { useMobile, useOverlayToggles } from "../../containers"
 import { colors, fonts } from "../../theme/theme"
 
 export const Logo = React.memo(function Logo() {
     const { isMobile } = useMobile()
     const [text, setText] = useState<string>("EARLY ACCESS")
+    const { toggleIsLeftDrawerOpen } = useOverlayToggles()
 
     return (
-        <Stack direction="row" alignItems="center" spacing="1.44rem" sx={{ px: ".8rem", zIndex: 1 }}>
+        <Stack direction="row" alignItems="center" spacing="1.3rem" sx={{ zIndex: 1 }}>
+            <IconButton size="small" onClick={() => toggleIsLeftDrawerOpen(true)}>
+                <SvgHamburger size="2rem" />
+            </IconButton>
+
             <Link to="/">
                 <SvgSupremacyLogo width="15rem" />
             </Link>
+
             {!isMobile && (
                 <Box
                     onMouseEnter={() => {
