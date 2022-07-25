@@ -2,18 +2,7 @@ import { Box, Stack } from "@mui/material"
 import { useEffect, useState } from "react"
 import { Redirect } from "react-router-dom"
 import { SvgAbility, SvgHistory, SvgHistoryClock, SvgRobot } from "../assets"
-import {
-    BattleEndScreen,
-    BattleHistory,
-    Controls,
-    EarlyAccessWarning,
-    LiveVotingChart,
-    MiniMap,
-    Notifications,
-    Stream,
-    VotingSystem,
-    WarMachineStats,
-} from "../components"
+import { BattleEndScreen, BattleHistory, Controls, EarlyAccessWarning, MiniMap, Notifications, Stream, VotingSystem, WarMachineStats } from "../components"
 import { TutorialModal } from "../components/HowToPlay/Tutorial/TutorialModal"
 import { QuickDeploy } from "../components/QuickDeploy/QuickDeploy"
 import { QuickPlayerAbilities } from "../components/QuickPlayerAbilities/QuickPlayerAbilities"
@@ -99,7 +88,6 @@ const BattleArenaPageInner = () => {
                         >
                             <Box sx={{ direction: "ltr", height: 0 }}>
                                 <Stack spacing="1.5rem" sx={{ position: "relative", p: ".8rem 1rem" }}>
-                                    <LiveVotingChart />
                                     <VotingSystem />
                                     <MiniMap />
                                     <WarMachineStats />
@@ -196,7 +184,6 @@ const BattleArenaPageInner = () => {
                         <>
                             <WarMachineStats />
                             <BattleEndScreen />
-                            <LiveVotingChart />
                             <BattleHistory />
                             {isQuickDeployOpen && <QuickDeploy open={isQuickDeployOpen} onClose={() => toggleIsQuickDeployOpen(false)} />}
 
