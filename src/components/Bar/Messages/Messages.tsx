@@ -13,6 +13,7 @@ import { GameServerKeys } from "../../../keys"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
 import { SystemMessage, SystemMessageDataType } from "../../../types"
 import { ClipThing } from "../../Common/ClipThing"
+import { MessageDisplay } from "./MessageDisplay"
 import { MessageItem } from "./MessageItem"
 
 export interface SystemMessageDisplayable extends SystemMessage {
@@ -26,6 +27,7 @@ export const Messages = () => {
 
     const { send } = useGameServerCommandsUser("/user_commander")
     const [messages, setMessages] = useState<SystemMessageDisplayable[]>([])
+    const [focusedMessage, setFocusedMessage] = useState<SystemMessageDisplayable>()
     const [lastUpdated, setLastUpdated] = useState<Date>(new Date())
     const [error, setError] = useState<string>()
     const { page, changePage, totalPages, totalItems, setTotalItems, pageSize } = usePagination({
@@ -135,79 +137,23 @@ export const Messages = () => {
         },
     )
 
-    const dismissMessage = useCallback(
-        async (id: string) => {
-            try {
-                await send<SystemMessage[], { id: string }>(GameServerKeys.SystemMessageDismiss, {
-                    id,
-                })
-            } catch (err) {
-                const message = typeof err === "string" ? err : "Failed to dismiss system message."
-                setError(message)
-                console.error(err)
-            }
-        },
-        [send],
-    )
+    // const dismissMessage = useCallback(
+    //     async (id: string) => {
+    //         try {
+    //             await send<SystemMessage[], { id: string }>(GameServerKeys.SystemMessageDismiss, {
+    //                 id,
+    //             })
+    //         } catch (err) {
+    //             const message = typeof err === "string" ? err : "Failed to dismiss system message."
+    //             setError(message)
+    //             console.error(err)
+    //         }
+    //     },
+    //     [send],
+    // )
 
     const content = useMemo(() => {
-        let globalMessagesRender = null
-        let factionMessagesRender = null
         let messagesRender = null
-
-        if (globalMessages.length !== 0) {
-            globalMessagesRender = (
-                <Stack>
-                    <Typography
-                        sx={{
-                            fontSize: "1.6rem",
-                            fontFamily: fonts.shareTechMono,
-                            textTransform: "uppercase",
-                        }}
-                    >
-                        Global Messages
-                    </Typography>
-                    <Stack spacing=".8rem">
-                        {globalMessages.map((m) => (
-                            <MessageItem key={m.id} message={m} />
-                        ))}
-                    </Stack>
-                    <Box
-                        sx={{
-                            mt: "1rem",
-                            borderBottom: `${theme.factionTheme.primary}70 1.5px solid`,
-                        }}
-                    />
-                </Stack>
-            )
-        }
-
-        if (factionMessages.length !== 0) {
-            factionMessagesRender = (
-                <Stack>
-                    <Typography
-                        sx={{
-                            fontSize: "1.6rem",
-                            fontFamily: fonts.shareTechMono,
-                            textTransform: "uppercase",
-                        }}
-                    >
-                        Faction Messages
-                    </Typography>
-                    <Stack spacing=".8rem">
-                        {factionMessages.map((m) => (
-                            <MessageItem key={m.id} message={m} />
-                        ))}
-                    </Stack>
-                    <Box
-                        sx={{
-                            mt: "1rem",
-                            borderBottom: `${theme.factionTheme.primary}70 1.5px solid`,
-                        }}
-                    />
-                </Stack>
-            )
-        }
 
         if (messages.length === 0) {
             messagesRender = (
@@ -229,7 +175,7 @@ export const Messages = () => {
         } else {
             messagesRender = (
                 <Stack spacing="1rem">
-                    <Stack spacing=".8rem" sx={{ p: "1rem 2rem 1.5rem 1.5rem" }}>
+                    <Stack spacing=".8rem" sx={{ p: "" }}>
                         {error && (
                             <Typography variant="body2" sx={{ color: colors.red }}>
                                 {error}
@@ -237,7 +183,7 @@ export const Messages = () => {
                         )}
 
                         {messages.map((m) => (
-                            <MessageItem key={m.id} message={m} onDismiss={() => dismissMessage(m.id)} />
+                            <MessageItem key={m.id} message={m} selected={focusedMessage?.id === m.id} onSelect={() => setFocusedMessage(m)} />
                         ))}
                     </Stack>
                     {totalPages > 1 && (
@@ -268,24 +214,39 @@ export const Messages = () => {
         }
 
         return (
-            <Stack spacing="1rem">
-                {globalMessagesRender}
-                {factionMessagesRender}
-                {messagesRender}
+            <Stack>
+                <Stack spacing="1rem" mb="1rem">
+                    {messagesRender}
+                </Stack>
+                <Box
+                    sx={{
+                        height: "100vh",
+                        maxHeight: "200px",
+                        p: ".6rem 1.2rem",
+                        backgroundColor: "#FFFFFF10",
+                    }}
+                >
+                    {focusedMessage ? (
+                        <MessageDisplay message={focusedMessage} />
+                    ) : (
+                        <Stack alignItems="center" justifyContent="center" height="100%">
+                            <Typography
+                                variant="body2"
+                                sx={{
+                                    color: colors.grey,
+                                    fontFamily: fonts.nostromoBold,
+                                    opacity: 0.9,
+                                    textAlign: "center",
+                                }}
+                            >
+                                Select an item to view its contents.
+                            </Typography>
+                        </Stack>
+                    )}
+                </Box>
             </Stack>
         )
-    }, [
-        globalMessages,
-        factionMessages,
-        messages,
-        theme.factionTheme.primary,
-        theme.factionTheme.secondary,
-        error,
-        totalPages,
-        page,
-        dismissMessage,
-        changePage,
-    ])
+    }, [messages, theme.factionTheme.primary, theme.factionTheme.secondary, focusedMessage, error, totalPages, page, changePage])
 
     return (
         <>
@@ -349,13 +310,13 @@ export const Messages = () => {
                     }}
                     backgroundColor={theme.factionTheme.background}
                     sx={{
-                        width: "52rem",
-                        maxWidth: "80vw",
+                        width: "800px",
+                        maxWidth: "100vw",
                     }}
                 >
                     <Stack
                         sx={{
-                            p: "1rem 2rem",
+                            p: "2rem",
                             borderBottom: `${theme.factionTheme.primary}70 1.5px solid`,
                         }}
                         spacing="1rem"
