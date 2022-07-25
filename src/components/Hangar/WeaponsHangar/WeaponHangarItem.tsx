@@ -66,7 +66,7 @@ export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGri
                         ...(isGridView
                             ? {
                                   "&>*:not(:last-child)": {
-                                      mb: ".8rem",
+                                      mb: "1rem",
                                   },
                               }
                             : {}),
