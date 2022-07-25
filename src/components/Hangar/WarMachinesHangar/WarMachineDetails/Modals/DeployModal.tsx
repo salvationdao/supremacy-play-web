@@ -116,7 +116,7 @@ export const DeployModal = ({
     )
 }
 
-const AmountItem = ({
+export const AmountItem = ({
     title,
     color,
     value,
@@ -126,7 +126,7 @@ const AmountItem = ({
     title: string
     color: string
     value: string | number
-    tooltip: string
+    tooltip?: string
     disableIcon?: boolean
 }) => {
     return (
@@ -141,11 +141,13 @@ const AmountItem = ({
                 {value || "---"}
             </Typography>
 
-            <TooltipHelper placement="right-start" text={tooltip}>
-                <Box sx={{ ml: "auto" }}>
-                    <SvgInfoCircular size="1.2rem" sx={{ opacity: 0.4, ":hover": { opacity: 1 } }} />
-                </Box>
-            </TooltipHelper>
+            {tooltip && (
+                <TooltipHelper placement="right-start" text={tooltip}>
+                    <Box sx={{ ml: "auto" }}>
+                        <SvgInfoCircular size="1.2rem" sx={{ opacity: 0.4, ":hover": { opacity: 1 } }} />
+                    </Box>
+                </TooltipHelper>
+            )}
         </Stack>
     )
 }

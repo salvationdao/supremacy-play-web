@@ -200,7 +200,7 @@ export const theme = createTheme({
         },
         body1: {
             fontFamily: fonts.shareTech,
-            fontSize: "1.6rem",
+            fontSize: "1.65rem",
         },
         body2: {
             fontFamily: fonts.shareTech,

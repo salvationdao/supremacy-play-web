@@ -61,7 +61,7 @@ export const WarMachineHangarDetails = ({ mechID }: { mechID: string }) => {
                 />
             )}
 
-            {selectedMechDetails && rentalMechModalOpen && (
+            {selectedMechDetails && repairMechModalOpen && (
                 <RepairModal
                     selectedMechDetails={selectedMechDetails}
                     repairMechModalOpen={repairMechModalOpen}
