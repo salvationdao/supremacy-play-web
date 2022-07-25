@@ -159,6 +159,21 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         requireFaction: false,
     },
 
+    // Jobs
+    jobs: {
+        id: "jobs",
+        path: "/jobs",
+        exact: true,
+        Component: undefined,
+        requireAuth: true,
+        requireFaction: true,
+        leftDrawer: {
+            enable: false,
+            label: "Contracts",
+        },
+        matchLeftDrawerID: "contracts",
+    },
+
     // Contract
     contracts: {
         id: "contracts",

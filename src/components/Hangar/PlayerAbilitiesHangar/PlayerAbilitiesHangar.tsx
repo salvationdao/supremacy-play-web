@@ -4,7 +4,7 @@ import { ClipThing, FancyButton } from "../.."
 import { PlayerAbilityPNG } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { parseString } from "../../../helpers"
-import { usePagination, useUrlQuery } from "../../../hooks"
+import { usePagination, useToggle, useUrlQuery } from "../../../hooks"
 import { useGameServerSubscriptionUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
@@ -31,6 +31,7 @@ export const PlayerAbilitiesHangar = () => {
     })
 
     // Filters
+    const [isFiltersExpanded, toggleIsFiltersExpanded] = useToggle(localStorage.getItem("isFiltersExpanded") === "true")
     const [search, setSearch] = useState("")
     const [locationSelectTypes, setLocationSelectTypes] = useState<string[]>((query.get("abilityTypes") || undefined)?.split("||") || [])
     const locationSelectTypeFilterSection = useRef<ChipFilter>({
@@ -48,6 +49,10 @@ export const PlayerAbilitiesHangar = () => {
             changePage(1)
         },
     })
+
+    useEffect(() => {
+        localStorage.setItem("isFiltersExpanded", isFiltersExpanded.toString())
+    }, [isFiltersExpanded])
 
     useGameServerSubscriptionUser<PlayerAbility[]>(
         {
@@ -169,8 +174,14 @@ export const PlayerAbilitiesHangar = () => {
     }, [isLoaded, shownPlayerAbilities, theme.factionTheme.primary, theme.factionTheme.secondary])
 
     return (
-        <Stack direction="row" spacing="1rem" sx={{ height: "100%" }}>
-            <SortAndFilters initialSearch={search} onSetSearch={setSearch} chipFilters={[locationSelectTypeFilterSection.current]} changePage={changePage} />
+        <Stack direction="row" sx={{ height: "100%" }}>
+            <SortAndFilters
+                initialSearch={search}
+                onSetSearch={setSearch}
+                chipFilters={[locationSelectTypeFilterSection.current]}
+                changePage={changePage}
+                isExpanded={isFiltersExpanded}
+            />
 
             <ClipThing
                 clipSize="10px"
@@ -207,6 +218,8 @@ export const PlayerAbilitiesHangar = () => {
                         changePageSize={changePageSize}
                         pageSizeOptions={[10, 20, 40]}
                         changePage={changePage}
+                        isFiltersExpanded={isFiltersExpanded}
+                        toggleIsFiltersExpanded={toggleIsFiltersExpanded}
                     />
 
                     <Stack sx={{ px: "2rem", flex: 1 }}>

@@ -140,7 +140,7 @@ export const MechCommonArea = ({
             </Box>
 
             <Stack
-                spacing={isGridView ? ".1rem" : ".2rem"}
+                spacing=".2rem"
                 sx={{
                     flex: 1,
                     pr: toggleIsExpanded ? "3rem" : "unset",

@@ -38,11 +38,16 @@ export const HistoryMarket = () => {
         pageSize: parseString(query.get("pageSize"), 10),
         page: parseString(query.get("page"), 1),
     })
+    const [isFiltersExpanded, toggleIsFiltersExpanded] = useToggle(localStorage.getItem("isFiltersExpanded") === "true")
     const [isGridView, toggleIsGridView] = useToggle(localStorage.getItem("marketHistoryGrid") === "true")
 
     useEffect(() => {
         localStorage.setItem("marketHistoryGrid", isGridView.toString())
     }, [isGridView])
+
+    useEffect(() => {
+        localStorage.setItem("isFiltersExpanded", isFiltersExpanded.toString())
+    }, [isFiltersExpanded])
 
     // Filters and sorts
     const [search, setSearch] = useState("")
@@ -154,7 +159,7 @@ export const HistoryMarket = () => {
                             width: "100%",
                             py: "1rem",
                             display: "grid",
-                            gridTemplateColumns: isGridView ? "repeat(auto-fill, minmax(29rem, 1fr))" : "100%",
+                            gridTemplateColumns: isGridView ? "repeat(auto-fill, minmax(30rem, 1fr))" : "100%",
                             gap: "1.3rem",
                             alignItems: "center",
                             justifyContent: "center",
@@ -203,13 +208,14 @@ export const HistoryMarket = () => {
     }, [loadError, eventItems, isLoading, primaryColor, isGridView])
 
     return (
-        <Stack direction="row" spacing="1rem" sx={{ height: "100%" }}>
+        <Stack direction="row" sx={{ height: "100%" }}>
             <SortAndFilters
                 initialSearch={search}
                 onSetSearch={setSearch}
                 chipFilters={[eventTypeFilterSection.current]}
                 changePage={changePage}
                 primaryColor={primaryColor}
+                isExpanded={isFiltersExpanded}
             >
                 <Box sx={{ p: ".8rem 1rem" }}>
                     <FancyButton
@@ -271,6 +277,8 @@ export const HistoryMarket = () => {
                             selectedSort={sort}
                             onSetSort={setSort}
                             primaryColor={primaryColor}
+                            isFiltersExpanded={isFiltersExpanded}
+                            toggleIsFiltersExpanded={toggleIsFiltersExpanded}
                         />
 
                         <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
