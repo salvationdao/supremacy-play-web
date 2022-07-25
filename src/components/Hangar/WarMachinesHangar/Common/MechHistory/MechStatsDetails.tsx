@@ -82,6 +82,8 @@ export const MechStatsDetails = ({ mechDetails }: { mechDetails?: MechDetails })
                                     label={w.label}
                                     primaryColor={colors.weapons}
                                     Icon={SvgWeapons}
+                                    rarity={w.weapon_skin ? getRarityDeets(w.weapon_skin.tier) : undefined}
+                                    hasSkin={!!w.weapon_skin}
                                 />
                             )
                         })}

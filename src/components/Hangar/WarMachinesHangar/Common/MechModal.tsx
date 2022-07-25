@@ -1,10 +1,9 @@
 import { Box, IconButton, Modal, Stack, Typography } from "@mui/material"
-import { ReactNode, useMemo } from "react"
+import { ReactNode } from "react"
 import { ClipThing } from "../../.."
 import { SvgClose } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
-import { getRarityDeets } from "../../../../helpers"
-import { colors, fonts, siteZIndex } from "../../../../theme/theme"
+import { fonts, siteZIndex } from "../../../../theme/theme"
 import { MechDetails } from "../../../../types"
 import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
 import { MechLoadoutIcons } from "./MechLoadoutIcons"
@@ -24,8 +23,7 @@ export const MechModal = ({
 }) => {
     const theme = useTheme()
 
-    const { name, label, tier } = mechDetails
-    const rarityDeets = useMemo(() => getRarityDeets(tier || ""), [tier])
+    const { name, label } = mechDetails
     const skin = mechDetails ? mechDetails.chassis_skin || mechDetails.default_chassis_skin : undefined
     const avatarUrl = skin?.avatar_url || mechDetails.avatar_url
     const imageUrl = skin?.image_url || mechDetails.image_url
@@ -74,27 +72,7 @@ export const MechModal = ({
                         </Box>
 
                         <Stack spacing=".8rem">
-                            <Stack spacing=".2rem" alignItems="flex-start">
-                                <MechLoadoutIcons mechDetails={mechDetails} />
-
-                                {mechDetails?.chassis_skin && (
-                                    <Typography
-                                        variant="body2"
-                                        sx={{
-                                            fontFamily: fonts.nostromoBold,
-                                            display: "-webkit-box",
-                                            overflow: "hidden",
-                                            overflowWrap: "anywhere",
-                                            textOverflow: "ellipsis",
-                                            WebkitLineClamp: 1, // change to max number of lines
-                                            WebkitBoxOrient: "vertical",
-                                        }}
-                                    >
-                                        <span style={{ color: colors.chassisSkin, fontFamily: "inherit" }}>{mechDetails?.chassis_skin?.label}</span>{" "}
-                                        <span style={{ color: rarityDeets.color, fontFamily: "inherit" }}>[{rarityDeets.label}]</span>
-                                    </Typography>
-                                )}
-                            </Stack>
+                            <MechLoadoutIcons mechDetails={mechDetails} />
 
                             <Typography sx={{ fontFamily: fonts.nostromoBlack, letterSpacing: "1px" }}>{name || label}</Typography>
                         </Stack>

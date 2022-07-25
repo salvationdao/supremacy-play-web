@@ -4,7 +4,7 @@ import { useLocation } from "react-router-dom"
 import { FancyButton } from "../.."
 import { SvgDropdownArrow } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
-import { getRarityDeets, shadeColor } from "../../../helpers"
+import { shadeColor } from "../../../helpers"
 import { useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
@@ -118,7 +118,6 @@ export const MechCommonArea = ({
     toggleIsExpanded?: (value?: boolean) => void
     label?: string
 }) => {
-    const rarityDeets = useMemo(() => getRarityDeets(mechDetails?.chassis_skin?.tier || mechDetails?.tier || mech?.tier || ""), [mech, mechDetails])
     const backgroundColor = useMemo(() => shadeColor(primaryColor, -90), [primaryColor])
 
     const mechh = mechDetails || mech
@@ -158,21 +157,7 @@ export const MechCommonArea = ({
                     toggleIsExpanded()
                 }}
             >
-                <Typography
-                    variant="body2"
-                    sx={{
-                        color: mechh?.name ? primaryColor : colors.grey,
-                        fontFamily: fonts.nostromoBlack,
-                        display: "-webkit-box",
-                        overflow: "hidden",
-                        overflowWrap: "anywhere",
-                        textOverflow: "ellipsis",
-                        WebkitLineClamp: 1, // change to max number of lines
-                        WebkitBoxOrient: "vertical",
-                    }}
-                >
-                    {mechh?.name || "Unnamed"}
-                </Typography>
+                <MechLoadoutIcons mechDetails={mechDetails} />
 
                 <Typography
                     sx={{
@@ -188,31 +173,21 @@ export const MechCommonArea = ({
                     {mechh?.label || label}
                 </Typography>
 
-                <Stack
-                    direction={isGridView ? "column-reverse" : "row"}
-                    spacing={isGridView ? ".2rem" : ".8rem"}
-                    alignItems={isGridView ? "flex-start" : "center"}
+                <Typography
+                    variant="body2"
+                    sx={{
+                        color: mechh?.name ? primaryColor : colors.grey,
+                        fontFamily: fonts.nostromoBlack,
+                        display: "-webkit-box",
+                        overflow: "hidden",
+                        overflowWrap: "anywhere",
+                        textOverflow: "ellipsis",
+                        WebkitLineClamp: 1, // change to max number of lines
+                        WebkitBoxOrient: "vertical",
+                    }}
                 >
-                    <MechLoadoutIcons mechDetails={mechDetails} />
-
-                    {mechDetails?.chassis_skin && (
-                        <Typography
-                            variant="caption"
-                            sx={{
-                                fontFamily: fonts.nostromoBold,
-                                display: "-webkit-box",
-                                overflow: "hidden",
-                                overflowWrap: "anywhere",
-                                textOverflow: "ellipsis",
-                                WebkitLineClamp: 1, // change to max number of lines
-                                WebkitBoxOrient: "vertical",
-                            }}
-                        >
-                            <span style={{ color: colors.chassisSkin, fontFamily: "inherit" }}>{mechDetails?.chassis_skin?.label}</span>{" "}
-                            <span style={{ color: rarityDeets.color, fontFamily: "inherit" }}>[{rarityDeets.label}]</span>
-                        </Typography>
-                    )}
-                </Stack>
+                    {mechh?.name || "Unnamed"}
+                </Typography>
 
                 {toggleIsExpanded && !isGridView && (
                     <Stack

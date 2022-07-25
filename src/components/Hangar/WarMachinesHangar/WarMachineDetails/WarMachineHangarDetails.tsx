@@ -1,7 +1,8 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material"
 import { useCallback, useMemo, useState } from "react"
 import { ClipThing } from "../../.."
-import { SvgStats } from "../../../../assets"
+import { SvgSkin, SvgStats } from "../../../../assets"
+import { BATTLE_ARENA_OPEN } from "../../../../constants"
 import { useSnackbar } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
 import { getRarityDeets } from "../../../../helpers"
@@ -10,17 +11,16 @@ import { GameServerKeys } from "../../../../keys"
 import { fonts } from "../../../../theme/theme"
 import { MechDetails } from "../../../../types"
 import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
+import { MechBattleHistoryDetails } from "../../../Marketplace/WarMachinesMarket/WarMachineMarketDetails/MechBattleHistoryDetails"
 import { MechBarStats } from "../Common/MechBarStats"
 import { MechGeneralStatus } from "../Common/MechGeneralStatus"
+import { MechButtons } from "./MechButtons"
+import { MechLoadout } from "./MechLoadout"
+import { MechName } from "./MechName"
+import { MechViewer } from "./MechViewer"
 import { DeployModal } from "./Modals/DeployModal"
 import { LeaveModal } from "./Modals/LeaveModal"
-import { MechButtons } from "./MechButtons"
-import { MechName } from "./MechName"
 import { RentalModal } from "./Modals/RentalModal"
-import { MechViewer } from "./MechViewer"
-import { MechLoadout } from "./MechLoadout"
-import { MechBattleHistoryDetails } from "../../../Marketplace/WarMachinesMarket/WarMachineMarketDetails/MechBattleHistoryDetails"
-import { BATTLE_ARENA_OPEN } from "../../../../constants"
 import { RepairModal } from "./Modals/RepairModal"
 
 export const WarMachineHangarDetails = ({ mechID }: { mechID: string }) => {
@@ -211,9 +211,12 @@ export const WarMachineHangarDetailsInner = ({
                                 <Stack spacing="1.6rem" sx={{ p: "1rem 1rem" }}>
                                     {/* Mech avatar, label, name etc */}
                                     <Stack spacing=".5rem">
-                                        <Typography variant="body2" sx={{ color: rarityDeets.color, fontFamily: fonts.nostromoHeavy }}>
-                                            {rarityDeets.label}
-                                        </Typography>
+                                        <Stack spacing=".5rem" direction="row" alignItems="center">
+                                            <SvgSkin fill={rarityDeets.color} />
+                                            <Typography variant="body2" sx={{ color: rarityDeets.color, fontFamily: fonts.nostromoHeavy }}>
+                                                {rarityDeets.label}
+                                            </Typography>
+                                        </Stack>
 
                                         <Typography sx={{ fontFamily: fonts.nostromoBlack }}>{mechDetails.label}</Typography>
 
