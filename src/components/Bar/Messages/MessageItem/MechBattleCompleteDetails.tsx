@@ -72,6 +72,7 @@ export const MechBattleCompleteDetails = ({ message, data }: MechBattleCompleteD
                     <Stack direction="row" spacing=".2rem" alignItems="baseline">
                         <Typography
                             sx={{
+                                mr: ".2rem",
                                 fontFamily: fonts.nostromoBold,
                                 whiteSpace: "nowrap",
                                 textTransform: "uppercase",
