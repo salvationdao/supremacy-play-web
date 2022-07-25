@@ -22,7 +22,7 @@ export type SplitOptionType = "tabbed" | "split" | null
 export type FontSizeType = 0.8 | 1.2 | 1.35
 
 export const ChatContainer = createContainer(() => {
-    const { userID } = useAuth()
+    const { userID, user } = useAuth()
     const history = useHistory()
     const location = useLocation()
     const [isPoppedout, toggleIsPoppedout] = useToggle()
@@ -181,6 +181,31 @@ export const ChatContainer = createContainer(() => {
         [userID, tabValue, splitOption],
     )
 
+    const readMessage = useCallback(
+        (messageID: string) => {
+            console.log("sdfkhjsdhjkf")
+            if (tabValue === 0) {
+                const newMessages = [...globalChatMessages]
+                let index = -1
+                const msgToRead = newMessages.find((el, i) => {
+                    index = i
+                    return el.id === messageID
+                })
+                if (!msgToRead) return
+                const md = (msgToRead.data as TextMessageData).metadata
+                if (md) {
+                    md.tagged_users_read[user.gid] = true
+                    newMessages[index] = msgToRead
+                    console.log(newMessages)
+                    setGlobalChatMessages(newMessages)
+                }
+            } else {
+                console.log("todo")
+            }
+        },
+        [globalChatMessages, user],
+    )
+
     useEffect(() => {
         if (!incomingMessages || incomingMessages.messages.length <= 0) return
 
@@ -319,6 +344,7 @@ export const ChatContainer = createContainer(() => {
         addToUserGidRecord,
         activePlayers,
         globalActivePlayers,
+        readMessage,
     }
 })
 

@@ -9,7 +9,7 @@ import { colors, fonts } from "../../../../../theme/theme"
 import { ChatMessageType, Faction, TextMessageData, User } from "../../../../../types"
 import { TooltipHelper } from "../../../../Common/TooltipHelper"
 import { UserDetailsPopover } from "./UserDetailsPopover"
-import { useChat } from "../../../../../containers"
+import { useAuth, useChat } from "../../../../../containers"
 import { GameServerKeys } from "../../../../../keys"
 import { useGameServerCommandsUser } from "../../../../../hooks/useGameServer"
 import { ReactJSXElement } from "@emotion/react/types/jsx-namespace"
@@ -62,7 +62,8 @@ export const TextMessage = ({
 }) => {
     const { from_user, user_rank, message_color, avatar_id, message, total_multiplier, is_citizen, from_user_stat, metadata } = data
     const { id, username, gid, faction_id } = from_user
-    const { userGidRecord, addToUserGidRecord } = useChat()
+    const { isHidden, isActive } = useAuth()
+    const { userGidRecord, addToUserGidRecord, readMessage } = useChat()
     const { send } = useGameServerCommandsUser("/user_commander")
 
     const popoverRef = useRef(null)
@@ -83,10 +84,7 @@ export const TextMessage = ({
     const faction_logo_url = useMemo(() => (faction_id ? getFaction(faction_id).logo_url : ""), [faction_id, getFaction])
     const rankDeets = useMemo(() => (user_rank ? getUserRankDeets(user_rank, ".8rem", "1.8rem") : undefined), [user_rank])
     const smallFontSize = useMemo(() => (fontSize ? `${0.9 * fontSize}rem` : "0.9rem"), [fontSize])
-    const shouldNotify = useMemo(
-        () => metadata && user.gid in metadata.tagged_users_read && !metadata.tagged_users_read[user.gid],
-        [metadata?.tagged_users_read],
-    )
+    const shouldNotify = useMemo(() => metadata && user.gid in metadata.tagged_users_read && !metadata.tagged_users_read[user.gid], [metadata, user])
 
     const renderFontSize = useCallback(() => {
         if (isEmoji) return (fontSize || 1.1) * 3
@@ -94,6 +92,7 @@ export const TextMessage = ({
     }, [isEmoji, fontSize])
 
     const isVisible = useCallback(() => {
+        if (isHidden || !isActive) return false
         if (!containerRef.current || !textMessageRef.current || isScrolling) return
 
         //Get container properties
@@ -124,11 +123,8 @@ export const TextMessage = ({
                     console.error(err)
                 }
 
-                const msg = chatMessages.find((msg) => (msg.data as TextMessageData).id === data.id)
-                if (!msg || !msg.data || !(msg.data as TextMessageData).metadata) return
-                const msgData = msg.data as TextMessageData
-                if (msgData && msgData.metadata && "tagged_users_read" in msgData.metadata) {
-                    msgData.metadata.tagged_users_read[user.gid] = true
+                if (data.id) {
+                    readMessage(data.id)
                 }
             }, 2000)
         }

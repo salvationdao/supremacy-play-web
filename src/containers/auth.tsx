@@ -35,7 +35,7 @@ export const FallbackFaction: Faction = {
 export interface AuthState {
     isActive: boolean
     setIsActive: Dispatch<React.SetStateAction<boolean>>
-    isVisible: boolean
+    isHidden: boolean
     isLoggingIn: boolean
     onLogInClick: () => void
     userHasFeature: (featureName: FeatureName) => boolean
@@ -56,7 +56,7 @@ const initialState: AuthState = {
     setIsActive: () => {
         return
     },
-    isVisible: true,
+    isHidden: false,
     isLoggingIn: false,
     onLogInClick: () => {
         return
@@ -227,7 +227,7 @@ export const AuthProvider: React.FC = ({ children }) => {
             value={{
                 isActive,
                 setIsActive,
-                isVisible: isHidden,
+                isHidden,
                 isLoggingIn,
                 onLogInClick,
                 userHasFeature,
