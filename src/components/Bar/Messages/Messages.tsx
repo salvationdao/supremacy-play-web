@@ -159,7 +159,7 @@ export const Messages = () => {
                 )}
             </Stack>
         )
-    }, [messages, totalPages, theme.factionTheme.primary, theme.factionTheme.secondary, page, showTimestamps, dismissMessage, changePage])
+    }, [messages, totalPages, theme.factionTheme.primary, theme.factionTheme.secondary, page, dismissMessage, changePage])
 
     return (
         <>
