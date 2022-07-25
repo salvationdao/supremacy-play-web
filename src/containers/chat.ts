@@ -9,8 +9,7 @@ import { parseString } from "../helpers"
 import { useToggle } from "../hooks"
 import { useGameServerSubscription, useGameServerSubscriptionFaction, useGameServerSubscriptionUser } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
-import { BanProposalStruct, ChatMessageType, TextMessageData } from "../types/chat"
-import { User } from "../types"
+import { BanProposalStruct, ChatMessageType, TextMessageData, User } from "../types"
 
 export interface IncomingMessages {
     faction: string | null
@@ -183,9 +182,11 @@ export const ChatContainer = createContainer(() => {
 
     const readMessage = useCallback(
         (messageID: string) => {
-            console.log("sdfkhjsdhjkf")
-            if (tabValue === 0) {
-                const newMessages = [...globalChatMessages]
+            const genericRead = (
+                msgs: ChatMessageType[],
+                setMsgs: (value: ((prevState: ChatMessageType[]) => ChatMessageType[]) | ChatMessageType[]) => void,
+            ) => {
+                const newMessages = [...msgs]
                 let index = -1
                 const msgToRead = newMessages.find((el, i) => {
                     index = i
@@ -196,14 +197,18 @@ export const ChatContainer = createContainer(() => {
                 if (md) {
                     md.tagged_users_read[user.gid] = true
                     newMessages[index] = msgToRead
-                    console.log(newMessages)
-                    setGlobalChatMessages(newMessages)
+
+                    setMsgs(newMessages)
                 }
+            }
+
+            if (tabValue === 0) {
+                genericRead(globalChatMessages, setGlobalChatMessages)
             } else {
-                console.log("todo")
+                genericRead(factionChatMessages, setFactionChatMessages)
             }
         },
-        [globalChatMessages, user, tabValue],
+        [globalChatMessages, setGlobalChatMessages, factionChatMessages, setFactionChatMessages, user, tabValue],
     )
 
     useEffect(() => {
