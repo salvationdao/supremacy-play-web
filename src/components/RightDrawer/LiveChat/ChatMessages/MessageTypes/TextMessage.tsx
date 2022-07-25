@@ -84,7 +84,7 @@ export const TextMessage = ({
     const faction_logo_url = useMemo(() => (faction_id ? getFaction(faction_id).logo_url : ""), [faction_id, getFaction])
     const rankDeets = useMemo(() => (user_rank ? getUserRankDeets(user_rank, ".8rem", "1.8rem") : undefined), [user_rank])
     const smallFontSize = useMemo(() => (fontSize ? `${0.9 * fontSize}rem` : "0.9rem"), [fontSize])
-    const shouldNotify = useMemo(() => metadata && user.gid in metadata.tagged_users_read && !metadata.tagged_users_read[user.gid], [metadata, user])
+    const shouldNotify = useMemo(() => metadata && user.gid in metadata.tagged_users_read && !metadata.tagged_users_read[user.gid], [user, metadata])
 
     const renderFontSize = useCallback(() => {
         if (isEmoji) return (fontSize || 1.1) * 3
@@ -144,7 +144,7 @@ export const TextMessage = ({
                 if (!taggedUser) {
                     try {
                         const resp = await send<User>(GameServerKeys.GetPlayerByGid, {
-                            gid: gid,
+                            gid: gidSubstring,
                         })
                         if (!resp) return
                         addToUserGidRecord(resp)
@@ -160,10 +160,14 @@ export const TextMessage = ({
                 newMsgArr.push(<Box component={"span"}>{str}</Box>)
                 if (matchedArr && matchedArr[i]) {
                     const gidSubstring = parseInt(matchedArr[i].substring(1))
+                    const taggedUser = userGidRecord[gidSubstring]
+                    if (!taggedUser) return
+
+                    const taggedFactionColor = getFaction(taggedUser.faction_id).primary_color
                     newMsgArr.push(
                         <Box component={"span"}>
                             <Box sx={{ display: "inline" }}> </Box>
-                            <UsernameJSX data={data} fontSize={fontSize} user={userGidRecord[gidSubstring]} factionColor={factionColor} />
+                            <UsernameJSX data={data} fontSize={fontSize} user={taggedUser} factionColor={taggedFactionColor} />
                         </Box>,
                     )
                 }
@@ -179,7 +183,7 @@ export const TextMessage = ({
                 </>
             )
         },
-        [addToUserGidRecord, userGidRecord, data, factionColor, fontSize, gid, metadata, send],
+        [addToUserGidRecord, userGidRecord, data, fontSize, metadata, send, getFaction],
     )
 
     const chatMessage = useMemo(() => {
