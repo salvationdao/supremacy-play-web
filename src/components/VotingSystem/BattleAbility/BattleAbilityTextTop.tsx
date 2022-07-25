@@ -14,7 +14,7 @@ interface BattleAbilityTextTopProps {
 }
 
 export const BattleAbilityTextTop = ({ label, image_url, colour, disableButton }: BattleAbilityTextTopProps) => {
-    const [isOptedIn, setIsOptedIn] = useState(true)
+    const [isOptedIn, setIsOptedIn] = useState(false)
 
     useGameServerSubscriptionUser<boolean | undefined>(
         {
