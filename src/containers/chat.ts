@@ -211,6 +211,26 @@ export const ChatContainer = createContainer(() => {
         [globalChatMessages, setGlobalChatMessages, factionChatMessages, setFactionChatMessages, user, tabValue],
     )
 
+    const sendBrowserNotification = useCallback((title: string, body: string, timeOpen?: number) => {
+        if (!("Notification" in window)) {
+            return
+        }
+
+        const n = new Notification(title, { body: body, badge: SupremacyPNG, icon: SupremacyPNG, image: SupremacyPNG })
+        n.onclick = (e) => {
+            e.preventDefault()
+            window.parent.parent.focus()
+        }
+
+        if (timeOpen) {
+            setTimeout(() => n.close(), timeOpen)
+        }
+
+        if (document.visibilityState === "visible") {
+            n.close()
+        }
+    }, [])
+
     useEffect(() => {
         if (!incomingMessages || incomingMessages.messages.length <= 0) return
 
@@ -273,18 +293,11 @@ export const ChatContainer = createContainer(() => {
                 ended_at: endTime,
             })
 
-            if (!("Notification" in window)) {
-                return
-            }
-
-            const notification = new Notification("Ban Proposal Initialised", {
-                body: `Reason: ${payload.reason}\nOn: ${payload.reported_player_username}\nFrom: ${payload.issued_by_username}`,
-                badge: SupremacyPNG,
-                icon: SupremacyPNG,
-                image: SupremacyPNG,
-            })
-
-            setTimeout(() => notification.close(), 10000)
+            sendBrowserNotification(
+                "Ban Proposal Initialised",
+                `Reason: ${payload.reason}\nOn: ${payload.reported_player_username}\nFrom: ${payload.issued_by_username}`,
+                10000,
+            )
         },
     )
 
@@ -350,6 +363,7 @@ export const ChatContainer = createContainer(() => {
         activePlayers,
         globalActivePlayers,
         readMessage,
+        sendBrowserNotification,
     }
 })
 

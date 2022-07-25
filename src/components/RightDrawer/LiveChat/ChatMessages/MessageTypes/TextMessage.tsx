@@ -63,7 +63,7 @@ export const TextMessage = ({
     const { from_user, user_rank, message_color, avatar_id, message, total_multiplier, is_citizen, from_user_stat, metadata } = data
     const { id, username, gid, faction_id } = from_user
     const { isHidden, isActive } = useAuth()
-    const { userGidRecord, addToUserGidRecord, readMessage } = useChat()
+    const { userGidRecord, addToUserGidRecord, readMessage, sendBrowserNotification, tabValue } = useChat()
     const { send } = useGameServerCommandsUser("/user_commander")
 
     const popoverRef = useRef(null)
@@ -91,8 +91,7 @@ export const TextMessage = ({
         return (fontSize || 1.1) * 1.35
     }, [isEmoji, fontSize])
 
-    const isVisible = useCallback(() => {
-        if (isHidden || !isActive) return false
+    const isVisibleInChat = useCallback(() => {
         if (!containerRef.current || !textMessageRef.current || isScrolling) return
 
         //Get container properties
@@ -110,8 +109,14 @@ export const TextMessage = ({
 
     useEffect(() => {
         if (metadata && Object.keys(metadata?.tagged_users_read).length === 0) return
-        const visibleBool = isVisible()
+        const visibleBool = isVisibleInChat()
         const isRead = metadata?.tagged_users_read[user.gid]
+
+        if (isRead === false && (isHidden || !isActive)) {
+            sendBrowserNotification(`New Chat Message`, `${username} has tagged you in a message in ${tabValue === 0 ? "Global Chat" : "Faction Chat"}.`)
+            return
+        }
+
         if (visibleBool && isRead === false) {
             setTimeout(async () => {
                 try {
@@ -128,7 +133,7 @@ export const TextMessage = ({
                 }
             }, 2000)
         }
-    }, [isVisible, data, chatMessages, metadata, readMessage, send, user.gid])
+    }, [isVisibleInChat, data, chatMessages, metadata, readMessage, send, user.gid, isHidden, isActive])
 
     const renderJSXMessage = useCallback(
         (msg: string) => {
