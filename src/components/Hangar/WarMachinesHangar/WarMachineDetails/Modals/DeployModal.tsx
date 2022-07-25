@@ -73,7 +73,7 @@ export const DeployModal = ({
                     {queueLength >= 0 && (
                         <AmountItem
                             key={`${queueLength}-queue_length`}
-                            title={"Position: "}
+                            title={"Next Position: "}
                             color="#FFFFFF"
                             value={`${queueLength + 1}`}
                             tooltip="The queue position of your war machine if you deploy now."
