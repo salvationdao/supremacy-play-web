@@ -2,7 +2,7 @@ import { createContext, Dispatch, useCallback, useContext, useEffect, useRef, us
 import { useQuery } from "react-fetching-library"
 import { useSupremacy } from "."
 import { PASSPORT_WEB } from "../constants"
-import { PassportLoginCheck, GetGameServerPlayer } from "../fetching"
+import { PassportLoginCheck, GameServerLoginCheck } from "../fetching"
 import { shadeColor } from "../helpers"
 import { useGameServerCommandsUser, useGameServerSubscriptionUser } from "../hooks/useGameServer"
 import { useInactivity } from "../hooks/useInactivity"
@@ -110,7 +110,7 @@ export const AuthProvider: React.FC = ({ children }) => {
     const [isHidden, setIsHidden] = useState(false)
 
     const { query: passportLoginCheck } = useQuery(PassportLoginCheck(), false)
-    const { query: getGameServerPlayer } = useQuery(GetGameServerPlayer(userFromPassport?.id), false)
+    const { query: gameserverLoginCheck } = useQuery(GameServerLoginCheck(), false)
 
     function handleVisibilityChange() {
         if (document["hidden"]) {
@@ -141,7 +141,6 @@ export const AuthProvider: React.FC = ({ children }) => {
                         setUserFromPassport(undefined)
                         return
                     }
-
                     setUserFromPassport(resp.payload)
                 } catch (err) {
                     console.error(err)
@@ -157,15 +156,16 @@ export const AuthProvider: React.FC = ({ children }) => {
             return
         }
 
-        getGameServerPlayer().then((resp) => {
-            if (resp.error || !resp.payload) {
-                setUser(initialState.user)
-                return
-            }
+        gameserverLoginCheck()
+            .then((resp) => {
+                if (resp.error || !resp.payload) {
+                    setUser(initialState.user)
+                    return
+                }
 
-            setUser(resp.payload)
-        })
-        setIsLoggingIn(false)
+                setUser(resp.payload)
+            })
+            .finally(() => setIsLoggingIn(false))
     }, [userFromPassport, setIsLoggingIn])
 
     // Check if login in the iframe has been successful (window closed), if closed then do clean up

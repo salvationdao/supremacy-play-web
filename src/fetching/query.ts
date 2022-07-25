@@ -1,7 +1,7 @@
 import { Action } from "react-fetching-library"
 import { GAME_SERVER_HOSTNAME, PASSPORT_SERVER_HOST } from "../constants"
-import { Fingerprint } from "../containers/fingerprint"
-import { Faction, UserFromPassport,SaleAbilitiesAvailabilityResponse, Stream, User, WarMachineDestroyedRecord, WeaponMaxStats } from "../types"
+import { Fingerprint } from "../containers"
+import { Faction, UserFromPassport, SaleAbilitiesAvailabilityResponse, Stream, User, WarMachineDestroyedRecord, WeaponMaxStats } from "../types"
 
 export const PassportLoginCheck = (): Action<UserFromPassport> => {
     return {
@@ -12,23 +12,13 @@ export const PassportLoginCheck = (): Action<UserFromPassport> => {
     }
 }
 
-export const GameServerLoginCheck = (fingerprint?: Fingerprint): Action<boolean> => {
+export const GameServerLoginCheck = (fingerprint?: Fingerprint): Action<User> => {
     return {
         method: "POST",
         endpoint: `${window.location.protocol}//${GAME_SERVER_HOSTNAME}/api/auth/check`,
         credentials: "include",
         responseType: "json",
         body: { fingerprint },
-    }
-}
-
-export const GetGameServerPlayer = (userID: string | undefined): Action<User> => {
-    return {
-        method: "POST",
-        endpoint: `${window.location.protocol}//${GAME_SERVER_HOSTNAME}/api/auth/player`,
-        credentials: "include",
-        responseType: "json",
-        body: { user_id: userID },
     }
 }
 
