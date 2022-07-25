@@ -85,7 +85,7 @@ export const ClaimedRewards = ({ rewards, onClose, setOpeningCrate, setOpenedRew
                         left: 0,
                         width: "100%",
                         height: "100%",
-                        opacity: 0.12,
+                        opacity: 0.08,
                         background: `url(${faction.background_url})`,
                         backgroundRepeat: "no-repeat",
                         backgroundPosition: "center",

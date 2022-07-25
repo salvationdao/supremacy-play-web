@@ -47,7 +47,7 @@ export const BattleAbilityItem = () => {
     // Listen on the progress of the votes
     useGameServerSubscription<BattleAbilityProgress[] | undefined>(
         {
-            URI: "/battle/live_data",
+            URI: "/public/live_data",
             key: GameServerKeys.SubBattleAbilityProgress,
         },
         (payload) => {

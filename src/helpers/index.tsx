@@ -533,6 +533,8 @@ export const getWeaponTypeColor = (weaponType: string | undefined) => {
             return colors.blue
         case "FLAK":
             return colors.orange
+        case "LASER BEAM":
+            return colors.purple
         default:
             return colors.neonBlue
     }

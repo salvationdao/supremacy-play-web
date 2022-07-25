@@ -195,15 +195,16 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate, setOpeningCrate, se
                                 {mysteryCrate.description}
                             </Typography>
 
-                            <Box
+                            <Stack
+                                direction="row"
+                                spacing="2rem"
+                                alignItems="stretch"
+                                justifyContent="center"
                                 sx={{
                                     mt: "auto !important",
                                     mx: "auto",
                                     width: "100%",
-                                    display: "flex",
-                                    alignItems: "stretch",
-                                    justifyContent: "center",
-                                    gap: "2rem",
+                                    pt: "1.8rem",
                                 }}
                             >
                                 <ClipThing
@@ -294,7 +295,7 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate, setOpeningCrate, se
                                         Buy Now
                                     </Typography>
                                 </FancyButton>
-                            </Box>
+                            </Stack>
                         </Stack>
                     </Stack>
                 </ClipThing>

@@ -1,12 +1,12 @@
 import { Box, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
-import { useEffect, useMemo, useState } from "react"
+import { useMemo, useState } from "react"
 import { FancyButton } from "../.."
 import { SvgSupToken } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { numFormatter } from "../../../helpers"
 import { useToggle } from "../../../hooks"
-import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
+import { useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { MARKETPLACE_TABS } from "../../../pages"
 import { colors } from "../../../theme/theme"
@@ -95,7 +95,7 @@ export const HistoryItem = ({ eventItem, isGridView }: { eventItem: MarketplaceE
                         p: isGridView ? ".5rem .6rem" : ".1rem .3rem",
                         display: isGridView ? "block" : "grid",
                         gridTemplateRows: "7rem",
-                        gridTemplateColumns: `minmax(auto, 46rem) repeat(2, 1fr) 1.3fr`, // hard-coded to have 5 columns, adjust as required
+                        gridTemplateColumns: `minmax(36rem, auto) repeat(2, 17rem) 23rem`, // hard-coded to have 5 columns, adjust as required
                         gap: "1.4rem",
                         ...(isGridView
                             ? {
@@ -160,40 +160,32 @@ const ItemCommonArea = ({
     isExpanded: boolean
     toggleIsExpanded: (value?: boolean) => void
 }) => {
-    const { send } = useGameServerCommandsFaction("/faction_commander")
     const [mechDetails, setMechDetails] = useState<MechDetails>()
     const [weaponDetails, setWeaponDetails] = useState<Weapon>()
 
-    useEffect(() => {
-        ;(async () => {
-            try {
-                if (!item.mech) return
-                const resp = await send<MechDetails>(GameServerKeys.GetMechDetails, {
-                    mech_id: item.mech.id,
-                })
+    useGameServerSubscriptionFaction<MechDetails>(
+        {
+            URI: `/mech/${item.mech?.id || ""}/details`,
+            key: GameServerKeys.GetMechDetails,
+            ready: !!item.mech,
+        },
+        (payload) => {
+            if (!payload) return
+            setMechDetails(payload)
+        },
+    )
 
-                if (!resp) return
-                setMechDetails(resp)
-            } catch (e) {
-                console.error(e)
-            }
-        })()
-    }, [item.mech, send])
-
-    useEffect(() => {
-        ;(async () => {
-            try {
-                if (!item.weapon) return
-                const resp = await send<Weapon>(GameServerKeys.GetWeaponDetails, {
-                    weapon_id: item.weapon.id,
-                })
-                if (!resp) return
-                setWeaponDetails(resp)
-            } catch (e) {
-                console.error(e)
-            }
-        })()
-    }, [item.weapon, send])
+    useGameServerSubscriptionFaction<Weapon>(
+        {
+            URI: `/weapon/${item.weapon?.id}/details`,
+            key: GameServerKeys.GetWeaponDetails,
+            ready: !!item.weapon,
+        },
+        (payload) => {
+            if (!payload) return
+            setWeaponDetails(payload)
+        },
+    )
 
     if (item.mech) {
         return (

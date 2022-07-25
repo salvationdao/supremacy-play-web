@@ -1,11 +1,11 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useEffect, useMemo, useState } from "react"
+import { useMemo, useState } from "react"
 import { useLocation } from "react-router-dom"
 import { FancyButton } from "../.."
 import { SvgDropdownArrow, SvgSkin } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { getRarityDeets, getWeaponDamageTypeColor, getWeaponTypeColor, shadeColor } from "../../../helpers"
-import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
+import { useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { Weapon } from "../../../types"
@@ -16,27 +16,22 @@ import { WeaponBarStats } from "./Common/WeaponBarStats"
 export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGridView?: boolean }) => {
     const location = useLocation()
     const theme = useTheme()
-    const { send } = useGameServerCommandsFaction("/faction_commander")
     const [weaponDetails, setWeaponDetails] = useState<Weapon>()
 
-    useEffect(() => {
-        ;(async () => {
-            try {
-                const resp = await send<Weapon>(GameServerKeys.GetWeaponDetails, {
-                    weapon_id: weapon.id,
-                })
-                if (!resp) return
-                setWeaponDetails(resp)
-            } catch (e) {
-                console.error(e)
-            }
-        })()
-    }, [weapon.id, send])
+    useGameServerSubscriptionFaction<Weapon>(
+        {
+            URI: `/weapon/${weapon.id}/details`,
+            key: GameServerKeys.GetWeaponDetails,
+        },
+        (payload) => {
+            if (!payload) return
+            setWeaponDetails(payload)
+        },
+    )
 
     const primaryColor = theme.factionTheme.primary
     const secondaryColor = theme.factionTheme.secondary
     const backgroundColor = theme.factionTheme.background
-    const largeImageUrl = weaponDetails?.weapon_skin?.large_image_url || weaponDetails?.large_image_url || weapon.large_image_url
 
     return (
         <Box sx={{ position: "relative", overflow: "visible", height: "100%" }}>
@@ -66,7 +61,7 @@ export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGri
                         p: isGridView ? ".5rem .6rem" : ".1rem .3rem",
                         display: isGridView ? "block" : "grid",
                         gridTemplateRows: "7rem",
-                        gridTemplateColumns: `auto 20rem 35rem`, // hard-coded to have 7 columns, adjust as required
+                        gridTemplateColumns: `minmax(38rem, auto) 20rem 32rem`,
                         gap: "1.4rem",
                         ...(isGridView
                             ? {
@@ -85,30 +80,14 @@ export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGri
                         secondaryColor={secondaryColor}
                     />
 
-                    <General title="DAMAGE TYPE">
+                    <General title="DAMAGE TYPE" isGridView={isGridView}>
                         <Typography variant="h6" sx={{ color: getWeaponDamageTypeColor(weaponDetails?.default_damage_type), fontWeight: "fontWeightBold" }}>
                             {weaponDetails?.default_damage_type}
                         </Typography>
                     </General>
 
-                    <WeaponBarStats fontSize="1.5rem" weapon={weapon} color={primaryColor} iconVersion />
+                    {weaponDetails && <WeaponBarStats fontSize="1.5rem" weapon={weaponDetails} color={primaryColor} iconVersion />}
                 </Box>
-
-                <Box
-                    sx={{
-                        position: "absolute",
-                        left: 0,
-                        right: 0,
-                        top: 0,
-                        bottom: 0,
-                        background: `url(${largeImageUrl})`,
-                        backgroundRepeat: "no-repeat",
-                        backgroundPosition: "top",
-                        backgroundSize: "cover",
-                        opacity: 0.06,
-                        zIndex: -2,
-                    }}
-                />
 
                 <Box
                     sx={{
@@ -151,7 +130,7 @@ export const WeaponCommonArea = ({
     const imageUrl = weaponDetails?.weapon_skin?.image_url || weaponDetails?.image_url || weapon?.image_url || ""
 
     return (
-        <Stack direction={isGridView ? "column" : "row"} alignItems="center" spacing="1.4rem" sx={{ position: "relative" }}>
+        <Stack direction={isGridView ? "column" : "row"} alignItems={isGridView ? "flex-start" : "center"} spacing="1.4rem" sx={{ position: "relative" }}>
             <Box
                 sx={{
                     position: "relative",
@@ -165,6 +144,7 @@ export const WeaponCommonArea = ({
             <Stack
                 spacing={isGridView ? ".1rem" : ".2rem"}
                 sx={{
+                    flex: 1,
                     pr: toggleIsExpanded ? "3rem" : "unset",
                     ":hover": {
                         ".expandArrow": {
@@ -237,7 +217,7 @@ export const WeaponCommonArea = ({
                         sx={{
                             position: "absolute",
                             top: "-2rem",
-                            left: "calc(100% - 3rem)",
+                            left: "calc(100% - 2.5rem)",
                             bottom: "-1rem",
                         }}
                     >
@@ -271,7 +251,7 @@ export const WeaponCommonArea = ({
                             }}
                         >
                             <Stack direction="row" spacing="4rem" sx={{ p: "1.5rem 2.1rem", height: "100%" }}>
-                                <General title="DAMAGE TYPE">
+                                <General title="DAMAGE TYPE" isGridView={isGridView}>
                                     <Typography variant="h6" sx={{ color: getWeaponDamageTypeColor(weap?.default_damage_type), fontWeight: "fontWeightBold" }}>
                                         {weap?.default_damage_type}
                                     </Typography>

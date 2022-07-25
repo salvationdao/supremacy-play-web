@@ -1,8 +1,8 @@
 import { Box, CircularProgress, Stack, Typography, useTheme } from "@mui/material"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { SvgStats } from "../../../../assets"
 import { getWeaponDamageTypeColor, getWeaponTypeColor } from "../../../../helpers"
-import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
+import { useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { fonts } from "../../../../theme/theme"
 import { Weapon } from "../../../../types"
@@ -15,24 +15,18 @@ import { WeaponViewer } from "./WeaponViewer"
 
 export const WeaponHangarDetailsInner = ({ weaponID }: { weaponID: string }) => {
     const theme = useTheme()
-    const { send } = useGameServerCommandsFaction("/faction_commander")
     const [weaponDetails, setWeaponDetails] = useState<Weapon>()
 
-    useEffect(() => {
-        ;(async () => {
-            try {
-                const resp = await send<Weapon>(GameServerKeys.GetWeaponDetails, {
-                    weapon_id: weaponID,
-                })
-
-                if (!resp) return
-
-                setWeaponDetails(resp)
-            } catch (e) {
-                console.error(e)
-            }
-        })()
-    }, [weaponID, send])
+    useGameServerSubscriptionFaction<Weapon>(
+        {
+            URI: `/weapon/${weaponID}/details`,
+            key: GameServerKeys.GetWeaponDetails,
+        },
+        (payload) => {
+            if (!payload) return
+            setWeaponDetails(payload)
+        },
+    )
 
     const primaryColor = theme.factionTheme.primary
     const backgroundColor = theme.factionTheme.background
@@ -162,7 +156,6 @@ export const WeaponHangarDetailsInner = ({ weaponID }: { weaponID: string }) => 
                     borderColor: primaryColor,
                     borderThickness: ".3rem",
                 }}
-                // opacity={0.7}
                 backgroundColor={backgroundColor}
                 sx={{ height: "100%", flex: 1 }}
             >
