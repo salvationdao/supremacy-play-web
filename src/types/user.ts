@@ -117,6 +117,7 @@ export enum FeatureName {
     mechMove = "MECH_MOVE",
     playerAbility = "PLAYER_ABILITY",
     publicProfilePage = "PUBLIC_PROFILE",
+    systemMessages = "SYSTEM_MESSAGES",
 }
 
 export enum SystemMessageType {
