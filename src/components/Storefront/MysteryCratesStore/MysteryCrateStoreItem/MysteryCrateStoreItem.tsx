@@ -1,5 +1,4 @@
 import { Box, Modal, Skeleton, Stack, TextField, Typography } from "@mui/material"
-import BigNumber from "bignumber.js"
 import { useCallback, useMemo, useState } from "react"
 import { ClipThing, FancyButton } from "../../.."
 import { SafePNG, SvgArrow, SvgSupToken } from "../../../../assets"
