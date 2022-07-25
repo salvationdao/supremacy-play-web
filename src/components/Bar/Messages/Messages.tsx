@@ -1,4 +1,4 @@
-import { Badge, Box, FormControlLabel, IconButton, Pagination, Popover, Stack, Switch, Typography } from "@mui/material"
+import { Badge, Box, IconButton, Pagination, Popover, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { SvgAnnouncement, SvgDamage1, SvgHistoryClock, SvgListView, SvgMail, SvgWrapperProps } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
@@ -22,7 +22,6 @@ export const Messages = () => {
     const { send } = useGameServerCommandsUser("/user_commander")
     const [messages, setMessages] = useState<SystemMessageDisplayable[]>([])
     const [lastUpdated, setLastUpdated] = useState<Date>(new Date())
-    const [showTimestamps, setShowTimestamps] = useState(false)
     const [error, setError] = useState<string>()
     const { page, changePage, totalPages, totalItems, setTotalItems, pageSize } = usePagination({
         pageSize: 10,
@@ -147,24 +146,6 @@ export const Messages = () => {
                     <Typography variant="h6" sx={{ fontFamily: fonts.nostromoBlack, textTransform: "uppercase" }}>
                         System Messages
                     </Typography>
-                    <FormControlLabel
-                        control={<Switch size="small" checked={showTimestamps} onChange={(e, c) => setShowTimestamps(c)} />}
-                        label="Show Timestamps"
-                        sx={{
-                            ml: 0,
-                            fontSize: "1rem",
-                            "& .MuiSwitch-switchBase.Mui-checked": {
-                                color: theme.factionTheme.primary,
-                                "&:hover": {
-                                    backgroundColor: `${theme.factionTheme.primary}dd`,
-                                },
-                            },
-                            "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track": {
-                                backgroundColor: theme.factionTheme.primary,
-                            },
-                        }}
-                    />
-
                     <Typography variant="body2" sx={{ color: colors.red }}>
                         {error}
                     </Typography>
@@ -182,7 +163,7 @@ export const Messages = () => {
                         </Typography>
                     </Stack>
                     {messages.map((m) => (
-                        <MessageItem key={m.id} message={m} onDismiss={() => dismissMessage(m.id)} showTimestamps={showTimestamps} />
+                        <MessageItem key={m.id} message={m} onDismiss={() => dismissMessage(m.id)} />
                     ))}
                 </Stack>
                 <Box
@@ -208,7 +189,7 @@ export const Messages = () => {
                 </Box>
             </Stack>
         )
-    }, [messages, theme.factionTheme.primary, theme.factionTheme.secondary, showTimestamps, error, lastUpdated, totalPages, page, dismissMessage, changePage])
+    }, [messages, theme.factionTheme.primary, theme.factionTheme.secondary, error, lastUpdated, totalPages, page, dismissMessage, changePage])
 
     return (
         <>
@@ -231,7 +212,8 @@ export const Messages = () => {
                                 right: 6,
                                 height: 14,
                                 minWidth: 14,
-                                fontSize: "1.2rem",
+                                fontSize: "1.5rem",
+                                fontWeight: "fontWeightBold",
                             },
                         }}
                     >
