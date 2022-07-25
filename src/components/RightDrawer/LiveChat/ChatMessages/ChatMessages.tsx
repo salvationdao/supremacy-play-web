@@ -1,5 +1,5 @@
 import { Box, Divider, Fade, IconButton, Stack, Typography } from "@mui/material"
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react"
+import { useCallback, useLayoutEffect, useRef, useState } from "react"
 import { PunishMessage, TextMessage } from "../../.."
 import { SvgScrolldown } from "../../../../assets"
 import { FontSizeType, SplitOptionType, useAuth, useChat, useSupremacy } from "../../../../containers"

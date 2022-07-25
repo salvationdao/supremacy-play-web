@@ -1,5 +1,5 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import React, { useCallback, useEffect, useMemo, useRef } from "react"
 import { UserBanForm } from "../../../.."
 import { SvgInfoCircular, SvgSkull2 } from "../../../../../assets"
 import { PASSPORT_SERVER_HOST_IMAGES } from "../../../../../constants"
@@ -106,7 +106,7 @@ export const TextMessage = ({
         // if (!cTop || !cBottom || !eTop || !eBottom) return
         //Check if in view
         return eTop >= cTop && eBottom <= cBottom
-    }, [containerRef, textMessageRef, isScrolling])
+    }, [containerRef, textMessageRef, isScrolling, isActive, isHidden])
 
     useEffect(() => {
         if (metadata && Object.keys(metadata?.tagged_users_read).length === 0) return
@@ -128,7 +128,7 @@ export const TextMessage = ({
                 }
             }, 2000)
         }
-    }, [isVisible, data, chatMessages])
+    }, [isVisible, data, chatMessages, metadata, readMessage, send, user.gid])
 
     const renderJSXMessage = useCallback(
         (msg: string) => {
@@ -179,7 +179,7 @@ export const TextMessage = ({
                 </>
             )
         },
-        [addToUserGidRecord, userGidRecord],
+        [addToUserGidRecord, userGidRecord, data, factionColor, fontSize, gid, metadata, send],
     )
 
     const chatMessage = useMemo(() => {

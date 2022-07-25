@@ -166,7 +166,7 @@ export const AuthProvider: React.FC = ({ children }) => {
                 setUser(resp.payload)
             })
             .finally(() => setIsLoggingIn(false))
-    }, [userFromPassport, setIsLoggingIn])
+    }, [userFromPassport, gameserverLoginCheck, setIsLoggingIn])
 
     // Check if login in the iframe has been successful (window closed), if closed then do clean up
     useEffect(() => {
@@ -329,7 +329,7 @@ export const UserUpdater = () => {
                 console.error(e)
             }
         },
-        [send],
+        [send, setIsActive],
     )
 
     useEffect(() => {

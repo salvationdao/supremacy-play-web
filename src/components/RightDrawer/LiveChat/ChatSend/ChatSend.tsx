@@ -149,7 +149,7 @@ const ChatSendInner = ({
             onFailedMessage(sentAt)
             console.error(e)
         }
-    }, [message, user, send, newMessageHandler, userRank, messageColor, faction_id, onSentMessage, newSnackbarMessage, onFailedMessage])
+    }, [message, user, send, newMessageHandler, userRank, messageColor, faction_id, onSentMessage, newSnackbarMessage, onFailedMessage, renderedMsg])
 
     const showCharCount = message.length >= MAX_CHAT_MESSAGE_LENGTH
 
@@ -245,7 +245,7 @@ const ChatSendInner = ({
                 document.getElementById(`message-textfield-${faction_id}`)?.focus()
             }
         },
-        [caretMsg, caretPosition, message, setMessageWithCheck],
+        [caretMsg, caretPosition, message, setMessageWithCheck, faction_id],
     )
 
     // While the user is using :emoji short cut- finding the search phrase and setting caret (cursor) positioning
@@ -294,7 +294,7 @@ const ChatSendInner = ({
         })
 
         faction_id ? setPlayersResults(fap) : setPlayersResults(gap)
-    }, [searchPlayersQuery, activePlayers, globalActivePlayers])
+    }, [searchPlayersQuery, activePlayers, globalActivePlayers, faction_id, send, user.id])
 
     // Sets the caret (cursor) position back to where it was previously
     const focusCaretTextField = useCallback(() => {

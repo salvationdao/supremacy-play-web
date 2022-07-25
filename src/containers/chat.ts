@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState, useRef } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { useHistory, useLocation } from "react-router"
 import { createContainer } from "unstated-next"
 import { useAuth } from "."
@@ -9,7 +9,7 @@ import { parseString } from "../helpers"
 import { useToggle } from "../hooks"
 import { useGameServerSubscription, useGameServerSubscriptionFaction, useGameServerSubscriptionUser } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
-import { BanProposalStruct, BanUser, ChatMessageType, TextMessageData } from "../types/chat"
+import { BanProposalStruct, ChatMessageType, TextMessageData } from "../types/chat"
 import { User } from "../types"
 
 export interface IncomingMessages {
@@ -203,7 +203,7 @@ export const ChatContainer = createContainer(() => {
                 console.log("todo")
             }
         },
-        [globalChatMessages, user],
+        [globalChatMessages, user, tabValue],
     )
 
     useEffect(() => {
