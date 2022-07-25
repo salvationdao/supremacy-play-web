@@ -212,7 +212,8 @@ export const Messages = () => {
                                 right: 6,
                                 height: 14,
                                 minWidth: 14,
-                                fontSize: "1.2rem",
+                                fontSize: "1.5rem",
+                                fontWeight: "fontWeightBold",
                             },
                         }}
                     >
