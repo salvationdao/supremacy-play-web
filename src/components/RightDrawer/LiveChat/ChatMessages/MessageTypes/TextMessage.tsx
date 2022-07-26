@@ -72,6 +72,7 @@ export const TextMessage = ({
     const [banModalOpen, toggleBanModalOpen] = useToggle()
     const [displayTimestamp, setDisplayTimestamp] = useToggle()
     const [isPreviousMessager, setIsPreviousMessager] = useToggle()
+    const [shouldNotify, setShouldNotify] = useToggle(metadata && user.gid in metadata.tagged_users_read && !metadata.tagged_users_read[user.gid])
 
     const multiplierColor = useMemo(() => getMultiplierColor(total_multiplier || 0), [total_multiplier])
     const abilityKillColor = useMemo(() => {
@@ -84,7 +85,6 @@ export const TextMessage = ({
     const faction_logo_url = useMemo(() => (faction_id ? getFaction(faction_id).logo_url : ""), [faction_id, getFaction])
     const rankDeets = useMemo(() => (user_rank ? getUserRankDeets(user_rank, ".8rem", "1.8rem") : undefined), [user_rank])
     const smallFontSize = useMemo(() => (fontSize ? `${0.9 * fontSize}rem` : "0.9rem"), [fontSize])
-    const shouldNotify = useMemo(() => metadata && user.gid in metadata.tagged_users_read && !metadata.tagged_users_read[user.gid], [user, metadata])
 
     const renderFontSize = useCallback(() => {
         if (isEmoji) return (fontSize || 1.1) * 3
@@ -113,7 +113,7 @@ export const TextMessage = ({
         const isRead = metadata?.tagged_users_read[user.gid]
 
         if (isRead === false && (isHidden || !isActive)) {
-            sendBrowserNotification(`New Chat Message`, `${username} has tagged you in a message in ${tabValue === 0 ? "Global Chat" : "Faction Chat"}.`)
+            sendBrowserNotification(`New Chat Message`, `${username} has tagged you in a message.`)
             return
         }
 
@@ -130,13 +130,29 @@ export const TextMessage = ({
 
                 if (data.id) {
                     readMessage(data.id)
+                    setShouldNotify(false)
                 }
-            }, 2000)
+            }, 1000)
         }
-    }, [isVisibleInChat, data, chatMessages, metadata, readMessage, send, user.gid, isHidden, isActive, sendBrowserNotification, tabValue, username])
+    }, [
+        isVisibleInChat,
+        data,
+        chatMessages,
+        metadata,
+        readMessage,
+        send,
+        user.gid,
+        isHidden,
+        isActive,
+        sendBrowserNotification,
+        tabValue,
+        username,
+        setShouldNotify,
+    ])
 
     const renderJSXMessage = useCallback(
         (msg: string) => {
+            //if no tagged users return the message
             if (metadata && Object.keys(metadata?.tagged_users_read).length === 0) return <Box component={"span"}>{msg}</Box>
 
             const newMsgArr: ReactJSXElement[] = []
@@ -159,15 +175,26 @@ export const TextMessage = ({
                 }
             })
 
+            //splitting the message on tags, identifying #12345 patterns ex hi, #1234 how are you? => ['hi,', ' how are you'] (tags are stored in match array)
             const stringsArr = msg.split(/#\d+/)
 
+            //looping through the string array
             stringsArr.map((str, i) => {
+                //pushing the first string
                 newMsgArr.push(<Box component={"span"}>{str}</Box>)
+                //if there is an item in matchedArr with the same index, push it into the new string, even if the tag is the first thing, it will still be split with an empty string at the start of stringsArr
                 if (matchedArr && matchedArr[i]) {
+                    //getting the gid from tag
                     const gidSubstring = parseInt(matchedArr[i].substring(1))
+                    //finding the user in the GID Record (added above)
                     const taggedUser = userGidRecord[gidSubstring]
-                    if (!taggedUser) return
+                    //if taggedUser doesnt exist or the user tagged themselves or user tagged taggedUser of a different faction in faction chat, just push the whole string, not rendering the tag
+                    if (!taggedUser || gidSubstring === gid || (taggedUser.faction_id !== user.faction_id && tabValue !== 0)) {
+                        newMsgArr.push(<Box component={"span"}>{matchedArr[i]}</Box>)
+                        return
+                    }
 
+                    //getting tagged user's faction colors and rendering the username to push to array
                     const taggedFactionColor = getFaction(taggedUser.faction_id).primary_color
                     newMsgArr.push(
                         <Box component={"span"}>
@@ -188,7 +215,7 @@ export const TextMessage = ({
                 </>
             )
         },
-        [addToUserGidRecord, userGidRecord, data, fontSize, metadata, send, getFaction],
+        [addToUserGidRecord, userGidRecord, data, fontSize, metadata, send, getFaction, gid, tabValue, user.faction_id],
     )
 
     const chatMessage = useMemo(() => {
@@ -359,7 +386,9 @@ export const TextMessage = ({
                             {dateFormatter(sentAt)}
                         </Typography>
                     </Fade>
-                    <Box sx={{ backgroundColor: shouldNotify ? "rgba(0,116,217, .4)" : "unset", borderRadius: ".3rem" }}>{chatMessage}</Box>
+                    <Box sx={{ backgroundColor: shouldNotify ? "rgba(0,116,217, .4)" : "unset", borderRadius: ".3rem", transition: "background-color 2s" }}>
+                        {chatMessage}
+                    </Box>
                 </Stack>
             </Box>
 
