@@ -70,7 +70,6 @@ export const TextMessage = ({
     const textMessageRef = useRef<HTMLDivElement>(null)
     const [isPopoverOpen, toggleIsPopoverOpen] = useToggle()
     const [banModalOpen, toggleBanModalOpen] = useToggle()
-    const [displayTimestamp, setDisplayTimestamp] = useToggle()
     const [isPreviousMessager, setIsPreviousMessager] = useToggle()
     const [shouldNotify, setShouldNotify] = useToggle(metadata && user.gid in metadata.tagged_users_read && !metadata.tagged_users_read[user.gid])
 
@@ -359,36 +358,23 @@ export const TextMessage = ({
                                 )}
                             </Box>
                         </Stack>
-                    </Stack>
-                )}
-
-                <Stack
-                    direction={"column"}
-                    sx={{ ml: "2.1rem", position: "relative" }}
-                    onMouseEnter={() => setDisplayTimestamp(true)}
-                    onMouseLeave={() => setDisplayTimestamp(false)}
-                >
-                    <Fade in>
                         <Typography
                             sx={{
-                                display: displayTimestamp ? "inline-block" : "none",
-                                alignSelf: "flex-start",
+                                alignSelf: "center",
                                 flexShrink: 0,
                                 ml: "auto",
                                 color: "#FFFFFF",
-                                fontSize: fontSize ? `${0.98 * fontSize}rem` : "0.98rem",
-                                position: "absolute",
-                                backgroundColor: "rgba(18, 18, 18, .8)",
-                                right: 0,
-                                bottom: 0,
+                                opacity: 0.7,
+                                fontSize: smallFontSize,
                             }}
                         >
                             {dateFormatter(sentAt)}
                         </Typography>
-                    </Fade>
-                    <Box sx={{ backgroundColor: shouldNotify ? "rgba(0,116,217, .4)" : "unset", borderRadius: ".3rem", transition: "background-color 2s" }}>
-                        {chatMessage}
-                    </Box>
+                    </Stack>
+                )}
+
+                <Stack direction={"row"} sx={{ ml: "2.1rem", justifyContent: "space-between" }}>
+                    {chatMessage}
                 </Stack>
             </Box>
 
