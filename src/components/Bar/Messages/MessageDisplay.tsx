@@ -2,7 +2,7 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useMemo } from "react"
 import { useTheme } from "../../../containers/theme"
-import { fonts } from "../../../theme/theme"
+import { colors, fonts } from "../../../theme/theme"
 import { SystemMessageDataMechBattleComplete, SystemMessageDataType } from "../../../types"
 import { MechBattleCompleteDetails } from "./MechBattleCompleteDetails"
 import { SystemMessageDisplayable } from "./Messages"
@@ -28,15 +28,25 @@ export const MessageDisplay = ({ message }: MessageDisplayProps) => {
 
     return (
         <Stack height="100%">
-            <Typography
-                variant="h4"
-                sx={{
-                    fontFamily: fonts.shareTechMono,
-                    fontWeight: "fontWeightBold",
-                }}
-            >
-                {message.title}
-            </Typography>
+            <Stack direction="row" alignItems="baseline">
+                <Typography
+                    variant="h4"
+                    sx={{
+                        fontFamily: fonts.shareTechMono,
+                        fontWeight: "fontWeightBold",
+                    }}
+                >
+                    {message.title}
+                </Typography>
+                <Typography
+                    sx={{
+                        ml: "auto",
+                        color: colors.grey,
+                    }}
+                >
+                    {message.sent_at.toLocaleTimeString()}, {message.sent_at.toDateString()}
+                </Typography>
+            </Stack>
             <Box
                 sx={{
                     overflowY: "auto",
