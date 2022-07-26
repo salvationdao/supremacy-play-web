@@ -38,7 +38,7 @@ export const HistoryMarket = () => {
         pageSize: parseString(query.get("pageSize"), 10),
         page: parseString(query.get("page"), 1),
     })
-    const [isFiltersExpanded, toggleIsFiltersExpanded] = useToggle(localStorage.getItem("isHistoryMarketFiltersExpanded") === "true")
+    const [isFiltersExpanded, toggleIsFiltersExpanded] = useToggle((localStorage.getItem("isHistoryMarketFiltersExpanded") || "true") === "true")
     const [isGridView, toggleIsGridView] = useToggle(localStorage.getItem("marketHistoryGrid") === "true")
 
     useEffect(() => {

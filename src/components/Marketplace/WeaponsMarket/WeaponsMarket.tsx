@@ -55,7 +55,7 @@ export const WeaponsMarket = () => {
     }, [isGridView])
 
     // Filters and sorts
-    const [isFiltersExpanded, toggleIsFiltersExpanded] = useToggle(localStorage.getItem("isWeaponsMarketFiltersExpanded") === "true")
+    const [isFiltersExpanded, toggleIsFiltersExpanded] = useToggle((localStorage.getItem("isWeaponsMarketFiltersExpanded") || "true") === "true")
     const [search, setSearch] = useState("")
     const [sort, setSort] = useState<string>(query.get("sort") || SortTypeLabel.CreateTimeNewestFirst)
     const [status, setStatus] = useState<string[]>((query.get("statuses") || undefined)?.split("||") || [])
