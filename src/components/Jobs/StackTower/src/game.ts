@@ -52,7 +52,7 @@ export class Game {
 
         setTimeout(() => {
             this.setState(GameState.Ready)
-        }, 1000)
+        }, 250)
     }
 
     handleEvent() {
