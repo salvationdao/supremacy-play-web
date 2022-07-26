@@ -26,7 +26,7 @@ export const MessageItem = ({ message, selected, onSelect }: MessageItemProps) =
                 <Stack direction="row" alignItems="center" spacing=".5rem">
                     <Stack direction="row" alignItems="center" spacing="1rem" sx={{ flex: 1 }}>
                         <Typography variant="body2" sx={{ color: colors.grey }}>
-                            {message.sent_at.getHours()}:{message.sent_at.getMinutes()}
+                            {message.sent_at.getHours()}:{`${message.sent_at.getMinutes() < 10 ? "0" : ""}${message.sent_at.getMinutes()}`}
                         </Typography>
 
                         <message.icon size="1.8rem" fill={!message.read_at || selected ? "white" : colors.grey} />
