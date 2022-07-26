@@ -102,31 +102,33 @@ export const DeviceRegisterModal = ({ onClose }: DeviceRegisterModalProps) => {
                             >
                                 <QRCode size={QR_CODE_SIZE} value={token} />
                             </Box>
-
-                            <FancyButton
-                                clipThingsProps={{
-                                    clipSize: "9px",
-                                    backgroundColor: colors.darkNavy,
-                                    opacity: 1,
-                                    border: { isFancy: true, borderColor: colors.neonBlue, borderThickness: "2px" },
-                                    sx: { position: "relative", mt: "auto", ml: 3, width: "9rem" },
-                                }}
-                                sx={{ px: "1.6rem", py: ".6rem", color: colors.neonBlue }}
-                                onClick={onClose}
-                            >
-                                <Typography
-                                    variant="caption"
-                                    sx={{
-                                        color: colors.neonBlue,
-                                        fontFamily: fonts.nostromoBlack,
-                                    }}
-                                >
-                                    DONE
-                                </Typography>
-                            </FancyButton>
                         </Stack>
+
+                        {/* "Done" button */}
+                        <FancyButton
+                            clipThingsProps={{
+                                clipSize: "9px",
+                                backgroundColor: colors.darkNavy,
+                                opacity: 1,
+                                border: { isFancy: true, borderColor: colors.neonBlue, borderThickness: "2px" },
+                                sx: { position: "relative", mt: "auto", ml: 3, width: "9rem" },
+                            }}
+                            sx={{ px: "1.6rem", py: ".6rem", color: colors.neonBlue }}
+                            onClick={onClose}
+                        >
+                            <Typography
+                                variant="caption"
+                                sx={{
+                                    color: colors.neonBlue,
+                                    fontFamily: fonts.nostromoBlack,
+                                }}
+                            >
+                                DONE
+                            </Typography>
+                        </FancyButton>
                     </Stack>
 
+                    {/* Close modal icon button */}
                     <IconButton size="small" onClick={onClose} sx={{ position: "absolute", top: ".5rem", right: ".5rem" }}>
                         <SvgClose size="1.9rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
                     </IconButton>
