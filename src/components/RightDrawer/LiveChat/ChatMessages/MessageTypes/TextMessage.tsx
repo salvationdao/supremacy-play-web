@@ -378,7 +378,7 @@ export const TextMessage = ({
                                 color: "#FFFFFF",
                                 fontSize: fontSize ? `${0.98 * fontSize}rem` : "0.98rem",
                                 position: "absolute",
-                                backgroundColor: "rgba(18, 18, 18, .6)",
+                                backgroundColor: "rgba(18, 18, 18, .8)",
                                 right: 0,
                                 bottom: 0,
                             }}
