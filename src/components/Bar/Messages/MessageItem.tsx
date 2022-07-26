@@ -29,7 +29,7 @@ export const MessageItem = ({ message, selected, onSelect }: MessageItemProps) =
                             {message.sent_at.getHours()}:{message.sent_at.getMinutes()}
                         </Typography>
 
-                        <message.icon size="1.8rem" />
+                        <message.icon size="1.8rem" fill={!message.read_at || selected ? "white" : colors.grey} />
 
                         <Typography
                             variant="h6"

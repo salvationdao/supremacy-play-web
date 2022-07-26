@@ -27,7 +27,7 @@ export const MessageDisplay = ({ message }: MessageDisplayProps) => {
     }, [message])
 
     return (
-        <Stack sx={{ height: "100%" }}>
+        <Stack height="100%">
             <Typography
                 variant="h4"
                 sx={{

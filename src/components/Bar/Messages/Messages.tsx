@@ -27,7 +27,7 @@ export const Messages = () => {
     const [error, setError] = useState<string>()
     const [totalUnread, setTotalUnread] = useState<number>()
     const { page, changePage, totalPages, setTotalItems, pageSize } = usePagination({
-        pageSize: 10,
+        pageSize: 5,
         page: 1,
     })
 
@@ -115,7 +115,7 @@ export const Messages = () => {
 
         if (messages.length === 0) {
             messagesRender = (
-                <Stack alignItems="center" justifyContent="center" sx={{ minHeight: "10rem", p: "1rem" }}>
+                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", p: "1rem" }}>
                     <Typography
                         variant="body2"
                         sx={{
@@ -132,14 +132,8 @@ export const Messages = () => {
             )
         } else {
             messagesRender = (
-                <Stack spacing="1rem">
-                    <Stack spacing=".8rem" sx={{ p: "" }}>
-                        {error && (
-                            <Typography variant="body2" sx={{ color: colors.red }}>
-                                {error}
-                            </Typography>
-                        )}
-
+                <Stack spacing="1rem" height="100%">
+                    <Stack spacing=".8rem" flex={1}>
                         {messages.map((m) => (
                             <MessageItem
                                 key={m.id}
@@ -157,7 +151,7 @@ export const Messages = () => {
                     {totalPages > 1 && (
                         <Box
                             sx={{
-                                pt: "1rem",
+                                p: "1rem",
                                 borderTop: `${theme.factionTheme.primary}70 1.5px solid`,
                                 backgroundColor: "#00000070",
                             }}
@@ -182,14 +176,25 @@ export const Messages = () => {
         }
 
         return (
-            <Stack>
-                <Stack spacing="1rem" mb="1rem">
+            <Stack flex={1} minHeight={0}>
+                {error && (
+                    <Typography variant="body2" sx={{ color: colors.red }}>
+                        {error}
+                    </Typography>
+                )}
+                <Stack
+                    spacing="1rem"
+                    sx={{
+                        minHeight: "50%",
+                        mb: "1rem",
+                    }}
+                >
                     {messagesRender}
                 </Stack>
                 <Box
                     sx={{
-                        height: "100vh",
-                        maxHeight: "200px",
+                        flex: 1,
+                        minHeight: 0,
                         p: ".6rem 1.2rem",
                         backgroundColor: "#FFFFFF10",
                     }}
@@ -278,14 +283,16 @@ export const Messages = () => {
                     }}
                     backgroundColor={theme.factionTheme.background}
                     sx={{
+                        height: "600px",
+                        maxHeight: "100vh",
                         width: "800px",
                         maxWidth: "100vw",
                     }}
                 >
                     <Stack
                         sx={{
+                            height: "100%",
                             p: "2rem",
-                            borderBottom: `${theme.factionTheme.primary}70 1.5px solid`,
                         }}
                         spacing="1rem"
                     >
