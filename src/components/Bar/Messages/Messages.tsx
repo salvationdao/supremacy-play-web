@@ -1,4 +1,4 @@
-import { Badge, Box, IconButton, Pagination, Popover, Stack, Typography } from "@mui/material"
+import { Badge, Box, FormControlLabel, IconButton, Pagination, Popover, Stack, Switch, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { SvgAnnouncement, SvgDamage1, SvgHistoryClock, SvgListView, SvgMail, SvgWrapperProps } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
@@ -26,6 +26,7 @@ export const Messages = () => {
     const [lastUpdated, setLastUpdated] = useState<Date>(new Date())
     const [error, setError] = useState<string>()
     const [totalUnread, setTotalUnread] = useState<number>()
+    const [hideRead, setHideRead] = useState(false)
     const { page, changePage, totalPages, setTotalItems, pageSize } = usePagination({
         pageSize: 5,
         page: 1,
@@ -42,10 +43,12 @@ export const Messages = () => {
                 {
                     page: number
                     page_size: number
+                    hide_read: boolean
                 }
             >(GameServerKeys.SystemMessageList, {
                 page: page - 1,
                 page_size: pageSize,
+                hide_read: hideRead,
             })
             if (!resp || !resp.system_messages) return
 
@@ -78,7 +81,7 @@ export const Messages = () => {
             setError(message)
             console.error(e)
         }
-    }, [page, pageSize, send, setTotalItems])
+    }, [hideRead, page, pageSize, send, setTotalItems])
 
     useEffect(() => {
         fetchMessages()
@@ -296,7 +299,8 @@ export const Messages = () => {
                         }}
                         spacing="1rem"
                     >
-                        <Box
+                        <Stack
+                            direction="row"
                             sx={{
                                 pb: "1rem",
                                 borderBottom: `${theme.factionTheme.primary}70 1.5px solid`,
@@ -305,7 +309,24 @@ export const Messages = () => {
                             <Typography variant="h6" sx={{ fontFamily: fonts.nostromoBlack }}>
                                 SYSTEM MESSAGES
                             </Typography>
-                        </Box>
+                            <FormControlLabel
+                                control={<Switch size="small" checked={hideRead} onChange={(e, c) => setHideRead(c)} />}
+                                label="Hide Read"
+                                sx={{
+                                    ml: "auto",
+                                    fontSize: "1rem",
+                                    "& .MuiSwitch-switchBase.Mui-checked": {
+                                        color: theme.factionTheme.primary,
+                                        "&:hover": {
+                                            backgroundColor: `${theme.factionTheme.primary}dd`,
+                                        },
+                                    },
+                                    "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track": {
+                                        backgroundColor: theme.factionTheme.primary,
+                                    },
+                                }}
+                            />
+                        </Stack>
                         <Stack direction="row" alignItems="center" spacing=".4rem" sx={{ opacity: 0.5, ":hover": { opacity: 1 } }}>
                             <SvgHistoryClock size="1.2rem" />
                             <Typography>Last updated: {lastUpdated.toISOString()}</Typography>

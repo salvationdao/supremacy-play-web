@@ -96,7 +96,6 @@ export enum SystemMessageDataType {
 export interface SystemMessage {
     id: string
     player_id: string
-    faction_id?: string
     data_type: SystemMessageDataType
     title: string
     message: string
