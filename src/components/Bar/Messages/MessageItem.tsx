@@ -12,6 +12,8 @@ export interface MessageItemProps {
 export const MessageItem = ({ message, selected, onSelect }: MessageItemProps) => {
     const theme = useTheme()
 
+    const selectedOrNotRead = !message.read_at || selected
+
     return (
         <Box>
             <Button
@@ -23,31 +25,51 @@ export const MessageItem = ({ message, selected, onSelect }: MessageItemProps) =
                 }}
                 onClick={() => onSelect()}
             >
-                <Stack direction="row" alignItems="center" spacing=".5rem">
-                    <Stack direction="row" alignItems="center" spacing="1rem" sx={{ flex: 1 }}>
-                        <Typography variant="body2" sx={{ color: colors.grey }}>
-                            {message.sent_at.getHours()}:{`${message.sent_at.getMinutes() < 10 ? "0" : ""}${message.sent_at.getMinutes()}`}
-                        </Typography>
+                <Stack direction="row" alignItems="center" spacing="1rem" sx={{ flex: 1 }}>
+                    <message.icon size="1.8rem" fill={selectedOrNotRead ? "white" : colors.grey} />
 
-                        <message.icon size="1.8rem" fill={!message.read_at || selected ? "white" : colors.grey} />
+                    <Typography
+                        variant="h6"
+                        sx={{
+                            display: "-webkit-box",
+                            overflow: "hidden",
+                            overflowWrap: "anywhere",
+                            width: "100%",
+                            maxWidth: "100px",
+                            textOverflow: "ellipsis",
+                            WebkitLineClamp: 1, // change to max number of lines
+                            WebkitBoxOrient: "vertical",
+                            textAlign: "left",
+                            color: selectedOrNotRead ? "white" : colors.grey,
+                        }}
+                    >
+                        {message.title}
+                    </Typography>
+                    <Typography
+                        sx={{
+                            display: "-webkit-box",
+                            overflow: "hidden",
+                            overflowWrap: "anywhere",
+                            textOverflow: "ellipsis",
+                            WebkitLineClamp: 1, // change to max number of lines
+                            WebkitBoxOrient: "vertical",
+                            textAlign: "left",
+                            textTransform: "none",
+                            color: selectedOrNotRead ? "white" : colors.grey,
+                        }}
+                    >
+                        {message.message}
+                    </Typography>
 
-                        <Typography
-                            variant="h6"
-                            sx={{
-                                display: "-webkit-box",
-                                overflow: "hidden",
-                                overflowWrap: "anywhere",
-                                textOverflow: "ellipsis",
-                                WebkitLineClamp: 1, // change to max number of lines
-                                WebkitBoxOrient: "vertical",
-                                textAlign: "left",
-                                textTransform: "none",
-                                color: !message.read_at || selected ? "white" : colors.grey,
-                            }}
-                        >
-                            {message.message}
-                        </Typography>
-                    </Stack>
+                    <Box flex={1} />
+                    <Typography
+                        variant="body2"
+                        sx={{
+                            color: colors.grey,
+                        }}
+                    >
+                        {message.sent_at.getHours()}:{`${message.sent_at.getMinutes() < 10 ? "0" : ""}${message.sent_at.getMinutes()}`}
+                    </Typography>
                 </Stack>
             </Button>
         </Box>

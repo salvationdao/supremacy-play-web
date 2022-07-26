@@ -311,7 +311,7 @@ export const Messages = () => {
                             }}
                         >
                             <Typography variant="h6" sx={{ fontFamily: fonts.nostromoBlack }}>
-                                SYSTEM MESSAGES
+                                INBOX
                             </Typography>
                             <FormControlLabel
                                 control={<Switch size="small" checked={hideRead} onChange={(e, c) => setHideRead(c)} />}
