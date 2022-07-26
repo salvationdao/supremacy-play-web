@@ -393,6 +393,8 @@ export const ProfileAvatar = ({ isOwner, primaryColor, backgroundColor, avatarUR
                                 <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
                                     <Box
                                         sx={{
+                                            display: "flex",
+                                            color: "white",
                                             ml: "1.9rem",
                                             mr: ".5rem",
                                             pr: "1.4rem",
@@ -415,7 +417,13 @@ export const ProfileAvatar = ({ isOwner, primaryColor, backgroundColor, avatarUR
                                             },
                                         }}
                                     >
-                                        {/* {content} */}
+                                        <Box width="50%">
+                                            <h1>left</h1>
+                                        </Box>
+
+                                        <Box width="50%">
+                                            <h1>right</h1>
+                                        </Box>
                                     </Box>
                                 </Stack>
                             </Stack>
@@ -428,32 +436,6 @@ export const ProfileAvatar = ({ isOwner, primaryColor, backgroundColor, avatarUR
                             >
                                 CLOSE
                             </FancyButton>
-                            {totalPages > 1 && (
-                                <Box
-                                    sx={{
-                                        px: "1rem",
-                                        py: ".7rem",
-                                        borderTop: `${primaryColor}70 1.5px solid`,
-                                        backgroundColor: "#00000070",
-                                    }}
-                                >
-                                    <Pagination
-                                        size="medium"
-                                        count={totalPages}
-                                        page={page}
-                                        sx={{
-                                            ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold },
-                                            ".Mui-selected": {
-                                                color: primaryColor,
-                                                backgroundColor: `${primaryColor} !important`,
-                                            },
-                                        }}
-                                        onChange={(e, p) => changePage(p)}
-                                        showFirstButton
-                                        showLastButton
-                                    />
-                                </Box>
-                            )}
                         </Stack>
                     </ClipThing>
                 </Stack>
