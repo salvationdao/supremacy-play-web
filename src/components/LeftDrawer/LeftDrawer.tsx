@@ -26,7 +26,7 @@ export const LeftDrawer = () => {
 
     return (
         <>
-            <DrawerButtons openLeftDrawer={() => toggleIsLeftDrawerOpen(true)} />
+            <DrawerButtons />
             <Drawer
                 transitionDuration={DRAWER_TRANSITION_DURATION}
                 open={isLeftDrawerOpen}

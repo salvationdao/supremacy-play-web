@@ -5,8 +5,8 @@ import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT } from "../../constants"
 import { useAuth, useSupremacy } from "../../containers"
 import { fonts, siteZIndex } from "../../theme/theme"
 import { User } from "../../types"
-import { HowToPlay } from "../HowToPlay/HowToPlay"
 import { Messages } from "./Messages/Messages"
+import { NavLinks } from "./NavLinks/NavLinks"
 
 export const Bar = () => {
     const { userID, user } = useAuth()
@@ -66,8 +66,9 @@ const BarContent = ({ userID, user }: { userID?: string; user: User }) => {
     return (
         <>
             <Logo />
+            <NavLinks />
             <Box sx={{ flexGrow: 1 }} />
-            <HowToPlay />
+            {/* <HowToPlay /> */}
             {/* {userID && <Enlist />} */}
             {userID && <WalletDetails />}
             {userID && <Messages />}

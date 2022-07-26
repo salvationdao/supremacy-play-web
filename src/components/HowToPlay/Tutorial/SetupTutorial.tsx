@@ -45,16 +45,16 @@ export const SetupTutorial = () => {
                     "#tutorial-purchase",
                 ],
             },
-            {
-                selector: user.faction_id ? "#tutorial-enlisted" : "#tutorial-enlist",
-                content: user.faction_id
-                    ? "You can see your personal game stats here."
-                    : "Here you can enlist into a Faction. Take care with who you choose to align yourself with- this will be the Faction you stay with for a while.",
-                action: () => {
-                    toggleActiveBar("enlist", true)
-                },
-                resizeObservables: ["#tutorial-enlist", "#tutorial-enlisted", "#tutorial-wallet", "#tutorial-passport"],
-            },
+            // {
+            //     selector: user.faction_id ? "#tutorial-enlisted" : "#tutorial-enlist",
+            //     content: user.faction_id
+            //         ? "You can see your personal game stats here."
+            //         : "Here you can enlist into a Faction. Take care with who you choose to align yourself with- this will be the Faction you stay with for a while.",
+            //     action: () => {
+            //         toggleActiveBar("enlist", true)
+            //     },
+            //     resizeObservables: ["#tutorial-enlist", "#tutorial-enlisted", "#tutorial-wallet", "#tutorial-passport"],
+            // },
             {
                 selector: "#tutorial-sups",
                 content:
@@ -103,7 +103,7 @@ export const SetupTutorial = () => {
                 position: "top",
             },
         ]
-    }, [toggleActiveBar, user.faction_id])
+    }, [toggleActiveBar])
 
     //only show if user is enlisted
     const enlistedSteps: StepType[] = useMemo(() => {
