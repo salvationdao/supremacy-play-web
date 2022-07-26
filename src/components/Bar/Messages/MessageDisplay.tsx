@@ -1,5 +1,5 @@
 /* eslint-disable no-case-declarations */
-import { Box, Stack, Typography } from "@mui/material"
+import { Box, Divider, Stack, Typography } from "@mui/material"
 import { useMemo } from "react"
 import { useTheme } from "../../../containers/theme"
 import { colors, fonts } from "../../../theme/theme"
@@ -47,6 +47,28 @@ export const MessageDisplay = ({ message }: MessageDisplayProps) => {
                     {message.sent_at.toLocaleTimeString()}, {message.sent_at.toDateString()}
                 </Typography>
             </Stack>
+            <Stack direction="row" spacing=".4rem">
+                <Typography
+                    sx={{
+                        color: colors.grey,
+                    }}
+                >
+                    From:
+                </Typography>
+                <Typography
+                    sx={{
+                        fontFamily: fonts.shareTechMono,
+                    }}
+                >
+                    {message.sender.username}
+                </Typography>
+            </Stack>
+            <Divider
+                sx={{
+                    backgroundColor: colors.darkGrey,
+                    my: "1rem",
+                }}
+            />
             <Box
                 sx={{
                     overflowY: "auto",
