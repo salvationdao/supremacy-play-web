@@ -8,7 +8,7 @@ export class Stage {
     scene: THREE.Scene
     camera: THREE.OrthographicCamera
 
-    constructor() {
+    constructor(backgroundColor = "#D0CBC7") {
         // container
         this.container = document.getElementById("game")
         const width = this.container?.clientWidth || 200
@@ -21,7 +21,7 @@ export class Stage {
         })
 
         this.renderer.setSize(width, height)
-        this.renderer.setClearColor("#D0CBC7", 1)
+        this.renderer.setClearColor(backgroundColor, 1)
         this.container && this.container.appendChild(this.renderer.domElement)
 
         // scene

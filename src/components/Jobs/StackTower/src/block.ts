@@ -1,4 +1,5 @@
 import * as THREE from "three"
+import { getRandomColor } from "../../../../helpers"
 import { blockConfig } from "./config"
 
 export interface Dimension {
@@ -84,7 +85,7 @@ export class Block {
         this.colorOffset = Math.round(Math.random() * 100)
 
         // set color
-        this.color = new THREE.Color(color === null ? Math.random() * 0xffffff : color)
+        this.color = new THREE.Color(color || getRandomColor()) //new THREE.Color(color || Math.random() * 0xffffff )
 
         // set direction
         let speed = blockConfig.initSpeed + blockConfig.acceleration

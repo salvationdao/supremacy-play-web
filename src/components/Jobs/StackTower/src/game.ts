@@ -1,45 +1,41 @@
 import { FallingBlock, NormalBlock } from "./block"
 import { Stage } from "./stage"
 
+export enum GameState {
+    Loading = "LOADING",
+    Playing = "PLAYING",
+    Ready = "READY",
+    Ended = "Ended",
+    Resetting = "RESETTING",
+}
+
 export class Game {
-    STATES: { LOADING: string; PLAYING: string; READY: string; ENDED: string; RESETTING: string }
     stage: Stage
-    state: string
+    state: GameState
+    score: number
     blocks: NormalBlock[]
     fallingBlocks: FallingBlock[]
-    mainContainer: HTMLElement | null
-    scoreContainer: HTMLElement | null
-    startButton: HTMLElement | null
-    instructions: HTMLElement | null
+    setGameState: React.Dispatch<React.SetStateAction<GameState>>
+    setScore: React.Dispatch<React.SetStateAction<number>>
 
-    constructor() {
-        this.STATES = {
-            LOADING: "game-state-loading",
-            PLAYING: "game-state-playing",
-            READY: "game-state-ready",
-            ENDED: "game-state-ended",
-            RESETTING: "game-state-resetting",
-        }
+    constructor(
+        backgroundColor: string,
+        _setGameState: React.Dispatch<React.SetStateAction<GameState>>,
+        _setScore: React.Dispatch<React.SetStateAction<number>>,
+    ) {
+        this.setGameState = _setGameState
+        this.setScore = _setScore
 
+        this.stage = new Stage(backgroundColor)
         this.blocks = []
         this.fallingBlocks = []
-        this.state = this.STATES.LOADING
-
-        this.stage = new Stage()
-
-        this.mainContainer = document.getElementById("container")
-        this.scoreContainer = document.getElementById("score")
-        this.startButton = document.getElementById("start-button")
-        this.instructions = document.getElementById("instructions")
-        if (this.scoreContainer) this.scoreContainer.innerHTML = "0"
+        this.state = GameState.Loading
+        this.score = 0
 
         this.addBlock()
         this.tick()
 
-        for (const key in this.STATES) {
-            if (this.mainContainer) this.mainContainer.classList.remove(this.STATES[key as keyof typeof this.STATES])
-        }
-        this.setState(this.STATES.READY)
+        this.setState(GameState.Ready)
 
         document.addEventListener("keydown", (e) => {
             if (e.keyCode === 32) {
@@ -59,21 +55,22 @@ export class Game {
 
     handleEvent() {
         switch (this.state) {
-            case this.STATES.READY:
-                this.setState(this.STATES.PLAYING)
+            case GameState.Ready:
+                this.setState(GameState.Playing)
                 this.addBlock()
                 break
-            case this.STATES.PLAYING:
+            case GameState.Playing:
                 this.addBlock()
                 break
-            case this.STATES.ENDED:
+            case GameState.Ended:
                 this.blocks.forEach((block) => {
                     this.stage.remove(block.mesh)
                 })
                 this.blocks = []
-                if (this.scoreContainer) this.scoreContainer.innerHTML = "0"
+                this.score = 0
+                this.setScore(0)
                 this.addBlock()
-                this.setState(this.STATES.READY)
+                this.setState(GameState.Ready)
                 break
             default:
                 break
@@ -93,7 +90,7 @@ export class Game {
 
             if (newLength <= 0) {
                 this.stage.remove(lastBlock.mesh)
-                this.setState(this.STATES.ENDED)
+                this.setState(GameState.Ended)
                 return
             }
 
@@ -133,7 +130,8 @@ export class Game {
             this.stage.add(fallingBlock.mesh)
         }
 
-        if (this.scoreContainer) this.scoreContainer.innerHTML = String(this.blocks.length - 1)
+        this.score = this.blocks.length - 1
+        this.setScore(this.blocks.length - 1)
 
         const newBlock = new NormalBlock(lastBlock)
         this.stage.add(newBlock.mesh)
@@ -142,11 +140,10 @@ export class Game {
         this.stage.setCamera(this.blocks.length * 2)
     }
 
-    setState(state: string) {
+    setState(state: GameState) {
         const oldState = this.state
-        if (this.mainContainer) this.mainContainer.classList.remove(this.state)
         this.state = state
-        if (this.mainContainer) this.mainContainer.classList.add(this.state)
+        this.setGameState(state)
         return oldState
     }
 
