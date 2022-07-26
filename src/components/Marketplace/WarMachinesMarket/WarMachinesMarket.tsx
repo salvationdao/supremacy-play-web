@@ -26,6 +26,8 @@ const sortOptions = [
     { label: SortTypeLabel.PriceHighest, value: SortTypeLabel.PriceHighest },
     { label: SortTypeLabel.Alphabetical, value: SortTypeLabel.Alphabetical },
     { label: SortTypeLabel.AlphabeticalReverse, value: SortTypeLabel.AlphabeticalReverse },
+    { label: SortTypeLabel.RarestAsc, value: SortTypeLabel.RarestAsc },
+    { label: SortTypeLabel.RarestDesc, value: SortTypeLabel.RarestDesc },
 ]
 
 export const WarMachinesMarket = () => {
@@ -150,12 +152,14 @@ export const WarMachinesMarket = () => {
                 sort === SortTypeLabel.AlphabeticalReverse ||
                 sort === SortTypeLabel.CreateTimeNewestFirst ||
                 sort === SortTypeLabel.EndTimeEndingLast ||
-                sort === SortTypeLabel.PriceHighest
+                sort === SortTypeLabel.PriceHighest ||
+                sort === SortTypeLabel.RarestDesc
             )
                 sortDir = "desc"
             if (sort === SortTypeLabel.CreateTimeOldestFirst || sort === SortTypeLabel.CreateTimeNewestFirst) sortBy = "created_at"
             if (sort === SortTypeLabel.EndTimeEndingSoon || sort === SortTypeLabel.EndTimeEndingLast) sortBy = "time"
             if (sort === SortTypeLabel.PriceLowest || sort === SortTypeLabel.PriceHighest) sortBy = "price"
+            if (sort === SortTypeLabel.RarestAsc || sort === SortTypeLabel.RarestDesc) sortBy = "rarity"
 
             const [min_price, max_price] = price
 
