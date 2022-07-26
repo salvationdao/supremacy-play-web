@@ -6,7 +6,7 @@ import { GetWeaponMaxStats } from "../../../fetching"
 import { ClipThing, FancyButton } from "../.."
 import { EmptyWarMachinesPNG, WarMachineIconPNG } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
-import { getWeaponTypeColor, parseString } from "../../../helpers"
+import { getRarityDeets, getWeaponTypeColor, parseString } from "../../../helpers"
 import { usePagination, useToggle, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
@@ -30,6 +30,8 @@ const sortOptions = [
     { label: SortTypeLabel.PriceHighest, value: SortTypeLabel.PriceHighest },
     { label: SortTypeLabel.Alphabetical, value: SortTypeLabel.Alphabetical },
     { label: SortTypeLabel.AlphabeticalReverse, value: SortTypeLabel.AlphabeticalReverse },
+    { label: SortTypeLabel.RarestAsc, value: SortTypeLabel.RarestAsc },
+    { label: SortTypeLabel.RarestDesc, value: SortTypeLabel.RarestDesc },
 ]
 
 export const WeaponsMarket = () => {
@@ -60,6 +62,7 @@ export const WeaponsMarket = () => {
     const [status, setStatus] = useState<string[]>((query.get("statuses") || undefined)?.split("||") || [])
     const [ownedBy, setOwnedBy] = useState<string[]>((query.get("ownedBy") || undefined)?.split("||") || [])
     const [listingTypes, setListingTypes] = useState<string[]>((query.get("listingTypes") || undefined)?.split("||") || [])
+    const [rarities, setRarities] = useState<string[]>((query.get("rarities") || undefined)?.split("||") || [])
     const [weaponTypes, setWeaponTypes] = useState<string[]>((query.get("weaponTypes") || undefined)?.split("||") || [])
     const [price, setPrice] = useState<(number | undefined)[]>(
         (query.get("priceRanges") || undefined)?.split("||").map((p) => (p ? parseInt(p) : undefined)) || [undefined, undefined],
@@ -163,6 +166,29 @@ export const WeaponsMarket = () => {
         initialExpanded: true,
         onSetValue: (value: (number | undefined)[]) => {
             setPrice(value)
+            changePage(1)
+        },
+    })
+
+    const rarityChipFilter = useRef<ChipFilter>({
+        label: "RARITY",
+        options: [
+            { value: "MEGA", ...getRarityDeets("MEGA") },
+            { value: "COLOSSAL", ...getRarityDeets("COLOSSAL") },
+            { value: "RARE", ...getRarityDeets("RARE") },
+            { value: "LEGENDARY", ...getRarityDeets("LEGENDARY") },
+            { value: "ELITE_LEGENDARY", ...getRarityDeets("ELITE_LEGENDARY") },
+            { value: "ULTRA_RARE", ...getRarityDeets("ULTRA_RARE") },
+            { value: "EXOTIC", ...getRarityDeets("EXOTIC") },
+            { value: "GUARDIAN", ...getRarityDeets("GUARDIAN") },
+            { value: "MYTHIC", ...getRarityDeets("MYTHIC") },
+            { value: "DEUS_EX", ...getRarityDeets("DEUS_EX") },
+            { value: "TITAN", ...getRarityDeets("TITAN") },
+        ],
+        initialSelected: rarities,
+        initialExpanded: true,
+        onSetSelected: (value: string[]) => {
+            setRarities(value)
             changePage(1)
         },
     })
@@ -304,12 +330,14 @@ export const WeaponsMarket = () => {
                 sort === SortTypeLabel.AlphabeticalReverse ||
                 sort === SortTypeLabel.CreateTimeNewestFirst ||
                 sort === SortTypeLabel.EndTimeEndingLast ||
-                sort === SortTypeLabel.PriceHighest
+                sort === SortTypeLabel.PriceHighest ||
+                sort === SortTypeLabel.RarestDesc
             )
                 sortDir = "desc"
             if (sort === SortTypeLabel.CreateTimeOldestFirst || sort === SortTypeLabel.CreateTimeNewestFirst) sortBy = "created_at"
             if (sort === SortTypeLabel.EndTimeEndingSoon || sort === SortTypeLabel.EndTimeEndingLast) sortBy = "time"
             if (sort === SortTypeLabel.PriceLowest || sort === SortTypeLabel.PriceHighest) sortBy = "price"
+            if (sort === SortTypeLabel.RarestAsc || sort === SortTypeLabel.RarestDesc) sortBy = "rarity"
 
             const [min_price, max_price] = price
 
@@ -317,6 +345,7 @@ export const WeaponsMarket = () => {
                 page: page - 1,
                 page_size: pageSize,
                 search,
+                rarities,
                 listing_types: listingTypes,
                 weapon_types: weaponTypes,
                 item_type: "weapon",
@@ -407,6 +436,7 @@ export const WeaponsMarket = () => {
                 statuses: status.join("||"),
                 ownedBy: ownedBy.join("||"),
                 listingTypes: listingTypes.join("||"),
+                rarities: rarities.join("||"),
                 priceRanges: price.join("||"),
                 ammo: ammoRange?.join("||"),
                 damage: damageRange?.join("||"),
@@ -440,6 +470,7 @@ export const WeaponsMarket = () => {
         status,
         ownedBy,
         listingTypes,
+        rarities,
         weaponTypes,
         ammoRange,
         damageRange,
@@ -562,18 +593,24 @@ export const WeaponsMarket = () => {
                 key={sortFilterReRender.toString()}
                 initialSearch={search}
                 onSetSearch={setSearch}
-                chipFilters={[statusFilterSection.current, ownedByFilterSection.current, listingTypeFilterSection.current, weaponTypeChipFilter.current]}
+                chipFilters={[
+                    statusFilterSection.current,
+                    ownedByFilterSection.current,
+                    listingTypeFilterSection.current,
+                    rarityChipFilter.current,
+                    weaponTypeChipFilter.current,
+                ]}
                 rangeFilters={[priceRangeFilter.current]}
                 sliderRangeFilters={[
-                    ammoRangeFilter.current,
+                    // ammoRangeFilter.current,
                     damageRangeFilter.current,
-                    damageFalloffRangeFilter.current,
-                    damageFalloffRateRangeFilter.current,
+                    // damageFalloffRangeFilter.current,
+                    // damageFalloffRateRangeFilter.current,
                     radiusRangeFilter.current,
-                    radiusDamageFalloffRangeFilter.current,
+                    // radiusDamageFalloffRangeFilter.current,
                     rateOfFireRangeFilter.current,
                     energyCostRangeFilter.current,
-                    projectileSpeedRangeFilter.current,
+                    // projectileSpeedRangeFilter.current,
                     spreadRangeFilter.current,
                 ]}
                 changePage={changePage}
