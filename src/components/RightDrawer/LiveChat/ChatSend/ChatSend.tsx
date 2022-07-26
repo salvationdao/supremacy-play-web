@@ -101,7 +101,7 @@ const ChatSendInner = ({
         [setMessage],
     )
 
-    const handleTaggedUsers = (msg: string): number[] => {
+    const handleTaggedUsers = useCallback((msg: string): number[] => {
         const taggedStrings = [...msg.matchAll(/#\d+/g)]
         let taggedGids: number[] = []
         taggedStrings.map((s) => {
@@ -109,7 +109,7 @@ const ChatSendInner = ({
             taggedGids = [...taggedGids, gid]
         })
         return taggedGids
-    }
+    }, [])
 
     const sendMessage = useCallback(async () => {
         if (!message.trim()) return
@@ -149,7 +149,20 @@ const ChatSendInner = ({
             onFailedMessage(sentAt)
             console.error(e)
         }
-    }, [message, user, send, newMessageHandler, userRank, messageColor, faction_id, onSentMessage, newSnackbarMessage, onFailedMessage, renderedMsg])
+    }, [
+        message,
+        user,
+        send,
+        newMessageHandler,
+        userRank,
+        messageColor,
+        faction_id,
+        onSentMessage,
+        newSnackbarMessage,
+        onFailedMessage,
+        renderedMsg,
+        handleTaggedUsers,
+    ])
 
     const showCharCount = message.length >= MAX_CHAT_MESSAGE_LENGTH
 

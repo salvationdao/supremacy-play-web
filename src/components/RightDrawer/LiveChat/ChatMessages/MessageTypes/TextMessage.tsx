@@ -105,7 +105,7 @@ export const TextMessage = ({
         // if (!cTop || !cBottom || !eTop || !eBottom) return
         //Check if in view
         return eTop >= cTop && eBottom <= cBottom
-    }, [containerRef, textMessageRef, isScrolling, isActive, isHidden])
+    }, [containerRef, textMessageRef, isScrolling])
 
     useEffect(() => {
         if (metadata && Object.keys(metadata?.tagged_users_read).length === 0) return
@@ -133,7 +133,7 @@ export const TextMessage = ({
                 }
             }, 2000)
         }
-    }, [isVisibleInChat, data, chatMessages, metadata, readMessage, send, user.gid, isHidden, isActive])
+    }, [isVisibleInChat, data, chatMessages, metadata, readMessage, send, user.gid, isHidden, isActive, sendBrowserNotification, tabValue, username])
 
     const renderJSXMessage = useCallback(
         (msg: string) => {

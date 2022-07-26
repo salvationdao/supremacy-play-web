@@ -112,13 +112,14 @@ export const AuthProvider: React.FC = ({ children }) => {
     const { query: passportLoginCheck } = useQuery(PassportLoginCheck(), false)
     const { query: gameserverLoginCheck } = useQuery(GameServerLoginCheck(), false)
 
-    function handleVisibilityChange() {
+    const handleVisibilityChange = () => {
         if (document["hidden"]) {
             setIsHidden(true)
         } else {
             setIsHidden(false)
         }
     }
+
     useEffect(() => {
         if (typeof document.hidden !== "undefined" && typeof document.addEventListener !== "undefined") {
             document.addEventListener("visibilitychange", handleVisibilityChange)

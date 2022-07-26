@@ -57,11 +57,11 @@ export const ChatContainer = createContainer(() => {
     const [activePlayers, setActivePlayers] = useState<User[]>([])
     const [globalActivePlayers, setGlobalActivePlayers] = useState<User[]>([])
 
-    const addToUserGidRecord = (user: User) => {
+    const addToUserGidRecord = useCallback((user: User) => {
         setUserGidRecord((prev) => {
             return { ...prev, [user.gid]: user }
         })
-    }
+    }, [])
 
     // Save chat settings to local storage
     useEffect(() => {
