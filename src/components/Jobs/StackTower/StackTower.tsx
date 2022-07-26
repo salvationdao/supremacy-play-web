@@ -111,7 +111,7 @@ const StackTowerInner = () => {
                         position: "absolute",
                         left: 0,
                         right: 0,
-                        bottom: "17%",
+                        bottom: "15%",
                         transition: "all .2s ease",
                         transform: gameState === GameState.Ready || gameState === GameState.Ended ? "translateY(0)" : "translateY(50px)",
                         opacity: gameState === GameState.Ready || gameState === GameState.Ended ? 1 : 0,
@@ -119,7 +119,7 @@ const StackTowerInner = () => {
                 >
                     <Typography
                         variant="h5"
-                        sx={{ textAlign: "center", fontFamily: fonts.nostromoBlack, span: { color: colors.neonBlue, fontFamily: "inherit" } }}
+                        sx={{ lineHeight: 1.7, textAlign: "center", fontFamily: fonts.nostromoBlack, span: { color: colors.neonBlue, fontFamily: "inherit" } }}
                     >
                         <span>Left click</span> or <span>[spacebar]</span>
                         <br />

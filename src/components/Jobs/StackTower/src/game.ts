@@ -3,9 +3,9 @@ import { Stage } from "./stage"
 
 export enum GameState {
     Loading = "LOADING",
-    Playing = "PLAYING",
     Ready = "READY",
-    Ended = "Ended",
+    Playing = "PLAYING",
+    Ended = "ENDED",
     Resetting = "RESETTING",
 }
 
@@ -35,8 +35,6 @@ export class Game {
         this.addBlock()
         this.tick()
 
-        this.setState(GameState.Ready)
-
         document.addEventListener("keydown", (e) => {
             if (e.keyCode === 32) {
                 // Space
@@ -51,6 +49,10 @@ export class Game {
         document.addEventListener("touchend", () => {
             this.handleEvent()
         })
+
+        setTimeout(() => {
+            this.setState(GameState.Ready)
+        }, 1000)
     }
 
     handleEvent() {
@@ -91,6 +93,7 @@ export class Game {
             if (newLength <= 0) {
                 this.stage.remove(lastBlock.mesh)
                 this.setState(GameState.Ended)
+                this.stage.setCamera(Math.max((this.blocks.length - 3) * 2, 0))
                 return
             }
 
