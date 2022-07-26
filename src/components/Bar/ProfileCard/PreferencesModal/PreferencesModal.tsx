@@ -4,13 +4,15 @@ import { useTheme } from "../../../../containers/theme"
 import { fonts } from "../../../../theme/theme"
 import { ClipThing } from "../../../Common/ClipThing"
 import { NotificationPreferences } from "./NotificationPreferences"
+import { DevicePreferences } from "./DevicePreferences"
 
 interface PreferencesModalProps {
     onClose: () => void
     setTelegramShortcode: (code: string) => void
+    toggleAddDeviceModal: () => void
 }
 
-export const PreferencesModal = ({ onClose, setTelegramShortcode }: PreferencesModalProps) => {
+export const PreferencesModal = ({ onClose, setTelegramShortcode, toggleAddDeviceModal }: PreferencesModalProps) => {
     const theme = useTheme()
 
     return (
@@ -49,6 +51,8 @@ export const PreferencesModal = ({ onClose, setTelegramShortcode }: PreferencesM
                         </Typography>
 
                         <NotificationPreferences setTelegramShortcode={setTelegramShortcode} />
+
+                        <DevicePreferences toggleAddDeviceModal={toggleAddDeviceModal} />
                     </Stack>
 
                     <IconButton size="small" onClick={onClose} sx={{ position: "absolute", top: ".5rem", right: ".5rem" }}>

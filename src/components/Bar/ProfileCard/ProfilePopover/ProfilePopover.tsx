@@ -11,14 +11,14 @@ import { PreferencesModal } from "../PreferencesModal/PreferencesModal"
 import { TelegramRegisterModal } from "../PreferencesModal/TelegramRegisterModal"
 import { LogoutButton } from "./LogoutButton"
 import { NavButton } from "./NavButton"
-import { QrCodeModal } from "./QrCodeModal"
+import { DeviceRegisterModal } from "../PreferencesModal/DeviceRegisterModal"
 
 export const ProfilePopover = ({ open, popoverRef, onClose, user }: { open: boolean; popoverRef: MutableRefObject<null>; onClose: () => void; user: User }) => {
     const theme = useTheme()
 
     const [localOpen, toggleLocalOpen] = useToggle(open)
     const [preferencesModalOpen, togglePreferencesModalOpen] = useToggle()
-    const [qrModalOpen, toggleQRModalOpen] = useToggle()
+    const [addDeviceModalOpen, toggleAddDeviceModalOpen] = useToggle()
 
     const [telegramShortcode, setTelegramShortcode] = useState<string>("")
 
@@ -83,14 +83,6 @@ export const ProfilePopover = ({ open, popoverRef, onClose, user }: { open: bool
                             text="Preferences"
                         />
 
-                        <NavButton
-                            onClick={() => {
-                                toggleQRModalOpen(true)
-                            }}
-                            startIcon={<SvgSettings sx={{ pb: ".5rem" }} size="1.6rem" />}
-                            text="QR Code Generator"
-                        />
-
                         <LogoutButton />
                     </Stack>
                 </ClipThing>
@@ -104,14 +96,15 @@ export const ProfilePopover = ({ open, popoverRef, onClose, user }: { open: bool
                         toggleLocalOpen(false)
                     }}
                     setTelegramShortcode={setTelegramShortcode}
+                    toggleAddDeviceModal={() => toggleAddDeviceModalOpen(!addDeviceModalOpen)}
                 />
             )}
 
-            {/* preferences modal */}
-            {qrModalOpen && (
-                <QrCodeModal
+            {/* Add new device modal - supremacy companion app*/}
+            {addDeviceModalOpen && (
+                <DeviceRegisterModal
                     onClose={() => {
-                        toggleQRModalOpen(false)
+                        toggleAddDeviceModalOpen(false)
                         toggleLocalOpen(false)
                     }}
                 />
