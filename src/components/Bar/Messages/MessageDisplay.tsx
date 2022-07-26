@@ -1,5 +1,6 @@
 /* eslint-disable no-case-declarations */
 import { Box, Divider, Stack, Typography } from "@mui/material"
+import MuiMarkdown from "mui-markdown"
 import { useMemo } from "react"
 import { useTheme } from "../../../containers/theme"
 import { colors, fonts } from "../../../theme/theme"
@@ -23,7 +24,7 @@ export const MessageDisplay = ({ message }: MessageDisplayProps) => {
                 return <MechBattleCompleteDetails message={message.message} data={data} />
         }
 
-        return <Typography variant="h6">{message.message}</Typography>
+        return <MuiMarkdown>{message.message}</MuiMarkdown>
     }, [message])
 
     return (
