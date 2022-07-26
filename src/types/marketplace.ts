@@ -1,3 +1,5 @@
+import { Collection } from "./assets"
+
 export enum ItemType {
     WarMachine = "WAR_MACHINE",
     Weapon = "WEAPON",
@@ -57,6 +59,10 @@ export interface MarketMech {
     name: string
     label: string
     avatar_url: string
+    image_url: string
+    large_image_url: string
+    animation_url: string
+    large_animation_url: string
 }
 
 export interface MarketWeapon {
@@ -83,14 +89,7 @@ export interface MarketplaceBuyAuctionItem {
     total_bids: number
     last_bid?: MarketUser
     owner?: MarketUser
-    collection_item?: {
-        tier: string
-        image_url?: string
-        animation_url?: string
-        card_animation_url?: string
-        avatar_url?: string
-        large_image_url?: string
-    }
+    collection_item?: Collection
     mech?: MarketMech
     keycard?: MarketKeycard
     mystery_crate?: MarketCrate

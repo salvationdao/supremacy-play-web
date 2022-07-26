@@ -1,5 +1,6 @@
 import BigNumber from "bignumber.js"
 import emojiRegex from "emoji-regex"
+import { VoidFunctionComponent } from "react"
 import {
     MultiplierAdmiral,
     MultiplierAFoolAndHisMoney,
@@ -20,12 +21,18 @@ import {
     SafePNG,
     SvgCorporal,
     SvgGeneral,
+    SvgIntroAnimation,
     SvgNewRecruit,
+    SvgOutroAnimation,
+    SvgPowerCore,
     SvgPrivate,
+    SvgSkin,
+    SvgUtilities,
+    SvgWeapons,
     SvgWrapperProps,
 } from "../assets"
 import { colors } from "../theme/theme"
-import { MysteryCrateType, Rarity, UserRank } from "../types"
+import { AssetItemType, MysteryCrateType, Rarity, UserRank } from "../types"
 
 // Capitalize convert a string "example" to "Example"
 export const Capitalize = (str: string): string => str[0].toUpperCase() + str.substring(1).toLowerCase()
@@ -351,12 +358,12 @@ export const getMysteryCrateDeets = (mysteryCrateType: MysteryCrateType): { imag
     let desc = "Open a mystery crate to receive random weapon / war machine!"
 
     switch (mysteryCrateType) {
-        case "MECH":
+        case MysteryCrateType.Mech:
             image = SafePNG
             label = "WAR MACHINE CRATE"
             desc = "Get a random war machine to participate in the battle arena."
             break
-        case "WEAPON":
+        case MysteryCrateType.Weapon:
             image = SafePNG
             label = "WEAPON CRATE"
             desc = "Get a random weapon to equip onto your war machine."
@@ -418,21 +425,21 @@ export const timeSince = (
     }
 }
 
-export const timeSinceInWords = (fromDate: Date, toDate: Date): string => {
+export const timeSinceInWords = (fromDate: Date, toDate: Date, abbreviated = false): string => {
     const { days, hours, minutes, seconds } = timeSince(fromDate, toDate)
 
     let result = days > 0 ? days + " day" + (days === 1 ? "" : "s") : ""
-    result = (result ? result + " " : "") + (hours > 0 ? hours + " hour" + (hours === 1 ? "" : "s") : "")
+    result = (result ? result + " " : "") + (hours > 0 ? hours + (abbreviated ? "hr" : " hour") + (hours === 1 ? "" : "s") : "")
 
     // Return result if more than a day, else too long
     if (days > 0) return result
 
-    result = (result ? result + " " : "") + (minutes > 0 ? minutes + " minute" + (minutes === 1 ? "" : "s") : "")
+    result = (result ? result + " " : "") + (minutes > 0 ? minutes + (abbreviated ? "min" : " minute") + (minutes === 1 ? "" : "s") : "")
 
     // Return result if more than a day, else too long
     if (hours > 0) return result
 
-    result = (result ? result + " " : "") + (seconds > 0 ? seconds + " second" + (seconds === 1 ? "" : "s") : "")
+    result = (result ? result + " " : "") + (seconds > 0 ? seconds + (abbreviated ? "sec" : " second") + (seconds === 1 ? "" : "s") : "")
     return result
 }
 
@@ -513,13 +520,21 @@ export const getWeaponTypeColor = (weaponType: string | undefined) => {
         case "SWORD":
             return colors.red
         case "MINIGUN":
-            return colors.yellow
-        case "MISSILE LAUNCHER":
-            return colors.purple
-        case "PLASMA GUN":
             return colors.blue
-        case "SNIPER RIFLE":
+        case "MISSILE LAUNCHER":
             return colors.orange
+        case "GRENADE LAUNCHER":
+            return colors.orange
+        case "MACHINE GUN":
+            return colors.blue
+        case "PLASMA GUN":
+            return colors.purple
+        case "SNIPER RIFLE":
+            return colors.blue
+        case "FLAK":
+            return colors.orange
+        case "LASER BEAM":
+            return colors.purple
         default:
             return colors.neonBlue
     }
@@ -541,3 +556,58 @@ export const getWeaponDamageTypeColor = (damageType: string | undefined) => {
 }
 
 export const closestAngle = (from: number, to: number) => from + ((((to - from) % 360) + 540) % 360) - 180
+
+export const getAssetItemDeets = (
+    assetItemType?: AssetItemType,
+): { icon: VoidFunctionComponent<SvgWrapperProps> | null; color: string; label: string; subRoute: string } => {
+    let icon = null
+    let color = ""
+    let label = ""
+    let subRoute = ""
+
+    if (!assetItemType) return { icon, color, label, subRoute }
+
+    switch (assetItemType) {
+        case AssetItemType.Mech:
+            subRoute = "mech"
+            break
+        case AssetItemType.Weapon:
+            icon = SvgWeapons
+            color = colors.weapons
+            label = "Weapon"
+            subRoute = "weapon"
+            break
+        case AssetItemType.MechSkin:
+            icon = SvgSkin
+            color = colors.chassisSkin
+            label = "Mech Skin"
+            break
+        case AssetItemType.WeaponSkin:
+            icon = SvgSkin
+            color = colors.chassisSkin
+            label = "Weapon Skin"
+            break
+        case AssetItemType.PowerCore:
+            icon = SvgPowerCore
+            color = colors.powerCore
+            label = "Power Core"
+            break
+        case AssetItemType.Utility:
+            icon = SvgUtilities
+            color = colors.utilities
+            label = "Utility"
+            break
+        case AssetItemType.IntroAnimation:
+            icon = SvgIntroAnimation
+            color = colors.introAnimation
+            label = "Intro Animation"
+            break
+        case AssetItemType.OutroAnimation:
+            icon = SvgOutroAnimation
+            color = colors.outroAnimation
+            label = "Outro Animation"
+            break
+    }
+
+    return { icon, color, label, subRoute }
+}

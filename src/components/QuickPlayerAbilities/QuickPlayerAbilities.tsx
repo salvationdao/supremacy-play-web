@@ -1,34 +1,58 @@
 import { Box, CircularProgress, Fade, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
+import { useParameterizedQuery } from "react-fetching-library"
 import { MoveableResizable } from ".."
 import { useAuth, useMobile } from "../../containers"
 import { useTheme } from "../../containers/theme"
-import { useGameServerSubscription } from "../../hooks/useGameServer"
+import { CanPlayerPurchase } from "../../fetching"
+import { useGameServerSubscription, useGameServerSubscriptionUser } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { colors, fonts } from "../../theme/theme"
-import { FeatureName, SaleAbility } from "../../types"
+import { PlayerAbility, SaleAbility } from "../../types"
 import { MoveableResizableConfig } from "../Common/MoveableResizable/MoveableResizableContainer"
 import { PageHeader } from "../Common/PageHeader"
 import { TimeLeft } from "../Storefront/PlayerAbilitiesStore/PlayerAbilitiesStore"
 import { QuickPlayerAbilitiesItem } from "./QuickPlayerAbilitiesItem"
 
 export const QuickPlayerAbilities = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
-    const { userHasFeature, userID } = useAuth()
-    if (!open || !userHasFeature(FeatureName.playerAbility)) return null
+    const { userID } = useAuth()
+    if (!open) return null
     return <QuickPlayerAbilitiesInner onClose={onClose} userID={userID} />
 }
 
 const QuickPlayerAbilitiesInner = ({ onClose, userID }: { onClose: () => void; userID: string }) => {
-    const { isMobile } = useMobile()
     const theme = useTheme()
+    const { isMobile } = useMobile()
+
+    const { query: queryCanPurchase } = useParameterizedQuery(CanPlayerPurchase)
+    const [canPurchase, setCanPurchase] = useState(true)
+    const [canPurchaseError, setCanPurchaseError] = useState<string>()
 
     const [isLoaded, setIsLoaded] = useState(false)
     const [nextRefreshTime, setNextRefreshTime] = useState<Date | null>(null)
     const [saleAbilities, setSaleAbilities] = useState<SaleAbility[]>([])
-    const [priceMap, setPriceMap] = useState<Map<string, string>>(new Map())
-    const [amountMap, setAmountMap] = useState<Map<string, number>>(new Map())
-    const [canPurchase, setCanPurchase] = useState(true)
     const [purchaseError, setPurchaseError] = useState<string>()
+
+    const [ownedAbilities, setOwnedAbilities] = useState<Map<string, number>>(new Map())
+
+    useEffect(() => {
+        ;(async () => {
+            try {
+                const resp = await queryCanPurchase(userID)
+                if (resp.error || !resp.payload) return
+                setCanPurchase(resp.payload.can_purchase)
+            } catch (e) {
+                let message = "Failed to obtain purchase availability during this sale period."
+                if (typeof e === "string") {
+                    message = e
+                } else if (e instanceof Error) {
+                    message = e.message
+                }
+                console.error(e)
+                setCanPurchaseError(message)
+            }
+        })()
+    }, [queryCanPurchase, userID])
 
     useGameServerSubscription<{
         next_refresh_time: Date | null
@@ -46,45 +70,30 @@ const QuickPlayerAbilitiesInner = ({ onClose, userID }: { onClose: () => void; u
             t.setSeconds(t.getSeconds() + payload.refresh_period_duration_seconds)
             setNextRefreshTime(payload.next_refresh_time || t)
             setSaleAbilities(payload.sale_abilities)
-            setAmountMap(new Map()) // reset amount map
+            setCanPurchase(true)
+            setPurchaseError(undefined)
+            setCanPurchaseError(undefined)
             if (isLoaded) return
             setIsLoaded(true)
         },
     )
 
-    useGameServerSubscription<{ id: string; current_price: string }>(
+    useGameServerSubscriptionUser<PlayerAbility[]>(
         {
-            URI: "/public/sale_abilities",
-            key: GameServerKeys.SaleAbilitiesPriceSubscribe,
-            ready: !!userID,
+            URI: "/player_abilities",
+            key: GameServerKeys.PlayerAbilitiesList,
         },
         (payload) => {
             if (!payload) return
-            setPriceMap((prev) => {
-                return new Map(prev.set(payload.id, payload.current_price))
+            setOwnedAbilities((prev) => {
+                const updated = new Map(prev)
+                for (const p of payload) {
+                    updated.set(p.blueprint_id, p.count)
+                }
+                return updated
             })
         },
     )
-
-    useGameServerSubscription<{ id: string; amount_sold: number }>(
-        {
-            URI: "/public/sale_abilities",
-            key: GameServerKeys.SaleAbilitiesAmountSubscribe,
-            ready: !!userID,
-        },
-        (payload) => {
-            if (!payload) return
-            setAmountMap((prev) => {
-                return new Map(prev.set(payload.id, payload.amount_sold))
-            })
-        },
-    )
-
-    useEffect(() => {
-        if (!nextRefreshTime) return
-        setCanPurchase(true)
-        setPurchaseError(undefined)
-    }, [nextRefreshTime])
 
     const primaryColor = theme.factionTheme.primary
 
@@ -155,6 +164,11 @@ const QuickPlayerAbilitiesInner = ({ onClose, userID }: { onClose: () => void; u
                                                 {purchaseError}
                                             </Typography>
                                         )}
+                                        {canPurchaseError && (
+                                            <Typography variant="body2" sx={{ color: colors.red }}>
+                                                {canPurchaseError}
+                                            </Typography>
+                                        )}
                                     </Stack>
                                 }
                             />
@@ -209,9 +223,7 @@ const QuickPlayerAbilitiesInner = ({ onClose, userID }: { onClose: () => void; u
                                                 <QuickPlayerAbilitiesItem
                                                     key={`${s.id}-${index}`}
                                                     saleAbility={s}
-                                                    updatedPrice={priceMap.get(s.id) || s.current_price}
-                                                    totalAmount={s.sale_limit}
-                                                    amountSold={amountMap.get(s.id) || s.amount_sold}
+                                                    amount={ownedAbilities.get(s.blueprint_id)}
                                                     setError={setPurchaseError}
                                                     onPurchase={() => setCanPurchase(false)}
                                                     disabled={!canPurchase}

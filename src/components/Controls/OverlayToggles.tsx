@@ -1,10 +1,10 @@
 import { IconButton, Stack, Typography } from "@mui/material"
 import { TooltipHelper } from ".."
-import { SvgGoldBars, SvgHistory, SvgRadar } from "../../assets"
+import { SvgHistory, SvgRadar } from "../../assets"
 import { useOverlayToggles } from "../../containers"
 
 export const OverlayToggles = () => {
-    const { isMapOpen, toggleIsMapOpen, isLiveChartOpen, toggleIsLiveChartOpen, isBattleHistoryOpen, toggleIsBattleHistoryOpen } = useOverlayToggles()
+    const { isMapOpen, toggleIsMapOpen, isBattleHistoryOpen, toggleIsBattleHistoryOpen } = useOverlayToggles()
 
     return (
         <Stack id="tutorial-overlays" direction="row" alignItems="center" sx={{ height: "100%" }}>
@@ -13,7 +13,7 @@ export const OverlayToggles = () => {
             </Typography>
 
             {/* Live Chart */}
-            <TooltipHelper text="Toggle the live voting chart.">
+            {/* <TooltipHelper text="Toggle the live voting chart.">
                 <IconButton
                     size="small"
                     onClick={() => toggleIsLiveChartOpen()}
@@ -27,7 +27,7 @@ export const OverlayToggles = () => {
                 >
                     <SvgGoldBars size="1.8rem" />
                 </IconButton>
-            </TooltipHelper>
+            </TooltipHelper> */}
 
             {/* Map */}
             <TooltipHelper text="Toggle the mini map, it will show when the battle begins.">

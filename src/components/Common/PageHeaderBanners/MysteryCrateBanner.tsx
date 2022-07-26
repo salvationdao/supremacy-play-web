@@ -6,6 +6,7 @@ import { useTheme } from "../../../containers/theme"
 import { useTimer } from "../../../hooks"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
+import { zoomEffect } from "../../../theme/keyframes"
 import { colors, fonts } from "../../../theme/theme"
 import { StorefrontMysteryCrate } from "../../../types"
 import { ClipThing } from "../ClipThing"
@@ -21,6 +22,8 @@ export const MysteryCrateBanner = () => {
     const { getFaction } = useSupremacy()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [crates, setCrate] = useState<StorefrontMysteryCrate[]>([])
+
+    const [unlocked, setUnlocked] = useState(new Date() > new Date(LOCKED_UNTIL))
 
     useEffect(() => {
         ;(async () => {
@@ -91,10 +94,22 @@ export const MysteryCrateBanner = () => {
 
                 {/* Countdown and CTA button */}
                 <Stack direction="row" alignItems="center" spacing="2.2rem" sx={{ py: ".5rem" }}>
-                    <Stack alignItems="center" spacing="-.5rem">
-                        <Typography sx={{ fontFamily: fonts.nostromoBlack }}>MYSTERY CRATE OPENING IN </Typography>
-                        <Countdown dateTo={new Date(LOCKED_UNTIL)} />
-                    </Stack>
+                    {unlocked ? (
+                        <Typography
+                            variant="h6"
+                            sx={{
+                                fontFamily: fonts.nostromoHeavy,
+                                animation: `${zoomEffect(1.05)} 10s infinite`,
+                            }}
+                        >
+                            OPEN YOUR CRATES NOW!
+                        </Typography>
+                    ) : (
+                        <Stack alignItems="center" spacing="-.5rem">
+                            <Typography sx={{ fontFamily: fonts.nostromoBlack }}>MYSTERY CRATE OPENING IN </Typography>
+                            <Countdown dateTo={new Date(LOCKED_UNTIL)} setUnlocked={setUnlocked} />
+                        </Stack>
+                    )}
 
                     <FancyButton
                         clipThingsProps={{
@@ -137,8 +152,12 @@ export const MysteryCrateBanner = () => {
     )
 }
 
-const Countdown = ({ dateTo }: { dateTo: Date | undefined }) => {
-    const { days, hours, minutes, seconds } = useTimer(dateTo)
+const Countdown = ({ dateTo, setUnlocked }: { dateTo: Date | undefined; setUnlocked: React.Dispatch<React.SetStateAction<boolean>> }) => {
+    const { days, hours, minutes, seconds, totalSecRemain } = useTimer(dateTo)
+
+    useEffect(() => {
+        if (totalSecRemain <= 0) setUnlocked(true)
+    }, [seconds, setUnlocked, totalSecRemain])
 
     if (seconds === undefined) return null
 

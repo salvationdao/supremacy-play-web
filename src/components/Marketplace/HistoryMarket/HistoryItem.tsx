@@ -1,12 +1,12 @@
 import { Box, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
-import { useEffect, useMemo, useState } from "react"
+import { useMemo, useState } from "react"
 import { FancyButton } from "../.."
 import { SvgSupToken } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { numFormatter } from "../../../helpers"
 import { useToggle } from "../../../hooks"
-import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
+import { useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { MARKETPLACE_TABS } from "../../../pages"
 import { colors } from "../../../theme/theme"
@@ -17,7 +17,6 @@ import { CrateCommonArea } from "../../Hangar/MysteryCratesHangar/MysteryCrateHa
 import { MechCommonArea } from "../../Hangar/WarMachinesHangar/WarMachineHangarItem"
 import { WeaponCommonArea } from "../../Hangar/WeaponsHangar/WeaponHangarItem"
 import { General } from "../Common/MarketItem/General"
-import { Thumbnail } from "../Common/MarketItem/Thumbnail"
 
 export const HistoryItem = ({ eventItem, isGridView }: { eventItem: MarketplaceEvent; isGridView: boolean }) => {
     const theme = useTheme()
@@ -26,44 +25,18 @@ export const HistoryItem = ({ eventItem, isGridView }: { eventItem: MarketplaceE
     const itemRelatedData = useMemo(() => {
         const item = eventItem.item
         let linkSubPath = MARKETPLACE_TABS.WarMachines
-        let imageUrl = ""
-        let animationUrl = ""
-        let cardAnimationUrl = ""
         let primaryColor = colors.marketSold
         let statusText = ""
         const formattedAmount = eventItem.amount ? numFormatter(new BigNumber(eventItem.amount).shiftedBy(-18).toNumber()) : ""
 
         if (item.mech && item.collection_item) {
-            // const rarityDeets = getRarityDeets(item.collection_item.tier)
-
             linkSubPath = MARKETPLACE_TABS.WarMachines
-            imageUrl = item.mech.avatar_url
-            // label = rarityDeets.label
-            // labelColor = rarityDeets.color
-            // description = item.mech.name || item.mech.label
         } else if (item.mystery_crate && item.collection_item) {
             linkSubPath = MARKETPLACE_TABS.MysteryCrates
-            imageUrl = item.collection_item.image_url || ""
-            animationUrl = item.collection_item.animation_url || ""
-            cardAnimationUrl = item.collection_item.card_animation_url || ""
-            // label = item.mystery_crate.label
-            // description = item.mystery_crate.description
         } else if (item.weapon && item.collection_item) {
-            // const rarityDeets = getRarityDeets(weaponDetails?.weapon_skin?.tier || "")
             linkSubPath = MARKETPLACE_TABS.Weapons
-            imageUrl = item.collection_item.image_url || item.weapon?.avatar_url || ""
-            animationUrl = item.collection_item.animation_url || ""
-            cardAnimationUrl = item.collection_item.card_animation_url || ""
-            // label = rarityDeets.label
-            // labelColor = rarityDeets.color
-            // description = item.weapon.label
         } else if (item.keycard) {
             linkSubPath = MARKETPLACE_TABS.Keycards
-            imageUrl = item.keycard.image_url
-            animationUrl = item.keycard.animation_url
-            cardAnimationUrl = item.keycard.card_animation_url
-            // label = item.keycard.label
-            // description = item.keycard.description
         }
 
         if (eventItem.event_type === MarketplaceEventType.Purchased) {
@@ -88,9 +61,6 @@ export const HistoryItem = ({ eventItem, isGridView }: { eventItem: MarketplaceE
 
         return {
             linkSubPath,
-            imageUrl,
-            animationUrl,
-            cardAnimationUrl,
             primaryColor,
             statusText,
             formattedAmount,
@@ -115,7 +85,7 @@ export const HistoryItem = ({ eventItem, isGridView }: { eventItem: MarketplaceE
                     border: { isFancy: !isGridView, borderColor: itemRelatedData.primaryColor, borderThickness: ".25rem" },
                     sx: { position: "relative", height: "100%" },
                 }}
-                sx={{ color: itemRelatedData.primaryColor, textAlign: "start", height: "100%" }}
+                sx={{ color: itemRelatedData.primaryColor, textAlign: "start", height: "100%", ":hover": { opacity: 1 } }}
                 to={`/marketplace/${itemRelatedData.linkSubPath}/${eventItem.item.id}${location.hash}`}
             >
                 <Box
@@ -125,7 +95,7 @@ export const HistoryItem = ({ eventItem, isGridView }: { eventItem: MarketplaceE
                         p: isGridView ? ".5rem .6rem" : ".1rem .3rem",
                         display: isGridView ? "block" : "grid",
                         gridTemplateRows: "7rem",
-                        gridTemplateColumns: `8rem minmax(auto, 38rem) repeat(2, 1fr) 1.3fr`, // hard-coded to have 5 columns, adjust as required
+                        gridTemplateColumns: `minmax(36rem, auto) repeat(2, 17rem) 23rem`, // hard-coded to have 5 columns, adjust as required
                         gap: "1.4rem",
                         ...(isGridView
                             ? {
@@ -136,13 +106,6 @@ export const HistoryItem = ({ eventItem, isGridView }: { eventItem: MarketplaceE
                             : {}),
                     }}
                 >
-                    <Thumbnail
-                        isGridView={isGridView}
-                        imageUrl={itemRelatedData.imageUrl}
-                        animationUrl={itemRelatedData.animationUrl}
-                        cardAnimationUrl={itemRelatedData.cardAnimationUrl}
-                    />
-
                     <ItemCommonArea
                         item={eventItem.item}
                         isGridView={isGridView}
@@ -197,40 +160,32 @@ const ItemCommonArea = ({
     isExpanded: boolean
     toggleIsExpanded: (value?: boolean) => void
 }) => {
-    const { send } = useGameServerCommandsFaction("/faction_commander")
     const [mechDetails, setMechDetails] = useState<MechDetails>()
     const [weaponDetails, setWeaponDetails] = useState<Weapon>()
 
-    useEffect(() => {
-        ;(async () => {
-            try {
-                if (!item.mech) return
-                const resp = await send<MechDetails>(GameServerKeys.GetMechDetails, {
-                    mech_id: item.mech.id,
-                })
+    useGameServerSubscriptionFaction<MechDetails>(
+        {
+            URI: `/mech/${item.mech?.id || ""}/details`,
+            key: GameServerKeys.GetMechDetails,
+            ready: !!item.mech,
+        },
+        (payload) => {
+            if (!payload) return
+            setMechDetails(payload)
+        },
+    )
 
-                if (!resp) return
-                setMechDetails(resp)
-            } catch (e) {
-                console.error(e)
-            }
-        })()
-    }, [item.mech, send])
-
-    useEffect(() => {
-        ;(async () => {
-            try {
-                if (!item.weapon) return
-                const resp = await send<Weapon>(GameServerKeys.GetWeaponDetails, {
-                    weapon_id: item.weapon.id,
-                })
-                if (!resp) return
-                setWeaponDetails(resp)
-            } catch (e) {
-                console.error(e)
-            }
-        })()
-    }, [item.weapon, send])
+    useGameServerSubscriptionFaction<Weapon>(
+        {
+            URI: `/weapon/${item.weapon?.id}/details`,
+            key: GameServerKeys.GetWeaponDetails,
+            ready: !!item.weapon,
+        },
+        (payload) => {
+            if (!payload) return
+            setWeaponDetails(payload)
+        },
+    )
 
     if (item.mech) {
         return (
@@ -259,11 +214,27 @@ const ItemCommonArea = ({
     }
 
     if (item.mystery_crate) {
-        return <CrateCommonArea isGridView={isGridView} label={item.mystery_crate.label} description={item.mystery_crate.description} />
+        return (
+            <CrateCommonArea
+                isGridView={isGridView}
+                label={item.mystery_crate.label}
+                description={item.mystery_crate.description}
+                imageUrl={item.collection_item?.image_url}
+                videoUrls={[item.collection_item?.animation_url, item.collection_item?.card_animation_url]}
+            />
+        )
     }
 
     if (item.keycard) {
-        return <KeycardCommonArea isGridView={isGridView} label={item.keycard.label} description={item.keycard.description} />
+        return (
+            <KeycardCommonArea
+                isGridView={isGridView}
+                label={item.keycard.label}
+                description={item.keycard.description}
+                imageUrl={item.keycard.image_url}
+                videoUrls={[item.keycard.animation_url, item.keycard.card_animation_url]}
+            />
+        )
     }
 
     return <Typography>MARKET ITEM</Typography>

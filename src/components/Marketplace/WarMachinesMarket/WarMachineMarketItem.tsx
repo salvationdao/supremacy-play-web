@@ -1,6 +1,6 @@
 import { useTheme } from "@mui/material"
-import { useEffect, useState } from "react"
-import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
+import { useState } from "react"
+import { useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { MARKETPLACE_TABS } from "../../../pages"
 import { MechDetails } from "../../../types"
@@ -17,35 +17,26 @@ interface WarMachineMarketItemProps {
 
 export const WarMachineMarketItem = ({ item, isGridView, isExpanded, toggleIsExpanded }: WarMachineMarketItemProps) => {
     const theme = useTheme()
-    const { send } = useGameServerCommandsFaction("/faction_commander")
     const [mechDetails, setMechDetails] = useState<MechDetails>()
 
-    useEffect(() => {
-        ;(async () => {
-            try {
-                if (!item.mech) return
-                const resp = await send<MechDetails>(GameServerKeys.GetMechDetails, {
-                    mech_id: item.mech.id,
-                })
-
-                if (!resp) return
-                setMechDetails(resp)
-            } catch (e) {
-                console.error(e)
-            }
-        })()
-    }, [item.mech, send])
+    useGameServerSubscriptionFaction<MechDetails>(
+        {
+            URI: `/mech/${item.mech?.id}/details`,
+            key: GameServerKeys.GetMechDetails,
+            ready: !!item.mech,
+        },
+        (payload) => {
+            if (!payload) return
+            setMechDetails(payload)
+        },
+    )
 
     const { mech, collection_item } = item
 
     if (!mech || !collection_item) return null
 
-    const skin = mechDetails ? mechDetails.chassis_skin || mechDetails.default_chassis_skin : undefined
-    const avatarUrl = skin?.avatar_url || mech.avatar_url
-    const largeImageUrl = skin?.large_image_url
-
     return (
-        <MarketItem item={item} imageUrl={avatarUrl} backgroundImageUrl={largeImageUrl} isGridView={isGridView} linkSubPath={MARKETPLACE_TABS.WarMachines}>
+        <MarketItem item={item} isGridView={isGridView} linkSubPath={MARKETPLACE_TABS.WarMachines}>
             <MechCommonArea
                 primaryColor={theme.factionTheme.primary}
                 secondaryColor={theme.factionTheme.secondary}

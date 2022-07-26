@@ -116,8 +116,29 @@ export const Username = ({
                             )
                         }}
                     >
-                        <Typography sx={{ WebkitTextStroke: "1px black", fontFamily: fonts.nostromoBlack, fontSize: "5rem" }}>{username}</Typography>
-                        <Typography sx={{ WebkitTextStroke: "1px black", fontFamily: fonts.nostromoBlack, fontSize: "5rem", color: primaryColour }}>
+                        <Typography
+                            sx={{
+                                fontSize: "5rem",
+                                "@media (max-width:900px)": {
+                                    fontSize: "4rem",
+                                },
+                                WebkitTextStroke: "1px black",
+                                fontFamily: fonts.nostromoBlack,
+                            }}
+                        >
+                            {username}
+                        </Typography>
+                        <Typography
+                            sx={{
+                                fontSize: "5rem",
+                                "@media (max-width:900px)": {
+                                    fontSize: "4rem",
+                                },
+                                WebkitTextStroke: "1px black",
+                                fontFamily: fonts.nostromoBlack,
+                                color: primaryColour,
+                            }}
+                        >
                             #{gid}
                         </Typography>
                     </Stack>

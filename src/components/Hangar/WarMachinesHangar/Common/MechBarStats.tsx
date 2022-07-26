@@ -274,12 +274,11 @@ export const IconStat = ({
                     spacing=".2rem"
                     sx={{
                         mr: ".8rem",
-                        mb: ".4rem",
-                        px: ".4rem",
-                        pt: ".1rem",
+                        mb: ".6rem",
+                        px: ".6rem",
+                        pt: ".2rem",
                         backgroundColor: `${primaryColor}28`,
                         borderRadius: 0.4,
-                        borderLeft: `${primaryColor} 2px solid`,
                     }}
                 >
                     <Icon size={`calc(${fontSize} * 0.9)`} sx={{ pb: "3px" }} />

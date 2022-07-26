@@ -32,6 +32,12 @@ export interface Transaction {
 
 export type UserRank = "NEW_RECRUIT" | "PRIVATE" | "CORPORAL" | "GENERAL"
 
+export enum FactionName {
+    RedMountainOffworldMiningCorporation = "Red Mountain Offworld Mining Corporation",
+    BostonCybernetics = "Boston Cybernetics",
+    ZaibatsuHeavyIndustries = "Zaibatsu Heavy Industries",
+}
+
 export interface Faction {
     id: string
     label: string
@@ -79,5 +85,34 @@ export interface Feature {
 export enum FeatureName {
     mechMove = "MECH_MOVE",
     playerAbility = "PLAYER_ABILITY",
-    publicProfilePage = "PUBLIC_PROFILE",
+    systemMessages = "SYSTEM_MESSAGES",
+}
+
+export enum SystemMessageType {
+    MechQueue = "MECH_QUEUE",
+    MechBattleComplete = "MECH_BATTLE_COMPLETE",
+}
+
+export interface SystemMessage {
+    id: string
+    player_id: string
+    type: SystemMessageType
+    message: string
+    data: unknown | null
+    sent_at: Date
+}
+
+export interface SystemMessageDataMechBattleComplete {
+    mech_id: string
+    faction_won: boolean
+    briefs: MechBattleBrief[]
+}
+
+export interface MechBattleBrief {
+    mech_id: string
+    faction_id: string
+    kills: number
+    killed: Date | null
+    label: string
+    name: string
 }

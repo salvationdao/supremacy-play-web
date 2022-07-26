@@ -1,56 +1,59 @@
 import Ability from "!@svgr/webpack!./svg/Ability.svg"
+import Ammo from "!@svgr/webpack!./svg/Ammo.svg"
+import Armor from "!@svgr/webpack!./svg/Armor.svg"
 import Assets from "!@svgr/webpack!./svg/Assets.svg"
 import BostonMechKillIcon from "!@svgr/webpack!./svg/BostonKillIcon.svg"
 import Chest from "!@svgr/webpack!./svg/Chest.svg"
 import Close from "!@svgr/webpack!./svg/Close.svg"
 import Close2 from "!@svgr/webpack!./svg/Close2.svg"
 import Copy from "!@svgr/webpack!./svg/Copy.svg"
+import Crown from "!@svgr/webpack!./svg/Crown.svg"
+import Damage1 from "!@svgr/webpack!./svg/Damage1.svg"
+import DamageFalloff from "!@svgr/webpack!./svg/DamageFalloff.svg"
+import DamageFalloffRate from "!@svgr/webpack!./svg/DamageFalloffRate.svg"
 import Death from "!@svgr/webpack!./svg/Death.svg"
 import DropdownArrow from "!@svgr/webpack!./svg/DropdownArrow.svg"
 import Emoji from "!@svgr/webpack!./svg/Emoji.svg"
 import EmojiSelector from "!@svgr/webpack!./svg/EmojiSelector.svg"
+import Energy from "!@svgr/webpack!./svg/Energy.svg"
 import ExternalLink from "!@svgr/webpack!./svg/ExternalLink.svg"
 import FastRepair from "!@svgr/webpack!./svg/FastRepair.svg"
 import FontCase from "!@svgr/webpack!./svg/FontCase.svg"
 import Global from "!@svgr/webpack!./svg/Global.svg"
 import Graph from "!@svgr/webpack!./svg/Graph.svg"
 import Hammer from "!@svgr/webpack!./svg/Hammer.svg"
-import IntroAnimation from "!@svgr/webpack!./svg/IntroAnimation.svg"
-import Unhide from "!@svgr/webpack!./svg/Unhide.svg"
-import Logout from "!@svgr/webpack!./svg/Logout.svg"
-import Meteor from "!@svgr/webpack!./svg/Meteor.svg"
-import Armor from "!@svgr/webpack!./svg/Armor.svg"
-import Energy from "!@svgr/webpack!./svg/Energy.svg"
-import Mobility from "!@svgr/webpack!./svg/Mobility.svg"
 import Health from "!@svgr/webpack!./svg/Health.svg"
-import PowerCoreCapacity from "!@svgr/webpack!./svg/PowerCoreCapacity.svg"
-import PowerCoreRegen from "!@svgr/webpack!./svg/PowerCoreRegen.svg"
-import ShieldRegen from "!@svgr/webpack!./svg/ShieldRegen.svg"
-import Shield from "!@svgr/webpack!./svg/Shield.svg"
-import Speed from "!@svgr/webpack!./svg/Speed.svg"
-import Ammo from "!@svgr/webpack!./svg/Ammo.svg"
-import Damage1 from "!@svgr/webpack!./svg/Damage1.svg"
-import DamageFalloff from "!@svgr/webpack!./svg/DamageFalloff.svg"
-import DamageFalloffRate from "!@svgr/webpack!./svg/DamageFalloffRate.svg"
-import Radius from "!@svgr/webpack!./svg/Radius.svg"
-import RadiusDamageFalloffRate from "!@svgr/webpack!./svg/RadiusDamageFalloffRate.svg"
-import RateOfFire from "!@svgr/webpack!./svg/RateOfFire.svg"
-import ProjectileSpeed from "!@svgr/webpack!./svg/ProjectileSpeed.svg"
-import Spread from "!@svgr/webpack!./svg/Spread.svg"
+import IntroAnimation from "!@svgr/webpack!./svg/IntroAnimation.svg"
+import Logout from "!@svgr/webpack!./svg/Logout.svg"
+import Mail from "!@svgr/webpack!./svg/Mail.svg"
+import Meteor from "!@svgr/webpack!./svg/Meteor.svg"
+import Mobility from "!@svgr/webpack!./svg/Mobility.svg"
 import NinjaSyndicateLogo from "!@svgr/webpack!./svg/NinjaSyndicateLogo.svg"
 import OutroAnimation from "!@svgr/webpack!./svg/OutroAnimation.svg"
 import Plus from "!@svgr/webpack!./svg/Plus.svg"
 import PowerCore from "!@svgr/webpack!./svg/PowerCore.svg"
+import PowerCoreCapacity from "!@svgr/webpack!./svg/PowerCoreCapacity.svg"
+import PowerCoreRegen from "!@svgr/webpack!./svg/PowerCoreRegen.svg"
 import Profile from "!@svgr/webpack!./svg/Profile.svg"
+import ProjectileSpeed from "!@svgr/webpack!./svg/ProjectileSpeed.svg"
+import Radius from "!@svgr/webpack!./svg/Radius.svg"
+import RadiusDamageFalloffRate from "!@svgr/webpack!./svg/RadiusDamageFalloffRate.svg"
 import Rank from "!@svgr/webpack!./svg/Rank.svg"
+import RankingStar from "!@svgr/webpack!./svg/RankingStar.svg"
+import RateOfFire from "!@svgr/webpack!./svg/RateOfFire.svg"
 import RedMoutainMechKillIcon from "!@svgr/webpack!./svg/RedMountainKillIcon.svg"
 import Refresh from "!@svgr/webpack!./svg/Refresh.svg"
 import Save from "!@svgr/webpack!./svg/Save.svg"
 import Scrolldown from "!@svgr/webpack!./svg/Scrolldown.svg"
 import Send from "!@svgr/webpack!./svg/Send.svg"
+import Shield from "!@svgr/webpack!./svg/Shield.svg"
+import ShieldRegen from "!@svgr/webpack!./svg/ShieldRegen.svg"
 import Shop from "!@svgr/webpack!./svg/Shop.svg"
 import Skin from "!@svgr/webpack!./svg/Skin.svg"
+import Speed from "!@svgr/webpack!./svg/Speed.svg"
+import Spread from "!@svgr/webpack!./svg/Spread.svg"
 import SupremacyLogo from "!@svgr/webpack!./svg/SupremacyLogo.svg"
+import Unhide from "!@svgr/webpack!./svg/Unhide.svg"
 import Utilities from "!@svgr/webpack!./svg/Utilities.svg"
 import View from "!@svgr/webpack!./svg/View.svg"
 import Wallet from "!@svgr/webpack!./svg/Wallet.svg"
@@ -149,6 +152,7 @@ import KeycardPNG from "./images/Keycard.png"
 import LogoWEBP from "./images/Logo.webp"
 import MaintenancePNG from "./images/Maintenance.png"
 // Multiplier images (no spaces in file names, won't work!)
+import { Cake } from "@mui/icons-material"
 import MultiplierAdmiral from "./images/Multipliers/Admiral.png"
 import MultiplierAFoolAndHisMoney from "./images/Multipliers/AFoolAndHisMoney.png"
 import MultiplierAirMarshal from "./images/Multipliers/AirMarshal.png"
@@ -174,7 +178,12 @@ import RainingSupsPNG from "./images/supsRain.png"
 import TrailerThumbPNG from "./images/TrailerThumb.png"
 import WarMachineIconPNG from "./images/WarMachineIcon.png"
 import ZaibatsuLogo from "./images/ZaibatsuLogo.png"
-import { Cake } from "@mui/icons-material"
+import AboutMeSVG from "./images/profileIcons/AboutMe.svg"
+import BattleHistorySVG from "./images/profileIcons/BattleHistory.svg"
+import StatsSVG from "./images/profileIcons/Stats.svg"
+import WarMachineBCPNG from "./images/profileIcons/warMachines/WMBC.png"
+import WarMachineRMPNG from "./images/profileIcons/warMachines/WMRM.png"
+import WarMachineZAIPNG from "./images/profileIcons/warMachines/WMZAI.png"
 
 export {
     MultiplierAdmiral,
@@ -217,6 +226,12 @@ export {
     RainingSupsPNG,
     WarMachineIconPNG,
     PlayerAbilityPNG,
+    AboutMeSVG,
+    BattleHistorySVG,
+    StatsSVG,
+    WarMachineBCPNG,
+    WarMachineRMPNG,
+    WarMachineZAIPNG,
 }
 
 export interface SvgWrapperProps extends BoxProps {
@@ -1075,5 +1090,23 @@ export const SvgShieldRegen: React.VoidFunctionComponent<SvgWrapperProps> = (pro
 export const SvgUnhide: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <Unhide />
+    </SvgWrapper>
+)
+
+export const SvgRankingStar: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <RankingStar />
+    </SvgWrapper>
+)
+
+export const SvgMail: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Mail />
+    </SvgWrapper>
+)
+
+export const SvgCrown: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Crown />
     </SvgWrapper>
 )

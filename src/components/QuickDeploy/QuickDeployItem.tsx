@@ -1,14 +1,13 @@
 import { Stack, Typography } from "@mui/material"
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 import { FancyButton } from ".."
-import { SvgSupToken } from "../../assets"
 import { useSnackbar } from "../../containers"
 import { useTheme } from "../../containers/theme"
-import { getRarityDeets, supFormatter } from "../../helpers"
+import { getRarityDeets } from "../../helpers"
 import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { colors, fonts } from "../../theme/theme"
-import { MechBasic, MechDetails, MechStatus, MechStatusEnum } from "../../types"
+import { MechBasic, MechDetails, MechStatus, MechStatusEnum, RepairType } from "../../types"
 import { MechGeneralStatus } from "../Hangar/WarMachinesHangar/Common/MechGeneralStatus"
 import { MechThumbnail } from "../Hangar/WarMachinesHangar/Common/MechThumbnail"
 import { QueueFeed } from "../Hangar/WarMachinesHangar/WarMachineDetails/Modals/DeployModal"
@@ -18,7 +17,7 @@ interface QuickDeployItemProps {
     queueFeed?: QueueFeed
 }
 
-export const QuickDeployItem = ({ mech, queueFeed }: QuickDeployItemProps) => {
+export const QuickDeployItem = ({ mech }: QuickDeployItemProps) => {
     const { newSnackbarMessage } = useSnackbar()
     const theme = useTheme()
     const { send } = useGameServerCommandsFaction("/faction_commander")
@@ -29,19 +28,16 @@ export const QuickDeployItem = ({ mech, queueFeed }: QuickDeployItemProps) => {
     const [error, setError] = useState<string>()
 
     // Get addition mech data
-    useEffect(() => {
-        ;(async () => {
-            try {
-                const resp = await send<MechDetails>(GameServerKeys.GetMechDetails, {
-                    mech_id: mech.id,
-                })
-                if (!resp) return
-                setMechDetails(resp)
-            } catch (e) {
-                console.error(e)
-            }
-        })()
-    }, [mech.id, send])
+    useGameServerSubscriptionFaction<MechDetails>(
+        {
+            URI: `/mech/${mech.id}/details`,
+            key: GameServerKeys.GetMechDetails,
+        },
+        (payload) => {
+            if (!payload) return
+            setMechDetails(payload)
+        },
+    )
 
     useGameServerSubscriptionFaction<MechStatus>(
         {
@@ -89,6 +85,25 @@ export const QuickDeployItem = ({ mech, queueFeed }: QuickDeployItemProps) => {
             setIsLoading(false)
         }
     }, [send, mech.hash, newSnackbarMessage])
+
+    const onRepair = useCallback(
+        async (repairType: string) => {
+            try {
+                setIsLoading(true)
+                const resp = await send(GameServerKeys.RepairWarMachine, { mech_id: mech.id, repair_type: repairType })
+                if (resp) {
+                    newSnackbarMessage("Successfully submit repair request", "success")
+                    setError(undefined)
+                }
+            } catch (e) {
+                setError(typeof e === "string" ? e : "Failed to submit repair request.")
+                console.error(e)
+            } finally {
+                setIsLoading(false)
+            }
+        },
+        [send, mech.id, newSnackbarMessage],
+    )
 
     return (
         <Stack
@@ -145,7 +160,6 @@ export const QuickDeployItem = ({ mech, queueFeed }: QuickDeployItemProps) => {
                                 backgroundColor: mechState === MechStatusEnum.Idle ? colors.green : theme.factionTheme.background,
                                 opacity: 1,
                                 border: {
-                                    isFancy: true,
                                     borderColor: mechState === MechStatusEnum.Idle ? colors.green : colors.yellow,
                                     borderThickness: "1px",
                                 },
@@ -165,26 +179,50 @@ export const QuickDeployItem = ({ mech, queueFeed }: QuickDeployItemProps) => {
                                     variant="caption"
                                     sx={{
                                         color: mechState === MechStatusEnum.Idle ? "#FFFFFF" : colors.yellow,
-                                        fontSize: "1.15rem",
                                         fontFamily: fonts.nostromoBlack,
                                     }}
                                 >
                                     {mechState === MechStatusEnum.Idle ? "DEPLOY" : "UNDEPLOY"}
                                 </Typography>
+                            </Stack>
+                        </FancyButton>
+                    )}
 
-                                {mechState === MechStatusEnum.Idle && queueFeed?.queue_cost && (
-                                    <Stack direction="row" alignItems="center">
-                                        <SvgSupToken size="1.6rem" />
-                                        <Typography
-                                            sx={{
-                                                color: mechState === MechStatusEnum.Idle ? "#FFFFFF" : colors.yellow,
-                                                fontWeight: "fontWeightBold",
-                                            }}
-                                        >
-                                            {supFormatter(queueFeed.queue_cost, 2)}
-                                        </Typography>
-                                    </Stack>
-                                )}
+                    {!error && mechDetails && (mechState === MechStatusEnum.Damaged || mechState === MechStatusEnum.StandardRepairing) && (
+                        <FancyButton
+                            loading={isLoading}
+                            clipThingsProps={{
+                                clipSize: "5px",
+                                backgroundColor: colors.blue2,
+                                opacity: 1,
+                                border: {
+                                    borderColor: colors.blue2,
+                                    borderThickness: "1px",
+                                },
+                                sx: { position: "relative" },
+                            }}
+                            sx={{ px: "1rem", pt: 0, pb: ".1rem", color: "#FFFFFF" }}
+                            onClick={() => {
+                                switch (mechState) {
+                                    case MechStatusEnum.Damaged:
+                                        onRepair(RepairType.Standard)
+                                        break
+                                    case MechStatusEnum.StandardRepairing:
+                                        onRepair(RepairType.Fast)
+                                        break
+                                }
+                            }}
+                        >
+                            <Stack direction="row" alignItems="center" spacing=".5rem">
+                                <Typography
+                                    variant="caption"
+                                    sx={{
+                                        color: "#FFFFFF",
+                                        fontFamily: fonts.nostromoBlack,
+                                    }}
+                                >
+                                    {mechState === MechStatusEnum.StandardRepairing ? "FAST REPAIR" : "REPAIR"}
+                                </Typography>
                             </Stack>
                         </FancyButton>
                     )}

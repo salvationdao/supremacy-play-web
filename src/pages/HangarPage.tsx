@@ -13,8 +13,6 @@ import { WarMachinesHangar } from "../components/Hangar/WarMachinesHangar/WarMac
 import { useTheme } from "../containers/theme"
 import { ROUTES_MAP } from "../routes"
 import { siteZIndex } from "../theme/theme"
-import { useAuth } from "../containers"
-import { FeatureName } from "../types"
 
 export enum HANGAR_TABS {
     WarMachines = "war-machines",
@@ -28,7 +26,6 @@ export const HangarPage = () => {
     const theme = useTheme()
     const location = useLocation()
     const history = useHistory()
-    const { userHasFeature } = useAuth()
     const { type } = useParams<{ type: HANGAR_TABS }>()
     const [currentValue, setCurrentValue] = useState<HANGAR_TABS>()
 
@@ -103,8 +100,7 @@ export const HangarPage = () => {
                                 <Tab label="KEY CARDS" value={HANGAR_TABS.Keycards} />
 
                                 <Tab label="MYSTERY CRATES" value={HANGAR_TABS.MysteryCrates} />
-
-                                {userHasFeature(FeatureName.playerAbility) && <Tab label="ABILITIES" value={HANGAR_TABS.Abilities} />}
+                                <Tab label="ABILITIES" value={HANGAR_TABS.Abilities} />
                             </Tabs>
                         </Box>
                     </ClipThing>
@@ -128,11 +124,9 @@ export const HangarPage = () => {
                     <MysteryCratesHangar />
                 </TabPanel>
 
-                {userHasFeature(FeatureName.playerAbility) && (
-                    <TabPanel currentValue={currentValue} value={HANGAR_TABS.Abilities}>
-                        <PlayerAbilitiesHangar />
-                    </TabPanel>
-                )}
+                <TabPanel currentValue={currentValue} value={HANGAR_TABS.Abilities}>
+                    <PlayerAbilitiesHangar />
+                </TabPanel>
             </Stack>
         </Stack>
     )

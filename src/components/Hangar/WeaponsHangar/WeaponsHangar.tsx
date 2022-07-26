@@ -1,8 +1,12 @@
 import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { ClipThing } from "../.."
+import { useParameterizedQuery } from "react-fetching-library"
+import { ClipThing, FancyButton } from "../.."
 import { EmptyWarMachinesPNG, WarMachineIconPNG } from "../../../assets"
+import { HANGAR_PAGE } from "../../../constants"
+import { useAuth } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
+import { GetWeaponMaxStats } from "../../../fetching"
 import { getWeaponTypeColor, parseString } from "../../../helpers"
 import { usePagination, useToggle, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
@@ -48,6 +52,7 @@ interface GetWeaponsResponse {
 
 export const WeaponsHangar = () => {
     const [query, updateQuery] = useUrlQuery()
+    const { userID } = useAuth()
     const { send } = useGameServerCommandsUser("/user_commander")
     const theme = useTheme()
 
@@ -65,42 +70,49 @@ export const WeaponsHangar = () => {
     const [search, setSearch] = useState("")
     const [weaponTypes, setWeaponTypes] = useState<string[]>((query.get("weapon_types") || undefined)?.split("||") || [])
     const [equippedStatuses, setEquippedStatuses] = useState<string[]>((query.get("equipped_status") || undefined)?.split("||") || [])
-    const [ammoRange, setAmmoRange] = useState<number[]>(
-        (query.get("ammo") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 3000)) || [0, 3000],
+    const [ammoRange, setAmmoRange] = useState<number[] | undefined>(
+        (query.get("ammo") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 30000)),
     )
-    const [damageRange, setDamageRange] = useState<number[]>(
-        (query.get("damage") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 1000)) || [0, 1000],
+    const [damageRange, setDamageRange] = useState<number[] | undefined>(
+        (query.get("damage") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 10000)),
     )
-    const [damageFalloffRange, setDamageFalloffRange] = useState<number[]>(
-        (query.get("damageFalloff") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 1000)) || [0, 1000],
+    const [damageFalloffRange, setDamageFalloffRange] = useState<number[] | undefined>(
+        (query.get("damageFalloff") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 10000)),
     )
-    const [damageFalloffRateRange, setDamageFalloffRateRange] = useState<number[]>(
-        (query.get("damageFalloffRate") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 1000)) || [0, 1000],
+    const [damageFalloffRateRange, setDamageFalloffRateRange] = useState<number[] | undefined>(
+        (query.get("damageFalloffRate") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 10000)),
     )
-    const [radiusRange, setRadiusRange] = useState<number[]>(
-        (query.get("radius") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 2000)) || [0, 2000],
+    const [radiusRange, setRadiusRange] = useState<number[] | undefined>(
+        (query.get("radius") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 20000)),
     )
-    const [radiusDamageFalloffRange, setRadiusDamageFalloffRange] = useState<number[]>(
-        (query.get("radiusDamageFalloff") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 2000)) || [0, 2000],
+    const [radiusDamageFalloffRange, setRadiusDamageFalloffRange] = useState<number[] | undefined>(
+        (query.get("radiusDamageFalloff") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 20000)),
     )
-    const [rateOfFireRange, setRateOfFireRange] = useState<number[]>(
-        (query.get("rateOfFire") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 1000)) || [0, 1000],
+    const [rateOfFireRange, setRateOfFireRange] = useState<number[] | undefined>(
+        (query.get("rateOfFire") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 10000)),
     )
-    const [energyCostRange, setEnergyCostRange] = useState<number[]>(
-        (query.get("energyCost") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 100)) || [0, 100],
+    const [energyCostRange, setEnergyCostRange] = useState<number[] | undefined>(
+        (query.get("energyCost") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 10000)),
     )
-    const [projectileSpeedRange, setProjectileSpeedRange] = useState<number[]>(
-        (query.get("projectileSpeed") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 200000)) || [0, 200000],
+    const [projectileSpeedRange, setProjectileSpeedRange] = useState<number[] | undefined>(
+        (query.get("projectileSpeed") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 2000000)),
     )
-    const [spreadRange, setSpreadRange] = useState<number[]>(
-        (query.get("spread") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 100)) || [0, 100],
+    const [spreadRange, setSpreadRange] = useState<number[] | undefined>(
+        (query.get("spread") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 100)),
     )
-    const [isGridView, toggleIsGridView] = useToggle(false)
+    const [isGridView, toggleIsGridView] = useToggle((localStorage.getItem("fleetWeaponGrid") || "true") === "true")
+
+    useEffect(() => {
+        localStorage.setItem("fleetWeaponGrid", isGridView.toString())
+    }, [isGridView])
 
     const weaponTypeFilterSection = useRef<ChipFilter>({
         label: "WEAPON TYPE",
         options: [
             { value: WeaponType.Cannon, label: WeaponType.Cannon, color: getWeaponTypeColor(WeaponType.Cannon) },
+            { value: WeaponType.GrenadeLauncher, label: WeaponType.GrenadeLauncher, color: getWeaponTypeColor(WeaponType.GrenadeLauncher) },
+            { value: WeaponType.MachineGun, label: WeaponType.MachineGun, color: getWeaponTypeColor(WeaponType.MachineGun) },
+            { value: WeaponType.Flak, label: WeaponType.Flak, color: getWeaponTypeColor(WeaponType.Flak) },
             { value: WeaponType.Sword, label: WeaponType.Sword, color: getWeaponTypeColor(WeaponType.Sword) },
             { value: WeaponType.Minigun, label: WeaponType.Minigun, color: getWeaponTypeColor(WeaponType.Minigun) },
             { value: WeaponType.MissileLauncher, label: WeaponType.MissileLauncher, color: getWeaponTypeColor(WeaponType.MissileLauncher) },
@@ -118,8 +130,8 @@ export const WeaponsHangar = () => {
     const weaponEquippedFilterSection = useRef<ChipFilter>({
         label: "EQUIPPED STATUS",
         options: [
-            { value: "equipped", label: "EQUIPPED", color: theme.factionTheme.primary, textColor: theme.factionTheme.secondary },
-            { value: "unequipped", label: "UNEQUIPPED", color: theme.factionTheme.primary, textColor: theme.factionTheme.secondary },
+            { value: "equipped", label: "EQUIPPED", color: colors.green, textColor: "#FFFFFF" },
+            { value: "unequipped", label: "UNEQUIPPED", color: colors.yellow, textColor: "#000000" },
         ],
         initialExpanded: true,
         initialSelected: equippedStatuses,
@@ -133,7 +145,7 @@ export const WeaponsHangar = () => {
         label: "AMMO",
         initialValue: ammoRange,
         minMax: [0, 3000],
-        onSetValue: (value: number[]) => {
+        onSetValue: (value: number[] | undefined) => {
             setAmmoRange(value)
             changePage(1)
         },
@@ -143,7 +155,7 @@ export const WeaponsHangar = () => {
         label: "DAMAGE",
         initialValue: damageRange,
         minMax: [0, 1000],
-        onSetValue: (value: number[]) => {
+        onSetValue: (value: number[] | undefined) => {
             setDamageRange(value)
             changePage(1)
         },
@@ -153,7 +165,7 @@ export const WeaponsHangar = () => {
         label: "DAMAGE FALLOFF",
         initialValue: damageFalloffRange,
         minMax: [0, 1000],
-        onSetValue: (value: number[]) => {
+        onSetValue: (value: number[] | undefined) => {
             setDamageFalloffRange(value)
             changePage(1)
         },
@@ -163,7 +175,7 @@ export const WeaponsHangar = () => {
         label: "DAMAGE FALLOFF RATE",
         initialValue: damageFalloffRateRange,
         minMax: [0, 1000],
-        onSetValue: (value: number[]) => {
+        onSetValue: (value: number[] | undefined) => {
             setDamageFalloffRateRange(value)
             changePage(1)
         },
@@ -173,7 +185,7 @@ export const WeaponsHangar = () => {
         label: "RADIUS",
         initialValue: radiusRange,
         minMax: [0, 2000],
-        onSetValue: (value: number[]) => {
+        onSetValue: (value: number[] | undefined) => {
             setRadiusRange(value)
             changePage(1)
         },
@@ -183,7 +195,7 @@ export const WeaponsHangar = () => {
         label: "RADIUS DAMAGE FALLOFF",
         initialValue: radiusDamageFalloffRange,
         minMax: [0, 2000],
-        onSetValue: (value: number[]) => {
+        onSetValue: (value: number[] | undefined) => {
             setRadiusDamageFalloffRange(value)
             changePage(1)
         },
@@ -193,7 +205,7 @@ export const WeaponsHangar = () => {
         label: "RATE OF FIRE",
         initialValue: rateOfFireRange,
         minMax: [0, 1000],
-        onSetValue: (value: number[]) => {
+        onSetValue: (value: number[] | undefined) => {
             setRateOfFireRange(value)
             changePage(1)
         },
@@ -203,7 +215,7 @@ export const WeaponsHangar = () => {
         label: "ENERGY COST",
         initialValue: energyCostRange,
         minMax: [0, 100],
-        onSetValue: (value: number[]) => {
+        onSetValue: (value: number[] | undefined) => {
             setEnergyCostRange(value)
             changePage(1)
         },
@@ -213,7 +225,7 @@ export const WeaponsHangar = () => {
         label: "PROJECTIVE SPEED",
         initialValue: projectileSpeedRange,
         minMax: [0, 200000],
-        onSetValue: (value: number[]) => {
+        onSetValue: (value: number[] | undefined) => {
             setProjectileSpeedRange(value)
             changePage(1)
         },
@@ -223,11 +235,38 @@ export const WeaponsHangar = () => {
         label: "SPREAD",
         initialValue: spreadRange,
         minMax: [0, 100],
-        onSetValue: (value: number[]) => {
+        onSetValue: (value: number[] | undefined) => {
             setSpreadRange(value)
             changePage(1)
         },
     })
+
+    const [sortFilterReRender, toggleSortFilterReRender] = useToggle()
+    const { query: queryGetWeaponMaxStats } = useParameterizedQuery(GetWeaponMaxStats)
+
+    // Get the max for each category for better filtering
+    useEffect(() => {
+        ;(async () => {
+            try {
+                const resp = await queryGetWeaponMaxStats(userID)
+                if (resp.error || !resp.payload) return
+                ammoRangeFilter.current.minMax[1] = resp.payload.max_ammo || 0
+                damageRangeFilter.current.minMax[1] = resp.payload.damage || 0
+                damageFalloffRangeFilter.current.minMax[1] = resp.payload.damage_falloff || 0
+                damageFalloffRateRangeFilter.current.minMax[1] = resp.payload.damage_falloff_rate || 0
+                radiusRangeFilter.current.minMax[1] = resp.payload.radius || 0
+                radiusDamageFalloffRangeFilter.current.minMax[1] = resp.payload.radius_damage_falloff || 0
+                rateOfFireRangeFilter.current.minMax[1] = resp.payload.rate_of_fire || 0
+                energyCostRangeFilter.current.minMax[1] = resp.payload.energy_cost || 0
+                projectileSpeedRangeFilter.current.minMax[1] = resp.payload.projectile_speed || 0
+                spreadRangeFilter.current.minMax[1] = resp.payload.spread || 0
+                toggleSortFilterReRender()
+            } catch (err) {
+                const message = typeof err === "string" ? err : "Failed to get the list of streams."
+                console.error(message)
+            }
+        })()
+    }, [queryGetWeaponMaxStats, toggleSortFilterReRender, userID])
 
     const getItems = useCallback(async () => {
         try {
@@ -241,70 +280,70 @@ export const WeaponsHangar = () => {
                 equipped_statuses: equippedStatuses,
                 search,
                 stat_ammo:
-                    ammoRange[0] > 0 || ammoRange[1] > 0
+                    ammoRange && (ammoRange[0] > 0 || ammoRange[1] > 0)
                         ? {
                               min: ammoRange[0],
                               max: ammoRange[1],
                           }
                         : undefined,
                 stat_damage:
-                    damageRange[0] > 0 || damageRange[1] > 0
+                    damageRange && (damageRange[0] > 0 || damageRange[1] > 0)
                         ? {
                               min: damageRange[0],
                               max: damageRange[1],
                           }
                         : undefined,
                 stat_damage_falloff:
-                    damageFalloffRange[0] > 0 || damageFalloffRange[1] > 0
+                    damageFalloffRange && (damageFalloffRange[0] > 0 || damageFalloffRange[1] > 0)
                         ? {
                               min: damageFalloffRange[0],
                               max: damageFalloffRange[1],
                           }
                         : undefined,
                 stat_damage_falloff_rate:
-                    damageFalloffRateRange[0] > 0 || damageFalloffRateRange[1] > 0
+                    damageFalloffRateRange && (damageFalloffRateRange[0] > 0 || damageFalloffRateRange[1] > 0)
                         ? {
                               min: damageFalloffRateRange[0],
                               max: damageFalloffRateRange[1],
                           }
                         : undefined,
                 stat_radius:
-                    radiusRange[0] > 0 || radiusRange[1] > 0
+                    radiusRange && (radiusRange[0] > 0 || radiusRange[1] > 0)
                         ? {
                               min: radiusRange[0],
                               max: radiusRange[1],
                           }
                         : undefined,
                 stat_radius_damage_falloff:
-                    radiusDamageFalloffRange[0] > 0 || radiusDamageFalloffRange[1] > 0
+                    radiusDamageFalloffRange && (radiusDamageFalloffRange[0] > 0 || radiusDamageFalloffRange[1] > 0)
                         ? {
                               min: radiusDamageFalloffRange[0],
                               max: radiusDamageFalloffRange[1],
                           }
                         : undefined,
                 stat_rate_of_fire:
-                    rateOfFireRange[0] > 0 || rateOfFireRange[1] > 0
+                    rateOfFireRange && (rateOfFireRange[0] > 0 || rateOfFireRange[1] > 0)
                         ? {
                               min: rateOfFireRange[0],
                               max: rateOfFireRange[1],
                           }
                         : undefined,
                 stat_energy_cost:
-                    energyCostRange[0] > 0 || energyCostRange[1] > 0
+                    energyCostRange && (energyCostRange[0] > 0 || energyCostRange[1] > 0)
                         ? {
                               min: energyCostRange[0],
                               max: energyCostRange[1],
                           }
                         : undefined,
                 stat_projectile_speed:
-                    projectileSpeedRange[0] > 0 || projectileSpeedRange[1] > 0
+                    projectileSpeedRange && (projectileSpeedRange[0] > 0 || projectileSpeedRange[1] > 0)
                         ? {
                               min: projectileSpeedRange[0],
                               max: projectileSpeedRange[1],
                           }
                         : undefined,
                 stat_spread:
-                    spreadRange[0] > 0 || spreadRange[1] > 0
+                    spreadRange && (spreadRange[0] > 0 || spreadRange[1] > 0)
                         ? {
                               min: spreadRange[0],
                               max: spreadRange[1],
@@ -317,16 +356,16 @@ export const WeaponsHangar = () => {
                 pageSize: pageSize.toString(),
                 weapon_types: weaponTypes.join("||"),
                 equipped_statuses: equippedStatuses.join("||"),
-                ammo: ammoRange.join("||"),
-                damage: damageRange.join("||"),
-                damageFalloff: damageFalloffRange.join("||"),
-                damageFalloffRate: damageFalloffRateRange.join("||"),
-                radius: radiusRange.join("||"),
-                radiusDamageFalloff: radiusDamageFalloffRange.join("||"),
-                rateOfFire: rateOfFireRange.join("||"),
-                energyCost: energyCostRange.join("||"),
-                projectileSpeed: projectileSpeedRange.join("||"),
-                spread: spreadRange.join("||"),
+                ammo: ammoRange?.join("||"),
+                damage: damageRange?.join("||"),
+                damageFalloff: damageFalloffRange?.join("||"),
+                damageFalloffRate: damageFalloffRateRange?.join("||"),
+                radius: radiusRange?.join("||"),
+                radiusDamageFalloff: radiusDamageFalloffRange?.join("||"),
+                rateOfFire: rateOfFireRange?.join("||"),
+                energyCost: energyCostRange?.join("||"),
+                projectileSpeed: projectileSpeedRange?.join("||"),
+                spread: spreadRange?.join("||"),
                 search,
             })
 
@@ -458,19 +497,20 @@ export const WeaponsHangar = () => {
     return (
         <Stack direction="row" spacing="1rem" sx={{ height: "100%" }}>
             <SortAndFilters
+                key={sortFilterReRender.toString()}
                 initialSearch={search}
                 onSetSearch={setSearch}
                 chipFilters={[weaponTypeFilterSection.current, weaponEquippedFilterSection.current]}
                 sliderRangeFilters={[
-                    ammoRangeFilter.current,
+                    // ammoRangeFilter.current,
                     damageRangeFilter.current,
-                    damageFalloffRangeFilter.current,
-                    damageFalloffRateRangeFilter.current,
+                    // damageFalloffRangeFilter.current,
+                    // damageFalloffRateRangeFilter.current,
                     radiusRangeFilter.current,
-                    radiusDamageFalloffRangeFilter.current,
+                    // radiusDamageFalloffRangeFilter.current,
                     rateOfFireRangeFilter.current,
                     energyCostRangeFilter.current,
-                    projectileSpeedRangeFilter.current,
+                    // projectileSpeedRangeFilter.current,
                     spreadRangeFilter.current,
                 ]}
                 changePage={changePage}
@@ -488,7 +528,32 @@ export const WeaponsHangar = () => {
             >
                 <Stack sx={{ position: "relative", height: "100%" }}>
                     <Stack sx={{ flex: 1 }}>
-                        <PageHeader title="weapons" description="Your weapons." imageUrl={WarMachineIconPNG} />
+                        <PageHeader title="weapons" description="Your weapons." imageUrl={WarMachineIconPNG}>
+                            <Box sx={{ ml: "auto !important", pr: "2rem" }}>
+                                <FancyButton
+                                    clipThingsProps={{
+                                        clipSize: "9px",
+                                        backgroundColor: colors.gold,
+                                        opacity: 1,
+                                        border: { borderColor: colors.gold, borderThickness: "2px" },
+                                        sx: { position: "relative" },
+                                    }}
+                                    sx={{ px: "1.6rem", py: ".6rem", color: "#000000" }}
+                                    href={HANGAR_PAGE}
+                                    target="_blank"
+                                >
+                                    <Typography
+                                        variant="caption"
+                                        sx={{
+                                            color: "#000000",
+                                            fontFamily: fonts.nostromoBlack,
+                                        }}
+                                    >
+                                        WALKABLE HANGAR
+                                    </Typography>
+                                </FancyButton>
+                            </Box>
+                        </PageHeader>
 
                         <TotalAndPageSizeOptions
                             countItems={weapons?.length}

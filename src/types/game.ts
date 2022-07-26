@@ -4,7 +4,7 @@ export interface FactionsAll {
     [faction_id: string]: Faction
 }
 
-export type BribeStage = "BRIBE" | "LOCATION_SELECT" | "COOLDOWN" | "HOLD"
+export type BribeStage = "OPT_IN" | "LOCATION_SELECT" | "COOLDOWN" | "HOLD"
 
 export interface ViewerLiveCount {
     red_mountain: number
@@ -85,6 +85,7 @@ export interface BattleAbility {
 }
 
 export interface GameAbility {
+    id: string
     game_client_ability_id: number
     identity: string
     label: string
@@ -123,8 +124,7 @@ export interface PlayerAbility {
 
 export interface SaleAbility {
     id: string
-    current_price: string
-    sale_limit: number
+    blueprint_id: string
     amount_sold: number
     ability: BlueprintPlayerAbility
 }

@@ -33,7 +33,7 @@ export const GameContainer = createContainer(() => {
     // Subscribe for game settings
     useGameServerSubscription<GameSettingsResponse | undefined>(
         {
-            URI: "/battle",
+            URI: "/public/game_settings",
             key: GameServerKeys.SubGameSettings,
         },
         (payload) => {
@@ -65,7 +65,7 @@ export const GameContainer = createContainer(() => {
     // Subscirbe on current voting state
     useGameServerSubscription<BribeStageResponse | undefined>(
         {
-            URI: "/battle/bribe_stage",
+            URI: "/public/bribe_stage",
             key: GameServerKeys.SubBribeStageUpdated,
         },
         (payload) => {

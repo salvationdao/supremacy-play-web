@@ -4,7 +4,7 @@ import { useCallback, useMemo, useState } from "react"
 import { ClipThing } from "../.."
 import { useGame } from "../../../containers"
 import { shadeColor } from "../../../helpers"
-import { useGameServerCommandsFaction, useGameServerSubscriptionAbilityFaction } from "../../../hooks/useGameServer"
+import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { GameAbility, GameAbilityProgress } from "../../../types"
 import { ProgressBar } from "../../Common/ProgressBar"
@@ -40,9 +40,9 @@ export const FactionAbilityItem = ({ gameAbility, abilityMaxPrice, clipSlantSize
     const { identity } = gameAbility
 
     // Listen on the progress of the votes
-    useGameServerSubscriptionAbilityFaction<GameAbilityProgress | undefined>(
+    useGameServerSubscriptionFaction<GameAbilityProgress | undefined>(
         {
-            URI: progressWsURI || "/faction",
+            URI: progressWsURI || "/faction_ability",
             key: GameServerKeys.SubAbilityProgress,
         },
         (payload) => {
@@ -104,7 +104,7 @@ interface InnerProps {
     onContribute: (c: BigNumber, p: number) => void
 }
 
-export const FactionAbilityItemInner = ({ gameAbility, initialTargetCost, clipSlantSize, currentSups, supsCost, isVoting, onContribute }: InnerProps) => {
+const FactionAbilityItemInner = ({ gameAbility, initialTargetCost, clipSlantSize, currentSups, supsCost, isVoting, onContribute }: InnerProps) => {
     const { label, colour, text_colour, image_url, description } = gameAbility
 
     const backgroundColor = useMemo(() => shadeColor(colour, -75), [colour])

@@ -1,11 +1,11 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material"
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 import { ClipThing } from "../../.."
 import { SvgStats } from "../../../../assets"
 import { useSnackbar } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
 import { getRarityDeets } from "../../../../helpers"
-import { useGameServerCommandsFaction, useGameServerCommandsUser } from "../../../../hooks/useGameServer"
+import { useGameServerCommandsUser, useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { fonts } from "../../../../theme/theme"
 import { MechDetails } from "../../../../types"
@@ -75,26 +75,21 @@ export const WarMachineHangarDetailsInner = ({
 }: WarMachineHangarDetailsInnerProps) => {
     const { newSnackbarMessage } = useSnackbar()
     const theme = useTheme()
-    const { send } = useGameServerCommandsFaction("/faction_commander")
     const { send: userSend } = useGameServerCommandsUser("/user_commander")
     const [mechDetails, setMechDetails] = useState<MechDetails>()
 
-    const rarityDeets = useMemo(() => getRarityDeets(mechDetails?.tier || ""), [mechDetails])
+    const rarityDeets = useMemo(() => getRarityDeets(mechDetails?.chassis_skin?.tier || mechDetails?.tier || ""), [mechDetails])
 
-    useEffect(() => {
-        ;(async () => {
-            try {
-                const resp = await send<MechDetails>(GameServerKeys.GetMechDetails, {
-                    mech_id: mechID,
-                })
-
-                if (!resp) return
-                setMechDetails(resp)
-            } catch (e) {
-                console.error(e)
-            }
-        })()
-    }, [mechID, send])
+    useGameServerSubscriptionFaction<MechDetails>(
+        {
+            URI: `/mech/${mechID}/details`,
+            key: GameServerKeys.GetMechDetails,
+        },
+        (payload) => {
+            if (!payload) return
+            setMechDetails(payload)
+        },
+    )
 
     const renameMech = useCallback(
         async (newName: string) => {
@@ -142,7 +137,7 @@ export const WarMachineHangarDetailsInner = ({
                 <Stack sx={{ height: "100%" }}>
                     <ClipThing clipSize="10px" corners={{ topRight: true }} opacity={0.7} sx={{ flexShrink: 0 }}>
                         <Box sx={{ position: "relative", borderBottom: `${primaryColor}60 2.2px solid` }}>
-                            <MediaPreview imageUrl={avatarUrl || imageUrl} objectFit="cover" objectPosition="50% 40%" />
+                            <MediaPreview imageUrl={avatarUrl || imageUrl} objectFit="cover" objectPosition="50% 40%" sx={{ minHeight: "20rem" }} />
 
                             <Box sx={{ position: "absolute", bottom: ".8rem", left: "1.2rem", minWidth: "10rem", backgroundColor: `${backgroundColor}DF` }}>
                                 <MechGeneralStatus mechID={mechID} />
@@ -242,7 +237,6 @@ export const WarMachineHangarDetailsInner = ({
                     borderColor: primaryColor,
                     borderThickness: ".3rem",
                 }}
-                opacity={0.7}
                 backgroundColor={backgroundColor}
                 sx={{ height: "100%", flex: 1 }}
             >

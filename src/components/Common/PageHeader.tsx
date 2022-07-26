@@ -9,9 +9,12 @@ interface PageHeaderProps {
     children?: ReactNode
     smallSize?: boolean
     primaryColor?: string
+
+    imageHeight?: string
+    imageWidth?: string
 }
 
-export const PageHeader = ({ title, description, imageUrl, children, smallSize, primaryColor }: PageHeaderProps) => {
+export const PageHeader = ({ title, description, imageUrl, children, smallSize, primaryColor, imageHeight, imageWidth }: PageHeaderProps) => {
     return (
         <Stack
             direction="row"
@@ -36,8 +39,8 @@ export const PageHeader = ({ title, description, imageUrl, children, smallSize, 
                             alignSelf: "flex-start",
                             flexShrink: 0,
                             mr: "1.6rem",
-                            width: "7rem",
-                            height: "5.2rem",
+                            width: imageWidth || "7rem",
+                            height: imageHeight || "5.2rem",
                             background: `url(${imageUrl})`,
                             backgroundRepeat: "no-repeat",
                             backgroundPosition: "center",
