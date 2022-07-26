@@ -86,7 +86,7 @@ export const DeviceRegisterModal = ({ onClose }: DeviceRegisterModalProps) => {
                                 1. Install the Supremacy companion app for Android or iOS.
                             </Typography>
                             <Typography sx={{ lineHeight: 1, fontWeight: "fontWeightBold", paddingLeft: 2 }}>
-                                {`2. In the app, click on the "Scan QR" button.`}
+                                {`2. In the app, click the "Scan QR" button.`}
                             </Typography>
                             <Typography sx={{ lineHeight: 1, fontWeight: "fontWeightBold", paddingLeft: 2 }}>3. Scan the image below.</Typography>
 

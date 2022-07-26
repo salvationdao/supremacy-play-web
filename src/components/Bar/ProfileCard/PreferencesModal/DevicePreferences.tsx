@@ -1,5 +1,5 @@
-import { Box, Checkbox, CircularProgress, Stack, Switch, TextField, Typography } from "@mui/material"
-import { Dispatch, useEffect, useState } from "react"
+import { Box, Stack, Typography } from "@mui/material"
+import { useEffect, useState } from "react"
 import { FancyButton } from "../../.."
 import { SvgInfoCircular } from "../../../../assets"
 import { useSnackbar } from "../../../../containers"
@@ -37,7 +37,7 @@ export const DevicePreferences = ({ toggleAddDeviceModal }: DevicePreferencesPro
 
     // Add device
     const addDevice = () => {
-        //todo: Check if user has selected a faction
+        //todo: Check the user has selected a faction
 
         // If user has a faction toggle the add device modal
         toggleAddDeviceModal()
@@ -47,7 +47,7 @@ export const DevicePreferences = ({ toggleAddDeviceModal }: DevicePreferencesPro
         <Stack spacing=".3rem" sx={{ px: "1.5rem", py: ".8rem", backgroundColor: "#FFFFFF08" }}>
             <Stack direction="row" alignItems="center" spacing=".7rem">
                 <Typography gutterBottom sx={{ color: colors.lightGrey }}>
-                    DEVICES
+                    CONNECTED DEVICES
                 </Typography>
 
                 {/*todo: add tooltip helper info*/}
@@ -55,7 +55,7 @@ export const DevicePreferences = ({ toggleAddDeviceModal }: DevicePreferencesPro
                     placement="right-start"
                     text={
                         <Box>
-                            <Typography sx={{ display: "inline" }}>ADD INFO HERE</Typography>
+                            <Typography sx={{ display: "inline" }}>Devices that are connected to the Supremacy companion app.</Typography>
                         </Box>
                     }
                 >
