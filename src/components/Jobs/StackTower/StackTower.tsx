@@ -89,7 +89,7 @@ const StackTowerInner = () => {
                         left: 0,
                         right: 0,
                         textAlign: "center",
-                        fontFamily: fonts.nostromoHeavy,
+                        fontFamily: fonts.nostromoBold,
                         transition: "all .4s ease",
                         transform:
                             gameState === GameState.Playing || gameState === GameState.Resetting

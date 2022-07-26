@@ -133,8 +133,8 @@ export class Game {
             this.stage.add(fallingBlock.mesh)
         }
 
-        this.score = this.blocks.length - 1
-        this.setScore(this.blocks.length - 1)
+        this.score = Math.max(this.blocks.length - 1, 0)
+        this.setScore(this.score)
 
         const newBlock = new NormalBlock(lastBlock)
         this.stage.add(newBlock.mesh)

@@ -18,7 +18,7 @@ export const cameraConfig = {
 export const lightsConfig = [
     {
         type: "DirectionalLight",
-        intensity: 0.5,
+        intensity: 0.8,
         position: [0, 499, 0],
         color: 0xffffff,
     },
