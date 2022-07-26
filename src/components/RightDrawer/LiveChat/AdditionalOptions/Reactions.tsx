@@ -13,30 +13,10 @@ type ReactionState = "none" | "like" | "dislike"
 //currently liked: like(-1) dislikes (-2)
 //currently disliked: like (+2) dislike(+1)
 
-//to be put in the header
-// <Typography
-// sx={{
-//     alignSelf: "center",
-//         flexShrink: 0,
-//         ml: "auto",
-//         color: "#FFFFFF",
-//         opacity: 0.7,
-//         fontSize: smallFontSize,
-// }}
-// >
-// {dateFormatter(sentAt)}
-// </Typography>
-
-//to replace chatmessage
-// <Stack
-// direction={"row"}
-// sx={{ ml: "2.1rem", justifyContent: "space-between" }}
-// >
-// {chatMessage}
+//to place under chatmessage
 // <Box sx={{ flexShrink: 0, alignSelf: "flex-end" }}>
 //     <Reactions fontSize={smallFontSize} />
 // </Box>
-// </Stack>
 
 export const Reactions = ({ fontSize }: ReactionsProps) => {
     const [reaction, setReaction] = useState<ReactionState>("none")
