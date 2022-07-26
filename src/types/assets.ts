@@ -13,6 +13,24 @@ export enum MechStatusEnum {
     BattleReady = "BATTLE_READY",
 }
 
+/*
+CREATE TYPE public."weapon_type" AS ENUM (
+	'Grenade Launcher',
+	'Cannon',
+	'Minigun',
+	'Plasma Gun',
+	'Flak',
+	'Machine Gun',
+	'Flamethrower',
+	'Missile Launcher',
+	'Laser Beam',
+	'Lightning Gun',
+	'BFG',
+	'Rifle',
+	'Sniper Rifle',
+	'Sword');
+*/
+
 export enum WeaponType {
     Cannon = "Cannon",
     Sword = "Sword",
@@ -23,6 +41,11 @@ export enum WeaponType {
     GrenadeLauncher = "Grenade Launcher",
     MachineGun = "Machine Gun",
     Flak = "Flak",
+    Flamethrower = "Flamethrower",
+    LaserBeam = "Laser Beam",
+    LightningGun = "Lightning Gun",
+    BFG = "BFG",
+    Rifle = "Rifle",
 }
 
 export enum AssetItemType {
