@@ -168,8 +168,6 @@ export const PlayerProfilePage = () => {
                 setAboutMe(resp.about_me)
                 newSnackbarMessage("about me updated successfully.", "success")
             } catch (e) {
-                console.log("what")
-
                 let errorMessage = ""
                 if (typeof e === "string") {
                     errorMessage = e

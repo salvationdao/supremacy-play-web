@@ -39,8 +39,6 @@ export const ProfileAvatar = ({ isOwner, primaryColor, backgroundColor, avatarUR
     const [query] = useUrlQuery()
     const { send } = useGameServerCommandsUser("/user_commander")
 
-    console.log("name:", factionName)
-
     const [modalOpen, setModalOpen] = useState(false)
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
