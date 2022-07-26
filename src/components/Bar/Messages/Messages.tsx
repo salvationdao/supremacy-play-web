@@ -84,6 +84,10 @@ export const Messages = () => {
     }, [hideRead, page, pageSize, send, setTotalItems])
 
     useEffect(() => {
+        changePage(1)
+    }, [changePage, hideRead])
+
+    useEffect(() => {
         fetchMessages()
     }, [fetchMessages, lastUpdated])
 
