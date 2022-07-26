@@ -22,9 +22,9 @@ export const MessageItem = ({ message, selected, onSelect }: MessageItemProps) =
                     borderRadius: 0,
                     justifyContent: "start",
                     border: selected ? `${theme.factionTheme.primary}70 1.5px solid` : "none",
-                    backgroundColor: selected ? `${theme.factionTheme.primary}aa` : "transparent",
+                    backgroundColor: selected ? `${theme.factionTheme.primary}55` : "transparent",
                     "&:hover": {
-                        backgroundColor: `${theme.factionTheme.primary}aa`,
+                        backgroundColor: `${theme.factionTheme.primary}55`,
                     },
                 }}
                 onClick={() => onSelect()}

@@ -1,4 +1,4 @@
-import { Badge, Box, FormControlLabel, IconButton, Pagination, Popover, Stack, Switch, Typography } from "@mui/material"
+import { Badge, Box, Button, Divider, FormControlLabel, IconButton, Pagination, Popover, Stack, Switch, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { SvgAnnouncement, SvgDamage1, SvgHistoryClock, SvgListView, SvgMail, SvgWrapperProps } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
@@ -8,6 +8,7 @@ import { GameServerKeys } from "../../../keys"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
 import { SystemMessage, SystemMessageDataType } from "../../../types"
 import { ClipThing } from "../../Common/ClipThing"
+import { FancyButton } from "../../Common/FancyButton"
 import { MessageDisplay } from "./MessageDisplay"
 import { MessageItem } from "./MessageItem"
 
@@ -292,50 +293,214 @@ export const Messages = () => {
                     sx={{
                         height: "600px",
                         maxHeight: "100vh",
-                        width: "800px",
+                        width: "1000px",
                         maxWidth: "100vw",
                     }}
                 >
-                    <Stack
-                        sx={{
-                            height: "100%",
-                            p: "2rem",
-                        }}
-                        spacing="1rem"
-                    >
+                    <Stack direction="row" p="2rem" height="100%">
                         <Stack
-                            direction="row"
                             sx={{
-                                pb: "1rem",
-                                borderBottom: `${theme.factionTheme.primary}70 1.5px solid`,
+                                height: "100%",
+                                minWidth: "200px",
                             }}
                         >
-                            <Typography variant="h6" sx={{ fontFamily: fonts.nostromoBlack }}>
-                                INBOX
-                            </Typography>
-                            <FormControlLabel
-                                control={<Switch size="small" checked={hideRead} onChange={(e, c) => setHideRead(c)} />}
-                                label="Hide Read"
-                                sx={{
-                                    ml: "auto",
-                                    fontSize: "1rem",
-                                    "& .MuiSwitch-switchBase.Mui-checked": {
-                                        color: theme.factionTheme.primary,
-                                        "&:hover": {
-                                            backgroundColor: `${theme.factionTheme.primary}dd`,
-                                        },
-                                    },
-                                    "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track": {
+                            <Box flex={1}>
+                                <FancyButton
+                                    clipThingsProps={{
+                                        clipSize: "7px",
+                                        opacity: 1,
+                                    }}
+                                    size="large"
+                                    sx={{
+                                        fontSize: "2rem",
+                                        px: "1.2rem",
                                         backgroundColor: theme.factionTheme.primary,
-                                    },
+                                    }}
+                                >
+                                    Compose Message
+                                </FancyButton>
+                            </Box>
+                            <Stack
+                                spacing="1rem"
+                                sx={{
+                                    minHeight: "50%",
+                                    maxHeight: "180px",
                                 }}
-                            />
+                            >
+                                <Box
+                                    sx={{
+                                        pb: "1rem",
+                                        borderBottom: `${theme.factionTheme.primary}70 1.5px solid`,
+                                    }}
+                                >
+                                    <Typography variant="h6" sx={{ fontFamily: fonts.nostromoBlack }}>
+                                        RECENT CHATS
+                                    </Typography>
+                                </Box>
+                                <Stack spacing=".5rem" sx={{
+                                    overflowY: "auto",
+                                    overflowX: "hidden",
+                                    direction: "ltr",
+                                    scrollbarWidth: "none",
+                                    "::-webkit-scrollbar": {
+                                        width: ".4rem",
+                                    },
+                                    "::-webkit-scrollbar-track": {
+                                        background: "#FFFFFF15",
+                                        borderRadius: 3,
+                                    },
+                                    "::-webkit-scrollbar-thumb": {
+                                        background: theme.factionTheme.primary,
+                                        borderRadius: 3,
+                                    },
+                                }}>
+                                    <Button
+                                        sx={{
+                                            width: "100%",
+                                            borderRadius: 0,
+                                            justifyContent: "start",
+                                            "&:hover": {
+                                                backgroundColor: `${theme.factionTheme.primary}55`,
+                                            },
+                                        }}
+                                    >
+                                        <Typography>Dude</Typography>
+                                    </Button>
+                                    <Button
+                                        sx={{
+                                            width: "100%",
+                                            borderRadius: 0,
+                                            justifyContent: "start",
+                                            "&:hover": {
+                                                backgroundColor: `${theme.factionTheme.primary}55`,
+                                            },
+                                        }}
+                                    >
+                                        <Typography>Dude</Typography>
+                                    </Button>
+                                    <Button
+                                        sx={{
+                                            width: "100%",
+                                            borderRadius: 0,
+                                            justifyContent: "start",
+                                            "&:hover": {
+                                                backgroundColor: `${theme.factionTheme.primary}55`,
+                                            },
+                                        }}
+                                    >
+                                        <Typography>Dude</Typography>
+                                    </Button>
+                                    <Button
+                                        sx={{
+                                            width: "100%",
+                                            borderRadius: 0,
+                                            justifyContent: "start",
+                                            "&:hover": {
+                                                backgroundColor: `${theme.factionTheme.primary}55`,
+                                            },
+                                        }}
+                                    >
+                                        <Typography>Dude</Typography>
+                                    </Button>
+                                    <Button
+                                        sx={{
+                                            width: "100%",
+                                            borderRadius: 0,
+                                            justifyContent: "start",
+                                            "&:hover": {
+                                                backgroundColor: `${theme.factionTheme.primary}55`,
+                                            },
+                                        }}
+                                    >
+                                        <Typography>Dude</Typography>
+                                    </Button>
+                                    <Button
+                                        sx={{
+                                            width: "100%",
+                                            borderRadius: 0,
+                                            justifyContent: "start",
+                                            "&:hover": {
+                                                backgroundColor: `${theme.factionTheme.primary}55`,
+                                            },
+                                        }}
+                                    >
+                                        <Typography>Dude</Typography>
+                                    </Button>
+                                    <Button
+                                        sx={{
+                                            width: "100%",
+                                            borderRadius: 0,
+                                            justifyContent: "start",
+                                            "&:hover": {
+                                                backgroundColor: `${theme.factionTheme.primary}55`,
+                                            },
+                                        }}
+                                    >
+                                        <Typography>Dude</Typography>
+                                    </Button>
+                                    <Button
+                                        sx={{
+                                            width: "100%",
+                                            borderRadius: 0,
+                                            justifyContent: "start",
+                                            "&:hover": {
+                                                backgroundColor: `${theme.factionTheme.primary}55`,
+                                            },
+                                        }}
+                                    >
+                                        <Typography>Dude</Typography>
+                                    </Button>
+                                </Stack>
+                            </Stack>
                         </Stack>
-                        <Stack direction="row" alignItems="center" spacing=".4rem" sx={{ opacity: 0.5, ":hover": { opacity: 1 } }}>
-                            <SvgHistoryClock size="1.2rem" />
-                            <Typography>Last updated: {lastUpdated.toISOString()}</Typography>
+                        <Divider
+                            orientation="vertical"
+                            sx={{
+                                mx: "1rem",
+                                backgroundColor: `${theme.factionTheme.primary}70`,
+                            }}
+                        />
+                        <Stack
+                            sx={{
+                                flex: 1,
+                                height: "100%",
+                            }}
+                            spacing="1rem"
+                        >
+                            <Stack
+                                direction="row"
+                                sx={{
+                                    pb: "1rem",
+                                    borderBottom: `${theme.factionTheme.primary}70 1.5px solid`,
+                                }}
+                            >
+                                <Typography variant="h6" sx={{ fontFamily: fonts.nostromoBlack }}>
+                                    INBOX
+                                </Typography>
+                                <FormControlLabel
+                                    control={<Switch size="small" checked={hideRead} onChange={(e, c) => setHideRead(c)} />}
+                                    label="Hide Read"
+                                    sx={{
+                                        ml: "auto",
+                                        fontSize: "1rem",
+                                        "& .MuiSwitch-switchBase.Mui-checked": {
+                                            color: theme.factionTheme.primary,
+                                            "&:hover": {
+                                                backgroundColor: `${theme.factionTheme.primary}dd`,
+                                            },
+                                        },
+                                        "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track": {
+                                            backgroundColor: theme.factionTheme.primary,
+                                        },
+                                    }}
+                                />
+                            </Stack>
+                            <Stack direction="row" alignItems="center" spacing=".4rem" sx={{ opacity: 0.5, ":hover": { opacity: 1 } }}>
+                                <SvgHistoryClock size="1.2rem" />
+                                <Typography>Last updated: {lastUpdated.toISOString()}</Typography>
+                            </Stack>
+                            {content}
                         </Stack>
-                        {content}
                     </Stack>
                 </ClipThing>
             </Popover>
