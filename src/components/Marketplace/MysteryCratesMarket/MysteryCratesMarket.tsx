@@ -50,7 +50,7 @@ export const MysteryCratesMarket = () => {
     }, [isGridView])
 
     // Filters and sorts
-    const [isFiltersExpanded, toggleIsFiltersExpanded] = useToggle(localStorage.getItem("isFiltersExpanded") === "true")
+    const [isFiltersExpanded, toggleIsFiltersExpanded] = useToggle(localStorage.getItem("isCratesMarketFiltersExpanded") === "true")
     const [search, setSearch] = useState("")
     const [sort, setSort] = useState<string>(query.get("sort") || SortTypeLabel.CreateTimeNewestFirst)
     const [status, setStatus] = useState<string[]>((query.get("statuses") || undefined)?.split("||") || [])
@@ -61,7 +61,7 @@ export const MysteryCratesMarket = () => {
     )
 
     useEffect(() => {
-        localStorage.setItem("isFiltersExpanded", isFiltersExpanded.toString())
+        localStorage.setItem("isCratesMarketFiltersExpanded", isFiltersExpanded.toString())
     }, [isFiltersExpanded])
 
     // Filters

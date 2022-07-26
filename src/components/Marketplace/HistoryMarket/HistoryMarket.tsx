@@ -38,7 +38,7 @@ export const HistoryMarket = () => {
         pageSize: parseString(query.get("pageSize"), 10),
         page: parseString(query.get("page"), 1),
     })
-    const [isFiltersExpanded, toggleIsFiltersExpanded] = useToggle(localStorage.getItem("isFiltersExpanded") === "true")
+    const [isFiltersExpanded, toggleIsFiltersExpanded] = useToggle(localStorage.getItem("isHistoryMarketFiltersExpanded") === "true")
     const [isGridView, toggleIsGridView] = useToggle(localStorage.getItem("marketHistoryGrid") === "true")
 
     useEffect(() => {
@@ -46,7 +46,7 @@ export const HistoryMarket = () => {
     }, [isGridView])
 
     useEffect(() => {
-        localStorage.setItem("isFiltersExpanded", isFiltersExpanded.toString())
+        localStorage.setItem("isHistoryMarketFiltersExpanded", isFiltersExpanded.toString())
     }, [isFiltersExpanded])
 
     // Filters and sorts

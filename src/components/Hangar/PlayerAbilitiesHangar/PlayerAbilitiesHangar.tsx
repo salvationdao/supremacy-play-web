@@ -31,7 +31,7 @@ export const PlayerAbilitiesHangar = () => {
     })
 
     // Filters
-    const [isFiltersExpanded, toggleIsFiltersExpanded] = useToggle(localStorage.getItem("isFiltersExpanded") === "true")
+    const [isFiltersExpanded, toggleIsFiltersExpanded] = useToggle(localStorage.getItem("isPlayerAbilitiesFiltersExpanded") === "true")
     const [search, setSearch] = useState("")
     const [locationSelectTypes, setLocationSelectTypes] = useState<string[]>((query.get("abilityTypes") || undefined)?.split("||") || [])
     const locationSelectTypeFilterSection = useRef<ChipFilter>({
@@ -51,7 +51,7 @@ export const PlayerAbilitiesHangar = () => {
     })
 
     useEffect(() => {
-        localStorage.setItem("isFiltersExpanded", isFiltersExpanded.toString())
+        localStorage.setItem("isPlayerAbilitiesFiltersExpanded", isFiltersExpanded.toString())
     }, [isFiltersExpanded])
 
     useGameServerSubscriptionUser<PlayerAbility[]>(

@@ -67,7 +67,7 @@ export const WeaponsHangar = () => {
     })
 
     // Filters and sorts
-    const [isFiltersExpanded, toggleIsFiltersExpanded] = useToggle(localStorage.getItem("isFiltersExpanded") === "true")
+    const [isFiltersExpanded, toggleIsFiltersExpanded] = useToggle(localStorage.getItem("isWeaponsHangarFiltersExpanded") === "true")
     const [search, setSearch] = useState("")
     const [weaponTypes, setWeaponTypes] = useState<string[]>((query.get("weapon_types") || undefined)?.split("||") || [])
     const [equippedStatuses, setEquippedStatuses] = useState<string[]>((query.get("equipped_status") || undefined)?.split("||") || [])
@@ -108,7 +108,7 @@ export const WeaponsHangar = () => {
     }, [isGridView])
 
     useEffect(() => {
-        localStorage.setItem("isFiltersExpanded", isFiltersExpanded.toString())
+        localStorage.setItem("isWeaponsHangarFiltersExpanded", isFiltersExpanded.toString())
     }, [isFiltersExpanded])
 
     const weaponTypeFilterSection = useRef<ChipFilter>({
