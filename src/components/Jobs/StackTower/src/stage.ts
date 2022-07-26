@@ -11,6 +11,8 @@ export class Stage {
     constructor() {
         // container
         this.container = document.getElementById("game")
+        const width = this.container?.clientWidth || 200
+        const height = this.container?.clientHeight || 200
 
         // renderer
         this.renderer = new THREE.WebGLRenderer({
@@ -18,7 +20,7 @@ export class Stage {
             alpha: false,
         })
 
-        this.renderer.setSize(window.innerWidth, window.innerHeight)
+        this.renderer.setSize(width, height)
         this.renderer.setClearColor("#D0CBC7", 1)
         this.container && this.container.appendChild(this.renderer.domElement)
 
@@ -26,7 +28,7 @@ export class Stage {
         this.scene = new THREE.Scene()
 
         // camera
-        const aspect = window.innerWidth / window.innerHeight
+        const aspect = width / height
         const depth = cameraConfig.depth
         this.camera = new THREE.OrthographicCamera(-depth * aspect, depth * aspect, depth, -depth, cameraConfig.near, cameraConfig.far)
         this.camera.position.fromArray(cameraConfig.position)
@@ -53,12 +55,14 @@ export class Stage {
     }
 
     onResize() {
+        const width = this.container?.clientWidth || 200
+        const height = this.container?.clientHeight || 200
         const viewSize = 30
-        this.renderer.setSize(window.innerWidth, window.innerHeight)
-        this.camera.left = window.innerWidth / -viewSize
-        this.camera.right = window.innerWidth / viewSize
-        this.camera.top = window.innerHeight / viewSize
-        this.camera.bottom = window.innerHeight / -viewSize
+        this.renderer.setSize(width, height)
+        this.camera.left = width / -viewSize
+        this.camera.right = width / viewSize
+        this.camera.top = height / viewSize
+        this.camera.bottom = height / -viewSize
         this.camera.updateProjectionMatrix()
     }
 

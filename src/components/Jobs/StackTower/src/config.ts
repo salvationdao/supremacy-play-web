@@ -2,12 +2,9 @@ export const blockConfig = {
     initWidth: 10, // Initial width of the box (x axis)
     initHeight: 2, // Initial height of the box (y axis)
     initDepth: 10, // Initial depth of the box (z axis)
-
-    initColor: 0xad6c86, // Initial color
-
     initSpeed: 0.1, // Initial moving speed
     acceleration: 0.005, // The acceleration, the box should move faster and faster
-    maxSpeed: 2, // The upperbound of the box's speed
+    maxSpeed: 2, // The upper bound of the box's speed
 }
 
 export const cameraConfig = {
