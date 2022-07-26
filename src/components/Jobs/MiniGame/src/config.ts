@@ -1,4 +1,4 @@
-export const block = {
+export const blockConfig = {
     initWidth: 10, // Initial width of the box (x axis)
     initHeight: 2, // Initial height of the box (y axis)
     initDepth: 10, // Initial depth of the box (z axis)
@@ -10,7 +10,7 @@ export const block = {
     maxSpeed: 2, // The upperbound of the box's speed
 }
 
-export const camera = {
+export const cameraConfig = {
     depth: 20,
     near: -100,
     far: 1000,
@@ -18,7 +18,7 @@ export const camera = {
     lookAt: [0, 0, 0],
 }
 
-export const lights = [
+export const lightsConfig = [
     {
         type: "DirectionalLight",
         intensity: 0.5,

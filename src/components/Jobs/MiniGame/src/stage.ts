@@ -1,6 +1,6 @@
 import gsap from "gsap"
 import * as THREE from "three"
-import { camera, lights } from "./config"
+import { cameraConfig, lightsConfig } from "./config"
 
 export class Stage {
     container: HTMLElement | null
@@ -26,7 +26,6 @@ export class Stage {
         this.scene = new THREE.Scene()
 
         // camera
-        const cameraConfig = camera
         const aspect = window.innerWidth / window.innerHeight
         const depth = cameraConfig.depth
         this.camera = new THREE.OrthographicCamera(-depth * aspect, depth * aspect, depth, -depth, cameraConfig.near, cameraConfig.far)
@@ -34,7 +33,6 @@ export class Stage {
         this.camera.lookAt(new THREE.Vector3().fromArray(cameraConfig.lookAt))
 
         //light
-        const lightsConfig = lights
         lightsConfig.forEach((lightConfig) => {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const LightClass = THREE[lightConfig.type as keyof typeof THREE] as any

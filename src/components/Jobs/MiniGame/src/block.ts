@@ -1,5 +1,5 @@
 import * as THREE from "three"
-import { block } from "./config"
+import { blockConfig } from "./config"
 
 export interface Dimension {
     width: number
@@ -14,11 +14,11 @@ interface Position {
 
 export class Block {
     MOVE_AMOUNT: number
+    direction: number
+    speed: number
     dimension: Dimension
     position: Position
     color: THREE.Color
-    speed: number
-    direction: number
     colorOffset: number
     material: THREE.MeshToonMaterial
     axis: string | null
@@ -27,12 +27,12 @@ export class Block {
     constructor(lastBlock?: { dimension: Dimension; position: Position; color: THREE.Color; axis: string | null }, shouldReplace = false) {
         this.MOVE_AMOUNT = 12
 
+        this.speed = 0
+        this.direction = 0
         this.dimension = { width: 0, height: 0, depth: 0 }
         this.position = { x: 0, y: 0, z: 0 }
         let color = null
         let axis = null
-
-        const blockConfig = block
 
         // set the dimensions from the target block, or defaults.
         let height, width, depth
@@ -121,13 +121,8 @@ export class Block {
 }
 
 export class NormalBlock extends Block {
-    direction: number
-    speed: number
-
     constructor(lastBlock: { dimension: Dimension; position: Position; color: THREE.Color; axis: string | null }, shouldReplace = false) {
         super(lastBlock, shouldReplace)
-        this.direction = 0
-        this.speed = 0
     }
 
     reverseDirection() {
@@ -139,14 +134,13 @@ export class NormalBlock extends Block {
         if (value > this.MOVE_AMOUNT || value < -this.MOVE_AMOUNT) {
             this.reverseDirection()
         }
+
         this.position[this.axis as keyof typeof this.position] += this.direction + this.direction * speed
         this.mesh.position[this.axis as keyof typeof this.position] = this.position[this.axis as keyof typeof this.position]
     }
 }
 
 export class FallingBlock extends Block {
-    direction: number
-
     constructor(lastBlock: { dimension: Dimension; position: Position; color: THREE.Color; axis: string | null }) {
         super(lastBlock, true)
         this.speed *= 2
