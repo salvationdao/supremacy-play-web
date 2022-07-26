@@ -240,8 +240,6 @@ export const PlayerProfilePage = () => {
         )
     }
 
-    console.log("this be faction", profile.faction)
-
     return (
         <Stack
             direction="column"
