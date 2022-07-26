@@ -40,7 +40,7 @@ export const Bar = () => {
                 transition: `all ${DRAWER_TRANSITION_DURATION / 1000}s`,
             }}
         >
-            <BarContent userID={userID} user={user}/>
+            <BarContent userID={userID} user={user} />
         </Stack>
     )
 }
