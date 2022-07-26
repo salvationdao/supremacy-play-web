@@ -207,7 +207,7 @@ export const ProfileAvatar = ({ isOwner, primaryColor, backgroundColor, avatarUR
                 </Stack>
             </Stack>
         )
-    }, [loadError, avatars, isLoading, primaryColor, updatehHandler])
+    }, [loadError, avatars, isLoading, primaryColor, updatehHandler, factionName])
 
     return (
         <Stack
