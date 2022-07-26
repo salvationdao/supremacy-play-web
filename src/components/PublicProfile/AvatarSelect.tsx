@@ -1,10 +1,11 @@
-import { Avatar, Box, CircularProgress, Modal, Pagination, Stack, Typography } from "@mui/material"
-import { useCallback, useEffect, useMemo, useState } from "react"
-import { EmptyWarMachinesPNG, SvgEdit } from "../../assets"
+import { Avatar, Box, CircularProgress, Modal, Pagination, Stack, Tab, Tabs, Typography } from "@mui/material"
+import { SyntheticEvent, useCallback, useEffect, useMemo, useState } from "react"
+import { EmptyWarMachinesPNG, HairPNG, HeadPNG, SvgEdit } from "../../assets"
 import { parseString } from "../../helpers"
 import { usePagination, useUrlQuery } from "../../hooks"
 import { useGameServerCommandsUser } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
+import { HANGAR_TABS } from "../../pages"
 import { colors, fonts, siteZIndex } from "../../theme/theme"
 import { ClipThing } from "../Common/ClipThing"
 import { FancyButton } from "../Common/FancyButton"
@@ -44,6 +45,15 @@ export const ProfileAvatar = ({ isOwner, primaryColor, backgroundColor, avatarUR
     const [submitting, setSubmitting] = useState(false)
 
     const [customAvatarModalOpen, setCustomAvatarModalOpen] = useState(false)
+    const [currentValue, setCurrentValue] = useState<HANGAR_TABS>()
+
+    const handleChange = useCallback(
+        (event: SyntheticEvent, newValue: HANGAR_TABS) => {
+            setCurrentValue(newValue)
+            // history.push(`${ROUTES_MAP.fleet.path.replace(":type", newValue)}${location.hash}`)
+        },
+        [history, location.hash],
+    )
 
     const { page, changePage, setTotalItems, totalPages, pageSize, totalItems, changePageSize } = usePagination({
         pageSize: parseString(query.get("pageSize"), 10),
@@ -417,12 +427,41 @@ export const ProfileAvatar = ({ isOwner, primaryColor, backgroundColor, avatarUR
                                             },
                                         }}
                                     >
-                                        <Box width="50%">
-                                            <h1>left</h1>
+                                        <Box width="600px" sx={{ border: "2px solid red" }}>
+                                            <img src={HeadPNG} alt="" height="500px" style={{ border: "1px solid pink" }} />
+                                            <img
+                                                style={{ border: "1px solid blue", position: "absolute", top: 108, left: 30 }}
+                                                src={HairPNG}
+                                                alt=""
+                                                height="500px"
+                                            />
                                         </Box>
 
                                         <Box width="50%">
-                                            <h1>right</h1>
+                                            <Tabs
+                                                value={currentValue}
+                                                onChange={handleChange}
+                                                variant="scrollable"
+                                                scrollButtons="auto"
+                                                sx={{
+                                                    flexShrink: 0,
+                                                    color: primaryColor,
+                                                    minHeight: 0,
+                                                    ".MuiTab-root": { minHeight: 0, fontSize: "1.3rem", height: "6rem", width: "10rem" },
+                                                    ".Mui-selected": {
+                                                        color: `${primaryColor} !important`,
+                                                        background: `linear-gradient(${primaryColor} 26%, ${primaryColor}BB)`,
+                                                    },
+                                                    ".MuiTabs-indicator": { display: "none" },
+                                                    ".MuiTabScrollButton-root": { display: "none" },
+                                                }}
+                                            >
+                                                <Tab label="FACE SHAPE " value={HANGAR_TABS.WarMachines} />
+
+                                                <Tab label="HAIR" value={HANGAR_TABS.Weapons} />
+
+                                                <Tab label="FACIAL HAIR" value={HANGAR_TABS.Keycards} />
+                                            </Tabs>
                                         </Box>
                                     </Box>
                                 </Stack>
@@ -443,3 +482,16 @@ export const ProfileAvatar = ({ isOwner, primaryColor, backgroundColor, avatarUR
         </Stack>
     )
 }
+
+// player_custom_avatars
+// player_id
+// face_id references faces (id)
+// hair_id references hair (id)
+
+// faces
+// id
+// hue
+
+// hair
+// id
+// hue
