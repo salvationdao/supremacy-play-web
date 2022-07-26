@@ -240,6 +240,8 @@ export const PlayerProfilePage = () => {
         )
     }
 
+    console.log("this be faction", profile.faction)
+
     return (
         <Stack
             direction="column"
@@ -282,6 +284,7 @@ export const PlayerProfilePage = () => {
                                     avatarURL={avatar?.avatar_url || ""}
                                     primaryColor={primaryColor}
                                     backgroundColor={backgroundColor}
+                                    factionName={profile.faction?.label}
                                 />
 
                                 <Stack

@@ -6,6 +6,7 @@ import { usePagination, useUrlQuery } from "../../hooks"
 import { useGameServerCommandsUser } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { colors, fonts, siteZIndex } from "../../theme/theme"
+import { FactionName } from "../../types"
 import { ClipThing } from "../Common/ClipThing"
 import { FancyButton } from "../Common/FancyButton"
 import { PageHeader } from "../Common/PageHeader"
@@ -30,12 +31,15 @@ interface ProfileAvatarProps {
     primaryColor: string
     backgroundColor: string
     avatarURL: string
+    factionName?: string
     updateAvatar: (avatarID: string) => Promise<void>
 }
 
-export const ProfileAvatar = ({ isOwner, primaryColor, backgroundColor, avatarURL, updateAvatar }: ProfileAvatarProps) => {
+export const ProfileAvatar = ({ isOwner, primaryColor, backgroundColor, avatarURL, updateAvatar, factionName }: ProfileAvatarProps) => {
     const [query] = useUrlQuery()
     const { send } = useGameServerCommandsUser("/user_commander")
+
+    console.log("name:", factionName)
 
     const [modalOpen, setModalOpen] = useState(false)
     const [isLoading, setIsLoading] = useState(true)
@@ -161,7 +165,7 @@ export const ProfileAvatar = ({ isOwner, primaryColor, backgroundColor, avatarUR
                                         width: "21rem",
                                         borderRadius: 1,
                                         border: `${primaryColor} 2px solid`,
-                                        backgroundColor: primaryColor,
+                                        backgroundColor: factionName == FactionName.ZaibatsuHeavyIndustries ? "black" : primaryColor,
                                         cursor: "pointer",
                                     }}
                                     variant="square"
@@ -251,7 +255,7 @@ export const ProfileAvatar = ({ isOwner, primaryColor, backgroundColor, avatarUR
                         width: "21rem",
                         borderRadius: 1,
                         border: `${primaryColor} 2px solid`,
-                        backgroundColor: primaryColor,
+                        backgroundColor: factionName == FactionName.ZaibatsuHeavyIndustries ? "black" : primaryColor,
                         cursor: "pointer",
                     }}
                     variant="square"
