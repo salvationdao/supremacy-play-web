@@ -1,7 +1,17 @@
+import { FallingBlock, NormalBlock } from "./block"
 import { Stage } from "./stage"
-import { NormalBlock, FallingBlock } from "./block"
 
 export class Game {
+    STATES: { LOADING: string; PLAYING: string; READY: string; ENDED: string; RESETTING: string }
+    stage: Stage
+    state: string
+    blocks: NormalBlock[]
+    fallingBlocks: FallingBlock[]
+    mainContainer: HTMLElement | null
+    scoreContainer: HTMLElement | null
+    startButton: HTMLElement | null
+    instructions: HTMLElement | null
+
     constructor() {
         this.STATES = {
             LOADING: "loading",
@@ -21,15 +31,13 @@ export class Game {
         this.scoreContainer = document.getElementById("score")
         this.startButton = document.getElementById("start-button")
         this.instructions = document.getElementById("instructions")
-        this.scoreContainer.innerHTML = "0"
-
-        this.music = document.getElementById("music")
+        if (this.scoreContainer) this.scoreContainer.innerHTML = "0"
 
         this.addBlock()
         this.tick()
 
-        for (let key in this.STATES) {
-            this.mainContainer.classList.remove(this.STATES[key])
+        for (const key in this.STATES) {
+            if (this.mainContainer) this.mainContainer.classList.remove(this.STATES[key as keyof typeof this.STATES])
         }
         this.setState(this.STATES.READY)
 
@@ -40,11 +48,11 @@ export class Game {
             }
         })
 
-        document.addEventListener("click", (e) => {
+        document.addEventListener("click", () => {
             this.handleEvent()
         })
 
-        document.addEventListener("touchend", (e) => {
+        document.addEventListener("touchend", () => {
             this.handleEvent()
         })
     }
@@ -53,7 +61,6 @@ export class Game {
         switch (this.state) {
             case this.STATES.READY:
                 this.setState(this.STATES.PLAYING)
-                this.music.play()
                 this.addBlock()
                 break
             case this.STATES.PLAYING:
@@ -64,7 +71,7 @@ export class Game {
                     this.stage.remove(block.mesh)
                 })
                 this.blocks = []
-                this.scoreContainer.innerHTML = "0"
+                if (this.scoreContainer) this.scoreContainer.innerHTML = "0"
                 this.addBlock()
                 this.setState(this.STATES.READY)
                 break
@@ -79,36 +86,33 @@ export class Game {
 
         if (lastBlock && lastToLastBlock) {
             const { axis, dimensionAlongAxis } = lastBlock.getAxis()
-            const distance = lastBlock.position[axis] - lastToLastBlock.position[axis]
-            let position, dimension
-            let positionFalling, dimensionFalling
+            const distance = lastBlock.position[axis as keyof typeof lastBlock.position] - lastToLastBlock.position[axis as keyof typeof lastBlock.position]
+            let positionFalling, position
             const { color } = lastBlock
-            const newLength = lastBlock.dimension[dimensionAlongAxis] - Math.abs(distance)
+            const newLength = lastBlock.dimension[dimensionAlongAxis as keyof typeof lastBlock.dimension] - Math.abs(distance)
 
             if (newLength <= 0) {
                 this.stage.remove(lastBlock.mesh)
                 this.setState(this.STATES.ENDED)
-                this.music.pause()
                 return
             }
 
-            dimension = { ...lastBlock.dimension }
-            dimension[dimensionAlongAxis] = newLength
-
-            dimensionFalling = { ...lastBlock.dimension }
-            dimensionFalling[dimensionAlongAxis] = Math.abs(distance)
+            const dimension = { ...lastBlock.dimension }
+            dimension[dimensionAlongAxis as keyof typeof dimension] = newLength
+            const dimensionFalling = { ...lastBlock.dimension }
+            dimensionFalling[dimensionAlongAxis as keyof typeof lastBlock.dimension] = Math.abs(distance)
 
             if (distance >= 0) {
                 position = lastBlock.position
 
                 positionFalling = { ...lastBlock.position }
-                positionFalling[axis] = lastBlock.position[axis] + newLength
+                positionFalling[axis as keyof typeof positionFalling] = lastBlock.position[axis as keyof typeof lastBlock.position] + newLength
             } else {
                 position = { ...lastBlock.position }
-                position[axis] = lastBlock.position[axis] + Math.abs(distance)
+                position[axis as keyof typeof position] = lastBlock.position[axis as keyof typeof lastBlock.position] + Math.abs(distance)
 
                 positionFalling = { ...lastBlock.position }
-                positionFalling[axis] = lastBlock.position[axis] - Math.abs(distance)
+                positionFalling[axis as keyof typeof positionFalling] = lastBlock.position[axis as keyof typeof lastBlock.position] - Math.abs(distance)
             }
 
             this.blocks.pop()
@@ -122,13 +126,14 @@ export class Game {
                 dimension: dimensionFalling,
                 position: positionFalling,
                 color,
+                axis: null,
             })
 
             this.fallingBlocks.push(fallingBlock)
             this.stage.add(fallingBlock.mesh)
         }
 
-        this.scoreContainer.innerHTML = String(this.blocks.length - 1)
+        if (this.scoreContainer) this.scoreContainer.innerHTML = String(this.blocks.length - 1)
 
         const newBlock = new NormalBlock(lastBlock)
         this.stage.add(newBlock.mesh)
@@ -137,11 +142,11 @@ export class Game {
         this.stage.setCamera(this.blocks.length * 2)
     }
 
-    setState(state) {
+    setState(state: string) {
         const oldState = this.state
-        this.mainContainer.classList.remove(this.state)
+        if (this.mainContainer) this.mainContainer.classList.remove(this.state)
         this.state = state
-        this.mainContainer.classList.add(this.state)
+        if (this.mainContainer) this.mainContainer.classList.add(this.state)
         return oldState
     }
 

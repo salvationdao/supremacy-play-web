@@ -1,9 +1,13 @@
-import * as THREE from "three"
 import gsap from "gsap"
-import { get } from "./helper"
-import { lights, camera } from "./config"
+import * as THREE from "three"
+import { camera, lights } from "./config"
 
 export class Stage {
+    container: HTMLElement | null
+    renderer: THREE.WebGLRenderer
+    scene: THREE.Scene
+    camera: THREE.OrthographicCamera
+
     constructor() {
         // container
         this.container = document.getElementById("game")
@@ -16,7 +20,7 @@ export class Stage {
 
         this.renderer.setSize(window.innerWidth, window.innerHeight)
         this.renderer.setClearColor("#D0CBC7", 1)
-        this.container.appendChild(this.renderer.domElement)
+        this.container && this.container.appendChild(this.renderer.domElement)
 
         // scene
         this.scene = new THREE.Scene()
@@ -32,7 +36,8 @@ export class Stage {
         //light
         const lightsConfig = lights
         lightsConfig.forEach((lightConfig) => {
-            const LightClass = get(THREE, lightConfig.type)
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const LightClass = THREE[lightConfig.type as keyof typeof THREE] as any
             if (LightClass) {
                 const light = new LightClass(lightConfig.color, lightConfig.intensity)
                 light.position.fromArray(lightConfig.position)
@@ -44,13 +49,13 @@ export class Stage {
         this.onResize()
     }
 
-    setCamera(y, speed = 0.3) {
+    setCamera(y: number, speed = 0.3) {
         gsap.to(this.camera.position, { duration: speed, y: y + 4, ease: "power1.easeInOut" })
         gsap.to(this.camera.lookAt, { duration: speed, y: y, ease: "power1.easeInOut" })
     }
 
     onResize() {
-        let viewSize = 30
+        const viewSize = 30
         this.renderer.setSize(window.innerWidth, window.innerHeight)
         this.camera.left = window.innerWidth / -viewSize
         this.camera.right = window.innerWidth / viewSize
@@ -63,11 +68,11 @@ export class Stage {
         this.renderer.render(this.scene, this.camera)
     }
 
-    add(elem) {
+    add(elem: THREE.Object3D<THREE.Event>) {
         this.scene.add(elem)
     }
 
-    remove(elem) {
+    remove(elem: THREE.Object3D<THREE.Event>) {
         this.scene.remove(elem)
     }
 }

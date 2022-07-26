@@ -1,8 +1,25 @@
 import { Box } from "@mui/material"
-import "./style.css"
-import { isWebGLAvailable } from "./lib/WebGL"
-import { Game } from "./src/game"
 import { useEffect } from "react"
+import { Game } from "./src/game"
+import "./style.css"
+
+export const isWebGLAvailable = function () {
+    try {
+        const canvas = document.createElement("canvas")
+        return !!(window.WebGLRenderingContext && (canvas.getContext("webgl") || canvas.getContext("experimental-webgl")))
+    } catch (e) {
+        return false
+    }
+}
+
+export const isWebGL2Available = function () {
+    try {
+        const canvas = document.createElement("canvas")
+        return !!(window.WebGL2RenderingContext && canvas.getContext("webgl2"))
+    } catch (e) {
+        return false
+    }
+}
 
 export const MiniGame = () => {
     useEffect(() => {

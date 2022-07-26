@@ -1,12 +1,34 @@
 import * as THREE from "three"
 import { block } from "./config"
 
+export interface Dimension {
+    width: number
+    height: number
+    depth: number
+}
+interface Position {
+    x: number
+    y: number
+    z: number
+}
+
 export class Block {
-    constructor(lastBlock = null, shouldReplace = false) {
+    MOVE_AMOUNT: number
+    dimension: Dimension
+    position: Position
+    color: THREE.Color
+    speed: number
+    direction: number
+    colorOffset: number
+    material: THREE.MeshToonMaterial
+    axis: string | null
+    mesh: THREE.Mesh<THREE.BoxGeometry, THREE.MeshToonMaterial>
+
+    constructor(lastBlock?: { dimension: Dimension; position: Position; color: THREE.Color; axis: string | null }, shouldReplace = false) {
         this.MOVE_AMOUNT = 12
 
-        this.dimension = {}
-        this.position = {}
+        this.dimension = { width: 0, height: 0, depth: 0 }
+        this.position = { x: 0, y: 0, z: 0 }
         let color = null
         let axis = null
 
@@ -50,13 +72,13 @@ export class Block {
         this.position.z = z
 
         if (axis === null) {
-            let random = Math.random()
+            const random = Math.random()
             axis = random < 0.5 ? "x" : "z"
         }
         this.axis = axis
 
         if (lastBlock && !shouldReplace) {
-            this.position[axis] = (Math.random() > 0.5 ? 1 : -1) * this.MOVE_AMOUNT
+            this.position[axis as keyof typeof this.position] = (Math.random() > 0.5 ? 1 : -1) * this.MOVE_AMOUNT
         }
 
         this.colorOffset = Math.round(Math.random() * 100)
@@ -71,11 +93,11 @@ export class Block {
         this.direction = this.speed
 
         // create block
-        let geometry = new THREE.BoxGeometry(this.dimension.width, this.dimension.height, this.dimension.depth)
+        const geometry = new THREE.BoxGeometry(this.dimension.width, this.dimension.height, this.dimension.depth)
         geometry.applyMatrix4(new THREE.Matrix4().makeTranslation(this.dimension.width / 2, this.dimension.height / 2, this.dimension.depth / 2))
         this.material = new THREE.MeshToonMaterial({
             color: this.color,
-            shading: THREE.FlatShading,
+            // shading: THREE.FlatShading,
         })
         this.mesh = new THREE.Mesh(geometry, this.material)
         this.mesh.position.set(this.position.x, this.position.y, this.position.z)
@@ -89,6 +111,7 @@ export class Block {
                 break
             case "z":
                 dimensionAlongAxis = "depth"
+                break
         }
         return {
             axis: this.axis,
@@ -98,8 +121,13 @@ export class Block {
 }
 
 export class NormalBlock extends Block {
-    constructor(lastBlock, shouldReplace = false) {
+    direction: number
+    speed: number
+
+    constructor(lastBlock: { dimension: Dimension; position: Position; color: THREE.Color; axis: string | null }, shouldReplace = false) {
         super(lastBlock, shouldReplace)
+        this.direction = 0
+        this.speed = 0
     }
 
     reverseDirection() {
@@ -107,24 +135,25 @@ export class NormalBlock extends Block {
     }
 
     tick(speed = 0) {
-        let value = this.position[this.axis]
+        const value = this.position[this.axis as keyof typeof this.position]
         if (value > this.MOVE_AMOUNT || value < -this.MOVE_AMOUNT) {
             this.reverseDirection()
         }
-        this.position[this.axis] += this.direction + this.direction * speed
-        this.mesh.position[this.axis] = this.position[this.axis]
+        this.position[this.axis as keyof typeof this.position] += this.direction + this.direction * speed
+        this.mesh.position[this.axis as keyof typeof this.position] = this.position[this.axis as keyof typeof this.position]
     }
 }
 
 export class FallingBlock extends Block {
-    constructor(lastBlock) {
+    direction: number
+
+    constructor(lastBlock: { dimension: Dimension; position: Position; color: THREE.Color; axis: string | null }) {
         super(lastBlock, true)
         this.speed *= 2
         this.direction = this.speed
     }
 
     tick() {
-        let value = this.position.y
         this.position.y -= Math.abs(this.direction)
         this.mesh.rotation.z += this.direction / 6
         this.mesh.position.y = this.position.y

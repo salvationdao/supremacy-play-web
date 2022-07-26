@@ -21,7 +21,7 @@ export const Logo = React.memo(function Logo() {
         >
             {below1370 && (
                 <IconButton size="small" onClick={() => toggleIsLeftDrawerOpen(true)}>
-                    <SvgHamburger size="2rem" />
+                    <SvgHamburger size="2.3rem" />
                 </IconButton>
             )}
 
