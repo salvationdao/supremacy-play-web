@@ -2,11 +2,11 @@
 import { Box, createTheme, Divider, Stack, ThemeProvider, Typography } from "@mui/material"
 import MuiMarkdown from "mui-markdown"
 import { useMemo } from "react"
-import { useTheme } from "../../../containers/theme"
-import { colors, fonts } from "../../../theme/theme"
-import { SystemMessageDataMechBattleComplete, SystemMessageDataType } from "../../../types"
+import { useTheme } from "../../../../../containers/theme"
+import { colors, fonts } from "../../../../../theme/theme"
+import { SystemMessageDataMechBattleComplete, SystemMessageDataType } from "../../../../../types"
+import { SystemMessageDisplayable } from "../../Messages"
 import { MechBattleCompleteDetails } from "./MechBattleCompleteDetails"
-import { SystemMessageDisplayable } from "./Messages"
 
 export interface MessageDisplayProps {
     message: SystemMessageDisplayable

@@ -1,7 +1,7 @@
 import { Box, Button, Stack, Typography } from "@mui/material"
-import { useTheme } from "../../../containers/theme"
-import { colors } from "../../../theme/theme"
-import { SystemMessageDisplayable } from "./Messages"
+import { useTheme } from "../../../../containers/theme"
+import { colors } from "../../../../theme/theme"
+import { SystemMessageDisplayable } from "../Messages"
 
 export interface MessageItemProps {
     message: SystemMessageDisplayable
