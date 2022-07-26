@@ -4,12 +4,12 @@ import { SvgDisconnected } from "../../assets"
 import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT } from "../../constants"
 import { useAuth, useSupremacy } from "../../containers"
 import { fonts, siteZIndex } from "../../theme/theme"
-import { FeatureName, User } from "../../types"
+import { User } from "../../types"
 import { HowToPlay } from "../HowToPlay/HowToPlay"
 import { Messages } from "./Messages/Messages"
 
 export const Bar = () => {
-    const { userID, user, userHasFeature } = useAuth()
+    const { userID, user } = useAuth()
 
     return (
         <Stack
@@ -40,12 +40,12 @@ export const Bar = () => {
                 transition: `all ${DRAWER_TRANSITION_DURATION / 1000}s`,
             }}
         >
-            <BarContent userID={userID} user={user} userHasFeature={userHasFeature} />
+            <BarContent userID={userID} user={user}/>
         </Stack>
     )
 }
 
-const BarContent = ({ userID, user, userHasFeature }: { userID?: string; user: User; userHasFeature: (featureName: FeatureName) => boolean }) => {
+const BarContent = ({ userID, user }: { userID?: string; user: User }) => {
     const below580 = useMediaQuery("(max-width:580px)")
     const { isServerUp } = useSupremacy()
 
@@ -71,7 +71,7 @@ const BarContent = ({ userID, user, userHasFeature }: { userID?: string; user: U
             <HowToPlay />
             {userID && <Enlist />}
             {userID && <WalletDetails />}
-            {userID && userHasFeature(FeatureName.systemMessages) && <Messages />}
+            {userID && <Messages />}
             <ProfileCard userID={userID} user={user} />
         </>
     )
