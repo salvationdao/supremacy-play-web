@@ -43,6 +43,8 @@ export const ProfileAvatar = ({ isOwner, primaryColor, backgroundColor, avatarUR
     const [avatars, setAvatars] = useState<ProfileAvatar[]>([])
     const [submitting, setSubmitting] = useState(false)
 
+    const [customAvatarModalOpen, setCustomAvatarModalOpen] = useState(false)
+
     const { page, changePage, setTotalItems, totalPages, pageSize, totalItems, changePageSize } = usePagination({
         pageSize: parseString(query.get("pageSize"), 10),
         page: parseString(query.get("page"), 1),
@@ -74,7 +76,7 @@ export const ProfileAvatar = ({ isOwner, primaryColor, backgroundColor, avatarUR
             if (!resp) return
             setLoadError(undefined)
             if (page === 1) {
-                setAvatars([{ avatar_url: "", id: "", tier: "MEGA" }, ...resp.avatars])
+                setAvatars([{ avatar_url: "", id: "custom", tier: "MEGA" }, { avatar_url: "", id: "", tier: "MEGA" }, ...resp.avatars])
             } else {
                 setAvatars(resp.avatars)
             }
@@ -149,6 +151,12 @@ export const ProfileAvatar = ({ isOwner, primaryColor, backgroundColor, avatarUR
                                     },
                                 }}
                                 onClick={() => {
+                                    if (a.id === "custom") {
+                                        console.log("create new avatar ... ")
+                                        setCustomAvatarModalOpen(true)
+                                        setModalOpen(false)
+                                        return
+                                    }
                                     updatehHandler(a.id)
                                 }}
                             >
@@ -274,7 +282,7 @@ export const ProfileAvatar = ({ isOwner, primaryColor, backgroundColor, avatarUR
                         <Stack sx={{ position: "relative", height: "100%" }}>
                             <Stack sx={{ flex: 1 }}>
                                 <PageHeader
-                                    title="Select avatar"
+                                    title="Select Avatar"
                                     description="Avatar options are based off your faction and owned war machines"
                                     primaryColor={primaryColor}
                                 />
@@ -322,6 +330,100 @@ export const ProfileAvatar = ({ isOwner, primaryColor, backgroundColor, avatarUR
                                 disabled={submitting}
                                 onClick={() => {
                                     setModalOpen(false)
+                                }}
+                            >
+                                CLOSE
+                            </FancyButton>
+                            {totalPages > 1 && (
+                                <Box
+                                    sx={{
+                                        px: "1rem",
+                                        py: ".7rem",
+                                        borderTop: `${primaryColor}70 1.5px solid`,
+                                        backgroundColor: "#00000070",
+                                    }}
+                                >
+                                    <Pagination
+                                        size="medium"
+                                        count={totalPages}
+                                        page={page}
+                                        sx={{
+                                            ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold },
+                                            ".Mui-selected": {
+                                                color: primaryColor,
+                                                backgroundColor: `${primaryColor} !important`,
+                                            },
+                                        }}
+                                        onChange={(e, p) => changePage(p)}
+                                        showFirstButton
+                                        showLastButton
+                                    />
+                                </Box>
+                            )}
+                        </Stack>
+                    </ClipThing>
+                </Stack>
+            </Modal>
+
+            {/* custom avatar modal */}
+            <Modal
+                onClose={() => setCustomAvatarModalOpen(false)}
+                open={customAvatarModalOpen}
+                sx={{ zIndex: siteZIndex.Modal, margin: "auto", height: "60vh", width: "60vw" }}
+            >
+                <Stack direction="row" spacing="1rem" sx={{ height: "100%", width: "100%" }}>
+                    <ClipThing
+                        clipSize="10px"
+                        border={{
+                            borderColor: primaryColor,
+                            borderThickness: ".3rem",
+                        }}
+                        opacity={0.95}
+                        backgroundColor={backgroundColor}
+                        sx={{ height: "100%", flex: 1 }}
+                    >
+                        <Stack sx={{ position: "relative", height: "100%" }}>
+                            <Stack sx={{ flex: 1 }}>
+                                <PageHeader
+                                    title="Custom avatar"
+                                    description="Avatar options are based off your faction and owned war machines"
+                                    primaryColor={primaryColor}
+                                />
+
+                                <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
+                                    <Box
+                                        sx={{
+                                            ml: "1.9rem",
+                                            mr: ".5rem",
+                                            pr: "1.4rem",
+                                            my: "1rem",
+                                            flex: 1,
+                                            overflowY: "auto",
+                                            overflowX: "hidden",
+                                            direction: "ltr",
+
+                                            "::-webkit-scrollbar": {
+                                                width: ".4rem",
+                                            },
+                                            "::-webkit-scrollbar-track": {
+                                                background: "#FFFFFF15",
+                                                borderRadius: 3,
+                                            },
+                                            "::-webkit-scrollbar-thumb": {
+                                                background: primaryColor,
+                                                borderRadius: 3,
+                                            },
+                                        }}
+                                    >
+                                        {/* {content} */}
+                                    </Box>
+                                </Stack>
+                            </Stack>
+
+                            <FancyButton
+                                disabled={submitting}
+                                onClick={() => {
+                                    setCustomAvatarModalOpen(false)
                                 }}
                             >
                                 CLOSE
