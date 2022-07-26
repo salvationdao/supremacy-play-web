@@ -37,11 +37,11 @@ export const ProfilePopover = ({ open, popoverRef, onClose, user }: { open: bool
                 onClose={() => toggleLocalOpen(false)}
                 anchorOrigin={{
                     vertical: "bottom",
-                    horizontal: "left",
+                    horizontal: "right",
                 }}
                 transformOrigin={{
                     vertical: "top",
-                    horizontal: "left",
+                    horizontal: "right",
                 }}
                 sx={{
                     mt: ".5rem",
