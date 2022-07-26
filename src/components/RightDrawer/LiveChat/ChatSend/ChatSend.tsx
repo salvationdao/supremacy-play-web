@@ -70,6 +70,7 @@ const ChatSendInner = ({
 }: ChatSendInnerProps) => {
     const { newSnackbarMessage } = useSnackbar()
     const { isMobile } = useMobile()
+    const { userGidRecord } = useChat()
 
     // Message field
     const [message, setMessage] = useState("")
@@ -101,15 +102,22 @@ const ChatSendInner = ({
         [setMessage],
     )
 
-    const handleTaggedUsers = useCallback((msg: string): number[] => {
-        const taggedStrings = [...msg.matchAll(/#\d+/g)]
-        let taggedGids: number[] = []
-        taggedStrings.map((s) => {
-            const gid = parseInt(s[0].substring(1))
-            taggedGids = [...taggedGids, gid]
-        })
-        return taggedGids
-    }, [])
+    const handleTaggedUsers = useCallback(
+        (msg: string): number[] => {
+            const taggedStrings = [...msg.matchAll(/#\d+/g)]
+            let taggedGids: number[] = []
+            taggedStrings.map((s) => {
+                const gid = parseInt(s[0].substring(1))
+                if (gid === user.gid) return
+                const taggedUser = userGidRecord[gid]
+
+                if (taggedUser && faction_id !== null && taggedUser.faction_id !== faction_id) return
+                taggedGids = [...taggedGids, gid]
+            })
+            return taggedGids
+        },
+        [userGidRecord, faction_id, user.gid],
+    )
 
     const sendMessage = useCallback(async () => {
         if (!message.trim()) return
