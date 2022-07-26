@@ -14,11 +14,11 @@ export class Game {
 
     constructor() {
         this.STATES = {
-            LOADING: "loading",
-            PLAYING: "playing",
-            READY: "ready",
-            ENDED: "ended",
-            RESETTING: "resetting",
+            LOADING: "game-state-loading",
+            PLAYING: "game-state-playing",
+            READY: "game-state-ready",
+            ENDED: "game-state-ended",
+            RESETTING: "game-state-resetting",
         }
 
         this.blocks = []

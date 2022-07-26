@@ -69,7 +69,7 @@ const StackTowerStatic = () => {
                 <div id="instructions">Click (or press the spacebar) to place the block</div>
                 <div className="game-over">
                     <h2>Game Over</h2>
-                    <p>You did great, you&apos;re the best.</p>
+                    <p>You did great citizen</p>
                     <p>Click or spacebar to start again</p>
                 </div>
                 <div className="game-ready">
