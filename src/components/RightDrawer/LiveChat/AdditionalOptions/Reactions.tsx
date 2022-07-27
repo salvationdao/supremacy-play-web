@@ -9,16 +9,6 @@ interface ReactionsProps {
 }
 type ReactionState = "none" | "like" | "dislike"
 
-//functionality: -allowed 1 like or dislike
-//States: no reactions - like(+1) dislike(-1)
-//currently liked: like(-1) dislikes (-2)
-//currently disliked: like (+2) dislike(+1)
-
-//to place under chatmessage
-// <Box sx={{ flexShrink: 0, alignSelf: "flex-end" }}>
-//     <Reactions fontSize={smallFontSize} />
-// </Box>
-
 const hoverStyles = {
     alignItems: "center",
     mr: "-1rem",
@@ -38,8 +28,7 @@ const styles = {
     ":hover": {
         opacity: "0.8",
     },
-    mt: "-.5rem",
-    ml: "-.3rem",
+    m: "-.3rem",
 }
 export const Reactions = ({ fontSize, hoverOnly = false }: ReactionsProps) => {
     const [reaction, setReaction] = useState<ReactionState>("none")
