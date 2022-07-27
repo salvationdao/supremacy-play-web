@@ -68,15 +68,17 @@ export const DevicePreferences = ({ toggleAddDeviceModal }: DevicePreferencesPro
             </Stack>
 
             {/* List of  connected devices */}
-            {devices &&
-                devices.length > 0 &&
-                devices.map((device) => {
-                    return (
-                        <Typography key={device.name} sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>
-                            {device.name}
-                        </Typography>
-                    )
-                })}
+            {devices && devices.length > 0 && (
+                <Stack>
+                    {devices.map((device) => {
+                        return (
+                            <Typography key={device.name} sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>
+                                {device.name}
+                            </Typography>
+                        )
+                    })}
+                </Stack>
+            )}
 
             {error && (
                 <Typography variant="body2" sx={{ color: colors.red, pt: "1rem" }}>
