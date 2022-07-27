@@ -26,7 +26,7 @@ export const ProfileWarmachineItem = ({
     useGameServerSubscription<MechDetails>(
         {
             URI: `/public/mech/${mech.id}/details`,
-            key: GameServerKeys.GetMechDetails,
+            key: GameServerKeys.PlayerAssetMechDetailPublic,
         },
         (payload) => {
             if (!payload) return
