@@ -231,7 +231,7 @@ export const WarMachineHangarDetailsInner = ({
                                             <Typography sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack }}>SYSTEM STATUS</Typography>
                                         </Stack>
 
-                                        <MechRepairStatus mechID={mechID} />
+                                        <MechRepairStatus mechID={mechID} defaultBlocks={mechDetails?.blocks_default} />
                                     </Stack>
 
                                     {/* Bar stats */}

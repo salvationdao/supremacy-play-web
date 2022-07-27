@@ -5,12 +5,11 @@ import { GameServerKeys } from "../../../../keys"
 import { colors } from "../../../../theme/theme"
 
 interface RepairStatus {
-    blocks_default: number
     blocks_required_repair: number
     blocks_repaired: number
 }
 
-export const MechRepairStatus = React.memo(function MechRepairStatus({ mechID }: { mechID?: string }) {
+export const MechRepairStatus = React.memo(function MechRepairStatus({ mechID, defaultBlocks }: { mechID?: string; defaultBlocks?: number }) {
     const repairStatus = useGameServerSubscription<RepairStatus>({
         URI: `/public/mech/${mechID}/repair_case`,
         key: GameServerKeys.SubMechRepairStatus,
@@ -29,7 +28,7 @@ export const MechRepairStatus = React.memo(function MechRepairStatus({ mechID }:
                     ".single-block": {
                         height: "8px",
                         width: "8px",
-                        backgroundColor: repairStatus?.blocks_default ? colors.green : "#FFFFFF35",
+                        backgroundColor: repairStatus ? colors.green : "#FFFFFF35",
                     },
                 },
                 [`& > div:nth-last-child(-n+${remainDamagedBlocks})`]: {
@@ -39,7 +38,7 @@ export const MechRepairStatus = React.memo(function MechRepairStatus({ mechID }:
                 },
             }}
         >
-            {new Array(repairStatus?.blocks_default || 18).fill(0).map((_, index) => (
+            {new Array(defaultBlocks || remainDamagedBlocks).fill(0).map((_, index) => (
                 <div key={index}>
                     <div className="single-block" />
                 </div>

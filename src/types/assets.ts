@@ -124,6 +124,7 @@ export interface MechDetails extends MechBasic {
     weapons: Weapon[]
     utility: Utility[]
     battle_ready: boolean
+    blocks_default: number
 }
 
 export interface BlueprintMech {

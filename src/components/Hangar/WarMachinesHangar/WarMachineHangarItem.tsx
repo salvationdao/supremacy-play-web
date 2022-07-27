@@ -175,7 +175,7 @@ export const MechCommonArea = ({
                     {mechh?.name || mechh?.label || label}
                 </Typography>
 
-                <MechRepairStatus mechID={mech?.id || mechDetails?.id} />
+                <MechRepairStatus mechID={mech?.id || mechDetails?.id} defaultBlocks={mechDetails?.blocks_default} />
 
                 {toggleIsExpanded && !isGridView && (
                     <Stack
