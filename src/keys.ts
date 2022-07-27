@@ -166,7 +166,8 @@ export enum GameServerKeys {
     GetPlayerMechsOwned = "LEADERBOARD:PLAYER:MECHS:OWNED",
 
     // Repairs
-    GetRepairList = "MECH:REPAIR:OFFER:LIST",
+    GetRepairJobList = "MECH:REPAIR:OFFER:LIST",
+    SubRepairJobStatus = "MECH:REPAIR:OFFER",
     AgentRepairWarMachine = "WAR:MACHINE:REPAIR",
     InstantRepairWarMachine = "XXXXXXXXX",
 }

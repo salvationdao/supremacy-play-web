@@ -14,6 +14,7 @@ import { PageHeader } from "../../Common/PageHeader"
 import { RangeFilter } from "../../Common/SortAndFilters/RangeFilterSection"
 import { SortAndFilters } from "../../Common/SortAndFilters/SortAndFilters"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
+import { RepairJobItem } from "./RepairJobItem"
 
 const sortOptions = [
     { label: SortTypeLabel.CreateTimeNewestFirst, value: SortTypeLabel.CreateTimeNewestFirst },
@@ -59,6 +60,11 @@ export const RepairJobs = () => {
     const [rewardRanges, setRewardRanges] = useState<(number | undefined)[]>(
         (query.get("rewardRanges") || undefined)?.split("||").map((p) => (p ? parseInt(p) : undefined)) || [undefined, undefined],
     )
+    const [isGridView, toggleIsGridView] = useToggle((localStorage.getItem("jobsRepairGrid") || "true") === "true")
+
+    useEffect(() => {
+        localStorage.setItem("jobsRepairGrid", isGridView.toString())
+    }, [isGridView])
 
     useEffect(() => {
         localStorage.setItem("isRepairJobsFiltersExpanded", isFiltersExpanded.toString())
@@ -96,7 +102,7 @@ export const RepairJobs = () => {
 
             const [min_reward, max_reward] = rewardRanges
 
-            const resp = await send<GetRepairJobsResponse, GetRepairJobsRequest>(GameServerKeys.GetRepairList, {
+            const resp = await send<GetRepairJobsResponse, GetRepairJobsRequest>(GameServerKeys.GetRepairJobList, {
                 order_by: sortBy,
                 order_dir: sortDir,
                 page_number: page - 1, // Server pagination starts at 0
@@ -170,16 +176,16 @@ export const RepairJobs = () => {
                             width: "100%",
                             py: "1rem",
                             display: "grid",
-                            gridTemplateColumns: "repeat(auto-fill, minmax(30rem, 1fr))",
+                            gridTemplateColumns: isGridView ? "repeat(auto-fill, minmax(30rem, 1fr))" : "100%",
                             gap: "1.3rem",
                             alignItems: "center",
                             justifyContent: "center",
                             overflow: "visible",
                         }}
                     >
-                        {/* {repairJobs.map((repairJob) => (
-                            <WarMachineHangarItem key={`marketplace-${mech.id}`} mech={mech} isGridView={isGridView} />
-                        ))} */}
+                        {repairJobs.map((repairJob) => (
+                            <RepairJobItem key={`repair-job-${repairJob.id}`} repairJob={repairJob} isGridView={isGridView} />
+                        ))}
                     </Box>
                 </Box>
             )
@@ -216,7 +222,7 @@ export const RepairJobs = () => {
                 </Stack>
             </Stack>
         )
-    }, [loadError, repairJobs, isLoading, theme.factionTheme.primary])
+    }, [loadError, repairJobs, isLoading, isGridView, theme.factionTheme.primary])
 
     return (
         <Stack direction="row" sx={{ height: "100%" }}>
@@ -247,6 +253,8 @@ export const RepairJobs = () => {
                             sortOptions={sortOptions}
                             selectedSort={sort}
                             onSetSort={setSort}
+                            isGridView={isGridView}
+                            toggleIsGridView={toggleIsGridView}
                             isFiltersExpanded={isFiltersExpanded}
                             toggleIsFiltersExpanded={toggleIsFiltersExpanded}
                         />

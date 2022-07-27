@@ -11,7 +11,6 @@ import { siteZIndex } from "../theme/theme"
 
 export enum JOB_TABS {
     Repairs = "repairs",
-    Bounties = "bounties",
 }
 
 export const JobsPage = () => {
@@ -86,8 +85,6 @@ export const JobsPage = () => {
                                 }}
                             >
                                 <Tab label="REPAIRS" value={JOB_TABS.Repairs} />
-
-                                <Tab label="BOUNTIES" value={JOB_TABS.Bounties} />
                             </Tabs>
                         </Box>
                     </ClipThing>
@@ -98,8 +95,6 @@ export const JobsPage = () => {
                 <TabPanel currentValue={currentValue} value={JOB_TABS.Repairs}>
                     <RepairJobs />
                 </TabPanel>
-
-                <TabPanel currentValue={currentValue} value={JOB_TABS.Bounties}></TabPanel>
             </Stack>
         </Stack>
     )
