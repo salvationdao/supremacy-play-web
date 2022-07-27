@@ -85,8 +85,7 @@ export const RepairJobItem = ({ repairJob, isGridView }: { repairJob: RepairOffe
                                     textOverflow: "ellipsis",
                                     WebkitLineClamp: 2,
                                     WebkitBoxOrient: "vertical",
-
-                                    span: { color: colors.red, fontFamily: "inherit" },
+                                    span: { color: colors.orange, fontFamily: "inherit" },
                                 }}
                             >
                                 <span>{remainDamagedBlocks}</span> BLOCKS REMAINING
