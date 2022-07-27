@@ -5,6 +5,7 @@ import { useState } from "react"
 interface ReactionsProps {
     fontSize: string
     //likes: Likes
+    hoverOnly?: boolean
 }
 type ReactionState = "none" | "like" | "dislike"
 
@@ -18,7 +19,29 @@ type ReactionState = "none" | "like" | "dislike"
 //     <Reactions fontSize={smallFontSize} />
 // </Box>
 
-export const Reactions = ({ fontSize }: ReactionsProps) => {
+const hoverStyles = {
+    alignItems: "center",
+    mr: "-1rem",
+    position: "absolute",
+    opacity: "0.9",
+    top: "-2.2rem",
+    right: "1rem",
+    backgroundColor: "#121212",
+    borderRadius: ".3rem",
+}
+
+const styles = {
+    width: "fit-content",
+    alignItems: "center",
+    borderRadius: ".3rem",
+    opacity: "0.4",
+    ":hover": {
+        opacity: "0.8",
+    },
+    mt: "-.5rem",
+    ml: "-.3rem",
+}
+export const Reactions = ({ fontSize, hoverOnly = false }: ReactionsProps) => {
     const [reaction, setReaction] = useState<ReactionState>("none")
 
     const handleLike = () => {
@@ -69,9 +92,9 @@ export const Reactions = ({ fontSize }: ReactionsProps) => {
 
     //only display if net !== 0 or is hovered
     return (
-        <Stack direction={"row"} spacing={"-.5rem"} sx={{ alignItems: "center", mr: "-1rem", opacity: "0.7", ":hover": { opacity: "0.9" } }}>
+        <Stack direction={"row"} spacing={"-.4rem"} sx={hoverOnly ? hoverStyles : styles}>
             <SvgPriceDownArrow size={"2.5rem"} onClick={() => handleDislike()} />
-            <Typography fontSize={"1.2rem"}>12</Typography>
+            <Typography fontSize={"1.2rem"}>120</Typography>
             <SvgPriceUpArrow size={"2.5rem"} onClick={() => handleLike()} />
         </Stack>
     )

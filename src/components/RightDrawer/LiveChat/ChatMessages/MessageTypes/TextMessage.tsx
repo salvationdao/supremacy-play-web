@@ -13,6 +13,7 @@ import { useAuth, useChat } from "../../../../../containers"
 import { GameServerKeys } from "../../../../../keys"
 import { useGameServerCommandsUser } from "../../../../../hooks/useGameServer"
 import { ReactJSXElement } from "@emotion/react/types/jsx-namespace"
+import { Reactions } from "../../AdditionalOptions/Reactions"
 
 const getMultiplierColor = (multiplierInt: number): string => {
     if (multiplierInt >= 2800) return "#3BFFDE"
@@ -72,6 +73,7 @@ export const TextMessage = ({
     const [banModalOpen, toggleBanModalOpen] = useToggle()
     const [isPreviousMessager, setIsPreviousMessager] = useToggle()
     const [shouldNotify, setShouldNotify] = useToggle(metadata && user.gid in metadata.tagged_users_read && !metadata.tagged_users_read[user.gid])
+    const [isHovered, setIsHovered] = useToggle()
 
     const multiplierColor = useMemo(() => getMultiplierColor(total_multiplier || 0), [total_multiplier])
     const abilityKillColor = useMemo(() => {
@@ -373,8 +375,26 @@ export const TextMessage = ({
                     </Stack>
                 )}
 
-                <Box sx={{ backgroundColor: shouldNotify ? "rgba(0,116,217, .4)" : "unset", borderRadius: ".3rem", transition: "background-color 2s" }}>
-                    {chatMessage}
+                <Box>
+                    <Stack
+                        direction={"column"}
+                        sx={{
+                            ml: "2rem",
+                            backgroundColor: shouldNotify ? "rgba(0,116,217, .4)" : isHovered ? "#121212" : "unset",
+                            borderRadius: ".3rem",
+                            transition: shouldNotify ? "background-color 2s" : "unset",
+                            position: "relative",
+                        }}
+                        onMouseEnter={() => setIsHovered(true)}
+                        onMouseLeave={() => setIsHovered(false)}
+                    >
+                        {/*only display if msg has likes*/}
+
+                        <Box sx={{ zIndex: 1 }}>{chatMessage}</Box>
+
+                        <Reactions fontSize={"1"} />
+                        {isHovered && <Reactions fontSize={"1"} hoverOnly={true} />}
+                    </Stack>
                 </Box>
             </Box>
 
