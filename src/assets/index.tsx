@@ -184,8 +184,12 @@ import StatsSVG from "./images/profileIcons/Stats.svg"
 import WarMachineBCPNG from "./images/profileIcons/warMachines/WMBC.png"
 import WarMachineRMPNG from "./images/profileIcons/warMachines/WMRM.png"
 import WarMachineZAIPNG from "./images/profileIcons/warMachines/WMZAI.png"
+
 import HeadPNG from "./images/profileIcons/head.png"
-import HairPNG from "./images/profileIcons/hair.png"
+
+import Hair1PNG from "./images/profileIcons/hair1.png"
+import Hair2PNG from "./images/profileIcons/hair2.png"
+import Hair3PNG from "./images/profileIcons/hair3.png"
 
 export {
     MultiplierAdmiral,
@@ -234,8 +238,11 @@ export {
     WarMachineBCPNG,
     WarMachineRMPNG,
     WarMachineZAIPNG,
+    // temp
     HeadPNG,
-    HairPNG,
+    Hair1PNG,
+    Hair2PNG,
+    Hair3PNG,
 }
 
 export interface SvgWrapperProps extends BoxProps {

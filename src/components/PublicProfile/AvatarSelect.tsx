@@ -1,16 +1,16 @@
-import { Avatar, Box, CircularProgress, Modal, Pagination, Stack, Tab, Tabs, Typography } from "@mui/material"
-import { SyntheticEvent, useCallback, useEffect, useMemo, useState } from "react"
-import { EmptyWarMachinesPNG, HairPNG, HeadPNG, SvgEdit } from "../../assets"
+import { Avatar, Box, CircularProgress, Modal, Pagination, Stack, Typography } from "@mui/material"
+import { useCallback, useEffect, useMemo, useState } from "react"
+import { EmptyWarMachinesPNG, SvgEdit } from "../../assets"
 import { parseString } from "../../helpers"
 import { usePagination, useUrlQuery } from "../../hooks"
 import { useGameServerCommandsUser } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
-import { HANGAR_TABS } from "../../pages"
 import { colors, fonts, siteZIndex } from "../../theme/theme"
 import { ClipThing } from "../Common/ClipThing"
 import { FancyButton } from "../Common/FancyButton"
 import { PageHeader } from "../Common/PageHeader"
 import { TotalAndPageSizeOptions } from "../Common/TotalAndPageSizeOptions"
+import { CustomAvatar } from "./CustomAvatar"
 
 interface GetAvatarsRequest {
     queue_sort: string
@@ -45,15 +45,6 @@ export const ProfileAvatar = ({ isOwner, primaryColor, backgroundColor, avatarUR
     const [submitting, setSubmitting] = useState(false)
 
     const [customAvatarModalOpen, setCustomAvatarModalOpen] = useState(false)
-    const [currentValue, setCurrentValue] = useState<HANGAR_TABS>()
-
-    const handleChange = useCallback(
-        (event: SyntheticEvent, newValue: HANGAR_TABS) => {
-            setCurrentValue(newValue)
-            // history.push(`${ROUTES_MAP.fleet.path.replace(":type", newValue)}${location.hash}`)
-        },
-        [history, location.hash],
-    )
 
     const { page, changePage, setTotalItems, totalPages, pageSize, totalItems, changePageSize } = usePagination({
         pageSize: parseString(query.get("pageSize"), 10),
@@ -376,109 +367,13 @@ export const ProfileAvatar = ({ isOwner, primaryColor, backgroundColor, avatarUR
             </Modal>
 
             {/* custom avatar modal */}
-            <Modal
-                onClose={() => setCustomAvatarModalOpen(false)}
+            <CustomAvatar
                 open={customAvatarModalOpen}
-                sx={{ zIndex: siteZIndex.Modal, margin: "auto", height: "60vh", width: "60vw" }}
-            >
-                <Stack direction="row" spacing="1rem" sx={{ height: "100%", width: "100%" }}>
-                    <ClipThing
-                        clipSize="10px"
-                        border={{
-                            borderColor: primaryColor,
-                            borderThickness: ".3rem",
-                        }}
-                        opacity={0.95}
-                        backgroundColor={backgroundColor}
-                        sx={{ height: "100%", flex: 1 }}
-                    >
-                        <Stack sx={{ position: "relative", height: "100%" }}>
-                            <Stack sx={{ flex: 1 }}>
-                                <PageHeader
-                                    title="Custom avatar"
-                                    description="Avatar options are based off your faction and owned war machines"
-                                    primaryColor={primaryColor}
-                                />
-
-                                <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
-                                    <Box
-                                        sx={{
-                                            display: "flex",
-                                            color: "white",
-                                            ml: "1.9rem",
-                                            mr: ".5rem",
-                                            pr: "1.4rem",
-                                            my: "1rem",
-                                            flex: 1,
-                                            overflowY: "auto",
-                                            overflowX: "hidden",
-                                            direction: "ltr",
-
-                                            "::-webkit-scrollbar": {
-                                                width: ".4rem",
-                                            },
-                                            "::-webkit-scrollbar-track": {
-                                                background: "#FFFFFF15",
-                                                borderRadius: 3,
-                                            },
-                                            "::-webkit-scrollbar-thumb": {
-                                                background: primaryColor,
-                                                borderRadius: 3,
-                                            },
-                                        }}
-                                    >
-                                        <Box width="600px" sx={{ border: "2px solid red" }}>
-                                            <img src={HeadPNG} alt="" height="500px" style={{ border: "1px solid pink" }} />
-                                            <img
-                                                style={{ border: "1px solid blue", position: "absolute", top: 108, left: 30 }}
-                                                src={HairPNG}
-                                                alt=""
-                                                height="500px"
-                                            />
-                                        </Box>
-
-                                        <Box width="50%">
-                                            <Tabs
-                                                value={currentValue}
-                                                onChange={handleChange}
-                                                variant="scrollable"
-                                                scrollButtons="auto"
-                                                sx={{
-                                                    flexShrink: 0,
-                                                    color: primaryColor,
-                                                    minHeight: 0,
-                                                    ".MuiTab-root": { minHeight: 0, fontSize: "1.3rem", height: "6rem", width: "10rem" },
-                                                    ".Mui-selected": {
-                                                        color: `${primaryColor} !important`,
-                                                        background: `linear-gradient(${primaryColor} 26%, ${primaryColor}BB)`,
-                                                    },
-                                                    ".MuiTabs-indicator": { display: "none" },
-                                                    ".MuiTabScrollButton-root": { display: "none" },
-                                                }}
-                                            >
-                                                <Tab label="FACE SHAPE " value={HANGAR_TABS.WarMachines} />
-
-                                                <Tab label="HAIR" value={HANGAR_TABS.Weapons} />
-
-                                                <Tab label="FACIAL HAIR" value={HANGAR_TABS.Keycards} />
-                                            </Tabs>
-                                        </Box>
-                                    </Box>
-                                </Stack>
-                            </Stack>
-
-                            <FancyButton
-                                disabled={submitting}
-                                onClick={() => {
-                                    setCustomAvatarModalOpen(false)
-                                }}
-                            >
-                                CLOSE
-                            </FancyButton>
-                        </Stack>
-                    </ClipThing>
-                </Stack>
-            </Modal>
+                setOpen={setCustomAvatarModalOpen}
+                primaryColor={primaryColor}
+                backgroundColor={backgroundColor}
+                submitting={false}
+            />
         </Stack>
     )
 }
