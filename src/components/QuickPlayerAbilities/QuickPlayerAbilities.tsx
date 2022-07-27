@@ -8,15 +8,15 @@ import { CanPlayerPurchase } from "../../fetching"
 import { useGameServerSubscription, useGameServerSubscriptionUser } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { colors, fonts } from "../../theme/theme"
-import { FeatureName, PlayerAbility, SaleAbility } from "../../types"
+import { PlayerAbility, SaleAbility } from "../../types"
 import { MoveableResizableConfig } from "../Common/MoveableResizable/MoveableResizableContainer"
 import { PageHeader } from "../Common/PageHeader"
 import { TimeLeft } from "../Storefront/PlayerAbilitiesStore/PlayerAbilitiesStore"
 import { QuickPlayerAbilitiesItem } from "./QuickPlayerAbilitiesItem"
 
 export const QuickPlayerAbilities = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
-    const { userHasFeature, userID } = useAuth()
-    if (!open || !userHasFeature(FeatureName.playerAbility)) return null
+    const { userID } = useAuth()
+    if (!open) return null
     return <QuickPlayerAbilitiesInner onClose={onClose} userID={userID} />
 }
 

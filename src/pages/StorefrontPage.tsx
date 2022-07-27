@@ -9,8 +9,6 @@ import { PlayerAbilitiesStore } from "../components/Storefront/PlayerAbilitiesSt
 import { useTheme } from "../containers/theme"
 import { ROUTES_MAP } from "../routes"
 import { siteZIndex } from "../theme/theme"
-import { useAuth } from "../containers"
-import { FeatureName } from "../types"
 
 export enum STOREFRONT_TABS {
     MysteryCrates = "mystery-crates",
@@ -23,7 +21,6 @@ export const StorefrontPage = () => {
     const theme = useTheme()
     const location = useLocation()
     const history = useHistory()
-    const { userHasFeature } = useAuth()
     const { type } = useParams<{ type: STOREFRONT_TABS }>()
     const [currentValue, setCurrentValue] = useState<STOREFRONT_TABS>()
 
@@ -93,7 +90,7 @@ export const StorefrontPage = () => {
                             >
                                 <Tab label="MYSTERY CRATES" value={STOREFRONT_TABS.MysteryCrates} />
 
-                                {userHasFeature(FeatureName.playerAbility) && <Tab label="ABILITIES" value={STOREFRONT_TABS.Abilities} />}
+                                <Tab label="ABILITIES" value={STOREFRONT_TABS.Abilities} />
                             </Tabs>
                         </Box>
                     </ClipThing>
@@ -105,11 +102,9 @@ export const StorefrontPage = () => {
                     <MysteryCratesStore />
                 </TabPanel>
 
-                {userHasFeature(FeatureName.playerAbility) && (
-                    <TabPanel currentValue={currentValue} value={STOREFRONT_TABS.Abilities}>
-                        <PlayerAbilitiesStore />
-                    </TabPanel>
-                )}
+                <TabPanel currentValue={currentValue} value={STOREFRONT_TABS.Abilities}>
+                    <PlayerAbilitiesStore />
+                </TabPanel>
             </Stack>
         </Stack>
     )
