@@ -134,7 +134,7 @@ export const AmountItem = ({
                 {title}
             </Typography>
 
-            {!disableIcon && <SvgSupToken size="1.5rem" fill={colors.yellow} sx={{ mr: ".1rem", pb: ".4rem" }} />}
+            {!disableIcon && <SvgSupToken size="1.6rem" fill={colors.yellow} sx={{ mr: ".1rem", pb: ".4rem" }} />}
 
             <Typography variant="caption" sx={{ mr: "3.2rem", color: color || "#FFFFFF", fontFamily: fonts.nostromoBold }}>
                 {value || "---"}

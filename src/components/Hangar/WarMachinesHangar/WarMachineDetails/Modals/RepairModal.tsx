@@ -57,7 +57,7 @@ export const RepairModal = ({
             const resp = await send(GameServerKeys.RegisterMechRepair, {
                 mech_id: selectedMechDetails.id,
                 last_for_minutes: durationMinutes,
-                offered_sups: agentReward,
+                offered_sups: agentReward.toString(),
             })
             if (resp) {
                 newSnackbarMessage("Successfully submitted listed mech for repair.", "success")
