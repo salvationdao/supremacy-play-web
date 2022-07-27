@@ -168,7 +168,7 @@ export enum GameServerKeys {
     GetRepairJobList = "MECH:REPAIR:OFFER:LIST",
     SubRepairJobStatus = "MECH:REPAIR:OFFER",
     SubMechRepairStatus = "MECH:REPAIR:CASE",
-    GetMechRepairJob = "XXXXXXXXX",
+    GetMechRepairJob = "MECH:ACTIVE:REPAIR:OFFER",
     RegisterMechRepair = "MECH:REPAIR:OFFER:ISSUE",
 }
 

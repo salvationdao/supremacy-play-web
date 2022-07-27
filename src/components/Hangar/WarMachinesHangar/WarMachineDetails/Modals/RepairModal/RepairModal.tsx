@@ -30,7 +30,7 @@ export const RepairModal = ({
     })
 
     const repairJob = useGameServerSubscription<RepairOffer>({
-        URI: `xxxxxxxxx`,
+        URI: `/public/mech/${selectedMechDetails.id}/active_repair_offer`,
         key: GameServerKeys.GetMechRepairJob,
     })
 
