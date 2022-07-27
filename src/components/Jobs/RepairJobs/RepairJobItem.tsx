@@ -1,14 +1,15 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useState } from "react"
-import { SvgSupToken } from "../../../assets"
+import { SvgCubes, SvgSupToken } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { supFormatterNoFixed, timeSinceInWords } from "../../../helpers"
 import { useTimer } from "../../../hooks"
 import { useGameServerSubscription } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
-import { colors } from "../../../theme/theme"
+import { colors, fonts } from "../../../theme/theme"
 import { RepairOffer } from "../../../types/jobs"
 import { FancyButton } from "../../Common/FancyButton"
+import { RepairBlocks } from "../../Hangar/WarMachinesHangar/Common/MechRepairBlocks"
 import { General } from "../../Marketplace/Common/MarketItem/General"
 
 interface RepairJobStatus extends RepairOffer {
@@ -23,19 +24,13 @@ interface RepairJobStatus extends RepairOffer {
 
 export const RepairJobItem = ({ repairJob, isGridView }: { repairJob: RepairOffer; isGridView?: boolean }) => {
     const theme = useTheme()
-    const [repairStatus, setRepairStatus] = useState<RepairJobStatus>()
 
-    useGameServerSubscription<RepairJobStatus>(
-        {
-            URI: `/public/repair_offer/${repairJob.id}`,
-            key: GameServerKeys.SubRepairJobStatus,
-        },
-        (payload) => {
-            if (!payload) return
-            setRepairStatus(payload)
-        },
-    )
+    const repairStatus = useGameServerSubscription<RepairJobStatus>({
+        URI: `/public/repair_offer/${repairJob.id}`,
+        key: GameServerKeys.SubRepairJobStatus,
+    })
 
+    const remainDamagedBlocks = repairStatus ? repairJob.blocks_total - repairStatus.blocks_repaired : 0
     const primaryColor = theme.factionTheme.primary
     const backgroundColor = theme.factionTheme.background
 
@@ -78,7 +73,28 @@ export const RepairJobItem = ({ repairJob, isGridView }: { repairJob: RepairOffe
                             : {}),
                     }}
                 >
-                    <Box />
+                    <Stack spacing=".6rem" sx={{ pt: ".3rem" }}>
+                        <Stack spacing=".8rem" direction="row" alignItems="center">
+                            <SvgCubes size="2.3rem" />
+                            <Typography
+                                sx={{
+                                    fontFamily: fonts.nostromoBlack,
+                                    display: "-webkit-box",
+                                    overflow: "hidden",
+                                    overflowWrap: "anywhere",
+                                    textOverflow: "ellipsis",
+                                    WebkitLineClamp: 2,
+                                    WebkitBoxOrient: "vertical",
+
+                                    span: { color: colors.red, fontFamily: "inherit" },
+                                }}
+                            >
+                                <span>{remainDamagedBlocks}</span> BLOCKS REMAINING
+                            </Typography>
+                        </Stack>
+
+                        <RepairBlocks defaultBlocks={repairJob.blocks_total} remainDamagedBlocks={remainDamagedBlocks} hideNumber />
+                    </Stack>
 
                     <General
                         isGridView={isGridView}

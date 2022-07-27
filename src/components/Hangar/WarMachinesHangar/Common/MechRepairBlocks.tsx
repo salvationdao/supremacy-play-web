@@ -5,22 +5,15 @@ import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
 import { RepairStatus } from "../../../../types/jobs"
 
-export const MechRepairBlocks = React.memo(function MechRepairBlocks({
-    mechID,
+export const RepairBlocks = ({
     defaultBlocks,
+    remainDamagedBlocks,
     hideNumber,
 }: {
-    mechID?: string
     defaultBlocks?: number
+    remainDamagedBlocks: number
     hideNumber?: boolean
-}) {
-    const repairStatus = useGameServerSubscription<RepairStatus>({
-        URI: `/public/mech/${mechID}/repair_case`,
-        key: GameServerKeys.SubMechRepairStatus,
-    })
-
-    const remainDamagedBlocks = repairStatus ? repairStatus.blocks_required_repair - repairStatus.blocks_repaired : 0
-
+}) => {
     return (
         <Stack direction="row" alignItems="center" spacing=".5rem" sx={{ width: "100%" }}>
             <Stack
@@ -65,4 +58,23 @@ export const MechRepairBlocks = React.memo(function MechRepairBlocks({
             </Stack>
         </Stack>
     )
+}
+
+export const MechRepairBlocks = React.memo(function MechRepairBlocks({
+    mechID,
+    defaultBlocks,
+    hideNumber,
+}: {
+    mechID?: string
+    defaultBlocks?: number
+    hideNumber?: boolean
+}) {
+    const repairStatus = useGameServerSubscription<RepairStatus>({
+        URI: `/public/mech/${mechID}/repair_case`,
+        key: GameServerKeys.SubMechRepairStatus,
+    })
+
+    const remainDamagedBlocks = repairStatus ? repairStatus.blocks_required_repair - repairStatus.blocks_repaired : 0
+
+    return <RepairBlocks defaultBlocks={defaultBlocks} remainDamagedBlocks={remainDamagedBlocks} hideNumber={hideNumber} />
 })

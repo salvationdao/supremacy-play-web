@@ -20,8 +20,8 @@ export const ExistingRepairJobCard = ({ repairJob }: { repairJob: RepairOffer })
     const onCancelRepair = useCallback(async () => {
         try {
             setIsSubmitting(true)
-            const resp = await send(GameServerKeys.RegisterMechRepair, {
-                offer_id: repairJob.id,
+            const resp = await send(GameServerKeys.CancelMechRepair, {
+                repair_offer_id: repairJob.id,
             })
             if (resp) {
                 newSnackbarMessage("Successfully cancelled repair job.", "success")
