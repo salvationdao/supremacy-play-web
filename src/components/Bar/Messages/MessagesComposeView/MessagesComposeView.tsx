@@ -81,6 +81,16 @@ export const MessagesComposeView = ({ onBack }: MessageComposeViewProps) => {
                             groupName: "title",
                             buttonProps: { "aria-label": "Insert title" },
                         }),
+                        commands.divider,
+                        commands.link,
+                        commands.quote,
+                        commands.code,
+                        commands.codeBlock,
+                        commands.image,
+                        commands.divider,
+                        commands.unorderedListCommand,
+                        commands.orderedListCommand,
+                        commands.checkedListCommand,
                     ]}
                     extraCommands={[commands.codeEdit, commands.codeLive, commands.codePreview]}
                     visibleDragbar={false}
