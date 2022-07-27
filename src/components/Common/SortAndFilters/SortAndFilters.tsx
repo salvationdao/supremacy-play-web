@@ -35,7 +35,7 @@ export const SortAndFilters = ({
     isExpanded = true,
 }: SortAndFiltersProps) => {
     const theme = useTheme()
-    const [searchValue, setSearchValue] = useState(initialSearch)
+    const [searchValue, setSearchValue] = useState(initialSearch || "")
 
     const primaryColor = pColor || theme.factionTheme.primary
     const secondaryColor = theme.factionTheme.secondary
@@ -122,7 +122,7 @@ export const SortAndFilters = ({
                                                         switch (e.key) {
                                                             case "Enter": {
                                                                 e.preventDefault()
-                                                                onSetSearch(searchValue || "")
+                                                                onSetSearch(searchValue)
                                                                 changePage(1)
                                                                 break
                                                             }
@@ -144,7 +144,7 @@ export const SortAndFilters = ({
                                                 }}
                                                 sx={{ py: ".6rem", color: secondaryColor, minWidth: 0, height: "100%" }}
                                                 onClick={() => {
-                                                    onSetSearch(searchValue || "")
+                                                    onSetSearch(searchValue)
                                                     changePage(1)
                                                 }}
                                             >

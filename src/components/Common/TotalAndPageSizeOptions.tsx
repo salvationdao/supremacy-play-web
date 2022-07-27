@@ -197,9 +197,7 @@ export const TotalAndPageSizeOptions = ({
                                         }}
                                         sx={{ "&:hover": { backgroundColor: "#FFFFFF20" } }}
                                     >
-                                        <Typography variant="body1" textTransform="uppercase">
-                                            {x.label}
-                                        </Typography>
+                                        <Typography>{x.label}</Typography>
                                     </MenuItem>
                                 )
                             })}
