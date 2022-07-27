@@ -20,24 +20,28 @@ export const MechRepairStatus = ({ mechID }: { mechID?: string }) => {
     return (
         <Stack
             direction="row"
-            spacing="3px"
+            flexWrap="wrap"
             sx={{
-                pt: ".1rem",
-                height: "10px",
                 width: "100%",
-                maxWidth: "30rem",
                 "& > div": {
-                    flex: 1,
-                    height: "100%",
-                    backgroundColor: repairStatus?.blocks_default ? colors.green : "#FFFFFF35",
+                    p: "1.5px",
+                    ".single-block": {
+                        height: "8px",
+                        width: "8px",
+                        backgroundColor: repairStatus?.blocks_default ? colors.green : "#FFFFFF35",
+                    },
                 },
                 [`& > div:nth-last-child(-n+${remainDamagedBlocks})`]: {
-                    backgroundColor: colors.red,
+                    ".single-block": {
+                        backgroundColor: colors.red,
+                    },
                 },
             }}
         >
-            {new Array(repairStatus?.blocks_default || 24).fill(0).map((_, index) => (
-                <div key={index} />
+            {new Array(repairStatus?.blocks_default || 18).fill(0).map((_, index) => (
+                <div key={index}>
+                    <div className="single-block" />
+                </div>
             ))}
         </Stack>
     )
