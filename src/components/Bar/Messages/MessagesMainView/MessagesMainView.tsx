@@ -1,6 +1,6 @@
 import { Box, colors, Divider, FormControlLabel, Pagination, Stack, Switch, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { SvgAnnouncement, SvgDamage1, SvgHistoryClock, SvgListView } from "../../../../assets"
+import { SvgAnnouncement, SvgDamage1, SvgHistoryClock, SvgListView, SvgSyndicateFlag } from "../../../../assets"
 import { useAuth } from "../../../../containers"
 import { usePagination } from "../../../../hooks"
 import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
@@ -20,7 +20,7 @@ export interface MessagesMainViewProps {
 export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewProps) => {
     const { userHasFeature } = useAuth()
     const { send } = useGameServerCommandsUser("/user_commander")
-    
+
     const [messages, setMessages] = useState<SystemMessageDisplayable[]>([])
     const [focusedMessage, setFocusedMessage] = useState<SystemMessageDisplayable>()
     const [error, setError] = useState<string>()
@@ -59,6 +59,8 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
                     case SystemMessageDataType.MechBattleComplete:
                         icon = SvgDamage1
                         break
+                    case SystemMessageDataType.Faction:
+                        icon = SvgSyndicateFlag
                 }
 
                 return {
@@ -216,52 +218,54 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
 
     return (
         <Stack direction="row" p="2rem" height="100%">
-            {userHasFeature(FeatureName.systemMessages) && <>
-            <Stack
-                sx={{
-                    height: "100%",
-                    minWidth: "200px",
-                }}
-            >
-                <Stack spacing="1rem" flex={1}>
-        <FancyButton
-            clipThingsProps={{
-                clipSize: "7px",
-            }}
-            size="large"
-            sx={{
-                fontSize: "2rem",
-                px: "1.2rem",
-                backgroundColor: theme.factionTheme.primary,
-            }}
-            onClick={() => onCompose(SystemMessageDataType.Global)}
-        >
-            Compose Global Message
-        </FancyButton>
-        <FancyButton
-            clipThingsProps={{
-                clipSize: "7px",
-            }}
-            size="large"
-            sx={{
-                fontSize: "2rem",
-                px: "1.2rem",
-                backgroundColor: theme.factionTheme.primary,
-            }}
-            onClick={() => onCompose(SystemMessageDataType.Faction)}
-        >
-            Compose Faction Message
-        </FancyButton>
-    </Stack>
-            </Stack>
-            <Divider
-                orientation="vertical"
-                sx={{
-                    mx: "1rem",
-                    backgroundColor: `${theme.factionTheme.primary}70`,
-                }}
-            />
-            </>}
+            {userHasFeature(FeatureName.systemMessages) && (
+                <>
+                    <Stack
+                        sx={{
+                            height: "100%",
+                            minWidth: "200px",
+                        }}
+                    >
+                        <Stack spacing="1rem" flex={1}>
+                            <FancyButton
+                                clipThingsProps={{
+                                    clipSize: "7px",
+                                }}
+                                size="large"
+                                sx={{
+                                    fontSize: "2rem",
+                                    px: "1.2rem",
+                                    backgroundColor: theme.factionTheme.primary,
+                                }}
+                                onClick={() => onCompose(SystemMessageDataType.Global)}
+                            >
+                                Compose Global Message
+                            </FancyButton>
+                            <FancyButton
+                                clipThingsProps={{
+                                    clipSize: "7px",
+                                }}
+                                size="large"
+                                sx={{
+                                    fontSize: "2rem",
+                                    px: "1.2rem",
+                                    backgroundColor: theme.factionTheme.primary,
+                                }}
+                                onClick={() => onCompose(SystemMessageDataType.Faction)}
+                            >
+                                Compose Faction Message
+                            </FancyButton>
+                        </Stack>
+                    </Stack>
+                    <Divider
+                        orientation="vertical"
+                        sx={{
+                            mx: "1rem",
+                            backgroundColor: `${theme.factionTheme.primary}70`,
+                        }}
+                    />
+                </>
+            )}
             <Stack
                 sx={{
                     flex: 1,

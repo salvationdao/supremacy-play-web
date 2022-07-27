@@ -45,6 +45,25 @@ export const MessageItem = ({ message, selected, onSelect }: MessageItemProps) =
                             WebkitBoxOrient: "vertical",
                             textAlign: "left",
                             color: selectedOrNotRead ? "white" : colors.grey,
+                            textTransform: "none",
+                        }}
+                    >
+                        {message.sender.username}
+                    </Typography>
+
+                    <Typography
+                        variant="h6"
+                        sx={{
+                            display: "-webkit-box",
+                            overflow: "hidden",
+                            overflowWrap: "anywhere",
+                            width: "100%",
+                            maxWidth: "100px",
+                            textOverflow: "ellipsis",
+                            WebkitLineClamp: 1, // change to max number of lines
+                            WebkitBoxOrient: "vertical",
+                            textAlign: "left",
+                            color: selectedOrNotRead ? "white" : colors.grey,
                         }}
                     >
                         {message.title}
@@ -59,7 +78,7 @@ export const MessageItem = ({ message, selected, onSelect }: MessageItemProps) =
                             WebkitBoxOrient: "vertical",
                             textAlign: "left",
                             textTransform: "none",
-                            color: selectedOrNotRead ? "white" : colors.grey,
+                            color: `${selectedOrNotRead ? "#ffffff" : colors.grey}66`,
                         }}
                     >
                         {message.message}
