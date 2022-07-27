@@ -48,7 +48,7 @@ export const MechRepairBlocks = React.memo(function MechRepairBlocks({
                     </div>
                 ))}
 
-                {defaultBlocks && !hideNumber && (
+                {!hideNumber && defaultBlocks && remainDamagedBlocks > 0 && (
                     <Typography
                         variant="caption"
                         sx={{
