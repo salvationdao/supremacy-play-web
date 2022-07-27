@@ -74,7 +74,6 @@ export const DeployModal = ({
                         <AmountItem
                             key={`${queueLength}-queue_length`}
                             title={"Next Position: "}
-                            color="#FFFFFF"
                             value={`${queueLength + 1}`}
                             tooltip="The queue position of your war machine if you deploy now."
                             disableIcon
@@ -124,7 +123,7 @@ export const AmountItem = ({
     disableIcon,
 }: {
     title: string
-    color: string
+    color?: string
     value: string | number
     tooltip?: string
     disableIcon?: boolean
@@ -135,9 +134,9 @@ export const AmountItem = ({
                 {title}
             </Typography>
 
-            {!disableIcon && <SvgSupToken size="1.4rem" fill={color} sx={{ mr: ".1rem", pb: ".4rem" }} />}
+            {!disableIcon && <SvgSupToken size="1.5rem" fill={colors.yellow} sx={{ mr: ".1rem", pb: ".4rem" }} />}
 
-            <Typography variant="caption" sx={{ mr: "3.2rem", color: color, fontFamily: fonts.nostromoBold }}>
+            <Typography variant="caption" sx={{ mr: "3.2rem", color: color || "#FFFFFF", fontFamily: fonts.nostromoBold }}>
                 {value || "---"}
             </Typography>
 

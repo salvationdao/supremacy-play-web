@@ -217,7 +217,7 @@ export const theme = createTheme({
         },
         caption: {
             fontFamily: fonts.shareTech,
-            fontSize: "1.2rem",
+            fontSize: "1.25rem",
         },
     },
     components: {
