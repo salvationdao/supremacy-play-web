@@ -1,6 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { SvgCubes, SvgSupToken } from "../../../assets"
-import { useAuth } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { supFormatterNoFixed, timeSinceInWords } from "../../../helpers"
 import { useTimer } from "../../../hooks"
@@ -9,21 +8,17 @@ import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { RepairOffer } from "../../../types/jobs"
 import { FancyButton } from "../../Common/FancyButton"
+import { Player } from "../../Common/Player"
 import { RepairBlocks } from "../../Hangar/WarMachinesHangar/Common/MechRepairBlocks"
 import { General } from "../../Marketplace/Common/MarketItem/General"
 
 interface RepairJobStatus extends RepairOffer {
-    // closed_at?: Date
-    // finished_reason?: string
-    // expires_at: Date
-    // blocks_total: number
     blocks_repaired: number
     sups_worth_per_block: string
     working_agent_count: number
 }
 
 export const RepairJobItem = ({ repairJob, isGridView }: { repairJob: RepairOffer; isGridView?: boolean }) => {
-    const { userID } = useAuth()
     const theme = useTheme()
 
     const repairStatus = useGameServerSubscription<RepairJobStatus>({
@@ -63,7 +58,7 @@ export const RepairJobItem = ({ repairJob, isGridView }: { repairJob: RepairOffe
                         p: isGridView ? ".5rem .6rem" : ".1rem .3rem",
                         display: isGridView ? "block" : "grid",
                         gridTemplateRows: "7rem",
-                        gridTemplateColumns: `minmax(38rem, auto) 20rem 20rem 32rem`,
+                        gridTemplateColumns: `minmax(38rem, auto) 20rem 20rem 32rem 32rem`,
                         gap: "1.4rem",
                         ...(isGridView
                             ? {
@@ -89,8 +84,7 @@ export const RepairJobItem = ({ repairJob, isGridView }: { repairJob: RepairOffe
                                     span: { color: colors.orange, fontFamily: "inherit" },
                                 }}
                             >
-                                <span>{remainDamagedBlocks}</span> BLOCKS REMAINING{" "}
-                                {repairJob.offered_by_id === userID ? <span style={{ color: colors.neonBlue }}>(YOUR LISTING)</span> : ""}
+                                <span>{remainDamagedBlocks}</span> BLOCKS REMAINING
                             </Typography>
                             <RepairBlocks defaultBlocks={repairJob.blocks_total} remainDamagedBlocks={remainDamagedBlocks} hideNumber />
                         </Stack>
@@ -120,6 +114,10 @@ export const RepairJobItem = ({ repairJob, isGridView }: { repairJob: RepairOffe
                                 {supFormatterNoFixed(repairStatus?.sups_worth_per_block || "0", 2)} / BLOCK
                             </Typography>
                         </Stack>
+                    </General>
+
+                    <General isGridView={isGridView} title="JOB OWNER">
+                        <Player player={repairJob.job_owner} />
                     </General>
 
                     {repairStatus?.closed_at || repairJob.expires_at < new Date() ? (

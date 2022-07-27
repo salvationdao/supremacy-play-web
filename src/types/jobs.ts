@@ -1,3 +1,5 @@
+import { User } from "./user"
+
 export interface RepairOffer {
     id: string
     repair_case_id: string
@@ -7,7 +9,8 @@ export interface RepairOffer {
     expires_at: Date
     finished_reason?: FinishedReason
     closed_at?: Date
-	offered_by_id: string
+    offered_by_id: string
+    job_owner: User
 }
 
 export interface RepairStatus {
