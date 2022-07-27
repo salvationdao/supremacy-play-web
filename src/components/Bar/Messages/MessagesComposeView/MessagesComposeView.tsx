@@ -1,9 +1,10 @@
-import { Box, Link, Stack, Typography } from "@mui/material"
+import { Box, Stack, Typography } from "@mui/material"
 import MDEditor, { commands } from "@uiw/react-md-editor"
 import { useEffect, useRef, useState } from "react"
 import { useTheme } from "../../../../containers/theme"
 import { colors, fonts } from "../../../../theme/theme"
 import { FancyButton } from "../../../Common/FancyButton"
+import MessageRenderer from "../MessageRenderer"
 
 interface MessageComposeViewProps {
     onBack: () => void
@@ -46,37 +47,26 @@ export const MessagesComposeView = ({ onBack }: MessageComposeViewProps) => {
                 <Typography>Subject</Typography>
             </Box>
 
-            <Box ref={editorContainerEl} flex={1}>
+            <Box
+                ref={editorContainerEl}
+                flex={1}
+                sx={{
+                    "& .w-md-editor-text": {
+                        fontFamily: fonts.shareTechMono,
+                        "& *": {
+                            fontFamily: `${fonts.shareTechMono} !important`,
+                        },
+                        // "& .w-md-editor-text-pre": {
+                        // },
+                        // "& .w-md-editor-text-input": {
+                        // },
+                    },
+                }}
+            >
                 <MDEditor
                     id="md-editor"
                     preview="live"
-                    previewOptions={{
-                        style: {
-                            backgroundColor: theme.factionTheme.background,
-                        },
-                        components: {
-                            a: Link,
-                            p: Typography,
-                            h1: (props) => <Typography variant="h1" {...props} />,
-                            h2: (props) => <Typography variant="h2" {...props} />,
-                            h3: (props) => <Typography variant="h3" {...props} />,
-                            h4: (props) => <Typography variant="h4" {...props} />,
-                            h5: (props) => <Typography variant="h5" {...props} />,
-                            h6: (props) => <Typography variant="h6" {...props} />,
-                            code: (props) => (
-                                <Box
-                                    component="code"
-                                    sx={{
-                                        fontFamily: fonts.shareTechMono,
-                                        "& *": {
-                                            fontFamily: fonts.shareTechMono,
-                                        },
-                                    }}
-                                    {...props}
-                                />
-                            ),
-                        },
-                    }}
+                    previewOptions={MessageRenderer.generateOptions(theme.factionTheme.background)}
                     style={{
                         backgroundColor: theme.factionTheme.background,
                     }}
