@@ -1,18 +1,19 @@
-import { Box } from "@mui/material"
+import { Box, Stack, Typography } from "@mui/material"
 import { useState } from "react"
+import { SvgSupToken } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { useGameServerSubscription } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
+import { colors } from "../../../theme/theme"
 import { RepairOffer } from "../../../types/jobs"
 import { FancyButton } from "../../Common/FancyButton"
 import { General } from "../../Marketplace/Common/MarketItem/General"
 
-interface RepairJobStatus {
-    id: string
-    offered_by_id: string
-    closed_at?: Date
-    finished_reason?: string
-    blocks_total: number
+interface RepairJobStatus extends RepairOffer {
+    // closed_at?: Date
+    // finished_reason?: string
+    // expires_at: Date
+    // blocks_total: number
     blocks_repaired: number
     sups_worth_per_block: string
     working_agent_count: number
@@ -78,9 +79,26 @@ export const RepairJobItem = ({ repairJob, isGridView }: { repairJob: RepairOffe
                 >
                     {/* <MechCommonArea isGridView={isGridView} mech={mech} mechDetails={mechDetails} primaryColor={primaryColor} secondaryColor={secondaryColor} /> */}
 
-                    <General isGridView={isGridView} title="STATUS">
-                        {/* <MechGeneralStatus mechID={mech.id} hideBox smallVersion /> */}
+                    <General isGridView={isGridView} title="REWARD PER BLOCK">
+                        <Stack direction="row" alignItems="center" spacing=".3rem">
+                            <SvgSupToken size="2.2rem" fill={colors.yellow} />
+                            <Typography
+                                sx={{
+                                    fontWeight: "fontWeightBold",
+                                    display: "-webkit-box",
+                                    overflow: "hidden",
+                                    overflowWrap: "anywhere",
+                                    textOverflow: "ellipsis",
+                                    WebkitLineClamp: 2,
+                                    WebkitBoxOrient: "vertical",
+                                }}
+                            >
+                                {repairStatus?.sups_worth_per_block}
+                            </Typography>
+                        </Stack>
                     </General>
+
+                    <General isGridView={isGridView} title="ACTIVE AGENTS" text={repairStatus?.working_agent_count.toString()}></General>
                 </Box>
 
                 <Box

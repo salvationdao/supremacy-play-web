@@ -72,7 +72,7 @@ export const RepairJobs = () => {
 
     // Filters
     const rewardRangeFilter = useRef<RangeFilter>({
-        label: "REWARD RANGE",
+        label: "REWARD PER BLOCK",
         initialValue: rewardRanges,
         initialExpanded: true,
         onSetValue: (value: (number | undefined)[]) => {
