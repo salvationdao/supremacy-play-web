@@ -56,7 +56,7 @@ export const SortAndFilters = ({
                 }}
                 opacity={0.7}
                 backgroundColor={backgroundColor}
-                sx={{ height: "100%", width: "38rem", mr: "1rem" }}
+                sx={{ height: "100%", width: "38rem", mr: "1rem", opacity: isExpanded ? 1 : 0, transition: "all .2s" }}
             >
                 <Stack sx={{ height: "100%" }}>
                     <Box
