@@ -18,8 +18,16 @@ interface CustomAvatarProps {
     submitting: boolean
 }
 
+interface AvatarFeature {
+    id: string
+    image_url: string
+}
+
 export const CustomAvatar = ({ open, setOpen, primaryColor, backgroundColor, submitting }: CustomAvatarProps) => {
     const [currentValue, setCurrentValue] = useState<AVATAR_FEATURE_TABS>(AVATAR_FEATURE_TABS.Faces)
+
+    // selected features
+    const [hair, setHair] = useState<AvatarFeature>()
 
     const handleChange = useCallback(
         (event: SyntheticEvent, newValue: AVATAR_FEATURE_TABS) => {
@@ -76,14 +84,7 @@ export const CustomAvatar = ({ open, setOpen, primaryColor, backgroundColor, sub
                                     {/* Preview */}
                                     <Box width="500px" height="500px" mr="1rem" sx={{ position: "relative" }}>
                                         <img src={HeadPNG} alt="" height="500px" />
-                                        <img
-                                            style={{ position: "absolute", top: "0", left: "0" }}
-                                            src={
-                                                "https://raw.githubusercontent.com/owengiri20/testing/fe54e2c20b22283bee7d08d30737fd555cacf65e/hair1.png?token=ALES3LRYSLBQT44XZIVLOULC4DUV2"
-                                            }
-                                            alt=""
-                                            height="500px"
-                                        />
+                                        <img style={{ position: "absolute", top: "0", left: "0" }} src={hair?.image_url} alt="" height="500px" />
                                     </Box>
 
                                     <Box width="50%">
@@ -99,7 +100,6 @@ export const CustomAvatar = ({ open, setOpen, primaryColor, backgroundColor, sub
                                                 ".MuiTab-root": { minHeight: 0, fontSize: "1.3rem", height: "6rem", width: "10rem" },
                                                 ".Mui-selected": {
                                                     color: `${primaryColor} !important`,
-                                                    // background: `linear-gradient(${primaryColor} 26%, ${primaryColor}BB)`,
                                                 },
                                                 ".MuiTabs-indicator": { display: "none" },
                                                 ".MuiTabScrollButton-root": { display: "none" },
@@ -115,7 +115,7 @@ export const CustomAvatar = ({ open, setOpen, primaryColor, backgroundColor, sub
                                         </TabPanel>
 
                                         <TabPanel currentValue={currentValue} value={AVATAR_FEATURE_TABS.Hair}>
-                                            <HairList />
+                                            <HairList setHair={setHair} />
                                         </TabPanel>
                                     </Box>
                                 </Box>
@@ -180,7 +180,10 @@ interface ListRequest {
     page_size: number
 }
 
-export const HairList = () => {
+interface HairListProps {
+    setHair: (h: Hair) => void
+}
+export const HairList = ({ setHair }: HairListProps) => {
     const [query] = useUrlQuery()
     const { send } = useGameServerCommandsUser("/user_commander")
 
@@ -297,13 +300,14 @@ export const HairList = () => {
                                     },
                                 }}
                                 onClick={() => {
-                                    if (a.id === "custom") {
-                                        console.log("create new avatar ... ")
-                                        setCustomAvatarModalOpen(true)
-                                        setModalOpen(false)
-                                        return
-                                    }
+                                    // if (a.id === "custom") {
+                                    //     console.log("create new avatar ... ")
+                                    //     setCustomAvatarModalOpen(true)
+                                    //     setModalOpen(false)
+                                    //     return
+                                    // }
                                     // updatehHandler(a.id)
+                                    setHair(a)
                                 }}
                             >
                                 <Avatar
