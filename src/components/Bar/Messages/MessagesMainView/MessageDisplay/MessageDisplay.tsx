@@ -4,7 +4,7 @@ import { useMemo } from "react"
 import { useTheme } from "../../../../../containers/theme"
 import { colors, fonts } from "../../../../../theme/theme"
 import { SystemMessageDataMechBattleComplete, SystemMessageDataType } from "../../../../../types"
-import { MessageRenderer } from "../../MessageRenderer"
+import MessageRenderer from "../../MessageRenderer"
 import { SystemMessageDisplayable } from "../../Messages"
 import { MechBattleCompleteDetails } from "./MechBattleCompleteDetails"
 
