@@ -2,6 +2,8 @@ import { Box, Stack, Typography } from "@mui/material"
 import { useState } from "react"
 import { SvgSupToken } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
+import { supFormatterNoFixed, timeSinceInWords } from "../../../helpers"
+import { useTimer } from "../../../hooks"
 import { useGameServerSubscription } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
@@ -35,7 +37,6 @@ export const RepairJobItem = ({ repairJob, isGridView }: { repairJob: RepairOffe
     )
 
     const primaryColor = theme.factionTheme.primary
-    const secondaryColor = theme.factionTheme.secondary
     const backgroundColor = theme.factionTheme.background
 
     return (
@@ -66,7 +67,7 @@ export const RepairJobItem = ({ repairJob, isGridView }: { repairJob: RepairOffe
                         p: isGridView ? ".5rem .6rem" : ".1rem .3rem",
                         display: isGridView ? "block" : "grid",
                         gridTemplateRows: "7rem",
-                        gridTemplateColumns: `minmax(38rem, auto) 20rem 32rem`,
+                        gridTemplateColumns: `minmax(38rem, auto) 20rem 20rem 32rem`,
                         gap: "1.4rem",
                         ...(isGridView
                             ? {
@@ -77,11 +78,18 @@ export const RepairJobItem = ({ repairJob, isGridView }: { repairJob: RepairOffe
                             : {}),
                     }}
                 >
-                    {/* <MechCommonArea isGridView={isGridView} mech={mech} mechDetails={mechDetails} primaryColor={primaryColor} secondaryColor={secondaryColor} /> */}
+                    <Box />
 
-                    <General isGridView={isGridView} title="REWARD PER BLOCK">
-                        <Stack direction="row" alignItems="center" spacing=".3rem">
-                            <SvgSupToken size="2.2rem" fill={colors.yellow} />
+                    <General
+                        isGridView={isGridView}
+                        title="ACTIVE AGENTS"
+                        text={repairStatus?.working_agent_count.toString()}
+                        textColor={!repairStatus?.working_agent_count ? colors.green : colors.orange}
+                    />
+
+                    <General isGridView={isGridView} title="REWARD">
+                        <Stack direction="row" alignItems="center">
+                            <SvgSupToken size="1.8rem" fill={colors.yellow} />
                             <Typography
                                 sx={{
                                     fontWeight: "fontWeightBold",
@@ -93,12 +101,16 @@ export const RepairJobItem = ({ repairJob, isGridView }: { repairJob: RepairOffe
                                     WebkitBoxOrient: "vertical",
                                 }}
                             >
-                                {repairStatus?.sups_worth_per_block}
+                                {supFormatterNoFixed(repairStatus?.sups_worth_per_block || "0", 2)} / BLOCK
                             </Typography>
                         </Stack>
                     </General>
 
-                    <General isGridView={isGridView} title="ACTIVE AGENTS" text={repairStatus?.working_agent_count.toString()}></General>
+                    {repairStatus?.closed_at ? (
+                        <General isGridView={isGridView} title="TIME LEFT" text="EXPIRED" />
+                    ) : (
+                        <CountdownGeneral isGridView={isGridView} endTime={repairJob.expires_at} />
+                    )}
                 </Box>
 
                 <Box
@@ -114,5 +126,18 @@ export const RepairJobItem = ({ repairJob, isGridView }: { repairJob: RepairOffe
                 />
             </FancyButton>
         </Box>
+    )
+}
+
+const CountdownGeneral = ({ isGridView, endTime }: { isGridView?: boolean; endTime: Date }) => {
+    const { totalSecRemain } = useTimer(endTime)
+
+    return (
+        <General
+            isGridView={isGridView}
+            title="TIME LEFT"
+            text={timeSinceInWords(new Date(), new Date(new Date().getTime() + totalSecRemain * 1000)) + " left"}
+            textColor={totalSecRemain < 180 ? colors.orange : "#FFFFFF"}
+        />
     )
 }

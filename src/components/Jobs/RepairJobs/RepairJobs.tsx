@@ -56,7 +56,7 @@ export const RepairJobs = () => {
 
     // Filters and sorts
     const [isFiltersExpanded, toggleIsFiltersExpanded] = useToggle(localStorage.getItem("isRepairJobsFiltersExpanded") === "true")
-    const [sort, setSort] = useState<string>(query.get("sort") || SortTypeLabel.CreateTimeNewestFirst)
+    const [sort, setSort] = useState<string>(query.get("sort") || SortTypeLabel.EndTimeEndingSoon)
     const [rewardRanges, setRewardRanges] = useState<(number | undefined)[]>(
         (query.get("rewardRanges") || undefined)?.split("||").map((p) => (p ? parseInt(p) : undefined)) || [undefined, undefined],
     )

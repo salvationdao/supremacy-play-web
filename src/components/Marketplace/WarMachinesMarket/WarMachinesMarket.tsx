@@ -55,7 +55,7 @@ export const WarMachinesMarket = () => {
     // Filters and sorts
     const [isFiltersExpanded, toggleIsFiltersExpanded] = useToggle((localStorage.getItem("isWarMachinesMarketFiltersExpanded") || "true") === "true")
     const [search, setSearch] = useState("")
-    const [sort, setSort] = useState<string>(query.get("sort") || SortTypeLabel.CreateTimeNewestFirst)
+    const [sort, setSort] = useState<string>(query.get("sort") || SortTypeLabel.PriceLowest)
     const [status, setStatus] = useState<string[]>((query.get("statuses") || undefined)?.split("||") || [])
     const [ownedBy, setOwnedBy] = useState<string[]>((query.get("ownedBy") || undefined)?.split("||") || [])
     const [listingTypes, setListingTypes] = useState<string[]>((query.get("listingTypes") || undefined)?.split("||") || [])

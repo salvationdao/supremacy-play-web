@@ -52,7 +52,7 @@ export const KeycardsMarket = () => {
     // Filters and sorts
     const [isFiltersExpanded, toggleIsFiltersExpanded] = useToggle((localStorage.getItem("isKeycardsMarketFiltersExpanded") || "true") === "true")
     const [search, setSearch] = useState("")
-    const [sort, setSort] = useState<string>(query.get("sort") || SortTypeLabel.CreateTimeNewestFirst)
+    const [sort, setSort] = useState<string>(query.get("sort") || SortTypeLabel.PriceLowest)
     const [status, setStatus] = useState<string[]>((query.get("statuses") || undefined)?.split("||") || [])
     const [ownedBy, setOwnedBy] = useState<string[]>((query.get("ownedBy") || undefined)?.split("||") || [])
     const [price, setPrice] = useState<(number | undefined)[]>(
