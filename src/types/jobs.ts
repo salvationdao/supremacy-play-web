@@ -13,5 +13,4 @@ export interface RepairOffer {
 export interface RepairStatus {
     blocks_required_repair: number
     blocks_repaired: number
-    has_repair_offer: boolean
 }

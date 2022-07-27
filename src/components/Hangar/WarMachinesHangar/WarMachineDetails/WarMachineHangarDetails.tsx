@@ -22,7 +22,7 @@ import { MechViewer } from "./MechViewer"
 import { DeployModal } from "./Modals/DeployModal"
 import { LeaveModal } from "./Modals/LeaveModal"
 import { RentalModal } from "./Modals/RentalModal"
-import { RepairModal } from "./Modals/RepairModal"
+import { RepairModal } from "./Modals/RepairModal/RepairModal"
 
 export const WarMachineHangarDetails = ({ mechID }: { mechID: string }) => {
     const [selectedMechDetails, setSelectedMechDetails] = useState<MechDetails>()

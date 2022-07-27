@@ -130,13 +130,13 @@ export const AmountItem = ({
 }) => {
     return (
         <Stack direction="row" alignItems="center">
-            <Typography variant="caption" sx={{ mr: ".4rem", fontFamily: fonts.nostromoBlack }}>
+            <Typography variant="body2" sx={{ mr: ".4rem", fontFamily: fonts.nostromoHeavy }}>
                 {title}
             </Typography>
 
-            {!disableIcon && <SvgSupToken size="1.6rem" fill={colors.yellow} sx={{ mr: ".1rem", pb: ".4rem" }} />}
+            {!disableIcon && <SvgSupToken size="1.8rem" fill={colors.yellow} sx={{ mr: ".1rem", pb: ".4rem" }} />}
 
-            <Typography variant="caption" sx={{ mr: "3.2rem", color: color || "#FFFFFF", fontFamily: fonts.nostromoBold }}>
+            <Typography variant="body1" sx={{ mr: "3.2rem", color: color || colors.offWhite, fontWeight: "fontWeightBold" }}>
                 {value || "---"}
             </Typography>
 
