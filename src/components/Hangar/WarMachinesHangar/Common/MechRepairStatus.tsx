@@ -1,4 +1,5 @@
 import { Stack } from "@mui/material"
+import React from "react"
 import { useGameServerSubscription } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors } from "../../../../theme/theme"
@@ -9,7 +10,7 @@ interface RepairStatus {
     blocks_repaired: number
 }
 
-export const MechRepairStatus = ({ mechID }: { mechID?: string }) => {
+export const MechRepairStatus = React.memo(function MechRepairStatus({ mechID }: { mechID?: string }) {
     const repairStatus = useGameServerSubscription<RepairStatus>({
         URI: `/public/mech/${mechID}/repair_case`,
         key: GameServerKeys.SubMechRepairStatus,
@@ -45,4 +46,4 @@ export const MechRepairStatus = ({ mechID }: { mechID?: string }) => {
             ))}
         </Stack>
     )
-}
+})

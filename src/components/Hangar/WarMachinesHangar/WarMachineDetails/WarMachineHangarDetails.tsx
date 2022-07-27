@@ -1,7 +1,7 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material"
 import { useCallback, useMemo, useState } from "react"
 import { ClipThing } from "../../.."
-import { SvgSkin, SvgStats } from "../../../../assets"
+import { SvgCubes, SvgSkin, SvgStats } from "../../../../assets"
 import { BATTLE_ARENA_OPEN } from "../../../../constants"
 import { useSnackbar } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
@@ -14,6 +14,7 @@ import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
 import { MechBattleHistoryDetails } from "../../../Marketplace/WarMachinesMarket/WarMachineMarketDetails/MechBattleHistoryDetails"
 import { MechBarStats } from "../Common/MechBarStats"
 import { MechGeneralStatus } from "../Common/MechGeneralStatus"
+import { MechRepairStatus } from "../Common/MechRepairStatus"
 import { MechButtons } from "./MechButtons"
 import { MechLoadout } from "./MechLoadout"
 import { MechName } from "./MechName"
@@ -221,6 +222,16 @@ export const WarMachineHangarDetailsInner = ({
                                         <Typography sx={{ fontFamily: fonts.nostromoBlack }}>{mechDetails.label}</Typography>
 
                                         <MechName renameMech={renameMech} mechDetails={mechDetails} />
+                                    </Stack>
+
+                                    {/* Repair status */}
+                                    <Stack spacing=".5rem">
+                                        <Stack direction="row" spacing=".8rem" alignItems="center">
+                                            <SvgCubes fill={primaryColor} size="1.6rem" />
+                                            <Typography sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack }}>SYSTEM STATUS</Typography>
+                                        </Stack>
+
+                                        <MechRepairStatus mechID={mechID} />
                                     </Stack>
 
                                     {/* Bar stats */}

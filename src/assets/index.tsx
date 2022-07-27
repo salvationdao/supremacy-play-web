@@ -18,6 +18,7 @@ import EmojiSelector from "!@svgr/webpack!./svg/EmojiSelector.svg"
 import Energy from "!@svgr/webpack!./svg/Energy.svg"
 import ExternalLink from "!@svgr/webpack!./svg/ExternalLink.svg"
 import FastRepair from "!@svgr/webpack!./svg/FastRepair.svg"
+import Cubes from "!@svgr/webpack!./svg/Cubes.svg"
 import FontCase from "!@svgr/webpack!./svg/FontCase.svg"
 import Global from "!@svgr/webpack!./svg/Global.svg"
 import Graph from "!@svgr/webpack!./svg/Graph.svg"
@@ -1115,5 +1116,11 @@ export const SvgCrown: React.VoidFunctionComponent<SvgWrapperProps> = (props) =>
 export const SvgHamburger: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <Hamburger />
+    </SvgWrapper>
+)
+
+export const SvgCubes: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Cubes />
     </SvgWrapper>
 )

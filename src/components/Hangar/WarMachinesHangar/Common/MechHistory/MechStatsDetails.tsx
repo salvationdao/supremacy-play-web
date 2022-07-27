@@ -1,11 +1,12 @@
 import { Stack, Typography } from "@mui/material"
-import { SvgIntroAnimation, SvgOutroAnimation, SvgPowerCore, SvgSkin, SvgStats, SvgUtilities, SvgWeapons } from "../../../../../assets"
+import { SvgCubes, SvgIntroAnimation, SvgOutroAnimation, SvgPowerCore, SvgSkin, SvgStats, SvgUtilities, SvgWeapons } from "../../../../../assets"
 import { useTheme } from "../../../../../containers/theme"
 import { getRarityDeets } from "../../../../../helpers"
 import { colors, fonts } from "../../../../../theme/theme"
 import { MechDetails } from "../../../../../types"
 import { MechBarStats } from "../MechBarStats"
 import { MechLoadoutItem } from "../MechLoadoutItem"
+import { MechRepairStatus } from "../MechRepairStatus"
 
 export const MechStatsDetails = ({ mechDetails }: { mechDetails?: MechDetails }) => {
     const theme = useTheme()
@@ -24,6 +25,17 @@ export const MechStatsDetails = ({ mechDetails }: { mechDetails?: MechDetails })
 
     return (
         <Stack spacing="3rem">
+            <Stack spacing="1rem">
+                <Stack direction="row" spacing=".8rem" alignItems="center">
+                    <SvgCubes fill={primaryColor} size="1.8rem" />
+                    <Typography variant="h5" sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack }}>
+                        SYSTEM STATUS
+                    </Typography>
+                </Stack>
+
+                <MechRepairStatus mechID={mechDetails.id} />
+            </Stack>
+
             <Stack spacing="1rem">
                 <Stack direction="row" spacing=".8rem" alignItems="center">
                     <SvgStats fill={primaryColor} size="1.8rem" />
