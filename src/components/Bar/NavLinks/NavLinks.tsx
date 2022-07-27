@@ -22,7 +22,7 @@ export const NavLinks = () => {
         <Stack
             direction="row"
             alignItems="center"
-            spacing="2rem"
+            spacing="2.2rem"
             sx={{
                 mx: "2.2rem",
                 height: "100%",
