@@ -1,5 +1,6 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { SvgCubes, SvgSupToken } from "../../../assets"
+import { useAuth } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { supFormatterNoFixed, timeSinceInWords } from "../../../helpers"
 import { useTimer } from "../../../hooks"
@@ -22,6 +23,7 @@ interface RepairJobStatus extends RepairOffer {
 }
 
 export const RepairJobItem = ({ repairJob, isGridView }: { repairJob: RepairOffer; isGridView?: boolean }) => {
+    const { userID } = useAuth()
     const theme = useTheme()
 
     const repairStatus = useGameServerSubscription<RepairJobStatus>({
@@ -87,7 +89,8 @@ export const RepairJobItem = ({ repairJob, isGridView }: { repairJob: RepairOffe
                                     span: { color: colors.orange, fontFamily: "inherit" },
                                 }}
                             >
-                                <span>{remainDamagedBlocks}</span> BLOCKS REMAINING
+                                <span>{remainDamagedBlocks}</span> BLOCKS REMAINING{" "}
+                                {repairJob.offered_by_id === userID ? <span style={{ color: colors.neonBlue }}>(YOUR LISTING)</span> : ""}
                             </Typography>
                             <RepairBlocks defaultBlocks={repairJob.blocks_total} remainDamagedBlocks={remainDamagedBlocks} hideNumber />
                         </Stack>

@@ -7,7 +7,7 @@ export interface RepairOffer {
     expires_at: Date
     finished_reason?: FinishedReason
     closed_at?: Date
-    ownerID: string
+	offered_by_id: string
 }
 
 export interface RepairStatus {
