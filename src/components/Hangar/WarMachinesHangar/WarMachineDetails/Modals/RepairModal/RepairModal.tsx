@@ -94,7 +94,7 @@ export const RepairModal = ({
 
                         <SelfRepairCard />
 
-                        {repairJob ? (
+                        {repairJob && !repairJob.closed_at ? (
                             <ExistingRepairJobCard repairJob={repairJob} />
                         ) : (
                             <HireContractorsCard mechDetails={selectedMechDetails} remainDamagedBlocks={remainDamagedBlocks} />

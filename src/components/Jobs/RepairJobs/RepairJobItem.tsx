@@ -1,5 +1,4 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useState } from "react"
 import { SvgCubes, SvgSupToken } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { supFormatterNoFixed, timeSinceInWords } from "../../../helpers"
@@ -73,9 +72,9 @@ export const RepairJobItem = ({ repairJob, isGridView }: { repairJob: RepairOffe
                             : {}),
                     }}
                 >
-                    <Stack spacing=".6rem" sx={{ pt: ".3rem" }}>
-                        <Stack spacing=".8rem" direction="row" alignItems="center">
-                            <SvgCubes size="2.3rem" />
+                    <Stack spacing="1.8rem" direction="row" alignItems="center" sx={{ pl: ".5rem" }}>
+                        <SvgCubes size="3.2rem" />
+                        <Stack spacing=".6rem">
                             <Typography
                                 sx={{
                                     fontFamily: fonts.nostromoBlack,
@@ -90,9 +89,8 @@ export const RepairJobItem = ({ repairJob, isGridView }: { repairJob: RepairOffe
                             >
                                 <span>{remainDamagedBlocks}</span> BLOCKS REMAINING
                             </Typography>
+                            <RepairBlocks defaultBlocks={repairJob.blocks_total} remainDamagedBlocks={remainDamagedBlocks} hideNumber />
                         </Stack>
-
-                        <RepairBlocks defaultBlocks={repairJob.blocks_total} remainDamagedBlocks={remainDamagedBlocks} hideNumber />
                     </Stack>
 
                     <General
@@ -122,7 +120,7 @@ export const RepairJobItem = ({ repairJob, isGridView }: { repairJob: RepairOffe
                     </General>
 
                     {repairStatus?.closed_at ? (
-                        <General isGridView={isGridView} title="TIME LEFT" text="EXPIRED" />
+                        <General isGridView={isGridView} title="TIME LEFT" text="EXPIRED" textColor={colors.lightGrey} />
                     ) : (
                         <CountdownGeneral isGridView={isGridView} endTime={repairJob.expires_at} />
                     )}
