@@ -1,4 +1,4 @@
-import { Box, Fade, Stack, Typography } from "@mui/material"
+import { Box, Stack, Typography } from "@mui/material"
 import React, { useCallback, useEffect, useMemo, useRef } from "react"
 import { UserBanForm } from "../../../.."
 import { SvgInfoCircular, SvgSkull2 } from "../../../../../assets"
@@ -373,9 +373,9 @@ export const TextMessage = ({
                     </Stack>
                 )}
 
-                <Stack direction={"row"} sx={{ ml: "2.1rem", justifyContent: "space-between" }}>
+                <Box sx={{ backgroundColor: shouldNotify ? "rgba(0,116,217, .4)" : "unset", borderRadius: ".3rem", transition: "background-color 2s" }}>
                     {chatMessage}
-                </Stack>
+                </Box>
             </Box>
 
             {isPopoverOpen && (
