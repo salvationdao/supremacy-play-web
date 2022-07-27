@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Box, Link, Typography } from "@mui/material"
 import MDEditor from "@uiw/react-md-editor"
+import rehypeSanitize from "rehype-sanitize"
 import { fonts } from "../../../theme/theme"
 
 export interface MessageRendererProps {
@@ -18,6 +19,7 @@ const InternalMessageRenderer = ({ markdown }: MessageRendererProps) => {
 }
 
 const options: any = {
+    rehypePlugins: [[rehypeSanitize]],
     components: {
         a: Link,
         p: Typography,

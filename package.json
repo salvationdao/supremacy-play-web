@@ -35,6 +35,7 @@
         "react-resizable": "^3.0.4",
         "react-rnd": "^10.3.7",
         "react-router-dom": "^5.2.0",
+        "rehype-sanitize": "^5.0.1",
         "unstated-next": "^1.1.0",
         "uuid": "^8.3.2"
     },
