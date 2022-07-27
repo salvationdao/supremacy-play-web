@@ -33,9 +33,9 @@ const options: any = {
             <Box
                 component="code"
                 sx={{
-                    fontFamily: fonts.shareTechMono,
+                    fontFamily: `${fonts.shareTechMono} !important`,
                     "& *": {
-                        fontFamily: fonts.shareTechMono,
+                        fontFamily: `${fonts.shareTechMono} !important`,
                     },
                 }}
                 {...props}
