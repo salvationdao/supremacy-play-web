@@ -14,6 +14,10 @@ interface DevicePreferencesProps {
     toggleAddDeviceModal: () => void
 }
 
+interface Device {
+    name: string
+}
+
 //todo: comment here
 export const DevicePreferences = ({ toggleAddDeviceModal }: DevicePreferencesProps) => {
     const theme = useTheme()
@@ -21,16 +25,18 @@ export const DevicePreferences = ({ toggleAddDeviceModal }: DevicePreferencesPro
     const [error, setError] = useState<string>()
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsUser("/user_commander")
+    const [devices, setDevices] = useState<Device[]>([])
 
     // Get list of devices connected to the companion app
     useEffect(() => {
         ;(async () => {
             try {
-                const resp = await send<{ token: string; expired_at: Date }>(GameServerKeys.AuthGenOneTimeToken)
+                const resp = await send<Device[]>(GameServerKeys.GetPlayerDeviceList)
                 if (!resp) return
+                setDevices(resp)
             } catch (err) {
                 const message = typeof err === "string" ? err : "Failed to get connected devices."
-                console.error(err)
+                setError(message)
             }
         })()
     }, [send])
@@ -72,7 +78,16 @@ export const DevicePreferences = ({ toggleAddDeviceModal }: DevicePreferencesPro
                 </TooltipHelper>
             </Stack>
 
-            {/*todo: add list of devices here*/}
+            {/* List of  connected devices */}
+            {devices &&
+                devices.length > 0 &&
+                devices.map((device) => {
+                    return (
+                        <Typography key={device.name} sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>
+                            {device.name}
+                        </Typography>
+                    )
+                })}
 
             {error && (
                 <Typography variant="body2" sx={{ color: colors.red, pt: "1rem" }}>

@@ -100,7 +100,7 @@ export const ProfilePopover = ({ open, popoverRef, onClose, user }: { open: bool
                 />
             )}
 
-            {/* Add new device modal - supremacy companion app*/}
+            {/* Add new device modal - supremacy companion app */}
             {addDeviceModalOpen && (
                 <DeviceRegisterModal
                     onClose={() => {
