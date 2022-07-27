@@ -44,10 +44,6 @@ export const MechGeneralStatus = ({ mechID, hideBox, smallVersion }: { mechID: s
                     setText("DAMAGED")
                     setColour(colors.bronze)
                     break
-                case MechStatusEnum.StandardRepairing:
-                    setText("REPAIRING")
-                    setColour(colors.blue2)
-                    break
                 default:
                     setText(payload.status)
                     setColour(colors.lightGrey)

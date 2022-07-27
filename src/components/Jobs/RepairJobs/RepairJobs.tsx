@@ -211,7 +211,7 @@ export const RepairJobs = () => {
                             textAlign: "center",
                         }}
                     >
-                        {"There are no war machines found, please try again."}
+                        {"There are no repair jobs found, please try again."}
                     </Typography>
                 </Stack>
             </Stack>
@@ -234,7 +234,7 @@ export const RepairJobs = () => {
             >
                 <Stack sx={{ position: "relative", height: "100%" }}>
                     <Stack sx={{ flex: 1 }}>
-                        <PageHeader title="WAR MACHINES" description="Your war machines." imageUrl={WarMachineIconPNG} />
+                        <PageHeader title="REPAIR JOBS" description="See a list repair jobs posted by mech owners." imageUrl={WarMachineIconPNG} />
 
                         <TotalAndPageSizeOptions
                             countItems={repairJobs?.length}
