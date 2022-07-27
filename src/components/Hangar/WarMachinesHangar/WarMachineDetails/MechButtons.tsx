@@ -120,7 +120,11 @@ export const MechButtons = ({
                             secondaryColor={mechState === MechStatusEnum.Market ? colors.red : undefined}
                             backgroundColor={mechState === MechStatusEnum.Market ? theme.factionTheme.background : colors.red}
                             label={mechState === MechStatusEnum.Market ? "VIEW LISTING" : "SELL"}
-                            disabled={!mechState || (mechState !== MechStatusEnum.Idle && mechState !== MechStatusEnum.Market) || marketLocked}
+                            disabled={
+                                !mechState ||
+                                (mechState !== MechStatusEnum.Idle && mechState !== MechStatusEnum.Damaged && mechState !== MechStatusEnum.Market) ||
+                                marketLocked
+                            }
                             to={
                                 mechDetails.locked_to_marketplace
                                     ? !mechDetails.item_sale_id

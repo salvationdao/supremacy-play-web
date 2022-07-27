@@ -36,10 +36,9 @@ export const MechLoadoutIcons = ({ mechDetails }: { mechDetails?: MechDetails })
     }
 
     return (
-        <Stack direction="row" spacing=".8rem" alignItems="center">
+        <Stack direction="row" spacing=".5rem" alignItems="center">
             {hasSkin && (
                 <Stack spacing=".4rem" direction="row" alignItems="center">
-                    <SvgSkin fill={rarityDeets.color} size="1.7rem" />
                     <Typography
                         variant="body2"
                         sx={{
@@ -55,72 +54,71 @@ export const MechLoadoutIcons = ({ mechDetails }: { mechDetails?: MechDetails })
                     >
                         {rarityDeets.label}
                     </Typography>
+                    <SvgSkin fill={rarityDeets.color} size="1.7rem" />
                 </Stack>
             )}
 
-            <Stack direction="row" spacing=".5rem">
-                {!hasSkin && (
-                    <TooltipHelper text="Submodel" placement="bottom">
+            {!hasSkin && (
+                <TooltipHelper text="Submodel" placement="bottom">
+                    <Box>
+                        <SvgSkin fill={hasSkin ? colors.chassisSkin : `${colors.darkGrey}80`} size="1.7rem" />
+                    </Box>
+                </TooltipHelper>
+            )}
+
+            <TooltipHelper text="Power core" placement="bottom">
+                <Box>
+                    <SvgPowerCore fill={hasPowerCore ? colors.powerCore : `${colors.darkGrey}80`} size="1.7rem" />
+                </Box>
+            </TooltipHelper>
+
+            {weaponCount > 0 &&
+                new Array(weaponCount).fill(0).map((_, index) => (
+                    <TooltipHelper key={`mech-info-${index}`} text="Weapon" placement="bottom">
                         <Box>
-                            <SvgSkin fill={hasSkin ? colors.chassisSkin : `${colors.darkGrey}80`} size="1.7rem" />
+                            <SvgWeapons fill={colors.weapons} size="1.7rem" />
                         </Box>
                     </TooltipHelper>
-                )}
+                ))}
 
-                <TooltipHelper text="Power core" placement="bottom">
-                    <Box>
-                        <SvgPowerCore fill={hasPowerCore ? colors.powerCore : `${colors.darkGrey}80`} size="1.7rem" />
-                    </Box>
-                </TooltipHelper>
+            {weaponSlots - weaponCount > 0 &&
+                new Array(weaponSlots - weaponCount).fill(0).map((_, index) => (
+                    <TooltipHelper key={`mech-info-${index}`} text="Weapon" placement="bottom">
+                        <Box>
+                            <SvgWeapons fill={`${colors.darkGrey}80`} size="1.7rem" />
+                        </Box>
+                    </TooltipHelper>
+                ))}
 
-                {weaponCount > 0 &&
-                    new Array(weaponCount).fill(0).map((_, index) => (
-                        <TooltipHelper key={`mech-info-${index}`} text="Weapon" placement="bottom">
-                            <Box>
-                                <SvgWeapons fill={colors.weapons} size="1.7rem" />
-                            </Box>
-                        </TooltipHelper>
-                    ))}
+            {utilityCount > 0 &&
+                new Array(utilityCount).fill(0).map((_, index) => (
+                    <TooltipHelper key={`mech-info-${index}`} text="Utility" placement="bottom">
+                        <Box>
+                            <SvgUtilities fill={colors.utilities} size="1.7rem" />
+                        </Box>
+                    </TooltipHelper>
+                ))}
 
-                {weaponSlots - weaponCount > 0 &&
-                    new Array(weaponSlots - weaponCount).fill(0).map((_, index) => (
-                        <TooltipHelper key={`mech-info-${index}`} text="Weapon" placement="bottom">
-                            <Box>
-                                <SvgWeapons fill={`${colors.darkGrey}80`} size="1.7rem" />
-                            </Box>
-                        </TooltipHelper>
-                    ))}
+            {utilitySlots - utilityCount > 0 &&
+                new Array(utilitySlots - utilityCount).fill(0).map((_, index) => (
+                    <TooltipHelper key={`mech-info-${index}`} text="Utility" placement="bottom">
+                        <Box>
+                            <SvgUtilities fill={`${colors.darkGrey}80`} size="1.7rem" />
+                        </Box>
+                    </TooltipHelper>
+                ))}
 
-                {utilityCount > 0 &&
-                    new Array(utilityCount).fill(0).map((_, index) => (
-                        <TooltipHelper key={`mech-info-${index}`} text="Utility" placement="bottom">
-                            <Box>
-                                <SvgUtilities fill={colors.utilities} size="1.7rem" />
-                            </Box>
-                        </TooltipHelper>
-                    ))}
+            <TooltipHelper text="Outro animation" placement="bottom">
+                <Box>
+                    <SvgIntroAnimation fill={hasIntroAnimation ? colors.introAnimation : `${colors.darkGrey}80`} size="1.7rem" />
+                </Box>
+            </TooltipHelper>
 
-                {utilitySlots - utilityCount > 0 &&
-                    new Array(utilitySlots - utilityCount).fill(0).map((_, index) => (
-                        <TooltipHelper key={`mech-info-${index}`} text="Utility" placement="bottom">
-                            <Box>
-                                <SvgUtilities fill={`${colors.darkGrey}80`} size="1.7rem" />
-                            </Box>
-                        </TooltipHelper>
-                    ))}
-
-                <TooltipHelper text="Outro animation" placement="bottom">
-                    <Box>
-                        <SvgIntroAnimation fill={hasIntroAnimation ? colors.introAnimation : `${colors.darkGrey}80`} size="1.7rem" />
-                    </Box>
-                </TooltipHelper>
-
-                <TooltipHelper text="Intro animation" placement="bottom">
-                    <Box>
-                        <SvgOutroAnimation fill={hasOutroAnimation ? colors.outroAnimation : `${colors.darkGrey}80`} size="1.7rem" />
-                    </Box>
-                </TooltipHelper>
-            </Stack>
+            <TooltipHelper text="Intro animation" placement="bottom">
+                <Box>
+                    <SvgOutroAnimation fill={hasOutroAnimation ? colors.outroAnimation : `${colors.darkGrey}80`} size="1.7rem" />
+                </Box>
+            </TooltipHelper>
         </Stack>
     )
 }

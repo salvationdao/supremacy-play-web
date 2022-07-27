@@ -14,6 +14,7 @@ import { General } from "../../Marketplace/Common/MarketItem/General"
 import { MechBarStats } from "./Common/MechBarStats"
 import { MechGeneralStatus } from "./Common/MechGeneralStatus"
 import { MechLoadoutIcons } from "./Common/MechLoadoutIcons"
+import { MechRepairStatus } from "./Common/MechRepairStatus"
 
 export const WarMachineHangarItem = ({ mech, isGridView }: { mech: MechBasic; isGridView?: boolean }) => {
     const location = useLocation()
@@ -143,7 +144,7 @@ export const MechCommonArea = ({
                 spacing=".2rem"
                 sx={{
                     flex: 1,
-                    pr: toggleIsExpanded ? "3rem" : "unset",
+                    pr: !isGridView && toggleIsExpanded ? "3rem" : "unset",
                     ":hover": {
                         ".expandArrow": {
                             transform: "translateX(4px)",
@@ -161,6 +162,7 @@ export const MechCommonArea = ({
 
                 <Typography
                     sx={{
+                        color: mechh?.name ? colors.offWhite : "#FFFFFF",
                         fontFamily: fonts.nostromoBlack,
                         display: "-webkit-box",
                         overflow: "hidden",
@@ -170,24 +172,10 @@ export const MechCommonArea = ({
                         WebkitBoxOrient: "vertical",
                     }}
                 >
-                    {mechh?.label || label}
+                    {mechh?.name || mechh?.label || label}
                 </Typography>
 
-                <Typography
-                    variant="body2"
-                    sx={{
-                        color: mechh?.name ? primaryColor : colors.grey,
-                        fontFamily: fonts.nostromoBlack,
-                        display: "-webkit-box",
-                        overflow: "hidden",
-                        overflowWrap: "anywhere",
-                        textOverflow: "ellipsis",
-                        WebkitLineClamp: 1, // change to max number of lines
-                        WebkitBoxOrient: "vertical",
-                    }}
-                >
-                    {mechh?.name || "Unnamed"}
-                </Typography>
+                <MechRepairStatus mechID={mech?.id || mechDetails?.id} />
 
                 {toggleIsExpanded && !isGridView && (
                     <Stack

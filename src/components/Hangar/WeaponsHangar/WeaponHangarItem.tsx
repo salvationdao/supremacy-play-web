@@ -145,7 +145,7 @@ export const WeaponCommonArea = ({
                 spacing=".2rem"
                 sx={{
                     flex: 1,
-                    pr: toggleIsExpanded ? "3rem" : "unset",
+                    pr: !isGridView && toggleIsExpanded ? "3rem" : "unset",
                     ":hover": {
                         ".expandArrow": {
                             transform: "translateX(4px)",
@@ -160,8 +160,6 @@ export const WeaponCommonArea = ({
                 }}
             >
                 <Stack direction="row" alignItems="center" spacing=".5rem">
-                    <SvgSkin fill={weap?.weapon_skin ? rarityDeets.color : `${colors.darkGrey}80`} size="1.7rem" />
-
                     {weap?.weapon_skin && (
                         <Typography
                             variant="body2"
@@ -179,6 +177,8 @@ export const WeaponCommonArea = ({
                             {rarityDeets.label}
                         </Typography>
                     )}
+
+                    <SvgSkin fill={weap?.weapon_skin ? rarityDeets.color : `${colors.darkGrey}80`} size="1.7rem" />
                 </Stack>
 
                 <Typography

@@ -56,7 +56,6 @@ export enum GameServerKeys {
     GetWeaponDetails = "PLAYER:ASSET:WEAPON:DETAIL",
     GetMechDetails = "PLAYER:ASSET:MECH:DETAIL",
     SubMechQueuePosition = "PLAYER:ASSET:MECH:QUEUE:SUBSCRIBE",
-    SubMechRepairStatus = "WAR:MACHINE:REPAIR:STATUS:SUBSCRIBE",
     JoinQueue = "BATTLE:QUEUE:JOIN",
     LeaveQueue = "BATTLE:QUEUE:LEAVE",
     MechQueueUpdated = "PLAYER:ASSET:MECH:QUEUE:UPDATE",
@@ -168,6 +167,7 @@ export enum GameServerKeys {
     // Repairs
     GetRepairJobList = "MECH:REPAIR:OFFER:LIST",
     SubRepairJobStatus = "MECH:REPAIR:OFFER",
+    SubMechRepairStatus = "MECH:REPAIR:CASE",
     AgentRepairWarMachine = "WAR:MACHINE:REPAIR",
     InstantRepairWarMachine = "XXXXXXXXX",
 }
