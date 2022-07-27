@@ -1,14 +1,11 @@
 import { Stack, Typography } from "@mui/material"
 import { SvgSupToken } from "../../../../assets"
-import { colors, fonts } from "../../../../theme/theme"
+import { colors } from "../../../../theme/theme"
+import { General } from "./General"
 
 export const AuctionPrice = ({ isGridView, formattedPrice, totalBids }: { isGridView?: boolean; formattedPrice: string; totalBids?: number }) => {
     return (
-        <Stack spacing={isGridView ? ".1rem" : ".6rem"}>
-            <Typography variant="subtitle2" sx={{ fontFamily: fonts.nostromoBlack, color: colors.grey }}>
-                BID PRICE
-            </Typography>
-
+        <General isGridView={isGridView} title="BID PRICE">
             <Stack direction="row" alignItems="center" flexWrap="wrap">
                 {formattedPrice && <SvgSupToken size="1.7rem" fill={colors.auction} />}
                 <Typography sx={{ color: formattedPrice ? colors.auction : colors.lightGrey, fontWeight: "fontWeightBold" }}>
@@ -23,6 +20,6 @@ export const AuctionPrice = ({ isGridView, formattedPrice, totalBids }: { isGrid
                     </Stack>
                 )}
             </Stack>
-        </Stack>
+        </General>
     )
 }
