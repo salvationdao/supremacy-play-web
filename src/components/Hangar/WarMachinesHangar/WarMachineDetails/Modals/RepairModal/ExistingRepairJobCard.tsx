@@ -63,20 +63,22 @@ export const ExistingRepairJobCard = ({ repairJob }: { repairJob: RepairOffer })
                 loading={isSubmitting}
                 clipThingsProps={{
                     clipSize: "5px",
-                    backgroundColor: colors.red,
-                    border: { isFancy: true, borderColor: colors.red },
+                    backgroundColor: "#222222",
+                    border: { borderColor: colors.red },
                     sx: { position: "relative", width: "100%" },
                 }}
-                sx={{ px: "1.6rem", py: ".8rem", color: "#FFFFFF" }}
+                sx={{ px: "1.6rem", py: ".8rem", color: colors.red }}
                 onClick={() => onCancelRepair()}
             >
-                <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack }}>
+                <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack, color: colors.red }}>
                     CANCEL
                 </Typography>
             </FancyButton>
 
-            <Typography variant="body2">
-                <strong>NOTE:</strong> Your remaining offered reward will be refunded but the original GST will be held.
+            <Typography sx={{ color: colors.lightGrey }}>
+                <i>
+                    <strong>NOTE:</strong> Your remaining offered reward will be refunded but the original GST will be held.
+                </i>
             </Typography>
 
             {submitError && (
