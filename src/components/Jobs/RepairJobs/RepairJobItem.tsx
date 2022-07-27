@@ -119,7 +119,7 @@ export const RepairJobItem = ({ repairJob, isGridView }: { repairJob: RepairOffe
                         </Stack>
                     </General>
 
-                    {repairStatus?.closed_at ? (
+                    {repairStatus?.closed_at || repairJob.expires_at < new Date() ? (
                         <General isGridView={isGridView} title="TIME LEFT" text="EXPIRED" textColor={colors.lightGrey} />
                     ) : (
                         <CountdownGeneral isGridView={isGridView} endTime={repairJob.expires_at} />
