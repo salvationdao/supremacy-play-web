@@ -216,33 +216,7 @@ export const HistoryMarket = () => {
                 changePage={changePage}
                 primaryColor={primaryColor}
                 isExpanded={isFiltersExpanded}
-            >
-                <Box sx={{ p: ".8rem 1rem" }}>
-                    <FancyButton
-                        clipThingsProps={{
-                            clipSize: "6px",
-                            clipSlantSize: "0px",
-                            corners: { topLeft: true, topRight: true, bottomLeft: true, bottomRight: true },
-                            backgroundColor: colors.red,
-                            opacity: 1,
-                            border: { isFancy: true, borderColor: colors.red, borderThickness: "2px" },
-                            sx: { position: "relative" },
-                        }}
-                        sx={{ px: "1.6rem", py: ".7rem", color: "#FFFFFF" }}
-                        to={`/marketplace/sell${location.hash}`}
-                    >
-                        <Typography
-                            variant="caption"
-                            sx={{
-                                color: "#FFFFFF",
-                                fontFamily: fonts.nostromoBlack,
-                            }}
-                        >
-                            SELL ITEM
-                        </Typography>
-                    </FancyButton>
-                </Box>
-            </SortAndFilters>
+            />
 
             <ClipThing
                 clipSize="10px"
@@ -261,7 +235,30 @@ export const HistoryMarket = () => {
                             description="See your marketplace events and logs here."
                             imageUrl={WarMachineIconPNG}
                             primaryColor={primaryColor}
-                        ></PageHeader>
+                        >
+                            <Box sx={{ ml: "auto !important", pr: "2rem" }}>
+                                <FancyButton
+                                    clipThingsProps={{
+                                        clipSize: "9px",
+                                        backgroundColor: colors.red,
+                                        opacity: 1,
+                                        border: { isFancy: true, borderColor: colors.red, borderThickness: "2px" },
+                                        sx: { position: "relative" },
+                                    }}
+                                    sx={{ px: "1.6rem", py: ".6rem", color: "#FFFFFF" }}
+                                    to={`/marketplace/sell${location.hash}`}
+                                >
+                                    <Typography
+                                        variant="caption"
+                                        sx={{
+                                            fontFamily: fonts.nostromoBlack,
+                                        }}
+                                    >
+                                        SELL ITEM
+                                    </Typography>
+                                </FancyButton>
+                            </Box>
+                        </PageHeader>
 
                         <TotalAndPageSizeOptions
                             countItems={eventItems?.length}
