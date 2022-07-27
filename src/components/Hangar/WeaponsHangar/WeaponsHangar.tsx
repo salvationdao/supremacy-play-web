@@ -7,12 +7,13 @@ import { HANGAR_PAGE } from "../../../constants"
 import { useAuth } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { GetWeaponMaxStats } from "../../../fetching"
-import { getWeaponTypeColor, parseString } from "../../../helpers"
+import { getRarityDeets, getWeaponTypeColor, parseString } from "../../../helpers"
 import { usePagination, useToggle, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { Weapon, WeaponType } from "../../../types"
+import { SortTypeLabel } from "../../../types/marketplace"
 import { PageHeader } from "../../Common/PageHeader"
 import { ChipFilter } from "../../Common/SortAndFilters/ChipFilterSection"
 import { SliderRangeFilter } from "../../Common/SortAndFilters/SliderRangeFilterSection"
@@ -20,12 +21,22 @@ import { SortAndFilters } from "../../Common/SortAndFilters/SortAndFilters"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { WeaponHangarItem } from "./WeaponHangarItem"
 
+const sortOptions = [
+    { label: SortTypeLabel.Alphabetical, value: SortTypeLabel.Alphabetical },
+    { label: SortTypeLabel.AlphabeticalReverse, value: SortTypeLabel.AlphabeticalReverse },
+    { label: SortTypeLabel.RarestAsc, value: SortTypeLabel.RarestAsc },
+    { label: SortTypeLabel.RarestDesc, value: SortTypeLabel.RarestDesc },
+]
+
 interface GetWeaponsRequest {
     page: number
     page_size: number
     include_market_listed: boolean
     exclude_equipped?: boolean
+    sort_by: string
+    sort_dir: string
     weapon_types: string[]
+    rarities: string[]
     equipped_statuses: string[]
     search: string
     stat_ammo?: GetWeaponStatFilter
@@ -68,7 +79,9 @@ export const WeaponsHangar = () => {
 
     // Filters and sorts
     const [search, setSearch] = useState("")
+    const [sort, setSort] = useState<string>(query.get("sort") || SortTypeLabel.Alphabetical)
     const [weaponTypes, setWeaponTypes] = useState<string[]>((query.get("weapon_types") || undefined)?.split("||") || [])
+    const [rarities, setRarities] = useState<string[]>((query.get("rarities") || undefined)?.split("||") || [])
     const [equippedStatuses, setEquippedStatuses] = useState<string[]>((query.get("equipped_status") || undefined)?.split("||") || [])
     const [ammoRange, setAmmoRange] = useState<number[] | undefined>(
         (query.get("ammo") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 30000)),
@@ -118,11 +131,39 @@ export const WeaponsHangar = () => {
             { value: WeaponType.MissileLauncher, label: WeaponType.MissileLauncher, color: getWeaponTypeColor(WeaponType.MissileLauncher) },
             { value: WeaponType.PlasmaGun, label: WeaponType.PlasmaGun, color: getWeaponTypeColor(WeaponType.PlasmaGun) },
             { value: WeaponType.SniperRifle, label: WeaponType.SniperRifle, color: getWeaponTypeColor(WeaponType.SniperRifle) },
+            { value: WeaponType.Flamethrower, label: WeaponType.Flamethrower, color: getWeaponTypeColor(WeaponType.Flamethrower) },
+            { value: WeaponType.LaserBeam, label: WeaponType.LaserBeam, color: getWeaponTypeColor(WeaponType.LaserBeam) },
+            { value: WeaponType.LightningGun, label: WeaponType.LightningGun, color: getWeaponTypeColor(WeaponType.LightningGun) },
+            { value: WeaponType.BFG, label: WeaponType.BFG, color: getWeaponTypeColor(WeaponType.BFG) },
+            { value: WeaponType.Rifle, label: WeaponType.Rifle, color: getWeaponTypeColor(WeaponType.Rifle) },
         ],
         initialSelected: weaponTypes,
         initialExpanded: true,
         onSetSelected: (value: string[]) => {
             setWeaponTypes(value)
+            changePage(1)
+        },
+    })
+
+    const rarityChipFilter = useRef<ChipFilter>({
+        label: "RARITY",
+        options: [
+            { value: "MEGA", ...getRarityDeets("MEGA") },
+            { value: "COLOSSAL", ...getRarityDeets("COLOSSAL") },
+            { value: "RARE", ...getRarityDeets("RARE") },
+            { value: "LEGENDARY", ...getRarityDeets("LEGENDARY") },
+            { value: "ELITE_LEGENDARY", ...getRarityDeets("ELITE_LEGENDARY") },
+            { value: "ULTRA_RARE", ...getRarityDeets("ULTRA_RARE") },
+            { value: "EXOTIC", ...getRarityDeets("EXOTIC") },
+            { value: "GUARDIAN", ...getRarityDeets("GUARDIAN") },
+            { value: "MYTHIC", ...getRarityDeets("MYTHIC") },
+            { value: "DEUS_EX", ...getRarityDeets("DEUS_EX") },
+            { value: "TITAN", ...getRarityDeets("TITAN") },
+        ],
+        initialSelected: rarities,
+        initialExpanded: true,
+        onSetSelected: (value: string[]) => {
+            setRarities(value)
             changePage(1)
         },
     })
@@ -272,11 +313,28 @@ export const WeaponsHangar = () => {
         try {
             setIsLoading(true)
 
+            let sortDir = "asc"
+            let sortBy = ""
+            if (sort === SortTypeLabel.AlphabeticalReverse || sort === SortTypeLabel.RarestDesc) sortDir = "desc"
+
+            switch (sort) {
+                case SortTypeLabel.Alphabetical:
+                case SortTypeLabel.AlphabeticalReverse:
+                    sortBy = "alphabetical"
+                    break
+                case SortTypeLabel.RarestAsc:
+                case SortTypeLabel.RarestDesc:
+                    sortBy = "rarity"
+            }
+
             const resp = await send<GetWeaponsResponse, GetWeaponsRequest>(GameServerKeys.GetWeapons, {
                 page,
                 page_size: pageSize,
+                sort_by: sortBy,
+                sort_dir: sortDir,
                 include_market_listed: true,
                 weapon_types: weaponTypes,
+                rarities,
                 equipped_statuses: equippedStatuses,
                 search,
                 stat_ammo:
@@ -354,7 +412,9 @@ export const WeaponsHangar = () => {
             updateQuery({
                 page: page.toString(),
                 pageSize: pageSize.toString(),
+                sort,
                 weapon_types: weaponTypes.join("||"),
+                rarities: rarities.join("||"),
                 equipped_statuses: equippedStatuses.join("||"),
                 ammo: ammoRange?.join("||"),
                 damage: damageRange?.join("||"),
@@ -384,9 +444,11 @@ export const WeaponsHangar = () => {
         page,
         pageSize,
         search,
+        sort,
         updateQuery,
         setTotalItems,
         weaponTypes,
+        rarities,
         equippedStatuses,
         ammoRange,
         damageRange,
@@ -500,7 +562,7 @@ export const WeaponsHangar = () => {
                 key={sortFilterReRender.toString()}
                 initialSearch={search}
                 onSetSearch={setSearch}
-                chipFilters={[weaponTypeFilterSection.current, weaponEquippedFilterSection.current]}
+                chipFilters={[weaponTypeFilterSection.current, rarityChipFilter.current, weaponEquippedFilterSection.current]}
                 sliderRangeFilters={[
                     // ammoRangeFilter.current,
                     damageRangeFilter.current,
@@ -563,6 +625,9 @@ export const WeaponsHangar = () => {
                             pageSizeOptions={[10, 20, 30]}
                             changePage={changePage}
                             manualRefresh={getItems}
+                            sortOptions={sortOptions}
+                            selectedSort={sort}
+                            onSetSort={setSort}
                             isGridView={isGridView}
                             toggleIsGridView={toggleIsGridView}
                         />
