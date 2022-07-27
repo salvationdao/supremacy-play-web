@@ -5,6 +5,7 @@ import { fonts } from "../../../../theme/theme"
 import { ClipThing } from "../../../Common/ClipThing"
 import { NotificationPreferences } from "./NotificationPreferences"
 import { DevicePreferences } from "./DevicePreferences"
+import { useAuth } from "../../../../containers"
 
 interface PreferencesModalProps {
     onClose: () => void
@@ -14,6 +15,7 @@ interface PreferencesModalProps {
 
 export const PreferencesModal = ({ onClose, setTelegramShortcode, toggleAddDeviceModal }: PreferencesModalProps) => {
     const theme = useTheme()
+    const { factionID } = useAuth()
 
     return (
         <Modal open onClose={onClose}>
@@ -52,7 +54,8 @@ export const PreferencesModal = ({ onClose, setTelegramShortcode, toggleAddDevic
 
                         <NotificationPreferences setTelegramShortcode={setTelegramShortcode} />
 
-                        <DevicePreferences toggleAddDeviceModal={toggleAddDeviceModal} />
+                        {/* Only display the device preferences if the user has selected a faction */}
+                        {factionID && <DevicePreferences toggleAddDeviceModal={toggleAddDeviceModal} />}
                     </Stack>
 
                     <IconButton size="small" onClick={onClose} sx={{ position: "absolute", top: ".5rem", right: ".5rem" }}>

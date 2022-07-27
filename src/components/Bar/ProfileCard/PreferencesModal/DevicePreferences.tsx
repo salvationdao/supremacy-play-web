@@ -2,9 +2,7 @@ import { Box, Stack, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
 import { FancyButton } from "../../.."
 import { SvgInfoCircular } from "../../../../assets"
-import { useSnackbar } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
-import { useToggle } from "../../../../hooks"
 import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
 import { colors, fonts } from "../../../../theme/theme"
 import { TooltipHelper } from "../../../Common/TooltipHelper"
@@ -21,13 +19,11 @@ interface Device {
 //todo: comment here
 export const DevicePreferences = ({ toggleAddDeviceModal }: DevicePreferencesProps) => {
     const theme = useTheme()
-    const [loading, setLoading] = useToggle(false)
     const [error, setError] = useState<string>()
-    const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsUser("/user_commander")
-    const [devices, setDevices] = useState<Device[]>([])
 
     // Get list of devices connected to the companion app
+    const [devices, setDevices] = useState<Device[]>([])
     useEffect(() => {
         ;(async () => {
             try {
@@ -39,24 +35,17 @@ export const DevicePreferences = ({ toggleAddDeviceModal }: DevicePreferencesPro
                 setError(message)
             }
         })()
-    }, [send])
-
-    // Add device
-    const addDevice = () => {
-        //todo: Check the user has selected a faction
-
-        // If user has a faction toggle the add device modal
-        toggleAddDeviceModal()
-    }
+    }, [send, toggleAddDeviceModal])
 
     return (
         <Stack spacing=".3rem" sx={{ px: "1.5rem", py: ".8rem", backgroundColor: "#FFFFFF08" }}>
             <Stack direction="row" alignItems="center" spacing=".7rem">
+                {/* Title */}
                 <Typography gutterBottom sx={{ color: colors.lightGrey }}>
                     CONNECTED DEVICES
                 </Typography>
 
-                {/*todo: add tooltip helper info*/}
+                {/* Connected devices' helper information */}
                 <TooltipHelper
                     placement="right-start"
                     text={
@@ -94,9 +83,11 @@ export const DevicePreferences = ({ toggleAddDeviceModal }: DevicePreferencesPro
                     {error}
                 </Typography>
             )}
+
+            {/* Add new device to companion app */}
             <Stack direction="row" spacing="1rem" sx={{ pt: "1rem" }}>
                 <FancyButton
-                    onClick={addDevice}
+                    onClick={toggleAddDeviceModal}
                     clipThingsProps={{
                         clipSize: "5px",
                         backgroundColor: theme.factionTheme.background,
@@ -105,7 +96,6 @@ export const DevicePreferences = ({ toggleAddDeviceModal }: DevicePreferencesPro
                         sx: { position: "relative" },
                     }}
                     sx={{ px: "1.5rem", py: 0, color: colors.green, minWidth: 0 }}
-                    disabled={loading}
                 >
                     <Typography
                         variant="caption"
