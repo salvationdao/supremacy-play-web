@@ -1,6 +1,7 @@
 import { Box, Stack, Typography } from "@mui/material"
+import { useMemo } from "react"
 import { SvgCubes, SvgSupToken } from "../../../assets"
-import { useTheme } from "../../../containers/theme"
+import { useSupremacy } from "../../../containers"
 import { supFormatterNoFixed, timeSinceInWords } from "../../../helpers"
 import { useTimer } from "../../../hooks"
 import { useGameServerSubscription } from "../../../hooks/useGameServer"
@@ -19,16 +20,18 @@ interface RepairJobStatus extends RepairOffer {
 }
 
 export const RepairJobItem = ({ repairJob, isGridView }: { repairJob: RepairOffer; isGridView?: boolean }) => {
-    const theme = useTheme()
+    const { getFaction } = useSupremacy()
 
     const repairStatus = useGameServerSubscription<RepairJobStatus>({
         URI: `/public/repair_offer/${repairJob.id}`,
         key: GameServerKeys.SubRepairJobStatus,
     })
 
+    const jobOwnerFaction = useMemo(() => getFaction(repairJob.job_owner.faction_id), [getFaction, repairJob.job_owner.faction_id])
+
     const remainDamagedBlocks = repairStatus ? repairJob.blocks_total - repairStatus.blocks_repaired : 0
-    const primaryColor = theme.factionTheme.primary
-    const backgroundColor = theme.factionTheme.background
+    const primaryColor = jobOwnerFaction.primary_color
+    const backgroundColor = jobOwnerFaction.background_color
 
     return (
         <Box sx={{ position: "relative", overflow: "visible", height: "100%" }}>
