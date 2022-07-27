@@ -223,7 +223,6 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
                     <FancyButton
                         clipThingsProps={{
                             clipSize: "7px",
-                            opacity: 1,
                         }}
                         size="large"
                         sx={{

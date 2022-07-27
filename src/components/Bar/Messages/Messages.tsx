@@ -122,7 +122,11 @@ export const Messages = () => {
                         maxWidth: "100vw",
                     }}
                 >
-                    {!isComposeView ? <MessagesMainView lastUpdated={lastUpdated} onCompose={() => setIsComposeView(true)} /> : <MessagesComposeView />}
+                    {!isComposeView ? (
+                        <MessagesMainView lastUpdated={lastUpdated} onCompose={() => setIsComposeView(true)} />
+                    ) : (
+                        <MessagesComposeView onBack={() => setIsComposeView(false)} />
+                    )}
                 </ClipThing>
             </Popover>
         </>
