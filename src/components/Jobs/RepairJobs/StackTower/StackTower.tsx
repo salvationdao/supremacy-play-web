@@ -1,9 +1,9 @@
 import { Box, IconButton, Modal, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
-import { SvgClose } from "../../../assets"
-import { useTheme } from "../../../containers/theme"
-import { colors, fonts, siteZIndex } from "../../../theme/theme"
-import { ClipThing } from "../../Common/ClipThing"
+import { SvgClose } from "../../../../assets"
+import { useTheme } from "../../../../containers/theme"
+import { colors, fonts, siteZIndex } from "../../../../theme/theme"
+import { ClipThing } from "../../../Common/ClipThing"
 import { Game, GameState } from "./src/game"
 import "./src/style.css"
 

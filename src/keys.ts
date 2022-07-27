@@ -59,8 +59,6 @@ export enum GameServerKeys {
     SubMechRepairStatus = "WAR:MACHINE:REPAIR:STATUS:SUBSCRIBE",
     JoinQueue = "BATTLE:QUEUE:JOIN",
     LeaveQueue = "BATTLE:QUEUE:LEAVE",
-    AgentRepairWarMachine = "WAR:MACHINE:REPAIR",
-    InstantRepairWarMachine = "XXXXXXXXX",
     MechQueueUpdated = "PLAYER:ASSET:MECH:QUEUE:UPDATE",
     TriggerMechStatusUpdate = "PLAYER:ASSET:MECH:STATUS:UPDATE",
     MechRename = "PLAYER:MECH:RENAME",
@@ -166,6 +164,11 @@ export enum GameServerKeys {
     GetPlayerAbilityKills = "LEADERBOARD:PLAYER:ABILITY:KILLS",
     GetPlayerAbilityTriggers = "LEADERBOARD:PLAYER:ABILITY:TRIGGERS",
     GetPlayerMechsOwned = "LEADERBOARD:PLAYER:MECHS:OWNED",
+
+    // Repairs
+    GetRepairList = "MECH:REPAIR:OFFER:LIST",
+    AgentRepairWarMachine = "WAR:MACHINE:REPAIR",
+    InstantRepairWarMachine = "XXXXXXXXX",
 }
 
 export enum PassportServerKeys {

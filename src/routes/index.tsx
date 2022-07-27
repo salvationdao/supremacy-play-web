@@ -163,7 +163,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
     // Jobs
     jobs: {
         id: "jobs",
-        path: "/jobs",
+        path: "/jobs/:type?",
         exact: true,
         Component: JobsPage,
         requireAuth: true,
@@ -173,21 +173,6 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
             label: "Jobs",
         },
         matchLeftDrawerID: "jobs",
-    },
-
-    // Contract
-    contracts: {
-        id: "contracts",
-        path: "/contracts",
-        exact: true,
-        Component: undefined,
-        requireAuth: true,
-        requireFaction: true,
-        leftDrawer: {
-            enable: false,
-            label: "Contracts",
-        },
-        matchLeftDrawerID: "contracts",
     },
 
     // Others

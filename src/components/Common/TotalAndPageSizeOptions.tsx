@@ -40,6 +40,7 @@ export const TotalAndPageSizeOptions = ({
     toggleIsGridView,
     manualRefresh,
     primaryColor: pColor,
+    isFiltersExpanded,
     toggleIsFiltersExpanded,
 
     sortOptions,
@@ -75,7 +76,8 @@ export const TotalAndPageSizeOptions = ({
                     sx={{
                         minWidth: 0,
                         borderRadius: 1,
-                        backgroundColor: primaryColor,
+                        backgroundColor: isFiltersExpanded ? primaryColor : "transparent !important",
+                        border: `${primaryColor} 1px solid`,
                         color: secondaryColor,
                         ":hover": { backgroundColor: primaryColor },
                     }}

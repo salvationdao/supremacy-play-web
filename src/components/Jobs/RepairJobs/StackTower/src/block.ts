@@ -1,5 +1,5 @@
 import * as THREE from "three"
-import { getRandomColor } from "../../../../helpers"
+import { getRandomColor } from "../../../../../helpers"
 import { blockConfig } from "./config"
 
 export interface Dimension {
