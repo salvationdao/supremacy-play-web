@@ -1,7 +1,7 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useMemo } from "react"
 import { SvgCubes, SvgSupToken } from "../../../assets"
-import { useSupremacy } from "../../../containers"
+import { useAuth, useSupremacy } from "../../../containers"
 import { supFormatterNoFixed, timeSinceInWords } from "../../../helpers"
 import { useTimer } from "../../../hooks"
 import { useGameServerSubscription } from "../../../hooks/useGameServer"
@@ -20,6 +20,7 @@ interface RepairJobStatus extends RepairOffer {
 }
 
 export const RepairJobItem = ({ repairJob, isGridView }: { repairJob: RepairOffer; isGridView?: boolean }) => {
+    const { userID } = useAuth()
     const { getFaction } = useSupremacy()
 
     const repairStatus = useGameServerSubscription<RepairJobStatus>({
@@ -120,7 +121,10 @@ export const RepairJobItem = ({ repairJob, isGridView }: { repairJob: RepairOffe
                     </General>
 
                     <General isGridView={isGridView} title="JOB OWNER">
-                        <Player player={repairJob.job_owner} />
+                        <Box>
+                            <Player player={repairJob.job_owner} />
+                            {repairJob.job_owner.id === userID && <Typography sx={{ display: "inline", color: colors.neonBlue }}>&nbsp;(YOU)</Typography>}
+                        </Box>
                     </General>
 
                     {repairStatus?.closed_at || repairJob.expires_at < new Date() ? (
