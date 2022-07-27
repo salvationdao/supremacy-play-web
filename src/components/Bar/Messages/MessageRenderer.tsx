@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Box, Link, Typography } from "@mui/material"
 import MDEditor from "@uiw/react-md-editor"
+import { useEffect, useRef } from "react"
 import rehypeSanitize from "rehype-sanitize"
 import { fonts } from "../../../theme/theme"
 
@@ -9,13 +10,25 @@ export interface MessageRendererProps {
 }
 
 const InternalMessageRenderer = ({ markdown }: MessageRendererProps) => {
+    const containerEl = useRef<HTMLDivElement>()
+
     const props = options
     props.style = {
         fontFamily: fonts.shareTech,
         backgroundColor: "transparent",
     }
 
-    return <MDEditor.Markdown {...props} source={markdown} />
+    useEffect(() => {
+        if (!containerEl.current) return
+
+        containerEl.current.setAttribute("data-color-mode", "dark")
+    }, [])
+
+    return (
+        <Box ref={containerEl}>
+            <MDEditor.Markdown {...props} source={markdown} />
+        </Box>
+    )
 }
 
 const options: any = {
