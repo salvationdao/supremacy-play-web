@@ -55,7 +55,6 @@ export const RepairJobs = () => {
 
     // Filters and sorts
     const [isFiltersExpanded, toggleIsFiltersExpanded] = useToggle(localStorage.getItem("isRepairJobsFiltersExpanded") === "true")
-    const [search, setSearch] = useState("")
     const [sort, setSort] = useState<string>(query.get("sort") || SortTypeLabel.CreateTimeNewestFirst)
     const [rewardRanges, setRewardRanges] = useState<(number | undefined)[]>(
         (query.get("rewardRanges") || undefined)?.split("||").map((p) => (p ? parseInt(p) : undefined)) || [undefined, undefined],
@@ -108,7 +107,6 @@ export const RepairJobs = () => {
 
             updateQuery({
                 sort,
-                search,
                 page: page.toString(),
                 pageSize: pageSize.toString(),
                 rewardRanges: rewardRanges.join("||"),
@@ -124,7 +122,7 @@ export const RepairJobs = () => {
         } finally {
             setIsLoading(false)
         }
-    }, [sort, rewardRanges, send, search, page, pageSize, updateQuery, setTotalItems])
+    }, [sort, rewardRanges, send, page, pageSize, updateQuery, setTotalItems])
 
     useEffect(() => {
         getItems()
@@ -222,13 +220,7 @@ export const RepairJobs = () => {
 
     return (
         <Stack direction="row" sx={{ height: "100%" }}>
-            <SortAndFilters
-                initialSearch={search}
-                onSetSearch={setSearch}
-                rangeFilters={[rewardRangeFilter.current]}
-                changePage={changePage}
-                isExpanded={isFiltersExpanded}
-            />
+            <SortAndFilters rangeFilters={[rewardRangeFilter.current]} changePage={changePage} isExpanded={isFiltersExpanded} />
 
             <ClipThing
                 clipSize="10px"

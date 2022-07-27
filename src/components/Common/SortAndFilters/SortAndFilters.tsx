@@ -10,8 +10,8 @@ import { Section } from "./Section"
 import { SliderRangeFilter, SliderRangeFilterSection } from "./SliderRangeFilterSection"
 
 interface SortAndFiltersProps {
-    initialSearch: string
-    onSetSearch: React.Dispatch<React.SetStateAction<string>>
+    initialSearch?: string
+    onSetSearch?: React.Dispatch<React.SetStateAction<string>>
     dropdownOptions?: DropdownOptions[]
     chipFilters?: ChipFilter[]
     rangeFilters?: RangeFilter[]
@@ -80,78 +80,80 @@ export const SortAndFilters = ({
                         }}
                     >
                         <Stack sx={{ position: "relative", height: 0, mt: "-.3rem", mx: "-.3rem" }}>
-                            <Section label="SEARCH" primaryColor={primaryColor} secondaryColor={secondaryColor} initialExpanded={true}>
-                                <Stack direction="row" spacing=".5rem">
-                                    <ClipThing
-                                        clipSize="5px"
-                                        clipSlantSize="2px"
-                                        opacity={0.9}
-                                        border={{
-                                            borderColor: primaryColor,
-                                            borderThickness: "1px",
-                                        }}
-                                        backgroundColor={backgroundColor}
-                                        sx={{ height: "100%", flex: 1 }}
-                                    >
-                                        <Stack sx={{ height: "100%" }}>
-                                            <TextField
-                                                variant="outlined"
-                                                hiddenLabel
-                                                fullWidth
-                                                placeholder="Enter keywords..."
-                                                sx={{
-                                                    backgroundColor: "unset",
-                                                    ".MuiOutlinedInput-input": {
-                                                        px: "1.5rem",
-                                                        py: ".5rem",
-                                                        height: "unset",
-                                                        "::-webkit-outer-spin-button, ::-webkit-inner-spin-button": {
-                                                            "-webkit-appearance": "none",
-                                                        },
-                                                        borderRadius: 0.5,
-                                                        border: `${primaryColor}50 2px solid`,
-                                                        ":hover, :focus, :active": { backgroundColor: "#00000080", border: `${primaryColor}99 2px solid` },
-                                                    },
-                                                    ".MuiOutlinedInput-notchedOutline": { border: "unset" },
-                                                }}
-                                                value={searchValue}
-                                                onChange={(e) => setSearchValue(e.target.value)}
-                                                onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
-                                                    e.stopPropagation()
-                                                    switch (e.key) {
-                                                        case "Enter": {
-                                                            e.preventDefault()
-                                                            onSetSearch(searchValue)
-                                                            changePage(1)
-                                                            break
-                                                        }
-                                                    }
-                                                }}
-                                            />
-                                        </Stack>
-                                    </ClipThing>
-
-                                    <Box sx={{ py: ".1rem" }}>
-                                        <FancyButton
-                                            clipThingsProps={{
-                                                clipSize: "5px",
-                                                clipSlantSize: "2px",
-                                                backgroundColor: primaryColor,
-                                                opacity: 1,
-                                                border: { isFancy: true, borderColor: primaryColor, borderThickness: "1px" },
-                                                sx: { position: "relative", width: "4.5rem", height: "100%" },
+                            {onSetSearch && (
+                                <Section label="SEARCH" primaryColor={primaryColor} secondaryColor={secondaryColor} initialExpanded={true}>
+                                    <Stack direction="row" spacing=".5rem">
+                                        <ClipThing
+                                            clipSize="5px"
+                                            clipSlantSize="2px"
+                                            opacity={0.9}
+                                            border={{
+                                                borderColor: primaryColor,
+                                                borderThickness: "1px",
                                             }}
-                                            sx={{ py: ".6rem", color: secondaryColor, minWidth: 0, height: "100%" }}
-                                            onClick={() => {
-                                                onSetSearch(searchValue)
-                                                changePage(1)
-                                            }}
+                                            backgroundColor={backgroundColor}
+                                            sx={{ height: "100%", flex: 1 }}
                                         >
-                                            <SvgSearch size="1.4rem" fill={secondaryColor} sx={{ pt: ".1rem" }} />
-                                        </FancyButton>
-                                    </Box>
-                                </Stack>
-                            </Section>
+                                            <Stack sx={{ height: "100%" }}>
+                                                <TextField
+                                                    variant="outlined"
+                                                    hiddenLabel
+                                                    fullWidth
+                                                    placeholder="Enter keywords..."
+                                                    sx={{
+                                                        backgroundColor: "unset",
+                                                        ".MuiOutlinedInput-input": {
+                                                            px: "1.5rem",
+                                                            py: ".5rem",
+                                                            height: "unset",
+                                                            "::-webkit-outer-spin-button, ::-webkit-inner-spin-button": {
+                                                                "-webkit-appearance": "none",
+                                                            },
+                                                            borderRadius: 0.5,
+                                                            border: `${primaryColor}50 2px solid`,
+                                                            ":hover, :focus, :active": { backgroundColor: "#00000080", border: `${primaryColor}99 2px solid` },
+                                                        },
+                                                        ".MuiOutlinedInput-notchedOutline": { border: "unset" },
+                                                    }}
+                                                    value={searchValue}
+                                                    onChange={(e) => setSearchValue(e.target.value)}
+                                                    onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
+                                                        e.stopPropagation()
+                                                        switch (e.key) {
+                                                            case "Enter": {
+                                                                e.preventDefault()
+                                                                onSetSearch(searchValue || "")
+                                                                changePage(1)
+                                                                break
+                                                            }
+                                                        }
+                                                    }}
+                                                />
+                                            </Stack>
+                                        </ClipThing>
+
+                                        <Box sx={{ py: ".1rem" }}>
+                                            <FancyButton
+                                                clipThingsProps={{
+                                                    clipSize: "5px",
+                                                    clipSlantSize: "2px",
+                                                    backgroundColor: primaryColor,
+                                                    opacity: 1,
+                                                    border: { isFancy: true, borderColor: primaryColor, borderThickness: "1px" },
+                                                    sx: { position: "relative", width: "4.5rem", height: "100%" },
+                                                }}
+                                                sx={{ py: ".6rem", color: secondaryColor, minWidth: 0, height: "100%" }}
+                                                onClick={() => {
+                                                    onSetSearch(searchValue || "")
+                                                    changePage(1)
+                                                }}
+                                            >
+                                                <SvgSearch size="1.4rem" fill={secondaryColor} sx={{ pt: ".1rem" }} />
+                                            </FancyButton>
+                                        </Box>
+                                    </Stack>
+                                </Section>
+                            )}
 
                             {!!dropdownOptions &&
                                 dropdownOptions.length > 0 &&
