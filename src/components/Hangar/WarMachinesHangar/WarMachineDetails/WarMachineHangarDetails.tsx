@@ -14,7 +14,7 @@ import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
 import { MechBattleHistoryDetails } from "../../../Marketplace/WarMachinesMarket/WarMachineMarketDetails/MechBattleHistoryDetails"
 import { MechBarStats } from "../Common/MechBarStats"
 import { MechGeneralStatus } from "../Common/MechGeneralStatus"
-import { MechRepairStatus } from "../Common/MechRepairStatus"
+import { MechRepairBlocks } from "../Common/MechRepairBlocks"
 import { MechButtons } from "./MechButtons"
 import { MechLoadout } from "./MechLoadout"
 import { MechName } from "./MechName"
@@ -231,7 +231,7 @@ export const WarMachineHangarDetailsInner = ({
                                             <Typography sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack }}>SYSTEM STATUS</Typography>
                                         </Stack>
 
-                                        <MechRepairStatus mechID={mechID} defaultBlocks={mechDetails?.model.repair_blocks} />
+                                        <MechRepairBlocks mechID={mechID} defaultBlocks={mechDetails?.model.repair_blocks} />
                                     </Stack>
 
                                     {/* Bar stats */}

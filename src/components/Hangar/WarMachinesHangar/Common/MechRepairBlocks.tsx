@@ -3,13 +3,9 @@ import React from "react"
 import { useGameServerSubscription } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
+import { RepairStatus } from "../../../../types/jobs"
 
-export interface RepairStatus {
-    blocks_required_repair: number
-    blocks_repaired: number
-}
-
-export const MechRepairStatus = React.memo(function MechRepairStatus({
+export const MechRepairBlocks = React.memo(function MechRepairBlocks({
     mechID,
     defaultBlocks,
     hideNumber,

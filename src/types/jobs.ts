@@ -9,3 +9,9 @@ export interface RepairOffer {
     closed_at?: Date
     ownerID: string
 }
+
+export interface RepairStatus {
+    blocks_required_repair: number
+    blocks_repaired: number
+    has_repair_offer: boolean
+}

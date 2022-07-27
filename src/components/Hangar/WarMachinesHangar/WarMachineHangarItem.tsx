@@ -13,8 +13,8 @@ import { MediaPreview } from "../../Common/MediaPreview/MediaPreview"
 import { General } from "../../Marketplace/Common/MarketItem/General"
 import { MechBarStats } from "./Common/MechBarStats"
 import { MechGeneralStatus } from "./Common/MechGeneralStatus"
+import { MechRepairBlocks } from "./Common/MechRepairBlocks"
 import { MechLoadoutIcons } from "./Common/MechLoadoutIcons"
-import { MechRepairStatus } from "./Common/MechRepairStatus"
 
 export const WarMachineHangarItem = ({ mech, isGridView }: { mech: MechBasic; isGridView?: boolean }) => {
     const location = useLocation()
@@ -175,7 +175,7 @@ export const MechCommonArea = ({
                     {mechh?.name || mechh?.label || label}
                 </Typography>
 
-                <MechRepairStatus mechID={mech?.id || mechDetails?.id} defaultBlocks={mechDetails?.model.repair_blocks} />
+                <MechRepairBlocks mechID={mech?.id || mechDetails?.id} defaultBlocks={mechDetails?.model.repair_blocks} />
 
                 {toggleIsExpanded && !isGridView && (
                     <Stack

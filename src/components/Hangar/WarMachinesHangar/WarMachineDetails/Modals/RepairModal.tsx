@@ -8,7 +8,8 @@ import { useGameServerCommandsFaction, useGameServerSubscription } from "../../.
 import { GameServerKeys } from "../../../../../keys"
 import { colors, fonts, siteZIndex } from "../../../../../theme/theme"
 import { MechDetails } from "../../../../../types"
-import { MechRepairStatus, RepairStatus } from "../../Common/MechRepairStatus"
+import { RepairStatus } from "../../../../../types/jobs"
+import { MechRepairBlocks } from "../../Common/MechRepairBlocks"
 import { AmountItem } from "./DeployModal"
 
 const listingDurations: {
@@ -121,7 +122,7 @@ export const RepairModal = ({
                                 {remainDamagedBlocks} x DAMAGED BLOCKS
                             </Typography>
 
-                            <MechRepairStatus mechID={selectedMechDetails?.id} defaultBlocks={selectedMechDetails?.model.repair_blocks} hideNumber />
+                            <MechRepairBlocks mechID={selectedMechDetails?.id} defaultBlocks={selectedMechDetails?.model.repair_blocks} hideNumber />
                         </Stack>
 
                         {/* Hire contractors */}

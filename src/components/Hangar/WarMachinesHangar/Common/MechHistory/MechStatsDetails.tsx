@@ -6,7 +6,7 @@ import { colors, fonts } from "../../../../../theme/theme"
 import { MechDetails } from "../../../../../types"
 import { MechBarStats } from "../MechBarStats"
 import { MechLoadoutItem } from "../MechLoadoutItem"
-import { MechRepairStatus } from "../MechRepairStatus"
+import { MechRepairBlocks } from "../MechRepairBlocks"
 
 export const MechStatsDetails = ({ mechDetails }: { mechDetails?: MechDetails }) => {
     const theme = useTheme()
@@ -33,7 +33,7 @@ export const MechStatsDetails = ({ mechDetails }: { mechDetails?: MechDetails })
                     </Typography>
                 </Stack>
 
-                <MechRepairStatus mechID={mechDetails.id} />
+                <MechRepairBlocks mechID={mechDetails.id} />
             </Stack>
 
             <Stack spacing="1rem">
