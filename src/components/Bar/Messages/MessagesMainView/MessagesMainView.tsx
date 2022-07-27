@@ -1,11 +1,12 @@
-import { Box, Button, colors, Divider, FormControlLabel, Pagination, Stack, Switch, Typography } from "@mui/material"
+import { Box, colors, Divider, FormControlLabel, Pagination, Stack, Switch, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { SvgAnnouncement, SvgDamage1, SvgHistoryClock, SvgListView } from "../../../../assets"
+import { useAuth } from "../../../../containers"
 import { usePagination } from "../../../../hooks"
 import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { fonts, theme } from "../../../../theme/theme"
-import { SystemMessage, SystemMessageDataType } from "../../../../types"
+import { FeatureName, SystemMessage, SystemMessageDataType } from "../../../../types"
 import { FancyButton } from "../../../Common/FancyButton"
 import { SystemMessageDisplayable } from "../Messages"
 import { MessageDisplay } from "./MessageDisplay/MessageDisplay"
@@ -13,11 +14,13 @@ import { MessageItem } from "./MessageItem"
 
 export interface MessagesMainViewProps {
     lastUpdated: Date
-    onCompose: () => void
+    onCompose: (type: SystemMessageDataType) => void
 }
 
 export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewProps) => {
+    const { userHasFeature } = useAuth()
     const { send } = useGameServerCommandsUser("/user_commander")
+    
     const [messages, setMessages] = useState<SystemMessageDisplayable[]>([])
     const [focusedMessage, setFocusedMessage] = useState<SystemMessageDisplayable>()
     const [error, setError] = useState<string>()
@@ -213,163 +216,43 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
 
     return (
         <Stack direction="row" p="2rem" height="100%">
+            {userHasFeature(FeatureName.systemMessages) && <>
             <Stack
                 sx={{
                     height: "100%",
                     minWidth: "200px",
                 }}
             >
-                <Box flex={1}>
-                    <FancyButton
-                        clipThingsProps={{
-                            clipSize: "7px",
-                        }}
-                        size="large"
-                        sx={{
-                            fontSize: "2rem",
-                            px: "1.2rem",
-                            backgroundColor: theme.factionTheme.primary,
-                        }}
-                        onClick={() => onCompose()}
-                    >
-                        Compose Message
-                    </FancyButton>
-                </Box>
-                <Stack
-                    spacing="1rem"
-                    sx={{
-                        minHeight: "50%",
-                        maxHeight: "180px",
-                    }}
-                >
-                    <Box
-                        sx={{
-                            pb: "1rem",
-                            borderBottom: `${theme.factionTheme.primary}70 1.5px solid`,
-                        }}
-                    >
-                        <Typography variant="h6" sx={{ fontFamily: fonts.nostromoBlack }}>
-                            RECENT CHATS
-                        </Typography>
-                    </Box>
-                    <Stack
-                        spacing=".5rem"
-                        sx={{
-                            overflowY: "auto",
-                            overflowX: "hidden",
-                            direction: "ltr",
-                            scrollbarWidth: "none",
-                            "::-webkit-scrollbar": {
-                                width: ".4rem",
-                            },
-                            "::-webkit-scrollbar-track": {
-                                background: "#FFFFFF15",
-                                borderRadius: 3,
-                            },
-                            "::-webkit-scrollbar-thumb": {
-                                background: theme.factionTheme.primary,
-                                borderRadius: 3,
-                            },
-                        }}
-                    >
-                        <Button
-                            sx={{
-                                width: "100%",
-                                borderRadius: 0,
-                                justifyContent: "start",
-                                "&:hover": {
-                                    backgroundColor: `${theme.factionTheme.primary}55`,
-                                },
-                            }}
-                        >
-                            <Typography>Dude</Typography>
-                        </Button>
-                        <Button
-                            sx={{
-                                width: "100%",
-                                borderRadius: 0,
-                                justifyContent: "start",
-                                "&:hover": {
-                                    backgroundColor: `${theme.factionTheme.primary}55`,
-                                },
-                            }}
-                        >
-                            <Typography>Dude</Typography>
-                        </Button>
-                        <Button
-                            sx={{
-                                width: "100%",
-                                borderRadius: 0,
-                                justifyContent: "start",
-                                "&:hover": {
-                                    backgroundColor: `${theme.factionTheme.primary}55`,
-                                },
-                            }}
-                        >
-                            <Typography>Dude</Typography>
-                        </Button>
-                        <Button
-                            sx={{
-                                width: "100%",
-                                borderRadius: 0,
-                                justifyContent: "start",
-                                "&:hover": {
-                                    backgroundColor: `${theme.factionTheme.primary}55`,
-                                },
-                            }}
-                        >
-                            <Typography>Dude</Typography>
-                        </Button>
-                        <Button
-                            sx={{
-                                width: "100%",
-                                borderRadius: 0,
-                                justifyContent: "start",
-                                "&:hover": {
-                                    backgroundColor: `${theme.factionTheme.primary}55`,
-                                },
-                            }}
-                        >
-                            <Typography>Dude</Typography>
-                        </Button>
-                        <Button
-                            sx={{
-                                width: "100%",
-                                borderRadius: 0,
-                                justifyContent: "start",
-                                "&:hover": {
-                                    backgroundColor: `${theme.factionTheme.primary}55`,
-                                },
-                            }}
-                        >
-                            <Typography>Dude</Typography>
-                        </Button>
-                        <Button
-                            sx={{
-                                width: "100%",
-                                borderRadius: 0,
-                                justifyContent: "start",
-                                "&:hover": {
-                                    backgroundColor: `${theme.factionTheme.primary}55`,
-                                },
-                            }}
-                        >
-                            <Typography>Dude</Typography>
-                        </Button>
-                        <Button
-                            sx={{
-                                width: "100%",
-                                borderRadius: 0,
-                                justifyContent: "start",
-                                "&:hover": {
-                                    backgroundColor: `${theme.factionTheme.primary}55`,
-                                },
-                            }}
-                        >
-                            <Typography>Dude</Typography>
-                        </Button>
-                    </Stack>
-                </Stack>
+                <Stack spacing="1rem" flex={1}>
+        <FancyButton
+            clipThingsProps={{
+                clipSize: "7px",
+            }}
+            size="large"
+            sx={{
+                fontSize: "2rem",
+                px: "1.2rem",
+                backgroundColor: theme.factionTheme.primary,
+            }}
+            onClick={() => onCompose(SystemMessageDataType.Global)}
+        >
+            Compose Global Message
+        </FancyButton>
+        <FancyButton
+            clipThingsProps={{
+                clipSize: "7px",
+            }}
+            size="large"
+            sx={{
+                fontSize: "2rem",
+                px: "1.2rem",
+                backgroundColor: theme.factionTheme.primary,
+            }}
+            onClick={() => onCompose(SystemMessageDataType.Faction)}
+        >
+            Compose Faction Message
+        </FancyButton>
+    </Stack>
             </Stack>
             <Divider
                 orientation="vertical"
@@ -378,6 +261,7 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
                     backgroundColor: `${theme.factionTheme.primary}70`,
                 }}
             />
+            </>}
             <Stack
                 sx={{
                     flex: 1,

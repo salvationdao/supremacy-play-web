@@ -1,28 +1,38 @@
 import { Box, InputAdornment, Stack, TextField, Typography } from "@mui/material"
 import MDEditor, { commands } from "@uiw/react-md-editor"
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { SvgSend } from "../../../../assets"
+import { useSnackbar } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
+import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../../keys"
 import { scaleUpKeyframes } from "../../../../theme/keyframes"
 import { colors, fonts } from "../../../../theme/theme"
+import { SystemMessageDataType } from "../../../../types"
 import { FancyButton } from "../../../Common/FancyButton"
 import MessageRenderer from "../MessageRenderer"
 
 interface MessageComposeViewProps {
     onBack: () => void
+    type: SystemMessageDataType
 }
 
 const MESSAGE_LIMIT = 1000
 
-export const MessagesComposeView = ({ onBack }: MessageComposeViewProps) => {
+export const MessagesComposeView = ({ onBack, type }: MessageComposeViewProps) => {
     const theme = useTheme()
+    const { send } = useGameServerCommandsUser("/user_commander")
+    const { newSnackbarMessage } = useSnackbar()
 
     const editorContainerEl = useRef<HTMLDivElement>()
     const [height, setHeight] = useState<number>()
 
-    const [to, setTo] = useState("")
+    // const [to, setTo] = useState("")
     const [subject, setSubject] = useState("")
     const [message, setMessage] = useState("")
+
+    const [loading, setLoading] = useState(false)
+    const [error, setError] = useState<string>()
 
     useEffect(() => {
         if (!editorContainerEl.current) return
@@ -30,6 +40,28 @@ export const MessagesComposeView = ({ onBack }: MessageComposeViewProps) => {
         setHeight(editorContainerEl.current.clientHeight)
         editorContainerEl.current.setAttribute("data-color-mode", "dark")
     }, [])
+
+    const onSend = useCallback(async () => {
+        try {
+            setLoading(true)
+            await send(GameServerKeys.SystemMessageSend, {
+                type,
+                subject,
+                message,
+            })
+            newSnackbarMessage(`Successfully sent ${type} message.`, "success")
+            setError(undefined)
+            onBack()
+        } catch (e) {
+            if (e instanceof Error) {
+                setError(e.message)
+            } else if (typeof e === "string") {
+                setError(e)
+            }
+        } finally {
+            setLoading(false)
+        }
+    }, [send, type, subject, message, newSnackbarMessage, onBack])
 
     return (
         <Stack p="2rem" height="100%" spacing="1rem">
@@ -78,10 +110,11 @@ export const MessagesComposeView = ({ onBack }: MessageComposeViewProps) => {
                         ".MuiOutlinedInput-notchedOutline": { border: "unset" },
                     }}
                     type="text"
-                    value={to}
-                    onChange={(e) => {
-                        setTo(e.target.value)
-                    }}
+                    value={type}
+                    disabled
+                    // onChange={(e) => {
+                    //     setTo(e.target.value)
+                    // }}
                 />
                 <TextField
                     variant="outlined"
@@ -198,6 +231,16 @@ export const MessagesComposeView = ({ onBack }: MessageComposeViewProps) => {
                     Discard / Back
                 </FancyButton>
                 <Box flex={1} />
+                {error && (
+                    <Typography
+                        sx={{
+                            color: colors.red,
+                            mr: "1rem",
+                        }}
+                    >
+                        {error}
+                    </Typography>
+                )}
                 <Stack direction="row">
                     <Typography
                         sx={{
@@ -229,7 +272,9 @@ export const MessagesComposeView = ({ onBack }: MessageComposeViewProps) => {
                         backgroundColor: colors.green,
                     }}
                     endIcon={<SvgSend />}
-                    disabled={!message}
+                    onClick={onSend}
+                    disabled={!message || loading}
+                    loading={loading}
                 >
                     Submit Message
                 </FancyButton>

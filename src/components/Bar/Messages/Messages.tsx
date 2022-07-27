@@ -6,7 +6,7 @@ import { useToggle } from "../../../hooks"
 import { useGameServerCommandsUser, useGameServerSubscriptionUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { siteZIndex } from "../../../theme/theme"
-import { SystemMessage } from "../../../types"
+import { SystemMessage, SystemMessageDataType } from "../../../types"
 import { ClipThing } from "../../Common/ClipThing"
 import { MessagesComposeView } from "./MessagesComposeView/MessagesComposeView"
 import { MessagesMainView } from "./MessagesMainView/MessagesMainView"
@@ -24,7 +24,7 @@ export const Messages = () => {
     const [totalUnread, setTotalUnread] = useState<number>()
     const [lastUpdated, setLastUpdated] = useState<Date>(new Date())
 
-    const [isComposeView, setIsComposeView] = useState(false)
+    const [composeView, setComposeView] = useState<SystemMessageDataType>()
 
     const fetchMessages = useCallback(async () => {
         try {
@@ -122,10 +122,10 @@ export const Messages = () => {
                         maxWidth: "100vw",
                     }}
                 >
-                    {!isComposeView ? (
-                        <MessagesMainView lastUpdated={lastUpdated} onCompose={() => setIsComposeView(true)} />
+                    {!composeView ? (
+                        <MessagesMainView lastUpdated={lastUpdated} onCompose={(type: SystemMessageDataType) => setComposeView(type)} />
                     ) : (
-                        <MessagesComposeView onBack={() => setIsComposeView(false)} />
+                        <MessagesComposeView onBack={() => setComposeView(undefined)} type={composeView} />
                     )}
                 </ClipThing>
             </Popover>

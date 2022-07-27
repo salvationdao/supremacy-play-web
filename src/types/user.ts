@@ -91,6 +91,8 @@ export enum FeatureName {
 export enum SystemMessageDataType {
     MechQueue = "MECH_QUEUE",
     MechBattleComplete = "MECH_BATTLE_COMPLETE",
+    Global = "GLOBAL",
+    Faction = "FACTION",
 }
 
 export interface SystemMessage {
