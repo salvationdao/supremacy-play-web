@@ -18,27 +18,31 @@ interface DeviceRegisterModalProps {
 
 export const DeviceRegisterModal = ({ onClose }: DeviceRegisterModalProps) => {
     const theme = useTheme()
-
     const { send } = useGameServerCommandsUser("/user_commander")
-    const [token, setToken] = useState("")
-    const [expiredAt, setExpiredAt] = useState<Date>()
+    const [error, setError] = useState<string>()
+    const [loading, setLoading] = useState(false)
 
+    // Generate one time token (used to create the QR code)
+    const [token, setToken] = useState("")
     useEffect(() => {
+        const errorMessage = "Failed to generate QR code, please try again or contact support."
+
         ;(async () => {
             try {
-                const resp = await send<{ token: string; expired_at: Date }>(GameServerKeys.AuthGenOneTimeToken)
-                if (!resp) return
+                setLoading(true)
+                const resp = await send<{ token: string }>(GameServerKeys.AuthGenOneTimeToken)
+                if (!resp) setError(errorMessage)
                 setToken(resp.token)
-                setExpiredAt(resp.expired_at)
             } catch (err) {
-                const message = typeof err === "string" ? err : "Failed to get device token."
-                console.error(err)
+                setError(typeof err === "string" ? err : errorMessage)
+            } finally {
+                setLoading(false)
             }
         })()
     }, [send])
 
     // Display the modal once the token has been created
-    if (!token) return null
+    if (loading) return null
 
     return (
         <Modal open onClose={onClose}>
@@ -91,17 +95,25 @@ export const DeviceRegisterModal = ({ onClose }: DeviceRegisterModalProps) => {
                             <Typography sx={{ lineHeight: 1, fontWeight: "fontWeightBold", paddingLeft: 2 }}>3. Scan the image below.</Typography>
 
                             {/* QR Code */}
-                            <Box
-                                style={{
-                                    marginLeft: 30,
-                                    padding: QR_CODE_PADDING,
-                                    width: QR_CODE_SIZE + QR_CODE_PADDING * 2,
-                                    height: QR_CODE_SIZE + QR_CODE_PADDING * 2,
-                                    backgroundColor: "white",
-                                }}
-                            >
-                                <QRCode size={QR_CODE_SIZE} value={token} />
-                            </Box>
+                            {token && (
+                                <Box
+                                    style={{
+                                        marginLeft: 30,
+                                        padding: QR_CODE_PADDING,
+                                        width: QR_CODE_SIZE + QR_CODE_PADDING * 2,
+                                        height: QR_CODE_SIZE + QR_CODE_PADDING * 2,
+                                        backgroundColor: "white",
+                                    }}
+                                >
+                                    <QRCode size={QR_CODE_SIZE} value={token} />
+                                </Box>
+                            )}
+
+                            {error && (
+                                <Typography variant="body2" sx={{ color: colors.red, pt: "1rem" }}>
+                                    {error}
+                                </Typography>
+                            )}
                         </Stack>
 
                         {/* "Done" button */}
