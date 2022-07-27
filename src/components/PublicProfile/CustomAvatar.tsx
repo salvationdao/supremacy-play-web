@@ -24,7 +24,6 @@ export const CustomAvatar = ({ open, setOpen, primaryColor, backgroundColor, sub
     const handleChange = useCallback(
         (event: SyntheticEvent, newValue: AVATAR_FEATURE_TABS) => {
             setCurrentValue(newValue)
-            // history.push(`${ROUTES_MAP.fleet.path.replace(":type", newValue)}${location.hash}`)
         },
         [history, location.hash],
     )
@@ -100,7 +99,7 @@ export const CustomAvatar = ({ open, setOpen, primaryColor, backgroundColor, sub
                                                 ".MuiTab-root": { minHeight: 0, fontSize: "1.3rem", height: "6rem", width: "10rem" },
                                                 ".Mui-selected": {
                                                     color: `${primaryColor} !important`,
-                                                    background: `linear-gradient(${primaryColor} 26%, ${primaryColor}BB)`,
+                                                    // background: `linear-gradient(${primaryColor} 26%, ${primaryColor}BB)`,
                                                 },
                                                 ".MuiTabs-indicator": { display: "none" },
                                                 ".MuiTabScrollButton-root": { display: "none" },
