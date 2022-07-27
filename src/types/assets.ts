@@ -124,7 +124,6 @@ export interface MechDetails extends MechBasic {
     weapons: Weapon[]
     utility: Utility[]
     battle_ready: boolean
-    blocks_default: number
 }
 
 export interface BlueprintMech {
@@ -172,6 +171,7 @@ export interface MechModel extends Collection {
     external_url?: string
     youtube_url?: string
     created_at: Date
+    repair_blocks: number
 }
 
 export interface BlueprintMechSkin extends Collection {
@@ -413,12 +413,6 @@ export interface WarMachineMetadata {
     name: string
     model: string
     image: string
-}
-
-export interface RepairStatus {
-    total_required_seconds: number
-    remain_seconds: number
-    full_repair_fee: string
 }
 
 export enum MysteryCrateType {
