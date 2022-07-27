@@ -6,6 +6,7 @@ import { ClipThing } from "../components"
 import { MysteryCrateBanner } from "../components/Common/PageHeaderBanners/MysteryCrateBanner"
 import { MysteryCratesStore } from "../components/Storefront/MysteryCratesStore/MysteryCratesStore"
 import { PlayerAbilitiesStore } from "../components/Storefront/PlayerAbilitiesStore/PlayerAbilitiesStore"
+import { PackagesStore } from "../components/Storefront/PackagesStore/PackagesStore"
 import { useTheme } from "../containers/theme"
 import { ROUTES_MAP } from "../routes"
 import { siteZIndex } from "../theme/theme"
@@ -15,6 +16,7 @@ export enum STOREFRONT_TABS {
     Skins = "skins",
     Abilities = "abilities",
     Merchandise = "merchandise",
+    Packages = "packages",
 }
 
 export const StorefrontPage = () => {
@@ -90,6 +92,8 @@ export const StorefrontPage = () => {
                             >
                                 <Tab label="MYSTERY CRATES" value={STOREFRONT_TABS.MysteryCrates} />
 
+                                <Tab label="PACKAGES" value={STOREFRONT_TABS.Packages} />
+
                                 <Tab label="ABILITIES" value={STOREFRONT_TABS.Abilities} />
                             </Tabs>
                         </Box>
@@ -100,6 +104,10 @@ export const StorefrontPage = () => {
 
                 <TabPanel currentValue={currentValue} value={STOREFRONT_TABS.MysteryCrates}>
                     <MysteryCratesStore />
+                </TabPanel>
+
+                <TabPanel currentValue={currentValue} value={STOREFRONT_TABS.Packages}>
+                    <PackagesStore />
                 </TabPanel>
 
                 <TabPanel currentValue={currentValue} value={STOREFRONT_TABS.Abilities}>

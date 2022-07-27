@@ -121,6 +121,7 @@ export enum GameServerKeys {
     GetMysteryCrates = "STORE:MYSTERY:CRATES",
     SubMysteryCrate = "STORE:MYSTERY:CRATE:SUBSCRIBE",
     PurchaseMysteryCrate = "STORE:MYSTERY:CRATE:PURCHASE",
+    GetPackages = "STORE:PACKAGES",
 
     // Marketplace
     MarketplaceSalesList = "MARKETPLACE:SALES:LIST",

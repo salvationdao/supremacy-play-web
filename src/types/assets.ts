@@ -511,3 +511,11 @@ export interface Rarity {
     color: string
     textColor: string
 }
+
+export interface StorefrontPackage {
+    id: string
+    name: string
+    currency: string
+    price_dollars: number
+    price_cents: number
+}
