@@ -20,10 +20,16 @@ import { WarMachineHangarItem } from "./WarMachineHangarItem"
 const sortOptions = [
     { label: SortTypeLabel.MechQueueAsc, value: SortTypeLabel.MechQueueAsc },
     { label: SortTypeLabel.MechQueueDesc, value: SortTypeLabel.MechQueueDesc },
+    { label: SortTypeLabel.Alphabetical, value: SortTypeLabel.Alphabetical },
+    { label: SortTypeLabel.AlphabeticalReverse, value: SortTypeLabel.AlphabeticalReverse },
+    { label: SortTypeLabel.RarestAsc, value: SortTypeLabel.RarestAsc },
+    { label: SortTypeLabel.RarestDesc, value: SortTypeLabel.RarestDesc },
 ]
 
 interface GetMechsRequest {
-    queue_sort: string
+    queue_sort?: string
+    sort_by?: string
+    sort_dir?: string
     search: string
     page: number
     page_size: number
@@ -109,10 +115,25 @@ export const WarMachinesHangar = () => {
             setIsLoading(true)
 
             let sortDir = "asc"
-            if (sort === SortTypeLabel.MechQueueDesc) sortDir = "desc"
+            let sortBy = ""
+            if (sort === SortTypeLabel.MechQueueDesc || sort === SortTypeLabel.AlphabeticalReverse || sort === SortTypeLabel.RarestDesc) sortDir = "desc"
+
+            switch (sort) {
+                case SortTypeLabel.Alphabetical:
+                case SortTypeLabel.AlphabeticalReverse:
+                    sortBy = "alphabetical"
+                    break
+                case SortTypeLabel.RarestAsc:
+                case SortTypeLabel.RarestDesc:
+                    sortBy = "rarity"
+            }
+
+            const isQueueSort = sort === SortTypeLabel.MechQueueAsc || sort === SortTypeLabel.MechQueueDesc
 
             const resp = await send<GetMechsResponse, GetMechsRequest>(GameServerKeys.GetMechs, {
-                queue_sort: sortDir,
+                queue_sort: isQueueSort ? sortDir : undefined,
+                sort_by: isQueueSort ? undefined : sortBy,
+                sort_dir: isQueueSort ? undefined : sortDir,
                 search,
                 rarities,
                 statuses: status,

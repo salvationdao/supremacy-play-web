@@ -31,6 +31,11 @@ export enum WeaponType {
     GrenadeLauncher = "Grenade Launcher",
     MachineGun = "Machine Gun",
     Flak = "Flak",
+    Flamethrower = "Flamethrower",
+    LaserBeam = "Laser Beam",
+    LightningGun = "Lightning Gun",
+    BFG = "BFG",
+    Rifle = "Rifle",
 }
 
 export enum AssetItemType {
