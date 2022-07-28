@@ -11,7 +11,13 @@ import { isWebGLAvailable } from "./src/utils"
 
 const STACKS_PER_BLOCK = 3
 
-export const StackTower = React.memo(function StackTower({ repairAgent }: { repairAgent?: RepairAgent }) {
+export const StackTower = React.memo(function StackTower({
+    repairAgent,
+    setRepairAgent,
+}: {
+    repairAgent?: RepairAgent
+    setRepairAgent: React.Dispatch<React.SetStateAction<RepairAgent | undefined>>
+}) {
     const theme = useTheme()
     const { send } = useGameServerCommandsUser("/user_commander")
     const [isSubmitting, setIsSubmitting] = useState(false)
@@ -23,7 +29,6 @@ export const StackTower = React.memo(function StackTower({ repairAgent }: { repa
 
     const [gamePatterns, setGamePatterns] = useState<GamePattern[]>([])
     const cumulativeScore = gamePatterns.filter((p) => !p.is_failed && p.score > 0).length
-    const disableGame = isSubmitting || submitError
 
     useEffect(() => {
         if (recentPattern) {
@@ -31,12 +36,11 @@ export const StackTower = React.memo(function StackTower({ repairAgent }: { repa
                 return [...prev, recentPattern]
             })
         }
-
-        if (recentPattern?.score && !recentPattern?.is_failed) {
-            setIsSubmitting(false)
-            setSubmitError(undefined)
-        }
     }, [recentPattern])
+
+    useEffect(() => {
+        if (repairAgent) setGamePatterns([])
+    }, [repairAgent])
 
     // Send server game pattern
     useEffect(() => {
@@ -52,7 +56,7 @@ export const StackTower = React.memo(function StackTower({ repairAgent }: { repa
                 })
 
                 if (!resp) return
-                setGamePatterns([])
+                setRepairAgent(undefined)
             } catch (err) {
                 const message = typeof err === "string" ? err : "Failed to submit results."
                 setSubmitError(message)
@@ -61,7 +65,7 @@ export const StackTower = React.memo(function StackTower({ repairAgent }: { repa
                 setIsSubmitting(false)
             }
         })()
-    }, [cumulativeScore, gamePatterns, repairAgent?.id, send])
+    }, [cumulativeScore, gamePatterns, repairAgent?.id, send, setRepairAgent])
 
     const primaryColor = theme.factionTheme.primary
 
@@ -79,26 +83,9 @@ export const StackTower = React.memo(function StackTower({ repairAgent }: { repa
             }}
         >
             <Stack spacing=".7rem">
-                {submitError && (
-                    <Typography variant="h5" sx={{ fontWeight: "fontWeightBold", color: colors.red }}>
-                        {submitError}
-                    </Typography>
-                )}
-
-                {!submitError && isSubmitting && (
-                    <Stack spacing="1.2rem" direction="row" alignItems="center">
-                        <CircularProgress size="1.8rem" sx={{ color: colors.neonBlue }} />
-                        <Typography variant="h5" sx={{ fontWeight: "fontWeightBold", color: colors.neonBlue }}>
-                            SUBMITTING RESULTS...
-                        </Typography>
-                    </Stack>
-                )}
-
-                {!submitError && !isSubmitting && (
-                    <Typography variant="h5" sx={{ fontWeight: "fontWeightBold", span: { fontFamily: "inherit", color: colors.neonBlue } }}>
-                        YOU NEED A TOTAL OF <span>{STACKS_PER_BLOCK}</span> STACKS TO REPAIR A SINGLE BLOCK!
-                    </Typography>
-                )}
+                <Typography variant="h5" sx={{ fontWeight: "fontWeightBold", span: { fontFamily: "inherit", color: colors.neonBlue } }}>
+                    YOU NEED A TOTAL OF <span>{STACKS_PER_BLOCK}</span> STACKS TO REPAIR A SINGLE BLOCK!
+                </Typography>
 
                 <Stack direction="row" alignItems="center" spacing="1rem">
                     <Stack sx={{ flex: 1 }}>
@@ -117,7 +104,56 @@ export const StackTower = React.memo(function StackTower({ repairAgent }: { repa
                 </Stack>
             </Stack>
 
-            <Box sx={{ flex: 1, opacity: disableGame ? 0.4 : 1, pointerEvents: disableGame ? "none" : "all", border: "#FFFFFF20 1px solid" }}>
+            <Box
+                sx={{
+                    position: "relative",
+                    flex: 1,
+                    opacity: !repairAgent ? 0.4 : 1,
+                    pointerEvents: !repairAgent ? "none" : "all",
+                    border: "#FFFFFF20 1px solid",
+                }}
+            >
+                {submitError && (
+                    <Typography
+                        variant="h5"
+                        sx={{
+                            position: "absolute",
+                            left: "50%",
+                            top: "50%",
+                            transform: "translate(-50%, -50%)",
+                            fontWeight: "fontWeightBold",
+                            color: colors.red,
+                        }}
+                    >
+                        {submitError}
+                    </Typography>
+                )}
+
+                {!submitError && isSubmitting && (
+                    <Stack
+                        spacing="1.2rem"
+                        direction="row"
+                        alignItems="center"
+                        sx={{
+                            position: "absolute",
+                            left: "50%",
+                            top: "50%",
+                        }}
+                    >
+                        <CircularProgress size="1.8rem" sx={{ color: colors.neonBlue }} />
+                        <Typography
+                            variant="h5"
+                            sx={{
+                                transform: "translate(-50%, -50%)",
+                                fontWeight: "fontWeightBold",
+                                color: colors.neonBlue,
+                            }}
+                        >
+                            SUBMITTING RESULTS...
+                        </Typography>
+                    </Stack>
+                )}
+
                 <TowerStackInner recentPattern={recentPattern} gameState={gameState} setGameState={setGameState} setRecentPattern={setRecentPattern} />
             </Box>
         </Stack>

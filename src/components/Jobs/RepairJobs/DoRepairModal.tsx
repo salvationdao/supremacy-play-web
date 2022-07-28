@@ -125,7 +125,7 @@ export const DoRepairModal = ({ repairStatus, open, onClose }: { repairStatus: R
 
                         {/* Game */}
                         <Box sx={{ flex: 1 }}>
-                            <StackTower repairAgent={repairAgent} />
+                            <StackTower repairAgent={repairAgent} setRepairAgent={setRepairAgent} />
                         </Box>
 
                         {/* Button */}
@@ -135,15 +135,15 @@ export const DoRepairModal = ({ repairStatus, open, onClose }: { repairStatus: R
                                     clipSize: "7px",
                                     clipSlantSize: "0px",
                                     corners: { topLeft: true, topRight: true, bottomLeft: true, bottomRight: true },
-                                    backgroundColor: backgroundColor,
+                                    backgroundColor: colors.red,
                                     opacity: 1,
                                     border: { borderColor: colors.red, borderThickness: "2px" },
                                     sx: { position: "relative" },
                                 }}
-                                sx={{ px: "1.6rem", py: "1rem", color: colors.red }}
+                                sx={{ px: "1.6rem", py: "1rem", color: "#FFFFFF" }}
                                 onClick={onClose}
                             >
-                                <Typography sx={{ color: colors.red, fontFamily: fonts.nostromoBlack }}>ABANDON JOB</Typography>
+                                <Typography sx={{ color: "#FFFFFF", fontFamily: fonts.nostromoBlack }}>ABANDON JOB</Typography>
                             </FancyButton>
                         ) : (
                             <FancyButton
