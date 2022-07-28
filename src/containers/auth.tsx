@@ -278,7 +278,7 @@ export const UserUpdater = () => {
     // Subscribe user stats
     useGameServerSubscriptionUser<UserStat>(
         {
-            URI: "",
+            URI: "/stat",
             key: GameServerKeys.SubscribeUserStat,
         },
         (payload) => {
@@ -290,7 +290,7 @@ export const UserUpdater = () => {
     // Listen on user ranking
     useGameServerSubscriptionUser<UserRank>(
         {
-            URI: "",
+            URI: "/rank",
             key: GameServerKeys.PlayerRank,
         },
         (payload) => {
