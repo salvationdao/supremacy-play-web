@@ -33,6 +33,13 @@ export interface Map {
     disabled_cells: number[]
 }
 
+export interface BattleZoneChange {
+    location: Position
+    radius: number
+    shrinkTime: number
+    warnTime: number
+}
+
 export enum StreamService {
     OvenMediaEngine = "OvenMediaEngine",
     AntMedia = "AntMedia",

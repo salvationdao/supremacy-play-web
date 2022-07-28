@@ -36,6 +36,8 @@ import {
     textNoti,
     warMachineAbilityNoti,
 } from "./testData"
+import { BattleZoneAlert } from "./Alerts/BattleZoneAlert"
+import { BattleZoneChange } from "../../types"
 
 const SPAWN_TEST_NOTIFICATIONS = false
 
@@ -56,11 +58,19 @@ export enum NotificationType {
     WarMachineAbility = "WAR_MACHINE_ABILITY",
     WarMachineDestroyed = "WAR_MACHINE_DESTROYED",
     WarMachineCommand = "WAR_MACHINE_COMMAND",
+    BattleZoneChange = "BATTLE_ZONE_CHANGE",
 }
 
 export interface NotificationResponse {
     type: NotificationType
-    data: BattleFactionAbilityAlertProps | KillAlertProps | LocationSelectAlertProps | WarMachineAbilityAlertProps | WarMachineCommandAlertProps | string
+    data:
+        | BattleFactionAbilityAlertProps
+        | KillAlertProps
+        | LocationSelectAlertProps
+        | WarMachineAbilityAlertProps
+        | WarMachineCommandAlertProps
+        | BattleZoneChange
+        | string
 }
 
 export const Notifications = () => {
@@ -77,7 +87,12 @@ export const Notifications = () => {
             if (!notification) return
 
             const notiID = makeid()
-            const duration = SPAWN_TEST_NOTIFICATIONS ? NOTIFICATION_TIME * 10000 : NOTIFICATION_TIME
+
+            let duration = SPAWN_TEST_NOTIFICATIONS ? NOTIFICATION_TIME * 10000 : NOTIFICATION_TIME
+            if (notification.type === NotificationType.BattleZoneChange) {
+                duration = (notification.data as BattleZoneChange).warnTime * 1000
+            }
+
             addNotification({ notiID, ...notification, duration })
 
             // Linger is for the slide animation to play before clearing off the component
@@ -225,6 +240,12 @@ export const Notifications = () => {
                             return (
                                 <NotificationItem key={n.notiID} duration={n.duration}>
                                     <WarMachineCommandAlert data={n.data} getFaction={getFaction} />
+                                </NotificationItem>
+                            )
+                        case NotificationType.BattleZoneChange:
+                            return (
+                                <NotificationItem key={n.notiID} duration={n.duration}>
+                                    <BattleZoneAlert data={n.data} />
                                 </NotificationItem>
                             )
                     }
