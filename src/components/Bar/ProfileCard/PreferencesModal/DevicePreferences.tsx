@@ -16,7 +16,7 @@ interface Device {
     name: string
 }
 
-//todo: comment here
+// DevicePreferences manages devices connected to the supremacy companion app
 export const DevicePreferences = ({ toggleAddDeviceModal }: DevicePreferencesProps) => {
     const theme = useTheme()
     const [error, setError] = useState<string>()

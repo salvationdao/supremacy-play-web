@@ -16,6 +16,7 @@ interface DeviceRegisterModalProps {
     onClose: () => void
 }
 
+// DeviceRegisterModal displays instructions and a QR code to log a player into the companion app
 export const DeviceRegisterModal = ({ onClose }: DeviceRegisterModalProps) => {
     const theme = useTheme()
     const { send } = useGameServerCommandsUser("/user_commander")
@@ -41,7 +42,7 @@ export const DeviceRegisterModal = ({ onClose }: DeviceRegisterModalProps) => {
         })()
     }, [send])
 
-    // Display the modal once the token has been created
+    // Display the modal after the token has been created
     if (loading) return null
 
     return (
