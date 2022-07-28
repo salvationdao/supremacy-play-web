@@ -5,9 +5,11 @@ import { Likes, TextMessageData } from "../../../../types"
 import { GameServerKeys } from "../../../../keys"
 import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
 import { useAuth, useChat } from "../../../../containers"
+import { colors } from "../../../../theme/theme"
 
 interface ReactionsProps {
     fontSize: string
+    factionColor?: string
     message: TextMessageData
     hoverOnly?: boolean
 }
@@ -41,7 +43,7 @@ const styles = {
     },
     m: "-.3rem",
 }
-export const Reactions = ({ fontSize, message, hoverOnly = false }: ReactionsProps) => {
+export const Reactions = ({ fontSize, factionColor, message, hoverOnly = false }: ReactionsProps) => {
     const [reaction, setReaction] = useState<ReactionState>("none")
 
     const { send } = useGameServerCommandsUser("/user_commander")
@@ -69,16 +71,13 @@ export const Reactions = ({ fontSize, message, hoverOnly = false }: ReactionsPro
             case "dislike":
                 sendReactMessage.dislikes = sendReactMessage.dislikes.filter((x) => x !== user.id)
                 sendReactMessage.likes = [...sendReactMessage.likes, user.id]
-                setReaction("like")
                 break
             case "like":
                 sendReactMessage.likes = sendReactMessage.likes.filter((x) => x !== user.id)
-                setReaction("none")
                 break
             default:
                 //case "none":
                 sendReactMessage.likes = [...sendReactMessage.likes, user.id]
-                setReaction("like")
                 break
         }
         const updatedMetadata: Likes = {
@@ -106,17 +105,14 @@ export const Reactions = ({ fontSize, message, hoverOnly = false }: ReactionsPro
         switch (reaction) {
             case "dislike":
                 sendReactMessage.dislikes = sendReactMessage.dislikes.filter((x) => x !== user.id)
-                setReaction("none")
                 break
             case "like":
                 sendReactMessage.likes = sendReactMessage.likes.filter((x) => x !== user.id)
                 sendReactMessage.dislikes = [...sendReactMessage.dislikes, user.id]
-                setReaction("dislike")
                 break
             default:
                 //case "none":
                 sendReactMessage.dislikes = [...sendReactMessage.dislikes, user.id]
-                setReaction("dislike")
                 break
         }
         const updatedMetadata: Likes = {
@@ -131,12 +127,53 @@ export const Reactions = ({ fontSize, message, hoverOnly = false }: ReactionsPro
         handleReactionSend(sendReactMessage)
     }
 
+    useEffect(() => {
+        if (!message.metadata || !message.metadata.likes) return
+
+        if (!message.metadata.likes.dislikes.includes(user.id) && !message.metadata.likes.likes.includes(user.id)) {
+            console.log("none")
+            setReaction("none")
+            return
+        }
+        if (message.metadata.likes.likes.includes(user.id)) {
+            console.log("like")
+            setReaction("like")
+            return
+        }
+        if (message.metadata.likes.dislikes.includes(user.id)) {
+            console.log("dislike")
+            setReaction("dislike")
+            return
+        }
+    }, [message, user.id])
+
+    useEffect(() => {
+        console.log(reaction)
+    }, [reaction])
     //only display if net !== 0 or is hovered
     return (
         <Stack direction={"row"} spacing={"-.4rem"} sx={hoverOnly ? hoverStyles : styles}>
-            <SvgPriceDownArrow size={"2.5rem"} onClick={() => handleDislike()} />
+            <SvgPriceDownArrow
+                size={"2.5rem"}
+                fill={reaction === "dislike" && factionColor ? factionColor : colors.lightGrey}
+                sx={{
+                    ":hover": {
+                        cursor: "pointer",
+                    },
+                }}
+                onClick={() => handleDislike()}
+            />
             <Typography fontSize={"1.2rem"}>{message.metadata ? message.metadata.likes.net : 0}</Typography>
-            <SvgPriceUpArrow size={"2.5rem"} onClick={() => handleLike()} />
+            <SvgPriceUpArrow
+                size={"2.5rem"}
+                fill={reaction === "like" && factionColor ? factionColor : colors.lightGrey}
+                sx={{
+                    ":hover": {
+                        cursor: "pointer",
+                    },
+                }}
+                onClick={() => handleLike()}
+            />
         </Stack>
     )
 }

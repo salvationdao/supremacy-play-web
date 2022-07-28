@@ -392,7 +392,7 @@ export const TextMessage = ({
 
                         <Box sx={{ zIndex: 1 }}>{chatMessage}</Box>
 
-                        {metadata?.likes.net !== 0 && <Reactions fontSize={"1"} message={data} />}
+                        {!!metadata?.likes.net && <Reactions fontSize={"1"} message={data} />}
                         {isHovered && <Reactions fontSize={"1"} hoverOnly={true} message={data} />}
                     </Stack>
                 </Box>
