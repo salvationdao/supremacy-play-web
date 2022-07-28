@@ -185,7 +185,7 @@ import WarMachineBCPNG from "./images/profileIcons/warMachines/WMBC.png"
 import WarMachineRMPNG from "./images/profileIcons/warMachines/WMRM.png"
 import WarMachineZAIPNG from "./images/profileIcons/warMachines/WMZAI.png"
 
-import HeadPNG from "./images/profileIcons/head.png"
+import HeadPNG from "./images/profileIcons/head3.png"
 
 import Hair1PNG from "./images/profileIcons/hair1.png"
 import Hair2PNG from "./images/profileIcons/hair2.png"

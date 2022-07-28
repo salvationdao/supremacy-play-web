@@ -157,7 +157,7 @@ export enum GameServerKeys {
     PlayerAssetMechListPublic = "PLAYER:ASSET:MECH:LIST:PUBLIC",
     PlayerAssetMechDetailPublic = "PLAYER:ASSET:MECH:DETAIL:PUBLIC",
     PlayerBattleMechHistoryList = "PLAYER:BATTLE:MECH:HISTORY:LIST",
-    PlayerProfileHairList = "PLAYER:PROFILE:HAIR:LIST",
+    PlayerProfileLayerList = "PLAYER:PROFILE:LAYERS:LIST",
 
     // Leaderboard
     GetPlayerBattlesSpectated = "LEADERBOARD:PLAYER:BATTLE:SPECTATED",

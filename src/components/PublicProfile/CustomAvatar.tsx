@@ -1,6 +1,6 @@
-import { Avatar, Box, CircularProgress, Fade, Modal, Stack, Tab, Tabs, Typography } from "@mui/material"
+import { Avatar, Box, CircularProgress, Fade, Modal, Stack, Tab, Tabs, Typography, useMediaQuery } from "@mui/material"
 import { SyntheticEvent, useCallback, useEffect, useMemo, useState } from "react"
-import { HeadPNG, Hair1PNG, Hair2PNG, Hair3PNG, EmptyWarMachinesPNG } from "../../assets"
+import { EmptyWarMachinesPNG } from "../../assets"
 import { parseString } from "../../helpers"
 import { usePagination, useUrlQuery } from "../../hooks"
 import { useGameServerCommandsUser } from "../../hooks/useGameServer"
@@ -18,16 +18,44 @@ interface CustomAvatarProps {
     submitting: boolean
 }
 
-interface AvatarFeature {
+interface Layer {
     id: string
     image_url: string
 }
 
 export const CustomAvatar = ({ open, setOpen, primaryColor, backgroundColor, submitting }: CustomAvatarProps) => {
-    const [currentValue, setCurrentValue] = useState<AVATAR_FEATURE_TABS>(AVATAR_FEATURE_TABS.Faces)
+    const [currentValue, setCurrentValue] = useState<AVATAR_FEATURE_TABS>(AVATAR_FEATURE_TABS.Face)
+
+    const [imageSize, setImageSize] = useState(600)
+
+    // const below650 = useMediaQuery("(max-width:650px)")
+    // const below750 = useMediaQuery("(max-width:750px)")
+    // const below980 = useMediaQuery("(max-width:980px)")
+    // const below1550 = useMediaQuery("(max-width:1550px)")
+    // const below1750 = useMediaQuery("(max-width:1750px)")
+
+    const below2500 = useMediaQuery("(max-width:2500px)")
+    const below2200 = useMediaQuery("(max-width:2200px)")
+
+    useEffect(() => {
+        if (below2200) {
+            setImageSize(420)
+            return
+        }
+
+        if (below2500) {
+            setImageSize(500)
+            return
+        }
+
+        setImageSize(500)
+    }, [below2500, below2200])
 
     // selected features
-    const [hair, setHair] = useState<AvatarFeature>()
+    const [hair, setHair] = useState<Layer>()
+    const [face, setFace] = useState<Layer>()
+    const [body, setBody] = useState<Layer>()
+    const [accessory, setAccessory] = useState<Layer>()
 
     const handleChange = useCallback(
         (event: SyntheticEvent, newValue: AVATAR_FEATURE_TABS) => {
@@ -53,11 +81,10 @@ export const CustomAvatar = ({ open, setOpen, primaryColor, backgroundColor, sub
                             <PageHeader title="Custom avatar" description="Customize your own avatar" primaryColor={primaryColor} />
 
                             <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
-                                <Box
+                                <Stack
+                                    direction="row"
                                     sx={{
                                         display: "flex",
-                                        justifyContent: "space-between",
-                                        alignItems: "space-between",
                                         color: "white",
                                         ml: "1.9rem",
                                         mr: ".5rem",
@@ -82,12 +109,22 @@ export const CustomAvatar = ({ open, setOpen, primaryColor, backgroundColor, sub
                                     }}
                                 >
                                     {/* Preview */}
-                                    <Box width="500px" height="500px" mr="1rem" sx={{ position: "relative" }}>
-                                        <img src={HeadPNG} alt="" height="500px" />
-                                        <img style={{ position: "absolute", top: "0", left: "0" }} src={hair?.image_url} alt="" height="500px" />
+                                    <Box width="500px" ml="3rem" mr="3rem" sx={{ height: imageSize, position: "relative", alignSelf: "flex-end" }}>
+                                        <img
+                                            style={{ height: imageSize, zIndex: 3, position: "absolute", top: "0", left: "0" }}
+                                            src={accessory?.image_url}
+                                            alt=""
+                                        />
+                                        <img style={{ height: imageSize, zIndex: 3, position: "absolute", top: "0", left: "0" }} src={hair?.image_url} alt="" />
+                                        <img style={{ height: imageSize, zIndex: 2 }} src={face?.image_url} alt="" />
+                                        <img
+                                            style={{ height: imageSize, zIndex: -1, position: "absolute", top: "0", left: "0" }}
+                                            src={body?.image_url}
+                                            alt=""
+                                        />
                                     </Box>
 
-                                    <Box width="50%">
+                                    <Box width="50%" sx={{ justifySelf: "flex-start", alignSelf: "flex-start" }}>
                                         <Tabs
                                             value={currentValue}
                                             onChange={handleChange}
@@ -105,31 +142,38 @@ export const CustomAvatar = ({ open, setOpen, primaryColor, backgroundColor, sub
                                                 ".MuiTabScrollButton-root": { display: "none" },
                                             }}
                                         >
-                                            <Tab label="FACE SHAPE " value={AVATAR_FEATURE_TABS.Faces} />
+                                            <Tab label="FACE" value={AVATAR_FEATURE_TABS.Face} />
 
                                             <Tab label="HAIR" value={AVATAR_FEATURE_TABS.Hair} />
+
+                                            <Tab label="BODY" value={AVATAR_FEATURE_TABS.Body} />
+
+                                            <Tab label="ACCESSORY" value={AVATAR_FEATURE_TABS.Accessory} />
                                         </Tabs>
 
-                                        <TabPanel currentValue={currentValue} value={AVATAR_FEATURE_TABS.Faces}>
-                                            <h1 style={{ color: "white" }}>FACES</h1>
+                                        {/* Face Layer */}
+                                        <TabPanel currentValue={currentValue} value={AVATAR_FEATURE_TABS.Face}>
+                                            <LayerList layerType="FACE" setLayer={setFace} />
                                         </TabPanel>
 
+                                        {/* Hair Layer */}
                                         <TabPanel currentValue={currentValue} value={AVATAR_FEATURE_TABS.Hair}>
-                                            <HairList setHair={setHair} />
+                                            <LayerList layerType="HAIR" setLayer={setHair} />
+                                        </TabPanel>
+
+                                        {/* Body Layer */}
+                                        <TabPanel currentValue={currentValue} value={AVATAR_FEATURE_TABS.Body}>
+                                            <LayerList layerType="BODY" setLayer={setBody} />
+                                        </TabPanel>
+
+                                        {/* Accessories layer */}
+                                        <TabPanel currentValue={currentValue} value={AVATAR_FEATURE_TABS.Accessory}>
+                                            <LayerList layerType={AVATAR_FEATURE_TABS.Accessory} setLayer={setAccessory} />
                                         </TabPanel>
                                     </Box>
-                                </Box>
+                                </Stack>
                             </Stack>
                         </Stack>
-
-                        <FancyButton
-                            disabled={submitting}
-                            onClick={() => {
-                                setOpen(false)
-                            }}
-                        >
-                            CLOSE
-                        </FancyButton>
                     </Stack>
                 </ClipThing>
             </Stack>
@@ -138,9 +182,10 @@ export const CustomAvatar = ({ open, setOpen, primaryColor, backgroundColor, sub
 }
 
 export enum AVATAR_FEATURE_TABS {
-    Faces = "faces",
-    Hair = "hair",
-    FACIAL_HAIR = "facial-hair",
+    Face = "FACE",
+    Hair = "HAIR",
+    Body = "BODY",
+    Accessory = "ACCESSORY",
 }
 interface TabPanelProps {
     children?: React.ReactNode
@@ -164,13 +209,14 @@ const TabPanel = (props: TabPanelProps) => {
     return null
 }
 
-interface Hair {
+interface Layer {
     id: string
     image_url: string
+    type: string
 }
 
-interface GetHairResponse {
-    hairs: Hair[]
+interface GetLayersResponse {
+    layers: Layer[]
     total: number
 }
 
@@ -178,57 +224,41 @@ interface ListRequest {
     queue_sort: string
     page: number
     page_size: number
+    layer_type: string
 }
 
-interface HairListProps {
-    setHair: (h: Hair) => void
+interface LayerListProps {
+    layerType: string
+    setLayer: (h: Layer) => void
 }
-export const HairList = ({ setHair }: HairListProps) => {
+export const LayerList = ({ setLayer, layerType }: LayerListProps) => {
     const [query] = useUrlQuery()
     const { send } = useGameServerCommandsUser("/user_commander")
 
-    const [modalOpen, setModalOpen] = useState(false)
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
-    const [avatars, setAvatars] = useState<Hair[]>([])
-    const [submitting, setSubmitting] = useState(false)
-
-    const [customAvatarModalOpen, setCustomAvatarModalOpen] = useState(false)
+    const [avatars, setAvatars] = useState<Layer[]>([])
 
     const { page, changePage, setTotalItems, totalPages, pageSize, totalItems, changePageSize } = usePagination({
         pageSize: parseString(query.get("pageSize"), 10),
         page: parseString(query.get("page"), 1),
     })
 
-    // const updatehHandler = useCallback(
-    //     async (avatarID) => {
-    //         try {
-    //             setSubmitting(true)
-    //             // await updateAvatar(avatarID)
-    //         } finally {
-    //             setSubmitting(false)
-    //             setModalOpen(false)
-    //         }
-    //     },
-    //     [updateAvatar],
-    // )
-
     // get list of avatars
     const getItems = useCallback(async () => {
         try {
             setIsLoading(true)
             const sortDir = "asc"
-            const resp = await send<GetHairResponse, ListRequest>(GameServerKeys.PlayerProfileHairList, {
+            const resp = await send<GetLayersResponse, ListRequest>(GameServerKeys.PlayerProfileLayerList, {
                 queue_sort: sortDir,
                 page,
                 page_size: pageSize,
+                layer_type: layerType,
             })
-            console.log("this is resp", resp)
-
             if (!resp) return
 
             setLoadError(undefined)
-            setAvatars(resp.hairs)
+            setAvatars(resp.layers)
             setTotalItems(resp.total)
         } catch (e) {
             setLoadError(typeof e === "string" ? e : "Failed to get avatars.")
@@ -300,14 +330,7 @@ export const HairList = ({ setHair }: HairListProps) => {
                                     },
                                 }}
                                 onClick={() => {
-                                    // if (a.id === "custom") {
-                                    //     console.log("create new avatar ... ")
-                                    //     setCustomAvatarModalOpen(true)
-                                    //     setModalOpen(false)
-                                    //     return
-                                    // }
-                                    // updatehHandler(a.id)
-                                    setHair(a)
+                                    setLayer(a)
                                 }}
                             >
                                 <Avatar
@@ -340,7 +363,6 @@ export const HairList = ({ setHair }: HairListProps) => {
                             height: "16rem",
                             opacity: 0.7,
                             filter: "grayscale(100%)",
-                            // TODO repace with empty avatar image
                             background: `url(${EmptyWarMachinesPNG})`,
                             backgroundRepeat: "no-repeat",
                             backgroundPosition: "bottom center",

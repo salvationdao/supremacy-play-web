@@ -74,6 +74,7 @@ export const ProfileAvatar = ({ isOwner, primaryColor, backgroundColor, avatarUR
                 page,
                 page_size: pageSize,
             })
+
             if (!resp) return
             setLoadError(undefined)
             if (page === 1) {
