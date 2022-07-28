@@ -140,17 +140,19 @@ const TowerStackInner = ({
                     variant="h2"
                     sx={{
                         position: "absolute",
-                        top: "23%",
+                        top: "20%",
                         left: 0,
                         right: 0,
                         textAlign: "center",
-                        fontFamily: fonts.nostromoBold,
+                        color: gameState === GameState.Ended ? colors.neonBlue : "#FFFFFF",
+                        fontFamily: fonts.shareTech,
+                        fontWeight: "fontWeightBold",
                         transition: "all .4s ease",
                         transform:
                             gameState === GameState.Playing || gameState === GameState.Resetting
                                 ? "translateY(0) scale(1)"
                                 : gameState === GameState.Ended
-                                ? "translateY(-50px) scale(1.5)"
+                                ? "translateY(-40px) scale(1.5)"
                                 : "translateY(-200px) scale(1)",
                         opacity: gameState === GameState.Playing || gameState === GameState.Resetting || gameState === GameState.Ended ? 1 : 0,
                     }}
@@ -168,8 +170,8 @@ const TowerStackInner = ({
                         left: 0,
                         right: 0,
                         transition: "all .2s ease",
-                        transform: gameState === GameState.Ready || gameState === GameState.Ended ? "translateY(0)" : "translateY(-50px)",
-                        opacity: gameState === GameState.Ready || gameState === GameState.Ended ? 1 : 0,
+                        transform: gameState === GameState.Ready ? "translateY(0)" : "translateY(-50px)",
+                        opacity: gameState === GameState.Ready ? 1 : 0,
                     }}
                 >
                     <Typography
@@ -191,7 +193,7 @@ const TowerStackInner = ({
                     alignItems="center"
                     sx={{
                         position: "absolute",
-                        top: "28%",
+                        top: "25%",
                         left: 0,
                         right: 0,
                         transition: "all .2s ease",

@@ -31,11 +31,19 @@ export const DoRepairModal = ({ repairStatus, open, onClose }: { repairStatus: R
     const primaryColor = theme.factionTheme.primary
     const backgroundColor = theme.factionTheme.background
 
+    const abandonJob = useCallback(() => {
+        setRepairAgent(undefined)
+        setError(undefined)
+        setIsRegistering(false)
+        setSubmitSuccess(false)
+    }, [])
+
     const registerAgentRepair = useCallback(async () => {
+        setError(undefined)
+        setIsRegistering(true)
+        setSubmitSuccess(false)
+
         try {
-            setError(undefined)
-            setIsRegistering(true)
-            setSubmitSuccess(false)
             const resp = await send<RepairAgent>(GameServerKeys.RegisterRepairAgent, {
                 repair_offer_id: repairStatus.id,
             })
@@ -283,7 +291,7 @@ export const DoRepairModal = ({ repairStatus, open, onClose }: { repairStatus: R
                                     sx: { position: "relative" },
                                 }}
                                 sx={{ px: "1.6rem", py: "1rem", color: "#FFFFFF" }}
-                                onClick={() => setRepairAgent(undefined)}
+                                onClick={abandonJob}
                             >
                                 <Typography sx={{ color: "#FFFFFF", fontFamily: fonts.nostromoBlack }}>ABANDON JOB</Typography>
                             </FancyButton>
