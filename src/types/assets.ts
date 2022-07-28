@@ -515,6 +515,7 @@ export interface Rarity {
 export interface StorefrontPackage {
     id: string
     name: string
+    description: string
     currency: string
     price_dollars: number
     price_cents: number
