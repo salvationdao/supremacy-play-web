@@ -4,10 +4,11 @@ import { FancyButton, TooltipHelper } from "../.."
 import { SvgGlobal, SvgLine, SvgMicrochip, SvgQuestionMark, SvgTarget } from "../../../assets"
 import { useSnackbar } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
-import { numberCommaFormatter } from "../../../helpers"
+import { numberCommaFormatter, supFormatter } from "../../../helpers"
 import { useToggle } from "../../../hooks"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
+import { scaleUpKeyframes } from "../../../theme/keyframes"
 import { colors, fonts } from "../../../theme/theme"
 import { LocationSelectType, SaleAbility, SaleAbilityAvailability } from "../../../types"
 import { ClipThing } from "../../Common/ClipThing"
@@ -235,7 +236,24 @@ export const PlayerAbilityStoreItem = ({
                                     color: theme.factionTheme.secondary,
                                 }}
                             >
-                                {actionWord} ABILITY
+                                {availability === SaleAbilityAvailability.CanPurchase ? (
+                                    <>
+                                        PURCHASE FOR{" "}
+                                        <Box
+                                            key={price}
+                                            component="span"
+                                            sx={{
+                                                animation: `${scaleUpKeyframes} .2s ease-out`,
+                                            }}
+                                        >
+                                            {supFormatter(price, 2)} SUPS
+                                        </Box>
+                                    </>
+                                ) : availability === SaleAbilityAvailability.CanClaim ? (
+                                    "CLAIM ABILITY"
+                                ) : (
+                                    "UNAVAILABLE"
+                                )}
                             </Typography>
                         </FancyButton>
                     </Stack>
@@ -254,7 +272,23 @@ export const PlayerAbilityStoreItem = ({
                     error={error}
                     confirmSuffix={
                         <Typography variant="h6" sx={{ fontWeight: "fontWeightBold", ml: ".4rem" }}>
-                            {actionWord}
+                            {availability === SaleAbilityAvailability.CanPurchase ? (
+                                <>
+                                    <Box
+                                        key={price}
+                                        component="span"
+                                        sx={{
+                                            animation: `${scaleUpKeyframes} .2s ease-out`,
+                                        }}
+                                    >
+                                        ({supFormatter(price, 2)} SUPS)
+                                    </Box>
+                                </>
+                            ) : availability === SaleAbilityAvailability.CanClaim ? (
+                                "CLAIM"
+                            ) : (
+                                "UNAVAILABLE"
+                            )}
                         </Typography>
                     }
                     disableConfirm={disabled}

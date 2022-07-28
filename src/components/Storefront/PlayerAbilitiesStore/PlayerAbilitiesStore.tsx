@@ -67,6 +67,7 @@ export const PlayerAbilitiesStore = () => {
             t.setSeconds(t.getSeconds() + payload.refresh_period_duration_seconds)
             setNextRefreshTime(payload.next_refresh_time || t)
             setSaleAbilities(payload.sale_abilities)
+            setAvailability(SaleAbilityAvailability.CanClaim)
             setAvailabilityError(undefined)
             if (isLoaded) return
             setIsLoaded(true)
