@@ -7,7 +7,7 @@ import { ProgressBar } from "../../../Common/ProgressBar"
 import { Game, GamePattern, GameState } from "./src/game"
 import { isWebGLAvailable } from "./src/utils"
 
-const STACKS_PER_BLOCK = 3
+const STACKS_PER_BLOCK = 100
 
 export const StackTower = React.memo(function StackTower({
     disableGame,
@@ -63,8 +63,8 @@ export const StackTower = React.memo(function StackTower({
                 sx={{
                     height: "100%",
                     transition: "all .1s",
-                    filter: disableGame ? "blur(2px)" : "unset",
-                    opacity: disableGame ? 0.3 : 1,
+                    filter: disableGame ? "blur(3px)" : "unset",
+                    opacity: disableGame ? 0.2 : 1,
                     pointerEvents: disableGame ? "none" : "all",
                 }}
             >
@@ -164,11 +164,11 @@ const TowerStackInner = ({
                     alignItems="center"
                     sx={{
                         position: "absolute",
+                        top: "23%",
                         left: 0,
                         right: 0,
-                        bottom: "15%",
                         transition: "all .2s ease",
-                        transform: gameState === GameState.Ready || gameState === GameState.Ended ? "translateY(0)" : "translateY(50px)",
+                        transform: gameState === GameState.Ready || gameState === GameState.Ended ? "translateY(0)" : "translateY(-50px)",
                         opacity: gameState === GameState.Ready || gameState === GameState.Ended ? 1 : 0,
                     }}
                 >
@@ -191,9 +191,9 @@ const TowerStackInner = ({
                     alignItems="center"
                     sx={{
                         position: "absolute",
+                        top: "28%",
                         left: 0,
                         right: 0,
-                        top: "28%",
                         transition: "all .2s ease",
                         transform: gameState === GameState.Ended ? "translateY(0)" : "translateY(-50px)",
                         opacity: gameState === GameState.Ended ? 1 : 0,

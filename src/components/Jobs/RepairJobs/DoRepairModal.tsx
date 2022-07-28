@@ -1,4 +1,4 @@
-import { Box, CircularProgress, IconButton, Modal, Stack, SxProps, Typography } from "@mui/material"
+import { Box, IconButton, Modal, Stack, SxProps, Typography } from "@mui/material"
 import { ReactNode, useCallback, useMemo, useState } from "react"
 import { SvgClose, SvgCubes, SvgSupToken } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
@@ -6,6 +6,7 @@ import { supFormatterNoFixed, timeSinceInWords } from "../../../helpers"
 import { useTimer } from "../../../hooks"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
+import { heightEffect } from "../../../theme/keyframes"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
 import { RepairAgent, RepairJobStatus } from "../../../types/jobs"
 import { ClipThing } from "../../Common/ClipThing"
@@ -24,22 +25,24 @@ export const DoRepairModal = ({ repairStatus, open, onClose }: { repairStatus: R
     // Submission
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [submitError, setSubmitError] = useState<string>()
+    const [submitSuccess, setSubmitSuccess] = useState(false)
 
     const remainDamagedBlocks = repairStatus ? repairStatus.blocks_required_repair - repairStatus.blocks_repaired : 0
     const primaryColor = theme.factionTheme.primary
-    const secondaryColor = theme.factionTheme.secondary
     const backgroundColor = theme.factionTheme.background
 
     const registerAgentRepair = useCallback(async () => {
         try {
             setError(undefined)
             setIsRegistering(true)
+            setSubmitSuccess(false)
             const resp = await send<RepairAgent>(GameServerKeys.RegisterRepairAgent, {
                 repair_offer_id: repairStatus.id,
             })
 
             if (!resp) return
             setRepairAgent(resp)
+            setSubmitSuccess(true)
         } catch (err) {
             const message = typeof err === "string" ? err : "Failed to register repair job."
             setError(message)
@@ -68,7 +71,7 @@ export const DoRepairModal = ({ repairStatus, open, onClose }: { repairStatus: R
             } finally {
                 setTimeout(() => {
                     setIsSubmitting(false)
-                }, 1500)
+                }, 2200)
             }
         },
         [send],
@@ -77,22 +80,53 @@ export const DoRepairModal = ({ repairStatus, open, onClose }: { repairStatus: R
     const popupContent = useMemo(() => {
         if (!repairAgent) {
             return (
-                <FancyButton
-                    loading={isRegistering}
-                    clipThingsProps={{
-                        clipSize: "7px",
-                        clipSlantSize: "0px",
-                        corners: { topLeft: true, topRight: true, bottomLeft: true, bottomRight: true },
-                        backgroundColor: primaryColor,
-                        opacity: 1,
-                        border: { borderColor: primaryColor, borderThickness: "2px" },
-                        sx: { position: "relative" },
-                    }}
-                    sx={{ px: "1.6rem", py: "1rem", color: secondaryColor }}
-                    onClick={registerAgentRepair}
-                >
-                    <Typography sx={{ color: secondaryColor, fontFamily: fonts.nostromoBlack }}>START REPAIRS</Typography>
-                </FancyButton>
+                <Stack spacing="2rem" alignItems="center">
+                    {submitSuccess && (
+                        <>
+                            <Box sx={{ textAlign: "center" }}>
+                                <Typography gutterBottom variant="h4" sx={{ fontFamily: fonts.nostromoHeavy }}>
+                                    CONGRATULATIONS!
+                                </Typography>
+                                <Typography variant="h5" sx={{ fontFamily: fonts.nostromoBlack }}>
+                                    YOU&apos;VE JUST EARNED
+                                </Typography>
+                            </Box>
+
+                            <ClipThing
+                                clipSize="10px"
+                                border={{
+                                    borderColor: primaryColor,
+                                    borderThickness: ".4rem",
+                                }}
+                                backgroundColor={backgroundColor}
+                            >
+                                <Stack direction="row" alignItems="center" sx={{ p: ".4rem 1rem" }}>
+                                    <SvgSupToken size="4.2rem" fill={colors.yellow} />
+                                    <Typography variant="h3" sx={{ fontWeight: "fontWeightBold" }}>
+                                        {supFormatterNoFixed(repairStatus.sups_worth_per_block || "0", 2)}
+                                    </Typography>
+                                </Stack>
+                            </ClipThing>
+                        </>
+                    )}
+
+                    <FancyButton
+                        loading={isRegistering}
+                        clipThingsProps={{
+                            clipSize: "7px",
+                            clipSlantSize: "0px",
+                            corners: { topLeft: true, topRight: true, bottomLeft: true, bottomRight: true },
+                            backgroundColor: colors.green,
+                            opacity: 1,
+                            border: { borderColor: colors.green, borderThickness: "2px" },
+                            sx: { position: "relative" },
+                        }}
+                        sx={{ px: "1.6rem", py: "1rem", color: "#FFFFFF" }}
+                        onClick={registerAgentRepair}
+                    >
+                        <Typography sx={{ fontFamily: fonts.nostromoBlack }}>{submitSuccess ? "REPAIR NEXT BLOCK" : "START REPAIRS"}</Typography>
+                    </FancyButton>
+                </Stack>
             )
         }
 
@@ -106,8 +140,11 @@ export const DoRepairModal = ({ repairStatus, open, onClose }: { repairStatus: R
 
         if (isSubmitting) {
             return (
-                <Stack spacing="1.2rem" alignItems="center">
-                    <CircularProgress size="2.3rem" sx={{ color: "#FFFFFF" }} />
+                <Stack spacing="1.8rem" alignItems="center">
+                    <Stack justifyContent="flex-end" sx={{ width: "3rem", height: "3rem", backgroundColor: colors.red, boxShadow: 3 }}>
+                        <Box sx={{ width: "100%", backgroundColor: colors.green, animation: `${heightEffect()} 4s ease-out infinite` }} />
+                    </Stack>
+
                     <Typography
                         variant="h5"
                         sx={{
@@ -121,7 +158,17 @@ export const DoRepairModal = ({ repairStatus, open, onClose }: { repairStatus: R
         }
 
         return null
-    }, [isRegistering, isSubmitting, primaryColor, registerAgentRepair, repairAgent, secondaryColor, submitError])
+    }, [
+        backgroundColor,
+        isRegistering,
+        isSubmitting,
+        primaryColor,
+        registerAgentRepair,
+        repairAgent,
+        repairStatus.sups_worth_per_block,
+        submitError,
+        submitSuccess,
+    ])
 
     return (
         <Modal open={open} onClose={repairAgent ? undefined : onClose} sx={{ zIndex: siteZIndex.Modal }}>
@@ -163,7 +210,7 @@ export const DoRepairModal = ({ repairStatus, open, onClose }: { repairStatus: R
                                     variant="h5"
                                     sx={{
                                         fontFamily: fonts.nostromoBlack,
-                                        span: { color: colors.orange, fontFamily: "inherit" },
+                                        span: { fontFamily: fonts.nostromoHeavy, color: colors.orange },
                                     }}
                                 >
                                     <span>{remainDamagedBlocks}</span> BLOCKS REMAINING
