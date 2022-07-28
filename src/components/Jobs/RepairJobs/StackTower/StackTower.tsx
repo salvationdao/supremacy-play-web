@@ -48,8 +48,7 @@ export const StackTower = React.memo(function StackTower({
     const primaryColor = theme.factionTheme.primary
 
     return (
-        <Stack
-            spacing="2rem"
+        <Box
             sx={{
                 height: "100%",
                 p: "1.8rem 3rem",
@@ -57,36 +56,43 @@ export const StackTower = React.memo(function StackTower({
                 backgroundColor: `${primaryColor}30`,
                 boxShadow: 2,
                 borderRadius: 1.3,
-                opacity: !disableGame ? 0.5 : 1,
-                pointerEvents: !disableGame ? "none" : "all",
             }}
         >
-            <Stack spacing=".7rem">
-                <Typography variant="h5" sx={{ fontWeight: "fontWeightBold", span: { fontFamily: "inherit", color: colors.neonBlue } }}>
-                    YOU NEED A TOTAL OF <span>{STACKS_PER_BLOCK}</span> STACKS TO REPAIR A SINGLE BLOCK!
-                </Typography>
-
-                <Stack direction="row" alignItems="center" spacing="1rem">
-                    <Stack sx={{ flex: 1 }}>
-                        <ProgressBar
-                            color={colors.green}
-                            backgroundColor={colors.red}
-                            orientation="horizontal"
-                            thickness="12px"
-                            percent={(100 * cumulativeScore) / STACKS_PER_BLOCK}
-                        />
-                    </Stack>
-
-                    <Typography variant="h6" sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>
-                        {cumulativeScore}/{STACKS_PER_BLOCK}
+            <Stack
+                spacing="2rem"
+                sx={{
+                    height: "100%",
+                    opacity: disableGame ? 0.3 : 1,
+                    pointerEvents: disableGame ? "none" : "all",
+                }}
+            >
+                <Stack spacing=".7rem">
+                    <Typography variant="h5" sx={{ fontWeight: "fontWeightBold", span: { fontFamily: "inherit", color: colors.neonBlue } }}>
+                        YOU NEED A TOTAL OF <span>{STACKS_PER_BLOCK}</span> STACKS TO REPAIR A SINGLE BLOCK!
                     </Typography>
-                </Stack>
-            </Stack>
 
-            <Box sx={{ flex: 1, border: "#FFFFFF20 1px solid" }}>
-                <TowerStackInner recentPattern={recentPattern} gameState={gameState} setGameState={setGameState} setRecentPattern={setRecentPattern} />
-            </Box>
-        </Stack>
+                    <Stack direction="row" alignItems="center" spacing="1rem">
+                        <Stack sx={{ flex: 1 }}>
+                            <ProgressBar
+                                color={colors.green}
+                                backgroundColor={colors.red}
+                                orientation="horizontal"
+                                thickness="12px"
+                                percent={(100 * cumulativeScore) / STACKS_PER_BLOCK}
+                            />
+                        </Stack>
+
+                        <Typography variant="h6" sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>
+                            {cumulativeScore}/{STACKS_PER_BLOCK}
+                        </Typography>
+                    </Stack>
+                </Stack>
+
+                <Box sx={{ flex: 1, border: "#FFFFFF20 1px solid" }}>
+                    <TowerStackInner recentPattern={recentPattern} gameState={gameState} setGameState={setGameState} setRecentPattern={setRecentPattern} />
+                </Box>
+            </Stack>
+        </Box>
     )
 })
 

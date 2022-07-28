@@ -172,33 +172,32 @@ export const DoRepairModal = ({ repairStatus, open, onClose }: { repairStatus: R
                                 </Typography>
                             )}
 
-                            {/* {!submitError && isSubmitting && ( */}
-                            <Stack
-                                spacing="1.2rem"
-                                alignItems="center"
-                                sx={{
-                                    position: "absolute",
-                                    left: "50%",
-                                    top: "50%",
-                                    transform: "translate(-50%, -50%)",
-                                    zIndex: 99,
-                                }}
-                            >
-                                <CircularProgress size="2.3rem" sx={{ color: "#FFFFFF" }} />
-                                <Typography
-                                    variant="h5"
+                            {!submitError && isSubmitting && (
+                                <Stack
+                                    spacing="1.2rem"
+                                    alignItems="center"
                                     sx={{
-                                        fontWeight: "fontWeightBold",
+                                        position: "absolute",
+                                        left: "50%",
+                                        top: "50%",
+                                        transform: "translate(-50%, -50%)",
+                                        zIndex: 99,
                                     }}
                                 >
-                                    SUBMITTING RESULTS...
-                                </Typography>
-                            </Stack>
-                            {/* )} */}
+                                    <CircularProgress size="2.3rem" sx={{ color: "#FFFFFF" }} />
+                                    <Typography
+                                        variant="h5"
+                                        sx={{
+                                            fontWeight: "fontWeightBold",
+                                        }}
+                                    >
+                                        SUBMITTING RESULTS...
+                                    </Typography>
+                                </Stack>
+                            )}
 
                             <StackTower
                                 disableGame={!repairAgent || !!submitError || isSubmitting}
-                                rewardPerBlock={repairStatus.sups_worth_per_block}
                                 repairAgent={repairAgent}
                                 completeAgentRepair={completeAgentRepair}
                             />
