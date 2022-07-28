@@ -103,6 +103,33 @@ export const DoRepairModal = ({
     )
 
     const popupContent = useMemo(() => {
+        if (remainDamagedBlocks > 0) {
+            return (
+                <Stack spacing="2rem" alignItems="center">
+                    <Typography variant="h4" sx={{ textAlign: "center", fontFamily: fonts.nostromoBlack }}>
+                        THIS ITEM IS FULLY REPAIRED!
+                    </Typography>
+
+                    <FancyButton
+                        loading={isRegistering}
+                        clipThingsProps={{
+                            clipSize: "7px",
+                            clipSlantSize: "0px",
+                            corners: { topLeft: true, topRight: true, bottomLeft: true, bottomRight: true },
+                            backgroundColor: colors.lightGrey,
+                            opacity: 1,
+                            border: { borderColor: colors.lightGrey, borderThickness: "2px" },
+                            sx: { position: "relative" },
+                        }}
+                        sx={{ px: "1.6rem", py: ".6rem", minWidth: "14rem", color: "#FFFFFF" }}
+                        onClick={onClose}
+                    >
+                        <Typography sx={{ fontFamily: fonts.nostromoBlack }}>EXIT</Typography>
+                    </FancyButton>
+                </Stack>
+            )
+        }
+
         if (!repairAgent) {
             return (
                 <Stack spacing="2rem" alignItems="center">
@@ -189,8 +216,10 @@ export const DoRepairModal = ({
         backgroundColor,
         isRegistering,
         isSubmitting,
+        onClose,
         primaryColor,
         registerAgentRepair,
+        remainDamagedBlocks,
         repairAgent,
         repairJobStatus?.sups_worth_per_block,
         submitError,
@@ -285,6 +314,7 @@ export const DoRepairModal = ({
                                     position: "absolute",
                                     left: "50%",
                                     top: "50%",
+                                    width: "90%",
                                     transform: "translate(-50%, -50%)",
                                     zIndex: 99,
                                 }}
