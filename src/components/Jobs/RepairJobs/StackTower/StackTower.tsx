@@ -28,16 +28,16 @@ export const StackTower = React.memo(function StackTower({
     const cumulativeScore = gamePatterns.filter((p) => !p.is_failed && p.score > 0).length
 
     useEffect(() => {
+        if (repairAgent) setGamePatterns([])
+    }, [repairAgent])
+
+    useEffect(() => {
         if (recentPattern) {
             setGamePatterns((prev) => {
                 return [...prev, recentPattern]
             })
         }
     }, [recentPattern])
-
-    useEffect(() => {
-        if (repairAgent) setGamePatterns([])
-    }, [repairAgent])
 
     // Send server game pattern
     useEffect(() => {
@@ -62,6 +62,7 @@ export const StackTower = React.memo(function StackTower({
                 spacing="2rem"
                 sx={{
                     height: "100%",
+                    filter: disableGame ? "blur(2px)" : "unset",
                     opacity: disableGame ? 0.3 : 1,
                     pointerEvents: disableGame ? "none" : "all",
                 }}

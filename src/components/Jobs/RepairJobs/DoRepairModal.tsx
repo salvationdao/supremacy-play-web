@@ -1,5 +1,5 @@
 import { Box, CircularProgress, IconButton, Modal, Stack, SxProps, Typography } from "@mui/material"
-import { ReactNode, useCallback, useState } from "react"
+import { ReactNode, useCallback, useMemo, useState } from "react"
 import { SvgClose, SvgCubes, SvgSupToken } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { supFormatterNoFixed, timeSinceInWords } from "../../../helpers"
@@ -73,6 +73,55 @@ export const DoRepairModal = ({ repairStatus, open, onClose }: { repairStatus: R
         },
         [send],
     )
+
+    const popupContent = useMemo(() => {
+        if (!repairAgent) {
+            return (
+                <FancyButton
+                    loading={isRegistering}
+                    clipThingsProps={{
+                        clipSize: "7px",
+                        clipSlantSize: "0px",
+                        corners: { topLeft: true, topRight: true, bottomLeft: true, bottomRight: true },
+                        backgroundColor: primaryColor,
+                        opacity: 1,
+                        border: { borderColor: primaryColor, borderThickness: "2px" },
+                        sx: { position: "relative" },
+                    }}
+                    sx={{ px: "1.6rem", py: "1rem", color: secondaryColor }}
+                    onClick={registerAgentRepair}
+                >
+                    <Typography sx={{ color: secondaryColor, fontFamily: fonts.nostromoBlack }}>START REPAIRS</Typography>
+                </FancyButton>
+            )
+        }
+
+        if (submitError) {
+            return (
+                <Typography variant="h5" sx={{ fontWeight: "fontWeightBold", color: colors.red }}>
+                    {submitError}
+                </Typography>
+            )
+        }
+
+        if (isSubmitting) {
+            return (
+                <Stack spacing="1.2rem" alignItems="center">
+                    <CircularProgress size="2.3rem" sx={{ color: "#FFFFFF" }} />
+                    <Typography
+                        variant="h5"
+                        sx={{
+                            fontWeight: "fontWeightBold",
+                        }}
+                    >
+                        SUBMITTING RESULTS...
+                    </Typography>
+                </Stack>
+            )
+        }
+
+        return null
+    }, [isRegistering, isSubmitting, primaryColor, registerAgentRepair, repairAgent, secondaryColor, submitError])
 
     return (
         <Modal open={open} onClose={repairAgent ? undefined : onClose} sx={{ zIndex: siteZIndex.Modal }}>
@@ -155,46 +204,17 @@ export const DoRepairModal = ({ repairStatus, open, onClose }: { repairStatus: R
 
                         {/* Game */}
                         <Box sx={{ flex: 1, position: "relative" }}>
-                            {submitError && (
-                                <Typography
-                                    variant="h5"
-                                    sx={{
-                                        position: "absolute",
-                                        left: "50%",
-                                        top: "50%",
-                                        transform: "translate(-50%, -50%)",
-                                        fontWeight: "fontWeightBold",
-                                        color: colors.red,
-                                        zIndex: 99,
-                                    }}
-                                >
-                                    {submitError}
-                                </Typography>
-                            )}
-
-                            {!submitError && isSubmitting && (
-                                <Stack
-                                    spacing="1.2rem"
-                                    alignItems="center"
-                                    sx={{
-                                        position: "absolute",
-                                        left: "50%",
-                                        top: "50%",
-                                        transform: "translate(-50%, -50%)",
-                                        zIndex: 99,
-                                    }}
-                                >
-                                    <CircularProgress size="2.3rem" sx={{ color: "#FFFFFF" }} />
-                                    <Typography
-                                        variant="h5"
-                                        sx={{
-                                            fontWeight: "fontWeightBold",
-                                        }}
-                                    >
-                                        SUBMITTING RESULTS...
-                                    </Typography>
-                                </Stack>
-                            )}
+                            <Box
+                                sx={{
+                                    position: "absolute",
+                                    left: "50%",
+                                    top: "50%",
+                                    transform: "translate(-50%, -50%)",
+                                    zIndex: 99,
+                                }}
+                            >
+                                {popupContent}
+                            </Box>
 
                             <StackTower
                                 disableGame={!repairAgent || !!submitError || isSubmitting}
@@ -204,7 +224,7 @@ export const DoRepairModal = ({ repairStatus, open, onClose }: { repairStatus: R
                         </Box>
 
                         {/* Button */}
-                        {repairAgent ? (
+                        {repairAgent && (
                             <FancyButton
                                 clipThingsProps={{
                                     clipSize: "7px",
@@ -216,26 +236,9 @@ export const DoRepairModal = ({ repairStatus, open, onClose }: { repairStatus: R
                                     sx: { position: "relative" },
                                 }}
                                 sx={{ px: "1.6rem", py: "1rem", color: "#FFFFFF" }}
-                                onClick={onClose}
+                                onClick={() => setRepairAgent(undefined)}
                             >
                                 <Typography sx={{ color: "#FFFFFF", fontFamily: fonts.nostromoBlack }}>ABANDON JOB</Typography>
-                            </FancyButton>
-                        ) : (
-                            <FancyButton
-                                loading={isRegistering}
-                                clipThingsProps={{
-                                    clipSize: "7px",
-                                    clipSlantSize: "0px",
-                                    corners: { topLeft: true, topRight: true, bottomLeft: true, bottomRight: true },
-                                    backgroundColor: primaryColor,
-                                    opacity: 1,
-                                    border: { borderColor: primaryColor, borderThickness: "2px" },
-                                    sx: { position: "relative" },
-                                }}
-                                sx={{ px: "1.6rem", py: "1rem", color: secondaryColor }}
-                                onClick={registerAgentRepair}
-                            >
-                                <Typography sx={{ color: secondaryColor, fontFamily: fonts.nostromoBlack }}>START REPAIRS</Typography>
                             </FancyButton>
                         )}
 
