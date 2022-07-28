@@ -1,4 +1,4 @@
-import { Box, Pagination, Stack, Typography } from "@mui/material"
+import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { ClipThing, FancyButton } from "../.."
 import { SafePNG } from "../../../assets"
@@ -15,7 +15,7 @@ import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { OpeningCrate } from "../../Hangar/MysteryCratesHangar/MysteryCratesHangar"
 import { CrateRewardsModal } from "../../Hangar/MysteryCratesHangar/OpenCrate/CrateRewardsModal"
 import { CrateRewardVideo } from "../../Hangar/MysteryCratesHangar/OpenCrate/CrateRewardVideo"
-import { MysteryCrateStoreItem, MysteryCrateStoreItemLoadingSkeleton } from "./MysteryCrateStoreItem/MysteryCrateStoreItem"
+import { MysteryCrateStoreItem } from "./MysteryCrateStoreItem/MysteryCrateStoreItem"
 
 export const MysteryCratesStore = () => {
     const { newSnackbarMessage } = useSnackbar()
@@ -94,10 +94,10 @@ export const MysteryCratesStore = () => {
 
         if (!crates || isLoading) {
             return (
-                <Stack direction="row" flexWrap="wrap" sx={{ height: 0 }}>
-                    {new Array(10).fill(0).map((_, index) => (
-                        <MysteryCrateStoreItemLoadingSkeleton key={index} />
-                    ))}
+                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                    <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
+                        <CircularProgress size="3rem" sx={{ color: theme.factionTheme.primary }} />
+                    </Stack>
                 </Stack>
             )
         }
@@ -194,7 +194,7 @@ export const MysteryCratesStore = () => {
                 </Stack>
             </Stack>
         )
-    }, [crates, enlargedView, isLoading, loadError])
+    }, [crates, enlargedView, isLoading, loadError, theme.factionTheme.primary])
 
     return (
         <>
