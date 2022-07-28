@@ -68,7 +68,7 @@ export const HireContractorsCard = ({ mechDetails, remainDamagedBlocks }: { mech
             {/* Duration */}
             <Stack spacing=".5rem">
                 <Typography variant="body2" sx={{ color: colors.blue2, fontFamily: fonts.nostromoBlack }}>
-                    DURATION:
+                    DEADLINE:
                 </Typography>
                 <Select
                     sx={{

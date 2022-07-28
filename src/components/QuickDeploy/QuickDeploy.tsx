@@ -29,6 +29,7 @@ interface GetMechsRequest {
     page: number
     page_size: number
     include_market_listed: boolean
+    exclude_damaged_mech: boolean
 }
 
 interface GetAssetsResponse {
@@ -85,6 +86,7 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
                 page,
                 page_size: pageSize,
                 include_market_listed: false,
+                exclude_damaged_mech: true,
             })
 
             if (!resp) return
