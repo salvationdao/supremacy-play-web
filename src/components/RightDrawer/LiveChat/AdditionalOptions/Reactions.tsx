@@ -4,6 +4,7 @@ import { useState } from "react"
 import { TextMessageData } from "../../../../types"
 import { GameServerKeys } from "../../../../keys"
 import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
+import { useAuth } from "../../../../containers"
 
 interface ReactionsProps {
     fontSize: string
@@ -13,8 +14,8 @@ interface ReactionsProps {
 
 interface ReactMessageSendProps {
     chat_history_id: string
-    likes: number
-    dislikes: number
+    likes: string[]
+    dislikes: string[]
 }
 
 type ReactionState = "none" | "like" | "dislike"
@@ -42,8 +43,9 @@ const styles = {
 }
 export const Reactions = ({ fontSize, message, hoverOnly = false }: ReactionsProps) => {
     const [reaction, setReaction] = useState<ReactionState>("none")
-    const { send } = useGameServerCommandsUser("/user_commander")
 
+    const { send } = useGameServerCommandsUser("/user_commander")
+    const { user } = useAuth()
     const handleReactionSend = async (reactMessageSend: ReactMessageSendProps) => {
         try {
             const resp = await send<boolean, ReactMessageSendProps>(GameServerKeys.ReactToMessage, reactMessageSend)
@@ -59,22 +61,22 @@ export const Reactions = ({ fontSize, message, hoverOnly = false }: ReactionsPro
 
         const reactMessage: ReactMessageSendProps = {
             chat_history_id: message.id,
-            likes: message.metadata ? message.metadata.likes.likes : 0,
-            dislikes: message.metadata ? message.metadata.likes.dislikes : 0,
+            likes: message.metadata ? message.metadata.likes.likes : ([] as string[]),
+            dislikes: message.metadata ? message.metadata.likes.dislikes : ([] as string[]),
         }
         switch (reaction) {
             case "dislike":
-                reactMessage.likes = reactMessage.likes + 1
-                reactMessage.dislikes = reactMessage.dislikes - 1
+                reactMessage.dislikes = reactMessage.dislikes.filter((x) => x !== user.id)
+                reactMessage.likes = [...reactMessage.likes, user.id]
                 setReaction("like")
                 break
             case "like":
-                reactMessage.likes = reactMessage.likes - 1
+                reactMessage.likes = reactMessage.likes.filter((x) => x !== user.id)
                 setReaction("none")
                 break
             default:
                 //case "none":
-                reactMessage.likes = reactMessage.likes + 1
+                reactMessage.likes = [...reactMessage.likes, user.id]
                 setReaction("like")
                 break
         }
@@ -89,23 +91,23 @@ export const Reactions = ({ fontSize, message, hoverOnly = false }: ReactionsPro
 
         const reactMessage: ReactMessageSendProps = {
             chat_history_id: message.id,
-            likes: message.metadata ? message.metadata.likes.likes : 0,
-            dislikes: message.metadata ? message.metadata.likes.dislikes : 0,
+            likes: message.metadata ? message.metadata.likes.likes : ([] as string[]),
+            dislikes: message.metadata ? message.metadata.likes.dislikes : ([] as string[]),
         }
 
         switch (reaction) {
             case "dislike":
-                reactMessage.dislikes = reactMessage.dislikes - 1
+                reactMessage.dislikes = reactMessage.dislikes.filter((x) => x !== user.id)
                 setReaction("none")
                 break
             case "like":
-                reactMessage.dislikes = reactMessage.dislikes + 1
-                reactMessage.likes = reactMessage.likes - 1
+                reactMessage.likes = reactMessage.likes.filter((x) => x !== user.id)
+                reactMessage.dislikes = [...reactMessage.dislikes, user.id]
                 setReaction("dislike")
                 break
             default:
                 //case "none":
-                reactMessage.dislikes = reactMessage.dislikes + 1
+                reactMessage.dislikes = [...reactMessage.dislikes, user.id]
                 setReaction("dislike")
                 break
         }

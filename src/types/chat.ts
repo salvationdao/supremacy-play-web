@@ -86,8 +86,8 @@ export interface ChatMessageType {
 
 export interface TextMessageMetadata {
     likes: {
-        likes: number
-        dislikes: number
+        likes: string[]
+        dislikes: string[]
         net: number
     }
     tagged_users_read: TaggedUsersRead
