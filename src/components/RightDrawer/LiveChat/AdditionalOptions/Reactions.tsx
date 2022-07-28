@@ -1,12 +1,22 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { SvgPriceDownArrow, SvgPriceUpArrow } from "../../../../assets"
 import { useState } from "react"
+import { TextMessageData } from "../../../../types"
+import { GameServerKeys } from "../../../../keys"
+import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
 
 interface ReactionsProps {
     fontSize: string
-    //likes: Likes
+    message: TextMessageData
     hoverOnly?: boolean
 }
+
+interface ReactMessageSendProps {
+    chat_history_id: string
+    likes: number
+    dislikes: number
+}
+
 type ReactionState = "none" | "like" | "dislike"
 
 const hoverStyles = {
@@ -30,53 +40,79 @@ const styles = {
     },
     m: "-.3rem",
 }
-export const Reactions = ({ fontSize, hoverOnly = false }: ReactionsProps) => {
+export const Reactions = ({ fontSize, message, hoverOnly = false }: ReactionsProps) => {
     const [reaction, setReaction] = useState<ReactionState>("none")
+    const { send } = useGameServerCommandsUser("/user_commander")
+
+    const handleReactionSend = async (reactMessageSend: ReactMessageSendProps) => {
+        try {
+            const resp = await send<boolean, ReactMessageSendProps>(GameServerKeys.ReactToMessage, reactMessageSend)
+            if (!resp) return
+            console.log(resp)
+        } catch (e) {
+            console.error(e)
+        }
+    }
 
     const handleLike = () => {
-        let amount: number
+        if (!message || !message.id) return
 
+        const reactMessage: ReactMessageSendProps = {
+            chat_history_id: message.id,
+            likes: message.metadata ? message.metadata.likes.likes : 0,
+            dislikes: message.metadata ? message.metadata.likes.dislikes : 0,
+        }
         switch (reaction) {
             case "dislike":
-                amount = 2
+                reactMessage.likes = reactMessage.likes + 1
+                reactMessage.dislikes = reactMessage.dislikes - 1
                 setReaction("like")
                 break
             case "like":
-                amount = -1
+                reactMessage.likes = reactMessage.likes - 1
                 setReaction("none")
                 break
             default:
                 //case "none":
-                amount = 1
+                reactMessage.likes = reactMessage.likes + 1
                 setReaction("like")
                 break
         }
 
         //update cached messages
         //send to backend to alter net likes
+        handleReactionSend(reactMessage)
     }
 
     const handleDislike = () => {
-        let amount: number
+        if (!message || !message.id) return
+
+        const reactMessage: ReactMessageSendProps = {
+            chat_history_id: message.id,
+            likes: message.metadata ? message.metadata.likes.likes : 0,
+            dislikes: message.metadata ? message.metadata.likes.dislikes : 0,
+        }
 
         switch (reaction) {
             case "dislike":
-                amount = 1
+                reactMessage.dislikes = reactMessage.dislikes - 1
                 setReaction("none")
                 break
             case "like":
-                amount = -2
+                reactMessage.dislikes = reactMessage.dislikes + 1
+                reactMessage.likes = reactMessage.likes - 1
                 setReaction("dislike")
                 break
             default:
                 //case "none":
-                amount = -1
+                reactMessage.dislikes = reactMessage.dislikes + 1
                 setReaction("dislike")
                 break
         }
 
         //update cached messages
         //send to backend to alter net likes
+        handleReactionSend(reactMessage)
     }
 
     //only display if net !== 0 or is hovered

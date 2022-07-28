@@ -392,8 +392,8 @@ export const TextMessage = ({
 
                         <Box sx={{ zIndex: 1 }}>{chatMessage}</Box>
 
-                        <Reactions fontSize={"1"} />
-                        {isHovered && <Reactions fontSize={"1"} hoverOnly={true} />}
+                        <Reactions fontSize={"1"} message={data} />
+                        {isHovered && <Reactions fontSize={"1"} hoverOnly={true} message={data} />}
                     </Stack>
                 </Box>
             </Box>
