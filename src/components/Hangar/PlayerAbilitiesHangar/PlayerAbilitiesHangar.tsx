@@ -52,7 +52,7 @@ export const PlayerAbilitiesHangar = () => {
     useGameServerSubscriptionUser<PlayerAbility[]>(
         {
             URI: "/player_abilities",
-            key: GameServerKeys.PlayerAbilitiesList,
+            key: GameServerKeys.SubPlayerAbilitiesList,
         },
         (payload) => {
             if (!payload) return
