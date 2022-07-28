@@ -257,6 +257,7 @@ export const PlayerAbilityStoreItem = ({
                                             key={price}
                                             component="span"
                                             sx={{
+                                                font: "inherit",
                                                 animation: `${scaleUpKeyframes} .2s ease-out`,
                                             }}
                                         >
