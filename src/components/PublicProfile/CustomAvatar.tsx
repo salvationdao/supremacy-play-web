@@ -29,11 +29,6 @@ export const CustomAvatar = ({ open, setOpen, primaryColor, backgroundColor, sub
     const [imageSize, setImageSize] = useState(600)
 
     // const below650 = useMediaQuery("(max-width:650px)")
-    // const below750 = useMediaQuery("(max-width:750px)")
-    // const below980 = useMediaQuery("(max-width:980px)")
-    // const below1550 = useMediaQuery("(max-width:1550px)")
-    // const below1750 = useMediaQuery("(max-width:1750px)")
-
     const below2500 = useMediaQuery("(max-width:2500px)")
     const below2200 = useMediaQuery("(max-width:2200px)")
 
