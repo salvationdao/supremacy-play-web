@@ -45,7 +45,7 @@ export const DoRepairModal = ({ repairStatus, open, onClose }: { repairStatus: R
     }, [repairStatus.id, send])
 
     return (
-        <Modal open={open} onClose={onClose} sx={{ zIndex: siteZIndex.Modal }}>
+        <Modal open={open} onClose={repairAgent ? undefined : onClose} sx={{ zIndex: siteZIndex.Modal }}>
             <Box
                 sx={{
                     position: "absolute",
@@ -53,9 +53,9 @@ export const DoRepairModal = ({ repairStatus, open, onClose }: { repairStatus: R
                     left: "50%",
                     transform: "translate(-50%, -50%)",
                     width: "80vw",
-                    height: "80vh",
+                    height: "90vh",
                     maxWidth: "80rem",
-                    maxHeight: "100rem",
+                    maxHeight: "120rem",
                     boxShadow: 6,
                     outline: "none",
                 }}
@@ -124,9 +124,9 @@ export const DoRepairModal = ({ repairStatus, open, onClose }: { repairStatus: R
                         </Stack>
 
                         {/* Game */}
-                        <Stack sx={{ flex: 1 }}>
-                            <StackTower />
-                        </Stack>
+                        <Box sx={{ flex: 1 }}>
+                            <StackTower repairAgent={repairAgent} />
+                        </Box>
 
                         {/* Button */}
                         {repairAgent ? (

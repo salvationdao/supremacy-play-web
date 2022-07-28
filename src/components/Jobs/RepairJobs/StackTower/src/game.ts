@@ -1,6 +1,13 @@
 import { FallingBlock, NormalBlock } from "./block"
 import { Stage } from "./stage"
 
+export interface GamePattern {
+    score: number
+    stack_at: Date
+    dimension: { width: number; height: number; depth: number }
+    is_failed: boolean
+}
+
 export enum GameState {
     Loading = "LOADING",
     Ready = "READY",
@@ -10,21 +17,25 @@ export enum GameState {
 }
 
 export class Game {
+    container: HTMLElement | null
     stage: Stage
     state: GameState
     score: number
     blocks: NormalBlock[]
     fallingBlocks: FallingBlock[]
     setGameState: React.Dispatch<React.SetStateAction<GameState>>
-    setScore: React.Dispatch<React.SetStateAction<number>>
+    setRecentPattern: React.Dispatch<React.SetStateAction<GamePattern | undefined>>
 
     constructor(
         backgroundColor: string,
         _setGameState: React.Dispatch<React.SetStateAction<GameState>>,
-        _setScore: React.Dispatch<React.SetStateAction<number>>,
+        _setRecentPattern: React.Dispatch<React.SetStateAction<GamePattern | undefined>>,
     ) {
+        // container
+        this.container = document.getElementById("game")
+
         this.setGameState = _setGameState
-        this.setScore = _setScore
+        this.setRecentPattern = _setRecentPattern
 
         this.stage = new Stage(backgroundColor)
         this.blocks = []
@@ -35,18 +46,18 @@ export class Game {
         this.addBlock()
         this.tick()
 
-        document.addEventListener("keydown", (e) => {
+        this.container?.addEventListener("keydown", (e) => {
             if (e.keyCode === 32) {
                 // Space
                 this.handleEvent()
             }
         })
 
-        document.addEventListener("click", () => {
+        this.container?.addEventListener("click", () => {
             this.handleEvent()
         })
 
-        document.addEventListener("touchend", () => {
+        this.container?.addEventListener("touchend", () => {
             this.handleEvent()
         })
 
@@ -70,7 +81,7 @@ export class Game {
                 })
                 this.blocks = []
                 this.score = 0
-                this.setScore(0)
+                this.setRecentPattern(undefined)
                 this.addBlock()
                 this.setState(GameState.Ready)
                 break
@@ -90,10 +101,12 @@ export class Game {
             const { color } = lastBlock
             const newLength = lastBlock.dimension[dimensionAlongAxis as keyof typeof lastBlock.dimension] - Math.abs(distance)
 
+            // Game over
             if (newLength <= 0) {
                 this.stage.remove(lastBlock.mesh)
                 this.setState(GameState.Ended)
                 this.stage.setCamera(Math.max((this.blocks.length - 3) * 2, 0))
+                this.setRecentPattern({ score: this.score, is_failed: true, dimension: lastBlock.dimension, stack_at: new Date() })
                 return
             }
 
@@ -134,7 +147,14 @@ export class Game {
         }
 
         this.score = Math.max(this.blocks.length - 1, 0)
-        this.setScore(this.score)
+        if (lastBlock) {
+            this.setRecentPattern({
+                score: this.score,
+                is_failed: false,
+                dimension: lastBlock.dimension,
+                stack_at: new Date(),
+            })
+        }
 
         const newBlock = new NormalBlock(lastBlock)
         this.stage.add(newBlock.mesh)
