@@ -9,7 +9,7 @@ import { parseString } from "../helpers"
 import { useToggle } from "../hooks"
 import { useGameServerSubscription, useGameServerSubscriptionFaction, useGameServerSubscriptionUser } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
-import { BanProposalStruct, ChatMessageType, TextMessageData, User } from "../types"
+import { BanProposalStruct, ChatMessageType, Likes, TextMessageData, User } from "../types"
 
 export interface IncomingMessages {
     faction: string | null
@@ -211,6 +211,36 @@ export const ChatContainer = createContainer(() => {
         [globalChatMessages, setGlobalChatMessages, factionChatMessages, setFactionChatMessages, user, tabValue],
     )
 
+    const reactMessage = useCallback(
+        (messageID: string, likes: Likes) => {
+            const genericReact = (
+                msgs: ChatMessageType[],
+                setMsgs: (value: ((prevState: ChatMessageType[]) => ChatMessageType[]) | ChatMessageType[]) => void,
+            ) => {
+                const newMessages = [...msgs]
+                let index = -1
+                const msgToReact = newMessages.find((el, i) => {
+                    index = i
+                    return el.id === messageID
+                })
+                if (!msgToReact) return
+                const md = (msgToReact.data as TextMessageData).metadata
+                if (md) {
+                    md.likes = likes
+                    newMessages[index] = msgToReact
+
+                    setMsgs(newMessages)
+                }
+            }
+            if (tabValue === 0) {
+                genericReact(globalChatMessages, setGlobalChatMessages)
+            } else {
+                genericReact(factionChatMessages, setFactionChatMessages)
+            }
+        },
+        [globalChatMessages, setGlobalChatMessages, factionChatMessages, setFactionChatMessages, tabValue],
+    )
+
     const sendBrowserNotification = useCallback((title: string, body: string, timeOpen?: number) => {
         if (!("Notification" in window)) {
             return
@@ -363,6 +393,7 @@ export const ChatContainer = createContainer(() => {
         activePlayers,
         globalActivePlayers,
         readMessage,
+        reactMessage,
         sendBrowserNotification,
     }
 })

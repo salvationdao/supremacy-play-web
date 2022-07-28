@@ -1,10 +1,10 @@
-import { Box, Stack, Typography } from "@mui/material"
+import { Stack, Typography } from "@mui/material"
 import { SvgPriceDownArrow, SvgPriceUpArrow } from "../../../../assets"
-import { useState } from "react"
-import { TextMessageData } from "../../../../types"
+import { useEffect, useState } from "react"
+import { Likes, TextMessageData } from "../../../../types"
 import { GameServerKeys } from "../../../../keys"
 import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
-import { useAuth } from "../../../../containers"
+import { useAuth, useChat } from "../../../../containers"
 
 interface ReactionsProps {
     fontSize: string
@@ -46,6 +46,7 @@ export const Reactions = ({ fontSize, message, hoverOnly = false }: ReactionsPro
 
     const { send } = useGameServerCommandsUser("/user_commander")
     const { user } = useAuth()
+    const { reactMessage } = useChat()
     const handleReactionSend = async (reactMessageSend: ReactMessageSendProps) => {
         try {
             const resp = await send<boolean, ReactMessageSendProps>(GameServerKeys.ReactToMessage, reactMessageSend)
@@ -59,37 +60,44 @@ export const Reactions = ({ fontSize, message, hoverOnly = false }: ReactionsPro
     const handleLike = () => {
         if (!message || !message.id) return
 
-        const reactMessage: ReactMessageSendProps = {
+        const sendReactMessage: ReactMessageSendProps = {
             chat_history_id: message.id,
             likes: message.metadata ? message.metadata.likes.likes : ([] as string[]),
             dislikes: message.metadata ? message.metadata.likes.dislikes : ([] as string[]),
         }
         switch (reaction) {
             case "dislike":
-                reactMessage.dislikes = reactMessage.dislikes.filter((x) => x !== user.id)
-                reactMessage.likes = [...reactMessage.likes, user.id]
+                sendReactMessage.dislikes = sendReactMessage.dislikes.filter((x) => x !== user.id)
+                sendReactMessage.likes = [...sendReactMessage.likes, user.id]
                 setReaction("like")
                 break
             case "like":
-                reactMessage.likes = reactMessage.likes.filter((x) => x !== user.id)
+                sendReactMessage.likes = sendReactMessage.likes.filter((x) => x !== user.id)
                 setReaction("none")
                 break
             default:
                 //case "none":
-                reactMessage.likes = [...reactMessage.likes, user.id]
+                sendReactMessage.likes = [...sendReactMessage.likes, user.id]
                 setReaction("like")
                 break
         }
+        const updatedMetadata: Likes = {
+            likes: sendReactMessage.likes,
+            dislikes: sendReactMessage.dislikes,
+            net: sendReactMessage.likes.length - sendReactMessage.dislikes.length,
+        }
 
         //update cached messages
+        reactMessage(message.id, updatedMetadata)
+
         //send to backend to alter net likes
-        handleReactionSend(reactMessage)
+        handleReactionSend(sendReactMessage)
     }
 
     const handleDislike = () => {
         if (!message || !message.id) return
 
-        const reactMessage: ReactMessageSendProps = {
+        const sendReactMessage: ReactMessageSendProps = {
             chat_history_id: message.id,
             likes: message.metadata ? message.metadata.likes.likes : ([] as string[]),
             dislikes: message.metadata ? message.metadata.likes.dislikes : ([] as string[]),
@@ -97,31 +105,37 @@ export const Reactions = ({ fontSize, message, hoverOnly = false }: ReactionsPro
 
         switch (reaction) {
             case "dislike":
-                reactMessage.dislikes = reactMessage.dislikes.filter((x) => x !== user.id)
+                sendReactMessage.dislikes = sendReactMessage.dislikes.filter((x) => x !== user.id)
                 setReaction("none")
                 break
             case "like":
-                reactMessage.likes = reactMessage.likes.filter((x) => x !== user.id)
-                reactMessage.dislikes = [...reactMessage.dislikes, user.id]
+                sendReactMessage.likes = sendReactMessage.likes.filter((x) => x !== user.id)
+                sendReactMessage.dislikes = [...sendReactMessage.dislikes, user.id]
                 setReaction("dislike")
                 break
             default:
                 //case "none":
-                reactMessage.dislikes = [...reactMessage.dislikes, user.id]
+                sendReactMessage.dislikes = [...sendReactMessage.dislikes, user.id]
                 setReaction("dislike")
                 break
         }
+        const updatedMetadata: Likes = {
+            likes: sendReactMessage.likes,
+            dislikes: sendReactMessage.dislikes,
+            net: sendReactMessage.likes.length - sendReactMessage.dislikes.length,
+        }
 
         //update cached messages
+        reactMessage(message.id, updatedMetadata)
         //send to backend to alter net likes
-        handleReactionSend(reactMessage)
+        handleReactionSend(sendReactMessage)
     }
 
     //only display if net !== 0 or is hovered
     return (
         <Stack direction={"row"} spacing={"-.4rem"} sx={hoverOnly ? hoverStyles : styles}>
             <SvgPriceDownArrow size={"2.5rem"} onClick={() => handleDislike()} />
-            <Typography fontSize={"1.2rem"}>120</Typography>
+            <Typography fontSize={"1.2rem"}>{message.metadata ? message.metadata.likes.net : 0}</Typography>
             <SvgPriceUpArrow size={"2.5rem"} onClick={() => handleLike()} />
         </Stack>
     )
