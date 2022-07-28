@@ -314,9 +314,9 @@ export const ChatContainer = createContainer(() => {
     )
 
     //subscribe active global users
-    useGameServerSubscriptionUser<User[]>(
+    useGameServerSubscription<User[]>(
         {
-            URI: "",
+            URI: "/public/global_active_players",
             key: GameServerKeys.SubGlobalPlayerList,
         },
         (payload) => {
