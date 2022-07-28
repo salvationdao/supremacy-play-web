@@ -8,14 +8,24 @@ import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { heightEffect } from "../../../theme/keyframes"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
-import { RepairAgent, RepairJobStatus } from "../../../types/jobs"
+import { RepairAgent, RepairJobStatus, RepairStatus } from "../../../types/jobs"
 import { ClipThing } from "../../Common/ClipThing"
 import { FancyButton } from "../../Common/FancyButton"
 import { RepairBlocks } from "../../Hangar/WarMachinesHangar/Common/MechRepairBlocks"
 import { GamePattern } from "./StackTower/src/game"
 import { StackTower } from "./StackTower/StackTower"
 
-export const DoRepairModal = ({ repairStatus, open, onClose }: { repairStatus: RepairJobStatus; open: boolean; onClose: () => void }) => {
+export const DoRepairModal = ({
+    repairStatus,
+    repairJobStatus,
+    open,
+    onClose,
+}: {
+    repairStatus?: RepairStatus
+    repairJobStatus?: RepairJobStatus
+    open: boolean
+    onClose: () => void
+}) => {
     const theme = useTheme()
     const { send } = useGameServerCommandsUser("/user_commander")
     const [isRegistering, setIsRegistering] = useState(false)
@@ -27,7 +37,11 @@ export const DoRepairModal = ({ repairStatus, open, onClose }: { repairStatus: R
     const [submitError, setSubmitError] = useState<string>()
     const [submitSuccess, setSubmitSuccess] = useState(false)
 
-    const remainDamagedBlocks = repairStatus ? repairStatus.blocks_required_repair - repairStatus.blocks_repaired : 0
+    const remainDamagedBlocks = repairJobStatus
+        ? repairJobStatus.blocks_required_repair - repairJobStatus.blocks_repaired
+        : repairStatus
+        ? repairStatus.blocks_required_repair - repairStatus.blocks_repaired
+        : 0
     const primaryColor = theme.factionTheme.primary
     const backgroundColor = theme.factionTheme.background
 
@@ -39,13 +53,16 @@ export const DoRepairModal = ({ repairStatus, open, onClose }: { repairStatus: R
     }, [])
 
     const registerAgentRepair = useCallback(async () => {
+        if (!repairStatus?.id && !repairJobStatus?.id) return
+
         setError(undefined)
         setIsRegistering(true)
         setSubmitSuccess(false)
 
         try {
             const resp = await send<RepairAgent>(GameServerKeys.RegisterRepairAgent, {
-                repair_offer_id: repairStatus.id,
+                repair_offer_id: repairJobStatus?.id,
+                repair_case_id: repairStatus?.id,
             })
 
             if (!resp) return
@@ -58,7 +75,7 @@ export const DoRepairModal = ({ repairStatus, open, onClose }: { repairStatus: R
         } finally {
             setIsRegistering(false)
         }
-    }, [repairStatus.id, send])
+    }, [repairJobStatus?.id, repairStatus?.id, send])
 
     const completeAgentRepair = useCallback(
         async (repairAgentID: string, gamePatterns: GamePattern[]) => {
@@ -96,25 +113,27 @@ export const DoRepairModal = ({ repairStatus, open, onClose }: { repairStatus: R
                                     CONGRATULATIONS!
                                 </Typography>
                                 <Typography variant="h5" sx={{ fontFamily: fonts.nostromoBlack }}>
-                                    YOU&apos;VE JUST EARNED
+                                    {repairJobStatus?.sups_worth_per_block ? "YOU'VE JUST EARNED" : "YOU'VE JUST REPAIRED A BLOCK"}
                                 </Typography>
                             </Box>
 
-                            <ClipThing
-                                clipSize="10px"
-                                border={{
-                                    borderColor: primaryColor,
-                                    borderThickness: ".4rem",
-                                }}
-                                backgroundColor={backgroundColor}
-                            >
-                                <Stack direction="row" alignItems="center" sx={{ p: ".4rem 1rem" }}>
-                                    <SvgSupToken size="4.2rem" fill={colors.yellow} />
-                                    <Typography variant="h3" sx={{ fontWeight: "fontWeightBold" }}>
-                                        {supFormatterNoFixed(repairStatus.sups_worth_per_block || "0", 2)}
-                                    </Typography>
-                                </Stack>
-                            </ClipThing>
+                            {repairJobStatus?.sups_worth_per_block && (
+                                <ClipThing
+                                    clipSize="10px"
+                                    border={{
+                                        borderColor: primaryColor,
+                                        borderThickness: ".4rem",
+                                    }}
+                                    backgroundColor={backgroundColor}
+                                >
+                                    <Stack direction="row" alignItems="center" sx={{ p: ".4rem 1rem" }}>
+                                        <SvgSupToken size="4.2rem" fill={colors.yellow} />
+                                        <Typography variant="h3" sx={{ fontWeight: "fontWeightBold" }}>
+                                            {supFormatterNoFixed(repairJobStatus.sups_worth_per_block || "0", 2)}
+                                        </Typography>
+                                    </Stack>
+                                </ClipThing>
+                            )}
                         </>
                     )}
 
@@ -173,7 +192,7 @@ export const DoRepairModal = ({ repairStatus, open, onClose }: { repairStatus: R
         primaryColor,
         registerAgentRepair,
         repairAgent,
-        repairStatus.sups_worth_per_block,
+        repairJobStatus?.sups_worth_per_block,
         submitError,
         submitSuccess,
     ])
@@ -225,7 +244,7 @@ export const DoRepairModal = ({ repairStatus, open, onClose }: { repairStatus: R
                                 </Typography>
                                 <RepairBlocks
                                     size={12}
-                                    defaultBlocks={repairStatus.blocks_required_repair}
+                                    defaultBlocks={repairJobStatus?.blocks_required_repair || repairStatus?.blocks_required_repair}
                                     remainDamagedBlocks={remainDamagedBlocks}
                                     hideNumber
                                 />
@@ -233,29 +252,31 @@ export const DoRepairModal = ({ repairStatus, open, onClose }: { repairStatus: R
                         </Stack>
 
                         {/* Info cards */}
-                        <Stack direction="row" spacing="1.7rem" justifyContent="center">
-                            <InfoCard primaryColor={primaryColor} label="ACTIVE AGENTS">
-                                <Typography
-                                    variant="h4"
-                                    sx={{ fontWeight: "fontWeightBold", color: repairStatus.working_agent_count <= 3 ? colors.green : colors.orange }}
-                                >
-                                    {repairStatus.working_agent_count.toString()}
-                                </Typography>
-                            </InfoCard>
-
-                            <InfoCard primaryColor={primaryColor} label="REWARD PER BLOCK" sx={{ flex: 1.6 }}>
-                                <Stack direction="row" alignItems="center">
-                                    <SvgSupToken size="3rem" fill={colors.yellow} />
-                                    <Typography variant="h4" sx={{ fontWeight: "fontWeightBold" }}>
-                                        {supFormatterNoFixed(repairStatus.sups_worth_per_block || "0", 2)}
+                        {repairJobStatus && (
+                            <Stack direction="row" spacing="1.7rem" justifyContent="center">
+                                <InfoCard primaryColor={primaryColor} label="ACTIVE AGENTS">
+                                    <Typography
+                                        variant="h4"
+                                        sx={{ fontWeight: "fontWeightBold", color: repairJobStatus.working_agent_count <= 3 ? colors.green : colors.orange }}
+                                    >
+                                        {repairJobStatus.working_agent_count.toString()}
                                     </Typography>
-                                </Stack>
-                            </InfoCard>
+                                </InfoCard>
 
-                            <InfoCard primaryColor={primaryColor} label="TIME LEFT">
-                                <Countdown endTime={repairStatus.expires_at} />
-                            </InfoCard>
-                        </Stack>
+                                <InfoCard primaryColor={primaryColor} label="REWARD PER BLOCK" sx={{ flex: 1.6 }}>
+                                    <Stack direction="row" alignItems="center">
+                                        <SvgSupToken size="3rem" fill={colors.yellow} />
+                                        <Typography variant="h4" sx={{ fontWeight: "fontWeightBold" }}>
+                                            {supFormatterNoFixed(repairJobStatus.sups_worth_per_block || "0", 2)}
+                                        </Typography>
+                                    </Stack>
+                                </InfoCard>
+
+                                <InfoCard primaryColor={primaryColor} label="TIME LEFT">
+                                    <Countdown endTime={repairJobStatus.expires_at} />
+                                </InfoCard>
+                            </Stack>
+                        )}
 
                         {/* Game */}
                         <Box sx={{ flex: 1, position: "relative" }}>

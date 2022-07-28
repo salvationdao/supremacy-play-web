@@ -21,6 +21,7 @@ export interface RepairJobStatus extends RepairOffer {
 }
 
 export interface RepairStatus {
+    id: string
     blocks_required_repair: number
     blocks_repaired: number
 }
