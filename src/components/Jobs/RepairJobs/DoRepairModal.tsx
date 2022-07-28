@@ -103,7 +103,7 @@ export const DoRepairModal = ({
     )
 
     const popupContent = useMemo(() => {
-        if (remainDamagedBlocks > 0) {
+        if (remainDamagedBlocks <= 0) {
             return (
                 <Stack spacing="2rem" alignItems="center">
                     <Typography variant="h4" sx={{ textAlign: "center", fontFamily: fonts.nostromoBlack }}>
