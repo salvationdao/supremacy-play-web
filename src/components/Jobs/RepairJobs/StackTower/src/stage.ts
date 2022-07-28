@@ -34,7 +34,7 @@ export class Stage {
         this.camera.position.fromArray(cameraConfig.position)
         this.camera.lookAt(new THREE.Vector3().fromArray(cameraConfig.lookAt))
 
-        //light
+        // light
         lightsConfig.forEach((lightConfig) => {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const LightClass = THREE[lightConfig.type as keyof typeof THREE] as any

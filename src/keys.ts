@@ -174,6 +174,7 @@ export enum GameServerKeys {
     GetMechRepairJob = "MECH:ACTIVE:REPAIR:OFFER",
     RegisterMechRepair = "MECH:REPAIR:OFFER:ISSUE",
     CancelMechRepair = "MECH:REPAIR:OFFER:CLOSE",
+    RegisterRepairAgent = "REPAIR:AGENT:REGISTER",
 }
 
 export enum PassportServerKeys {

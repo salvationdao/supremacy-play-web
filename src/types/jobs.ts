@@ -13,6 +13,13 @@ export interface RepairOffer {
     job_owner: User
 }
 
+export interface RepairJobStatus extends RepairOffer {
+    blocks_required_repair: number
+    blocks_repaired: number
+    sups_worth_per_block: string
+    working_agent_count: number
+}
+
 export interface RepairStatus {
     blocks_required_repair: number
     blocks_repaired: number
@@ -22,4 +29,14 @@ export enum FinishedReason {
     Abandoned = "ABANDONED",
     Expired = "Expired",
     Succeeded = "SUCCEEDED",
+}
+
+export interface RepairAgent {
+    id: string
+    repair_case_id: string
+    repair_offer_id: string
+    player_id: string
+    started_at: Date
+    finished_at?: Date
+    finished_reason?: string
 }

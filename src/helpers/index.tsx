@@ -405,20 +405,21 @@ export const timeSince = (
     fromDate: Date,
     toDate: Date,
 ): {
-    total: number
+    totalSeconds: number
     days: number
     hours: number
     minutes: number
     seconds: number
 } => {
     const total = toDate.getTime() - fromDate.getTime()
+    const totalSeconds = total / 1000
     const seconds = Math.floor((total / 1000) % 60)
     const minutes = Math.floor((total / 1000 / 60) % 60)
     const hours = Math.floor((total / (1000 * 60 * 60)) % 24)
     const days = Math.floor(total / (1000 * 60 * 60 * 24))
 
     return {
-        total,
+        totalSeconds,
         days,
         hours,
         minutes,

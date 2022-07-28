@@ -9,10 +9,12 @@ export const RepairBlocks = ({
     defaultBlocks,
     remainDamagedBlocks,
     hideNumber,
+    size = 8,
 }: {
     defaultBlocks?: number
     remainDamagedBlocks: number
     hideNumber?: boolean
+    size?: number
 }) => {
     return (
         <Stack direction="row" alignItems="center" spacing=".5rem" sx={{ width: "100%" }}>
@@ -21,10 +23,10 @@ export const RepairBlocks = ({
                 flexWrap="wrap"
                 sx={{
                     "& > div": {
-                        p: "1.5px",
+                        p: `${size * 0.1875}px`,
                         ".single-block": {
-                            height: "8px",
-                            width: "8px",
+                            height: `${size}px`,
+                            width: `${size}px`,
                             backgroundColor: defaultBlocks ? colors.red : "#FFFFFF35",
                         },
                     },
