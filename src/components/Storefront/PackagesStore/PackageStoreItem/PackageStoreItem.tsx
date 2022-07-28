@@ -1,9 +1,11 @@
 import { Box, Stack, Skeleton, Typography } from "@mui/material"
 import { SafePNG } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
+import { generatePriceText } from "../../../../helpers"
 import { fonts } from "../../../../theme/theme"
 import { StorefrontPackage } from "../../../../types"
 import { ClipThing } from "../../../Common/ClipThing"
+import { FancyButton } from "../../../Common/FancyButton"
 import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
 
 interface PackageStoreItemProps {
@@ -58,7 +60,9 @@ export const PackageStoreItem = ({ enlargedView, item }: PackageStoreItemProps) 
                                 }}
                             >
                                 <Stack direction="row" alignItems="center" spacing=".1rem">
-                                    <Typography sx={{ fontSize: enlargedView ? "2.2rem" : "1.9rem", fontFamily: fonts.nostromoBlack }}>$TBA</Typography>
+                                    <Typography sx={{ fontSize: enlargedView ? "2.2rem" : "1.9rem", fontFamily: fonts.nostromoBlack }}>
+                                        {generatePriceText(item.price_dollars, item.price_cents)}
+                                    </Typography>
                                 </Stack>
                             </Stack>
                         </Box>
@@ -75,6 +79,37 @@ export const PackageStoreItem = ({ enlargedView, item }: PackageStoreItemProps) 
                             <Typography sx={{ fontSize: enlargedView ? "2.1rem" : "1.6rem", textAlign: enlargedView ? "center" : "start" }}>
                                 {item.description}
                             </Typography>
+
+                            <Stack
+                                direction="row"
+                                spacing="2rem"
+                                alignItems="stretch"
+                                justifyContent="center"
+                                sx={{
+                                    mt: "auto !important",
+                                    mx: "auto",
+                                    width: "100%",
+                                    pt: "1.8rem",
+                                }}
+                            >
+                                <FancyButton
+                                    clipThingsProps={{
+                                        clipSize: "5px",
+                                        backgroundColor: primaryColor,
+                                        opacity: 1,
+                                        border: { isFancy: true, borderColor: primaryColor, borderThickness: "1.5px" },
+                                        sx: { position: "relative", width: enlargedView ? "50%" : "100%", height: "100%" },
+                                    }}
+                                    sx={{ px: "1.6rem", py: enlargedView ? "1.1rem" : ".6rem" }}
+                                >
+                                    <Typography
+                                        variant={enlargedView ? "body1" : "caption"}
+                                        sx={{ fontFamily: fonts.nostromoBlack, color: theme.factionTheme.secondary }}
+                                    >
+                                        Buy Now
+                                    </Typography>
+                                </FancyButton>
+                            </Stack>
                         </Stack>
                     </Stack>
                 </ClipThing>
