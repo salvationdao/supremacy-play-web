@@ -77,13 +77,26 @@ export interface BanOption {
 }
 
 export interface ChatMessageType {
+    id?: string
     type: "TEXT" | "PUNISH_VOTE" | "SYSTEM_BAN" | "NEW_BATTLE"
     data: TextMessageData | PunishMessageData | SystemBanMessageData | NewBattleMessageData
     sent_at: Date
     locallySent?: boolean
 }
 
+export interface TextMessageMetadata {
+    likes: {
+        likes: number
+        dislikes: number
+        net: number
+    }
+    tagged_users_read: TaggedUsersRead
+}
+
+export type TaggedUsersRead = { [gid: number]: boolean }
+
 export interface TextMessageData {
+    id?: string
     from_user: User
     message_color?: string
     avatar_id?: string
@@ -92,6 +105,8 @@ export interface TextMessageData {
     total_multiplier?: number
     is_citizen?: boolean
     from_user_stat?: UserStat
+    tagged_users_gids?: number[]
+    metadata?: TextMessageMetadata
 }
 
 export interface PunishMessageData {
