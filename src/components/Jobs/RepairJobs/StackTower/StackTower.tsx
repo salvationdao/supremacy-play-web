@@ -23,7 +23,7 @@ export const StackTower = React.memo(function StackTower({ repairAgent }: { repa
 
     const [gamePatterns, setGamePatterns] = useState<GamePattern[]>([])
     const cumulativeScore = gamePatterns.filter((p) => !p.is_failed && p.score > 0).length
-    const disableGame = isSubmitting || submitError
+    const disableGame = isSubmitting || submitError || !repairAgent
 
     useEffect(() => {
         if (recentPattern) {

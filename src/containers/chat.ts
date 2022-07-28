@@ -7,7 +7,7 @@ import { GlobalAnnouncementType } from "../components/RightDrawer/LiveChat/Globa
 import { MESSAGES_BUFFER_SIZE } from "../constants"
 import { parseString } from "../helpers"
 import { useToggle } from "../hooks"
-import { useGameServerSubscription, useGameServerSubscriptionFaction, useGameServerSubscriptionUser } from "../hooks/useGameServer"
+import { useGameServerSubscription, useGameServerSubscriptionFaction } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
 import { BanProposalStruct, ChatMessageType, TextMessageData, User } from "../types"
 

@@ -131,7 +131,6 @@ export const DoRepairModal = ({ repairStatus, open, onClose }: { repairStatus: R
                         {/* Button */}
                         {repairAgent ? (
                             <FancyButton
-                                loading={isRegistering}
                                 clipThingsProps={{
                                     clipSize: "7px",
                                     clipSlantSize: "0px",
@@ -142,7 +141,7 @@ export const DoRepairModal = ({ repairStatus, open, onClose }: { repairStatus: R
                                     sx: { position: "relative" },
                                 }}
                                 sx={{ px: "1.6rem", py: "1rem", color: colors.red }}
-                                onClick={registerAgentRepair}
+                                onClick={onClose}
                             >
                                 <Typography sx={{ color: colors.red, fontFamily: fonts.nostromoBlack }}>ABANDON JOB</Typography>
                             </FancyButton>
