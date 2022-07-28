@@ -80,7 +80,7 @@ export const LeaveModal = ({
                         variant="body2"
                         sx={{
                             mt: ".3rem",
-                            color: "red",
+                            color: colors.red,
                         }}
                     >
                         {leaveQueueError}

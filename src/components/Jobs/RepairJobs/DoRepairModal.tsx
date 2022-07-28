@@ -103,7 +103,7 @@ export const DoRepairModal = ({ repairStatus, open, onClose }: { repairStatus: R
                             <InfoCard primaryColor={primaryColor} label="ACTIVE AGENTS">
                                 <Typography
                                     variant="h4"
-                                    sx={{ fontWeight: "fontWeightBold", color: !repairStatus.working_agent_count ? colors.green : colors.orange }}
+                                    sx={{ fontWeight: "fontWeightBold", color: repairStatus.working_agent_count <= 3 ? colors.green : colors.orange }}
                                 >
                                     {repairStatus.working_agent_count.toString()}
                                 </Typography>
@@ -166,7 +166,7 @@ export const DoRepairModal = ({ repairStatus, open, onClose }: { repairStatus: R
                         )}
 
                         {/* Error message */}
-                        {error && <Typography sx={{ color: "red" }}>{error}</Typography>}
+                        {error && <Typography sx={{ color: colors.red }}>{error}</Typography>}
                     </Stack>
 
                     {!repairAgent && (

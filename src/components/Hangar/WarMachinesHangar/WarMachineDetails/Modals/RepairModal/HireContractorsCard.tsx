@@ -191,7 +191,7 @@ export const HireContractorsCard = ({ mechDetails, remainDamagedBlocks }: { mech
             </FancyButton>
 
             {submitError && (
-                <Typography variant="body2" sx={{ color: "red" }}>
+                <Typography variant="body2" sx={{ color: colors.red }}>
                     {submitError}
                 </Typography>
             )}

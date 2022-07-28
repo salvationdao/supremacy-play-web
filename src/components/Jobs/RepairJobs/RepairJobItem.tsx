@@ -95,7 +95,7 @@ export const RepairJobItem = ({ repairJob, isGridView }: { repairJob: RepairOffe
                             isGridView={isGridView}
                             title="ACTIVE AGENTS"
                             text={repairStatus?.working_agent_count.toString()}
-                            textColor={!repairStatus?.working_agent_count ? colors.green : colors.orange}
+                            textColor={repairStatus && repairStatus.working_agent_count <= 3 ? colors.green : colors.orange}
                         />
 
                         <General isGridView={isGridView} title="REWARD">

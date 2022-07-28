@@ -82,7 +82,7 @@ export const ExistingRepairJobCard = ({ repairJob }: { repairJob: RepairOffer })
             </Typography>
 
             {submitError && (
-                <Typography variant="body2" sx={{ color: "red" }}>
+                <Typography variant="body2" sx={{ color: colors.red }}>
                     {submitError}
                 </Typography>
             )}

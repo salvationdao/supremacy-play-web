@@ -1,4 +1,4 @@
-import { Box, Stack, Typography } from "@mui/material"
+import { Box, CircularProgress, Stack, Typography } from "@mui/material"
 import React, { useEffect, useMemo, useState } from "react"
 import { useTheme } from "../../../../containers/theme"
 import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
@@ -9,7 +9,7 @@ import { ProgressBar } from "../../../Common/ProgressBar"
 import { Game, GamePattern, GameState } from "./src/game"
 import { isWebGLAvailable } from "./src/utils"
 
-const STACKS_PER_BLOCK = 100
+const STACKS_PER_BLOCK = 3
 
 export const StackTower = React.memo(function StackTower({ repairAgent }: { repairAgent?: RepairAgent }) {
     const theme = useTheme()
@@ -23,20 +23,27 @@ export const StackTower = React.memo(function StackTower({ repairAgent }: { repa
 
     const [gamePatterns, setGamePatterns] = useState<GamePattern[]>([])
     const cumulativeScore = gamePatterns.filter((p) => !p.is_failed && p.score > 0).length
+    const disableGame = isSubmitting || submitError
 
     useEffect(() => {
         if (recentPattern) {
-            console.log(recentPattern)
-            setGamePatterns((prev) => [...prev, recentPattern])
+            setGamePatterns((prev) => {
+                return [...prev, recentPattern]
+            })
+        }
+
+        if (recentPattern?.score && !recentPattern?.is_failed) {
+            setIsSubmitting(false)
+            setSubmitError(undefined)
         }
     }, [recentPattern])
 
     // Send server game pattern
     useEffect(() => {
         ;(async () => {
-            try {
-                if (cumulativeScore !== STACKS_PER_BLOCK || !repairAgent?.id) return
+            if (cumulativeScore !== STACKS_PER_BLOCK || !repairAgent?.id) return
 
+            try {
                 setSubmitError(undefined)
                 setIsSubmitting(true)
                 const resp = await send(GameServerKeys.CompleteRepairAgent, {
@@ -47,11 +54,11 @@ export const StackTower = React.memo(function StackTower({ repairAgent }: { repa
                 if (!resp) return
                 setGamePatterns([])
             } catch (err) {
-                const message = typeof err === "string" ? err : "Failed to get key card listings."
+                const message = typeof err === "string" ? err : "Failed to submit results."
                 setSubmitError(message)
                 console.error(err)
             } finally {
-                setIsSubmitting(true)
+                setIsSubmitting(false)
             }
         })()
     }, [cumulativeScore, gamePatterns, repairAgent?.id, send])
@@ -70,10 +77,27 @@ export const StackTower = React.memo(function StackTower({ repairAgent }: { repa
                 borderRadius: 1.3,
             }}
         >
-            <Stack>
-                <Typography gutterBottom variant="h5" sx={{ fontWeight: "fontWeightBold", span: { fontFamily: "inherit", color: colors.neonBlue } }}>
-                    YOU NEED <span>{STACKS_PER_BLOCK}</span> STACKS TO REPAIR A SINGLE BLOCK!
-                </Typography>
+            <Stack spacing=".7rem">
+                {submitError && (
+                    <Typography variant="h5" sx={{ fontWeight: "fontWeightBold", color: colors.red }}>
+                        {submitError}
+                    </Typography>
+                )}
+
+                {!submitError && isSubmitting && (
+                    <Stack spacing="1.2rem" direction="row" alignItems="center">
+                        <CircularProgress size="1.8rem" sx={{ color: colors.neonBlue }} />
+                        <Typography variant="h5" sx={{ fontWeight: "fontWeightBold", color: colors.neonBlue }}>
+                            SUBMITTING RESULTS...
+                        </Typography>
+                    </Stack>
+                )}
+
+                {!submitError && !isSubmitting && (
+                    <Typography variant="h5" sx={{ fontWeight: "fontWeightBold", span: { fontFamily: "inherit", color: colors.neonBlue } }}>
+                        YOU NEED A TOTAL OF <span>{STACKS_PER_BLOCK}</span> STACKS TO REPAIR A SINGLE BLOCK!
+                    </Typography>
+                )}
 
                 <Stack direction="row" alignItems="center" spacing="1rem">
                     <Stack sx={{ flex: 1 }}>
@@ -86,13 +110,15 @@ export const StackTower = React.memo(function StackTower({ repairAgent }: { repa
                         />
                     </Stack>
 
-                    <Typography sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>
+                    <Typography variant="h6" sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>
                         {cumulativeScore}/{STACKS_PER_BLOCK}
                     </Typography>
                 </Stack>
             </Stack>
 
-            <TowerStackInner recentPattern={recentPattern} gameState={gameState} setGameState={setGameState} setRecentPattern={setRecentPattern} />
+            <Box sx={{ flex: 1, opacity: disableGame ? 0.4 : 1, pointerEvents: disableGame ? "none" : "all", border: "#FFFFFF20 1px solid" }}>
+                <TowerStackInner recentPattern={recentPattern} gameState={gameState} setGameState={setGameState} setRecentPattern={setRecentPattern} />
+            </Box>
         </Stack>
     )
 })
@@ -121,7 +147,7 @@ const TowerStackInner = ({
 
     return useMemo(() => {
         return (
-            <Box sx={{ position: "relative", width: "100%", flex: 1, overflow: "hidden" }}>
+            <Box sx={{ position: "relative", width: "100%", height: "100%", overflow: "hidden" }}>
                 {/* Game container, must keep the id */}
                 <Box
                     id="game"

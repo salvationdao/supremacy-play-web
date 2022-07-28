@@ -64,7 +64,7 @@ export const ConfirmModal = ({ title, children, onConfirm, onClose, isLoading, e
                             <Typography
                                 sx={{
                                     mt: ".3rem",
-                                    color: "red",
+                                    color: colors.red,
                                 }}
                             >
                                 {error}

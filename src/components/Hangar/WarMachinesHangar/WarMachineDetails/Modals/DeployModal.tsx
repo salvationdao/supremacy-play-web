@@ -104,7 +104,7 @@ export const DeployModal = ({
                         variant="body2"
                         sx={{
                             mt: ".3rem",
-                            color: "red",
+                            color: colors.red,
                         }}
                     >
                         {deployQueueError}
