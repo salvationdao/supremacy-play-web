@@ -12,13 +12,6 @@ export enum MechStatusEnum {
     Sold = "SOLD",
     BattleReady = "BATTLE_READY",
     Damaged = "DAMAGED",
-    StandardRepairing = "REPAIRING (STANDARD)",
-    FastRepairing = "REPAIRING (FAST)",
-}
-
-export enum RepairType {
-    Standard = "START_STANDARD_REPAIR",
-    Fast = "START_FAST_REPAIR",
 }
 
 export enum WeaponType {
@@ -31,6 +24,11 @@ export enum WeaponType {
     GrenadeLauncher = "Grenade Launcher",
     MachineGun = "Machine Gun",
     Flak = "Flak",
+    Flamethrower = "Flamethrower",
+    LaserBeam = "Laser Beam",
+    LightningGun = "Lightning Gun",
+    BFG = "BFG",
+    Rifle = "Rifle",
 }
 
 export enum AssetItemType {
@@ -173,6 +171,7 @@ export interface MechModel extends Collection {
     external_url?: string
     youtube_url?: string
     created_at: Date
+    repair_blocks: number
 }
 
 export interface BlueprintMechSkin extends Collection {
@@ -414,12 +413,6 @@ export interface WarMachineMetadata {
     name: string
     model: string
     image: string
-}
-
-export interface RepairStatus {
-    total_required_seconds: number
-    remain_seconds: number
-    full_repair_fee: string
 }
 
 export enum MysteryCrateType {

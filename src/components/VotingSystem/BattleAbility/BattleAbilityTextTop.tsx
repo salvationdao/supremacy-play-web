@@ -14,7 +14,7 @@ interface BattleAbilityTextTopProps {
 }
 
 export const BattleAbilityTextTop = ({ label, image_url, colour, disableButton }: BattleAbilityTextTopProps) => {
-    const [isOptedIn, setIsOptedIn] = useState(true)
+    const [isOptedIn, setIsOptedIn] = useState(false)
 
     useGameServerSubscriptionUser<boolean | undefined>(
         {
@@ -59,29 +59,31 @@ export const BattleAbilityTextTop = ({ label, image_url, colour, disableButton }
                     {label}
                 </Typography>
             </Stack>
-            <OptInButton disable={disableButton || isOptedIn} />
+            <OptInButton disable={disableButton} isOptedIn={isOptedIn} />
         </Stack>
     )
 }
 
-const OptInButton = ({ disable }: { disable: boolean }) => {
+const OptInButton = ({ disable, isOptedIn }: { disable: boolean; isOptedIn: boolean }) => {
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsFaction("/faction_commander")
 
+    const disabled = disable || isOptedIn
+
     const onTrigger = useCallback(async () => {
         try {
-            if (disable) return
+            if (disabled) return
             await send(GameServerKeys.OptInBattleAbility)
         } catch (err) {
             const message = typeof err === "string" ? err : "Failed to opt in battle ability."
             newSnackbarMessage(message, "error")
             console.error(message)
         }
-    }, [disable, newSnackbarMessage, send])
+    }, [disabled, newSnackbarMessage, send])
 
     return (
         <FancyButton
-            disabled={disable}
+            disabled={disabled}
             clipThingsProps={{
                 clipSize: "5px",
                 backgroundColor: colors.green,
@@ -103,7 +105,7 @@ const OptInButton = ({ disable }: { disable: boolean }) => {
                         color: "#FFFFFF",
                     }}
                 >
-                    OPT IN
+                    {isOptedIn ? "OPTED IN" : "OPT IN"}
                 </Typography>
             </Stack>
         </FancyButton>

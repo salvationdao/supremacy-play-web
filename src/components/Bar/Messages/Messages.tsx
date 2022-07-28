@@ -1,4 +1,4 @@
-import { Badge, Box, IconButton, Pagination, Popover, Stack, Switch, Typography } from "@mui/material"
+import { Badge, Box, IconButton, Pagination, Popover, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { SvgAnnouncement, SvgDamage1, SvgHistoryClock, SvgListView, SvgMail, SvgWrapperProps } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
@@ -22,7 +22,6 @@ export const Messages = () => {
 
     const popoverRef = useRef(null)
     const [modalOpen, toggleModalOpen] = useToggle(false)
-    const [showTimestamps, setShowTimestamps] = useState(true)
     const [error, setError] = useState<string>()
     const { page, changePage, totalPages, totalItems, setTotalItems, pageSize } = usePagination({
         pageSize: 10,
@@ -172,26 +171,24 @@ export const Messages = () => {
                     height: "100%",
                 }}
             >
-                <Box>
-                    <Badge
-                        badgeContent={totalItems}
-                        color="error"
-                        sx={{
-                            "& .MuiBadge-badge": {
-                                top: 10,
-                                right: 6,
-                                height: 14,
-                                minWidth: 14,
-                                fontSize: "1.5rem",
-                                fontWeight: "fontWeightBold",
-                            },
-                        }}
-                    >
-                        <IconButton onClick={() => toggleModalOpen(true)}>
-                            <SvgMail size="2.2rem" />
-                        </IconButton>
-                    </Badge>
-                </Box>
+                <Badge
+                    badgeContent={totalItems}
+                    color="error"
+                    sx={{
+                        "& .MuiBadge-badge": {
+                            top: 10,
+                            right: 6,
+                            height: 14,
+                            minWidth: 14,
+                            fontSize: "1.5rem",
+                            fontWeight: "fontWeightBold",
+                        },
+                    }}
+                >
+                    <IconButton onClick={() => toggleModalOpen(true)}>
+                        <SvgMail size="2.2rem" />
+                    </IconButton>
+                </Badge>
             </Stack>
 
             <Popover
@@ -237,29 +234,11 @@ export const Messages = () => {
                             <Typography variant="h6" sx={{ fontFamily: fonts.nostromoBlack }}>
                                 SYSTEM MESSAGES
                             </Typography>
-
-                            <Stack direction="row" alignItems="center">
-                                <Switch
-                                    disabled={messages.length === 0}
-                                    size="small"
-                                    checked={showTimestamps}
-                                    onChange={(e, c) => setShowTimestamps(c)}
-                                    sx={{
-                                        transform: "scale(.7)",
-                                        ".Mui-checked": { color: (theme) => theme.factionTheme.primary },
-                                        ".Mui-checked+.MuiSwitch-track": { backgroundColor: (theme) => `${theme.factionTheme.primary}50` },
-                                    }}
-                                />
-
-                                <Typography sx={{ lineHeight: 1, fontWeight: "fontWeightBold", opacity: messages.length === 0 ? 0.6 : 1 }}>
-                                    Show Timestamps
-                                </Typography>
-                            </Stack>
                         </Stack>
 
                         <Stack direction="row" alignItems="center" spacing=".4rem" sx={{ opacity: 0.5, ":hover": { opacity: 1 } }}>
                             <SvgHistoryClock size="1.2rem" />
-                            <Typography>Last updated: {lastUpdated.toISOString()}</Typography>
+                            <Typography>Last updated: {lastUpdated.toUTCString()}</Typography>
                         </Stack>
 
                         {error && (

@@ -18,6 +18,7 @@ import EmojiSelector from "!@svgr/webpack!./svg/EmojiSelector.svg"
 import Energy from "!@svgr/webpack!./svg/Energy.svg"
 import ExternalLink from "!@svgr/webpack!./svg/ExternalLink.svg"
 import FastRepair from "!@svgr/webpack!./svg/FastRepair.svg"
+import Cubes from "!@svgr/webpack!./svg/Cubes.svg"
 import FontCase from "!@svgr/webpack!./svg/FontCase.svg"
 import Global from "!@svgr/webpack!./svg/Global.svg"
 import Graph from "!@svgr/webpack!./svg/Graph.svg"
@@ -30,6 +31,7 @@ import Meteor from "!@svgr/webpack!./svg/Meteor.svg"
 import Mobility from "!@svgr/webpack!./svg/Mobility.svg"
 import NinjaSyndicateLogo from "!@svgr/webpack!./svg/NinjaSyndicateLogo.svg"
 import OutroAnimation from "!@svgr/webpack!./svg/OutroAnimation.svg"
+import Hamburger from "!@svgr/webpack!./svg/Hamburger.svg"
 import Plus from "!@svgr/webpack!./svg/Plus.svg"
 import PowerCore from "!@svgr/webpack!./svg/PowerCore.svg"
 import PowerCoreCapacity from "!@svgr/webpack!./svg/PowerCoreCapacity.svg"
@@ -178,6 +180,12 @@ import RainingSupsPNG from "./images/supsRain.png"
 import TrailerThumbPNG from "./images/TrailerThumb.png"
 import WarMachineIconPNG from "./images/WarMachineIcon.png"
 import ZaibatsuLogo from "./images/ZaibatsuLogo.png"
+import AboutMeSVG from "./images/profileIcons/AboutMe.svg"
+import BattleHistorySVG from "./images/profileIcons/BattleHistory.svg"
+import StatsSVG from "./images/profileIcons/Stats.svg"
+import WarMachineBCPNG from "./images/profileIcons/warMachines/WMBC.png"
+import WarMachineRMPNG from "./images/profileIcons/warMachines/WMRM.png"
+import WarMachineZAIPNG from "./images/profileIcons/warMachines/WMZAI.png"
 
 export {
     MultiplierAdmiral,
@@ -220,6 +228,12 @@ export {
     RainingSupsPNG,
     WarMachineIconPNG,
     PlayerAbilityPNG,
+    AboutMeSVG,
+    BattleHistorySVG,
+    StatsSVG,
+    WarMachineBCPNG,
+    WarMachineRMPNG,
+    WarMachineZAIPNG,
 }
 
 export interface SvgWrapperProps extends BoxProps {
@@ -1096,5 +1110,17 @@ export const SvgMail: React.VoidFunctionComponent<SvgWrapperProps> = (props) => 
 export const SvgCrown: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <Crown />
+    </SvgWrapper>
+)
+
+export const SvgHamburger: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Hamburger />
+    </SvgWrapper>
+)
+
+export const SvgCubes: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Cubes />
     </SvgWrapper>
 )

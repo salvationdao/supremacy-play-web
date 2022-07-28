@@ -20,10 +20,16 @@ import { WarMachineHangarItem } from "./WarMachineHangarItem"
 const sortOptions = [
     { label: SortTypeLabel.MechQueueAsc, value: SortTypeLabel.MechQueueAsc },
     { label: SortTypeLabel.MechQueueDesc, value: SortTypeLabel.MechQueueDesc },
+    { label: SortTypeLabel.Alphabetical, value: SortTypeLabel.Alphabetical },
+    { label: SortTypeLabel.AlphabeticalReverse, value: SortTypeLabel.AlphabeticalReverse },
+    { label: SortTypeLabel.RarestAsc, value: SortTypeLabel.RarestAsc },
+    { label: SortTypeLabel.RarestDesc, value: SortTypeLabel.RarestDesc },
 ]
 
 interface GetMechsRequest {
-    queue_sort: string
+    queue_sort?: string
+    sort_by?: string
+    sort_dir?: string
     search: string
     page: number
     page_size: number
@@ -53,6 +59,7 @@ export const WarMachinesHangar = () => {
     })
 
     // Filters and sorts
+    const [isFiltersExpanded, toggleIsFiltersExpanded] = useToggle(localStorage.getItem("isWarMachinesHangarFiltersExpanded") === "true")
     const [search, setSearch] = useState("")
     const [sort, setSort] = useState<string>(query.get("sort") || SortTypeLabel.MechQueueAsc)
     const [status, setStatus] = useState<string[]>((query.get("statuses") || undefined)?.split("||") || [])
@@ -62,6 +69,10 @@ export const WarMachinesHangar = () => {
     useEffect(() => {
         localStorage.setItem("fleetMechGrid", isGridView.toString())
     }, [isGridView])
+
+    useEffect(() => {
+        localStorage.setItem("isWarMachinesHangarFiltersExpanded", isFiltersExpanded.toString())
+    }, [isFiltersExpanded])
 
     // Filters
     const statusFilterSection = useRef<ChipFilter>({
@@ -109,10 +120,25 @@ export const WarMachinesHangar = () => {
             setIsLoading(true)
 
             let sortDir = "asc"
-            if (sort === SortTypeLabel.MechQueueDesc) sortDir = "desc"
+            let sortBy = ""
+            if (sort === SortTypeLabel.MechQueueDesc || sort === SortTypeLabel.AlphabeticalReverse || sort === SortTypeLabel.RarestDesc) sortDir = "desc"
+
+            switch (sort) {
+                case SortTypeLabel.Alphabetical:
+                case SortTypeLabel.AlphabeticalReverse:
+                    sortBy = "alphabetical"
+                    break
+                case SortTypeLabel.RarestAsc:
+                case SortTypeLabel.RarestDesc:
+                    sortBy = "rarity"
+            }
+
+            const isQueueSort = sort === SortTypeLabel.MechQueueAsc || sort === SortTypeLabel.MechQueueDesc
 
             const resp = await send<GetMechsResponse, GetMechsRequest>(GameServerKeys.GetMechs, {
-                queue_sort: sortDir,
+                queue_sort: isQueueSort ? sortDir : undefined,
+                sort_by: isQueueSort ? undefined : sortBy,
+                sort_dir: isQueueSort ? undefined : sortDir,
                 search,
                 rarities,
                 statuses: status,
@@ -188,7 +214,7 @@ export const WarMachinesHangar = () => {
                             width: "100%",
                             py: "1rem",
                             display: "grid",
-                            gridTemplateColumns: isGridView ? "repeat(auto-fill, minmax(29rem, 1fr))" : "100%",
+                            gridTemplateColumns: isGridView ? "repeat(auto-fill, minmax(30rem, 1fr))" : "100%",
                             gap: "1.3rem",
                             alignItems: "center",
                             justifyContent: "center",
@@ -237,12 +263,13 @@ export const WarMachinesHangar = () => {
     }, [loadError, mechs, isLoading, isGridView, theme.factionTheme.primary])
 
     return (
-        <Stack direction="row" spacing="1rem" sx={{ height: "100%" }}>
+        <Stack direction="row" sx={{ height: "100%" }}>
             <SortAndFilters
                 initialSearch={search}
                 onSetSearch={setSearch}
                 chipFilters={[statusFilterSection.current, rarityChipFilter.current]}
                 changePage={changePage}
+                isExpanded={isFiltersExpanded}
             />
 
             <ClipThing
@@ -297,6 +324,8 @@ export const WarMachinesHangar = () => {
                             onSetSort={setSort}
                             isGridView={isGridView}
                             toggleIsGridView={toggleIsGridView}
+                            isFiltersExpanded={isFiltersExpanded}
+                            toggleIsFiltersExpanded={toggleIsFiltersExpanded}
                         />
 
                         <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>

@@ -115,7 +115,7 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
             minPosX: 0,
             minPosY: 0,
             // Size limits
-            minWidth: 360,
+            minWidth: 400,
             minHeight: 280,
             maxWidth: 1000,
             maxHeight: 1000,
@@ -154,7 +154,7 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
                                         {queueLength > 0 && (
                                             <AmountItem
                                                 key={`${queueLength}-queue_length`}
-                                                title={"POSITION: "}
+                                                title={"NEXT POSITION: "}
                                                 color="#FFFFFF"
                                                 value={`${queueLength + 1}`}
                                                 tooltip="The queue position of your war machine if you deploy now."

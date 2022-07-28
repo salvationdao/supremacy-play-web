@@ -1,15 +1,15 @@
-import { Box, Stack, Typography, useMediaQuery } from "@mui/material"
-import { Enlist, Logo, ProfileCard, WalletDetails } from ".."
+import { Box, Stack, Typography } from "@mui/material"
+import { Logo, ProfileCard, WalletDetails } from ".."
 import { SvgDisconnected } from "../../assets"
 import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT } from "../../constants"
 import { useAuth, useSupremacy } from "../../containers"
 import { fonts, siteZIndex } from "../../theme/theme"
-import { FeatureName, User } from "../../types"
-import { HowToPlay } from "../HowToPlay/HowToPlay"
+import { User } from "../../types"
 import { Messages } from "./Messages/Messages"
+import { NavLinks } from "./NavLinks/NavLinks"
 
 export const Bar = () => {
-    const { userID, user, userHasFeature } = useAuth()
+    const { userID, user } = useAuth()
 
     return (
         <Stack
@@ -40,13 +40,12 @@ export const Bar = () => {
                 transition: `all ${DRAWER_TRANSITION_DURATION / 1000}s`,
             }}
         >
-            <BarContent userID={userID} user={user} userHasFeature={userHasFeature} />
+            <BarContent userID={userID} user={user} />
         </Stack>
     )
 }
 
-const BarContent = ({ userID, user, userHasFeature }: { userID?: string; user: User; userHasFeature: (featureName: FeatureName) => boolean }) => {
-    const below580 = useMediaQuery("(max-width:580px)")
+const BarContent = ({ userID, user }: { userID?: string; user: User }) => {
     const { isServerUp } = useSupremacy()
 
     if (!isServerUp) {
@@ -66,12 +65,13 @@ const BarContent = ({ userID, user, userHasFeature }: { userID?: string; user: U
 
     return (
         <>
-            {!below580 && <Logo />}
+            <Logo />
+            <NavLinks />
             <Box sx={{ flexGrow: 1 }} />
-            <HowToPlay />
-            {userID && <Enlist />}
+            {/* <HowToPlay /> */}
+            {/* {userID && <Enlist />} */}
             {userID && <WalletDetails />}
-            {userID && userHasFeature(FeatureName.systemMessages) && <Messages />}
+            {userID && <Messages />}
             <ProfileCard userID={userID} user={user} />
         </>
     )

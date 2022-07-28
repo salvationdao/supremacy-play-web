@@ -84,7 +84,7 @@ export const MessageItem = ({ message, onDismiss }: MessageItemProps) => {
             </Stack>
 
             <Collapse in={!isCollapsed}>
-                <Box sx={{ my: "1rem", p: ".6rem 1.2rem", backgroundColor: "#FFFFFF10" }}>{details}</Box>
+                <Box sx={{ my: "1rem", p: "1rem 1.4rem", backgroundColor: "#FFFFFF20", border: "#FFFFFF40 1px solid" }}>{details}</Box>
             </Collapse>
         </Box>
     )

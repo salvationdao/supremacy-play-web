@@ -1,14 +1,15 @@
 import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { EmptyWarMachinesPNG, WarMachineIconPNG } from "../../assets"
+import { EmptyWarMachinesPNG, WarMachineBCPNG, WarMachineIconPNG, WarMachineRMPNG, WarMachineZAIPNG } from "../../assets"
 import { parseString } from "../../helpers"
 import { usePagination, useUrlQuery } from "../../hooks"
 import { useGameServerCommands } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { colors, fonts } from "../../theme/theme"
-import { MechBasic } from "../../types"
+import { FactionName, MechBasic } from "../../types"
 import { ClipThing } from "../Common/ClipThing"
 import { PageHeader } from "../Common/PageHeader"
+import { TotalAndPageSizeOptions } from "../Common/TotalAndPageSizeOptions"
 import { ProfileWarmachineItem } from "./ProfileMechDetails"
 
 interface GetMechsRequest {
@@ -24,7 +25,31 @@ interface GetMechsResponse {
     total: number
 }
 
-export const ProfileWarmachines = ({ playerID, primaryColour, backgroundColour }: { playerID: string; primaryColour: string; backgroundColour: string }) => {
+interface ProfileWarmachinesProps {
+    playerID: string
+    primaryColour: string
+    backgroundColour: string
+    factionName: string
+}
+
+const getIcon = (factionName: FactionName): string => {
+    // zhi
+    if (factionName === FactionName.ZaibatsuHeavyIndustries) {
+        return WarMachineZAIPNG
+    }
+    // rm
+    if (factionName === FactionName.RedMountainOffworldMiningCorporation) {
+        return WarMachineRMPNG
+    }
+    // bc
+    if (factionName === FactionName.BostonCybernetics) {
+        return WarMachineBCPNG
+    }
+
+    return WarMachineIconPNG
+}
+
+export const ProfileWarmachines = ({ playerID, primaryColour, backgroundColour, factionName }: ProfileWarmachinesProps) => {
     const [query] = useUrlQuery()
     const { send } = useGameServerCommands("/public/commander")
 
@@ -33,7 +58,7 @@ export const ProfileWarmachines = ({ playerID, primaryColour, backgroundColour }
     const [loadError, setLoadError] = useState<string>()
     const [mechs, setMechs] = useState<MechBasic[]>([])
 
-    const { page, changePage, setTotalItems, totalPages, pageSize } = usePagination({
+    const { page, changePage, setTotalItems, totalItems, totalPages, changePageSize, pageSize } = usePagination({
         pageSize: parseString(query.get("pageSize"), 10),
         page: parseString(query.get("page"), 1),
     })
@@ -109,7 +134,7 @@ export const ProfileWarmachines = ({ playerID, primaryColour, backgroundColour }
                             width: "100%",
                             py: "1rem",
                             display: "grid",
-                            gridTemplateColumns: "repeat(auto-fill, minmax(29rem, 1fr))",
+                            gridTemplateColumns: "repeat(auto-fill, minmax(30rem, 1fr))",
                             gap: "1.3rem",
                             alignItems: "center",
                             justifyContent: "center",
@@ -177,8 +202,17 @@ export const ProfileWarmachines = ({ playerID, primaryColour, backgroundColour }
             >
                 <Stack sx={{ position: "relative", height: "100%" }}>
                     <Stack sx={{ flex: 1 }}>
-                        <PageHeader title="WAR MACHINES" description="" primaryColor={primaryColour} imageUrl={WarMachineIconPNG} />
+                        <PageHeader title="WAR MACHINES" description="" primaryColor={primaryColour} imageUrl={getIcon(factionName as FactionName)} />
 
+                        <TotalAndPageSizeOptions
+                            countItems={mechs?.length}
+                            totalItems={totalItems}
+                            pageSize={pageSize}
+                            changePageSize={changePageSize}
+                            pageSizeOptions={[10, 20, 30]}
+                            changePage={changePage}
+                            manualRefresh={getItems}
+                        />
                         <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
                             <Box
                                 sx={{

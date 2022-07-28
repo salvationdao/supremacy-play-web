@@ -87,7 +87,7 @@ export const MarketItem = ({ item, isGridView, children, linkSubPath }: MarketIt
                         ...(isGridView
                             ? {
                                   "&>*:not(:last-child)": {
-                                      mb: ".8rem",
+                                      mb: "1rem",
                                   },
                               }
                             : {}),

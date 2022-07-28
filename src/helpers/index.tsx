@@ -119,6 +119,7 @@ export const supFormatter = (num: string, fixedAmount: number | undefined = 0): 
     const a = !fixedAmount || fixedAmount == 0 ? 1 : fixedAmount * 10
     return (Math.floor(supTokens.dividedBy(new BigNumber("1000000000000000000")).toNumber() * a) / a).toFixed(fixedAmount)
 }
+
 export const supFormatterNoFixed = (num: string, maxDecimals?: number): string => {
     const supTokens = new BigNumber(num).shiftedBy(-18)
     if (maxDecimals) {
@@ -428,18 +429,18 @@ export const timeSince = (
 export const timeSinceInWords = (fromDate: Date, toDate: Date, abbreviated = false): string => {
     const { days, hours, minutes, seconds } = timeSince(fromDate, toDate)
 
-    let result = days > 0 ? days + " day" + (days === 1 ? "" : "s") : ""
-    result = (result ? result + " " : "") + (hours > 0 ? hours + (abbreviated ? "hr" : " hour") + (hours === 1 ? "" : "s") : "")
+    let result = days > 0 ? days + (abbreviated ? "d" : " day") + (days === 1 || abbreviated ? "" : "s") : ""
+    result = (result ? result + " " : "") + (hours > 0 ? hours + (abbreviated ? "h" : " hour") + (hours === 1 || abbreviated ? "" : "s") : "")
 
     // Return result if more than a day, else too long
     if (days > 0) return result
 
-    result = (result ? result + " " : "") + (minutes > 0 ? minutes + (abbreviated ? "min" : " minute") + (minutes === 1 ? "" : "s") : "")
+    result = (result ? result + " " : "") + (minutes > 0 ? minutes + (abbreviated ? "m" : " minute") + (minutes === 1 || abbreviated ? "" : "s") : "")
 
     // Return result if more than a day, else too long
     if (hours > 0) return result
 
-    result = (result ? result + " " : "") + (seconds > 0 ? seconds + (abbreviated ? "sec" : " second") + (seconds === 1 ? "" : "s") : "")
+    result = (result ? result + " " : "") + (seconds > 0 ? seconds + (abbreviated ? "s" : " second") + (seconds === 1 || abbreviated ? "" : "s") : "")
     return result
 }
 
@@ -531,10 +532,18 @@ export const getWeaponTypeColor = (weaponType: string | undefined) => {
             return colors.purple
         case "SNIPER RIFLE":
             return colors.blue
+        case "RIFLE":
+            return colors.blue
         case "FLAK":
             return colors.orange
         case "LASER BEAM":
             return colors.purple
+        case "LIGHTNING GUN":
+            return colors.purple
+        case "BFG":
+            return colors.orange
+        case "FLAMETHROWER":
+            return colors.orange
         default:
             return colors.neonBlue
     }
