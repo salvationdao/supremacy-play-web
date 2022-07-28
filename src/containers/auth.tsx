@@ -106,19 +106,19 @@ export const AuthProvider: React.FC = ({ children }) => {
     const [userStat, setUserStat] = useState<UserStat>(initialState.userStat)
     const [userRank, setUserRank] = useState<UserRank>(initialState.userRank)
     const [punishments, setPunishments] = useState<PunishListItem[]>(initialState.punishments)
-    //checks if supremacy tab is open
+    // Checks if supremacy tab is active
     const [isHidden, setIsHidden] = useState(false)
 
     const { query: passportLoginCheck } = useQuery(PassportLoginCheck(), false)
     const { query: gameserverLoginCheck } = useQuery(GameServerLoginCheck(), false)
 
-    const handleVisibilityChange = () => {
+    const handleVisibilityChange = useCallback(() => {
         if (document["hidden"]) {
             setIsHidden(true)
         } else {
             setIsHidden(false)
         }
-    }
+    }, [])
 
     useEffect(() => {
         if (typeof document.hidden !== "undefined" && typeof document.addEventListener !== "undefined") {
@@ -129,7 +129,7 @@ export const AuthProvider: React.FC = ({ children }) => {
         return () => {
             document.removeEventListener("visibilitychange", handleVisibilityChange)
         }
-    }, [])
+    }, [handleVisibilityChange])
 
     const authCheckCallback = useCallback(
         async (event?: MessageEvent) => {
