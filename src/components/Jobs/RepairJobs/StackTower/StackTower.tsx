@@ -1,8 +1,6 @@
-import { Box, CircularProgress, Stack, Typography } from "@mui/material"
+import { Box, Stack, Typography } from "@mui/material"
 import React, { useEffect, useMemo, useState } from "react"
 import { useTheme } from "../../../../containers/theme"
-import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
-import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
 import { RepairAgent } from "../../../../types/jobs"
 import { ProgressBar } from "../../../Common/ProgressBar"
@@ -12,16 +10,15 @@ import { isWebGLAvailable } from "./src/utils"
 const STACKS_PER_BLOCK = 3
 
 export const StackTower = React.memo(function StackTower({
+    disableGame,
     repairAgent,
-    setRepairAgent,
+    completeAgentRepair,
 }: {
+    disableGame: boolean
     repairAgent?: RepairAgent
-    setRepairAgent: React.Dispatch<React.SetStateAction<RepairAgent | undefined>>
+    completeAgentRepair: (repairAgentID: string, gamePatterns: GamePattern[]) => Promise<void>
 }) {
     const theme = useTheme()
-    const { send } = useGameServerCommandsUser("/user_commander")
-    const [isSubmitting, setIsSubmitting] = useState(false)
-    const [submitError, setSubmitError] = useState<string>()
 
     // Game data
     const [gameState, setGameState] = useState<GameState>(GameState.Loading)
@@ -44,28 +41,9 @@ export const StackTower = React.memo(function StackTower({
 
     // Send server game pattern
     useEffect(() => {
-        ;(async () => {
-            if (cumulativeScore !== STACKS_PER_BLOCK || !repairAgent?.id) return
-
-            try {
-                setSubmitError(undefined)
-                setIsSubmitting(true)
-                const resp = await send(GameServerKeys.CompleteRepairAgent, {
-                    repair_agent_id: repairAgent.id,
-                    game_patterns: gamePatterns,
-                })
-
-                if (!resp) return
-                setRepairAgent(undefined)
-            } catch (err) {
-                const message = typeof err === "string" ? err : "Failed to submit results."
-                setSubmitError(message)
-                console.error(err)
-            } finally {
-                setIsSubmitting(false)
-            }
-        })()
-    }, [cumulativeScore, gamePatterns, repairAgent?.id, send, setRepairAgent])
+        if (cumulativeScore !== STACKS_PER_BLOCK || !repairAgent?.id) return
+        completeAgentRepair(repairAgent.id, gamePatterns)
+    }, [completeAgentRepair, cumulativeScore, gamePatterns, repairAgent?.id])
 
     const primaryColor = theme.factionTheme.primary
 
@@ -79,7 +57,8 @@ export const StackTower = React.memo(function StackTower({
                 backgroundColor: `${primaryColor}30`,
                 boxShadow: 2,
                 borderRadius: 1.3,
-                opacity: !repairAgent ? 0.5 : 1,
+                opacity: !disableGame ? 0.5 : 1,
+                pointerEvents: !disableGame ? "none" : "all",
             }}
         >
             <Stack spacing=".7rem">
@@ -104,56 +83,7 @@ export const StackTower = React.memo(function StackTower({
                 </Stack>
             </Stack>
 
-            <Box
-                sx={{
-                    position: "relative",
-                    flex: 1,
-                    opacity: !repairAgent ? 0.4 : 1,
-                    pointerEvents: !repairAgent ? "none" : "all",
-                    border: "#FFFFFF20 1px solid",
-                }}
-            >
-                {submitError && (
-                    <Typography
-                        variant="h5"
-                        sx={{
-                            position: "absolute",
-                            left: "50%",
-                            top: "50%",
-                            transform: "translate(-50%, -50%)",
-                            fontWeight: "fontWeightBold",
-                            color: colors.red,
-                        }}
-                    >
-                        {submitError}
-                    </Typography>
-                )}
-
-                {!submitError && isSubmitting && (
-                    <Stack
-                        spacing="1.2rem"
-                        direction="row"
-                        alignItems="center"
-                        sx={{
-                            position: "absolute",
-                            left: "50%",
-                            top: "50%",
-                        }}
-                    >
-                        <CircularProgress size="1.8rem" sx={{ color: colors.neonBlue }} />
-                        <Typography
-                            variant="h5"
-                            sx={{
-                                transform: "translate(-50%, -50%)",
-                                fontWeight: "fontWeightBold",
-                                color: colors.neonBlue,
-                            }}
-                        >
-                            SUBMITTING RESULTS...
-                        </Typography>
-                    </Stack>
-                )}
-
+            <Box sx={{ flex: 1, border: "#FFFFFF20 1px solid" }}>
                 <TowerStackInner recentPattern={recentPattern} gameState={gameState} setGameState={setGameState} setRecentPattern={setRecentPattern} />
             </Box>
         </Stack>

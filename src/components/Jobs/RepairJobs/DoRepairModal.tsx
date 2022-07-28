@@ -1,4 +1,4 @@
-import { Box, IconButton, Modal, Stack, SxProps, Typography } from "@mui/material"
+import { Box, CircularProgress, IconButton, Modal, Stack, SxProps, Typography } from "@mui/material"
 import { ReactNode, useCallback, useState } from "react"
 import { SvgClose, SvgCubes, SvgSupToken } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
@@ -11,6 +11,7 @@ import { RepairAgent, RepairJobStatus } from "../../../types/jobs"
 import { ClipThing } from "../../Common/ClipThing"
 import { FancyButton } from "../../Common/FancyButton"
 import { RepairBlocks } from "../../Hangar/WarMachinesHangar/Common/MechRepairBlocks"
+import { GamePattern } from "./StackTower/src/game"
 import { StackTower } from "./StackTower/StackTower"
 
 export const DoRepairModal = ({ repairStatus, open, onClose }: { repairStatus: RepairJobStatus; open: boolean; onClose: () => void }) => {
@@ -19,6 +20,10 @@ export const DoRepairModal = ({ repairStatus, open, onClose }: { repairStatus: R
     const [isRegistering, setIsRegistering] = useState(false)
     const [error, setError] = useState<string>()
     const [repairAgent, setRepairAgent] = useState<RepairAgent>()
+
+    // Submission
+    const [isSubmitting, setIsSubmitting] = useState(false)
+    const [submitError, setSubmitError] = useState<string>()
 
     const remainDamagedBlocks = repairStatus ? repairStatus.blocks_required_repair - repairStatus.blocks_repaired : 0
     const primaryColor = theme.factionTheme.primary
@@ -43,6 +48,31 @@ export const DoRepairModal = ({ repairStatus, open, onClose }: { repairStatus: R
             setIsRegistering(false)
         }
     }, [repairStatus.id, send])
+
+    const completeAgentRepair = useCallback(
+        async (repairAgentID: string, gamePatterns: GamePattern[]) => {
+            try {
+                setSubmitError(undefined)
+                setIsSubmitting(true)
+                const resp = await send(GameServerKeys.CompleteRepairAgent, {
+                    repair_agent_id: repairAgentID,
+                    game_patterns: gamePatterns,
+                })
+
+                if (!resp) return
+                setRepairAgent(undefined)
+            } catch (err) {
+                const message = typeof err === "string" ? err : "Failed to submit results."
+                setSubmitError(message)
+                console.error(err)
+            } finally {
+                setTimeout(() => {
+                    setIsSubmitting(false)
+                }, 1500)
+            }
+        },
+        [send],
+    )
 
     return (
         <Modal open={open} onClose={repairAgent ? undefined : onClose} sx={{ zIndex: siteZIndex.Modal }}>
@@ -124,8 +154,54 @@ export const DoRepairModal = ({ repairStatus, open, onClose }: { repairStatus: R
                         </Stack>
 
                         {/* Game */}
-                        <Box sx={{ flex: 1 }}>
-                            <StackTower repairAgent={repairAgent} setRepairAgent={setRepairAgent} />
+                        <Box sx={{ flex: 1, position: "relative" }}>
+                            {submitError && (
+                                <Typography
+                                    variant="h5"
+                                    sx={{
+                                        position: "absolute",
+                                        left: "50%",
+                                        top: "50%",
+                                        transform: "translate(-50%, -50%)",
+                                        fontWeight: "fontWeightBold",
+                                        color: colors.red,
+                                        zIndex: 99,
+                                    }}
+                                >
+                                    {submitError}
+                                </Typography>
+                            )}
+
+                            {/* {!submitError && isSubmitting && ( */}
+                            <Stack
+                                spacing="1.2rem"
+                                alignItems="center"
+                                sx={{
+                                    position: "absolute",
+                                    left: "50%",
+                                    top: "50%",
+                                    transform: "translate(-50%, -50%)",
+                                    zIndex: 99,
+                                }}
+                            >
+                                <CircularProgress size="2.3rem" sx={{ color: "#FFFFFF" }} />
+                                <Typography
+                                    variant="h5"
+                                    sx={{
+                                        fontWeight: "fontWeightBold",
+                                    }}
+                                >
+                                    SUBMITTING RESULTS...
+                                </Typography>
+                            </Stack>
+                            {/* )} */}
+
+                            <StackTower
+                                disableGame={!repairAgent || !!submitError || isSubmitting}
+                                rewardPerBlock={repairStatus.sups_worth_per_block}
+                                repairAgent={repairAgent}
+                                completeAgentRepair={completeAgentRepair}
+                            />
                         </Box>
 
                         {/* Button */}
