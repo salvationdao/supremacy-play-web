@@ -23,7 +23,7 @@ export const StackTower = React.memo(function StackTower({ repairAgent }: { repa
 
     const [gamePatterns, setGamePatterns] = useState<GamePattern[]>([])
     const cumulativeScore = gamePatterns.filter((p) => !p.is_failed && p.score > 0).length
-    const disableGame = isSubmitting || submitError || !repairAgent
+    const disableGame = isSubmitting || submitError
 
     useEffect(() => {
         if (recentPattern) {
@@ -75,6 +75,7 @@ export const StackTower = React.memo(function StackTower({ repairAgent }: { repa
                 backgroundColor: `${primaryColor}30`,
                 boxShadow: 2,
                 borderRadius: 1.3,
+                opacity: !repairAgent ? 0.5 : 1,
             }}
         >
             <Stack spacing=".7rem">
