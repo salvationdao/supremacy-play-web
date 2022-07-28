@@ -13,6 +13,11 @@ import { ClipThing } from "../../Common/ClipThing"
 import { PageHeader } from "../../Common/PageHeader"
 import { SafePNG } from "../../../assets"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
+import { Elements } from "@stripe/react-stripe-js"
+import { loadStripe } from "@stripe/stripe-js"
+import { STRIPE_PUBLISHABLE_KEY } from "../../../constants"
+
+const stripePromise = loadStripe(STRIPE_PUBLISHABLE_KEY)
 
 export const PackagesStore = () => {
     const { newSnackbarMessage } = useSnackbar()
@@ -154,101 +159,103 @@ export const PackagesStore = () => {
     }, [packages, enlargedView, isLoading, loadError])
 
     return (
-        <ClipThing
-            clipSize="10px"
-            border={{
-                borderColor: theme.factionTheme.primary,
-                borderThickness: ".3rem",
-            }}
-            corners={{
-                topRight: true,
-                bottomLeft: true,
-                bottomRight: true,
-            }}
-            opacity={0.7}
-            backgroundColor={theme.factionTheme.background}
-            sx={{ height: "100%" }}
-        >
-            <Stack sx={{ position: "relative", height: "100%" }}>
-                <Stack sx={{ flex: 1 }}>
-                    <PageHeader
-                        title={
-                            <Typography variant="h5" sx={{ fontFamily: fonts.nostromoBlack }}>
-                                PACKAGES <span style={{ color: colors.lightNeonBlue, fontFamily: "inherit", fontSize: "inherit" }}>(LIMITED SUPPLY)</span>
-                            </Typography>
-                        }
-                        description={
-                            <Typography sx={{ fontSize: "1.85rem" }}>Gear up for the battle arena with a variety of War Machines and Weapons.</Typography>
-                        }
-                        imageUrl={SafePNG}
-                    ></PageHeader>
+        <Elements stripe={stripePromise}>
+            <ClipThing
+                clipSize="10px"
+                border={{
+                    borderColor: theme.factionTheme.primary,
+                    borderThickness: ".3rem",
+                }}
+                corners={{
+                    topRight: true,
+                    bottomLeft: true,
+                    bottomRight: true,
+                }}
+                opacity={0.7}
+                backgroundColor={theme.factionTheme.background}
+                sx={{ height: "100%" }}
+            >
+                <Stack sx={{ position: "relative", height: "100%" }}>
+                    <Stack sx={{ flex: 1 }}>
+                        <PageHeader
+                            title={
+                                <Typography variant="h5" sx={{ fontFamily: fonts.nostromoBlack }}>
+                                    PACKAGES <span style={{ color: colors.lightNeonBlue, fontFamily: "inherit", fontSize: "inherit" }}>(LIMITED SUPPLY)</span>
+                                </Typography>
+                            }
+                            description={
+                                <Typography sx={{ fontSize: "1.85rem" }}>Gear up for the battle arena with a variety of War Machines and Weapons.</Typography>
+                            }
+                            imageUrl={SafePNG}
+                        ></PageHeader>
 
-                    <TotalAndPageSizeOptions
-                        countItems={packages?.length}
-                        pageSize={pageSize}
-                        changePageSize={changePageSize}
-                        pageSizeOptions={[10, 20, 40]}
-                        changePage={changePage}
-                        manualRefresh={getItems}
-                    />
+                        <TotalAndPageSizeOptions
+                            countItems={packages?.length}
+                            pageSize={pageSize}
+                            changePageSize={changePageSize}
+                            pageSizeOptions={[10, 20, 40]}
+                            changePage={changePage}
+                            manualRefresh={getItems}
+                        />
 
-                    <Stack sx={{ px: "2rem", py: "1rem", flex: 1 }}>
+                        <Stack sx={{ px: "2rem", py: "1rem", flex: 1 }}>
+                            <Box
+                                sx={{
+                                    flex: 1,
+                                    ml: "1.9rem",
+                                    mr: ".5rem",
+                                    pr: "1.4rem",
+                                    my: "1rem",
+                                    overflowY: "auto",
+                                    overflowX: "hidden",
+                                    direction: "ltr",
+
+                                    "::-webkit-scrollbar": {
+                                        width: ".4rem",
+                                    },
+                                    "::-webkit-scrollbar-track": {
+                                        background: "#FFFFFF15",
+                                        borderRadius: 3,
+                                    },
+                                    "::-webkit-scrollbar-thumb": {
+                                        background: theme.factionTheme.primary,
+                                        borderRadius: 3,
+                                    },
+                                }}
+                            >
+                                {content}
+                            </Box>
+                        </Stack>
+                    </Stack>
+
+                    {totalPages > 1 && (
                         <Box
                             sx={{
-                                flex: 1,
-                                ml: "1.9rem",
-                                mr: ".5rem",
-                                pr: "1.4rem",
-                                my: "1rem",
-                                overflowY: "auto",
-                                overflowX: "hidden",
-                                direction: "ltr",
-
-                                "::-webkit-scrollbar": {
-                                    width: ".4rem",
-                                },
-                                "::-webkit-scrollbar-track": {
-                                    background: "#FFFFFF15",
-                                    borderRadius: 3,
-                                },
-                                "::-webkit-scrollbar-thumb": {
-                                    background: theme.factionTheme.primary,
-                                    borderRadius: 3,
-                                },
+                                px: "1rem",
+                                py: ".7rem",
+                                borderTop: (theme) => `${theme.factionTheme.primary}70 1px solid`,
+                                backgroundColor: "#00000070",
                             }}
                         >
-                            {content}
+                            <Pagination
+                                size="medium"
+                                count={totalPages}
+                                page={page}
+                                sx={{
+                                    ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold },
+                                    ".Mui-selected": {
+                                        color: (theme) => theme.factionTheme.secondary,
+                                        backgroundColor: `${theme.factionTheme.primary} !important`,
+                                    },
+                                }}
+                                onChange={(e, p) => changePage(p)}
+                                showFirstButton
+                                showLastButton
+                            />
                         </Box>
-                    </Stack>
+                    )}
                 </Stack>
-
-                {totalPages > 1 && (
-                    <Box
-                        sx={{
-                            px: "1rem",
-                            py: ".7rem",
-                            borderTop: (theme) => `${theme.factionTheme.primary}70 1px solid`,
-                            backgroundColor: "#00000070",
-                        }}
-                    >
-                        <Pagination
-                            size="medium"
-                            count={totalPages}
-                            page={page}
-                            sx={{
-                                ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold },
-                                ".Mui-selected": {
-                                    color: (theme) => theme.factionTheme.secondary,
-                                    backgroundColor: `${theme.factionTheme.primary} !important`,
-                                },
-                            }}
-                            onChange={(e, p) => changePage(p)}
-                            showFirstButton
-                            showLastButton
-                        />
-                    </Box>
-                )}
-            </Stack>
-        </ClipThing>
+            </ClipThing>
+        </Elements>
     )
 }
