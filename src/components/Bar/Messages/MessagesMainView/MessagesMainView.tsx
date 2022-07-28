@@ -236,6 +236,7 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
                                     fontSize: "2rem",
                                     px: "1.2rem",
                                     backgroundColor: theme.factionTheme.primary,
+                                    color: theme.factionTheme.secondary,
                                 }}
                                 onClick={() => onCompose(SystemMessageDataType.Global)}
                             >
@@ -250,6 +251,7 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
                                     fontSize: "2rem",
                                     px: "1.2rem",
                                     backgroundColor: theme.factionTheme.primary,
+                                    color: theme.factionTheme.secondary,
                                 }}
                                 onClick={() => onCompose(SystemMessageDataType.Faction)}
                             >
