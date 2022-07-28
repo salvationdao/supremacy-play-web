@@ -26,11 +26,14 @@ export const ProgressBar = ({
                 <Stack justifyContent="flex-end" style={{ position: "relative", height: thickness, width: "100%", backgroundColor }}>
                     <Box
                         style={{
+                            position: "absolute",
+                            top: "50%",
+                            left: 0,
                             height: "100%",
                             width: `${percentt}%`,
                             backgroundColor: color,
                             transition: "all .25s",
-                            transform: "scaleY(1.2)",
+                            transform: "translateY(-50%) scaleY(1.2)",
                         }}
                     />
 
@@ -54,11 +57,14 @@ export const ProgressBar = ({
             <Stack justifyContent="flex-end" style={{ position: "relative", height: "100%", width: thickness, backgroundColor }}>
                 <Box
                     style={{
+                        position: "absolute",
+                        bottom: 0,
+                        left: "50%",
                         height: `${percentt}%`,
                         width: "100%",
                         backgroundColor: color,
                         transition: "all .25s",
-                        transform: "scaleX(1.2)",
+                        transform: "translateX(-50%) scaleX(1.2)",
                     }}
                 />
 
