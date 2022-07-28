@@ -62,6 +62,7 @@ export const StackTower = React.memo(function StackTower({
                 spacing="2rem"
                 sx={{
                     height: "100%",
+                    transition: "all .1s",
                     filter: disableGame ? "blur(2px)" : "unset",
                     opacity: disableGame ? 0.3 : 1,
                     pointerEvents: disableGame ? "none" : "all",
