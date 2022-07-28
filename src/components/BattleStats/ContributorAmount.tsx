@@ -21,7 +21,7 @@ export const ContributorAmount = (props: ContributorAmountProps) => {
 
     useGameServerSubscriptionUser<string>(
         {
-            URI: "",
+            URI: "/contribute_multiplier",
             key: GameServerKeys.ListenContributorMulti,
         },
         (payload) => {

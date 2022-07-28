@@ -19,7 +19,7 @@ export const TelegramRegisterModal = ({ onClose, code }: { onClose: () => void; 
     // Subscribe on telegram shortcode registered status
     useGameServerSubscriptionUser<string>(
         {
-            URI: "",
+            URI: "/telegram_shortcode_register",
             key: GameServerKeys.UserTelegramShortcodeRegistered,
         },
         (payload) => {

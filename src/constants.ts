@@ -2,8 +2,6 @@ import BigNumber from "bignumber.js"
 
 const USE_PROD = false
 
-console.log("thisi sevn", process.env.REACT_APP_PASSPORT_SERVER_HOST)
-
 // Envar stuff
 export const STAGING_OR_DEV_ONLY = process.env.REACT_APP_ENVIRONMENT !== "production"
 export const DEV_ONLY = process.env.REACT_APP_ENVIRONMENT !== "production" && process.env.REACT_APP_ENVIRONMENT !== "staging"
