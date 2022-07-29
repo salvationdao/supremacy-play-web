@@ -33,7 +33,7 @@ export interface Map {
     disabled_cells: number[]
 }
 
-export interface BattleZoneChange {
+export interface BattleZone {
     location: Position
     radius: number
     shrinkTime: number

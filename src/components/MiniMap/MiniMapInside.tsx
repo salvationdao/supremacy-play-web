@@ -11,6 +11,7 @@ import { LineSelect } from "./MapInsideItems/LineSelect"
 import { MechCommandIcons } from "./MapInsideItems/MapIcon/MechCommandIcons"
 import { RangeIndicator } from "./MapInsideItems/RangeIndicator"
 import { useMiniMapGestures } from "./useMiniMapGestures"
+import { BattleZone } from "./MapInsideItems/BattleZone"
 
 interface MiniMapInsideProps {
     containerDimensions: Dimension
@@ -86,6 +87,8 @@ export const MiniMapInside = ({ containerDimensions }: MiniMapInsideProps) => {
                             transform: `translate(${dragX}px, ${dragY}px) scale(${mapScale})`,
                         }}
                     >
+                        <BattleZone map={map} />
+
                         {/* Render the user selection icon on the map */}
                         <SelectionIcon key={selection?.startCoords && `column-${selection.startCoords.y}-row-${selection.startCoords.x}`} />
 

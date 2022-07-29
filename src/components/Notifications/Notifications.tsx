@@ -37,7 +37,7 @@ import {
     warMachineAbilityNoti,
 } from "./testData"
 import { BattleZoneAlert } from "./Alerts/BattleZoneAlert"
-import { BattleZoneChange } from "../../types"
+import { BattleZone } from "../../types"
 
 const SPAWN_TEST_NOTIFICATIONS = false
 
@@ -69,14 +69,14 @@ export interface NotificationResponse {
         | LocationSelectAlertProps
         | WarMachineAbilityAlertProps
         | WarMachineCommandAlertProps
-        | BattleZoneChange
+        | BattleZone
         | string
 }
 
 export const Notifications = () => {
     const { isMobile } = useMobile()
     const { getFaction } = useSupremacy()
-    const { setForceDisplay100Percentage } = useGame()
+    const { setForceDisplay100Percentage, setBattleZone } = useGame()
 
     // Notification array
     const { value: notifications, add: addNotification, removeByID } = useArray([], "notiID")
@@ -89,8 +89,11 @@ export const Notifications = () => {
             const notiID = makeid()
 
             let duration = SPAWN_TEST_NOTIFICATIONS ? NOTIFICATION_TIME * 10000 : NOTIFICATION_TIME
+
             if (notification.type === NotificationType.BattleZoneChange) {
-                duration = (notification.data as BattleZoneChange).warnTime * 1000
+                const battleZoneChange = notification.data as BattleZone
+                duration = battleZoneChange.warnTime * 1000
+                setBattleZone(battleZoneChange)
             }
 
             addNotification({ notiID, ...notification, duration })

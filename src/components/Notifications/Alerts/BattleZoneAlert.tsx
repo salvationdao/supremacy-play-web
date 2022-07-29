@@ -2,10 +2,10 @@ import { Box, Stack } from "@mui/material"
 import { ClipThing, StyledNormalText } from "../.."
 import { SvgEmergency } from "../../../assets"
 import { colors } from "../../../theme/theme"
-import { BattleZoneChange } from "../../../types"
+import { BattleZone } from "../../../types"
 import { useTimer } from "../../../hooks"
 
-export const BattleZoneAlert = ({ data }: { data: BattleZoneChange }) => {
+export const BattleZoneAlert = ({ data }: { data: BattleZone }) => {
     const { totalSecRemain } = useTimer(new Date(Date.now() + data.warnTime * 1000))
 
     return (
@@ -28,7 +28,7 @@ export const BattleZoneAlert = ({ data }: { data: BattleZoneChange }) => {
                 }}
             >
                 <Box>
-                    <SvgEmergency fill={colors.red} size="1.2rem" sx={{ display: "inline", mx: ".4rem" }} />
+                    <SvgEmergency fill={colors.red} size="1.2rem" sx={{ display: "inline", ml: ".4rem", mr: "1.2rem" }} />
                     <StyledNormalText
                         text={
                             totalSecRemain <= 0
