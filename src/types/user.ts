@@ -125,18 +125,24 @@ export enum FeatureName {
     systemMessages = "SYSTEM_MESSAGES",
 }
 
-export enum SystemMessageType {
+export enum SystemMessageDataType {
     MechQueue = "MECH_QUEUE",
     MechBattleComplete = "MECH_BATTLE_COMPLETE",
+    Global = "GLOBAL",
+    Faction = "FACTION",
 }
 
 export interface SystemMessage {
     id: string
     player_id: string
-    type: SystemMessageType
+    sender_id: string
+    data_type: SystemMessageDataType
+    title: string
     message: string
     data: unknown | null
     sent_at: Date
+    read_at?: Date
+    sender: User
 }
 
 export interface SystemMessageDataMechBattleComplete {
