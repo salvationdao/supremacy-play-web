@@ -239,14 +239,14 @@ export const PlayerAbilitiesStore = () => {
                             clipThingsProps={{
                                 clipSize: "9px",
                                 backgroundColor: theme.factionTheme.primary,
-                                border: { isFancy: true, borderColor: theme.factionTheme.primary, borderThickness: "2px" },
+                                border: { borderColor: theme.factionTheme.primary, borderThickness: "2px" },
                                 sx: { position: "relative" },
                             }}
                             sx={{
                                 display: "flex",
                                 flexWrap: "nowrap",
-                                px: "2rem",
-                                py: ".3rem",
+                                px: "1.6rem",
+                                py: ".6rem",
                             }}
                         >
                             <Typography

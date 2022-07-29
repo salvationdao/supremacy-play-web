@@ -275,7 +275,7 @@ export const KeycardsMarket = () => {
                                         clipSize: "9px",
                                         backgroundColor: colors.red,
                                         opacity: 1,
-                                        border: { isFancy: true, borderColor: colors.red, borderThickness: "2px" },
+                                        border: { borderColor: colors.red, borderThickness: "2px" },
                                         sx: { position: "relative" },
                                     }}
                                     sx={{ px: "1.6rem", py: ".6rem", color: "#FFFFFF" }}

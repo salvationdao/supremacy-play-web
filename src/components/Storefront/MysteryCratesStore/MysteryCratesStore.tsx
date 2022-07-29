@@ -233,7 +233,7 @@ export const MysteryCratesStore = () => {
                                         clipSize: "9px",
                                         backgroundColor: theme.factionTheme.primary,
                                         opacity: 1,
-                                        border: { isFancy: true, borderColor: theme.factionTheme.primary, borderThickness: "2px" },
+                                        border: { borderColor: theme.factionTheme.primary, borderThickness: "2px" },
                                         sx: { position: "relative" },
                                     }}
                                     sx={{ px: "1.6rem", py: ".6rem", color: theme.factionTheme.secondary }}
