@@ -127,7 +127,7 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
             )
         } else {
             return (
-                <Stack spacing="1rem" sx={{ flex: 1, height: 0 }}>
+                <Stack sx={{ flex: 1, height: 0 }}>
                     <TableContainer sx={{ flex: 1 }}>
                         <Table sx={{ borderRadius: 0.5, overflow: "hidden", ".MuiTableCell-root": { p: "1.2rem" } }}>
                             <TableHead sx={{ boxShadow: 5 }}>
