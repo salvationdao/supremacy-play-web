@@ -43,8 +43,6 @@ const styles = {
     m: "-.3rem",
 }
 export const Reactions = ({ fontSize, factionColor, message, hoverOnly = false }: ReactionsProps) => {
-    const [reaction, setReaction] = useState<ReactionState>("none")
-
     const { send } = useGameServerCommandsUser("/user_commander")
     const { user } = useAuth()
     const { reactMessage } = useChat()
@@ -56,7 +54,6 @@ export const Reactions = ({ fontSize, factionColor, message, hoverOnly = false }
             const resp = await send<Likes, ReactMessageSendProps>(GameServerKeys.ReactToMessage, reactMessageSend)
             if (!resp) return
             reactMessage(message.id, resp)
-            console.log(resp)
         } catch (e) {
             console.error(e)
         }
@@ -84,35 +81,12 @@ export const Reactions = ({ fontSize, factionColor, message, hoverOnly = false }
         handleReactionSend(sendReactMessage)
     }
 
-    useEffect(() => {
-        if (!message.metadata || !message.metadata.likes) return
-
-        if (!message.metadata.likes.dislikes.includes(user.id) && !message.metadata.likes.likes.includes(user.id)) {
-            console.log("none")
-            setReaction("none")
-            return
-        }
-        if (message.metadata.likes.likes.includes(user.id)) {
-            console.log("like")
-            setReaction("like")
-            return
-        }
-        if (message.metadata.likes.dislikes.includes(user.id)) {
-            console.log("dislike")
-            setReaction("dislike")
-            return
-        }
-    }, [message, user.id])
-
-    useEffect(() => {
-        console.log(reaction)
-    }, [reaction])
     //only display if net !== 0 or is hovered
     return (
         <Stack direction={"row"} spacing={"-.4rem"} sx={hoverOnly ? hoverStyles : styles}>
             <SvgPriceDownArrow
                 size={"2.5rem"}
-                fill={reaction === "dislike" && factionColor ? factionColor : colors.lightGrey}
+                fill={message.metadata?.likes.dislikes.includes(user.id) && factionColor ? factionColor : colors.lightGrey}
                 sx={{
                     ":hover": {
                         cursor: "pointer",
@@ -123,7 +97,7 @@ export const Reactions = ({ fontSize, factionColor, message, hoverOnly = false }
             <Typography fontSize={"1.2rem"}>{message.metadata ? message.metadata.likes.net : 0}</Typography>
             <SvgPriceUpArrow
                 size={"2.5rem"}
-                fill={reaction === "like" && factionColor ? factionColor : colors.lightGrey}
+                fill={message.metadata?.likes.likes.includes(user.id) && factionColor ? factionColor : colors.lightGrey}
                 sx={{
                     ":hover": {
                         cursor: "pointer",
