@@ -9,7 +9,7 @@ import { parseString } from "../helpers"
 import { useToggle } from "../hooks"
 import { useGameServerSubscription, useGameServerSubscriptionFaction } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
-import { BanProposalStruct, ChatMessageType, TextMessageData } from "../types/chat"
+import { BanProposalStruct, ChatMessageType, TextMessageData, User } from "../types"
 
 export interface IncomingMessages {
     faction: string | null
@@ -21,7 +21,7 @@ export type SplitOptionType = "tabbed" | "split" | null
 export type FontSizeType = 0.8 | 1.2 | 1.35
 
 export const ChatContainer = createContainer(() => {
-    const { userID } = useAuth()
+    const { userID, user } = useAuth()
     const history = useHistory()
     const location = useLocation()
     const [isPoppedout, toggleIsPoppedout] = useToggle()
@@ -45,12 +45,23 @@ export const ChatContainer = createContainer(() => {
     const [factionChatUnread, setFactionChatUnread] = useState<number>(0)
     const [globalChatUnread, setGlobalChatUnread] = useState<number>(0)
     const [incomingMessages, setIncomingMessages] = useState<IncomingMessages>()
+    const [userGidRecord, setUserGidRecord] = useState<{ [gid: number]: User }>({})
 
     const [banProposal, setBanProposal] = useState<BanProposalStruct>()
 
     // Store list of messages that were successfully sent or failed
     const [sentMessages, setSentMessages] = useState<Date[]>([])
     const [failedMessages, setFailedMessages] = useState<Date[]>([])
+
+    //active users
+    const [activePlayers, setActivePlayers] = useState<User[]>([])
+    const [globalActivePlayers, setGlobalActivePlayers] = useState<User[]>([])
+
+    const addToUserGidRecord = useCallback((user: User) => {
+        setUserGidRecord((prev) => {
+            return { ...prev, [user.gid]: user }
+        })
+    }, [])
 
     // Save chat settings to local storage
     useEffect(() => {
@@ -169,6 +180,57 @@ export const ChatContainer = createContainer(() => {
         [userID, tabValue, splitOption],
     )
 
+    const readMessage = useCallback(
+        (messageID: string) => {
+            const genericRead = (
+                msgs: ChatMessageType[],
+                setMsgs: (value: ((prevState: ChatMessageType[]) => ChatMessageType[]) | ChatMessageType[]) => void,
+            ) => {
+                const newMessages = [...msgs]
+                let index = -1
+                const msgToRead = newMessages.find((el, i) => {
+                    index = i
+                    return el.id === messageID
+                })
+                if (!msgToRead) return
+                const md = (msgToRead.data as TextMessageData).metadata
+                if (md) {
+                    md.tagged_users_read[user.gid] = true
+                    newMessages[index] = msgToRead
+
+                    setMsgs(newMessages)
+                }
+            }
+
+            if (tabValue === 0) {
+                genericRead(globalChatMessages, setGlobalChatMessages)
+            } else {
+                genericRead(factionChatMessages, setFactionChatMessages)
+            }
+        },
+        [globalChatMessages, setGlobalChatMessages, factionChatMessages, setFactionChatMessages, user, tabValue],
+    )
+
+    const sendBrowserNotification = useCallback((title: string, body: string, timeOpen?: number) => {
+        if (!("Notification" in window)) {
+            return
+        }
+
+        const n = new Notification(title, { body: body, badge: SupremacyPNG, icon: SupremacyPNG, image: SupremacyPNG })
+        n.onclick = (e) => {
+            e.preventDefault()
+            window.parent.parent.focus()
+        }
+
+        if (timeOpen) {
+            setTimeout(() => n.close(), timeOpen)
+        }
+
+        if (document.visibilityState === "visible") {
+            n.close()
+        }
+    }, [])
+
     useEffect(() => {
         if (!incomingMessages || incomingMessages.messages.length <= 0) return
 
@@ -231,18 +293,35 @@ export const ChatContainer = createContainer(() => {
                 ended_at: endTime,
             })
 
-            if (!("Notification" in window)) {
-                return
-            }
+            sendBrowserNotification(
+                "Ban Proposal Initialised",
+                `Reason: ${payload.reason}\nOn: ${payload.reported_player_username}\nFrom: ${payload.issued_by_username}`,
+                10000,
+            )
+        },
+    )
 
-            const notification = new Notification("Ban Proposal Initialised", {
-                body: `Reason: ${payload.reason}\nOn: ${payload.reported_player_username}\nFrom: ${payload.issued_by_username}`,
-                badge: SupremacyPNG,
-                icon: SupremacyPNG,
-                image: SupremacyPNG,
-            })
+    //subscribe active faction users
+    useGameServerSubscriptionFaction<User[]>(
+        {
+            URI: "",
+            key: GameServerKeys.SubPlayerList,
+        },
+        (payload) => {
+            if (!payload) return
+            setActivePlayers(payload.sort((a, b) => a.username.localeCompare(b.username)))
+        },
+    )
 
-            setTimeout(() => notification.close(), 10000)
+    //subscribe active global users
+    useGameServerSubscription<User[]>(
+        {
+            URI: "/public/global_active_players",
+            key: GameServerKeys.SubGlobalPlayerList,
+        },
+        (payload) => {
+            if (!payload) return
+            setGlobalActivePlayers(payload.sort((a, b) => a.username.localeCompare(b.username)))
         },
     )
 
@@ -279,6 +358,12 @@ export const ChatContainer = createContainer(() => {
         setFontSize,
         globalAnnouncement,
         banProposal,
+        userGidRecord,
+        addToUserGidRecord,
+        activePlayers,
+        globalActivePlayers,
+        readMessage,
+        sendBrowserNotification,
     }
 })
 

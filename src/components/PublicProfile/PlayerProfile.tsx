@@ -168,8 +168,6 @@ export const PlayerProfilePage = () => {
                 setAboutMe(resp.about_me)
                 newSnackbarMessage("about me updated successfully.", "success")
             } catch (e) {
-                console.log("what")
-
                 let errorMessage = ""
                 if (typeof e === "string") {
                     errorMessage = e
@@ -283,6 +281,7 @@ export const PlayerProfilePage = () => {
                                     avatarURL={avatar?.avatar_url || ""}
                                     primaryColor={primaryColor}
                                     backgroundColor={backgroundColor}
+                                    factionName={profile.faction?.label}
                                 />
 
                                 <Stack

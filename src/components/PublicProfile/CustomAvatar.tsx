@@ -81,7 +81,7 @@ export const CustomAvatar = ({ playerID, open, setOpen, primaryColor, background
         console.log("after")
 
         try {
-            const resp = await userSend<string, CustomAvatarCreateRequest>(GameServerKeys.PlayerProfileCustomAvatarCreate, {
+            await userSend<string, CustomAvatarCreateRequest>(GameServerKeys.PlayerProfileCustomAvatarCreate, {
                 player_id: playerID,
                 face_id: face.id,
                 body_id: body.id,
@@ -90,6 +90,9 @@ export const CustomAvatar = ({ playerID, open, setOpen, primaryColor, background
                 // eyewear_id: "",
             })
             newSnackbarMessage("avatar created successfully.", "success")
+            setOpen(false)
+
+            console.log("djfajklfjlkesafj")
         } catch (e) {
             let errorMessage = ""
             if (typeof e === "string") {

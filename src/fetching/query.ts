@@ -1,9 +1,9 @@
 import { Action } from "react-fetching-library"
 import { GAME_SERVER_HOSTNAME, PASSPORT_SERVER_HOST } from "../constants"
-import { Fingerprint } from "../containers/fingerprint"
-import { Faction, SaleAbilitiesAvailabilityResponse, Stream, User, WarMachineDestroyedRecord, WeaponMaxStats } from "../types"
+import { Fingerprint } from "../containers"
+import { Faction, SaleAbilityAvailability, Stream, User, UserFromPassport, WarMachineDestroyedRecord, WeaponMaxStats } from "../types"
 
-export const PassportLoginCheck = (): Action<User> => {
+export const PassportLoginCheck = (): Action<UserFromPassport> => {
     return {
         method: "GET",
         endpoint: `${window.location.protocol}//${PASSPORT_SERVER_HOST}/api/auth/check`,
@@ -12,7 +12,7 @@ export const PassportLoginCheck = (): Action<User> => {
     }
 }
 
-export const GameServerLoginCheck = (fingerprint?: Fingerprint): Action<boolean> => {
+export const GameServerLoginCheck = (fingerprint?: Fingerprint): Action<User> => {
     return {
         method: "POST",
         endpoint: `${window.location.protocol}//${GAME_SERVER_HOSTNAME}/api/auth/check`,
@@ -49,7 +49,7 @@ export const GetMechDestroyedInfo = (mechID: string): Action<WarMachineDestroyed
     }
 }
 
-export const CanPlayerPurchase = (playerID: string): Action<SaleAbilitiesAvailabilityResponse> => {
+export const GetSaleAbilityAvailability = (playerID: string): Action<SaleAbilityAvailability> => {
     return {
         method: "GET",
         endpoint: `/sale_abilities/availability/${playerID}`,

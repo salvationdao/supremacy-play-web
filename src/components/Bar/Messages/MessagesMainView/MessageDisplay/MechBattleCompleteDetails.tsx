@@ -1,9 +1,9 @@
 import { Box, Divider, Stack, Typography } from "@mui/material"
 import { useMemo } from "react"
-import { SvgCrown } from "../../../../assets"
-import { useSupremacy } from "../../../../containers"
-import { colors, fonts } from "../../../../theme/theme"
-import { MechBattleBrief, SystemMessageDataMechBattleComplete } from "../../../../types"
+import { SvgCrown } from "../../../../../assets"
+import { useSupremacy } from "../../../../../containers"
+import { colors, fonts } from "../../../../../theme/theme"
+import { MechBattleBrief, SystemMessageDataMechBattleComplete } from "../../../../../types"
 
 export interface MechBattleCompleteDetailsProps {
     message: string
