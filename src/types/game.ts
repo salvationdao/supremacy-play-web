@@ -109,6 +109,7 @@ export interface BlueprintPlayerAbility {
     text_colour: string
     location_select_type: LocationSelectType
     created_at: Date
+    inventory_limit: number
 }
 
 export interface PlayerAbility {
@@ -126,7 +127,14 @@ export interface SaleAbility {
     id: string
     blueprint_id: string
     amount_sold: number
+    current_price: string
     ability: BlueprintPlayerAbility
+}
+
+export enum SaleAbilityAvailability {
+    Unavailable,
+    CanClaim,
+    CanPurchase,
 }
 
 export interface GameAbilityProgress {
