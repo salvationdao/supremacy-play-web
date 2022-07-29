@@ -40,4 +40,5 @@ export interface RepairAgent {
     started_at: Date
     finished_at?: Date
     finished_reason?: string
+    required_stacks: number
 }

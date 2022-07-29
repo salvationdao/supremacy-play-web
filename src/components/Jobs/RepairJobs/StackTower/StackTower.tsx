@@ -7,8 +7,6 @@ import { ProgressBar } from "../../../Common/ProgressBar"
 import { Game, GamePattern, GameState } from "./src/game"
 import { isWebGLAvailable } from "./src/utils"
 
-const STACKS_PER_BLOCK = 3
-
 export const StackTower = React.memo(function StackTower({
     disableGame,
     repairAgent,
@@ -37,12 +35,12 @@ export const StackTower = React.memo(function StackTower({
 
     // Send server game pattern
     useEffect(() => {
-        if (cumulativeScore !== STACKS_PER_BLOCK || !repairAgent?.id) return
+        if (cumulativeScore !== repairAgent?.required_stacks || !repairAgent?.id) return
         ;(async () => {
             const result = await completeAgentRepair(repairAgent.id, gamePatterns)
             if (result) setGamePatterns([])
         })()
-    }, [completeAgentRepair, cumulativeScore, gamePatterns, repairAgent?.id])
+    }, [completeAgentRepair, cumulativeScore, gamePatterns, repairAgent?.id, repairAgent?.required_stacks])
 
     const primaryColor = theme.factionTheme.primary
 
@@ -69,7 +67,7 @@ export const StackTower = React.memo(function StackTower({
             >
                 <Stack spacing=".7rem">
                     <Typography variant="h5" sx={{ fontWeight: "fontWeightBold", span: { fontFamily: "inherit", color: colors.neonBlue } }}>
-                        YOU NEED A TOTAL OF <span>{STACKS_PER_BLOCK}</span> STACKS TO REPAIR A SINGLE BLOCK!
+                        YOU NEED A TOTAL OF <span>{repairAgent?.required_stacks || "XXX"}</span> STACKS TO REPAIR A SINGLE BLOCK!
                     </Typography>
 
                     <Stack direction="row" alignItems="center" spacing="1rem">
@@ -79,12 +77,12 @@ export const StackTower = React.memo(function StackTower({
                                 backgroundColor={colors.red}
                                 orientation="horizontal"
                                 thickness="12px"
-                                percent={(100 * cumulativeScore) / STACKS_PER_BLOCK}
+                                percent={(100 * cumulativeScore) / (repairAgent?.required_stacks || 100)}
                             />
                         </Stack>
 
                         <Typography variant="h6" sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>
-                            {cumulativeScore}/{STACKS_PER_BLOCK}
+                            {cumulativeScore}/{repairAgent?.required_stacks || "XXX"}
                         </Typography>
                     </Stack>
                 </Stack>
