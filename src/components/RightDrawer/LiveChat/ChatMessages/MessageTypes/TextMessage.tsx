@@ -88,7 +88,6 @@ export const TextMessage = ({
     const smallFontSize = useMemo(() => (fontSize ? `${0.9 * fontSize}rem` : "0.9rem"), [fontSize])
 
     const renderFontSize = useCallback(() => {
-        console.log(fontSize)
         if (isEmoji) return (fontSize || 1.1) * 3
         return (fontSize || 1.1) * 1.35
     }, [isEmoji, fontSize])
