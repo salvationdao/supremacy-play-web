@@ -1,6 +1,7 @@
 import { Avatar, Box, CircularProgress, Fade, Modal, Stack, Tab, Tabs, Typography, useMediaQuery } from "@mui/material"
 import { SyntheticEvent, useCallback, useEffect, useMemo, useState } from "react"
 import { EmptyWarMachinesPNG } from "../../assets"
+import { useSnackbar } from "../../containers"
 import { parseString } from "../../helpers"
 import { usePagination, useUrlQuery } from "../../hooks"
 import { useGameServerCommandsUser } from "../../hooks/useGameServer"
@@ -11,6 +12,7 @@ import { FancyButton } from "../Common/FancyButton"
 import { PageHeader } from "../Common/PageHeader"
 
 interface CustomAvatarProps {
+    playerID: string
     open: boolean
     setOpen: (o: boolean) => void
     primaryColor: string
@@ -23,7 +25,18 @@ interface Layer {
     image_url: string
 }
 
-export const CustomAvatar = ({ open, setOpen, primaryColor, backgroundColor, submitting }: CustomAvatarProps) => {
+interface CustomAvatarCreateRequest {
+    player_id?: string
+    face_id: string
+    body_id: string
+    hair_id?: string
+    accessory_id?: string
+    eyewear_id?: string
+}
+export const CustomAvatar = ({ playerID, open, setOpen, primaryColor, backgroundColor, submitting }: CustomAvatarProps) => {
+    const { send: userSend } = useGameServerCommandsUser("/user_commander")
+    const { newSnackbarMessage } = useSnackbar()
+
     const [currentValue, setCurrentValue] = useState<AVATAR_FEATURE_TABS>(AVATAR_FEATURE_TABS.Face)
 
     const [imageSize, setImageSize] = useState(600)
@@ -51,6 +64,7 @@ export const CustomAvatar = ({ open, setOpen, primaryColor, backgroundColor, sub
     const [face, setFace] = useState<Layer>()
     const [body, setBody] = useState<Layer>()
     const [accessory, setAccessory] = useState<Layer>()
+    const [eyewear, setEyeWear] = useState<Layer>()
 
     const handleChange = useCallback(
         (event: SyntheticEvent, newValue: AVATAR_FEATURE_TABS) => {
@@ -58,6 +72,34 @@ export const CustomAvatar = ({ open, setOpen, primaryColor, backgroundColor, sub
         },
         [history, location.hash],
     )
+
+    // username
+    const handleSave = useCallback(async () => {
+        console.log("here")
+
+        if (!body || !face) return
+        console.log("after")
+
+        try {
+            const resp = await userSend<string, CustomAvatarCreateRequest>(GameServerKeys.PlayerProfileCustomAvatarCreate, {
+                player_id: playerID,
+                face_id: face.id,
+                body_id: body.id,
+                hair_id: hair?.id,
+                accessory_id: accessory?.id,
+                // eyewear_id: "",
+            })
+            newSnackbarMessage("avatar created successfully.", "success")
+        } catch (e) {
+            let errorMessage = ""
+            if (typeof e === "string") {
+                errorMessage = e
+            } else if (e instanceof Error) {
+                errorMessage = e.message
+            }
+            newSnackbarMessage(errorMessage, "error")
+        }
+    }, [userSend, playerID, newSnackbarMessage, face, body, hair, accessory])
     return (
         <Modal onClose={() => setOpen(false)} open={open} sx={{ zIndex: siteZIndex.Modal, margin: "auto", height: "60vh", width: "60vw" }}>
             <Stack direction="row" spacing="1rem" sx={{ height: "100%", width: "100%" }}>
@@ -119,52 +161,58 @@ export const CustomAvatar = ({ open, setOpen, primaryColor, backgroundColor, sub
                                         />
                                     </Box>
 
-                                    <Box width="50%" sx={{ justifySelf: "flex-start", alignSelf: "flex-start" }}>
-                                        <Tabs
-                                            value={currentValue}
-                                            onChange={handleChange}
-                                            variant="scrollable"
-                                            scrollButtons="auto"
-                                            sx={{
-                                                flexShrink: 0,
-                                                color: primaryColor,
-                                                minHeight: 0,
-                                                ".MuiTab-root": { minHeight: 0, fontSize: "1.3rem", height: "6rem", width: "10rem" },
-                                                ".Mui-selected": {
-                                                    color: `${primaryColor} !important`,
-                                                },
-                                                ".MuiTabs-indicator": { display: "none" },
-                                                ".MuiTabScrollButton-root": { display: "none" },
-                                            }}
-                                        >
-                                            <Tab label="FACE" value={AVATAR_FEATURE_TABS.Face} />
+                                    {/* tabs */}
+                                    <Stack width="50%">
+                                        <Box>
+                                            <Tabs
+                                                value={currentValue}
+                                                onChange={handleChange}
+                                                variant="scrollable"
+                                                scrollButtons="auto"
+                                                sx={{
+                                                    flexShrink: 0,
+                                                    color: primaryColor,
+                                                    minHeight: 0,
+                                                    ".MuiTab-root": { minHeight: 0, fontSize: "1.3rem", height: "6rem", width: "10rem" },
+                                                    ".Mui-selected": {
+                                                        color: `${primaryColor} !important`,
+                                                    },
+                                                    ".MuiTabs-indicator": { display: "none" },
+                                                    ".MuiTabScrollButton-root": { display: "none" },
+                                                }}
+                                            >
+                                                <Tab label="FACE" value={AVATAR_FEATURE_TABS.Face} />
 
-                                            <Tab label="HAIR" value={AVATAR_FEATURE_TABS.Hair} />
+                                                <Tab label="HAIR" value={AVATAR_FEATURE_TABS.Hair} />
 
-                                            <Tab label="BODY" value={AVATAR_FEATURE_TABS.Body} />
+                                                <Tab label="BODY" value={AVATAR_FEATURE_TABS.Body} />
 
-                                            <Tab label="ACCESSORY" value={AVATAR_FEATURE_TABS.Accessory} />
-                                        </Tabs>
+                                                <Tab label="ACCESSORY" value={AVATAR_FEATURE_TABS.Accessory} />
+                                            </Tabs>
 
-                                        {/* Face Layer */}
-                                        <TabPanel currentValue={currentValue} value={AVATAR_FEATURE_TABS.Face}>
-                                            <LayerList layerType="FACE" setLayer={setFace} />
-                                        </TabPanel>
+                                            {/* Face Layer */}
+                                            <TabPanel currentValue={currentValue} value={AVATAR_FEATURE_TABS.Face}>
+                                                <LayerList layerType="FACE" setLayer={setFace} />
+                                            </TabPanel>
 
-                                        {/* Hair Layer */}
-                                        <TabPanel currentValue={currentValue} value={AVATAR_FEATURE_TABS.Hair}>
-                                            <LayerList layerType="HAIR" setLayer={setHair} />
-                                        </TabPanel>
+                                            {/* Hair Layer */}
+                                            <TabPanel currentValue={currentValue} value={AVATAR_FEATURE_TABS.Hair}>
+                                                <LayerList layerType="HAIR" setLayer={setHair} />
+                                            </TabPanel>
 
-                                        {/* Body Layer */}
-                                        <TabPanel currentValue={currentValue} value={AVATAR_FEATURE_TABS.Body}>
-                                            <LayerList layerType="BODY" setLayer={setBody} />
-                                        </TabPanel>
+                                            {/* Body Layer */}
+                                            <TabPanel currentValue={currentValue} value={AVATAR_FEATURE_TABS.Body}>
+                                                <LayerList layerType="BODY" setLayer={setBody} />
+                                            </TabPanel>
 
-                                        {/* Accessories layer */}
-                                        <TabPanel currentValue={currentValue} value={AVATAR_FEATURE_TABS.Accessory}>
-                                            <LayerList layerType={AVATAR_FEATURE_TABS.Accessory} setLayer={setAccessory} />
-                                        </TabPanel>
+                                            {/* Accessories layer */}
+                                            <TabPanel currentValue={currentValue} value={AVATAR_FEATURE_TABS.Accessory}>
+                                                <LayerList layerType={AVATAR_FEATURE_TABS.Accessory} setLayer={setAccessory} />
+                                            </TabPanel>
+                                        </Box>
+                                    </Stack>
+                                    <Box sx={{ alignSelf: "flex-end" }}>
+                                        <FancyButton onClick={handleSave}>Save</FancyButton>
                                     </Box>
                                 </Stack>
                             </Stack>

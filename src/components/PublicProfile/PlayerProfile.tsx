@@ -275,6 +275,7 @@ export const PlayerProfilePage = () => {
                                 }}
                             >
                                 <ProfileAvatar
+                                    playerID={profile.player.id}
                                     isOwner={isMe}
                                     updateAvatar={async (avatar_id: string) => {
                                         updateAvatar(avatar_id)

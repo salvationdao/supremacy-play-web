@@ -27,6 +27,7 @@ interface ProfileAvatar {
     tier: string
 }
 interface ProfileAvatarProps {
+    playerID: string
     isOwner: boolean
     primaryColor: string
     backgroundColor: string
@@ -34,7 +35,7 @@ interface ProfileAvatarProps {
     updateAvatar: (avatarID: string) => Promise<void>
 }
 
-export const ProfileAvatar = ({ isOwner, primaryColor, backgroundColor, avatarURL, updateAvatar }: ProfileAvatarProps) => {
+export const ProfileAvatar = ({ isOwner, primaryColor, backgroundColor, avatarURL, updateAvatar, playerID }: ProfileAvatarProps) => {
     const [query] = useUrlQuery()
     const { send } = useGameServerCommandsUser("/user_commander")
 
@@ -78,7 +79,7 @@ export const ProfileAvatar = ({ isOwner, primaryColor, backgroundColor, avatarUR
             if (!resp) return
             setLoadError(undefined)
             if (page === 1) {
-                setAvatars([{ avatar_url: "", id: "custom", tier: "MEGA" }, { avatar_url: "", id: "", tier: "MEGA" }, ...resp.avatars])
+                setAvatars([{ avatar_url: "", id: "", tier: "MEGA" }, ...resp.avatars])
             } else {
                 setAvatars(resp.avatars)
             }
@@ -369,6 +370,7 @@ export const ProfileAvatar = ({ isOwner, primaryColor, backgroundColor, avatarUR
 
             {/* custom avatar modal */}
             <CustomAvatar
+                playerID={playerID}
                 open={customAvatarModalOpen}
                 setOpen={setCustomAvatarModalOpen}
                 primaryColor={primaryColor}
@@ -378,16 +380,3 @@ export const ProfileAvatar = ({ isOwner, primaryColor, backgroundColor, avatarUR
         </Stack>
     )
 }
-
-// player_custom_avatars
-// player_id
-// face_id references faces (id)
-// hair_id references hair (id)
-
-// faces
-// id
-// hue
-
-// hair
-// id
-// hue
