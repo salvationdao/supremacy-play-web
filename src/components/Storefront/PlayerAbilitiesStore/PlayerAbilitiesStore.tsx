@@ -5,14 +5,14 @@ import { ClipThing, FancyButton } from "../.."
 import { PlayerAbilityPNG } from "../../../assets"
 import { useAuth } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
-import { CanPlayerPurchase } from "../../../fetching"
+import { GetSaleAbilityAvailability } from "../../../fetching"
 import { timeSinceInWords } from "../../../helpers"
 import { useTimer } from "../../../hooks"
 import { useGameServerSubscription, useGameServerSubscriptionUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { HANGAR_TABS } from "../../../pages"
 import { colors, fonts } from "../../../theme/theme"
-import { PlayerAbility, SaleAbility } from "../../../types"
+import { PlayerAbility, SaleAbility, SaleAbilityAvailability } from "../../../types"
 import { PageHeader } from "../../Common/PageHeader"
 import { PlayerAbilityStoreItem } from "./PlayerAbilityStoreItem"
 
@@ -20,12 +20,13 @@ export const PlayerAbilitiesStore = () => {
     const theme = useTheme()
     const { userID } = useAuth()
 
-    const { query: queryCanPurchase } = useParameterizedQuery(CanPlayerPurchase)
-    const [canPurchase, setCanPurchase] = useState(true)
-    const [canPurchaseError, setCanPurchaseError] = useState<string>()
+    const { query: queryAvailability } = useParameterizedQuery(GetSaleAbilityAvailability)
+    const [availability, setAvailability] = useState<SaleAbilityAvailability>(SaleAbilityAvailability.CanClaim)
+    const [availabilityError, setAvailabilityError] = useState<string>()
 
     const [isLoaded, setIsLoaded] = useState(false)
     const [nextRefreshTime, setNextRefreshTime] = useState<Date | null>(null)
+    const [priceMap, setPriceMap] = useState<Map<string, string>>(new Map())
     const [saleAbilities, setSaleAbilities] = useState<SaleAbility[]>([])
 
     const [ownedAbilities, setOwnedAbilities] = useState<Map<string, number>>(new Map())
@@ -33,9 +34,9 @@ export const PlayerAbilitiesStore = () => {
     useEffect(() => {
         ;(async () => {
             try {
-                const resp = await queryCanPurchase(userID)
-                if (resp.error || !resp.payload) return
-                setCanPurchase(resp.payload.can_purchase)
+                const resp = await queryAvailability(userID)
+                if (resp.error || resp.payload == null) return
+                setAvailability(resp.payload)
             } catch (e) {
                 let message = "Failed to obtain purchase availability during this sale period."
                 if (typeof e === "string") {
@@ -44,10 +45,10 @@ export const PlayerAbilitiesStore = () => {
                     message = e.message
                 }
                 console.error(e)
-                setCanPurchaseError(message)
+                setAvailabilityError(message)
             }
         })()
-    }, [queryCanPurchase, userID])
+    }, [queryAvailability, userID])
 
     useGameServerSubscription<{
         next_refresh_time: Date | null
@@ -56,7 +57,7 @@ export const PlayerAbilitiesStore = () => {
     }>(
         {
             URI: "/public/sale_abilities",
-            key: GameServerKeys.SaleAbilitiesList,
+            key: GameServerKeys.SubSaleAbilitiesList,
             ready: !!userID,
         },
         (payload) => {
@@ -65,17 +66,31 @@ export const PlayerAbilitiesStore = () => {
             t.setSeconds(t.getSeconds() + payload.refresh_period_duration_seconds)
             setNextRefreshTime(payload.next_refresh_time || t)
             setSaleAbilities(payload.sale_abilities)
-            setCanPurchase(true)
-            setCanPurchaseError(undefined)
+            setAvailability(SaleAbilityAvailability.CanClaim)
+            setAvailabilityError(undefined)
             if (isLoaded) return
             setIsLoaded(true)
+        },
+    )
+
+    useGameServerSubscription<{ id: string; current_price: string }>(
+        {
+            URI: "/public/sale_abilities",
+            key: GameServerKeys.SubSaleAbilitiesPrice,
+            ready: !!userID,
+        },
+        (payload) => {
+            if (!payload) return
+            setPriceMap((prev) => {
+                return new Map(prev.set(payload.id, payload.current_price))
+            })
         },
     )
 
     useGameServerSubscriptionUser<PlayerAbility[]>(
         {
             URI: "/player_abilities",
-            key: GameServerKeys.PlayerAbilitiesList,
+            key: GameServerKeys.SubPlayerAbilitiesList,
         },
         (payload) => {
             if (!payload) return
@@ -132,9 +147,11 @@ export const PlayerAbilitiesStore = () => {
                             <PlayerAbilityStoreItem
                                 key={`${s.id}-${index}`}
                                 saleAbility={s}
+                                price={priceMap.get(s.id)}
                                 amount={ownedAbilities.get(s.blueprint_id)}
-                                onPurchase={() => setCanPurchase(false)}
-                                disabled={!canPurchase}
+                                onClaim={() => setAvailability(SaleAbilityAvailability.CanPurchase)}
+                                onPurchase={() => setAvailability(SaleAbilityAvailability.Unavailable)}
+                                availability={availability}
                             />
                         ))}
                     </Box>
@@ -175,7 +192,7 @@ export const PlayerAbilitiesStore = () => {
                 </Stack>
             </Stack>
         )
-    }, [isLoaded, saleAbilities, theme.factionTheme.primary, ownedAbilities, canPurchase])
+    }, [isLoaded, saleAbilities, theme.factionTheme.primary, priceMap, ownedAbilities, availability])
 
     return (
         <ClipThing
@@ -208,9 +225,9 @@ export const PlayerAbilitiesStore = () => {
                             <Typography sx={{ fontSize: "1.85rem" }}>
                                 Player abilities are abilities that can be claimed and used on the battle arena.
                             </Typography>
-                            {canPurchaseError && (
+                            {availabilityError && (
                                 <Typography variant="body2" sx={{ color: colors.red }}>
-                                    {canPurchaseError}
+                                    {availabilityError}
                                 </Typography>
                             )}
                         </Stack>
