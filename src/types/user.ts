@@ -123,6 +123,7 @@ export enum FeatureName {
     mechMove = "MECH_MOVE",
     playerAbility = "PLAYER_ABILITY",
     systemMessages = "SYSTEM_MESSAGES",
+    chatBan = "CHAT_BAN",
 }
 
 export enum SystemMessageDataType {

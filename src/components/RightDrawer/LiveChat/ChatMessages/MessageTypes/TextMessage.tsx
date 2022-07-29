@@ -1,18 +1,18 @@
+import { ReactJSXElement } from "@emotion/react/types/jsx-namespace"
 import { Box, Stack, Typography } from "@mui/material"
 import React, { useCallback, useEffect, useMemo, useRef } from "react"
 import { UserBanForm } from "../../../.."
 import { SvgInfoCircular, SvgSkull2 } from "../../../../../assets"
 import { PASSPORT_SERVER_HOST_IMAGES } from "../../../../../constants"
+import { useAuth, useChat } from "../../../../../containers"
 import { dateFormatter, getUserRankDeets, shadeColor, truncate } from "../../../../../helpers"
 import { useToggle } from "../../../../../hooks"
+import { useGameServerCommandsUser } from "../../../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../../../keys"
 import { colors, fonts } from "../../../../../theme/theme"
 import { ChatMessageType, Faction, TextMessageData, User } from "../../../../../types"
 import { TooltipHelper } from "../../../../Common/TooltipHelper"
 import { UserDetailsPopover } from "./UserDetailsPopover"
-import { useAuth, useChat } from "../../../../../containers"
-import { GameServerKeys } from "../../../../../keys"
-import { useGameServerCommandsUser } from "../../../../../hooks/useGameServer"
-import { ReactJSXElement } from "@emotion/react/types/jsx-namespace"
 
 const getMultiplierColor = (multiplierInt: number): string => {
     if (multiplierInt >= 2800) return "#3BFFDE"
@@ -382,13 +382,13 @@ export const TextMessage = ({
                 <UserDetailsPopover
                     factionColor={factionColor}
                     factionSecondaryColor={factionSecondaryColor}
-                    fromUserFactionID={faction_id}
                     userStat={from_user_stat}
                     popoverRef={popoverRef}
                     open={isPopoverOpen}
                     onClose={() => toggleIsPopoverOpen(false)}
                     toggleBanModalOpen={toggleBanModalOpen}
                     user={user}
+                    fromUser={from_user}
                 />
             )}
 

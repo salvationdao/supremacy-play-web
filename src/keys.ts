@@ -80,6 +80,7 @@ export enum GameServerKeys {
     SubscribeFactionChat = "FACTION:CHAT:SUBSCRIBE",
     SubscribeGlobalChat = "GLOBAL:CHAT:SUBSCRIBE",
     SendChatMessage = "CHAT:MESSAGE",
+    ChatBanPlayer = "CHAT:BAN:PLAYER",
 
     BattleMechHistoryDetailed = "BATTLE:MECH:HISTORY:DETAILED",
     BattleMechHistoryList = "BATTLE:MECH:HISTORY:LIST",
