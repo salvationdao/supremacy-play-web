@@ -87,12 +87,14 @@ export const DoRepairModal = ({
                     game_patterns: gamePatterns,
                 })
 
-                if (!resp) return
+                if (!resp) return Promise.reject(false)
                 setRepairAgent(undefined)
+                return Promise.resolve(true)
             } catch (err) {
                 const message = typeof err === "string" ? err : "Failed to submit results."
                 setSubmitError(message)
                 console.error(err)
+                return Promise.reject(false)
             } finally {
                 setTimeout(() => {
                     setIsSubmitting(false)
@@ -186,7 +188,7 @@ export const DoRepairModal = ({
 
         if (submitError) {
             return (
-                <Typography variant="h5" sx={{ fontWeight: "fontWeightBold", color: colors.red }}>
+                <Typography variant="h5" sx={{ textAlign: "center", fontWeight: "fontWeightBold", color: colors.red }}>
                     {submitError}
                 </Typography>
             )
@@ -336,15 +338,15 @@ export const DoRepairModal = ({
                                     clipSize: "7px",
                                     clipSlantSize: "0px",
                                     corners: { topLeft: true, topRight: true, bottomLeft: true, bottomRight: true },
-                                    backgroundColor: colors.red,
+                                    backgroundColor: backgroundColor,
                                     opacity: 1,
                                     border: { borderColor: colors.red, borderThickness: "2px" },
                                     sx: { position: "relative" },
                                 }}
-                                sx={{ px: "1.6rem", py: "1rem", color: "#FFFFFF" }}
+                                sx={{ px: "1.6rem", py: "1rem", color: colors.red }}
                                 onClick={abandonJob}
                             >
-                                <Typography sx={{ color: "#FFFFFF", fontFamily: fonts.nostromoBlack }}>ABANDON JOB</Typography>
+                                <Typography sx={{ color: colors.red, fontFamily: fonts.nostromoBlack }}>ABANDON JOB</Typography>
                             </FancyButton>
                         )}
 

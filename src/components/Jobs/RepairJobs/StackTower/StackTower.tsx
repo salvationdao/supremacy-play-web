@@ -7,7 +7,7 @@ import { ProgressBar } from "../../../Common/ProgressBar"
 import { Game, GamePattern, GameState } from "./src/game"
 import { isWebGLAvailable } from "./src/utils"
 
-const STACKS_PER_BLOCK = 100
+const STACKS_PER_BLOCK = 3
 
 export const StackTower = React.memo(function StackTower({
     disableGame,
@@ -16,7 +16,7 @@ export const StackTower = React.memo(function StackTower({
 }: {
     disableGame: boolean
     repairAgent?: RepairAgent
-    completeAgentRepair: (repairAgentID: string, gamePatterns: GamePattern[]) => Promise<void>
+    completeAgentRepair: (repairAgentID: string, gamePatterns: GamePattern[]) => Promise<boolean>
 }) {
     const theme = useTheme()
 
@@ -26,10 +26,6 @@ export const StackTower = React.memo(function StackTower({
 
     const [gamePatterns, setGamePatterns] = useState<GamePattern[]>([])
     const cumulativeScore = gamePatterns.filter((p) => !p.is_failed && p.score > 0).length
-
-    useEffect(() => {
-        if (repairAgent) setGamePatterns([])
-    }, [repairAgent])
 
     useEffect(() => {
         if (recentPattern) {
@@ -42,7 +38,10 @@ export const StackTower = React.memo(function StackTower({
     // Send server game pattern
     useEffect(() => {
         if (cumulativeScore !== STACKS_PER_BLOCK || !repairAgent?.id) return
-        completeAgentRepair(repairAgent.id, gamePatterns)
+        ;(async () => {
+            const result = await completeAgentRepair(repairAgent.id, gamePatterns)
+            if (result) setGamePatterns([])
+        })()
     }, [completeAgentRepair, cumulativeScore, gamePatterns, repairAgent?.id])
 
     const primaryColor = theme.factionTheme.primary
