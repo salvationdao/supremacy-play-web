@@ -22,15 +22,15 @@ export const MessageItem = ({ message, selected, onSelect }: MessageItemProps) =
                     borderRadius: 0,
                     justifyContent: "start",
                     border: selected ? `${theme.factionTheme.primary}70 1.5px solid` : "none",
-                    backgroundColor: selected ? `${theme.factionTheme.primary}55` : "transparent",
+                    backgroundColor: selected ? `${theme.factionTheme.primary}30` : "transparent",
                     "&:hover": {
-                        backgroundColor: `${theme.factionTheme.primary}55`,
+                        backgroundColor: `${theme.factionTheme.primary}30`,
                     },
                 }}
                 onClick={() => onSelect()}
             >
                 <Stack direction="row" alignItems="center" spacing="1rem" sx={{ flex: 1 }}>
-                    <message.icon size="1.8rem" fill={selectedOrNotRead ? "white" : colors.grey} />
+                    <message.icon size="1.8rem" fill={selectedOrNotRead ? "#FFFFFF" : colors.grey} />
 
                     <Typography
                         variant="h6"
@@ -44,7 +44,7 @@ export const MessageItem = ({ message, selected, onSelect }: MessageItemProps) =
                             WebkitLineClamp: 1, // change to max number of lines
                             WebkitBoxOrient: "vertical",
                             textAlign: "left",
-                            color: selectedOrNotRead ? "white" : colors.grey,
+                            color: selectedOrNotRead ? "#FFFFFF" : colors.grey,
                             textTransform: "none",
                         }}
                     >
@@ -63,11 +63,12 @@ export const MessageItem = ({ message, selected, onSelect }: MessageItemProps) =
                             WebkitLineClamp: 1, // change to max number of lines
                             WebkitBoxOrient: "vertical",
                             textAlign: "left",
-                            color: selectedOrNotRead ? "white" : colors.grey,
+                            color: selectedOrNotRead ? "#FFFFFF" : colors.grey,
                         }}
                     >
                         {message.title}
                     </Typography>
+
                     <Typography
                         sx={{
                             display: "-webkit-box",
@@ -78,19 +79,15 @@ export const MessageItem = ({ message, selected, onSelect }: MessageItemProps) =
                             WebkitBoxOrient: "vertical",
                             textAlign: "left",
                             textTransform: "none",
-                            color: `${selectedOrNotRead ? "#ffffff" : colors.grey}66`,
+                            color: `${selectedOrNotRead ? "#FFFFFF" : colors.grey}66`,
                         }}
                     >
                         {message.message}
                     </Typography>
 
                     <Box flex={1} />
-                    <Typography
-                        variant="body2"
-                        sx={{
-                            color: colors.grey,
-                        }}
-                    >
+
+                    <Typography variant="body2" sx={{ color: colors.grey }}>
                         {message.sent_at.getHours()}:{`${message.sent_at.getMinutes() < 10 ? "0" : ""}${message.sent_at.getMinutes()}`}
                     </Typography>
                 </Stack>

@@ -1,11 +1,11 @@
-import { Box, colors, Divider, FormControlLabel, Pagination, Stack, Switch, Typography } from "@mui/material"
+import { Box, Pagination, Stack, Switch, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { SvgAnnouncement, SvgDamage1, SvgHistoryClock, SvgListView, SvgSyndicateFlag } from "../../../../assets"
 import { useAuth } from "../../../../containers"
 import { usePagination } from "../../../../hooks"
 import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
-import { fonts, theme } from "../../../../theme/theme"
+import { colors, fonts, theme } from "../../../../theme/theme"
 import { FeatureName, SystemMessage, SystemMessageDataType } from "../../../../types"
 import { FancyButton } from "../../../Common/FancyButton"
 import { SystemMessageDisplayable } from "../Messages"
@@ -26,7 +26,7 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
     const [error, setError] = useState<string>()
     const [hideRead, setHideRead] = useState(false)
     const { page, changePage, totalPages, setTotalItems, pageSize } = usePagination({
-        pageSize: 5,
+        pageSize: 15,
         page: 1,
     })
 
@@ -106,19 +106,19 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
     )
 
     const content = useMemo(() => {
-        let messagesRender = null
+        if (focusedMessage) {
+            return <MessageDisplay message={focusedMessage} onClose={() => setFocusedMessage(undefined)} />
+        }
 
         if (messages.length === 0) {
-            messagesRender = (
+            return (
                 <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", p: "1rem" }}>
                     <Typography
                         variant="body2"
                         sx={{
-                            color: colors.grey,
+                            color: colors.lightGrey,
                             fontFamily: fonts.nostromoBold,
-                            opacity: 0.9,
                             textAlign: "center",
-                            textTransform: "uppercase",
                         }}
                     >
                         YOUR INBOX IS EMPTY.
@@ -126,28 +126,55 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
                 </Stack>
             )
         } else {
-            messagesRender = (
-                <Stack spacing="1rem" height="100%">
-                    <Stack spacing=".8rem" flex={1}>
-                        {messages.map((m) => (
-                            <MessageItem
-                                key={m.id}
-                                message={m}
-                                selected={focusedMessage?.id === m.id}
-                                onSelect={() => {
-                                    if (!m.read_at) {
-                                        readMessage(m.id)
-                                    }
-                                    setFocusedMessage(m)
-                                }}
-                            />
-                        ))}
-                    </Stack>
+            return (
+                <Stack spacing="1rem" sx={{ height: "100%" }}>
+                    <Box
+                        sx={{
+                            flex: 1,
+                            overflowY: "auto",
+                            overflowX: "hidden",
+                            mr: ".8rem",
+                            my: ".6rem",
+                            direction: "ltr",
+                            scrollbarWidth: "none",
+                            "::-webkit-scrollbar": {
+                                width: ".4rem",
+                            },
+                            "::-webkit-scrollbar-track": {
+                                background: "#FFFFFF15",
+                                borderRadius: 3,
+                            },
+                            "::-webkit-scrollbar-thumb": {
+                                background: (theme) => theme.factionTheme.primary,
+                                borderRadius: 3,
+                            },
+                        }}
+                    >
+                        <Box sx={{ direction: "ltr", height: 0 }}>
+                            <Stack flex={1} sx={{ p: ".6rem 1.5rem 1.5rem 1.5rem" }}>
+                                {messages.map((m) => (
+                                    <MessageItem
+                                        key={m.id}
+                                        message={m}
+                                        selected={false}
+                                        onSelect={() => {
+                                            if (!m.read_at) {
+                                                readMessage(m.id)
+                                            }
+                                            setFocusedMessage(m)
+                                        }}
+                                    />
+                                ))}
+                            </Stack>
+                        </Box>
+                    </Box>
+
                     {totalPages > 1 && (
                         <Box
                             sx={{
                                 p: "1rem",
                                 borderTop: `${theme.factionTheme.primary}70 1.5px solid`,
+                                borderBottom: `${theme.factionTheme.primary}70 1.5px solid`,
                                 backgroundColor: "#00000070",
                             }}
                         >
@@ -169,144 +196,82 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
                 </Stack>
             )
         }
-
-        return (
-            <Stack flex={1} minHeight={0}>
-                {error && (
-                    <Typography variant="body2" sx={{ color: colors.red }}>
-                        {error}
-                    </Typography>
-                )}
-                <Stack
-                    spacing="1rem"
-                    sx={{
-                        minHeight: "50%",
-                        mb: "1rem",
-                    }}
-                >
-                    {messagesRender}
-                </Stack>
-                <Box
-                    sx={{
-                        flex: 1,
-                        minHeight: 0,
-                        p: ".6rem 1.2rem",
-                        backgroundColor: "#FFFFFF10",
-                    }}
-                >
-                    {focusedMessage ? (
-                        <MessageDisplay message={focusedMessage} />
-                    ) : (
-                        <Stack alignItems="center" justifyContent="center" height="100%">
-                            <Typography
-                                variant="body2"
-                                sx={{
-                                    color: colors.grey,
-                                    fontFamily: fonts.nostromoBold,
-                                    opacity: 0.9,
-                                    textAlign: "center",
-                                }}
-                            >
-                                Select an item to view its contents.
-                            </Typography>
-                        </Stack>
-                    )}
-                </Box>
-            </Stack>
-        )
-    }, [messages, focusedMessage, error, totalPages, page, readMessage, changePage])
+    }, [messages, focusedMessage, totalPages, page, readMessage, changePage])
 
     return (
-        <Stack direction="row" p="2rem" height="100%">
+        <Stack direction="row" height="100%">
             {userHasFeature(FeatureName.systemMessages) && (
-                <>
-                    <Stack
-                        sx={{
-                            height: "100%",
-                            minWidth: "200px",
-                        }}
-                    >
-                        <Stack spacing="1rem" flex={1}>
-                            <FancyButton
-                                clipThingsProps={{
-                                    clipSize: "7px",
-                                }}
-                                size="large"
+                <Stack sx={{ height: "100%", backgroundColor: "#000000", borderRight: `${theme.factionTheme.primary}70 1.5px solid` }}>
+                    <Stack spacing="1.4rem" flex={1} sx={{ p: "1.6rem" }}>
+                        <FancyButton
+                            clipThingsProps={{
+                                clipSize: "9px",
+                                clipSlantSize: "0px",
+                                backgroundColor: theme.factionTheme.primary,
+                                opacity: 1,
+                                border: { borderColor: theme.factionTheme.primary, borderThickness: "1px" },
+                                sx: { position: "relative" },
+                            }}
+                            sx={{ px: "1.6rem", py: ".6rem", color: theme.factionTheme.secondary }}
+                            onClick={() => onCompose(SystemMessageDataType.Global)}
+                        >
+                            <Typography sx={{ fontWeight: "fontWeightBold", color: theme.factionTheme.secondary }}>Compose Global Message</Typography>
+                        </FancyButton>
+
+                        <FancyButton
+                            clipThingsProps={{
+                                clipSize: "9px",
+                                clipSlantSize: "0px",
+                                backgroundColor: theme.factionTheme.primary,
+                                opacity: 1,
+                                border: { borderColor: theme.factionTheme.primary, borderThickness: "1px" },
+                                sx: { position: "relative" },
+                            }}
+                            sx={{ px: "1.6rem", py: ".6rem", color: theme.factionTheme.secondary }}
+                            onClick={() => onCompose(SystemMessageDataType.Faction)}
+                        >
+                            <Typography sx={{ fontWeight: "fontWeightBold", color: theme.factionTheme.secondary }}>Compose Faction Message</Typography>
+                        </FancyButton>
+                    </Stack>
+                </Stack>
+            )}
+
+            <Stack sx={{ flex: 1, height: "100%" }}>
+                <Stack sx={{ p: ".6rem 1.6rem", pt: "1rem", borderBottom: `${theme.factionTheme.primary}70 1.5px solid` }}>
+                    <Stack direction="row">
+                        <Typography variant="h6" sx={{ fontFamily: fonts.nostromoBlack }}>
+                            YOUR INBOX
+                        </Typography>
+
+                        <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ ml: "auto" }}>
+                            <Switch
+                                size="small"
+                                checked={hideRead}
+                                onChange={(e, c) => setHideRead(c)}
                                 sx={{
-                                    fontSize: "2rem",
-                                    px: "1.2rem",
-                                    backgroundColor: theme.factionTheme.primary,
-                                    color: theme.factionTheme.secondary,
+                                    transform: "scale(.7)",
+                                    ".Mui-checked": { color: theme.factionTheme.primary },
+                                    ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${theme.factionTheme.primary}50` },
                                 }}
-                                onClick={() => onCompose(SystemMessageDataType.Global)}
-                            >
-                                Compose Global Message
-                            </FancyButton>
-                            <FancyButton
-                                clipThingsProps={{
-                                    clipSize: "7px",
-                                }}
-                                size="large"
-                                sx={{
-                                    fontSize: "2rem",
-                                    px: "1.2rem",
-                                    backgroundColor: theme.factionTheme.primary,
-                                    color: theme.factionTheme.secondary,
-                                }}
-                                onClick={() => onCompose(SystemMessageDataType.Faction)}
-                            >
-                                Compose Faction Message
-                            </FancyButton>
+                            />
+                            <Typography variant="body2" sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>
+                                Hide Read
+                            </Typography>
                         </Stack>
                     </Stack>
-                    <Divider
-                        orientation="vertical"
-                        sx={{
-                            mx: "1rem",
-                            backgroundColor: `${theme.factionTheme.primary}70`,
-                        }}
-                    />
-                </>
-            )}
-            <Stack
-                sx={{
-                    flex: 1,
-                    height: "100%",
-                }}
-                spacing="1rem"
-            >
-                <Stack
-                    direction="row"
-                    sx={{
-                        pb: "1rem",
-                        borderBottom: `${theme.factionTheme.primary}70 1.5px solid`,
-                    }}
-                >
-                    <Typography variant="h6" sx={{ fontFamily: fonts.nostromoBlack }}>
-                        INBOX
-                    </Typography>
-                    <FormControlLabel
-                        control={<Switch size="small" checked={hideRead} onChange={(e, c) => setHideRead(c)} />}
-                        label="Hide Read"
-                        sx={{
-                            ml: "auto",
-                            fontSize: "1rem",
-                            "& .MuiSwitch-switchBase.Mui-checked": {
-                                color: theme.factionTheme.primary,
-                                "&:hover": {
-                                    backgroundColor: `${theme.factionTheme.primary}dd`,
-                                },
-                            },
-                            "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track": {
-                                backgroundColor: theme.factionTheme.primary,
-                            },
-                        }}
-                    />
+
+                    <Stack direction="row" alignItems="center" spacing=".4rem" sx={{ opacity: 0.5, ":hover": { opacity: 1 } }}>
+                        <SvgHistoryClock size="1.2rem" />
+                        <Typography>Last updated: {lastUpdated.toISOString()}</Typography>
+                    </Stack>
+
+                    {error && (
+                        <Typography variant="body2" sx={{ color: colors.red }}>
+                            {error}
+                        </Typography>
+                    )}
                 </Stack>
-                <Stack direction="row" alignItems="center" spacing=".4rem" sx={{ opacity: 0.5, ":hover": { opacity: 1 } }}>
-                    <SvgHistoryClock size="1.2rem" />
-                    <Typography>Last updated: {lastUpdated.toISOString()}</Typography>
-                </Stack>
+
                 {content}
             </Stack>
         </Stack>
