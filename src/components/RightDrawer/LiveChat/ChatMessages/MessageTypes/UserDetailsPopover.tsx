@@ -1,4 +1,4 @@
-import { Box, InputAdornment, Popover, Stack, TextField, Typography } from "@mui/material"
+import { Box, InputAdornment, MenuItem, Popover, Select, Stack, TextField, Typography, useTheme } from "@mui/material"
 import { useCallback, useEffect, useState } from "react"
 import { ClipThing, FancyButton } from "../../../.."
 import { SvgAbility, SvgDeath, SvgSkull2, SvgView } from "../../../../../assets"
@@ -10,6 +10,20 @@ import { colors, fonts, siteZIndex } from "../../../../../theme/theme"
 import { FeatureName, User, UserStat } from "../../../../../types"
 import { ConfirmModal } from "../../../../Common/ConfirmModal"
 import { Player } from "../../../../Common/Player"
+
+enum DurationOptions {
+    TwentyFourHours = "24 Hours",
+    ThreeHours = "3 Hours",
+    OneHour = "1 Hour",
+    FifteenMinutes = "15 Minutes",
+}
+
+const DURATION_OPTIONS = {
+    [DurationOptions.TwentyFourHours]: 1440,
+    [DurationOptions.ThreeHours]: 180,
+    [DurationOptions.OneHour]: 60,
+    [DurationOptions.FifteenMinutes]: 15,
+}
 
 export const UserDetailsPopover = ({
     factionColor,
@@ -32,6 +46,7 @@ export const UserDetailsPopover = ({
     fromUser: User
     toggleBanModalOpen: (value?: boolean | undefined) => void
 }) => {
+    const theme = useTheme()
     const { userHasFeature } = useAuth()
     const [localOpen, toggleLocalOpen] = useToggle(open)
 
@@ -40,6 +55,7 @@ export const UserDetailsPopover = ({
     const { send } = useGameServerCommandsUser("/user_commander")
     const [showChatBanModal, setShowChatBanModal] = useState(false)
     const [reason, setReason] = useState<string>("")
+    const [durationMinutes, setDurationMinutes] = useState<DurationOptions>(DurationOptions.TwentyFourHours) // default one day
     const [error, setError] = useState<string>()
     const [loading, setLoading] = useState(false)
 
@@ -59,8 +75,11 @@ export const UserDetailsPopover = ({
             await send(GameServerKeys.ChatBanPlayer, {
                 player_id: fromUser.id,
                 reason,
+                duration_minutes: DURATION_OPTIONS[durationMinutes],
             })
             newSnackbarMessage(`Successfully banned player ${fromUser.username}`, "success")
+            setReason("")
+            setDurationMinutes(DurationOptions.TwentyFourHours)
             setShowChatBanModal(false)
             setError(undefined)
         } catch (e) {
@@ -72,7 +91,7 @@ export const UserDetailsPopover = ({
         } finally {
             setLoading(false)
         }
-    }, [fromUser, newSnackbarMessage, reason, send])
+    }, [durationMinutes, fromUser.id, fromUser.username, newSnackbarMessage, reason, send])
 
     if (!userStat) return null
 
@@ -214,6 +233,7 @@ export const UserDetailsPopover = ({
                     onConfirm={onChatBan}
                     onClose={() => {
                         setReason("")
+                        setDurationMinutes(DurationOptions.TwentyFourHours)
                         setError(undefined)
                         setShowChatBanModal(false)
                     }}
@@ -267,6 +287,55 @@ export const UserDetailsPopover = ({
                             setReason(e.target.value)
                         }}
                     />
+                    <Select
+                        sx={{
+                            width: "100%",
+                            borderRadius: 0.5,
+                            "&:hover": {
+                                backgroundColor: theme.factionTheme.primary,
+                                ".MuiTypography-root": { color: theme.factionTheme.secondary },
+                            },
+                            ".MuiTypography-root": {
+                                px: "1rem",
+                                py: ".5rem",
+                            },
+                            "& .MuiSelect-outlined": { px: ".8rem", pt: ".2rem", pb: 0 },
+                            ".MuiOutlinedInput-notchedOutline": {
+                                border: "none !important",
+                            },
+                        }}
+                        value={durationMinutes}
+                        MenuProps={{
+                            variant: "menu",
+                            sx: {
+                                "&& .Mui-selected": {
+                                    ".MuiTypography-root": {
+                                        color: theme.factionTheme.secondary,
+                                    },
+                                    backgroundColor: theme.factionTheme.primary,
+                                },
+                            },
+                            PaperProps: {
+                                sx: {
+                                    backgroundColor: colors.darkNavy,
+                                    borderRadius: 0.5,
+                                },
+                            },
+                        }}
+                    >
+                        {Object.keys(DURATION_OPTIONS).map((value) => (
+                            <MenuItem
+                                key={value}
+                                value={value}
+                                onClick={() => {
+                                    setDurationMinutes(value as DurationOptions)
+                                }}
+                                sx={{ "&:hover": { backgroundColor: "#FFFFFF20" } }}
+                            >
+                                <Typography textTransform="uppercase">{value}</Typography>
+                            </MenuItem>
+                        ))}
+                    </Select>
                 </ConfirmModal>
             )}
         </>
