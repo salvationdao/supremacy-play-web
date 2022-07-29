@@ -1,5 +1,6 @@
+import HCaptcha from "@hcaptcha/react-hcaptcha"
 import { Box, IconButton, Modal, Stack, SxProps, Typography } from "@mui/material"
-import { ReactNode, useCallback, useMemo, useState } from "react"
+import { ReactNode, useCallback, useMemo, useRef, useState } from "react"
 import { SvgClose, SvgCubes, SvgSupToken } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { supFormatterNoFixed, timeSinceInWords } from "../../../helpers"
@@ -31,6 +32,10 @@ export const DoRepairModal = ({
     const [isRegistering, setIsRegistering] = useState(false)
     const [error, setError] = useState<string>()
     const [repairAgent, setRepairAgent] = useState<RepairAgent>()
+
+    // captcha
+    const [token, setToken] = useState<string>()
+    const captchaRef = useRef<HCaptcha | null>(null)
 
     // Submission
     const [isSubmitting, setIsSubmitting] = useState(false)
@@ -89,6 +94,7 @@ export const DoRepairModal = ({
 
                 if (!resp) return Promise.reject(false)
                 setRepairAgent(undefined)
+                setToken(undefined)
                 return Promise.resolve(true)
             } catch (err) {
                 const message = typeof err === "string" ? err : "Failed to submit results."
@@ -166,7 +172,21 @@ export const DoRepairModal = ({
                         </>
                     )}
 
+                    {!token && (
+                        <form>
+                            <HCaptcha
+                                size="compact"
+                                theme="dark"
+                                sitekey="your-sitekey"
+                                onLoad={() => captchaRef.current && captchaRef.current.execute()}
+                                onVerify={setToken}
+                                ref={captchaRef}
+                            />
+                        </form>
+                    )}
+
                     <FancyButton
+                        disabled={!token}
                         loading={isRegistering}
                         clipThingsProps={{
                             clipSize: "7px",
@@ -226,6 +246,7 @@ export const DoRepairModal = ({
         repairJobStatus?.sups_worth_per_block,
         submitError,
         submitSuccess,
+        token,
     ])
 
     return (

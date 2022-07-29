@@ -7,6 +7,7 @@
         "@emotion/react": "^11.9.0",
         "@emotion/styled": "^11.3.0",
         "@fingerprintjs/fingerprintjs": "^3.3.3",
+        "@hcaptcha/react-hcaptcha": "^1.4.4",
         "@mui/icons-material": "^5.0.1",
         "@mui/lab": "^5.0.0-alpha.53",
         "@mui/material": "^5.0.1",
@@ -36,8 +37,8 @@
         "react-resizable": "^3.0.4",
         "react-rnd": "^10.3.7",
         "react-router-dom": "^5.2.0",
-        "three": "^0.142.0",
         "rehype-sanitize": "^5.0.1",
+        "three": "^0.142.0",
         "unstated-next": "^1.1.0",
         "uuid": "^8.3.2"
     },
