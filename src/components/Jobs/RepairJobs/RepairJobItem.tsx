@@ -26,7 +26,7 @@ export const RepairJobItem = ({ repairJob, isGridView }: { repairJob: RepairOffe
 
     const jobOwnerFaction = useMemo(() => getFaction(repairJob.job_owner.faction_id), [getFaction, repairJob.job_owner.faction_id])
 
-    const remainDamagedBlocks = repairJobStatus ? repairJob.blocks_total - repairJobStatus.blocks_repaired : 0
+    const remainDamagedBlocks = repairJobStatus ? repairJobStatus.blocks_required_repair - repairJobStatus.blocks_repaired : 0
     const primaryColor = jobOwnerFaction.primary_color
     const backgroundColor = jobOwnerFaction.background_color
 
@@ -87,7 +87,7 @@ export const RepairJobItem = ({ repairJob, isGridView }: { repairJob: RepairOffe
                                 >
                                     <span>{remainDamagedBlocks}</span> BLOCKS REMAINING
                                 </Typography>
-                                <RepairBlocks defaultBlocks={repairJob.blocks_total} remainDamagedBlocks={remainDamagedBlocks} hideNumber />
+                                <RepairBlocks defaultBlocks={repairJobStatus?.blocks_required_repair} remainDamagedBlocks={remainDamagedBlocks} hideNumber />
                             </Stack>
                         </Stack>
 
