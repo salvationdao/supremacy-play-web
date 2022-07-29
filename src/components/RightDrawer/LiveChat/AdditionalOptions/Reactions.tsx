@@ -1,6 +1,6 @@
 import { Stack, Typography } from "@mui/material"
 import { SvgPriceDownArrow, SvgPriceUpArrow } from "../../../../assets"
-import { useEffect, useState } from "react"
+import { useCallback } from "react"
 import { Likes, TextMessageData } from "../../../../types"
 import { GameServerKeys } from "../../../../keys"
 import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
@@ -8,7 +8,7 @@ import { useAuth, useChat } from "../../../../containers"
 import { colors } from "../../../../theme/theme"
 
 interface ReactionsProps {
-    fontSize: string
+    fontSize: number
     factionColor?: string
     message: TextMessageData
     hoverOnly?: boolean
@@ -47,19 +47,22 @@ export const Reactions = ({ fontSize, factionColor, message, hoverOnly = false }
     const { user } = useAuth()
     const { reactMessage } = useChat()
 
-    const handleReactionSend = async (reactMessageSend: ReactMessageSendProps) => {
-        if (!message.id) return
+    const handleReactionSend = useCallback(
+        async (reactMessageSend: ReactMessageSendProps) => {
+            if (!message.id) return
 
-        try {
-            const resp = await send<Likes, ReactMessageSendProps>(GameServerKeys.ReactToMessage, reactMessageSend)
-            if (!resp) return
-            reactMessage(message.id, resp)
-        } catch (e) {
-            console.error(e)
-        }
-    }
+            try {
+                const resp = await send<Likes, ReactMessageSendProps>(GameServerKeys.ReactToMessage, reactMessageSend)
+                if (!resp) return
+                reactMessage(message.id, resp)
+            } catch (e) {
+                console.error(e)
+            }
+        },
+        [message, send, reactMessage],
+    )
 
-    const handleLike = () => {
+    const handleLike = useCallback(() => {
         if (!message || !message.id) return
 
         const sendReactMessage: ReactMessageSendProps = {
@@ -68,9 +71,9 @@ export const Reactions = ({ fontSize, factionColor, message, hoverOnly = false }
         }
 
         handleReactionSend(sendReactMessage)
-    }
+    }, [handleReactionSend, message])
 
-    const handleDislike = () => {
+    const handleDislike = useCallback(() => {
         if (!message || !message.id) return
 
         const sendReactMessage: ReactMessageSendProps = {
@@ -79,13 +82,13 @@ export const Reactions = ({ fontSize, factionColor, message, hoverOnly = false }
         }
 
         handleReactionSend(sendReactMessage)
-    }
+    }, [handleReactionSend, message])
 
     //only display if net !== 0 or is hovered
     return (
         <Stack direction={"row"} spacing={"-.4rem"} sx={hoverOnly ? hoverStyles : styles}>
             <SvgPriceDownArrow
-                size={"2.5rem"}
+                size={`${fontSize * 2.2}rem`}
                 fill={message.metadata?.likes.dislikes.includes(user.id) && factionColor ? factionColor : colors.lightGrey}
                 sx={{
                     ":hover": {
@@ -94,9 +97,9 @@ export const Reactions = ({ fontSize, factionColor, message, hoverOnly = false }
                 }}
                 onClick={() => handleDislike()}
             />
-            <Typography fontSize={"1.2rem"}>{message.metadata ? message.metadata.likes.net : 0}</Typography>
+            <Typography fontSize={`${fontSize * 0.9}rem`}>{message.metadata ? message.metadata.likes.net : 0}</Typography>
             <SvgPriceUpArrow
-                size={"2.5rem"}
+                size={`${fontSize * 2.2}rem`}
                 fill={message.metadata?.likes.likes.includes(user.id) && factionColor ? factionColor : colors.lightGrey}
                 sx={{
                     ":hover": {

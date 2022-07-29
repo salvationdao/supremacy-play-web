@@ -88,6 +88,7 @@ export const TextMessage = ({
     const smallFontSize = useMemo(() => (fontSize ? `${0.9 * fontSize}rem` : "0.9rem"), [fontSize])
 
     const renderFontSize = useCallback(() => {
+        console.log(fontSize)
         if (isEmoji) return (fontSize || 1.1) * 3
         return (fontSize || 1.1) * 1.35
     }, [isEmoji, fontSize])
@@ -392,8 +393,8 @@ export const TextMessage = ({
 
                         <Box sx={{ zIndex: 1 }}>{chatMessage}</Box>
 
-                        {!!metadata?.likes.net && <Reactions fontSize={"1"} message={data} factionColor={factionColor} />}
-                        {isHovered && <Reactions fontSize={"1"} hoverOnly={true} message={data} factionColor={factionColor} />}
+                        {!!metadata?.likes.net && <Reactions fontSize={fontSize} message={data} factionColor={factionColor} />}
+                        {isHovered && <Reactions fontSize={fontSize} hoverOnly={true} message={data} factionColor={factionColor} />}
                     </Stack>
                 </Box>
             </Box>
