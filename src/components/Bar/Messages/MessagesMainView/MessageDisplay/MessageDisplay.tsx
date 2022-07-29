@@ -27,7 +27,7 @@ export const MessageDisplay = ({ message, onClose }: MessageDisplayProps) => {
     }, [message])
 
     return (
-        <Stack height="100%" sx={{ p: "1.4rem" }}>
+        <Stack sx={{ flex: 1, p: "1.4rem" }}>
             <Stack direction="row" alignItems="center">
                 <Typography variant="h4" sx={{ fontWeight: "fontWeightBold" }}>
                     {message.title}

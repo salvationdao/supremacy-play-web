@@ -1,4 +1,4 @@
-import { Box, Pagination, Stack, Switch, Typography } from "@mui/material"
+import { Box, Pagination, Stack, Switch, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { SvgAnnouncement, SvgDamage1, SvgHistoryClock, SvgListView, SvgSyndicateFlag } from "../../../../assets"
 import { useAuth } from "../../../../containers"
@@ -112,7 +112,7 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
 
         if (messages.length === 0) {
             return (
-                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", p: "1rem" }}>
+                <Stack alignItems="center" justifyContent="center" sx={{ flex: 1, p: "1rem" }}>
                     <Typography
                         variant="body2"
                         sx={{
@@ -127,47 +127,42 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
             )
         } else {
             return (
-                <Stack spacing="1rem" sx={{ height: "100%" }}>
-                    <Box
-                        sx={{
-                            flex: 1,
-                            overflowY: "auto",
-                            overflowX: "hidden",
-                            mr: ".8rem",
-                            my: ".6rem",
-                            direction: "ltr",
-                            scrollbarWidth: "none",
-                            "::-webkit-scrollbar": {
-                                width: ".4rem",
-                            },
-                            "::-webkit-scrollbar-track": {
-                                background: "#FFFFFF15",
-                                borderRadius: 3,
-                            },
-                            "::-webkit-scrollbar-thumb": {
-                                background: (theme) => theme.factionTheme.primary,
-                                borderRadius: 3,
-                            },
-                        }}
-                    >
-                        <Box sx={{ direction: "ltr", height: 0 }}>
-                            <Stack flex={1} sx={{ p: ".6rem 1.5rem 1.5rem 1.5rem" }}>
-                                {messages.map((m) => (
-                                    <MessageItem
-                                        key={m.id}
-                                        message={m}
-                                        selected={false}
-                                        onSelect={() => {
-                                            if (!m.read_at) {
-                                                readMessage(m.id)
-                                            }
-                                            setFocusedMessage(m)
-                                        }}
-                                    />
-                                ))}
-                            </Stack>
-                        </Box>
-                    </Box>
+                <Stack spacing="1rem" sx={{ flex: 1, height: 0 }}>
+                    <TableContainer sx={{ flex: 1 }}>
+                        <Table sx={{ borderRadius: 0.5, overflow: "hidden", ".MuiTableCell-root": { p: "1.2rem" } }}>
+                            <TableHead sx={{ boxShadow: 5 }}>
+                                <TableRow sx={{ backgroundColor: `${theme.factionTheme.primary}40` }}>
+                                    {["FROM", "TITLE", "BODY", "TIME"].map((heading, i) => {
+                                        return (
+                                            <TableCell key={i} align="left" sx={{ borderRight: "#FFFFFF20 1px solid", height: "3.5rem", py: "0 !important" }}>
+                                                <Typography variant="caption" sx={{ py: ".3rem", fontFamily: fonts.nostromoBlack }}>
+                                                    {heading}
+                                                </Typography>
+                                            </TableCell>
+                                        )
+                                    })}
+                                </TableRow>
+                            </TableHead>
+
+                            <TableBody>
+                                {messages.map((m) => {
+                                    return (
+                                        <MessageItem
+                                            key={`${m.id}-${m.read_at}`}
+                                            message={m}
+                                            selected={false}
+                                            onSelect={() => {
+                                                if (!m.read_at) {
+                                                    readMessage(m.id)
+                                                }
+                                                setFocusedMessage(m)
+                                            }}
+                                        />
+                                    )
+                                })}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
 
                     {totalPages > 1 && (
                         <Box
