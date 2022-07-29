@@ -44,6 +44,8 @@ export const BattleZone = ({ map }: BattleZoneProps) => {
         />
     )
 
+    if (!battleZone || battleZone.radius === 0) return <></>
+
     return (
         <>
             {battleZoneCircle()}
