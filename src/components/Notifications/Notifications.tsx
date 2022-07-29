@@ -143,7 +143,7 @@ export const Notifications = () => {
                 )
             }
         },
-        [addNotification, removeByID],
+        [addNotification, removeByID, setBattleZone],
     )
 
     // Test cases
