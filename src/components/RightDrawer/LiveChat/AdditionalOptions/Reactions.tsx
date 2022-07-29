@@ -16,8 +16,7 @@ interface ReactionsProps {
 
 interface ReactMessageSendProps {
     chat_history_id: string
-    likes: string[]
-    dislikes: string[]
+    reaction: ReactionState
 }
 
 type ReactionState = "none" | "like" | "dislike"
@@ -49,10 +48,14 @@ export const Reactions = ({ fontSize, factionColor, message, hoverOnly = false }
     const { send } = useGameServerCommandsUser("/user_commander")
     const { user } = useAuth()
     const { reactMessage } = useChat()
+
     const handleReactionSend = async (reactMessageSend: ReactMessageSendProps) => {
+        if (!message.id) return
+
         try {
-            const resp = await send<boolean, ReactMessageSendProps>(GameServerKeys.ReactToMessage, reactMessageSend)
+            const resp = await send<Likes, ReactMessageSendProps>(GameServerKeys.ReactToMessage, reactMessageSend)
             if (!resp) return
+            reactMessage(message.id, resp)
             console.log(resp)
         } catch (e) {
             console.error(e)
@@ -64,32 +67,9 @@ export const Reactions = ({ fontSize, factionColor, message, hoverOnly = false }
 
         const sendReactMessage: ReactMessageSendProps = {
             chat_history_id: message.id,
-            likes: message.metadata ? message.metadata.likes.likes : ([] as string[]),
-            dislikes: message.metadata ? message.metadata.likes.dislikes : ([] as string[]),
-        }
-        switch (reaction) {
-            case "dislike":
-                sendReactMessage.dislikes = sendReactMessage.dislikes.filter((x) => x !== user.id)
-                sendReactMessage.likes = [...sendReactMessage.likes, user.id]
-                break
-            case "like":
-                sendReactMessage.likes = sendReactMessage.likes.filter((x) => x !== user.id)
-                break
-            default:
-                //case "none":
-                sendReactMessage.likes = [...sendReactMessage.likes, user.id]
-                break
-        }
-        const updatedMetadata: Likes = {
-            likes: sendReactMessage.likes,
-            dislikes: sendReactMessage.dislikes,
-            net: sendReactMessage.likes.length - sendReactMessage.dislikes.length,
+            reaction: "like",
         }
 
-        //update cached messages
-        reactMessage(message.id, updatedMetadata)
-
-        //send to backend to alter net likes
         handleReactionSend(sendReactMessage)
     }
 
@@ -98,32 +78,9 @@ export const Reactions = ({ fontSize, factionColor, message, hoverOnly = false }
 
         const sendReactMessage: ReactMessageSendProps = {
             chat_history_id: message.id,
-            likes: message.metadata ? message.metadata.likes.likes : ([] as string[]),
-            dislikes: message.metadata ? message.metadata.likes.dislikes : ([] as string[]),
+            reaction: "dislike",
         }
 
-        switch (reaction) {
-            case "dislike":
-                sendReactMessage.dislikes = sendReactMessage.dislikes.filter((x) => x !== user.id)
-                break
-            case "like":
-                sendReactMessage.likes = sendReactMessage.likes.filter((x) => x !== user.id)
-                sendReactMessage.dislikes = [...sendReactMessage.dislikes, user.id]
-                break
-            default:
-                //case "none":
-                sendReactMessage.dislikes = [...sendReactMessage.dislikes, user.id]
-                break
-        }
-        const updatedMetadata: Likes = {
-            likes: sendReactMessage.likes,
-            dislikes: sendReactMessage.dislikes,
-            net: sendReactMessage.likes.length - sendReactMessage.dislikes.length,
-        }
-
-        //update cached messages
-        reactMessage(message.id, updatedMetadata)
-        //send to backend to alter net likes
         handleReactionSend(sendReactMessage)
     }
 
