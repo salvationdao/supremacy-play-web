@@ -64,11 +64,12 @@ export const MessagesComposeView = ({ onBack, type }: MessageComposeViewProps) =
     }, [send, type, subject, message, newSnackbarMessage, onBack])
 
     return (
-        <Stack p="2rem" height="100%" spacing="1rem">
+        <Stack height="100%" spacing="1rem">
             <Stack
                 direction="row"
                 sx={{
-                    pb: "1rem",
+                    p: "1rem 2rem",
+                    pt: "1.5rem",
                     borderBottom: `${theme.factionTheme.primary}70 1.5px solid`,
                 }}
             >
@@ -76,6 +77,7 @@ export const MessagesComposeView = ({ onBack, type }: MessageComposeViewProps) =
                     COMPOSE MESSAGE
                 </Typography>
             </Stack>
+
             <Stack spacing=".5rem">
                 <TextField
                     variant="outlined"
@@ -85,13 +87,8 @@ export const MessagesComposeView = ({ onBack, type }: MessageComposeViewProps) =
                     InputProps={{
                         startAdornment: (
                             <InputAdornment position="start">
-                                <Typography
-                                    variant="h6"
-                                    sx={{
-                                        fontWeight: "fontWeightBold",
-                                    }}
-                                >
-                                    To
+                                <Typography variant="h6" sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>
+                                    TO:
                                 </Typography>
                             </InputAdornment>
                         ),
@@ -112,10 +109,8 @@ export const MessagesComposeView = ({ onBack, type }: MessageComposeViewProps) =
                     type="text"
                     value={type}
                     disabled
-                    // onChange={(e) => {
-                    //     setTo(e.target.value)
-                    // }}
                 />
+
                 <TextField
                     variant="outlined"
                     hiddenLabel
@@ -124,13 +119,8 @@ export const MessagesComposeView = ({ onBack, type }: MessageComposeViewProps) =
                     InputProps={{
                         startAdornment: (
                             <InputAdornment position="start">
-                                <Typography
-                                    variant="h6"
-                                    sx={{
-                                        fontWeight: "fontWeightBold",
-                                    }}
-                                >
-                                    Subject
+                                <Typography variant="h6" sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>
+                                    SUBJECT:
                                 </Typography>
                             </InputAdornment>
                         ),
@@ -155,6 +145,7 @@ export const MessagesComposeView = ({ onBack, type }: MessageComposeViewProps) =
                     }}
                 />
             </Stack>
+
             <Box
                 ref={editorContainerEl}
                 flex={1}
@@ -167,10 +158,6 @@ export const MessagesComposeView = ({ onBack, type }: MessageComposeViewProps) =
                         "& *": {
                             fontFamily: `${fonts.shareTechMono} !important`,
                         },
-                        // "& .w-md-editor-text-pre": {
-                        // },
-                        // "& .w-md-editor-text-input": {
-                        // },
                     },
                 }}
             >
@@ -212,25 +199,25 @@ export const MessagesComposeView = ({ onBack, type }: MessageComposeViewProps) =
                     }}
                 />
             </Box>
-            <Stack direction="row" alignItems="start">
+
+            <Stack direction="row" spacing="1rem" alignItems="center" sx={{ pb: "1rem", px: "2rem" }}>
                 <FancyButton
                     clipThingsProps={{
-                        clipSize: "7px",
-                    }}
-                    sx={{
-                        px: "1.2rem",
-                        fontSize: "1.6rem",
+                        clipSize: "9px",
+                        clipSlantSize: "0px",
                         backgroundColor: colors.grey,
-                        "&:hover": {
-                            backgroundColor: colors.red,
-                            color: "white",
-                        },
+                        opacity: 1,
+                        border: { borderColor: colors.grey, borderThickness: "1px" },
+                        sx: { position: "relative" },
                     }}
+                    sx={{ px: "1.6rem", py: ".4rem", color: "#FFFFFF" }}
                     onClick={() => onBack()}
                 >
-                    Discard / Back
+                    <Typography sx={{ fontWeight: "fontWeightBold", color: "#FFFFFF" }}>Discard / Back</Typography>
                 </FancyButton>
+
                 <Box flex={1} />
+
                 {error && (
                     <Typography
                         sx={{
@@ -241,42 +228,32 @@ export const MessagesComposeView = ({ onBack, type }: MessageComposeViewProps) =
                         {error}
                     </Typography>
                 )}
+
                 <Stack direction="row">
-                    <Typography
-                        sx={{
-                            color: colors.grey,
-                        }}
-                    >
-                        <Box
-                            key={message ? message.length : 0}
-                            component="span"
-                            sx={{
-                                animate: `${scaleUpKeyframes} .2s ease-out`,
-                            }}
-                        >
-                            {message ? message.length : 0}
+                    <Typography sx={{ color: colors.grey }}>
+                        <Box key={message ? message.length : 0} component="span" sx={{ animate: `${scaleUpKeyframes} .2s ease-out` }}>
+                            {message?.length || 0}
                         </Box>{" "}
                         / {MESSAGE_LIMIT}
                     </Typography>
                 </Stack>
+
                 <FancyButton
                     clipThingsProps={{
-                        clipSize: "7px",
-                        sx: {
-                            ml: "1rem",
-                        },
-                    }}
-                    sx={{
-                        px: "1.2rem",
-                        fontSize: "1.6rem",
+                        clipSize: "9px",
+                        clipSlantSize: "0px",
                         backgroundColor: colors.green,
+                        opacity: 1,
+                        border: { borderColor: colors.green, borderThickness: "1px" },
+                        sx: { position: "relative" },
                     }}
-                    endIcon={<SvgSend />}
+                    sx={{ px: "1.6rem", py: ".4rem", color: "#FFFFFF" }}
                     onClick={onSend}
+                    endIcon={<SvgSend size="1.8rem" />}
                     disabled={!message || loading}
                     loading={loading}
                 >
-                    Submit Message
+                    <Typography sx={{ fontWeight: "fontWeightBold", color: "#FFFFFF" }}>Submit Message</Typography>
                 </FancyButton>
             </Stack>
         </Stack>
