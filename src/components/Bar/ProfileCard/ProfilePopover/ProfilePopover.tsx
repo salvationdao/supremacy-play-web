@@ -64,6 +64,7 @@ export const ProfilePopover = ({ open, popoverRef, onClose, user }: { open: bool
                     <Stack spacing=".32rem" sx={{ p: ".8rem" }}>
                         <NavButton href={`${PASSPORT_WEB}profile`} startIcon={<SvgAssets sx={{ pb: ".5rem" }} size="1.6rem" />} text="My Inventory" />
                         <NavButton href={`/profile/${user.gid}`} startIcon={<SvgProfile sx={{ pb: ".5rem" }} size="1.6rem" />} text="Profile" />
+                        <NavButton href={`/billing-history`} startIcon={<SvgAssets sx={{ pb: ".5rem" }} size="1.6rem" />} text="Billing History" />
                         <NavButton
                             href={`${PASSPORT_WEB}profile/${user.username}/edit`}
                             startIcon={<SvgProfile sx={{ pb: ".5rem" }} size="1.6rem" />}

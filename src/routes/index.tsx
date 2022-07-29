@@ -1,4 +1,4 @@
-import { BattleArenaPage, ClaimPage, HangarPage, MarketplacePage, NotFoundPage } from "../pages"
+import { BattleArenaPage, ClaimPage, HangarPage, MarketplacePage, BillingHistoryPage, NotFoundPage } from "../pages"
 import { SvgChat } from "../assets"
 import { Box } from "@mui/system"
 import { colors } from "../theme/theme"
@@ -172,6 +172,16 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
             label: "Contracts",
         },
         matchLeftDrawerID: "contracts",
+    },
+
+    // FIAT related
+    billing_history: {
+        id: "billing_history",
+        path: "/billing-history",
+        exact: true,
+        Component: BillingHistoryPage,
+        requireAuth: true,
+        requireFaction: true,
     },
 
     // Others
