@@ -128,7 +128,7 @@ export const CustomAvatar = ({ playerID, open, setOpen, primaryColor, background
                                         color: "white",
                                         ml: "1.9rem",
                                         mr: ".5rem",
-                                        pr: "1.4rem",
+                                        // pr: "1.4rem",
                                         my: "1rem",
                                         flex: 1,
                                         overflowY: "auto",

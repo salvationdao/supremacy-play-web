@@ -1,15 +1,17 @@
 import { Avatar, Box, CircularProgress, Modal, Pagination, Stack, Typography } from "@mui/material"
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { EmptyWarMachinesPNG, SvgEdit } from "../../assets"
 import { parseString } from "../../helpers"
 import { usePagination, useUrlQuery } from "../../hooks"
-import { useGameServerCommandsUser } from "../../hooks/useGameServer"
+import { useGameServerCommandsUser, useGameServerSubscription, useGameServerSubscriptionUser } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { colors, fonts, siteZIndex } from "../../theme/theme"
-import { FactionName } from "../../types"
+import { FactionName, MechStatusEnum } from "../../types"
 import { ClipThing } from "../Common/ClipThing"
 import { FancyButton } from "../Common/FancyButton"
 import { PageHeader } from "../Common/PageHeader"
+import { ChipFilter, ChipFilterSection } from "../Common/SortAndFilters/ChipFilterSection"
+import { SortAndFilters } from "../Common/SortAndFilters/SortAndFilters"
 import { TotalAndPageSizeOptions } from "../Common/TotalAndPageSizeOptions"
 import { CustomAvatar } from "./CustomAvatar"
 
@@ -20,6 +22,10 @@ interface GetAvatarsRequest {
 }
 interface GetAvatarsResponse {
     avatars: ProfileAvatar[]
+    total: number
+}
+interface GetCustomAvatarsResponse {
+    ids: string[]
     total: number
 }
 interface ProfileAvatar {
@@ -37,21 +43,45 @@ interface ProfileAvatarProps {
     updateAvatar: (avatarID: string) => Promise<void>
 }
 
+export enum AvatarListFilter {
+    Custom = "CUSTOM",
+    Default = "DEFAULT",
+}
+
 export const ProfileAvatar = ({ isOwner, primaryColor, backgroundColor, avatarURL, updateAvatar, factionName, playerID }: ProfileAvatarProps) => {
     const [query] = useUrlQuery()
     const { send } = useGameServerCommandsUser("/user_commander")
 
     const [modalOpen, setModalOpen] = useState(false)
+
+    // default avatars
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
     const [avatars, setAvatars] = useState<ProfileAvatar[]>([])
     const [submitting, setSubmitting] = useState(false)
 
+    // custom avatars
+    const [showCustom, setShowCustom] = useState(false)
     const [customAvatarModalOpen, setCustomAvatarModalOpen] = useState(false)
+    const [cusotmAvarIDs, setCustomAvatarIDs] = useState<string[]>([])
 
     const { page, changePage, setTotalItems, totalPages, pageSize, totalItems, changePageSize } = usePagination({
         pageSize: parseString(query.get("pageSize"), 10),
         page: parseString(query.get("page"), 1),
+    })
+
+    // Filters
+    const statusFilterSection = useRef<ChipFilter>({
+        label: "Filter",
+        options: [{ value: AvatarListFilter.Custom, label: AvatarListFilter.Custom, color: colors.purple }],
+        initialSelected: [],
+        initialExpanded: true,
+        onSetSelected: (value: string[]) => {
+            console.log("v", value)
+
+            setShowCustom(value[0] === AvatarListFilter.Custom)
+            changePage(1)
+        },
     })
 
     const updatehHandler = useCallback(
@@ -69,6 +99,7 @@ export const ProfileAvatar = ({ isOwner, primaryColor, backgroundColor, avatarUR
 
     // get list of avatars
     const getItems = useCallback(async () => {
+        if (showCustom) return
         try {
             setIsLoading(true)
             const sortDir = "asc"
@@ -92,13 +123,41 @@ export const ProfileAvatar = ({ isOwner, primaryColor, backgroundColor, avatarUR
         } finally {
             setIsLoading(false)
         }
-    }, [send, page, pageSize, setTotalItems])
+    }, [send, page, pageSize, setTotalItems, showCustom])
+
+    // get list of custom avatars
+    const getCustomAvatars = useCallback(async () => {
+        if (!showCustom) return
+        try {
+            setIsLoading(true)
+            const sortDir = "asc"
+            const resp = await send<GetCustomAvatarsResponse, GetAvatarsRequest>(GameServerKeys.PlayerProfileCustomAvatarList, {
+                queue_sort: sortDir,
+                page,
+                page_size: pageSize,
+            })
+
+            console.log("this is resp", resp)
+
+            if (!resp) return
+            setLoadError(undefined)
+            setCustomAvatarIDs(resp.ids)
+            setTotalItems(resp.total)
+        } catch (e) {
+            setLoadError(typeof e === "string" ? e : "Failed to get avatars.")
+            console.error(e)
+        } finally {
+            setIsLoading(false)
+        }
+    }, [send, page, pageSize, setTotalItems, showCustom])
 
     useEffect(() => {
         getItems()
-    }, [getItems])
+        getCustomAvatars()
+    }, [getItems, getCustomAvatars])
 
-    const content = useMemo(() => {
+    const contentDefaul = useMemo(() => {
+        if (showCustom) return null
         if (loadError) {
             return (
                 <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
@@ -220,6 +279,131 @@ export const ProfileAvatar = ({ isOwner, primaryColor, backgroundColor, avatarUR
         )
     }, [loadError, avatars, isLoading, primaryColor, updatehHandler, factionName])
 
+    const contentCustom = useMemo(() => {
+        if (!showCustom) return null
+        if (loadError) {
+            return (
+                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                    <Stack
+                        alignItems="center"
+                        justifyContent="center"
+                        sx={{ height: "100%", maxWidth: "100%", width: "75rem", px: "3rem", pt: "1.28rem" }}
+                        spacing="1.5rem"
+                    >
+                        <Typography
+                            sx={{
+                                color: colors.red,
+                                fontFamily: fonts.nostromoBold,
+                                textAlign: "center",
+                            }}
+                        >
+                            {loadError}
+                        </Typography>
+                    </Stack>
+                </Stack>
+            )
+        }
+
+        // if (!avatars || isLoading) {
+        //     return (
+        //         <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+        //             <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
+        //                 <CircularProgress size="3rem" sx={{ color: primaryColor }} />
+        //             </Stack>
+        //         </Stack>
+        //     )
+        // }
+
+        if (cusotmAvarIDs && cusotmAvarIDs.length > 0) {
+            return (
+                <Box sx={{ direction: "ltr", height: 0, width: "100%" }}>
+                    <Box
+                        sx={{
+                            width: "100%",
+                            py: "1rem",
+                            display: "grid",
+                            gridTemplateColumns: "repeat(auto-fill, minmax(21rem, 1fr))",
+                            gap: "1.3rem",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            overflow: "visible",
+                        }}
+                    >
+                        {cusotmAvarIDs.map((a, idx) => (
+                            <Box
+                                key={idx}
+                                sx={{
+                                    ":hover": {
+                                        opacity: ".7",
+                                    },
+                                }}
+                                onClick={() => {
+                                    // if (a.id === "custom") {
+                                    //     console.log("create new avatar ... ")
+                                    //     setCustomAvatarModalOpen(true)
+                                    //     setModalOpen(false)
+                                    //     return
+                                    // }
+                                    // updatehHandler(a.id)
+                                }}
+                            >
+                                {/* <Avatar
+                                    src={a.avatar_url}
+                                    alt="Avatar"
+                                    sx={{
+                                        mr: "1rem",
+                                        height: "21rem",
+                                        width: "21rem",
+                                        borderRadius: 1,
+                                        border: `${primaryColor} 2px solid`,
+                                        backgroundColor: factionName == FactionName.ZaibatsuHeavyIndustries ? "black" : primaryColor,
+                                        cursor: "pointer",
+                                    }}
+                                    variant="square"
+                                /> */}
+
+                                <CusotomAvatarItem avatarID={a} primaryColour={""} backgroundColour={""} />
+                            </Box>
+                        ))}
+                    </Box>
+                </Box>
+            )
+        }
+
+        return (
+            <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", maxWidth: "40rem" }}>
+                    <Box
+                        sx={{
+                            width: "80%",
+                            height: "16rem",
+                            opacity: 0.7,
+                            filter: "grayscale(100%)",
+                            // TODO repace with empty avatar image
+                            background: `url(${EmptyWarMachinesPNG})`,
+                            backgroundRepeat: "no-repeat",
+                            backgroundPosition: "bottom center",
+                            backgroundSize: "contain",
+                        }}
+                    />
+                    <Typography
+                        sx={{
+                            px: "1.28rem",
+                            pt: "1.28rem",
+                            color: colors.grey,
+                            fontFamily: fonts.nostromoBold,
+                            userSelect: "text !important",
+                            opacity: 0.9,
+                            textAlign: "center",
+                        }}
+                    >
+                        {"There are no avatars found, please try again."}
+                    </Typography>
+                </Stack>
+            </Stack>
+        )
+    }, [loadError, avatars, isLoading, primaryColor, updatehHandler, factionName])
+
     return (
         <Stack
             direction="column"
@@ -280,6 +464,24 @@ export const ProfileAvatar = ({ isOwner, primaryColor, backgroundColor, avatarUR
                             borderColor: primaryColor,
                             borderThickness: ".3rem",
                         }}
+                        corners={{
+                            topRight: true,
+                            bottomLeft: true,
+                            bottomRight: true,
+                        }}
+                        opacity={0.7}
+                        backgroundColor={backgroundColor}
+                        sx={{ height: "100%", width: "38rem" }}
+                    >
+                        <ChipFilterSection key={""} filter={statusFilterSection.current} primaryColor={primaryColor} secondaryColor={""} />
+                    </ClipThing>
+
+                    <ClipThing
+                        clipSize="10px"
+                        border={{
+                            borderColor: primaryColor,
+                            borderThickness: ".3rem",
+                        }}
                         opacity={0.95}
                         backgroundColor={backgroundColor}
                         sx={{ height: "100%", flex: 1 }}
@@ -326,7 +528,7 @@ export const ProfileAvatar = ({ isOwner, primaryColor, backgroundColor, avatarUR
                                             },
                                         }}
                                     >
-                                        {content}
+                                        {showCustom ? contentCustom : contentDefaul}
                                     </Box>
                                 </Stack>
                             </Stack>
@@ -380,5 +582,84 @@ export const ProfileAvatar = ({ isOwner, primaryColor, backgroundColor, avatarUR
                 submitting={false}
             />
         </Stack>
+    )
+}
+
+interface Layer {
+    id: string
+    image_url: string
+}
+interface CustomAvatar {
+    face: Layer
+    body: Layer
+    hair?: Layer
+    accessory: Layer
+    eyewear: Layer
+    helmet: Layer
+}
+
+export const CusotomAvatarItem = ({
+    avatarID,
+    isGridView,
+    primaryColour,
+    backgroundColour,
+}: {
+    avatarID: string
+    isGridView?: boolean
+    primaryColour: string
+    backgroundColour: string
+}) => {
+    const [mechDetails, setMechDetails] = useState<CustomAvatar>()
+
+    useGameServerSubscriptionUser<CustomAvatar>(
+        {
+            URI: `/custom_avatar/${avatarID}/details`,
+            key: GameServerKeys.PlayerProfileCustomAvatarDetails,
+        },
+        (payload) => {
+            console.log("this be payodn", payload)
+
+            if (!payload) return
+            setMechDetails(payload)
+        },
+    )
+
+    const imageSize = 160
+
+    const face = mechDetails?.face
+    const body = mechDetails?.body
+    const hair = mechDetails?.hair
+    const accessory = mechDetails?.accessory
+    // const imageUrl = mechDetails?.chassis_skin?.avatar_url || mech.avatar_url
+    // const largeImageUrl = mechDetails?.large_image_url || mech.large_image_url
+
+    return (
+        <Box sx={{ position: "relative", overflow: "visible", height: "100%" }}>
+            {/* <FancyButton
+                clipThingsProps={{
+                    clipSize: "7px",
+                    clipSlantSize: "0px",
+                    corners: {
+                        topLeft: true,
+                        topRight: true,
+                        bottomLeft: true,
+                        bottomRight: true,
+                    },
+                    backgroundColor: backgroundColour,
+                    opacity: 0.9,
+                    border: { isFancy: !isGridView, borderColor: primaryColour, borderThickness: ".25rem" },
+                    sx: { position: "relative", height: "100%" },
+                }}
+                sx={{ color: primaryColour, textAlign: "start", height: "100%" }}
+                // TODO create public mech view
+            > */}
+            <Box width={imageSize} sx={{ height: imageSize, position: "relative", alignSelf: "flex-center" }}>
+                <img style={{ height: imageSize, zIndex: 3, position: "absolute", top: "0", left: "0" }} src={accessory?.image_url} alt="" />
+                <img style={{ height: imageSize, zIndex: 3, position: "absolute", top: "0", left: "0" }} src={hair?.image_url} alt="" />
+                <img style={{ height: imageSize, zIndex: 2 }} src={face?.image_url} alt="" />
+                <img style={{ height: imageSize, zIndex: -1, position: "absolute", top: "0", left: "0" }} src={body?.image_url} alt="" />
+            </Box>
+            {/* </FancyButton> */}
+        </Box>
     )
 }
