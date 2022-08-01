@@ -189,8 +189,8 @@ export const CoolTable = <T,>({
                                 sx={{
                                     minHeight: 0,
                                     "*": {
-                                        fontFamily: fonts.nostromoBold,
-                                        fontSize: "1.3rem",
+                                        fontFamily: `${fonts.nostromoBold} !important`,
+                                        fontSize: "1.3rem !important",
                                     },
                                 }}
                                 rowsPerPageOptions={[5, 10, 25]}
