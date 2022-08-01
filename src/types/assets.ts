@@ -1,9 +1,5 @@
 import { Battle, Faction, User, Vector2i } from "."
 
-export interface SaleAbilitiesAvailabilityResponse {
-    can_purchase: boolean
-}
-
 export enum MechStatusEnum {
     Idle = "IDLE",
     Queue = "QUEUE",

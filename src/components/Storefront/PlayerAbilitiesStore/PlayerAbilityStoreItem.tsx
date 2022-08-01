@@ -4,23 +4,33 @@ import { FancyButton, TooltipHelper } from "../.."
 import { SvgGlobal, SvgLine, SvgMicrochip, SvgQuestionMark, SvgTarget } from "../../../assets"
 import { useSnackbar } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
-import { numberCommaFormatter } from "../../../helpers"
+import { numberCommaFormatter, supFormatter } from "../../../helpers"
 import { useToggle } from "../../../hooks"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
+import { scaleUpKeyframes } from "../../../theme/keyframes"
 import { colors, fonts } from "../../../theme/theme"
-import { LocationSelectType, SaleAbility } from "../../../types"
+import { LocationSelectType, SaleAbility, SaleAbilityAvailability } from "../../../types"
 import { ClipThing } from "../../Common/ClipThing"
 import { ConfirmModal } from "../../Common/ConfirmModal"
 
 export interface PlayerAbilityStoreItemProps {
     saleAbility: SaleAbility
+    price?: string
     amount?: number
+    onClaim: () => void
     onPurchase: () => void
-    disabled?: boolean
+    availability: SaleAbilityAvailability
 }
 
-export const PlayerAbilityStoreItem = ({ saleAbility, amount = 0, onPurchase: onPurchaseCallback, disabled }: PlayerAbilityStoreItemProps) => {
+export const PlayerAbilityStoreItem = ({
+    saleAbility,
+    price = saleAbility.current_price,
+    amount = 0,
+    onClaim: onClaimCallback,
+    onPurchase: onPurchaseCallback,
+    availability,
+}: PlayerAbilityStoreItemProps) => {
     const theme = useTheme()
     const primaryColor = theme.factionTheme.primary
     const backgroundColor = theme.factionTheme.background
@@ -29,8 +39,21 @@ export const PlayerAbilityStoreItem = ({ saleAbility, amount = 0, onPurchase: on
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsUser("/user_commander")
     const [showPurchaseModal, toggleShowPurchaseModal] = useToggle(false)
-    const [purchaseLoading, setPurchaseLoading] = useState(false)
-    const [purchaseError, setPurchaseError] = useState<string>()
+    const [loading, setLoading] = useState(false)
+    const [error, setError] = useState<string>()
+
+    const disabled = availability === SaleAbilityAvailability.Unavailable
+
+    const actionWord = useMemo(() => {
+        switch (availability) {
+            case SaleAbilityAvailability.CanPurchase:
+                return "PURCHASE"
+            case SaleAbilityAvailability.CanClaim:
+                return "CLAIM"
+            default:
+                return "UNAVAILABLE"
+        }
+    }, [availability])
 
     const [abilityTypeIcon, abilityTypeDescription] = useMemo(() => {
         switch (saleAbility.ability.location_select_type) {
@@ -47,26 +70,57 @@ export const PlayerAbilityStoreItem = ({ saleAbility, amount = 0, onPurchase: on
         return [<SvgQuestionMark key="MISCELLANEOUS" />, "Miscellaneous ability type."]
     }, [saleAbility])
 
-    const onPurchase = useCallback(async () => {
+    const onClaim = useCallback(async () => {
         try {
-            setPurchaseLoading(true)
+            setLoading(true)
             await send(GameServerKeys.SaleAbilityClaim, {
                 ability_id: saleAbility.id,
             })
             newSnackbarMessage(`Successfully claimed 1 x ${saleAbility.ability.label || "ability"}`, "success")
             toggleShowPurchaseModal(false)
-            onPurchaseCallback()
-            setPurchaseError(undefined)
+            onClaimCallback()
+            setError(undefined)
         } catch (e) {
             if (e instanceof Error) {
-                setPurchaseError(e.message)
+                setError(e.message)
             } else if (typeof e === "string") {
-                setPurchaseError(e)
+                setError(e)
             }
         } finally {
-            setPurchaseLoading(false)
+            setLoading(false)
         }
-    }, [send, saleAbility.id, saleAbility.ability.label, newSnackbarMessage, toggleShowPurchaseModal, onPurchaseCallback])
+    }, [send, saleAbility.id, saleAbility.ability.label, newSnackbarMessage, toggleShowPurchaseModal, onClaimCallback])
+
+    const onPurchase = useCallback(async () => {
+        try {
+            setLoading(true)
+            await send(GameServerKeys.SaleAbilityPurchase, {
+                ability_id: saleAbility.id,
+                price,
+            })
+            newSnackbarMessage(`Successfully purchased 1 x ${saleAbility.ability.label || "ability"}`, "success")
+            toggleShowPurchaseModal(false)
+            onPurchaseCallback()
+            setError(undefined)
+        } catch (e) {
+            if (e instanceof Error) {
+                setError(e.message)
+            } else if (typeof e === "string") {
+                setError(e)
+            }
+        } finally {
+            setLoading(false)
+        }
+    }, [send, saleAbility.id, saleAbility.ability.label, price, newSnackbarMessage, toggleShowPurchaseModal, onPurchaseCallback])
+
+    const onClick = useMemo(() => {
+        if (availability === SaleAbilityAvailability.CanClaim) {
+            return onClaim
+        } else if (availability === SaleAbilityAvailability.CanPurchase) {
+            return onPurchase
+        }
+        return () => null
+    }, [availability, onClaim, onPurchase])
 
     return (
         <>
@@ -145,13 +199,27 @@ export const PlayerAbilityStoreItem = ({ saleAbility, amount = 0, onPurchase: on
                                         lineHeight: 1,
                                         fontSize: "1.5rem",
                                         fontFamily: fonts.nostromoBold,
-                                        span: {
-                                            fontFamily: "inherit",
-                                            color: colors.neonBlue,
-                                        },
+                                        span: {},
                                     }}
                                 >
-                                    <span>{numberCommaFormatter(amount)}</span> Owned
+                                    <Box
+                                        component="span"
+                                        sx={{
+                                            fontFamily: "inherit",
+                                            color: colors.neonBlue,
+                                        }}
+                                    >
+                                        {numberCommaFormatter(amount)}
+                                    </Box>{" "}
+                                    <Box
+                                        component="span"
+                                        sx={{
+                                            fontFamily: "inherit",
+                                        }}
+                                    >
+                                        / {numberCommaFormatter(saleAbility.ability.inventory_limit)}
+                                    </Box>{" "}
+                                    Owned
                                 </Typography>
                             </Box>
                         </Box>
@@ -182,7 +250,25 @@ export const PlayerAbilityStoreItem = ({ saleAbility, amount = 0, onPurchase: on
                                     color: theme.factionTheme.secondary,
                                 }}
                             >
-                                CLAIM ABILITY
+                                {availability === SaleAbilityAvailability.CanPurchase ? (
+                                    <>
+                                        PURCHASE FOR{" "}
+                                        <Box
+                                            key={price}
+                                            component="span"
+                                            sx={{
+                                                font: "inherit",
+                                                animation: `${scaleUpKeyframes} .2s ease-out`,
+                                            }}
+                                        >
+                                            {supFormatter(price, 2)} SUPS
+                                        </Box>
+                                    </>
+                                ) : availability === SaleAbilityAvailability.CanClaim ? (
+                                    "CLAIM ABILITY"
+                                ) : (
+                                    "UNAVAILABLE"
+                                )}
                             </Typography>
                         </FancyButton>
                     </Stack>
@@ -192,21 +278,38 @@ export const PlayerAbilityStoreItem = ({ saleAbility, amount = 0, onPurchase: on
             {showPurchaseModal && (
                 <ConfirmModal
                     title="CONFIRMATION"
-                    onConfirm={onPurchase}
+                    onConfirm={onClick}
                     onClose={() => {
-                        setPurchaseError(undefined)
+                        setError(undefined)
                         toggleShowPurchaseModal(false)
                     }}
-                    isLoading={purchaseLoading}
-                    error={purchaseError}
+                    isLoading={loading}
+                    error={error}
                     confirmSuffix={
                         <Typography variant="h6" sx={{ fontWeight: "fontWeightBold", ml: ".4rem" }}>
-                            CLAIM
+                            {availability === SaleAbilityAvailability.CanPurchase ? (
+                                <>
+                                    <Box
+                                        key={price}
+                                        component="span"
+                                        sx={{
+                                            animation: `${scaleUpKeyframes} .2s ease-out`,
+                                        }}
+                                    >
+                                        ({supFormatter(price, 2)} SUPS)
+                                    </Box>
+                                </>
+                            ) : availability === SaleAbilityAvailability.CanClaim ? (
+                                "CLAIM"
+                            ) : (
+                                "UNAVAILABLE"
+                            )}
                         </Typography>
                     }
+                    disableConfirm={disabled}
                 >
                     <Typography variant="h6">
-                        Do you wish to claim one <strong>{saleAbility.ability.label}</strong>?
+                        Do you wish to {actionWord.toLowerCase()} one <strong>{saleAbility.ability.label}</strong>?
                     </Typography>
                 </ConfirmModal>
             )}
