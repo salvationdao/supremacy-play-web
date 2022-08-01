@@ -1,6 +1,6 @@
 import { Avatar, Box, CircularProgress, Modal, Pagination, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { EmptyWarMachinesPNG, SvgEdit } from "../../assets"
+import { EmptyWarMachinesPNG, HeadPNG, SvgEdit } from "../../assets"
 import { parseString } from "../../helpers"
 import { usePagination, useUrlQuery } from "../../hooks"
 import { useGameServerCommandsUser } from "../../hooks/useGameServer"
@@ -101,6 +101,7 @@ export const ProfileAvatar = ({
                 await updateAvatar(avatarID, isCustom)
             } finally {
                 setSubmitting(false)
+                setShowCustom(false)
                 setModalOpen(false)
             }
         },
@@ -234,20 +235,38 @@ export const ProfileAvatar = ({
                                     updatehHandler(a.id, false)
                                 }}
                             >
-                                <Avatar
-                                    src={a.avatar_url}
-                                    alt="Avatar"
-                                    sx={{
-                                        mr: "1rem",
-                                        height: "21rem",
-                                        width: "21rem",
-                                        borderRadius: 1,
-                                        border: `${primaryColor} 2px solid`,
-                                        backgroundColor: factionName == FactionName.ZaibatsuHeavyIndustries ? "black" : primaryColor,
-                                        cursor: "pointer",
-                                    }}
-                                    variant="square"
-                                />
+                                {a.id === "custom" ? (
+                                    <Box
+                                        sx={{
+                                            borderRadius: 1,
+                                            border: `${primaryColor} 2px solid`,
+                                            backgroundColor: factionName == FactionName.ZaibatsuHeavyIndustries ? "black" : primaryColor,
+                                            cursor: "pointer",
+                                        }}
+                                        display={"flex"}
+                                        height="21rem"
+                                        width="21rem"
+                                        justifyContent={"center"}
+                                        alignItems="center"
+                                    >
+                                        <SvgEdit title="Create custom avatar" size="6rem" />
+                                    </Box>
+                                ) : (
+                                    <Avatar
+                                        src={a.avatar_url}
+                                        alt="Avatar"
+                                        sx={{
+                                            mr: "1rem",
+                                            height: "21rem",
+                                            width: "21rem",
+                                            borderRadius: 1,
+                                            border: `${primaryColor} 2px solid`,
+                                            backgroundColor: factionName == FactionName.ZaibatsuHeavyIndustries ? "black" : primaryColor,
+                                            cursor: "pointer",
+                                        }}
+                                        variant="square"
+                                    />
+                                )}
                             </Box>
                         ))}
                     </Box>
@@ -288,9 +307,6 @@ export const ProfileAvatar = ({
             </Stack>
         )
     }, [loadError, avatars, isLoading, primaryColor, updatehHandler, factionName])
-
-    console.log("avatar id ", avatarID)
-    console.log("is custom ", isCustom)
 
     const contentCustom = useMemo(() => {
         if (!showCustom) return null
@@ -453,7 +469,14 @@ export const ProfileAvatar = ({
             </FancyButton>
 
             {/* avatar select modal */}
-            <Modal onClose={() => setModalOpen(false)} open={modalOpen} sx={{ zIndex: siteZIndex.Modal, margin: "auto", height: "60vh", width: "60vw" }}>
+            <Modal
+                onClose={() => {
+                    setShowCustom(false)
+                    setModalOpen(false)
+                }}
+                open={modalOpen}
+                sx={{ zIndex: siteZIndex.Modal, margin: "auto", height: "60vh", width: "60vw" }}
+            >
                 <Stack direction="row" spacing="1rem" sx={{ height: "100%", width: "100%" }}>
                     <ClipThing
                         clipSize="10px"
@@ -470,7 +493,7 @@ export const ProfileAvatar = ({
                         backgroundColor={backgroundColor}
                         sx={{ height: "100%", width: "38rem" }}
                     >
-                        <ChipFilterSection key={""} filter={statusFilterSection.current} primaryColor={primaryColor} secondaryColor={""} />
+                        <ChipFilterSection filter={statusFilterSection.current} primaryColor={primaryColor} secondaryColor={""} />
                     </ClipThing>
 
                     <ClipThing
@@ -534,6 +557,7 @@ export const ProfileAvatar = ({
                                 disabled={submitting}
                                 onClick={() => {
                                     setModalOpen(false)
+                                    setShowCustom(false)
                                 }}
                             >
                                 CLOSE

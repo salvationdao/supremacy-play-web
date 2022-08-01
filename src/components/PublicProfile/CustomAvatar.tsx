@@ -1,6 +1,7 @@
-import { Avatar, Box, CircularProgress, Fade, Modal, Stack, Tab, Tabs, Typography, useMediaQuery } from "@mui/material"
+import { Avatar, Box, CircularProgress, Fade, Modal, Pagination, Stack, Tab, Tabs, Typography, useMediaQuery } from "@mui/material"
+import { type } from "os"
 import { SyntheticEvent, useCallback, useEffect, useMemo, useState } from "react"
-import { EmptyWarMachinesPNG } from "../../assets"
+import { EmptyWarMachinesPNG, SvgClose } from "../../assets"
 import { useSnackbar } from "../../containers"
 import { parseString } from "../../helpers"
 import { usePagination, useUrlQuery } from "../../hooks"
@@ -78,6 +79,10 @@ export const CustomAvatar = ({ playerID, open, setOpen, primaryColor, background
             })
             newSnackbarMessage("avatar created successfully.", "success")
             setOpen(false)
+            setHair(undefined)
+            setFace(undefined)
+            setBody(undefined)
+            setAccessory(undefined)
         } catch (e) {
             let errorMessage = ""
             if (typeof e === "string") {
@@ -176,27 +181,43 @@ export const CustomAvatar = ({ playerID, open, setOpen, primaryColor, background
 
                                             {/* Face Layer */}
                                             <TabPanel currentValue={currentValue} value={AVATAR_FEATURE_TABS.Face}>
-                                                <LayerList layerType="FACE" setLayer={setFace} />
+                                                <LayerList primaryColor={primaryColor} layerType="FACE" setLayer={setFace} />
                                             </TabPanel>
 
                                             {/* Hair Layer */}
                                             <TabPanel currentValue={currentValue} value={AVATAR_FEATURE_TABS.Hair}>
-                                                <LayerList layerType="HAIR" setLayer={setHair} />
+                                                <LayerList primaryColor={primaryColor} layerType="HAIR" setLayer={setHair} />
                                             </TabPanel>
 
                                             {/* Body Layer */}
                                             <TabPanel currentValue={currentValue} value={AVATAR_FEATURE_TABS.Body}>
-                                                <LayerList layerType="BODY" setLayer={setBody} />
+                                                <LayerList primaryColor={primaryColor} layerType="BODY" setLayer={setBody} />
                                             </TabPanel>
 
                                             {/* Accessories layer */}
                                             <TabPanel currentValue={currentValue} value={AVATAR_FEATURE_TABS.Accessory}>
-                                                <LayerList layerType={AVATAR_FEATURE_TABS.Accessory} setLayer={setAccessory} />
+                                                <LayerList primaryColor={primaryColor} layerType={AVATAR_FEATURE_TABS.Accessory} setLayer={setAccessory} />
                                             </TabPanel>
                                         </Box>
                                     </Stack>
+
                                     <Box sx={{ alignSelf: "flex-end" }}>
                                         <FancyButton onClick={handleSave}>Save</FancyButton>
+                                    </Box>
+
+                                    <Box sx={{ alignSelf: "flex-end" }}>
+                                        <FancyButton
+                                            onClick={() => {
+                                                // handle close
+                                                setOpen(false)
+                                                setHair(undefined)
+                                                setFace(undefined)
+                                                setBody(undefined)
+                                                setAccessory(undefined)
+                                            }}
+                                        >
+                                            Close
+                                        </FancyButton>
                                     </Box>
                                 </Stack>
                             </Stack>
@@ -255,9 +276,10 @@ interface ListRequest {
 
 interface LayerListProps {
     layerType: string
-    setLayer: (h: Layer) => void
+    setLayer: (h?: Layer) => void
+    primaryColor: string
 }
-export const LayerList = ({ setLayer, layerType }: LayerListProps) => {
+export const LayerList = ({ setLayer, layerType, primaryColor }: LayerListProps) => {
     const [query] = useUrlQuery()
     const { send } = useGameServerCommandsUser("/user_commander")
 
@@ -265,7 +287,7 @@ export const LayerList = ({ setLayer, layerType }: LayerListProps) => {
     const [loadError, setLoadError] = useState<string>()
     const [avatars, setAvatars] = useState<Layer[]>([])
 
-    const { page, setTotalItems, pageSize } = usePagination({
+    const { page, setTotalItems, pageSize, totalPages, changePage } = usePagination({
         pageSize: parseString(query.get("pageSize"), 10),
         page: parseString(query.get("page"), 1),
     })
@@ -284,7 +306,14 @@ export const LayerList = ({ setLayer, layerType }: LayerListProps) => {
             if (!resp) return
 
             setLoadError(undefined)
-            setAvatars(resp.layers)
+            setAvatars([
+                {
+                    id: "remove",
+                    image_url: "",
+                    type: layerType,
+                },
+                ...resp.layers,
+            ])
             setTotalItems(resp.total)
         } catch (e) {
             setLoadError(typeof e === "string" ? e : "Failed to get avatars.")
@@ -334,7 +363,7 @@ export const LayerList = ({ setLayer, layerType }: LayerListProps) => {
 
         if (avatars && avatars.length > 0) {
             return (
-                <Box sx={{ direction: "ltr", height: 0, width: "100%" }}>
+                <Box sx={{ direction: "ltr", height: "35vh", width: "100%" }}>
                     <Box
                         sx={{
                             width: "100%",
@@ -356,23 +385,31 @@ export const LayerList = ({ setLayer, layerType }: LayerListProps) => {
                                     },
                                 }}
                                 onClick={() => {
+                                    if (a.id === "remove") {
+                                        setLayer(undefined)
+                                        return
+                                    }
                                     setLayer(a)
                                 }}
                             >
-                                <Avatar
-                                    src={a.image_url}
-                                    alt="Avatar"
-                                    sx={{
-                                        mr: "1rem",
-                                        height: "21rem",
-                                        width: "21rem",
-                                        borderRadius: 1,
-                                        border: `white 2px solid`,
-                                        backgroundColor: "transparent",
-                                        cursor: "pointer",
-                                    }}
-                                    variant="square"
-                                />
+                                {a.id === "remove" ? (
+                                    <SvgClose sx={{ cursor: "pointer" }} size="6rem" />
+                                ) : (
+                                    <Avatar
+                                        src={a.image_url}
+                                        alt="Avatar"
+                                        sx={{
+                                            mr: "1rem",
+                                            height: "21rem",
+                                            width: "21rem",
+                                            borderRadius: 1,
+                                            border: `white 2px solid`,
+                                            backgroundColor: "transparent",
+                                            cursor: "pointer",
+                                        }}
+                                        variant="square"
+                                    />
+                                )}
                             </Box>
                         ))}
                     </Box>
@@ -414,19 +451,139 @@ export const LayerList = ({ setLayer, layerType }: LayerListProps) => {
     }, [loadError, avatars, isLoading])
 
     return (
-        <Stack
-            direction="column"
-            justifyContent={"center"}
-            alignItems="center"
-            sx={{
-                height: "100%",
-                "@media (max-width:1300px)": {
-                    overflowY: "auto",
-                },
-            }}
-        >
-            {content}
+        <Stack direction="row" spacing="1rem" sx={{ height: "100%", width: "100%" }}>
+            <ClipThing
+                clipSize="10px"
+                border={{
+                    borderColor: primaryColor,
+                    borderThickness: ".3rem",
+                }}
+                opacity={0.7}
+                backgroundColor={""}
+                sx={{ height: "100%", flex: 1 }}
+            >
+                <Stack sx={{ position: "relative", height: "100%" }}>
+                    <Stack sx={{ flex: 1 }}>
+                        <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
+                            <Box
+                                sx={{
+                                    ml: "1.9rem",
+                                    mr: ".5rem",
+                                    pr: "1.4rem",
+                                    my: "1rem",
+                                    flex: 1,
+                                    overflowY: "auto",
+                                    overflowX: "hidden",
+                                    direction: "ltr",
+
+                                    "::-webkit-scrollbar": {
+                                        width: ".4rem",
+                                    },
+                                    "::-webkit-scrollbar-track": {
+                                        background: "#FFFFFF15",
+                                        borderRadius: 3,
+                                    },
+                                    "::-webkit-scrollbar-thumb": {
+                                        background: primaryColor,
+                                        borderRadius: 3,
+                                    },
+                                }}
+                            >
+                                {content}
+                            </Box>
+                        </Stack>
+                    </Stack>
+
+                    {totalPages > 1 && (
+                        <Box
+                            sx={{
+                                px: "1rem",
+                                py: ".7rem",
+                                // borderTop: `${primaryColour}70 1.5px solid`,
+                                backgroundColor: "#00000070",
+                            }}
+                        >
+                            <Pagination
+                                size="medium"
+                                count={totalPages}
+                                page={page}
+                                sx={{
+                                    ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold },
+                                    ".Mui-selected": {
+                                        // color: primaryColour,
+                                        // backgroundColor: `${primaryColour} !important`,
+                                    },
+                                }}
+                                onChange={(e, p) => changePage(p)}
+                                showFirstButton
+                                showLastButton
+                            />
+                        </Box>
+                    )}
+                </Stack>
+            </ClipThing>
         </Stack>
+
+        // <Stack spacing="1rem" sx={{ height: "100%" }}>
+        //     <Stack sx={{ flex: 1, height: "100%" }}>
+        //         <Stack sx={{ px: "1rem", py: "1rem", flex: 1, height: "100%" }}>
+        //             <Box
+        //                 sx={{
+        //                     height: "100%",
+        //                     ml: "1.9rem",
+        //                     mr: ".5rem",
+        //                     pr: "1.4rem",
+        //                     my: "1rem",
+        //                     flex: 1,
+        //                     overflowY: "auto",
+        //                     overflowX: "hidden",
+        //                     direction: "ltr",
+
+        //                     "::-webkit-scrollbar": {
+        //                         width: ".4rem",
+        //                     },
+        //                     "::-webkit-scrollbar-track": {
+        //                         background: "#FFFFFF15",
+        //                         borderRadius: 3,
+        //                     },
+        //                     "::-webkit-scrollbar-thumb": {
+        //                         background: primaryColor,
+        //                         borderRadius: 3,
+        //                     },
+        //                 }}
+        //             >
+        //                 {content}
+        //             </Box>
+        //         </Stack>
+        //     </Stack>
+
+        //     {totalPages > 1 && (
+        //         <Box
+        //             sx={{
+        //                 px: "1rem",
+        //                 py: ".7rem",
+        //                 borderTop: `${primaryColor}70 1.5px solid`,
+        //                 backgroundColor: "#00000070",
+        //             }}
+        //         >
+        //             <Pagination
+        //                 size="medium"
+        //                 count={totalPages}
+        //                 page={page}
+        //                 sx={{
+        //                     ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold },
+        //                     ".Mui-selected": {
+        //                         color: primaryColor,
+        //                         backgroundColor: `${primaryColor} !important`,
+        //                     },
+        //                 }}
+        //                 onChange={(e, p) => changePage(p)}
+        //                 showFirstButton
+        //                 showLastButton
+        //             />
+        //         </Box>
+        //     )}
+        // </Stack>
     )
 }
 
@@ -458,18 +615,24 @@ export const CustomAvatarItem = ({ avatarID, backgroundColor }: { avatarID: stri
     return (
         <Box sx={{ position: "relative", overflow: "visible", height: "100%", zIndex: -3, background: backgroundColor, border: "1px solid black" }}>
             <Box width={imageSize} sx={{ height: imageSize, position: "relative", alignSelf: "flex-center" }}>
-                <img
-                    key={avatarDetails?.accessory?.image_url}
-                    style={{ height: imageSize, zIndex: 3, position: "absolute", top: "0", left: "0" }}
-                    src={avatarDetails?.accessory?.image_url}
-                    alt="accessory"
-                />
-                <img
-                    key={avatarDetails?.hair?.image_url}
-                    style={{ height: imageSize, zIndex: 3, position: "absolute", top: "0", left: "0" }}
-                    src={avatarDetails?.hair?.image_url}
-                    alt="hair"
-                />
+                {avatarDetails?.accessory && (
+                    <img
+                        key={avatarDetails?.accessory?.image_url}
+                        style={{ height: imageSize, zIndex: 3, position: "absolute", top: "0", left: "0" }}
+                        src={avatarDetails?.accessory?.image_url}
+                        alt="accessory"
+                    />
+                )}
+
+                {avatarDetails?.hair && (
+                    <img
+                        key={avatarDetails?.hair?.image_url}
+                        style={{ height: imageSize, zIndex: 3, position: "absolute", top: "0", left: "0" }}
+                        src={avatarDetails?.hair?.image_url}
+                        alt="hair"
+                    />
+                )}
+
                 <img key={avatarDetails?.face?.image_url} style={{ height: imageSize, zIndex: 2 }} src={avatarDetails?.face?.image_url} alt="face" />
                 <img
                     key={avatarDetails?.body?.image_url}
