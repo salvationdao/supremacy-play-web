@@ -71,6 +71,7 @@ export const DoRepairModal = ({
             const resp = await send<RepairAgent>(GameServerKeys.RegisterRepairAgent, {
                 repair_offer_id: repairJobStatus?.id,
                 repair_case_id: repairStatus?.id,
+                captcha_token: captchaToken,
             })
 
             if (!resp) return
@@ -83,7 +84,7 @@ export const DoRepairModal = ({
         } finally {
             setIsRegistering(false)
         }
-    }, [repairJobStatus?.id, repairStatus?.id, send])
+    }, [repairJobStatus?.id, repairStatus?.id, send, captchaToken])
 
     const completeAgentRepair = useCallback(
         async (repairAgentID: string, gamePatterns: GamePattern[]) => {
