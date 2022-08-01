@@ -1,6 +1,6 @@
 import { Badge, Box, IconButton, Modal, Stack } from "@mui/material"
 import { useCallback, useEffect, useState } from "react"
-import { SvgMail, SvgWrapperProps } from "../../../assets"
+import { SvgClose, SvgMail, SvgWrapperProps } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { useToggle } from "../../../hooks"
 import { useGameServerCommandsUser, useGameServerSubscriptionUser } from "../../../hooks/useGameServer"
@@ -106,6 +106,7 @@ export const Messages = () => {
                         }}
                         backgroundColor={theme.factionTheme.background}
                         sx={{
+                            position: "relative",
                             height: "72rem",
                             maxHeight: "90vh",
                         }}
@@ -115,6 +116,10 @@ export const Messages = () => {
                         ) : (
                             <MessagesComposeView onBack={() => setComposeView(undefined)} type={composeView} />
                         )}
+
+                        <IconButton size="small" onClick={() => toggleModalOpen(false)} sx={{ position: "absolute", top: ".5rem", right: ".5rem" }}>
+                            <SvgClose size="2.6rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
+                        </IconButton>
                     </ClipThing>
                 </Box>
             </Modal>

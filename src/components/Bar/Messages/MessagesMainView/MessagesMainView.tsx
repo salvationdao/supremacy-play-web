@@ -233,12 +233,15 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
 
             <Stack sx={{ flex: 1, height: "100%" }}>
                 <Stack sx={{ p: ".6rem 1.6rem", pt: "1rem", borderBottom: `${theme.factionTheme.primary}70 1.5px solid` }}>
-                    <Stack direction="row">
-                        <Typography variant="h6" sx={{ fontFamily: fonts.nostromoBlack }}>
-                            YOUR INBOX
-                        </Typography>
+                    <Typography variant="h6" sx={{ fontFamily: fonts.nostromoBlack }}>
+                        YOUR INBOX
+                    </Typography>
 
-                        <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ ml: "auto" }}>
+                    <Stack direction="row" alignItems="center" spacing=".4rem" sx={{ opacity: 0.5, ":hover": { opacity: 1 } }}>
+                        <SvgHistoryClock size="1.2rem" />
+                        <Typography>Last updated: {lastUpdated.toISOString()}</Typography>
+
+                        <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ ml: "auto !important" }}>
                             <Switch
                                 size="small"
                                 checked={hideRead}
@@ -253,11 +256,6 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
                                 Hide Read
                             </Typography>
                         </Stack>
-                    </Stack>
-
-                    <Stack direction="row" alignItems="center" spacing=".4rem" sx={{ opacity: 0.5, ":hover": { opacity: 1 } }}>
-                        <SvgHistoryClock size="1.2rem" />
-                        <Typography>Last updated: {lastUpdated.toISOString()}</Typography>
                     </Stack>
 
                     {error && (
