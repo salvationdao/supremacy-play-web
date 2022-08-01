@@ -5,7 +5,7 @@ import { ClipThing, FancyButton } from "../.."
 import { EmptyWarMachinesPNG, WarMachineIconPNG } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { parseString } from "../../../helpers"
-import { usePagination, useUrlQuery } from "../../../hooks"
+import { usePagination, useToggle, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
@@ -38,6 +38,11 @@ export const HistoryMarket = () => {
         pageSize: parseString(query.get("pageSize"), 10),
         page: parseString(query.get("page"), 1),
     })
+    const [isGridView, toggleIsGridView] = useToggle(localStorage.getItem("marketHistoryGrid") === "true")
+
+    useEffect(() => {
+        localStorage.setItem("marketHistoryGrid", isGridView.toString())
+    }, [isGridView])
 
     // Filters and sorts
     const [search, setSearch] = useState("")
@@ -56,6 +61,7 @@ export const HistoryMarket = () => {
             { value: MarketplaceEventType.Sold, label: "SOLD", color: colors.marketSold },
         ],
         initialSelected: eventType,
+        initialExpanded: true,
         onSetSelected: (value: string[]) => {
             setEventType(value)
             changePage(1)
@@ -148,7 +154,7 @@ export const HistoryMarket = () => {
                             width: "100%",
                             py: "1rem",
                             display: "grid",
-                            gridTemplateColumns: "100%",
+                            gridTemplateColumns: isGridView ? "repeat(auto-fill, minmax(29rem, 1fr))" : "100%",
                             gap: "1.3rem",
                             alignItems: "center",
                             justifyContent: "center",
@@ -156,7 +162,7 @@ export const HistoryMarket = () => {
                         }}
                     >
                         {eventItems.map((eventItem) => (
-                            <HistoryItem key={`marketplace-${eventItem.id}`} eventItem={eventItem} />
+                            <HistoryItem key={`marketplace-${eventItem.id}`} eventItem={eventItem} isGridView={isGridView} />
                         ))}
                     </Box>
                 </Box>
@@ -194,7 +200,7 @@ export const HistoryMarket = () => {
                 </Stack>
             </Stack>
         )
-    }, [loadError, eventItems, isLoading, primaryColor])
+    }, [loadError, eventItems, isLoading, primaryColor, isGridView])
 
     return (
         <Stack direction="row" spacing="1rem" sx={{ height: "100%" }}>
@@ -204,7 +210,33 @@ export const HistoryMarket = () => {
                 chipFilters={[eventTypeFilterSection.current]}
                 changePage={changePage}
                 primaryColor={primaryColor}
-            />
+            >
+                <Box sx={{ p: ".8rem 1rem" }}>
+                    <FancyButton
+                        clipThingsProps={{
+                            clipSize: "6px",
+                            clipSlantSize: "0px",
+                            corners: { topLeft: true, topRight: true, bottomLeft: true, bottomRight: true },
+                            backgroundColor: colors.red,
+                            opacity: 1,
+                            border: { isFancy: true, borderColor: colors.red, borderThickness: "2px" },
+                            sx: { position: "relative" },
+                        }}
+                        sx={{ px: "1.6rem", py: ".7rem", color: "#FFFFFF" }}
+                        to={`/marketplace/sell${location.hash}`}
+                    >
+                        <Typography
+                            variant="caption"
+                            sx={{
+                                color: "#FFFFFF",
+                                fontFamily: fonts.nostromoBlack,
+                            }}
+                        >
+                            SELL ITEM
+                        </Typography>
+                    </FancyButton>
+                </Box>
+            </SortAndFilters>
 
             <ClipThing
                 clipSize="10px"
@@ -223,29 +255,7 @@ export const HistoryMarket = () => {
                             description="See your marketplace events and logs here."
                             imageUrl={WarMachineIconPNG}
                             primaryColor={primaryColor}
-                        >
-                            <FancyButton
-                                clipThingsProps={{
-                                    clipSize: "9px",
-                                    backgroundColor: colors.red,
-                                    opacity: 1,
-                                    border: { isFancy: true, borderColor: colors.red, borderThickness: "2px" },
-                                    sx: { position: "relative" },
-                                }}
-                                sx={{ px: "1.6rem", py: ".4rem", color: "#FFFFFF" }}
-                                to={`/marketplace/sell${location.hash}`}
-                            >
-                                <Typography
-                                    variant="caption"
-                                    sx={{
-                                        color: "#FFFFFF",
-                                        fontFamily: fonts.nostromoBlack,
-                                    }}
-                                >
-                                    SELL ITEM
-                                </Typography>
-                            </FancyButton>
-                        </PageHeader>
+                        ></PageHeader>
 
                         <TotalAndPageSizeOptions
                             countItems={eventItems?.length}
@@ -254,6 +264,8 @@ export const HistoryMarket = () => {
                             changePageSize={changePageSize}
                             pageSizeOptions={[10, 20, 40]}
                             changePage={changePage}
+                            isGridView={isGridView}
+                            toggleIsGridView={toggleIsGridView}
                             manualRefresh={getItems}
                             sortOptions={sortOptions}
                             selectedSort={sort}

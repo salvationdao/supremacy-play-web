@@ -41,7 +41,6 @@ export const GlobalAnnouncement = ({ globalAnnouncement }: { globalAnnouncement:
     return (
         <Box>
             <Stack
-                alignItems="center"
                 justifyContent="center"
                 spacing=".24rem"
                 sx={{
@@ -49,6 +48,7 @@ export const GlobalAnnouncement = ({ globalAnnouncement }: { globalAnnouncement:
                     py: "1.2rem",
                     backgroundColor: bgColourFromSeverity(globalAnnouncement.severity),
                     boxShadow: 2,
+                    textAlign: "start",
                 }}
             >
                 <Typography sx={{ fontFamily: fonts.nostromoHeavy }}>{globalAnnouncement.title}</Typography>

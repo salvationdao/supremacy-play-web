@@ -3,10 +3,31 @@ import { Variant } from "@mui/material/styles/createTypography"
 import { OverridableStringUnion } from "@mui/types"
 import { ReactNode, useMemo } from "react"
 
+export interface StyledImageTextProps {
+    imageUrl?: string
+    text?: string | ReactNode
+    variant?: OverridableStringUnion<Variant | "inherit", TypographyPropsVariantOverrides>
+    textColor?: string
+    color?: string
+    truncateLine?: boolean
+    textSx?: SxProps
+
+    fontWeight?: string
+    fontFamily?: string
+    imageSize?: number
+    imageBorderColor?: string
+    imageBackgroundColor?: string
+    imageBorderThickness?: string
+    imageBackgroundSize?: string
+    noImageBackgroundColor?: boolean
+    imageMb?: number
+}
+
 export const StyledImageText = ({
     imageUrl,
     text,
     variant = "body1",
+    textColor,
     color,
     truncateLine,
     textSx,
@@ -20,24 +41,7 @@ export const StyledImageText = ({
     imageBackgroundSize = "cover",
     noImageBackgroundColor,
     imageMb,
-}: {
-    imageUrl?: string
-    text: string | ReactNode
-    variant?: OverridableStringUnion<Variant | "inherit", TypographyPropsVariantOverrides>
-    color: string
-    truncateLine?: boolean
-    textSx?: SxProps
-
-    fontWeight?: string
-    fontFamily?: string
-    imageSize?: number
-    imageBorderColor?: string
-    imageBackgroundColor?: string
-    imageBorderThickness?: string
-    imageBackgroundSize?: string
-    noImageBackgroundColor?: boolean
-    imageMb?: number
-}) => {
+}: StyledImageTextProps) => {
     const truncateStyle: SxProps = useMemo(
         () =>
             truncateLine
@@ -54,7 +58,9 @@ export const StyledImageText = ({
         <span style={{ display: "inline-block" }}>
             {imageUrl && (
                 <Box
+                    component="span"
                     sx={{
+                        flexShrink: 0,
                         display: "inline-block",
                         width: `${imageSize}rem`,
                         height: `${imageSize}rem`,
@@ -77,8 +83,8 @@ export const StyledImageText = ({
                     display: "inline",
                     fontFamily,
                     fontWeight,
-                    color,
-                    wordBreak: "break-word",
+                    color: textColor || color,
+                    wordBreak: "break-all",
                     ...truncateStyle,
                     ...textSx,
                 }}

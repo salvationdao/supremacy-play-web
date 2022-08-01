@@ -10,22 +10,17 @@ import { MarketplaceBuyAuctionItem } from "../../../../types/marketplace"
 import { AuctionPrice } from "../../Common/MarketItem/AuctionPrice"
 import { BuyoutPrice } from "../../Common/MarketItem/BuyoutPrice"
 import { UserInfo } from "./UserInfo"
-import { Thumbnail } from "../../Common/MarketItem/Thumbnail"
 import { Timeframe } from "../../Common/MarketItem/Timeframe"
 import { SoldPrice } from "./SoldPrice"
 
 interface MarketItemProps {
-    imageUrl: string
-    animationUrl?: string
-    cardAnimationUrl?: string
-    backgroundImageUrl?: string
     item: MarketplaceBuyAuctionItem
     isGridView: boolean
     children: ReactNode
     linkSubPath: MARKETPLACE_TABS
 }
 
-export const MarketItem = ({ imageUrl, animationUrl, cardAnimationUrl, backgroundImageUrl, item, isGridView, children, linkSubPath }: MarketItemProps) => {
+export const MarketItem = ({ item, isGridView, children, linkSubPath }: MarketItemProps) => {
     const theme = useTheme()
 
     const formattedBuyoutPrice = useMemo(() => {
@@ -35,7 +30,7 @@ export const MarketItem = ({ imageUrl, animationUrl, cardAnimationUrl, backgroun
         if (item.dutch_auction_drop_rate) {
             buyoutPrice = BigNumber.max(
                 calculateDutchAuctionCurrentPrice({ createdAt: item.created_at, dropRate: dropPrice, startPrice: buyoutPrice }),
-                new BigNumber(item.auction_reserved_price || 1),
+                new BigNumber(item.auction_reserved_price || 1000000000000000000).shiftedBy(-18),
             )
         }
         return numFormatter(buyoutPrice.toNumber())
@@ -62,6 +57,7 @@ export const MarketItem = ({ imageUrl, animationUrl, cardAnimationUrl, backgroun
     return (
         <Box sx={{ position: "relative", overflow: "visible", height: "100%" }}>
             <FancyButton
+                disableRipple
                 clipThingsProps={{
                     clipSize: "7px",
                     clipSlantSize: "0px",
@@ -76,7 +72,7 @@ export const MarketItem = ({ imageUrl, animationUrl, cardAnimationUrl, backgroun
                     border: { isFancy: !isGridView, borderColor: sold_at ? colors.marketSold : primaryColor, borderThickness: ".25rem" },
                     sx: { position: "relative", height: "100%" },
                 }}
-                sx={{ color: primaryColor, textAlign: "start" }}
+                sx={{ color: primaryColor, textAlign: "start", height: "100%", ":hover": { opacity: 1 } }}
                 to={`/marketplace/${linkSubPath}/${id}${location.hash}`}
             >
                 <Box
@@ -86,7 +82,7 @@ export const MarketItem = ({ imageUrl, animationUrl, cardAnimationUrl, backgroun
                         p: isGridView ? ".5rem .6rem" : ".1rem .3rem",
                         display: isGridView ? "block" : "grid",
                         gridTemplateRows: "7rem",
-                        gridTemplateColumns: `8rem minmax(auto, 38rem) 1.5fr ${sold_to ? "1.2fr" : "1fr"} repeat(2, 1fr)`, // hard-coded to have 6 columns, adjust as required
+                        gridTemplateColumns: `minmax(36rem, auto) 23rem repeat(3, 17rem)`, // hard-coded to have 6 columns, adjust as required
                         gap: "1.4rem",
                         ...(isGridView
                             ? {
@@ -97,8 +93,6 @@ export const MarketItem = ({ imageUrl, animationUrl, cardAnimationUrl, backgroun
                             : {}),
                     }}
                 >
-                    <Thumbnail isGridView={isGridView} imageUrl={imageUrl} animationUrl={animationUrl} cardAnimationUrl={cardAnimationUrl} />
-
                     {children}
 
                     <UserInfo isGridView={isGridView} marketUser={owner} title="SELLER" />
@@ -116,22 +110,6 @@ export const MarketItem = ({ imageUrl, animationUrl, cardAnimationUrl, backgroun
                         </>
                     )}
                 </Box>
-
-                <Box
-                    sx={{
-                        position: "absolute",
-                        left: 0,
-                        right: 0,
-                        top: 0,
-                        bottom: 0,
-                        background: `url(${backgroundImageUrl})`,
-                        backgroundRepeat: "no-repeat",
-                        backgroundPosition: "top",
-                        backgroundSize: "cover",
-                        opacity: 0.06,
-                        zIndex: -2,
-                    }}
-                />
 
                 <Box
                     sx={{

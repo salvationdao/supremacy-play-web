@@ -40,6 +40,18 @@ export const MechGeneralStatus = ({ mechID, hideBox }: { mechID: string; hideBox
                     setText("SOLD")
                     setColour(colors.lightGrey)
                     break
+                case MechStatusEnum.Damaged:
+                    setText("DAMAGED")
+                    setColour(colors.bronze)
+                    break
+                case MechStatusEnum.StandardRepairing:
+                    setText("REPAIRING")
+                    setColour(colors.blue)
+                    break
+                case MechStatusEnum.FastRepairing:
+                    setText("FAST REPAIRING")
+                    setColour(colors.blue2)
+                    break
             }
         },
     )
@@ -49,6 +61,7 @@ export const MechGeneralStatus = ({ mechID, hideBox }: { mechID: string; hideBox
         async (currentStatus: string) => {
             try {
                 if (currentStatus.includes("QUEUE")) return
+                console.log("send status update")
                 await send(GameServerKeys.TriggerMechStatusUpdate, {
                     mech_id: mechID,
                 })
@@ -57,6 +70,19 @@ export const MechGeneralStatus = ({ mechID, hideBox }: { mechID: string; hideBox
             }
         },
         [mechID, send],
+    )
+
+    // When the battle queue is updated, tell the server to send the mech status to us again
+    useGameServerSubscriptionFaction<boolean>(
+        {
+            URI: `/mech/${mechID}/repair-update`,
+            key: GameServerKeys.MechQueueUpdated,
+        },
+        (payload) => {
+            if (!payload) return
+            // Force update status
+            triggerStatusUpdate("")
+        },
     )
 
     // When the battle queue is updated, tell the server to send the mech status to us again

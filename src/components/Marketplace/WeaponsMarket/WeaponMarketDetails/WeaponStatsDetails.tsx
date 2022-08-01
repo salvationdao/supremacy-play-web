@@ -29,15 +29,7 @@ export const WeaponStatsDetails = ({ weaponDetails }: Props) => {
                     </Typography>
                 </Stack>
 
-                <WeaponBarStats
-                    weapon={weaponDetails}
-                    weaponDetails={weaponDetails}
-                    color={primaryColor}
-                    fontSize="1.3rem"
-                    width="100%"
-                    spacing="1.2rem"
-                    barHeight=".8rem"
-                />
+                <WeaponBarStats weapon={weaponDetails} color={primaryColor} fontSize="1.3rem" width="100%" spacing="1.2rem" barHeight=".8rem" />
             </Stack>
 
             <Stack spacing="1rem">
@@ -50,7 +42,8 @@ export const WeaponStatsDetails = ({ weaponDetails }: Props) => {
 
                 {skin ? (
                     <MechLoadoutItem
-                        imageUrl={skin.image_url}
+                        imageUrl={skin.image_url || skin.avatar_url}
+                        videoUrls={[skin.card_animation_url]}
                         label={skin.label}
                         primaryColor={colors.chassisSkin}
                         Icon={SvgSkin}

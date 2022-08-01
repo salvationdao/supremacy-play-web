@@ -1,5 +1,5 @@
 import { Box, CircularProgress, Stack } from "@mui/material"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { useToggle } from "../../../../hooks"
 import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
 import { MediaPreviewModal } from "../../../Common/MediaPreview/MediaPreviewModal"
@@ -10,17 +10,8 @@ export interface MarketMedia {
 }
 
 export const ImagesPreview = ({ media, primaryColor }: { media: MarketMedia[]; primaryColor: string }) => {
-    const [activeImageUrl, setActiveImageUrl] = useState<string>()
-    const [activeVideoUrl, setActiveVideoUrl] = useState<string>()
+    const [activeIndex, setActiveIndex] = useState(0)
     const [previewModalOpen, togglePreviewModalOpen] = useToggle()
-
-    // Sets the initial image to display
-    useEffect(() => {
-        if (!activeImageUrl && media.length > 0) {
-            setActiveImageUrl(media[0].imageUrl)
-            setActiveVideoUrl(media[0].videoUrl)
-        }
-    }, [activeImageUrl, activeVideoUrl, media])
 
     return (
         <>
@@ -38,8 +29,12 @@ export const ImagesPreview = ({ media, primaryColor }: { media: MarketMedia[]; p
                     }}
                     onClick={() => togglePreviewModalOpen(true)}
                 >
-                    {activeImageUrl ? (
-                        <MediaPreview imageUrl={activeImageUrl} videoUrls={activeVideoUrl ? [activeVideoUrl] : undefined} showBorder />
+                    {media[activeIndex] ? (
+                        <MediaPreview
+                            imageUrl={media[activeIndex].imageUrl}
+                            videoUrls={media[activeIndex].videoUrl ? [media[activeIndex].videoUrl] : undefined}
+                            showBorder
+                        />
                     ) : (
                         <Stack
                             alignItems="center"
@@ -69,11 +64,11 @@ export const ImagesPreview = ({ media, primaryColor }: { media: MarketMedia[]; p
                         return (
                             <SmallImageThumbnail
                                 key={i}
+                                index={i}
                                 imageUrl={m.imageUrl}
                                 videoUrl={m.videoUrl}
-                                activeImageUrl={activeImageUrl}
-                                setActiveImageUrl={setActiveImageUrl}
-                                setActiveVideoUrl={setActiveVideoUrl}
+                                activeIndex={activeIndex}
+                                setActiveIndex={setActiveIndex}
                                 primaryColor={primaryColor}
                             />
                         )
@@ -81,24 +76,29 @@ export const ImagesPreview = ({ media, primaryColor }: { media: MarketMedia[]; p
                 </Box>
             </Stack>
 
-            {previewModalOpen && <MediaPreviewModal imageUrl={activeImageUrl} videoUrls={[activeVideoUrl]} onClose={() => togglePreviewModalOpen(false)} />}
+            {previewModalOpen && (
+                <MediaPreviewModal
+                    imageUrl={media[activeIndex].imageUrl}
+                    videoUrls={[media[activeIndex].videoUrl]}
+                    onClose={() => togglePreviewModalOpen(false)}
+                />
+            )}
         </>
     )
 }
 
 const SmallImageThumbnail = ({
+    index,
     imageUrl,
-    videoUrl,
-    activeImageUrl,
-    setActiveImageUrl,
-    setActiveVideoUrl,
+    activeIndex,
+    setActiveIndex,
     primaryColor,
 }: {
+    index: number
     imageUrl?: string
     videoUrl?: string
-    activeImageUrl?: string
-    setActiveImageUrl: React.Dispatch<React.SetStateAction<string | undefined>>
-    setActiveVideoUrl: React.Dispatch<React.SetStateAction<string | undefined>>
+    activeIndex: number
+    setActiveIndex: React.Dispatch<React.SetStateAction<number>>
     primaryColor: string
 }) => {
     return (
@@ -111,12 +111,9 @@ const SmallImageThumbnail = ({
                 height: "100%",
                 objectFit: "cover",
                 objectPosition: "center",
-                border: activeImageUrl === imageUrl ? `${primaryColor} 2px solid` : "#FFFFFF18 2px solid",
+                border: index === activeIndex ? `${primaryColor} 2px solid` : "#FFFFFF18 2px solid",
             }}
-            onClick={() => {
-                setActiveImageUrl(imageUrl)
-                setActiveVideoUrl(videoUrl)
-            }}
+            onClick={() => setActiveIndex(index)}
         />
     )
 }

@@ -1,16 +1,14 @@
 import { createContext, Dispatch, useCallback, useContext, useEffect, useRef, useState } from "react"
 import { useQuery } from "react-fetching-library"
 import { useSupremacy } from "."
-import { GAME_SERVER_HOSTNAME, PASSPORT_WEB } from "../constants"
-import { GameServerLoginCheck, PassportLoginCheck } from "../fetching"
+import { PASSPORT_WEB } from "../constants"
+import { PassportLoginCheck, GameServerLoginCheck } from "../fetching"
 import { shadeColor } from "../helpers"
 import { useGameServerCommandsUser, useGameServerSubscriptionUser } from "../hooks/useGameServer"
 import { useInactivity } from "../hooks/useInactivity"
 import { GameServerKeys } from "../keys"
 import { colors } from "../theme/theme"
-import { Faction, FeatureName, User, UserRank, UserStat } from "../types"
-import { PunishListItem } from "../types/chat"
-import { useFingerprint } from "./fingerprint"
+import { Faction, FeatureName, User, UserRank, UserStat, UserFromPassport, PunishListItem } from "../types"
 import { useTheme } from "./theme"
 
 export const FallbackUser: User = {
@@ -27,6 +25,7 @@ export const FallbackFaction: Faction = {
     label: "",
     logo_url: "",
     background_url: "",
+    wallpaper_url: "",
     primary_color: colors.neonBlue,
     secondary_color: "#000000",
     background_color: shadeColor(colors.neonBlue, -95),
@@ -34,6 +33,9 @@ export const FallbackFaction: Faction = {
 }
 
 export interface AuthState {
+    isActive: boolean
+    setIsActive: Dispatch<React.SetStateAction<boolean>>
+    isHidden: boolean
     isLoggingIn: boolean
     onLogInClick: () => void
     userHasFeature: (featureName: FeatureName) => boolean
@@ -50,6 +52,11 @@ export interface AuthState {
 }
 
 const initialState: AuthState = {
+    isActive: true,
+    setIsActive: () => {
+        return
+    },
+    isHidden: false,
     isLoggingIn: false,
     onLogInClick: () => {
         return
@@ -87,61 +94,80 @@ const initialState: AuthState = {
 export const AuthContext = createContext<AuthState>(initialState)
 
 export const AuthProvider: React.FC = ({ children }) => {
-    const { fingerprint } = useFingerprint()
-
     const [isLoggingIn, setIsLoggingIn] = useState(true)
     const [passportPopup, setPassportPopup] = useState<Window | null>(null)
     const popupCheckInterval = useRef<NodeJS.Timer>()
 
-    const [userFromPassport, setUserFromPassport] = useState<User>()
-    const [isLoginGameServer, setIsLoginGameServer] = useState(false)
+    const [userFromPassport, setUserFromPassport] = useState<UserFromPassport>()
     const [user, setUser] = useState<User>(initialState.user)
     const userID = user.id
     const factionID = user.faction_id
-
+    const [isActive, setIsActive] = useState(true)
     const [userStat, setUserStat] = useState<UserStat>(initialState.userStat)
     const [userRank, setUserRank] = useState<UserRank>(initialState.userRank)
     const [punishments, setPunishments] = useState<PunishListItem[]>(initialState.punishments)
+    //checks if supremacy tab is open
+    const [isHidden, setIsHidden] = useState(false)
 
     const { query: passportLoginCheck } = useQuery(PassportLoginCheck(), false)
-    const { query: gameServerLoginCheck } = useQuery(GameServerLoginCheck(fingerprint), false)
+    const { query: gameserverLoginCheck } = useQuery(GameServerLoginCheck(), false)
+
+    const handleVisibilityChange = () => {
+        if (document["hidden"]) {
+            setIsHidden(true)
+        } else {
+            setIsHidden(false)
+        }
+    }
+
+    useEffect(() => {
+        if (typeof document.hidden !== "undefined" && typeof document.addEventListener !== "undefined") {
+            document.addEventListener("visibilitychange", handleVisibilityChange)
+        } else {
+            console.error("Failed to get visibility.")
+        }
+        return () => {
+            document.removeEventListener("visibilitychange", handleVisibilityChange)
+        }
+    }, [])
 
     const authCheckCallback = useCallback(
-        (event?: MessageEvent) => {
+        async (event?: MessageEvent) => {
             if (event && !("token" in event.data)) return
             // Check passport server login
             if (!userFromPassport) {
-                passportLoginCheck().then((resp) => {
+                try {
+                    const resp = await passportLoginCheck()
                     if (resp.error || !resp.payload) {
                         setUserFromPassport(undefined)
                         return
                     }
                     setUserFromPassport(resp.payload)
-                })
-            }
-
-            // Check game server login
-            if (!isLoginGameServer) {
-                gameServerLoginCheck().then((resp) => {
-                    if (resp.error || !resp.payload) {
-                        setIsLoginGameServer(false)
-                        return
-                    }
-                    setIsLoginGameServer(true)
-                })
+                } catch (err) {
+                    console.error(err)
+                }
             }
         },
-        [gameServerLoginCheck, isLoginGameServer, passportLoginCheck, userFromPassport],
+        [passportLoginCheck, userFromPassport],
     )
 
     useEffect(() => {
-        if (!userFromPassport || !isLoginGameServer) {
+        if (!userFromPassport) {
             setIsLoggingIn(false)
             return
         }
-        setUser(userFromPassport)
-        setIsLoggingIn(false)
-    }, [userFromPassport, isLoginGameServer, setIsLoggingIn])
+
+        gameserverLoginCheck()
+            .then((resp) => {
+                if (resp.error || !resp.payload) {
+                    setUser(initialState.user)
+                    return
+                }
+
+                setUser(resp.payload)
+            })
+            .finally(() => setIsLoggingIn(false))
+    }, [userFromPassport, gameserverLoginCheck, setIsLoggingIn])
 
     // Check if login in the iframe has been successful (window closed), if closed then do clean up
     useEffect(() => {
@@ -155,12 +181,13 @@ export const AuthProvider: React.FC = ({ children }) => {
         }
 
         clearPopupCheckInterval()
-        popupCheckInterval.current = setInterval(() => {
+        popupCheckInterval.current = setInterval(async () => {
             if (!passportPopup) return clearPopupCheckInterval()
             if (passportPopup.closed) {
                 clearPopupCheckInterval()
-                setIsLoggingIn(false)
                 setPassportPopup(null)
+                await authCheckCallback()
+                setIsLoggingIn(false)
                 window.removeEventListener("message", authCheckCallback)
             }
         }, 1000)
@@ -181,11 +208,8 @@ export const AuthProvider: React.FC = ({ children }) => {
         const height = 730
         const top = window.screenY + (window.outerHeight - height) / 2.5
         const left = window.screenX + (window.outerWidth - width) / 2
-        const href = `${PASSPORT_WEB}external/login?tenant=supremacy&redirectURL=${encodeURIComponent(
-            `${window.location.protocol}//${GAME_SERVER_HOSTNAME}/api/auth/xsyn`,
-        )}`
+        const href = `${PASSPORT_WEB}external/login?tenant=supremacy&redirectURL=${encodeURIComponent(`${window.location.origin}/login-redirect`)}`
         const popup = window.open(href, "Connect with XSYN Passport", `width=${width},height=${height},left=${left},top=${top},popup=1`)
-        if (!popup) return setIsLoggingIn(false)
 
         setPassportPopup(popup)
     }, [isLoggingIn])
@@ -198,9 +222,13 @@ export const AuthProvider: React.FC = ({ children }) => {
         },
         [user.features, userID],
     )
+
     return (
         <AuthContext.Provider
             value={{
+                isActive,
+                setIsActive,
+                isHidden,
                 isLoggingIn,
                 onLogInClick,
                 userHasFeature,
@@ -226,7 +254,7 @@ export const useAuth = () => {
 }
 
 export const UserUpdater = () => {
-    const { userID, factionID, setUser, setUserStat, setUserRank, setPunishments } = useAuth()
+    const { userID, factionID, setUser, setUserStat, setUserRank, setPunishments, setIsActive } = useAuth()
     const { getFaction } = useSupremacy()
     const { setFactionColors } = useTheme()
     const { send } = useGameServerCommandsUser("/user_commander")
@@ -274,7 +302,7 @@ export const UserUpdater = () => {
     // Listen on user punishments
     useGameServerSubscriptionUser<PunishListItem[]>(
         {
-            URI: "",
+            URI: "/punishment_list",
             key: GameServerKeys.ListPunishments,
         },
         (payload) => {
@@ -294,6 +322,7 @@ export const UserUpdater = () => {
     const sendFruit = useCallback(
         async (a: boolean) => {
             try {
+                setIsActive(a)
                 await send<null, { fruit: "APPLE" | "BANANA" }>(GameServerKeys.ToggleGojiBerryTea, {
                     fruit: a ? "APPLE" : "BANANA",
                 })
@@ -301,7 +330,7 @@ export const UserUpdater = () => {
                 console.error(e)
             }
         },
-        [send],
+        [send, setIsActive],
     )
 
     useEffect(() => {

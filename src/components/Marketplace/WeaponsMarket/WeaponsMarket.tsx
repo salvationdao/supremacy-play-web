@@ -1,10 +1,12 @@
 import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useLocation } from "react-router-dom"
+import { useParameterizedQuery } from "react-fetching-library"
+import { GetWeaponMaxStats } from "../../../fetching"
 import { ClipThing, FancyButton } from "../.."
 import { EmptyWarMachinesPNG, WarMachineIconPNG } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
-import { getWeaponTypeColor, parseString } from "../../../helpers"
+import { getRarityDeets, getWeaponTypeColor, parseString } from "../../../helpers"
 import { usePagination, useToggle, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
@@ -14,6 +16,7 @@ import { MarketplaceBuyAuctionItem, MarketSaleType, SortTypeLabel } from "../../
 import { PageHeader } from "../../Common/PageHeader"
 import { ChipFilter } from "../../Common/SortAndFilters/ChipFilterSection"
 import { RangeFilter } from "../../Common/SortAndFilters/RangeFilterSection"
+import { SliderRangeFilter } from "../../Common/SortAndFilters/SliderRangeFilterSection"
 import { SortAndFilters } from "../../Common/SortAndFilters/SortAndFilters"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { WeaponsMarketItem } from "./WeaponsMarketItem"
@@ -27,6 +30,8 @@ const sortOptions = [
     { label: SortTypeLabel.PriceHighest, value: SortTypeLabel.PriceHighest },
     { label: SortTypeLabel.Alphabetical, value: SortTypeLabel.Alphabetical },
     { label: SortTypeLabel.AlphabeticalReverse, value: SortTypeLabel.AlphabeticalReverse },
+    { label: SortTypeLabel.RarestAsc, value: SortTypeLabel.RarestAsc },
+    { label: SortTypeLabel.RarestDesc, value: SortTypeLabel.RarestDesc },
 ]
 
 export const WeaponsMarket = () => {
@@ -44,7 +49,12 @@ export const WeaponsMarket = () => {
         pageSize: parseString(query.get("pageSize"), 10),
         page: parseString(query.get("page"), 1),
     })
-    const [isGridView, toggleIsGridView] = useToggle(false)
+    const [isGridView, toggleIsGridView] = useToggle(localStorage.getItem("marketWeaponGrid") === "true")
+    const [isExpanded, toggleIsExpanded] = useToggle(false)
+
+    useEffect(() => {
+        localStorage.setItem("marketWeaponGrid", isGridView.toString())
+    }, [isGridView])
 
     // Filters and sorts
     const [search, setSearch] = useState("")
@@ -52,9 +62,40 @@ export const WeaponsMarket = () => {
     const [status, setStatus] = useState<string[]>((query.get("statuses") || undefined)?.split("||") || [])
     const [ownedBy, setOwnedBy] = useState<string[]>((query.get("ownedBy") || undefined)?.split("||") || [])
     const [listingTypes, setListingTypes] = useState<string[]>((query.get("listingTypes") || undefined)?.split("||") || [])
+    const [rarities, setRarities] = useState<string[]>((query.get("rarities") || undefined)?.split("||") || [])
     const [weaponTypes, setWeaponTypes] = useState<string[]>((query.get("weaponTypes") || undefined)?.split("||") || [])
     const [price, setPrice] = useState<(number | undefined)[]>(
         (query.get("priceRanges") || undefined)?.split("||").map((p) => (p ? parseInt(p) : undefined)) || [undefined, undefined],
+    )
+    const [ammoRange, setAmmoRange] = useState<number[] | undefined>(
+        (query.get("ammo") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 30000)),
+    )
+    const [damageRange, setDamageRange] = useState<number[] | undefined>(
+        (query.get("damage") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 10000)),
+    )
+    const [damageFalloffRange, setDamageFalloffRange] = useState<number[] | undefined>(
+        (query.get("damageFalloff") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 10000)),
+    )
+    const [damageFalloffRateRange, setDamageFalloffRateRange] = useState<number[] | undefined>(
+        (query.get("damageFalloffRate") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 10000)),
+    )
+    const [radiusRange, setRadiusRange] = useState<number[] | undefined>(
+        (query.get("radius") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 20000)),
+    )
+    const [radiusDamageFalloffRange, setRadiusDamageFalloffRange] = useState<number[] | undefined>(
+        (query.get("radiusDamageFalloff") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 20000)),
+    )
+    const [rateOfFireRange, setRateOfFireRange] = useState<number[] | undefined>(
+        (query.get("rateOfFire") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 10000)),
+    )
+    const [energyCostRange, setEnergyCostRange] = useState<number[] | undefined>(
+        (query.get("energyCost") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 10000)),
+    )
+    const [projectileSpeedRange, setProjectileSpeedRange] = useState<number[] | undefined>(
+        (query.get("projectileSpeed") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 2000000)),
+    )
+    const [spreadRange, setSpreadRange] = useState<number[] | undefined>(
+        (query.get("spread") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 100)),
     )
 
     // Filters
@@ -62,6 +103,7 @@ export const WeaponsMarket = () => {
         label: "STATUS",
         options: [{ value: "true", label: "SOLD", color: colors.marketSold }],
         initialSelected: status,
+        initialExpanded: true,
         onSetSelected: (value: string[]) => {
             setStatus(value)
             changePage(1)
@@ -75,6 +117,7 @@ export const WeaponsMarket = () => {
             { value: "others", label: "OTHERS", color: theme.factionTheme.primary, textColor: theme.factionTheme.secondary },
         ],
         initialSelected: ownedBy,
+        initialExpanded: true,
         onSetSelected: (value: string[]) => {
             setOwnedBy(value)
             changePage(1)
@@ -89,6 +132,7 @@ export const WeaponsMarket = () => {
             { value: MarketSaleType.Auction, label: "AUCTION", color: colors.auction },
         ],
         initialSelected: listingTypes,
+        initialExpanded: true,
         onSetSelected: (value: string[]) => {
             setListingTypes(value)
             changePage(1)
@@ -99,13 +143,22 @@ export const WeaponsMarket = () => {
         label: "WEAPON TYPE",
         options: [
             { value: WeaponType.Cannon, label: WeaponType.Cannon, color: getWeaponTypeColor(WeaponType.Cannon) },
+            { value: WeaponType.GrenadeLauncher, label: WeaponType.GrenadeLauncher, color: getWeaponTypeColor(WeaponType.GrenadeLauncher) },
+            { value: WeaponType.MachineGun, label: WeaponType.MachineGun, color: getWeaponTypeColor(WeaponType.MachineGun) },
+            { value: WeaponType.Flak, label: WeaponType.Flak, color: getWeaponTypeColor(WeaponType.Flak) },
             { value: WeaponType.Sword, label: WeaponType.Sword, color: getWeaponTypeColor(WeaponType.Sword) },
             { value: WeaponType.Minigun, label: WeaponType.Minigun, color: getWeaponTypeColor(WeaponType.Minigun) },
             { value: WeaponType.MissileLauncher, label: WeaponType.MissileLauncher, color: getWeaponTypeColor(WeaponType.MissileLauncher) },
             { value: WeaponType.PlasmaGun, label: WeaponType.PlasmaGun, color: getWeaponTypeColor(WeaponType.PlasmaGun) },
             { value: WeaponType.SniperRifle, label: WeaponType.SniperRifle, color: getWeaponTypeColor(WeaponType.SniperRifle) },
+            { value: WeaponType.Flamethrower, label: WeaponType.Flamethrower, color: getWeaponTypeColor(WeaponType.Flamethrower) },
+            { value: WeaponType.LaserBeam, label: WeaponType.LaserBeam, color: getWeaponTypeColor(WeaponType.LaserBeam) },
+            { value: WeaponType.LightningGun, label: WeaponType.LightningGun, color: getWeaponTypeColor(WeaponType.LightningGun) },
+            { value: WeaponType.BFG, label: WeaponType.BFG, color: getWeaponTypeColor(WeaponType.BFG) },
+            { value: WeaponType.Rifle, label: WeaponType.Rifle, color: getWeaponTypeColor(WeaponType.Rifle) },
         ],
         initialSelected: weaponTypes,
+        initialExpanded: true,
         onSetSelected: (value: string[]) => {
             setWeaponTypes(value)
             changePage(1)
@@ -115,11 +168,162 @@ export const WeaponsMarket = () => {
     const priceRangeFilter = useRef<RangeFilter>({
         label: "PRICE RANGE",
         initialValue: price,
+        initialExpanded: true,
         onSetValue: (value: (number | undefined)[]) => {
             setPrice(value)
             changePage(1)
         },
     })
+
+    const rarityChipFilter = useRef<ChipFilter>({
+        label: "RARITY",
+        options: [
+            { value: "MEGA", ...getRarityDeets("MEGA") },
+            { value: "COLOSSAL", ...getRarityDeets("COLOSSAL") },
+            { value: "RARE", ...getRarityDeets("RARE") },
+            { value: "LEGENDARY", ...getRarityDeets("LEGENDARY") },
+            { value: "ELITE_LEGENDARY", ...getRarityDeets("ELITE_LEGENDARY") },
+            { value: "ULTRA_RARE", ...getRarityDeets("ULTRA_RARE") },
+            { value: "EXOTIC", ...getRarityDeets("EXOTIC") },
+            { value: "GUARDIAN", ...getRarityDeets("GUARDIAN") },
+            { value: "MYTHIC", ...getRarityDeets("MYTHIC") },
+            { value: "DEUS_EX", ...getRarityDeets("DEUS_EX") },
+            { value: "TITAN", ...getRarityDeets("TITAN") },
+        ],
+        initialSelected: rarities,
+        initialExpanded: true,
+        onSetSelected: (value: string[]) => {
+            setRarities(value)
+            changePage(1)
+        },
+    })
+
+    const ammoRangeFilter = useRef<SliderRangeFilter>({
+        label: "AMMO",
+        initialValue: ammoRange,
+        minMax: [0, 3000],
+        onSetValue: (value: number[] | undefined) => {
+            setAmmoRange(value)
+            changePage(1)
+        },
+    })
+
+    const damageRangeFilter = useRef<SliderRangeFilter>({
+        label: "DAMAGE",
+        initialValue: damageRange,
+        minMax: [0, 1000],
+        onSetValue: (value: number[] | undefined) => {
+            setDamageRange(value)
+            changePage(1)
+        },
+    })
+
+    const damageFalloffRangeFilter = useRef<SliderRangeFilter>({
+        label: "DAMAGE FALLOFF",
+        initialValue: damageFalloffRange,
+        minMax: [0, 1000],
+        onSetValue: (value: number[] | undefined) => {
+            setDamageFalloffRange(value)
+            changePage(1)
+        },
+    })
+
+    const damageFalloffRateRangeFilter = useRef<SliderRangeFilter>({
+        label: "DAMAGE FALLOFF RATE",
+        initialValue: damageFalloffRateRange,
+        minMax: [0, 1000],
+        onSetValue: (value: number[] | undefined) => {
+            setDamageFalloffRateRange(value)
+            changePage(1)
+        },
+    })
+
+    const radiusRangeFilter = useRef<SliderRangeFilter>({
+        label: "RADIUS",
+        initialValue: radiusRange,
+        minMax: [0, 2000],
+        onSetValue: (value: number[] | undefined) => {
+            setRadiusRange(value)
+            changePage(1)
+        },
+    })
+
+    const radiusDamageFalloffRangeFilter = useRef<SliderRangeFilter>({
+        label: "RADIUS DAMAGE FALLOFF",
+        initialValue: radiusDamageFalloffRange,
+        minMax: [0, 2000],
+        onSetValue: (value: number[] | undefined) => {
+            setRadiusDamageFalloffRange(value)
+            changePage(1)
+        },
+    })
+
+    const rateOfFireRangeFilter = useRef<SliderRangeFilter>({
+        label: "RATE OF FIRE",
+        initialValue: rateOfFireRange,
+        minMax: [0, 1000],
+        onSetValue: (value: number[] | undefined) => {
+            setRateOfFireRange(value)
+            changePage(1)
+        },
+    })
+
+    const energyCostRangeFilter = useRef<SliderRangeFilter>({
+        label: "ENERGY COST",
+        initialValue: energyCostRange,
+        minMax: [0, 100],
+        onSetValue: (value: number[] | undefined) => {
+            setEnergyCostRange(value)
+            changePage(1)
+        },
+    })
+
+    const projectileSpeedRangeFilter = useRef<SliderRangeFilter>({
+        label: "PROJECTIVE SPEED",
+        initialValue: projectileSpeedRange,
+        minMax: [0, 200000],
+        onSetValue: (value: number[] | undefined) => {
+            setProjectileSpeedRange(value)
+            changePage(1)
+        },
+    })
+
+    const spreadRangeFilter = useRef<SliderRangeFilter>({
+        label: "SPREAD",
+        initialValue: spreadRange,
+        minMax: [0, 100],
+        onSetValue: (value: number[] | undefined) => {
+            setSpreadRange(value)
+            changePage(1)
+        },
+    })
+
+    const [sortFilterReRender, toggleSortFilterReRender] = useToggle()
+    const { query: queryGetWeaponMaxStats } = useParameterizedQuery(GetWeaponMaxStats)
+
+    // Get the max for each category for better filtering
+    useEffect(() => {
+        ;(async () => {
+            try {
+                const resp = await queryGetWeaponMaxStats(undefined)
+                if (resp.error || !resp.payload) return
+                ammoRangeFilter.current.minMax[1] = resp.payload.max_ammo || 0
+                damageRangeFilter.current.minMax[1] = resp.payload.damage || 0
+                damageFalloffRangeFilter.current.minMax[1] = resp.payload.damage_falloff || 0
+                damageFalloffRateRangeFilter.current.minMax[1] = resp.payload.damage_falloff_rate || 0
+                radiusRangeFilter.current.minMax[1] = resp.payload.radius || 0
+                radiusDamageFalloffRangeFilter.current.minMax[1] = resp.payload.radius_damage_falloff || 0
+                rateOfFireRangeFilter.current.minMax[1] = resp.payload.rate_of_fire || 0
+                energyCostRangeFilter.current.minMax[1] = resp.payload.energy_cost || 0
+                projectileSpeedRangeFilter.current.minMax[1] = resp.payload.projectile_speed || 0
+                spreadRangeFilter.current.minMax[1] = resp.payload.spread || 0
+                toggleSortFilterReRender()
+            } catch (err) {
+                const message = typeof err === "string" ? err : "Failed to get the list of streams."
+                console.error(message)
+            }
+        })()
+    }, [queryGetWeaponMaxStats, toggleSortFilterReRender])
 
     const getItems = useCallback(async () => {
         try {
@@ -131,12 +335,14 @@ export const WeaponsMarket = () => {
                 sort === SortTypeLabel.AlphabeticalReverse ||
                 sort === SortTypeLabel.CreateTimeNewestFirst ||
                 sort === SortTypeLabel.EndTimeEndingLast ||
-                sort === SortTypeLabel.PriceHighest
+                sort === SortTypeLabel.PriceHighest ||
+                sort === SortTypeLabel.RarestDesc
             )
                 sortDir = "desc"
             if (sort === SortTypeLabel.CreateTimeOldestFirst || sort === SortTypeLabel.CreateTimeNewestFirst) sortBy = "created_at"
             if (sort === SortTypeLabel.EndTimeEndingSoon || sort === SortTypeLabel.EndTimeEndingLast) sortBy = "time"
             if (sort === SortTypeLabel.PriceLowest || sort === SortTypeLabel.PriceHighest) sortBy = "price"
+            if (sort === SortTypeLabel.RarestAsc || sort === SortTypeLabel.RarestDesc) sortBy = "rarity"
 
             const [min_price, max_price] = price
 
@@ -144,6 +350,7 @@ export const WeaponsMarket = () => {
                 page: page - 1,
                 page_size: pageSize,
                 search,
+                rarities,
                 listing_types: listingTypes,
                 weapon_types: weaponTypes,
                 item_type: "weapon",
@@ -153,6 +360,78 @@ export const WeaponsMarket = () => {
                 sort_by: sortBy,
                 owned_by: ownedBy,
                 sold: status.length > 0,
+                weapon_stats: {
+                    ammo:
+                        ammoRange && (ammoRange[0] > 0 || ammoRange[1] > 0)
+                            ? {
+                                  min: ammoRange[0],
+                                  max: ammoRange[1],
+                              }
+                            : undefined,
+                    damage:
+                        damageRange && (damageRange[0] > 0 || damageRange[1] > 0)
+                            ? {
+                                  min: damageRange[0],
+                                  max: damageRange[1],
+                              }
+                            : undefined,
+                    damage_falloff:
+                        damageFalloffRange && (damageFalloffRange[0] > 0 || damageFalloffRange[1] > 0)
+                            ? {
+                                  min: damageFalloffRange[0],
+                                  max: damageFalloffRange[1],
+                              }
+                            : undefined,
+                    damage_falloff_rate:
+                        damageFalloffRateRange && (damageFalloffRateRange[0] > 0 || damageFalloffRateRange[1] > 0)
+                            ? {
+                                  min: damageFalloffRateRange[0],
+                                  max: damageFalloffRateRange[1],
+                              }
+                            : undefined,
+                    radius:
+                        radiusRange && (radiusRange[0] > 0 || radiusRange[1] > 0)
+                            ? {
+                                  min: radiusRange[0],
+                                  max: radiusRange[1],
+                              }
+                            : undefined,
+                    radius_damage_falloff:
+                        radiusDamageFalloffRange && (radiusDamageFalloffRange[0] > 0 || radiusDamageFalloffRange[1] > 0)
+                            ? {
+                                  min: radiusDamageFalloffRange[0],
+                                  max: radiusDamageFalloffRange[1],
+                              }
+                            : undefined,
+                    rate_of_fire:
+                        rateOfFireRange && (rateOfFireRange[0] > 0 || rateOfFireRange[1] > 0)
+                            ? {
+                                  min: rateOfFireRange[0],
+                                  max: rateOfFireRange[1],
+                              }
+                            : undefined,
+                    energy_cost:
+                        energyCostRange && (energyCostRange[0] > 0 || energyCostRange[1] > 0)
+                            ? {
+                                  min: energyCostRange[0],
+                                  max: energyCostRange[1],
+                              }
+                            : undefined,
+                    projectile_speed:
+                        projectileSpeedRange && (projectileSpeedRange[0] > 0 || projectileSpeedRange[1] > 0)
+                            ? {
+                                  min: projectileSpeedRange[0],
+                                  max: projectileSpeedRange[1],
+                              }
+                            : undefined,
+                    spread:
+                        spreadRange && (spreadRange[0] > 0 || spreadRange[1] > 0)
+                            ? {
+                                  min: spreadRange[0],
+                                  max: spreadRange[1],
+                              }
+                            : undefined,
+                },
             })
 
             updateQuery({
@@ -162,7 +441,18 @@ export const WeaponsMarket = () => {
                 statuses: status.join("||"),
                 ownedBy: ownedBy.join("||"),
                 listingTypes: listingTypes.join("||"),
+                rarities: rarities.join("||"),
                 priceRanges: price.join("||"),
+                ammo: ammoRange?.join("||"),
+                damage: damageRange?.join("||"),
+                damageFalloff: damageFalloffRange?.join("||"),
+                damageFalloffRate: damageFalloffRateRange?.join("||"),
+                radius: radiusRange?.join("||"),
+                radiusDamageFalloff: radiusDamageFalloffRange?.join("||"),
+                rateOfFire: rateOfFireRange?.join("||"),
+                energyCost: energyCostRange?.join("||"),
+                projectileSpeed: projectileSpeedRange?.join("||"),
+                spread: spreadRange?.join("||"),
             })
 
             if (!resp) return
@@ -176,7 +466,31 @@ export const WeaponsMarket = () => {
         } finally {
             setIsLoading(false)
         }
-    }, [sort, price, updateQuery, page, pageSize, status, ownedBy, listingTypes, weaponTypes, send, search, setTotalItems])
+    }, [
+        sort,
+        price,
+        updateQuery,
+        page,
+        pageSize,
+        status,
+        ownedBy,
+        listingTypes,
+        rarities,
+        weaponTypes,
+        ammoRange,
+        damageRange,
+        damageFalloffRange,
+        damageFalloffRateRange,
+        radiusRange,
+        radiusDamageFalloffRange,
+        rateOfFireRange,
+        energyCostRange,
+        projectileSpeedRange,
+        spreadRange,
+        send,
+        search,
+        setTotalItems,
+    ])
 
     useEffect(() => {
         getItems()
@@ -232,7 +546,13 @@ export const WeaponsMarket = () => {
                         }}
                     >
                         {mechItems.map((item) => (
-                            <WeaponsMarketItem key={`marketplace-${item.id}`} item={item} isGridView={isGridView} />
+                            <WeaponsMarketItem
+                                key={`marketplace-${item.id}`}
+                                item={item}
+                                isGridView={isGridView}
+                                isExpanded={isExpanded}
+                                toggleIsExpanded={toggleIsExpanded}
+                            />
                         ))}
                     </Box>
                 </Box>
@@ -270,17 +590,62 @@ export const WeaponsMarket = () => {
                 </Stack>
             </Stack>
         )
-    }, [loadError, mechItems, isLoading, theme.factionTheme.primary, isGridView])
+    }, [loadError, mechItems, isLoading, theme.factionTheme.primary, isGridView, isExpanded, toggleIsExpanded])
 
     return (
         <Stack direction="row" spacing="1rem" sx={{ height: "100%" }}>
             <SortAndFilters
+                key={sortFilterReRender.toString()}
                 initialSearch={search}
                 onSetSearch={setSearch}
-                chipFilters={[statusFilterSection.current, ownedByFilterSection.current, listingTypeFilterSection.current, weaponTypeChipFilter.current]}
+                chipFilters={[
+                    statusFilterSection.current,
+                    ownedByFilterSection.current,
+                    listingTypeFilterSection.current,
+                    rarityChipFilter.current,
+                    weaponTypeChipFilter.current,
+                ]}
                 rangeFilters={[priceRangeFilter.current]}
+                sliderRangeFilters={[
+                    // ammoRangeFilter.current,
+                    damageRangeFilter.current,
+                    // damageFalloffRangeFilter.current,
+                    // damageFalloffRateRangeFilter.current,
+                    radiusRangeFilter.current,
+                    // radiusDamageFalloffRangeFilter.current,
+                    rateOfFireRangeFilter.current,
+                    energyCostRangeFilter.current,
+                    // projectileSpeedRangeFilter.current,
+                    spreadRangeFilter.current,
+                ]}
                 changePage={changePage}
-            />
+            >
+                <Box sx={{ p: ".8rem 1rem" }}>
+                    <FancyButton
+                        clipThingsProps={{
+                            clipSize: "6px",
+                            clipSlantSize: "0px",
+                            corners: { topLeft: true, topRight: true, bottomLeft: true, bottomRight: true },
+                            backgroundColor: colors.red,
+                            opacity: 1,
+                            border: { isFancy: true, borderColor: colors.red, borderThickness: "2px" },
+                            sx: { position: "relative" },
+                        }}
+                        sx={{ px: "1.6rem", py: ".7rem", color: "#FFFFFF" }}
+                        to={`/marketplace/sell${location.hash}`}
+                    >
+                        <Typography
+                            variant="caption"
+                            sx={{
+                                color: "#FFFFFF",
+                                fontFamily: fonts.nostromoBlack,
+                            }}
+                        >
+                            SELL ITEM
+                        </Typography>
+                    </FancyButton>
+                </Box>
+            </SortAndFilters>
 
             <ClipThing
                 clipSize="10px"
@@ -294,29 +659,7 @@ export const WeaponsMarket = () => {
             >
                 <Stack sx={{ position: "relative", height: "100%" }}>
                     <Stack sx={{ flex: 1 }}>
-                        <PageHeader title="WEAPONS" description="Explore what other citizens have to offer." imageUrl={WarMachineIconPNG}>
-                            <FancyButton
-                                clipThingsProps={{
-                                    clipSize: "9px",
-                                    backgroundColor: colors.red,
-                                    opacity: 1,
-                                    border: { isFancy: true, borderColor: colors.red, borderThickness: "2px" },
-                                    sx: { position: "relative" },
-                                }}
-                                sx={{ px: "1.6rem", py: ".4rem", color: "#FFFFFF" }}
-                                to={`/marketplace/sell${location.hash}`}
-                            >
-                                <Typography
-                                    variant="caption"
-                                    sx={{
-                                        color: "#FFFFFF",
-                                        fontFamily: fonts.nostromoBlack,
-                                    }}
-                                >
-                                    SELL ITEM
-                                </Typography>
-                            </FancyButton>
-                        </PageHeader>
+                        <PageHeader title="WEAPONS" description="Explore what other citizens have to offer." imageUrl={WarMachineIconPNG}></PageHeader>
 
                         <TotalAndPageSizeOptions
                             countItems={mechItems?.length}

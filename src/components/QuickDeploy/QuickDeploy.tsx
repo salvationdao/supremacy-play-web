@@ -4,7 +4,7 @@ import { MoveableResizable, TooltipHelper } from ".."
 import { SvgNotification, SvgSupToken } from "../../assets"
 import { useAuth, useMobile } from "../../containers"
 import { useTheme } from "../../containers/theme"
-import { parseString, supFormatter } from "../../helpers"
+import { parseString } from "../../helpers"
 import { usePagination, useToggle } from "../../hooks"
 import { useGameServerCommandsUser, useGameServerSubscriptionFaction } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
@@ -107,15 +107,15 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
         () => ({
             localStoragePrefix: "quickDeploy1",
             // Defaults
-            defaultPosX: 370,
-            defaultPosY: 20,
+            defaultPosX: 9999,
+            defaultPosY: 0,
             defaultWidth: 420,
             defaultHeight: 580,
             // Position limits
             minPosX: 0,
             minPosY: 0,
             // Size limits
-            minWidth: 360,
+            minWidth: 400,
             minHeight: 280,
             maxWidth: 1000,
             maxHeight: 1000,
@@ -127,8 +127,6 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
     )
 
     const queueLength = queueFeed?.queue_length || 0
-    const contractReward = queueFeed?.contract_reward || ""
-    const queueCost = queueFeed?.queue_cost || ""
 
     return (
         <>
@@ -156,34 +154,14 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
                                         {queueLength > 0 && (
                                             <AmountItem
                                                 key={`${queueLength}-queue_length`}
-                                                title={"POSITION: "}
+                                                title={"NEXT POSITION: "}
                                                 color="#FFFFFF"
                                                 value={`${queueLength + 1}`}
                                                 tooltip="The queue position of your war machine if you deploy now."
                                                 disableIcon
                                             />
                                         )}
-
-                                        {contractReward && (
-                                            <AmountItem
-                                                key={`${contractReward}-contract_reward`}
-                                                title={"REWARD: "}
-                                                color={colors.yellow}
-                                                value={supFormatter(contractReward, 2)}
-                                                tooltip="Your reward if your mech survives the battle giving your faction a victory."
-                                            />
-                                        )}
-
-                                        {queueCost && (
-                                            <AmountItem
-                                                title={"FEE: "}
-                                                color={colors.orange}
-                                                value={supFormatter(queueCost || "0", 2)}
-                                                tooltip="The cost to place your war machine into the battle queue."
-                                            />
-                                        )}
-
-                                        <IconButton size="small" sx={{ ml: "auto !important" }} onClick={() => togglePreferencesModalOpen(true)}>
+                                        <IconButton size="small" onClick={() => togglePreferencesModalOpen(true)}>
                                             <SvgNotification size="1.3rem" />
                                         </IconButton>
                                     </Stack>

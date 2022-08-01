@@ -7,7 +7,9 @@ export const MechViewer = ({ mechDetails }: { mechDetails: MechDetails }) => {
     const theme = useTheme()
 
     const backgroundColor = theme.factionTheme.background
+
     const skin = mechDetails.chassis_skin || mechDetails.default_chassis_skin
+    const avatarUrl = skin?.avatar_url || mechDetails.avatar_url
     const imageUrl = skin?.image_url || mechDetails.image_url
     const largeImageUrl = skin?.large_image_url || mechDetails.large_image_url
     const animationUrl = skin?.animation_url || mechDetails.animation_url
@@ -41,16 +43,16 @@ export const MechViewer = ({ mechDetails }: { mechDetails: MechDetails }) => {
                 sx={{
                     position: "absolute",
                     zIndex: 3,
-                    aspectRatio: "1",
-                    width: "unset",
+                    aspectRatio: "1.1",
                     height: "80%",
                     left: "50%",
-                    top: "52%",
+                    top: "50%",
                     transform: "translate(-50%, -50%)",
+                    overflow: "hidden",
                 }}
             >
                 <FeatherFade color={backgroundColor} />
-                <MediaPreview imageUrl={largeImageUrl || imageUrl} videoUrls={[animationUrl, cardAnimationUrl]} objectFit="contain" objectPosition="50% 8%" />
+                <MediaPreview imageUrl={largeImageUrl || imageUrl || avatarUrl} videoUrls={[animationUrl, cardAnimationUrl]} objectFit="cover" blurBackground />
             </Box>
         </Box>
     )
@@ -66,6 +68,7 @@ export const FeatherFade = ({ color }: { color: string }) => {
                 left: -1,
                 right: -1,
                 boxShadow: `0 0 60px 50px ${color}`,
+                zIndex: 9,
             }}
         >
             <Box
@@ -74,7 +77,7 @@ export const FeatherFade = ({ color }: { color: string }) => {
                     top: 0,
                     width: "100%",
                     height: "15rem",
-                    background: `linear-gradient(to top, transparent 40%, ${color})`,
+                    background: `linear-gradient(to top, transparent 50%, ${color})`,
                 }}
             />
 
@@ -84,7 +87,7 @@ export const FeatherFade = ({ color }: { color: string }) => {
                     bottom: 0,
                     width: "100%",
                     height: "15rem",
-                    background: `linear-gradient(to bottom, transparent 40%, ${color})`,
+                    background: `linear-gradient(to bottom, transparent 50%, ${color})`,
                 }}
             />
 
@@ -93,7 +96,7 @@ export const FeatherFade = ({ color }: { color: string }) => {
                     position: "absolute",
                     width: "15rem",
                     height: "100%",
-                    background: `linear-gradient(to left, transparent 40%, ${color})`,
+                    background: `linear-gradient(to left, transparent 50%, ${color})`,
                 }}
             />
 
@@ -103,7 +106,7 @@ export const FeatherFade = ({ color }: { color: string }) => {
                     right: 0,
                     width: "15rem",
                     height: "100%",
-                    background: `linear-gradient(to right, transparent 40%, ${color})`,
+                    background: `linear-gradient(to right, transparent 50%, ${color})`,
                 }}
             />
         </Box>

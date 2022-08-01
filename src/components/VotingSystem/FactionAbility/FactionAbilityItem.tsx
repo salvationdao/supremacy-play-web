@@ -1,10 +1,10 @@
 import { Box, Fade, Stack } from "@mui/material"
 import BigNumber from "bignumber.js"
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 import { ClipThing } from "../.."
 import { useGame } from "../../../containers"
 import { shadeColor } from "../../../helpers"
-import { useGameServerCommandsFaction, useGameServerSubscriptionAbilityFaction } from "../../../hooks/useGameServer"
+import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { GameAbility, GameAbilityProgress } from "../../../types"
 import { ProgressBar } from "../../Common/ProgressBar"
@@ -12,7 +12,7 @@ import { SupsBar } from "./SupsBar"
 import { TopText } from "./TopText"
 import { VotingButtons } from "./VotingButtons"
 
-interface ContributeFactionUniqueAbilityRequest {
+export interface ContributeFactionUniqueAbilityRequest {
     ability_identity: string
     ability_offering_id: string
     percentage: number
@@ -29,7 +29,7 @@ export const FactionAbilityItem = ({ gameAbility, abilityMaxPrice, clipSlantSize
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const { bribeStage } = useGame()
 
-    const [gameAbilityProgress, setGameAbilityProgress] = useState<GameAbilityProgress>()
+    // const [gameAbilityProgress, setGameAbilityProgress] = useState<GameAbilityProgress>()
     const [offeringID, setOfferingID] = useState<string>(gameAbility.ability_offering_id)
     const [currentSups, setCurrentSups] = useState(new BigNumber(gameAbility.current_sups).dividedBy("1000000000000000000"))
     const [supsCost, setSupsCost] = useState(new BigNumber(gameAbility.sups_cost).dividedBy("1000000000000000000"))
@@ -40,33 +40,27 @@ export const FactionAbilityItem = ({ gameAbility, abilityMaxPrice, clipSlantSize
     const { identity } = gameAbility
 
     // Listen on the progress of the votes
-    useGameServerSubscriptionAbilityFaction<GameAbilityProgress | undefined>(
+    useGameServerSubscriptionFaction<GameAbilityProgress | undefined>(
         {
-            URI: progressWsURI || "/faction",
+            URI: progressWsURI || "/faction_ability",
             key: GameServerKeys.SubAbilityProgress,
         },
         (payload) => {
             if (!payload || payload.id !== identity) return
-            setGameAbilityProgress(payload)
+            const currentSups = new BigNumber(payload.current_sups).dividedBy("1000000000000000000")
+            const supsCost = new BigNumber(payload.sups_cost).dividedBy("1000000000000000000")
+            setCurrentSups(currentSups)
+            setSupsCost(supsCost)
+            setOfferingID(payload.offering_id)
+
+            setInitialTargetCost((prev) => {
+                if (payload.should_reset || prev.isZero()) {
+                    return supsCost
+                }
+                return prev
+            })
         },
     )
-
-    // Set states
-    useEffect(() => {
-        if (!gameAbilityProgress) return
-        const currentSups = new BigNumber(gameAbilityProgress.current_sups).dividedBy("1000000000000000000")
-        const supsCost = new BigNumber(gameAbilityProgress.sups_cost).dividedBy("1000000000000000000")
-        setCurrentSups(currentSups)
-        setSupsCost(supsCost)
-        setOfferingID(gameAbilityProgress.offering_id)
-
-        setInitialTargetCost((prev) => {
-            if (gameAbilityProgress.should_reset || prev.isZero()) {
-                return supsCost
-            }
-            return prev
-        })
-    }, [gameAbilityProgress])
 
     const onContribute = useCallback(
         async (amount: BigNumber, percentage: number) => {
@@ -110,7 +104,7 @@ interface InnerProps {
     onContribute: (c: BigNumber, p: number) => void
 }
 
-export const FactionAbilityItemInner = ({ gameAbility, initialTargetCost, clipSlantSize, currentSups, supsCost, isVoting, onContribute }: InnerProps) => {
+const FactionAbilityItemInner = ({ gameAbility, initialTargetCost, clipSlantSize, currentSups, supsCost, isVoting, onContribute }: InnerProps) => {
     const { label, colour, text_colour, image_url, description } = gameAbility
 
     const backgroundColor = useMemo(() => shadeColor(colour, -75), [colour])
@@ -123,7 +117,6 @@ export const FactionAbilityItemInner = ({ gameAbility, initialTargetCost, clipSl
                         clipSize="6px"
                         clipSlantSize={clipSlantSize}
                         border={{
-                            isFancy: true,
                             borderColor: colour,
                             borderThickness: ".3rem",
                         }}

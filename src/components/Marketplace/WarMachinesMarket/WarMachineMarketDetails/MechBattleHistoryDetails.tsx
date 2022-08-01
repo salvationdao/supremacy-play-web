@@ -106,7 +106,7 @@ export const MechBattleHistoryDetails = ({ mechDetails, smallSize }: { mechDetai
                             percentage={stats.extra_stats.survival_rate * 100}
                             size={size}
                             circleSize={circleSize}
-                            label="Survival %"
+                            label="Survive %"
                             color={colors.green}
                         />
                         <PercentageDisplay
@@ -127,7 +127,7 @@ export const MechBattleHistoryDetails = ({ mechDetails, smallSize }: { mechDetai
                             percentage={0}
                             size={size}
                             circleSize={unknownCircleSize}
-                            label="Survival %"
+                            label="Survive %"
                             color={colors.green}
                         />
                         <PercentageDisplay displayValue={`?`} percentage={0} size={size} circleSize={unknownCircleSize} label="Deaths" color={colors.red} />

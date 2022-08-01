@@ -6,6 +6,7 @@ import { useAuth, useSupremacy } from "../../containers"
 import { fonts, siteZIndex } from "../../theme/theme"
 import { User } from "../../types"
 import { HowToPlay } from "../HowToPlay/HowToPlay"
+import { Messages } from "./Messages/Messages"
 
 export const Bar = () => {
     const { userID, user } = useAuth()
@@ -48,7 +49,7 @@ const BarContent = ({ userID, user }: { userID?: string; user: User }) => {
     const below580 = useMediaQuery("(max-width:580px)")
     const { isServerUp } = useSupremacy()
 
-    if (isServerUp === false) {
+    if (!isServerUp) {
         return (
             <>
                 <Logo />
@@ -70,6 +71,7 @@ const BarContent = ({ userID, user }: { userID?: string; user: User }) => {
             <HowToPlay />
             {userID && <Enlist />}
             {userID && <WalletDetails />}
+            {userID && <Messages />}
             <ProfileCard userID={userID} user={user} />
         </>
     )

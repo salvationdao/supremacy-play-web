@@ -156,9 +156,7 @@ export const SetupTutorial = () => {
                 selector: ".tutorial-end",
                 content: (
                     <Box>
-                        <Typography>
-                            Start contributing to your faction&apos;s battle effort to ensure it&apos;s supremacy and reap the Spoils of War!
-                        </Typography>
+                        <Typography>Start contributing to your faction&apos;s battle effort to ensure its supremacy and reap the Spoils of War!</Typography>
                         <FancyButton
                             clipThingsProps={{
                                 clipSize: "9px",

@@ -6,6 +6,15 @@ export enum MechStatusEnum {
     Battle = "BATTLE",
     Market = "MARKET",
     Sold = "SOLD",
+    BattleReady = "BATTLE_READY",
+    Damaged = "DAMAGED",
+    StandardRepairing = "REPAIRING (STANDARD)",
+    FastRepairing = "REPAIRING (FAST)",
+}
+
+export enum RepairType {
+    Standard = "START_STANDARD_REPAIR",
+    Fast = "START_FAST_REPAIR",
 }
 
 export enum WeaponType {
@@ -15,6 +24,36 @@ export enum WeaponType {
     MissileLauncher = "Missile Launcher",
     PlasmaGun = "Plasma Gun",
     SniperRifle = "Sniper Rifle",
+    GrenadeLauncher = "Grenade Launcher",
+    MachineGun = "Machine Gun",
+    Flak = "Flak",
+    Flamethrower = "Flamethrower",
+    LaserBeam = "Laser Beam",
+    LightningGun = "Lightning Gun",
+    BFG = "BFG",
+    Rifle = "Rifle",
+}
+
+export enum AssetItemType {
+    Mech = "mech",
+    Weapon = "weapon",
+    MechSkin = "mech_skin",
+    WeaponSkin = "weapon_skin",
+    PowerCore = "power_core",
+    Utility = "utilities",
+    IntroAnimation = "intro_animation",
+    OutroAnimation = "outro_animation",
+}
+
+export enum MechRepairStatEnum {
+    Pending = "PENDING",
+    StandardRepair = "STANDARD_REPAIR",
+    FastRepair = "FAST_REPAIR",
+}
+
+export interface MechRepairStatus {
+    repair_status: MechRepairStatEnum
+    remain_seconds?: number
 }
 
 export interface MechStatus {
@@ -29,11 +68,11 @@ export interface AssetDurability {
     repair_type: "FAST" | "STANDARD" | ""
 }
 
-interface Collection {
+export interface Collection {
     collection_slug: string
     hash: string
     token_id: number
-    item_type: string
+    item_type: AssetItemType
     item_id: string
     tier: string
     owner_id: string
@@ -87,6 +126,7 @@ export interface MechDetails extends MechBasic {
     power_core?: PowerCore
     weapons: Weapon[]
     utility: Utility[]
+    battle_ready: boolean
 }
 
 export interface BlueprintMech {
@@ -158,6 +198,7 @@ export interface MechSkin extends Collection {
     large_image_url?: string
     avatar_url?: string
     created_at: Date
+    equipped_on?: string
 }
 
 export interface MechAnimation extends Collection {
@@ -193,6 +234,7 @@ export interface Weapon extends Collection {
     blueprint_id: string
     default_damage_type: string
     genesis_token_id?: number
+    equipped_on?: string
     weapon_type: string
     damage_falloff?: number
     damage_falloff_rate?: number
@@ -206,6 +248,8 @@ export interface Weapon extends Collection {
     weapon_skin?: WeaponSkin
     updated_at: Date
     created_at: Date
+    market_locked: boolean
+    item_sale_id?: string
 }
 
 export interface WeaponSkin extends Collection {
@@ -218,6 +262,19 @@ export interface WeaponSkin extends Collection {
     tier: string
     created_at: string
     weapon_model_id: Date
+}
+
+export interface WeaponMaxStats {
+    max_ammo?: number
+    damage: number
+    damage_falloff?: number
+    damage_falloff_rate?: number
+    spread?: number
+    rate_of_fire?: number
+    radius?: number
+    radius_damage_falloff?: number
+    projectile_speed?: number
+    energy_cost?: number
 }
 
 export interface Utility extends Collection {
@@ -289,6 +346,7 @@ export interface BattleMechHistory {
     faction_won?: boolean
     mech_survived?: boolean
     battle?: Battle
+    mech?: MechDetails
 }
 
 export interface BattleMechHistoryIdentifier {
@@ -315,6 +373,10 @@ export enum AIType {
     Reinforcement = "Reinforcement",
     MiniMech = "Mini Mech",
     RobotDog = "Robot Dog",
+}
+
+export interface AbilityDetail {
+    radius: number
 }
 
 export interface WarMachineState {
@@ -368,7 +430,10 @@ export interface RepairStatus {
     full_repair_fee: string
 }
 
-export type MysteryCrateType = "MECH" | "WEAPON"
+export enum MysteryCrateType {
+    Mech = "MECH",
+    Weapon = "WEAPON",
+}
 
 export interface StorefrontMysteryCrate {
     id: string
@@ -428,6 +493,7 @@ export interface KeycardBlueprint {
 }
 
 export interface RewardResponse {
+    mystery_crate?: StorefrontMysteryCrate
     label: string
     image_url: string
     locked_until: Date
@@ -440,11 +506,12 @@ export interface MysteryCrateOwnershipResp {
 }
 
 export interface OpenCrateResponse {
+    id: string
     mech?: MechDetails
     power_core?: PowerCore
-    mech_skin?: MechSkin
+    mech_skins?: MechSkin[]
     weapon: Weapon[]
-    weapon_skin?: WeaponSkin
+    weapon_skins?: WeaponSkin[]
 }
 
 export interface Rarity {

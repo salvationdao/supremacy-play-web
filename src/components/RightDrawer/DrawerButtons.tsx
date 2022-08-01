@@ -1,5 +1,6 @@
 import { Box, Tabs } from "@mui/material"
 import { useHistory, useLocation } from "react-router-dom"
+import { useAuth } from "../../containers"
 import { useTheme } from "../../containers/theme"
 import { HASH_ROUTES_ARRAY, RightDrawerHashes } from "../../routes"
 import { siteZIndex } from "../../theme/theme"
@@ -9,6 +10,7 @@ const DRAWER_BAR_WIDTH = 3 // rem
 
 export const DrawerButtons = () => {
     const theme = useTheme()
+    const { userID } = useAuth()
     const location = useLocation()
     const history = useHistory()
 
@@ -30,12 +32,13 @@ export const DrawerButtons = () => {
                     display: "none",
                 },
                 ".MuiSvgIcon-root": {
-                    fill: `#FFFFFF !important`,
+                    fill: `${theme.factionTheme.secondary} !important`,
                 },
             }}
         >
             <Tabs value={0} orientation="vertical" variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile sx={{ flex: 1 }}>
                 {HASH_ROUTES_ARRAY.map((r) => {
+                    if (r.requireAuth && !userID) return null
                     return (
                         <TabButton
                             key={r.id}

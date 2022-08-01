@@ -1,54 +1,42 @@
 import { Box, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
-import { useMemo } from "react"
+import { useMemo, useState } from "react"
 import { FancyButton } from "../.."
 import { SvgSupToken } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
-import { getRarityDeets, numFormatter } from "../../../helpers"
+import { numFormatter } from "../../../helpers"
+import { useToggle } from "../../../hooks"
+import { useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../keys"
 import { MARKETPLACE_TABS } from "../../../pages"
-import { colors, fonts } from "../../../theme/theme"
-import { MarketplaceEvent, MarketplaceEventType } from "../../../types/marketplace"
+import { colors } from "../../../theme/theme"
+import { MechDetails, Weapon } from "../../../types/assets"
+import { MarketplaceBuyAuctionItem, MarketplaceEvent, MarketplaceEventType } from "../../../types/marketplace"
+import { KeycardCommonArea } from "../../Hangar/KeycardsHangar/KeycardHangarItem"
+import { CrateCommonArea } from "../../Hangar/MysteryCratesHangar/MysteryCrateHangarItem"
+import { MechCommonArea } from "../../Hangar/WarMachinesHangar/WarMachineHangarItem"
+import { WeaponCommonArea } from "../../Hangar/WeaponsHangar/WeaponHangarItem"
 import { General } from "../Common/MarketItem/General"
-import { Thumbnail } from "../Common/MarketItem/Thumbnail"
 
-export const HistoryItem = ({ eventItem }: { eventItem: MarketplaceEvent }) => {
+export const HistoryItem = ({ eventItem, isGridView }: { eventItem: MarketplaceEvent; isGridView: boolean }) => {
     const theme = useTheme()
+    const [isExpanded, toggleIsExpanded] = useToggle(false)
 
     const itemRelatedData = useMemo(() => {
         const item = eventItem.item
         let linkSubPath = MARKETPLACE_TABS.WarMachines
-        let imageUrl = ""
-        let animationUrl = ""
-        let cardAnimationUrl = ""
-        let label = ""
-        let labelColor = "#FFFFFF"
-        let description = ""
         let primaryColor = colors.marketSold
         let statusText = ""
         const formattedAmount = eventItem.amount ? numFormatter(new BigNumber(eventItem.amount).shiftedBy(-18).toNumber()) : ""
 
         if (item.mech && item.collection_item) {
-            const rarityDeets = getRarityDeets(item.collection_item.tier)
-
             linkSubPath = MARKETPLACE_TABS.WarMachines
-            imageUrl = item.mech.avatar_url
-            label = rarityDeets.label
-            labelColor = rarityDeets.color
-            description = item.mech.name || item.mech.label
         } else if (item.mystery_crate && item.collection_item) {
             linkSubPath = MARKETPLACE_TABS.MysteryCrates
-            imageUrl = item.collection_item.image_url || ""
-            animationUrl = item.collection_item.animation_url || ""
-            cardAnimationUrl = item.collection_item.card_animation_url || ""
-            label = item.mystery_crate.label
-            description = item.mystery_crate.description
+        } else if (item.weapon && item.collection_item) {
+            linkSubPath = MARKETPLACE_TABS.Weapons
         } else if (item.keycard) {
             linkSubPath = MARKETPLACE_TABS.Keycards
-            imageUrl = item.keycard.image_url
-            animationUrl = item.keycard.animation_url
-            cardAnimationUrl = item.keycard.card_animation_url
-            label = item.keycard.label
-            description = item.keycard.description
         }
 
         if (eventItem.event_type === MarketplaceEventType.Purchased) {
@@ -73,12 +61,6 @@ export const HistoryItem = ({ eventItem }: { eventItem: MarketplaceEvent }) => {
 
         return {
             linkSubPath,
-            imageUrl,
-            animationUrl,
-            cardAnimationUrl,
-            label,
-            labelColor,
-            description,
             primaryColor,
             statusText,
             formattedAmount,
@@ -86,8 +68,9 @@ export const HistoryItem = ({ eventItem }: { eventItem: MarketplaceEvent }) => {
     }, [eventItem])
 
     return (
-        <Box sx={{ position: "relative", overflow: "visible" }}>
+        <Box sx={{ position: "relative", overflow: "visible", height: "100%" }}>
             <FancyButton
+                disableRipple
                 clipThingsProps={{
                     clipSize: "7px",
                     clipSlantSize: "0px",
@@ -99,62 +82,41 @@ export const HistoryItem = ({ eventItem }: { eventItem: MarketplaceEvent }) => {
                     },
                     backgroundColor: theme.factionTheme.background,
                     opacity: 0.9,
-                    border: { isFancy: true, borderColor: itemRelatedData.primaryColor, borderThickness: ".25rem" },
-                    sx: { position: "relative" },
+                    border: { isFancy: !isGridView, borderColor: itemRelatedData.primaryColor, borderThickness: ".25rem" },
+                    sx: { position: "relative", height: "100%" },
                 }}
-                sx={{ color: itemRelatedData.primaryColor, textAlign: "start" }}
+                sx={{ color: itemRelatedData.primaryColor, textAlign: "start", height: "100%", ":hover": { opacity: 1 } }}
                 to={`/marketplace/${itemRelatedData.linkSubPath}/${eventItem.item.id}${location.hash}`}
             >
                 <Box
                     sx={{
                         position: "relative",
-                        p: ".1rem .3rem",
-                        display: "grid",
+                        height: "100%",
+                        p: isGridView ? ".5rem .6rem" : ".1rem .3rem",
+                        display: isGridView ? "block" : "grid",
                         gridTemplateRows: "7rem",
-                        gridTemplateColumns: `8rem minmax(auto, 38rem) repeat(2, 1fr) 1.3fr`, // hard-coded to have 5 columns, adjust as required
+                        gridTemplateColumns: `minmax(36rem, auto) repeat(2, 17rem) 23rem`, // hard-coded to have 5 columns, adjust as required
                         gap: "1.4rem",
+                        ...(isGridView
+                            ? {
+                                  "&>*:not(:last-child)": {
+                                      mb: ".8rem",
+                                  },
+                              }
+                            : {}),
                     }}
                 >
-                    <Thumbnail
-                        imageUrl={itemRelatedData.imageUrl}
-                        animationUrl={itemRelatedData.animationUrl}
-                        cardAnimationUrl={itemRelatedData.cardAnimationUrl}
+                    <ItemCommonArea
+                        item={eventItem.item}
+                        isGridView={isGridView}
+                        isExpanded={isExpanded}
+                        toggleIsExpanded={toggleIsExpanded}
+                        primaryColor={itemRelatedData.primaryColor}
                     />
 
-                    <Stack spacing=".6rem">
-                        <Typography
-                            variant="body2"
-                            sx={{
-                                fontFamily: fonts.nostromoBlack,
-                                color: itemRelatedData.labelColor,
-                                display: "-webkit-box",
-                                overflow: "hidden",
-                                overflowWrap: "anywhere",
-                                textOverflow: "ellipsis",
-                                WebkitLineClamp: 1,
-                                WebkitBoxOrient: "vertical",
-                            }}
-                        >
-                            {itemRelatedData.label}
-                        </Typography>
+                    <General title="EVENT TYPE" text={itemRelatedData.statusText} textColor={itemRelatedData.primaryColor} isGridView={isGridView} />
 
-                        <Typography
-                            sx={{
-                                display: "-webkit-box",
-                                overflow: "hidden",
-                                overflowWrap: "anywhere",
-                                textOverflow: "ellipsis",
-                                WebkitLineClamp: 2,
-                                WebkitBoxOrient: "vertical",
-                            }}
-                        >
-                            {itemRelatedData.description}
-                        </Typography>
-                    </Stack>
-
-                    <General title="EVENT TYPE" text={itemRelatedData.statusText} textColor={itemRelatedData.primaryColor} />
-
-                    <General title="AMOUNT">
+                    <General title="AMOUNT" isGridView={isGridView}>
                         <Stack direction="row" alignItems="center" flexWrap="wrap">
                             {itemRelatedData.formattedAmount && <SvgSupToken size="1.7rem" fill={itemRelatedData.primaryColor} />}
                             <Typography
@@ -165,7 +127,7 @@ export const HistoryItem = ({ eventItem }: { eventItem: MarketplaceEvent }) => {
                         </Stack>
                     </General>
 
-                    <General title="DATE" text={eventItem.created_at.toUTCString()} />
+                    <General title="DATE" text={eventItem.created_at.toUTCString()} isGridView={isGridView} />
                 </Box>
 
                 <Box
@@ -182,4 +144,98 @@ export const HistoryItem = ({ eventItem }: { eventItem: MarketplaceEvent }) => {
             </FancyButton>
         </Box>
     )
+}
+
+const ItemCommonArea = ({
+    primaryColor,
+    item,
+    isGridView,
+    isExpanded,
+    toggleIsExpanded,
+}: {
+    primaryColor: string
+
+    item: MarketplaceBuyAuctionItem
+    isGridView: boolean
+    isExpanded: boolean
+    toggleIsExpanded: (value?: boolean) => void
+}) => {
+    const [mechDetails, setMechDetails] = useState<MechDetails>()
+    const [weaponDetails, setWeaponDetails] = useState<Weapon>()
+
+    useGameServerSubscriptionFaction<MechDetails>(
+        {
+            URI: `/mech/${item.mech?.id || ""}/details`,
+            key: GameServerKeys.GetMechDetails,
+            ready: !!item.mech,
+        },
+        (payload) => {
+            if (!payload) return
+            setMechDetails(payload)
+        },
+    )
+
+    useGameServerSubscriptionFaction<Weapon>(
+        {
+            URI: `/weapon/${item.weapon?.id}/details`,
+            key: GameServerKeys.GetWeaponDetails,
+            ready: !!item.weapon,
+        },
+        (payload) => {
+            if (!payload) return
+            setWeaponDetails(payload)
+        },
+    )
+
+    if (item.mech) {
+        return (
+            <MechCommonArea
+                primaryColor={primaryColor}
+                secondaryColor="#FFFFFF"
+                isGridView={isGridView}
+                mechDetails={mechDetails}
+                isExpanded={isExpanded}
+                toggleIsExpanded={toggleIsExpanded}
+            />
+        )
+    }
+
+    if (item.weapon) {
+        return (
+            <WeaponCommonArea
+                primaryColor={primaryColor}
+                secondaryColor="#FFFFFF"
+                isGridView={isGridView}
+                weaponDetails={weaponDetails}
+                isExpanded={isExpanded}
+                toggleIsExpanded={toggleIsExpanded}
+            />
+        )
+    }
+
+    if (item.mystery_crate) {
+        return (
+            <CrateCommonArea
+                isGridView={isGridView}
+                label={item.mystery_crate.label}
+                description={item.mystery_crate.description}
+                imageUrl={item.collection_item?.image_url}
+                videoUrls={[item.collection_item?.animation_url, item.collection_item?.card_animation_url]}
+            />
+        )
+    }
+
+    if (item.keycard) {
+        return (
+            <KeycardCommonArea
+                isGridView={isGridView}
+                label={item.keycard.label}
+                description={item.keycard.description}
+                imageUrl={item.keycard.image_url}
+                videoUrls={[item.keycard.animation_url, item.keycard.card_animation_url]}
+            />
+        )
+    }
+
+    return <Typography>MARKET ITEM</Typography>
 }

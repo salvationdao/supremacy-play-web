@@ -69,7 +69,7 @@ export const AssetChooseModal = ({
                 exclude_opened: true,
                 exclude_market_listed: true,
                 exclude_market_locked: true,
-                exclude_equipped: true,
+                equipped_statuses: ["unequipped"],
             })
 
             if (!resp) return

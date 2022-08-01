@@ -1,29 +1,15 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useMemo } from "react"
-import { LineItem, StyledImageText, TooltipHelper } from "../../../.."
+import { LineItem, TooltipHelper } from "../../../.."
 import { SvgAnnouncement, SvgCooldown, SvgFastRepair, SvgInfoCircular } from "../../../../../assets"
 import { dateFormatter, getUserRankDeets, snakeToTitle } from "../../../../../helpers"
 import { useToggle } from "../../../../../hooks"
 import { colors } from "../../../../../theme/theme"
-import { Faction } from "../../../../../types"
 import { PunishMessageData } from "../../../../../types/chat"
+import { Player } from "../../../../Common/Player"
 
-export const PunishMessage = ({
-    data,
-    sentAt,
-    fontSize,
-    getFaction,
-}: {
-    data?: PunishMessageData
-    sentAt: Date
-    fontSize: number
-    getFaction: (factionID: string) => Faction
-}) => {
+export const PunishMessage = ({ data, sentAt, fontSize }: { data?: PunishMessageData; sentAt: Date; fontSize: number }) => {
     const [isExpanded, toggleIsExpanded] = useToggle()
-    const factionColor = useMemo(
-        () => (data?.issued_by_user.faction_id ? getFaction(data.issued_by_user.faction_id).primary_color : "#FFFFFF"),
-        [data?.issued_by_user.faction_id, getFaction],
-    )
 
     const votedByRender = useMemo(() => {
         if (!data) return null
@@ -79,9 +65,9 @@ export const PunishMessage = ({
                         px: "1.5rem",
                     }}
                 >
-                    <Stack direction="row" spacing=".6rem" sx={{ mb: ".5rem", opacity: 0.7 }} alignItems="center">
+                    <Stack direction="row" spacing=".8rem" sx={{ mb: ".5rem", opacity: 0.7 }} alignItems="center">
                         <SvgAnnouncement size="1.1rem" sx={{ pb: ".35rem" }} />
-                        <Typography sx={{ fontWeight: "fontWeightBold" }}>SYSTEM</Typography>
+                        <Typography sx={{ fontWeight: "fontWeightBold" }}>PLAYER BAN</Typography>
 
                         <Typography
                             variant="caption"
@@ -105,18 +91,7 @@ export const PunishMessage = ({
                             },
                         }}
                     >
-                        <StyledImageText
-                            text={
-                                <>
-                                    {`${reported_user.username}`}
-                                    <span style={{ marginLeft: ".2rem", opacity: 0.7 }}>{`#${reported_user.gid}`}</span>
-                                </>
-                            }
-                            color={factionColor || "#FFFFFF"}
-                            imageUrl={getFaction(issued_by_user.faction_id).logo_url}
-                            imageMb={-0.2}
-                            imageSize={1.4}
-                        />
+                        <Player player={reported_user} />
                         <Typography>&nbsp;{is_passed ? "was" : "was not"} punished with&nbsp;</Typography>
 
                         <TooltipHelper placement="left" text={punish_option.description}>
@@ -166,17 +141,11 @@ export const PunishMessage = ({
                         }}
                     >
                         <LineItem title="INITIATOR" color={colors.green}>
-                            <Typography>
-                                {`${issued_by_user.username}`}
-                                <span style={{ marginLeft: ".2rem", opacity: 0.7 }}>{`#${issued_by_user.gid}`}</span>
-                            </Typography>
+                            <Player player={issued_by_user} />
                         </LineItem>
 
                         <LineItem title="AGAINST">
-                            <Typography>
-                                {`${reported_user.username}`}
-                                <span style={{ marginLeft: ".2rem", opacity: 0.7 }}>{`#${reported_user.gid}`}</span>
-                            </Typography>
+                            <Player player={reported_user} />
                         </LineItem>
 
                         <LineItem title="PUNISH">

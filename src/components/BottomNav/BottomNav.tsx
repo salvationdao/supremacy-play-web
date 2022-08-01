@@ -31,13 +31,12 @@ const BottomNavInner = () => {
     const secondaryColor = theme.factionTheme.secondary
     const backgroundColor = theme.factionTheme.background
 
-    const tabs = [HASH_ROUTES_MAP.live_chat, ...additionalTabs]
-    if (userID) tabs.push(HASH_ROUTES_MAP.active_players)
+    const tabs = [HASH_ROUTES_MAP.live_chat, ...additionalTabs, HASH_ROUTES_MAP.active_players]
 
     return (
         <Stack
             sx={{
-                maxHeight: "70vh",
+                maxHeight: "calc(100% - 240px)",
                 height: isNavOpen ? `${BOTTOM_NAV_HEIGHT}rem` : "4.2rem",
                 backgroundColor: `${primaryColor}08`,
                 transition: "all .3s",
@@ -72,6 +71,7 @@ const BottomNavInner = () => {
                     }}
                 >
                     {tabs.map((item, i) => {
+                        if (item.requireAuth && !userID) return null
                         return (
                             <Tab
                                 key={i}
@@ -101,6 +101,7 @@ const BottomNavInner = () => {
             {isNavOpen && (
                 <Box id="game-ui-container" sx={{ flex: 1, backgroundColor }}>
                     {tabs.map((item, i) => {
+                        if (item.requireAuth && !userID) return null
                         return (
                             <TabPanel key={i} currentValue={currentValue} value={i}>
                                 {item.Component && <item.Component />}

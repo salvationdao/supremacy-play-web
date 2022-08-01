@@ -1,11 +1,13 @@
-import { Box, Fade, Slide, Stack } from "@mui/material"
+import { Box, Divider, Fade, IconButton, Slide, Stack } from "@mui/material"
 import { ReactElement, useEffect, useMemo } from "react"
 import { ClipThing } from ".."
+import { SvgExternalLink } from "../../assets"
 import { useAuth, useGame, useMobile, useSupremacy } from "../../containers"
 import { useTheme } from "../../containers/theme"
 import { useToggle } from "../../hooks"
 import { siteZIndex } from "../../theme/theme"
 import { AIType } from "../../types"
+import { WindowPortal } from "../Common/WindowPortal"
 import { WarMachineItem } from "./WarMachineItem/WarMachineItem"
 
 export const WarMachineStats = () => {
@@ -13,7 +15,8 @@ export const WarMachineStats = () => {
     const theme = useTheme()
     const { factionID, userID } = useAuth()
     const { battleIdentifier } = useSupremacy()
-    const { warMachines, spawnedAI, bribeStage } = useGame()
+    const { warMachines, spawnedAI, bribeStage, map } = useGame()
+    const [isPoppedout, toggleIsPoppedout] = useToggle()
 
     // Temp hotfix ask james ****************************
     const [show, toggleShow] = useToggle(false)
@@ -29,6 +32,103 @@ export const WarMachineStats = () => {
         () => (spawnedAI ? spawnedAI.filter((sa) => sa.aiType === AIType.MiniMech && sa.ownedByID === userID) : []),
         [spawnedAI, userID],
     )
+
+    if (isPoppedout) {
+        return (
+            <WindowPortal
+                title="Supremacy - Live Chat"
+                onClose={() => toggleIsPoppedout(false)}
+                features={{
+                    width: 345,
+                    height: 896,
+                }}
+            >
+                <Stack
+                    alignItems="center"
+                    justifyContent="flex-start"
+                    sx={{
+                        position: "relative",
+                        width: "100%",
+                        height: "100%",
+                    }}
+                >
+                    {/* map background image */}
+                    <Box
+                        sx={{
+                            position: "absolute",
+                            width: "100%",
+                            height: "100%",
+                            background: `url(${map?.image_url})`,
+                            backgroundRepeat: "no-repeat",
+                            backgroundPosition: "center",
+                            backgroundSize: "cover",
+                            opacity: 0.15,
+                        }}
+                    />
+
+                    <ClipThing
+                        clipSize="10px"
+                        border={{
+                            borderColor: theme.factionTheme.primary,
+                            borderThickness: ".6rem",
+                        }}
+                        opacity={0.7}
+                        backgroundColor={theme.factionTheme.background}
+                        sx={{ flex: 1, transform: "scale(0.7)" }}
+                    >
+                        <Stack sx={{ height: "100%" }}>
+                            <Box
+                                sx={{
+                                    flex: 1,
+                                    overflowY: "auto",
+                                    overflowX: "hidden",
+                                    ml: "1.9rem",
+                                    mr: ".5rem",
+                                    pr: "1.4rem",
+                                    my: "1rem",
+                                    direction: "ltr",
+                                    scrollbarWidth: "none",
+                                    "::-webkit-scrollbar": {
+                                        width: ".4rem",
+                                    },
+                                    "::-webkit-scrollbar-track": {
+                                        background: "#FFFFFF15",
+                                        borderRadius: 3,
+                                    },
+                                    "::-webkit-scrollbar-thumb": {
+                                        background: (theme) => theme.factionTheme.primary,
+                                        borderRadius: 3,
+                                    },
+                                }}
+                            >
+                                <Box sx={{ direction: "ltr", height: 0 }}>
+                                    <Stack spacing="2.6rem" justifyContent="center" sx={{ p: "2rem" }}>
+                                        {otherMechs.length > 0 &&
+                                            otherMechs
+                                                .sort((a, b) => a.factionID.localeCompare(b.factionID))
+                                                .map((wm) => (
+                                                    <Box key={`${wm.participantID} - ${wm.hash}`}>
+                                                        <WarMachineItem warMachine={wm} scale={1} initialExpanded isPoppedout />
+                                                    </Box>
+                                                ))}
+
+                                        <Divider orientation="horizontal" />
+
+                                        {haveFactionMechs &&
+                                            factionMechs.map((wm) => (
+                                                <Box key={`${wm.participantID} - ${wm.hash}`}>
+                                                    <WarMachineItem warMachine={wm} scale={1} initialExpanded isPoppedout />
+                                                </Box>
+                                            ))}
+                                    </Stack>
+                                </Box>
+                            </Box>
+                        </Stack>
+                    </ClipThing>
+                </Stack>
+            </WindowPortal>
+        )
+    }
 
     if (!warMachines || warMachines.length <= 0) return null
 
@@ -48,7 +148,7 @@ export const WarMachineStats = () => {
                         }}
                     >
                         {factionMechs.map((wm) => (
-                            <WarMachineItem key={`${wm.participantID} - ${wm.hash}`} warMachine={wm} scale={0.7} initialExpanded />
+                            <WarMachineItem key={`${wm.participantID} - ${wm.hash}`} warMachine={wm} scale={0.7} transformOrigin="0 0" initialExpanded />
                         ))}
                     </Box>
                 )}
@@ -67,7 +167,7 @@ export const WarMachineStats = () => {
                         {otherMechs
                             .sort((a, b) => a.factionID.localeCompare(b.factionID))
                             .map((wm) => (
-                                <WarMachineItem key={`${wm.participantID} - ${wm.hash}`} warMachine={wm} scale={0.7} initialExpanded />
+                                <WarMachineItem key={`${wm.participantID} - ${wm.hash}`} warMachine={wm} scale={0.7} transformOrigin="0 0" initialExpanded />
                             ))}
                     </Box>
                 )}
@@ -102,6 +202,14 @@ export const WarMachineStats = () => {
                         </Box>
                     </Stack>
                 </Fade>
+                <IconButton
+                    onClick={() => toggleIsPoppedout()}
+                    edge="end"
+                    size="small"
+                    sx={{ position: "absolute", top: 0, left: 0, opacity: 0.5, ":hover": { opacity: 1 }, transition: "all .1s", zIndex: 99 }}
+                >
+                    <SvgExternalLink size="1.3rem" fill="#FFFFFF" sx={{ pb: 0 }} />
+                </IconButton>
                 <Stack direction="row" alignItems="flex-end" sx={{ ml: "-3rem", pl: "2rem", transform: "skew(-6deg)" }}>
                     {haveFactionMechs && (
                         <ClipThing
@@ -112,7 +220,7 @@ export const WarMachineStats = () => {
                             sx={{ height: "100%" }}
                         >
                             <HorizontalScrollContainer>
-                                <Stack spacing="-.6rem" direction="row" alignItems="center" justifyContent="center" sx={{ px: "2rem", py: "2rem" }}>
+                                <Stack spacing="-.9rem" direction="row" alignItems="center" justifyContent="center" sx={{ px: "1.2rem", py: "2rem" }}>
                                     {factionMechs.map((wm) => (
                                         <WarMachineItem key={`${wm.participantID} - ${wm.hash}`} warMachine={wm} scale={0.75} />
                                     ))}
@@ -123,7 +231,7 @@ export const WarMachineStats = () => {
 
                     {otherMechs.length > 0 && (
                         <HorizontalScrollContainer>
-                            <Stack spacing="-.8rem" direction="row" alignItems="center" sx={{ flex: 1, px: "2rem", py: "2rem" }}>
+                            <Stack spacing="-1.1rem" direction="row" alignItems="center" sx={{ flex: 1, px: "1.2rem", py: "2rem" }}>
                                 {otherMechs
                                     .sort((a, b) => a.factionID.localeCompare(b.factionID))
                                     .map((wm) => (

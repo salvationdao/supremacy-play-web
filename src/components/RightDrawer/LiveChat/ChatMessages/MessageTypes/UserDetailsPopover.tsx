@@ -1,20 +1,16 @@
 import { Box, Popover, Stack, Typography } from "@mui/material"
 import { useEffect } from "react"
 import { ClipThing, FancyButton } from "../../../.."
-import { SvgSkull2, SvgAbility, SvgDeath, SvgView } from "../../../../../assets"
-import { truncate } from "../../../../../helpers"
+import { SvgAbility, SvgDeath, SvgSkull2, SvgView } from "../../../../../assets"
 import { useToggle } from "../../../../../hooks"
 import { colors, fonts, siteZIndex } from "../../../../../theme/theme"
 import { User, UserStat } from "../../../../../types"
+import { Player } from "../../../../Common/Player"
 
 export const UserDetailsPopover = ({
-    faction_logo_url,
     factionColor,
     factionSecondaryColor,
     fromUserFactionID,
-    messageColor,
-    username,
-    gid,
     userStat,
     popoverRef,
     open,
@@ -22,13 +18,9 @@ export const UserDetailsPopover = ({
     user,
     toggleBanModalOpen,
 }: {
-    faction_logo_url?: string
     factionColor?: string
     factionSecondaryColor?: string
     fromUserFactionID?: string
-    messageColor?: string
-    username: string
-    gid: number
     userStat?: UserStat
     popoverRef: React.MutableRefObject<null>
     open: boolean
@@ -87,29 +79,9 @@ export const UserDetailsPopover = ({
                     backgroundColor={colors.darkNavy}
                 >
                     <Stack sx={{ minWidth: "20rem", px: "1.5rem", py: "1.2rem" }}>
-                        <Stack direction="row" spacing=".5rem" sx={{ mt: ".3rem", mb: ".7rem" }}>
-                            {faction_logo_url && (
-                                <Box
-                                    sx={{
-                                        mt: "-0.1rem !important",
-                                        width: "1.7rem",
-                                        height: "1.7rem",
-                                        flexShrink: 0,
-                                        backgroundImage: `url(${faction_logo_url})`,
-                                        backgroundRepeat: "no-repeat",
-                                        backgroundPosition: "center",
-                                        backgroundSize: "contain",
-                                        backgroundColor: factionColor,
-                                        borderRadius: 0.8,
-                                        border: `${factionColor} 1px solid`,
-                                    }}
-                                />
-                            )}
-                            <Typography sx={{ color: messageColor, fontWeight: "fontWeightBold" }}>
-                                {`${truncate(username, 20)}`}
-                                <span style={{ marginLeft: ".2rem", opacity: 0.7 }}>{`#${gid}`}</span>
-                            </Typography>
-                        </Stack>
+                        <Box sx={{ mt: ".3rem", mb: ".7rem" }}>
+                            <Player player={user} />
+                        </Box>
 
                         <Stack spacing=".3rem" sx={{ ml: ".2rem" }}>
                             <Stack direction="row" spacing=".5rem">

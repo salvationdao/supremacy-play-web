@@ -42,6 +42,7 @@ export const PlayerAbilitiesHangar = () => {
             { value: LocationSelectType.LINE_SELECT, label: LocationSelectType.LINE_SELECT.split("_").join(" "), color: colors.purple },
         ],
         initialSelected: locationSelectTypes,
+        initialExpanded: true,
         onSetSelected: (value: string[]) => {
             setLocationSelectTypes(value)
             changePage(1)
@@ -51,7 +52,7 @@ export const PlayerAbilitiesHangar = () => {
     useGameServerSubscriptionUser<PlayerAbility[]>(
         {
             URI: "/player_abilities",
-            key: GameServerKeys.PlayerAbilitiesList,
+            key: GameServerKeys.SubPlayerAbilitiesList,
         },
         (payload) => {
             if (!payload) return
@@ -196,7 +197,7 @@ export const PlayerAbilitiesHangar = () => {
                     <PageHeader
                         imageUrl={PlayerAbilityPNG}
                         title="PLAYER ABILITIES"
-                        description="Player abilities are abilities that can be bought and used on the battle arena."
+                        description="Player abilities are abilities that can be claimed and used on the battle arena."
                     />
 
                     <TotalAndPageSizeOptions

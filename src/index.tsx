@@ -1,10 +1,12 @@
-import { Box, Stack } from "@mui/material"
+import { Box, LinearProgress, Stack, Typography } from "@mui/material"
 import { TourProvider } from "@reactour/tour"
 import * as Sentry from "@sentry/react"
 import { Buffer } from "buffer"
+import { useEffect } from "react"
 import ReactDOM from "react-dom"
 import { Action, ClientContextProvider, createClient } from "react-fetching-library"
 import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom"
+import { SupremacyPNG } from "./assets"
 import { Bar, GlobalSnackbar, Maintenance, RightDrawer } from "./components"
 import { BottomNav } from "./components/BottomNav/BottomNav"
 import { tourStyles } from "./components/HowToPlay/Tutorial/SetupTutorial"
@@ -29,17 +31,69 @@ import { AuthProvider, useAuth, UserUpdater } from "./containers/auth"
 import { FingerprintProvider } from "./containers/fingerprint"
 import { ThemeProvider } from "./containers/theme"
 import { ws } from "./containers/ws"
+import { useToggle } from "./hooks"
 import { NotFoundPage } from "./pages"
 import { AuthPage } from "./pages/AuthPage"
 import { EnlistPage } from "./pages/EnlistPage"
 import { LoginRedirect } from "./pages/LoginRedirect"
 import { ROUTES_ARRAY, ROUTES_MAP } from "./routes"
-import { colors } from "./theme/theme"
+import { colors, fonts } from "./theme/theme"
 
 const AppInner = () => {
-    const { isServerUp } = useSupremacy()
+    const { serverConnectedBefore, isServerUp } = useSupremacy()
     const { isMobile } = useMobile()
     const { userID, factionID } = useAuth()
+    const [showLoading, toggleShowLoading] = useToggle(true)
+
+    // Makes the loading screen to show for AT LEAST 1 second
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            toggleShowLoading(false)
+        }, 2000)
+
+        return () => clearTimeout(timeout)
+    }, [toggleShowLoading])
+
+    if (!serverConnectedBefore || showLoading) {
+        return (
+            <Stack
+                spacing="3rem"
+                alignItems="center"
+                justifyContent="center"
+                sx={{
+                    position: "fixed",
+                    width: "100vw",
+                    height: "100%",
+                    backgroundColor: (theme) => theme.factionTheme.background,
+                }}
+            >
+                <Box
+                    sx={{
+                        width: "9rem",
+                        height: "9rem",
+                        background: `url(${SupremacyPNG})`,
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "center",
+                        backgroundSize: "contain",
+                    }}
+                />
+
+                <Stack alignItems="center" spacing=".8rem">
+                    <Typography variant="body2" sx={{ textAlign: "center", fontFamily: fonts.nostromoBlack }}>
+                        CONNECTING...
+                    </Typography>
+                    <LinearProgress
+                        sx={{
+                            width: "13rem",
+                            height: "9px",
+                            backgroundColor: `${colors.gold}15`,
+                            ".MuiLinearProgress-bar": { backgroundColor: colors.gold },
+                        }}
+                    />
+                </Stack>
+            </Stack>
+        )
+    }
 
     return (
         <>
@@ -78,7 +132,7 @@ const AppInner = () => {
                         }}
                     >
                         <Box sx={{ flex: 1, position: "relative", overflow: "hidden" }}>
-                            {isServerUp && !UNDER_MAINTENANCE && (
+                            {isServerUp && !UNDER_MAINTENANCE ? (
                                 <Switch>
                                     {ROUTES_ARRAY.map((r) => {
                                         const { id, path, exact, Component, requireAuth, requireFaction, authTitle, authDescription } = r
@@ -93,9 +147,9 @@ const AppInner = () => {
                                     })}
                                     <Redirect to={ROUTES_MAP.not_found_page.path} />
                                 </Switch>
+                            ) : (
+                                <Maintenance />
                             )}
-
-                            {(isServerUp === false || UNDER_MAINTENANCE) && <Maintenance />}
                         </Box>
 
                         {isMobile && <BottomNav />}
@@ -162,36 +216,36 @@ const App = () => {
                 <SnackBarProvider>
                     <ClientContextProvider client={client}>
                         <AuthProvider>
-                            <SupremacyProvider>
-                                <ChatProvider>
-                                    <WalletProvider>
-                                        <BarProvider>
-                                            <TourProvider {...tourProviderProps}>
-                                                <StreamProvider>
-                                                    <GameProvider>
-                                                        <MobileProvider>
-                                                            <DimensionProvider>
-                                                                <OverlayTogglesProvider>
-                                                                    <MiniMapProvider>
-                                                                        <UserUpdater />
-                                                                        <BrowserRouter>
+                            <BrowserRouter>
+                                <SupremacyProvider>
+                                    <ChatProvider>
+                                        <WalletProvider>
+                                            <BarProvider>
+                                                <TourProvider {...tourProviderProps}>
+                                                    <StreamProvider>
+                                                        <GameProvider>
+                                                            <MobileProvider>
+                                                                <DimensionProvider>
+                                                                    <OverlayTogglesProvider>
+                                                                        <MiniMapProvider>
+                                                                            <UserUpdater />
                                                                             <Switch>
                                                                                 <Route path="/404" exact component={NotFoundPage} />
                                                                                 <Route path="/login-redirect" exact component={LoginRedirect} />
                                                                                 <Route path="" component={AppInner} />
                                                                             </Switch>
-                                                                        </BrowserRouter>
-                                                                    </MiniMapProvider>
-                                                                </OverlayTogglesProvider>
-                                                            </DimensionProvider>
-                                                        </MobileProvider>
-                                                    </GameProvider>
-                                                </StreamProvider>
-                                            </TourProvider>
-                                        </BarProvider>
-                                    </WalletProvider>
-                                </ChatProvider>
-                            </SupremacyProvider>
+                                                                        </MiniMapProvider>
+                                                                    </OverlayTogglesProvider>
+                                                                </DimensionProvider>
+                                                            </MobileProvider>
+                                                        </GameProvider>
+                                                    </StreamProvider>
+                                                </TourProvider>
+                                            </BarProvider>
+                                        </WalletProvider>
+                                    </ChatProvider>
+                                </SupremacyProvider>
+                            </BrowserRouter>
                         </AuthProvider>
                     </ClientContextProvider>
                 </SnackBarProvider>

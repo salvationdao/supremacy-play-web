@@ -1,47 +1,33 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useMemo } from "react"
 import { SvgGlobal, SvgLine, SvgMicrochip, SvgQuestionMark, SvgTarget } from "../../../assets"
 import { useMiniMap } from "../../../containers"
-import { useToggle } from "../../../hooks"
-import { colors, fonts } from "../../../theme/theme"
+import { colors } from "../../../theme/theme"
 import { LocationSelectType, PlayerAbility } from "../../../types"
-import { ClipThing } from "../../Common/ClipThing"
-import { ConfirmModal } from "../../Common/ConfirmModal"
 import { FancyButton } from "../../Common/FancyButton"
 import { TooltipHelper } from "../../Common/TooltipHelper"
 
 export const PlayerAbilityCard = ({ playerAbility }: { playerAbility: PlayerAbility }) => {
     const { setPlayerAbility } = useMiniMap()
-    const [abilityTypeIcon, setAbilityTypeIcon] = useState<JSX.Element>(<SvgQuestionMark size="1.4rem" />)
-    const [abilityTypeDescription, setAbilityTypeDescription] = useState("Miscellaneous ability type.")
-    const [showPurchaseModal, toggleShowActivateModal] = useToggle(false)
 
-    useEffect(() => {
+    const abilityTypeIcon = useMemo(() => {
         switch (playerAbility.ability.location_select_type) {
             case LocationSelectType.GLOBAL:
-                setAbilityTypeDescription("This ability will affect all units on the map.")
-                setAbilityTypeIcon(<SvgGlobal size="1.4rem" />)
-                break
+                return <SvgGlobal size="1.5rem" />
             case LocationSelectType.LOCATION_SELECT:
-                setAbilityTypeDescription("This ability will target a specific location on the map.")
-                setAbilityTypeIcon(<SvgTarget size="1.4rem" />)
-                break
+                return <SvgTarget size="1.5rem" />
             case LocationSelectType.MECH_SELECT:
-                setAbilityTypeDescription("This ability will target a specific mech on the map.")
-                setAbilityTypeIcon(<SvgMicrochip size="1.4rem" />)
-                break
+                return <SvgMicrochip size="1.5rem" />
             case LocationSelectType.LINE_SELECT:
-                setAbilityTypeDescription("This ability will target a straight line on the map.")
-                setAbilityTypeIcon(<SvgLine size="1.4rem" />)
-                break
+                return <SvgLine size="1.5rem" />
         }
+        return <SvgQuestionMark size="1.5rem" />
     }, [playerAbility])
 
     const onActivate = useCallback(() => {
         if (!playerAbility) return
         setPlayerAbility(playerAbility)
-        toggleShowActivateModal(false)
-    }, [playerAbility, setPlayerAbility, toggleShowActivateModal])
+    }, [playerAbility, setPlayerAbility])
 
     return (
         <>
@@ -58,11 +44,11 @@ export const PlayerAbilityCard = ({ playerAbility }: { playerAbility: PlayerAbil
                         },
                         backgroundColor: colors.darkNavy,
                         opacity: 1,
-                        border: { borderColor: playerAbility.ability.colour, borderThickness: "1px" },
+                        border: { borderColor: playerAbility.ability.colour, borderThickness: "1.5px" },
                         sx: { position: "relative", px: ".4rem", py: ".3rem" },
                     }}
                     sx={{ color: playerAbility.ability.colour, p: 0, minWidth: 0, height: "100%" }}
-                    onClick={() => toggleShowActivateModal(true)}
+                    onClick={onActivate}
                 >
                     <Stack
                         spacing=".3rem"
@@ -85,8 +71,8 @@ export const PlayerAbilityCard = ({ playerAbility }: { playerAbility: PlayerAbil
                             <Box
                                 sx={{
                                     position: "absolute",
-                                    top: ".2rem",
-                                    right: ".2rem",
+                                    top: ".5rem",
+                                    left: ".5rem",
                                     zIndex: 2,
                                 }}
                             >
@@ -95,15 +81,13 @@ export const PlayerAbilityCard = ({ playerAbility }: { playerAbility: PlayerAbil
 
                             <Box
                                 sx={{
-                                    zIndex: 2,
                                     position: "absolute",
                                     top: ".2rem",
-                                    left: ".2rem",
+                                    right: ".2rem",
+                                    zIndex: 2,
                                 }}
                             >
-                                <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBold }}>
-                                    {playerAbility.count}
-                                </Typography>
+                                <Typography sx={{ textTransform: "none" }}>{playerAbility.count}x</Typography>
                             </Box>
 
                             <Box
@@ -155,65 +139,6 @@ export const PlayerAbilityCard = ({ playerAbility }: { playerAbility: PlayerAbil
                     </Stack>
                 </FancyButton>
             </TooltipHelper>
-
-            {showPurchaseModal && (
-                <ConfirmModal
-                    title={`Activate ${playerAbility.ability.label || "Ability"}`}
-                    onConfirm={onActivate}
-                    onClose={() => toggleShowActivateModal(false)}
-                >
-                    <Stack spacing="1rem">
-                        <Stack direction="row" spacing="1.5rem">
-                            <ClipThing
-                                clipSize="8px"
-                                border={{
-                                    borderColor: playerAbility.ability.colour,
-                                    borderThickness: ".3rem",
-                                }}
-                                opacity={0.5}
-                                backgroundColor="#333333"
-                                sx={{ height: "100%", flexShrink: 0 }}
-                            >
-                                <Box
-                                    sx={{
-                                        position: "relative",
-                                        height: "60px",
-                                        width: "60px",
-                                        background: `center center`,
-                                        backgroundImage: `linear-gradient(to top, rgba(0, 0, 0, .8) 20%, rgba(255, 255, 255, 0.0)), url(${playerAbility.ability.image_url})`,
-                                        backgroundSize: "cover",
-                                    }}
-                                >
-                                    <TooltipHelper text={abilityTypeDescription} placement="bottom">
-                                        <Box
-                                            sx={{
-                                                position: "absolute",
-                                                right: ".4rem",
-                                                bottom: ".2rem",
-                                                zIndex: 1,
-                                            }}
-                                        >
-                                            {abilityTypeIcon}
-                                        </Box>
-                                    </TooltipHelper>
-                                </Box>
-                            </ClipThing>
-
-                            <Typography variant="h6">{playerAbility.ability.description}</Typography>
-                        </Stack>
-
-                        <Typography
-                            variant="body2"
-                            sx={{
-                                fontFamily: fonts.nostromoBold,
-                                alignSelf: "end",
-                            }}
-                        >
-                            Remaining: {playerAbility.count}
-                        </Typography>
-                    </Stack>
-                </ConfirmModal>
-            )}
         </>
     )
 }

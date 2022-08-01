@@ -1,16 +1,15 @@
 import { Box, Fade, Stack } from "@mui/material"
 import { useMemo } from "react"
-import { BattleAbilityItem, FactionAbilities, MoveableResizable } from ".."
+import { BattleAbilityItem, MoveableResizable } from ".."
 import { useAuth, useGame, useMobile } from "../../containers"
 import { useTheme } from "../../containers/theme"
-import { FeatureName } from "../../types"
 import { ContributorAmount } from "../BattleStats/ContributorAmount"
 import { MoveableResizableConfig } from "../Common/MoveableResizable/MoveableResizableContainer"
 import { PlayerAbilities } from "./PlayerAbilities/PlayerAbilities"
 
 export const VotingSystem = () => {
     const theme = useTheme()
-    const { userID, factionID, userHasFeature } = useAuth()
+    const { factionID } = useAuth()
     const { isMobile } = useMobile()
     const { bribeStage } = useGame()
     const isBattleStarted = useMemo(() => bribeStage && bribeStage.phase !== "HOLD", [bribeStage])
@@ -29,7 +28,7 @@ export const VotingSystem = () => {
             // Size limits
             minWidth: 320,
             // minHeight: 168,
-            maxWidth: 500,
+            maxWidth: 400,
             // maxHeight: 900,
             // Others
             infoTooltipText: "Vote for game abilities and fight for your Faction!",
@@ -85,8 +84,8 @@ export const VotingSystem = () => {
                         >
                             <Stack spacing="1rem" sx={{ direction: "ltr", pt: ".4rem", pb: "1.2rem" }}>
                                 <BattleAbilityItem key={factionID} />
-                                <FactionAbilities />
-                                {userHasFeature(FeatureName.playerAbility) && userID && <PlayerAbilities />}
+                                {/* <FactionAbilities /> */}
+                                <PlayerAbilities />
                             </Stack>
                         </Box>
                     </Stack>

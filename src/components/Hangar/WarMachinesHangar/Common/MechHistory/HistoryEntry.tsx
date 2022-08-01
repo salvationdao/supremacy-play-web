@@ -3,6 +3,7 @@ import { ClipThing } from "../../../.."
 import { SvgDeath, SvgGoldBars } from "../../../../../assets"
 import { timeSinceInWords } from "../../../../../helpers"
 import { fonts, colors } from "../../../../../theme/theme"
+import { MechDetails } from "../../../../../types"
 
 interface HistoryEntryProps {
     mapName: string
@@ -11,9 +12,10 @@ interface HistoryEntryProps {
     status: "won" | "lost" | "pending"
     kills: number
     date: Date
+    mech?: MechDetails
 }
 
-export const HistoryEntry = ({ status, mapName, mechSurvived, backgroundImage, kills, date }: HistoryEntryProps) => {
+export const HistoryEntry = ({ status, mapName, mechSurvived, backgroundImage, kills, date, mech }: HistoryEntryProps) => {
     let statusColor = colors.grey
     let statusText = "In Progress"
     switch (status) {
@@ -81,13 +83,9 @@ export const HistoryEntry = ({ status, mapName, mechSurvived, backgroundImage, k
                 />
 
                 <Box>
-                    <Typography variant="body2" sx={{ textTransform: "uppercase" }}>
-                        {mapName}
-                    </Typography>
+                    {mech && <Typography sx={{ fontFamily: fonts.nostromoBlack, textTransform: "uppercase" }}>{mech.name || mech.label}</Typography>}
 
-                    <Typography variant="h6" sx={{ fontFamily: fonts.nostromoBlack }}>
-                        {statusText}
-                    </Typography>
+                    <Typography sx={{ fontFamily: fonts.nostromoBlack }}>{statusText}</Typography>
 
                     {status !== "pending" && (
                         <Stack direction="row" alignItems="center" spacing=".5rem">
@@ -106,8 +104,13 @@ export const HistoryEntry = ({ status, mapName, mechSurvived, backgroundImage, k
                 </Box>
 
                 <Stack alignItems="flex-end" alignSelf="center" sx={{ ml: "auto" }}>
+                    <Typography variant="body2" sx={{ textTransform: "uppercase" }}>
+                        {mapName}
+                    </Typography>
+
                     <Stack direction="row" spacing=".5rem" alignItems="center">
                         <Typography
+                            variant="body2"
                             sx={{
                                 fontFamily: fonts.nostromoBlack,
                                 color: kills > 0 ? colors.gold : colors.lightGrey,
@@ -118,7 +121,7 @@ export const HistoryEntry = ({ status, mapName, mechSurvived, backgroundImage, k
                         <SvgDeath fill={kills > 0 ? colors.gold : colors.lightGrey} size="1.8rem" />
                     </Stack>
 
-                    <Typography sx={{ color: colors.offWhite }}>{timeSinceInWords(date, new Date())} ago</Typography>
+                    <Typography sx={{ color: colors.offWhite }}>{timeSinceInWords(date, new Date(), true)} ago</Typography>
                 </Stack>
             </Stack>
         </ClipThing>

@@ -10,10 +10,11 @@ export interface RangeFilter {
     label: string
     initialValue: (number | undefined)[]
     onSetValue: (value: (number | undefined)[]) => void
+    initialExpanded?: boolean
 }
 
 export const RangeFilterSection = ({ filter, primaryColor, secondaryColor }: { filter: RangeFilter; primaryColor: string; secondaryColor: string }) => {
-    const { label, initialValue, onSetValue } = filter
+    const { label, initialValue, onSetValue, initialExpanded } = filter
     const [value, setValue, valueInstant, setValueInstant] = useDebounce<(number | undefined)[]>(initialValue, 700)
     const calledCallback = useRef(true)
 
@@ -67,7 +68,7 @@ export const RangeFilterSection = ({ filter, primaryColor, secondaryColor }: { f
     }, [secondaryColor, setValueInstant, value])
 
     return (
-        <Section label={label} primaryColor={primaryColor} secondaryColor={secondaryColor} endComponent={resetButton}>
+        <Section label={label} primaryColor={primaryColor} secondaryColor={secondaryColor} endComponent={resetButton} initialExpanded={initialExpanded}>
             <Stack direction="row" spacing="1rem" alignItems="center" sx={{ px: ".4rem" }}>
                 <NumberInput value={valueInstant[0]} setValue={(newValue: number) => handleChange(newValue, 0)} primaryColor={primaryColor} />
                 <Typography>TO</Typography>

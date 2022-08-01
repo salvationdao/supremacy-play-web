@@ -1,7 +1,8 @@
 import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { ClipThing } from "../.."
+import { ClipThing, FancyButton } from "../.."
 import { EmptyWarMachinesPNG, WarMachineIconPNG } from "../../../assets"
+import { HANGAR_PAGE } from "../../../constants"
 import { useTheme } from "../../../containers/theme"
 import { getRarityDeets, parseString } from "../../../helpers"
 import { usePagination, useToggle, useUrlQuery } from "../../../hooks"
@@ -19,12 +20,21 @@ import { WarMachineHangarItem } from "./WarMachineHangarItem"
 const sortOptions = [
     { label: SortTypeLabel.MechQueueAsc, value: SortTypeLabel.MechQueueAsc },
     { label: SortTypeLabel.MechQueueDesc, value: SortTypeLabel.MechQueueDesc },
+    { label: SortTypeLabel.Alphabetical, value: SortTypeLabel.Alphabetical },
+    { label: SortTypeLabel.AlphabeticalReverse, value: SortTypeLabel.AlphabeticalReverse },
+    { label: SortTypeLabel.RarestAsc, value: SortTypeLabel.RarestAsc },
+    { label: SortTypeLabel.RarestDesc, value: SortTypeLabel.RarestDesc },
 ]
 
 interface GetMechsRequest {
-    queue_sort: string
+    queue_sort?: string
+    sort_by?: string
+    sort_dir?: string
+    search: string
     page: number
     page_size: number
+    rarities: string[]
+    statuses: string[]
     include_market_listed: boolean
 }
 
@@ -53,7 +63,11 @@ export const WarMachinesHangar = () => {
     const [sort, setSort] = useState<string>(query.get("sort") || SortTypeLabel.MechQueueAsc)
     const [status, setStatus] = useState<string[]>((query.get("statuses") || undefined)?.split("||") || [])
     const [rarities, setRarities] = useState<string[]>((query.get("rarities") || undefined)?.split("||") || [])
-    const [isGridView, toggleIsGridView] = useToggle(false)
+    const [isGridView, toggleIsGridView] = useToggle((localStorage.getItem("fleetMechGrid") || "true") === "true")
+
+    useEffect(() => {
+        localStorage.setItem("fleetMechGrid", isGridView.toString())
+    }, [isGridView])
 
     // Filters
     const statusFilterSection = useRef<ChipFilter>({
@@ -63,8 +77,10 @@ export const WarMachinesHangar = () => {
             { value: MechStatusEnum.Battle, label: "IN BATTLE", color: colors.orange },
             { value: MechStatusEnum.Market, label: "MARKETPLACE", color: colors.red },
             { value: MechStatusEnum.Queue, label: "IN QUEUE", color: colors.yellow },
+            { value: MechStatusEnum.BattleReady, label: "BATTLE READY", color: colors.purple },
         ],
         initialSelected: status,
+        initialExpanded: true,
         onSetSelected: (value: string[]) => {
             setStatus(value)
             changePage(1)
@@ -87,6 +103,7 @@ export const WarMachinesHangar = () => {
             { value: "TITAN", ...getRarityDeets("TITAN") },
         ],
         initialSelected: rarities,
+        initialExpanded: true,
         onSetSelected: (value: string[]) => {
             setRarities(value)
             changePage(1)
@@ -98,10 +115,28 @@ export const WarMachinesHangar = () => {
             setIsLoading(true)
 
             let sortDir = "asc"
-            if (sort === SortTypeLabel.MechQueueDesc) sortDir = "desc"
+            let sortBy = ""
+            if (sort === SortTypeLabel.MechQueueDesc || sort === SortTypeLabel.AlphabeticalReverse || sort === SortTypeLabel.RarestDesc) sortDir = "desc"
+
+            switch (sort) {
+                case SortTypeLabel.Alphabetical:
+                case SortTypeLabel.AlphabeticalReverse:
+                    sortBy = "alphabetical"
+                    break
+                case SortTypeLabel.RarestAsc:
+                case SortTypeLabel.RarestDesc:
+                    sortBy = "rarity"
+            }
+
+            const isQueueSort = sort === SortTypeLabel.MechQueueAsc || sort === SortTypeLabel.MechQueueDesc
 
             const resp = await send<GetMechsResponse, GetMechsRequest>(GameServerKeys.GetMechs, {
-                queue_sort: sortDir,
+                queue_sort: isQueueSort ? sortDir : undefined,
+                sort_by: isQueueSort ? undefined : sortBy,
+                sort_dir: isQueueSort ? undefined : sortDir,
+                search,
+                rarities,
+                statuses: status,
                 page,
                 page_size: pageSize,
                 include_market_listed: true,
@@ -109,6 +144,9 @@ export const WarMachinesHangar = () => {
 
             updateQuery({
                 sort,
+                search,
+                rarities: rarities.join("||"),
+                statuses: status.join("||"),
                 page: page.toString(),
                 pageSize: pageSize.toString(),
             })
@@ -123,7 +161,7 @@ export const WarMachinesHangar = () => {
         } finally {
             setIsLoading(false)
         }
-    }, [send, page, pageSize, updateQuery, sort, setTotalItems])
+    }, [send, page, pageSize, search, rarities, status, updateQuery, sort, setTotalItems])
 
     useEffect(() => {
         getItems()
@@ -240,7 +278,32 @@ export const WarMachinesHangar = () => {
             >
                 <Stack sx={{ position: "relative", height: "100%" }}>
                     <Stack sx={{ flex: 1 }}>
-                        <PageHeader title="WAR MACHINES" description="Your war machines." imageUrl={WarMachineIconPNG} />
+                        <PageHeader title="WAR MACHINES" description="Your war machines." imageUrl={WarMachineIconPNG}>
+                            <Box sx={{ ml: "auto !important", pr: "2rem" }}>
+                                <FancyButton
+                                    clipThingsProps={{
+                                        clipSize: "9px",
+                                        backgroundColor: colors.gold,
+                                        opacity: 1,
+                                        border: { borderColor: colors.gold, borderThickness: "2px" },
+                                        sx: { position: "relative" },
+                                    }}
+                                    sx={{ px: "1.6rem", py: ".6rem", color: "#000000" }}
+                                    href={HANGAR_PAGE}
+                                    target="_blank"
+                                >
+                                    <Typography
+                                        variant="caption"
+                                        sx={{
+                                            color: "#000000",
+                                            fontFamily: fonts.nostromoBlack,
+                                        }}
+                                    >
+                                        WALKABLE HANGAR
+                                    </Typography>
+                                </FancyButton>
+                            </Box>
+                        </PageHeader>
 
                         <TotalAndPageSizeOptions
                             countItems={mechs?.length}

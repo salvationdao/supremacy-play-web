@@ -4,7 +4,7 @@ import { useMiniMap } from "../../../containers"
 import { useTimer } from "../../../hooks"
 import { fonts } from "../../../theme/theme"
 import { LocationSelectType } from "../../../types"
-import { MechMoveCommandAbility } from "../../WarMachine/WarMachineAbilitiesPopover/MechMoveCommandCard"
+import { MechMoveCommandAbility } from "../../WarMachine/WarMachineItem/MoveCommand"
 
 export const CountdownSubmit = () => {
     const { isTargeting, winner, playerAbility, selection } = useMiniMap()
@@ -13,29 +13,31 @@ export const CountdownSubmit = () => {
 }
 
 const CountdownSubmitInner = () => {
-    const { playerAbility, selection, onTargetConfirm } = useMiniMap()
+    const { winner, playerAbility, selection, onTargetConfirm } = useMiniMap()
     const { setEndTimeState, totalSecRemain, delay } = useTimer(undefined, 600)
 
     const isInstant = useMemo(() => {
-        if (playerAbility) {
+        if (playerAbility?.ability) {
             switch (playerAbility.ability.location_select_type) {
                 case LocationSelectType.LINE_SELECT:
                 case LocationSelectType.LOCATION_SELECT:
+                case LocationSelectType.MECH_COMMAND:
                     return true
             }
 
             // If is mini mech move
-            if (playerAbility.ability.game_client_ability_id === MechMoveCommandAbility.game_client_ability_id) {
+            if (playerAbility.ability.game_client_ability_id === MechMoveCommandAbility.ability.game_client_ability_id) {
                 return true
             }
         }
         return false
-    }, [playerAbility])
+    }, [playerAbility?.ability])
 
     const hasSelected = useMemo(() => {
         let selected = !!selection
-        if (playerAbility) {
-            switch (playerAbility.ability.location_select_type) {
+        const ability = winner?.game_ability || playerAbility?.ability
+        if (ability) {
+            switch (ability.location_select_type) {
                 case LocationSelectType.LINE_SELECT:
                     selected = !!(selection?.startCoords && selection?.endCoords)
                     break
@@ -48,7 +50,7 @@ const CountdownSubmitInner = () => {
             }
         }
         return selected
-    }, [selection, playerAbility])
+    }, [selection, winner?.game_ability, playerAbility?.ability])
 
     // Count down starts when user has selected a location, then fires if they don't change their mind
     useEffect(() => {

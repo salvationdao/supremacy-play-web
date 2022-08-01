@@ -4,18 +4,13 @@ export interface FactionsAll {
     [faction_id: string]: Faction
 }
 
-export type BribeStage = "BRIBE" | "LOCATION_SELECT" | "COOLDOWN" | "HOLD"
+export type BribeStage = "OPT_IN" | "LOCATION_SELECT" | "COOLDOWN" | "HOLD"
 
 export interface ViewerLiveCount {
     red_mountain: number
     boston: number
     zaibatsu: number
     other: number
-}
-
-export interface CellCoords {
-    x: number
-    y: number
 }
 
 export enum LocationSelectType {
@@ -90,6 +85,8 @@ export interface BattleAbility {
 }
 
 export interface GameAbility {
+    id: string
+    game_client_ability_id: number
     identity: string
     label: string
     colour: string
@@ -112,6 +109,7 @@ export interface BlueprintPlayerAbility {
     text_colour: string
     location_select_type: LocationSelectType
     created_at: Date
+    inventory_limit: number
 }
 
 export interface PlayerAbility {
@@ -127,11 +125,16 @@ export interface PlayerAbility {
 
 export interface SaleAbility {
     id: string
-    current_price: string
-    available_until?: Date
-    sale_limit: number
+    blueprint_id: string
     amount_sold: number
+    current_price: string
     ability: BlueprintPlayerAbility
+}
+
+export enum SaleAbilityAvailability {
+    Unavailable,
+    CanClaim,
+    CanPurchase,
 }
 
 export interface GameAbilityProgress {

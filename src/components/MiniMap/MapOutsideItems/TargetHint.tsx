@@ -1,5 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useEffect, useMemo } from "react"
+import { useCallback, useEffect, useMemo } from "react"
 import { ClipThing, FancyButton } from "../.."
 import { SvgLine, SvgMicrochip, SvgQuestionMark, SvgTarget } from "../../../assets"
 import { useMiniMap, useSnackbar } from "../../../containers"
@@ -7,6 +7,7 @@ import { useTheme } from "../../../containers/theme"
 import { useTimer } from "../../../hooks"
 import { colors } from "../../../theme/theme"
 import { LocationSelectType } from "../../../types"
+import { TOP_BAR_HEIGHT } from "../MiniMap"
 
 export const TargetHint = () => {
     const { isTargeting, winner, playerAbility } = useMiniMap()
@@ -27,7 +28,30 @@ const WinnerTargetHint = () => {
     const { label, colour, image_url } = winner.game_ability
 
     return (
-        <>
+        <Stack
+            direction="row"
+            alignItems="flex-end"
+            sx={{
+                position: "absolute",
+                bottom: 0,
+                left: 0,
+                right: 0,
+                zIndex: 98,
+            }}
+        >
+            <ClipThing backgroundColor={colour} corners={{ topRight: true }} border={{ borderColor: colour, borderThickness: ".25rem" }} sx={{ zIndex: 99 }}>
+                <Box
+                    sx={{
+                        width: "45px",
+                        height: "45px",
+                        background: `url(${image_url})`,
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "center",
+                        backgroundSize: "contain",
+                    }}
+                />
+            </ClipThing>
+
             <Box
                 sx={{
                     zIndex: 98,
@@ -93,7 +117,7 @@ const WinnerTargetHint = () => {
                     </Typography>
                 </Box>
             </Stack>
-        </>
+        </Stack>
     )
 }
 
@@ -111,6 +135,21 @@ const WinnerTargetHintInner = ({ endTime, onCountdownExpired }: { endTime: Date;
 const PlayerAbilityTargetHint = () => {
     const { playerAbility, resetSelection } = useMiniMap()
     const theme = useTheme()
+
+    const handleKeyDown = useCallback(
+        (e: KeyboardEvent) => {
+            if (e.key === "Escape") {
+                resetSelection()
+            }
+        },
+        [resetSelection],
+    )
+
+    useEffect(() => {
+        document.addEventListener("keydown", handleKeyDown)
+
+        return () => document.removeEventListener("keydown", handleKeyDown)
+    }, [handleKeyDown])
 
     const data = useMemo(() => {
         const ability = playerAbility?.ability
@@ -150,7 +189,7 @@ const PlayerAbilityTargetHint = () => {
                 sx={{
                     zIndex: 98,
                     position: "absolute",
-                    top: 0,
+                    top: `${TOP_BAR_HEIGHT}rem`,
                     left: 0,
                     right: 0,
                     bottom: 0,
@@ -159,6 +198,7 @@ const PlayerAbilityTargetHint = () => {
                     opacity: 0.2,
                 }}
             />
+
             <Stack
                 direction="row"
                 alignItems="flex-end"
@@ -170,7 +210,11 @@ const PlayerAbilityTargetHint = () => {
                     zIndex: 98,
                 }}
             >
-                <ClipThing backgroundColor={theme.factionTheme.primary} corners={{ topRight: true }} sx={{ zIndex: 1, m: "-.3rem", p: ".9rem 1.1rem" }}>
+                <ClipThing
+                    backgroundColor={theme.factionTheme.primary}
+                    corners={{ topRight: true }}
+                    sx={{ zIndex: 1, p: ".9rem 1.1rem", svg: { fill: theme.factionTheme.secondary } }}
+                >
                     {data?.icon}
                 </ClipThing>
 
@@ -186,12 +230,9 @@ const PlayerAbilityTargetHint = () => {
                         backgroundColor: (theme) => `${theme.factionTheme.background}`,
                     }}
                 >
-                    <Typography variant="h5" sx={{ lineHeight: 1 }}>
-                        {data?.descriptor}
-                    </Typography>
-
-                    <Typography variant="h5" sx={{ lineHeight: 1, fontWeight: "fontWeightBold", color: ability.colour }}>
-                        {ability.label}
+                    <Typography variant="h5" sx={{ lineHeight: 1, span: { fontWeight: "fontWeightBold", color: ability.colour } }}>
+                        {data?.descriptor}&nbsp;
+                        <span>{`${ability.label}`}</span>
                     </Typography>
 
                     <FancyButton

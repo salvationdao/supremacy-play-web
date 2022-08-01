@@ -1,6 +1,6 @@
 import { Badge, Box, Stack, Tab, Tabs, Typography } from "@mui/material"
 import { useMemo } from "react"
-import { AdditionalOptionsButton, TooltipHelper } from "../.."
+import { AdditionalOptionsButton, FancyButton, TooltipHelper } from "../.."
 import { SvgGlobal, SvgInfoCircular } from "../../../assets"
 import { useAuth, useChat, useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
@@ -8,11 +8,52 @@ import { acronym, shadeColor } from "../../../helpers"
 import { zoomEffect } from "../../../theme/keyframes"
 import { colors, fonts } from "../../../theme/theme"
 import { ChatMessageType } from "../../../types/chat"
+import { WindowPortal } from "../../Common/WindowPortal"
 import { ChatMessages } from "./ChatMessages/ChatMessages"
 import { ChatSend } from "./ChatSend/ChatSend"
 
 export const LiveChat = () => {
-    const { splitOption } = useChat()
+    const { splitOption, isPoppedout, toggleIsPoppedout } = useChat()
+
+    if (isPoppedout) {
+        return (
+            <>
+                <WindowPortal
+                    title="Supremacy - Live Chat"
+                    onClose={() => toggleIsPoppedout(false)}
+                    features={{
+                        width: 360,
+                        height: 650,
+                    }}
+                >
+                    <Stack id="tutorial-chat" sx={{ width: "100%", height: "100%", overflow: "hidden" }}>
+                        {splitOption == "split" ? <SplitLayout /> : <TabbedLayout />}
+                        <AdditionalOptionsButton />
+                    </Stack>
+                </WindowPortal>
+
+                <Stack spacing=".6rem" alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                    <Typography sx={{ color: colors.grey, textAlign: "center" }}>Live chat has been opened in a new window.</Typography>
+                    <FancyButton
+                        clipThingsProps={{
+                            clipSize: "6px",
+                            clipSlantSize: "0px",
+                            backgroundColor: "#333333",
+                            opacity: 1,
+                            sx: { position: "relative" },
+                        }}
+                        sx={{ px: "2rem", py: ".2rem", color: "#FFFFFF" }}
+                        onClick={() => toggleIsPoppedout(false)}
+                    >
+                        <Typography variant="caption" sx={{ fontWeight: "fontWeightBold", color: "#FFFFFF" }}>
+                            CLOSE WINDOW
+                        </Typography>
+                    </FancyButton>
+                </Stack>
+            </>
+        )
+    }
+
     return (
         <Stack id="tutorial-chat" sx={{ width: "100%", height: "100%", overflow: "hidden" }}>
             {splitOption == "split" ? <SplitLayout /> : <TabbedLayout />}
@@ -76,12 +117,14 @@ const TabbedLayout = () => {
                 value={tabValue}
                 variant="fullWidth"
                 sx={{
-                    height: `${5}rem`,
+                    height: `${4.8}rem`,
                     background: `linear-gradient(${bannerBackgroundColor} 26%, ${bannerBackgroundColor}95)`,
                     boxShadow: 1,
                     zIndex: 9,
+                    minHeight: 0,
                     ".MuiButtonBase-root": {
-                        height: `${5}rem`,
+                        height: `${4.8}rem`,
+                        minHeight: 0,
                     },
                     ".MuiTabs-indicator": {
                         height: "3px",

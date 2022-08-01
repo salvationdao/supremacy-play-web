@@ -1,43 +1,69 @@
 import { Box, CircularProgress, Fade, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
+import { useParameterizedQuery } from "react-fetching-library"
 import { MoveableResizable } from ".."
 import { useAuth, useMobile } from "../../containers"
 import { useTheme } from "../../containers/theme"
-import { useGameServerSubscriptionSecurePublic } from "../../hooks/useGameServer"
+import { GetSaleAbilityAvailability } from "../../fetching"
+import { useGameServerSubscription, useGameServerSubscriptionUser } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { colors, fonts } from "../../theme/theme"
-import { FeatureName, SaleAbility } from "../../types"
+import { PlayerAbility, SaleAbility, SaleAbilityAvailability } from "../../types"
 import { MoveableResizableConfig } from "../Common/MoveableResizable/MoveableResizableContainer"
 import { PageHeader } from "../Common/PageHeader"
 import { TimeLeft } from "../Storefront/PlayerAbilitiesStore/PlayerAbilitiesStore"
 import { QuickPlayerAbilitiesItem } from "./QuickPlayerAbilitiesItem"
 
 export const QuickPlayerAbilities = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
-    const { userHasFeature } = useAuth()
-    if (!open || !userHasFeature(FeatureName.playerAbility)) return null
-    return <QuickPlayerAbilitiesInner onClose={onClose} />
+    const { userID } = useAuth()
+    if (!open) return null
+    return <QuickPlayerAbilitiesInner onClose={onClose} userID={userID} />
 }
 
-const QuickPlayerAbilitiesInner = ({ onClose }: { onClose: () => void }) => {
-    const { isMobile } = useMobile()
+const QuickPlayerAbilitiesInner = ({ onClose, userID }: { onClose: () => void; userID: string }) => {
     const theme = useTheme()
+    const { isMobile } = useMobile()
+
+    const { query: queryAvailability } = useParameterizedQuery(GetSaleAbilityAvailability)
+    const [availability, setAvailability] = useState<SaleAbilityAvailability>(SaleAbilityAvailability.CanClaim)
+    const [availabilityError, setAvailabilityError] = useState<string>()
 
     const [isLoaded, setIsLoaded] = useState(false)
     const [nextRefreshTime, setNextRefreshTime] = useState<Date | null>(null)
     const [saleAbilities, setSaleAbilities] = useState<SaleAbility[]>([])
     const [priceMap, setPriceMap] = useState<Map<string, string>>(new Map())
-    const [amountMap, setAmountMap] = useState<Map<string, number>>(new Map())
-    const [canPurchase, setCanPurchase] = useState(true)
     const [purchaseError, setPurchaseError] = useState<string>()
 
-    useGameServerSubscriptionSecurePublic<{
+    const [ownedAbilities, setOwnedAbilities] = useState<Map<string, number>>(new Map())
+
+    useEffect(() => {
+        ;(async () => {
+            try {
+                const resp = await queryAvailability(userID)
+                if (resp.error || resp.payload == null) return
+                setAvailability(resp.payload)
+            } catch (e) {
+                let message = "Failed to obtain purchase availability during this sale period."
+                if (typeof e === "string") {
+                    message = e
+                } else if (e instanceof Error) {
+                    message = e.message
+                }
+                console.error(e)
+                setAvailabilityError(message)
+            }
+        })()
+    }, [queryAvailability, userID])
+
+    useGameServerSubscription<{
         next_refresh_time: Date | null
         refresh_period_duration_seconds: number
         sale_abilities: SaleAbility[]
     }>(
         {
-            URI: "sale_abilities",
-            key: GameServerKeys.SaleAbilitiesList,
+            URI: "/public/sale_abilities",
+            key: GameServerKeys.SubSaleAbilitiesList,
+            ready: !!userID,
         },
         (payload) => {
             if (!payload) return
@@ -45,16 +71,19 @@ const QuickPlayerAbilitiesInner = ({ onClose }: { onClose: () => void }) => {
             t.setSeconds(t.getSeconds() + payload.refresh_period_duration_seconds)
             setNextRefreshTime(payload.next_refresh_time || t)
             setSaleAbilities(payload.sale_abilities)
-            setAmountMap(new Map()) // reset amount map
+            setAvailability(SaleAbilityAvailability.CanClaim)
+            setPurchaseError(undefined)
+            setAvailabilityError(undefined)
             if (isLoaded) return
             setIsLoaded(true)
         },
     )
 
-    useGameServerSubscriptionSecurePublic<{ id: string; current_price: string }>(
+    useGameServerSubscription<{ id: string; current_price: string }>(
         {
-            URI: "sale_abilities",
-            key: GameServerKeys.SaleAbilitiesPriceSubscribe,
+            URI: "/public/sale_abilities",
+            key: GameServerKeys.SubSaleAbilitiesPrice,
+            ready: !!userID,
         },
         (payload) => {
             if (!payload) return
@@ -64,24 +93,22 @@ const QuickPlayerAbilitiesInner = ({ onClose }: { onClose: () => void }) => {
         },
     )
 
-    useGameServerSubscriptionSecurePublic<{ id: string; amount_sold: number }>(
+    useGameServerSubscriptionUser<PlayerAbility[]>(
         {
-            URI: "sale_abilities",
-            key: GameServerKeys.SaleAbilitiesAmountSubscribe,
+            URI: "/player_abilities",
+            key: GameServerKeys.SubPlayerAbilitiesList,
         },
         (payload) => {
             if (!payload) return
-            setAmountMap((prev) => {
-                return new Map(prev.set(payload.id, payload.amount_sold))
+            setOwnedAbilities((prev) => {
+                const updated = new Map(prev)
+                for (const p of payload) {
+                    updated.set(p.blueprint_id, p.count)
+                }
+                return updated
             })
         },
     )
-
-    useEffect(() => {
-        if (!nextRefreshTime) return
-        setCanPurchase(true)
-        setPurchaseError(undefined)
-    }, [nextRefreshTime])
 
     const primaryColor = theme.factionTheme.primary
 
@@ -89,8 +116,8 @@ const QuickPlayerAbilitiesInner = ({ onClose }: { onClose: () => void }) => {
         () => ({
             localStoragePrefix: "quickPlayerAbilities1",
             // Defaults
-            defaultPosX: 390,
-            defaultPosY: 40,
+            defaultPosX: 9999,
+            defaultPosY: 0,
             defaultWidth: 360,
             defaultHeight: 245,
             // Position limits
@@ -99,7 +126,7 @@ const QuickPlayerAbilitiesInner = ({ onClose }: { onClose: () => void }) => {
             // Size limits
             minWidth: 360,
             minHeight: 245,
-            maxWidth: 500,
+            maxWidth: 360,
             maxHeight: 245,
             // Others
             infoTooltipText: "Quickly view and purchase abilities that are currently on sale",
@@ -117,16 +144,8 @@ const QuickPlayerAbilitiesInner = ({ onClose }: { onClose: () => void }) => {
             )
         }
 
-        if (saleAbilities.length > 0) {
-            return (
-                <Typography sx={{ color: colors.lightNeonBlue, fontFamily: fonts.shareTech, textTransform: "uppercase" }}>
-                    <TimeLeft key={saleAbilities[0].available_until?.getMilliseconds()} dateTo={saleAbilities[0].available_until} />
-                </Typography>
-            )
-        }
-
         return <Typography sx={{ color: colors.lightNeonBlue, fontFamily: fonts.shareTech, textTransform: "uppercase" }}>Less than an hour</Typography>
-    }, [nextRefreshTime, saleAbilities])
+    }, [nextRefreshTime])
 
     return (
         <>
@@ -158,6 +177,11 @@ const QuickPlayerAbilitiesInner = ({ onClose }: { onClose: () => void }) => {
                                         {purchaseError && (
                                             <Typography variant="body2" sx={{ color: colors.red }}>
                                                 {purchaseError}
+                                            </Typography>
+                                        )}
+                                        {availabilityError && (
+                                            <Typography variant="body2" sx={{ color: colors.red }}>
+                                                {availabilityError}
                                             </Typography>
                                         )}
                                     </Stack>
@@ -210,16 +234,16 @@ const QuickPlayerAbilitiesInner = ({ onClose }: { onClose: () => void }) => {
                                                 width: "100%",
                                             }}
                                         >
-                                            {saleAbilities.map((s) => (
+                                            {saleAbilities.map((s, index) => (
                                                 <QuickPlayerAbilitiesItem
-                                                    key={s.id}
+                                                    key={`${s.id}-${index}`}
                                                     saleAbility={s}
-                                                    updatedPrice={priceMap.get(s.id) || s.current_price}
-                                                    totalAmount={s.sale_limit}
-                                                    amountSold={amountMap.get(s.id) || s.amount_sold}
+                                                    price={priceMap.get(s.id)}
+                                                    amount={ownedAbilities.get(s.blueprint_id)}
                                                     setError={setPurchaseError}
-                                                    onPurchase={() => setCanPurchase(false)}
-                                                    disabled={!canPurchase}
+                                                    onClaim={() => setAvailability(SaleAbilityAvailability.CanPurchase)}
+                                                    onPurchase={() => setAvailability(SaleAbilityAvailability.Unavailable)}
+                                                    availability={availability}
                                                 />
                                             ))}
                                         </Box>

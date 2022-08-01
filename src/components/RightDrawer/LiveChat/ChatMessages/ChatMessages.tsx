@@ -1,14 +1,14 @@
-import { Box, Fade, IconButton, Stack, Typography } from "@mui/material"
+import { Box, Divider, Fade, IconButton, Stack, Typography } from "@mui/material"
 import { useCallback, useLayoutEffect, useRef, useState } from "react"
 import { PunishMessage, TextMessage } from "../../.."
 import { SvgScrolldown } from "../../../../assets"
-import { FontSizeType, SplitOptionType, useChat, useSupremacy, useAuth } from "../../../../containers"
-import { checkIfIsEmoji } from "../../../../helpers"
-import { colors } from "../../../../theme/theme"
-import { Faction, User } from "../../../../types"
-import { ChatMessageType, PunishMessageData, TextMessageData } from "../../../../types/chat"
+import { FontSizeType, SplitOptionType, useAuth, useChat, useSupremacy } from "../../../../containers"
+import { checkIfIsEmoji, dateFormatter } from "../../../../helpers"
+import { colors, fonts } from "../../../../theme/theme"
+import { ChatMessageType, Faction, NewBattleMessageData, PunishMessageData, SystemBanMessageData, TextMessageData, User } from "../../../../types"
 import { BanProposal } from "../BanProposal/BanProposal"
 import { GlobalAnnouncement, GlobalAnnouncementType } from "../GlobalAnnouncement"
+import { SystemBanMessage } from "./MessageTypes/SystemBanMessage"
 
 interface ChatMessagesProps {
     primaryColor: string
@@ -68,6 +68,7 @@ const ChatMessagesInner = ({
 }: ChatMessagesInnerProps) => {
     const scrollableRef = useRef<HTMLDivElement>(null)
     const [autoScroll, setAutoScroll] = useState(true)
+    const [isScrolling, setIsScrolling] = useState(false)
 
     useLayoutEffect(() => {
         // Auto scroll to the bottom if enabled, has messages and user login/logout state changed
@@ -84,6 +85,7 @@ const ChatMessagesInner = ({
 
     const scrollHandler = useCallback(
         (e: React.UIEvent<HTMLDivElement, UIEvent>) => {
+            setIsScrolling(true)
             const { currentTarget } = e
             const extraHeight = currentTarget.scrollHeight - currentTarget.offsetHeight
             const scrollUpTooMuch = currentTarget.scrollTop < extraHeight - 0.5 * currentTarget.offsetHeight
@@ -94,6 +96,10 @@ const ChatMessagesInner = ({
             } else if (!autoScroll && !scrollUpTooMuch) {
                 setAutoScroll(true)
             }
+
+            setTimeout(() => {
+                setIsScrolling(false)
+            }, 150)
         },
         [autoScroll],
     )
@@ -136,22 +142,9 @@ const ChatMessagesInner = ({
                 }}
             >
                 <Box sx={{ height: 0 }}>
-                    <Stack spacing="1rem" sx={{ mt: ".88rem" }}>
+                    <Stack spacing="1rem">
                         {chatMessages && chatMessages.length > 0 ? (
-                            chatMessages.map((message) => {
-                                if (message.type == "PUNISH_VOTE") {
-                                    const data = message.data as PunishMessageData
-                                    return (
-                                        <PunishMessage
-                                            key={`${data.issued_by_user.id} - ${message.sent_at.toISOString()}`}
-                                            data={data}
-                                            sentAt={message.sent_at}
-                                            fontSize={fontSize}
-                                            getFaction={getFaction}
-                                        />
-                                    )
-                                }
-
+                            chatMessages.map((message, i) => {
                                 if (message.type == "TEXT") {
                                     const data = message.data as TextMessageData
                                     const isEmoji: boolean = checkIfIsEmoji(data.message)
@@ -169,7 +162,50 @@ const ChatMessagesInner = ({
                                             user={user}
                                             isEmoji={isEmoji}
                                             locallySent={message.locallySent}
+                                            previousMessage={chatMessages[i - 1]}
+                                            containerRef={scrollableRef}
+                                            isScrolling={isScrolling}
+                                            chatMessages={chatMessages}
                                         />
+                                    )
+                                } else if (message.type == "PUNISH_VOTE") {
+                                    const data = message.data as PunishMessageData
+                                    return (
+                                        <PunishMessage
+                                            key={`${data.issued_by_user.id} - ${message.sent_at.toISOString()}`}
+                                            data={data}
+                                            sentAt={message.sent_at}
+                                            fontSize={fontSize}
+                                        />
+                                    )
+                                } else if (message.type == "SYSTEM_BAN") {
+                                    const data = message.data as SystemBanMessageData
+                                    return (
+                                        <SystemBanMessage
+                                            key={`${data.banned_user.id} - ${message.sent_at.toISOString()}`}
+                                            data={data}
+                                            sentAt={message.sent_at}
+                                            fontSize={fontSize}
+                                        />
+                                    )
+                                } else if (message.type === "NEW_BATTLE") {
+                                    const data = message.data as NewBattleMessageData
+                                    return (
+                                        <Stack
+                                            key={`${data.battle_number} - ${message.sent_at.toISOString()}`}
+                                            direction={"row"}
+                                            alignItems={"center"}
+                                            sx={{ pb: "0.5rem" }}
+                                        >
+                                            <Divider sx={{ flex: "1" }} />
+                                            <Typography
+                                                variant={"caption"}
+                                                sx={{ color: colors.grey, flexShrink: "0", px: "1rem", fontFamily: fonts.nostromoBold }}
+                                            >
+                                                BATTLE #{data ? data.battle_number : null} ({dateFormatter(message.sent_at)})
+                                            </Typography>
+                                            <Divider sx={{ flex: "1" }} />
+                                        </Stack>
                                     )
                                 }
 

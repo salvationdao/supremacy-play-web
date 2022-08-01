@@ -1,7 +1,7 @@
 import { Slide, Stack } from "@mui/material"
 import { Box } from "@mui/system"
 import { useEffect, useMemo } from "react"
-import { SectionBottom, SectionMostFrequentAbilityExecutor, SectionMultipliers, SectionTopSups, SectionTopSupsFaction, SectionWinner } from ".."
+import { SectionBottom, SectionMostFrequentAbilityExecutor, SectionMultipliers, SectionWinner } from ".."
 import { useGame, useMobile, useOverlayToggles } from "../../containers"
 import { shadeColor } from "../../helpers"
 import { colors, siteZIndex } from "../../theme/theme"
@@ -57,7 +57,6 @@ export const BattleEndScreen = () => {
                 }}
             >
                 <Stack
-                    spacing="3.2rem"
                     sx={{
                         height: `calc(100% - ${BOTTOM_BUTTONS_HEIGHT}rem)`,
                         pr: "1.76rem",
@@ -80,11 +79,13 @@ export const BattleEndScreen = () => {
                     }}
                 >
                     <Box sx={{ height: 0 }}>
-                        <SectionMultipliers battleEndDetail={battleEndDetail} />
-                        <SectionWinner battleEndDetail={battleEndDetail} />
-                        <SectionTopSups battleEndDetail={battleEndDetail} />
-                        <SectionMostFrequentAbilityExecutor battleEndDetail={battleEndDetail} />
-                        <SectionTopSupsFaction battleEndDetail={battleEndDetail} />
+                        <Stack spacing="3.2rem">
+                            <SectionMultipliers battleEndDetail={battleEndDetail} />
+                            <SectionWinner battleEndDetail={battleEndDetail} />
+                            {/* <SectionTopSups battleEndDetail={battleEndDetail} /> */}
+                            <SectionMostFrequentAbilityExecutor battleEndDetail={battleEndDetail} />
+                            {/* <SectionTopSupsFaction battleEndDetail={battleEndDetail} /> */}
+                        </Stack>
                     </Box>
                 </Stack>
 

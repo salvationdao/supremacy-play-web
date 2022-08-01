@@ -1,5 +1,4 @@
 import { Box, Modal, Skeleton, Stack, TextField, Typography } from "@mui/material"
-import BigNumber from "bignumber.js"
 import { useCallback, useMemo, useState } from "react"
 import { ClipThing, FancyButton } from "../../.."
 import { SafePNG, SvgArrow, SvgSupToken } from "../../../../assets"
@@ -10,22 +9,26 @@ import { useToggle } from "../../../../hooks"
 import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts, siteZIndex } from "../../../../theme/theme"
-import { RewardResponse, StorefrontMysteryCrate } from "../../../../types"
+import { MysteryCrate, OpenCrateResponse, RewardResponse, StorefrontMysteryCrate } from "../../../../types"
 import { ClaimedRewards } from "../../../Claims/ClaimedRewards"
 import { ConfirmModal } from "../../../Common/ConfirmModal"
 import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
+import { OpeningCrate } from "../../../Hangar/MysteryCratesHangar/MysteryCratesHangar"
 
 interface MysteryCrateStoreItemProps {
     enlargedView?: boolean
     crate: StorefrontMysteryCrate
+    setOpeningCrate: React.Dispatch<React.SetStateAction<OpeningCrate | undefined>>
+    setOpenedRewards: React.Dispatch<React.SetStateAction<OpenCrateResponse | undefined>>
+    setFutureCratesToOpen: React.Dispatch<React.SetStateAction<(StorefrontMysteryCrate | MysteryCrate)[]>>
 }
 
-export const MysteryCrateStoreItem = ({ enlargedView, crate }: MysteryCrateStoreItemProps) => {
+export const MysteryCrateStoreItem = ({ enlargedView, crate, setOpeningCrate, setOpenedRewards, setFutureCratesToOpen }: MysteryCrateStoreItemProps) => {
     const theme = useTheme()
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [mysteryCrate, setMysteryCrate] = useState<StorefrontMysteryCrate>(crate)
-    const [reward, setReward] = useState<RewardResponse[]>()
+    const [rewards, setRewards] = useState<RewardResponse[]>()
 
     // Buying
     const [confirmModalOpen, toggleConfirmModalOpen] = useToggle()
@@ -60,7 +63,14 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate }: MysteryCrateStore
             })
 
             if (!resp) return
-            setReward(resp)
+            setRewards(resp)
+
+            const futureCratesToOpen: StorefrontMysteryCrate[] = []
+            resp.forEach((r) => {
+                if (r.mystery_crate) futureCratesToOpen.push(r.mystery_crate)
+            })
+            setFutureCratesToOpen(futureCratesToOpen)
+
             newSnackbarMessage(`Successfully purchased ${quantity} ${mysteryCrate.mystery_crate_type} crate.`, "success")
             toggleConfirmModalOpen(false)
             setBuyError(undefined)
@@ -70,7 +80,7 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate }: MysteryCrateStore
         } finally {
             setIsLoading(false)
         }
-    }, [send, mysteryCrate.mystery_crate_type, newSnackbarMessage, setReward, toggleConfirmModalOpen, quantity])
+    }, [send, mysteryCrate.mystery_crate_type, quantity, setFutureCratesToOpen, newSnackbarMessage, toggleConfirmModalOpen])
 
     return (
         <>
@@ -102,7 +112,7 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate }: MysteryCrateStore
                                 }}
                             >
                                 <MediaPreview
-                                    imageUrl={mysteryCrate.image_url || SafePNG}
+                                    imageUrl={mysteryCrate.image_url || mysteryCrate.avatar_url || SafePNG}
                                     videoUrls={[mysteryCrate.animation_url, mysteryCrate.card_animation_url]}
                                     objectFit="cover"
                                 />
@@ -116,24 +126,6 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate }: MysteryCrateStore
                                     bottom: enlargedView ? ".6rem" : ".2rem",
                                 }}
                             >
-                                <Stack direction="row" alignItems="center" spacing=".1rem" sx={{ position: "relative", opacity: 0.9 }}>
-                                    <SvgSupToken size={enlargedView ? "2rem" : "1.3rem"} fill={colors.yellow} />
-                                    <Typography sx={{ fontSize: enlargedView ? "1.6rem" : "1.3rem", fontFamily: fonts.nostromoBold }}>
-                                        {supFormatterNoFixed(new BigNumber(mysteryCrate.price).plus(Math.pow(10, 21)).toString(), 2)}
-                                    </Typography>
-                                    <Box
-                                        sx={{
-                                            position: "absolute",
-                                            left: "-1px",
-                                            right: "-3px",
-                                            top: "50%",
-                                            transform: "translateY(-110%)",
-                                            height: "2px",
-                                            backgroundColor: colors.lightNeonBlue,
-                                        }}
-                                    />
-                                </Stack>
-
                                 <Stack direction="row" alignItems="center" spacing=".1rem">
                                     <SvgSupToken size={enlargedView ? "2.6rem" : "1.9rem"} fill={colors.yellow} />
                                     <Typography sx={{ fontSize: enlargedView ? "2.2rem" : "1.9rem", fontFamily: fonts.nostromoBlack }}>
@@ -181,15 +173,16 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate }: MysteryCrateStore
                                 {mysteryCrate.description}
                             </Typography>
 
-                            <Box
+                            <Stack
+                                direction="row"
+                                spacing="2rem"
+                                alignItems="stretch"
+                                justifyContent="center"
                                 sx={{
                                     mt: "auto !important",
                                     mx: "auto",
                                     width: "100%",
-                                    display: "flex",
-                                    alignItems: "stretch",
-                                    justifyContent: "center",
-                                    gap: "2rem",
+                                    pt: "1.8rem",
                                 }}
                             >
                                 <ClipThing
@@ -280,7 +273,7 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate }: MysteryCrateStore
                                         Buy Now
                                     </Typography>
                                 </FancyButton>
-                            </Box>
+                            </Stack>
                         </Stack>
                     </Stack>
                 </ClipThing>
@@ -314,12 +307,29 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate }: MysteryCrateStore
                 </ConfirmModal>
             )}
 
-            {reward && <PurchaseSuccessModal reward={reward} onClose={() => setReward(undefined)} />}
+            {rewards && (
+                <PurchaseSuccessModal
+                    rewards={rewards}
+                    onClose={() => setRewards(undefined)}
+                    setOpeningCrate={setOpeningCrate}
+                    setOpenedRewards={setOpenedRewards}
+                />
+            )}
         </>
     )
 }
 
-const PurchaseSuccessModal = ({ reward, onClose }: { reward: RewardResponse[] | undefined; onClose: () => void }) => {
+const PurchaseSuccessModal = ({
+    rewards,
+    onClose,
+    setOpeningCrate,
+    setOpenedRewards,
+}: {
+    rewards: RewardResponse[] | undefined
+    onClose: () => void
+    setOpeningCrate: React.Dispatch<React.SetStateAction<OpeningCrate | undefined>>
+    setOpenedRewards: React.Dispatch<React.SetStateAction<OpenCrateResponse | undefined>>
+}) => {
     return (
         <Modal open onClose={onClose} sx={{ zIndex: siteZIndex.Modal }}>
             <Box
@@ -331,7 +341,9 @@ const PurchaseSuccessModal = ({ reward, onClose }: { reward: RewardResponse[] | 
                     outline: "none",
                 }}
             >
-                <Box sx={{ position: "relative" }}>{reward && <ClaimedRewards rewards={reward} onClose={onClose} />}</Box>
+                <Box sx={{ position: "relative" }}>
+                    {rewards && <ClaimedRewards rewards={rewards} onClose={onClose} setOpeningCrate={setOpeningCrate} setOpenedRewards={setOpenedRewards} />}
+                </Box>
             </Box>
         </Modal>
     )
