@@ -236,7 +236,7 @@ export const WarMachineItem = ({
                     {/* Health and shield bars */}
                     <HealthShieldBars warMachine={warMachine} toggleIsAlive={toggleIsAlive} />
 
-                    {isAlive && gameAbilities && gameAbilities.length > 0 && (
+                    {!isMiniMech && isAlive && gameAbilities && gameAbilities.length > 0 && (
                         <Box
                             sx={{
                                 position: "relative",
@@ -283,7 +283,7 @@ export const WarMachineItem = ({
                         </Box>
                     )}
 
-                    {warMachine.ownedByID === userID && <MoveCommand isAlive={isAlive} warMachine={warMachine} smallVersion={isMiniMech} />}
+                    {warMachine.ownedByID === userID && <MoveCommand isAlive={isAlive} warMachine={warMachine} />}
                 </Stack>
             </Stack>
 
