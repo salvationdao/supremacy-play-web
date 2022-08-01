@@ -1,15 +1,15 @@
-import { useState, useEffect, useCallback, useMemo } from "react"
-import { useUrlQuery, usePagination } from "../hooks"
-import { useGameServerCommandsUser } from "../hooks/useGameServer"
-import { parseString } from "../helpers"
-import { GameServerKeys } from "../keys"
-import { BillingHistory } from "../types/fiat"
 import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
-import { useTheme } from "../containers/theme"
+import { useCallback, useEffect, useMemo, useState } from "react"
+import { HangarBg, SafePNG } from "../assets"
 import { ClipThing, FancyButton } from "../components"
 import { PageHeader } from "../components/Common/PageHeader"
-import { EmptyWarMachinesPNG, WarMachineIconPNG } from "../assets"
-import { colors, fonts } from "../theme/theme"
+import { useTheme } from "../containers/theme"
+import { parseString } from "../helpers"
+import { usePagination, useUrlQuery } from "../hooks"
+import { useGameServerCommandsUser } from "../hooks/useGameServer"
+import { GameServerKeys } from "../keys"
+import { colors, fonts, siteZIndex } from "../theme/theme"
+import { BillingHistory } from "../types/fiat"
 
 export const BillingHistoryPage = () => {
     const theme = useTheme()
@@ -33,7 +33,6 @@ export const BillingHistoryPage = () => {
                 page: page - 1,
                 page_size: pageSize,
             })
-            console.log("Hmm", resp)
 
             updateQuery({
                 page: page.toString(),
@@ -120,13 +119,13 @@ export const BillingHistoryPage = () => {
                 <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", maxWidth: "40rem" }}>
                     <Box
                         sx={{
-                            width: "80%",
-                            height: "16rem",
-                            opacity: 0.7,
+                            width: "9rem",
+                            height: "9rem",
+                            opacity: 0.6,
                             filter: "grayscale(100%)",
-                            background: `url(${EmptyWarMachinesPNG})`,
+                            background: `url(${SafePNG})`,
                             backgroundRepeat: "no-repeat",
-                            backgroundPosition: "bottom center",
+                            backgroundPosition: "top center",
                             backgroundSize: "contain",
                         }}
                     />
@@ -146,82 +145,95 @@ export const BillingHistoryPage = () => {
                 </Stack>
             </Stack>
         )
-    }, [loadError, billingHistoryItems, isLoading])
+    }, [loadError, billingHistoryItems, isLoading, theme.factionTheme.primary])
 
     return (
-        <Stack direction="row" spacing="1rem" sx={{ height: "100%" }}>
-            <ClipThing
-                clipSize="10px"
-                border={{
-                    borderColor: theme.factionTheme.primary,
-                    borderThickness: ".3rem",
-                }}
-                opacity={0.7}
-                backgroundColor={theme.factionTheme.background}
-                sx={{ height: "100%", flex: 1 }}
-            >
-                <Stack sx={{ position: "relative", height: "100%" }}>
-                    <Stack sx={{ flex: 1 }}>
-                        <PageHeader title="BILLING HISTORY" description="View your past payments." imageUrl={WarMachineIconPNG} />
+        <Stack
+            alignItems="center"
+            sx={{
+                height: "100%",
+                zIndex: siteZIndex.RoutePage,
+                backgroundImage: `url(${HangarBg})`,
+                backgroundRepeat: "no-repeat",
+                backgroundPosition: "center",
+                backgroundSize: "cover",
+                boxShadow: `inset 0 0 50px 60px #00000090`,
+            }}
+        >
+            <Stack sx={{ mt: "1.5rem", mb: "2rem", height: "100%", width: "calc(100% - 3rem)", maxWidth: "160rem" }}>
+                <ClipThing
+                    clipSize="10px"
+                    border={{
+                        borderColor: theme.factionTheme.primary,
+                        borderThickness: ".3rem",
+                    }}
+                    opacity={0.7}
+                    backgroundColor={theme.factionTheme.background}
+                    sx={{ height: "100%", flex: 1 }}
+                >
+                    <Stack sx={{ position: "relative", height: "100%" }}>
+                        <Stack sx={{ flex: 1 }}>
+                            <PageHeader title="BILLING HISTORY" description="View your past transactions." imageUrl={SafePNG} />
 
-                        <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
+                            <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
+                                <Box
+                                    sx={{
+                                        ml: "1.9rem",
+                                        mr: ".5rem",
+                                        pr: "1.4rem",
+                                        my: "1rem",
+                                        flex: 1,
+                                        overflowY: "auto",
+                                        overflowX: "hidden",
+                                        direction: "ltr",
+
+                                        "::-webkit-scrollbar": {
+                                            width: ".4rem",
+                                        },
+                                        "::-webkit-scrollbar-track": {
+                                            background: "#FFFFFF15",
+                                            borderRadius: 3,
+                                        },
+                                        "::-webkit-scrollbar-thumb": {
+                                            background: theme.factionTheme.primary,
+                                            borderRadius: 3,
+                                        },
+                                    }}
+                                >
+                                    {content}
+                                </Box>
+                            </Stack>
+                        </Stack>
+
+                        {totalPages > 1 && (
                             <Box
                                 sx={{
-                                    ml: "1.9rem",
-                                    mr: ".5rem",
-                                    pr: "1.4rem",
-                                    my: "1rem",
-                                    flex: 1,
-                                    overflowY: "auto",
-                                    overflowX: "hidden",
-                                    direction: "ltr",
-
-                                    "::-webkit-scrollbar": {
-                                        width: ".4rem",
-                                    },
-                                    "::-webkit-scrollbar-track": {
-                                        background: "#FFFFFF15",
-                                        borderRadius: 3,
-                                    },
-                                    "::-webkit-scrollbar-thumb": {
-                                        background: theme.factionTheme.primary,
-                                        borderRadius: 3,
-                                    },
+                                    px: "1rem",
+                                    py: ".7rem",
+                                    borderTop: (theme) => `${theme.factionTheme.primary}70 1.5px solid`,
+                                    backgroundColor: "#00000070",
                                 }}
                             >
-                                {content}
+                                <Pagination
+                                    size="medium"
+                                    count={totalPages}
+                                    page={page}
+                                    sx={{
+                                        ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold },
+                                        ".Mui-selected": {
+                                            color: (theme) => theme.factionTheme.secondary,
+                                            backgroundColor: `${theme.factionTheme.primary} !important`,
+                                        },
+                                    }}
+                                    onChange={(e, p) => changePage(p)}
+                                    showFirstButton
+                                    showLastButton
+                                />
                             </Box>
-                        </Stack>
+                        )}
                     </Stack>
-
-                    {totalPages > 1 && (
-                        <Box
-                            sx={{
-                                px: "1rem",
-                                py: ".7rem",
-                                borderTop: (theme) => `${theme.factionTheme.primary}70 1.5px solid`,
-                                backgroundColor: "#00000070",
-                            }}
-                        >
-                            <Pagination
-                                size="medium"
-                                count={totalPages}
-                                page={page}
-                                sx={{
-                                    ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold },
-                                    ".Mui-selected": {
-                                        color: (theme) => theme.factionTheme.secondary,
-                                        backgroundColor: `${theme.factionTheme.primary} !important`,
-                                    },
-                                }}
-                                onChange={(e, p) => changePage(p)}
-                                showFirstButton
-                                showLastButton
-                            />
-                        </Box>
-                    )}
-                </Stack>
-            </ClipThing>
+                </ClipThing>
+            </Stack>
         </Stack>
     )
 }
