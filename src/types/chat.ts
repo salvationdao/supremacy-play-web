@@ -1,4 +1,4 @@
-import { UserRank, User, UserStat } from "."
+import { User, UserRank, UserStat } from "."
 
 export interface BanProposalStruct {
     id: string
@@ -103,8 +103,6 @@ export interface TextMessageData {
     avatar_id?: string
     message: string
     user_rank?: UserRank
-    total_multiplier?: number
-    is_citizen?: boolean
     from_user_stat?: UserStat
     tagged_users_gids?: number[]
     metadata?: TextMessageMetadata
