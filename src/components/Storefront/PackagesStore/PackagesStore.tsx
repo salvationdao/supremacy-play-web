@@ -1,21 +1,21 @@
-import { useState, useCallback, useEffect, useMemo } from "react"
+import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
+import { Elements } from "@stripe/react-stripe-js"
+import { loadStripe } from "@stripe/stripe-js"
+import { useCallback, useEffect, useMemo, useState } from "react"
+import { SafePNG } from "../../../assets"
+import { STRIPE_PUBLISHABLE_KEY } from "../../../constants"
 import { useSnackbar } from "../../../containers"
+import { useTheme } from "../../../containers/theme"
 import { parseString } from "../../../helpers"
 import { usePagination, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
-import { useTheme } from "../../../containers/theme"
 import { colors, fonts } from "../../../theme/theme"
 import { StorefrontPackage } from "../../../types"
-import { Box, Pagination, Stack, Typography } from "@mui/material"
-import { PackageStoreItem, PackageStoreItemLoadingSkeleton } from "./PackageStoreItem/PackageStoreItem"
 import { ClipThing } from "../../Common/ClipThing"
 import { PageHeader } from "../../Common/PageHeader"
-import { SafePNG } from "../../../assets"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
-import { Elements } from "@stripe/react-stripe-js"
-import { loadStripe } from "@stripe/stripe-js"
-import { STRIPE_PUBLISHABLE_KEY } from "../../../constants"
+import { PackageStoreItem } from "./PackageStoreItem/PackageStoreItem"
 
 const stripePromise = loadStripe(STRIPE_PUBLISHABLE_KEY)
 
@@ -93,24 +93,48 @@ export const PackagesStore = () => {
 
         if (!packages || isLoading) {
             return (
-                <Stack direction="row" flexWrap="wrap" sx={{ height: 0 }}>
-                    {new Array(10).fill(0).map((_, index) => (
-                        <PackageStoreItemLoadingSkeleton key={index} />
-                    ))}
+                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                    <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
+                        <CircularProgress size="3rem" sx={{ color: theme.factionTheme.primary }} />
+                    </Stack>
                 </Stack>
             )
         }
 
         if (packages && packages.length > 0) {
+            if (enlargedView) {
+                return (
+                    <Box
+                        sx={{
+                            width: "100%",
+                            pt: "1rem",
+                            display: "grid",
+                            gridTemplateColumns: "repeat(auto-fill, minmax(min-content, 40%))",
+                            gridTemplateRows: "min-content",
+                            gap: "5rem",
+                            alignItems: "center",
+                            alignContent: "center",
+                            justifyContent: "center",
+                            overflow: "visible",
+                            height: "90%",
+                        }}
+                    >
+                        {packages.map((item, index) => (
+                            <PackageStoreItem key={`storefront-package-${item.id}-${index}`} enlargedView={enlargedView} item={item} />
+                        ))}
+                    </Box>
+                )
+            }
+
             return (
                 <Box sx={{ direction: "ltr", height: 0 }}>
                     <Box
                         sx={{
                             width: "100%",
-                            pt: enlargedView ? "1%" : "1rem",
+                            pt: "1rem",
                             display: "grid",
                             gridTemplateColumns: enlargedView ? "repeat(auto-fill, minmax(min-content, 40%))" : "repeat(auto-fill, minmax(32rem, 1fr))",
-                            gap: enlargedView ? "5rem" : "2.4rem",
+                            gap: "2.4rem",
                             alignItems: "center",
                             justifyContent: "center",
                             overflow: "visible",
@@ -156,7 +180,7 @@ export const PackagesStore = () => {
                 </Stack>
             </Stack>
         )
-    }, [packages, enlargedView, isLoading, loadError])
+    }, [loadError, packages, isLoading, theme.factionTheme.primary, enlargedView])
 
     return (
         <Elements stripe={stripePromise}>
