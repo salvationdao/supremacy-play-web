@@ -3,7 +3,6 @@ import { useMemo } from "react"
 import { BattleAbilityItem, MoveableResizable } from ".."
 import { useAuth, useGame, useMobile } from "../../containers"
 import { useTheme } from "../../containers/theme"
-import { ContributorAmount } from "../BattleStats/ContributorAmount"
 import { MoveableResizableConfig } from "../Common/MoveableResizable/MoveableResizableContainer"
 import { PlayerAbilities } from "./PlayerAbilities/PlayerAbilities"
 
@@ -43,52 +42,35 @@ export const VotingSystem = () => {
         <Fade in={isBattleStarted}>
             <Box sx={{ ...(isMobile ? { backgroundColor: "#FFFFFF12", boxShadow: 2, border: "#FFFFFF20 1px solid" } : {}) }}>
                 <MoveableResizable config={config}>
-                    <Stack sx={{ position: "relative" }}>
-                        <Stack
-                            direction="row"
-                            alignItems="center"
-                            spacing="1.2rem"
-                            sx={{
-                                height: "3.1rem",
-                                pt: ".4rem",
-                                px: "1.8rem",
-                                backgroundColor: "#000000BF",
-                                borderBottom: `${theme.factionTheme.primary}80 .25rem solid`,
-                            }}
-                        >
-                            <ContributorAmount />
+                    <Box
+                        sx={{
+                            maxHeight: "100vh",
+                            overflowY: "auto",
+                            overflowX: "hidden",
+                            ml: "1.9rem",
+                            mr: ".5rem",
+                            pr: "1.4rem",
+                            mt: "1rem",
+                            direction: "ltr",
+                            "::-webkit-scrollbar": {
+                                width: ".4rem",
+                            },
+                            "::-webkit-scrollbar-track": {
+                                background: "#FFFFFF15",
+                                borderRadius: 3,
+                            },
+                            "::-webkit-scrollbar-thumb": {
+                                background: theme.factionTheme.primary,
+                                borderRadius: 3,
+                            },
+                        }}
+                    >
+                        <Stack spacing="1rem" sx={{ direction: "ltr", pt: ".4rem", pb: "1.2rem" }}>
+                            <BattleAbilityItem key={factionID} />
+                            {/* <FactionAbilities /> */}
+                            <PlayerAbilities />
                         </Stack>
-
-                        <Box
-                            sx={{
-                                maxHeight: "100vh",
-                                overflowY: "auto",
-                                overflowX: "hidden",
-                                ml: "1.9rem",
-                                mr: ".5rem",
-                                pr: "1.4rem",
-                                mt: "1rem",
-                                direction: "ltr",
-                                "::-webkit-scrollbar": {
-                                    width: ".4rem",
-                                },
-                                "::-webkit-scrollbar-track": {
-                                    background: "#FFFFFF15",
-                                    borderRadius: 3,
-                                },
-                                "::-webkit-scrollbar-thumb": {
-                                    background: theme.factionTheme.primary,
-                                    borderRadius: 3,
-                                },
-                            }}
-                        >
-                            <Stack spacing="1rem" sx={{ direction: "ltr", pt: ".4rem", pb: "1.2rem" }}>
-                                <BattleAbilityItem key={factionID} />
-                                {/* <FactionAbilities /> */}
-                                <PlayerAbilities />
-                            </Stack>
-                        </Box>
-                    </Stack>
+                    </Box>
                 </MoveableResizable>
             </Box>
         </Fade>

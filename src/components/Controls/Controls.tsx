@@ -6,7 +6,6 @@ import { useMobile } from "../../containers"
 import { useTheme } from "../../containers/theme"
 import { shadeColor } from "../../helpers"
 import { siteZIndex } from "../../theme/theme"
-import { BattleStats } from "../BattleStats/BattleStats"
 import { PreviousBattle } from "./PreviousBattle"
 import { ResolutionSelect } from "./ResolutionSelect"
 import { ShowTrailerButton } from "./ShowTrailerButton"
@@ -54,7 +53,6 @@ export const Controls = () => {
                 {!isMobile && <PreviousBattle />}
                 <LiveCounts />
                 {!isMobile && <OverlayToggles />}
-                {!isMobile && <BattleStats />}
             </Stack>
 
             <Stack id="tutorial-stream-options" direction="row" spacing="1.6rem" sx={{ flexShrink: 0, height: "100%" }}>
