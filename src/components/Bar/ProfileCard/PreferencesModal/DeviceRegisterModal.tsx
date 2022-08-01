@@ -1,4 +1,4 @@
-import { Box, IconButton, Modal, Stack, Typography } from "@mui/material"
+import { Box, IconButton, Modal, Skeleton, Stack, Typography } from "@mui/material"
 import { SvgClose } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
 import { colors, fonts } from "../../../../theme/theme"
@@ -41,9 +41,6 @@ export const DeviceRegisterModal = ({ onClose }: DeviceRegisterModalProps) => {
             }
         })()
     }, [send])
-
-    // Display the modal after the token has been created
-    if (loading) return null
 
     return (
         <Modal open onClose={onClose}>
@@ -95,20 +92,25 @@ export const DeviceRegisterModal = ({ onClose }: DeviceRegisterModalProps) => {
                             </Typography>
                             <Typography sx={{ lineHeight: 1, fontWeight: "fontWeightBold", paddingLeft: 2 }}>3. Scan the image below.</Typography>
 
-                            {/* QR Code */}
-                            {token && (
-                                <Box
-                                    style={{
-                                        marginLeft: 30,
-                                        padding: QR_CODE_PADDING,
-                                        width: QR_CODE_SIZE + QR_CODE_PADDING * 2,
-                                        height: QR_CODE_SIZE + QR_CODE_PADDING * 2,
-                                        backgroundColor: "white",
-                                    }}
-                                >
-                                    <QRCode size={QR_CODE_SIZE} value={token} />
-                                </Box>
-                            )}
+                            {/* QR Code - displays skeleton while it is loading */}
+                            <Box style={{ marginLeft: 30 }}>
+                                {loading ? (
+                                    <Skeleton variant={"rectangular"} width={QR_CODE_SIZE + QR_CODE_PADDING * 2} height={QR_CODE_SIZE + QR_CODE_PADDING * 2} />
+                                ) : (
+                                    token && (
+                                        <Box
+                                            style={{
+                                                padding: QR_CODE_PADDING,
+                                                width: QR_CODE_SIZE + QR_CODE_PADDING * 2,
+                                                height: QR_CODE_SIZE + QR_CODE_PADDING * 2,
+                                                backgroundColor: "white",
+                                            }}
+                                        >
+                                            <QRCode size={QR_CODE_SIZE} value={token} />
+                                        </Box>
+                                    )
+                                )}
+                            </Box>
 
                             {error && (
                                 <Typography variant="body2" sx={{ color: colors.red, pt: "1rem" }}>
