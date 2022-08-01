@@ -7,7 +7,7 @@ import { useTimer } from "../../../hooks"
 import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
-import { LocationSelectType, PlayerAbility, WarMachineState } from "../../../types"
+import { AIType, LocationSelectType, PlayerAbility, WarMachineState } from "../../../types"
 import { DEAD_OPACITY, WIDTH_SKILL_BUTTON } from "./WarMachineItem"
 
 export const MechMoveCommandAbility: PlayerAbility = {
@@ -42,7 +42,7 @@ export interface MechMoveCommand {
 
 export const MoveCommand = ({ warMachine, isAlive, smallVersion }: { warMachine: WarMachineState; isAlive: boolean; smallVersion?: boolean }) => {
     const { factionID } = useAuth()
-    const { hash, factionID: wmFactionID, participantID } = warMachine
+    const { hash, factionID: wmFactionID, participantID, aiType } = warMachine
     const [mechMoveCommand, setMechMoveCommand] = useState<MechMoveCommand>()
 
     useGameServerSubscriptionFaction<MechMoveCommand>(
@@ -65,7 +65,9 @@ export const MoveCommand = ({ warMachine, isAlive, smallVersion }: { warMachine:
             isAlive={isAlive}
             hash={hash}
             remainCooldownSeconds={mechMoveCommand.remain_cooldown_seconds}
-            isMoving={!mechMoveCommand?.reached_at && !mechMoveCommand?.cancelled_at && mechMoveCommand.remain_cooldown_seconds !== 0}
+            isMoving={
+                !mechMoveCommand?.reached_at && !mechMoveCommand?.cancelled_at && mechMoveCommand.remain_cooldown_seconds !== 0 && aiType !== AIType.MiniMech
+            }
             isCancelled={!!mechMoveCommand.cancelled_at}
             mechMoveCommandID={mechMoveCommand.id}
             smallVersion={smallVersion}
