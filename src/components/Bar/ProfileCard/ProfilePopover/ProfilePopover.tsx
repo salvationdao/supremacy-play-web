@@ -2,7 +2,7 @@ import { Popover, Stack } from "@mui/material"
 import { MutableRefObject, useEffect, useState } from "react"
 import { ClipThing } from "../../.."
 import { SvgAssets, SvgProfile, SvgSettings, SvgSupport } from "../../../../assets"
-import { PASSPORT_WEB } from "../../../../constants"
+import { PASSPORT_WEB, STAGING_OR_DEV_ONLY } from "../../../../constants"
 import { useTheme } from "../../../../containers/theme"
 import { useToggle } from "../../../../hooks"
 import { siteZIndex } from "../../../../theme/theme"
@@ -11,12 +11,15 @@ import { PreferencesModal } from "../PreferencesModal/PreferencesModal"
 import { TelegramRegisterModal } from "../PreferencesModal/TelegramRegisterModal"
 import { LogoutButton } from "./LogoutButton"
 import { NavButton } from "./NavButton"
+import { DeviceRegisterModal } from "../PreferencesModal/DeviceRegisterModal"
 
 export const ProfilePopover = ({ open, popoverRef, onClose, user }: { open: boolean; popoverRef: MutableRefObject<null>; onClose: () => void; user: User }) => {
     const theme = useTheme()
 
     const [localOpen, toggleLocalOpen] = useToggle(open)
     const [preferencesModalOpen, togglePreferencesModalOpen] = useToggle()
+    const [addDeviceModalOpen, toggleAddDeviceModalOpen] = useToggle()
+
     const [telegramShortcode, setTelegramShortcode] = useState<string>("")
 
     useEffect(() => {
@@ -93,11 +96,22 @@ export const ProfilePopover = ({ open, popoverRef, onClose, user }: { open: bool
                         toggleLocalOpen(false)
                     }}
                     setTelegramShortcode={setTelegramShortcode}
+                    toggleAddDeviceModal={() => toggleAddDeviceModalOpen(!addDeviceModalOpen)}
                 />
             )}
 
             {/* telegram register modal */}
             {!!telegramShortcode && <TelegramRegisterModal code={telegramShortcode} onClose={() => setTelegramShortcode("")} />}
+
+            {/* Add new device modal - supremacy companion app */}
+            {STAGING_OR_DEV_ONLY && addDeviceModalOpen && (
+                <DeviceRegisterModal
+                    onClose={() => {
+                        toggleAddDeviceModalOpen(false)
+                        toggleLocalOpen(false)
+                    }}
+                />
+            )}
         </>
     )
 }
