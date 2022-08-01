@@ -4,7 +4,7 @@ import { EmptyWarMachinesPNG } from "../../assets"
 import { useSnackbar } from "../../containers"
 import { parseString } from "../../helpers"
 import { usePagination, useUrlQuery } from "../../hooks"
-import { useGameServerCommandsUser } from "../../hooks/useGameServer"
+import { useGameServerCommandsUser, useGameServerSubscription } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { colors, fonts, siteZIndex } from "../../theme/theme"
 import { ClipThing } from "../Common/ClipThing"
@@ -20,11 +20,6 @@ interface CustomAvatarProps {
     submitting: boolean
 }
 
-interface Layer {
-    id: string
-    image_url: string
-}
-
 interface CustomAvatarCreateRequest {
     player_id?: string
     face_id: string
@@ -33,15 +28,12 @@ interface CustomAvatarCreateRequest {
     accessory_id?: string
     eyewear_id?: string
 }
-export const CustomAvatar = ({ playerID, open, setOpen, primaryColor, backgroundColor, submitting }: CustomAvatarProps) => {
+export const CustomAvatar = ({ playerID, open, setOpen, primaryColor, backgroundColor }: CustomAvatarProps) => {
     const { send: userSend } = useGameServerCommandsUser("/user_commander")
     const { newSnackbarMessage } = useSnackbar()
-
     const [currentValue, setCurrentValue] = useState<AVATAR_FEATURE_TABS>(AVATAR_FEATURE_TABS.Face)
-
     const [imageSize, setImageSize] = useState(600)
 
-    // const below650 = useMediaQuery("(max-width:650px)")
     const below2500 = useMediaQuery("(max-width:2500px)")
     const below2200 = useMediaQuery("(max-width:2200px)")
 
@@ -64,7 +56,7 @@ export const CustomAvatar = ({ playerID, open, setOpen, primaryColor, background
     const [face, setFace] = useState<Layer>()
     const [body, setBody] = useState<Layer>()
     const [accessory, setAccessory] = useState<Layer>()
-    const [eyewear, setEyeWear] = useState<Layer>()
+    // TODO: add eyewear, helmet options once artwork ready
 
     const handleChange = useCallback(
         (event: SyntheticEvent, newValue: AVATAR_FEATURE_TABS) => {
@@ -75,11 +67,7 @@ export const CustomAvatar = ({ playerID, open, setOpen, primaryColor, background
 
     // username
     const handleSave = useCallback(async () => {
-        console.log("here")
-
         if (!body || !face) return
-        console.log("after")
-
         try {
             await userSend<string, CustomAvatarCreateRequest>(GameServerKeys.PlayerProfileCustomAvatarCreate, {
                 player_id: playerID,
@@ -87,12 +75,9 @@ export const CustomAvatar = ({ playerID, open, setOpen, primaryColor, background
                 body_id: body.id,
                 hair_id: hair?.id,
                 accessory_id: accessory?.id,
-                // eyewear_id: "",
             })
             newSnackbarMessage("avatar created successfully.", "success")
             setOpen(false)
-
-            console.log("djfajklfjlkesafj")
         } catch (e) {
             let errorMessage = ""
             if (typeof e === "string") {
@@ -128,7 +113,6 @@ export const CustomAvatar = ({ playerID, open, setOpen, primaryColor, background
                                         color: "white",
                                         ml: "1.9rem",
                                         mr: ".5rem",
-                                        // pr: "1.4rem",
                                         my: "1rem",
                                         flex: 1,
                                         overflowY: "auto",
@@ -185,11 +169,8 @@ export const CustomAvatar = ({ playerID, open, setOpen, primaryColor, background
                                                 }}
                                             >
                                                 <Tab label="FACE" value={AVATAR_FEATURE_TABS.Face} />
-
                                                 <Tab label="HAIR" value={AVATAR_FEATURE_TABS.Hair} />
-
                                                 <Tab label="BODY" value={AVATAR_FEATURE_TABS.Body} />
-
                                                 <Tab label="ACCESSORY" value={AVATAR_FEATURE_TABS.Accessory} />
                                             </Tabs>
 
@@ -245,17 +226,16 @@ const TabPanel = (props: TabPanelProps) => {
     if (currentValue === value) {
         return (
             <Fade in>
-                <Box id={`marketplace-tabpanel-${value}`} sx={{ flex: 1 }}>
+                <Box id={`avatar-panel-${value}`} sx={{ flex: 1 }}>
                     {children}
                 </Box>
             </Fade>
         )
     }
-
     return null
 }
 
-interface Layer {
+export interface Layer {
     id: string
     image_url: string
     type: string
@@ -285,7 +265,7 @@ export const LayerList = ({ setLayer, layerType }: LayerListProps) => {
     const [loadError, setLoadError] = useState<string>()
     const [avatars, setAvatars] = useState<Layer[]>([])
 
-    const { page, changePage, setTotalItems, totalPages, pageSize, totalItems, changePageSize } = usePagination({
+    const { page, setTotalItems, pageSize } = usePagination({
         pageSize: parseString(query.get("pageSize"), 10),
         page: parseString(query.get("page"), 1),
     })
@@ -446,7 +426,58 @@ export const LayerList = ({ setLayer, layerType }: LayerListProps) => {
             }}
         >
             {content}
-            {/* avatar select modal */}
         </Stack>
+    )
+}
+
+interface CustomAvatar {
+    face: Layer
+    body: Layer
+    hair?: Layer
+    accessory: Layer
+    eyewear: Layer
+    helmet: Layer
+}
+
+export const CustomAvatarItem = ({ avatarID, backgroundColor }: { avatarID: string; backgroundColor: string }) => {
+    const [avatarDetails, setAvatarDetails] = useState<CustomAvatar>()
+    useGameServerSubscription<CustomAvatar>(
+        {
+            URI: `/public/custom_avatar/${avatarID}/details`,
+            key: GameServerKeys.PlayerProfileCustomAvatarDetails,
+        },
+        (payload) => {
+            console.log("hello")
+
+            if (!payload) return
+            setAvatarDetails(payload)
+        },
+    )
+
+    const imageSize = 200
+    return (
+        <Box sx={{ position: "relative", overflow: "visible", height: "100%", zIndex: -3, background: backgroundColor, border: "1px solid black" }}>
+            <Box width={imageSize} sx={{ height: imageSize, position: "relative", alignSelf: "flex-center" }}>
+                <img
+                    key={avatarDetails?.accessory?.image_url}
+                    style={{ height: imageSize, zIndex: 3, position: "absolute", top: "0", left: "0" }}
+                    src={avatarDetails?.accessory?.image_url}
+                    alt="accessory"
+                />
+                <img
+                    key={avatarDetails?.hair?.image_url}
+                    style={{ height: imageSize, zIndex: 3, position: "absolute", top: "0", left: "0" }}
+                    src={avatarDetails?.hair?.image_url}
+                    alt="hair"
+                />
+                <img key={avatarDetails?.face?.image_url} style={{ height: imageSize, zIndex: 2 }} src={avatarDetails?.face?.image_url} alt="face" />
+                <img
+                    key={avatarDetails?.body?.image_url}
+                    style={{ height: imageSize, zIndex: -1, position: "absolute", top: "0", left: "0" }}
+                    src={avatarDetails?.body?.image_url}
+                    alt="body"
+                />
+            </Box>
+        </Box>
     )
 }

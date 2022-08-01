@@ -3,17 +3,16 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { EmptyWarMachinesPNG, SvgEdit } from "../../assets"
 import { parseString } from "../../helpers"
 import { usePagination, useUrlQuery } from "../../hooks"
-import { useGameServerCommandsUser, useGameServerSubscription, useGameServerSubscriptionUser } from "../../hooks/useGameServer"
+import { useGameServerCommandsUser } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { colors, fonts, siteZIndex } from "../../theme/theme"
-import { FactionName, MechStatusEnum } from "../../types"
+import { FactionName } from "../../types"
 import { ClipThing } from "../Common/ClipThing"
 import { FancyButton } from "../Common/FancyButton"
 import { PageHeader } from "../Common/PageHeader"
 import { ChipFilter, ChipFilterSection } from "../Common/SortAndFilters/ChipFilterSection"
-import { SortAndFilters } from "../Common/SortAndFilters/SortAndFilters"
 import { TotalAndPageSizeOptions } from "../Common/TotalAndPageSizeOptions"
-import { CustomAvatar } from "./CustomAvatar"
+import { CustomAvatar, CustomAvatarItem } from "./CustomAvatar"
 
 interface GetAvatarsRequest {
     queue_sort: string
@@ -32,15 +31,18 @@ interface ProfileAvatar {
     id: string
     avatar_url: string
     tier: string
+    is_custom: boolean
 }
 interface ProfileAvatarProps {
     playerID: string
+    avatarID: string
+    isCustom: boolean
     isOwner: boolean
     primaryColor: string
     backgroundColor: string
     avatarURL: string
     factionName?: string
-    updateAvatar: (avatarID: string) => Promise<void>
+    updateAvatar: (avatarID: string, isCustom: boolean) => Promise<void>
 }
 
 export enum AvatarListFilter {
@@ -48,7 +50,17 @@ export enum AvatarListFilter {
     Default = "DEFAULT",
 }
 
-export const ProfileAvatar = ({ isOwner, primaryColor, backgroundColor, avatarURL, updateAvatar, factionName, playerID }: ProfileAvatarProps) => {
+export const ProfileAvatar = ({
+    isOwner,
+    primaryColor,
+    backgroundColor,
+    avatarURL,
+    updateAvatar,
+    factionName,
+    playerID,
+    avatarID,
+    isCustom,
+}: ProfileAvatarProps) => {
     const [query] = useUrlQuery()
     const { send } = useGameServerCommandsUser("/user_commander")
 
@@ -77,18 +89,16 @@ export const ProfileAvatar = ({ isOwner, primaryColor, backgroundColor, avatarUR
         initialSelected: [],
         initialExpanded: true,
         onSetSelected: (value: string[]) => {
-            console.log("v", value)
-
             setShowCustom(value[0] === AvatarListFilter.Custom)
             changePage(1)
         },
     })
 
     const updatehHandler = useCallback(
-        async (avatarID) => {
+        async (avatarID: string, isCustom: boolean) => {
             try {
                 setSubmitting(true)
-                await updateAvatar(avatarID)
+                await updateAvatar(avatarID, isCustom)
             } finally {
                 setSubmitting(false)
                 setModalOpen(false)
@@ -112,7 +122,11 @@ export const ProfileAvatar = ({ isOwner, primaryColor, backgroundColor, avatarUR
             if (!resp) return
             setLoadError(undefined)
             if (page === 1) {
-                setAvatars([{ avatar_url: "", id: "custom", tier: "MEGA" }, { avatar_url: "", id: "", tier: "MEGA" }, ...resp.avatars])
+                setAvatars([
+                    { is_custom: false, avatar_url: "", id: "custom", tier: "MEGA" },
+                    { is_custom: false, avatar_url: "", id: "", tier: "MEGA" },
+                    ...resp.avatars,
+                ])
             } else {
                 setAvatars(resp.avatars)
             }
@@ -136,15 +150,12 @@ export const ProfileAvatar = ({ isOwner, primaryColor, backgroundColor, avatarUR
                 page,
                 page_size: pageSize,
             })
-
-            console.log("this is resp", resp)
-
             if (!resp) return
             setLoadError(undefined)
             setCustomAvatarIDs(resp.ids)
             setTotalItems(resp.total)
         } catch (e) {
-            setLoadError(typeof e === "string" ? e : "Failed to get avatars.")
+            setLoadError(typeof e === "string" ? e : "Failed to get custom avatars.")
             console.error(e)
         } finally {
             setIsLoading(false)
@@ -156,7 +167,7 @@ export const ProfileAvatar = ({ isOwner, primaryColor, backgroundColor, avatarUR
         getCustomAvatars()
     }, [getItems, getCustomAvatars])
 
-    const contentDefaul = useMemo(() => {
+    const contentDefault = useMemo(() => {
         if (showCustom) return null
         if (loadError) {
             return (
@@ -216,12 +227,11 @@ export const ProfileAvatar = ({ isOwner, primaryColor, backgroundColor, avatarUR
                                 }}
                                 onClick={() => {
                                     if (a.id === "custom") {
-                                        console.log("create new avatar ... ")
                                         setCustomAvatarModalOpen(true)
                                         setModalOpen(false)
                                         return
                                     }
-                                    updatehHandler(a.id)
+                                    updatehHandler(a.id, false)
                                 }}
                             >
                                 <Avatar
@@ -279,6 +289,9 @@ export const ProfileAvatar = ({ isOwner, primaryColor, backgroundColor, avatarUR
         )
     }, [loadError, avatars, isLoading, primaryColor, updatehHandler, factionName])
 
+    console.log("avatar id ", avatarID)
+    console.log("is custom ", isCustom)
+
     const contentCustom = useMemo(() => {
         if (!showCustom) return null
         if (loadError) {
@@ -304,15 +317,15 @@ export const ProfileAvatar = ({ isOwner, primaryColor, backgroundColor, avatarUR
             )
         }
 
-        // if (!avatars || isLoading) {
-        //     return (
-        //         <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
-        //             <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
-        //                 <CircularProgress size="3rem" sx={{ color: primaryColor }} />
-        //             </Stack>
-        //         </Stack>
-        //     )
-        // }
+        if (isLoading) {
+            return (
+                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                    <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
+                        <CircularProgress size="3rem" sx={{ color: primaryColor }} />
+                    </Stack>
+                </Stack>
+            )
+        }
 
         if (cusotmAvarIDs && cusotmAvarIDs.length > 0) {
             return (
@@ -332,37 +345,16 @@ export const ProfileAvatar = ({ isOwner, primaryColor, backgroundColor, avatarUR
                         {cusotmAvarIDs.map((a, idx) => (
                             <Box
                                 key={idx}
+                                onClick={() => {
+                                    updatehHandler(a, true)
+                                }}
                                 sx={{
                                     ":hover": {
                                         opacity: ".7",
                                     },
                                 }}
-                                onClick={() => {
-                                    // if (a.id === "custom") {
-                                    //     console.log("create new avatar ... ")
-                                    //     setCustomAvatarModalOpen(true)
-                                    //     setModalOpen(false)
-                                    //     return
-                                    // }
-                                    // updatehHandler(a.id)
-                                }}
                             >
-                                {/* <Avatar
-                                    src={a.avatar_url}
-                                    alt="Avatar"
-                                    sx={{
-                                        mr: "1rem",
-                                        height: "21rem",
-                                        width: "21rem",
-                                        borderRadius: 1,
-                                        border: `${primaryColor} 2px solid`,
-                                        backgroundColor: factionName == FactionName.ZaibatsuHeavyIndustries ? "black" : primaryColor,
-                                        cursor: "pointer",
-                                    }}
-                                    variant="square"
-                                /> */}
-
-                                <CusotomAvatarItem avatarID={a} primaryColour={""} backgroundColour={""} />
+                                <CustomAvatarItem avatarID={a} backgroundColor={primaryColor} />
                             </Box>
                         ))}
                     </Box>
@@ -439,20 +431,25 @@ export const ProfileAvatar = ({ isOwner, primaryColor, backgroundColor, avatarUR
                         <SvgEdit size="4.2rem" sx={{ mt: "2rem" }} />
                     </Box>
                 )}
-                <Avatar
-                    src={avatarURL}
-                    alt="Avatar"
-                    sx={{
-                        mr: "1rem",
-                        height: "21rem",
-                        width: "21rem",
-                        borderRadius: 1,
-                        border: `${primaryColor} 2px solid`,
-                        backgroundColor: factionName == FactionName.ZaibatsuHeavyIndustries ? "black" : primaryColor,
-                        cursor: "pointer",
-                    }}
-                    variant="square"
-                />
+                {/* preview */}
+                {isCustom && avatarID ? (
+                    <CustomAvatarItem key={"pp-" + avatarID} avatarID={avatarID} backgroundColor={primaryColor} />
+                ) : (
+                    <Avatar
+                        src={avatarURL}
+                        alt="Avatar"
+                        sx={{
+                            mr: "1rem",
+                            height: "21rem",
+                            width: "21rem",
+                            borderRadius: 1,
+                            border: `${primaryColor} 2px solid`,
+                            backgroundColor: factionName === FactionName.ZaibatsuHeavyIndustries ? "black" : primaryColor,
+                            cursor: "pointer",
+                        }}
+                        variant="square"
+                    />
+                )}
             </FancyButton>
 
             {/* avatar select modal */}
@@ -528,7 +525,7 @@ export const ProfileAvatar = ({ isOwner, primaryColor, backgroundColor, avatarUR
                                             },
                                         }}
                                     >
-                                        {showCustom ? contentCustom : contentDefaul}
+                                        {showCustom ? contentCustom : contentDefault}
                                     </Box>
                                 </Stack>
                             </Stack>
@@ -582,84 +579,5 @@ export const ProfileAvatar = ({ isOwner, primaryColor, backgroundColor, avatarUR
                 submitting={false}
             />
         </Stack>
-    )
-}
-
-interface Layer {
-    id: string
-    image_url: string
-}
-interface CustomAvatar {
-    face: Layer
-    body: Layer
-    hair?: Layer
-    accessory: Layer
-    eyewear: Layer
-    helmet: Layer
-}
-
-export const CusotomAvatarItem = ({
-    avatarID,
-    isGridView,
-    primaryColour,
-    backgroundColour,
-}: {
-    avatarID: string
-    isGridView?: boolean
-    primaryColour: string
-    backgroundColour: string
-}) => {
-    const [mechDetails, setMechDetails] = useState<CustomAvatar>()
-
-    useGameServerSubscriptionUser<CustomAvatar>(
-        {
-            URI: `/custom_avatar/${avatarID}/details`,
-            key: GameServerKeys.PlayerProfileCustomAvatarDetails,
-        },
-        (payload) => {
-            console.log("this be payodn", payload)
-
-            if (!payload) return
-            setMechDetails(payload)
-        },
-    )
-
-    const imageSize = 160
-
-    const face = mechDetails?.face
-    const body = mechDetails?.body
-    const hair = mechDetails?.hair
-    const accessory = mechDetails?.accessory
-    // const imageUrl = mechDetails?.chassis_skin?.avatar_url || mech.avatar_url
-    // const largeImageUrl = mechDetails?.large_image_url || mech.large_image_url
-
-    return (
-        <Box sx={{ position: "relative", overflow: "visible", height: "100%" }}>
-            {/* <FancyButton
-                clipThingsProps={{
-                    clipSize: "7px",
-                    clipSlantSize: "0px",
-                    corners: {
-                        topLeft: true,
-                        topRight: true,
-                        bottomLeft: true,
-                        bottomRight: true,
-                    },
-                    backgroundColor: backgroundColour,
-                    opacity: 0.9,
-                    border: { isFancy: !isGridView, borderColor: primaryColour, borderThickness: ".25rem" },
-                    sx: { position: "relative", height: "100%" },
-                }}
-                sx={{ color: primaryColour, textAlign: "start", height: "100%" }}
-                // TODO create public mech view
-            > */}
-            <Box width={imageSize} sx={{ height: imageSize, position: "relative", alignSelf: "flex-center" }}>
-                <img style={{ height: imageSize, zIndex: 3, position: "absolute", top: "0", left: "0" }} src={accessory?.image_url} alt="" />
-                <img style={{ height: imageSize, zIndex: 3, position: "absolute", top: "0", left: "0" }} src={hair?.image_url} alt="" />
-                <img style={{ height: imageSize, zIndex: 2 }} src={face?.image_url} alt="" />
-                <img style={{ height: imageSize, zIndex: -1, position: "absolute", top: "0", left: "0" }} src={body?.image_url} alt="" />
-            </Box>
-            {/* </FancyButton> */}
-        </Box>
     )
 }

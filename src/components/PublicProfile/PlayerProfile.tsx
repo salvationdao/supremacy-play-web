@@ -36,8 +36,10 @@ interface Stats {
 }
 
 interface AvatarType {
+    id: string
     avatar_url: string
     tier: string
+    is_custom: boolean
 }
 
 interface PlayerProfile {
@@ -136,11 +138,12 @@ export const PlayerProfilePage = () => {
 
     // avatar
     const updateAvatar = useCallback(
-        async (avatar_id: string) => {
+        async (avatarID: string, isCustom: boolean) => {
             try {
                 const resp = await userSend<AvatarType>(GameServerKeys.PlayerProfileAvatarUpdate, {
                     player_id: profile?.player.id,
-                    profile_avatar_id: avatar_id,
+                    profile_avatar_id: avatarID,
+                    is_custom: isCustom,
                 })
                 setAvatar(resp)
                 newSnackbarMessage("avatar updated successfully.", "success")
@@ -275,9 +278,11 @@ export const PlayerProfilePage = () => {
                                 <ProfileAvatar
                                     playerID={profile.player.id}
                                     isOwner={isMe}
-                                    updateAvatar={async (avatar_id: string) => {
-                                        updateAvatar(avatar_id)
+                                    updateAvatar={async (avatar_id: string, isCustom: boolean) => {
+                                        updateAvatar(avatar_id, isCustom)
                                     }}
+                                    avatarID={avatar?.id || ""}
+                                    isCustom={!!avatar?.is_custom}
                                     avatarURL={avatar?.avatar_url || ""}
                                     primaryColor={primaryColor}
                                     backgroundColor={backgroundColor}
