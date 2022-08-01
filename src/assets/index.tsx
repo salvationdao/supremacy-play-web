@@ -132,6 +132,7 @@ import CampaignSharpIcon from "@mui/icons-material/CampaignSharp"
 import CloseSharpIcon from "@mui/icons-material/CloseSharp"
 import ExpandLessIcon from "@mui/icons-material/ExpandLess"
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
+import OutlinedFlagIcon from "@mui/icons-material/OutlinedFlag"
 import FlagSharpIcon from "@mui/icons-material/FlagSharp"
 import HorizontalRuleSharpIcon from "@mui/icons-material/HorizontalRuleSharp"
 import MapSharpIcon from "@mui/icons-material/MapSharp"
@@ -276,6 +277,11 @@ export const SvgSupToken: React.VoidFunctionComponent<SvgWrapperProps> = (props)
 export const SvgSyndicateFlag: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <FlagSharpIcon />
+    </SvgWrapper>
+)
+export const SvgReportFlag: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <OutlinedFlagIcon />
     </SvgWrapper>
 )
 

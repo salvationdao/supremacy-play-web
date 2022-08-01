@@ -2,7 +2,7 @@ import { ReactJSXElement } from "@emotion/react/types/jsx-namespace"
 import { Box, Stack, Typography } from "@mui/material"
 import React, { useCallback, useEffect, useMemo, useRef } from "react"
 import { UserBanForm } from "../../../.."
-import { SvgInfoCircular, SvgSkull2 } from "../../../../../assets"
+import { SvgInfoCircular, SvgSkull2, SvgReportFlag } from "../../../../../assets"
 import { PASSPORT_SERVER_HOST_IMAGES } from "../../../../../constants"
 import { useAuth, useChat } from "../../../../../containers"
 import { dateFormatter, getUserRankDeets, shadeColor, truncate } from "../../../../../helpers"
@@ -14,6 +14,7 @@ import { ChatMessageType, Faction, TextMessageData, User } from "../../../../../
 import { TooltipHelper } from "../../../../Common/TooltipHelper"
 import { UserDetailsPopover } from "./UserDetailsPopover"
 import { Reactions } from "../../AdditionalOptions/Reactions"
+import { ReportModal } from "../../AdditionalOptions/ReportModal"
 
 // const getMultiplierColor = (multiplierInt: number): string => {
 //     if (multiplierInt >= 2800) return "#3BFFDE"
@@ -70,6 +71,7 @@ export const TextMessage = ({
     const [isPreviousMessager, setIsPreviousMessager] = useToggle()
     const [shouldNotify, setShouldNotify] = useToggle(metadata && user.gid in metadata.tagged_users_read && !metadata.tagged_users_read[user.gid])
     const [isHovered, setIsHovered] = useToggle()
+    const [reportModalOpen, setReportModalOpen] = useToggle()
 
     const abilityKillColor = useMemo(() => {
         if (!from_user_stat || from_user_stat.ability_kill_count == 0 || !message_color) return colors.grey
@@ -342,7 +344,6 @@ export const TextMessage = ({
                     <Stack
                         direction={"column"}
                         sx={{
-                            ml: "2rem",
                             backgroundColor: shouldNotify ? "rgba(0,116,217, .4)" : isHovered ? "#121212" : "unset",
                             borderRadius: ".3rem",
                             transition: shouldNotify ? "background-color 2s" : "unset",
@@ -353,12 +354,23 @@ export const TextMessage = ({
                     >
                         {/*only display if msg has likes*/}
 
-                        <Box sx={{ zIndex: 1 }}>{chatMessage}</Box>
+                        <Stack direction={"row"} sx={{ zIndex: 1, alignItems: "center" }}>
+                            <SvgReportFlag
+                                fill={"grey"}
+                                size={"1.5rem"}
+                                sx={{ mr: "1rem", opacity: isHovered ? "100%" : "0", cursor: "pointer" }}
+                                onClick={() => {
+                                    setReportModalOpen(true)
+                                }}
+                            />
+                            {chatMessage}
+                        </Stack>
 
                         {!!metadata?.likes.net && <Reactions fontSize={fontSize} message={data} factionColor={factionColor} />}
                         {isHovered && <Reactions fontSize={fontSize} hoverOnly={true} message={data} factionColor={factionColor} />}
                     </Stack>
                 </Box>
+                {reportModalOpen && <ReportModal message={data} setReportModalOpen={setReportModalOpen} reportModalOpen={reportModalOpen} />}
             </Box>
 
             {isPopoverOpen && (
