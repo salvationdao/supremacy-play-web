@@ -130,6 +130,103 @@ export const WarMachineStats = () => {
         )
     }
 
+    if (isPoppedout) {
+        return (
+            <WindowPortal
+                title="Supremacy - Live Chat"
+                onClose={() => toggleIsPoppedout(false)}
+                features={{
+                    width: 345,
+                    height: 896,
+                }}
+            >
+                <Stack
+                    alignItems="center"
+                    justifyContent="flex-start"
+                    sx={{
+                        position: "relative",
+                        width: "100%",
+                        height: "100%",
+                    }}
+                >
+                    {/* map background image */}
+                    <Box
+                        sx={{
+                            position: "absolute",
+                            width: "100%",
+                            height: "100%",
+                            background: `url(${map?.image_url})`,
+                            backgroundRepeat: "no-repeat",
+                            backgroundPosition: "center",
+                            backgroundSize: "cover",
+                            opacity: 0.15,
+                        }}
+                    />
+
+                    <ClipThing
+                        clipSize="10px"
+                        border={{
+                            borderColor: theme.factionTheme.primary,
+                            borderThickness: ".6rem",
+                        }}
+                        opacity={0.7}
+                        backgroundColor={theme.factionTheme.background}
+                        sx={{ flex: 1, transform: "scale(0.7)" }}
+                    >
+                        <Stack sx={{ height: "100%" }}>
+                            <Box
+                                sx={{
+                                    flex: 1,
+                                    overflowY: "auto",
+                                    overflowX: "hidden",
+                                    ml: "1.9rem",
+                                    mr: ".5rem",
+                                    pr: "1.4rem",
+                                    my: "1rem",
+                                    direction: "ltr",
+                                    scrollbarWidth: "none",
+                                    "::-webkit-scrollbar": {
+                                        width: ".4rem",
+                                    },
+                                    "::-webkit-scrollbar-track": {
+                                        background: "#FFFFFF15",
+                                        borderRadius: 3,
+                                    },
+                                    "::-webkit-scrollbar-thumb": {
+                                        background: (theme) => theme.factionTheme.primary,
+                                        borderRadius: 3,
+                                    },
+                                }}
+                            >
+                                <Box sx={{ direction: "ltr", height: 0 }}>
+                                    <Stack spacing="2.6rem" justifyContent="center" sx={{ p: "2rem" }}>
+                                        {otherMechs.length > 0 &&
+                                            otherMechs
+                                                .sort((a, b) => a.factionID.localeCompare(b.factionID))
+                                                .map((wm) => (
+                                                    <Box key={`${wm.participantID} - ${wm.hash}`}>
+                                                        <WarMachineItem warMachine={wm} scale={1} initialExpanded isPoppedout />
+                                                    </Box>
+                                                ))}
+
+                                        <Divider orientation="horizontal" />
+
+                                        {haveFactionMechs &&
+                                            factionMechs.map((wm) => (
+                                                <Box key={`${wm.participantID} - ${wm.hash}`}>
+                                                    <WarMachineItem warMachine={wm} scale={1} initialExpanded isPoppedout />
+                                                </Box>
+                                            ))}
+                                    </Stack>
+                                </Box>
+                            </Box>
+                        </Stack>
+                    </ClipThing>
+                </Stack>
+            </WindowPortal>
+        )
+    }
+
     if (!warMachines || warMachines.length <= 0) return null
 
     if (isMobile) {

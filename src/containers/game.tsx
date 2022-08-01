@@ -3,7 +3,7 @@ import { createContainer } from "unstated-next"
 import { useSupremacy } from "."
 import { useGameServerCommandsUser, useGameServerSubscription, useGameServerSubscriptionUser } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
-import { AbilityDetail, BattleEndDetail, BribeStage, Map, WarMachineState } from "../types"
+import { AbilityDetail, BattleEndDetail, BattleZone, BribeStage, Map, WarMachineState } from "../types"
 
 export interface BribeStageResponse {
     phase: BribeStage
@@ -13,6 +13,7 @@ export interface BribeStageResponse {
 export interface GameSettingsResponse {
     battle_identifier: number
     game_map: Map
+    battle_zone: BattleZone
     war_machines: WarMachineState[]
     spawned_ai: WarMachineState[]
     ability_details: AbilityDetail[]
@@ -25,6 +26,7 @@ export const GameContainer = createContainer(() => {
 
     // States
     const [map, setMap] = useState<Map>()
+    const [battleZone, setBattleZone] = useState<BattleZone>()
     const [abilityDetails, setAbilityDetails] = useState<AbilityDetail[]>([])
     const [warMachines, setWarMachines] = useState<WarMachineState[] | undefined>([])
     const [spawnedAI, setSpawnedAI] = useState<WarMachineState[] | undefined>([])
@@ -42,6 +44,7 @@ export const GameContainer = createContainer(() => {
             if (!payload) return
             if (payload.battle_identifier > 0) setBattleIdentifier(payload.battle_identifier)
             setMap(payload.game_map)
+            setBattleZone(payload.battle_zone)
             setAbilityDetails(payload.ability_details)
             setWarMachines(payload.war_machines)
             setSpawnedAI(payload.spawned_ai)
@@ -94,6 +97,8 @@ export const GameContainer = createContainer(() => {
         bribeStage,
         map,
         setMap,
+        battleZone,
+        setBattleZone,
         abilityDetails,
         warMachines,
         spawnedAI,

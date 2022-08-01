@@ -1,13 +1,13 @@
 import { IconButton, Popover, Stack, Typography } from "@mui/material"
 import { MutableRefObject, useEffect, useMemo, useRef } from "react"
-import { ClipThing, NoMultiFilter, SplitView, SystemMessageFilter } from "../../.."
+import { ClipThing, SplitView, SystemMessageFilter } from "../../.."
 import { SvgSettings } from "../../../../assets"
 import { shadeColor } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
 import { fonts, siteZIndex } from "../../../../theme/theme"
 import { ChatFontSize } from "./ChatFontSize"
 
-export const ChatSettings = ({ primaryColor, faction_id }: { primaryColor: string; faction_id: string | null }) => {
+export const ChatSettings = ({ primaryColor }: { primaryColor: string }) => {
     const popoverRef = useRef(null)
     const [isPopoverOpen, toggleIsPopoverOpen] = useToggle()
 
@@ -24,13 +24,7 @@ export const ChatSettings = ({ primaryColor, faction_id }: { primaryColor: strin
             </IconButton>
 
             {isPopoverOpen && (
-                <SettingsPopover
-                    open={isPopoverOpen}
-                    popoverRef={popoverRef}
-                    onClose={() => toggleIsPopoverOpen(false)}
-                    primaryColor={primaryColor}
-                    faction_id={faction_id}
-                />
+                <SettingsPopover open={isPopoverOpen} popoverRef={popoverRef} onClose={() => toggleIsPopoverOpen(false)} primaryColor={primaryColor} />
             )}
         </>
     )
@@ -41,13 +35,11 @@ const SettingsPopover = ({
     popoverRef,
     onClose,
     primaryColor,
-    faction_id,
 }: {
     open: boolean
     popoverRef: MutableRefObject<null>
     onClose: () => void
     primaryColor: string
-    faction_id: string | null
 }) => {
     const [localOpen, toggleLocalOpen] = useToggle(open)
 
@@ -95,13 +87,13 @@ const SettingsPopover = ({
                 backgroundColor={backgroundColor}
                 sx={{ height: "100%" }}
             >
-                <SettingsContent faction_id={faction_id} />
+                <SettingsContent />
             </ClipThing>
         </Popover>
     )
 }
 
-const SettingsContent = ({ faction_id }: { faction_id: string | null }) => {
+const SettingsContent = () => {
     return (
         <Stack spacing=".7rem" sx={{ position: "relative", width: "30rem", maxWidth: "30rem", px: "1.6rem", py: "1.2rem", pb: "1.6rem" }}>
             <Typography gutterBottom sx={{ fontFamily: fonts.nostromoBlack }}>
@@ -110,7 +102,6 @@ const SettingsContent = ({ faction_id }: { faction_id: string | null }) => {
             <ChatFontSize />
             <SplitView />
             <SystemMessageFilter />
-            <NoMultiFilter faction_id={faction_id} />
         </Stack>
     )
 }

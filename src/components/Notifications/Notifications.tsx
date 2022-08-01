@@ -21,6 +21,8 @@ import { useArray } from "../../hooks"
 import { useGameServerSubscription, useGameServerSubscriptionFaction } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { siteZIndex } from "../../theme/theme"
+import { BattleZone } from "../../types"
+import { BattleZoneAlert } from "./Alerts/BattleZoneAlert"
 import { WarMachineCommandAlert, WarMachineCommandAlertProps } from "./Alerts/WarMachineCommandAlert"
 import {
     battleAbilityNoti,
@@ -56,17 +58,25 @@ export enum NotificationType {
     WarMachineAbility = "WAR_MACHINE_ABILITY",
     WarMachineDestroyed = "WAR_MACHINE_DESTROYED",
     WarMachineCommand = "WAR_MACHINE_COMMAND",
+    BattleZoneChange = "BATTLE_ZONE_CHANGE",
 }
 
 export interface NotificationResponse {
     type: NotificationType
-    data: BattleFactionAbilityAlertProps | KillAlertProps | LocationSelectAlertProps | WarMachineAbilityAlertProps | WarMachineCommandAlertProps | string
+    data:
+        | BattleFactionAbilityAlertProps
+        | KillAlertProps
+        | LocationSelectAlertProps
+        | WarMachineAbilityAlertProps
+        | WarMachineCommandAlertProps
+        | BattleZone
+        | string
 }
 
 export const Notifications = () => {
     const { isMobile } = useMobile()
     const { getFaction } = useSupremacy()
-    const { setForceDisplay100Percentage } = useGame()
+    const { setForceDisplay100Percentage, setBattleZone } = useGame()
 
     // Notification array
     const { value: notifications, add: addNotification, removeByID } = useArray([], "notiID")
@@ -77,7 +87,15 @@ export const Notifications = () => {
             if (!notification) return
 
             const notiID = makeid()
-            const duration = SPAWN_TEST_NOTIFICATIONS ? NOTIFICATION_TIME * 10000 : NOTIFICATION_TIME
+
+            let duration = SPAWN_TEST_NOTIFICATIONS ? NOTIFICATION_TIME * 10000 : NOTIFICATION_TIME
+
+            if (notification.type === NotificationType.BattleZoneChange) {
+                const battleZoneChange = notification.data as BattleZone
+                duration = battleZoneChange.warnTime * 1000
+                setBattleZone(battleZoneChange)
+            }
+
             addNotification({ notiID, ...notification, duration })
 
             // Linger is for the slide animation to play before clearing off the component
@@ -125,7 +143,7 @@ export const Notifications = () => {
                 )
             }
         },
-        [addNotification, removeByID],
+        [addNotification, removeByID, setBattleZone],
     )
 
     // Test cases
@@ -225,6 +243,12 @@ export const Notifications = () => {
                             return (
                                 <NotificationItem key={n.notiID} duration={n.duration}>
                                     <WarMachineCommandAlert data={n.data} getFaction={getFaction} />
+                                </NotificationItem>
+                            )
+                        case NotificationType.BattleZoneChange:
+                            return (
+                                <NotificationItem key={n.notiID} duration={n.duration}>
+                                    <BattleZoneAlert data={n.data} />
                                 </NotificationItem>
                             )
                     }
