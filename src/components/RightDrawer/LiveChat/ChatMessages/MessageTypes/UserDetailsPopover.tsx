@@ -227,6 +227,7 @@ export const UserDetailsPopover = ({
                     </Stack>
                 </ClipThing>
             </Popover>
+
             {showChatBanModal && (
                 <ConfirmModal
                     title="CONFIRMATION"
@@ -249,6 +250,7 @@ export const UserDetailsPopover = ({
                     <Typography variant="h6">
                         Do you wish to chat ban <strong>{fromUser.username}</strong>?
                     </Typography>
+
                     <TextField
                         variant="outlined"
                         hiddenLabel
@@ -287,6 +289,7 @@ export const UserDetailsPopover = ({
                             setReason(e.target.value)
                         }}
                     />
+
                     <Select
                         sx={{
                             width: "100%",

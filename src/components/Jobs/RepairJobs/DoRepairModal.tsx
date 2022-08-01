@@ -35,7 +35,7 @@ export const DoRepairModal = ({
     const [repairAgent, setRepairAgent] = useState<RepairAgent>()
 
     // captcha
-    const [token, setToken] = useState<string>()
+    const [captchaToken, setCaptchaToken] = useState<string>()
     const captchaRef = useRef<HCaptcha | null>(null)
 
     // Submission
@@ -97,7 +97,6 @@ export const DoRepairModal = ({
 
                 if (!resp) return Promise.reject(false)
                 setRepairAgent(undefined)
-                setToken(undefined)
                 return Promise.resolve(true)
             } catch (err) {
                 const message = typeof err === "string" ? err : "Failed to submit results."
@@ -188,22 +187,22 @@ export const DoRepairModal = ({
                         </>
                     )}
 
-                    {!token && (
+                    {!captchaToken && (
                         <form>
                             <HCaptcha
                                 size="compact"
                                 theme="dark"
                                 sitekey="87f715ba-98ff-43da-b970-cfc30fd7c5a0"
                                 onLoad={() => captchaRef.current && captchaRef.current.execute()}
-                                onVerify={setToken}
-                                onExpire={() => setToken(undefined)}
+                                onVerify={setCaptchaToken}
+                                onExpire={() => setCaptchaToken(undefined)}
                                 ref={captchaRef}
                             />
                         </form>
                     )}
 
                     <FancyButton
-                        disabled={!token}
+                        disabled={!captchaToken}
                         loading={isRegistering}
                         clipThingsProps={{
                             clipSize: "7px",
@@ -264,7 +263,7 @@ export const DoRepairModal = ({
         repairJobStatus,
         submitError,
         submitSuccess,
-        token,
+        captchaToken,
     ])
 
     return (
@@ -323,7 +322,7 @@ export const DoRepairModal = ({
 
                         {/* Info cards */}
                         {repairJobStatus && (
-                            <Stack direction="row" spacing="1.7rem" justifyContent="center">
+                            <Stack direction="row" spacing="1.6rem" justifyContent="center">
                                 <InfoCard primaryColor={primaryColor} label="ACTIVE AGENTS">
                                     <Typography
                                         variant="h4"
@@ -333,7 +332,7 @@ export const DoRepairModal = ({
                                     </Typography>
                                 </InfoCard>
 
-                                <InfoCard primaryColor={primaryColor} label="REWARD PER BLOCK">
+                                <InfoCard primaryColor={primaryColor} label="REWARD PER BLOCK" sx={{ flex: 1.6 }}>
                                     <Stack direction="row" alignItems="center">
                                         <SvgSupToken size="3rem" fill={colors.yellow} />
                                         <Typography variant="h4" sx={{ fontWeight: "fontWeightBold" }}>
@@ -342,7 +341,7 @@ export const DoRepairModal = ({
                                     </Stack>
                                 </InfoCard>
 
-                                <InfoCard primaryColor={primaryColor} label="REMAINING REWARD">
+                                <InfoCard primaryColor={primaryColor} label="REMAINING REWARD" sx={{ flex: 1.6 }}>
                                     <Stack direction="row" alignItems="center">
                                         <SvgSupToken size="3rem" fill={colors.yellow} />
                                         <Typography variant="h4" sx={{ fontWeight: "fontWeightBold" }}>

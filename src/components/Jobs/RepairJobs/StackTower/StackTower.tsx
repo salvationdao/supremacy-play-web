@@ -35,7 +35,7 @@ export const StackTower = React.memo(function StackTower({
 
     // Send server game pattern
     useEffect(() => {
-        if (!repairAgent?.id || cumulativeScore !== 3) return
+        if (!repairAgent?.id || cumulativeScore !== repairAgent?.required_stacks) return
         ;(async () => {
             const result = await completeAgentRepair(repairAgent.id, gamePatterns)
             if (result) setGamePatterns([])
