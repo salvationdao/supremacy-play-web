@@ -338,27 +338,25 @@ export const TextMessage = ({
                     </Stack>
                 )}
 
-                <Box>
-                    <Stack
-                        direction={"column"}
-                        sx={{
-                            ml: "2rem",
-                            backgroundColor: shouldNotify ? "rgba(0,116,217, .4)" : isHovered ? "#121212" : "unset",
-                            borderRadius: ".3rem",
-                            transition: shouldNotify ? "background-color 2s" : "unset",
-                            position: "relative",
-                        }}
-                        onMouseEnter={() => setIsHovered(true)}
-                        onMouseLeave={() => setIsHovered(false)}
-                    >
-                        {/*only display if msg has likes*/}
+                <Stack
+                    direction={"column"}
+                    sx={{
+                        ml: "2rem",
+                        backgroundColor: shouldNotify ? "rgba(0,116,217, .4)" : isHovered ? "#121212" : "unset",
+                        borderRadius: ".3rem",
+                        transition: shouldNotify ? "background-color 2s" : "unset",
+                        position: "relative",
+                    }}
+                    onMouseEnter={() => setIsHovered(true)}
+                    onMouseLeave={() => setIsHovered(false)}
+                >
+                    {/*only display if msg has likes*/}
 
-                        <Box sx={{ zIndex: 1 }}>{chatMessage}</Box>
+                    <Box sx={{ zIndex: 1 }}>{chatMessage}</Box>
 
-                        {!!metadata?.likes.net && <Reactions fontSize={fontSize} message={data} factionColor={factionColor} />}
-                        {isHovered && <Reactions fontSize={fontSize} hoverOnly={true} message={data} factionColor={factionColor} />}
-                    </Stack>
-                </Box>
+                    {!!metadata?.likes.net && <Reactions fontSize={fontSize} message={data} factionColor={factionColor} />}
+                    {isHovered && <Reactions fontSize={fontSize} hoverOnly={true} message={data} factionColor={factionColor} />}
+                </Stack>
             </Box>
 
             {isPopoverOpen && (
