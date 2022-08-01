@@ -165,6 +165,7 @@ export const CoolTable = <T,>({
                                     align={alignments ? alignments[i] : "left"}
                                     sx={{
                                         borderRight: "#FFFFFF20 1px solid",
+                                        borderBottom: `${primaryColor}60 1px solid`,
                                         height: titleRowHeight,
                                         py: "0 !important",
                                         width: widths ? widths[i] : undefined,
