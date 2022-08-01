@@ -117,20 +117,28 @@ const TowerStackInner = ({
         new Game(theme.factionTheme.background, setGameState, setRecentPattern)
     }, [setGameState, setRecentPattern, theme.factionTheme.background])
 
+    // This makes sure it never re-renders
+    const gameDiv = useMemo(() => {
+        // Game container, must keep the id
+        return (
+            <Box
+                id="game"
+                tabIndex={0}
+                sx={{
+                    position: "absolute",
+                    top: 0,
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                }}
+            />
+        )
+    }, [])
+
     return useMemo(() => {
         return (
             <Box sx={{ position: "relative", width: "100%", height: "100%", overflow: "hidden" }}>
-                {/* Game container, must keep the id */}
-                <Box
-                    id="game"
-                    sx={{
-                        position: "absolute",
-                        top: 0,
-                        bottom: 0,
-                        left: 0,
-                        right: 0,
-                    }}
-                />
+                {gameDiv}
 
                 {/* Score */}
                 <Typography
@@ -207,5 +215,5 @@ const TowerStackInner = ({
                 </Stack>
             </Box>
         )
-    }, [gameState, recentPattern?.score])
+    }, [gameDiv, gameState, recentPattern?.score])
 }

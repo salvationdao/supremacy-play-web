@@ -47,7 +47,7 @@ export class Game {
         this.tick()
 
         this.container?.addEventListener("keydown", (e) => {
-            if (e.keyCode === 32) {
+            if (e.key === "Spacebar" || e.key === " ") {
                 // Space
                 this.handleEvent()
             }

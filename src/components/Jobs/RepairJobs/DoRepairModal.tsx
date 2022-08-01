@@ -333,7 +333,7 @@ export const DoRepairModal = ({
                                     </Typography>
                                 </InfoCard>
 
-                                <InfoCard primaryColor={primaryColor} label="REWARD PER BLOCK" sx={{ flex: 1.6 }}>
+                                <InfoCard primaryColor={primaryColor} label="REWARD PER BLOCK">
                                     <Stack direction="row" alignItems="center">
                                         <SvgSupToken size="3rem" fill={colors.yellow} />
                                         <Typography variant="h4" sx={{ fontWeight: "fontWeightBold" }}>
@@ -342,13 +342,13 @@ export const DoRepairModal = ({
                                     </Stack>
                                 </InfoCard>
 
-                                <InfoCard primaryColor={primaryColor} label="REMAINING REWARD" sx={{ flex: 1.6 }}>
+                                <InfoCard primaryColor={primaryColor} label="REMAINING REWARD">
                                     <Stack direction="row" alignItems="center">
                                         <SvgSupToken size="3rem" fill={colors.yellow} />
                                         <Typography variant="h4" sx={{ fontWeight: "fontWeightBold" }}>
                                             {supFormatterNoFixed(
                                                 new BigNumber(repairJobStatus.sups_worth_per_block || "0").multipliedBy(remainDamagedBlocks).toString(),
-                                                2,
+                                                1,
                                             )}
                                         </Typography>
                                     </Stack>
