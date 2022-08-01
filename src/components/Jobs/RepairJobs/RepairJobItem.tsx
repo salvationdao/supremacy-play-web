@@ -125,7 +125,7 @@ export const RepairJobItem = ({ repairJob, isGridView }: { repairJob: RepairOffe
                         </General>
 
                         {repairJobStatus?.closed_at || repairJob.expires_at < new Date() ? (
-                            <General isGridView={isGridView} title="TIME LEFT" text="EXPIRED" textColor={colors.lightGrey} />
+                            <General isGridView={isGridView} title="TIME REMAINING" text="EXPIRED" textColor={colors.lightGrey} />
                         ) : (
                             <CountdownGeneral isGridView={isGridView} endTime={repairJob.expires_at} />
                         )}
@@ -158,7 +158,7 @@ const CountdownGeneral = ({ isGridView, endTime }: { isGridView?: boolean; endTi
     return (
         <General
             isGridView={isGridView}
-            title="TIME LEFT"
+            title="TIME REMAINING"
             text={timeSinceInWords(new Date(), new Date(new Date().getTime() + totalSecRemain * 1000)) + " left"}
             textColor={totalSecRemain < 300 ? colors.orange : "#FFFFFF"}
         />

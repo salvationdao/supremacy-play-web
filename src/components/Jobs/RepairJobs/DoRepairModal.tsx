@@ -1,5 +1,6 @@
 import HCaptcha from "@hcaptcha/react-hcaptcha"
 import { Box, IconButton, Modal, Stack, SxProps, Typography } from "@mui/material"
+import BigNumber from "bignumber.js"
 import { ReactNode, useCallback, useMemo, useRef, useState } from "react"
 import { SvgClose, SvgCubes, SvgSupToken } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
@@ -41,6 +42,8 @@ export const DoRepairModal = ({
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [submitError, setSubmitError] = useState<string>()
     const [submitSuccess, setSubmitSuccess] = useState(false)
+
+    const isFinished = !!(repairJobStatus?.closed_at || (repairJobStatus?.expires_at && repairJobStatus?.expires_at < new Date()))
 
     const remainDamagedBlocks = repairJobStatus
         ? repairJobStatus.blocks_required_repair - repairJobStatus.blocks_repaired
@@ -110,7 +113,20 @@ export const DoRepairModal = ({
         [send],
     )
 
-    const popupContent = useMemo(() => {
+    const overlayContent = useMemo(() => {
+        if (isFinished) {
+            return (
+                <Stack spacing="2rem" alignItems="center">
+                    <Typography variant="h4" sx={{ textAlign: "center", fontFamily: fonts.nostromoBlack }}>
+                        JOB {repairJobStatus?.finished_reason}
+                    </Typography>
+                    <Typography variant="h5" sx={{ textAlign: "center", fontFamily: fonts.nostromoBlack }}>
+                        THIS JOB IS NO LONGER AVAILABLE
+                    </Typography>
+                </Stack>
+            )
+        }
+
         if (remainDamagedBlocks <= 0) {
             return (
                 <Stack spacing="2rem" alignItems="center">
@@ -177,9 +193,10 @@ export const DoRepairModal = ({
                             <HCaptcha
                                 size="compact"
                                 theme="dark"
-                                sitekey="your-sitekey"
+                                sitekey="87f715ba-98ff-43da-b970-cfc30fd7c5a0"
                                 onLoad={() => captchaRef.current && captchaRef.current.execute()}
                                 onVerify={setToken}
+                                onExpire={() => setToken(undefined)}
                                 ref={captchaRef}
                             />
                         </form>
@@ -235,6 +252,7 @@ export const DoRepairModal = ({
 
         return null
     }, [
+        isFinished,
         backgroundColor,
         isRegistering,
         isSubmitting,
@@ -243,7 +261,7 @@ export const DoRepairModal = ({
         registerAgentRepair,
         remainDamagedBlocks,
         repairAgent,
-        repairJobStatus?.sups_worth_per_block,
+        repairJobStatus,
         submitError,
         submitSuccess,
         token,
@@ -315,7 +333,7 @@ export const DoRepairModal = ({
                                     </Typography>
                                 </InfoCard>
 
-                                <InfoCard primaryColor={primaryColor} label="REWARD PER BLOCK" sx={{ flex: 1.6 }}>
+                                <InfoCard primaryColor={primaryColor} label="REWARD PER BLOCK">
                                     <Stack direction="row" alignItems="center">
                                         <SvgSupToken size="3rem" fill={colors.yellow} />
                                         <Typography variant="h4" sx={{ fontWeight: "fontWeightBold" }}>
@@ -324,7 +342,19 @@ export const DoRepairModal = ({
                                     </Stack>
                                 </InfoCard>
 
-                                <InfoCard primaryColor={primaryColor} label="TIME LEFT">
+                                <InfoCard primaryColor={primaryColor} label="REMAINING REWARD">
+                                    <Stack direction="row" alignItems="center">
+                                        <SvgSupToken size="3rem" fill={colors.yellow} />
+                                        <Typography variant="h4" sx={{ fontWeight: "fontWeightBold" }}>
+                                            {supFormatterNoFixed(
+                                                new BigNumber(repairJobStatus.sups_worth_per_block || "0").multipliedBy(remainDamagedBlocks).toString(),
+                                                2,
+                                            )}
+                                        </Typography>
+                                    </Stack>
+                                </InfoCard>
+
+                                <InfoCard primaryColor={primaryColor} label="TIME REMAINING">
                                     <Countdown endTime={repairJobStatus.expires_at} />
                                 </InfoCard>
                             </Stack>
@@ -342,11 +372,11 @@ export const DoRepairModal = ({
                                     zIndex: 99,
                                 }}
                             >
-                                {popupContent}
+                                {overlayContent}
                             </Box>
 
                             <StackTower
-                                disableGame={!repairAgent || !!submitError || isSubmitting}
+                                disableGame={!repairAgent || !!submitError || isSubmitting || isFinished}
                                 repairAgent={repairAgent}
                                 completeAgentRepair={completeAgentRepair}
                             />
@@ -415,9 +445,13 @@ const InfoCard = ({ primaryColor, children, label, sx }: { primaryColor: string;
 const Countdown = ({ endTime }: { endTime: Date }) => {
     const { totalSecRemain } = useTimer(endTime)
 
+    let color = "#FFFFFF"
+    if (totalSecRemain < 300) color = colors.orange
+    if (totalSecRemain <= 0) color = colors.lightGrey
+
     return (
-        <Typography variant="h4" sx={{ fontWeight: "fontWeightBold", color: totalSecRemain < 300 ? colors.orange : "#FFFFFF" }}>
-            {timeSinceInWords(new Date(), new Date(new Date().getTime() + totalSecRemain * 1000), true)}
+        <Typography variant="h4" sx={{ fontWeight: "fontWeightBold", color: color }}>
+            {totalSecRemain > 0 ? timeSinceInWords(new Date(), new Date(new Date().getTime() + totalSecRemain * 1000), true) : "EXPIRED"}
         </Typography>
     )
 }
