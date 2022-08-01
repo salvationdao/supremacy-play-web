@@ -48,6 +48,7 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
     const theme = useTheme()
     const { send } = useGameServerCommandsUser("/user_commander")
     const [preferencesModalOpen, togglePreferencesModalOpen] = useToggle()
+    const [addDeviceModalOpen, toggleAddDeviceModalOpen] = useToggle()
     const [telegramShortcode, setTelegramShortcode] = useState<string>("")
 
     // Mechs
@@ -292,7 +293,13 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
             </Fade>
 
             {/* preferences modal */}
-            {preferencesModalOpen && <PreferencesModal onClose={() => togglePreferencesModalOpen(false)} setTelegramShortcode={setTelegramShortcode} />}
+            {preferencesModalOpen && (
+                <PreferencesModal
+                    onClose={() => togglePreferencesModalOpen(false)}
+                    setTelegramShortcode={setTelegramShortcode}
+                    toggleAddDeviceModal={() => toggleAddDeviceModalOpen(!addDeviceModalOpen)}
+                />
+            )}
 
             {/* telegram register modal */}
             {!!telegramShortcode && <TelegramRegisterModal code={telegramShortcode} onClose={() => setTelegramShortcode("")} />}

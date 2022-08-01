@@ -3,6 +3,7 @@ export enum GameServerKeys {
     SubSpoilsOfWar = "SPOIL:OF:WAR:UPDATED",
     SubLiveGraph = "LIVE:VOTE:COUNT:UPDATED",
     SubMechLiveStats = "WAR:MACHINE:STAT:UPDATED",
+    SubBattleAbilityProgress = "BATTLE:ABILITY:PROGRESS:BAR:UPDATED",
     SubAbilityProgress = "ABILITY:PRICE:UPDATED",
     SubMechAbilityCoolDown = "WAR:MACHINE:ABILITY:SUBSCRIBE",
     SubBattleAbilityOptInCheck = "BATTLE:ABILITY:OPT:IN:CHECK",
@@ -181,6 +182,10 @@ export enum GameServerKeys {
     CancelMechRepair = "MECH:REPAIR:OFFER:CLOSE",
     RegisterRepairAgent = "REPAIR:AGENT:REGISTER",
     CompleteRepairAgent = "REPAIR:AGENT:COMPLETE",
+
+    // Companion App
+    AuthGenOneTimeToken = "GEN:ONE:TIME:TOKEN",
+    GetPlayerDeviceList = "PLAYER:DEVICE:LIST",
 }
 
 export enum PassportServerKeys {
