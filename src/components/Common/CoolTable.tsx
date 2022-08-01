@@ -1,10 +1,28 @@
-import { CircularProgress, colors, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material"
+import FirstPageIcon from "@mui/icons-material/FirstPage"
+import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft"
+import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight"
+import LastPageIcon from "@mui/icons-material/LastPage"
+import {
+    Box,
+    CircularProgress,
+    IconButton,
+    Stack,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableFooter,
+    TableHead,
+    TablePagination,
+    TableRow,
+    Typography,
+} from "@mui/material"
 import { ReactNode, useMemo } from "react"
 import { useTheme } from "../../containers/theme"
-import { fonts } from "../../theme/theme"
+import { colors, fonts } from "../../theme/theme"
 
 interface CoolTableProps<T> {
-    title: string
+    title?: string
     tableHeadings: string[]
     alignments?: ("left" | "right" | "center")[]
     widths?: string[]
@@ -14,6 +32,13 @@ interface CoolTableProps<T> {
     loadError?: string
     titleRowHeight?: string
     cellPadding?: string
+    paginationProps?: {
+        page: number
+        pageSize: number
+        totalItems: number
+        changePage: (newPage: number) => void
+        changePageSize: (newPageSize: number) => void
+    }
 }
 
 export const CoolTable = <T,>({
@@ -27,13 +52,14 @@ export const CoolTable = <T,>({
     loadError,
     titleRowHeight = "5.5rem",
     cellPadding = ".8rem 1rem",
+    paginationProps,
 }: CoolTableProps<T>) => {
     const theme = useTheme()
 
     const primaryColor = theme.factionTheme.primary
     const secondaryColor = theme.factionTheme.secondary
 
-    const content = useMemo(() => {
+    const tableBody = useMemo(() => {
         if (loadError) {
             return (
                 <TableBody>
@@ -105,7 +131,6 @@ export const CoolTable = <T,>({
                                     pt: "1.28rem",
                                     color: colors.grey,
                                     fontFamily: fonts.nostromoBold,
-                                    opacity: 0.9,
                                     textAlign: "center",
                                 }}
                             >
@@ -119,8 +144,8 @@ export const CoolTable = <T,>({
     }, [loadError, items, isLoading, tableHeadings.length, primaryColor, cellPadding, renderItem, alignments, widths])
 
     return (
-        <TableContainer>
-            <Table sx={{ borderRadius: 0.5, overflow: "hidden", ".MuiTableCell-root": { p: "1.2rem" } }}>
+        <TableContainer sx={{ height: "100%" }}>
+            <Table sx={{ height: "100%", borderRadius: 0.5, overflow: "hidden", ".MuiTableCell-root": { p: "1.2rem" } }}>
                 <TableHead sx={{ boxShadow: 5 }}>
                     {title && (
                         <TableRow sx={{ backgroundColor: primaryColor }}>
@@ -154,8 +179,82 @@ export const CoolTable = <T,>({
                     </TableRow>
                 </TableHead>
 
-                {content}
+                {tableBody}
+
+                {paginationProps && (
+                    <TableFooter>
+                        <TableRow>
+                            <TablePagination
+                                sx={{
+                                    minHeight: 0,
+                                    "*": {
+                                        fontFamily: fonts.nostromoBold,
+                                        fontSize: "1.3rem",
+                                    },
+                                }}
+                                rowsPerPageOptions={[5, 10, 25]}
+                                colSpan={tableHeadings.length}
+                                count={paginationProps.totalItems}
+                                rowsPerPage={paginationProps.pageSize}
+                                page={paginationProps.page}
+                                SelectProps={{ native: true }}
+                                onPageChange={(e, newPage: number) => paginationProps.changePage(newPage)}
+                                onRowsPerPageChange={(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+                                    paginationProps.changePageSize(parseInt(event.target.value, 10))
+                                }
+                                ActionsComponent={TablePaginationActions}
+                            />
+                        </TableRow>
+                    </TableFooter>
+                )}
             </Table>
         </TableContainer>
+    )
+}
+
+interface TablePaginationActionsProps {
+    count: number
+    page: number
+    rowsPerPage: number
+    onPageChange: (event: React.MouseEvent<HTMLButtonElement>, newPage: number) => void
+}
+
+const TablePaginationActions = (props: TablePaginationActionsProps) => {
+    const { count, page, rowsPerPage, onPageChange } = props
+
+    const handleFirstPageButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+        onPageChange(event, 0)
+    }
+
+    const handleBackButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+        onPageChange(event, page - 1)
+    }
+
+    const handleNextButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+        onPageChange(event, page + 1)
+    }
+
+    const handleLastPageButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+        onPageChange(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1))
+    }
+
+    return (
+        <Box sx={{ flexShrink: 0, ml: 2.5 }}>
+            <IconButton onClick={handleFirstPageButtonClick} disabled={page === 0}>
+                <FirstPageIcon fontSize="large" />
+            </IconButton>
+
+            <IconButton onClick={handleBackButtonClick} disabled={page === 0}>
+                <KeyboardArrowLeft fontSize="large" />
+            </IconButton>
+
+            <IconButton onClick={handleNextButtonClick} disabled={page >= Math.ceil(count / rowsPerPage) - 1}>
+                <KeyboardArrowRight fontSize="large" />
+            </IconButton>
+
+            <IconButton onClick={handleLastPageButtonClick} disabled={page >= Math.ceil(count / rowsPerPage) - 1}>
+                <LastPageIcon fontSize="large" />
+            </IconButton>
+        </Box>
     )
 }

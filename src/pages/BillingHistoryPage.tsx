@@ -1,14 +1,15 @@
-import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { Box, Pagination, Stack, Typography } from "@mui/material"
+import { useCallback, useEffect, useState } from "react"
 import { HangarBg, SafePNG } from "../assets"
-import { ClipThing, FancyButton } from "../components"
+import { ClipThing } from "../components"
+import { CoolTable } from "../components/Common/CoolTable"
 import { PageHeader } from "../components/Common/PageHeader"
 import { useTheme } from "../containers/theme"
 import { parseString } from "../helpers"
 import { usePagination, useUrlQuery } from "../hooks"
 import { useGameServerCommandsUser } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
-import { colors, fonts, siteZIndex } from "../theme/theme"
+import { fonts, siteZIndex } from "../theme/theme"
 import { BillingHistory } from "../types/fiat"
 
 export const BillingHistoryPage = () => {
@@ -57,96 +58,6 @@ export const BillingHistoryPage = () => {
         getItems()
     }, [getItems])
 
-    const content = useMemo(() => {
-        if (loadError) {
-            return (
-                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
-                    <Stack
-                        alignItems="center"
-                        justifyContent="center"
-                        sx={{ height: "100%", maxWidth: "100%", width: "75rem", px: "3rem", pt: "1.28rem" }}
-                        spacing="1.5rem"
-                    >
-                        <Typography
-                            sx={{
-                                color: colors.red,
-                                fontFamily: fonts.nostromoBold,
-                                textAlign: "center",
-                            }}
-                        >
-                            {loadError}
-                        </Typography>
-                    </Stack>
-                </Stack>
-            )
-        }
-
-        if (!billingHistoryItems || isLoading) {
-            return (
-                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
-                    <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
-                        <CircularProgress size="3rem" sx={{ color: theme.factionTheme.primary }} />
-                    </Stack>
-                </Stack>
-            )
-        }
-
-        if (billingHistoryItems && billingHistoryItems.length > 0) {
-            return (
-                <Box sx={{ direction: "ltr", height: 0 }}>
-                    <Box
-                        sx={{
-                            width: "100%",
-                            py: "1rem",
-                            display: "grid",
-                            gridTemplateColumns: "100%",
-                            gap: "1.3rem",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            overflow: "visible",
-                        }}
-                    >
-                        {billingHistoryItems.map((item) => (
-                            <BillingHistoryItem key={`billing-history-${item.id}`} item={item} />
-                        ))}
-                    </Box>
-                </Box>
-            )
-        }
-
-        return (
-            <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
-                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", maxWidth: "40rem" }}>
-                    <Box
-                        sx={{
-                            width: "9rem",
-                            height: "9rem",
-                            opacity: 0.6,
-                            filter: "grayscale(100%)",
-                            background: `url(${SafePNG})`,
-                            backgroundRepeat: "no-repeat",
-                            backgroundPosition: "top center",
-                            backgroundSize: "contain",
-                        }}
-                    />
-                    <Typography
-                        sx={{
-                            px: "1.28rem",
-                            pt: "1.28rem",
-                            color: colors.grey,
-                            fontFamily: fonts.nostromoBold,
-                            userSelect: "text !important",
-                            opacity: 0.9,
-                            textAlign: "center",
-                        }}
-                    >
-                        {"There are no past purchases found."}
-                    </Typography>
-                </Stack>
-            </Stack>
-        )
-    }, [loadError, billingHistoryItems, isLoading, theme.factionTheme.primary])
-
     return (
         <Stack
             alignItems="center"
@@ -175,34 +86,28 @@ export const BillingHistoryPage = () => {
                         <Stack sx={{ flex: 1 }}>
                             <PageHeader title="BILLING HISTORY" description="View your past transactions." imageUrl={SafePNG} />
 
-                            <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
-                                <Box
-                                    sx={{
-                                        ml: "1.9rem",
-                                        mr: ".5rem",
-                                        pr: "1.4rem",
-                                        my: "1rem",
-                                        flex: 1,
-                                        overflowY: "auto",
-                                        overflowX: "hidden",
-                                        direction: "ltr",
-
-                                        "::-webkit-scrollbar": {
-                                            width: ".4rem",
-                                        },
-                                        "::-webkit-scrollbar-track": {
-                                            background: "#FFFFFF15",
-                                            borderRadius: 3,
-                                        },
-                                        "::-webkit-scrollbar-thumb": {
-                                            background: theme.factionTheme.primary,
-                                            borderRadius: 3,
-                                        },
+                            <Box sx={{ flex: 1 }}>
+                                <CoolTable
+                                    tableHeadings={["RECEIPT NUMBER", "DATE", "PAID", "REFUNDED"]}
+                                    alignments={["left", "center", "center", "center"]}
+                                    widths={["25%", "25%", "25%", "25%"]}
+                                    titleRowHeight="3.5rem"
+                                    cellPadding=".4rem 1rem"
+                                    items={billingHistoryItems}
+                                    isLoading={isLoading}
+                                    loadError={loadError}
+                                    paginationProps={{
+                                        page,
+                                        pageSize,
+                                        totalItems,
+                                        changePage,
+                                        changePageSize,
                                     }}
-                                >
-                                    {content}
-                                </Box>
-                            </Stack>
+                                    renderItem={(item, index) => {
+                                        return [<Typography key={1}>{index + 1}</Typography>]
+                                    }}
+                                />
+                            </Box>
                         </Stack>
 
                         {totalPages > 1 && (
@@ -235,56 +140,5 @@ export const BillingHistoryPage = () => {
                 </ClipThing>
             </Stack>
         </Stack>
-    )
-}
-
-interface BillingHistoryItemProps {
-    item: BillingHistory
-}
-
-export const BillingHistoryItem = ({ item }: BillingHistoryItemProps) => {
-    const theme = useTheme()
-
-    const primaryColor = theme.factionTheme.primary
-    const backgroundColor = theme.factionTheme.background
-
-    return (
-        <Box sx={{ position: "relative", overflow: "visible", height: "100%" }}>
-            <FancyButton
-                disableRipple
-                clipThingsProps={{
-                    clipSize: "7px",
-                    clipSlantSize: "0px",
-                    corners: {
-                        topLeft: true,
-                        topRight: true,
-                        bottomLeft: true,
-                        bottomRight: true,
-                    },
-                    backgroundColor: backgroundColor,
-                    opacity: 0.9,
-                    border: { isFancy: true, borderColor: primaryColor, borderThickness: ".25rem" },
-                    sx: { position: "relative", height: "100%" },
-                }}
-                sx={{ color: primaryColor, textAlign: "start", height: "100%", ":hover": { opacity: 1 } }}
-                to={`/billing-history`}
-            >
-                <Box
-                    sx={{
-                        position: "relative",
-                        height: "100%",
-                        p: ".1rem .3rem",
-                        display: "grid",
-                        gridTemplateRows: "7rem",
-                        gridTemplateColumns: `minmax(36rem, auto) 23rem repeat(3, 17rem)`, // hard-coded to have 6 columns, adjust as required
-                        gap: "1.4rem",
-                    }}
-                >
-                    <Stack direction="column" alignItems="center" spacing="1.4rem" sx={{ position: "relative" }}>
-                        Test Cakes
-                    </Stack>
-                </Box>
-            </FancyButton>
-        </Box>
     )
 }
