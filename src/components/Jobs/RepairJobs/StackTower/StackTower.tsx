@@ -188,7 +188,9 @@ const TowerStackInner = ({
                             span: { color: colors.neonBlue, fontFamily: "inherit" },
                         }}
                     >
-                        <span>Click</span> to start repairing
+                        <span>Click</span> or <span>Spacebar</span>
+                        <br />
+                        to start repairing
                     </Typography>
                 </Stack>
 
