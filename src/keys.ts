@@ -48,6 +48,7 @@ export enum GameServerKeys {
     SystemMessageList = "SYSTEM:MESSAGE:LIST",
     SystemMessageDismiss = "SYSTEM:MESSAGE:DISMISS",
     SubSystemMessageListUpdated = "SYSTEM:MESSAGE:LIST:UPDATED",
+    SystemMessageSend = "SYSTEM:MESSAGE:SEND",
 
     // Asset / queue
     SubQueueFeed = "BATTLE:QUEUE:STATUS:SUBSCRIBE",
@@ -66,9 +67,11 @@ export enum GameServerKeys {
     MechRename = "PLAYER:MECH:RENAME",
 
     // Player Abilities
-    PlayerAbilitiesList = "PLAYER:ABILITIES:LIST:SUBSCRIBE",
-    SaleAbilitiesList = "SALE:ABILITIES:LIST:SUBSCRIBE",
+    SubSaleAbilitiesPrice = "SALE:ABILITIES:PRICE:SUBSCRIBE",
+    SubPlayerAbilitiesList = "PLAYER:ABILITIES:LIST:SUBSCRIBE",
+    SubSaleAbilitiesList = "SALE:ABILITIES:LIST:SUBSCRIBE",
     SaleAbilityClaim = "SALE:ABILITY:CLAIM",
+    SaleAbilityPurchase = "SALE:ABILITY:PURCHASE",
     PlayerAbilityUse = "PLAYER:ABILITY:USE",
 
     // Minimap ability updates
@@ -78,6 +81,9 @@ export enum GameServerKeys {
     SubscribeFactionChat = "FACTION:CHAT:SUBSCRIBE",
     SubscribeGlobalChat = "GLOBAL:CHAT:SUBSCRIBE",
     SendChatMessage = "CHAT:MESSAGE",
+    ReadTaggedMessage = "READ:TAGGED:MESSAGE",
+    ReactToMessage = "REACT:MESSAGE",
+    ChatBanPlayer = "CHAT:BAN:PLAYER",
 
     BattleMechHistoryDetailed = "BATTLE:MECH:HISTORY:DETAILED",
     BattleMechHistoryList = "BATTLE:MECH:HISTORY:LIST",
@@ -107,7 +113,6 @@ export enum GameServerKeys {
     SubPlayerList = "FACTION:ACTIVE:PLAYER:SUBSCRIBE",
     SubGlobalPlayerList = "GLOBAL:ACTIVE:PLAYER:SUBSCRIBE",
     GetPlayerByGid = "GET:PLAYER:GID",
-    ReadTaggedMessage = "READ:TAGGED:MESSAGE",
 
     // Telegram
     UserTelegramShortcodeRegistered = "USER:TELEGRAM_SHORTCODE_REGISTERED",

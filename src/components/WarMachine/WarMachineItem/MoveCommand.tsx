@@ -25,6 +25,7 @@ export const MechMoveCommandAbility: PlayerAbility = {
         colour: colors.gold,
         location_select_type: LocationSelectType.MECH_COMMAND,
         created_at: new Date(),
+        inventory_limit: 10,
     },
 }
 
