@@ -7,19 +7,19 @@ import { useInterval, useToggle } from "../../../hooks"
 import { useGameServerCommandsFaction, useGameServerSubscription, useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
-import { GameAbility, WarMachineLiveState, WarMachineState } from "../../../types"
+import { AIType, GameAbility, WarMachineLiveState, WarMachineState } from "../../../types"
 import { MoveCommand } from "../../WarMachine/WarMachineItem/MoveCommand"
 
 export const HighlightedMechAbilities = () => {
     const { factionID } = useAuth()
-    const { bribeStage, warMachines } = useGame()
+    const { bribeStage, warMachines, spawnedAI } = useGame()
     const { highlightedMechParticipantID, isTargeting } = useMiniMap()
 
     const isVoting = useMemo(() => bribeStage && bribeStage?.phase != "HOLD", [bribeStage])
 
     const highlightedMech = useMemo(() => {
-        return warMachines?.find((m) => m.participantID === highlightedMechParticipantID)
-    }, [highlightedMechParticipantID, warMachines])
+        return [...(warMachines || []), ...(spawnedAI || [])].find((m) => m.participantID === highlightedMechParticipantID)
+    }, [highlightedMechParticipantID, spawnedAI, warMachines])
 
     if (isTargeting || !highlightedMechParticipantID || !highlightedMech || highlightedMech?.factionID !== factionID || !isVoting) {
         return null
@@ -33,6 +33,8 @@ const HighlightedMechAbilitiesInner = ({ warMachine }: { warMachine: WarMachineS
     const theme = useTheme()
     const { participantID, ownedByID } = warMachine
     const [isAlive, toggleIsAlive] = useToggle(warMachine.health > 0)
+
+    const isMiniMech = warMachine.aiType === AIType.MiniMech
 
     // Subscribe to war machine ability updates
     const gameAbilities = useGameServerSubscriptionFaction<GameAbility[] | undefined>({
@@ -81,9 +83,10 @@ const HighlightedMechAbilitiesInner = ({ warMachine }: { warMachine: WarMachineS
                     }}
                     sx={{ p: ".8rem .9rem", width: "15rem" }}
                 >
-                    {gameAbilities.map((ga) => {
-                        return <AbilityItem key={ga.id} hash={warMachine.hash} participantID={participantID} ability={ga} />
-                    })}
+                    {!isMiniMech &&
+                        gameAbilities.map((ga) => {
+                            return <AbilityItem key={ga.id} hash={warMachine.hash} participantID={participantID} ability={ga} />
+                        })}
 
                     {userID === ownedByID && <MoveCommand isAlive={isAlive} warMachine={warMachine} smallVersion />}
                 </Stack>
