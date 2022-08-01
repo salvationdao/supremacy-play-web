@@ -188,7 +188,7 @@ export const CoolTable = <T,>({
                             <TablePagination
                                 sx={{
                                     minHeight: 0,
-                                    "*": {
+                                    "p, select, option": {
                                         fontFamily: `${fonts.nostromoBold} !important`,
                                         fontSize: "1.3rem !important",
                                     },
