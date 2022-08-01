@@ -84,12 +84,13 @@ export interface ChatMessageType {
     locallySent?: boolean
 }
 
+export interface Likes {
+    likes: string[]
+    dislikes: string[]
+    net: number
+}
 export interface TextMessageMetadata {
-    likes: {
-        likes: number
-        dislikes: number
-        net: number
-    }
+    likes: Likes
     tagged_users_read: TaggedUsersRead
 }
 
