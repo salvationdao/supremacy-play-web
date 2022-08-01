@@ -78,6 +78,9 @@ export enum GameServerKeys {
     SubscribeFactionChat = "FACTION:CHAT:SUBSCRIBE",
     SubscribeGlobalChat = "GLOBAL:CHAT:SUBSCRIBE",
     SendChatMessage = "CHAT:MESSAGE",
+    ReadTaggedMessage = "READ:TAGGED:MESSAGE",
+    ReactToMessage = "REACT:MESSAGE",
+    ChatBanPlayer = "CHAT:BAN:PLAYER",
 
     BattleMechHistoryDetailed = "BATTLE:MECH:HISTORY:DETAILED",
     BattleMechHistoryList = "BATTLE:MECH:HISTORY:LIST",
@@ -107,7 +110,6 @@ export enum GameServerKeys {
     SubPlayerList = "FACTION:ACTIVE:PLAYER:SUBSCRIBE",
     SubGlobalPlayerList = "GLOBAL:ACTIVE:PLAYER:SUBSCRIBE",
     GetPlayerByGid = "GET:PLAYER:GID",
-    ReadTaggedMessage = "READ:TAGGED:MESSAGE",
 
     // Telegram
     UserTelegramShortcodeRegistered = "USER:TELEGRAM_SHORTCODE_REGISTERED",

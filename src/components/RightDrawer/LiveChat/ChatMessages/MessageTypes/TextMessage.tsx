@@ -1,31 +1,32 @@
+import { ReactJSXElement } from "@emotion/react/types/jsx-namespace"
 import { Box, Stack, Typography } from "@mui/material"
 import React, { useCallback, useEffect, useMemo, useRef } from "react"
 import { UserBanForm } from "../../../.."
 import { SvgInfoCircular, SvgSkull2 } from "../../../../../assets"
 import { PASSPORT_SERVER_HOST_IMAGES } from "../../../../../constants"
+import { useAuth, useChat } from "../../../../../containers"
 import { dateFormatter, getUserRankDeets, shadeColor, truncate } from "../../../../../helpers"
 import { useToggle } from "../../../../../hooks"
+import { useGameServerCommandsUser } from "../../../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../../../keys"
 import { colors, fonts } from "../../../../../theme/theme"
 import { ChatMessageType, Faction, TextMessageData, User } from "../../../../../types"
 import { TooltipHelper } from "../../../../Common/TooltipHelper"
 import { UserDetailsPopover } from "./UserDetailsPopover"
-import { useAuth, useChat } from "../../../../../containers"
-import { GameServerKeys } from "../../../../../keys"
-import { useGameServerCommandsUser } from "../../../../../hooks/useGameServer"
-import { ReactJSXElement } from "@emotion/react/types/jsx-namespace"
+import { Reactions } from "../../AdditionalOptions/Reactions"
 
-const getMultiplierColor = (multiplierInt: number): string => {
-    if (multiplierInt >= 2800) return "#3BFFDE"
-    if (multiplierInt >= 2000) return "#8BFF33"
-    if (multiplierInt >= 1400) return "#EEFF36"
-    if (multiplierInt >= 800) return "#FFC830"
-    if (multiplierInt >= 400) return "#FF6924"
-    if (multiplierInt >= 220) return "#B669FF"
-    if (multiplierInt >= 120) return "#FA5EFF"
-    if (multiplierInt >= 80) return "#FF547F"
-    if (multiplierInt >= 50) return "#FF4242"
-    return "#9791FF"
-}
+// const getMultiplierColor = (multiplierInt: number): string => {
+//     if (multiplierInt >= 2800) return "#3BFFDE"
+//     if (multiplierInt >= 2000) return "#8BFF33"
+//     if (multiplierInt >= 1400) return "#EEFF36"
+//     if (multiplierInt >= 800) return "#FFC830"
+//     if (multiplierInt >= 400) return "#FF6924"
+//     if (multiplierInt >= 220) return "#B669FF"
+//     if (multiplierInt >= 120) return "#FA5EFF"
+//     if (multiplierInt >= 80) return "#FF547F"
+//     if (multiplierInt >= 50) return "#FF4242"
+//     return "#9791FF"
+// }
 
 export const TextMessage = ({
     data,
@@ -33,12 +34,10 @@ export const TextMessage = ({
     fontSize,
     isSent,
     isFailed,
-    filterZeros,
     filterSystemMessages,
     getFaction,
     user,
     isEmoji,
-    locallySent,
     previousMessage,
     containerRef,
     isScrolling,
@@ -49,18 +48,16 @@ export const TextMessage = ({
     fontSize: number
     isSent?: boolean
     isFailed?: boolean
-    filterZeros?: boolean
     filterSystemMessages?: boolean
     getFaction: (factionID: string) => Faction
     user: User
     isEmoji: boolean
-    locallySent?: boolean
     previousMessage: ChatMessageType | undefined
     containerRef: React.RefObject<HTMLDivElement>
     isScrolling: boolean
     chatMessages: ChatMessageType[]
 }) => {
-    const { from_user, user_rank, message_color, avatar_id, message, total_multiplier, is_citizen, from_user_stat, metadata } = data
+    const { from_user, user_rank, message_color, avatar_id, message, from_user_stat, metadata } = data
     const { id, username, gid, faction_id } = from_user
     const { isHidden, isActive } = useAuth()
     const { userGidRecord, addToUserGidRecord, readMessage, sendBrowserNotification, tabValue } = useChat()
@@ -72,8 +69,8 @@ export const TextMessage = ({
     const [banModalOpen, toggleBanModalOpen] = useToggle()
     const [isPreviousMessager, setIsPreviousMessager] = useToggle()
     const [shouldNotify, setShouldNotify] = useToggle(metadata && user.gid in metadata.tagged_users_read && !metadata.tagged_users_read[user.gid])
+    const [isHovered, setIsHovered] = useToggle()
 
-    const multiplierColor = useMemo(() => getMultiplierColor(total_multiplier || 0), [total_multiplier])
     const abilityKillColor = useMemo(() => {
         if (!from_user_stat || from_user_stat.ability_kill_count == 0 || !message_color) return colors.grey
         if (from_user_stat.ability_kill_count < 0) return colors.red
@@ -231,7 +228,7 @@ export const TextMessage = ({
     }, [previousMessage, setIsPreviousMessager, data])
 
     // For the hide zero multi setting
-    if ((!locallySent && filterZeros && (!total_multiplier || total_multiplier <= 0)) || filterSystemMessages) return null
+    if (filterSystemMessages) return null
 
     return (
         <>
@@ -324,38 +321,6 @@ export const TextMessage = ({
                                         </Typography>
                                     </Box>
                                 )}
-
-                                <Typography
-                                    sx={{
-                                        display: "inline-block",
-                                        ml: ".4rem",
-                                        color: multiplierColor,
-                                        textAlign: "center",
-                                        fontFamily: fonts.nostromoBold,
-                                        fontSize: smallFontSize,
-                                        opacity: (total_multiplier || 0) > 0 ? 1 : 0.7,
-                                    }}
-                                >
-                                    {total_multiplier || 0}x
-                                </Typography>
-
-                                {is_citizen && (
-                                    <TooltipHelper placement="top" text={"CITIZEN"}>
-                                        <Typography
-                                            sx={{
-                                                display: "inline-block",
-                                                cursor: "default",
-                                                ml: ".4rem",
-                                                pb: ".3rem",
-                                                textAlign: "center",
-                                                fontFamily: fonts.nostromoBold,
-                                                fontSize: smallFontSize,
-                                            }}
-                                        >
-                                            🦾
-                                        </Typography>
-                                    </TooltipHelper>
-                                )}
                             </Box>
                         </Stack>
                         <Typography
@@ -373,8 +338,26 @@ export const TextMessage = ({
                     </Stack>
                 )}
 
-                <Box sx={{ backgroundColor: shouldNotify ? "rgba(0,116,217, .4)" : "unset", borderRadius: ".3rem", transition: "background-color 2s" }}>
-                    {chatMessage}
+                <Box>
+                    <Stack
+                        direction={"column"}
+                        sx={{
+                            ml: "2rem",
+                            backgroundColor: shouldNotify ? "rgba(0,116,217, .4)" : isHovered ? "#121212" : "unset",
+                            borderRadius: ".3rem",
+                            transition: shouldNotify ? "background-color 2s" : "unset",
+                            position: "relative",
+                        }}
+                        onMouseEnter={() => setIsHovered(true)}
+                        onMouseLeave={() => setIsHovered(false)}
+                    >
+                        {/*only display if msg has likes*/}
+
+                        <Box sx={{ zIndex: 1 }}>{chatMessage}</Box>
+
+                        {!!metadata?.likes.net && <Reactions fontSize={fontSize} message={data} factionColor={factionColor} />}
+                        {isHovered && <Reactions fontSize={fontSize} hoverOnly={true} message={data} factionColor={factionColor} />}
+                    </Stack>
                 </Box>
             </Box>
 
@@ -382,13 +365,13 @@ export const TextMessage = ({
                 <UserDetailsPopover
                     factionColor={factionColor}
                     factionSecondaryColor={factionSecondaryColor}
-                    fromUserFactionID={faction_id}
                     userStat={from_user_stat}
                     popoverRef={popoverRef}
                     open={isPopoverOpen}
                     onClose={() => toggleIsPopoverOpen(false)}
                     toggleBanModalOpen={toggleBanModalOpen}
                     user={user}
+                    fromUser={from_user}
                 />
             )}
 

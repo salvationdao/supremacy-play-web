@@ -139,6 +139,8 @@ import HorizontalRuleSharpIcon from "@mui/icons-material/HorizontalRuleSharp"
 import MapSharpIcon from "@mui/icons-material/MapSharp"
 import WarningIcon from "@mui/icons-material/Warning"
 import WorkspacesSharpIcon from "@mui/icons-material/WorkspacesSharp"
+import ThumbDownOffAltIcon from "@mui/icons-material/ThumbDownOffAlt"
+import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt"
 import { Box, BoxProps } from "@mui/system"
 import { colors } from "../theme/theme"
 import BostonCyberneticsLogo from "./images/BostonCyberneticsLogo.png"
@@ -1122,5 +1124,17 @@ export const SvgHamburger: React.VoidFunctionComponent<SvgWrapperProps> = (props
 export const SvgCubes: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <Cubes />
+    </SvgWrapper>
+)
+
+export const SvgThumbUpOffAltIcon: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <ThumbUpOffAltIcon />
+    </SvgWrapper>
+)
+
+export const SvgThumbDownOffAltIcon: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <ThumbDownOffAltIcon />
     </SvgWrapper>
 )
