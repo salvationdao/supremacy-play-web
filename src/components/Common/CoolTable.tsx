@@ -12,9 +12,22 @@ interface CoolTableProps<T> {
     renderItem: (item: T, index: number) => ReactNode[]
     isLoading: boolean
     loadError?: string
+    titleRowHeight?: string
+    cellPadding?: string
 }
 
-export const CoolTable = <T,>({ title, tableHeadings, alignments, widths, items, renderItem, isLoading, loadError }: CoolTableProps<T>) => {
+export const CoolTable = <T,>({
+    title,
+    tableHeadings,
+    alignments,
+    widths,
+    items,
+    renderItem,
+    isLoading,
+    loadError,
+    titleRowHeight = "5.5rem",
+    cellPadding = ".8rem 1rem",
+}: CoolTableProps<T>) => {
     const theme = useTheme()
 
     const primaryColor = theme.factionTheme.primary
@@ -62,7 +75,7 @@ export const CoolTable = <T,>({ title, tableHeadings, alignments, widths, items,
                 <TableBody>
                     {items.map((item, i) => {
                         return (
-                            <TableRow key={i} sx={{ "&:nth-of-type(odd)": { backgroundColor: "#FFFFFF10" }, ".MuiTableCell-root": { p: ".8rem 1rem" } }}>
+                            <TableRow key={i} sx={{ "&:nth-of-type(odd)": { backgroundColor: "#FFFFFF10" }, ".MuiTableCell-root": { p: cellPadding } }}>
                                 {renderItem(item, i).map((node, j) => {
                                     return (
                                         <TableCell
@@ -103,7 +116,7 @@ export const CoolTable = <T,>({ title, tableHeadings, alignments, widths, items,
                 </TableRow>
             </TableBody>
         )
-    }, [loadError, items, isLoading, tableHeadings.length, primaryColor, renderItem, alignments, widths])
+    }, [loadError, items, isLoading, tableHeadings.length, primaryColor, cellPadding, renderItem, alignments, widths])
 
     return (
         <TableContainer>
@@ -111,7 +124,7 @@ export const CoolTable = <T,>({ title, tableHeadings, alignments, widths, items,
                 <TableHead sx={{ boxShadow: 5 }}>
                     {title && (
                         <TableRow sx={{ backgroundColor: primaryColor }}>
-                            <TableCell colSpan={tableHeadings.length} align="center">
+                            <TableCell colSpan={tableHeadings.length} align="center" sx={{ height: titleRowHeight }}>
                                 <Typography variant="h6" sx={{ color: secondaryColor, fontFamily: fonts.nostromoHeavy }}>
                                     {title}
                                 </Typography>
@@ -125,7 +138,12 @@ export const CoolTable = <T,>({ title, tableHeadings, alignments, widths, items,
                                 <TableCell
                                     key={i}
                                     align={alignments ? alignments[i] : "left"}
-                                    sx={{ borderRight: "#FFFFFF20 1px solid", height: "5.5rem", py: "0 !important", width: widths ? widths[i] : undefined }}
+                                    sx={{
+                                        borderRight: "#FFFFFF20 1px solid",
+                                        height: titleRowHeight,
+                                        py: "0 !important",
+                                        width: widths ? widths[i] : undefined,
+                                    }}
                                 >
                                     <Typography variant="body2" sx={{ py: ".3rem", fontFamily: fonts.nostromoBlack }}>
                                         {heading}
