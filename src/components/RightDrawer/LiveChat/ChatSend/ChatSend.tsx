@@ -591,7 +591,7 @@ const ChatSendInner = ({
                             InputProps={{
                                 endAdornment: (
                                     <InputAdornment position="end">
-                                        <ChatSettings primaryColor={primaryColor} faction_id={faction_id} />
+                                        <ChatSettings primaryColor={primaryColor} />
 
                                         {!isPoppedout && !isMobile && (
                                             <IconButton

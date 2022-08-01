@@ -31,8 +31,6 @@ export const ChatContainer = createContainer(() => {
 
     // Chat settings
     const [splitOption, setSplitOption] = useState<SplitOptionType>((localStorage.getItem("chatSplitOption") as SplitOptionType) || "tabbed")
-    const [filterZerosGlobal, toggleFilterZerosGlobal] = useToggle(localStorage.getItem("chatFilterZerosGlobal") == "true")
-    const [filterZerosFaction, toggleFilterZerosFaction] = useToggle(localStorage.getItem("chatFilterZerosFaction") == "true")
     const [filterSystemMessages, toggleFilterSystemMessages] = useToggle(localStorage.getItem("chatFilterSystemMessages") == "true")
     const [fontSize, setFontSize] = useState<FontSizeType>(parseString(localStorage.getItem("chatFontSize2"), 1.2) as FontSizeType)
 
@@ -66,11 +64,9 @@ export const ChatContainer = createContainer(() => {
     // Save chat settings to local storage
     useEffect(() => {
         localStorage.setItem("chatSplitOption", splitOption || "tabbed")
-        localStorage.setItem("chatFilterZerosGlobal", filterZerosGlobal ? "true" : "false")
-        localStorage.setItem("chatFilterZerosFaction", filterZerosFaction ? "true" : "false")
         localStorage.setItem("chatFilterSystemMessages", filterSystemMessages ? "true" : "false")
         localStorage.setItem("chatFontSize2", fontSize ? fontSize.toString() : "1")
-    }, [splitOption, filterZerosGlobal, filterZerosFaction, filterSystemMessages, fontSize])
+    }, [splitOption, filterSystemMessages, fontSize])
 
     const onSentMessage = useCallback(
         (sentAt: Date) => {
@@ -128,8 +124,6 @@ export const ChatContainer = createContainer(() => {
         (message: ChatMessageType, isFaction: boolean) => {
             const data = message.data as TextMessageData
             const newStats = {
-                total_multiplier: data.total_multiplier,
-                is_citizen: data.is_citizen,
                 from_user_stat: data.from_user_stat,
             }
 
@@ -340,10 +334,6 @@ export const ChatContainer = createContainer(() => {
         newMessageHandler,
         splitOption,
         setSplitOption,
-        filterZerosGlobal,
-        toggleFilterZerosGlobal,
-        filterZerosFaction,
-        toggleFilterZerosFaction,
         filterSystemMessages,
         toggleFilterSystemMessages,
         globalChatMessages,
