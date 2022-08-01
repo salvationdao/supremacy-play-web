@@ -75,6 +75,8 @@ export const ProfilePopover = ({ open, popoverRef, onClose, user }: { open: bool
                             text="XSYN Profile"
                         />
 
+                        <NavButton to="/billing-history" startIcon={<SvgAssets sx={{ pb: ".5rem" }} size="1.6rem" />} text="Billing History" />
+
                         <NavButton href="https://supremacyhelp.zendesk.com/" startIcon={<SvgSupport sx={{ pb: ".5rem" }} size="1.6rem" />} text="SUPPORT" />
 
                         <NavButton
