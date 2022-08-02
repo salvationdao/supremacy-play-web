@@ -30,6 +30,7 @@ const hoverStyles = {
     right: "1rem",
     backgroundColor: "#121212",
     borderRadius: ".3rem",
+    zIndex: 1,
 }
 
 const styles = {
@@ -41,6 +42,7 @@ const styles = {
         opacity: "0.8",
     },
     m: "-.3rem",
+    zIndex: 1,
 }
 export const Reactions = ({ fontSize, factionColor, message, hoverOnly = false }: ReactionsProps) => {
     const { send } = useGameServerCommandsUser("/user_commander")
