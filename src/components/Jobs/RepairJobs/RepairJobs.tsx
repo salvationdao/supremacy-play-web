@@ -1,6 +1,7 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
 import { useEffect, useMemo, useRef, useState } from "react"
+import FlipMove from "react-flip-move"
 import { ClipThing } from "../.."
 import { EmptyWarMachinesPNG, WarMachineIconPNG } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
@@ -132,9 +133,11 @@ export const RepairJobs = () => {
                             overflow: "visible",
                         }}
                     >
-                        {repairJobs.map((repairJob) => (
-                            <RepairJobItem key={`repair-job-${repairJob.id}`} repairJob={repairJob} isGridView={isGridView} />
-                        ))}
+                        <FlipMove>
+                            {repairJobs.map((repairJob) => (
+                                <RepairJobItem key={`repair-job-${repairJob.id}`} repairJob={repairJob} isGridView={isGridView} />
+                            ))}
+                        </FlipMove>
                     </Box>
                 </Box>
             )
