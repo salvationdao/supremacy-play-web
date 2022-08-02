@@ -32,7 +32,7 @@ export const TooltipHelper = ({
 
     if (!text) return <>{children}</>
 
-    const primaryColor = "#333333"
+    const primaryColor = "#555555"
     const backgroundColor = theme.factionTheme.background
 
     return (
