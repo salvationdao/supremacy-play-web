@@ -33,7 +33,7 @@ interface CoolTableProps<T> {
     titleRowHeight?: string
     cellPadding?: string
     paginationProps?: {
-        page: number
+        page: number // Starts from 1
         pageSize: number
         totalItems: number
         changePage: (newPage: number) => void
@@ -205,7 +205,7 @@ export const CoolTable = <T,>({
                                 colSpan={tableHeadings.length}
                                 count={paginationProps.totalItems}
                                 rowsPerPage={paginationProps.pageSize}
-                                page={paginationProps.page}
+                                page={paginationProps.page - 1}
                                 SelectProps={{ native: true }}
                                 onPageChange={(e, newPage: number) => paginationProps.changePage(newPage)}
                                 onRowsPerPageChange={(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
