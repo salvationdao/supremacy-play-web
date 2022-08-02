@@ -7,6 +7,7 @@ import { FancyButton } from "../../../../Common/FancyButton"
 import MessageRenderer from "../../MessageRenderer"
 import { SystemMessageDisplayable } from "../../Messages"
 import { MechBattleCompleteDetails } from "./MechBattleCompleteDetails"
+import { MechOwnerBattleReward, MechOwnerBattleRewardData } from "./MechOwnerBattleReward"
 
 export interface MessageDisplayProps {
     message: SystemMessageDisplayable
@@ -21,6 +22,9 @@ export const MessageDisplay = ({ message, onClose }: MessageDisplayProps) => {
                 const data = message.data as SystemMessageDataMechBattleComplete
 
                 return <MechBattleCompleteDetails message={message.message} data={data} />
+
+            case SystemMessageDataType.MechOwnerBattleReward:
+                return <MechOwnerBattleReward message={message.message} data={message.data as MechOwnerBattleRewardData} />
         }
 
         return <MessageRenderer markdown={message.message} />

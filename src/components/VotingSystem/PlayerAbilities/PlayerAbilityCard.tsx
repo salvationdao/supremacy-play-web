@@ -7,7 +7,7 @@ import { LocationSelectType, PlayerAbility } from "../../../types"
 import { FancyButton } from "../../Common/FancyButton"
 import { TooltipHelper } from "../../Common/TooltipHelper"
 
-export const PlayerAbilityCard = ({ playerAbility }: { playerAbility: PlayerAbility }) => {
+export const PlayerAbilityCard = ({ playerAbility, viewOnly }: { playerAbility: PlayerAbility; viewOnly?: boolean }) => {
     const { setPlayerAbility } = useMiniMap()
 
     const abilityTypeIcon = useMemo(() => {
@@ -48,7 +48,7 @@ export const PlayerAbilityCard = ({ playerAbility }: { playerAbility: PlayerAbil
                         sx: { position: "relative", px: ".4rem", py: ".3rem" },
                     }}
                     sx={{ color: playerAbility.ability.colour, p: 0, minWidth: 0, height: "100%" }}
-                    onClick={onActivate}
+                    onClick={!viewOnly ? onActivate : undefined}
                 >
                     <Stack
                         spacing=".3rem"
