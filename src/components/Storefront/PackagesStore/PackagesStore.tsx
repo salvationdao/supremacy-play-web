@@ -11,7 +11,7 @@ import { usePagination, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { FiatProduct } from "../../../types/fiat"
+import { FiatProduct, FiatProductType } from "../../../types/fiat"
 import { ClipThing } from "../../Common/ClipThing"
 import { PageHeader } from "../../Common/PageHeader"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
@@ -43,6 +43,7 @@ export const PackagesStore = () => {
             const resp = await send<FiatProduct[]>(GameServerKeys.FiatProductList, {
                 page,
                 page_size: pageSize,
+                product_type: FiatProductType.StarterPackage,
             })
 
             updateQuery({

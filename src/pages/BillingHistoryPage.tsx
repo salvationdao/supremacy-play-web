@@ -1,4 +1,5 @@
-import { Box, Pagination, Stack, Typography } from "@mui/material"
+import moment from "moment"
+import { Box, Pagination, Stack, Typography, Link } from "@mui/material"
 import { useCallback, useEffect, useState } from "react"
 import { HangarBg, SafePNG } from "../assets"
 import { ClipThing } from "../components"
@@ -88,7 +89,7 @@ export const BillingHistoryPage = () => {
 
                             <Box sx={{ flex: 1 }}>
                                 <CoolTable
-                                    tableHeadings={["RECEIPT NUMBER", "DATE", "PAID", "REFUNDED"]}
+                                    tableHeadings={["RECEIPT NUMBER", "DATE", "STATUS", "VIEW"]}
                                     alignments={["left", "center", "center", "center"]}
                                     widths={["25%", "25%", "25%", "25%"]}
                                     titleRowHeight="3.5rem"
@@ -104,7 +105,21 @@ export const BillingHistoryPage = () => {
                                         changePageSize,
                                     }}
                                     renderItem={(item, index) => {
-                                        return [<Typography key={1}>{index + 1}</Typography>]
+                                        let status = "PAID"
+                                        if (item.refunded) {
+                                            status = "REFUNDED"
+                                        }
+
+                                        return [
+                                            <Typography key={1}>{item.receipt_number}</Typography>,
+                                            <Typography key={2}>{moment(item.created_at).format("DD/MM/YYYY h:mm A")}</Typography>,
+                                            <Typography key={3}>{status}</Typography>,
+                                            <Typography key={4}>
+                                                <Link href={item.receipt_url} target={"_blank"}>
+                                                    View Details
+                                                </Link>
+                                            </Typography>,
+                                        ]
                                     }}
                                 />
                             </Box>
