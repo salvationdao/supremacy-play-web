@@ -1,4 +1,4 @@
-import { Faction, MultiplierUpdateResp, WarMachineState } from "."
+import { Faction, WarMachineState } from "."
 
 export interface FactionsAll {
     [faction_id: string]: Faction
