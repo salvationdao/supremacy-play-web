@@ -110,6 +110,8 @@ export class Game {
             const { color } = lastBlock
             const newLength = lastBlock.dimension[dimensionAlongAxis as keyof typeof lastBlock.dimension] - Math.abs(distance)
 
+            console.log(newLength)
+
             // Game over
             if (newLength <= 0) {
                 this.stage.remove(lastBlock.mesh)
