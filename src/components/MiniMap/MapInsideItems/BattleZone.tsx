@@ -1,6 +1,6 @@
-import { useGame } from "../../../containers"
-import React, { useMemo } from "react"
 import { Box } from "@mui/material"
+import { useMemo } from "react"
+import { useGame } from "../../../containers"
 import { colors } from "../../../theme/theme"
 import { Map } from "../../../types"
 

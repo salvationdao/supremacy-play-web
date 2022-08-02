@@ -1,21 +1,25 @@
 import { Box } from "@mui/material"
 import React, { useCallback, useEffect, useMemo, useRef } from "react"
 import { useGame, useMiniMap } from "../../../containers"
+import { Map } from "../../../types"
 
 interface RangeIndicatorProps {
     parentRef: React.RefObject<HTMLDivElement>
     mapScale: number
+    map: Map
 }
 
-export const RangeIndicator = ({ parentRef, mapScale }: RangeIndicatorProps) => {
+export const RangeIndicator = ({ parentRef, map, mapScale: trueMapScale }: RangeIndicatorProps) => {
     const { abilityDetails } = useGame()
-    const { gridHeight, playerAbility, winner } = useMiniMap()
+    const { playerAbility, winner } = useMiniMap()
 
     const indicatorRef = useRef<HTMLDivElement>(null)
 
+    const mapScale = useMemo(() => map.width / (map.cells_x * 2000), [map])
     const ability = useMemo(() => winner?.game_ability || playerAbility?.ability, [winner, playerAbility])
     const abilityDetail = typeof ability?.game_client_ability_id !== "undefined" ? abilityDetails[ability.game_client_ability_id] : undefined
-    const diameter = useMemo(() => (abilityDetail ? ((mapScale * abilityDetail.radius) / gridHeight) * 2.5 : undefined), [abilityDetail, gridHeight, mapScale])
+
+    const diameter = useMemo(() => (abilityDetail ? abilityDetail.radius * mapScale * trueMapScale * 2 : undefined), [abilityDetail, mapScale, trueMapScale])
 
     const handleMouseMove = useCallback(
         (e: MouseEvent) => {
