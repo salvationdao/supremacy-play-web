@@ -54,6 +54,13 @@ export const BattleEndScreen = () => {
                     background: `linear-gradient(65deg, ${backgroundColor} 3%, ${backgroundColor}FF 50%, ${backgroundColor}EE)`,
                 }}
             >
+                <Box sx={{ mb: "1.6rem" }}>
+                    <Typography variant="h4">BATTLE ID #{battle_identifier.toString().padStart(4, "0")}</Typography>
+                    <Typography variant="h6">
+                        {moment(started_at).format("h:mm A")} to {moment(ended_at).format("h:mm A")}
+                    </Typography>
+                </Box>
+
                 <Stack
                     sx={{
                         height: `calc(100% - ${BOTTOM_BUTTONS_HEIGHT}rem)`,
@@ -78,13 +85,6 @@ export const BattleEndScreen = () => {
                 >
                     <Box sx={{ height: 0 }}>
                         <Stack spacing="3.2rem">
-                            <Box>
-                                <Typography variant="h5">BATTLE ID #{battle_identifier.toString().padStart(4, "0")}</Typography>
-                                <Typography variant="h6">
-                                    {moment(started_at).format("h:mm A")} to {moment(ended_at).format("h:mm A")}
-                                </Typography>
-                            </Box>
-
                             <SectionWinner battleEndDetail={battleEndDetail} />
                             <SectionFactions battleEndDetail={battleEndDetail} />
                         </Stack>
