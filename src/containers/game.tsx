@@ -65,7 +65,7 @@ export const GameContainer = createContainer(() => {
         },
     )
 
-    // Subscirbe on current voting state
+    // Subscribe on current voting state
     useGameServerSubscription<BribeStageResponse | undefined>(
         {
             URI: "/public/bribe_stage",

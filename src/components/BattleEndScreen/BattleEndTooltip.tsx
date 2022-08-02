@@ -1,7 +1,7 @@
 import { Box, Tooltip, Typography } from "@mui/material"
 import { SvgInfoIcon } from "../../assets"
 
-export const BattleEndTooltip = ({ text, color }: { text: string; color: string }) => {
+export const BattleEndTooltip = ({ text, color }: { text: string; color?: string }) => {
     return (
         <Tooltip
             title={

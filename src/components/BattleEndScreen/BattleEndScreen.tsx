@@ -1,7 +1,8 @@
-import { Slide, Stack } from "@mui/material"
+import { Slide, Stack, Typography } from "@mui/material"
 import { Box } from "@mui/system"
+import moment from "moment"
 import { useEffect } from "react"
-import { SectionBottom, SectionMostFrequentAbilityExecutor, SectionWinner } from ".."
+import { SectionBottom, SectionFactions, SectionWinner } from ".."
 import { useGame, useMobile, useOverlayToggles } from "../../containers"
 import { useTheme } from "../../containers/theme"
 import { siteZIndex } from "../../theme/theme"
@@ -31,8 +32,10 @@ export const BattleEndScreen = () => {
 
     if (!battleEndDetail) return null
 
+    const { battle_id, battle_identifier, started_at, ended_at } = battleEndDetail
+
     return (
-        <Slide key={battleEndDetail.battle_id} in={isEndBattleDetailOpen || isMobile} direction="right">
+        <Slide key={battle_id} in={isEndBattleDetailOpen || isMobile} direction="right">
             <Box
                 sx={{
                     position: isMobile ? "unset" : "absolute",
@@ -44,7 +47,7 @@ export const BattleEndScreen = () => {
                     pt: "2.4rem",
                     pb: "1.2rem",
                     height: "100%",
-                    minWidth: "43rem",
+                    minWidth: "50rem",
                     boxShadow: 20,
                     zIndex: siteZIndex.Popover,
                     maxWidth: isMobile ? "unset" : "48rem",
@@ -75,13 +78,20 @@ export const BattleEndScreen = () => {
                 >
                     <Box sx={{ height: 0 }}>
                         <Stack spacing="3.2rem">
+                            <Box>
+                                <Typography variant="h5">BATTLE ID #{battle_identifier.toString().padStart(4, "0")}</Typography>
+                                <Typography variant="h6">
+                                    {moment(started_at).format("h:mm A")} to {moment(ended_at).format("h:mm A")}
+                                </Typography>
+                            </Box>
+
                             <SectionWinner battleEndDetail={battleEndDetail} />
-                            <SectionMostFrequentAbilityExecutor battleEndDetail={battleEndDetail} />
+                            <SectionFactions battleEndDetail={battleEndDetail} />
                         </Stack>
                     </Box>
                 </Stack>
 
-                <SectionBottom battleEndDetail={battleEndDetail} />
+                <SectionBottom />
             </Box>
         </Slide>
     )

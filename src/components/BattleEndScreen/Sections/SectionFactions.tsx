@@ -4,7 +4,7 @@ import { useSupremacy } from "../../../containers"
 import { colors, fonts } from "../../../theme/theme"
 import { BattleEndDetail } from "../../../types"
 
-export const SectionMostFrequentAbilityExecutor = ({ battleEndDetail }: { battleEndDetail: BattleEndDetail }) => {
+export const SectionFactions = ({ battleEndDetail }: { battleEndDetail: BattleEndDetail }) => {
     const { getFaction } = useSupremacy()
     const { winning_faction_id_order } = battleEndDetail
 
@@ -18,21 +18,27 @@ export const SectionMostFrequentAbilityExecutor = ({ battleEndDetail }: { battle
                         position: "relative",
                         fontFamily: fonts.nostromoBlack,
                         fontWeight: "fontWeightBold",
-                        color: colors.neonBlue,
                     }}
                 >
-                    EXECUTORS
-                    <BattleEndTooltip text="The players that had executed the most abilities during the battle." color={colors.neonBlue} />
+                    FACTION RANKING
+                    <BattleEndTooltip text="Best to worst performing factions." />
                 </Typography>
             </Box>
 
             {winning_faction_id_order && winning_faction_id_order.length > 0 ? (
                 <Stack spacing="1.2rem" sx={{ pl: ".8rem" }}>
                     {winning_faction_id_order.map((fid, index) => {
+                        const rank = index + 1
                         const faction = getFaction(fid)
+
+                        let color = "#FFFFFF"
+                        if (rank === 1) color = colors.yellow
+                        if (rank === 2) color = colors.silver
+                        if (rank === 3) color = colors.bronze
+
                         return (
                             <Stack key={index} direction="row" spacing="1.04rem" alignItems="center">
-                                <Typography variant="h6" sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>
+                                <Typography variant="h6" sx={{ lineHeight: 1, fontWeight: "fontWeightBold", color }}>
                                     {index + 1}.
                                 </Typography>
                                 <StyledImageText

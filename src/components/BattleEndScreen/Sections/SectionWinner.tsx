@@ -1,13 +1,13 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { BattleEndTooltip, StyledImageText } from "../.."
-import { GenericWarMachinePNG } from "../../../assets"
+import { GenericWarMachinePNG, SvgCrown } from "../../../assets"
 import { useSupremacy } from "../../../containers"
 import { colors, fonts } from "../../../theme/theme"
 import { BattleEndDetail } from "../../../types"
 
 export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndDetail }) => {
     const { getFaction } = useSupremacy()
-    const { battle_identifier, winning_faction_id_order, winning_war_machines } = battleEndDetail
+    const { winning_faction_id_order, winning_war_machines } = battleEndDetail
 
     const faction = getFaction(winning_faction_id_order[0])
 
@@ -21,26 +21,29 @@ export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndD
                         position: "relative",
                         fontFamily: fonts.nostromoBlack,
                         fontWeight: "fontWeightBold",
-                        color: colors.neonBlue,
                     }}
                 >
                     The Winner
-                    <BattleEndTooltip text={`The faction that had won the battle #${battle_identifier}.`} color={colors.neonBlue} />
+                    <BattleEndTooltip text="The faction that won the battle" />
                 </Typography>
             </Box>
 
             <Stack spacing="1.5rem" sx={{ px: ".96rem" }}>
-                <StyledImageText
-                    color={faction.primary_color}
-                    text={faction.label}
-                    imageUrl={faction.logo_url}
-                    variant="h6"
-                    imageSize={3.6}
-                    imageBorderThickness="0px"
-                    imageBackgroundSize="contain"
-                    truncateLine
-                    imageMb={-1.4}
-                />
+                <Box sx={{ position: "relative" }}>
+                    <SvgCrown fill={colors.yellow} size="2rem" sx={{ position: "absolute", bottom: "calc(100% - .7rem)", left: ".8rem" }} />
+
+                    <StyledImageText
+                        color={faction.primary_color}
+                        text={faction.label}
+                        imageUrl={faction.logo_url}
+                        variant="h6"
+                        imageSize={3.6}
+                        imageBorderThickness="0px"
+                        imageBackgroundSize="contain"
+                        truncateLine
+                        imageMb={-1.4}
+                    />
+                </Box>
 
                 {winning_war_machines && winning_war_machines.length > 0 ? (
                     <Stack spacing=".8rem" sx={{ pl: ".5rem" }}>
