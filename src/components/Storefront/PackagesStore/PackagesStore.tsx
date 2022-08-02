@@ -11,7 +11,7 @@ import { usePagination, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { StorefrontPackage } from "../../../types"
+import { FiatProduct } from "../../../types/fiat"
 import { ClipThing } from "../../Common/ClipThing"
 import { PageHeader } from "../../Common/PageHeader"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
@@ -25,7 +25,7 @@ export const PackagesStore = () => {
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const theme = useTheme()
 
-    const [packages, setPackages] = useState<StorefrontPackage[]>()
+    const [packages, setPackages] = useState<FiatProduct[]>()
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
     const { page, changePage, changePageSize, totalPages, pageSize } = usePagination({
@@ -40,7 +40,7 @@ export const PackagesStore = () => {
         try {
             setIsLoading(true)
 
-            const resp = await send<StorefrontPackage[]>(GameServerKeys.GetPackages, {
+            const resp = await send<FiatProduct[]>(GameServerKeys.FiatProductList, {
                 page,
                 page_size: pageSize,
             })

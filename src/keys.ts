@@ -130,10 +130,10 @@ export enum GameServerKeys {
     GetMysteryCrates = "STORE:MYSTERY:CRATES",
     SubMysteryCrate = "STORE:MYSTERY:CRATE:SUBSCRIBE",
     PurchaseMysteryCrate = "STORE:MYSTERY:CRATE:PURCHASE",
-    GetPackages = "STORE:PACKAGES",
 
     // FIAT
-    BillingHistoryList = "FIAT:BILLING_HISTORY:LIST",
+    FiatProductList = "FIAT:PRODUCT:LIST",
+    FiatBillingHistoryList = "FIAT:BILLING_HISTORY:LIST",
 
     // Marketplace
     MarketplaceSalesList = "MARKETPLACE:SALES:LIST",

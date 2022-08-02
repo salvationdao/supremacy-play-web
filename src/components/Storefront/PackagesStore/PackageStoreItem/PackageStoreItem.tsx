@@ -5,7 +5,7 @@ import { SafePNG } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
 import { generatePriceText } from "../../../../helpers"
 import { fonts } from "../../../../theme/theme"
-import { StorefrontPackage } from "../../../../types"
+import { FiatProduct } from "../../../../types/fiat"
 import { ClipThing } from "../../../Common/ClipThing"
 import { FancyButton } from "../../../Common/FancyButton"
 import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
@@ -13,7 +13,7 @@ import { CreateCheckoutSession } from "../../../../fetching"
 
 interface PackageStoreItemProps {
     enlargedView?: boolean
-    item: StorefrontPackage
+    item: FiatProduct
 }
 
 export const PackageStoreItem = ({ enlargedView, item }: PackageStoreItemProps) => {
@@ -30,7 +30,7 @@ export const PackageStoreItem = ({ enlargedView, item }: PackageStoreItemProps) 
         const host = window.location.protocol + "//" + window.location.host
 
         const { payload: sessionID, error } = await mutate({
-            package_id: item.id,
+            product_id: item.id,
             success_url: host + "/storefront/packages",
             cancel_url: host + "/storefront/packages",
         })

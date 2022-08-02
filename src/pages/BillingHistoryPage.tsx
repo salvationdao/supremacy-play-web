@@ -10,7 +10,7 @@ import { usePagination, useUrlQuery } from "../hooks"
 import { useGameServerCommandsUser } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
 import { fonts, siteZIndex } from "../theme/theme"
-import { BillingHistory } from "../types/fiat"
+import { FiatBillingHistory } from "../types/fiat"
 
 export const BillingHistoryPage = () => {
     const theme = useTheme()
@@ -25,12 +25,12 @@ export const BillingHistoryPage = () => {
     // Items
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
-    const [billingHistoryItems, setBillingHistoryItems] = useState<BillingHistory[]>()
+    const [billingHistoryItems, setBillingHistoryItems] = useState<FiatBillingHistory[]>()
 
     const getItems = useCallback(async () => {
         try {
             setIsLoading(true)
-            const resp = await send<{ total: number; records: BillingHistory[] }>(GameServerKeys.BillingHistoryList, {
+            const resp = await send<{ total: number; records: FiatBillingHistory[] }>(GameServerKeys.FiatBillingHistoryList, {
                 page: page - 1,
                 page_size: pageSize,
             })
