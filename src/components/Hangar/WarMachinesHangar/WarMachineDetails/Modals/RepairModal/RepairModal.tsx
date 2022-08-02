@@ -29,7 +29,7 @@ export const RepairModal = ({
         key: GameServerKeys.SubMechRepairStatus,
     })
 
-    const repairJob = useGameServerSubscription<RepairOffer>({
+    const repairOffer = useGameServerSubscription<RepairOffer>({
         URI: `/public/mech/${selectedMechDetails.id}/active_repair_offer`,
         key: GameServerKeys.GetMechRepairJob,
     })
@@ -94,8 +94,8 @@ export const RepairModal = ({
 
                         <SelfRepairCard repairStatus={repairStatus} />
 
-                        {repairJob && !repairJob.closed_at ? (
-                            <ExistingRepairJobCard repairJob={repairJob} />
+                        {repairOffer && !repairOffer.closed_at ? (
+                            <ExistingRepairJobCard repairOffer={repairOffer} />
                         ) : (
                             <HireContractorsCard mechDetails={selectedMechDetails} remainDamagedBlocks={remainDamagedBlocks} />
                         )}

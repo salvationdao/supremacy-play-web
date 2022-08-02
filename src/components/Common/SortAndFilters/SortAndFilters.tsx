@@ -16,7 +16,7 @@ interface SortAndFiltersProps {
     chipFilters?: ChipFilter[]
     rangeFilters?: RangeFilter[]
     sliderRangeFilters?: SliderRangeFilter[]
-    changePage: (page: number) => void
+    changePage?: (page: number) => void
     primaryColor?: string
     children?: ReactNode
     isExpanded?: boolean
@@ -80,7 +80,7 @@ export const SortAndFilters = ({
                         }}
                     >
                         <Stack sx={{ position: "relative", height: 0, mt: "-.3rem", mx: "-.3rem" }}>
-                            {onSetSearch && (
+                            {onSetSearch && changePage && (
                                 <Section label="SEARCH" primaryColor={primaryColor} secondaryColor={secondaryColor} initialExpanded={true}>
                                     <Stack direction="row" spacing=".5rem">
                                         <ClipThing
@@ -164,7 +164,6 @@ export const SortAndFilters = ({
                                         primaryColor={primaryColor}
                                         secondaryColor={secondaryColor}
                                         backgroundColor={backgroundColor}
-                                        changePage={changePage}
                                     />
                                 ))}
 

@@ -1,14 +1,14 @@
-import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { Box, CircularProgress, Stack, Typography } from "@mui/material"
+import BigNumber from "bignumber.js"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { ClipThing } from "../.."
 import { EmptyWarMachinesPNG, WarMachineIconPNG } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
-import { parseString } from "../../../helpers"
-import { usePagination, useToggle, useUrlQuery } from "../../../hooks"
-import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
+import { useArray, useToggle, useUrlQuery } from "../../../hooks"
+import { useGameServerSubscription } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { RepairOffer } from "../../../types/jobs"
+import { RepairJob } from "../../../types/jobs"
 import { SortTypeLabel } from "../../../types/marketplace"
 import { PageHeader } from "../../Common/PageHeader"
 import { RangeFilter } from "../../Common/SortAndFilters/RangeFilterSection"
@@ -25,34 +25,12 @@ const sortOptions = [
     { label: SortTypeLabel.RewardAmountHighest, value: SortTypeLabel.RewardAmountHighest },
 ]
 
-interface GetRepairJobsRequest {
-    order_by?: string
-    order_dir?: string
-    min_reward?: number
-    max_reward?: number
-    page_number: number
-    page_size: number
-}
-
-interface GetRepairJobsResponse {
-    offers: RepairOffer[]
-    total: number
-}
-
 export const RepairJobs = () => {
     const [query, updateQuery] = useUrlQuery()
-    const { send } = useGameServerCommandsUser("/user_commander")
     const theme = useTheme()
 
     // Items
-    const [isLoading, setIsLoading] = useState(true)
-    const [loadError, setLoadError] = useState<string>()
-    const [repairJobs, setRepairJobs] = useState<RepairOffer[]>([])
-
-    const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({
-        pageSize: parseString(query.get("pageSize"), 10),
-        page: parseString(query.get("page"), 1),
-    })
+    const { value: repairJobs, setValue: setRepairJobs, add: addRepairJob, removeByID } = useArray<RepairJob>([], "id")
 
     // Filters and sorts
     const [isFiltersExpanded, toggleIsFiltersExpanded] = useToggle(localStorage.getItem("isRepairJobsFiltersExpanded") === "true")
@@ -70,6 +48,27 @@ export const RepairJobs = () => {
         localStorage.setItem("isRepairJobsFiltersExpanded", isFiltersExpanded.toString())
     }, [isFiltersExpanded])
 
+    useGameServerSubscription<RepairJob>(
+        {
+            URI: "/public/repair_offer/update",
+            key: GameServerKeys.SubRepairJobListUpdated,
+        },
+        (payload) => {
+            if (!payload) return
+            const foundIndex = repairJobs.findIndex((rj) => rj.id === payload.id)
+            if (foundIndex >= 0) {
+                setRepairJobs((prev) => {
+                    const curr = [...prev]
+                    curr[foundIndex] = payload
+                    return curr
+                })
+            } else {
+                // If repair job is not in the array, then add it
+                addRepairJob(payload)
+            }
+        },
+    )
+
     // Filters
     const rewardRangeFilter = useRef<RangeFilter>({
         label: "REWARD PER BLOCK",
@@ -77,88 +76,38 @@ export const RepairJobs = () => {
         initialExpanded: true,
         onSetValue: (value: (number | undefined)[]) => {
             setRewardRanges(value)
-            changePage(1)
         },
     })
 
-    const getItems = useCallback(async () => {
-        try {
-            setIsLoading(true)
-
-            let sortDir = "ASC"
-            let sortBy = "offered_sups_amount"
-            if (sort === SortTypeLabel.CreateTimeNewestFirst || sort === SortTypeLabel.EndTimeEndingLast || sort === SortTypeLabel.RewardAmountHighest)
-                sortDir = "DESC"
-
-            switch (sort) {
-                case SortTypeLabel.CreateTimeNewestFirst:
-                case SortTypeLabel.CreateTimeOldestFirst:
-                    sortBy = "created_at"
-                    break
-                case SortTypeLabel.EndTimeEndingSoon:
-                case SortTypeLabel.EndTimeEndingLast:
-                    sortBy = "expires_at"
-            }
-
-            const [min_reward, max_reward] = rewardRanges
-
-            const resp = await send<GetRepairJobsResponse, GetRepairJobsRequest>(GameServerKeys.GetRepairJobList, {
-                order_by: sortBy,
-                order_dir: sortDir,
-                page_number: page - 1, // Server pagination starts at 0
-                page_size: pageSize,
-                min_reward,
-                max_reward,
-            })
-
-            updateQuery({
-                sort,
-                page: page.toString(),
-                pageSize: pageSize.toString(),
-                rewardRanges: rewardRanges.join("||"),
-            })
-
-            if (!resp) return
-            setLoadError(undefined)
-            setRepairJobs(resp.offers)
-            setTotalItems(resp.total)
-        } catch (e) {
-            setLoadError(typeof e === "string" ? e : "Failed to get war machines.")
-            console.error(e)
-        } finally {
-            setIsLoading(false)
-        }
-    }, [sort, rewardRanges, send, page, pageSize, updateQuery, setTotalItems])
-
+    // Apply filter and sorting
     useEffect(() => {
-        getItems()
-    }, [getItems])
+        setRepairJobs((prev) => {
+            const filtered = prev.filter((rj) => {
+                const rewardPerBlock = new BigNumber(rj.sups_worth_per_block).shiftedBy(-18).toNumber()
+                if (rewardRanges && rewardRanges[0] && rewardPerBlock < rewardRanges[0]) return false
+                if (rewardRanges && rewardRanges[1] && rewardPerBlock > rewardRanges[1]) return false
+                return true
+            })
+
+            let sorted = filtered
+            if (sort === SortTypeLabel.EndTimeEndingLast) sorted = sorted.sort((a, b) => (a.expires_at < b.expires_at ? 1 : -1))
+            if (sort === SortTypeLabel.EndTimeEndingSoon) sorted = sorted.sort((a, b) => (a.expires_at > b.expires_at ? 1 : -1))
+            if (sort === SortTypeLabel.CreateTimeNewestFirst) sorted = sorted.sort((a, b) => (a.created_at < b.created_at ? 1 : -1))
+            if (sort === SortTypeLabel.CreateTimeOldestFirst) sorted = sorted.sort((a, b) => (a.created_at > b.created_at ? 1 : -1))
+            if (sort === SortTypeLabel.RewardAmountHighest) sorted = sorted.sort((a, b) => (a.offered_sups_amount < b.offered_sups_amount ? 1 : -1))
+            if (sort === SortTypeLabel.RewardAmountLowest) sorted = sorted.sort((a, b) => (a.offered_sups_amount > b.offered_sups_amount ? 1 : -1))
+
+            return sorted
+        })
+
+        updateQuery({
+            sort,
+            rewardRanges: rewardRanges.join("||"),
+        })
+    }, [sort, rewardRanges, updateQuery, setRepairJobs])
 
     const content = useMemo(() => {
-        if (loadError) {
-            return (
-                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
-                    <Stack
-                        alignItems="center"
-                        justifyContent="center"
-                        sx={{ height: "100%", maxWidth: "100%", width: "75rem", px: "3rem", pt: "1.28rem" }}
-                        spacing="1.5rem"
-                    >
-                        <Typography
-                            sx={{
-                                color: colors.red,
-                                fontFamily: fonts.nostromoBold,
-                                textAlign: "center",
-                            }}
-                        >
-                            {loadError}
-                        </Typography>
-                    </Stack>
-                </Stack>
-            )
-        }
-
-        if (!repairJobs || isLoading) {
+        if (!repairJobs) {
             return (
                 <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                     <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
@@ -222,11 +171,11 @@ export const RepairJobs = () => {
                 </Stack>
             </Stack>
         )
-    }, [loadError, repairJobs, isLoading, isGridView, theme.factionTheme.primary])
+    }, [repairJobs, isGridView, theme.factionTheme.primary])
 
     return (
         <Stack direction="row" sx={{ height: "100%" }}>
-            <SortAndFilters rangeFilters={[rewardRangeFilter.current]} changePage={changePage} isExpanded={isFiltersExpanded} />
+            <SortAndFilters rangeFilters={[rewardRangeFilter.current]} isExpanded={isFiltersExpanded} />
 
             <ClipThing
                 clipSize="10px"
@@ -239,82 +188,49 @@ export const RepairJobs = () => {
                 sx={{ height: "100%", flex: 1 }}
             >
                 <Stack sx={{ position: "relative", height: "100%" }}>
-                    <Stack sx={{ flex: 1 }}>
-                        <PageHeader title="REPAIR JOBS" description="Damaged items will be sent here by the mech owners." imageUrl={WarMachineIconPNG} />
+                    <PageHeader title="REPAIR JOBS" description="Damaged items will be sent here by the mech owners." imageUrl={WarMachineIconPNG} />
 
-                        <TotalAndPageSizeOptions
-                            countItems={repairJobs?.length}
-                            totalItems={totalItems}
-                            pageSize={pageSize}
-                            changePageSize={changePageSize}
-                            pageSizeOptions={[10, 20, 30]}
-                            changePage={changePage}
-                            manualRefresh={getItems}
-                            sortOptions={sortOptions}
-                            selectedSort={sort}
-                            onSetSort={setSort}
-                            isGridView={isGridView}
-                            toggleIsGridView={toggleIsGridView}
-                            isFiltersExpanded={isFiltersExpanded}
-                            toggleIsFiltersExpanded={toggleIsFiltersExpanded}
-                        />
+                    <TotalAndPageSizeOptions
+                        countItems={repairJobs?.length}
+                        totalItems={repairJobs.length}
+                        pageSizeOptions={[10, 20, 30]}
+                        sortOptions={sortOptions}
+                        selectedSort={sort}
+                        onSetSort={setSort}
+                        isGridView={isGridView}
+                        toggleIsGridView={toggleIsGridView}
+                        isFiltersExpanded={isFiltersExpanded}
+                        toggleIsFiltersExpanded={toggleIsFiltersExpanded}
+                    />
 
-                        <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
-                            <Box
-                                sx={{
-                                    ml: "1.9rem",
-                                    mr: ".5rem",
-                                    pr: "1.4rem",
-                                    my: "1rem",
-                                    flex: 1,
-                                    overflowY: "auto",
-                                    overflowX: "hidden",
-                                    direction: "ltr",
-
-                                    "::-webkit-scrollbar": {
-                                        width: ".4rem",
-                                    },
-                                    "::-webkit-scrollbar-track": {
-                                        background: "#FFFFFF15",
-                                        borderRadius: 3,
-                                    },
-                                    "::-webkit-scrollbar-thumb": {
-                                        background: theme.factionTheme.primary,
-                                        borderRadius: 3,
-                                    },
-                                }}
-                            >
-                                {content}
-                            </Box>
-                        </Stack>
-                    </Stack>
-
-                    {totalPages > 1 && (
+                    <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
                         <Box
                             sx={{
-                                px: "1rem",
-                                py: ".7rem",
-                                borderTop: (theme) => `${theme.factionTheme.primary}70 1.5px solid`,
-                                backgroundColor: "#00000070",
+                                ml: "1.9rem",
+                                mr: ".5rem",
+                                pr: "1.4rem",
+                                my: "1rem",
+                                flex: 1,
+                                overflowY: "auto",
+                                overflowX: "hidden",
+                                direction: "ltr",
+
+                                "::-webkit-scrollbar": {
+                                    width: ".4rem",
+                                },
+                                "::-webkit-scrollbar-track": {
+                                    background: "#FFFFFF15",
+                                    borderRadius: 3,
+                                },
+                                "::-webkit-scrollbar-thumb": {
+                                    background: theme.factionTheme.primary,
+                                    borderRadius: 3,
+                                },
                             }}
                         >
-                            <Pagination
-                                size="medium"
-                                count={totalPages}
-                                page={page}
-                                sx={{
-                                    ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold },
-                                    ".Mui-selected": {
-                                        color: (theme) => theme.factionTheme.secondary,
-                                        backgroundColor: `${theme.factionTheme.primary} !important`,
-                                    },
-                                }}
-                                onChange={(e, p) => changePage(p)}
-                                showFirstButton
-                                showLastButton
-                            />
+                            {content}
                         </Box>
-                    )}
+                    </Stack>
                 </Stack>
             </ClipThing>
         </Stack>

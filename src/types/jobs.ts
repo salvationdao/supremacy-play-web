@@ -11,9 +11,10 @@ export interface RepairOffer {
     closed_at?: Date
     offered_by_id: string
     job_owner: User
+    created_at: Date
 }
 
-export interface RepairJobStatus extends RepairOffer {
+export interface RepairJob extends RepairOffer {
     blocks_required_repair: number
     blocks_repaired: number
     sups_worth_per_block: string

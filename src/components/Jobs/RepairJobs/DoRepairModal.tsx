@@ -10,7 +10,7 @@ import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { heightEffect } from "../../../theme/keyframes"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
-import { RepairAgent, RepairJobStatus, RepairStatus } from "../../../types/jobs"
+import { RepairAgent, RepairJob, RepairStatus } from "../../../types/jobs"
 import { ClipThing } from "../../Common/ClipThing"
 import { FancyButton } from "../../Common/FancyButton"
 import { RepairBlocks } from "../../Hangar/WarMachinesHangar/Common/MechRepairBlocks"
@@ -19,12 +19,12 @@ import { StackTower } from "./StackTower/StackTower"
 
 export const DoRepairModal = ({
     repairStatus,
-    repairJobStatus,
+    repairJob,
     open,
     onClose,
 }: {
     repairStatus?: RepairStatus
-    repairJobStatus?: RepairJobStatus
+    repairJob?: RepairJob
     open: boolean
     onClose: () => void
 }) => {
@@ -43,10 +43,10 @@ export const DoRepairModal = ({
     const [submitError, setSubmitError] = useState<string>()
     const [submitSuccess, setSubmitSuccess] = useState(false)
 
-    const isFinished = !!(repairJobStatus?.closed_at || (repairJobStatus?.expires_at && repairJobStatus?.expires_at < new Date()))
+    const isFinished = !!(repairJob?.closed_at || (repairJob?.expires_at && repairJob?.expires_at < new Date()))
 
-    const remainDamagedBlocks = repairJobStatus
-        ? repairJobStatus.blocks_required_repair - repairJobStatus.blocks_repaired
+    const remainDamagedBlocks = repairJob
+        ? repairJob.blocks_required_repair - repairJob.blocks_repaired
         : repairStatus
         ? repairStatus.blocks_required_repair - repairStatus.blocks_repaired
         : 0
@@ -61,7 +61,7 @@ export const DoRepairModal = ({
     }, [])
 
     const registerAgentRepair = useCallback(async () => {
-        if (!repairStatus?.id && !repairJobStatus?.id) return
+        if (!repairStatus?.id && !repairJob?.id) return
 
         setError(undefined)
         setIsRegistering(true)
@@ -69,7 +69,7 @@ export const DoRepairModal = ({
 
         try {
             const resp = await send<RepairAgent>(GameServerKeys.RegisterRepairAgent, {
-                repair_offer_id: repairJobStatus?.id,
+                repair_offer_id: repairJob?.id,
                 repair_case_id: repairStatus?.id,
                 captcha_token: captchaToken,
             })
@@ -84,7 +84,7 @@ export const DoRepairModal = ({
         } finally {
             setIsRegistering(false)
         }
-    }, [repairJobStatus?.id, repairStatus?.id, send, captchaToken])
+    }, [repairJob?.id, repairStatus?.id, send, captchaToken])
 
     const completeAgentRepair = useCallback(
         async (repairAgentID: string, gamePatterns: GamePattern[]) => {
@@ -118,7 +118,7 @@ export const DoRepairModal = ({
             return (
                 <Stack spacing="2rem" alignItems="center">
                     <Typography variant="h4" sx={{ textAlign: "center", fontFamily: fonts.nostromoBlack }}>
-                        JOB {repairJobStatus?.finished_reason}
+                        JOB {repairJob?.finished_reason}
                     </Typography>
                     <Typography variant="h5" sx={{ textAlign: "center", fontFamily: fonts.nostromoBlack }}>
                         THIS JOB IS NO LONGER AVAILABLE
@@ -164,11 +164,11 @@ export const DoRepairModal = ({
                                     CONGRATULATIONS!
                                 </Typography>
                                 <Typography variant="h5" sx={{ fontFamily: fonts.nostromoBlack }}>
-                                    {repairJobStatus?.sups_worth_per_block ? "YOU'VE JUST EARNED" : "YOU'VE JUST REPAIRED A BLOCK"}
+                                    {repairJob?.sups_worth_per_block ? "YOU'VE JUST EARNED" : "YOU'VE JUST REPAIRED A BLOCK"}
                                 </Typography>
                             </Box>
 
-                            {repairJobStatus?.sups_worth_per_block && (
+                            {repairJob?.sups_worth_per_block && (
                                 <ClipThing
                                     clipSize="10px"
                                     border={{
@@ -180,7 +180,7 @@ export const DoRepairModal = ({
                                     <Stack direction="row" alignItems="center" sx={{ p: ".4rem 1rem" }}>
                                         <SvgSupToken size="4.2rem" fill={colors.yellow} />
                                         <Typography variant="h3" sx={{ fontWeight: "fontWeightBold" }}>
-                                            {supFormatterNoFixed(repairJobStatus.sups_worth_per_block || "0", 2)}
+                                            {supFormatterNoFixed(repairJob.sups_worth_per_block || "0", 2)}
                                         </Typography>
                                     </Stack>
                                 </ClipThing>
@@ -261,7 +261,7 @@ export const DoRepairModal = ({
         registerAgentRepair,
         remainDamagedBlocks,
         repairAgent,
-        repairJobStatus,
+        repairJob,
         submitError,
         submitSuccess,
         captchaToken,
@@ -314,7 +314,7 @@ export const DoRepairModal = ({
                                 </Typography>
                                 <RepairBlocks
                                     size={12}
-                                    defaultBlocks={repairJobStatus?.blocks_required_repair || repairStatus?.blocks_required_repair}
+                                    defaultBlocks={repairJob?.blocks_required_repair || repairStatus?.blocks_required_repair}
                                     remainDamagedBlocks={remainDamagedBlocks}
                                     hideNumber
                                 />
@@ -322,14 +322,14 @@ export const DoRepairModal = ({
                         </Stack>
 
                         {/* Info cards */}
-                        {repairJobStatus && (
+                        {repairJob && (
                             <Stack direction="row" spacing="1.6rem" justifyContent="center">
                                 <InfoCard primaryColor={primaryColor} label="ACTIVE AGENTS">
                                     <Typography
                                         variant="h4"
-                                        sx={{ fontWeight: "fontWeightBold", color: repairJobStatus.working_agent_count <= 3 ? colors.green : colors.orange }}
+                                        sx={{ fontWeight: "fontWeightBold", color: repairJob.working_agent_count <= 3 ? colors.green : colors.orange }}
                                     >
-                                        {repairJobStatus.working_agent_count.toString()}
+                                        {repairJob.working_agent_count.toString()}
                                     </Typography>
                                 </InfoCard>
 
@@ -337,7 +337,7 @@ export const DoRepairModal = ({
                                     <Stack direction="row" alignItems="center">
                                         <SvgSupToken size="3rem" fill={colors.yellow} />
                                         <Typography variant="h4" sx={{ fontWeight: "fontWeightBold" }}>
-                                            {supFormatterNoFixed(repairJobStatus.sups_worth_per_block || "0", 2)}
+                                            {supFormatterNoFixed(repairJob.sups_worth_per_block || "0", 2)}
                                         </Typography>
                                     </Stack>
                                 </InfoCard>
@@ -347,7 +347,7 @@ export const DoRepairModal = ({
                                         <SvgSupToken size="3rem" fill={colors.yellow} />
                                         <Typography variant="h4" sx={{ fontWeight: "fontWeightBold" }}>
                                             {supFormatterNoFixed(
-                                                new BigNumber(repairJobStatus.sups_worth_per_block || "0").multipliedBy(remainDamagedBlocks).toString(),
+                                                new BigNumber(repairJob.sups_worth_per_block || "0").multipliedBy(remainDamagedBlocks).toString(),
                                                 1,
                                             )}
                                         </Typography>
@@ -355,7 +355,7 @@ export const DoRepairModal = ({
                                 </InfoCard>
 
                                 <InfoCard primaryColor={primaryColor} label="TIME REMAINING">
-                                    <Countdown endTime={repairJobStatus.expires_at} />
+                                    <Countdown endTime={repairJob.expires_at} />
                                 </InfoCard>
                             </Stack>
                         )}

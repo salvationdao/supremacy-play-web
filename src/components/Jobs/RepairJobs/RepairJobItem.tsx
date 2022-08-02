@@ -7,26 +7,26 @@ import { useTimer } from "../../../hooks"
 import { useGameServerSubscription } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { RepairJobStatus, RepairOffer } from "../../../types/jobs"
+import { RepairJob } from "../../../types/jobs"
 import { FancyButton } from "../../Common/FancyButton"
 import { Player } from "../../Common/Player"
 import { RepairBlocks } from "../../Hangar/WarMachinesHangar/Common/MechRepairBlocks"
 import { General } from "../../Marketplace/Common/MarketItem/General"
 import { DoRepairModal } from "./DoRepairModal"
 
-export const RepairJobItem = ({ repairJob, isGridView }: { repairJob: RepairOffer; isGridView?: boolean }) => {
+export const RepairJobItem = ({ repairJob, isGridView }: { repairJob: RepairJob; isGridView?: boolean }) => {
     const { userID } = useAuth()
     const { getFaction } = useSupremacy()
     const [doRepairModalOpen, setDoRepairModalOpen] = useState(false)
 
-    const repairJobStatus = useGameServerSubscription<RepairJobStatus>({
-        URI: `/public/repair_offer/${repairJob.id}`,
-        key: GameServerKeys.SubRepairJobStatus,
-    })
+    // const repairJobStatus = useGameServerSubscription<RepairJobStatus>({
+    //     URI: `/public/repair_offer/${repairJob.id}`,
+    //     key: GameServerKeys.SubRepairJobStatus,
+    // })
 
     const jobOwnerFaction = useMemo(() => getFaction(repairJob.job_owner.faction_id), [getFaction, repairJob.job_owner.faction_id])
 
-    const remainDamagedBlocks = repairJobStatus ? repairJobStatus.blocks_required_repair - repairJobStatus.blocks_repaired : 0
+    const remainDamagedBlocks = repairJob.blocks_required_repair - repairJob.blocks_repaired
     const primaryColor = jobOwnerFaction.primary_color
     const backgroundColor = jobOwnerFaction.background_color
 
@@ -87,15 +87,15 @@ export const RepairJobItem = ({ repairJob, isGridView }: { repairJob: RepairOffe
                                 >
                                     <span>{remainDamagedBlocks}</span> BLOCKS REMAINING
                                 </Typography>
-                                <RepairBlocks defaultBlocks={repairJobStatus?.blocks_required_repair} remainDamagedBlocks={remainDamagedBlocks} hideNumber />
+                                <RepairBlocks defaultBlocks={repairJob.blocks_required_repair} remainDamagedBlocks={remainDamagedBlocks} hideNumber />
                             </Stack>
                         </Stack>
 
                         <General
                             isGridView={isGridView}
                             title="ACTIVE AGENTS"
-                            text={repairJobStatus?.working_agent_count.toString()}
-                            textColor={repairJobStatus && repairJobStatus.working_agent_count <= 3 ? colors.green : colors.orange}
+                            text={repairJob.working_agent_count.toString()}
+                            textColor={repairJob.working_agent_count <= 3 ? colors.green : colors.orange}
                         />
 
                         <General isGridView={isGridView} title="REWARD">
@@ -112,7 +112,7 @@ export const RepairJobItem = ({ repairJob, isGridView }: { repairJob: RepairOffe
                                         WebkitBoxOrient: "vertical",
                                     }}
                                 >
-                                    {supFormatterNoFixed(repairJobStatus?.sups_worth_per_block || "0", 2)} / BLOCK
+                                    {supFormatterNoFixed(repairJob.sups_worth_per_block || "0", 2)} / BLOCK
                                 </Typography>
                             </Stack>
                         </General>
@@ -124,7 +124,7 @@ export const RepairJobItem = ({ repairJob, isGridView }: { repairJob: RepairOffe
                             </Box>
                         </General>
 
-                        {repairJobStatus?.closed_at || repairJob.expires_at < new Date() ? (
+                        {repairJob.closed_at || repairJob.expires_at < new Date() ? (
                             <General isGridView={isGridView} title="TIME LEFT" text="EXPIRED" textColor={colors.lightGrey} />
                         ) : (
                             <CountdownGeneral isGridView={isGridView} endTime={repairJob.expires_at} />
@@ -145,9 +145,7 @@ export const RepairJobItem = ({ repairJob, isGridView }: { repairJob: RepairOffe
                 </FancyButton>
             </Box>
 
-            {doRepairModalOpen && repairJobStatus && (
-                <DoRepairModal repairJobStatus={repairJobStatus} open={doRepairModalOpen} onClose={() => setDoRepairModalOpen(false)} />
-            )}
+            {doRepairModalOpen && <DoRepairModal repairJob={repairJob} open={doRepairModalOpen} onClose={() => setDoRepairModalOpen(false)} />}
         </>
     )
 }

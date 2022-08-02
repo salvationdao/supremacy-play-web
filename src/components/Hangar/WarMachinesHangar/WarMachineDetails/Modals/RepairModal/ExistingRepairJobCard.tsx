@@ -11,7 +11,7 @@ import { colors, fonts } from "../../../../../../theme/theme"
 import { RepairOffer } from "../../../../../../types/jobs"
 import { AmountItem } from "../DeployModal"
 
-export const ExistingRepairJobCard = ({ repairJob }: { repairJob: RepairOffer }) => {
+export const ExistingRepairJobCard = ({ repairOffer }: { repairOffer: RepairOffer }) => {
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsUser("/user_commander")
     const [isSubmitting, setIsSubmitting] = useState(false)
@@ -21,7 +21,7 @@ export const ExistingRepairJobCard = ({ repairJob }: { repairJob: RepairOffer })
         try {
             setIsSubmitting(true)
             const resp = await send(GameServerKeys.CancelMechRepair, {
-                repair_offer_id: repairJob.id,
+                repair_offer_id: repairOffer.id,
             })
             if (resp) {
                 newSnackbarMessage("Successfully cancelled repair job.", "success")
@@ -33,7 +33,7 @@ export const ExistingRepairJobCard = ({ repairJob }: { repairJob: RepairOffer })
         } finally {
             setIsSubmitting(false)
         }
-    }, [send, repairJob.id, newSnackbarMessage])
+    }, [send, repairOffer.id, newSnackbarMessage])
 
     return (
         <Stack
@@ -54,9 +54,9 @@ export const ExistingRepairJobCard = ({ repairJob }: { repairJob: RepairOffer })
             </Typography>
 
             <Stack>
-                <AmountItem title="BLOCKS TO REPAIR:" value={repairJob.blocks_total} disableIcon />
-                <AmountItem title="REWARD:" value={supFormatterNoFixed(repairJob.offered_sups_amount)} />
-                <Countdown endTime={repairJob.expires_at} />
+                <AmountItem title="BLOCKS TO REPAIR:" value={repairOffer.blocks_total} disableIcon />
+                <AmountItem title="REWARD:" value={supFormatterNoFixed(repairOffer.offered_sups_amount)} />
+                <Countdown endTime={repairOffer.expires_at} />
             </Stack>
 
             <FancyButton

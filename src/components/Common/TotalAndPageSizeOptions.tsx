@@ -6,10 +6,10 @@ import { colors, fonts } from "../../theme/theme"
 interface TotalAndPageSizeOptionsProps {
     countItems?: number
     totalItems?: number
-    pageSize: number
+    pageSize?: number
     pageSizeOptions?: number[]
-    changePageSize: (value: number) => void
-    changePage: (value: number) => void
+    changePageSize?: (value: number) => void
+    changePage?: (value: number) => void
     isGridView?: boolean
     toggleIsGridView?: (value: boolean) => void
     manualRefresh?: () => void
@@ -121,7 +121,7 @@ export const TotalAndPageSizeOptions = ({
                     </Stack>
                 )}
 
-                {!hidePageSizeOptions && (
+                {!hidePageSizeOptions && changePage && changePageSize && (
                     <Stack direction="row" spacing=".6rem" alignItems="center">
                         {pageSizeOptions.map((size, i) => {
                             return (
@@ -146,7 +146,7 @@ export const TotalAndPageSizeOptions = ({
                     </Stack>
                 )}
 
-                {sortOptions && selectedSort && onSetSort && (
+                {sortOptions && selectedSort && onSetSort && changePage && (
                     <Stack direction="row" alignItems="center" spacing=".6rem">
                         <Typography variant="caption">SORT:</Typography>
 
