@@ -136,12 +136,13 @@ export const QuickDeployItem = ({ mech }: QuickDeployItemProps) => {
                     {!error && mechDetails && (mechState === MechStatusEnum.Idle || mechState === MechStatusEnum.Queue) && (
                         <FancyButton
                             loading={isLoading}
+                            disabled={mechState !== MechStatusEnum.Idle}
                             clipThingsProps={{
                                 clipSize: "5px",
-                                backgroundColor: mechState === MechStatusEnum.Idle ? colors.green : theme.factionTheme.background,
+                                backgroundColor: colors.green,
                                 opacity: 1,
                                 border: {
-                                    borderColor: mechState === MechStatusEnum.Idle ? colors.green : colors.yellow,
+                                    borderColor: colors.green,
                                     borderThickness: "1px",
                                 },
                                 sx: { position: "relative" },
@@ -156,14 +157,8 @@ export const QuickDeployItem = ({ mech }: QuickDeployItemProps) => {
                             }}
                         >
                             <Stack direction="row" alignItems="center" spacing=".5rem">
-                                <Typography
-                                    variant="caption"
-                                    sx={{
-                                        color: mechState === MechStatusEnum.Idle ? "#FFFFFF" : colors.yellow,
-                                        fontFamily: fonts.nostromoBlack,
-                                    }}
-                                >
-                                    {mechState === MechStatusEnum.Idle ? "DEPLOY" : "UNDEPLOY"}
+                                <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBlack }}>
+                                    DEPLOY
                                 </Typography>
                             </Stack>
                         </FancyButton>
