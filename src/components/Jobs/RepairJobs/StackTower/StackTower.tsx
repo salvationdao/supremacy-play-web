@@ -47,12 +47,8 @@ export const StackTower = React.memo(function StackTower({
     useEffect(() => {
         if (!repairAgent?.id || cumulativeScore !== repairAgent?.required_stacks) return
         ;(async () => {
-            const result = await completeAgentRepair(repairAgent.id)
-            if (result) {
-                setGamePatterns([])
-            } else {
-                setGamePatterns((prev) => prev.slice(0, -1))
-            }
+            await completeAgentRepair(repairAgent.id)
+            setGamePatterns([])
         })()
     }, [completeAgentRepair, cumulativeScore, gamePatterns, repairAgent?.id, repairAgent?.required_stacks])
 
