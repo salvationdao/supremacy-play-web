@@ -31,7 +31,7 @@ export const RepairJobs = () => {
     const theme = useTheme()
 
     // Items
-    const { value: repairJobs, setValue: setRepairJobs, add: addRepairJob, removeByID } = useArray<RepairJob>([], "id")
+    const { value: repairJobs, setValue: setRepairJobs, removeByID } = useArray<RepairJob>([], "id")
 
     // Filters and sorts
     const [isFiltersExpanded, toggleIsFiltersExpanded] = useToggle(localStorage.getItem("isRepairJobsFiltersExpanded") === "true")
@@ -49,24 +49,29 @@ export const RepairJobs = () => {
         localStorage.setItem("isRepairJobsFiltersExpanded", isFiltersExpanded.toString())
     }, [isFiltersExpanded])
 
-    useGameServerSubscription<RepairJob>(
+    useGameServerSubscription<RepairJob[]>(
         {
             URI: "/public/repair_offer/update",
             key: GameServerKeys.SubRepairJobListUpdated,
         },
         (payload) => {
-            if (!payload) return
-            const foundIndex = repairJobs.findIndex((rj) => rj.id === payload.id)
-            if (foundIndex >= 0) {
-                setRepairJobs((prev) => {
-                    const curr = [...prev]
-                    curr[foundIndex] = payload
-                    return curr
+            if (!payload || payload.length <= 0) return
+
+            setRepairJobs((prev) => {
+                let newArray = prev
+
+                payload.forEach((repairJob) => {
+                    const foundIndex = newArray.findIndex((rj) => rj.id === repairJob.id)
+                    if (foundIndex >= 0) {
+                        newArray[foundIndex] = repairJob
+                    } else {
+                        // If repair job is not in the array, then add it
+                        newArray = [...newArray, repairJob]
+                    }
                 })
-            } else {
-                // If repair job is not in the array, then add it
-                addRepairJob(payload)
-            }
+
+                return newArray
+            })
         },
     )
 
@@ -135,7 +140,9 @@ export const RepairJobs = () => {
                     >
                         <FlipMove>
                             {repairJobs.map((repairJob) => (
-                                <RepairJobItem key={`repair-job-${repairJob.id}`} repairJob={repairJob} isGridView={isGridView} removeByID={removeByID} />
+                                <div key={`repair-job-${repairJob.id}`}>
+                                    <RepairJobItem repairJob={repairJob} isGridView={isGridView} removeByID={removeByID} />
+                                </div>
                             ))}
                         </FlipMove>
                     </Box>
