@@ -121,10 +121,10 @@ export const RepairJobs = () => {
         if (repairJobs && repairJobs.length > 0) {
             return (
                 <Box sx={{ direction: "ltr", height: 0 }}>
-                    <Stack spacing="1.3rem">
+                    <Stack>
                         <FlipMove>
                             {repairJobs.map((repairJob) => (
-                                <div key={`repair-job-${repairJob.id}`}>
+                                <div key={`repair-job-${repairJob.id}`} style={{ marginBottom: "1.3rem" }}>
                                     <RepairJobItem repairJob={repairJob} removeByID={removeByID} />
                                 </div>
                             ))}
