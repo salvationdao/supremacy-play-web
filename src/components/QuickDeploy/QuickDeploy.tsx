@@ -25,12 +25,18 @@ const sortOptions = [
 ]
 
 interface GetMechsRequest {
-    queue_sort: string
+    queue_sort?: string
+    sort_by?: string
+    sort_dir?: string
+    search?: string
     page: number
     page_size: number
+    rarities?: string[]
+    statuses: string[]
     include_market_listed: boolean
     exclude_damaged_mech: boolean
 }
+
 
 interface GetAssetsResponse {
     mechs: MechBasic[]
@@ -86,6 +92,7 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
                 queue_sort: sortDir,
                 page,
                 page_size: pageSize,
+                statuses: ['BATTLE_READY'],
                 include_market_listed: false,
                 exclude_damaged_mech: true,
             })
