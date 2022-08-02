@@ -48,7 +48,11 @@ export const StackTower = React.memo(function StackTower({
         if (!repairAgent?.id || cumulativeScore !== repairAgent?.required_stacks) return
         ;(async () => {
             const result = await completeAgentRepair(repairAgent.id)
-            if (result) setGamePatterns([])
+            if (result) {
+                setGamePatterns([])
+            } else {
+                setGamePatterns((prev) => prev.slice(0, -1))
+            }
         })()
     }, [completeAgentRepair, cumulativeScore, gamePatterns, repairAgent?.id, repairAgent?.required_stacks])
 
@@ -219,7 +223,7 @@ const StaticGame = React.memo(function StaticGame({
         }
 
         new Game(backgroundColor, setGameState, oneNewGamePattern)
-    }, [setGameState, oneNewGamePattern, backgroundColor])
+    }, [backgroundColor, oneNewGamePattern, setGameState])
 
     // Game container, must keep the id
     return (
