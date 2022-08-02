@@ -36,7 +36,6 @@ interface GetMechsRequest {
     include_market_listed: boolean
 }
 
-
 interface GetAssetsResponse {
     mechs: MechBasic[]
     total: number
@@ -91,7 +90,7 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
                 queue_sort: sortDir,
                 page,
                 page_size: pageSize,
-                statuses: ['BATTLE_READY'],
+                statuses: ["BATTLE_READY"],
                 include_market_listed: false,
             })
 
