@@ -119,8 +119,10 @@ export const CoolTable = <T,>({
                             </TableRow>
                         )
                     })}
+
+                    {/* Need this empty row for a bug fix, don't delete */}
                     <TableRow sx={{ backgroundColor: "transparent" }}>
-                        <TableCell colSpan={tableHeadings.length}></TableCell>
+                        <TableCell colSpan={tableHeadings.length} sx={{ p: "0 !important", border: "none !important" }} />
                     </TableRow>
                 </TableBody>
             )
