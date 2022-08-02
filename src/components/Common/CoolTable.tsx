@@ -101,7 +101,10 @@ export const CoolTable = <T,>({
                 <TableBody>
                     {items.map((item, i) => {
                         return (
-                            <TableRow key={i} sx={{ "&:nth-of-type(odd)": { backgroundColor: "#FFFFFF10" }, ".MuiTableCell-root": { p: cellPadding } }}>
+                            <TableRow
+                                key={i}
+                                sx={{ height: 0, "&:nth-of-type(odd)": { backgroundColor: "#FFFFFF10" }, ".MuiTableCell-root": { p: cellPadding } }}
+                            >
                                 {renderItem(item, i).map((node, j) => {
                                     return (
                                         <TableCell
@@ -116,6 +119,9 @@ export const CoolTable = <T,>({
                             </TableRow>
                         )
                     })}
+                    <TableRow sx={{ backgroundColor: "transparent" }}>
+                        <TableCell colSpan={tableHeadings.length}></TableCell>
+                    </TableRow>
                 </TableBody>
             )
         }
