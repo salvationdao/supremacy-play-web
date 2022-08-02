@@ -1,6 +1,6 @@
-import { Avatar, Box, CircularProgress, Modal, Pagination, Stack, Typography } from "@mui/material"
+import { Avatar, Box, Button, CircularProgress, Modal, Pagination, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { EmptyWarMachinesPNG, HeadPNG, SvgEdit } from "../../assets"
+import { EmptyWarMachinesPNG, SvgClose, SvgEdit } from "../../assets"
 import { parseString } from "../../helpers"
 import { usePagination, useUrlQuery } from "../../hooks"
 import { useGameServerCommandsUser } from "../../hooks/useGameServer"
@@ -8,6 +8,7 @@ import { GameServerKeys } from "../../keys"
 import { colors, fonts, siteZIndex } from "../../theme/theme"
 import { FactionName } from "../../types"
 import { ClipThing } from "../Common/ClipThing"
+import { ConfirmModal } from "../Common/ConfirmModal"
 import { FancyButton } from "../Common/FancyButton"
 import { PageHeader } from "../Common/PageHeader"
 import { ChipFilter, ChipFilterSection } from "../Common/SortAndFilters/ChipFilterSection"
@@ -43,6 +44,7 @@ interface ProfileAvatarProps {
     avatarURL: string
     factionName?: string
     updateAvatar: (avatarID: string, isCustom: boolean) => Promise<void>
+    deleteCustomAvatar: (avatarID: string) => Promise<void>
 }
 
 export enum AvatarListFilter {
@@ -56,6 +58,7 @@ export const ProfileAvatar = ({
     backgroundColor,
     avatarURL,
     updateAvatar,
+    deleteCustomAvatar,
     factionName,
     playerID,
     avatarID,
@@ -75,7 +78,10 @@ export const ProfileAvatar = ({
     // custom avatars
     const [showCustom, setShowCustom] = useState(false)
     const [customAvatarModalOpen, setCustomAvatarModalOpen] = useState(false)
-    const [cusotmAvarIDs, setCustomAvatarIDs] = useState<string[]>([])
+    const [customAvatarDeleteModalOpen, setCustomAvatarDeleteModalOpen] = useState(false)
+    const [selectedCustomAvatarID, setSelectedCustomAvatarID] = useState<string>()
+
+    const [customAvatarIDs, setCustomAvatarIDs] = useState<string[]>([])
 
     const { page, changePage, setTotalItems, totalPages, pageSize, totalItems, changePageSize } = usePagination({
         pageSize: parseString(query.get("pageSize"), 10),
@@ -94,19 +100,24 @@ export const ProfileAvatar = ({
         },
     })
 
-    const updatehHandler = useCallback(
+    // update
+    const updateHandler = useCallback(
         async (avatarID: string, isCustom: boolean) => {
             try {
                 setSubmitting(true)
                 await updateAvatar(avatarID, isCustom)
             } finally {
-                setSubmitting(false)
-                setShowCustom(false)
-                setModalOpen(false)
+                closeHandler()
             }
         },
         [updateAvatar],
     )
+
+    const closeHandler = () => {
+        setSubmitting(false)
+        setShowCustom(false)
+        setModalOpen(false)
+    }
 
     // get list of avatars
     const getItems = useCallback(async () => {
@@ -153,7 +164,11 @@ export const ProfileAvatar = ({
             })
             if (!resp) return
             setLoadError(undefined)
-            setCustomAvatarIDs(resp.ids)
+            if (page === 1) {
+                setCustomAvatarIDs(["custom", ...resp.ids])
+            } else {
+                setCustomAvatarIDs(resp.ids)
+            }
             setTotalItems(resp.total)
         } catch (e) {
             setLoadError(typeof e === "string" ? e : "Failed to get custom avatars.")
@@ -232,7 +247,7 @@ export const ProfileAvatar = ({
                                         setModalOpen(false)
                                         return
                                     }
-                                    updatehHandler(a.id, false)
+                                    updateHandler(a.id, false)
                                 }}
                             >
                                 {a.id === "custom" ? (
@@ -306,7 +321,7 @@ export const ProfileAvatar = ({
                 </Stack>
             </Stack>
         )
-    }, [loadError, avatars, isLoading, primaryColor, updatehHandler, factionName])
+    }, [loadError, avatars, isLoading, primaryColor, updateHandler, factionName, showCustom])
 
     const contentCustom = useMemo(() => {
         if (!showCustom) return null
@@ -343,7 +358,7 @@ export const ProfileAvatar = ({
             )
         }
 
-        if (cusotmAvarIDs && cusotmAvarIDs.length > 0) {
+        if (customAvatarIDs && customAvatarIDs.length > 0) {
             return (
                 <Box sx={{ direction: "ltr", height: 0, width: "100%" }}>
                     <Box
@@ -358,21 +373,57 @@ export const ProfileAvatar = ({
                             overflow: "visible",
                         }}
                     >
-                        {cusotmAvarIDs.map((a, idx) => (
-                            <Box
-                                key={idx}
-                                onClick={() => {
-                                    updatehHandler(a, true)
-                                }}
-                                sx={{
-                                    ":hover": {
-                                        opacity: ".7",
-                                    },
-                                }}
-                            >
-                                <CustomAvatarItem avatarID={a} backgroundColor={primaryColor} />
-                            </Box>
-                        ))}
+                        {customAvatarIDs.map((a, idx) =>
+                            a === "custom" ? (
+                                <Box
+                                    onClick={() => {
+                                        setCustomAvatarModalOpen(true)
+                                        setModalOpen(false)
+                                    }}
+                                    sx={{
+                                        borderRadius: 1,
+                                        border: `${primaryColor} 2px solid`,
+                                        backgroundColor: factionName == FactionName.ZaibatsuHeavyIndustries ? "black" : primaryColor,
+                                        cursor: "pointer",
+                                    }}
+                                    display={"flex"}
+                                    height="21rem"
+                                    width="21rem"
+                                    justifyContent={"center"}
+                                    alignItems="center"
+                                >
+                                    <SvgEdit title="Create custom avatar" size="6rem" />
+                                </Box>
+                            ) : (
+                                <Box
+                                    key={idx}
+                                    onClick={() => {
+                                        updateHandler(a, true)
+                                    }}
+                                    sx={{
+                                        position: "relative",
+                                        width: "200px",
+                                        height: "200px",
+                                        ":hover": {
+                                            opacity: ".7",
+                                            cursor: "pointer",
+                                        },
+                                    }}
+                                >
+                                    <Button
+                                        sx={{ position: "absolute", top: 0, right: -2 }}
+                                        onClick={(e) => {
+                                            e.stopPropagation()
+                                            setSelectedCustomAvatarID(a)
+                                            setCustomAvatarDeleteModalOpen(true)
+                                        }}
+                                    >
+                                        <SvgClose color={colors.red} size="2.6rem" />
+                                    </Button>
+                                    <CustomAvatarItem avatarID={a} />
+                                </Box>
+                            ),
+                        )}
                     </Box>
                 </Box>
             )
@@ -410,7 +461,7 @@ export const ProfileAvatar = ({
                 </Stack>
             </Stack>
         )
-    }, [loadError, avatars, isLoading, primaryColor, updatehHandler, factionName])
+    }, [loadError, isLoading, primaryColor, updateHandler, factionName, customAvatarIDs, showCustom])
 
     return (
         <Stack
@@ -449,7 +500,10 @@ export const ProfileAvatar = ({
                 )}
                 {/* preview */}
                 {isCustom && avatarID ? (
-                    <CustomAvatarItem key={"pp-" + avatarID} avatarID={avatarID} backgroundColor={primaryColor} />
+                    <Box sx={{ border: "3px solid white" }}>
+                        <CustomAvatarItem key={"custom-avatar-" + avatarID} avatarID={avatarID} />
+                        <Box id="abc" sx={{ zIndex: -7, opacity: 0.5, position: "absolute", background: "black", top: 9, width: 200, height: 200 }} />
+                    </Box>
                 ) : (
                     <Avatar
                         src={avatarURL}
@@ -515,14 +569,15 @@ export const ProfileAvatar = ({
                                 />
 
                                 <TotalAndPageSizeOptions
-                                    countItems={avatars?.length}
+                                    countItems={showCustom ? customAvatarIDs.length : avatars?.length}
                                     totalItems={totalItems + 1}
                                     pageSize={pageSize}
                                     changePageSize={changePageSize}
                                     pageSizeOptions={[10, 20, 30]}
                                     changePage={changePage}
-                                    manualRefresh={getItems}
+                                    manualRefresh={showCustom ? getCustomAvatars : getItems}
                                 />
+
                                 <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
                                     <Box
                                         sx={{
@@ -595,6 +650,7 @@ export const ProfileAvatar = ({
 
             {/* custom avatar modal */}
             <CustomAvatar
+                onClose={closeHandler}
                 playerID={playerID}
                 open={customAvatarModalOpen}
                 setOpen={setCustomAvatarModalOpen}
@@ -602,6 +658,28 @@ export const ProfileAvatar = ({
                 backgroundColor={backgroundColor}
                 submitting={false}
             />
+
+            {/* confirm delete modal */}
+            {customAvatarDeleteModalOpen && selectedCustomAvatarID && (
+                <ConfirmModal
+                    cancelBackground={colors.offWhite}
+                    confirmBackground={colors.red}
+                    cancelColor={"#000"}
+                    confirmLabel="DELETE"
+                    title="CONFIRMATION"
+                    onConfirm={async () => {
+                        await deleteCustomAvatar(selectedCustomAvatarID)
+                        await getCustomAvatars()
+                        setCustomAvatarDeleteModalOpen(false)
+                    }}
+                    onClose={() => {
+                        setCustomAvatarDeleteModalOpen(false)
+                    }}
+                    isLoading={isLoading}
+                >
+                    <Typography variant="h6">Are you sure you want to delete this custom avatar?</Typography>
+                </ConfirmModal>
+            )}
         </Stack>
     )
 }

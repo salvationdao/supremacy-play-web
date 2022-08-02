@@ -1,5 +1,5 @@
 import { Avatar, Box, CircularProgress, Fade, Modal, Pagination, Stack, Tab, Tabs, Typography, useMediaQuery } from "@mui/material"
-import { type } from "os"
+
 import { SyntheticEvent, useCallback, useEffect, useMemo, useState } from "react"
 import { EmptyWarMachinesPNG, SvgClose } from "../../assets"
 import { useSnackbar } from "../../containers"
@@ -19,6 +19,7 @@ interface CustomAvatarProps {
     primaryColor: string
     backgroundColor: string
     submitting: boolean
+    onClose: () => void
 }
 
 interface CustomAvatarCreateRequest {
@@ -29,7 +30,7 @@ interface CustomAvatarCreateRequest {
     accessory_id?: string
     eyewear_id?: string
 }
-export const CustomAvatar = ({ playerID, open, setOpen, primaryColor, backgroundColor }: CustomAvatarProps) => {
+export const CustomAvatar = ({ playerID, open, setOpen, primaryColor, backgroundColor, onClose }: CustomAvatarProps) => {
     const { send: userSend } = useGameServerCommandsUser("/user_commander")
     const { newSnackbarMessage } = useSnackbar()
     const [currentValue, setCurrentValue] = useState<AVATAR_FEATURE_TABS>(AVATAR_FEATURE_TABS.Face)
@@ -59,12 +60,18 @@ export const CustomAvatar = ({ playerID, open, setOpen, primaryColor, background
     const [accessory, setAccessory] = useState<Layer>()
     // TODO: add eyewear, helmet options once artwork ready
 
-    const handleChange = useCallback(
-        (event: SyntheticEvent, newValue: AVATAR_FEATURE_TABS) => {
-            setCurrentValue(newValue)
-        },
-        [history, location.hash],
-    )
+    const handleChange = useCallback((event: SyntheticEvent, newValue: AVATAR_FEATURE_TABS) => {
+        setCurrentValue(newValue)
+    }, [])
+
+    const closeHandler = useCallback(() => {
+        setOpen(false)
+        setHair(undefined)
+        setFace(undefined)
+        setBody(undefined)
+        setAccessory(undefined)
+        onClose()
+    }, [onClose, setOpen])
 
     // username
     const handleSave = useCallback(async () => {
@@ -78,11 +85,7 @@ export const CustomAvatar = ({ playerID, open, setOpen, primaryColor, background
                 accessory_id: accessory?.id,
             })
             newSnackbarMessage("avatar created successfully.", "success")
-            setOpen(false)
-            setHair(undefined)
-            setFace(undefined)
-            setBody(undefined)
-            setAccessory(undefined)
+            closeHandler()
         } catch (e) {
             let errorMessage = ""
             if (typeof e === "string") {
@@ -92,9 +95,9 @@ export const CustomAvatar = ({ playerID, open, setOpen, primaryColor, background
             }
             newSnackbarMessage(errorMessage, "error")
         }
-    }, [userSend, playerID, newSnackbarMessage, face, body, hair, accessory])
+    }, [userSend, playerID, newSnackbarMessage, face, body, hair, accessory, closeHandler])
     return (
-        <Modal onClose={() => setOpen(false)} open={open} sx={{ zIndex: siteZIndex.Modal, margin: "auto", height: "60vh", width: "60vw" }}>
+        <Modal onClose={closeHandler} open={open} sx={{ zIndex: siteZIndex.Modal, margin: "auto", height: "60vh", width: "60vw" }}>
             <Stack direction="row" spacing="1rem" sx={{ height: "100%", width: "100%" }}>
                 <ClipThing
                     clipSize="10px"
@@ -199,26 +202,17 @@ export const CustomAvatar = ({ playerID, open, setOpen, primaryColor, background
                                                 <LayerList primaryColor={primaryColor} layerType={AVATAR_FEATURE_TABS.Accessory} setLayer={setAccessory} />
                                             </TabPanel>
                                         </Box>
+
+                                        <Box display="flex" alignSelf="flex-end">
+                                            <Box sx={{ alignSelf: "flex-end" }}>
+                                                <FancyButton onClick={handleSave}>Save</FancyButton>
+                                            </Box>
+
+                                            <Box sx={{ alignSelf: "flex-end" }}>
+                                                <FancyButton onClick={closeHandler}>Close</FancyButton>
+                                            </Box>
+                                        </Box>
                                     </Stack>
-
-                                    <Box sx={{ alignSelf: "flex-end" }}>
-                                        <FancyButton onClick={handleSave}>Save</FancyButton>
-                                    </Box>
-
-                                    <Box sx={{ alignSelf: "flex-end" }}>
-                                        <FancyButton
-                                            onClick={() => {
-                                                // handle close
-                                                setOpen(false)
-                                                setHair(undefined)
-                                                setFace(undefined)
-                                                setBody(undefined)
-                                                setAccessory(undefined)
-                                            }}
-                                        >
-                                            Close
-                                        </FancyButton>
-                                    </Box>
                                 </Stack>
                             </Stack>
                         </Stack>
@@ -321,7 +315,7 @@ export const LayerList = ({ setLayer, layerType, primaryColor }: LayerListProps)
         } finally {
             setIsLoading(false)
         }
-    }, [send, page, pageSize, setTotalItems])
+    }, [send, page, pageSize, setTotalItems, layerType])
 
     useEffect(() => {
         getItems()
@@ -448,7 +442,7 @@ export const LayerList = ({ setLayer, layerType, primaryColor }: LayerListProps)
                 </Stack>
             </Stack>
         )
-    }, [loadError, avatars, isLoading])
+    }, [loadError, avatars, isLoading, setLayer])
 
     return (
         <Stack direction="row" spacing="1rem" sx={{ height: "100%", width: "100%" }}>
@@ -459,7 +453,6 @@ export const LayerList = ({ setLayer, layerType, primaryColor }: LayerListProps)
                     borderThickness: ".3rem",
                 }}
                 opacity={0.7}
-                backgroundColor={""}
                 sx={{ height: "100%", flex: 1 }}
             >
                 <Stack sx={{ position: "relative", height: "100%" }}>
@@ -523,67 +516,6 @@ export const LayerList = ({ setLayer, layerType, primaryColor }: LayerListProps)
                 </Stack>
             </ClipThing>
         </Stack>
-
-        // <Stack spacing="1rem" sx={{ height: "100%" }}>
-        //     <Stack sx={{ flex: 1, height: "100%" }}>
-        //         <Stack sx={{ px: "1rem", py: "1rem", flex: 1, height: "100%" }}>
-        //             <Box
-        //                 sx={{
-        //                     height: "100%",
-        //                     ml: "1.9rem",
-        //                     mr: ".5rem",
-        //                     pr: "1.4rem",
-        //                     my: "1rem",
-        //                     flex: 1,
-        //                     overflowY: "auto",
-        //                     overflowX: "hidden",
-        //                     direction: "ltr",
-
-        //                     "::-webkit-scrollbar": {
-        //                         width: ".4rem",
-        //                     },
-        //                     "::-webkit-scrollbar-track": {
-        //                         background: "#FFFFFF15",
-        //                         borderRadius: 3,
-        //                     },
-        //                     "::-webkit-scrollbar-thumb": {
-        //                         background: primaryColor,
-        //                         borderRadius: 3,
-        //                     },
-        //                 }}
-        //             >
-        //                 {content}
-        //             </Box>
-        //         </Stack>
-        //     </Stack>
-
-        //     {totalPages > 1 && (
-        //         <Box
-        //             sx={{
-        //                 px: "1rem",
-        //                 py: ".7rem",
-        //                 borderTop: `${primaryColor}70 1.5px solid`,
-        //                 backgroundColor: "#00000070",
-        //             }}
-        //         >
-        //             <Pagination
-        //                 size="medium"
-        //                 count={totalPages}
-        //                 page={page}
-        //                 sx={{
-        //                     ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold },
-        //                     ".Mui-selected": {
-        //                         color: primaryColor,
-        //                         backgroundColor: `${primaryColor} !important`,
-        //                     },
-        //                 }}
-        //                 onChange={(e, p) => changePage(p)}
-        //                 showFirstButton
-        //                 showLastButton
-        //             />
-        //         </Box>
-        //     )}
-        // </Stack>
     )
 }
 
@@ -596,7 +528,7 @@ interface CustomAvatar {
     helmet: Layer
 }
 
-export const CustomAvatarItem = ({ avatarID, backgroundColor }: { avatarID: string; backgroundColor: string }) => {
+export const CustomAvatarItem = ({ avatarID }: { avatarID: string }) => {
     const [avatarDetails, setAvatarDetails] = useState<CustomAvatar>()
     useGameServerSubscription<CustomAvatar>(
         {
@@ -604,8 +536,6 @@ export const CustomAvatarItem = ({ avatarID, backgroundColor }: { avatarID: stri
             key: GameServerKeys.PlayerProfileCustomAvatarDetails,
         },
         (payload) => {
-            console.log("hello")
-
             if (!payload) return
             setAvatarDetails(payload)
         },
@@ -613,7 +543,7 @@ export const CustomAvatarItem = ({ avatarID, backgroundColor }: { avatarID: stri
 
     const imageSize = 200
     return (
-        <Box sx={{ position: "relative", overflow: "visible", height: "100%", zIndex: -3, background: backgroundColor, border: "1px solid black" }}>
+        <Box sx={{ position: "relative", overflow: "visible", height: imageSize, zIndex: -3 }}>
             <Box width={imageSize} sx={{ height: imageSize, position: "relative", alignSelf: "flex-center" }}>
                 {avatarDetails?.accessory && (
                     <img

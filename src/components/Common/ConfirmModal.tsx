@@ -15,9 +15,31 @@ interface ConfirmModalProps {
     confirmPrefix?: ReactNode
     confirmSuffix?: ReactNode
     disableConfirm?: boolean
+    confirmLabel?: string
+    cancelLabel?: string
+    confirmBackground?: string
+    cancelBackground?: string
+    confirmColor?: string
+    cancelColor?: string
 }
 
-export const ConfirmModal = ({ title, children, onConfirm, onClose, isLoading, error, confirmPrefix, confirmSuffix, disableConfirm }: ConfirmModalProps) => {
+export const ConfirmModal = ({
+    title,
+    children,
+    onConfirm,
+    onClose,
+    isLoading,
+    error,
+    confirmPrefix,
+    confirmSuffix,
+    disableConfirm,
+    confirmLabel,
+    cancelLabel,
+    confirmBackground,
+    cancelBackground,
+    confirmColor,
+    cancelColor,
+}: ConfirmModalProps) => {
     const theme = useTheme()
 
     return (
@@ -75,15 +97,15 @@ export const ConfirmModal = ({ title, children, onConfirm, onClose, isLoading, e
                             <FancyButton
                                 clipThingsProps={{
                                     clipSize: "5px",
-                                    backgroundColor: colors.red,
-                                    border: { borderColor: colors.red, borderThickness: "2px" },
+                                    backgroundColor: cancelBackground || colors.red,
+                                    border: { borderColor: cancelBackground || colors.red, borderThickness: "2px" },
                                     sx: { flex: 2, position: "relative" },
                                 }}
-                                sx={{ pt: 0, pb: 0, minWidth: "5rem", color: "#FFFFFF" }}
+                                sx={{ pt: 0, pb: 0, minWidth: "5rem" }}
                                 onClick={onClose}
                             >
-                                <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
-                                    CANCEL
+                                <Typography variant="h6" sx={{ color: cancelColor || "#FFFFFF", fontWeight: "fontWeightBold" }}>
+                                    {cancelLabel || "CANCEL"}
                                 </Typography>
                             </FancyButton>
 
@@ -92,17 +114,17 @@ export const ConfirmModal = ({ title, children, onConfirm, onClose, isLoading, e
                                 loading={isLoading}
                                 clipThingsProps={{
                                     clipSize: "5px",
-                                    backgroundColor: colors.green,
-                                    border: { borderColor: colors.green, borderThickness: "2px" },
+                                    backgroundColor: confirmBackground || colors.green,
+                                    border: { borderColor: confirmBackground || colors.green, borderThickness: "2px" },
                                     sx: { flex: 2, position: "relative" },
                                 }}
-                                sx={{ pt: 0, pb: 0, minWidth: "5rem", color: "#FFFFFF" }}
+                                sx={{ pt: 0, pb: 0, minWidth: "5rem" }}
                                 onClick={onConfirm}
                             >
                                 <Stack direction="row" justifyContent="center">
                                     {confirmPrefix}
-                                    <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
-                                        CONFIRM
+                                    <Typography variant="h6" sx={{ color: confirmColor || "#FFFFFF", fontWeight: "fontWeightBold" }}>
+                                        {confirmLabel || "CONFIRM"}
                                     </Typography>
                                     {confirmSuffix}
                                 </Stack>

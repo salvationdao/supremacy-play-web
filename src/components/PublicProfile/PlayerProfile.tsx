@@ -160,6 +160,29 @@ export const PlayerProfilePage = () => {
         [userSend, profile?.player.id, newSnackbarMessage],
     )
 
+    // delete a custom avatar
+    const deleteCustomAvatar = useCallback(
+        async (avatarID: string) => {
+            try {
+                const resp = await userSend<AvatarType>(GameServerKeys.PlayerProfileCustomAvatarDelete, {
+                    avatar_id: avatarID,
+                })
+                if (resp) {
+                    newSnackbarMessage("avatar deleted successfully.", "success")
+                }
+            } catch (e) {
+                let errorMessage = ""
+                if (typeof e === "string") {
+                    errorMessage = e
+                } else if (e instanceof Error) {
+                    errorMessage = e.message
+                }
+                newSnackbarMessage(errorMessage, "error")
+            }
+        },
+        [userSend, newSnackbarMessage],
+    )
+
     // about me
     const updateAboutMe = useCallback(
         async (newAboutMe: string) => {
@@ -277,11 +300,14 @@ export const PlayerProfilePage = () => {
                             >
                                 <ProfileAvatar
                                     playerID={profile.player.id}
+                                    avatarID={avatar?.id || ""}
                                     isOwner={isMe}
                                     updateAvatar={async (avatar_id: string, isCustom: boolean) => {
                                         updateAvatar(avatar_id, isCustom)
                                     }}
-                                    avatarID={avatar?.id || ""}
+                                    deleteCustomAvatar={async (avatar_id: string) => {
+                                        deleteCustomAvatar(avatar_id)
+                                    }}
                                     isCustom={!!avatar?.is_custom}
                                     avatarURL={avatar?.avatar_url || ""}
                                     primaryColor={primaryColor}

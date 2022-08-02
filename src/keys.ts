@@ -158,8 +158,6 @@ export enum GameServerKeys {
     PlayerProfileGet = "PLAYER:PROFILE:GET",
     PlayerProfileAvatarUpdate = "PLAYER:AVATAR:UPDATE",
     PlayerProfileAvatarList = "PLAYER:AVATAR:LIST",
-    PlayerProfileCustomAvatarList = "PLAYER:CUSTOM_AVATAR:LIST",
-    PlayerProfileCustomAvatarDetails = "PLAYER:CUSTOM_AVATAR:DETAILS",
 
     PlayerProfileUsernameUpdate = "PLAYER:UPDATE:USERNAME",
     PlayerProfileAboutMeUpdate = "PLAYER:UPDATE:ABOUT_ME",
@@ -167,8 +165,12 @@ export enum GameServerKeys {
     PlayerAssetMechDetailPublic = "PLAYER:ASSET:MECH:DETAIL:PUBLIC",
     PlayerBattleMechHistoryList = "PLAYER:BATTLE:MECH:HISTORY:LIST",
     PlayerProfileLayerList = "PLAYER:PROFILE:LAYERS:LIST",
+
+    PlayerProfileCustomAvatarList = "PLAYER:CUSTOM_AVATAR:LIST",
+    PlayerProfileCustomAvatarDetails = "PLAYER:CUSTOM_AVATAR:DETAILS",
     PlayerProfileCustomAvatarUpdate = "PLAYER:PROFILE:CUSTOM_AVATAR:UPDATE",
     PlayerProfileCustomAvatarCreate = "PLAYER:PROFILE:CUSTOM_AVATAR:CREATE",
+    PlayerProfileCustomAvatarDelete = "PLAYER:PROFILE:CUSTOM_AVATAR:DELETE",
 
     // Leaderboard
     GetPlayerBattlesSpectated = "LEADERBOARD:PLAYER:BATTLE:SPECTATED",
