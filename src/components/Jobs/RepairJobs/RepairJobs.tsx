@@ -39,11 +39,6 @@ export const RepairJobs = () => {
     const [rewardRanges, setRewardRanges] = useState<(number | undefined)[]>(
         (query.get("rewardRanges") || undefined)?.split("||").map((p) => (p ? parseInt(p) : undefined)) || [undefined, undefined],
     )
-    const [isGridView, toggleIsGridView] = useToggle((localStorage.getItem("jobsRepairGrid") || "true") === "true")
-
-    useEffect(() => {
-        localStorage.setItem("jobsRepairGrid", isGridView.toString())
-    }, [isGridView])
 
     useEffect(() => {
         localStorage.setItem("isRepairJobsFiltersExpanded", isFiltersExpanded.toString())
@@ -126,26 +121,15 @@ export const RepairJobs = () => {
         if (repairJobs && repairJobs.length > 0) {
             return (
                 <Box sx={{ direction: "ltr", height: 0 }}>
-                    <Box
-                        sx={{
-                            width: "100%",
-                            py: "1rem",
-                            display: "grid",
-                            gridTemplateColumns: isGridView ? "repeat(auto-fill, minmax(30rem, 1fr))" : "100%",
-                            gap: "1.3rem",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            overflow: "visible",
-                        }}
-                    >
+                    <Stack spacing="1.3rem">
                         <FlipMove>
                             {repairJobs.map((repairJob) => (
                                 <div key={`repair-job-${repairJob.id}`}>
-                                    <RepairJobItem repairJob={repairJob} isGridView={isGridView} removeByID={removeByID} />
+                                    <RepairJobItem repairJob={repairJob} removeByID={removeByID} />
                                 </div>
                             ))}
                         </FlipMove>
-                    </Box>
+                    </Stack>
                 </Box>
             )
         }
@@ -181,7 +165,7 @@ export const RepairJobs = () => {
                 </Stack>
             </Stack>
         )
-    }, [repairJobs, isGridView, theme.factionTheme.primary])
+    }, [removeByID, repairJobs, theme.factionTheme.primary])
 
     return (
         <Stack direction="row" sx={{ height: "100%" }}>
@@ -207,8 +191,6 @@ export const RepairJobs = () => {
                         sortOptions={sortOptions}
                         selectedSort={sort}
                         onSetSort={setSort}
-                        isGridView={isGridView}
-                        toggleIsGridView={toggleIsGridView}
                         isFiltersExpanded={isFiltersExpanded}
                         toggleIsFiltersExpanded={toggleIsFiltersExpanded}
                     />
