@@ -46,9 +46,12 @@ export const StyledImageText = ({
         () =>
             truncateLine
                 ? {
-                      textOverflow: "ellipsis",
-                      whiteSpace: "nowrap",
+                      display: "-webkit-box",
                       overflow: "hidden",
+                      overflowWrap: "anywhere",
+                      textOverflow: "ellipsis",
+                      WebkitLineClamp: 1, // change to max number of lines
+                      WebkitBoxOrient: "vertical",
                   }
                 : {},
         [truncateLine],

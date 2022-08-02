@@ -67,7 +67,7 @@ export const SectionMechRewards = ({ battleEndDetail }: { battleEndDetail: Battl
                                         }}
                                     >
                                         {wm.owner_id === userID && <span>(YOUR MECH) </span>}
-                                        {(wm.name || wm.label).toUpperCase()}
+                                        {wm.name || wm.label}
                                     </Typography>
 
                                     <Stack direction="row" alignItems="center">

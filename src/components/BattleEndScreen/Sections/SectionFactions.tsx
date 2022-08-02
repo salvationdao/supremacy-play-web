@@ -51,6 +51,7 @@ export const SectionFactions = ({ battleEndDetail }: { battleEndDetail: BattleEn
                                     fontWeight="normal"
                                     truncateLine
                                     imageMb={-0.8}
+                                    textSx={{ fontWeight: "fontWeightBold" }}
                                 />
                             </Stack>
                         )

@@ -42,6 +42,7 @@ export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndD
                         imageBackgroundSize="contain"
                         truncateLine
                         imageMb={-1.4}
+                        textSx={{ fontWeight: "fontWeightBold" }}
                     />
                 </Box>
 
