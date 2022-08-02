@@ -36,7 +36,6 @@ export const DoRepairModal = ({
 
     // captcha
     const [captchaToken, setCaptchaToken] = useState<string>()
-    const captchaRef = useRef<HCaptcha | null>(null)
 
     // Submission
     const [isSubmitting, setIsSubmitting] = useState(false)
@@ -206,10 +205,8 @@ export const DoRepairModal = ({
                                 size="compact"
                                 theme="dark"
                                 sitekey="87f715ba-98ff-43da-b970-cfc30fd7c5a0"
-                                onLoad={() => captchaRef.current && captchaRef.current.execute()}
                                 onVerify={setCaptchaToken}
                                 onExpire={() => setCaptchaToken(undefined)}
-                                ref={captchaRef}
                             />
                         </form>
                     )}

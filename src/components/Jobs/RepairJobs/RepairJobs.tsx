@@ -54,17 +54,17 @@ export const RepairJobs = () => {
             if (!payload || payload.length <= 0) return
 
             setRepairJobs((prev) => {
-                let newArray = prev
+                let newArray = [...prev]
 
-                payload.forEach((repairJob) => {
-                    const foundIndex = newArray.findIndex((rj) => rj.id === repairJob.id)
+                for (let index = 0; index < payload.length; index++) {
+                    const foundIndex = newArray.findIndex((rj) => rj.id === payload[index].id)
                     if (foundIndex >= 0) {
-                        newArray[foundIndex] = repairJob
+                        newArray[foundIndex] = payload[index]
                     } else {
                         // If repair job is not in the array, then add it
-                        newArray = [...newArray, repairJob]
+                        newArray = [...newArray, payload[index]]
                     }
-                })
+                }
 
                 return newArray
             })
@@ -122,11 +122,13 @@ export const RepairJobs = () => {
                 <Box sx={{ direction: "ltr", height: 0 }}>
                     <Stack>
                         <FlipMove>
-                            {repairJobsRender.map((repairJob) => (
-                                <div key={`repair-job-${repairJob.id}`} style={{ marginBottom: "1.3rem" }}>
-                                    <RepairJobItem repairJob={repairJob} removeByID={removeByID} />
-                                </div>
-                            ))}
+                            {repairJobsRender.map((repairJob) => {
+                                return (
+                                    <div key={`repair-job-${repairJob.id}`} style={{ marginBottom: "1.3rem" }}>
+                                        <RepairJobItem repairJob={repairJob} removeByID={removeByID} />
+                                    </div>
+                                )
+                            })}
                         </FlipMove>
                     </Stack>
                 </Box>

@@ -5,7 +5,7 @@ import { useEffect } from "react"
 import { SectionBottom, SectionFactions, SectionWinner } from ".."
 import { useGame, useMobile, useOverlayToggles } from "../../containers"
 import { useTheme } from "../../containers/theme"
-import { siteZIndex } from "../../theme/theme"
+import { siteZIndex, fonts } from "../../theme/theme"
 
 export const BOTTOM_BUTTONS_HEIGHT = 5 //rems
 
@@ -55,7 +55,9 @@ export const BattleEndScreen = () => {
                 }}
             >
                 <Box sx={{ mb: "1.6rem" }}>
-                    <Typography variant="h4">BATTLE ID #{battle_identifier.toString().padStart(4, "0")}</Typography>
+                    <Typography variant="h5" sx={{ fontFamily: fonts.nostromoBlack }}>
+                        BATTLE ID #{battle_identifier.toString().padStart(4, "0")}
+                    </Typography>
                     <Typography variant="h6">
                         {moment(started_at).format("h:mm A")} to {moment(ended_at).format("h:mm A")}
                     </Typography>

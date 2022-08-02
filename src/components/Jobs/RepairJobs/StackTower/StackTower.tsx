@@ -27,7 +27,7 @@ export const StackTower = React.memo(function StackTower({
     const [gamePatterns, setGamePatterns] = useState<GamePattern[]>([])
     const cumulativeScore = gamePatterns.filter((p) => !p.is_failed && p.score > 0).length
 
-    // As the player plays the minigame, this will be the game updates
+    // As the player plays the mini game, this will be the game updates
     const oneNewGamePattern = useCallback(
         (gamePattern: GamePattern) => {
             setScore(gamePattern?.score)
