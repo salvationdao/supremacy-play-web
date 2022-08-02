@@ -67,8 +67,8 @@ export const MechOwnerBattleReward = ({ message, data }: MechOwnerBattleRewardPr
                 </Stack>
 
                 {playerAbility && (
-                    <Stack alignItems="center">
-                        <Box sx={{ width: "10rem", height: "13rem" }}>
+                    <Stack alignItems="center" spacing=".8rem">
+                        <Box sx={{ width: "10rem", minHeight: "13rem" }}>
                             <PlayerAbilityCard playerAbility={playerAbility} viewOnly />
                         </Box>
 
