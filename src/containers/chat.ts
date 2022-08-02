@@ -259,20 +259,34 @@ export const ChatContainer = createContainer(() => {
         if (!incomingMessages || incomingMessages.messages.length <= 0) return
 
         let userStatMessage
+        let isUpdate = false
         incomingMessages.messages.forEach((message) => {
-            if (message.type === "TEXT" && (message.data as TextMessageData).from_user.id === userID) {
+            if (message.type === "TEXT") {
+                if (factionChatMessages.findIndex((x) => x.id === message.id) !== -1) {
+                    reactMessage(message.id ?? "", (message.data as TextMessageData).metadata.likes)
+                    isUpdate = true
+                    return
+                }
+                if (globalChatMessages.findIndex((x) => x.id === message.id) !== -1) {
+                    reactMessage(message.id ?? "", (message.data as TextMessageData).metadata.likes)
+                    isUpdate = true
+                    return
+                }
                 // This will attempt to look through the messages, if it's our own,
                 // get the latest message and update userStats with it.
-                userStatMessage = message
+                if ((message.data as TextMessageData).from_user.id === userID) {
+                    userStatMessage = message
+                }
             }
 
             return message
         })
 
+        if (isUpdate) return
         if (userStatMessage) saveUserStats(userStatMessage, !!incomingMessages.faction)
         newMessageHandler(incomingMessages)
         setIncomingMessages(undefined)
-    }, [incomingMessages, newMessageHandler, saveUserStats, userID])
+    }, [incomingMessages, newMessageHandler, saveUserStats, userID, reactMessage])
 
     // Subscribe to global chat messages
     useGameServerSubscription<ChatMessageType[]>(
