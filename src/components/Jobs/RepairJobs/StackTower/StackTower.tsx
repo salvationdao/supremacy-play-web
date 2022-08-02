@@ -46,10 +46,8 @@ export const StackTower = React.memo(function StackTower({
     // Tell server when we complete one block
     useEffect(() => {
         if (!repairAgent?.id || cumulativeScore !== repairAgent?.required_stacks) return
-        ;(async () => {
-            await completeAgentRepair(repairAgent.id)
-            setGamePatterns([])
-        })()
+        completeAgentRepair(repairAgent.id)
+        setGamePatterns([])
     }, [completeAgentRepair, cumulativeScore, gamePatterns, repairAgent?.id, repairAgent?.required_stacks])
 
     return (
