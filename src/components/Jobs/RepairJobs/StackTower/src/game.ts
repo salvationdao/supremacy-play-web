@@ -1,11 +1,19 @@
 import { FallingBlock, NormalBlock } from "./block"
 import { Stage } from "./stage"
 
+enum TriggerWith {
+    Spacebar = "SPACE_BAR",
+    LeftClick = "LEFT_CLICK",
+    Touch = "TOUCH",
+    None = "NONE",
+}
+
 export interface GamePattern {
     score: number
     stack_at: Date
     dimension: { width: number; height: number; depth: number }
     is_failed: boolean
+    trigger_with: TriggerWith
 }
 
 export enum GameState {
@@ -24,18 +32,20 @@ export class Game {
     blocks: NormalBlock[]
     fallingBlocks: FallingBlock[]
     setGameState: React.Dispatch<React.SetStateAction<GameState>>
-    setRecentPattern: React.Dispatch<React.SetStateAction<GamePattern | undefined>>
+    oneNewGamePattern: (gamePattern: GamePattern) => void
+    triggerWith: TriggerWith
 
     constructor(
         backgroundColor: string,
         _setGameState: React.Dispatch<React.SetStateAction<GameState>>,
-        _setRecentPattern: React.Dispatch<React.SetStateAction<GamePattern | undefined>>,
+        _oneNewGamePattern: (gamePattern: GamePattern) => void,
     ) {
         // container
         this.container = document.getElementById("game")
 
         this.setGameState = _setGameState
-        this.setRecentPattern = _setRecentPattern
+        this.oneNewGamePattern = _oneNewGamePattern
+        this.triggerWith = TriggerWith.None
 
         this.stage = new Stage(backgroundColor)
         this.blocks = []
@@ -81,7 +91,6 @@ export class Game {
                 })
                 this.blocks = []
                 this.score = 0
-                this.setRecentPattern(undefined)
                 this.addBlock()
                 this.setState(GameState.Ready)
                 break
@@ -106,7 +115,13 @@ export class Game {
                 this.stage.remove(lastBlock.mesh)
                 this.setState(GameState.Ended)
                 this.stage.setCamera(Math.max((this.blocks.length - 3) * 2, 0))
-                this.setRecentPattern({ score: this.score, is_failed: true, dimension: lastBlock.dimension, stack_at: new Date() })
+                this.oneNewGamePattern({
+                    score: this.score,
+                    is_failed: true,
+                    dimension: lastBlock.dimension,
+                    stack_at: new Date(),
+                    trigger_with: this.triggerWith,
+                })
                 return
             }
 
@@ -148,11 +163,12 @@ export class Game {
 
         this.score = Math.max(this.blocks.length - 1, 0)
         if (lastBlock) {
-            this.setRecentPattern({
+            this.oneNewGamePattern({
                 score: this.score,
                 is_failed: false,
                 dimension: lastBlock.dimension,
                 stack_at: new Date(),
+                trigger_with: this.triggerWith,
             })
         }
 

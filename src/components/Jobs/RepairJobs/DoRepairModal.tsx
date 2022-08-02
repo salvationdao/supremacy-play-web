@@ -60,6 +60,7 @@ export const DoRepairModal = ({
         setSubmitSuccess(false)
     }, [])
 
+    // Register for an agent
     const registerAgentRepair = useCallback(async () => {
         if (!repairStatus?.id && !repairJob?.id) return
 
@@ -86,14 +87,25 @@ export const DoRepairModal = ({
         }
     }, [repairJob?.id, repairStatus?.id, send, captchaToken])
 
+    // Send individual updates
+    const agentRepairUpdate = useCallback(
+        (repairAgentID: string, gamePattern: GamePattern) => {
+            send(GameServerKeys.RepairAgentUpdate, {
+                repair_agent_id: repairAgentID,
+                ...gamePattern,
+            })
+        },
+        [send],
+    )
+
+    // Tell server we finished and do validation
     const completeAgentRepair = useCallback(
-        async (repairAgentID: string, gamePatterns: GamePattern[]) => {
+        async (repairAgentID: string) => {
             try {
                 setSubmitError(undefined)
                 setIsSubmitting(true)
                 const resp = await send(GameServerKeys.CompleteRepairAgent, {
                     repair_agent_id: repairAgentID,
-                    game_patterns: gamePatterns,
                 })
 
                 if (!resp) return Promise.reject(false)
@@ -225,9 +237,27 @@ export const DoRepairModal = ({
 
         if (submitError) {
             return (
-                <Typography variant="h5" sx={{ textAlign: "center", fontWeight: "fontWeightBold", color: colors.red }}>
-                    {submitError}
-                </Typography>
+                <Stack spacing="2rem" alignItems="center">
+                    <Typography variant="h5" sx={{ textAlign: "center", fontWeight: "fontWeightBold", color: colors.red }}>
+                        {submitError}
+                    </Typography>
+
+                    <FancyButton
+                        clipThingsProps={{
+                            clipSize: "7px",
+                            clipSlantSize: "0px",
+                            corners: { topLeft: true, topRight: true, bottomLeft: true, bottomRight: true },
+                            backgroundColor: colors.red,
+                            opacity: 1,
+                            border: { borderColor: colors.red, borderThickness: "2px" },
+                            sx: { position: "relative" },
+                        }}
+                        sx={{ px: "1.6rem", py: "1rem", color: "#FFFFFF" }}
+                        onClick={() => setSubmitError(undefined)}
+                    >
+                        <Typography sx={{ fontFamily: fonts.nostromoBlack }}>DISMISS</Typography>
+                    </FancyButton>
+                </Stack>
             )
         }
 
@@ -378,6 +408,7 @@ export const DoRepairModal = ({
                             <StackTower
                                 disableGame={!repairAgent || !!submitError || isSubmitting || isFinished}
                                 repairAgent={repairAgent}
+                                agentRepairUpdate={agentRepairUpdate}
                                 completeAgentRepair={completeAgentRepair}
                             />
                         </Box>

@@ -1,5 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
-import React, { useEffect, useMemo, useState } from "react"
+import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { useTheme } from "../../../../containers/theme"
 import { colors, fonts } from "../../../../theme/theme"
 import { RepairAgent } from "../../../../types/jobs"
@@ -10,34 +10,44 @@ import { isWebGLAvailable } from "./src/utils"
 export const StackTower = React.memo(function StackTower({
     disableGame,
     repairAgent,
+    agentRepairUpdate,
     completeAgentRepair,
 }: {
     disableGame: boolean
     repairAgent?: RepairAgent
-    completeAgentRepair: (repairAgentID: string, gamePatterns: GamePattern[]) => Promise<boolean>
+    agentRepairUpdate: (repairAgentID: string, gamePattern: GamePattern) => void
+    completeAgentRepair: (repairAgentID: string) => Promise<boolean>
 }) {
     const theme = useTheme()
 
     // Game data
     const [gameState, setGameState] = useState<GameState>(GameState.Loading)
-    const [recentPattern, setRecentPattern] = useState<GamePattern>()
+    const [score, setScore] = useState(0)
 
     const [gamePatterns, setGamePatterns] = useState<GamePattern[]>([])
     const cumulativeScore = gamePatterns.filter((p) => !p.is_failed && p.score > 0).length
 
-    useEffect(() => {
-        if (recentPattern) {
-            setGamePatterns((prev) => {
-                return [...prev, recentPattern]
-            })
-        }
-    }, [recentPattern])
+    // As the player plays the minigame, this will be the game updates
+    const oneNewGamePattern = useCallback(
+        (gamePattern: GamePattern) => {
+            setScore(gamePattern?.score)
 
-    // Send server game pattern
+            if (repairAgent?.id) {
+                setGamePatterns((prev) => {
+                    return [...prev, gamePattern]
+                })
+
+                agentRepairUpdate(repairAgent.id, gamePattern)
+            }
+        },
+        [agentRepairUpdate, repairAgent?.id],
+    )
+
+    // Tell server when we complete one block
     useEffect(() => {
         if (!repairAgent?.id || cumulativeScore !== repairAgent?.required_stacks) return
         ;(async () => {
-            const result = await completeAgentRepair(repairAgent.id, gamePatterns)
+            const result = await completeAgentRepair(repairAgent.id)
             if (result) setGamePatterns([])
         })()
     }, [completeAgentRepair, cumulativeScore, gamePatterns, repairAgent?.id, repairAgent?.required_stacks])
@@ -88,7 +98,7 @@ export const StackTower = React.memo(function StackTower({
                 </Stack>
 
                 <Box sx={{ flex: 1, border: "#FFFFFF20 1px solid" }}>
-                    <TowerStackInner recentPattern={recentPattern} gameState={gameState} setGameState={setGameState} setRecentPattern={setRecentPattern} />
+                    <TowerStackInner score={score} gameState={gameState} setGameState={setGameState} oneNewGamePattern={oneNewGamePattern} />
                 </Box>
             </Stack>
         </Box>
@@ -96,13 +106,13 @@ export const StackTower = React.memo(function StackTower({
 })
 
 const TowerStackInner = ({
-    recentPattern,
-    setRecentPattern,
+    score,
+    oneNewGamePattern,
     gameState,
     setGameState,
 }: {
-    recentPattern?: GamePattern
-    setRecentPattern: React.Dispatch<React.SetStateAction<GamePattern | undefined>>
+    score: number
+    oneNewGamePattern: (gamePattern: GamePattern) => void
     gameState: GameState
     setGameState: React.Dispatch<React.SetStateAction<GameState>>
 }) => {
@@ -114,8 +124,8 @@ const TowerStackInner = ({
             console.error("WebGL is not supported in this browser.")
         }
 
-        new Game(theme.factionTheme.background, setGameState, setRecentPattern)
-    }, [setGameState, setRecentPattern, theme.factionTheme.background])
+        new Game(theme.factionTheme.background, setGameState, oneNewGamePattern)
+    }, [setGameState, oneNewGamePattern, theme.factionTheme.background])
 
     // This makes sure it never re-renders
     const gameDiv = useMemo(() => {
@@ -162,7 +172,7 @@ const TowerStackInner = ({
                         opacity: gameState === GameState.Playing || gameState === GameState.Resetting || gameState === GameState.Ended ? 1 : 0,
                     }}
                 >
-                    {recentPattern?.score || 0}
+                    {score}
                 </Typography>
 
                 {/* Game ready instructions */}
@@ -217,5 +227,5 @@ const TowerStackInner = ({
                 </Stack>
             </Box>
         )
-    }, [gameDiv, gameState, recentPattern?.score])
+    }, [gameDiv, gameState, score])
 }

@@ -185,6 +185,7 @@ export enum GameServerKeys {
     RegisterMechRepair = "MECH:REPAIR:OFFER:ISSUE",
     CancelMechRepair = "MECH:REPAIR:OFFER:CLOSE",
     RegisterRepairAgent = "REPAIR:AGENT:REGISTER",
+    RepairAgentUpdate = "REPAIR:AGENT:RECORD",
     CompleteRepairAgent = "REPAIR:AGENT:COMPLETE",
 
     // Companion App
