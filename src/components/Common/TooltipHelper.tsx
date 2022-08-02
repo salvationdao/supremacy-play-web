@@ -32,6 +32,9 @@ export const TooltipHelper = ({
 
     if (!text) return <>{children}</>
 
+    const primaryColor = "#333333"
+    const backgroundColor = theme.factionTheme.background
+
     return (
         <Tooltip
             open={open}
@@ -48,15 +51,15 @@ export const TooltipHelper = ({
                     clipSize="6px"
                     clipSlantSize="3px"
                     border={{
-                        borderColor: theme.factionTheme.primary,
-                        borderThickness: ".15rem",
+                        borderColor: primaryColor,
+                        borderThickness: "1.2px",
                     }}
                     corners={{
                         topRight: true,
                         bottomLeft: true,
                     }}
                     opacity={0.99}
-                    backgroundColor={theme.factionTheme.background}
+                    backgroundColor={backgroundColor}
                     sx={{ height: "100%" }}
                 >
                     <Stack sx={{ height: "100%", px: "1.1rem", py: ".6rem" }}>
@@ -70,7 +73,7 @@ export const TooltipHelper = ({
                 popper: {
                     style: { filter: "drop-shadow(0 3px 3px #00000050)", zIndex: 999999 },
                 },
-                arrow: { sx: { color: theme.factionTheme.primary } },
+                arrow: { sx: { color: primaryColor } },
                 tooltip: { sx: { padding: "0 !important", maxWidth: "25rem", background: "unset" } },
             }}
         >

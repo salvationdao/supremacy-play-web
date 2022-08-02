@@ -133,10 +133,9 @@ export const QuickDeployItem = ({ mech }: QuickDeployItemProps) => {
                 <Stack direction="row" alignItems="center" spacing="1rem" justifyContent="space-between" sx={{ width: "100%" }}>
                     <MechGeneralStatus mechID={mech.id} smallVersion />
 
-                    {!error && mechDetails && (mechState === MechStatusEnum.Idle || mechState === MechStatusEnum.Queue) && (
+                    {!error && mechDetails && mechState === MechStatusEnum.Idle && (
                         <FancyButton
                             loading={isLoading}
-                            disabled={mechState !== MechStatusEnum.Idle}
                             clipThingsProps={{
                                 clipSize: "5px",
                                 backgroundColor: colors.green,
