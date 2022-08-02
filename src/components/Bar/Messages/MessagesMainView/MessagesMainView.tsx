@@ -1,11 +1,12 @@
 import { Box, Pagination, Stack, Switch, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { SvgAnnouncement, SvgDamage1, SvgHistoryClock, SvgListView, SvgSyndicateFlag } from "../../../../assets"
+import { SvgAnnouncement, SvgDamage1, SvgHealth, SvgHistoryClock, SvgNotification, SvgSyndicateFlag } from "../../../../assets"
 import { useAuth } from "../../../../containers"
+import { useTheme } from "../../../../containers/theme"
 import { usePagination } from "../../../../hooks"
 import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
-import { colors, fonts, theme } from "../../../../theme/theme"
+import { colors, fonts } from "../../../../theme/theme"
 import { FeatureName, SystemMessage, SystemMessageDataType } from "../../../../types"
 import { FancyButton } from "../../../Common/FancyButton"
 import { SystemMessageDisplayable } from "../Messages"
@@ -18,6 +19,7 @@ export interface MessagesMainViewProps {
 }
 
 export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewProps) => {
+    const theme = useTheme()
     const { userHasFeature } = useAuth()
     const { send } = useGameServerCommandsUser("/user_commander")
 
@@ -51,16 +53,20 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
             if (!resp || !resp.system_messages) return
 
             const displayables = resp.system_messages.map<SystemMessageDisplayable>((r) => {
-                let icon = SvgAnnouncement
+                let icon = <SvgAnnouncement fill={colors.orange} size="1.6rem" />
                 switch (r.data_type) {
                     case SystemMessageDataType.MechQueue:
-                        icon = SvgListView
+                        icon = <SvgNotification size="1.6rem" />
                         break
                     case SystemMessageDataType.MechBattleComplete:
-                        icon = SvgDamage1
+                        icon = <SvgDamage1 fill={colors.green} size="1.6rem" />
                         break
                     case SystemMessageDataType.Faction:
-                        icon = SvgSyndicateFlag
+                        icon = <SvgSyndicateFlag fill={theme.factionTheme.primary} size="1.6rem" />
+                        break
+                    case SystemMessageDataType.MechOwnerBattleReward:
+                        icon = <SvgHealth fill={colors.yellow} size="1.6rem" />
+                        break
                 }
 
                 return {
@@ -80,7 +86,7 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
             setError(message)
             console.error(e)
         }
-    }, [hideRead, page, pageSize, send, setTotalItems])
+    }, [hideRead, page, pageSize, send, setTotalItems, theme.factionTheme.primary])
 
     useEffect(() => {
         changePage(1)
@@ -191,7 +197,7 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
                 </Stack>
             )
         }
-    }, [messages, focusedMessage, totalPages, page, readMessage, changePage])
+    }, [focusedMessage, messages, theme.factionTheme.primary, theme.factionTheme.secondary, totalPages, page, readMessage, changePage])
 
     return (
         <Stack direction="row" height="100%">

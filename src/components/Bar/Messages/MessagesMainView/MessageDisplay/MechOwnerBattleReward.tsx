@@ -3,6 +3,7 @@ import { SvgSupToken } from "../../../../../assets"
 import { supFormatterNoFixed } from "../../../../../helpers"
 import { colors, fonts } from "../../../../../theme/theme"
 import { BlueprintPlayerAbility, PlayerAbility } from "../../../../../types"
+import { ClipThing } from "../../../../Common/ClipThing"
 import { PlayerAbilityCard } from "../../../../VotingSystem/PlayerAbilities/PlayerAbilityCard"
 
 interface MechOwnerBattleRewardProps {
@@ -34,32 +35,49 @@ export const MechOwnerBattleReward = ({ message, data }: MechOwnerBattleRewardPr
 
             <Divider sx={{ my: "1rem !important", borderColor: "#FFFFFF28" }} />
 
-            <Typography sx={{ fontFamily: fonts.nostromoBold, lineHeight: 1, pb: "1rem" }}>CONSOLATION REWARD:</Typography>
+            <Typography sx={{ fontFamily: fonts.nostromoBold, pb: "1rem" }}>CONSOLATION REWARDS:</Typography>
 
-            <Stack
-                direction="row"
-                alignItems="center"
-                sx={{
-                    pb: ".4rem",
-                    borderRadius: 1,
-                }}
-            >
-                <Typography sx={{ fontFamily: fonts.nostromoBold, lineHeight: 1 }}>Sups: </Typography>
-                <SvgSupToken size="1.9rem" fill={colors.yellow} sx={{ mr: ".2rem", pb: ".4rem" }} />
-                <Typography variant="h6" sx={{ lineHeight: 1 }}>
-                    {supFormatterNoFixed(sups, 2)}
-                </Typography>
-            </Stack>
+            <Stack alignItems="center" direction="row" spacing="2rem">
+                <Stack alignItems="center" spacing=".8rem" sx={{ alignSelf: "stretch" }}>
+                    <ClipThing
+                        clipSize="6px"
+                        border={{
+                            borderColor: colors.yellow,
+                            borderThickness: "1.5px",
+                        }}
+                        opacity={0.9}
+                        backgroundColor="#111111"
+                        sx={{ flex: 1, width: "10rem" }}
+                    >
+                        <Stack alignItems="center" justifyContent="center" spacing="1rem" sx={{ position: "relative", height: "100%" }}>
+                            <SvgSupToken
+                                size="8.6rem"
+                                fill={colors.yellow}
+                                sx={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", zIndex: -1, opacity: 0.07 }}
+                            />
+                            <Typography variant="h6" sx={{ textAlign: "center", fontWeight: "fontWeightBold" }}>
+                                {supFormatterNoFixed(sups, 2)}
+                            </Typography>
+                        </Stack>
+                    </ClipThing>
 
-            {ability && playerAbility && (
-                <Stack direction="column">
-                    <Typography sx={{ fontFamily: fonts.nostromoBold, lineHeight: 1 }}>Ability: </Typography>
-
-                    <Box sx={{ width: "8rem", height: "14rem" }}>
-                        <PlayerAbilityCard key={ability.id} playerAbility={playerAbility} viewOnly />
-                    </Box>
+                    <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack }}>
+                        SUPS
+                    </Typography>
                 </Stack>
-            )}
+
+                {playerAbility && (
+                    <Stack alignItems="center">
+                        <Box sx={{ width: "10rem", height: "13rem" }}>
+                            <PlayerAbilityCard playerAbility={playerAbility} viewOnly />
+                        </Box>
+
+                        <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack }}>
+                            ABILITY
+                        </Typography>
+                    </Stack>
+                )}
+            </Stack>
         </Stack>
     )
 }

@@ -29,7 +29,7 @@ export const MessageItem = ({ message, selected, onSelect }: MessageItemProps) =
         >
             <TableCell align="left" sx={{ width: "18rem", borderBottom: "none" }}>
                 <Stack spacing="1rem" direction="row" alignItems="center">
-                    <message.icon size="1.6rem" />
+                    {message.icon}
                     <Typography
                         sx={{
                             display: "-webkit-box",
