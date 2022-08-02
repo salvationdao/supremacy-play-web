@@ -146,7 +146,7 @@ export const TotalAndPageSizeOptions = ({
                     </Stack>
                 )}
 
-                {sortOptions && selectedSort && onSetSort && changePage && (
+                {sortOptions && selectedSort && onSetSort && (
                     <Stack direction="row" alignItems="center" spacing=".6rem">
                         <Typography variant="caption">SORT:</Typography>
 
@@ -193,7 +193,7 @@ export const TotalAndPageSizeOptions = ({
                                         value={x.value}
                                         onClick={() => {
                                             onSetSort(x.value)
-                                            changePage(1)
+                                            changePage && changePage(1)
                                         }}
                                         sx={{ "&:hover": { backgroundColor: "#FFFFFF20" } }}
                                     >
