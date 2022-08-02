@@ -150,7 +150,7 @@ export const HireContractorsCard = ({ mechDetails, remainDamagedBlocks }: { mech
                             fontSize: "1.7rem",
                             height: "unset",
                             "::-webkit-outer-spin-button, ::-webkit-inner-spin-button": {
-                                "-webkit-appearance": "none",
+                                WebkitAppearance: "none",
                             },
                         },
                         ".MuiOutlinedInput-notchedOutline": { border: "unset" },

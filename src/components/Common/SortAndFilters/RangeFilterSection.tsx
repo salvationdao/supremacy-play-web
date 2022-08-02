@@ -100,7 +100,7 @@ const NumberInput = ({ value, setValue, primaryColor }: { value: number | undefi
                     fontSize: "1.7rem",
                     height: "unset",
                     "::-webkit-outer-spin-button, ::-webkit-inner-spin-button": {
-                        "-webkit-appearance": "none",
+                        WebkitAppearance: "none",
                     },
                 },
                 ".MuiOutlinedInput-notchedOutline": { border: "unset" },
