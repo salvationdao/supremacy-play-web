@@ -30,7 +30,7 @@ export const QuickDeployItem = ({ mech }: QuickDeployItemProps) => {
     // Get addition mech data
     useGameServerSubscriptionFaction<MechDetails>(
         {
-            URI: `/mech/${mech.id}/details`,
+            URI: `/mech/${mech.id}/brief_info`,
             key: GameServerKeys.GetMechDetails,
         },
         (payload) => {
