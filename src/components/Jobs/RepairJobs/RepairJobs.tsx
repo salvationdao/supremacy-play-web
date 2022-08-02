@@ -135,7 +135,7 @@ export const RepairJobs = () => {
                     >
                         <FlipMove>
                             {repairJobs.map((repairJob) => (
-                                <RepairJobItem key={`repair-job-${repairJob.id}`} repairJob={repairJob} isGridView={isGridView} />
+                                <RepairJobItem key={`repair-job-${repairJob.id}`} repairJob={repairJob} isGridView={isGridView} removeByID={removeByID} />
                             ))}
                         </FlipMove>
                     </Box>

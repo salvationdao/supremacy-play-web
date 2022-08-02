@@ -1,5 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { SvgCubes, SvgSupToken } from "../../../assets"
 import { useAuth, useSupremacy } from "../../../containers"
 import { supFormatterNoFixed, timeSinceInWords } from "../../../helpers"
@@ -14,7 +14,7 @@ import { RepairBlocks } from "../../Hangar/WarMachinesHangar/Common/MechRepairBl
 import { General } from "../../Marketplace/Common/MarketItem/General"
 import { DoRepairModal } from "./DoRepairModal"
 
-export const RepairJobItem = ({ repairJob, isGridView }: { repairJob: RepairJob; isGridView?: boolean }) => {
+export const RepairJobItem = ({ repairJob, isGridView, removeByID }: { repairJob: RepairJob; isGridView?: boolean; removeByID: (id: string) => void }) => {
     const { userID } = useAuth()
     const { getFaction } = useSupremacy()
     const [doRepairModalOpen, setDoRepairModalOpen] = useState(false)
@@ -26,9 +26,18 @@ export const RepairJobItem = ({ repairJob, isGridView }: { repairJob: RepairJob;
 
     const jobOwnerFaction = useMemo(() => getFaction(repairJob.job_owner.faction_id), [getFaction, repairJob.job_owner.faction_id])
 
+    const isFinished = repairJob.closed_at || repairJob.expires_at < new Date()
     const remainDamagedBlocks = repairJob.blocks_required_repair - repairJob.blocks_repaired
     const primaryColor = jobOwnerFaction.primary_color
     const backgroundColor = jobOwnerFaction.background_color
+
+    useEffect(() => {
+        if (isFinished && doRepairModalOpen) {
+            setTimeout(() => {
+                removeByID(repairJob.id)
+            }, 5000)
+        }
+    }, [doRepairModalOpen, isFinished, removeByID, repairJob.id])
 
     return (
         <>
@@ -50,7 +59,7 @@ export const RepairJobItem = ({ repairJob, isGridView }: { repairJob: RepairJob;
                         sx: { position: "relative", height: "100%" },
                     }}
                     sx={{ color: primaryColor, textAlign: "start", height: "100%", ":hover": { opacity: 1 } }}
-                    onClick={() => setDoRepairModalOpen(true)}
+                    onClick={() => !isFinished && setDoRepairModalOpen(true)}
                 >
                     <Box
                         sx={{
@@ -124,7 +133,7 @@ export const RepairJobItem = ({ repairJob, isGridView }: { repairJob: RepairJob;
                             </Box>
                         </General>
 
-                        {repairJob.closed_at || repairJob.expires_at < new Date() ? (
+                        {isFinished ? (
                             <General isGridView={isGridView} title="TIME LEFT" text="EXPIRED" textColor={colors.lightGrey} />
                         ) : (
                             <CountdownGeneral isGridView={isGridView} endTime={repairJob.expires_at} />
