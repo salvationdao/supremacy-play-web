@@ -47,15 +47,15 @@ export const MechOwnerBattleReward = ({ message, data }: MechOwnerBattleRewardPr
                         }}
                         opacity={0.9}
                         backgroundColor="#111111"
-                        sx={{ flex: 1, width: "10rem" }}
+                        sx={{ flex: 1, width: "10rem", minHeight: "10rem" }}
                     >
                         <Stack alignItems="center" justifyContent="center" spacing="1rem" sx={{ position: "relative", height: "100%" }}>
                             <SvgSupToken
                                 size="8.6rem"
                                 fill={colors.yellow}
-                                sx={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", zIndex: -1, opacity: 0.07 }}
+                                sx={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", zIndex: -1, opacity: 0.05 }}
                             />
-                            <Typography variant="h6" sx={{ textAlign: "center", fontWeight: "fontWeightBold" }}>
+                            <Typography variant="h6" sx={{ color: colors.neonBlue, textAlign: "center", fontWeight: "fontWeightBold" }}>
                                 {supFormatterNoFixed(sups, 2)}
                             </Typography>
                         </Stack>
