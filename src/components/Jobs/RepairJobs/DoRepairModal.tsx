@@ -1,12 +1,12 @@
 import HCaptcha from "@hcaptcha/react-hcaptcha"
 import { Box, IconButton, Modal, Stack, SxProps, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
-import { ReactNode, useCallback, useMemo, useRef, useState } from "react"
+import { ReactNode, useCallback, useMemo, useState } from "react"
 import { SvgClose, SvgCubes, SvgSupToken } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { supFormatterNoFixed, timeSinceInWords } from "../../../helpers"
 import { useTimer } from "../../../hooks"
-import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
+import { useGameServerCommandsUser, useGameServerSubscription } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { heightEffect } from "../../../theme/keyframes"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
@@ -19,7 +19,7 @@ import { StackTower } from "./StackTower/StackTower"
 
 export const DoRepairModal = ({
     repairStatus,
-    repairJob,
+    repairJob: _repairJob,
     open,
     onClose,
 }: {
@@ -32,7 +32,20 @@ export const DoRepairModal = ({
     const { send } = useGameServerCommandsUser("/user_commander")
     const [isRegistering, setIsRegistering] = useState(false)
     const [error, setError] = useState<string>()
+    const [repairJob, setRepairJob] = useState<RepairJob | undefined>(_repairJob)
     const [repairAgent, setRepairAgent] = useState<RepairAgent>()
+
+    useGameServerSubscription<RepairJob>(
+        {
+            URI: `/public/repair_offer/${_repairJob?.id}`,
+            key: GameServerKeys.SubRepairJobStatus,
+            ready: !!repairJob?.id,
+        },
+        (payload) => {
+            if (!payload) return
+            setRepairJob(payload)
+        },
+    )
 
     // captcha
     const [captchaToken, setCaptchaToken] = useState<string>()

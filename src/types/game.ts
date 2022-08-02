@@ -189,6 +189,12 @@ export interface BattleEndDetail {
     winning_faction_id_order: FactionIDs[]
     winning_war_machines: WarMachineState[]
 }
+// {
+//     "player_id": "db51b218-ef04-42d9-abd7-21fb2cc9aa51",
+//     "rewarded_sups": "73125000000000000000",
+//     "rewarded_player_ability": null,
+//     "faction_rank": "SECOND"
+// }
 
 export interface WarMachineDestroyedRecord {
     destroyed_war_machine: WarMachineState
