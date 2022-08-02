@@ -32,6 +32,7 @@ export const RepairJobs = () => {
 
     // Items
     const { value: repairJobs, setValue: setRepairJobs, removeByID } = useArray<RepairJob>([], "id")
+    const [repairJobsRender, setRepairJobsRender] = useState<RepairJob[]>([])
 
     // Filters and sorts
     const [isFiltersExpanded, toggleIsFiltersExpanded] = useToggle(localStorage.getItem("isRepairJobsFiltersExpanded") === "true")
@@ -82,33 +83,31 @@ export const RepairJobs = () => {
 
     // Apply filter and sorting
     useEffect(() => {
-        setRepairJobs((prev) => {
-            const filtered = prev.filter((rj) => {
-                const rewardPerBlock = new BigNumber(rj.sups_worth_per_block).shiftedBy(-18).toNumber()
-                if (rewardRanges && rewardRanges[0] && rewardPerBlock < rewardRanges[0]) return false
-                if (rewardRanges && rewardRanges[1] && rewardPerBlock > rewardRanges[1]) return false
-                return true
-            })
-
-            let sorted = filtered
-            if (sort === SortTypeLabel.EndTimeEndingLast) sorted = sorted.sort((a, b) => (a.expires_at < b.expires_at ? 1 : -1))
-            if (sort === SortTypeLabel.EndTimeEndingSoon) sorted = sorted.sort((a, b) => (a.expires_at > b.expires_at ? 1 : -1))
-            if (sort === SortTypeLabel.CreateTimeNewestFirst) sorted = sorted.sort((a, b) => (a.created_at < b.created_at ? 1 : -1))
-            if (sort === SortTypeLabel.CreateTimeOldestFirst) sorted = sorted.sort((a, b) => (a.created_at > b.created_at ? 1 : -1))
-            if (sort === SortTypeLabel.RewardAmountHighest) sorted = sorted.sort((a, b) => (a.offered_sups_amount < b.offered_sups_amount ? 1 : -1))
-            if (sort === SortTypeLabel.RewardAmountLowest) sorted = sorted.sort((a, b) => (a.offered_sups_amount > b.offered_sups_amount ? 1 : -1))
-
-            return sorted
+        const filtered = repairJobs.filter((rj) => {
+            const rewardPerBlock = new BigNumber(rj.sups_worth_per_block).shiftedBy(-18).toNumber()
+            if (rewardRanges && rewardRanges[0] !== undefined && rewardPerBlock < rewardRanges[0]) return false
+            if (rewardRanges && rewardRanges[1] !== undefined && rewardPerBlock > rewardRanges[1]) return false
+            return true
         })
+
+        let sorted = filtered
+        if (sort === SortTypeLabel.EndTimeEndingLast) sorted = sorted.sort((a, b) => (a.expires_at < b.expires_at ? 1 : -1))
+        if (sort === SortTypeLabel.EndTimeEndingSoon) sorted = sorted.sort((a, b) => (a.expires_at > b.expires_at ? 1 : -1))
+        if (sort === SortTypeLabel.CreateTimeNewestFirst) sorted = sorted.sort((a, b) => (a.created_at < b.created_at ? 1 : -1))
+        if (sort === SortTypeLabel.CreateTimeOldestFirst) sorted = sorted.sort((a, b) => (a.created_at > b.created_at ? 1 : -1))
+        if (sort === SortTypeLabel.RewardAmountHighest) sorted = sorted.sort((a, b) => (a.offered_sups_amount < b.offered_sups_amount ? 1 : -1))
+        if (sort === SortTypeLabel.RewardAmountLowest) sorted = sorted.sort((a, b) => (a.offered_sups_amount > b.offered_sups_amount ? 1 : -1))
+
+        setRepairJobsRender(sorted)
 
         updateQuery({
             sort,
             rewardRanges: rewardRanges.join("||"),
         })
-    }, [sort, rewardRanges, updateQuery, setRepairJobs])
+    }, [sort, rewardRanges, updateQuery, setRepairJobsRender, repairJobs])
 
     const content = useMemo(() => {
-        if (!repairJobs) {
+        if (!repairJobsRender) {
             return (
                 <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                     <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
@@ -118,12 +117,12 @@ export const RepairJobs = () => {
             )
         }
 
-        if (repairJobs && repairJobs.length > 0) {
+        if (repairJobsRender && repairJobsRender.length > 0) {
             return (
                 <Box sx={{ direction: "ltr", height: 0 }}>
                     <Stack>
                         <FlipMove>
-                            {repairJobs.map((repairJob) => (
+                            {repairJobsRender.map((repairJob) => (
                                 <div key={`repair-job-${repairJob.id}`} style={{ marginBottom: "1.3rem" }}>
                                     <RepairJobItem repairJob={repairJob} removeByID={removeByID} />
                                 </div>
@@ -165,7 +164,7 @@ export const RepairJobs = () => {
                 </Stack>
             </Stack>
         )
-    }, [removeByID, repairJobs, theme.factionTheme.primary])
+    }, [removeByID, repairJobsRender, theme.factionTheme.primary])
 
     return (
         <Stack direction="row" sx={{ height: "100%" }}>
@@ -185,7 +184,7 @@ export const RepairJobs = () => {
                     <PageHeader title="REPAIR JOBS" description="Damaged items will be sent here by the mech owners." imageUrl={WarMachineIconPNG} />
 
                     <TotalAndPageSizeOptions
-                        countItems={repairJobs?.length}
+                        countItems={repairJobsRender?.length}
                         totalItems={repairJobs.length}
                         pageSizeOptions={[10, 20, 30]}
                         sortOptions={sortOptions}
