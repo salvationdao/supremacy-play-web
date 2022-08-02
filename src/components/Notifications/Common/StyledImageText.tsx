@@ -46,7 +46,7 @@ export const StyledImageText = ({
         () =>
             truncateLine
                 ? {
-                      display: "-webkit-box",
+                      display: "-webkit-inline-box",
                       overflow: "hidden",
                       overflowWrap: "anywhere",
                       textOverflow: "ellipsis",
