@@ -3,6 +3,7 @@ import { Box, IconButton, Modal, Stack, SxProps, Typography } from "@mui/materia
 import BigNumber from "bignumber.js"
 import { ReactNode, useCallback, useMemo, useState } from "react"
 import { SvgClose, SvgCubes, SvgSupToken } from "../../../assets"
+import { useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { supFormatterNoFixed, timeSinceInWords } from "../../../helpers"
 import { useTimer } from "../../../hooks"
@@ -29,6 +30,7 @@ export const DoRepairModal = ({
     onClose: () => void
 }) => {
     const theme = useTheme()
+    const { getFaction } = useSupremacy()
     const { send } = useGameServerCommandsUser("/user_commander")
     const [isRegistering, setIsRegistering] = useState(false)
     const [error, setError] = useState<string>()
@@ -57,13 +59,14 @@ export const DoRepairModal = ({
 
     const isFinished = !!(repairJob?.closed_at || (repairJob?.expires_at && repairJob?.expires_at < new Date()))
 
+    const faction = useMemo(() => getFaction(_repairJob?.job_owner.faction_id || ""), [_repairJob?.job_owner.faction_id, getFaction])
     const remainDamagedBlocks = repairJob
         ? repairJob.blocks_required_repair - repairJob.blocks_repaired
         : repairStatus
         ? repairStatus.blocks_required_repair - repairStatus.blocks_repaired
         : 0
-    const primaryColor = theme.factionTheme.primary
-    const backgroundColor = theme.factionTheme.background
+    const primaryColor = _repairJob?.job_owner.faction_id ? faction.primary_color : theme.factionTheme.primary
+    const backgroundColor = _repairJob?.job_owner.faction_id ? faction.background_color : theme.factionTheme.background
 
     const abandonJob = useCallback(() => {
         setRepairAgent(undefined)
@@ -416,6 +419,7 @@ export const DoRepairModal = ({
                             </Box>
 
                             <StackTower
+                                primaryColor={primaryColor}
                                 disableGame={!repairAgent || !!submitError || isSubmitting || isFinished}
                                 repairAgent={repairAgent}
                                 agentRepairUpdate={agentRepairUpdate}

@@ -53,7 +53,7 @@ export const MessageDisplay = ({ message, onClose }: MessageDisplayProps) => {
                     mt: ".5rem",
                     mb: ".8rem",
                     p: "1rem 1.4rem",
-                    backgroundColor: "#FFFFFF20",
+                    backgroundColor: "#FFFFFF15",
                     direction: "ltr",
                     scrollbarWidth: "none",
                     "::-webkit-scrollbar": {

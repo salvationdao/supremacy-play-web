@@ -8,18 +8,18 @@ import { Game, GamePattern, GameState } from "./src/game"
 import { isWebGLAvailable } from "./src/utils"
 
 export const StackTower = React.memo(function StackTower({
+    primaryColor,
     disableGame,
     repairAgent,
     agentRepairUpdate,
     completeAgentRepair,
 }: {
+    primaryColor: string
     disableGame: boolean
     repairAgent?: RepairAgent
     agentRepairUpdate: (repairAgentID: string, gamePattern: GamePattern) => void
     completeAgentRepair: (repairAgentID: string) => Promise<boolean>
 }) {
-    const theme = useTheme()
-
     // Game data
     const [gameState, setGameState] = useState<GameState>(GameState.Loading)
     const [score, setScore] = useState(0)
@@ -55,8 +55,6 @@ export const StackTower = React.memo(function StackTower({
             }
         })()
     }, [completeAgentRepair, cumulativeScore, gamePatterns, repairAgent?.id, repairAgent?.required_stacks])
-
-    const primaryColor = theme.factionTheme.primary
 
     return (
         <Box
