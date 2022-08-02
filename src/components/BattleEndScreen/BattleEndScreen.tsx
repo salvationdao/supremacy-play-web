@@ -6,6 +6,7 @@ import { SectionBottom, SectionFactions, SectionWinner } from ".."
 import { useGame, useMobile, useOverlayToggles } from "../../containers"
 import { useTheme } from "../../containers/theme"
 import { siteZIndex, fonts } from "../../theme/theme"
+import { SectionMechRewards } from "./Sections/SectionMechRewards"
 
 export const BOTTOM_BUTTONS_HEIGHT = 5 //rems
 
@@ -89,6 +90,7 @@ export const BattleEndScreen = () => {
                         <Stack spacing="3.2rem">
                             <SectionWinner battleEndDetail={battleEndDetail} />
                             <SectionFactions battleEndDetail={battleEndDetail} />
+                            <SectionMechRewards battleEndDetail={battleEndDetail} />
                         </Stack>
                     </Box>
                 </Stack>

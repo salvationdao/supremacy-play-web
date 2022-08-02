@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { createContainer } from "unstated-next"
 import { useSupremacy } from "."
-import { useGameServerCommandsUser, useGameServerSubscription, useGameServerSubscriptionUser } from "../hooks/useGameServer"
+import { useGameServerCommandsUser, useGameServerSubscription } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
 import { AbilityDetail, BattleEndDetail, BattleZone, BribeStage, Map, WarMachineState } from "../types"
 
@@ -54,9 +54,9 @@ export const GameContainer = createContainer(() => {
     }, [send, map])
 
     // Subscribe on battle end information
-    useGameServerSubscriptionUser<BattleEndDetail>(
+    useGameServerSubscription<BattleEndDetail>(
         {
-            URI: "",
+            URI: "/public/battle_end_result",
             key: GameServerKeys.SubBattleEndDetailUpdated,
         },
         (payload) => {

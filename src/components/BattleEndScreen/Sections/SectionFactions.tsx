@@ -21,7 +21,7 @@ export const SectionFactions = ({ battleEndDetail }: { battleEndDetail: BattleEn
                     }}
                 >
                     FACTION RANKING
-                    <BattleEndTooltip text="Best to worst performing factions." />
+                    <BattleEndTooltip text="Best to worst performing faction." />
                 </Typography>
             </Box>
 

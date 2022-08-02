@@ -377,6 +377,8 @@ export interface WarMachineState {
     imageAvatar: string
     maxShield: number
     ownedByID: string
+    ownerUsername: string
+    modelID: string
     description?: string | null
     externalUrl: string
     name: string
