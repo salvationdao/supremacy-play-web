@@ -40,8 +40,8 @@ export const PackagesStore = () => {
         try {
             setIsLoading(true)
 
-            const resp = await send<FiatProduct[]>(GameServerKeys.FiatProductList, {
-                page,
+            const resp = await send<{ total: number; records: FiatProduct[] }>(GameServerKeys.FiatProductList, {
+                page: page - 1,
                 page_size: pageSize,
                 product_type: FiatProductType.StarterPackage,
             })
@@ -53,7 +53,7 @@ export const PackagesStore = () => {
 
             if (!resp) return
             setLoadError(undefined)
-            setPackages(resp)
+            setPackages(resp.records)
         } catch (e) {
             const message = typeof e === "string" ? e : "Failed to get packages."
             setLoadError(message)
