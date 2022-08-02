@@ -3,7 +3,6 @@ import { useMemo } from "react"
 import { BattleAbilityItem, MoveableResizable } from ".."
 import { useAuth, useGame, useMobile } from "../../containers"
 import { useTheme } from "../../containers/theme"
-import { ContributorAmount } from "../BattleStats/ContributorAmount"
 import { MoveableResizableConfig } from "../Common/MoveableResizable/MoveableResizableContainer"
 import { PlayerAbilities } from "./PlayerAbilities/PlayerAbilities"
 
@@ -44,21 +43,6 @@ export const VotingSystem = () => {
             <Box sx={{ ...(isMobile ? { backgroundColor: "#FFFFFF12", boxShadow: 2, border: "#FFFFFF20 1px solid" } : {}) }}>
                 <MoveableResizable config={config}>
                     <Stack sx={{ position: "relative" }}>
-                        <Stack
-                            direction="row"
-                            alignItems="center"
-                            spacing="1.2rem"
-                            sx={{
-                                height: "3.1rem",
-                                pt: ".4rem",
-                                px: "1.8rem",
-                                backgroundColor: "#000000BF",
-                                borderBottom: `${theme.factionTheme.primary}80 .25rem solid`,
-                            }}
-                        >
-                            <ContributorAmount />
-                        </Stack>
-
                         <Box
                             sx={{
                                 maxHeight: "100vh",
