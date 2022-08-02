@@ -189,12 +189,25 @@ export interface BattleEndDetail {
     winning_faction_id_order: FactionIDs[]
     winning_war_machines: WarMachineState[]
 }
+
 // {
-//     "player_id": "db51b218-ef04-42d9-abd7-21fb2cc9aa51",
-//     "rewarded_sups": "73125000000000000000",
-//     "rewarded_player_ability": null,
-//     "faction_rank": "SECOND"
-// }
+//     "player_id": "cc43913e-393f-4c00-a6e2-26fc78accf78",
+//     "rewarded_sups": "146250000000000000000",
+//     "rewarded_player_ability": {
+//       "id": "d76053ab-19f5-40cc-a592-d57afa7fa451",
+//       "game_client_ability_id": 13,
+//       "label": "Hacker Drone",
+//       "colour": "#FF5861",
+//       "image_url": "https://afiles.ninja-cdn.com/supremacy-stream-site/assets/img/ability-hacker-drone.png",
+//       "description": "Deploy a drone onto the battlefield that hacks into the nearest War Machine and disrupts their targeting systems.",
+//       "text_colour": "#FF5861",
+//       "location_select_type": "LOCATION_SELECT",
+//       "created_at": "2022-08-01T20:39:47.911364+08:00",
+//       "rarity_weight": 30,
+//       "inventory_limit": 10
+//     },
+//     "faction_rank": "THIRD"
+//   }
 
 export interface WarMachineDestroyedRecord {
     destroyed_war_machine: WarMachineState
