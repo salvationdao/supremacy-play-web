@@ -6,7 +6,7 @@ import { BattleEndDetail } from "../../../types"
 
 export const SectionMostFrequentAbilityExecutor = ({ battleEndDetail }: { battleEndDetail: BattleEndDetail }) => {
     const { getFaction } = useSupremacy()
-    const { most_frequent_ability_executors } = battleEndDetail
+    const { winning_faction_id_order } = battleEndDetail
 
     return (
         <Stack spacing={2}>
@@ -26,26 +26,29 @@ export const SectionMostFrequentAbilityExecutor = ({ battleEndDetail }: { battle
                 </Typography>
             </Box>
 
-            {most_frequent_ability_executors && most_frequent_ability_executors.length > 0 ? (
+            {winning_faction_id_order && winning_faction_id_order.length > 0 ? (
                 <Stack spacing="1.2rem" sx={{ pl: ".8rem" }}>
-                    {most_frequent_ability_executors.map((u, index) => (
-                        <Stack key={index} direction="row" spacing="1.04rem" alignItems="center">
-                            <Typography variant="h6" sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>
-                                {index + 1}.
-                            </Typography>
-                            <StyledImageText
-                                color={getFaction(u.faction_id).primary_color}
-                                text={u.username}
-                                imageUrl={getFaction(u.faction_id).logo_url}
-                                variant="h6"
-                                imageSize={2.9}
-                                imageBorderThickness=".2rem"
-                                fontWeight="normal"
-                                truncateLine
-                                imageMb={-0.8}
-                            />
-                        </Stack>
-                    ))}
+                    {winning_faction_id_order.map((fid, index) => {
+                        const faction = getFaction(fid)
+                        return (
+                            <Stack key={index} direction="row" spacing="1.04rem" alignItems="center">
+                                <Typography variant="h6" sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>
+                                    {index + 1}.
+                                </Typography>
+                                <StyledImageText
+                                    color={faction.primary_color}
+                                    text={faction.label}
+                                    imageUrl={faction.logo_url}
+                                    variant="h6"
+                                    imageSize={2.9}
+                                    imageBorderThickness=".2rem"
+                                    fontWeight="normal"
+                                    truncateLine
+                                    imageMb={-0.8}
+                                />
+                            </Stack>
+                        )
+                    })}
                 </Stack>
             ) : (
                 <Typography variant="h6" sx={{ pl: ".8rem", opacity: 0.8 }}>

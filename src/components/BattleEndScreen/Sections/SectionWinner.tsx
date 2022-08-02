@@ -7,9 +7,9 @@ import { BattleEndDetail } from "../../../types"
 
 export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndDetail }) => {
     const { getFaction } = useSupremacy()
-    const { battle_identifier, winning_faction, winning_war_machines } = battleEndDetail
+    const { battle_identifier, winning_faction_id_order, winning_war_machines } = battleEndDetail
 
-    const faction = getFaction(winning_faction.id)
+    const faction = getFaction(winning_faction_id_order[0])
 
     return (
         <Stack spacing="2.4rem">

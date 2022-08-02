@@ -1,14 +1,15 @@
 import { Slide, Stack } from "@mui/material"
 import { Box } from "@mui/system"
-import { useEffect, useMemo } from "react"
+import { useEffect } from "react"
 import { SectionBottom, SectionMostFrequentAbilityExecutor, SectionWinner } from ".."
 import { useGame, useMobile, useOverlayToggles } from "../../containers"
-import { shadeColor } from "../../helpers"
-import { colors, siteZIndex } from "../../theme/theme"
+import { useTheme } from "../../containers/theme"
+import { siteZIndex } from "../../theme/theme"
 
 export const BOTTOM_BUTTONS_HEIGHT = 5 //rems
 
 export const BattleEndScreen = () => {
+    const theme = useTheme()
     const { isMobile } = useMobile()
     const { map, battleEndDetail } = useGame()
     const { isEndBattleDetailOpen, toggleIsEndBattleDetailOpen, toggleIsEndBattleDetailEnabled } = useOverlayToggles()
@@ -25,17 +26,10 @@ export const BattleEndScreen = () => {
         if (map) toggleIsEndBattleDetailOpen(false)
     }, [map, toggleIsEndBattleDetailOpen])
 
-    const primaryColor = useMemo(
-        () => (battleEndDetail && battleEndDetail.winning_faction ? battleEndDetail.winning_faction.theme.primary : colors.neonBlue),
-        [battleEndDetail],
-    )
+    const primaryColor = theme.factionTheme.primary
+    const backgroundColor = theme.factionTheme.background
 
-    const backgroundColor = useMemo(
-        () => (battleEndDetail && battleEndDetail.winning_faction ? shadeColor(battleEndDetail.winning_faction.theme.primary, -96) : colors.darkNavyBlue),
-        [battleEndDetail],
-    )
-
-    if (!battleEndDetail || !battleEndDetail.winning_faction) return null
+    if (!battleEndDetail) return null
 
     return (
         <Slide key={battleEndDetail.battle_id} in={isEndBattleDetailOpen || isMobile} direction="right">
