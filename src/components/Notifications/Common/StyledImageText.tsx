@@ -20,7 +20,6 @@ export interface StyledImageTextProps {
     imageBorderThickness?: string
     imageBackgroundSize?: string
     noImageBackgroundColor?: boolean
-    imageMb?: number
 }
 
 export const StyledImageText = ({
@@ -40,7 +39,6 @@ export const StyledImageText = ({
     imageBorderThickness = "1px",
     imageBackgroundSize = "cover",
     noImageBackgroundColor,
-    imageMb,
 }: StyledImageTextProps) => {
     const truncateStyle: SxProps = useMemo(
         () =>
@@ -67,7 +65,6 @@ export const StyledImageText = ({
                         display: "inline-block",
                         width: `${imageSize}rem`,
                         height: `${imageSize}rem`,
-                        mb: imageMb || "-0.16rem",
                         mr: `${0.3 * imageSize}rem`,
                         backgroundImage: `url(${imageUrl})`,
                         backgroundRepeat: "no-repeat",
