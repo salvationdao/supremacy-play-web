@@ -1,11 +1,13 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { BattleEndTooltip, StyledImageText } from "../.."
-import { GenericWarMachinePNG } from "../../../assets"
-import { useSupremacy } from "../../../containers"
+import { BattleEndTooltip } from "../.."
+import { GenericWarMachinePNG, SvgSupToken } from "../../../assets"
+import { useAuth, useSupremacy } from "../../../containers"
+import { supFormatterNoFixed } from "../../../helpers"
 import { colors, fonts } from "../../../theme/theme"
 import { BattleEndDetail } from "../../../types"
 
 export const SectionMechRewards = ({ battleEndDetail }: { battleEndDetail: BattleEndDetail }) => {
+    const { userID } = useAuth()
     const { getFaction } = useSupremacy()
     const { mech_rewards } = battleEndDetail
 
@@ -21,30 +23,60 @@ export const SectionMechRewards = ({ battleEndDetail }: { battleEndDetail: Battl
                         fontWeight: "fontWeightBold",
                     }}
                 >
-                    FACTION RANKING
+                    MECH OWNER REWARDS
                     <BattleEndTooltip text="Best to worst performing faction." />
                 </Typography>
             </Box>
 
             {mech_rewards && mech_rewards.length > 0 ? (
-                <Stack spacing=".8rem" sx={{ pl: ".5rem" }}>
+                <Stack spacing="1.2rem" sx={{ pl: ".5rem" }}>
                     {mech_rewards.map((wm) => {
                         const faction = getFaction(wm.faction_id)
                         return (
-                            <StyledImageText
-                                key={wm.id}
-                                color={colors.text}
-                                imageBorderColor={faction.primary_color}
-                                imageBackgroundColor={`${faction.primary_color}60`}
-                                text={(wm.name || wm.label).toUpperCase()}
-                                imageUrl={wm.avatar_url || GenericWarMachinePNG}
-                                variant="h6"
-                                imageSize={2.9}
-                                imageBorderThickness=".2rem"
-                                fontWeight="normal"
-                                truncateLine
-                                imageMb={-0.8}
-                            />
+                            <Stack key={wm.id} direction="row" alignItems="center" spacing="1rem">
+                                <Box
+                                    sx={{
+                                        flexShrink: 0,
+                                        width: "4.5rem",
+                                        height: "4.5rem",
+                                        background: `url(${wm.avatar_url || GenericWarMachinePNG})`,
+                                        backgroundRepeat: "no-repeat",
+                                        backgroundPosition: "center",
+                                        backgroundSize: "cover",
+                                        backgroundColor: `${faction.primary_color}60`,
+                                        borderRadius: 0.5,
+                                        border: `${faction.primary_color} solid .2rem`,
+                                    }}
+                                />
+
+                                <Stack spacing=".4rem" sx={{ pt: ".5rem" }}>
+                                    <Typography
+                                        variant="h6"
+                                        sx={{
+                                            lineHeight: 1,
+                                            color: faction.primary_color,
+                                            fontWeight: "fontWeightBold",
+                                            display: "-webkit-box",
+                                            overflow: "hidden",
+                                            overflowWrap: "anywhere",
+                                            textOverflow: "ellipsis",
+                                            WebkitLineClamp: 1, // change to max number of lines
+                                            WebkitBoxOrient: "vertical",
+
+                                            span: { color: colors.neonBlue },
+                                        }}
+                                    >
+                                        {wm.owner_id === userID && <span>(YOUR MECH) </span>}
+                                        {(wm.name || wm.label).toUpperCase()}
+                                    </Typography>
+
+                                    <Stack direction="row" alignItems="center">
+                                        <Typography sx={{ lineHeight: 1, fontWeight: "fontWeightBold", color: colors.offWhite }}>REWARD:&nbsp;</Typography>
+                                        <SvgSupToken fill={colors.yellow} size="1.8rem" />
+                                        <Typography sx={{ lineHeight: 1 }}>{supFormatterNoFixed(wm.rewarded_sups, 2)}</Typography>
+                                    </Stack>
+                                </Stack>
+                            </Stack>
                         )
                     })}
                 </Stack>
