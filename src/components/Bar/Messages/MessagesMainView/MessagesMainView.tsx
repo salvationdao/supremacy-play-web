@@ -150,15 +150,19 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
                                         },
                                         sx: {
                                             ".MuiTableCell-root": {
-                                                opacity: !item.read_at ? 1 : 0.5,
+                                                opacity: !item.read_at || focusedMessage?.id === item.id ? 1 : 0.5,
                                                 "*": { fontWeight: !item.read_at ? "fontWeightBold" : "unset" },
                                             },
-                                            backgroundColor: focusedMessage?.id === item.id ? "#FFFFFF26" : "unset",
-                                            "&:hover": {
-                                                cursor: "pointer",
-                                                backgroundColor: "#FFFFFF26",
-                                                border: "#FFFFFF38 solid 1px",
-                                            },
+                                            backgroundColor: focusedMessage?.id === item.id ? "#FFFFFF40 !important" : "unset",
+                                            border: focusedMessage?.id === item.id ? "#FFFFFF38 solid 1px" : "unset",
+                                            "&:hover":
+                                                focusedMessage?.id !== item.id
+                                                    ? {
+                                                          cursor: "pointer",
+                                                          backgroundColor: "#FFFFFF26",
+                                                          border: "#FFFFFF38 solid 1px",
+                                                      }
+                                                    : undefined,
                                         },
                                     },
                                     cells: [
