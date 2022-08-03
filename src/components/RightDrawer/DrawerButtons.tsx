@@ -3,7 +3,7 @@ import { useHistory, useLocation } from "react-router-dom"
 import { useAuth } from "../../containers"
 import { useTheme } from "../../containers/theme"
 import { HASH_ROUTES_ARRAY, RightDrawerHashes } from "../../routes"
-import { siteZIndex } from "../../theme/theme"
+import { colors, siteZIndex } from "../../theme/theme"
 import { TabButton } from "../LeftDrawer/DrawerButtons"
 
 const DRAWER_BAR_WIDTH = 3 // rem
@@ -32,7 +32,7 @@ export const DrawerButtons = () => {
                     display: "none",
                 },
                 ".MuiSvgIcon-root": {
-                    fill: `${theme.factionTheme.secondary} !important`,
+                    fill: `${colors.neonBlue} !important`,
                     width: "3rem",
                     height: "3rem",
                 },
