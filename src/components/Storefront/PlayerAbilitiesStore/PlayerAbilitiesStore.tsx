@@ -33,6 +33,7 @@ export const PlayerAbilitiesStore = () => {
     const [ownedAbilities, setOwnedAbilities] = useState<Map<string, number>>(new Map())
 
     useEffect(() => {
+        if (!userID) return
         ;(async () => {
             try {
                 const resp = await queryAvailability(userID)
@@ -118,6 +119,24 @@ export const PlayerAbilitiesStore = () => {
     }, [nextRefreshTime])
 
     const content = useMemo(() => {
+        if (!userID) {
+            return (
+                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                    <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
+                        <Typography
+                            sx={{
+                                color: colors.red,
+                                fontFamily: fonts.nostromoBold,
+                                textAlign: "center",
+                            }}
+                        >
+                            You must be logged in to view player abilities on sale.
+                        </Typography>
+                    </Stack>
+                </Stack>
+            )
+        }
+
         if (!isLoaded) {
             return (
                 <Stack direction="row" flexWrap="wrap" sx={{ height: 0 }}>
@@ -193,7 +212,7 @@ export const PlayerAbilitiesStore = () => {
                 </Stack>
             </Stack>
         )
-    }, [isLoaded, saleAbilities, priceMap, ownedAbilities, availability])
+    }, [userID, isLoaded, saleAbilities, priceMap, ownedAbilities, availability])
 
     return (
         <ClipThing

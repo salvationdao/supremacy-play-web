@@ -37,6 +37,7 @@ const QuickPlayerAbilitiesInner = ({ onClose, userID }: { onClose: () => void; u
     const [ownedAbilities, setOwnedAbilities] = useState<Map<string, number>>(new Map())
 
     useEffect(() => {
+        if (!userID) return
         ;(async () => {
             try {
                 const resp = await queryAvailability(userID)
@@ -147,6 +148,114 @@ const QuickPlayerAbilitiesInner = ({ onClose, userID }: { onClose: () => void; u
         return <Typography sx={{ color: colors.lightNeonBlue, fontFamily: fonts.shareTech, textTransform: "uppercase" }}>Less than an hour</Typography>
     }, [nextRefreshTime])
 
+    const content = useMemo(() => {
+        if (!userID) {
+            return (
+                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                    <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
+                        <Typography
+                            sx={{
+                                color: colors.red,
+                                fontFamily: fonts.nostromoBold,
+                                textAlign: "center",
+                            }}
+                        >
+                            You must be logged in to view player abilities on sale.
+                        </Typography>
+                    </Stack>
+                </Stack>
+            )
+        }
+
+        if (!isLoaded) {
+            return (
+                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                    <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
+                        <CircularProgress size="3rem" sx={{ color: primaryColor }} />
+                    </Stack>
+                </Stack>
+            )
+        }
+
+        if (saleAbilities && saleAbilities.length > 0) {
+            return (
+                <Box
+                    sx={{
+                        flex: 1,
+                        overflowY: "auto",
+                        overflowX: "hidden",
+                        ml: "1rem",
+                        mr: ".5rem",
+                        pr: ".6rem",
+                        mt: "2rem",
+                        mb: "1rem",
+                        direction: "ltr",
+                        scrollbarWidth: "none",
+                        "::-webkit-scrollbar": {
+                            width: ".4rem",
+                        },
+                        "::-webkit-scrollbar-track": {
+                            background: "#FFFFFF15",
+                            borderRadius: 3,
+                        },
+                        "::-webkit-scrollbar-thumb": {
+                            background: primaryColor,
+                            borderRadius: 3,
+                        },
+                    }}
+                >
+                    <Box sx={{ direction: "ltr", height: 0 }}>
+                        <Box
+                            sx={{
+                                display: "grid",
+                                gridTemplateColumns: "repeat(3, minmax(0, 100px))",
+                                gridTemplateRows: "repeat(1, fr)",
+                                gap: "1rem",
+                                justifyContent: "center",
+                                px: "2rem",
+                                width: "100%",
+                            }}
+                        >
+                            {saleAbilities.map((s, index) => (
+                                <QuickPlayerAbilitiesItem
+                                    key={`${s.id}-${index}`}
+                                    saleAbility={s}
+                                    price={priceMap.get(s.id)}
+                                    amount={ownedAbilities.get(s.blueprint_id)}
+                                    setError={setPurchaseError}
+                                    onClaim={() => setAvailability(SaleAbilityAvailability.CanPurchase)}
+                                    onPurchase={() => setAvailability(SaleAbilityAvailability.Unavailable)}
+                                    availability={availability}
+                                />
+                            ))}
+                        </Box>
+                    </Box>
+                </Box>
+            )
+        }
+
+        return (
+            <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", maxWidth: "40rem" }}>
+                    <Typography
+                        variant="body2"
+                        sx={{
+                            px: "1.28rem",
+                            pt: "1.28rem",
+                            color: colors.grey,
+                            fontFamily: fonts.nostromoBold,
+                            userSelect: "text !important",
+                            opacity: 0.9,
+                            textAlign: "center",
+                        }}
+                    >
+                        NO ABILITIES ARE ON SALE AT THE MOMENT.
+                    </Typography>
+                </Stack>
+            </Stack>
+        )
+    }, [availability, isLoaded, ownedAbilities, priceMap, primaryColor, saleAbilities, userID])
+
     return (
         <>
             <Fade in>
@@ -187,90 +296,7 @@ const QuickPlayerAbilitiesInner = ({ onClose, userID }: { onClose: () => void; u
                                     </Stack>
                                 }
                             />
-
-                            {!isLoaded && (
-                                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
-                                    <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
-                                        <CircularProgress size="3rem" sx={{ color: primaryColor }} />
-                                    </Stack>
-                                </Stack>
-                            )}
-
-                            {isLoaded && saleAbilities && saleAbilities.length > 0 && (
-                                <Box
-                                    sx={{
-                                        flex: 1,
-                                        overflowY: "auto",
-                                        overflowX: "hidden",
-                                        ml: "1rem",
-                                        mr: ".5rem",
-                                        pr: ".6rem",
-                                        mt: "2rem",
-                                        mb: "1rem",
-                                        direction: "ltr",
-                                        scrollbarWidth: "none",
-                                        "::-webkit-scrollbar": {
-                                            width: ".4rem",
-                                        },
-                                        "::-webkit-scrollbar-track": {
-                                            background: "#FFFFFF15",
-                                            borderRadius: 3,
-                                        },
-                                        "::-webkit-scrollbar-thumb": {
-                                            background: primaryColor,
-                                            borderRadius: 3,
-                                        },
-                                    }}
-                                >
-                                    <Box sx={{ direction: "ltr", height: 0 }}>
-                                        <Box
-                                            sx={{
-                                                display: "grid",
-                                                gridTemplateColumns: "repeat(3, minmax(0, 100px))",
-                                                gridTemplateRows: "repeat(1, fr)",
-                                                gap: "1rem",
-                                                justifyContent: "center",
-                                                px: "2rem",
-                                                width: "100%",
-                                            }}
-                                        >
-                                            {saleAbilities.map((s, index) => (
-                                                <QuickPlayerAbilitiesItem
-                                                    key={`${s.id}-${index}`}
-                                                    saleAbility={s}
-                                                    price={priceMap.get(s.id)}
-                                                    amount={ownedAbilities.get(s.blueprint_id)}
-                                                    setError={setPurchaseError}
-                                                    onClaim={() => setAvailability(SaleAbilityAvailability.CanPurchase)}
-                                                    onPurchase={() => setAvailability(SaleAbilityAvailability.Unavailable)}
-                                                    availability={availability}
-                                                />
-                                            ))}
-                                        </Box>
-                                    </Box>
-                                </Box>
-                            )}
-
-                            {isLoaded && saleAbilities && saleAbilities.length <= 0 && (
-                                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
-                                    <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", maxWidth: "40rem" }}>
-                                        <Typography
-                                            variant="body2"
-                                            sx={{
-                                                px: "1.28rem",
-                                                pt: "1.28rem",
-                                                color: colors.grey,
-                                                fontFamily: fonts.nostromoBold,
-                                                userSelect: "text !important",
-                                                opacity: 0.9,
-                                                textAlign: "center",
-                                            }}
-                                        >
-                                            NO ABILITIES ARE ON SALE AT THE MOMENT.
-                                        </Typography>
-                                    </Stack>
-                                </Stack>
-                            )}
+                            {content}
                         </Stack>
                     </MoveableResizable>
                 </Box>
