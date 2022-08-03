@@ -63,7 +63,7 @@ export const CustomAvatar = ({ playerID, open, setOpen, primaryColor, background
         }
 
         setImageSize(500)
-    }, [below2500, below2200])
+    }, [below1200, below1500, below2200, below2500])
 
     // selected features
     const [hair, setHair] = useState<Layer>()
