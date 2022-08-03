@@ -9,7 +9,7 @@ import { parseString } from "../helpers"
 import { useToggle } from "../hooks"
 import { useGameServerSubscription, useGameServerSubscriptionFaction } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
-import { BanProposalStruct, ChatMessageType, Likes, TextMessageData, User } from "../types"
+import { BanProposalStruct, ChatMessageType, TextMessageData, User } from "../types"
 
 export interface IncomingMessages {
     faction: string | null
@@ -21,7 +21,7 @@ export type SplitOptionType = "tabbed" | "split" | null
 export type FontSizeType = 0.8 | 1.2 | 1.35
 
 export const ChatContainer = createContainer(() => {
-    const { userID, user } = useAuth()
+    const { userID } = useAuth()
     const history = useHistory()
     const location = useLocation()
     const [isPoppedout, toggleIsPoppedout] = useToggle()
@@ -48,7 +48,6 @@ export const ChatContainer = createContainer(() => {
     const [banProposal, setBanProposal] = useState<BanProposalStruct>()
 
     // Store list of messages that were successfully sent or failed
-    const [sentMessages, setSentMessages] = useState<Date[]>([])
     const [failedMessages, setFailedMessages] = useState<Date[]>([])
 
     //active users
@@ -67,17 +66,6 @@ export const ChatContainer = createContainer(() => {
         localStorage.setItem("chatFilterSystemMessages", filterSystemMessages ? "true" : "false")
         localStorage.setItem("chatFontSize2", fontSize ? fontSize.toString() : "1")
     }, [splitOption, filterSystemMessages, fontSize])
-
-    const onSentMessage = useCallback(
-        (sentAt: Date) => {
-            setSentMessages((prev) => {
-                // Buffer the array
-                const newArray = [...prev, sentAt]
-                return newArray.slice(newArray.length - MESSAGES_BUFFER_SIZE, newArray.length)
-            })
-        },
-        [setSentMessages],
-    )
 
     const onFailedMessage = useCallback(
         (sentAt: Date) => {
@@ -174,67 +162,6 @@ export const ChatContainer = createContainer(() => {
         [userID, tabValue, splitOption],
     )
 
-    const readMessage = useCallback(
-        (messageID: string) => {
-            const genericRead = (
-                msgs: ChatMessageType[],
-                setMsgs: (value: ((prevState: ChatMessageType[]) => ChatMessageType[]) | ChatMessageType[]) => void,
-            ) => {
-                const newMessages = [...msgs]
-                let index = -1
-                const msgToRead = newMessages.find((el, i) => {
-                    index = i
-                    return el.id === messageID
-                })
-                if (!msgToRead) return
-                const md = (msgToRead.data as TextMessageData).metadata
-                if (md) {
-                    md.tagged_users_read[user.gid] = true
-                    newMessages[index] = msgToRead
-
-                    setMsgs(newMessages)
-                }
-            }
-
-            if (tabValue === 0) {
-                genericRead(globalChatMessages, setGlobalChatMessages)
-            } else {
-                genericRead(factionChatMessages, setFactionChatMessages)
-            }
-        },
-        [globalChatMessages, setGlobalChatMessages, factionChatMessages, setFactionChatMessages, user, tabValue],
-    )
-
-    const reactMessage = useCallback(
-        (messageID: string, likes: Likes) => {
-            const genericReact = (
-                msgs: ChatMessageType[],
-                setMsgs: (value: ((prevState: ChatMessageType[]) => ChatMessageType[]) | ChatMessageType[]) => void,
-            ) => {
-                const newMessages = [...msgs]
-                let index = -1
-                const msgToReact = newMessages.find((el, i) => {
-                    index = i
-                    return el.id === messageID
-                })
-                if (!msgToReact) return
-                const md = (msgToReact.data as TextMessageData).metadata
-                if (md) {
-                    md.likes = likes
-                    newMessages[index] = msgToReact
-
-                    setMsgs(newMessages)
-                }
-            }
-            if (tabValue === 0) {
-                genericReact(globalChatMessages, setGlobalChatMessages)
-            } else {
-                genericReact(factionChatMessages, setFactionChatMessages)
-            }
-        },
-        [globalChatMessages, setGlobalChatMessages, factionChatMessages, setFactionChatMessages, tabValue],
-    )
-
     const sendBrowserNotification = useCallback((title: string, body: string, timeOpen?: number) => {
         if (!("Notification" in window)) {
             return
@@ -255,24 +182,54 @@ export const ChatContainer = createContainer(() => {
         }
     }, [])
 
+    const updateMessageHandler = useCallback(
+        (updatedMessage: ChatMessageType, faction: string | null): boolean => {
+            const genericUpdate = (
+                chatMessages: ChatMessageType[],
+                setChatMessages: (value: ((prevState: ChatMessageType[]) => ChatMessageType[]) | ChatMessageType[]) => void,
+            ) => {
+                const updatedArr = [...chatMessages]
+                const i = updatedArr.findIndex((m) => m.id === updatedMessage.id)
+                if (i === -1) return false
+                updatedArr[i] = updatedMessage
+                setChatMessages(updatedArr)
+                return true
+            }
+            //global chat
+            if (!faction) {
+                return genericUpdate(globalChatMessages, setGlobalChatMessages)
+            }
+            if (faction) {
+                return genericUpdate(factionChatMessages, setFactionChatMessages)
+            }
+            return false
+        },
+        [globalChatMessages, factionChatMessages],
+    )
+
     useEffect(() => {
         if (!incomingMessages || incomingMessages.messages.length <= 0) return
 
         let userStatMessage
+        let isUpdate = false
         incomingMessages.messages.forEach((message) => {
-            if (message.type === "TEXT" && (message.data as TextMessageData).from_user.id === userID) {
+            if (message.type === "TEXT") {
+                isUpdate = updateMessageHandler(message, incomingMessages.faction)
                 // This will attempt to look through the messages, if it's our own,
                 // get the latest message and update userStats with it.
-                userStatMessage = message
+                if ((message.data as TextMessageData).from_user.id === userID) {
+                    userStatMessage = message
+                }
             }
 
             return message
         })
 
+        setIncomingMessages(undefined)
+        if (isUpdate) return
         if (userStatMessage) saveUserStats(userStatMessage, !!incomingMessages.faction)
         newMessageHandler(incomingMessages)
-        setIncomingMessages(undefined)
-    }, [incomingMessages, newMessageHandler, saveUserStats, userID])
+    }, [incomingMessages, newMessageHandler, saveUserStats, userID, updateMessageHandler])
 
     // Subscribe to global chat messages
     useGameServerSubscription<ChatMessageType[]>(
@@ -370,8 +327,6 @@ export const ChatContainer = createContainer(() => {
         factionChatMessages,
         factionChatUnread,
         globalChatUnread,
-        onSentMessage,
-        sentMessages,
         failedMessages,
         onFailedMessage,
         fontSize,
@@ -382,8 +337,6 @@ export const ChatContainer = createContainer(() => {
         addToUserGidRecord,
         activePlayers,
         globalActivePlayers,
-        readMessage,
-        reactMessage,
         sendBrowserNotification,
     }
 })
