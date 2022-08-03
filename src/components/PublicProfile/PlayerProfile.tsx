@@ -1,13 +1,13 @@
-import { Box, CircularProgress, Stack, Typography } from "@mui/material"
+import { Avatar, Box, CircularProgress, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { useHistory, useParams } from "react-router-dom"
+import { Redirect, useHistory, useParams } from "react-router-dom"
 import { AboutMeSVG, BattleHistorySVG, StatsSVG, SvgAbility, SvgCake, SvgDeath, SvgSkull2, SvgView } from "../../assets"
 import { useAuth, useSnackbar } from "../../containers"
 import { getUserRankDeets, snakeToTitle, timeSince } from "../../helpers"
 import { useGameServerCommands, useGameServerCommandsUser } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { colors, fonts, theme } from "../../theme/theme"
-import { Faction, UserRank } from "../../types"
+import { Faction, FeatureName, UserRank } from "../../types"
 import { ClipThing } from "../Common/ClipThing"
 import { PageHeader } from "../Common/PageHeader"
 import { ProfileAvatar } from "./AvatarSelect"
@@ -91,7 +91,7 @@ const getOnlineStatus = (time: Date): { status: string; colour: string } => {
 
 export const PlayerProfilePage = () => {
     const { playerGID } = useParams<{ playerGID: string }>()
-    const { user } = useAuth()
+    const { user, userHasFeature } = useAuth()
     const history = useHistory()
 
     const [loading, setLoading] = useState(false)
@@ -105,6 +105,8 @@ export const PlayerProfilePage = () => {
     const { send: userSend } = useGameServerCommandsUser("/user_commander")
     const { newSnackbarMessage } = useSnackbar()
     const isMe = `${user?.gid}` === playerGID
+
+    const viewAvatar = userHasFeature(FeatureName.playerProfile)
 
     const rankDeets = useMemo(() => (profile?.player.rank ? getUserRankDeets(profile?.player.rank, "1.6rem", "1.6rem") : undefined), [profile?.player.rank])
 
@@ -301,23 +303,38 @@ export const PlayerProfilePage = () => {
                                     },
                                 }}
                             >
-                                <ProfileAvatar
-                                    playerID={profile.player.id}
-                                    avatarID={avatar?.id || ""}
-                                    isOwner={isMe}
-                                    updateAvatar={async (avatar_id: string, isCustom: boolean) => {
-                                        updateAvatar(avatar_id, isCustom)
-                                    }}
-                                    deleteCustomAvatar={async (avatar_id: string) => {
-                                        deleteCustomAvatar(avatar_id)
-                                    }}
-                                    isCustom={!!avatar?.is_custom}
-                                    avatarURL={avatar?.avatar_url || ""}
-                                    primaryColor={primaryColor}
-                                    backgroundColor={backgroundColor}
-                                    factionName={profile.faction?.label}
-                                />
-
+                                {viewAvatar ? (
+                                    <ProfileAvatar
+                                        playerID={profile.player.id}
+                                        avatarID={avatar?.id || ""}
+                                        isOwner={isMe}
+                                        updateAvatar={async (avatar_id: string, isCustom: boolean) => {
+                                            updateAvatar(avatar_id, isCustom)
+                                        }}
+                                        deleteCustomAvatar={async (avatar_id: string) => {
+                                            deleteCustomAvatar(avatar_id)
+                                        }}
+                                        isCustom={!!avatar?.is_custom}
+                                        avatarURL={avatar?.avatar_url || ""}
+                                        primaryColor={primaryColor}
+                                        backgroundColor={backgroundColor}
+                                        factionName={profile.faction?.label}
+                                    />
+                                ) : (
+                                    <Avatar
+                                        src={profile.faction?.logo_url}
+                                        alt="Avatar"
+                                        sx={{
+                                            mr: "1rem",
+                                            height: "21rem",
+                                            width: "21rem",
+                                            borderRadius: 1,
+                                            border: `${primaryColor} 2px solid`,
+                                            backgroundColor: primaryColor,
+                                        }}
+                                        variant="square"
+                                    />
+                                )}
                                 <Stack
                                     sx={{
                                         "@media (max-width:900px)": {

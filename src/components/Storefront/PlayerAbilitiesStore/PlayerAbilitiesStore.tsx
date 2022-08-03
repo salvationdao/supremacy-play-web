@@ -1,4 +1,4 @@
-import { Box, Stack, Typography } from "@mui/material"
+import { Box, CircularProgress, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
 import { useParameterizedQuery } from "react-fetching-library"
 import { ClipThing, FancyButton } from "../.."
@@ -14,7 +14,6 @@ import { HANGAR_TABS } from "../../../pages"
 import { colors, fonts } from "../../../theme/theme"
 import { PlayerAbility, SaleAbility, SaleAbilityAvailability } from "../../../types"
 import { PageHeader } from "../../Common/PageHeader"
-import { MysteryCrateStoreItemLoadingSkeleton } from "../MysteryCratesStore/MysteryCrateStoreItem/MysteryCrateStoreItem"
 import { PlayerAbilityStoreItem } from "./PlayerAbilityStoreItem"
 
 export const PlayerAbilitiesStore = () => {
@@ -33,6 +32,7 @@ export const PlayerAbilitiesStore = () => {
     const [ownedAbilities, setOwnedAbilities] = useState<Map<string, number>>(new Map())
 
     useEffect(() => {
+        if (!userID) return
         ;(async () => {
             try {
                 const resp = await queryAvailability(userID)
@@ -120,10 +120,10 @@ export const PlayerAbilitiesStore = () => {
     const content = useMemo(() => {
         if (!isLoaded) {
             return (
-                <Stack direction="row" flexWrap="wrap" sx={{ height: 0 }}>
-                    {new Array(10).fill(0).map((_, index) => (
-                        <MysteryCrateStoreItemLoadingSkeleton key={index} />
-                    ))}
+                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                    <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
+                        <CircularProgress size="3rem" sx={{ color: theme.factionTheme.primary }} />
+                    </Stack>
                 </Stack>
             )
         }
@@ -193,7 +193,7 @@ export const PlayerAbilitiesStore = () => {
                 </Stack>
             </Stack>
         )
-    }, [isLoaded, saleAbilities, priceMap, ownedAbilities, availability])
+    }, [isLoaded, saleAbilities, theme.factionTheme.primary, priceMap, ownedAbilities, availability])
 
     return (
         <ClipThing
@@ -240,14 +240,14 @@ export const PlayerAbilitiesStore = () => {
                             clipThingsProps={{
                                 clipSize: "9px",
                                 backgroundColor: theme.factionTheme.primary,
-                                border: { isFancy: true, borderColor: theme.factionTheme.primary, borderThickness: "2px" },
+                                border: { borderColor: theme.factionTheme.primary, borderThickness: "2px" },
                                 sx: { position: "relative" },
                             }}
                             sx={{
                                 display: "flex",
                                 flexWrap: "nowrap",
-                                px: "2rem",
-                                py: ".3rem",
+                                px: "1.6rem",
+                                py: ".6rem",
                             }}
                         >
                             <Typography

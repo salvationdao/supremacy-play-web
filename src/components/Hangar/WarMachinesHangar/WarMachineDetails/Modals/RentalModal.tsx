@@ -10,7 +10,7 @@ export const RentalModal = ({
 }: {
     selectedMechDetails: MechDetails
     rentalMechModalOpen: boolean
-    setRentalMechModalOpen: (close: boolean) => void
+    setRentalMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
 }) => {
     // // Fetch
     // const { send } = useGameServerCommandsYYY("xxxxxxxxx")

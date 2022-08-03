@@ -33,7 +33,7 @@ export const WalletInfo = () => {
 
                 // Accrue stuff
                 payload.forEach((tx) => {
-                    const isCredit = userID === tx.credit
+                    const isCredit = userID === tx.credit_account_id
                     const summary = (tx.description + tx.sub_group + tx.group).toLowerCase()
 
                     // For inflows

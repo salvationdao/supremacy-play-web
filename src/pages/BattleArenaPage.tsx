@@ -9,6 +9,8 @@ import { QuickPlayerAbilities } from "../components/QuickPlayerAbilities/QuickPl
 import { BATTLE_ARENA_OPEN } from "../constants"
 import { useAuth, useDimension, useMobile, useSupremacy } from "../containers"
 import { siteZIndex } from "../theme/theme"
+import { FeatureName } from "../types"
+import { EnlistPage } from "./EnlistPage"
 
 export const BattleArenaPage = () => {
     const { userID } = useAuth()
@@ -38,7 +40,7 @@ export const BattleArenaPage = () => {
 }
 
 const BattleArenaPageInner = () => {
-    const { userID } = useAuth()
+    const { userID, factionID, userHasFeature } = useAuth()
     const { isMobile, setAdditionalTabs, setIsNavOpen, allowCloseNav } = useMobile()
     const { isQuickDeployOpen, toggleIsQuickDeployOpen, isQuickPlayerAbilitiesOpen, toggleIsQuickPlayerAbilitiesOpen } = useSupremacy()
     const { triggerReset } = useDimension()
@@ -87,7 +89,6 @@ const BattleArenaPageInner = () => {
                         >
                             <Box sx={{ direction: "ltr", height: 0 }}>
                                 <Stack spacing="1.5rem" sx={{ position: "relative", p: ".8rem 1rem" }}>
-                                    {/* <LiveVotingChart /> */}
                                     <VotingSystem />
                                     <MiniMap />
                                     <WarMachineStats />
@@ -116,23 +117,26 @@ const BattleArenaPageInner = () => {
             },
         ]
 
-        tabs.push({
-            id: "buy-abilities",
-            hash: "#buy-abilities",
-            icon: <SvgAbility size="1.2rem" sx={{ pt: ".1rem" }} />,
-            label: "BUY ABILITIES",
-            requireAuth: true,
-            Component: () => (
-                <Stack sx={{ position: "relative", height: "100%" }}>
-                    <QuickPlayerAbilities
-                        open
-                        onClose={() => {
-                            return
-                        }}
-                    />
-                </Stack>
-            ),
-        })
+        if (userHasFeature(FeatureName.playerAbility)) {
+            tabs.push({
+                id: "buy-abilities",
+                hash: "#buy-abilities",
+                icon: <SvgAbility size="1.2rem" sx={{ pt: ".1rem" }} />,
+                label: "BUY ABILITIES",
+                requireAuth: true,
+                Component: () => (
+                    <Stack sx={{ position: "relative", height: "100%" }}>
+                        <QuickPlayerAbilities
+                            open
+                            onClose={() => {
+                                return
+                            }}
+                        />
+                    </Stack>
+                ),
+            })
+        }
+
         tabs.push({
             id: "prev-battle",
             hash: "#prev-battle",
@@ -171,36 +175,37 @@ const BattleArenaPageInner = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [allowCloseNav, isMobile, triggerReset, setAdditionalTabs, setIsNavOpen])
 
+    if (userID && !factionID) {
+        return <EnlistPage />
+    }
+
     return (
-        <>
-            <Stack sx={{ height: "100%", zIndex: siteZIndex.RoutePage }}>
-                <Box id={isMobile ? "" : "game-ui-container"} sx={{ position: "relative", flex: 1 }}>
-                    <Stream />
+        <Stack sx={{ height: "100%", zIndex: siteZIndex.RoutePage }}>
+            <Box id={isMobile ? "" : "game-ui-container"} sx={{ position: "relative", flex: 1 }}>
+                <Stream />
 
-                    {!isMobile && (
-                        <>
-                            <WarMachineStats />
-                            <BattleEndScreen />
-                            {/* <LiveVotingChart /> */}
-                            <BattleHistory />
-                            {isQuickDeployOpen && <QuickDeploy open={isQuickDeployOpen} onClose={() => toggleIsQuickDeployOpen(false)} />}
+                {!isMobile && (
+                    <>
+                        <WarMachineStats />
+                        <BattleEndScreen />
+                        <BattleHistory />
+                        {isQuickDeployOpen && <QuickDeploy open={isQuickDeployOpen} onClose={() => toggleIsQuickDeployOpen(false)} />}
 
-                            {isQuickPlayerAbilitiesOpen && (
-                                <QuickPlayerAbilities open={isQuickPlayerAbilitiesOpen} onClose={() => toggleIsQuickPlayerAbilitiesOpen(false)} />
-                            )}
+                        {isQuickPlayerAbilitiesOpen && (
+                            <QuickPlayerAbilities open={isQuickPlayerAbilitiesOpen} onClose={() => toggleIsQuickPlayerAbilitiesOpen(false)} />
+                        )}
 
-                            <VotingSystem />
-                            <MiniMap />
-                        </>
-                    )}
+                        <VotingSystem />
+                        <MiniMap />
+                    </>
+                )}
 
-                    <Notifications />
+                <Notifications />
 
-                    {userID && <TutorialModal />}
-                </Box>
+                {userID && <TutorialModal />}
+            </Box>
 
-                <Controls />
-            </Stack>
-        </>
+            <Controls />
+        </Stack>
     )
 }

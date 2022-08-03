@@ -60,7 +60,7 @@ export const TextMessage = ({
     const { from_user, user_rank, message_color, avatar_id, message, from_user_stat, metadata } = data
     const { id, username, gid, faction_id } = from_user
     const { isHidden, isActive } = useAuth()
-    const { userGidRecord, addToUserGidRecord, readMessage, sendBrowserNotification, tabValue } = useChat()
+    const { userGidRecord, addToUserGidRecord, sendBrowserNotification, tabValue } = useChat()
     const { send } = useGameServerCommandsUser("/user_commander")
 
     const popoverRef = useRef(null)
@@ -125,26 +125,11 @@ export const TextMessage = ({
                 }
 
                 if (data.id) {
-                    readMessage(data.id)
                     setShouldNotify(false)
                 }
             }, 1000)
         }
-    }, [
-        isVisibleInChat,
-        data,
-        chatMessages,
-        metadata,
-        readMessage,
-        send,
-        user.gid,
-        isHidden,
-        isActive,
-        sendBrowserNotification,
-        tabValue,
-        username,
-        setShouldNotify,
-    ])
+    }, [isVisibleInChat, data, chatMessages, metadata, send, user.gid, isHidden, isActive, sendBrowserNotification, tabValue, username, setShouldNotify])
 
     const renderJSXMessage = useCallback(
         (msg: string) => {
@@ -353,10 +338,10 @@ export const TextMessage = ({
                     >
                         {/*only display if msg has likes*/}
 
-                        <Box sx={{ zIndex: 1 }}>{chatMessage}</Box>
+                        <Box sx={{ zIndex: isHovered ? 2 : 1 }}>{chatMessage}</Box>
 
-                        {!!metadata?.likes.net && <Reactions fontSize={fontSize} message={data} factionColor={factionColor} />}
-                        {isHovered && <Reactions fontSize={fontSize} hoverOnly={true} message={data} factionColor={factionColor} />}
+                        {!!metadata?.likes.net && <Reactions fontSize={fontSize} data={data} getFaction={getFaction} />}
+                        {isHovered && <Reactions fontSize={fontSize} hoverOnly={true} data={data} getFaction={getFaction} />}
                     </Stack>
                 </Box>
             </Box>
@@ -403,37 +388,35 @@ export const UsernameJSX = ({ data, fontSize, toggleIsPopoverOpen, user, faction
     const { message_color } = data
 
     return (
-        <>
-            <Typography
-                onClick={() => (toggleIsPopoverOpen ? toggleIsPopoverOpen() : null)}
-                sx={{
-                    display: "inline",
-                    color: toggleIsPopoverOpen ? message_color : factionColor,
-                    backgroundColor: toggleIsPopoverOpen ? "unset" : colors.darkNavyBlue,
-                    borderRadius: toggleIsPopoverOpen ? "unset" : 0.5,
-                    fontWeight: toggleIsPopoverOpen ? 700 : "unset",
-                    fontSize: toggleIsPopoverOpen && fontSize ? `${1.33 * fontSize}rem` : `${1.2 * fontSize}rem`,
-                    verticalAlign: "middle",
-                    ":hover": toggleIsPopoverOpen
-                        ? {
-                              cursor: "pointer",
-                              textDecoration: "underline",
-                          }
-                        : "unset",
-                    ":active": {
-                        opacity: 0.7,
-                    },
+        <Typography
+            onClick={() => (toggleIsPopoverOpen ? toggleIsPopoverOpen() : null)}
+            sx={{
+                display: "inline",
+                color: toggleIsPopoverOpen ? message_color : factionColor,
+                backgroundColor: toggleIsPopoverOpen ? "unset" : colors.darkNavyBlue,
+                borderRadius: toggleIsPopoverOpen ? "unset" : 0.5,
+                fontWeight: toggleIsPopoverOpen ? 700 : "unset",
+                fontSize: toggleIsPopoverOpen && fontSize ? `${1.33 * fontSize}rem` : `${1.2 * fontSize}rem`,
+                verticalAlign: "middle",
+                ":hover": toggleIsPopoverOpen
+                    ? {
+                          cursor: "pointer",
+                          textDecoration: "underline",
+                      }
+                    : "unset",
+                ":active": {
+                    opacity: 0.7,
+                },
+            }}
+        >
+            {`${truncate(user?.username || "", 20)}`}
+            <span
+                style={{
+                    marginLeft: ".2rem",
+                    opacity: 0.7,
+                    fontSize: fontSize ? `${1.1 * fontSize}rem` : "1.1rem",
                 }}
-            >
-                {`${truncate(user?.username || "", 20)}`}
-                <span
-                    style={{
-                        marginLeft: ".2rem",
-                        opacity: 0.7,
-                        fontSize: fontSize ? `${1.1 * fontSize}rem` : "1.1rem",
-                    }}
-                >{`#${user?.gid}`}</span>
-            </Typography>
-        </>
+            >{`#${user?.gid}`}</span>
+        </Typography>
     )
 }

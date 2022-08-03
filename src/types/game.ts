@@ -1,4 +1,5 @@
 import { Faction, WarMachineState } from "."
+import { FactionIDs } from "./../constants"
 
 export interface FactionsAll {
     [faction_id: string]: Faction
@@ -185,22 +186,19 @@ export interface BattleEndDetail {
     started_at: Date
     ended_at: Date
     winning_condition: string
-    winning_faction: {
-        id: string
-        label: string
-        theme: {
-            primary: string
-            secondary: string
-            background: string
-        }
-    }
+    winning_faction_id_order: FactionIDs[]
     winning_war_machines: WarMachineState[]
-    most_frequent_ability_executors: {
-        username: string
-        avatar_id: string
-        faction_id: string
-        faction_colour: string
-    }[]
+    mech_rewards: BattleMechReward[]
+}
+
+export interface BattleMechReward {
+    id: string
+    name?: string
+    label: string
+    faction_id: FactionIDs
+    avatar_url: string
+    rewarded_sups: string
+    owner_id: string
 }
 
 export interface WarMachineDestroyedRecord {
