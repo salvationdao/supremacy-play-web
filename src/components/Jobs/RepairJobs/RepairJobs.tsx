@@ -98,9 +98,9 @@ export const RepairJobs = () => {
         if (sort === SortTypeLabel.CreateTimeNewestFirst) sorted = sorted.sort((a, b) => (a.created_at < b.created_at ? 1 : -1))
         if (sort === SortTypeLabel.CreateTimeOldestFirst) sorted = sorted.sort((a, b) => (a.created_at > b.created_at ? 1 : -1))
         if (sort === SortTypeLabel.RewardAmountHighest)
-            sorted = sorted.sort((a, b) => (new BigNumber(a.offered_sups_amount).isLessThan(new BigNumber(b.offered_sups_amount)) ? 1 : -1))
+            sorted = sorted.sort((a, b) => (new BigNumber(a.sups_worth_per_block).isLessThan(new BigNumber(b.sups_worth_per_block)) ? 1 : -1))
         if (sort === SortTypeLabel.RewardAmountLowest)
-            sorted = sorted.sort((a, b) => (new BigNumber(a.offered_sups_amount).isGreaterThan(new BigNumber(b.offered_sups_amount)) ? 1 : -1))
+            sorted = sorted.sort((a, b) => (new BigNumber(a.sups_worth_per_block).isGreaterThan(new BigNumber(b.sups_worth_per_block)) ? 1 : -1))
 
         setRepairJobsRender(sorted)
 
