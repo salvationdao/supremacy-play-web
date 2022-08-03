@@ -72,8 +72,16 @@ export const DoRepairModal = ({
         setError(undefined)
         setIsRegistering(false)
         setSubmitSuccess(false)
+
+        // Tell back end
+        if (repairAgent?.id) {
+            send(GameServerKeys.AbandonRepairAgent, {
+                repair_agent_id: repairAgent.id,
+            })
+        }
+
         onClose()
-    }, [onClose])
+    }, [onClose, repairAgent?.id, send])
 
     // Register for an agent
     const registerAgentRepair = useCallback(async () => {
