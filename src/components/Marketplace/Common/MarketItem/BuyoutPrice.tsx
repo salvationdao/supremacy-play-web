@@ -1,7 +1,8 @@
 import { Stack, Typography } from "@mui/material"
 import { useMemo } from "react"
 import { SvgSupToken } from "../../../../assets"
-import { colors, fonts } from "../../../../theme/theme"
+import { colors } from "../../../../theme/theme"
+import { General } from "./General"
 
 export const BuyoutPrice = ({
     isGridView,
@@ -15,11 +16,7 @@ export const BuyoutPrice = ({
     const primaryColor = useMemo(() => (formattedDropPrice ? colors.dutchAuction : colors.buyout), [formattedDropPrice])
 
     return (
-        <Stack spacing={isGridView ? ".1rem" : ".6rem"}>
-            <Typography variant="subtitle2" sx={{ fontFamily: fonts.nostromoBlack, color: colors.grey }}>
-                BUYOUT PRICE
-            </Typography>
-
+        <General isGridView={isGridView} title="BUYOUT PRICE">
             <Stack direction="row" alignItems="center" flexWrap="wrap">
                 {formattedPrice && <SvgSupToken size="1.7rem" fill={primaryColor} />}
                 <Typography sx={{ color: formattedPrice ? primaryColor : colors.lightGrey, fontWeight: "fontWeightBold" }}>
@@ -34,6 +31,6 @@ export const BuyoutPrice = ({
                     </Stack>
                 )}
             </Stack>
-        </Stack>
+        </General>
     )
 }

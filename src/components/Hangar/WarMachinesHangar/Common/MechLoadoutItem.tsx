@@ -1,10 +1,10 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useMemo } from "react"
 import { FancyButton } from "../../.."
-import { SvgPlus, SvgWrapperProps } from "../../../../assets"
+import { SvgPlus, SvgSkin, SvgWrapperProps } from "../../../../assets"
 import { shadeColor } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
-import { fonts } from "../../../../theme/theme"
+import { colors, fonts } from "../../../../theme/theme"
 import { Rarity } from "../../../../types"
 import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
 import { MediaPreviewModal } from "../../../Common/MediaPreview/MediaPreviewModal"
@@ -18,6 +18,7 @@ export const MechLoadoutItem = ({
     isEmpty,
     Icon,
     rarity,
+    hasSkin,
     imageTransform,
     disabled,
 }: {
@@ -29,6 +30,7 @@ export const MechLoadoutItem = ({
     isEmpty?: boolean
     Icon?: React.VoidFunctionComponent<SvgWrapperProps>
     rarity?: Rarity
+    hasSkin?: boolean
     imageTransform?: string
     disabled?: boolean
 }) => {
@@ -69,7 +71,10 @@ export const MechLoadoutItem = ({
                                 />
                             )}
 
-                            {Icon && <Icon fill={primaryColor} size="2rem" sx={{ position: "absolute", top: ".1rem", left: ".5rem" }} />}
+                            <Stack spacing=".3rem" direction="row" alignItems="center" sx={{ position: "absolute", top: ".1rem", left: ".5rem" }}>
+                                {Icon && <Icon fill={primaryColor} size="1.8rem" />}
+                                {hasSkin && <SvgSkin fill={colors.chassisSkin} size="1.8rem" />}
+                            </Stack>
 
                             {rarity && (
                                 <Typography

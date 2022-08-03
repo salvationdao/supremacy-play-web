@@ -2,11 +2,10 @@ import { Stack } from "@mui/material"
 import { useMemo } from "react"
 import { LiveCounts, OverlayToggles, VideoPlayerControls } from ".."
 import { CONTROLS_HEIGHT } from "../../constants"
-import { useMobile, useOverlayToggles } from "../../containers"
+import { useMobile } from "../../containers"
 import { useTheme } from "../../containers/theme"
 import { shadeColor } from "../../helpers"
 import { siteZIndex } from "../../theme/theme"
-import { BattleStats } from "../BattleStats/BattleStats"
 import { PreviousBattle } from "./PreviousBattle"
 import { ResolutionSelect } from "./ResolutionSelect"
 import { ShowTrailerButton } from "./ShowTrailerButton"
@@ -15,7 +14,6 @@ import { StreamSelect } from "./StreamSelect"
 export const Controls = () => {
     const { isMobile } = useMobile()
     const theme = useTheme()
-    const { isLiveChartOpen } = useOverlayToggles()
 
     const darkerBackgroundColor = useMemo(() => shadeColor(theme.factionTheme.primary, -91), [theme.factionTheme.primary])
 
@@ -55,7 +53,6 @@ export const Controls = () => {
                 {!isMobile && <PreviousBattle />}
                 <LiveCounts />
                 {!isMobile && <OverlayToggles />}
-                {!isMobile && <BattleStats hideContributionTotal={isLiveChartOpen} hideContributorAmount={isLiveChartOpen} />}
             </Stack>
 
             <Stack id="tutorial-stream-options" direction="row" spacing="1.6rem" sx={{ flexShrink: 0, height: "100%" }}>

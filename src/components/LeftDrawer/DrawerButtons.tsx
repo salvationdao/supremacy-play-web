@@ -1,6 +1,5 @@
-import { Box, Button, Stack, Tab, Tabs } from "@mui/material"
+import { Box, Stack, Tab, Tabs } from "@mui/material"
 import { useHistory, useLocation, useRouteMatch } from "react-router-dom"
-import { SvgNext } from "../../assets"
 import { useAuth, useMobile } from "../../containers"
 import { useTheme } from "../../containers/theme"
 import { ROUTES_ARRAY } from "../../routes"
@@ -11,7 +10,7 @@ import { QuickPlayerAbilitiesButton } from "../QuickPlayerAbilities/QuickPlayerA
 const DRAWER_BAR_WIDTH = 3 // rem
 const BUTTON_WIDTH = 17 //rem
 
-export const DrawerButtons = ({ openLeftDrawer }: { openLeftDrawer: () => void }) => {
+export const DrawerButtons = () => {
     const { isMobile } = useMobile()
     const { userID } = useAuth()
     const theme = useTheme()
@@ -80,23 +79,6 @@ export const DrawerButtons = ({ openLeftDrawer }: { openLeftDrawer: () => void }
                     return toRender
                 })}
             </Tabs>
-
-            <Button
-                onClick={() => openLeftDrawer()}
-                sx={{
-                    minWidth: 0,
-                    color: "#FFFFFF",
-                    borderRadius: 0,
-                    ":hover": {
-                        backgroundColor: (theme) => theme.factionTheme.primary,
-                        svg: {
-                            fill: (theme) => theme.factionTheme.secondary,
-                        },
-                    },
-                }}
-            >
-                <SvgNext size="1.6rem" fill="#FFFFFF" />
-            </Button>
         </Stack>
     )
 }

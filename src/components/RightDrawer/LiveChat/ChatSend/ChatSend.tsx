@@ -11,8 +11,9 @@ import { useToggle } from "../../../../hooks"
 import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
-import { User, UserRank } from "../../../../types"
+import { ChatMessageType, User, UserRank } from "../../../../types"
 import { TooltipHelper } from "../../../Common/TooltipHelper"
+import { v4 as uuidv4 } from "uuid"
 
 interface ChatSendProps {
     primaryColor: string
@@ -22,7 +23,7 @@ interface ChatSendProps {
 export const ChatSend = (props: ChatSendProps) => {
     const { send } = useGameServerCommandsUser("/user_commander")
     const { user, userRank } = useAuth()
-    const { onSentMessage, onFailedMessage, newMessageHandler, isPoppedout, toggleIsPoppedout, globalActivePlayers, activePlayers } = useChat()
+    const { onFailedMessage, newMessageHandler, isPoppedout, toggleIsPoppedout, globalActivePlayers, activePlayers } = useChat()
 
     return (
         <ChatSendInner
@@ -30,7 +31,6 @@ export const ChatSend = (props: ChatSendProps) => {
             send={send}
             user={user}
             userRank={userRank}
-            onSentMessage={onSentMessage}
             onFailedMessage={onFailedMessage}
             newMessageHandler={newMessageHandler}
             isPoppedout={isPoppedout}
@@ -44,7 +44,6 @@ export const ChatSend = (props: ChatSendProps) => {
 interface ChatSendInnerProps extends ChatSendProps {
     user: User
     userRank?: UserRank
-    onSentMessage: (sentAt: Date) => void
     onFailedMessage: (sentAt: Date) => void
     newMessageHandler: ({ messages, faction }: IncomingMessages) => void
     send: SendFunc
@@ -60,7 +59,6 @@ const ChatSendInner = ({
     send,
     user,
     userRank,
-    onSentMessage,
     onFailedMessage,
     newMessageHandler,
     isPoppedout,
@@ -123,54 +121,46 @@ const ChatSendInner = ({
         if (!message.trim()) return
 
         const sentAt = new Date()
-
+        const id = uuidv4()
         const taggedUserGids = handleTaggedUsers(renderedMsg)
+
+        const msg: ChatMessageType = {
+            id: id,
+            data: {
+                id: id,
+                from_user: user,
+                user_rank: userRank,
+                message_color: messageColor,
+                message: renderedMsg,
+                tagged_users_gids: taggedUserGids,
+            },
+            type: "TEXT",
+            sent_at: sentAt,
+            locallySent: true,
+        }
+
         newMessageHandler({
-            messages: [
-                {
-                    data: {
-                        from_user: user,
-                        user_rank: userRank,
-                        message_color: messageColor,
-                        message: renderedMsg,
-                        tagged_users_gids: taggedUserGids,
-                    },
-                    type: "TEXT",
-                    sent_at: sentAt,
-                    locallySent: true,
-                },
-            ],
+            messages: [msg],
             faction: faction_id,
         })
 
         try {
             setMessage("")
-            const resp = await send<boolean>(GameServerKeys.SendChatMessage, {
+            const resp = await send<ChatMessageType>(GameServerKeys.SendChatMessage, {
+                id,
                 faction_id,
                 message: renderedMsg,
                 message_color: messageColor,
                 tagged_users_gids: taggedUserGids,
             })
-            if (resp) onSentMessage(sentAt)
+            if (!resp) return
+            //update
         } catch (e) {
             newSnackbarMessage(typeof e === "string" ? e : "Failed to send chat message.", "error")
             onFailedMessage(sentAt)
             console.error(e)
         }
-    }, [
-        message,
-        user,
-        send,
-        newMessageHandler,
-        userRank,
-        messageColor,
-        faction_id,
-        onSentMessage,
-        newSnackbarMessage,
-        onFailedMessage,
-        renderedMsg,
-        handleTaggedUsers,
-    ])
+    }, [message, user, send, newMessageHandler, userRank, messageColor, faction_id, newSnackbarMessage, onFailedMessage, renderedMsg, handleTaggedUsers])
 
     const showCharCount = message.length >= MAX_CHAT_MESSAGE_LENGTH
 

@@ -1,4 +1,4 @@
-import { Box, Modal, Skeleton, Stack, TextField, Typography } from "@mui/material"
+import { Box, Modal, Stack, TextField, Typography } from "@mui/material"
 import { useCallback, useMemo, useState } from "react"
 import { ClipThing, FancyButton } from "../../.."
 import { SafePNG, SvgArrow, SvgSupToken } from "../../../../assets"
@@ -212,7 +212,7 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate, setOpeningCrate, se
                                                     fontSize: "2rem",
                                                     height: "unset",
                                                     "::-webkit-outer-spin-button, ::-webkit-inner-spin-button": {
-                                                        "-webkit-appearance": "none",
+                                                        WebkitAppearance: "none",
                                                     },
                                                     appearance: "textfield",
                                                 },
@@ -346,32 +346,5 @@ const PurchaseSuccessModal = ({
                 </Box>
             </Box>
         </Modal>
-    )
-}
-
-export const MysteryCrateStoreItemLoadingSkeleton = () => {
-    const theme = useTheme()
-
-    return (
-        <Box sx={{ p: "1.2rem", width: "30rem" }}>
-            <ClipThing
-                clipSize="10px"
-                border={{
-                    borderColor: theme.factionTheme.primary,
-                    borderThickness: ".2rem",
-                }}
-                opacity={0.5}
-                backgroundColor={theme.factionTheme.background}
-            >
-                <Stack spacing=".7rem" sx={{ px: "1.8rem", py: "1.6rem" }}>
-                    <Skeleton variant="rectangular" width="100%" height="12rem" sx={{ mb: ".3rem !important" }} />
-                    <Skeleton variant="rectangular" width="80%" height="2.2rem" />
-                    <Skeleton variant="rectangular" width="100%" height="1.5rem" />
-                    <Skeleton variant="rectangular" width="100%" height="1.5rem" />
-                    <Skeleton variant="rectangular" width="100%" height="1.5rem" />
-                    <Skeleton variant="rectangular" width="100%" height="4rem" sx={{ mt: "1rem !important" }} />
-                </Stack>
-            </ClipThing>
-        </Box>
     )
 }
