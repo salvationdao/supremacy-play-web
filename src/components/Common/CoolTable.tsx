@@ -28,7 +28,7 @@ interface CoolTableProps<T> {
     widths?: string[]
     items?: T[]
     renderItem: (item: T, index: number) => ReactNode[]
-    isLoading: boolean
+    isLoading?: boolean
     loadError?: string
     titleRowHeight?: string
     cellPadding?: string
@@ -192,10 +192,18 @@ export const CoolTable = <T,>({
 
                 {paginationProps && (
                     <TableFooter>
-                        <TableRow>
+                        <TableRow
+                            sx={{
+                                ".MuiToolbar-root": {
+                                    height: `calc(${titleRowHeight} * 1.2)`,
+                                    minHeight: "0 !important",
+                                    overflow: "hidden",
+                                    borderTop: `${primaryColor}60 1px solid`,
+                                },
+                            }}
+                        >
                             <TablePagination
                                 sx={{
-                                    minHeight: 0,
                                     "p, select, option": {
                                         fontFamily: `${fonts.nostromoBold} !important`,
                                         fontSize: "1.3rem !important",
