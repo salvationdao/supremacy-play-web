@@ -3,21 +3,23 @@ import { User } from "./user"
 export interface RepairOffer {
     id: string
     repair_case_id: string
-    is_self: boolean
-    blocks_total: number
-    offered_sups_amount: string
-    expires_at: Date
-    finished_reason?: FinishedReason
-    closed_at?: Date
     offered_by_id: string
+    expires_at: Date
+    finished_reason?: string
+    closed_at?: string
+    blocks_required_repair: number
+    blocks_repaired: number
+    sups_worth_per_block: string
+    working_agent_count: number
     job_owner: User
     created_at: Date
+    blocks_total: number
+    offered_sups_amount: string
 }
 
 export interface RepairJob extends RepairOffer {
     blocks_required_repair: number
     blocks_repaired: number
-    sups_worth_per_block: string
     working_agent_count: number
 }
 

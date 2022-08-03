@@ -85,7 +85,7 @@ export const DeployModal = ({
 
                     <AmountItem
                         title={"Fee: "}
-                        color={colors.orange}
+                        color={colors.yellow}
                         value={supFormatter(queueCost, 2)}
                         tooltip="The cost to place your war machine into the battle queue."
                     />
