@@ -11,7 +11,7 @@ import { useToggle } from "../../../../hooks"
 import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
-import { User, UserRank } from "../../../../types"
+import { ChatMessageType, User, UserRank } from "../../../../types"
 import { TooltipHelper } from "../../../Common/TooltipHelper"
 
 interface ChatSendProps {
@@ -22,7 +22,7 @@ interface ChatSendProps {
 export const ChatSend = (props: ChatSendProps) => {
     const { send } = useGameServerCommandsUser("/user_commander")
     const { user, userRank } = useAuth()
-    const { onSentMessage, onFailedMessage, newMessageHandler, isPoppedout, toggleIsPoppedout, globalActivePlayers, activePlayers } = useChat()
+    const { replaceMessageHandler, onFailedMessage, newMessageHandler, isPoppedout, toggleIsPoppedout, globalActivePlayers, activePlayers } = useChat()
 
     return (
         <ChatSendInner
@@ -30,13 +30,13 @@ export const ChatSend = (props: ChatSendProps) => {
             send={send}
             user={user}
             userRank={userRank}
-            onSentMessage={onSentMessage}
             onFailedMessage={onFailedMessage}
             newMessageHandler={newMessageHandler}
             isPoppedout={isPoppedout}
             toggleIsPoppedout={toggleIsPoppedout}
             globalActivePlayers={globalActivePlayers}
             activePlayers={activePlayers}
+            replaceMessageHandler={replaceMessageHandler}
         />
     )
 }
@@ -44,7 +44,6 @@ export const ChatSend = (props: ChatSendProps) => {
 interface ChatSendInnerProps extends ChatSendProps {
     user: User
     userRank?: UserRank
-    onSentMessage: (sentAt: Date) => void
     onFailedMessage: (sentAt: Date) => void
     newMessageHandler: ({ messages, faction }: IncomingMessages) => void
     send: SendFunc
@@ -52,6 +51,7 @@ interface ChatSendInnerProps extends ChatSendProps {
     toggleIsPoppedout: (value?: boolean) => void
     globalActivePlayers: User[]
     activePlayers: User[]
+    replaceMessageHandler: (placeholderID: string, updatedMessage: ChatMessageType, factionID: string | null) => void
 }
 
 const ChatSendInner = ({
@@ -60,13 +60,13 @@ const ChatSendInner = ({
     send,
     user,
     userRank,
-    onSentMessage,
     onFailedMessage,
     newMessageHandler,
     isPoppedout,
     toggleIsPoppedout,
     globalActivePlayers,
     activePlayers,
+    replaceMessageHandler,
 }: ChatSendInnerProps) => {
     const { newSnackbarMessage } = useSnackbar()
     const { isMobile } = useMobile()
@@ -123,35 +123,40 @@ const ChatSendInner = ({
         if (!message.trim()) return
 
         const sentAt = new Date()
-
+        const placeholderID = `${user.gid}-${sentAt}`
         const taggedUserGids = handleTaggedUsers(renderedMsg)
+
+        const msg: ChatMessageType = {
+            id: placeholderID,
+            data: {
+                id: placeholderID,
+                from_user: user,
+                user_rank: userRank,
+                message_color: messageColor,
+                message: renderedMsg,
+                tagged_users_gids: taggedUserGids,
+            },
+            type: "TEXT",
+            sent_at: sentAt,
+            locallySent: true,
+        }
+
         newMessageHandler({
-            messages: [
-                {
-                    data: {
-                        from_user: user,
-                        user_rank: userRank,
-                        message_color: messageColor,
-                        message: renderedMsg,
-                        tagged_users_gids: taggedUserGids,
-                    },
-                    type: "TEXT",
-                    sent_at: sentAt,
-                    locallySent: true,
-                },
-            ],
+            messages: [msg],
             faction: faction_id,
         })
 
         try {
             setMessage("")
-            const resp = await send<boolean>(GameServerKeys.SendChatMessage, {
+            const resp = await send<ChatMessageType>(GameServerKeys.SendChatMessage, {
                 faction_id,
                 message: renderedMsg,
                 message_color: messageColor,
                 tagged_users_gids: taggedUserGids,
             })
-            if (resp) onSentMessage(sentAt)
+            if (!resp) return
+            //update
+            replaceMessageHandler(placeholderID, resp, faction_id)
         } catch (e) {
             newSnackbarMessage(typeof e === "string" ? e : "Failed to send chat message.", "error")
             onFailedMessage(sentAt)
@@ -165,11 +170,11 @@ const ChatSendInner = ({
         userRank,
         messageColor,
         faction_id,
-        onSentMessage,
         newSnackbarMessage,
         onFailedMessage,
         renderedMsg,
         handleTaggedUsers,
+        replaceMessageHandler,
     ])
 
     const showCharCount = message.length >= MAX_CHAT_MESSAGE_LENGTH

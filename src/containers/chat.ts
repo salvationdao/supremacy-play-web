@@ -48,7 +48,6 @@ export const ChatContainer = createContainer(() => {
     const [banProposal, setBanProposal] = useState<BanProposalStruct>()
 
     // Store list of messages that were successfully sent or failed
-    const [sentMessages, setSentMessages] = useState<Date[]>([])
     const [failedMessages, setFailedMessages] = useState<Date[]>([])
 
     //active users
@@ -67,17 +66,6 @@ export const ChatContainer = createContainer(() => {
         localStorage.setItem("chatFilterSystemMessages", filterSystemMessages ? "true" : "false")
         localStorage.setItem("chatFontSize2", fontSize ? fontSize.toString() : "1")
     }, [splitOption, filterSystemMessages, fontSize])
-
-    const onSentMessage = useCallback(
-        (sentAt: Date) => {
-            setSentMessages((prev) => {
-                // Buffer the array
-                const newArray = [...prev, sentAt]
-                return newArray.slice(newArray.length - MESSAGES_BUFFER_SIZE, newArray.length)
-            })
-        },
-        [setSentMessages],
-    )
 
     const onFailedMessage = useCallback(
         (sentAt: Date) => {
@@ -173,6 +161,11 @@ export const ChatContainer = createContainer(() => {
         },
         [userID, tabValue, splitOption],
     )
+
+    const replaceMessageHandler = useCallback((placeholderID: string, updatedMessage: ChatMessageType, factionID: string | null) => {
+        //handler
+        return
+    }, [])
 
     const sendBrowserNotification = useCallback((title: string, body: string, timeOpen?: number) => {
         if (!("Notification" in window)) {
@@ -339,8 +332,6 @@ export const ChatContainer = createContainer(() => {
         factionChatMessages,
         factionChatUnread,
         globalChatUnread,
-        onSentMessage,
-        sentMessages,
         failedMessages,
         onFailedMessage,
         fontSize,
@@ -352,6 +343,7 @@ export const ChatContainer = createContainer(() => {
         activePlayers,
         globalActivePlayers,
         sendBrowserNotification,
+        replaceMessageHandler,
     }
 })
 
