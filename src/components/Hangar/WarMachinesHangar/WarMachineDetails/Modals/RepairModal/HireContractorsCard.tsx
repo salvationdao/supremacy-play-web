@@ -170,7 +170,7 @@ export const HireContractorsCard = ({ mechDetails, remainDamagedBlocks }: { mech
                     value={Math.round((agentReward / remainDamagedBlocks) * 100) / 100}
                     tooltip={`Offered reward / ${remainDamagedBlocks} blocks`}
                 />
-                <AmountItem title="TOTAL CHARGE:" value={Math.round(agentReward * 1.1 * 100) / 100} tooltip={`Offered reward + 10% GST`} />
+                <AmountItem title="TOTAL CHARGE:" value={Math.round(agentReward * 1.1 * 100) / 100} tooltip={`Offered reward + 10% Processing Fee`} />
             </Stack>
 
             <FancyButton
