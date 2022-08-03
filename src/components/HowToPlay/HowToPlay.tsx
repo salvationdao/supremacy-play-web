@@ -1,5 +1,4 @@
 import { Button, Popover, Stack, Typography, useMediaQuery } from "@mui/material"
-import { useTour } from "@reactour/tour"
 import { MutableRefObject, useRef } from "react"
 import { ClipThing, FancyButton } from ".."
 import { SvgQuestionMark } from "../../assets"
@@ -7,7 +6,6 @@ import { useTheme } from "../../containers/theme"
 import { useToggle } from "../../hooks"
 import { fonts, siteZIndex } from "../../theme/theme"
 import GameGuide from "./GameGuide/GameGuide"
-import { SetupTutorial } from "./Tutorial/SetupTutorial"
 
 export const HowToPlay = () => {
     const theme = useTheme()
@@ -15,10 +13,7 @@ export const HowToPlay = () => {
     const popoverRef = useRef(null)
     const [isPopoverOpen, toggleIsPopoverOpen] = useToggle()
 
-    const { setIsOpen } = useTour()
     const [isGameGuideOpen, toggleIsGameGuideOpen] = useToggle()
-
-    return <SetupTutorial />
 
     return (
         <>
@@ -52,14 +47,9 @@ export const HowToPlay = () => {
                         toggleIsGameGuideOpen(true)
                         toggleIsPopoverOpen(false)
                     }}
-                    openTutorial={() => {
-                        setIsOpen(true)
-                        toggleIsPopoverOpen(false)
-                    }}
                 />
             )}
 
-            <SetupTutorial />
             {isGameGuideOpen && <GameGuide onClose={() => toggleIsGameGuideOpen(false)} />}
         </>
     )
@@ -70,13 +60,11 @@ const OptionsPopover = ({
     onClose,
     popoverRef,
     openGameGuide,
-    openTutorial,
 }: {
     open: boolean
     onClose: () => void
     popoverRef: MutableRefObject<null>
     openGameGuide: () => void
-    openTutorial: () => void
 }) => {
     const theme = useTheme()
 
@@ -112,7 +100,6 @@ const OptionsPopover = ({
                 sx={{ height: "100%" }}
             >
                 <Stack spacing=".32rem" sx={{ position: "relative", minWidth: "13rem", p: ".8rem" }}>
-                    <OptionButton text="TUTORIAL" onClick={openTutorial} />
                     <OptionButton text="GAME GUIDE" onClick={openGameGuide} />
                 </Stack>
             </ClipThing>
