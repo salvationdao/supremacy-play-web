@@ -47,7 +47,6 @@ const styles = {
 export const Reactions = ({ fontSize, factionColor, message, hoverOnly = false }: ReactionsProps) => {
     const { send } = useGameServerCommandsUser("/user_commander")
     const { user } = useAuth()
-    const { reactMessage } = useChat()
 
     const handleReactionSend = useCallback(
         async (reactMessageSend: ReactMessageSendProps) => {
@@ -56,12 +55,11 @@ export const Reactions = ({ fontSize, factionColor, message, hoverOnly = false }
             try {
                 const resp = await send<Likes, ReactMessageSendProps>(GameServerKeys.ReactToMessage, reactMessageSend)
                 if (!resp) return
-                reactMessage(message.id, resp)
             } catch (e) {
                 console.error(e)
             }
         },
-        [message, send, reactMessage],
+        [message, send],
     )
 
     const handleLike = useCallback(() => {

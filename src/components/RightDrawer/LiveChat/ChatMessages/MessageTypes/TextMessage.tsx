@@ -60,7 +60,7 @@ export const TextMessage = ({
     const { from_user, user_rank, message_color, avatar_id, message, from_user_stat, metadata } = data
     const { id, username, gid, faction_id } = from_user
     const { isHidden, isActive } = useAuth()
-    const { userGidRecord, addToUserGidRecord, readMessage, sendBrowserNotification, tabValue } = useChat()
+    const { userGidRecord, addToUserGidRecord, sendBrowserNotification, tabValue } = useChat()
     const { send } = useGameServerCommandsUser("/user_commander")
 
     const popoverRef = useRef(null)
@@ -125,26 +125,11 @@ export const TextMessage = ({
                 }
 
                 if (data.id) {
-                    readMessage(data.id)
                     setShouldNotify(false)
                 }
             }, 1000)
         }
-    }, [
-        isVisibleInChat,
-        data,
-        chatMessages,
-        metadata,
-        readMessage,
-        send,
-        user.gid,
-        isHidden,
-        isActive,
-        sendBrowserNotification,
-        tabValue,
-        username,
-        setShouldNotify,
-    ])
+    }, [isVisibleInChat, data, chatMessages, metadata, send, user.gid, isHidden, isActive, sendBrowserNotification, tabValue, username, setShouldNotify])
 
     const renderJSXMessage = useCallback(
         (msg: string) => {
