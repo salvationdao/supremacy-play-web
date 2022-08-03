@@ -188,6 +188,51 @@ export const DoRepairModal = ({
             )
         }
 
+        if (submitError) {
+            return (
+                <Stack spacing="2rem" alignItems="center">
+                    <Typography variant="h5" sx={{ textAlign: "center", fontWeight: "fontWeightBold", color: colors.red }}>
+                        {submitError}
+                    </Typography>
+
+                    <FancyButton
+                        clipThingsProps={{
+                            clipSize: "7px",
+                            clipSlantSize: "0px",
+                            corners: { topLeft: true, topRight: true, bottomLeft: true, bottomRight: true },
+                            backgroundColor: colors.red,
+                            opacity: 1,
+                            border: { borderColor: colors.red, borderThickness: "2px" },
+                            sx: { position: "relative" },
+                        }}
+                        sx={{ px: "1.6rem", py: "1rem", color: "#FFFFFF" }}
+                        onClick={() => setSubmitError(undefined)}
+                    >
+                        <Typography sx={{ fontFamily: fonts.nostromoBlack }}>DISMISS</Typography>
+                    </FancyButton>
+                </Stack>
+            )
+        }
+
+        if (isSubmitting) {
+            return (
+                <Stack spacing="1.8rem" alignItems="center">
+                    <Stack justifyContent="flex-end" sx={{ width: "3rem", height: "3rem", backgroundColor: colors.red, boxShadow: 3 }}>
+                        <Box sx={{ width: "100%", backgroundColor: colors.green, animation: `${heightEffect()} 4s ease-out infinite` }} />
+                    </Stack>
+
+                    <Typography
+                        variant="h5"
+                        sx={{
+                            fontWeight: "fontWeightBold",
+                        }}
+                    >
+                        SUBMITTING RESULTS...
+                    </Typography>
+                </Stack>
+            )
+        }
+
         if (!repairAgent) {
             return (
                 <Stack spacing="2rem" alignItems="center">
@@ -251,51 +296,6 @@ export const DoRepairModal = ({
                     >
                         <Typography sx={{ fontFamily: fonts.nostromoBlack }}>{submitSuccess ? "REPAIR NEXT BLOCK" : "START REPAIRS"}</Typography>
                     </FancyButton>
-                </Stack>
-            )
-        }
-
-        if (submitError) {
-            return (
-                <Stack spacing="2rem" alignItems="center">
-                    <Typography variant="h5" sx={{ textAlign: "center", fontWeight: "fontWeightBold", color: colors.red }}>
-                        {submitError}
-                    </Typography>
-
-                    <FancyButton
-                        clipThingsProps={{
-                            clipSize: "7px",
-                            clipSlantSize: "0px",
-                            corners: { topLeft: true, topRight: true, bottomLeft: true, bottomRight: true },
-                            backgroundColor: colors.red,
-                            opacity: 1,
-                            border: { borderColor: colors.red, borderThickness: "2px" },
-                            sx: { position: "relative" },
-                        }}
-                        sx={{ px: "1.6rem", py: "1rem", color: "#FFFFFF" }}
-                        onClick={() => setSubmitError(undefined)}
-                    >
-                        <Typography sx={{ fontFamily: fonts.nostromoBlack }}>DISMISS</Typography>
-                    </FancyButton>
-                </Stack>
-            )
-        }
-
-        if (isSubmitting) {
-            return (
-                <Stack spacing="1.8rem" alignItems="center">
-                    <Stack justifyContent="flex-end" sx={{ width: "3rem", height: "3rem", backgroundColor: colors.red, boxShadow: 3 }}>
-                        <Box sx={{ width: "100%", backgroundColor: colors.green, animation: `${heightEffect()} 4s ease-out infinite` }} />
-                    </Stack>
-
-                    <Typography
-                        variant="h5"
-                        sx={{
-                            fontWeight: "fontWeightBold",
-                        }}
-                    >
-                        SUBMITTING RESULTS...
-                    </Typography>
                 </Stack>
             )
         }
