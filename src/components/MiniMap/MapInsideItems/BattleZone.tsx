@@ -1,5 +1,5 @@
 import { useGame } from "../../../containers"
-import React, { useMemo } from "react"
+import React, { useCallback, useMemo } from "react"
 import { Box } from "@mui/material"
 import { colors } from "../../../theme/theme"
 import { Map } from "../../../types"
@@ -26,22 +26,25 @@ export const BattleZone = ({ map }: BattleZoneProps) => {
     const radius = useMemo(() => (battleZone?.radius || 0) * mapScale, [mapScale, battleZone?.radius])
     const adjustedRadius = (radius + borderThickness) * 2
 
-    const battleZoneCircle = (overlay: boolean = false) => (
-        <Box
-            sx={{
-                zIndex: overlay ? 900 : 1,
-                position: "absolute",
-                left: 0,
-                width: adjustedRadius,
-                height: adjustedRadius,
-                transform: `translate(-50%, -50%) translate3d(${locationX}px, ${locationY}px, 0)`,
-                borderRadius: "50%",
-                border: `${borderThickness}px solid #0F0202${overlay ? "66" : "BB"}`,
-                pointerEvents: "none",
-                transition: `all ${battleZone?.shrinkTime || 0.5}s ease-in-out`,
-                transitionDelay: `${battleZone?.warnTime || 0}s`,
-            }}
-        />
+    const battleZoneCircle = useCallback(
+        (overlay: boolean = false) => (
+            <Box
+                sx={{
+                    zIndex: overlay ? 900 : 1,
+                    position: "absolute",
+                    left: 0,
+                    width: adjustedRadius,
+                    height: adjustedRadius,
+                    transform: `translate(-50%, -50%) translate3d(${locationX}px, ${locationY}px, 0)`,
+                    borderRadius: "50%",
+                    border: `${borderThickness}px solid #0F0202${overlay ? "66" : "BB"}`,
+                    pointerEvents: "none",
+                    transition: `all ${battleZone?.shrinkTime || 0.5}s ease-in-out`,
+                    transitionDelay: `${battleZone?.warnTime || 0}s`,
+                }}
+            />
+        ),
+        [adjustedRadius, battleZone?.shrinkTime, battleZone?.warnTime, locationX, locationY],
     )
 
     if (!battleZone || battleZone.radius === 0) return <></>

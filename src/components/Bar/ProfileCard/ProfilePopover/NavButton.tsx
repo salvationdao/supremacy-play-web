@@ -3,6 +3,7 @@ import { FancyButton } from "../../.."
 import { fonts } from "../../../../theme/theme"
 
 interface NavButtonProps {
+    to?: string
     href?: string
     startIcon?: React.ReactNode
     text: string
@@ -10,7 +11,7 @@ interface NavButtonProps {
     hoverBackgroundColor?: string
 }
 
-export const NavButton: React.FC<NavButtonProps> = ({ href, startIcon, text, onClick, hoverBackgroundColor }) => {
+export const NavButton: React.FC<NavButtonProps> = ({ to, href, startIcon, text, onClick, hoverBackgroundColor }) => {
     return (
         <FancyButton
             tabIndex={0}
@@ -20,6 +21,7 @@ export const NavButton: React.FC<NavButtonProps> = ({ href, startIcon, text, onC
                 sx: { position: "relative" },
             }}
             sx={{ px: "1.6rem", py: ".4rem", color: hoverBackgroundColor }}
+            to={to}
             href={href || ""}
             target={href ? "_blank" : undefined}
             onClick={onClick}

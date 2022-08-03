@@ -4,12 +4,12 @@ import { useSupremacy } from "../../../containers"
 import { colors, fonts } from "../../../theme/theme"
 import { BattleEndDetail } from "../../../types"
 
-export const SectionTopSupsFaction = ({ battleEndDetail }: { battleEndDetail: BattleEndDetail }) => {
+export const SectionFactions = ({ battleEndDetail }: { battleEndDetail: BattleEndDetail }) => {
     const { getFaction } = useSupremacy()
-    const { top_sups_contribute_factions } = battleEndDetail
+    const { winning_faction_id_order } = battleEndDetail
 
     return (
-        <Stack spacing="1.6rem">
+        <Stack spacing={2}>
             <Box sx={{ px: "2rem", py: ".88rem", pr: "3.2rem", backgroundColor: "#FFFFFF15" }}>
                 <Typography
                     component="span"
@@ -18,21 +18,27 @@ export const SectionTopSupsFaction = ({ battleEndDetail }: { battleEndDetail: Ba
                         position: "relative",
                         fontFamily: fonts.nostromoBlack,
                         fontWeight: "fontWeightBold",
-                        color: colors.neonBlue,
                     }}
                 >
-                    MOST SUPS SPENT (FACTION)
-                    <BattleEndTooltip text="The factions that had spent the most SUPS, ranked in order." color={colors.neonBlue} />
+                    FACTION RANKING
+                    <BattleEndTooltip text="Best to worst performing faction." />
                 </Typography>
             </Box>
 
-            {top_sups_contribute_factions && top_sups_contribute_factions.length > 0 ? (
+            {winning_faction_id_order && winning_faction_id_order.length > 0 ? (
                 <Stack spacing="1.2rem" sx={{ pl: ".8rem" }}>
-                    {top_sups_contribute_factions.map((f, index) => {
-                        const faction = getFaction(f.id)
+                    {winning_faction_id_order.map((fid, index) => {
+                        const rank = index + 1
+                        const faction = getFaction(fid)
+
+                        let color = "#FFFFFF"
+                        if (rank === 1) color = colors.yellow
+                        if (rank === 2) color = colors.silver
+                        if (rank === 3) color = colors.bronze
+
                         return (
                             <Stack key={index} direction="row" spacing="1.04rem" alignItems="center">
-                                <Typography variant="h6" sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>
+                                <Typography variant="h6" sx={{ lineHeight: 1, fontWeight: "fontWeightBold", color }}>
                                     {index + 1}.
                                 </Typography>
                                 <StyledImageText
@@ -44,7 +50,7 @@ export const SectionTopSupsFaction = ({ battleEndDetail }: { battleEndDetail: Ba
                                     imageBorderThickness=".2rem"
                                     fontWeight="normal"
                                     truncateLine
-                                    imageMb={-0.8}
+                                    textSx={{ fontWeight: "fontWeightBold" }}
                                 />
                             </Stack>
                         )
