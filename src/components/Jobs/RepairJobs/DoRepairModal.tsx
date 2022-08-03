@@ -58,8 +58,6 @@ export const DoRepairModal = ({
     const [submitError, setSubmitError] = useState<string>()
     const [submitSuccess, setSubmitSuccess] = useState(false)
 
-    const isFinished = !!(repairJob?.closed_at || (repairJob?.expires_at && repairJob?.expires_at < new Date()))
-
     const faction = useMemo(() => getFaction(_repairJob?.job_owner.faction_id || ""), [_repairJob?.job_owner.faction_id, getFaction])
     const remainDamagedBlocks = repairJob
         ? repairJob.blocks_required_repair - repairJob.blocks_repaired
@@ -68,6 +66,7 @@ export const DoRepairModal = ({
         : 0
     const primaryColor = _repairJob?.job_owner.faction_id ? faction.primary_color : theme.factionTheme.primary
     const backgroundColor = _repairJob?.job_owner.faction_id ? faction.background_color : theme.factionTheme.background
+    const isFinished = !!(repairJob?.closed_at || (repairJob?.expires_at && repairJob?.expires_at < new Date()) || remainDamagedBlocks <= 0)
 
     const abandonJob = useCallback(() => {
         setRepairAgent(undefined)

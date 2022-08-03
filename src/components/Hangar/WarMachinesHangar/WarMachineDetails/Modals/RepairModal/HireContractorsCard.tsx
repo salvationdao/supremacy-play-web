@@ -180,7 +180,7 @@ export const HireContractorsCard = ({ mechDetails, remainDamagedBlocks }: { mech
             </Stack>
 
             <FancyButton
-                disabled={!agentReward || agentReward <= 0}
+                disabled={!agentReward || agentReward <= 0 || remainDamagedBlocks <= 0}
                 loading={isSubmitting}
                 clipThingsProps={{
                     clipSize: "5px",
