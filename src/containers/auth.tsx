@@ -2,13 +2,13 @@ import { createContext, Dispatch, useCallback, useContext, useEffect, useRef, us
 import { useQuery } from "react-fetching-library"
 import { useSupremacy } from "."
 import { PASSPORT_WEB } from "../constants"
-import { PassportLoginCheck, GameServerLoginCheck } from "../fetching"
+import { GameServerLoginCheck, GetGlobalFeatures, PassportLoginCheck } from "../fetching"
 import { shadeColor } from "../helpers"
 import { useGameServerCommandsUser, useGameServerSubscriptionUser } from "../hooks/useGameServer"
 import { useInactivity } from "../hooks/useInactivity"
 import { GameServerKeys } from "../keys"
 import { colors } from "../theme/theme"
-import { Faction, FeatureName, User, UserRank, UserStat, UserFromPassport, PunishListItem } from "../types"
+import { Faction, Feature, FeatureName, PunishListItem, User, UserFromPassport, UserRank, UserStat } from "../types"
 import { useTheme } from "./theme"
 
 export const FallbackUser: User = {
@@ -49,6 +49,7 @@ export interface AuthState {
     setUserRank: Dispatch<React.SetStateAction<UserRank>>
     punishments: PunishListItem[]
     setPunishments: Dispatch<React.SetStateAction<PunishListItem[]>>
+    globalFeatures: Feature[]
 }
 
 const initialState: AuthState = {
@@ -89,6 +90,7 @@ const initialState: AuthState = {
     setPunishments: () => {
         return
     },
+    globalFeatures: [],
 }
 
 export const AuthContext = createContext<AuthState>(initialState)
@@ -108,6 +110,9 @@ export const AuthProvider: React.FC = ({ children }) => {
     const [punishments, setPunishments] = useState<PunishListItem[]>(initialState.punishments)
     // Checks if supremacy tab is active
     const [isHidden, setIsHidden] = useState(false)
+
+    const { query: getGlobalFeatures } = useQuery(GetGlobalFeatures())
+    const [globalFeatures, setGlobalFeatures] = useState<Feature[]>([])
 
     const { query: passportLoginCheck } = useQuery(PassportLoginCheck(), false)
     const { query: gameserverLoginCheck } = useQuery(GameServerLoginCheck(), false)
@@ -195,6 +200,19 @@ export const AuthProvider: React.FC = ({ children }) => {
         return clearPopupCheckInterval
     }, [passportPopup, authCheckCallback])
 
+    // Fetch global features
+    useEffect(() => {
+        ;(async () => {
+            try {
+                const resp = await getGlobalFeatures()
+                if (resp.error || resp.payload == null) return
+                setGlobalFeatures(resp.payload)
+            } catch (e) {
+                console.error(e)
+            }
+        })()
+    }, [getGlobalFeatures])
+
     useEffect(() => {
         authCheckCallback()
     }, [authCheckCallback])
@@ -216,11 +234,11 @@ export const AuthProvider: React.FC = ({ children }) => {
 
     const userHasFeature = useCallback(
         (featureName: FeatureName) => {
-            if (!userID || !user.features) return false
-            const index = user.features.findIndex((el) => el.name === featureName)
+            const allFeatures = [...globalFeatures, ...(user.features || [])]
+            const index = allFeatures.findIndex((el) => el.name === featureName)
             return index !== -1
         },
-        [user.features, userID],
+        [globalFeatures, user.features],
     )
 
     return (
@@ -242,6 +260,7 @@ export const AuthProvider: React.FC = ({ children }) => {
                 setUserStat,
                 userRank,
                 setUserRank,
+                globalFeatures,
             }}
         >
             {children}
