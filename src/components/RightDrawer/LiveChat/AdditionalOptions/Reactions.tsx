@@ -66,7 +66,6 @@ export const Reactions = ({ fontSize, data, getFaction, hoverOnly = false }: Rea
     )
 
     const handleLike = useCallback(() => {
-        console.log(data)
         if (!data || !data.id) return
         if (data.from_user.id === user.id) {
             newSnackbarMessage("Can't react to your own message!", "warning")
