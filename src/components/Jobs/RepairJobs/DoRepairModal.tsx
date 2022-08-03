@@ -72,7 +72,8 @@ export const DoRepairModal = ({
         setError(undefined)
         setIsRegistering(false)
         setSubmitSuccess(false)
-    }, [])
+        onClose()
+    }, [onClose])
 
     // Register for an agent
     const registerAgentRepair = useCallback(async () => {
