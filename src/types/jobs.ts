@@ -13,6 +13,8 @@ export interface RepairOffer {
     working_agent_count: number
     job_owner: User
     created_at: Date
+    blocks_total: number
+    offered_sups_amount: string
 }
 
 export interface RepairJob extends RepairOffer {
