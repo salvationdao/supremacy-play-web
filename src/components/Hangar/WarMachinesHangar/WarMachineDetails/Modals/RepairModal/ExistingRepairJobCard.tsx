@@ -77,7 +77,7 @@ export const ExistingRepairJobCard = ({ repairOffer }: { repairOffer: RepairOffe
 
             <Typography sx={{ color: colors.lightGrey }}>
                 <i>
-                    <strong>NOTE:</strong> Your remaining offered reward will be refunded but the original GST will be held.
+                    <strong>NOTE:</strong> Your remaining offered reward will be refunded but the original processing fee will be held.
                 </i>
             </Typography>
 
