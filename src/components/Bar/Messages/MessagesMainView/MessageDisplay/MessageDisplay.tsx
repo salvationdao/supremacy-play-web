@@ -88,7 +88,7 @@ export const MessageDisplay = ({ message, onClose }: MessageDisplayProps) => {
                     onClick={onClose}
                 >
                     <Typography variant="body2" sx={{ fontWeight: "fontWeightBold", color: "#FFFFFF" }}>
-                        CLOSE
+                        BACK
                     </Typography>
                 </FancyButton>
             </Stack>

@@ -161,7 +161,7 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
                                 title="QUICK DEPLOY"
                                 description={
                                     <Stack spacing="1.5rem" direction="row" sx={{ width: "100%" }}>
-                                        {queueLength > 0 && (
+                                        {queueLength >= 0 && (
                                             <AmountItem
                                                 key={`${queueLength}-queue_length`}
                                                 title={"NEXT POSITION: "}
@@ -175,7 +175,7 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
                                         {queueCost && (
                                             <AmountItem
                                                 title={"FEE: "}
-                                                color={colors.orange}
+                                                color={colors.yellow}
                                                 value={supFormatter(queueCost, 2)}
                                                 tooltip="The cost to place your war machine into the battle queue."
                                             />
