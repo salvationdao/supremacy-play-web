@@ -17,6 +17,7 @@ import { FancyButton } from "../../Common/FancyButton"
 import { RepairBlocks } from "../../Hangar/WarMachinesHangar/Common/MechRepairBlocks"
 import { GamePattern } from "./StackTower/src/game"
 import { StackTower } from "./StackTower/StackTower"
+import {CAPTCHA_KEY} from "../../../constants";
 
 export const DoRepairModal = ({
     repairStatus,
@@ -220,7 +221,7 @@ export const DoRepairModal = ({
                             <HCaptcha
                                 size="compact"
                                 theme="dark"
-                                sitekey="87f715ba-98ff-43da-b970-cfc30fd7c5a0"
+                                sitekey={CAPTCHA_KEY}
                                 onVerify={setCaptchaToken}
                                 onExpire={() => setCaptchaToken(undefined)}
                             />
