@@ -1,16 +1,16 @@
 import { Stack, Typography } from "@mui/material"
 import { SvgPriceDownArrow, SvgPriceUpArrow } from "../../../../assets"
 import { useCallback } from "react"
-import { Likes, TextMessageData } from "../../../../types"
+import { Faction, Likes, TextMessageData } from "../../../../types"
 import { GameServerKeys } from "../../../../keys"
 import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
-import { useAuth, useChat } from "../../../../containers"
+import { useAuth, useSnackbar } from "../../../../containers"
 import { colors } from "../../../../theme/theme"
 
 interface ReactionsProps {
     fontSize: number
-    factionColor?: string
     message: TextMessageData
+    getFaction: (factionID: string) => Faction
     hoverOnly?: boolean
 }
 
@@ -44,9 +44,12 @@ const styles = {
     m: "-.3rem",
     zIndex: 1,
 }
-export const Reactions = ({ fontSize, factionColor, message, hoverOnly = false }: ReactionsProps) => {
+export const Reactions = ({ fontSize, message, getFaction, hoverOnly = false }: ReactionsProps) => {
     const { send } = useGameServerCommandsUser("/user_commander")
     const { user } = useAuth()
+    const { newSnackbarMessage } = useSnackbar()
+
+    const factionColor = getFaction(user.faction_id).primary_color
 
     const handleReactionSend = useCallback(
         async (reactMessageSend: ReactMessageSendProps) => {
@@ -64,6 +67,10 @@ export const Reactions = ({ fontSize, factionColor, message, hoverOnly = false }
 
     const handleLike = useCallback(() => {
         if (!message || !message.id) return
+        if (message.from_user.id === user.id) {
+            newSnackbarMessage("Can't react to your own message!", "warning")
+            return
+        }
 
         const sendReactMessage: ReactMessageSendProps = {
             chat_history_id: message.id,
@@ -71,10 +78,14 @@ export const Reactions = ({ fontSize, factionColor, message, hoverOnly = false }
         }
 
         handleReactionSend(sendReactMessage)
-    }, [handleReactionSend, message])
+    }, [handleReactionSend, message, user, newSnackbarMessage])
 
     const handleDislike = useCallback(() => {
         if (!message || !message.id) return
+        if (message.from_user.id === user.id) {
+            newSnackbarMessage("Can't react to your own message!", "warning")
+            return
+        }
 
         const sendReactMessage: ReactMessageSendProps = {
             chat_history_id: message.id,
@@ -82,7 +93,7 @@ export const Reactions = ({ fontSize, factionColor, message, hoverOnly = false }
         }
 
         handleReactionSend(sendReactMessage)
-    }, [handleReactionSend, message])
+    }, [handleReactionSend, message, user, newSnackbarMessage])
 
     //only display if net !== 0 or is hovered
     return (
@@ -92,7 +103,7 @@ export const Reactions = ({ fontSize, factionColor, message, hoverOnly = false }
                 fill={message.metadata?.likes.dislikes.includes(user.id) && factionColor ? factionColor : colors.lightGrey}
                 sx={{
                     ":hover": {
-                        cursor: "pointer",
+                        cursor: message.from_user.id === user.id ? "cursor" : "pointer",
                     },
                 }}
                 onClick={() => handleDislike()}
@@ -103,7 +114,7 @@ export const Reactions = ({ fontSize, factionColor, message, hoverOnly = false }
                 fill={message.metadata?.likes.likes.includes(user.id) && factionColor ? factionColor : colors.lightGrey}
                 sx={{
                     ":hover": {
-                        cursor: "pointer",
+                        cursor: message.from_user.id === user.id ? "cursor" : "pointer",
                     },
                 }}
                 onClick={() => handleLike()}

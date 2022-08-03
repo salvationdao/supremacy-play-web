@@ -9,7 +9,7 @@ import { parseString } from "../helpers"
 import { useToggle } from "../hooks"
 import { useGameServerSubscription, useGameServerSubscriptionFaction } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
-import { BanProposalStruct, ChatMessageType, Likes, TextMessageData, User } from "../types"
+import { BanProposalStruct, ChatMessageType, TextMessageData, User } from "../types"
 
 export interface IncomingMessages {
     faction: string | null
@@ -21,7 +21,7 @@ export type SplitOptionType = "tabbed" | "split" | null
 export type FontSizeType = 0.8 | 1.2 | 1.35
 
 export const ChatContainer = createContainer(() => {
-    const { userID, user } = useAuth()
+    const { userID } = useAuth()
     const history = useHistory()
     const location = useLocation()
     const [isPoppedout, toggleIsPoppedout] = useToggle()
@@ -196,7 +196,6 @@ export const ChatContainer = createContainer(() => {
 
     const updateMessageHandler = useCallback(
         (incomingMessage: ChatMessageType, faction: string | null): boolean => {
-            console.log(incomingMessage)
             const genericUpdate = (
                 chatMessages: ChatMessageType[],
                 setChatMessages: (value: ((prevState: ChatMessageType[]) => ChatMessageType[]) | ChatMessageType[]) => void,

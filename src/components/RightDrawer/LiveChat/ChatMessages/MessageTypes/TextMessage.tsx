@@ -340,8 +340,8 @@ export const TextMessage = ({
 
                         <Box sx={{ zIndex: isHovered ? 2 : 1 }}>{chatMessage}</Box>
 
-                        {!!metadata?.likes.net && <Reactions fontSize={fontSize} message={data} factionColor={factionColor} />}
-                        {isHovered && <Reactions fontSize={fontSize} hoverOnly={true} message={data} factionColor={factionColor} />}
+                        {!!metadata?.likes.net && <Reactions fontSize={fontSize} message={data} getFaction={getFaction} />}
+                        {isHovered && <Reactions fontSize={fontSize} hoverOnly={true} message={data} getFaction={getFaction} />}
                     </Stack>
                 </Box>
             </Box>
