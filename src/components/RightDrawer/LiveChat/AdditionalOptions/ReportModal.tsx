@@ -54,7 +54,7 @@ export const ReportModal = ({ message, reportModalOpen, setReportModalOpen }: Re
         } catch (e) {
             console.error(e)
         }
-    }, [message])
+    }, [message, reason, otherDescription, description, send])
 
     const primaryColor = theme.factionTheme.primary
     const secondaryColor = theme.factionTheme.secondary
@@ -145,8 +145,8 @@ export const ReportModal = ({ message, reportModalOpen, setReportModalOpen }: Re
                             <Stack direction={"row"} sx={{ alignItems: "center" }}>
                                 <Typography>Description:</Typography>
                                 <TextField
+                                    value={otherDescription}
                                     onChange={(e) => {
-                                        e.preventDefault()
                                         setOtherDescription(e.target.value)
                                     }}
                                 />
@@ -155,8 +155,8 @@ export const ReportModal = ({ message, reportModalOpen, setReportModalOpen }: Re
                         <Stack direction={"row"} sx={{ alignItems: "center" }}>
                             <Typography>Comments:</Typography>
                             <TextField
+                                value={description}
                                 onChange={(e) => {
-                                    e.preventDefault()
                                     setDescription(e.target.value)
                                 }}
                             />
