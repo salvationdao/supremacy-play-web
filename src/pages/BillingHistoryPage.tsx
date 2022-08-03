@@ -6,7 +6,7 @@ import { ClipThing } from "../components"
 import { CoolTable } from "../components/Common/CoolTable"
 import { PageHeader } from "../components/Common/PageHeader"
 import { useTheme } from "../containers/theme"
-import { parseString } from "../helpers"
+import { generatePriceText, parseString } from "../helpers"
 import { usePagination, useUrlQuery } from "../hooks"
 import { useGameServerCommandsUser } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
@@ -89,9 +89,9 @@ export const BillingHistoryPage = () => {
 
                             <Box sx={{ flex: 1 }}>
                                 <CoolTable
-                                    tableHeadings={["RECEIPT NUMBER", "DATE", "STATUS", "VIEW"]}
-                                    alignments={["left", "center", "center", "center"]}
-                                    widths={["25%", "25%", "25%", "25%"]}
+                                    tableHeadings={["RECEIPT NUMBER", "DATE", "STATUS", "TOTAL", "VIEW"]}
+                                    alignments={["left", "center", "center", "center", "center"]}
+                                    widths={["20%", "20%", "20%", "20%", "20%"]}
                                     titleRowHeight="3.5rem"
                                     cellPadding=".4rem 1rem"
                                     items={billingHistoryItems}
@@ -111,12 +111,15 @@ export const BillingHistoryPage = () => {
                                         }
 
                                         return [
-                                            <Typography key={1}>{item.receipt_number}</Typography>,
+                                            <Typography key={1}>{item.receipt_number || "N/A"}</Typography>,
                                             <Typography key={2}>{moment(item.created_at).format("DD/MM/YYYY h:mm A")}</Typography>,
                                             <Typography key={3}>{status}</Typography>,
                                             <Typography key={4}>
+                                                {generatePriceText(item.total_dollars, item.total_cents)} {item.currency.toUpperCase()}
+                                            </Typography>,
+                                            <Typography key={5}>
                                                 <Link href={item.receipt_url} target={"_blank"}>
-                                                    View Details
+                                                    View Receipt
                                                 </Link>
                                             </Typography>,
                                         ]

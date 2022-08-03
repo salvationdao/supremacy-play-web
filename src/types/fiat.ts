@@ -19,6 +19,9 @@ export interface FiatBillingHistory {
     paid: boolean
     refunded: boolean
     items: FiatBillingHistoryItem[]
+    currency: string
+    total_dollars: number
+    total_cents: number
     receipt_number: string
     receipt_url: string
     created_at: string
@@ -29,10 +32,10 @@ export interface FiatBillingHistoryItem {
     description: string
     currency: string
     quantity: number
-    amount_total_dollars: number
-    amount_total_cents: number
-    amount_subtotal_dollars: number
-    amount_subtotal_cents: number
-    amount_tax_dollars: number
-    amount_tax_cents: number
+    total_dollars: number
+    total_cents: number
+    subtotal_dollars: number
+    subtotal_cents: number
+    tax_dollars: number
+    tax_cents: number
 }
