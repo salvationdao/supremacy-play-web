@@ -28,6 +28,7 @@ interface GetMechsResponse {
 interface ProfileWarmachinesProps {
     playerID: string
     primaryColour: string
+    secondaryColor: string
     backgroundColour: string
     factionName: string
 }
@@ -49,7 +50,7 @@ const getIcon = (factionName: FactionName): string => {
     return WarMachineIconPNG
 }
 
-export const ProfileWarmachines = ({ playerID, primaryColour, backgroundColour, factionName }: ProfileWarmachinesProps) => {
+export const ProfileWarmachines = ({ playerID, primaryColour, secondaryColor, backgroundColour, factionName }: ProfileWarmachinesProps) => {
     const [query] = useUrlQuery()
     const { send } = useGameServerCommands("/public/commander")
 
@@ -259,7 +260,7 @@ export const ProfileWarmachines = ({ playerID, primaryColour, backgroundColour, 
                                 sx={{
                                     ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold },
                                     ".Mui-selected": {
-                                        color: primaryColour,
+                                        color: secondaryColor,
                                         backgroundColor: `${primaryColour} !important`,
                                     },
                                 }}

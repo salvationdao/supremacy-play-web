@@ -222,6 +222,7 @@ export const PlayerProfilePage = () => {
 
     const faction = profile?.faction
     const primaryColor = faction?.primary_color || theme.factionTheme.primary
+    const secondaryColor = faction?.secondary_color || theme.factionTheme.secondary
     const backgroundColor = faction?.background_color || theme.factionTheme.background
 
     if (loading) {
@@ -282,6 +283,7 @@ export const PlayerProfilePage = () => {
                                         }}
                                         avatarURL={avatar?.avatar_url || ""}
                                         primaryColor={primaryColor}
+                                        secondaryColor={secondaryColor}
                                         backgroundColor={backgroundColor}
                                         factionName={profile.faction?.label}
                                     />
@@ -606,6 +608,7 @@ export const PlayerProfilePage = () => {
                         <ProfileWarmachines
                             factionName={profile.faction?.label || ""}
                             playerID={profile.player.id}
+                            secondaryColor={secondaryColor}
                             backgroundColour={backgroundColor}
                             primaryColour={primaryColor}
                         />
