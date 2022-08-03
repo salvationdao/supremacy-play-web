@@ -33,6 +33,13 @@ export interface Map {
     disabled_cells: number[]
 }
 
+export interface BattleZone {
+    location: Position
+    radius: number
+    shrinkTime: number
+    warnTime: number
+}
+
 export enum StreamService {
     OvenMediaEngine = "OvenMediaEngine",
     AntMedia = "AntMedia",
@@ -177,8 +184,6 @@ export interface BattleEndDetail {
     battle_identifier: number
     started_at: Date
     ended_at: Date
-    total_multipliers: number
-    battle_multipliers: MultiplierUpdateResp
     winning_condition: string
     winning_faction: {
         id: string
@@ -190,13 +195,6 @@ export interface BattleEndDetail {
         }
     }
     winning_war_machines: WarMachineState[]
-    top_sups_contributors: {
-        username: string
-        avatar_id: string
-        faction_id: string
-        faction_colour: string
-    }[]
-    top_sups_contribute_factions: Faction[]
     most_frequent_ability_executors: {
         username: string
         avatar_id: string

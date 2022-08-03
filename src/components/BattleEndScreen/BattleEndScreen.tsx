@@ -1,7 +1,7 @@
 import { Slide, Stack } from "@mui/material"
 import { Box } from "@mui/system"
 import { useEffect, useMemo } from "react"
-import { SectionBottom, SectionMostFrequentAbilityExecutor, SectionMultipliers, SectionWinner } from ".."
+import { SectionBottom, SectionMostFrequentAbilityExecutor, SectionWinner } from ".."
 import { useGame, useMobile, useOverlayToggles } from "../../containers"
 import { shadeColor } from "../../helpers"
 import { colors, siteZIndex } from "../../theme/theme"
@@ -80,7 +80,6 @@ export const BattleEndScreen = () => {
                 >
                     <Box sx={{ height: 0 }}>
                         <Stack spacing="3.2rem">
-                            <SectionMultipliers battleEndDetail={battleEndDetail} />
                             <SectionWinner battleEndDetail={battleEndDetail} />
                             {/* <SectionTopSups battleEndDetail={battleEndDetail} /> */}
                             <SectionMostFrequentAbilityExecutor battleEndDetail={battleEndDetail} />

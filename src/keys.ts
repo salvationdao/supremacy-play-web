@@ -1,9 +1,6 @@
 export enum GameServerKeys {
     // Old netMessage
-    SubSpoilsOfWar = "SPOIL:OF:WAR:UPDATED",
-    SubLiveGraph = "LIVE:VOTE:COUNT:UPDATED",
     SubMechLiveStats = "WAR:MACHINE:STAT:UPDATED",
-    SubAbilityProgress = "ABILITY:PRICE:UPDATED",
     SubMechAbilityCoolDown = "WAR:MACHINE:ABILITY:SUBSCRIBE",
     SubBattleAbilityOptInCheck = "BATTLE:ABILITY:OPT:IN:CHECK",
     OptInBattleAbility = "BATTLE:ABILITY:OPT:IN",
@@ -14,10 +11,6 @@ export enum GameServerKeys {
     PlayerRank = "PLAYER:RANK:GET",
     ListPunishments = "PLAYER:PUNISHMENT:LIST",
 
-    // Contributor multiplier
-    ListenContributorMulti = "BATTLE:CONTRIBUTOR:UPDATE",
-    ListenContributorRate = "CONTRIBUTOR:MULTI:AMOUNT",
-
     // Notification container
     SubGameNotification = "GAME:NOTIFICATION",
 
@@ -25,16 +18,12 @@ export enum GameServerKeys {
     SubBribeStageUpdated = "BRIBE:STAGE:UPDATED:SUBSCRIBE",
     SubBribeWinnerAnnouncement = "BRIBE:WINNER:SUBSCRIBE",
     SubBattleAbility = "BATTLE:ABILITY:UPDATED",
-    SubFactionUniqueAbilities = "FACTION:UNIQUE:ABILITIES:UPDATED",
     SubWarMachineAbilitiesUpdated = "WAR:MACHINE:ABILITIES:UPDATED",
-    ContributeFactionUniqueAbility = "FACTION:UNIQUE:ABILITY:CONTRIBUTE",
-    BribeBattleAbility = "BATTLE:ABILITY:BRIBE",
     TriggerWarMachineAbility = "WAR:MACHINE:ABILITY:TRIGGER",
     SubmitAbilityLocationSelect = "ABILITY:LOCATION:SELECT",
 
     SubMechCommands = "MECH:COMMANDS:SUBSCRIBE",
     SubMechMoveCommand = "MECH:MOVE:COMMAND:SUBSCRIBE",
-    MechMoveCommandCreate = "MECH:MOVE:COMMAND:CREATE",
     MechMoveCommandCancel = "MECH:MOVE:COMMAND:CANCEL",
 
     // Game Use
@@ -80,16 +69,16 @@ export enum GameServerKeys {
     SubscribeFactionChat = "FACTION:CHAT:SUBSCRIBE",
     SubscribeGlobalChat = "GLOBAL:CHAT:SUBSCRIBE",
     SendChatMessage = "CHAT:MESSAGE",
+    ReadTaggedMessage = "READ:TAGGED:MESSAGE",
+    ReactToMessage = "REACT:MESSAGE",
+    ChatBanPlayer = "CHAT:BAN:PLAYER",
 
-    BattleMechHistoryDetailed = "BATTLE:MECH:HISTORY:DETAILED",
     BattleMechHistoryList = "BATTLE:MECH:HISTORY:LIST",
     BattleMechStats = "BATTLE:MECH:STATS",
 
     // Get / sub to data
-    SubWarMachineDestroyed = "WAR:MACHINE:DESTROYED:UPDATED",
     SubGameSettings = "GAME:SETTINGS:UPDATED",
     SubBattleEndDetailUpdated = "BATTLE:END:DETAIL:UPDATED",
-    SubscribeSupsMultiplier = "USER:MULTIPLIERS:SUBSCRIBE",
     SubViewersLiveCount = "VIEWER:LIVE:COUNT:UPDATED",
     SubscribeUserStat = "USER:STAT:SUBSCRIBE",
     UpdateSettings = "PLAYER:UPDATE_SETTINGS",
@@ -109,7 +98,6 @@ export enum GameServerKeys {
     SubPlayerList = "FACTION:ACTIVE:PLAYER:SUBSCRIBE",
     SubGlobalPlayerList = "GLOBAL:ACTIVE:PLAYER:SUBSCRIBE",
     GetPlayerByGid = "GET:PLAYER:GID",
-    ReadTaggedMessage = "READ:TAGGED:MESSAGE",
 
     // Telegram
     UserTelegramShortcodeRegistered = "USER:TELEGRAM_SHORTCODE_REGISTERED",
@@ -179,6 +167,10 @@ export enum GameServerKeys {
     GetPlayerAbilityKills = "LEADERBOARD:PLAYER:ABILITY:KILLS",
     GetPlayerAbilityTriggers = "LEADERBOARD:PLAYER:ABILITY:TRIGGERS",
     GetPlayerMechsOwned = "LEADERBOARD:PLAYER:MECHS:OWNED",
+
+    // Companion App
+    AuthGenOneTimeToken = "GEN:ONE:TIME:TOKEN",
+    GetPlayerDeviceList = "PLAYER:DEVICE:LIST",
 }
 
 export enum PassportServerKeys {

@@ -3,7 +3,6 @@ import { BarExpandable, BuySupsButton } from "../.."
 import { SvgSupToken, SvgWallet } from "../../../assets"
 import { useAuth } from "../../../containers"
 import { colors } from "../../../theme/theme"
-import { MultipliersInfo } from "./MultipliersInfo/MultipliersInfo"
 import { WalletInfo } from "./WalletInfo/WalletInfo"
 
 export const WalletDetails = () => {
@@ -55,7 +54,6 @@ export const WalletDetails = () => {
                     <Stack direction="row" alignItems="center">
                         <SvgWallet size="2.3rem" sx={{ mr: ".8rem" }} />
                         <WalletInfo />
-                        <MultipliersInfo />
                     </Stack>
 
                     {userID && <BuySupsButton />}

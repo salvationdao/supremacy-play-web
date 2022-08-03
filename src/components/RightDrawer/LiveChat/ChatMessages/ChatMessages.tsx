@@ -19,14 +19,13 @@ interface ChatMessagesProps {
 
 export const ChatMessages = (props: ChatMessagesProps) => {
     const { user } = useAuth()
-    const { filterZerosGlobal, filterZerosFaction, filterSystemMessages, sentMessages, failedMessages, splitOption, fontSize, globalAnnouncement } = useChat()
+    const { filterSystemMessages, sentMessages, failedMessages, splitOption, fontSize, globalAnnouncement } = useChat()
     const { getFaction } = useSupremacy()
 
     return (
         <ChatMessagesInner
             {...props}
             user={user}
-            filterZeros={props.faction_id ? filterZerosFaction : filterZerosGlobal}
             filterSystemMessages={filterSystemMessages}
             sentMessages={sentMessages}
             failedMessages={failedMessages}
@@ -41,7 +40,6 @@ export const ChatMessages = (props: ChatMessagesProps) => {
 
 interface ChatMessagesInnerProps extends ChatMessagesProps {
     user: User
-    filterZeros?: boolean
     filterSystemMessages?: boolean
     sentMessages: Date[]
     failedMessages: Date[]
@@ -56,7 +54,6 @@ const ChatMessagesInner = ({
     primaryColor,
     secondaryColor,
     chatMessages,
-    filterZeros,
     filterSystemMessages,
     sentMessages,
     failedMessages,
@@ -142,7 +139,7 @@ const ChatMessagesInner = ({
                 }}
             >
                 <Box sx={{ height: 0 }}>
-                    <Stack spacing="1rem">
+                    <Stack spacing=".5rem">
                         {chatMessages && chatMessages.length > 0 ? (
                             chatMessages.map((message, i) => {
                                 if (message.type == "TEXT") {
@@ -154,14 +151,12 @@ const ChatMessagesInner = ({
                                             data={data}
                                             sentAt={message.sent_at}
                                             fontSize={fontSize}
-                                            filterZeros={filterZeros}
                                             filterSystemMessages={filterSystemMessages}
                                             isSent={message.locallySent ? sentMessages.includes(message.sent_at) : true}
                                             isFailed={data.from_user.id === user?.id ? failedMessages.includes(message.sent_at) : false}
                                             getFaction={getFaction}
                                             user={user}
                                             isEmoji={isEmoji}
-                                            locallySent={message.locallySent}
                                             previousMessage={chatMessages[i - 1]}
                                             containerRef={scrollableRef}
                                             isScrolling={isScrolling}
