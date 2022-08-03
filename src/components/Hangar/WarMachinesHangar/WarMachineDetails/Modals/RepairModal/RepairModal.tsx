@@ -27,6 +27,7 @@ export const RepairModal = ({
     const repairStatus = useGameServerSubscription<RepairStatus>({
         URI: `/public/mech/${selectedMechDetails.id}/repair_case`,
         key: GameServerKeys.SubMechRepairStatus,
+        ready: !!selectedMechDetails.id,
     })
 
     const repairOffer = useGameServerSubscription<RepairOffer>({
