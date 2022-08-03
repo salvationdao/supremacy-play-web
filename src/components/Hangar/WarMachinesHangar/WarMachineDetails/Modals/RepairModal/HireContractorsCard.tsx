@@ -170,11 +170,11 @@ export const HireContractorsCard = ({ mechDetails, remainDamagedBlocks }: { mech
                     value={Math.round((agentReward / remainDamagedBlocks) * 100) / 100}
                     tooltip={`Offered reward / ${remainDamagedBlocks} blocks`}
                 />
-                <AmountItem title="TOTAL CHARGE:" value={Math.round(agentReward * 1.1 * 100) / 100} tooltip={`Offered reward + 10% GST`} />
+                <AmountItem title="TOTAL CHARGE:" value={Math.round(agentReward * 1.1 * 100) / 100} tooltip={`Offered reward + 10% processing fee`} />
 
                 <Typography sx={{ color: colors.lightGrey }}>
                     <i>
-                        <strong>NOTE:</strong> Total charge is {agentReward} SUPS + 10% GST.
+                        <strong>NOTE:</strong> Total charge is {agentReward} SUPS + 10% processing fee.
                     </i>
                 </Typography>
             </Stack>
