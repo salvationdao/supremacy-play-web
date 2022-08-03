@@ -9,7 +9,7 @@ import { colors } from "../../../../theme/theme"
 
 interface ReactionsProps {
     fontSize: number
-    message: TextMessageData
+    data: TextMessageData
     getFaction: (factionID: string) => Faction
     hoverOnly?: boolean
 }
@@ -44,7 +44,7 @@ const styles = {
     m: "-.3rem",
     zIndex: 1,
 }
-export const Reactions = ({ fontSize, message, getFaction, hoverOnly = false }: ReactionsProps) => {
+export const Reactions = ({ fontSize, data, getFaction, hoverOnly = false }: ReactionsProps) => {
     const { send } = useGameServerCommandsUser("/user_commander")
     const { user } = useAuth()
     const { newSnackbarMessage } = useSnackbar()
@@ -53,7 +53,7 @@ export const Reactions = ({ fontSize, message, getFaction, hoverOnly = false }: 
 
     const handleReactionSend = useCallback(
         async (reactMessageSend: ReactMessageSendProps) => {
-            if (!message.id) return
+            if (!data.id) return
 
             try {
                 const resp = await send<Likes, ReactMessageSendProps>(GameServerKeys.ReactToMessage, reactMessageSend)
@@ -62,59 +62,60 @@ export const Reactions = ({ fontSize, message, getFaction, hoverOnly = false }: 
                 console.error(e)
             }
         },
-        [message, send],
+        [data, send],
     )
 
     const handleLike = useCallback(() => {
-        if (!message || !message.id) return
-        if (message.from_user.id === user.id) {
+        console.log(data)
+        if (!data || !data.id) return
+        if (data.from_user.id === user.id) {
             newSnackbarMessage("Can't react to your own message!", "warning")
             return
         }
 
         const sendReactMessage: ReactMessageSendProps = {
-            chat_history_id: message.id,
+            chat_history_id: data.id,
             reaction: "like",
         }
 
         handleReactionSend(sendReactMessage)
-    }, [handleReactionSend, message, user, newSnackbarMessage])
+    }, [handleReactionSend, data, user, newSnackbarMessage])
 
     const handleDislike = useCallback(() => {
-        if (!message || !message.id) return
-        if (message.from_user.id === user.id) {
+        if (!data || !data.id) return
+        if (data.from_user.id === user.id) {
             newSnackbarMessage("Can't react to your own message!", "warning")
             return
         }
 
         const sendReactMessage: ReactMessageSendProps = {
-            chat_history_id: message.id,
+            chat_history_id: data.id,
             reaction: "dislike",
         }
 
         handleReactionSend(sendReactMessage)
-    }, [handleReactionSend, message, user, newSnackbarMessage])
+    }, [handleReactionSend, data, user, newSnackbarMessage])
 
     //only display if net !== 0 or is hovered
     return (
         <Stack direction={"row"} spacing={"-.4rem"} sx={hoverOnly ? hoverStyles : styles}>
             <SvgPriceDownArrow
                 size={`${fontSize * 2.2}rem`}
-                fill={message.metadata?.likes.dislikes.includes(user.id) && factionColor ? factionColor : colors.lightGrey}
+                fill={data.metadata?.likes.dislikes.includes(user.id) && factionColor ? factionColor : colors.lightGrey}
                 sx={{
                     ":hover": {
-                        cursor: message.from_user.id === user.id ? "cursor" : "pointer",
+                        cursor: data.from_user.id === user.id ? "cursor" : "pointer",
                     },
                 }}
                 onClick={() => handleDislike()}
             />
-            <Typography fontSize={`${fontSize * 0.9}rem`}>{message.metadata ? message.metadata.likes.net : 0}</Typography>
+            <Typography fontSize={`${fontSize * 0.9}rem`}>{data.metadata ? data.metadata.likes.net : 0}</Typography>
             <SvgPriceUpArrow
                 size={`${fontSize * 2.2}rem`}
-                fill={message.metadata?.likes.likes.includes(user.id) && factionColor ? factionColor : colors.lightGrey}
+                fill={data.metadata?.likes.likes.includes(user.id) && factionColor ? factionColor : colors.lightGrey}
                 sx={{
                     ":hover": {
-                        cursor: message.from_user.id === user.id ? "cursor" : "pointer",
+                        cursor: data.from_user.id === user.id ? "cursor" : "pointer",
                     },
                 }}
                 onClick={() => handleLike()}

@@ -162,11 +162,6 @@ export const ChatContainer = createContainer(() => {
         [userID, tabValue, splitOption],
     )
 
-    const replaceMessageHandler = useCallback((placeholderID: string, updatedMessage: ChatMessageType, factionID: string | null) => {
-        //handler
-        return
-    }, [])
-
     const sendBrowserNotification = useCallback((title: string, body: string, timeOpen?: number) => {
         if (!("Notification" in window)) {
             return
@@ -188,15 +183,15 @@ export const ChatContainer = createContainer(() => {
     }, [])
 
     const updateMessageHandler = useCallback(
-        (incomingMessage: ChatMessageType, faction: string | null): boolean => {
+        (updatedMessage: ChatMessageType, faction: string | null): boolean => {
             const genericUpdate = (
                 chatMessages: ChatMessageType[],
                 setChatMessages: (value: ((prevState: ChatMessageType[]) => ChatMessageType[]) | ChatMessageType[]) => void,
             ) => {
                 const updatedArr = [...chatMessages]
-                const i = updatedArr.findIndex((m) => m.id === incomingMessage.id)
+                const i = updatedArr.findIndex((m) => m.id === updatedMessage.id)
                 if (i === -1) return false
-                updatedArr[i] = incomingMessage
+                updatedArr[i] = updatedMessage
                 setChatMessages(updatedArr)
                 return true
             }
@@ -343,7 +338,6 @@ export const ChatContainer = createContainer(() => {
         activePlayers,
         globalActivePlayers,
         sendBrowserNotification,
-        replaceMessageHandler,
     }
 })
 
