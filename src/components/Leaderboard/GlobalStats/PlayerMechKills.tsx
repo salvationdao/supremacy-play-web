@@ -57,6 +57,7 @@ export const PlayerMechKills = () => {
                 borderThickness: ".2rem",
             }}
             backgroundColor={backgroundColor}
+            sx={{ height: "62rem" }}
         >
             <CoolTable
                 title="MOST MECH KILLS"

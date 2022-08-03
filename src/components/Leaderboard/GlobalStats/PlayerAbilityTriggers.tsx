@@ -57,6 +57,7 @@ export const PlayerAbilityTriggers = () => {
                 borderThickness: ".2rem",
             }}
             backgroundColor={backgroundColor}
+            sx={{ height: "62rem" }}
         >
             <CoolTable
                 title="MOST ABILITIES TRIGGERED"

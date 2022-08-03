@@ -104,6 +104,7 @@ export const DoRepairModal = ({
         } catch (err) {
             const message = typeof err === "string" ? err : "Failed to register repair job."
             setError(message)
+            setCaptchaToken(undefined)
             console.error(err)
         } finally {
             setIsRegistering(false)
