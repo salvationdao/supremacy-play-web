@@ -108,6 +108,7 @@ const Blackout = React.forwardRef(function Blackout({ radius, coords, isVisible 
                 backgroundColor: `${colors.black2}DD`,
                 boxShadow: 20,
                 animation: `${isVisible ? fadeInKeyframes : fadeOutKeyframes} ${BLACKOUT_TRANSITION_DURATION}ms ease-in`,
+                pointerEvents: "none",
             }}
         />
     )

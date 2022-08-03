@@ -143,7 +143,7 @@ export const LineSelect = ({ mapScale }: { mapScale: number }) => {
                         transform: `translate(${selection.startCoords.x * gridWidth - indicatorDiameter / 2}px, ${
                             selection.startCoords.y * gridHeight - indicatorDiameter / 2
                         }px)`,
-                        zIndex: 100,
+                        zIndex: 910,
                     }}
                 >
                     <Typography sx={{ fontSize: `${indicatorDiameter / 2}px`, fontFamily: fonts.nostromoBlack, color: theme.factionTheme.secondary }}>
@@ -174,7 +174,7 @@ export const LineSelect = ({ mapScale }: { mapScale: number }) => {
                         transform: `translate(${selection.endCoords.x * gridWidth - indicatorDiameter / 2}px, ${
                             selection.endCoords.y * gridHeight - indicatorDiameter / 2
                         }px)`,
-                        zIndex: 100,
+                        zIndex: 910,
                     }}
                 >
                     <Typography sx={{ fontSize: `${indicatorDiameter / 2}px`, fontFamily: fonts.nostromoBlack, color: theme.factionTheme.secondary }}>
