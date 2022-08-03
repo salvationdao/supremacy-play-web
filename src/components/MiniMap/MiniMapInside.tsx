@@ -4,6 +4,7 @@ import { MapMechs, SelectionIcon } from ".."
 import { Crosshair } from "../../assets"
 import { useGame, useMiniMap } from "../../containers"
 import { Dimension, LocationSelectType } from "../../types"
+import { BattleZone } from "./MapInsideItems/BattleZone"
 import { Blackouts } from "./MapInsideItems/Blackouts"
 import { CountdownSubmit } from "./MapInsideItems/CountdownSubmit"
 import { DisabledCells } from "./MapInsideItems/DisabledCells"
@@ -11,7 +12,6 @@ import { LineSelect } from "./MapInsideItems/LineSelect"
 import { MechCommandIcons } from "./MapInsideItems/MapIcon/MechCommandIcons"
 import { RangeIndicator } from "./MapInsideItems/RangeIndicator"
 import { useMiniMapGestures } from "./useMiniMapGestures"
-import { BattleZone } from "./MapInsideItems/BattleZone"
 
 interface MiniMapInsideProps {
     containerDimensions: Dimension
@@ -77,7 +77,7 @@ export const MiniMapInside = ({ containerDimensions }: MiniMapInsideProps) => {
                     }}
                 >
                     {/* Range indicator */}
-                    <RangeIndicator parentRef={mapRef} mapScale={mapScale} />
+                    <RangeIndicator parentRef={mapRef} map={map} mapScale={mapScale} />
 
                     <Box
                         ref={gestureRef}
