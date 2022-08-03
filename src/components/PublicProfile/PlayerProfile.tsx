@@ -321,19 +321,21 @@ export const PlayerProfilePage = () => {
                                         factionName={profile.faction?.label}
                                     />
                                 ) : (
-                                    <Avatar
-                                        src={profile.faction?.logo_url}
-                                        alt="Avatar"
-                                        sx={{
-                                            mr: "1rem",
-                                            height: "21rem",
-                                            width: "21rem",
-                                            borderRadius: 1,
-                                            border: `${primaryColor} 2px solid`,
-                                            backgroundColor: primaryColor,
-                                        }}
-                                        variant="square"
-                                    />
+                                    <Box display="flex" justifyContent="center" alignItems="center">
+                                        <Avatar
+                                            src={profile.faction?.logo_url}
+                                            alt="Avatar"
+                                            sx={{
+                                                mr: "1rem",
+                                                height: "21rem",
+                                                width: "21rem",
+                                                borderRadius: 1,
+                                                border: `${primaryColor} 2px solid`,
+                                                backgroundColor: primaryColor,
+                                            }}
+                                            variant="square"
+                                        />
+                                    </Box>
                                 )}
                                 <Stack
                                     sx={{
