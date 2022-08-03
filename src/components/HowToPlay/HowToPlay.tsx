@@ -18,6 +18,8 @@ export const HowToPlay = () => {
     const { setIsOpen } = useTour()
     const [isGameGuideOpen, toggleIsGameGuideOpen] = useToggle()
 
+    return <SetupTutorial />
+
     return (
         <>
             <Button
