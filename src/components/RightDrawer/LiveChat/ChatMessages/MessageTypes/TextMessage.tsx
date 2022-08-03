@@ -338,27 +338,25 @@ export const TextMessage = ({
                     </Stack>
                 )}
 
-                <Box>
-                    <Stack
-                        direction={"column"}
-                        sx={{
-                            ml: "2rem",
-                            backgroundColor: shouldNotify ? "rgba(0,116,217, .4)" : isHovered ? "#121212" : "unset",
-                            borderRadius: ".3rem",
-                            transition: shouldNotify ? "background-color 2s" : "unset",
-                            position: "relative",
-                        }}
-                        onMouseEnter={() => setIsHovered(true)}
-                        onMouseLeave={() => setIsHovered(false)}
-                    >
-                        {/*only display if msg has likes*/}
+                <Stack
+                    direction={"column"}
+                    sx={{
+                        ml: "2rem",
+                        backgroundColor: shouldNotify ? "rgba(0,116,217, .4)" : isHovered ? "#121212" : "unset",
+                        borderRadius: ".3rem",
+                        transition: shouldNotify ? "background-color 2s" : "unset",
+                        position: "relative",
+                    }}
+                    onMouseEnter={() => setIsHovered(true)}
+                    onMouseLeave={() => setIsHovered(false)}
+                >
+                    {/*only display if msg has likes*/}
 
-                        <Box sx={{ zIndex: 1 }}>{chatMessage}</Box>
+                    <Box sx={{ zIndex: 1 }}>{chatMessage}</Box>
 
-                        {!!metadata?.likes.net && <Reactions fontSize={fontSize} message={data} factionColor={factionColor} />}
-                        {isHovered && <Reactions fontSize={fontSize} hoverOnly={true} message={data} factionColor={factionColor} />}
-                    </Stack>
-                </Box>
+                    {!!metadata?.likes.net && <Reactions fontSize={fontSize} message={data} factionColor={factionColor} />}
+                    {isHovered && <Reactions fontSize={fontSize} hoverOnly={true} message={data} factionColor={factionColor} />}
+                </Stack>
             </Box>
 
             {isPopoverOpen && (
@@ -403,37 +401,35 @@ export const UsernameJSX = ({ data, fontSize, toggleIsPopoverOpen, user, faction
     const { message_color } = data
 
     return (
-        <>
-            <Typography
-                onClick={() => (toggleIsPopoverOpen ? toggleIsPopoverOpen() : null)}
-                sx={{
-                    display: "inline",
-                    color: toggleIsPopoverOpen ? message_color : factionColor,
-                    backgroundColor: toggleIsPopoverOpen ? "unset" : colors.darkNavyBlue,
-                    borderRadius: toggleIsPopoverOpen ? "unset" : 0.5,
-                    fontWeight: toggleIsPopoverOpen ? 700 : "unset",
-                    fontSize: toggleIsPopoverOpen && fontSize ? `${1.33 * fontSize}rem` : `${1.2 * fontSize}rem`,
-                    verticalAlign: "middle",
-                    ":hover": toggleIsPopoverOpen
-                        ? {
-                              cursor: "pointer",
-                              textDecoration: "underline",
-                          }
-                        : "unset",
-                    ":active": {
-                        opacity: 0.7,
-                    },
+        <Typography
+            onClick={() => (toggleIsPopoverOpen ? toggleIsPopoverOpen() : null)}
+            sx={{
+                display: "inline",
+                color: toggleIsPopoverOpen ? message_color : factionColor,
+                backgroundColor: toggleIsPopoverOpen ? "unset" : colors.darkNavyBlue,
+                borderRadius: toggleIsPopoverOpen ? "unset" : 0.5,
+                fontWeight: toggleIsPopoverOpen ? 700 : "unset",
+                fontSize: toggleIsPopoverOpen && fontSize ? `${1.33 * fontSize}rem` : `${1.2 * fontSize}rem`,
+                verticalAlign: "middle",
+                ":hover": toggleIsPopoverOpen
+                    ? {
+                          cursor: "pointer",
+                          textDecoration: "underline",
+                      }
+                    : "unset",
+                ":active": {
+                    opacity: 0.7,
+                },
+            }}
+        >
+            {`${truncate(user?.username || "", 20)}`}
+            <span
+                style={{
+                    marginLeft: ".2rem",
+                    opacity: 0.7,
+                    fontSize: fontSize ? `${1.1 * fontSize}rem` : "1.1rem",
                 }}
-            >
-                {`${truncate(user?.username || "", 20)}`}
-                <span
-                    style={{
-                        marginLeft: ".2rem",
-                        opacity: 0.7,
-                        fontSize: fontSize ? `${1.1 * fontSize}rem` : "1.1rem",
-                    }}
-                >{`#${user?.gid}`}</span>
-            </Typography>
-        </>
+            >{`#${user?.gid}`}</span>
+        </Typography>
     )
 }

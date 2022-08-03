@@ -2,8 +2,6 @@ import BigNumber from "bignumber.js"
 
 const USE_PROD = false
 
-console.log("thisi sevn", process.env.REACT_APP_PASSPORT_SERVER_HOST)
-
 // Envar stuff
 export const STAGING_OR_DEV_ONLY = process.env.REACT_APP_ENVIRONMENT !== "production"
 export const DEV_ONLY = process.env.REACT_APP_ENVIRONMENT !== "production" && process.env.REACT_APP_ENVIRONMENT !== "staging"
@@ -102,3 +100,6 @@ export const PRISMIC_ACCESS_TOKEN = process.env.REACT_APP_PRISMIC_ACCESS_TOKEN
 export const TELEGRAM_BOT_URL = process.env.REACT_APP_TELEGRAM_BOT_URL || "https://t.me/SupremacyNotifyBot"
 
 export const BATTLE_ARENA_OPEN = STAGING_OR_DEV_ONLY
+
+// stripe
+export const STRIPE_PUBLISHABLE_KEY = process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY || ""

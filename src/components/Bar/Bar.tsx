@@ -1,12 +1,12 @@
-import { Box, Stack, Typography, useMediaQuery } from "@mui/material"
-import { Enlist, Logo, ProfileCard, WalletDetails } from ".."
+import { Box, Stack, Typography } from "@mui/material"
+import { Logo, ProfileCard, WalletDetails } from ".."
 import { SvgDisconnected } from "../../assets"
 import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT } from "../../constants"
 import { useAuth, useSupremacy } from "../../containers"
 import { fonts, siteZIndex } from "../../theme/theme"
 import { User } from "../../types"
-import { HowToPlay } from "../HowToPlay/HowToPlay"
 import { Messages } from "./Messages/Messages"
+import { NavLinks } from "./NavLinks/NavLinks"
 
 export const Bar = () => {
     const { userID, user } = useAuth()
@@ -46,7 +46,6 @@ export const Bar = () => {
 }
 
 const BarContent = ({ userID, user }: { userID?: string; user: User }) => {
-    const below580 = useMediaQuery("(max-width:580px)")
     const { isServerUp } = useSupremacy()
 
     if (!isServerUp) {
@@ -66,10 +65,11 @@ const BarContent = ({ userID, user }: { userID?: string; user: User }) => {
 
     return (
         <>
-            {!below580 && <Logo />}
+            <Logo />
+            <NavLinks />
             <Box sx={{ flexGrow: 1 }} />
-            <HowToPlay />
-            {userID && <Enlist />}
+            {/* <HowToPlay /> */}
+            {/* {userID && <Enlist />} */}
             {userID && <WalletDetails />}
             {userID && <Messages />}
             <ProfileCard userID={userID} user={user} />

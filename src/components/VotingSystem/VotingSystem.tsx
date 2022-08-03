@@ -19,13 +19,13 @@ export const VotingSystem = () => {
             // Defaults
             defaultPosX: 0,
             defaultPosY: 0,
-            defaultWidth: 320,
+            defaultWidth: 360,
             defaultHeight: 480,
             // Position limits
             minPosX: 0,
             minPosY: 0,
             // Size limits
-            minWidth: 320,
+            minWidth: 360,
             // minHeight: 168,
             maxWidth: 400,
             // maxHeight: 900,
@@ -42,37 +42,35 @@ export const VotingSystem = () => {
         <Fade in={isBattleStarted}>
             <Box sx={{ ...(isMobile ? { backgroundColor: "#FFFFFF12", boxShadow: 2, border: "#FFFFFF20 1px solid" } : {}) }}>
                 <MoveableResizable config={config}>
-                    <Stack sx={{ position: "relative" }}>
-                        <Box
-                            sx={{
-                                maxHeight: "100vh",
-                                overflowY: "auto",
-                                overflowX: "hidden",
-                                ml: "1.9rem",
-                                mr: ".5rem",
-                                pr: "1.4rem",
-                                mt: "1rem",
-                                direction: "ltr",
-                                "::-webkit-scrollbar": {
-                                    width: ".4rem",
-                                },
-                                "::-webkit-scrollbar-track": {
-                                    background: "#FFFFFF15",
-                                    borderRadius: 3,
-                                },
-                                "::-webkit-scrollbar-thumb": {
-                                    background: theme.factionTheme.primary,
-                                    borderRadius: 3,
-                                },
-                            }}
-                        >
-                            <Stack spacing="1rem" sx={{ direction: "ltr", pt: ".4rem", pb: "1.2rem" }}>
-                                <BattleAbilityItem key={factionID} />
-                                {/* <FactionAbilities /> */}
-                                <PlayerAbilities />
-                            </Stack>
-                        </Box>
-                    </Stack>
+                    <Box
+                        sx={{
+                            maxHeight: "100vh",
+                            overflowY: "auto",
+                            overflowX: "hidden",
+                            ml: "1.9rem",
+                            mr: ".5rem",
+                            pr: "1.4rem",
+                            mt: "1rem",
+                            direction: "ltr",
+                            "::-webkit-scrollbar": {
+                                width: ".4rem",
+                            },
+                            "::-webkit-scrollbar-track": {
+                                background: "#FFFFFF15",
+                                borderRadius: 3,
+                            },
+                            "::-webkit-scrollbar-thumb": {
+                                background: theme.factionTheme.primary,
+                                borderRadius: 3,
+                            },
+                        }}
+                    >
+                        <Stack spacing="1rem" sx={{ direction: "ltr", pt: ".4rem", pb: "1.2rem", minWidth: 360 }}>
+                            <BattleAbilityItem key={factionID} />
+                            {/* <FactionAbilities /> */}
+                            <PlayerAbilities />
+                        </Stack>
+                    </Box>
                 </MoveableResizable>
             </Box>
         </Fade>

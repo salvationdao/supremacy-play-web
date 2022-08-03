@@ -46,10 +46,8 @@ export enum GameServerKeys {
     GetWeaponDetails = "PLAYER:ASSET:WEAPON:DETAIL",
     GetMechDetails = "PLAYER:ASSET:MECH:DETAIL",
     SubMechQueuePosition = "PLAYER:ASSET:MECH:QUEUE:SUBSCRIBE",
-    SubMechRepairStatus = "WAR:MACHINE:REPAIR:STATUS:SUBSCRIBE",
     JoinQueue = "BATTLE:QUEUE:JOIN",
     LeaveQueue = "BATTLE:QUEUE:LEAVE",
-    RepairWarMachine = "WAR:MACHINE:REPAIR",
     MechQueueUpdated = "PLAYER:ASSET:MECH:QUEUE:UPDATE",
     TriggerMechStatusUpdate = "PLAYER:ASSET:MECH:STATUS:UPDATE",
     MechRename = "PLAYER:MECH:RENAME",
@@ -115,6 +113,10 @@ export enum GameServerKeys {
     GetMysteryCrates = "STORE:MYSTERY:CRATES",
     SubMysteryCrate = "STORE:MYSTERY:CRATE:SUBSCRIBE",
     PurchaseMysteryCrate = "STORE:MYSTERY:CRATE:PURCHASE",
+    GetPackages = "STORE:PACKAGES",
+
+    // FIAT
+    BillingHistoryList = "FIAT:BILLING_HISTORY:LIST",
 
     // Marketplace
     MarketplaceSalesList = "MARKETPLACE:SALES:LIST",
@@ -159,6 +161,17 @@ export enum GameServerKeys {
     GetPlayerAbilityKills = "LEADERBOARD:PLAYER:ABILITY:KILLS",
     GetPlayerAbilityTriggers = "LEADERBOARD:PLAYER:ABILITY:TRIGGERS",
     GetPlayerMechsOwned = "LEADERBOARD:PLAYER:MECHS:OWNED",
+
+    // Repairs
+    SubRepairJobListUpdated = "MECH:REPAIR:OFFER:LIST:UPDATE",
+    SubRepairJobStatus = "MECH:REPAIR:OFFER",
+    SubMechRepairStatus = "MECH:REPAIR:CASE",
+    GetMechRepairJob = "MECH:ACTIVE:REPAIR:OFFER",
+    RegisterMechRepair = "MECH:REPAIR:OFFER:ISSUE",
+    CancelMechRepair = "MECH:REPAIR:OFFER:CLOSE",
+    RegisterRepairAgent = "REPAIR:AGENT:REGISTER",
+    RepairAgentUpdate = "REPAIR:AGENT:RECORD",
+    CompleteRepairAgent = "REPAIR:AGENT:COMPLETE",
 
     // Companion App
     AuthGenOneTimeToken = "GEN:ONE:TIME:TOKEN",

@@ -5,11 +5,12 @@ import { ClipThing, FancyButton } from ".."
 import { SvgQuestionMark } from "../../assets"
 import { useTheme } from "../../containers/theme"
 import { useToggle } from "../../hooks"
-import { colors, fonts, siteZIndex } from "../../theme/theme"
+import { fonts, siteZIndex } from "../../theme/theme"
 import GameGuide from "./GameGuide/GameGuide"
 import { SetupTutorial } from "./Tutorial/SetupTutorial"
 
 export const HowToPlay = () => {
+    const theme = useTheme()
     const below1440 = useMediaQuery("(max-width:1440px)")
     const popoverRef = useRef(null)
     const [isPopoverOpen, toggleIsPopoverOpen] = useToggle()
@@ -29,14 +30,14 @@ export const HowToPlay = () => {
                     alignItems: "center",
                     justifyContent: "center",
                     mx: "1.2rem",
-                    color: colors.neonBlue,
+                    color: theme.factionTheme.primary,
                     minWidth: 0,
                     borderRadius: 0.4,
                 }}
             >
-                <SvgQuestionMark size="1.5rem" fill={colors.neonBlue} />
+                <SvgQuestionMark size="1.5rem" fill={theme.factionTheme.primary} />
                 {below1440 ? null : (
-                    <Typography sx={{ ml: ".6rem", lineHeight: 1, color: colors.neonBlue, textTransform: "uppercase" }}>How To Play</Typography>
+                    <Typography sx={{ ml: ".6rem", lineHeight: 1, color: theme.factionTheme.primary, fontWeight: "fontWeightBold" }}>HOW TO PLAY</Typography>
                 )}
             </Button>
 

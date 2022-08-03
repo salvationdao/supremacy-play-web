@@ -2,7 +2,6 @@ import Masonry from "@mui/lab/Masonry"
 import { Box, CircularProgress, Stack, Typography, useMediaQuery } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
 import { useTheme } from "../../../../containers/theme"
-import { getRarityDeets } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
 import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
@@ -10,15 +9,15 @@ import { colors, fonts } from "../../../../theme/theme"
 import { MechDetails } from "../../../../types"
 import { ItemType, MarketplaceBuyAuctionItem } from "../../../../types/marketplace"
 import { ClipThing } from "../../../Common/ClipThing"
+import { MechStatsDetails } from "../../../Hangar/WarMachinesHangar/Common/MechHistory/MechStatsDetails"
 import { AuctionDetails } from "../../Common/MarketDetails/AuctionDetails"
 import { BuyNowDetails } from "../../Common/MarketDetails/BuyNowDetails"
 import { Dates } from "../../Common/MarketDetails/Dates"
 import { ImagesPreview, MarketMedia } from "../../Common/MarketDetails/ImagesPreview"
 import { ManageListing } from "../../Common/MarketDetails/ManageListing"
-import { UserInfo } from "../../Common/MarketDetails/UserInfo"
 import { SoldDetails } from "../../Common/MarketDetails/SoldDetails"
+import { UserInfo } from "../../Common/MarketDetails/UserInfo"
 import { MechBattleHistoryDetails } from "./MechBattleHistoryDetails"
-import { MechStatsDetails } from "../../../Hangar/WarMachinesHangar/Common/MechHistory/MechStatsDetails"
 
 export const WarMachineMarketDetails = ({ id }: { id: string }) => {
     const theme = useTheme()
@@ -134,7 +133,6 @@ const WarMachineMarketDetailsInner = ({
 }) => {
     const below780 = useMediaQuery("(max-width:780px)")
     const [isTimeEnded, toggleIsTimeEnded] = useToggle()
-    const rarityDeets = useMemo(() => getRarityDeets(marketItem.collection_item?.tier || ""), [marketItem.collection_item?.tier])
 
     const media: MarketMedia[] = useMemo(() => {
         const skin = mechDetails ? mechDetails.chassis_skin || mechDetails.default_chassis_skin : undefined
@@ -201,12 +199,8 @@ const WarMachineMarketDetailsInner = ({
 
                         <Stack spacing="2rem" sx={{ pb: "1rem", minHeight: "65rem" }}>
                             <Box>
-                                <Typography
-                                    gutterBottom
-                                    variant="h5"
-                                    sx={{ color: primaryColor, fontFamily: fonts.nostromoBold, span: { color: rarityDeets.color, fontFamily: "inherit" } }}
-                                >
-                                    WAR MACHINE | <span>{rarityDeets.label}</span>
+                                <Typography gutterBottom variant="h5" sx={{ color: primaryColor, fontFamily: fonts.nostromoBold }}>
+                                    WAR MACHINE
                                 </Typography>
 
                                 <Typography variant="h4" sx={{ fontFamily: fonts.nostromoBlack }}>

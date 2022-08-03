@@ -64,22 +64,14 @@ export const DeviceRegisterModal = ({ onClose }: DeviceRegisterModalProps) => {
                     sx={{ position: "relative" }}
                     backgroundColor={theme.factionTheme.background}
                 >
-                    <Stack
-                        spacing=".7rem"
-                        sx={{
-                            position: "relative",
-                            px: "1.8rem",
-                            py: "1.6rem",
-                            pb: "1.6rem",
-                        }}
-                    >
+                    <Stack spacing=".7rem" sx={{ position: "relative", px: "1.8rem", py: "1.6rem" }}>
                         {/* Modal title */}
                         <Typography variant="h6" sx={{ fontFamily: fonts.nostromoBlack }}>
                             ADD DEVICE
                         </Typography>
 
                         {/* Instructions on how to set up companion app */}
-                        <Stack spacing="1.3rem" sx={{ px: "1.5rem", py: ".8rem", backgroundColor: "#FFFFFF08" }}>
+                        <Stack spacing="1.3rem" sx={{ px: "1.5rem", py: "1.3rem", pb: "1.8rem", backgroundColor: "#FFFFFF08" }}>
                             <Typography gutterBottom sx={{ color: colors.lightGrey }}>
                                 COMPLETE THE FOLLOWING STEPS TO CONFIGURE YOUR MOBILE APP:
                             </Typography>
@@ -93,17 +85,17 @@ export const DeviceRegisterModal = ({ onClose }: DeviceRegisterModalProps) => {
                             <Typography sx={{ lineHeight: 1, fontWeight: "fontWeightBold", paddingLeft: 2 }}>3. Scan the image below.</Typography>
 
                             {/* QR Code - displays skeleton while it is loading */}
-                            <Box style={{ marginLeft: 30 }}>
+                            <Box sx={{ ml: "9rem" }}>
                                 {loading ? (
                                     <Skeleton variant={"rectangular"} width={QR_CODE_SIZE + QR_CODE_PADDING * 2} height={QR_CODE_SIZE + QR_CODE_PADDING * 2} />
                                 ) : (
                                     token && (
                                         <Box
-                                            style={{
-                                                padding: QR_CODE_PADDING,
+                                            sx={{
+                                                p: QR_CODE_PADDING,
                                                 width: QR_CODE_SIZE + QR_CODE_PADDING * 2,
                                                 height: QR_CODE_SIZE + QR_CODE_PADDING * 2,
-                                                backgroundColor: "white",
+                                                backgroundColor: "#FFFFFF",
                                             }}
                                         >
                                             <QRCode size={QR_CODE_SIZE} value={token} />
@@ -123,18 +115,18 @@ export const DeviceRegisterModal = ({ onClose }: DeviceRegisterModalProps) => {
                         <FancyButton
                             clipThingsProps={{
                                 clipSize: "9px",
-                                backgroundColor: colors.darkNavy,
+                                backgroundColor: theme.factionTheme.primary,
                                 opacity: 1,
-                                border: { isFancy: true, borderColor: colors.neonBlue, borderThickness: "2px" },
-                                sx: { position: "relative", mt: "auto", ml: 3, width: "9rem" },
+                                border: { borderColor: theme.factionTheme.primary, borderThickness: "2px" },
+                                sx: { position: "relative", ml: 3, width: "9rem" },
                             }}
-                            sx={{ px: "1.6rem", py: ".6rem", color: colors.neonBlue }}
+                            sx={{ px: "1.6rem", py: ".3rem", color: theme.factionTheme.secondary }}
                             onClick={onClose}
                         >
                             <Typography
                                 variant="caption"
                                 sx={{
-                                    color: colors.neonBlue,
+                                    color: theme.factionTheme.secondary,
                                     fontFamily: fonts.nostromoBlack,
                                 }}
                             >

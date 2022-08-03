@@ -1,4 +1,4 @@
-import { BattleArenaPage, ClaimPage, HangarPage, MarketplacePage, NotFoundPage } from "../pages"
+import { BattleArenaPage, ClaimPage, HangarPage, MarketplacePage, BillingHistoryPage, NotFoundPage } from "../pages"
 import { SvgChat } from "../assets"
 import { Box } from "@mui/system"
 import { colors } from "../theme/theme"
@@ -12,6 +12,7 @@ import { PlayerList } from "../components/RightDrawer/PlayerList/PlayerList"
 import { PlayerProfilePage } from "../components/PublicProfile/PlayerProfile"
 import { BATTLE_ARENA_OPEN } from "../constants"
 import { LeaderboardPage } from "../pages/LeaderboardPage"
+import { JobsPage } from "../pages/JobsPage"
 
 /**
  * Left drawer
@@ -159,19 +160,29 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         requireFaction: false,
     },
 
-    // Contract
-    contracts: {
-        id: "contracts",
-        path: "/contracts",
+    // Jobs
+    jobs: {
+        id: "jobs",
+        path: "/jobs/:type?",
         exact: true,
-        Component: undefined,
+        Component: JobsPage,
         requireAuth: true,
         requireFaction: true,
         leftDrawer: {
-            enable: false,
-            label: "Contracts",
+            enable: true,
+            label: "Jobs",
         },
-        matchLeftDrawerID: "contracts",
+        matchLeftDrawerID: "jobs",
+    },
+
+    // FIAT related
+    billing_history: {
+        id: "billing_history",
+        path: "/billing-history",
+        exact: true,
+        Component: BillingHistoryPage,
+        requireAuth: true,
+        requireFaction: true,
     },
 
     // Others

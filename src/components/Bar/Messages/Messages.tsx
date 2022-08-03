@@ -1,6 +1,6 @@
-import { Badge, Box, IconButton, Popover, Stack } from "@mui/material"
-import { useCallback, useEffect, useRef, useState } from "react"
-import { SvgMail, SvgWrapperProps } from "../../../assets"
+import { Badge, Box, IconButton, Modal, Stack } from "@mui/material"
+import { ReactNode, useCallback, useEffect, useState } from "react"
+import { SvgClose, SvgMail } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { useToggle } from "../../../hooks"
 import { useGameServerCommandsUser, useGameServerSubscriptionUser } from "../../../hooks/useGameServer"
@@ -12,12 +12,11 @@ import { MessagesComposeView } from "./MessagesComposeView/MessagesComposeView"
 import { MessagesMainView } from "./MessagesMainView/MessagesMainView"
 
 export interface SystemMessageDisplayable extends SystemMessage {
-    icon: React.VoidFunctionComponent<SvgWrapperProps>
+    icon: ReactNode
 }
 
 export const Messages = () => {
     const theme = useTheme()
-    const popoverRef = useRef(null)
     const [modalOpen, toggleModalOpen] = useToggle(false)
 
     const { send } = useGameServerCommandsUser("/user_commander")
@@ -57,7 +56,6 @@ export const Messages = () => {
     return (
         <>
             <Stack
-                ref={popoverRef}
                 direction="row"
                 alignItems="center"
                 sx={{
@@ -87,48 +85,44 @@ export const Messages = () => {
                 </Box>
             </Stack>
 
-            <Popover
-                open={modalOpen}
-                anchorEl={popoverRef.current}
-                onClose={() => toggleModalOpen(false)}
-                anchorOrigin={{
-                    vertical: "bottom",
-                    horizontal: "center",
-                }}
-                transformOrigin={{
-                    vertical: "top",
-                    horizontal: "center",
-                }}
-                sx={{
-                    mt: ".5rem",
-                    zIndex: siteZIndex.Popover,
-                    ".MuiPaper-root": {
-                        background: "none",
-                        boxShadow: 0,
-                    },
-                }}
-            >
-                <ClipThing
-                    clipSize="10px"
-                    border={{
-                        borderColor: theme.factionTheme.primary,
-                        borderThickness: ".3rem",
-                    }}
-                    backgroundColor={theme.factionTheme.background}
+            <Modal open={modalOpen} onClose={() => toggleModalOpen(false)} sx={{ zIndex: siteZIndex.Modal }}>
+                <Box
                     sx={{
-                        height: "600px",
-                        maxHeight: "100vh",
-                        width: "1000px",
-                        maxWidth: "100vw",
+                        position: "absolute",
+                        top: "50%",
+                        left: "50%",
+                        transform: "translate(-50%, -50%)",
+                        width: "120rem",
+                        maxWidth: "90vw",
+                        boxShadow: 6,
+                        outline: "none",
                     }}
                 >
-                    {!composeView ? (
-                        <MessagesMainView lastUpdated={lastUpdated} onCompose={(type: SystemMessageDataType) => setComposeView(type)} />
-                    ) : (
-                        <MessagesComposeView onBack={() => setComposeView(undefined)} type={composeView} />
-                    )}
-                </ClipThing>
-            </Popover>
+                    <ClipThing
+                        clipSize="10px"
+                        border={{
+                            borderColor: theme.factionTheme.primary,
+                            borderThickness: ".3rem",
+                        }}
+                        backgroundColor={theme.factionTheme.background}
+                        sx={{
+                            position: "relative",
+                            height: "72rem",
+                            maxHeight: "90vh",
+                        }}
+                    >
+                        {!composeView ? (
+                            <MessagesMainView lastUpdated={lastUpdated} onCompose={(type: SystemMessageDataType) => setComposeView(type)} />
+                        ) : (
+                            <MessagesComposeView onBack={() => setComposeView(undefined)} type={composeView} />
+                        )}
+
+                        <IconButton size="small" onClick={() => toggleModalOpen(false)} sx={{ position: "absolute", top: ".5rem", right: ".5rem" }}>
+                            <SvgClose size="2.6rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
+                        </IconButton>
+                    </ClipThing>
+                </Box>
+            </Modal>
         </>
     )
 }

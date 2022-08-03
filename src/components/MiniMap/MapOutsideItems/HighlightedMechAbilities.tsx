@@ -56,7 +56,7 @@ const HighlightedMechAbilitiesInner = ({ warMachine }: { warMachine: WarMachineS
         },
     )
 
-    if (!gameAbilities || gameAbilities.length <= 0 || !isAlive) {
+    if (!isAlive) {
         return null
     }
 
@@ -81,9 +81,11 @@ const HighlightedMechAbilitiesInner = ({ warMachine }: { warMachine: WarMachineS
                     }}
                     sx={{ p: ".8rem .9rem", width: "15rem" }}
                 >
-                    {gameAbilities.map((ga) => {
-                        return <AbilityItem key={ga.id} hash={warMachine.hash} participantID={participantID} ability={ga} />
-                    })}
+                    {gameAbilities &&
+                        gameAbilities.length > 0 &&
+                        gameAbilities.map((ga) => {
+                            return <AbilityItem key={ga.id} hash={warMachine.hash} participantID={participantID} ability={ga} />
+                        })}
 
                     {userID === ownedByID && <MoveCommand isAlive={isAlive} warMachine={warMachine} smallVersion />}
                 </Stack>

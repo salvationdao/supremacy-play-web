@@ -227,6 +227,7 @@ export const UserDetailsPopover = ({
                     </Stack>
                 </ClipThing>
             </Popover>
+
             {showChatBanModal && (
                 <ConfirmModal
                     title="CONFIRMATION"
@@ -249,6 +250,7 @@ export const UserDetailsPopover = ({
                     <Typography variant="h6">
                         Do you wish to chat ban <strong>{fromUser.username}</strong>?
                     </Typography>
+
                     <TextField
                         variant="outlined"
                         hiddenLabel
@@ -276,7 +278,7 @@ export const UserDetailsPopover = ({
                                 fontSize: "2rem",
                                 height: "unset",
                                 "::-webkit-outer-spin-button, ::-webkit-inner-spin-button": {
-                                    "-webkit-appearance": "none",
+                                    WebkitAppearance: "none",
                                 },
                             },
                             ".MuiOutlinedInput-notchedOutline": { border: "unset" },
@@ -287,6 +289,7 @@ export const UserDetailsPopover = ({
                             setReason(e.target.value)
                         }}
                     />
+
                     <Select
                         sx={{
                             width: "100%",

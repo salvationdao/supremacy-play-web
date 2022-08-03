@@ -6,7 +6,7 @@ import { GameServerKeys } from "../../../../keys"
 import { fonts, colors } from "../../../../theme/theme"
 import { MechStatus, MechStatusEnum } from "../../../../types"
 
-export const MechGeneralStatus = ({ mechID, hideBox }: { mechID: string; hideBox?: boolean }) => {
+export const MechGeneralStatus = ({ mechID, hideBox, smallVersion }: { mechID: string; hideBox?: boolean; smallVersion?: boolean }) => {
     const theme = useTheme()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [text, setText] = useState("LOADING...")
@@ -44,14 +44,9 @@ export const MechGeneralStatus = ({ mechID, hideBox }: { mechID: string; hideBox
                     setText("DAMAGED")
                     setColour(colors.bronze)
                     break
-                case MechStatusEnum.StandardRepairing:
-                    setText("REPAIRING")
-                    setColour(colors.blue)
-                    break
-                case MechStatusEnum.FastRepairing:
-                    setText("FAST REPAIRING")
-                    setColour(colors.blue2)
-                    break
+                default:
+                    setText(payload.status)
+                    setColour(colors.lightGrey)
             }
         },
     )
@@ -99,8 +94,14 @@ export const MechGeneralStatus = ({ mechID, hideBox }: { mechID: string; hideBox
     )
 
     return (
-        <Box sx={hideBox ? {} : { p: ".2rem 1rem", backgroundColor: `${color}20`, border: `${color} 1.5px dashed` }}>
-            <Typography variant="body2" sx={{ color, textAlign: hideBox ? "start" : "center", fontFamily: fonts.nostromoBlack }}>
+        <Box
+            sx={
+                hideBox
+                    ? {}
+                    : { p: smallVersion ? ".2rem 1rem" : ".6rem 1.6rem", backgroundColor: `${color}25`, border: `${color} ${smallVersion ? 1.5 : 2}px dashed` }
+            }
+        >
+            <Typography variant={smallVersion ? "body2" : "body1"} sx={{ color, textAlign: hideBox ? "start" : "center", fontFamily: fonts.nostromoBlack }}>
                 {text}
             </Typography>
         </Box>
