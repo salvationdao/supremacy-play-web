@@ -17,7 +17,7 @@ export const StackTower = React.memo(function StackTower({
     primaryColor: string
     disableGame: boolean
     repairAgent?: RepairAgent
-    agentRepairUpdate: (repairAgentID: string, gamePattern: GamePattern) => void
+    agentRepairUpdate: (repairAgentID: string, gamePattern: GamePattern) => Promise<boolean>
     completeAgentRepair: (repairAgentID: string) => Promise<boolean>
 }) {
     // Game data
@@ -29,15 +29,16 @@ export const StackTower = React.memo(function StackTower({
 
     // As the player plays the mini game, this will be the game updates
     const oneNewGamePattern = useCallback(
-        (gamePattern: GamePattern) => {
+        async (gamePattern: GamePattern) => {
             setScore(gamePattern?.score)
 
             if (repairAgent?.id) {
-                setGamePatterns((prev) => {
-                    return [...prev, gamePattern]
-                })
-
-                agentRepairUpdate(repairAgent.id, gamePattern)
+                const resp = await agentRepairUpdate(repairAgent.id, gamePattern)
+                if (resp) {
+                    setGamePatterns((prev) => {
+                        return [...prev, gamePattern]
+                    })
+                }
             }
         },
         [agentRepairUpdate, repairAgent?.id],

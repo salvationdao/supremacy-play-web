@@ -74,6 +74,7 @@ export const MechRepairBlocks = React.memo(function MechRepairBlocks({
     const repairStatus = useGameServerSubscription<RepairStatus>({
         URI: `/public/mech/${mechID}/repair_case`,
         key: GameServerKeys.SubMechRepairStatus,
+        ready: !!mechID,
     })
 
     const remainDamagedBlocks = repairStatus ? repairStatus.blocks_required_repair - repairStatus.blocks_repaired : 0

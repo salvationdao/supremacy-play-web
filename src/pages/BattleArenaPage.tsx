@@ -3,7 +3,6 @@ import { useEffect, useState } from "react"
 import { Redirect } from "react-router-dom"
 import { SvgAbility, SvgHistory, SvgHistoryClock, SvgRobot } from "../assets"
 import { BattleEndScreen, BattleHistory, Controls, EarlyAccessWarning, MiniMap, Notifications, Stream, VotingSystem, WarMachineStats } from "../components"
-import { TutorialModal } from "../components/HowToPlay/Tutorial/TutorialModal"
 import { QuickDeploy } from "../components/QuickDeploy/QuickDeploy"
 import { QuickPlayerAbilities } from "../components/QuickPlayerAbilities/QuickPlayerAbilities"
 import { BATTLE_ARENA_OPEN } from "../constants"
@@ -201,8 +200,6 @@ const BattleArenaPageInner = () => {
                 )}
 
                 <Notifications />
-
-                {userID && <TutorialModal />}
             </Box>
 
             <Controls />
