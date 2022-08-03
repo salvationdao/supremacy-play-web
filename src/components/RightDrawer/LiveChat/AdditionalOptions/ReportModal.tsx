@@ -5,6 +5,8 @@ import { colors, siteZIndex } from "../../../../theme/theme"
 import { ClipThing } from "../../../Common/ClipThing"
 import { useTheme } from "../../../../containers/theme"
 import { FancyButton } from "../../../Common/FancyButton"
+import { GameServerKeys } from "../../../../keys"
+import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
 
 interface ReportModalProps {
     message: TextMessageData
@@ -13,10 +15,9 @@ interface ReportModalProps {
 }
 
 interface ReportSend {
-    reported_user_id: string
-    message: string
+    message_id: string
     reason: string
-    other_description: string
+    other_description?: string
     description: string
 }
 
@@ -32,13 +33,24 @@ enum reasons {
 
 export const ReportModal = ({ message, reportModalOpen, setReportModalOpen }: ReportModalProps) => {
     const theme = useTheme()
-    const [selected, setSelected] = useState<string>(reasons.OffensiveLanguage)
+    const { send } = useGameServerCommandsUser("/user_commander")
+
+    const [reason, setReason] = useState<string>(reasons.OffensiveLanguage)
+    const [otherDescription, setOtherDescription] = useState<string>("")
+    const [description, setDescription] = useState<string>("")
 
     const handleReport = useCallback(async () => {
         if (!message.id) return
+        const payload: ReportSend = {
+            message_id: message.id,
+            reason: reason,
+            other_description: otherDescription,
+            description: description,
+        }
 
         try {
-            console.log("lol")
+            const resp = await send<boolean, ReportSend>(GameServerKeys.ChatReport, payload)
+            if (!resp) return
         } catch (e) {
             console.error(e)
         }
@@ -94,7 +106,7 @@ export const ReportModal = ({ message, reportModalOpen, setReportModalOpen }: Re
                                     },
                                     "& .MuiSelect-outlined": { px: ".8rem", pt: ".2rem", pb: 0 },
                                 }}
-                                value={selected ?? ""}
+                                value={reason ?? ""}
                                 MenuProps={{
                                     variant: "menu",
                                     sx: {
@@ -119,7 +131,7 @@ export const ReportModal = ({ message, reportModalOpen, setReportModalOpen }: Re
                                             key={x + i}
                                             value={x}
                                             onClick={() => {
-                                                setSelected(x)
+                                                setReason(x)
                                             }}
                                             sx={{ "&:hover": { backgroundColor: "#FFFFFF20" } }}
                                         >
@@ -129,15 +141,25 @@ export const ReportModal = ({ message, reportModalOpen, setReportModalOpen }: Re
                                 })}
                             </Select>
                         </Stack>
-                        {selected === reasons.Other && (
+                        {reason === reasons.Other && (
                             <Stack direction={"row"} sx={{ alignItems: "center" }}>
                                 <Typography>Description:</Typography>
-                                <TextField />
+                                <TextField
+                                    onChange={(e) => {
+                                        e.preventDefault()
+                                        setOtherDescription(e.target.value)
+                                    }}
+                                />
                             </Stack>
                         )}
                         <Stack direction={"row"} sx={{ alignItems: "center" }}>
                             <Typography>Comments:</Typography>
-                            <TextField />
+                            <TextField
+                                onChange={(e) => {
+                                    e.preventDefault()
+                                    setDescription(e.target.value)
+                                }}
+                            />
                         </Stack>
                         <FancyButton onClick={() => handleReport()}>Report</FancyButton>
                     </Box>
