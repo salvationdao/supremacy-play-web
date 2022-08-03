@@ -47,10 +47,10 @@ export const DrawerButtons = () => {
                             icon={r.icon}
                             onClick={() => {
                                 if (location.hash === r.hash) {
-                                    history.replace(`${location.pathname}${RightDrawerHashes.None}`)
+                                    history.replace(`${location.pathname}${location.search}${RightDrawerHashes.None}`)
                                     return
                                 }
-                                history.replace(`${location.pathname}${r.hash}`)
+                                history.replace(`${location.pathname}${location.search}${r.hash}`)
                             }}
                             isActive={location.hash === r.hash}
                             primaryColor={theme.factionTheme.primary}
