@@ -135,7 +135,7 @@ export const DoRepairModal = ({
             } finally {
                 setTimeout(() => {
                     setIsSubmitting(false)
-                }, 2200)
+                }, 3500)
             }
         },
         [send],
@@ -480,7 +480,9 @@ const InfoCard = ({ primaryColor, children, label, sx }: { primaryColor: string;
                 ...sx,
             }}
         >
-            {children}
+            <Stack alignItems="center" justifyContent="center" sx={{ flex: 1 }}>
+                {children}
+            </Stack>
             <Typography variant="caption" sx={{ color: colors.lightGrey, fontFamily: fonts.nostromoBlack }}>
                 {label}
             </Typography>
