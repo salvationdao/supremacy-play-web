@@ -185,6 +185,9 @@ export const UserDetailsPopover = ({
                                 }}
                                 sx={{ px: "1.6rem", py: ".1rem", color: factionSecondaryColor }}
                                 to={`/profile/${fromUser.gid}`}
+                                onClick={() => {
+                                    toggleLocalOpen(false)
+                                }}
                             >
                                 <Typography
                                     variant="caption"
