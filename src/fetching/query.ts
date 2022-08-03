@@ -1,7 +1,7 @@
 import { Action } from "react-fetching-library"
 import { GAME_SERVER_HOSTNAME, PASSPORT_SERVER_HOST } from "../constants"
 import { Fingerprint } from "../containers"
-import { Faction, SaleAbilityAvailability, Stream, User, UserFromPassport, WarMachineDestroyedRecord, WeaponMaxStats } from "../types"
+import { Faction, Feature, SaleAbilityAvailability, Stream, User, UserFromPassport, WarMachineDestroyedRecord, WeaponMaxStats } from "../types"
 
 export const PassportLoginCheck = (): Action<UserFromPassport> => {
     return {
@@ -62,6 +62,15 @@ export const GetWeaponMaxStats = (playerID?: string | undefined): Action<WeaponM
     return {
         method: "GET",
         endpoint: `/max_weapon_stats?user_id=${playerID || ""}`,
+        credentials: "include",
+        responseType: "json",
+    }
+}
+
+export const GetGlobalFeatures = (): Action<Feature[]> => {
+    return {
+        method: "GET",
+        endpoint: "/feature/global-features",
         credentials: "include",
         responseType: "json",
     }
