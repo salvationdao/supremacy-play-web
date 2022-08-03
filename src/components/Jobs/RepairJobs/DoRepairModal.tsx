@@ -103,11 +103,18 @@ export const DoRepairModal = ({
 
     // Send individual updates
     const agentRepairUpdate = useCallback(
-        (repairAgentID: string, gamePattern: GamePattern) => {
-            send(GameServerKeys.RepairAgentUpdate, {
-                repair_agent_id: repairAgentID,
-                ...gamePattern,
-            })
+        async (repairAgentID: string, gamePattern: GamePattern) => {
+            try {
+                const resp = await send(GameServerKeys.RepairAgentUpdate, {
+                    repair_agent_id: repairAgentID,
+                    ...gamePattern,
+                })
+
+                if (!resp) return Promise.reject(false)
+                return Promise.resolve(true)
+            } catch (err) {
+                return Promise.reject(false)
+            }
         },
         [send],
     )
