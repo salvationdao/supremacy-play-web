@@ -189,69 +189,69 @@ import WarMachineBCPNG from "./images/profileIcons/warMachines/WMBC.png"
 import WarMachineRMPNG from "./images/profileIcons/warMachines/WMRM.png"
 import WarMachineZAIPNG from "./images/profileIcons/warMachines/WMZAI.png"
 
-import Stack1aPNG from "./images/TowerStackSkins/Stack1a.png"
-import Stack1bPNG from "./images/TowerStackSkins/Stack1b.png"
-import Stack1cPNG from "./images/TowerStackSkins/Stack1c.png"
-import Stack2aPNG from "./images/TowerStackSkins/Stack2a.png"
-import Stack2bPNG from "./images/TowerStackSkins/Stack2b.png"
-import Stack2cPNG from "./images/TowerStackSkins/Stack2c.png"
-import Stack3aPNG from "./images/TowerStackSkins/Stack3a.png"
-import Stack3bPNG from "./images/TowerStackSkins/Stack3b.png"
-import Stack3cPNG from "./images/TowerStackSkins/Stack3c.png"
-import Stack4aPNG from "./images/TowerStackSkins/Stack4a.png"
-import Stack4bPNG from "./images/TowerStackSkins/Stack4b.png"
-import Stack4cPNG from "./images/TowerStackSkins/Stack4c.png"
-import Stack5aPNG from "./images/TowerStackSkins/Stack5a.png"
-import Stack5bPNG from "./images/TowerStackSkins/Stack5b.png"
-import Stack5cPNG from "./images/TowerStackSkins/Stack5c.png"
-import Stack6aPNG from "./images/TowerStackSkins/Stack6a.png"
-import Stack6bPNG from "./images/TowerStackSkins/Stack6b.png"
-import Stack6cPNG from "./images/TowerStackSkins/Stack6c.png"
-import Stack7aPNG from "./images/TowerStackSkins/Stack7a.png"
-import Stack7bPNG from "./images/TowerStackSkins/Stack7b.png"
-import Stack7cPNG from "./images/TowerStackSkins/Stack7c.png"
-import Stack8aPNG from "./images/TowerStackSkins/Stack8a.png"
-import Stack8bPNG from "./images/TowerStackSkins/Stack8b.png"
-import Stack8cPNG from "./images/TowerStackSkins/Stack8c.png"
-import Stack9aPNG from "./images/TowerStackSkins/Stack9a.png"
-import Stack9bPNG from "./images/TowerStackSkins/Stack9b.png"
-import Stack9cPNG from "./images/TowerStackSkins/Stack9c.png"
-import Stack10aPNG from "./images/TowerStackSkins/Stack10a.png"
-import Stack10bPNG from "./images/TowerStackSkins/Stack10b.png"
-import Stack10cPNG from "./images/TowerStackSkins/Stack10c.png"
+import Stack1aJPG from "./images/TowerStackSkins/Stack1a.jpg"
+import Stack1bJPG from "./images/TowerStackSkins/Stack1b.jpg"
+import Stack1cJPG from "./images/TowerStackSkins/Stack1c.jpg"
+import Stack2aJPG from "./images/TowerStackSkins/Stack2a.jpg"
+import Stack2bJPG from "./images/TowerStackSkins/Stack2b.jpg"
+import Stack2cJPG from "./images/TowerStackSkins/Stack2c.jpg"
+import Stack3aJPG from "./images/TowerStackSkins/Stack3a.jpg"
+import Stack3bJPG from "./images/TowerStackSkins/Stack3b.jpg"
+import Stack3cJPG from "./images/TowerStackSkins/Stack3c.jpg"
+import Stack4aJPG from "./images/TowerStackSkins/Stack4a.jpg"
+import Stack4bJPG from "./images/TowerStackSkins/Stack4b.jpg"
+import Stack4cJPG from "./images/TowerStackSkins/Stack4c.jpg"
+import Stack5aJPG from "./images/TowerStackSkins/Stack5a.jpg"
+import Stack5bJPG from "./images/TowerStackSkins/Stack5b.jpg"
+import Stack5cJPG from "./images/TowerStackSkins/Stack5c.jpg"
+import Stack6aJPG from "./images/TowerStackSkins/Stack6a.jpg"
+import Stack6bJPG from "./images/TowerStackSkins/Stack6b.jpg"
+import Stack6cJPG from "./images/TowerStackSkins/Stack6c.jpg"
+import Stack7aJPG from "./images/TowerStackSkins/Stack7a.jpg"
+import Stack7bJPG from "./images/TowerStackSkins/Stack7b.jpg"
+import Stack7cJPG from "./images/TowerStackSkins/Stack7c.jpg"
+import Stack8aJPG from "./images/TowerStackSkins/Stack8a.jpg"
+import Stack8bJPG from "./images/TowerStackSkins/Stack8b.jpg"
+import Stack8cJPG from "./images/TowerStackSkins/Stack8c.jpg"
+import Stack9aJPG from "./images/TowerStackSkins/Stack9a.jpg"
+import Stack9bJPG from "./images/TowerStackSkins/Stack9b.jpg"
+import Stack9cJPG from "./images/TowerStackSkins/Stack9c.jpg"
+import Stack10aJPG from "./images/TowerStackSkins/Stack10a.jpg"
+import Stack10bJPG from "./images/TowerStackSkins/Stack10b.jpg"
+import Stack10cJPG from "./images/TowerStackSkins/Stack10c.jpg"
 
 // Tower stack mini game skins
 export {
-    Stack1aPNG,
-    Stack1bPNG,
-    Stack1cPNG,
-    Stack2aPNG,
-    Stack2bPNG,
-    Stack2cPNG,
-    Stack3aPNG,
-    Stack3bPNG,
-    Stack3cPNG,
-    Stack4aPNG,
-    Stack4bPNG,
-    Stack4cPNG,
-    Stack5aPNG,
-    Stack5bPNG,
-    Stack5cPNG,
-    Stack6aPNG,
-    Stack6bPNG,
-    Stack6cPNG,
-    Stack7aPNG,
-    Stack7bPNG,
-    Stack7cPNG,
-    Stack8aPNG,
-    Stack8bPNG,
-    Stack8cPNG,
-    Stack9aPNG,
-    Stack9bPNG,
-    Stack9cPNG,
-    Stack10aPNG,
-    Stack10bPNG,
-    Stack10cPNG,
+    Stack1aJPG,
+    Stack1bJPG,
+    Stack1cJPG,
+    Stack2aJPG,
+    Stack2bJPG,
+    Stack2cJPG,
+    Stack3aJPG,
+    Stack3bJPG,
+    Stack3cJPG,
+    Stack4aJPG,
+    Stack4bJPG,
+    Stack4cJPG,
+    Stack5aJPG,
+    Stack5bJPG,
+    Stack5cJPG,
+    Stack6aJPG,
+    Stack6bJPG,
+    Stack6cJPG,
+    Stack7aJPG,
+    Stack7bJPG,
+    Stack7cJPG,
+    Stack8aJPG,
+    Stack8bJPG,
+    Stack8cJPG,
+    Stack9aJPG,
+    Stack9bJPG,
+    Stack9cJPG,
+    Stack10aJPG,
+    Stack10bJPG,
+    Stack10cJPG,
 }
 
 // multiplier images
