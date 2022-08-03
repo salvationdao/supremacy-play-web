@@ -26,7 +26,6 @@ export const KillAlert = ({ data, getFaction }: { data: KillAlertProps; getFacti
                 text={killed_by_war_machine.name || killed_by_war_machine.hash}
                 color={mainColor || "grey !important"}
                 imageUrl={killed_by_war_machine.imageAvatar}
-                imageMb={-0.2}
             />
         )
     } else if (killed_by_user) {
@@ -61,7 +60,6 @@ export const KillAlert = ({ data, getFaction }: { data: KillAlertProps; getFacti
                     text={destroyed_war_machine.name || destroyed_war_machine.hash}
                     color={getFaction(destroyed_war_machine.factionID).primary_color}
                     imageUrl={destroyed_war_machine.imageAvatar}
-                    imageMb={-0.2}
                 />
             </Box>
         </ClipThing>

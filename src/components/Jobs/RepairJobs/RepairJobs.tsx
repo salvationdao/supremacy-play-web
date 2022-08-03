@@ -15,6 +15,7 @@ import { PageHeader } from "../../Common/PageHeader"
 import { RangeFilter } from "../../Common/SortAndFilters/RangeFilterSection"
 import { SortAndFilters } from "../../Common/SortAndFilters/SortAndFilters"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
+import { DoRepairModal } from "./DoRepairModal"
 import { RepairJobItem } from "./RepairJobItem"
 
 const sortOptions = [
@@ -29,6 +30,7 @@ const sortOptions = [
 export const RepairJobs = () => {
     const [query, updateQuery] = useUrlQuery()
     const theme = useTheme()
+    const [repairJobModal, setRepairJobModal] = useState<RepairJob>()
 
     // Items
     const { value: repairJobs, setValue: setRepairJobs, removeByID } = useArray<RepairJob>([], "id")
@@ -54,17 +56,17 @@ export const RepairJobs = () => {
             if (!payload || payload.length <= 0) return
 
             setRepairJobs((prev) => {
-                let newArray = prev
+                let newArray = [...prev]
 
-                payload.forEach((repairJob) => {
-                    const foundIndex = newArray.findIndex((rj) => rj.id === repairJob.id)
+                for (let index = 0; index < payload.length; index++) {
+                    const foundIndex = newArray.findIndex((rj) => rj.id === payload[index].id)
                     if (foundIndex >= 0) {
-                        newArray[foundIndex] = repairJob
+                        newArray[foundIndex] = payload[index]
                     } else {
                         // If repair job is not in the array, then add it
-                        newArray = [...newArray, repairJob]
+                        newArray = [...newArray, payload[index]]
                     }
-                })
+                }
 
                 return newArray
             })
@@ -122,11 +124,18 @@ export const RepairJobs = () => {
                 <Box sx={{ direction: "ltr", height: 0 }}>
                     <Stack>
                         <FlipMove>
-                            {repairJobsRender.map((repairJob) => (
-                                <div key={`repair-job-${repairJob.id}`} style={{ marginBottom: "1.3rem" }}>
-                                    <RepairJobItem repairJob={repairJob} removeByID={removeByID} />
-                                </div>
-                            ))}
+                            {repairJobsRender.map((repairJob) => {
+                                return (
+                                    <div key={`repair-job-${repairJob.id}`} style={{ marginBottom: "1.3rem" }}>
+                                        <RepairJobItem
+                                            repairJob={repairJob}
+                                            removeByID={removeByID}
+                                            repairJobModal={repairJobModal}
+                                            setRepairJobModal={setRepairJobModal}
+                                        />
+                                    </div>
+                                )
+                            })}
                         </FlipMove>
                     </Stack>
                 </Box>
@@ -164,66 +173,70 @@ export const RepairJobs = () => {
                 </Stack>
             </Stack>
         )
-    }, [removeByID, repairJobsRender, theme.factionTheme.primary])
+    }, [removeByID, repairJobModal, repairJobsRender, theme.factionTheme.primary])
 
     return (
-        <Stack direction="row" sx={{ height: "100%" }}>
-            <SortAndFilters rangeFilters={[rewardRangeFilter.current]} isExpanded={isFiltersExpanded} />
+        <>
+            <Stack direction="row" sx={{ height: "100%" }}>
+                <SortAndFilters rangeFilters={[rewardRangeFilter.current]} isExpanded={isFiltersExpanded} />
 
-            <ClipThing
-                clipSize="10px"
-                border={{
-                    borderColor: theme.factionTheme.primary,
-                    borderThickness: ".3rem",
-                }}
-                opacity={0.7}
-                backgroundColor={theme.factionTheme.background}
-                sx={{ height: "100%", flex: 1 }}
-            >
-                <Stack sx={{ position: "relative", height: "100%" }}>
-                    <PageHeader title="REPAIR JOBS" description="Damaged items will be sent here by the mech owners." imageUrl={WarMachineIconPNG} />
+                <ClipThing
+                    clipSize="10px"
+                    border={{
+                        borderColor: theme.factionTheme.primary,
+                        borderThickness: ".3rem",
+                    }}
+                    opacity={0.7}
+                    backgroundColor={theme.factionTheme.background}
+                    sx={{ height: "100%", flex: 1 }}
+                >
+                    <Stack sx={{ position: "relative", height: "100%" }}>
+                        <PageHeader title="REPAIR JOBS" description="Damaged items will be sent here by the mech owners." imageUrl={WarMachineIconPNG} />
 
-                    <TotalAndPageSizeOptions
-                        countItems={repairJobsRender?.length}
-                        totalItems={repairJobs.length}
-                        pageSizeOptions={[10, 20, 30]}
-                        sortOptions={sortOptions}
-                        selectedSort={sort}
-                        onSetSort={setSort}
-                        isFiltersExpanded={isFiltersExpanded}
-                        toggleIsFiltersExpanded={toggleIsFiltersExpanded}
-                    />
+                        <TotalAndPageSizeOptions
+                            countItems={repairJobsRender?.length}
+                            totalItems={repairJobs.length}
+                            pageSizeOptions={[10, 20, 30]}
+                            sortOptions={sortOptions}
+                            selectedSort={sort}
+                            onSetSort={setSort}
+                            isFiltersExpanded={isFiltersExpanded}
+                            toggleIsFiltersExpanded={toggleIsFiltersExpanded}
+                        />
 
-                    <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
-                        <Box
-                            sx={{
-                                ml: "1.9rem",
-                                mr: ".5rem",
-                                pr: "1.4rem",
-                                my: "1rem",
-                                flex: 1,
-                                overflowY: "auto",
-                                overflowX: "hidden",
-                                direction: "ltr",
+                        <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
+                            <Box
+                                sx={{
+                                    ml: "1.9rem",
+                                    mr: ".5rem",
+                                    pr: "1.4rem",
+                                    my: "1rem",
+                                    flex: 1,
+                                    overflowY: "auto",
+                                    overflowX: "hidden",
+                                    direction: "ltr",
 
-                                "::-webkit-scrollbar": {
-                                    width: ".4rem",
-                                },
-                                "::-webkit-scrollbar-track": {
-                                    background: "#FFFFFF15",
-                                    borderRadius: 3,
-                                },
-                                "::-webkit-scrollbar-thumb": {
-                                    background: theme.factionTheme.primary,
-                                    borderRadius: 3,
-                                },
-                            }}
-                        >
-                            {content}
-                        </Box>
+                                    "::-webkit-scrollbar": {
+                                        width: ".4rem",
+                                    },
+                                    "::-webkit-scrollbar-track": {
+                                        background: "#FFFFFF15",
+                                        borderRadius: 3,
+                                    },
+                                    "::-webkit-scrollbar-thumb": {
+                                        background: theme.factionTheme.primary,
+                                        borderRadius: 3,
+                                    },
+                                }}
+                            >
+                                {content}
+                            </Box>
+                        </Stack>
                     </Stack>
-                </Stack>
-            </ClipThing>
-        </Stack>
+                </ClipThing>
+            </Stack>
+
+            {repairJobModal && <DoRepairModal repairJob={repairJobModal} open={!!repairJobModal} onClose={() => setRepairJobModal(undefined)} />}
+        </>
     )
 }

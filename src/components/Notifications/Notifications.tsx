@@ -303,7 +303,9 @@ const NotificationsInner = ({ notificationsJsx }: { notificationsJsx: (JSX.Eleme
                 }}
             >
                 <Box sx={{ direction: "ltr", height: 0 }}>
-                    <Stack spacing=".5rem">{notificationsJsx}</Stack>
+                    <Stack spacing=".5rem" alignItems="flex-end">
+                        {notificationsJsx}
+                    </Stack>
                 </Box>
             </Box>
         </Stack>

@@ -33,7 +33,7 @@ interface CoolTableProps<T> {
     titleRowHeight?: string
     cellPadding?: string
     paginationProps?: {
-        page: number
+        page: number // Starts from 1
         pageSize: number
         totalItems: number
         changePage: (newPage: number) => void
@@ -101,7 +101,10 @@ export const CoolTable = <T,>({
                 <TableBody>
                     {items.map((item, i) => {
                         return (
-                            <TableRow key={i} sx={{ "&:nth-of-type(odd)": { backgroundColor: "#FFFFFF10" }, ".MuiTableCell-root": { p: cellPadding } }}>
+                            <TableRow
+                                key={i}
+                                sx={{ height: 0, "&:nth-of-type(odd)": { backgroundColor: "#FFFFFF10" }, ".MuiTableCell-root": { p: cellPadding } }}
+                            >
                                 {renderItem(item, i).map((node, j) => {
                                     return (
                                         <TableCell
@@ -116,6 +119,11 @@ export const CoolTable = <T,>({
                             </TableRow>
                         )
                     })}
+
+                    {/* Need this empty row for a bug fix, don't delete */}
+                    <TableRow sx={{ backgroundColor: "transparent" }}>
+                        <TableCell colSpan={tableHeadings.length} sx={{ p: "0 !important", border: "none !important" }} />
+                    </TableRow>
                 </TableBody>
             )
         }
@@ -197,7 +205,7 @@ export const CoolTable = <T,>({
                                 colSpan={tableHeadings.length}
                                 count={paginationProps.totalItems}
                                 rowsPerPage={paginationProps.pageSize}
-                                page={paginationProps.page}
+                                page={paginationProps.page - 1}
                                 SelectProps={{ native: true }}
                                 onPageChange={(e, newPage: number) => paginationProps.changePage(newPage)}
                                 onRowsPerPageChange={(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>

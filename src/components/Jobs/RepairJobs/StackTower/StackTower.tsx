@@ -8,18 +8,18 @@ import { Game, GamePattern, GameState } from "./src/game"
 import { isWebGLAvailable } from "./src/utils"
 
 export const StackTower = React.memo(function StackTower({
+    primaryColor,
     disableGame,
     repairAgent,
     agentRepairUpdate,
     completeAgentRepair,
 }: {
+    primaryColor: string
     disableGame: boolean
     repairAgent?: RepairAgent
     agentRepairUpdate: (repairAgentID: string, gamePattern: GamePattern) => void
     completeAgentRepair: (repairAgentID: string) => Promise<boolean>
 }) {
-    const theme = useTheme()
-
     // Game data
     const [gameState, setGameState] = useState<GameState>(GameState.Loading)
     const [score, setScore] = useState(0)
@@ -27,7 +27,7 @@ export const StackTower = React.memo(function StackTower({
     const [gamePatterns, setGamePatterns] = useState<GamePattern[]>([])
     const cumulativeScore = gamePatterns.filter((p) => !p.is_failed && p.score > 0).length
 
-    // As the player plays the minigame, this will be the game updates
+    // As the player plays the mini game, this will be the game updates
     const oneNewGamePattern = useCallback(
         (gamePattern: GamePattern) => {
             setScore(gamePattern?.score)
@@ -46,13 +46,9 @@ export const StackTower = React.memo(function StackTower({
     // Tell server when we complete one block
     useEffect(() => {
         if (!repairAgent?.id || cumulativeScore !== repairAgent?.required_stacks) return
-        ;(async () => {
-            const result = await completeAgentRepair(repairAgent.id)
-            if (result) setGamePatterns([])
-        })()
+        completeAgentRepair(repairAgent.id)
+        setGamePatterns([])
     }, [completeAgentRepair, cumulativeScore, gamePatterns, repairAgent?.id, repairAgent?.required_stacks])
-
-    const primaryColor = theme.factionTheme.primary
 
     return (
         <Box
@@ -107,48 +103,21 @@ export const StackTower = React.memo(function StackTower({
 
 const TowerStackInner = ({
     score,
-    oneNewGamePattern,
     gameState,
     setGameState,
+    oneNewGamePattern,
 }: {
     score: number
-    oneNewGamePattern: (gamePattern: GamePattern) => void
     gameState: GameState
     setGameState: React.Dispatch<React.SetStateAction<GameState>>
+    oneNewGamePattern: (gamePattern: GamePattern) => void
 }) => {
     const theme = useTheme()
-
-    // Initialize game
-    useEffect(() => {
-        if (!isWebGLAvailable()) {
-            console.error("WebGL is not supported in this browser.")
-        }
-
-        new Game(theme.factionTheme.background, setGameState, oneNewGamePattern)
-    }, [setGameState, oneNewGamePattern, theme.factionTheme.background])
-
-    // This makes sure it never re-renders
-    const gameDiv = useMemo(() => {
-        // Game container, must keep the id
-        return (
-            <Box
-                id="game"
-                tabIndex={0}
-                sx={{
-                    position: "absolute",
-                    top: 0,
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                }}
-            />
-        )
-    }, [])
 
     return useMemo(() => {
         return (
             <Box sx={{ position: "relative", width: "100%", height: "100%", overflow: "hidden" }}>
-                {gameDiv}
+                <StaticGame backgroundColor={theme.factionTheme.background} setGameState={setGameState} oneNewGamePattern={oneNewGamePattern} />
 
                 {/* Score */}
                 <Typography
@@ -227,5 +196,39 @@ const TowerStackInner = ({
                 </Stack>
             </Box>
         )
-    }, [gameDiv, gameState, score])
+    }, [gameState, oneNewGamePattern, score, setGameState, theme.factionTheme.background])
 }
+
+const StaticGame = React.memo(function StaticGame({
+    backgroundColor,
+    setGameState,
+    oneNewGamePattern,
+}: {
+    backgroundColor: string
+    setGameState: React.Dispatch<React.SetStateAction<GameState>>
+    oneNewGamePattern: (gamePattern: GamePattern) => void
+}) {
+    // Initialize game
+    useEffect(() => {
+        if (!isWebGLAvailable()) {
+            console.error("WebGL is not supported in this browser.")
+        }
+
+        new Game(backgroundColor, setGameState, oneNewGamePattern)
+    }, [backgroundColor, oneNewGamePattern, setGameState])
+
+    // Game container, must keep the id
+    return (
+        <Box
+            id="game"
+            tabIndex={0}
+            sx={{
+                position: "absolute",
+                top: 0,
+                bottom: 0,
+                left: 0,
+                right: 0,
+            }}
+        />
+    )
+})

@@ -40,14 +40,44 @@ export class Game {
         _setGameState: React.Dispatch<React.SetStateAction<GameState>>,
         _oneNewGamePattern: (gamePattern: GamePattern) => void,
     ) {
-        // container
-        this.container = document.getElementById("game")
+        const gameContainer = document.getElementById("game")
+        const container = document.createElement("div")
+        container.style.width = "100%"
+        container.style.height = "100%"
+        container.tabIndex = 0
+        if (gameContainer) {
+            let child = gameContainer.lastElementChild
+            while (child) {
+                gameContainer.removeChild(child)
+                child = gameContainer.lastElementChild
+            }
+
+            container.addEventListener("keydown", (e: KeyboardEvent) => {
+                if (e.key === "Spacebar" || e.key === " ") {
+                    this.triggerWith = TriggerWith.Spacebar
+                    this.handleEvent()
+                }
+            })
+
+            container.addEventListener("click", () => {
+                this.triggerWith = TriggerWith.LeftClick
+                this.handleEvent()
+            })
+
+            container.addEventListener("touchend", () => {
+                this.triggerWith = TriggerWith.Touch
+                this.handleEvent()
+            })
+
+            gameContainer.appendChild(container)
+        }
+        this.container = container
 
         this.setGameState = _setGameState
         this.oneNewGamePattern = _oneNewGamePattern
         this.triggerWith = TriggerWith.None
 
-        this.stage = new Stage(backgroundColor)
+        this.stage = new Stage(this.container, backgroundColor)
         this.blocks = []
         this.fallingBlocks = []
         this.state = GameState.Loading
@@ -55,21 +85,6 @@ export class Game {
 
         this.addBlock()
         this.tick()
-
-        this.container?.addEventListener("keydown", (e) => {
-            if (e.key === "Spacebar" || e.key === " ") {
-                // Space
-                this.handleEvent()
-            }
-        })
-
-        this.container?.addEventListener("click", () => {
-            this.handleEvent()
-        })
-
-        this.container?.addEventListener("touchend", () => {
-            this.handleEvent()
-        })
 
         setTimeout(() => {
             this.setState(GameState.Ready)

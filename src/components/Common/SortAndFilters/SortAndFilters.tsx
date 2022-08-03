@@ -107,7 +107,7 @@ export const SortAndFilters = ({
                                                             py: ".5rem",
                                                             height: "unset",
                                                             "::-webkit-outer-spin-button, ::-webkit-inner-spin-button": {
-                                                                "-webkit-appearance": "none",
+                                                                WebkitAppearance: "none",
                                                             },
                                                             borderRadius: 0.5,
                                                             border: `${primaryColor}50 2px solid`,

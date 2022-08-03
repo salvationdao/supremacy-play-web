@@ -1,6 +1,6 @@
 import { Badge, Box, IconButton, Modal, Stack } from "@mui/material"
-import { useCallback, useEffect, useState } from "react"
-import { SvgClose, SvgMail, SvgWrapperProps } from "../../../assets"
+import { ReactNode, useCallback, useEffect, useState } from "react"
+import { SvgClose, SvgMail } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { useToggle } from "../../../hooks"
 import { useGameServerCommandsUser, useGameServerSubscriptionUser } from "../../../hooks/useGameServer"
@@ -12,7 +12,7 @@ import { MessagesComposeView } from "./MessagesComposeView/MessagesComposeView"
 import { MessagesMainView } from "./MessagesMainView/MessagesMainView"
 
 export interface SystemMessageDisplayable extends SystemMessage {
-    icon: React.VoidFunctionComponent<SvgWrapperProps>
+    icon: ReactNode
 }
 
 export const Messages = () => {

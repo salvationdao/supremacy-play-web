@@ -212,7 +212,7 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate, setOpeningCrate, se
                                                     fontSize: "2rem",
                                                     height: "unset",
                                                     "::-webkit-outer-spin-button, ::-webkit-inner-spin-button": {
-                                                        "-webkit-appearance": "none",
+                                                        WebkitAppearance: "none",
                                                     },
                                                     appearance: "textfield",
                                                 },

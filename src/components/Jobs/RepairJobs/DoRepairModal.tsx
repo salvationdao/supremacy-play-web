@@ -1,12 +1,13 @@
 import HCaptcha from "@hcaptcha/react-hcaptcha"
 import { Box, IconButton, Modal, Stack, SxProps, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
-import { ReactNode, useCallback, useMemo, useRef, useState } from "react"
+import { ReactNode, useCallback, useMemo, useState } from "react"
 import { SvgClose, SvgCubes, SvgSupToken } from "../../../assets"
+import { useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { supFormatterNoFixed, timeSinceInWords } from "../../../helpers"
 import { useTimer } from "../../../hooks"
-import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
+import { useGameServerCommandsUser, useGameServerSubscription } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { heightEffect } from "../../../theme/keyframes"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
@@ -19,7 +20,7 @@ import { StackTower } from "./StackTower/StackTower"
 
 export const DoRepairModal = ({
     repairStatus,
-    repairJob,
+    repairJob: _repairJob,
     open,
     onClose,
 }: {
@@ -29,14 +30,27 @@ export const DoRepairModal = ({
     onClose: () => void
 }) => {
     const theme = useTheme()
+    const { getFaction } = useSupremacy()
     const { send } = useGameServerCommandsUser("/user_commander")
     const [isRegistering, setIsRegistering] = useState(false)
     const [error, setError] = useState<string>()
+    const [repairJob, setRepairJob] = useState<RepairJob | undefined>(_repairJob)
     const [repairAgent, setRepairAgent] = useState<RepairAgent>()
+
+    useGameServerSubscription<RepairJob>(
+        {
+            URI: `/public/repair_offer/${_repairJob?.id}`,
+            key: GameServerKeys.SubRepairJobStatus,
+            ready: !!repairJob?.id,
+        },
+        (payload) => {
+            if (!payload) return
+            setRepairJob(payload)
+        },
+    )
 
     // captcha
     const [captchaToken, setCaptchaToken] = useState<string>()
-    const captchaRef = useRef<HCaptcha | null>(null)
 
     // Submission
     const [isSubmitting, setIsSubmitting] = useState(false)
@@ -45,13 +59,14 @@ export const DoRepairModal = ({
 
     const isFinished = !!(repairJob?.closed_at || (repairJob?.expires_at && repairJob?.expires_at < new Date()))
 
+    const faction = useMemo(() => getFaction(_repairJob?.job_owner.faction_id || ""), [_repairJob?.job_owner.faction_id, getFaction])
     const remainDamagedBlocks = repairJob
         ? repairJob.blocks_required_repair - repairJob.blocks_repaired
         : repairStatus
         ? repairStatus.blocks_required_repair - repairStatus.blocks_repaired
         : 0
-    const primaryColor = theme.factionTheme.primary
-    const backgroundColor = theme.factionTheme.background
+    const primaryColor = _repairJob?.job_owner.faction_id ? faction.primary_color : theme.factionTheme.primary
+    const backgroundColor = _repairJob?.job_owner.faction_id ? faction.background_color : theme.factionTheme.background
 
     const abandonJob = useCallback(() => {
         setRepairAgent(undefined)
@@ -206,10 +221,8 @@ export const DoRepairModal = ({
                                 size="compact"
                                 theme="dark"
                                 sitekey="87f715ba-98ff-43da-b970-cfc30fd7c5a0"
-                                onLoad={() => captchaRef.current && captchaRef.current.execute()}
                                 onVerify={setCaptchaToken}
                                 onExpire={() => setCaptchaToken(undefined)}
-                                ref={captchaRef}
                             />
                         </form>
                     )}
@@ -406,6 +419,7 @@ export const DoRepairModal = ({
                             </Box>
 
                             <StackTower
+                                primaryColor={primaryColor}
                                 disableGame={!repairAgent || !!submitError || isSubmitting || isFinished}
                                 repairAgent={repairAgent}
                                 agentRepairUpdate={agentRepairUpdate}

@@ -30,7 +30,7 @@ export const RepairBlocks = ({
                             backgroundColor: defaultBlocks ? colors.red : "#FFFFFF35",
                         },
                     },
-                    [`& > div:nth-child(-n+${defaultBlocks ? defaultBlocks - remainDamagedBlocks : 0})`]: {
+                    [`& > div:nth-of-type(-n+${defaultBlocks ? defaultBlocks - remainDamagedBlocks : 0})`]: {
                         ".single-block": {
                             backgroundColor: colors.green,
                         },

@@ -20,7 +20,6 @@ export const Player = ({ player, styledImageTextProps }: { player: User; styledI
             }
             color={primaryColor}
             imageUrl={faction.logo_url}
-            imageMb={-0.2}
             {...styledImageTextProps}
         />
     )

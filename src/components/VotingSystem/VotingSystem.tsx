@@ -19,13 +19,13 @@ export const VotingSystem = () => {
             // Defaults
             defaultPosX: 0,
             defaultPosY: 0,
-            defaultWidth: 320,
+            defaultWidth: 360,
             defaultHeight: 480,
             // Position limits
             minPosX: 0,
             minPosY: 0,
             // Size limits
-            minWidth: 320,
+            minWidth: 360,
             // minHeight: 168,
             maxWidth: 400,
             // maxHeight: 900,
@@ -65,7 +65,7 @@ export const VotingSystem = () => {
                             },
                         }}
                     >
-                        <Stack spacing="1rem" sx={{ direction: "ltr", pt: ".4rem", pb: "1.2rem" }}>
+                        <Stack spacing="1rem" sx={{ direction: "ltr", pt: ".4rem", pb: "1.2rem", minWidth: 360 }}>
                             <BattleAbilityItem key={factionID} />
                             {/* <FactionAbilities /> */}
                             <PlayerAbilities />

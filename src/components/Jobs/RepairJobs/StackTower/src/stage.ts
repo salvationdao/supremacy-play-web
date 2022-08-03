@@ -8,9 +8,9 @@ export class Stage {
     scene: THREE.Scene
     camera: THREE.OrthographicCamera
 
-    constructor(backgroundColor = "#D0CBC7") {
+    constructor(container: HTMLElement | null, backgroundColor = "#D0CBC7") {
         // container
-        this.container = document.getElementById("game")
+        this.container = container
         const width = this.container?.clientWidth || 200
         const height = this.container?.clientHeight || 200
 
