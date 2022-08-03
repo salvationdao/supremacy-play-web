@@ -92,10 +92,10 @@ export const RepairModal = ({
                             <MechRepairBlocks mechID={selectedMechDetails?.id} defaultBlocks={selectedMechDetails?.model.repair_blocks} hideNumber />
                         </Stack>
 
-                        <SelfRepairCard repairStatus={repairStatus} />
+                        <SelfRepairCard repairStatus={repairStatus} remainDamagedBlocks={remainDamagedBlocks} />
 
                         {repairOffer && !repairOffer.closed_at ? (
-                            <ExistingRepairJobCard repairOffer={repairOffer} />
+                            <ExistingRepairJobCard repairOffer={repairOffer} remainDamagedBlocks={remainDamagedBlocks} />
                         ) : (
                             <HireContractorsCard mechDetails={selectedMechDetails} remainDamagedBlocks={remainDamagedBlocks} />
                         )}

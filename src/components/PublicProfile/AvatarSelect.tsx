@@ -29,13 +29,14 @@ interface ProfileAvatar {
 interface ProfileAvatarProps {
     isOwner: boolean
     primaryColor: string
+    secondaryColor: string
     backgroundColor: string
     avatarURL: string
     factionName?: string
     updateAvatar: (avatarID: string) => Promise<void>
 }
 
-export const ProfileAvatar = ({ isOwner, primaryColor, backgroundColor, avatarURL, updateAvatar, factionName }: ProfileAvatarProps) => {
+export const ProfileAvatar = ({ isOwner, primaryColor, secondaryColor, backgroundColor, avatarURL, updateAvatar, factionName }: ProfileAvatarProps) => {
     const [query] = useUrlQuery()
     const { send } = useGameServerCommandsUser("/user_commander")
 
@@ -344,7 +345,7 @@ export const ProfileAvatar = ({ isOwner, primaryColor, backgroundColor, avatarUR
                                         sx={{
                                             ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold },
                                             ".Mui-selected": {
-                                                color: primaryColor,
+                                                color: secondaryColor,
                                                 backgroundColor: `${primaryColor} !important`,
                                             },
                                         }}
