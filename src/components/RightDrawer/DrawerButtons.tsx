@@ -33,6 +33,8 @@ export const DrawerButtons = () => {
                 },
                 ".MuiSvgIcon-root": {
                     fill: `${theme.factionTheme.secondary} !important`,
+                    width: "3rem",
+                    height: "3rem",
                 },
             }}
         >

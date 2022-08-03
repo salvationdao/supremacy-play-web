@@ -44,6 +44,8 @@ export const DrawerButtons = () => {
                 },
                 ".MuiSvgIcon-root": {
                     fill: "#FFFFFF !important",
+                    width: "3rem",
+                    height: "3rem",
                 },
             }}
         >
