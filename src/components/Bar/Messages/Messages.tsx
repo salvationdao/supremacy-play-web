@@ -96,6 +96,7 @@ export const Messages = () => {
                         maxWidth: "90vw",
                         boxShadow: 6,
                         outline: "none",
+                        "*": { userSelect: "text" },
                     }}
                 >
                     <ClipThing
@@ -107,7 +108,7 @@ export const Messages = () => {
                         backgroundColor={theme.factionTheme.background}
                         sx={{
                             position: "relative",
-                            height: "72rem",
+                            height: "130rem",
                             maxHeight: "90vh",
                         }}
                     >

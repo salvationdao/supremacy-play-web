@@ -84,11 +84,11 @@ export const MessageDisplay = ({ message, onClose }: MessageDisplayProps) => {
                         border: { borderColor: colors.grey, borderThickness: "1px" },
                         sx: { position: "relative" },
                     }}
-                    sx={{ px: "1.6rem", py: ".4rem", color: "#FFFFFF" }}
+                    sx={{ px: "1.6rem", py: ".2rem", color: "#FFFFFF" }}
                     onClick={onClose}
                 >
                     <Typography variant="body2" sx={{ fontWeight: "fontWeightBold", color: "#FFFFFF" }}>
-                        BACK
+                        CLOSE
                     </Typography>
                 </FancyButton>
             </Stack>

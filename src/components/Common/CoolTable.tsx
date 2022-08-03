@@ -15,10 +15,12 @@ import {
     TableHead,
     TablePagination,
     TableRow,
+    TableRowProps,
     Typography,
 } from "@mui/material"
 import { ReactNode, useMemo } from "react"
 import { useTheme } from "../../containers/theme"
+import { mergeDeep } from "../../helpers"
 import { colors, fonts } from "../../theme/theme"
 
 interface CoolTableProps<T> {
@@ -27,7 +29,14 @@ interface CoolTableProps<T> {
     alignments?: ("left" | "right" | "center")[]
     widths?: string[]
     items?: T[]
-    renderItem: (item: T, index: number) => ReactNode[]
+    renderItem: (
+        item: T,
+        index: number,
+    ) => {
+        rowProps?: TableRowProps
+        cells: ReactNode[]
+    }
+
     isLoading?: boolean
     loadError?: string
     titleRowHeight?: string
@@ -97,12 +106,16 @@ export const CoolTable = <T,>({
             return (
                 <>
                     {items.map((item, i) => {
+                        const { cells, rowProps } = renderItem(item, i)
                         return (
                             <TableRow
                                 key={i}
-                                sx={{ height: 0, "&:nth-of-type(odd)": { backgroundColor: "#FFFFFF10" }, ".MuiTableCell-root": { p: cellPadding } }}
+                                {...mergeDeep(
+                                    { sx: { height: 0, "&:nth-of-type(odd)": { backgroundColor: "#FFFFFF10" }, ".MuiTableCell-root": { p: cellPadding } } },
+                                    rowProps,
+                                )}
                             >
-                                {renderItem(item, i).map((node, j) => {
+                                {cells.map((node, j) => {
                                     return (
                                         <TableCell
                                             key={j}
@@ -226,6 +239,7 @@ export const CoolTable = <T,>({
                             <TableRow
                                 sx={{
                                     borderTop: `${primaryColor}60 1px solid`,
+                                    backgroundColor: `${primaryColor}40`,
                                     ".MuiTableCell-root": {
                                         borderBottom: "none",
                                     },
