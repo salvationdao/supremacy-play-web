@@ -169,7 +169,6 @@ export const PlayerAbilities = () => {
                                     pt: "1.28rem",
                                     mb: ".56rem",
                                     color: colors.grey,
-                                    userSelect: "text !important",
                                     opacity: 0.8,
                                 }}
                             >

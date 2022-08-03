@@ -96,7 +96,6 @@ export const Messages = () => {
                         maxWidth: "90vw",
                         boxShadow: 6,
                         outline: "none",
-                        "*": { userSelect: "text" },
                     }}
                 >
                     <ClipThing

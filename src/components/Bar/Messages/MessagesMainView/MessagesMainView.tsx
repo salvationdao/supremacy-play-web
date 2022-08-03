@@ -221,11 +221,24 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
                         />
                     </Stack>
 
-                    {focusedMessage && (
-                        <Box sx={{ height: "50%", borderTop: `${theme.factionTheme.primary} 1px solid` }}>
+                    <Box sx={{ height: "50%", borderTop: `${theme.factionTheme.primary} 1px solid` }}>
+                        {focusedMessage ? (
                             <MessageDisplay message={focusedMessage} onClose={() => setFocusedMessage(undefined)} />
-                        </Box>
-                    )}
+                        ) : (
+                            <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                                <Typography
+                                    variant="body2"
+                                    sx={{
+                                        color: colors.grey,
+                                        fontFamily: fonts.nostromoBold,
+                                        textAlign: "center",
+                                    }}
+                                >
+                                    Select a message to view here.
+                                </Typography>
+                            </Stack>
+                        )}
+                    </Box>
                 </Stack>
             )
         }
@@ -275,7 +288,7 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
                         YOUR INBOX
                     </Typography>
 
-                    <Stack direction="row" alignItems="center" spacing=".4rem" sx={{ opacity: 0.5, ":hover": { opacity: 1 } }}>
+                    <Stack direction="row" alignItems="center" spacing=".4rem">
                         <SvgHistoryClock size="1.2rem" />
                         <Typography>Last updated: {lastUpdated.toISOString()}</Typography>
 

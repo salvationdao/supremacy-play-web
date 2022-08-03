@@ -239,7 +239,6 @@ export const AuctionDetails = ({
                                 mt: ".5rem",
                                 color: colors.red,
                                 fontWeight: "fontWeightBold",
-                                userSelect: "text",
                             }}
                         >
                             {inputBidPriceError}
