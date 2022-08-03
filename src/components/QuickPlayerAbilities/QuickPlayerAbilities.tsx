@@ -16,7 +16,7 @@ import { QuickPlayerAbilitiesItem } from "./QuickPlayerAbilitiesItem"
 
 export const QuickPlayerAbilities = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
     const { userID } = useAuth()
-    if (!open) return null
+    if (!open || !userID || userID === "") return null
     return <QuickPlayerAbilitiesInner onClose={onClose} userID={userID} />
 }
 
@@ -37,6 +37,7 @@ const QuickPlayerAbilitiesInner = ({ onClose, userID }: { onClose: () => void; u
     const [ownedAbilities, setOwnedAbilities] = useState<Map<string, number>>(new Map())
 
     useEffect(() => {
+        if (!userID) return
         ;(async () => {
             try {
                 const resp = await queryAvailability(userID)
