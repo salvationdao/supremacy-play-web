@@ -60,7 +60,7 @@ export const TextMessage = ({
     const { from_user, user_rank, message_color, avatar_id, message, from_user_stat, metadata } = data
     const { id, username, gid, faction_id } = from_user
     const { isHidden, isActive } = useAuth()
-    const { userGidRecord, addToUserGidRecord, readMessage, sendBrowserNotification, tabValue } = useChat()
+    const { userGidRecord, addToUserGidRecord, sendBrowserNotification, tabValue } = useChat()
     const { send } = useGameServerCommandsUser("/user_commander")
 
     const popoverRef = useRef(null)
@@ -125,26 +125,11 @@ export const TextMessage = ({
                 }
 
                 if (data.id) {
-                    readMessage(data.id)
                     setShouldNotify(false)
                 }
             }, 1000)
         }
-    }, [
-        isVisibleInChat,
-        data,
-        chatMessages,
-        metadata,
-        readMessage,
-        send,
-        user.gid,
-        isHidden,
-        isActive,
-        sendBrowserNotification,
-        tabValue,
-        username,
-        setShouldNotify,
-    ])
+    }, [isVisibleInChat, data, chatMessages, metadata, send, user.gid, isHidden, isActive, sendBrowserNotification, tabValue, username, setShouldNotify])
 
     const renderJSXMessage = useCallback(
         (msg: string) => {
@@ -338,25 +323,27 @@ export const TextMessage = ({
                     </Stack>
                 )}
 
-                <Stack
-                    direction={"column"}
-                    sx={{
-                        ml: "2rem",
-                        backgroundColor: shouldNotify ? "rgba(0,116,217, .4)" : isHovered ? "#121212" : "unset",
-                        borderRadius: ".3rem",
-                        transition: shouldNotify ? "background-color 2s" : "unset",
-                        position: "relative",
-                    }}
-                    onMouseEnter={() => setIsHovered(true)}
-                    onMouseLeave={() => setIsHovered(false)}
-                >
-                    {/*only display if msg has likes*/}
+                <Box>
+                    <Stack
+                        direction={"column"}
+                        sx={{
+                            ml: "2rem",
+                            backgroundColor: shouldNotify ? "rgba(0,116,217, .4)" : isHovered ? "#121212" : "unset",
+                            borderRadius: ".3rem",
+                            transition: shouldNotify ? "background-color 2s" : "unset",
+                            position: "relative",
+                        }}
+                        onMouseEnter={() => setIsHovered(true)}
+                        onMouseLeave={() => setIsHovered(false)}
+                    >
+                        {/*only display if msg has likes*/}
 
-                    <Box sx={{ zIndex: 1 }}>{chatMessage}</Box>
+                        <Box sx={{ zIndex: isHovered ? 2 : 1 }}>{chatMessage}</Box>
 
-                    {!!metadata?.likes.net && <Reactions fontSize={fontSize} message={data} factionColor={factionColor} />}
-                    {isHovered && <Reactions fontSize={fontSize} hoverOnly={true} message={data} factionColor={factionColor} />}
-                </Stack>
+                        {!!metadata?.likes.net && <Reactions fontSize={fontSize} data={data} getFaction={getFaction} />}
+                        {isHovered && <Reactions fontSize={fontSize} hoverOnly={true} data={data} getFaction={getFaction} />}
+                    </Stack>
+                </Box>
             </Box>
 
             {isPopoverOpen && (
