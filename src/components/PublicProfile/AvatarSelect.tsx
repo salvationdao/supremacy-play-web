@@ -162,7 +162,9 @@ export const ProfileAvatar = ({
                 page,
                 page_size: pageSize,
             })
-            if (!resp) return
+            console.log(resp)
+
+            if (!resp || !resp.ids) return
             setLoadError(undefined)
             if (page === 1) {
                 setCustomAvatarIDs(["custom", ...resp.ids])
@@ -529,7 +531,19 @@ export const ProfileAvatar = ({
                     setModalOpen(false)
                 }}
                 open={modalOpen}
-                sx={{ zIndex: siteZIndex.Modal, margin: "auto", height: "60vh", width: "60vw" }}
+                sx={{
+                    zIndex: siteZIndex.Modal,
+                    margin: "auto",
+                    height: "60vh",
+                    width: "50vw",
+                    "@media (max-width:2400px)": {
+                        width: "80vw",
+                    },
+                    "@media (max-width:1500px)": {
+                        width: "90vw",
+                        height: "75vh",
+                    },
+                }}
             >
                 <Stack direction="row" spacing="1rem" sx={{ height: "100%", width: "100%" }}>
                     <ClipThing

@@ -284,6 +284,9 @@ export const PlayerProfilePage = () => {
                     backgroundSize: "cover",
                     height: "55.5rem",
                     position: "relative",
+                    "@media (max-width:900px)": {
+                        height: "72rem",
+                    },
                 }}
             >
                 <Stack spacing="1.6rem" sx={{ p: "1rem 1rem" }}>

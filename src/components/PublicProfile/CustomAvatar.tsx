@@ -36,10 +36,22 @@ export const CustomAvatar = ({ playerID, open, setOpen, primaryColor, background
     const [currentValue, setCurrentValue] = useState<AVATAR_FEATURE_TABS>(AVATAR_FEATURE_TABS.Face)
     const [imageSize, setImageSize] = useState(600)
 
-    const below2500 = useMediaQuery("(max-width:2500px)")
+    const below1200 = useMediaQuery("(max-width:1200px)")
+    const below1500 = useMediaQuery("(max-width:2200px)")
     const below2200 = useMediaQuery("(max-width:2200px)")
+    const below2500 = useMediaQuery("(max-width:2500px)")
 
     useEffect(() => {
+        if (below1200) {
+            setImageSize(310)
+            return
+        }
+
+        if (below1500) {
+            setImageSize(360)
+            return
+        }
+
         if (below2200) {
             setImageSize(420)
             return
@@ -97,7 +109,23 @@ export const CustomAvatar = ({ playerID, open, setOpen, primaryColor, background
         }
     }, [userSend, playerID, newSnackbarMessage, face, body, hair, accessory, closeHandler])
     return (
-        <Modal onClose={closeHandler} open={open} sx={{ zIndex: siteZIndex.Modal, margin: "auto", height: "60vh", width: "60vw" }}>
+        <Modal
+            onClose={closeHandler}
+            open={open}
+            sx={{
+                zIndex: siteZIndex.Modal,
+                margin: "auto",
+                height: "60vh",
+                width: "50vw",
+                "@media (max-width:2400px)": {
+                    width: "80vw",
+                },
+                "@media (max-width:1500px)": {
+                    width: "90vw",
+                    height: "75vh",
+                },
+            }}
+        >
             <Stack direction="row" spacing="1rem" sx={{ height: "100%", width: "100%" }}>
                 <ClipThing
                     clipSize="10px"
@@ -141,7 +169,7 @@ export const CustomAvatar = ({ playerID, open, setOpen, primaryColor, background
                                     }}
                                 >
                                     {/* Preview */}
-                                    <Box width="500px" ml="3rem" mr="3rem" sx={{ height: imageSize, position: "relative", alignSelf: "flex-end" }}>
+                                    <Box width={imageSize + 10} ml="3rem" mr="3rem" sx={{ height: imageSize, position: "relative", alignSelf: "flex-end" }}>
                                         <img
                                             style={{ height: imageSize, zIndex: 3, position: "absolute", top: "0", left: "0" }}
                                             src={accessory?.image_url}
