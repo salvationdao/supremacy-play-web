@@ -383,7 +383,7 @@ export const UsernameJSX = ({ data, fontSize, toggleIsPopoverOpen, user }: Usern
                       }
                     : "unset",
                 ":active": {
-                    opacity: 0.7,
+                    opacity: 0.8,
                 },
             }}
         >
@@ -391,7 +391,7 @@ export const UsernameJSX = ({ data, fontSize, toggleIsPopoverOpen, user }: Usern
             <span
                 style={{
                     marginLeft: ".2rem",
-                    opacity: 0.7,
+                    opacity: 0.8,
                     fontSize: fontSize ? `${1.1 * fontSize}rem` : "1.1rem",
                 }}
             >{`#${user?.gid}`}</span>
