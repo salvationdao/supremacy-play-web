@@ -199,6 +199,7 @@ export const WarMachineItem = ({
                     {isExpanded && (
                         <Stack
                             sx={{
+                                userSelect: "text",
                                 flex: 1,
                                 position: "relative",
                                 height: "100%",
