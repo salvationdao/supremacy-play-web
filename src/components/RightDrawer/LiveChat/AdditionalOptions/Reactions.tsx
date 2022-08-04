@@ -88,12 +88,13 @@ export const Reactions = ({ fontSize, data, hoverOnly = false }: ReactionsProps)
         handleReactionSend(sendReactMessage)
     }, [handleReactionSend, data, user, newSnackbarMessage])
 
-    //only display if net !== 0 or is hovered
+    const netLikes = data.metadata ? data.metadata.likes.net : 0
+
     return (
         <Stack direction={"row"} alignItems="center" spacing={"-.2rem"} sx={hoverOnly ? hoverStyles : styles}>
             <SvgPriceDownArrow
                 size={`${fontSize * 2.2}rem`}
-                fill={data.metadata?.likes.dislikes.includes(user.id) ? colors.red : colors.lightGrey}
+                fill={data.metadata?.likes.dislikes.includes(user.id) ? "#FFFFFF" : colors.grey}
                 sx={{
                     ":hover": {
                         cursor: data.from_user.id === user.id ? "cursor" : "pointer",
@@ -102,13 +103,13 @@ export const Reactions = ({ fontSize, data, hoverOnly = false }: ReactionsProps)
                 onClick={() => handleDislike()}
             />
 
-            <Typography fontSize={`${fontSize * 0.9}rem`} sx={{ color: colors.neonBlue, fontWeight: "fontWeightBold" }}>
-                {data.metadata ? data.metadata.likes.net : 0}
+            <Typography fontSize={`${fontSize * 0.9}rem`} sx={{ color: netLikes < 0 ? colors.red : colors.green, fontWeight: "fontWeightBold" }}>
+                {netLikes}
             </Typography>
 
             <SvgPriceUpArrow
                 size={`${fontSize * 2.2}rem`}
-                fill={data.metadata?.likes.likes.includes(user.id) ? colors.green : colors.lightGrey}
+                fill={data.metadata?.likes.likes.includes(user.id) ? "#FFFFFF" : colors.grey}
                 sx={{
                     ":hover": {
                         cursor: data.from_user.id === user.id ? "cursor" : "pointer",
