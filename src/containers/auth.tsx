@@ -126,6 +126,7 @@ export const AuthProvider = ({ setLoggedInUserID, children }: { setLoggedInUserI
     }, [])
 
     useEffect(() => {
+        if (!userID) return
         setLoggedInUserID(userID)
     }, [setLoggedInUserID, userID])
 
