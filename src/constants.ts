@@ -8,7 +8,7 @@ export const DEV_ONLY = process.env.REACT_APP_ENVIRONMENT !== "production" && pr
 const VERSION = process.env.REACT_APP_COMMIT_REF || "development"
 const TOKEN_SALE_PAGE = process.env.REACT_APP_TOKEN_SALE_PAGE || "https://passport.xsyn.io/external/buy"
 const SUPREMACY_PAGE = process.env.REACT_APP_SUPREMACY_PAGE || "https://supremacy.game/"
-const HANGAR_PAGE = "https://hangar.supremacy.game/"
+const HANGAR_PAGE = process.env.REACT_APP_ENVIRONMENT === "production" ? "https://hangar.supremacy.game/" : "https://hangar.supremacygame.dev/"
 const VIDEO_SERVER_WEBSOCKET = process.env.REACT_APP_PASSPORT_SERVER_HOST || "wss://staging-watch.supremacy.game:5443/WebRTCAppEE/websocket"
 const VIDEO_SERVER_STREAM_ID = process.env.REACT_APP_PASSPORT_SERVER_HOST || "524280586954581049507513"
 let GAME_SERVER_HOSTNAME = process.env.REACT_APP_GAME_SERVER_HOSTNAME || "api.supremacygame.io"
