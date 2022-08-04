@@ -49,12 +49,8 @@ export const MechOwnerBattleReward = ({ message, data }: MechOwnerBattleRewardPr
                         backgroundColor="#111111"
                         sx={{ flex: 1, width: "10rem", minHeight: "10rem" }}
                     >
-                        <Stack alignItems="center" justifyContent="center" spacing="1rem" sx={{ position: "relative", height: "100%" }}>
-                            <SvgSupToken
-                                size="8.6rem"
-                                fill={colors.yellow}
-                                sx={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", zIndex: -1, opacity: 0.05 }}
-                            />
+                        <Stack alignItems="center" justifyContent="center" spacing=".5rem" sx={{ height: "100%", backgroundColor: `${colors.yellow}12` }}>
+                            <SvgSupToken size="3rem" fill={colors.yellow} />
                             <Typography variant="h6" sx={{ textAlign: "center", fontWeight: "fontWeightBold" }}>
                                 {supFormatterNoFixed(sups, 2)}
                             </Typography>

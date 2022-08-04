@@ -5,7 +5,6 @@ import { colors, fonts } from "../../../../theme/theme"
 import { RepairAgent } from "../../../../types/jobs"
 import { ProgressBar } from "../../../Common/ProgressBar"
 import { Game, GamePattern, GameState } from "./src/game"
-import { isWebGLAvailable } from "./src/utils"
 
 export const StackTower = React.memo(function StackTower({
     primaryColor,
@@ -211,10 +210,6 @@ const StaticGame = React.memo(function StaticGame({
 }) {
     // Initialize game
     useEffect(() => {
-        if (!isWebGLAvailable()) {
-            console.error("WebGL is not supported in this browser.")
-        }
-
         new Game(backgroundColor, setGameState, oneNewGamePattern)
     }, [backgroundColor, oneNewGamePattern, setGameState])
 

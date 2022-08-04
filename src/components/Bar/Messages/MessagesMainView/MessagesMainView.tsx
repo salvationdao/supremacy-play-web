@@ -1,4 +1,4 @@
-import { Box, Pagination, Stack, Switch, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material"
+import { Box, Stack, Switch, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { SvgAnnouncement, SvgDamage1, SvgHealth, SvgHistoryClock, SvgNotification, SvgSyndicateFlag } from "../../../../assets"
 import { useAuth } from "../../../../containers"
@@ -8,10 +8,10 @@ import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
 import { FeatureName, SystemMessage, SystemMessageDataType } from "../../../../types"
+import { CoolTable } from "../../../Common/CoolTable"
 import { FancyButton } from "../../../Common/FancyButton"
 import { SystemMessageDisplayable } from "../Messages"
 import { MessageDisplay } from "./MessageDisplay/MessageDisplay"
-import { MessageItem } from "./MessageItem"
 
 export interface MessagesMainViewProps {
     lastUpdated: Date
@@ -27,9 +27,9 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
     const [focusedMessage, setFocusedMessage] = useState<SystemMessageDisplayable>()
     const [error, setError] = useState<string>()
     const [hideRead, setHideRead] = useState(false)
-    const { page, changePage, totalPages, setTotalItems, pageSize } = usePagination({
+    const { page, changePage, setTotalItems, totalItems, changePageSize, pageSize } = usePagination({
         pageSize: 15,
-        page: 1,
+        page: 0,
     })
 
     const fetchMessages = useCallback(async () => {
@@ -46,7 +46,7 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
                     hide_read: boolean
                 }
             >(GameServerKeys.SystemMessageList, {
-                page: page - 1,
+                page: page,
                 page_size: pageSize,
                 hide_read: hideRead,
             })
@@ -76,21 +76,16 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
             })
             setTotalItems(resp.total)
             setMessages(displayables)
-        } catch (e) {
-            let message = "Failed to get system messages."
-            if (typeof e === "string") {
-                message = e
-            } else if (e instanceof Error) {
-                message = e.message
-            }
+        } catch (err) {
+            const message = typeof err === "string" ? err : "Failed to get system messages."
             setError(message)
-            console.error(e)
+            console.error(err)
         }
     }, [hideRead, page, pageSize, send, setTotalItems, theme.factionTheme.primary])
 
     useEffect(() => {
-        changePage(1)
-    }, [changePage, hideRead])
+        changePage(0)
+    }, [changePage, hideRead, pageSize])
 
     useEffect(() => {
         fetchMessages()
@@ -112,10 +107,6 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
     )
 
     const content = useMemo(() => {
-        if (focusedMessage) {
-            return <MessageDisplay message={focusedMessage} onClose={() => setFocusedMessage(undefined)} />
-        }
-
         if (messages.length === 0) {
             return (
                 <Stack alignItems="center" justifyContent="center" sx={{ flex: 1, p: "1rem" }}>
@@ -133,71 +124,129 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
             )
         } else {
             return (
-                <Stack sx={{ flex: 1, height: 0 }}>
-                    <TableContainer sx={{ flex: 1 }}>
-                        <Table sx={{ borderRadius: 0.5, overflow: "hidden", ".MuiTableCell-root": { p: "1.2rem" } }}>
-                            <TableHead sx={{ boxShadow: 5 }}>
-                                <TableRow sx={{ backgroundColor: `${theme.factionTheme.primary}40` }}>
-                                    {["FROM", "TITLE", "BODY", "TIME"].map((heading, i) => {
-                                        return (
-                                            <TableCell key={i} align="left" sx={{ borderRight: "#FFFFFF20 1px solid", height: "3.5rem", py: "0 !important" }}>
-                                                <Typography variant="caption" sx={{ py: ".3rem", fontFamily: fonts.nostromoBlack }}>
-                                                    {heading}
-                                                </Typography>
-                                            </TableCell>
-                                        )
-                                    })}
-                                </TableRow>
-                            </TableHead>
-
-                            <TableBody>
-                                {messages.map((m) => {
-                                    return (
-                                        <MessageItem
-                                            key={`${m.id}-${m.read_at}`}
-                                            message={m}
-                                            selected={false}
-                                            onSelect={() => {
-                                                if (!m.read_at) {
-                                                    readMessage(m.id)
-                                                }
-                                                setFocusedMessage(m)
-                                            }}
-                                        />
-                                    )
-                                })}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-
-                    {totalPages > 1 && (
-                        <Box
-                            sx={{
-                                p: "1rem",
-                                borderTop: `${theme.factionTheme.primary}70 1.5px solid`,
-                                borderBottom: `${theme.factionTheme.primary}70 1.5px solid`,
-                                backgroundColor: "#00000070",
+                <Stack sx={{ flex: 1 }}>
+                    <Stack sx={{ flex: 1 }}>
+                        <CoolTable
+                            tableHeadings={["FROM", "TITLE", "BODY", "TIME"]}
+                            alignments={["left", "left", "left", "left"]}
+                            widths={["18rem", "15rem", "auto", "8rem"]}
+                            titleRowHeight="3.5rem"
+                            cellPadding=".6rem 1rem"
+                            items={messages}
+                            paginationProps={{
+                                page,
+                                pageSize,
+                                totalItems,
+                                changePage,
+                                changePageSize,
+                                pageSizeOptions: [15, 25, 35],
                             }}
-                        >
-                            <Pagination
-                                size="small"
-                                count={totalPages}
-                                page={page}
-                                sx={{
-                                    ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold, fontSize: "1.2rem" },
-                                    ".Mui-selected": {
-                                        color: theme.factionTheme.secondary,
-                                        backgroundColor: `${theme.factionTheme.primary} !important`,
+                            renderItem={(item) => {
+                                return {
+                                    rowProps: {
+                                        onClick: () => {
+                                            if (!item.read_at) readMessage(item.id)
+                                            setFocusedMessage(item)
+                                        },
+                                        sx: {
+                                            ".MuiTableCell-root": {
+                                                opacity: !item.read_at || focusedMessage?.id === item.id ? 1 : 0.5,
+                                                "*": { fontWeight: !item.read_at ? "fontWeightBold" : "unset" },
+                                            },
+                                            backgroundColor: focusedMessage?.id === item.id ? "#FFFFFF40 !important" : "unset",
+                                            border: focusedMessage?.id === item.id ? "#FFFFFF38 solid 1px" : "unset",
+                                            "&:hover":
+                                                focusedMessage?.id !== item.id
+                                                    ? {
+                                                          cursor: "pointer",
+                                                          backgroundColor: "#FFFFFF26",
+                                                          border: "#FFFFFF38 solid 1px",
+                                                      }
+                                                    : undefined,
+                                        },
                                     },
-                                }}
-                                onChange={(e, p) => changePage(p)}
-                            />
-                        </Box>
-                    )}
+                                    cells: [
+                                        <Stack key={0} spacing="1rem" direction="row" alignItems="center">
+                                            {item.icon}
+                                            <Typography
+                                                sx={{
+                                                    display: "-webkit-box",
+                                                    overflow: "hidden",
+                                                    overflowWrap: "anywhere",
+                                                    width: "100%",
+                                                    maxWidth: "100px",
+                                                    textOverflow: "ellipsis",
+                                                    WebkitLineClamp: 1, // change to max number of lines
+                                                    WebkitBoxOrient: "vertical",
+                                                    textAlign: "left",
+                                                    textTransform: "none",
+                                                }}
+                                            >
+                                                {item.sender.username}
+                                            </Typography>
+                                        </Stack>,
+                                        <Typography
+                                            key={1}
+                                            sx={{
+                                                display: "-webkit-box",
+                                                overflow: "hidden",
+                                                overflowWrap: "anywhere",
+                                                width: "100%",
+                                                maxWidth: "100px",
+                                                textOverflow: "ellipsis",
+                                                WebkitLineClamp: 1, // change to max number of lines
+                                                WebkitBoxOrient: "vertical",
+                                                textAlign: "left",
+                                            }}
+                                        >
+                                            {item.title}
+                                        </Typography>,
+                                        <Typography
+                                            key={2}
+                                            sx={{
+                                                display: "-webkit-box",
+                                                overflow: "hidden",
+                                                overflowWrap: "anywhere",
+                                                textOverflow: "ellipsis",
+                                                WebkitLineClamp: 1, // change to max number of lines
+                                                WebkitBoxOrient: "vertical",
+                                                textAlign: "left",
+                                                textTransform: "none",
+                                            }}
+                                        >
+                                            {item.message}
+                                        </Typography>,
+                                        <Typography key={3}>
+                                            {item.sent_at.getHours()}:{`${item.sent_at.getMinutes() < 10 ? "0" : ""}${item.sent_at.getMinutes()}`}
+                                        </Typography>,
+                                    ],
+                                }
+                            }}
+                        />
+                    </Stack>
+
+                    <Box sx={{ height: "50%", borderTop: `${theme.factionTheme.primary} 1px solid` }}>
+                        {focusedMessage ? (
+                            <MessageDisplay message={focusedMessage} onClose={() => setFocusedMessage(undefined)} />
+                        ) : (
+                            <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                                <Typography
+                                    variant="body2"
+                                    sx={{
+                                        color: colors.grey,
+                                        fontFamily: fonts.nostromoBold,
+                                        textAlign: "center",
+                                    }}
+                                >
+                                    Select a message to view here.
+                                </Typography>
+                            </Stack>
+                        )}
+                    </Box>
                 </Stack>
             )
         }
-    }, [focusedMessage, messages, theme.factionTheme.primary, theme.factionTheme.secondary, totalPages, page, readMessage, changePage])
+    }, [messages, page, pageSize, totalItems, changePage, changePageSize, focusedMessage, theme.factionTheme.primary, readMessage])
 
     return (
         <Stack direction="row" height="100%">
@@ -243,7 +292,7 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
                         YOUR INBOX
                     </Typography>
 
-                    <Stack direction="row" alignItems="center" spacing=".4rem" sx={{ opacity: 0.5, ":hover": { opacity: 1 } }}>
+                    <Stack direction="row" alignItems="center" spacing=".4rem">
                         <SvgHistoryClock size="1.2rem" />
                         <Typography>Last updated: {lastUpdated.toISOString()}</Typography>
 

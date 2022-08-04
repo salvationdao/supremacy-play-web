@@ -247,9 +247,6 @@ export const theme = createTheme({
                 color: "text.primary",
             },
             styleOverrides: {
-                root: {
-                    userSelect: "none",
-                },
                 caption: {
                     display: "block",
                 },
