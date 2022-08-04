@@ -2,7 +2,7 @@ import { Box, LinearProgress, Stack, Typography } from "@mui/material"
 import { TourProvider } from "@reactour/tour"
 import * as Sentry from "@sentry/react"
 import { Buffer } from "buffer"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import ReactDOM from "react-dom"
 import { Action, ClientContextProvider, createClient } from "react-fetching-library"
 import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom"
@@ -210,17 +210,17 @@ const tourProviderProps = {
 }
 
 const Root = () => {
-    const [refreshRoot, toggleRefreshRoot] = useToggle()
-    return <App key={refreshRoot.toString()} toggleRefreshRoot={toggleRefreshRoot} />
+    const [loggedInUserID, setLoggedInUserID] = useState("")
+    return <App key={loggedInUserID} setLoggedInUserID={setLoggedInUserID} />
 }
 
-const App = ({ toggleRefreshRoot }: { toggleRefreshRoot: (value?: boolean | undefined) => void }) => {
+const App = ({ setLoggedInUserID }: { setLoggedInUserID: React.Dispatch<React.SetStateAction<string>> }) => {
     return (
         <ThemeProvider>
             <FingerprintProvider>
                 <SnackBarProvider>
                     <ClientContextProvider client={client}>
-                        <AuthProvider toggleRefreshRoot={toggleRefreshRoot}>
+                        <AuthProvider setLoggedInUserID={setLoggedInUserID}>
                             <BrowserRouter>
                                 <SupremacyProvider>
                                     <ChatProvider>

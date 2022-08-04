@@ -95,7 +95,7 @@ const initialState: AuthState = {
 
 export const AuthContext = createContext<AuthState>(initialState)
 
-export const AuthProvider = ({ toggleRefreshRoot, children }: { toggleRefreshRoot: (value?: boolean | undefined) => void; children: ReactNode }) => {
+export const AuthProvider = ({ setLoggedInUserID, children }: { setLoggedInUserID: React.Dispatch<React.SetStateAction<string>>; children: ReactNode }) => {
     const [isLoggingIn, setIsLoggingIn] = useState(true)
     const [passportPopup, setPassportPopup] = useState<Window | null>(null)
     const popupCheckInterval = useRef<NodeJS.Timer>()
@@ -126,8 +126,8 @@ export const AuthProvider = ({ toggleRefreshRoot, children }: { toggleRefreshRoo
     }, [])
 
     useEffect(() => {
-        toggleRefreshRoot()
-    }, [toggleRefreshRoot, userID])
+        setLoggedInUserID(userID)
+    }, [setLoggedInUserID, userID])
 
     useEffect(() => {
         if (typeof document.hidden !== "undefined" && typeof document.addEventListener !== "undefined") {
