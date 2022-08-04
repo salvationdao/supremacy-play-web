@@ -254,7 +254,7 @@ export const DoRepairModal = ({
 
         if (!repairAgent) {
             return (
-                <Stack spacing="2rem" alignItems="center">
+                <Stack spacing="2.3rem" alignItems="center">
                     {submitSuccess && (
                         <>
                             <Box sx={{ textAlign: "center" }}>

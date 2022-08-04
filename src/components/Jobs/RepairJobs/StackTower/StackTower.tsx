@@ -128,6 +128,7 @@ const TowerStackInner = ({
                         left: 0,
                         right: 0,
                         textAlign: "center",
+                        pointerEvents: "none",
                         color: gameState === GameState.Ended ? colors.neonBlue : "#FFFFFF",
                         fontFamily: fonts.shareTech,
                         fontWeight: "fontWeightBold",
@@ -156,6 +157,7 @@ const TowerStackInner = ({
                         transition: "all .2s ease",
                         transform: gameState === GameState.Ready ? "translateY(0)" : "translateY(-50px)",
                         opacity: gameState === GameState.Ready ? 1 : 0,
+                        pointerEvents: "none",
                     }}
                 >
                     <Typography
@@ -185,6 +187,7 @@ const TowerStackInner = ({
                         transition: "all .2s ease",
                         transform: gameState === GameState.Ended ? "translateY(0)" : "translateY(-50px)",
                         opacity: gameState === GameState.Ended ? 1 : 0,
+                        pointerEvents: "none",
                     }}
                 >
                     <Typography variant="h3" sx={{ textAlign: "center", fontFamily: fonts.nostromoHeavy }}>
