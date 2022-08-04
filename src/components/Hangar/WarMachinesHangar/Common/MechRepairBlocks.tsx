@@ -17,8 +17,6 @@ export const RepairBlocks = ({
     hideNumber?: boolean
     size?: number
 }) => {
-    const remainDamagedBlocksPositive = Math.max(remainDamagedBlocks, 0)
-
     return (
         <Stack direction="row" alignItems="center" spacing=".5rem" sx={{ width: "100%" }}>
             <Stack
@@ -33,20 +31,20 @@ export const RepairBlocks = ({
                             backgroundColor: defaultBlocks ? colors.red : "#FFFFFF35",
                         },
                     },
-                    [`& > div:nth-of-type(-n+${defaultBlocks ? defaultBlocks - remainDamagedBlocksPositive : 0})`]: {
+                    [`& > div:nth-of-type(-n+${defaultBlocks ? defaultBlocks - remainDamagedBlocks : 0})`]: {
                         ".single-block": {
-                            backgroundColor: remainDamagedBlocks >= 0 ? colors.green : "#FFFFFF35",
+                            backgroundColor: colors.green,
                         },
                     },
                 }}
             >
-                {new Array(defaultBlocks || remainDamagedBlocksPositive).fill(0).map((_, index) => (
+                {new Array(defaultBlocks || remainDamagedBlocks).fill(0).map((_, index) => (
                     <div key={index}>
                         <div className="single-block" />
                     </div>
                 ))}
 
-                {!hideNumber && defaultBlocks && remainDamagedBlocksPositive > 0 && (
+                {!hideNumber && defaultBlocks && remainDamagedBlocks > 0 && (
                     <Typography
                         variant="caption"
                         sx={{
@@ -54,10 +52,10 @@ export const RepairBlocks = ({
                             pt: ".8px",
                             lineHeight: 1,
                             fontFamily: fonts.nostromoBlack,
-                            color: remainDamagedBlocksPositive > 0 ? colors.red : colors.green,
+                            color: remainDamagedBlocks > 0 ? colors.red : colors.green,
                         }}
                     >
-                        {remainDamagedBlocksPositive || defaultBlocks}
+                        {remainDamagedBlocks || defaultBlocks}
                     </Typography>
                 )}
             </Stack>
@@ -82,7 +80,7 @@ export const MechRepairBlocks = React.memo(function MechRepairBlocks({
         ready: !!mechID && !!userID,
     })
 
-    const remainDamagedBlocks = repairStatus ? repairStatus.blocks_required_repair - repairStatus.blocks_repaired : -1
+    const remainDamagedBlocks = repairStatus ? repairStatus.blocks_required_repair - repairStatus.blocks_repaired : 0
 
     return <RepairBlocks defaultBlocks={defaultBlocks} remainDamagedBlocks={remainDamagedBlocks} hideNumber={hideNumber} />
 })
