@@ -209,13 +209,18 @@ const tourProviderProps = {
     disableDotsNavigation: true,
 }
 
-const App = () => {
+const Root = () => {
+    const [refreshRoot, toggleRefreshRoot] = useToggle()
+    return <App key={refreshRoot.toString()} toggleRefreshRoot={toggleRefreshRoot} />
+}
+
+const App = ({ toggleRefreshRoot }: { toggleRefreshRoot: (value?: boolean | undefined) => void }) => {
     return (
         <ThemeProvider>
             <FingerprintProvider>
                 <SnackBarProvider>
                     <ClientContextProvider client={client}>
-                        <AuthProvider>
+                        <AuthProvider toggleRefreshRoot={toggleRefreshRoot}>
                             <BrowserRouter>
                                 <SupremacyProvider>
                                     <ChatProvider>
@@ -254,4 +259,4 @@ const App = () => {
     )
 }
 
-ReactDOM.render(<App />, document.getElementById("root"))
+ReactDOM.render(<Root />, document.getElementById("root"))
