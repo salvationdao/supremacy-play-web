@@ -22,9 +22,7 @@ export const StackTower = React.memo(function StackTower({
     // Game data
     const [gameState, setGameState] = useState<GameState>(GameState.Loading)
     const [score, setScore] = useState(0)
-
-    const [gamePatterns, setGamePatterns] = useState<GamePattern[]>([])
-    const cumulativeScore = gamePatterns.filter((p) => !p.is_failed && p.score > 0).length
+    const [cumulativeScore, setCumulativeScore] = useState(0)
 
     // As the player plays the mini game, this will be the game updates
     const oneNewGamePattern = useCallback(
@@ -33,22 +31,19 @@ export const StackTower = React.memo(function StackTower({
 
             if (repairAgent?.id) {
                 const resp = await agentRepairUpdate(repairAgent.id, gamePattern)
-                if (resp) {
-                    setGamePatterns((prev) => {
-                        return [...prev, gamePattern]
+                if (resp)
+                    setCumulativeScore((prev) => {
+                        const newCumScore = prev + 1
+                        if (repairAgent?.id && newCumScore === repairAgent?.required_stacks) {
+                            completeAgentRepair(repairAgent.id)
+                            setCumulativeScore(0)
+                        }
+                        return newCumScore
                     })
-                }
             }
         },
-        [agentRepairUpdate, repairAgent?.id],
+        [agentRepairUpdate, completeAgentRepair, repairAgent?.id, repairAgent?.required_stacks],
     )
-
-    // Tell server when we complete one block
-    useEffect(() => {
-        if (!repairAgent?.id || cumulativeScore !== repairAgent?.required_stacks) return
-        completeAgentRepair(repairAgent.id)
-        setGamePatterns([])
-    }, [completeAgentRepair, cumulativeScore, gamePatterns, repairAgent?.id, repairAgent?.required_stacks])
 
     return (
         <Box
@@ -62,7 +57,7 @@ export const StackTower = React.memo(function StackTower({
             }}
         >
             <Stack
-                spacing="2rem"
+                spacing="1rem"
                 sx={{
                     height: "100%",
                     transition: "all .1s",
@@ -71,7 +66,7 @@ export const StackTower = React.memo(function StackTower({
                     pointerEvents: disableGame ? "none" : "all",
                 }}
             >
-                <Stack spacing=".7rem">
+                <Stack spacing=".7rem" sx={{ pb: ".4rem" }}>
                     <Typography variant="h5" sx={{ fontWeight: "fontWeightBold", span: { fontFamily: "inherit", color: colors.neonBlue } }}>
                         YOU NEED A TOTAL OF <span>{repairAgent?.required_stacks || "XXX"}</span> STACKS TO REPAIR A SINGLE BLOCK!
                     </Typography>
@@ -93,9 +88,15 @@ export const StackTower = React.memo(function StackTower({
                     </Stack>
                 </Stack>
 
-                <Box sx={{ flex: 1, border: "#FFFFFF20 1px solid" }}>
+                <Box sx={{ position: "relative", flex: 1, border: "#FFFFFF20 1px solid" }}>
                     <TowerStackInner score={score} gameState={gameState} setGameState={setGameState} oneNewGamePattern={oneNewGamePattern} />
                 </Box>
+
+                <Typography sx={{ color: colors.lightGrey }}>
+                    <i>
+                        <strong>NOTE:</strong> Your submission will be rejected if there are too many failed attempts.
+                    </i>
+                </Typography>
             </Stack>
         </Box>
     )
@@ -137,7 +138,7 @@ const TowerStackInner = ({
                             gameState === GameState.Playing || gameState === GameState.Resetting
                                 ? "translateY(0) scale(1)"
                                 : gameState === GameState.Ended
-                                ? "translateY(-60px) scale(1.5)"
+                                ? "translateY(-20px) scale(1.5)"
                                 : "translateY(-200px) scale(1)",
                         opacity: gameState === GameState.Playing || gameState === GameState.Resetting || gameState === GameState.Ended ? 1 : 0,
                     }}
@@ -151,7 +152,7 @@ const TowerStackInner = ({
                     alignItems="center"
                     sx={{
                         position: "absolute",
-                        top: "34%",
+                        top: "30%",
                         left: 0,
                         right: 0,
                         transition: "all .2s ease",
@@ -181,7 +182,7 @@ const TowerStackInner = ({
                     alignItems="center"
                     sx={{
                         position: "absolute",
-                        top: "22%",
+                        top: "32%",
                         left: 0,
                         right: 0,
                         transition: "all .2s ease",

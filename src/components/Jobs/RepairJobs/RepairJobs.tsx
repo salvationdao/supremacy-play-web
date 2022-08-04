@@ -51,7 +51,7 @@ export const RepairJobs = () => {
 
     useGameServerSubscription<RepairJob[]>(
         {
-            URI: "/public/repair_offer/update",
+            URI: "/secure_public/repair_offer/update",
             key: GameServerKeys.SubRepairJobListUpdated,
             ready: !!userID,
         },
