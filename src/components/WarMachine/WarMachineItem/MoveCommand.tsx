@@ -57,7 +57,7 @@ export const MoveCommand = ({ warMachine, isAlive, smallVersion }: { warMachine:
         },
     )
 
-    if (!mechMoveCommand) return null
+    if (!mechMoveCommand || !isAlive) return null
 
     return (
         <MoveCommandInner
