@@ -104,7 +104,7 @@ export const BillingHistoryPage = () => {
                                         changePage,
                                         changePageSize,
                                     }}
-                                    renderItem={(item, index) => {
+                                    renderItem={(item) => {
                                         let status = "PAID"
                                         if (item.refunded) {
                                             status = "REFUNDED"
