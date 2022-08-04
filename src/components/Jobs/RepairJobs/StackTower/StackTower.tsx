@@ -143,7 +143,7 @@ const TowerStackInner = ({
                             gameState === GameState.Playing || gameState === GameState.Resetting
                                 ? "translateY(0) scale(1)"
                                 : gameState === GameState.Ended
-                                ? "translateY(-60px) scale(1.5)"
+                                ? "translateY(-20px) scale(1.5)"
                                 : "translateY(-200px) scale(1)",
                         opacity: gameState === GameState.Playing || gameState === GameState.Resetting || gameState === GameState.Ended ? 1 : 0,
                     }}
@@ -157,7 +157,7 @@ const TowerStackInner = ({
                     alignItems="center"
                     sx={{
                         position: "absolute",
-                        top: "34%",
+                        top: "30%",
                         left: 0,
                         right: 0,
                         transition: "all .2s ease",
@@ -187,7 +187,7 @@ const TowerStackInner = ({
                     alignItems="center"
                     sx={{
                         position: "absolute",
-                        top: "22%",
+                        top: "32%",
                         left: 0,
                         right: 0,
                         transition: "all .2s ease",
