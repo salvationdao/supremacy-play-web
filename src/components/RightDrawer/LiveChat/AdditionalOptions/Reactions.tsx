@@ -24,7 +24,6 @@ const hoverStyles = {
     alignItems: "center",
     mr: "-1rem",
     position: "absolute",
-    opacity: "0.9",
     top: "-2.2rem",
     right: "1rem",
     backgroundColor: "#121212",
@@ -103,7 +102,9 @@ export const Reactions = ({ fontSize, data, hoverOnly = false }: ReactionsProps)
                 onClick={() => handleDislike()}
             />
 
-            <Typography fontSize={`${fontSize * 0.9}rem`}>{data.metadata ? data.metadata.likes.net : 0}</Typography>
+            <Typography fontSize={`${fontSize * 0.9}rem`} sx={{ color: colors.neonBlue, fontWeight: "fontWeightBold" }}>
+                {data.metadata ? data.metadata.likes.net : 0}
+            </Typography>
 
             <SvgPriceUpArrow
                 size={`${fontSize * 2.2}rem`}
