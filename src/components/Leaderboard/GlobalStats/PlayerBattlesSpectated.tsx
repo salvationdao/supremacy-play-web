@@ -57,13 +57,13 @@ export const PlayerBattlesSpectated = () => {
                 borderThickness: ".2rem",
             }}
             backgroundColor={backgroundColor}
-            sx={{ height: "62rem" }}
         >
             <CoolTable
                 title="MOST BATTLES SPECTATED"
                 tableHeadings={["TOP 10", "PLAYER", "FACTION", "BATTLES SPECTATED"]}
                 alignments={["center", "left", "left", "center"]}
                 widths={["19rem", "auto", "auto", "23rem"]}
+                autoHeight
                 items={rankItems}
                 isLoading={isLoading}
                 loadError={loadError}
