@@ -88,7 +88,7 @@ export const StackTower = React.memo(function StackTower({
                     </Stack>
                 </Stack>
 
-                <Box sx={{ flex: 1, border: "#FFFFFF20 1px solid" }}>
+                <Box sx={{ position: "relative", flex: 1, border: "#FFFFFF20 1px solid" }}>
                     <TowerStackInner score={score} gameState={gameState} setGameState={setGameState} oneNewGamePattern={oneNewGamePattern} />
                 </Box>
 
