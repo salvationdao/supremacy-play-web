@@ -96,7 +96,9 @@ export const TextMessage = ({
         const isRead = metadata?.tagged_users_read[user.gid]
 
         if (isRead === false && (isHidden || !isActive)) {
-            sendBrowserNotification(`New Chat Message`, `${username} has tagged you in a message.`)
+            if (chatMessages.findIndex((x) => x.id === data.id) === chatMessages.length - 1) {
+                sendBrowserNotification(`New Chat Message`, `${username} has tagged you in a message.`)
+            }
             return
         }
 
