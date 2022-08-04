@@ -2,6 +2,7 @@ import { Box, IconButton, Modal, Stack, Typography } from "@mui/material"
 import { useCallback } from "react"
 import { ClipThing } from "../../../../.."
 import { SvgClose } from "../../../../../../assets"
+import { useAuth } from "../../../../../../containers"
 import { useTheme } from "../../../../../../containers/theme"
 import { useGameServerSubscription } from "../../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../../keys"
@@ -22,17 +23,19 @@ export const RepairModal = ({
     repairMechModalOpen: boolean
     setRepairMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
 }) => {
+    const { userID } = useAuth()
     const theme = useTheme()
 
     const repairStatus = useGameServerSubscription<RepairStatus>({
         URI: `/public/mech/${selectedMechDetails.id}/repair_case`,
         key: GameServerKeys.SubMechRepairStatus,
-        ready: !!selectedMechDetails.id,
+        ready: !!selectedMechDetails.id && !!userID,
     })
 
     const repairOffer = useGameServerSubscription<RepairOffer>({
         URI: `/public/mech/${selectedMechDetails.id}/active_repair_offer`,
         key: GameServerKeys.GetMechRepairJob,
+        ready: !!userID,
     })
 
     const remainDamagedBlocks = repairStatus ? repairStatus.blocks_required_repair - repairStatus.blocks_repaired : 0

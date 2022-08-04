@@ -1,16 +1,15 @@
 import { Stack, Typography } from "@mui/material"
-import { SvgPriceDownArrow, SvgPriceUpArrow } from "../../../../assets"
 import { useCallback } from "react"
-import { Faction, Likes, TextMessageData } from "../../../../types"
-import { GameServerKeys } from "../../../../keys"
-import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
+import { SvgPriceDownArrow, SvgPriceUpArrow } from "../../../../assets"
 import { useAuth, useSnackbar } from "../../../../containers"
+import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../../keys"
 import { colors } from "../../../../theme/theme"
+import { Likes, TextMessageData } from "../../../../types"
 
 interface ReactionsProps {
     fontSize: number
     data: TextMessageData
-    getFaction: (factionID: string) => Faction
     hoverOnly?: boolean
 }
 
@@ -25,7 +24,6 @@ const hoverStyles = {
     alignItems: "center",
     mr: "-1rem",
     position: "absolute",
-    opacity: "0.9",
     top: "-2.2rem",
     right: "1rem",
     backgroundColor: "#121212",
@@ -37,19 +35,14 @@ const styles = {
     width: "fit-content",
     alignItems: "center",
     borderRadius: ".3rem",
-    opacity: "0.4",
-    ":hover": {
-        opacity: "0.8",
-    },
-    m: "-.3rem",
+    mx: "-.3rem",
     zIndex: 1,
 }
-export const Reactions = ({ fontSize, data, getFaction, hoverOnly = false }: ReactionsProps) => {
+
+export const Reactions = ({ fontSize, data, hoverOnly = false }: ReactionsProps) => {
     const { send } = useGameServerCommandsUser("/user_commander")
     const { user } = useAuth()
     const { newSnackbarMessage } = useSnackbar()
-
-    const factionColor = getFaction(user.faction_id).primary_color
 
     const handleReactionSend = useCallback(
         async (reactMessageSend: ReactMessageSendProps) => {
@@ -95,12 +88,13 @@ export const Reactions = ({ fontSize, data, getFaction, hoverOnly = false }: Rea
         handleReactionSend(sendReactMessage)
     }, [handleReactionSend, data, user, newSnackbarMessage])
 
-    //only display if net !== 0 or is hovered
+    const netLikes = data.metadata ? data.metadata.likes.net : 0
+
     return (
-        <Stack direction={"row"} spacing={"-.4rem"} sx={hoverOnly ? hoverStyles : styles}>
+        <Stack direction={"row"} alignItems="center" spacing={"-.2rem"} sx={hoverOnly ? hoverStyles : styles}>
             <SvgPriceDownArrow
                 size={`${fontSize * 2.2}rem`}
-                fill={data.metadata?.likes.dislikes.includes(user.id) && factionColor ? factionColor : colors.lightGrey}
+                fill={data.metadata?.likes.dislikes.includes(user.id) ? "#FFFFFF" : colors.grey}
                 sx={{
                     ":hover": {
                         cursor: data.from_user.id === user.id ? "cursor" : "pointer",
@@ -108,10 +102,14 @@ export const Reactions = ({ fontSize, data, getFaction, hoverOnly = false }: Rea
                 }}
                 onClick={() => handleDislike()}
             />
-            <Typography fontSize={`${fontSize * 0.9}rem`}>{data.metadata ? data.metadata.likes.net : 0}</Typography>
+
+            <Typography fontSize={`${fontSize * 0.9}rem`} sx={{ color: netLikes < 0 ? colors.red : colors.green, fontWeight: "fontWeightBold" }}>
+                {netLikes}
+            </Typography>
+
             <SvgPriceUpArrow
                 size={`${fontSize * 2.2}rem`}
-                fill={data.metadata?.likes.likes.includes(user.id) && factionColor ? factionColor : colors.lightGrey}
+                fill={data.metadata?.likes.likes.includes(user.id) ? "#FFFFFF" : colors.grey}
                 sx={{
                     ":hover": {
                         cursor: data.from_user.id === user.id ? "cursor" : "pointer",

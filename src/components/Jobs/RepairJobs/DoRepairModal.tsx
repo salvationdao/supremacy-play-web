@@ -3,7 +3,7 @@ import { Box, IconButton, Modal, Stack, SxProps, Typography } from "@mui/materia
 import BigNumber from "bignumber.js"
 import { ReactNode, useCallback, useEffect, useMemo, useState } from "react"
 import { SvgClose, SvgCubes, SvgSupToken } from "../../../assets"
-import { useSupremacy } from "../../../containers"
+import { useAuth, useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { supFormatterNoFixed, timeSinceInWords } from "../../../helpers"
 import { useTimer } from "../../../hooks"
@@ -31,6 +31,7 @@ export const DoRepairModal = ({
     open: boolean
     onClose: () => void
 }) => {
+    const { userID } = useAuth()
     const theme = useTheme()
     const { getFaction } = useSupremacy()
     const { send } = useGameServerCommandsUser("/user_commander")
@@ -43,7 +44,7 @@ export const DoRepairModal = ({
         {
             URI: `/public/repair_offer/${_repairJob?.id}`,
             key: GameServerKeys.SubRepairJobStatus,
-            ready: !!repairJob?.id,
+            ready: !!repairJob?.id && !!userID,
         },
         (payload) => {
             if (!payload) return
