@@ -193,7 +193,7 @@ export const TextMessage = ({
 
     return (
         <>
-            <Box sx={{ opacity: isSent ? 1 : 0.45, wordBreak: "break-word" }} ref={textMessageRef}>
+            <Box sx={{ opacity: isSent ? 1 : 0.45 }} ref={textMessageRef}>
                 {(!isPreviousMessager || (previousMessage && sentAt > new Date(previousMessage.sent_at.getTime() + 2 * 60000))) && (
                     <Stack direction="row" justifyContent="space-between" sx={{ mt: ".8rem", mb: ".5rem" }}>
                         <Stack ref={popoverRef} direction="row" spacing=".3rem">
@@ -381,7 +381,7 @@ export const UsernameJSX = ({ data, fontSize, toggleIsPopoverOpen, user }: Usern
                           cursor: "pointer",
                           textDecoration: "underline",
                       }
-                    : "unset",
+                    : undefined,
                 ":active": {
                     opacity: 0.8,
                 },
