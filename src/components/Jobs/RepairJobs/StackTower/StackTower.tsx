@@ -62,7 +62,7 @@ export const StackTower = React.memo(function StackTower({
             }}
         >
             <Stack
-                spacing="2rem"
+                spacing="1rem"
                 sx={{
                     height: "100%",
                     transition: "all .1s",
@@ -71,7 +71,7 @@ export const StackTower = React.memo(function StackTower({
                     pointerEvents: disableGame ? "none" : "all",
                 }}
             >
-                <Stack spacing=".7rem">
+                <Stack spacing=".7rem" sx={{ pb: ".4rem" }}>
                     <Typography variant="h5" sx={{ fontWeight: "fontWeightBold", span: { fontFamily: "inherit", color: colors.neonBlue } }}>
                         YOU NEED A TOTAL OF <span>{repairAgent?.required_stacks || "XXX"}</span> STACKS TO REPAIR A SINGLE BLOCK!
                     </Typography>
@@ -96,6 +96,12 @@ export const StackTower = React.memo(function StackTower({
                 <Box sx={{ flex: 1, border: "#FFFFFF20 1px solid" }}>
                     <TowerStackInner score={score} gameState={gameState} setGameState={setGameState} oneNewGamePattern={oneNewGamePattern} />
                 </Box>
+
+                <Typography sx={{ color: colors.lightGrey }}>
+                    <i>
+                        <strong>NOTE:</strong> Your submission will be rejected if there are too many failed attempts.
+                    </i>
+                </Typography>
             </Stack>
         </Box>
     )
