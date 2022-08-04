@@ -139,6 +139,7 @@ export const OvenplayerStream = () => {
                 div: {
                     height: "100% !important",
                 },
+                pointerEvents: "none",
                 video: {
                     position: "absolute !important",
                     width: "100% !important",
