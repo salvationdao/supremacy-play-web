@@ -177,6 +177,7 @@ export const AntMediaStream = () => {
                 width: "100%",
                 height: "100%",
                 zIndex: siteZIndex.Stream,
+                pointerEvents: "none",
             }}
         >
             {!isPlaying && <NoStreamScreen />}
