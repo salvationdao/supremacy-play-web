@@ -42,7 +42,7 @@ export const DoRepairModal = ({
 
     useGameServerSubscription<RepairJob>(
         {
-            URI: `/public/repair_offer/${_repairJob?.id}`,
+            URI: `/public_secure/repair_offer/${_repairJob?.id}`,
             key: GameServerKeys.SubRepairJobStatus,
             ready: !!repairJob?.id && !!userID,
         },
