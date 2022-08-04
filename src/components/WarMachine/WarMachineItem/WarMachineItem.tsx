@@ -215,8 +215,8 @@ export const WarMachineItem = ({
 
                             <Typography
                                 variant="h5"
-                                gutterBottom
                                 sx={{
+                                    mb: ".3rem",
                                     lineHeight: 1,
                                     fontWeight: "fontWeightBold",
                                     textOverflow: "ellipsis",
@@ -244,7 +244,7 @@ export const WarMachineItem = ({
                                     WebkitLineClamp: 1,
                                 }}
                             >
-                                {ownerUsername}
+                                @{ownerUsername}
                             </Typography>
                         </Stack>
                     )}
