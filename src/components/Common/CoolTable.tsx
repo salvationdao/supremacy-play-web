@@ -15,10 +15,12 @@ import {
     TableHead,
     TablePagination,
     TableRow,
+    TableRowProps,
     Typography,
 } from "@mui/material"
 import { ReactNode, useMemo } from "react"
 import { useTheme } from "../../containers/theme"
+import { mergeDeep } from "../../helpers"
 import { colors, fonts } from "../../theme/theme"
 
 interface CoolTableProps<T> {
@@ -27,17 +29,25 @@ interface CoolTableProps<T> {
     alignments?: ("left" | "right" | "center")[]
     widths?: string[]
     items?: T[]
-    renderItem: (item: T, index: number) => ReactNode[]
-    isLoading: boolean
+    renderItem: (
+        item: T,
+        index: number,
+    ) => {
+        rowProps?: TableRowProps
+        cells: ReactNode[]
+    }
+
+    isLoading?: boolean
     loadError?: string
     titleRowHeight?: string
     cellPadding?: string
     paginationProps?: {
-        page: number // Starts from 1
+        page: number // Starts from 0
         pageSize: number
         totalItems: number
         changePage: (newPage: number) => void
         changePageSize: (newPageSize: number) => void
+        pageSizeOptions?: number[]
     }
 }
 
@@ -62,55 +72,59 @@ export const CoolTable = <T,>({
     const tableBody = useMemo(() => {
         if (loadError) {
             return (
-                <TableBody>
-                    <TableRow>
-                        <TableCell colSpan={tableHeadings.length}>
-                            <Stack alignItems="center" justifyContent="center" sx={{ height: "8rem" }}>
-                                <Typography
-                                    sx={{
-                                        color: colors.red,
-                                        fontFamily: fonts.nostromoBold,
-                                        textAlign: "center",
-                                    }}
-                                >
-                                    {loadError}
-                                </Typography>
-                            </Stack>
-                        </TableCell>
-                    </TableRow>
-                </TableBody>
+                <TableRow sx={{ height: "100% !important" }}>
+                    <TableCell sx={{ flex: 1, justifyContent: "center", borderBottom: "none" }}>
+                        <Stack alignItems="center" justifyContent="center" sx={{ height: "8rem" }}>
+                            <Typography
+                                sx={{
+                                    color: colors.red,
+                                    fontFamily: fonts.nostromoBold,
+                                    textAlign: "center",
+                                }}
+                            >
+                                {loadError}
+                            </Typography>
+                        </Stack>
+                    </TableCell>
+                </TableRow>
             )
         }
 
         if (!items || isLoading) {
             return (
-                <TableBody>
-                    <TableRow>
-                        <TableCell colSpan={tableHeadings.length}>
-                            <Stack alignItems="center" justifyContent="center" sx={{ height: "8rem" }}>
-                                <CircularProgress size="3rem" sx={{ color: primaryColor }} />
-                            </Stack>
-                        </TableCell>
-                    </TableRow>
-                </TableBody>
+                <TableRow sx={{ height: "100% !important" }}>
+                    <TableCell sx={{ flex: 1, justifyContent: "center", borderBottom: "none" }}>
+                        <Stack alignItems="center" justifyContent="center" sx={{ height: "8rem" }}>
+                            <CircularProgress size="3rem" sx={{ color: primaryColor }} />
+                        </Stack>
+                    </TableCell>
+                </TableRow>
             )
         }
 
         if (items && items.length > 0) {
             return (
-                <TableBody>
+                <>
                     {items.map((item, i) => {
+                        const { cells, rowProps } = renderItem(item, i)
                         return (
                             <TableRow
                                 key={i}
-                                sx={{ height: 0, "&:nth-of-type(odd)": { backgroundColor: "#FFFFFF10" }, ".MuiTableCell-root": { p: cellPadding } }}
+                                {...mergeDeep(
+                                    { sx: { height: 0, "&:nth-of-type(odd)": { backgroundColor: "#FFFFFF10" }, ".MuiTableCell-root": { p: cellPadding } } },
+                                    rowProps,
+                                )}
                             >
-                                {renderItem(item, i).map((node, j) => {
+                                {cells.map((node, j) => {
                                     return (
                                         <TableCell
                                             key={j}
-                                            align={alignments ? alignments[j] : "left"}
-                                            sx={{ width: widths ? widths[j] : undefined, borderBottom: "none" }}
+                                            sx={{
+                                                width: widths ? widths[j] : undefined,
+                                                flex: widths && widths[j] === "auto" ? 1 : undefined,
+                                                borderBottom: "none",
+                                                justifyContent: alignments ? alignments[j] : "left",
+                                            }}
                                         >
                                             {node}
                                         </TableCell>
@@ -122,102 +136,146 @@ export const CoolTable = <T,>({
 
                     {/* Need this empty row for a bug fix, don't delete */}
                     <TableRow sx={{ backgroundColor: "transparent" }}>
-                        <TableCell colSpan={tableHeadings.length} sx={{ p: "0 !important", border: "none !important" }} />
+                        <TableCell sx={{ p: "0 !important", border: "none !important" }} />
                     </TableRow>
-                </TableBody>
+                </>
             )
         }
 
         return (
-            <TableBody>
-                <TableRow>
-                    <TableCell colSpan={tableHeadings.length}>
-                        <Stack alignItems="center" justifyContent="center" sx={{ height: "8rem" }}>
-                            <Typography
-                                sx={{
-                                    px: "1.28rem",
-                                    pt: "1.28rem",
-                                    color: colors.grey,
-                                    fontFamily: fonts.nostromoBold,
-                                    textAlign: "center",
-                                }}
-                            >
-                                {"There's nothing to show, please contact support."}
-                            </Typography>
-                        </Stack>
-                    </TableCell>
-                </TableRow>
-            </TableBody>
+            <TableRow sx={{ height: "100% !important" }}>
+                <TableCell sx={{ flex: 1, justifyContent: "center", borderBottom: "none" }}>
+                    <Stack alignItems="center" justifyContent="center" sx={{ height: "8rem" }}>
+                        <Typography
+                            sx={{
+                                px: "1.28rem",
+                                pt: "1.28rem",
+                                color: colors.grey,
+                                fontFamily: fonts.nostromoBold,
+                                textAlign: "center",
+                            }}
+                        >
+                            {"There's nothing to show, please contact support."}
+                        </Typography>
+                    </Stack>
+                </TableCell>
+            </TableRow>
         )
-    }, [loadError, items, isLoading, tableHeadings.length, primaryColor, cellPadding, renderItem, alignments, widths])
+    }, [loadError, items, isLoading, primaryColor, cellPadding, renderItem, alignments, widths])
 
     return (
-        <TableContainer sx={{ height: "100%" }}>
-            <Table sx={{ height: "100%", borderRadius: 0.5, overflow: "hidden", ".MuiTableCell-root": { p: "1.2rem" } }}>
-                <TableHead sx={{ boxShadow: 5 }}>
-                    {title && (
-                        <TableRow sx={{ backgroundColor: primaryColor }}>
-                            <TableCell colSpan={tableHeadings.length} align="center" sx={{ height: titleRowHeight }}>
-                                <Typography variant="h6" sx={{ color: secondaryColor, fontFamily: fonts.nostromoHeavy }}>
-                                    {title}
-                                </Typography>
-                            </TableCell>
-                        </TableRow>
-                    )}
-
-                    <TableRow sx={{ backgroundColor: `${primaryColor}40` }}>
-                        {tableHeadings.map((heading, i) => {
-                            return (
-                                <TableCell
-                                    key={i}
-                                    align={alignments ? alignments[i] : "left"}
-                                    sx={{
-                                        borderRight: "#FFFFFF20 1px solid",
-                                        borderBottom: `${primaryColor}60 1px solid`,
-                                        height: titleRowHeight,
-                                        py: "0 !important",
-                                        width: widths ? widths[i] : undefined,
-                                    }}
-                                >
-                                    <Typography variant="body2" sx={{ py: ".3rem", fontFamily: fonts.nostromoBlack }}>
-                                        {heading}
+        <Box sx={{ position: "relative", height: "100%" }}>
+            <TableContainer sx={{ position: "absolute", width: "100%", height: "100%", "thead, tr, tbody, tfoot": { display: "block" } }}>
+                <Table
+                    sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        height: "100%",
+                        borderRadius: 0.5,
+                        overflow: "hidden",
+                        ".MuiTableRow-root": { height: "unset", display: "flex", alignItems: "center" },
+                        ".MuiTableCell-root": { p: "1.2rem", display: "flex", alignItems: "center" },
+                    }}
+                >
+                    <TableHead sx={{ boxShadow: 5 }}>
+                        {title && (
+                            <TableRow sx={{ backgroundColor: primaryColor }}>
+                                <TableCell sx={{ flex: 1, height: titleRowHeight, justifyContent: "center" }}>
+                                    <Typography variant="h6" sx={{ textAlign: "center", color: secondaryColor, fontFamily: fonts.nostromoHeavy }}>
+                                        {title}
                                     </Typography>
                                 </TableCell>
-                            )
-                        })}
-                    </TableRow>
-                </TableHead>
+                            </TableRow>
+                        )}
 
-                {tableBody}
+                        <TableRow sx={{ backgroundColor: `${primaryColor}40` }}>
+                            {tableHeadings.map((heading, i) => {
+                                return (
+                                    <TableCell
+                                        key={i}
+                                        sx={{
+                                            borderRight: "#FFFFFF20 1px solid",
+                                            borderBottom: `${primaryColor}60 1px solid`,
+                                            height: titleRowHeight,
+                                            py: "0 !important",
+                                            width: widths ? widths[i] : undefined,
+                                            flex: widths && widths[i] === "auto" ? 1 : undefined,
+                                            justifyContent: alignments ? alignments[i] : "left",
+                                        }}
+                                    >
+                                        <Typography variant="body2" sx={{ py: ".3rem", fontFamily: fonts.nostromoBlack }}>
+                                            {heading}
+                                        </Typography>
+                                    </TableCell>
+                                )
+                            })}
+                        </TableRow>
+                    </TableHead>
 
-                {paginationProps && (
-                    <TableFooter>
-                        <TableRow>
-                            <TablePagination
+                    <TableBody
+                        sx={{
+                            overflow: "auto",
+                            mr: ".6rem",
+                            height: `calc(100% - ${title ? titleRowHeight : "0px"} - ${titleRowHeight} - ${paginationProps ? titleRowHeight : "0px"})`,
+                            scrollbarWidth: "none",
+                            "::-webkit-scrollbar": {
+                                width: ".4rem",
+                            },
+                            "::-webkit-scrollbar-track": {
+                                background: "#FFFFFF15",
+                                borderRadius: 3,
+                            },
+                            "::-webkit-scrollbar-thumb": {
+                                background: (theme) => theme.factionTheme.primary,
+                                borderRadius: 3,
+                            },
+                        }}
+                    >
+                        {tableBody}
+                    </TableBody>
+
+                    {paginationProps && (
+                        <TableFooter>
+                            <TableRow
                                 sx={{
-                                    minHeight: 0,
-                                    "p, select, option": {
-                                        fontFamily: `${fonts.nostromoBold} !important`,
-                                        fontSize: "1.3rem !important",
+                                    borderTop: `${primaryColor}60 1px solid`,
+                                    backgroundColor: `${primaryColor}40`,
+                                    ".MuiTableCell-root": {
+                                        borderBottom: "none",
+                                    },
+                                    ".MuiToolbar-root": {
+                                        flex: 1,
+                                        height: titleRowHeight,
+                                        minHeight: "0 !important",
+                                        overflow: "hidden",
                                     },
                                 }}
-                                rowsPerPageOptions={[5, 10, 25]}
-                                colSpan={tableHeadings.length}
-                                count={paginationProps.totalItems}
-                                rowsPerPage={paginationProps.pageSize}
-                                page={paginationProps.page - 1}
-                                SelectProps={{ native: true }}
-                                onPageChange={(e, newPage: number) => paginationProps.changePage(newPage)}
-                                onRowsPerPageChange={(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
-                                    paginationProps.changePageSize(parseInt(event.target.value, 10))
-                                }
-                                ActionsComponent={TablePaginationActions}
-                            />
-                        </TableRow>
-                    </TableFooter>
-                )}
-            </Table>
-        </TableContainer>
+                            >
+                                <TablePagination
+                                    sx={{
+                                        flex: 1,
+                                        "p, select, option": {
+                                            fontFamily: `${fonts.nostromoBold} !important`,
+                                            fontSize: "1.3rem !important",
+                                        },
+                                    }}
+                                    rowsPerPageOptions={paginationProps.pageSizeOptions || [5, 10, 25]}
+                                    count={paginationProps.totalItems}
+                                    rowsPerPage={paginationProps.pageSize}
+                                    page={paginationProps.page}
+                                    SelectProps={{ native: true }}
+                                    onPageChange={(e, newPage: number) => paginationProps.changePage(newPage)}
+                                    onRowsPerPageChange={(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+                                        paginationProps.changePageSize(parseInt(event.target.value, 10))
+                                    }
+                                    ActionsComponent={TablePaginationActions}
+                                />
+                            </TableRow>
+                        </TableFooter>
+                    )}
+                </Table>
+            </TableContainer>
+        </Box>
     )
 }
 

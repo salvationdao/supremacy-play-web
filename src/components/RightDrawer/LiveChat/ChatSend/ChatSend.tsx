@@ -489,7 +489,6 @@ const ChatSendInner = ({
                 <ClipThing
                     clipSize="8px"
                     border={{
-                        isFancy: true,
                         borderColor: primaryColor,
                         borderThickness: ".25rem",
                     }}

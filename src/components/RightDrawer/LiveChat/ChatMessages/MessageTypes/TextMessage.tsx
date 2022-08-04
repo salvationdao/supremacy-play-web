@@ -217,7 +217,7 @@ export const TextMessage = ({
 
     return (
         <>
-            <Box sx={{ opacity: isSent ? 1 : 0.45, wordBreak: "break-word", "*": { userSelect: "text !important" } }} ref={textMessageRef}>
+            <Box sx={{ opacity: isSent ? 1 : 0.45, wordBreak: "break-word" }} ref={textMessageRef}>
                 {(!isPreviousMessager || (previousMessage && sentAt > new Date(previousMessage.sent_at.getTime() + 2 * 60000))) && (
                     <Stack direction="row" justifyContent="space-between" sx={{ mb: ".5rem" }}>
                         <Stack ref={popoverRef} direction="row" spacing=".3rem">

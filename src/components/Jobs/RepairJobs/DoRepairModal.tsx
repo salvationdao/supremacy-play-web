@@ -1,7 +1,7 @@
 import HCaptcha from "@hcaptcha/react-hcaptcha"
 import { Box, IconButton, Modal, Stack, SxProps, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
-import { ReactNode, useCallback, useMemo, useState } from "react"
+import { ReactNode, useCallback, useEffect, useMemo, useState } from "react"
 import { SvgClose, SvgCubes, SvgSupToken } from "../../../assets"
 import { useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
@@ -16,6 +16,7 @@ import { ClipThing } from "../../Common/ClipThing"
 import { FancyButton } from "../../Common/FancyButton"
 import { RepairBlocks } from "../../Hangar/WarMachinesHangar/Common/MechRepairBlocks"
 import { GamePattern } from "./StackTower/src/game"
+import { isWebGLAvailable } from "./StackTower/src/utils"
 import { StackTower } from "./StackTower/StackTower"
 import {CAPTCHA_KEY} from "../../../constants";
 
@@ -68,6 +69,13 @@ export const DoRepairModal = ({
     const backgroundColor = _repairJob?.job_owner.faction_id ? faction.background_color : theme.factionTheme.background
     const isFinished = !!(repairJob?.closed_at || (repairJob?.expires_at && repairJob?.expires_at < new Date()) || remainDamagedBlocks <= 0)
 
+    useEffect(() => {
+        if (!isWebGLAvailable()) {
+            setError("WebGL is not supported in this browser.")
+            console.error("WebGL is not supported in this browser.")
+        }
+    }, [])
+
     const abandonJob = useCallback(() => {
         setRepairAgent(undefined)
         setError(undefined)
@@ -105,6 +113,7 @@ export const DoRepairModal = ({
         } catch (err) {
             const message = typeof err === "string" ? err : "Failed to register repair job."
             setError(message)
+            setCaptchaToken(undefined)
             console.error(err)
         } finally {
             setIsRegistering(false)
