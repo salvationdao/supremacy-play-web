@@ -173,13 +173,42 @@ export const UserDetailsPopover = ({
                             </Stack>
                         </Stack>
 
+                        {userHasFeature(FeatureName.profileAvatar) && (
+                            <FancyButton
+                                clipThingsProps={{
+                                    clipSize: "5px",
+                                    clipSlantSize: "0px",
+                                    backgroundColor: factionColor,
+                                    opacity: 1,
+                                    border: { borderColor: factionColor, borderThickness: "2px" },
+                                    sx: { position: "relative", mt: ".7rem" },
+                                }}
+                                sx={{ px: "1.6rem", py: ".1rem", color: factionSecondaryColor }}
+                                to={`/profile/${fromUser.gid}`}
+                                onClick={() => {
+                                    toggleLocalOpen(false)
+                                }}
+                            >
+                                <Typography
+                                    variant="caption"
+                                    sx={{
+                                        color: factionSecondaryColor,
+                                        fontFamily: fonts.nostromoBlack,
+                                    }}
+                                >
+                                    VIEW PROFILE
+                                </Typography>
+                            </FancyButton>
+                        )}
+
                         {fromUser.faction_id === user.faction_id && (
                             <FancyButton
                                 clipThingsProps={{
                                     clipSize: "5px",
+                                    clipSlantSize: "0px",
                                     backgroundColor: factionColor,
                                     opacity: 1,
-                                    border: { isFancy: true, borderColor: factionColor, borderThickness: "2px" },
+                                    border: { borderColor: factionColor, borderThickness: "2px" },
                                     sx: { position: "relative", mt: ".7rem" },
                                 }}
                                 sx={{ px: "1.6rem", py: ".1rem", color: factionSecondaryColor }}
@@ -199,13 +228,15 @@ export const UserDetailsPopover = ({
                                 </Typography>
                             </FancyButton>
                         )}
+
                         {userHasFeature(FeatureName.chatBan) && fromUser.id !== user.id && (
                             <FancyButton
                                 clipThingsProps={{
                                     clipSize: "5px",
+                                    clipSlantSize: "0px",
                                     backgroundColor: factionColor,
                                     opacity: 1,
-                                    border: { isFancy: true, borderColor: factionColor, borderThickness: "2px" },
+                                    border: { borderColor: factionColor, borderThickness: "2px" },
                                     sx: { position: "relative", mt: ".7rem" },
                                 }}
                                 sx={{ px: "1.6rem", py: ".1rem", color: factionSecondaryColor }}
@@ -227,6 +258,7 @@ export const UserDetailsPopover = ({
                     </Stack>
                 </ClipThing>
             </Popover>
+
             {showChatBanModal && (
                 <ConfirmModal
                     title="CONFIRMATION"
@@ -249,6 +281,7 @@ export const UserDetailsPopover = ({
                     <Typography variant="h6">
                         Do you wish to chat ban <strong>{fromUser.username}</strong>?
                     </Typography>
+
                     <TextField
                         variant="outlined"
                         hiddenLabel
@@ -276,7 +309,7 @@ export const UserDetailsPopover = ({
                                 fontSize: "2rem",
                                 height: "unset",
                                 "::-webkit-outer-spin-button, ::-webkit-inner-spin-button": {
-                                    "-webkit-appearance": "none",
+                                    WebkitAppearance: "none",
                                 },
                             },
                             ".MuiOutlinedInput-notchedOutline": { border: "unset" },
@@ -287,6 +320,7 @@ export const UserDetailsPopover = ({
                             setReason(e.target.value)
                         }}
                     />
+
                     <Select
                         sx={{
                             width: "100%",

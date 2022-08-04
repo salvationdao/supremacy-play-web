@@ -28,6 +28,7 @@ interface GetMechsResponse {
 interface ProfileWarmachinesProps {
     playerID: string
     primaryColour: string
+    secondaryColor: string
     backgroundColour: string
     factionName: string
 }
@@ -49,7 +50,7 @@ const getIcon = (factionName: FactionName): string => {
     return WarMachineIconPNG
 }
 
-export const ProfileWarmachines = ({ playerID, primaryColour, backgroundColour, factionName }: ProfileWarmachinesProps) => {
+export const ProfileWarmachines = ({ playerID, primaryColour, secondaryColor, backgroundColour, factionName }: ProfileWarmachinesProps) => {
     const [query] = useUrlQuery()
     const { send } = useGameServerCommands("/public/commander")
 
@@ -134,7 +135,7 @@ export const ProfileWarmachines = ({ playerID, primaryColour, backgroundColour, 
                             width: "100%",
                             py: "1rem",
                             display: "grid",
-                            gridTemplateColumns: "repeat(auto-fill, minmax(29rem, 1fr))",
+                            gridTemplateColumns: "repeat(auto-fill, minmax(30rem, 1fr))",
                             gap: "1.3rem",
                             alignItems: "center",
                             justifyContent: "center",
@@ -176,8 +177,6 @@ export const ProfileWarmachines = ({ playerID, primaryColour, backgroundColour, 
                             pt: "1.28rem",
                             color: colors.grey,
                             fontFamily: fonts.nostromoBold,
-                            userSelect: "text !important",
-                            opacity: 0.9,
                             textAlign: "center",
                         }}
                     >
@@ -259,7 +258,7 @@ export const ProfileWarmachines = ({ playerID, primaryColour, backgroundColour, 
                                 sx={{
                                     ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold },
                                     ".Mui-selected": {
-                                        color: primaryColour,
+                                        color: secondaryColor,
                                         backgroundColor: `${primaryColour} !important`,
                                     },
                                 }}

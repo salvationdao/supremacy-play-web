@@ -4,7 +4,7 @@ import { MoveableResizable, TooltipHelper } from ".."
 import { SvgNotification, SvgSupToken } from "../../assets"
 import { useAuth, useMobile } from "../../containers"
 import { useTheme } from "../../containers/theme"
-import { parseString } from "../../helpers"
+import { parseString, supFormatter } from "../../helpers"
 import { usePagination, useToggle } from "../../hooks"
 import { useGameServerCommandsUser, useGameServerSubscriptionFaction } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
@@ -25,10 +25,16 @@ const sortOptions = [
 ]
 
 interface GetMechsRequest {
-    queue_sort: string
+    queue_sort?: string
+    sort_by?: string
+    sort_dir?: string
+    search?: string
     page: number
     page_size: number
+    rarities?: string[]
+    statuses: string[]
     include_market_listed: boolean
+    exclude_damaged_mech: boolean
 }
 
 interface GetAssetsResponse {
@@ -85,7 +91,9 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
                 queue_sort: sortDir,
                 page,
                 page_size: pageSize,
+                statuses: ["BATTLE_READY"],
                 include_market_listed: false,
+                exclude_damaged_mech: true,
             })
 
             if (!resp) return
@@ -128,6 +136,7 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
     )
 
     const queueLength = queueFeed?.queue_length || 0
+    const queueCost = queueFeed?.queue_cost || "0"
 
     return (
         <>
@@ -152,7 +161,7 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
                                 title="QUICK DEPLOY"
                                 description={
                                     <Stack spacing="1.5rem" direction="row" sx={{ width: "100%" }}>
-                                        {queueLength > 0 && (
+                                        {queueLength >= 0 && (
                                             <AmountItem
                                                 key={`${queueLength}-queue_length`}
                                                 title={"NEXT POSITION: "}
@@ -162,6 +171,16 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
                                                 disableIcon
                                             />
                                         )}
+
+                                        {queueCost && (
+                                            <AmountItem
+                                                title={"FEE: "}
+                                                color={colors.yellow}
+                                                value={supFormatter(queueCost, 2)}
+                                                tooltip="The cost to place your war machine into the battle queue."
+                                            />
+                                        )}
+
                                         <IconButton size="small" onClick={() => togglePreferencesModalOpen(true)}>
                                             <SvgNotification size="1.3rem" />
                                         </IconButton>
@@ -249,8 +268,6 @@ const QuickDeployInner = ({ onClose }: { onClose: () => void }) => {
                                                 pt: "1.28rem",
                                                 color: colors.grey,
                                                 fontFamily: fonts.nostromoBold,
-                                                userSelect: "text !important",
-                                                opacity: 0.9,
                                                 textAlign: "center",
                                             }}
                                         >

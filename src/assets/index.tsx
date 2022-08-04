@@ -18,6 +18,7 @@ import EmojiSelector from "!@svgr/webpack!./svg/EmojiSelector.svg"
 import Energy from "!@svgr/webpack!./svg/Energy.svg"
 import ExternalLink from "!@svgr/webpack!./svg/ExternalLink.svg"
 import FastRepair from "!@svgr/webpack!./svg/FastRepair.svg"
+import Cubes from "!@svgr/webpack!./svg/Cubes.svg"
 import FontCase from "!@svgr/webpack!./svg/FontCase.svg"
 import Global from "!@svgr/webpack!./svg/Global.svg"
 import Graph from "!@svgr/webpack!./svg/Graph.svg"
@@ -30,6 +31,7 @@ import Meteor from "!@svgr/webpack!./svg/Meteor.svg"
 import Mobility from "!@svgr/webpack!./svg/Mobility.svg"
 import NinjaSyndicateLogo from "!@svgr/webpack!./svg/NinjaSyndicateLogo.svg"
 import OutroAnimation from "!@svgr/webpack!./svg/OutroAnimation.svg"
+import Hamburger from "!@svgr/webpack!./svg/Hamburger.svg"
 import Plus from "!@svgr/webpack!./svg/Plus.svg"
 import PowerCore from "!@svgr/webpack!./svg/PowerCore.svg"
 import PowerCoreCapacity from "!@svgr/webpack!./svg/PowerCoreCapacity.svg"
@@ -187,6 +189,72 @@ import WarMachineBCPNG from "./images/profileIcons/warMachines/WMBC.png"
 import WarMachineRMPNG from "./images/profileIcons/warMachines/WMRM.png"
 import WarMachineZAIPNG from "./images/profileIcons/warMachines/WMZAI.png"
 
+import Stack1aJPG from "./images/TowerStackSkins/Stack1a.jpg"
+import Stack1bJPG from "./images/TowerStackSkins/Stack1b.jpg"
+import Stack1cJPG from "./images/TowerStackSkins/Stack1c.jpg"
+import Stack2aJPG from "./images/TowerStackSkins/Stack2a.jpg"
+import Stack2bJPG from "./images/TowerStackSkins/Stack2b.jpg"
+import Stack2cJPG from "./images/TowerStackSkins/Stack2c.jpg"
+import Stack3aJPG from "./images/TowerStackSkins/Stack3a.jpg"
+import Stack3bJPG from "./images/TowerStackSkins/Stack3b.jpg"
+import Stack3cJPG from "./images/TowerStackSkins/Stack3c.jpg"
+import Stack4aJPG from "./images/TowerStackSkins/Stack4a.jpg"
+import Stack4bJPG from "./images/TowerStackSkins/Stack4b.jpg"
+import Stack4cJPG from "./images/TowerStackSkins/Stack4c.jpg"
+import Stack5aJPG from "./images/TowerStackSkins/Stack5a.jpg"
+import Stack5bJPG from "./images/TowerStackSkins/Stack5b.jpg"
+import Stack5cJPG from "./images/TowerStackSkins/Stack5c.jpg"
+import Stack6aJPG from "./images/TowerStackSkins/Stack6a.jpg"
+import Stack6bJPG from "./images/TowerStackSkins/Stack6b.jpg"
+import Stack6cJPG from "./images/TowerStackSkins/Stack6c.jpg"
+import Stack7aJPG from "./images/TowerStackSkins/Stack7a.jpg"
+import Stack7bJPG from "./images/TowerStackSkins/Stack7b.jpg"
+import Stack7cJPG from "./images/TowerStackSkins/Stack7c.jpg"
+import Stack8aJPG from "./images/TowerStackSkins/Stack8a.jpg"
+import Stack8bJPG from "./images/TowerStackSkins/Stack8b.jpg"
+import Stack8cJPG from "./images/TowerStackSkins/Stack8c.jpg"
+import Stack9aJPG from "./images/TowerStackSkins/Stack9a.jpg"
+import Stack9bJPG from "./images/TowerStackSkins/Stack9b.jpg"
+import Stack9cJPG from "./images/TowerStackSkins/Stack9c.jpg"
+import Stack10aJPG from "./images/TowerStackSkins/Stack10a.jpg"
+import Stack10bJPG from "./images/TowerStackSkins/Stack10b.jpg"
+import Stack10cJPG from "./images/TowerStackSkins/Stack10c.jpg"
+
+// Tower stack mini game skins
+export {
+    Stack1aJPG,
+    Stack1bJPG,
+    Stack1cJPG,
+    Stack2aJPG,
+    Stack2bJPG,
+    Stack2cJPG,
+    Stack3aJPG,
+    Stack3bJPG,
+    Stack3cJPG,
+    Stack4aJPG,
+    Stack4bJPG,
+    Stack4cJPG,
+    Stack5aJPG,
+    Stack5bJPG,
+    Stack5cJPG,
+    Stack6aJPG,
+    Stack6bJPG,
+    Stack6cJPG,
+    Stack7aJPG,
+    Stack7bJPG,
+    Stack7cJPG,
+    Stack8aJPG,
+    Stack8bJPG,
+    Stack8cJPG,
+    Stack9aJPG,
+    Stack9bJPG,
+    Stack9cJPG,
+    Stack10aJPG,
+    Stack10bJPG,
+    Stack10cJPG,
+}
+
+// multiplier images
 export {
     MultiplierAdmiral,
     MultiplierAFoolAndHisMoney,
@@ -205,7 +273,7 @@ export {
     MultiplierGeneric,
     MultiplierWonLastThreeBattles,
 }
-// End multiplier images
+
 export {
     KeycardPNG,
     HangarBg,
@@ -1110,6 +1178,18 @@ export const SvgMail: React.VoidFunctionComponent<SvgWrapperProps> = (props) => 
 export const SvgCrown: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <Crown />
+    </SvgWrapper>
+)
+
+export const SvgHamburger: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Hamburger />
+    </SvgWrapper>
+)
+
+export const SvgCubes: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Cubes />
     </SvgWrapper>
 )
 

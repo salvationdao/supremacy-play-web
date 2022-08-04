@@ -99,7 +99,7 @@ export const Music = () => {
 
     // Play the faction's victory track when battle ends
     useEffect(() => {
-        switch (battleEndDetail?.winning_faction.id) {
+        switch (battleEndDetail?.winning_faction_id_order[0]) {
             case FactionIDs.BC:
                 playNewSound(Sounds.bcVictory)
                 break

@@ -72,6 +72,16 @@ export const AntMediaStream = () => {
         if (vidRef && vidRef.current) vidRef.current.volume = volume
     }, [volume])
 
+    // Clear the ws on unmount
+    useEffect(() => {
+        return () => {
+            if (webRtc.current && currentStream) {
+                webRtc.current?.closeWebSocket(currentStream.stream_id)
+            }
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
+
     // When user selects a resolution, make the change into the stream
     useEffect(() => {
         if (
@@ -167,6 +177,7 @@ export const AntMediaStream = () => {
                 width: "100%",
                 height: "100%",
                 zIndex: siteZIndex.Stream,
+                pointerEvents: "none",
             }}
         >
             {!isPlaying && <NoStreamScreen />}
