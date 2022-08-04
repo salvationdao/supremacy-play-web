@@ -198,7 +198,6 @@ export const WarMachineItem = ({
                     {/* Mech rarity and name */}
                     {isExpanded && (
                         <Stack
-                            onClick={handleClick}
                             sx={{
                                 flex: 1,
                                 position: "relative",
