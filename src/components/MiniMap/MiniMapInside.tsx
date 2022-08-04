@@ -46,19 +46,19 @@ export const MiniMapInside = ({ containerDimensions }: MiniMapInsideProps) => {
 
     // i.e. is battle ability or player ability of type LOCATION_SELECT
     const isLocationSelection = useMemo(
-        () =>
-            isTargeting &&
-            (winner?.game_ability.location_select_type === LocationSelectType.LOCATION_SELECT ||
-                playerAbility?.ability.location_select_type === LocationSelectType.LOCATION_SELECT ||
-                playerAbility?.ability.location_select_type === LocationSelectType.MECH_COMMAND),
+        () => {
+            const abilityType = winner?.game_ability.location_select_type || playerAbility?.ability.location_select_type
+            return isTargeting &&
+            (abilityType === LocationSelectType.LOCATION_SELECT || abilityType === LocationSelectType.MECH_COMMAND)
+        },
         [isTargeting, winner?.game_ability.location_select_type, playerAbility?.ability.location_select_type],
     )
 
     const isLineSelection = useMemo(
-        () =>
-            isTargeting &&
-            (playerAbility?.ability.location_select_type === LocationSelectType.LINE_SELECT ||
-                winner?.game_ability.location_select_type === LocationSelectType.LINE_SELECT),
+        () => {
+            const abilityType = winner?.game_ability.location_select_type || playerAbility?.ability.location_select_type
+            return isTargeting && (abilityType === LocationSelectType.LINE_SELECT)
+        },
         [isTargeting, playerAbility?.ability.location_select_type, winner?.game_ability.location_select_type],
     )
 
