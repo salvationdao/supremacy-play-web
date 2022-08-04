@@ -293,9 +293,9 @@ export const TextMessage = ({
                                 alignSelf: "center",
                                 flexShrink: 0,
                                 ml: "auto",
-                                color: "#FFFFFF",
+                                color: colors.grey,
                                 opacity: 0.7,
-                                fontSize: smallFontSize,
+                                fontSize: `${renderFontSize(true)}rem`,
                             }}
                         >
                             {dateFormatter(sentAt)}
