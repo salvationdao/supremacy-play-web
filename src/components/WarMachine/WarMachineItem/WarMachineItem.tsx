@@ -199,7 +199,6 @@ export const WarMachineItem = ({
                     {isExpanded && (
                         <Stack
                             onClick={handleClick}
-                            spacing=".2rem"
                             sx={{
                                 flex: 1,
                                 position: "relative",
@@ -216,6 +215,7 @@ export const WarMachineItem = ({
 
                             <Typography
                                 variant="h5"
+                                gutterBottom
                                 sx={{
                                     lineHeight: 1,
                                     fontWeight: "fontWeightBold",
