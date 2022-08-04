@@ -387,6 +387,7 @@ export const UsernameJSX = ({ data, fontSize, toggleIsPopoverOpen, user }: Usern
                 },
             }}
         >
+            {toggleIsPopoverOpen ? "" : "@"}
             {`${truncate(user?.username || "", 20)}`}
             <span
                 style={{
