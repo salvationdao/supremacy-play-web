@@ -5,7 +5,7 @@ import { NewBattleMessageData } from "../../../../../types"
 
 export const NewBattleMessage = ({ data, sentAt }: { data: NewBattleMessageData; sentAt: Date }) => {
     return (
-        <Stack key={`${data.battle_number} - ${sentAt.toISOString()}`} direction={"row"} alignItems={"center"} sx={{ py: "0.5rem" }}>
+        <Stack direction={"row"} alignItems={"center"} sx={{ py: "0.5rem" }}>
             <Divider sx={{ flex: "1" }} />
             <Typography variant={"caption"} sx={{ color: colors.grey, flexShrink: "0", px: "1rem", fontFamily: fonts.nostromoBold }}>
                 BATTLE #{data ? data.battle_number : null} ({dateFormatter(sentAt)})

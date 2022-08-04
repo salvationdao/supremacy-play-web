@@ -316,7 +316,7 @@ export const TextMessage = ({
                         onMouseEnter={() => setIsHovered(true)}
                         onMouseLeave={() => setIsHovered(false)}
                     >
-                        <Box sx={{ color: "#FFFFFF", fontSize: `${renderFontSize()}rem`, zIndex: isHovered ? 2 : 1 }}>{chatMessage}</Box>
+                        <Box sx={{ lineHeight: 1, color: "#FFFFFF", fontSize: `${renderFontSize()}rem`, zIndex: isHovered ? 2 : 1 }}>{chatMessage}</Box>
                         {!!metadata?.likes.net && <Reactions fontSize={fontSize} data={data} />}
                         {isHovered && <Reactions fontSize={fontSize} hoverOnly={true} data={data} />}
                     </Stack>
