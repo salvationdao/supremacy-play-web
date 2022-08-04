@@ -183,7 +183,13 @@ const ChatMessagesInner = ({
                                     )
                                 } else if (message.type === "NEW_BATTLE") {
                                     const data = message.data as NewBattleMessageData
-                                    return <NewBattleMessage key={`${data.battle_number} - ${sentAt.toISOString()}`} data={data} sentAt={message.sent_at} />
+                                    return (
+                                        <NewBattleMessage
+                                            key={`${data.battle_number} - ${message.sent_at.toISOString()}`}
+                                            data={data}
+                                            sentAt={message.sent_at}
+                                        />
+                                    )
                                 }
 
                                 return null
