@@ -307,7 +307,7 @@ export const TextMessage = ({
                     <Stack
                         direction={"column"}
                         sx={{
-                            ml: "2rem",
+                            ml: "1.8rem",
                             backgroundColor: shouldNotify ? "rgba(0,116,217, .4)" : isHovered ? "#121212" : "unset",
                             borderRadius: ".3rem",
                             transition: shouldNotify ? "background-color 2s" : "unset",
