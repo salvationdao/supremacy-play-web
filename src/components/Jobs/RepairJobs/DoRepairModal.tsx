@@ -1,9 +1,9 @@
 import HCaptcha from "@hcaptcha/react-hcaptcha"
 import { Box, IconButton, Modal, Stack, SxProps, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
-import { ReactNode, useCallback, useMemo, useState } from "react"
+import { ReactNode, useCallback, useEffect, useMemo, useState } from "react"
 import { SvgClose, SvgCubes, SvgSupToken } from "../../../assets"
-import { useSupremacy } from "../../../containers"
+import { useAuth, useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { supFormatterNoFixed, timeSinceInWords } from "../../../helpers"
 import { useTimer } from "../../../hooks"
@@ -16,6 +16,7 @@ import { ClipThing } from "../../Common/ClipThing"
 import { FancyButton } from "../../Common/FancyButton"
 import { RepairBlocks } from "../../Hangar/WarMachinesHangar/Common/MechRepairBlocks"
 import { GamePattern } from "./StackTower/src/game"
+import { isWebGLAvailable } from "./StackTower/src/utils"
 import { StackTower } from "./StackTower/StackTower"
 
 export const DoRepairModal = ({
@@ -29,6 +30,7 @@ export const DoRepairModal = ({
     open: boolean
     onClose: () => void
 }) => {
+    const { userID } = useAuth()
     const theme = useTheme()
     const { getFaction } = useSupremacy()
     const { send } = useGameServerCommandsUser("/user_commander")
@@ -41,7 +43,7 @@ export const DoRepairModal = ({
         {
             URI: `/public/repair_offer/${_repairJob?.id}`,
             key: GameServerKeys.SubRepairJobStatus,
-            ready: !!repairJob?.id,
+            ready: !!repairJob?.id && !!userID,
         },
         (payload) => {
             if (!payload) return
@@ -57,8 +59,6 @@ export const DoRepairModal = ({
     const [submitError, setSubmitError] = useState<string>()
     const [submitSuccess, setSubmitSuccess] = useState(false)
 
-    const isFinished = !!(repairJob?.closed_at || (repairJob?.expires_at && repairJob?.expires_at < new Date()))
-
     const faction = useMemo(() => getFaction(_repairJob?.job_owner.faction_id || ""), [_repairJob?.job_owner.faction_id, getFaction])
     const remainDamagedBlocks = repairJob
         ? repairJob.blocks_required_repair - repairJob.blocks_repaired
@@ -67,13 +67,30 @@ export const DoRepairModal = ({
         : 0
     const primaryColor = _repairJob?.job_owner.faction_id ? faction.primary_color : theme.factionTheme.primary
     const backgroundColor = _repairJob?.job_owner.faction_id ? faction.background_color : theme.factionTheme.background
+    const isFinished = !!(repairJob?.closed_at || (repairJob?.expires_at && repairJob?.expires_at < new Date()) || remainDamagedBlocks <= 0)
+
+    useEffect(() => {
+        if (!isWebGLAvailable()) {
+            setError("WebGL is not supported in this browser.")
+            console.error("WebGL is not supported in this browser.")
+        }
+    }, [])
 
     const abandonJob = useCallback(() => {
         setRepairAgent(undefined)
         setError(undefined)
         setIsRegistering(false)
         setSubmitSuccess(false)
-    }, [])
+
+        // Tell back end
+        if (repairAgent?.id) {
+            send(GameServerKeys.AbandonRepairAgent, {
+                repair_agent_id: repairAgent.id,
+            })
+        }
+
+        onClose()
+    }, [onClose, repairAgent?.id, send])
 
     // Register for an agent
     const registerAgentRepair = useCallback(async () => {
@@ -96,6 +113,7 @@ export const DoRepairModal = ({
         } catch (err) {
             const message = typeof err === "string" ? err : "Failed to register repair job."
             setError(message)
+            setCaptchaToken(undefined)
             console.error(err)
         } finally {
             setIsRegistering(false)
@@ -104,11 +122,18 @@ export const DoRepairModal = ({
 
     // Send individual updates
     const agentRepairUpdate = useCallback(
-        (repairAgentID: string, gamePattern: GamePattern) => {
-            send(GameServerKeys.RepairAgentUpdate, {
-                repair_agent_id: repairAgentID,
-                ...gamePattern,
-            })
+        async (repairAgentID: string, gamePattern: GamePattern) => {
+            try {
+                const resp = await send(GameServerKeys.RepairAgentUpdate, {
+                    repair_agent_id: repairAgentID,
+                    ...gamePattern,
+                })
+
+                if (!resp) return Promise.reject(false)
+                return Promise.resolve(true)
+            } catch (err) {
+                return Promise.reject(false)
+            }
         },
         [send],
     )
@@ -134,7 +159,7 @@ export const DoRepairModal = ({
             } finally {
                 setTimeout(() => {
                     setIsSubmitting(false)
-                }, 2200)
+                }, 3500)
             }
         },
         [send],
@@ -177,6 +202,51 @@ export const DoRepairModal = ({
                     >
                         <Typography sx={{ fontFamily: fonts.nostromoBlack }}>EXIT</Typography>
                     </FancyButton>
+                </Stack>
+            )
+        }
+
+        if (submitError) {
+            return (
+                <Stack spacing="2rem" alignItems="center">
+                    <Typography variant="h5" sx={{ textAlign: "center", fontWeight: "fontWeightBold", color: colors.red }}>
+                        {submitError}
+                    </Typography>
+
+                    <FancyButton
+                        clipThingsProps={{
+                            clipSize: "7px",
+                            clipSlantSize: "0px",
+                            corners: { topLeft: true, topRight: true, bottomLeft: true, bottomRight: true },
+                            backgroundColor: colors.red,
+                            opacity: 1,
+                            border: { borderColor: colors.red, borderThickness: "2px" },
+                            sx: { position: "relative" },
+                        }}
+                        sx={{ px: "1.6rem", py: "1rem", color: "#FFFFFF" }}
+                        onClick={() => setSubmitError(undefined)}
+                    >
+                        <Typography sx={{ fontFamily: fonts.nostromoBlack }}>DISMISS</Typography>
+                    </FancyButton>
+                </Stack>
+            )
+        }
+
+        if (isSubmitting) {
+            return (
+                <Stack spacing="1.8rem" alignItems="center">
+                    <Stack justifyContent="flex-end" sx={{ width: "3rem", height: "3rem", backgroundColor: colors.red, boxShadow: 3 }}>
+                        <Box sx={{ width: "100%", backgroundColor: colors.green, animation: `${heightEffect()} 4s ease-out infinite` }} />
+                    </Stack>
+
+                    <Typography
+                        variant="h5"
+                        sx={{
+                            fontWeight: "fontWeightBold",
+                        }}
+                    >
+                        SUBMITTING RESULTS...
+                    </Typography>
                 </Stack>
             )
         }
@@ -244,51 +314,6 @@ export const DoRepairModal = ({
                     >
                         <Typography sx={{ fontFamily: fonts.nostromoBlack }}>{submitSuccess ? "REPAIR NEXT BLOCK" : "START REPAIRS"}</Typography>
                     </FancyButton>
-                </Stack>
-            )
-        }
-
-        if (submitError) {
-            return (
-                <Stack spacing="2rem" alignItems="center">
-                    <Typography variant="h5" sx={{ textAlign: "center", fontWeight: "fontWeightBold", color: colors.red }}>
-                        {submitError}
-                    </Typography>
-
-                    <FancyButton
-                        clipThingsProps={{
-                            clipSize: "7px",
-                            clipSlantSize: "0px",
-                            corners: { topLeft: true, topRight: true, bottomLeft: true, bottomRight: true },
-                            backgroundColor: colors.red,
-                            opacity: 1,
-                            border: { borderColor: colors.red, borderThickness: "2px" },
-                            sx: { position: "relative" },
-                        }}
-                        sx={{ px: "1.6rem", py: "1rem", color: "#FFFFFF" }}
-                        onClick={() => setSubmitError(undefined)}
-                    >
-                        <Typography sx={{ fontFamily: fonts.nostromoBlack }}>DISMISS</Typography>
-                    </FancyButton>
-                </Stack>
-            )
-        }
-
-        if (isSubmitting) {
-            return (
-                <Stack spacing="1.8rem" alignItems="center">
-                    <Stack justifyContent="flex-end" sx={{ width: "3rem", height: "3rem", backgroundColor: colors.red, boxShadow: 3 }}>
-                        <Box sx={{ width: "100%", backgroundColor: colors.green, animation: `${heightEffect()} 4s ease-out infinite` }} />
-                    </Stack>
-
-                    <Typography
-                        variant="h5"
-                        sx={{
-                            fontWeight: "fontWeightBold",
-                        }}
-                    >
-                        SUBMITTING RESULTS...
-                    </Typography>
                 </Stack>
             )
         }
@@ -479,7 +504,9 @@ const InfoCard = ({ primaryColor, children, label, sx }: { primaryColor: string;
                 ...sx,
             }}
         >
-            {children}
+            <Stack alignItems="center" justifyContent="center" sx={{ flex: 1 }}>
+                {children}
+            </Stack>
             <Typography variant="caption" sx={{ color: colors.lightGrey, fontFamily: fonts.nostromoBlack }}>
                 {label}
             </Typography>

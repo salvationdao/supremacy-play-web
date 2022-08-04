@@ -173,6 +173,7 @@ export enum GameServerKeys {
     RegisterRepairAgent = "REPAIR:AGENT:REGISTER",
     RepairAgentUpdate = "REPAIR:AGENT:RECORD",
     CompleteRepairAgent = "REPAIR:AGENT:COMPLETE",
+    AbandonRepairAgent = "REPAIR:AGENT:ABANDON",
 
     // Companion App
     AuthGenOneTimeToken = "GEN:ONE:TIME:TOKEN",

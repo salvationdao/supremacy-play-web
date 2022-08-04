@@ -109,6 +109,7 @@ export const SLPDStream = () => {
                 width: "100%",
                 height: "100%",
                 zIndex: siteZIndex.Stream,
+                pointerEvents: "none",
                 div: {
                     display: "block",
                     height: "100% !important",

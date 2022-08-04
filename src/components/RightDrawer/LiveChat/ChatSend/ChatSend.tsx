@@ -334,12 +334,12 @@ const ChatSendInner = ({
                     <Box
                         sx={{
                             background: "#49494933",
-                            width: "100%",
-                            display: "flex",
-                            mb: ".6rem",
-                            p: ".5rem",
+                            mb: ".8rem",
                             boxShadow: 4,
                             borderRadius: 1,
+                            width: "100%",
+                            display: "flex",
+                            p: ".5rem",
                             overflowX: "scroll",
                             scrollBehavior: "smooth",
                             "::-webkit-scrollbar": {
@@ -432,8 +432,15 @@ const ChatSendInner = ({
                     </Box>
                 )}
 
-                {playersResults && (
-                    <MenuList>
+                {playersResults && playersResults.length > 0 && (
+                    <MenuList
+                        sx={{
+                            background: "#49494933",
+                            mb: ".8rem",
+                            boxShadow: 4,
+                            borderRadius: 1,
+                        }}
+                    >
                         <Stack direction={"column-reverse"}>
                             {playersResults.map((r, i) => {
                                 return (
@@ -489,7 +496,6 @@ const ChatSendInner = ({
                 <ClipThing
                     clipSize="8px"
                     border={{
-                        isFancy: true,
                         borderColor: primaryColor,
                         borderThickness: ".25rem",
                     }}

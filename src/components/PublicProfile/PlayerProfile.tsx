@@ -1,4 +1,4 @@
-import { Box, CircularProgress, Stack, Typography } from "@mui/material"
+import { Avatar, Box, CircularProgress, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { useHistory, useParams } from "react-router-dom"
 import { AboutMeSVG, BattleHistorySVG, StatsSVG, SvgAbility, SvgCake, SvgDeath, SvgSkull2, SvgView } from "../../assets"
@@ -7,7 +7,7 @@ import { getUserRankDeets, snakeToTitle, timeSince } from "../../helpers"
 import { useGameServerCommands, useGameServerCommandsUser } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { colors, fonts, theme } from "../../theme/theme"
-import { Faction, UserRank } from "../../types"
+import { Faction, FeatureName, UserRank } from "../../types"
 import { ClipThing } from "../Common/ClipThing"
 import { PageHeader } from "../Common/PageHeader"
 import { ProfileAvatar } from "./AvatarSelect"
@@ -89,7 +89,7 @@ const getOnlineStatus = (time: Date): { status: string; colour: string } => {
 
 export const PlayerProfilePage = () => {
     const { playerGID } = useParams<{ playerGID: string }>()
-    const { user } = useAuth()
+    const { user, userHasFeature } = useAuth()
     const history = useHistory()
 
     const [loading, setLoading] = useState(false)
@@ -105,6 +105,8 @@ export const PlayerProfilePage = () => {
     const isMe = `${user?.gid}` === playerGID
 
     const rankDeets = useMemo(() => (profile?.player.rank ? getUserRankDeets(profile?.player.rank, "1.6rem", "1.6rem") : undefined), [profile?.player.rank])
+
+    const viewAvatar = userHasFeature(FeatureName.profileAvatar)
 
     const onlineStatus = useMemo(
         () => (profile?.active_log?.active_at ? getOnlineStatus(profile?.active_log?.active_at) : undefined),
@@ -220,6 +222,7 @@ export const PlayerProfilePage = () => {
 
     const faction = profile?.faction
     const primaryColor = faction?.primary_color || theme.factionTheme.primary
+    const secondaryColor = faction?.secondary_color || theme.factionTheme.secondary
     const backgroundColor = faction?.background_color || theme.factionTheme.background
 
     if (loading) {
@@ -272,17 +275,35 @@ export const PlayerProfilePage = () => {
                                     },
                                 }}
                             >
-                                <ProfileAvatar
-                                    isOwner={isMe}
-                                    updateAvatar={async (avatar_id: string) => {
-                                        updateAvatar(avatar_id)
-                                    }}
-                                    avatarURL={avatar?.avatar_url || ""}
-                                    primaryColor={primaryColor}
-                                    backgroundColor={backgroundColor}
-                                    factionName={profile.faction?.label}
-                                />
-
+                                {viewAvatar ? (
+                                    <ProfileAvatar
+                                        isOwner={isMe}
+                                        updateAvatar={async (avatar_id: string) => {
+                                            updateAvatar(avatar_id)
+                                        }}
+                                        avatarURL={avatar?.avatar_url || ""}
+                                        primaryColor={primaryColor}
+                                        secondaryColor={secondaryColor}
+                                        backgroundColor={backgroundColor}
+                                        factionName={profile.faction?.label}
+                                    />
+                                ) : (
+                                    <Box display="flex" justifyContent="center" alignItems="center">
+                                        <Avatar
+                                            src={profile.faction?.logo_url}
+                                            alt="Avatar"
+                                            sx={{
+                                                mr: "1rem",
+                                                height: "21rem",
+                                                width: "21rem",
+                                                borderRadius: 1,
+                                                border: `${primaryColor} 2px solid`,
+                                                backgroundColor: primaryColor,
+                                            }}
+                                            variant="square"
+                                        />
+                                    </Box>
+                                )}
                                 <Stack
                                     sx={{
                                         "@media (max-width:900px)": {
@@ -587,6 +608,7 @@ export const PlayerProfilePage = () => {
                         <ProfileWarmachines
                             factionName={profile.faction?.label || ""}
                             playerID={profile.player.id}
+                            secondaryColor={secondaryColor}
                             backgroundColour={backgroundColor}
                             primaryColour={primaryColor}
                         />

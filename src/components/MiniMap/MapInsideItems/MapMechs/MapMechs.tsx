@@ -1,8 +1,13 @@
 import { useMemo } from "react"
-import { useGame } from "../../../../containers"
+import { useGame, useSupremacy } from "../../../../containers"
 import { MapMech } from "./MapMech"
 
 export const MapMechs = () => {
+    const { battleIdentifier } = useSupremacy()
+    return <MapMechsInner key={battleIdentifier} />
+}
+
+const MapMechsInner = () => {
     const { map, warMachines } = useGame()
 
     return useMemo(() => {

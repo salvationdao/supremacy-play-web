@@ -82,7 +82,7 @@ export const TotalAndPageSizeOptions = ({
                         ":hover": { backgroundColor: primaryColor },
                     }}
                 >
-                    <SvgFilter size="1.2rem" fill={secondaryColor} />
+                    <SvgFilter size="1.2rem" fill={isFiltersExpanded ? primaryColor : secondaryColor} />
                 </Button>
             )}
 

@@ -173,13 +173,42 @@ export const UserDetailsPopover = ({
                             </Stack>
                         </Stack>
 
+                        {userHasFeature(FeatureName.profileAvatar) && (
+                            <FancyButton
+                                clipThingsProps={{
+                                    clipSize: "5px",
+                                    clipSlantSize: "0px",
+                                    backgroundColor: factionColor,
+                                    opacity: 1,
+                                    border: { borderColor: factionColor, borderThickness: "2px" },
+                                    sx: { position: "relative", mt: ".7rem" },
+                                }}
+                                sx={{ px: "1.6rem", py: ".1rem", color: factionSecondaryColor }}
+                                to={`/profile/${fromUser.gid}`}
+                                onClick={() => {
+                                    toggleLocalOpen(false)
+                                }}
+                            >
+                                <Typography
+                                    variant="caption"
+                                    sx={{
+                                        color: factionSecondaryColor,
+                                        fontFamily: fonts.nostromoBlack,
+                                    }}
+                                >
+                                    VIEW PROFILE
+                                </Typography>
+                            </FancyButton>
+                        )}
+
                         {fromUser.faction_id === user.faction_id && (
                             <FancyButton
                                 clipThingsProps={{
                                     clipSize: "5px",
+                                    clipSlantSize: "0px",
                                     backgroundColor: factionColor,
                                     opacity: 1,
-                                    border: { isFancy: true, borderColor: factionColor, borderThickness: "2px" },
+                                    border: { borderColor: factionColor, borderThickness: "2px" },
                                     sx: { position: "relative", mt: ".7rem" },
                                 }}
                                 sx={{ px: "1.6rem", py: ".1rem", color: factionSecondaryColor }}
@@ -199,13 +228,15 @@ export const UserDetailsPopover = ({
                                 </Typography>
                             </FancyButton>
                         )}
+
                         {userHasFeature(FeatureName.chatBan) && fromUser.id !== user.id && (
                             <FancyButton
                                 clipThingsProps={{
                                     clipSize: "5px",
+                                    clipSlantSize: "0px",
                                     backgroundColor: factionColor,
                                     opacity: 1,
-                                    border: { isFancy: true, borderColor: factionColor, borderThickness: "2px" },
+                                    border: { borderColor: factionColor, borderThickness: "2px" },
                                     sx: { position: "relative", mt: ".7rem" },
                                 }}
                                 sx={{ px: "1.6rem", py: ".1rem", color: factionSecondaryColor }}

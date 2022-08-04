@@ -1,6 +1,6 @@
 import * as THREE from "three"
 import { getRandomColor } from "../../../../../helpers"
-import { blockConfig } from "./config"
+import { blockConfig, skins } from "./config"
 
 export interface Dimension {
     width: number
@@ -21,11 +21,25 @@ export class Block {
     position: Position
     color: THREE.Color
     colorOffset: number
-    material: THREE.MeshToonMaterial
     axis: string | null
-    mesh: THREE.Mesh<THREE.BoxGeometry, THREE.MeshToonMaterial>
+    mesh: THREE.Mesh<THREE.BoxGeometry, THREE.MeshBasicMaterial[]>
+    topTexture: THREE.Texture
+    leftTexture: THREE.Texture
+    bottomTexture: THREE.Texture
 
-    constructor(lastBlock?: { dimension: Dimension; position: Position; color: THREE.Color; axis: string | null }, shouldReplace = false) {
+    constructor(
+        lastBlock?: {
+            dimension: Dimension
+            position: Position
+            color: THREE.Color
+            axis: string | null
+            topTexture: THREE.Texture
+            leftTexture: THREE.Texture
+            bottomTexture: THREE.Texture
+        },
+        shouldReplace = false,
+        isFalling = false,
+    ) {
         this.MOVE_AMOUNT = 12
 
         this.speed = 0
@@ -64,6 +78,7 @@ export class Block {
             y = height
             z = 0
         }
+
         this.dimension.width = width
         this.dimension.height = height
         this.dimension.depth = depth
@@ -96,12 +111,60 @@ export class Block {
         // create block
         const geometry = new THREE.BoxGeometry(this.dimension.width, this.dimension.height, this.dimension.depth)
         geometry.applyMatrix4(new THREE.Matrix4().makeTranslation(this.dimension.width / 2, this.dimension.height / 2, this.dimension.depth / 2))
-        this.material = new THREE.MeshToonMaterial({
-            color: this.color,
-            // shading: THREE.FlatShading,
-        })
-        this.mesh = new THREE.Mesh(geometry, this.material)
+
+        // handle skin
+        if (lastBlock && shouldReplace) {
+            this.topTexture = lastBlock.topTexture
+            this.leftTexture = lastBlock.leftTexture
+            this.bottomTexture = lastBlock.bottomTexture
+
+            if (!isFalling) {
+                this.cover(this.topTexture, this.dimension.width / this.dimension.depth)
+                this.cover(this.leftTexture, this.dimension.width / this.dimension.height)
+                this.cover(this.bottomTexture, this.dimension.depth / this.dimension.height)
+            }
+        } else {
+            // loading the texture from image
+            const skin = this.getRandomSkin()
+            const textureLoader = new THREE.TextureLoader()
+            this.topTexture = textureLoader.load(skin.top, () => this.cover(this.topTexture, this.dimension.width / this.dimension.depth))
+            this.leftTexture = textureLoader.load(skin.left, () => this.cover(this.leftTexture, this.dimension.width / this.dimension.height))
+            this.bottomTexture = textureLoader.load(skin.bottom, () => this.cover(this.bottomTexture, this.dimension.depth / this.dimension.height))
+        }
+
+        // define materials from texture
+        const topMaterial = new THREE.MeshBasicMaterial({ map: this.topTexture })
+        const leftMaterial = new THREE.MeshBasicMaterial({ map: this.leftTexture })
+        const bottomMaterial = new THREE.MeshBasicMaterial({ map: this.bottomTexture })
+
+        const materials = [
+            bottomMaterial, // bottom
+            bottomMaterial, // bottom opposite
+            topMaterial, // top
+            topMaterial, // top opposite
+            leftMaterial, // left
+            leftMaterial, // left opposite
+        ]
+
+        this.mesh = new THREE.Mesh(geometry, materials)
         this.mesh.position.set(this.position.x, this.position.y, this.position.z)
+    }
+
+    getRandomSkin() {
+        return skins[Math.floor(Math.random() * skins.length)]
+    }
+
+    cover(texture: THREE.Texture, aspect: number) {
+        if (!texture.image) return null
+
+        texture.matrixAutoUpdate = false
+        const imageAspect = texture.image.width / texture.image.height
+
+        if (aspect < imageAspect) {
+            texture.matrix.setUvTransform(0, 0, aspect / imageAspect, 1, 0, 0.5, 0.5)
+        } else {
+            texture.matrix.setUvTransform(0, 0, 1, imageAspect / aspect, 0, 0.5, 0.5)
+        }
     }
 
     getAxis() {
@@ -122,7 +185,18 @@ export class Block {
 }
 
 export class NormalBlock extends Block {
-    constructor(lastBlock: { dimension: Dimension; position: Position; color: THREE.Color; axis: string | null }, shouldReplace = false) {
+    constructor(
+        lastBlock: {
+            dimension: Dimension
+            position: Position
+            color: THREE.Color
+            axis: string | null
+            topTexture: THREE.Texture
+            leftTexture: THREE.Texture
+            bottomTexture: THREE.Texture
+        },
+        shouldReplace = false,
+    ) {
         super(lastBlock, shouldReplace)
     }
 
@@ -142,8 +216,16 @@ export class NormalBlock extends Block {
 }
 
 export class FallingBlock extends Block {
-    constructor(lastBlock: { dimension: Dimension; position: Position; color: THREE.Color; axis: string | null }) {
-        super(lastBlock, true)
+    constructor(lastBlock: {
+        dimension: Dimension
+        position: Position
+        color: THREE.Color
+        axis: string | null
+        topTexture: THREE.Texture
+        leftTexture: THREE.Texture
+        bottomTexture: THREE.Texture
+    }) {
+        super(lastBlock, true, true)
         this.speed *= 2
         this.direction = this.speed
     }

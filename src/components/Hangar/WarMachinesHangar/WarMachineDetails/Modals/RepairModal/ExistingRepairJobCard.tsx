@@ -11,7 +11,7 @@ import { colors, fonts } from "../../../../../../theme/theme"
 import { RepairOffer } from "../../../../../../types/jobs"
 import { AmountItem } from "../DeployModal"
 
-export const ExistingRepairJobCard = ({ repairOffer }: { repairOffer: RepairOffer }) => {
+export const ExistingRepairJobCard = ({ repairOffer, remainDamagedBlocks }: { repairOffer: RepairOffer; remainDamagedBlocks: number }) => {
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsUser("/user_commander")
     const [isSubmitting, setIsSubmitting] = useState(false)
@@ -61,6 +61,7 @@ export const ExistingRepairJobCard = ({ repairOffer }: { repairOffer: RepairOffe
 
             <FancyButton
                 loading={isSubmitting}
+                disabled={remainDamagedBlocks <= 0}
                 clipThingsProps={{
                     clipSize: "5px",
                     backgroundColor: "#222222",

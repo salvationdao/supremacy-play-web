@@ -122,7 +122,7 @@ export class Game {
             const { axis, dimensionAlongAxis } = lastBlock.getAxis()
             const distance = lastBlock.position[axis as keyof typeof lastBlock.position] - lastToLastBlock.position[axis as keyof typeof lastBlock.position]
             let positionFalling, position
-            const { color } = lastBlock
+            const { color, topTexture, leftTexture, bottomTexture } = lastBlock
             const newLength = lastBlock.dimension[dimensionAlongAxis as keyof typeof lastBlock.dimension] - Math.abs(distance)
 
             // Game over
@@ -160,7 +160,7 @@ export class Game {
 
             this.blocks.pop()
             this.stage.remove(lastBlock.mesh)
-            lastBlock = new NormalBlock({ dimension, position, color, axis }, true)
+            lastBlock = new NormalBlock({ dimension, position, color, axis, topTexture, leftTexture, bottomTexture }, true)
 
             this.blocks.push(lastBlock)
             this.stage.add(lastBlock.mesh)
@@ -170,6 +170,9 @@ export class Game {
                 position: positionFalling,
                 color,
                 axis: null,
+                topTexture,
+                leftTexture,
+                bottomTexture,
             })
 
             this.fallingBlocks.push(fallingBlock)
@@ -177,6 +180,7 @@ export class Game {
         }
 
         this.score = Math.max(this.blocks.length - 1, 0)
+
         if (lastBlock) {
             this.oneNewGamePattern({
                 score: this.score,

@@ -32,6 +32,7 @@ export const PlayerAbilitiesStore = () => {
     const [ownedAbilities, setOwnedAbilities] = useState<Map<string, number>>(new Map())
 
     useEffect(() => {
+        if (!userID) return
         ;(async () => {
             try {
                 const resp = await queryAvailability(userID)
@@ -182,8 +183,6 @@ export const PlayerAbilitiesStore = () => {
                             pt: "1.28rem",
                             color: colors.grey,
                             fontFamily: fonts.nostromoBold,
-                            userSelect: "text !important",
-                            opacity: 0.9,
                             textAlign: "center",
                         }}
                     >
