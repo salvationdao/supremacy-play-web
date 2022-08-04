@@ -14,7 +14,7 @@ import { MoveCommand } from "./MoveCommand"
 
 // in rems
 const WIDTH_AVATAR = 8.6
-const WIDTH_BODY = 17
+const WIDTH_BODY = 25
 const HEIGHT = 8
 export const DEAD_OPACITY = 0.6
 export const WIDTH_SKILL_BUTTON = 3.8
@@ -38,7 +38,7 @@ export const WarMachineItem = ({
     const { getFaction } = useSupremacy()
     const { highlightedMechParticipantID, setHighlightedMechParticipantID } = useMiniMap()
 
-    const { hash, participantID, factionID: wmFactionID, name, imageAvatar, tier, ownedByID } = warMachine
+    const { hash, participantID, factionID: wmFactionID, name, imageAvatar, tier, ownedByID, ownerUsername } = warMachine
 
     // Subscribe to war machine ability updates
     const gameAbilities = useGameServerSubscriptionFaction<GameAbility[] | undefined>({
@@ -199,6 +199,7 @@ export const WarMachineItem = ({
                     {isExpanded && (
                         <Stack
                             onClick={handleClick}
+                            spacing=".2rem"
                             sx={{
                                 flex: 1,
                                 position: "relative",
@@ -224,10 +225,26 @@ export const WarMachineItem = ({
                                     display: "-webkit-box",
                                     overflowWrap: "anywhere",
                                     WebkitBoxOrient: "vertical",
-                                    WebkitLineClamp: 2,
+                                    WebkitLineClamp: 1,
                                 }}
                             >
                                 {name || hash}
+                            </Typography>
+
+                            <Typography
+                                variant="h6"
+                                sx={{
+                                    lineHeight: 1,
+                                    textOverflow: "ellipsis",
+                                    overflow: "hidden",
+                                    whiteSpace: "normal",
+                                    display: "-webkit-box",
+                                    overflowWrap: "anywhere",
+                                    WebkitBoxOrient: "vertical",
+                                    WebkitLineClamp: 1,
+                                }}
+                            >
+                                {ownerUsername}
                             </Typography>
                         </Stack>
                     )}
