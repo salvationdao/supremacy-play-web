@@ -2,7 +2,7 @@ import { Box, LinearProgress, Stack, Typography } from "@mui/material"
 import { TourProvider } from "@reactour/tour"
 import * as Sentry from "@sentry/react"
 import { Buffer } from "buffer"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import ReactDOM from "react-dom"
 import { Action, ClientContextProvider, createClient } from "react-fetching-library"
 import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom"
@@ -209,13 +209,18 @@ const tourProviderProps = {
     disableDotsNavigation: true,
 }
 
-const App = () => {
+const Root = () => {
+    const [loggedInUserID, setLoggedInUserID] = useState("")
+    return <App key={loggedInUserID} setLoggedInUserID={setLoggedInUserID} />
+}
+
+const App = ({ setLoggedInUserID }: { setLoggedInUserID: React.Dispatch<React.SetStateAction<string>> }) => {
     return (
         <ThemeProvider>
             <FingerprintProvider>
                 <SnackBarProvider>
                     <ClientContextProvider client={client}>
-                        <AuthProvider>
+                        <AuthProvider setLoggedInUserID={setLoggedInUserID}>
                             <BrowserRouter>
                                 <SupremacyProvider>
                                     <ChatProvider>
@@ -254,4 +259,4 @@ const App = () => {
     )
 }
 
-ReactDOM.render(<App />, document.getElementById("root"))
+ReactDOM.render(<Root />, document.getElementById("root"))

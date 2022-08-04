@@ -14,6 +14,7 @@ import { colors, fonts, siteZIndex } from "../../../theme/theme"
 import { RepairAgent, RepairJob, RepairStatus } from "../../../types/jobs"
 import { ClipThing } from "../../Common/ClipThing"
 import { FancyButton } from "../../Common/FancyButton"
+import { WindowPortal } from "../../Common/WindowPortal"
 import { RepairBlocks } from "../../Hangar/WarMachinesHangar/Common/MechRepairBlocks"
 import { GamePattern } from "./StackTower/src/game"
 import { isWebGLAvailable } from "./StackTower/src/utils"
@@ -64,7 +65,7 @@ export const DoRepairModal = ({
         ? repairJob.blocks_required_repair - repairJob.blocks_repaired
         : repairStatus
         ? repairStatus.blocks_required_repair - repairStatus.blocks_repaired
-        : 0
+        : -1
     const primaryColor = _repairJob?.job_owner.faction_id ? faction.primary_color : theme.factionTheme.primary
     const backgroundColor = _repairJob?.job_owner.faction_id ? faction.background_color : theme.factionTheme.background
     const isFinished = !!(repairJob?.closed_at || (repairJob?.expires_at && repairJob?.expires_at < new Date()) || remainDamagedBlocks <= 0)
@@ -253,7 +254,7 @@ export const DoRepairModal = ({
 
         if (!repairAgent) {
             return (
-                <Stack spacing="2rem" alignItems="center">
+                <Stack spacing="2.3rem" alignItems="center">
                     {submitSuccess && (
                         <>
                             <Box sx={{ textAlign: "center" }}>
@@ -334,6 +335,25 @@ export const DoRepairModal = ({
         submitSuccess,
         captchaToken,
     ])
+
+    if (!open) return null
+
+    const windowed = false
+
+    if (windowed) {
+        return (
+            <WindowPortal
+                title="Supremacy - Repair Job"
+                onClose={onClose}
+                features={{
+                    width: 600,
+                    height: 840,
+                }}
+            >
+                <Box sx={{ width: "100%", height: "100%", border: `${primaryColor} 1.5px solid` }}></Box>
+            </WindowPortal>
+        )
+    }
 
     return (
         <Modal open={open} onClose={repairAgent ? undefined : onClose} sx={{ zIndex: siteZIndex.Modal }}>

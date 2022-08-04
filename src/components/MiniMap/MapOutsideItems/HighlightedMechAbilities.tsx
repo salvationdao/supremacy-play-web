@@ -175,7 +175,7 @@ const AbilityItem = ({ hash, participantID, ability }: { hash: string; participa
                     WebkitBoxOrient: "vertical",
                 }}
             >
-                {ready ? label : `${remainSeconds}s`}
+                {ready ? label : remainSeconds > 300 ? "∞" : `${remainSeconds}s`}
             </Typography>
         </Stack>
     )
