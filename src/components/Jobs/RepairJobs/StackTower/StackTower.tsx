@@ -116,7 +116,7 @@ const TowerStackInner = ({
 
     return useMemo(() => {
         return (
-            <Box sx={{ position: "relative", width: "100%", height: "100%", overflow: "hidden" }}>
+            <Box sx={{ position: "relative", width: "100%", height: "100%", overflow: "hidden", userSelect: "none" }}>
                 <StaticGame backgroundColor={theme.factionTheme.background} setGameState={setGameState} oneNewGamePattern={oneNewGamePattern} />
 
                 {/* Score */}
@@ -128,6 +128,7 @@ const TowerStackInner = ({
                         left: 0,
                         right: 0,
                         textAlign: "center",
+                        pointerEvents: "none",
                         color: gameState === GameState.Ended ? colors.neonBlue : "#FFFFFF",
                         fontFamily: fonts.shareTech,
                         fontWeight: "fontWeightBold",
@@ -136,7 +137,7 @@ const TowerStackInner = ({
                             gameState === GameState.Playing || gameState === GameState.Resetting
                                 ? "translateY(0) scale(1)"
                                 : gameState === GameState.Ended
-                                ? "translateY(-40px) scale(1.5)"
+                                ? "translateY(-60px) scale(1.5)"
                                 : "translateY(-200px) scale(1)",
                         opacity: gameState === GameState.Playing || gameState === GameState.Resetting || gameState === GameState.Ended ? 1 : 0,
                     }}
@@ -150,12 +151,13 @@ const TowerStackInner = ({
                     alignItems="center"
                     sx={{
                         position: "absolute",
-                        top: "23%",
+                        top: "34%",
                         left: 0,
                         right: 0,
                         transition: "all .2s ease",
                         transform: gameState === GameState.Ready ? "translateY(0)" : "translateY(-50px)",
                         opacity: gameState === GameState.Ready ? 1 : 0,
+                        pointerEvents: "none",
                     }}
                 >
                     <Typography
@@ -179,19 +181,25 @@ const TowerStackInner = ({
                     alignItems="center"
                     sx={{
                         position: "absolute",
-                        top: "25%",
+                        top: "22%",
                         left: 0,
                         right: 0,
                         transition: "all .2s ease",
                         transform: gameState === GameState.Ended ? "translateY(0)" : "translateY(-50px)",
                         opacity: gameState === GameState.Ended ? 1 : 0,
+                        pointerEvents: "none",
                     }}
                 >
                     <Typography variant="h3" sx={{ textAlign: "center", fontFamily: fonts.nostromoHeavy }}>
                         Game Over
                     </Typography>
-                    <Typography variant="h6" sx={{ textAlign: "center", fontFamily: fonts.nostromoBlack }}>
+                    <Typography
+                        variant="h6"
+                        sx={{ textAlign: "center", fontFamily: fonts.nostromoBlack, span: { color: colors.neonBlue, fontFamily: "inherit" } }}
+                    >
                         You did great citizen
+                        <br />
+                        <span>Click</span> to continue
                     </Typography>
                 </Stack>
             </Box>
