@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react"
 import FlipMove from "react-flip-move"
 import { ClipThing } from "../.."
 import { EmptyWarMachinesPNG, WarMachineIconPNG } from "../../../assets"
+import { useAuth } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { useArray, useToggle, useUrlQuery } from "../../../hooks"
 import { useGameServerSubscription } from "../../../hooks/useGameServer"
@@ -28,6 +29,7 @@ const sortOptions = [
 ]
 
 export const RepairJobs = () => {
+    const { userID } = useAuth()
     const [query, updateQuery] = useUrlQuery()
     const theme = useTheme()
     const [repairJobModal, setRepairJobModal] = useState<RepairJob>()
@@ -51,6 +53,7 @@ export const RepairJobs = () => {
         {
             URI: "/public/repair_offer/update",
             key: GameServerKeys.SubRepairJobListUpdated,
+            ready: !!userID,
         },
         (payload) => {
             if (!payload || payload.length <= 0) return
