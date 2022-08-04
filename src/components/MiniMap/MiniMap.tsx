@@ -183,9 +183,6 @@ const MiniMapInner = ({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [map, setDefaultWidth, setDefaultHeight])
 
-    let mapName = map.name
-    if (mapName === "NeoTokyo") mapName = "City Block X2"
-
     return useMemo(() => {
         if (!toRender) return null
 
@@ -259,7 +256,7 @@ const MiniMapInner = ({
                                 opacity: 0.8,
                             }}
                         >
-                            {mapName
+                            {map.name
                                 .replace(/([A-Z])/g, " $1")
                                 .trim()
                                 .toUpperCase()}
@@ -290,5 +287,5 @@ const MiniMapInner = ({
             </Stack>
         )
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [toRender, theme.factionTheme.primary, mapName, curWidth, curHeight, remToPxRatio, isMobile, width, height, isPoppedout])
+    }, [toRender, theme.factionTheme.primary, curWidth, curHeight, remToPxRatio, isMobile, width, height, isPoppedout])
 }

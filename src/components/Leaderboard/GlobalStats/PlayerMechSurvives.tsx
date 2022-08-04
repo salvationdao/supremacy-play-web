@@ -57,13 +57,13 @@ export const PlayerMechSurvives = () => {
                 borderThickness: ".2rem",
             }}
             backgroundColor={backgroundColor}
-            sx={{ height: "62rem" }}
         >
             <CoolTable
                 title="MOST MECH SURVIVES"
                 tableHeadings={["TOP 10", "PLAYER", "FACTION", "MECH SURVIVES"]}
                 alignments={["center", "left", "left", "center"]}
                 widths={["19rem", "auto", "auto", "23rem"]}
+                autoHeight
                 items={rankItems}
                 isLoading={isLoading}
                 loadError={loadError}

@@ -28,6 +28,7 @@ interface CoolTableProps<T> {
     tableHeadings: string[]
     alignments?: ("left" | "right" | "center")[]
     widths?: string[]
+    autoHeight?: boolean
     items?: T[]
     renderItem: (
         item: T,
@@ -56,6 +57,7 @@ export const CoolTable = <T,>({
     tableHeadings,
     alignments,
     widths,
+    autoHeight,
     items,
     renderItem,
     isLoading,
@@ -165,7 +167,9 @@ export const CoolTable = <T,>({
 
     return (
         <Box sx={{ position: "relative", height: "100%" }}>
-            <TableContainer sx={{ position: "absolute", width: "100%", height: "100%", "thead, tr, tbody, tfoot": { display: "block" } }}>
+            <TableContainer
+                sx={{ position: autoHeight ? "relative" : "absolute", width: "100%", height: "100%", "thead, tr, tbody, tfoot": { display: "block" } }}
+            >
                 <Table
                     sx={{
                         display: "flex",
