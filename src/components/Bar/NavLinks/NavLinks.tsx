@@ -1,4 +1,5 @@
 import { Stack, Typography, useMediaQuery } from "@mui/material"
+import { Box } from "@mui/system"
 import { Link, useLocation, useRouteMatch } from "react-router-dom"
 import { useAuth } from "../../../containers"
 import { ROUTES_ARRAY } from "../../../routes"
@@ -19,15 +20,7 @@ export const NavLinks = () => {
     if (below1370) return null
 
     return (
-        <Stack
-            direction="row"
-            alignItems="center"
-            spacing="2.2rem"
-            sx={{
-                mx: "2.2rem",
-                height: "100%",
-            }}
-        >
+        <Stack direction="row" alignItems="center" spacing="1.5rem" sx={{ height: "100%", mx: "2rem" }} divider={<Divider />}>
             {ROUTES_ARRAY.map((r) => {
                 if (!r.leftDrawer || !r.leftDrawer.enable || ((r.requireAuth || r.requireFaction) && !userID)) return null
                 const { id } = r
@@ -43,6 +36,15 @@ export const NavLinks = () => {
                     />
                 )
             })}
+        </Stack>
+    )
+}
+
+const Divider = () => {
+    return (
+        <Stack direction="row" alignItems="center" spacing="2px" sx={{ height: "100%", transform: "skewX(-20deg)", pb: "3px" }}>
+            <Box sx={{ height: "12px", width: "2px", backgroundColor: "#FFFFFF40" }} />
+            <Box sx={{ height: "12px", width: "2px", backgroundColor: "#FFFFFF40" }} />
         </Stack>
     )
 }

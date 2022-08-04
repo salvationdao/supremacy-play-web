@@ -22,9 +22,7 @@ export const StackTower = React.memo(function StackTower({
     // Game data
     const [gameState, setGameState] = useState<GameState>(GameState.Loading)
     const [score, setScore] = useState(0)
-
-    const [gamePatterns, setGamePatterns] = useState<GamePattern[]>([])
-    const cumulativeScore = gamePatterns.filter((p) => !p.is_failed && p.score > 0).length
+    const [cumulativeScore, setCumulativeScore] = useState(0)
 
     // As the player plays the mini game, this will be the game updates
     const oneNewGamePattern = useCallback(
@@ -33,22 +31,19 @@ export const StackTower = React.memo(function StackTower({
 
             if (repairAgent?.id) {
                 const resp = await agentRepairUpdate(repairAgent.id, gamePattern)
-                if (resp) {
-                    setGamePatterns((prev) => {
-                        return [...prev, gamePattern]
+                if (resp)
+                    setCumulativeScore((prev) => {
+                        const newCumScore = prev + 1
+                        if (repairAgent?.id && newCumScore === repairAgent?.required_stacks) {
+                            completeAgentRepair(repairAgent.id)
+                            setCumulativeScore(0)
+                        }
+                        return newCumScore
                     })
-                }
             }
         },
-        [agentRepairUpdate, repairAgent?.id],
+        [agentRepairUpdate, completeAgentRepair, repairAgent?.id, repairAgent?.required_stacks],
     )
-
-    // Tell server when we complete one block
-    useEffect(() => {
-        if (!repairAgent?.id || cumulativeScore !== repairAgent?.required_stacks) return
-        completeAgentRepair(repairAgent.id)
-        setGamePatterns([])
-    }, [completeAgentRepair, cumulativeScore, gamePatterns, repairAgent?.id, repairAgent?.required_stacks])
 
     return (
         <Box
