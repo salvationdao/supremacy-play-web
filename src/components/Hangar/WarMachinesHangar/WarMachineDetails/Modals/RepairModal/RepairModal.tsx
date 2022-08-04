@@ -27,13 +27,13 @@ export const RepairModal = ({
     const theme = useTheme()
 
     const repairStatus = useGameServerSubscription<RepairStatus>({
-        URI: `/public_secure/mech/${selectedMechDetails.id}/repair_case`,
+        URI: `/secure_public/mech/${selectedMechDetails.id}/repair_case`,
         key: GameServerKeys.SubMechRepairStatus,
         ready: !!selectedMechDetails.id && !!userID,
     })
 
     const repairOffer = useGameServerSubscription<RepairOffer>({
-        URI: `/public_secure/mech/${selectedMechDetails.id}/active_repair_offer`,
+        URI: `/secure_public/mech/${selectedMechDetails.id}/active_repair_offer`,
         key: GameServerKeys.GetMechRepairJob,
         ready: !!userID,
     })

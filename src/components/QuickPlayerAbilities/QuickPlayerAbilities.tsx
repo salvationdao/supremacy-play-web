@@ -62,7 +62,7 @@ const QuickPlayerAbilitiesInner = ({ onClose, userID }: { onClose: () => void; u
         sale_abilities: SaleAbility[]
     }>(
         {
-            URI: "/public_secure/sale_abilities",
+            URI: "/secure_public/sale_abilities",
             key: GameServerKeys.SubSaleAbilitiesList,
             ready: !!userID,
         },
