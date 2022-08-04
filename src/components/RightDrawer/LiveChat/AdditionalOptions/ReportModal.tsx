@@ -86,82 +86,86 @@ export const ReportModal = ({ message, reportModalOpen, setReportModalOpen }: Re
                     sx={{ position: "relative" }}
                     backgroundColor={backgroundColor}
                 >
-                    <Box sx={{ padding: "1rem" }}>
-                        <Typography variant={"h3"}>Report {message.from_user.username}</Typography>
-                        <Typography>Message:</Typography>
-                        <Typography>{message.message}</Typography>
-                        <Stack direction={"row"} sx={{ alignItems: "center" }}>
-                            <Typography sx={{ mr: "1rem" }}>Reason:</Typography>
-                            <Select
-                                sx={{
-                                    width: "100%",
-                                    borderRadius: 0.5,
-                                    "&:hover": {
+                    <Box sx={{ padding: "2rem", display: "grid", gridTemplateColumns: "70px 1fr" }}>
+                        <Typography variant={"h3"} sx={{ gridColumn: "1 / 3" }}>
+                            Report {message.from_user.username}
+                        </Typography>
+                        <Typography sx={{ gridColumn: "1 / 2" }}>Message:</Typography>
+                        <Typography sx={{ gridColumn: "2 / 3" }}>{message.message}</Typography>
+
+                        <Typography sx={{ mr: "1rem", gridColumn: "1 / 2" }}>Reason:</Typography>
+                        <Select
+                            sx={{
+                                width: "100%",
+                                gridColumn: "2 / 3",
+                                borderRadius: 0.5,
+                                "&:hover": {
+                                    backgroundColor: primaryColor,
+                                    ".MuiTypography-root": { color: (theme) => theme.factionTheme.secondary },
+                                },
+                                ".MuiTypography-root": {
+                                    px: "1rem",
+                                    py: ".5rem",
+                                },
+                                "& .MuiSelect-outlined": { px: ".8rem", pt: ".2rem", pb: 0 },
+                            }}
+                            value={reason ?? ""}
+                            MenuProps={{
+                                variant: "menu",
+                                sx: {
+                                    "&& .Mui-selected": {
+                                        ".MuiTypography-root": {
+                                            color: secondaryColor,
+                                        },
                                         backgroundColor: primaryColor,
-                                        ".MuiTypography-root": { color: (theme) => theme.factionTheme.secondary },
                                     },
-                                    ".MuiTypography-root": {
-                                        px: "1rem",
-                                        py: ".5rem",
-                                    },
-                                    "& .MuiSelect-outlined": { px: ".8rem", pt: ".2rem", pb: 0 },
-                                }}
-                                value={reason ?? ""}
-                                MenuProps={{
-                                    variant: "menu",
+                                },
+                                PaperProps: {
                                     sx: {
-                                        "&& .Mui-selected": {
-                                            ".MuiTypography-root": {
-                                                color: secondaryColor,
-                                            },
-                                            backgroundColor: primaryColor,
-                                        },
+                                        backgroundColor: colors.darkNavy,
+                                        borderRadius: 0.5,
                                     },
-                                    PaperProps: {
-                                        sx: {
-                                            backgroundColor: colors.darkNavy,
-                                            borderRadius: 0.5,
-                                        },
-                                    },
-                                }}
-                            >
-                                {Object.values(reasons).map((x, i) => {
-                                    return (
-                                        <MenuItem
-                                            key={x + i}
-                                            value={x}
-                                            onClick={() => {
-                                                setReason(x)
-                                            }}
-                                            sx={{ "&:hover": { backgroundColor: "#FFFFFF20" } }}
-                                        >
-                                            <Typography textTransform="uppercase">{x}</Typography>
-                                        </MenuItem>
-                                    )
-                                })}
-                            </Select>
-                        </Stack>
+                                },
+                            }}
+                        >
+                            {Object.values(reasons).map((x, i) => {
+                                return (
+                                    <MenuItem
+                                        key={x + i}
+                                        value={x}
+                                        onClick={() => {
+                                            setReason(x)
+                                        }}
+                                        sx={{ "&:hover": { backgroundColor: "#FFFFFF20" } }}
+                                    >
+                                        <Typography textTransform="uppercase">{x}</Typography>
+                                    </MenuItem>
+                                )
+                            })}
+                        </Select>
                         {reason === reasons.Other && (
-                            <Stack direction={"row"} sx={{ alignItems: "center" }}>
+                            <Stack direction={"row"} sx={{ alignItems: "center", gridColumn: "1 / 3", ml: "3rem" }}>
                                 <Typography>Description:</Typography>
                                 <TextField
                                     value={otherDescription}
                                     onChange={(e) => {
                                         setOtherDescription(e.target.value)
                                     }}
+                                    sx={{ width: "100%", ml: "1rem" }}
                                 />
                             </Stack>
                         )}
-                        <Stack direction={"row"} sx={{ alignItems: "center" }}>
-                            <Typography>Comments:</Typography>
-                            <TextField
-                                value={description}
-                                onChange={(e) => {
-                                    setDescription(e.target.value)
-                                }}
-                            />
-                        </Stack>
-                        <FancyButton onClick={() => handleReport()}>Report</FancyButton>
+                        <Typography sx={{ gridColumn: "1 / 2" }}>Comments:</Typography>
+                        <TextField
+                            value={description}
+                            onChange={(e) => {
+                                setDescription(e.target.value)
+                            }}
+                            sx={{ gridColumn: "2 / 3" }}
+                        />
+                        <FancyButton sx={{ gridColumn: "1 / 4" }} onClick={() => handleReport()}>
+                            Report
+                        </FancyButton>
                     </Box>
                 </ClipThing>
             </Box>

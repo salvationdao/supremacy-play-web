@@ -318,16 +318,17 @@ export const TextMessage = ({
                             <SvgReportFlag
                                 fill={"grey"}
                                 size={"1.5rem"}
-                                sx={{ mr: "1rem", opacity: isHovered ? "100%" : "0", cursor: "pointer" }}
+                                sx={{ mr: "1rem", opacity: isHovered ? "100%" : "0", cursor: user.id ? "pointer" : "cursor" }}
                                 onClick={() => {
+                                    if (!user.id) return
                                     setReportModalOpen(true)
                                 }}
                             />
                             <Box sx={{ fontSize: `${renderFontSize()}rem`, zIndex: isHovered ? 2 : 1 }}>{chatMessage}</Box>
                         </Stack>
 
-                        {!!metadata?.likes.net && <Reactions fontSize={fontSize} data={data} getFaction={getFaction} />}
-                        {isHovered && <Reactions fontSize={fontSize} hoverOnly={true} data={data} getFaction={getFaction} />}
+                        {!!metadata?.likes.net && <Reactions fontSize={fontSize} data={data} />}
+                        {isHovered && <Reactions fontSize={fontSize} hoverOnly={true} data={data} />}
                     </Stack>
                 </Box>
                 {reportModalOpen && <ReportModal message={data} setReportModalOpen={setReportModalOpen} reportModalOpen={reportModalOpen} />}
