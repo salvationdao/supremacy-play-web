@@ -43,7 +43,7 @@ export const DoRepairModal = ({
 
     useGameServerSubscription<RepairJob>(
         {
-            URI: `/public/repair_offer/${_repairJob?.id}`,
+            URI: `/secure_public/repair_offer/${_repairJob?.id}`,
             key: GameServerKeys.SubRepairJobStatus,
             ready: !!repairJob?.id && !!userID,
         },
@@ -337,173 +337,181 @@ export const DoRepairModal = ({
         captchaToken,
     ])
 
+    const Wrapper = useCallback(
+        ({ children }: { children: ReactNode }) => {
+            const windowed = false
+
+            if (windowed) {
+                return (
+                    <WindowPortal
+                        title="Supremacy - Repair Job"
+                        onClose={onClose}
+                        features={{
+                            width: 600,
+                            height: 840,
+                        }}
+                    >
+                        <Box sx={{ width: "100%", height: "100%", border: `${primaryColor} 1.5px solid` }}>{children}</Box>
+                    </WindowPortal>
+                )
+            }
+
+            return (
+                <Modal open={open} onClose={repairAgent ? undefined : onClose} sx={{ zIndex: siteZIndex.Modal }}>
+                    <Box
+                        sx={{
+                            position: "absolute",
+                            top: "50%",
+                            left: "50%",
+                            transform: "translate(-50%, -50%)",
+                            width: "80vw",
+                            height: "90vh",
+                            maxWidth: "80rem",
+                            maxHeight: "120rem",
+                            boxShadow: 6,
+                            outline: "none",
+                        }}
+                    >
+                        <ClipThing
+                            clipSize="8px"
+                            border={{
+                                borderColor: primaryColor,
+                                borderThickness: ".3rem",
+                            }}
+                            corners={{
+                                topLeft: true,
+                                topRight: true,
+                                bottomLeft: true,
+                                bottomRight: true,
+                            }}
+                            sx={{ position: "relative", height: "100%", width: "100%" }}
+                            backgroundColor={backgroundColor}
+                        >
+                            {children}
+
+                            {!repairAgent && (
+                                <IconButton size="small" onClick={onClose} sx={{ position: "absolute", top: ".5rem", right: ".5rem" }}>
+                                    <SvgClose size="2.6rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
+                                </IconButton>
+                            )}
+                        </ClipThing>
+                    </Box>
+                </Modal>
+            )
+        },
+        [backgroundColor, onClose, open, primaryColor, repairAgent],
+    )
+
     if (!open) return null
 
-    const windowed = false
-
-    if (windowed) {
-        return (
-            <WindowPortal
-                title="Supremacy - Repair Job"
-                onClose={onClose}
-                features={{
-                    width: 600,
-                    height: 840,
-                }}
-            >
-                <Box sx={{ width: "100%", height: "100%", border: `${primaryColor} 1.5px solid` }}></Box>
-            </WindowPortal>
-        )
-    }
-
     return (
-        <Modal open={open} onClose={repairAgent ? undefined : onClose} sx={{ zIndex: siteZIndex.Modal }}>
-            <Box
-                sx={{
-                    position: "absolute",
-                    top: "50%",
-                    left: "50%",
-                    transform: "translate(-50%, -50%)",
-                    width: "80vw",
-                    height: "90vh",
-                    maxWidth: "80rem",
-                    maxHeight: "120rem",
-                    boxShadow: 6,
-                    outline: "none",
-                }}
-            >
-                <ClipThing
-                    clipSize="8px"
-                    border={{
-                        borderColor: primaryColor,
-                        borderThickness: ".3rem",
-                    }}
-                    corners={{
-                        topLeft: true,
-                        topRight: true,
-                        bottomLeft: true,
-                        bottomRight: true,
-                    }}
-                    sx={{ position: "relative", height: "100%", width: "100%" }}
-                    backgroundColor={backgroundColor}
-                >
-                    <Stack spacing="2rem" sx={{ p: "3.6rem 3.8rem", height: "100%" }}>
-                        {/* Top blocks */}
-                        <Stack spacing="2.6rem" direction="row" alignItems="center" sx={{ pl: ".5rem" }}>
-                            <SvgCubes size="5rem" />
-                            <Stack spacing=".6rem">
-                                <Typography
-                                    variant="h5"
-                                    sx={{
-                                        fontFamily: fonts.nostromoBlack,
-                                        span: { fontFamily: fonts.nostromoHeavy, color: colors.orange },
-                                    }}
-                                >
-                                    <span>{remainDamagedBlocks}</span> BLOCKS REMAINING
-                                </Typography>
-                                <RepairBlocks
-                                    size={12}
-                                    defaultBlocks={repairJob?.blocks_required_repair || repairStatus?.blocks_required_repair}
-                                    remainDamagedBlocks={remainDamagedBlocks}
-                                    hideNumber
-                                />
-                            </Stack>
-                        </Stack>
-
-                        {/* Info cards */}
-                        {repairJob && (
-                            <Stack direction="row" spacing="1.6rem" justifyContent="center">
-                                <InfoCard primaryColor={primaryColor} label="ACTIVE AGENTS">
-                                    <Typography
-                                        variant="h4"
-                                        sx={{ fontWeight: "fontWeightBold", color: repairJob.working_agent_count <= 3 ? colors.green : colors.orange }}
-                                    >
-                                        {repairJob.working_agent_count.toString()}
-                                    </Typography>
-                                </InfoCard>
-
-                                <InfoCard primaryColor={primaryColor} label="REWARD PER BLOCK">
-                                    <Stack direction="row" alignItems="center">
-                                        <SvgSupToken size="3rem" fill={colors.yellow} />
-                                        <Typography variant="h4" sx={{ fontWeight: "fontWeightBold" }}>
-                                            {supFormatterNoFixed(repairJob.sups_worth_per_block || "0", 2)}
-                                        </Typography>
-                                    </Stack>
-                                </InfoCard>
-
-                                <InfoCard primaryColor={primaryColor} label="REMAINING REWARD">
-                                    <Stack direction="row" alignItems="center">
-                                        <SvgSupToken size="3rem" fill={colors.yellow} />
-                                        <Typography variant="h4" sx={{ fontWeight: "fontWeightBold" }}>
-                                            {supFormatterNoFixed(
-                                                new BigNumber(repairJob.sups_worth_per_block || "0").multipliedBy(remainDamagedBlocks).toString(),
-                                                1,
-                                            )}
-                                        </Typography>
-                                    </Stack>
-                                </InfoCard>
-
-                                <InfoCard primaryColor={primaryColor} label="TIME REMAINING">
-                                    <Countdown endTime={repairJob.expires_at} />
-                                </InfoCard>
-                            </Stack>
-                        )}
-
-                        {/* Game */}
-                        <Box sx={{ flex: 1, position: "relative" }}>
-                            <Box
-                                sx={{
-                                    position: "absolute",
-                                    left: "50%",
-                                    top: "50%",
-                                    width: "90%",
-                                    transform: "translate(-50%, -50%)",
-                                    zIndex: 99,
-                                }}
-                            >
-                                {overlayContent}
-                            </Box>
-
-                            <StackTower
-                                primaryColor={primaryColor}
-                                disableGame={!repairAgent || !!submitError || isSubmitting || isFinished}
-                                repairAgent={repairAgent}
-                                agentRepairUpdate={agentRepairUpdate}
-                                completeAgentRepair={completeAgentRepair}
-                            />
-                        </Box>
-
-                        {/* Button */}
-                        {repairAgent && (
-                            <FancyButton
-                                clipThingsProps={{
-                                    clipSize: "7px",
-                                    clipSlantSize: "0px",
-                                    corners: { topLeft: true, topRight: true, bottomLeft: true, bottomRight: true },
-                                    backgroundColor: backgroundColor,
-                                    opacity: 1,
-                                    border: { borderColor: colors.red, borderThickness: "2px" },
-                                    sx: { position: "relative" },
-                                }}
-                                sx={{ px: "1.6rem", py: "1rem", color: colors.red }}
-                                onClick={abandonJob}
-                            >
-                                <Typography sx={{ color: colors.red, fontFamily: fonts.nostromoBlack }}>ABANDON JOB</Typography>
-                            </FancyButton>
-                        )}
-
-                        {/* Error message */}
-                        {error && <Typography sx={{ color: colors.red }}>{error}</Typography>}
+        <Wrapper>
+            <Stack spacing="2rem" sx={{ p: "3.6rem 3.8rem", height: "100%" }}>
+                {/* Top blocks */}
+                <Stack spacing="2.6rem" direction="row" alignItems="center" sx={{ pl: ".5rem" }}>
+                    <SvgCubes size="5rem" />
+                    <Stack spacing=".6rem">
+                        <Typography
+                            variant="h5"
+                            sx={{
+                                fontFamily: fonts.nostromoBlack,
+                                span: { fontFamily: fonts.nostromoHeavy, color: colors.orange },
+                            }}
+                        >
+                            <span>{remainDamagedBlocks}</span> BLOCKS REMAINING
+                        </Typography>
+                        <RepairBlocks
+                            size={12}
+                            defaultBlocks={repairJob?.blocks_required_repair || repairStatus?.blocks_required_repair}
+                            remainDamagedBlocks={remainDamagedBlocks}
+                            hideNumber
+                        />
                     </Stack>
+                </Stack>
 
-                    {!repairAgent && (
-                        <IconButton size="small" onClick={onClose} sx={{ position: "absolute", top: ".5rem", right: ".5rem" }}>
-                            <SvgClose size="2.6rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
-                        </IconButton>
-                    )}
-                </ClipThing>
-            </Box>
-        </Modal>
+                {/* Info cards */}
+                {repairJob && (
+                    <Stack direction="row" spacing="1.6rem" justifyContent="center">
+                        <InfoCard primaryColor={primaryColor} label="ACTIVE AGENTS">
+                            <Typography
+                                variant="h4"
+                                sx={{ fontWeight: "fontWeightBold", color: repairJob.working_agent_count <= 3 ? colors.green : colors.orange }}
+                            >
+                                {repairJob.working_agent_count.toString()}
+                            </Typography>
+                        </InfoCard>
+
+                        <InfoCard primaryColor={primaryColor} label="REWARD PER BLOCK">
+                            <Stack direction="row" alignItems="center">
+                                <SvgSupToken size="3rem" fill={colors.yellow} />
+                                <Typography variant="h4" sx={{ fontWeight: "fontWeightBold" }}>
+                                    {supFormatterNoFixed(repairJob.sups_worth_per_block || "0", 2)}
+                                </Typography>
+                            </Stack>
+                        </InfoCard>
+
+                        <InfoCard primaryColor={primaryColor} label="REMAINING REWARD">
+                            <Stack direction="row" alignItems="center">
+                                <SvgSupToken size="3rem" fill={colors.yellow} />
+                                <Typography variant="h4" sx={{ fontWeight: "fontWeightBold" }}>
+                                    {supFormatterNoFixed(new BigNumber(repairJob.sups_worth_per_block || "0").multipliedBy(remainDamagedBlocks).toString(), 1)}
+                                </Typography>
+                            </Stack>
+                        </InfoCard>
+
+                        <InfoCard primaryColor={primaryColor} label="TIME REMAINING">
+                            <Countdown endTime={repairJob.expires_at} />
+                        </InfoCard>
+                    </Stack>
+                )}
+
+                {/* Game */}
+                <Box sx={{ flex: 1, position: "relative" }}>
+                    <Box
+                        sx={{
+                            position: "absolute",
+                            left: "50%",
+                            top: "50%",
+                            width: "90%",
+                            transform: "translate(-50%, -50%)",
+                            zIndex: 99,
+                        }}
+                    >
+                        {overlayContent}
+                    </Box>
+
+                    <StackTower
+                        primaryColor={primaryColor}
+                        disableGame={!repairAgent || !!submitError || isSubmitting || isFinished}
+                        repairAgent={repairAgent}
+                        agentRepairUpdate={agentRepairUpdate}
+                        completeAgentRepair={completeAgentRepair}
+                    />
+                </Box>
+
+                {/* Button */}
+                {repairAgent && (
+                    <FancyButton
+                        clipThingsProps={{
+                            clipSize: "7px",
+                            clipSlantSize: "0px",
+                            corners: { topLeft: true, topRight: true, bottomLeft: true, bottomRight: true },
+                            backgroundColor: backgroundColor,
+                            opacity: 1,
+                            border: { borderColor: colors.red, borderThickness: "2px" },
+                            sx: { position: "relative" },
+                        }}
+                        sx={{ px: "1.6rem", py: "1rem", color: colors.red }}
+                        onClick={abandonJob}
+                    >
+                        <Typography sx={{ color: colors.red, fontFamily: fonts.nostromoBlack }}>ABANDON JOB</Typography>
+                    </FancyButton>
+                )}
+
+                {/* Error message */}
+                {error && <Typography sx={{ color: colors.red }}>{error}</Typography>}
+            </Stack>
+        </Wrapper>
     )
 }
 

@@ -95,7 +95,7 @@ const initialState: AuthState = {
 
 export const AuthContext = createContext<AuthState>(initialState)
 
-export const AuthProvider = ({ setLoggedInUserID, children }: { setLoggedInUserID: React.Dispatch<React.SetStateAction<string>>; children: ReactNode }) => {
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [isLoggingIn, setIsLoggingIn] = useState(true)
     const [passportPopup, setPassportPopup] = useState<Window | null>(null)
     const popupCheckInterval = useRef<NodeJS.Timer>()
@@ -126,11 +126,6 @@ export const AuthProvider = ({ setLoggedInUserID, children }: { setLoggedInUserI
     }, [])
 
     useEffect(() => {
-        if (!userID) return
-        setLoggedInUserID(userID)
-    }, [setLoggedInUserID, userID])
-
-    useEffect(() => {
         if (typeof document.hidden !== "undefined" && typeof document.addEventListener !== "undefined") {
             document.addEventListener("visibilitychange", handleVisibilityChange)
         } else {
@@ -144,6 +139,7 @@ export const AuthProvider = ({ setLoggedInUserID, children }: { setLoggedInUserI
     const authCheckCallback = useCallback(
         async (event?: MessageEvent) => {
             if (event && !("token" in event.data)) return
+
             // Check passport server login
             if (!userFromPassport) {
                 try {
