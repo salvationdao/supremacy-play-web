@@ -1,16 +1,17 @@
 import { Avatar, Box, CircularProgress, Fade, Modal, Pagination, Stack, Tab, Tabs, Typography, useMediaQuery } from "@mui/material"
 
 import { SyntheticEvent, useCallback, useEffect, useMemo, useState } from "react"
-import { EmptyWarMachinesPNG, SvgClose } from "../../assets"
-import { useSnackbar } from "../../containers"
-import { parseString } from "../../helpers"
-import { usePagination, useUrlQuery } from "../../hooks"
-import { useGameServerCommandsUser, useGameServerSubscription } from "../../hooks/useGameServer"
-import { GameServerKeys } from "../../keys"
-import { colors, fonts, siteZIndex } from "../../theme/theme"
-import { ClipThing } from "../Common/ClipThing"
-import { FancyButton } from "../Common/FancyButton"
-import { PageHeader } from "../Common/PageHeader"
+import { EmptyWarMachinesPNG, SvgClose } from "../../../assets"
+import { useSnackbar } from "../../../containers"
+import { parseString } from "../../../helpers"
+import { usePagination, useUrlQuery } from "../../../hooks"
+import { useGameServerCommandsUser, useGameServerSubscription } from "../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../keys"
+import { colors, fonts, siteZIndex } from "../../../theme/theme"
+import { ClipThing } from "../../Common/ClipThing"
+import { ConfirmModal } from "../../Common/ConfirmModal"
+import { FancyButton } from "../../Common/FancyButton"
+import { PageHeader } from "../../Common/PageHeader"
 
 interface CustomAvatarProps {
     playerID: string
@@ -20,6 +21,7 @@ interface CustomAvatarProps {
     backgroundColor: string
     submitting: boolean
     onClose: () => void
+    updateAvatar: (avatarID: string, isCustom: boolean) => Promise<void>
 }
 
 interface CustomAvatarCreateRequest {
@@ -30,11 +32,14 @@ interface CustomAvatarCreateRequest {
     accessory_id?: string
     eyewear_id?: string
 }
-export const CustomAvatar = ({ playerID, open, setOpen, primaryColor, backgroundColor, onClose }: CustomAvatarProps) => {
+export const CustomAvatar = ({ updateAvatar, playerID, open, setOpen, primaryColor, backgroundColor, onClose }: CustomAvatarProps) => {
     const { send: userSend } = useGameServerCommandsUser("/user_commander")
     const { newSnackbarMessage } = useSnackbar()
     const [currentValue, setCurrentValue] = useState<AVATAR_FEATURE_TABS>(AVATAR_FEATURE_TABS.Face)
     const [imageSize, setImageSize] = useState(600)
+    const [setAsAvatarModal, setSetAsAvatarModal] = useState(false)
+    const [loading, setLoading] = useState(false)
+    const [createdAvatarID, setCreatedAvatarID] = useState<string>()
 
     const below1200 = useMediaQuery("(max-width:1200px)")
     const below1500 = useMediaQuery("(max-width:2200px)")
@@ -82,22 +87,31 @@ export const CustomAvatar = ({ playerID, open, setOpen, primaryColor, background
         setFace(undefined)
         setBody(undefined)
         setAccessory(undefined)
+        setLoading(false)
+        setSetAsAvatarModal(false)
         onClose()
     }, [onClose, setOpen])
 
-    // username
     const handleSave = useCallback(async () => {
-        if (!body || !face) return
+        if (!body || !face) {
+            newSnackbarMessage("Custom avatars must have a body and face layer.", "error")
+            return
+        }
+        setLoading(true)
         try {
-            await userSend<string, CustomAvatarCreateRequest>(GameServerKeys.PlayerProfileCustomAvatarCreate, {
+            const resp = await userSend<string, CustomAvatarCreateRequest>(GameServerKeys.PlayerProfileCustomAvatarCreate, {
                 player_id: playerID,
                 face_id: face.id,
                 body_id: body.id,
                 hair_id: hair?.id,
                 accessory_id: accessory?.id,
             })
-            newSnackbarMessage("avatar created successfully.", "success")
-            closeHandler()
+            if (resp) {
+                setCreatedAvatarID(resp)
+                newSnackbarMessage("avatar created successfully.", "success")
+                setLoading(false)
+                setSetAsAvatarModal(true)
+            }
         } catch (e) {
             let errorMessage = ""
             if (typeof e === "string") {
@@ -106,148 +120,182 @@ export const CustomAvatar = ({ playerID, open, setOpen, primaryColor, background
                 errorMessage = e.message
             }
             newSnackbarMessage(errorMessage, "error")
+            setLoading(false)
         }
-    }, [userSend, playerID, newSnackbarMessage, face, body, hair, accessory, closeHandler])
+    }, [userSend, playerID, newSnackbarMessage, face, body, hair, accessory])
     return (
-        <Modal
-            onClose={closeHandler}
-            open={open}
-            sx={{
-                zIndex: siteZIndex.Modal,
-                margin: "auto",
-                height: "60vh",
-                width: "50vw",
-                "@media (max-width:2400px)": {
-                    width: "80vw",
-                },
-                "@media (max-width:1500px)": {
-                    width: "90vw",
-                    height: "75vh",
-                },
-            }}
-        >
-            <Stack direction="row" spacing="1rem" sx={{ height: "100%", width: "100%" }}>
-                <ClipThing
-                    clipSize="10px"
-                    border={{
-                        borderColor: primaryColor,
-                        borderThickness: ".3rem",
-                    }}
-                    opacity={0.95}
-                    backgroundColor={backgroundColor}
-                    sx={{ height: "100%", flex: 1 }}
-                >
-                    <Stack sx={{ position: "relative", height: "100%" }}>
-                        <Stack sx={{ flex: 1 }}>
-                            <PageHeader title="Custom avatar" description="Customize your own avatar" primaryColor={primaryColor} />
+        <>
+            <Modal
+                onClose={closeHandler}
+                open={open}
+                sx={{
+                    zIndex: siteZIndex.Modal,
+                    margin: "auto",
+                    height: "60vh",
+                    width: "50vw",
+                    "@media (max-width:2400px)": {
+                        width: "80vw",
+                    },
+                    "@media (max-width:1500px)": {
+                        width: "90vw",
+                        height: "75vh",
+                    },
+                }}
+            >
+                <Stack direction="row" spacing="1rem" sx={{ height: "100%", width: "100%" }}>
+                    <ClipThing
+                        clipSize="10px"
+                        border={{
+                            borderColor: primaryColor,
+                            borderThickness: ".3rem",
+                        }}
+                        opacity={0.95}
+                        backgroundColor={backgroundColor}
+                        sx={{ height: "100%", flex: 1 }}
+                    >
+                        <Stack sx={{ position: "relative", height: "100%" }}>
+                            <Stack sx={{ flex: 1 }}>
+                                <PageHeader title="Custom avatar" description="Customize your own avatar" primaryColor={primaryColor} />
 
-                            <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
-                                <Stack
-                                    direction="row"
-                                    sx={{
-                                        display: "flex",
-                                        color: "white",
-                                        ml: "1.9rem",
-                                        mr: ".5rem",
-                                        my: "1rem",
-                                        flex: 1,
-                                        overflowY: "auto",
-                                        overflowX: "hidden",
-                                        direction: "ltr",
+                                <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
+                                    <Stack
+                                        direction="row"
+                                        sx={{
+                                            display: "flex",
+                                            color: "white",
+                                            ml: "1.9rem",
+                                            mr: ".5rem",
+                                            my: "1rem",
+                                            flex: 1,
+                                            overflowY: "auto",
+                                            overflowX: "hidden",
+                                            direction: "ltr",
 
-                                        "::-webkit-scrollbar": {
-                                            width: ".4rem",
-                                        },
-                                        "::-webkit-scrollbar-track": {
-                                            background: "#FFFFFF15",
-                                            borderRadius: 3,
-                                        },
-                                        "::-webkit-scrollbar-thumb": {
-                                            background: primaryColor,
-                                            borderRadius: 3,
-                                        },
-                                    }}
-                                >
-                                    {/* Preview */}
-                                    <Box width={imageSize + 10} ml="3rem" mr="3rem" sx={{ height: imageSize, position: "relative", alignSelf: "flex-end" }}>
-                                        <img
-                                            style={{ height: imageSize, zIndex: 3, position: "absolute", top: "0", left: "0" }}
-                                            src={accessory?.image_url}
-                                            alt=""
-                                        />
-                                        <img style={{ height: imageSize, zIndex: 3, position: "absolute", top: "0", left: "0" }} src={hair?.image_url} alt="" />
-                                        <img style={{ height: imageSize, zIndex: 2 }} src={face?.image_url} alt="" />
-                                        <img
-                                            style={{ height: imageSize, zIndex: -1, position: "absolute", top: "0", left: "0" }}
-                                            src={body?.image_url}
-                                            alt=""
-                                        />
-                                    </Box>
-
-                                    {/* tabs */}
-                                    <Stack width="50%">
-                                        <Box>
-                                            <Tabs
-                                                value={currentValue}
-                                                onChange={handleChange}
-                                                variant="scrollable"
-                                                scrollButtons="auto"
-                                                sx={{
-                                                    flexShrink: 0,
-                                                    color: primaryColor,
-                                                    minHeight: 0,
-                                                    ".MuiTab-root": { minHeight: 0, fontSize: "1.3rem", height: "6rem", width: "10rem" },
-                                                    ".Mui-selected": {
-                                                        color: `${primaryColor} !important`,
-                                                    },
-                                                    ".MuiTabs-indicator": { display: "none" },
-                                                    ".MuiTabScrollButton-root": { display: "none" },
-                                                }}
-                                            >
-                                                <Tab label="FACE" value={AVATAR_FEATURE_TABS.Face} />
-                                                <Tab label="HAIR" value={AVATAR_FEATURE_TABS.Hair} />
-                                                <Tab label="BODY" value={AVATAR_FEATURE_TABS.Body} />
-                                                <Tab label="ACCESSORY" value={AVATAR_FEATURE_TABS.Accessory} />
-                                            </Tabs>
-
-                                            {/* Face Layer */}
-                                            <TabPanel currentValue={currentValue} value={AVATAR_FEATURE_TABS.Face}>
-                                                <LayerList primaryColor={primaryColor} layerType="FACE" setLayer={setFace} />
-                                            </TabPanel>
-
-                                            {/* Hair Layer */}
-                                            <TabPanel currentValue={currentValue} value={AVATAR_FEATURE_TABS.Hair}>
-                                                <LayerList primaryColor={primaryColor} layerType="HAIR" setLayer={setHair} />
-                                            </TabPanel>
-
-                                            {/* Body Layer */}
-                                            <TabPanel currentValue={currentValue} value={AVATAR_FEATURE_TABS.Body}>
-                                                <LayerList primaryColor={primaryColor} layerType="BODY" setLayer={setBody} />
-                                            </TabPanel>
-
-                                            {/* Accessories layer */}
-                                            <TabPanel currentValue={currentValue} value={AVATAR_FEATURE_TABS.Accessory}>
-                                                <LayerList primaryColor={primaryColor} layerType={AVATAR_FEATURE_TABS.Accessory} setLayer={setAccessory} />
-                                            </TabPanel>
+                                            "::-webkit-scrollbar": {
+                                                width: ".4rem",
+                                            },
+                                            "::-webkit-scrollbar-track": {
+                                                background: "#FFFFFF15",
+                                                borderRadius: 3,
+                                            },
+                                            "::-webkit-scrollbar-thumb": {
+                                                background: primaryColor,
+                                                borderRadius: 3,
+                                            },
+                                        }}
+                                    >
+                                        {/* Preview */}
+                                        <Box width={imageSize + 10} ml="3rem" mr="3rem" sx={{ height: imageSize, position: "relative", alignSelf: "flex-end" }}>
+                                            <img
+                                                style={{ height: imageSize, zIndex: 3, position: "absolute", top: "0", left: "0" }}
+                                                src={accessory?.image_url}
+                                                alt=""
+                                            />
+                                            <img
+                                                style={{ height: imageSize, zIndex: 3, position: "absolute", top: "0", left: "0" }}
+                                                src={hair?.image_url}
+                                                alt=""
+                                            />
+                                            <img style={{ height: imageSize, zIndex: 2 }} src={face?.image_url} alt="" />
+                                            <img
+                                                style={{ height: imageSize, zIndex: -1, position: "absolute", top: "0", left: "0" }}
+                                                src={body?.image_url}
+                                                alt=""
+                                            />
                                         </Box>
 
-                                        <Box display="flex" alignSelf="flex-end">
-                                            <Box sx={{ alignSelf: "flex-end" }}>
-                                                <FancyButton onClick={handleSave}>Save</FancyButton>
+                                        {/* tabs */}
+                                        <Stack width="50%">
+                                            <Box>
+                                                <Tabs
+                                                    value={currentValue}
+                                                    onChange={handleChange}
+                                                    variant="scrollable"
+                                                    scrollButtons="auto"
+                                                    sx={{
+                                                        flexShrink: 0,
+                                                        color: primaryColor,
+                                                        minHeight: 0,
+                                                        ".MuiTab-root": { minHeight: 0, fontSize: "1.3rem", height: "6rem", width: "10rem" },
+                                                        ".Mui-selected": {
+                                                            color: `${primaryColor} !important`,
+                                                        },
+                                                        ".MuiTabs-indicator": { display: "none" },
+                                                        ".MuiTabScrollButton-root": { display: "none" },
+                                                    }}
+                                                >
+                                                    <Tab label="FACE" value={AVATAR_FEATURE_TABS.Face} />
+                                                    <Tab label="BODY" value={AVATAR_FEATURE_TABS.Body} />
+                                                    <Tab label="HAIR" value={AVATAR_FEATURE_TABS.Hair} />
+                                                    <Tab label="ACCESSORY" value={AVATAR_FEATURE_TABS.Accessory} />
+                                                </Tabs>
+
+                                                {/* Face Layer */}
+                                                <TabPanel currentValue={currentValue} value={AVATAR_FEATURE_TABS.Face}>
+                                                    <LayerList primaryColor={primaryColor} layerType="FACE" setLayer={setFace} />
+                                                </TabPanel>
+
+                                                {/* Body Layer */}
+                                                <TabPanel currentValue={currentValue} value={AVATAR_FEATURE_TABS.Body}>
+                                                    <LayerList primaryColor={primaryColor} layerType="BODY" setLayer={setBody} />
+                                                </TabPanel>
+
+                                                {/* Hair Layer */}
+                                                <TabPanel currentValue={currentValue} value={AVATAR_FEATURE_TABS.Hair}>
+                                                    <LayerList primaryColor={primaryColor} layerType="HAIR" setLayer={setHair} />
+                                                </TabPanel>
+
+                                                {/* Accessories layer */}
+                                                <TabPanel currentValue={currentValue} value={AVATAR_FEATURE_TABS.Accessory}>
+                                                    <LayerList primaryColor={primaryColor} layerType={AVATAR_FEATURE_TABS.Accessory} setLayer={setAccessory} />
+                                                </TabPanel>
                                             </Box>
 
-                                            <Box sx={{ alignSelf: "flex-end" }}>
-                                                <FancyButton onClick={closeHandler}>Close</FancyButton>
+                                            <Box display="flex" alignSelf="flex-end">
+                                                <Box sx={{ alignSelf: "flex-end" }}>
+                                                    <FancyButton
+                                                        onClick={() => {
+                                                            handleSave()
+                                                            setSetAsAvatarModal(true)
+                                                        }}
+                                                    >
+                                                        Save
+                                                    </FancyButton>
+                                                </Box>
+
+                                                <Box sx={{ alignSelf: "flex-end" }}>
+                                                    <FancyButton onClick={closeHandler}>Close</FancyButton>
+                                                </Box>
                                             </Box>
-                                        </Box>
+                                        </Stack>
                                     </Stack>
                                 </Stack>
                             </Stack>
                         </Stack>
-                    </Stack>
-                </ClipThing>
-            </Stack>
-        </Modal>
+                    </ClipThing>
+                </Stack>
+            </Modal>
+
+            {/* confirm delete modal */}
+            {setAsAvatarModal && createdAvatarID && (
+                <ConfirmModal
+                    confirmLabel="Yes"
+                    cancelLabel="No"
+                    onConfirm={async () => {
+                        // update avatar
+                        await updateAvatar(createdAvatarID, true)
+                        closeHandler()
+                    }}
+                    onClose={() => {
+                        closeHandler()
+                    }}
+                    isLoading={loading}
+                    title={"AVATAR CREATED SUCCESSFULLY"}
+                >
+                    <Typography variant="h6">Use this avatar as your new avatar?</Typography>
+                </ConfirmModal>
+            )}
+        </>
     )
 }
 

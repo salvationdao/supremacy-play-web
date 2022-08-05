@@ -1,18 +1,18 @@
 import { Avatar, Box, Button, CircularProgress, Modal, Pagination, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { EmptyWarMachinesPNG, SvgClose, SvgEdit } from "../../assets"
-import { parseString } from "../../helpers"
-import { usePagination, useUrlQuery } from "../../hooks"
-import { useGameServerCommandsUser } from "../../hooks/useGameServer"
-import { GameServerKeys } from "../../keys"
-import { colors, fonts, siteZIndex } from "../../theme/theme"
-import { FactionName } from "../../types"
-import { ClipThing } from "../Common/ClipThing"
-import { ConfirmModal } from "../Common/ConfirmModal"
-import { FancyButton } from "../Common/FancyButton"
-import { PageHeader } from "../Common/PageHeader"
-import { ChipFilter, ChipFilterSection } from "../Common/SortAndFilters/ChipFilterSection"
-import { TotalAndPageSizeOptions } from "../Common/TotalAndPageSizeOptions"
+import { EmptyWarMachinesPNG, SvgClose, SvgEdit } from "../../../assets"
+import { parseString } from "../../../helpers"
+import { usePagination, useUrlQuery } from "../../../hooks"
+import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../keys"
+import { colors, fonts, siteZIndex } from "../../../theme/theme"
+import { FactionName } from "../../../types"
+import { ClipThing } from "../../Common/ClipThing"
+import { ConfirmModal } from "../../Common/ConfirmModal"
+import { FancyButton } from "../../Common/FancyButton"
+import { PageHeader } from "../../Common/PageHeader"
+import { ChipFilter, ChipFilterSection } from "../../Common/SortAndFilters/ChipFilterSection"
+import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { CustomAvatar, CustomAvatarItem } from "./CustomAvatar"
 
 interface GetAvatarsRequest {
@@ -578,7 +578,7 @@ export const ProfileAvatar = ({
                             <Stack sx={{ flex: 1 }}>
                                 <PageHeader
                                     title="Select Avatar"
-                                    description="Avatar options are based off your faction and owned war machines"
+                                    description={showCustom ? "Your custom avatars" : "Avatar options are based off your faction and owned war machines"}
                                     primaryColor={primaryColor}
                                 />
 
@@ -664,6 +664,7 @@ export const ProfileAvatar = ({
 
             {/* custom avatar modal */}
             <CustomAvatar
+                updateAvatar={updateHandler}
                 onClose={closeHandler}
                 playerID={playerID}
                 open={customAvatarModalOpen}
