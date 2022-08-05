@@ -168,20 +168,22 @@ export const MoveableResizableContainer = createContainer((initialState: Moveabl
     useEffect(() => {
         if (isPoppedout || popoutRef || !width || !height) return
 
-        const newWidth = Math.min(curWidth, width - 2 * PADDING)
-        const newHeight = Math.min(curHeight, height - 2 * PADDING)
+        setTimeout(() => {
+            const newWidth = Math.min(curWidth, width - 2 * PADDING)
+            const newHeight = Math.min(curHeight, height - 2 * PADDING)
 
-        const newDimension = { width: newWidth, height: newHeight }
-        const newPosition = {
-            x: clamp(0, curPosX, width - newWidth - 2 * PADDING),
-            y: clamp(0, curPosY, height - newHeight - 2 * PADDING),
-        }
+            const newDimension = { width: newWidth, height: newHeight }
+            const newPosition = {
+                x: clamp(0, curPosX, width - newWidth - 2 * PADDING),
+                y: clamp(0, curPosY, height - newHeight - 2 * PADDING),
+            }
 
-        rndRef.current?.updateSize(newDimension)
-        rndRef.current?.updatePosition(newPosition)
+            rndRef.current?.updateSize(newDimension)
+            rndRef.current?.updatePosition(newPosition)
 
-        onResizeStopped(newDimension)
-        onMovingStopped(newPosition)
+            onResizeStopped(newDimension)
+            onMovingStopped(newPosition)
+        }, 100)
 
         // Just run this once to set initial, no deps
         // eslint-disable-next-line react-hooks/exhaustive-deps
