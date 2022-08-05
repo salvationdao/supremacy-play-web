@@ -19,6 +19,7 @@ import { RepairBlocks } from "../../Hangar/WarMachinesHangar/Common/MechRepairBl
 import { GamePattern } from "./StackTower/src/game"
 import { isWebGLAvailable } from "./StackTower/src/utils"
 import { StackTower } from "./StackTower/StackTower"
+import {CAPTCHA_KEY} from "../../../constants";
 
 interface DoRepairModalProps {
     repairStatus?: RepairStatus
@@ -297,7 +298,7 @@ export const DoRepairModal = React.memo(function DoRepairModal({ repairStatus, r
                             <HCaptcha
                                 size="compact"
                                 theme="dark"
-                                sitekey="87f715ba-98ff-43da-b970-cfc30fd7c5a0"
+                                sitekey={CAPTCHA_KEY}
                                 onVerify={setCaptchaToken}
                                 onExpire={() => setCaptchaToken(undefined)}
                             />
