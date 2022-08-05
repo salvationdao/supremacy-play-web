@@ -6,6 +6,7 @@ import { colors } from "../../../theme/theme"
 import { LocationSelectType, PlayerAbility } from "../../../types"
 import { FancyButton } from "../../Common/FancyButton"
 import { TooltipHelper } from "../../Common/TooltipHelper"
+import { PlayerAbilityCooldownIndicator } from "./PlayerAbilityCooldownIndicator"
 
 export const PlayerAbilityCard = ({ playerAbility, viewOnly }: { playerAbility: PlayerAbility; viewOnly?: boolean }) => {
     const { setPlayerAbility } = useMiniMap()
@@ -136,6 +137,7 @@ export const PlayerAbilityCard = ({ playerAbility, viewOnly }: { playerAbility: 
                         >
                             {playerAbility.ability.label}
                         </Typography>
+                        <PlayerAbilityCooldownIndicator playerAbility={playerAbility} />
                     </Stack>
                 </FancyButton>
             </TooltipHelper>

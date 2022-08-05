@@ -118,6 +118,7 @@ export interface BlueprintPlayerAbility {
     location_select_type: LocationSelectType
     created_at: Date
     inventory_limit: number
+    cooldown_seconds: number
 }
 
 export interface PlayerAbility {
@@ -125,6 +126,7 @@ export interface PlayerAbility {
     blueprint_id: string
     count: number
     last_purchased_at: Date
+    cooldown_expires_on: Date
     ability: BlueprintPlayerAbility
 
     // Used for mech command related abilities
