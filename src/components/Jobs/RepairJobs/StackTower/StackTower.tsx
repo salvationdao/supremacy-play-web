@@ -235,6 +235,7 @@ const StaticGame = React.memo(function StaticGame({
                 bottom: 0,
                 left: 0,
                 right: 0,
+                backgroundColor,
             }}
         />
     )
