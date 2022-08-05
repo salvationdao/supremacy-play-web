@@ -476,13 +476,12 @@ export const DoRepairModal = ({
                             zIndex: 99,
                         }}
                     >
-                        {/* {overlayContent} */}
+                        {overlayContent}
                     </Box>
 
                     <StackTower
                         primaryColor={primaryColor}
-                        disableGame={false}
-                        // disableGame={!repairAgent || !!submitError || isSubmitting || isFinished}
+                        disableGame={!repairAgent || !!submitError || isSubmitting || isFinished}
                         repairAgent={repairAgent}
                         agentRepairUpdate={agentRepairUpdate}
                         completeAgentRepair={completeAgentRepair}
