@@ -56,7 +56,6 @@ export const MechGeneralStatus = ({ mechID, hideBox, smallVersion }: { mechID: s
         async (currentStatus: string) => {
             try {
                 if (currentStatus.includes("QUEUE")) return
-                console.log("send status update")
                 await send(GameServerKeys.TriggerMechStatusUpdate, {
                     mech_id: mechID,
                 })
