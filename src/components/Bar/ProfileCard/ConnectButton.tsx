@@ -25,7 +25,7 @@ export const ConnectButton = ({ width, label, loadingLabel, sx, typeSx, clipBord
                         clipSize: "7px",
                         backgroundColor: clipBackgroundColor || colors.neonBlue,
                         sx: { position: "relative", width },
-                        border: { isFancy: true, borderColor: clipBorderColor || colors.neonBlue },
+                        border: { borderColor: clipBorderColor || colors.neonBlue },
                     }}
                     sx={{
                         px: "2rem",

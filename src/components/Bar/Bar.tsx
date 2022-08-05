@@ -1,7 +1,7 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { FancyButton, Logo, ProfileCard, WalletDetails } from ".."
 import { SvgDisconnected } from "../../assets"
-import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT, STAGING_OR_DEV_ONLY } from "../../constants"
+import { DRAWER_TRANSITION_DURATION, FEEDBACK_FORM_URL, GAME_BAR_HEIGHT, STAGING_OR_DEV_ONLY } from "../../constants"
 import { useAuth, useSupremacy } from "../../containers"
 import { colors, fonts, siteZIndex } from "../../theme/theme"
 import { User } from "../../types"
@@ -105,21 +105,24 @@ const BarContent = ({ userID, user }: { userID?: string; user: User }) => {
             <NavLinks />
             <Box sx={{ flexGrow: 1 }} />
 
-            <FancyButton
-                clipThingsProps={{
-                    clipSize: "6px",
-                    backgroundColor: colors.neonBlue,
-                    opacity: 1,
-                    border: { borderColor: colors.neonBlue, borderThickness: "2px" },
-                    sx: { position: "relative", mx: "2rem" },
-                }}
-                sx={{ px: "1.6rem", py: ".1rem", color: "#000000" }}
-                href=""
-            >
-                <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBold, color: "#000000" }}>
-                    FEEDBACK
-                </Typography>
-            </FancyButton>
+            {userID && (
+                <FancyButton
+                    clipThingsProps={{
+                        clipSize: "6px",
+                        backgroundColor: colors.neonBlue,
+                        opacity: 1,
+                        border: { borderColor: colors.neonBlue, borderThickness: "2px" },
+                        sx: { position: "relative", mx: "2rem" },
+                    }}
+                    sx={{ px: "1.6rem", py: ".1rem", color: colors.darkestNeonBlue }}
+                    href={FEEDBACK_FORM_URL}
+                    target="_blank"
+                >
+                    <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBold, color: colors.darkestNeonBlue }}>
+                        FEEDBACK
+                    </Typography>
+                </FancyButton>
+            )}
 
             {/* <HowToPlay /> */}
             {/* {userID && <Enlist />} */}
