@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useMemo, useRef } from "react"
 import { UserBanForm } from "../../../.."
 import { SvgInfoCircular, SvgSkull2, SvgReportFlag } from "../../../../../assets"
 import { PASSPORT_SERVER_HOST_IMAGES } from "../../../../../constants"
-import { useAuth, useChat, useSupremacy } from "../../../../../containers"
+import { useAuth, useChat, useSnackbar, useSupremacy } from "../../../../../containers"
 import { dateFormatter, getUserRankDeets, shadeColor, truncate } from "../../../../../helpers"
 import { useToggle } from "../../../../../hooks"
 import { useGameServerCommandsUser } from "../../../../../hooks/useGameServer"
@@ -48,6 +48,7 @@ export const TextMessage = ({
     const { from_user, user_rank, message_color, avatar_id, message, from_user_stat, metadata } = data
     const { id, username, gid, faction_id } = from_user
     const { isHidden, isActive } = useAuth()
+    const { newSnackbarMessage } = useSnackbar()
     const { userGidRecord, addToUserGidRecord, sendBrowserNotification, tabValue } = useChat()
     const { send } = useGameServerCommandsUser("/user_commander")
 
@@ -317,13 +318,17 @@ export const TextMessage = ({
                         onMouseEnter={() => setIsHovered(true)}
                         onMouseLeave={() => setIsHovered(false)}
                     >
-                        <Stack direction={"row"} sx={{lineHeight: 1, color: "#FFFFFF",  zIndex: 1, alignItems: "center" }}>
+                        <Stack direction={"row"} sx={{ lineHeight: 1, color: "#FFFFFF", zIndex: 1, alignItems: "center" }}>
                             <SvgReportFlag
-                                fill={"grey"}
+                                fill={metadata?.reports.includes(user.id) ? colors.red : "grey"}
                                 size={"1.5rem"}
                                 sx={{ mr: "1rem", opacity: isHovered ? "100%" : "0", cursor: user.id ? "pointer" : "cursor" }}
                                 onClick={() => {
                                     if (!user.id) return
+                                    if (metadata?.reports.includes(user.id)) {
+                                        newSnackbarMessage("Your report has already been sent.", "warning")
+                                        return
+                                    }
                                     setReportModalOpen(true)
                                 }}
                             />
