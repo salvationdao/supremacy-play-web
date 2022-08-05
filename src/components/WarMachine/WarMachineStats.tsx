@@ -10,17 +10,21 @@ import { WindowPortal } from "../Common/WindowPortal"
 import { WarMachineItem } from "./WarMachineItem/WarMachineItem"
 
 export const WarMachineStats = () => {
+    const { battleIdentifier } = useSupremacy()
+    return <WarMachineStatsInner key={battleIdentifier} />
+}
+
+const WarMachineStatsInner = () => {
     const { isMobile } = useMobile()
     const theme = useTheme()
     const { factionID } = useAuth()
-    const { battleIdentifier } = useSupremacy()
     const { warMachines, bribeStage, map } = useGame()
     const [isPoppedout, toggleIsPoppedout] = useToggle()
 
     // Temp hotfix ask james ****************************
     const [show, toggleShow] = useToggle(false)
     useEffect(() => {
-        toggleShow(bribeStage && bribeStage.phase !== "HOLD")
+        toggleShow(bribeStage && bribeStage.phase !== "HOLD" ? true : false)
     }, [bribeStage, toggleShow])
     // End ****************************************
 
@@ -171,9 +175,8 @@ export const WarMachineStats = () => {
     }
 
     return (
-        <Slide in={show} direction="up" key={battleIdentifier}>
+        <Slide in={show} direction="up">
             <Box
-                id="tutorial-mech-stats"
                 sx={{
                     position: "absolute",
                     bottom: 0,

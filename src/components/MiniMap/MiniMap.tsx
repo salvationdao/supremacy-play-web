@@ -23,7 +23,7 @@ export const MiniMap = () => {
     // Temp hotfix ask james ****************************
     const [show, toggleShow] = useToggle(false)
     useEffect(() => {
-        if (bribeStage && bribeStage.phase !== "HOLD") {
+        if (bribeStage && bribeStage.phase !== "HOLD" ? true : false) {
             toggleShow(true)
         } else {
             toggleShow(false)
@@ -137,10 +137,10 @@ const MiniMapInner = ({
 
     // When it's targeting, enlarge the map and move to center of screen, else restore to the prev dimensions
     useEffect(() => {
-        if (isTargeting || isEnlarged) {
-            // If its mech move, then dont do the map enlarge, too disruptive
-            if (playerAbility?.ability.location_select_type === LocationSelectType.MECH_COMMAND) return
+        // If its mech move, then dont do the map enlarge, too disruptive
+        if (playerAbility?.ability.location_select_type === LocationSelectType.MECH_COMMAND) return
 
+        if (isTargeting || isEnlarged) {
             const maxW = Math.min(width - 25, maxWidth || width, 900)
             const maxH = Math.min(maxW * mapHeightWidthRatio.current, maxHeight || height, height - 120)
             let targetingWidth = Math.min(maxW, 900)
@@ -182,9 +182,6 @@ const MiniMapInner = ({
         mapHeightWidthRatio.current = ratio
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [map, setDefaultWidth, setDefaultHeight])
-
-    let mapName = map.name
-    if (mapName === "NeoTokyo") mapName = "City Block X2"
 
     return useMemo(() => {
         if (!toRender) return null
@@ -259,7 +256,7 @@ const MiniMapInner = ({
                                 opacity: 0.8,
                             }}
                         >
-                            {mapName
+                            {map.name
                                 .replace(/([A-Z])/g, " $1")
                                 .trim()
                                 .toUpperCase()}
@@ -290,5 +287,5 @@ const MiniMapInner = ({
             </Stack>
         )
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [toRender, theme.factionTheme.primary, mapName, curWidth, curHeight, remToPxRatio, isMobile, width, height, isPoppedout])
+    }, [toRender, theme.factionTheme.primary, curWidth, curHeight, remToPxRatio, isMobile, width, height, isPoppedout])
 }

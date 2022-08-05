@@ -122,7 +122,7 @@ export const MechAbilityButton = ({ warMachine, gameAbility }: { warMachine: War
                         color: remainSeconds > 0 || !text_colour ? "#FFFFFF" : text_colour,
                     }}
                 >
-                    {remainSeconds > 0 ? `${remainSeconds}s` : `FIRE`}
+                    {remainSeconds > 300 ? "∞" : remainSeconds > 0 ? `${remainSeconds}s` : `FIRE`}
                 </Typography>
             </Stack>
         </FancyButton>

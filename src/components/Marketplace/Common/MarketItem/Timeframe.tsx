@@ -1,29 +1,9 @@
-import { Stack, Typography } from "@mui/material"
 import { useMemo } from "react"
 import { timeSinceInWords } from "../../../../helpers"
-import { fonts, colors } from "../../../../theme/theme"
+import { General } from "./General"
 
 export const Timeframe = ({ isGridView, endAt, soldAt }: { isGridView?: boolean; endAt: Date; soldAt?: Date }) => {
     const timeLeft = useMemo(() => timeSinceInWords(new Date(), endAt), [endAt])
 
-    return (
-        <Stack spacing={isGridView ? ".1rem" : ".6rem"}>
-            <Typography variant="subtitle2" sx={{ fontFamily: fonts.nostromoBlack, color: colors.grey }}>
-                {soldAt ? "DATE SOLD" : "TIME LEFT"}
-            </Typography>
-            <Typography
-                sx={{
-                    fontWeight: "fontWeightBold",
-                    display: "-webkit-box",
-                    overflow: "hidden",
-                    overflowWrap: "anywhere",
-                    textOverflow: "ellipsis",
-                    WebkitLineClamp: 2,
-                    WebkitBoxOrient: "vertical",
-                }}
-            >
-                {soldAt ? soldAt.toUTCString() : timeLeft}
-            </Typography>
-        </Stack>
-    )
+    return <General isGridView={isGridView} title={soldAt ? "DATE SOLD" : "TIME LEFT"} text={soldAt ? soldAt.toUTCString() : timeLeft} />
 }

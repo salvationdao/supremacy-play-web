@@ -14,14 +14,13 @@ import { Timeframe } from "../../Common/MarketItem/Timeframe"
 import { SoldPrice } from "./SoldPrice"
 
 interface MarketItemProps {
-    backgroundImageUrl?: string
     item: MarketplaceBuyAuctionItem
     isGridView: boolean
     children: ReactNode
     linkSubPath: MARKETPLACE_TABS
 }
 
-export const MarketItem = ({ backgroundImageUrl, item, isGridView, children, linkSubPath }: MarketItemProps) => {
+export const MarketItem = ({ item, isGridView, children, linkSubPath }: MarketItemProps) => {
     const theme = useTheme()
 
     const formattedBuyoutPrice = useMemo(() => {
@@ -73,7 +72,7 @@ export const MarketItem = ({ backgroundImageUrl, item, isGridView, children, lin
                     border: { isFancy: !isGridView, borderColor: sold_at ? colors.marketSold : primaryColor, borderThickness: ".25rem" },
                     sx: { position: "relative", height: "100%" },
                 }}
-                sx={{ color: primaryColor, textAlign: "start", height: "100%" }}
+                sx={{ color: primaryColor, textAlign: "start", height: "100%", ":hover": { opacity: 1 } }}
                 to={`/marketplace/${linkSubPath}/${id}${location.hash}`}
             >
                 <Box
@@ -88,7 +87,7 @@ export const MarketItem = ({ backgroundImageUrl, item, isGridView, children, lin
                         ...(isGridView
                             ? {
                                   "&>*:not(:last-child)": {
-                                      mb: ".8rem",
+                                      mb: "1rem",
                                   },
                               }
                             : {}),
@@ -111,22 +110,6 @@ export const MarketItem = ({ backgroundImageUrl, item, isGridView, children, lin
                         </>
                     )}
                 </Box>
-
-                <Box
-                    sx={{
-                        position: "absolute",
-                        left: 0,
-                        right: 0,
-                        top: 0,
-                        bottom: 0,
-                        background: `url(${backgroundImageUrl})`,
-                        backgroundRepeat: "no-repeat",
-                        backgroundPosition: "top",
-                        backgroundSize: "cover",
-                        opacity: 0.06,
-                        zIndex: -2,
-                    }}
-                />
 
                 <Box
                     sx={{

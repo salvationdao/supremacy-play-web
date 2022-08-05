@@ -1,5 +1,4 @@
 import { SxProps, Typography } from "@mui/material"
-import { useTour } from "@reactour/tour"
 import { colors, fonts } from "../../../theme/theme"
 import { useAuth } from "../../../containers"
 import { FancyButton } from "../.."
@@ -16,18 +15,16 @@ interface ConnectWalletProps {
 
 export const ConnectButton = ({ width, label, loadingLabel, sx, typeSx, clipBorderColor, clipBackgroundColor }: ConnectWalletProps) => {
     const { isLoggingIn, onLogInClick } = useAuth()
-    const { setIsOpen } = useTour()
 
     return (
         <>
             {!isLoggingIn ? (
                 <FancyButton
-                    id="tutorial-connect"
                     clipThingsProps={{
                         clipSize: "7px",
                         backgroundColor: clipBackgroundColor || colors.neonBlue,
                         sx: { position: "relative", width },
-                        border: { isFancy: true, borderColor: clipBorderColor || colors.neonBlue },
+                        border: { borderColor: clipBorderColor || colors.neonBlue },
                     }}
                     sx={{
                         px: "2rem",
@@ -36,7 +33,6 @@ export const ConnectButton = ({ width, label, loadingLabel, sx, typeSx, clipBord
                         ...sx,
                     }}
                     onClick={() => {
-                        setIsOpen(false)
                         onLogInClick()
                     }}
                 >

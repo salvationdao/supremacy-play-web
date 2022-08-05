@@ -9,7 +9,7 @@ import { parseString } from "../helpers"
 import { useToggle } from "../hooks"
 import { useGameServerSubscription, useGameServerSubscriptionFaction } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
-import { BanProposalStruct, ChatMessageType, TextMessageData } from "../types/chat"
+import { BanProposalStruct, ChatMessageType, TextMessageData, User } from "../types"
 
 export interface IncomingMessages {
     faction: string | null
@@ -31,8 +31,6 @@ export const ChatContainer = createContainer(() => {
 
     // Chat settings
     const [splitOption, setSplitOption] = useState<SplitOptionType>((localStorage.getItem("chatSplitOption") as SplitOptionType) || "tabbed")
-    const [filterZerosGlobal, toggleFilterZerosGlobal] = useToggle(localStorage.getItem("chatFilterZerosGlobal") == "true")
-    const [filterZerosFaction, toggleFilterZerosFaction] = useToggle(localStorage.getItem("chatFilterZerosFaction") == "true")
     const [filterSystemMessages, toggleFilterSystemMessages] = useToggle(localStorage.getItem("chatFilterSystemMessages") == "true")
     const [fontSize, setFontSize] = useState<FontSizeType>(parseString(localStorage.getItem("chatFontSize2"), 1.2) as FontSizeType)
 
@@ -45,32 +43,29 @@ export const ChatContainer = createContainer(() => {
     const [factionChatUnread, setFactionChatUnread] = useState<number>(0)
     const [globalChatUnread, setGlobalChatUnread] = useState<number>(0)
     const [incomingMessages, setIncomingMessages] = useState<IncomingMessages>()
+    const [userGidRecord, setUserGidRecord] = useState<{ [gid: number]: User }>({})
 
     const [banProposal, setBanProposal] = useState<BanProposalStruct>()
 
     // Store list of messages that were successfully sent or failed
-    const [sentMessages, setSentMessages] = useState<Date[]>([])
     const [failedMessages, setFailedMessages] = useState<Date[]>([])
+
+    //active users
+    const [activePlayers, setActivePlayers] = useState<User[]>([])
+    const [globalActivePlayers, setGlobalActivePlayers] = useState<User[]>([])
+
+    const addToUserGidRecord = useCallback((user: User) => {
+        setUserGidRecord((prev) => {
+            return { ...prev, [user.gid]: user }
+        })
+    }, [])
 
     // Save chat settings to local storage
     useEffect(() => {
         localStorage.setItem("chatSplitOption", splitOption || "tabbed")
-        localStorage.setItem("chatFilterZerosGlobal", filterZerosGlobal ? "true" : "false")
-        localStorage.setItem("chatFilterZerosFaction", filterZerosFaction ? "true" : "false")
         localStorage.setItem("chatFilterSystemMessages", filterSystemMessages ? "true" : "false")
         localStorage.setItem("chatFontSize2", fontSize ? fontSize.toString() : "1")
-    }, [splitOption, filterZerosGlobal, filterZerosFaction, filterSystemMessages, fontSize])
-
-    const onSentMessage = useCallback(
-        (sentAt: Date) => {
-            setSentMessages((prev) => {
-                // Buffer the array
-                const newArray = [...prev, sentAt]
-                return newArray.slice(newArray.length - MESSAGES_BUFFER_SIZE, newArray.length)
-            })
-        },
-        [setSentMessages],
-    )
+    }, [splitOption, filterSystemMessages, fontSize])
 
     const onFailedMessage = useCallback(
         (sentAt: Date) => {
@@ -117,8 +112,6 @@ export const ChatContainer = createContainer(() => {
         (message: ChatMessageType, isFaction: boolean) => {
             const data = message.data as TextMessageData
             const newStats = {
-                total_multiplier: data.total_multiplier,
-                is_citizen: data.is_citizen,
                 from_user_stat: data.from_user_stat,
             }
 
@@ -169,24 +162,74 @@ export const ChatContainer = createContainer(() => {
         [userID, tabValue, splitOption],
     )
 
+    const sendBrowserNotification = useCallback((title: string, body: string, timeOpen?: number) => {
+        if (!("Notification" in window)) {
+            return
+        }
+
+        const n = new Notification(title, { body: body, badge: SupremacyPNG, icon: SupremacyPNG, image: SupremacyPNG })
+        n.onclick = (e) => {
+            e.preventDefault()
+            window.parent.parent.focus()
+        }
+
+        if (timeOpen) {
+            setTimeout(() => n.close(), timeOpen)
+        }
+
+        if (document.visibilityState === "visible") {
+            n.close()
+        }
+    }, [])
+
+    const updateMessageHandler = useCallback(
+        (updatedMessage: ChatMessageType, faction: string | null): boolean => {
+            const genericUpdate = (
+                chatMessages: ChatMessageType[],
+                setChatMessages: (value: ((prevState: ChatMessageType[]) => ChatMessageType[]) | ChatMessageType[]) => void,
+            ) => {
+                const updatedArr = [...chatMessages]
+                const i = updatedArr.findIndex((m) => m.id === updatedMessage.id)
+                if (i === -1) return false
+                updatedArr[i] = updatedMessage
+                setChatMessages(updatedArr)
+                return true
+            }
+            //global chat
+            if (!faction) {
+                return genericUpdate(globalChatMessages, setGlobalChatMessages)
+            }
+            if (faction) {
+                return genericUpdate(factionChatMessages, setFactionChatMessages)
+            }
+            return false
+        },
+        [globalChatMessages, factionChatMessages],
+    )
+
     useEffect(() => {
         if (!incomingMessages || incomingMessages.messages.length <= 0) return
 
         let userStatMessage
+        let isUpdate = false
         incomingMessages.messages.forEach((message) => {
-            if (message.type === "TEXT" && (message.data as TextMessageData).from_user.id === userID) {
+            if (message.type === "TEXT") {
+                isUpdate = updateMessageHandler(message, incomingMessages.faction)
                 // This will attempt to look through the messages, if it's our own,
                 // get the latest message and update userStats with it.
-                userStatMessage = message
+                if ((message.data as TextMessageData).from_user.id === userID) {
+                    userStatMessage = message
+                }
             }
 
             return message
         })
 
+        setIncomingMessages(undefined)
+        if (isUpdate) return
         if (userStatMessage) saveUserStats(userStatMessage, !!incomingMessages.faction)
         newMessageHandler(incomingMessages)
-        setIncomingMessages(undefined)
-    }, [incomingMessages, newMessageHandler, saveUserStats, userID])
+    }, [incomingMessages, newMessageHandler, saveUserStats, userID, updateMessageHandler])
 
     // Subscribe to global chat messages
     useGameServerSubscription<ChatMessageType[]>(
@@ -231,18 +274,35 @@ export const ChatContainer = createContainer(() => {
                 ended_at: endTime,
             })
 
-            if (!("Notification" in window)) {
-                return
-            }
+            sendBrowserNotification(
+                "Ban Proposal Initialised",
+                `Reason: ${payload.reason}\nOn: ${payload.reported_player_username}\nFrom: ${payload.issued_by_username}`,
+                10000,
+            )
+        },
+    )
 
-            const notification = new Notification("Ban Proposal Initialised", {
-                body: `Reason: ${payload.reason}\nOn: ${payload.reported_player_username}\nFrom: ${payload.issued_by_username}`,
-                badge: SupremacyPNG,
-                icon: SupremacyPNG,
-                image: SupremacyPNG,
-            })
+    //subscribe active faction users
+    useGameServerSubscriptionFaction<User[]>(
+        {
+            URI: "",
+            key: GameServerKeys.SubPlayerList,
+        },
+        (payload) => {
+            if (!payload) return
+            setActivePlayers(payload.sort((a, b) => a.username.localeCompare(b.username)))
+        },
+    )
 
-            setTimeout(() => notification.close(), 10000)
+    //subscribe active global users
+    useGameServerSubscription<User[]>(
+        {
+            URI: "/public/global_active_players",
+            key: GameServerKeys.SubGlobalPlayerList,
+        },
+        (payload) => {
+            if (!payload) return
+            setGlobalActivePlayers(payload.sort((a, b) => a.username.localeCompare(b.username)))
         },
     )
 
@@ -261,24 +321,23 @@ export const ChatContainer = createContainer(() => {
         newMessageHandler,
         splitOption,
         setSplitOption,
-        filterZerosGlobal,
-        toggleFilterZerosGlobal,
-        filterZerosFaction,
-        toggleFilterZerosFaction,
         filterSystemMessages,
         toggleFilterSystemMessages,
         globalChatMessages,
         factionChatMessages,
         factionChatUnread,
         globalChatUnread,
-        onSentMessage,
-        sentMessages,
         failedMessages,
         onFailedMessage,
         fontSize,
         setFontSize,
         globalAnnouncement,
         banProposal,
+        userGidRecord,
+        addToUserGidRecord,
+        activePlayers,
+        globalActivePlayers,
+        sendBrowserNotification,
     }
 })
 

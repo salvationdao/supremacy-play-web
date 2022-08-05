@@ -1,7 +1,8 @@
-import { Stack, Typography } from "@mui/material"
+import { Typography } from "@mui/material"
 import { useAuth } from "../../../../containers"
-import { fonts, colors } from "../../../../theme/theme"
+import { colors } from "../../../../theme/theme"
 import { MarketUser } from "../../../../types/marketplace"
+import { General } from "./General"
 
 export const UserInfo = ({ isGridView, marketUser, title }: { isGridView?: boolean; marketUser: MarketUser; title?: string }) => {
     const { userID } = useAuth()
@@ -10,10 +11,7 @@ export const UserInfo = ({ isGridView, marketUser, title }: { isGridView?: boole
     const isSelfItem = userID === id
 
     return (
-        <Stack spacing={isGridView ? ".1rem" : ".6rem"}>
-            <Typography variant="subtitle2" sx={{ fontFamily: fonts.nostromoBlack, color: colors.grey }}>
-                {title || "USER"}
-            </Typography>
+        <General isGridView={isGridView} title={title || "USER"}>
             <Typography
                 sx={{
                     fontWeight: "fontWeightBold",
@@ -26,9 +24,9 @@ export const UserInfo = ({ isGridView, marketUser, title }: { isGridView?: boole
                 }}
             >
                 {username}
-                <span style={{ marginLeft: ".2rem", opacity: 0.7, fontFamily: "inherit" }}>{`#${gid}`}</span>
-                <span style={{ color: colors.neonBlue, fontFamily: "inherit" }}>{isSelfItem ? " (YOU)" : ""}</span>
+                <span style={{ marginLeft: ".2rem", opacity: 0.7 }}>{`#${gid}`}</span>
+                <span style={{ color: colors.neonBlue }}>{isSelfItem ? " (YOU)" : ""}</span>
             </Typography>
-        </Stack>
+        </General>
     )
 }

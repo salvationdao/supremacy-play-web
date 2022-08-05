@@ -20,13 +20,11 @@ export const DropdownOptionsSection = ({
     primaryColor,
     secondaryColor,
     backgroundColor,
-    changePage,
 }: {
     dropdownOptions: DropdownOptions
     primaryColor: string
     secondaryColor: string
     backgroundColor: string
-    changePage: (page: number) => void
 }) => {
     const { label, options, initialSelected, onSetSelected, initialExpanded } = dropdownOptions
     const [selected, setSelected] = useState<string>(initialSelected)
@@ -88,7 +86,6 @@ export const DropdownOptionsSection = ({
                                     onClick={() => {
                                         setSelected(x.value)
                                         onSetSelected(x.value)
-                                        changePage(1)
                                     }}
                                     sx={{ "&:hover": { backgroundColor: "#FFFFFF20" } }}
                                 >

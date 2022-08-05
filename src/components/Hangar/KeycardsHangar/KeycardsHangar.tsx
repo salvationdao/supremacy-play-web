@@ -1,5 +1,5 @@
-import { Box, Pagination, Stack, Typography } from "@mui/material"
-import React, { useCallback, useEffect, useMemo, useState } from "react"
+import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { useLocation } from "react-router-dom"
 import { ClipThing, FancyButton } from "../.."
 import { KeycardPNG } from "../../../assets"
@@ -14,7 +14,6 @@ import { colors, fonts } from "../../../theme/theme"
 import { Keycard } from "../../../types"
 import { PageHeader } from "../../Common/PageHeader"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
-import { MysteryCrateStoreItemLoadingSkeleton } from "../../Storefront/MysteryCratesStore/MysteryCrateStoreItem/MysteryCrateStoreItem"
 import { KeycardHangarItem } from "./KeycardHangarItem"
 
 interface GetPlayerKeycardsRequest {
@@ -123,10 +122,10 @@ export const KeycardsHangar = () => {
 
         if (isLoading) {
             return (
-                <Stack direction="row" flexWrap="wrap" sx={{ height: 0 }}>
-                    {new Array(5).fill(0).map((_, index) => (
-                        <MysteryCrateStoreItemLoadingSkeleton key={index} />
-                    ))}
+                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                    <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
+                        <CircularProgress size="3rem" sx={{ color: theme.factionTheme.primary }} />
+                    </Stack>
                 </Stack>
             )
         }
@@ -153,8 +152,6 @@ export const KeycardsHangar = () => {
                             pt: "1.28rem",
                             color: colors.grey,
                             fontFamily: fonts.nostromoBold,
-                            userSelect: "text !important",
-                            opacity: 0.9,
                             textAlign: "center",
                         }}
                     >

@@ -1,10 +1,10 @@
-import { Box, Stack, Typography } from "@mui/material"
+import { Box, CircularProgress, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useRef, useState } from "react"
 import { ClipThing, FancyButton } from "../.."
 import { PlayerAbilityPNG } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { parseString } from "../../../helpers"
-import { usePagination, useUrlQuery } from "../../../hooks"
+import { usePagination, useToggle, useUrlQuery } from "../../../hooks"
 import { useGameServerSubscriptionUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
@@ -13,7 +13,6 @@ import { PageHeader } from "../../Common/PageHeader"
 import { ChipFilter } from "../../Common/SortAndFilters/ChipFilterSection"
 import { SortAndFilters } from "../../Common/SortAndFilters/SortAndFilters"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
-import { MysteryCrateStoreItemLoadingSkeleton } from "../../Storefront/MysteryCratesStore/MysteryCrateStoreItem/MysteryCrateStoreItem"
 import { PlayerAbilityHangarItem } from "./PlayerAbilityHangarItem"
 
 export const PlayerAbilitiesHangar = () => {
@@ -31,6 +30,7 @@ export const PlayerAbilitiesHangar = () => {
     })
 
     // Filters
+    const [isFiltersExpanded, toggleIsFiltersExpanded] = useToggle(localStorage.getItem("isPlayerAbilitiesFiltersExpanded") === "true")
     const [search, setSearch] = useState("")
     const [locationSelectTypes, setLocationSelectTypes] = useState<string[]>((query.get("abilityTypes") || undefined)?.split("||") || [])
     const locationSelectTypeFilterSection = useRef<ChipFilter>({
@@ -49,10 +49,14 @@ export const PlayerAbilitiesHangar = () => {
         },
     })
 
+    useEffect(() => {
+        localStorage.setItem("isPlayerAbilitiesFiltersExpanded", isFiltersExpanded.toString())
+    }, [isFiltersExpanded])
+
     useGameServerSubscriptionUser<PlayerAbility[]>(
         {
             URI: "/player_abilities",
-            key: GameServerKeys.PlayerAbilitiesList,
+            key: GameServerKeys.SubPlayerAbilitiesList,
         },
         (payload) => {
             if (!payload) return
@@ -79,10 +83,10 @@ export const PlayerAbilitiesHangar = () => {
     const content = useMemo(() => {
         if (!isLoaded) {
             return (
-                <Stack direction="row" flexWrap="wrap" sx={{ height: 0 }}>
-                    {new Array(10).fill(0).map((_, index) => (
-                        <MysteryCrateStoreItemLoadingSkeleton key={index} />
-                    ))}
+                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                    <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
+                        <CircularProgress size="3rem" sx={{ color: theme.factionTheme.primary }} />
+                    </Stack>
                 </Stack>
             )
         }
@@ -134,8 +138,6 @@ export const PlayerAbilitiesHangar = () => {
                             pt: "1.28rem",
                             color: colors.grey,
                             fontFamily: fonts.nostromoBold,
-                            userSelect: "text !important",
-                            opacity: 0.9,
                             textAlign: "center",
                         }}
                     >
@@ -169,8 +171,14 @@ export const PlayerAbilitiesHangar = () => {
     }, [isLoaded, shownPlayerAbilities, theme.factionTheme.primary, theme.factionTheme.secondary])
 
     return (
-        <Stack direction="row" spacing="1rem" sx={{ height: "100%" }}>
-            <SortAndFilters initialSearch={search} onSetSearch={setSearch} chipFilters={[locationSelectTypeFilterSection.current]} changePage={changePage} />
+        <Stack direction="row" sx={{ height: "100%" }}>
+            <SortAndFilters
+                initialSearch={search}
+                onSetSearch={setSearch}
+                chipFilters={[locationSelectTypeFilterSection.current]}
+                changePage={changePage}
+                isExpanded={isFiltersExpanded}
+            />
 
             <ClipThing
                 clipSize="10px"
@@ -207,6 +215,8 @@ export const PlayerAbilitiesHangar = () => {
                         changePageSize={changePageSize}
                         pageSizeOptions={[10, 20, 40]}
                         changePage={changePage}
+                        isFiltersExpanded={isFiltersExpanded}
+                        toggleIsFiltersExpanded={toggleIsFiltersExpanded}
                     />
 
                     <Stack sx={{ px: "2rem", flex: 1 }}>

@@ -4,14 +4,19 @@ import { useTheme } from "../../../../containers/theme"
 import { fonts } from "../../../../theme/theme"
 import { ClipThing } from "../../../Common/ClipThing"
 import { NotificationPreferences } from "./NotificationPreferences"
+import { DevicePreferences } from "./DevicePreferences"
+import { useAuth } from "../../../../containers"
+import { STAGING_OR_DEV_ONLY } from "../../../../constants"
 
 interface PreferencesModalProps {
     onClose: () => void
     setTelegramShortcode: (code: string) => void
+    toggleAddDeviceModal: () => void
 }
 
-export const PreferencesModal = ({ onClose, setTelegramShortcode }: PreferencesModalProps) => {
+export const PreferencesModal = ({ onClose, setTelegramShortcode, toggleAddDeviceModal }: PreferencesModalProps) => {
     const theme = useTheme()
+    const { factionID } = useAuth()
 
     return (
         <Modal open onClose={onClose}>
@@ -49,10 +54,13 @@ export const PreferencesModal = ({ onClose, setTelegramShortcode }: PreferencesM
                         </Typography>
 
                         <NotificationPreferences setTelegramShortcode={setTelegramShortcode} />
+
+                        {/* Only display the device preferences if the user has selected a faction */}
+                        {STAGING_OR_DEV_ONLY && factionID && <DevicePreferences toggleAddDeviceModal={toggleAddDeviceModal} />}
                     </Stack>
 
                     <IconButton size="small" onClick={onClose} sx={{ position: "absolute", top: ".5rem", right: ".5rem" }}>
-                        <SvgClose size="1.9rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
+                        <SvgClose size="2.6rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
                     </IconButton>
                 </ClipThing>
             </Box>

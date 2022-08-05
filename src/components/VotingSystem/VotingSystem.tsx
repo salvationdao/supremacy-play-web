@@ -1,16 +1,14 @@
 import { Box, Fade, Stack } from "@mui/material"
 import { useMemo } from "react"
-import { BattleAbilityItem, FactionAbilities, MoveableResizable } from ".."
+import { BattleAbilityItem, MoveableResizable } from ".."
 import { useAuth, useGame, useMobile } from "../../containers"
 import { useTheme } from "../../containers/theme"
-import { FeatureName } from "../../types"
-import { ContributorAmount } from "../BattleStats/ContributorAmount"
 import { MoveableResizableConfig } from "../Common/MoveableResizable/MoveableResizableContainer"
 import { PlayerAbilities } from "./PlayerAbilities/PlayerAbilities"
 
 export const VotingSystem = () => {
     const theme = useTheme()
-    const { userID, factionID, userHasFeature } = useAuth()
+    const { factionID } = useAuth()
     const { isMobile } = useMobile()
     const { bribeStage } = useGame()
     const isBattleStarted = useMemo(() => bribeStage && bribeStage.phase !== "HOLD", [bribeStage])
@@ -21,15 +19,15 @@ export const VotingSystem = () => {
             // Defaults
             defaultPosX: 0,
             defaultPosY: 0,
-            defaultWidth: 320,
+            defaultWidth: 360,
             defaultHeight: 480,
             // Position limits
             minPosX: 0,
             minPosY: 0,
             // Size limits
-            minWidth: 320,
+            minWidth: 360,
             // minHeight: 168,
-            maxWidth: 500,
+            maxWidth: 400,
             // maxHeight: 900,
             // Others
             infoTooltipText: "Vote for game abilities and fight for your Faction!",
@@ -44,52 +42,34 @@ export const VotingSystem = () => {
         <Fade in={isBattleStarted}>
             <Box sx={{ ...(isMobile ? { backgroundColor: "#FFFFFF12", boxShadow: 2, border: "#FFFFFF20 1px solid" } : {}) }}>
                 <MoveableResizable config={config}>
-                    <Stack sx={{ position: "relative" }}>
-                        <Stack
-                            direction="row"
-                            alignItems="center"
-                            spacing="1.2rem"
-                            sx={{
-                                height: "3.1rem",
-                                pt: ".4rem",
-                                px: "1.8rem",
-                                backgroundColor: "#000000BF",
-                                borderBottom: `${theme.factionTheme.primary}80 .25rem solid`,
-                            }}
-                        >
-                            <ContributorAmount />
+                    <Box
+                        sx={{
+                            maxHeight: "100vh",
+                            overflowY: "auto",
+                            overflowX: "hidden",
+                            ml: "1.9rem",
+                            mr: ".5rem",
+                            pr: "1.4rem",
+                            mt: "1rem",
+                            direction: "ltr",
+                            "::-webkit-scrollbar": {
+                                width: ".4rem",
+                            },
+                            "::-webkit-scrollbar-track": {
+                                background: "#FFFFFF15",
+                                borderRadius: 3,
+                            },
+                            "::-webkit-scrollbar-thumb": {
+                                background: theme.factionTheme.primary,
+                                borderRadius: 3,
+                            },
+                        }}
+                    >
+                        <Stack spacing="1rem" sx={{ direction: "ltr", pt: ".4rem", pb: "1.2rem", minWidth: 360 }}>
+                            <BattleAbilityItem key={factionID} />
+                            <PlayerAbilities />
                         </Stack>
-
-                        <Box
-                            sx={{
-                                maxHeight: "100vh",
-                                overflowY: "auto",
-                                overflowX: "hidden",
-                                ml: "1.9rem",
-                                mr: ".5rem",
-                                pr: "1.4rem",
-                                mt: "1rem",
-                                direction: "ltr",
-                                "::-webkit-scrollbar": {
-                                    width: ".4rem",
-                                },
-                                "::-webkit-scrollbar-track": {
-                                    background: "#FFFFFF15",
-                                    borderRadius: 3,
-                                },
-                                "::-webkit-scrollbar-thumb": {
-                                    background: theme.factionTheme.primary,
-                                    borderRadius: 3,
-                                },
-                            }}
-                        >
-                            <Stack spacing="1rem" sx={{ direction: "ltr", pt: ".4rem", pb: "1.2rem" }}>
-                                <BattleAbilityItem key={factionID} />
-                                <FactionAbilities />
-                                {userHasFeature(FeatureName.playerAbility) && userID && <PlayerAbilities />}
-                            </Stack>
-                        </Box>
-                    </Stack>
+                    </Box>
                 </MoveableResizable>
             </Box>
         </Fade>

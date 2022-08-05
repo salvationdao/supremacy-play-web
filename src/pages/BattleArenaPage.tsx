@@ -2,25 +2,14 @@ import { Box, Stack } from "@mui/material"
 import { useEffect, useState } from "react"
 import { Redirect } from "react-router-dom"
 import { SvgAbility, SvgHistory, SvgHistoryClock, SvgRobot } from "../assets"
-import {
-    BattleEndScreen,
-    BattleHistory,
-    Controls,
-    EarlyAccessWarning,
-    LiveVotingChart,
-    MiniMap,
-    Notifications,
-    Stream,
-    VotingSystem,
-    WarMachineStats,
-} from "../components"
-import { TutorialModal } from "../components/HowToPlay/Tutorial/TutorialModal"
+import { BattleEndScreen, BattleHistory, Controls, EarlyAccessWarning, MiniMap, Notifications, Stream, VotingSystem, WarMachineStats } from "../components"
 import { QuickDeploy } from "../components/QuickDeploy/QuickDeploy"
 import { QuickPlayerAbilities } from "../components/QuickPlayerAbilities/QuickPlayerAbilities"
 import { BATTLE_ARENA_OPEN } from "../constants"
 import { useAuth, useDimension, useMobile, useSupremacy } from "../containers"
 import { siteZIndex } from "../theme/theme"
 import { FeatureName } from "../types"
+import { EnlistPage } from "./EnlistPage"
 
 export const BattleArenaPage = () => {
     const { userID } = useAuth()
@@ -28,14 +17,14 @@ export const BattleArenaPage = () => {
 
     useEffect(() => {
         if (!userID) return
-        setUnderstand(localStorage.getItem(`understand-${userID}`) === "true")
+        setUnderstand(localStorage.getItem(`understand1-${userID}`) === "true")
     }, [userID])
 
     if (!understand && userID) {
         return (
             <EarlyAccessWarning
                 onAcknowledged={() => {
-                    localStorage.setItem(`understand-${userID}`, "true")
+                    localStorage.setItem(`understand1-${userID}`, "true")
                     setUnderstand(true)
                 }}
             />
@@ -50,7 +39,7 @@ export const BattleArenaPage = () => {
 }
 
 const BattleArenaPageInner = () => {
-    const { userID, userHasFeature } = useAuth()
+    const { userID, factionID, userHasFeature } = useAuth()
     const { isMobile, setAdditionalTabs, setIsNavOpen, allowCloseNav } = useMobile()
     const { isQuickDeployOpen, toggleIsQuickDeployOpen, isQuickPlayerAbilitiesOpen, toggleIsQuickPlayerAbilitiesOpen } = useSupremacy()
     const { triggerReset } = useDimension()
@@ -99,7 +88,6 @@ const BattleArenaPageInner = () => {
                         >
                             <Box sx={{ direction: "ltr", height: 0 }}>
                                 <Stack spacing="1.5rem" sx={{ position: "relative", p: ".8rem 1rem" }}>
-                                    <LiveVotingChart />
                                     <VotingSystem />
                                     <MiniMap />
                                     <WarMachineStats />
@@ -186,36 +174,39 @@ const BattleArenaPageInner = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [allowCloseNav, isMobile, triggerReset, setAdditionalTabs, setIsNavOpen])
 
+    if (userID && !factionID) {
+        return <EnlistPage />
+    }
+
     return (
-        <>
-            <Stack sx={{ height: "100%", zIndex: siteZIndex.RoutePage }}>
-                <Box id={isMobile ? "" : "game-ui-container"} sx={{ position: "relative", flex: 1 }}>
-                    <Stream />
+        <Stack sx={{ height: "100%", zIndex: siteZIndex.RoutePage }}>
+            <Box id={isMobile ? "" : "game-ui-container"} sx={{ position: "relative", flex: 1 }}>
+                <Stream />
 
-                    {!isMobile && (
-                        <>
-                            <WarMachineStats />
-                            <BattleEndScreen />
-                            <LiveVotingChart />
-                            <BattleHistory />
-                            {isQuickDeployOpen && <QuickDeploy open={isQuickDeployOpen} onClose={() => toggleIsQuickDeployOpen(false)} />}
+                {!isMobile && (
+                    <>
+                        <WarMachineStats />
 
-                            {isQuickPlayerAbilitiesOpen && (
-                                <QuickPlayerAbilities open={isQuickPlayerAbilitiesOpen} onClose={() => toggleIsQuickPlayerAbilitiesOpen(false)} />
-                            )}
+                        <BattleEndScreen />
 
-                            <VotingSystem />
-                            <MiniMap />
-                        </>
-                    )}
+                        <BattleHistory />
 
-                    <Notifications />
+                        {isQuickDeployOpen && <QuickDeploy open={isQuickDeployOpen} onClose={() => toggleIsQuickDeployOpen(false)} />}
 
-                    {userID && <TutorialModal />}
-                </Box>
+                        {isQuickPlayerAbilitiesOpen && (
+                            <QuickPlayerAbilities open={isQuickPlayerAbilitiesOpen} onClose={() => toggleIsQuickPlayerAbilitiesOpen(false)} />
+                        )}
 
-                <Controls />
-            </Stack>
-        </>
+                        <VotingSystem />
+
+                        <MiniMap />
+                    </>
+                )}
+
+                <Notifications />
+            </Box>
+
+            <Controls />
+        </Stack>
     )
 }

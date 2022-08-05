@@ -33,7 +33,7 @@ export const PlayerAbilities = () => {
     useGameServerSubscriptionUser<PlayerAbility[]>(
         {
             URI: "/player_abilities",
-            key: GameServerKeys.PlayerAbilitiesList,
+            key: GameServerKeys.SubPlayerAbilitiesList,
         },
         (payload) => {
             if (!payload) return
@@ -154,7 +154,7 @@ export const PlayerAbilities = () => {
                             <Box
                                 sx={{
                                     display: "grid",
-                                    gridTemplateColumns: `repeat(${COLUMNS}, minmax(0, 9rem))`,
+                                    gridTemplateColumns: `repeat(${COLUMNS}, minmax(0, ${100 / COLUMNS}%))`,
                                     gap: ".6rem",
                                 }}
                             >
@@ -169,7 +169,6 @@ export const PlayerAbilities = () => {
                                     pt: "1.28rem",
                                     mb: ".56rem",
                                     color: colors.grey,
-                                    userSelect: "text !important",
                                     opacity: 0.8,
                                 }}
                             >

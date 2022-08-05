@@ -4,17 +4,16 @@ import { SvgMeteor } from "../../assets"
 import { useAuth, useSupremacy } from "../../containers"
 import { useTheme } from "../../containers/theme"
 import { pulseEffect } from "../../theme/keyframes"
-import { FeatureName } from "../../types"
 
 export const QuickPlayerAbilitiesButton = () => {
     const theme = useTheme()
-    const { userHasFeature } = useAuth()
+    const { userID } = useAuth()
     const { isQuickPlayerAbilitiesOpen, toggleIsQuickPlayerAbilitiesOpen } = useSupremacy()
     const location = useLocation()
 
     const inBattleArena = location.pathname === "/"
 
-    if (!inBattleArena || !userHasFeature(FeatureName.playerAbility)) return null
+    if (!inBattleArena || !userID) return null
 
     return (
         <Stack

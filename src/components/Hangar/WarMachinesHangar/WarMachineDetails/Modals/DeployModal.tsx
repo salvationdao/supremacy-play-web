@@ -8,9 +8,11 @@ import { GameServerKeys } from "../../../../../keys"
 import { colors, fonts } from "../../../../../theme/theme"
 import { MechModal } from "../../Common/MechModal"
 import { MechDetails } from "../../../../../types"
+import { supFormatter } from "../../../../../helpers"
 
 export interface QueueFeed {
     queue_length: number
+    queue_cost: string
 }
 
 export const DeployModal = ({
@@ -20,7 +22,7 @@ export const DeployModal = ({
 }: {
     selectedMechDetails: MechDetails
     deployMechModalOpen: boolean
-    setDeployMechModalOpen: (close: boolean) => void
+    setDeployMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
 }) => {
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsFaction("/faction_commander")
@@ -64,6 +66,7 @@ export const DeployModal = ({
     if (!deployMechDetails) return null
 
     const queueLength = queueFeed?.queue_length || 0
+    const queueCost = queueFeed?.queue_cost || "0"
     const { hash } = deployMechDetails
 
     return (
@@ -73,13 +76,19 @@ export const DeployModal = ({
                     {queueLength >= 0 && (
                         <AmountItem
                             key={`${queueLength}-queue_length`}
-                            title={"Position: "}
-                            color="#FFFFFF"
+                            title={"Next Position: "}
                             value={`${queueLength + 1}`}
                             tooltip="The queue position of your war machine if you deploy now."
                             disableIcon
                         />
                     )}
+
+                    <AmountItem
+                        title={"Fee: "}
+                        color={colors.yellow}
+                        value={supFormatter(queueCost, 2)}
+                        tooltip="The cost to place your war machine into the battle queue."
+                    />
                 </Stack>
 
                 <Box sx={{ mt: "auto" }}>
@@ -105,7 +114,7 @@ export const DeployModal = ({
                         variant="body2"
                         sx={{
                             mt: ".3rem",
-                            color: "red",
+                            color: colors.red,
                         }}
                     >
                         {deployQueueError}
@@ -116,7 +125,7 @@ export const DeployModal = ({
     )
 }
 
-const AmountItem = ({
+export const AmountItem = ({
     title,
     color,
     value,
@@ -124,28 +133,30 @@ const AmountItem = ({
     disableIcon,
 }: {
     title: string
-    color: string
+    color?: string
     value: string | number
-    tooltip: string
+    tooltip?: string
     disableIcon?: boolean
 }) => {
     return (
         <Stack direction="row" alignItems="center">
-            <Typography variant="caption" sx={{ mr: ".4rem", fontFamily: fonts.nostromoBlack }}>
+            <Typography variant="body2" sx={{ mr: ".4rem", fontFamily: fonts.nostromoHeavy }}>
                 {title}
             </Typography>
 
-            {!disableIcon && <SvgSupToken size="1.4rem" fill={color} sx={{ mr: ".1rem", pb: ".4rem" }} />}
+            {!disableIcon && <SvgSupToken size="1.8rem" fill={colors.yellow} sx={{ mr: ".1rem", pb: ".4rem" }} />}
 
-            <Typography variant="caption" sx={{ mr: "3.2rem", color: color, fontFamily: fonts.nostromoBold }}>
+            <Typography variant="body1" sx={{ mr: "3.2rem", color: color || colors.offWhite, fontWeight: "fontWeightBold" }}>
                 {value || "---"}
             </Typography>
 
-            <TooltipHelper placement="right-start" text={tooltip}>
-                <Box sx={{ ml: "auto" }}>
-                    <SvgInfoCircular size="1.2rem" sx={{ opacity: 0.4, ":hover": { opacity: 1 } }} />
-                </Box>
-            </TooltipHelper>
+            {tooltip && (
+                <TooltipHelper placement="right-start" text={tooltip}>
+                    <Box sx={{ ml: "auto" }}>
+                        <SvgInfoCircular size="1.2rem" sx={{ opacity: 0.4, ":hover": { opacity: 1 } }} />
+                    </Box>
+                </TooltipHelper>
+            )}
         </Stack>
     )
 }

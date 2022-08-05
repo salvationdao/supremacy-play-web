@@ -1,18 +1,19 @@
-import { Box, IconButton, InputAdornment, Stack, TextField, Typography } from "@mui/material"
+import { Box, IconButton, InputAdornment, MenuItem, MenuList, Stack, TextField, Typography } from "@mui/material"
 import { BaseEmoji, emojiIndex } from "emoji-mart"
-import { useCallback, useMemo, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { ChatSettings, ClipThing, EmojiPopover } from "../../.."
 import { SvgEmoji, SvgEmojiSelector, SvgExternalLink, SvgSend } from "../../../../assets"
 import { MAX_CHAT_MESSAGE_LENGTH } from "../../../../constants"
-import { useChat, useAuth, useSnackbar, IncomingMessages, useMobile } from "../../../../containers"
+import { IncomingMessages, useAuth, useChat, useMobile, useSnackbar } from "../../../../containers"
 import { SendFunc } from "../../../../containers/ws"
 import { getRandomColor } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
 import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
-import { User, UserRank } from "../../../../types"
+import { ChatMessageType, User, UserRank } from "../../../../types"
 import { TooltipHelper } from "../../../Common/TooltipHelper"
+import { v4 as uuidv4 } from "uuid"
 
 interface ChatSendProps {
     primaryColor: string
@@ -22,7 +23,7 @@ interface ChatSendProps {
 export const ChatSend = (props: ChatSendProps) => {
     const { send } = useGameServerCommandsUser("/user_commander")
     const { user, userRank } = useAuth()
-    const { onSentMessage, onFailedMessage, newMessageHandler, isPoppedout, toggleIsPoppedout } = useChat()
+    const { onFailedMessage, newMessageHandler, isPoppedout, toggleIsPoppedout, globalActivePlayers, activePlayers } = useChat()
 
     return (
         <ChatSendInner
@@ -30,11 +31,12 @@ export const ChatSend = (props: ChatSendProps) => {
             send={send}
             user={user}
             userRank={userRank}
-            onSentMessage={onSentMessage}
             onFailedMessage={onFailedMessage}
             newMessageHandler={newMessageHandler}
             isPoppedout={isPoppedout}
             toggleIsPoppedout={toggleIsPoppedout}
+            globalActivePlayers={globalActivePlayers}
+            activePlayers={activePlayers}
         />
     )
 }
@@ -42,12 +44,13 @@ export const ChatSend = (props: ChatSendProps) => {
 interface ChatSendInnerProps extends ChatSendProps {
     user: User
     userRank?: UserRank
-    onSentMessage: (sentAt: Date) => void
     onFailedMessage: (sentAt: Date) => void
     newMessageHandler: ({ messages, faction }: IncomingMessages) => void
     send: SendFunc
     isPoppedout: boolean
     toggleIsPoppedout: (value?: boolean) => void
+    globalActivePlayers: User[]
+    activePlayers: User[]
 }
 
 const ChatSendInner = ({
@@ -56,14 +59,16 @@ const ChatSendInner = ({
     send,
     user,
     userRank,
-    onSentMessage,
     onFailedMessage,
     newMessageHandler,
     isPoppedout,
     toggleIsPoppedout,
+    globalActivePlayers,
+    activePlayers,
 }: ChatSendInnerProps) => {
     const { newSnackbarMessage } = useSnackbar()
     const { isMobile } = useMobile()
+    const { userGidRecord } = useChat()
 
     // Message field
     const [message, setMessage] = useState("")
@@ -74,13 +79,16 @@ const ChatSendInner = ({
     const [caretMsg, setCaretMsg] = useState<string>("")
     const [emojiSelect, setEmojiSelect] = useState<number>()
     const textfieldRef = useRef<HTMLInputElement>()
+    //tagging states
+    const [searchPlayersQuery, setSearchPlayersQuery] = useState<string>()
+    const [playersResults, setPlayersResults] = useState<User[]>([])
 
     //Emoji Popup
     const [isEmojiOpen, toggleIsEmojiOpen] = useToggle()
     const popoverRef = useRef(null)
 
     const messageColor = useMemo(() => getRandomColor(), [])
-
+    const renderedMsg = message.replace(/@[a-zA-Z0-9-_]+#/g, "#")
     const setMessageWithCheck = useCallback(
         (newMessage: string, append?: boolean) => {
             setMessage((prev) => {
@@ -92,42 +100,67 @@ const ChatSendInner = ({
         [setMessage],
     )
 
+    const handleTaggedUsers = useCallback(
+        (msg: string): number[] => {
+            const taggedStrings = [...msg.matchAll(/#\d+/g)]
+            let taggedGids: number[] = []
+            taggedStrings.map((s) => {
+                const gid = parseInt(s[0].substring(1))
+                if (gid === user.gid) return
+                const taggedUser = userGidRecord[gid]
+
+                if (taggedUser && faction_id !== null && taggedUser.faction_id !== faction_id) return
+                taggedGids = [...taggedGids, gid]
+            })
+            return taggedGids
+        },
+        [userGidRecord, faction_id, user.gid],
+    )
+
     const sendMessage = useCallback(async () => {
         if (!message.trim()) return
 
         const sentAt = new Date()
+        const id = uuidv4()
+        const taggedUserGids = handleTaggedUsers(renderedMsg)
+
+        const msg: ChatMessageType = {
+            id: id,
+            data: {
+                id: id,
+                from_user: user,
+                user_rank: userRank,
+                message_color: messageColor,
+                message: renderedMsg,
+                tagged_users_gids: taggedUserGids,
+            },
+            type: "TEXT",
+            sent_at: sentAt,
+            locallySent: true,
+        }
 
         newMessageHandler({
-            messages: [
-                {
-                    data: {
-                        from_user: user,
-                        user_rank: userRank,
-                        message_color: messageColor,
-                        message,
-                    },
-                    type: "TEXT",
-                    sent_at: sentAt,
-                    locallySent: true,
-                },
-            ],
+            messages: [msg],
             faction: faction_id,
         })
 
         try {
             setMessage("")
-            const resp = await send<boolean>(GameServerKeys.SendChatMessage, {
+            const resp = await send<ChatMessageType>(GameServerKeys.SendChatMessage, {
+                id,
                 faction_id,
-                message,
+                message: renderedMsg,
                 message_color: messageColor,
+                tagged_users_gids: taggedUserGids,
             })
-            if (resp) onSentMessage(sentAt)
+            if (!resp) return
+            //update
         } catch (e) {
             newSnackbarMessage(typeof e === "string" ? e : "Failed to send chat message.", "error")
             onFailedMessage(sentAt)
             console.error(e)
         }
-    }, [message, user, send, newMessageHandler, userRank, messageColor, faction_id, onSentMessage, newSnackbarMessage, onFailedMessage])
+    }, [message, user, send, newMessageHandler, userRank, messageColor, faction_id, newSnackbarMessage, onFailedMessage, renderedMsg, handleTaggedUsers])
 
     const showCharCount = message.length >= MAX_CHAT_MESSAGE_LENGTH
 
@@ -197,6 +230,83 @@ const ChatSendInner = ({
         }
     }, [])
 
+    // After user has selected an emoji- deconstructs string before and after the emoji enter point and reconstructs the message string
+    const handlePlayerTagSelect = useCallback(
+        (taggedUser: User) => {
+            //getting the index of the last colon of the string from the start of the message to the caret (cursor) position
+            const index = caretMsg.lastIndexOf("@")
+            //if there is an index, run the next block of code
+            if (index != -1) {
+                //saving the string before the colon
+                const stringBefore = caretMsg.substring(0, index)
+                //initializing the full string to be the string before the colon and the chosen emoji
+                let fullString = `${stringBefore + "@" + taggedUser.username + "#" + taggedUser.gid + " "}`
+                //caretPosition can be null if elements not focused, but shouldn't be in this use case, getting string after the caret position in case user uses this in middle of message
+                if (caretPosition) {
+                    //finding the string after the caret position
+                    const stringAfter = message.substring(caretPosition, message.length)
+                    //setting the full string to add the string after
+                    fullString = `${fullString + stringAfter}`
+                }
+                //setting message
+                setMessageWithCheck(fullString)
+                //setting Emojis Array, to close out the Emoji selector
+                setPlayersResults([])
+                setSearchPlayersQuery("")
+                document.getElementById(`message-textfield-${faction_id}`)?.focus()
+            }
+        },
+        [caretMsg, caretPosition, message, setMessageWithCheck, faction_id],
+    )
+
+    // While the user is using :emoji short cut- finding the search phrase and setting caret (cursor) positioning
+    const handlePlayerSearchShortcut = useCallback((caretStartPosition: number | null, msg: string) => {
+        //there should always be a caret position or the element is not focused
+        if (caretStartPosition) {
+            //set the caret position
+            setCaretPosition(caretStartPosition)
+            //finds the string from the start of the message to the caret string- allows for multiple @s to be used in a message and focus only where the user is typing
+            const caretString = msg.substring(0, caretStartPosition)
+            //sets for use in another function
+            setCaretMsg(caretString)
+            //getting last index of shortcut key: colon
+            const colonIndex = caretString.lastIndexOf("@")
+            //if there is a colon, run the next block of code
+            if (colonIndex != -1) {
+                //gets the string from the first letter after the colon to the end of the caret position
+                const afterColonSubstring = caretString.substring(colonIndex + 1, caretString.length)
+                //identifies if theres a space, if there is one and marks it as the end of the search query
+                const searchStringEndIndex = afterColonSubstring.indexOf(" ")
+                const searchString = afterColonSubstring.substring(0, searchStringEndIndex !== -1 ? searchStringEndIndex : caretString.length)
+
+                //if there is no matches, clear the results
+                if (searchStringEndIndex !== -1) {
+                    setSearchPlayersQuery(undefined)
+                    return
+                }
+
+                setSearchPlayersQuery(searchString)
+            }
+        }
+    }, [])
+
+    useEffect(() => {
+        if (!searchPlayersQuery || !send) {
+            setPlayersResults([])
+            return
+        }
+
+        const fap = activePlayers.filter((ap) => {
+            return ap.id !== user.id && (ap.username.includes(searchPlayersQuery) || ap.gid.toString().includes(searchPlayersQuery))
+        })
+
+        const gap = globalActivePlayers.filter((ap) => {
+            return ap.id !== user.id && (ap.username.includes(searchPlayersQuery) || ap.gid.toString().includes(searchPlayersQuery))
+        })
+
+        faction_id ? setPlayersResults(fap) : setPlayersResults(gap)
+    }, [searchPlayersQuery, activePlayers, globalActivePlayers, faction_id, send, user.id])
+
     // Sets the caret (cursor) position back to where it was previously
     const focusCaretTextField = useCallback(() => {
         if (caretPosition) {
@@ -224,12 +334,12 @@ const ChatSendInner = ({
                     <Box
                         sx={{
                             background: "#49494933",
-                            width: "100%",
-                            display: "flex",
-                            mb: ".6rem",
-                            p: ".5rem",
+                            mb: ".8rem",
                             boxShadow: 4,
                             borderRadius: 1,
+                            width: "100%",
+                            display: "flex",
+                            p: ".5rem",
                             overflowX: "scroll",
                             scrollBehavior: "smooth",
                             "::-webkit-scrollbar": {
@@ -322,10 +432,70 @@ const ChatSendInner = ({
                     </Box>
                 )}
 
+                {playersResults && playersResults.length > 0 && (
+                    <MenuList
+                        sx={{
+                            background: "#49494933",
+                            mb: ".8rem",
+                            boxShadow: 4,
+                            borderRadius: 1,
+                        }}
+                    >
+                        <Stack direction={"column-reverse"}>
+                            {playersResults.map((r, i) => {
+                                return (
+                                    <MenuItem
+                                        id={"search-player-results-" + i}
+                                        dense
+                                        key={r.id}
+                                        onClick={() => {
+                                            handlePlayerTagSelect(r)
+                                        }}
+                                        onKeyDown={(e) => {
+                                            e.stopPropagation()
+                                            switch (e.key) {
+                                                case "ArrowUp": {
+                                                    e.preventDefault()
+                                                    if (i === playersResults.length - 1) {
+                                                        break
+                                                    }
+                                                    document.getElementById(`search-player-results-${i + 1}`)?.focus()
+                                                    break
+                                                }
+                                                case "ArrowDown": {
+                                                    e.preventDefault()
+                                                    if (i === 0) {
+                                                        document.getElementById(`message-textfield-${faction_id}`)?.focus()
+                                                        break
+                                                    }
+                                                    document.getElementById(`search-player-results-${i - 1}`)?.focus()
+                                                    break
+                                                }
+                                                case "Escape": {
+                                                    e.preventDefault()
+                                                    document.getElementById(`message-textfield-${faction_id}`)?.focus()
+                                                    break
+                                                }
+                                                case "Enter": {
+                                                    document.getElementById(`message-textfield-${faction_id}`)?.focus()
+                                                    setPlayersResults([])
+                                                    setSearchPlayersQuery("")
+                                                    break
+                                                }
+                                            }
+                                        }}
+                                    >
+                                        <Typography>{r.username + " #" + r.gid}</Typography>
+                                    </MenuItem>
+                                )
+                            })}
+                        </Stack>
+                    </MenuList>
+                )}
+
                 <ClipThing
                     clipSize="8px"
                     border={{
-                        isFancy: true,
                         borderColor: primaryColor,
                         borderThickness: ".25rem",
                     }}
@@ -345,6 +515,7 @@ const ChatSendInner = ({
                                 setMessageWithCheck(msg)
 
                                 handleEmojiShortcut(e.target.selectionStart, msg)
+                                handlePlayerSearchShortcut(e.target.selectionStart, msg)
                             }}
                             onFocus={(e) => {
                                 e.preventDefault()
@@ -362,20 +533,30 @@ const ChatSendInner = ({
                                         e.preventDefault()
                                         sendMessage()
                                         setEmojis([])
+                                        setPlayersResults([])
+                                        setSearchPlayersQuery("")
                                         break
                                     }
                                     case "ArrowUp": {
                                         e.preventDefault()
-                                        if (emojis.length < 1) return
-                                        document.getElementById(`emoji-index-${faction_id}-0`)?.focus()
+                                        if (emojis.length > 0) {
+                                            document.getElementById(`emoji-index-${faction_id}-0`)?.focus()
+                                        }
+                                        if (playersResults.length > 0) {
+                                            document.getElementById(`search-player-results-0`)?.focus()
+                                        }
                                         break
                                     }
                                     case "Tab": {
-                                        if (emojis.length < 1) return
                                         e.preventDefault()
-                                        const emoji = emojis[0]
-                                        handleOnEmojiSelect(emoji)
-
+                                        if (emojis.length > 0) {
+                                            const emoji = emojis[0]
+                                            handleOnEmojiSelect(emoji)
+                                        }
+                                        if (playersResults.length > 0) {
+                                            const taggedUser = playersResults[0]
+                                            handlePlayerTagSelect(taggedUser)
+                                        }
                                         if (caretPosition) {
                                             textfieldRef.current?.setSelectionRange(caretPosition, caretPosition)
                                         }
@@ -406,7 +587,7 @@ const ChatSendInner = ({
                             InputProps={{
                                 endAdornment: (
                                     <InputAdornment position="end">
-                                        <ChatSettings primaryColor={primaryColor} faction_id={faction_id} />
+                                        <ChatSettings primaryColor={primaryColor} />
 
                                         {!isPoppedout && !isMobile && (
                                             <IconButton

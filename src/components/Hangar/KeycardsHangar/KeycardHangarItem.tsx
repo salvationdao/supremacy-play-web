@@ -1,6 +1,7 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useLocation } from "react-router-dom"
 import { FancyButton } from "../.."
+import { STAGING_OR_DEV_ONLY } from "../../../constants"
 import { useTheme } from "../../../containers/theme"
 import { MARKETPLACE_TABS } from "../../../pages"
 import { colors, fonts } from "../../../theme/theme"
@@ -81,27 +82,29 @@ export const KeycardHangarItemInner = ({ keycard, itemSaleID }: MysteryCrateStor
 
                         <Typography variant="h6">{keycard.blueprints.description}</Typography>
 
-                        <Stack alignItems="center" sx={{ mt: "auto !important", pt: ".8rem", alignSelf: "stretch" }}>
-                            <FancyButton
-                                to={
-                                    itemSaleID
-                                        ? `/marketplace/${MARKETPLACE_TABS.Keycards}/${itemSaleID}${location.hash}`
-                                        : `/marketplace/sell?itemType=${ItemType.Keycards}&assetID=${keycard.id}${location.hash}`
-                                }
-                                clipThingsProps={{
-                                    clipSize: "5px",
-                                    backgroundColor: itemSaleID ? backgroundColor : colors.red,
-                                    opacity: 1,
-                                    border: { isFancy: !itemSaleID, borderColor: colors.red, borderThickness: "1.5px" },
-                                    sx: { position: "relative", mt: "1rem", width: "100%" },
-                                }}
-                                sx={{ px: "1.6rem", py: ".6rem", color: itemSaleID ? colors.red : "#FFFFFF" }}
-                            >
-                                <Typography variant={"caption"} sx={{ fontFamily: fonts.nostromoBlack, color: itemSaleID ? colors.red : "#FFFFFF" }}>
-                                    {itemSaleID ? "VIEW LISTING" : "SELL ITEM"}
-                                </Typography>
-                            </FancyButton>
-                        </Stack>
+                        {!STAGING_OR_DEV_ONLY && (
+                            <Stack alignItems="center" sx={{ mt: "auto !important", pt: ".8rem", alignSelf: "stretch" }}>
+                                <FancyButton
+                                    to={
+                                        itemSaleID
+                                            ? `/marketplace/${MARKETPLACE_TABS.Keycards}/${itemSaleID}${location.hash}`
+                                            : `/marketplace/sell?itemType=${ItemType.Keycards}&assetID=${keycard.id}${location.hash}`
+                                    }
+                                    clipThingsProps={{
+                                        clipSize: "5px",
+                                        backgroundColor: itemSaleID ? backgroundColor : colors.red,
+                                        opacity: 1,
+                                        border: { isFancy: !itemSaleID, borderColor: colors.red, borderThickness: "1.5px" },
+                                        sx: { position: "relative", mt: "1rem", width: "100%" },
+                                    }}
+                                    sx={{ px: "1.6rem", py: ".6rem", color: itemSaleID ? colors.red : "#FFFFFF" }}
+                                >
+                                    <Typography variant={"caption"} sx={{ fontFamily: fonts.nostromoBlack, color: itemSaleID ? colors.red : "#FFFFFF" }}>
+                                        {itemSaleID ? "VIEW LISTING" : "SELL ITEM"}
+                                    </Typography>
+                                </FancyButton>
+                            </Stack>
+                        )}
                     </Stack>
                 </Stack>
             </ClipThing>

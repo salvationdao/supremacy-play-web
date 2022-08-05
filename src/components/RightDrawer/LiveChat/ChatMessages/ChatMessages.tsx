@@ -1,13 +1,14 @@
-import { Box, Divider, Fade, IconButton, Stack, Typography } from "@mui/material"
+import { Box, Fade, IconButton, Stack, Typography } from "@mui/material"
 import { useCallback, useLayoutEffect, useRef, useState } from "react"
 import { PunishMessage, TextMessage } from "../../.."
 import { SvgScrolldown } from "../../../../assets"
 import { FontSizeType, SplitOptionType, useAuth, useChat, useSupremacy } from "../../../../containers"
-import { checkIfIsEmoji, dateFormatter } from "../../../../helpers"
-import { colors, fonts } from "../../../../theme/theme"
+import { checkIfIsEmoji } from "../../../../helpers"
+import { colors } from "../../../../theme/theme"
 import { ChatMessageType, Faction, NewBattleMessageData, PunishMessageData, SystemBanMessageData, TextMessageData, User } from "../../../../types"
 import { BanProposal } from "../BanProposal/BanProposal"
 import { GlobalAnnouncement, GlobalAnnouncementType } from "../GlobalAnnouncement"
+import { NewBattleMessage } from "./MessageTypes/NewBattleMessage"
 import { SystemBanMessage } from "./MessageTypes/SystemBanMessage"
 
 interface ChatMessagesProps {
@@ -19,16 +20,14 @@ interface ChatMessagesProps {
 
 export const ChatMessages = (props: ChatMessagesProps) => {
     const { user } = useAuth()
-    const { filterZerosGlobal, filterZerosFaction, filterSystemMessages, sentMessages, failedMessages, splitOption, fontSize, globalAnnouncement } = useChat()
+    const { filterSystemMessages, failedMessages, splitOption, fontSize, globalAnnouncement } = useChat()
     const { getFaction } = useSupremacy()
 
     return (
         <ChatMessagesInner
             {...props}
             user={user}
-            filterZeros={props.faction_id ? filterZerosFaction : filterZerosGlobal}
             filterSystemMessages={filterSystemMessages}
-            sentMessages={sentMessages}
             failedMessages={failedMessages}
             faction_id={props.faction_id}
             splitOption={splitOption}
@@ -41,9 +40,7 @@ export const ChatMessages = (props: ChatMessagesProps) => {
 
 interface ChatMessagesInnerProps extends ChatMessagesProps {
     user: User
-    filterZeros?: boolean
     filterSystemMessages?: boolean
-    sentMessages: Date[]
     failedMessages: Date[]
     splitOption: SplitOptionType
     fontSize: FontSizeType
@@ -56,9 +53,7 @@ const ChatMessagesInner = ({
     primaryColor,
     secondaryColor,
     chatMessages,
-    filterZeros,
     filterSystemMessages,
-    sentMessages,
     failedMessages,
     faction_id,
     splitOption,
@@ -68,6 +63,7 @@ const ChatMessagesInner = ({
 }: ChatMessagesInnerProps) => {
     const scrollableRef = useRef<HTMLDivElement>(null)
     const [autoScroll, setAutoScroll] = useState(true)
+    const [isScrolling, setIsScrolling] = useState(false)
 
     useLayoutEffect(() => {
         // Auto scroll to the bottom if enabled, has messages and user login/logout state changed
@@ -84,6 +80,7 @@ const ChatMessagesInner = ({
 
     const scrollHandler = useCallback(
         (e: React.UIEvent<HTMLDivElement, UIEvent>) => {
+            setIsScrolling(true)
             const { currentTarget } = e
             const extraHeight = currentTarget.scrollHeight - currentTarget.offsetHeight
             const scrollUpTooMuch = currentTarget.scrollTop < extraHeight - 0.5 * currentTarget.offsetHeight
@@ -94,6 +91,10 @@ const ChatMessagesInner = ({
             } else if (!autoScroll && !scrollUpTooMuch) {
                 setAutoScroll(true)
             }
+
+            setTimeout(() => {
+                setIsScrolling(false)
+            }, 150)
         },
         [autoScroll],
     )
@@ -136,7 +137,7 @@ const ChatMessagesInner = ({
                 }}
             >
                 <Box sx={{ height: 0 }}>
-                    <Stack spacing="1rem" sx={{ mt: ".88rem" }}>
+                    <Stack spacing=".5rem" sx={{ mt: ".88rem" }}>
                         {chatMessages && chatMessages.length > 0 ? (
                             chatMessages.map((message, i) => {
                                 if (message.type == "TEXT") {
@@ -148,15 +149,16 @@ const ChatMessagesInner = ({
                                             data={data}
                                             sentAt={message.sent_at}
                                             fontSize={fontSize}
-                                            filterZeros={filterZeros}
                                             filterSystemMessages={filterSystemMessages}
-                                            isSent={message.locallySent ? sentMessages.includes(message.sent_at) : true}
+                                            isSent={!message.locallySent}
                                             isFailed={data.from_user.id === user?.id ? failedMessages.includes(message.sent_at) : false}
                                             getFaction={getFaction}
                                             user={user}
                                             isEmoji={isEmoji}
-                                            locallySent={message.locallySent}
                                             previousMessage={chatMessages[i - 1]}
+                                            containerRef={scrollableRef}
+                                            isScrolling={isScrolling}
+                                            chatMessages={chatMessages}
                                         />
                                     )
                                 } else if (message.type == "PUNISH_VOTE") {
@@ -182,21 +184,11 @@ const ChatMessagesInner = ({
                                 } else if (message.type === "NEW_BATTLE") {
                                     const data = message.data as NewBattleMessageData
                                     return (
-                                        <Stack
+                                        <NewBattleMessage
                                             key={`${data.battle_number} - ${message.sent_at.toISOString()}`}
-                                            direction={"row"}
-                                            alignItems={"center"}
-                                            sx={{ pb: "0.5rem" }}
-                                        >
-                                            <Divider sx={{ flex: "1" }} />
-                                            <Typography
-                                                variant={"caption"}
-                                                sx={{ color: colors.grey, flexShrink: "0", px: "1rem", fontFamily: fonts.nostromoBold }}
-                                            >
-                                                BATTLE #{data ? data.battle_number : null} ({dateFormatter(message.sent_at)})
-                                            </Typography>
-                                            <Divider sx={{ flex: "1" }} />
-                                        </Stack>
+                                            data={data}
+                                            sentAt={message.sent_at}
+                                        />
                                     )
                                 }
 
@@ -207,7 +199,6 @@ const ChatMessagesInner = ({
                                 sx={{
                                     color: colors.grey,
                                     textAlign: "center",
-                                    userSelect: "tex !important",
                                 }}
                             >
                                 There are no messages yet.

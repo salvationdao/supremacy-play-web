@@ -23,14 +23,14 @@ export const QuickDeployItem = ({ mech }: QuickDeployItemProps) => {
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [mechDetails, setMechDetails] = useState<MechDetails>()
     const rarityDeets = useMemo(() => getRarityDeets(mech.tier || mechDetails?.tier || ""), [mech, mechDetails])
-    const [mechState, setMechState] = useState<MechStatusEnum>()
+    const [mechStatus, setMechStatus] = useState<MechStatus>()
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState<string>()
 
     // Get addition mech data
     useGameServerSubscriptionFaction<MechDetails>(
         {
-            URI: `/mech/${mech.id}/details`,
+            URI: `/mech/${mech.id}/brief_info`,
             key: GameServerKeys.GetMechDetails,
         },
         (payload) => {
@@ -45,8 +45,8 @@ export const QuickDeployItem = ({ mech }: QuickDeployItemProps) => {
             key: GameServerKeys.SubMechQueuePosition,
         },
         (payload) => {
-            if (!payload || mechState === MechStatusEnum.Sold) return
-            setMechState(payload.status)
+            if (!payload || mechStatus?.status === MechStatusEnum.Sold) return
+            setMechStatus(payload)
         },
     )
 
@@ -65,22 +65,6 @@ export const QuickDeployItem = ({ mech }: QuickDeployItemProps) => {
             setError(typeof e === "string" ? e : "Failed to deploy war machine.")
             console.error(e)
             return
-        } finally {
-            setIsLoading(false)
-        }
-    }, [send, mech.hash, newSnackbarMessage])
-
-    const onLeaveQueue = useCallback(async () => {
-        try {
-            setIsLoading(true)
-            const resp = await send(GameServerKeys.LeaveQueue, { asset_hash: mech.hash })
-            if (resp) {
-                newSnackbarMessage("Successfully removed war machine from queue.", "success")
-                setError(undefined)
-            }
-        } catch (e) {
-            setError(typeof e === "string" ? e : "Failed to leave queue.")
-            console.error(e)
         } finally {
             setIsLoading(false)
         }
@@ -131,40 +115,27 @@ export const QuickDeployItem = ({ mech }: QuickDeployItemProps) => {
                 </Typography>
 
                 <Stack direction="row" alignItems="center" spacing="1rem" justifyContent="space-between" sx={{ width: "100%" }}>
-                    <MechGeneralStatus mechID={mech.id} />
+                    <MechGeneralStatus mechID={mech.id} smallVersion />
 
-                    {!error && mechDetails && (mechState === MechStatusEnum.Idle || mechState === MechStatusEnum.Queue) && (
+                    {!error && mechDetails && mechStatus?.can_deploy && (
                         <FancyButton
                             loading={isLoading}
                             clipThingsProps={{
                                 clipSize: "5px",
-                                backgroundColor: mechState === MechStatusEnum.Idle ? colors.green : theme.factionTheme.background,
+                                backgroundColor: colors.green,
                                 opacity: 1,
                                 border: {
-                                    isFancy: true,
-                                    borderColor: mechState === MechStatusEnum.Idle ? colors.green : colors.yellow,
+                                    borderColor: colors.green,
                                     borderThickness: "1px",
                                 },
                                 sx: { position: "relative" },
                             }}
                             sx={{ px: "1rem", pt: 0, pb: ".1rem", color: theme.factionTheme.primary }}
-                            onClick={() => {
-                                if (mechState === MechStatusEnum.Idle) {
-                                    onDeployQueue()
-                                } else {
-                                    onLeaveQueue()
-                                }
-                            }}
+                            onClick={onDeployQueue}
                         >
                             <Stack direction="row" alignItems="center" spacing=".5rem">
-                                <Typography
-                                    variant="caption"
-                                    sx={{
-                                        color: mechState === MechStatusEnum.Idle ? "#FFFFFF" : colors.yellow,
-                                        fontFamily: fonts.nostromoBlack,
-                                    }}
-                                >
-                                    {mechState === MechStatusEnum.Idle ? "DEPLOY" : "UNDEPLOY"}
+                                <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBlack }}>
+                                    DEPLOY
                                 </Typography>
                             </Stack>
                         </FancyButton>

@@ -1,4 +1,4 @@
-import { BattleArenaPage, ClaimPage, HangarPage, MarketplacePage, NotFoundPage } from "../pages"
+import { BattleArenaPage, ClaimPage, HangarPage, MarketplacePage, BillingHistoryPage, NotFoundPage } from "../pages"
 import { SvgChat } from "../assets"
 import { Box } from "@mui/system"
 import { colors } from "../theme/theme"
@@ -10,8 +10,9 @@ import { WeaponPage } from "../pages/WeaponPage"
 import { LiveChat } from "../components/RightDrawer/LiveChat/LiveChat"
 import { PlayerList } from "../components/RightDrawer/PlayerList/PlayerList"
 import { PlayerProfilePage } from "../components/PublicProfile/PlayerProfile"
-import { BATTLE_ARENA_OPEN } from "../constants"
+import { BATTLE_ARENA_OPEN, STAGING_OR_DEV_ONLY } from "../constants"
 import { LeaderboardPage } from "../pages/LeaderboardPage"
+import { JobsPage } from "../pages/JobsPage"
 
 /**
  * Left drawer
@@ -31,6 +32,7 @@ interface RouteStruct {
         comingSoonLabel?: string
     }
     matchLeftDrawerID?: string // The /route which will make this button highlighted
+    enable: boolean
 }
 
 export const ROUTES_MAP: { [name: string]: RouteStruct } = {
@@ -47,6 +49,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
             comingSoonLabel: "Returning Soon",
         },
         matchLeftDrawerID: "home",
+        enable: true,
     },
 
     // Leaderboard
@@ -62,6 +65,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
             label: "Leaderboard",
         },
         matchLeftDrawerID: "leaderboard",
+        enable: true,
     },
 
     // Mech
@@ -73,6 +77,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         requireAuth: true,
         requireFaction: true,
         matchLeftDrawerID: "fleet",
+        enable: true,
     },
 
     // Weapon
@@ -84,6 +89,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         requireAuth: true,
         requireFaction: true,
         matchLeftDrawerID: "fleet",
+        enable: true,
     },
 
     // Fleet
@@ -99,6 +105,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
             label: "fleet",
         },
         matchLeftDrawerID: "fleet",
+        enable: true,
     },
 
     // Storefront
@@ -114,6 +121,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
             label: "Storefront",
         },
         matchLeftDrawerID: "storefront",
+        enable: !STAGING_OR_DEV_ONLY,
     },
 
     // Marketplace
@@ -125,6 +133,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         requireAuth: true,
         requireFaction: true,
         matchLeftDrawerID: "marketplace",
+        enable: !STAGING_OR_DEV_ONLY,
     },
     marketplace_item: {
         id: "marketplace_item",
@@ -134,6 +143,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         requireAuth: true,
         requireFaction: true,
         matchLeftDrawerID: "marketplace",
+        enable: !STAGING_OR_DEV_ONLY,
     },
     marketplace: {
         id: "marketplace",
@@ -147,6 +157,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
             label: "Marketplace",
         },
         matchLeftDrawerID: "marketplace",
+        enable: !STAGING_OR_DEV_ONLY,
     },
 
     // Player profile
@@ -157,21 +168,34 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         Component: PlayerProfilePage,
         requireAuth: false,
         requireFaction: false,
+        enable: true,
     },
 
-    // Contract
-    contracts: {
-        id: "contracts",
-        path: "/contracts",
+    // Jobs
+    jobs: {
+        id: "jobs",
+        path: "/jobs/:type?",
         exact: true,
-        Component: undefined,
+        Component: JobsPage,
         requireAuth: true,
         requireFaction: true,
         leftDrawer: {
-            enable: false,
-            label: "Contracts",
+            enable: true,
+            label: "Jobs",
         },
-        matchLeftDrawerID: "contracts",
+        matchLeftDrawerID: "jobs",
+        enable: true,
+    },
+
+    // FIAT related
+    billing_history: {
+        id: "billing_history",
+        path: "/billing-history",
+        exact: true,
+        Component: BillingHistoryPage,
+        requireAuth: true,
+        requireFaction: true,
+        enable: true,
     },
 
     // Others
@@ -181,11 +205,13 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         exact: true,
         Component: ClaimPage,
         requireAuth: true,
-        authTitle: "Connect Your Wallet to Claim Your Rewards",
+        authTitle: "Connect to XSYN to Claim Your Rewards",
         authDescription:
             "You will receive assets that are of Supremacy's next generation collection: Supremacy Nexus, which will allow you to equip your war machines to defeat your enemies in the battle arena.",
         requireFaction: true,
+        enable: true,
     },
+
     not_found_page: {
         id: "not_found_page",
         path: "/404",
@@ -193,6 +219,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         Component: NotFoundPage,
         requireAuth: false,
         requireFaction: false,
+        enable: true,
     },
 }
 

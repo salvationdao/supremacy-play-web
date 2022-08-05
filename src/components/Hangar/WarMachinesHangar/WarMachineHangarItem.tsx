@@ -4,7 +4,7 @@ import { useLocation } from "react-router-dom"
 import { FancyButton } from "../.."
 import { SvgDropdownArrow } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
-import { getRarityDeets, shadeColor } from "../../../helpers"
+import { shadeColor } from "../../../helpers"
 import { useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
@@ -13,6 +13,7 @@ import { MediaPreview } from "../../Common/MediaPreview/MediaPreview"
 import { General } from "../../Marketplace/Common/MarketItem/General"
 import { MechBarStats } from "./Common/MechBarStats"
 import { MechGeneralStatus } from "./Common/MechGeneralStatus"
+import { MechRepairBlocks } from "./Common/MechRepairBlocks"
 import { MechLoadoutIcons } from "./Common/MechLoadoutIcons"
 
 export const WarMachineHangarItem = ({ mech, isGridView }: { mech: MechBasic; isGridView?: boolean }) => {
@@ -53,7 +54,7 @@ export const WarMachineHangarItem = ({ mech, isGridView }: { mech: MechBasic; is
                     border: { isFancy: !isGridView, borderColor: primaryColor, borderThickness: ".25rem" },
                     sx: { position: "relative", height: "100%" },
                 }}
-                sx={{ color: primaryColor, textAlign: "start", height: "100%" }}
+                sx={{ color: primaryColor, textAlign: "start", height: "100%", ":hover": { opacity: 1 } }}
                 to={`/mech/${mech.id}${location.hash}`}
             >
                 <Box
@@ -68,7 +69,7 @@ export const WarMachineHangarItem = ({ mech, isGridView }: { mech: MechBasic; is
                         ...(isGridView
                             ? {
                                   "&>*:not(:last-child)": {
-                                      mb: ".8rem",
+                                      mb: "1rem",
                                   },
                               }
                             : {}),
@@ -77,7 +78,7 @@ export const WarMachineHangarItem = ({ mech, isGridView }: { mech: MechBasic; is
                     <MechCommonArea isGridView={isGridView} mech={mech} mechDetails={mechDetails} primaryColor={primaryColor} secondaryColor={secondaryColor} />
 
                     <General isGridView={isGridView} title="STATUS">
-                        <MechGeneralStatus mechID={mech.id} hideBox />
+                        <MechGeneralStatus mechID={mech.id} hideBox smallVersion />
                     </General>
 
                     <MechBarStats fontSize="1.5rem" mech={mech} mechDetails={mechDetails} color={primaryColor} iconVersion />
@@ -118,7 +119,6 @@ export const MechCommonArea = ({
     toggleIsExpanded?: (value?: boolean) => void
     label?: string
 }) => {
-    const rarityDeets = useMemo(() => getRarityDeets(mechDetails?.chassis_skin?.tier || mechDetails?.tier || mech?.tier || ""), [mech, mechDetails])
     const backgroundColor = useMemo(() => shadeColor(primaryColor, -90), [primaryColor])
 
     const mechh = mechDetails || mech
@@ -141,10 +141,10 @@ export const MechCommonArea = ({
             </Box>
 
             <Stack
-                spacing={isGridView ? ".1rem" : ".2rem"}
+                spacing=".2rem"
                 sx={{
                     flex: 1,
-                    pr: toggleIsExpanded ? "3rem" : "unset",
+                    pr: !isGridView && toggleIsExpanded ? "3rem" : "unset",
                     ":hover": {
                         ".expandArrow": {
                             transform: "translateX(4px)",
@@ -158,10 +158,11 @@ export const MechCommonArea = ({
                     toggleIsExpanded()
                 }}
             >
+                <MechLoadoutIcons mechDetails={mechDetails} />
+
                 <Typography
-                    variant="body2"
                     sx={{
-                        color: mechh?.name ? primaryColor : colors.grey,
+                        color: mechh?.name ? colors.offWhite : "#FFFFFF",
                         fontFamily: fonts.nostromoBlack,
                         display: "-webkit-box",
                         overflow: "hidden",
@@ -171,48 +172,10 @@ export const MechCommonArea = ({
                         WebkitBoxOrient: "vertical",
                     }}
                 >
-                    {mechh?.name || "Unnamed"}
+                    {mechh?.name || mechh?.label || label}
                 </Typography>
 
-                <Typography
-                    sx={{
-                        fontFamily: fonts.nostromoBlack,
-                        display: "-webkit-box",
-                        overflow: "hidden",
-                        overflowWrap: "anywhere",
-                        textOverflow: "ellipsis",
-                        WebkitLineClamp: 1, // change to max number of lines
-                        WebkitBoxOrient: "vertical",
-                    }}
-                >
-                    {mechh?.label || label}
-                </Typography>
-
-                <Stack
-                    direction={isGridView ? "column-reverse" : "row"}
-                    spacing={isGridView ? ".2rem" : ".8rem"}
-                    alignItems={isGridView ? "flex-start" : "center"}
-                >
-                    <MechLoadoutIcons mechDetails={mechDetails} />
-
-                    {mechDetails?.chassis_skin && (
-                        <Typography
-                            variant="caption"
-                            sx={{
-                                fontFamily: fonts.nostromoBold,
-                                display: "-webkit-box",
-                                overflow: "hidden",
-                                overflowWrap: "anywhere",
-                                textOverflow: "ellipsis",
-                                WebkitLineClamp: 1, // change to max number of lines
-                                WebkitBoxOrient: "vertical",
-                            }}
-                        >
-                            <span style={{ color: colors.chassisSkin, fontFamily: "inherit" }}>{mechDetails?.chassis_skin?.label}</span>{" "}
-                            <span style={{ color: rarityDeets.color, fontFamily: "inherit" }}>[{rarityDeets.label}]</span>
-                        </Typography>
-                    )}
-                </Stack>
+                <MechRepairBlocks mechID={mech?.id || mechDetails?.id} defaultBlocks={mechDetails?.model.repair_blocks} />
 
                 {toggleIsExpanded && !isGridView && (
                     <Stack

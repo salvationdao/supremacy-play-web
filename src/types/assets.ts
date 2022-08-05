@@ -1,9 +1,5 @@
 import { Battle, Faction, User, Vector2i } from "."
 
-export interface SaleAbilitiesAvailabilityResponse {
-    can_purchase: boolean
-}
-
 export enum MechStatusEnum {
     Idle = "IDLE",
     Queue = "QUEUE",
@@ -11,6 +7,7 @@ export enum MechStatusEnum {
     Market = "MARKET",
     Sold = "SOLD",
     BattleReady = "BATTLE_READY",
+    Damaged = "DAMAGED",
 }
 
 export enum WeaponType {
@@ -41,9 +38,21 @@ export enum AssetItemType {
     OutroAnimation = "outro_animation",
 }
 
+export enum MechRepairStatEnum {
+    Pending = "PENDING",
+    StandardRepair = "STANDARD_REPAIR",
+    FastRepair = "FAST_REPAIR",
+}
+
+export interface MechRepairStatus {
+    repair_status: MechRepairStatEnum
+    remain_seconds?: number
+}
+
 export interface MechStatus {
     status: MechStatusEnum
     queue_position?: number
+    can_deploy?: boolean
 }
 
 export interface AssetDurability {
@@ -159,6 +168,7 @@ export interface MechModel extends Collection {
     external_url?: string
     youtube_url?: string
     created_at: Date
+    repair_blocks: number
 }
 
 export interface BlueprintMechSkin extends Collection {
@@ -368,6 +378,8 @@ export interface WarMachineState {
     imageAvatar: string
     maxShield: number
     ownedByID: string
+    ownerUsername: string
+    modelID: string
     description?: string | null
     externalUrl: string
     name: string
@@ -400,12 +412,6 @@ export interface WarMachineMetadata {
     name: string
     model: string
     image: string
-}
-
-export interface RepairStatus {
-    total_required_seconds: number
-    remain_seconds: number
-    full_repair_fee: string
 }
 
 export enum MysteryCrateType {
@@ -496,4 +502,13 @@ export interface Rarity {
     label: string
     color: string
     textColor: string
+}
+
+export interface StorefrontPackage {
+    id: string
+    name: string
+    description: string
+    currency: string
+    price_dollars: number
+    price_cents: number
 }

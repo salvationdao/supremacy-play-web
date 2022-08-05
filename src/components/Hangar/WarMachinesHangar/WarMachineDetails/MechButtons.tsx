@@ -2,7 +2,7 @@ import { Box, Typography } from "@mui/material"
 import { useState } from "react"
 import { useLocation } from "react-router-dom"
 import { ClipThing, FancyButton, TooltipHelper } from "../../.."
-import { BATTLE_ARENA_OPEN } from "../../../../constants"
+import { BATTLE_ARENA_OPEN, STAGING_OR_DEV_ONLY } from "../../../../constants"
 import { useTheme } from "../../../../containers/theme"
 import { useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
@@ -15,20 +15,20 @@ export const MechButtons = ({
     mechDetails,
     setSelectedMechDetails,
     setDeployMechModalOpen,
-    setLeaveMechModalOpen,
     setRentalMechModalOpen,
+    setRepairMechModalOpen,
     marketLocked,
 }: {
     mechDetails: MechDetails
     setSelectedMechDetails: React.Dispatch<React.SetStateAction<MechDetails | undefined>>
     setDeployMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
-    setLeaveMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
     setRentalMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
+    setRepairMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
     marketLocked: boolean
 }) => {
     const location = useLocation()
     const theme = useTheme()
-    const [mechState, setMechState] = useState<MechStatusEnum>()
+    const [mechStatus, setMechStatus] = useState<MechStatus>()
 
     useGameServerSubscriptionFaction<MechStatus>(
         {
@@ -36,10 +36,12 @@ export const MechButtons = ({
             key: GameServerKeys.SubMechQueuePosition,
         },
         (payload) => {
-            if (!payload || mechState === MechStatusEnum.Sold) return
-            setMechState(payload.status)
+            if (!payload || mechStatus?.status === MechStatusEnum.Sold) return
+            setMechStatus(payload)
         },
     )
+
+    const mechState = mechStatus?.status
 
     return (
         <ClipThing
@@ -54,34 +56,30 @@ export const MechButtons = ({
         >
             <Box sx={{ p: "1rem", gap: ".8rem", display: "grid", gridTemplateColumns: "repeat(2, 1fr)" }}>
                 {/* Button 1 */}
-                {mechState === MechStatusEnum.Battle || mechState === MechStatusEnum.Queue ? (
-                    <ReusableButton
-                        primaryColor="#E0B61B"
-                        secondaryColor="#111111"
-                        backgroundColor="#E0B61B"
-                        label="UNDEPLOY"
-                        disabled={!mechState || mechState === MechStatusEnum.Battle}
-                        onClick={() => {
-                            setSelectedMechDetails(mechDetails)
-                            setLeaveMechModalOpen(true)
-                        }}
-                    />
-                ) : (
-                    <ReusableButton
-                        isFancy
-                        primaryColor={colors.green}
-                        backgroundColor={colors.green}
-                        label="DEPLOY"
-                        disabled={!BATTLE_ARENA_OPEN || !mechState || mechState !== MechStatusEnum.Idle || !mechDetails.battle_ready}
-                        onClick={() => {
-                            setSelectedMechDetails(mechDetails)
-                            setDeployMechModalOpen(true)
-                        }}
-                    />
-                )}
+                <ReusableButton
+                    isFancy
+                    primaryColor={colors.green}
+                    backgroundColor={colors.green}
+                    label="DEPLOY"
+                    disabled={!BATTLE_ARENA_OPEN || !mechStatus?.can_deploy || !mechDetails.battle_ready}
+                    onClick={() => {
+                        setSelectedMechDetails(mechDetails)
+                        setDeployMechModalOpen(true)
+                    }}
+                />
 
                 {/* Button 2 */}
-                <ReusableButton isFancy primaryColor={colors.orange} backgroundColor={colors.orange} label="REPAIR" disabled={!mechState} />
+                <ReusableButton
+                    isFancy
+                    primaryColor={colors.blue2}
+                    disabled={mechState !== MechStatusEnum.Damaged}
+                    backgroundColor={colors.blue2}
+                    label={"REPAIR"}
+                    onClick={() => {
+                        setSelectedMechDetails(mechDetails)
+                        setRepairMechModalOpen(true)
+                    }}
+                />
 
                 {/* Button 4 */}
                 <ReusableButton
@@ -108,7 +106,12 @@ export const MechButtons = ({
                             secondaryColor={mechState === MechStatusEnum.Market ? colors.red : undefined}
                             backgroundColor={mechState === MechStatusEnum.Market ? theme.factionTheme.background : colors.red}
                             label={mechState === MechStatusEnum.Market ? "VIEW LISTING" : "SELL"}
-                            disabled={!mechState || (mechState !== MechStatusEnum.Idle && mechState !== MechStatusEnum.Market) || marketLocked}
+                            disabled={
+                                STAGING_OR_DEV_ONLY ||
+                                !mechState ||
+                                (mechState !== MechStatusEnum.Idle && mechState !== MechStatusEnum.Damaged && mechState !== MechStatusEnum.Market) ||
+                                marketLocked
+                            }
                             to={
                                 mechDetails.locked_to_marketplace
                                     ? !mechDetails.item_sale_id

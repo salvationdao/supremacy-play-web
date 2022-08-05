@@ -1,10 +1,11 @@
-import { Faction, MultiplierUpdateResp, WarMachineState } from "."
+import { Faction, WarMachineState } from "."
+import { FactionIDs } from "./../constants"
 
 export interface FactionsAll {
     [faction_id: string]: Faction
 }
 
-export type BribeStage = "BRIBE" | "LOCATION_SELECT" | "COOLDOWN" | "HOLD"
+export type BribeStage = "OPT_IN" | "LOCATION_SELECT" | "COOLDOWN" | "HOLD"
 
 export interface ViewerLiveCount {
     red_mountain: number
@@ -31,6 +32,13 @@ export interface Map {
     top_pixels: number
     left_pixels: number
     disabled_cells: number[]
+}
+
+export interface BattleZone {
+    location: Position
+    radius: number
+    shrinkTime: number
+    warnTime: number
 }
 
 export enum StreamService {
@@ -109,6 +117,8 @@ export interface BlueprintPlayerAbility {
     text_colour: string
     location_select_type: LocationSelectType
     created_at: Date
+    inventory_limit: number
+    cooldown_seconds: number
 }
 
 export interface PlayerAbility {
@@ -116,6 +126,7 @@ export interface PlayerAbility {
     blueprint_id: string
     count: number
     last_purchased_at: Date
+    cooldown_expires_on: Date
     ability: BlueprintPlayerAbility
 
     // Used for mech command related abilities
@@ -126,7 +137,14 @@ export interface SaleAbility {
     id: string
     blueprint_id: string
     amount_sold: number
+    current_price: string
     ability: BlueprintPlayerAbility
+}
+
+export enum SaleAbilityAvailability {
+    Unavailable,
+    CanClaim,
+    CanPurchase,
 }
 
 export interface GameAbilityProgress {
@@ -169,32 +187,20 @@ export interface BattleEndDetail {
     battle_identifier: number
     started_at: Date
     ended_at: Date
-    total_multipliers: number
-    battle_multipliers: MultiplierUpdateResp
     winning_condition: string
-    winning_faction: {
-        id: string
-        label: string
-        theme: {
-            primary: string
-            secondary: string
-            background: string
-        }
-    }
+    winning_faction_id_order: FactionIDs[]
     winning_war_machines: WarMachineState[]
-    top_sups_contributors: {
-        username: string
-        avatar_id: string
-        faction_id: string
-        faction_colour: string
-    }[]
-    top_sups_contribute_factions: Faction[]
-    most_frequent_ability_executors: {
-        username: string
-        avatar_id: string
-        faction_id: string
-        faction_colour: string
-    }[]
+    mech_rewards: BattleMechReward[]
+}
+
+export interface BattleMechReward {
+    id: string
+    name?: string
+    label: string
+    faction_id: FactionIDs
+    avatar_url: string
+    rewarded_sups: string
+    owner_id: string
 }
 
 export interface WarMachineDestroyedRecord {
