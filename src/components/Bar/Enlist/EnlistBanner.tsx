@@ -74,7 +74,6 @@ const EnlistBannerInner = ({ userID, user, battleIdentifier, getFaction, userSta
         //     }
         // >
         <Box
-            id="tutorial-enlisted"
             sx={{
                 mx: "1.2rem",
                 px: "2.24rem",

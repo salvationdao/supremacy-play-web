@@ -151,7 +151,7 @@ export const AuctionDetails = ({
                         </ClipThing>
 
                         {bidCount > 0 && lastBidUser && (
-                            <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBold, span: { color: colors.lightNeonBlue, fontFamily: "inherit" } }}>
+                            <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBold, span: { color: colors.lightNeonBlue } }}>
                                 LATEST BID:{" "}
                                 <span>
                                     {lastBidUser.username}#{lastBidUser.gid}

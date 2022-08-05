@@ -26,7 +26,7 @@ export const LiveChat = () => {
                         height: 650,
                     }}
                 >
-                    <Stack id="tutorial-chat" sx={{ width: "100%", height: "100%", overflow: "hidden" }}>
+                    <Stack sx={{ width: "100%", height: "100%", overflow: "hidden" }}>
                         {splitOption == "split" ? <SplitLayout /> : <TabbedLayout />}
                         <AdditionalOptionsButton />
                     </Stack>
@@ -55,7 +55,7 @@ export const LiveChat = () => {
     }
 
     return (
-        <Stack id="tutorial-chat" sx={{ width: "100%", height: "100%", overflow: "hidden" }}>
+        <Stack sx={{ width: "100%", height: "100%", overflow: "hidden" }}>
             {splitOption == "split" ? <SplitLayout /> : <TabbedLayout />}
             <AdditionalOptionsButton />
         </Stack>
