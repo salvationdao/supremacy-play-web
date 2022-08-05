@@ -15,7 +15,7 @@ export const SectionBottom = () => {
     if (isMobile) return null
 
     return (
-        <Stack direction="row" justifyContent="flex-end" alignItems="flex-start" sx={{ px: "3.36rem" }}>
+        <Stack direction="row" justifyContent="flex-end" alignItems="flex-start" sx={{ py: ".6rem", px: "3.36rem" }}>
             <FancyButton
                 clipThingsProps={{
                     clipSize: "8px",
