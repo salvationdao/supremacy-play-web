@@ -92,17 +92,19 @@ export const MiniMapInside = ({ containerDimensions }: MiniMapInsideProps) => {
                         <MapMechs />
 
                         {/* Map Image */}
-                        <MapImage
-                            map={map}
-                            mapScale={mapScale}
+                        <MapImage map={map} />
+
+                        {/* Map grid, with map clicking */}
+                        <MapGrid
+                            mapWidth={map.width}
+                            mapHeight={map.height}
+                            gridHeight={gridHeight}
                             mapElement={mapElement}
                             onClick={isLocationSelection ? onMapClick : () => setHighlightedMechParticipantID(undefined)}
+                            mapScale={mapScale}
                             isLocationSelection={isLocationSelection}
                             isLineSelection={isLineSelection}
                         />
-
-                        {/* Map grid */}
-                        <MapGrid mapWidth={map.width} mapHeight={map.height} gridHeight={gridHeight} />
 
                         {/* Shade disabled cells */}
                         <DisabledCells />
