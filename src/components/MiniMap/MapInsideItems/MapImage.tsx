@@ -1,4 +1,4 @@
-import { Box, Stack } from "@mui/material"
+import { Box, Stack, Typography } from "@mui/material"
 import React from "react"
 import { Crosshair } from "../../../assets"
 import { Map } from "../../../types"
@@ -42,13 +42,16 @@ const MapGrid = React.memo(function MapGrid() {
     return (
         <Stack
             sx={{
+                position: "relative",
                 width: "100%",
                 height: "100%",
                 pointerEvents: "none",
             }}
         >
             {new Array(10).fill(0).map((_, i) => (
-                <Stack key={i} direction="row" sx={{ flex: 1 }}>
+                <Stack key={i} direction="row" sx={{ position: "relative", flex: 1 }}>
+                    <Typography></Typography>
+
                     {new Array(10).fill(0).map((_, j) => (
                         <div key={j} style={{ flex: 1, border: "#FFFFFF40 1px solid" }} />
                     ))}
