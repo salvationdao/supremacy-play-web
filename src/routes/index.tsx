@@ -121,7 +121,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
             label: "Storefront",
         },
         matchLeftDrawerID: "storefront",
-        enable: true,
+        enable: !STAGING_OR_DEV_ONLY,
     },
 
     // Marketplace
