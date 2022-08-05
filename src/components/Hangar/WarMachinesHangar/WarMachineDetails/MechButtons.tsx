@@ -28,7 +28,7 @@ export const MechButtons = ({
 }) => {
     const location = useLocation()
     const theme = useTheme()
-    const [mechState, setMechState] = useState<MechStatusEnum>()
+    const [mechStatus, setMechStatus] = useState<MechStatus>()
 
     useGameServerSubscriptionFaction<MechStatus>(
         {
@@ -36,10 +36,12 @@ export const MechButtons = ({
             key: GameServerKeys.SubMechQueuePosition,
         },
         (payload) => {
-            if (!payload || mechState === MechStatusEnum.Sold) return
-            setMechState(payload.status)
+            if (!payload || mechStatus?.status === MechStatusEnum.Sold) return
+            setMechStatus(payload)
         },
     )
+
+    const mechState = mechStatus?.status
 
     return (
         <ClipThing
@@ -59,7 +61,7 @@ export const MechButtons = ({
                     primaryColor={colors.green}
                     backgroundColor={colors.green}
                     label="DEPLOY"
-                    disabled={!BATTLE_ARENA_OPEN || !mechState || mechState !== MechStatusEnum.Idle || !mechDetails.battle_ready}
+                    disabled={!BATTLE_ARENA_OPEN || !mechStatus?.can_deploy || !mechDetails.battle_ready}
                     onClick={() => {
                         setSelectedMechDetails(mechDetails)
                         setDeployMechModalOpen(true)
