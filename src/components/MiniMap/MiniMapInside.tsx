@@ -98,6 +98,7 @@ export const MiniMapInside = ({ containerDimensions }: MiniMapInsideProps) => {
                             onClick={isLocationSelection ? onMapClick : () => setHighlightedMechParticipantID(undefined)}
                             isLocationSelection={isLocationSelection}
                             isLineSelection={isLineSelection}
+                            gridHeight={gridHeight}
                         />
 
                         {/* Shade disabled cells */}
@@ -124,5 +125,6 @@ export const MiniMapInside = ({ containerDimensions }: MiniMapInsideProps) => {
         onMapClick,
         selection?.startCoords,
         setHighlightedMechParticipantID,
+        gridHeight,
     ])
 }

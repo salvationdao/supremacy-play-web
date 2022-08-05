@@ -28,7 +28,12 @@ interface DoRepairModalProps {
 }
 
 const propsAreEqual = (prevProps: DoRepairModalProps, nextProps: DoRepairModalProps) => {
-    return prevProps.open === nextProps.open && prevProps.repairJob?.id === nextProps.repairJob?.id && prevProps.repairStatus?.id === nextProps.repairStatus?.id
+    return (
+        prevProps.open === nextProps.open &&
+        prevProps.repairJob?.id === nextProps.repairJob?.id &&
+        prevProps.repairStatus?.id === nextProps.repairStatus?.id &&
+        prevProps.repairStatus?.blocks_repaired === nextProps.repairStatus?.blocks_repaired
+    )
 }
 
 export const DoRepairModal = React.memo(function DoRepairModal({ repairStatus, repairJob: _repairJob, open, onClose }: DoRepairModalProps) {

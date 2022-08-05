@@ -638,4 +638,4 @@ export const generatePriceText = (dollars: number, cents: number) => {
 }
 
 // Converts number to alphabet letter. E.g. 0 -> "a"
-export const intToLetter = (i: number) => String.fromCharCode(96 + i)
+export const intToLetter = (i: number) => String.fromCharCode(97 + i)
