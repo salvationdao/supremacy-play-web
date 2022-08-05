@@ -18,7 +18,6 @@ export const HowToPlay = () => {
     return (
         <>
             <Button
-                id="tutorial-welcome"
                 onClick={() => toggleIsPopoverOpen()}
                 ref={popoverRef}
                 sx={{

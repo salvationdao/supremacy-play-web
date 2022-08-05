@@ -16,7 +16,6 @@ export const BuySupsButton = () => {
 
     return (
         <Button
-            id="tutorial-purchase"
             sx={{
                 px: "1.2rem",
                 pt: ".32rem",
