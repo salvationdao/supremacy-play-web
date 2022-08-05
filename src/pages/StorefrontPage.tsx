@@ -5,6 +5,7 @@ import { HangarBg } from "../assets"
 import { ClipThing } from "../components"
 import { MysteryCrateBanner } from "../components/Common/PageHeaderBanners/MysteryCrateBanner"
 import { MysteryCratesStore } from "../components/Storefront/MysteryCratesStore/MysteryCratesStore"
+import { PackagesStore } from "../components/Storefront/PackagesStore/PackagesStore"
 import { PlayerAbilitiesStore } from "../components/Storefront/PlayerAbilitiesStore/PlayerAbilitiesStore"
 import { useTheme } from "../containers/theme"
 import { ROUTES_MAP } from "../routes"
@@ -91,7 +92,7 @@ export const StorefrontPage = () => {
                             >
                                 <Tab label="MYSTERY CRATES" value={STOREFRONT_TABS.MysteryCrates} />
 
-                                {/* <Tab label="PACKAGES" value={STOREFRONT_TABS.Packages} /> */}
+                                <Tab label="PACKAGES" value={STOREFRONT_TABS.Packages} />
 
                                 <Tab label="ABILITIES" value={STOREFRONT_TABS.Abilities} />
                             </Tabs>
@@ -106,7 +107,7 @@ export const StorefrontPage = () => {
                 </TabPanel>
 
                 <TabPanel currentValue={currentValue} value={STOREFRONT_TABS.Packages}>
-                    {/* <PackagesStore /> */}
+                    <PackagesStore />
                 </TabPanel>
 
                 <TabPanel currentValue={currentValue} value={STOREFRONT_TABS.Abilities}>

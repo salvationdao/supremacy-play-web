@@ -13,6 +13,7 @@ import { PlayerProfilePage } from "../components/PublicProfile/PlayerProfile"
 import { BATTLE_ARENA_OPEN } from "../constants"
 import { LeaderboardPage } from "../pages/LeaderboardPage"
 import { JobsPage } from "../pages/JobsPage"
+import { StorefrontCheckoutPage } from "../pages/StorefrontCheckoutPage"
 
 /**
  * Left drawer
@@ -114,6 +115,15 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
             enable: true,
             label: "Storefront",
         },
+        matchLeftDrawerID: "storefront",
+    },
+    storefront_checkout: {
+        id: "storefront",
+        path: "/storefront/:type/:id",
+        exact: true,
+        Component: StorefrontCheckoutPage,
+        requireAuth: true,
+        requireFaction: true,
         matchLeftDrawerID: "storefront",
     },
 

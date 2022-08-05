@@ -27,25 +27,31 @@ export const PackageStoreItem = ({ enlargedView, item }: PackageStoreItemProps) 
     const buyNowClickHandler = async () => {
         if (!stripe) return
 
-        const host = window.location.protocol + "//" + window.location.host
+        try {
+            const host = window.location.protocol + "//" + window.location.host
 
-        const { payload: sessionID, error } = await mutate({
-            product_id: item.id,
-            success_url: host + "/storefront/packages",
-            cancel_url: host + "/storefront/packages",
-        })
+            const { payload: sessionID, error } = await mutate({
+                product_id: item.id,
+                product_type: "generic",
+                success_url: host + "/storefront/packages",
+                cancel_url: host + "/storefront/packages",
+            })
 
-        if (error || !sessionID) {
-            return
-        }
+            if (error || !sessionID) {
+                return
+            }
 
-        const resp = await stripe.redirectToCheckout({
-            sessionId: sessionID,
-        })
+            const resp = await stripe.redirectToCheckout({
+                sessionId: sessionID,
+            })
 
-        if (resp.error) {
-            // TODO: Handle errors :/
-            return
+            if (resp.error) {
+                // TODO: Handle errors :/
+                return
+            }
+        } catch (err) {
+            const message = typeof err === "string" ? err : "Unable to start checkout, please try again."
+            console.error(message)
         }
     }
 
