@@ -1,5 +1,4 @@
 import { useEffect, useRef } from "react"
-import { colors } from "../../../theme/theme"
 import { PlayerAbility } from "../../../types"
 
 export interface PlayerAbilityCooldownIndicatorProps {
@@ -48,7 +47,7 @@ export const PlayerAbilityCooldownIndicator = ({ playerAbility }: PlayerAbilityC
                     fill: "transparent",
                     strokeDasharray: `${(circumference * 100) / 100} ${circumference}`,
                     strokeWidth: radius * 2,
-                    stroke: colors.black2,
+                    stroke: "#0e1447",
                     transition: "stroke-dasharray .2s ease-out",
                 }}
                 className="base-timer__path-elapsed"
