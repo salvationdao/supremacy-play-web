@@ -82,7 +82,7 @@ const QuickPlayerAbilitiesInner = ({ onClose, userID }: { onClose: () => void; u
 
     useGameServerSubscription<{ id: string; current_price: string }>(
         {
-            URI: "/public/sale_abilities",
+            URI: "/secure_public/sale_abilities",
             key: GameServerKeys.SubSaleAbilitiesPrice,
             ready: !!userID,
         },
@@ -187,7 +187,13 @@ const QuickPlayerAbilitiesInner = ({ onClose, userID }: { onClose: () => void; u
                                         )}
                                     </Stack>
                                 }
-                            />
+                            >
+                                {/* <Stack direction="row" justifyContent="end" flex={1} alignSelf="end">
+                                    <IconButton onClick={refreshEverything}>
+                                        <SvgRefresh />
+                                    </IconButton>
+                                </Stack> */}
+                            </PageHeader>
 
                             {!isLoaded && (
                                 <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>

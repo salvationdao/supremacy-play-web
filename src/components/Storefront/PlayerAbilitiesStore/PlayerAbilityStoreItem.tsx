@@ -51,7 +51,7 @@ export const PlayerAbilityStoreItem = ({
             case SaleAbilityAvailability.CanClaim:
                 return "CLAIM"
             default:
-                return "UNAVAILABLE"
+                return "PURCHASE"
         }
     }, [availability])
 
@@ -236,7 +236,9 @@ export const PlayerAbilityStoreItem = ({
                                     color: theme.factionTheme.secondary,
                                 }}
                             >
-                                {availability === SaleAbilityAvailability.CanPurchase ? (
+                                {availability === SaleAbilityAvailability.CanClaim ? (
+                                    "CLAIM ABILITY"
+                                ) : (
                                     <>
                                         PURCHASE FOR{" "}
                                         <Box
@@ -250,10 +252,6 @@ export const PlayerAbilityStoreItem = ({
                                             {supFormatter(price, 2)} SUPS
                                         </Box>
                                     </>
-                                ) : availability === SaleAbilityAvailability.CanClaim ? (
-                                    "CLAIM ABILITY"
-                                ) : (
-                                    "UNAVAILABLE"
                                 )}
                             </Typography>
                         </FancyButton>
