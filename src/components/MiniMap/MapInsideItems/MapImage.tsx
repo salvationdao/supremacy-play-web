@@ -61,7 +61,7 @@ const MapGrid = React.memo(function MapGrid({ mapWidth, mapHeight, gridHeight }:
                         variant="caption"
                         sx={{
                             position: "absolute",
-                            fontSize: gridHeight / 2,
+                            fontSize: gridHeight / 1.8,
                             fontFamily: fonts.nostromoBlack,
                             left: 0,
                             top: "50%",
@@ -78,7 +78,7 @@ const MapGrid = React.memo(function MapGrid({ mapWidth, mapHeight, gridHeight }:
                                     variant="caption"
                                     sx={{
                                         position: "absolute",
-                                        fontSize: gridHeight / 2,
+                                        fontSize: gridHeight / 1.8,
                                         fontFamily: fonts.nostromoBlack,
                                         top: 0,
                                         left: "50%",
