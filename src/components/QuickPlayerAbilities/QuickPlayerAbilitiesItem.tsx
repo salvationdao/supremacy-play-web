@@ -43,15 +43,9 @@ export const QuickPlayerAbilitiesItem = ({
                 return (
                     <Typography>
                         PURCHASE ABILITY FOR{" "}
-                        <Box
-                            key={price}
-                            component="span"
-                            sx={{
-                                animation: `${scaleUpKeyframes} .2s ease-out`,
-                            }}
-                        >
+                        <strong key={price} style={{ color: colors.yellow, animation: `${scaleUpKeyframes} .2s ease-out` }}>
                             {supFormatter(price, 2)} SUPS
-                        </Box>
+                        </strong>
                     </Typography>
                 )
             case SaleAbilityAvailability.CanClaim:

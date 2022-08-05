@@ -135,7 +135,9 @@ const AppInner = () => {
                             {isServerUp && !UNDER_MAINTENANCE ? (
                                 <Switch>
                                     {ROUTES_ARRAY.map((r) => {
-                                        const { id, path, exact, Component, requireAuth, requireFaction, authTitle, authDescription } = r
+                                        const { id, path, exact, Component, requireAuth, requireFaction, authTitle, authDescription, enable } = r
+                                        if (!enable) return null
+
                                         let component = Component
                                         if (requireAuth && !userID) {
                                             const Comp = () => <AuthPage authTitle={authTitle} authDescription={authDescription} />
