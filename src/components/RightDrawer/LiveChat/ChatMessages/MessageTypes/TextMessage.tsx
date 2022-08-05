@@ -402,8 +402,7 @@ export const UsernameJSX = ({ data, fontSize, toggleIsPopoverOpen, user }: Usern
                 },
             }}
         >
-            {toggleIsPopoverOpen ? "" : "@"}
-            {`${truncate(user?.username || "", 20)}`}
+            {toggleIsPopoverOpen ? truncate(user?.username || "", 20) : `@${user?.username}`}
             <span
                 style={{
                     marginLeft: ".2rem",
