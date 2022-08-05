@@ -29,7 +29,7 @@ export const Bar = () => {
                     >
                         <Marquee direction="left" gradientColor={hexToRGBArray(colors.lightRed)} gradientWidth={50} style={{ overflow: "hidden" }}>
                             <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack, lineHeight: 1 }}>
-                                EXPERIMENTAL BATTLE TRAINING GROUNDS - The SUPS you spend are not real!
+                                EXPERIMENTAL TESTING - ALL SUPS AND WAR MACHINES ARE TEMPORARY AND ONLY EXIST IN EXPERIMENTAL TESTING
                             </Typography>
                         </Marquee>
                     </Box>

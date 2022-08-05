@@ -2,6 +2,7 @@ import { Box, Stack, Typography } from "@mui/material"
 import { useCallback, useState } from "react"
 import { useLocation } from "react-router-dom"
 import { SafePNG } from "../../../assets"
+import { STAGING_OR_DEV_ONLY } from "../../../constants"
 import { useSnackbar } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { useTimer } from "../../../hooks"
@@ -140,30 +141,32 @@ export const MysteryCrateHangarItem = ({ crate, setOpeningCrate, setOpenedReward
                                     </Typography>
                                 </FancyButton>
 
-                                <FancyButton
-                                    to={
-                                        crate.locked_to_marketplace
-                                            ? !crate.item_sale_id
-                                                ? undefined
-                                                : `/marketplace/${MARKETPLACE_TABS.MysteryCrates}/${crate.item_sale_id}${location.hash}`
-                                            : `/marketplace/sell?itemType=${ItemType.MysteryCrate}&assetID=${crate.id}${location.hash}`
-                                    }
-                                    clipThingsProps={{
-                                        clipSize: "5px",
-                                        backgroundColor: crate.locked_to_marketplace ? backgroundColor : colors.red,
-                                        opacity: 1,
-                                        border: { isFancy: !crate.locked_to_marketplace, borderColor: colors.red, borderThickness: "1.5px" },
-                                        sx: { position: "relative", mt: "1rem", width: "100%" },
-                                    }}
-                                    sx={{ px: "1.6rem", py: ".6rem", color: crate.locked_to_marketplace ? colors.red : "#FFFFFF" }}
-                                >
-                                    <Typography
-                                        variant={"caption"}
-                                        sx={{ fontFamily: fonts.nostromoBlack, color: crate.locked_to_marketplace ? colors.red : "#FFFFFF" }}
+                                {!STAGING_OR_DEV_ONLY && (
+                                    <FancyButton
+                                        to={
+                                            crate.locked_to_marketplace
+                                                ? !crate.item_sale_id
+                                                    ? undefined
+                                                    : `/marketplace/${MARKETPLACE_TABS.MysteryCrates}/${crate.item_sale_id}${location.hash}`
+                                                : `/marketplace/sell?itemType=${ItemType.MysteryCrate}&assetID=${crate.id}${location.hash}`
+                                        }
+                                        clipThingsProps={{
+                                            clipSize: "5px",
+                                            backgroundColor: crate.locked_to_marketplace ? backgroundColor : colors.red,
+                                            opacity: 1,
+                                            border: { isFancy: !crate.locked_to_marketplace, borderColor: colors.red, borderThickness: "1.5px" },
+                                            sx: { position: "relative", mt: "1rem", width: "100%" },
+                                        }}
+                                        sx={{ px: "1.6rem", py: ".6rem", color: crate.locked_to_marketplace ? colors.red : "#FFFFFF" }}
                                     >
-                                        {crate.locked_to_marketplace ? "VIEW LISTING" : "SELL ITEM"}
-                                    </Typography>
-                                </FancyButton>
+                                        <Typography
+                                            variant={"caption"}
+                                            sx={{ fontFamily: fonts.nostromoBlack, color: crate.locked_to_marketplace ? colors.red : "#FFFFFF" }}
+                                        >
+                                            {crate.locked_to_marketplace ? "VIEW LISTING" : "SELL ITEM"}
+                                        </Typography>
+                                    </FancyButton>
+                                )}
                             </Stack>
                         </Stack>
                     </Stack>

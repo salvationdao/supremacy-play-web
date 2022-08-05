@@ -636,3 +636,6 @@ export const generatePriceText = (dollars: number, cents: number) => {
 
     return `$${totalDollars}.${remainingCents < 10 ? `0${remainingCents}` : remainingCents}`
 }
+
+// Converts number to alphabet letter. E.g. 0 -> "a"
+export const intToLetter = (i: number) => String.fromCharCode(97 + i)

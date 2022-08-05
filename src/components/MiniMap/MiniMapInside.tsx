@@ -7,6 +7,7 @@ import { BattleZone } from "./MapInsideItems/BattleZone"
 import { Blackouts } from "./MapInsideItems/Blackouts"
 import { CountdownSubmit } from "./MapInsideItems/CountdownSubmit"
 import { DisabledCells } from "./MapInsideItems/DisabledCells"
+import { MapGrid } from "./MapInsideItems/MapGrid"
 import { MechCommandIcons } from "./MapInsideItems/MapIcon/MechCommandIcons"
 import { MapImage } from "./MapInsideItems/MapImage"
 import { RangeIndicator } from "./MapInsideItems/RangeIndicator"
@@ -91,11 +92,16 @@ export const MiniMapInside = ({ containerDimensions }: MiniMapInsideProps) => {
                         <MapMechs />
 
                         {/* Map Image */}
-                        <MapImage
-                            map={map}
-                            mapScale={mapScale}
+                        <MapImage map={map} />
+
+                        {/* Map grid, with map clicking */}
+                        <MapGrid
+                            mapWidth={map.width}
+                            mapHeight={map.height}
+                            gridHeight={gridHeight}
                             mapElement={mapElement}
                             onClick={isLocationSelection ? onMapClick : () => setHighlightedMechParticipantID(undefined)}
+                            mapScale={mapScale}
                             isLocationSelection={isLocationSelection}
                             isLineSelection={isLineSelection}
                         />
@@ -124,5 +130,6 @@ export const MiniMapInside = ({ containerDimensions }: MiniMapInsideProps) => {
         onMapClick,
         selection?.startCoords,
         setHighlightedMechParticipantID,
+        gridHeight,
     ])
 }
