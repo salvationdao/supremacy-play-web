@@ -70,7 +70,7 @@ const NavLink = ({ isActive, label, to }: { isActive: boolean; label: string; to
                     variant="subtitle2"
                     sx={{
                         textAlign: "center",
-                        color: isActive ? colors.offWhite : "#FFFFFF",
+                        color: isActive ? colors.neonBlue : "#FFFFFF",
                         fontFamily: isActive ? fonts.nostromoBlack : fonts.nostromoBold,
                     }}
                 >
