@@ -216,8 +216,7 @@ export const MysteryCratesStore = () => {
                         <PageHeader
                             title={
                                 <Typography variant="h5" sx={{ fontFamily: fonts.nostromoBlack }}>
-                                    MYSTERY CRATES{" "}
-                                    <span style={{ color: colors.lightNeonBlue, fontFamily: "inherit", fontSize: "inherit" }}>(LIMITED SUPPLY)</span>
+                                    MYSTERY CRATES <span style={{ color: colors.lightNeonBlue }}>(LIMITED SUPPLY)</span>
                                 </Typography>
                             }
                             description={

@@ -202,24 +202,10 @@ export const PlayerAbilityStoreItem = ({
                                         span: {},
                                     }}
                                 >
-                                    <Box
-                                        component="span"
-                                        sx={{
-                                            fontFamily: "inherit",
-                                            color: colors.neonBlue,
-                                        }}
-                                    >
+                                    <Box component="span" sx={{ color: colors.neonBlue }}>
                                         {numberCommaFormatter(amount)}
                                     </Box>{" "}
-                                    <Box
-                                        component="span"
-                                        sx={{
-                                            fontFamily: "inherit",
-                                        }}
-                                    >
-                                        / {numberCommaFormatter(saleAbility.ability.inventory_limit)}
-                                    </Box>{" "}
-                                    Owned
+                                    <Box component="span">/ {numberCommaFormatter(saleAbility.ability.inventory_limit)}</Box> Owned
                                 </Typography>
                             </Box>
                         </Box>

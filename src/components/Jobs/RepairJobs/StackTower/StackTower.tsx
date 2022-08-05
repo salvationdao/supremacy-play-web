@@ -67,7 +67,7 @@ export const StackTower = React.memo(function StackTower({
                 }}
             >
                 <Stack spacing=".7rem" sx={{ pb: ".4rem" }}>
-                    <Typography variant="h5" sx={{ fontWeight: "fontWeightBold", span: { fontFamily: "inherit", color: colors.neonBlue } }}>
+                    <Typography variant="h5" sx={{ fontWeight: "fontWeightBold", span: { color: colors.neonBlue } }}>
                         YOU NEED A TOTAL OF <span>{repairAgent?.required_stacks || "XXX"}</span> STACKS TO REPAIR A SINGLE BLOCK!
                     </Typography>
 
@@ -167,7 +167,7 @@ const TowerStackInner = ({
                             lineHeight: 1.7,
                             textAlign: "center",
                             fontFamily: fonts.nostromoBlack,
-                            span: { color: colors.neonBlue, fontFamily: "inherit" },
+                            span: { color: colors.neonBlue },
                         }}
                     >
                         <span>Click</span> or <span>Spacebar</span>
@@ -194,10 +194,7 @@ const TowerStackInner = ({
                     <Typography variant="h3" sx={{ textAlign: "center", fontFamily: fonts.nostromoHeavy }}>
                         Game Over
                     </Typography>
-                    <Typography
-                        variant="h6"
-                        sx={{ textAlign: "center", fontFamily: fonts.nostromoBlack, span: { color: colors.neonBlue, fontFamily: "inherit" } }}
-                    >
+                    <Typography variant="h6" sx={{ textAlign: "center", fontFamily: fonts.nostromoBlack, span: { color: colors.neonBlue } }}>
                         You did great citizen
                         <br />
                         <span>Click</span> to continue
