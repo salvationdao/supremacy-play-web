@@ -3,6 +3,7 @@ import { Box, IconButton, Modal, Stack, SxProps, Typography } from "@mui/materia
 import BigNumber from "bignumber.js"
 import React, { ReactNode, useCallback, useEffect, useMemo, useState } from "react"
 import { SvgClose, SvgCubes, SvgSupToken } from "../../../assets"
+import { CAPTCHA_KEY } from "../../../constants"
 import { useAuth, useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { supFormatterNoFixed, timeSinceInWords } from "../../../helpers"
@@ -19,7 +20,6 @@ import { RepairBlocks } from "../../Hangar/WarMachinesHangar/Common/MechRepairBl
 import { GamePattern } from "./StackTower/src/game"
 import { isWebGLAvailable } from "./StackTower/src/utils"
 import { StackTower } from "./StackTower/StackTower"
-import {CAPTCHA_KEY} from "../../../constants";
 
 interface DoRepairModalProps {
     repairStatus?: RepairStatus
