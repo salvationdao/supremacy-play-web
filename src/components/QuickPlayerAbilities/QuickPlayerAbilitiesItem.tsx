@@ -1,6 +1,6 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
 import React, { useCallback, useMemo, useState } from "react"
-import { SvgGlobal, SvgLine, SvgMicrochip, SvgQuestionMark, SvgTarget } from "../../assets"
+import { SvgGlobal, SvgLine, SvgMicrochip, SvgQuestionMark, SvgSupToken, SvgTarget } from "../../assets"
 import { useSnackbar } from "../../containers"
 import { supFormatter } from "../../helpers"
 import { useGameServerCommandsUser } from "../../hooks/useGameServer"
@@ -205,7 +205,7 @@ export const QuickPlayerAbilitiesItem = ({
                                         {abilityTypeIcon}
                                     </Box>
 
-                                    {availability === SaleAbilityAvailability.CanClaim && (
+                                    {availability === SaleAbilityAvailability.CanClaim ? (
                                         <Box
                                             sx={{
                                                 zIndex: 2,
@@ -220,6 +220,24 @@ export const QuickPlayerAbilitiesItem = ({
                                                 FREE
                                             </Typography>
                                         </Box>
+                                    ) : (
+                                        <Stack
+                                            direction="row"
+                                            alignItems="center"
+                                            sx={{
+                                                zIndex: 2,
+                                                position: "absolute",
+                                                top: ".2rem",
+                                                right: ".2rem",
+                                                backgroundColor: "#000000DD",
+                                                p: ".2rem .4rem",
+                                            }}
+                                        >
+                                            <SvgSupToken size="1.6rem" />
+                                            <Typography variant="body2" sx={{ lineHeight: 1, color: colors.gold }}>
+                                                {supFormatter(price, 2)}
+                                            </Typography>
+                                        </Stack>
                                     )}
 
                                     <Box

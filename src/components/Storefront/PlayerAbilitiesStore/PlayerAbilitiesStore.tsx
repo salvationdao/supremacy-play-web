@@ -76,7 +76,7 @@ export const PlayerAbilitiesStore = () => {
 
     useGameServerSubscription<{ id: string; current_price: string }>(
         {
-            URI: "/public/sale_abilities",
+            URI: "/secure_public/sale_abilities",
             key: GameServerKeys.SubSaleAbilitiesPrice,
             ready: !!userID,
         },
@@ -311,5 +311,5 @@ export const PlayerAbilitiesStore = () => {
 
 export const TimeLeft = ({ dateTo }: { dateTo: Date | undefined }) => {
     const { totalSecRemain } = useTimer(dateTo)
-    return <>{timeSinceInWords(new Date(), new Date(new Date().getTime() + totalSecRemain * 1000))}</>
+    return <>{totalSecRemain > 0 ? timeSinceInWords(new Date(), new Date(new Date().getTime() + totalSecRemain * 1000)) : "0 SECONDS"}</>
 }
