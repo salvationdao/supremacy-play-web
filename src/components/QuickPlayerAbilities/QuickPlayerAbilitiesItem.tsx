@@ -233,8 +233,8 @@ export const QuickPlayerAbilitiesItem = ({
                                                 p: ".2rem .4rem",
                                             }}
                                         >
-                                            <SvgSupToken size="1.6rem" />
-                                            <Typography variant="body2" sx={{ lineHeight: 1, color: colors.gold }}>
+                                            <SvgSupToken size="1.6rem" fill={colors.gold} />
+                                            <Typography variant="body2" sx={{ lineHeight: 1 }}>
                                                 {supFormatter(price, 2)}
                                             </Typography>
                                         </Stack>
