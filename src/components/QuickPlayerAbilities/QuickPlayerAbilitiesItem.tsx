@@ -197,13 +197,30 @@ export const QuickPlayerAbilitiesItem = ({
                                     <Box
                                         sx={{
                                             position: "absolute",
-                                            top: ".2rem",
-                                            right: ".2rem",
+                                            top: ".5rem",
+                                            left: ".5rem",
                                             zIndex: 2,
                                         }}
                                     >
                                         {abilityTypeIcon}
                                     </Box>
+
+                                    {availability === SaleAbilityAvailability.CanClaim && (
+                                        <Box
+                                            sx={{
+                                                zIndex: 2,
+                                                position: "absolute",
+                                                top: ".2rem",
+                                                right: ".2rem",
+                                                backgroundColor: "#000000DD",
+                                                p: ".2rem .4rem",
+                                            }}
+                                        >
+                                            <Typography variant="body2" sx={{ lineHeight: 1, color: colors.gold }}>
+                                                FREE
+                                            </Typography>
+                                        </Box>
+                                    )}
 
                                     <Box
                                         sx={{

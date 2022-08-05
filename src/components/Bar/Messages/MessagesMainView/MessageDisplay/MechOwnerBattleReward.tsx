@@ -25,6 +25,7 @@ export const MechOwnerBattleReward = ({ message, data }: MechOwnerBattleRewardPr
               blueprint_id: "",
               count: 1,
               last_purchased_at: new Date(),
+              cooldown_expires_on: new Date(),
               ability: ability,
           }
         : undefined
