@@ -1,5 +1,5 @@
 import { Box, CircularProgress, Fade, Stack, Typography } from "@mui/material"
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { useParameterizedQuery } from "react-fetching-library"
 import { MoveableResizable } from ".."
 import { useAuth, useMobile } from "../../containers"
@@ -54,23 +54,6 @@ const QuickPlayerAbilitiesInner = ({ onClose, userID }: { onClose: () => void; u
                 setAvailabilityError(message)
             }
         })()
-    }, [queryAvailability, userID])
-
-    const refreshEverything = useCallback(async () => {
-        try {
-            const resp = await queryAvailability(userID)
-            if (resp.error || resp.payload == null) return
-            setAvailability(resp.payload)
-        } catch (e) {
-            let message = "Failed to obtain purchase availability during this sale period."
-            if (typeof e === "string") {
-                message = e
-            } else if (e instanceof Error) {
-                message = e.message
-            }
-            console.error(e)
-            setAvailabilityError(message)
-        }
     }, [queryAvailability, userID])
 
     useGameServerSubscription<{
