@@ -108,7 +108,7 @@ export const WalletPopover = ({
 
                     <Box>
                         <Typography gutterBottom sx={{ fontFamily: fonts.nostromoBlack, color: theme.factionTheme.primary }}>
-                            TOTAL SUPS
+                            TOTAL SUPS <span style={{ color: colors.lightRed }}>(FAKE)</span>
                         </Typography>
 
                         <Stack direction="row" alignItems="center">

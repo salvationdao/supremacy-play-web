@@ -40,7 +40,7 @@ body {
 }
 
 span {
-    font-family: "Share Tech", "Roboto", "Helvetica", "Arial", "sans-serif";
+    font-family: inherit;
 }
 
 body {

@@ -59,6 +59,7 @@ export const MysteryCrateBanner = () => {
             sx={{ flex: 1, alignSelf: "stretch", flexShrink: 0 }}
         >
             <Stack
+                spacing="1.7rem"
                 direction="row"
                 alignItems="stretch"
                 justifyContent="center"
@@ -71,13 +72,13 @@ export const MysteryCrateBanner = () => {
             >
                 {/* Images */}
                 {!isMobile && crates && crates.length > 0 && (
-                    <Stack direction="row" alignItems="stretch" spacing="-1.3rem">
+                    <Stack direction="row" alignItems="stretch">
                         {crates.map((c) => {
                             return (
                                 <Box
                                     key={c.id}
                                     sx={{
-                                        width: "12rem",
+                                        width: "6rem",
                                         height: "100%",
                                         backgroundColor,
                                         background: `url(${c.image_url || c.avatar_url})`,
