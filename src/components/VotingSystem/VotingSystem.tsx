@@ -67,7 +67,6 @@ export const VotingSystem = () => {
                     >
                         <Stack spacing="1rem" sx={{ direction: "ltr", pt: ".4rem", pb: "1.2rem", minWidth: 360 }}>
                             <BattleAbilityItem key={factionID} />
-                            {/* <FactionAbilities /> */}
                             <PlayerAbilities />
                         </Stack>
                     </Box>
