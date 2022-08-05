@@ -186,8 +186,11 @@ const BattleArenaPageInner = () => {
                 {!isMobile && (
                     <>
                         <WarMachineStats />
+
                         <BattleEndScreen />
+
                         <BattleHistory />
+
                         {isQuickDeployOpen && <QuickDeploy open={isQuickDeployOpen} onClose={() => toggleIsQuickDeployOpen(false)} />}
 
                         {isQuickPlayerAbilitiesOpen && (
@@ -195,6 +198,7 @@ const BattleArenaPageInner = () => {
                         )}
 
                         <VotingSystem />
+
                         <MiniMap />
                     </>
                 )}

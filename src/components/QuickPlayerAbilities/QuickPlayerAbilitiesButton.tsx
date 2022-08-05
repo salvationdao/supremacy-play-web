@@ -1,18 +1,19 @@
 import { IconButton, Stack } from "@mui/material"
 import { useLocation } from "react-router"
 import { SvgMeteor } from "../../assets"
-import { useSupremacy } from "../../containers"
+import { useAuth, useSupremacy } from "../../containers"
 import { useTheme } from "../../containers/theme"
 import { pulseEffect } from "../../theme/keyframes"
 
 export const QuickPlayerAbilitiesButton = () => {
     const theme = useTheme()
+    const { userID } = useAuth()
     const { isQuickPlayerAbilitiesOpen, toggleIsQuickPlayerAbilitiesOpen } = useSupremacy()
     const location = useLocation()
 
     const inBattleArena = location.pathname === "/"
 
-    if (!inBattleArena) return null
+    if (!inBattleArena || !userID) return null
 
     return (
         <Stack
