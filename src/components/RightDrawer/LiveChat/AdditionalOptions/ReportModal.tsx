@@ -59,7 +59,7 @@ export const ReportModal = ({ message, reportModalOpen, setReportModalOpen }: Re
             console.error(e)
             newSnackbarMessage(typeof e === "string" ? e : "Failed to send report, try again or contact support.", "error")
         }
-    }, [message, reason, otherDescription, description, send])
+    }, [message, reason, otherDescription, description, send, newSnackbarMessage, setReportModalOpen])
 
     const primaryColor = theme.factionTheme.primary
     const secondaryColor = theme.factionTheme.secondary
