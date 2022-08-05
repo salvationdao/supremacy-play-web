@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react"
 import FlipMove from "react-flip-move"
 import { ClipThing } from "../.."
 import { EmptyWarMachinesPNG, WarMachineIconPNG } from "../../../assets"
+import { useAuth } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { useArray, useToggle, useUrlQuery } from "../../../hooks"
 import { useGameServerSubscription } from "../../../hooks/useGameServer"
@@ -28,6 +29,7 @@ const sortOptions = [
 ]
 
 export const RepairJobs = () => {
+    const { userID } = useAuth()
     const [query, updateQuery] = useUrlQuery()
     const theme = useTheme()
     const [repairJobModal, setRepairJobModal] = useState<RepairJob>()
@@ -38,7 +40,7 @@ export const RepairJobs = () => {
 
     // Filters and sorts
     const [isFiltersExpanded, toggleIsFiltersExpanded] = useToggle(localStorage.getItem("isRepairJobsFiltersExpanded") === "true")
-    const [sort, setSort] = useState<string>(query.get("sort") || SortTypeLabel.EndTimeEndingSoon)
+    const [sort, setSort] = useState<string>(query.get("sort") || SortTypeLabel.RewardAmountHighest)
     const [rewardRanges, setRewardRanges] = useState<(number | undefined)[]>(
         (query.get("rewardRanges") || undefined)?.split("||").map((p) => (p ? parseInt(p) : undefined)) || [undefined, undefined],
     )
@@ -49,8 +51,9 @@ export const RepairJobs = () => {
 
     useGameServerSubscription<RepairJob[]>(
         {
-            URI: "/public/repair_offer/update",
+            URI: "/secure_public/repair_offer/update",
             key: GameServerKeys.SubRepairJobListUpdated,
+            ready: !!userID,
         },
         (payload) => {
             if (!payload || payload.length <= 0) return
@@ -97,8 +100,10 @@ export const RepairJobs = () => {
         if (sort === SortTypeLabel.EndTimeEndingSoon) sorted = sorted.sort((a, b) => (a.expires_at > b.expires_at ? 1 : -1))
         if (sort === SortTypeLabel.CreateTimeNewestFirst) sorted = sorted.sort((a, b) => (a.created_at < b.created_at ? 1 : -1))
         if (sort === SortTypeLabel.CreateTimeOldestFirst) sorted = sorted.sort((a, b) => (a.created_at > b.created_at ? 1 : -1))
-        if (sort === SortTypeLabel.RewardAmountHighest) sorted = sorted.sort((a, b) => (a.offered_sups_amount < b.offered_sups_amount ? 1 : -1))
-        if (sort === SortTypeLabel.RewardAmountLowest) sorted = sorted.sort((a, b) => (a.offered_sups_amount > b.offered_sups_amount ? 1 : -1))
+        if (sort === SortTypeLabel.RewardAmountHighest)
+            sorted = sorted.sort((a, b) => (new BigNumber(a.sups_worth_per_block).isLessThan(new BigNumber(b.sups_worth_per_block)) ? 1 : -1))
+        if (sort === SortTypeLabel.RewardAmountLowest)
+            sorted = sorted.sort((a, b) => (new BigNumber(a.sups_worth_per_block).isGreaterThan(new BigNumber(b.sups_worth_per_block)) ? 1 : -1))
 
         setRepairJobsRender(sorted)
 
@@ -163,8 +168,6 @@ export const RepairJobs = () => {
                             pt: "1.28rem",
                             color: colors.grey,
                             fontFamily: fonts.nostromoBold,
-                            userSelect: "text !important",
-                            opacity: 0.9,
                             textAlign: "center",
                         }}
                     >

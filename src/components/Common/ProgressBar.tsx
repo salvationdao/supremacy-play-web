@@ -33,7 +33,7 @@ export const ProgressBar = ({
                             width: `${percentt}%`,
                             backgroundColor: color,
                             transition: "all .25s",
-                            transform: "translateY(-50%) scaleY(1.2)",
+                            transform: "translateY(-50%) scaleY(1.08)",
                         }}
                     />
 
@@ -64,7 +64,7 @@ export const ProgressBar = ({
                         width: "100%",
                         backgroundColor: color,
                         transition: "all .25s",
-                        transform: "translateX(-50%) scaleX(1.2)",
+                        transform: "translateX(-50%) scaleX(1.08)",
                     }}
                 />
 

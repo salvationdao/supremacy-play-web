@@ -124,7 +124,7 @@ export enum FeatureName {
     playerAbility = "PLAYER_ABILITY",
     systemMessages = "SYSTEM_MESSAGES",
     chatBan = "CHAT_BAN",
-    playerProfile = "PLAYER_PROFILE",
+    profileAvatar = "PROFILE_AVATAR",
 }
 
 export enum SystemMessageDataType {

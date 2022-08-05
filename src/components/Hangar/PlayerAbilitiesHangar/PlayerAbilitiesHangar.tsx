@@ -138,8 +138,6 @@ export const PlayerAbilitiesHangar = () => {
                             pt: "1.28rem",
                             color: colors.grey,
                             fontFamily: fonts.nostromoBold,
-                            userSelect: "text !important",
-                            opacity: 0.9,
                             textAlign: "center",
                         }}
                     >

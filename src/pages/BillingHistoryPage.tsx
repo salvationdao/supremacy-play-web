@@ -104,7 +104,7 @@ export const BillingHistoryPage = () => {
                                         changePageSize,
                                     }}
                                     renderItem={(item, index) => {
-                                        return [<Typography key={1}>{index + 1}</Typography>]
+                                        return { cells: [<Typography key={1}>{index + 1}</Typography>] }
                                     }}
                                 />
                             </Box>

@@ -40,6 +40,7 @@ interface ProfileAvatarProps {
     isCustom: boolean
     isOwner: boolean
     primaryColor: string
+    secondaryColor: string
     backgroundColor: string
     avatarURL: string
     factionName?: string
@@ -63,6 +64,7 @@ export const ProfileAvatar = ({
     playerID,
     avatarID,
     isCustom,
+    secondaryColor,
 }: ProfileAvatarProps) => {
     const [query] = useUrlQuery()
     const { send } = useGameServerCommandsUser("/user_commander")
@@ -453,8 +455,6 @@ export const ProfileAvatar = ({
                             pt: "1.28rem",
                             color: colors.grey,
                             fontFamily: fonts.nostromoBold,
-                            userSelect: "text !important",
-                            opacity: 0.9,
                             textAlign: "center",
                         }}
                     >
@@ -647,7 +647,7 @@ export const ProfileAvatar = ({
                                         sx={{
                                             ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold },
                                             ".Mui-selected": {
-                                                color: primaryColor,
+                                                color: secondaryColor,
                                                 backgroundColor: `${primaryColor} !important`,
                                             },
                                         }}

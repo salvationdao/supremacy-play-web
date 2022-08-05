@@ -63,6 +63,7 @@ export const PlayerMechsOwned = () => {
                 tableHeadings={["TOP 10", "PLAYER", "FACTION", "MECHS OWNED"]}
                 alignments={["center", "left", "left", "center"]}
                 widths={["19rem", "auto", "auto", "23rem"]}
+                autoHeight
                 items={rankItems}
                 isLoading={isLoading}
                 loadError={loadError}
@@ -75,27 +76,29 @@ export const PlayerMechsOwned = () => {
                     if (rank === 2) color = colors.silver
                     if (rank === 3) color = colors.bronze
 
-                    return [
-                        <Typography
-                            key={1}
-                            variant="h6"
-                            sx={{ textAlign: "center", fontWeight: "fontWeightBold", color, fontFamily: rank <= 3 ? fonts.nostromoBlack : "inherit" }}
-                        >
-                            {index + 1}
-                        </Typography>,
+                    return {
+                        cells: [
+                            <Typography
+                                key={1}
+                                variant="h6"
+                                sx={{ textAlign: "center", fontWeight: "fontWeightBold", color, fontFamily: rank <= 3 ? fonts.nostromoBlack : "inherit" }}
+                            >
+                                {index + 1}
+                            </Typography>,
 
-                        <Player key={2} player={item.player} styledImageTextProps={{ variant: "h6", imageSize: 2.4 }} />,
+                            <Player key={2} player={item.player} styledImageTextProps={{ variant: "h6", imageSize: 2.4 }} />,
 
-                        <Typography variant="h6" key={3} sx={{ fontWeight: "fontWeightBold", color: faction.primary_color, textTransform: "uppercase" }}>
-                            {faction.label}
-                        </Typography>,
+                            <Typography variant="h6" key={3} sx={{ fontWeight: "fontWeightBold", color: faction.primary_color, textTransform: "uppercase" }}>
+                                {faction.label}
+                            </Typography>,
 
-                        <Stack key={4} direction="row" spacing=".4rem" alignItems="center" justifyContent="center">
-                            <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
-                                {item.mechs_owned}
-                            </Typography>
-                        </Stack>,
-                    ]
+                            <Stack key={4} direction="row" spacing=".4rem" alignItems="center" justifyContent="center">
+                                <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
+                                    {item.mechs_owned}
+                                </Typography>
+                            </Stack>,
+                        ],
+                    }
                 }}
             />
         </ClipThing>

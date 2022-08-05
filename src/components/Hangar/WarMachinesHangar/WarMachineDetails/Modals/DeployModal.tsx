@@ -8,9 +8,11 @@ import { GameServerKeys } from "../../../../../keys"
 import { colors, fonts } from "../../../../../theme/theme"
 import { MechModal } from "../../Common/MechModal"
 import { MechDetails } from "../../../../../types"
+import { supFormatter } from "../../../../../helpers"
 
 export interface QueueFeed {
     queue_length: number
+    queue_cost: string
 }
 
 export const DeployModal = ({
@@ -64,6 +66,7 @@ export const DeployModal = ({
     if (!deployMechDetails) return null
 
     const queueLength = queueFeed?.queue_length || 0
+    const queueCost = queueFeed?.queue_cost || "0"
     const { hash } = deployMechDetails
 
     return (
@@ -79,6 +82,13 @@ export const DeployModal = ({
                             disableIcon
                         />
                     )}
+
+                    <AmountItem
+                        title={"Fee: "}
+                        color={colors.yellow}
+                        value={supFormatter(queueCost, 2)}
+                        tooltip="The cost to place your war machine into the battle queue."
+                    />
                 </Stack>
 
                 <Box sx={{ mt: "auto" }}>

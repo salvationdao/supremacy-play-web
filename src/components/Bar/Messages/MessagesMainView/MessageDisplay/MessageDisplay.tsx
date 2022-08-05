@@ -31,7 +31,7 @@ export const MessageDisplay = ({ message, onClose }: MessageDisplayProps) => {
     }, [message])
 
     return (
-        <Stack sx={{ flex: 1, p: "1.4rem" }}>
+        <Stack sx={{ height: "100%", p: "1.4rem" }}>
             <Stack direction="row" alignItems="center">
                 <Typography variant="h4" sx={{ fontWeight: "fontWeightBold" }}>
                     {message.title}
@@ -84,7 +84,7 @@ export const MessageDisplay = ({ message, onClose }: MessageDisplayProps) => {
                         border: { borderColor: colors.grey, borderThickness: "1px" },
                         sx: { position: "relative" },
                     }}
-                    sx={{ px: "1.6rem", py: ".4rem", color: "#FFFFFF" }}
+                    sx={{ px: "1.6rem", py: ".2rem", color: "#FFFFFF" }}
                     onClick={onClose}
                 >
                     <Typography variant="body2" sx={{ fontWeight: "fontWeightBold", color: "#FFFFFF" }}>

@@ -131,7 +131,7 @@ export const RepairJobItem = ({
                     <General isGridView={isGridView} title="JOB OWNER">
                         <Box>
                             <Player player={repairJob.job_owner} />
-                            {repairJob.job_owner.id === userID && <Typography sx={{ display: "inline", color: colors.neonBlue }}>&nbsp;(YOU)</Typography>}
+                            {repairJob.offered_by_id === userID && <Typography sx={{ display: "inline", color: colors.neonBlue }}>&nbsp;(YOU)</Typography>}
                         </Box>
                     </General>
 

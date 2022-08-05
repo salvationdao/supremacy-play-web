@@ -107,7 +107,7 @@ export const Messages = () => {
                         backgroundColor={theme.factionTheme.background}
                         sx={{
                             position: "relative",
-                            height: "72rem",
+                            height: "130rem",
                             maxHeight: "90vh",
                         }}
                     >

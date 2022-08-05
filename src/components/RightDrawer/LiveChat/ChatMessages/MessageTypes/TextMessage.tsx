@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useMemo, useRef } from "react"
 import { UserBanForm } from "../../../.."
 import { SvgInfoCircular, SvgSkull2 } from "../../../../../assets"
 import { PASSPORT_SERVER_HOST_IMAGES } from "../../../../../constants"
-import { useAuth, useChat } from "../../../../../containers"
+import { useAuth, useChat, useSupremacy } from "../../../../../containers"
 import { dateFormatter, getUserRankDeets, shadeColor, truncate } from "../../../../../helpers"
 import { useToggle } from "../../../../../hooks"
 import { useGameServerCommandsUser } from "../../../../../hooks/useGameServer"
@@ -12,21 +12,8 @@ import { GameServerKeys } from "../../../../../keys"
 import { colors, fonts } from "../../../../../theme/theme"
 import { ChatMessageType, Faction, TextMessageData, User } from "../../../../../types"
 import { TooltipHelper } from "../../../../Common/TooltipHelper"
-import { UserDetailsPopover } from "./UserDetailsPopover"
 import { Reactions } from "../../AdditionalOptions/Reactions"
-
-// const getMultiplierColor = (multiplierInt: number): string => {
-//     if (multiplierInt >= 2800) return "#3BFFDE"
-//     if (multiplierInt >= 2000) return "#8BFF33"
-//     if (multiplierInt >= 1400) return "#EEFF36"
-//     if (multiplierInt >= 800) return "#FFC830"
-//     if (multiplierInt >= 400) return "#FF6924"
-//     if (multiplierInt >= 220) return "#B669FF"
-//     if (multiplierInt >= 120) return "#FA5EFF"
-//     if (multiplierInt >= 80) return "#FF547F"
-//     if (multiplierInt >= 50) return "#FF4242"
-//     return "#9791FF"
-// }
+import { UserDetailsPopover } from "./UserDetailsPopover"
 
 export const TextMessage = ({
     data,
@@ -80,12 +67,15 @@ export const TextMessage = ({
     const factionSecondaryColor = useMemo(() => (faction_id ? getFaction(faction_id).secondary_color : "#FFFFFF"), [faction_id, getFaction])
     const faction_logo_url = useMemo(() => (faction_id ? getFaction(faction_id).logo_url : ""), [faction_id, getFaction])
     const rankDeets = useMemo(() => (user_rank ? getUserRankDeets(user_rank, ".8rem", "1.8rem") : undefined), [user_rank])
-    const smallFontSize = useMemo(() => (fontSize ? `${0.9 * fontSize}rem` : "0.9rem"), [fontSize])
 
-    const renderFontSize = useCallback(() => {
-        if (isEmoji) return (fontSize || 1.1) * 3
-        return (fontSize || 1.1) * 1.35
-    }, [isEmoji, fontSize])
+    const smallFontSize = useMemo(() => (fontSize ? `${1 * fontSize}rem` : "0.9rem"), [fontSize])
+    const renderFontSize = useCallback(
+        (isEmojiOverride = false) => {
+            if (isEmoji && !isEmojiOverride) return (fontSize || 1.1) * 3
+            return (fontSize || 1.1) * 1.35
+        },
+        [isEmoji, fontSize],
+    )
 
     const isVisibleInChat = useCallback(() => {
         if (!containerRef.current || !textMessageRef.current || isScrolling) return
@@ -109,7 +99,9 @@ export const TextMessage = ({
         const isRead = metadata?.tagged_users_read[user.gid]
 
         if (isRead === false && (isHidden || !isActive)) {
-            sendBrowserNotification(`New Chat Message`, `${username} has tagged you in a message.`)
+            if (chatMessages.findIndex((x) => x.id === data.id) === chatMessages.length - 1) {
+                sendBrowserNotification(`New Chat Message`, `${username} has tagged you in a message.`)
+            }
             return
         }
 
@@ -131,78 +123,65 @@ export const TextMessage = ({
         }
     }, [isVisibleInChat, data, chatMessages, metadata, send, user.gid, isHidden, isActive, sendBrowserNotification, tabValue, username, setShouldNotify])
 
-    const renderJSXMessage = useCallback(
-        (msg: string) => {
-            //if no tagged users return the message
-            if (metadata && Object.keys(metadata?.tagged_users_read).length === 0) return <Box component={"span"}>{msg}</Box>
-
-            const newMsgArr: ReactJSXElement[] = []
-
-            const matchedArr = msg.match(/#\d+/g)
-            matchedArr?.map(async (match) => {
-                const gidSubstring = parseInt(match.substring(1))
-                const taggedUser = userGidRecord[gidSubstring] ?? undefined
-                //if not make a call to the backend to find the user and add to record
-                if (!taggedUser) {
-                    try {
-                        const resp = await send<User>(GameServerKeys.GetPlayerByGid, {
-                            gid: gidSubstring,
-                        })
-                        if (!resp) return
-                        addToUserGidRecord(resp)
-                    } catch (err) {
-                        console.error(err)
-                    }
-                }
-            })
-
-            //splitting the message on tags, identifying #12345 patterns ex hi, #1234 how are you? => ['hi,', ' how are you'] (tags are stored in match array)
-            const stringsArr = msg.split(/#\d+/)
-
-            //looping through the string array
-            stringsArr.map((str, i) => {
-                //pushing the first string
-                newMsgArr.push(<Box component={"span"}>{str}</Box>)
-                //if there is an item in matchedArr with the same index, push it into the new string, even if the tag is the first thing, it will still be split with an empty string at the start of stringsArr
-                if (matchedArr && matchedArr[i]) {
-                    //getting the gid from tag
-                    const gidSubstring = parseInt(matchedArr[i].substring(1))
-                    //finding the user in the GID Record (added above)
-                    const taggedUser = userGidRecord[gidSubstring]
-                    //if taggedUser doesnt exist or the user tagged themselves or user tagged taggedUser of a different faction in faction chat, just push the whole string, not rendering the tag
-                    if (!taggedUser || gidSubstring === gid || (taggedUser.faction_id !== user.faction_id && tabValue !== 0)) {
-                        newMsgArr.push(<Box component={"span"}>{matchedArr[i]}</Box>)
-                        return
-                    }
-
-                    //getting tagged user's faction colors and rendering the username to push to array
-                    const taggedFactionColor = getFaction(taggedUser.faction_id).primary_color
-                    newMsgArr.push(
-                        <Box component={"span"}>
-                            <Box sx={{ display: "inline" }}> </Box>
-                            <UsernameJSX data={data} fontSize={fontSize} user={taggedUser} factionColor={taggedFactionColor} />
-                        </Box>,
-                    )
-                }
-            })
-
-            return (
-                <>
-                    {newMsgArr.map((x, i) => (
-                        <Box component={"span"} key={i}>
-                            {x}
-                        </Box>
-                    ))}
-                </>
-            )
-        },
-        [addToUserGidRecord, userGidRecord, data, fontSize, metadata, send, getFaction, gid, tabValue, user.faction_id],
-    )
-
     const chatMessage = useMemo(() => {
-        const messageFontSize = renderFontSize()
-        return <Box sx={{ fontSize: `${messageFontSize}rem` }}>{renderJSXMessage(message)}</Box>
-    }, [message, renderFontSize, renderJSXMessage])
+        //if no tagged users return the message
+        if (metadata && Object.keys(metadata?.tagged_users_read).length === 0) return <span>{message}</span>
+
+        const newMsgArr: ReactJSXElement[] = []
+
+        const matchedArr = message.match(/#\d+/g)
+        matchedArr?.map(async (match) => {
+            const gidSubstring = parseInt(match.substring(1))
+            const taggedUser = userGidRecord[gidSubstring] ?? undefined
+            //if not make a call to the backend to find the user and add to record
+            if (!taggedUser) {
+                try {
+                    const resp = await send<User>(GameServerKeys.GetPlayerByGid, {
+                        gid: gidSubstring,
+                    })
+                    if (!resp) return
+                    addToUserGidRecord(resp)
+                } catch (err) {
+                    console.error(err)
+                }
+            }
+        })
+
+        //splitting the message on tags, identifying #12345 patterns ex hi, #1234 how are you? => ['hi,', ' how are you'] (tags are stored in match array)
+        const stringsArr = message.split(/#\d+/)
+
+        //looping through the string array
+        stringsArr.map((str, i) => {
+            //pushing the first string
+            newMsgArr.push(<span>{str}</span>)
+            //if there is an item in matchedArr with the same index, push it into the new string, even if the tag is the first thing, it will still be split with an empty string at the start of stringsArr
+            if (matchedArr && matchedArr[i]) {
+                //getting the gid from tag
+                const gidSubstring = parseInt(matchedArr[i].substring(1))
+                //finding the user in the GID Record (added above)
+                const taggedUser = userGidRecord[gidSubstring]
+                //if taggedUser doesnt exist or the user tagged themselves or user tagged taggedUser of a different faction in faction chat, just push the whole string, not rendering the tag
+                if (!taggedUser || gidSubstring === gid || (taggedUser.faction_id !== user.faction_id && tabValue !== 0)) {
+                    newMsgArr.push(<span>{matchedArr[i]}</span>)
+                    return
+                }
+
+                newMsgArr.push(
+                    <span>
+                        <UsernameJSX data={data} fontSize={renderFontSize(true)} user={taggedUser} />{" "}
+                    </span>,
+                )
+            }
+        })
+
+        return (
+            <>
+                {newMsgArr.map((x, i) => (
+                    <span key={i}>{x}</span>
+                ))}
+            </>
+        )
+    }, [addToUserGidRecord, data, gid, message, metadata, renderFontSize, send, tabValue, user.faction_id, userGidRecord])
 
     useEffect(() => {
         if (!previousMessage || previousMessage.type != "TEXT") return
@@ -217,9 +196,9 @@ export const TextMessage = ({
 
     return (
         <>
-            <Box sx={{ opacity: isSent ? 1 : 0.45, wordBreak: "break-word", "*": { userSelect: "text !important" } }} ref={textMessageRef}>
+            <Box sx={{ opacity: isSent ? 1 : 0.45 }} ref={textMessageRef}>
                 {(!isPreviousMessager || (previousMessage && sentAt > new Date(previousMessage.sent_at.getTime() + 2 * 60000))) && (
-                    <Stack direction="row" justifyContent="space-between" sx={{ mb: ".5rem" }}>
+                    <Stack direction="row" justifyContent="space-between" sx={{ mt: ".8rem", mb: ".5rem" }}>
                         <Stack ref={popoverRef} direction="row" spacing=".3rem">
                             <Stack direction="row" spacing=".4rem" alignItems="flex-start">
                                 {isFailed && <SvgInfoCircular size="1.2rem" fill={colors.red} sx={{ mt: ".2rem" }} />}
@@ -276,7 +255,7 @@ export const TextMessage = ({
                             </Stack>
 
                             <Box>
-                                <UsernameJSX data={data} fontSize={fontSize} user={from_user} toggleIsPopoverOpen={toggleIsPopoverOpen} />
+                                <UsernameJSX data={data} fontSize={renderFontSize(true)} user={from_user} toggleIsPopoverOpen={toggleIsPopoverOpen} />
 
                                 {from_user_stat && (
                                     <Box sx={{ flexShrink: 0, display: "inline-block", ml: ".4rem", cursor: "default" }}>
@@ -308,14 +287,15 @@ export const TextMessage = ({
                                 )}
                             </Box>
                         </Stack>
+
                         <Typography
                             sx={{
                                 alignSelf: "center",
                                 flexShrink: 0,
                                 ml: "auto",
-                                color: "#FFFFFF",
+                                color: colors.grey,
                                 opacity: 0.7,
-                                fontSize: smallFontSize,
+                                fontSize: `${renderFontSize(true)}rem`,
                             }}
                         >
                             {dateFormatter(sentAt)}
@@ -327,7 +307,7 @@ export const TextMessage = ({
                     <Stack
                         direction={"column"}
                         sx={{
-                            ml: "2rem",
+                            ml: "1.8rem",
                             backgroundColor: shouldNotify ? "rgba(0,116,217, .4)" : isHovered ? "#121212" : "unset",
                             borderRadius: ".3rem",
                             transition: shouldNotify ? "background-color 2s" : "unset",
@@ -336,12 +316,9 @@ export const TextMessage = ({
                         onMouseEnter={() => setIsHovered(true)}
                         onMouseLeave={() => setIsHovered(false)}
                     >
-                        {/*only display if msg has likes*/}
-
-                        <Box sx={{ zIndex: isHovered ? 2 : 1 }}>{chatMessage}</Box>
-
-                        {!!metadata?.likes.net && <Reactions fontSize={fontSize} data={data} getFaction={getFaction} />}
-                        {isHovered && <Reactions fontSize={fontSize} hoverOnly={true} data={data} getFaction={getFaction} />}
+                        <Box sx={{ lineHeight: 1, color: "#FFFFFF", fontSize: `${renderFontSize()}rem`, zIndex: isHovered ? 2 : 1 }}>{chatMessage}</Box>
+                        {!!metadata?.likes.net && <Reactions fontSize={fontSize} data={data} />}
+                        {isHovered && <Reactions fontSize={fontSize} hoverOnly={true} data={data} />}
                     </Stack>
                 </Box>
             </Box>
@@ -380,41 +357,45 @@ interface UsernameJSXProps {
     data: TextMessageData
     fontSize: number
     toggleIsPopoverOpen?: (value?: boolean) => void
-    factionColor?: string
     user: User | undefined
 }
 
-export const UsernameJSX = ({ data, fontSize, toggleIsPopoverOpen, user, factionColor }: UsernameJSXProps) => {
+export const UsernameJSX = ({ data, fontSize, toggleIsPopoverOpen, user }: UsernameJSXProps) => {
+    const { getFaction } = useSupremacy()
     const { message_color } = data
+
+    const faction = useMemo(() => getFaction(user?.faction_id || ""), [getFaction, user?.faction_id])
 
     return (
         <Typography
             onClick={() => (toggleIsPopoverOpen ? toggleIsPopoverOpen() : null)}
             sx={{
                 display: "inline",
-                color: toggleIsPopoverOpen ? message_color : factionColor,
-                backgroundColor: toggleIsPopoverOpen ? "unset" : colors.darkNavyBlue,
+                cursor: toggleIsPopoverOpen ? "pointer" : "unset",
+                p: toggleIsPopoverOpen ? "unset" : ".08rem .5rem",
+                color: toggleIsPopoverOpen ? message_color : faction.secondary_color,
+                backgroundColor: toggleIsPopoverOpen ? "unset" : faction.primary_color,
                 borderRadius: toggleIsPopoverOpen ? "unset" : 0.5,
                 fontWeight: toggleIsPopoverOpen ? 700 : "unset",
-                fontSize: toggleIsPopoverOpen && fontSize ? `${1.33 * fontSize}rem` : `${1.2 * fontSize}rem`,
+                fontSize: `${fontSize}rem`,
                 verticalAlign: "middle",
                 ":hover": toggleIsPopoverOpen
                     ? {
                           cursor: "pointer",
                           textDecoration: "underline",
                       }
-                    : "unset",
+                    : undefined,
                 ":active": {
-                    opacity: 0.7,
+                    opacity: 0.8,
                 },
             }}
         >
+            {toggleIsPopoverOpen ? "" : "@"}
             {`${truncate(user?.username || "", 20)}`}
             <span
                 style={{
                     marginLeft: ".2rem",
-                    opacity: 0.7,
-                    fontSize: fontSize ? `${1.1 * fontSize}rem` : "1.1rem",
+                    fontSize: `${1.1 * fontSize}rem`,
                 }}
             >{`#${user?.gid}`}</span>
         </Typography>

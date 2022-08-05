@@ -5,7 +5,7 @@ import { colors, fonts } from "../../../../../../theme/theme"
 import { RepairStatus } from "../../../../../../types/jobs"
 import { DoRepairModal } from "../../../../../Jobs/RepairJobs/DoRepairModal"
 
-export const SelfRepairCard = ({ repairStatus }: { repairStatus?: RepairStatus }) => {
+export const SelfRepairCard = ({ repairStatus, remainDamagedBlocks }: { repairStatus?: RepairStatus; remainDamagedBlocks: number }) => {
     const [doRepairModalOpen, setDoRepairModalOpen] = useState(false)
 
     return (
@@ -18,6 +18,7 @@ export const SelfRepairCard = ({ repairStatus }: { repairStatus?: RepairStatus }
                 <Typography variant="h6">Get your hands dirty and do the repair work yourself.</Typography>
 
                 <FancyButton
+                    disabled={remainDamagedBlocks <= 0}
                     clipThingsProps={{
                         clipSize: "5px",
                         backgroundColor: colors.orange,

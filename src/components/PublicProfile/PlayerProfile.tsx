@@ -106,9 +106,9 @@ export const PlayerProfilePage = () => {
     const { newSnackbarMessage } = useSnackbar()
     const isMe = `${user?.gid}` === playerGID
 
-    const viewAvatar = userHasFeature(FeatureName.playerProfile)
-
     const rankDeets = useMemo(() => (profile?.player.rank ? getUserRankDeets(profile?.player.rank, "1.6rem", "1.6rem") : undefined), [profile?.player.rank])
+
+    const viewAvatar = userHasFeature(FeatureName.profileAvatar)
 
     const onlineStatus = useMemo(
         () => (profile?.active_log?.active_at ? getOnlineStatus(profile?.active_log?.active_at) : undefined),
@@ -248,6 +248,7 @@ export const PlayerProfilePage = () => {
 
     const faction = profile?.faction
     const primaryColor = faction?.primary_color || theme.factionTheme.primary
+    const secondaryColor = faction?.secondary_color || theme.factionTheme.secondary
     const backgroundColor = faction?.background_color || theme.factionTheme.background
 
     if (loading) {
@@ -318,6 +319,7 @@ export const PlayerProfilePage = () => {
                                         avatarURL={avatar?.avatar_url || ""}
                                         primaryColor={primaryColor}
                                         backgroundColor={backgroundColor}
+                                        secondaryColor={secondaryColor}
                                         factionName={profile.faction?.label}
                                     />
                                 ) : (
@@ -641,6 +643,7 @@ export const PlayerProfilePage = () => {
                         <ProfileWarmachines
                             factionName={profile.faction?.label || ""}
                             playerID={profile.player.id}
+                            secondaryColor={secondaryColor}
                             backgroundColour={backgroundColor}
                             primaryColour={primaryColor}
                         />
