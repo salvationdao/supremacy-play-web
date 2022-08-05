@@ -62,13 +62,13 @@ const MapGrid = React.memo(function MapGrid({ mapWidth, mapHeight, gridHeight }:
                         sx={{
                             position: "absolute",
                             fontSize: gridHeight / 2,
-                            fontFamily: fonts.nostromoBold,
+                            fontFamily: fonts.nostromoBlack,
                             left: 0,
                             top: "50%",
                             transform: "translateY(-50%)",
                         }}
                     >
-                        {intToLetter(i)}
+                        {i + 1}
                     </Typography>
 
                     {new Array(10).fill(0).map((_, j) => (
@@ -79,13 +79,13 @@ const MapGrid = React.memo(function MapGrid({ mapWidth, mapHeight, gridHeight }:
                                     sx={{
                                         position: "absolute",
                                         fontSize: gridHeight / 2,
-                                        fontFamily: fonts.nostromoBold,
+                                        fontFamily: fonts.nostromoBlack,
                                         top: 0,
                                         left: "50%",
                                         transform: "translateX(-50%)",
                                     }}
                                 >
-                                    {j}
+                                    {intToLetter(j)}
                                 </Typography>
                             )}
                         </div>
