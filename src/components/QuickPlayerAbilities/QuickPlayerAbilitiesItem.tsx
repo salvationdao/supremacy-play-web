@@ -47,6 +47,7 @@ export const QuickPlayerAbilitiesItem = ({
                             key={price}
                             component="span"
                             sx={{
+                                color: colors.yellow,
                                 animation: `${scaleUpKeyframes} .2s ease-out`,
                             }}
                         >
