@@ -313,12 +313,12 @@ const MapMechInner = ({ warMachine, map }: MapMechInnerProps) => {
 
                 {/* Health and shield bars */}
                 {isAlive && (
-                    <Stack spacing=".2rem" style={{ width: iconSize * 1.2, zIndex: 1 }}>
+                    <Stack spacing=".2rem" style={{ width: iconSize * 0.9, zIndex: 1 }}>
                         {warMachine.maxShield > 0 && (
                             <Box
                                 style={{
                                     width: "100%",
-                                    height: `${0.3 * iconSize}px`,
+                                    height: `${0.2 * iconSize}px`,
                                     border: "3px solid #00000080",
                                     overflow: "hidden",
                                 }}
@@ -336,7 +336,7 @@ const MapMechInner = ({ warMachine, map }: MapMechInnerProps) => {
                         <Box
                             style={{
                                 width: "100%",
-                                height: `${0.3 * iconSize}px`,
+                                height: `${0.2 * iconSize}px`,
                                 border: "3px solid #00000080",
                                 overflow: "hidden",
                             }}
