@@ -8,8 +8,6 @@ import { useTheme } from "../../containers/theme"
 import { siteZIndex, fonts } from "../../theme/theme"
 import { SectionMechRewards } from "./Sections/SectionMechRewards"
 
-export const BOTTOM_BUTTONS_HEIGHT = 5 //rems
-
 export const BattleEndScreen = () => {
     const theme = useTheme()
     const { isMobile } = useMobile()
@@ -37,7 +35,7 @@ export const BattleEndScreen = () => {
 
     return (
         <Slide key={battle_id} in={isEndBattleDetailOpen || isMobile} direction="right">
-            <Box
+            <Stack
                 sx={{
                     position: isMobile ? "unset" : "absolute",
                     top: 0,
@@ -66,7 +64,7 @@ export const BattleEndScreen = () => {
 
                 <Stack
                     sx={{
-                        height: `calc(100% - ${BOTTOM_BUTTONS_HEIGHT}rem)`,
+                        flex: 1,
                         pr: "1.76rem",
                         pb: "3.2rem",
                         overflowY: "auto",
@@ -96,7 +94,7 @@ export const BattleEndScreen = () => {
                 </Stack>
 
                 <SectionBottom />
-            </Box>
+            </Stack>
         </Slide>
     )
 }
