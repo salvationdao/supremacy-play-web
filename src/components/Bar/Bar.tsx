@@ -1,5 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { Logo, ProfileCard, WalletDetails } from ".."
+import { FancyButton, Logo, ProfileCard, WalletDetails } from ".."
 import { SvgDisconnected } from "../../assets"
 import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT, STAGING_OR_DEV_ONLY } from "../../constants"
 import { useAuth, useSupremacy } from "../../containers"
@@ -7,6 +7,8 @@ import { colors, fonts, siteZIndex } from "../../theme/theme"
 import { User } from "../../types"
 import { Messages } from "./Messages/Messages"
 import { NavLinks } from "./NavLinks/NavLinks"
+import Marquee from "react-fast-marquee"
+import { hexToRGBArray } from "../../helpers"
 
 export const Bar = () => {
     const { userID, user } = useAuth()
@@ -25,9 +27,11 @@ export const Bar = () => {
                             zIndex: siteZIndex.Popover,
                         }}
                     >
-                        <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack, lineHeight: 1, textAlign: "center" }}>
-                            THIS IS A TESTING ENVIRONMENT
-                        </Typography>
+                        <Marquee direction="left" gradientColor={hexToRGBArray(colors.lightRed)} gradientWidth={50} style={{ overflow: "hidden" }}>
+                            <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack, lineHeight: 1 }}>
+                                EXPERIMENTAL BATTLE TRAINING GROUNDS - The $SUPS you spend are not real!
+                            </Typography>
+                        </Marquee>
                     </Box>
 
                     <Box
@@ -100,6 +104,23 @@ const BarContent = ({ userID, user }: { userID?: string; user: User }) => {
             <Logo />
             <NavLinks />
             <Box sx={{ flexGrow: 1 }} />
+
+            <FancyButton
+                clipThingsProps={{
+                    clipSize: "6px",
+                    backgroundColor: colors.neonBlue,
+                    opacity: 1,
+                    border: { borderColor: colors.neonBlue, borderThickness: "2px" },
+                    sx: { position: "relative", mx: "2rem" },
+                }}
+                sx={{ px: "1.6rem", py: ".1rem", color: "#000000" }}
+                href=""
+            >
+                <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBold, color: "#000000" }}>
+                    FEEDBACK
+                </Typography>
+            </FancyButton>
+
             {/* <HowToPlay /> */}
             {/* {userID && <Enlist />} */}
             {userID && <WalletDetails />}

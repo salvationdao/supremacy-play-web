@@ -17,14 +17,14 @@ export const BattleArenaPage = () => {
 
     useEffect(() => {
         if (!userID) return
-        setUnderstand(localStorage.getItem(`understand-${userID}`) === "true")
+        setUnderstand(localStorage.getItem(`understand1-${userID}`) === "true")
     }, [userID])
 
     if (!understand && userID) {
         return (
             <EarlyAccessWarning
                 onAcknowledged={() => {
-                    localStorage.setItem(`understand-${userID}`, "true")
+                    localStorage.setItem(`understand1-${userID}`, "true")
                     setUnderstand(true)
                 }}
             />
