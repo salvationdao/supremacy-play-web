@@ -219,7 +219,9 @@ const StaticGame = React.memo(function StaticGame({
 }) {
     // Initialize game
     useEffect(() => {
-        new Game(backgroundColor, setGameState, oneNewGamePattern)
+        setTimeout(() => {
+            new Game(backgroundColor, setGameState, oneNewGamePattern)
+        }, 100)
     }, [backgroundColor, oneNewGamePattern, setGameState])
 
     // Game container, must keep the id
