@@ -93,7 +93,7 @@ export const RepairJobItem = ({
                                     textOverflow: "ellipsis",
                                     WebkitLineClamp: 2,
                                     WebkitBoxOrient: "vertical",
-                                    span: { color: colors.orange, fontFamily: "inherit" },
+                                    span: { color: colors.orange },
                                 }}
                             >
                                 <span>{remainDamagedBlocks}</span> BLOCKS REMAINING

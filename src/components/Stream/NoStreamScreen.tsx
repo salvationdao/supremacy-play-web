@@ -59,7 +59,7 @@ export const NoStreamScreen = () => {
                         },
                     }}
                 >
-                    Powered by <span style={{ color: colors.yellow, fontFamily: "inherit" }}>$SUPS</span>
+                    Powered by <span style={{ color: colors.yellow }}>$SUPS</span>
                 </Typography>
             </Stack>
 

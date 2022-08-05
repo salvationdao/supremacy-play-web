@@ -189,6 +189,7 @@ import WarMachineBCPNG from "./images/profileIcons/warMachines/WMBC.png"
 import WarMachineRMPNG from "./images/profileIcons/warMachines/WMRM.png"
 import WarMachineZAIPNG from "./images/profileIcons/warMachines/WMZAI.png"
 
+import StackTowerBackgroundJPG from "./images/TowerStackSkins/StackTowerBackground.jpg"
 import Stack1aJPG from "./images/TowerStackSkins/Stack1a.jpg"
 import Stack1bJPG from "./images/TowerStackSkins/Stack1b.jpg"
 import Stack1cJPG from "./images/TowerStackSkins/Stack1c.jpg"
@@ -222,6 +223,7 @@ import Stack10cJPG from "./images/TowerStackSkins/Stack10c.jpg"
 
 // Tower stack mini game skins
 export {
+    StackTowerBackgroundJPG,
     Stack1aJPG,
     Stack1bJPG,
     Stack1cJPG,

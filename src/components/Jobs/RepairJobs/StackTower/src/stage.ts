@@ -45,6 +45,17 @@ export class Stage {
             }
         })
 
+        // // background image
+        // const loader = new THREE.TextureLoader()
+        // const backgroundTexture = loader.load(StackTowerBackgroundJPG)
+        // const backgroundMesh = new THREE.Mesh(
+        //     new THREE.PlaneGeometry(2048, 2048, 8, 8),
+        //     new THREE.MeshBasicMaterial({
+        //         map: backgroundTexture,
+        //     }),
+        // )
+        // this.scene.background = backgroundTexture
+
         window.addEventListener("resize", () => this.onResize())
         this.onResize()
     }

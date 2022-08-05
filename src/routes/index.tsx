@@ -192,7 +192,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         exact: true,
         Component: ClaimPage,
         requireAuth: true,
-        authTitle: "Connect Your Wallet to Claim Your Rewards",
+        authTitle: "Connect to XSYN to Claim Your Rewards",
         authDescription:
             "You will receive assets that are of Supremacy's next generation collection: Supremacy Nexus, which will allow you to equip your war machines to defeat your enemies in the battle arena.",
         requireFaction: true,

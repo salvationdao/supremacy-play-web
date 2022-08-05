@@ -174,8 +174,8 @@ const MapMechInner = ({ warMachine, map }: MapMechInnerProps) => {
                             top: "0",
                             left: "50%",
                             transform: "translate(-50%, -80%)",
-                            height: `${iconSize}px`,
-                            width: `${iconSize}px`,
+                            height: iconSize,
+                            width: iconSize,
                             cursor: "pointer",
                             border: `3px solid ${playerAbility.ability.colour}`,
                             borderRadius: 1,
@@ -246,9 +246,10 @@ const MapMechInner = ({ warMachine, map }: MapMechInnerProps) => {
                         }}
                     >
                         <Typography
-                            variant="h1"
                             sx={{
                                 color: primaryColor,
+                                fontSize: iconSize * 0.98,
+                                lineHeight: 1,
                                 fontFamily: fonts.nostromoBlack,
                             }}
                         >
