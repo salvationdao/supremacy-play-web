@@ -1,4 +1,4 @@
-import { createContext, Dispatch, useCallback, useContext, useEffect, useRef, useState } from "react"
+import { createContext, Dispatch, ReactNode, useCallback, useContext, useEffect, useRef, useState } from "react"
 import { useQuery } from "react-fetching-library"
 import { useSupremacy } from "."
 import { PASSPORT_WEB } from "../constants"
@@ -95,7 +95,7 @@ const initialState: AuthState = {
 
 export const AuthContext = createContext<AuthState>(initialState)
 
-export const AuthProvider: React.FC = ({ children }) => {
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [isLoggingIn, setIsLoggingIn] = useState(true)
     const [passportPopup, setPassportPopup] = useState<Window | null>(null)
     const popupCheckInterval = useRef<NodeJS.Timer>()
@@ -139,6 +139,7 @@ export const AuthProvider: React.FC = ({ children }) => {
     const authCheckCallback = useCallback(
         async (event?: MessageEvent) => {
             if (event && !("token" in event.data)) return
+
             // Check passport server login
             if (!userFromPassport) {
                 try {

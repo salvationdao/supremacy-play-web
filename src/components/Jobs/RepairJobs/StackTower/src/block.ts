@@ -40,7 +40,7 @@ export class Block {
         shouldReplace = false,
         isFalling = false,
     ) {
-        this.MOVE_AMOUNT = 12
+        this.MOVE_AMOUNT = 20
 
         this.speed = 0
         this.direction = 0

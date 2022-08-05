@@ -67,12 +67,15 @@ export const TextMessage = ({
     const factionSecondaryColor = useMemo(() => (faction_id ? getFaction(faction_id).secondary_color : "#FFFFFF"), [faction_id, getFaction])
     const faction_logo_url = useMemo(() => (faction_id ? getFaction(faction_id).logo_url : ""), [faction_id, getFaction])
     const rankDeets = useMemo(() => (user_rank ? getUserRankDeets(user_rank, ".8rem", "1.8rem") : undefined), [user_rank])
-    const smallFontSize = useMemo(() => (fontSize ? `${1 * fontSize}rem` : "0.9rem"), [fontSize])
 
-    const renderFontSize = useCallback(() => {
-        if (isEmoji) return (fontSize || 1.1) * 3
-        return (fontSize || 1.1) * 1.35
-    }, [isEmoji, fontSize])
+    const smallFontSize = useMemo(() => (fontSize ? `${1 * fontSize}rem` : "0.9rem"), [fontSize])
+    const renderFontSize = useCallback(
+        (isEmojiOverride = false) => {
+            if (isEmoji && !isEmojiOverride) return (fontSize || 1.1) * 3
+            return (fontSize || 1.1) * 1.35
+        },
+        [isEmoji, fontSize],
+    )
 
     const isVisibleInChat = useCallback(() => {
         if (!containerRef.current || !textMessageRef.current || isScrolling) return
@@ -165,7 +168,7 @@ export const TextMessage = ({
 
                 newMsgArr.push(
                     <span>
-                        <UsernameJSX data={data} fontSize={fontSize} user={taggedUser} />{" "}
+                        <UsernameJSX data={data} fontSize={renderFontSize(true)} user={taggedUser} />{" "}
                     </span>,
                 )
             }
@@ -178,7 +181,7 @@ export const TextMessage = ({
                 ))}
             </>
         )
-    }, [addToUserGidRecord, data, fontSize, gid, message, metadata, send, tabValue, user.faction_id, userGidRecord])
+    }, [addToUserGidRecord, data, gid, message, metadata, renderFontSize, send, tabValue, user.faction_id, userGidRecord])
 
     useEffect(() => {
         if (!previousMessage || previousMessage.type != "TEXT") return
@@ -193,7 +196,7 @@ export const TextMessage = ({
 
     return (
         <>
-            <Box sx={{ opacity: isSent ? 1 : 0.45, wordBreak: "break-word" }} ref={textMessageRef}>
+            <Box sx={{ opacity: isSent ? 1 : 0.45 }} ref={textMessageRef}>
                 {(!isPreviousMessager || (previousMessage && sentAt > new Date(previousMessage.sent_at.getTime() + 2 * 60000))) && (
                     <Stack direction="row" justifyContent="space-between" sx={{ mt: ".8rem", mb: ".5rem" }}>
                         <Stack ref={popoverRef} direction="row" spacing=".3rem">
@@ -252,7 +255,7 @@ export const TextMessage = ({
                             </Stack>
 
                             <Box>
-                                <UsernameJSX data={data} fontSize={fontSize} user={from_user} toggleIsPopoverOpen={toggleIsPopoverOpen} />
+                                <UsernameJSX data={data} fontSize={renderFontSize(true)} user={from_user} toggleIsPopoverOpen={toggleIsPopoverOpen} />
 
                                 {from_user_stat && (
                                     <Box sx={{ flexShrink: 0, display: "inline-block", ml: ".4rem", cursor: "default" }}>
@@ -290,9 +293,9 @@ export const TextMessage = ({
                                 alignSelf: "center",
                                 flexShrink: 0,
                                 ml: "auto",
-                                color: "#FFFFFF",
+                                color: colors.grey,
                                 opacity: 0.7,
-                                fontSize: smallFontSize,
+                                fontSize: `${renderFontSize(true)}rem`,
                             }}
                         >
                             {dateFormatter(sentAt)}
@@ -304,7 +307,7 @@ export const TextMessage = ({
                     <Stack
                         direction={"column"}
                         sx={{
-                            ml: "2rem",
+                            ml: "1.8rem",
                             backgroundColor: shouldNotify ? "rgba(0,116,217, .4)" : isHovered ? "#121212" : "unset",
                             borderRadius: ".3rem",
                             transition: shouldNotify ? "background-color 2s" : "unset",
@@ -313,7 +316,7 @@ export const TextMessage = ({
                         onMouseEnter={() => setIsHovered(true)}
                         onMouseLeave={() => setIsHovered(false)}
                     >
-                        <Box sx={{ fontSize: `${renderFontSize()}rem`, zIndex: isHovered ? 2 : 1 }}>{chatMessage}</Box>
+                        <Box sx={{ lineHeight: 1, color: "#FFFFFF", fontSize: `${renderFontSize()}rem`, zIndex: isHovered ? 2 : 1 }}>{chatMessage}</Box>
                         {!!metadata?.likes.net && <Reactions fontSize={fontSize} data={data} />}
                         {isHovered && <Reactions fontSize={fontSize} hoverOnly={true} data={data} />}
                     </Stack>
@@ -369,30 +372,30 @@ export const UsernameJSX = ({ data, fontSize, toggleIsPopoverOpen, user }: Usern
             sx={{
                 display: "inline",
                 cursor: toggleIsPopoverOpen ? "pointer" : "unset",
-                p: toggleIsPopoverOpen ? "unset" : ".1rem .5rem",
+                p: toggleIsPopoverOpen ? "unset" : ".08rem .5rem",
                 color: toggleIsPopoverOpen ? message_color : faction.secondary_color,
                 backgroundColor: toggleIsPopoverOpen ? "unset" : faction.primary_color,
                 borderRadius: toggleIsPopoverOpen ? "unset" : 0.5,
                 fontWeight: toggleIsPopoverOpen ? 700 : "unset",
-                fontSize: toggleIsPopoverOpen && fontSize ? `${1.33 * fontSize}rem` : `${1.2 * fontSize}rem`,
+                fontSize: `${fontSize}rem`,
                 verticalAlign: "middle",
                 ":hover": toggleIsPopoverOpen
                     ? {
                           cursor: "pointer",
                           textDecoration: "underline",
                       }
-                    : "unset",
+                    : undefined,
                 ":active": {
-                    opacity: 0.7,
+                    opacity: 0.8,
                 },
             }}
         >
+            {toggleIsPopoverOpen ? "" : "@"}
             {`${truncate(user?.username || "", 20)}`}
             <span
                 style={{
                     marginLeft: ".2rem",
-                    opacity: 0.7,
-                    fontSize: fontSize ? `${1.1 * fontSize}rem` : "1.1rem",
+                    fontSize: `${1.1 * fontSize}rem`,
                 }}
             >{`#${user?.gid}`}</span>
         </Typography>
