@@ -52,6 +52,7 @@ export interface MechRepairStatus {
 export interface MechStatus {
     status: MechStatusEnum
     queue_position?: number
+    can_deploy?: boolean
 }
 
 export interface AssetDurability {
