@@ -38,7 +38,7 @@ export const RepairJobItem = ({
         if (isFinished && !repairJobModal) {
             setTimeout(() => {
                 removeByID(repairJob.id)
-            }, 5000)
+            }, 10000)
         }
     }, [repairJobModal, isFinished, removeByID, repairJob.id])
 
