@@ -8,23 +8,13 @@ import { User } from "../../types"
 import { Messages } from "./Messages/Messages"
 import { NavLinks } from "./NavLinks/NavLinks"
 import Marquee from "react-fast-marquee"
-import { hexToRGBArray } from "../../helpers"
-import Countdown from "react-countdown"
-import { CountdownRendererFn } from "react-countdown/dist/Countdown"
+import { hexToRGBArray, timeSinceInWords } from "../../helpers"
+import { useTimer } from "../../hooks"
 
-// Renderer callback with condition
-const renderer: CountdownRendererFn = ({ days, hours, minutes, seconds, completed }) => {
-    if (completed) {
-        // Render a completed state
-        return <span>very shortly.</span>
-    } else {
-        // Render a countdown
-        return (
-            <span style={{ paddingRight: "100px" }}>
-                in {days > 0 && <>{days} days </>} {hours} hours {minutes} minutes and {seconds} seconds
-            </span>
-        )
-    }
+const Countdown = ({ endTime }: { endTime: Date }) => {
+    const { totalSecRemain } = useTimer(endTime)
+    if (totalSecRemain <= 0) return <>very shortly</>
+    return <>{timeSinceInWords(new Date(), new Date(new Date().getTime() + totalSecRemain * 1000))}</>
 }
 
 export const Bar = () => {
@@ -45,9 +35,9 @@ export const Bar = () => {
                         }}
                     >
                         <Marquee direction="left" gradientColor={hexToRGBArray(colors.lightRed)} gradientWidth={50} style={{ overflow: "hidden" }}>
-                            <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack, lineHeight: 1 }}>
-                                Welcome to the proving grounds! Win up to 150,000 SUPS by helping us play-test incoming mechanisms and features. This round will
-                                reset <Countdown date={NEXT_RESET_TIME} renderer={renderer} />
+                            <Typography variant="body2" sx={{ pr: "100px", fontFamily: fonts.nostromoBlack, lineHeight: 1 }}>
+                                Welcome to the proving grounds! Win up to <span style={{ color: colors.neonBlue }}>150,000</span> SUPS by helping us play-test
+                                incoming mechanisms and features. This round will reset in <Countdown endTime={new Date(NEXT_RESET_TIME)} />.
                             </Typography>
                         </Marquee>
                     </Box>

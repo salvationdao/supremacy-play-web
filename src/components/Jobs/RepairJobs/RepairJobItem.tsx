@@ -165,7 +165,7 @@ const CountdownGeneral = ({ isGridView, endTime }: { isGridView?: boolean; endTi
         <General
             isGridView={isGridView}
             title="TIME LEFT"
-            text={timeSinceInWords(new Date(), new Date(new Date().getTime() + totalSecRemain * 1000)) + " left"}
+            text={timeSinceInWords(new Date(), new Date(new Date().getTime() + totalSecRemain * 1000))}
             textColor={totalSecRemain < 300 ? colors.orange : "#FFFFFF"}
         />
     )
