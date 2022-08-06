@@ -9,7 +9,7 @@ import { colors, fonts } from "../../theme/theme"
 export const Logo = React.memo(function Logo() {
     const below1370 = useMediaQuery("(max-width:1370px)")
     const { isMobile } = useMobile()
-    const [text, setText] = useState<string>("EARLY ACCESS")
+    const [text, setText] = useState<string>("PROVING GROUNDS")
     const { toggleIsLeftDrawerOpen } = useOverlayToggles()
 
     return (
@@ -35,7 +35,7 @@ export const Logo = React.memo(function Logo() {
                         setText(`${VERSION.substring(0, 10)}...`)
                     }}
                     onMouseLeave={() => {
-                        setText("EARLY ACCESS")
+                        setText("PROVING GROUNDS")
                     }}
                     sx={{ pb: "2px" }}
                 >
