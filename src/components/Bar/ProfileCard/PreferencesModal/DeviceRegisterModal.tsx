@@ -10,7 +10,6 @@ import { GameServerKeys } from "../../../../keys"
 import { FancyButton } from "../../../Common/FancyButton"
 
 const QR_CODE_SIZE = 228
-const QR_CODE_PADDING = 5
 
 interface DeviceRegisterModalProps {
     onClose: () => void
@@ -87,14 +86,13 @@ export const DeviceRegisterModal = ({ onClose }: DeviceRegisterModalProps) => {
                             {/* QR Code - displays skeleton while it is loading */}
                             <Box sx={{ ml: "9rem" }}>
                                 {loading ? (
-                                    <Skeleton variant={"rectangular"} width={QR_CODE_SIZE + QR_CODE_PADDING * 2} height={QR_CODE_SIZE + QR_CODE_PADDING * 2} />
+                                    <Skeleton variant={"rectangular"} width={QR_CODE_SIZE} height={QR_CODE_SIZE} />
                                 ) : (
                                     token && (
                                         <Box
                                             sx={{
-                                                p: QR_CODE_PADDING,
-                                                width: QR_CODE_SIZE + QR_CODE_PADDING * 2,
-                                                height: QR_CODE_SIZE + QR_CODE_PADDING * 2,
+                                                width: QR_CODE_SIZE,
+                                                height: QR_CODE_SIZE,
                                                 backgroundColor: "#FFFFFF",
                                             }}
                                         >
