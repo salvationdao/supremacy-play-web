@@ -35,7 +35,7 @@ export const RepairJobItem = ({
     const backgroundColor = jobOwnerFaction.background_color
 
     useEffect(() => {
-        if (isFinished && repairJobModal) {
+        if (isFinished && !repairJobModal) {
             setTimeout(() => {
                 removeByID(repairJob.id)
             }, 5000)
