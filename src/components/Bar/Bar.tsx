@@ -1,7 +1,7 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { FancyButton, Logo, ProfileCard, WalletDetails } from ".."
 import { SvgDisconnected } from "../../assets"
-import { DRAWER_TRANSITION_DURATION, FEEDBACK_FORM_URL, GAME_BAR_HEIGHT, STAGING_OR_DEV_ONLY } from "../../constants"
+import { DRAWER_TRANSITION_DURATION, FEEDBACK_FORM_URL, GAME_BAR_HEIGHT, NEXT_RESET_TIME, STAGING_OR_DEV_ONLY } from "../../constants"
 import { useAuth, useSupremacy } from "../../containers"
 import { colors, fonts, siteZIndex } from "../../theme/theme"
 import { User } from "../../types"
@@ -9,6 +9,23 @@ import { Messages } from "./Messages/Messages"
 import { NavLinks } from "./NavLinks/NavLinks"
 import Marquee from "react-fast-marquee"
 import { hexToRGBArray } from "../../helpers"
+import Countdown from "react-countdown"
+import { CountdownRendererFn } from "react-countdown/dist/Countdown"
+
+// Renderer callback with condition
+const renderer: CountdownRendererFn = ({ days, hours, minutes, seconds, completed }) => {
+    if (completed) {
+        // Render a completed state
+        return <span>very shortly.</span>
+    } else {
+        // Render a countdown
+        return (
+            <span style={{ paddingRight: "100px" }}>
+                in {days > 0 && <>{days} days </>} {hours} hours {minutes} minutes and {seconds} seconds
+            </span>
+        )
+    }
+}
 
 export const Bar = () => {
     const { userID, user } = useAuth()
@@ -29,7 +46,8 @@ export const Bar = () => {
                     >
                         <Marquee direction="left" gradientColor={hexToRGBArray(colors.lightRed)} gradientWidth={50} style={{ overflow: "hidden" }}>
                             <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack, lineHeight: 1 }}>
-                                EXPERIMENTAL TESTING - ALL SUPS AND WAR MACHINES ARE TEMPORARY AND ONLY EXIST IN EXPERIMENTAL TESTING
+                                Welcome to the testing grounds! Win up to 150,000 SUPS by helping us play-test incoming mechanisms and features. This round will
+                                reset <Countdown date={NEXT_RESET_TIME} renderer={renderer} />
                             </Typography>
                         </Marquee>
                     </Box>

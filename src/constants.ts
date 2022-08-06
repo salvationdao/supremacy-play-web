@@ -18,6 +18,8 @@ let PASSPORT_WEB = process.env.REACT_APP_PASSPORT_WEB || "https://passport.xsynd
 let PASSPORT_SERVER_HOST = process.env.REACT_APP_PASSPORT_SERVER_HOST || "passport.supremacygame.io"
 let PASSPORT_SERVER_HOST_IMAGES = process.env.REACT_APP_SERVER_HOST_IMAGES || "https://api.supremacygame.io"
 
+export const NEXT_RESET_TIME = new Date("Mon Aug 08 2022 15:00:00 GMT+0800 (AWST)")
+
 if (USE_PROD) {
     GAME_SERVER_HOSTNAME = process.env.REACT_APP_GAME_SERVER_HOSTNAME || "api.supremacy.game"
     PASSPORT_WEB = process.env.REACT_APP_PASSPORT_WEB || "https://passport.xsyn.io/"
