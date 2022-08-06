@@ -104,7 +104,7 @@ export const RepairJobItem = ({
 
                     <General
                         isGridView={isGridView}
-                        title="ACTIVE AGENTS"
+                        title="ACTIVE WORKERS"
                         text={repairJob.working_agent_count.toString()}
                         textColor={repairJob.working_agent_count <= 3 ? colors.green : colors.orange}
                     />
@@ -136,7 +136,12 @@ export const RepairJobItem = ({
                     </General>
 
                     {isFinished ? (
-                        <General isGridView={isGridView} title="TIME LEFT" text="EXPIRED" textColor={colors.lightGrey} />
+                        <General
+                            isGridView={isGridView}
+                            title="TIME LEFT"
+                            text={repairJob ? `JOB ${repairJob.finished_reason}` : "EXPIRED"}
+                            textColor={colors.lightGrey}
+                        />
                     ) : (
                         <CountdownGeneral isGridView={isGridView} endTime={repairJob.expires_at} />
                     )}

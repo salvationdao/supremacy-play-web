@@ -438,7 +438,7 @@ export const DoRepairModal = React.memo(function DoRepairModal({ repairStatus, r
                 {/* Info cards */}
                 {repairJob && (
                     <Stack direction="row" spacing="1.6rem" justifyContent="center">
-                        <InfoCard primaryColor={primaryColor} label="ACTIVE AGENTS">
+                        <InfoCard primaryColor={primaryColor} label="ACTIVE WORKERS">
                             <Typography
                                 variant="h4"
                                 sx={{ fontWeight: "fontWeightBold", color: repairJob.working_agent_count <= 3 ? colors.green : colors.orange }}
@@ -456,7 +456,7 @@ export const DoRepairModal = React.memo(function DoRepairModal({ repairStatus, r
                             </Stack>
                         </InfoCard>
 
-                        <InfoCard primaryColor={primaryColor} label="REMAINING REWARD">
+                        <InfoCard primaryColor={primaryColor} label="REMAINING REWARDS">
                             <Stack direction="row" alignItems="center">
                                 <SvgSupToken size="3rem" fill={colors.yellow} />
                                 <Typography variant="h4" sx={{ fontWeight: "fontWeightBold" }}>
