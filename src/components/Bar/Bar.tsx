@@ -21,7 +21,7 @@ const renderer: CountdownRendererFn = ({ days, hours, minutes, seconds, complete
         // Render a countdown
         return (
             <span style={{ paddingRight: "100px" }}>
-                in {days > 0 && <>{days} days </>} {hours} hours {minutes} minutes and {seconds} seconds
+                in {days === 1 ? <>{days} day </> : <>{days} days </>} {hours} hours {minutes} minutes and {seconds} seconds
             </span>
         )
     }
