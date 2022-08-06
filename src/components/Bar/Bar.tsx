@@ -36,7 +36,7 @@ export const Bar = () => {
                     >
                         <Marquee direction="left" gradientColor={hexToRGBArray(colors.lightRed)} gradientWidth={50} style={{ overflow: "hidden" }}>
                             <Typography variant="body2" sx={{ pr: "100px", fontFamily: fonts.nostromoBlack, lineHeight: 1 }}>
-                                Welcome to the proving grounds! Win up to <span style={{ color: colors.neonBlue }}>150,000</span> SUPS by helping us play-test
+                                Welcome to the proving grounds! Win up to <span style={{ color: colors.yellow }}>150,000</span> SUPS by helping us play-test
                                 incoming mechanisms and features. This round will reset in <Countdown endTime={new Date(NEXT_RESET_TIME)} />.
                             </Typography>
                         </Marquee>
