@@ -9,7 +9,7 @@ import { useEffect, useState } from "react"
 import { GameServerKeys } from "../../../../keys"
 import { FancyButton } from "../../../Common/FancyButton"
 
-const QR_CODE_SIZE = 228
+const QR_CODE_SIZE = 180
 
 interface DeviceRegisterModalProps {
     onClose: () => void
@@ -84,7 +84,7 @@ export const DeviceRegisterModal = ({ onClose }: DeviceRegisterModalProps) => {
                             <Typography sx={{ lineHeight: 1, fontWeight: "fontWeightBold", paddingLeft: 2 }}>3. Scan the image below.</Typography>
 
                             {/* QR Code - displays skeleton while it is loading */}
-                            <Box sx={{ ml: "9rem" }}>
+                            <Box sx={{ ml: "2rem !important" }}>
                                 {loading ? (
                                     <Skeleton variant={"rectangular"} width={QR_CODE_SIZE} height={QR_CODE_SIZE} />
                                 ) : (
