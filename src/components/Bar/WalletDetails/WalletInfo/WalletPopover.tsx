@@ -108,11 +108,11 @@ export const WalletPopover = ({
 
                     <Box>
                         <Typography gutterBottom sx={{ fontFamily: fonts.nostromoBlack, color: theme.factionTheme.primary }}>
-                            TOTAL SUPS <span style={{ color: colors.lightRed }}>(FAKE)</span>
+                            TOTAL VSUPS
                         </Typography>
 
                         <Stack direction="row" alignItems="center">
-                            <SvgSupToken size="1.4rem" fill={colors.yellow} sx={{ pb: ".1rem" }} />
+                            <SvgSupToken size="1.4rem" fill={colors.red} sx={{ pb: ".1rem" }} />
                             <Typography sx={{ lineHeight: 1 }}>{sups ? supFormatterNoFixed(sups, 18) : "0.00"}</Typography>
                         </Stack>
                     </Box>
