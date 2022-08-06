@@ -3,7 +3,7 @@ import BigNumber from "bignumber.js"
 import { MutableRefObject, useEffect } from "react"
 import { ClipThing, TransactionItem } from "../../.."
 import { SvgClose, SvgExternalLink, SvgSupToken } from "../../../../assets"
-import { PASSPORT_WEB, STAGING_OR_DEV_ONLY } from "../../../../constants"
+import { PASSPORT_WEB, IS_TESTING_MODE } from "../../../../constants"
 import { useTheme } from "../../../../containers/theme"
 import { supFormatterNoFixed } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
@@ -108,11 +108,11 @@ export const WalletPopover = ({
 
                     <Box>
                         <Typography gutterBottom sx={{ fontFamily: fonts.nostromoBlack, color: theme.factionTheme.primary }}>
-                            TOTAL {STAGING_OR_DEV_ONLY ? "V" : ""}SUPS
+                            TOTAL {IS_TESTING_MODE ? "V" : ""}SUPS
                         </Typography>
 
                         <Stack direction="row" alignItems="center">
-                            <SvgSupToken size="1.4rem" fill={STAGING_OR_DEV_ONLY ? colors.red : colors.yellow} sx={{ pb: ".1rem" }} />
+                            <SvgSupToken size="1.4rem" fill={IS_TESTING_MODE ? colors.red : colors.yellow} sx={{ pb: ".1rem" }} />
                             <Typography sx={{ lineHeight: 1 }}>{sups ? supFormatterNoFixed(sups, 18) : "0.00"}</Typography>
                         </Stack>
                     </Box>

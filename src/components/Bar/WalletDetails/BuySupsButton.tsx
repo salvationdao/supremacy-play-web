@@ -1,6 +1,6 @@
 import { Button } from "@mui/material"
 import { useCallback } from "react"
-import { STAGING_OR_DEV_ONLY, TOKEN_SALE_PAGE } from "../../../constants"
+import { IS_TESTING_MODE, TOKEN_SALE_PAGE } from "../../../constants"
 import { colors, fonts } from "../../../theme/theme"
 
 export const BuySupsButton = () => {
@@ -12,7 +12,7 @@ export const BuySupsButton = () => {
         window.open(TOKEN_SALE_PAGE, "SUPS Token Sale", `width=${width},height=${height},left=${left},top=${top},popup=1`)
     }, [])
 
-    if (STAGING_OR_DEV_ONLY) return null
+    if (IS_TESTING_MODE) return null
 
     return (
         <Button

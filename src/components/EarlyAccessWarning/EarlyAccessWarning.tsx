@@ -3,7 +3,7 @@ import { Alert } from "@mui/lab"
 import { colors, fonts } from "../../theme/theme"
 import { useToggle } from "../../hooks"
 import { ClipThing, FancyButton } from ".."
-import { STAGING_OR_DEV_ONLY } from "../../constants"
+import { IS_TESTING_MODE } from "../../constants"
 
 export const EarlyAccessWarning = ({ onAcknowledged }: { onAcknowledged: () => void }) => {
     const [closed, toggleClosed] = useToggle()
@@ -38,7 +38,7 @@ export const EarlyAccessWarning = ({ onAcknowledged }: { onAcknowledged: () => v
                             py: "2.4rem",
                         }}
                     >
-                        {STAGING_OR_DEV_ONLY ? <StagingMessage /> : <ProdMessage />}
+                        {IS_TESTING_MODE ? <StagingMessage /> : <ProdMessage />}
 
                         <FancyButton
                             clipThingsProps={{

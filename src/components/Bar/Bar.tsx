@@ -1,7 +1,7 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { FancyButton, Logo, ProfileCard, WalletDetails } from ".."
 import { SvgDisconnected } from "../../assets"
-import { DRAWER_TRANSITION_DURATION, FEEDBACK_FORM_URL, GAME_BAR_HEIGHT, NEXT_RESET_TIME, STAGING_OR_DEV_ONLY } from "../../constants"
+import { DRAWER_TRANSITION_DURATION, FEEDBACK_FORM_URL, GAME_BAR_HEIGHT, NEXT_RESET_TIME, IS_TESTING_MODE } from "../../constants"
 import { useAuth, useSupremacy } from "../../containers"
 import { colors, fonts, siteZIndex } from "../../theme/theme"
 import { User } from "../../types"
@@ -32,7 +32,7 @@ export const Bar = () => {
 
     return (
         <>
-            {STAGING_OR_DEV_ONLY && (
+            {IS_TESTING_MODE && (
                 <>
                     <Box
                         sx={{
@@ -57,7 +57,7 @@ export const Bar = () => {
                             position: "fixed",
                             height: "100%",
                             width: "100%",
-                            border: STAGING_OR_DEV_ONLY ? `${colors.lightRed} 3px solid` : "unset",
+                            border: `${colors.lightRed} 3px solid`,
                             zIndex: siteZIndex.Modal * 99,
                             pointerEvents: "none",
                         }}
