@@ -168,7 +168,7 @@ export const DoRepairModal = React.memo(function DoRepairModal({ repairStatus, r
             } finally {
                 setTimeout(() => {
                     setIsSubmitting(false)
-                }, 1500)
+                }, 1500) // Show the loading spinner for at least sometime so it doesnt flash away
             }
         },
         [send],

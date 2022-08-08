@@ -161,7 +161,7 @@ const TowerStackInner = ({
                     alignItems="center"
                     sx={{
                         position: "absolute",
-                        top: "20%",
+                        top: "30%",
                         left: 0,
                         right: 0,
                         transition: "all .2s ease",

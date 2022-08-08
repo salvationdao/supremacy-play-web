@@ -132,7 +132,7 @@ export class Game {
             if (newLength <= 0) {
                 this.stage.remove(lastBlock.mesh)
                 this.setState(GameState.Ended)
-                this.stage.setCamera(Math.max(this.blocks.length * blockConfig.initHeight - 6, 6))
+                this.stage.setCamera(Math.max(this.blocks.length * blockConfig.initHeight - 6, 6) + cameraConfig.offsetY)
                 this.oneNewGamePattern({
                     score: this.score,
                     is_failed: true,

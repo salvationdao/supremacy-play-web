@@ -68,7 +68,8 @@ export class Stage {
     }
 
     setCamera(y: number, speed = 0.3) {
-        gsap.to(this.camera.position, { duration: speed, y: y + 4, ease: "power1.easeInOut" })
+        const height = this.container?.clientHeight || 200
+        gsap.to(this.camera.position, { duration: speed, y: y + 4 - (height < 550 ? 10 : 0), ease: "power1.easeInOut" })
         gsap.to(this.camera.lookAt, { duration: speed, y: y, ease: "power1.easeInOut" })
     }
 
