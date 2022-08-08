@@ -4,6 +4,7 @@ const USE_PROD = false
 
 // Envar stuff
 export const STAGING_OR_DEV_ONLY = process.env.REACT_APP_ENVIRONMENT !== "production"
+export const STAGING_ONLY = process.env.REACT_APP_ENVIRONMENT === "staging"
 export const DEV_ONLY = process.env.REACT_APP_ENVIRONMENT !== "production" && process.env.REACT_APP_ENVIRONMENT !== "staging"
 export const CAPTCHA_KEY = process.env.REACT_APP_CAPTCHA_SITE_KEY || "87f715ba-98ff-43da-b970-cfc30fd7c5a0"
 const VERSION = process.env.REACT_APP_COMMIT_REF || "development"
@@ -21,7 +22,7 @@ let PASSPORT_SERVER_HOST_IMAGES = process.env.REACT_APP_SERVER_HOST_IMAGES || "h
 export const BATTLE_ARENA_OPEN = STAGING_OR_DEV_ONLY
 
 // Testing related
-export const IS_TESTING_MODE = STAGING_OR_DEV_ONLY
+export const IS_TESTING_MODE = STAGING_ONLY
 export const NEXT_RESET_TIME = new Date("Mon Aug 08 2022 15:00:00 GMT+0800 (AWST)")
 
 if (USE_PROD) {
