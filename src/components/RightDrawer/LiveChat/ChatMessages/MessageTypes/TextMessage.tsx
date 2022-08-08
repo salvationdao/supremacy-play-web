@@ -322,7 +322,11 @@ export const TextMessage = ({
                             <SvgReportFlag
                                 fill={metadata?.reports.includes(user.id) ? colors.red : "grey"}
                                 size={"1.5rem"}
-                                sx={{ mr: "1rem", opacity: isHovered ? "100%" : "0", cursor: user.id ? "pointer" : "cursor" }}
+                                sx={{
+                                    mr: "1rem",
+                                    opacity: isHovered ? "100%" : "0",
+                                    cursor: user.id ? "pointer" : "cursor",
+                                }}
                                 onClick={() => {
                                     if (!user.id) return
                                     if (metadata?.reports.includes(user.id)) {
@@ -332,7 +336,17 @@ export const TextMessage = ({
                                     setReportModalOpen(true)
                                 }}
                             />
-                            <Box sx={{ fontFamily: fonts.shareTech, lineHeight: 1, color: "#FFFFFF", fontSize: `${renderFontSize()}rem`, zIndex: isHovered ? 2 : 1 }}>{chatMessage}</Box>
+                            <Box
+                                sx={{
+                                    fontFamily: fonts.shareTech,
+                                    lineHeight: 1,
+                                    color: "#FFFFFF",
+                                    fontSize: `${renderFontSize()}rem`,
+                                    zIndex: isHovered ? 2 : 1,
+                                }}
+                            >
+                                {chatMessage}
+                            </Box>
                         </Stack>
 
                         {!!metadata?.likes.net && <Reactions fontSize={fontSize} data={data} />}
