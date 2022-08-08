@@ -65,9 +65,6 @@ export const ReportModal = ({ message, reportModalOpen, setReportModalOpen }: Re
     const secondaryColor = theme.factionTheme.secondary
     const backgroundColor = theme.factionTheme.background
 
-    // const reasons = ["Offensive Language", "Hate Speech", "Scams", "Spamming", "Unauthorized Advertisement", "Cheating/Sabotaging", "Other"]
-
-    //only display if net !== 0 or is hovered
     return (
         <Modal open={reportModalOpen} onClose={() => setReportModalOpen(false)} sx={{ zIndex: siteZIndex.Modal }}>
             <Box
