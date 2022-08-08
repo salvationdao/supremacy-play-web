@@ -209,11 +209,10 @@ export const theme = createTheme({
         subtitle1: {
             fontFamily: fonts.shareTech,
             fontSize: "1.3rem",
-            textAlign: "center",
         },
         subtitle2: {
             fontFamily: fonts.shareTech,
-            fontSize: "1.3rem",
+            fontSize: "1.15rem",
         },
         caption: {
             fontFamily: fonts.shareTech,

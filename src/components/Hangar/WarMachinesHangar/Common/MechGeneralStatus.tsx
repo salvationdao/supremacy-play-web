@@ -97,10 +97,13 @@ export const MechGeneralStatus = ({ mechID, hideBox, smallVersion }: { mechID: s
             sx={
                 hideBox
                     ? {}
-                    : { p: smallVersion ? ".2rem 1rem" : ".6rem 1.6rem", backgroundColor: `${color}25`, border: `${color} ${smallVersion ? 1.5 : 2}px dashed` }
+                    : { p: smallVersion ? ".4rem 1rem" : ".6rem 1.6rem", backgroundColor: `${color}25`, border: `${color} ${smallVersion ? 1.5 : 2}px dashed` }
             }
         >
-            <Typography variant={smallVersion ? "body2" : "body1"} sx={{ color, textAlign: hideBox ? "start" : "center", fontFamily: fonts.nostromoBlack }}>
+            <Typography
+                variant={smallVersion ? "caption" : "body1"}
+                sx={{ lineHeight: 1, color, textAlign: hideBox ? "start" : "center", fontFamily: fonts.nostromoBlack }}
+            >
                 {text}
             </Typography>
         </Box>
