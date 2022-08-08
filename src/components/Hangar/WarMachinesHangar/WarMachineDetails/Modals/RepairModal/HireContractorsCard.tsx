@@ -22,7 +22,12 @@ const listingDurations: {
     { label: "3 hours", value: 180 },
 ]
 
-export const HireContractorsCard = ({ mechDetails, remainDamagedBlocks }: { mechDetails: MechDetails; remainDamagedBlocks: number }) => {
+export const HireContractorsCard = (props: { mechDetails: MechDetails; remainDamagedBlocks: number }) => {
+    if (props.remainDamagedBlocks <= 0) return null
+    return <HireContractorsCardInner {...props} />
+}
+
+const HireContractorsCardInner = ({ mechDetails, remainDamagedBlocks }: { mechDetails: MechDetails; remainDamagedBlocks: number }) => {
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsUser("/user_commander")
     const [isSubmitting, setIsSubmitting] = useState(false)
@@ -31,8 +36,6 @@ export const HireContractorsCard = ({ mechDetails, remainDamagedBlocks }: { mech
     const [agentReward, setAgentReward] = useState<number>(INITIAL_REWARD)
     const [agentRewardPerBlock, setAgentRewardPerBlock] = useState<number>(INITIAL_REWARD / remainDamagedBlocks)
     const [durationMinutes, setDurationMinutes] = useState<number>(listingDurations[1].value)
-
-    console.log({ remainDamagedBlocks, INITIAL_REWARD })
 
     const onAgentRepair = useCallback(async () => {
         try {
