@@ -105,6 +105,7 @@ export const DoRepairModal = React.memo(function DoRepairModal({ repairStatus, r
         if (!repairStatus?.id && !repairJob?.id) return
 
         setError(undefined)
+        setSubmitError(undefined)
         setIsRegistering(true)
         setSubmitSuccess(false)
 
@@ -167,7 +168,7 @@ export const DoRepairModal = React.memo(function DoRepairModal({ repairStatus, r
             } finally {
                 setTimeout(() => {
                     setIsSubmitting(false)
-                }, 3500)
+                }, 1500)
             }
         },
         [send],
@@ -232,7 +233,7 @@ export const DoRepairModal = React.memo(function DoRepairModal({ repairStatus, r
                             sx: { position: "relative" },
                         }}
                         sx={{ px: "1.6rem", py: "1rem", color: "#FFFFFF" }}
-                        onClick={() => setSubmitError(undefined)}
+                        onClick={() => registerAgentRepair()}
                     >
                         <Typography sx={{ fontFamily: fonts.nostromoBlack }}>DISMISS</Typography>
                     </FancyButton>

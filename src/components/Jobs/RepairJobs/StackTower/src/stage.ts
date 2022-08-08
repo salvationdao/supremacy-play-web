@@ -1,6 +1,12 @@
 import gsap from "gsap"
 import * as THREE from "three"
+import { StackTowerBackgroundJPG } from "../../../../../assets"
 import { cameraConfig, lightsConfig } from "./config"
+import { cover } from "./utils"
+
+const BACKGROUND_DEPTH = 100
+const BACKGROUND_WIDTH = 40
+const BACKGROUND_HEIGHT = 218.15
 
 export class Stage {
     container: HTMLElement | null
@@ -45,17 +51,18 @@ export class Stage {
             }
         })
 
-        // // background image
-        // const loader = new THREE.TextureLoader()
-        // const backgroundTexture = loader.load(StackTowerBackgroundJPG)
-        // const backgroundMesh = new THREE.Mesh(
-        //     new THREE.PlaneGeometry(2048, 2048, 8, 8),
-        //     new THREE.MeshBasicMaterial({
-        //         map: backgroundTexture,
-        //     }),
-        // )
-        // this.scene.background = backgroundTexture
+        // tiling background image
+        const textureLoader = new THREE.TextureLoader()
+        const backgroundTexture = textureLoader.load(StackTowerBackgroundJPG, () => {
+            cover(backgroundTexture, BACKGROUND_WIDTH / BACKGROUND_HEIGHT)
+            const backgroundMaterial = new THREE.SpriteMaterial({ map: backgroundTexture })
+            const backgroundSprite = new THREE.Sprite(backgroundMaterial)
+            backgroundSprite.scale.set(BACKGROUND_WIDTH, BACKGROUND_HEIGHT, 1)
+            backgroundSprite.position.set(-BACKGROUND_DEPTH, BACKGROUND_HEIGHT / 2 - BACKGROUND_DEPTH + 10, -BACKGROUND_DEPTH)
+            this.add(backgroundSprite)
+        })
 
+        // set listener
         window.addEventListener("resize", () => this.onResize())
         this.onResize()
     }
