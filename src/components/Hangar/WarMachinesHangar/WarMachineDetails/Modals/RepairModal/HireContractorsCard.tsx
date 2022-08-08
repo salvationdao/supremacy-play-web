@@ -9,6 +9,8 @@ import { colors, fonts } from "../../../../../../theme/theme"
 import { MechDetails } from "../../../../../../types"
 import { AmountItem } from "../DeployModal"
 
+const INITIAL_REWARD = 10
+
 const listingDurations: {
     label: string
     value: number
@@ -26,7 +28,8 @@ export const HireContractorsCard = ({ mechDetails, remainDamagedBlocks }: { mech
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [submitError, setSubmitError] = useState<string>()
 
-    const [agentReward, setAgentReward] = useState<number>(10)
+    const [agentReward, setAgentReward] = useState<number>(INITIAL_REWARD)
+    const [agentRewardPerBlock, setAgentRewardPerBlock] = useState<number>(INITIAL_REWARD / remainDamagedBlocks)
     const [durationMinutes, setDurationMinutes] = useState<number>(listingDurations[1].value)
 
     const onAgentRepair = useCallback(async () => {
@@ -125,6 +128,51 @@ export const HireContractorsCard = ({ mechDetails, remainDamagedBlocks }: { mech
                 </Select>
             </Stack>
 
+            {/* Reward to offer (per block) */}
+            <Stack spacing=".5rem">
+                <Typography variant="body2" sx={{ color: colors.blue2, fontFamily: fonts.nostromoBlack }}>
+                    REWARD TO OFFER (PER BLOCK):
+                </Typography>
+                <TextField
+                    variant="outlined"
+                    hiddenLabel
+                    placeholder="ANY"
+                    InputProps={{
+                        startAdornment: (
+                            <InputAdornment position="start">
+                                <SvgSupToken fill={colors.yellow} size="1.9rem" />
+                            </InputAdornment>
+                        ),
+                        endAdornment: (
+                            <InputAdornment position="end">
+                                <Typography variant="body2">PER BLOCK</Typography>
+                            </InputAdornment>
+                        ),
+                    }}
+                    sx={{
+                        backgroundColor: "#00000090",
+                        ".MuiOutlinedInput-root": { borderRadius: 0.5, border: `${colors.blue2}99 2px dashed` },
+                        ".MuiOutlinedInput-input": {
+                            px: "1.5rem",
+                            py: ".6rem",
+                            fontSize: "1.7rem",
+                            height: "unset",
+                            "::-webkit-outer-spin-button, ::-webkit-inner-spin-button": {
+                                WebkitAppearance: "none",
+                            },
+                        },
+                        ".MuiOutlinedInput-notchedOutline": { border: "unset" },
+                    }}
+                    type="number"
+                    value={agentRewardPerBlock}
+                    onChange={(e) => {
+                        const value = parseFloat(e.target.value)
+                        setAgentRewardPerBlock(value)
+                        setAgentReward(value * remainDamagedBlocks)
+                    }}
+                />
+            </Stack>
+
             {/* Reward to offer */}
             <Stack spacing=".5rem">
                 <Typography variant="body2" sx={{ color: colors.blue2, fontFamily: fonts.nostromoBlack }}>
@@ -160,17 +208,18 @@ export const HireContractorsCard = ({ mechDetails, remainDamagedBlocks }: { mech
                     onChange={(e) => {
                         const value = parseFloat(e.target.value)
                         setAgentReward(value)
+                        setAgentRewardPerBlock(Math.round((value / remainDamagedBlocks) * 100) / 100)
                     }}
                 />
             </Stack>
 
             <Stack sx={{ pt: ".8rem" }}>
                 <AmountItem
-                    title="REWARD PER BLOCK:"
-                    value={Math.round((agentReward / remainDamagedBlocks) * 100) / 100}
-                    tooltip={`Offered reward / ${remainDamagedBlocks} blocks`}
+                    title="TOTAL CHARGE:"
+                    color={colors.yellow}
+                    value={Math.round(agentReward * 1.1 * 100) / 100}
+                    tooltip={`Offered reward + 10% processing fee`}
                 />
-                <AmountItem title="TOTAL CHARGE:" value={Math.round(agentReward * 1.1 * 100) / 100} tooltip={`Offered reward + 10% processing fee`} />
 
                 <Typography sx={{ color: colors.lightGrey }}>
                     <i>
