@@ -32,6 +32,8 @@ export const HireContractorsCard = ({ mechDetails, remainDamagedBlocks }: { mech
     const [agentRewardPerBlock, setAgentRewardPerBlock] = useState<number>(INITIAL_REWARD / remainDamagedBlocks)
     const [durationMinutes, setDurationMinutes] = useState<number>(listingDurations[1].value)
 
+    console.log({ remainDamagedBlocks, INITIAL_REWARD })
+
     const onAgentRepair = useCallback(async () => {
         try {
             setIsSubmitting(true)
