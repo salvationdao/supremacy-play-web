@@ -118,7 +118,7 @@ const WalletInfoInner = ({
                     },
                 }}
             >
-                <SvgSupToken size="1.9rem" fill={IS_TESTING_MODE ? colors.red : colors.yellow} sx={{ mr: ".2rem", pb: ".4rem" }} />
+                <SvgSupToken size="1.9rem" fill={IS_TESTING_MODE ? colors.red : colors.yellow} sx={{ mr: ".2rem", pb: 0 }} />
                 <Typography sx={{ fontFamily: fonts.nostromoBold, lineHeight: 1, whiteSpace: "nowrap" }}>
                     {!isHideValue && <>{onWorldSupsRaw ? supFormatterNoFixed(onWorldSupsRaw, 2) : "0.00"}</>}
                     {isHideValue && "---"}

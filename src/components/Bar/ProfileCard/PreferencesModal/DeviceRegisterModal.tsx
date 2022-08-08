@@ -116,9 +116,9 @@ export const DeviceRegisterModal = ({ onClose }: DeviceRegisterModalProps) => {
                                 backgroundColor: theme.factionTheme.primary,
                                 opacity: 1,
                                 border: { borderColor: theme.factionTheme.primary, borderThickness: "2px" },
-                                sx: { position: "relative", ml: 3, width: "9rem" },
+                                sx: { position: "relative", ml: "2rem", width: "9rem" },
                             }}
-                            sx={{ px: "1.6rem", py: ".3rem", color: theme.factionTheme.secondary }}
+                            sx={{ py: ".3rem", color: theme.factionTheme.secondary, minWidth: 0 }}
                             onClick={onClose}
                         >
                             <Typography
