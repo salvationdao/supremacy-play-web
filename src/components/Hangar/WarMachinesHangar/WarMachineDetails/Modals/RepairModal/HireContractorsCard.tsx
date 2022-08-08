@@ -3,6 +3,7 @@ import { useCallback, useState } from "react"
 import { FancyButton } from "../../../../.."
 import { SvgSupToken } from "../../../../../../assets"
 import { useSnackbar } from "../../../../../../containers"
+import { numberCommaFormatter } from "../../../../../../helpers"
 import { useGameServerCommandsUser } from "../../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../../keys"
 import { colors, fonts } from "../../../../../../theme/theme"
@@ -222,13 +223,13 @@ const HireContractorsCardInner = ({ mechDetails, remainDamagedBlocks }: { mechDe
                 <AmountItem
                     title="TOTAL CHARGE:"
                     color={colors.yellow}
-                    value={Math.round(agentReward * 1.1 * 100) / 100}
+                    value={numberCommaFormatter(Math.round(agentReward * 1.1 * 100) / 100)}
                     tooltip={`Offered reward + 10% processing fee`}
                 />
 
                 <Typography sx={{ color: colors.lightGrey }}>
                     <i>
-                        <strong>NOTE:</strong> Total charge is {agentReward} SUPS + 10% processing fee.
+                        <strong>NOTE:</strong> Total charge is {agentReward || 0} SUPS + 10% processing fee.
                     </i>
                 </Typography>
             </Stack>
