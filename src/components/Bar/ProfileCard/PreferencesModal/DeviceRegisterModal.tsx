@@ -9,8 +9,7 @@ import { useEffect, useState } from "react"
 import { GameServerKeys } from "../../../../keys"
 import { FancyButton } from "../../../Common/FancyButton"
 
-const QR_CODE_SIZE = 228
-const QR_CODE_PADDING = 5
+const QR_CODE_SIZE = 180
 
 interface DeviceRegisterModalProps {
     onClose: () => void
@@ -85,16 +84,15 @@ export const DeviceRegisterModal = ({ onClose }: DeviceRegisterModalProps) => {
                             <Typography sx={{ lineHeight: 1, fontWeight: "fontWeightBold", paddingLeft: 2 }}>3. Scan the image below.</Typography>
 
                             {/* QR Code - displays skeleton while it is loading */}
-                            <Box sx={{ ml: "9rem" }}>
+                            <Box sx={{ ml: "2rem !important" }}>
                                 {loading ? (
-                                    <Skeleton variant={"rectangular"} width={QR_CODE_SIZE + QR_CODE_PADDING * 2} height={QR_CODE_SIZE + QR_CODE_PADDING * 2} />
+                                    <Skeleton variant={"rectangular"} width={QR_CODE_SIZE} height={QR_CODE_SIZE} />
                                 ) : (
                                     token && (
                                         <Box
                                             sx={{
-                                                p: QR_CODE_PADDING,
-                                                width: QR_CODE_SIZE + QR_CODE_PADDING * 2,
-                                                height: QR_CODE_SIZE + QR_CODE_PADDING * 2,
+                                                width: QR_CODE_SIZE,
+                                                height: QR_CODE_SIZE,
                                                 backgroundColor: "#FFFFFF",
                                             }}
                                         >
@@ -118,9 +116,9 @@ export const DeviceRegisterModal = ({ onClose }: DeviceRegisterModalProps) => {
                                 backgroundColor: theme.factionTheme.primary,
                                 opacity: 1,
                                 border: { borderColor: theme.factionTheme.primary, borderThickness: "2px" },
-                                sx: { position: "relative", ml: 3, width: "9rem" },
+                                sx: { position: "relative", ml: "2rem", width: "9rem" },
                             }}
-                            sx={{ px: "1.6rem", py: ".3rem", color: theme.factionTheme.secondary }}
+                            sx={{ py: ".3rem", color: theme.factionTheme.secondary, minWidth: 0 }}
                             onClick={onClose}
                         >
                             <Typography

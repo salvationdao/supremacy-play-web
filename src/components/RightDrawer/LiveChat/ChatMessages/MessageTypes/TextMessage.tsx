@@ -317,11 +317,19 @@ export const TextMessage = ({
                         onMouseLeave={() => setIsHovered(false)}
                     >
                         <Box
-                            sx={{ fontFamily: fonts.shareTech, lineHeight: 1, color: "#FFFFFF", fontSize: `${renderFontSize()}rem`, zIndex: isHovered ? 2 : 1 }}
+                            sx={{
+                                fontFamily: fonts.shareTech,
+                                lineHeight: 1.2,
+                                color: "#FFFFFF",
+                                fontSize: `${renderFontSize()}rem`,
+                                zIndex: isHovered ? 2 : 1,
+                            }}
                         >
                             {chatMessage}
                         </Box>
+
                         {!!metadata?.likes.net && <Reactions fontSize={fontSize} data={data} />}
+
                         {isHovered && <Reactions fontSize={fontSize} hoverOnly={true} data={data} />}
                     </Stack>
                 </Box>
@@ -394,8 +402,7 @@ export const UsernameJSX = ({ data, fontSize, toggleIsPopoverOpen, user }: Usern
                 },
             }}
         >
-            {toggleIsPopoverOpen ? "" : "@"}
-            {`${truncate(user?.username || "", 20)}`}
+            {toggleIsPopoverOpen ? truncate(user?.username || "", 20) : `@${user?.username}`}
             <span
                 style={{
                     marginLeft: ".2rem",

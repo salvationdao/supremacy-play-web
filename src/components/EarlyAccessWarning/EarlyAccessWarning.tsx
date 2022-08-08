@@ -3,7 +3,7 @@ import { Alert } from "@mui/lab"
 import { colors, fonts } from "../../theme/theme"
 import { useToggle } from "../../hooks"
 import { ClipThing, FancyButton } from ".."
-import { STAGING_OR_DEV_ONLY } from "../../constants"
+import { IS_TESTING_MODE } from "../../constants"
 
 export const EarlyAccessWarning = ({ onAcknowledged }: { onAcknowledged: () => void }) => {
     const [closed, toggleClosed] = useToggle()
@@ -38,7 +38,7 @@ export const EarlyAccessWarning = ({ onAcknowledged }: { onAcknowledged: () => v
                             py: "2.4rem",
                         }}
                     >
-                        {STAGING_OR_DEV_ONLY ? <StagingMessage /> : <ProdMessage />}
+                        {IS_TESTING_MODE ? <StagingMessage /> : <ProdMessage />}
 
                         <FancyButton
                             clipThingsProps={{
@@ -73,7 +73,7 @@ const StagingMessage = () => {
                 EXPERIMENTAL BATTLE TRAINING GROUNDS
             </Typography>
 
-            <Typography variant="h6">Thank you for participating in the Supremacy Battle Arena Early Access.</Typography>
+            <Typography variant="h6">Thank you for participating in the Supremacy Battle Arena Proving Grounds.</Typography>
 
             <Typography variant="h6">
                 This is a <strong>TESTING ENVIRONMENT</strong> and the $SUPS that you spend here <strong>WILL NOT</strong> affect your real accounts.
@@ -97,19 +97,19 @@ const ProdMessage = () => {
                     },
                 }}
             >
-                The game is in early access and the $SUPS you use are real!
+                The game is the proving grounds.
             </Alert>
 
             <Typography variant="h5" sx={{ fontFamily: fonts.nostromoHeavy, color: colors.neonBlue }}>
-                EARLY ACCESS!
+                PROVING GROUNDS ACCESS!
             </Typography>
 
-            <Typography variant="h6">Thank you for participating in the Supremacy Battle Arena Early Access.</Typography>
+            <Typography variant="h6">Thank you for participating in the Supremacy Battle Arena Proving Grounds.</Typography>
 
             <Typography variant="h6">
                 By choosing to try out this game and continue from here, you expressly acknowledge and accept that you assume all risks associated with the
-                gameplay and/or participating in the Battle Events. This includes contributing to battle abilities, queueing your mech for battle, and other
-                $SUPS related tasks.
+                gameplay and/or participating in the Battle Events. This includes contributing to battle abilities, queueing your mech for battle, and any
+                $VSUPS related tasks.
             </Typography>
         </Stack>
     )

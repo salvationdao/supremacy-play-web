@@ -2,7 +2,7 @@ import { Box, Stack, Typography } from "@mui/material"
 import { useCallback, useState } from "react"
 import { useLocation } from "react-router-dom"
 import { SafePNG } from "../../../assets"
-import { STAGING_OR_DEV_ONLY } from "../../../constants"
+import { IS_TESTING_MODE } from "../../../constants"
 import { useSnackbar } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { useTimer } from "../../../hooks"
@@ -141,7 +141,7 @@ export const MysteryCrateHangarItem = ({ crate, setOpeningCrate, setOpenedReward
                                     </Typography>
                                 </FancyButton>
 
-                                {!STAGING_OR_DEV_ONLY && (
+                                {!IS_TESTING_MODE && (
                                     <FancyButton
                                         to={
                                             crate.locked_to_marketplace

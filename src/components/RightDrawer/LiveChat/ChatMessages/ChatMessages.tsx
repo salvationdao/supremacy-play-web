@@ -117,7 +117,7 @@ const ChatMessagesInner = ({
                     ml: "1.5rem",
                     mr: ".8rem",
                     pr: "1.6rem",
-                    my: ".6rem",
+                    my: "1rem",
                     overflowY: "auto",
                     overflowX: "hidden",
                     direction: "ltr",

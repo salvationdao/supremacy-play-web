@@ -2,14 +2,14 @@ import { Box, IconButton, Stack, Typography, useMediaQuery } from "@mui/material
 import React, { useState } from "react"
 import { Link } from "react-router-dom"
 import { SvgHamburger, SvgSupremacyLogo } from "../../assets"
-import { VERSION } from "../../constants"
+import { IS_TESTING_MODE, VERSION } from "../../constants"
 import { useMobile, useOverlayToggles } from "../../containers"
 import { colors, fonts } from "../../theme/theme"
 
 export const Logo = React.memo(function Logo() {
     const below1370 = useMediaQuery("(max-width:1370px)")
     const { isMobile } = useMobile()
-    const [text, setText] = useState<string>("EARLY ACCESS")
+    const [text, setText] = useState<string>(IS_TESTING_MODE ? "PROVING GROUNDS" : "EARLY ACCESS")
     const { toggleIsLeftDrawerOpen } = useOverlayToggles()
 
     return (
@@ -35,7 +35,7 @@ export const Logo = React.memo(function Logo() {
                         setText(`${VERSION.substring(0, 10)}...`)
                     }}
                     onMouseLeave={() => {
-                        setText("EARLY ACCESS")
+                        setText(IS_TESTING_MODE ? "PROVING GROUNDS" : "EARLY ACCESS")
                     }}
                     sx={{ pb: "2px" }}
                 >

@@ -3,6 +3,7 @@ import { Box, IconButton, Modal, Stack, SxProps, Typography } from "@mui/materia
 import BigNumber from "bignumber.js"
 import React, { ReactNode, useCallback, useEffect, useMemo, useState } from "react"
 import { SvgClose, SvgCubes, SvgSupToken } from "../../../assets"
+import { CAPTCHA_KEY } from "../../../constants"
 import { useAuth, useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { supFormatterNoFixed, timeSinceInWords } from "../../../helpers"
@@ -297,7 +298,7 @@ export const DoRepairModal = React.memo(function DoRepairModal({ repairStatus, r
                             <HCaptcha
                                 size="compact"
                                 theme="dark"
-                                sitekey="87f715ba-98ff-43da-b970-cfc30fd7c5a0"
+                                sitekey={CAPTCHA_KEY}
                                 onVerify={setCaptchaToken}
                                 onExpire={() => setCaptchaToken(undefined)}
                             />
@@ -437,7 +438,7 @@ export const DoRepairModal = React.memo(function DoRepairModal({ repairStatus, r
                 {/* Info cards */}
                 {repairJob && (
                     <Stack direction="row" spacing="1.6rem" justifyContent="center">
-                        <InfoCard primaryColor={primaryColor} label="ACTIVE AGENTS">
+                        <InfoCard primaryColor={primaryColor} label="ACTIVE WORKERS">
                             <Typography
                                 variant="h4"
                                 sx={{ fontWeight: "fontWeightBold", color: repairJob.working_agent_count <= 3 ? colors.green : colors.orange }}
@@ -455,7 +456,7 @@ export const DoRepairModal = React.memo(function DoRepairModal({ repairStatus, r
                             </Stack>
                         </InfoCard>
 
-                        <InfoCard primaryColor={primaryColor} label="REMAINING REWARD">
+                        <InfoCard primaryColor={primaryColor} label="REMAINING REWARDS">
                             <Stack direction="row" alignItems="center">
                                 <SvgSupToken size="3rem" fill={colors.yellow} />
                                 <Typography variant="h4" sx={{ fontWeight: "fontWeightBold" }}>
