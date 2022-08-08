@@ -45,6 +45,7 @@ export class Game {
         container.style.width = "100%"
         container.style.height = "100%"
         container.tabIndex = 0
+
         if (gameContainer) {
             let child = gameContainer.lastElementChild
             while (child) {
@@ -71,6 +72,7 @@ export class Game {
 
             gameContainer.appendChild(container)
         }
+        container.focus()
         this.container = container
 
         this.setGameState = _setGameState

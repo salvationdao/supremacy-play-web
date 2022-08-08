@@ -3,6 +3,7 @@ import { Box, IconButton, Modal, Stack, SxProps, Typography } from "@mui/materia
 import BigNumber from "bignumber.js"
 import React, { ReactNode, useCallback, useEffect, useMemo, useState } from "react"
 import { SvgClose, SvgCubes, SvgSupToken } from "../../../assets"
+import { CAPTCHA_KEY } from "../../../constants"
 import { useAuth, useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { supFormatterNoFixed, timeSinceInWords } from "../../../helpers"
@@ -19,7 +20,6 @@ import { RepairBlocks } from "../../Hangar/WarMachinesHangar/Common/MechRepairBl
 import { GamePattern } from "./StackTower/src/game"
 import { isWebGLAvailable } from "./StackTower/src/utils"
 import { StackTower } from "./StackTower/StackTower"
-import {CAPTCHA_KEY} from "../../../constants";
 
 interface DoRepairModalProps {
     repairStatus?: RepairStatus
@@ -438,7 +438,7 @@ export const DoRepairModal = React.memo(function DoRepairModal({ repairStatus, r
                 {/* Info cards */}
                 {repairJob && (
                     <Stack direction="row" spacing="1.6rem" justifyContent="center">
-                        <InfoCard primaryColor={primaryColor} label="ACTIVE AGENTS">
+                        <InfoCard primaryColor={primaryColor} label="ACTIVE WORKERS">
                             <Typography
                                 variant="h4"
                                 sx={{ fontWeight: "fontWeightBold", color: repairJob.working_agent_count <= 3 ? colors.green : colors.orange }}
@@ -456,7 +456,7 @@ export const DoRepairModal = React.memo(function DoRepairModal({ repairStatus, r
                             </Stack>
                         </InfoCard>
 
-                        <InfoCard primaryColor={primaryColor} label="REMAINING REWARD">
+                        <InfoCard primaryColor={primaryColor} label="REMAINING REWARDS">
                             <Stack direction="row" alignItems="center">
                                 <SvgSupToken size="3rem" fill={colors.yellow} />
                                 <Typography variant="h4" sx={{ fontWeight: "fontWeightBold" }}>

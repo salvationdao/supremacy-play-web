@@ -10,7 +10,7 @@ import { WeaponPage } from "../pages/WeaponPage"
 import { LiveChat } from "../components/RightDrawer/LiveChat/LiveChat"
 import { PlayerList } from "../components/RightDrawer/PlayerList/PlayerList"
 import { PlayerProfilePage } from "../components/PublicProfile/PlayerProfile"
-import { BATTLE_ARENA_OPEN, STAGING_OR_DEV_ONLY } from "../constants"
+import { BATTLE_ARENA_OPEN, IS_TESTING_MODE } from "../constants"
 import { LeaderboardPage } from "../pages/LeaderboardPage"
 import { JobsPage } from "../pages/JobsPage"
 
@@ -121,7 +121,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
             label: "Storefront",
         },
         matchLeftDrawerID: "storefront",
-        enable: !STAGING_OR_DEV_ONLY,
+        enable: !IS_TESTING_MODE,
     },
 
     // Marketplace
@@ -133,7 +133,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         requireAuth: true,
         requireFaction: true,
         matchLeftDrawerID: "marketplace",
-        enable: !STAGING_OR_DEV_ONLY,
+        enable: !IS_TESTING_MODE,
     },
     marketplace_item: {
         id: "marketplace_item",
@@ -143,7 +143,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         requireAuth: true,
         requireFaction: true,
         matchLeftDrawerID: "marketplace",
-        enable: !STAGING_OR_DEV_ONLY,
+        enable: !IS_TESTING_MODE,
     },
     marketplace: {
         id: "marketplace",
@@ -157,7 +157,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
             label: "Marketplace",
         },
         matchLeftDrawerID: "marketplace",
-        enable: !STAGING_OR_DEV_ONLY,
+        enable: !IS_TESTING_MODE,
     },
 
     // Player profile

@@ -304,7 +304,7 @@ const ChatSendInner = ({
             return ap.id !== user.id && (ap.username.includes(searchPlayersQuery) || ap.gid.toString().includes(searchPlayersQuery))
         })
 
-        faction_id ? setPlayersResults(fap) : setPlayersResults(gap)
+        faction_id ? setPlayersResults(fap.slice(0, 10)) : setPlayersResults(gap.slice(0, 10))
     }, [searchPlayersQuery, activePlayers, globalActivePlayers, faction_id, send, user.id])
 
     // Sets the caret (cursor) position back to where it was previously
