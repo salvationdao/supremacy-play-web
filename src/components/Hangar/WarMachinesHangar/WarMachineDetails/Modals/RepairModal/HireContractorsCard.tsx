@@ -35,7 +35,7 @@ const HireContractorsCardInner = ({ mechDetails, remainDamagedBlocks }: { mechDe
     const [submitError, setSubmitError] = useState<string>()
 
     const [agentReward, setAgentReward] = useState<number>(INITIAL_REWARD)
-    const [agentRewardPerBlock, setAgentRewardPerBlock] = useState<number>(INITIAL_REWARD / remainDamagedBlocks)
+    const [agentRewardPerBlock, setAgentRewardPerBlock] = useState<number>(Math.round((100 * INITIAL_REWARD) / remainDamagedBlocks) / 100)
     const [durationMinutes, setDurationMinutes] = useState<number>(listingDurations[1].value)
 
     const onAgentRepair = useCallback(async () => {

@@ -132,7 +132,7 @@ const TowerStackInner = ({
                         transition: "all .4s ease",
                         transform:
                             gameState === GameState.Playing || gameState === GameState.Resetting
-                                ? "translateY(0) scale(1)"
+                                ? "translateY(50px) scale(1)"
                                 : gameState === GameState.Ended
                                 ? "translateY(-20px) scale(1.5)"
                                 : "translateY(-200px) scale(1)",

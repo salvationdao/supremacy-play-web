@@ -91,7 +91,7 @@ export class Game {
 
         setTimeout(() => {
             this.setState(GameState.Ready)
-        }, 250)
+        }, 500) // This allows the parent to full load because game ready means it needs parent container dimensions
     }
 
     handleEvent() {
