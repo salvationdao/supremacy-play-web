@@ -114,7 +114,7 @@ export const QuickDeployItem = ({ mech }: QuickDeployItemProps) => {
                     {mech.name || mech.label}
                 </Typography>
 
-                <MechRepairBlocks mechID={mech?.id || mechDetails?.id} defaultBlocks={mechDetails?.model.repair_blocks} />
+                <MechRepairBlocks mechID={mech?.id || mechDetails?.id} defaultBlocks={mechDetails?.model?.repair_blocks} />
 
                 <Stack direction="row" alignItems="center" spacing="1rem" justifyContent="space-between" sx={{ mt: ".5rem", width: "100%" }}>
                     <MechGeneralStatus mechID={mech.id} smallVersion />
