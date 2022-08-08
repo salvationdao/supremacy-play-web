@@ -38,7 +38,7 @@ export const RepairJobItem = ({
         if (isFinished && !repairJobModal) {
             setTimeout(() => {
                 removeByID(repairJob.id)
-            }, 10000)
+            }, 10000) // Wait 10seconds before un-rendering the item, allows enough time for players to see why job was closed
         }
     }, [repairJobModal, isFinished, removeByID, repairJob.id])
 
