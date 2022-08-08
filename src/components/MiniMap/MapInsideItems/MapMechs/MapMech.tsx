@@ -174,8 +174,8 @@ const MapMechInner = ({ warMachine, map }: MapMechInnerProps) => {
                             top: "0",
                             left: "50%",
                             transform: "translate(-50%, -80%)",
-                            height: `${iconSize}px`,
-                            width: `${iconSize}px`,
+                            height: iconSize,
+                            width: iconSize,
                             cursor: "pointer",
                             border: `3px solid ${playerAbility.ability.colour}`,
                             borderRadius: 1,
@@ -246,9 +246,10 @@ const MapMechInner = ({ warMachine, map }: MapMechInnerProps) => {
                         }}
                     >
                         <Typography
-                            variant="h1"
                             sx={{
                                 color: primaryColor,
+                                fontSize: iconSize * 0.98,
+                                lineHeight: 1,
                                 fontFamily: fonts.nostromoBlack,
                             }}
                         >
@@ -312,12 +313,12 @@ const MapMechInner = ({ warMachine, map }: MapMechInnerProps) => {
 
                 {/* Health and shield bars */}
                 {isAlive && (
-                    <Stack spacing=".2rem" style={{ width: iconSize * 1.2, zIndex: 1 }}>
+                    <Stack spacing=".2rem" style={{ width: iconSize * 0.9, zIndex: 1 }}>
                         {warMachine.maxShield > 0 && (
                             <Box
                                 style={{
                                     width: "100%",
-                                    height: `${0.3 * iconSize}px`,
+                                    height: `${0.2 * iconSize}px`,
                                     border: "3px solid #00000080",
                                     overflow: "hidden",
                                 }}
@@ -335,7 +336,7 @@ const MapMechInner = ({ warMachine, map }: MapMechInnerProps) => {
                         <Box
                             style={{
                                 width: "100%",
-                                height: `${0.3 * iconSize}px`,
+                                height: `${0.2 * iconSize}px`,
                                 border: "3px solid #00000080",
                                 overflow: "hidden",
                             }}

@@ -55,7 +55,7 @@ export const Controls = () => {
                 {!isMobile && <OverlayToggles />}
             </Stack>
 
-            <Stack id="tutorial-stream-options" direction="row" spacing="1.6rem" sx={{ flexShrink: 0, height: "100%" }}>
+            <Stack direction="row" spacing="1.6rem" sx={{ flexShrink: 0, height: "100%" }}>
                 <ShowTrailerButton />
                 <StreamSelect />
                 <ResolutionSelect />

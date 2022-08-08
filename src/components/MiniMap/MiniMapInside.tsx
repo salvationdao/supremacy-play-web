@@ -1,15 +1,15 @@
 import { Box, Stack } from "@mui/material"
 import { useCallback, useMemo, useRef } from "react"
 import { MapMechs, SelectionIcon } from ".."
-import { Crosshair } from "../../assets"
 import { useGame, useMiniMap } from "../../containers"
 import { Dimension, LocationSelectType } from "../../types"
 import { BattleZone } from "./MapInsideItems/BattleZone"
 import { Blackouts } from "./MapInsideItems/Blackouts"
 import { CountdownSubmit } from "./MapInsideItems/CountdownSubmit"
 import { DisabledCells } from "./MapInsideItems/DisabledCells"
-import { LineSelect } from "./MapInsideItems/LineSelect"
+import { MapGrid } from "./MapInsideItems/MapGrid"
 import { MechCommandIcons } from "./MapInsideItems/MapIcon/MechCommandIcons"
+import { MapImage } from "./MapInsideItems/MapImage"
 import { RangeIndicator } from "./MapInsideItems/RangeIndicator"
 import { useMiniMapGestures } from "./useMiniMapGestures"
 
@@ -92,20 +92,19 @@ export const MiniMapInside = ({ containerDimensions }: MiniMapInsideProps) => {
                         <MapMechs />
 
                         {/* Map Image */}
-                        <Box
-                            ref={mapElement}
+                        <MapImage map={map} />
+
+                        {/* Map grid, with map clicking */}
+                        <MapGrid
+                            mapWidth={map.width}
+                            mapHeight={map.height}
+                            gridHeight={gridHeight}
+                            mapElement={mapElement}
                             onClick={isLocationSelection ? onMapClick : () => setHighlightedMechParticipantID(undefined)}
-                            sx={{
-                                position: "absolute",
-                                width: `${map.width}px`,
-                                height: `${map.height}px`,
-                                backgroundImage: `url(${map.image_url})`,
-                                cursor: isLocationSelection || isLineSelection ? `url(${Crosshair}) 14.5 14.5, auto` : "move",
-                                borderSpacing: 0,
-                            }}
-                        >
-                            {isLineSelection && <LineSelect mapScale={mapScale} />}
-                        </Box>
+                            mapScale={mapScale}
+                            isLocationSelection={isLocationSelection}
+                            isLineSelection={isLineSelection}
+                        />
 
                         {/* Shade disabled cells */}
                         <DisabledCells />
@@ -131,5 +130,6 @@ export const MiniMapInside = ({ containerDimensions }: MiniMapInsideProps) => {
         onMapClick,
         selection?.startCoords,
         setHighlightedMechParticipantID,
+        gridHeight,
     ])
 }

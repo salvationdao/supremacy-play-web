@@ -1,7 +1,7 @@
 import HCaptcha from "@hcaptcha/react-hcaptcha"
 import { Box, IconButton, Modal, Stack, SxProps, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
-import { ReactNode, useCallback, useEffect, useMemo, useState } from "react"
+import React, { ReactNode, useCallback, useEffect, useMemo, useState } from "react"
 import { SvgClose, SvgCubes, SvgSupToken } from "../../../assets"
 import { useAuth, useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
@@ -20,17 +20,23 @@ import { GamePattern } from "./StackTower/src/game"
 import { isWebGLAvailable } from "./StackTower/src/utils"
 import { StackTower } from "./StackTower/StackTower"
 
-export const DoRepairModal = ({
-    repairStatus,
-    repairJob: _repairJob,
-    open,
-    onClose,
-}: {
+interface DoRepairModalProps {
     repairStatus?: RepairStatus
     repairJob?: RepairJob
     open: boolean
     onClose: () => void
-}) => {
+}
+
+const propsAreEqual = (prevProps: DoRepairModalProps, nextProps: DoRepairModalProps) => {
+    return (
+        prevProps.open === nextProps.open &&
+        prevProps.repairJob?.id === nextProps.repairJob?.id &&
+        prevProps.repairStatus?.id === nextProps.repairStatus?.id &&
+        prevProps.repairStatus?.blocks_repaired === nextProps.repairStatus?.blocks_repaired
+    )
+}
+
+export const DoRepairModal = React.memo(function DoRepairModal({ repairStatus, repairJob: _repairJob, open, onClose }: DoRepairModalProps) {
     const { userID } = useAuth()
     const theme = useTheme()
     const { getFaction } = useSupremacy()
@@ -512,7 +518,7 @@ export const DoRepairModal = ({
             </Stack>
         </Wrapper>
     )
-}
+}, propsAreEqual)
 
 const InfoCard = ({ primaryColor, children, label, sx }: { primaryColor: string; children: ReactNode; label: string; sx?: SxProps }) => {
     return (

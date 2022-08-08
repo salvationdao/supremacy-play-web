@@ -202,7 +202,7 @@ export const PackagesStore = () => {
                         <PageHeader
                             title={
                                 <Typography variant="h5" sx={{ fontFamily: fonts.nostromoBlack }}>
-                                    PACKAGES <span style={{ color: colors.lightNeonBlue, fontFamily: "inherit", fontSize: "inherit" }}>(LIMITED SUPPLY)</span>
+                                    PACKAGES <span style={{ color: colors.lightNeonBlue, fontSize: "inherit" }}>(LIMITED SUPPLY)</span>
                                 </Typography>
                             }
                             description={

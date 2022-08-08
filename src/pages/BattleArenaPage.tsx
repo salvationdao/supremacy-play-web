@@ -17,14 +17,14 @@ export const BattleArenaPage = () => {
 
     useEffect(() => {
         if (!userID) return
-        setUnderstand(localStorage.getItem(`understand-${userID}`) === "true")
+        setUnderstand(localStorage.getItem(`understand1-${userID}`) === "true")
     }, [userID])
 
     if (!understand && userID) {
         return (
             <EarlyAccessWarning
                 onAcknowledged={() => {
-                    localStorage.setItem(`understand-${userID}`, "true")
+                    localStorage.setItem(`understand1-${userID}`, "true")
                     setUnderstand(true)
                 }}
             />
@@ -186,8 +186,11 @@ const BattleArenaPageInner = () => {
                 {!isMobile && (
                     <>
                         <WarMachineStats />
+
                         <BattleEndScreen />
+
                         <BattleHistory />
+
                         {isQuickDeployOpen && <QuickDeploy open={isQuickDeployOpen} onClose={() => toggleIsQuickDeployOpen(false)} />}
 
                         {isQuickPlayerAbilitiesOpen && (
@@ -195,6 +198,7 @@ const BattleArenaPageInner = () => {
                         )}
 
                         <VotingSystem />
+
                         <MiniMap />
                     </>
                 )}

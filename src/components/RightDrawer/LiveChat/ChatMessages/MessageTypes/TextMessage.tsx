@@ -332,7 +332,7 @@ export const TextMessage = ({
                                     setReportModalOpen(true)
                                 }}
                             />
-                            <Box sx={{ fontSize: `${renderFontSize()}rem`, zIndex: isHovered ? 2 : 1 }}>{chatMessage}</Box>
+                            <Box sx={{ fontFamily: fonts.shareTech, lineHeight: 1, color: "#FFFFFF", fontSize: `${renderFontSize()}rem`, zIndex: isHovered ? 2 : 1 }}>{chatMessage}</Box>
                         </Stack>
 
                         {!!metadata?.likes.net && <Reactions fontSize={fontSize} data={data} />}

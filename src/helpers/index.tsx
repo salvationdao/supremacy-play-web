@@ -190,6 +190,14 @@ export const hexToRGB = (hex: string, alpha?: number): string => {
     else return "rgb(" + r + ", " + g + ", " + b + ")"
 }
 
+export const hexToRGBArray = (hex: string): [number, number, number] => {
+    const h = "0123456789ABCDEF"
+    const r = h.indexOf(hex[1]) * 16 + h.indexOf(hex[2])
+    const g = h.indexOf(hex[3]) * 16 + h.indexOf(hex[4])
+    const b = h.indexOf(hex[5]) * 16 + h.indexOf(hex[6])
+    return [r, g, b]
+}
+
 export const getRarityDeets = (rarityKey: string): Rarity => {
     switch (rarityKey) {
         case "COLOSSAL":
@@ -628,3 +636,6 @@ export const generatePriceText = (dollars: number, cents: number) => {
 
     return `$${totalDollars}.${remainingCents < 10 ? `0${remainingCents}` : remainingCents}`
 }
+
+// Converts number to alphabet letter. E.g. 0 -> "a"
+export const intToLetter = (i: number) => String.fromCharCode(97 + i)
