@@ -1,4 +1,5 @@
 import { FallingBlock, NormalBlock } from "./block"
+import { blockConfig } from "./config"
 import { Stage } from "./stage"
 
 enum TriggerWith {
@@ -197,7 +198,7 @@ export class Game {
         this.stage.add(newBlock.mesh)
         this.blocks.push(newBlock)
 
-        this.stage.setCamera(this.blocks.length * 2)
+        this.stage.setCamera(this.blocks.length * blockConfig.initHeight - 4)
     }
 
     setState(state: GameState) {
