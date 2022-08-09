@@ -64,17 +64,10 @@ export const LocationSelectAlert = ({ data, getFaction }: { data: LocationSelect
             opacity={0.8}
             backgroundColor={colors.darkNavy}
         >
-            <Stack
-                spacing=".5rem"
-                sx={{
-                    px: "1.44rem",
-                    pt: "1.2rem",
-                    pb: ".8rem",
-                }}
-            >
+            <Stack spacing=".5rem" sx={{ px: "1.44rem", pt: "1.2rem", pb: ".8rem" }}>
                 <Box>
                     <Player player={currentUser || FallbackUser} />
-                    <SvgLocation fill="#FFFFFF" size="1.2rem" sx={{ display: "inline", mx: ".4rem" }} />
+                    <SvgLocation fill="#FFFFFF" size="1.3rem" sx={{ display: "inline", mx: ".4rem" }} />
                     <StyledImageText text={label} color={colour} imageUrl={abilityImageUrl} />
                 </Box>
             </Stack>

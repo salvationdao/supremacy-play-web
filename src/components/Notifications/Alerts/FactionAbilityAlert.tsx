@@ -23,17 +23,10 @@ export const FactionAbilityAlert = ({ data, getFaction }: { data: BattleFactionA
             opacity={0.8}
             backgroundColor={colors.darkNavy}
         >
-            <Stack
-                spacing=".5rem"
-                sx={{
-                    px: "1.44rem",
-                    pt: "1.2rem",
-                    pb: ".8rem",
-                }}
-            >
+            <Stack spacing=".5rem" sx={{ px: "1.44rem", pt: "1.2rem", pb: ".8rem" }}>
                 <Box>
                     <StyledImageText text={user ? acronym(faction.label) : "GABS"} color={mainColor || "grey !important"} imageUrl={faction.logo_url} />
-                    <SvgEmergency fill="#FFFFFF" size="1.2rem" sx={{ display: "inline", mx: ".4rem" }} />
+                    <SvgEmergency fill="#FFFFFF" size="1.3rem" sx={{ display: "inline", mx: ".4rem" }} />
                     <StyledImageText text={label} color={colour} imageUrl={`${image_url}`} />
                 </Box>
             </Stack>
