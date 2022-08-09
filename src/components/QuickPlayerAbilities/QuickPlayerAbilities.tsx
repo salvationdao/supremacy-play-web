@@ -128,7 +128,7 @@ const QuickPlayerAbilitiesInner = ({ onClose, userID }: { onClose: () => void; u
             minWidth: 360,
             minHeight: 245,
             maxWidth: 360,
-            maxHeight: 245,
+            maxHeight: 300,
             // Others
             infoTooltipText: "Quickly view and purchase abilities that are currently on sale",
             onHideCallback: onClose,
