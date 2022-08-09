@@ -67,7 +67,7 @@ const NavLink = ({ isActive, label, to }: { isActive: boolean; label: string; to
                 }}
             >
                 <Typography
-                    variant="subtitle2"
+                    variant="subtitle1"
                     sx={{
                         textAlign: "center",
                         color: isActive ? colors.neonBlue : "#FFFFFF",

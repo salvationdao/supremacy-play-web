@@ -1,4 +1,5 @@
 import { FallingBlock, NormalBlock } from "./block"
+import { blockConfig, cameraConfig } from "./config"
 import { Stage } from "./stage"
 
 enum TriggerWith {
@@ -90,7 +91,7 @@ export class Game {
 
         setTimeout(() => {
             this.setState(GameState.Ready)
-        }, 250)
+        }, 500) // This allows the parent to full load because game ready means it needs parent container dimensions
     }
 
     handleEvent() {
@@ -131,7 +132,7 @@ export class Game {
             if (newLength <= 0) {
                 this.stage.remove(lastBlock.mesh)
                 this.setState(GameState.Ended)
-                this.stage.setCamera(6)
+                this.stage.setCamera(Math.max(this.blocks.length * blockConfig.initHeight - 6, 6) + cameraConfig.offsetY)
                 this.oneNewGamePattern({
                     score: this.score,
                     is_failed: true,
@@ -197,7 +198,7 @@ export class Game {
         this.stage.add(newBlock.mesh)
         this.blocks.push(newBlock)
 
-        this.stage.setCamera(this.blocks.length * 2)
+        this.stage.setCamera(this.blocks.length * blockConfig.initHeight + cameraConfig.offsetY)
     }
 
     setState(state: GameState) {
