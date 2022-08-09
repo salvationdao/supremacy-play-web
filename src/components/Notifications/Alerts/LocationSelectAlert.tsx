@@ -1,9 +1,8 @@
 import { Box, Stack } from "@mui/material"
 import { useMemo } from "react"
-import { ClipThing, StyledImageText, StyledNormalText } from "../.."
-import { SvgCancelled, SvgDeath, SvgDisconnected, SvgHourglass, SvgLocation } from "../../../assets"
+import { ClipThing, StyledImageText } from "../.."
+import { SvgLocation } from "../../../assets"
 import { FallbackUser } from "../../../containers"
-import { acronym } from "../../../helpers"
 import { colors } from "../../../theme/theme"
 import { BattleAbility, Faction, User } from "../../../types"
 import { Player } from "../../Common/Player"
@@ -46,76 +45,13 @@ export interface LocationSelectAlertProps {
 }
 
 export const LocationSelectAlert = ({ data, getFaction }: { data: LocationSelectAlertProps; getFaction: (factionID: string) => Faction }) => {
-    const { type, currentUser, ability } = data
+    const { currentUser, ability } = data
     const { label, colour, image_url } = ability
     const { faction_id } = currentUser || FallbackUser
 
     const faction = getFaction(faction_id)
     const abilityImageUrl = useMemo(() => `${image_url}`, [image_url])
     const mainColor = faction.primary_color
-
-    const Icon = () => {
-        if (type === LocationSelectAlertType.CancelledNoPlayer || type === LocationSelectAlertType.CancelledDisconnect) {
-            return <SvgCancelled fill="#FFFFFF" size="1.2rem" sx={{ display: "inline", mx: ".4rem" }} />
-        }
-
-        if (type === LocationSelectAlertType.FailedTimeOut) {
-            return <SvgHourglass fill="#FFFFFF" size="1.15rem" sx={{ display: "inline", mx: ".4rem" }} />
-        }
-
-        if (type === LocationSelectAlertType.FailedDisconnected) {
-            return <SvgDisconnected fill="#FFFFFF" size="1.2rem" sx={{ display: "inline", mx: ".4rem" }} />
-        }
-
-        if (type === LocationSelectAlertType.Trigger) {
-            return <SvgDeath fill="#FFFFFF" size="1.25rem" sx={{ display: "inline", mx: ".4rem" }} />
-        }
-
-        if (type === LocationSelectAlertType.Assigned) {
-            return <SvgLocation fill="#FFFFFF" size="1.2rem" sx={{ display: "inline", mx: ".4rem" }} />
-        }
-
-        return <SvgDeath fill="#FFFFFF" size="1.2rem" sx={{ display: "inline", mx: ".4rem" }} />
-    }
-
-    const Content = () => {
-        if (type === LocationSelectAlertType.CancelledNoPlayer || type === LocationSelectAlertType.CancelledDisconnect) {
-            return (
-                <Box>
-                    <StyledNormalText text="Cancelled as there were no players available to choose a target." />
-                </Box>
-            )
-        }
-
-        if (type === LocationSelectAlertType.FailedTimeOut || type === LocationSelectAlertType.FailedDisconnected) {
-            return (
-                <Box>
-                    <Player player={currentUser || FallbackUser} />
-                    <StyledNormalText text=" failed to choose a target." />
-                </Box>
-            )
-        }
-
-        if (type === LocationSelectAlertType.Trigger) {
-            return (
-                <Box>
-                    <Player player={currentUser || FallbackUser} />
-                    <StyledNormalText text=" has confirmed target." />
-                </Box>
-            )
-        }
-
-        if (type === LocationSelectAlertType.Assigned) {
-            return (
-                <Box>
-                    <Player player={currentUser || FallbackUser} />
-                    <StyledNormalText text=" is assigned to choose a target." />
-                </Box>
-            )
-        }
-
-        return null
-    }
 
     return (
         <ClipThing
@@ -137,11 +73,10 @@ export const LocationSelectAlert = ({ data, getFaction }: { data: LocationSelect
                 }}
             >
                 <Box>
-                    <StyledImageText text={acronym(faction.label) || "GABS"} color={mainColor || "grey !important"} imageUrl={faction.logo_url} />
-                    <Icon />
+                    <Player player={currentUser || FallbackUser} />
+                    <SvgLocation fill="#FFFFFF" size="1.2rem" sx={{ display: "inline", mx: ".4rem" }} />
                     <StyledImageText text={label} color={colour} imageUrl={abilityImageUrl} />
                 </Box>
-                <Content />
             </Stack>
         </ClipThing>
     )

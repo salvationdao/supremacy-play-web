@@ -1,8 +1,7 @@
 import { Box, Stack } from "@mui/material"
 import { useMemo } from "react"
-import { ClipThing, StyledImageText, StyledNormalText } from "../.."
+import { ClipThing, StyledImageText } from "../.."
 import { GenericWarMachinePNG, SvgEmergency } from "../../../assets"
-import { acronym } from "../../../helpers"
 import { colors } from "../../../theme/theme"
 import { BattleAbility, Faction, User, WarMachineState } from "../../../types"
 
@@ -41,13 +40,9 @@ export const WarMachineAbilityAlert = ({ data, getFaction }: { data: WarMachineA
                 }}
             >
                 <Box>
-                    <StyledImageText text={acronym(faction.label)} color={mainColor || "grey !important"} imageUrl={faction.logo_url} />
+                    <StyledImageText text={name || hash} color={mainColor} imageUrl={wmImageUrl} />
                     <SvgEmergency fill="#FFFFFF" size="1.2rem" sx={{ display: "inline", mx: ".4rem" }} />
                     <StyledImageText text={label} color={colour} imageUrl={`${image_url}`} />
-                </Box>
-                <Box>
-                    <StyledNormalText text="Mech ability has been initiated by " />
-                    <StyledImageText text={name || hash} color={mainColor} imageUrl={wmImageUrl} />
                 </Box>
             </Stack>
         </ClipThing>

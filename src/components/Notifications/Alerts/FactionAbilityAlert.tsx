@@ -1,5 +1,5 @@
 import { Box, Stack } from "@mui/material"
-import { BattleFactionAbilityAlertProps, ClipThing, StyledImageText, StyledNormalText } from "../.."
+import { BattleFactionAbilityAlertProps, ClipThing, StyledImageText } from "../.."
 import { SvgEmergency } from "../../../assets"
 import { acronym } from "../../../helpers"
 import { colors } from "../../../theme/theme"
@@ -35,9 +35,6 @@ export const FactionAbilityAlert = ({ data, getFaction }: { data: BattleFactionA
                     <StyledImageText text={user ? acronym(faction.label) : "GABS"} color={mainColor || "grey !important"} imageUrl={faction.logo_url} />
                     <SvgEmergency fill="#FFFFFF" size="1.2rem" sx={{ display: "inline", mx: ".4rem" }} />
                     <StyledImageText text={label} color={colour} imageUrl={`${image_url}`} />
-                </Box>
-                <Box>
-                    <StyledNormalText text="Faction ability has been initiated." />
                 </Box>
             </Stack>
         </ClipThing>

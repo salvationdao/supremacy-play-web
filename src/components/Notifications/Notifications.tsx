@@ -21,7 +21,6 @@ import { useArray } from "../../hooks"
 import { useGameServerSubscription, useGameServerSubscriptionFaction } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { siteZIndex } from "../../theme/theme"
-import { WarMachineCommandAlert, WarMachineCommandAlertProps } from "./Alerts/WarMachineCommandAlert"
 import {
     battleAbilityNoti,
     factionAbilityNoti,
@@ -57,20 +56,12 @@ export enum NotificationType {
     FactionAbility = "FACTION_ABILITY",
     WarMachineAbility = "WAR_MACHINE_ABILITY",
     WarMachineDestroyed = "WAR_MACHINE_DESTROYED",
-    WarMachineCommand = "WAR_MACHINE_COMMAND",
     BattleZoneChange = "BATTLE_ZONE_CHANGE",
 }
 
 export interface NotificationResponse {
     type: NotificationType
-    data:
-        | BattleFactionAbilityAlertProps
-        | KillAlertProps
-        | LocationSelectAlertProps
-        | WarMachineAbilityAlertProps
-        | WarMachineCommandAlertProps
-        | BattleZone
-        | string
+    data: BattleFactionAbilityAlertProps | KillAlertProps | LocationSelectAlertProps | WarMachineAbilityAlertProps | BattleZone | string
 }
 
 interface Notification extends NotificationResponse {
@@ -242,12 +233,6 @@ export const Notifications = () => {
                             return (
                                 <NotificationItem key={n.notiID} duration={n.duration}>
                                     <KillAlert data={n.data as KillAlertProps} getFaction={getFaction} />
-                                </NotificationItem>
-                            )
-                        case NotificationType.WarMachineCommand:
-                            return (
-                                <NotificationItem key={n.notiID} duration={n.duration}>
-                                    <WarMachineCommandAlert data={n.data as WarMachineCommandAlertProps} getFaction={getFaction} />
                                 </NotificationItem>
                             )
                         case NotificationType.BattleZoneChange:
