@@ -88,7 +88,6 @@ export class Stage {
         const width = this.container?.clientWidth || 200
         const height = this.container?.clientHeight || 200
         const viewSize = 30
-        console.log({ height })
         this.renderer.setSize(width, height)
         this.camera.left = width / -viewSize
         this.camera.right = width / viewSize
