@@ -10,7 +10,7 @@ import { useWS } from "./ws/useWS"
 
 export const SupremacyContainer = createContainer(() => {
     const { newSnackbarMessage } = useSnackbar()
-    const { state } = useWS({
+    const { state, isReconnecting, isServerDown } = useWS({
         URI: "/public/online",
         host: GAME_SERVER_HOSTNAME,
     })
@@ -66,7 +66,8 @@ export const SupremacyContainer = createContainer(() => {
 
     return {
         serverConnectedBefore,
-        isServerUp: state === WebSocket.OPEN,
+        isReconnecting,
+        isServerDown,
 
         factionsAll,
         getFaction,

@@ -1,6 +1,5 @@
-import { Box, Stack, Typography } from "@mui/material"
+import { Box, CircularProgress, Stack, Typography } from "@mui/material"
 import { FancyButton, Logo, ProfileCard, WalletDetails } from ".."
-import { SvgDisconnected } from "../../assets"
 import { DRAWER_TRANSITION_DURATION, FEEDBACK_FORM_URL, GAME_BAR_HEIGHT, NEXT_RESET_TIME, IS_TESTING_MODE } from "../../constants"
 import { useAuth, useSupremacy } from "../../containers"
 import { colors, fonts, siteZIndex } from "../../theme/theme"
@@ -10,6 +9,7 @@ import { NavLinks } from "./NavLinks/NavLinks"
 import Marquee from "react-fast-marquee"
 import { hexToRGBArray, timeSinceInWords } from "../../helpers"
 import { useTimer } from "../../hooks"
+import { SvgDisconnected } from "../../assets"
 
 const Countdown = ({ endTime }: { endTime: Date }) => {
     const { totalSecRemain } = useTimer(endTime)
@@ -90,17 +90,32 @@ export const Bar = () => {
 }
 
 const BarContent = ({ userID, user }: { userID?: string; user: User }) => {
-    const { isServerUp } = useSupremacy()
+    const { isReconnecting, isServerDown } = useSupremacy()
 
-    if (!isServerUp) {
+    if (isServerDown) {
         return (
             <>
                 <Logo />
                 <Box sx={{ flexGrow: 1 }} />
-                <Stack direction="row" alignItems="center" spacing=".8rem" sx={{ mr: "1.6rem" }}>
+                <Stack direction="row" alignItems="center" spacing="1.3rem" sx={{ mr: "1.6rem" }}>
                     <SvgDisconnected size="1.7rem" sx={{ pb: ".6rem" }} />
                     <Typography sx={{ fontFamily: fonts.nostromoBold }} variant="caption">
                         DISCONNECTED
+                    </Typography>
+                </Stack>
+            </>
+        )
+    }
+
+    if (isReconnecting) {
+        return (
+            <>
+                <Logo />
+                <Box sx={{ flexGrow: 1 }} />
+                <Stack direction="row" alignItems="center" spacing="1.3rem" sx={{ mr: "1.6rem" }}>
+                    <CircularProgress size="1.9rem" sx={{ color: colors.neonBlue, mb: ".5rem !important" }} />
+                    <Typography sx={{ color: colors.neonBlue, fontFamily: fonts.nostromoBold }} variant="caption">
+                        RECONNECTING...
                     </Typography>
                 </Stack>
             </>
