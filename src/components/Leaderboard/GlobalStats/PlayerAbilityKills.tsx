@@ -2,6 +2,7 @@ import { Stack, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
 import { ClipThing } from "../.."
 import { useSnackbar, useSupremacy } from "../../../containers"
+import { useAuth } from "../../../containers/auth"
 import { useTheme } from "../../../containers/theme"
 import { useGameServerCommands } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
@@ -17,6 +18,7 @@ interface RankItem {
 
 export const PlayerAbilityKills = () => {
     const theme = useTheme()
+    const { userID } = useAuth()
     const { getFaction } = useSupremacy()
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommands("/public/commander")
@@ -77,6 +79,12 @@ export const PlayerAbilityKills = () => {
                     if (rank === 3) color = colors.bronze
 
                     return {
+                        rowProps: {
+                            sx: {
+                                backgroundColor: item.player.id === userID ? `${rank <= 3 ? color : primaryColor}20` : "unset",
+                                border: item.player.id === userID ? `${rank <= 3 ? color : primaryColor} 3px solid` : "unset",
+                            },
+                        },
                         cells: [
                             <Typography
                                 key={1}
