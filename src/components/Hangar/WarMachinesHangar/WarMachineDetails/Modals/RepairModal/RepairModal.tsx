@@ -44,7 +44,7 @@ export const RepairModal = ({
         setRepairMechModalOpen(false)
     }, [setRepairMechModalOpen])
 
-    if (!selectedMechDetails) return null
+    if (!selectedMechDetails || remainDamagedBlocks <= 0) return null
 
     return (
         <Modal open={repairMechModalOpen} onClose={onClose} sx={{ zIndex: siteZIndex.Modal }}>
