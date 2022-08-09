@@ -34,6 +34,7 @@ export const SupremacyContainer = createContainer(() => {
     useEffect(() => {
         ;(async () => {
             if (isServerDown) return
+
             try {
                 const resp = await queryGetFactionsAll({})
                 if (resp.error || !resp.payload) return
