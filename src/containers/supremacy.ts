@@ -10,7 +10,7 @@ import { useWS } from "./ws/useWS"
 
 export const SupremacyContainer = createContainer(() => {
     const { newSnackbarMessage } = useSnackbar()
-    const { state } = useWS({
+    const { state, isReconnecting, isServerDown } = useWS({
         URI: "/public/online",
         host: GAME_SERVER_HOSTNAME,
     })
@@ -33,6 +33,8 @@ export const SupremacyContainer = createContainer(() => {
     // Get main color of each factions
     useEffect(() => {
         ;(async () => {
+            if (isServerDown) return
+
             try {
                 const resp = await queryGetFactionsAll({})
                 if (resp.error || !resp.payload) return
@@ -47,7 +49,7 @@ export const SupremacyContainer = createContainer(() => {
                 return false
             }
         })()
-    }, [newSnackbarMessage, queryGetFactionsAll])
+    }, [newSnackbarMessage, isServerDown, queryGetFactionsAll])
 
     const getFaction = useCallback(
         (factionID: string) => {
@@ -66,7 +68,8 @@ export const SupremacyContainer = createContainer(() => {
 
     return {
         serverConnectedBefore,
-        isServerUp: state === WebSocket.OPEN,
+        isReconnecting,
+        isServerDown,
 
         factionsAll,
         getFaction,

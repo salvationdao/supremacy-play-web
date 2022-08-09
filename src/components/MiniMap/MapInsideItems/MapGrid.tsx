@@ -27,6 +27,7 @@ export const MapGrid = React.memo(function MapGrid({
     isLineSelection: boolean
 }) {
     const grid = useMemo(() => {
+        return null
         return (
             <Stack sx={{ width: "100%", height: "100%", pointerEvents: "none" }}>
                 {new Array(Math.floor(mapHeight / gridHeight / 3)).fill(0).map((_, i) => (

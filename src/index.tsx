@@ -40,7 +40,7 @@ import { ROUTES_ARRAY, ROUTES_MAP } from "./routes"
 import { colors, fonts } from "./theme/theme"
 
 const AppInner = () => {
-    const { serverConnectedBefore, isServerUp } = useSupremacy()
+    const { isServerDown, serverConnectedBefore } = useSupremacy()
     const { isMobile } = useMobile()
     const { userID, factionID } = useAuth()
     const [showLoading, toggleShowLoading] = useToggle(true)
@@ -132,7 +132,7 @@ const AppInner = () => {
                         }}
                     >
                         <Box sx={{ flex: 1, position: "relative", overflow: "hidden" }}>
-                            {isServerUp && !UNDER_MAINTENANCE ? (
+                            {!isServerDown && !UNDER_MAINTENANCE ? (
                                 <Switch>
                                     {ROUTES_ARRAY.map((r) => {
                                         const { id, path, exact, Component, requireAuth, requireFaction, authTitle, authDescription, enable } = r
@@ -217,9 +217,9 @@ const App = () => {
             <FingerprintProvider>
                 <SnackBarProvider>
                     <ClientContextProvider client={client}>
-                        <AuthProvider>
-                            <BrowserRouter>
-                                <SupremacyProvider>
+                        <SupremacyProvider>
+                            <AuthProvider>
+                                <BrowserRouter>
                                     <ChatProvider>
                                         <WalletProvider>
                                             <BarProvider>
@@ -246,9 +246,9 @@ const App = () => {
                                             </BarProvider>
                                         </WalletProvider>
                                     </ChatProvider>
-                                </SupremacyProvider>
-                            </BrowserRouter>
-                        </AuthProvider>
+                                </BrowserRouter>
+                            </AuthProvider>
+                        </SupremacyProvider>
                     </ClientContextProvider>
                 </SnackBarProvider>
             </FingerprintProvider>
