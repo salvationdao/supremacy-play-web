@@ -46,6 +46,7 @@ export const cameraConfig = {
     far: 1000,
     position: [2, 2, 2],
     lookAt: [0, 0, 0],
+    offsetY: 10,
 }
 
 export const lightsConfig = [

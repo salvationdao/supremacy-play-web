@@ -58,7 +58,7 @@ export const BattleEndScreen = () => {
                         BATTLE ID #{battle_identifier.toString().padStart(4, "0")}
                     </Typography>
                     <Typography variant="h6">
-                        {moment(started_at).format("h:mm A")} to {moment(ended_at).format("h:mm A")}
+                        FROM {moment(started_at).format("h:mm A")} to {moment(ended_at).format("h:mm A")}
                     </Typography>
                 </Box>
 
