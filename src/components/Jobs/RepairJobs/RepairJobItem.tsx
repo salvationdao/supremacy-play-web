@@ -35,10 +35,10 @@ export const RepairJobItem = ({
     const backgroundColor = jobOwnerFaction.background_color
 
     useEffect(() => {
-        if (isFinished && repairJobModal) {
+        if (isFinished && !repairJobModal) {
             setTimeout(() => {
                 removeByID(repairJob.id)
-            }, 5000)
+            }, 10000) // Wait 10seconds before un-rendering the item, allows enough time for players to see why job was closed
         }
     }, [repairJobModal, isFinished, removeByID, repairJob.id])
 
@@ -104,7 +104,7 @@ export const RepairJobItem = ({
 
                     <General
                         isGridView={isGridView}
-                        title="ACTIVE AGENTS"
+                        title="ACTIVE WORKERS"
                         text={repairJob.working_agent_count.toString()}
                         textColor={repairJob.working_agent_count <= 3 ? colors.green : colors.orange}
                     />
@@ -136,7 +136,12 @@ export const RepairJobItem = ({
                     </General>
 
                     {isFinished ? (
-                        <General isGridView={isGridView} title="TIME LEFT" text="EXPIRED" textColor={colors.lightGrey} />
+                        <General
+                            isGridView={isGridView}
+                            title="TIME LEFT"
+                            text={repairJob ? `JOB ${repairJob.finished_reason}` : "EXPIRED"}
+                            textColor={colors.lightGrey}
+                        />
                     ) : (
                         <CountdownGeneral isGridView={isGridView} endTime={repairJob.expires_at} />
                     )}
@@ -165,7 +170,7 @@ const CountdownGeneral = ({ isGridView, endTime }: { isGridView?: boolean; endTi
         <General
             isGridView={isGridView}
             title="TIME LEFT"
-            text={timeSinceInWords(new Date(), new Date(new Date().getTime() + totalSecRemain * 1000)) + " left"}
+            text={timeSinceInWords(new Date(), new Date(new Date().getTime() + totalSecRemain * 1000))}
             textColor={totalSecRemain < 300 ? colors.orange : "#FFFFFF"}
         />
     )

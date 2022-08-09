@@ -1,21 +1,28 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { FancyButton, Logo, ProfileCard, WalletDetails } from ".."
 import { SvgDisconnected } from "../../assets"
-import { DRAWER_TRANSITION_DURATION, FEEDBACK_FORM_URL, GAME_BAR_HEIGHT, STAGING_OR_DEV_ONLY } from "../../constants"
+import { DRAWER_TRANSITION_DURATION, FEEDBACK_FORM_URL, GAME_BAR_HEIGHT, NEXT_RESET_TIME, IS_TESTING_MODE } from "../../constants"
 import { useAuth, useSupremacy } from "../../containers"
 import { colors, fonts, siteZIndex } from "../../theme/theme"
 import { User } from "../../types"
 import { Messages } from "./Messages/Messages"
 import { NavLinks } from "./NavLinks/NavLinks"
 import Marquee from "react-fast-marquee"
-import { hexToRGBArray } from "../../helpers"
+import { hexToRGBArray, timeSinceInWords } from "../../helpers"
+import { useTimer } from "../../hooks"
+
+const Countdown = ({ endTime }: { endTime: Date }) => {
+    const { totalSecRemain } = useTimer(endTime)
+    if (totalSecRemain <= 0) return <>very shortly</>
+    return <>{timeSinceInWords(new Date(), new Date(new Date().getTime() + totalSecRemain * 1000))}</>
+}
 
 export const Bar = () => {
     const { userID, user } = useAuth()
 
     return (
         <>
-            {STAGING_OR_DEV_ONLY && (
+            {IS_TESTING_MODE && (
                 <>
                     <Box
                         sx={{
@@ -28,8 +35,9 @@ export const Bar = () => {
                         }}
                     >
                         <Marquee direction="left" gradientColor={hexToRGBArray(colors.lightRed)} gradientWidth={50} style={{ overflow: "hidden" }}>
-                            <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack, lineHeight: 1 }}>
-                                EXPERIMENTAL TESTING - ALL SUPS AND WAR MACHINES ARE TEMPORARY AND ONLY EXIST IN EXPERIMENTAL TESTING
+                            <Typography variant="body2" sx={{ pr: "100px", fontFamily: fonts.nostromoBlack, lineHeight: 1 }}>
+                                Welcome to the proving grounds! Win up to <span style={{ color: colors.yellow }}>150,000</span> SUPS by helping us play-test
+                                incoming mechanisms and features. This round will reset in <Countdown endTime={new Date(NEXT_RESET_TIME)} />.
                             </Typography>
                         </Marquee>
                     </Box>
@@ -39,7 +47,7 @@ export const Bar = () => {
                             position: "fixed",
                             height: "100%",
                             width: "100%",
-                            border: STAGING_OR_DEV_ONLY ? `${colors.lightRed} 3px solid` : "unset",
+                            border: `${colors.lightRed} 3px solid`,
                             zIndex: siteZIndex.Modal * 99,
                             pointerEvents: "none",
                         }}

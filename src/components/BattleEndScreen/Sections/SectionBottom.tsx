@@ -1,5 +1,5 @@
 import { Stack, Typography } from "@mui/material"
-import { BOTTOM_BUTTONS_HEIGHT, FancyButton } from "../.."
+import { FancyButton } from "../.."
 import { useMobile, useOverlayToggles } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { fonts } from "../../../theme/theme"
@@ -15,20 +15,7 @@ export const SectionBottom = () => {
     if (isMobile) return null
 
     return (
-        <Stack
-            direction="row"
-            justifyContent="flex-end"
-            alignItems="flex-start"
-            sx={{
-                position: "absolute",
-                bottom: 0,
-                left: 0,
-                right: 0,
-                pl: "1.2rem",
-                pr: "3.36rem",
-                height: `${BOTTOM_BUTTONS_HEIGHT}rem`,
-            }}
-        >
+        <Stack direction="row" justifyContent="flex-end" alignItems="flex-start" sx={{ py: ".6rem", px: "3.36rem" }}>
             <FancyButton
                 clipThingsProps={{
                     clipSize: "8px",

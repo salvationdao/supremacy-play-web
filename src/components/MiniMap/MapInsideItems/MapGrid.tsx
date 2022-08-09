@@ -2,12 +2,14 @@ import { Box, Stack, Typography } from "@mui/material"
 import React, { useMemo } from "react"
 import { Crosshair } from "../../../assets"
 import { intToLetter } from "../../../helpers"
+import { colors } from "../../../theme/theme"
 import { LineSelect } from "./LineSelect"
 
 export const MapGrid = React.memo(function MapGrid({
     mapWidth,
     mapHeight,
     gridHeight,
+    gridWidth,
     mapElement,
     onClick,
     mapScale,
@@ -17,6 +19,7 @@ export const MapGrid = React.memo(function MapGrid({
     mapWidth: number
     mapHeight: number
     gridHeight: number
+    gridWidth: number
     mapElement: React.MutableRefObject<HTMLDivElement | undefined>
     onClick: React.MouseEventHandler<HTMLDivElement>
     mapScale: number
@@ -26,15 +29,16 @@ export const MapGrid = React.memo(function MapGrid({
     const grid = useMemo(() => {
         return (
             <Stack sx={{ width: "100%", height: "100%", pointerEvents: "none" }}>
-                {new Array(10).fill(0).map((_, i) => (
+                {new Array(Math.floor(mapHeight / gridHeight / 3)).fill(0).map((_, i) => (
                     <Stack key={i} direction="row" sx={{ position: "relative", flex: 1 }}>
-                        {new Array(10).fill(0).map((_, j) => (
-                            <Box key={j} sx={{ flex: 1, position: "relative", border: "#FFFFFF30 1px solid", ":hover p": { opacity: 1 } }}>
+                        {new Array(Math.floor(mapWidth / gridWidth / 3)).fill(0).map((_, j) => (
+                            <Box key={j} sx={{ flex: 1, position: "relative", border: `${colors.offWhite}30 1px solid`, ":hover p": { opacity: 1 } }}>
                                 <Typography
                                     variant="caption"
                                     sx={{
+                                        color: colors.offWhite,
                                         position: "absolute",
-                                        fontSize: gridHeight / 1.6,
+                                        fontSize: gridHeight / 1.2,
                                         top: 0,
                                         left: "10%",
                                         textTransform: "uppercase",
@@ -51,7 +55,7 @@ export const MapGrid = React.memo(function MapGrid({
                 ))}
             </Stack>
         )
-    }, [gridHeight])
+    }, [gridHeight, gridWidth, mapHeight, mapWidth])
 
     return (
         <Box

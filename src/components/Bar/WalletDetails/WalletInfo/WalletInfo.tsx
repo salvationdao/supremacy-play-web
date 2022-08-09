@@ -2,6 +2,7 @@ import { CircularProgress, IconButton, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
 import { MutableRefObject, useRef, useState } from "react"
 import { SvgHide, SvgSupToken, SvgUnhide } from "../../../../assets"
+import { IS_TESTING_MODE } from "../../../../constants"
 import { useAuth, useWallet } from "../../../../containers"
 import { supFormatterNoFixed } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
@@ -33,7 +34,7 @@ export const WalletInfo = () => {
 
                 // Accrue stuff
                 payload.forEach((tx) => {
-                    const isCredit = userID === tx.credit_account_id
+                    const isCredit = userID === tx.credit
                     const summary = (tx.description + tx.sub_group + tx.group).toLowerCase()
 
                     // For inflows
@@ -117,13 +118,9 @@ const WalletInfoInner = ({
                     },
                 }}
             >
-                <SvgSupToken size="1.9rem" fill={colors.yellow} sx={{ mr: ".2rem", pb: ".4rem" }} />
+                <SvgSupToken size="1.9rem" fill={IS_TESTING_MODE ? colors.red : colors.yellow} sx={{ mr: ".2rem", pb: 0 }} />
                 <Typography sx={{ fontFamily: fonts.nostromoBold, lineHeight: 1, whiteSpace: "nowrap" }}>
-                    {!isHideValue && (
-                        <>
-                            {onWorldSupsRaw ? supFormatterNoFixed(onWorldSupsRaw, 2) : "0.00"} <span style={{ color: colors.lightRed }}>(FAKE)</span>
-                        </>
-                    )}
+                    {!isHideValue && <>{onWorldSupsRaw ? supFormatterNoFixed(onWorldSupsRaw, 2) : "0.00"}</>}
                     {isHideValue && "---"}
                 </Typography>
             </Stack>
