@@ -1,7 +1,7 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useRef } from "react"
 import { MiniMapInside, MoveableResizable } from ".."
-import { SvgFullscreen } from "../../assets"
+import { SvgFullscreen, SvgMinimize } from "../../assets"
 import { useDimension, useGame, useMobile, useOverlayToggles } from "../../containers"
 import { useMiniMap } from "../../containers/minimap"
 import { useTheme } from "../../containers/theme"
@@ -14,10 +14,27 @@ import { TargetHint } from "./MapOutsideItems/TargetHint"
 
 export const TOP_BAR_HEIGHT = 3.1 // rems
 
+const FullscreenIcon = () => {
+    const { isEnlarged, toggleIsEnlarged } = useMiniMap()
+    return (
+        <Box
+            onClick={() => toggleIsEnlarged()}
+            sx={{
+                mr: ".9rem",
+                cursor: "pointer",
+                opacity: 0.4,
+                ":hover": { opacity: 1 },
+            }}
+        >
+            {isEnlarged ? <SvgMinimize size="1.6rem" /> : <SvgFullscreen size="1.6rem" />}
+        </Box>
+    )
+}
+
 export const MiniMap = () => {
     const { isMobile } = useMobile()
     const { map, bribeStage } = useGame()
-    const { isTargeting, isEnlarged, resetSelection, toggleIsEnlarged, playerAbility } = useMiniMap()
+    const { isTargeting, isEnlarged, resetSelection, playerAbility } = useMiniMap()
     const { isMapOpen, toggleIsMapOpen } = useOverlayToggles()
 
     // Temp hotfix ask james ****************************
@@ -57,21 +74,9 @@ export const MiniMap = () => {
             infoTooltipText: "Battle arena minimap.",
             onHideCallback: () => toggleIsMapOpen(false),
             hidePopoutBorder: true,
-            topRightContent: (
-                <Box
-                    onClick={() => toggleIsEnlarged()}
-                    sx={{
-                        mr: ".9rem",
-                        cursor: "pointer",
-                        opacity: 0.4,
-                        ":hover": { opacity: 1 },
-                    }}
-                >
-                    <SvgFullscreen size="1.6rem" />
-                </Box>
-            ),
+            topRightContent: <FullscreenIcon />,
         }),
-        [toggleIsEnlarged, toggleIsMapOpen],
+        [toggleIsMapOpen],
     )
 
     return useMemo(() => {
