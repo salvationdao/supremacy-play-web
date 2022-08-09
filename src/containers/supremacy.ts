@@ -52,7 +52,6 @@ export const SupremacyContainer = createContainer(() => {
 
     const getFaction = useCallback(
         (factionID: string) => {
-            console.log({ factionsAll })
             return factionsAll[factionID] || FallbackFaction
         },
         [factionsAll],
