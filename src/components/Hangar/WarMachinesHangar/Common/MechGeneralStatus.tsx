@@ -145,7 +145,7 @@ export const MechGeneralStatus = ({
                                     setRepairMechModalOpen(true)
                                 }}
                             >
-                                <SvgRepair size="1rem" />
+                                <SvgRepair size="1.2rem" />
                             </IconButton>
                         )}
                     </Stack>
