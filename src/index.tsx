@@ -217,9 +217,9 @@ const App = () => {
             <FingerprintProvider>
                 <SnackBarProvider>
                     <ClientContextProvider client={client}>
-                        <AuthProvider>
-                            <BrowserRouter>
-                                <SupremacyProvider>
+                        <SupremacyProvider>
+                            <AuthProvider>
+                                <BrowserRouter>
                                     <ChatProvider>
                                         <WalletProvider>
                                             <BarProvider>
@@ -246,9 +246,9 @@ const App = () => {
                                             </BarProvider>
                                         </WalletProvider>
                                     </ChatProvider>
-                                </SupremacyProvider>
-                            </BrowserRouter>
-                        </AuthProvider>
+                                </BrowserRouter>
+                            </AuthProvider>
+                        </SupremacyProvider>
                     </ClientContextProvider>
                 </SnackBarProvider>
             </FingerprintProvider>

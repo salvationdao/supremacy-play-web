@@ -33,6 +33,7 @@ export const SupremacyContainer = createContainer(() => {
     // Get main color of each factions
     useEffect(() => {
         ;(async () => {
+            if (isServerDown) return
             try {
                 const resp = await queryGetFactionsAll({})
                 if (resp.error || !resp.payload) return
@@ -47,10 +48,11 @@ export const SupremacyContainer = createContainer(() => {
                 return false
             }
         })()
-    }, [newSnackbarMessage, queryGetFactionsAll])
+    }, [newSnackbarMessage, isServerDown, queryGetFactionsAll])
 
     const getFaction = useCallback(
         (factionID: string) => {
+            console.log({ factionsAll })
             return factionsAll[factionID] || FallbackFaction
         },
         [factionsAll],
