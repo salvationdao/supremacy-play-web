@@ -64,7 +64,9 @@ export const VideoPlayerControls = () => {
     )
 
     useEffect(() => {
-        toggleFullscreen(isMobileHorizontal)
+        if (isMobile) {
+            toggleFullscreen(isMobileHorizontal)
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isMobileHorizontal])
 
