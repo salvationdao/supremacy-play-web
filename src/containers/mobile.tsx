@@ -11,11 +11,11 @@ export const MobileContainer = createContainer(() => {
 
     // For displaying a mobile layout
     const isMobile = useMemo(() => {
-        return width <= 650 && height > width
+        return width <= 650 || height <= 650
     }, [width, height])
 
     const isMobileHorizontal = useMemo(() => {
-        return isMobile && !!window.screen.orientation.angle
+        return isMobile && height < width
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isMobile, width, height])
 

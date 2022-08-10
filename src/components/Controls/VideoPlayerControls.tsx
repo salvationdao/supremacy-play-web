@@ -1,12 +1,13 @@
 import { IconButton, Slider, Stack } from "@mui/material"
-import { useCallback } from "react"
-import { SvgFullscreen, SvgMusic, SvgMusicMute, SvgVolume, SvgVolumeMute } from "../../assets"
+import { useCallback, useState } from "react"
+import { SvgFullscreen, SvgMinimize, SvgMusic, SvgMusicMute, SvgVolume, SvgVolumeMute } from "../../assets"
 import { DEV_ONLY } from "../../constants"
 import { useMobile, useStream } from "../../containers"
 
 export const VideoPlayerControls = () => {
     const { isMobile } = useMobile()
     const { toggleIsMute, isMute, toggleIsMusicMute, isMusicMute, musicVolume, setMusicVolume, volume, setVolume } = useStream()
+    const [fullscreen, setFullscreen] = useState(false)
 
     const handleVolumeChange = useCallback(
         (_: Event, newValue: number | number[]) => {
@@ -23,16 +24,20 @@ export const VideoPlayerControls = () => {
     )
 
     const toggleFullscreen = useCallback(() => {
-        const elem = document.documentElement
-        const doc = document
+        setFullscreen((prev) => {
+            const elem = document.documentElement
+            const doc = document
 
-        if (window.innerWidth == screen.width && window.innerHeight == screen.height && doc.exitFullscreen) {
-            doc.exitFullscreen()
-            return
-        }
-        if (elem.requestFullscreen) {
-            elem.requestFullscreen()
-        }
+            if (prev) {
+                doc.exitFullscreen()
+                return false
+            } else if (elem.requestFullscreen) {
+                elem.requestFullscreen()
+                return true
+            }
+
+            return prev
+        })
     }, [])
 
     return (
@@ -82,8 +87,8 @@ export const VideoPlayerControls = () => {
             </Stack>
 
             {!isMobile && (
-                <IconButton size="small" onClick={toggleFullscreen} sx={{ opacity: 0.5, transition: "all .2s", ":hover": { opacity: 1 } }}>
-                    <SvgFullscreen size="1.4rem" />
+                <IconButton size="small" onClick={() => toggleFullscreen()} sx={{ opacity: 0.5, transition: "all .2s", ":hover": { opacity: 1 } }}>
+                    {fullscreen ? <SvgMinimize size="1.4rem" /> : <SvgFullscreen size="1.4rem" />}
                 </IconButton>
             )}
         </Stack>
