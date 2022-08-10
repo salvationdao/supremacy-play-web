@@ -10,7 +10,7 @@ import { colors, fonts, theme } from "../../theme/theme"
 import { Faction, FeatureName, UserRank } from "../../types"
 import { ClipThing } from "../Common/ClipThing"
 import { PageHeader } from "../Common/PageHeader"
-import { ProfileAvatar } from "./AvatarSelect"
+import { ProfileAvatar } from "./Avatar/AvatarSelect"
 import { AboutMe } from "./ProfileAboutMe"
 import { ProfileMechHistory } from "./ProfileBattleHistory"
 import { Username } from "./ProfileUsername"
@@ -36,8 +36,10 @@ interface Stats {
 }
 
 interface AvatarType {
+    id: string
     avatar_url: string
     tier: string
+    is_custom: boolean
 }
 
 interface PlayerProfile {
@@ -124,7 +126,7 @@ export const PlayerProfilePage = () => {
                 setUsername(resp)
                 newSnackbarMessage("username updated successfully.", "success")
             } catch (e) {
-                let errorMessage = ""
+                let errorMessage = "Failed to update username, try again or contact support."
                 if (typeof e === "string") {
                     errorMessage = e
                 } else if (e instanceof Error) {
@@ -138,16 +140,17 @@ export const PlayerProfilePage = () => {
 
     // avatar
     const updateAvatar = useCallback(
-        async (avatar_id: string) => {
+        async (avatarID: string, isCustom: boolean) => {
             try {
                 const resp = await userSend<AvatarType>(GameServerKeys.PlayerProfileAvatarUpdate, {
                     player_id: profile?.player.id,
-                    profile_avatar_id: avatar_id,
+                    profile_avatar_id: avatarID,
+                    is_custom: isCustom,
                 })
                 setAvatar(resp)
                 newSnackbarMessage("avatar updated successfully.", "success")
             } catch (e) {
-                let errorMessage = ""
+                let errorMessage = "Failed to update avatar, try again or contact support."
                 if (typeof e === "string") {
                     errorMessage = e
                 } else if (e instanceof Error) {
@@ -157,6 +160,29 @@ export const PlayerProfilePage = () => {
             }
         },
         [userSend, profile?.player.id, newSnackbarMessage],
+    )
+
+    // delete a custom avatar
+    const deleteCustomAvatar = useCallback(
+        async (avatarID: string) => {
+            try {
+                const resp = await userSend<AvatarType>(GameServerKeys.PlayerProfileCustomAvatarDelete, {
+                    avatar_id: avatarID,
+                })
+                if (resp) {
+                    newSnackbarMessage("avatar deleted successfully.", "success")
+                }
+            } catch (e) {
+                let errorMessage = "Failed to update avatar, try again or contact support."
+                if (typeof e === "string") {
+                    errorMessage = e
+                } else if (e instanceof Error) {
+                    errorMessage = e.message
+                }
+                newSnackbarMessage(errorMessage, "error")
+            }
+        },
+        [userSend, newSnackbarMessage],
     )
 
     // about me
@@ -170,7 +196,7 @@ export const PlayerProfilePage = () => {
                 setAboutMe(resp.about_me)
                 newSnackbarMessage("about me updated successfully.", "success")
             } catch (e) {
-                let errorMessage = ""
+                let errorMessage = "Failed to update about me, try again or contact support."
                 if (typeof e === "string") {
                     errorMessage = e
                 } else if (e instanceof Error) {
@@ -196,7 +222,7 @@ export const PlayerProfilePage = () => {
                 setAvatar(resp.avatar)
                 setLoading(false)
             } catch (e) {
-                let errorMessage = ""
+                let errorMessage = "Failed to fetch profile, please try again or contact support"
                 if (typeof e === "string") {
                     errorMessage = e
                 } else if (e instanceof Error) {
@@ -261,6 +287,9 @@ export const PlayerProfilePage = () => {
                     backgroundSize: "cover",
                     height: "55.5rem",
                     position: "relative",
+                    "@media (max-width:900px)": {
+                        height: "72rem",
+                    },
                 }}
             >
                 <Stack spacing="1.6rem" sx={{ p: "1rem 1rem" }}>
@@ -277,14 +306,20 @@ export const PlayerProfilePage = () => {
                             >
                                 {viewAvatar ? (
                                     <ProfileAvatar
+                                        playerID={profile.player.id}
+                                        avatarID={avatar?.id || ""}
                                         isOwner={isMe}
-                                        updateAvatar={async (avatar_id: string) => {
-                                            updateAvatar(avatar_id)
+                                        updateAvatar={async (avatarID: string, isCustom: boolean) => {
+                                            updateAvatar(avatarID, isCustom)
                                         }}
+                                        deleteCustomAvatar={async (avatarID: string) => {
+                                            deleteCustomAvatar(avatarID)
+                                        }}
+                                        isCustom={!!avatar?.is_custom}
                                         avatarURL={avatar?.avatar_url || ""}
                                         primaryColor={primaryColor}
-                                        secondaryColor={secondaryColor}
                                         backgroundColor={backgroundColor}
+                                        secondaryColor={secondaryColor}
                                         factionName={profile.faction?.label}
                                     />
                                 ) : (

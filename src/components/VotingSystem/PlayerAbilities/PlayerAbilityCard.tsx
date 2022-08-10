@@ -50,6 +50,8 @@ export const PlayerAbilityCard = ({ playerAbility, viewOnly }: { playerAbility: 
         setPlayerAbility(playerAbility)
     }, [playerAbility, setPlayerAbility])
 
+    const disable = viewOnly || disabled
+
     return (
         <>
             <TooltipHelper text={playerAbility.ability.description} placement="bottom">
@@ -68,9 +70,14 @@ export const PlayerAbilityCard = ({ playerAbility, viewOnly }: { playerAbility: 
                         border: { borderColor: playerAbility.ability.colour, borderThickness: "1.5px" },
                         sx: { position: "relative", px: ".4rem", py: ".3rem" },
                     }}
-                    sx={{ color: playerAbility.ability.colour, p: 0, minWidth: 0, height: "100%" }}
-                    onClick={!viewOnly ? onActivate : undefined}
-                    disabled={disabled}
+                    sx={{
+                        color: playerAbility.ability.colour,
+                        p: 0,
+                        minWidth: 0,
+                        height: "100%",
+                        ":hover": { cursor: disable ? "default" : "pointer" },
+                    }}
+                    onClick={!disabled ? onActivate : undefined}
                 >
                     <Stack
                         spacing=".3rem"
@@ -141,6 +148,8 @@ export const PlayerAbilityCard = ({ playerAbility, viewOnly }: { playerAbility: 
                                     transition: "transform .1s ease-out, filter .1s ease-out",
                                 }}
                             />
+
+                            <PlayerAbilityCooldownIndicator playerAbility={playerAbility} />
                         </Box>
 
                         <Typography
@@ -158,7 +167,6 @@ export const PlayerAbilityCard = ({ playerAbility, viewOnly }: { playerAbility: 
                         >
                             {playerAbility.ability.label}
                         </Typography>
-                        <PlayerAbilityCooldownIndicator playerAbility={playerAbility} />
                     </Stack>
                 </FancyButton>
             </TooltipHelper>
