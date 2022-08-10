@@ -351,7 +351,6 @@ export const TextMessage = ({
 
             {banModalOpen && user && faction_id === user.faction_id && (
                 <UserBanForm
-                    user={user}
                     open={banModalOpen}
                     onClose={() => toggleBanModalOpen(false)}
                     prefillUser={{

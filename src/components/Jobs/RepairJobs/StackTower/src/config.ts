@@ -31,6 +31,8 @@ import {
     Stack10cJPG,
 } from "../../../../../assets"
 
+export const baseFrameRate = 144
+
 export const blockConfig = {
     initWidth: 10, // Initial width of the box (x axis)
     initHeight: 2, // Initial height of the box (y axis)
