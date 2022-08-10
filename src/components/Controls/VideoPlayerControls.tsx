@@ -39,7 +39,7 @@ export const VideoPlayerControls = () => {
                     if (videoElem && (videoElem as any).webkitEnterFullscreen) {
                         // eslint-disable-next-line @typescript-eslint/no-explicit-any
                         ;(videoElem as any).webkitEnterFullscreen()
-                        setFullscreen(true)
+                        setFullscreen(false)
                     }
                     return
                 }
