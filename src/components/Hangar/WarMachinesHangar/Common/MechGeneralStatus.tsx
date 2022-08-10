@@ -1,10 +1,10 @@
-import { Box, IconButton, Stack, Typography } from "@mui/material"
+import { Box, Button, Stack, Typography } from "@mui/material"
 import { useCallback, useState } from "react"
 import { SvgRepair } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
 import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
-import { fonts, colors } from "../../../../theme/theme"
+import { colors, fonts } from "../../../../theme/theme"
 import { MechDetails, MechStatus, MechStatusEnum } from "../../../../types"
 import { RepairModal } from "../WarMachineDetails/Modals/RepairModal/RepairModal"
 
@@ -133,20 +133,24 @@ export const MechGeneralStatus = ({
                         direction="row"
                         alignItems="center"
                         spacing=".5rem"
-                        sx={{ position: "absolute", left: "100%", top: "50%", transform: "translateY(-50%)", px: ".3rem", pb: ".1rem" }}
+                        sx={{ position: "absolute", left: "100%", top: "50%", transform: "translateY(-50%)", px: ".4rem", pb: ".1rem" }}
                     >
                         {mechDetails && mechStatus?.status === MechStatusEnum.Damaged && (
-                            <IconButton
+                            <Button
                                 size="small"
-                                sx={{ opacity: 0.7, ":hover": { opacity: 1 } }}
+                                variant="contained"
+                                sx={{ p: ".1rem .6rem", pt: ".2rem", minWidth: 0, backgroundColor: colors.blue2, color: "#FFFFFF" }}
                                 onClick={(e) => {
                                     e.preventDefault()
                                     e.stopPropagation()
                                     setRepairMechModalOpen(true)
                                 }}
                             >
-                                <SvgRepair size="1.2rem" />
-                            </IconButton>
+                                <SvgRepair size="1.1rem" />
+                                <Typography variant="subtitle1" sx={{ ml: ".3rem", lineHeight: 1, fontWeight: "fontWeightBold" }}>
+                                    REPAIR
+                                </Typography>
+                            </Button>
                         )}
                     </Stack>
                 </Box>
