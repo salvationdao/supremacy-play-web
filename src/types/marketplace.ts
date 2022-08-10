@@ -56,6 +56,10 @@ export interface MarketCrate {
     id: string
     label: string
     description: string
+    image_url?: string
+    card_animation_url?: string
+    large_image_url?: string
+    animation_url?: string
 }
 
 export interface MarketMech {

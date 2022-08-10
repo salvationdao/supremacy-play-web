@@ -163,8 +163,8 @@ const WarMachineMarketDetailsInner = ({
                         <ImagesPreview
                             media={[
                                 {
-                                    imageUrl: marketItem?.collection_item?.image_url || SafePNG,
-                                    videoUrl: marketItem?.collection_item?.animation_url || SafePNG,
+                                    imageUrl: marketItem?.mystery_crate?.image_url || SafePNG,
+                                    videoUrl: marketItem?.mystery_crate?.animation_url || SafePNG,
                                 },
                             ]}
                             primaryColor={primaryColor}
