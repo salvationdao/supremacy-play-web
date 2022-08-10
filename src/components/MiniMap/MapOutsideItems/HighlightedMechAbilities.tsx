@@ -11,7 +11,7 @@ import { GameAbility, WarMachineLiveState, WarMachineState } from "../../../type
 import { MoveCommand } from "../../WarMachine/WarMachineItem/MoveCommand"
 
 export const HighlightedMechAbilities = () => {
-    const { factionID } = useAuth()
+    const { userID } = useAuth()
     const { bribeStage, warMachines } = useGame()
     const { highlightedMechParticipantID, isTargeting } = useMiniMap()
 
@@ -21,7 +21,7 @@ export const HighlightedMechAbilities = () => {
         return warMachines?.find((m) => m.participantID === highlightedMechParticipantID)
     }, [highlightedMechParticipantID, warMachines])
 
-    if (isTargeting || !highlightedMechParticipantID || !highlightedMech || highlightedMech?.factionID !== factionID || !isVoting) {
+    if (isTargeting || !highlightedMechParticipantID || !highlightedMech || highlightedMech?.ownedByID !== userID || !isVoting) {
         return null
     }
 

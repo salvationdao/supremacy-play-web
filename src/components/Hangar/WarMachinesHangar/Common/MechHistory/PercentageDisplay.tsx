@@ -92,7 +92,7 @@ const StyledSVG = styled("svg")({})
 
 const StyledCircle = styled("circle")({})
 
-const generateStrokeKeyframes = (percentage: number, circumference: number) => {
+export const generateStrokeKeyframes = (percentage: number, circumference: number) => {
     return keyframes`
 	0% {
 	  stroke-dasharray: 0;

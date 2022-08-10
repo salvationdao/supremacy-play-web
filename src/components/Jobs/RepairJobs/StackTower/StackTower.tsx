@@ -31,7 +31,7 @@ export const StackTower = React.memo(function StackTower({
 
             if (repairAgent?.id) {
                 const resp = await agentRepairUpdate(repairAgent.id, gamePattern)
-                if (resp)
+                if (resp) {
                     setCumulativeScore((prev) => {
                         const newCumScore = prev + 1
                         if (repairAgent?.id && newCumScore === repairAgent?.required_stacks) {
@@ -40,6 +40,7 @@ export const StackTower = React.memo(function StackTower({
                         }
                         return newCumScore
                     })
+                }
             }
         },
         [agentRepairUpdate, completeAgentRepair, repairAgent?.id, repairAgent?.required_stacks],
@@ -67,7 +68,7 @@ export const StackTower = React.memo(function StackTower({
                 }}
             >
                 <Stack spacing=".7rem" sx={{ pb: ".4rem" }}>
-                    <Typography variant="h5" sx={{ fontWeight: "fontWeightBold", span: { fontFamily: "inherit", color: colors.neonBlue } }}>
+                    <Typography variant="h5" sx={{ fontWeight: "fontWeightBold", span: { color: colors.neonBlue } }}>
                         YOU NEED A TOTAL OF <span>{repairAgent?.required_stacks || "XXX"}</span> STACKS TO REPAIR A SINGLE BLOCK!
                     </Typography>
 
@@ -121,30 +122,38 @@ const TowerStackInner = ({
                 <StaticGame backgroundColor={theme.factionTheme.background} setGameState={setGameState} oneNewGamePattern={oneNewGamePattern} />
 
                 {/* Score */}
-                <Typography
-                    variant="h2"
+                <Stack
+                    alignItems="center"
                     sx={{
                         position: "absolute",
                         top: "20%",
                         left: 0,
                         right: 0,
-                        textAlign: "center",
-                        pointerEvents: "none",
-                        color: gameState === GameState.Ended ? colors.neonBlue : "#FFFFFF",
-                        fontFamily: fonts.shareTech,
-                        fontWeight: "fontWeightBold",
                         transition: "all .4s ease",
                         transform:
                             gameState === GameState.Playing || gameState === GameState.Resetting
-                                ? "translateY(0) scale(1)"
+                                ? "translateY(50px) scale(1)"
                                 : gameState === GameState.Ended
                                 ? "translateY(-20px) scale(1.5)"
                                 : "translateY(-200px) scale(1)",
                         opacity: gameState === GameState.Playing || gameState === GameState.Resetting || gameState === GameState.Ended ? 1 : 0,
+                        pointerEvents: "none",
                     }}
                 >
-                    {score}
-                </Typography>
+                    <Box sx={{ p: ".2rem 1.2rem", backgroundColor: "#000000CD" }}>
+                        <Typography
+                            variant="h2"
+                            sx={{
+                                textAlign: "center",
+                                color: gameState === GameState.Ended ? colors.orange : "#FFFFFF",
+                                fontFamily: fonts.shareTech,
+                                fontWeight: "fontWeightBold",
+                            }}
+                        >
+                            {score}
+                        </Typography>
+                    </Box>
+                </Stack>
 
                 {/* Game ready instructions */}
                 <Stack
@@ -161,24 +170,25 @@ const TowerStackInner = ({
                         pointerEvents: "none",
                     }}
                 >
-                    <Typography
-                        variant="h5"
-                        sx={{
-                            lineHeight: 1.7,
-                            textAlign: "center",
-                            fontFamily: fonts.nostromoBlack,
-                            span: { color: colors.neonBlue, fontFamily: "inherit" },
-                        }}
-                    >
-                        <span>Click</span> or <span>Spacebar</span>
-                        <br />
-                        to start repairing
-                    </Typography>
+                    <Box sx={{ p: ".6rem 1rem", backgroundColor: "#000000CD" }}>
+                        <Typography
+                            variant="h5"
+                            sx={{
+                                lineHeight: 1.7,
+                                textAlign: "center",
+                                fontFamily: fonts.nostromoBlack,
+                                span: { color: colors.orange },
+                            }}
+                        >
+                            <span>Click</span> or <span>Spacebar</span>
+                            <br />
+                            to start repairing
+                        </Typography>
+                    </Box>
                 </Stack>
 
                 {/* Game over text */}
                 <Stack
-                    spacing=".4rem"
                     alignItems="center"
                     sx={{
                         position: "absolute",
@@ -191,17 +201,16 @@ const TowerStackInner = ({
                         pointerEvents: "none",
                     }}
                 >
-                    <Typography variant="h3" sx={{ textAlign: "center", fontFamily: fonts.nostromoHeavy }}>
-                        Game Over
-                    </Typography>
-                    <Typography
-                        variant="h6"
-                        sx={{ textAlign: "center", fontFamily: fonts.nostromoBlack, span: { color: colors.neonBlue, fontFamily: "inherit" } }}
-                    >
-                        You did great citizen
-                        <br />
-                        <span>Click</span> to continue
-                    </Typography>
+                    <Stack spacing=".4rem" sx={{ p: ".6rem 1rem", backgroundColor: "#000000CD" }}>
+                        <Typography variant="h3" sx={{ textAlign: "center", fontFamily: fonts.nostromoHeavy }}>
+                            Game Over
+                        </Typography>
+                        <Typography variant="h6" sx={{ textAlign: "center", fontFamily: fonts.nostromoBlack, span: { color: colors.orange } }}>
+                            You did great citizen
+                            <br />
+                            <span>Click</span> to continue
+                        </Typography>
+                    </Stack>
                 </Stack>
             </Box>
         )
@@ -219,7 +228,9 @@ const StaticGame = React.memo(function StaticGame({
 }) {
     // Initialize game
     useEffect(() => {
-        new Game(backgroundColor, setGameState, oneNewGamePattern)
+        setTimeout(() => {
+            new Game(backgroundColor, setGameState, oneNewGamePattern)
+        }, 100)
     }, [backgroundColor, oneNewGamePattern, setGameState])
 
     // Game container, must keep the id
@@ -233,6 +244,7 @@ const StaticGame = React.memo(function StaticGame({
                 bottom: 0,
                 left: 0,
                 right: 0,
+                backgroundColor,
             }}
         />
     )

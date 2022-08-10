@@ -61,8 +61,8 @@ export interface Transaction {
     transaction_reference: string
     created_at: Date
     description: string
-    debit_account_id: string
-    credit_account_id: string
+    debit: string
+    credit: string
     group: string
     sub_group: string
 }

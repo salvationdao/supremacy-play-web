@@ -40,7 +40,6 @@ export const MechThumbnail = ({ mech, mechDetails, smallSize }: { mech: MechBasi
                             padding: ".1rem .6rem",
                             lineHeight: 1.5,
                             backgroundColor: `${theme.factionTheme.background}DD`,
-                            fontFamily: "inherit",
                         }}
                     >
                         {rarityDeets.label}

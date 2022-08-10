@@ -31,7 +31,7 @@ export const AuthPage = ({ authTitle, authDescription }: { authTitle?: string; a
                     <SvgSupremacyLogo width="100%" height="3rem" />
 
                     <Typography variant="h6" sx={{ fontFamily: fonts.nostromoBlack }}>
-                        {authTitle || "PLEASE CONNECT YOUR WALLET TO CONTINUE"}
+                        {authTitle || "PLEASE CONNECT TO XSYN TO CONTINUE"}
                     </Typography>
 
                     {authDescription && <Typography>{authDescription}</Typography>}

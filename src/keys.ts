@@ -47,7 +47,6 @@ export enum GameServerKeys {
     GetMechDetails = "PLAYER:ASSET:MECH:DETAIL",
     SubMechQueuePosition = "PLAYER:ASSET:MECH:QUEUE:SUBSCRIBE",
     JoinQueue = "BATTLE:QUEUE:JOIN",
-    LeaveQueue = "BATTLE:QUEUE:LEAVE",
     MechQueueUpdated = "PLAYER:ASSET:MECH:QUEUE:UPDATE",
     TriggerMechStatusUpdate = "PLAYER:ASSET:MECH:STATUS:UPDATE",
     MechRename = "PLAYER:MECH:RENAME",

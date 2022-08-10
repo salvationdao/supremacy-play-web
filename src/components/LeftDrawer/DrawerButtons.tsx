@@ -51,7 +51,7 @@ export const DrawerButtons = () => {
         >
             <Tabs value={0} orientation="vertical" variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile sx={{ flex: 1 }}>
                 {ROUTES_ARRAY.map((r) => {
-                    if (!r.leftDrawer) return null
+                    if (!r.enable || !r.leftDrawer) return null
                     const { id, requireAuth, requireFaction } = r
                     const { enable, label } = r.leftDrawer
                     const disable = (requireAuth || requireFaction) && !userID

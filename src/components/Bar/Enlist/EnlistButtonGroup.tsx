@@ -34,7 +34,7 @@ export const EnlistButtonGroup = () => {
         //         />
         //     }
         // >
-        <Stack id="tutorial-enlist" direction="row" alignItems="center" sx={{ mx: "1.2rem", height: "100%" }}>
+        <Stack direction="row" alignItems="center" sx={{ mx: "1.2rem", height: "100%" }}>
             <Stack
                 direction="row"
                 alignItems="center"

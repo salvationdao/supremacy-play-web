@@ -15,6 +15,7 @@ export const MechMoveCommandAbility: PlayerAbility = {
     blueprint_id: "mech_move_command",
     count: 1,
     last_purchased_at: new Date(),
+    cooldown_expires_on: new Date(),
     ability: {
         id: "",
         game_client_ability_id: 8,
@@ -26,6 +27,7 @@ export const MechMoveCommandAbility: PlayerAbility = {
         location_select_type: LocationSelectType.MECH_COMMAND,
         created_at: new Date(),
         inventory_limit: 10,
+        cooldown_seconds: 5,
     },
 }
 

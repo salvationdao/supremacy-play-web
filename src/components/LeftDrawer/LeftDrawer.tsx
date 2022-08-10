@@ -60,7 +60,7 @@ export const LeftDrawer = () => {
                         </Stack>
 
                         {ROUTES_ARRAY.map((r) => {
-                            if (!r.leftDrawer) return null
+                            if (!r.enable || !r.leftDrawer) return null
                             const { requireAuth, requireFaction } = r
                             const { enable, label } = r.leftDrawer
                             const disable = (requireAuth || requireFaction) && !userID

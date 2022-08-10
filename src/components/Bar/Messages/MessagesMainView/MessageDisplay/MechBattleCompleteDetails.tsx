@@ -44,7 +44,6 @@ export const MechBattleCompleteDetails = ({ message, data }: MechBattleCompleteD
                             sx={{
                                 fontWeight: "fontWeightBold",
                                 span: {
-                                    fontFamily: "inherit",
                                     color: (theme) => theme.factionTheme.primary,
                                 },
                             }}
@@ -57,7 +56,7 @@ export const MechBattleCompleteDetails = ({ message, data }: MechBattleCompleteD
                         <Typography
                             sx={{
                                 fontWeight: "fontWeightBold",
-                                span: { color: ownedMechBrief.killed ? colors.red : colors.green, fontFamily: "inherit" },
+                                span: { color: ownedMechBrief.killed ? colors.red : colors.green },
                             }}
                         >
                             STATUS: <span>{ownedMechBrief.killed ? "OUT OF COMMISSION" : "SURVIVED"}</span>
@@ -68,7 +67,7 @@ export const MechBattleCompleteDetails = ({ message, data }: MechBattleCompleteD
                         <Typography
                             sx={{
                                 fontWeight: "fontWeightBold",
-                                span: { color: ownedMechBrief.kills > 0 ? colors.red : colors.lightGrey, fontFamily: "inherit" },
+                                span: { color: ownedMechBrief.kills > 0 ? colors.red : colors.lightGrey },
                             }}
                         >
                             KILLS: <span>{ownedMechBrief.kills}</span>
@@ -83,10 +82,7 @@ export const MechBattleCompleteDetails = ({ message, data }: MechBattleCompleteD
                 variant="h6"
                 sx={{
                     fontWeight: "fontWeightBold",
-                    span: {
-                        fontFamily: "inherit",
-                        color: data.faction_won ? colors.green : colors.red,
-                    },
+                    span: { color: data.faction_won ? colors.green : colors.red },
                 }}
             >
                 FACTION: <span>{data.faction_won ? " VICTORY!" : "DEFEATED!"}</span>

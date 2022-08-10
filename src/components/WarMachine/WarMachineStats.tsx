@@ -177,7 +177,6 @@ const WarMachineStatsInner = () => {
     return (
         <Slide in={show} direction="up">
             <Box
-                id="tutorial-mech-stats"
                 sx={{
                     position: "absolute",
                     bottom: 0,

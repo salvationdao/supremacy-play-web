@@ -24,8 +24,8 @@ export const UserInfo = ({ isGridView, marketUser, title }: { isGridView?: boole
                 }}
             >
                 {username}
-                <span style={{ marginLeft: ".2rem", opacity: 0.7, fontFamily: "inherit" }}>{`#${gid}`}</span>
-                <span style={{ color: colors.neonBlue, fontFamily: "inherit" }}>{isSelfItem ? " (YOU)" : ""}</span>
+                <span style={{ marginLeft: ".2rem", opacity: 0.7 }}>{`#${gid}`}</span>
+                <span style={{ color: colors.neonBlue }}>{isSelfItem ? " (YOU)" : ""}</span>
             </Typography>
         </General>
     )

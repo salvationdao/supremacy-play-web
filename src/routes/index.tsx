@@ -10,7 +10,7 @@ import { WeaponPage } from "../pages/WeaponPage"
 import { LiveChat } from "../components/RightDrawer/LiveChat/LiveChat"
 import { PlayerList } from "../components/RightDrawer/PlayerList/PlayerList"
 import { PlayerProfilePage } from "../components/PublicProfile/PlayerProfile"
-import { BATTLE_ARENA_OPEN } from "../constants"
+import { BATTLE_ARENA_OPEN, IS_TESTING_MODE } from "../constants"
 import { LeaderboardPage } from "../pages/LeaderboardPage"
 import { JobsPage } from "../pages/JobsPage"
 import { StorefrontCheckoutPage } from "../pages/StorefrontCheckoutPage"
@@ -33,6 +33,7 @@ interface RouteStruct {
         comingSoonLabel?: string
     }
     matchLeftDrawerID?: string // The /route which will make this button highlighted
+    enable: boolean
 }
 
 export const ROUTES_MAP: { [name: string]: RouteStruct } = {
@@ -49,6 +50,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
             comingSoonLabel: "Returning Soon",
         },
         matchLeftDrawerID: "home",
+        enable: true,
     },
 
     // Leaderboard
@@ -64,6 +66,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
             label: "Leaderboard",
         },
         matchLeftDrawerID: "leaderboard",
+        enable: true,
     },
 
     // Mech
@@ -75,6 +78,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         requireAuth: true,
         requireFaction: true,
         matchLeftDrawerID: "fleet",
+        enable: true,
     },
 
     // Weapon
@@ -86,6 +90,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         requireAuth: true,
         requireFaction: true,
         matchLeftDrawerID: "fleet",
+        enable: true,
     },
 
     // Fleet
@@ -101,6 +106,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
             label: "fleet",
         },
         matchLeftDrawerID: "fleet",
+        enable: true,
     },
 
     // Storefront
@@ -116,6 +122,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
             label: "Storefront",
         },
         matchLeftDrawerID: "storefront",
+        enable: !IS_TESTING_MODE,
     },
     storefront_checkout: {
         id: "storefront",
@@ -136,6 +143,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         requireAuth: true,
         requireFaction: true,
         matchLeftDrawerID: "marketplace",
+        enable: !IS_TESTING_MODE,
     },
     marketplace_item: {
         id: "marketplace_item",
@@ -145,6 +153,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         requireAuth: true,
         requireFaction: true,
         matchLeftDrawerID: "marketplace",
+        enable: !IS_TESTING_MODE,
     },
     marketplace: {
         id: "marketplace",
@@ -158,6 +167,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
             label: "Marketplace",
         },
         matchLeftDrawerID: "marketplace",
+        enable: !IS_TESTING_MODE,
     },
 
     // Player profile
@@ -168,6 +178,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         Component: PlayerProfilePage,
         requireAuth: false,
         requireFaction: false,
+        enable: true,
     },
 
     // Jobs
@@ -183,6 +194,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
             label: "Jobs",
         },
         matchLeftDrawerID: "jobs",
+        enable: true,
     },
 
     // FIAT related
@@ -193,6 +205,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         Component: BillingHistoryPage,
         requireAuth: true,
         requireFaction: true,
+        enable: true,
     },
 
     // Others
@@ -202,11 +215,13 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         exact: true,
         Component: ClaimPage,
         requireAuth: true,
-        authTitle: "Connect Your Wallet to Claim Your Rewards",
+        authTitle: "Connect to XSYN to Claim Your Rewards",
         authDescription:
             "You will receive assets that are of Supremacy's next generation collection: Supremacy Nexus, which will allow you to equip your war machines to defeat your enemies in the battle arena.",
         requireFaction: true,
+        enable: true,
     },
+
     not_found_page: {
         id: "not_found_page",
         path: "/404",
@@ -214,6 +229,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         Component: NotFoundPage,
         requireAuth: false,
         requireFaction: false,
+        enable: true,
     },
 }
 
