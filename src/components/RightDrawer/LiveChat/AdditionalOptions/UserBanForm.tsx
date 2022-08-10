@@ -19,21 +19,23 @@ interface SubmitRequest {
     reason: string
 }
 
-const UserItem = ({ banUser, sx }: {banUser: BanUser; sx?: SxProps }) => {
+const UserItem = ({ banUser, sx }: { banUser: BanUser; sx?: SxProps }) => {
     return (
-<Stack direction="row" spacing=".6rem" alignItems="center" sx={sx}>
-<Player player={{
-    id: banUser.id,
-    username: banUser.username,
-    gid: banUser.gid,
-    faction_id: "",
-    rank: "NEW_RECRUIT",
-    features: []
-}} styledImageTextProps={{ textColor: "#FFFFFF" }} />
-</Stack>
+        <Stack direction="row" spacing=".6rem" alignItems="center" sx={sx}>
+            <Player
+                player={{
+                    id: banUser.id,
+                    username: banUser.username,
+                    gid: banUser.gid,
+                    faction_id: "",
+                    rank: "NEW_RECRUIT",
+                    features: [],
+                }}
+                styledImageTextProps={{ textColor: "#FFFFFF" }}
+            />
+        </Stack>
     )
 }
-
 
 export const UserBanForm = ({ open, onClose, prefillUser }: { open: boolean; onClose: () => void; prefillUser?: BanUser }) => {
     const theme = useTheme()
