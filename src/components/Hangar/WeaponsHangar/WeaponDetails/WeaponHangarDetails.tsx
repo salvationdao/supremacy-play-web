@@ -1,8 +1,8 @@
 import { Box, CircularProgress, Stack, Typography, useTheme } from "@mui/material"
-import { useEffect, useMemo, useState } from "react"
-import { SvgStats } from "../../../../assets"
+import { useMemo, useState } from "react"
+import { SvgSkin, SvgStats } from "../../../../assets"
 import { getRarityDeets, getWeaponDamageTypeColor, getWeaponTypeColor } from "../../../../helpers"
-import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
+import { useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { fonts } from "../../../../theme/theme"
 import { Weapon } from "../../../../types"
@@ -15,29 +15,25 @@ import { WeaponViewer } from "./WeaponViewer"
 
 export const WeaponHangarDetailsInner = ({ weaponID }: { weaponID: string }) => {
     const theme = useTheme()
-    const { send } = useGameServerCommandsFaction("/faction_commander")
     const [weaponDetails, setWeaponDetails] = useState<Weapon>()
 
-    const rarityDeets = useMemo(() => getRarityDeets(weaponDetails?.tier || ""), [weaponDetails])
+    const rarityDeets = useMemo(() => getRarityDeets(weaponDetails?.weapon_skin?.tier || weaponDetails?.tier || ""), [weaponDetails])
 
-    useEffect(() => {
-        ;(async () => {
-            try {
-                const resp = await send<Weapon>(GameServerKeys.GetWeaponDetails, {
-                    weapon_id: weaponID,
-                })
-
-                if (!resp) return
-                setWeaponDetails(resp)
-            } catch (e) {
-                console.error(e)
-            }
-        })()
-    }, [weaponID, send])
+    useGameServerSubscriptionFaction<Weapon>(
+        {
+            URI: `/weapon/${weaponID}/details`,
+            key: GameServerKeys.GetWeaponDetails,
+        },
+        (payload) => {
+            if (!payload) return
+            setWeaponDetails(payload)
+        },
+    )
 
     const primaryColor = theme.factionTheme.primary
     const backgroundColor = theme.factionTheme.background
     const avatarUrl = weaponDetails?.weapon_skin?.avatar_url || weaponDetails?.avatar_url
+    const imageUrl = weaponDetails?.weapon_skin?.image_url || weaponDetails?.image_url
 
     return (
         <Stack direction="row" spacing="1rem" sx={{ height: "100%" }}>
@@ -55,12 +51,17 @@ export const WeaponHangarDetailsInner = ({ weaponID }: { weaponID: string }) => 
                 }}
                 opacity={0.7}
                 backgroundColor={backgroundColor}
-                sx={{ flexShrink: 0, height: "100%", width: "41rem" }}
+                sx={{ flexShrink: 0, height: "100%", width: "38rem" }}
             >
                 <Stack sx={{ height: "100%" }}>
                     <ClipThing clipSize="10px" corners={{ topRight: true }} opacity={0.7} sx={{ flexShrink: 0 }}>
                         <Box sx={{ position: "relative", borderBottom: `${primaryColor}60 1.5px solid` }}>
-                            <MediaPreview imageUrl={avatarUrl} objectFit="cover" objectPosition="50% 40%" />
+                            <MediaPreview
+                                imageUrl={imageUrl || avatarUrl}
+                                objectFit="cover"
+                                sx={{ height: "32rem" }}
+                                imageTransform="rotate(-30deg) scale(.95)"
+                            />
 
                             <Box sx={{ position: "absolute", top: 0, bottom: 0, left: 0, right: 0, background: `linear-gradient(#FFFFFF00 60%, #00000050)` }} />
                         </Box>
@@ -95,9 +96,12 @@ export const WeaponHangarDetailsInner = ({ weaponID }: { weaponID: string }) => 
                                 <Stack spacing="1.6rem" sx={{ p: "1rem 1rem" }}>
                                     {/* Weapon avatar, label, name etc */}
                                     <Stack spacing=".5rem">
-                                        <Typography variant="body2" sx={{ color: rarityDeets.color, fontFamily: fonts.nostromoHeavy }}>
-                                            {rarityDeets.label}
-                                        </Typography>
+                                        <Stack spacing=".5rem" direction="row" alignItems="center">
+                                            <SvgSkin fill={rarityDeets.color} />
+                                            <Typography variant="body2" sx={{ color: rarityDeets.color, fontFamily: fonts.nostromoHeavy }}>
+                                                {rarityDeets.label}
+                                            </Typography>
+                                        </Stack>
 
                                         <Typography sx={{ fontFamily: fonts.nostromoBlack }}>{weaponDetails.label}</Typography>
                                     </Stack>
@@ -160,7 +164,6 @@ export const WeaponHangarDetailsInner = ({ weaponID }: { weaponID: string }) => 
                     borderColor: primaryColor,
                     borderThickness: ".3rem",
                 }}
-                opacity={0.7}
                 backgroundColor={backgroundColor}
                 sx={{ height: "100%", flex: 1 }}
             >
