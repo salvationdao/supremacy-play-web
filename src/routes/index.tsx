@@ -132,6 +132,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         requireAuth: true,
         requireFaction: true,
         matchLeftDrawerID: "storefront",
+        enable: !IS_TESTING_MODE,
     },
 
     // Marketplace

@@ -17,7 +17,7 @@ export const StorefrontCheckoutPage = () => {
 
     useEffect(() => {
         if (!id || !Object.values(STOREFRONT_TABS).includes(type)) goBack()
-    }, [goBack, type])
+    }, [goBack, type, id])
 
     return (
         <Stack

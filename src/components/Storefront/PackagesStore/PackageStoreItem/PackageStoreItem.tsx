@@ -1,4 +1,5 @@
 import { Box, Stack, Skeleton, Typography } from "@mui/material"
+import { useHistory } from "react-router-dom"
 import { useStripe } from "@stripe/react-stripe-js"
 import { useMutation } from "react-fetching-library"
 import { SafePNG } from "../../../../assets"
@@ -19,6 +20,7 @@ interface PackageStoreItemProps {
 export const PackageStoreItem = ({ enlargedView, item }: PackageStoreItemProps) => {
     const theme = useTheme()
     const stripe = useStripe()
+    const history = useHistory()
     const { loading, mutate } = useMutation(CreateCheckoutSession)
 
     const primaryColor = theme.factionTheme.primary
@@ -27,32 +29,35 @@ export const PackageStoreItem = ({ enlargedView, item }: PackageStoreItemProps) 
     const buyNowClickHandler = async () => {
         if (!stripe) return
 
-        try {
-            const host = window.location.protocol + "//" + window.location.host
+        history.push(`/storefront/packages/${item.id}`)
 
-            const { payload: sessionID, error } = await mutate({
-                product_id: item.id,
-                product_type: "generic",
-                success_url: host + "/storefront/packages",
-                cancel_url: host + "/storefront/packages",
-            })
+        // TODO: Remove if confirmed not using simple stripe checkout session :(
+        // try {
+        //     const host = window.location.protocol + "//" + window.location.host
 
-            if (error || !sessionID) {
-                return
-            }
+        //     const { payload: sessionID, error } = await mutate({
+        //         product_id: item.id,
+        //         product_type: "generic",
+        //         success_url: host + "/storefront/packages",
+        //         cancel_url: host + "/storefront/packages",
+        //     })
 
-            const resp = await stripe.redirectToCheckout({
-                sessionId: sessionID,
-            })
+        //     if (error || !sessionID) {
+        //         return
+        //     }
 
-            if (resp.error) {
-                // TODO: Handle errors :/
-                return
-            }
-        } catch (err) {
-            const message = typeof err === "string" ? err : "Unable to start checkout, please try again."
-            console.error(message)
-        }
+        //     const resp = await stripe.redirectToCheckout({
+        //         sessionId: sessionID,
+        //     })
+
+        //     if (resp.error) {
+        //         // TODO: Handle errors :/
+        //         return
+        //     }
+        // } catch (err) {
+        //     const message = typeof err === "string" ? err : "Unable to start checkout, please try again."
+        //     console.error(message)
+        // }
     }
 
     return (
