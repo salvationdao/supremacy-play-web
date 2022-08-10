@@ -39,7 +39,9 @@ export interface MechMoveCommand {
     cell_y: number
     cancelled_at?: string
     reached_at?: string
+    is_moving: boolean
     remain_cooldown_seconds: number
+    is_mini_mech: boolean
 }
 
 export const MoveCommand = ({ warMachine, isAlive, smallVersion }: { warMachine: WarMachineState; isAlive: boolean; smallVersion?: boolean }) => {
@@ -67,7 +69,7 @@ export const MoveCommand = ({ warMachine, isAlive, smallVersion }: { warMachine:
             isAlive={isAlive}
             hash={hash}
             remainCooldownSeconds={mechMoveCommand.remain_cooldown_seconds}
-            isMoving={!mechMoveCommand?.reached_at && !mechMoveCommand?.cancelled_at && mechMoveCommand.remain_cooldown_seconds !== 0}
+            isMoving={mechMoveCommand.is_moving}
             isCancelled={!!mechMoveCommand.cancelled_at}
             mechMoveCommandID={mechMoveCommand.id}
             smallVersion={smallVersion}
