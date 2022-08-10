@@ -568,7 +568,6 @@ export const LayerList = ({ setLayer, layerType, primaryColor }: LayerListProps)
                             sx={{
                                 px: "1rem",
                                 py: ".7rem",
-                                // borderTop: `${primaryColour}70 1.5px solid`,
                                 backgroundColor: "#00000070",
                             }}
                         >
@@ -578,10 +577,6 @@ export const LayerList = ({ setLayer, layerType, primaryColor }: LayerListProps)
                                 page={page}
                                 sx={{
                                     ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold },
-                                    ".Mui-selected": {
-                                        // color: primaryColour,
-                                        // backgroundColor: `${primaryColour} !important`,
-                                    },
                                 }}
                                 onChange={(e, p) => changePage(p)}
                                 showFirstButton
