@@ -1,12 +1,14 @@
 import { IconButton, Slider, Stack } from "@mui/material"
-import { useCallback } from "react"
-import { SvgFullscreen, SvgMusic, SvgMusicMute, SvgVolume, SvgVolumeMute } from "../../assets"
+import { useCallback, useEffect, useState } from "react"
+import { SvgFullscreen, SvgMinimize, SvgMusic, SvgMusicMute, SvgVolume, SvgVolumeMute } from "../../assets"
 import { DEV_ONLY } from "../../constants"
 import { useMobile, useStream } from "../../containers"
+import { siteZIndex } from "../../theme/theme"
 
 export const VideoPlayerControls = () => {
-    const { isMobile } = useMobile()
+    const { isMobile, isMobileHorizontal } = useMobile()
     const { toggleIsMute, isMute, toggleIsMusicMute, isMusicMute, musicVolume, setMusicVolume, volume, setVolume } = useStream()
+    const [fullscreen, setFullscreen] = useState(false)
 
     const handleVolumeChange = useCallback(
         (_: Event, newValue: number | number[]) => {
@@ -22,18 +24,51 @@ export const VideoPlayerControls = () => {
         [setMusicVolume],
     )
 
-    const toggleFullscreen = useCallback(() => {
-        const elem = document.documentElement
-        const doc = document
+    const toggleFullscreen = useCallback(
+        (newValue?: boolean) => {
+            setFullscreen((prev) => {
+                if (isMobile) {
+                    const elem = document.getElementById("battle-arena-all")
+                    if (!elem) return prev
 
-        if (window.innerWidth == screen.width && window.innerHeight == screen.height && doc.exitFullscreen) {
-            doc.exitFullscreen()
-            return
+                    if (prev && !newValue) {
+                        elem.style.position = ""
+                        elem.style.top = ""
+                        elem.style.left = ""
+                        elem.style.zIndex = ""
+                        return false
+                    } else {
+                        elem.style.position = "fixed"
+                        elem.style.top = "0"
+                        elem.style.left = "0"
+                        elem.style.zIndex = `${siteZIndex.Bar + 10}`
+                        return true
+                    }
+                } else {
+                    // Normal fullscreen operations
+                    const elem = document.documentElement
+
+                    if (prev && !newValue) {
+                        document.exitFullscreen()
+                        return false
+                    } else if (elem.requestFullscreen) {
+                        elem.requestFullscreen()
+                        return true
+                    }
+
+                    return prev
+                }
+            })
+        },
+        [isMobile],
+    )
+
+    useEffect(() => {
+        if (isMobile) {
+            toggleFullscreen(isMobileHorizontal)
         }
-        if (elem.requestFullscreen) {
-            elem.requestFullscreen()
-        }
-    }, [])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isMobileHorizontal])
 
     return (
         <Stack direction="row" alignItems="center">
@@ -81,9 +116,9 @@ export const VideoPlayerControls = () => {
                 )}
             </Stack>
 
-            {!isMobile && (
-                <IconButton size="small" onClick={toggleFullscreen} sx={{ opacity: 0.5, transition: "all .2s", ":hover": { opacity: 1 } }}>
-                    <SvgFullscreen size="1.4rem" />
+            {(!isMobile || isMobileHorizontal) && (
+                <IconButton size="small" onClick={() => toggleFullscreen()} sx={{ opacity: 0.5, transition: "all .2s", ":hover": { opacity: 1 } }}>
+                    {fullscreen ? <SvgMinimize size="1.4rem" /> : <SvgFullscreen size="1.4rem" />}
                 </IconButton>
             )}
         </Stack>

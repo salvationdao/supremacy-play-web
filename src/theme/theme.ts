@@ -121,7 +121,6 @@ export enum siteZIndex {
     Drawer = 298,
     Popover = 297,
     Tooltip = 296,
-    LoadMessage = 250,
 
     // Stream site top elements
     Bar = 199,
