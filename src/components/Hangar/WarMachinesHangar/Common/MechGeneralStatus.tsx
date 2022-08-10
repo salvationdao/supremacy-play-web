@@ -133,7 +133,7 @@ export const MechGeneralStatus = ({
                         direction="row"
                         alignItems="center"
                         spacing=".5rem"
-                        sx={{ position: "absolute", left: "100%", top: "50%", transform: "translateY(-50%)", px: ".4rem", pb: ".1rem" }}
+                        sx={{ position: "absolute", left: "100%", top: "50%", transform: "translateY(-50%)", px: ".4rem", pb: ".3rem" }}
                     >
                         {mechDetails && mechStatus?.status === MechStatusEnum.Damaged && (
                             <Button
