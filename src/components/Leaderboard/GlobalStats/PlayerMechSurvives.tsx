@@ -9,6 +9,7 @@ import { colors, fonts } from "../../../theme/theme"
 import { User } from "../../../types"
 import { CoolTable } from "../../Common/CoolTable"
 import { Player } from "../../Common/Player"
+import { useAuth } from "../../../containers/auth"
 
 interface RankItem {
     player: User
@@ -17,6 +18,7 @@ interface RankItem {
 
 export const PlayerMechSurvives = () => {
     const theme = useTheme()
+    const { userID } = useAuth()
     const { getFaction } = useSupremacy()
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommands("/public/commander")
@@ -77,6 +79,12 @@ export const PlayerMechSurvives = () => {
                     if (rank === 3) color = colors.bronze
 
                     return {
+                        rowProps: {
+                            sx: {
+                                backgroundColor: item.player.id === userID ? `${rank <= 3 ? color : primaryColor}20` : "unset",
+                                border: item.player.id === userID ? `${rank <= 3 ? color : primaryColor} 3px solid` : "unset",
+                            },
+                        },
                         cells: [
                             <Typography
                                 key={1}
