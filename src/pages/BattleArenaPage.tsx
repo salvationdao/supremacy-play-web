@@ -40,7 +40,7 @@ export const BattleArenaPage = () => {
 
 const BattleArenaPageInner = () => {
     const { userID, factionID, userHasFeature } = useAuth()
-    const { isMobile, isMobileHorizontal, setAdditionalTabs, setIsNavOpen, allowCloseNav } = useMobile()
+    const { isMobile, setAdditionalTabs, setIsNavOpen, allowCloseNav } = useMobile()
     const { isQuickDeployOpen, toggleIsQuickDeployOpen, isQuickPlayerAbilitiesOpen, toggleIsQuickPlayerAbilitiesOpen } = useSupremacy()
     const { triggerReset } = useDimension()
 
@@ -179,16 +179,7 @@ const BattleArenaPageInner = () => {
     }
 
     return (
-        <Stack
-            sx={{
-                position: isMobileHorizontal ? "fixed" : "relative",
-                top: 0,
-                left: 0,
-                width: "100%",
-                height: "100%",
-                zIndex: isMobileHorizontal ? siteZIndex.Bar + 10 : siteZIndex.RoutePage,
-            }}
-        >
+        <Stack id="battle-arena-all" sx={{ width: "100%", height: "100%", zIndex: siteZIndex.RoutePage }}>
             <Box id={isMobile ? "" : "game-ui-container"} sx={{ position: "relative", flex: 1 }}>
                 <Stream />
 
