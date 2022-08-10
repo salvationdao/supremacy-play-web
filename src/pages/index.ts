@@ -1,5 +1,6 @@
 export * from "./BattleArenaPage"
 export * from "./HangarPage"
 export * from "./MarketplacePage"
+export * from "./BillingHistoryPage"
 export * from "./NotFoundPage"
 export * from "./ClaimPage"

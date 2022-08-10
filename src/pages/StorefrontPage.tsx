@@ -15,6 +15,7 @@ export enum STOREFRONT_TABS {
     Skins = "skins",
     Abilities = "abilities",
     Merchandise = "merchandise",
+    Packages = "packages",
 }
 
 export const StorefrontPage = () => {
@@ -90,6 +91,8 @@ export const StorefrontPage = () => {
                             >
                                 <Tab label="MYSTERY CRATES" value={STOREFRONT_TABS.MysteryCrates} />
 
+                                {/* <Tab label="PACKAGES" value={STOREFRONT_TABS.Packages} /> */}
+
                                 <Tab label="ABILITIES" value={STOREFRONT_TABS.Abilities} />
                             </Tabs>
                         </Box>
@@ -100,6 +103,10 @@ export const StorefrontPage = () => {
 
                 <TabPanel currentValue={currentValue} value={STOREFRONT_TABS.MysteryCrates}>
                     <MysteryCratesStore />
+                </TabPanel>
+
+                <TabPanel currentValue={currentValue} value={STOREFRONT_TABS.Packages}>
+                    {/* <PackagesStore /> */}
                 </TabPanel>
 
                 <TabPanel currentValue={currentValue} value={STOREFRONT_TABS.Abilities}>

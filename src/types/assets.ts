@@ -8,13 +8,6 @@ export enum MechStatusEnum {
     Sold = "SOLD",
     BattleReady = "BATTLE_READY",
     Damaged = "DAMAGED",
-    StandardRepairing = "REPAIRING (STANDARD)",
-    FastRepairing = "REPAIRING (FAST)",
-}
-
-export enum RepairType {
-    Standard = "START_STANDARD_REPAIR",
-    Fast = "START_FAST_REPAIR",
 }
 
 export enum WeaponType {
@@ -59,6 +52,7 @@ export interface MechRepairStatus {
 export interface MechStatus {
     status: MechStatusEnum
     queue_position?: number
+    can_deploy?: boolean
 }
 
 export interface AssetDurability {
@@ -174,6 +168,7 @@ export interface MechModel extends Collection {
     external_url?: string
     youtube_url?: string
     created_at: Date
+    repair_blocks: number
 }
 
 export interface BlueprintMechSkin extends Collection {
@@ -389,6 +384,8 @@ export interface WarMachineState {
     imageAvatar: string
     maxShield: number
     ownedByID: string
+    ownerUsername: string
+    modelID: string
     description?: string | null
     externalUrl: string
     name: string
@@ -422,12 +419,6 @@ export interface WarMachineMetadata {
     name: string
     model: string
     image: string
-}
-
-export interface RepairStatus {
-    total_required_seconds: number
-    remain_seconds: number
-    full_repair_fee: string
 }
 
 export enum MysteryCrateType {
@@ -518,4 +509,13 @@ export interface Rarity {
     label: string
     color: string
     textColor: string
+}
+
+export interface StorefrontPackage {
+    id: string
+    name: string
+    description: string
+    currency: string
+    price_dollars: number
+    price_cents: number
 }

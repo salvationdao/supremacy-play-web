@@ -26,6 +26,8 @@ export enum SortTypeLabel {
     MechQueueDesc = "Queue: highest first",
     RarestAsc = "Rarity: least rarest",
     RarestDesc = "Rarity: most rarest",
+    RewardAmountHighest = "Reward: highest first",
+    RewardAmountLowest = "Reward: lowest first",
 }
 
 export interface MarketUser {

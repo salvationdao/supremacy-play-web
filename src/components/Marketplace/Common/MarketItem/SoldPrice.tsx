@@ -3,7 +3,8 @@ import BigNumber from "bignumber.js"
 import { useMemo } from "react"
 import { SvgSupToken } from "../../../../assets"
 import { numFormatter } from "../../../../helpers"
-import { colors, fonts } from "../../../../theme/theme"
+import { colors } from "../../../../theme/theme"
+import { General } from "./General"
 
 export const SoldPrice = ({ isGridView, soldFor }: { isGridView?: boolean; soldFor: string }) => {
     const formattedPrice = useMemo(() => {
@@ -11,15 +12,11 @@ export const SoldPrice = ({ isGridView, soldFor }: { isGridView?: boolean; soldF
     }, [soldFor])
 
     return (
-        <Stack spacing={isGridView ? ".1rem" : ".6rem"}>
-            <Typography variant="subtitle2" sx={{ fontFamily: fonts.nostromoBlack, color: colors.grey }}>
-                SOLD FOR
-            </Typography>
-
+        <General isGridView={isGridView} title="SOLD FOR">
             <Stack direction="row" alignItems="center" flexWrap="wrap">
                 <SvgSupToken size="1.7rem" fill={colors.marketSold} />
                 <Typography sx={{ color: colors.marketSold, fontWeight: "fontWeightBold" }}>{formattedPrice}</Typography>
             </Stack>
-        </Stack>
+        </General>
     )
 }

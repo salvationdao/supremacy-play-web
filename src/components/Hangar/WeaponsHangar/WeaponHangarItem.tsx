@@ -66,7 +66,7 @@ export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGri
                         ...(isGridView
                             ? {
                                   "&>*:not(:last-child)": {
-                                      mb: ".8rem",
+                                      mb: "1rem",
                                   },
                               }
                             : {}),
@@ -142,10 +142,10 @@ export const WeaponCommonArea = ({
                 <MediaPreview imageUrl={imageUrl || avatarUrl} objectFit={isGridView ? "cover" : "contain"} imageTransform="rotate(-30deg) scale(.95)" />
             </Box>
             <Stack
-                spacing={isGridView ? ".1rem" : ".2rem"}
+                spacing=".2rem"
                 sx={{
                     flex: 1,
-                    pr: toggleIsExpanded ? "3rem" : "unset",
+                    pr: !isGridView && toggleIsExpanded ? "3rem" : "unset",
                     ":hover": {
                         ".expandArrow": {
                             transform: "translateX(4px)",
@@ -159,21 +159,27 @@ export const WeaponCommonArea = ({
                     toggleIsExpanded()
                 }}
             >
-                <Typography
-                    variant="body2"
-                    sx={{
-                        color: getWeaponTypeColor(weaponDetails?.weapon_type),
-                        fontFamily: fonts.nostromoBold,
-                        display: "-webkit-box",
-                        overflow: "hidden",
-                        overflowWrap: "anywhere",
-                        textOverflow: "ellipsis",
-                        WebkitLineClamp: 1, // change to max number of lines
-                        WebkitBoxOrient: "vertical",
-                    }}
-                >
-                    {weap?.weapon_type}
-                </Typography>
+                <Stack direction="row" alignItems="center" spacing=".5rem">
+                    {weap?.weapon_skin && (
+                        <Typography
+                            variant="body2"
+                            sx={{
+                                color: rarityDeets.color,
+                                fontFamily: fonts.nostromoBold,
+                                display: "-webkit-box",
+                                overflow: "hidden",
+                                overflowWrap: "anywhere",
+                                textOverflow: "ellipsis",
+                                WebkitLineClamp: 1,
+                                WebkitBoxOrient: "vertical",
+                            }}
+                        >
+                            {rarityDeets.label}
+                        </Typography>
+                    )}
+
+                    <SvgSkin fill={weap?.weapon_skin ? rarityDeets.color : `${colors.darkGrey}80`} size="1.7rem" />
+                </Stack>
 
                 <Typography
                     sx={{
@@ -189,27 +195,21 @@ export const WeaponCommonArea = ({
                     {weap?.label}
                 </Typography>
 
-                <Stack direction="row" alignItems="center" spacing=".5rem">
-                    <SvgSkin fill={weap?.weapon_skin ? colors.chassisSkin : `${colors.darkGrey}80`} size="1.5rem" />
-
-                    {weap?.weapon_skin && (
-                        <Typography
-                            variant="caption"
-                            sx={{
-                                fontFamily: fonts.nostromoBold,
-                                display: "-webkit-box",
-                                overflow: "hidden",
-                                overflowWrap: "anywhere",
-                                textOverflow: "ellipsis",
-                                WebkitLineClamp: 1,
-                                WebkitBoxOrient: "vertical",
-                            }}
-                        >
-                            <span style={{ color: colors.chassisSkin, fontFamily: "inherit" }}>{weap?.weapon_skin.label}</span>{" "}
-                            <span style={{ color: rarityDeets.color, fontFamily: "inherit" }}>[{rarityDeets.label}]</span>
-                        </Typography>
-                    )}
-                </Stack>
+                <Typography
+                    variant="body2"
+                    sx={{
+                        color: getWeaponTypeColor(weaponDetails?.weapon_type),
+                        fontFamily: fonts.nostromoBold,
+                        display: "-webkit-box",
+                        overflow: "hidden",
+                        overflowWrap: "anywhere",
+                        textOverflow: "ellipsis",
+                        WebkitLineClamp: 1, // change to max number of lines
+                        WebkitBoxOrient: "vertical",
+                    }}
+                >
+                    {weap?.weapon_type}
+                </Typography>
 
                 {toggleIsExpanded && !isGridView && (
                     <Stack

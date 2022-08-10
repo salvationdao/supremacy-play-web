@@ -77,7 +77,7 @@ export interface BanOption {
 }
 
 export interface ChatMessageType {
-    id?: string
+    id: string
     type: "TEXT" | "PUNISH_VOTE" | "SYSTEM_BAN" | "NEW_BATTLE"
     data: TextMessageData | PunishMessageData | SystemBanMessageData | NewBattleMessageData
     sent_at: Date
@@ -97,7 +97,7 @@ export interface TextMessageMetadata {
 export type TaggedUsersRead = { [gid: number]: boolean }
 
 export interface TextMessageData {
-    id?: string
+    id: string
     from_user: User
     message_color?: string
     avatar_id?: string

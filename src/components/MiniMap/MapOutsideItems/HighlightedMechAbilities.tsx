@@ -11,7 +11,7 @@ import { AIType, GameAbility, WarMachineLiveState, WarMachineState } from "../..
 import { MoveCommand } from "../../WarMachine/WarMachineItem/MoveCommand"
 
 export const HighlightedMechAbilities = () => {
-    const { factionID } = useAuth()
+    const { userID } = useAuth()
     const { bribeStage, warMachines, spawnedAI } = useGame()
     const { highlightedMechParticipantID, isTargeting } = useMiniMap()
 
@@ -21,7 +21,7 @@ export const HighlightedMechAbilities = () => {
         return [...(warMachines || []), ...(spawnedAI || [])].find((m) => m.participantID === highlightedMechParticipantID)
     }, [highlightedMechParticipantID, spawnedAI, warMachines])
 
-    if (isTargeting || !highlightedMechParticipantID || !highlightedMech || highlightedMech?.factionID !== factionID || !isVoting) {
+    if (isTargeting || !highlightedMechParticipantID || !highlightedMech || highlightedMech?.ownedByID !== userID || !isVoting) {
         return null
     }
 
@@ -58,7 +58,7 @@ const HighlightedMechAbilitiesInner = ({ warMachine }: { warMachine: WarMachineS
         },
     )
 
-    if (!gameAbilities || gameAbilities.length <= 0 || !isAlive) {
+    if (!isAlive) {
         return null
     }
 
@@ -84,6 +84,8 @@ const HighlightedMechAbilitiesInner = ({ warMachine }: { warMachine: WarMachineS
                     sx={{ p: ".8rem .9rem", width: "15rem" }}
                 >
                     {!isMiniMech &&
+                        gameAbilities &&
+                        gameAbilities.length > 0 &&
                         gameAbilities.map((ga) => {
                             return <AbilityItem key={ga.id} hash={warMachine.hash} participantID={participantID} ability={ga} />
                         })}
@@ -176,7 +178,7 @@ const AbilityItem = ({ hash, participantID, ability }: { hash: string; participa
                     WebkitBoxOrient: "vertical",
                 }}
             >
-                {ready ? label : `${remainSeconds}s`}
+                {ready ? label : remainSeconds > 300 ? "∞" : `${remainSeconds}s`}
             </Typography>
         </Stack>
     )

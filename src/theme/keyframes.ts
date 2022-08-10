@@ -34,3 +34,8 @@ export const scaleUpKeyframes = keyframes({
     "50%": { transform: "scale(1.2)" },
     "100%": { transform: "scale(1)" },
 })
+
+export const heightEffect = (to = 100) => keyframes`
+	0% { height: 0; }
+	100% { height: ${to}%; }
+`

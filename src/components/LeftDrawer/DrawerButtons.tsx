@@ -1,6 +1,5 @@
-import { Box, Button, Stack, Tab, Tabs } from "@mui/material"
+import { Box, Stack, Tab, Tabs } from "@mui/material"
 import { useHistory, useLocation, useRouteMatch } from "react-router-dom"
-import { SvgNext } from "../../assets"
 import { useAuth, useMobile } from "../../containers"
 import { useTheme } from "../../containers/theme"
 import { ROUTES_ARRAY } from "../../routes"
@@ -11,7 +10,7 @@ import { QuickPlayerAbilitiesButton } from "../QuickPlayerAbilities/QuickPlayerA
 const DRAWER_BAR_WIDTH = 3 // rem
 const BUTTON_WIDTH = 17 //rem
 
-export const DrawerButtons = ({ openLeftDrawer }: { openLeftDrawer: () => void }) => {
+export const DrawerButtons = () => {
     const { isMobile } = useMobile()
     const { userID } = useAuth()
     const theme = useTheme()
@@ -44,13 +43,15 @@ export const DrawerButtons = ({ openLeftDrawer }: { openLeftDrawer: () => void }
                     display: "none",
                 },
                 ".MuiSvgIcon-root": {
-                    fill: "#FFFFFF !important",
+                    fill: `${colors.neonBlue} !important`,
+                    width: "3rem",
+                    height: "3rem",
                 },
             }}
         >
             <Tabs value={0} orientation="vertical" variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile sx={{ flex: 1 }}>
                 {ROUTES_ARRAY.map((r) => {
-                    if (!r.leftDrawer) return null
+                    if (!r.enable || !r.leftDrawer) return null
                     const { id, requireAuth, requireFaction } = r
                     const { enable, label } = r.leftDrawer
                     const disable = (requireAuth || requireFaction) && !userID
@@ -80,23 +81,6 @@ export const DrawerButtons = ({ openLeftDrawer }: { openLeftDrawer: () => void }
                     return toRender
                 })}
             </Tabs>
-
-            <Button
-                onClick={() => openLeftDrawer()}
-                sx={{
-                    minWidth: 0,
-                    color: "#FFFFFF",
-                    borderRadius: 0,
-                    ":hover": {
-                        backgroundColor: (theme) => theme.factionTheme.primary,
-                        svg: {
-                            fill: (theme) => theme.factionTheme.secondary,
-                        },
-                    },
-                }}
-            >
-                <SvgNext size="1.6rem" fill="#FFFFFF" />
-            </Button>
         </Stack>
     )
 }

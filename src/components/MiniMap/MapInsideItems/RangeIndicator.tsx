@@ -9,7 +9,7 @@ interface RangeIndicatorProps {
     map: Map
 }
 
-export const RangeIndicator = ({ parentRef, map, mapScale: trueMapScale }: RangeIndicatorProps) => {
+export const RangeIndicator = ({ parentRef, map, mapScale: zoomScale }: RangeIndicatorProps) => {
     const { abilityDetails } = useGame()
     const { playerAbility, winner } = useMiniMap()
 
@@ -18,8 +18,7 @@ export const RangeIndicator = ({ parentRef, map, mapScale: trueMapScale }: Range
     const mapScale = useMemo(() => map.width / (map.cells_x * 2000), [map])
     const ability = useMemo(() => winner?.game_ability || playerAbility?.ability, [winner, playerAbility])
     const abilityDetail = typeof ability?.game_client_ability_id !== "undefined" ? abilityDetails[ability.game_client_ability_id] : undefined
-
-    const diameter = useMemo(() => (abilityDetail ? abilityDetail.radius * mapScale * trueMapScale * 2 : undefined), [abilityDetail, mapScale, trueMapScale])
+    const diameter = useMemo(() => (abilityDetail ? abilityDetail.radius * mapScale * zoomScale * 2 : undefined), [abilityDetail, mapScale, zoomScale])
 
     const handleMouseMove = useCallback(
         (e: MouseEvent) => {

@@ -1,7 +1,7 @@
 import { Box, CircularProgress, Stack, Typography, useTheme } from "@mui/material"
-import { useState } from "react"
-import { SvgStats } from "../../../../assets"
-import { getWeaponDamageTypeColor, getWeaponTypeColor } from "../../../../helpers"
+import { useMemo, useState } from "react"
+import { SvgSkin, SvgStats } from "../../../../assets"
+import { getRarityDeets, getWeaponDamageTypeColor, getWeaponTypeColor } from "../../../../helpers"
 import { useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { fonts } from "../../../../theme/theme"
@@ -16,6 +16,8 @@ import { WeaponViewer } from "./WeaponViewer"
 export const WeaponHangarDetailsInner = ({ weaponID }: { weaponID: string }) => {
     const theme = useTheme()
     const [weaponDetails, setWeaponDetails] = useState<Weapon>()
+
+    const rarityDeets = useMemo(() => getRarityDeets(weaponDetails?.weapon_skin?.tier || weaponDetails?.tier || ""), [weaponDetails])
 
     useGameServerSubscriptionFaction<Weapon>(
         {
@@ -49,7 +51,7 @@ export const WeaponHangarDetailsInner = ({ weaponID }: { weaponID: string }) => 
                 }}
                 opacity={0.7}
                 backgroundColor={backgroundColor}
-                sx={{ flexShrink: 0, height: "100%", width: "36rem" }}
+                sx={{ flexShrink: 0, height: "100%", width: "38rem" }}
             >
                 <Stack sx={{ height: "100%" }}>
                     <ClipThing clipSize="10px" corners={{ topRight: true }} opacity={0.7} sx={{ flexShrink: 0 }}>
@@ -57,8 +59,7 @@ export const WeaponHangarDetailsInner = ({ weaponID }: { weaponID: string }) => 
                             <MediaPreview
                                 imageUrl={imageUrl || avatarUrl}
                                 objectFit="cover"
-                                objectPosition="50% 40%"
-                                sx={{ minHeight: "20rem" }}
+                                sx={{ height: "32rem" }}
                                 imageTransform="rotate(-30deg) scale(.95)"
                             />
 
@@ -95,6 +96,13 @@ export const WeaponHangarDetailsInner = ({ weaponID }: { weaponID: string }) => 
                                 <Stack spacing="1.6rem" sx={{ p: "1rem 1rem" }}>
                                     {/* Weapon avatar, label, name etc */}
                                     <Stack spacing=".5rem">
+                                        <Stack spacing=".5rem" direction="row" alignItems="center">
+                                            <SvgSkin fill={rarityDeets.color} />
+                                            <Typography variant="body2" sx={{ color: rarityDeets.color, fontFamily: fonts.nostromoHeavy }}>
+                                                {rarityDeets.label}
+                                            </Typography>
+                                        </Stack>
+
                                         <Typography sx={{ fontFamily: fonts.nostromoBlack }}>{weaponDetails.label}</Typography>
                                     </Stack>
 

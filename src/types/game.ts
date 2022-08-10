@@ -1,4 +1,5 @@
 import { Faction, WarMachineState } from "."
+import { FactionIDs } from "./../constants"
 
 export interface FactionsAll {
     [faction_id: string]: Faction
@@ -117,6 +118,7 @@ export interface BlueprintPlayerAbility {
     location_select_type: LocationSelectType
     created_at: Date
     inventory_limit: number
+    cooldown_seconds: number
 }
 
 export interface PlayerAbility {
@@ -124,6 +126,7 @@ export interface PlayerAbility {
     blueprint_id: string
     count: number
     last_purchased_at: Date
+    cooldown_expires_on: Date
     ability: BlueprintPlayerAbility
 
     // Used for mech command related abilities
@@ -185,22 +188,19 @@ export interface BattleEndDetail {
     started_at: Date
     ended_at: Date
     winning_condition: string
-    winning_faction: {
-        id: string
-        label: string
-        theme: {
-            primary: string
-            secondary: string
-            background: string
-        }
-    }
+    winning_faction_id_order: FactionIDs[]
     winning_war_machines: WarMachineState[]
-    most_frequent_ability_executors: {
-        username: string
-        avatar_id: string
-        faction_id: string
-        faction_colour: string
-    }[]
+    mech_rewards: BattleMechReward[]
+}
+
+export interface BattleMechReward {
+    id: string
+    name?: string
+    label: string
+    faction_id: FactionIDs
+    avatar_url: string
+    rewarded_sups: string
+    owner_id: string
 }
 
 export interface WarMachineDestroyedRecord {

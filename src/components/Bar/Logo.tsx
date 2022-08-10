@@ -1,27 +1,41 @@
-import { Box, Stack, Typography } from "@mui/material"
+import { Box, IconButton, Stack, Typography, useMediaQuery } from "@mui/material"
 import React, { useState } from "react"
 import { Link } from "react-router-dom"
-import { SvgSupremacyLogo } from "../../assets"
-import { VERSION } from "../../constants"
-import { useMobile } from "../../containers"
+import { SvgHamburger, SvgSupremacyLogo } from "../../assets"
+import { IS_TESTING_MODE, VERSION } from "../../constants"
+import { useMobile, useOverlayToggles } from "../../containers"
 import { colors, fonts } from "../../theme/theme"
 
 export const Logo = React.memo(function Logo() {
+    const below1370 = useMediaQuery("(max-width:1370px)")
     const { isMobile } = useMobile()
-    const [text, setText] = useState<string>("EARLY ACCESS")
+    const [text, setText] = useState<string>(IS_TESTING_MODE ? "PROVING GROUNDS" : "EARLY ACCESS")
+    const { toggleIsLeftDrawerOpen } = useOverlayToggles()
 
     return (
-        <Stack direction="row" alignItems="center" spacing="1.44rem" sx={{ px: ".8rem", zIndex: 1 }}>
+        <Stack
+            direction="row"
+            alignItems="center"
+            spacing="1.3rem"
+            sx={{ zIndex: 1, height: "100%", pl: "1.2rem", pr: "2.2rem", borderRight: "#FFFFFF30 1px solid" }}
+        >
+            {below1370 && (
+                <IconButton size="small" onClick={() => toggleIsLeftDrawerOpen(true)}>
+                    <SvgHamburger size="2.3rem" />
+                </IconButton>
+            )}
+
             <Link to="/">
                 <SvgSupremacyLogo width="15rem" />
             </Link>
+
             {!isMobile && (
                 <Box
                     onMouseEnter={() => {
                         setText(`${VERSION.substring(0, 10)}...`)
                     }}
                     onMouseLeave={() => {
-                        setText("EARLY ACCESS")
+                        setText(IS_TESTING_MODE ? "PROVING GROUNDS" : "EARLY ACCESS")
                     }}
                     sx={{ pb: "2px" }}
                 >

@@ -78,6 +78,7 @@ export const WeaponsHangar = () => {
     })
 
     // Filters and sorts
+    const [isFiltersExpanded, toggleIsFiltersExpanded] = useToggle(localStorage.getItem("isWeaponsHangarFiltersExpanded") === "true")
     const [search, setSearch] = useState("")
     const [sort, setSort] = useState<string>(query.get("sort") || SortTypeLabel.Alphabetical)
     const [weaponTypes, setWeaponTypes] = useState<string[]>((query.get("weapon_types") || undefined)?.split("||") || [])
@@ -118,6 +119,10 @@ export const WeaponsHangar = () => {
     useEffect(() => {
         localStorage.setItem("fleetWeaponGrid", isGridView.toString())
     }, [isGridView])
+
+    useEffect(() => {
+        localStorage.setItem("isWeaponsHangarFiltersExpanded", isFiltersExpanded.toString())
+    }, [isFiltersExpanded])
 
     const weaponTypeFilterSection = useRef<ChipFilter>({
         label: "WEAPON TYPE",
@@ -508,7 +513,7 @@ export const WeaponsHangar = () => {
                             width: "100%",
                             py: "1rem",
                             display: "grid",
-                            gridTemplateColumns: isGridView ? "repeat(auto-fill, minmax(29rem, 1fr))" : "100%",
+                            gridTemplateColumns: isGridView ? "repeat(auto-fill, minmax(30rem, 1fr))" : "100%",
                             gap: "1.3rem",
                             alignItems: "center",
                             justifyContent: "center",
@@ -544,20 +549,40 @@ export const WeaponsHangar = () => {
                             pt: "1.28rem",
                             color: colors.grey,
                             fontFamily: fonts.nostromoBold,
-                            userSelect: "text !important",
-                            opacity: 0.9,
                             textAlign: "center",
                         }}
                     >
                         {"There are no weapons found, please try again."}
                     </Typography>
+
+                    <FancyButton
+                        to={`/marketplace/weapons${location.hash}`}
+                        clipThingsProps={{
+                            clipSize: "9px",
+                            backgroundColor: theme.factionTheme.primary,
+                            border: { isFancy: true, borderColor: theme.factionTheme.primary },
+                            sx: { position: "relative", mt: "2rem" },
+                        }}
+                        sx={{ px: "1.8rem", py: ".8rem", color: theme.factionTheme.secondary }}
+                    >
+                        <Typography
+                            variant="body2"
+                            sx={{
+                                textAlign: "center",
+                                color: theme.factionTheme.secondary,
+                                fontFamily: fonts.nostromoBold,
+                            }}
+                        >
+                            GO TO MARKETPLACE
+                        </Typography>
+                    </FancyButton>
                 </Stack>
             </Stack>
         )
-    }, [loadError, weapons, isLoading, isGridView, theme.factionTheme.primary])
+    }, [loadError, weapons, isLoading, theme.factionTheme.primary, theme.factionTheme.secondary, isGridView])
 
     return (
-        <Stack direction="row" spacing="1rem" sx={{ height: "100%" }}>
+        <Stack direction="row" sx={{ height: "100%" }}>
             <SortAndFilters
                 key={sortFilterReRender.toString()}
                 initialSearch={search}
@@ -576,6 +601,7 @@ export const WeaponsHangar = () => {
                     spreadRangeFilter.current,
                 ]}
                 changePage={changePage}
+                isExpanded={isFiltersExpanded}
             />
 
             <ClipThing
@@ -630,6 +656,8 @@ export const WeaponsHangar = () => {
                             onSetSort={setSort}
                             isGridView={isGridView}
                             toggleIsGridView={toggleIsGridView}
+                            isFiltersExpanded={isFiltersExpanded}
+                            toggleIsFiltersExpanded={toggleIsFiltersExpanded}
                         />
 
                         <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>

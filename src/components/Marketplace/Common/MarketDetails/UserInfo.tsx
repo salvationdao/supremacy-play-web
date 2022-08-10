@@ -39,8 +39,8 @@ export const UserInfo = ({ marketUser, title, primaryColor }: { marketUser?: Mar
                 )}
                 <Typography variant="h5" sx={{ color: primaryColor || ownerFactionDeets.primary_color, fontWeight: "fontWeightBold" }}>
                     {username}
-                    <span style={{ marginLeft: ".2rem", opacity: 0.8, fontFamily: "inherit" }}>{`#${gid}`}</span>
-                    <span style={{ color: colors.neonBlue, fontFamily: "inherit" }}>{isSelfItem ? " (YOU)" : ""}</span>
+                    <span style={{ marginLeft: ".2rem", opacity: 0.8 }}>{`#${gid}`}</span>
+                    <span style={{ color: colors.neonBlue }}>{isSelfItem ? " (YOU)" : ""}</span>
                 </Typography>
             </Stack>
         </Box>

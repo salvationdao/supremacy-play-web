@@ -1,19 +1,21 @@
-import { Box, Divider, IconButton, MenuItem, Select, Stack, Typography } from "@mui/material"
-import { SvgGridView, SvgListView, SvgRefresh } from "../../assets"
+import { Box, Button, Divider, IconButton, MenuItem, Select, Stack, Typography } from "@mui/material"
+import { SvgFilter, SvgGridView, SvgListView, SvgRefresh } from "../../assets"
 import { useTheme } from "../../containers/theme"
 import { colors, fonts } from "../../theme/theme"
 
 interface TotalAndPageSizeOptionsProps {
     countItems?: number
     totalItems?: number
-    pageSize: number
+    pageSize?: number
     pageSizeOptions?: number[]
-    changePageSize: (value: number) => void
-    changePage: (value: number) => void
+    changePageSize?: (value: number) => void
+    changePage?: (value: number) => void
     isGridView?: boolean
     toggleIsGridView?: (value: boolean) => void
     manualRefresh?: () => void
     primaryColor?: string
+    isFiltersExpanded?: boolean
+    toggleIsFiltersExpanded?: (value?: boolean) => void
 
     // Sorting
     sortOptions?: {
@@ -38,6 +40,8 @@ export const TotalAndPageSizeOptions = ({
     toggleIsGridView,
     manualRefresh,
     primaryColor: pColor,
+    isFiltersExpanded,
+    toggleIsFiltersExpanded,
 
     sortOptions,
     selectedSort,
@@ -48,11 +52,13 @@ export const TotalAndPageSizeOptions = ({
     const theme = useTheme()
 
     const primaryColor = pColor || theme.factionTheme.primary
+    const secondaryColor = pColor || theme.factionTheme.secondary
 
     return (
         <Stack
             direction="row"
             alignItems="center"
+            spacing="1rem"
             sx={{
                 pl: "1.5rem",
                 pr: ".5rem",
@@ -63,6 +69,23 @@ export const TotalAndPageSizeOptions = ({
                 strong: { fontFamily: fonts.nostromoBlack },
             }}
         >
+            {toggleIsFiltersExpanded && (
+                <Button
+                    variant="contained"
+                    onClick={() => toggleIsFiltersExpanded()}
+                    sx={{
+                        minWidth: 0,
+                        borderRadius: 1,
+                        backgroundColor: isFiltersExpanded ? "transparent !important" : primaryColor,
+                        border: `${primaryColor}90 1px solid`,
+                        color: secondaryColor,
+                        ":hover": { backgroundColor: primaryColor },
+                    }}
+                >
+                    <SvgFilter size="1.2rem" fill={isFiltersExpanded ? primaryColor : secondaryColor} />
+                </Button>
+            )}
+
             {totalItems && (
                 <Typography variant="caption" sx={{ lineHeight: 1 }}>
                     <strong>DISPLAYING:</strong> {countItems || 0} OF {totalItems}
@@ -75,7 +98,7 @@ export const TotalAndPageSizeOptions = ({
                 alignItems="center"
                 divider={<Divider orientation="vertical" sx={{ height: "unset", alignSelf: "stretch", my: ".4rem !important" }} />}
                 sx={{
-                    ml: "auto",
+                    ml: "auto !important",
                     "& .MuiIconButton-root": {
                         minWidth: "3rem",
                         borderRadius: 0.8,
@@ -98,7 +121,7 @@ export const TotalAndPageSizeOptions = ({
                     </Stack>
                 )}
 
-                {!hidePageSizeOptions && (
+                {!hidePageSizeOptions && changePage && changePageSize && (
                     <Stack direction="row" spacing=".6rem" alignItems="center">
                         {pageSizeOptions.map((size, i) => {
                             return (
@@ -170,13 +193,11 @@ export const TotalAndPageSizeOptions = ({
                                         value={x.value}
                                         onClick={() => {
                                             onSetSort(x.value)
-                                            changePage(1)
+                                            changePage && changePage(1)
                                         }}
                                         sx={{ "&:hover": { backgroundColor: "#FFFFFF20" } }}
                                     >
-                                        <Typography variant="body1" textTransform="uppercase">
-                                            {x.label}
-                                        </Typography>
+                                        <Typography>{x.label}</Typography>
                                     </MenuItem>
                                 )
                             })}

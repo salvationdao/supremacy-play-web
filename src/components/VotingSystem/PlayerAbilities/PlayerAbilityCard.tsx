@@ -1,14 +1,35 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useCallback, useMemo } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { SvgGlobal, SvgLine, SvgMicrochip, SvgQuestionMark, SvgTarget } from "../../../assets"
 import { useMiniMap } from "../../../containers"
 import { colors } from "../../../theme/theme"
 import { LocationSelectType, PlayerAbility } from "../../../types"
 import { FancyButton } from "../../Common/FancyButton"
 import { TooltipHelper } from "../../Common/TooltipHelper"
+import { PlayerAbilityCooldownIndicator } from "./PlayerAbilityCooldownIndicator"
 
-export const PlayerAbilityCard = ({ playerAbility }: { playerAbility: PlayerAbility }) => {
+export const PlayerAbilityCard = ({ playerAbility, viewOnly }: { playerAbility: PlayerAbility; viewOnly?: boolean }) => {
     const { setPlayerAbility } = useMiniMap()
+    const [disabled, setDisabled] = useState(false)
+
+    const checkIfDisabled = useCallback(() => {
+        const now = new Date()
+        if (now.getTime() >= playerAbility.cooldown_expires_on.getTime() && disabled) {
+            setDisabled(false)
+        }
+    }, [disabled, playerAbility.cooldown_expires_on])
+
+    useEffect(() => {
+        const cooldownExpiresOn = playerAbility.cooldown_expires_on
+        const now = new Date()
+
+        if (now.getTime() < cooldownExpiresOn.getTime()) {
+            setDisabled(true)
+        }
+        const t = setInterval(checkIfDisabled, 500)
+
+        return () => clearInterval(t)
+    }, [checkIfDisabled, disabled, playerAbility.cooldown_expires_on])
 
     const abilityTypeIcon = useMemo(() => {
         switch (playerAbility.ability.location_select_type) {
@@ -48,7 +69,8 @@ export const PlayerAbilityCard = ({ playerAbility }: { playerAbility: PlayerAbil
                         sx: { position: "relative", px: ".4rem", py: ".3rem" },
                     }}
                     sx={{ color: playerAbility.ability.colour, p: 0, minWidth: 0, height: "100%" }}
-                    onClick={onActivate}
+                    onClick={!viewOnly ? onActivate : undefined}
+                    disabled={disabled}
                 >
                     <Stack
                         spacing=".3rem"
@@ -136,6 +158,7 @@ export const PlayerAbilityCard = ({ playerAbility }: { playerAbility: PlayerAbil
                         >
                             {playerAbility.ability.label}
                         </Typography>
+                        <PlayerAbilityCooldownIndicator playerAbility={playerAbility} />
                     </Stack>
                 </FancyButton>
             </TooltipHelper>

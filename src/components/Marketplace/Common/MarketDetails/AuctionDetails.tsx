@@ -151,7 +151,7 @@ export const AuctionDetails = ({
                         </ClipThing>
 
                         {bidCount > 0 && lastBidUser && (
-                            <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBold, span: { color: colors.lightNeonBlue, fontFamily: "inherit" } }}>
+                            <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBold, span: { color: colors.lightNeonBlue } }}>
                                 LATEST BID:{" "}
                                 <span>
                                     {lastBidUser.username}#{lastBidUser.gid}
@@ -190,7 +190,7 @@ export const AuctionDetails = ({
                                     fontSize: "2.2rem",
                                     height: "unset",
                                     "::-webkit-outer-spin-button, ::-webkit-inner-spin-button": {
-                                        "-webkit-appearance": "none",
+                                        WebkitAppearance: "none",
                                     },
                                 },
                                 ".MuiOutlinedInput-notchedOutline": { border: "unset" },
@@ -239,7 +239,6 @@ export const AuctionDetails = ({
                                 mt: ".5rem",
                                 color: colors.red,
                                 fontWeight: "fontWeightBold",
-                                userSelect: "text",
                             }}
                         >
                             {inputBidPriceError}

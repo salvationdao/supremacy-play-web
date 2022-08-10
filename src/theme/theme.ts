@@ -200,7 +200,7 @@ export const theme = createTheme({
         },
         body1: {
             fontFamily: fonts.shareTech,
-            fontSize: "1.6rem",
+            fontSize: "1.65rem",
         },
         body2: {
             fontFamily: fonts.shareTech,
@@ -209,15 +209,14 @@ export const theme = createTheme({
         subtitle1: {
             fontFamily: fonts.shareTech,
             fontSize: "1.3rem",
-            textAlign: "center",
         },
         subtitle2: {
             fontFamily: fonts.shareTech,
-            fontSize: "1.3rem",
+            fontSize: "1.15rem",
         },
         caption: {
             fontFamily: fonts.shareTech,
-            fontSize: "1.2rem",
+            fontSize: "1.25rem",
         },
     },
     components: {
@@ -247,9 +246,6 @@ export const theme = createTheme({
                 color: "text.primary",
             },
             styleOverrides: {
-                root: {
-                    userSelect: "none",
-                },
                 caption: {
                     display: "block",
                 },

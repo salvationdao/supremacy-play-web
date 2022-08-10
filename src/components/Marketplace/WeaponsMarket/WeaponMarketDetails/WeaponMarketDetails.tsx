@@ -1,23 +1,22 @@
-import { useState, useEffect, useMemo } from "react"
-import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
+import { Masonry } from "@mui/lab"
+import { Box, CircularProgress, Stack, Typography, useMediaQuery } from "@mui/material"
+import { useEffect, useMemo, useState } from "react"
 import { useTheme } from "../../../../containers/theme"
 import { useToggle } from "../../../../hooks"
-import { getRarityDeets } from "../../../../helpers"
-import { useMediaQuery, CircularProgress, Stack, Typography, Box } from "@mui/material"
-import { ItemType, MarketplaceBuyAuctionItem } from "../../../../types/marketplace"
+import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
-import { ClipThing } from "../../../Common/ClipThing"
-import { Masonry } from "@mui/lab"
-import { ImagesPreview, MarketMedia } from "../../Common/MarketDetails/ImagesPreview"
-import { UserInfo } from "../../Common/MarketDetails/UserInfo"
-import { SoldDetails } from "../../Common/MarketDetails/SoldDetails"
-import { BuyNowDetails } from "../../Common/MarketDetails/BuyNowDetails"
-import { AuctionDetails } from "../../Common/MarketDetails/AuctionDetails"
-import { Dates } from "../../Common/MarketDetails/Dates"
-import { ManageListing } from "../../Common/MarketDetails/ManageListing"
-import { WeaponStatsDetails } from "./WeaponStatsDetails"
 import { Weapon } from "../../../../types"
+import { ItemType, MarketplaceBuyAuctionItem } from "../../../../types/marketplace"
+import { ClipThing } from "../../../Common/ClipThing"
+import { AuctionDetails } from "../../Common/MarketDetails/AuctionDetails"
+import { BuyNowDetails } from "../../Common/MarketDetails/BuyNowDetails"
+import { Dates } from "../../Common/MarketDetails/Dates"
+import { ImagesPreview, MarketMedia } from "../../Common/MarketDetails/ImagesPreview"
+import { ManageListing } from "../../Common/MarketDetails/ManageListing"
+import { SoldDetails } from "../../Common/MarketDetails/SoldDetails"
+import { UserInfo } from "../../Common/MarketDetails/UserInfo"
+import { WeaponStatsDetails } from "./WeaponStatsDetails"
 
 export const WeaponMarketDetails = ({ id }: { id: string }) => {
     const theme = useTheme()
@@ -132,7 +131,6 @@ const WeaponMarketDetailsInner = ({
 }) => {
     const below780 = useMediaQuery("(max-width:780px)")
     const [isTimeEnded, toggleIsTimeEnded] = useToggle()
-    const rarityDeets = useMemo(() => getRarityDeets(marketItem.collection_item?.tier || ""), [marketItem.collection_item?.tier])
 
     const media: MarketMedia[] = useMemo(() => {
         const skin = weaponDetails?.weapon_skin
@@ -199,12 +197,8 @@ const WeaponMarketDetailsInner = ({
 
                         <Stack spacing="2rem" sx={{ pb: "1rem", minHeight: "65rem" }}>
                             <Box>
-                                <Typography
-                                    gutterBottom
-                                    variant="h5"
-                                    sx={{ color: primaryColor, fontFamily: fonts.nostromoBold, span: { color: rarityDeets.color, fontFamily: "inherit" } }}
-                                >
-                                    WEAPON | <span>{rarityDeets.label}</span>
+                                <Typography gutterBottom variant="h5" sx={{ color: primaryColor, fontFamily: fonts.nostromoBold }}>
+                                    WEAPON
                                 </Typography>
 
                                 <Typography variant="h4" sx={{ fontFamily: fonts.nostromoBlack }}>

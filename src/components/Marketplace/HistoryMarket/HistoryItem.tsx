@@ -100,7 +100,7 @@ export const HistoryItem = ({ eventItem, isGridView }: { eventItem: MarketplaceE
                         ...(isGridView
                             ? {
                                   "&>*:not(:last-child)": {
-                                      mb: ".8rem",
+                                      mb: "1rem",
                                   },
                               }
                             : {}),

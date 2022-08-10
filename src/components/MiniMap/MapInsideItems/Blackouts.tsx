@@ -1,6 +1,6 @@
 import { Box, keyframes } from "@mui/material"
 import React, { useEffect, useMemo, useState } from "react"
-import { useMiniMap } from "../../../containers"
+import { useGame, useMiniMap } from "../../../containers"
 
 import { useGameServerSubscription } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
@@ -92,8 +92,10 @@ const BLACKOUT_TRANSITION_DURATION = 500
 
 const Blackout = React.forwardRef(function Blackout({ radius, coords, isVisible }: BlackoutWithAnimationState, ref) {
     const { gridHeight, gridWidth } = useMiniMap()
+    const { map } = useGame()
 
-    const diameter = useMemo(() => (radius / gridHeight) * 2.5, [gridHeight, radius])
+    const mapScale = useMemo(() => (map ? map.width / (map.cells_x * 2000) : 0), [map])
+    const diameter = useMemo(() => radius * mapScale * 2, [mapScale, radius])
 
     return (
         <Box
@@ -108,6 +110,7 @@ const Blackout = React.forwardRef(function Blackout({ radius, coords, isVisible 
                 backgroundColor: `${colors.black2}DD`,
                 boxShadow: 20,
                 animation: `${isVisible ? fadeInKeyframes : fadeOutKeyframes} ${BLACKOUT_TRANSITION_DURATION}ms ease-in`,
+                pointerEvents: "none",
             }}
         />
     )

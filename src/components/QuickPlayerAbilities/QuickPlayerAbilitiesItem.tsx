@@ -1,6 +1,6 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
 import React, { useCallback, useMemo, useState } from "react"
-import { SvgGlobal, SvgLine, SvgMicrochip, SvgQuestionMark, SvgTarget } from "../../assets"
+import { SvgGlobal, SvgLine, SvgMicrochip, SvgQuestionMark, SvgSupToken, SvgTarget } from "../../assets"
 import { useSnackbar } from "../../containers"
 import { supFormatter } from "../../helpers"
 import { useGameServerCommandsUser } from "../../hooks/useGameServer"
@@ -43,15 +43,9 @@ export const QuickPlayerAbilitiesItem = ({
                 return (
                     <Typography>
                         PURCHASE ABILITY FOR{" "}
-                        <Box
-                            key={price}
-                            component="span"
-                            sx={{
-                                animation: `${scaleUpKeyframes} .2s ease-out`,
-                            }}
-                        >
+                        <strong key={price} style={{ color: colors.yellow, animation: `${scaleUpKeyframes} .2s ease-out` }}>
                             {supFormatter(price, 2)} SUPS
-                        </Box>
+                        </strong>
                     </Typography>
                 )
             case SaleAbilityAvailability.CanClaim:
@@ -197,13 +191,48 @@ export const QuickPlayerAbilitiesItem = ({
                                     <Box
                                         sx={{
                                             position: "absolute",
-                                            top: ".2rem",
-                                            right: ".2rem",
+                                            top: ".5rem",
+                                            left: ".5rem",
                                             zIndex: 2,
                                         }}
                                     >
                                         {abilityTypeIcon}
                                     </Box>
+
+                                    {availability === SaleAbilityAvailability.CanClaim ? (
+                                        <Box
+                                            sx={{
+                                                zIndex: 2,
+                                                position: "absolute",
+                                                top: ".2rem",
+                                                right: ".2rem",
+                                                backgroundColor: "#000000DD",
+                                                p: ".2rem .4rem",
+                                            }}
+                                        >
+                                            <Typography variant="body2" sx={{ lineHeight: 1, color: colors.gold }}>
+                                                FREE
+                                            </Typography>
+                                        </Box>
+                                    ) : (
+                                        <Stack
+                                            direction="row"
+                                            alignItems="center"
+                                            sx={{
+                                                zIndex: 2,
+                                                position: "absolute",
+                                                top: ".2rem",
+                                                right: ".2rem",
+                                                backgroundColor: "#000000DD",
+                                                p: ".2rem .4rem",
+                                            }}
+                                        >
+                                            <SvgSupToken size="1.6rem" fill={colors.gold} />
+                                            <Typography variant="body2" sx={{ lineHeight: 1 }}>
+                                                {supFormatter(price, 2)}
+                                            </Typography>
+                                        </Stack>
+                                    )}
 
                                     <Box
                                         sx={{

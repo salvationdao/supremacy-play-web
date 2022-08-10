@@ -1,11 +1,11 @@
 import { useTheme } from "../../../../containers/theme"
 import { Stack, Typography } from "@mui/material"
-import { SvgSkin, SvgStats } from "../../../../assets"
+import { SvgSkin, SvgStats, SvgWeapons } from "../../../../assets"
 import { colors, fonts } from "../../../../theme/theme"
 import { Weapon } from "../../../../types"
 import { WeaponBarStats } from "../../../Hangar/WeaponsHangar/Common/WeaponBarStats"
 import { MechLoadoutItem } from "../../../Hangar/WarMachinesHangar/Common/MechLoadoutItem"
-import { getRarityDeets } from "../../../../helpers"
+import { getRarityDeets, getWeaponTypeColor } from "../../../../helpers"
 
 interface Props {
     weaponDetails?: Weapon
@@ -21,6 +21,19 @@ export const WeaponStatsDetails = ({ weaponDetails }: Props) => {
 
     return (
         <Stack spacing="3rem">
+            <Stack spacing="1rem">
+                <Stack direction="row" spacing=".8rem" alignItems="center">
+                    <SvgWeapons fill={primaryColor} size="1.8rem" />
+                    <Typography variant="h5" sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack }}>
+                        WEAPON TYPE
+                    </Typography>
+                </Stack>
+
+                <Typography variant="h6" sx={{ color: getWeaponTypeColor(weaponDetails?.weapon_type), fontFamily: fonts.nostromoBold }}>
+                    {weaponDetails?.weapon_type}
+                </Typography>
+            </Stack>
+
             <Stack spacing="1rem">
                 <Stack direction="row" spacing=".8rem" alignItems="center">
                     <SvgStats fill={primaryColor} size="1.8rem" />

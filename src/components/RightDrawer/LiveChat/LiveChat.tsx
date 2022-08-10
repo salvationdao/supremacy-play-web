@@ -26,7 +26,7 @@ export const LiveChat = () => {
                         height: 650,
                     }}
                 >
-                    <Stack id="tutorial-chat" sx={{ width: "100%", height: "100%", overflow: "hidden" }}>
+                    <Stack sx={{ width: "100%", height: "100%", overflow: "hidden" }}>
                         {splitOption == "split" ? <SplitLayout /> : <TabbedLayout />}
                         <AdditionalOptionsButton />
                     </Stack>
@@ -55,7 +55,7 @@ export const LiveChat = () => {
     }
 
     return (
-        <Stack id="tutorial-chat" sx={{ width: "100%", height: "100%", overflow: "hidden" }}>
+        <Stack sx={{ width: "100%", height: "100%", overflow: "hidden" }}>
             {splitOption == "split" ? <SplitLayout /> : <TabbedLayout />}
             <AdditionalOptionsButton />
         </Stack>
@@ -381,15 +381,7 @@ const Content = ({
                 <ChatSend primaryColor={primaryColor} faction_id={faction_id} />
             ) : (
                 <Box sx={{ px: "1.6rem", py: ".4rem", backgroundColor: colors.red }}>
-                    <Typography
-                        variant="body2"
-                        sx={{
-                            textAlign: "center",
-                            lineHeight: 1,
-                        }}
-                    >
-                        You must be signed in to send messages.
-                    </Typography>
+                    <Typography sx={{ textAlign: "center", lineHeight: 1 }}>You must be signed in to send messages.</Typography>
                 </Box>
             )}
         </>

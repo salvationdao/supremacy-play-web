@@ -1,14 +1,14 @@
-import { createContext, Dispatch, useCallback, useContext, useEffect, useRef, useState } from "react"
+import { createContext, Dispatch, ReactNode, useCallback, useContext, useEffect, useRef, useState } from "react"
 import { useQuery } from "react-fetching-library"
 import { useSupremacy } from "."
 import { PASSPORT_WEB } from "../constants"
-import { PassportLoginCheck, GameServerLoginCheck } from "../fetching"
+import { GameServerLoginCheck, GetGlobalFeatures, PassportLoginCheck } from "../fetching"
 import { shadeColor } from "../helpers"
 import { useGameServerCommandsUser, useGameServerSubscriptionUser } from "../hooks/useGameServer"
 import { useInactivity } from "../hooks/useInactivity"
 import { GameServerKeys } from "../keys"
 import { colors } from "../theme/theme"
-import { Faction, FeatureName, User, UserRank, UserStat, UserFromPassport, PunishListItem } from "../types"
+import { Faction, Feature, FeatureName, PunishListItem, User, UserFromPassport, UserRank, UserStat } from "../types"
 import { useTheme } from "./theme"
 
 export const FallbackUser: User = {
@@ -49,6 +49,7 @@ export interface AuthState {
     setUserRank: Dispatch<React.SetStateAction<UserRank>>
     punishments: PunishListItem[]
     setPunishments: Dispatch<React.SetStateAction<PunishListItem[]>>
+    globalFeatures: Feature[]
 }
 
 const initialState: AuthState = {
@@ -89,11 +90,13 @@ const initialState: AuthState = {
     setPunishments: () => {
         return
     },
+    globalFeatures: [],
 }
 
 export const AuthContext = createContext<AuthState>(initialState)
 
-export const AuthProvider: React.FC = ({ children }) => {
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
+    const { isServerDown } = useSupremacy()
     const [isLoggingIn, setIsLoggingIn] = useState(true)
     const [passportPopup, setPassportPopup] = useState<Window | null>(null)
     const popupCheckInterval = useRef<NodeJS.Timer>()
@@ -106,19 +109,22 @@ export const AuthProvider: React.FC = ({ children }) => {
     const [userStat, setUserStat] = useState<UserStat>(initialState.userStat)
     const [userRank, setUserRank] = useState<UserRank>(initialState.userRank)
     const [punishments, setPunishments] = useState<PunishListItem[]>(initialState.punishments)
-    //checks if supremacy tab is open
+    // Checks if supremacy tab is active
     const [isHidden, setIsHidden] = useState(false)
+
+    const { query: getGlobalFeatures } = useQuery(GetGlobalFeatures())
+    const [globalFeatures, setGlobalFeatures] = useState<Feature[]>([])
 
     const { query: passportLoginCheck } = useQuery(PassportLoginCheck(), false)
     const { query: gameserverLoginCheck } = useQuery(GameServerLoginCheck(), false)
 
-    const handleVisibilityChange = () => {
+    const handleVisibilityChange = useCallback(() => {
         if (document["hidden"]) {
             setIsHidden(true)
         } else {
             setIsHidden(false)
         }
-    }
+    }, [])
 
     useEffect(() => {
         if (typeof document.hidden !== "undefined" && typeof document.addEventListener !== "undefined") {
@@ -129,11 +135,12 @@ export const AuthProvider: React.FC = ({ children }) => {
         return () => {
             document.removeEventListener("visibilitychange", handleVisibilityChange)
         }
-    }, [])
+    }, [handleVisibilityChange])
 
     const authCheckCallback = useCallback(
         async (event?: MessageEvent) => {
             if (event && !("token" in event.data)) return
+
             // Check passport server login
             if (!userFromPassport) {
                 try {
@@ -152,6 +159,8 @@ export const AuthProvider: React.FC = ({ children }) => {
     )
 
     useEffect(() => {
+        if (isServerDown) return
+
         if (!userFromPassport) {
             setIsLoggingIn(false)
             return
@@ -167,7 +176,7 @@ export const AuthProvider: React.FC = ({ children }) => {
                 setUser(resp.payload)
             })
             .finally(() => setIsLoggingIn(false))
-    }, [userFromPassport, gameserverLoginCheck, setIsLoggingIn])
+    }, [userFromPassport, gameserverLoginCheck, isServerDown, setIsLoggingIn])
 
     // Check if login in the iframe has been successful (window closed), if closed then do clean up
     useEffect(() => {
@@ -195,6 +204,21 @@ export const AuthProvider: React.FC = ({ children }) => {
         return clearPopupCheckInterval
     }, [passportPopup, authCheckCallback])
 
+    // Fetch global features
+    useEffect(() => {
+        ;(async () => {
+            if (isServerDown) return
+
+            try {
+                const resp = await getGlobalFeatures()
+                if (resp.error || resp.payload == null) return
+                setGlobalFeatures(resp.payload)
+            } catch (e) {
+                console.error(e)
+            }
+        })()
+    }, [getGlobalFeatures, isServerDown])
+
     useEffect(() => {
         authCheckCallback()
     }, [authCheckCallback])
@@ -216,11 +240,11 @@ export const AuthProvider: React.FC = ({ children }) => {
 
     const userHasFeature = useCallback(
         (featureName: FeatureName) => {
-            if (!userID || !user.features) return false
-            const index = user.features.findIndex((el) => el.name === featureName)
+            const allFeatures = [...globalFeatures, ...(user.features || [])]
+            const index = allFeatures.findIndex((el) => el.name === featureName)
             return index !== -1
         },
-        [user.features, userID],
+        [globalFeatures, user.features],
     )
 
     return (
@@ -242,6 +266,7 @@ export const AuthProvider: React.FC = ({ children }) => {
                 setUserStat,
                 userRank,
                 setUserRank,
+                globalFeatures,
             }}
         >
             {children}
@@ -278,7 +303,7 @@ export const UserUpdater = () => {
     // Subscribe user stats
     useGameServerSubscriptionUser<UserStat>(
         {
-            URI: "",
+            URI: "/stat",
             key: GameServerKeys.SubscribeUserStat,
         },
         (payload) => {
@@ -290,7 +315,7 @@ export const UserUpdater = () => {
     // Listen on user ranking
     useGameServerSubscriptionUser<UserRank>(
         {
-            URI: "",
+            URI: "/rank",
             key: GameServerKeys.PlayerRank,
         },
         (payload) => {

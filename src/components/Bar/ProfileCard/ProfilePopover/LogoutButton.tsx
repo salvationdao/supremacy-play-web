@@ -31,7 +31,6 @@ export const LogoutButton = () => {
     const onClick = useCallback(async () => {
         await passportLogout()
         await gameserverLogout()
-
         window.location.reload()
     }, [passportLogout, gameserverLogout])
 

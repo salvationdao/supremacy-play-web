@@ -124,6 +124,7 @@ export enum FeatureName {
     playerAbility = "PLAYER_ABILITY",
     systemMessages = "SYSTEM_MESSAGES",
     chatBan = "CHAT_BAN",
+    profileAvatar = "PROFILE_AVATAR",
 }
 
 export enum SystemMessageDataType {
@@ -131,6 +132,7 @@ export enum SystemMessageDataType {
     MechBattleComplete = "MECH_BATTLE_COMPLETE",
     Global = "GLOBAL",
     Faction = "FACTION",
+    MechOwnerBattleReward = "MECH_OWNER_BATTLE_REWARD",
 }
 
 export interface SystemMessage {

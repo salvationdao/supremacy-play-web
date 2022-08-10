@@ -137,14 +137,9 @@ export const LocationSelectAlert = ({ data, getFaction }: { data: LocationSelect
                 }}
             >
                 <Box>
-                    <StyledImageText
-                        text={acronym(faction.label) || "GABS"}
-                        color={mainColor || "grey !important"}
-                        imageUrl={faction.logo_url}
-                        imageMb={-0.2}
-                    />
+                    <StyledImageText text={acronym(faction.label) || "GABS"} color={mainColor || "grey !important"} imageUrl={faction.logo_url} />
                     <Icon />
-                    <StyledImageText text={label} color={colour} imageUrl={abilityImageUrl} imageMb={-0.2} />
+                    <StyledImageText text={label} color={colour} imageUrl={abilityImageUrl} />
                 </Box>
                 <Content />
             </Stack>

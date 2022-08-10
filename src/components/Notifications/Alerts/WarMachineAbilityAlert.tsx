@@ -41,13 +41,13 @@ export const WarMachineAbilityAlert = ({ data, getFaction }: { data: WarMachineA
                 }}
             >
                 <Box>
-                    <StyledImageText text={acronym(faction.label)} color={mainColor || "grey !important"} imageUrl={faction.logo_url} imageMb={-0.2} />
+                    <StyledImageText text={acronym(faction.label)} color={mainColor || "grey !important"} imageUrl={faction.logo_url} />
                     <SvgEmergency fill="#FFFFFF" size="1.2rem" sx={{ display: "inline", mx: ".4rem" }} />
-                    <StyledImageText text={label} color={colour} imageUrl={`${image_url}`} imageMb={-0.2} />
+                    <StyledImageText text={label} color={colour} imageUrl={`${image_url}`} />
                 </Box>
                 <Box>
                     <StyledNormalText text="Mech ability has been initiated by " />
-                    <StyledImageText text={name || hash} color={mainColor} imageUrl={wmImageUrl} imageMb={-0.3} />
+                    <StyledImageText text={name || hash} color={mainColor} imageUrl={wmImageUrl} />
                 </Box>
             </Stack>
         </ClipThing>

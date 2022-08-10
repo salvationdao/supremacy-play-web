@@ -108,6 +108,13 @@ export const Username = ({
 
                 {!editing && (
                     <Stack
+                        sx={{
+                            "@media (max-width:500px)": {
+                                flexDirection: "column",
+                                justifyContent: "center",
+                                alignItems: "center",
+                            },
+                        }}
                         direction="row"
                         onClick={() => {
                             navigator.clipboard.writeText(window.location.href).then(
@@ -119,20 +126,38 @@ export const Username = ({
                         <Typography
                             sx={{
                                 fontSize: "5rem",
-                                "@media (max-width:900px)": {
+                                "@media (max-width:1400px)": {
                                     fontSize: "4rem",
                                 },
-                                WebkitTextStroke: "1px black",
+                                "@media (max-width:1200px)": {
+                                    fontSize: "3.4rem",
+                                },
+                                "@media (max-width:1000px)": {
+                                    fontSize: "3rem",
+                                },
+                                "@media (max-width:700px)": {
+                                    fontSize: "2rem",
+                                },
                                 fontFamily: fonts.nostromoBlack,
                             }}
                         >
                             {username}
                         </Typography>
+
                         <Typography
                             sx={{
                                 fontSize: "5rem",
-                                "@media (max-width:900px)": {
+                                "@media (max-width:1400px)": {
                                     fontSize: "4rem",
+                                },
+                                "@media (max-width:1200px)": {
+                                    fontSize: "3.4rem",
+                                },
+                                "@media (max-width:1000px)": {
+                                    fontSize: "3rem",
+                                },
+                                "@media (max-width:700px)": {
+                                    fontSize: "2.2rem",
                                 },
                                 WebkitTextStroke: "1px black",
                                 fontFamily: fonts.nostromoBlack,
@@ -147,7 +172,14 @@ export const Username = ({
                 {!hide && !editing && (
                     <IconButton
                         size="small"
-                        sx={{ ml: ".5rem", opacity: 0.6, ":hover": { opacity: 1 } }}
+                        sx={{
+                            ml: ".5rem",
+                            opacity: 0.6,
+                            ":hover": { opacity: 1 },
+                            "@media (max-width:500px)": {
+                                marginTop: "-20px",
+                            },
+                        }}
                         onClick={() => {
                             setEditing(true)
                             renamingRef.current?.focus()
