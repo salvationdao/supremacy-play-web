@@ -164,8 +164,6 @@ export const ProfileAvatar = ({
                 page,
                 page_size: pageSize,
             })
-            console.log(resp)
-
             if (!resp || !resp.ids) return
             setLoadError(undefined)
             if (page === 1) {
