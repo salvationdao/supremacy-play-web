@@ -219,7 +219,6 @@ export const CoolTable = <T,>({
                     <TableBody
                         sx={{
                             overflow: "auto",
-                            mr: ".6rem",
                             height: `calc(100% - ${title ? titleRowHeight : "0px"} - ${titleRowHeight} - ${paginationProps ? titleRowHeight : "0px"})`,
                             scrollbarWidth: "none",
                             "::-webkit-scrollbar": {

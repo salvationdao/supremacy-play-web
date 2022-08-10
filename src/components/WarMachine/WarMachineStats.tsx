@@ -1,11 +1,11 @@
-import { Box, Divider, Fade, IconButton, Slide, Stack } from "@mui/material"
+import { Box, Divider, Fade, IconButton, Slide, Stack, Typography } from "@mui/material"
 import { ReactElement, useEffect, useMemo } from "react"
 import { ClipThing } from ".."
 import { SvgExternalLink } from "../../assets"
 import { useAuth, useGame, useMobile, useSupremacy } from "../../containers"
 import { useTheme } from "../../containers/theme"
 import { useToggle } from "../../hooks"
-import { siteZIndex } from "../../theme/theme"
+import { fonts, siteZIndex } from "../../theme/theme"
 import { AIType } from "../../types"
 import { WindowPortal } from "../Common/WindowPortal"
 import { WarMachineItem } from "./WarMachineItem/WarMachineItem"
@@ -141,39 +141,51 @@ const WarMachineStatsInner = () => {
         return (
             <>
                 {haveFactionMechs && (
-                    <Box
+                    <Stack
+                        spacing="1rem"
                         sx={{
                             backgroundColor: "#FFFFFF12",
                             boxShadow: 2,
                             border: "#FFFFFF20 1px solid",
                             p: "1.2rem 1.4rem",
-                            display: "grid",
-                            gridTemplateColumns: "repeat(2, 50%)",
                         }}
                     >
-                        {factionMechs.map((wm) => (
-                            <WarMachineItem key={`${wm.participantID} - ${wm.hash}`} warMachine={wm} scale={0.7} transformOrigin="0 0" initialExpanded />
-                        ))}
-                    </Box>
+                        <Typography sx={{ fontFamily: fonts.nostromoBlack }}>YOUR FACTION</Typography>
+
+                        <Box sx={{ display: "grid", gridTemplateColumns: "repeat(2, 50%)" }}>
+                            {factionMechs.map((wm) => (
+                                <WarMachineItem key={`${wm.participantID} - ${wm.hash}`} warMachine={wm} scale={0.7} transformOrigin="0 0" initialExpanded />
+                            ))}
+                        </Box>
+                    </Stack>
                 )}
 
                 {otherMechs.length > 0 && (
-                    <Box
+                    <Stack
+                        spacing="1rem"
                         sx={{
                             backgroundColor: "#FFFFFF12",
                             boxShadow: 2,
                             border: "#FFFFFF20 1px solid",
                             p: "1.2rem 1.4rem",
-                            display: "grid",
-                            gridTemplateColumns: "repeat(2, 50%)",
                         }}
                     >
-                        {otherMechs
-                            .sort((a, b) => a.factionID.localeCompare(b.factionID))
-                            .map((wm) => (
-                                <WarMachineItem key={`${wm.participantID} - ${wm.hash}`} warMachine={wm} scale={0.7} transformOrigin="0 0" initialExpanded />
-                            ))}
-                    </Box>
+                        <Typography sx={{ fontFamily: fonts.nostromoBlack }}>OTHER FACTIONS</Typography>
+
+                        <Box sx={{ display: "grid", gridTemplateColumns: "repeat(2, 50%)" }}>
+                            {otherMechs
+                                .sort((a, b) => a.factionID.localeCompare(b.factionID))
+                                .map((wm) => (
+                                    <WarMachineItem
+                                        key={`${wm.participantID} - ${wm.hash}`}
+                                        warMachine={wm}
+                                        scale={0.7}
+                                        transformOrigin="0 0"
+                                        initialExpanded
+                                    />
+                                ))}
+                        </Box>
+                    </Stack>
                 )}
             </>
         )

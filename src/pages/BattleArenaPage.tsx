@@ -179,7 +179,7 @@ const BattleArenaPageInner = () => {
     }
 
     return (
-        <Stack sx={{ height: "100%", zIndex: siteZIndex.RoutePage }}>
+        <Stack id="battle-arena-all" sx={{ width: "100%", height: "100%", zIndex: siteZIndex.RoutePage }}>
             <Box id={isMobile ? "" : "game-ui-container"} sx={{ position: "relative", flex: 1 }}>
                 <Stream />
 

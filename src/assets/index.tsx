@@ -123,7 +123,9 @@ import Unknown from "!react-svg-loader!./svg/Unknown.svg"
 import User from "!react-svg-loader!./svg/User.svg"
 import Volume from "!react-svg-loader!./svg/Volume.svg"
 import VolumeMute from "!react-svg-loader!./svg/VolumeMute.svg"
+import Minimize from "!react-svg-loader!./svg/Minimize.svg"
 import WarnTriangle from "!react-svg-loader!./svg/WarnTriangle.svg"
+import Repair from "!react-svg-loader!./svg/Repair.svg"
 import YouTube from "!react-svg-loader!./svg/YouTube.svg"
 import AccessTimeSharpIcon from "@mui/icons-material/AccessTimeSharp"
 import AppsIcon from "@mui/icons-material/Apps"
@@ -1204,5 +1206,17 @@ export const SvgThumbUpOffAltIcon: React.VoidFunctionComponent<SvgWrapperProps> 
 export const SvgThumbDownOffAltIcon: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <ThumbDownOffAltIcon />
+    </SvgWrapper>
+)
+
+export const SvgRepair: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Repair />
+    </SvgWrapper>
+)
+
+export const SvgMinimize: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Minimize />
     </SvgWrapper>
 )

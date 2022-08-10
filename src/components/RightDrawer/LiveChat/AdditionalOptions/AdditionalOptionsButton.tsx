@@ -7,7 +7,7 @@ import { useToggle } from "../../../../hooks"
 import { colors, siteZIndex } from "../../../../theme/theme"
 
 export const AdditionalOptionsButton = () => {
-    const { userID, user } = useAuth()
+    const { userID } = useAuth()
     const popoverRef = useRef(null)
     const [isPopoverOpen, toggleIsPopoverOpen] = useToggle()
     const [banModalOpen, toggleBanModalOpen] = useToggle()
@@ -47,7 +47,7 @@ export const AdditionalOptionsButton = () => {
                 />
             )}
 
-            {banModalOpen && <UserBanForm user={user} open={banModalOpen} onClose={() => toggleBanModalOpen(false)} />}
+            {banModalOpen && <UserBanForm open={banModalOpen} onClose={() => toggleBanModalOpen(false)} />}
         </>
     )
 }
