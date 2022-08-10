@@ -201,7 +201,6 @@ export class NormalBlock extends Block {
         }
 
         this.position[this.axis as keyof typeof this.position] += (this.direction + this.direction * speed) * (elapsedTime * (baseFrameRate / 1000))
-
         this.mesh.position[this.axis as keyof typeof this.position] = this.position[this.axis as keyof typeof this.position]
     }
 }
