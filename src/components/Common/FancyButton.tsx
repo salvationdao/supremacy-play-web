@@ -58,6 +58,7 @@ export const FancyButton = React.forwardRef(function FancyButton(
                     fontWeight: "fontWeightBold",
                     color: "#FFFFFF",
                     textTransform: "uppercase",
+                    minWidth: 1,
                     "&:focus": {
                         boxShadow: "none",
                     },

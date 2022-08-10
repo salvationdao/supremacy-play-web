@@ -1,6 +1,6 @@
 import * as THREE from "three"
 import { getRandomColor } from "../../../../../helpers"
-import { blockConfig, skins } from "./config"
+import { baseFrameRate, blockConfig, skins } from "./config"
 import { cover } from "./utils"
 
 export interface Dimension {
@@ -192,13 +192,13 @@ export class NormalBlock extends Block {
         this.direction = this.direction > 0 ? this.speed : Math.abs(this.speed)
     }
 
-    tick(speed = 0) {
+    tick(speed = 0, elapsedTime: number) {
         const value = this.position[this.axis as keyof typeof this.position]
         if (value > this.MOVE_AMOUNT || value < -this.MOVE_AMOUNT) {
             this.reverseDirection()
         }
 
-        this.position[this.axis as keyof typeof this.position] += this.direction + this.direction * speed
+        this.position[this.axis as keyof typeof this.position] += (this.direction + this.direction * speed) * (elapsedTime * (baseFrameRate / 1000))
         this.mesh.position[this.axis as keyof typeof this.position] = this.position[this.axis as keyof typeof this.position]
     }
 }
