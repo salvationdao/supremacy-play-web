@@ -20,5 +20,6 @@
             "username": "gameserver",
             "password": "dev"
         }
-    ]
+    ],
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
 }

@@ -2,26 +2,25 @@ import { useEffect, useRef, useState } from "react"
 import { createContainer } from "unstated-next"
 import BigNumber from "bignumber.js"
 import { PassportServerKeys } from "../keys"
-import { usePassportServerWebsocket } from "./passportServerSocket"
-import { usePassportServerAuth } from "./passportServerAuth"
 import { useSupremacy } from "."
+import { usePassportSubscriptionUser } from "../hooks/usePassport"
 
 export const WalletContainer = createContainer(() => {
-    const { state, subscribe } = usePassportServerWebsocket()
-    const { userID } = usePassportServerAuth()
     const { haveSups, toggleHaveSups } = useSupremacy()
     const [onWorldSupsRaw, setOnWorldSupsRaw] = useState<string>("")
-    const [onWorldSups, setOnworldSups] = useState<BigNumber>()
+    const [onWorldSups, setOnWorldSups] = useState<BigNumber>()
     const firstIteration = useRef(true)
 
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe || !userID) return
-        return subscribe<string>(PassportServerKeys.SubscribeWallet, (payload) => {
-            if (!payload) return
+    usePassportSubscriptionUser<string>(
+        {
+            URI: "/sups",
+            key: PassportServerKeys.SubscribeWallet,
+        },
+        (payload) => {
             setOnWorldSupsRaw(payload)
-            setOnworldSups(new BigNumber(payload))
-        })
-    }, [state, subscribe, userID])
+            setOnWorldSups(new BigNumber(payload))
+        },
+    )
 
     useEffect(() => {
         if (!onWorldSups || onWorldSups.isNaN()) return

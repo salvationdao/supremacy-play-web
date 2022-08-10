@@ -1,6 +1,11 @@
-import { useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 
-export const usePagination = ({ pageSize: _pageSize, page: _page } = { pageSize: 10, page: 1 }) => {
+interface Props {
+    pageSize: number
+    page: number
+}
+
+export const usePagination = ({ pageSize: _pageSize = 10, page: _page = 1 }: Props) => {
     const [pageSize, setPageSize] = useState<number>(_pageSize)
     const [page, setPage] = useState<number>(_page)
     const [totalItems, setTotalItems] = useState<number>(0)
@@ -14,17 +19,21 @@ export const usePagination = ({ pageSize: _pageSize, page: _page } = { pageSize:
 
     const hasPrev = useMemo(() => page - 1 > 0, [page])
 
-    const nextPage = () => {
-        if (hasNext) setPage(page + 1)
-    }
+    const nextPage = useCallback(() => {
+        if (hasNext) setPage((prev) => prev + 1)
+    }, [hasNext])
 
-    const prevPage = () => {
-        if (hasPrev) setPage(page - 1)
-    }
+    const prevPage = useCallback(() => {
+        if (hasPrev) setPage((prev) => prev - 1)
+    }, [hasPrev])
 
-    const changePage = (newPage: number) => {
-        setPage((curPage) => (newPage != curPage ? newPage : curPage))
-    }
+    const changePageSize = useCallback((newPageSize: number) => {
+        setPageSize((curPageSize) => (newPageSize !== curPageSize ? newPageSize : curPageSize))
+    }, [])
+
+    const changePage = useCallback((newPage: number) => {
+        setPage((curPage) => (newPage !== curPage ? newPage : curPage))
+    }, [])
 
     return {
         page,
@@ -37,6 +46,6 @@ export const usePagination = ({ pageSize: _pageSize, page: _page } = { pageSize:
         totalItems,
         pageSize,
         setTotalItems,
-        setPageSize,
+        changePageSize,
     }
 }

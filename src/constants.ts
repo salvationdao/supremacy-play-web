@@ -3,16 +3,27 @@ import BigNumber from "bignumber.js"
 const USE_PROD = false
 
 // Envar stuff
-export const DEV_ONLY = process.env.NODE_ENV === "development"
+export const STAGING_OR_DEV_ONLY = process.env.REACT_APP_ENVIRONMENT !== "production"
+export const STAGING_ONLY = process.env.REACT_APP_ENVIRONMENT === "staging"
+export const DEV_ONLY = process.env.REACT_APP_ENVIRONMENT !== "production" && process.env.REACT_APP_ENVIRONMENT !== "staging"
+export const CAPTCHA_KEY = process.env.REACT_APP_CAPTCHA_SITE_KEY || "87f715ba-98ff-43da-b970-cfc30fd7c5a0"
 const VERSION = process.env.REACT_APP_COMMIT_REF || "development"
-const TOKEN_SALE_PAGE = process.env.REACT_APP_TOKEN_SALE_PAGE || "https://passport.xsyn.io/nosidebar/buy"
+const TOKEN_SALE_PAGE = process.env.REACT_APP_TOKEN_SALE_PAGE || "https://passport.xsyn.io/external/buy"
 const SUPREMACY_PAGE = process.env.REACT_APP_SUPREMACY_PAGE || "https://supremacy.game/"
+const HANGAR_PAGE = STAGING_OR_DEV_ONLY ? "https://hangar.supremacygame.dev/" : "https://hangar.supremacy.game/"
 const VIDEO_SERVER_WEBSOCKET = process.env.REACT_APP_PASSPORT_SERVER_HOST || "wss://staging-watch.supremacy.game:5443/WebRTCAppEE/websocket"
 const VIDEO_SERVER_STREAM_ID = process.env.REACT_APP_PASSPORT_SERVER_HOST || "524280586954581049507513"
-let GAME_SERVER_HOSTNAME = process.env.REACT_APP_GAME_SERVER_HOSTNAME || "localhost:8084"
-let PASSPORT_WEB = process.env.REACT_APP_PASSPORT_WEB || "http://localhost:5003/"
-let PASSPORT_SERVER_HOST = process.env.REACT_APP_PASSPORT_SERVER_HOST || "localhost:8086"
-let PASSPORT_SERVER_HOST_IMAGES = process.env.REACT_APP_SERVER_HOST_IMAGES || "http://localhost:8086"
+const FEEDBACK_FORM_URL = "https://supremacyhelp.zendesk.com/hc/en-us/requests/new?ticket_form_id=5606068606745"
+let GAME_SERVER_HOSTNAME = process.env.REACT_APP_GAME_SERVER_HOSTNAME || "api.supremacygame.io"
+let PASSPORT_WEB = process.env.REACT_APP_PASSPORT_WEB || "https://passport.xsyndev.io/"
+let PASSPORT_SERVER_HOST = process.env.REACT_APP_PASSPORT_SERVER_HOST || "passport.supremacygame.io"
+let PASSPORT_SERVER_HOST_IMAGES = process.env.REACT_APP_SERVER_HOST_IMAGES || "https://api.supremacygame.io"
+
+export const BATTLE_ARENA_OPEN = STAGING_OR_DEV_ONLY
+
+// Testing related
+export const IS_TESTING_MODE = STAGING_ONLY
+export const NEXT_RESET_TIME = new Date("Fri Aug 12 2022 09:30:00 GMT+0800 (AWST)")
 
 if (USE_PROD) {
     GAME_SERVER_HOSTNAME = process.env.REACT_APP_GAME_SERVER_HOSTNAME || "api.supremacy.game"
@@ -26,11 +37,13 @@ export {
     GAME_SERVER_HOSTNAME,
     TOKEN_SALE_PAGE,
     SUPREMACY_PAGE,
+    HANGAR_PAGE,
     PASSPORT_WEB,
     PASSPORT_SERVER_HOST,
     PASSPORT_SERVER_HOST_IMAGES,
     VIDEO_SERVER_WEBSOCKET,
     VIDEO_SERVER_STREAM_ID,
+    FEEDBACK_FORM_URL,
 }
 
 export const SENTRY_CONFIG = {
@@ -52,15 +65,13 @@ export const SENTRY_CONFIG = {
 export const GAME_BAR_HEIGHT = 5.9 // rem
 export const RIGHT_DRAWER_WIDTH = 38 // rem
 export const CONTROLS_HEIGHT = 3.0 // rem
-export const MINI_MAP_DEFAULT_SIZE = 240 //px
+export const BOTTOM_NAV_HEIGHT = 85 // rem
 
 export const DRAWER_TRANSITION_DURATION = 250
 export const MESSAGES_BUFFER_SIZE = 500
 export const MAX_CHAT_MESSAGE_LENGTH = 280
-export const GAMEBAR_AUTO_SIGNIN_WAIT_SECONDS = 2000
 export const NOTIFICATION_TIME = 30000
 export const NOTIFICATION_LINGER = 400
-export const STREAM_ASPECT_RATIO_W_H = 16 / 9
 export const MAX_BAN_PROPOSAL_REASON_LENGTH = 150
 
 // Game stuff
@@ -88,12 +99,15 @@ export enum FactionIDs {
 // Other stuff
 export const NullUUID = "00000000-0000-0000-0000-000000000000"
 export const TRAILER_VIDEO =
-    "https://player.vimeo.com/progressive_redirect/playback/681913587/rendition/1080p?loc=external&signature=6d5bf3570be8bd5e9e57a6a786964a99d067957fbcf9e3a40b6914c085c9b3e9"
+    "https://player.vimeo.com/progressive_redirect/playback/681913587/rendition/1080p?loc=external&signature=6d5bf3570be8bd5e9e57a6a786964a99d067957fbcf9e3a40b6914c085c9b3e9#t=10"
 
-// Maintenance (ENVAR). The local stroage is a hack to let the team members in
-export const UNDER_MAINTENANCE = process.env.REACT_APP_MAINTENANCE_PAGE == "true" && !localStorage.getItem("NinjaSecrets@!")
+// Maintenance (ENVAR). The local storage is a hack to let the team members in
+export const UNDER_MAINTENANCE = process.env.REACT_APP_MAINTENANCE_PAGE === "true" && !localStorage.getItem("NinjaSecrets@!")
 
 export const PRISMIC_ACCESS_TOKEN = process.env.REACT_APP_PRISMIC_ACCESS_TOKEN
 
 // note: telegram notifications does not work on develop
 export const TELEGRAM_BOT_URL = process.env.REACT_APP_TELEGRAM_BOT_URL || "https://t.me/SupremacyNotifyBot"
+
+// stripe
+export const STRIPE_PUBLISHABLE_KEY = process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY || ""

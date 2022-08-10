@@ -1,14 +1,15 @@
 import { Box, Divider, Grow, Stack, Typography } from "@mui/material"
 import { ReactNode, useCallback, useEffect, useMemo, useState } from "react"
 import { FancyButton, TooltipHelper } from "../../.."
-import { SvgCooldown, SvgInfoCircular } from "../../../../assets"
-import { useChat, useGameServerAuth, useGameServerWebsocket } from "../../../../containers"
-import { getUserRankDeets, snakeToTitle } from "../../../../helpers"
+import { SvgCooldown, SvgInfoCircular, SvgSupToken } from "../../../../assets"
+import { useAuth, useChat } from "../../../../containers"
+import { getUserRankDeets, snakeToTitle, supFormatterNoFixed } from "../../../../helpers"
 import { useTimer, useToggle } from "../../../../hooks"
+import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors } from "../../../../theme/theme"
 import { BanProposalStruct } from "../../../../types/chat"
-import { InstantPunishConfirmModal } from "./InstantPunishConfirmModal"
+import { ConfirmModal } from "../../../Common/ConfirmModal"
 
 export const BanProposal = () => {
     const { banProposal } = useChat()
@@ -51,52 +52,55 @@ const BanProposalInner = ({
     outOfTime: boolean
     toggleOutOfTime: (value?: boolean | undefined) => void
 }) => {
-    const { state, send } = useGameServerWebsocket()
-    const { userStat, userRank } = useGameServerAuth()
-    const [submitted, setSubmitted] = useState(!!banProposal.decision)
+    const { send } = useGameServerCommandsFaction("/faction_commander")
+    const { userStat, userRank, userID } = useAuth()
+    const [submitted, setSubmitted] = useState(!!banProposal.decision || !!banProposal.instant_pass_user_ids.find((id) => id === userID))
     const [submittedVote, setSubmittedVote] = useState(banProposal.decision?.is_agreed)
-    const [error, setError] = useState("")
+    const [instantPassVoted, setInstantPassVoted] = useState(!!banProposal.instant_pass_user_ids.find((id) => id === userID))
+
     const [instantPunishModalOpen, toggleInstantPunishModalOpen] = useToggle()
+    const [isLoading, toggleIsLoading] = useToggle()
+    const [error, setError] = useState("")
 
     const rankDeets = useMemo(() => getUserRankDeets("GENERAL", "1rem", "1.2rem"), [])
 
     const submitVote = useCallback(
         async (isAgree: boolean) => {
-            if (state !== WebSocket.OPEN || !send) return
             try {
+                toggleIsLoading(true)
                 const resp = await send<boolean, { punish_vote_id: string; is_agreed: boolean }>(GameServerKeys.SubmitBanVote, {
                     punish_vote_id: banProposal.id,
                     is_agreed: isAgree,
                 })
 
-                if (resp) {
-                    setSubmitted(true)
-                    setSubmittedVote(isAgree)
-                    setError("")
-                }
+                if (!resp) return
+                setSubmitted(true)
+                setSubmittedVote(isAgree)
+                setError("")
             } catch (e) {
                 setError(typeof e === "string" ? e : "Failed to submit your vote.")
+            } finally {
+                toggleIsLoading(false)
             }
         },
-        [state, send, banProposal],
+        [toggleIsLoading, send, banProposal.id],
     )
 
     const submitInstantPunish = useCallback(async () => {
-        if (state !== WebSocket.OPEN || !send) return
         try {
             const resp = await send<boolean, { punish_vote_id: string }>(GameServerKeys.SubmitInstantBan, {
                 punish_vote_id: banProposal.id,
             })
 
-            if (resp) {
-                setSubmitted(true)
-                setSubmittedVote(true)
-                setError("")
-            }
+            if (!resp) return
+            setSubmitted(true)
+            setError("")
+            toggleInstantPunishModalOpen(false)
+            setInstantPassVoted(true)
         } catch (e) {
             setError(typeof e === "string" ? e : "Failed to submit your vote.")
         }
-    }, [banProposal.id, send, state])
+    }, [send, banProposal.id, toggleInstantPunishModalOpen])
 
     const bottomSection = useMemo(() => {
         if (!userStat || (userStat.last_seven_days_kills < 5 && userStat.ability_kill_count < 100 && userRank !== "GENERAL")) {
@@ -108,6 +112,13 @@ const BanProposalInner = ({
         }
 
         if (submitted) {
+            if (instantPassVoted) {
+                return (
+                    <Typography>
+                        <i>You triggered a command override on this proposal.</i>
+                    </Typography>
+                )
+            }
             return (
                 <Typography>
                     <i>
@@ -125,28 +136,28 @@ const BanProposalInner = ({
                 <Stack direction="row" spacing=".6rem">
                     <TooltipHelper placement="bottom" text="GENERALS can skip the voting process and instantly punish a player.">
                         <FancyButton
-                            excludeCaret
                             clipThingsProps={{
-                                clipSize: "4px",
+                                clipSize: "5px",
                                 backgroundColor: colors.darkNavyBlue,
                                 border: { borderColor: userRank !== "GENERAL" ? "#FFFFFF90" : "#FFFFFF", borderThickness: "2px" },
-                                sx: { flex: 1.6, position: "relative" },
+                                sx: { flex: 2, position: "relative" },
                             }}
                             sx={{ pt: ".2rem", pb: 0, minWidth: "5rem" }}
                             onClick={() => toggleInstantPunishModalOpen(true)}
                             disabled={userRank !== "GENERAL"}
                         >
-                            {rankDeets?.icon}
-                            <Typography variant="body2" sx={{ ml: ".5rem", fontWeight: "fontWeightBold" }}>
-                                INSTANT PUNISH
-                            </Typography>
+                            <Stack direction="row" justifyContent="center">
+                                {rankDeets?.icon}
+                                <Typography variant="body2" sx={{ ml: ".5rem", fontWeight: "fontWeightBold" }}>
+                                    COMMAND OVERRIDE
+                                </Typography>
+                            </Stack>
                         </FancyButton>
                     </TooltipHelper>
 
                     <FancyButton
-                        excludeCaret
                         clipThingsProps={{
-                            clipSize: "4px",
+                            clipSize: "5px",
                             backgroundColor: colors.green,
                             border: { borderColor: colors.green, borderThickness: "2px" },
                             sx: { flex: 1, position: "relative" },
@@ -158,9 +169,8 @@ const BanProposalInner = ({
                     </FancyButton>
 
                     <FancyButton
-                        excludeCaret
                         clipThingsProps={{
-                            clipSize: "4px",
+                            clipSize: "5px",
                             backgroundColor: colors.red,
                             border: { borderColor: colors.red, borderThickness: "2px" },
                             sx: { flex: 1, position: "relative" },
@@ -179,7 +189,7 @@ const BanProposalInner = ({
                 )}
             </>
         )
-    }, [userStat, userRank, submitted, rankDeets?.icon, error, submittedVote, toggleInstantPunishModalOpen, submitVote])
+    }, [userStat, userRank, submitted, rankDeets?.icon, error, submittedVote, toggleInstantPunishModalOpen, submitVote, instantPassVoted])
 
     return (
         <>
@@ -228,7 +238,7 @@ const BanProposalInner = ({
                             <LineItem title="DURATION">
                                 <Stack spacing=".24rem" direction="row" alignItems="center" justifyContent="center">
                                     <SvgCooldown component="span" size="1.4rem" sx={{ pb: ".25rem" }} />
-                                    <Typography sx={{ lineHeight: 1 }}>{banProposal.punish_option.punish_duration_hours} Hrs</Typography>
+                                    <Typography sx={{ lineHeight: 1 }}>{banProposal.punish_option.punish_duration_hours} mins</Typography>
                                 </Stack>
                             </LineItem>
 
@@ -245,12 +255,29 @@ const BanProposalInner = ({
             </Grow>
 
             {instantPunishModalOpen && (
-                <InstantPunishConfirmModal
-                    submitInstantPunish={submitInstantPunish}
+                <ConfirmModal
+                    title="COMMAND OVERRIDE"
+                    onConfirm={submitInstantPunish}
                     onClose={() => toggleInstantPunishModalOpen(false)}
-                    cost={banProposal.instant_pass_fee}
-                    punishPlayer={`${banProposal.reported_player_username}#${banProposal.reported_player_gid}`}
-                />
+                    isLoading={isLoading}
+                    error={error}
+                    confirmSuffix={
+                        <Stack direction="row" sx={{ ml: ".4rem" }}>
+                            <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
+                                (
+                            </Typography>
+                            <SvgSupToken size="1.8rem" />
+                            <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
+                                {supFormatterNoFixed(banProposal.instant_pass_fee, 0)})
+                            </Typography>
+                        </Stack>
+                    }
+                >
+                    <Typography variant="h6">
+                        As a GENERAL, you have the privilege to issue a command override. With 2 command overrides, the player will be instantly punished. Do
+                        you wish to spend <span>{supFormatterNoFixed(banProposal.instant_pass_fee, 0)}</span> SUPS to issue a command override?
+                    </Typography>
+                </ConfirmModal>
             )}
         </>
     )
@@ -259,18 +286,20 @@ const BanProposalInner = ({
 export const LineItem = ({ title, children, color }: { title: string; children: ReactNode; color?: string }) => {
     return (
         <Stack direction="row" spacing=".7rem" alignItems="start">
-            <Typography
+            <Stack
+                alignItems="center"
+                justifyContent="center"
                 sx={{
-                    py: ".2rem",
+                    alignSelf: "stretch",
                     flexShrink: 0,
-                    width: "7rem",
+                    py: ".2rem",
+                    width: "8rem",
                     textAlign: "center",
-                    lineHeight: 1,
-                    backgroundColor: `${color || colors.red}70`,
+                    backgroundColor: `${color || colors.red}BB`,
                 }}
             >
-                {title}
-            </Typography>
+                <Typography sx={{ lineHeight: 1 }}>{title}</Typography>
+            </Stack>
             <Stack direction="row" spacing=".7rem" alignItems="center" sx={{ mt: ".2rem !important", alignSelf: "stretch" }}>
                 {children}
             </Stack>

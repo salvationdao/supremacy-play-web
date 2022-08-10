@@ -1,62 +1,59 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useMemo } from "react"
-import { LineItem, StyledImageText, TooltipHelper } from "../../../.."
+import { LineItem, TooltipHelper } from "../../../.."
 import { SvgAnnouncement, SvgCooldown, SvgFastRepair, SvgInfoCircular } from "../../../../../assets"
-import { PASSPORT_SERVER_HOST_IMAGES } from "../../../../../constants"
-import { FactionsAll } from "../../../../../containers"
 import { dateFormatter, getUserRankDeets, snakeToTitle } from "../../../../../helpers"
 import { useToggle } from "../../../../../hooks"
 import { colors } from "../../../../../theme/theme"
 import { PunishMessageData } from "../../../../../types/chat"
+import { Player } from "../../../../Common/Player"
 
-export const PunishMessage = ({
-    data,
-    sentAt,
-    fontSize,
-    factionsAll,
-}: {
-    data?: PunishMessageData
-    sentAt: Date
-    fontSize: number
-    factionsAll: FactionsAll
-}) => {
+export const PunishMessage = ({ data, sentAt, fontSize }: { data?: PunishMessageData; sentAt: Date; fontSize: number }) => {
     const [isExpanded, toggleIsExpanded] = useToggle()
-    const factionColor = useMemo(
-        () => (data?.issued_by_user.faction_id ? factionsAll[data?.issued_by_user.faction_id]?.theme.primary : "#FFFFFF"),
-        [data?.issued_by_user.faction_id, factionsAll],
-    )
 
     const votedByRender = useMemo(() => {
         if (!data) return null
 
-        const { issued_by_user, is_passed, instant_pass_by_user, agreed_player_number, total_player_number } = data
-
-        // If ban was triggered instantly by a GENERAL
-        if (instant_pass_by_user && instant_pass_by_user.rank) {
-            const rankDeets = getUserRankDeets(instant_pass_by_user.rank, "1rem", "1.3rem")
-            return (
-                <Stack direction="row">
-                    {rankDeets?.icon}
-                    <Typography sx={{ ml: ".2rem" }}>
-                        {`${issued_by_user.username}`}
-                        <span style={{ marginLeft: ".2rem", opacity: 0.7 }}>{`#${issued_by_user.gid}`}</span>
-                    </Typography>
-                </Stack>
-            )
-        }
+        const { agreed_player_number, total_player_number } = data
 
         return (
             <Box>
-                <Typography sx={{ color: is_passed ? colors.green : colors.red }}>
+                <Typography sx={{ color: agreed_player_number > total_player_number / 2 ? colors.green : colors.red }}>
                     {agreed_player_number}/{total_player_number} AGREED
                 </Typography>
             </Box>
         )
     }, [data])
 
+    const commanderVoteRender = useMemo(() => {
+        if (!data) return null
+
+        const { instant_pass_by_users } = data
+        if (!instant_pass_by_users || instant_pass_by_users.length == 0) return null
+
+        return (
+            <Box>
+                <Stack direction="column">
+                    {instant_pass_by_users.map((ipu, i) => {
+                        const rankDeets = getUserRankDeets(ipu.rank, "1rem", "1.3rem")
+                        return (
+                            <Stack direction="row" key={i} sx={{ pb: ".2rem" }}>
+                                {rankDeets?.icon}
+                                <Typography sx={{ ml: ".2rem" }}>
+                                    {`${ipu.username}`}
+                                    <span style={{ marginLeft: ".2rem", opacity: 0.7 }}>{`#${ipu.gid}`}</span>
+                                </Typography>
+                            </Stack>
+                        )
+                    })}
+                </Stack>
+            </Box>
+        )
+    }, [data])
+
     if (!data) return null
 
-    const { issued_by_user, reported_user, is_passed, punish_option, punish_reason, instant_pass_by_user } = data
+    const { issued_by_user, reported_user, is_passed, punish_option, punish_reason, instant_pass_by_users, agreed_player_number, total_player_number } = data
 
     return (
         <Box>
@@ -68,9 +65,9 @@ export const PunishMessage = ({
                         px: "1.5rem",
                     }}
                 >
-                    <Stack direction="row" spacing=".6rem" sx={{ mb: ".5rem", opacity: 0.7 }} alignItems="center">
+                    <Stack direction="row" spacing=".8rem" sx={{ mb: ".5rem", opacity: 0.7 }} alignItems="center">
                         <SvgAnnouncement size="1.1rem" sx={{ pb: ".35rem" }} />
-                        <Typography sx={{ fontWeight: "fontWeightBold" }}>SYSTEM</Typography>
+                        <Typography sx={{ fontWeight: "fontWeightBold" }}>PLAYER BAN</Typography>
 
                         <Typography
                             variant="caption"
@@ -94,22 +91,7 @@ export const PunishMessage = ({
                             },
                         }}
                     >
-                        <StyledImageText
-                            text={
-                                <>
-                                    {`${reported_user.username}`}
-                                    <span style={{ marginLeft: ".2rem", opacity: 0.7 }}>{`#${reported_user.gid}`}</span>
-                                </>
-                            }
-                            color={factionColor || "#FFFFFF"}
-                            imageUrl={
-                                factionsAll[issued_by_user.faction_id]
-                                    ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${factionsAll[issued_by_user.faction_id].logo_blob_id}`
-                                    : undefined
-                            }
-                            imageMb={-0.2}
-                            imageSize={1.4}
-                        />
+                        <Player player={reported_user} />
                         <Typography>&nbsp;{is_passed ? "was" : "was not"} punished with&nbsp;</Typography>
 
                         <TooltipHelper placement="left" text={punish_option.description}>
@@ -120,7 +102,7 @@ export const PunishMessage = ({
                             <>
                                 <Typography>&nbsp;for&nbsp;</Typography>
                                 <Typography sx={{ color: colors.lightNeonBlue }}>{punish_option.punish_duration_hours}</Typography>
-                                <Typography>&nbsp;hours</Typography>
+                                <Typography>&nbsp;mins</Typography>
                             </>
                         )}
 
@@ -159,17 +141,11 @@ export const PunishMessage = ({
                         }}
                     >
                         <LineItem title="INITIATOR" color={colors.green}>
-                            <Typography>
-                                {`${issued_by_user.username}`}
-                                <span style={{ marginLeft: ".2rem", opacity: 0.7 }}>{`#${issued_by_user.gid}`}</span>
-                            </Typography>
+                            <Player player={issued_by_user} />
                         </LineItem>
 
                         <LineItem title="AGAINST">
-                            <Typography>
-                                {`${reported_user.username}`}
-                                <span style={{ marginLeft: ".2rem", opacity: 0.7 }}>{`#${reported_user.gid}`}</span>
-                            </Typography>
+                            <Player player={reported_user} />
                         </LineItem>
 
                         <LineItem title="PUNISH">
@@ -184,7 +160,7 @@ export const PunishMessage = ({
                         <LineItem title="DURATION">
                             <Stack spacing=".24rem" direction="row" alignItems="center" justifyContent="center">
                                 <SvgCooldown component="span" size="1.4rem" sx={{ pb: ".25rem" }} />
-                                <Typography>{punish_option.punish_duration_hours} Hrs</Typography>
+                                <Typography>{punish_option.punish_duration_hours} mins</Typography>
                             </Stack>
                         </LineItem>
 
@@ -192,7 +168,19 @@ export const PunishMessage = ({
                             <Typography>{punish_reason}</Typography>
                         </LineItem>
 
-                        <LineItem title={instant_pass_by_user ? "INSTANT BANNED" : "VOTES"}>{votedByRender}</LineItem>
+                        <LineItem title="VOTES" color={agreed_player_number > total_player_number / 2 ? colors.green : colors.red}>
+                            {votedByRender}
+                        </LineItem>
+
+                        {instant_pass_by_users && instant_pass_by_users.length > 0 && (
+                            <LineItem title={"COMMAND OVERRIDE"} color={instant_pass_by_users.length >= 5 ? colors.green : colors.red}>
+                                {commanderVoteRender}
+                            </LineItem>
+                        )}
+
+                        <LineItem title="RESULT" color={is_passed ? colors.green : colors.red}>
+                            <Typography sx={{ color: is_passed ? colors.green : colors.red }}>{is_passed ? "PUNISHED" : "NOT PUNISHED"}</Typography>
+                        </LineItem>
                     </Stack>
                 )}
             </Box>

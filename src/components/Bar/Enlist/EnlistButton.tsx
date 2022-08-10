@@ -2,20 +2,15 @@ import { Box, Stack, Button } from "@mui/material"
 import { useRef } from "react"
 import { EnlistDetailsPopover } from "../.."
 import { SvgPlus } from "../../../assets"
-import { PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
 import { useToggle } from "../../../hooks"
 import { colors, fonts } from "../../../theme/theme"
-import { FactionGeneralData } from "../../../types/passport"
+import { Faction } from "../../../types"
 
-export const EnlistButton = ({ faction }: { faction: FactionGeneralData }) => {
+export const EnlistButton = ({ faction }: { faction: Faction }) => {
     const popoverRef = useRef(null)
     const [popoverOpen, togglePopoverOpen] = useToggle()
 
-    const {
-        id,
-        theme: { primary },
-        logo_blob_id,
-    } = faction
+    const { id, primary_color, logo_url } = faction
 
     return (
         <>
@@ -30,9 +25,9 @@ export const EnlistButton = ({ faction }: { faction: FactionGeneralData }) => {
                     fontFamily: fonts.nostromoBold,
                     backgroundColor: "transparent",
                     borderRadius: 0.2,
-                    border: `1px solid ${primary}`,
+                    border: `1px solid ${primary_color}`,
                     "& .MuiTouchRipple-child": {
-                        backgroundColor: `${primary || "#FFFFFF"} !important`,
+                        backgroundColor: `${primary_color || "#FFFFFF"} !important`,
                     },
                 }}
             >
@@ -43,13 +38,13 @@ export const EnlistButton = ({ faction }: { faction: FactionGeneralData }) => {
                         sx={{
                             width: "2.4rem",
                             height: "2.4rem",
-                            backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${logo_blob_id})`,
+                            backgroundImage: `url(${logo_url})`,
                             backgroundRepeat: "no-repeat",
                             backgroundPosition: "center",
-                            backgroundSize: "cover",
+                            backgroundSize: "contain",
                         }}
                     />
-                    <SvgPlus size="1rem" fill={primary || colors.text} sx={{ pb: 0 }} />
+                    <SvgPlus size="1rem" fill={primary_color || colors.text} sx={{ pb: 0 }} />
                 </Stack>
             </Button>
 

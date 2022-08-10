@@ -26,14 +26,13 @@ export const VotingButton = ({ displayPercentage, cost, color, textColor, isVoti
     return (
         <FancyButton
             disabled={!isVotable}
-            excludeCaret
             clipThingsProps={{
-                clipSize: "4px",
+                clipSize: "5px",
                 backgroundColor: color || "#14182B",
-                border: { borderColor: color || "#14182B" },
+                border: { isFancy: true, borderColor: color || "#14182B" },
                 sx: { flex: 1, position: "relative" },
             }}
-            sx={{ pt: ".32rem", pb: ".24rem", minWidth: "2rem" }}
+            sx={{ pt: ".3rem", pb: ".4rem", minWidth: "2rem" }}
             onClick={onClick}
         >
             <Stack
@@ -55,7 +54,6 @@ export const VotingButton = ({ displayPercentage, cost, color, textColor, isVoti
             >
                 <Typography
                     sx={{
-                        lineHeight: 1,
                         fontWeight: "fontWeightBold",
                         whiteSpace: "nowrap",
                         color: "#FFFFFF",

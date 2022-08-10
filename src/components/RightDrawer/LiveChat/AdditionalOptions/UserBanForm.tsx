@@ -1,30 +1,17 @@
-import {
-    Autocomplete,
-    Box,
-    Button,
-    CircularProgress,
-    IconButton,
-    MenuItem,
-    Modal,
-    Select,
-    Stack,
-    SxProps,
-    TextField,
-    Typography,
-    useTheme,
-    Theme,
-} from "@mui/material"
+import { Autocomplete, Box, CircularProgress, IconButton, MenuItem, Modal, Select, Stack, SxProps, TextField, Typography } from "@mui/material"
 import { useCallback, useEffect, useState } from "react"
-import { ClipThing } from "../../.."
+import { ClipThing, FancyButton } from "../../.."
 import { SvgClose, SvgCooldown, SvgSupToken } from "../../../../assets"
-import { MAX_BAN_PROPOSAL_REASON_LENGTH, PASSPORT_SERVER_HOST_IMAGES } from "../../../../constants"
-import { useGameServerAuth, useGameServerWebsocket, useSnackbar } from "../../../../containers"
+import { MAX_BAN_PROPOSAL_REASON_LENGTH } from "../../../../constants"
+import { useAuth, useSnackbar } from "../../../../containers"
+import { useTheme } from "../../../../containers/theme"
 import { snakeToTitle } from "../../../../helpers"
 import { useDebounce, useToggle } from "../../../../hooks"
+import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts, siteZIndex } from "../../../../theme/theme"
 import { BanOption, BanUser } from "../../../../types/chat"
-import { User } from "../../../../types"
+import { Player } from "../../../Common/Player"
 
 interface SubmitRequest {
     intend_to_punish_player_id: string
@@ -32,37 +19,29 @@ interface SubmitRequest {
     reason: string
 }
 
-const UserItem = ({ user, banUser, sx }: { user: User; banUser: BanUser; sx?: SxProps }) => {
+const UserItem = ({ banUser, sx }: { banUser: BanUser; sx?: SxProps }) => {
     return (
         <Stack direction="row" spacing=".6rem" alignItems="center" sx={sx}>
-            <Box
-                sx={{
-                    mt: "-0.1rem !important",
-                    width: "1.7rem",
-                    height: "1.7rem",
-                    flexShrink: 0,
-                    backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${user.faction.logo_blob_id})`,
-                    backgroundRepeat: "no-repeat",
-                    backgroundPosition: "center",
-                    backgroundSize: "contain",
-                    backgroundColor: (theme) => theme.factionTheme.primary,
-                    borderRadius: 0.8,
-                    border: (theme) => `${theme.factionTheme.primary} 1px solid`,
+            <Player
+                player={{
+                    id: banUser.id,
+                    username: banUser.username,
+                    gid: banUser.gid,
+                    faction_id: "",
+                    rank: "NEW_RECRUIT",
+                    features: [],
                 }}
+                styledImageTextProps={{ textColor: "#FFFFFF" }}
             />
-            <Typography>
-                {`${banUser.username}`}
-                <span style={{ marginLeft: ".2rem", opacity: 0.7 }}>{`#${banUser.gid}`}</span>
-            </Typography>
         </Stack>
     )
 }
 
-export const UserBanForm = ({ user, open, onClose, prefillUser }: { user?: User; open: boolean; onClose: () => void; prefillUser?: BanUser }) => {
-    const theme = useTheme<Theme>()
+export const UserBanForm = ({ open, onClose, prefillUser }: { open: boolean; onClose: () => void; prefillUser?: BanUser }) => {
+    const theme = useTheme()
     const { newSnackbarMessage } = useSnackbar()
-    const { state, send } = useGameServerWebsocket()
-    const { userStat, userRank } = useGameServerAuth()
+    const { send } = useGameServerCommandsFaction("/faction_commander")
+    const { userStat, userRank } = useAuth()
     // Options and display only
     const [searchText, setSearchText] = useState(prefillUser ? `${prefillUser.username}#${prefillUser.gid}` : "")
     const [search, setSearch] = useDebounce(prefillUser ? `${prefillUser.username}#${prefillUser.gid}` : "", 300)
@@ -83,73 +62,74 @@ export const UserBanForm = ({ user, open, onClose, prefillUser }: { user?: User;
     useEffect(() => {
         ;(async () => {
             try {
-                if (state !== WebSocket.OPEN) return
                 const resp = await send<BanOption[], null>(GameServerKeys.GetBanOptions, null)
 
-                if (resp) setBanOptions(resp)
+                if (!resp) return
+                setBanOptions(resp)
             } catch (e) {
                 newSnackbarMessage(typeof e === "string" ? e : "Failed to load ban options.", "error")
             }
         })()
-    }, [newSnackbarMessage, send, state])
+    }, [newSnackbarMessage, send])
 
     // When searching for player, update the dropdown list
     useEffect(() => {
+        if (search === "") return
         ;(async () => {
             toggleIsLoadingUsers(true)
             try {
-                if (state !== WebSocket.OPEN) return
                 const resp = await send<BanUser[], { search: string }>(GameServerKeys.GetPlayerList, {
                     search: search || "",
                 })
 
-                if (resp) setUserDropdown(resp)
+                if (!resp) return
+                setUserDropdown(resp)
+            } catch (e) {
+                newSnackbarMessage(typeof e === "string" ? e : "Failed to load ban options.", "error")
             } finally {
                 toggleIsLoadingUsers(false)
             }
         })()
-    }, [search, send, state, toggleIsLoadingUsers])
+    }, [search, send, toggleIsLoadingUsers, newSnackbarMessage])
 
     // When a player is selected, get the ban fee for that player
     useEffect(() => {
         ;(async () => {
             try {
-                if (state !== WebSocket.OPEN || !selectedUser) return
+                if (!selectedUser) return
                 const resp = await send<string, { intend_to_punish_player_id: string }>(GameServerKeys.GetBanPlayerCost, {
                     intend_to_punish_player_id: selectedUser.id,
                 })
 
-                if (resp) setFee(resp)
+                if (!resp) return
+                setFee(resp)
             } catch (e) {
                 newSnackbarMessage(typeof e === "string" ? e : "Failed to load users from search.", "error")
             }
         })()
-    }, [newSnackbarMessage, selectedUser, send, state])
+    }, [newSnackbarMessage, selectedUser, send])
 
     // Submit the ban proposal
     const onSubmit = useCallback(async () => {
         try {
-            if (state !== WebSocket.OPEN || !selectedUser || !selectedBanOptionID || !reason) throw new Error()
+            if (!selectedUser || !selectedBanOptionID || !reason) throw new Error()
             const resp = await send<boolean, SubmitRequest>(GameServerKeys.SubmitBanProposal, {
                 intend_to_punish_player_id: selectedUser.id,
                 punish_option_id: selectedBanOptionID,
                 reason,
             })
 
-            if (resp) {
-                onClose()
-                setError("")
-                newSnackbarMessage("Successfully submitted proposal.", "success")
-            }
+            if (!resp) return
+            onClose()
+            setError("")
+            newSnackbarMessage("Successfully submitted proposal.", "success")
         } catch (e) {
             setError(typeof e === "string" ? e : "Failed to submit proposal.")
         }
-    }, [state, selectedUser, selectedBanOptionID, reason, send, onClose, newSnackbarMessage])
+    }, [selectedUser, selectedBanOptionID, reason, send, onClose, newSnackbarMessage])
 
     const isDisabled =
         !selectedUser || !selectedBanOptionID || !reason || (userStat.last_seven_days_kills < 5 && userStat.ability_kill_count < 100 && userRank !== "GENERAL")
-
-    if (!user) return null
 
     return (
         <Modal open={open} onClose={onClose}>
@@ -161,23 +141,22 @@ export const UserBanForm = ({ user, open, onClose, prefillUser }: { user?: User;
                     transform: "translate(-50%, -50%)",
                     width: "42rem",
                     boxShadow: 24,
+                    outline: "none",
                 }}
             >
                 <ClipThing
-                    clipSize="0"
+                    clipSize="8px"
                     border={{
-                        isFancy: true,
                         borderColor: primaryColor,
-                        borderThickness: ".15rem",
+                        borderThickness: ".3rem",
                     }}
                     sx={{ position: "relative" }}
                     backgroundColor={theme.factionTheme.background}
                 >
                     <Stack
                         sx={{
-                            px: "2rem",
-                            pt: "1.8rem",
-                            pb: "2rem",
+                            px: "2.2rem",
+                            py: "2.1rem",
                             ".MuiAutocomplete-popper": {
                                 zIndex: siteZIndex.Modal,
                                 ".MuiPaper-root": {
@@ -188,7 +167,7 @@ export const UserBanForm = ({ user, open, onClose, prefillUser }: { user?: User;
                             },
                         }}
                     >
-                        <Typography sx={{ mb: ".9rem", fontFamily: fonts.nostromoBlack }}>PROPOSE TO PUNISH A PLAYER</Typography>
+                        <Typography sx={{ mb: "1.2rem", fontFamily: fonts.nostromoBlack }}>PROPOSE TO PUNISH A PLAYER</Typography>
 
                         <Autocomplete
                             options={userDropdown}
@@ -203,7 +182,7 @@ export const UserBanForm = ({ user, open, onClose, prefillUser }: { user?: User;
                             onChange={(e, value) => setSelectedUser(value)}
                             renderOption={(props, u) => (
                                 <Box key={u.id} component="li" {...props}>
-                                    <UserItem user={user} banUser={u} />
+                                    <UserItem banUser={u} />
                                 </Box>
                             )}
                             getOptionLabel={(u) => `${u.username}#${u.gid}`}
@@ -258,7 +237,7 @@ export const UserBanForm = ({ user, open, onClose, prefillUser }: { user?: User;
                             <Stack spacing=".1rem">
                                 <Typography sx={{ color: primaryColor, fontWeight: "fontWeightBold" }}>USER:</Typography>
                                 {selectedUser ? (
-                                    <UserItem user={user} banUser={selectedUser} sx={{ pl: ".2rem" }} />
+                                    <UserItem banUser={selectedUser} sx={{ pl: ".2rem" }} />
                                 ) : (
                                     <Typography sx={{ opacity: 0.6 }}>
                                         <i>Use the search box to find a user...</i>
@@ -290,7 +269,10 @@ export const UserBanForm = ({ user, open, onClose, prefillUser }: { user?: User;
                                         variant: "menu",
                                         sx: {
                                             "&& .Mui-selected": {
-                                                backgroundColor: "#FFFFFF25",
+                                                ".MuiTypography-root": {
+                                                    color: secondaryColor,
+                                                },
+                                                backgroundColor: primaryColor,
                                             },
                                         },
                                         PaperProps: {
@@ -308,17 +290,13 @@ export const UserBanForm = ({ user, open, onClose, prefillUser }: { user?: User;
                                                 key={`ban-reason-${x.id}`}
                                                 value={x.id}
                                                 onClick={() => setSelectedBanOptionID(x.id)}
-                                                sx={{
-                                                    "&:hover": {
-                                                        backgroundColor: "#FFFFFF15",
-                                                    },
-                                                }}
+                                                sx={{ "&:hover": { backgroundColor: "#FFFFFF20" } }}
                                             >
                                                 <Stack direction="row" spacing="1rem" justifyContent="space-between" sx={{ flex: 1 }}>
                                                     <Typography>{snakeToTitle(x.key)}</Typography>
                                                     <Stack spacing=".24rem" direction="row" alignItems="center" justifyContent="center">
                                                         <SvgCooldown component="span" size="1.5rem" sx={{ pb: ".25rem" }} />
-                                                        <Typography>{x.punish_duration_hours} Hrs</Typography>
+                                                        <Typography>{x.punish_duration_hours} mins</Typography>
                                                     </Stack>
                                                 </Stack>
                                             </MenuItem>
@@ -373,33 +351,28 @@ export const UserBanForm = ({ user, open, onClose, prefillUser }: { user?: User;
                             </Stack>
                         </Stack>
 
-                        <Button
-                            variant="contained"
-                            size="small"
+                        <FancyButton
+                            clipThingsProps={{
+                                clipSize: "9px",
+                                backgroundColor: primaryColor,
+                                opacity: 1,
+                                border: { isFancy: true, borderColor: primaryColor, borderThickness: "2px" },
+                                sx: { position: "relative", flex: 1, minWidth: 0, mt: "1.8rem" },
+                            }}
+                            sx={{ px: "1.6rem", py: ".3rem", color: secondaryColor }}
                             onClick={onSubmit}
                             disabled={isDisabled}
-                            sx={{
-                                flex: 1,
-                                minWidth: 0,
-                                mt: "1.8rem",
-                                px: ".8rem",
-                                py: ".8rem",
-                                backgroundColor: primaryColor,
-                                borderRadius: 0.3,
-                                ":hover": { backgroundColor: `${primaryColor}90` },
-                            }}
                         >
                             <Typography
+                                variant="caption"
                                 sx={{
                                     color: secondaryColor,
-                                    lineHeight: 1,
-                                    fontWeight: "fontWeightBold",
-                                    opacity: isDisabled ? 0.6 : 1,
+                                    fontFamily: fonts.nostromoBlack,
                                 }}
                             >
                                 SUBMIT
                             </Typography>
-                        </Button>
+                        </FancyButton>
 
                         {userStat.last_seven_days_kills < 5 && userStat.ability_kill_count < 100 && (
                             <Typography variant="body2" sx={{ mt: "1rem", opacity: 0.6, lineHeight: 1.2 }}>
@@ -414,8 +387,8 @@ export const UserBanForm = ({ user, open, onClose, prefillUser }: { user?: User;
                         )}
                     </Stack>
 
-                    <IconButton size="small" onClick={onClose} sx={{ position: "absolute", top: ".2rem", right: ".2rem" }}>
-                        <SvgClose size="1.6rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
+                    <IconButton size="small" onClick={onClose} sx={{ position: "absolute", top: ".5rem", right: ".5rem" }}>
+                        <SvgClose size="2.6rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
                     </IconButton>
                 </ClipThing>
             </Box>

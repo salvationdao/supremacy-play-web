@@ -1,15 +1,21 @@
 import { Stack } from "@mui/material"
+import { useMemo } from "react"
 import { LiveCounts, OverlayToggles, VideoPlayerControls } from ".."
 import { CONTROLS_HEIGHT } from "../../constants"
-import { useOverlayToggles } from "../../containers"
+import { useMobile } from "../../containers"
+import { useTheme } from "../../containers/theme"
+import { shadeColor } from "../../helpers"
 import { siteZIndex } from "../../theme/theme"
-import { BattleStats } from "../BattleStats/BattleStats"
 import { PreviousBattle } from "./PreviousBattle"
 import { ResolutionSelect } from "./ResolutionSelect"
+import { ShowTrailerButton } from "./ShowTrailerButton"
 import { StreamSelect } from "./StreamSelect"
 
 export const Controls = () => {
-    const { isLiveChartOpen } = useOverlayToggles()
+    const { isMobile } = useMobile()
+    const theme = useTheme()
+
+    const darkerBackgroundColor = useMemo(() => shadeColor(theme.factionTheme.primary, -91), [theme.factionTheme.primary])
 
     return (
         <Stack
@@ -18,17 +24,18 @@ export const Controls = () => {
             justifyContent="space-between"
             spacing="1.6rem"
             sx={{
+                flexShrink: 0,
                 position: "relative",
                 width: "100%",
                 height: `${CONTROLS_HEIGHT}rem`,
                 pr: "1rem",
                 pt: ".24rem",
                 pb: ".16rem",
-                backgroundColor: (theme) => theme.factionTheme.background,
+                background: (theme) => `linear-gradient(${darkerBackgroundColor} 26%, ${theme.factionTheme.background})`,
                 zIndex: siteZIndex.Controls,
                 overflowX: "auto",
                 overflowY: "hidden",
-                scrollbarWidth: "none",
+
                 "::-webkit-scrollbar": {
                     height: ".4rem",
                 },
@@ -43,13 +50,13 @@ export const Controls = () => {
             }}
         >
             <Stack direction="row" spacing="1.6rem" sx={{ flexShrink: 0, height: "100%" }}>
-                <PreviousBattle />
+                {!isMobile && <PreviousBattle />}
                 <LiveCounts />
-                <OverlayToggles />
-                <BattleStats hideContributionTotal={isLiveChartOpen} hideContributorAmount={isLiveChartOpen} />
+                {!isMobile && <OverlayToggles />}
             </Stack>
 
-            <Stack id="tutorial-stream-options" direction="row" spacing="1.6rem" sx={{ flexShrink: 0, height: "100%" }}>
+            <Stack direction="row" spacing="1.6rem" sx={{ flexShrink: 0, height: "100%" }}>
+                <ShowTrailerButton />
                 <StreamSelect />
                 <ResolutionSelect />
                 <VideoPlayerControls />

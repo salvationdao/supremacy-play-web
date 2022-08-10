@@ -1,13 +1,12 @@
 import { Box, Divider, Stack } from "@mui/material"
 import { BarExpandable, BuySupsButton } from "../.."
 import { SvgSupToken, SvgWallet } from "../../../assets"
-import { usePassportServerAuth } from "../../../containers"
+import { useAuth } from "../../../containers"
 import { colors } from "../../../theme/theme"
-import { MultipliersInfo } from "./MultipliersInfo/MultipliersInfo"
 import { WalletInfo } from "./WalletInfo/WalletInfo"
 
 export const WalletDetails = () => {
-    const { user } = usePassportServerAuth()
+    const { userID } = useAuth()
     const barName = "wallet"
 
     return (
@@ -15,13 +14,12 @@ export const WalletDetails = () => {
             noDivider
             barName={barName}
             iconComponent={
-                <Box id="tutorial-wallet-icon" sx={{ p: ".32rem", backgroundColor: colors.grey, borderRadius: 1 }}>
-                    <SvgSupToken size="2rem" />
+                <Box sx={{ p: ".32rem", backgroundColor: colors.gold, borderRadius: 1 }}>
+                    <SvgSupToken size="2.2rem" fill="#000000" sx={{ pb: 0 }} />
                 </Box>
             }
         >
             <Stack
-                id="tutorial-wallet"
                 direction="row"
                 alignItems="center"
                 sx={{
@@ -38,7 +36,7 @@ export const WalletDetails = () => {
                         height: "100%",
                         overflowX: "auto",
                         overflowY: "hidden",
-                        scrollbarWidth: "none",
+
                         "::-webkit-scrollbar": {
                             height: ".3rem",
                         },
@@ -55,10 +53,9 @@ export const WalletDetails = () => {
                     <Stack direction="row" alignItems="center">
                         <SvgWallet size="2.3rem" sx={{ mr: ".8rem" }} />
                         <WalletInfo />
-                        <MultipliersInfo />
                     </Stack>
 
-                    {user && <BuySupsButton user={user} />}
+                    {userID && <BuySupsButton />}
                 </Stack>
 
                 <Divider

@@ -1,33 +1,41 @@
-import { Button, Drawer, Stack, Typography, useTheme, Theme } from "@mui/material"
-import { useHistory, useLocation } from "react-router-dom"
-import { SvgBack } from "../../assets"
+import { Button, Drawer, IconButton, Stack, Typography } from "@mui/material"
+import { Link, useHistory, useLocation, useRouteMatch } from "react-router-dom"
+import { SvgBack, SvgSupremacyLogo } from "../../assets"
 import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT } from "../../constants"
-import { useToggle } from "../../hooks"
+import { useAuth, useOverlayToggles } from "../../containers"
+import { useTheme } from "../../containers/theme"
 import { ROUTES_ARRAY } from "../../routes"
 import { colors, fonts, siteZIndex } from "../../theme/theme"
 import { DrawerButtons } from "./DrawerButtons"
 
-const EXPAND_DRAWER_WIDTH = 30 //rem
+const EXPAND_DRAWER_WIDTH = 34 //rem
 
 export const LeftDrawer = () => {
-    const theme = useTheme<Theme>()
+    const { userID } = useAuth()
+    const theme = useTheme()
     const location = useLocation()
     const history = useHistory()
-    const [isExpanded, toggleIsExpanded] = useToggle(false)
+    const { isLeftDrawerOpen, toggleIsLeftDrawerOpen } = useOverlayToggles()
+
+    const match = useRouteMatch(ROUTES_ARRAY.filter((r) => r.path !== "/").map((r) => r.path))
+    let activeTabID = ""
+    if (match) {
+        const r = ROUTES_ARRAY.find((r) => r.path === match.path)
+        activeTabID = r?.matchLeftDrawerID || ""
+    }
 
     return (
         <>
-            <DrawerButtons openLeftDrawer={() => toggleIsExpanded(true)} />
+            <DrawerButtons />
             <Drawer
                 transitionDuration={DRAWER_TRANSITION_DURATION}
-                open={isExpanded}
-                onClose={() => toggleIsExpanded(false)}
+                open={isLeftDrawerOpen}
+                onClose={() => toggleIsLeftDrawerOpen(false)}
                 variant="temporary"
                 anchor="left"
                 sx={{
-                    mt: `${GAME_BAR_HEIGHT}rem`,
                     flexShrink: 0,
-                    width: isExpanded ? `${EXPAND_DRAWER_WIDTH}rem` : 0,
+                    width: isLeftDrawerOpen ? `${EXPAND_DRAWER_WIDTH}rem` : 0,
                     transition: `all ${DRAWER_TRANSITION_DURATION}ms cubic-bezier(0, 0, 0.2, 1)`,
                     zIndex: siteZIndex.LeftDrawer,
                     "& .MuiDrawer-paper": {
@@ -41,14 +49,31 @@ export const LeftDrawer = () => {
             >
                 <Stack sx={{ height: "100%" }}>
                     <Stack sx={{ flex: 1 }}>
-                        {ROUTES_ARRAY.filter((r) => r.showInLeftDrawer).map((r) => {
+                        <Stack spacing="1rem" direction="row" alignItems="center" sx={{ px: "1.5rem", height: `${GAME_BAR_HEIGHT}rem` }}>
+                            <IconButton size="small" onClick={() => toggleIsLeftDrawerOpen(false)}>
+                                <SvgBack size="2rem" />
+                            </IconButton>
+
+                            <Link to="/">
+                                <SvgSupremacyLogo width="15rem" />
+                            </Link>
+                        </Stack>
+
+                        {ROUTES_ARRAY.map((r) => {
+                            if (!r.enable || !r.leftDrawer) return null
+                            const { requireAuth, requireFaction } = r
+                            const { enable, label } = r.leftDrawer
+                            const disable = (requireAuth || requireFaction) && !userID
+                            const navigateTo = r.path.split("/:")[0]
                             return (
                                 <MenuButton
                                     key={r.id}
-                                    label={r.label}
-                                    enable={r.enable}
-                                    onClick={() => history.push(r.path)}
-                                    isActive={location.pathname === r.path}
+                                    label={label}
+                                    enable={enable && !disable}
+                                    isComingSoon={!enable}
+                                    comingSoonLabel={r.leftDrawer.comingSoonLabel}
+                                    onClick={() => history.push(`${navigateTo}${location.hash}`)}
+                                    isActive={activeTabID === r.matchLeftDrawerID || location.pathname === r.path}
                                     primaryColor={theme.factionTheme.primary}
                                     secondaryColor={theme.factionTheme.secondary}
                                 />
@@ -57,7 +82,7 @@ export const LeftDrawer = () => {
                     </Stack>
 
                     <Button
-                        onClick={() => toggleIsExpanded(false)}
+                        onClick={() => toggleIsLeftDrawerOpen(false)}
                         sx={{
                             px: "2.3rem",
                             py: "1rem",
@@ -75,7 +100,7 @@ export const LeftDrawer = () => {
                         }}
                     >
                         <SvgBack size="1.6rem" fill="#FFFFFF" />
-                        <Typography sx={{ ml: "1rem", fontFamily: fonts.nostromoHeavy, whiteSpace: "nowrap", lineHeight: 1 }}>MINIMISE</Typography>
+                        <Typography sx={{ ml: "1rem", fontFamily: fonts.nostromoHeavy, whiteSpace: "nowrap", lineHeight: 1 }}>MINIMIZE</Typography>
                     </Button>
                 </Stack>
             </Drawer>
@@ -86,18 +111,22 @@ export const LeftDrawer = () => {
 const MenuButton = ({
     label,
     enable,
+    isComingSoon,
     isActive,
     primaryColor,
     secondaryColor,
     onClick,
+    comingSoonLabel,
 }: {
     label: string
     enable?: boolean
+    isComingSoon?: boolean
     icon?: string | React.ReactElement<unknown, string | React.JSXElementConstructor<unknown>>
     isActive?: boolean
     primaryColor: string
     secondaryColor: string
     onClick: () => void
+    comingSoonLabel?: string
 }) => {
     return (
         <Button
@@ -120,9 +149,10 @@ const MenuButton = ({
             <Typography sx={{ color: isActive ? secondaryColor : "#FFFFFF", fontFamily: fonts.nostromoHeavy, whiteSpace: "nowrap", lineHeight: 1 }}>
                 {label}
             </Typography>
-            {!enable && (
+
+            {isComingSoon && (
                 <Typography variant="caption" sx={{ color: colors.neonBlue, fontFamily: fonts.nostromoBold, whiteSpace: "nowrap", lineHeight: 1 }}>
-                    &nbsp;(COMING SOON)
+                    &nbsp;({comingSoonLabel || "COMING SOON"})
                 </Typography>
             )}
         </Button>

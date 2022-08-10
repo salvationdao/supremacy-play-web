@@ -1,114 +1,107 @@
-import { Box, Stack, ThemeProvider, Theme } from "@mui/material"
+import { Box, LinearProgress, Stack, Typography } from "@mui/material"
 import { TourProvider } from "@reactour/tour"
 import * as Sentry from "@sentry/react"
-import { useEffect, useMemo, useState } from "react"
+import { Buffer } from "buffer"
+import { useEffect } from "react"
 import ReactDOM from "react-dom"
-import { BrowserRouter, Route, Redirect, Switch, useLocation } from "react-router-dom"
-import { Bar, GlobalSnackbar, LoadMessage, RightDrawer, Maintenance, EarlyAccessWarning } from "./components"
+import { Action, ClientContextProvider, createClient } from "react-fetching-library"
+import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom"
+import { SupremacyPNG } from "./assets"
+import { Bar, GlobalSnackbar, Maintenance, RightDrawer } from "./components"
+import { BottomNav } from "./components/BottomNav/BottomNav"
 import { tourStyles } from "./components/HowToPlay/Tutorial/SetupTutorial"
 import { LeftDrawer } from "./components/LeftDrawer/LeftDrawer"
-import { DEV_ONLY, PASSPORT_SERVER_HOST, SENTRY_CONFIG, UNDER_MAINTENANCE } from "./constants"
+import { GAME_SERVER_HOSTNAME, SENTRY_CONFIG, UNDER_MAINTENANCE } from "./constants"
 import {
-    RightDrawerProvider,
-    GameServerAuthProvider,
-    GameServerSocketProvider,
-    PassportServerAuthProvider,
-    PassportServerSocketProvider,
-    SnackBarProvider,
-    SupremacyProvider,
-    useGameServerWebsocket,
-    WalletProvider,
     BarProvider,
-    useGameServerAuth,
+    ChatProvider,
+    DimensionProvider,
+    GameProvider,
+    MiniMapProvider,
+    MobileProvider,
+    OverlayTogglesProvider,
+    SnackBarProvider,
+    StreamProvider,
+    SupremacyProvider,
+    useMobile,
+    useSupremacy,
+    WalletProvider,
 } from "./containers"
-import { mergeDeep, shadeColor } from "./helpers"
+import { AuthProvider, useAuth, UserUpdater } from "./containers/auth"
+import { FingerprintProvider } from "./containers/fingerprint"
+import { ThemeProvider } from "./containers/theme"
+import { ws } from "./containers/ws"
 import { useToggle } from "./hooks"
 import { NotFoundPage } from "./pages"
+import { AuthPage } from "./pages/AuthPage"
+import { EnlistPage } from "./pages/EnlistPage"
+import { LoginRedirect } from "./pages/LoginRedirect"
 import { ROUTES_ARRAY, ROUTES_MAP } from "./routes"
-import { colors, theme } from "./theme/theme"
-import { FactionThemeColor, UpdateTheme } from "./types"
-
-if (SENTRY_CONFIG) {
-    Sentry.init({
-        dsn: SENTRY_CONFIG.DSN,
-        release: SENTRY_CONFIG.RELEASE,
-        environment: SENTRY_CONFIG.ENVIRONMENT,
-        tracesSampleRate: SENTRY_CONFIG.SAMPLERATE,
-    })
-}
-
-const App = () => {
-    const [currentTheme, setTheme] = useState<Theme>(theme)
-    const [factionColors, setFactionColors] = useState<FactionThemeColor>({
-        primary: colors.neonBlue,
-        secondary: "#000000",
-        background: shadeColor(colors.neonBlue, -95),
-    })
-
-    useEffect(() => {
-        setTheme((curTheme: Theme) => mergeDeep(curTheme, { factionTheme: factionColors }))
-    }, [factionColors])
-
-    const tourProviderProps = useMemo(
-        () => ({
-            children: <AppInner />,
-            steps: [],
-            padding: 2,
-            styles: tourStyles,
-            showBadge: false,
-            disableKeyboardNavigation: false,
-            disableDotsNavigation: true,
-        }),
-        [],
-    )
-
-    return (
-        <UpdateTheme.Provider value={{ updateTheme: setFactionColors }}>
-            <ThemeProvider theme={currentTheme}>
-                <SnackBarProvider>
-                    <PassportServerSocketProvider initialState={{ host: PASSPORT_SERVER_HOST }}>
-                        <PassportServerAuthProvider>
-                            <GameServerSocketProvider>
-                                <GameServerAuthProvider>
-                                    <SupremacyProvider>
-                                        <WalletProvider>
-                                            <BarProvider>
-                                                <RightDrawerProvider>
-                                                    <TourProvider {...tourProviderProps}>
-                                                        <BrowserRouter>
-                                                            <AppInner />
-                                                        </BrowserRouter>
-                                                    </TourProvider>
-                                                </RightDrawerProvider>
-                                            </BarProvider>
-                                        </WalletProvider>
-                                    </SupremacyProvider>
-                                </GameServerAuthProvider>
-                            </GameServerSocketProvider>
-                        </PassportServerAuthProvider>
-                    </PassportServerSocketProvider>
-                </SnackBarProvider>
-            </ThemeProvider>
-        </UpdateTheme.Provider>
-    )
-}
+import { colors, fonts } from "./theme/theme"
 
 const AppInner = () => {
-    const { isServerUp } = useGameServerWebsocket()
-    useGameServerAuth() // For re-rendering the site when user has changed (e.g. theme color etc.)
-    const location = useLocation()
-    const [understand, toggleUnderstand] = useToggle()
+    const { isServerDown, serverConnectedBefore } = useSupremacy()
+    const { isMobile } = useMobile()
+    const { userID, factionID } = useAuth()
+    const [showLoading, toggleShowLoading] = useToggle(true)
 
-    // Dont show gamebar and left nav in 404
-    if (location.pathname === "/404") return <NotFoundPage />
+    // Makes the loading screen to show for AT LEAST 1 second
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            toggleShowLoading(false)
+        }, 2000)
+
+        return () => clearTimeout(timeout)
+    }, [toggleShowLoading])
+
+    if (!serverConnectedBefore || showLoading) {
+        return (
+            <Stack
+                spacing="3rem"
+                alignItems="center"
+                justifyContent="center"
+                sx={{
+                    position: "fixed",
+                    width: "100vw",
+                    height: "100%",
+                    backgroundColor: (theme) => theme.factionTheme.background,
+                }}
+            >
+                <Box
+                    sx={{
+                        width: "9rem",
+                        height: "9rem",
+                        background: `url(${SupremacyPNG})`,
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "center",
+                        backgroundSize: "contain",
+                    }}
+                />
+
+                <Stack alignItems="center" spacing=".8rem">
+                    <Typography variant="body2" sx={{ textAlign: "center", fontFamily: fonts.nostromoBlack }}>
+                        CONNECTING...
+                    </Typography>
+                    <LinearProgress
+                        sx={{
+                            width: "13rem",
+                            height: "9px",
+                            backgroundColor: `${colors.gold}15`,
+                            ".MuiLinearProgress-bar": { backgroundColor: colors.gold },
+                        }}
+                    />
+                </Stack>
+            </Stack>
+        )
+    }
 
     return (
         <>
             <Stack
                 sx={{
-                    position: "relative",
+                    position: "fixed",
                     width: "100vw",
-                    height: "100vh",
+                    height: "100%",
                     backgroundColor: (theme) => theme.factionTheme.background,
                 }}
             >
@@ -127,9 +120,9 @@ const AppInner = () => {
                         },
                     }}
                 >
-                    {DEV_ONLY && <LeftDrawer />}
+                    <LeftDrawer />
 
-                    <Box
+                    <Stack
                         sx={{
                             flex: 1,
                             position: "relative",
@@ -138,21 +131,31 @@ const AppInner = () => {
                             overflow: "hidden",
                         }}
                     >
-                        <LoadMessage />
-                        <EarlyAccessWarning onAcknowledged={() => toggleUnderstand(true)} />
+                        <Box sx={{ flex: 1, position: "relative", overflow: "hidden" }}>
+                            {!isServerDown && !UNDER_MAINTENANCE ? (
+                                <Switch>
+                                    {ROUTES_ARRAY.map((r) => {
+                                        const { id, path, exact, Component, requireAuth, requireFaction, authTitle, authDescription, enable } = r
+                                        if (!enable) return null
 
-                        {understand && isServerUp && !UNDER_MAINTENANCE && (
-                            <Switch>
-                                {ROUTES_ARRAY.map((r) => {
-                                    const { id, path, exact, Component } = r
-                                    return <Route key={id} path={path} exact={exact} component={Component} />
-                                })}
-                                <Redirect to={ROUTES_MAP.not_found_page.path} />
-                            </Switch>
-                        )}
+                                        let component = Component
+                                        if (requireAuth && !userID) {
+                                            const Comp = () => <AuthPage authTitle={authTitle} authDescription={authDescription} />
+                                            component = Comp
+                                        } else if (requireFaction && !factionID) {
+                                            component = EnlistPage
+                                        }
+                                        return <Route key={id} path={path} exact={exact} component={component} />
+                                    })}
+                                    <Redirect to={ROUTES_MAP.not_found_page.path} />
+                                </Switch>
+                            ) : (
+                                <Maintenance />
+                            )}
+                        </Box>
 
-                        {!isServerUp || (UNDER_MAINTENANCE && <Maintenance />)}
-                    </Box>
+                        {isMobile && <BottomNav />}
+                    </Stack>
 
                     <RightDrawer />
                 </Stack>
@@ -160,6 +163,96 @@ const AppInner = () => {
 
             <GlobalSnackbar />
         </>
+    )
+}
+
+if (SENTRY_CONFIG) {
+    Sentry.init({
+        dsn: SENTRY_CONFIG.DSN,
+        release: SENTRY_CONFIG.RELEASE,
+        environment: SENTRY_CONFIG.ENVIRONMENT,
+        tracesSampleRate: SENTRY_CONFIG.SAMPLERATE,
+    })
+}
+
+window.Buffer = Buffer
+
+if (window.location.host.includes("localhost")) {
+    alert("Please don't run on localhost.")
+    throw new Error("Please don't run on localhost.")
+}
+
+const prefixURL = (prefix: string) => () => async (action: Action) => {
+    return {
+        ...action,
+        headers: {
+            "X-AUTH-TOKEN": localStorage.getItem("auth-token") || "",
+            ...action.headers,
+        },
+        endpoint: action.endpoint.startsWith("http") ? action.endpoint : `${prefix}${action.endpoint}`,
+    }
+}
+
+const client = createClient({
+    //None of the options is required
+    requestInterceptors: [prefixURL(`${window.location.protocol}//${GAME_SERVER_HOSTNAME}/api`)],
+    responseInterceptors: [],
+})
+
+ws.Initialise({ defaultHost: GAME_SERVER_HOSTNAME })
+
+const tourProviderProps = {
+    children: <AppInner />,
+    steps: [],
+    padding: 2,
+    styles: tourStyles,
+    showBadge: false,
+    disableKeyboardNavigation: false,
+    disableDotsNavigation: true,
+}
+
+const App = () => {
+    return (
+        <ThemeProvider>
+            <FingerprintProvider>
+                <SnackBarProvider>
+                    <ClientContextProvider client={client}>
+                        <SupremacyProvider>
+                            <AuthProvider>
+                                <BrowserRouter>
+                                    <ChatProvider>
+                                        <WalletProvider>
+                                            <BarProvider>
+                                                <TourProvider {...tourProviderProps}>
+                                                    <StreamProvider>
+                                                        <GameProvider>
+                                                            <MobileProvider>
+                                                                <DimensionProvider>
+                                                                    <OverlayTogglesProvider>
+                                                                        <MiniMapProvider>
+                                                                            <UserUpdater />
+                                                                            <Switch>
+                                                                                <Route path="/404" exact component={NotFoundPage} />
+                                                                                <Route path="/login-redirect" exact component={LoginRedirect} />
+                                                                                <Route path="" component={AppInner} />
+                                                                            </Switch>
+                                                                        </MiniMapProvider>
+                                                                    </OverlayTogglesProvider>
+                                                                </DimensionProvider>
+                                                            </MobileProvider>
+                                                        </GameProvider>
+                                                    </StreamProvider>
+                                                </TourProvider>
+                                            </BarProvider>
+                                        </WalletProvider>
+                                    </ChatProvider>
+                                </BrowserRouter>
+                            </AuthProvider>
+                        </SupremacyProvider>
+                    </ClientContextProvider>
+                </SnackBarProvider>
+            </FingerprintProvider>
+        </ThemeProvider>
     )
 }
 

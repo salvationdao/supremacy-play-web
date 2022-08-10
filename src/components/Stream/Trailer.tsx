@@ -1,25 +1,39 @@
-import { Box, Button, Stack, Typography } from "@mui/material"
-import { Dispatch, SetStateAction, useCallback, useRef } from "react"
-import { SvgPlay, TrailerThumbPNG } from "../../assets"
+import { Box, Stack, Typography } from "@mui/material"
+import { useCallback, useEffect, useRef } from "react"
+import { FancyButton } from ".."
+import { TrailerThumbPNG } from "../../assets"
 import { TRAILER_VIDEO } from "../../constants"
+import { useOverlayToggles, useStream } from "../../containers"
 import { useToggle } from "../../hooks"
-import { colors, fonts, siteZIndex } from "../../theme/theme"
+import { fonts, siteZIndex } from "../../theme/theme"
 
-export const Trailer = ({ watchedTrailer, setWatchedTrailer }: { watchedTrailer: boolean; setWatchedTrailer: Dispatch<SetStateAction<boolean>> }) => {
-    const videoRef = useRef<HTMLVideoElement>(null)
+export const Trailer = () => {
+    const { toggleShowTrailer } = useOverlayToggles()
+    const vidRef = useRef<HTMLVideoElement>(null)
+    const { isMute, volume } = useStream()
     const [isPlaying, toggleIsPlaying] = useToggle()
 
     const onEnded = useCallback(() => {
-        setWatchedTrailer(true)
-        if (!watchedTrailer) localStorage.setItem("watchedTrailer", "true")
-    }, [setWatchedTrailer, watchedTrailer])
+        toggleShowTrailer(false)
+    }, [toggleShowTrailer])
+
+    const onPlayClick = useCallback(() => {
+        vidRef.current && vidRef.current.play()
+    }, [])
+
+    useEffect(() => {
+        if (volume <= 0) return
+        if (vidRef && vidRef.current) vidRef.current.volume = volume
+    }, [volume])
+
+    useEffect(() => {
+        if (vidRef && vidRef.current) vidRef.current.muted = isMute
+    }, [isMute])
 
     return (
         <Box sx={{ position: "absolute", top: 0, left: 0, bottom: 0, right: 0 }}>
             <Stack
-                onClick={() => {
-                    videoRef.current && videoRef.current.play()
-                }}
+                onClick={onPlayClick}
                 alignItems="center"
                 justifyContent="center"
                 sx={{
@@ -36,6 +50,7 @@ export const Trailer = ({ watchedTrailer, setWatchedTrailer }: { watchedTrailer:
             >
                 {!isPlaying ? (
                     <Box
+                        onClick={onPlayClick}
                         sx={{
                             position: "absolute",
                             top: 0,
@@ -46,56 +61,29 @@ export const Trailer = ({ watchedTrailer, setWatchedTrailer }: { watchedTrailer:
                             backgroundRepeat: "no-repeat",
                             backgroundPosition: "center",
                             backgroundSize: "contain",
+                            zIndex: 2,
                         }}
-                    >
-                        <Stack
-                            direction="row"
-                            justifyContent="center"
-                            spacing=".96rem"
-                            sx={{
-                                position: "absolute",
-                                top: "50%",
-                                left: "50%",
-                                transform: "translate(-50%, -50%)",
-                                px: "2.08rem",
-                                py: ".8rem",
-                                borderRadius: 1,
-                                backgroundColor: colors.darkerNeonBlue,
-                                boxShadow: 10,
-                            }}
-                        >
-                            <SvgPlay size="1.9rem" />
-                            <Typography variant="h6" sx={{ lineHeight: 2, fontWeight: "fontWeightBold" }}>
-                                WATCH TRAILER TO ENTER
-                            </Typography>
-                        </Stack>
-                    </Box>
+                    />
                 ) : (
-                    <Button
-                        variant="contained"
-                        sx={{
-                            position: "absolute",
-                            top: "3rem",
-                            right: "3rem",
-                            zIndex: 9,
-                            backgroundColor: colors.darkNavy,
-                            borderRadius: 0.7,
-                            fontFamily: fonts.nostromoBold,
-                            ":hover": { opacity: 0.8, backgroundColor: colors.darkNavy },
-                            ":disabled": {
-                                color: "#FFFFFF80",
-                                backgroundColor: colors.darkNavy,
-                                opacity: 0.6,
-                            },
+                    <FancyButton
+                        clipThingsProps={{
+                            clipSize: "9px",
+                            backgroundColor: "#222222",
+                            opacity: 0.8,
+                            border: { borderColor: "#FFFFFF", borderThickness: "1px" },
+                            sx: { position: "absolute", bottom: "3rem", right: "3rem", zIndex: 9 },
                         }}
+                        sx={{ px: "1.6rem", py: ".3rem", color: "#FFFFFF" }}
                         onClick={onEnded}
                     >
-                        SKIP
-                    </Button>
+                        <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack, color: "#FFFFFF" }}>
+                            CLOSE
+                        </Typography>
+                    </FancyButton>
                 )}
 
                 <video
-                    ref={videoRef}
+                    ref={vidRef}
                     disablePictureInPicture
                     disableRemotePlayback
                     playsInline

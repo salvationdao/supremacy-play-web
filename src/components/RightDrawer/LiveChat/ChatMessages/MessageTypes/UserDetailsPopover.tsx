@@ -1,43 +1,63 @@
-import { Box, Button, Popover, Stack, Typography } from "@mui/material"
-import { useEffect } from "react"
-import { ClipThing } from "../../../.."
-import { SvgSkull2, SvgAbility, SvgDeath, SvgView } from "../../../../../assets"
-import { NullUUID, PASSPORT_SERVER_HOST_IMAGES } from "../../../../../constants"
-import { truncate } from "../../../../../helpers"
+import { Box, InputAdornment, MenuItem, Popover, Select, Stack, TextField, Typography, useTheme } from "@mui/material"
+import { useCallback, useEffect, useState } from "react"
+import { ClipThing, FancyButton } from "../../../.."
+import { SvgAbility, SvgDeath, SvgSkull2, SvgView } from "../../../../../assets"
+import { useAuth, useSnackbar } from "../../../../../containers"
 import { useToggle } from "../../../../../hooks"
-import { colors, siteZIndex } from "../../../../../theme/theme"
-import { User, UserStat } from "../../../../../types"
+import { useGameServerCommandsUser } from "../../../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../../../keys"
+import { colors, fonts, siteZIndex } from "../../../../../theme/theme"
+import { FeatureName, User, UserStat } from "../../../../../types"
+import { ConfirmModal } from "../../../../Common/ConfirmModal"
+import { Player } from "../../../../Common/Player"
+
+enum DurationOptions {
+    TwentyFourHours = "24 Hours",
+    ThreeHours = "3 Hours",
+    OneHour = "1 Hour",
+    FifteenMinutes = "15 Minutes",
+}
+
+const DURATION_OPTIONS = {
+    [DurationOptions.TwentyFourHours]: 1440,
+    [DurationOptions.ThreeHours]: 180,
+    [DurationOptions.OneHour]: 60,
+    [DurationOptions.FifteenMinutes]: 15,
+}
 
 export const UserDetailsPopover = ({
-    factionLogoBlobID,
     factionColor,
     factionSecondaryColor,
-    fromUserFactionID,
-    messageColor,
-    username,
-    gid,
     userStat,
     popoverRef,
     open,
     onClose,
     user,
+    fromUser,
     toggleBanModalOpen,
 }: {
-    factionLogoBlobID?: string
     factionColor?: string
     factionSecondaryColor?: string
-    fromUserFactionID?: string
-    messageColor?: string
-    username: string
-    gid: number
     userStat?: UserStat
     popoverRef: React.MutableRefObject<null>
     open: boolean
     onClose: () => void
-    user?: User
+    user: User
+    fromUser: User
     toggleBanModalOpen: (value?: boolean | undefined) => void
 }) => {
+    const theme = useTheme()
+    const { userHasFeature } = useAuth()
     const [localOpen, toggleLocalOpen] = useToggle(open)
+
+    // Chat banning
+    const { newSnackbarMessage } = useSnackbar()
+    const { send } = useGameServerCommandsUser("/user_commander")
+    const [showChatBanModal, setShowChatBanModal] = useState(false)
+    const [reason, setReason] = useState<string>("")
+    const [durationMinutes, setDurationMinutes] = useState<DurationOptions>(DurationOptions.TwentyFourHours) // default one day
+    const [error, setError] = useState<string>()
+    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
         if (!localOpen) {
@@ -48,6 +68,30 @@ export const UserDetailsPopover = ({
             return () => clearTimeout(timeout)
         }
     }, [localOpen, onClose])
+
+    const onChatBan = useCallback(async () => {
+        try {
+            setLoading(true)
+            await send(GameServerKeys.ChatBanPlayer, {
+                player_id: fromUser.id,
+                reason,
+                duration_minutes: DURATION_OPTIONS[durationMinutes],
+            })
+            newSnackbarMessage(`Successfully banned player ${fromUser.username}`, "success")
+            setReason("")
+            setDurationMinutes(DurationOptions.TwentyFourHours)
+            setShowChatBanModal(false)
+            setError(undefined)
+        } catch (e) {
+            if (e instanceof Error) {
+                setError(e.message)
+            } else if (typeof e === "string") {
+                setError(e)
+            }
+        } finally {
+            setLoading(false)
+        }
+    }, [durationMinutes, fromUser.id, fromUser.username, newSnackbarMessage, reason, send])
 
     if (!userStat) return null
 
@@ -75,39 +119,22 @@ export const UserDetailsPopover = ({
                 }}
             >
                 <ClipThing
-                    clipSize="0"
+                    clipSize="8px"
                     border={{
-                        isFancy: true,
                         borderColor: factionColor || colors.neonBlue,
-                        borderThickness: ".15rem",
+                        borderThickness: ".2rem",
+                    }}
+                    corners={{
+                        topRight: true,
+                        bottomLeft: true,
                     }}
                     sx={{ position: "relative" }}
                     backgroundColor={colors.darkNavy}
                 >
-                    <Stack sx={{ minWidth: "20rem", px: "1.2rem", py: ".8rem" }}>
-                        <Stack direction="row" spacing=".5rem" sx={{ mt: ".3rem", mb: ".7rem" }}>
-                            {factionLogoBlobID && factionLogoBlobID != NullUUID && (
-                                <Box
-                                    sx={{
-                                        mt: "-0.1rem !important",
-                                        width: "1.7rem",
-                                        height: "1.7rem",
-                                        flexShrink: 0,
-                                        backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${factionLogoBlobID})`,
-                                        backgroundRepeat: "no-repeat",
-                                        backgroundPosition: "center",
-                                        backgroundSize: "contain",
-                                        backgroundColor: factionColor,
-                                        borderRadius: 0.8,
-                                        border: `${factionColor} 1px solid`,
-                                    }}
-                                />
-                            )}
-                            <Typography sx={{ color: messageColor, fontWeight: "fontWeightBold" }}>
-                                {`${truncate(username, 20)}`}
-                                <span style={{ marginLeft: ".2rem", opacity: 0.7 }}>{`#${gid}`}</span>
-                            </Typography>
-                        </Stack>
+                    <Stack sx={{ minWidth: "20rem", px: "1.5rem", py: "1.2rem" }}>
+                        <Box sx={{ mt: ".3rem", mb: ".7rem" }}>
+                            <Player player={fromUser} />
+                        </Box>
 
                         <Stack spacing=".3rem" sx={{ ml: ".2rem" }}>
                             <Stack direction="row" spacing=".5rem">
@@ -146,40 +173,205 @@ export const UserDetailsPopover = ({
                             </Stack>
                         </Stack>
 
-                        {user && fromUserFactionID === user.faction_id && (
-                            <Button
-                                variant="contained"
-                                size="small"
+                        {userHasFeature(FeatureName.profileAvatar) && (
+                            <FancyButton
+                                clipThingsProps={{
+                                    clipSize: "5px",
+                                    clipSlantSize: "0px",
+                                    backgroundColor: factionColor,
+                                    opacity: 1,
+                                    border: { borderColor: factionColor, borderThickness: "2px" },
+                                    sx: { position: "relative", mt: ".7rem" },
+                                }}
+                                sx={{ px: "1.6rem", py: ".1rem", color: factionSecondaryColor }}
+                                to={`/profile/${fromUser.gid}`}
+                                onClick={() => {
+                                    toggleLocalOpen(false)
+                                }}
+                            >
+                                <Typography
+                                    variant="caption"
+                                    sx={{
+                                        color: factionSecondaryColor,
+                                        fontFamily: fonts.nostromoBlack,
+                                    }}
+                                >
+                                    VIEW PROFILE
+                                </Typography>
+                            </FancyButton>
+                        )}
+
+                        {fromUser.faction_id === user.faction_id && (
+                            <FancyButton
+                                clipThingsProps={{
+                                    clipSize: "5px",
+                                    clipSlantSize: "0px",
+                                    backgroundColor: factionColor,
+                                    opacity: 1,
+                                    border: { borderColor: factionColor, borderThickness: "2px" },
+                                    sx: { position: "relative", mt: ".7rem" },
+                                }}
+                                sx={{ px: "1.6rem", py: ".1rem", color: factionSecondaryColor }}
                                 onClick={() => {
                                     toggleBanModalOpen()
                                     toggleLocalOpen(false)
                                 }}
-                                sx={{
-                                    mt: ".7rem",
-                                    px: ".8rem",
-                                    pt: ".48rem",
-                                    pb: ".3rem",
-                                    backgroundColor: factionColor,
-                                    border: `${factionColor} 1px solid`,
-                                    borderRadius: 0.3,
-                                    ":hover": { backgroundColor: `${factionColor}90` },
-                                }}
                             >
                                 <Typography
-                                    variant="body2"
+                                    variant="caption"
                                     sx={{
-                                        lineHeight: 1,
-                                        fontWeight: "fontWeightBold",
                                         color: factionSecondaryColor,
+                                        fontFamily: fonts.nostromoBlack,
                                     }}
                                 >
                                     PUNISH
                                 </Typography>
-                            </Button>
+                            </FancyButton>
+                        )}
+
+                        {userHasFeature(FeatureName.chatBan) && fromUser.id !== user.id && (
+                            <FancyButton
+                                clipThingsProps={{
+                                    clipSize: "5px",
+                                    clipSlantSize: "0px",
+                                    backgroundColor: factionColor,
+                                    opacity: 1,
+                                    border: { borderColor: factionColor, borderThickness: "2px" },
+                                    sx: { position: "relative", mt: ".7rem" },
+                                }}
+                                sx={{ px: "1.6rem", py: ".1rem", color: factionSecondaryColor }}
+                                onClick={() => {
+                                    setShowChatBanModal(true)
+                                }}
+                            >
+                                <Typography
+                                    variant="caption"
+                                    sx={{
+                                        color: factionSecondaryColor,
+                                        fontFamily: fonts.nostromoBlack,
+                                    }}
+                                >
+                                    CHAT BAN
+                                </Typography>
+                            </FancyButton>
                         )}
                     </Stack>
                 </ClipThing>
             </Popover>
+
+            {showChatBanModal && (
+                <ConfirmModal
+                    title="CONFIRMATION"
+                    onConfirm={onChatBan}
+                    onClose={() => {
+                        setReason("")
+                        setDurationMinutes(DurationOptions.TwentyFourHours)
+                        setError(undefined)
+                        setShowChatBanModal(false)
+                    }}
+                    isLoading={loading}
+                    error={error}
+                    confirmSuffix={
+                        <Typography variant="h6" sx={{ fontWeight: "fontWeightBold", ml: ".4rem" }}>
+                            BAN
+                        </Typography>
+                    }
+                    disableConfirm={loading}
+                >
+                    <Typography variant="h6">
+                        Do you wish to chat ban <strong>{fromUser.username}</strong>?
+                    </Typography>
+
+                    <TextField
+                        variant="outlined"
+                        hiddenLabel
+                        fullWidth
+                        placeholder="Ban reason"
+                        InputProps={{
+                            startAdornment: (
+                                <InputAdornment position="start">
+                                    <Typography
+                                        variant="h6"
+                                        sx={{
+                                            fontWeight: "fontWeightBold",
+                                        }}
+                                    >
+                                        Reason
+                                    </Typography>
+                                </InputAdornment>
+                            ),
+                        }}
+                        sx={{
+                            backgroundColor: "#00000090",
+                            ".MuiOutlinedInput-input": {
+                                px: "1.5rem",
+                                py: "1.5rem",
+                                fontSize: "2rem",
+                                height: "unset",
+                                "::-webkit-outer-spin-button, ::-webkit-inner-spin-button": {
+                                    WebkitAppearance: "none",
+                                },
+                            },
+                            ".MuiOutlinedInput-notchedOutline": { border: "unset" },
+                        }}
+                        type="text"
+                        value={reason}
+                        onChange={(e) => {
+                            setReason(e.target.value)
+                        }}
+                    />
+
+                    <Select
+                        sx={{
+                            width: "100%",
+                            borderRadius: 0.5,
+                            "&:hover": {
+                                backgroundColor: theme.factionTheme.primary,
+                                ".MuiTypography-root": { color: theme.factionTheme.secondary },
+                            },
+                            ".MuiTypography-root": {
+                                px: "1rem",
+                                py: ".5rem",
+                            },
+                            "& .MuiSelect-outlined": { px: ".8rem", pt: ".2rem", pb: 0 },
+                            ".MuiOutlinedInput-notchedOutline": {
+                                border: "none !important",
+                            },
+                        }}
+                        value={durationMinutes}
+                        MenuProps={{
+                            variant: "menu",
+                            sx: {
+                                "&& .Mui-selected": {
+                                    ".MuiTypography-root": {
+                                        color: theme.factionTheme.secondary,
+                                    },
+                                    backgroundColor: theme.factionTheme.primary,
+                                },
+                            },
+                            PaperProps: {
+                                sx: {
+                                    backgroundColor: colors.darkNavy,
+                                    borderRadius: 0.5,
+                                },
+                            },
+                        }}
+                    >
+                        {Object.keys(DURATION_OPTIONS).map((value) => (
+                            <MenuItem
+                                key={value}
+                                value={value}
+                                onClick={() => {
+                                    setDurationMinutes(value as DurationOptions)
+                                }}
+                                sx={{ "&:hover": { backgroundColor: "#FFFFFF20" } }}
+                            >
+                                <Typography textTransform="uppercase">{value}</Typography>
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </ConfirmModal>
+            )}
         </>
     )
 }

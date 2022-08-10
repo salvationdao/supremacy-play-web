@@ -1,9 +1,19 @@
 import { MenuItem, Select, Stack, Typography } from "@mui/material"
 import { useStream } from "../../containers"
+import { useTheme } from "../../containers/theme"
 import { colors } from "../../theme/theme"
+import { StreamService } from "../../types"
+
+const isExperimental = (service: StreamService) => {
+    return service === StreamService.OvenMediaEngine || service === StreamService.Softvelum
+}
 
 export const StreamSelect = () => {
+    const theme = useTheme()
     const { currentStream, changeStream, streamOptions } = useStream()
+
+    const primaryColor = theme.factionTheme.primary
+    const secondaryColor = theme.factionTheme.secondary
 
     return (
         <Stack direction="row" spacing=".24rem" alignItems="center">
@@ -15,10 +25,11 @@ export const StreamSelect = () => {
                 sx={{
                     width: "15rem",
                     borderRadius: 0.5,
-                    "&:hover": {
-                        backgroundColor: colors.darkNavy,
+                    ".MuiTypography-root": {
+                        px: ".8rem",
+                        pt: ".48rem",
                     },
-                    "& .MuiSelect-outlined": { px: ".8rem", pt: ".48rem", pb: 0 },
+                    "& .MuiSelect-outlined": { p: 0 },
                 }}
                 defaultValue={currentStream?.host}
                 value={currentStream ? currentStream.host : ""}
@@ -26,7 +37,10 @@ export const StreamSelect = () => {
                     variant: "menu",
                     sx: {
                         "&& .Mui-selected": {
-                            backgroundColor: colors.darkerNeonBlue,
+                            ".MuiTypography-root": {
+                                color: secondaryColor,
+                            },
+                            backgroundColor: primaryColor,
                         },
                     },
                     PaperProps: {
@@ -45,13 +59,18 @@ export const StreamSelect = () => {
                             onClick={() => {
                                 changeStream(x)
                             }}
-                            sx={{
-                                "&:hover": {
-                                    backgroundColor: colors.darkNavyBlue,
-                                },
-                            }}
+                            sx={{ "&:hover": { backgroundColor: `#FFFFFF30` } }}
                         >
-                            <Typography variant="body2">{x.name}</Typography>
+                            <Typography
+                                sx={{
+                                    lineHeight: 1,
+                                    color: isExperimental(x.service) ? "#E4E455" : "unset",
+                                    fontWeight: isExperimental(x.service) ? "bold" : "unset",
+                                }}
+                                variant="body2"
+                            >
+                                {x.name}
+                            </Typography>
                         </MenuItem>
                     )
                 })}

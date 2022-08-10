@@ -9,7 +9,7 @@ export const TextAlert = ({ data }: { data: string }) => {
             border={{
                 borderColor: colors.offWhite,
                 isFancy: true,
-                borderThickness: ".15rem",
+                borderThickness: ".2rem",
             }}
             opacity={0.8}
             backgroundColor={colors.darkNavy}

@@ -2,22 +2,22 @@ import { Avatar, IconButton, Stack, Typography } from "@mui/material"
 import { useRef } from "react"
 import { BarExpandable, ConnectButton, PunishmentList } from "../.."
 import { SvgInfoCircular } from "../../../assets"
-import { PASSPORT_SERVER_HOST_IMAGES } from "../../../constants"
-import { useGameServerAuth } from "../../../containers"
+import { useAuth, useSupremacy } from "../../../containers"
 import { useToggle } from "../../../hooks"
 import { colors, fonts } from "../../../theme/theme"
-import { UserData } from "../../../types/passport"
+import { User } from "../../../types"
 import { ProfilePopover } from "./ProfilePopover/ProfilePopover"
 
-export const ProfileCard = ({ user }: { user?: UserData }) => {
-    const { punishments } = useGameServerAuth()
+export const ProfileCard = ({ userID, user }: { userID?: string; user: User }) => {
+    const { punishments } = useAuth()
+    const { getFaction } = useSupremacy()
     const popoverRef = useRef(null)
     const [isPopoverOpen, toggleIsPopoverOpen] = useToggle()
     const [isPunishmentsOpen, toggleIsPunishmentsOpen] = useToggle()
 
-    if (!user) return <ConnectButton />
+    if (!userID) return <ConnectButton />
 
-    const { username, faction } = user
+    const { username, faction_id } = user
 
     return (
         <>
@@ -26,7 +26,7 @@ export const ProfileCard = ({ user }: { user?: UserData }) => {
                 barName={"profile"}
                 iconComponent={
                     <Avatar
-                        src={faction ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${faction.logo_blob_id}` : ""}
+                        src={getFaction(faction_id).logo_url}
                         alt={`${username}'s Avatar`}
                         sx={{
                             height: "2.9rem",
@@ -40,7 +40,6 @@ export const ProfileCard = ({ user }: { user?: UserData }) => {
                 }
             >
                 <Stack
-                    id="tutorial-passport"
                     ref={popoverRef}
                     onClick={() => toggleIsPopoverOpen()}
                     direction="row"
@@ -53,7 +52,7 @@ export const ProfileCard = ({ user }: { user?: UserData }) => {
                         ":hover p": { opacity: 0.7 },
                         overflowX: "auto",
                         overflowY: "hidden",
-                        scrollbarWidth: "none",
+
                         "::-webkit-scrollbar": {
                             height: ".3rem",
                         },
@@ -68,7 +67,7 @@ export const ProfileCard = ({ user }: { user?: UserData }) => {
                     }}
                 >
                     <Avatar
-                        src={faction ? `${PASSPORT_SERVER_HOST_IMAGES}/api/files/${faction.logo_blob_id}` : ""}
+                        src={getFaction(faction_id).logo_url}
                         alt={`${username}'s Avatar`}
                         sx={{
                             height: "2.6rem",
@@ -87,6 +86,12 @@ export const ProfileCard = ({ user }: { user?: UserData }) => {
                             lineHeight: 1,
                             fontFamily: fonts.nostromoBlack,
                             color: (theme) => theme.factionTheme.primary,
+                            display: "-webkit-box",
+                            overflow: "hidden",
+                            overflowWrap: "anywhere",
+                            textOverflow: "ellipsis",
+                            WebkitLineClamp: 2,
+                            WebkitBoxOrient: "vertical",
                         }}
                     >
                         {username}

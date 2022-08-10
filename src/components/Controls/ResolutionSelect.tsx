@@ -1,11 +1,16 @@
 import { MenuItem, Select, Stack, Typography } from "@mui/material"
 import { useStream } from "../../containers"
+import { useTheme } from "../../containers/theme"
 import { colors } from "../../theme/theme"
 
 export const ResolutionSelect = () => {
-    const { streamResolutions, selectedResolution, setSelectedResolution } = useStream()
+    const theme = useTheme()
+    const { resolutions, selectedResolution, setSelectedResolution, currentStream } = useStream()
 
-    if (!streamResolutions || streamResolutions.length <= 0) return null
+    if (!resolutions || resolutions.length <= 0) return null
+
+    const primaryColor = theme.factionTheme.primary
+    const secondaryColor = theme.factionTheme.secondary
 
     return (
         <Stack direction="row" spacing=".24rem" alignItems="center">
@@ -17,18 +22,22 @@ export const ResolutionSelect = () => {
                 sx={{
                     width: "15rem",
                     borderRadius: 0.5,
-                    "&:hover": {
-                        backgroundColor: colors.darkNavy,
+                    ".MuiTypography-root": {
+                        px: ".8rem",
+                        pt: ".48rem",
                     },
-                    "& .MuiSelect-outlined": { px: ".8rem", pt: ".48rem", pb: 0 },
+                    "& .MuiSelect-outlined": { p: 0 },
                 }}
-                defaultValue={streamResolutions[0]}
-                value={selectedResolution || streamResolutions[0] || -1}
+                defaultValue={resolutions[0]}
+                value={selectedResolution || resolutions[0] || 0}
                 MenuProps={{
                     variant: "menu",
                     sx: {
                         "&& .Mui-selected": {
-                            backgroundColor: colors.darkerNeonBlue,
+                            ".MuiTypography-root": {
+                                color: secondaryColor,
+                            },
+                            backgroundColor: primaryColor,
                         },
                     },
                     PaperProps: {
@@ -39,19 +48,18 @@ export const ResolutionSelect = () => {
                     },
                 }}
             >
-                {streamResolutions.map((x) => {
+                {resolutions.map((x) => {
                     return (
                         <MenuItem
                             key={x}
                             value={x}
-                            onClick={() => setSelectedResolution(x)}
-                            sx={{
-                                "&:hover": {
-                                    backgroundColor: colors.darkNavyBlue,
-                                },
+                            onClick={() => {
+                                setSelectedResolution(x)
+                                localStorage.setItem(`${currentStream?.host}-resolution`, x.toString())
                             }}
+                            sx={{ "&:hover": { backgroundColor: `#FFFFFF30` } }}
                         >
-                            <Typography textTransform="uppercase" variant="body2">
+                            <Typography textTransform="uppercase" variant="body2" sx={{ lineHeight: 1 }}>
                                 {x === 0 ? "Automatic" : `${x}P`}
                             </Typography>
                         </MenuItem>

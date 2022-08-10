@@ -2,13 +2,14 @@ import { Box, Fade, IconButton, Stack, Typography } from "@mui/material"
 import { useCallback, useLayoutEffect, useRef, useState } from "react"
 import { PunishMessage, TextMessage } from "../../.."
 import { SvgScrolldown } from "../../../../assets"
-import { FactionsAll, FontSizeType, SplitOptionType, useChat, useSupremacy, useGameServerAuth } from "../../../../containers"
+import { FontSizeType, SplitOptionType, useAuth, useChat, useSupremacy } from "../../../../containers"
 import { checkIfIsEmoji } from "../../../../helpers"
 import { colors } from "../../../../theme/theme"
-import { User } from "../../../../types"
-import { ChatMessageType, PunishMessageData, TextMessageData } from "../../../../types/chat"
+import { ChatMessageType, Faction, NewBattleMessageData, PunishMessageData, SystemBanMessageData, TextMessageData, User } from "../../../../types"
 import { BanProposal } from "../BanProposal/BanProposal"
 import { GlobalAnnouncement, GlobalAnnouncementType } from "../GlobalAnnouncement"
+import { NewBattleMessage } from "./MessageTypes/NewBattleMessage"
+import { SystemBanMessage } from "./MessageTypes/SystemBanMessage"
 
 interface ChatMessagesProps {
     primaryColor: string
@@ -18,37 +19,33 @@ interface ChatMessagesProps {
 }
 
 export const ChatMessages = (props: ChatMessagesProps) => {
-    const { user } = useGameServerAuth()
-    const { filterZerosGlobal, filterZerosFaction, filterSystemMessages, sentMessages, failedMessages, splitOption, fontSize, globalAnnouncement } = useChat()
-    const { factionsAll } = useSupremacy()
+    const { user } = useAuth()
+    const { filterSystemMessages, failedMessages, splitOption, fontSize, globalAnnouncement } = useChat()
+    const { getFaction } = useSupremacy()
 
     return (
         <ChatMessagesInner
             {...props}
             user={user}
-            filterZeros={props.faction_id ? filterZerosFaction : filterZerosGlobal}
             filterSystemMessages={filterSystemMessages}
-            sentMessages={sentMessages}
             failedMessages={failedMessages}
             faction_id={props.faction_id}
             splitOption={splitOption}
             fontSize={fontSize}
             globalAnnouncement={globalAnnouncement}
-            factionsAll={factionsAll}
+            getFaction={getFaction}
         />
     )
 }
 
 interface ChatMessagesInnerProps extends ChatMessagesProps {
-    user?: User
-    filterZeros?: boolean
+    user: User
     filterSystemMessages?: boolean
-    sentMessages: Date[]
     failedMessages: Date[]
     splitOption: SplitOptionType
     fontSize: FontSizeType
     globalAnnouncement?: GlobalAnnouncementType
-    factionsAll: FactionsAll
+    getFaction: (factionID: string) => Faction
 }
 
 const ChatMessagesInner = ({
@@ -56,18 +53,17 @@ const ChatMessagesInner = ({
     primaryColor,
     secondaryColor,
     chatMessages,
-    filterZeros,
     filterSystemMessages,
-    sentMessages,
     failedMessages,
     faction_id,
     splitOption,
     fontSize,
     globalAnnouncement,
-    factionsAll,
+    getFaction,
 }: ChatMessagesInnerProps) => {
     const scrollableRef = useRef<HTMLDivElement>(null)
     const [autoScroll, setAutoScroll] = useState(true)
+    const [isScrolling, setIsScrolling] = useState(false)
 
     useLayoutEffect(() => {
         // Auto scroll to the bottom if enabled, has messages and user login/logout state changed
@@ -84,6 +80,7 @@ const ChatMessagesInner = ({
 
     const scrollHandler = useCallback(
         (e: React.UIEvent<HTMLDivElement, UIEvent>) => {
+            setIsScrolling(true)
             const { currentTarget } = e
             const extraHeight = currentTarget.scrollHeight - currentTarget.offsetHeight
             const scrollUpTooMuch = currentTarget.scrollTop < extraHeight - 0.5 * currentTarget.offsetHeight
@@ -94,6 +91,10 @@ const ChatMessagesInner = ({
             } else if (!autoScroll && !scrollUpTooMuch) {
                 setAutoScroll(true)
             }
+
+            setTimeout(() => {
+                setIsScrolling(false)
+            }, 150)
         },
         [autoScroll],
     )
@@ -113,14 +114,14 @@ const ChatMessagesInner = ({
                 sx={{
                     flex: 1,
                     position: "relative",
-                    my: ".6rem",
-                    mr: ".64rem",
-                    pl: "1.52rem",
+                    ml: "1.5rem",
+                    mr: ".8rem",
                     pr: "1.6rem",
+                    my: "1rem",
                     overflowY: "auto",
                     overflowX: "hidden",
                     direction: "ltr",
-                    scrollbarWidth: "none",
+
                     scrollBehavior: "smooth",
                     "::-webkit-scrollbar": {
                         width: ".4rem",
@@ -135,56 +136,76 @@ const ChatMessagesInner = ({
                     },
                 }}
             >
-                <Stack spacing="1rem" sx={{ mt: ".88rem" }}>
-                    {chatMessages && chatMessages.length > 0 ? (
-                        chatMessages.map((message) => {
-                            if (message.type == "PUNISH_VOTE") {
-                                const data = message.data as PunishMessageData
-                                return (
-                                    <PunishMessage
-                                        key={`${data.issued_by_user.id} - ${message.sent_at.toISOString()}`}
-                                        data={data}
-                                        sentAt={message.sent_at}
-                                        fontSize={fontSize}
-                                        factionsAll={factionsAll}
-                                    />
-                                )
-                            }
+                <Box sx={{ height: 0 }}>
+                    <Stack spacing=".5rem" sx={{ mt: ".88rem" }}>
+                        {chatMessages && chatMessages.length > 0 ? (
+                            chatMessages.map((message, i) => {
+                                if (message.type == "TEXT") {
+                                    const data = message.data as TextMessageData
+                                    const isEmoji: boolean = checkIfIsEmoji(data.message)
+                                    return (
+                                        <TextMessage
+                                            key={`${data.from_user.id} - ${message.sent_at.toISOString()}`}
+                                            data={data}
+                                            sentAt={message.sent_at}
+                                            fontSize={fontSize}
+                                            filterSystemMessages={filterSystemMessages}
+                                            isSent={!message.locallySent}
+                                            isFailed={data.from_user.id === user?.id ? failedMessages.includes(message.sent_at) : false}
+                                            getFaction={getFaction}
+                                            user={user}
+                                            isEmoji={isEmoji}
+                                            previousMessage={chatMessages[i - 1]}
+                                            containerRef={scrollableRef}
+                                            isScrolling={isScrolling}
+                                            chatMessages={chatMessages}
+                                        />
+                                    )
+                                } else if (message.type == "PUNISH_VOTE") {
+                                    const data = message.data as PunishMessageData
+                                    return (
+                                        <PunishMessage
+                                            key={`${data.issued_by_user.id} - ${message.sent_at.toISOString()}`}
+                                            data={data}
+                                            sentAt={message.sent_at}
+                                            fontSize={fontSize}
+                                        />
+                                    )
+                                } else if (message.type == "SYSTEM_BAN") {
+                                    const data = message.data as SystemBanMessageData
+                                    return (
+                                        <SystemBanMessage
+                                            key={`${data.banned_user.id} - ${message.sent_at.toISOString()}`}
+                                            data={data}
+                                            sentAt={message.sent_at}
+                                            fontSize={fontSize}
+                                        />
+                                    )
+                                } else if (message.type === "NEW_BATTLE") {
+                                    const data = message.data as NewBattleMessageData
+                                    return (
+                                        <NewBattleMessage
+                                            key={`${data.battle_number} - ${message.sent_at.toISOString()}`}
+                                            data={data}
+                                            sentAt={message.sent_at}
+                                        />
+                                    )
+                                }
 
-                            if (message.type == "TEXT") {
-                                const data = message.data as TextMessageData
-                                const isEmoji: boolean = checkIfIsEmoji(data.message)
-                                return (
-                                    <TextMessage
-                                        key={`${data.from_user.id} - ${message.sent_at.toISOString()}`}
-                                        data={data}
-                                        sentAt={message.sent_at}
-                                        fontSize={fontSize}
-                                        filterZeros={filterZeros}
-                                        filterSystemMessages={filterSystemMessages}
-                                        isSent={data.from_user.id != user?.id ? true : sentMessages.includes(message.sent_at)}
-                                        isFailed={data.from_user.id != user?.id ? false : failedMessages.includes(message.sent_at)}
-                                        factionsAll={factionsAll}
-                                        user={user}
-                                        isEmoji={isEmoji}
-                                    />
-                                )
-                            }
-
-                            return null
-                        })
-                    ) : (
-                        <Typography
-                            sx={{
-                                color: colors.grey,
-                                textAlign: "center",
-                                userSelect: "tex !important",
-                            }}
-                        >
-                            There are no messages yet.
-                        </Typography>
-                    )}
-                </Stack>
+                                return null
+                            })
+                        ) : (
+                            <Typography
+                                sx={{
+                                    color: colors.grey,
+                                    textAlign: "center",
+                                }}
+                            >
+                                There are no messages yet.
+                            </Typography>
+                        )}
+                    </Stack>
+                </Box>
             </Box>
 
             <Fade in={!autoScroll} timeout={2200} easing={{ exit: "cubic-bezier(0,.99,.28,1.01)" }}>

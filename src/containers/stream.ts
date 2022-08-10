@@ -1,56 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from "react"
+import { useParameterizedQuery } from "react-fetching-library"
 import { createContainer } from "unstated-next"
-import { WebRTCAdaptor } from "@antmedia/webrtc_adaptor"
-import { useToggle } from "../hooks"
-import { Stream } from "../types"
+import { useSnackbar } from "."
+import { GetStreamList } from "../fetching"
 import { getObjectFromArrayByKey, parseString } from "../helpers"
-import { useGameServerWebsocket, useSnackbar } from "."
-import { GameServerKeys } from "../keys"
+import { useToggle } from "../hooks"
+import { Stream, StreamService } from "../types"
 
 const MAX_OPTIONS = 10
-
-interface StreamInfoEntry {
-    audioBitrate: number
-    streamHeight: number
-    streamWidth: number
-    videoBitrate: number
-    videoCodec: string
-}
-
-interface WebRTCCallbackObj {
-    command: string
-    streamId: string
-    streamInfo: {
-        videoBitrate: number
-        streamWidth: number
-        streamHeight: number
-        audioBitrate: number
-        videoCodec: string
-    }[]
-}
-
-interface WebRTCAdaptorType {
-    websocket_url: string
-    mediaConstraints: {
-        video: boolean
-        audio: boolean
-    }
-    sdp_constraints: {
-        OfferToReceiveAudio: boolean
-        OfferToReceiveVideo: boolean
-    }
-    remoteVideoId: string
-    isPlayMode: boolean
-    debug: boolean
-    candidateTypes: string[]
-    callback: (info: string, obj: WebRTCCallbackObj | null) => void
-    callbackError: (error: string) => void
-
-    forceStreamQuality: (stream_id: string, quality: number) => void
-    play: (stream_id: string, token_id: string) => void
-    getStreamInfo: (stream_id: string) => void
-    closeWebSocket: (stream_id: string) => void
-}
 
 const blankOption: Stream = {
     host: "No Stream",
@@ -59,73 +16,72 @@ const blankOption: Stream = {
     stream_id: "No Stream",
     region: "",
     resolution: "",
-    bit_rates_kbits: 0,
-    user_max: 999999,
+    bit_rates_k_bits: 0,
+    user_max: 9999999,
     users_now: 0,
     active: true,
     status: "online",
-    latitude: 0,
-    longitude: 0,
-    distance: 0,
+    latitude: "0",
+    longitude: "0",
+    service: StreamService.None,
 }
 
 export const StreamContainer = createContainer(() => {
     const { newSnackbarMessage } = useSnackbar()
-    const { state, subscribe } = useGameServerWebsocket()
-    const defaultResolution = 720
+    const { query: queryGetStreamList } = useParameterizedQuery(GetStreamList)
 
-    // video
-    const webRtc = useRef<WebRTCAdaptorType>()
-    const vidRef = useRef<HTMLVideoElement | undefined>(undefined)
-    const [currentPlayingStreamHost, setCurrentPlayingStreamHost] = useState<string>()
-
-    // stream
-    const [streams, setStreams] = useState<Stream[]>([])
+    // Stream
+    const [loadedStreams, setLoadedStreams] = useState<Stream[]>([])
     const [streamOptions, setStreamOptions] = useState<Stream[]>([])
     const [currentStream, setCurrentStream] = useState<Stream>()
+    const [currentPlayingStreamHost, setCurrentPlayingStreamHost] = useState<string>()
 
-    // volume
+    // Volume control
     const [volume, setVolume] = useState(parseString(localStorage.getItem("streamVolume"), 0.3))
-    const [isMute, toggleIsMute] = useToggle(localStorage.getItem("isMute") == "true")
+    const [isMute, toggleIsMute] = useToggle(true)
     const [musicVolume, setMusicVolume] = useState(parseString(localStorage.getItem("musicVolume"), 0.3))
-    const [isMusicMute, toggleIsMusicMute] = useToggle(localStorage.getItem("isMusicMute") == "true")
+    const [isMusicMute, toggleIsMusicMute] = useToggle(true)
 
-    // resolution
+    // Resolution control
     const [selectedResolution, setSelectedResolution] = useState<number>()
-    const [streamResolutions, setStreamResolutions] = useState<number[]>([])
-    const [, setFailedToChangeRed] = useState(false)
+    const [resolutions, setResolutions] = useState<number[]>([])
 
-    // When user selects a resolution, make the change into the stream
+    const hasInteracted = useRef(false)
+
+    // Unmute stream / trailers etc. after user has interacted with the site.
+    // This is needed for autoplay to work
     useEffect(() => {
-        if (
-            webRtc?.current &&
-            selectedResolution &&
-            selectedResolution > 0 &&
-            streamResolutions &&
-            streamResolutions.length > 0 &&
-            currentStream &&
-            currentStream.host === currentPlayingStreamHost
-        ) {
-            try {
-                webRtc.current.forceStreamQuality(currentStream.stream_id, selectedResolution)
-                setFailedToChangeRed(false)
-            } catch {
-                setFailedToChangeRed(true)
-            }
+        const resetMute = () => {
+            toggleIsMute(localStorage.getItem("isMute") == "true")
+            toggleIsMusicMute(localStorage.getItem("isMusicMute") == "true")
+            hasInteracted.current = true
         }
-    }, [selectedResolution, currentStream, streamResolutions, currentPlayingStreamHost])
+
+        document.addEventListener("mousedown", resetMute, { once: true })
+    }, [toggleIsMusicMute, toggleIsMute])
+
+    // Fetch stream list
+    useEffect(() => {
+        ;(async () => {
+            try {
+                const resp = await queryGetStreamList({})
+                if (resp.error || !resp.payload) return
+                // setLoadedStreams([blankOption, ...resp.payload])
+                setLoadedStreams([blankOption, ...resp.payload])
+            } catch (err) {
+                const message = typeof err === "string" ? err : "Failed to get the list of streams."
+                newSnackbarMessage(message, "error")
+                console.error(message)
+            }
+        })()
+    }, [newSnackbarMessage, queryGetStreamList])
 
     useEffect(() => {
-        if (localStorage.getItem("isMute") == "true") setVolume(0)
-        if (localStorage.getItem("isMusicMute") == "true") setMusicVolume(0)
-    }, [])
-
-    useEffect(() => {
-        localStorage.setItem("isMute", isMute ? "true" : "false")
+        if (hasInteracted.current) localStorage.setItem("isMute", isMute ? "true" : "false")
     }, [isMute])
 
     useEffect(() => {
-        localStorage.setItem("isMusicMute", isMusicMute ? "true" : "false")
+        if (hasInteracted.current) localStorage.setItem("isMusicMute", isMusicMute ? "true" : "false")
     }, [isMusicMute])
 
     useEffect(() => {
@@ -136,10 +92,7 @@ export const StreamContainer = createContainer(() => {
             return
         }
 
-        if (vidRef && vidRef.current) {
-            vidRef.current.volume = volume
-        }
-        toggleIsMute(false)
+        if (hasInteracted.current) toggleIsMute(false)
     }, [toggleIsMute, volume])
 
     useEffect(() => {
@@ -153,18 +106,10 @@ export const StreamContainer = createContainer(() => {
         toggleIsMusicMute(false)
     }, [musicVolume, toggleIsMusicMute])
 
-    // Subscribe to list of streams
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe) return
-        return subscribe<Stream[]>(GameServerKeys.SubStreamList, (payload) => {
-            if (!payload) return
-            setStreams([blankOption, ...payload])
-        })
-    }, [state, subscribe])
-
     const changeStream = useCallback((s: Stream) => {
         if (!s) return
         setCurrentStream(s)
+        setResolutions([])
         localStorage.setItem("new_stream_props", JSON.stringify(s))
     }, [])
 
@@ -179,9 +124,7 @@ export const StreamContainer = createContainer(() => {
             // If there is no current stream selected then pick the US one (for now)
             if (!dontChangeCurrentStream && !currentStream && newStreamOptions && newStreamOptions.length > 0) {
                 const usaStreams = newStreamOptions.filter((s) => s.name == "USA AZ")
-                if (usaStreams && usaStreams.length > 0) {
-                    changeStream(usaStreams[0])
-                }
+                if (usaStreams && usaStreams.length > 0) changeStream(usaStreams[0])
             }
 
             // Reverse the order for rendering so best is closer to user's mouse
@@ -193,12 +136,14 @@ export const StreamContainer = createContainer(() => {
 
     // Build stream options for the drop down
     useEffect(() => {
-        if (!streams || streams.length <= 0) return
+        if (!loadedStreams || loadedStreams.length <= 0) return
 
-        // Filter for servers that have capacity and is onlnine
-        const availStreams = streams.filter((x) => {
-            return x.users_now < x.user_max && x.status === "online" && x.active
-        })
+        // Filter for servers that have capacity and is online
+        const availStreams = [
+            ...loadedStreams.filter((x) => {
+                return x.users_now < x.user_max && x.status === "online" && x.active
+            }),
+        ]
 
         if (availStreams.length <= 0) return
 
@@ -215,98 +160,32 @@ export const StreamContainer = createContainer(() => {
                 setNewStreamOptions(quietestStreams, true)
                 return
             }
+        } else if (quietestStreams.length > 0) {
+            setCurrentStream(quietestStreams[quietestStreams.length - 1])
         }
 
         setNewStreamOptions(quietestStreams)
-    }, [setNewStreamOptions, streams])
-
-    const vidRefCallback = useCallback(
-        (vid: HTMLVideoElement) => {
-            if (!currentStream || !currentStream.url || !currentStream.stream_id) return
-            if (!vid || !vid.parentNode) {
-                vidRef.current = undefined
-                return
-            }
-            try {
-                vidRef.current = vid
-                vidRef.current.volume = parseString(localStorage.getItem("streamVolume"), 0.3)
-
-                webRtc.current = new WebRTCAdaptor({
-                    websocket_url: currentStream.url,
-                    mediaConstraints: { video: false, audio: false },
-                    sdp_constraints: {
-                        OfferToReceiveAudio: true,
-                        OfferToReceiveVideo: true,
-                    },
-                    remoteVideoId: "remoteVideo",
-                    isPlayMode: true,
-                    debug: false,
-                    candidateTypes: ["tcp", "udp"],
-                    callback: (info: string, obj: WebRTCCallbackObj) => {
-                        if (info == "initialized") {
-                            if (!webRtc || !webRtc.current || !webRtc.current.play) return
-                            webRtc.current.play(currentStream.stream_id, "")
-                        } else if (info == "play_started") {
-                            if (!webRtc || !webRtc.current || !webRtc.current.getStreamInfo) return
-                            webRtc.current.getStreamInfo(currentStream.stream_id)
-                        } else if (info == "streamInformation") {
-                            const resolutions: number[] = []
-                            obj["streamInfo"].forEach((entry: StreamInfoEntry) => {
-                                // get resolutions from server response and added to an array.
-                                if (!resolutions.includes(entry["streamHeight"])) {
-                                    resolutions.push(entry["streamHeight"])
-                                }
-                            })
-                            setStreamResolutions(resolutions)
-                            setSelectedResolution(Math.max.apply(null, resolutions))
-                            setCurrentPlayingStreamHost(currentStream.host)
-                        } else if (info == "closed") {
-                            webRtc.current = undefined
-                            if (typeof obj != "undefined") {
-                                console.debug("connection closed: " + JSON.stringify(obj))
-                            }
-                        }
-                    },
-                    callbackError: (e: string) => {
-                        if (e === "no_stream_exist" || e === "WebSocketNotConnected") {
-                            console.debug("Failed to start stream:", e)
-                            newSnackbarMessage("Failed to start stream.", "error")
-                        }
-                    },
-                })
-            } catch (e) {
-                console.debug(e)
-                webRtc.current = undefined
-            }
-        },
-        [currentStream, newSnackbarMessage],
-    )
+    }, [setNewStreamOptions, loadedStreams])
 
     return {
-        webRtc,
-        vidRef,
-        vidRefCallback,
-
         streamOptions,
-
         currentStream,
         changeStream,
-
-        streamResolutions,
+        resolutions,
+        setResolutions,
         selectedResolution,
         setSelectedResolution,
+        currentPlayingStreamHost,
+        setCurrentPlayingStreamHost,
 
         volume,
         setVolume,
         isMute,
         toggleIsMute,
-
         musicVolume,
         setMusicVolume,
         isMusicMute,
         toggleIsMusicMute,
-
-        defaultResolution,
     }
 })
 

@@ -28,20 +28,23 @@ declare module "@mui/material/styles" {
 export const colors = {
     text: "#FFFFFF",
     offWhite: "#D4FFFF",
-    red: "#C24242",
+    red: "#D93434",
     lightRed: "#E83200",
     green: "#2BA172",
-    yellow: "#FFE200",
+    yellow: "#FFC800",
     orange: "#E04F00",
     gold: "#FFC400",
+    silver: "#C1F3F7",
+    bronze: "#CB7431",
     blue: "#0074D9",
     blue2: "#309FFF",
     purple: "#A985FF",
     black2: "#13161B",
     black3: "#080303",
 
+    neonPink: "#F72485",
     lightNeonBlue: "#8DE9FF",
-    neonBlue: "#00FFFF",
+    neonBlue: "#00FAFA",
     darkNeonBlue: "#176969",
     darkerNeonBlue: "#073339",
     darkNavyBlue: "#0C0C1A",
@@ -53,16 +56,33 @@ export const colors = {
     shield: "#00F7F7",
     warMachineSkillBar: "#9669FF",
 
-    lightGrey: "#aeaeb3",
-    grey: "#89898d",
+    lightGrey: "#999999",
+    grey: "#777777",
+    darkGrey: "#444444",
     battleQueueBanner: "#C24242",
     darkestNeonBlue: "#050c12",
 
-    globalChat: "#1A6044",
-    assetsBanner: "#4E1A61",
+    globalChat: "#35A679",
 
+    // Transactions
     supsCredit: "#01FF70",
     supsDebit: "#FF4136",
+
+    // Market
+    buyout: "#309FFF",
+    auction: "#E04F00",
+    dutchAuction: "#D98D00",
+    marketSold: "#2BA172",
+    marketCreate: "#E6C85C",
+    marketBidReturned: "#CC3F3F",
+
+    // Mech loadout
+    chassisSkin: "#D4AA13",
+    introAnimation: "#B63DD4",
+    outroAnimation: "#B63DD4",
+    weapons: "#EB2300",
+    utilities: "#5DC437",
+    powerCore: "#009CBF",
 
     rarity: {
         MEGA: "#e84234",
@@ -80,8 +100,8 @@ export const colors = {
 }
 
 const factionTheme: FactionTheme = {
-    primary: "#00FFFF",
-    secondary: "#00FFFF",
+    primary: "#00FAFA",
+    secondary: "#00FAFA",
     background: "#050c12",
 }
 
@@ -92,6 +112,7 @@ export const fonts = {
     nostromoMedium: ["Nostromo Regular Medium", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
     nostromoLight: ["Nostromo Regular Light", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
     shareTech: ["Share Tech", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
+    shareTechMono: ["Share Tech Mono", "monospace"].join(","),
 }
 
 export enum siteZIndex {
@@ -100,7 +121,6 @@ export enum siteZIndex {
     Drawer = 298,
     Popover = 297,
     Tooltip = 296,
-    LoadMessage = 250,
 
     // Stream site top elements
     Bar = 199,
@@ -115,8 +135,8 @@ export enum siteZIndex {
     BattleEnd = 60,
     MiniMap = 50,
     MoveableResizableHover = 51,
-    MoveableResizable = 20,
-    Notfications = 40,
+    MoveableResizable = 42,
+    Notifications = 40,
     MechStats = 30,
     VotingSystem = 30,
     Stream = 5,
@@ -175,28 +195,27 @@ export const theme = createTheme({
         },
         h6: {
             fontFamily: fonts.shareTech,
-            fontSize: "1.78rem",
+            fontSize: "1.82rem",
         },
         body1: {
             fontFamily: fonts.shareTech,
-            fontSize: "1.43rem",
+            fontSize: "1.65rem",
         },
         body2: {
             fontFamily: fonts.shareTech,
-            fontSize: "1.28rem",
+            fontSize: "1.4rem",
         },
         subtitle1: {
             fontFamily: fonts.shareTech,
-            fontSize: "1.19rem",
-            textAlign: "center",
+            fontSize: "1.3rem",
         },
         subtitle2: {
             fontFamily: fonts.shareTech,
-            fontSize: "1.19rem",
+            fontSize: "1.15rem",
         },
         caption: {
             fontFamily: fonts.shareTech,
-            fontSize: "1.19rem",
+            fontSize: "1.25rem",
         },
     },
     components: {
@@ -226,9 +245,6 @@ export const theme = createTheme({
                 color: "text.primary",
             },
             styleOverrides: {
-                root: {
-                    userSelect: "none",
-                },
                 caption: {
                     display: "block",
                 },
@@ -246,20 +262,13 @@ export const theme = createTheme({
         },
         MuiLink: {
             defaultProps: {
-                underline: "none",
-                color: "text.primary",
+                color: colors.neonBlue,
             },
             styleOverrides: {
                 root: {
+                    cursor: "pointer",
                     display: "inline-flex",
                     alignItems: "center",
-                    transition: "all .1s",
-                    "& *": {
-                        transition: "all .1s",
-                    },
-                    ":hover, :hover > *": {
-                        color: "#136ED6",
-                    },
                 },
             },
         },
@@ -273,6 +282,10 @@ export const theme = createTheme({
                 root: {
                     ".MuiPagination-ul": {
                         justifyContent: "center",
+                    },
+                    ".MuiButtonBase-root": {
+                        minWidth: "25px",
+                        height: "25px",
                     },
                 },
             },

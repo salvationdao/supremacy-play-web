@@ -3,10 +3,30 @@ import { Variant } from "@mui/material/styles/createTypography"
 import { OverridableStringUnion } from "@mui/types"
 import { ReactNode, useMemo } from "react"
 
+export interface StyledImageTextProps {
+    imageUrl?: string
+    text?: string | ReactNode
+    variant?: OverridableStringUnion<Variant | "inherit", TypographyPropsVariantOverrides>
+    textColor?: string
+    color?: string
+    truncateLine?: boolean
+    textSx?: SxProps
+
+    fontWeight?: string
+    fontFamily?: string
+    imageSize?: number
+    imageBorderColor?: string
+    imageBackgroundColor?: string
+    imageBorderThickness?: string
+    imageBackgroundSize?: string
+    noImageBackgroundColor?: boolean
+}
+
 export const StyledImageText = ({
     imageUrl,
     text,
     variant = "body1",
+    textColor,
     color,
     truncateLine,
     textSx,
@@ -19,46 +39,32 @@ export const StyledImageText = ({
     imageBorderThickness = "1px",
     imageBackgroundSize = "cover",
     noImageBackgroundColor,
-    imageMb,
-}: {
-    imageUrl?: string
-    text: string | ReactNode
-    variant?: OverridableStringUnion<Variant | "inherit", TypographyPropsVariantOverrides>
-    color: string
-    truncateLine?: boolean
-    textSx?: SxProps
-
-    fontWeight?: string
-    fontFamily?: string
-    imageSize?: number
-    imageBorderColor?: string
-    imageBackgroundColor?: string
-    imageBorderThickness?: string
-    imageBackgroundSize?: string
-    noImageBackgroundColor?: boolean
-    imageMb?: number
-}) => {
+}: StyledImageTextProps) => {
     const truncateStyle: SxProps = useMemo(
         () =>
             truncateLine
                 ? {
-                      textOverflow: "ellipsis",
-                      whiteSpace: "nowrap",
+                      display: "-webkit-inline-box",
                       overflow: "hidden",
+                      overflowWrap: "anywhere",
+                      textOverflow: "ellipsis",
+                      WebkitLineClamp: 1, // change to max number of lines
+                      WebkitBoxOrient: "vertical",
                   }
                 : {},
         [truncateLine],
     )
 
     return (
-        <span style={{ display: "inline-block" }}>
+        <span style={{ display: "inline" }}>
             {imageUrl && (
                 <Box
+                    component="span"
                     sx={{
+                        flexShrink: 0,
                         display: "inline-block",
                         width: `${imageSize}rem`,
                         height: `${imageSize}rem`,
-                        mb: imageMb || "-0.16rem",
                         mr: `${0.3 * imageSize}rem`,
                         backgroundImage: `url(${imageUrl})`,
                         backgroundRepeat: "no-repeat",
@@ -77,8 +83,8 @@ export const StyledImageText = ({
                     display: "inline",
                     fontFamily,
                     fontWeight,
-                    color,
-                    wordBreak: "break-word",
+                    color: textColor || color,
+                    wordBreak: "break-all",
                     ...truncateStyle,
                     ...textSx,
                 }}

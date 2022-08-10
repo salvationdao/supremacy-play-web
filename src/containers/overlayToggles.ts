@@ -1,3 +1,4 @@
+import { useMobile } from "./mobile"
 import { useCallback, useEffect, useState } from "react"
 import { createContainer } from "unstated-next"
 import { useToggle } from "../hooks"
@@ -9,16 +10,14 @@ enum LeftDrawerPanels {
 
 // Control left side bar button and open states
 const OverlayTogglesContainer = createContainer(() => {
+    const { isMobile } = useMobile()
+    const [isLeftDrawerOpen, toggleIsLeftDrawerOpen] = useToggle(false)
     const [activePanel, setActivePanel] = useState<LeftDrawerPanels>(LeftDrawerPanels.None)
 
+    const [showTrailer, toggleShowTrailer] = useToggle()
     const [isEndBattleDetailEnabled, toggleIsEndBattleDetailEnabled] = useToggle()
-    const [isLiveChartOpen, toggleIsLiveChartOpen] = useToggle(localStorage.getItem("liveChartOverlay") === "true")
-    const [isMapOpen, toggleIsMapOpen] = useToggle(localStorage.getItem("mapOverlay") === "true")
+    const [isMapOpen, toggleIsMapOpen] = useToggle((localStorage.getItem("mapOverlay") || "true") === "true")
     const [isBattleHistoryOpen, toggleIsBattleHistoryOpen] = useToggle()
-
-    useEffect(() => {
-        localStorage.setItem("liveChartOverlay", isLiveChartOpen.toString())
-    }, [isLiveChartOpen])
 
     useEffect(() => {
         localStorage.setItem("mapOverlay", isMapOpen.toString())
@@ -36,17 +35,27 @@ const OverlayTogglesContainer = createContainer(() => {
 
     const toggleIsEndBattleDetailOpen = useCallback((value?: boolean) => togglePanel(LeftDrawerPanels.EndBattleDetail, value), [togglePanel])
 
+    useEffect(() => {
+        if (isMobile) {
+            toggleIsMapOpen(true)
+            toggleIsBattleHistoryOpen(true)
+        }
+    }, [isMobile, toggleIsBattleHistoryOpen, toggleIsMapOpen])
+
     return {
+        isLeftDrawerOpen,
+        toggleIsLeftDrawerOpen,
+
         // Left side panels are a little different, only 1 can be open at a time
         isEndBattleDetailOpen: activePanel == LeftDrawerPanels.EndBattleDetail,
         toggleIsEndBattleDetailOpen,
 
-        isLiveChartOpen,
+        showTrailer,
         isEndBattleDetailEnabled,
         isMapOpen,
         isBattleHistoryOpen,
+        toggleShowTrailer,
         toggleIsEndBattleDetailEnabled,
-        toggleIsLiveChartOpen,
         toggleIsMapOpen,
         toggleIsBattleHistoryOpen,
     }

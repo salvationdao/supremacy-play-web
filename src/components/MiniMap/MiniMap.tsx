@@ -1,272 +1,296 @@
-import { Box, Fade, Theme, useTheme } from "@mui/material"
-import { useEffect, useMemo, useState } from "react"
-import { ClipThing, MiniMapInside, ResizeBox, TargetTimerCountdown, TopIconSettings } from ".."
-import { SvgResizeXY } from "../../assets"
-import { MINI_MAP_DEFAULT_SIZE } from "../../constants"
-import { useDimension, useGame, useOverlayToggles, BribeStageResponse, WinnerAnnouncementResponse, useSnackbar, Severity } from "../../containers"
+import { Box, Fade, Stack, Typography } from "@mui/material"
+import { useEffect, useMemo, useRef } from "react"
+import { MiniMapInside, MoveableResizable } from ".."
+import { SvgFullscreen, SvgMinimize } from "../../assets"
+import { useDimension, useGame, useMobile, useOverlayToggles } from "../../containers"
+import { useMiniMap } from "../../containers/minimap"
+import { useTheme } from "../../containers/theme"
 import { useToggle } from "../../hooks"
-import { colors, siteZIndex } from "../../theme/theme"
-import { Dimension, Map } from "../../types"
+import { fonts } from "../../theme/theme"
+import { LocationSelectType, Map, PlayerAbility } from "../../types"
+import { MoveableResizableConfig, useMoveableResizable } from "../Common/MoveableResizable/MoveableResizableContainer"
+import { HighlightedMechAbilities } from "./MapOutsideItems/HighlightedMechAbilities"
+import { TargetHint } from "./MapOutsideItems/TargetHint"
+
+export const TOP_BAR_HEIGHT = 3.1 // rems
+
+const FullscreenIcon = () => {
+    const { isEnlarged, toggleIsEnlarged } = useMiniMap()
+    return (
+        <Box
+            onClick={() => toggleIsEnlarged()}
+            sx={{
+                mr: ".9rem",
+                cursor: "pointer",
+                opacity: 0.4,
+                ":hover": { opacity: 1 },
+            }}
+        >
+            {isEnlarged ? <SvgMinimize size="1.6rem" /> : <SvgFullscreen size="1.6rem" />}
+        </Box>
+    )
+}
 
 export const MiniMap = () => {
-    const theme = useTheme<Theme>()
-    const { newSnackbarMessage } = useSnackbar()
-    const { map, winner, setWinner, bribeStage } = useGame()
+    const { isMobile } = useMobile()
+    const { map, bribeStage } = useGame()
+    const { isTargeting, isEnlarged, resetSelection, playerAbility } = useMiniMap()
     const { isMapOpen, toggleIsMapOpen } = useOverlayToggles()
-    const [isRender, toggleIsRender] = useToggle(isMapOpen)
 
     // Temp hotfix ask james ****************************
     const [show, toggleShow] = useToggle(false)
     useEffect(() => {
-        toggleShow(bribeStage !== undefined && bribeStage.phase !== "HOLD")
-    }, [bribeStage, toggleShow])
+        if (bribeStage && bribeStage.phase !== "HOLD" ? true : false) {
+            toggleShow(true)
+        } else {
+            toggleShow(false)
+            resetSelection()
+        }
+    }, [bribeStage, toggleShow, resetSelection])
     // End ****************************************
 
-    // A little timeout so fade transition can play
     useEffect(() => {
-        if (isMapOpen) return toggleIsRender(true)
-        const timeout = setTimeout(() => {
-            toggleIsRender(false)
-        }, 250)
+        if (isTargeting) toggleIsMapOpen(true)
+    }, [isTargeting, toggleIsMapOpen])
 
-        return () => clearTimeout(timeout)
-    }, [isMapOpen, toggleIsRender])
-
-    useEffect(() => {
-        if (winner && bribeStage?.phase == "LOCATION_SELECT") {
-            toggleIsMapOpen(true)
-        }
-    }, [winner, bribeStage, toggleIsMapOpen])
-
-    const mapRender = useMemo(
-        () => (
-            <MiniMapInner
-                map={map}
-                winner={winner}
-                setWinner={setWinner}
-                bribeStage={bribeStage}
-                isMapOpen={isMapOpen && show}
-                toggleIsMapOpen={toggleIsMapOpen}
-                newSnackbarMessage={newSnackbarMessage}
-                factionColor={theme.factionTheme.primary}
-            />
-        ),
-        [map, winner, setWinner, bribeStage, isMapOpen, toggleIsMapOpen, newSnackbarMessage, theme, show],
+    // Map config
+    const config: MoveableResizableConfig = useMemo(
+        () => ({
+            localStoragePrefix: "miniMap1",
+            // Defaults
+            defaultPosX: 9999,
+            defaultPosY: 9999,
+            defaultWidth: 300,
+            defaultHeight: 300,
+            // Position limits
+            minPosX: 0,
+            minPosY: 0,
+            // Size limits
+            minWidth: 300,
+            minHeight: 300,
+            maxWidth: 1000,
+            maxHeight: 1000,
+            // Others
+            infoTooltipText: "Battle arena minimap.",
+            onHideCallback: () => toggleIsMapOpen(false),
+            hidePopoutBorder: true,
+            topRightContent: <FullscreenIcon />,
+        }),
+        [toggleIsMapOpen],
     )
 
-    if (!isRender) return null
-    return <>{mapRender}</>
+    return useMemo(() => {
+        if (!map) return null
+
+        const toRender = show && isMapOpen
+
+        return (
+            <Fade in={toRender}>
+                <Box sx={{ ...(isMobile ? { backgroundColor: "#FFFFFF12", boxShadow: 2, border: "#FFFFFF20 1px solid" } : {}) }}>
+                    <MoveableResizable config={config}>
+                        <MiniMapInner map={map} isTargeting={isTargeting} isEnlarged={isEnlarged} toRender={toRender} playerAbility={playerAbility} />
+                    </MoveableResizable>
+                </Box>
+            </Fade>
+        )
+    }, [map, show, isMapOpen, isMobile, config, isTargeting, isEnlarged, playerAbility])
 }
 
-interface InnerProps {
-    map?: Map
-    winner?: WinnerAnnouncementResponse
-    setWinner: (winner?: WinnerAnnouncementResponse) => void
-    bribeStage?: BribeStageResponse
-    isMapOpen: boolean
-    toggleIsMapOpen: (open?: boolean) => void
-    factionColor: string
-    newSnackbarMessage: (message: string, severity?: Severity) => void
-}
-
-const MiniMapInner = ({ map, winner, setWinner, bribeStage, isMapOpen, toggleIsMapOpen, factionColor, newSnackbarMessage }: InnerProps) => {
+// This inner component takes care of the resizing etc.
+const MiniMapInner = ({
+    map,
+    isTargeting,
+    isEnlarged,
+    toRender,
+    playerAbility,
+}: {
+    map: Map
+    isTargeting: boolean
+    isEnlarged: boolean
+    toRender: boolean
+    playerAbility?: PlayerAbility
+}) => {
+    const { isMobile } = useMobile()
+    const theme = useTheme()
     const {
         remToPxRatio,
         gameUIDimensions: { width, height },
     } = useDimension()
-    const [enlarged, toggleEnlarged] = useToggle()
-    const [mapHeightWidthRatio, setMapHeightWidthRatio] = useState(1)
-    const [defaultDimensions, setDefaultDimensions] = useState<Dimension>({
-        width: MINI_MAP_DEFAULT_SIZE,
-        height: MINI_MAP_DEFAULT_SIZE,
-    })
-    const [dimensions, setDimensions] = useState<Dimension>({
-        width: MINI_MAP_DEFAULT_SIZE,
-        height: MINI_MAP_DEFAULT_SIZE,
-    })
+    const {
+        isPoppedout,
+        updateSize,
+        updatePosition,
+        curWidth,
+        curHeight,
+        curPosX,
+        curPosY,
+        defaultWidth,
+        maxWidth,
+        maxHeight,
+        setDefaultWidth,
+        setDefaultHeight,
+        minWidth,
+        setMinHeight,
+    } = useMoveableResizable()
 
-    // For targeting map
-    const [timeReachZero, setTimeReachZero] = useState<boolean>(false)
-    const [submitted, setSubmitted] = useState<boolean>(false)
+    const ref = useRef<HTMLDivElement>()
+    const mapHeightWidthRatio = useRef(1)
+    const prevWidth = useRef(curWidth)
+    const prevHeight = useRef(curHeight)
+    const prevPosX = useRef(curPosX)
+    const prevPosY = useRef(curPosY)
 
-    const adjustment = useMemo(() => Math.min(remToPxRatio, 9) / 9, [remToPxRatio])
+    // When it's targeting, enlarge the map and move to center of screen, else restore to the prev dimensions
+    useEffect(() => {
+        // If its mech move, then dont do the map enlarge, too disruptive
+        if (playerAbility?.ability.location_select_type === LocationSelectType.MECH_COMMAND) return
 
-    const isTargeting = useMemo(
-        () => winner && !timeReachZero && !submitted && bribeStage?.phase == "LOCATION_SELECT",
-        [winner, timeReachZero, submitted, bribeStage],
-    )
+        if (isTargeting || isEnlarged) {
+            const maxW = Math.min(width - 25, maxWidth || width, 900)
+            const maxH = Math.min(maxW * mapHeightWidthRatio.current, maxHeight || height, height - 120)
+            let targetingWidth = Math.min(maxW, 900)
+            let targetingHeight = targetingWidth * mapHeightWidthRatio.current
+
+            if (targetingHeight > maxH) {
+                targetingHeight = Math.min(maxH, 700)
+                targetingWidth = targetingHeight / mapHeightWidthRatio.current
+            }
+
+            prevPosX.current = curPosX
+            prevPosY.current = curPosY
+            prevWidth.current = curWidth
+            prevHeight.current = curHeight
+            updateSize({ width: targetingWidth, height: targetingHeight })
+            updatePosition({ x: (width - targetingWidth) / 2, y: Math.max((height - targetingHeight) / 2 - 55, 25) })
+        } else {
+            updateSize({ width: prevWidth.current, height: prevHeight.current })
+            updatePosition({ x: prevPosX.current, y: prevPosY.current })
+        }
+
+        if (isTargeting && isMobile && ref.current) {
+            ref.current.scrollIntoView()
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isTargeting, isEnlarged, maxHeight, maxWidth, isMobile])
 
     // Set initial size
     useEffect(() => {
-        if (!map) return
-        const ratio = map ? map.height / map.width : 1
-        const defaultRes = {
-            width: MINI_MAP_DEFAULT_SIZE * adjustment,
-            height: MINI_MAP_DEFAULT_SIZE * ratio * adjustment + 2.4 * remToPxRatio,
-        }
+        const ratio = map.height / map.width
+        const defaultW = defaultWidth
+        const defaultH = defaultWidth * ratio + TOP_BAR_HEIGHT * remToPxRatio
+        const minH = (minWidth || defaultWidth) * ratio + TOP_BAR_HEIGHT * remToPxRatio
 
-        setDefaultDimensions(defaultRes)
-        setDimensions((prev) => {
-            return { width: prev.width, height: prev.width * ratio }
-        })
-        setMapHeightWidthRatio(ratio)
-    }, [map, adjustment, remToPxRatio])
-
-    useEffect(() => {
-        if (width <= 0 || height <= 0) return
-        // 25px is room for padding so the map doesnt grow bigger than the stream dimensions
-        // 110px is approx the height of the mech stats
-        const maxWidth = Math.min(width - 25, 900)
-        const maxHeight = Math.min(height - 110 - 12.5, maxWidth * mapHeightWidthRatio)
-        let targetingWidth = Math.min(maxWidth, 900)
-        let targetingHeight = targetingWidth * mapHeightWidthRatio
-
-        if (targetingHeight > maxHeight) {
-            targetingHeight = Math.min(maxHeight, 700)
-            targetingWidth = targetingHeight / mapHeightWidthRatio
-        }
-
-        const newWidth = isTargeting ? targetingWidth : enlarged ? maxWidth : defaultDimensions.width * adjustment
-        const newHeight = isTargeting ? targetingHeight : enlarged ? maxHeight : defaultDimensions.height * adjustment
-        setDimensions({ width: newWidth, height: newHeight })
-        // NOTE: need to skip the lint or the map will keep resetting to small size on new battle
+        setDefaultWidth(defaultW)
+        setDefaultHeight(defaultH)
+        setMinHeight(minH)
+        updateSize({ width: curWidth, height: curWidth * ratio + TOP_BAR_HEIGHT * remToPxRatio })
+        mapHeightWidthRatio.current = ratio
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [width, height, enlarged, adjustment])
+    }, [map, setDefaultWidth, setDefaultHeight])
 
-    useEffect(() => {
-        const endTime = winner?.end_time
+    return useMemo(() => {
+        if (!toRender) return null
 
-        if (endTime) {
-            setSubmitted(false)
-            setTimeReachZero(false)
+        // All for the popped out window black bars
+        let outsideWidth = curWidth
+        let outsideHeight = curHeight
+        let insideWidth = outsideWidth
+        let insideHeight = outsideHeight - TOP_BAR_HEIGHT * remToPxRatio
+
+        if (isPoppedout) {
+            const maxHeight = outsideWidth * mapHeightWidthRatio.current
+            const maxWidth = outsideHeight / mapHeightWidthRatio.current
+
+            if (outsideHeight > maxHeight) {
+                outsideHeight = maxHeight
+            }
+            insideHeight = outsideHeight
+
+            if (outsideWidth > maxWidth) {
+                outsideWidth = maxWidth
+                insideWidth = outsideWidth
+            }
         }
-    }, [winner])
 
-    useEffect(() => {
-        if (winner && bribeStage?.phase == "LOCATION_SELECT") {
-            toggleEnlarged(true)
-        }
-    }, [winner, bribeStage, toggleEnlarged])
-
-    useEffect(() => {
-        if (timeReachZero || submitted) {
-            toggleEnlarged(false)
-            setWinner(undefined)
+        if (isMobile) {
+            const parentDiv = ref.current?.parentElement
+            insideWidth = parentDiv?.offsetWidth || 300
+            insideHeight = parentDiv?.offsetWidth || 300 * mapHeightWidthRatio.current
         }
 
-        if (timeReachZero) {
-            newSnackbarMessage("Failed to submit target location on time.", "error")
-        }
-    }, [timeReachZero, submitted, toggleEnlarged, setWinner, newSnackbarMessage])
-
-    const mainColor = useMemo(() => (isTargeting && winner ? winner.game_ability.colour : factionColor), [isTargeting, winner, factionColor])
-
-    const mapInsideRender = useMemo(() => {
-        if (isTargeting && winner) {
-            return (
-                <MiniMapInside
-                    gameAbility={winner.game_ability}
-                    containerDimensions={{ width: dimensions.width, height: dimensions.height - 2.4 * remToPxRatio }}
-                    targeting
-                    setSubmitted={setSubmitted}
-                    enlarged={enlarged || dimensions.width > 388}
-                    newSnackbarMessage={newSnackbarMessage}
-                />
-            )
-        } else {
-            return (
-                <MiniMapInside
-                    containerDimensions={{ width: dimensions.width, height: dimensions.height - 2.4 * remToPxRatio }}
-                    enlarged={enlarged || dimensions.width > 388}
-                    newSnackbarMessage={newSnackbarMessage}
-                />
-            )
-        }
-    }, [isTargeting, winner, dimensions, remToPxRatio, setSubmitted, enlarged, newSnackbarMessage])
-
-    if (!map) return null
-
-    return (
-        <Box
-            sx={{
-                position: "absolute",
-                bottom: enlarged ? "calc(50% + 50px)" : "1rem",
-                right: enlarged ? (width - dimensions.width) / 2 - 3 : "1rem",
-                transform: enlarged ? "translateY(50%)" : "none",
-                pointerEvents: "none",
-                filter: "drop-shadow(0 3px 3px #00000050)",
-                transition: "all .2s",
-                zIndex: siteZIndex.MiniMap,
-            }}
-        >
-            <Box sx={{ position: "relative", pointerEvents: "all" }}>
-                <ResizeBox
-                    sx={{ bottom: 0, right: 0 }}
-                    color={mainColor}
-                    adjustment={adjustment}
-                    onResizeStop={setDimensions}
-                    initialDimensions={[dimensions.width, dimensions.height]}
-                    minConstraints={[defaultDimensions.width, defaultDimensions.height]}
-                    maxConstraints={[Math.min(width - 25, 638), Math.min(height - 25, 638)]}
-                    resizeHandles={["nw"]}
-                    handle={() => (
-                        <Box
+        return (
+            <Stack
+                alignItems="center"
+                justifyContent="center"
+                sx={{
+                    position: "relative",
+                    width: "100%",
+                    height: "100%",
+                }}
+            >
+                <Box
+                    ref={ref}
+                    sx={{
+                        position: "relative",
+                        boxShadow: 1,
+                        width: isPoppedout ? outsideWidth : "100%",
+                        height: isPoppedout ? outsideHeight : "100%",
+                        transition: "all .2s",
+                        overflow: "hidden",
+                        pointerEvents: "all",
+                        border: isPoppedout ? `${theme.factionTheme.primary} 1.5px solid` : "unset",
+                        zIndex: 2,
+                    }}
+                >
+                    <Stack
+                        direction="row"
+                        alignItems="center"
+                        sx={{
+                            height: `${TOP_BAR_HEIGHT}rem`,
+                            px: "1.8rem",
+                            backgroundColor: "#000000BF",
+                            borderBottom: `${theme.factionTheme.primary}80 .25rem solid`,
+                            zIndex: 99,
+                        }}
+                    >
+                        <Typography
+                            variant="caption"
                             sx={{
-                                display: !isMapOpen ? "none" : enlarged ? "none" : "unset",
-                                pointerEvents: "all",
-                                position: "absolute",
-                                top: ".75rem",
-                                left: "1.15rem",
-                                cursor: "nwse-resize",
-                                color: colors.text,
+                                fontFamily: fonts.nostromoBlack,
+                                lineHeight: 1,
                                 opacity: 0.8,
-                                zIndex: siteZIndex.MiniMap,
                             }}
                         >
-                            <SvgResizeXY size="1rem" sx={{ transform: "rotate(90deg)" }} />
-                        </Box>
-                    )}
+                            {map.name
+                                .replace(/([A-Z])/g, " $1")
+                                .trim()
+                                .toUpperCase()}
+                        </Typography>
+                    </Stack>
+
+                    <MiniMapInside containerDimensions={{ width: insideWidth, height: insideHeight }} />
+
+                    <TargetHint />
+
+                    <HighlightedMechAbilities />
+                </Box>
+
+                {/* not scaled map background image, for background only */}
+                <Box
+                    sx={{
+                        position: "absolute",
+                        width: "100%",
+                        height: "100%",
+                        background: `url(${map?.image_url})`,
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "center",
+                        backgroundSize: "cover",
+                        opacity: 0.15,
+                        zIndex: 1,
+                    }}
                 />
-
-                <Fade in={isMapOpen}>
-                    <Box>
-                        <ClipThing
-                            clipSize="10px"
-                            border={{
-                                isFancy: true,
-                                borderThickness: ".2rem",
-                                borderColor: mainColor,
-                            }}
-                            backgroundColor={colors.darkNavy}
-                        >
-                            <Box
-                                sx={{
-                                    position: "relative",
-                                    boxShadow: 1,
-                                    width: dimensions.width,
-                                    height: dimensions.height,
-                                    transition: "all .2s",
-                                    overflow: "hidden",
-                                }}
-                            >
-                                <TopIconSettings
-                                    map={map}
-                                    enlarged={enlarged}
-                                    mainColor={mainColor}
-                                    toggleEnlarged={toggleEnlarged}
-                                    toggleIsMapOpen={toggleIsMapOpen}
-                                />
-
-                                {mapInsideRender}
-
-                                {isTargeting && winner && (
-                                    <TargetTimerCountdown gameAbility={winner.game_ability} setTimeReachZero={setTimeReachZero} endTime={winner.end_time} />
-                                )}
-                            </Box>
-                        </ClipThing>
-                    </Box>
-                </Fade>
-            </Box>
-        </Box>
-    )
+            </Stack>
+        )
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [toRender, theme.factionTheme.primary, curWidth, curHeight, remToPxRatio, isMobile, width, height, isPoppedout])
 }

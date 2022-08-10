@@ -1,49 +1,39 @@
 import LoadingButton, { LoadingButtonProps } from "@mui/lab/LoadingButton"
-import { Box, styled, SxProps } from "@mui/system"
-import { fonts } from "../../theme/theme"
+import { Box, SxProps } from "@mui/system"
+import React, { HTMLAttributeAnchorTarget } from "react"
+import { Link } from "react-router-dom"
+import { mergeDeep } from "../../helpers"
+import { colors, fonts } from "../../theme/theme"
 import { ClipThing, ClipThingProps } from "./ClipThing"
-
-const Base = styled(LoadingButton)({
-    borderRadius: 0,
-    fontFamily: fonts.shareTech,
-    fontWeight: "fontWeightBold",
-    color: "white",
-    textTransform: "uppercase",
-    "&:focus": {
-        boxShadow: "none",
-    },
-    "&:active": {
-        opacity: 0.75,
-    },
-    "& .MuiLoadingButton-loadingIndicator": {
-        color: "#FFFFFF",
-    },
-    "& > *": {
-        fontFamily: fonts.shareTech,
-        fontWeight: "fontWeightBold",
-    },
-})
-
-const Triangle = styled("div")({
-    position: "absolute",
-    bottom: "3px",
-    right: "3px",
-    clipPath: "polygon(100% 0, 0% 100%, 100% 100%)",
-    height: "1rem",
-    width: "1rem",
-})
-
 interface FancyButtonProps extends LoadingButtonProps {
-    excludeCaret?: boolean
     sx?: SxProps
-    caretColor?: string
+    innerSx?: SxProps
     clipThingsProps?: ClipThingProps
+    href?: string
+    to?: string
+    target?: HTMLAttributeAnchorTarget | undefined
 }
 
-export const FancyButton = ({ sx, excludeCaret = false, disabled, caretColor, clipThingsProps, children, ...props }: FancyButtonProps) => {
+export const FancyButton = React.forwardRef(function FancyButton(
+    { sx, innerSx, disabled, clipThingsProps, children, loading, to, href, target, ...props }: FancyButtonProps,
+    ref,
+) {
+    const isDisabled = loading || disabled
+
     return (
-        <ClipThing {...clipThingsProps}>
-            {disabled && (
+        <ClipThing
+            corners={{
+                topRight: true,
+                bottomLeft: true,
+            }}
+            {...mergeDeep(
+                { clipSlantSize: "2px" },
+                clipThingsProps,
+                { opacity: disabled ? 0.5 : clipThingsProps?.opacity },
+                isDisabled ? { sx: { filter: "grayscale(60%)" } } : {},
+            )}
+        >
+            {isDisabled && (
                 <Box
                     sx={{
                         position: "absolute",
@@ -52,15 +42,55 @@ export const FancyButton = ({ sx, excludeCaret = false, disabled, caretColor, cl
                         left: 0,
                         right: 0,
                         backgroundColor: "#050c12",
-                        opacity: 0.3,
+                        opacity: 0.5,
                         zIndex: 99,
                     }}
                 />
             )}
-            <Base sx={{ ...sx }} fullWidth {...props}>
-                {children}
-                {!excludeCaret && <Triangle sx={{ backgroundColor: caretColor }} />}
-            </Base>
+
+            <LoadingButton
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                ref={ref as any}
+                disabled={isDisabled}
+                sx={{
+                    borderRadius: 0,
+                    fontFamily: fonts.shareTech,
+                    fontWeight: "fontWeightBold",
+                    color: "#FFFFFF",
+                    textTransform: "uppercase",
+                    minWidth: 1,
+                    "&:focus": {
+                        boxShadow: "none",
+                    },
+                    "&:active": {
+                        opacity: 0.75,
+                    },
+                    "& .MuiLoadingButton-loadingIndicator": {
+                        color: "#FFFFFF",
+                    },
+                    ".MuiCircularProgress-root": {
+                        color: colors.offWhite,
+                    },
+                    ...sx,
+                }}
+                fullWidth
+                loading={loading}
+                {...props}
+            >
+                <Box sx={{ pt: ".3rem", height: "100%", width: "100%", ...innerSx }}>
+                    {to ? (
+                        <Link to={to} target={target}>
+                            {children}
+                        </Link>
+                    ) : href ? (
+                        <a href={href} target={target}>
+                            {children}
+                        </a>
+                    ) : (
+                        children
+                    )}
+                </Box>
+            </LoadingButton>
         </ClipThing>
     )
-}
+})

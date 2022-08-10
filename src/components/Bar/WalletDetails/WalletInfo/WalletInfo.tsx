@@ -1,71 +1,58 @@
-import { CircularProgress, Stack, Typography } from "@mui/material"
+import { CircularProgress, IconButton, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
-import { MutableRefObject, useEffect, useRef, useState } from "react"
-import { SvgSupToken } from "../../../../assets"
-import { NullUUID } from "../../../../constants"
-import { usePassportServerAuth, usePassportServerWebsocket, useWallet } from "../../../../containers"
+import { MutableRefObject, useRef, useState } from "react"
+import { SvgHide, SvgSupToken, SvgUnhide } from "../../../../assets"
+import { IS_TESTING_MODE } from "../../../../constants"
+import { useAuth, useWallet } from "../../../../containers"
 import { supFormatterNoFixed } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
+import { usePassportSubscriptionUser } from "../../../../hooks/usePassport"
 import { PassportServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
-import { Transaction, UserData } from "../../../../types/passport"
+import { Transaction, User } from "../../../../types"
 import { WalletPopover } from "./WalletPopover"
 
 export const WalletInfo = () => {
     const { onWorldSupsRaw } = useWallet()
-    const { user, userID } = usePassportServerAuth()
-    const { state, subscribe } = usePassportServerWebsocket()
+    const { userID, user } = useAuth()
     const startTime = useRef(new Date())
     // Transactions
     const [transactions, setTransactions] = useState<Transaction[]>([])
-    const [latestTransaction, setLatestTransaction] = useState<Transaction[]>([])
     // Accruing transaction spend / ticks
     const supsSpent = useRef<BigNumber>(new BigNumber(0))
     const supsEarned = useRef<BigNumber>(new BigNumber(0))
 
-    // Get initial 5 transactions
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe || !userID) return
-        return subscribe<Transaction[]>(PassportServerKeys.SubscribeUserTransactions, (payload) => {
+    usePassportSubscriptionUser<Transaction[]>(
+        {
+            URI: "/transactions",
+            key: PassportServerKeys.SubscribeUserTransactions,
+        },
+        (payload) => {
             if (!payload) return
-            setTransactions(payload)
-        })
-    }, [state, subscribe, userID])
+            setTransactions((prev) => {
+                if (!payload || payload.length <= 0 || !userID) return prev
 
-    // Subscribe to latest transactions
-    useEffect(() => {
-        if (state !== WebSocket.OPEN || !subscribe || !userID) return
-        return subscribe<Transaction[]>(PassportServerKeys.SubscribeUserLatestTransactions, (payload) => {
-            if (!payload) return
-            setLatestTransaction(payload)
-        })
-    }, [state, subscribe, userID])
+                // Accrue stuff
+                payload.forEach((tx) => {
+                    const isCredit = userID === tx.credit
+                    const summary = (tx.description + tx.sub_group + tx.group).toLowerCase()
 
-    // Append to latest transaction to list
-    useEffect(() => {
-        setTransactions((prev) => {
-            if (!prev || prev.length <= 0 || !latestTransaction || latestTransaction.length <= 0 || !userID || userID === NullUUID) return []
+                    // For inflows
+                    if (isCredit && (summary.includes("spoil") || summary.includes("won"))) {
+                        supsEarned.current = supsEarned.current.plus(new BigNumber(tx.amount))
+                    }
 
-            // Accrue stuff
-            latestTransaction.forEach((tx) => {
-                const isCredit = userID === tx.credit
-                const summary = (tx.description + tx.sub_group + tx.group).toLowerCase()
+                    // For outflows
+                    if (!isCredit && !prev.some((t) => t.id === tx.id)) {
+                        supsSpent.current = supsSpent.current.plus(new BigNumber(tx.amount))
+                    }
+                })
 
-                // For inflows
-                if (isCredit && (summary.includes("spoil") || summary.includes("won"))) {
-                    supsEarned.current = supsEarned.current.plus(new BigNumber(tx.amount))
-                }
-
-                // For outflows
-                if (!isCredit && !prev.some((t) => t.id === tx.id)) {
-                    supsSpent.current = supsSpent.current.plus(new BigNumber(tx.amount))
-                }
+                // Append the latest transaction into list
+                return [...payload, ...prev].slice(0, 30)
             })
-
-            // Append the latest transaction into list
-            return [...latestTransaction, ...prev].slice(0, 30)
-        })
-    }, [latestTransaction, userID])
+        },
+    )
 
     return (
         <WalletInfoInner
@@ -91,14 +78,15 @@ const WalletInfoInner = ({
 }: {
     onWorldSupsRaw: string
     startTime: MutableRefObject<Date>
-    user?: UserData
-    userID?: string
+    user: User
+    userID: string
     transactions: Transaction[]
     supsSpent: MutableRefObject<BigNumber>
     supsEarned: MutableRefObject<BigNumber>
 }) => {
     const walletPopoverRef = useRef(null)
     const [isWalletPopoverOpen, toggleIsWalletPopoverOpen] = useToggle()
+    const [isHideValue, setIsHideValue] = useState(localStorage.getItem("walletHide") === "true")
 
     if (!onWorldSupsRaw) {
         return (
@@ -111,7 +99,6 @@ const WalletInfoInner = ({
     return (
         <>
             <Stack
-                id="tutorial-sups"
                 direction="row"
                 alignItems="center"
                 ref={walletPopoverRef}
@@ -131,17 +118,31 @@ const WalletInfoInner = ({
                     },
                 }}
             >
-                <SvgSupToken size="1.9rem" fill={colors.yellow} sx={{ mr: ".2rem", pb: ".4rem" }} />
-                <Typography sx={{ fontFamily: fonts.nostromoBold, lineHeight: 1 }}>
-                    {onWorldSupsRaw ? supFormatterNoFixed(onWorldSupsRaw, 2) : "0.00"}
+                <SvgSupToken size="1.9rem" fill={IS_TESTING_MODE ? colors.red : colors.yellow} sx={{ mr: ".2rem", pb: 0 }} />
+                <Typography sx={{ fontFamily: fonts.nostromoBold, lineHeight: 1, whiteSpace: "nowrap" }}>
+                    {!isHideValue && <>{onWorldSupsRaw ? supFormatterNoFixed(onWorldSupsRaw, 2) : "0.00"}</>}
+                    {isHideValue && "---"}
                 </Typography>
             </Stack>
+
+            <IconButton
+                size="small"
+                sx={{ ml: "-.4rem", opacity: 0.4, ":hover": { opacity: 1 } }}
+                onClick={() => {
+                    setIsHideValue((prev) => {
+                        localStorage.setItem("walletHide", (!prev).toString())
+                        return !prev
+                    })
+                }}
+            >
+                {isHideValue ? <SvgUnhide size="1.3rem" /> : <SvgHide size="1.3rem" />}
+            </IconButton>
 
             {isWalletPopoverOpen && user && (
                 <WalletPopover
                     open={isWalletPopoverOpen}
                     sups={onWorldSupsRaw}
-                    userID={userID || ""}
+                    userID={userID}
                     transactions={transactions}
                     supsSpent={supsSpent}
                     supsEarned={supsEarned}
