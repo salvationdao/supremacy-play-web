@@ -1,4 +1,4 @@
-import { Box, Button, Stack, Typography } from "@mui/material"
+import { Box, Stack, Typography } from "@mui/material"
 import { useCallback, useState } from "react"
 import { SvgRepair } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
