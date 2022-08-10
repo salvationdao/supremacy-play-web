@@ -18,7 +18,6 @@ export const PlayerAbilityCooldownIndicator = ({ playerAbility }: PlayerAbilityC
                 if (!circleRef.current) return
                 const secondsLeft = Math.max((cooldownExpiresOn - new Date().getTime()) / 1000, 0)
                 const percentage = Math.min((secondsLeft * 100) / cooldownSeconds, 100)
-
                 circleRef.current.style.strokeDasharray = `${(circumference * percentage) / 100} ${circumference}`
             })
         }, 500)
@@ -35,7 +34,6 @@ export const PlayerAbilityCooldownIndicator = ({ playerAbility }: PlayerAbilityC
                 width: "150%",
                 height: "150%",
                 transform: "translate(-50%, -50%) rotate(-90deg)",
-                opacity: 0.6,
             }}
             className="base-timer__svg"
             viewBox="0 0 100 100"
@@ -47,7 +45,7 @@ export const PlayerAbilityCooldownIndicator = ({ playerAbility }: PlayerAbilityC
                     fill: "transparent",
                     strokeDasharray: `${(circumference * 100) / 100} ${circumference}`,
                     strokeWidth: radius * 2,
-                    stroke: "#0e1447",
+                    stroke: "#000000DD",
                     transition: "stroke-dasharray .2s ease-out",
                 }}
                 className="base-timer__path-elapsed"
