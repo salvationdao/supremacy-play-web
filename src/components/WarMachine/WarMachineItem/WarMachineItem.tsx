@@ -231,21 +231,23 @@ export const WarMachineItem = ({
                                 {isMiniMech ? "Mini Mech" : name || hash}
                             </Typography>
 
-                            <Typography
-                                variant="h6"
-                                sx={{
-                                    lineHeight: 1,
-                                    textOverflow: "ellipsis",
-                                    overflow: "hidden",
-                                    whiteSpace: "normal",
-                                    display: "-webkit-box",
-                                    overflowWrap: "anywhere",
-                                    WebkitBoxOrient: "vertical",
-                                    WebkitLineClamp: 1,
-                                }}
-                            >
-                                @{ownerUsername}
-                            </Typography>
+                            {!isMiniMech && (
+                                <Typography
+                                    variant="h6"
+                                    sx={{
+                                        lineHeight: 1,
+                                        textOverflow: "ellipsis",
+                                        overflow: "hidden",
+                                        whiteSpace: "normal",
+                                        display: "-webkit-box",
+                                        overflowWrap: "anywhere",
+                                        WebkitBoxOrient: "vertical",
+                                        WebkitLineClamp: 1,
+                                    }}
+                                >
+                                    @{ownerUsername}
+                                </Typography>
+                            )}
                         </Stack>
                     )}
 
