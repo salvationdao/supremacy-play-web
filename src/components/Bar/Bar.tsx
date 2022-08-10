@@ -70,7 +70,7 @@ export const Bar = () => {
                     background: (theme) => `linear-gradient(#FFFFFF10 26%, ${theme.factionTheme.background})`,
                     transition: `all ${DRAWER_TRANSITION_DURATION / 1000}s`,
 
-                    zIndex: siteZIndex.Popover,
+                    zIndex: siteZIndex.Bar,
                     "::-webkit-scrollbar": {
                         height: ".3rem",
                     },

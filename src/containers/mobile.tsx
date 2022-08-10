@@ -11,7 +11,7 @@ export const MobileContainer = createContainer(() => {
 
     // For displaying a mobile layout
     const isMobile = useMemo(() => {
-        return (width <= 650 && height > width) || !!navigator.maxTouchPoints
+        return width <= 650 && height > width
     }, [width, height])
 
     const isMobileHorizontal = useMemo(() => {
