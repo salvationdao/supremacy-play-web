@@ -66,6 +66,7 @@ export const UserBanForm = ({ user, open, onClose, prefillUser }: { user: User; 
 
     // When searching for player, update the dropdown list
     useEffect(() => {
+        if (search === "") return
         ;(async () => {
             toggleIsLoadingUsers(true)
             try {
