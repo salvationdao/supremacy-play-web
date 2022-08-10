@@ -1,6 +1,7 @@
 import * as THREE from "three"
 import { getRandomColor } from "../../../../../helpers"
 import { blockConfig, skins } from "./config"
+import { cover } from "./utils"
 
 export interface Dimension {
     width: number
@@ -119,17 +120,17 @@ export class Block {
             this.bottomTexture = lastBlock.bottomTexture
 
             if (!isFalling) {
-                this.cover(this.topTexture, this.dimension.width / this.dimension.depth)
-                this.cover(this.leftTexture, this.dimension.width / this.dimension.height)
-                this.cover(this.bottomTexture, this.dimension.depth / this.dimension.height)
+                cover(this.topTexture, this.dimension.width / this.dimension.depth)
+                cover(this.leftTexture, this.dimension.width / this.dimension.height)
+                cover(this.bottomTexture, this.dimension.depth / this.dimension.height)
             }
         } else {
             // loading the texture from image
             const skin = this.getRandomSkin()
             const textureLoader = new THREE.TextureLoader()
-            this.topTexture = textureLoader.load(skin.top, () => this.cover(this.topTexture, this.dimension.width / this.dimension.depth))
-            this.leftTexture = textureLoader.load(skin.left, () => this.cover(this.leftTexture, this.dimension.width / this.dimension.height))
-            this.bottomTexture = textureLoader.load(skin.bottom, () => this.cover(this.bottomTexture, this.dimension.depth / this.dimension.height))
+            this.topTexture = textureLoader.load(skin.top, () => cover(this.topTexture, this.dimension.width / this.dimension.depth))
+            this.leftTexture = textureLoader.load(skin.left, () => cover(this.leftTexture, this.dimension.width / this.dimension.height))
+            this.bottomTexture = textureLoader.load(skin.bottom, () => cover(this.bottomTexture, this.dimension.depth / this.dimension.height))
         }
 
         // define materials from texture
@@ -152,19 +153,6 @@ export class Block {
 
     getRandomSkin() {
         return skins[Math.floor(Math.random() * skins.length)]
-    }
-
-    cover(texture: THREE.Texture, aspect: number) {
-        if (!texture.image) return null
-
-        texture.matrixAutoUpdate = false
-        const imageAspect = texture.image.width / texture.image.height
-
-        if (aspect < imageAspect) {
-            texture.matrix.setUvTransform(0, 0, aspect / imageAspect, 1, 0, 0.5, 0.5)
-        } else {
-            texture.matrix.setUvTransform(0, 0, 1, imageAspect / aspect, 0, 0.5, 0.5)
-        }
     }
 
     getAxis() {

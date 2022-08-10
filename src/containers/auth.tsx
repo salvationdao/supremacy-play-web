@@ -96,6 +96,7 @@ const initialState: AuthState = {
 export const AuthContext = createContext<AuthState>(initialState)
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
+    const { isServerDown } = useSupremacy()
     const [isLoggingIn, setIsLoggingIn] = useState(true)
     const [passportPopup, setPassportPopup] = useState<Window | null>(null)
     const popupCheckInterval = useRef<NodeJS.Timer>()
@@ -158,6 +159,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     )
 
     useEffect(() => {
+        if (isServerDown) return
+
         if (!userFromPassport) {
             setIsLoggingIn(false)
             return
@@ -173,7 +176,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 setUser(resp.payload)
             })
             .finally(() => setIsLoggingIn(false))
-    }, [userFromPassport, gameserverLoginCheck, setIsLoggingIn])
+    }, [userFromPassport, gameserverLoginCheck, isServerDown, setIsLoggingIn])
 
     // Check if login in the iframe has been successful (window closed), if closed then do clean up
     useEffect(() => {
@@ -204,6 +207,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     // Fetch global features
     useEffect(() => {
         ;(async () => {
+            if (isServerDown) return
+
             try {
                 const resp = await getGlobalFeatures()
                 if (resp.error || resp.payload == null) return
@@ -212,7 +217,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 console.error(e)
             }
         })()
-    }, [getGlobalFeatures])
+    }, [getGlobalFeatures, isServerDown])
 
     useEffect(() => {
         authCheckCallback()

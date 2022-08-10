@@ -40,7 +40,6 @@ export const ProfileCard = ({ userID, user }: { userID?: string; user: User }) =
                 }
             >
                 <Stack
-                    id="tutorial-passport"
                     ref={popoverRef}
                     onClick={() => toggleIsPopoverOpen()}
                     direction="row"

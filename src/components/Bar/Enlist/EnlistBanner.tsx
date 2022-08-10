@@ -74,7 +74,6 @@ const EnlistBannerInner = ({ userID, user, battleIdentifier, getFaction, userSta
         //     }
         // >
         <Box
-            id="tutorial-enlisted"
             sx={{
                 mx: "1.2rem",
                 px: "2.24rem",
@@ -154,7 +153,7 @@ const BannerInfo = ({ title, tooltip, content, PrefixSvg }: { title: string; too
         <TooltipHelper text={tooltip}>
             <Box>
                 <Typography
-                    variant="subtitle2"
+                    variant="subtitle1"
                     sx={{
                         mb: ".56rem",
                         fontFamily: fonts.nostromoBold,
@@ -168,7 +167,7 @@ const BannerInfo = ({ title, tooltip, content, PrefixSvg }: { title: string; too
 
                 <Stack direction="row" alignItems="center" spacing=".64rem">
                     {PrefixSvg}
-                    <Typography variant="subtitle2" sx={{ fontFamily: fonts.nostromoBold, lineHeight: 1, whiteSpace: "nowrap" }}>
+                    <Typography variant="subtitle1" sx={{ fontFamily: fonts.nostromoBold, lineHeight: 1, whiteSpace: "nowrap" }}>
                         {content}
                     </Typography>
                 </Stack>

@@ -150,7 +150,6 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate, setOpeningCrate, se
                                         fontSize: enlargedView ? "1.5rem" : "1.22rem",
                                         fontFamily: fonts.nostromoBlack,
                                         span: {
-                                            fontFamily: "inherit",
                                             color: mysteryCrate.amount_sold >= mysteryCrate.amount ? colors.red : colors.neonBlue,
                                         },
                                     }}

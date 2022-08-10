@@ -17,7 +17,7 @@ export const General = ({
 }) => {
     return (
         <Stack spacing={isGridView ? ".1rem" : ".6rem"} sx={{ flexShrink: 0 }}>
-            <Typography variant="subtitle2" sx={{ fontFamily: fonts.nostromoBlack, color: colors.grey }}>
+            <Typography variant="subtitle1" sx={{ fontFamily: fonts.nostromoBlack, color: colors.grey }}>
                 {title || "INFO"}
             </Typography>
 

@@ -27,7 +27,7 @@ export const QuestionSection = ({
                             <strong> (OPTIONAL)</strong>
                         </span>
                     ) : (
-                        <span style={{ color: colors.red, fontFamily: "inherit", letterSpacing: "1px" }}> *</span>
+                        <span style={{ color: colors.red, letterSpacing: "1px" }}> *</span>
                     )}
                 </Typography>
                 {description && (

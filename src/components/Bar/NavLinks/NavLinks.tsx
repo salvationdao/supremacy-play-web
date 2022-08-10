@@ -6,7 +6,7 @@ import { ROUTES_ARRAY } from "../../../routes"
 import { colors, fonts } from "../../../theme/theme"
 
 export const NavLinks = () => {
-    const below1370 = useMediaQuery("(max-width:1370px)")
+    const below1450 = useMediaQuery("(max-width:1450px)")
     const { userID } = useAuth()
     const location = useLocation()
 
@@ -17,12 +17,12 @@ export const NavLinks = () => {
         activeTabID = r?.matchLeftDrawerID || ""
     }
 
-    if (below1370) return null
+    if (below1450) return null
 
     return (
         <Stack direction="row" alignItems="center" spacing="1.5rem" sx={{ height: "100%", mx: "2rem" }} divider={<Divider />}>
             {ROUTES_ARRAY.map((r) => {
-                if (!r.leftDrawer || !r.leftDrawer.enable || ((r.requireAuth || r.requireFaction) && !userID)) return null
+                if (!r.enable || !r.leftDrawer || !r.leftDrawer.enable || ((r.requireAuth || r.requireFaction) && !userID)) return null
                 const { id } = r
                 const { label } = r.leftDrawer
                 const navigateTo = r.path.split("/:")[0]
@@ -67,10 +67,10 @@ const NavLink = ({ isActive, label, to }: { isActive: boolean; label: string; to
                 }}
             >
                 <Typography
-                    variant="subtitle2"
+                    variant="subtitle1"
                     sx={{
                         textAlign: "center",
-                        color: isActive ? colors.offWhite : "#FFFFFF",
+                        color: isActive ? colors.neonBlue : "#FFFFFF",
                         fontFamily: isActive ? fonts.nostromoBlack : fonts.nostromoBold,
                     }}
                 >

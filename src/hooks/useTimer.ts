@@ -25,7 +25,10 @@ export const useTimer = (endTime: Date | undefined, speed: number = 1000, stopCo
         setTotalSecRemain((t) => Math.max(t - 1, 0))
         const d = moment.duration(moment(endTimeState).diff(moment()))
 
-        if (stopCountingOnEnd && d.milliseconds() < 0) return
+        if (stopCountingOnEnd && d.milliseconds() < 0) {
+            setDelay(null)
+            return
+        }
 
         const days = Math.floor(d.asDays())
         const hours = Math.floor(d.asHours()) - days * 24

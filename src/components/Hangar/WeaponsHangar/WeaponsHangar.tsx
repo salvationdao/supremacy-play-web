@@ -554,10 +554,32 @@ export const WeaponsHangar = () => {
                     >
                         {"There are no weapons found, please try again."}
                     </Typography>
+
+                    <FancyButton
+                        to={`/marketplace/weapons${location.hash}`}
+                        clipThingsProps={{
+                            clipSize: "9px",
+                            backgroundColor: theme.factionTheme.primary,
+                            border: { isFancy: true, borderColor: theme.factionTheme.primary },
+                            sx: { position: "relative", mt: "2rem" },
+                        }}
+                        sx={{ px: "1.8rem", py: ".8rem", color: theme.factionTheme.secondary }}
+                    >
+                        <Typography
+                            variant="body2"
+                            sx={{
+                                textAlign: "center",
+                                color: theme.factionTheme.secondary,
+                                fontFamily: fonts.nostromoBold,
+                            }}
+                        >
+                            GO TO MARKETPLACE
+                        </Typography>
+                    </FancyButton>
                 </Stack>
             </Stack>
         )
-    }, [loadError, weapons, isLoading, isGridView, theme.factionTheme.primary])
+    }, [loadError, weapons, isLoading, theme.factionTheme.primary, theme.factionTheme.secondary, isGridView])
 
     return (
         <Stack direction="row" sx={{ height: "100%" }}>
