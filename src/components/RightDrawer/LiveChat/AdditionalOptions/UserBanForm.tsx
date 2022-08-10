@@ -75,11 +75,13 @@ export const UserBanForm = ({ user, open, onClose, prefillUser }: { user: User; 
 
                 if (!resp) return
                 setUserDropdown(resp)
+            } catch (e) {
+                newSnackbarMessage(typeof e === "string" ? e : "Failed to load player list.", "error")
             } finally {
                 toggleIsLoadingUsers(false)
             }
         })()
-    }, [search, send, toggleIsLoadingUsers])
+    }, [search, send, toggleIsLoadingUsers, newSnackbarMessage])
 
     // When a player is selected, get the ban fee for that player
     useEffect(() => {
