@@ -10,7 +10,7 @@ import { colors, fonts, theme } from "../../theme/theme"
 import { Faction, FeatureName, UserRank } from "../../types"
 import { ClipThing } from "../Common/ClipThing"
 import { PageHeader } from "../Common/PageHeader"
-import { ProfileAvatar } from "./avatar/AvatarSelect"
+import { ProfileAvatar } from "./Avatar/AvatarSelect"
 import { AboutMe } from "./ProfileAboutMe"
 import { ProfileMechHistory } from "./ProfileBattleHistory"
 import { Username } from "./ProfileUsername"
@@ -126,7 +126,7 @@ export const PlayerProfilePage = () => {
                 setUsername(resp)
                 newSnackbarMessage("username updated successfully.", "success")
             } catch (e) {
-                let errorMessage = ""
+                let errorMessage = "Failed to update username, try again or contact support."
                 if (typeof e === "string") {
                     errorMessage = e
                 } else if (e instanceof Error) {
@@ -150,7 +150,7 @@ export const PlayerProfilePage = () => {
                 setAvatar(resp)
                 newSnackbarMessage("avatar updated successfully.", "success")
             } catch (e) {
-                let errorMessage = ""
+                let errorMessage = "Failed to update avatar, try again or contact support."
                 if (typeof e === "string") {
                     errorMessage = e
                 } else if (e instanceof Error) {
@@ -173,7 +173,7 @@ export const PlayerProfilePage = () => {
                     newSnackbarMessage("avatar deleted successfully.", "success")
                 }
             } catch (e) {
-                let errorMessage = ""
+                let errorMessage = "Failed to update avatar, try again or contact support."
                 if (typeof e === "string") {
                     errorMessage = e
                 } else if (e instanceof Error) {
@@ -196,7 +196,7 @@ export const PlayerProfilePage = () => {
                 setAboutMe(resp.about_me)
                 newSnackbarMessage("about me updated successfully.", "success")
             } catch (e) {
-                let errorMessage = ""
+                let errorMessage = "Failed to update about me, try again or contact support."
                 if (typeof e === "string") {
                     errorMessage = e
                 } else if (e instanceof Error) {
@@ -222,7 +222,7 @@ export const PlayerProfilePage = () => {
                 setAvatar(resp.avatar)
                 setLoading(false)
             } catch (e) {
-                let errorMessage = ""
+                let errorMessage = "Failed to fetch profile, please try again or contact support"
                 if (typeof e === "string") {
                     errorMessage = e
                 } else if (e instanceof Error) {
@@ -309,11 +309,11 @@ export const PlayerProfilePage = () => {
                                         playerID={profile.player.id}
                                         avatarID={avatar?.id || ""}
                                         isOwner={isMe}
-                                        updateAvatar={async (avatar_id: string, isCustom: boolean) => {
-                                            updateAvatar(avatar_id, isCustom)
+                                        updateAvatar={async (avatarID: string, isCustom: boolean) => {
+                                            updateAvatar(avatarID, isCustom)
                                         }}
-                                        deleteCustomAvatar={async (avatar_id: string) => {
-                                            deleteCustomAvatar(avatar_id)
+                                        deleteCustomAvatar={async (avatarID: string) => {
+                                            deleteCustomAvatar(avatarID)
                                         }}
                                         isCustom={!!avatar?.is_custom}
                                         avatarURL={avatar?.avatar_url || ""}

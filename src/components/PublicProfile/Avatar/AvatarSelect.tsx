@@ -485,8 +485,8 @@ export const ProfileAvatar = ({
                     <Box
                         sx={{
                             position: "absolute",
-                            height: "21rem",
-                            width: "21rem",
+                            height: "100%",
+                            width: "100%",
                             zIndex: 5,
                             backgroundColor: "black",
                             opacity: "0",
