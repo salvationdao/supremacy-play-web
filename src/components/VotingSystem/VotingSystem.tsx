@@ -25,9 +25,9 @@ export const VotingSystem = () => {
             minPosX: 0,
             minPosY: 0,
             // Size limits
-            minWidth: 360,
+            minWidth: 330,
             // minHeight: 168,
-            maxWidth: 400,
+            maxWidth: 360,
             // maxHeight: 900,
             // Others
             infoTooltipText: "Vote for game abilities and fight for your Faction!",
@@ -44,7 +44,8 @@ export const VotingSystem = () => {
                 <MoveableResizable config={config}>
                     <Box
                         sx={{
-                            maxHeight: "100vh",
+                            // maxWidth: isMobile ? config.minWidth : "unset",
+                            maxHeight: "90vh",
                             overflowY: "auto",
                             overflowX: "hidden",
                             ml: "1.9rem",
@@ -65,7 +66,7 @@ export const VotingSystem = () => {
                             },
                         }}
                     >
-                        <Stack spacing="1rem" sx={{ direction: "ltr", pt: ".4rem", pb: "1.2rem", minWidth: 360 }}>
+                        <Stack spacing="1rem" sx={{ direction: "ltr", pt: ".4rem", pb: "1.2rem" }}>
                             <BattleAbilityItem key={factionID} />
                             <PlayerAbilities />
                         </Stack>
