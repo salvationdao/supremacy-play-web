@@ -10,10 +10,18 @@ export const MobileContainer = createContainer(() => {
     const [additionalTabs, setAdditionalTabs] = useState<HashRouteStruct[]>([])
 
     // For displaying a mobile layout
-    const isMobile = useMemo(() => width <= 650 && height > width, [width, height])
+    const isMobile = useMemo(() => {
+        return (width <= 650 && height > width) || !!navigator.maxTouchPoints
+    }, [width, height])
+
+    const isMobileHorizontal = useMemo(() => {
+        return isMobile && !!window.screen.orientation.angle
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isMobile, width, height])
 
     return {
         isMobile,
+        isMobileHorizontal,
         isNavOpen,
         setIsNavOpen,
         additionalTabs,

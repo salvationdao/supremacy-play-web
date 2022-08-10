@@ -6,7 +6,7 @@ import { colors, fonts } from "../../../theme/theme"
 import { User } from "../../../types"
 import { Player } from "../../Common/Player"
 
-export const PlayerItem = ({ player, user, isActive }: { player: User; user: User; isActive?: boolean }) => {
+export const PlayerItem = ({ player, isActive }: { player: User; isActive?: boolean }) => {
     const theme = useTheme()
     const [banModalOpen, toggleBanModalOpen] = useToggle()
 
@@ -51,7 +51,6 @@ export const PlayerItem = ({ player, user, isActive }: { player: User; user: Use
 
             {banModalOpen && (
                 <UserBanForm
-                    user={user}
                     open={banModalOpen}
                     onClose={() => toggleBanModalOpen(false)}
                     prefillUser={{
