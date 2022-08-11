@@ -87,7 +87,9 @@ export const LeaderboardSelect = ({
                             }}
                             sx={{ "&:hover": { backgroundColor: "#FFFFFF20" } }}
                         >
-                            <Typography textTransform="uppercase">{x.label}</Typography>
+                            <Typography textTransform="uppercase" sx={{ fontWeight: "fontWeightBold", color: secondaryColor }}>
+                                {x.label}
+                            </Typography>
                         </MenuItem>
                     )
                 })}

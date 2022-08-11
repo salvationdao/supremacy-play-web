@@ -67,7 +67,9 @@ export const RoundSelect = ({
                             }}
                             sx={{ "&:hover": { backgroundColor: "#FFFFFF20" } }}
                         >
-                            <Typography textTransform="uppercase">ROUND #{x.round_number}</Typography>
+                            <Typography textTransform="uppercase" sx={{ fontWeight: "fontWeightBold", color: secondaryColor }}>
+                                ROUND #{x.round_number}
+                            </Typography>
                         </MenuItem>
                     )
                 })}

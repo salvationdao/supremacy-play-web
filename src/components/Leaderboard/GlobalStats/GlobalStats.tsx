@@ -93,7 +93,7 @@ export const GlobalStats = () => {
                         imageUrl={Gabs}
                     ></PageHeader>
 
-                    <Stack direction="row" alignItems="center" sx={{ p: ".8rem 1.8rem" }}>
+                    <Stack spacing="2.6rem" direction="row" alignItems="center" sx={{ p: ".8rem 1.8rem" }}>
                         <Stack spacing="1rem" direction="row" alignItems="center">
                             <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack }}>
                                 LEADERBOARD:
