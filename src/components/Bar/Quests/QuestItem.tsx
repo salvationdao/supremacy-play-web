@@ -14,7 +14,7 @@ export const QuestItem = ({ questStat, progress }: { questStat: QuestStat; progr
                 alignItems="center"
                 spacing=".3rem"
                 sx={{
-                    p: ".6rem .5rem",
+                    p: ".8rem .5rem",
                     pr: "1.6rem",
                     borderRadius: 1,
                     backgroundColor: `${colors.purple}12`,
