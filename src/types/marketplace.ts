@@ -1,4 +1,4 @@
-import {Collection, Images} from "./assets"
+import { Collection, Images } from "./assets"
 
 export enum ItemType {
     WarMachine = "WAR_MACHINE",
