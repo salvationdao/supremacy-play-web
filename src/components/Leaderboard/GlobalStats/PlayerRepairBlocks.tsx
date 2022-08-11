@@ -50,8 +50,8 @@ export const PlayerRepairBlocks = ({ selectedRound }: { selectedRound?: Leaderbo
 
     return (
         <CoolTable
-            title="MOST REPAIRED BLOCKS"
-            tableHeadings={["TOP 100", "PLAYER", "FACTION", "REPAIRED BLOCKS"]}
+            title="MOST BLOCKS REPAIRED"
+            tableHeadings={["TOP 100", "PLAYER", "FACTION", "BLOCKS REPAIRED"]}
             alignments={["center", "left", "left", "center"]}
             widths={["19rem", "auto", "auto", "23rem"]}
             items={rankItems}

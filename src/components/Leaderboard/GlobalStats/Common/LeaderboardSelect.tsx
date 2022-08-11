@@ -22,7 +22,7 @@ export const leaderboardTypeOptions: {
     { label: "Top Player Mech Kills", value: LeaderboardTypeEnum.PlayerMechKills },
     { label: "Top Player Ability Triggers", value: LeaderboardTypeEnum.PlayerAbilityTriggers },
     { label: "Top Player Mechs Owned", value: LeaderboardTypeEnum.PlayerMechsOwned },
-    { label: "Top Player Repair Blocks", value: LeaderboardTypeEnum.PlayerRepairBlocks },
+    { label: "Top Player Blocks Repaired", value: LeaderboardTypeEnum.PlayerRepairBlocks },
 ]
 
 export const LeaderboardSelect = ({
