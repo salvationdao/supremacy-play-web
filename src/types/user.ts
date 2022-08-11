@@ -87,24 +87,6 @@ export interface Faction {
     description: string
 }
 
-export interface MultiplierUpdateResp {
-    battles: BattleMultipliers[]
-}
-
-export interface BattleMultipliers {
-    battle_number: number
-    total_multipliers: number
-    multipliers: Multiplier[]
-}
-
-export interface Multiplier {
-    key: string
-    value: string
-    description: string
-    is_multiplicative: boolean
-    battle_number: number
-}
-
 export interface UserStat {
     id: string
     view_battle_count: number

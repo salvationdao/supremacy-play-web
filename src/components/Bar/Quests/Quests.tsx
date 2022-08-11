@@ -1,21 +1,12 @@
-import { Badge, Box, IconButton, Modal, Stack } from "@mui/material"
-import { ReactNode, useCallback, useEffect, useState } from "react"
-import { SvgClose, SvgMail } from "../../../assets"
+import { IconButton, Stack } from "@mui/material"
+import { useRef } from "react"
+import { SvgMail } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { useToggle } from "../../../hooks"
-import { useGameServerCommandsUser, useGameServerSubscriptionUser } from "../../../hooks/useGameServer"
+import { useGameServerSubscriptionUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
-import { siteZIndex } from "../../../theme/theme"
-import { SystemMessage, SystemMessageDataType } from "../../../types"
 import { QuestStat } from "../../../types/user"
-import { ClipThing } from "../../Common/ClipThing"
-import { MessagesComposeView } from "./MessagesComposeView/MessagesComposeView"
-import { MessagesMainView } from "./MessagesMainView/MessagesMainView"
 import { QuestsPopover } from "./QuestsPopover"
-
-export interface SystemMessageDisplayable extends SystemMessage {
-    icon: ReactNode
-}
 
 export const Quests = () => {
     const theme = useTheme()
@@ -37,12 +28,14 @@ export const Quests = () => {
                     height: "100%",
                 }}
             >
-                        <IconButton onClick={() => togglePopoverOpen(true)}>
-                            <SvgMail size="2.2rem" />
-                        </IconButton>
+                <IconButton onClick={() => togglePopoverOpen(true)}>
+                    <SvgMail size="2.2rem" />
+                </IconButton>
             </Stack>
-			
-			<QuestsPopover popoverRef={popoverRef} onClose={} />
+
+            {questStats && popoverOpen && (
+                <QuestsPopover open={popoverOpen} popoverRef={popoverRef} questStats={questStats} onClose={() => togglePopoverOpen(false)} />
+            )}
         </>
     )
 }

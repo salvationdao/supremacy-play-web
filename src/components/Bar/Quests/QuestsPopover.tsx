@@ -1,27 +1,25 @@
 import { Box, IconButton, Popover, Stack, Typography } from "@mui/material"
 import { MutableRefObject, useEffect } from "react"
-import { ClipThing } from "../../.."
-import { SvgClose } from "../../../../assets"
-import { useTheme } from "../../../../containers/theme"
-import { useToggle } from "../../../../hooks"
-import { fonts, siteZIndex } from "../../../../theme/theme"
-import { BattleMultipliers } from "../../../../types"
-import { MultipliersBattle } from "./MultipliersBattle"
+import { ClipThing } from "../.."
+import { SvgClose } from "../../../assets"
+import { useTheme } from "../../../containers/theme"
+import { useToggle } from "../../../hooks"
+import { fonts, siteZIndex } from "../../../theme/theme"
+import { QuestStat } from "../../../types"
 
 export const QuestsPopover = ({
     open,
-    multipliers,
+    questStats,
     onClose,
     popoverRef,
 }: {
     open: boolean
-    multipliers: BattleMultipliers[]
+    questStats: QuestStat[]
     onClose: () => void
     popoverRef: MutableRefObject<null>
 }) => {
     const theme = useTheme()
     const [localOpen, toggleLocalOpen] = useToggle(open)
-    const actualMultipliers = multipliers.filter((m) => m.multipliers.length > 0)
 
     useEffect(() => {
         if (!localOpen) {
@@ -67,7 +65,7 @@ export const QuestsPopover = ({
                 sx={{ height: "100%" }}
             >
                 <Stack spacing="1.2rem" sx={{ position: "relative", width: "35rem", px: "2rem", py: "1.4rem" }}>
-                    {actualMultipliers && actualMultipliers.length > 0 ? (
+                    {questStats && questStats.length > 0 ? (
                         <Box>
                             <Typography gutterBottom sx={{ fontFamily: fonts.nostromoBlack, color: theme.factionTheme.primary }}>
                                 ACTIVE MULTIPLIERS
@@ -78,9 +76,9 @@ export const QuestsPopover = ({
                             </Typography>
 
                             <Stack spacing=".4rem">
-                                {actualMultipliers.map((bm) => {
+                                {/* {actualMultipliers.map((bm) => {
                                     return <MultipliersBattle key={`bmv-key-${bm.battle_number}`} bm={bm} />
-                                })}
+                                })} */}
                             </Stack>
                         </Box>
                     ) : (
