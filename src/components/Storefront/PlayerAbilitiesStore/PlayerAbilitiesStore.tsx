@@ -118,24 +118,6 @@ export const PlayerAbilitiesStore = () => {
     }, [nextRefreshTime])
 
     const content = useMemo(() => {
-        if (!userID) {
-            return (
-                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
-                    <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
-                        <Typography
-                            sx={{
-                                color: colors.red,
-                                fontFamily: fonts.nostromoBold,
-                                textAlign: "center",
-                            }}
-                        >
-                            You must be logged in to view player abilities on sale.
-                        </Typography>
-                    </Stack>
-                </Stack>
-            )
-        }
-
         if (!isLoaded) {
             return (
                 <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
@@ -209,7 +191,7 @@ export const PlayerAbilitiesStore = () => {
                 </Stack>
             </Stack>
         )
-    }, [userID, isLoaded, saleAbilities, theme.factionTheme.primary, priceMap, ownedAbilities, availability])
+    }, [isLoaded, saleAbilities, theme.factionTheme.primary, priceMap, ownedAbilities, availability])
 
     return (
         <ClipThing
