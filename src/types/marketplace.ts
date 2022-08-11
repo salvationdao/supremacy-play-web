@@ -1,4 +1,4 @@
-import { Collection } from "./assets"
+import { Collection, Images } from "./assets"
 
 export enum ItemType {
     WarMachine = "WAR_MACHINE",
@@ -38,12 +38,9 @@ export interface MarketUser {
     faction_id: string
 }
 
-export interface MarketKeycard {
+export interface MarketKeycard extends Images {
     id: string
     label: string
-    image_url: string
-    animation_url: string
-    card_animation_url: string
     description: string
     collection: string
     keycard_token_id: string
@@ -52,32 +49,22 @@ export interface MarketKeycard {
     created_at: Date
 }
 
-export interface MarketCrate {
+export interface MarketCrate extends Images {
     id: string
     label: string
     description: string
 }
 
-export interface MarketMech {
+export interface MarketMech extends Images {
     id: string
     name: string
     label: string
-    avatar_url: string
-    image_url: string
-    large_image_url: string
-    animation_url: string
-    large_animation_url: string
 }
 
-export interface MarketWeapon {
+export interface MarketWeapon extends Images {
     id: string
     label: string
     weapon_type: string
-    avatar_url: string
-    image_url: string
-    large_image_url: string
-    animation_url: string
-    large_animation_url: string
 }
 
 export interface MarketplaceBuyAuctionItem {
