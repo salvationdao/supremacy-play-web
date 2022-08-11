@@ -72,7 +72,7 @@ export const WalletPopover = ({
                 clipSize="10px"
                 border={{
                     borderColor: theme.factionTheme.primary,
-                    borderThickness: ".3rem",
+                    borderThickness: ".2rem",
                 }}
                 backgroundColor={theme.factionTheme.background}
                 sx={{ height: "100%" }}
@@ -159,7 +159,7 @@ export const WalletPopover = ({
                         </Box>
                     )}
 
-                    <IconButton size="small" onClick={() => toggleLocalOpen(false)} sx={{ position: "absolute", top: "-1rem", right: ".2rem" }}>
+                    <IconButton size="small" onClick={() => toggleLocalOpen(false)} sx={{ position: "absolute", top: "-2rem", right: ".2rem" }}>
                         <SvgClose size="2.6rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
                     </IconButton>
                 </Stack>

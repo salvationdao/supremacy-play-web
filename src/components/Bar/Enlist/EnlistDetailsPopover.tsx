@@ -52,7 +52,7 @@ export const EnlistDetailsPopover = ({ popoverRef, open, onClose, faction }: Enl
                     clipSize="10px"
                     border={{
                         borderColor: primary_color,
-                        borderThickness: ".3rem",
+                        borderThickness: ".2rem",
                     }}
                     backgroundColor="#101019"
                 >

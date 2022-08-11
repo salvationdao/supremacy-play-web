@@ -6,6 +6,7 @@ import { useTheme } from "../../../containers/theme"
 import { useToggle } from "../../../hooks"
 import { fonts, siteZIndex } from "../../../theme/theme"
 import { QuestStat } from "../../../types"
+import { QuestItem } from "./QuestItem"
 
 export const QuestsPopover = ({
     open,
@@ -38,11 +39,11 @@ export const QuestsPopover = ({
             onClose={() => toggleLocalOpen(false)}
             anchorOrigin={{
                 vertical: "bottom",
-                horizontal: "right",
+                horizontal: "center",
             }}
             transformOrigin={{
                 vertical: "top",
-                horizontal: "right",
+                horizontal: "center",
             }}
             sx={{
                 mt: ".8rem",
@@ -57,44 +58,27 @@ export const QuestsPopover = ({
             <ClipThing
                 clipSize="10px"
                 border={{
-                    isFancy: true,
                     borderColor: theme.factionTheme.primary,
-                    borderThickness: ".3rem",
+                    borderThickness: ".2rem",
                 }}
                 backgroundColor={theme.factionTheme.background}
                 sx={{ height: "100%" }}
             >
-                <Stack spacing="1.2rem" sx={{ position: "relative", width: "35rem", px: "2rem", py: "1.4rem" }}>
-                    {questStats && questStats.length > 0 ? (
-                        <Box>
-                            <Typography gutterBottom sx={{ fontFamily: fonts.nostromoBlack, color: theme.factionTheme.primary }}>
-                                ACTIVE MULTIPLIERS
-                            </Typography>
+                <Box sx={{ position: "relative", width: "38rem", px: "2rem", py: "1.4rem" }}>
+                    <Typography gutterBottom sx={{ fontFamily: fonts.nostromoBlack, color: theme.factionTheme.primary }}>
+                        YOUR QUESTS
+                    </Typography>
 
-                            <Typography sx={{ mb: ".9rem", opacity: 0.7 }}>
-                                The below are the active multipliers from each battle that are currently applied to your account.
-                            </Typography>
+                    <Stack spacing=".4rem">
+                        {questStats.map((qs) => {
+                            return <QuestItem key={`qs-key-${qs.id}`} questStat={qs} />
+                        })}
+                    </Stack>
 
-                            <Stack spacing=".4rem">
-                                {/* {actualMultipliers.map((bm) => {
-                                    return <MultipliersBattle key={`bmv-key-${bm.battle_number}`} bm={bm} />
-                                })} */}
-                            </Stack>
-                        </Box>
-                    ) : (
-                        <Typography>
-                            <i>
-                                You don&apos;t have any multipliers.
-                                <br />
-                                Participate in battles to earn multipliers.
-                            </i>
-                        </Typography>
-                    )}
-
-                    <IconButton size="small" onClick={() => toggleLocalOpen(false)} sx={{ position: "absolute", top: "-1rem", right: ".2rem" }}>
+                    <IconButton size="small" onClick={() => toggleLocalOpen(false)} sx={{ position: "absolute", top: "-2rem", right: ".2rem" }}>
                         <SvgClose size="1.9rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
                     </IconButton>
-                </Stack>
+                </Box>
             </ClipThing>
         </Popover>
     )

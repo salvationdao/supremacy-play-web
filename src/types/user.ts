@@ -160,4 +160,5 @@ export interface QuestStat {
     key: QuestKey
     description: string
     obtained: boolean
+    expires_at: Date
 }

@@ -1,15 +1,14 @@
-import { IconButton, Stack } from "@mui/material"
+import { CircularProgress, Divider, Stack, Typography } from "@mui/material"
 import { useRef } from "react"
-import { SvgMail } from "../../../assets"
-import { useTheme } from "../../../containers/theme"
+import { SvgQuest } from "../../../assets"
 import { useToggle } from "../../../hooks"
 import { useGameServerSubscriptionUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
+import { colors, fonts } from "../../../theme/theme"
 import { QuestStat } from "../../../types/user"
 import { QuestsPopover } from "./QuestsPopover"
 
 export const Quests = () => {
-    const theme = useTheme()
     const popoverRef = useRef(null)
     const [popoverOpen, togglePopoverOpen] = useToggle(false)
 
@@ -18,19 +17,62 @@ export const Quests = () => {
         key: GameServerKeys.SubPlayerQuestStats,
     })
 
+    if (!questStats) {
+        return (
+            <Stack alignItems="center" sx={{ width: "10rem" }}>
+                <CircularProgress size="1.8rem" sx={{ color: colors.purple }} />
+            </Stack>
+        )
+    }
+
     return (
         <>
             <Stack
                 direction="row"
                 alignItems="center"
                 sx={{
-                    mx: "1.2rem",
+                    mx: "1rem",
                     height: "100%",
                 }}
             >
-                <IconButton onClick={() => togglePopoverOpen(true)}>
-                    <SvgMail size="2.2rem" />
-                </IconButton>
+                <Stack
+                    direction="row"
+                    alignItems="center"
+                    spacing=".9rem"
+                    ref={popoverRef}
+                    onClick={() => togglePopoverOpen()}
+                    sx={{
+                        mr: ".3rem",
+                        px: ".7rem",
+                        py: ".6rem",
+                        cursor: "pointer",
+                        borderRadius: 1,
+                        backgroundColor: popoverOpen ? "#FFFFFF12" : "unset",
+                        ":hover": {
+                            backgroundColor: "#FFFFFF12",
+                        },
+                        ":active": {
+                            opacity: 0.8,
+                        },
+                    }}
+                >
+                    <SvgQuest size="1.9rem" fill={colors.purple} />
+                    <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBold, lineHeight: 1, whiteSpace: "nowrap" }}>
+                        {questStats.filter((qs) => qs.obtained).length}/{questStats.length}
+                    </Typography>
+                </Stack>
+
+                <Divider
+                    orientation="vertical"
+                    flexItem
+                    sx={{
+                        height: "2.3rem",
+                        my: "auto !important",
+                        ml: "1.7rem",
+                        borderColor: "#494949",
+                        borderRightWidth: 1.6,
+                    }}
+                />
             </Stack>
 
             {questStats && popoverOpen && (
