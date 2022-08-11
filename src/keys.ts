@@ -162,6 +162,7 @@ export enum GameServerKeys {
     PlayerProfileCustomAvatarDelete = "PLAYER:PROFILE:CUSTOM_AVATAR:DELETE",
 
     // Leaderboard
+    GetLeaderboardRounds = "LEADERBOARD:ROUNDS",
     GetPlayerBattlesSpectated = "LEADERBOARD:PLAYER:BATTLE:SPECTATED",
     GetPlayerMechSurvives = "LEADERBOARD:PLAYER:MECH:SURVIVES",
     GetPlayerMechKills = "LEADERBOARD:PLAYER:MECH:KILLS",

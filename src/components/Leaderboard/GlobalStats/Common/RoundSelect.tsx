@@ -1,36 +1,16 @@
 import { MenuItem, Select, Stack, Typography } from "@mui/material"
 import { useTheme } from "../../../../containers/theme"
 import { colors } from "../../../../theme/theme"
+import { LeaderboardRound } from "../../../../types"
 
-export enum LeaderboardTypeEnum {
-    PlayerAbilityKills = "PlayerAbilityKills",
-    PlayerBattlesSpectated = "PlayerBattlesSpectated",
-    PlayerMechSurvives = "PlayerMechSurvives",
-    PlayerMechKills = "PlayerMechKills",
-    PlayerAbilityTriggers = "PlayerAbilityTriggers",
-    PlayerMechsOwned = "PlayerMechsOwned",
-    PlayerRepairBlocks = "PlayerRepairBlocks",
-}
-
-export const leaderboardTypeOptions: {
-    label: string
-    value: LeaderboardTypeEnum
-}[] = [
-    { label: "Top Player Ability Kills", value: LeaderboardTypeEnum.PlayerAbilityKills },
-    { label: "Top Player Battles Spectated", value: LeaderboardTypeEnum.PlayerBattlesSpectated },
-    { label: "Top Player Mech Survives", value: LeaderboardTypeEnum.PlayerMechSurvives },
-    { label: "Top Player Mech Kills", value: LeaderboardTypeEnum.PlayerMechKills },
-    { label: "Top Player Ability Triggers", value: LeaderboardTypeEnum.PlayerAbilityTriggers },
-    { label: "Top Player Mechs Owned", value: LeaderboardTypeEnum.PlayerMechsOwned },
-    { label: "Top Player Repair Blocks", value: LeaderboardTypeEnum.PlayerRepairBlocks },
-]
-
-export const LeaderboardSelect = ({
-    leaderboardType,
-    setLeaderboardType,
+export const RoundSelect = ({
+    roundOptions,
+    selectedRound,
+    setSelectedRound,
 }: {
-    leaderboardType: LeaderboardTypeEnum
-    setLeaderboardType: React.Dispatch<React.SetStateAction<LeaderboardTypeEnum>>
+    roundOptions: LeaderboardRound[]
+    selectedRound: number
+    setSelectedRound: React.Dispatch<React.SetStateAction<number>>
 }) => {
     const theme = useTheme()
 
@@ -58,7 +38,7 @@ export const LeaderboardSelect = ({
                     },
                 }}
                 displayEmpty
-                value={leaderboardType}
+                value={selectedRound}
                 MenuProps={{
                     variant: "menu",
                     sx: {
@@ -77,17 +57,17 @@ export const LeaderboardSelect = ({
                     },
                 }}
             >
-                {leaderboardTypeOptions.map((x, i) => {
+                {roundOptions.map((x, i) => {
                     return (
                         <MenuItem
-                            key={x.value + i}
-                            value={x.value}
+                            key={x.id + i}
+                            value={x.round_number}
                             onClick={() => {
-                                setLeaderboardType(x.value)
+                                setSelectedRound(x.round_number)
                             }}
                             sx={{ "&:hover": { backgroundColor: "#FFFFFF20" } }}
                         >
-                            <Typography textTransform="uppercase">{x.label}</Typography>
+                            <Typography textTransform="uppercase">ROUND #{x.round_number}</Typography>
                         </MenuItem>
                     )
                 })}

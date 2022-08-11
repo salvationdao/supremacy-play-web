@@ -1,11 +1,15 @@
 import { Stack, Typography } from "@mui/material"
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { ClipThing } from "../.."
 import { Gabs } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
+import { useGameServerCommands } from "../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../keys"
 import { fonts } from "../../../theme/theme"
+import { LeaderboardRound } from "../../../types"
 import { PageHeader } from "../../Common/PageHeader"
 import { LeaderboardSelect, LeaderboardTypeEnum } from "./Common/LeaderboardSelect"
+import { RoundSelect } from "./Common/RoundSelect"
 import { PlayerAbilityKills } from "./PlayerAbilityKills"
 import { PlayerAbilityTriggers } from "./PlayerAbilityTriggers"
 import { PlayerBattlesSpectated } from "./PlayerBattlesSpectated"
@@ -16,7 +20,24 @@ import { PlayerRepairBlocks } from "./PlayerRepairBlocks"
 
 export const GlobalStats = () => {
     const theme = useTheme()
+    const { send } = useGameServerCommands("/public/commander")
+    const [roundOptions, setRoundOptions] = useState<LeaderboardRound[]>()
     const [leaderboardType, setLeaderboardType] = useState<LeaderboardTypeEnum>(LeaderboardTypeEnum.PlayerAbilityKills)
+    const [selectedRound, setSelectedRound] = useState<number>(1)
+
+    useEffect(() => {
+        ;(async () => {
+            try {
+                const resp = await send<LeaderboardRound[]>(GameServerKeys.GetLeaderboardRounds)
+
+                if (!resp || resp.length <= 0) return
+                setRoundOptions(resp)
+                setSelectedRound(resp[0].round_number)
+            } catch (err) {
+                console.error(err)
+            }
+        })()
+    }, [send])
 
     const leaderboard = useMemo(() => {
         switch (leaderboardType) {
@@ -70,11 +91,25 @@ export const GlobalStats = () => {
                             </Typography>
                         }
                         imageUrl={Gabs}
-                    >
-                        <Stack direction="row" alignItems="center" sx={{ ml: "auto !important", pr: "2rem" }}>
+                    ></PageHeader>
+
+                    <Stack direction="row" alignItems="center" sx={{ p: ".8rem 1.8rem" }}>
+                        <Stack spacing="1rem" direction="row" alignItems="center">
+                            <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack }}>
+                                LEADERBOARD:
+                            </Typography>
                             <LeaderboardSelect leaderboardType={leaderboardType} setLeaderboardType={setLeaderboardType} />
                         </Stack>
-                    </PageHeader>
+
+                        {roundOptions && (
+                            <Stack spacing="1rem" direction="row" alignItems="center">
+                                <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack }}>
+                                    ROUND:
+                                </Typography>
+                                <RoundSelect roundOptions={roundOptions} selectedRound={selectedRound} setSelectedRound={setSelectedRound} />
+                            </Stack>
+                        )}
+                    </Stack>
 
                     <Stack spacing="2rem" sx={{ pb: "1rem", flex: 1 }}>
                         {leaderboard}

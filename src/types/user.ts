@@ -168,3 +168,10 @@ export interface QuestProgress {
     current: number
     goal: number
 }
+
+export interface LeaderboardRound {
+    id: string
+    started_at: Date
+    end_at: Date
+    round_number: number
+}
