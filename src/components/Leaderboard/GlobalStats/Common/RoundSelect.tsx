@@ -1,4 +1,5 @@
 import { MenuItem, Select, Stack, Typography } from "@mui/material"
+import { useMemo } from "react"
 import { useTheme } from "../../../../containers/theme"
 import { colors } from "../../../../theme/theme"
 import { LeaderboardRound } from "../../../../types"
@@ -9,10 +10,16 @@ export const RoundSelect = ({
     setSelectedRound,
 }: {
     roundOptions: LeaderboardRound[]
-    selectedRound: number
-    setSelectedRound: React.Dispatch<React.SetStateAction<number>>
+    selectedRound?: LeaderboardRound
+    setSelectedRound: React.Dispatch<React.SetStateAction<LeaderboardRound | undefined>>
 }) => {
     const theme = useTheme()
+
+    const label = useMemo(() => {
+        const selected = roundOptions.find((i) => i.id === selectedRound?.id)
+        if (!selected) return null
+        return `${selected.name} (#${selected.round_number})`
+    }, [roundOptions, selectedRound?.id])
 
     const primaryColor = theme.factionTheme.primary
     const secondaryColor = theme.factionTheme.secondary
@@ -56,19 +63,31 @@ export const RoundSelect = ({
                         },
                     },
                 }}
+                renderValue={() => {
+                    return (
+                        <Typography textTransform="uppercase" sx={{ fontWeight: "fontWeightBold", color: secondaryColor }}>
+                            {label || "ALL TIME"}
+                        </Typography>
+                    )
+                }}
             >
+                <MenuItem value="" onClick={() => setSelectedRound(undefined)}>
+                    <Typography textTransform="uppercase" sx={{ fontWeight: "fontWeightBold", color: secondaryColor }}>
+                        ALL TIME
+                    </Typography>
+                </MenuItem>
                 {roundOptions.map((x, i) => {
                     return (
                         <MenuItem
                             key={x.id + i}
-                            value={x.round_number}
+                            value={x.id}
                             onClick={() => {
-                                setSelectedRound(x.round_number)
+                                setSelectedRound(x)
                             }}
                             sx={{ "&:hover": { backgroundColor: "#FFFFFF20" } }}
                         >
                             <Typography textTransform="uppercase" sx={{ fontWeight: "fontWeightBold", color: secondaryColor }}>
-                                ROUND #{x.round_number}
+                                {x.name} (#{x.round_number})
                             </Typography>
                         </MenuItem>
                     )

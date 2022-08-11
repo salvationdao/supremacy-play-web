@@ -6,7 +6,7 @@ import { useTheme } from "../../../containers/theme"
 import { useGameServerCommands } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { User } from "../../../types"
+import { LeaderboardRound, User } from "../../../types"
 import { CoolTable } from "../../Common/CoolTable"
 import { Player } from "../../Common/Player"
 
@@ -15,7 +15,7 @@ interface RankItem {
     total_block_repaired: number
 }
 
-export const PlayerRepairBlocks = () => {
+export const PlayerRepairBlocks = ({ selectedRound }: { selectedRound?: LeaderboardRound }) => {
     const theme = useTheme()
     const { userID } = useAuth()
     const { getFaction } = useSupremacy()
@@ -32,7 +32,7 @@ export const PlayerRepairBlocks = () => {
             try {
                 setIsLoading(true)
 
-                const resp = await send<RankItem[]>(GameServerKeys.GetPlayerRepairBlocks)
+                const resp = await send<RankItem[]>(GameServerKeys.GetPlayerRepairBlocks, { round_id: selectedRound?.id })
 
                 if (!resp) return
                 setLoadError(undefined)
@@ -46,7 +46,7 @@ export const PlayerRepairBlocks = () => {
                 setIsLoading(false)
             }
         })()
-    }, [newSnackbarMessage, send])
+    }, [newSnackbarMessage, selectedRound?.id, send])
 
     return (
         <CoolTable

@@ -23,8 +23,9 @@ export const GlobalStats = () => {
     const { send } = useGameServerCommands("/public/commander")
     const [roundOptions, setRoundOptions] = useState<LeaderboardRound[]>()
     const [leaderboardType, setLeaderboardType] = useState<LeaderboardTypeEnum>(LeaderboardTypeEnum.PlayerAbilityKills)
-    const [selectedRound, setSelectedRound] = useState<number>(1)
+    const [selectedRound, setSelectedRound] = useState<LeaderboardRound>()
 
+    console.log(selectedRound)
     useEffect(() => {
         ;(async () => {
             try {
@@ -32,7 +33,7 @@ export const GlobalStats = () => {
 
                 if (!resp || resp.length <= 0) return
                 setRoundOptions(resp)
-                setSelectedRound(resp[0].round_number)
+                setSelectedRound(resp[0])
             } catch (err) {
                 console.error(err)
             }
@@ -42,24 +43,24 @@ export const GlobalStats = () => {
     const leaderboard = useMemo(() => {
         switch (leaderboardType) {
             case LeaderboardTypeEnum.PlayerAbilityKills:
-                return <PlayerAbilityKills />
+                return <PlayerAbilityKills selectedRound={selectedRound} />
             case LeaderboardTypeEnum.PlayerBattlesSpectated:
-                return <PlayerBattlesSpectated />
+                return <PlayerBattlesSpectated selectedRound={selectedRound} />
             case LeaderboardTypeEnum.PlayerMechSurvives:
-                return <PlayerMechSurvives />
+                return <PlayerMechSurvives selectedRound={selectedRound} />
             case LeaderboardTypeEnum.PlayerMechKills:
-                return <PlayerMechKills />
+                return <PlayerMechKills selectedRound={selectedRound} />
             case LeaderboardTypeEnum.PlayerAbilityTriggers:
-                return <PlayerAbilityTriggers />
+                return <PlayerAbilityTriggers selectedRound={selectedRound} />
             case LeaderboardTypeEnum.PlayerMechsOwned:
-                return <PlayerMechsOwned />
+                return <PlayerMechsOwned selectedRound={selectedRound} />
             case LeaderboardTypeEnum.PlayerRepairBlocks:
-                return <PlayerRepairBlocks />
+                return <PlayerRepairBlocks selectedRound={selectedRound} />
 
             default:
                 return null
         }
-    }, [leaderboardType])
+    }, [leaderboardType, selectedRound])
 
     return (
         <ClipThing

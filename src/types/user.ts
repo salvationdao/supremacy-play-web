@@ -171,6 +171,7 @@ export interface QuestProgress {
 
 export interface LeaderboardRound {
     id: string
+    name: string
     started_at: Date
     end_at: Date
     round_number: number
