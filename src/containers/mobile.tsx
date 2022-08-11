@@ -11,7 +11,7 @@ export const MobileContainer = createContainer(() => {
 
     // For displaying a mobile layout
     const isMobile = useMemo(() => {
-        return width <= 650 || height <= 650
+        return width <= 480 || height <= 480
     }, [width, height])
 
     const isMobileHorizontal = useMemo(() => {
