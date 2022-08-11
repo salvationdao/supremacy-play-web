@@ -212,6 +212,7 @@ export const ProfileWarmachines = ({ playerID, primaryColour, secondaryColor, ba
                             <PageHeader title="WAR MACHINES" description="" primaryColor={primaryColour} imageUrl={getIcon(factionName as FactionName)} />
 
                             <TotalAndPageSizeOptions
+                                primaryColor={primaryColour}
                                 countItems={mechs?.length}
                                 totalItems={totalItems}
                                 pageSize={pageSize}
@@ -297,7 +298,7 @@ export const ProfileWarmachines = ({ playerID, primaryColour, secondaryColor, ba
                         },
                     }}
                 >
-                    <WarmachineDetails mechID={viewMechID} />
+                    <WarmachineDetails mechID={viewMechID} primaryColor={primaryColour} backgroundColor={backgroundColour} />
                 </Modal>
             )}
         </>

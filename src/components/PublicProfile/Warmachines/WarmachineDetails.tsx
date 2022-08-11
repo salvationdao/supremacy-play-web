@@ -14,7 +14,7 @@ import { MechLoadout } from "../../Hangar/WarMachinesHangar/WarMachineDetails/Me
 import { MechViewer } from "../../Hangar/WarMachinesHangar/WarMachineDetails/MechViewer"
 import { MechBattleHistoryDetails } from "../../Marketplace/WarMachinesMarket/WarMachineMarketDetails/MechBattleHistoryDetails"
 
-export const WarmachineDetails = ({ mechID }: { mechID: string }) => {
+export const WarmachineDetails = ({ mechID, primaryColor, backgroundColor }: { mechID: string; primaryColor: string; backgroundColor: string }) => {
     const theme = useTheme()
     const [mechDetails, setMechDetails] = useState<MechDetails>()
 
@@ -31,8 +31,6 @@ export const WarmachineDetails = ({ mechID }: { mechID: string }) => {
         },
     )
 
-    const primaryColor = theme.factionTheme.primary
-    const backgroundColor = theme.factionTheme.background
     const avatarUrl = mechDetails?.chassis_skin?.avatar_url || mechDetails?.avatar_url
     const imageUrl = mechDetails?.chassis_skin?.image_url || mechDetails?.image_url
 
@@ -91,7 +89,7 @@ export const WarmachineDetails = ({ mechID }: { mechID: string }) => {
                                 borderRadius: 3,
                             },
                             "::-webkit-scrollbar-thumb": {
-                                background: (theme) => theme.factionTheme.primary,
+                                background: backgroundColor,
                                 borderRadius: 3,
                             },
                         }}
