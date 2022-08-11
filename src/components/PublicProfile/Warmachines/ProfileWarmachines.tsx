@@ -1,16 +1,17 @@
-import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
+import { Box, CircularProgress, Modal, Pagination, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { EmptyWarMachinesPNG, WarMachineBCPNG, WarMachineIconPNG, WarMachineRMPNG, WarMachineZAIPNG } from "../../assets"
-import { parseString } from "../../helpers"
-import { usePagination, useUrlQuery } from "../../hooks"
-import { useGameServerCommands } from "../../hooks/useGameServer"
-import { GameServerKeys } from "../../keys"
-import { colors, fonts } from "../../theme/theme"
-import { FactionName, MechBasic } from "../../types"
-import { ClipThing } from "../Common/ClipThing"
-import { PageHeader } from "../Common/PageHeader"
-import { TotalAndPageSizeOptions } from "../Common/TotalAndPageSizeOptions"
-import { ProfileWarmachineItem } from "./ProfileMechDetails"
+import { EmptyWarMachinesPNG, WarMachineBCPNG, WarMachineIconPNG, WarMachineRMPNG, WarMachineZAIPNG } from "../../../assets"
+import { parseString } from "../../../helpers"
+import { usePagination, useUrlQuery } from "../../../hooks"
+import { useGameServerCommands } from "../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../keys"
+import { colors, fonts, siteZIndex } from "../../../theme/theme"
+import { FactionName, MechBasic } from "../../../types"
+import { ClipThing } from "../../Common/ClipThing"
+import { PageHeader } from "../../Common/PageHeader"
+import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
+import { ProfileWarmachineItem } from "../ProfileMechDetails"
+import { WarmachineDetails } from "./WarmachineDetails"
 
 interface GetMechsRequest {
     player_id: string
@@ -58,6 +59,9 @@ export const ProfileWarmachines = ({ playerID, primaryColour, secondaryColor, ba
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
     const [mechs, setMechs] = useState<MechBasic[]>([])
+
+    // mech details preview modal
+    const [viewMechID, setViewMechID] = useState<string>()
 
     const { page, changePage, setTotalItems, totalItems, totalPages, changePageSize, pageSize } = usePagination({
         pageSize: parseString(query.get("pageSize"), 10),
@@ -144,6 +148,9 @@ export const ProfileWarmachines = ({ playerID, primaryColour, secondaryColor, ba
                     >
                         {mechs.map((mech) => (
                             <ProfileWarmachineItem
+                                onClick={() => {
+                                    setViewMechID(mech.id)
+                                }}
                                 key={`marketplace-${mech.id}`}
                                 mech={mech}
                                 isGridView={true}
@@ -188,88 +195,111 @@ export const ProfileWarmachines = ({ playerID, primaryColour, secondaryColor, ba
     }, [loadError, mechs, isLoading, primaryColour, backgroundColour])
 
     return (
-        <Stack direction="row" spacing="1rem" sx={{ height: "100%", width: "100%" }}>
-            <ClipThing
-                clipSize="10px"
-                border={{
-                    borderColor: primaryColour,
-                    borderThickness: ".3rem",
-                }}
-                opacity={0.7}
-                backgroundColor={backgroundColour}
-                sx={{ height: "100%", flex: 1 }}
-            >
-                <Stack sx={{ position: "relative", height: "100%" }}>
-                    <Stack sx={{ flex: 1 }}>
-                        <PageHeader title="WAR MACHINES" description="" primaryColor={primaryColour} imageUrl={getIcon(factionName as FactionName)} />
+        <>
+            <Stack direction="row" spacing="1rem" sx={{ height: "100%", width: "100%" }}>
+                <ClipThing
+                    clipSize="10px"
+                    border={{
+                        borderColor: primaryColour,
+                        borderThickness: ".3rem",
+                    }}
+                    opacity={0.7}
+                    backgroundColor={backgroundColour}
+                    sx={{ height: "100%", flex: 1 }}
+                >
+                    <Stack sx={{ position: "relative", height: "100%" }}>
+                        <Stack sx={{ flex: 1 }}>
+                            <PageHeader title="WAR MACHINES" description="" primaryColor={primaryColour} imageUrl={getIcon(factionName as FactionName)} />
 
-                        <TotalAndPageSizeOptions
-                            countItems={mechs?.length}
-                            totalItems={totalItems}
-                            pageSize={pageSize}
-                            changePageSize={changePageSize}
-                            pageSizeOptions={[10, 20, 30]}
-                            changePage={changePage}
-                            manualRefresh={getItems}
-                        />
-                        <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
+                            <TotalAndPageSizeOptions
+                                countItems={mechs?.length}
+                                totalItems={totalItems}
+                                pageSize={pageSize}
+                                changePageSize={changePageSize}
+                                pageSizeOptions={[10, 20, 30]}
+                                changePage={changePage}
+                                manualRefresh={getItems}
+                            />
+                            <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
+                                <Box
+                                    sx={{
+                                        ml: "1.9rem",
+                                        mr: ".5rem",
+                                        pr: "1.4rem",
+                                        my: "1rem",
+                                        flex: 1,
+                                        overflowY: "auto",
+                                        overflowX: "hidden",
+                                        direction: "ltr",
+
+                                        "::-webkit-scrollbar": {
+                                            width: ".4rem",
+                                        },
+                                        "::-webkit-scrollbar-track": {
+                                            background: "#FFFFFF15",
+                                            borderRadius: 3,
+                                        },
+                                        "::-webkit-scrollbar-thumb": {
+                                            background: primaryColour,
+                                            borderRadius: 3,
+                                        },
+                                    }}
+                                >
+                                    {content}
+                                </Box>
+                            </Stack>
+                        </Stack>
+
+                        {totalPages > 1 && (
                             <Box
                                 sx={{
-                                    ml: "1.9rem",
-                                    mr: ".5rem",
-                                    pr: "1.4rem",
-                                    my: "1rem",
-                                    flex: 1,
-                                    overflowY: "auto",
-                                    overflowX: "hidden",
-                                    direction: "ltr",
-
-                                    "::-webkit-scrollbar": {
-                                        width: ".4rem",
-                                    },
-                                    "::-webkit-scrollbar-track": {
-                                        background: "#FFFFFF15",
-                                        borderRadius: 3,
-                                    },
-                                    "::-webkit-scrollbar-thumb": {
-                                        background: primaryColour,
-                                        borderRadius: 3,
-                                    },
+                                    px: "1rem",
+                                    py: ".7rem",
+                                    borderTop: `${primaryColour}70 1.5px solid`,
+                                    backgroundColor: "#00000070",
                                 }}
                             >
-                                {content}
+                                <Pagination
+                                    size="medium"
+                                    count={totalPages}
+                                    page={page}
+                                    sx={{
+                                        ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold },
+                                        ".Mui-selected": {
+                                            color: secondaryColor,
+                                            backgroundColor: `${primaryColour} !important`,
+                                        },
+                                    }}
+                                    onChange={(e, p) => changePage(p)}
+                                    showFirstButton
+                                    showLastButton
+                                />
                             </Box>
-                        </Stack>
+                        )}
                     </Stack>
+                </ClipThing>
+            </Stack>
 
-                    {totalPages > 1 && (
-                        <Box
-                            sx={{
-                                px: "1rem",
-                                py: ".7rem",
-                                borderTop: `${primaryColour}70 1.5px solid`,
-                                backgroundColor: "#00000070",
-                            }}
-                        >
-                            <Pagination
-                                size="medium"
-                                count={totalPages}
-                                page={page}
-                                sx={{
-                                    ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold },
-                                    ".Mui-selected": {
-                                        color: secondaryColor,
-                                        backgroundColor: `${primaryColour} !important`,
-                                    },
-                                }}
-                                onChange={(e, p) => changePage(p)}
-                                showFirstButton
-                                showLastButton
-                            />
-                        </Box>
-                    )}
-                </Stack>
-            </ClipThing>
-        </Stack>
+            {/* details modal */}
+            {viewMechID && (
+                <Modal
+                    open={!!viewMechID}
+                    onClose={() => setViewMechID(undefined)}
+                    sx={{
+                        zIndex: siteZIndex.Modal,
+                        height: "70vh",
+                        width: "70vw",
+                        margin: "auto",
+
+                        "@media (max-width:1440px)": {
+                            height: "85vh",
+                            width: "85vw",
+                        },
+                    }}
+                >
+                    <WarmachineDetails mechID={viewMechID} />
+                </Modal>
+            )}
+        </>
     )
 }

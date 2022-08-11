@@ -14,7 +14,7 @@ import { ProfileAvatar } from "./Avatar/AvatarSelect"
 import { AboutMe } from "./ProfileAboutMe"
 import { ProfileMechHistory } from "./ProfileBattleHistory"
 import { Username } from "./ProfileUsername"
-import { ProfileWarmachines } from "./ProfileWarmachines"
+import { ProfileWarmachines } from "./Warmachines/ProfileWarmachines"
 
 interface Player {
     id: string
