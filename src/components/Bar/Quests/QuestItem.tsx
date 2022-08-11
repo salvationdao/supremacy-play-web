@@ -12,7 +12,7 @@ export const QuestItem = ({ questStat, progress }: { questStat: QuestStat; progr
                 alignItems="center"
                 sx={{
                     p: ".2rem .5rem",
-                    pr: "1rem",
+                    pr: "1.6rem",
                     borderRadius: 1,
                     backgroundColor: `${colors.purple}12`,
                     opacity: questStat.obtained ? 0.5 : 1,
