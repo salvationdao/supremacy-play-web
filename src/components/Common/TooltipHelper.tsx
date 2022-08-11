@@ -1,4 +1,4 @@
-import { Stack, Tooltip, Typography, useTheme } from "@mui/material"
+import { Stack, Tooltip, Typography } from "@mui/material"
 import { ReactElement } from "react"
 import { ClipThing } from ".."
 import { fonts, siteZIndex } from "../../theme/theme"
@@ -9,6 +9,8 @@ export const TooltipHelper = ({
     isCentered,
     placement,
     open,
+    color,
+    textColor,
 }: {
     text: string | React.ReactNode
     children: ReactElement
@@ -27,13 +29,12 @@ export const TooltipHelper = ({
         | "top-start"
         | "top"
     open?: boolean
+    color?: string
+    textColor?: string
 }) => {
-    const theme = useTheme()
-
     if (!text) return <>{children}</>
 
-    const primaryColor = "#555555"
-    const backgroundColor = theme.factionTheme.background
+    const primaryColor = color || "#555555"
 
     return (
         <Tooltip
@@ -59,12 +60,15 @@ export const TooltipHelper = ({
                         bottomLeft: true,
                     }}
                     opacity={0.99}
-                    backgroundColor={backgroundColor}
+                    backgroundColor={primaryColor}
                     sx={{ height: "100%" }}
                 >
                     <Stack sx={{ height: "100%", px: "1.1rem", py: ".6rem" }}>
-                        <Typography variant="body1" sx={{ fontFamily: fonts.shareTech, textAlign: isCentered ? "center" : "start" }}>
-                            {text}
+                        <Typography
+                            variant="body1"
+                            sx={{ color: textColor || "#FFFFFF", fontFamily: fonts.shareTech, textAlign: isCentered ? "center" : "start" }}
+                        >
+                            <strong>{text}</strong>
                         </Typography>
                     </Stack>
                 </ClipThing>

@@ -147,7 +147,7 @@ export const QuickPlayerAbilitiesItem = ({
                     loading={loading}
                     disabled={disabled}
                 >
-                    <TooltipHelper text={saleAbility.ability.description} placement="bottom">
+                    <TooltipHelper color={saleAbility.ability.colour} text={saleAbility.ability.description} placement="bottom">
                         <Box
                             sx={{
                                 position: "relative",

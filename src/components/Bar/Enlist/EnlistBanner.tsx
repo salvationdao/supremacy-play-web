@@ -150,7 +150,7 @@ const EnlistBannerInner = ({ userID, user, battleIdentifier, getFaction, userSta
 
 const BannerInfo = ({ title, tooltip, content, PrefixSvg }: { title: string; tooltip: ReactNode; content: string; PrefixSvg?: SvgWrapperProps }) => {
     return (
-        <TooltipHelper text={tooltip}>
+        <TooltipHelper color={colors.grey} text={tooltip}>
             <Box>
                 <Typography
                     variant="subtitle1"

@@ -54,7 +54,7 @@ export const CrateRewardItemsLarge = ({ item, largerVersion }: CrateRewardItemsP
                             imageTransform={item?.type === AssetItemType.Weapon || item?.type === AssetItemType.WeaponSkin ? "rotate(-30deg) scale(.95)" : ""}
                         />
 
-                        <TooltipHelper placement="right" text={assetItemDeets.label}>
+                        <TooltipHelper color={assetItemDeets.color} placement="right" text={assetItemDeets.label}>
                             <Box sx={{ position: "absolute", top: ".1rem", left: ".1rem" }}>
                                 {assetItemDeets.icon && <assetItemDeets.icon size="2rem" fill={assetItemDeets.color} />}
                             </Box>
@@ -126,7 +126,7 @@ export const CrateRewardItemsSmall = ({ item }: CrateRewardItemsProps) => {
                             imageTransform={item?.type === AssetItemType.Weapon || item?.type === AssetItemType.WeaponSkin ? "rotate(-30deg) scale(.95)" : ""}
                         />
 
-                        <TooltipHelper placement="right" text={assetItemDeets.label}>
+                        <TooltipHelper color={assetItemDeets.color} placement="right" text={assetItemDeets.label}>
                             <Box sx={{ position: "absolute", top: ".1rem", left: ".1rem" }}>
                                 {assetItemDeets.icon && <assetItemDeets.icon size="1.4rem" fill={assetItemDeets.color} />}
                             </Box>

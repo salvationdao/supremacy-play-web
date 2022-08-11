@@ -54,7 +54,7 @@ export const PlayerAbilityCard = ({ playerAbility, viewOnly }: { playerAbility: 
 
     return (
         <>
-            <TooltipHelper text={playerAbility.ability.description} placement="bottom">
+            <TooltipHelper color={playerAbility.ability.colour} text={playerAbility.ability.description} placement="bottom">
                 <FancyButton
                     clipThingsProps={{
                         clipSize: "6px",

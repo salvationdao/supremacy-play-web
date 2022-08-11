@@ -79,9 +79,7 @@ export const WalletPopover = ({
             >
                 <Stack spacing="2rem" sx={{ position: "relative", minWidth: "35rem", px: "2rem", pt: "1.6rem", pb: "2rem" }}>
                     <Box>
-                        <Typography gutterBottom sx={{ fontFamily: fonts.nostromoBlack, color: theme.factionTheme.primary }}>
-                            CURRENT SESSION
-                        </Typography>
+                        <Typography sx={{ mb: "1rem", fontFamily: fonts.nostromoBlack, color: theme.factionTheme.primary }}>CURRENT SESSION</Typography>
 
                         <Stack spacing=".5rem">
                             <Stack direction="row" alignItems="center">
@@ -107,7 +105,7 @@ export const WalletPopover = ({
                     </Box>
 
                     <Box>
-                        <Typography gutterBottom sx={{ fontFamily: fonts.nostromoBlack, color: theme.factionTheme.primary }}>
+                        <Typography sx={{ mb: "1rem", fontFamily: fonts.nostromoBlack, color: theme.factionTheme.primary }}>
                             TOTAL {IS_TESTING_MODE ? "V" : ""}SUPS
                         </Typography>
 

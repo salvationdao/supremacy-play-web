@@ -61,7 +61,7 @@ export const Quests = () => {
                         },
                     }}
                 >
-                    <SvgQuest size="1.9rem" fill={colors.purple} />
+                    <SvgQuest size="1.7rem" fill={colors.purple} />
                     <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBold, lineHeight: 1, whiteSpace: "nowrap" }}>
                         {questStats.filter((qs) => qs.obtained).length}/{questStats.length}
                     </Typography>

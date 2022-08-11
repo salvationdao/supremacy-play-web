@@ -59,14 +59,14 @@ export const MechLoadoutIcons = ({ mechDetails }: { mechDetails?: MechDetails })
             )}
 
             {!hasSkin && (
-                <TooltipHelper text="Submodel" placement="bottom">
+                <TooltipHelper color={colors.chassisSkin} text="Submodel" placement="bottom">
                     <Box>
                         <SvgSkin fill={hasSkin ? colors.chassisSkin : `${colors.darkGrey}80`} size="1.7rem" />
                     </Box>
                 </TooltipHelper>
             )}
 
-            <TooltipHelper text="Power core" placement="bottom">
+            <TooltipHelper color={colors.powerCore} text="Power core" placement="bottom">
                 <Box>
                     <SvgPowerCore fill={hasPowerCore ? colors.powerCore : `${colors.darkGrey}80`} size="1.7rem" />
                 </Box>
@@ -74,7 +74,7 @@ export const MechLoadoutIcons = ({ mechDetails }: { mechDetails?: MechDetails })
 
             {weaponCount > 0 &&
                 new Array(weaponCount).fill(0).map((_, index) => (
-                    <TooltipHelper key={`mech-info-${index}`} text="Weapon" placement="bottom">
+                    <TooltipHelper color={colors.weapons} key={`mech-info-${index}`} text="Weapon" placement="bottom">
                         <Box>
                             <SvgWeapons fill={colors.weapons} size="1.7rem" />
                         </Box>
@@ -83,7 +83,7 @@ export const MechLoadoutIcons = ({ mechDetails }: { mechDetails?: MechDetails })
 
             {weaponSlots - weaponCount > 0 &&
                 new Array(weaponSlots - weaponCount).fill(0).map((_, index) => (
-                    <TooltipHelper key={`mech-info-${index}`} text="Weapon" placement="bottom">
+                    <TooltipHelper color={colors.weapons} key={`mech-info-${index}`} text="Weapon" placement="bottom">
                         <Box>
                             <SvgWeapons fill={`${colors.darkGrey}80`} size="1.7rem" />
                         </Box>
@@ -92,7 +92,7 @@ export const MechLoadoutIcons = ({ mechDetails }: { mechDetails?: MechDetails })
 
             {utilityCount > 0 &&
                 new Array(utilityCount).fill(0).map((_, index) => (
-                    <TooltipHelper key={`mech-info-${index}`} text="Utility" placement="bottom">
+                    <TooltipHelper color={colors.utilities} key={`mech-info-${index}`} text="Utility" placement="bottom">
                         <Box>
                             <SvgUtilities fill={colors.utilities} size="1.7rem" />
                         </Box>
@@ -101,20 +101,20 @@ export const MechLoadoutIcons = ({ mechDetails }: { mechDetails?: MechDetails })
 
             {utilitySlots - utilityCount > 0 &&
                 new Array(utilitySlots - utilityCount).fill(0).map((_, index) => (
-                    <TooltipHelper key={`mech-info-${index}`} text="Utility" placement="bottom">
+                    <TooltipHelper color={colors.utilities} key={`mech-info-${index}`} text="Utility" placement="bottom">
                         <Box>
                             <SvgUtilities fill={`${colors.darkGrey}80`} size="1.7rem" />
                         </Box>
                     </TooltipHelper>
                 ))}
 
-            <TooltipHelper text="Outro animation" placement="bottom">
+            <TooltipHelper color={colors.introAnimation} text="Outro animation" placement="bottom">
                 <Box>
                     <SvgIntroAnimation fill={hasIntroAnimation ? colors.introAnimation : `${colors.darkGrey}80`} size="1.7rem" />
                 </Box>
             </TooltipHelper>
 
-            <TooltipHelper text="Intro animation" placement="bottom">
+            <TooltipHelper color={colors.outroAnimation} text="Intro animation" placement="bottom">
                 <Box>
                     <SvgOutroAnimation fill={hasOutroAnimation ? colors.outroAnimation : `${colors.darkGrey}80`} size="1.7rem" />
                 </Box>

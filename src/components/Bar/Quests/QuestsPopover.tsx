@@ -4,7 +4,7 @@ import { ClipThing } from "../.."
 import { SvgClose } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { useToggle } from "../../../hooks"
-import { fonts, siteZIndex } from "../../../theme/theme"
+import { colors, fonts, siteZIndex } from "../../../theme/theme"
 import { QuestProgress, QuestStat } from "../../../types"
 import { QuestItem } from "./QuestItem"
 
@@ -60,15 +60,19 @@ export const QuestsPopover = ({
             <ClipThing
                 clipSize="10px"
                 border={{
-                    borderColor: theme.factionTheme.primary,
+                    borderColor: colors.purple,
                     borderThickness: ".2rem",
                 }}
                 backgroundColor={theme.factionTheme.background}
                 sx={{ height: "100%" }}
             >
                 <Box sx={{ position: "relative", width: "38rem", px: "2rem", py: "1.4rem" }}>
-                    <Typography gutterBottom sx={{ fontFamily: fonts.nostromoBlack, color: theme.factionTheme.primary }}>
-                        YOUR QUESTS
+                    <Typography sx={{ mb: ".4rem", fontFamily: fonts.nostromoBlack, color: colors.purple }}>YOUR QUESTS</Typography>
+
+                    <Typography variant="body2" sx={{ mb: ".8rem", fontWeight: "fontWeightBold", color: colors.grey }}>
+                        <i>
+                            YOU&apos;VE COMPLETED {questStats.filter((qs) => qs.obtained).length}/{questStats.length} QUESTS
+                        </i>
                     </Typography>
 
                     <Stack spacing=".5rem">
@@ -77,8 +81,8 @@ export const QuestsPopover = ({
                         })}
                     </Stack>
 
-                    <IconButton size="small" onClick={() => toggleLocalOpen(false)} sx={{ position: "absolute", top: "-2rem", right: ".2rem" }}>
-                        <SvgClose size="1.9rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
+                    <IconButton size="small" onClick={() => toggleLocalOpen(false)} sx={{ position: "absolute", top: 0, right: ".2rem" }}>
+                        <SvgClose size="2.6rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
                     </IconButton>
                 </Box>
             </ClipThing>
