@@ -124,6 +124,17 @@ const WarMachineStatsInner = () => {
                                                     <WarMachineItem warMachine={wm} scale={1} initialExpanded isPoppedout />
                                                 </Box>
                                             ))}
+
+                                        {ownedMiniMechs.length && (
+                                            <>
+                                                <Divider orientation="horizontal" />
+                                                {ownedMiniMechs.map((mm) => (
+                                                    <Box key={`${mm.participantID}`}>
+                                                        <WarMachineItem warMachine={mm} scale={0.8} transformOrigin="0 0" initialExpanded isPoppedout />
+                                                    </Box>
+                                                ))}
+                                            </>
+                                        )}
                                     </Stack>
                                 </Box>
                             </Box>
@@ -140,6 +151,25 @@ const WarMachineStatsInner = () => {
         if (!show) return null
         return (
             <>
+                <Fade in={ownedMiniMechs.length > 0}>
+                    <Stack
+                        spacing="1rem"
+                        sx={{
+                            backgroundColor: "#FFFFFF12",
+                            boxShadow: 2,
+                            border: "#FFFFFF20 1px solid",
+                            p: "1.2rem 1.4rem",
+                        }}
+                    >
+                        <Typography sx={{ fontFamily: fonts.nostromoBlack }}>YOUR MINI MECHS</Typography>
+
+                        <Box sx={{ display: "grid", gridTemplateColumns: "repeat(2, 50%)" }}>
+                            {ownedMiniMechs.map((mm) => (
+                                <WarMachineItem key={`${mm.participantID}`} warMachine={mm} scale={0.5} transformOrigin="0 0" initialExpanded />
+                            ))}
+                        </Box>
+                    </Stack>
+                </Fade>
                 {haveFactionMechs && (
                     <Stack
                         spacing="1rem"
