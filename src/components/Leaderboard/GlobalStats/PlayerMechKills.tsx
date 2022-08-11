@@ -40,7 +40,7 @@ export const PlayerMechKills = () => {
                 setLoadError(undefined)
                 setRankItems(resp)
             } catch (e) {
-                const message = typeof e === "string" ? e : "Failed to player battles spectated."
+                const message = typeof e === "string" ? e : "Failed to player mech kills."
                 setLoadError(message)
                 newSnackbarMessage(message, "error")
                 console.error(e)

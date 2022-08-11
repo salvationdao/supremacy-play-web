@@ -168,6 +168,7 @@ export enum GameServerKeys {
     GetPlayerAbilityKills = "LEADERBOARD:PLAYER:ABILITY:KILLS",
     GetPlayerAbilityTriggers = "LEADERBOARD:PLAYER:ABILITY:TRIGGERS",
     GetPlayerMechsOwned = "LEADERBOARD:PLAYER:MECHS:OWNED",
+    GetPlayerRepairBlocks = "LEADERBOARD:PLAYER:REPAIR:BLOCK",
 
     // Repairs
     SubRepairJobListUpdated = "MECH:REPAIR:OFFER:LIST:UPDATE",

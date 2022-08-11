@@ -2,6 +2,7 @@ import { Stack, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
 import { ClipThing } from "../.."
 import { useSnackbar, useSupremacy } from "../../../containers"
+import { useAuth } from "../../../containers/auth"
 import { useTheme } from "../../../containers/theme"
 import { useGameServerCommands } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
@@ -9,14 +10,13 @@ import { colors, fonts } from "../../../theme/theme"
 import { User } from "../../../types"
 import { CoolTable } from "../../Common/CoolTable"
 import { Player } from "../../Common/Player"
-import { useAuth } from "../../../containers/auth"
 
 interface RankItem {
     player: User
-    total_ability_triggered: number
+    total_block_repaired: number
 }
 
-export const PlayerAbilityTriggers = () => {
+export const PlayerRepairBlocks = () => {
     const theme = useTheme()
     const { userID } = useAuth()
     const { getFaction } = useSupremacy()
@@ -34,13 +34,13 @@ export const PlayerAbilityTriggers = () => {
             try {
                 setIsLoading(true)
 
-                const resp = await send<RankItem[]>(GameServerKeys.GetPlayerAbilityTriggers)
+                const resp = await send<RankItem[]>(GameServerKeys.GetPlayerRepairBlocks)
 
                 if (!resp) return
                 setLoadError(undefined)
                 setRankItems(resp)
             } catch (e) {
-                const message = typeof e === "string" ? e : "Failed to player ability triggers."
+                const message = typeof e === "string" ? e : "Failed to player repair blocks."
                 setLoadError(message)
                 newSnackbarMessage(message, "error")
                 console.error(e)
@@ -61,8 +61,8 @@ export const PlayerAbilityTriggers = () => {
             backgroundColor={backgroundColor}
         >
             <CoolTable
-                title="MOST ABILITIES TRIGGERED"
-                tableHeadings={["TOP 10", "PLAYER", "FACTION", "ABILITIES TRIGGERED"]}
+                title="MOST REPAIRED BLOCKS"
+                tableHeadings={["TOP 10", "PLAYER", "FACTION", "REPAIRED BLOCKS"]}
                 alignments={["center", "left", "left", "center"]}
                 widths={["19rem", "auto", "auto", "23rem"]}
                 autoHeight
@@ -102,7 +102,7 @@ export const PlayerAbilityTriggers = () => {
 
                             <Stack key={4} direction="row" spacing=".4rem" alignItems="center" justifyContent="center">
                                 <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
-                                    {item.total_ability_triggered}
+                                    {item.total_block_repaired}
                                 </Typography>
                             </Stack>,
                         ],
