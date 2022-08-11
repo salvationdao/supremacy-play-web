@@ -10,7 +10,6 @@ import { ClipThing } from "../../Common/ClipThing"
 import { MediaPreview } from "../../Common/MediaPreview/MediaPreview"
 import { MechBarStats } from "../../Hangar/WarMachinesHangar/Common/MechBarStats"
 import { MechRepairBlocks } from "../../Hangar/WarMachinesHangar/Common/MechRepairBlocks"
-import { MechLoadout } from "../../Hangar/WarMachinesHangar/WarMachineDetails/MechLoadout"
 import { MechViewer } from "../../Hangar/WarMachinesHangar/WarMachineDetails/MechViewer"
 import { MechBattleHistoryDetails } from "../../Marketplace/WarMachinesMarket/WarMachineMarketDetails/MechBattleHistoryDetails"
 
