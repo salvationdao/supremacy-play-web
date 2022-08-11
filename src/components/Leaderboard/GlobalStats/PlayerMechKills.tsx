@@ -1,7 +1,7 @@
 import { Stack, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
-import { ClipThing } from "../.."
 import { useSnackbar, useSupremacy } from "../../../containers"
+import { useAuth } from "../../../containers/auth"
 import { useTheme } from "../../../containers/theme"
 import { useGameServerCommands } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
@@ -9,7 +9,6 @@ import { colors, fonts } from "../../../theme/theme"
 import { User } from "../../../types"
 import { CoolTable } from "../../Common/CoolTable"
 import { Player } from "../../Common/Player"
-import { useAuth } from "../../../containers/auth"
 
 interface RankItem {
     player: User
@@ -27,7 +26,6 @@ export const PlayerMechKills = () => {
     const [loadError, setLoadError] = useState<string>()
 
     const primaryColor = theme.factionTheme.primary
-    const backgroundColor = theme.factionTheme.background
 
     useEffect(() => {
         ;(async () => {
@@ -51,64 +49,53 @@ export const PlayerMechKills = () => {
     }, [newSnackbarMessage, send])
 
     return (
-        <ClipThing
-            clipSize="8px"
-            border={{
-                isFancy: true,
-                borderColor: primaryColor,
-                borderThickness: ".2rem",
-            }}
-            backgroundColor={backgroundColor}
-        >
-            <CoolTable
-                title="MOST MECH KILLS"
-                tableHeadings={["TOP 10", "PLAYER", "FACTION", "MECH KILLS"]}
-                alignments={["center", "left", "left", "center"]}
-                widths={["19rem", "auto", "auto", "23rem"]}
-                autoHeight
-                items={rankItems}
-                isLoading={isLoading}
-                loadError={loadError}
-                renderItem={(item, index) => {
-                    const rank = index + 1
-                    const faction = getFaction(item.player.faction_id)
+        <CoolTable
+            title="MOST MECH KILLS"
+            tableHeadings={["TOP 100", "PLAYER", "FACTION", "MECH KILLS"]}
+            alignments={["center", "left", "left", "center"]}
+            widths={["19rem", "auto", "auto", "23rem"]}
+            items={rankItems}
+            isLoading={isLoading}
+            loadError={loadError}
+            renderItem={(item, index) => {
+                const rank = index + 1
+                const faction = getFaction(item.player.faction_id)
 
-                    let color = "#FFFFFF"
-                    if (rank === 1) color = colors.yellow
-                    if (rank === 2) color = colors.silver
-                    if (rank === 3) color = colors.bronze
+                let color = "#FFFFFF"
+                if (rank === 1) color = colors.yellow
+                if (rank === 2) color = colors.silver
+                if (rank === 3) color = colors.bronze
 
-                    return {
-                        rowProps: {
-                            sx: {
-                                backgroundColor: item.player.id === userID ? `${rank <= 3 ? color : primaryColor}20` : "unset",
-                                border: item.player.id === userID ? `${rank <= 3 ? color : primaryColor} 3px solid` : "unset",
-                            },
+                return {
+                    rowProps: {
+                        sx: {
+                            backgroundColor: item.player.id === userID ? `${rank <= 3 ? color : primaryColor}20` : "unset",
+                            border: item.player.id === userID ? `${rank <= 3 ? color : primaryColor} 3px solid` : "unset",
                         },
-                        cells: [
-                            <Typography
-                                key={1}
-                                variant="h6"
-                                sx={{ textAlign: "center", fontWeight: "fontWeightBold", color, fontFamily: rank <= 3 ? fonts.nostromoBlack : "inherit" }}
-                            >
-                                {index + 1}
-                            </Typography>,
+                    },
+                    cells: [
+                        <Typography
+                            key={1}
+                            variant="h6"
+                            sx={{ textAlign: "center", fontWeight: "fontWeightBold", color, fontFamily: rank <= 3 ? fonts.nostromoBlack : "inherit" }}
+                        >
+                            {index + 1}
+                        </Typography>,
 
-                            <Player key={2} player={item.player} styledImageTextProps={{ variant: "h6", imageSize: 2.4 }} />,
+                        <Player key={2} player={item.player} styledImageTextProps={{ variant: "h6", imageSize: 2.4 }} />,
 
-                            <Typography variant="h6" key={3} sx={{ fontWeight: "fontWeightBold", color: faction.primary_color, textTransform: "uppercase" }}>
-                                {faction.label}
-                            </Typography>,
+                        <Typography variant="h6" key={3} sx={{ fontWeight: "fontWeightBold", color: faction.primary_color, textTransform: "uppercase" }}>
+                            {faction.label}
+                        </Typography>,
 
-                            <Stack key={4} direction="row" spacing=".4rem" alignItems="center" justifyContent="center">
-                                <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
-                                    {item.mech_kill_count}
-                                </Typography>
-                            </Stack>,
-                        ],
-                    }
-                }}
-            />
-        </ClipThing>
+                        <Stack key={4} direction="row" spacing=".4rem" alignItems="center" justifyContent="center">
+                            <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
+                                {item.mech_kill_count}
+                            </Typography>
+                        </Stack>,
+                    ],
+                }
+            }}
+        />
     )
 }

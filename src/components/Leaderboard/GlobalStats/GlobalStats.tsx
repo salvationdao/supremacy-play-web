@@ -1,18 +1,44 @@
-import { Box, Stack, Typography } from "@mui/material"
+import { Stack, Typography } from "@mui/material"
+import { useMemo, useState } from "react"
 import { ClipThing } from "../.."
 import { Gabs } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { fonts } from "../../../theme/theme"
 import { PageHeader } from "../../Common/PageHeader"
+import { LeaderboardSelect, LeaderboardTypeEnum } from "./Common/LeaderboardSelect"
 import { PlayerAbilityKills } from "./PlayerAbilityKills"
 import { PlayerAbilityTriggers } from "./PlayerAbilityTriggers"
 import { PlayerBattlesSpectated } from "./PlayerBattlesSpectated"
 import { PlayerMechKills } from "./PlayerMechKills"
 import { PlayerMechsOwned } from "./PlayerMechsOwned"
 import { PlayerMechSurvives } from "./PlayerMechSurvives"
+import { PlayerRepairBlocks } from "./PlayerRepairBlocks"
 
 export const GlobalStats = () => {
     const theme = useTheme()
+    const [leaderboardType, setLeaderboardType] = useState<LeaderboardTypeEnum>(LeaderboardTypeEnum.PlayerAbilityKills)
+
+    const leaderboard = useMemo(() => {
+        switch (leaderboardType) {
+            case LeaderboardTypeEnum.PlayerAbilityKills:
+                return <PlayerAbilityKills />
+            case LeaderboardTypeEnum.PlayerBattlesSpectated:
+                return <PlayerBattlesSpectated />
+            case LeaderboardTypeEnum.PlayerMechSurvives:
+                return <PlayerMechSurvives />
+            case LeaderboardTypeEnum.PlayerMechKills:
+                return <PlayerMechKills />
+            case LeaderboardTypeEnum.PlayerAbilityTriggers:
+                return <PlayerAbilityTriggers />
+            case LeaderboardTypeEnum.PlayerMechsOwned:
+                return <PlayerMechsOwned />
+            case LeaderboardTypeEnum.PlayerRepairBlocks:
+                return <PlayerRepairBlocks />
+
+            default:
+                return null
+        }
+    }, [leaderboardType])
 
     return (
         <ClipThing
@@ -26,7 +52,7 @@ export const GlobalStats = () => {
                 bottomLeft: true,
                 bottomRight: true,
             }}
-            opacity={0.7}
+            opacity={0.9}
             backgroundColor={theme.factionTheme.background}
             sx={{ height: "100%" }}
         >
@@ -44,44 +70,14 @@ export const GlobalStats = () => {
                             </Typography>
                         }
                         imageUrl={Gabs}
-                    ></PageHeader>
+                    >
+                        <Stack direction="row" alignItems="center" sx={{ ml: "auto !important", pr: "2rem" }}>
+                            <LeaderboardSelect leaderboardType={leaderboardType} setLeaderboardType={setLeaderboardType} />
+                        </Stack>
+                    </PageHeader>
 
-                    <Stack sx={{ px: "2rem", pb: "1rem", flex: 1 }}>
-                        <Box
-                            sx={{
-                                flex: 1,
-                                ml: "1.9rem",
-                                mr: ".5rem",
-                                pr: "1.4rem",
-                                my: "1rem",
-                                overflowY: "auto",
-                                overflowX: "hidden",
-                                direction: "ltr",
-
-                                "::-webkit-scrollbar": {
-                                    width: ".4rem",
-                                },
-                                "::-webkit-scrollbar-track": {
-                                    background: "#FFFFFF15",
-                                    borderRadius: 3,
-                                },
-                                "::-webkit-scrollbar-thumb": {
-                                    background: theme.factionTheme.primary,
-                                    borderRadius: 3,
-                                },
-                            }}
-                        >
-                            <Box sx={{ direction: "ltr", height: 0 }}>
-                                <Stack spacing="5rem" sx={{ p: "3rem 1.8rem" }}>
-                                    <PlayerBattlesSpectated />
-                                    <PlayerMechSurvives />
-                                    <PlayerMechKills />
-                                    <PlayerAbilityKills />
-                                    <PlayerAbilityTriggers />
-                                    <PlayerMechsOwned />
-                                </Stack>
-                            </Box>
-                        </Box>
+                    <Stack spacing="2rem" sx={{ pb: "1rem", flex: 1 }}>
+                        {leaderboard}
                     </Stack>
                 </Stack>
             </Stack>
