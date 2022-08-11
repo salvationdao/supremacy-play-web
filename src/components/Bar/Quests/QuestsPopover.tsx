@@ -71,7 +71,7 @@ export const QuestsPopover = ({
                         YOUR QUESTS
                     </Typography>
 
-                    <Stack spacing=".4rem">
+                    <Stack spacing=".5rem">
                         {questStats.map((qs) => {
                             return <QuestItem key={`qs-key-${qs.id}`} questStat={qs} progress={questProgressions?.find((qp) => qp.quest_id === qs.id)} />
                         })}
