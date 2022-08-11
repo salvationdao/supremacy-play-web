@@ -51,7 +51,7 @@ export const GlobalStats = () => {
             case LeaderboardTypeEnum.PlayerAbilityTriggers:
                 return <PlayerAbilityTriggers selectedRound={selectedRound} />
             case LeaderboardTypeEnum.PlayerMechsOwned:
-                return <PlayerMechsOwned selectedRound={selectedRound} />
+                return <PlayerMechsOwned />
             case LeaderboardTypeEnum.PlayerRepairBlocks:
                 return <PlayerRepairBlocks selectedRound={selectedRound} />
 
@@ -100,7 +100,7 @@ export const GlobalStats = () => {
                             <LeaderboardSelect leaderboardType={leaderboardType} setLeaderboardType={setLeaderboardType} />
                         </Stack>
 
-                        {roundOptions && (
+                        {roundOptions && leaderboardType !== LeaderboardTypeEnum.PlayerMechsOwned && (
                             <Stack spacing="1rem" direction="row" alignItems="center">
                                 <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack }}>
                                     ROUND:
