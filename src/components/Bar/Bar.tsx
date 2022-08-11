@@ -36,8 +36,9 @@ export const Bar = () => {
                     >
                         <Marquee direction="left" gradientColor={hexToRGBArray(colors.lightRed)} gradientWidth={50} style={{ overflow: "hidden" }}>
                             <Typography variant="body2" sx={{ pr: "100px", fontFamily: fonts.nostromoBlack, lineHeight: 1 }}>
-                                Welcome to the proving grounds! Win up to <span style={{ color: colors.yellow }}>150,000</span> SUPS by helping us play-test
-                                incoming mechanisms and features. This round will reset in <Countdown endTime={new Date(NEXT_RESET_TIME)} />.
+                                Welcome to the proving grounds! <span style={{ color: colors.yellow }}>Hundreds of thousands of $SUPS</span> are up for grabs by
+                                helping us play-test incoming mechanisms and features. This round will reset in{" "}
+                                <Countdown endTime={new Date(NEXT_RESET_TIME)} />.
                             </Typography>
                         </Marquee>
                     </Box>
@@ -69,7 +70,7 @@ export const Bar = () => {
                     background: (theme) => `linear-gradient(#FFFFFF10 26%, ${theme.factionTheme.background})`,
                     transition: `all ${DRAWER_TRANSITION_DURATION / 1000}s`,
 
-                    zIndex: siteZIndex.Popover,
+                    zIndex: siteZIndex.Bar,
                     "::-webkit-scrollbar": {
                         height: ".3rem",
                     },

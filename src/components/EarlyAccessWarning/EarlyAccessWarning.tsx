@@ -97,19 +97,19 @@ const ProdMessage = () => {
                     },
                 }}
             >
-                The game is the proving grounds.
+                The game is in early access and the $SUPS you use are real!
             </Alert>
 
             <Typography variant="h5" sx={{ fontFamily: fonts.nostromoHeavy, color: colors.neonBlue }}>
-                PROVING GROUNDS ACCESS!
+                EARLY ACCESS!
             </Typography>
 
-            <Typography variant="h6">Thank you for participating in the Supremacy Battle Arena Proving Grounds.</Typography>
+            <Typography variant="h6">Thank you for participating in the Supremacy Battle Arena Early Access.</Typography>
 
             <Typography variant="h6">
                 By choosing to try out this game and continue from here, you expressly acknowledge and accept that you assume all risks associated with the
-                gameplay and/or participating in the Battle Events. This includes contributing to battle abilities, queueing your mech for battle, and any
-                $VSUPS related tasks.
+                gameplay and/or participating in the Battle Events. This includes contributing to battle abilities, queueing your mech for battle, and any $SUPS
+                related tasks.
             </Typography>
         </Stack>
     )

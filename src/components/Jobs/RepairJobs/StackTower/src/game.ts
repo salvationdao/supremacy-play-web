@@ -35,6 +35,8 @@ export class Game {
     setGameState: React.Dispatch<React.SetStateAction<GameState>>
     oneNewGamePattern: (gamePattern: GamePattern) => void
     triggerWith: TriggerWith
+    animationID: number | null
+    timestamp: number
 
     constructor(
         backgroundColor: string,
@@ -85,10 +87,13 @@ export class Game {
         this.fallingBlocks = []
         this.state = GameState.Loading
         this.score = 0
+        this.animationID = null
+        this.timestamp = 0
+    }
 
+    start() {
         this.addBlock()
-        this.tick()
-
+        this.tick(0)
         setTimeout(() => {
             this.setState(GameState.Ready)
         }, 500) // This allows the parent to full load because game ready means it needs parent container dimensions
@@ -208,9 +213,9 @@ export class Game {
         return oldState
     }
 
-    tick() {
+    tick(elapsedTime: number) {
         if (this.blocks.length > 1) {
-            this.blocks[this.blocks.length - 1].tick(this.blocks.length / 10)
+            this.blocks[this.blocks.length - 1].tick(this.blocks.length / 10, elapsedTime)
         }
         this.fallingBlocks.forEach((block) => block.tick())
         this.fallingBlocks = this.fallingBlocks.filter((block) => {
@@ -222,8 +227,15 @@ export class Game {
             }
         })
         this.stage.render()
-        requestAnimationFrame(() => {
-            this.tick()
+        this.animationID = requestAnimationFrame((ts) => {
+            this.tick(ts - this.timestamp)
+            this.timestamp = ts
         })
+    }
+
+    cleanup() {
+        if (this.animationID) {
+            cancelAnimationFrame(this.animationID)
+        }
     }
 }
