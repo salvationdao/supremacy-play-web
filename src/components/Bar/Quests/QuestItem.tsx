@@ -10,12 +10,12 @@ export const QuestItem = ({ questStat, progress }: { questStat: QuestStat; progr
             <Stack
                 direction="row"
                 alignItems="center"
+                spacing=".3rem"
                 sx={{
-                    p: ".3rem .5rem",
+                    p: ".6rem .5rem",
                     pr: "1.6rem",
                     borderRadius: 1,
                     backgroundColor: `${colors.purple}12`,
-                    opacity: questStat.obtained ? 0.5 : 1,
                     userSelect: "none",
                 }}
             >
@@ -31,7 +31,7 @@ export const QuestItem = ({ questStat, progress }: { questStat: QuestStat; progr
                     }}
                 />
 
-                <Stack spacing=".4rem" sx={{ flex: 1 }}>
+                <Stack spacing=".6rem" sx={{ flex: 1 }}>
                     <Typography
                         sx={{
                             lineHeight: 1,
