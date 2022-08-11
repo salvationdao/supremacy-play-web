@@ -11,7 +11,7 @@ export const QuestItem = ({ questStat, progress }: { questStat: QuestStat; progr
                 direction="row"
                 alignItems="center"
                 sx={{
-                    p: ".2rem .5rem",
+                    p: ".3rem .5rem",
                     pr: "1.6rem",
                     borderRadius: 1,
                     backgroundColor: `${colors.purple}12`,
@@ -31,7 +31,7 @@ export const QuestItem = ({ questStat, progress }: { questStat: QuestStat; progr
                     }}
                 />
 
-                <Stack spacing=".3rem" sx={{ flex: 1 }}>
+                <Stack spacing=".4rem" sx={{ flex: 1 }}>
                     <Typography
                         sx={{
                             lineHeight: 1,
@@ -50,10 +50,10 @@ export const QuestItem = ({ questStat, progress }: { questStat: QuestStat; progr
                     {progress && (
                         <ProgressBar
                             color={colors.green}
-                            backgroundColor={colors.red}
+                            backgroundColor={`${colors.red}90`}
                             orientation="horizontal"
                             thickness="7px"
-                            percent={progress.current / progress.goal}
+                            percent={(100 * progress.current) / progress.goal}
                         />
                     )}
                 </Stack>

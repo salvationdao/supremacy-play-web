@@ -66,7 +66,7 @@ export const QuestsPopover = ({
                 backgroundColor={theme.factionTheme.background}
                 sx={{ height: "100%" }}
             >
-                <Box sx={{ position: "relative", width: "38rem", px: "2rem", py: "1.4rem" }}>
+                <Box sx={{ position: "relative", width: "38rem", maxHeight: "90vh", px: "2rem", py: "1.4rem" }}>
                     <Typography sx={{ mb: ".4rem", fontFamily: fonts.nostromoBlack, color: colors.purple }}>YOUR QUESTS</Typography>
 
                     <Typography variant="body2" sx={{ mb: ".8rem", fontWeight: "fontWeightBold", color: colors.grey }}>
@@ -75,7 +75,7 @@ export const QuestsPopover = ({
                         </i>
                     </Typography>
 
-                    <Stack spacing=".5rem">
+                    <Stack spacing=".7rem">
                         {questStats.map((qs) => {
                             return <QuestItem key={`qs-key-${qs.id}`} questStat={qs} progress={questProgressions?.find((qp) => qp.quest_id === qs.id)} />
                         })}
