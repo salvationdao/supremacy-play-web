@@ -162,3 +162,20 @@ export interface MechBattleBrief {
     label: string
     name: string
 }
+
+export enum QuestKey {
+    AbilityKill = "ability_kill",
+    MechKill = "mech_kill",
+    MechCommanderUsedInBattle = "mech_commander_used_in_battle",
+    RepairForOther = "repair_for_other",
+    ChatSent = "chat_sent",
+    MechJoinBattle = "mech_join_battle",
+}
+
+export interface QuestStat {
+    id: string
+    name: string
+    key: QuestKey
+    description: string
+    obtained: boolean
+}

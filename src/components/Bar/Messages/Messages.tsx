@@ -53,6 +53,7 @@ export const Messages = () => {
             setLastUpdated(new Date())
         },
     )
+
     return (
         <>
             <Stack

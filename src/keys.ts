@@ -184,6 +184,9 @@ export enum GameServerKeys {
     // Companion App
     AuthGenOneTimeToken = "GEN:ONE:TIME:TOKEN",
     GetPlayerDeviceList = "PLAYER:DEVICE:LIST",
+
+    // Quests
+    SubPlayerQuestStats = "PLAYER:QUEST:STAT",
 }
 
 export enum PassportServerKeys {
