@@ -120,7 +120,7 @@ export const PlayerAbilitiesStore = () => {
     const content = useMemo(() => {
         if (!isLoaded) {
             return (
-                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                <Stack alignItems="center" justifyContent="center" sx={{ height: "10rem" }}>
                     <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
                         <CircularProgress size="3rem" sx={{ color: theme.factionTheme.primary }} />
                     </Stack>
@@ -301,7 +301,7 @@ export const PlayerAbilitiesStore = () => {
                             },
                         }}
                     >
-                        {content}
+                        <Box sx={{ height: 0 }}>{content}</Box>
                     </Box>
                 </Stack>
             </Stack>
