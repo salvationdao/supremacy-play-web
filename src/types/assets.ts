@@ -62,6 +62,16 @@ export interface AssetDurability {
     repair_type: "FAST" | "STANDARD" | ""
 }
 
+export interface Images {
+    image_url?: string
+    animation_url?: string
+    card_animation_url?: string
+    avatar_url?: string
+    large_image_url?: string
+    external_url?: string
+    youtube_url?: string
+}
+
 export interface Collection {
     collection_slug: string
     hash: string
@@ -71,16 +81,11 @@ export interface Collection {
     tier: string
     owner_id: string
     on_chain_status: string
-    image_url?: string
-    animation_url?: string
-    card_animation_url?: string
-    avatar_url?: string
-    large_image_url?: string
     locked_to_marketplace: boolean
     item_sale_id?: string
 }
 
-export interface MechBasic extends Collection {
+export interface MechBasic extends Collection, Images {
     id: string
     label: string
     weapon_hardpoints: number
@@ -151,7 +156,7 @@ export interface Brand {
     created_at: Date
 }
 
-export interface MechModel extends Collection {
+export interface MechModel extends Collection, Images {
     id: string
     blueprint_id: string
     genesis_token_id?: number
@@ -160,43 +165,26 @@ export interface MechModel extends Collection {
     background_color: string
     mech_model: string
     equipped_on?: string
-    image_url?: string
-    animation_url?: string
-    card_animation_url?: string
-    avatar_url?: string
-    large_image_url?: string
-    external_url?: string
-    youtube_url?: string
     created_at: Date
     repair_blocks: number
 }
 
-export interface BlueprintMechSkin extends Collection {
+export interface BlueprintMechSkin extends Collection, Images {
     id: string
     collection: string
     mech_model: string
     label: string
-    image_url?: string
-    animation_url?: string
-    card_animation_url?: string
-    large_image_url?: string
-    avatar_url?: string
     created_at: Date
 }
 
-export interface MechSkin extends Collection {
+export interface MechSkin extends Collection, Images {
     id: string
     label: string
-    image_url?: string
-    animation_url?: string
-    card_animation_url?: string
-    large_image_url?: string
-    avatar_url?: string
     created_at: Date
     equipped_on?: string
 }
 
-export interface MechAnimation extends Collection {
+export interface MechAnimation extends Collection, Images {
     id: string
     blueprint_id: string
     label: string
@@ -207,7 +195,7 @@ export interface MechAnimation extends Collection {
     created_at: Date
 }
 
-export interface PowerCore extends Collection {
+export interface PowerCore extends Collection, Images {
     id: string
     label: string
     size: string
@@ -220,7 +208,7 @@ export interface PowerCore extends Collection {
     created_at: Date
 }
 
-export interface Weapon extends Collection {
+export interface Weapon extends Collection, Images {
     id: string
     brand_id?: string
     label: string
@@ -247,7 +235,7 @@ export interface Weapon extends Collection {
     item_sale_id?: string
 }
 
-export interface WeaponSkin extends Collection {
+export interface WeaponSkin extends Collection, Images {
     id: string
     blueprint_id: string
     owner_id: string
@@ -272,7 +260,7 @@ export interface WeaponMaxStats {
     energy_cost?: number
 }
 
-export interface Utility extends Collection {
+export interface Utility extends Collection, Images {
     id: string
     brand_id?: string
     label: string
@@ -419,7 +407,7 @@ export enum MysteryCrateType {
     Weapon = "WEAPON",
 }
 
-export interface StorefrontMysteryCrate {
+export interface StorefrontMysteryCrate extends Images {
     id: string
     mystery_crate_type: MysteryCrateType
     price: string
@@ -428,16 +416,10 @@ export interface StorefrontMysteryCrate {
     faction_id: string
     label: string
     description: string
-    image_url?: string
-    card_animation_url?: string
-    avatar_url?: string
-    large_image_url?: string
-    background_color?: string
-    animation_url?: string
     youtube_url?: string
 }
 
-export interface MysteryCrate extends Collection {
+export interface MysteryCrate extends Collection, Images {
     id: string
     type: string
     faction_id: string
@@ -462,15 +444,12 @@ export interface Keycard {
     blueprints: KeycardBlueprint
 }
 
-export interface KeycardBlueprint {
+export interface KeycardBlueprint extends Images {
     id: string
     label: string
     description: string
     collection: string
     keycard_token_id: string
-    image_url: string
-    animation_url: string
-    card_animation_url: string
     keycard_group: string
     syndicate?: string | null
     created_at: Date
