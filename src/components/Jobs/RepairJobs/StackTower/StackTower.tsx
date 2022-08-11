@@ -203,7 +203,7 @@ const TowerStackInner = ({
                 >
                     <Stack spacing=".4rem" sx={{ p: ".6rem 1rem", backgroundColor: "#000000CD" }}>
                         <Typography variant="h3" sx={{ textAlign: "center", fontFamily: fonts.nostromoHeavy }}>
-                            Game Over
+                            Stack Ended
                         </Typography>
                         <Typography variant="h6" sx={{ textAlign: "center", fontFamily: fonts.nostromoBlack, span: { color: colors.orange } }}>
                             You did great citizen
