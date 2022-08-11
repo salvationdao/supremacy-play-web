@@ -1,9 +1,9 @@
 import { Stack, Typography } from "@mui/material"
-import { useCallback, useEffect, useState } from "react"
+import { useEffect, useRef } from "react"
 import { SvgBattleAbilityIcon } from "../../../assets"
 import { BribeStageResponse } from "../../../containers"
-import { colors } from "../../../theme/theme"
 import { useTimer } from "../../../hooks"
+import { colors } from "../../../theme/theme"
 
 export const BattleAbilityCountdown = ({ bribeStage }: { bribeStage?: BribeStageResponse }) => {
     return (
@@ -17,29 +17,24 @@ export const BattleAbilityCountdown = ({ bribeStage }: { bribeStage?: BribeStage
 }
 
 const CountdownText = ({ bribeStage }: { bribeStage?: BribeStageResponse }) => {
-    const [sentence, setSentence] = useState<string>("Loading...")
     const { setEndTimeState, totalSecRemain } = useTimer(undefined)
+    const sentence = useRef("Loading...")
 
     const phase = bribeStage?.phase || ""
-    const doSentence = useCallback(() => {
-        switch (phase) {
-            case "OPT_IN":
-                setSentence(`BATTLE ABILITY (${totalSecRemain}s)`)
-                break
 
-            case "LOCATION_SELECT":
-                setSentence(`BATTLE ABILITY INITIATED (${totalSecRemain}s)`)
-                break
+    switch (phase) {
+        case "OPT_IN":
+            sentence.current = `BATTLE ABILITY (${totalSecRemain}s)`
+            break
 
-            case "COOLDOWN":
-                setSentence(`NEXT BATTLE ABILITY (${totalSecRemain}s)`)
-                break
-        }
-    }, [phase, totalSecRemain])
+        case "LOCATION_SELECT":
+            sentence.current = `BATTLE ABILITY INITIATED (${totalSecRemain}s)`
+            break
 
-    useEffect(() => {
-        doSentence()
-    }, [doSentence, totalSecRemain])
+        case "COOLDOWN":
+            sentence.current = `NEXT BATTLE ABILITY (${totalSecRemain}s)`
+            break
+    }
 
     useEffect(() => {
         if (!bribeStage) return
@@ -55,8 +50,7 @@ const CountdownText = ({ bribeStage }: { bribeStage?: BribeStageResponse }) => {
         }
 
         setEndTimeState(endTime)
-        doSentence()
-    }, [bribeStage, doSentence, setEndTimeState])
+    }, [bribeStage, setEndTimeState])
 
-    return <>{sentence}</>
+    return <>{sentence.current}</>
 }
