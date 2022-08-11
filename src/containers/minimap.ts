@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { createContainer } from "unstated-next"
 import { useAuth, useSnackbar } from "."
-import { useGameServerCommandsFaction, useGameServerSubscriptionUser } from "../hooks/useGameServer"
+import { useGameServerCommandsFaction, useGameServerSubscriptionFaction, useGameServerSubscriptionUser } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
 import { Position, GameAbility, LocationSelectType, PlayerAbility, WarMachineState } from "../types"
 import { useToggle } from "./../hooks/useToggle"
@@ -23,7 +23,7 @@ export interface MapSelection {
 
 export const MiniMapContainer = createContainer(() => {
     const { bribeStage, map } = useGame()
-    const { factionID } = useAuth()
+    const { factionID, user } = useAuth()
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsFaction("/faction_commander")
 
@@ -72,6 +72,26 @@ export const MiniMapContainer = createContainer(() => {
         },
     )
 
+    // const onTrigger = useCallback(
+    //     async (warMachineHash, gameAbilityID: string) => {
+    //         try {
+    //             await send<boolean, { mech_hash: string; game_ability_id: string }>(GameServerKeys.TriggerWarMachineAbility, {
+    //                 mech_hash: warMachineHash,
+    //                 game_ability_id: gameAbilityID,
+    //             })
+    //         } catch (e) {
+    //             console.error(e)
+    //         }
+    //     },
+    //     [send],
+    // )
+    //
+    // const gameAbilities = useGameServerSubscriptionFaction<GameAbility[] | undefined>({
+    //     URI: `/mech/${participantID}/abilities`,
+    //     key: GameServerKeys.SubWarMachineAbilitiesUpdated,
+    //     ready: factionID === wmFactionID && !!participantID,
+    // })
+
     // Toggle expand if user is using player ability or user is chosen to use battle ability
     useEffect(() => {
         if (winner && bribeStage?.phase === "LOCATION_SELECT") {
@@ -108,6 +128,23 @@ export const MiniMapContainer = createContainer(() => {
                 default:
                     return
             }
+
+            // if (highlightedMechParticipantID) {
+            //     const w = wm.find((w) => w.ownedByID === user.id && w.participantID === highlightedMechParticipantID)
+            //     switch (e.key) {
+            //         case "1":
+            //             onTrigger(w.hash)
+            //             break
+            //         case "Control" && "2":
+            //             setHighlightedMechParticipantID(wm[1].participantID)
+            //             break
+            //         case "Control" && "3":
+            //             setHighlightedMechParticipantID(wm[2].participantID)
+            //             break
+            //         default:
+            //             return
+            //     }
+            // }
         },
         [disableHotKey, warMachines, factionID],
     )
