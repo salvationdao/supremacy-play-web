@@ -5,6 +5,8 @@ import { ProgressBar } from "../../Common/ProgressBar"
 import { TooltipHelper } from "../../Common/TooltipHelper"
 
 export const QuestItem = ({ questStat, progress }: { questStat: QuestStat; progress?: QuestProgress }) => {
+    const progressPercent = progress ? (100 * progress.current) / progress.goal : 0
+
     return (
         <TooltipHelper color={colors.purple} placement="left" text={questStat.description}>
             <Stack
@@ -32,20 +34,31 @@ export const QuestItem = ({ questStat, progress }: { questStat: QuestStat; progr
                 />
 
                 <Stack spacing=".6rem" sx={{ flex: 1 }}>
-                    <Typography
-                        sx={{
-                            lineHeight: 1,
-                            fontWeight: "fontWeightBold",
-                            display: "-webkit-box",
-                            overflow: "hidden",
-                            overflowWrap: "anywhere",
-                            textOverflow: "ellipsis",
-                            WebkitLineClamp: 1, // change to max number of lines
-                            WebkitBoxOrient: "vertical",
-                        }}
-                    >
-                        {questStat.name}
-                    </Typography>
+                    <Stack direction="row" alignItems="center" justifyContent="space-between">
+                        <Typography
+                            sx={{
+                                lineHeight: 1,
+                                fontWeight: "fontWeightBold",
+                                display: "-webkit-box",
+                                overflow: "hidden",
+                                overflowWrap: "anywhere",
+                                textOverflow: "ellipsis",
+                                WebkitLineClamp: 1, // change to max number of lines
+                                WebkitBoxOrient: "vertical",
+                            }}
+                        >
+                            {questStat.name}
+                        </Typography>
+
+                        {progress && (
+                            <Typography
+                                variant="body2"
+                                sx={{ color: progressPercent < 100 ? colors.red : colors.green, lineHeight: 1, fontWeight: "fontWeightBold" }}
+                            >
+                                {progress.current}/{progress.goal}
+                            </Typography>
+                        )}
+                    </Stack>
 
                     {progress && (
                         <ProgressBar
@@ -53,7 +66,7 @@ export const QuestItem = ({ questStat, progress }: { questStat: QuestStat; progr
                             backgroundColor={`${colors.red}BB`}
                             orientation="horizontal"
                             thickness="7px"
-                            percent={(100 * progress.current) / progress.goal}
+                            percent={progressPercent}
                         />
                     )}
                 </Stack>
