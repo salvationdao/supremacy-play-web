@@ -65,7 +65,6 @@ export const SENTRY_CONFIG = {
 export const GAME_BAR_HEIGHT = 5.9 // rem
 export const RIGHT_DRAWER_WIDTH = 38 // rem
 export const CONTROLS_HEIGHT = 3.0 // rem
-export const BOTTOM_NAV_HEIGHT = 85 // rem
 
 export const DRAWER_TRANSITION_DURATION = 250
 export const MESSAGES_BUFFER_SIZE = 500
