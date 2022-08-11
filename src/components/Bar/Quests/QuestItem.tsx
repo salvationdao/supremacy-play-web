@@ -50,7 +50,7 @@ export const QuestItem = ({ questStat, progress }: { questStat: QuestStat; progr
                     {progress && (
                         <ProgressBar
                             color={colors.green}
-                            backgroundColor={`${colors.red}90`}
+                            backgroundColor={`${colors.red}BB`}
                             orientation="horizontal"
                             thickness="7px"
                             percent={(100 * progress.current) / progress.goal}

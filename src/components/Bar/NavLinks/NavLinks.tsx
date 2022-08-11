@@ -6,7 +6,7 @@ import { ROUTES_ARRAY } from "../../../routes"
 import { colors, fonts } from "../../../theme/theme"
 
 export const NavLinks = () => {
-    const below1450 = useMediaQuery("(max-width:1450px)")
+    const below1600 = useMediaQuery("(max-width:1600px)")
     const { userID } = useAuth()
     const location = useLocation()
 
@@ -17,7 +17,7 @@ export const NavLinks = () => {
         activeTabID = r?.matchLeftDrawerID || ""
     }
 
-    if (below1450) return null
+    if (below1600) return null
 
     return (
         <Stack direction="row" alignItems="center" spacing="1.5rem" sx={{ height: "100%", mx: "2rem" }} divider={<Divider />}>

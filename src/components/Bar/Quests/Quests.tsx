@@ -1,5 +1,5 @@
 import { CircularProgress, Divider, Stack, Typography } from "@mui/material"
-import { useRef } from "react"
+import { useRef, useState } from "react"
 import { SvgQuest } from "../../../assets"
 import { useToggle } from "../../../hooks"
 import { useGameServerSubscriptionUser } from "../../../hooks/useGameServer"
@@ -11,16 +11,37 @@ import { QuestsPopover } from "./QuestsPopover"
 export const Quests = () => {
     const popoverRef = useRef(null)
     const [popoverOpen, togglePopoverOpen] = useToggle(false)
+    const [questProgressions, setQuestProgressions] = useState<QuestProgress[]>()
 
     const questStats = useGameServerSubscriptionUser<QuestStat[]>({
         URI: "/quest_stat",
         key: GameServerKeys.SubPlayerQuestStats,
     })
 
-    const questProgressions = useGameServerSubscriptionUser<QuestProgress[]>({
-        URI: "/quest_progression",
-        key: GameServerKeys.SubPlayerQuestStatsProgression,
-    })
+    useGameServerSubscriptionUser<QuestProgress[]>(
+        {
+            URI: "/quest_progression",
+            key: GameServerKeys.SubPlayerQuestStatsProgression,
+        },
+        (payload) => {
+            if (!payload) return
+            setQuestProgressions((prev) => {
+                if (!prev) return payload
+                const clonedArray = [...prev]
+
+                payload.forEach((p) => {
+                    const index = clonedArray.findIndex((i) => i.quest_id === p.quest_id)
+                    if (index > 0) {
+                        clonedArray[index] = p
+                        return
+                    }
+                    clonedArray.push(p)
+                })
+
+                return clonedArray
+            })
+        },
+    )
 
     if (!questStats) {
         return (
