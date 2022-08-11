@@ -1,6 +1,7 @@
 import { Checkbox, Stack, Typography } from "@mui/material"
 import { colors } from "../../../theme/theme"
 import { QuestProgress, QuestStat } from "../../../types"
+import { ProgressBar } from "../../Common/ProgressBar"
 import { TooltipHelper } from "../../Common/TooltipHelper"
 
 export const QuestItem = ({ questStat, progress }: { questStat: QuestStat; progress?: QuestProgress }) => {
@@ -10,7 +11,8 @@ export const QuestItem = ({ questStat, progress }: { questStat: QuestStat; progr
                 direction="row"
                 alignItems="center"
                 sx={{
-                    p: ".1rem .5rem",
+                    p: ".2rem .5rem",
+                    pr: "1rem",
                     borderRadius: 1,
                     backgroundColor: `${colors.purple}12`,
                     opacity: questStat.obtained ? 0.5 : 1,
@@ -29,20 +31,32 @@ export const QuestItem = ({ questStat, progress }: { questStat: QuestStat; progr
                     }}
                 />
 
-                <Typography
-                    sx={{
-                        lineHeight: 1,
-                        fontWeight: "fontWeightBold",
-                        display: "-webkit-box",
-                        overflow: "hidden",
-                        overflowWrap: "anywhere",
-                        textOverflow: "ellipsis",
-                        WebkitLineClamp: 1, // change to max number of lines
-                        WebkitBoxOrient: "vertical",
-                    }}
-                >
-                    {questStat.name}
-                </Typography>
+                <Stack spacing=".3rem" sx={{ flex: 1 }}>
+                    <Typography
+                        sx={{
+                            lineHeight: 1,
+                            fontWeight: "fontWeightBold",
+                            display: "-webkit-box",
+                            overflow: "hidden",
+                            overflowWrap: "anywhere",
+                            textOverflow: "ellipsis",
+                            WebkitLineClamp: 1, // change to max number of lines
+                            WebkitBoxOrient: "vertical",
+                        }}
+                    >
+                        {questStat.name}
+                    </Typography>
+
+                    {progress && (
+                        <ProgressBar
+                            color={colors.green}
+                            backgroundColor={colors.red}
+                            orientation="horizontal"
+                            thickness="7px"
+                            percent={progress.current / progress.goal}
+                        />
+                    )}
+                </Stack>
             </Stack>
         </TooltipHelper>
     )
