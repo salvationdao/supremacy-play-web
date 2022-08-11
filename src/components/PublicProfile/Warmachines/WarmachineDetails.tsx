@@ -15,7 +15,6 @@ import { MechViewer } from "../../Hangar/WarMachinesHangar/WarMachineDetails/Mec
 import { MechBattleHistoryDetails } from "../../Marketplace/WarMachinesMarket/WarMachineMarketDetails/MechBattleHistoryDetails"
 
 export const WarmachineDetails = ({ mechID, primaryColor, backgroundColor }: { mechID: string; primaryColor: string; backgroundColor: string }) => {
-    const theme = useTheme()
     const [mechDetails, setMechDetails] = useState<MechDetails>()
 
     const rarityDeets = useMemo(() => getRarityDeets(mechDetails?.chassis_skin?.tier || mechDetails?.tier || ""), [mechDetails])
