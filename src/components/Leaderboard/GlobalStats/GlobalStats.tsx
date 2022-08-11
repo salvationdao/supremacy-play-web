@@ -25,15 +25,13 @@ export const GlobalStats = () => {
     const [leaderboardType, setLeaderboardType] = useState<LeaderboardTypeEnum>(LeaderboardTypeEnum.PlayerAbilityKills)
     const [selectedRound, setSelectedRound] = useState<LeaderboardRound>()
 
-    console.log(selectedRound)
     useEffect(() => {
         ;(async () => {
             try {
                 const resp = await send<LeaderboardRound[]>(GameServerKeys.GetLeaderboardRounds)
 
-                if (!resp || resp.length <= 0) return
+                if (!resp) return
                 setRoundOptions(resp)
-                setSelectedRound(resp[0])
             } catch (err) {
                 console.error(err)
             }
