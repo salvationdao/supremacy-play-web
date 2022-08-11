@@ -3,7 +3,7 @@ import { createContainer } from "unstated-next"
 import { useAuth, useSnackbar } from "."
 import { useGameServerCommandsFaction, useGameServerSubscriptionUser } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
-import { Position, GameAbility, LocationSelectType, PlayerAbility } from "../types"
+import { Position, GameAbility, LocationSelectType, PlayerAbility, WarMachineState } from "../types"
 import { useToggle } from "./../hooks/useToggle"
 import { useGame } from "./game"
 
@@ -37,10 +37,17 @@ export const MiniMapContainer = createContainer(() => {
     const [playerAbility, setPlayerAbility] = useState<PlayerAbility>()
     const [isEnlarged, toggleIsEnlarged] = useToggle()
     const [isTargeting, setIsTargeting] = useState(false)
+    const [disableHotKey, setDisableHotKey] = useState(false)
 
     // Other stuff
     const [highlightedMechParticipantID, setHighlightedMechParticipantID] = useState<number>()
     const [selection, setSelection] = useState<MapSelection>()
+
+    const { warMachines } = useGame()
+    const wm = useMemo(
+        () => (warMachines as WarMachineState[])?.filter((w) => w.factionID === factionID).sort((a, b) => a.participantID - b.participantID),
+        [warMachines, factionID],
+    )
 
     // Subscribe on winner announcements
     useGameServerSubscriptionUser<WinnerAnnouncementResponse | undefined>(
@@ -81,6 +88,32 @@ export const MiniMapContainer = createContainer(() => {
             setIsTargeting(true)
         }
     }, [winner, bribeStage, playerAbility])
+
+    const handleHotKey = useCallback(
+        (e: KeyboardEvent) => {
+            if (disableHotKey || !wm) return
+            e.preventDefault()
+            console.log(e.key)
+
+            switch (e.key) {
+                case "Control" && "1":
+                    setHighlightedMechParticipantID(wm[0].participantID)
+                    break
+                case "Control" && "2":
+                    setHighlightedMechParticipantID(wm[1].participantID)
+                    break
+                case "Control" && "3":
+                    setHighlightedMechParticipantID(wm[2].participantID)
+                    break
+                default:
+                    return
+            }
+        },
+        [disableHotKey, warMachines, factionID],
+    )
+    useEffect(() => {
+        document.addEventListener("keydown", handleHotKey)
+    }, [handleHotKey])
 
     const resetSelection = useCallback(() => {
         setWinner(undefined)
