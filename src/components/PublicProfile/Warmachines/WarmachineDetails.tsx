@@ -1,4 +1,4 @@
-import { Box, CircularProgress, Stack, Typography, useTheme } from "@mui/material"
+import { Box, CircularProgress, Stack, Typography } from "@mui/material"
 import { useMemo, useState } from "react"
 import { SvgCubes, SvgSkin, SvgStats } from "../../../assets"
 import { getRarityDeets } from "../../../helpers"
