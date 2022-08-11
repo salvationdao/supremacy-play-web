@@ -1,6 +1,6 @@
 import { Stack } from "@mui/material"
-import { QuestStat } from "../../../types"
+import { QuestProgress, QuestStat } from "../../../types"
 
-export const QuestItem = ({ questStat }: { questStat: QuestStat }) => {
+export const QuestItem = ({ questStat, progress }: { questStat: QuestStat; progress?: QuestProgress }) => {
     return <Stack direction="row" alignItems="center"></Stack>
 }

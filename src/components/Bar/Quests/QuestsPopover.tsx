@@ -5,17 +5,19 @@ import { SvgClose } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { useToggle } from "../../../hooks"
 import { fonts, siteZIndex } from "../../../theme/theme"
-import { QuestStat } from "../../../types"
+import { QuestProgress, QuestStat } from "../../../types"
 import { QuestItem } from "./QuestItem"
 
 export const QuestsPopover = ({
     open,
     questStats,
+    questProgressions,
     onClose,
     popoverRef,
 }: {
     open: boolean
     questStats: QuestStat[]
+    questProgressions?: QuestProgress[]
     onClose: () => void
     popoverRef: MutableRefObject<null>
 }) => {
@@ -71,7 +73,7 @@ export const QuestsPopover = ({
 
                     <Stack spacing=".4rem">
                         {questStats.map((qs) => {
-                            return <QuestItem key={`qs-key-${qs.id}`} questStat={qs} />
+                            return <QuestItem key={`qs-key-${qs.id}`} questStat={qs} progress={questProgressions?.find((qp) => qp.quest_id === qs.id)} />
                         })}
                     </Stack>
 

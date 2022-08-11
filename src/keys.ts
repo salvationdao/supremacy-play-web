@@ -187,6 +187,7 @@ export enum GameServerKeys {
 
     // Quests
     SubPlayerQuestStats = "PLAYER:QUEST:STAT",
+    SubPlayerQuestStatsProgression = "PLAYER:QUEST:PROGRESSIONS",
 }
 
 export enum PassportServerKeys {

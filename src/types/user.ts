@@ -162,3 +162,9 @@ export interface QuestStat {
     obtained: boolean
     expires_at: Date
 }
+
+export interface QuestProgress {
+    quest_id: string
+    current: number
+    goal: number
+}

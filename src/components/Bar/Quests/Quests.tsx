@@ -5,7 +5,7 @@ import { useToggle } from "../../../hooks"
 import { useGameServerSubscriptionUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { QuestStat } from "../../../types/user"
+import { QuestProgress, QuestStat } from "../../../types/user"
 import { QuestsPopover } from "./QuestsPopover"
 
 export const Quests = () => {
@@ -15,6 +15,11 @@ export const Quests = () => {
     const questStats = useGameServerSubscriptionUser<QuestStat[]>({
         URI: "/quest_stat",
         key: GameServerKeys.SubPlayerQuestStats,
+    })
+
+    const questProgressions = useGameServerSubscriptionUser<QuestProgress[]>({
+        URI: "/quest_progression",
+        key: GameServerKeys.SubPlayerQuestStatsProgression,
     })
 
     if (!questStats) {
@@ -76,7 +81,13 @@ export const Quests = () => {
             </Stack>
 
             {questStats && popoverOpen && (
-                <QuestsPopover open={popoverOpen} popoverRef={popoverRef} questStats={questStats} onClose={() => togglePopoverOpen(false)} />
+                <QuestsPopover
+                    open={popoverOpen}
+                    popoverRef={popoverRef}
+                    questStats={questStats}
+                    questProgressions={questProgressions}
+                    onClose={() => togglePopoverOpen(false)}
+                />
             )}
         </>
     )
