@@ -165,7 +165,6 @@ export const WarmachineDetails = ({ mechID, primaryColor, backgroundColor }: { m
             >
                 {mechDetails ? (
                     <>
-                        <MechLoadout mechDetails={mechDetails} />
                         <MechViewer mechDetails={mechDetails} />
                     </>
                 ) : (
