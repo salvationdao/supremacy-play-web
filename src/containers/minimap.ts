@@ -38,7 +38,7 @@ export const MiniMapContainer = createContainer(() => {
     const [isEnlarged, toggleIsEnlarged] = useToggle()
     const [isTargeting, setIsTargeting] = useState(false)
     const [disableHotKey, setDisableHotKey] = useState(false)
-
+    const [highlightedMechGameAbilities, setHighlightedMechGameAbilities] = useState<GameAbility[]>([])
     // Other stuff
     const [highlightedMechParticipantID, setHighlightedMechParticipantID] = useState<number>()
     const [selection, setSelection] = useState<MapSelection>()
@@ -72,25 +72,20 @@ export const MiniMapContainer = createContainer(() => {
         },
     )
 
-    // const onTrigger = useCallback(
-    //     async (warMachineHash, gameAbilityID: string) => {
-    //         try {
-    //             await send<boolean, { mech_hash: string; game_ability_id: string }>(GameServerKeys.TriggerWarMachineAbility, {
-    //                 mech_hash: warMachineHash,
-    //                 game_ability_id: gameAbilityID,
-    //             })
-    //         } catch (e) {
-    //             console.error(e)
-    //         }
-    //     },
-    //     [send],
-    // )
-    //
-    // const gameAbilities = useGameServerSubscriptionFaction<GameAbility[] | undefined>({
-    //     URI: `/mech/${participantID}/abilities`,
-    //     key: GameServerKeys.SubWarMachineAbilitiesUpdated,
-    //     ready: factionID === wmFactionID && !!participantID,
-    // })
+    //todo: refactor this repetative code
+    const onTrigger = useCallback(
+        async (warMachineHash, gameAbilityID: string) => {
+            try {
+                await send<boolean, { mech_hash: string; game_ability_id: string }>(GameServerKeys.TriggerWarMachineAbility, {
+                    mech_hash: warMachineHash,
+                    game_ability_id: gameAbilityID,
+                })
+            } catch (e) {
+                console.error(e)
+            }
+        },
+        [send],
+    )
 
     // Toggle expand if user is using player ability or user is chosen to use battle ability
     useEffect(() => {
@@ -113,7 +108,6 @@ export const MiniMapContainer = createContainer(() => {
         (e: KeyboardEvent) => {
             if (disableHotKey || !wm) return
             e.preventDefault()
-            console.log(e.key)
 
             switch (e.key) {
                 case "Control" && "1":
@@ -129,24 +123,27 @@ export const MiniMapContainer = createContainer(() => {
                     return
             }
 
-            // if (highlightedMechParticipantID) {
-            //     const w = wm.find((w) => w.ownedByID === user.id && w.participantID === highlightedMechParticipantID)
-            //     switch (e.key) {
-            //         case "1":
-            //             onTrigger(w.hash)
-            //             break
-            //         case "Control" && "2":
-            //             setHighlightedMechParticipantID(wm[1].participantID)
-            //             break
-            //         case "Control" && "3":
-            //             setHighlightedMechParticipantID(wm[2].participantID)
-            //             break
-            //         default:
-            //             return
-            //     }
-            // }
+            if (highlightedMechParticipantID) {
+                const w = wm.find((w) => w.ownedByID === user.id && w.participantID === highlightedMechParticipantID)
+
+                if (!w) return
+
+                switch (e.key) {
+                    case "1":
+                        onTrigger(w.hash, highlightedMechGameAbilities[0].id)
+                        break
+                    case "Control" && "2":
+                        onTrigger(w.hash, highlightedMechGameAbilities[1].id)
+                        break
+                    case "Control" && "3":
+                        onTrigger(w.hash, highlightedMechGameAbilities[2].id)
+                        break
+                    default:
+                        return
+                }
+            }
         },
-        [disableHotKey, warMachines, factionID],
+        [disableHotKey, onTrigger, wm, user, highlightedMechGameAbilities, highlightedMechParticipantID],
     )
     useEffect(() => {
         document.addEventListener("keydown", handleHotKey)
@@ -267,6 +264,7 @@ export const MiniMapContainer = createContainer(() => {
         gridHeight,
         isEnlarged,
         toggleIsEnlarged,
+        setHighlightedMechGameAbilities,
     }
 })
 

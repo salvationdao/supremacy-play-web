@@ -36,7 +36,7 @@ export const WarMachineItem = ({
     const { isMobile } = useMobile()
     const { userID, factionID } = useAuth()
     const { getFaction } = useSupremacy()
-    const { highlightedMechParticipantID, setHighlightedMechParticipantID } = useMiniMap()
+    const { highlightedMechParticipantID, setHighlightedMechParticipantID, setHighlightedMechGameAbilities } = useMiniMap()
 
     const { hash, participantID, factionID: wmFactionID, name, imageAvatar, tier, ownedByID, ownerUsername } = warMachine
 
@@ -80,6 +80,11 @@ export const WarMachineItem = ({
         }
     }, [highlightedMechParticipantID, initialExpanded, isMobile, setHighlightedMechParticipantID, toggleIsExpanded, participantID])
 
+    useEffect(() => {
+        if (highlightedMechParticipantID === participantID && gameAbilities) {
+            setHighlightedMechGameAbilities(gameAbilities)
+        }
+    }, [highlightedMechParticipantID, participantID, gameAbilities])
     return (
         <>
             <Stack
