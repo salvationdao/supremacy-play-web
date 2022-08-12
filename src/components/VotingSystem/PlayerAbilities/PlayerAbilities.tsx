@@ -11,6 +11,7 @@ import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { LocationSelectType, PlayerAbility } from "../../../types"
 import { PlayerAbilityCard } from "./PlayerAbilityCard"
+import { useMiniMap } from "../../../containers"
 
 const COLUMNS = 4
 const ROWS = 2
@@ -19,10 +20,10 @@ const PAGE_SIZE = COLUMNS * ROWS
 export const PlayerAbilities = () => {
     const theme = useTheme()
     const { userID } = useAuth()
+    const { shownPlayerAbilities, setShownPlayerAbilities } = useMiniMap()
     const [isCollapsed, setIsCollapsed] = useState(localStorage.getItem("isPlayerAbilitiesCollapsed") === "true")
 
     const [playerAbilities, setPlayerAbilities] = useState<PlayerAbility[]>([])
-    const [shownPlayerAbilities, setShownPlayerAbilities] = useState<PlayerAbility[]>([])
 
     const { page, changePage, setTotalItems, totalPages, pageSize } = usePagination({
         pageSize: PAGE_SIZE,

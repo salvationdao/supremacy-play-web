@@ -9,7 +9,7 @@ import { TooltipHelper } from "../../Common/TooltipHelper"
 import { PlayerAbilityCooldownIndicator } from "./PlayerAbilityCooldownIndicator"
 
 export const PlayerAbilityCard = ({ playerAbility, viewOnly }: { playerAbility: PlayerAbility; viewOnly?: boolean }) => {
-    const { setPlayerAbility } = useMiniMap()
+    const { onPlayerAbilityActivate } = useMiniMap()
     const [disabled, setDisabled] = useState(false)
 
     const checkIfDisabled = useCallback(() => {
@@ -44,11 +44,6 @@ export const PlayerAbilityCard = ({ playerAbility, viewOnly }: { playerAbility: 
         }
         return <SvgQuestionMark size="1.5rem" />
     }, [playerAbility])
-
-    const onActivate = useCallback(() => {
-        if (!playerAbility) return
-        setPlayerAbility(playerAbility)
-    }, [playerAbility, setPlayerAbility])
 
     const disable = viewOnly || disabled
 

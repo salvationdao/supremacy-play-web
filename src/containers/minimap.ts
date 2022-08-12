@@ -6,6 +6,7 @@ import { GameServerKeys } from "../keys"
 import { Position, GameAbility, LocationSelectType, PlayerAbility, WarMachineState } from "../types"
 import { useToggle } from "./../hooks/useToggle"
 import { useGame } from "./game"
+import { MechMoveCommandAbility } from "../components/WarMachine/WarMachineItem/MoveCommand"
 
 interface WinnerAnnouncementResponse {
     game_ability: GameAbility
@@ -39,6 +40,7 @@ export const MiniMapContainer = createContainer(() => {
     const [isTargeting, setIsTargeting] = useState(false)
     const [disableHotKey, setDisableHotKey] = useState(false)
     const [highlightedMechGameAbilities, setHighlightedMechGameAbilities] = useState<GameAbility[]>([])
+    const [shownPlayerAbilities, setShownPlayerAbilities] = useState<PlayerAbility[]>([])
     // Other stuff
     const [highlightedMechParticipantID, setHighlightedMechParticipantID] = useState<number>()
     const [selection, setSelection] = useState<MapSelection>()
@@ -73,7 +75,7 @@ export const MiniMapContainer = createContainer(() => {
     )
 
     //todo: refactor this repetative code
-    const onTrigger = useCallback(
+    const onGameAbilityTrigger = useCallback(
         async (warMachineHash, gameAbilityID: string) => {
             try {
                 await send<boolean, { mech_hash: string; game_ability_id: string }>(GameServerKeys.TriggerWarMachineAbility, {
@@ -86,6 +88,35 @@ export const MiniMapContainer = createContainer(() => {
         },
         [send],
     )
+
+    //todo: have to figure out dynamic hotkeys before implementing player abilities
+    const onPlayerAbilityActivate = useCallback(() => {
+        if (!playerAbility) return
+        setPlayerAbility(playerAbility)
+    }, [playerAbility, setPlayerAbility])
+
+    //--mech move
+    // const onClick = useCallback(async () => {
+    //     if (!isAlive) return
+    //
+    //     if (isMoving && !isCancelled) {
+    //         try {
+    //             await send(GameServerKeys.MechMoveCommandCancel, {
+    //                 move_command_id: mechMoveCommandID,
+    //                 hash,
+    //             })
+    //         } catch (err) {
+    //             const message = typeof err === "string" ? err : "Failed cancel mech move command."
+    //             newSnackbarMessage(message, "error")
+    //             console.error(err)
+    //         }
+    //     } else {
+    //         setPlayerAbility({
+    //             ...MechMoveCommandAbility,
+    //             mechHash: hash,
+    //         })
+    //     }
+    // }, [isAlive, isMoving, isCancelled, send, mechMoveCommandID, hash, newSnackbarMessage, setPlayerAbility])
 
     // Toggle expand if user is using player ability or user is chosen to use battle ability
     useEffect(() => {
@@ -130,20 +161,20 @@ export const MiniMapContainer = createContainer(() => {
 
                 switch (e.key) {
                     case "1":
-                        onTrigger(w.hash, highlightedMechGameAbilities[0].id)
+                        onGameAbilityTrigger(w.hash, highlightedMechGameAbilities[0].id)
                         break
                     case "Control" && "2":
-                        onTrigger(w.hash, highlightedMechGameAbilities[1].id)
+                        onGameAbilityTrigger(w.hash, highlightedMechGameAbilities[1].id)
                         break
                     case "Control" && "3":
-                        onTrigger(w.hash, highlightedMechGameAbilities[2].id)
+                        onGameAbilityTrigger(w.hash, highlightedMechGameAbilities[2].id)
                         break
                     default:
                         return
                 }
             }
         },
-        [disableHotKey, onTrigger, wm, user, highlightedMechGameAbilities, highlightedMechParticipantID],
+        [disableHotKey, onGameAbilityTrigger, wm, user, highlightedMechGameAbilities, highlightedMechParticipantID],
     )
     useEffect(() => {
         document.addEventListener("keydown", handleHotKey)
@@ -265,6 +296,9 @@ export const MiniMapContainer = createContainer(() => {
         isEnlarged,
         toggleIsEnlarged,
         setHighlightedMechGameAbilities,
+        onPlayerAbilityActivate,
+        shownPlayerAbilities,
+        setShownPlayerAbilities,
     }
 })
 
