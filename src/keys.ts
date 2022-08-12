@@ -115,6 +115,7 @@ export enum GameServerKeys {
 
     // FIAT
     FiatProductList = "FIAT:PRODUCT:LIST",
+    FiatProductGet = "FIAT:PRODUCT:GET",
     FiatBillingHistoryList = "FIAT:BILLING_HISTORY:LIST",
 
     // Marketplace
