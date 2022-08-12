@@ -3,15 +3,10 @@ import { createContainer } from "unstated-next"
 import { useAuth, useSnackbar } from "."
 import { useGameServerCommandsFaction, useGameServerSubscriptionFaction, useGameServerSubscriptionUser } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
-import { Position, GameAbility, LocationSelectType, PlayerAbility, WarMachineState } from "../types"
+import { Position, GameAbility, LocationSelectType, PlayerAbility, WarMachineState, User } from "../types"
 import { useToggle } from "./../hooks/useToggle"
 import { useGame } from "./game"
 import { MechMoveCommandAbility } from "../components/WarMachine/WarMachineItem/MoveCommand"
-
-interface WinnerAnnouncementResponse {
-    game_ability: GameAbility
-    end_time: Date
-}
 
 export interface MapSelection {
     // start coords (used for LINE_SELECT and LOCATION_SELECT abilities)
@@ -20,6 +15,11 @@ export interface MapSelection {
     endCoords?: Position
     // mech hash (only used for MECH_SELECT abilities)
     mechHash?: string
+}
+
+interface HotkeyCheck {
+    type: string
+    index: number
 }
 
 export const MiniMapContainer = createContainer(() => {
@@ -38,12 +38,29 @@ export const MiniMapContainer = createContainer(() => {
     const [playerAbility, setPlayerAbility] = useState<PlayerAbility>()
     const [isEnlarged, toggleIsEnlarged] = useToggle()
     const [isTargeting, setIsTargeting] = useState(false)
-    const [disableHotKey, setDisableHotKey] = useState(false)
-    const [highlightedMechGameAbilities, setHighlightedMechGameAbilities] = useState<GameAbility[]>([])
-    const [shownPlayerAbilities, setShownPlayerAbilities] = useState<PlayerAbility[]>([])
     // Other stuff
     const [highlightedMechParticipantID, setHighlightedMechParticipantID] = useState<number>()
     const [selection, setSelection] = useState<MapSelection>()
+
+    //ability hot keys
+    const [mechAbilityRecord, setMechAbilityRecord] = useState<{ [hotkey: string]: HotkeyCheck }>({})
+    const [playerAbilityRecord, setPlayerAbilityRecord] = useState<{ [hotkey: string]: HotkeyCheck }>({})
+    const [disableHotKey, setDisableHotKey] = useState(false)
+    const [highlightedMechGameAbilities, setHighlightedMechGameAbilities] = useState<GameAbility[]>([])
+    const [shownPlayerAbilities, setShownPlayerAbilities] = useState<PlayerAbility[]>([])
+
+    const addToPlayerAbilityRecord = useCallback(
+        (
+            set: (value: ((prevState: { [p: string]: HotkeyCheck }) => { [p: string]: HotkeyCheck }) | { [p: string]: HotkeyCheck }) => void,
+            gameAbility: string,
+            i: number,
+        ) => {
+            set((prev) => {
+                return { ...prev, [i.toString()]: gameAbility }
+            })
+        },
+        [],
+    )
 
     const { warMachines } = useGame()
     const wm = useMemo(
