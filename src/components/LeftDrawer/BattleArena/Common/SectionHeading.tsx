@@ -14,7 +14,7 @@ export const SectionHeading = ({ label, tooltip }: { label: string; tooltip?: st
             <Typography sx={{ color: (theme) => theme.factionTheme.secondary, fontFamily: fonts.nostromoHeavy }}>{label}</Typography>
 
             {tooltip && (
-                <TooltipHelper text={tooltip} placement="bottom">
+                <TooltipHelper text={tooltip} placement="right">
                     <Box
                         sx={{
                             opacity: 0.4,

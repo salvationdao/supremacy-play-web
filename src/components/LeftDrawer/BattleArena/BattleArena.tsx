@@ -6,13 +6,13 @@ import { PlayerAbilities } from "./PlayerAbilities/PlayerAbilities"
 
 export const BattleArena = () => {
     return (
-        <Box sx={{ height: "100%", pl: "1.9rem", pr: ".8rem", py: "1.8rem", backgroundColor: (theme) => theme.factionTheme.background }}>
+        <Box sx={{ height: "100%", pl: "1.6rem", pr: ".8rem", py: "1.4rem", backgroundColor: (theme) => theme.factionTheme.background }}>
             <Box
                 sx={{
                     height: "100%",
                     overflowY: "auto",
                     overflowX: "hidden",
-                    pr: "1.4rem",
+                    pr: ".8rem",
                     direction: "ltr",
                     scrollbarWidth: "none",
                     "::-webkit-scrollbar": {
