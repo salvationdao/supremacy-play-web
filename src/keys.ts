@@ -74,6 +74,7 @@ export enum GameServerKeys {
     BattleMechStats = "BATTLE:MECH:STATS",
 
     // Get / sub to data
+    SubBattleAISpawned = "BATTLE:AI:SPAWNED:SUBSCRIBE",
     SubGameSettings = "GAME:SETTINGS:UPDATED",
     SubBattleEndDetailUpdated = "BATTLE:END:DETAIL:UPDATED",
     SubViewersLiveCount = "VIEWER:LIVE:COUNT:UPDATED",

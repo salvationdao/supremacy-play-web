@@ -3,14 +3,20 @@ import { SvgDrag } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
 import { useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
-import { MechMoveCommand } from "../../../WarMachine/WarMachineItem/MoveCommand"
 import { MapIcon } from "./MapIcon"
+
+interface FactionMechCommand {
+    battle_id: string
+    cell_x: number
+    cell_y: number
+    is_ai: boolean
+}
 
 export const MechCommandIcons = () => {
     const theme = useTheme()
-    const [mechMoveCommands, setMechMoveCommands] = useState<MechMoveCommand[]>([])
+    const [mechMoveCommands, setMechMoveCommands] = useState<FactionMechCommand[]>([])
 
-    useGameServerSubscriptionFaction<MechMoveCommand[]>(
+    useGameServerSubscriptionFaction<FactionMechCommand[]>(
         {
             URI: "/mech_commands",
             key: GameServerKeys.SubMechCommands,
@@ -25,11 +31,10 @@ export const MechCommandIcons = () => {
             <>
                 {mechMoveCommands &&
                     mechMoveCommands.length > 0 &&
-                    mechMoveCommands.map((mmc) => {
-                        if (mmc.cell_x === undefined || mmc.cell_y === undefined || mmc.reached_at || mmc.cancelled_at) return null
+                    mechMoveCommands.map((mmc, index) => {
                         return (
                             <MapIcon
-                                key={mmc.id}
+                                key={`${mmc.battle_id}-${index}`}
                                 primaryColor={theme.factionTheme.primary}
                                 position={{ x: mmc.cell_x, y: mmc.cell_y }}
                                 sx={{ zIndex: 9, borderRadius: "50%" }}
