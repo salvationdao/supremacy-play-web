@@ -1,9 +1,9 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { BattleEndTooltip, StyledImageText } from "../.."
-import { GenericWarMachinePNG, SvgCrown } from "../../../assets"
-import { useSupremacy } from "../../../containers"
-import { colors, fonts } from "../../../theme/theme"
-import { BattleEndDetail } from "../../../types"
+import { BattleEndTooltip, StyledImageText } from "../../.."
+import { GenericWarMachinePNG, SvgCrown } from "../../../../assets"
+import { useSupremacy } from "../../../../containers"
+import { colors, fonts } from "../../../../theme/theme"
+import { BattleEndDetail } from "../../../../types"
 
 export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndDetail }) => {
     const { getFaction } = useSupremacy()

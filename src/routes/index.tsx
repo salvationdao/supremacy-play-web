@@ -13,7 +13,7 @@ import { PlayerProfilePage } from "../components/PublicProfile/PlayerProfile"
 import { BATTLE_ARENA_OPEN, IS_TESTING_MODE } from "../constants"
 import { LeaderboardPage } from "../pages/LeaderboardPage"
 import { JobsPage } from "../pages/JobsPage"
-import { BattleEndScreen } from "../components/BattleEndScreen/BattleEndScreen"
+import { BattleEndScreen } from "../components/LeftDrawer/BattleEndScreen/BattleEndScreen"
 
 /**
  * Left drawer

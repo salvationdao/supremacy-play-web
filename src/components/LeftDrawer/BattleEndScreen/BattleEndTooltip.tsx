@@ -1,6 +1,6 @@
 import { Box } from "@mui/material"
-import { SvgInfoIcon } from "../../assets"
-import { TooltipHelper } from "../Common/TooltipHelper"
+import { SvgInfoIcon } from "../../../assets"
+import { TooltipHelper } from "../../Common/TooltipHelper"
 
 export const BattleEndTooltip = ({ text, color }: { text: string; color?: string }) => {
     return (

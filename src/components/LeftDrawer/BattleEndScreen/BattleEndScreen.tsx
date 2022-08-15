@@ -2,11 +2,11 @@ import { Stack, Typography } from "@mui/material"
 import { Box } from "@mui/system"
 import moment from "moment"
 import { useEffect } from "react"
-import { SectionFactions, SectionWinner } from ".."
-import { useGame, useOverlayToggles } from "../../containers"
-import { useTheme } from "../../containers/theme"
-import { LEFT_DRAWER_MAP } from "../../routes"
-import { colors, fonts, siteZIndex } from "../../theme/theme"
+import { SectionFactions, SectionWinner } from "../.."
+import { useGame, useOverlayToggles } from "../../../containers"
+import { useTheme } from "../../../containers/theme"
+import { LEFT_DRAWER_MAP } from "../../../routes"
+import { colors, fonts, siteZIndex } from "../../../theme/theme"
 import { SectionMechRewards } from "./Sections/SectionMechRewards"
 
 export const BattleEndScreen = () => {
@@ -41,10 +41,9 @@ export const BattleEndScreen = () => {
         <Stack
             spacing="1rem"
             sx={{
-                pl: "2.9rem",
-                pr: "1.2rem",
-                pt: "2.4rem",
-                pb: "2.5rem",
+                pl: "2rem",
+                pr: "1rem",
+                py: "1.8rem",
                 height: "100%",
                 width: "100%",
                 boxShadow: 20,

@@ -35,6 +35,7 @@ export const LeftDrawer = () => {
                         position: "absolute",
                         ml: `${DRAWER_BAR_WIDTH}rem`,
                         borderRight: 0,
+                        overflow: "hidden",
                     },
                 }}
             >

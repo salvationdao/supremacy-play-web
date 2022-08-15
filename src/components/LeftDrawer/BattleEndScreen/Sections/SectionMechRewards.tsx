@@ -1,10 +1,10 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { BattleEndTooltip } from "../.."
-import { GenericWarMachinePNG, SvgSupToken } from "../../../assets"
-import { useAuth, useSupremacy } from "../../../containers"
-import { supFormatterNoFixed } from "../../../helpers"
-import { colors, fonts } from "../../../theme/theme"
-import { BattleEndDetail } from "../../../types"
+import { BattleEndTooltip } from "../../.."
+import { GenericWarMachinePNG, SvgSupToken } from "../../../../assets"
+import { useAuth, useSupremacy } from "../../../../containers"
+import { supFormatterNoFixed } from "../../../../helpers"
+import { colors, fonts } from "../../../../theme/theme"
+import { BattleEndDetail } from "../../../../types"
 
 export const SectionMechRewards = ({ battleEndDetail }: { battleEndDetail: BattleEndDetail }) => {
     const { userID } = useAuth()

@@ -34,6 +34,7 @@ export const RightDrawer = () => {
                         backgroundColor: colors.darkNavy,
                         position: "absolute",
                         borderLeft: 0,
+                        overflow: "hidden",
                     },
                 }}
             >

@@ -1,8 +1,8 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { BattleEndTooltip, StyledImageText } from "../.."
-import { useSupremacy } from "../../../containers"
-import { colors, fonts } from "../../../theme/theme"
-import { BattleEndDetail } from "../../../types"
+import { BattleEndTooltip, StyledImageText } from "../../.."
+import { useSupremacy } from "../../../../containers"
+import { colors, fonts } from "../../../../theme/theme"
+import { BattleEndDetail } from "../../../../types"
 
 export const SectionFactions = ({ battleEndDetail }: { battleEndDetail: BattleEndDetail }) => {
     const { getFaction } = useSupremacy()
