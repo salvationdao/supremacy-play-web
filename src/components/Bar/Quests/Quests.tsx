@@ -31,7 +31,7 @@ export const Quests = () => {
 
                 payload.forEach((p) => {
                     const index = clonedArray.findIndex((i) => i.quest_id === p.quest_id)
-                    if (index > 0) {
+                    if (index >= 0) {
                         clonedArray[index] = p
                         return
                     }
