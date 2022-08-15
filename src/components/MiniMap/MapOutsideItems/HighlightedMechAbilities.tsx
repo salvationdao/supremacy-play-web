@@ -80,12 +80,12 @@ const HighlightedMechAbilitiesInner = ({ warMachine }: { warMachine: WarMachineS
                         e.preventDefault()
                         e.stopPropagation()
                     }}
-                    sx={{ p: ".8rem .9rem", width: "15rem" }}
+                    sx={{ p: ".8rem .9rem", width: "17rem" }}
                 >
                     {gameAbilities &&
                         gameAbilities.length > 0 &&
-                        gameAbilities.map((ga) => {
-                            return <AbilityItem key={ga.id} hash={warMachine.hash} participantID={participantID} ability={ga} />
+                        gameAbilities.map((ga, i) => {
+                            return <AbilityItem key={ga.id} hash={warMachine.hash} participantID={participantID} ability={ga} index={i} />
                         })}
 
                     {userID === ownedByID && <MoveCommand isAlive={isAlive} warMachine={warMachine} smallVersion />}
@@ -95,7 +95,7 @@ const HighlightedMechAbilitiesInner = ({ warMachine }: { warMachine: WarMachineS
     )
 }
 
-const AbilityItem = ({ hash, participantID, ability }: { hash: string; participantID: number; ability: GameAbility }) => {
+const AbilityItem = ({ hash, participantID, ability, index }: { hash: string; participantID: number; ability: GameAbility; index: number }) => {
     const { id, colour, image_url, label } = ability
     const [remainSeconds, setRemainSeconds] = useState(30)
     const ready = useMemo(() => remainSeconds === 0, [remainSeconds])
@@ -151,22 +151,25 @@ const AbilityItem = ({ hash, participantID, ability }: { hash: string; participa
                 onClick={ready ? () => onGameAbilityTrigger(hash, id) : undefined}
             />
 
-            <Typography
-                variant="body2"
-                sx={{
-                    pt: ".4rem",
-                    lineHeight: 1,
-                    fontWeight: "fontWeightBold",
-                    display: "-webkit-box",
-                    overflow: "hidden",
-                    overflowWrap: "anywhere",
-                    textOverflow: "ellipsis",
-                    WebkitLineClamp: 1, // change to max number of lines
-                    WebkitBoxOrient: "vertical",
-                }}
-            >
-                {ready ? label : remainSeconds > 300 ? "∞" : `${remainSeconds}s`}
-            </Typography>
+            <Stack direction={"row"} sx={{ width: "100%" }} justifyContent={"space-between"} alignItems={"center"}>
+                <Typography
+                    variant="body2"
+                    sx={{
+                        pt: ".4rem",
+                        lineHeight: 1,
+                        fontWeight: "fontWeightBold",
+                        display: "-webkit-box",
+                        overflow: "hidden",
+                        overflowWrap: "anywhere",
+                        textOverflow: "ellipsis",
+                        WebkitLineClamp: 1, // change to max number of lines
+                        WebkitBoxOrient: "vertical",
+                    }}
+                >
+                    {ready ? label : remainSeconds > 300 ? "∞" : `${remainSeconds}s`}
+                </Typography>
+                {ready && <Typography sx={{ opacity: "0.7" }}>[{index + 1}]</Typography>}
+            </Stack>
         </Stack>
     )
 }

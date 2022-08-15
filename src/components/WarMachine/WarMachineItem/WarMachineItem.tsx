@@ -27,12 +27,14 @@ export const WarMachineItem = ({
     initialExpanded = false,
     transformOrigin,
     isPoppedout,
+    index,
 }: {
     warMachine: WarMachineState
     scale: number
     initialExpanded?: boolean
     transformOrigin?: string
     isPoppedout?: boolean
+    index?: number
 }) => {
     const { isMobile } = useMobile()
     const { userID, factionID } = useAuth()
@@ -52,6 +54,7 @@ export const WarMachineItem = ({
     const [isAlive, toggleIsAlive] = useToggle(warMachine.health > 0)
     const [isExpanded, toggleIsExpanded] = useToggle(initialExpanded)
     const faction = getFaction(wmFactionID)
+    const [hovered, setHovered] = useToggle(false)
 
     const popoverRef = useRef(null)
     const [popoverOpen, togglePopoverOpen] = useToggle()
@@ -107,8 +110,13 @@ export const WarMachineItem = ({
                     transform: highlightedMechParticipantID === participantID ? `scale(${scale * 1.08})` : `scale(${scale})`,
                     transformOrigin: transformOrigin || "center",
                 }}
+                onMouseEnter={() => setHovered(true)}
+                onMouseLeave={() => setHovered(false)}
             >
                 {/* Little info button to show the mech destroyed info */}
+                <Box sx={{ display: hovered ? "inline-block" : "none", position: "absolute", top: "-3rem", right: "0" }}>
+                    {index !== null && index !== undefined && <Typography>[Ctrl + {index + 1}]</Typography>}
+                </Box>
                 {!isAlive && (
                     <IconButton
                         size="small"

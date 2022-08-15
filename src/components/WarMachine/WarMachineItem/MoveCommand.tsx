@@ -101,23 +101,26 @@ const MoveCommandInner = ({ isAlive, remainCooldownSeconds, isMoving, warMachine
                     {isMoving ? <SvgClose2 size="1.6rem" sx={{ pb: 0 }} fill={primaryColor} /> : <SvgDrag size="1.6rem" sx={{ pb: 0 }} fill={primaryColor} />}
                 </Stack>
 
-                <Typography
-                    variant="body2"
-                    sx={{
-                        pt: ".2rem",
-                        opacity: ready ? 1 : 0.6,
-                        lineHeight: 1,
-                        fontWeight: "fontWeightBold",
-                        display: "-webkit-box",
-                        overflow: "hidden",
-                        overflowWrap: "anywhere",
-                        textOverflow: "ellipsis",
-                        WebkitLineClamp: 1, // change to max number of lines
-                        WebkitBoxOrient: "vertical",
-                    }}
-                >
-                    {ready ? MechMoveCommandAbility.ability.label : `${totalSecRemain}s`}
-                </Typography>
+                <Stack direction={"row"} sx={{ width: "100%" }} justifyContent={"space-between"} alignItems={"center"}>
+                    <Typography
+                        variant="body2"
+                        sx={{
+                            pt: ".2rem",
+                            opacity: ready ? 1 : 0.6,
+                            lineHeight: 1,
+                            fontWeight: "fontWeightBold",
+                            display: "-webkit-box",
+                            overflow: "hidden",
+                            overflowWrap: "anywhere",
+                            textOverflow: "ellipsis",
+                            WebkitLineClamp: 1, // change to max number of lines
+                            WebkitBoxOrient: "vertical",
+                        }}
+                    >
+                        {ready ? MechMoveCommandAbility.ability.label : `${totalSecRemain}s`}
+                    </Typography>
+                    <Typography sx={{ opacity: "0.7" }}>[a]</Typography>
+                </Stack>
             </Stack>
         )
     }

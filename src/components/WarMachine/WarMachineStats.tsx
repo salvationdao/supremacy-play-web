@@ -114,9 +114,9 @@ const WarMachineStatsInner = () => {
                                         <Divider orientation="horizontal" />
 
                                         {haveFactionMechs &&
-                                            factionMechs.map((wm) => (
+                                            factionMechs.map((wm, i) => (
                                                 <Box key={`${wm.participantID} - ${wm.hash}`}>
-                                                    <WarMachineItem warMachine={wm} scale={1} initialExpanded isPoppedout />
+                                                    <WarMachineItem warMachine={wm} scale={1} index={i} initialExpanded isPoppedout />
                                                 </Box>
                                             ))}
                                     </Stack>
@@ -148,8 +148,15 @@ const WarMachineStatsInner = () => {
                         <Typography sx={{ fontFamily: fonts.nostromoBlack }}>YOUR FACTION</Typography>
 
                         <Box sx={{ display: "grid", gridTemplateColumns: "repeat(2, 50%)" }}>
-                            {factionMechs.map((wm) => (
-                                <WarMachineItem key={`${wm.participantID} - ${wm.hash}`} warMachine={wm} scale={0.7} transformOrigin="0 0" initialExpanded />
+                            {factionMechs.map((wm, i) => (
+                                <WarMachineItem
+                                    key={`${wm.participantID} - ${wm.hash}`}
+                                    warMachine={wm}
+                                    scale={0.7}
+                                    index={i}
+                                    transformOrigin="0 0"
+                                    initialExpanded
+                                />
                             ))}
                         </Box>
                     </Stack>
@@ -219,8 +226,8 @@ const WarMachineStatsInner = () => {
                         >
                             <HorizontalScrollContainer>
                                 <Stack spacing="-.9rem" direction="row" alignItems="center" justifyContent="center" sx={{ px: "1.2rem", py: "2rem" }}>
-                                    {factionMechs.map((wm) => (
-                                        <WarMachineItem key={`${wm.participantID} - ${wm.hash}`} warMachine={wm} scale={0.75} />
+                                    {factionMechs.map((wm, i) => (
+                                        <WarMachineItem key={`${wm.participantID} - ${wm.hash}`} warMachine={wm} scale={0.75} index={i} />
                                     ))}
                                 </Stack>
                             </HorizontalScrollContainer>
