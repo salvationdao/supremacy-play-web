@@ -13,14 +13,13 @@ import { tourStyles } from "./components/HowToPlay/Tutorial/SetupTutorial"
 import { LeftDrawer } from "./components/LeftDrawer/LeftDrawer"
 import { GAME_SERVER_HOSTNAME, SENTRY_CONFIG, UNDER_MAINTENANCE } from "./constants"
 import {
-    BarProvider,
     ChatProvider,
     DimensionProvider,
     GameProvider,
+    GlobalNotificationsProvider,
     MiniMapProvider,
     MobileProvider,
     OverlayTogglesProvider,
-    GlobalNotificationsProvider,
     StreamProvider,
     SupremacyProvider,
     useMobile,
@@ -222,28 +221,26 @@ const App = () => {
                                 <BrowserRouter>
                                     <ChatProvider>
                                         <WalletProvider>
-                                            <BarProvider>
-                                                <TourProvider {...tourProviderProps}>
-                                                    <StreamProvider>
-                                                        <GameProvider>
-                                                            <MobileProvider>
-                                                                <DimensionProvider>
-                                                                    <OverlayTogglesProvider>
-                                                                        <MiniMapProvider>
-                                                                            <UserUpdater />
-                                                                            <Switch>
-                                                                                <Route path="/404" exact component={NotFoundPage} />
-                                                                                <Route path="/login-redirect" exact component={LoginRedirect} />
-                                                                                <Route path="" component={AppInner} />
-                                                                            </Switch>
-                                                                        </MiniMapProvider>
-                                                                    </OverlayTogglesProvider>
-                                                                </DimensionProvider>
-                                                            </MobileProvider>
-                                                        </GameProvider>
-                                                    </StreamProvider>
-                                                </TourProvider>
-                                            </BarProvider>
+                                            <TourProvider {...tourProviderProps}>
+                                                <StreamProvider>
+                                                    <GameProvider>
+                                                        <MobileProvider>
+                                                            <DimensionProvider>
+                                                                <OverlayTogglesProvider>
+                                                                    <MiniMapProvider>
+                                                                        <UserUpdater />
+                                                                        <Switch>
+                                                                            <Route path="/404" exact component={NotFoundPage} />
+                                                                            <Route path="/login-redirect" exact component={LoginRedirect} />
+                                                                            <Route path="" component={AppInner} />
+                                                                        </Switch>
+                                                                    </MiniMapProvider>
+                                                                </OverlayTogglesProvider>
+                                                            </DimensionProvider>
+                                                        </MobileProvider>
+                                                    </GameProvider>
+                                                </StreamProvider>
+                                            </TourProvider>
                                         </WalletProvider>
                                     </ChatProvider>
                                 </BrowserRouter>

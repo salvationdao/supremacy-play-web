@@ -1,5 +1,4 @@
 export * from "./auth"
-export * from "./bar"
 export * from "./chat"
 export * from "./dimension"
 export * from "./fingerprint"
