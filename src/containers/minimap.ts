@@ -1,12 +1,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { createContainer } from "unstated-next"
 import { useAuth, useSnackbar } from "."
-import { useGameServerCommandsFaction, useGameServerSubscriptionFaction, useGameServerSubscriptionUser } from "../hooks/useGameServer"
+import { useGameServerCommandsFaction, useGameServerSubscriptionUser } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
-import { Position, GameAbility, LocationSelectType, PlayerAbility, WarMachineState, User } from "../types"
+import { GameAbility, LocationSelectType, PlayerAbility, Position, WarMachineState } from "../types"
 import { useToggle } from "./../hooks/useToggle"
 import { useGame } from "./game"
-import { MechMoveCommandAbility } from "../components/WarMachine/WarMachineItem/MoveCommand"
 
 export interface MapSelection {
     // start coords (used for LINE_SELECT and LOCATION_SELECT abilities)
