@@ -147,7 +147,7 @@ const WarMachineStatsInner = () => {
                     >
                         <Typography sx={{ fontFamily: fonts.nostromoBlack }}>YOUR FACTION</Typography>
 
-                        <Box sx={{ display: "grid", gridTemplateColumns: "repeat(2, 50%)" }}>
+                        <Box sx={{ display: "grid", gridTemplateColumns: "repeat(4, 25%)" }}>
                             {factionMechs.map((wm) => (
                                 <WarMachineItem key={`${wm.participantID} - ${wm.hash}`} warMachine={wm} scale={0.7} transformOrigin="0 0" initialExpanded />
                             ))}
@@ -167,7 +167,7 @@ const WarMachineStatsInner = () => {
                     >
                         <Typography sx={{ fontFamily: fonts.nostromoBlack }}>OTHER FACTIONS</Typography>
 
-                        <Box sx={{ display: "grid", gridTemplateColumns: "repeat(2, 50%)" }}>
+                        <Box sx={{ display: "grid", gridTemplateColumns: "repeat(4, 25%)" }}>
                             {otherMechs
                                 .sort((a, b) => a.factionID.localeCompare(b.factionID))
                                 .map((wm) => (

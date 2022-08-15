@@ -99,7 +99,9 @@ export const MysteryCrateBanner = () => {
                         <Typography
                             variant="h6"
                             sx={{
+                                textAlign: "center",
                                 fontFamily: fonts.nostromoHeavy,
+                                whiteSpace: "nowrap",
                                 animation: `${zoomEffect(1.05)} 10s infinite`,
                             }}
                         >
@@ -120,7 +122,7 @@ export const MysteryCrateBanner = () => {
                             border: { isFancy: true, borderColor: primaryColor, borderThickness: "1.5px" },
                             sx: { position: "relative" },
                         }}
-                        sx={{ px: "3.4rem", py: ".8rem", color: secondaryColor }}
+                        sx={{ px: "3.4rem", py: ".8rem", color: secondaryColor, flexWrap: 0, whiteSpace: "nowrap" }}
                         to={`/storefront/mystery-crates${location.hash}`}
                     >
                         <Stack justifyContent="center" sx={{ height: "100%" }}>
