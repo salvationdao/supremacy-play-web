@@ -1,14 +1,15 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
-import { useCallback, useMemo, useState } from "react"
+import { useMemo, useState } from "react"
 import { ClipThing } from "../.."
 import { useAuth, useGame, useMiniMap } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { useInterval, useToggle } from "../../../hooks"
-import { useGameServerCommandsFaction, useGameServerSubscription, useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
+import { useGameServerSubscription, useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
 import { GameAbility, WarMachineLiveState, WarMachineState } from "../../../types"
 import { MoveCommand } from "../../WarMachine/WarMachineItem/MoveCommand"
+import { useHotkey } from "../../../containers/hotkeys"
 
 export const HighlightedMechAbilities = () => {
     const { userID } = useAuth()
@@ -95,10 +96,10 @@ const HighlightedMechAbilitiesInner = ({ warMachine }: { warMachine: WarMachineS
 }
 
 const AbilityItem = ({ hash, participantID, ability }: { hash: string; participantID: number; ability: GameAbility }) => {
-    const { send } = useGameServerCommandsFaction("/faction_commander")
     const { id, colour, image_url, label } = ability
     const [remainSeconds, setRemainSeconds] = useState(30)
     const ready = useMemo(() => remainSeconds === 0, [remainSeconds])
+    const { onGameAbilityTrigger } = useHotkey()
 
     useGameServerSubscriptionFaction<number | undefined>(
         {
@@ -119,17 +120,6 @@ const AbilityItem = ({ hash, participantID, ability }: { hash: string; participa
             return rs - 1
         })
     }, 1000)
-
-    const onTrigger = useCallback(async () => {
-        try {
-            await send<boolean, { mech_hash: string; game_ability_id: string }>(GameServerKeys.TriggerWarMachineAbility, {
-                mech_hash: hash,
-                game_ability_id: id,
-            })
-        } catch (e) {
-            console.error(e)
-        }
-    }, [hash, id, send])
 
     return (
         <Stack
@@ -158,7 +148,7 @@ const AbilityItem = ({ hash, participantID, ability }: { hash: string; participa
                     border: `${colour} 1.5px solid`,
                     ":hover": ready ? { borderWidth: "3px", transform: "scale(1.04)" } : undefined,
                 }}
-                onClick={ready ? onTrigger : undefined}
+                onClick={ready ? () => onGameAbilityTrigger(hash, id) : undefined}
             />
 
             <Typography

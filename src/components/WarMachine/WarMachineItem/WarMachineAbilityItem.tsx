@@ -1,12 +1,13 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
-import { useCallback, useMemo, useState } from "react"
+import { useMemo, useState } from "react"
 import { ClipThing, FancyButton } from "../.."
 import { shadeColor } from "../../../helpers"
-import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
+import { useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { GameAbility, WarMachineState } from "../../../types"
 import { TopText } from "../../VotingSystem/FactionAbility/TopText"
 import { useInterval } from "../../../hooks"
+import { useHotkey } from "../../../containers/hotkeys"
 
 export interface ContributeFactionUniqueAbilityRequest {
     ability_identity: string
@@ -64,8 +65,8 @@ export const MechAbilityButton = ({ warMachine, gameAbility }: { warMachine: War
     const { participantID, hash } = warMachine
     const { id, colour, text_colour } = gameAbility
 
-    const { send } = useGameServerCommandsFaction("/faction_commander")
     const [remainSeconds, setRemainSeconds] = useState(30)
+    const { onGameAbilityTrigger } = useHotkey()
 
     // Listen on the progress of the votes
     useGameServerSubscriptionFaction<number | undefined>(
@@ -88,17 +89,6 @@ export const MechAbilityButton = ({ warMachine, gameAbility }: { warMachine: War
         })
     }, 1000)
 
-    const onTrigger = useCallback(async () => {
-        try {
-            await send<boolean, { mech_hash: string; game_ability_id: string }>(GameServerKeys.TriggerWarMachineAbility, {
-                mech_hash: hash,
-                game_ability_id: id,
-            })
-        } catch (e) {
-            console.error(e)
-        }
-    }, [hash, id, send])
-
     return (
         <FancyButton
             disabled={remainSeconds !== 0}
@@ -109,7 +99,7 @@ export const MechAbilityButton = ({ warMachine, gameAbility }: { warMachine: War
                 sx: { position: "relative" },
             }}
             sx={{ px: "1.2rem", pt: ".4rem", pb: ".5rem", minWidth: "7rem" }}
-            onClick={onTrigger}
+            onClick={() => onGameAbilityTrigger(hash, id)}
         >
             <Stack alignItems="center" justifyContent="center" direction="row">
                 <Typography

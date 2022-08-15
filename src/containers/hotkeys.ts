@@ -44,14 +44,14 @@ export const HotkeyContainer = createContainer(() => {
 
     const { send } = useGameServerCommandsFaction("/faction_commander")
 
-    const wm = useMemo(
+    const factionWarMachines = useMemo(
         () => (warMachines as WarMachineState[])?.filter((w) => w.factionID === factionID).sort((a, b) => a.participantID - b.participantID),
         [warMachines, factionID],
     )
 
-    //todo: refactor this repetative code
+    //ability triggers ------------------------------------
     const onGameAbilityTrigger = useCallback(
-        async (warMachineHash, gameAbilityID: string) => {
+        async (warMachineHash: string, gameAbilityID: string) => {
             try {
                 await send<boolean, { mech_hash: string; game_ability_id: string }>(GameServerKeys.TriggerWarMachineAbility, {
                     mech_hash: warMachineHash,
@@ -64,7 +64,7 @@ export const HotkeyContainer = createContainer(() => {
         [send],
     )
 
-    //todo: have to figure out dynamic hotkeys before implementing player abilities
+    //player abilities - todo: implement player ability hotkeys
     const onPlayerAbilityActivate = useCallback(() => {
         if (!playerAbility) return
         setPlayerAbility(playerAbility)
@@ -100,29 +100,47 @@ export const HotkeyContainer = createContainer(() => {
         },
         [send, mechMoveCommand, newSnackbarMessage, setPlayerAbility],
     )
+    //end ability triggers ------------------------------------
 
     const handleHotKey = useCallback(
         (e: KeyboardEvent) => {
-            if (!wm) return
+            if (!factionWarMachines) return
             e.preventDefault()
 
+            //control key + int = highlight faction mech
             if (e.ctrlKey) {
                 const key = parseInt(e.key)
-
-                if (key > wm.length) return
-
-                setHighlightedMechParticipantID(wm[key - 1].participantID)
+                if (key > factionWarMachines.length) return
+                setHighlightedMechParticipantID(factionWarMachines[key - 1].participantID)
             }
+
+            //mech commander functions
             if (highlightedMechParticipantID) {
+                const w = factionWarMachines.find((w) => w.ownedByID === user.id && w.participantID === highlightedMechParticipantID)
+                if (!w || e.ctrlKey) return
+
+                //trigger mech specific ability
                 const key = parseInt(e.key)
-                const w = wm.find((w) => w.ownedByID === user.id && w.participantID === highlightedMechParticipantID)
+                if (key) {
+                    if (key > highlightedMechGameAbilities.length) return
+                    onGameAbilityTrigger(w.hash, highlightedMechGameAbilities[key - 1].id)
+                }
 
-                if (!w || key > highlightedMechGameAbilities.length) return
-
-                onGameAbilityTrigger(w.hash, highlightedMechGameAbilities[key - 1].id)
+                //trigger mech move
+                if (e.key === "a") {
+                    handleMechMove(w)
+                }
             }
         },
-        [disableHotKey, onGameAbilityTrigger, wm, user, highlightedMechGameAbilities, highlightedMechParticipantID, setHighlightedMechParticipantID],
+        [
+            onGameAbilityTrigger,
+            handleMechMove,
+            factionWarMachines,
+            user,
+            highlightedMechGameAbilities,
+            highlightedMechParticipantID,
+            setHighlightedMechParticipantID,
+        ],
     )
     useEffect(() => {
         document.addEventListener("keydown", handleHotKey)
@@ -134,6 +152,7 @@ export const HotkeyContainer = createContainer(() => {
         setShownPlayerAbilities,
         setHighlightedMechGameAbilities,
         onPlayerAbilityActivate,
+        onGameAbilityTrigger,
         mechMoveCommand,
         setMechMoveCommand,
         MechMoveCommandAbility,
