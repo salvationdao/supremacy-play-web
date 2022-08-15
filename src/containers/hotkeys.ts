@@ -106,7 +106,7 @@ export const HotkeyContainer = createContainer(() => {
             if (e.ctrlKey) {
                 const key = parseInt(e.key)
                 if (key > factionWarMachines.length) return
-                setHighlightedMechParticipantID(factionWarMachines[key - 1].participantID)
+                setHighlightedMechParticipantID(factionWarMachines[key - 1]?.participantID)
             }
 
             //mech commander functions
