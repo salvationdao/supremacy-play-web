@@ -4,7 +4,7 @@ import { supFormatterNoFixed } from "../../../../../helpers"
 import { colors, fonts } from "../../../../../theme/theme"
 import { BlueprintPlayerAbility, PlayerAbility } from "../../../../../types"
 import { ClipThing } from "../../../../Common/ClipThing"
-import { PlayerAbilityCard } from "../../../../LeftDrawer/BattleArena/VotingSystem/PlayerAbilities/PlayerAbilityCard"
+import { PlayerAbilityCard } from "../../../../LeftDrawer/BattleArena/PlayerAbilities/PlayerAbilityCard"
 
 interface MechOwnerBattleRewardProps {
     message: string

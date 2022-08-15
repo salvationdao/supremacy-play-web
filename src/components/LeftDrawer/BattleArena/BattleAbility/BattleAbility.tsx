@@ -1,11 +1,10 @@
 import { Box, Stack } from "@mui/material"
 import { useMemo } from "react"
-import { BattleAbilityItem } from "../../.."
 import { useAuth, useGame } from "../../../../containers"
-import { SectionHeading } from "../Common/SectionHeading"
-import { PlayerAbilities } from "./PlayerAbilities/PlayerAbilities"
+import { BattleAbilityCountdown } from "./BattleAbilityCountdown"
+import { BattleAbilityItem } from "./BattleAbilityItem"
 
-export const VotingSystem = () => {
+export const BattleAbility = () => {
     const { factionID } = useAuth()
     const { bribeStage } = useGame()
     const isBattleStarted = useMemo(() => bribeStage && bribeStage.phase !== "HOLD", [bribeStage])
@@ -14,7 +13,7 @@ export const VotingSystem = () => {
 
     return (
         <Box>
-            <SectionHeading label="VOTING" />
+            <BattleAbilityCountdown bribeStage={bribeStage} />
             <Stack
                 spacing="1rem"
                 sx={{
@@ -27,7 +26,6 @@ export const VotingSystem = () => {
                 }}
             >
                 <BattleAbilityItem key={factionID} />
-                <PlayerAbilities />
             </Stack>
         </Box>
     )

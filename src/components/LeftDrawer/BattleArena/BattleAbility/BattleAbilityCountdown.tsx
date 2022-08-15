@@ -1,22 +1,9 @@
-import { Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useState } from "react"
-import { SvgBattleAbilityIcon } from "../../../../../assets"
-import { BribeStageResponse } from "../../../../../containers"
-import { colors } from "../../../../../theme/theme"
-import { useTimer } from "../../../../../hooks"
+import { BribeStageResponse } from "../../../../containers"
+import { useTimer } from "../../../../hooks"
+import { SectionHeading } from "../Common/SectionHeading"
 
 export const BattleAbilityCountdown = ({ bribeStage }: { bribeStage?: BribeStageResponse }) => {
-    return (
-        <Stack direction="row" spacing=".6rem" alignItems="center">
-            <SvgBattleAbilityIcon size="1.8rem" fill={colors.text} />
-            <Typography sx={{ lineHeight: 1, color: colors.text, fontWeight: "fontWeightBold", textTransform: "initial" }}>
-                <CountdownText bribeStage={bribeStage} />
-            </Typography>
-        </Stack>
-    )
-}
-
-const CountdownText = ({ bribeStage }: { bribeStage?: BribeStageResponse }) => {
     const [sentence, setSentence] = useState<string>("Loading...")
     const { setEndTimeState, totalSecRemain } = useTimer(undefined)
 
@@ -24,15 +11,15 @@ const CountdownText = ({ bribeStage }: { bribeStage?: BribeStageResponse }) => {
     const doSentence = useCallback(() => {
         switch (phase) {
             case "OPT_IN":
-                setSentence(`BATTLE ABILITY (${totalSecRemain}s)`)
+                setSentence(`BATTLE ABILITY (${totalSecRemain})`)
                 break
 
             case "LOCATION_SELECT":
-                setSentence(`BATTLE ABILITY INITIATED (${totalSecRemain}s)`)
+                setSentence(`BATTLE ABILITY INITIATED (${totalSecRemain})`)
                 break
 
             case "COOLDOWN":
-                setSentence(`NEXT BATTLE ABILITY (${totalSecRemain}s)`)
+                setSentence(`NEXT BATTLE ABILITY (${totalSecRemain})`)
                 break
         }
     }, [phase, totalSecRemain])
@@ -58,5 +45,5 @@ const CountdownText = ({ bribeStage }: { bribeStage?: BribeStageResponse }) => {
         doSentence()
     }, [bribeStage, doSentence, setEndTimeState])
 
-    return <>{sentence}</>
+    return <SectionHeading label={sentence} />
 }
