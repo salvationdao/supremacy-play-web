@@ -2,7 +2,7 @@ import { Box, Fade, Stack, Typography, useMediaQuery } from "@mui/material"
 import { useCallback, useState } from "react"
 import { HangarBg } from "../assets"
 import { ClipThing, FancyButton } from "../components"
-import { useSnackbar, useSupremacy } from "../containers"
+import { useGlobalNotifications, useSupremacy } from "../containers"
 import { useGameServerCommandsUser } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
 import { fonts, siteZIndex } from "../theme/theme"
@@ -55,7 +55,7 @@ const renderLastDescription = (faction: Faction) => {
 }
 
 const ExtendedFactionEnlist = ({ faction }: { faction: Faction }) => {
-    const { newSnackbarMessage } = useSnackbar()
+    const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsUser("/user_commander")
     const below1250 = useMediaQuery("(max-width:1250px)")
 

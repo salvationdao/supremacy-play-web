@@ -1,7 +1,7 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useCallback, useState } from "react"
 import { FancyButton } from "../.."
-import { useSnackbar } from "../../../containers"
+import { useGlobalNotifications } from "../../../containers"
 import { useGameServerCommandsFaction, useGameServerSubscriptionUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
@@ -65,7 +65,7 @@ export const BattleAbilityTextTop = ({ label, image_url, colour, disableButton }
 }
 
 const OptInButton = ({ disable, isOptedIn }: { disable: boolean; isOptedIn: boolean }) => {
-    const { newSnackbarMessage } = useSnackbar()
+    const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsFaction("/faction_commander")
 
     const disabled = disable || isOptedIn

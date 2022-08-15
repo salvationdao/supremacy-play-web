@@ -2,7 +2,7 @@ import { Box, InputAdornment, Stack, TextField, Typography } from "@mui/material
 import MDEditor, { commands } from "@uiw/react-md-editor"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { SvgSend } from "../../../../assets"
-import { useSnackbar } from "../../../../containers"
+import { useGlobalNotifications } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
 import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
@@ -22,7 +22,7 @@ const MESSAGE_LIMIT = 1000
 export const MessagesComposeView = ({ onBack, type }: MessageComposeViewProps) => {
     const theme = useTheme()
     const { send } = useGameServerCommandsUser("/user_commander")
-    const { newSnackbarMessage } = useSnackbar()
+    const { newSnackbarMessage } = useGlobalNotifications()
 
     const editorContainerEl = useRef<HTMLDivElement>()
     const [height, setHeight] = useState<number>()

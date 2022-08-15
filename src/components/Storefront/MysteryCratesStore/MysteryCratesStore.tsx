@@ -2,7 +2,7 @@ import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/mater
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { ClipThing, FancyButton } from "../.."
 import { SafePNG } from "../../../assets"
-import { useSnackbar } from "../../../containers"
+import { useGlobalNotifications } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { parseString } from "../../../helpers"
 import { usePagination, useUrlQuery } from "../../../hooks"
@@ -18,7 +18,7 @@ import { CrateRewardVideo } from "../../Hangar/MysteryCratesHangar/OpenCrate/Cra
 import { MysteryCrateStoreItem } from "./MysteryCrateStoreItem/MysteryCrateStoreItem"
 
 export const MysteryCratesStore = () => {
-    const { newSnackbarMessage } = useSnackbar()
+    const { newSnackbarMessage } = useGlobalNotifications()
     const [query, updateQuery] = useUrlQuery()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const theme = useTheme()

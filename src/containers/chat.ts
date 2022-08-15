@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useState } from "react"
 import { useHistory, useLocation } from "react-router"
 import { createContainer } from "unstated-next"
-import { useAuth } from "."
-import { SupremacyPNG } from "../assets"
+import { useAuth, useGlobalNotifications } from "."
 import { GlobalAnnouncementType } from "../components/RightDrawer/LiveChat/GlobalAnnouncement"
 import { MESSAGES_BUFFER_SIZE } from "../constants"
 import { parseString } from "../helpers"
@@ -21,6 +20,7 @@ export type SplitOptionType = "tabbed" | "split" | null
 export type FontSizeType = 0.8 | 1.2 | 1.35
 
 export const ChatContainer = createContainer(() => {
+    const { sendBrowserNotification } = useGlobalNotifications()
     const { userID } = useAuth()
     const history = useHistory()
     const location = useLocation()
@@ -162,26 +162,6 @@ export const ChatContainer = createContainer(() => {
         [userID, tabValue, splitOption],
     )
 
-    const sendBrowserNotification = useCallback((title: string, body: string, timeOpen?: number) => {
-        if (!("Notification" in window)) {
-            return
-        }
-
-        const n = new Notification(title, { body: body, badge: SupremacyPNG, icon: SupremacyPNG, image: SupremacyPNG })
-        n.onclick = (e) => {
-            e.preventDefault()
-            window.parent.parent.focus()
-        }
-
-        if (timeOpen) {
-            setTimeout(() => n.close(), timeOpen)
-        }
-
-        if (document.visibilityState === "visible") {
-            n.close()
-        }
-    }, [])
-
     const updateMessageHandler = useCallback(
         (updatedMessage: ChatMessageType, faction: string | null): boolean => {
             const genericUpdate = (
@@ -275,7 +255,7 @@ export const ChatContainer = createContainer(() => {
             })
 
             sendBrowserNotification(
-                "Ban Proposal Initialised",
+                "Ban Proposal Initialized",
                 `Reason: ${payload.reason}\nOn: ${payload.reported_player_username}\nFrom: ${payload.issued_by_username}`,
                 10000,
             )
@@ -337,7 +317,6 @@ export const ChatContainer = createContainer(() => {
         addToUserGidRecord,
         activePlayers,
         globalActivePlayers,
-        sendBrowserNotification,
     }
 })
 

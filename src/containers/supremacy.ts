@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react"
 import { useParameterizedQuery } from "react-fetching-library"
 import { createContainer } from "unstated-next"
-import { FallbackFaction, useSnackbar } from "."
+import { FallbackFaction, useGlobalNotifications } from "."
 import { GAME_SERVER_HOSTNAME } from "../constants"
 import { GetFactionsAll } from "../fetching"
 import { useToggle } from "../hooks"
@@ -9,7 +9,7 @@ import { FactionsAll } from "../types"
 import { useWS } from "./ws/useWS"
 
 export const SupremacyContainer = createContainer(() => {
-    const { newSnackbarMessage } = useSnackbar()
+    const { newSnackbarMessage } = useGlobalNotifications()
     const { state, isReconnecting, isServerDown } = useWS({
         URI: "/public/online",
         host: GAME_SERVER_HOSTNAME,

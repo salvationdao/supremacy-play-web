@@ -1,7 +1,7 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
 import React, { useCallback, useMemo, useState } from "react"
 import { SvgGlobal, SvgLine, SvgMicrochip, SvgQuestionMark, SvgSupToken, SvgTarget } from "../../assets"
-import { useSnackbar } from "../../containers"
+import { useGlobalNotifications } from "../../containers"
 import { supFormatter } from "../../helpers"
 import { useGameServerCommandsUser } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
@@ -31,7 +31,7 @@ export const QuickPlayerAbilitiesItem = ({
     availability,
 }: QuickPlayerAbilitiesItemProps) => {
     // Purchasing
-    const { newSnackbarMessage } = useSnackbar()
+    const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsUser("/user_commander")
     const [loading, setLoading] = useState(false)
 

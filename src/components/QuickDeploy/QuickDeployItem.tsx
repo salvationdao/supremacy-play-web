@@ -1,7 +1,7 @@
 import { Stack, Typography } from "@mui/material"
 import { useCallback, useMemo, useState } from "react"
 import { FancyButton } from ".."
-import { useSnackbar } from "../../containers"
+import { useGlobalNotifications } from "../../containers"
 import { useTheme } from "../../containers/theme"
 import { getRarityDeets } from "../../helpers"
 import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../hooks/useGameServer"
@@ -19,7 +19,7 @@ interface QuickDeployItemProps {
 }
 
 export const QuickDeployItem = ({ mech }: QuickDeployItemProps) => {
-    const { newSnackbarMessage } = useSnackbar()
+    const { newSnackbarMessage } = useGlobalNotifications()
     const theme = useTheme()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [mechDetails, setMechDetails] = useState<MechDetails>()

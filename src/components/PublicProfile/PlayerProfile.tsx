@@ -2,7 +2,7 @@ import { Avatar, Box, CircularProgress, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { useHistory, useParams } from "react-router-dom"
 import { AboutMeSVG, BattleHistorySVG, StatsSVG, SvgAbility, SvgCake, SvgDeath, SvgSkull2, SvgView } from "../../assets"
-import { useAuth, useSnackbar } from "../../containers"
+import { useAuth, useGlobalNotifications } from "../../containers"
 import { getUserRankDeets, snakeToTitle, timeSince } from "../../helpers"
 import { useGameServerCommands, useGameServerCommandsUser } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
@@ -103,7 +103,7 @@ export const PlayerProfilePage = () => {
 
     const { send } = useGameServerCommands("/public/commander")
     const { send: userSend } = useGameServerCommandsUser("/user_commander")
-    const { newSnackbarMessage } = useSnackbar()
+    const { newSnackbarMessage } = useGlobalNotifications()
     const isMe = `${user?.gid}` === playerGID
 
     const rankDeets = useMemo(() => (profile?.player.rank ? getUserRankDeets(profile?.player.rank, "1.6rem", "1.6rem") : undefined), [profile?.player.rank])

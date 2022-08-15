@@ -1,7 +1,7 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useCallback, useMemo, useState } from "react"
 import { SvgClose2, SvgDrag } from "../../../assets"
-import { useAuth, useMiniMap, useSnackbar } from "../../../containers"
+import { useAuth, useMiniMap, useGlobalNotifications } from "../../../containers"
 import { shadeColor } from "../../../helpers"
 import { useTimer } from "../../../hooks"
 import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
@@ -86,7 +86,7 @@ interface MoveCommandInnerProps {
 }
 
 const MoveCommandInner = ({ isAlive, remainCooldownSeconds, isMoving, isCancelled, hash, mechMoveCommandID, smallVersion }: MoveCommandInnerProps) => {
-    const { newSnackbarMessage } = useSnackbar()
+    const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const { setPlayerAbility } = useMiniMap()
 

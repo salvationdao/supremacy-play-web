@@ -20,7 +20,7 @@ import {
     MiniMapProvider,
     MobileProvider,
     OverlayTogglesProvider,
-    SnackBarProvider,
+    GlobalNotificationsProvider,
     StreamProvider,
     SupremacyProvider,
     useMobile,
@@ -199,7 +199,7 @@ const client = createClient({
     responseInterceptors: [],
 })
 
-ws.Initialise({ defaultHost: GAME_SERVER_HOSTNAME })
+ws.Initialize({ defaultHost: GAME_SERVER_HOSTNAME })
 
 const tourProviderProps = {
     children: <AppInner />,
@@ -215,7 +215,7 @@ const App = () => {
     return (
         <ThemeProvider>
             <FingerprintProvider>
-                <SnackBarProvider>
+                <GlobalNotificationsProvider>
                     <ClientContextProvider client={client}>
                         <SupremacyProvider>
                             <AuthProvider>
@@ -250,7 +250,7 @@ const App = () => {
                             </AuthProvider>
                         </SupremacyProvider>
                     </ClientContextProvider>
-                </SnackBarProvider>
+                </GlobalNotificationsProvider>
             </FingerprintProvider>
         </ThemeProvider>
     )
