@@ -1,6 +1,6 @@
 import { Stack, Typography, useMediaQuery } from "@mui/material"
 import { Box } from "@mui/system"
-import { Link, useLocation, useRouteMatch } from "react-router-dom"
+import { Link, useRouteMatch } from "react-router-dom"
 import { useAuth } from "../../../containers"
 import { ROUTES_ARRAY } from "../../../routes"
 import { fonts } from "../../../theme/theme"
@@ -10,7 +10,6 @@ export const HIDE_NAV_LINKS_WIDTH = 1550
 export const NavLinks = () => {
     const hideNavLinks = useMediaQuery(`(max-width:${HIDE_NAV_LINKS_WIDTH}px)`)
     const { userID } = useAuth()
-    const location = useLocation()
 
     const match = useRouteMatch(ROUTES_ARRAY.filter((r) => r.path !== "/").map((r) => r.path))
     let activeTabID = ""
@@ -29,14 +28,7 @@ export const NavLinks = () => {
                 const { label } = r.navLink
                 const navigateTo = r.path.split("/:")[0]
 
-                return (
-                    <NavLink
-                        key={id}
-                        label={label}
-                        to={`${navigateTo}${location.hash}`}
-                        isActive={activeTabID === r.matchNavLinkID || location.pathname === r.path}
-                    />
-                )
+                return <NavLink key={id} label={label} to={`${navigateTo}`} isActive={activeTabID === r.matchNavLinkID || location.pathname === r.path} />
             })}
         </Stack>
     )

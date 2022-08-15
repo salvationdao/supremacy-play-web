@@ -54,7 +54,6 @@ const BattleArenaPageInner = () => {
         const tabs = [
             {
                 id: "battle-arena",
-                hash: "#battle-arena",
                 icon: <SvgAbility size="1.2rem" sx={{ pt: ".1rem" }} />,
                 label: "BATTLE ARENA",
                 requireAuth: false,
@@ -99,7 +98,6 @@ const BattleArenaPageInner = () => {
             },
             {
                 id: "quick-deploy",
-                hash: "#quick-deploy",
                 icon: <SvgRobot size="1.2rem" sx={{ pt: ".1rem" }} />,
                 label: "QUICK DEPLOY",
                 requireAuth: true,
@@ -119,7 +117,6 @@ const BattleArenaPageInner = () => {
         if (userHasFeature(FeatureName.playerAbility)) {
             tabs.push({
                 id: "buy-abilities",
-                hash: "#buy-abilities",
                 icon: <SvgAbility size="1.2rem" sx={{ pt: ".1rem" }} />,
                 label: "BUY ABILITIES",
                 requireAuth: true,
@@ -138,7 +135,6 @@ const BattleArenaPageInner = () => {
 
         tabs.push({
             id: "prev-battle",
-            hash: "#prev-battle",
             icon: <SvgHistoryClock size="1.2rem" sx={{ pt: ".1rem" }} />,
             label: "PREVIOUS BATTLE",
             requireAuth: false,
@@ -151,7 +147,6 @@ const BattleArenaPageInner = () => {
 
         tabs.push({
             id: "history",
-            hash: "#history",
             icon: <SvgHistory size="1.2rem" sx={{ pt: ".1rem" }} />,
             label: "HISTORY",
             requireAuth: false,

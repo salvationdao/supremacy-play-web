@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useState } from "react"
-import { useHistory, useLocation } from "react-router"
 import { createContainer } from "unstated-next"
 import { useAuth, useGlobalNotifications } from "."
 import { GlobalAnnouncementType } from "../components/RightDrawer/LiveChat/GlobalAnnouncement"
@@ -22,8 +21,6 @@ export type FontSizeType = 0.8 | 1.2 | 1.35
 export const ChatContainer = createContainer(() => {
     const { sendBrowserNotification } = useGlobalNotifications()
     const { userID } = useAuth()
-    const history = useHistory()
-    const location = useLocation()
     const [isPoppedout, toggleIsPoppedout] = useToggle()
 
     // Tabs: 0 is global chat, 1 is faction chat
@@ -285,13 +282,6 @@ export const ChatContainer = createContainer(() => {
             setGlobalActivePlayers(payload.sort((a, b) => a.username.localeCompare(b.username)))
         },
     )
-
-    // Close right drawer when chat is popped out
-    useEffect(() => {
-        if (isPoppedout) {
-            history.replace(location.pathname)
-        }
-    }, [history, isPoppedout, location.pathname])
 
     return {
         isPoppedout,

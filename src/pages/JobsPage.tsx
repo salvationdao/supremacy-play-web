@@ -23,15 +23,15 @@ export const JobsPage = () => {
     // Make sure that the param route is correct, fix it if invalid
     useEffect(() => {
         if (Object.values(JOB_TABS).includes(type)) return setCurrentValue(type)
-        history.replace(`${ROUTES_MAP.jobs.path.replace(":type", JOB_TABS.Repairs)}${location.hash}`)
-    }, [history, location.hash, location.pathname, type])
+        history.replace(`${ROUTES_MAP.jobs.path.replace(":type", JOB_TABS.Repairs)}`)
+    }, [history, location.pathname, type])
 
     const handleChange = useCallback(
         (event: SyntheticEvent, newValue: JOB_TABS) => {
             setCurrentValue(newValue)
-            history.push(`${ROUTES_MAP.jobs.path.replace(":type", newValue)}${location.hash}`)
+            history.push(`${ROUTES_MAP.jobs.path.replace(":type", newValue)}`)
         },
-        [history, location.hash],
+        [history],
     )
 
     if (!currentValue) return null

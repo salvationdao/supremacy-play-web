@@ -37,6 +37,7 @@ import { EnlistPage } from "./pages/EnlistPage"
 import { LoginRedirect } from "./pages/LoginRedirect"
 import { ROUTES_ARRAY, ROUTES_MAP } from "./routes"
 import { colors, fonts } from "./theme/theme"
+import { LeftDrawer } from "./components/LeftDrawer/LeftDrawer"
 
 const AppInner = () => {
     const { isServerDown, serverConnectedBefore } = useSupremacy()
@@ -120,6 +121,7 @@ const AppInner = () => {
                     }}
                 >
                     <NavLinksDrawer />
+                    <LeftDrawer />
 
                     <Stack
                         sx={{

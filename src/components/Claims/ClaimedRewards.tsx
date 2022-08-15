@@ -1,6 +1,5 @@
 import { Box, IconButton, Stack, Typography } from "@mui/material"
 import { useCallback, useMemo, useState } from "react"
-import { useLocation } from "react-router-dom"
 import { RainingSupsPNG, SafePNG, SvgClose } from "../../assets"
 import { useAuth, useGlobalNotifications, useSupremacy } from "../../containers"
 import { useTheme } from "../../containers/theme"
@@ -27,7 +26,6 @@ export const ClaimedRewards = ({ rewards, onClose, setOpeningCrate, setOpenedRew
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const { factionID } = useAuth()
     const theme = useTheme()
-    const location = useLocation()
     const [loading, setLoading] = useState(false)
 
     const faction = useMemo(() => getFaction(factionID), [getFaction, factionID])
@@ -162,7 +160,7 @@ export const ClaimedRewards = ({ rewards, onClose, setOpeningCrate, setOpenedRew
                             sx: { position: "relative", width: "32rem" },
                         }}
                         sx={{ width: "100%", py: "1rem", color: theme.factionTheme.secondary }}
-                        to={`/fleet/mystery-crates${location.hash}`}
+                        to={`/fleet/mystery-crates`}
                     >
                         <Typography
                             variant="h6"

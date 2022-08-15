@@ -1,5 +1,5 @@
 import { Button, Drawer, IconButton, Stack, Typography } from "@mui/material"
-import { Link, useHistory, useLocation, useRouteMatch } from "react-router-dom"
+import { Link, useHistory, useRouteMatch } from "react-router-dom"
 import { SvgBack, SvgSupremacyLogo } from "../../../assets"
 import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT } from "../../../constants"
 import { useAuth, useOverlayToggles } from "../../../containers"
@@ -12,7 +12,6 @@ const EXPAND_DRAWER_WIDTH = 34 //rem
 export const NavLinksDrawer = () => {
     const { userID } = useAuth()
     const theme = useTheme()
-    const location = useLocation()
     const history = useHistory()
     const { isNavLinksDrawerOpen, toggleIsNavLinksDrawerOpen } = useOverlayToggles()
 
@@ -69,7 +68,7 @@ export const NavLinksDrawer = () => {
                                 enable={enable && !disable}
                                 isComingSoon={!enable}
                                 comingSoonLabel={r.navLink.comingSoonLabel}
-                                onClick={() => history.push(`${navigateTo}${location.hash}`)}
+                                onClick={() => history.push(`${navigateTo}`)}
                                 isActive={activeTabID === r.matchNavLinkID || location.pathname === r.path}
                                 primaryColor={theme.factionTheme.primary}
                                 secondaryColor={theme.factionTheme.secondary}

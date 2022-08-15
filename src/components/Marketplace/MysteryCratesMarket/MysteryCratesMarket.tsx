@@ -1,6 +1,5 @@
 import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { useLocation } from "react-router-dom"
 import { ClipThing, FancyButton } from "../.."
 import { SafePNG } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
@@ -29,7 +28,6 @@ const sortOptions = [
 ]
 
 export const MysteryCratesMarket = () => {
-    const location = useLocation()
     const [query, updateQuery] = useUrlQuery()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const theme = useTheme()
@@ -296,7 +294,7 @@ export const MysteryCratesMarket = () => {
                                         sx: { position: "relative" },
                                     }}
                                     sx={{ px: "1.6rem", py: ".6rem", color: "#FFFFFF" }}
-                                    to={`/marketplace/sell${location.hash}`}
+                                    to={`/marketplace/sell`}
                                 >
                                     <Typography
                                         variant="caption"

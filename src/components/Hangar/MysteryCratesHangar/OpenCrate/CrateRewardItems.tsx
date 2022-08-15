@@ -1,6 +1,6 @@
 import { Box, Button, Stack, Typography } from "@mui/material"
 import { useMemo } from "react"
-import { Link, useLocation } from "react-router-dom"
+import { Link } from "react-router-dom"
 import { SvgSkin } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
 import { getAssetItemDeets, getRarityDeets } from "../../../../helpers"
@@ -17,7 +17,6 @@ interface CrateRewardItemsProps {
 }
 
 export const CrateRewardItemsLarge = ({ item, largerVersion }: CrateRewardItemsProps) => {
-    const location = useLocation()
     const theme = useTheme()
     const rarityDeets = useMemo(() => getRarityDeets(item?.skin?.tier || item?.rarity || ""), [item?.rarity, item?.skin?.tier])
     const assetItemDeets = useMemo(() => getAssetItemDeets(item?.type), [item?.type])
@@ -43,7 +42,7 @@ export const CrateRewardItemsLarge = ({ item, largerVersion }: CrateRewardItemsP
                     sx: { height: "100%", pointerEvents: assetItemDeets.subRoute ? "all" : "none" },
                 }}
                 sx={{ p: 0, color: "#FFFFFF" }}
-                to={`/${assetItemDeets.subRoute}/${item?.id}${location.hash}`}
+                to={`/${assetItemDeets.subRoute}/${item?.id}`}
             >
                 <Stack sx={{ m: "1rem", textAlign: "start", width: largerVersion ? "30rem" : "25rem" }}>
                     <Box sx={{ position: "relative", width: "100%", height: largerVersion ? "30rem" : "22rem", mb: "1rem" }}>
@@ -96,7 +95,6 @@ export const CrateRewardItemsLarge = ({ item, largerVersion }: CrateRewardItemsP
 }
 
 export const CrateRewardItemsSmall = ({ item }: CrateRewardItemsProps) => {
-    const location = useLocation()
     const theme = useTheme()
     const rarityDeets = useMemo(() => getRarityDeets(item?.skin?.tier || item?.rarity || ""), [item?.rarity, item?.skin?.tier])
     const assetItemDeets = useMemo(() => getAssetItemDeets(item?.type), [item?.type])
@@ -108,7 +106,7 @@ export const CrateRewardItemsSmall = ({ item }: CrateRewardItemsProps) => {
 
     return (
         <Button sx={{ color: "#FFFFFF", justifyContent: "flex-start", pointerEvents: assetItemDeets.subRoute ? "all" : "none" }}>
-            <Link to={`/${assetItemDeets.subRoute}/${item?.id}${location.hash}`}>
+            <Link to={`/${assetItemDeets.subRoute}/${item?.id}`}>
                 <Stack direction="row" alignItems="center" spacing="1rem" sx={{ textAlign: "start" }}>
                     <Box
                         sx={{

@@ -232,7 +232,7 @@ export const MysteryCratesStore = () => {
                                         sx: { position: "relative" },
                                     }}
                                     sx={{ px: "1.6rem", py: ".6rem", color: theme.factionTheme.secondary }}
-                                    to={`/fleet/mystery-crates${location.hash}`}
+                                    to={`/fleet/mystery-crates`}
                                 >
                                     <Typography
                                         variant="caption"

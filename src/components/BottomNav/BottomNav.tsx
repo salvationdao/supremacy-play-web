@@ -2,7 +2,7 @@ import { Box, Fade, Stack, Tab, Tabs, Typography } from "@mui/material"
 import { useCallback, useState } from "react"
 import { useAuth, useMobile } from "../../containers"
 import { useTheme } from "../../containers/theme"
-import { HASH_ROUTES_MAP } from "../../routes"
+import { RIGHT_DRAWER_MAP } from "../../routes"
 import { fonts } from "../../theme/theme"
 
 export const BottomNav = () => {
@@ -30,7 +30,7 @@ const BottomNavInner = () => {
     const secondaryColor = theme.factionTheme.secondary
     const backgroundColor = theme.factionTheme.background
 
-    const tabs = [HASH_ROUTES_MAP.live_chat, ...additionalTabs, HASH_ROUTES_MAP.active_players]
+    const tabs = [RIGHT_DRAWER_MAP.live_chat, ...additionalTabs, RIGHT_DRAWER_MAP.active_players]
 
     return (
         <Stack

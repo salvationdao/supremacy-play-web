@@ -1,18 +1,21 @@
 import { Box, Stack, Tab, Tabs } from "@mui/material"
-import { useHistory, useLocation } from "react-router-dom"
 import { useAuth } from "../../containers"
 import { useTheme } from "../../containers/theme"
-import { HASH_ROUTES_ARRAY, RightDrawerHashes } from "../../routes"
+import { RIGHT_DRAWER_ARRAY } from "../../routes"
 import { colors, fonts, siteZIndex } from "../../theme/theme"
 
 const BUTTON_WIDTH = 17 //rem
 const DRAWER_BAR_WIDTH = 3 // rem
 
-export const DrawerButtons = () => {
+export const DrawerButtons = ({
+    drawerActiveTabID,
+    setDrawerActiveTabID,
+}: {
+    drawerActiveTabID: string
+    setDrawerActiveTabID: React.Dispatch<React.SetStateAction<string>>
+}) => {
     const theme = useTheme()
     const { userID } = useAuth()
-    const location = useLocation()
-    const history = useHistory()
 
     return (
         <Box
@@ -39,7 +42,7 @@ export const DrawerButtons = () => {
             }}
         >
             <Tabs value={0} orientation="vertical" variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile sx={{ flex: 1 }}>
-                {HASH_ROUTES_ARRAY.map((r) => {
+                {RIGHT_DRAWER_ARRAY.map((r) => {
                     if (r.requireAuth && !userID) return null
                     return (
                         <TabButton
@@ -48,13 +51,14 @@ export const DrawerButtons = () => {
                             enable={true}
                             icon={r.icon}
                             onClick={() => {
-                                if (location.hash === r.hash) {
-                                    history.replace(`${location.pathname}${location.search}${RightDrawerHashes.None}`)
-                                    return
-                                }
-                                history.replace(`${location.pathname}${location.search}${r.hash}`)
+                                setDrawerActiveTabID((prev) => {
+                                    if (r.id === prev) {
+                                        return ""
+                                    }
+                                    return r.id
+                                })
                             }}
-                            isActive={location.hash === r.hash}
+                            isActive={r.id === drawerActiveTabID}
                             primaryColor={theme.factionTheme.primary}
                             secondaryColor={theme.factionTheme.secondary}
                         />

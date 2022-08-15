@@ -229,28 +229,22 @@ for (const [, value] of Object.entries(ROUTES_MAP)) {
 }
 
 /**
- * Right drawer
+ * Left and right drawer
  */
-export enum RightDrawerHashes {
-    None = "",
-    LiveChat = "#live_chat",
-    PlayerList = "#player_list",
-}
 
-export interface HashRouteStruct {
+export interface SideTabsStruct {
     id: string
-    hash: string
     Component?: () => JSX.Element
     icon: string | React.ReactElement<unknown, string | React.JSXElementConstructor<unknown>>
     label: string
-    mountAllTime?: boolean
+    onlyShowOnRoute?: string // Leave blank to have the tab available on all pages, else specify the route
+    mountAllTime?: boolean // Whether to keep component mounted even not on the tab
     requireAuth: boolean
 }
 
-export const HASH_ROUTES_MAP: { [name: string]: HashRouteStruct } = {
+export const RIGHT_DRAWER_MAP: { [name: string]: SideTabsStruct } = {
     live_chat: {
         id: "live_chat",
-        hash: RightDrawerHashes.LiveChat,
         icon: <SvgChat size="1rem" sx={{ pt: ".3rem" }} />,
         label: "Live Chat",
         Component: LiveChat,
@@ -259,7 +253,6 @@ export const HASH_ROUTES_MAP: { [name: string]: HashRouteStruct } = {
     },
     active_players: {
         id: "active_players",
-        hash: RightDrawerHashes.PlayerList,
         icon: (
             <Box sx={{ pb: ".2rem" }}>
                 <Box sx={{ width: ".8rem", height: ".8rem", borderRadius: "50%", backgroundColor: colors.green }} />
@@ -272,7 +265,7 @@ export const HASH_ROUTES_MAP: { [name: string]: HashRouteStruct } = {
     },
 }
 
-export const HASH_ROUTES_ARRAY: HashRouteStruct[] = []
-for (const [, value] of Object.entries(HASH_ROUTES_MAP)) {
-    HASH_ROUTES_ARRAY.push(value)
+export const RIGHT_DRAWER_ARRAY: SideTabsStruct[] = []
+for (const [, value] of Object.entries(RIGHT_DRAWER_MAP)) {
+    RIGHT_DRAWER_ARRAY.push(value)
 }

@@ -1,17 +1,17 @@
 import { Box, Fade, Stack, Tab, Tabs } from "@mui/material"
 import { SyntheticEvent, useCallback, useEffect, useState } from "react"
-import { useHistory, useLocation, useParams } from "react-router-dom"
+import { useHistory, useParams } from "react-router-dom"
 import { HangarBg } from "../assets"
+import { ClipThing } from "../components"
+import { MysteryCrateBanner } from "../components/Common/PageHeaderBanners/MysteryCrateBanner"
+import { HistoryMarket } from "../components/Marketplace/HistoryMarket/HistoryMarket"
 import { KeycardsMarket } from "../components/Marketplace/KeycardsMarket/KeycardsMarket"
 import { MysteryCratesMarket } from "../components/Marketplace/MysteryCratesMarket/MysteryCratesMarket"
 import { WarMachinesMarket } from "../components/Marketplace/WarMachinesMarket/WarMachinesMarket"
 import { WeaponsMarket } from "../components/Marketplace/WeaponsMarket/WeaponsMarket"
-import { HistoryMarket } from "../components/Marketplace/HistoryMarket/HistoryMarket"
 import { useTheme } from "../containers/theme"
 import { ROUTES_MAP } from "../routes"
 import { siteZIndex } from "../theme/theme"
-import { MysteryCrateBanner } from "../components/Common/PageHeaderBanners/MysteryCrateBanner"
-import { ClipThing } from "../components"
 
 export enum MARKETPLACE_TABS {
     History = "history",
@@ -23,7 +23,6 @@ export enum MARKETPLACE_TABS {
 
 export const MarketplacePage = () => {
     const theme = useTheme()
-    const location = useLocation()
     const history = useHistory()
     const { type } = useParams<{ type: MARKETPLACE_TABS }>()
     const [currentValue, setCurrentValue] = useState<MARKETPLACE_TABS>()
@@ -31,15 +30,15 @@ export const MarketplacePage = () => {
     // Make sure that the param route is correct, fix it if invalid
     useEffect(() => {
         if (Object.values(MARKETPLACE_TABS).includes(type)) return setCurrentValue(type)
-        history.replace(`${ROUTES_MAP.marketplace.path.replace(":type", MARKETPLACE_TABS.WarMachines)}${location.hash}`)
-    }, [history, location.hash, location.pathname, type])
+        history.replace(`${ROUTES_MAP.marketplace.path.replace(":type", MARKETPLACE_TABS.WarMachines)}`)
+    }, [history, type])
 
     const handleChange = useCallback(
         (event: SyntheticEvent, newValue: MARKETPLACE_TABS) => {
             setCurrentValue(newValue)
-            history.push(`${ROUTES_MAP.marketplace.path.replace(":type", newValue)}${location.hash}`)
+            history.push(`${ROUTES_MAP.marketplace.path.replace(":type", newValue)}`)
         },
-        [history, location.hash],
+        [history],
     )
 
     if (!currentValue) return null
