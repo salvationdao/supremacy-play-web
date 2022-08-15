@@ -6,10 +6,10 @@ import { LocationSelectType, PlayerAbility } from "../../../types"
 import { FancyButton } from "../../Common/FancyButton"
 import { TooltipHelper } from "../../Common/TooltipHelper"
 import { PlayerAbilityCooldownIndicator } from "./PlayerAbilityCooldownIndicator"
-import { useHotkey } from "../../../containers/hotkeys"
+import { useMiniMap } from "../../../containers"
 
 export const PlayerAbilityCard = ({ playerAbility, viewOnly }: { playerAbility: PlayerAbility; viewOnly?: boolean }) => {
-    const { onPlayerAbilityActivate } = useHotkey()
+    const { onPlayerAbilityActivate } = useMiniMap()
     const [disabled, setDisabled] = useState(false)
 
     const checkIfDisabled = useCallback(() => {

@@ -179,6 +179,11 @@ export const MiniMapContainer = createContainer(() => {
         }
     }, [send, selection, resetSelection, winner?.game_ability, playerAbility, newSnackbarMessage, setHighlightedMechParticipantID])
 
+    const onPlayerAbilityActivate = useCallback(() => {
+        if (!playerAbility) return
+        setPlayerAbility(playerAbility)
+    }, [playerAbility, setPlayerAbility])
+
     return {
         mapElement,
         winner,
@@ -196,6 +201,7 @@ export const MiniMapContainer = createContainer(() => {
         gridHeight,
         isEnlarged,
         toggleIsEnlarged,
+        onPlayerAbilityActivate,
     }
 })
 

@@ -30,9 +30,10 @@ export const MechMoveCommandAbility: PlayerAbility = {
         cooldown_seconds: 5,
     },
 }
+//todo: Player Abilities hotkeys and custom hotkey maps
 
 export const HotkeyContainer = createContainer(() => {
-    const { setHighlightedMechParticipantID, setPlayerAbility, playerAbility, highlightedMechParticipantID } = useMiniMap()
+    const { setHighlightedMechParticipantID, setPlayerAbility, highlightedMechParticipantID } = useMiniMap()
     const { warMachines } = useGame()
     const { factionID, user } = useAuth()
     const { newSnackbarMessage } = useSnackbar()
@@ -63,12 +64,6 @@ export const HotkeyContainer = createContainer(() => {
         },
         [send],
     )
-
-    //player abilities - todo: implement player ability hotkeys
-    const onPlayerAbilityActivate = useCallback(() => {
-        if (!playerAbility) return
-        setPlayerAbility(playerAbility)
-    }, [playerAbility, setPlayerAbility])
 
     // mech move
     const handleMechMove = useCallback(
@@ -151,7 +146,6 @@ export const HotkeyContainer = createContainer(() => {
         shownPlayerAbilities,
         setShownPlayerAbilities,
         setHighlightedMechGameAbilities,
-        onPlayerAbilityActivate,
         onGameAbilityTrigger,
         mechMoveCommand,
         setMechMoveCommand,
