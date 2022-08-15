@@ -4,6 +4,7 @@ import { SvgQuest } from "../../../assets"
 import { useToggle } from "../../../hooks"
 import { useGameServerSubscriptionUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
+import { shake } from "../../../theme/keyframes"
 import { colors, fonts } from "../../../theme/theme"
 import { QuestProgress, QuestStat } from "../../../types/user"
 import { QuestsPopover } from "./QuestsPopover"
@@ -12,7 +13,7 @@ export const Quests = () => {
     const popoverRef = useRef(null)
     const [popoverOpen, togglePopoverOpen] = useToggle(false)
     const [questProgressions, setQuestProgressions] = useState<QuestProgress[]>()
-    const confetti = useRef<string[]>([])
+    const [confetti, setConfetti] = useState<string[]>([])
 
     const questStats = useGameServerSubscriptionUser<QuestStat[]>({
         URI: "/quest_stat",
@@ -33,7 +34,7 @@ export const Quests = () => {
                 payload.forEach((p) => {
                     const index = clonedArray.findIndex((i) => i.quest_id === p.quest_id)
                     if (index >= 0) {
-                        if (p.current === p.goal) confetti.current = confetti.current.concat(p.quest_id)
+                        if (p.current === p.goal) setConfetti((prev) => prev.concat(p.quest_id))
                         clonedArray[index] = p
                         return
                     }
@@ -76,6 +77,7 @@ export const Quests = () => {
                         cursor: "pointer",
                         borderRadius: 1,
                         backgroundColor: popoverOpen ? "#FFFFFF12" : "unset",
+                        animation: confetti.length > 0 ? `${shake} 1s infinite` : "unset",
                         ":hover": {
                             backgroundColor: "#FFFFFF12",
                         },
@@ -111,9 +113,9 @@ export const Quests = () => {
                     questProgressions={questProgressions}
                     onClose={() => {
                         togglePopoverOpen(false)
-                        confetti.current = []
+                        setConfetti([])
                     }}
-                    confetti={confetti.current}
+                    confetti={confetti}
                 />
             )}
         </>

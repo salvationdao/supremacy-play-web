@@ -79,11 +79,12 @@ export const QuestsPopover = ({
 
                     <Stack spacing=".7rem">
                         {questStats.map((qs) => {
+                            const progress = questProgressions?.find((qp) => qp.quest_id === qs.id)
                             return (
                                 <QuestItem
-                                    key={`qs-key-${qs.id}`}
+                                    key={`qs-key-${qs.id}-${progress?.current}`}
                                     questStat={qs}
-                                    progress={questProgressions?.find((qp) => qp.quest_id === qs.id)}
+                                    progress={progress}
                                     showConfetti={confetti.findIndex((i) => i === qs.id) >= 0}
                                 />
                             )

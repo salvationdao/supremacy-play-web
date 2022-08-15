@@ -26,12 +26,12 @@ export const QuestItem = ({ questStat, progress, showConfetti }: { questStat: Qu
             >
                 <Confetti
                     width={1000}
-                    height={100}
+                    height={40}
                     gravity={0.04}
                     initialVelocityX={1}
                     tweenDuration={10000}
                     run={showConfetti}
-                    numberOfPieces={400}
+                    numberOfPieces={600}
                     recycle={false}
                 />
 
