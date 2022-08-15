@@ -14,18 +14,15 @@ export const BattleEndScreen = () => {
     const { map, battleEndDetail } = useGame()
     const { setLeftDrawerActiveTabID } = useOverlayToggles()
 
-    useEffect(() => {
-        if (battleEndDetail) {
-            setLeftDrawerActiveTabID(LEFT_DRAWER_MAP.previous_battle?.id)
-        }
-    }, [battleEndDetail, setLeftDrawerActiveTabID])
-
     // New game started, so close the panel
     useEffect(() => {
-        if (map) {
-            // setLeftDrawerActiveTabID(LEFT_DRAWER_MAP.battle_arena?.id)
-        }
+        if (map) setLeftDrawerActiveTabID(LEFT_DRAWER_MAP.battle_arena?.id)
     }, [map, setLeftDrawerActiveTabID])
+
+    // Game ends, show the panel
+    useEffect(() => {
+        if (battleEndDetail) setLeftDrawerActiveTabID(LEFT_DRAWER_MAP.previous_battle?.id)
+    }, [battleEndDetail, setLeftDrawerActiveTabID])
 
     const primaryColor = theme.factionTheme.primary
     const backgroundColor = theme.factionTheme.background
@@ -52,7 +49,7 @@ export const BattleEndScreen = () => {
                 width: "100%",
                 boxShadow: 20,
                 zIndex: siteZIndex.Popover,
-                background: `linear-gradient(65deg, ${backgroundColor} 3%, ${backgroundColor}FF 50%, ${backgroundColor}EE)`,
+                backgroundColor,
             }}
         >
             <Box>
