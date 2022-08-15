@@ -43,6 +43,9 @@ export const HotkeyContainer = createContainer(() => {
     const [shownPlayerAbilities, setShownPlayerAbilities] = useState<PlayerAbility[]>([])
     const [mechMoveCommand, setMechMoveCommand] = useState<MechMoveCommand>()
 
+    //keys reserved for mech abilities
+    const mechAbilityKey = ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"]
+
     const { send } = useGameServerCommandsFaction("/faction_commander")
 
     const factionWarMachines = useMemo(
@@ -102,9 +105,9 @@ export const HotkeyContainer = createContainer(() => {
             if (!factionWarMachines) return
             e.preventDefault()
 
-            //control key + int = highlight faction mech
-            if (e.ctrlKey) {
-                const key = parseInt(e.key)
+            //int = highlight faction mech
+            const key = parseInt(e.key)
+            if (key) {
                 if (key > factionWarMachines.length) return
                 setHighlightedMechParticipantID(factionWarMachines[key - 1]?.participantID)
             }
@@ -115,10 +118,9 @@ export const HotkeyContainer = createContainer(() => {
                 if (!w || e.ctrlKey) return
 
                 //trigger mech specific ability
-                const key = parseInt(e.key)
-                if (key) {
-                    if (key > highlightedMechGameAbilities.length) return
-                    onGameAbilityTrigger(w.hash, highlightedMechGameAbilities[key - 1].id)
+                const qwertyIndex = mechAbilityKey.indexOf(e.key)
+                if (qwertyIndex > -1) {
+                    onGameAbilityTrigger(w.hash, highlightedMechGameAbilities[qwertyIndex].id)
                 }
 
                 //trigger mech move
