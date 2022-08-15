@@ -1,8 +1,8 @@
-import { useState, useEffect, useMemo, useCallback } from "react"
+import React, { useState, useEffect, useMemo, useCallback } from "react"
 import { useMutation } from "react-fetching-library"
 import { Masonry } from "@mui/lab"
-import { useMediaQuery, Stack, Box, Typography, CircularProgress } from "@mui/material"
-import { Elements, PaymentElement } from "@stripe/react-stripe-js"
+import { useMediaQuery, Stack, Box, Typography, CircularProgress, TextField } from "@mui/material"
+import { Elements, useElements, useStripe, CardNumberElement } from "@stripe/react-stripe-js"
 import { loadStripe } from "@stripe/stripe-js"
 import { STRIPE_PUBLISHABLE_KEY } from "../../../../constants"
 import { useTheme } from "../../../../containers/theme"
@@ -16,6 +16,7 @@ import { GameServerKeys } from "../../../../keys"
 import { useSnackbar } from "../../../../containers"
 import { SetupCheckout } from "../../../../fetching"
 import { FancyButton } from "../../../Common/FancyButton"
+import { StripeTextFieldCVC, StripeTextFieldExpiry, StripeTextFieldNumber } from "../../../Stripe/StripeElements"
 
 const stripePromise = loadStripe(STRIPE_PUBLISHABLE_KEY)
 
@@ -94,23 +95,25 @@ export const PackageStoreCheckout = ({ id }: Props) => {
     }, [isLoading, loadError, product, primaryColor])
 
     return (
-        <ClipThing
-            clipSize="10px"
-            border={{
-                borderColor: theme.factionTheme.primary,
-                borderThickness: ".3rem",
-            }}
-            corners={{
-                topRight: true,
-                bottomLeft: true,
-                bottomRight: true,
-            }}
-            opacity={0.7}
-            backgroundColor={theme.factionTheme.background}
-            sx={{ height: "100%" }}
-        >
-            <Stack sx={{ height: "100%" }}>({content}</Stack>
-        </ClipThing>
+        <Elements stripe={stripePromise}>
+            <ClipThing
+                clipSize="10px"
+                border={{
+                    borderColor: theme.factionTheme.primary,
+                    borderThickness: ".3rem",
+                }}
+                corners={{
+                    topRight: true,
+                    bottomLeft: true,
+                    bottomRight: true,
+                }}
+                opacity={0.7}
+                backgroundColor={theme.factionTheme.background}
+                sx={{ height: "100%" }}
+            >
+                <Stack sx={{ height: "100%" }}>({content}</Stack>
+            </ClipThing>
+        </Elements>
     )
 }
 
@@ -121,33 +124,6 @@ interface PackageStoreCheckoutInnerProps {
 const PackageStoreCheckoutInner = ({ product }: PackageStoreCheckoutInnerProps) => {
     const theme = useTheme()
     const below780 = useMediaQuery("(max-width:780px)")
-    const { loading, mutate } = useMutation(SetupCheckout)
-
-    const [paymentIntentSecret, setPaymentIntentSecret] = useState<string>()
-
-    const setupCheckout = useCallback(async () => {
-        try {
-            const { payload: secretToken, error } = await mutate({
-                product_id: product.id,
-                product_type: "generic",
-            })
-
-            if (error || !secretToken) {
-                return
-            }
-            console.log("Test Secret", secretToken)
-
-            setPaymentIntentSecret(secretToken)
-        } catch (err) {
-            const message = typeof err === "string" ? err : "Unable to start checkout, please try again."
-            console.error(message)
-        }
-    }, [mutate, product])
-
-    useEffect(() => {
-        setupCheckout()
-    }, [setupCheckout])
-
     const primaryColor = theme.factionTheme.primary
 
     return (
@@ -204,45 +180,210 @@ const PackageStoreCheckoutInner = ({ product }: PackageStoreCheckoutInnerProps) 
                                         {product.name}
                                     </Typography>
                                 </Box>
-                                {loading && <CircularProgress size="3rem" sx={{ color: primaryColor }} />}
-                                {paymentIntentSecret && (
-                                    <Elements
-                                        stripe={stripePromise}
-                                        options={{
-                                            clientSecret: paymentIntentSecret,
-                                        }}
-                                    >
-                                        <form>
-                                            <PaymentElement />
-                                            <FancyButton
-                                                type={"submit"}
-                                                clipThingsProps={{
-                                                    clipSize: "9px",
-                                                    backgroundColor: colors.marketSold,
-                                                    opacity: 1,
-                                                    border: { isFancy: true, borderColor: colors.marketSold, borderThickness: "2px" },
-                                                    sx: { position: "relative" },
-                                                }}
-                                                sx={{ px: "4rem", py: ".6rem", color: "#FFFFFF" }}
-                                            >
-                                                <Typography
-                                                    variant="caption"
-                                                    sx={{
-                                                        color: "#FFFFFF",
-                                                        fontFamily: fonts.nostromoHeavy,
-                                                    }}
-                                                >
-                                                    SUBMIT
-                                                </Typography>
-                                            </FancyButton>
-                                        </form>
-                                    </Elements>
-                                )}
+                                <PaymentForm product={product} />
                             </Stack>
                         </Masonry>
                     </Box>
                 </Box>
             </Box>
         </Stack>
+    )
+}
+
+const PaymentForm = ({ product }: PackageStoreCheckoutInnerProps) => {
+    const theme = useTheme()
+    const { mutate } = useMutation(SetupCheckout)
+
+    const elements = useElements()
+    const stripe = useStripe()
+
+    const primaryColor = theme.factionTheme.primary
+    const backgroundColor = theme.factionTheme.background
+
+    const [submitting, setSubmitting] = useState(false)
+
+    const setupCheckout = useCallback(async () => {
+        try {
+            const { payload: secretToken, error } = await mutate({
+                product_id: product.id,
+                product_type: "generic",
+            })
+
+            if (error || !secretToken) {
+                return
+            }
+            return secretToken
+        } catch (err) {
+            const message = typeof err === "string" ? err : "Unable to start checkout, please try again."
+            console.error(message)
+        }
+    }, [mutate, product])
+
+    const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault()
+        if (!elements || !stripe) return
+
+        const cardElement = elements.getElement(CardNumberElement)
+        if (!cardElement) return
+
+        try {
+            setSubmitting(true)
+            const paymentIntentSecret = await setupCheckout()
+            if (!paymentIntentSecret) {
+                return
+            }
+
+            const resp = await stripe.confirmCardPayment(paymentIntentSecret, {
+                payment_method: {
+                    card: cardElement,
+                },
+            })
+            if (resp.error) {
+                console.error("Payment Failed", resp.error)
+            }
+        } catch (err) {
+            const message = typeof err === "string" ? err : "Unable to start checkout, please try again."
+            console.error("Payment Failed (Exception)", message, err)
+        } finally {
+            setSubmitting(false)
+        }
+    }
+
+    return (
+        <form onSubmit={submitHandler}>
+            <ClipThing
+                clipSize="5px"
+                clipSlantSize="2px"
+                opacity={0.9}
+                border={{
+                    borderColor: primaryColor,
+                    borderThickness: "1px",
+                }}
+                backgroundColor={backgroundColor}
+                sx={{ height: "100%", flex: 1 }}
+            >
+                <Stack sx={{ height: "100%" }}>
+                    <StripeTextFieldNumber
+                        variant="outlined"
+                        hiddenLabel
+                        fullWidth
+                        placeholder="Enter keywords..."
+                        label={undefined}
+                        sx={{
+                            backgroundColor: "unset",
+                            ".MuiOutlinedInput-input": {
+                                px: "1.5rem",
+                                py: ".5rem",
+                                height: "unset",
+                                "::-webkit-outer-spin-button, ::-webkit-inner-spin-button": {
+                                    WebkitAppearance: "none",
+                                },
+                                borderRadius: 0.5,
+                                border: `${primaryColor}50 2px solid`,
+                                ":hover, :focus, :active": { backgroundColor: "#00000080", border: `${primaryColor}99 2px solid` },
+                            },
+                            ".MuiOutlinedInput-notchedOutline": { border: "unset" },
+                        }}
+                    />
+                </Stack>
+            </ClipThing>
+
+            <ClipThing
+                clipSize="5px"
+                clipSlantSize="2px"
+                opacity={0.9}
+                border={{
+                    borderColor: primaryColor,
+                    borderThickness: "1px",
+                }}
+                backgroundColor={backgroundColor}
+                sx={{ height: "100%", flex: 1 }}
+            >
+                <Stack sx={{ height: "100%" }}>
+                    <StripeTextFieldExpiry
+                        variant="outlined"
+                        hiddenLabel
+                        fullWidth
+                        placeholder="Enter keywords..."
+                        label={undefined}
+                        sx={{
+                            backgroundColor: "unset",
+                            ".MuiOutlinedInput-input": {
+                                px: "1.5rem",
+                                py: ".5rem",
+                                height: "unset",
+                                "::-webkit-outer-spin-button, ::-webkit-inner-spin-button": {
+                                    WebkitAppearance: "none",
+                                },
+                                borderRadius: 0.5,
+                                border: `${primaryColor}50 2px solid`,
+                                ":hover, :focus, :active": { backgroundColor: "#00000080", border: `${primaryColor}99 2px solid` },
+                            },
+                            ".MuiOutlinedInput-notchedOutline": { border: "unset" },
+                        }}
+                    />
+                </Stack>
+            </ClipThing>
+
+            <ClipThing
+                clipSize="5px"
+                clipSlantSize="2px"
+                opacity={0.9}
+                border={{
+                    borderColor: primaryColor,
+                    borderThickness: "1px",
+                }}
+                backgroundColor={backgroundColor}
+                sx={{ height: "100%", flex: 1 }}
+            >
+                <Stack sx={{ height: "100%" }}>
+                    <StripeTextFieldCVC
+                        variant="outlined"
+                        hiddenLabel
+                        fullWidth
+                        placeholder="Enter keywords..."
+                        label={undefined}
+                        sx={{
+                            backgroundColor: "unset",
+                            ".MuiOutlinedInput-input": {
+                                px: "1.5rem",
+                                py: ".5rem",
+                                height: "unset",
+                                "::-webkit-outer-spin-button, ::-webkit-inner-spin-button": {
+                                    WebkitAppearance: "none",
+                                },
+                                borderRadius: 0.5,
+                                border: `${primaryColor}50 2px solid`,
+                                ":hover, :focus, :active": { backgroundColor: "#00000080", border: `${primaryColor}99 2px solid` },
+                            },
+                            ".MuiOutlinedInput-notchedOutline": { border: "unset" },
+                        }}
+                    />
+                </Stack>
+            </ClipThing>
+
+            <FancyButton
+                type={"submit"}
+                loading={submitting}
+                clipThingsProps={{
+                    clipSize: "9px",
+                    backgroundColor: colors.marketSold,
+                    opacity: 1,
+                    border: { isFancy: true, borderColor: colors.marketSold, borderThickness: "2px" },
+                    sx: { position: "relative" },
+                }}
+                sx={{ px: "4rem", py: ".6rem", color: "#FFFFFF" }}
+            >
+                <Typography
+                    variant="caption"
+                    sx={{
+                        color: "#FFFFFF",
+                        fontFamily: fonts.nostromoHeavy,
+                    }}
+                >
+                    SUBMIT
+                </Typography>
+            </FancyButton>
+        </form>
     )
 }
