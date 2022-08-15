@@ -5,7 +5,7 @@ import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT } from "../../../constants"
 import { useAuth, useOverlayToggles } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { ROUTES_ARRAY } from "../../../routes"
-import { colors, fonts, siteZIndex } from "../../../theme/theme"
+import { fonts, siteZIndex } from "../../../theme/theme"
 
 const EXPAND_DRAWER_WIDTH = 34 //rem
 
@@ -66,8 +66,6 @@ export const NavLinksDrawer = () => {
                                 key={r.id}
                                 label={label}
                                 enable={enable && !disable}
-                                isComingSoon={!enable}
-                                comingSoonLabel={r.navLink.comingSoonLabel}
                                 onClick={() => history.push(`${navigateTo}`)}
                                 isActive={activeTabID === r.matchNavLinkID || location.pathname === r.path}
                                 primaryColor={theme.factionTheme.primary}
@@ -106,22 +104,18 @@ export const NavLinksDrawer = () => {
 const MenuButton = ({
     label,
     enable,
-    isComingSoon,
     isActive,
     primaryColor,
     secondaryColor,
     onClick,
-    comingSoonLabel,
 }: {
     label: string
     enable?: boolean
-    isComingSoon?: boolean
     icon?: string | React.ReactElement<unknown, string | React.JSXElementConstructor<unknown>>
     isActive?: boolean
     primaryColor: string
     secondaryColor: string
     onClick: () => void
-    comingSoonLabel?: string
 }) => {
     return (
         <Button
@@ -144,12 +138,6 @@ const MenuButton = ({
             <Typography sx={{ color: isActive ? secondaryColor : "#FFFFFF", fontFamily: fonts.nostromoHeavy, whiteSpace: "nowrap", lineHeight: 1 }}>
                 {label}
             </Typography>
-
-            {isComingSoon && (
-                <Typography variant="caption" sx={{ color: colors.neonBlue, fontFamily: fonts.nostromoBold, whiteSpace: "nowrap", lineHeight: 1 }}>
-                    &nbsp;({comingSoonLabel || "COMING SOON"})
-                </Typography>
-            )}
         </Button>
     )
 }

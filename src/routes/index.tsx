@@ -13,6 +13,7 @@ import { PlayerProfilePage } from "../components/PublicProfile/PlayerProfile"
 import { BATTLE_ARENA_OPEN, IS_TESTING_MODE } from "../constants"
 import { LeaderboardPage } from "../pages/LeaderboardPage"
 import { JobsPage } from "../pages/JobsPage"
+import { BattleEndScreen } from "../components/BattleEndScreen/BattleEndScreen"
 
 /**
  * Left drawer
@@ -29,7 +30,6 @@ interface RouteStruct {
     navLink?: {
         enable: boolean
         label: string
-        comingSoonLabel?: string
     }
     matchNavLinkID?: string // The /route which will make this button highlighted
     enable: boolean
@@ -46,7 +46,6 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         navLink: {
             enable: BATTLE_ARENA_OPEN,
             label: "Battle Arena",
-            comingSoonLabel: "Returning Soon",
         },
         matchNavLinkID: "home",
         enable: true,
@@ -234,12 +233,33 @@ for (const [, value] of Object.entries(ROUTES_MAP)) {
 
 export interface SideTabsStruct {
     id: string
-    Component?: () => JSX.Element
+    Component?: () => JSX.Element | null
     icon: string | React.ReactElement<unknown, string | React.JSXElementConstructor<unknown>>
     label: string
-    onlyShowOnRoute?: string // Leave blank to have the tab available on all pages, else specify the route
-    mountAllTime?: boolean // Whether to keep component mounted even not on the tab
+    onlyShowOnRoute: string // Leave blank to have the tab available on all pages, else specify the route
+    mountAllTime: boolean // Whether to keep component mounted even not on the tab
     requireAuth: boolean
+}
+
+export const LEFT_DRAWER_MAP: { [name: string]: SideTabsStruct } = {
+    battle_arena: {
+        id: "battle_arena",
+        icon: <SvgChat size="1rem" sx={{ pt: ".3rem" }} />,
+        label: "Battle Commands",
+        // Component: LiveChat,
+        requireAuth: false,
+        onlyShowOnRoute: "/",
+        mountAllTime: true,
+    },
+    previous_battle: {
+        id: "previous_battle",
+        icon: <SvgChat size="1rem" sx={{ pt: ".3rem" }} />,
+        label: "Previous Battle",
+        Component: BattleEndScreen,
+        requireAuth: false,
+        onlyShowOnRoute: "/",
+        mountAllTime: true,
+    },
 }
 
 export const RIGHT_DRAWER_MAP: { [name: string]: SideTabsStruct } = {
@@ -249,6 +269,7 @@ export const RIGHT_DRAWER_MAP: { [name: string]: SideTabsStruct } = {
         label: "Live Chat",
         Component: LiveChat,
         requireAuth: false,
+        onlyShowOnRoute: "",
         mountAllTime: true,
     },
     active_players: {
@@ -261,6 +282,7 @@ export const RIGHT_DRAWER_MAP: { [name: string]: SideTabsStruct } = {
         label: "Active Players",
         Component: PlayerList,
         requireAuth: true,
+        onlyShowOnRoute: "",
         mountAllTime: false,
     },
 }

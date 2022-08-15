@@ -57,6 +57,8 @@ const BattleArenaPageInner = () => {
                 icon: <SvgAbility size="1.2rem" sx={{ pt: ".1rem" }} />,
                 label: "BATTLE ARENA",
                 requireAuth: false,
+                onlyShowOnRoute: "",
+                mountAllTime: true,
                 Component: () => (
                     <Stack sx={{ height: "100%" }}>
                         {/* <Notifications /> */}
@@ -101,6 +103,8 @@ const BattleArenaPageInner = () => {
                 icon: <SvgRobot size="1.2rem" sx={{ pt: ".1rem" }} />,
                 label: "QUICK DEPLOY",
                 requireAuth: true,
+                onlyShowOnRoute: "",
+                mountAllTime: true,
                 Component: () => (
                     <Stack sx={{ position: "relative", height: "100%" }}>
                         <QuickDeploy
@@ -120,6 +124,8 @@ const BattleArenaPageInner = () => {
                 icon: <SvgAbility size="1.2rem" sx={{ pt: ".1rem" }} />,
                 label: "BUY ABILITIES",
                 requireAuth: true,
+                onlyShowOnRoute: "",
+                mountAllTime: true,
                 Component: () => (
                     <Stack sx={{ position: "relative", height: "100%" }}>
                         <QuickPlayerAbilities
@@ -138,6 +144,8 @@ const BattleArenaPageInner = () => {
             icon: <SvgHistoryClock size="1.2rem" sx={{ pt: ".1rem" }} />,
             label: "PREVIOUS BATTLE",
             requireAuth: false,
+            onlyShowOnRoute: "",
+            mountAllTime: true,
             Component: () => (
                 <Stack sx={{ position: "relative", height: "100%" }}>
                     <BattleEndScreen />
@@ -150,6 +158,8 @@ const BattleArenaPageInner = () => {
             icon: <SvgHistory size="1.2rem" sx={{ pt: ".1rem" }} />,
             label: "HISTORY",
             requireAuth: false,
+            onlyShowOnRoute: "",
+            mountAllTime: false,
             Component: () => (
                 <Stack sx={{ position: "relative", height: "100%" }}>
                     <BattleHistory />

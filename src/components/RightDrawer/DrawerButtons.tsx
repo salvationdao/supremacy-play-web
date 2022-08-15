@@ -1,5 +1,5 @@
-import { Box, Stack, Tab, Tabs } from "@mui/material"
-import { useAuth } from "../../containers"
+import { Box, Tab, Tabs } from "@mui/material"
+import { useAuth, useOverlayToggles } from "../../containers"
 import { useTheme } from "../../containers/theme"
 import { RIGHT_DRAWER_ARRAY } from "../../routes"
 import { colors, fonts, siteZIndex } from "../../theme/theme"
@@ -7,13 +7,8 @@ import { colors, fonts, siteZIndex } from "../../theme/theme"
 const BUTTON_WIDTH = 17 //rem
 const DRAWER_BAR_WIDTH = 3 // rem
 
-export const DrawerButtons = ({
-    drawerActiveTabID,
-    setDrawerActiveTabID,
-}: {
-    drawerActiveTabID: string
-    setDrawerActiveTabID: React.Dispatch<React.SetStateAction<string>>
-}) => {
+export const DrawerButtons = () => {
+    const { rightDrawerActiveTabID, setRightDrawerActiveTabID } = useOverlayToggles()
     const theme = useTheme()
     const { userID } = useAuth()
 
@@ -51,14 +46,14 @@ export const DrawerButtons = ({
                             enable={true}
                             icon={r.icon}
                             onClick={() => {
-                                setDrawerActiveTabID((prev) => {
+                                setRightDrawerActiveTabID((prev) => {
                                     if (r.id === prev) {
                                         return ""
                                     }
                                     return r.id
                                 })
                             }}
-                            isActive={r.id === drawerActiveTabID}
+                            isActive={r.id === rightDrawerActiveTabID}
                             primaryColor={theme.factionTheme.primary}
                             secondaryColor={theme.factionTheme.secondary}
                         />
@@ -72,23 +67,19 @@ export const DrawerButtons = ({
 export const TabButton = ({
     label,
     enable,
-    isComingSoon,
     icon,
     isActive,
     primaryColor,
     secondaryColor,
     onClick,
-    comingSoonLabel,
 }: {
     label: string
     enable?: boolean
-    isComingSoon?: boolean
     icon?: string | React.ReactElement<unknown, string | React.JSXElementConstructor<unknown>>
     isActive?: boolean
     primaryColor: string
     secondaryColor: string
     onClick: () => void
-    comingSoonLabel?: string
 }) => {
     return (
         <Box
@@ -99,17 +90,7 @@ export const TabButton = ({
             }}
         >
             <Tab
-                label={
-                    !isComingSoon ? (
-                        label
-                    ) : (
-                        <Stack>
-                            {label}
-                            <br />
-                            <span style={{ color: colors.neonBlue }}>({comingSoonLabel || "COMING SOON"})</span>
-                        </Stack>
-                    )
-                }
+                label={label}
                 icon={icon}
                 iconPosition="end"
                 onClick={onClick}

@@ -1,7 +1,7 @@
 import { Box, Drawer, Fade } from "@mui/material"
-import { ReactNode, useEffect, useState } from "react"
+import { ReactNode } from "react"
 import { DRAWER_TRANSITION_DURATION } from "../../constants"
-import { useAuth, useMobile } from "../../containers"
+import { useAuth, useMobile, useOverlayToggles } from "../../containers"
 import { RIGHT_DRAWER_ARRAY, RIGHT_DRAWER_MAP } from "../../routes"
 import { colors, siteZIndex } from "../../theme/theme"
 import { DrawerButtons } from "./DrawerButtons"
@@ -9,21 +9,17 @@ import { DrawerButtons } from "./DrawerButtons"
 export const DRAWER_WIDTH = 38 // rem
 
 export const RightDrawer = () => {
+    const { rightDrawerActiveTabID } = useOverlayToggles()
     const { isMobile } = useMobile()
     const { userID } = useAuth()
-    const [drawerActiveTabID, setDrawerActiveTabID] = useState(localStorage.getItem("leftDrawerActiveTabID") || "")
-
-    useEffect(() => {
-        localStorage.setItem("leftDrawerActiveTabID", drawerActiveTabID)
-    }, [drawerActiveTabID])
 
     if (isMobile) return null
 
-    const isOpen = !!RIGHT_DRAWER_MAP[drawerActiveTabID]
+    const isOpen = !!RIGHT_DRAWER_MAP[rightDrawerActiveTabID]
 
     return (
         <>
-            <DrawerButtons drawerActiveTabID={drawerActiveTabID} setDrawerActiveTabID={setDrawerActiveTabID} />
+            <DrawerButtons />
             <Drawer
                 transitionDuration={DRAWER_TRANSITION_DURATION}
                 open={isOpen}
@@ -45,7 +41,7 @@ export const RightDrawer = () => {
                 {RIGHT_DRAWER_ARRAY.map((r) => {
                     if (r.requireAuth && !userID) return null
                     return (
-                        <Content key={r.id} isActive={r.id === drawerActiveTabID} mountAllTime={r.mountAllTime}>
+                        <Content key={r.id} isActive={r.id === rightDrawerActiveTabID} mountAllTime={r.mountAllTime}>
                             {r.Component && <r.Component />}
                         </Content>
                     )
