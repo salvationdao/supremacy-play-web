@@ -123,10 +123,10 @@ const QuickPlayerAbilitiesInner = ({ userID }: { userID: string }) => {
     }, [nextRefreshTime])
 
     return (
-        <Stack spacing="2rem">
+        <Box>
             <SectionHeading label="PURCHASE ABILITIES" />
 
-            <Stack sx={{ position: "relative" }}>
+            <Stack sx={{ p: "1.5rem 1.1rem", backgroundColor: "#FFFFFF12", boxShadow: 2, border: "#FFFFFF20 1px solid" }}>
                 <Stack>
                     <Stack direction="row" spacing=".6rem">
                         <Typography sx={{ fontWeight: "fontWeightBold", textTransform: "uppercase" }}>Next refresh in:</Typography>
@@ -199,6 +199,6 @@ const QuickPlayerAbilitiesInner = ({ userID }: { userID: string }) => {
                     </Stack>
                 )}
             </Stack>
-        </Stack>
+        </Box>
     )
 }

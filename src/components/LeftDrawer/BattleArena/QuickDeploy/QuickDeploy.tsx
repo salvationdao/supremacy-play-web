@@ -115,11 +115,11 @@ const QuickDeployInner = () => {
 
     return (
         <>
-            <Stack spacing="2rem">
+            <Box>
                 <SectionHeading label="QUICK DEPLOY" />
 
-                <Stack sx={{ position: "relative" }}>
-                    <Stack spacing="1.5rem" direction="row" sx={{ width: "100%" }}>
+                <Stack sx={{ backgroundColor: "#FFFFFF12", boxShadow: 2, border: "#FFFFFF20 1px solid" }}>
+                    <Stack spacing="1.5rem" direction="row" sx={{ p: ".5rem 1rem", backgroundColor: "#00000099" }}>
                         {queueLength >= 0 && (
                             <AmountItem
                                 key={`${queueLength}-queue_length`}
@@ -173,7 +173,7 @@ const QuickDeployInner = () => {
                     )}
 
                     {!isLoading && !loadError && mechs && mechs.length > 0 && (
-                        <Stack sx={{ minHeight: "20rem" }}>
+                        <Stack sx={{ minHeight: "20rem", p: "1.1rem" }}>
                             {mechs.map((mech) => {
                                 return <QuickDeployItem key={mech.id} mech={mech} queueFeed={queueFeed} />
                             })}
@@ -225,7 +225,7 @@ const QuickDeployInner = () => {
                         </Box>
                     )}
                 </Stack>
-            </Stack>
+            </Box>
 
             {/* preferences modal */}
             {preferencesModalOpen && (

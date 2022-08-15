@@ -5,7 +5,7 @@ import { VotingSystem } from "./VotingSystem/VotingSystem"
 
 export const BattleArena = () => {
     return (
-        <Box sx={{ height: "100%", pl: "1.9rem", pr: ".5rem", py: "1.8rem", backgroundColor: (theme) => theme.factionTheme.background }}>
+        <Box sx={{ height: "100%", pl: "1.9rem", pr: ".8rem", py: "1.8rem", backgroundColor: (theme) => theme.factionTheme.background }}>
             <Box
                 sx={{
                     height: "100%",
@@ -28,7 +28,7 @@ export const BattleArena = () => {
                 }}
             >
                 <Box sx={{ direction: "ltr", height: 0 }}>
-                    <Stack spacing="3rem">
+                    <Stack spacing="2rem">
                         <VotingSystem />
                         <QuickPlayerAbilities />
                         <QuickDeploy />
