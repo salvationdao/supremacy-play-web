@@ -2,7 +2,7 @@ import { Box, Stack } from "@mui/material"
 import { SvgIntroAnimation, SvgOutroAnimation, SvgPowerCore, SvgSkin, SvgUtilities, SvgWeapons } from "../../../../assets"
 import { getRarityDeets } from "../../../../helpers"
 import { colors } from "../../../../theme/theme"
-import { MechDetails } from "../../../../types"
+import { AssetItemType, MechDetails } from "../../../../types"
 import { MechLoadoutItem } from "../Common/MechLoadoutItem"
 
 export const MechLoadout = ({ mechDetails }: { mechDetails: MechDetails }) => {
@@ -39,6 +39,7 @@ export const MechLoadout = ({ mechDetails }: { mechDetails: MechDetails }) => {
             >
                 {powerCore ? (
                     <MechLoadoutItem
+                        type={AssetItemType.PowerCore}
                         imageUrl={powerCore.image_url || powerCore.avatar_url}
                         videoUrls={[powerCore.card_animation_url]}
                         label={powerCore.label}
@@ -46,7 +47,14 @@ export const MechLoadout = ({ mechDetails }: { mechDetails: MechDetails }) => {
                         Icon={SvgPowerCore}
                     />
                 ) : (
-                    <MechLoadoutItem label="POWER CORE" primaryColor={colors.powerCore} onClick={() => console.log("AAAAA")} isEmpty disabled />
+                    <MechLoadoutItem
+                        type={AssetItemType.PowerCore}
+                        label="POWER CORE"
+                        primaryColor={colors.powerCore}
+                        onClick={() => console.log("AAAAA")}
+                        isEmpty
+                        disabled
+                    />
                 )}
 
                 {weapons &&
@@ -55,6 +63,7 @@ export const MechLoadout = ({ mechDetails }: { mechDetails: MechDetails }) => {
                         return (
                             <MechLoadoutItem
                                 key={w.id}
+                                type={AssetItemType.Weapon}
                                 imageUrl={w.image_url || w.avatar_url}
                                 videoUrls={[w.card_animation_url]}
                                 label={w.label}
@@ -73,7 +82,15 @@ export const MechLoadout = ({ mechDetails }: { mechDetails: MechDetails }) => {
                     new Array(weaponSlots - weapons.length)
                         .fill(0)
                         .map((_, index) => (
-                            <MechLoadoutItem key={index} label="WEAPON" primaryColor={colors.weapons} onClick={() => console.log("AAAAA")} isEmpty disabled />
+                            <MechLoadoutItem
+                                type={AssetItemType.Weapon}
+                                key={index}
+                                label="WEAPON"
+                                primaryColor={colors.weapons}
+                                onClick={() => console.log("AAAAA")}
+                                isEmpty
+                                disabled
+                            />
                         ))}
 
                 {utilities &&
@@ -82,6 +99,7 @@ export const MechLoadout = ({ mechDetails }: { mechDetails: MechDetails }) => {
                         return (
                             <MechLoadoutItem
                                 key={w.id}
+                                type={AssetItemType.Utility}
                                 imageUrl={w.image_url || w.avatar_url}
                                 videoUrls={[w.card_animation_url]}
                                 label={w.label}
@@ -99,6 +117,7 @@ export const MechLoadout = ({ mechDetails }: { mechDetails: MechDetails }) => {
                         .map((_, index) => (
                             <MechLoadoutItem
                                 key={index}
+                                type={AssetItemType.Utility}
                                 label="UTILITY"
                                 primaryColor={colors.utilities}
                                 onClick={() => console.log("AAAAA")}
@@ -120,6 +139,7 @@ export const MechLoadout = ({ mechDetails }: { mechDetails: MechDetails }) => {
             >
                 {chassisSkin ? (
                     <MechLoadoutItem
+                        type={AssetItemType.MechSkin}
                         imageUrl={chassisSkin.image_url || chassisSkin.avatar_url}
                         videoUrls={[chassisSkin.card_animation_url]}
                         label={chassisSkin.label}
@@ -128,11 +148,19 @@ export const MechLoadout = ({ mechDetails }: { mechDetails: MechDetails }) => {
                         rarity={getRarityDeets(chassisSkin.tier)}
                     />
                 ) : (
-                    <MechLoadoutItem label="SUBMODEL" primaryColor={colors.chassisSkin} onClick={() => console.log("AAAAA")} isEmpty disabled />
+                    <MechLoadoutItem
+                        type={AssetItemType.MechSkin}
+                        label="SUBMODEL"
+                        primaryColor={colors.chassisSkin}
+                        onClick={() => console.log("AAAAA")}
+                        isEmpty
+                        disabled
+                    />
                 )}
 
                 {introAnimation ? (
                     <MechLoadoutItem
+                        type={AssetItemType.IntroAnimation}
                         imageUrl={introAnimation.image_url || introAnimation.avatar_url}
                         videoUrls={[introAnimation.card_animation_url]}
                         label={introAnimation.label}
@@ -140,11 +168,19 @@ export const MechLoadout = ({ mechDetails }: { mechDetails: MechDetails }) => {
                         Icon={SvgIntroAnimation}
                     />
                 ) : (
-                    <MechLoadoutItem label="INTRO ANIMATION" primaryColor={colors.introAnimation} onClick={() => console.log("AAAAA")} isEmpty disabled />
+                    <MechLoadoutItem
+                        type={AssetItemType.IntroAnimation}
+                        label="INTRO ANIMATION"
+                        primaryColor={colors.introAnimation}
+                        onClick={() => console.log("AAAAA")}
+                        isEmpty
+                        disabled
+                    />
                 )}
 
                 {outroAnimation ? (
                     <MechLoadoutItem
+                        type={AssetItemType.OutroAnimation}
                         imageUrl={outroAnimation.image_url || outroAnimation.avatar_url}
                         videoUrls={[outroAnimation.card_animation_url]}
                         label={outroAnimation.label}
@@ -152,7 +188,14 @@ export const MechLoadout = ({ mechDetails }: { mechDetails: MechDetails }) => {
                         Icon={SvgOutroAnimation}
                     />
                 ) : (
-                    <MechLoadoutItem label="OUTRO ANIMATION" primaryColor={colors.outroAnimation} onClick={() => console.log("AAAAA")} isEmpty disabled />
+                    <MechLoadoutItem
+                        type={AssetItemType.OutroAnimation}
+                        label="OUTRO ANIMATION"
+                        primaryColor={colors.outroAnimation}
+                        onClick={() => console.log("AAAAA")}
+                        isEmpty
+                        disabled
+                    />
                 )}
             </Stack>
         </Box>

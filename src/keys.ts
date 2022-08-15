@@ -39,15 +39,17 @@ export enum GameServerKeys {
     SystemMessageSend = "SYSTEM:MESSAGE:SEND",
 
     // Asset / queue
+    JoinQueue = "BATTLE:QUEUE:JOIN",
     SubQueueFeed = "BATTLE:QUEUE:STATUS:SUBSCRIBE",
+    SubMechQueuePosition = "PLAYER:ASSET:MECH:QUEUE:SUBSCRIBE",
+    MechQueueUpdated = "PLAYER:ASSET:MECH:QUEUE:UPDATE",
     GetMechs = "PLAYER:ASSET:MECH:LIST",
-    // Weapons
+    GetMechDetails = "PLAYER:ASSET:MECH:DETAIL",
     GetWeapons = "PLAYER:ASSET:WEAPON:LIST",
     GetWeaponDetails = "PLAYER:ASSET:WEAPON:DETAIL",
-    GetMechDetails = "PLAYER:ASSET:MECH:DETAIL",
-    SubMechQueuePosition = "PLAYER:ASSET:MECH:QUEUE:SUBSCRIBE",
-    JoinQueue = "BATTLE:QUEUE:JOIN",
-    MechQueueUpdated = "PLAYER:ASSET:MECH:QUEUE:UPDATE",
+    GetPowerCores = "PLAYER:ASSET:POWER_CORE:LIST",
+    GetPowerCoreDetails = "PLAYER:ASSET:POWER_CORE:DETAIL",
+    GetUtilities = "PLAYER:ASSET:UTILITY:LIST",
     TriggerMechStatusUpdate = "PLAYER:ASSET:MECH:STATUS:UPDATE",
     MechRename = "PLAYER:MECH:RENAME",
 

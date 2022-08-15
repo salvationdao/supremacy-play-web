@@ -5,23 +5,13 @@ import { SvgPlus, SvgSkin, SvgWrapperProps } from "../../../../assets"
 import { shadeColor } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
 import { colors, fonts } from "../../../../theme/theme"
-import { Rarity } from "../../../../types"
+import { AssetItemType, Rarity } from "../../../../types"
 import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
 import { MediaPreviewModal } from "../../../Common/MediaPreview/MediaPreviewModal"
+import { MechLoadoutPowerCoreModal } from "../WarMachineDetails/Modals/Loadout/MechLoadoutPowerCoreModal"
 
-export const MechLoadoutItem = ({
-    imageUrl,
-    videoUrls,
-    label,
-    primaryColor,
-    onClick,
-    isEmpty,
-    Icon,
-    rarity,
-    hasSkin,
-    imageTransform,
-    disabled,
-}: {
+export interface MechLoadoutItemProps {
+    type?: AssetItemType
     imageUrl?: string
     videoUrls?: (string | undefined)[] | undefined
     label: string
@@ -33,9 +23,24 @@ export const MechLoadoutItem = ({
     hasSkin?: boolean
     imageTransform?: string
     disabled?: boolean
-}) => {
-    const [showPreviewModal, toggleShowPreviewModal] = useToggle()
+}
+
+export const MechLoadoutItem = (props: MechLoadoutItemProps) => {
+    const { type, imageUrl, videoUrls, label, primaryColor, onClick, isEmpty, Icon, rarity, hasSkin, imageTransform, disabled } = props
+    const [showLoadoutModal, toggleShowLoadoutModal] = useToggle()
     const backgroundColor = useMemo(() => shadeColor(primaryColor, -90), [primaryColor])
+
+    const Modal = useMemo(() => {
+        switch (type) {
+            case AssetItemType.Weapon:
+                return <MechLoadoutPowerCoreModal {...props} onClose={() => toggleShowLoadoutModal(false)} />
+            case AssetItemType.PowerCore:
+                return <MechLoadoutPowerCoreModal {...props} onClose={() => toggleShowLoadoutModal(false)} />
+            case AssetItemType.Utility:
+                return <MechLoadoutPowerCoreModal {...props} onClose={() => toggleShowLoadoutModal(false)} />
+        }
+        return <MediaPreviewModal imageUrl={imageUrl} videoUrls={videoUrls} onClose={() => toggleShowLoadoutModal(false)} />
+    }, [imageUrl, props, toggleShowLoadoutModal, type, videoUrls])
 
     return (
         <>
@@ -54,7 +59,7 @@ export const MechLoadoutItem = ({
                     sx={{ p: 0, color: primaryColor }}
                     onClick={() => {
                         onClick && onClick()
-                        toggleShowPreviewModal(true)
+                        toggleShowLoadoutModal(true)
                     }}
                 >
                     <Stack spacing="1rem" alignItems="center" sx={{ height: "16rem", width: "16rem", p: "1rem", textAlign: "center" }}>
@@ -105,7 +110,7 @@ export const MechLoadoutItem = ({
                 </FancyButton>
             </Box>
 
-            {showPreviewModal && <MediaPreviewModal imageUrl={imageUrl} videoUrls={videoUrls} onClose={() => toggleShowPreviewModal(false)} />}
+            {showLoadoutModal && Modal}
         </>
     )
 }
