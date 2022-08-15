@@ -1,7 +1,7 @@
 import { Stack, Typography } from "@mui/material"
 import { ReactNode } from "react"
-import { TooltipHelper } from "../.."
-import { fonts } from "../../../theme/theme"
+import { TooltipHelper } from "../../../.."
+import { fonts } from "../../../../../theme/theme"
 
 interface TopTextProps {
     description: string

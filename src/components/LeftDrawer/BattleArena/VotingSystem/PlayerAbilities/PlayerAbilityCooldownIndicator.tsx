@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react"
-import { PlayerAbility } from "../../../types"
+import { PlayerAbility } from "../../../../../types"
 
 export interface PlayerAbilityCooldownIndicatorProps {
     playerAbility: PlayerAbility

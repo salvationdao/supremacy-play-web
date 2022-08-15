@@ -1,9 +1,9 @@
 import { Stack } from "@mui/material"
 import BigNumber from "bignumber.js"
 import { useMemo } from "react"
-import { VotingButton } from "../.."
-import { SvgSupToken } from "../../../assets"
-import { VOTING_OPTION_COSTS } from "../../../constants"
+import { VotingButton } from "../../../.."
+import { SvgSupToken } from "../../../../../assets"
+import { VOTING_OPTION_COSTS } from "../../../../../constants"
 
 interface VotingButtonsProps {
     colour: string

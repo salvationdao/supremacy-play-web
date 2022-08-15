@@ -1,10 +1,10 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useCallback, useState } from "react"
-import { FancyButton } from "../.."
-import { useGlobalNotifications } from "../../../containers"
-import { useGameServerCommandsFaction, useGameServerSubscriptionUser } from "../../../hooks/useGameServer"
-import { GameServerKeys } from "../../../keys"
-import { colors, fonts } from "../../../theme/theme"
+import { FancyButton } from "../../../.."
+import { useGlobalNotifications } from "../../../../../containers"
+import { useGameServerCommandsFaction, useGameServerSubscriptionUser } from "../../../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../../../keys"
+import { colors, fonts } from "../../../../../theme/theme"
 
 interface BattleAbilityTextTopProps {
     label: string

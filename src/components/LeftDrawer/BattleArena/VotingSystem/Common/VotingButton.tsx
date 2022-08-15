@@ -1,7 +1,7 @@
 import { Stack, Typography } from "@mui/material"
 import { useMemo } from "react"
-import { FancyButton } from "../.."
-import { useWallet } from "../../../containers"
+import { FancyButton } from "../../../.."
+import { useWallet } from "../../../../../containers"
 
 interface VotingButtonProps {
     percentage: string

@@ -4,7 +4,6 @@ import { createContainer } from "unstated-next"
 import { FallbackFaction, useGlobalNotifications } from "."
 import { GAME_SERVER_HOSTNAME } from "../constants"
 import { GetFactionsAll } from "../fetching"
-import { useToggle } from "../hooks"
 import { FactionsAll } from "../types"
 import { useWS } from "./ws/useWS"
 
@@ -18,8 +17,6 @@ export const SupremacyContainer = createContainer(() => {
     const [haveSups, toggleHaveSups] = useState<boolean>() // Needs 3 states: true, false, undefined. Undefined means it's not loaded yet.
     const [factionsAll, setFactionsAll] = useState<FactionsAll>({})
     const [battleIdentifier, setBattleIdentifier] = useState<number>()
-    const [isQuickDeployOpen, toggleIsQuickDeployOpen] = useToggle(localStorage.getItem("quickDeployOpen") === "true")
-    const [isQuickPlayerAbilitiesOpen, toggleIsQuickPlayerAbilitiesOpen] = useToggle(localStorage.getItem("quickPlayerAbilitiesOpen") === "true")
 
     const { query: queryGetFactionsAll } = useParameterizedQuery(GetFactionsAll)
 
@@ -58,14 +55,6 @@ export const SupremacyContainer = createContainer(() => {
         [factionsAll],
     )
 
-    useEffect(() => {
-        localStorage.setItem("quickDeployOpen", isQuickDeployOpen.toString())
-    }, [isQuickDeployOpen])
-
-    useEffect(() => {
-        localStorage.setItem("quickPlayerAbilitiesOpen", isQuickPlayerAbilitiesOpen.toString())
-    }, [isQuickPlayerAbilitiesOpen])
-
     return {
         serverConnectedBefore,
         isReconnecting,
@@ -77,12 +66,6 @@ export const SupremacyContainer = createContainer(() => {
         setBattleIdentifier,
         haveSups,
         toggleHaveSups,
-
-        isQuickDeployOpen,
-        toggleIsQuickDeployOpen,
-
-        isQuickPlayerAbilitiesOpen,
-        toggleIsQuickPlayerAbilitiesOpen,
     }
 })
 

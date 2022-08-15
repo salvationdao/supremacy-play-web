@@ -5,7 +5,7 @@ import { shadeColor } from "../../../helpers"
 import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { GameAbility, WarMachineState } from "../../../types"
-import { TopText } from "../../VotingSystem/FactionAbility/TopText"
+import { TopText } from "../../LeftDrawer/BattleArena/VotingSystem/FactionAbility/TopText"
 import { useInterval } from "../../../hooks"
 
 export interface ContributeFactionUniqueAbilityRequest {

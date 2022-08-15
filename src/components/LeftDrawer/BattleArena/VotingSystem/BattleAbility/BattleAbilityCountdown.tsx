@@ -1,9 +1,9 @@
 import { Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useState } from "react"
-import { SvgBattleAbilityIcon } from "../../../assets"
-import { BribeStageResponse } from "../../../containers"
-import { colors } from "../../../theme/theme"
-import { useTimer } from "../../../hooks"
+import { SvgBattleAbilityIcon } from "../../../../../assets"
+import { BribeStageResponse } from "../../../../../containers"
+import { colors } from "../../../../../theme/theme"
+import { useTimer } from "../../../../../hooks"
 
 export const BattleAbilityCountdown = ({ bribeStage }: { bribeStage?: BribeStageResponse }) => {
     return (

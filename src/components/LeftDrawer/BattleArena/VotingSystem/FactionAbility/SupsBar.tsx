@@ -1,6 +1,6 @@
 import { Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
-import { zoomEffect } from "../../../theme/keyframes"
+import { zoomEffect } from "../../../../../theme/keyframes"
 
 interface SupsStackBarProps {
     currentSups: BigNumber

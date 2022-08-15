@@ -3,10 +3,10 @@ import { useEffect, useState } from "react"
 import { Redirect } from "react-router-dom"
 import { SvgAbility, SvgHistory, SvgHistoryClock, SvgRobot } from "../assets"
 import { BattleEndScreen, BattleHistory, Controls, EarlyAccessWarning, MiniMap, Notifications, Stream, VotingSystem, WarMachineStats } from "../components"
-import { QuickDeploy } from "../components/QuickDeploy/QuickDeploy"
-import { QuickPlayerAbilities } from "../components/QuickPlayerAbilities/QuickPlayerAbilities"
+import { QuickDeploy } from "../components/LeftDrawer/BattleArena/QuickDeploy/QuickDeploy"
+import { QuickPlayerAbilities } from "../components/LeftDrawer/BattleArena/QuickPlayerAbilities/QuickPlayerAbilities"
 import { BATTLE_ARENA_OPEN } from "../constants"
-import { useAuth, useDimension, useMobile, useSupremacy } from "../containers"
+import { useAuth, useDimension, useMobile } from "../containers"
 import { siteZIndex } from "../theme/theme"
 import { FeatureName } from "../types"
 import { EnlistPage } from "./EnlistPage"
@@ -41,7 +41,6 @@ export const BattleArenaPage = () => {
 const BattleArenaPageInner = () => {
     const { userID, factionID, userHasFeature } = useAuth()
     const { isMobile, setAdditionalTabs, setIsNavOpen, allowCloseNav } = useMobile()
-    const { isQuickDeployOpen, toggleIsQuickDeployOpen, isQuickPlayerAbilitiesOpen, toggleIsQuickPlayerAbilitiesOpen } = useSupremacy()
     const { triggerReset } = useDimension()
 
     // When its mobile, we have tabs
@@ -107,12 +106,7 @@ const BattleArenaPageInner = () => {
                 mountAllTime: true,
                 Component: () => (
                     <Stack sx={{ position: "relative", height: "100%" }}>
-                        <QuickDeploy
-                            open
-                            onClose={() => {
-                                return
-                            }}
-                        />
+                        <QuickDeploy />
                     </Stack>
                 ),
             },
@@ -128,12 +122,7 @@ const BattleArenaPageInner = () => {
                 mountAllTime: true,
                 Component: () => (
                     <Stack sx={{ position: "relative", height: "100%" }}>
-                        <QuickPlayerAbilities
-                            open
-                            onClose={() => {
-                                return
-                            }}
-                        />
+                        <QuickPlayerAbilities />
                     </Stack>
                 ),
             })
@@ -191,17 +180,7 @@ const BattleArenaPageInner = () => {
                 {!isMobile && (
                     <>
                         <WarMachineStats />
-
                         <BattleHistory />
-
-                        {isQuickDeployOpen && <QuickDeploy open={isQuickDeployOpen} onClose={() => toggleIsQuickDeployOpen(false)} />}
-
-                        {isQuickPlayerAbilitiesOpen && (
-                            <QuickPlayerAbilities open={isQuickPlayerAbilitiesOpen} onClose={() => toggleIsQuickPlayerAbilitiesOpen(false)} />
-                        )}
-
-                        <VotingSystem />
-
                         <MiniMap />
                     </>
                 )}

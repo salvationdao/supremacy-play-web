@@ -14,10 +14,11 @@ import { BATTLE_ARENA_OPEN, IS_TESTING_MODE } from "../constants"
 import { LeaderboardPage } from "../pages/LeaderboardPage"
 import { JobsPage } from "../pages/JobsPage"
 import { BattleEndScreen } from "../components/LeftDrawer/BattleEndScreen/BattleEndScreen"
+import { BattleArena } from "../components/LeftDrawer/BattleArena/BattleArena"
 
-/**
- * Left drawer
- */
+// ************
+// ** ROUTES **
+// ************
 interface RouteStruct {
     id: string
     path: string
@@ -227,10 +228,9 @@ for (const [, value] of Object.entries(ROUTES_MAP)) {
     ROUTES_ARRAY.push(value)
 }
 
-/**
- * Left and right drawer
- */
-
+// *****************
+// ** LEFT DRAWER **
+// *****************
 export interface SideTabsStruct {
     id: string
     Component?: () => JSX.Element | null
@@ -246,7 +246,7 @@ export const LEFT_DRAWER_MAP: { [name: string]: SideTabsStruct } = {
         id: "battle_arena",
         icon: <SvgChat size="1rem" sx={{ pt: ".3rem" }} />,
         label: "Battle Commands",
-        // Component: LiveChat,
+        Component: BattleArena,
         requireAuth: false,
         onlyShowOnRoute: "/",
         mountAllTime: true,
@@ -267,6 +267,9 @@ for (const [, value] of Object.entries(LEFT_DRAWER_MAP)) {
     LEFT_DRAWER_ARRAY.push(value)
 }
 
+// ******************
+// ** RIGHT DRAWER **
+// ******************
 export const RIGHT_DRAWER_MAP: { [name: string]: SideTabsStruct } = {
     live_chat: {
         id: "live_chat",
