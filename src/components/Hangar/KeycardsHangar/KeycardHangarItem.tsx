@@ -1,7 +1,7 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useLocation } from "react-router-dom"
 import { FancyButton } from "../.."
-import { STAGING_OR_DEV_ONLY } from "../../../constants"
+import { IS_TESTING_MODE } from "../../../constants"
 import { useTheme } from "../../../containers/theme"
 import { MARKETPLACE_TABS } from "../../../pages"
 import { colors, fonts } from "../../../theme/theme"
@@ -82,7 +82,7 @@ export const KeycardHangarItemInner = ({ keycard, itemSaleID }: MysteryCrateStor
 
                         <Typography variant="h6">{keycard.blueprints.description}</Typography>
 
-                        {!STAGING_OR_DEV_ONLY && (
+                        {!IS_TESTING_MODE && (
                             <Stack alignItems="center" sx={{ mt: "auto !important", pt: ".8rem", alignSelf: "stretch" }}>
                                 <FancyButton
                                     to={

@@ -3,7 +3,7 @@ import { Box } from "@mui/system"
 import { Link, useLocation, useRouteMatch } from "react-router-dom"
 import { useAuth } from "../../../containers"
 import { ROUTES_ARRAY } from "../../../routes"
-import { colors, fonts } from "../../../theme/theme"
+import { fonts } from "../../../theme/theme"
 
 export const NavLinks = () => {
     const below1450 = useMediaQuery("(max-width:1450px)")
@@ -59,7 +59,7 @@ const NavLink = ({ isActive, label, to }: { isActive: boolean; label: string; to
                     position: "relative",
                     height: "100%",
                     cursor: "pointer",
-                    opacity: isActive ? 1 : 0.7,
+                    opacity: isActive ? 1 : 0.5,
                     transition: "all .1s",
                     ":hover": {
                         opacity: 1,
@@ -67,10 +67,9 @@ const NavLink = ({ isActive, label, to }: { isActive: boolean; label: string; to
                 }}
             >
                 <Typography
-                    variant="subtitle2"
+                    variant="subtitle1"
                     sx={{
                         textAlign: "center",
-                        color: isActive ? colors.offWhite : "#FFFFFF",
                         fontFamily: isActive ? fonts.nostromoBlack : fonts.nostromoBold,
                     }}
                 >

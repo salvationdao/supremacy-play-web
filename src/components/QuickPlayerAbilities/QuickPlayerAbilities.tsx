@@ -128,7 +128,7 @@ const QuickPlayerAbilitiesInner = ({ onClose, userID }: { onClose: () => void; u
             minWidth: 360,
             minHeight: 245,
             maxWidth: 360,
-            maxHeight: 245,
+            maxHeight: 300,
             // Others
             infoTooltipText: "Quickly view and purchase abilities that are currently on sale",
             onHideCallback: onClose,
@@ -212,8 +212,7 @@ const QuickPlayerAbilitiesInner = ({ onClose, userID }: { onClose: () => void; u
                                         ml: "1rem",
                                         mr: ".5rem",
                                         pr: ".6rem",
-                                        mt: "2rem",
-                                        mb: "1rem",
+                                        my: "1rem",
                                         direction: "ltr",
                                         scrollbarWidth: "none",
                                         "::-webkit-scrollbar": {
@@ -233,7 +232,7 @@ const QuickPlayerAbilitiesInner = ({ onClose, userID }: { onClose: () => void; u
                                         <Box
                                             sx={{
                                                 display: "grid",
-                                                gridTemplateColumns: "repeat(3, minmax(0, 100px))",
+                                                gridTemplateColumns: "repeat(auto-fill, minmax(80px, 1fr))",
                                                 gridTemplateRows: "repeat(1, fr)",
                                                 gap: "1rem",
                                                 justifyContent: "center",

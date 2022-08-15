@@ -1,4 +1,5 @@
 import { FallingBlock, NormalBlock } from "./block"
+import { blockConfig, cameraConfig } from "./config"
 import { Stage } from "./stage"
 
 enum TriggerWith {
@@ -34,6 +35,8 @@ export class Game {
     setGameState: React.Dispatch<React.SetStateAction<GameState>>
     oneNewGamePattern: (gamePattern: GamePattern) => void
     triggerWith: TriggerWith
+    animationID: number | null
+    timestamp: number
 
     constructor(
         backgroundColor: string,
@@ -45,6 +48,7 @@ export class Game {
         container.style.width = "100%"
         container.style.height = "100%"
         container.tabIndex = 0
+
         if (gameContainer) {
             let child = gameContainer.lastElementChild
             while (child) {
@@ -71,6 +75,7 @@ export class Game {
 
             gameContainer.appendChild(container)
         }
+        container.focus()
         this.container = container
 
         this.setGameState = _setGameState
@@ -82,13 +87,16 @@ export class Game {
         this.fallingBlocks = []
         this.state = GameState.Loading
         this.score = 0
+        this.animationID = null
+        this.timestamp = 0
+    }
 
+    start() {
         this.addBlock()
-        this.tick()
-
+        this.tick(0)
         setTimeout(() => {
             this.setState(GameState.Ready)
-        }, 250)
+        }, 500) // This allows the parent to full load because game ready means it needs parent container dimensions
     }
 
     handleEvent() {
@@ -129,7 +137,7 @@ export class Game {
             if (newLength <= 0) {
                 this.stage.remove(lastBlock.mesh)
                 this.setState(GameState.Ended)
-                this.stage.setCamera(6)
+                this.stage.setCamera(Math.max(this.blocks.length * blockConfig.initHeight - 6, 6) + cameraConfig.offsetY)
                 this.oneNewGamePattern({
                     score: this.score,
                     is_failed: true,
@@ -195,7 +203,7 @@ export class Game {
         this.stage.add(newBlock.mesh)
         this.blocks.push(newBlock)
 
-        this.stage.setCamera(this.blocks.length * 2)
+        this.stage.setCamera(this.blocks.length * blockConfig.initHeight + cameraConfig.offsetY)
     }
 
     setState(state: GameState) {
@@ -205,9 +213,9 @@ export class Game {
         return oldState
     }
 
-    tick() {
+    tick(elapsedTime: number) {
         if (this.blocks.length > 1) {
-            this.blocks[this.blocks.length - 1].tick(this.blocks.length / 10)
+            this.blocks[this.blocks.length - 1].tick(this.blocks.length / 10, elapsedTime)
         }
         this.fallingBlocks.forEach((block) => block.tick())
         this.fallingBlocks = this.fallingBlocks.filter((block) => {
@@ -219,8 +227,15 @@ export class Game {
             }
         })
         this.stage.render()
-        requestAnimationFrame(() => {
-            this.tick()
+        this.animationID = requestAnimationFrame((ts) => {
+            this.tick(ts - this.timestamp)
+            this.timestamp = ts
         })
+    }
+
+    cleanup() {
+        if (this.animationID) {
+            cancelAnimationFrame(this.animationID)
+        }
     }
 }

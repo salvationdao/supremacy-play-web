@@ -2,7 +2,7 @@ import { Box, Typography } from "@mui/material"
 import { useState } from "react"
 import { useLocation } from "react-router-dom"
 import { ClipThing, FancyButton, TooltipHelper } from "../../.."
-import { BATTLE_ARENA_OPEN, STAGING_OR_DEV_ONLY } from "../../../../constants"
+import { BATTLE_ARENA_OPEN, IS_TESTING_MODE } from "../../../../constants"
 import { useTheme } from "../../../../containers/theme"
 import { useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
@@ -107,7 +107,7 @@ export const MechButtons = ({
                             backgroundColor={mechState === MechStatusEnum.Market ? theme.factionTheme.background : colors.red}
                             label={mechState === MechStatusEnum.Market ? "VIEW LISTING" : "SELL"}
                             disabled={
-                                STAGING_OR_DEV_ONLY ||
+                                IS_TESTING_MODE ||
                                 !mechState ||
                                 (mechState !== MechStatusEnum.Idle && mechState !== MechStatusEnum.Damaged && mechState !== MechStatusEnum.Market) ||
                                 marketLocked

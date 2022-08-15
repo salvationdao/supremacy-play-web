@@ -9,6 +9,7 @@ import { GameServerKeys } from "../../keys"
 import { colors, fonts } from "../../theme/theme"
 import { MechBasic, MechDetails, MechStatus, MechStatusEnum } from "../../types"
 import { MechGeneralStatus } from "../Hangar/WarMachinesHangar/Common/MechGeneralStatus"
+import { MechRepairBlocks } from "../Hangar/WarMachinesHangar/Common/MechRepairBlocks"
 import { MechThumbnail } from "../Hangar/WarMachinesHangar/Common/MechThumbnail"
 import { QueueFeed } from "../Hangar/WarMachinesHangar/WarMachineDetails/Modals/DeployModal"
 
@@ -74,7 +75,7 @@ export const QuickDeployItem = ({ mech }: QuickDeployItemProps) => {
         <Stack
             direction="row"
             spacing="1.2rem"
-            alignItems="flex-start"
+            alignItems="center"
             sx={{
                 position: "relative",
                 py: ".7rem",
@@ -99,7 +100,6 @@ export const QuickDeployItem = ({ mech }: QuickDeployItemProps) => {
 
                 <Typography
                     variant="body2"
-                    gutterBottom
                     sx={{
                         fontFamily: fonts.nostromoBlack,
                         fontWeight: "fontWeightBold",
@@ -114,7 +114,9 @@ export const QuickDeployItem = ({ mech }: QuickDeployItemProps) => {
                     {mech.name || mech.label}
                 </Typography>
 
-                <Stack direction="row" alignItems="center" spacing="1rem" justifyContent="space-between" sx={{ width: "100%" }}>
+                <MechRepairBlocks mechID={mech?.id || mechDetails?.id} defaultBlocks={mechDetails?.model?.repair_blocks} />
+
+                <Stack direction="row" alignItems="center" spacing="1rem" justifyContent="space-between" sx={{ mt: ".5rem", width: "100%" }}>
                     <MechGeneralStatus mechID={mech.id} smallVersion />
 
                     {!error && mechDetails && mechStatus?.can_deploy && (
@@ -134,7 +136,7 @@ export const QuickDeployItem = ({ mech }: QuickDeployItemProps) => {
                             onClick={onDeployQueue}
                         >
                             <Stack direction="row" alignItems="center" spacing=".5rem">
-                                <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBlack }}>
+                                <Typography variant="subtitle2" sx={{ fontFamily: fonts.nostromoBlack }}>
                                     DEPLOY
                                 </Typography>
                             </Stack>

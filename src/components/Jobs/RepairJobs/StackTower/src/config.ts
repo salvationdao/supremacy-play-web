@@ -31,6 +31,8 @@ import {
     Stack10cJPG,
 } from "../../../../../assets"
 
+export const baseFrameRate = 144
+
 export const blockConfig = {
     initWidth: 10, // Initial width of the box (x axis)
     initHeight: 2, // Initial height of the box (y axis)
@@ -46,6 +48,7 @@ export const cameraConfig = {
     far: 1000,
     position: [2, 2, 2],
     lookAt: [0, 0, 0],
+    offsetY: 10,
 }
 
 export const lightsConfig = [

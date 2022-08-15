@@ -219,8 +219,8 @@ const ItemCommonArea = ({
                 isGridView={isGridView}
                 label={item.mystery_crate.label}
                 description={item.mystery_crate.description}
-                imageUrl={item.collection_item?.image_url}
-                videoUrls={[item.collection_item?.animation_url, item.collection_item?.card_animation_url]}
+                imageUrl={item.mystery_crate?.image_url || item.mystery_crate?.large_image_url}
+                videoUrls={[item.mystery_crate?.animation_url, item.mystery_crate?.card_animation_url]}
             />
         )
     }

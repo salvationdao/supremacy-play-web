@@ -318,7 +318,7 @@ export const TextMessage = ({
                         onMouseEnter={() => setIsHovered(true)}
                         onMouseLeave={() => setIsHovered(false)}
                     >
-                        <Stack direction={"row"} sx={{ lineHeight: 1, color: "#FFFFFF", zIndex: 1, alignItems: "center" }}>
+                        <Stack direction={"row"} sx={{ lineHeight: 1.2, color: "#FFFFFF", zIndex: 1, alignItems: "center" }}>
                             <SvgReportFlag
                                 fill={metadata?.reports.includes(user.id) ? colors.red : "grey"}
                                 size={"1.5rem"}
@@ -350,6 +350,7 @@ export const TextMessage = ({
                         </Stack>
 
                         {!!metadata?.likes.net && <Reactions fontSize={fontSize} data={data} />}
+
                         {isHovered && <Reactions fontSize={fontSize} hoverOnly={true} data={data} />}
                     </Stack>
                 </Box>
@@ -372,7 +373,6 @@ export const TextMessage = ({
 
             {banModalOpen && user && faction_id === user.faction_id && (
                 <UserBanForm
-                    user={user}
                     open={banModalOpen}
                     onClose={() => toggleBanModalOpen(false)}
                     prefillUser={{
@@ -423,8 +423,7 @@ export const UsernameJSX = ({ data, fontSize, toggleIsPopoverOpen, user }: Usern
                 },
             }}
         >
-            {toggleIsPopoverOpen ? "" : "@"}
-            {`${truncate(user?.username || "", 20)}`}
+            {toggleIsPopoverOpen ? truncate(user?.username || "", 20) : `@${user?.username}`}
             <span
                 style={{
                     marginLeft: ".2rem",

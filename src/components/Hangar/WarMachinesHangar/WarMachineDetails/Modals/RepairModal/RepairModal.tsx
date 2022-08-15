@@ -44,10 +44,18 @@ export const RepairModal = ({
         setRepairMechModalOpen(false)
     }, [setRepairMechModalOpen])
 
-    if (!selectedMechDetails) return null
+    if (!selectedMechDetails || remainDamagedBlocks <= 0) return null
 
     return (
-        <Modal open={repairMechModalOpen} onClose={onClose} sx={{ zIndex: siteZIndex.Modal }}>
+        <Modal
+            open={repairMechModalOpen}
+            onClose={onClose}
+            sx={{ zIndex: siteZIndex.Modal }}
+            onBackdropClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+            }}
+        >
             <Box
                 sx={{
                     position: "absolute",
@@ -57,6 +65,10 @@ export const RepairModal = ({
                     width: "50rem",
                     boxShadow: 6,
                     outline: "none",
+                }}
+                onClick={(e) => {
+                    e.preventDefault()
+                    e.stopPropagation()
                 }}
             >
                 <ClipThing

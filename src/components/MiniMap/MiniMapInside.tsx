@@ -99,6 +99,7 @@ export const MiniMapInside = ({ containerDimensions }: MiniMapInsideProps) => {
                             mapWidth={map.width}
                             mapHeight={map.height}
                             gridHeight={gridHeight}
+                            gridWidth={gridWidth}
                             mapElement={mapElement}
                             onClick={isLocationSelection ? onMapClick : () => setHighlightedMechParticipantID(undefined)}
                             mapScale={mapScale}
@@ -131,5 +132,6 @@ export const MiniMapInside = ({ containerDimensions }: MiniMapInsideProps) => {
         selection?.startCoords,
         setHighlightedMechParticipantID,
         gridHeight,
+        gridWidth,
     ])
 }
