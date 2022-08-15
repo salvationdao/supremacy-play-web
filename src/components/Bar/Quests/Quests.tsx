@@ -12,6 +12,7 @@ export const Quests = () => {
     const popoverRef = useRef(null)
     const [popoverOpen, togglePopoverOpen] = useToggle(false)
     const [questProgressions, setQuestProgressions] = useState<QuestProgress[]>()
+    const confetti = useRef<string[]>([])
 
     const questStats = useGameServerSubscriptionUser<QuestStat[]>({
         URI: "/quest_stat",
@@ -32,6 +33,7 @@ export const Quests = () => {
                 payload.forEach((p) => {
                     const index = clonedArray.findIndex((i) => i.quest_id === p.quest_id)
                     if (index >= 0) {
+                        if (p.current === p.goal) confetti.current = confetti.current.concat(p.quest_id)
                         clonedArray[index] = p
                         return
                     }
@@ -107,7 +109,11 @@ export const Quests = () => {
                     popoverRef={popoverRef}
                     questStats={questStats}
                     questProgressions={questProgressions}
-                    onClose={() => togglePopoverOpen(false)}
+                    onClose={() => {
+                        togglePopoverOpen(false)
+                        confetti.current = []
+                    }}
+                    confetti={confetti.current}
                 />
             )}
         </>

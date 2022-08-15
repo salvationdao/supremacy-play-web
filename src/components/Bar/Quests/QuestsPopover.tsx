@@ -14,12 +14,14 @@ export const QuestsPopover = ({
     questProgressions,
     onClose,
     popoverRef,
+    confetti,
 }: {
     open: boolean
     questStats: QuestStat[]
     questProgressions?: QuestProgress[]
     onClose: () => void
     popoverRef: MutableRefObject<null>
+    confetti: string[]
 }) => {
     const theme = useTheme()
     const [localOpen, toggleLocalOpen] = useToggle(open)
@@ -77,7 +79,14 @@ export const QuestsPopover = ({
 
                     <Stack spacing=".7rem">
                         {questStats.map((qs) => {
-                            return <QuestItem key={`qs-key-${qs.id}`} questStat={qs} progress={questProgressions?.find((qp) => qp.quest_id === qs.id)} />
+                            return (
+                                <QuestItem
+                                    key={`qs-key-${qs.id}`}
+                                    questStat={qs}
+                                    progress={questProgressions?.find((qp) => qp.quest_id === qs.id)}
+                                    showConfetti={confetti.findIndex((i) => i === qs.id) >= 0}
+                                />
+                            )
                         })}
                     </Stack>
 

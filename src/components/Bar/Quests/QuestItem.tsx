@@ -3,8 +3,9 @@ import { colors } from "../../../theme/theme"
 import { QuestProgress, QuestStat } from "../../../types"
 import { ProgressBar } from "../../Common/ProgressBar"
 import { TooltipHelper } from "../../Common/TooltipHelper"
+import Confetti from "react-confetti"
 
-export const QuestItem = ({ questStat, progress }: { questStat: QuestStat; progress?: QuestProgress }) => {
+export const QuestItem = ({ questStat, progress, showConfetti }: { questStat: QuestStat; progress?: QuestProgress; showConfetti: boolean }) => {
     const progressPercent = progress ? (100 * progress.current) / progress.goal : 0
 
     return (
@@ -14,6 +15,8 @@ export const QuestItem = ({ questStat, progress }: { questStat: QuestStat; progr
                 alignItems="center"
                 spacing=".3rem"
                 sx={{
+                    position: "relative",
+                    overflow: "hidden",
                     p: ".8rem .5rem",
                     pr: "1.6rem",
                     borderRadius: 1,
@@ -21,6 +24,17 @@ export const QuestItem = ({ questStat, progress }: { questStat: QuestStat; progr
                     userSelect: "none",
                 }}
             >
+                <Confetti
+                    width={1000}
+                    height={100}
+                    gravity={0.04}
+                    initialVelocityX={1}
+                    tweenDuration={10000}
+                    run={showConfetti}
+                    numberOfPieces={400}
+                    recycle={false}
+                />
+
                 <Checkbox
                     size="small"
                     checked={questStat.obtained}
