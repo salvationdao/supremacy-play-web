@@ -5,8 +5,10 @@ import { useAuth } from "../../../containers"
 import { ROUTES_ARRAY } from "../../../routes"
 import { fonts } from "../../../theme/theme"
 
+export const HIDE_NAV_LINKS_WIDTH = 1550
+
 export const NavLinks = () => {
-    const below1450 = useMediaQuery("(max-width:1450px)")
+    const hideNavLinks = useMediaQuery(`(max-width:${HIDE_NAV_LINKS_WIDTH}px)`)
     const { userID } = useAuth()
     const location = useLocation()
 
@@ -14,17 +16,17 @@ export const NavLinks = () => {
     let activeTabID = ""
     if (match) {
         const r = ROUTES_ARRAY.find((r) => r.path === match.path)
-        activeTabID = r?.matchLeftDrawerID || ""
+        activeTabID = r?.matchNavLinkID || ""
     }
 
-    if (below1450) return null
+    if (hideNavLinks) return null
 
     return (
         <Stack direction="row" alignItems="center" spacing="1.5rem" sx={{ height: "100%", mx: "2rem" }} divider={<Divider />}>
             {ROUTES_ARRAY.map((r) => {
-                if (!r.enable || !r.leftDrawer || !r.leftDrawer.enable || ((r.requireAuth || r.requireFaction) && !userID)) return null
+                if (!r.enable || !r.navLink || !r.navLink.enable || ((r.requireAuth || r.requireFaction) && !userID)) return null
                 const { id } = r
-                const { label } = r.leftDrawer
+                const { label } = r.navLink
                 const navigateTo = r.path.split("/:")[0]
 
                 return (
@@ -32,7 +34,7 @@ export const NavLinks = () => {
                         key={id}
                         label={label}
                         to={`${navigateTo}${location.hash}`}
-                        isActive={activeTabID === r.matchLeftDrawerID || location.pathname === r.path}
+                        isActive={activeTabID === r.matchNavLinkID || location.pathname === r.path}
                     />
                 )
             })}
@@ -71,6 +73,7 @@ const NavLink = ({ isActive, label, to }: { isActive: boolean; label: string; to
                     sx={{
                         textAlign: "center",
                         fontFamily: isActive ? fonts.nostromoBlack : fonts.nostromoBold,
+                        whiteSpace: "nowrap",
                     }}
                 >
                     {label}

@@ -10,7 +10,7 @@ import { SupremacyPNG } from "./assets"
 import { Bar, GlobalSnackbar, Maintenance, RightDrawer } from "./components"
 import { BottomNav } from "./components/BottomNav/BottomNav"
 import { tourStyles } from "./components/HowToPlay/Tutorial/SetupTutorial"
-import { LeftDrawer } from "./components/LeftDrawer/LeftDrawer"
+import { NavLinksDrawer } from "./components/Bar/NavLinks/NavLinksDrawer"
 import { GAME_SERVER_HOSTNAME, SENTRY_CONFIG, UNDER_MAINTENANCE } from "./constants"
 import {
     ChatProvider,
@@ -119,7 +119,7 @@ const AppInner = () => {
                         },
                     }}
                 >
-                    <LeftDrawer />
+                    <NavLinksDrawer />
 
                     <Stack
                         sx={{

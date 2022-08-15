@@ -1,11 +1,11 @@
-import { Box, Tabs } from "@mui/material"
+import { Box, Stack, Tab, Tabs } from "@mui/material"
 import { useHistory, useLocation } from "react-router-dom"
 import { useAuth } from "../../containers"
 import { useTheme } from "../../containers/theme"
 import { HASH_ROUTES_ARRAY, RightDrawerHashes } from "../../routes"
-import { colors, siteZIndex } from "../../theme/theme"
-import { TabButton } from "../LeftDrawer/DrawerButtons"
+import { colors, fonts, siteZIndex } from "../../theme/theme"
 
+const BUTTON_WIDTH = 17 //rem
 const DRAWER_BAR_WIDTH = 3 // rem
 
 export const DrawerButtons = () => {
@@ -22,7 +22,7 @@ export const DrawerButtons = () => {
                 overflow: "hidden",
                 width: `${DRAWER_BAR_WIDTH}rem`,
                 background: (theme) => `linear-gradient(to right, #FFFFFF06 26%, ${theme.factionTheme.background})`,
-                zIndex: siteZIndex.RightDrawer,
+                zIndex: siteZIndex.Drawer,
                 ".MuiTabs-flexContainer": {
                     "& > :not(:last-child)": {
                         mb: ".2rem",
@@ -61,6 +61,80 @@ export const DrawerButtons = () => {
                     )
                 })}
             </Tabs>
+        </Box>
+    )
+}
+
+export const TabButton = ({
+    label,
+    enable,
+    isComingSoon,
+    icon,
+    isActive,
+    primaryColor,
+    secondaryColor,
+    onClick,
+    comingSoonLabel,
+}: {
+    label: string
+    enable?: boolean
+    isComingSoon?: boolean
+    icon?: string | React.ReactElement<unknown, string | React.JSXElementConstructor<unknown>>
+    isActive?: boolean
+    primaryColor: string
+    secondaryColor: string
+    onClick: () => void
+    comingSoonLabel?: string
+}) => {
+    return (
+        <Box
+            sx={{
+                position: "relative",
+                height: `${BUTTON_WIDTH}rem`,
+                width: `${DRAWER_BAR_WIDTH}rem`,
+            }}
+        >
+            <Tab
+                label={
+                    !isComingSoon ? (
+                        label
+                    ) : (
+                        <Stack>
+                            {label}
+                            <br />
+                            <span style={{ color: colors.neonBlue }}>({comingSoonLabel || "COMING SOON"})</span>
+                        </Stack>
+                    )
+                }
+                icon={icon}
+                iconPosition="end"
+                onClick={onClick}
+                disabled={!enable}
+                sx={{
+                    p: 0,
+                    pt: ".2rem",
+                    position: "absolute",
+                    whiteSpace: "nowrap",
+                    fontFamily: fonts.nostromoBold,
+                    fontSize: "1.2rem",
+                    lineHeight: 1,
+                    color: isActive ? secondaryColor : "#FFFFFF",
+                    backgroundColor: enable ? (isActive ? `${primaryColor}CC` : `${primaryColor}25`) : `${primaryColor}20`,
+                    opacity: isActive ? 1 : 0.6,
+                    transform: `translate(${-BUTTON_WIDTH / 2 + DRAWER_BAR_WIDTH / 2}rem, ${BUTTON_WIDTH / 2 - DRAWER_BAR_WIDTH / 2}rem) rotate(-90deg)`,
+                    ":hover": {
+                        opacity: 1,
+                    },
+                    "&, .MuiTouchRipple-root": {
+                        width: `${BUTTON_WIDTH}rem`,
+                        height: `${DRAWER_BAR_WIDTH}rem`,
+                        minHeight: `${DRAWER_BAR_WIDTH}rem`,
+                    },
+                    "& svg": {
+                        fill: isActive ? `${secondaryColor} !important` : "#FFFFFF",
+                    },
+                }}
+            />
         </Box>
     )
 }

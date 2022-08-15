@@ -26,12 +26,12 @@ interface RouteStruct {
     authTitle?: string // If omitted, it'll have a default title
     authDescription?: string // If omitted, it'll have a default description
     requireFaction: boolean
-    leftDrawer?: {
+    navLink?: {
         enable: boolean
         label: string
         comingSoonLabel?: string
     }
-    matchLeftDrawerID?: string // The /route which will make this button highlighted
+    matchNavLinkID?: string // The /route which will make this button highlighted
     enable: boolean
 }
 
@@ -43,12 +43,12 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         Component: BattleArenaPage,
         requireAuth: false,
         requireFaction: false,
-        leftDrawer: {
+        navLink: {
             enable: BATTLE_ARENA_OPEN,
             label: "Battle Arena",
             comingSoonLabel: "Returning Soon",
         },
-        matchLeftDrawerID: "home",
+        matchNavLinkID: "home",
         enable: true,
     },
 
@@ -60,11 +60,11 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         Component: LeaderboardPage,
         requireAuth: false,
         requireFaction: false,
-        leftDrawer: {
+        navLink: {
             enable: true,
             label: "Leaderboard",
         },
-        matchLeftDrawerID: "leaderboard",
+        matchNavLinkID: "leaderboard",
         enable: true,
     },
 
@@ -76,7 +76,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         Component: MechPage,
         requireAuth: true,
         requireFaction: true,
-        matchLeftDrawerID: "fleet",
+        matchNavLinkID: "fleet",
         enable: true,
     },
 
@@ -88,7 +88,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         Component: WeaponPage,
         requireAuth: true,
         requireFaction: true,
-        matchLeftDrawerID: "fleet",
+        matchNavLinkID: "fleet",
         enable: true,
     },
 
@@ -100,11 +100,11 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         Component: HangarPage,
         requireAuth: true,
         requireFaction: true,
-        leftDrawer: {
+        navLink: {
             enable: true,
             label: "fleet",
         },
-        matchLeftDrawerID: "fleet",
+        matchNavLinkID: "fleet",
         enable: true,
     },
 
@@ -116,11 +116,11 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         Component: StorefrontPage,
         requireAuth: true,
         requireFaction: true,
-        leftDrawer: {
+        navLink: {
             enable: true,
             label: "Storefront",
         },
-        matchLeftDrawerID: "storefront",
+        matchNavLinkID: "storefront",
         enable: !IS_TESTING_MODE,
     },
 
@@ -132,7 +132,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         Component: MarketplaceSellPage,
         requireAuth: true,
         requireFaction: true,
-        matchLeftDrawerID: "marketplace",
+        matchNavLinkID: "marketplace",
         enable: !IS_TESTING_MODE,
     },
     marketplace_item: {
@@ -142,7 +142,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         Component: MarketplaceItemPage,
         requireAuth: true,
         requireFaction: true,
-        matchLeftDrawerID: "marketplace",
+        matchNavLinkID: "marketplace",
         enable: !IS_TESTING_MODE,
     },
     marketplace: {
@@ -152,11 +152,11 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         Component: MarketplacePage,
         requireAuth: true,
         requireFaction: true,
-        leftDrawer: {
+        navLink: {
             enable: true,
             label: "Marketplace",
         },
-        matchLeftDrawerID: "marketplace",
+        matchNavLinkID: "marketplace",
         enable: !IS_TESTING_MODE,
     },
 
@@ -179,11 +179,11 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         Component: JobsPage,
         requireAuth: true,
         requireFaction: true,
-        leftDrawer: {
+        navLink: {
             enable: true,
             label: "Jobs",
         },
-        matchLeftDrawerID: "jobs",
+        matchNavLinkID: "jobs",
         enable: true,
     },
 

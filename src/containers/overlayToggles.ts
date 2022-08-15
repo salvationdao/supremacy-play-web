@@ -11,7 +11,7 @@ enum LeftDrawerPanels {
 // Control left side bar button and open states
 const OverlayTogglesContainer = createContainer(() => {
     const { isMobile } = useMobile()
-    const [isLeftDrawerOpen, toggleIsLeftDrawerOpen] = useToggle(false)
+    const [isNavLinksDrawerOpen, toggleIsNavLinksDrawerOpen] = useToggle(false)
     const [activePanel, setActivePanel] = useState<LeftDrawerPanels>(LeftDrawerPanels.None)
 
     const [showTrailer, toggleShowTrailer] = useToggle()
@@ -43,8 +43,8 @@ const OverlayTogglesContainer = createContainer(() => {
     }, [isMobile, toggleIsBattleHistoryOpen, toggleIsMapOpen])
 
     return {
-        isLeftDrawerOpen,
-        toggleIsLeftDrawerOpen,
+        isNavLinksDrawerOpen,
+        toggleIsNavLinksDrawerOpen,
 
         // Left side panels are a little different, only 1 can be open at a time
         isEndBattleDetailOpen: activePanel == LeftDrawerPanels.EndBattleDetail,

@@ -32,7 +32,7 @@ export const RightDrawer = () => {
                     flexShrink: 0,
                     width: isDrawerOpen ? `${RIGHT_DRAWER_WIDTH}rem` : 0,
                     transition: `all ${DRAWER_TRANSITION_DURATION}ms cubic-bezier(0, 0, 0.2, 1)`,
-                    zIndex: siteZIndex.RightDrawer,
+                    zIndex: siteZIndex.Drawer,
                     "& .MuiDrawer-paper": {
                         width: `${RIGHT_DRAWER_WIDTH}rem`,
                         backgroundColor: colors.darkNavy,
