@@ -38,6 +38,7 @@ import { EnlistPage } from "./pages/EnlistPage"
 import { LoginRedirect } from "./pages/LoginRedirect"
 import { ROUTES_ARRAY, ROUTES_MAP } from "./routes"
 import { colors, fonts } from "./theme/theme"
+import { HotkeyProvider } from "./containers/hotkeys"
 
 const AppInner = () => {
     const { isServerDown, serverConnectedBefore } = useSupremacy()
@@ -230,12 +231,15 @@ const App = () => {
                                                                 <DimensionProvider>
                                                                     <OverlayTogglesProvider>
                                                                         <MiniMapProvider>
-                                                                            <UserUpdater />
-                                                                            <Switch>
-                                                                                <Route path="/404" exact component={NotFoundPage} />
-                                                                                <Route path="/login-redirect" exact component={LoginRedirect} />
-                                                                                <Route path="" component={AppInner} />
-                                                                            </Switch>
+                                                                            <HotkeyProvider>
+                                                                                <UserUpdater />
+
+                                                                                <Switch>
+                                                                                    <Route path="/404" exact component={NotFoundPage} />
+                                                                                    <Route path="/login-redirect" exact component={LoginRedirect} />
+                                                                                    <Route path="" component={AppInner} />
+                                                                                </Switch>
+                                                                            </HotkeyProvider>
                                                                         </MiniMapProvider>
                                                                     </OverlayTogglesProvider>
                                                                 </DimensionProvider>

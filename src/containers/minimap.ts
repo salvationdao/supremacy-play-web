@@ -3,7 +3,7 @@ import { createContainer } from "unstated-next"
 import { useAuth, useSnackbar } from "."
 import { useGameServerCommandsFaction, useGameServerSubscriptionUser } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
-import { GameAbility, LocationSelectType, PlayerAbility, Position, WarMachineState } from "../types"
+import { GameAbility, LocationSelectType, PlayerAbility, Position } from "../types"
 import { useToggle } from "./../hooks/useToggle"
 import { useGame } from "./game"
 
@@ -16,14 +16,14 @@ export interface MapSelection {
     mechHash?: string
 }
 
-interface HotkeyCheck {
-    type: string
-    index: number
+interface WinnerAnnouncementResponse {
+    game_ability: GameAbility
+    end_time: Date
 }
 
 export const MiniMapContainer = createContainer(() => {
     const { bribeStage, map } = useGame()
-    const { factionID, user } = useAuth()
+    const { factionID } = useAuth()
     const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsFaction("/faction_commander")
 
@@ -40,32 +40,6 @@ export const MiniMapContainer = createContainer(() => {
     // Other stuff
     const [highlightedMechParticipantID, setHighlightedMechParticipantID] = useState<number>()
     const [selection, setSelection] = useState<MapSelection>()
-
-    //ability hot keys
-    const [mechAbilityRecord, setMechAbilityRecord] = useState<{ [hotkey: string]: HotkeyCheck }>({})
-    const [playerAbilityRecord, setPlayerAbilityRecord] = useState<{ [hotkey: string]: HotkeyCheck }>({})
-    const [disableHotKey, setDisableHotKey] = useState(false)
-    const [highlightedMechGameAbilities, setHighlightedMechGameAbilities] = useState<GameAbility[]>([])
-    const [shownPlayerAbilities, setShownPlayerAbilities] = useState<PlayerAbility[]>([])
-
-    const addToPlayerAbilityRecord = useCallback(
-        (
-            set: (value: ((prevState: { [p: string]: HotkeyCheck }) => { [p: string]: HotkeyCheck }) | { [p: string]: HotkeyCheck }) => void,
-            gameAbility: string,
-            i: number,
-        ) => {
-            set((prev) => {
-                return { ...prev, [i.toString()]: gameAbility }
-            })
-        },
-        [],
-    )
-
-    const { warMachines } = useGame()
-    const wm = useMemo(
-        () => (warMachines as WarMachineState[])?.filter((w) => w.factionID === factionID).sort((a, b) => a.participantID - b.participantID),
-        [warMachines, factionID],
-    )
 
     // Subscribe on winner announcements
     useGameServerSubscriptionUser<WinnerAnnouncementResponse | undefined>(
@@ -90,50 +64,6 @@ export const MiniMapContainer = createContainer(() => {
         },
     )
 
-    //todo: refactor this repetative code
-    const onGameAbilityTrigger = useCallback(
-        async (warMachineHash, gameAbilityID: string) => {
-            try {
-                await send<boolean, { mech_hash: string; game_ability_id: string }>(GameServerKeys.TriggerWarMachineAbility, {
-                    mech_hash: warMachineHash,
-                    game_ability_id: gameAbilityID,
-                })
-            } catch (e) {
-                console.error(e)
-            }
-        },
-        [send],
-    )
-
-    //todo: have to figure out dynamic hotkeys before implementing player abilities
-    const onPlayerAbilityActivate = useCallback(() => {
-        if (!playerAbility) return
-        setPlayerAbility(playerAbility)
-    }, [playerAbility, setPlayerAbility])
-
-    //--mech move
-    // const onClick = useCallback(async () => {
-    //     if (!isAlive) return
-    //
-    //     if (isMoving && !isCancelled) {
-    //         try {
-    //             await send(GameServerKeys.MechMoveCommandCancel, {
-    //                 move_command_id: mechMoveCommandID,
-    //                 hash,
-    //             })
-    //         } catch (err) {
-    //             const message = typeof err === "string" ? err : "Failed cancel mech move command."
-    //             newSnackbarMessage(message, "error")
-    //             console.error(err)
-    //         }
-    //     } else {
-    //         setPlayerAbility({
-    //             ...MechMoveCommandAbility,
-    //             mechHash: hash,
-    //         })
-    //     }
-    // }, [isAlive, isMoving, isCancelled, send, mechMoveCommandID, hash, newSnackbarMessage, setPlayerAbility])
-
     // Toggle expand if user is using player ability or user is chosen to use battle ability
     useEffect(() => {
         if (winner && bribeStage?.phase === "LOCATION_SELECT") {
@@ -150,51 +80,6 @@ export const MiniMapContainer = createContainer(() => {
             setIsTargeting(true)
         }
     }, [winner, bribeStage, playerAbility])
-
-    const handleHotKey = useCallback(
-        (e: KeyboardEvent) => {
-            if (disableHotKey || !wm) return
-            e.preventDefault()
-
-            switch (e.key) {
-                case "Control" && "1":
-                    setHighlightedMechParticipantID(wm[0].participantID)
-                    break
-                case "Control" && "2":
-                    setHighlightedMechParticipantID(wm[1].participantID)
-                    break
-                case "Control" && "3":
-                    setHighlightedMechParticipantID(wm[2].participantID)
-                    break
-                default:
-                    return
-            }
-
-            if (highlightedMechParticipantID) {
-                const w = wm.find((w) => w.ownedByID === user.id && w.participantID === highlightedMechParticipantID)
-
-                if (!w) return
-
-                switch (e.key) {
-                    case "1":
-                        onGameAbilityTrigger(w.hash, highlightedMechGameAbilities[0].id)
-                        break
-                    case "Control" && "2":
-                        onGameAbilityTrigger(w.hash, highlightedMechGameAbilities[1].id)
-                        break
-                    case "Control" && "3":
-                        onGameAbilityTrigger(w.hash, highlightedMechGameAbilities[2].id)
-                        break
-                    default:
-                        return
-                }
-            }
-        },
-        [disableHotKey, onGameAbilityTrigger, wm, user, highlightedMechGameAbilities, highlightedMechParticipantID],
-    )
-    useEffect(() => {
-        document.addEventListener("keydown", handleHotKey)
-    }, [handleHotKey])
 
     const resetSelection = useCallback(() => {
         setWinner(undefined)
@@ -311,10 +196,6 @@ export const MiniMapContainer = createContainer(() => {
         gridHeight,
         isEnlarged,
         toggleIsEnlarged,
-        setHighlightedMechGameAbilities,
-        onPlayerAbilityActivate,
-        shownPlayerAbilities,
-        setShownPlayerAbilities,
     }
 })
 

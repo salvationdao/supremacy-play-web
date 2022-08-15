@@ -11,6 +11,7 @@ import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { GameAbility, WarMachineState } from "../../../types"
 import { MoveCommand } from "./MoveCommand"
+import { useHotkey } from "../../../containers/hotkeys"
 
 // in rems
 const WIDTH_AVATAR = 8.6
@@ -36,7 +37,8 @@ export const WarMachineItem = ({
     const { isMobile } = useMobile()
     const { userID, factionID } = useAuth()
     const { getFaction } = useSupremacy()
-    const { highlightedMechParticipantID, setHighlightedMechParticipantID, setHighlightedMechGameAbilities } = useMiniMap()
+    const { highlightedMechParticipantID, setHighlightedMechParticipantID } = useMiniMap()
+    const { setHighlightedMechGameAbilities } = useHotkey()
 
     const { hash, participantID, factionID: wmFactionID, name, imageAvatar, tier, ownedByID, ownerUsername } = warMachine
 
@@ -84,7 +86,7 @@ export const WarMachineItem = ({
         if (highlightedMechParticipantID === participantID && gameAbilities) {
             setHighlightedMechGameAbilities(gameAbilities)
         }
-    }, [highlightedMechParticipantID, participantID, gameAbilities])
+    }, [highlightedMechParticipantID, participantID, gameAbilities, setHighlightedMechGameAbilities])
     return (
         <>
             <Stack

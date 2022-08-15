@@ -1,0 +1,145 @@
+import { useCallback, useEffect, useMemo, useState } from "react"
+import { createContainer } from "unstated-next"
+import { GameAbility, LocationSelectType, PlayerAbility, WarMachineState } from "../types"
+import { useMiniMap } from "./minimap"
+import { GameServerKeys } from "../keys"
+import { useGame } from "./game"
+import { useGameServerCommandsFaction } from "../hooks/useGameServer"
+import { useAuth } from "./auth"
+import { MechMoveCommand } from "../components/WarMachine/WarMachineItem/MoveCommand"
+import { colors } from "../theme/theme"
+import { useSnackbar } from "./snackbar"
+
+export const MechMoveCommandAbility: PlayerAbility = {
+    id: "mech_move_command",
+    blueprint_id: "mech_move_command",
+    count: 1,
+    last_purchased_at: new Date(),
+    cooldown_expires_on: new Date(),
+    ability: {
+        id: "",
+        game_client_ability_id: 8,
+        label: "MOVE COMMAND",
+        image_url: "",
+        description: "Command the war machine to move to a specific location.",
+        text_colour: "#000000",
+        colour: colors.gold,
+        location_select_type: LocationSelectType.MECH_COMMAND,
+        created_at: new Date(),
+        inventory_limit: 10,
+        cooldown_seconds: 5,
+    },
+}
+
+export const HotkeyContainer = createContainer(() => {
+    const { setHighlightedMechParticipantID, setPlayerAbility, playerAbility, highlightedMechParticipantID } = useMiniMap()
+    const { warMachines } = useGame()
+    const { factionID, user } = useAuth()
+    const { newSnackbarMessage } = useSnackbar()
+
+    //ability hot keys
+    const [highlightedMechGameAbilities, setHighlightedMechGameAbilities] = useState<GameAbility[]>([])
+    const [shownPlayerAbilities, setShownPlayerAbilities] = useState<PlayerAbility[]>([])
+    const [mechMoveCommand, setMechMoveCommand] = useState<MechMoveCommand>()
+
+    const { send } = useGameServerCommandsFaction("/faction_commander")
+
+    const wm = useMemo(
+        () => (warMachines as WarMachineState[])?.filter((w) => w.factionID === factionID).sort((a, b) => a.participantID - b.participantID),
+        [warMachines, factionID],
+    )
+
+    //todo: refactor this repetative code
+    const onGameAbilityTrigger = useCallback(
+        async (warMachineHash, gameAbilityID: string) => {
+            try {
+                await send<boolean, { mech_hash: string; game_ability_id: string }>(GameServerKeys.TriggerWarMachineAbility, {
+                    mech_hash: warMachineHash,
+                    game_ability_id: gameAbilityID,
+                })
+            } catch (e) {
+                console.error(e)
+            }
+        },
+        [send],
+    )
+
+    //todo: have to figure out dynamic hotkeys before implementing player abilities
+    const onPlayerAbilityActivate = useCallback(() => {
+        if (!playerAbility) return
+        setPlayerAbility(playerAbility)
+    }, [playerAbility, setPlayerAbility])
+
+    // mech move
+    const handleMechMove = useCallback(
+        async (warMachine: WarMachineState) => {
+            if (warMachine.health <= 0 || !mechMoveCommand) return
+
+            if (
+                !mechMoveCommand?.reached_at &&
+                !mechMoveCommand?.cancelled_at &&
+                mechMoveCommand.remain_cooldown_seconds !== 0 &&
+                !!mechMoveCommand.cancelled_at
+            ) {
+                try {
+                    await send(GameServerKeys.MechMoveCommandCancel, {
+                        move_command_id: mechMoveCommand.id,
+                        hash: warMachine.hash,
+                    })
+                } catch (err) {
+                    const message = typeof err === "string" ? err : "Failed cancel mech move command."
+                    newSnackbarMessage(message, "error")
+                    console.error(err)
+                }
+            } else {
+                setPlayerAbility({
+                    ...MechMoveCommandAbility,
+                    mechHash: warMachine.hash,
+                })
+            }
+        },
+        [send, mechMoveCommand, newSnackbarMessage, setPlayerAbility],
+    )
+
+    const handleHotKey = useCallback(
+        (e: KeyboardEvent) => {
+            if (!wm) return
+            e.preventDefault()
+
+            if (e.ctrlKey) {
+                const key = parseInt(e.key)
+
+                if (key > wm.length) return
+
+                setHighlightedMechParticipantID(wm[key - 1].participantID)
+            }
+            if (highlightedMechParticipantID) {
+                const key = parseInt(e.key)
+                const w = wm.find((w) => w.ownedByID === user.id && w.participantID === highlightedMechParticipantID)
+
+                if (!w || key > highlightedMechGameAbilities.length) return
+
+                onGameAbilityTrigger(w.hash, highlightedMechGameAbilities[key - 1].id)
+            }
+        },
+        [disableHotKey, onGameAbilityTrigger, wm, user, highlightedMechGameAbilities, highlightedMechParticipantID, setHighlightedMechParticipantID],
+    )
+    useEffect(() => {
+        document.addEventListener("keydown", handleHotKey)
+        return () => document.removeEventListener("keydown", handleHotKey)
+    }, [handleHotKey])
+
+    return {
+        shownPlayerAbilities,
+        setShownPlayerAbilities,
+        setHighlightedMechGameAbilities,
+        onPlayerAbilityActivate,
+        mechMoveCommand,
+        setMechMoveCommand,
+        MechMoveCommandAbility,
+        handleMechMove,
+    }
+})
+
+export const HotkeyProvider = HotkeyContainer.Provider
+export const useHotkey = HotkeyContainer.useContainer

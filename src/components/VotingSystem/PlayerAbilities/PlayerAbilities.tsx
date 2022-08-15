@@ -11,7 +11,7 @@ import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { LocationSelectType, PlayerAbility } from "../../../types"
 import { PlayerAbilityCard } from "./PlayerAbilityCard"
-import { useMiniMap } from "../../../containers"
+import { useHotkey } from "../../../containers/hotkeys"
 
 const COLUMNS = 4
 const ROWS = 2
@@ -20,7 +20,7 @@ const PAGE_SIZE = COLUMNS * ROWS
 export const PlayerAbilities = () => {
     const theme = useTheme()
     const { userID } = useAuth()
-    const { shownPlayerAbilities, setShownPlayerAbilities } = useMiniMap()
+    const { shownPlayerAbilities, setShownPlayerAbilities } = useHotkey()
     const [isCollapsed, setIsCollapsed] = useState(localStorage.getItem("isPlayerAbilitiesCollapsed") === "true")
 
     const [playerAbilities, setPlayerAbilities] = useState<PlayerAbility[]>([])
@@ -51,7 +51,7 @@ export const PlayerAbilities = () => {
 
         setTotalItems(result.length)
         setShownPlayerAbilities(result.slice((page - 1) * pageSize, page * pageSize))
-    }, [playerAbilities, locationSelectType, setTotalItems, pageSize, page])
+    }, [playerAbilities, locationSelectType, setShownPlayerAbilities, setTotalItems, pageSize, page])
 
     const onLocationSelectTypeChange = useCallback(
         (l: LocationSelectType | null) => {

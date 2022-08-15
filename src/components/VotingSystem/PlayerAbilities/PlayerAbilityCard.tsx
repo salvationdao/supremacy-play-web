@@ -1,15 +1,15 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { SvgGlobal, SvgLine, SvgMicrochip, SvgQuestionMark, SvgTarget } from "../../../assets"
-import { useMiniMap } from "../../../containers"
 import { colors } from "../../../theme/theme"
 import { LocationSelectType, PlayerAbility } from "../../../types"
 import { FancyButton } from "../../Common/FancyButton"
 import { TooltipHelper } from "../../Common/TooltipHelper"
 import { PlayerAbilityCooldownIndicator } from "./PlayerAbilityCooldownIndicator"
+import { useHotkey } from "../../../containers/hotkeys"
 
 export const PlayerAbilityCard = ({ playerAbility, viewOnly }: { playerAbility: PlayerAbility; viewOnly?: boolean }) => {
-    const { onPlayerAbilityActivate } = useMiniMap()
+    const { onPlayerAbilityActivate } = useHotkey()
     const [disabled, setDisabled] = useState(false)
 
     const checkIfDisabled = useCallback(() => {
@@ -72,7 +72,7 @@ export const PlayerAbilityCard = ({ playerAbility, viewOnly }: { playerAbility: 
                         height: "100%",
                         ":hover": { cursor: disable ? "default" : "pointer" },
                     }}
-                    onClick={!disabled ? onActivate : undefined}
+                    onClick={!disabled ? onPlayerAbilityActivate : undefined}
                 >
                     <Stack
                         spacing=".3rem"
