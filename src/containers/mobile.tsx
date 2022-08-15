@@ -1,13 +1,21 @@
-import { useMemo, useRef, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { createContainer } from "unstated-next"
 import { useWindowDimensions } from "../hooks"
 import { HashRouteStruct } from "../routes"
+
+const configureViewPort = (width: number) => {
+    document.querySelector('meta[name="viewport"]')?.setAttribute("content", "width=" + Math.max(980, width))
+}
 
 export const MobileContainer = createContainer(() => {
     const { width, height } = useWindowDimensions()
     const [isNavOpen, setIsNavOpen] = useState(true)
     const allowCloseNav = useRef(true)
     const [additionalTabs, setAdditionalTabs] = useState<HashRouteStruct[]>([])
+
+    useEffect(() => {
+        configureViewPort(width)
+    }, [width])
 
     // For displaying a mobile layout
     const isMobile = useMemo(() => {
