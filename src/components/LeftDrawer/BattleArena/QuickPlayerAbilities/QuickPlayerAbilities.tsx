@@ -146,7 +146,7 @@ const QuickPlayerAbilitiesInner = ({ userID }: { userID: string }) => {
 
                 {!isLoaded && (
                     <Stack alignItems="center" justifyContent="center" sx={{ minHeight: "20rem" }}>
-                        <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
+                        <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem" }}>
                             <CircularProgress size="3rem" sx={{ color: primaryColor }} />
                         </Stack>
                     </Stack>
@@ -187,7 +187,6 @@ const QuickPlayerAbilitiesInner = ({ userID }: { userID: string }) => {
                                 variant="body2"
                                 sx={{
                                     px: "1.28rem",
-                                    pt: "1.28rem",
                                     color: colors.grey,
                                     fontFamily: fonts.nostromoBold,
                                     textAlign: "center",
