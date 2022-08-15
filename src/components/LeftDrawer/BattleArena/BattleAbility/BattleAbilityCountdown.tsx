@@ -45,5 +45,5 @@ export const BattleAbilityCountdown = ({ bribeStage }: { bribeStage?: BribeStage
         doSentence()
     }, [bribeStage, doSentence, setEndTimeState])
 
-    return <SectionHeading label={sentence} />
+    return <SectionHeading label={sentence} tooltip="Opt into battle abilities and fight for your Faction!" />
 }

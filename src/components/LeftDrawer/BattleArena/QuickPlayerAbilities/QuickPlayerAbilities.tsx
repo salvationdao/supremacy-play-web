@@ -124,7 +124,7 @@ const QuickPlayerAbilitiesInner = ({ userID }: { userID: string }) => {
 
     return (
         <Box>
-            <SectionHeading label="PURCHASE ABILITIES" />
+            <SectionHeading label="PURCHASE ABILITIES" tooltip="Purchase abilities that are currently on sale." />
 
             <Stack sx={{ p: "1.5rem 1.1rem", backgroundColor: "#FFFFFF12", boxShadow: 2, border: "#FFFFFF20 1px solid" }}>
                 <Stack>

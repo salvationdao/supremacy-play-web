@@ -21,7 +21,7 @@ export const PlayerAbilities = () => {
 
     return (
         <Box>
-            <SectionHeading label="OWNED ABILITIES" />
+            <SectionHeading label="OWNED ABILITIES" tooltip="Launch your own abilities." />
             <Stack
                 spacing="1rem"
                 sx={{

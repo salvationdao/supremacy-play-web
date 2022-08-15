@@ -116,7 +116,7 @@ const QuickDeployInner = () => {
     return (
         <>
             <Box>
-                <SectionHeading label="QUICK DEPLOY" />
+                <SectionHeading label="QUICK DEPLOY" tooltip="Quickly deploy your mechs to the battle queue." />
 
                 <Stack sx={{ backgroundColor: "#FFFFFF12", boxShadow: 2, border: "#FFFFFF20 1px solid" }}>
                     <Stack spacing="1.5rem" direction="row" sx={{ p: ".5rem 1rem", backgroundColor: "#00000099" }}>
