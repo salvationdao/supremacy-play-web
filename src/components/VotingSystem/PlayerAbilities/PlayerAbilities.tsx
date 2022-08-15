@@ -13,10 +13,6 @@ import { LocationSelectType, PlayerAbility } from "../../../types"
 import { PlayerAbilityCard } from "./PlayerAbilityCard"
 import { useHotkey } from "../../../containers/hotkeys"
 
-const COLUMNS = 4
-const ROWS = 2
-const PAGE_SIZE = COLUMNS * ROWS
-
 export const PlayerAbilities = () => {
     const theme = useTheme()
     const { userID } = useAuth()
@@ -26,7 +22,7 @@ export const PlayerAbilities = () => {
     const [playerAbilities, setPlayerAbilities] = useState<PlayerAbility[]>([])
 
     const { page, changePage, setTotalItems, totalPages, pageSize } = usePagination({
-        pageSize: PAGE_SIZE,
+        pageSize: 8,
         page: 1,
     })
     const [locationSelectType, setLocationSelectType] = useState<LocationSelectType | null>(null)
@@ -155,7 +151,7 @@ export const PlayerAbilities = () => {
                             <Box
                                 sx={{
                                     display: "grid",
-                                    gridTemplateColumns: `repeat(${COLUMNS}, minmax(0, ${100 / COLUMNS}%))`,
+                                    gridTemplateColumns: "repeat(auto-fill, minmax(70px, 1fr))",
                                     gap: ".6rem",
                                 }}
                             >

@@ -1,5 +1,6 @@
 import { IconButton, Slider, Stack } from "@mui/material"
 import { useCallback, useEffect, useState } from "react"
+import screenfull from "screenfull"
 import { SvgFullscreen, SvgMinimize, SvgMusic, SvgMusicMute, SvgVolume, SvgVolumeMute } from "../../assets"
 import { DEV_ONLY } from "../../constants"
 import { useMobile, useStream } from "../../containers"
@@ -26,47 +27,56 @@ export const VideoPlayerControls = () => {
 
     const toggleFullscreen = useCallback(
         (newValue?: boolean) => {
-            setFullscreen((prev) => {
-                if (isMobile) {
+            try {
+                // If unsupported, then just fullscreen the video
+                if (!screenfull.isEnabled) {
                     const elem = document.getElementById("battle-arena-all")
-                    if (!elem) return prev
+                    const videoElems = elem?.getElementsByTagName("video")
+                    const videoElem = videoElems && videoElems.length > 0 ? videoElems[0] : undefined
 
-                    if (prev && !newValue) {
+                    // Mobile safari edge case, it doesnt support fullscreen API
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    if (videoElem && (videoElem as any).webkitEnterFullscreen) {
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        ;(videoElem as any).webkitEnterFullscreen()
+                        setFullscreen(false)
+                    }
+                    return
+                }
+
+                if (screenfull.isFullscreen || newValue === false) {
+                    const elem = document.getElementById("battle-arena-all")
+                    if (isMobile && elem) {
                         elem.style.position = ""
                         elem.style.top = ""
                         elem.style.left = ""
                         elem.style.zIndex = ""
-                        return false
-                    } else {
-                        elem.style.position = "fixed"
-                        elem.style.top = "0"
-                        elem.style.left = "0"
-                        elem.style.zIndex = `${siteZIndex.Bar + 10}`
-                        return true
                     }
+
+                    screenfull.exit().then(() => setFullscreen(false))
                 } else {
-                    // Normal fullscreen operations
-                    const elem = document.documentElement
-
-                    if (prev && !newValue) {
-                        document.exitFullscreen()
-                        return false
-                    } else if (elem.requestFullscreen) {
-                        elem.requestFullscreen()
-                        return true
+                    if (isMobile) {
+                        const elem = document.getElementById("battle-arena-all")
+                        if (elem) {
+                            elem.style.position = "fixed"
+                            elem.style.top = "0"
+                            elem.style.left = "0"
+                            elem.style.zIndex = `${siteZIndex.Bar + 10}`
+                            screenfull.request(elem, { navigationUI: "hide" }).then(() => setFullscreen(screenfull.isFullscreen))
+                        }
+                    } else {
+                        screenfull.request().then(() => setFullscreen(screenfull.isFullscreen))
                     }
-
-                    return prev
                 }
-            })
+            } catch (err) {
+                console.error(err)
+            }
         },
         [isMobile],
     )
 
     useEffect(() => {
-        if (isMobile) {
-            toggleFullscreen(isMobileHorizontal)
-        }
+        if (isMobile) toggleFullscreen(isMobileHorizontal)
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isMobileHorizontal])
 

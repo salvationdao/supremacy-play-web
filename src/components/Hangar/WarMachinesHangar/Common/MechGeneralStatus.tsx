@@ -1,4 +1,4 @@
-import { Box, Button, Stack, Typography } from "@mui/material"
+import { Box, Stack, Typography } from "@mui/material"
 import { useCallback, useState } from "react"
 import { SvgRepair } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
@@ -136,10 +136,19 @@ export const MechGeneralStatus = ({
                         sx={{ position: "absolute", left: "100%", top: "50%", transform: "translateY(-50%)", px: ".4rem", pb: ".3rem" }}
                     >
                         {mechDetails && mechStatus?.status === MechStatusEnum.Damaged && (
-                            <Button
-                                size="small"
-                                variant="contained"
-                                sx={{ p: ".1rem .6rem", pt: ".2rem", minWidth: 0, backgroundColor: colors.blue2, color: "#FFFFFF" }}
+                            <Stack
+                                direction="row"
+                                spacing=".3rem"
+                                alignItems="center"
+                                sx={{
+                                    p: ".1rem .6rem",
+                                    pt: ".2rem",
+                                    backgroundColor: colors.blue2,
+                                    color: "#FFFFFF",
+                                    borderRadius: 0.5,
+                                    cursor: "pointer",
+                                    ":hover": { transform: "scale(1.03)" },
+                                }}
                                 onClick={(e) => {
                                     e.preventDefault()
                                     e.stopPropagation()
@@ -147,10 +156,10 @@ export const MechGeneralStatus = ({
                                 }}
                             >
                                 <SvgRepair size="1.1rem" />
-                                <Typography variant="subtitle1" sx={{ ml: ".3rem", lineHeight: 1, fontWeight: "fontWeightBold" }}>
+                                <Typography variant="subtitle1" sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>
                                     REPAIR
                                 </Typography>
-                            </Button>
+                            </Stack>
                         )}
                     </Stack>
                 </Box>

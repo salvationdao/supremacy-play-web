@@ -94,7 +94,7 @@ export const MysteryCratesStore = () => {
 
         if (!crates || isLoading) {
             return (
-                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                <Stack alignItems="center" justifyContent="center" sx={{ height: "10rem" }}>
                     <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
                         <CircularProgress size="3rem" sx={{ color: theme.factionTheme.primary }} />
                     </Stack>
@@ -110,14 +110,13 @@ export const MysteryCratesStore = () => {
                             width: "100%",
                             pt: "1rem",
                             display: "grid",
-                            gridTemplateColumns: "repeat(auto-fill, minmax(min-content, 40%))",
+                            gridTemplateColumns: "repeat(auto-fill, minmax(min-content, 45%))",
                             gridTemplateRows: "min-content",
                             gap: "5rem",
                             alignItems: "center",
                             alignContent: "center",
                             justifyContent: "center",
                             overflow: "visible",
-                            height: "90%",
                         }}
                     >
                         {crates.map((crate, index) => (
@@ -146,7 +145,6 @@ export const MysteryCratesStore = () => {
                             alignItems: "center",
                             justifyContent: "center",
                             overflow: "visible",
-                            height: "100%",
                         }}
                     >
                         {crates.map((crate, index) => (
@@ -283,7 +281,7 @@ export const MysteryCratesStore = () => {
                                     },
                                 }}
                             >
-                                {content}
+                                <Box sx={{ height: 0 }}>{content}</Box>
                             </Box>
                         </Stack>
                     </Stack>
