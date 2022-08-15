@@ -1,4 +1,4 @@
-import { Box, Divider, IconButton, Slide, Stack, Typography } from "@mui/material"
+import { Box, Divider, Fade, IconButton, Slide, Stack, Typography } from "@mui/material"
 import { ReactElement, useEffect, useMemo } from "react"
 import { ClipThing } from ".."
 import { SvgExternalLink } from "../../assets"
@@ -6,6 +6,7 @@ import { useAuth, useGame, useMobile, useSupremacy } from "../../containers"
 import { useTheme } from "../../containers/theme"
 import { useToggle } from "../../hooks"
 import { fonts, siteZIndex } from "../../theme/theme"
+import { AIType } from "../../types"
 import { WindowPortal } from "../Common/WindowPortal"
 import { WarMachineItem } from "./WarMachineItem/WarMachineItem"
 
@@ -17,8 +18,8 @@ export const WarMachineStats = () => {
 const WarMachineStatsInner = () => {
     const { isMobile } = useMobile()
     const theme = useTheme()
-    const { factionID } = useAuth()
-    const { warMachines, bribeStage, map } = useGame()
+    const { factionID, userID } = useAuth()
+    const { warMachines, spawnedAI, bribeStage, map } = useGame()
     const [isPoppedout, toggleIsPoppedout] = useToggle()
 
     // Temp hotfix ask james ****************************
@@ -31,6 +32,10 @@ const WarMachineStatsInner = () => {
     const factionMechs = useMemo(() => (warMachines ? warMachines.filter((wm) => wm.factionID && wm.factionID === factionID) : []), [warMachines, factionID])
     const otherMechs = useMemo(() => (warMachines ? warMachines.filter((wm) => wm.factionID && wm.factionID !== factionID) : []), [warMachines, factionID])
     const haveFactionMechs = useMemo(() => factionMechs.length > 0, [factionMechs])
+    const ownedMiniMechs = useMemo(
+        () => (spawnedAI ? spawnedAI.filter((sa) => sa.aiType === AIType.MiniMech && sa.ownedByID === userID) : []),
+        [spawnedAI, userID],
+    )
 
     if (isPoppedout) {
         return (
@@ -119,6 +124,17 @@ const WarMachineStatsInner = () => {
                                                     <WarMachineItem warMachine={wm} scale={1} initialExpanded isPoppedout />
                                                 </Box>
                                             ))}
+
+                                        {ownedMiniMechs.length && (
+                                            <>
+                                                <Divider orientation="horizontal" />
+                                                {ownedMiniMechs.map((mm) => (
+                                                    <Box key={`${mm.participantID}`}>
+                                                        <WarMachineItem warMachine={mm} scale={0.8} transformOrigin="0 0" initialExpanded isPoppedout />
+                                                    </Box>
+                                                ))}
+                                            </>
+                                        )}
                                     </Stack>
                                 </Box>
                             </Box>
@@ -135,6 +151,25 @@ const WarMachineStatsInner = () => {
         if (!show) return null
         return (
             <>
+                <Fade in={ownedMiniMechs.length > 0}>
+                    <Stack
+                        spacing="1rem"
+                        sx={{
+                            backgroundColor: "#FFFFFF12",
+                            boxShadow: 2,
+                            border: "#FFFFFF20 1px solid",
+                            p: "1.2rem 1.4rem",
+                        }}
+                    >
+                        <Typography sx={{ fontFamily: fonts.nostromoBlack }}>YOUR MINI MECHS</Typography>
+
+                        <Box sx={{ display: "grid", gridTemplateColumns: "repeat(2, 50%)" }}>
+                            {ownedMiniMechs.map((mm) => (
+                                <WarMachineItem key={`${mm.participantID}`} warMachine={mm} scale={0.5} transformOrigin="0 0" initialExpanded />
+                            ))}
+                        </Box>
+                    </Stack>
+                </Fade>
                 {haveFactionMechs && (
                     <Stack
                         spacing="1rem"
@@ -199,6 +234,19 @@ const WarMachineStatsInner = () => {
                     filter: "drop-shadow(0 3px 3px #00000020)",
                 }}
             >
+                <Fade in={ownedMiniMechs.length > 0}>
+                    <Stack direction="row" sx={{ ml: "-3rem", pl: "2rem", transform: "skew(-6deg)" }}>
+                        <Box>
+                            <HorizontalScrollContainer>
+                                <Stack spacing="-3rem" direction="row" alignItems="center" justifyContent="center" sx={{ px: ".6rem", py: ".6rem" }}>
+                                    {ownedMiniMechs.map((mm) => (
+                                        <WarMachineItem key={`${mm.participantID}`} warMachine={mm} scale={0.6} />
+                                    ))}
+                                </Stack>
+                            </HorizontalScrollContainer>
+                        </Box>
+                    </Stack>
+                </Fade>
                 <IconButton
                     onClick={() => toggleIsPoppedout()}
                     edge="end"
@@ -207,7 +255,6 @@ const WarMachineStatsInner = () => {
                 >
                     <SvgExternalLink size="1.3rem" fill="#FFFFFF" sx={{ pb: 0 }} />
                 </IconButton>
-
                 <Stack direction="row" alignItems="flex-end" sx={{ ml: "-3rem", pl: "2rem", transform: "skew(-6deg)" }}>
                     {haveFactionMechs && (
                         <ClipThing

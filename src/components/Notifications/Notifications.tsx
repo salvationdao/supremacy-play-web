@@ -21,6 +21,8 @@ import { useArray } from "../../hooks"
 import { useGameServerSubscription, useGameServerSubscriptionFaction } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { siteZIndex } from "../../theme/theme"
+import { BattleZone } from "../../types"
+import { BattleZoneAlert } from "./Alerts/BattleZoneAlert"
 import {
     battleAbilityNoti,
     factionAbilityNoti,
@@ -35,8 +37,6 @@ import {
     textNoti,
     warMachineAbilityNoti,
 } from "./testData"
-import { BattleZoneAlert } from "./Alerts/BattleZoneAlert"
-import { BattleZone } from "../../types"
 
 const SPAWN_TEST_NOTIFICATIONS = false
 
