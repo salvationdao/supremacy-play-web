@@ -2,7 +2,7 @@ import { useEffect } from "react"
 import { useDebounce } from "."
 
 const getWindowDimensions = () => {
-    const { innerWidth: width, innerHeight: height } = window
+    const { outerWidth: width, outerHeight: height } = window
     return {
         width,
         height,
@@ -14,7 +14,8 @@ export const useWindowDimensions = (debounceValue = 300) => {
 
     useEffect(() => {
         const handleResize = () => {
-            setWindowDimensions(getWindowDimensions())
+            const dimensions = getWindowDimensions()
+            setWindowDimensions(dimensions)
         }
 
         window.addEventListener("resize", handleResize)
