@@ -147,7 +147,7 @@ const WarMachineStatsInner = () => {
                     >
                         <Typography sx={{ fontFamily: fonts.nostromoBlack }}>YOUR FACTION</Typography>
 
-                        <Box sx={{ display: "grid", gridTemplateColumns: "repeat(4, 25%)"  }}>
+                        <Box sx={{ display: "grid", gridTemplateColumns: "repeat(4, 25%)" }}>
                             {factionMechs.map((wm, i) => (
                                 <WarMachineItem
                                     key={`${wm.participantID} - ${wm.hash}`}
@@ -210,7 +210,15 @@ const WarMachineStatsInner = () => {
                     onClick={() => toggleIsPoppedout()}
                     edge="end"
                     size="small"
-                    sx={{ position: "absolute", top: 0, left: 0, opacity: 0.5, ":hover": { opacity: 1 }, transition: "all .1s", zIndex: 99 }}
+                    sx={{
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        opacity: 0.5,
+                        ":hover": { opacity: 1 },
+                        transition: "all .1s",
+                        zIndex: 99,
+                    }}
                 >
                     <SvgExternalLink size="1.3rem" fill="#FFFFFF" sx={{ pb: 0 }} />
                 </IconButton>
