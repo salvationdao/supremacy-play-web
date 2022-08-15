@@ -63,7 +63,7 @@ export const ReportModal = ({ message, reportModalOpen, setReportModalOpen }: Re
         } finally {
             setLoading(false)
         }
-    }, [message, reason, otherDescription, description, send, newSnackbarMessage, setReportModalOpen])
+    }, [message, reason, otherDescription, description, send, newSnackbarMessage, setReportModalOpen, loading, setLoading])
 
     const primaryColor = theme.factionTheme.primary
     const secondaryColor = theme.factionTheme.secondary
