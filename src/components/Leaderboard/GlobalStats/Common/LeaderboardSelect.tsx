@@ -56,6 +56,14 @@ export const LeaderboardSelect = ({
                     ".MuiOutlinedInput-notchedOutline": {
                         border: "none !important",
                     },
+                    ".MuiSelect-select": {
+                        ".MuiTypography-root": {
+                            color: secondaryColor,
+                        },
+                    },
+                    ".MuiSelect-icon": {
+                        fill: secondaryColor,
+                    },
                 }}
                 displayEmpty
                 value={leaderboardType}
@@ -87,7 +95,7 @@ export const LeaderboardSelect = ({
                             }}
                             sx={{ "&:hover": { backgroundColor: "#FFFFFF20" } }}
                         >
-                            <Typography textTransform="uppercase" sx={{ fontWeight: "fontWeightBold", color: secondaryColor }}>
+                            <Typography textTransform="uppercase" sx={{ fontWeight: "fontWeightBold" }}>
                                 {x.label}
                             </Typography>
                         </MenuItem>

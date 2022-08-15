@@ -43,6 +43,14 @@ export const RoundSelect = ({
                     ".MuiOutlinedInput-notchedOutline": {
                         border: "none !important",
                     },
+                    ".MuiSelect-select": {
+                        ".MuiTypography-root": {
+                            color: secondaryColor,
+                        },
+                    },
+                    ".MuiSelect-icon": {
+                        fill: secondaryColor,
+                    },
                 }}
                 displayEmpty
                 value={selectedRound}
@@ -65,14 +73,14 @@ export const RoundSelect = ({
                 }}
                 renderValue={() => {
                     return (
-                        <Typography textTransform="uppercase" sx={{ fontWeight: "fontWeightBold", color: secondaryColor }}>
+                        <Typography textTransform="uppercase" sx={{ fontWeight: "fontWeightBold" }}>
                             {label || "ALL TIME"}
                         </Typography>
                     )
                 }}
             >
                 <MenuItem value="" onClick={() => setSelectedRound(undefined)}>
-                    <Typography textTransform="uppercase" sx={{ fontWeight: "fontWeightBold", color: secondaryColor }}>
+                    <Typography textTransform="uppercase" sx={{ fontWeight: "fontWeightBold" }}>
                         ALL TIME
                     </Typography>
                 </MenuItem>
@@ -86,7 +94,7 @@ export const RoundSelect = ({
                             }}
                             sx={{ "&:hover": { backgroundColor: "#FFFFFF20" } }}
                         >
-                            <Typography textTransform="uppercase" sx={{ fontWeight: "fontWeightBold", color: secondaryColor }}>
+                            <Typography textTransform="uppercase" sx={{ fontWeight: "fontWeightBold" }}>
                                 {x.name} (#{x.round_number})
                             </Typography>
                         </MenuItem>
