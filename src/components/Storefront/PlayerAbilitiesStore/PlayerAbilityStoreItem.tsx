@@ -141,19 +141,8 @@ export const PlayerAbilityStoreItem = ({
                 }}
             >
                 <Fade in={true} timeout={1000}>
-                    <Stack
-                        spacing=".8rem"
-                        sx={{
-                            height: "100%",
-                            p: "4rem",
-                        }}
-                    >
-                        <Box
-                            sx={{
-                                position: "relative",
-                                width: "100%",
-                            }}
-                        >
+                    <Stack spacing=".8rem" sx={{ height: "100%", p: "4rem" }}>
+                        <Box sx={{ position: "relative", width: "100%" }}>
                             <Box
                                 component="img"
                                 src={saleAbility.ability.image_url}

@@ -21,7 +21,7 @@ export const PageHeader = ({ title, description, imageUrl, children, smallSize, 
             alignItems="center"
             spacing="2rem"
             sx={{
-                backgroundColor: "#00000070",
+                backgroundColor: "#00000080",
                 borderBottom: (theme) => `${primaryColor || theme.factionTheme.primary}70 1.5px solid`,
             }}
         >
