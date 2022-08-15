@@ -1,4 +1,4 @@
-import { Box, MenuItem, Modal, Select, Stack, TextField, Typography } from "@mui/material"
+import { Box, CircularProgress, MenuItem, Modal, Select, Stack, TextField, Typography } from "@mui/material"
 import { useCallback, useState } from "react"
 import { TextMessageData } from "../../../../types"
 import { colors, siteZIndex } from "../../../../theme/theme"
@@ -8,6 +8,7 @@ import { FancyButton } from "../../../Common/FancyButton"
 import { GameServerKeys } from "../../../../keys"
 import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
 import { useSnackbar } from "../../../../containers"
+import { useToggle } from "../../../../hooks"
 
 interface ReportModalProps {
     message: TextMessageData
@@ -40,9 +41,10 @@ export const ReportModal = ({ message, reportModalOpen, setReportModalOpen }: Re
     const [reason, setReason] = useState<string>(reasons.OffensiveLanguage)
     const [otherDescription, setOtherDescription] = useState<string>("")
     const [description, setDescription] = useState<string>("")
+    const [loading, setLoading] = useToggle(false)
 
     const handleReport = useCallback(async () => {
-        if (!message.id) return
+        if (!message.id || loading) return
         const payload: ReportSend = {
             message_id: message.id,
             reason: reason,
@@ -51,13 +53,15 @@ export const ReportModal = ({ message, reportModalOpen, setReportModalOpen }: Re
         }
 
         try {
+            setLoading(true)
             const resp = await send<boolean, ReportSend>(GameServerKeys.ChatReport, payload)
             if (!resp) return
             setReportModalOpen(false)
             newSnackbarMessage("Thank you, your report has been successful.", "success")
         } catch (e) {
-            console.error(e)
             newSnackbarMessage(typeof e === "string" ? e : "Failed to send report, try again or contact support.", "error")
+        } finally {
+            setLoading(false)
         }
     }, [message, reason, otherDescription, description, send, newSnackbarMessage, setReportModalOpen])
 
@@ -183,7 +187,9 @@ export const ReportModal = ({ message, reportModalOpen, setReportModalOpen }: Re
                                 }}
                             />
                             <Box sx={{ gridColumn: "1 / 3" }}>
-                                <FancyButton type={"submit"}>Report</FancyButton>
+                                <FancyButton disabled={loading} type={"submit"}>
+                                    {loading ? <CircularProgress size={"1.5rem"} /> : "Report"}
+                                </FancyButton>
                             </Box>
                         </Box>
                     </form>
