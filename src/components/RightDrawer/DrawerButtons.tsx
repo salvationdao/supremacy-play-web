@@ -4,7 +4,7 @@ import { useTheme } from "../../containers/theme"
 import { RIGHT_DRAWER_ARRAY } from "../../routes"
 import { colors, fonts, siteZIndex } from "../../theme/theme"
 
-const BUTTON_WIDTH = 17 //rem
+const BUTTON_WIDTH = 20 //rem
 const DRAWER_BAR_WIDTH = 3 // rem
 
 export const DrawerButtons = () => {

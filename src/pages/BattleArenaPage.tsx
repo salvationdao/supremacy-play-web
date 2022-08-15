@@ -192,8 +192,6 @@ const BattleArenaPageInner = () => {
                     <>
                         <WarMachineStats />
 
-                        <BattleEndScreen />
-
                         <BattleHistory />
 
                         {isQuickDeployOpen && <QuickDeploy open={isQuickDeployOpen} onClose={() => toggleIsQuickDeployOpen(false)} />}

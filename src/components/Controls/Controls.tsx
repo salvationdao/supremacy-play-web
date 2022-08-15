@@ -1,7 +1,6 @@
 import { Stack } from "@mui/material"
 import { useMemo } from "react"
 import { LiveCounts, OverlayToggles, VideoPlayerControls } from ".."
-import { CONTROLS_HEIGHT } from "../../constants"
 import { useMobile } from "../../containers"
 import { useTheme } from "../../containers/theme"
 import { shadeColor } from "../../helpers"
@@ -9,6 +8,8 @@ import { siteZIndex } from "../../theme/theme"
 import { ResolutionSelect } from "./ResolutionSelect"
 import { ShowTrailerButton } from "./ShowTrailerButton"
 import { StreamSelect } from "./StreamSelect"
+
+export const CONTROLS_HEIGHT = 3.0 // rem
 
 export const Controls = () => {
     const { isMobile } = useMobile()

@@ -262,6 +262,11 @@ export const LEFT_DRAWER_MAP: { [name: string]: SideTabsStruct } = {
     },
 }
 
+export const LEFT_DRAWER_ARRAY: SideTabsStruct[] = []
+for (const [, value] of Object.entries(LEFT_DRAWER_MAP)) {
+    LEFT_DRAWER_ARRAY.push(value)
+}
+
 export const RIGHT_DRAWER_MAP: { [name: string]: SideTabsStruct } = {
     live_chat: {
         id: "live_chat",

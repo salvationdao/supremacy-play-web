@@ -3,15 +3,14 @@ import { Box } from "@mui/system"
 import moment from "moment"
 import { useEffect } from "react"
 import { SectionFactions, SectionWinner } from ".."
-import { useGame, useMobile, useOverlayToggles } from "../../containers"
+import { useGame, useOverlayToggles } from "../../containers"
 import { useTheme } from "../../containers/theme"
 import { LEFT_DRAWER_MAP } from "../../routes"
-import { fonts, siteZIndex } from "../../theme/theme"
+import { colors, fonts, siteZIndex } from "../../theme/theme"
 import { SectionMechRewards } from "./Sections/SectionMechRewards"
 
 export const BattleEndScreen = () => {
     const theme = useTheme()
-    const { isMobile } = useMobile()
     const { map, battleEndDetail } = useGame()
     const { setLeftDrawerActiveTabID } = useOverlayToggles()
 
@@ -24,37 +23,39 @@ export const BattleEndScreen = () => {
     // New game started, so close the panel
     useEffect(() => {
         if (map) {
-            setLeftDrawerActiveTabID(LEFT_DRAWER_MAP.battle_arena?.id)
+            // setLeftDrawerActiveTabID(LEFT_DRAWER_MAP.battle_arena?.id)
         }
     }, [map, setLeftDrawerActiveTabID])
 
     const primaryColor = theme.factionTheme.primary
     const backgroundColor = theme.factionTheme.background
 
-    if (!battleEndDetail) return null
+    if (!battleEndDetail) {
+        return (
+            <Stack spacing=".6rem" alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                <Typography sx={{ color: colors.grey, textAlign: "center" }}>Please wait for the current battle to finish.</Typography>
+            </Stack>
+        )
+    }
 
     const { battle_identifier, started_at, ended_at } = battleEndDetail
 
     return (
         <Stack
+            spacing="1rem"
             sx={{
-                position: isMobile ? "unset" : "absolute",
-                top: 0,
-                bottom: 0,
-                left: 0,
                 pl: "2.9rem",
-                pr: ".8rem",
+                pr: "1.2rem",
                 pt: "2.4rem",
-                pb: "1.2rem",
+                pb: "2.5rem",
                 height: "100%",
                 width: "100%",
                 boxShadow: 20,
                 zIndex: siteZIndex.Popover,
-                maxWidth: isMobile ? "unset" : "48rem",
                 background: `linear-gradient(65deg, ${backgroundColor} 3%, ${backgroundColor}FF 50%, ${backgroundColor}EE)`,
             }}
         >
-            <Box sx={{ mb: "1.6rem" }}>
+            <Box>
                 <Typography variant="h5" sx={{ fontFamily: fonts.nostromoBlack }}>
                     BATTLE ID #{battle_identifier.toString().padStart(4, "0")}
                 </Typography>
@@ -66,8 +67,7 @@ export const BattleEndScreen = () => {
             <Stack
                 sx={{
                     flex: 1,
-                    pr: "1.76rem",
-                    pb: "3.2rem",
+                    pr: "1rem",
                     overflowY: "auto",
                     overflowX: "auto",
 
@@ -86,7 +86,7 @@ export const BattleEndScreen = () => {
                 }}
             >
                 <Box sx={{ height: 0 }}>
-                    <Stack spacing="3.2rem">
+                    <Stack spacing="3.2rem" sx={{ py: "1rem" }}>
                         <SectionWinner battleEndDetail={battleEndDetail} />
                         <SectionFactions battleEndDetail={battleEndDetail} />
                         <SectionMechRewards battleEndDetail={battleEndDetail} />
