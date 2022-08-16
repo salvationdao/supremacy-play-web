@@ -67,7 +67,6 @@ export const ArenaListener = () => {
             key: GameServerKeys.SubBattleArenaList,
         },
         (payload) => {
-            console.log(payload)
             if (!payload || payload.length === 0) {
                 setArenas([])
                 return
@@ -81,8 +80,6 @@ export const ArenaListener = () => {
             }
         },
     )
-
-    console.log(currentArenaID)
 
     useGameServerSubscription<boolean>(
         {
