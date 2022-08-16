@@ -684,7 +684,7 @@ const WeaponItem = ({ id, equipped, selected, onSelect }: WeaponItemProps) => {
         },
     )
 
-    const renderStat = useCallback((label: string, stats: { oldStat?: number; newStat: number, negated?: boolean }) => {
+    const renderStat = useCallback((label: string, stats: { oldStat?: number; newStat: number; negated?: boolean }) => {
         const positiveColor = stats.negated ? colors.red : colors.green
         const negativeColor = stats.negated ? colors.green : colors.red
         const difference = stats.newStat - (stats.oldStat || 0)
@@ -811,7 +811,7 @@ const WeaponItem = ({ id, equipped, selected, onSelect }: WeaponItemProps) => {
                         renderStat("SPREAD", {
                             oldStat: equipped.spread,
                             newStat: weaponDetails.spread,
-                            negated: true
+                            negated: true,
                         })}
                     {typeof weaponDetails.rate_of_fire !== "undefined" &&
                         renderStat("RATE OF FIRE", {
@@ -1019,7 +1019,7 @@ const WeaponPreview = ({ weapon, equipped, skinInheritable }: WeaponPreviewProps
                         mt: "1rem",
                     }}
                 >
-                    {statChanges.length > 0 && (
+                    {statChanges.length > 0 ? (
                         <Stack>
                             <Typography
                                 sx={{
@@ -1031,6 +1031,15 @@ const WeaponPreview = ({ weapon, equipped, skinInheritable }: WeaponPreviewProps
                             </Typography>
                             {statChanges}
                         </Stack>
+                    ) : (
+                        <Typography
+                            sx={{
+                                color: colors.lightGrey,
+                                textTransform: "uppercase",
+                            }}
+                        >
+                            No Stat Changes If Equipped
+                        </Typography>
                     )}
                     <Stack direction="row" spacing="1rem" mt="auto">
                         <Box ml="auto" />
