@@ -12,6 +12,7 @@ import { MoveableResizableConfig, useMoveableResizable } from "../Common/Moveabl
 import { SectionHeading } from "../LeftDrawer/BattleArena/Common/SectionHeading"
 import { HighlightedMechAbilities } from "./MapOutsideItems/HighlightedMechAbilities"
 import { TargetHint } from "./MapOutsideItems/TargetHint"
+import { useHotkey } from "../../containers/hotkeys"
 
 export const TOP_BAR_HEIGHT = 3.1 // rems
 
@@ -113,6 +114,7 @@ const MiniMapInner = ({
 }) => {
     const { isMobile } = useMobile()
     const theme = useTheme()
+    const { handleHotKey } = useHotkey()
     const {
         remToPxRatio,
         gameUIDimensions: { width, height },
@@ -140,6 +142,10 @@ const MiniMapInner = ({
     const prevHeight = useRef(curHeight)
     const prevPosX = useRef(curPosX)
     const prevPosY = useRef(curPosY)
+
+    useEffect(() => {
+        ref.current?.focus()
+    }, [])
 
     // When it's targeting, enlarge the map and move to center of screen, else restore to the prev dimensions
     useEffect(() => {
@@ -233,6 +239,9 @@ const MiniMapInner = ({
             >
                 <Box
                     ref={ref}
+                    tabIndex={0}
+                    onKeyDown={handleHotKey}
+                    onClick={() => ref.current?.focus()}
                     sx={{
                         position: "relative",
                         boxShadow: 1,
@@ -306,5 +315,5 @@ const MiniMapInner = ({
             </Stack>
         )
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [toRender, theme.factionTheme.primary, curWidth, curHeight, remToPxRatio, isMobile, width, height, isPoppedout])
+    }, [toRender, theme.factionTheme.primary, curWidth, curHeight, remToPxRatio, isMobile, width, height, isPoppedout, handleHotKey])
 }

@@ -46,8 +46,9 @@ export const HotkeyContainer = createContainer(() => {
     )
 
     const handleHotKey = useCallback(
-        (e: KeyboardEvent) => {
+        (e) => {
             e.preventDefault()
+            console.log(e.key, hotkeyRecord)
 
             let handlePress = hotkeyRecord[e.key]
             if (e.ctrlKey) {
@@ -60,14 +61,11 @@ export const HotkeyContainer = createContainer(() => {
         },
         [hotkeyRecord, controlHotkeyRecord],
     )
-    useEffect(() => {
-        document.addEventListener("keydown", handleHotKey)
-        return () => document.removeEventListener("keydown", handleHotKey)
-    }, [handleHotKey])
 
     return {
         mechAbilityKey,
         addToHotkeyRecord,
+        handleHotKey,
     }
 })
 
