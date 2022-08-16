@@ -1,6 +1,7 @@
 import { Box } from "@mui/system"
-import { SvgChat, SvgDamage1, SvgHistoryClock, SvgRepair } from "../assets"
+import { SvgChat, SvgDamage1, SvgHistoryClock, SvgRepair, SvgRobot } from "../assets"
 import { BattleArena } from "../components/LeftDrawer/BattleArena/BattleArena"
+import { QuickDeploy } from "../components/LeftDrawer/QuickDeploy/QuickDeploy"
 import { BattleEndScreen } from "../components/LeftDrawer/BattleEndScreen/BattleEndScreen"
 import { PlayerProfilePage } from "../components/PublicProfile/PlayerProfile"
 import { LiveChat } from "../components/RightDrawer/LiveChat/LiveChat"
@@ -234,6 +235,15 @@ export const LEFT_DRAWER_MAP: { [name: string]: SideTabsStruct } = {
         requireAuth: false,
         matchNavLinkID: "home",
         mountAllTime: true,
+    },
+    quick_deploy: {
+        id: "quick_deploy",
+        icon: <SvgRobot size="1.2rem" sx={{ pt: ".3rem" }} />,
+        label: "Quick Deploy",
+        Component: QuickDeploy,
+        requireAuth: true,
+        matchNavLinkID: "home",
+        mountAllTime: false,
     },
     previous_battle: {
         id: "previous_battle",

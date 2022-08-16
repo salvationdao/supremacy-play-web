@@ -247,6 +247,7 @@ const WarMachineStatsInner = () => {
                         </Box>
                     </Stack>
                 </Fade>
+
                 <IconButton
                     onClick={() => toggleIsPoppedout()}
                     edge="end"
@@ -255,7 +256,8 @@ const WarMachineStatsInner = () => {
                 >
                     <SvgExternalLink size="1.3rem" fill="#FFFFFF" sx={{ pb: 0 }} />
                 </IconButton>
-                <Stack direction="row" alignItems="flex-end" sx={{ ml: "-3rem", pl: "2rem", transform: "skew(-6deg)" }}>
+
+                <Stack direction="row" alignItems="flex-end" sx={{ ml: "-3rem", px: "2rem", transform: "skew(-6deg)" }}>
                     {haveFactionMechs && (
                         <ClipThing
                             clipSize="10px"

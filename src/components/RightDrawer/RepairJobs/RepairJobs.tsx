@@ -160,11 +160,9 @@ export const RepairJobs = () => {
                         boxShadow: 1.5,
                     }}
                 >
-                    <Stack spacing=".1rem">
-                        <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack, color: theme.factionTheme.secondary }}>
-                            REPAIR JOBS
-                        </Typography>
-                    </Stack>
+                    <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack, color: theme.factionTheme.secondary }}>
+                        REPAIR JOBS
+                    </Typography>
                 </Stack>
 
                 <TotalAndPageSizeOptions sortOptions={sortOptions} selectedSort={sort} onSetSort={setSort} />
@@ -172,9 +170,8 @@ export const RepairJobs = () => {
                 <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
                     <Box
                         sx={{
-                            ml: ".8rem",
-                            mr: ".4rem",
-                            pr: ".4rem",
+                            ml: ".5rem",
+                            pr: ".5rem",
                             my: ".6rem",
                             flex: 1,
                             overflowY: "auto",

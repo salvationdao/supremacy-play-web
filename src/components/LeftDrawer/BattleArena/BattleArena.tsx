@@ -1,8 +1,7 @@
 import { Box, Stack } from "@mui/material"
-import { QuickDeploy } from "./QuickDeploy/QuickDeploy"
-import { QuickPlayerAbilities } from "./QuickPlayerAbilities/QuickPlayerAbilities"
 import { BattleAbility } from "./BattleAbility/BattleAbility"
 import { PlayerAbilities } from "./PlayerAbilities/PlayerAbilities"
+import { QuickPlayerAbilities } from "./QuickPlayerAbilities/QuickPlayerAbilities"
 
 export const BattleArena = () => {
     return (
@@ -33,7 +32,6 @@ export const BattleArena = () => {
                         <BattleAbility />
                         <PlayerAbilities />
                         <QuickPlayerAbilities />
-                        <QuickDeploy />
                     </Stack>
                 </Box>
             </Box>

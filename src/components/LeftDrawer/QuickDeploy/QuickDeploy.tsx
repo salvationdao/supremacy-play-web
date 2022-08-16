@@ -1,21 +1,20 @@
 import { Box, CircularProgress, IconButton, Pagination, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useState } from "react"
-import { TooltipHelper } from "../../.."
-import { SvgNotification, SvgSupToken } from "../../../../assets"
-import { useAuth } from "../../../../containers"
-import { useTheme } from "../../../../containers/theme"
-import { parseString, supFormatter } from "../../../../helpers"
-import { usePagination, useToggle } from "../../../../hooks"
-import { useGameServerCommandsUser, useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
-import { GameServerKeys } from "../../../../keys"
-import { colors, fonts } from "../../../../theme/theme"
-import { MechBasic } from "../../../../types"
-import { SortTypeLabel } from "../../../../types/marketplace"
-import { PreferencesModal } from "../../../Bar/ProfileCard/PreferencesModal/PreferencesModal"
-import { TelegramRegisterModal } from "../../../Bar/ProfileCard/PreferencesModal/TelegramRegisterModal"
-import { TotalAndPageSizeOptions } from "../../../Common/TotalAndPageSizeOptions"
-import { QueueFeed } from "../../../Hangar/WarMachinesHangar/WarMachineDetails/Modals/DeployModal"
-import { SectionHeading } from "../Common/SectionHeading"
+import { TooltipHelper } from "../.."
+import { SvgNotification, SvgSupToken } from "../../../assets"
+import { useAuth } from "../../../containers"
+import { useTheme } from "../../../containers/theme"
+import { parseString, supFormatter } from "../../../helpers"
+import { usePagination, useToggle } from "../../../hooks"
+import { useGameServerCommandsUser, useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../keys"
+import { colors, fonts } from "../../../theme/theme"
+import { MechBasic } from "../../../types"
+import { SortTypeLabel } from "../../../types/marketplace"
+import { PreferencesModal } from "../../Bar/ProfileCard/PreferencesModal/PreferencesModal"
+import { TelegramRegisterModal } from "../../Bar/ProfileCard/PreferencesModal/TelegramRegisterModal"
+import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
+import { QueueFeed } from "../../Hangar/WarMachinesHangar/WarMachineDetails/Modals/DeployModal"
 import { QuickDeployItem } from "./QuickDeployItem"
 
 const sortOptions = [
@@ -115,10 +114,26 @@ const QuickDeployInner = () => {
 
     return (
         <>
-            <Box>
-                <SectionHeading label="QUICK DEPLOY" tooltip="Quickly deploy your mechs to the battle queue." />
+            <Stack sx={{ position: "relative", height: "100%", backgroundColor: theme.factionTheme.background }}>
+                <Stack
+                    direction="row"
+                    spacing=".96rem"
+                    alignItems="center"
+                    sx={{
+                        position: "relative",
+                        pl: "2.2rem",
+                        pr: "4.8rem",
+                        height: `${5}rem`,
+                        background: `linear-gradient(${theme.factionTheme.primary} 26%, ${theme.factionTheme.primary}95)`,
+                        boxShadow: 1.5,
+                    }}
+                >
+                    <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack, color: theme.factionTheme.secondary }}>
+                        QUICK DEPLOY
+                    </Typography>
+                </Stack>
 
-                <Stack sx={{ backgroundColor: "#FFFFFF12", boxShadow: 2, border: "#FFFFFF20 1px solid" }}>
+                <Stack sx={{ flex: 1 }}>
                     <Stack spacing="1.5rem" direction="row" sx={{ p: ".5rem 1rem", backgroundColor: "#00000099" }}>
                         {queueLength >= 0 && (
                             <AmountItem
@@ -201,6 +216,7 @@ const QuickDeployInner = () => {
                     {totalPages > 1 && (
                         <Box
                             sx={{
+                                mt: "auto",
                                 px: "1rem",
                                 py: ".7rem",
                                 borderTop: `${primaryColor}70 1.5px solid`,
@@ -224,7 +240,7 @@ const QuickDeployInner = () => {
                         </Box>
                     )}
                 </Stack>
-            </Box>
+            </Stack>
 
             {/* preferences modal */}
             {preferencesModalOpen && (

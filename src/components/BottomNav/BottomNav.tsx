@@ -12,6 +12,11 @@ export const BottomNav = () => {
     return <BottomNavInner />
 }
 
+/**
+ * This thing replaces the left and right drawers on mobile view
+ * @returns
+ */
+
 const BottomNavInner = () => {
     const { userID } = useAuth()
     const theme = useTheme()
