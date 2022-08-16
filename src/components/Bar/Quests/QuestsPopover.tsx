@@ -26,7 +26,10 @@ export const QuestsPopover = ({
     const theme = useTheme()
     const [localOpen, toggleLocalOpen] = useToggle(open)
 
-    const roundNames = useMemo(() => questStats.reduce<string[]>((acc, qs) => (qs.round_name in acc ? acc : [...acc, qs.round_name]), []), [questStats])
+    const roundNames = useMemo(
+        () => questStats.reduce<string[]>((acc, qs) => (acc.findIndex((a) => a === qs.round_name) >= 0 ? acc : [...acc, qs.round_name]), []),
+        [questStats],
+    )
 
     useEffect(() => {
         if (!localOpen) {
@@ -70,21 +73,25 @@ export const QuestsPopover = ({
                 backgroundColor={theme.factionTheme.background}
                 sx={{ height: "100%" }}
             >
-                <Box sx={{ position: "relative", width: "38rem", maxHeight: "90vh", px: "2rem", py: "1.4rem" }}>
-                    <Typography sx={{ mb: ".4rem", fontFamily: fonts.nostromoBlack, color: colors.purple }}>YOUR QUESTS</Typography>
+                <Box sx={{ position: "relative", width: "38rem", maxHeight: "90vh", py: "1.4rem" }}>
+                    <Box sx={{ px: "2rem" }}>
+                        <Typography sx={{ mb: ".4rem", fontFamily: fonts.nostromoBlack, color: colors.purple }}>YOUR QUESTS</Typography>
 
-                    <Typography variant="body2" sx={{ mb: ".8rem", fontWeight: "fontWeightBold", color: colors.grey }}>
-                        <i>
-                            YOU&apos;VE COMPLETED {questStats.filter((qs) => qs.obtained).length}/{questStats.length} QUESTS
-                        </i>
-                    </Typography>
+                        <Typography variant="body2" sx={{ mb: ".8rem", fontWeight: "fontWeightBold", color: colors.grey }}>
+                            <i>
+                                YOU&apos;VE COMPLETED {questStats.filter((qs) => qs.obtained).length}/{questStats.length} QUESTS
+                            </i>
+                        </Typography>
+                    </Box>
 
                     {roundNames.length > 0 &&
                         roundNames.map((roundName) => {
                             return (
-                                <Accordion key={roundName}>
-                                    <AccordionSummary expandIcon={<SvgExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header">
-                                        <Typography>{roundName}</Typography>
+                                <Accordion key={roundName} sx={{ ".MuiAccordionSummary-root.Mui-expanded": { backgroundColor: colors.purple, minHeight: 0 } }}>
+                                    <AccordionSummary expandIcon={<SvgExpandMoreIcon />} sx={{ minHeight: 0, ":hover": { opacity: 0.9 } }}>
+                                        <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack }}>
+                                            {roundName}
+                                        </Typography>
                                     </AccordionSummary>
                                     <AccordionDetails>
                                         <Stack spacing=".7rem">
