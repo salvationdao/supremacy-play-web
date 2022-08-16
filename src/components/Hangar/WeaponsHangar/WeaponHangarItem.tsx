@@ -137,7 +137,7 @@ export const WeaponCommonArea = ({
                     flexShrink: 0,
                 }}
             >
-                <MediaPreview imageUrl={imageUrl || avatarUrl} objectFit={isGridView ? "cover" : "contain"} imageTransform="rotate(-30deg) scale(.95)" />
+                <MediaPreview imageUrl={imageUrl || avatarUrl} objectFit={isGridView ? "cover" : "contain"} />
             </Box>
             <Stack
                 spacing=".2rem"

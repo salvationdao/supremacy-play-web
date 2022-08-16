@@ -5,7 +5,6 @@ import { SvgSkin } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
 import { getAssetItemDeets, getRarityDeets } from "../../../../helpers"
 import { colors, fonts } from "../../../../theme/theme"
-import { AssetItemType } from "../../../../types"
 import { FancyButton } from "../../../Common/FancyButton"
 import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
 import { TooltipHelper } from "../../../Common/TooltipHelper"
@@ -46,12 +45,7 @@ export const CrateRewardItemsLarge = ({ item, largerVersion }: CrateRewardItemsP
             >
                 <Stack sx={{ m: "1rem", textAlign: "start", width: largerVersion ? "30rem" : "25rem" }}>
                     <Box sx={{ position: "relative", width: "100%", height: largerVersion ? "30rem" : "22rem", mb: "1rem" }}>
-                        <MediaPreview
-                            imageUrl={imageUrl}
-                            videoUrls={[animationUrl, cardAnimationUrl]}
-                            objectFit="cover"
-                            imageTransform={item?.type === AssetItemType.Weapon || item?.type === AssetItemType.WeaponSkin ? "rotate(-30deg) scale(.95)" : ""}
-                        />
+                        <MediaPreview imageUrl={imageUrl} videoUrls={[animationUrl, cardAnimationUrl]} objectFit="cover" />
 
                         <TooltipHelper placement="right" text={assetItemDeets.label}>
                             <Box sx={{ position: "absolute", top: ".1rem", left: ".1rem" }}>
@@ -117,12 +111,7 @@ export const CrateRewardItemsSmall = ({ item }: CrateRewardItemsProps) => {
                             border: `${assetItemDeets.color || theme.factionTheme.primary} 1px solid`,
                         }}
                     >
-                        <MediaPreview
-                            imageUrl={imageUrl}
-                            videoUrls={[animationUrl, cardAnimationUrl]}
-                            showBorder
-                            imageTransform={item?.type === AssetItemType.Weapon || item?.type === AssetItemType.WeaponSkin ? "rotate(-30deg) scale(.95)" : ""}
-                        />
+                        <MediaPreview imageUrl={imageUrl} videoUrls={[animationUrl, cardAnimationUrl]} showBorder />
 
                         <TooltipHelper placement="right" text={assetItemDeets.label}>
                             <Box sx={{ position: "absolute", top: ".1rem", left: ".1rem" }}>
