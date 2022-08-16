@@ -15,6 +15,7 @@ export interface GameSettingsResponse {
     game_map: Map
     battle_zone: BattleZone
     war_machines: WarMachineState[]
+    spawned_ai: WarMachineState[]
     ability_details: AbilityDetail[]
 }
 
@@ -28,6 +29,7 @@ export const GameContainer = createContainer(() => {
     const [battleZone, setBattleZone] = useState<BattleZone>()
     const [abilityDetails, setAbilityDetails] = useState<AbilityDetail[]>([])
     const [warMachines, setWarMachines] = useState<WarMachineState[] | undefined>([])
+    const [spawnedAI, setSpawnedAI] = useState<WarMachineState[] | undefined>([])
     const [bribeStage, setBribeStage] = useState<BribeStageResponse | undefined>()
     const [battleEndDetail, setBattleEndDetail] = useState<BattleEndDetail>()
     const [forceDisplay100Percentage, setForceDisplay100Percentage] = useState<string>("")
@@ -45,6 +47,19 @@ export const GameContainer = createContainer(() => {
             setBattleZone(payload.battle_zone)
             setAbilityDetails(payload.ability_details)
             setWarMachines(payload.war_machines)
+            setSpawnedAI(payload.spawned_ai)
+        },
+    )
+
+    // Subscribe for spawned AI
+    useGameServerSubscription<WarMachineState[] | undefined>(
+        {
+            URI: "/public/minimap",
+            key: GameServerKeys.SubBattleAISpawned,
+        },
+        (payload) => {
+            if (!payload) return
+            setSpawnedAI(payload)
         },
     )
 
@@ -86,6 +101,7 @@ export const GameContainer = createContainer(() => {
         setBattleZone,
         abilityDetails,
         warMachines,
+        spawnedAI,
         battleEndDetail,
         setBattleEndDetail,
         forceDisplay100Percentage,
