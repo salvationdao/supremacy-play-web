@@ -9,7 +9,6 @@ import { GameServerKeys } from "../../../../../../keys"
 import { colors, fonts, siteZIndex } from "../../../../../../theme/theme"
 import { PowerCore } from "../../../../../../types"
 import { ClipThing } from "../../../../../Common/ClipThing"
-import { MechLoadoutItemProps } from "../../../Common/MechLoadoutItem"
 
 interface GetPowerCoresRequest {
     search: string
@@ -40,7 +39,7 @@ interface GetPowerCoresResponse {
     total: number
 }
 
-interface MechLoadoutPowerCoreModalProps extends MechLoadoutItemProps {
+interface MechLoadoutPowerCoreModalProps {
     onClose: () => void
 }
 

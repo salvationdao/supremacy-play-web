@@ -20,7 +20,6 @@ import { SliderRangeFilter } from "../../../../../Common/SortAndFilters/SliderRa
 import { SortAndFilters } from "../../../../../Common/SortAndFilters/SortAndFilters"
 import { TotalAndPageSizeOptions } from "../../../../../Common/TotalAndPageSizeOptions"
 import { GetWeaponsRequest, GetWeaponsResponse } from "../../../../WeaponsHangar/WeaponsHangar"
-import { MechLoadoutItemProps } from "../../../Common/MechLoadoutItem"
 import { FeatherFade } from "../../MechViewer"
 
 const sortOptions = [
@@ -30,11 +29,12 @@ const sortOptions = [
     { label: SortTypeLabel.RarestDesc, value: SortTypeLabel.RarestDesc },
 ]
 
-interface MechLoadoutWeaponModalProps extends MechLoadoutItemProps {
+interface MechLoadoutWeaponModalProps {
     onClose: () => void
+    equipped: Weapon
 }
 
-export const MechLoadoutWeaponModal = ({ onClose }: MechLoadoutWeaponModalProps) => {
+export const MechLoadoutWeaponModal = ({ onClose, equipped }: MechLoadoutWeaponModalProps) => {
     const { userID } = useAuth()
     const { send } = useGameServerCommandsUser("/user_commander")
 
@@ -440,7 +440,7 @@ export const MechLoadoutWeaponModal = ({ onClose }: MechLoadoutWeaponModalProps)
                     }}
                 >
                     {weapons.map((p) => (
-                        <WeaponItem key={p.id} id={p.id} onSelect={(w) => setSelectedWeapon(w)} />
+                        <WeaponItem key={p.id} id={p.id} onSelect={(w) => setSelectedWeapon(w)} equipped={equipped} />
                     ))}
                 </Box>
             )
@@ -497,7 +497,7 @@ export const MechLoadoutWeaponModal = ({ onClose }: MechLoadoutWeaponModalProps)
                 </Stack>
             </Stack>
         )
-    }, [isLoading, loadError, theme.factionTheme.primary, theme.factionTheme.secondary, weapons])
+    }, [equipped, isLoading, loadError, theme.factionTheme.primary, theme.factionTheme.secondary, weapons])
 
     const weaponPreview = useMemo(() => {
         if (selectedWeapon) {
@@ -738,9 +738,10 @@ export const MechLoadoutWeaponModal = ({ onClose }: MechLoadoutWeaponModalProps)
 interface WeaponItemProps {
     id: string
     onSelect: (w: Weapon) => void
+    equipped: Weapon
 }
 
-const WeaponItem = ({ id, onSelect }: WeaponItemProps) => {
+const WeaponItem = ({ id, onSelect, equipped }: WeaponItemProps) => {
     const theme = useTheme()
 
     const [weaponDetails, setWeaponDetails] = useState<Weapon>()
@@ -818,16 +819,18 @@ const WeaponItem = ({ id, onSelect }: WeaponItemProps) => {
                 </Box>
                 <Divider orientation="vertical" />
                 <Stack>
-                    <Typography
-                        variant="caption"
-                        sx={{
-                            color: colors.lightGrey,
-                            fontSize: "1rem",
-                            fontFamily: fonts.nostromoBlack,
-                        }}
-                    >
-                        MAX DRAW RATE
-                    </Typography>
+                    <Stack direction="row">
+                        <Typography
+                            variant="caption"
+                            sx={{
+                                color: colors.lightGrey,
+                                fontSize: "1rem",
+                                fontFamily: fonts.nostromoBlack,
+                            }}
+                        >
+                            MAX DRAW RATE
+                        </Typography>
+                    </Stack>
                 </Stack>
             </Stack>
         </FancyButton>
