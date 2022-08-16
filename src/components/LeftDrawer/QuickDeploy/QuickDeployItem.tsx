@@ -1,4 +1,4 @@
-import { Stack, Typography } from "@mui/material"
+import { Box, Stack, Typography } from "@mui/material"
 import { useCallback, useMemo, useState } from "react"
 import { FancyButton } from "../.."
 import { useGlobalNotifications } from "../../../containers"
@@ -73,71 +73,100 @@ export const QuickDeployItem = ({ mech }: QuickDeployItemProps) => {
         <Stack
             direction="row"
             spacing="1.2rem"
-            alignItems="center"
+            alignItems="flex-start"
             sx={{
                 position: "relative",
-                py: ".7rem",
+                py: ".8rem",
                 pl: ".5rem",
                 pr: ".7rem",
             }}
         >
-            <Stack sx={{ height: "8rem" }}>
-                <MechThumbnail mech={mech} mechDetails={mechDetails} smallSize />
+            <Stack>
+                <Stack sx={{ height: "8rem" }}>
+                    <MechThumbnail mech={mech} mechDetails={mechDetails} smallSize />
+                </Stack>
+
+                {!error && mechDetails && mechStatus?.can_deploy && (
+                    <FancyButton
+                        loading={isLoading}
+                        clipThingsProps={{
+                            clipSize: "2px",
+                            clipSlantSize: "0px",
+                            corners: {
+                                topLeft: true,
+                                topRight: true,
+                                bottomLeft: true,
+                                bottomRight: true,
+                            },
+                            backgroundColor: colors.green,
+                            opacity: 1,
+                            border: {
+                                borderColor: colors.green,
+                                borderThickness: "1px",
+                            },
+                            sx: { mt: "-9px" },
+                        }}
+                        sx={{ px: 0, pt: 0, pb: ".2rem", color: "#FFFFFF" }}
+                        onClick={onDeployQueue}
+                    >
+                        <Typography variant="subtitle2" sx={{ fontFamily: fonts.nostromoBlack }}>
+                            DEPLOY
+                        </Typography>
+                    </FancyButton>
+                )}
             </Stack>
 
-            <Stack alignItems="flex-start" sx={{ py: ".2rem", flex: 1 }}>
-                <Typography
-                    variant="caption"
-                    sx={{
-                        fontFamily: fonts.nostromoHeavy,
-                        color: rarityDeets.color,
-                    }}
-                >
-                    {rarityDeets.label}
-                </Typography>
-
-                <Typography
-                    variant="body2"
-                    sx={{
-                        fontFamily: fonts.nostromoBlack,
-                        fontWeight: "fontWeightBold",
-                        display: "-webkit-box",
-                        overflow: "hidden",
-                        overflowWrap: "anywhere",
-                        textOverflow: "ellipsis",
-                        WebkitLineClamp: 1,
-                        WebkitBoxOrient: "vertical",
-                    }}
-                >
-                    {mech.name || mech.label}
-                </Typography>
-
-                <MechRepairBlocks mechID={mech?.id || mechDetails?.id} defaultBlocks={mechDetails?.model?.repair_blocks} />
-
-                <Stack direction="row" alignItems="center" spacing="1rem" justifyContent="space-between" sx={{ mt: ".5rem", width: "100%" }}>
-                    <MechGeneralStatus mechID={mech.id} smallVersion />
-
-                    {!error && mechDetails && mechStatus?.can_deploy && (
-                        <FancyButton
-                            loading={isLoading}
-                            clipThingsProps={{
-                                clipSize: "5px",
-                                backgroundColor: colors.green,
-                                opacity: 1,
-                                border: {
-                                    borderColor: colors.green,
-                                    borderThickness: "1px",
-                                },
-                                sx: { position: "relative" },
-                            }}
-                            sx={{ px: "1rem", pt: 0, pb: ".1rem", color: "#FFFFFF" }}
-                            onClick={onDeployQueue}
-                        >
-                            <Typography variant="subtitle2" sx={{ fontFamily: fonts.nostromoBlack }}>
-                                DEPLOY
+            <Stack spacing="1.2rem" direction="row" alignItems="flex-start" sx={{ py: ".2rem", flex: 1 }}>
+                <Stack sx={{ flex: 1 }}>
+                    <Stack spacing="1.2rem" direction="row" alignItems="flex-start" justifyContent="space-between" sx={{ py: ".2rem", flex: 1 }}>
+                        <Box>
+                            <Typography
+                                variant="caption"
+                                sx={{
+                                    fontFamily: fonts.nostromoHeavy,
+                                    color: rarityDeets.color,
+                                }}
+                            >
+                                {rarityDeets.label}
                             </Typography>
-                        </FancyButton>
-                    )}
+
+                            <Typography
+                                sx={{
+                                    color: mech.name ? "#FFFFFF" : colors.grey,
+                                    lineHeight: 1,
+                                    fontWeight: "fontWeightBold",
+                                    display: "-webkit-box",
+                                    overflow: "hidden",
+                                    overflowWrap: "anywhere",
+                                    textOverflow: "ellipsis",
+                                    WebkitLineClamp: 1,
+                                    WebkitBoxOrient: "vertical",
+                                }}
+                            >
+                                {mech.name || "Unnamed"}
+                            </Typography>
+                        </Box>
+
+                        <MechGeneralStatus mechID={mech.id} smallVersion />
+                    </Stack>
+
+                    <Typography
+                        variant="body2"
+                        sx={{
+                            fontFamily: fonts.nostromoBlack,
+                            fontWeight: "fontWeightBold",
+                            display: "-webkit-box",
+                            overflow: "hidden",
+                            overflowWrap: "anywhere",
+                            textOverflow: "ellipsis",
+                            WebkitLineClamp: 1,
+                            WebkitBoxOrient: "vertical",
+                        }}
+                    >
+                        {mech.label}
+                    </Typography>
+
+                    <MechRepairBlocks mechID={mech?.id || mechDetails?.id} defaultBlocks={mechDetails?.model?.repair_blocks} />
 
                     {error && (
                         <Typography variant="body2" sx={{ color: colors.red }}>

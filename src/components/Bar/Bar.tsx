@@ -10,6 +10,7 @@ import Marquee from "react-fast-marquee"
 import { hexToRGBArray, timeSinceInWords } from "../../helpers"
 import { useTimer } from "../../hooks"
 import { SvgDisconnected } from "../../assets"
+import { Quests } from "./Quests/Quests"
 
 const Countdown = ({ endTime }: { endTime: Date }) => {
     const { totalSecRemain } = useTimer(endTime)
@@ -151,6 +152,7 @@ const BarContent = ({ userID, user }: { userID?: string; user: User }) => {
             {/* <HowToPlay /> */}
             {/* {userID && <Enlist />} */}
             {userID && <WalletDetails />}
+            {userID && <Quests />}
             {userID && <Messages />}
             <ProfileCard userID={userID} user={user} />
         </>

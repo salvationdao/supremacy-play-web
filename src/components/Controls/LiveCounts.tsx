@@ -45,9 +45,9 @@ export const LiveCountsInner = ({ getFaction, viewers }: InnerProps) => {
     )
 }
 
-const ReUsedText = ({ text, color, tooltip }: { text: string; color?: string; tooltip: string }) => {
+const ReUsedText = ({ text, color, textColor, tooltip }: { text: string; color?: string; textColor?: string; tooltip: string }) => {
     return (
-        <TooltipHelper text={tooltip} isCentered>
+        <TooltipHelper color={color} textColor={textColor} text={tooltip} isCentered>
             <Typography variant="body2" sx={{ color: color || colors.text, lineHeight: 1 }}>
                 {text}
             </Typography>

@@ -47,7 +47,7 @@ export const CrateRewardItemsLarge = ({ item, largerVersion }: CrateRewardItemsP
                     <Box sx={{ position: "relative", width: "100%", height: largerVersion ? "30rem" : "22rem", mb: "1rem" }}>
                         <MediaPreview imageUrl={imageUrl} videoUrls={[animationUrl, cardAnimationUrl]} objectFit="cover" />
 
-                        <TooltipHelper placement="right" text={assetItemDeets.label}>
+                        <TooltipHelper color={assetItemDeets.color} placement="right" text={assetItemDeets.label}>
                             <Box sx={{ position: "absolute", top: ".1rem", left: ".1rem" }}>
                                 {assetItemDeets.icon && <assetItemDeets.icon size="2rem" fill={assetItemDeets.color} />}
                             </Box>
@@ -113,7 +113,7 @@ export const CrateRewardItemsSmall = ({ item }: CrateRewardItemsProps) => {
                     >
                         <MediaPreview imageUrl={imageUrl} videoUrls={[animationUrl, cardAnimationUrl]} showBorder />
 
-                        <TooltipHelper placement="right" text={assetItemDeets.label}>
+                        <TooltipHelper color={assetItemDeets.color} placement="right" text={assetItemDeets.label}>
                             <Box sx={{ position: "absolute", top: ".1rem", left: ".1rem" }}>
                                 {assetItemDeets.icon && <assetItemDeets.icon size="1.4rem" fill={assetItemDeets.color} />}
                             </Box>

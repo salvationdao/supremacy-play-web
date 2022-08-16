@@ -90,8 +90,8 @@ const WalletInfoInner = ({
 
     if (!onWorldSupsRaw) {
         return (
-            <Stack alignItems="center" sx={{ width: "26rem" }}>
-                <CircularProgress size="1.8rem" sx={{ color: colors.neonBlue }} />
+            <Stack alignItems="center" sx={{ width: "10rem" }}>
+                <CircularProgress size="1.8rem" sx={{ color: colors.yellow }} />
             </Stack>
         )
     }

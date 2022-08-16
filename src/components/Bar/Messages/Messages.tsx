@@ -53,6 +53,7 @@ export const Messages = () => {
             setLastUpdated(new Date())
         },
     )
+
     return (
         <>
             <Stack
@@ -102,7 +103,7 @@ export const Messages = () => {
                         clipSize="10px"
                         border={{
                             borderColor: theme.factionTheme.primary,
-                            borderThickness: ".3rem",
+                            borderThickness: ".2rem",
                         }}
                         backgroundColor={theme.factionTheme.background}
                         sx={{
