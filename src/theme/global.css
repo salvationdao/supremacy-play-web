@@ -4,6 +4,9 @@
     margin: 0;
     padding: 0;
     box-sizing: inherit;
+    text-shadow: -0.5px 1px 0 #00000080;
+    /* text-shadow: -1px -1px 0 #00000030, 1px -1px 0 #00000030, -1px 1px 0 #00000030, 1px 1px 0 #00000030; */
+    /* -webkit-text-stroke: 2px red; */
 }
 
 body {
