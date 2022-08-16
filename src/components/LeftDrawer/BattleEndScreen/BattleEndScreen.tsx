@@ -16,7 +16,7 @@ export const BattleEndScreen = () => {
 
     // New game started, so close the panel
     useEffect(() => {
-        if (map) setLeftDrawerActiveTabID(LEFT_DRAWER_MAP.battle_arena?.id)
+        if (map) setLeftDrawerActiveTabID((prev) => (prev ? LEFT_DRAWER_MAP.battle_arena?.id : prev))
     }, [map, setLeftDrawerActiveTabID])
 
     // Game ends, show the panel
