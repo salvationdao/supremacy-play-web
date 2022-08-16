@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useState } from "react"
 import { createContainer } from "unstated-next"
 
 //todo: Player Abilities hotkeys and custom hotkey maps
