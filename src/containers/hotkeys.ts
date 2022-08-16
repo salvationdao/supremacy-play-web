@@ -45,18 +45,12 @@ export const HotkeyContainer = createContainer(() => {
         [hotkeyRecord, setHotkeyRecord, controlHotkeyRecord, setControlHotkeyRecord],
     )
 
-    useEffect(() => {
-        console.log("hkr", hotkeyRecord)
-        console.log("chkr", controlHotkeyRecord)
-    }, [hotkeyRecord, controlHotkeyRecord])
-
     const handleHotKey = useCallback(
         (e: KeyboardEvent) => {
             e.preventDefault()
 
             let handlePress = hotkeyRecord[e.key]
             if (e.ctrlKey) {
-                console.log(controlHotkeyRecord)
                 handlePress = controlHotkeyRecord[e.key]
             }
 

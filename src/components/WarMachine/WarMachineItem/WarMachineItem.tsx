@@ -95,6 +95,7 @@ export const WarMachineItem = ({
         }
         addToHotkeyRecord(false, label.toString(), handleClick)
     }, [handleClick, addMiniMechParticipantId, label, participantID, addToHotkeyRecord, factionID, wmFactionID])
+
     return (
         <>
             <Stack
@@ -120,7 +121,9 @@ export const WarMachineItem = ({
             >
                 {/* Little info button to show the mech destroyed info */}
                 <Box sx={{ display: hovered ? "inline-block" : "none", position: "absolute", top: "-3rem", right: "0" }}>
-                    {label !== null && label !== undefined && wmFactionID === factionID && <Typography>[{label}]</Typography>}
+                    {label !== null && label !== undefined && wmFactionID === factionID && (
+                        <Typography>[{participantID > 100 ? `CTRL + ${label}` : label}]</Typography>
+                    )}
                 </Box>
                 {!isAlive && !isMiniMech && (
                     <IconButton
