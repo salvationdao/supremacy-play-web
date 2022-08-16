@@ -61,7 +61,7 @@ export const MechLoadoutWeaponModal = ({ onClose, equipped, weaponsWithSkinInher
     const [search, setSearch] = useState("")
     const [weaponTypes, setWeaponTypes] = useState<string[]>([])
     const [rarities, setRarities] = useState<string[]>([])
-    const [equippedStatuses, setEquippedStatuses] = useState<string[]>([])
+    const [equippedStatuses, setEquippedStatuses] = useState<string[]>(["unequipped"])
     const [ammoRange, setAmmoRange] = useState<number[] | undefined>()
     const [damageRange, setDamageRange] = useState<number[] | undefined>()
     const [damageFalloffRange, setDamageFalloffRange] = useState<number[] | undefined>()
@@ -436,7 +436,6 @@ export const MechLoadoutWeaponModal = ({ onClose, equipped, weaponsWithSkinInher
                 <Box
                     sx={{
                         display: "grid",
-                        gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))",
                         gap: "1rem",
                     }}
                 >
@@ -524,7 +523,7 @@ export const MechLoadoutWeaponModal = ({ onClose, equipped, weaponsWithSkinInher
                     backgroundColor={theme.factionTheme.background}
                     sx={{
                         position: "relative",
-                        height: "50rem",
+                        height: "55rem",
                         maxHeight: "90vh",
                     }}
                 >
@@ -680,9 +679,6 @@ const WeaponItem = ({ id, equipped, selected, onSelect }: WeaponItemProps) => {
         },
         (payload) => {
             if (!payload) return
-            if (!payload.equipped_on) {
-                console.log(payload)
-            }
             setWeaponDetails(payload)
         },
     )
@@ -742,11 +738,37 @@ const WeaponItem = ({ id, equipped, selected, onSelect }: WeaponItemProps) => {
                 backgroundColor: theme.factionTheme.background,
             }}
             sx={{
+                position: "relative",
                 padding: "1rem",
                 backgroundColor: selected ? "#ffffff22" : "transparent",
             }}
             onClick={() => onSelect(weaponDetails)}
         >
+            {weaponDetails.equipped_on && (
+                <Box
+                    sx={{
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        backgroundColor: "black",
+                        opacity: 0.4,
+                    }}
+                >
+                    <Typography
+                        variant="h2"
+                        sx={{
+                            position: "absolute",
+                            top: "50%",
+                            left: "50%",
+                            transform: "translate(-50%, -50%)",
+                        }}
+                    >
+                        IN USE
+                    </Typography>
+                </Box>
+            )}
             <Stack direction="row" alignItems="stretch" padding="1rem">
                 <Box sx={{ width: "10rem" }}>
                     <Box
@@ -1018,9 +1040,33 @@ const WeaponPreview = ({ weapon, equipped, skinInheritable }: WeaponPreviewProps
                     sx={{
                         zIndex: 100,
                         flex: 1,
+                        overflowY: "auto",
+                        overflowX: "hidden",
+                        direction: "ltr",
                         mt: "1rem",
+
+                        "::-webkit-scrollbar": {
+                            width: ".4rem",
+                        },
+                        "::-webkit-scrollbar-track": {
+                            background: "#FFFFFF15",
+                            borderRadius: 3,
+                        },
+                        "::-webkit-scrollbar-thumb": {
+                            background: theme.factionTheme.primary,
+                            borderRadius: 3,
+                        },
                     }}
                 >
+                    {weapon.equipped_on && (
+                        <Typography
+                            sx={{
+                                color: colors.red,
+                            }}
+                        >
+                            Currently equipped on another mech.
+                        </Typography>
+                    )}
                     {statChanges.length > 0 ? (
                         <Stack>
                             <Typography
@@ -1043,33 +1089,40 @@ const WeaponPreview = ({ weapon, equipped, skinInheritable }: WeaponPreviewProps
                             No Stat Changes If Equipped
                         </Typography>
                     )}
-                    <Stack direction="row" spacing="1rem" mt="auto">
-                        <Box ml="auto" />
-                        {skinInheritable && (
-                            <Stack direction="row" alignItems="center" justifyContent="space-between">
-                                <Switch
-                                    size="small"
-                                    checked={inheritSkin}
-                                    onChange={(e, c) => setInheritSkin(c)}
-                                    sx={{
-                                        transform: "scale(.7)",
-                                        ".Mui-checked": { color: theme.factionTheme.primary },
-                                        ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${theme.factionTheme.primary}50` },
-                                    }}
-                                />
-                                <Typography variant="body2" sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>
-                                    Inherit Skin
-                                </Typography>
-                            </Stack>
-                        )}
-                        <FancyButton
-                            clipThingsProps={{
-                                backgroundColor: colors.green,
-                            }}
-                        >
-                            Equip To Mech
-                        </FancyButton>
-                    </Stack>
+                </Stack>
+                <Stack
+                    direction="row"
+                    spacing="1rem"
+                    sx={{
+                        zIndex: 100,
+                        pt: "1rem",
+                    }}
+                >
+                    <Box ml="auto" />
+                    {skinInheritable && (
+                        <Stack direction="row" alignItems="center" justifyContent="space-between">
+                            <Switch
+                                size="small"
+                                checked={inheritSkin}
+                                onChange={(e, c) => setInheritSkin(c)}
+                                sx={{
+                                    transform: "scale(.7)",
+                                    ".Mui-checked": { color: theme.factionTheme.primary },
+                                    ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${theme.factionTheme.primary}50` },
+                                }}
+                            />
+                            <Typography variant="body2" sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>
+                                Inherit Skin
+                            </Typography>
+                        </Stack>
+                    )}
+                    <FancyButton
+                        clipThingsProps={{
+                            backgroundColor: colors.green,
+                        }}
+                    >
+                        Equip To Mech
+                    </FancyButton>
                 </Stack>
             </Stack>
         )
