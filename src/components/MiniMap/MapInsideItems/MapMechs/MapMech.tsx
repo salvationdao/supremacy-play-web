@@ -10,6 +10,7 @@ import { colors, fonts } from "../../../../theme/theme"
 import { LocationSelectType, Map, Vector2i, WarMachineState } from "../../../../types"
 import { WarMachineLiveState } from "../../../../types/game"
 import { MechMoveCommand } from "../../../WarMachine/WarMachineItem/MoveCommand"
+import { useArena } from "../../../../containers/arena"
 
 const TRANSITION_DURATION = 0.275 // seconds
 
@@ -30,6 +31,7 @@ interface MapMechInnerProps extends MapMechProps {
 
 const MapMechInner = ({ warMachine, map, isAI }: MapMechInnerProps) => {
     const { userID, factionID } = useAuth()
+    const { currentArenaID } = useArena()
     const { getFaction } = useSupremacy()
     const { isTargeting, gridWidth, gridHeight, playerAbility, highlightedMechParticipantID, setHighlightedMechParticipantID, selection, setSelection } =
         useMiniMap()
@@ -94,10 +96,10 @@ const MapMechInner = ({ warMachine, map, isAI }: MapMechInnerProps) => {
     // Listen on mech stats
     useGameServerSubscription<WarMachineLiveState | undefined>(
         {
-            URI: `/public/mech/${participantID}`,
+            URI: `/public/arena/${currentArenaID}/mech/${participantID}`,
             key: GameServerKeys.SubMechLiveStats,
-            ready: !!participantID,
-            batchURI: "/public/mech",
+            ready: !!participantID && !!currentArenaID,
+            batchURI: `/public/arena/${currentArenaID}/mech`,
         },
         (payload) => {
             if (payload?.health !== undefined) setHealth(payload.health)
@@ -111,9 +113,9 @@ const MapMechInner = ({ warMachine, map, isAI }: MapMechInnerProps) => {
     // Listen on mech move command positions for this mech
     useGameServerSubscriptionFaction<MechMoveCommand>(
         {
-            URI: `/mech_command/${hash}`,
+            URI: `/arena/${currentArenaID}/mech_command/${hash}`,
             key: GameServerKeys.SubMechMoveCommand,
-            ready: factionID === warMachineFactionID && !!participantID,
+            ready: factionID === warMachineFactionID && !!participantID && !!currentArenaID,
         },
         (payload) => {
             if (!payload) return

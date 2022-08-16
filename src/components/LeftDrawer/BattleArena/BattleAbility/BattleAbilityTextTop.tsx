@@ -2,9 +2,10 @@ import { Box, Stack, Typography } from "@mui/material"
 import { useCallback, useState } from "react"
 import { FancyButton } from "../../.."
 import { useGlobalNotifications } from "../../../../containers"
-import { useGameServerCommandsFaction, useGameServerSubscriptionUser } from "../../../../hooks/useGameServer"
+import { useGameServerCommandsFaction, useGameServerSubscriptionSecuredUser } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
+import { useArena } from "../../../../containers/arena"
 
 interface BattleAbilityTextTopProps {
     label: string
@@ -15,11 +16,13 @@ interface BattleAbilityTextTopProps {
 
 export const BattleAbilityTextTop = ({ label, image_url, colour, disableButton }: BattleAbilityTextTopProps) => {
     const [isOptedIn, setIsOptedIn] = useState(false)
+    const { currentArenaID } = useArena()
 
-    useGameServerSubscriptionUser<boolean | undefined>(
+    useGameServerSubscriptionSecuredUser<boolean | undefined>(
         {
-            URI: `/battle_ability/check_opt_in`,
+            URI: `/arena/${currentArenaID}/battle_ability/check_opt_in`,
             key: GameServerKeys.SubBattleAbilityOptInCheck,
+            ready: !!currentArenaID,
         },
         (payload) => {
             if (payload === undefined) return
@@ -66,6 +69,7 @@ export const BattleAbilityTextTop = ({ label, image_url, colour, disableButton }
 
 const OptInButton = ({ disable, isOptedIn }: { disable: boolean; isOptedIn: boolean }) => {
     const { newSnackbarMessage } = useGlobalNotifications()
+    const { currentArenaID } = useArena()
     const { send } = useGameServerCommandsFaction("/faction_commander")
 
     const disabled = disable || isOptedIn
@@ -73,13 +77,13 @@ const OptInButton = ({ disable, isOptedIn }: { disable: boolean; isOptedIn: bool
     const onTrigger = useCallback(async () => {
         try {
             if (disabled) return
-            await send(GameServerKeys.OptInBattleAbility)
+            await send(GameServerKeys.OptInBattleAbility, { arena_id: currentArenaID })
         } catch (err) {
             const message = typeof err === "string" ? err : "Failed to opt in battle ability."
             newSnackbarMessage(message, "error")
             console.error(message)
         }
-    }, [disabled, newSnackbarMessage, send])
+    }, [disabled, newSnackbarMessage, send, currentArenaID])
 
     return (
         <FancyButton

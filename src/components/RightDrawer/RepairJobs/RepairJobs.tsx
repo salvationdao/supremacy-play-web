@@ -6,7 +6,7 @@ import { EmptyWarMachinesPNG } from "../../../assets"
 import { useAuth } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { useArray } from "../../../hooks"
-import { useGameServerSubscription } from "../../../hooks/useGameServer"
+import { useGameServerSubscription, useGameServerSubscriptionSecured } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { RepairJob } from "../../../types/jobs"
@@ -36,11 +36,10 @@ export const RepairJobs = () => {
     // Filters and sorts
     const [sort, setSort] = useState<string>(SortTypeLabel.RewardAmountHighest)
 
-    useGameServerSubscription<RepairJob[]>(
+    useGameServerSubscriptionSecured<RepairJob[]>(
         {
-            URI: "/secure_public/repair_offer/update",
+            URI: "/repair_offer/update",
             key: GameServerKeys.SubRepairJobListUpdated,
-            ready: !!userID,
         },
         (payload) => {
             if (!payload || payload.length <= 0) return

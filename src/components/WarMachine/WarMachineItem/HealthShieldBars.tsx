@@ -6,8 +6,10 @@ import { GameServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
 import { WarMachineLiveState, WarMachineState } from "../../../types"
 import { ProgressBar } from "../../Common/ProgressBar"
+import { useArena } from "../../../containers/arena"
 
 export const HealthShieldBars = ({ warMachine, toggleIsAlive }: { warMachine: WarMachineState; toggleIsAlive: (value: boolean) => void }) => {
+    const { currentArenaID } = useArena()
     const { participantID, maxHealth, maxShield } = warMachine
     const [health, setHealth] = useState<number>(warMachine.health)
     const [shield, setShield] = useState<number>(warMachine.shield)
@@ -18,10 +20,10 @@ export const HealthShieldBars = ({ warMachine, toggleIsAlive }: { warMachine: Wa
     // Listen on current war machine changes
     useGameServerSubscription<WarMachineLiveState | undefined>(
         {
-            URI: `/public/mech/${participantID}`,
+            URI: `/public/arena/${currentArenaID}/mech/${participantID}`,
             key: GameServerKeys.SubMechLiveStats,
-            ready: !!participantID,
-            batchURI: "/public/mech",
+            ready: !!participantID && !!currentArenaID,
+            batchURI: `public/arena/${currentArenaID}/mech`,
         },
         (payload) => {
             if (payload?.health !== undefined) {

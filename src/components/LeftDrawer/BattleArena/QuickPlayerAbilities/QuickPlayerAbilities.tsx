@@ -4,7 +4,7 @@ import { useParameterizedQuery } from "react-fetching-library"
 import { useAuth } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
 import { GetSaleAbilityAvailability } from "../../../../fetching"
-import { useGameServerSubscription, useGameServerSubscriptionUser } from "../../../../hooks/useGameServer"
+import { useGameServerSubscription, useGameServerSubscriptionSecured, useGameServerSubscriptionSecuredUser } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
 import { FeatureName, PlayerAbility, SaleAbility, SaleAbilityAvailability } from "../../../../types"
@@ -53,15 +53,14 @@ const QuickPlayerAbilitiesInner = ({ userID }: { userID: string }) => {
         })()
     }, [queryAvailability, userID])
 
-    useGameServerSubscription<{
+    useGameServerSubscriptionSecured<{
         next_refresh_time: Date | null
         refresh_period_duration_seconds: number
         sale_abilities: SaleAbility[]
     }>(
         {
-            URI: "/secure_public/sale_abilities",
+            URI: "/sale_abilities",
             key: GameServerKeys.SubSaleAbilitiesList,
-            ready: !!userID,
         },
         (payload) => {
             if (!payload) return
@@ -77,11 +76,10 @@ const QuickPlayerAbilitiesInner = ({ userID }: { userID: string }) => {
         },
     )
 
-    useGameServerSubscription<{ id: string; current_price: string }>(
+    useGameServerSubscriptionSecured<{ id: string; current_price: string }>(
         {
-            URI: "/secure_public/sale_abilities",
+            URI: "/sale_abilities",
             key: GameServerKeys.SubSaleAbilitiesPrice,
-            ready: !!userID,
         },
         (payload) => {
             if (!payload) return
@@ -91,7 +89,7 @@ const QuickPlayerAbilitiesInner = ({ userID }: { userID: string }) => {
         },
     )
 
-    useGameServerSubscriptionUser<PlayerAbility[]>(
+    useGameServerSubscriptionSecuredUser<PlayerAbility[]>(
         {
             URI: "/player_abilities",
             key: GameServerKeys.SubPlayerAbilitiesList,

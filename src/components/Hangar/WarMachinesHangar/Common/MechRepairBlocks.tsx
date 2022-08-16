@@ -1,7 +1,7 @@
 import { Stack, Typography } from "@mui/material"
 import React from "react"
 import { useAuth } from "../../../../containers"
-import { useGameServerSubscription } from "../../../../hooks/useGameServer"
+import { useGameServerSubscription, useGameServerSubscriptionSecured } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
 import { RepairStatus } from "../../../../types/jobs"
@@ -74,10 +74,10 @@ export const MechRepairBlocks = React.memo(function MechRepairBlocks({
 }) {
     const { userID } = useAuth()
 
-    const repairStatus = useGameServerSubscription<RepairStatus>({
-        URI: `/secure_public/mech/${mechID}/repair_case`,
+    const repairStatus = useGameServerSubscriptionSecured<RepairStatus>({
+        URI: `/mech/${mechID}/repair_case`,
         key: GameServerKeys.SubMechRepairStatus,
-        ready: !!mechID && !!userID,
+        ready: !!mechID,
     })
 
     const remainDamagedBlocks = repairStatus ? repairStatus.blocks_required_repair - repairStatus.blocks_repaired : 0

@@ -24,9 +24,15 @@ export const useGameServerCommands = (URI: string) => {
 // ******************
 // ** Subscription **
 // ******************
-export function useGameServerSubscriptionUser<T = DataType>({ URI, key, batchURI, ready = true }: SubProps, callback?: (payload: T) => void) {
+
+export function useGameServerSubscriptionSecuredUser<T = DataType>({ URI, key, batchURI, ready = true }: SubProps, callback?: (payload: T) => void) {
     const { userID } = useAuth()
-    return useSubscription({ URI: `/user/${userID}${URI}`, key, host: GAME_SERVER_HOSTNAME, batchURI: batchURI, ready: !!userID && ready }, callback)
+    return useSubscription({ URI: `/secure/user/${userID}${URI}`, key, host: GAME_SERVER_HOSTNAME, batchURI: batchURI, ready: !!userID && ready }, callback)
+}
+
+export function useGameServerSubscriptionSecured<T = DataType>({ URI, key, batchURI, ready = true }: SubProps, callback?: (payload: T) => void) {
+    const { userID } = useAuth()
+    return useSubscription({ URI: `/secure${URI}`, key, host: GAME_SERVER_HOSTNAME, batchURI: batchURI, ready: !!userID && ready }, callback)
 }
 
 export function useGameServerSubscriptionFaction<T = DataType>({ URI, key, batchURI, ready = true }: SubProps, callback?: (payload: T) => void) {

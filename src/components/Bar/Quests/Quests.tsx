@@ -2,7 +2,7 @@ import { CircularProgress, Divider, Stack, Typography } from "@mui/material"
 import { useRef, useState } from "react"
 import { SvgQuest } from "../../../assets"
 import { useToggle } from "../../../hooks"
-import { useGameServerSubscriptionUser } from "../../../hooks/useGameServer"
+import { useGameServerSubscriptionSecuredUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { shake } from "../../../theme/keyframes"
 import { colors, fonts } from "../../../theme/theme"
@@ -15,12 +15,12 @@ export const Quests = () => {
     const [questProgressions, setQuestProgressions] = useState<QuestProgress[]>()
     const [confetti, setConfetti] = useState<string[]>([])
 
-    const questStats = useGameServerSubscriptionUser<QuestStat[]>({
+    const questStats = useGameServerSubscriptionSecuredUser<QuestStat[]>({
         URI: "/quest_stat",
         key: GameServerKeys.SubPlayerQuestStats,
     })
 
-    useGameServerSubscriptionUser<QuestProgress[]>(
+    useGameServerSubscriptionSecuredUser<QuestProgress[]>(
         {
             URI: "/quest_progression",
             key: GameServerKeys.SubPlayerQuestStatsProgression,

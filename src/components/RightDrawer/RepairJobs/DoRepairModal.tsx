@@ -8,7 +8,7 @@ import { useAuth, useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { supFormatterNoFixed, timeSinceInWords } from "../../../helpers"
 import { useTimer } from "../../../hooks"
-import { useGameServerCommandsUser, useGameServerSubscription } from "../../../hooks/useGameServer"
+import { useGameServerCommandsUser, useGameServerSubscription, useGameServerSubscriptionSecured } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { heightEffect } from "../../../theme/keyframes"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
@@ -47,11 +47,11 @@ export const DoRepairModal = React.memo(function DoRepairModal({ repairStatus, r
     const [repairJob, setRepairJob] = useState<RepairJob | undefined>(_repairJob)
     const [repairAgent, setRepairAgent] = useState<RepairAgent>()
 
-    useGameServerSubscription<RepairJob>(
+    useGameServerSubscriptionSecured<RepairJob>(
         {
-            URI: `/secure_public/repair_offer/${_repairJob?.id}`,
+            URI: `/repair_offer/${_repairJob?.id}`,
             key: GameServerKeys.SubRepairJobStatus,
-            ready: !!repairJob?.id && !!userID,
+            ready: !!repairJob?.id,
         },
         (payload) => {
             if (!payload) return
