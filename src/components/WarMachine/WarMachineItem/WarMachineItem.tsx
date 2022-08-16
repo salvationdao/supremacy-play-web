@@ -70,7 +70,6 @@ export const WarMachineItem = ({
 
     // Highlighting on the map
     const handleClick = useCallback(() => {
-        console.log(participantID)
         if (participantID === highlightedMechParticipantID) {
             setHighlightedMechParticipantID(undefined)
         } else {
