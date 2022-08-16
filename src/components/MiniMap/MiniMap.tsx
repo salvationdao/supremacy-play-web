@@ -144,7 +144,13 @@ const MiniMapInner = ({
     // When it's targeting, enlarge the map and move to center of screen, else restore to the prev dimensions
     useEffect(() => {
         // If its mech move, then dont do the map enlarge, too disruptive
-        if (playerAbility?.ability.location_select_type === LocationSelectType.MECH_COMMAND) return
+        if (playerAbility?.ability.location_select_type === LocationSelectType.MECH_COMMAND) {
+            prevPosX.current = curPosX
+            prevPosY.current = curPosY
+            prevWidth.current = curWidth
+            prevHeight.current = curHeight
+            return
+        }
 
         if (isTargeting || isEnlarged) {
             const maxW = Math.min(width - 25, maxWidth || width, 900)
