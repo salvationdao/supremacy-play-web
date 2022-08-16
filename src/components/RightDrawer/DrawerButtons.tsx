@@ -34,6 +34,7 @@ export const DrawerButtons = () => {
                     width: "3rem",
                     height: "3rem",
                 },
+                svg: { transform: "rotate(90deg)" },
             }}
         >
             <Tabs value={0} orientation="vertical" variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile sx={{ flex: 1 }}>

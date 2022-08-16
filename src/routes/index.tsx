@@ -1,20 +1,20 @@
-import { BattleArenaPage, ClaimPage, HangarPage, MarketplacePage, BillingHistoryPage, NotFoundPage } from "../pages"
-import { SvgChat } from "../assets"
 import { Box } from "@mui/system"
-import { colors } from "../theme/theme"
-import { StorefrontPage } from "../pages/StorefrontPage"
+import { SvgChat, SvgDamage1, SvgHistoryClock } from "../assets"
+import { BattleArena } from "../components/LeftDrawer/BattleArena/BattleArena"
+import { BattleEndScreen } from "../components/LeftDrawer/BattleEndScreen/BattleEndScreen"
+import { PlayerProfilePage } from "../components/PublicProfile/PlayerProfile"
+import { LiveChat } from "../components/RightDrawer/LiveChat/LiveChat"
+import { PlayerList } from "../components/RightDrawer/PlayerList/PlayerList"
+import { BATTLE_ARENA_OPEN, IS_TESTING_MODE } from "../constants"
+import { BattleArenaPage, BillingHistoryPage, ClaimPage, HangarPage, MarketplacePage, NotFoundPage } from "../pages"
+import { JobsPage } from "../pages/JobsPage"
+import { LeaderboardPage } from "../pages/LeaderboardPage"
 import { MarketplaceItemPage } from "../pages/MarketplaceItemPage"
 import { MarketplaceSellPage } from "../pages/MarketplaceSellPage"
 import { MechPage } from "../pages/MechPage"
+import { StorefrontPage } from "../pages/StorefrontPage"
 import { WeaponPage } from "../pages/WeaponPage"
-import { LiveChat } from "../components/RightDrawer/LiveChat/LiveChat"
-import { PlayerList } from "../components/RightDrawer/PlayerList/PlayerList"
-import { PlayerProfilePage } from "../components/PublicProfile/PlayerProfile"
-import { BATTLE_ARENA_OPEN, IS_TESTING_MODE } from "../constants"
-import { LeaderboardPage } from "../pages/LeaderboardPage"
-import { JobsPage } from "../pages/JobsPage"
-import { BattleEndScreen } from "../components/LeftDrawer/BattleEndScreen/BattleEndScreen"
-import { BattleArena } from "../components/LeftDrawer/BattleArena/BattleArena"
+import { colors } from "../theme/theme"
 
 // ************
 // ** ROUTES **
@@ -244,7 +244,7 @@ export interface SideTabsStruct {
 export const LEFT_DRAWER_MAP: { [name: string]: SideTabsStruct } = {
     battle_arena: {
         id: "battle_arena",
-        icon: <SvgChat size="1rem" sx={{ pt: ".3rem" }} />,
+        icon: <SvgDamage1 size="1.2rem" sx={{ pt: ".3rem" }} />,
         label: "Battle Commands",
         Component: BattleArena,
         requireAuth: false,
@@ -253,7 +253,7 @@ export const LEFT_DRAWER_MAP: { [name: string]: SideTabsStruct } = {
     },
     previous_battle: {
         id: "previous_battle",
-        icon: <SvgChat size="1rem" sx={{ pt: ".3rem" }} />,
+        icon: <SvgHistoryClock size="1.4rem" sx={{ pt: ".3rem" }} />,
         label: "Previous Battle",
         Component: BattleEndScreen,
         requireAuth: false,
@@ -273,7 +273,7 @@ for (const [, value] of Object.entries(LEFT_DRAWER_MAP)) {
 export const RIGHT_DRAWER_MAP: { [name: string]: SideTabsStruct } = {
     live_chat: {
         id: "live_chat",
-        icon: <SvgChat size="1rem" sx={{ pt: ".3rem" }} />,
+        icon: <SvgChat size="1.1rem" sx={{ pt: ".3rem" }} />,
         label: "Live Chat",
         Component: LiveChat,
         requireAuth: false,
@@ -283,7 +283,7 @@ export const RIGHT_DRAWER_MAP: { [name: string]: SideTabsStruct } = {
         id: "active_players",
         icon: (
             <Box sx={{ pb: ".2rem" }}>
-                <Box sx={{ width: ".8rem", height: ".8rem", borderRadius: "50%", backgroundColor: colors.green }} />
+                <Box sx={{ width: ".9rem", height: ".9rem", borderRadius: "50%", backgroundColor: colors.green }} />
             </Box>
         ),
         label: "Active Players",
