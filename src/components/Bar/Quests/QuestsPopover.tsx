@@ -90,11 +90,12 @@ export const QuestsPopover = ({
                     {roundNames.length > 0 &&
                         roundNames.map((roundName, i) => {
                             const questStatsFiltered = questStats.filter((qs) => qs.round_name === roundName)
+                            const itemHasConfetti = questStatsFiltered.some((qs) => confetti.findIndex((i) => i === qs.id) >= 0)
 
                             return (
                                 <Accordion
                                     key={roundName}
-                                    defaultExpanded={i === 0}
+                                    defaultExpanded={i === 0 || itemHasConfetti}
                                     sx={{ m: "0 !important", ".MuiAccordionSummary-root.Mui-expanded": { backgroundColor: "#FFFFFF20", minHeight: 0 } }}
                                 >
                                     <AccordionSummary expandIcon={<SvgExpandMoreIcon />} sx={{ minHeight: 0, ":hover": { opacity: 0.95 } }}>
