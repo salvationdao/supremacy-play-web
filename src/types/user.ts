@@ -157,10 +157,11 @@ export enum QuestKey {
 export interface QuestStat {
     id: string
     name: string
+    round_name: string
     key: QuestKey
     description: string
     obtained: boolean
-    expires_at: Date
+    end_at: Date
 }
 
 export interface QuestProgress {
