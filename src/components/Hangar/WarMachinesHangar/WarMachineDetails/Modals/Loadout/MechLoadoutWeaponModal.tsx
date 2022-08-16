@@ -440,7 +440,7 @@ export const MechLoadoutWeaponModal = ({ onClose, equipped }: MechLoadoutWeaponM
                     }}
                 >
                     {weapons.map((p) => (
-                        <WeaponItem key={p.id} id={p.id} onSelect={(w) => setSelectedWeapon(w)} equipped={equipped} />
+                        <WeaponItem key={p.id} id={p.id} onSelect={(w) => setSelectedWeapon(w)} equipped={equipped} selected={selectedWeapon?.id === p.id} />
                     ))}
                 </Box>
             )
@@ -497,7 +497,7 @@ export const MechLoadoutWeaponModal = ({ onClose, equipped }: MechLoadoutWeaponM
                 </Stack>
             </Stack>
         )
-    }, [equipped, isLoading, loadError, theme.factionTheme.primary, theme.factionTheme.secondary, weapons])
+    }, [equipped, isLoading, loadError, selectedWeapon?.id, theme.factionTheme.primary, theme.factionTheme.secondary, weapons])
 
     const weaponPreview = useMemo(() => {
         if (selectedWeapon) {
@@ -737,11 +737,12 @@ export const MechLoadoutWeaponModal = ({ onClose, equipped }: MechLoadoutWeaponM
 
 interface WeaponItemProps {
     id: string
-    onSelect: (w: Weapon) => void
     equipped: Weapon
+    selected: boolean
+    onSelect: (w: Weapon) => void
 }
 
-const WeaponItem = ({ id, onSelect, equipped }: WeaponItemProps) => {
+const WeaponItem = ({ id, equipped, selected, onSelect }: WeaponItemProps) => {
     const theme = useTheme()
 
     const [weaponDetails, setWeaponDetails] = useState<Weapon>()
@@ -756,6 +757,35 @@ const WeaponItem = ({ id, onSelect, equipped }: WeaponItemProps) => {
             setWeaponDetails(payload)
         },
     )
+
+    const renderStat = useCallback((label: string, stats: { oldStat?: number; newStat: number }) => {
+        const difference = stats.newStat - (stats.oldStat || 0)
+        const color = difference > 0 ? colors.green : difference === 0 ? "white" : colors.red
+        const symbol = difference > 0 ? "+" : ""
+
+        return (
+            <Stack direction="row" spacing="1rem" alignItems="center">
+                <Typography
+                    variant="caption"
+                    sx={{
+                        color: colors.lightGrey,
+                        fontSize: "1rem",
+                        fontFamily: fonts.nostromoBlack,
+                    }}
+                >
+                    {label}
+                </Typography>
+                <Typography
+                    variant="body2"
+                    sx={{
+                        color,
+                    }}
+                >
+                    {stats.newStat} {difference !== 0 && `(${symbol}${difference})`}
+                </Typography>
+            </Stack>
+        )
+    }, [])
 
     if (!weaponDetails) {
         return (
@@ -782,10 +812,11 @@ const WeaponItem = ({ id, onSelect, equipped }: WeaponItemProps) => {
             }}
             sx={{
                 padding: "1rem",
+                backgroundColor: selected ? "#ffffff22" : "transparent",
             }}
             onClick={() => onSelect(weaponDetails)}
         >
-            <Stack direction="row">
+            <Stack direction="row" alignItems="stretch">
                 <Box sx={{ width: "10rem" }}>
                     <Box
                         sx={{
@@ -817,20 +848,57 @@ const WeaponItem = ({ id, onSelect, equipped }: WeaponItemProps) => {
                         {weaponDetails?.label}
                     </Typography>
                 </Box>
-                <Divider orientation="vertical" />
+                <Divider
+                    orientation="vertical"
+                    sx={{
+                        alignSelf: "stretch",
+                        height: "auto",
+                        ml: "2rem",
+                        mr: "1rem",
+                        borderColor: "#494949",
+                    }}
+                />
                 <Stack>
-                    <Stack direction="row">
-                        <Typography
-                            variant="caption"
-                            sx={{
-                                color: colors.lightGrey,
-                                fontSize: "1rem",
-                                fontFamily: fonts.nostromoBlack,
-                            }}
-                        >
-                            MAX DRAW RATE
-                        </Typography>
-                    </Stack>
+                    {typeof weaponDetails.damage !== "undefined" &&
+                        renderStat("DAMAGE", {
+                            oldStat: equipped.damage,
+                            newStat: weaponDetails.damage,
+                        })}
+                    {typeof weaponDetails.damage_falloff !== "undefined" &&
+                        renderStat("DAMAGE FALLOFF", {
+                            oldStat: equipped.damage_falloff,
+                            newStat: weaponDetails.damage_falloff,
+                        })}
+                    {typeof weaponDetails.radius !== "undefined" &&
+                        renderStat("RADIUS", {
+                            oldStat: equipped.radius,
+                            newStat: weaponDetails.radius,
+                        })}
+                    {typeof weaponDetails.radius_damage_falloff !== "undefined" &&
+                        renderStat("RADIAL DAMAGE FALLOFF", {
+                            oldStat: equipped.radius_damage_falloff,
+                            newStat: weaponDetails.radius_damage_falloff,
+                        })}
+                    {typeof weaponDetails.spread !== "undefined" &&
+                        renderStat("SPREAD", {
+                            oldStat: equipped.spread,
+                            newStat: weaponDetails.spread,
+                        })}
+                    {typeof weaponDetails.rate_of_fire !== "undefined" &&
+                        renderStat("RATE OF FIRE", {
+                            oldStat: equipped.rate_of_fire,
+                            newStat: weaponDetails.rate_of_fire,
+                        })}
+                    {typeof weaponDetails.projectile_speed !== "undefined" &&
+                        renderStat("PROJECTILE SPEED", {
+                            oldStat: equipped.projectile_speed,
+                            newStat: weaponDetails.projectile_speed,
+                        })}
+                    {typeof weaponDetails.max_ammo !== "undefined" &&
+                        renderStat("MAX AMMO", {
+                            oldStat: equipped.max_ammo,
+                            newStat: weaponDetails.max_ammo,
+                        })}
                 </Stack>
             </Stack>
         </FancyButton>
