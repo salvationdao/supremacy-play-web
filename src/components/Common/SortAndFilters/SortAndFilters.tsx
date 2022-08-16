@@ -1,5 +1,5 @@
-import { Box, Collapse, Stack, TextField } from "@mui/material"
-import { ReactNode, useState } from "react"
+import { Box, Collapse, Drawer, Stack, TextField } from "@mui/material"
+import { ReactNode, useMemo, useState } from "react"
 import { ClipThing, FancyButton } from "../.."
 import { SvgSearch } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
@@ -21,6 +21,10 @@ interface SortAndFiltersProps {
     children?: ReactNode
     isExpanded?: boolean
     width?: string | number
+    drawer?: {
+        container?: Element | (() => Element | null) | null
+        onClose: () => void
+    }
 }
 
 export const SortAndFilters = ({
@@ -35,6 +39,7 @@ export const SortAndFilters = ({
     children,
     isExpanded = true,
     width = "38rem",
+    drawer,
 }: SortAndFiltersProps) => {
     const theme = useTheme()
     const [searchValue, setSearchValue] = useState(initialSearch || "")
@@ -43,8 +48,8 @@ export const SortAndFilters = ({
     const secondaryColor = theme.factionTheme.secondary
     const backgroundColor = theme.factionTheme.background
 
-    return (
-        <Collapse in={isExpanded} orientation="horizontal">
+    const content = useMemo(
+        () => (
             <ClipThing
                 clipSize="10px"
                 border={{
@@ -58,7 +63,7 @@ export const SortAndFilters = ({
                 }}
                 opacity={0.7}
                 backgroundColor={backgroundColor}
-                sx={{ height: "100%", width, mr: "1rem", opacity: isExpanded ? 1 : 0, transition: "all .2s" }}
+                sx={{ height: "100%", width, mr: drawer ? 0 : "1rem", opacity: isExpanded ? 1 : 0, transition: "all .2s" }}
             >
                 <Stack sx={{ height: "100%" }}>
                     <Box
@@ -190,6 +195,46 @@ export const SortAndFilters = ({
                     {children}
                 </Stack>
             </ClipThing>
-        </Collapse>
+        ),
+        [
+            backgroundColor,
+            changePage,
+            children,
+            chipFilters,
+            drawer,
+            dropdownOptions,
+            isExpanded,
+            onSetSearch,
+            primaryColor,
+            rangeFilters,
+            searchValue,
+            secondaryColor,
+            sliderRangeFilters,
+            width,
+        ],
+    )
+
+    return (
+        <>
+            {drawer ? (
+                <Drawer
+                    container={drawer.container}
+                    anchor="left"
+                    open={isExpanded}
+                    onClose={() => drawer.onClose()}
+                    PaperProps={{
+                        sx: {
+                            background: "none",
+                        },
+                    }}
+                >
+                    {content}
+                </Drawer>
+            ) : (
+                <Collapse in={isExpanded} orientation="horizontal">
+                    {content}
+                </Collapse>
+            )}
+        </>
     )
 }
