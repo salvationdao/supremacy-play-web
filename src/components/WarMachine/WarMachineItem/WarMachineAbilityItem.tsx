@@ -115,7 +115,7 @@ export const MechAbilityButton = ({ warMachine, gameAbility, index }: { warMachi
                 sx: { position: "relative" },
             }}
             sx={{ px: "1.2rem", pt: ".4rem", pb: ".5rem", minWidth: "7rem" }}
-            onClick={() => onTrigger}
+            onClick={onTrigger}
         >
             <Stack alignItems="center" justifyContent="center" direction="row">
                 <Typography

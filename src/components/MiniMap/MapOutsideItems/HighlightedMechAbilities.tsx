@@ -167,7 +167,7 @@ const AbilityItem = ({ hash, participantID, ability, index }: { hash: string; pa
                     border: `${colour} 1.5px solid`,
                     ":hover": ready ? { borderWidth: "3px", transform: "scale(1.04)" } : undefined,
                 }}
-                onClick={ready ? () => onTrigger : undefined}
+                onClick={ready ? onTrigger : undefined}
             />
 
             <Stack direction={"row"} sx={{ width: "100%" }} justifyContent={"space-between"} alignItems={"center"}>
