@@ -135,7 +135,7 @@ export const TextMessage = ({
         const matchedArr = message.match(/#\d+/g)
         matchedArr?.map(async (match) => {
             const gidSubstring = parseInt(match.substring(1))
-            const taggedUser = userGidRecord[gidSubstring] ?? undefined
+            const taggedUser = userGidRecord[gidSubstring] || undefined
             //if not make a call to the backend to find the user and add to record
             if (!taggedUser) {
                 try {
@@ -355,7 +355,9 @@ export const TextMessage = ({
                     </Stack>
                 </Box>
 
-                {reportModalOpen && <ReportModal message={data} setReportModalOpen={setReportModalOpen} reportModalOpen={reportModalOpen} />}
+                {reportModalOpen && (
+                    <ReportModal fromUser={from_user} message={data} setReportModalOpen={setReportModalOpen} reportModalOpen={reportModalOpen} />
+                )}
             </Box>
 
             {isPopoverOpen && (

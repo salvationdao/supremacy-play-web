@@ -52,9 +52,9 @@ export const DeployModal = ({
                     newSnackbarMessage("Successfully deployed war machine.", "success")
                     onClose()
                 }
-            } catch (e) {
-                setDeployQueueError(typeof e === "string" ? e : "Failed to deploy war machine.")
-                console.error(e)
+            } catch (err) {
+                setDeployQueueError(typeof err === "string" ? err : "Failed to deploy war machine.")
+                console.error(err)
                 return
             } finally {
                 setIsLoading(false)
@@ -97,7 +97,7 @@ export const DeployModal = ({
                         clipThingsProps={{
                             clipSize: "5px",
                             backgroundColor: colors.green,
-                            border: { isFancy: true, borderColor: colors.green },
+                            border: { borderColor: colors.green },
                             sx: { position: "relative", width: "100%" },
                         }}
                         sx={{ px: "1.6rem", py: ".6rem", color: "#FFFFFF" }}
