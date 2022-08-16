@@ -9,9 +9,11 @@ import { AssetItemType, Rarity } from "../../../../types"
 import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
 import { MediaPreviewModal } from "../../../Common/MediaPreview/MediaPreviewModal"
 import { MechLoadoutPowerCoreModal } from "../WarMachineDetails/Modals/Loadout/MechLoadoutPowerCoreModal"
+import { MechLoadoutWeaponModal } from "../WarMachineDetails/Modals/Loadout/MechLoadoutWeaponModal"
 
 export interface MechLoadoutItemProps {
     type?: AssetItemType
+    weaponsWithSkinInheritance?: string[]
     imageUrl?: string
     videoUrls?: (string | undefined)[] | undefined
     label: string
@@ -33,7 +35,7 @@ export const MechLoadoutItem = (props: MechLoadoutItemProps) => {
     const Modal = useMemo(() => {
         switch (type) {
             case AssetItemType.Weapon:
-                return <MechLoadoutPowerCoreModal {...props} onClose={() => toggleShowLoadoutModal(false)} />
+                return <MechLoadoutWeaponModal {...props} onClose={() => toggleShowLoadoutModal(false)} />
             case AssetItemType.PowerCore:
                 return <MechLoadoutPowerCoreModal {...props} onClose={() => toggleShowLoadoutModal(false)} />
             case AssetItemType.Utility:

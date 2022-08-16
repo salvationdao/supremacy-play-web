@@ -9,6 +9,7 @@ export const MechLoadout = ({ mechDetails }: { mechDetails: MechDetails }) => {
     const weaponSlots = mechDetails.weapon_hardpoints
     const utilitySlots = mechDetails.utility_slots
     const weapons = mechDetails.weapons
+    const weaponsWithSkinInheritance = mechDetails.blueprint_weapon_ids_with_skin_inheritance
     const utilities = mechDetails.utility
     const powerCore = mechDetails.power_core
     const chassisSkin = mechDetails.chassis_skin
@@ -64,6 +65,7 @@ export const MechLoadout = ({ mechDetails }: { mechDetails: MechDetails }) => {
                             <MechLoadoutItem
                                 key={w.id}
                                 type={AssetItemType.Weapon}
+                                weaponsWithSkinInheritance={weaponsWithSkinInheritance}
                                 imageUrl={w.image_url || w.avatar_url}
                                 videoUrls={[w.card_animation_url]}
                                 label={w.label}

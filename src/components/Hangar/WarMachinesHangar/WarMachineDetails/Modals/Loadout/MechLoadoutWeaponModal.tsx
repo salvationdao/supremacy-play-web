@@ -1,25 +1,26 @@
-import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
+import { Box, CircularProgress, Divider, IconButton, Modal, Pagination, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useParameterizedQuery } from "react-fetching-library"
-import { ClipThing, FancyButton } from "../.."
-import { EmptyWarMachinesPNG, WarMachineIconPNG } from "../../../assets"
-import { HANGAR_PAGE } from "../../../constants"
-import { useAuth } from "../../../containers"
-import { useTheme } from "../../../containers/theme"
-import { GetWeaponMaxStats } from "../../../fetching"
-import { getRarityDeets, getWeaponTypeColor, parseString } from "../../../helpers"
-import { usePagination, useToggle, useUrlQuery } from "../../../hooks"
-import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
-import { GameServerKeys } from "../../../keys"
-import { colors, fonts } from "../../../theme/theme"
-import { Weapon, WeaponType } from "../../../types"
-import { SortTypeLabel } from "../../../types/marketplace"
-import { PageHeader } from "../../Common/PageHeader"
-import { ChipFilter } from "../../Common/SortAndFilters/ChipFilterSection"
-import { SliderRangeFilter } from "../../Common/SortAndFilters/SliderRangeFilterSection"
-import { SortAndFilters } from "../../Common/SortAndFilters/SortAndFilters"
-import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
-import { WeaponHangarItem } from "./WeaponHangarItem"
+import { FancyButton } from "../../../../.."
+import { EmptyWarMachinesPNG, SvgClose } from "../../../../../../assets"
+import { useAuth } from "../../../../../../containers"
+import { useTheme } from "../../../../../../containers/theme"
+import { GetWeaponMaxStats } from "../../../../../../fetching"
+import { getRarityDeets, getWeaponTypeColor } from "../../../../../../helpers"
+import { usePagination, useToggle } from "../../../../../../hooks"
+import { useGameServerCommandsUser, useGameServerSubscriptionFaction } from "../../../../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../../../../keys"
+import { colors, fonts, siteZIndex } from "../../../../../../theme/theme"
+import { Weapon, WeaponType } from "../../../../../../types"
+import { SortTypeLabel } from "../../../../../../types/marketplace"
+import { ClipThing } from "../../../../../Common/ClipThing"
+import { PageHeader } from "../../../../../Common/PageHeader"
+import { ChipFilter } from "../../../../../Common/SortAndFilters/ChipFilterSection"
+import { SliderRangeFilter } from "../../../../../Common/SortAndFilters/SliderRangeFilterSection"
+import { SortAndFilters } from "../../../../../Common/SortAndFilters/SortAndFilters"
+import { TotalAndPageSizeOptions } from "../../../../../Common/TotalAndPageSizeOptions"
+import { GetWeaponsRequest, GetWeaponsResponse } from "../../../../WeaponsHangar/WeaponsHangar"
+import { MechLoadoutItemProps } from "../../../Common/MechLoadoutItem"
 
 const sortOptions = [
     { label: SortTypeLabel.Alphabetical, value: SortTypeLabel.Alphabetical },
@@ -28,101 +29,45 @@ const sortOptions = [
     { label: SortTypeLabel.RarestDesc, value: SortTypeLabel.RarestDesc },
 ]
 
-export interface GetWeaponsRequest {
-    page: number
-    page_size: number
-    include_market_listed: boolean
-    exclude_equipped?: boolean
-    sort_by: string
-    sort_dir: string
-    weapon_types: string[]
-    rarities: string[]
-    equipped_statuses: string[]
-    search: string
-    stat_ammo?: GetWeaponStatFilter
-    stat_damage?: GetWeaponStatFilter
-    stat_damage_falloff?: GetWeaponStatFilter
-    stat_damage_falloff_rate?: GetWeaponStatFilter
-    stat_radius?: GetWeaponStatFilter
-    stat_radius_damage_falloff?: GetWeaponStatFilter
-    stat_rate_of_fire?: GetWeaponStatFilter
-    stat_energy_cost?: GetWeaponStatFilter
-    stat_projectile_speed?: GetWeaponStatFilter
-    stat_spread?: GetWeaponStatFilter
+interface MechLoadoutWeaponModalProps extends MechLoadoutItemProps {
+    onClose: () => void
 }
 
-interface GetWeaponStatFilter {
-    min?: number
-    max?: number
-}
-
-export interface GetWeaponsResponse {
-    weapons: Weapon[]
-    total: number
-}
-
-export const WeaponsHangar = () => {
-    const [query, updateQuery] = useUrlQuery()
+export const MechLoadoutWeaponModal = ({ onClose }: MechLoadoutWeaponModalProps) => {
     const { userID } = useAuth()
     const { send } = useGameServerCommandsUser("/user_commander")
-    const theme = useTheme()
 
-    // Items
+    const theme = useTheme()
+    const primaryColor = theme.factionTheme.primary
+    const secondaryColor = theme.factionTheme.secondary
+
+    const [weapons, setWeapons] = useState<Weapon[]>([])
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
-    const [weapons, setWeapons] = useState<Weapon[]>([])
 
-    const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({
-        pageSize: parseString(query.get("pageSize"), 10),
-        page: parseString(query.get("page"), 1),
+    const { page, changePage, totalPages, changePageSize, pageSize, setTotalItems, totalItems } = usePagination({
+        pageSize: 4,
+        page: 1,
     })
 
-    // Filters and sorts
-    const [isFiltersExpanded, toggleIsFiltersExpanded] = useToggle(localStorage.getItem("isWeaponsHangarFiltersExpanded") === "true")
+    const [sort, setSort] = useState<string>(SortTypeLabel.Alphabetical)
+    const [sortFilterReRender, toggleSortFilterReRender] = useToggle()
+
+    const [isFiltersExpanded, toggleIsFiltersExpanded] = useToggle()
     const [search, setSearch] = useState("")
-    const [sort, setSort] = useState<string>(query.get("sort") || SortTypeLabel.Alphabetical)
-    const [weaponTypes, setWeaponTypes] = useState<string[]>((query.get("weapon_types") || undefined)?.split("||") || [])
-    const [rarities, setRarities] = useState<string[]>((query.get("rarities") || undefined)?.split("||") || [])
-    const [equippedStatuses, setEquippedStatuses] = useState<string[]>((query.get("equipped_status") || undefined)?.split("||") || [])
-    const [ammoRange, setAmmoRange] = useState<number[] | undefined>(
-        (query.get("ammo") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 30000)),
-    )
-    const [damageRange, setDamageRange] = useState<number[] | undefined>(
-        (query.get("damage") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 10000)),
-    )
-    const [damageFalloffRange, setDamageFalloffRange] = useState<number[] | undefined>(
-        (query.get("damageFalloff") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 10000)),
-    )
-    const [damageFalloffRateRange, setDamageFalloffRateRange] = useState<number[] | undefined>(
-        (query.get("damageFalloffRate") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 10000)),
-    )
-    const [radiusRange, setRadiusRange] = useState<number[] | undefined>(
-        (query.get("radius") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 20000)),
-    )
-    const [radiusDamageFalloffRange, setRadiusDamageFalloffRange] = useState<number[] | undefined>(
-        (query.get("radiusDamageFalloff") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 20000)),
-    )
-    const [rateOfFireRange, setRateOfFireRange] = useState<number[] | undefined>(
-        (query.get("rateOfFire") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 10000)),
-    )
-    const [energyCostRange, setEnergyCostRange] = useState<number[] | undefined>(
-        (query.get("energyCost") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 10000)),
-    )
-    const [projectileSpeedRange, setProjectileSpeedRange] = useState<number[] | undefined>(
-        (query.get("projectileSpeed") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 2000000)),
-    )
-    const [spreadRange, setSpreadRange] = useState<number[] | undefined>(
-        (query.get("spread") || undefined)?.split("||").map((p, i) => (p ? parseInt(p) : i === 0 ? 0 : 100)),
-    )
-    const [isGridView, toggleIsGridView] = useToggle((localStorage.getItem("fleetWeaponGrid") || "true") === "true")
-
-    useEffect(() => {
-        localStorage.setItem("fleetWeaponGrid", isGridView.toString())
-    }, [isGridView])
-
-    useEffect(() => {
-        localStorage.setItem("isWeaponsHangarFiltersExpanded", isFiltersExpanded.toString())
-    }, [isFiltersExpanded])
+    const [weaponTypes, setWeaponTypes] = useState<string[]>([])
+    const [rarities, setRarities] = useState<string[]>([])
+    const [equippedStatuses, setEquippedStatuses] = useState<string[]>([])
+    const [ammoRange, setAmmoRange] = useState<number[] | undefined>()
+    const [damageRange, setDamageRange] = useState<number[] | undefined>()
+    const [damageFalloffRange, setDamageFalloffRange] = useState<number[] | undefined>()
+    const [damageFalloffRateRange, setDamageFalloffRateRange] = useState<number[] | undefined>()
+    const [radiusRange, setRadiusRange] = useState<number[] | undefined>()
+    const [radiusDamageFalloffRange, setRadiusDamageFalloffRange] = useState<number[] | undefined>()
+    const [rateOfFireRange, setRateOfFireRange] = useState<number[] | undefined>()
+    const [energyCostRange, setEnergyCostRange] = useState<number[] | undefined>()
+    const [projectileSpeedRange, setProjectileSpeedRange] = useState<number[] | undefined>()
+    const [spreadRange, setSpreadRange] = useState<number[] | undefined>()
 
     const weaponTypeFilterSection = useRef<ChipFilter>({
         label: "WEAPON TYPE",
@@ -287,34 +232,7 @@ export const WeaponsHangar = () => {
         },
     })
 
-    const [sortFilterReRender, toggleSortFilterReRender] = useToggle()
-    const { query: queryGetWeaponMaxStats } = useParameterizedQuery(GetWeaponMaxStats)
-
-    // Get the max for each category for better filtering
-    useEffect(() => {
-        ;(async () => {
-            try {
-                const resp = await queryGetWeaponMaxStats(userID)
-                if (resp.error || !resp.payload) return
-                ammoRangeFilter.current.minMax[1] = resp.payload.max_ammo || 0
-                damageRangeFilter.current.minMax[1] = resp.payload.damage || 0
-                damageFalloffRangeFilter.current.minMax[1] = resp.payload.damage_falloff || 0
-                damageFalloffRateRangeFilter.current.minMax[1] = resp.payload.damage_falloff_rate || 0
-                radiusRangeFilter.current.minMax[1] = resp.payload.radius || 0
-                radiusDamageFalloffRangeFilter.current.minMax[1] = resp.payload.radius_damage_falloff || 0
-                rateOfFireRangeFilter.current.minMax[1] = resp.payload.rate_of_fire || 0
-                energyCostRangeFilter.current.minMax[1] = resp.payload.energy_cost || 0
-                projectileSpeedRangeFilter.current.minMax[1] = resp.payload.projectile_speed || 0
-                spreadRangeFilter.current.minMax[1] = resp.payload.spread || 0
-                toggleSortFilterReRender()
-            } catch (err) {
-                const message = typeof err === "string" ? err : "Failed to get the list of streams."
-                console.error(message)
-            }
-        })()
-    }, [queryGetWeaponMaxStats, toggleSortFilterReRender, userID])
-
-    const getItems = useCallback(async () => {
+    const getWeapons = useCallback(async () => {
         try {
             setIsLoading(true)
 
@@ -414,28 +332,9 @@ export const WeaponsHangar = () => {
                         : undefined,
             })
 
-            updateQuery({
-                page: page.toString(),
-                pageSize: pageSize.toString(),
-                sort,
-                weapon_types: weaponTypes.join("||"),
-                rarities: rarities.join("||"),
-                equipped_statuses: equippedStatuses.join("||"),
-                ammo: ammoRange?.join("||"),
-                damage: damageRange?.join("||"),
-                damageFalloff: damageFalloffRange?.join("||"),
-                damageFalloffRate: damageFalloffRateRange?.join("||"),
-                radius: radiusRange?.join("||"),
-                radiusDamageFalloff: radiusDamageFalloffRange?.join("||"),
-                rateOfFire: rateOfFireRange?.join("||"),
-                energyCost: energyCostRange?.join("||"),
-                projectileSpeed: projectileSpeedRange?.join("||"),
-                spread: spreadRange?.join("||"),
-                search,
-            })
-
             if (!resp) return
             setLoadError(undefined)
+            console.log(resp)
             setWeapons(resp.weapons)
             setTotalItems(resp.total)
         } catch (e) {
@@ -445,31 +344,55 @@ export const WeaponsHangar = () => {
             setIsLoading(false)
         }
     }, [
-        send,
-        page,
-        pageSize,
-        search,
-        sort,
-        updateQuery,
-        setTotalItems,
-        weaponTypes,
-        rarities,
-        equippedStatuses,
         ammoRange,
-        damageRange,
         damageFalloffRange,
         damageFalloffRateRange,
-        radiusRange,
-        radiusDamageFalloffRange,
-        rateOfFireRange,
+        damageRange,
         energyCostRange,
+        equippedStatuses,
+        page,
+        pageSize,
         projectileSpeedRange,
+        radiusDamageFalloffRange,
+        radiusRange,
+        rarities,
+        rateOfFireRange,
+        search,
+        send,
+        setTotalItems,
+        sort,
         spreadRange,
+        weaponTypes,
     ])
 
     useEffect(() => {
-        getItems()
-    }, [getItems])
+        getWeapons()
+    }, [getWeapons])
+
+    // Get the max for each category for better filtering
+    const { query: queryGetWeaponMaxStats } = useParameterizedQuery(GetWeaponMaxStats)
+    useEffect(() => {
+        ;(async () => {
+            try {
+                const resp = await queryGetWeaponMaxStats(userID)
+                if (resp.error || !resp.payload) return
+                ammoRangeFilter.current.minMax[1] = resp.payload.max_ammo || 0
+                damageRangeFilter.current.minMax[1] = resp.payload.damage || 0
+                damageFalloffRangeFilter.current.minMax[1] = resp.payload.damage_falloff || 0
+                damageFalloffRateRangeFilter.current.minMax[1] = resp.payload.damage_falloff_rate || 0
+                radiusRangeFilter.current.minMax[1] = resp.payload.radius || 0
+                radiusDamageFalloffRangeFilter.current.minMax[1] = resp.payload.radius_damage_falloff || 0
+                rateOfFireRangeFilter.current.minMax[1] = resp.payload.rate_of_fire || 0
+                energyCostRangeFilter.current.minMax[1] = resp.payload.energy_cost || 0
+                projectileSpeedRangeFilter.current.minMax[1] = resp.payload.projectile_speed || 0
+                spreadRangeFilter.current.minMax[1] = resp.payload.spread || 0
+                toggleSortFilterReRender()
+            } catch (err) {
+                const message = typeof err === "string" ? err : "Failed to get the list of streams."
+                console.error(message)
+            }
+        })()
+    }, [queryGetWeaponMaxStats, toggleSortFilterReRender, userID])
 
     const content = useMemo(() => {
         if (loadError) {
@@ -507,30 +430,23 @@ export const WeaponsHangar = () => {
 
         if (weapons && weapons.length > 0) {
             return (
-                <Box sx={{ direction: "ltr", height: 0 }}>
-                    <Box
-                        sx={{
-                            width: "100%",
-                            py: "1rem",
-                            display: "grid",
-                            gridTemplateColumns: isGridView ? "repeat(auto-fill, minmax(30rem, 1fr))" : "100%",
-                            gap: "1.3rem",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            overflow: "visible",
-                        }}
-                    >
-                        {weapons.map((weapon) => (
-                            <WeaponHangarItem key={`marketplace-${weapon.id}`} weapon={weapon} isGridView={isGridView} />
-                        ))}
-                    </Box>
+                <Box
+                    sx={{
+                        display: "grid",
+                        gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))",
+                        gap: "1rem",
+                    }}
+                >
+                    {weapons.map((p) => (
+                        <WeaponItem key={p.id} id={p.id} />
+                    ))}
                 </Box>
             )
         }
 
         return (
             <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
-                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", maxWidth: "40rem" }}>
+                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                     <Box
                         sx={{
                             width: "80%",
@@ -579,88 +495,81 @@ export const WeaponsHangar = () => {
                 </Stack>
             </Stack>
         )
-    }, [loadError, weapons, isLoading, theme.factionTheme.primary, theme.factionTheme.secondary, isGridView])
+    }, [isLoading, loadError, theme.factionTheme.primary, theme.factionTheme.secondary, weapons])
 
     return (
-        <Stack direction="row" sx={{ height: "100%" }}>
-            <SortAndFilters
-                key={sortFilterReRender.toString()}
-                initialSearch={search}
-                onSetSearch={setSearch}
-                chipFilters={[weaponTypeFilterSection.current, rarityChipFilter.current, weaponEquippedFilterSection.current]}
-                sliderRangeFilters={[
-                    // ammoRangeFilter.current,
-                    damageRangeFilter.current,
-                    // damageFalloffRangeFilter.current,
-                    // damageFalloffRateRangeFilter.current,
-                    radiusRangeFilter.current,
-                    // radiusDamageFalloffRangeFilter.current,
-                    rateOfFireRangeFilter.current,
-                    energyCostRangeFilter.current,
-                    // projectileSpeedRangeFilter.current,
-                    spreadRangeFilter.current,
-                ]}
-                changePage={changePage}
-                isExpanded={isFiltersExpanded}
-            />
-
-            <ClipThing
-                clipSize="10px"
-                border={{
-                    borderColor: theme.factionTheme.primary,
-                    borderThickness: ".3rem",
+        <Modal open onClose={onClose} sx={{ zIndex: siteZIndex.Modal }}>
+            <Box
+                sx={{
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                    width: "100rem",
+                    maxWidth: "90vw",
+                    boxShadow: 6,
+                    outline: "none",
                 }}
-                opacity={0.7}
-                backgroundColor={theme.factionTheme.background}
-                sx={{ height: "100%", flex: 1 }}
             >
-                <Stack sx={{ position: "relative", height: "100%" }}>
-                    <Stack sx={{ flex: 1 }}>
-                        <PageHeader title="weapons" description="Your weapons." imageUrl={WarMachineIconPNG}>
-                            <Box sx={{ ml: "auto !important", pr: "2rem" }}>
-                                <FancyButton
-                                    clipThingsProps={{
-                                        clipSize: "9px",
-                                        backgroundColor: colors.gold,
-                                        opacity: 1,
-                                        border: { borderColor: colors.gold, borderThickness: "2px" },
-                                        sx: { position: "relative" },
-                                    }}
-                                    sx={{ px: "1.6rem", py: ".6rem", color: "#000000" }}
-                                    href={HANGAR_PAGE}
-                                    target="_blank"
-                                >
-                                    <Typography
-                                        variant="caption"
-                                        sx={{
-                                            color: "#000000",
-                                            fontFamily: fonts.nostromoBlack,
-                                        }}
-                                    >
-                                        WALKABLE HANGAR
-                                    </Typography>
-                                </FancyButton>
-                            </Box>
-                        </PageHeader>
-
-                        <TotalAndPageSizeOptions
-                            countItems={weapons?.length}
-                            totalItems={totalItems}
-                            pageSize={pageSize}
-                            changePageSize={changePageSize}
-                            pageSizeOptions={[10, 20, 30]}
+                <ClipThing
+                    clipSize="10px"
+                    border={{
+                        borderColor: theme.factionTheme.primary,
+                        borderThickness: ".3rem",
+                    }}
+                    backgroundColor={theme.factionTheme.background}
+                    sx={{
+                        position: "relative",
+                        height: "50rem",
+                        maxHeight: "90vh",
+                    }}
+                >
+                    <IconButton size="small" onClick={onClose} sx={{ position: "absolute", top: ".5rem", right: ".5rem" }}>
+                        <SvgClose size="3rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
+                    </IconButton>
+                    <Stack
+                        direction="row"
+                        sx={{
+                            height: "100%",
+                        }}
+                    >
+                        <SortAndFilters
+                            key={sortFilterReRender.toString()}
+                            initialSearch={search}
+                            onSetSearch={setSearch}
+                            chipFilters={[weaponTypeFilterSection.current, rarityChipFilter.current, weaponEquippedFilterSection.current]}
+                            sliderRangeFilters={[
+                                // ammoRangeFilter.current,
+                                damageRangeFilter.current,
+                                // damageFalloffRangeFilter.current,
+                                // damageFalloffRateRangeFilter.current,
+                                radiusRangeFilter.current,
+                                // radiusDamageFalloffRangeFilter.current,
+                                rateOfFireRangeFilter.current,
+                                energyCostRangeFilter.current,
+                                // projectileSpeedRangeFilter.current,
+                                spreadRangeFilter.current,
+                            ]}
                             changePage={changePage}
-                            manualRefresh={getItems}
-                            sortOptions={sortOptions}
-                            selectedSort={sort}
-                            onSetSort={setSort}
-                            isGridView={isGridView}
-                            toggleIsGridView={toggleIsGridView}
-                            isFiltersExpanded={isFiltersExpanded}
-                            toggleIsFiltersExpanded={toggleIsFiltersExpanded}
+                            isExpanded={isFiltersExpanded}
+                            width="25rem"
                         />
-
-                        <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
+                        <Stack flex={1}>
+                            <PageHeader title="Equip a weapon" description="Select a weapon to equip on your mech." />
+                            <TotalAndPageSizeOptions
+                                countItems={weapons?.length}
+                                totalItems={totalItems}
+                                pageSize={pageSize}
+                                changePageSize={changePageSize}
+                                pageSizeOptions={[4, 8]}
+                                changePage={changePage}
+                                manualRefresh={getWeapons}
+                                sortOptions={sortOptions}
+                                selectedSort={sort}
+                                onSetSort={setSort}
+                                isFiltersExpanded={isFiltersExpanded}
+                                toggleIsFiltersExpanded={toggleIsFiltersExpanded}
+                            />
                             <Box
                                 sx={{
                                     ml: "1.9rem",
@@ -687,37 +596,118 @@ export const WeaponsHangar = () => {
                             >
                                 {content}
                             </Box>
+                            {totalPages > 1 && (
+                                <Box
+                                    sx={{
+                                        mt: "auto",
+                                        px: "1rem",
+                                        py: ".7rem",
+                                        borderTop: `${primaryColor}70 1.5px solid`,
+                                        borderBottom: `${primaryColor}70 1.5px solid`,
+                                        backgroundColor: "#00000070",
+                                    }}
+                                >
+                                    <Pagination
+                                        size="small"
+                                        count={totalPages}
+                                        page={page}
+                                        sx={{
+                                            ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold, fontSize: "1.2rem" },
+                                            ".Mui-selected": {
+                                                color: secondaryColor,
+                                                backgroundColor: `${primaryColor} !important`,
+                                            },
+                                        }}
+                                        onChange={(e, p) => changePage(p)}
+                                    />
+                                </Box>
+                            )}
                         </Stack>
                     </Stack>
+                </ClipThing>
+            </Box>
+        </Modal>
+    )
+}
 
-                    {totalPages > 1 && (
+interface WeaponItemProps {
+    id: string
+}
+
+const WeaponItem = ({ id }: WeaponItemProps) => {
+    const [weaponDetails, setWeaponDetails] = useState<Weapon>()
+    const theme = useTheme()
+
+    useGameServerSubscriptionFaction<Weapon>(
+        {
+            URI: `/weapon/${id}/details`,
+            key: GameServerKeys.GetWeaponDetails,
+        },
+        (payload) => {
+            if (!payload) return
+            console.log(payload)
+            setWeaponDetails(payload)
+        },
+    )
+
+    return (
+        <FancyButton
+            clipThingsProps={{
+                border: {
+                    borderColor: theme.factionTheme.primary,
+                },
+                backgroundColor: theme.factionTheme.background,
+            }}
+            sx={{
+                padding: "1rem",
+            }}
+        >
+            <Stack direction="row">
+                <Box sx={{ width: "10rem" }}>
+                    <Box
+                        sx={{
+                            position: "relative",
+                            height: "9rem",
+                            width: "100%",
+                        }}
+                    >
                         <Box
+                            component="img"
+                            src={weaponDetails?.image_url}
                             sx={{
-                                px: "1rem",
-                                py: ".7rem",
-                                borderTop: (theme) => `${theme.factionTheme.primary}70 1.5px solid`,
-                                backgroundColor: "#00000070",
+                                position: "absolute",
+                                top: 0,
+                                left: 0,
+                                width: "100%",
+                                height: "100%",
+                                objectFit: "contain",
                             }}
-                        >
-                            <Pagination
-                                size="medium"
-                                count={totalPages}
-                                page={page}
-                                sx={{
-                                    ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold },
-                                    ".Mui-selected": {
-                                        color: (theme) => theme.factionTheme.secondary,
-                                        backgroundColor: `${theme.factionTheme.primary} !important`,
-                                    },
-                                }}
-                                onChange={(e, p) => changePage(p)}
-                                showFirstButton
-                                showLastButton
-                            />
-                        </Box>
-                    )}
+                        />
+                    </Box>
+
+                    <Typography
+                        variant="body2"
+                        sx={{
+                            textAlign: "center",
+                        }}
+                    >
+                        {weaponDetails?.label}
+                    </Typography>
+                </Box>
+                <Divider orientation="vertical" />
+                <Stack>
+                    <Typography
+                        variant="caption"
+                        sx={{
+                            color: colors.lightGrey,
+                            fontSize: "1rem",
+                            fontFamily: fonts.nostromoBlack,
+                        }}
+                    >
+                        MAX DRAW RATE
+                    </Typography>
                 </Stack>
-            </ClipThing>
-        </Stack>
+            </Stack>
+        </FancyButton>
     )
 }

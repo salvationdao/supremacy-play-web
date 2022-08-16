@@ -67,7 +67,6 @@ export const MechLoadoutPowerCoreModal = ({ onClose }: MechLoadoutPowerCoreModal
             rarities: [],
             sizes: [],
         })
-        console.log(resp)
         setPowerCores(resp.power_cores)
         setTotalItems(resp.total)
     }, [page, pageSize, send, setTotalItems])
@@ -180,7 +179,6 @@ const PowerCoreItem = ({ id }: PowerCoreItemProps) => {
         },
         (payload) => {
             if (!payload) return
-            console.log(payload)
             setPowerCoreDetails(payload)
         },
     )

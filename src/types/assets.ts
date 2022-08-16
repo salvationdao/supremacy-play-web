@@ -126,6 +126,7 @@ export interface MechDetails extends MechBasic {
     weapons: Weapon[]
     utility: Utility[]
     battle_ready: boolean
+    blueprint_weapon_ids_with_skin_inheritance: string[]
 }
 
 export interface BlueprintMech {

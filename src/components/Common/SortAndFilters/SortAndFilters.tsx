@@ -20,6 +20,7 @@ interface SortAndFiltersProps {
     primaryColor?: string
     children?: ReactNode
     isExpanded?: boolean
+    width?: string | number
 }
 
 export const SortAndFilters = ({
@@ -33,6 +34,7 @@ export const SortAndFilters = ({
     primaryColor: pColor,
     children,
     isExpanded = true,
+    width = "38rem",
 }: SortAndFiltersProps) => {
     const theme = useTheme()
     const [searchValue, setSearchValue] = useState(initialSearch || "")
@@ -56,7 +58,7 @@ export const SortAndFilters = ({
                 }}
                 opacity={0.7}
                 backgroundColor={backgroundColor}
-                sx={{ height: "100%", width: "38rem", mr: "1rem", opacity: isExpanded ? 1 : 0, transition: "all .2s" }}
+                sx={{ height: "100%", width, mr: "1rem", opacity: isExpanded ? 1 : 0, transition: "all .2s" }}
             >
                 <Stack sx={{ height: "100%" }}>
                     <Box
