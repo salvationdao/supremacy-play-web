@@ -426,7 +426,7 @@ const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
         hash,
         playerAbility,
         selection?.mechHash,
-        warMachine.participantID,
         zIndex,
+        label,
     ])
 }

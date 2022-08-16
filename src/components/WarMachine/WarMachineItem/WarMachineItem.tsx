@@ -40,10 +40,11 @@ export const WarMachineItem = ({
     const { userID, factionID } = useAuth()
     const { getFaction } = useSupremacy()
     const { highlightedMechParticipantID, setHighlightedMechParticipantID } = useMiniMap()
-    const { setHighlightedMechGameAbilities } = useHotkey()
+    const { addToHotkeyRecord } = useHotkey()
 
     const { hash, participantID, factionID: wmFactionID, name, imageAvatar, tier, ownedByID, ownerUsername, aiType } = warMachine
     const isMiniMech = aiType === AIType.MiniMech
+    const addMiniMechParticipantId = 100
 
     // Subscribe to war machine ability updates
     const gameAbilities = useGameServerSubscriptionFaction<GameAbility[] | undefined>({
@@ -87,10 +88,13 @@ export const WarMachineItem = ({
     }, [highlightedMechParticipantID, initialExpanded, isMobile, setHighlightedMechParticipantID, toggleIsExpanded, participantID])
 
     useEffect(() => {
-        if (highlightedMechParticipantID === participantID && gameAbilities) {
-            setHighlightedMechGameAbilities(gameAbilities)
+        if (!label || wmFactionID !== factionID) return
+        if (participantID > addMiniMechParticipantId) {
+            addToHotkeyRecord(true, label.toString(), handleClick)
+            return
         }
-    }, [highlightedMechParticipantID, participantID, gameAbilities, setHighlightedMechGameAbilities])
+        addToHotkeyRecord(false, label.toString(), handleClick)
+    }, [handleClick, addMiniMechParticipantId, label, participantID, addToHotkeyRecord, factionID, wmFactionID])
     return (
         <>
             <Stack

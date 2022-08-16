@@ -1,10 +1,10 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
-import { useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { ClipThing } from "../.."
 import { useAuth, useGame, useMiniMap } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { useInterval, useToggle } from "../../../hooks"
-import { useGameServerSubscription, useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
+import { useGameServerCommandsFaction, useGameServerSubscription, useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
 import { AIType, GameAbility, WarMachineLiveState, WarMachineState } from "../../../types"
@@ -102,7 +102,8 @@ const AbilityItem = ({ hash, participantID, ability, index }: { hash: string; pa
     const { id, colour, image_url, label } = ability
     const [remainSeconds, setRemainSeconds] = useState(30)
     const ready = useMemo(() => remainSeconds === 0, [remainSeconds])
-    const { onGameAbilityTrigger, mechAbilityKey } = useHotkey()
+    const { mechAbilityKey, addToHotkeyRecord } = useHotkey()
+    const { send } = useGameServerCommandsFaction("/faction_commander")
 
     useGameServerSubscriptionFaction<number | undefined>(
         {
@@ -123,6 +124,21 @@ const AbilityItem = ({ hash, participantID, ability, index }: { hash: string; pa
             return rs - 1
         })
     }, 1000)
+
+    const onTrigger = useCallback(async () => {
+        try {
+            await send<boolean, { mech_hash: string; game_ability_id: string }>(GameServerKeys.TriggerWarMachineAbility, {
+                mech_hash: hash,
+                game_ability_id: id,
+            })
+        } catch (e) {
+            console.error(e)
+        }
+    }, [hash, id, send])
+
+    useEffect(() => {
+        addToHotkeyRecord(false, mechAbilityKey[index], onTrigger)
+    }, [onTrigger, mechAbilityKey, addToHotkeyRecord, index])
 
     return (
         <Stack
@@ -151,7 +167,7 @@ const AbilityItem = ({ hash, participantID, ability, index }: { hash: string; pa
                     border: `${colour} 1.5px solid`,
                     ":hover": ready ? { borderWidth: "3px", transform: "scale(1.04)" } : undefined,
                 }}
-                onClick={ready ? () => onGameAbilityTrigger(hash, id) : undefined}
+                onClick={ready ? () => onTrigger : undefined}
             />
 
             <Stack direction={"row"} sx={{ width: "100%" }} justifyContent={"space-between"} alignItems={"center"}>

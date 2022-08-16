@@ -1,7 +1,6 @@
 import { useMemo } from "react"
-import { useAuth, useGame, useSupremacy } from "../../../../containers"
+import { useGame, useSupremacy } from "../../../../containers"
 import { MapMech } from "./MapMech"
-import { useHotkey } from "../../../../containers/hotkeys"
 
 export const MapMechs = () => {
     const { battleIdentifier } = useSupremacy()

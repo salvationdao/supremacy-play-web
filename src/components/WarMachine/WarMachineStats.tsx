@@ -2,14 +2,12 @@ import { Box, Divider, Fade, IconButton, Slide, Stack, Typography } from "@mui/m
 import { ReactElement, useEffect, useMemo } from "react"
 import { ClipThing } from ".."
 import { SvgExternalLink } from "../../assets"
-import { useAuth, useGame, useMobile, useSupremacy } from "../../containers"
+import { useGame, useMobile, useSupremacy } from "../../containers"
 import { useTheme } from "../../containers/theme"
 import { useToggle } from "../../hooks"
 import { fonts, siteZIndex } from "../../theme/theme"
-import { AIType } from "../../types"
 import { WindowPortal } from "../Common/WindowPortal"
 import { WarMachineItem } from "./WarMachineItem/WarMachineItem"
-import { useHotkey } from "../../containers/hotkeys"
 
 export const WarMachineStats = () => {
     const { battleIdentifier } = useSupremacy()

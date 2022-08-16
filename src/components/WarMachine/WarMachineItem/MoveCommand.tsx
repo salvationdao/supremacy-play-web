@@ -1,15 +1,36 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useMemo } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { SvgClose2, SvgDrag } from "../../../assets"
-import { useAuth } from "../../../containers"
+import { useAuth, useMiniMap, useSnackbar } from "../../../containers"
 import { shadeColor } from "../../../helpers"
 import { useTimer } from "../../../hooks"
-import { useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
+import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
-import { WarMachineState } from "../../../types"
+import { LocationSelectType, PlayerAbility, WarMachineState } from "../../../types"
 import { DEAD_OPACITY, WIDTH_SKILL_BUTTON } from "./WarMachineItem"
-import { MechMoveCommandAbility, useHotkey } from "../../../containers/hotkeys"
+import { useHotkey } from "../../../containers/hotkeys"
+
+export const MechMoveCommandAbility: PlayerAbility = {
+    id: "mech_move_command",
+    blueprint_id: "mech_move_command",
+    count: 1,
+    last_purchased_at: new Date(),
+    cooldown_expires_on: new Date(),
+    ability: {
+        id: "",
+        game_client_ability_id: 8,
+        label: "MOVE COMMAND",
+        image_url: "",
+        description: "Command the war machine to move to a specific location.",
+        text_colour: "#000000",
+        colour: colors.gold,
+        location_select_type: LocationSelectType.MECH_COMMAND,
+        created_at: new Date(),
+        inventory_limit: 10,
+        cooldown_seconds: 5,
+    },
+}
 
 export interface MechMoveCommand {
     id: string
@@ -27,7 +48,7 @@ export interface MechMoveCommand {
 export const MoveCommand = ({ warMachine, isAlive, smallVersion }: { warMachine: WarMachineState; isAlive: boolean; smallVersion?: boolean }) => {
     const { factionID } = useAuth()
     const { hash, factionID: wmFactionID, participantID } = warMachine
-    const { setMechMoveCommand, mechMoveCommand } = useHotkey()
+    const [mechMoveCommand, setMechMoveCommand] = useState<MechMoveCommand>()
 
     useGameServerSubscriptionFaction<MechMoveCommand>(
         {
@@ -47,24 +68,31 @@ export const MoveCommand = ({ warMachine, isAlive, smallVersion }: { warMachine:
         <MoveCommandInner
             key={mechMoveCommand.id}
             isAlive={isAlive}
-            warMachine={warMachine}
+            hash={hash}
             remainCooldownSeconds={mechMoveCommand.remain_cooldown_seconds}
             isMoving={mechMoveCommand.is_moving}
+            isCancelled={!!mechMoveCommand.cancelled_at}
+            mechMoveCommandID={mechMoveCommand.id}
             smallVersion={smallVersion}
         />
     )
 }
 
 interface MoveCommandInnerProps {
+    hash: string
+    mechMoveCommandID: string
     isAlive: boolean
     isMoving: boolean
+    isCancelled: boolean
     remainCooldownSeconds: number
     smallVersion?: boolean
-    warMachine: WarMachineState
 }
 
-const MoveCommandInner = ({ isAlive, remainCooldownSeconds, isMoving, warMachine, smallVersion }: MoveCommandInnerProps) => {
-    const { handleMechMove } = useHotkey()
+const MoveCommandInner = ({ isAlive, remainCooldownSeconds, isMoving, isCancelled, hash, mechMoveCommandID, smallVersion }: MoveCommandInnerProps) => {
+    const { newSnackbarMessage } = useSnackbar()
+    const { send } = useGameServerCommandsFaction("/faction_commander")
+    const { setPlayerAbility } = useMiniMap()
+    const { addToHotkeyRecord } = useHotkey()
 
     const { totalSecRemain } = useTimer(new Date(new Date().getTime() + remainCooldownSeconds * 1000))
     const ready = useMemo(() => totalSecRemain <= 0, [totalSecRemain])
@@ -72,6 +100,32 @@ const MoveCommandInner = ({ isAlive, remainCooldownSeconds, isMoving, warMachine
     const primaryColor = isMoving ? colors.grey : MechMoveCommandAbility.ability.colour
     const secondaryColor = isMoving ? "#FFFFFF" : MechMoveCommandAbility.ability.text_colour
     const backgroundColor = useMemo(() => shadeColor(primaryColor, -84), [primaryColor])
+
+    const onClick = useCallback(async () => {
+        if (!isAlive) return
+
+        if (isMoving && !isCancelled) {
+            try {
+                await send(GameServerKeys.MechMoveCommandCancel, {
+                    move_command_id: mechMoveCommandID,
+                    hash,
+                })
+            } catch (err) {
+                const message = typeof err === "string" ? err : "Failed cancel mech move command."
+                newSnackbarMessage(message, "error")
+                console.error(err)
+            }
+        } else {
+            setPlayerAbility({
+                ...MechMoveCommandAbility,
+                mechHash: hash,
+            })
+        }
+    }, [isAlive, isMoving, isCancelled, send, mechMoveCommandID, hash, newSnackbarMessage, setPlayerAbility])
+
+    useEffect(() => {
+        addToHotkeyRecord(false, "a", onClick)
+    }, [onClick, addToHotkeyRecord])
 
     if (smallVersion) {
         return (
@@ -98,7 +152,7 @@ const MoveCommandInner = ({ isAlive, remainCooldownSeconds, isMoving, warMachine
                         border: `${primaryColor} 1.5px solid`,
                         ":hover": { borderWidth: "3px" },
                     }}
-                    onClick={() => handleMechMove(warMachine)}
+                    onClick={onClick}
                 >
                     {isMoving ? <SvgClose2 size="1.6rem" sx={{ pb: 0 }} fill={primaryColor} /> : <SvgDrag size="1.6rem" sx={{ pb: 0 }} fill={primaryColor} />}
                 </Stack>
@@ -142,7 +196,7 @@ const MoveCommandInner = ({ isAlive, remainCooldownSeconds, isMoving, warMachine
                     letterSpacing: isAlive ? 2.3 : 1,
                 },
             }}
-            onClick={() => handleMechMove(warMachine)}
+            onClick={onClick}
         >
             <Box
                 sx={{
