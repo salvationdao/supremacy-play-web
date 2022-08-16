@@ -86,6 +86,7 @@ export const TotalAndPageSizeOptions = ({
                 </Button>
             )}
 
+            {/* Showing total items and count */}
             {totalItems && (
                 <Typography variant="caption" sx={{ lineHeight: 1 }}>
                     <strong>DISPLAYING:</strong> {countItems || 0} OF {totalItems}
@@ -110,6 +111,7 @@ export const TotalAndPageSizeOptions = ({
                     },
                 }}
             >
+                {/* Toggle grid view */}
                 {toggleIsGridView && (
                     <Stack direction="row" spacing=".6rem" alignItems="center">
                         <IconButton size="small" onClick={() => toggleIsGridView(false)}>
@@ -121,6 +123,7 @@ export const TotalAndPageSizeOptions = ({
                     </Stack>
                 )}
 
+                {/* Change page size */}
                 {!hidePageSizeOptions && changePage && changePageSize && (
                     <Stack direction="row" spacing=".6rem" alignItems="center">
                         {pageSizeOptions.map((size, i) => {
@@ -146,9 +149,12 @@ export const TotalAndPageSizeOptions = ({
                     </Stack>
                 )}
 
+                {/* Sorting */}
                 {sortOptions && selectedSort && onSetSort && (
                     <Stack direction="row" alignItems="center" spacing=".6rem">
-                        <Typography variant="caption">SORT:</Typography>
+                        <Typography variant="caption" sx={{ lineHeight: 1 }}>
+                            SORT:
+                        </Typography>
 
                         <Select
                             sx={{
