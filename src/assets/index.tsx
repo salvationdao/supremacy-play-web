@@ -137,13 +137,14 @@ import CampaignSharpIcon from "@mui/icons-material/CampaignSharp"
 import CloseSharpIcon from "@mui/icons-material/CloseSharp"
 import ExpandLessIcon from "@mui/icons-material/ExpandLess"
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
+import OutlinedFlagIcon from "@mui/icons-material/OutlinedFlag"
 import FlagSharpIcon from "@mui/icons-material/FlagSharp"
 import HorizontalRuleSharpIcon from "@mui/icons-material/HorizontalRuleSharp"
 import MapSharpIcon from "@mui/icons-material/MapSharp"
-import WarningIcon from "@mui/icons-material/Warning"
-import WorkspacesSharpIcon from "@mui/icons-material/WorkspacesSharp"
 import ThumbDownOffAltIcon from "@mui/icons-material/ThumbDownOffAlt"
 import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt"
+import WarningIcon from "@mui/icons-material/Warning"
+import WorkspacesSharpIcon from "@mui/icons-material/WorkspacesSharp"
 import { Box, BoxProps } from "@mui/system"
 import { colors } from "../theme/theme"
 import BostonCyberneticsLogo from "./images/BostonCyberneticsLogo.png"
@@ -160,6 +161,12 @@ import LogoWEBP from "./images/Logo.webp"
 import MaintenancePNG from "./images/Maintenance.png"
 import { Cake } from "@mui/icons-material"
 import PlayerAbilityPNG from "./images/PlayerAbility.png"
+import AboutMeSVG from "./images/profileIcons/AboutMe.svg"
+import BattleHistorySVG from "./images/profileIcons/BattleHistory.svg"
+import StatsSVG from "./images/profileIcons/Stats.svg"
+import WarMachineBCPNG from "./images/profileIcons/warMachines/WMBC.png"
+import WarMachineRMPNG from "./images/profileIcons/warMachines/WMRM.png"
+import WarMachineZAIPNG from "./images/profileIcons/warMachines/WMZAI.png"
 import RedMountainLogo from "./images/RedMountainLogo.png"
 import SafePNG from "./images/Safe.png"
 import SupBackground from "./images/SupBackground.webp"
@@ -168,12 +175,6 @@ import RainingSupsPNG from "./images/supsRain.png"
 import TrailerThumbPNG from "./images/TrailerThumb.png"
 import WarMachineIconPNG from "./images/WarMachineIcon.png"
 import ZaibatsuLogo from "./images/ZaibatsuLogo.png"
-import AboutMeSVG from "./images/profileIcons/AboutMe.svg"
-import BattleHistorySVG from "./images/profileIcons/BattleHistory.svg"
-import StatsSVG from "./images/profileIcons/Stats.svg"
-import WarMachineBCPNG from "./images/profileIcons/warMachines/WMBC.png"
-import WarMachineRMPNG from "./images/profileIcons/warMachines/WMRM.png"
-import WarMachineZAIPNG from "./images/profileIcons/warMachines/WMZAI.png"
 
 import StackTowerBackgroundJPG from "./images/TowerStackSkins/StackTowerBackground.jpg"
 import Stack1aJPG from "./images/TowerStackSkins/Stack1a.jpg"
@@ -312,6 +313,11 @@ export const SvgSupToken: React.VoidFunctionComponent<SvgWrapperProps> = (props)
 export const SvgSyndicateFlag: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <FlagSharpIcon />
+    </SvgWrapper>
+)
+export const SvgReportFlag: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <OutlinedFlagIcon />
     </SvgWrapper>
 )
 
