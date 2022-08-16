@@ -69,6 +69,7 @@ export enum GameServerKeys {
     ReadTaggedMessage = "READ:TAGGED:MESSAGE",
     ReactToMessage = "REACT:MESSAGE",
     ChatBanPlayer = "CHAT:BAN:PLAYER",
+    ChatReport = "CHAT:REPORT:MESSAGE",
 
     BattleMechHistoryList = "BATTLE:MECH:HISTORY:LIST",
     BattleMechStats = "BATTLE:MECH:STATS",

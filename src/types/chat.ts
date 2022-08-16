@@ -92,6 +92,7 @@ export interface Likes {
 export interface TextMessageMetadata {
     likes: Likes
     tagged_users_read: TaggedUsersRead
+    reports: string[]
 }
 
 export type TaggedUsersRead = { [gid: number]: boolean }
