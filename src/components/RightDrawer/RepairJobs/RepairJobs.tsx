@@ -1,20 +1,16 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import FlipMove from "react-flip-move"
-import { ClipThing } from "../.."
-import { EmptyWarMachinesPNG, WarMachineIconPNG } from "../../../assets"
+import { EmptyWarMachinesPNG } from "../../../assets"
 import { useAuth } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
-import { useArray, useToggle, useUrlQuery } from "../../../hooks"
+import { useArray } from "../../../hooks"
 import { useGameServerSubscription } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { RepairJob } from "../../../types/jobs"
 import { SortTypeLabel } from "../../../types/marketplace"
-import { PageHeader } from "../../Common/PageHeader"
-import { RangeFilter } from "../../Common/SortAndFilters/RangeFilterSection"
-import { SortAndFilters } from "../../Common/SortAndFilters/SortAndFilters"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { DoRepairModal } from "./DoRepairModal"
 import { RepairJobItem } from "./RepairJobItem"
@@ -30,7 +26,6 @@ const sortOptions = [
 
 export const RepairJobs = () => {
     const { userID } = useAuth()
-    const [query, updateQuery] = useUrlQuery()
     const theme = useTheme()
     const [repairJobModal, setRepairJobModal] = useState<RepairJob>()
 
@@ -39,15 +34,7 @@ export const RepairJobs = () => {
     const [repairJobsRender, setRepairJobsRender] = useState<RepairJob[]>([])
 
     // Filters and sorts
-    const [isFiltersExpanded, toggleIsFiltersExpanded] = useToggle(localStorage.getItem("isRepairJobsFiltersExpanded") === "true")
-    const [sort, setSort] = useState<string>(query.get("sort") || SortTypeLabel.RewardAmountHighest)
-    const [rewardRanges, setRewardRanges] = useState<(number | undefined)[]>(
-        (query.get("rewardRanges") || undefined)?.split("||").map((p) => (p ? parseInt(p) : undefined)) || [undefined, undefined],
-    )
-
-    useEffect(() => {
-        localStorage.setItem("isRepairJobsFiltersExpanded", isFiltersExpanded.toString())
-    }, [isFiltersExpanded])
+    const [sort, setSort] = useState<string>(SortTypeLabel.RewardAmountHighest)
 
     useGameServerSubscription<RepairJob[]>(
         {
@@ -76,26 +63,9 @@ export const RepairJobs = () => {
         },
     )
 
-    // Filters
-    const rewardRangeFilter = useRef<RangeFilter>({
-        label: "REWARD PER BLOCK",
-        initialValue: rewardRanges,
-        initialExpanded: true,
-        onSetValue: (value: (number | undefined)[]) => {
-            setRewardRanges(value)
-        },
-    })
-
     // Apply filter and sorting
     useEffect(() => {
-        const filtered = repairJobs.filter((rj) => {
-            const rewardPerBlock = new BigNumber(rj.sups_worth_per_block).shiftedBy(-18).toNumber()
-            if (rewardRanges && rewardRanges[0] !== undefined && rewardPerBlock < rewardRanges[0]) return false
-            if (rewardRanges && rewardRanges[1] !== undefined && rewardPerBlock > rewardRanges[1]) return false
-            return true
-        })
-
-        let sorted = filtered
+        let sorted = [...repairJobs]
         if (sort === SortTypeLabel.EndTimeEndingLast) sorted = sorted.sort((a, b) => (a.expires_at < b.expires_at ? 1 : -1))
         if (sort === SortTypeLabel.EndTimeEndingSoon) sorted = sorted.sort((a, b) => (a.expires_at > b.expires_at ? 1 : -1))
         if (sort === SortTypeLabel.CreateTimeNewestFirst) sorted = sorted.sort((a, b) => (a.created_at < b.created_at ? 1 : -1))
@@ -106,19 +76,14 @@ export const RepairJobs = () => {
             sorted = sorted.sort((a, b) => (new BigNumber(a.sups_worth_per_block).isGreaterThan(new BigNumber(b.sups_worth_per_block)) ? 1 : -1))
 
         setRepairJobsRender(sorted)
-
-        updateQuery({
-            sort,
-            rewardRanges: rewardRanges.join("||"),
-        })
-    }, [sort, rewardRanges, updateQuery, setRepairJobsRender, repairJobs])
+    }, [sort, setRepairJobsRender, repairJobs])
 
     const content = useMemo(() => {
         if (!repairJobsRender) {
             return (
                 <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                     <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
-                        <CircularProgress size="3rem" sx={{ color: theme.factionTheme.primary }} />
+                        <CircularProgress size="2.8rem" sx={{ color: theme.factionTheme.primary }} />
                     </Stack>
                 </Stack>
             )
@@ -153,7 +118,7 @@ export const RepairJobs = () => {
                     <Box
                         sx={{
                             width: "80%",
-                            height: "16rem",
+                            height: "10rem",
                             opacity: 0.7,
                             filter: "grayscale(100%)",
                             background: `url(${EmptyWarMachinesPNG})`,
@@ -163,6 +128,7 @@ export const RepairJobs = () => {
                         }}
                     />
                     <Typography
+                        variant="body2"
                         sx={{
                             px: "1.28rem",
                             pt: "1.28rem",
@@ -180,63 +146,39 @@ export const RepairJobs = () => {
 
     return (
         <>
-            <Stack direction="row" sx={{ height: "100%" }}>
-                <SortAndFilters rangeFilters={[rewardRangeFilter.current]} isExpanded={isFiltersExpanded} />
+            <Stack sx={{ position: "relative", height: "100%", backgroundColor: theme.factionTheme.background }}>
+                <Box sx={{ backgroundColor: theme.factionTheme.primary }}>
+                    <TotalAndPageSizeOptions sortOptions={sortOptions} selectedSort={sort} onSetSort={setSort} />
+                </Box>
 
-                <ClipThing
-                    clipSize="10px"
-                    border={{
-                        borderColor: theme.factionTheme.primary,
-                        borderThickness: ".3rem",
-                    }}
-                    opacity={0.7}
-                    backgroundColor={theme.factionTheme.background}
-                    sx={{ height: "100%", flex: 1 }}
-                >
-                    <Stack sx={{ position: "relative", height: "100%" }}>
-                        <PageHeader title="REPAIR JOBS" description="Damaged items will be sent here by the mech owners." imageUrl={WarMachineIconPNG} />
+                <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
+                    <Box
+                        sx={{
+                            ml: ".8rem",
+                            mr: ".4rem",
+                            pr: ".4rem",
+                            my: ".6rem",
+                            flex: 1,
+                            overflowY: "auto",
+                            overflowX: "hidden",
+                            direction: "ltr",
 
-                        <TotalAndPageSizeOptions
-                            countItems={repairJobsRender?.length}
-                            totalItems={repairJobs.length}
-                            pageSizeOptions={[10, 20, 30]}
-                            sortOptions={sortOptions}
-                            selectedSort={sort}
-                            onSetSort={setSort}
-                            isFiltersExpanded={isFiltersExpanded}
-                            toggleIsFiltersExpanded={toggleIsFiltersExpanded}
-                        />
-
-                        <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
-                            <Box
-                                sx={{
-                                    ml: "1.9rem",
-                                    mr: ".5rem",
-                                    pr: "1.4rem",
-                                    my: "1rem",
-                                    flex: 1,
-                                    overflowY: "auto",
-                                    overflowX: "hidden",
-                                    direction: "ltr",
-
-                                    "::-webkit-scrollbar": {
-                                        width: ".4rem",
-                                    },
-                                    "::-webkit-scrollbar-track": {
-                                        background: "#FFFFFF15",
-                                        borderRadius: 3,
-                                    },
-                                    "::-webkit-scrollbar-thumb": {
-                                        background: theme.factionTheme.primary,
-                                        borderRadius: 3,
-                                    },
-                                }}
-                            >
-                                {content}
-                            </Box>
-                        </Stack>
-                    </Stack>
-                </ClipThing>
+                            "::-webkit-scrollbar": {
+                                width: ".4rem",
+                            },
+                            "::-webkit-scrollbar-track": {
+                                background: "#FFFFFF15",
+                                borderRadius: 3,
+                            },
+                            "::-webkit-scrollbar-thumb": {
+                                background: theme.factionTheme.primary,
+                                borderRadius: 3,
+                            },
+                        }}
+                    >
+                        {content}
+                    </Box>
+                </Stack>
             </Stack>
 
             {repairJobModal && <DoRepairModal repairJob={repairJobModal} open={!!repairJobModal} onClose={() => setRepairJobModal(undefined)} />}

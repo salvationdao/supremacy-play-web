@@ -13,13 +13,11 @@ import { General } from "../../Marketplace/Common/MarketItem/General"
 
 export const RepairJobItem = ({
     repairJob,
-    isGridView,
     removeByID,
     repairJobModal,
     setRepairJobModal,
 }: {
     repairJob: RepairJob
-    isGridView?: boolean
     removeByID: (id: string) => void
     repairJobModal?: RepairJob
     setRepairJobModal: React.Dispatch<React.SetStateAction<RepairJob | undefined>>
@@ -57,34 +55,26 @@ export const RepairJobItem = ({
                     },
                     backgroundColor: backgroundColor,
                     opacity: 0.9,
-                    border: { isFancy: !isGridView, borderColor: primaryColor, borderThickness: ".25rem" },
+                    border: { borderColor: primaryColor, borderThickness: ".15rem" },
                     sx: { position: "relative", height: "100%" },
                 }}
-                sx={{ color: primaryColor, textAlign: "start", height: "100%", ":hover": { opacity: 1 } }}
+                sx={{ p: 0, color: primaryColor, textAlign: "start", height: "100%", ":hover": { opacity: 1 } }}
                 onClick={() => !isFinished && setRepairJobModal(repairJob)}
             >
-                <Box
+                <Stack
+                    spacing=".8rem"
                     sx={{
                         position: "relative",
                         height: "100%",
-                        p: isGridView ? ".5rem .6rem" : ".1rem .3rem",
-                        display: isGridView ? "block" : "grid",
-                        gridTemplateRows: "7rem",
-                        gridTemplateColumns: `minmax(38rem, auto) 20rem 20rem 32rem 32rem`,
-                        gap: "1.4rem",
-                        ...(isGridView
-                            ? {
-                                  "&>*:not(:last-child)": {
-                                      mb: "1rem",
-                                  },
-                              }
-                            : {}),
+                        p: "1rem 1.5rem",
+                        background: (theme) => `linear-gradient(#00000010 26%, ${theme.factionTheme.primary}20)`,
                     }}
                 >
-                    <Stack spacing="1.8rem" direction="row" alignItems="center" sx={{ pl: ".5rem" }}>
-                        <SvgCubes size="3.2rem" />
-                        <Stack spacing=".6rem">
+                    <Stack spacing="1.5rem" direction="row" alignItems="center" sx={{ pl: ".5rem" }}>
+                        <SvgCubes size="2.8rem" />
+                        <Stack>
                             <Typography
+                                variant="body2"
                                 sx={{
                                     fontFamily: fonts.nostromoBlack,
                                     display: "-webkit-box",
@@ -98,18 +88,18 @@ export const RepairJobItem = ({
                             >
                                 <span>{remainDamagedBlocks}</span> BLOCKS REMAINING
                             </Typography>
-                            <RepairBlocks defaultBlocks={repairJob.blocks_required_repair} remainDamagedBlocks={remainDamagedBlocks} hideNumber />
+                            <RepairBlocks size={7} defaultBlocks={repairJob.blocks_required_repair} remainDamagedBlocks={remainDamagedBlocks} hideNumber />
                         </Stack>
                     </Stack>
 
                     <General
-                        isGridView={isGridView}
+                        isGridView={true}
                         title="ACTIVE WORKERS"
                         text={repairJob.working_agent_count.toString()}
                         textColor={repairJob.working_agent_count <= 3 ? colors.green : colors.orange}
                     />
 
-                    <General isGridView={isGridView} title="REWARD">
+                    <General isGridView={true} title="REWARD">
                         <Stack direction="row" alignItems="center">
                             <SvgSupToken size="1.8rem" fill={colors.yellow} />
                             <Typography
@@ -128,7 +118,7 @@ export const RepairJobItem = ({
                         </Stack>
                     </General>
 
-                    <General isGridView={isGridView} title="JOB OWNER">
+                    <General isGridView={true} title="JOB OWNER">
                         <Box>
                             <Player player={repairJob.job_owner} />
                             {repairJob.offered_by_id === userID && <Typography sx={{ display: "inline", color: colors.neonBlue }}>&nbsp;(YOU)</Typography>}
@@ -137,15 +127,15 @@ export const RepairJobItem = ({
 
                     {isFinished ? (
                         <General
-                            isGridView={isGridView}
+                            isGridView={true}
                             title="TIME LEFT"
                             text={repairJob ? `JOB ${repairJob.finished_reason}` : "EXPIRED"}
                             textColor={colors.lightGrey}
                         />
                     ) : (
-                        <CountdownGeneral isGridView={isGridView} endTime={repairJob.expires_at} />
+                        <CountdownGeneral isGridView={true} endTime={repairJob.expires_at} />
                     )}
-                </Box>
+                </Stack>
 
                 <Box
                     sx={{

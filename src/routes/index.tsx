@@ -1,13 +1,13 @@
 import { Box } from "@mui/system"
-import { SvgChat, SvgDamage1, SvgHistoryClock } from "../assets"
+import { SvgChat, SvgDamage1, SvgHistoryClock, SvgRepair } from "../assets"
 import { BattleArena } from "../components/LeftDrawer/BattleArena/BattleArena"
 import { BattleEndScreen } from "../components/LeftDrawer/BattleEndScreen/BattleEndScreen"
 import { PlayerProfilePage } from "../components/PublicProfile/PlayerProfile"
 import { LiveChat } from "../components/RightDrawer/LiveChat/LiveChat"
 import { PlayerList } from "../components/RightDrawer/PlayerList/PlayerList"
+import { RepairJobs } from "../components/RightDrawer/RepairJobs/RepairJobs"
 import { BATTLE_ARENA_OPEN, IS_TESTING_MODE } from "../constants"
 import { BattleArenaPage, BillingHistoryPage, ClaimPage, HangarPage, MarketplacePage, NotFoundPage } from "../pages"
-import { JobsPage } from "../pages/JobsPage"
 import { LeaderboardPage } from "../pages/LeaderboardPage"
 import { MarketplaceItemPage } from "../pages/MarketplaceItemPage"
 import { MarketplaceSellPage } from "../pages/MarketplaceSellPage"
@@ -171,22 +171,6 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         enable: true,
     },
 
-    // Jobs
-    jobs: {
-        id: "jobs",
-        path: "/jobs/:type?",
-        exact: true,
-        Component: JobsPage,
-        requireAuth: true,
-        requireFaction: true,
-        navLink: {
-            enable: true,
-            label: "Jobs",
-        },
-        matchNavLinkID: "jobs",
-        enable: true,
-    },
-
     // FIAT related
     billing_history: {
         id: "billing_history",
@@ -288,6 +272,14 @@ export const RIGHT_DRAWER_MAP: { [name: string]: SideTabsStruct } = {
         ),
         label: "Active Players",
         Component: PlayerList,
+        requireAuth: true,
+        mountAllTime: false,
+    },
+    repairs: {
+        id: "repairs",
+        icon: <SvgRepair size="1.1rem" sx={{ pt: ".3rem" }} />,
+        label: "Repairs",
+        Component: RepairJobs,
         requireAuth: true,
         mountAllTime: false,
     },

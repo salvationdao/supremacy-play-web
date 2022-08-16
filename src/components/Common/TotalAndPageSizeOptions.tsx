@@ -153,6 +153,7 @@ export const TotalAndPageSizeOptions = ({
                         <Select
                             sx={{
                                 width: "100%",
+                                backgroundColor: `${theme.factionTheme.primary}50`,
                                 borderRadius: 0.5,
                                 "&:hover": {
                                     backgroundColor: primaryColor,
