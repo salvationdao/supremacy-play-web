@@ -3,7 +3,7 @@ import { useCallback, useMemo, useState } from "react"
 import { ClipThing } from "../../.."
 import { SvgCubes, SvgSkin, SvgStats } from "../../../../assets"
 import { BATTLE_ARENA_OPEN } from "../../../../constants"
-import { useSnackbar } from "../../../../containers"
+import { useGlobalNotifications } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
 import { getRarityDeets } from "../../../../helpers"
 import { useGameServerCommandsUser, useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
@@ -81,7 +81,7 @@ export const WarMachineHangarDetailsInner = ({
     setRentalMechModalOpen,
     setRepairMechModalOpen,
 }: WarMachineHangarDetailsInnerProps) => {
-    const { newSnackbarMessage } = useSnackbar()
+    const { newSnackbarMessage } = useGlobalNotifications()
     const theme = useTheme()
     const { send: userSend } = useGameServerCommandsUser("/user_commander")
     const [mechDetails, setMechDetails] = useState<MechDetails>()

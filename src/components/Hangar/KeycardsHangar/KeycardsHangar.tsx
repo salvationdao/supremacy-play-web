@@ -1,6 +1,5 @@
 import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { useLocation } from "react-router-dom"
 import { ClipThing, FancyButton } from "../.."
 import { KeycardPNG } from "../../../assets"
 import { PASSPORT_WEB } from "../../../constants"
@@ -28,7 +27,6 @@ interface GetAssetsResponse {
 }
 
 export const KeycardsHangar = () => {
-    const location = useLocation()
     const [query, updateQuery] = useUrlQuery()
     const { user } = useAuth()
     const { send } = useGameServerCommandsUser("/user_commander")
@@ -159,7 +157,7 @@ export const KeycardsHangar = () => {
                     </Typography>
 
                     <FancyButton
-                        to={`/marketplace/keycards${location.hash}`}
+                        to={`/marketplace/keycards`}
                         clipThingsProps={{
                             clipSize: "9px",
                             backgroundColor: theme.factionTheme.primary,
@@ -182,7 +180,7 @@ export const KeycardsHangar = () => {
                 </Stack>
             </Stack>
         )
-    }, [loadError, keycards, isLoading, theme.factionTheme.primary, theme.factionTheme.secondary, location.hash])
+    }, [loadError, keycards, isLoading, theme.factionTheme.primary, theme.factionTheme.secondary])
 
     return (
         <ClipThing

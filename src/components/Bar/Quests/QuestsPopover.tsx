@@ -1,7 +1,7 @@
-import { Box, IconButton, Popover, Stack, Typography } from "@mui/material"
-import { MutableRefObject, useEffect } from "react"
+import { Accordion, AccordionDetails, AccordionSummary, Box, IconButton, Popover, Stack, Typography } from "@mui/material"
+import { MutableRefObject, useEffect, useMemo } from "react"
 import { ClipThing } from "../.."
-import { SvgClose } from "../../../assets"
+import { SvgClose, SvgExpandMoreIcon } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { useToggle } from "../../../hooks"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
@@ -25,6 +25,8 @@ export const QuestsPopover = ({
 }) => {
     const theme = useTheme()
     const [localOpen, toggleLocalOpen] = useToggle(open)
+
+    const roundNames = useMemo(() => questStats.reduce<string[]>((acc, qs) => (qs.round_name in acc ? acc : [...acc, qs.round_name]), []), [questStats])
 
     useEffect(() => {
         if (!localOpen) {
@@ -77,19 +79,34 @@ export const QuestsPopover = ({
                         </i>
                     </Typography>
 
-                    <Stack spacing=".7rem">
-                        {questStats.map((qs) => {
-                            const progress = questProgressions?.find((qp) => qp.quest_id === qs.id)
+                    {roundNames.length > 0 &&
+                        roundNames.map((roundName) => {
                             return (
-                                <QuestItem
-                                    key={`qs-key-${qs.id}-${progress?.current}`}
-                                    questStat={qs}
-                                    progress={progress}
-                                    showConfetti={confetti.findIndex((i) => i === qs.id) >= 0}
-                                />
+                                <Accordion key={roundName}>
+                                    <AccordionSummary expandIcon={<SvgExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header">
+                                        <Typography>{roundName}</Typography>
+                                    </AccordionSummary>
+                                    <AccordionDetails>
+                                        <Stack spacing=".7rem">
+                                            {questStats
+                                                .filter((qs) => qs.round_name === roundName)
+                                                .map((qs) => {
+                                                    const progress = questProgressions?.find((qp) => qp.quest_id === qs.id)
+
+                                                    return (
+                                                        <QuestItem
+                                                            key={`qs-key-${qs.id}-${progress?.current}`}
+                                                            questStat={qs}
+                                                            progress={progress}
+                                                            showConfetti={confetti.findIndex((i) => i === qs.id) >= 0}
+                                                        />
+                                                    )
+                                                })}
+                                        </Stack>
+                                    </AccordionDetails>
+                                </Accordion>
                             )
                         })}
-                    </Stack>
 
                     <IconButton size="small" onClick={() => toggleLocalOpen(false)} sx={{ position: "absolute", top: 0, right: ".2rem" }}>
                         <SvgClose size="2.6rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />

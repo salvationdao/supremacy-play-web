@@ -1,11 +1,10 @@
 import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { useLocation } from "react-router-dom"
 import { useParameterizedQuery } from "react-fetching-library"
-import { GetWeaponMaxStats } from "../../../fetching"
 import { ClipThing, FancyButton } from "../.."
 import { EmptyWarMachinesPNG, WarMachineIconPNG } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
+import { GetWeaponMaxStats } from "../../../fetching"
 import { getRarityDeets, getWeaponTypeColor, parseString } from "../../../helpers"
 import { usePagination, useToggle, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
@@ -35,7 +34,6 @@ const sortOptions = [
 ]
 
 export const WeaponsMarket = () => {
-    const location = useLocation()
     const [query, updateQuery] = useUrlQuery()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const theme = useTheme()
@@ -648,7 +646,7 @@ export const WeaponsMarket = () => {
                                         sx: { position: "relative" },
                                     }}
                                     sx={{ px: "1.6rem", py: ".6rem", color: "#FFFFFF" }}
-                                    to={`/marketplace/sell${location.hash}`}
+                                    to={`/marketplace/sell`}
                                 >
                                     <Typography
                                         variant="caption"

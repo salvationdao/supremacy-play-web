@@ -124,8 +124,6 @@ export enum siteZIndex {
 
     // Stream site top elements
     Bar = 199,
-    LeftDrawer = 198,
-    RightDrawer = 197,
     RoutePage = 101,
 
     // Battle areana

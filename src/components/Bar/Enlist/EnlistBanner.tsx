@@ -54,25 +54,6 @@ const EnlistBannerInner = ({ userID, user, battleIdentifier, getFaction, userSta
     }
 
     return (
-        // <BarExpandable
-        //     noDivider
-        //     barName={"enlist"}
-        //     iconComponent={
-        //         <Box
-        //             sx={{
-        //                 width: "2.8rem",
-        //                 height: "2.8rem",
-        //                 backgroundImage: `url(${getFaction(user.faction_id).logo_url})`,
-        //                 backgroundRepeat: "no-repeat",
-        //                 backgroundPosition: "center",
-        //                 backgroundSize: "contain",
-        //                 backgroundColor: theme.factionTheme.primary,
-        //                 borderRadius: 1,
-        //                 border: `${theme.factionTheme.primary} 2px solid`,
-        //             }}
-        //         />
-        //     }
-        // >
         <Box
             sx={{
                 mx: "1.2rem",
@@ -144,7 +125,6 @@ const EnlistBannerInner = ({ userID, user, battleIdentifier, getFaction, userSta
                 {rankDeets && <BannerInfo title={`RANK`} tooltip={rankDeets.desc} content={rankDeets.title} PrefixSvg={rankDeets.icon} />}
             </Stack>
         </Box>
-        // </BarExpandable>
     )
 }
 

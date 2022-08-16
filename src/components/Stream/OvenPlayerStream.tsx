@@ -1,7 +1,7 @@
 import { Stack } from "@mui/material"
 import OvenPlayer from "ovenplayer"
 import { useEffect, useRef } from "react"
-import { useSnackbar, useStream } from "../../containers"
+import { useGlobalNotifications, useStream } from "../../containers"
 import { parseString } from "../../helpers"
 import { siteZIndex } from "../../theme/theme"
 import { StreamService } from "../../types"
@@ -70,7 +70,7 @@ interface OvenPlayerInstance {
 }
 
 export const OvenplayerStream = () => {
-    const { newSnackbarMessage } = useSnackbar()
+    const { newSnackbarMessage } = useGlobalNotifications()
     const { isMute, volume, currentStream, setCurrentPlayingStreamHost } = useStream()
     const ovenPlayer = useRef<OvenPlayerInstance>()
 

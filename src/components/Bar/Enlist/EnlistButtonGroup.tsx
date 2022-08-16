@@ -15,25 +15,6 @@ export const EnlistButtonGroup = () => {
     }
 
     return (
-        // <BarExpandable
-        //     noDivider
-        //     barName={"enlist"}
-        //     iconComponent={
-        //         <Box
-        //             sx={{
-        //                 width: "2.8rem",
-        //                 height: "2.8rem",
-        //                 backgroundImage: `url(${RedMountainLogo})`,
-        //                 backgroundRepeat: "no-repeat",
-        //                 backgroundPosition: "center",
-        //                 backgroundSize: "contain",
-        //                 backgroundColor: "#C52A1F",
-        //                 borderRadius: 1,
-        //                 border: `${"#C52A1F"} 2px solid`,
-        //             }}
-        //         />
-        //     }
-        // >
         <Stack direction="row" alignItems="center" sx={{ mx: "1.2rem", height: "100%" }}>
             <Stack
                 direction="row"
@@ -77,6 +58,5 @@ export const EnlistButtonGroup = () => {
                 }}
             />
         </Stack>
-        // </BarExpandable>
     )
 }

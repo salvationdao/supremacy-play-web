@@ -1,6 +1,6 @@
 import { Box, Fade, Stack, Tab, Tabs } from "@mui/material"
 import { SyntheticEvent, useCallback, useEffect, useState } from "react"
-import { useHistory, useLocation, useParams } from "react-router-dom"
+import { useHistory, useParams } from "react-router-dom"
 import { HangarBg } from "../assets"
 import { ClipThing } from "../components"
 import { MysteryCrateBanner } from "../components/Common/PageHeaderBanners/MysteryCrateBanner"
@@ -24,7 +24,6 @@ export enum HANGAR_TABS {
 
 export const HangarPage = () => {
     const theme = useTheme()
-    const location = useLocation()
     const history = useHistory()
     const { type } = useParams<{ type: HANGAR_TABS }>()
     const [currentValue, setCurrentValue] = useState<HANGAR_TABS>()
@@ -32,15 +31,15 @@ export const HangarPage = () => {
     // Make sure that the param route is correct, fix it if invalid
     useEffect(() => {
         if (Object.values(HANGAR_TABS).includes(type)) return setCurrentValue(type)
-        history.replace(`${ROUTES_MAP.fleet.path.replace(":type", HANGAR_TABS.WarMachines)}${location.hash}`)
-    }, [history, location.hash, location.pathname, type])
+        history.replace(`${ROUTES_MAP.fleet.path.replace(":type", HANGAR_TABS.WarMachines)}`)
+    }, [history, type])
 
     const handleChange = useCallback(
         (event: SyntheticEvent, newValue: HANGAR_TABS) => {
             setCurrentValue(newValue)
-            history.push(`${ROUTES_MAP.fleet.path.replace(":type", newValue)}${location.hash}`)
+            history.push(`${ROUTES_MAP.fleet.path.replace(":type", newValue)}`)
         },
-        [history, location.hash],
+        [history],
     )
 
     if (!currentValue) return null

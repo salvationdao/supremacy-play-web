@@ -1,6 +1,6 @@
 import { Stack } from "@mui/material"
 import { useCallback, useEffect, useRef, useState } from "react"
-import { useSnackbar, useStream } from "../../containers"
+import { useGlobalNotifications, useStream } from "../../containers"
 import { parseString } from "../../helpers"
 import { siteZIndex } from "../../theme/theme"
 import { StreamService } from "../../types"
@@ -13,7 +13,7 @@ declare global {
 }
 
 export const SLPDStream = () => {
-    const { newSnackbarMessage } = useSnackbar()
+    const { newSnackbarMessage } = useGlobalNotifications()
     const { isMute, volume, currentStream, setCurrentPlayingStreamHost, setResolutions, setSelectedResolution, selectedResolution, currentPlayingStreamHost } =
         useStream()
     const [isScriptLoaded, setIsScriptLoaded] = useState(false)

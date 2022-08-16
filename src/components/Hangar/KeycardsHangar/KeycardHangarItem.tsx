@@ -1,5 +1,4 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useLocation } from "react-router-dom"
 import { FancyButton } from "../.."
 import { IS_TESTING_MODE } from "../../../constants"
 import { useTheme } from "../../../containers/theme"
@@ -27,7 +26,6 @@ export const KeycardHangarItem = ({ keycard }: MysteryCrateStoreItemProps) => {
 }
 
 export const KeycardHangarItemInner = ({ keycard, itemSaleID }: MysteryCrateStoreItemProps) => {
-    const location = useLocation()
     const theme = useTheme()
 
     const primaryColor = theme.factionTheme.primary
@@ -87,8 +85,8 @@ export const KeycardHangarItemInner = ({ keycard, itemSaleID }: MysteryCrateStor
                                 <FancyButton
                                     to={
                                         itemSaleID
-                                            ? `/marketplace/${MARKETPLACE_TABS.Keycards}/${itemSaleID}${location.hash}`
-                                            : `/marketplace/sell?itemType=${ItemType.Keycards}&assetID=${keycard.id}${location.hash}`
+                                            ? `/marketplace/${MARKETPLACE_TABS.Keycards}/${itemSaleID}`
+                                            : `/marketplace/sell?itemType=${ItemType.Keycards}&assetID=${keycard.id}`
                                     }
                                     clipThingsProps={{
                                         clipSize: "5px",

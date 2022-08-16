@@ -7,7 +7,7 @@ import { useTheme } from "../../../../containers/theme"
 import { FancyButton } from "../../../Common/FancyButton"
 import { GameServerKeys } from "../../../../keys"
 import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
-import { useSnackbar } from "../../../../containers"
+import { useGlobalNotifications } from "../../../../containers"
 import { useToggle } from "../../../../hooks"
 
 interface ReportModalProps {
@@ -35,7 +35,7 @@ enum reasons {
 
 export const ReportModal = ({ message, reportModalOpen, setReportModalOpen }: ReportModalProps) => {
     const theme = useTheme()
-    const { newSnackbarMessage } = useSnackbar()
+    const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsUser("/user_commander")
 
     const [reason, setReason] = useState<string>(reasons.OffensiveLanguage)
