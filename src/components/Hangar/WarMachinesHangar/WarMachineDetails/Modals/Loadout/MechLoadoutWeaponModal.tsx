@@ -54,6 +54,7 @@ export const MechLoadoutWeaponModal = ({ onClose }: MechLoadoutWeaponModalProps)
     const [sortFilterReRender, toggleSortFilterReRender] = useToggle()
 
     const [isFiltersExpanded, toggleIsFiltersExpanded] = useToggle()
+    const filtersContainerEl = useRef<HTMLElement>()
     const [search, setSearch] = useState("")
     const [weaponTypes, setWeaponTypes] = useState<string[]>([])
     const [rarities, setRarities] = useState<string[]>([])
@@ -512,6 +513,7 @@ export const MechLoadoutWeaponModal = ({ onClose }: MechLoadoutWeaponModalProps)
                 }}
             >
                 <ClipThing
+                ref={filtersContainerEl}
                     clipSize="10px"
                     border={{
                         borderColor: theme.factionTheme.primary,
@@ -553,6 +555,10 @@ export const MechLoadoutWeaponModal = ({ onClose }: MechLoadoutWeaponModalProps)
                             changePage={changePage}
                             isExpanded={isFiltersExpanded}
                             width="25rem"
+                            drawer={{
+                                container: filtersContainerEl.current,
+                                onClose: () => toggleIsFiltersExpanded(false)
+                            }}
                         />
                         <Stack flex={1}>
                             <PageHeader title="Equip a weapon" description="Select a weapon to equip on your mech." />
