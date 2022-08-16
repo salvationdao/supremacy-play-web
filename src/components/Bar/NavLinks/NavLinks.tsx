@@ -1,9 +1,10 @@
 import { Stack, Typography, useMediaQuery } from "@mui/material"
-import { Box } from "@mui/system"
-import { Link, useRouteMatch } from "react-router-dom"
+import { useRouteMatch } from "react-router-dom"
 import { useAuth } from "../../../containers"
+import { useTheme } from "../../../containers/theme"
 import { ROUTES_ARRAY } from "../../../routes"
 import { fonts } from "../../../theme/theme"
+import { FancyButton } from "../../Common/FancyButton"
 
 export const HIDE_NAV_LINKS_WIDTH = 1550
 
@@ -21,7 +22,7 @@ export const NavLinks = () => {
     if (hideNavLinks) return null
 
     return (
-        <Stack direction="row" alignItems="center" spacing="1.5rem" sx={{ height: "100%", mx: "2rem" }} divider={<Divider />}>
+        <Stack direction="row" alignItems="center" sx={{ height: "100%", mx: "2rem" }}>
             {ROUTES_ARRAY.map((r) => {
                 if (!r.enable || !r.navLink || !r.navLink.enable || ((r.requireAuth || r.requireFaction) && !userID)) return null
                 const { id } = r
@@ -34,43 +35,28 @@ export const NavLinks = () => {
     )
 }
 
-const Divider = () => {
-    return (
-        <Stack direction="row" alignItems="center" spacing="2px" sx={{ height: "100%", transform: "skewX(-20deg)", pb: "3px" }}>
-            <Box sx={{ height: "12px", width: "2px", backgroundColor: "#FFFFFF40" }} />
-            <Box sx={{ height: "12px", width: "2px", backgroundColor: "#FFFFFF40" }} />
-        </Stack>
-    )
-}
-
 const NavLink = ({ isActive, label, to }: { isActive: boolean; label: string; to: string }) => {
+    const theme = useTheme()
+
+    const primaryColor = theme.factionTheme.primary
+    const secondaryColor = isActive ? theme.factionTheme.secondary : "#FFFFFF"
+
     return (
-        <Link to={to} style={{ height: "100%", position: "relative" }}>
-            <Stack
-                alignItems="center"
-                justifyContent="center"
-                sx={{
-                    position: "relative",
-                    height: "100%",
-                    cursor: "pointer",
-                    opacity: isActive ? 1 : 0.5,
-                    transition: "all .1s",
-                    ":hover": {
-                        opacity: 1,
-                    },
-                }}
-            >
-                <Typography
-                    variant="subtitle1"
-                    sx={{
-                        textAlign: "center",
-                        fontFamily: isActive ? fonts.nostromoBlack : fonts.nostromoBold,
-                        whiteSpace: "nowrap",
-                    }}
-                >
-                    {label}
-                </Typography>
-            </Stack>
-        </Link>
+        <FancyButton
+            clipThingsProps={{
+                clipSize: "8px",
+                clipSlantSize: "3px",
+                backgroundColor: primaryColor,
+                opacity: isActive ? 1 : 0.01,
+                border: { borderColor: primaryColor, borderThickness: "1px" },
+                sx: { position: "relative", height: "3rem" },
+            }}
+            sx={{ px: "1.6rem", py: ".6rem", color: secondaryColor, height: "100%" }}
+            to={to}
+        >
+            <Typography variant="subtitle1" sx={{ textAlign: "center", fontFamily: fonts.nostromoBlack, color: secondaryColor }}>
+                {label}
+            </Typography>
+        </FancyButton>
     )
 }

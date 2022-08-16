@@ -135,7 +135,7 @@ const BarContent = ({ userID, user }: { userID?: string; user: User }) => {
                         clipSize: "6px",
                         backgroundColor: colors.neonBlue,
                         opacity: 1,
-                        border: { borderColor: colors.neonBlue, borderThickness: "2px" },
+                        border: { borderColor: colors.neonBlue, borderThickness: "1px" },
                         sx: { position: "relative", mx: "2rem" },
                     }}
                     sx={{ px: "1.2rem", py: 0, color: colors.darkestNeonBlue }}

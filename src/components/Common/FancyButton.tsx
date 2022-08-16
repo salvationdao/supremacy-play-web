@@ -1,4 +1,5 @@
 import LoadingButton, { LoadingButtonProps } from "@mui/lab/LoadingButton"
+import { Stack } from "@mui/material"
 import { Box, SxProps } from "@mui/system"
 import React, { HTMLAttributeAnchorTarget } from "react"
 import { Link } from "react-router-dom"
@@ -77,7 +78,7 @@ export const FancyButton = React.forwardRef(function FancyButton(
                 loading={loading}
                 {...props}
             >
-                <Box sx={{ pt: ".3rem", height: "100%", width: "100%", ...innerSx }}>
+                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", width: "100%", ...innerSx }}>
                     {to ? (
                         <Link to={to} target={target}>
                             {children}
@@ -89,7 +90,7 @@ export const FancyButton = React.forwardRef(function FancyButton(
                     ) : (
                         children
                     )}
-                </Box>
+                </Stack>
             </LoadingButton>
         </ClipThing>
     )

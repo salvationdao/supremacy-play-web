@@ -2,7 +2,6 @@ import { Stack, Typography } from "@mui/material"
 import { useCallback, useMemo, useState } from "react"
 import { FancyButton } from "../../.."
 import { useGlobalNotifications } from "../../../../containers"
-import { useTheme } from "../../../../containers/theme"
 import { getRarityDeets } from "../../../../helpers"
 import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
@@ -20,7 +19,6 @@ interface QuickDeployItemProps {
 
 export const QuickDeployItem = ({ mech }: QuickDeployItemProps) => {
     const { newSnackbarMessage } = useGlobalNotifications()
-    const theme = useTheme()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [mechDetails, setMechDetails] = useState<MechDetails>()
     const rarityDeets = useMemo(() => getRarityDeets(mech.tier || mechDetails?.tier || ""), [mech, mechDetails])
@@ -132,14 +130,12 @@ export const QuickDeployItem = ({ mech }: QuickDeployItemProps) => {
                                 },
                                 sx: { position: "relative" },
                             }}
-                            sx={{ px: "1rem", pt: 0, pb: ".1rem", color: theme.factionTheme.primary }}
+                            sx={{ px: "1rem", pt: 0, pb: ".1rem", color: "#FFFFFF" }}
                             onClick={onDeployQueue}
                         >
-                            <Stack direction="row" alignItems="center" spacing=".5rem">
-                                <Typography variant="subtitle2" sx={{ fontFamily: fonts.nostromoBlack }}>
-                                    DEPLOY
-                                </Typography>
-                            </Stack>
+                            <Typography variant="subtitle2" sx={{ fontFamily: fonts.nostromoBlack }}>
+                                DEPLOY
+                            </Typography>
                         </FancyButton>
                     )}
 

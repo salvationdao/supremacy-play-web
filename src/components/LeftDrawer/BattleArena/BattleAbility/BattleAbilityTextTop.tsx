@@ -87,27 +87,15 @@ const OptInButton = ({ disable, isOptedIn }: { disable: boolean; isOptedIn: bool
             clipThingsProps={{
                 clipSize: "5px",
                 backgroundColor: colors.green,
-                border: { isFancy: true, borderColor: colors.green },
+                border: { borderColor: colors.green, borderThickness: "1px" },
                 sx: { position: "relative" },
             }}
-            sx={{ px: "3rem", pt: ".4rem", pb: ".5rem", minWidth: "7rem", color: "#FFFFFF" }}
+            sx={{ px: "1rem", pt: 0, pb: ".1rem", minWidth: "7rem", color: "#FFFFFF" }}
             onClick={onTrigger}
         >
-            <Stack alignItems="center" justifyContent="center" direction="row">
-                <Typography
-                    variant="body2"
-                    sx={{
-                        lineHeight: 1,
-                        letterSpacing: ".6px",
-                        fontWeight: "fontWeightBold",
-                        whiteSpace: "nowrap",
-                        textTransform: "none",
-                        color: "#FFFFFF",
-                    }}
-                >
-                    {isOptedIn ? "OPTED IN" : "OPT IN"}
-                </Typography>
-            </Stack>
+            <Typography variant="subtitle2" sx={{ fontFamily: fonts.nostromoBlack }}>
+                {isOptedIn ? "OPTED IN" : "OPT IN"}
+            </Typography>
         </FancyButton>
     )
 }
