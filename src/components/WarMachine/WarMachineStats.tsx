@@ -19,6 +19,7 @@ const WarMachineStatsInner = () => {
     const theme = useTheme()
     const { warMachines, bribeStage, map, factionWarMachines, otherWarMachines, ownedMiniMechs } = useGame()
     const [isPoppedout, toggleIsPoppedout] = useToggle()
+    const addMiniMechParticipantId = 100
 
     // Temp hotfix ask james ****************************
     const [show, toggleShow] = useToggle(false)
@@ -128,7 +129,14 @@ const WarMachineStatsInner = () => {
                                                 <Divider orientation="horizontal" />
                                                 {ownedMiniMechs.map((mm) => (
                                                     <Box key={`${mm.participantID}`}>
-                                                        <WarMachineItem warMachine={mm} scale={0.8} transformOrigin="0 0" initialExpanded isPoppedout />
+                                                        <WarMachineItem
+                                                            warMachine={mm}
+                                                            scale={0.8}
+                                                            transformOrigin="0 0"
+                                                            label={mm.participantID - addMiniMechParticipantId}
+                                                            initialExpanded
+                                                            isPoppedout
+                                                        />
                                                     </Box>
                                                 ))}
                                             </>
@@ -163,7 +171,14 @@ const WarMachineStatsInner = () => {
 
                         <Box sx={{ display: "grid", gridTemplateColumns: "repeat(2, 50%)" }}>
                             {ownedMiniMechs.map((mm) => (
-                                <WarMachineItem key={`${mm.participantID}`} warMachine={mm} scale={0.5} transformOrigin="0 0" initialExpanded />
+                                <WarMachineItem
+                                    key={`${mm.participantID}`}
+                                    warMachine={mm}
+                                    scale={0.5}
+                                    label={mm.participantID - addMiniMechParticipantId}
+                                    transformOrigin="0 0"
+                                    initialExpanded
+                                />
                             ))}
                         </Box>
                     </Stack>
@@ -246,7 +261,12 @@ const WarMachineStatsInner = () => {
                             <HorizontalScrollContainer>
                                 <Stack spacing="-3rem" direction="row" alignItems="center" justifyContent="center" sx={{ px: ".6rem", py: ".6rem" }}>
                                     {ownedMiniMechs.map((mm) => (
-                                        <WarMachineItem key={`${mm.participantID}`} warMachine={mm} scale={0.6} />
+                                        <WarMachineItem
+                                            key={`${mm.participantID}`}
+                                            warMachine={mm}
+                                            label={mm.participantID - addMiniMechParticipantId}
+                                            scale={0.6}
+                                        />
                                     ))}
                                 </Stack>
                             </HorizontalScrollContainer>

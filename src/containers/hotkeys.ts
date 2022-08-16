@@ -1,13 +1,9 @@
 import { useCallback, useEffect, useState } from "react"
 import { createContainer } from "unstated-next"
-import { PlayerAbility } from "../types"
 
 //todo: Player Abilities hotkeys and custom hotkey maps
 
 export const HotkeyContainer = createContainer(() => {
-    //ability hot keys
-    const [shownPlayerAbilities, setShownPlayerAbilities] = useState<PlayerAbility[]>([])
-
     //records
     type hotkey = { [key: string]: () => void }
     const [hotkeyRecord, setHotkeyRecord] = useState<hotkey>({})
@@ -18,20 +14,30 @@ export const HotkeyContainer = createContainer(() => {
 
     const addToHotkeyRecord = useCallback(
         (isControlModified: boolean, key: string, value: () => void) => {
-            //if already exists, update and return
+            //keys often come from the index, return if it is more than 10
+            const numKey = parseInt(key)
+            if (numKey && numKey > 10) {
+                console.error("Cannot create key more than keyboard number value")
+            }
+            if (numKey === 10) {
+                key = "0"
+            }
+
             let setRecord = setHotkeyRecord
             let record = hotkeyRecord
+            //if modifying the shortcut with [Ctrl + int] set it to specified CTRL record
             if (isControlModified) {
                 setRecord = setControlHotkeyRecord
                 record = controlHotkeyRecord
             }
 
-            console.log("hit")
+            //if already exists, update and return
             if (record[key]) {
                 record[key] = value
                 return
             }
 
+            //else create record
             setRecord((prev) => {
                 return { ...prev, [key]: value }
             })
@@ -47,31 +53,6 @@ export const HotkeyContainer = createContainer(() => {
     const handleHotKey = useCallback(
         (e: KeyboardEvent) => {
             e.preventDefault()
-
-            //int = highlight faction mech
-            // const key = parseInt(e.key)
-            // if (key) {
-            //     //select mini mechs
-            //     if (e.ctrlKey) {
-            //         const mmID = key + addMiniMechParticipantId
-            //         const mmIndex = ownedMiniMechs.findIndex((w) => w.participantID === mmID)
-            //         if (mmIndex === -1) return
-            //         setHighlightedMechParticipantID(mmID)
-            //         return
-            //     }
-            //     if (key > factionWarMachines.length) return
-            //     setHighlightedMechParticipantID(factionWarMachines[key - 1]?.participantID)
-            //     return
-            // }
-            //
-            // //mech commander functions
-            // if (highlightedMechParticipantID) {
-            //     const w =
-            //         highlightedMechParticipantID < addMiniMechParticipantId
-            //             ? factionWarMachines.find((w) => w.ownedByID === user.id && w.participantID === highlightedMechParticipantID)
-            //             : ownedMiniMechs.find((w) => w.ownedByID === user.id && w.participantID === highlightedMechParticipantID)
-            //
-            //     if (!w || e.ctrlKey) return
 
             let handlePress = hotkeyRecord[e.key]
             if (e.ctrlKey) {
@@ -91,8 +72,6 @@ export const HotkeyContainer = createContainer(() => {
     }, [handleHotKey])
 
     return {
-        shownPlayerAbilities,
-        setShownPlayerAbilities,
         mechAbilityKey,
         addToHotkeyRecord,
     }
