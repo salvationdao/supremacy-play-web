@@ -43,6 +43,7 @@ export const BattleArena = () => {
             <Box
                 sx={{
                     position: "absolute",
+                    pointerEvents: "none",
                     top: 0,
                     left: 0,
                     width: "100%",
