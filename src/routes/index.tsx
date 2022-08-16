@@ -238,7 +238,7 @@ export const LEFT_DRAWER_MAP: { [name: string]: SideTabsStruct } = {
     },
     quick_deploy: {
         id: "quick_deploy",
-        icon: <SvgRobot size="1.2rem" sx={{ pt: ".3rem" }} />,
+        icon: <SvgRobot size="1.3rem" sx={{ pt: ".3rem" }} />,
         label: "Quick Deploy",
         Component: QuickDeploy,
         requireAuth: true,
@@ -247,7 +247,7 @@ export const LEFT_DRAWER_MAP: { [name: string]: SideTabsStruct } = {
     },
     previous_battle: {
         id: "previous_battle",
-        icon: <SvgHistoryClock size="1.4rem" sx={{ pt: ".3rem" }} />,
+        icon: <SvgHistoryClock size="1.3rem" sx={{ pt: ".3rem" }} />,
         label: "Previous Battle",
         Component: BattleEndScreen,
         requireAuth: false,

@@ -1,20 +1,21 @@
 import { Stack, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
-import { useAuth, useGlobalNotifications, useSupremacy } from "../../../containers"
+import { useGlobalNotifications, useSupremacy } from "../../../containers"
+import { useAuth } from "../../../containers/auth"
 import { useTheme } from "../../../containers/theme"
 import { useGameServerCommands } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { User } from "../../../types"
+import { LeaderboardRound, User } from "../../../types"
 import { CoolTable } from "../../Common/CoolTable"
 import { Player } from "../../Common/Player"
 
 interface RankItem {
     player: User
-    mechs_owned: number
+    total_block_repaired: number
 }
 
-export const PlayerMechsOwned = () => {
+export const PlayerRepairBlocks = ({ selectedRound }: { selectedRound?: LeaderboardRound }) => {
     const theme = useTheme()
     const { userID } = useAuth()
     const { getFaction } = useSupremacy()
@@ -31,13 +32,13 @@ export const PlayerMechsOwned = () => {
             try {
                 setIsLoading(true)
 
-                const resp = await send<RankItem[]>(GameServerKeys.GetPlayerMechsOwned)
+                const resp = await send<RankItem[]>(GameServerKeys.GetPlayerRepairBlocks, { round_id: selectedRound?.id })
 
                 if (!resp) return
                 setLoadError(undefined)
                 setRankItems(resp)
             } catch (e) {
-                const message = typeof e === "string" ? e : "Failed to player mechs owned."
+                const message = typeof e === "string" ? e : "Failed to player repair blocks."
                 setLoadError(message)
                 newSnackbarMessage(message, "error")
                 console.error(e)
@@ -45,12 +46,12 @@ export const PlayerMechsOwned = () => {
                 setIsLoading(false)
             }
         })()
-    }, [newSnackbarMessage, send])
+    }, [newSnackbarMessage, selectedRound?.id, send])
 
     return (
         <CoolTable
-            title="MOST MECHS OWNED"
-            tableHeadings={["TOP 100", "PLAYER", "FACTION", "MECHS OWNED"]}
+            title="MOST BLOCKS REPAIRED"
+            tableHeadings={["TOP 100", "PLAYER", "FACTION", "BLOCKS REPAIRED"]}
             alignments={["center", "left", "left", "center"]}
             widths={["19rem", "auto", "auto", "23rem"]}
             items={rankItems}
@@ -89,7 +90,7 @@ export const PlayerMechsOwned = () => {
 
                         <Stack key={4} direction="row" spacing=".4rem" alignItems="center" justifyContent="center">
                             <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
-                                {item.mechs_owned}
+                                {item.total_block_repaired}
                             </Typography>
                         </Stack>,
                     ],

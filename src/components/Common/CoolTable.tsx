@@ -175,7 +175,6 @@ export const CoolTable = <T,>({
                         display: "flex",
                         flexDirection: "column",
                         height: "100%",
-                        borderRadius: 0.5,
                         overflow: "hidden",
                         ".MuiTableRow-root": { height: "unset", display: "flex", alignItems: "center" },
                         ".MuiTableCell-root": { p: "1.2rem", display: "flex", alignItems: "center" },
@@ -221,8 +220,10 @@ export const CoolTable = <T,>({
                             overflow: "auto",
                             height: `calc(100% - ${title ? titleRowHeight : "0px"} - ${titleRowHeight} - ${paginationProps ? titleRowHeight : "0px"})`,
                             scrollbarWidth: "none",
+                            pr: ".4rem",
+                            mr: ".4rem",
                             "::-webkit-scrollbar": {
-                                width: ".4rem",
+                                width: ".6rem",
                             },
                             "::-webkit-scrollbar-track": {
                                 background: "#FFFFFF15",

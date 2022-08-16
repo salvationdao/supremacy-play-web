@@ -213,8 +213,9 @@ export const NotificationPreferencesInner = ({ notificationPreferences, setNotif
                                 }}
                                 sx={{
                                     transform: "scale(1.4)",
-                                    ".Mui-checked": { color: colors.neonBlue },
-                                    ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${colors.neonBlue}50` },
+                                    color: colors.neonBlue,
+                                    ".Mui-checked, .MuiSvgIcon-root": { color: `${colors.neonBlue} !important` },
+                                    ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${colors.neonBlue}50 !important` },
                                 }}
                             />
                         </Stack>

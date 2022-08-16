@@ -144,3 +144,35 @@ export interface MechBattleBrief {
     label: string
     name: string
 }
+
+export enum QuestKey {
+    AbilityKill = "ability_kill",
+    MechKill = "mech_kill",
+    MechCommanderUsedInBattle = "mech_commander_used_in_battle",
+    RepairForOther = "repair_for_other",
+    ChatSent = "chat_sent",
+    MechJoinBattle = "mech_join_battle",
+}
+
+export interface QuestStat {
+    id: string
+    name: string
+    round_name: string
+    key: QuestKey
+    description: string
+    obtained: boolean
+    end_at: Date
+}
+
+export interface QuestProgress {
+    quest_id: string
+    current: number
+    goal: number
+}
+
+export interface LeaderboardRound {
+    id: string
+    name: string
+    started_at: Date
+    end_at: Date
+}
