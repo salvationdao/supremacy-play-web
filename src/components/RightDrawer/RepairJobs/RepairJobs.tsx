@@ -3,10 +3,9 @@ import BigNumber from "bignumber.js"
 import { useEffect, useMemo, useState } from "react"
 import FlipMove from "react-flip-move"
 import { EmptyWarMachinesPNG } from "../../../assets"
-import { useAuth } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { useArray } from "../../../hooks"
-import { useGameServerSubscription, useGameServerSubscriptionSecured } from "../../../hooks/useGameServer"
+import { useGameServerSubscriptionSecured } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { RepairJob } from "../../../types/jobs"
@@ -25,7 +24,6 @@ const sortOptions = [
 ]
 
 export const RepairJobs = () => {
-    const { userID } = useAuth()
     const theme = useTheme()
     const [repairJobModal, setRepairJobModal] = useState<RepairJob>()
 

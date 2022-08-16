@@ -2,9 +2,8 @@ import { Box, IconButton, Modal, Stack, Typography } from "@mui/material"
 import { useCallback } from "react"
 import { ClipThing } from "../../../../.."
 import { SvgClose } from "../../../../../../assets"
-import { useAuth } from "../../../../../../containers"
 import { useTheme } from "../../../../../../containers/theme"
-import { useGameServerSubscription, useGameServerSubscriptionSecured } from "../../../../../../hooks/useGameServer"
+import { useGameServerSubscriptionSecured } from "../../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../../keys"
 import { colors, fonts, siteZIndex } from "../../../../../../theme/theme"
 import { MechDetails } from "../../../../../../types"
@@ -23,7 +22,6 @@ export const RepairModal = ({
     repairMechModalOpen: boolean
     setRepairMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
 }) => {
-    const { userID } = useAuth()
     const theme = useTheme()
 
     const repairStatus = useGameServerSubscriptionSecured<RepairStatus>({

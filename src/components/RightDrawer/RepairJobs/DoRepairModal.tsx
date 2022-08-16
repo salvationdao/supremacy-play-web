@@ -4,11 +4,11 @@ import BigNumber from "bignumber.js"
 import React, { ReactNode, useCallback, useEffect, useMemo, useState } from "react"
 import { SvgClose, SvgCubes, SvgSupToken } from "../../../assets"
 import { CAPTCHA_KEY } from "../../../constants"
-import { useAuth, useSupremacy } from "../../../containers"
+import { useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { supFormatterNoFixed, timeSinceInWords } from "../../../helpers"
 import { useTimer } from "../../../hooks"
-import { useGameServerCommandsUser, useGameServerSubscription, useGameServerSubscriptionSecured } from "../../../hooks/useGameServer"
+import { useGameServerCommandsUser, useGameServerSubscriptionSecured } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { heightEffect } from "../../../theme/keyframes"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
@@ -38,7 +38,6 @@ const propsAreEqual = (prevProps: DoRepairModalProps, nextProps: DoRepairModalPr
 }
 
 export const DoRepairModal = React.memo(function DoRepairModal({ repairStatus, repairJob: _repairJob, open, onClose }: DoRepairModalProps) {
-    const { userID } = useAuth()
     const theme = useTheme()
     const { getFaction } = useSupremacy()
     const { send } = useGameServerCommandsUser("/user_commander")

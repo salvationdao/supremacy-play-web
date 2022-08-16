@@ -1,7 +1,5 @@
 import React, { createContext, Dispatch, ReactNode, useContext, useState } from "react"
-import { AuthContext, AuthState } from "./auth"
-import { User } from "../types"
-import { useGameServerSubscription, useGameServerSubscriptionSecuredUser } from "../hooks/useGameServer"
+import { useGameServerSubscription } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
 
 enum ArenaType {
