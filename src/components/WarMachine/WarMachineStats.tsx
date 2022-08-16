@@ -19,9 +19,8 @@ export const WarMachineStats = () => {
 const WarMachineStatsInner = () => {
     const { isMobile } = useMobile()
     const theme = useTheme()
-    const { userID } = useAuth()
-    const { factionWarMachines, otherWarMachines } = useHotkey()
-    const { warMachines, spawnedAI, bribeStage, map } = useGame()
+    const { factionWarMachines, otherWarMachines, ownedMiniMechs } = useHotkey()
+    const { warMachines, bribeStage, map } = useGame()
     const [isPoppedout, toggleIsPoppedout] = useToggle()
 
     // Temp hotfix ask james ****************************
@@ -32,10 +31,6 @@ const WarMachineStatsInner = () => {
     // End ****************************************
 
     const haveFactionMechs = useMemo(() => factionWarMachines && factionWarMachines.length > 0, [factionWarMachines])
-    const ownedMiniMechs = useMemo(
-        () => (spawnedAI ? spawnedAI.filter((sa) => sa.aiType === AIType.MiniMech && sa.ownedByID === userID) : []),
-        [spawnedAI, userID],
-    )
 
     if (isPoppedout) {
         return (

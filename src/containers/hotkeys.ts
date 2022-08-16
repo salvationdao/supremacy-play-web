@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { createContainer } from "unstated-next"
-import { GameAbility, LocationSelectType, PlayerAbility, WarMachineState } from "../types"
+import { AIType, GameAbility, LocationSelectType, PlayerAbility, WarMachineState } from "../types"
 import { useMiniMap } from "./minimap"
 import { GameServerKeys } from "../keys"
 import { useGame } from "./game"
@@ -30,11 +30,14 @@ export const MechMoveCommandAbility: PlayerAbility = {
         cooldown_seconds: 5,
     },
 }
+
+const addMiniMechParticipantId = 100
+
 //todo: Player Abilities hotkeys and custom hotkey maps
 
 export const HotkeyContainer = createContainer(() => {
     const { setHighlightedMechParticipantID, setPlayerAbility, highlightedMechParticipantID } = useMiniMap()
-    const { warMachines } = useGame()
+    const { warMachines, spawnedAI } = useGame()
     const { factionID, user } = useAuth()
     const { newSnackbarMessage } = useSnackbar()
 
@@ -63,6 +66,10 @@ export const HotkeyContainer = createContainer(() => {
         return [...factionWarMachines, ...otherWarMachines]
     }, [otherWarMachines, factionWarMachines])
 
+    const ownedMiniMechs = useMemo(
+        () => (spawnedAI ? spawnedAI.filter((sa) => sa.aiType === AIType.MiniMech && sa.ownedByID === user.id) : []),
+        [spawnedAI, user],
+    )
     //ability triggers ------------------------------------
     const onGameAbilityTrigger = useCallback(
         async (warMachineHash: string, gameAbilityID: string) => {
@@ -118,24 +125,39 @@ export const HotkeyContainer = createContainer(() => {
             //int = highlight faction mech
             const key = parseInt(e.key)
             if (key) {
+                //select mini mechs
+                if (e.ctrlKey) {
+                    const mmID = key + addMiniMechParticipantId
+                    const mmIndex = ownedMiniMechs.findIndex((w) => w.participantID === mmID)
+                    if (mmIndex === -1) return
+                    setHighlightedMechParticipantID(mmID)
+                    return
+                }
                 if (key > factionWarMachines.length) return
                 setHighlightedMechParticipantID(factionWarMachines[key - 1]?.participantID)
+                return
             }
 
             //mech commander functions
             if (highlightedMechParticipantID) {
-                const w = factionWarMachines.find((w) => w.ownedByID === user.id && w.participantID === highlightedMechParticipantID)
+                const w =
+                    highlightedMechParticipantID < addMiniMechParticipantId
+                        ? factionWarMachines.find((w) => w.ownedByID === user.id && w.participantID === highlightedMechParticipantID)
+                        : ownedMiniMechs.find((w) => w.ownedByID === user.id && w.participantID === highlightedMechParticipantID)
+
                 if (!w || e.ctrlKey) return
 
                 //trigger mech specific ability
                 const qwertyIndex = mechAbilityKey.indexOf(e.key)
                 if (qwertyIndex > -1) {
                     onGameAbilityTrigger(w.hash, highlightedMechGameAbilities[qwertyIndex].id)
+                    return
                 }
 
                 //trigger mech move
                 if (e.key === "a") {
                     handleMechMove(w)
+                    return
                 }
             }
         },
@@ -147,6 +169,7 @@ export const HotkeyContainer = createContainer(() => {
             highlightedMechGameAbilities,
             highlightedMechParticipantID,
             setHighlightedMechParticipantID,
+            ownedMiniMechs,
         ],
     )
     useEffect(() => {
@@ -166,6 +189,7 @@ export const HotkeyContainer = createContainer(() => {
         orderedWarMachines,
         otherWarMachines,
         factionWarMachines,
+        ownedMiniMechs,
         mechAbilityKey,
     }
 })
