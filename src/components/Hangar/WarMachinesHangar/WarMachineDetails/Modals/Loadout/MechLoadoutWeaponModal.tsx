@@ -680,6 +680,9 @@ const WeaponItem = ({ id, equipped, selected, onSelect }: WeaponItemProps) => {
         },
         (payload) => {
             if (!payload) return
+            if (!payload.equipped_on) {
+                console.log(payload)
+            }
             setWeaponDetails(payload)
         },
     )
@@ -744,7 +747,7 @@ const WeaponItem = ({ id, equipped, selected, onSelect }: WeaponItemProps) => {
             }}
             onClick={() => onSelect(weaponDetails)}
         >
-            <Stack direction="row" alignItems="stretch">
+            <Stack direction="row" alignItems="stretch" padding="1rem">
                 <Box sx={{ width: "10rem" }}>
                     <Box
                         sx={{
@@ -781,8 +784,7 @@ const WeaponItem = ({ id, equipped, selected, onSelect }: WeaponItemProps) => {
                     sx={{
                         alignSelf: "stretch",
                         height: "auto",
-                        ml: "2rem",
-                        mr: "1rem",
+                        mx: "1rem",
                         borderColor: "#494949",
                     }}
                 />
