@@ -3,11 +3,11 @@ import { useMutation } from "react-fetching-library"
 import { Masonry } from "@mui/lab"
 import { useMediaQuery, Stack, Box, Typography, CircularProgress, TextField } from "@mui/material"
 import { Elements, useElements, useStripe, CardNumberElement } from "@stripe/react-stripe-js"
-import { loadStripe } from "@stripe/stripe-js"
+import { loadStripe, StripeCardCvcElementChangeEvent } from "@stripe/stripe-js"
 import { STRIPE_PUBLISHABLE_KEY } from "../../../../constants"
 import { useTheme } from "../../../../containers/theme"
 import { colors, fonts } from "../../../../theme/theme"
-import { SafePNG } from "../../../../assets"
+import { SafePNG, SvgWallet } from "../../../../assets"
 import { ClipThing } from "../../../Common/ClipThing"
 import { ImagesPreview } from "../../../Marketplace/Common/MarketDetails/ImagesPreview"
 import { FiatProduct } from "../../../../types/fiat"
@@ -17,6 +17,8 @@ import { useSnackbar } from "../../../../containers"
 import { SetupCheckout } from "../../../../fetching"
 import { FancyButton } from "../../../Common/FancyButton"
 import { StripeTextFieldCVC, StripeTextFieldExpiry, StripeTextFieldNumber } from "../../../Stripe/StripeElements"
+import { generatePriceText } from "../../../../helpers"
+import { StripeGenericChangeEvent } from "../../../Stripe/StripeInput"
 
 const stripePromise = loadStripe(STRIPE_PUBLISHABLE_KEY)
 
@@ -180,8 +182,20 @@ const PackageStoreCheckoutInner = ({ product }: PackageStoreCheckoutInnerProps) 
                                         {product.name}
                                     </Typography>
                                 </Box>
-                                <PaymentForm product={product} />
+
+                                <Stack spacing="2rem">
+                                    <Box>
+                                        <Typography gutterBottom sx={{ color: colors.lightGrey, fontFamily: fonts.nostromoBold }}>
+                                            PRICE:
+                                        </Typography>
+                                        <Typography variant="h5" sx={{ fontWeight: "fontWeightBold", span: { color: colors.lightNeonBlue } }}>
+                                            {generatePriceText(product.price_dollars, product.price_cents)}
+                                        </Typography>
+                                    </Box>
+                                </Stack>
                             </Stack>
+
+                            <PaymentForm product={product} />
                         </Masonry>
                     </Box>
                 </Box>
@@ -197,7 +211,29 @@ const PaymentForm = ({ product }: PackageStoreCheckoutInnerProps) => {
     const elements = useElements()
     const stripe = useStripe()
 
+    const [validations, setValidations] = useState({
+        cardNumberComplete: false,
+        expiredComplete: false,
+        cvcComplete: false,
+        cardNumberError: undefined,
+        expiredError: undefined,
+        cvcError: undefined,
+    })
+
+    const stripeElementChangeHandler = useCallback((fieldName: string) => {
+        return ({ complete, error }: StripeGenericChangeEvent) => {
+            setValidations((prev) => {
+                return {
+                    ...prev,
+                    [`${fieldName}Complete`]: complete,
+                    [`${fieldName}Error`]: error?.message,
+                }
+            })
+        }
+    }, [])
+
     const primaryColor = theme.factionTheme.primary
+    const secondaryColor = "#FFFFFF"
     const backgroundColor = theme.factionTheme.background
 
     const [submitting, setSubmitting] = useState(false)
@@ -223,7 +259,7 @@ const PaymentForm = ({ product }: PackageStoreCheckoutInnerProps) => {
 
     const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        if (!elements || !stripe) return
+        if (!elements || !stripe || !validations.cardNumberComplete || !validations.expiredComplete || !validations.cvcComplete) return
 
         const cardElement = elements.getElement(CardNumberElement)
         if (!cardElement) return
@@ -252,190 +288,209 @@ const PaymentForm = ({ product }: PackageStoreCheckoutInnerProps) => {
     }
 
     return (
-        <form onSubmit={submitHandler}>
-            <Typography variant="body2" sx={{ color: colors.offWhite, fontFamily: fonts.nostromoBlack }}>
-                Card Number
+        <Stack spacing="3rem">
+            <Typography variant="h5" sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack }}>
+                PAYMENT FORM
             </Typography>
-            <ClipThing
-                clipSize="5px"
-                clipSlantSize="2px"
-                opacity={0.9}
-                border={{
-                    borderColor: primaryColor,
-                    borderThickness: "1px",
-                }}
-                backgroundColor={backgroundColor}
-                sx={{ mb: "1rem", mt: "0.5rem" }}
-            >
-                <Stack sx={{ height: "100%" }}>
-                    <StripeTextFieldNumber
-                        variant="outlined"
-                        hiddenLabel
-                        fullWidth
-                        placeholder="Enter keywords..."
-                        label={undefined}
-                        sx={{
-                            backgroundColor: "unset",
-                            ".MuiOutlinedInput-input": {
-                                px: "1.5rem",
-                                py: ".5rem",
-                                height: "unset",
-                                "::-webkit-outer-spin-button, ::-webkit-inner-spin-button": {
-                                    WebkitAppearance: "none",
-                                },
-                                borderRadius: 0.5,
-                                border: `${primaryColor}50 2px solid`,
-                                ":hover, :focus, :active": { backgroundColor: "#00000080", border: `${primaryColor}99 2px solid` },
-                            },
-                            ".MuiOutlinedInput-notchedOutline": { border: "unset" },
-                        }}
-                    />
-                </Stack>
-            </ClipThing>
-
-            <Typography variant="body2" sx={{ color: colors.offWhite, fontFamily: fonts.nostromoBlack }}>
-                Card Expiry
-            </Typography>
-            <ClipThing
-                clipSize="5px"
-                clipSlantSize="2px"
-                opacity={0.9}
-                border={{
-                    borderColor: primaryColor,
-                    borderThickness: "1px",
-                }}
-                backgroundColor={backgroundColor}
-                sx={{ mb: "1rem", mt: "0.5rem" }}
-            >
-                <Stack sx={{ height: "100%" }}>
-                    <StripeTextFieldExpiry
-                        variant="outlined"
-                        hiddenLabel
-                        fullWidth
-                        placeholder="Enter keywords..."
-                        label={undefined}
-                        sx={{
-                            backgroundColor: "unset",
-                            ".MuiOutlinedInput-input": {
-                                px: "1.5rem",
-                                py: ".5rem",
-                                height: "unset",
-                                "::-webkit-outer-spin-button, ::-webkit-inner-spin-button": {
-                                    WebkitAppearance: "none",
-                                },
-                                borderRadius: 0.5,
-                                border: `${primaryColor}50 2px solid`,
-                                ":hover, :focus, :active": { backgroundColor: "#00000080", border: `${primaryColor}99 2px solid` },
-                            },
-                            ".MuiOutlinedInput-notchedOutline": { border: "unset" },
-                        }}
-                    />
-                </Stack>
-            </ClipThing>
-
-            <Typography variant="body2" sx={{ color: colors.offWhite, fontFamily: fonts.nostromoBlack }}>
-                CVV
-            </Typography>
-            <ClipThing
-                clipSize="5px"
-                clipSlantSize="2px"
-                opacity={0.9}
-                border={{
-                    borderColor: primaryColor,
-                    borderThickness: "1px",
-                }}
-                backgroundColor={backgroundColor}
-                sx={{ mb: "1rem", mt: "0.5rem" }}
-            >
-                <Stack sx={{ height: "100%" }}>
-                    <StripeTextFieldCVC
-                        variant="outlined"
-                        hiddenLabel
-                        fullWidth
-                        placeholder="Enter keywords..."
-                        label={undefined}
-                        sx={{
-                            backgroundColor: "unset",
-                            ".MuiOutlinedInput-input": {
-                                px: "1.5rem",
-                                py: ".5rem",
-                                height: "unset",
-                                "::-webkit-outer-spin-button, ::-webkit-inner-spin-button": {
-                                    WebkitAppearance: "none",
-                                },
-                                borderRadius: 0.5,
-                                border: `${primaryColor}50 2px solid`,
-                                ":hover, :focus, :active": { backgroundColor: "#00000080", border: `${primaryColor}99 2px solid` },
-                            },
-                            ".MuiOutlinedInput-notchedOutline": { border: "unset" },
-                        }}
-                    />
-                </Stack>
-            </ClipThing>
-
-            <Typography variant="body2" sx={{ color: colors.offWhite, fontFamily: fonts.nostromoBlack }}>
-                Email Receipt
-            </Typography>
-            <ClipThing
-                clipSize="5px"
-                clipSlantSize="2px"
-                opacity={0.9}
-                border={{
-                    borderColor: primaryColor,
-                    borderThickness: "1px",
-                }}
-                backgroundColor={backgroundColor}
-                sx={{ mb: "1rem", mt: "0.5rem" }}
-            >
-                <Stack sx={{ height: "100%" }}>
-                    <TextField
-                        variant="outlined"
-                        hiddenLabel
-                        fullWidth
-                        placeholder="Email receipt to"
-                        sx={{
-                            backgroundColor: "unset",
-                            ".MuiOutlinedInput-input": {
-                                px: "1.5rem",
-                                py: ".5rem",
-                                height: "unset",
-                                "::-webkit-outer-spin-button, ::-webkit-inner-spin-button": {
-                                    WebkitAppearance: "none",
-                                },
-                                borderRadius: 0.5,
-                                border: `${primaryColor}50 2px solid`,
-                                ":hover, :focus, :active": { backgroundColor: "#00000080", border: `${primaryColor}99 2px solid` },
-                            },
-                            ".MuiOutlinedInput-notchedOutline": { border: "unset" },
-                        }}
-                        value={receiptEmail}
-                        onChange={(e) => setReceiptEmail(e.target.value)}
-                    />
-                </Stack>
-            </ClipThing>
-
-            <FancyButton
-                type={"submit"}
-                loading={submitting}
-                clipThingsProps={{
-                    clipSize: "9px",
-                    backgroundColor: colors.marketSold,
-                    opacity: 1,
-                    border: { isFancy: true, borderColor: colors.marketSold, borderThickness: "2px" },
-                    sx: { position: "relative" },
-                }}
-                sx={{ px: "4rem", py: ".6rem", color: "#FFFFFF" }}
-            >
-                <Typography
-                    variant="caption"
-                    sx={{
-                        color: "#FFFFFF",
-                        fontFamily: fonts.nostromoHeavy,
-                    }}
-                >
-                    PLACE ORDER
+            <form onSubmit={submitHandler}>
+                <Typography variant="body2" sx={{ color: colors.offWhite, fontFamily: fonts.nostromoBlack }}>
+                    Card Number
                 </Typography>
-            </FancyButton>
-        </form>
+                <ClipThing
+                    clipSize="5px"
+                    clipSlantSize="2px"
+                    opacity={0.9}
+                    border={{
+                        borderColor: primaryColor,
+                        borderThickness: "1px",
+                    }}
+                    backgroundColor={backgroundColor}
+                    sx={{ mb: "1rem", mt: "0.5rem" }}
+                >
+                    <Stack sx={{ height: "100%" }}>
+                        <StripeTextFieldNumber
+                            variant="outlined"
+                            hiddenLabel
+                            fullWidth
+                            placeholder="Enter keywords..."
+                            label={undefined}
+                            error={!!validations.cardNumberError}
+                            labelErrorMessage={validations.cardNumberError}
+                            onChange={stripeElementChangeHandler("cardNumber")}
+                            sx={{
+                                backgroundColor: "unset",
+                                ".MuiOutlinedInput-input": {
+                                    px: "1.5rem",
+                                    py: ".5rem",
+                                    height: "unset",
+                                    "::-webkit-outer-spin-button, ::-webkit-inner-spin-button": {
+                                        WebkitAppearance: "none",
+                                    },
+                                    borderRadius: 0.5,
+                                    border: `${primaryColor}50 2px solid`,
+                                    ":hover, :focus, :active": { backgroundColor: "#00000080", border: `${primaryColor}99 2px solid` },
+                                },
+                                ".MuiOutlinedInput-notchedOutline": { border: "unset" },
+                            }}
+                        />
+                    </Stack>
+                </ClipThing>
+
+                <Typography variant="body2" sx={{ color: colors.offWhite, fontFamily: fonts.nostromoBlack }}>
+                    Card Expiry
+                </Typography>
+                <ClipThing
+                    clipSize="5px"
+                    clipSlantSize="2px"
+                    opacity={0.9}
+                    border={{
+                        borderColor: primaryColor,
+                        borderThickness: "1px",
+                    }}
+                    backgroundColor={backgroundColor}
+                    sx={{ mb: "1rem", mt: "0.5rem" }}
+                >
+                    <Stack sx={{ height: "100%" }}>
+                        <StripeTextFieldExpiry
+                            variant="outlined"
+                            hiddenLabel
+                            fullWidth
+                            placeholder="Enter keywords..."
+                            label={undefined}
+                            error={!!validations.expiredError}
+                            labelErrorMessage={validations.expiredError}
+                            onChange={stripeElementChangeHandler("expired")}
+                            sx={{
+                                backgroundColor: "unset",
+                                ".MuiOutlinedInput-input": {
+                                    px: "1.5rem",
+                                    py: ".5rem",
+                                    height: "unset",
+                                    "::-webkit-outer-spin-button, ::-webkit-inner-spin-button": {
+                                        WebkitAppearance: "none",
+                                    },
+                                    borderRadius: 0.5,
+                                    border: `${primaryColor}50 2px solid`,
+                                    ":hover, :focus, :active": { backgroundColor: "#00000080", border: `${primaryColor}99 2px solid` },
+                                },
+                                ".MuiOutlinedInput-notchedOutline": { border: "unset" },
+                            }}
+                        />
+                    </Stack>
+                </ClipThing>
+
+                <Typography variant="body2" sx={{ color: colors.offWhite, fontFamily: fonts.nostromoBlack }}>
+                    CVC
+                </Typography>
+                <ClipThing
+                    clipSize="5px"
+                    clipSlantSize="2px"
+                    opacity={0.9}
+                    border={{
+                        borderColor: primaryColor,
+                        borderThickness: "1px",
+                    }}
+                    backgroundColor={backgroundColor}
+                    sx={{ mb: "1rem", mt: "0.5rem" }}
+                >
+                    <Stack sx={{ height: "100%" }}>
+                        <StripeTextFieldCVC
+                            variant="outlined"
+                            hiddenLabel
+                            fullWidth
+                            placeholder="Enter keywords..."
+                            label={undefined}
+                            error={!!validations.cvcError}
+                            labelErrorMessage={validations.cvcError}
+                            onChange={stripeElementChangeHandler("cvc")}
+                            sx={{
+                                backgroundColor: "unset",
+                                ".MuiOutlinedInput-input": {
+                                    px: "1.5rem",
+                                    py: ".5rem",
+                                    height: "unset",
+                                    "::-webkit-outer-spin-button, ::-webkit-inner-spin-button": {
+                                        WebkitAppearance: "none",
+                                    },
+                                    borderRadius: 0.5,
+                                    border: `${primaryColor}50 2px solid`,
+                                    ":hover, :focus, :active": { backgroundColor: "#00000080", border: `${primaryColor}99 2px solid` },
+                                },
+                                ".MuiOutlinedInput-notchedOutline": { border: "unset" },
+                            }}
+                        />
+                    </Stack>
+                </ClipThing>
+
+                <Typography variant="body2" sx={{ color: colors.offWhite, fontFamily: fonts.nostromoBlack }}>
+                    Email Receipt
+                </Typography>
+                <ClipThing
+                    clipSize="5px"
+                    clipSlantSize="2px"
+                    opacity={0.9}
+                    border={{
+                        borderColor: primaryColor,
+                        borderThickness: "1px",
+                    }}
+                    backgroundColor={backgroundColor}
+                    sx={{ mb: "1rem", mt: "0.5rem" }}
+                >
+                    <Stack sx={{ height: "100%" }}>
+                        <TextField
+                            variant="outlined"
+                            hiddenLabel
+                            fullWidth
+                            placeholder="Email receipt to"
+                            sx={{
+                                backgroundColor: "unset",
+                                ".MuiOutlinedInput-input": {
+                                    px: "1.5rem",
+                                    py: ".5rem",
+                                    height: "unset",
+                                    "::-webkit-outer-spin-button, ::-webkit-inner-spin-button": {
+                                        WebkitAppearance: "none",
+                                    },
+                                    borderRadius: 0.5,
+                                    border: `${primaryColor}50 2px solid`,
+                                    ":hover, :focus, :active": { backgroundColor: "#00000080", border: `${primaryColor}99 2px solid` },
+                                },
+                                ".MuiOutlinedInput-notchedOutline": { border: "unset" },
+                            }}
+                            value={receiptEmail}
+                            onChange={(e) => setReceiptEmail(e.target.value)}
+                        />
+                    </Stack>
+                </ClipThing>
+
+                <FancyButton
+                    type={"submit"}
+                    loading={submitting}
+                    clipThingsProps={{
+                        clipSize: "9px",
+                        backgroundColor: primaryColor,
+                        opacity: 1,
+                        border: { isFancy: true, borderColor: primaryColor, borderThickness: "2px" },
+                        sx: { position: "relative", width: "18rem" },
+                    }}
+                    sx={{ py: ".7rem", color: secondaryColor }}
+                >
+                    <Stack direction="row" spacing=".9rem" alignItems="center" justifyContent="center">
+                        <SvgWallet size="1.9rem" fill={secondaryColor} />
+
+                        <Typography
+                            variant="body2"
+                            sx={{
+                                flexShrink: 0,
+                                color: secondaryColor,
+                                fontFamily: fonts.nostromoBlack,
+                            }}
+                        >
+                            BUY NOW
+                        </Typography>
+                    </Stack>
+                </FancyButton>
+            </form>
+        </Stack>
     )
 }

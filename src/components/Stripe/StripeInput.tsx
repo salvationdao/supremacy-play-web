@@ -3,6 +3,15 @@ import { alpha, useTheme } from "@mui/material/styles"
 import { InputBaseComponentProps } from "@mui/material/InputBase"
 import { fonts } from "../../theme/theme"
 
+export interface StripeGenericChangeEvent {
+    complete: boolean
+    error?: {
+        type: string
+        code: string
+        message: string
+    }
+}
+
 export const StripeInput = React.forwardRef<any, InputBaseComponentProps>(function StripeInput(props, ref) {
     const { component: Component, options, ...other } = props
     const theme = useTheme()
