@@ -18,7 +18,7 @@ export const RoundSelect = ({
     const label = useMemo(() => {
         const selected = roundOptions.find((i) => i.id === selectedRound?.id)
         if (!selected) return null
-        return `${selected.name} (#${selected.round_number})`
+        return `${selected.name}`
     }, [roundOptions, selectedRound?.id])
 
     const primaryColor = theme.factionTheme.primary
@@ -95,7 +95,7 @@ export const RoundSelect = ({
                             sx={{ "&:hover": { backgroundColor: "#FFFFFF20" } }}
                         >
                             <Typography textTransform="uppercase" sx={{ fontWeight: "fontWeightBold" }}>
-                                {x.name} (#{x.round_number})
+                                {x.name}
                             </Typography>
                         </MenuItem>
                     )
