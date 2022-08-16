@@ -885,18 +885,32 @@ const WeaponPreview = ({ weapon, skinInheritable }: WeaponPreviewProps) => {
                             {videoUrlsFilters.map((videoUrl, i) => videoUrl && <source key={videoUrl + i} src={videoUrl} type="video/mp4" />)}
                         </Box>
                     )}
-                    <Typography
-                        variant="h4"
+                    <Box
                         sx={{
                             zIndex: 100,
                             position: "absolute",
                             left: 0,
                             bottom: 0,
-                            fontFamily: fonts.nostromoBlack,
                         }}
                     >
-                        {weapon.label}
-                    </Typography>
+                        <Typography
+                            variant="h6"
+                            sx={{
+                                color: getRarityDeets(weapon.tier).color,
+                                fontFamily: fonts.nostromoBlack,
+                            }}
+                        >
+                            {weapon.tier}
+                        </Typography>
+                        <Typography
+                            variant="h4"
+                            sx={{
+                                fontFamily: fonts.nostromoBlack,
+                            }}
+                        >
+                            {weapon.label}
+                        </Typography>
+                    </Box>
                 </Box>
                 <Stack
                     sx={{
