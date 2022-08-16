@@ -4,9 +4,19 @@ import { QuestProgress, QuestStat } from "../../../types"
 import { ProgressBar } from "../../Common/ProgressBar"
 import { TooltipHelper } from "../../Common/TooltipHelper"
 import Confetti from "react-confetti"
+import { useEffect, useState } from "react"
 
 export const QuestItem = ({ questStat, progress, showConfetti }: { questStat: QuestStat; progress?: QuestProgress; showConfetti: boolean }) => {
     const progressPercent = progress ? (100 * progress.current) / progress.goal : 0
+    const [showShowConfetti, setShowShowConfetti] = useState(false)
+
+    // This timeout allows the popover to fully animate before we do other animations, else it will lage
+    useEffect(() => {
+        if (!showConfetti) return
+        setTimeout(() => {
+            setShowShowConfetti(true)
+        }, 500)
+    }, [showConfetti])
 
     return (
         <TooltipHelper color={colors.purple} placement="left" text={questStat.description}>
@@ -30,7 +40,7 @@ export const QuestItem = ({ questStat, progress, showConfetti }: { questStat: Qu
                     gravity={0.04}
                     initialVelocityX={1}
                     tweenDuration={10000}
-                    run={showConfetti}
+                    run={showShowConfetti}
                     numberOfPieces={600}
                     recycle={false}
                 />
