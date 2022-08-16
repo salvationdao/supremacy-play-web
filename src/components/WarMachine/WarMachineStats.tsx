@@ -284,7 +284,7 @@ const WarMachineStatsInner = () => {
                 <Stack sx={{ px: "2rem", transform: "skew(-6deg)" }}>
                     {haveFactionMechs && (
                         <HorizontalScrollContainer>
-                            <Stack spacing="-1.1rem" direction="row" alignItems="center">
+                            <Stack spacing="-1.1rem" direction="row" alignItems="center" sx={{ pt: "1rem" }}>
                                 {factionWarMachines &&
                                     factionWarMachines.map((wm, i) => (
                                         <WarMachineItem key={`${wm.participantID} - ${wm.hash}`} warMachine={wm} scale={0.75} label={i + 1} />
