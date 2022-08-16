@@ -15,6 +15,7 @@ const TRANSITION_DURATION = 0.275 // seconds
 
 interface MapMechProps {
     warMachine: WarMachineState
+    label?: number
     isAI?: boolean
 }
 
@@ -28,7 +29,7 @@ interface MapMechInnerProps extends MapMechProps {
     map: Map
 }
 
-const MapMechInner = ({ warMachine, map, isAI }: MapMechInnerProps) => {
+const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
     const { userID, factionID } = useAuth()
     const { getFaction } = useSupremacy()
     const { isTargeting, gridWidth, gridHeight, playerAbility, highlightedMechParticipantID, setHighlightedMechParticipantID, selection, setSelection } =
@@ -255,7 +256,7 @@ const MapMechInner = ({ warMachine, map, isAI }: MapMechInnerProps) => {
                                 fontFamily: fonts.nostromoBlack,
                             }}
                         >
-                            {warMachine.participantID}
+                            {label}
                         </Typography>
                     </Box>
 

@@ -1,6 +1,7 @@
 import { useMemo } from "react"
-import { useGame, useSupremacy } from "../../../../containers"
+import { useAuth, useGame, useSupremacy } from "../../../../containers"
 import { MapMech } from "./MapMech"
+import { useHotkey } from "../../../../containers/hotkeys"
 
 export const MapMechs = () => {
     const { battleIdentifier } = useSupremacy()
@@ -8,13 +9,14 @@ export const MapMechs = () => {
 }
 
 const MapMechsInner = () => {
-    const { map, warMachines, spawnedAI } = useGame()
+    const { map, spawnedAI } = useGame()
+    const { orderedWarMachines } = useHotkey()
 
     const mechs = useMemo(() => {
-        if (!warMachines || warMachines.length <= 0) return null
+        if (!orderedWarMachines || orderedWarMachines.length <= 0) return null
 
-        return warMachines.map((wm) => <MapMech key={`${wm.participantID} - ${wm.hash}`} warMachine={wm} />)
-    }, [warMachines])
+        return orderedWarMachines.map((wm, i) => <MapMech key={`${wm.participantID} - ${wm.hash}`} warMachine={wm} label={i + 1} />)
+    }, [orderedWarMachines])
 
     const ai = useMemo(() => {
         if (!spawnedAI || spawnedAI.length <= 0) return null

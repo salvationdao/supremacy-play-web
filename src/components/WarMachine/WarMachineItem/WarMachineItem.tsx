@@ -27,14 +27,14 @@ export const WarMachineItem = ({
     initialExpanded = false,
     transformOrigin,
     isPoppedout,
-    index,
+    label,
 }: {
     warMachine: WarMachineState
     scale: number
     initialExpanded?: boolean
     transformOrigin?: string
     isPoppedout?: boolean
-    index?: number
+    label?: number
 }) => {
     const { isMobile } = useMobile()
     const { userID, factionID } = useAuth()
@@ -116,9 +116,9 @@ export const WarMachineItem = ({
             >
                 {/* Little info button to show the mech destroyed info */}
                 <Box sx={{ display: hovered ? "inline-block" : "none", position: "absolute", top: "-3rem", right: "0" }}>
-                    {index !== null && index !== undefined && <Typography>[Ctrl + {index + 1}]</Typography>}
+                    {label !== null && label !== undefined && <Typography>[Ctrl + {label}]</Typography>}
                 </Box>
-                {!isAlive && !isMiniMech &&  (
+                {!isAlive && !isMiniMech && (
                     <IconButton
                         size="small"
                         onClick={() => toggleIsDestroyedInfoOpen()}
@@ -184,7 +184,7 @@ export const WarMachineItem = ({
                             }}
                         >
                             <Typography variant="h4" sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack }}>
-                                {warMachine.participantID}
+                                {label}
                             </Typography>
                         </Box>
 

@@ -48,10 +48,20 @@ export const HotkeyContainer = createContainer(() => {
 
     const { send } = useGameServerCommandsFaction("/faction_commander")
 
-    const factionWarMachines = useMemo(
-        () => (warMachines as WarMachineState[])?.filter((w) => w.factionID === factionID).sort((a, b) => a.participantID - b.participantID),
-        [warMachines, factionID],
-    )
+    const factionWarMachines = useMemo(() => {
+        if (!warMachines) return
+        return warMachines?.filter((w) => w.factionID === factionID).sort((a, b) => a.participantID - b.participantID)
+    }, [warMachines, factionID])
+
+    const otherWarMachines = useMemo(() => {
+        if (!warMachines) return
+        return warMachines?.filter((w) => w.factionID !== factionID).sort((a, b) => a.participantID - b.participantID)
+    }, [warMachines, factionID])
+
+    const orderedWarMachines = useMemo(() => {
+        if (!otherWarMachines || !factionWarMachines) return
+        return [...factionWarMachines, ...otherWarMachines]
+    }, [otherWarMachines, factionWarMachines])
 
     //ability triggers ------------------------------------
     const onGameAbilityTrigger = useCallback(
@@ -153,6 +163,9 @@ export const HotkeyContainer = createContainer(() => {
         setMechMoveCommand,
         MechMoveCommandAbility,
         handleMechMove,
+        orderedWarMachines,
+        otherWarMachines,
+        factionWarMachines,
     }
 })
 

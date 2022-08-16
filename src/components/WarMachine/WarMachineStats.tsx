@@ -9,6 +9,7 @@ import { fonts, siteZIndex } from "../../theme/theme"
 import { AIType } from "../../types"
 import { WindowPortal } from "../Common/WindowPortal"
 import { WarMachineItem } from "./WarMachineItem/WarMachineItem"
+import { useHotkey } from "../../containers/hotkeys"
 
 export const WarMachineStats = () => {
     const { battleIdentifier } = useSupremacy()
@@ -18,7 +19,8 @@ export const WarMachineStats = () => {
 const WarMachineStatsInner = () => {
     const { isMobile } = useMobile()
     const theme = useTheme()
-    const { factionID, userID } = useAuth()
+    const { userID } = useAuth()
+    const { factionWarMachines, otherWarMachines } = useHotkey()
     const { warMachines, spawnedAI, bribeStage, map } = useGame()
     const [isPoppedout, toggleIsPoppedout] = useToggle()
 
@@ -29,9 +31,7 @@ const WarMachineStatsInner = () => {
     }, [bribeStage, toggleShow])
     // End ****************************************
 
-    const factionMechs = useMemo(() => (warMachines ? warMachines.filter((wm) => wm.factionID && wm.factionID === factionID) : []), [warMachines, factionID])
-    const otherMechs = useMemo(() => (warMachines ? warMachines.filter((wm) => wm.factionID && wm.factionID !== factionID) : []), [warMachines, factionID])
-    const haveFactionMechs = useMemo(() => factionMechs.length > 0, [factionMechs])
+    const haveFactionMechs = useMemo(() => factionWarMachines && factionWarMachines.length > 0, [factionWarMachines])
     const ownedMiniMechs = useMemo(
         () => (spawnedAI ? spawnedAI.filter((sa) => sa.aiType === AIType.MiniMech && sa.ownedByID === userID) : []),
         [spawnedAI, userID],
@@ -107,21 +107,27 @@ const WarMachineStatsInner = () => {
                             >
                                 <Box sx={{ direction: "ltr", height: 0 }}>
                                     <Stack spacing="2.6rem" justifyContent="center" sx={{ p: "2rem" }}>
-                                        {otherMechs.length > 0 &&
-                                            otherMechs
-                                                .sort((a, b) => a.factionID.localeCompare(b.factionID))
-                                                .map((wm) => (
-                                                    <Box key={`${wm.participantID} - ${wm.hash}`}>
-                                                        <WarMachineItem warMachine={wm} scale={1} initialExpanded isPoppedout />
-                                                    </Box>
-                                                ))}
+                                        {otherWarMachines &&
+                                            otherWarMachines.length > 0 &&
+                                            otherWarMachines.map((wm, i) => (
+                                                <Box key={`${wm.participantID} - ${wm.hash}`}>
+                                                    <WarMachineItem
+                                                        warMachine={wm}
+                                                        scale={1}
+                                                        label={i + 1 + (factionWarMachines ? factionWarMachines?.length : 0)}
+                                                        initialExpanded
+                                                        isPoppedout
+                                                    />
+                                                </Box>
+                                            ))}
 
                                         <Divider orientation="horizontal" />
 
                                         {haveFactionMechs &&
-                                            factionMechs.map((wm, i) => (
+                                            factionWarMachines &&
+                                            factionWarMachines.map((wm, i) => (
                                                 <Box key={`${wm.participantID} - ${wm.hash}`}>
-                                                    <WarMachineItem warMachine={wm} scale={1} index={i} initialExpanded isPoppedout />
+                                                    <WarMachineItem warMachine={wm} scale={1} label={i + 1} initialExpanded isPoppedout />
                                                 </Box>
                                             ))}
 
@@ -183,21 +189,22 @@ const WarMachineStatsInner = () => {
                         <Typography sx={{ fontFamily: fonts.nostromoBlack }}>YOUR FACTION</Typography>
 
                         <Box sx={{ display: "grid", gridTemplateColumns: "repeat(4, 25%)" }}>
-                            {factionMechs.map((wm, i) => (
-                                <WarMachineItem
-                                    key={`${wm.participantID} - ${wm.hash}`}
-                                    warMachine={wm}
-                                    scale={0.7}
-                                    index={i}
-                                    transformOrigin="0 0"
-                                    initialExpanded
-                                />
-                            ))}
+                            {factionWarMachines &&
+                                factionWarMachines.map((wm, i) => (
+                                    <WarMachineItem
+                                        key={`${wm.participantID} - ${wm.hash}`}
+                                        warMachine={wm}
+                                        scale={0.7}
+                                        label={i + 1}
+                                        transformOrigin="0 0"
+                                        initialExpanded
+                                    />
+                                ))}
                         </Box>
                     </Stack>
                 )}
 
-                {otherMechs.length > 0 && (
+                {otherWarMachines && otherWarMachines.length > 0 && (
                     <Stack
                         spacing="1rem"
                         sx={{
@@ -210,14 +217,14 @@ const WarMachineStatsInner = () => {
                         <Typography sx={{ fontFamily: fonts.nostromoBlack }}>OTHER FACTIONS</Typography>
 
                         <Box sx={{ display: "grid", gridTemplateColumns: "repeat(4, 25%)" }}>
-                            {otherMechs
-                                .sort((a, b) => a.factionID.localeCompare(b.factionID))
-                                .map((wm) => (
+                            {otherWarMachines &&
+                                otherWarMachines.map((wm, i) => (
                                     <WarMachineItem
                                         key={`${wm.participantID} - ${wm.hash}`}
                                         warMachine={wm}
                                         scale={0.7}
                                         transformOrigin="0 0"
+                                        label={i + 1 + (factionWarMachines ? factionWarMachines?.length : 0)}
                                         initialExpanded
                                     />
                                 ))}
@@ -281,22 +288,26 @@ const WarMachineStatsInner = () => {
                         >
                             <HorizontalScrollContainer>
                                 <Stack spacing="-.9rem" direction="row" alignItems="center" justifyContent="center" sx={{ px: "1.2rem", py: "2rem" }}>
-                                    {factionMechs.map((wm, i) => (
-                                        <WarMachineItem key={`${wm.participantID} - ${wm.hash}`} warMachine={wm} scale={0.75} index={i} />
-                                    ))}
+                                    {factionWarMachines &&
+                                        factionWarMachines.map((wm, i) => (
+                                            <WarMachineItem key={`${wm.participantID} - ${wm.hash}`} warMachine={wm} scale={0.75} label={i + 1} />
+                                        ))}
                                 </Stack>
                             </HorizontalScrollContainer>
                         </ClipThing>
                     )}
 
-                    {otherMechs.length > 0 && (
+                    {otherWarMachines && otherWarMachines.length > 0 && (
                         <HorizontalScrollContainer>
                             <Stack spacing="-1.1rem" direction="row" alignItems="center" sx={{ flex: 1, px: "1.2rem", py: "2rem" }}>
-                                {otherMechs
-                                    .sort((a, b) => a.factionID.localeCompare(b.factionID))
-                                    .map((wm) => (
-                                        <WarMachineItem key={`${wm.participantID} - ${wm.hash}`} warMachine={wm} scale={0.7} />
-                                    ))}
+                                {otherWarMachines.map((wm, i) => (
+                                    <WarMachineItem
+                                        key={`${wm.participantID} - ${wm.hash}`}
+                                        warMachine={wm}
+                                        scale={0.7}
+                                        label={i + 1 + (factionWarMachines ? factionWarMachines?.length : 0)}
+                                    />
+                                ))}
                             </Stack>
                         </HorizontalScrollContainer>
                     )}
