@@ -149,13 +149,10 @@ export const RepairJobs = () => {
             <Stack sx={{ position: "relative", height: "100%", backgroundColor: theme.factionTheme.background }}>
                 <Stack
                     direction="row"
-                    spacing=".96rem"
                     alignItems="center"
                     sx={{
-                        position: "relative",
-                        pl: "2.2rem",
-                        pr: "4.8rem",
-                        height: `${5}rem`,
+                        px: "2.2rem",
+                        height: "5rem",
                         background: `linear-gradient(${theme.factionTheme.primary} 26%, ${theme.factionTheme.primary}95)`,
                         boxShadow: 1.5,
                     }}

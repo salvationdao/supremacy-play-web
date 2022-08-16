@@ -73,42 +73,49 @@ export const QuestsPopover = ({
                 backgroundColor={theme.factionTheme.background}
                 sx={{ height: "100%" }}
             >
-                <Box sx={{ position: "relative", width: "38rem", maxHeight: "90vh", py: "1.4rem" }}>
-                    <Box sx={{ px: "2rem" }}>
-                        <Typography sx={{ mb: ".4rem", fontFamily: fonts.nostromoBlack, color: colors.purple }}>YOUR QUESTS</Typography>
-
-                        <Typography variant="body2" sx={{ mb: ".8rem", fontWeight: "fontWeightBold", color: colors.grey }}>
-                            <i>
-                                YOU&apos;VE COMPLETED {questStats.filter((qs) => qs.obtained).length}/{questStats.length} QUESTS
-                            </i>
-                        </Typography>
-                    </Box>
+                <Box sx={{ position: "relative", width: "38rem", maxHeight: "90vh", pb: "1.1rem" }}>
+                    <Stack
+                        direction="row"
+                        alignItems="center"
+                        sx={{
+                            px: "2.2rem",
+                            height: "5rem",
+                            background: `linear-gradient(${colors.purple} 26%, ${colors.purple}95)`,
+                            boxShadow: 1.5,
+                        }}
+                    >
+                        <Typography sx={{ fontFamily: fonts.nostromoBlack }}>YOUR QUESTS</Typography>
+                    </Stack>
 
                     {roundNames.length > 0 &&
-                        roundNames.map((roundName) => {
+                        roundNames.map((roundName, i) => {
+                            const questStatsFiltered = questStats.filter((qs) => qs.round_name === roundName)
+
                             return (
-                                <Accordion key={roundName} sx={{ ".MuiAccordionSummary-root.Mui-expanded": { backgroundColor: colors.purple, minHeight: 0 } }}>
-                                    <AccordionSummary expandIcon={<SvgExpandMoreIcon />} sx={{ minHeight: 0, ":hover": { opacity: 0.9 } }}>
+                                <Accordion
+                                    key={roundName}
+                                    defaultExpanded={i === 0}
+                                    sx={{ m: "0 !important", ".MuiAccordionSummary-root.Mui-expanded": { backgroundColor: "#FFFFFF20", minHeight: 0 } }}
+                                >
+                                    <AccordionSummary expandIcon={<SvgExpandMoreIcon />} sx={{ minHeight: 0, ":hover": { opacity: 0.95 } }}>
                                         <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack }}>
-                                            {roundName}
+                                            {roundName} ({questStatsFiltered.filter((qs) => qs.obtained).length}/{questStatsFiltered.length})
                                         </Typography>
                                     </AccordionSummary>
                                     <AccordionDetails>
                                         <Stack spacing=".7rem">
-                                            {questStats
-                                                .filter((qs) => qs.round_name === roundName)
-                                                .map((qs) => {
-                                                    const progress = questProgressions?.find((qp) => qp.quest_id === qs.id)
+                                            {questStatsFiltered.map((qs) => {
+                                                const progress = questProgressions?.find((qp) => qp.quest_id === qs.id)
 
-                                                    return (
-                                                        <QuestItem
-                                                            key={`qs-key-${qs.id}-${progress?.current}`}
-                                                            questStat={qs}
-                                                            progress={progress}
-                                                            showConfetti={confetti.findIndex((i) => i === qs.id) >= 0}
-                                                        />
-                                                    )
-                                                })}
+                                                return (
+                                                    <QuestItem
+                                                        key={`qs-key-${qs.id}-${progress?.current}`}
+                                                        questStat={qs}
+                                                        progress={progress}
+                                                        showConfetti={confetti.findIndex((i) => i === qs.id) >= 0}
+                                                    />
+                                                )
+                                            })}
                                         </Stack>
                                     </AccordionDetails>
                                 </Accordion>
