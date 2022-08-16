@@ -137,7 +137,7 @@ export const RepairJobs = () => {
                             textAlign: "center",
                         }}
                     >
-                        {"There are no repair jobs found, please try again."}
+                        Repair jobs will appear here.
                     </Typography>
                 </Stack>
             </Stack>
@@ -147,9 +147,27 @@ export const RepairJobs = () => {
     return (
         <>
             <Stack sx={{ position: "relative", height: "100%", backgroundColor: theme.factionTheme.background }}>
-                <Box sx={{ backgroundColor: theme.factionTheme.primary }}>
-                    <TotalAndPageSizeOptions sortOptions={sortOptions} selectedSort={sort} onSetSort={setSort} />
-                </Box>
+                <Stack
+                    direction="row"
+                    spacing=".96rem"
+                    alignItems="center"
+                    sx={{
+                        position: "relative",
+                        pl: "2.2rem",
+                        pr: "4.8rem",
+                        height: `${5}rem`,
+                        background: `linear-gradient(${theme.factionTheme.primary} 26%, ${theme.factionTheme.primary}95)`,
+                        boxShadow: 1.5,
+                    }}
+                >
+                    <Stack spacing=".1rem">
+                        <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack, color: theme.factionTheme.secondary }}>
+                            REPAIR JOBS
+                        </Typography>
+                    </Stack>
+                </Stack>
+
+                <TotalAndPageSizeOptions sortOptions={sortOptions} selectedSort={sort} onSetSort={setSort} />
 
                 <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
                     <Box
