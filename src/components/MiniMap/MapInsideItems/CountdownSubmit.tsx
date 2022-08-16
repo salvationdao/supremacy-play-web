@@ -4,7 +4,7 @@ import { useMiniMap } from "../../../containers"
 import { useTimer } from "../../../hooks"
 import { fonts } from "../../../theme/theme"
 import { LocationSelectType } from "../../../types"
-import { MechMoveCommandAbility } from "../../WarMachine/WarMachineItem/MoveCommand"
+import { useHotkey } from "../../../containers/hotkeys"
 
 export const CountdownSubmit = () => {
     const { isTargeting, winner, playerAbility, selection } = useMiniMap()
@@ -14,6 +14,7 @@ export const CountdownSubmit = () => {
 
 const CountdownSubmitInner = () => {
     const { winner, playerAbility, selection, onTargetConfirm } = useMiniMap()
+    const { MechMoveCommandAbility } = useHotkey()
     const { setEndTimeState, totalSecRemain, delay } = useTimer(undefined, 600)
 
     const isInstant = useMemo(() => {
