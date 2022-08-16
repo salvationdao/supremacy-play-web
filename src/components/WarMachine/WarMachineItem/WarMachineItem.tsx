@@ -116,7 +116,7 @@ export const WarMachineItem = ({
             >
                 {/* Little info button to show the mech destroyed info */}
                 <Box sx={{ display: hovered ? "inline-block" : "none", position: "absolute", top: "-3rem", right: "0" }}>
-                    {label !== null && label !== undefined && <Typography>[Ctrl + {label}]</Typography>}
+                    {label !== null && label !== undefined && wmFactionID === factionID && <Typography>[{label}]</Typography>}
                 </Box>
                 {!isAlive && !isMiniMech && (
                     <IconButton

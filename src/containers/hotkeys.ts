@@ -166,6 +166,7 @@ export const HotkeyContainer = createContainer(() => {
         orderedWarMachines,
         otherWarMachines,
         factionWarMachines,
+        mechAbilityKey,
     }
 })
 

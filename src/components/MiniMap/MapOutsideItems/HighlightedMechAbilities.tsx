@@ -102,7 +102,7 @@ const AbilityItem = ({ hash, participantID, ability, index }: { hash: string; pa
     const { id, colour, image_url, label } = ability
     const [remainSeconds, setRemainSeconds] = useState(30)
     const ready = useMemo(() => remainSeconds === 0, [remainSeconds])
-    const { onGameAbilityTrigger } = useHotkey()
+    const { onGameAbilityTrigger, mechAbilityKey } = useHotkey()
 
     useGameServerSubscriptionFaction<number | undefined>(
         {
@@ -171,7 +171,7 @@ const AbilityItem = ({ hash, participantID, ability, index }: { hash: string; pa
                 >
                     {ready ? label : remainSeconds > 300 ? "∞" : `${remainSeconds}s`}
                 </Typography>
-                {ready && <Typography sx={{ opacity: "0.7" }}>[{index + 1}]</Typography>}
+                {ready && <Typography sx={{ opacity: "0.7" }}>[{mechAbilityKey[index]}]</Typography>}
             </Stack>
         </Stack>
     )
