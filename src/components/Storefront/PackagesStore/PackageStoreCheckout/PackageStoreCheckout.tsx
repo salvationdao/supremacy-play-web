@@ -201,12 +201,14 @@ const PaymentForm = ({ product }: PackageStoreCheckoutInnerProps) => {
     const backgroundColor = theme.factionTheme.background
 
     const [submitting, setSubmitting] = useState(false)
+    const [receiptEmail, setReceiptEmail] = useState("")
 
     const setupCheckout = useCallback(async () => {
         try {
             const { payload: secretToken, error } = await mutate({
                 product_id: product.id,
                 product_type: "generic",
+                email_address: receiptEmail,
             })
 
             if (error || !secretToken) {
@@ -217,7 +219,7 @@ const PaymentForm = ({ product }: PackageStoreCheckoutInnerProps) => {
             const message = typeof err === "string" ? err : "Unable to start checkout, please try again."
             console.error(message)
         }
-    }, [mutate, product])
+    }, [mutate, product, receiptEmail])
 
     const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
@@ -251,6 +253,9 @@ const PaymentForm = ({ product }: PackageStoreCheckoutInnerProps) => {
 
     return (
         <form onSubmit={submitHandler}>
+            <Typography variant="body2" sx={{ color: colors.offWhite, fontFamily: fonts.nostromoBlack }}>
+                Card Number
+            </Typography>
             <ClipThing
                 clipSize="5px"
                 clipSlantSize="2px"
@@ -260,7 +265,7 @@ const PaymentForm = ({ product }: PackageStoreCheckoutInnerProps) => {
                     borderThickness: "1px",
                 }}
                 backgroundColor={backgroundColor}
-                sx={{ height: "100%", flex: 1 }}
+                sx={{ mb: "1rem", mt: "0.5rem" }}
             >
                 <Stack sx={{ height: "100%" }}>
                     <StripeTextFieldNumber
@@ -288,6 +293,9 @@ const PaymentForm = ({ product }: PackageStoreCheckoutInnerProps) => {
                 </Stack>
             </ClipThing>
 
+            <Typography variant="body2" sx={{ color: colors.offWhite, fontFamily: fonts.nostromoBlack }}>
+                Card Expiry
+            </Typography>
             <ClipThing
                 clipSize="5px"
                 clipSlantSize="2px"
@@ -297,7 +305,7 @@ const PaymentForm = ({ product }: PackageStoreCheckoutInnerProps) => {
                     borderThickness: "1px",
                 }}
                 backgroundColor={backgroundColor}
-                sx={{ height: "100%", flex: 1 }}
+                sx={{ mb: "1rem", mt: "0.5rem" }}
             >
                 <Stack sx={{ height: "100%" }}>
                     <StripeTextFieldExpiry
@@ -325,6 +333,9 @@ const PaymentForm = ({ product }: PackageStoreCheckoutInnerProps) => {
                 </Stack>
             </ClipThing>
 
+            <Typography variant="body2" sx={{ color: colors.offWhite, fontFamily: fonts.nostromoBlack }}>
+                CVV
+            </Typography>
             <ClipThing
                 clipSize="5px"
                 clipSlantSize="2px"
@@ -334,7 +345,7 @@ const PaymentForm = ({ product }: PackageStoreCheckoutInnerProps) => {
                     borderThickness: "1px",
                 }}
                 backgroundColor={backgroundColor}
-                sx={{ height: "100%", flex: 1 }}
+                sx={{ mb: "1rem", mt: "0.5rem" }}
             >
                 <Stack sx={{ height: "100%" }}>
                     <StripeTextFieldCVC
@@ -362,6 +373,47 @@ const PaymentForm = ({ product }: PackageStoreCheckoutInnerProps) => {
                 </Stack>
             </ClipThing>
 
+            <Typography variant="body2" sx={{ color: colors.offWhite, fontFamily: fonts.nostromoBlack }}>
+                Email Receipt
+            </Typography>
+            <ClipThing
+                clipSize="5px"
+                clipSlantSize="2px"
+                opacity={0.9}
+                border={{
+                    borderColor: primaryColor,
+                    borderThickness: "1px",
+                }}
+                backgroundColor={backgroundColor}
+                sx={{ mb: "1rem", mt: "0.5rem" }}
+            >
+                <Stack sx={{ height: "100%" }}>
+                    <TextField
+                        variant="outlined"
+                        hiddenLabel
+                        fullWidth
+                        placeholder="Email receipt to"
+                        sx={{
+                            backgroundColor: "unset",
+                            ".MuiOutlinedInput-input": {
+                                px: "1.5rem",
+                                py: ".5rem",
+                                height: "unset",
+                                "::-webkit-outer-spin-button, ::-webkit-inner-spin-button": {
+                                    WebkitAppearance: "none",
+                                },
+                                borderRadius: 0.5,
+                                border: `${primaryColor}50 2px solid`,
+                                ":hover, :focus, :active": { backgroundColor: "#00000080", border: `${primaryColor}99 2px solid` },
+                            },
+                            ".MuiOutlinedInput-notchedOutline": { border: "unset" },
+                        }}
+                        value={receiptEmail}
+                        onChange={(e) => setReceiptEmail(e.target.value)}
+                    />
+                </Stack>
+            </ClipThing>
+
             <FancyButton
                 type={"submit"}
                 loading={submitting}
@@ -381,7 +433,7 @@ const PaymentForm = ({ product }: PackageStoreCheckoutInnerProps) => {
                         fontFamily: fonts.nostromoHeavy,
                     }}
                 >
-                    SUBMIT
+                    PLACE ORDER
                 </Typography>
             </FancyButton>
         </form>
