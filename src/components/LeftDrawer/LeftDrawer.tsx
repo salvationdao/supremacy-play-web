@@ -1,7 +1,8 @@
 import { Box, Drawer, Fade } from "@mui/material"
+import { useRouteMatch } from "react-router-dom"
 import { DRAWER_TRANSITION_DURATION } from "../../constants"
 import { useAuth, useMobile, useOverlayToggles } from "../../containers"
-import { LEFT_DRAWER_ARRAY, LEFT_DRAWER_MAP } from "../../routes"
+import { LEFT_DRAWER_ARRAY, LEFT_DRAWER_MAP, ROUTES_ARRAY } from "../../routes"
 import { colors, siteZIndex } from "../../theme/theme"
 import { DrawerButtons, DRAWER_BAR_WIDTH } from "./DrawerButtons"
 
@@ -12,7 +13,15 @@ export const LeftDrawer = () => {
     const { isMobile } = useMobile()
     const { userID } = useAuth()
 
-    if (isMobile) return null
+    const match = useRouteMatch(ROUTES_ARRAY.filter((r) => r.path !== "/").map((r) => r.path))
+    let activeRouteID = ""
+    if (match) {
+        const r = ROUTES_ARRAY.find((r) => r.path === match.path)
+        activeRouteID = r?.matchNavLinkID || ""
+    }
+
+    // Hide the drawer if on mobile OR none of the tabs are visible on the page
+    if (isMobile || (activeRouteID && LEFT_DRAWER_ARRAY.filter((r) => !r.matchNavLinkID || r.matchNavLinkID === activeRouteID).length <= 0)) return null
 
     const isOpen = !!LEFT_DRAWER_MAP[leftDrawerActiveTabID]
 
@@ -40,7 +49,7 @@ export const LeftDrawer = () => {
                 }}
             >
                 {LEFT_DRAWER_ARRAY.map((r) => {
-                    if (r.requireAuth && !userID) return null
+                    if ((r.requireAuth && !userID) || (r.matchNavLinkID && activeRouteID && activeRouteID !== r.matchNavLinkID)) return null
                     const isActive = r.id === leftDrawerActiveTabID
                     if (isActive || r.mountAllTime) {
                         return (

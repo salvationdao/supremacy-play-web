@@ -236,7 +236,7 @@ export interface SideTabsStruct {
     Component?: () => JSX.Element | null
     icon: string | React.ReactElement<unknown, string | React.JSXElementConstructor<unknown>>
     label: string
-    onlyShowOnRoute: string // Leave blank to have the tab available on all pages, else specify the route
+    matchNavLinkID?: string // Leave blank to have the tab available on all pages, else specify the route
     mountAllTime: boolean // Whether to keep component mounted even not on the tab
     requireAuth: boolean
 }
@@ -248,7 +248,7 @@ export const LEFT_DRAWER_MAP: { [name: string]: SideTabsStruct } = {
         label: "Battle Commands",
         Component: BattleArena,
         requireAuth: false,
-        onlyShowOnRoute: "/",
+        matchNavLinkID: "home",
         mountAllTime: true,
     },
     previous_battle: {
@@ -257,7 +257,7 @@ export const LEFT_DRAWER_MAP: { [name: string]: SideTabsStruct } = {
         label: "Previous Battle",
         Component: BattleEndScreen,
         requireAuth: false,
-        onlyShowOnRoute: "/",
+        matchNavLinkID: "home",
         mountAllTime: true,
     },
 }
@@ -277,7 +277,6 @@ export const RIGHT_DRAWER_MAP: { [name: string]: SideTabsStruct } = {
         label: "Live Chat",
         Component: LiveChat,
         requireAuth: false,
-        onlyShowOnRoute: "",
         mountAllTime: true,
     },
     active_players: {
@@ -290,7 +289,6 @@ export const RIGHT_DRAWER_MAP: { [name: string]: SideTabsStruct } = {
         label: "Active Players",
         Component: PlayerList,
         requireAuth: true,
-        onlyShowOnRoute: "",
         mountAllTime: false,
     },
 }

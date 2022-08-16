@@ -13,10 +13,10 @@ export const NavLinks = () => {
     const { userID } = useAuth()
 
     const match = useRouteMatch(ROUTES_ARRAY.filter((r) => r.path !== "/").map((r) => r.path))
-    let activeTabID = ""
+    let activeRouteID = ""
     if (match) {
         const r = ROUTES_ARRAY.find((r) => r.path === match.path)
-        activeTabID = r?.matchNavLinkID || ""
+        activeRouteID = r?.matchNavLinkID || ""
     }
 
     if (hideNavLinks) return null
@@ -29,7 +29,7 @@ export const NavLinks = () => {
                 const { label } = r.navLink
                 const navigateTo = r.path.split("/:")[0]
 
-                return <NavLink key={id} label={label} to={`${navigateTo}`} isActive={activeTabID === r.matchNavLinkID || location.pathname === r.path} />
+                return <NavLink key={id} label={label} to={`${navigateTo}`} isActive={activeRouteID === r.matchNavLinkID || location.pathname === r.path} />
             })}
         </Stack>
     )
