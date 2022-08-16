@@ -1,6 +1,5 @@
 import { Box, Fade, Stack, Tab, Tabs, Typography } from "@mui/material"
 import { useCallback, useState } from "react"
-import { BOTTOM_NAV_HEIGHT } from "../../constants"
 import { useAuth, useMobile } from "../../containers"
 import { useTheme } from "../../containers/theme"
 import { HASH_ROUTES_MAP } from "../../routes"
@@ -37,7 +36,7 @@ const BottomNavInner = () => {
         <Stack
             sx={{
                 maxHeight: "calc(100% - 240px)",
-                height: isNavOpen ? `${BOTTOM_NAV_HEIGHT}rem` : "4.2rem",
+                height: isNavOpen ? `62%` : "4.2rem",
                 backgroundColor: `${primaryColor}08`,
                 transition: "all .3s",
             }}

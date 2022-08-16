@@ -42,6 +42,7 @@
         "react-rnd": "^10.3.7",
         "react-router-dom": "^5.2.0",
         "rehype-sanitize": "^5.0.1",
+        "screenfull": "^6.0.2",
         "three": "^0.142.0",
         "unstated-next": "^1.1.0",
         "uuid": "^8.3.2"
@@ -85,7 +86,6 @@
     },
     "scripts": {
         "start": "git submodule update --init --recursive; cross-env SSL_CRT_FILE=./certs/__supremacygame_io_ca_all.ca-bundle SSL_KEY_FILE=./certs/_.supremacygame.io.key HOST=0.0.0.0 PORT=3002 HTTPS=true BROWSER=none react-scripts start",
-        "start-no-update": "cross-env SSL_CRT_FILE=./certs/__supremacygame_io_ca_all.ca-bundle SSL_KEY_FILE=./certs/_.supremacygame.io.key HOST=0.0.0.0 PORT=3002 HTTPS=true BROWSER=none react-scripts start",
         "start:windows": "git submodule update --init --recursive && cross-env SSL_CRT_FILE=./certs/__supremacygame_io_ca_all.ca-bundle SSL_KEY_FILE=./certs/_.supremacygame.io.key HOST=0.0.0.0 PORT=3002 HTTPS=true BROWSER=none react-scripts start",
         "build": "react-scripts build",
         "test": "react-scripts test",

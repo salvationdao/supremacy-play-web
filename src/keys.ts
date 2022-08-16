@@ -69,11 +69,13 @@ export enum GameServerKeys {
     ReadTaggedMessage = "READ:TAGGED:MESSAGE",
     ReactToMessage = "REACT:MESSAGE",
     ChatBanPlayer = "CHAT:BAN:PLAYER",
+    ChatReport = "CHAT:REPORT:MESSAGE",
 
     BattleMechHistoryList = "BATTLE:MECH:HISTORY:LIST",
     BattleMechStats = "BATTLE:MECH:STATS",
 
     // Get / sub to data
+    SubBattleAISpawned = "BATTLE:AI:SPAWNED:SUBSCRIBE",
     SubGameSettings = "GAME:SETTINGS:UPDATED",
     SubBattleEndDetailUpdated = "BATTLE:END:DETAIL:UPDATED",
     SubViewersLiveCount = "VIEWER:LIVE:COUNT:UPDATED",
