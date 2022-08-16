@@ -650,6 +650,7 @@ export const MechLoadoutWeaponModal = ({ onClose, equipped, weaponsWithSkinInher
                         >
                             <WeaponPreview
                                 weapon={selectedWeapon}
+                                equipped={equipped}
                                 skinInheritable={selectedWeapon ? !!weaponsWithSkinInheritance.find((s) => s === selectedWeapon?.blueprint_id) : false}
                             />
                         </Stack>
@@ -683,9 +684,11 @@ const WeaponItem = ({ id, equipped, selected, onSelect }: WeaponItemProps) => {
         },
     )
 
-    const renderStat = useCallback((label: string, stats: { oldStat?: number; newStat: number }) => {
+    const renderStat = useCallback((label: string, stats: { oldStat?: number; newStat: number, negated?: boolean }) => {
+        const positiveColor = stats.negated ? colors.red : colors.green
+        const negativeColor = stats.negated ? colors.green : colors.red
         const difference = stats.newStat - (stats.oldStat || 0)
-        const color = difference > 0 ? colors.green : difference === 0 ? "white" : colors.red
+        const color = difference > 0 ? positiveColor : difference === 0 ? "white" : negativeColor
         const symbol = difference > 0 ? "+" : ""
 
         return (
@@ -808,6 +811,7 @@ const WeaponItem = ({ id, equipped, selected, onSelect }: WeaponItemProps) => {
                         renderStat("SPREAD", {
                             oldStat: equipped.spread,
                             newStat: weaponDetails.spread,
+                            negated: true
                         })}
                     {typeof weaponDetails.rate_of_fire !== "undefined" &&
                         renderStat("RATE OF FIRE", {
@@ -832,12 +836,108 @@ const WeaponItem = ({ id, equipped, selected, onSelect }: WeaponItemProps) => {
 
 interface WeaponPreviewProps {
     weapon?: Weapon
+    equipped: Weapon
     skinInheritable: boolean
 }
 
-const WeaponPreview = ({ weapon, skinInheritable }: WeaponPreviewProps) => {
+const WeaponPreview = ({ weapon, equipped, skinInheritable }: WeaponPreviewProps) => {
     const theme = useTheme()
     const [inheritSkin, setInheritSkin] = useState(false)
+
+    const renderStatChange = useCallback((label: string, stats: { oldStat?: number; newStat: number; negated?: boolean }) => {
+        const positiveColor = stats.negated ? colors.red : colors.green
+        const negativeColor = stats.negated ? colors.green : colors.red
+        const difference = stats.newStat - (stats.oldStat || 0)
+        const color = difference > 0 ? positiveColor : difference === 0 ? "white" : negativeColor
+        const symbol = difference > 0 ? "+" : ""
+
+        if (difference === 0 || !stats.oldStat) return null
+
+        const percentageDifference = Math.round((difference * 100 * 100) / stats.oldStat) / 100
+        return (
+            <Stack direction="row" spacing="1rem" alignItems="center">
+                <Typography
+                    variant="body2"
+                    sx={{
+                        color,
+                    }}
+                >
+                    {symbol}
+                    {percentageDifference}%
+                </Typography>
+                <Typography
+                    variant="caption"
+                    sx={{
+                        fontSize: "1rem",
+                        fontFamily: fonts.nostromoBlack,
+                    }}
+                >
+                    {label}
+                </Typography>
+            </Stack>
+        )
+    }, [])
+
+    const statChanges = useMemo(() => {
+        if (!weapon) return []
+
+        const stats = [
+            typeof weapon.damage !== "undefined" &&
+                renderStatChange("DAMAGE", {
+                    oldStat: equipped.damage,
+                    newStat: weapon.damage,
+                }),
+            typeof weapon.damage_falloff !== "undefined" &&
+                renderStatChange("DAMAGE FALLOFF", {
+                    oldStat: equipped.damage_falloff,
+                    newStat: weapon.damage_falloff,
+                }),
+            typeof weapon.radius !== "undefined" &&
+                renderStatChange("RADIUS", {
+                    oldStat: equipped.radius,
+                    newStat: weapon.radius,
+                }),
+            typeof weapon.radius_damage_falloff !== "undefined" &&
+                renderStatChange("RADIAL DAMAGE FALLOFF", {
+                    oldStat: equipped.radius_damage_falloff,
+                    newStat: weapon.radius_damage_falloff,
+                }),
+            typeof weapon.spread !== "undefined" &&
+                renderStatChange("SPREAD", {
+                    oldStat: equipped.spread,
+                    newStat: weapon.spread,
+                    negated: true,
+                }),
+            typeof weapon.rate_of_fire !== "undefined" &&
+                renderStatChange("RATE OF FIRE", {
+                    oldStat: equipped.rate_of_fire,
+                    newStat: weapon.rate_of_fire,
+                }),
+            typeof weapon.projectile_speed !== "undefined" &&
+                renderStatChange("PROJECTILE SPEED", {
+                    oldStat: equipped.projectile_speed,
+                    newStat: weapon.projectile_speed,
+                }),
+            typeof weapon.max_ammo !== "undefined" &&
+                renderStatChange("MAX AMMO", {
+                    oldStat: equipped.max_ammo,
+                    newStat: weapon.max_ammo,
+                }),
+        ]
+
+        return stats.filter((s) => !!s)
+    }, [
+        equipped.damage,
+        equipped.damage_falloff,
+        equipped.max_ammo,
+        equipped.projectile_speed,
+        equipped.radius,
+        equipped.radius_damage_falloff,
+        equipped.rate_of_fire,
+        equipped.spread,
+        renderStatChange,
+        weapon,
+    ])
 
     if (weapon) {
         const skin = weapon.weapon_skin
@@ -919,6 +1019,19 @@ const WeaponPreview = ({ weapon, skinInheritable }: WeaponPreviewProps) => {
                         mt: "1rem",
                     }}
                 >
+                    {statChanges.length > 0 && (
+                        <Stack>
+                            <Typography
+                                sx={{
+                                    color: colors.lightGrey,
+                                    textTransform: "uppercase",
+                                }}
+                            >
+                                Stat Changes If Equipped:
+                            </Typography>
+                            {statChanges}
+                        </Stack>
+                    )}
                     <Stack direction="row" spacing="1rem" mt="auto">
                         <Box ml="auto" />
                         {skinInheritable && (
