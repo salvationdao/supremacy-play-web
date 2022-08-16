@@ -10,7 +10,6 @@ import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
 import { MediaPreviewModal } from "../../../Common/MediaPreview/MediaPreviewModal"
 
 export interface MechLoadoutItemProps {
-    weaponsWithSkinInheritance?: string[]
     imageUrl?: string
     videoUrls?: (string | undefined)[] | undefined
     label: string

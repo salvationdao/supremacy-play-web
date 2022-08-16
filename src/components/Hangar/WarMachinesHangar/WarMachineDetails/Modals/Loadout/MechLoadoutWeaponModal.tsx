@@ -1,4 +1,4 @@
-import { Box, CircularProgress, Divider, IconButton, Modal, Pagination, Stack, Typography } from "@mui/material"
+import { Box, CircularProgress, Divider, IconButton, Modal, Pagination, Stack, Switch, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useParameterizedQuery } from "react-fetching-library"
 import { FancyButton } from "../../../../.."
@@ -32,9 +32,10 @@ const sortOptions = [
 interface MechLoadoutWeaponModalProps {
     onClose: () => void
     equipped: Weapon
+    weaponsWithSkinInheritance: string[]
 }
 
-export const MechLoadoutWeaponModal = ({ onClose, equipped }: MechLoadoutWeaponModalProps) => {
+export const MechLoadoutWeaponModal = ({ onClose, equipped, weaponsWithSkinInheritance }: MechLoadoutWeaponModalProps) => {
     const { userID } = useAuth()
     const { send } = useGameServerCommandsUser("/user_commander")
 
@@ -499,85 +500,6 @@ export const MechLoadoutWeaponModal = ({ onClose, equipped }: MechLoadoutWeaponM
         )
     }, [equipped, isLoading, loadError, selectedWeapon?.id, theme.factionTheme.primary, theme.factionTheme.secondary, weapons])
 
-    const weaponPreview = useMemo(() => {
-        if (selectedWeapon) {
-            const skin = selectedWeapon.weapon_skin
-            const videoUrls = [skin?.animation_url || selectedWeapon?.animation_url, skin?.card_animation_url || selectedWeapon?.card_animation_url]
-            const videoUrlsFilters = videoUrls ? videoUrls.filter((videoUrl) => !!videoUrl) : []
-            const imageUrl =
-                skin?.avatar_url ||
-                selectedWeapon?.avatar_url ||
-                skin?.image_url ||
-                selectedWeapon?.image_url ||
-                skin?.large_image_url ||
-                selectedWeapon?.large_image_url
-
-            return (
-                <Box
-                    sx={{
-                        position: "relative",
-                    }}
-                >
-                    <FeatherFade color={theme.factionTheme.background} />
-                    {(!videoUrlsFilters || videoUrlsFilters.length <= 0) && imageUrl ? (
-                        <Box
-                            component="img"
-                            src={imageUrl}
-                            sx={{
-                                height: "100%",
-                                width: "100%",
-                                objectFit: "contain",
-                                objectPosition: "center",
-                            }}
-                        />
-                    ) : (
-                        <Box
-                            key={imageUrl}
-                            component="video"
-                            sx={{
-                                height: "100%",
-                                width: "100%",
-                                objectFit: "contain",
-                                objectPosition: "center",
-                            }}
-                            disablePictureInPicture
-                            disableRemotePlayback
-                            loop
-                            muted
-                            autoPlay
-                            controls={false}
-                            poster={`${imageUrl}`}
-                        >
-                            {videoUrlsFilters.map((videoUrl, i) => videoUrl && <source key={videoUrl + i} src={videoUrl} type="video/mp4" />)}
-                        </Box>
-                    )}
-                </Box>
-            )
-        }
-
-        return (
-            <Stack
-                alignItems="center"
-                justifyContent="center"
-                sx={{
-                    height: "100%",
-                }}
-            >
-                <Typography
-                    sx={{
-                        px: "1.28rem",
-                        pt: "1.28rem",
-                        color: colors.grey,
-                        fontFamily: fonts.nostromoBold,
-                        textAlign: "center",
-                    }}
-                >
-                    Select a weapon to view its details.
-                </Typography>
-            </Stack>
-        )
-    }, [selectedWeapon, theme.factionTheme.background])
-
     return (
         <Modal open onClose={onClose} sx={{ zIndex: siteZIndex.Modal }}>
             <Box
@@ -726,7 +648,10 @@ export const MechLoadoutWeaponModal = ({ onClose, equipped }: MechLoadoutWeaponM
                                 backgroundColor: "#00000070",
                             }}
                         >
-                            {weaponPreview}
+                            <WeaponPreview
+                                weapon={selectedWeapon}
+                                skinInheritable={selectedWeapon ? !!weaponsWithSkinInheritance.find((s) => s === selectedWeapon?.blueprint_id) : false}
+                            />
                         </Stack>
                     </Stack>
                 </ClipThing>
@@ -902,5 +827,135 @@ const WeaponItem = ({ id, equipped, selected, onSelect }: WeaponItemProps) => {
                 </Stack>
             </Stack>
         </FancyButton>
+    )
+}
+
+interface WeaponPreviewProps {
+    weapon?: Weapon
+    skinInheritable: boolean
+}
+
+const WeaponPreview = ({ weapon, skinInheritable }: WeaponPreviewProps) => {
+    const theme = useTheme()
+    const [inheritSkin, setInheritSkin] = useState(false)
+
+    if (weapon) {
+        const skin = weapon.weapon_skin
+        const videoUrls = [skin?.animation_url || weapon?.animation_url, skin?.card_animation_url || weapon?.card_animation_url]
+        const videoUrlsFilters = videoUrls ? videoUrls.filter((videoUrl) => !!videoUrl) : []
+        const imageUrl = skin?.avatar_url || weapon?.avatar_url || skin?.image_url || weapon?.image_url || skin?.large_image_url || weapon?.large_image_url
+
+        return (
+            <Stack p="1rem 2rem" height="100%">
+                <Box
+                    sx={{
+                        position: "relative",
+                    }}
+                >
+                    <FeatherFade color={theme.factionTheme.background} />
+                    {(!videoUrlsFilters || videoUrlsFilters.length <= 0) && imageUrl ? (
+                        <Box
+                            component="img"
+                            src={imageUrl}
+                            sx={{
+                                height: "100%",
+                                width: "100%",
+                                objectFit: "contain",
+                                objectPosition: "center",
+                            }}
+                        />
+                    ) : (
+                        <Box
+                            key={imageUrl}
+                            component="video"
+                            sx={{
+                                height: "100%",
+                                width: "100%",
+                                objectFit: "contain",
+                                objectPosition: "center",
+                            }}
+                            disablePictureInPicture
+                            disableRemotePlayback
+                            loop
+                            muted
+                            autoPlay
+                            controls={false}
+                            poster={`${imageUrl}`}
+                        >
+                            {videoUrlsFilters.map((videoUrl, i) => videoUrl && <source key={videoUrl + i} src={videoUrl} type="video/mp4" />)}
+                        </Box>
+                    )}
+                    <Typography
+                        variant="h4"
+                        sx={{
+                            zIndex: 100,
+                            position: "absolute",
+                            left: 0,
+                            bottom: 0,
+                            fontFamily: fonts.nostromoBlack,
+                        }}
+                    >
+                        {weapon.label}
+                    </Typography>
+                </Box>
+                <Stack
+                    sx={{
+                        zIndex: 100,
+                        flex: 1,
+                        mt: "1rem",
+                    }}
+                >
+                    <Stack direction="row" spacing="1rem" mt="auto">
+                        <Box ml="auto" />
+                        {skinInheritable && (
+                            <Stack direction="row" alignItems="center" justifyContent="space-between">
+                                <Switch
+                                    size="small"
+                                    checked={inheritSkin}
+                                    onChange={(e, c) => setInheritSkin(c)}
+                                    sx={{
+                                        transform: "scale(.7)",
+                                        ".Mui-checked": { color: theme.factionTheme.primary },
+                                        ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${theme.factionTheme.primary}50` },
+                                    }}
+                                />
+                                <Typography variant="body2" sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>
+                                    Inherit Skin
+                                </Typography>
+                            </Stack>
+                        )}
+                        <FancyButton
+                            clipThingsProps={{
+                                backgroundColor: colors.green,
+                            }}
+                        >
+                            Equip To Mech
+                        </FancyButton>
+                    </Stack>
+                </Stack>
+            </Stack>
+        )
+    }
+
+    return (
+        <Stack
+            alignItems="center"
+            justifyContent="center"
+            sx={{
+                height: "100%",
+            }}
+        >
+            <Typography
+                sx={{
+                    px: "1.28rem",
+                    pt: "1.28rem",
+                    color: colors.grey,
+                    fontFamily: fonts.nostromoBold,
+                    textAlign: "center",
+                }}
+            >
+                Select a weapon to view its details.
+            </Typography>
+        </Stack>
     )
 }
