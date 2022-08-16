@@ -21,6 +21,7 @@ import { SortAndFilters } from "../../../../../Common/SortAndFilters/SortAndFilt
 import { TotalAndPageSizeOptions } from "../../../../../Common/TotalAndPageSizeOptions"
 import { GetWeaponsRequest, GetWeaponsResponse } from "../../../../WeaponsHangar/WeaponsHangar"
 import { MechLoadoutItemProps } from "../../../Common/MechLoadoutItem"
+import { FeatherFade } from "../../MechViewer"
 
 const sortOptions = [
     { label: SortTypeLabel.Alphabetical, value: SortTypeLabel.Alphabetical },
@@ -42,6 +43,7 @@ export const MechLoadoutWeaponModal = ({ onClose }: MechLoadoutWeaponModalProps)
     const secondaryColor = theme.factionTheme.secondary
 
     const [weapons, setWeapons] = useState<Weapon[]>([])
+    const [selectedWeapon, setSelectedWeapon] = useState<Weapon>()
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
 
@@ -335,7 +337,6 @@ export const MechLoadoutWeaponModal = ({ onClose }: MechLoadoutWeaponModalProps)
 
             if (!resp) return
             setLoadError(undefined)
-            console.log(resp)
             setWeapons(resp.weapons)
             setTotalItems(resp.total)
         } catch (e) {
@@ -395,7 +396,7 @@ export const MechLoadoutWeaponModal = ({ onClose }: MechLoadoutWeaponModalProps)
         })()
     }, [queryGetWeaponMaxStats, toggleSortFilterReRender, userID])
 
-    const content = useMemo(() => {
+    const weaponList = useMemo(() => {
         if (loadError) {
             return (
                 <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
@@ -439,7 +440,7 @@ export const MechLoadoutWeaponModal = ({ onClose }: MechLoadoutWeaponModalProps)
                     }}
                 >
                     {weapons.map((p) => (
-                        <WeaponItem key={p.id} id={p.id} />
+                        <WeaponItem key={p.id} id={p.id} onSelect={(w) => setSelectedWeapon(w)} />
                     ))}
                 </Box>
             )
@@ -498,6 +499,85 @@ export const MechLoadoutWeaponModal = ({ onClose }: MechLoadoutWeaponModalProps)
         )
     }, [isLoading, loadError, theme.factionTheme.primary, theme.factionTheme.secondary, weapons])
 
+    const weaponPreview = useMemo(() => {
+        if (selectedWeapon) {
+            const skin = selectedWeapon.weapon_skin
+            const videoUrls = [skin?.animation_url || selectedWeapon?.animation_url, skin?.card_animation_url || selectedWeapon?.card_animation_url]
+            const videoUrlsFilters = videoUrls ? videoUrls.filter((videoUrl) => !!videoUrl) : []
+            const imageUrl =
+                skin?.avatar_url ||
+                selectedWeapon?.avatar_url ||
+                skin?.image_url ||
+                selectedWeapon?.image_url ||
+                skin?.large_image_url ||
+                selectedWeapon?.large_image_url
+
+            return (
+                <Box
+                    sx={{
+                        position: "relative",
+                    }}
+                >
+                    <FeatherFade color={theme.factionTheme.background} />
+                    {(!videoUrlsFilters || videoUrlsFilters.length <= 0) && imageUrl ? (
+                        <Box
+                            component="img"
+                            src={imageUrl}
+                            sx={{
+                                height: "100%",
+                                width: "100%",
+                                objectFit: "contain",
+                                objectPosition: "center",
+                            }}
+                        />
+                    ) : (
+                        <Box
+                            key={imageUrl}
+                            component="video"
+                            sx={{
+                                height: "100%",
+                                width: "100%",
+                                objectFit: "contain",
+                                objectPosition: "center",
+                            }}
+                            disablePictureInPicture
+                            disableRemotePlayback
+                            loop
+                            muted
+                            autoPlay
+                            controls={false}
+                            poster={`${imageUrl}`}
+                        >
+                            {videoUrlsFilters.map((videoUrl, i) => videoUrl && <source key={videoUrl + i} src={videoUrl} type="video/mp4" />)}
+                        </Box>
+                    )}
+                </Box>
+            )
+        }
+
+        return (
+            <Stack
+                alignItems="center"
+                justifyContent="center"
+                sx={{
+                    height: "100%",
+                }}
+            >
+                <Typography
+                    sx={{
+                        px: "1.28rem",
+                        pt: "1.28rem",
+                        color: colors.grey,
+                        fontFamily: fonts.nostromoBold,
+                        textAlign: "center",
+                    }}
+                >
+                    Select a weapon to view its details.
+                </Typography>
+            </Stack>
+        )
+    }, [selectedWeapon, theme.factionTheme.background])
+
     return (
         <Modal open onClose={onClose} sx={{ zIndex: siteZIndex.Modal }}>
             <Box
@@ -513,7 +593,7 @@ export const MechLoadoutWeaponModal = ({ onClose }: MechLoadoutWeaponModalProps)
                 }}
             >
                 <ClipThing
-                ref={filtersContainerEl}
+                    ref={filtersContainerEl}
                     clipSize="10px"
                     border={{
                         borderColor: theme.factionTheme.primary,
@@ -526,7 +606,16 @@ export const MechLoadoutWeaponModal = ({ onClose }: MechLoadoutWeaponModalProps)
                         maxHeight: "90vh",
                     }}
                 >
-                    <IconButton size="small" onClick={onClose} sx={{ position: "absolute", top: ".5rem", right: ".5rem" }}>
+                    <IconButton
+                        size="small"
+                        onClick={onClose}
+                        sx={{
+                            zIndex: 100,
+                            position: "absolute",
+                            top: ".5rem",
+                            right: ".5rem",
+                        }}
+                    >
                         <SvgClose size="3rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
                     </IconButton>
                     <Stack
@@ -557,7 +646,7 @@ export const MechLoadoutWeaponModal = ({ onClose }: MechLoadoutWeaponModalProps)
                             width="25rem"
                             drawer={{
                                 container: filtersContainerEl.current,
-                                onClose: () => toggleIsFiltersExpanded(false)
+                                onClose: () => toggleIsFiltersExpanded(false),
                             }}
                         />
                         <Stack flex={1}>
@@ -600,7 +689,7 @@ export const MechLoadoutWeaponModal = ({ onClose }: MechLoadoutWeaponModalProps)
                                     },
                                 }}
                             >
-                                {content}
+                                {weaponList}
                             </Box>
                             {totalPages > 1 && (
                                 <Box
@@ -629,6 +718,16 @@ export const MechLoadoutWeaponModal = ({ onClose }: MechLoadoutWeaponModalProps)
                                 </Box>
                             )}
                         </Stack>
+                        <Stack
+                            sx={{
+                                overflow: "hidden",
+                                flexBasis: "300px",
+                                borderLeft: `${primaryColor}70 1.5px solid`,
+                                backgroundColor: "#00000070",
+                            }}
+                        >
+                            {weaponPreview}
+                        </Stack>
                     </Stack>
                 </ClipThing>
             </Box>
@@ -638,11 +737,13 @@ export const MechLoadoutWeaponModal = ({ onClose }: MechLoadoutWeaponModalProps)
 
 interface WeaponItemProps {
     id: string
+    onSelect: (w: Weapon) => void
 }
 
-const WeaponItem = ({ id }: WeaponItemProps) => {
-    const [weaponDetails, setWeaponDetails] = useState<Weapon>()
+const WeaponItem = ({ id, onSelect }: WeaponItemProps) => {
     const theme = useTheme()
+
+    const [weaponDetails, setWeaponDetails] = useState<Weapon>()
 
     useGameServerSubscriptionFaction<Weapon>(
         {
@@ -651,10 +752,24 @@ const WeaponItem = ({ id }: WeaponItemProps) => {
         },
         (payload) => {
             if (!payload) return
-            console.log(payload)
             setWeaponDetails(payload)
         },
     )
+
+    if (!weaponDetails) {
+        return (
+            <ClipThing
+                border={{
+                    borderColor: theme.factionTheme.primary,
+                }}
+                backgroundColor={theme.factionTheme.background}
+            >
+                <Stack alignItems="center" justifyContent="center">
+                    <CircularProgress />
+                </Stack>
+            </ClipThing>
+        )
+    }
 
     return (
         <FancyButton
@@ -667,6 +782,7 @@ const WeaponItem = ({ id }: WeaponItemProps) => {
             sx={{
                 padding: "1rem",
             }}
+            onClick={() => onSelect(weaponDetails)}
         >
             <Stack direction="row">
                 <Box sx={{ width: "10rem" }}>
