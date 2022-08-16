@@ -107,7 +107,7 @@ const BottomNavInner = () => {
                     {tabs.map((item, i) => {
                         if (item.requireAuth && !userID) return null
                         return (
-                            <TabPanel key={i} currentValue={currentValue} value={i}>
+                            <TabPanel key={i} currentValue={currentValue} value={i} mountAllTime={item.mountAllTime}>
                                 {item.Component && <item.Component />}
                             </TabPanel>
                         )
@@ -122,11 +122,14 @@ interface TabPanelProps {
     children?: React.ReactNode
     value: number
     currentValue: number
+    mountAllTime: boolean
 }
 
 const TabPanel = (props: TabPanelProps) => {
-    const { children, currentValue, value } = props
+    const { children, currentValue, value, mountAllTime } = props
     const isActive = currentValue === value
+
+    if (!isActive && !mountAllTime) return null
 
     return (
         <Fade in={isActive}>

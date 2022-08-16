@@ -28,7 +28,7 @@ export const Controls = () => {
                 position: "relative",
                 width: "100%",
                 height: `${CONTROLS_HEIGHT}rem`,
-                pr: "1rem",
+                px: "1rem",
                 pt: ".24rem",
                 pb: ".16rem",
                 background: (theme) => `linear-gradient(${darkerBackgroundColor} 26%, ${theme.factionTheme.background})`,

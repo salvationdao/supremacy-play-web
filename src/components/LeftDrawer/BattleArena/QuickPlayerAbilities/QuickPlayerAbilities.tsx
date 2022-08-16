@@ -7,14 +7,14 @@ import { GetSaleAbilityAvailability } from "../../../../fetching"
 import { useGameServerSubscription, useGameServerSubscriptionUser } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
-import { PlayerAbility, SaleAbility, SaleAbilityAvailability } from "../../../../types"
+import { FeatureName, PlayerAbility, SaleAbility, SaleAbilityAvailability } from "../../../../types"
 import { TimeLeft } from "../../../Storefront/PlayerAbilitiesStore/PlayerAbilitiesStore"
 import { SectionHeading } from "../Common/SectionHeading"
 import { QuickPlayerAbilitiesItem } from "./QuickPlayerAbilitiesItem"
 
 export const QuickPlayerAbilities = () => {
-    const { userID } = useAuth()
-    if (!userID) return null
+    const { userID, userHasFeature } = useAuth()
+    if (!userID || !userHasFeature(FeatureName.playerAbility)) return null
     return <QuickPlayerAbilitiesInner userID={userID} />
 }
 

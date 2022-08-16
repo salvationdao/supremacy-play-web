@@ -66,7 +66,10 @@ export const NavLinksDrawer = () => {
                                 key={r.id}
                                 label={label}
                                 enable={enable && !disable}
-                                onClick={() => history.push(`${navigateTo}`)}
+                                onClick={() => {
+                                    history.push(`${navigateTo}`)
+                                    toggleIsNavLinksDrawerOpen(false)
+                                }}
                                 isActive={activeTabID === r.matchNavLinkID || location.pathname === r.path}
                                 primaryColor={theme.factionTheme.primary}
                                 secondaryColor={theme.factionTheme.secondary}

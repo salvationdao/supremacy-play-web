@@ -2,13 +2,13 @@ import { Box, Stack } from "@mui/material"
 import { useEffect, useState } from "react"
 import { Redirect } from "react-router-dom"
 import { SvgAbility, SvgHistory, SvgHistoryClock, SvgRobot } from "../assets"
-import { BattleEndScreen, BattleHistory, Controls, EarlyAccessWarning, MiniMap, Notifications, Stream, BattleAbility, WarMachineStats } from "../components"
-import { QuickDeploy } from "../components/LeftDrawer/QuickDeploy/QuickDeploy"
+import { BattleAbility, BattleEndScreen, BattleHistory, Controls, EarlyAccessWarning, MiniMap, Notifications, Stream, WarMachineStats } from "../components"
+import { PlayerAbilities } from "../components/LeftDrawer/BattleArena/PlayerAbilities/PlayerAbilities"
 import { QuickPlayerAbilities } from "../components/LeftDrawer/BattleArena/QuickPlayerAbilities/QuickPlayerAbilities"
+import { QuickDeploy } from "../components/LeftDrawer/QuickDeploy/QuickDeploy"
 import { BATTLE_ARENA_OPEN } from "../constants"
 import { useAuth, useDimension, useMobile } from "../containers"
 import { siteZIndex } from "../theme/theme"
-import { FeatureName } from "../types"
 import { EnlistPage } from "./EnlistPage"
 
 export const BattleArenaPage = () => {
@@ -39,7 +39,7 @@ export const BattleArenaPage = () => {
 }
 
 const BattleArenaPageInner = () => {
-    const { userID, factionID, userHasFeature } = useAuth()
+    const { userID, factionID } = useAuth()
     const { isMobile, setAdditionalTabs, setIsNavOpen, allowCloseNav } = useMobile()
     const { triggerReset } = useDimension()
 
@@ -87,10 +87,17 @@ const BattleArenaPageInner = () => {
                             }}
                         >
                             <Box sx={{ direction: "ltr", height: 0 }}>
-                                <Stack spacing="1.5rem" sx={{ position: "relative", p: ".8rem 1rem" }}>
-                                    <BattleAbility />
-                                    <MiniMap />
-                                    <WarMachineStats />
+                                <Stack direction="row">
+                                    <Stack spacing="1.5rem" sx={{ width: "50%", position: "relative", p: ".8rem 1rem" }}>
+                                        <MiniMap />
+                                        <WarMachineStats />
+                                    </Stack>
+
+                                    <Stack spacing="1.5rem" sx={{ width: "50%", position: "relative", p: ".8rem 1rem" }}>
+                                        <BattleAbility />
+                                        <PlayerAbilities />
+                                        <QuickPlayerAbilities />
+                                    </Stack>
                                 </Stack>
                             </Box>
                         </Box>
@@ -111,22 +118,6 @@ const BattleArenaPageInner = () => {
                 ),
             },
         ]
-
-        if (userHasFeature(FeatureName.playerAbility)) {
-            tabs.push({
-                id: "buy-abilities",
-                icon: <SvgAbility size="1.2rem" sx={{ pt: ".1rem" }} />,
-                label: "BUY ABILITIES",
-                requireAuth: true,
-                onlyShowOnRoute: "",
-                mountAllTime: true,
-                Component: () => (
-                    <Stack sx={{ position: "relative", height: "100%" }}>
-                        <QuickPlayerAbilities />
-                    </Stack>
-                ),
-            })
-        }
 
         tabs.push({
             id: "prev-battle",
