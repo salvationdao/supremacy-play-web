@@ -2,7 +2,7 @@ import { Box, Fade, IconButton, Popover, Stack, Typography } from "@mui/material
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { ClipThing, FancyButton } from "../.."
 import { SvgArrowRightAltSharpIcon, SvgSupToken, SvgWrapperProps } from "../../../assets"
-import { useSnackbar } from "../../../containers"
+import { useGlobalNotifications } from "../../../containers"
 import { useToggle } from "../../../hooks"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
@@ -83,7 +83,7 @@ const Stat = ({ title, content, PrefixSvg }: { title: string; content: string | 
 }
 
 const PopoverContent = ({ faction }: { faction: Faction }) => {
-    const { newSnackbarMessage } = useSnackbar()
+    const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsUser("/user_commander")
     const [page, setPage] = useState(0)
 

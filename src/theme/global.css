@@ -65,6 +65,12 @@ html {
     }
 }
 
+@media only screen and (max-width: 1300px) {
+    html {
+        font-size: 46%;
+    }
+}
+
 @media only screen and (max-width: 900px) {
     html {
         font-size: 44%;

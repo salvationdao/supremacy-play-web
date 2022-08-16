@@ -145,7 +145,7 @@ export const PlayerAbilitiesHangar = () => {
                     </Typography>
 
                     <FancyButton
-                        to={`/storefront/abilities${location.hash}`}
+                        to={`/storefront/abilities`}
                         clipThingsProps={{
                             clipSize: "9px",
                             backgroundColor: theme.factionTheme.primary,

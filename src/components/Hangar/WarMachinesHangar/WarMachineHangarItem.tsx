@@ -1,6 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useMemo, useState } from "react"
-import { useLocation } from "react-router-dom"
 import { FancyButton } from "../.."
 import { SvgDropdownArrow } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
@@ -13,11 +12,10 @@ import { MediaPreview } from "../../Common/MediaPreview/MediaPreview"
 import { General } from "../../Marketplace/Common/MarketItem/General"
 import { MechBarStats } from "./Common/MechBarStats"
 import { MechGeneralStatus } from "./Common/MechGeneralStatus"
-import { MechRepairBlocks } from "./Common/MechRepairBlocks"
 import { MechLoadoutIcons } from "./Common/MechLoadoutIcons"
+import { MechRepairBlocks } from "./Common/MechRepairBlocks"
 
 export const WarMachineHangarItem = ({ mech, isGridView }: { mech: MechBasic; isGridView?: boolean }) => {
-    const location = useLocation()
     const theme = useTheme()
     const [mechDetails, setMechDetails] = useState<MechDetails>()
 
@@ -55,7 +53,7 @@ export const WarMachineHangarItem = ({ mech, isGridView }: { mech: MechBasic; is
                     sx: { position: "relative", height: "100%" },
                 }}
                 sx={{ color: primaryColor, textAlign: "start", height: "100%", ":hover": { opacity: 1 } }}
-                to={`/mech/${mech.id}${location.hash}`}
+                to={`/mech/${mech.id}`}
             >
                 <Box
                     sx={{

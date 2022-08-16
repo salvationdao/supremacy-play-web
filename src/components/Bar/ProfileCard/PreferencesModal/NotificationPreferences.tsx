@@ -2,7 +2,7 @@ import { Box, Checkbox, CircularProgress, Stack, Switch, TextField, Typography }
 import { Dispatch, useEffect, useState } from "react"
 import { FancyButton } from "../../.."
 import { SvgInfoCircular, SvgSupToken } from "../../../../assets"
-import { useSnackbar } from "../../../../containers"
+import { useGlobalNotifications } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
 import { useToggle } from "../../../../hooks"
 import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
@@ -27,7 +27,7 @@ interface NotificationPreferencesProps {
 }
 
 export const NotificationPreferences = (props: NotificationPreferencesProps) => {
-    const { newSnackbarMessage } = useSnackbar()
+    const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsUser("/user_commander")
     const [notificationPreferences, setNotificationPreferences] = useState<NotificationPreferences>()
 
@@ -64,7 +64,7 @@ interface InnerProps extends NotificationPreferencesProps {
 
 export const NotificationPreferencesInner = ({ notificationPreferences, setNotificationPreferences, setTelegramShortcode }: InnerProps) => {
     const theme = useTheme()
-    const { newSnackbarMessage } = useSnackbar()
+    const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsUser("/user_commander")
     const [loading, setLoading] = useToggle(false)
     const [error, setError] = useState<string>()

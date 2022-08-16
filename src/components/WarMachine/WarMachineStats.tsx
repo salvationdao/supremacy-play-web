@@ -1,4 +1,4 @@
-import { Box, Divider, Fade, IconButton, Slide, Stack, Typography } from "@mui/material"
+import { Box, Divider, Fade, IconButton, Slide, Stack } from "@mui/material"
 import { ReactElement, useEffect, useMemo } from "react"
 import { ClipThing } from ".."
 import { SvgExternalLink } from "../../assets"
@@ -6,7 +6,9 @@ import { useGame, useMobile, useSupremacy } from "../../containers"
 import { useTheme } from "../../containers/theme"
 import { useToggle } from "../../hooks"
 import { fonts, siteZIndex } from "../../theme/theme"
+import { AIType } from "../../types"
 import { WindowPortal } from "../Common/WindowPortal"
+import { SectionHeading } from "../LeftDrawer/BattleArena/Common/SectionHeading"
 import { WarMachineItem } from "./WarMachineItem/WarMachineItem"
 
 export const WarMachineStats = () => {
@@ -157,86 +159,92 @@ const WarMachineStatsInner = () => {
         if (!show) return null
         return (
             <>
-                <Fade in={ownedMiniMechs.length > 0}>
-                    <Stack
-                        spacing="1rem"
-                        sx={{
-                            backgroundColor: "#FFFFFF12",
-                            boxShadow: 2,
-                            border: "#FFFFFF20 1px solid",
-                            p: "1.2rem 1.4rem",
-                        }}
-                    >
-                        <Typography sx={{ fontFamily: fonts.nostromoBlack }}>YOUR MINI MECHS</Typography>
-
-                        <Box sx={{ display: "grid", gridTemplateColumns: "repeat(2, 50%)" }}>
-                            {ownedMiniMechs.map((mm) => (
-                                <WarMachineItem
-                                    key={`${mm.participantID}`}
-                                    warMachine={mm}
-                                    scale={0.5}
-                                    label={mm.participantID - addMiniMechParticipantId}
-                                    transformOrigin="0 0"
-                                    initialExpanded
-                                />
-                            ))}
+                {ownedMiniMechs.length > 0 && (
+                    <Fade in>
+                        <Box>
+                            <SectionHeading label="YOUR MINI MECHS" />
+                            <Stack
+                                spacing="1rem"
+                                sx={{
+                                    backgroundColor: "#FFFFFF12",
+                                    boxShadow: 2,
+                                    border: "#FFFFFF20 1px solid",
+                                    p: "1.2rem 1.4rem",
+                                }}
+                            >
+                                <Box sx={{ display: "grid", gridTemplateColumns: "repeat(2, 50%)" }}>
+                                    {ownedMiniMechs.map((mm) => (
+                                        <WarMachineItem
+                                            key={`${mm.participantID}`}
+                                            warMachine={mm}
+                                            scale={0.5}
+                                            label={mm.participantID - addMiniMechParticipantId}
+                                            transformOrigin="0 0"
+                                            initialExpanded
+                                        />
+                                    ))}
+                                </Box>
+                            </Stack>
                         </Box>
-                    </Stack>
-                </Fade>
+                    </Fade>
+                )}
+
                 {haveFactionMechs && (
-                    <Stack
-                        spacing="1rem"
-                        sx={{
-                            backgroundColor: "#FFFFFF12",
-                            boxShadow: 2,
-                            border: "#FFFFFF20 1px solid",
-                            p: "1.2rem 1.4rem",
-                        }}
-                    >
-                        <Typography sx={{ fontFamily: fonts.nostromoBlack }}>YOUR FACTION</Typography>
-
-                        <Box sx={{ display: "grid", gridTemplateColumns: "repeat(4, 25%)" }}>
-                            {factionWarMachines &&
-                                factionWarMachines.map((wm, i) => (
-                                    <WarMachineItem
-                                        key={`${wm.participantID} - ${wm.hash}`}
-                                        warMachine={wm}
-                                        scale={0.7}
-                                        label={i + 1}
-                                        transformOrigin="0 0"
-                                        initialExpanded
-                                    />
-                                ))}
-                        </Box>
-                    </Stack>
+                    <Box>
+                        <SectionHeading label="YOUR FACTION" />
+                        <Stack
+                            spacing="1rem"
+                            sx={{
+                                backgroundColor: "#FFFFFF12",
+                                boxShadow: 2,
+                                border: "#FFFFFF20 1px solid",
+                                p: "1.2rem 1.4rem",
+                            }}
+                        >
+                            <Box sx={{ display: "grid", gridTemplateColumns: "repeat(2, 50%)" }}>
+                                {factionWarMachines &&
+                                    factionWarMachines.map((wm, i) => (
+                                        <WarMachineItem
+                                            key={`${wm.participantID} - ${wm.hash}`}
+                                            warMachine={wm}
+                                            scale={0.7}
+                                            label={i + 1}
+                                            transformOrigin="0 0"
+                                            initialExpanded
+                                        />
+                                    ))}
+                            </Box>
+                        </Stack>
+                    </Box>
                 )}
 
                 {otherWarMachines && otherWarMachines.length > 0 && (
-                    <Stack
-                        spacing="1rem"
-                        sx={{
-                            backgroundColor: "#FFFFFF12",
-                            boxShadow: 2,
-                            border: "#FFFFFF20 1px solid",
-                            p: "1.2rem 1.4rem",
-                        }}
-                    >
-                        <Typography sx={{ fontFamily: fonts.nostromoBlack }}>OTHER FACTIONS</Typography>
-
-                        <Box sx={{ display: "grid", gridTemplateColumns: "repeat(4, 25%)" }}>
-                            {otherWarMachines &&
-                                otherWarMachines.map((wm, i) => (
-                                    <WarMachineItem
-                                        key={`${wm.participantID} - ${wm.hash}`}
-                                        warMachine={wm}
-                                        scale={0.7}
-                                        transformOrigin="0 0"
-                                        label={i + 1 + (factionWarMachines ? factionWarMachines?.length : 0)}
-                                        initialExpanded
-                                    />
-                                ))}
-                        </Box>
-                    </Stack>
+                    <Box>
+                        <SectionHeading label="OTHER FACTIONS" />
+                        <Stack
+                            spacing="1rem"
+                            sx={{
+                                backgroundColor: "#FFFFFF12",
+                                boxShadow: 2,
+                                border: "#FFFFFF20 1px solid",
+                                p: "1.2rem 1.4rem",
+                            }}
+                        >
+                            <Box sx={{ display: "grid", gridTemplateColumns: "repeat(2, 50%)" }}>
+                                {otherWarMachines &&
+                                    otherWarMachines.map((wm, i) => (
+                                        <WarMachineItem
+                                            key={`${wm.participantID} - ${wm.hash}`}
+                                            warMachine={wm}
+                                            scale={0.7}
+                                            transformOrigin="0 0"
+                                            label={i + 1 + (factionWarMachines ? factionWarMachines?.length : 0)}
+                                            initialExpanded
+                                        />
+                                    ))}
+                            </Box>
+                        </Stack>
+                    </Box>
                 )}
             </>
         )
@@ -255,11 +263,11 @@ const WarMachineStatsInner = () => {
                     filter: "drop-shadow(0 3px 3px #00000020)",
                 }}
             >
-                <Fade in={ownedMiniMechs.length > 0}>
-                    <Stack direction="row" sx={{ ml: "-3rem", pl: "2rem", transform: "skew(-6deg)" }}>
-                        <Box>
+                {ownedMiniMechs.length > 0 && (
+                    <Fade in>
+                        <Stack sx={{ px: "2rem", transform: "skew(-6deg)" }}>
                             <HorizontalScrollContainer>
-                                <Stack spacing="-3rem" direction="row" alignItems="center" justifyContent="center" sx={{ px: ".6rem", py: ".6rem" }}>
+                                <Stack spacing="-3rem" direction="row" alignItems="center">
                                     {ownedMiniMechs.map((mm) => (
                                         <WarMachineItem
                                             key={`${mm.participantID}`}
@@ -270,43 +278,20 @@ const WarMachineStatsInner = () => {
                                     ))}
                                 </Stack>
                             </HorizontalScrollContainer>
-                        </Box>
-                    </Stack>
-                </Fade>
-                <IconButton
-                    onClick={() => toggleIsPoppedout()}
-                    edge="end"
-                    size="small"
-                    sx={{
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
-                        opacity: 0.5,
-                        ":hover": { opacity: 1 },
-                        transition: "all .1s",
-                        zIndex: 99,
-                    }}
-                >
-                    <SvgExternalLink size="1.3rem" fill="#FFFFFF" sx={{ pb: 0 }} />
-                </IconButton>
-                <Stack direction="row" alignItems="flex-end" sx={{ ml: "-3rem", pl: "2rem", transform: "skew(-6deg)" }}>
+                        </Stack>
+                    </Fade>
+                )}
+
+                <Stack sx={{ px: "2rem", transform: "skew(-6deg)" }}>
                     {haveFactionMechs && (
-                        <ClipThing
-                            clipSize="10px"
-                            corners={{ topRight: true }}
-                            opacity={0.7}
-                            backgroundColor={theme.factionTheme.background}
-                            sx={{ height: "100%" }}
-                        >
-                            <HorizontalScrollContainer>
-                                <Stack spacing="-.9rem" direction="row" alignItems="center" justifyContent="center" sx={{ px: "1.2rem", py: "2rem" }}>
-                                    {factionWarMachines &&
-                                        factionWarMachines.map((wm, i) => (
-                                            <WarMachineItem key={`${wm.participantID} - ${wm.hash}`} warMachine={wm} scale={0.75} label={i + 1} />
-                                        ))}
-                                </Stack>
-                            </HorizontalScrollContainer>
-                        </ClipThing>
+                        <HorizontalScrollContainer>
+                            <Stack spacing="-1.1rem" direction="row" alignItems="center">
+                                {factionWarMachines &&
+                                    factionWarMachines.map((wm, i) => (
+                                        <WarMachineItem key={`${wm.participantID} - ${wm.hash}`} warMachine={wm} scale={0.75} label={i + 1} />
+                                    ))}
+                            </Stack>
+                        </HorizontalScrollContainer>
                     )}
 
                     {otherWarMachines && otherWarMachines.length > 0 && (
@@ -324,6 +309,15 @@ const WarMachineStatsInner = () => {
                         </HorizontalScrollContainer>
                     )}
                 </Stack>
+
+                <IconButton
+                    onClick={() => toggleIsPoppedout()}
+                    edge="end"
+                    size="small"
+                    sx={{ position: "absolute", top: 0, left: 0, opacity: 0.5, ":hover": { opacity: 1 }, transition: "all .1s", zIndex: 99 }}
+                >
+                    <SvgExternalLink size="1.3rem" fill="#FFFFFF" sx={{ pb: 0 }} />
+                </IconButton>
             </Box>
         </Slide>
     )

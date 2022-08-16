@@ -10,17 +10,16 @@ import { SupremacyPNG } from "./assets"
 import { Bar, GlobalSnackbar, Maintenance, RightDrawer } from "./components"
 import { BottomNav } from "./components/BottomNav/BottomNav"
 import { tourStyles } from "./components/HowToPlay/Tutorial/SetupTutorial"
-import { LeftDrawer } from "./components/LeftDrawer/LeftDrawer"
+import { NavLinksDrawer } from "./components/Bar/NavLinks/NavLinksDrawer"
 import { GAME_SERVER_HOSTNAME, SENTRY_CONFIG, UNDER_MAINTENANCE } from "./constants"
 import {
-    BarProvider,
     ChatProvider,
     DimensionProvider,
     GameProvider,
+    GlobalNotificationsProvider,
     MiniMapProvider,
     MobileProvider,
     OverlayTogglesProvider,
-    SnackBarProvider,
     StreamProvider,
     SupremacyProvider,
     useMobile,
@@ -38,6 +37,7 @@ import { EnlistPage } from "./pages/EnlistPage"
 import { LoginRedirect } from "./pages/LoginRedirect"
 import { ROUTES_ARRAY, ROUTES_MAP } from "./routes"
 import { colors, fonts } from "./theme/theme"
+import { LeftDrawer } from "./components/LeftDrawer/LeftDrawer"
 import { HotkeyProvider } from "./containers/hotkeys"
 
 const AppInner = () => {
@@ -121,6 +121,8 @@ const AppInner = () => {
                         },
                     }}
                 >
+                    <NavLinksDrawer />
+
                     <LeftDrawer />
 
                     <Stack
@@ -216,45 +218,42 @@ const App = () => {
     return (
         <ThemeProvider>
             <FingerprintProvider>
-                <SnackBarProvider>
+                <GlobalNotificationsProvider>
                     <ClientContextProvider client={client}>
                         <SupremacyProvider>
                             <AuthProvider>
                                 <BrowserRouter>
                                     <ChatProvider>
                                         <WalletProvider>
-                                            <BarProvider>
-                                                <TourProvider {...tourProviderProps}>
-                                                    <StreamProvider>
-                                                        <GameProvider>
-                                                            <MobileProvider>
-                                                                <DimensionProvider>
-                                                                    <OverlayTogglesProvider>
-                                                                        <MiniMapProvider>
-                                                                            <HotkeyProvider>
-                                                                                <UserUpdater />
-
-                                                                                <Switch>
-                                                                                    <Route path="/404" exact component={NotFoundPage} />
-                                                                                    <Route path="/login-redirect" exact component={LoginRedirect} />
-                                                                                    <Route path="" component={AppInner} />
-                                                                                </Switch>
-                                                                            </HotkeyProvider>
-                                                                        </MiniMapProvider>
-                                                                    </OverlayTogglesProvider>
-                                                                </DimensionProvider>
-                                                            </MobileProvider>
-                                                        </GameProvider>
-                                                    </StreamProvider>
-                                                </TourProvider>
-                                            </BarProvider>
+                                            <TourProvider {...tourProviderProps}>
+                                                <StreamProvider>
+                                                    <GameProvider>
+                                                        <MobileProvider>
+                                                            <DimensionProvider>
+                                                                <OverlayTogglesProvider>
+                                                                    <MiniMapProvider>
+                                                                        <HotkeyProvider>
+                                                                            <UserUpdater />
+                                                                            <Switch>
+                                                                                <Route path="/404" exact component={NotFoundPage} />
+                                                                                <Route path="/login-redirect" exact component={LoginRedirect} />
+                                                                                <Route path="" component={AppInner} />
+                                                                            </Switch>
+                                                                        </HotkeyProvider>
+                                                                    </MiniMapProvider>
+                                                                </OverlayTogglesProvider>
+                                                            </DimensionProvider>
+                                                        </MobileProvider>
+                                                    </GameProvider>
+                                                </StreamProvider>
+                                            </TourProvider>
                                         </WalletProvider>
                                     </ChatProvider>
                                 </BrowserRouter>
                             </AuthProvider>
                         </SupremacyProvider>
                     </ClientContextProvider>
-                </SnackBarProvider>
+                </GlobalNotificationsProvider>
             </FingerprintProvider>
         </ThemeProvider>
     )

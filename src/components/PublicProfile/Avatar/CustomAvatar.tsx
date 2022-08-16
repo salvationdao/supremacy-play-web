@@ -2,7 +2,7 @@ import { Avatar, Box, CircularProgress, Fade, Modal, Pagination, Stack, Tab, Tab
 
 import { SyntheticEvent, useCallback, useEffect, useMemo, useState } from "react"
 import { EmptyWarMachinesPNG, SvgClose } from "../../../assets"
-import { useSnackbar } from "../../../containers"
+import { useGlobalNotifications } from "../../../containers"
 import { parseString } from "../../../helpers"
 import { usePagination, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsUser, useGameServerSubscription } from "../../../hooks/useGameServer"
@@ -34,7 +34,7 @@ interface CustomAvatarCreateRequest {
 }
 export const CustomAvatar = ({ updateAvatar, playerID, open, setOpen, primaryColor, backgroundColor, onClose }: CustomAvatarProps) => {
     const { send: userSend } = useGameServerCommandsUser("/user_commander")
-    const { newSnackbarMessage } = useSnackbar()
+    const { newSnackbarMessage } = useGlobalNotifications()
     const [currentValue, setCurrentValue] = useState<AVATAR_FEATURE_TABS>(AVATAR_FEATURE_TABS.Face)
     const [imageSize, setImageSize] = useState(600)
     const [setAsAvatarModal, setSetAsAvatarModal] = useState(false)

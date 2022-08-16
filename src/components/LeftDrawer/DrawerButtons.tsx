@@ -1,39 +1,34 @@
-import { Box, Stack, Tab, Tabs } from "@mui/material"
-import { useHistory, useLocation, useRouteMatch } from "react-router-dom"
-import { useAuth, useMobile } from "../../containers"
+import { Box, Tabs } from "@mui/material"
+import { useRouteMatch } from "react-router-dom"
+import { useAuth, useOverlayToggles } from "../../containers"
 import { useTheme } from "../../containers/theme"
-import { ROUTES_ARRAY } from "../../routes"
-import { colors, fonts, siteZIndex } from "../../theme/theme"
-import { QuickDeployButton } from "../QuickDeploy/QuickDeployButton"
-import { QuickPlayerAbilitiesButton } from "../QuickPlayerAbilities/QuickPlayerAbilitiesButton"
+import { LEFT_DRAWER_ARRAY, ROUTES_ARRAY } from "../../routes"
+import { colors, siteZIndex } from "../../theme/theme"
+import { TabButton } from "../RightDrawer/DrawerButtons"
 
-const DRAWER_BAR_WIDTH = 3 // rem
-const BUTTON_WIDTH = 17 //rem
+export const DRAWER_BAR_WIDTH = 3 // rem
 
 export const DrawerButtons = () => {
-    const { isMobile } = useMobile()
-    const { userID } = useAuth()
+    const { leftDrawerActiveTabID, setLeftDrawerActiveTabID } = useOverlayToggles()
     const theme = useTheme()
-    const location = useLocation()
-    const history = useHistory()
+    const { userID } = useAuth()
 
     const match = useRouteMatch(ROUTES_ARRAY.filter((r) => r.path !== "/").map((r) => r.path))
-    let activeTabID = ""
+    let activeRouteID = ""
     if (match) {
         const r = ROUTES_ARRAY.find((r) => r.path === match.path)
-        activeTabID = r?.matchLeftDrawerID || ""
+        activeRouteID = r?.matchNavLinkID || ""
     }
 
     return (
-        <Stack
+        <Box
             sx={{
-                flexShrink: 0,
                 position: "relative",
                 height: "100%",
                 overflow: "hidden",
                 width: `${DRAWER_BAR_WIDTH}rem`,
                 background: (theme) => `linear-gradient(to right, #FFFFFF06 26%, ${theme.factionTheme.background})`,
-                zIndex: siteZIndex.LeftDrawer,
+                zIndex: siteZIndex.Drawer + 10,
                 ".MuiTabs-flexContainer": {
                     "& > :not(:last-child)": {
                         mb: ".2rem",
@@ -50,111 +45,29 @@ export const DrawerButtons = () => {
             }}
         >
             <Tabs value={0} orientation="vertical" variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile sx={{ flex: 1 }}>
-                {ROUTES_ARRAY.map((r) => {
-                    if (!r.enable || !r.leftDrawer) return null
-                    const { id, requireAuth, requireFaction } = r
-                    const { enable, label } = r.leftDrawer
-                    const disable = (requireAuth || requireFaction) && !userID
-                    const navigateTo = r.path.split("/:")[0]
-
-                    const toRender = []
-
-                    toRender.push(
+                {LEFT_DRAWER_ARRAY.map((r) => {
+                    if ((r.requireAuth && !userID) || (r.matchNavLinkID && activeRouteID && activeRouteID !== r.matchNavLinkID)) return null
+                    return (
                         <TabButton
                             key={r.id}
-                            label={label}
-                            enable={enable && !disable}
-                            isComingSoon={!enable}
-                            comingSoonLabel={r.leftDrawer.comingSoonLabel}
-                            onClick={() => history.push(`${navigateTo}${location.hash}`)}
-                            isActive={activeTabID === r.matchLeftDrawerID || location.pathname === r.path}
+                            label={r.label}
+                            enable={true}
+                            icon={r.icon}
+                            onClick={() => {
+                                setLeftDrawerActiveTabID((prev) => {
+                                    if (r.id === prev) {
+                                        return ""
+                                    }
+                                    return r.id
+                                })
+                            }}
+                            isActive={r.id === leftDrawerActiveTabID}
                             primaryColor={theme.factionTheme.primary}
                             secondaryColor={theme.factionTheme.secondary}
-                        />,
+                        />
                     )
-
-                    if (id === "home" && !isMobile) {
-                        toRender.push(<QuickDeployButton />)
-                        toRender.push(<QuickPlayerAbilitiesButton />)
-                    }
-
-                    return toRender
                 })}
             </Tabs>
-        </Stack>
-    )
-}
-
-export const TabButton = ({
-    label,
-    enable,
-    isComingSoon,
-    icon,
-    isActive,
-    primaryColor,
-    secondaryColor,
-    onClick,
-    comingSoonLabel,
-}: {
-    label: string
-    enable?: boolean
-    isComingSoon?: boolean
-    icon?: string | React.ReactElement<unknown, string | React.JSXElementConstructor<unknown>>
-    isActive?: boolean
-    primaryColor: string
-    secondaryColor: string
-    onClick: () => void
-    comingSoonLabel?: string
-}) => {
-    return (
-        <Box
-            sx={{
-                position: "relative",
-                height: `${BUTTON_WIDTH}rem`,
-                width: `${DRAWER_BAR_WIDTH}rem`,
-            }}
-        >
-            <Tab
-                label={
-                    !isComingSoon ? (
-                        label
-                    ) : (
-                        <Stack>
-                            {label}
-                            <br />
-                            <span style={{ color: colors.neonBlue }}>({comingSoonLabel || "COMING SOON"})</span>
-                        </Stack>
-                    )
-                }
-                icon={icon}
-                iconPosition="end"
-                onClick={onClick}
-                disabled={!enable}
-                sx={{
-                    p: 0,
-                    pt: ".2rem",
-                    position: "absolute",
-                    whiteSpace: "nowrap",
-                    fontFamily: fonts.nostromoBold,
-                    fontSize: "1.2rem",
-                    lineHeight: 1,
-                    color: isActive ? secondaryColor : "#FFFFFF",
-                    backgroundColor: enable ? (isActive ? `${primaryColor}CC` : `${primaryColor}25`) : `${primaryColor}20`,
-                    opacity: isActive ? 1 : 0.6,
-                    transform: `translate(${-BUTTON_WIDTH / 2 + DRAWER_BAR_WIDTH / 2}rem, ${BUTTON_WIDTH / 2 - DRAWER_BAR_WIDTH / 2}rem) rotate(-90deg)`,
-                    ":hover": {
-                        opacity: 1,
-                    },
-                    "&, .MuiTouchRipple-root": {
-                        width: `${BUTTON_WIDTH}rem`,
-                        height: `${DRAWER_BAR_WIDTH}rem`,
-                        minHeight: `${DRAWER_BAR_WIDTH}rem`,
-                    },
-                    "& svg": {
-                        fill: isActive ? `${secondaryColor} !important` : "#FFFFFF",
-                    },
-                }}
-            />
         </Box>
     )
 }

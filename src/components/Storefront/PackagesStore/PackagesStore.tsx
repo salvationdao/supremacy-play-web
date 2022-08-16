@@ -4,7 +4,7 @@ import { loadStripe } from "@stripe/stripe-js"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { SafePNG } from "../../../assets"
 import { STRIPE_PUBLISHABLE_KEY } from "../../../constants"
-import { useSnackbar } from "../../../containers"
+import { useGlobalNotifications } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { parseString } from "../../../helpers"
 import { usePagination, useUrlQuery } from "../../../hooks"
@@ -20,7 +20,7 @@ import { PackageStoreItem } from "./PackageStoreItem/PackageStoreItem"
 const stripePromise = loadStripe(STRIPE_PUBLISHABLE_KEY)
 
 export const PackagesStore = () => {
-    const { newSnackbarMessage } = useSnackbar()
+    const { newSnackbarMessage } = useGlobalNotifications()
     const [query, updateQuery] = useUrlQuery()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const theme = useTheme()

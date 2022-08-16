@@ -2,7 +2,7 @@ import { InputAdornment, MenuItem, Select, Stack, TextField, Typography } from "
 import { useCallback, useState } from "react"
 import { FancyButton } from "../../../../.."
 import { SvgSupToken } from "../../../../../../assets"
-import { useSnackbar } from "../../../../../../containers"
+import { useGlobalNotifications } from "../../../../../../containers"
 import { numberCommaFormatter } from "../../../../../../helpers"
 import { useGameServerCommandsUser } from "../../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../../keys"
@@ -29,7 +29,7 @@ export const HireContractorsCard = (props: { mechDetails: MechDetails; remainDam
 }
 
 const HireContractorsCardInner = ({ mechDetails, remainDamagedBlocks }: { mechDetails: MechDetails; remainDamagedBlocks: number }) => {
-    const { newSnackbarMessage } = useSnackbar()
+    const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsUser("/user_commander")
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [submitError, setSubmitError] = useState<string>()

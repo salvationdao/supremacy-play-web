@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from "react"
 import { ClipThing, FancyButton } from "../../.."
 import { SvgClose, SvgCooldown, SvgSupToken } from "../../../../assets"
 import { MAX_BAN_PROPOSAL_REASON_LENGTH } from "../../../../constants"
-import { useAuth, useSnackbar } from "../../../../containers"
+import { useAuth, useGlobalNotifications } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
 import { snakeToTitle } from "../../../../helpers"
 import { useDebounce, useToggle } from "../../../../hooks"
@@ -39,7 +39,7 @@ const UserItem = ({ banUser, sx }: { banUser: BanUser; sx?: SxProps }) => {
 
 export const UserBanForm = ({ open, onClose, prefillUser }: { open: boolean; onClose: () => void; prefillUser?: BanUser }) => {
     const theme = useTheme()
-    const { newSnackbarMessage } = useSnackbar()
+    const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const { userStat, userRank } = useAuth()
     // Options and display only
