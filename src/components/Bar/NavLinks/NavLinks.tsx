@@ -54,9 +54,11 @@ const NavLink = ({ isActive, label, to }: { isActive: boolean; label: string; to
             sx={{ px: "1.6rem", py: ".6rem", color: secondaryColor, height: "100%" }}
             to={to}
         >
-            <Typography variant="subtitle1" sx={{ textAlign: "center", fontFamily: fonts.nostromoBlack, color: secondaryColor }}>
-                {label}
-            </Typography>
+            <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                <Typography variant="subtitle1" sx={{ textAlign: "center", fontFamily: fonts.nostromoBlack, color: secondaryColor }}>
+                    {label}
+                </Typography>
+            </Stack>
         </FancyButton>
     )
 }
