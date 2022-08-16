@@ -1,5 +1,5 @@
-import React from "react"
-import { alpha, useTheme } from "@mui/material/styles"
+import React, { useState, useImperativeHandle } from "react"
+import { useTheme } from "@mui/material/styles"
 import { InputBaseComponentProps } from "@mui/material/InputBase"
 import { fonts } from "../../theme/theme"
 
@@ -12,12 +12,14 @@ export interface StripeGenericChangeEvent {
     }
 }
 
+// eslint-disable-next-line  @typescript-eslint/no-explicit-any
 export const StripeInput = React.forwardRef<any, InputBaseComponentProps>(function StripeInput(props, ref) {
     const { component: Component, options, ...other } = props
     const theme = useTheme()
-    const [mountNode, setMountNode] = React.useState<any | null>(null)
+    // eslint-disable-next-line  @typescript-eslint/no-explicit-any
+    const [mountNode, setMountNode] = useState<any | null>(null)
 
-    React.useImperativeHandle(
+    useImperativeHandle(
         ref,
         () => ({
             focus: () => mountNode.focus(),

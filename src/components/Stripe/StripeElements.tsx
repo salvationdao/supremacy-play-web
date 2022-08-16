@@ -48,6 +48,7 @@ export const StripeTextField = <T extends StripeElement>(props: StripeTextFieldP
                 inputComponent: StripeInput,
             }}
             helperText={error ? labelErrorMessage : helperText}
+            // eslint-disable-next-line  @typescript-eslint/no-explicit-any
             {...(other as any)}
         />
     )

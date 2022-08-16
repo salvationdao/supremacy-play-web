@@ -1,7 +1,5 @@
 import { Box, Stack, Skeleton, Typography } from "@mui/material"
 import { useHistory } from "react-router-dom"
-import { useStripe } from "@stripe/react-stripe-js"
-import { useMutation } from "react-fetching-library"
 import { SafePNG } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
 import { generatePriceText } from "../../../../helpers"
@@ -10,7 +8,6 @@ import { FiatProduct } from "../../../../types/fiat"
 import { ClipThing } from "../../../Common/ClipThing"
 import { FancyButton } from "../../../Common/FancyButton"
 import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
-import { CreateCheckoutSession } from "../../../../fetching"
 
 interface PackageStoreItemProps {
     enlargedView?: boolean
@@ -19,45 +16,13 @@ interface PackageStoreItemProps {
 
 export const PackageStoreItem = ({ enlargedView, item }: PackageStoreItemProps) => {
     const theme = useTheme()
-    const stripe = useStripe()
     const history = useHistory()
-    const { loading, mutate } = useMutation(CreateCheckoutSession)
 
     const primaryColor = theme.factionTheme.primary
     const backgroundColor = theme.factionTheme.background
 
     const buyNowClickHandler = async () => {
-        if (!stripe) return
-
         history.push(`/storefront/packages/${item.id}`)
-
-        // TODO: Remove if confirmed not using simple stripe checkout session :(
-        // try {
-        //     const host = window.location.protocol + "//" + window.location.host
-
-        //     const { payload: sessionID, error } = await mutate({
-        //         product_id: item.id,
-        //         product_type: "generic",
-        //         success_url: host + "/storefront/packages",
-        //         cancel_url: host + "/storefront/packages",
-        //     })
-
-        //     if (error || !sessionID) {
-        //         return
-        //     }
-
-        //     const resp = await stripe.redirectToCheckout({
-        //         sessionId: sessionID,
-        //     })
-
-        //     if (resp.error) {
-        //         // TODO: Handle errors :/
-        //         return
-        //     }
-        // } catch (err) {
-        //     const message = typeof err === "string" ? err : "Unable to start checkout, please try again."
-        //     console.error(message)
-        // }
     }
 
     return (
@@ -141,7 +106,6 @@ export const PackageStoreItem = ({ enlargedView, item }: PackageStoreItemProps) 
                                         border: { isFancy: true, borderColor: primaryColor, borderThickness: "1.5px" },
                                         sx: { position: "relative", width: enlargedView ? "50%" : "100%", height: "100%" },
                                     }}
-                                    loading={!stripe || loading}
                                     onClick={buyNowClickHandler}
                                     sx={{ px: "1.6rem", py: enlargedView ? "1.1rem" : ".6rem" }}
                                 >
