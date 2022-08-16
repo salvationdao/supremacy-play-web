@@ -26,7 +26,7 @@ export const QuestsPopover = ({
     const theme = useTheme()
     const [localOpen, toggleLocalOpen] = useToggle(open)
 
-    const roundNames = useMemo(
+    const eventNames = useMemo(
         () => questStats.reduce<string[]>((acc, qs) => (acc.findIndex((a) => a === qs.round_name) >= 0 ? acc : [...acc, qs.round_name]), []),
         [questStats],
     )
@@ -87,20 +87,20 @@ export const QuestsPopover = ({
                         <Typography sx={{ fontFamily: fonts.nostromoBlack }}>YOUR QUESTS</Typography>
                     </Stack>
 
-                    {roundNames.length > 0 &&
-                        roundNames.map((roundName, i) => {
-                            const questStatsFiltered = questStats.filter((qs) => qs.round_name === roundName)
+                    {eventNames.length > 0 &&
+                        eventNames.map((eventName, i) => {
+                            const questStatsFiltered = questStats.filter((qs) => qs.round_name === eventName)
                             const itemHasConfetti = questStatsFiltered.some((qs) => confetti.findIndex((i) => i === qs.id) >= 0)
 
                             return (
                                 <Accordion
-                                    key={roundName}
+                                    key={eventName}
                                     defaultExpanded={i === 0 || itemHasConfetti}
                                     sx={{ m: "0 !important", ".MuiAccordionSummary-root.Mui-expanded": { backgroundColor: "#FFFFFF20", minHeight: 0 } }}
                                 >
                                     <AccordionSummary expandIcon={<SvgExpandMoreIcon />} sx={{ minHeight: 0, ":hover": { opacity: 0.95 } }}>
                                         <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack }}>
-                                            {roundName} ({questStatsFiltered.filter((qs) => qs.obtained).length}/{questStatsFiltered.length})
+                                            {eventName} ({questStatsFiltered.filter((qs) => qs.obtained).length}/{questStatsFiltered.length})
                                         </Typography>
                                     </AccordionSummary>
                                     <AccordionDetails>

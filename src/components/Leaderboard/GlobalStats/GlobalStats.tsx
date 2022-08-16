@@ -103,7 +103,7 @@ export const GlobalStats = () => {
                         {roundOptions && leaderboardType !== LeaderboardTypeEnum.PlayerMechsOwned && (
                             <Stack spacing="1rem" direction="row" alignItems="center">
                                 <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack }}>
-                                    ROUND:
+                                    EVENT:
                                 </Typography>
                                 <RoundSelect roundOptions={roundOptions} selectedRound={selectedRound} setSelectedRound={setSelectedRound} />
                             </Stack>
