@@ -170,6 +170,7 @@ const WarMachineStatsInner = () => {
                         </Box>
                     </Stack>
                 </Fade>
+
                 {haveFactionMechs && (
                     <Stack
                         spacing="1rem"
@@ -235,50 +236,31 @@ const WarMachineStatsInner = () => {
                 }}
             >
                 <Fade in={ownedMiniMechs.length > 0}>
-                    <Stack direction="row" sx={{ ml: "-3rem", pl: "2rem", transform: "skew(-6deg)" }}>
-                        <Box>
-                            <HorizontalScrollContainer>
-                                <Stack spacing="-3rem" direction="row" alignItems="center" justifyContent="center" sx={{ px: ".6rem", py: ".6rem" }}>
-                                    {ownedMiniMechs.map((mm) => (
-                                        <WarMachineItem key={`${mm.participantID}`} warMachine={mm} scale={0.6} />
-                                    ))}
-                                </Stack>
-                            </HorizontalScrollContainer>
-                        </Box>
+                    <Stack sx={{ px: "2rem", transform: "skew(-6deg)" }}>
+                        <HorizontalScrollContainer>
+                            <Stack spacing="-3rem" direction="row" alignItems="center">
+                                {ownedMiniMechs.map((mm) => (
+                                    <WarMachineItem key={`${mm.participantID}`} warMachine={mm} scale={0.6} />
+                                ))}
+                            </Stack>
+                        </HorizontalScrollContainer>
                     </Stack>
                 </Fade>
 
-                <IconButton
-                    onClick={() => toggleIsPoppedout()}
-                    edge="end"
-                    size="small"
-                    sx={{ position: "absolute", top: 0, left: 0, opacity: 0.5, ":hover": { opacity: 1 }, transition: "all .1s", zIndex: 99 }}
-                >
-                    <SvgExternalLink size="1.3rem" fill="#FFFFFF" sx={{ pb: 0 }} />
-                </IconButton>
-
-                <Stack direction="row" alignItems="flex-end" sx={{ ml: "-3rem", px: "2rem", transform: "skew(-6deg)" }}>
+                <Stack sx={{ px: "2rem", transform: "skew(-6deg)" }}>
                     {haveFactionMechs && (
-                        <ClipThing
-                            clipSize="10px"
-                            corners={{ topRight: true }}
-                            opacity={0.7}
-                            backgroundColor={theme.factionTheme.background}
-                            sx={{ height: "100%" }}
-                        >
-                            <HorizontalScrollContainer>
-                                <Stack spacing="-.9rem" direction="row" alignItems="center" justifyContent="center" sx={{ px: "1.2rem", py: "2rem" }}>
-                                    {factionMechs.map((wm) => (
-                                        <WarMachineItem key={`${wm.participantID} - ${wm.hash}`} warMachine={wm} scale={0.75} />
-                                    ))}
-                                </Stack>
-                            </HorizontalScrollContainer>
-                        </ClipThing>
+                        <HorizontalScrollContainer>
+                            <Stack spacing="-1.1rem" direction="row" alignItems="center">
+                                {factionMechs.map((wm) => (
+                                    <WarMachineItem key={`${wm.participantID} - ${wm.hash}`} warMachine={wm} scale={0.7} />
+                                ))}
+                            </Stack>
+                        </HorizontalScrollContainer>
                     )}
 
                     {otherMechs.length > 0 && (
                         <HorizontalScrollContainer>
-                            <Stack spacing="-1.1rem" direction="row" alignItems="center" sx={{ flex: 1, px: "1.2rem", py: "2rem" }}>
+                            <Stack spacing="-1.1rem" direction="row" alignItems="center">
                                 {otherMechs
                                     .sort((a, b) => a.factionID.localeCompare(b.factionID))
                                     .map((wm) => (
@@ -288,6 +270,15 @@ const WarMachineStatsInner = () => {
                         </HorizontalScrollContainer>
                     )}
                 </Stack>
+
+                <IconButton
+                    onClick={() => toggleIsPoppedout()}
+                    edge="end"
+                    size="small"
+                    sx={{ position: "absolute", top: 0, left: 0, opacity: 0.5, ":hover": { opacity: 1 }, transition: "all .1s", zIndex: 99 }}
+                >
+                    <SvgExternalLink size="1.3rem" fill="#FFFFFF" sx={{ pb: 0 }} />
+                </IconButton>
             </Box>
         </Slide>
     )
