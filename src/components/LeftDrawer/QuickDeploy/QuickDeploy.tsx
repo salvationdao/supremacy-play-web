@@ -60,7 +60,7 @@ const QuickDeployInner = () => {
 
     const [sort, setSort] = useState<string>(SortTypeLabel.MechQueueAsc)
     const { page, changePage, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({
-        pageSize: parseString(localStorage.getItem("quickDeployPageSize"), 5),
+        pageSize: parseString(localStorage.getItem("quickDeployPageSize2"), 10),
         page: 1,
     })
 
@@ -74,7 +74,7 @@ const QuickDeployInner = () => {
     })
 
     useEffect(() => {
-        localStorage.setItem("quickDeployPageSize", pageSize.toString())
+        localStorage.setItem("quickDeployPageSize2", pageSize.toString())
     }, [pageSize])
 
     const getItems = useCallback(async () => {
@@ -119,6 +119,7 @@ const QuickDeployInner = () => {
                     direction="row"
                     alignItems="center"
                     sx={{
+                        flexShrink: 0,
                         px: "2.2rem",
                         height: "5rem",
                         background: `linear-gradient(${theme.factionTheme.primary} 26%, ${theme.factionTheme.primary}95)`,
@@ -166,6 +167,7 @@ const QuickDeployInner = () => {
                         sortOptions={sortOptions}
                         selectedSort={sort}
                         onSetSort={setSort}
+                        pageSizeOptions={[10, 20, 40]}
                     />
 
                     {loadError && (
@@ -185,11 +187,38 @@ const QuickDeployInner = () => {
                     )}
 
                     {!isLoading && !loadError && mechs && mechs.length > 0 && (
-                        <Stack sx={{ minHeight: "20rem", p: "1.1rem" }}>
-                            {mechs.map((mech) => {
-                                return <QuickDeployItem key={mech.id} mech={mech} queueFeed={queueFeed} />
-                            })}
-                        </Stack>
+                        <Box
+                            sx={{
+                                flex: 1,
+                                overflowY: "auto",
+                                overflowX: "hidden",
+                                my: ".8rem",
+                                mr: ".7rem",
+                                pr: ".7rem",
+                                pl: "1.4rem",
+                                direction: "ltr",
+                                scrollbarWidth: "none",
+                                "::-webkit-scrollbar": {
+                                    width: ".4rem",
+                                },
+                                "::-webkit-scrollbar-track": {
+                                    background: "#FFFFFF15",
+                                    borderRadius: 3,
+                                },
+                                "::-webkit-scrollbar-thumb": {
+                                    background: (theme) => theme.factionTheme.primary,
+                                    borderRadius: 3,
+                                },
+                            }}
+                        >
+                            <Box sx={{ direction: "ltr", height: 0 }}>
+                                <Stack sx={{ minHeight: "20rem" }}>
+                                    {mechs.map((mech) => {
+                                        return <QuickDeployItem key={mech.id} mech={mech} queueFeed={queueFeed} />
+                                    })}
+                                </Stack>
+                            </Box>
+                        </Box>
                     )}
 
                     {!isLoading && !loadError && mechs && mechs.length <= 0 && (
