@@ -2,22 +2,6 @@ import BigNumber from "bignumber.js"
 import emojiRegex from "emoji-regex"
 import { VoidFunctionComponent } from "react"
 import {
-    MultiplierAdmiral,
-    MultiplierAFoolAndHisMoney,
-    MultiplierAirMarshal,
-    MultiplierAirSupport,
-    MultiplierContributor,
-    MultiplierDestroyerOfWorlds,
-    MultiplierFieldMechanic,
-    MultiplierGeneric,
-    MultiplierGreaseMonkey,
-    MultiplierJunkE,
-    MultiplierMechCommander,
-    MultiplierMechHead,
-    MultiplierNowIAmBecomeDeath,
-    MultiplierSniper,
-    MultiplierWonBattle,
-    MultiplierWonLastThreeBattles,
     SafePNG,
     SvgCorporal,
     SvgGeneral,
@@ -231,73 +215,6 @@ export const getRarityDeets = (rarityKey: string): Rarity => {
         default:
             return { label: "", color: colors.rarity.MEGA, textColor: "#FFFFFF" }
     }
-}
-
-export const getMultiplierDeets = (multiplierKey: string): { image: string } => {
-    let image
-
-    switch (multiplierKey.toLowerCase()) {
-        case "contributor":
-            image = MultiplierContributor
-            break
-        case "a fool and his money":
-            image = MultiplierAFoolAndHisMoney
-            break
-        case "air support":
-            image = MultiplierAirSupport
-            break
-        case "now i am become death":
-            image = MultiplierNowIAmBecomeDeath
-            break
-        case "destroyer of worlds":
-            image = MultiplierDestroyerOfWorlds
-            break
-        case "grease monkey":
-            image = MultiplierGreaseMonkey
-            break
-        case "field mechanic":
-            image = MultiplierFieldMechanic
-            break
-        case "combo breaker":
-            image = MultiplierFieldMechanic
-            break
-        case "mech commander":
-            image = MultiplierMechCommander
-            break
-        case "admiral":
-            image = MultiplierAdmiral
-            break
-        case "air marshal":
-            image = MultiplierAirMarshal
-            break
-        case "junk-e":
-            image = MultiplierJunkE
-            break
-        case "mech head":
-            image = MultiplierMechHead
-            break
-        case "sniper":
-            image = MultiplierSniper
-            break
-        case "won battle":
-            image = MultiplierWonBattle
-            break
-        case "won last three battles":
-            image = MultiplierWonLastThreeBattles
-            break
-        case "offline":
-        case "applause":
-        case "picked location":
-        case "battlerewardupdate":
-        case "supsmultiplierget":
-        case "checkmultiplierupdate":
-        case "supstick":
-        default:
-            image = MultiplierGeneric
-            break
-    }
-
-    return { image }
 }
 
 export const dateFormatter = (date: Date, showSeconds?: boolean, showDate?: boolean): string => {

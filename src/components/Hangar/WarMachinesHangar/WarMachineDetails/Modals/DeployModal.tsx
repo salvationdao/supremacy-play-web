@@ -2,7 +2,7 @@ import { Box, Stack, Typography } from "@mui/material"
 import { useCallback, useState } from "react"
 import { FancyButton, TooltipHelper } from "../../../.."
 import { SvgInfoCircular, SvgSupToken } from "../../../../../assets"
-import { useSnackbar } from "../../../../../containers"
+import { useGlobalNotifications } from "../../../../../containers"
 import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../keys"
 import { colors, fonts } from "../../../../../theme/theme"
@@ -24,7 +24,7 @@ export const DeployModal = ({
     deployMechModalOpen: boolean
     setDeployMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
 }) => {
-    const { newSnackbarMessage } = useSnackbar()
+    const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [isLoading, setIsLoading] = useState(false)
     const [deployQueueError, setDeployQueueError] = useState<string>()

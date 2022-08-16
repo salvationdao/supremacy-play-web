@@ -2,7 +2,7 @@ import { Box, Fade, Stack, Typography } from "@mui/material"
 import { useCallback, useMemo, useState } from "react"
 import { FancyButton, TooltipHelper } from "../.."
 import { SvgGlobal, SvgLine, SvgMicrochip, SvgQuestionMark, SvgTarget } from "../../../assets"
-import { useSnackbar } from "../../../containers"
+import { useGlobalNotifications } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { numberCommaFormatter, supFormatter } from "../../../helpers"
 import { useToggle } from "../../../hooks"
@@ -36,7 +36,7 @@ export const PlayerAbilityStoreItem = ({
     const backgroundColor = theme.factionTheme.background
 
     // Purchasing
-    const { newSnackbarMessage } = useSnackbar()
+    const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsUser("/user_commander")
     const [showPurchaseModal, toggleShowPurchaseModal] = useToggle(false)
     const [loading, setLoading] = useState(false)

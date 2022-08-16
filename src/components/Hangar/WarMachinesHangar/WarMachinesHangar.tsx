@@ -257,7 +257,7 @@ export const WarMachinesHangar = () => {
                     </Typography>
 
                     <FancyButton
-                        to={`/marketplace/war-machines${location.hash}`}
+                        to={`/marketplace/war-machines`}
                         clipThingsProps={{
                             clipSize: "9px",
                             backgroundColor: theme.factionTheme.primary,

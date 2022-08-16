@@ -1,7 +1,7 @@
 import { Stack, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
 import { ClipThing } from "../.."
-import { useSnackbar, useSupremacy } from "../../../containers"
+import { useGlobalNotifications, useSupremacy } from "../../../containers"
 import { useAuth } from "../../../containers/auth"
 import { useTheme } from "../../../containers/theme"
 import { useGameServerCommands } from "../../../hooks/useGameServer"
@@ -20,7 +20,7 @@ export const PlayerAbilityKills = () => {
     const theme = useTheme()
     const { userID } = useAuth()
     const { getFaction } = useSupremacy()
-    const { newSnackbarMessage } = useSnackbar()
+    const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommands("/public/commander")
     const [rankItems, setRankItems] = useState<RankItem[]>()
     const [isLoading, setIsLoading] = useState(true)

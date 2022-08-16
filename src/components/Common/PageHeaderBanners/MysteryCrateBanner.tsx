@@ -1,6 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
-import { useLocation } from "react-router"
 import { useAuth, useMobile, useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { useTimer } from "../../../hooks"
@@ -16,7 +15,6 @@ const LOCKED_UNTIL = "2022-07-22T00:00:00+08:00"
 
 export const MysteryCrateBanner = () => {
     const { isMobile } = useMobile()
-    const location = useLocation()
     const theme = useTheme()
     const { factionID } = useAuth()
     const { getFaction } = useSupremacy()
@@ -123,7 +121,7 @@ export const MysteryCrateBanner = () => {
                             sx: { position: "relative" },
                         }}
                         sx={{ px: "3.4rem", py: ".8rem", color: secondaryColor, flexWrap: 0, whiteSpace: "nowrap" }}
-                        to={`/storefront/mystery-crates${location.hash}`}
+                        to={`/storefront/mystery-crates`}
                     >
                         <Stack justifyContent="center" sx={{ height: "100%" }}>
                             <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBlack, color: secondaryColor }}>

@@ -2,7 +2,7 @@ import { Box, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo } from "react"
 import { ClipThing, FancyButton } from "../.."
 import { SvgLine, SvgMicrochip, SvgQuestionMark, SvgTarget } from "../../../assets"
-import { useMiniMap, useSnackbar } from "../../../containers"
+import { useMiniMap, useGlobalNotifications } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { useTimer } from "../../../hooks"
 import { colors } from "../../../theme/theme"
@@ -20,7 +20,7 @@ export const TargetHint = () => {
 
 // Winner hint
 const WinnerTargetHint = () => {
-    const { newSnackbarMessage } = useSnackbar()
+    const { newSnackbarMessage } = useGlobalNotifications()
     const { winner, resetSelection } = useMiniMap()
 
     if (!winner) return null

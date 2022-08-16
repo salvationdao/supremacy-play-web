@@ -1,5 +1,4 @@
 import { Box, useTheme } from "@mui/material"
-import { useLocation } from "react-router-dom"
 import { MARKETPLACE_TABS } from "../../../../pages"
 import { colors } from "../../../../theme/theme"
 import { Weapon } from "../../../../types"
@@ -9,7 +8,6 @@ import { TooltipHelper } from "../../../Common/TooltipHelper"
 import { ReusableButton } from "../../WarMachinesHangar/WarMachineDetails/MechButtons"
 
 export const WeaponButtons = ({ weaponDetails }: { weaponDetails: Weapon }) => {
-    const location = useLocation()
     const theme = useTheme()
 
     const marketLocked = weaponDetails.market_locked
@@ -41,8 +39,8 @@ export const WeaponButtons = ({ weaponDetails }: { weaponDetails: Weapon }) => {
                             label={isInMarketplace ? "VIEW LISTING" : "SELL"}
                             to={
                                 weaponDetails.item_sale_id
-                                    ? `/marketplace/${MARKETPLACE_TABS.Weapons}/${weaponDetails.item_sale_id}${location.hash}`
-                                    : `/marketplace/sell?itemType=${ItemType.Weapon}&assetID=${weaponDetails.id}${location.hash}`
+                                    ? `/marketplace/${MARKETPLACE_TABS.Weapons}/${weaponDetails.item_sale_id}`
+                                    : `/marketplace/sell?itemType=${ItemType.Weapon}&assetID=${weaponDetails.id}`
                             }
                         />
                     </Box>
