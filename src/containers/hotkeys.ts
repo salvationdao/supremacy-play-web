@@ -37,8 +37,8 @@ const addMiniMechParticipantId = 100
 
 export const HotkeyContainer = createContainer(() => {
     const { setHighlightedMechParticipantID, setPlayerAbility, highlightedMechParticipantID } = useMiniMap()
-    const { warMachines, spawnedAI } = useGame()
-    const { factionID, user } = useAuth()
+    const { factionWarMachines, ownedMiniMechs } = useGame()
+    const { user } = useAuth()
     const { newSnackbarMessage } = useSnackbar()
 
     //ability hot keys
@@ -51,25 +51,6 @@ export const HotkeyContainer = createContainer(() => {
 
     const { send } = useGameServerCommandsFaction("/faction_commander")
 
-    const factionWarMachines = useMemo(() => {
-        if (!warMachines) return
-        return warMachines?.filter((w) => w.factionID === factionID).sort((a, b) => a.participantID - b.participantID)
-    }, [warMachines, factionID])
-
-    const otherWarMachines = useMemo(() => {
-        if (!warMachines) return
-        return warMachines?.filter((w) => w.factionID !== factionID).sort((a, b) => a.participantID - b.participantID)
-    }, [warMachines, factionID])
-
-    const orderedWarMachines = useMemo(() => {
-        if (!otherWarMachines || !factionWarMachines) return
-        return [...factionWarMachines, ...otherWarMachines]
-    }, [otherWarMachines, factionWarMachines])
-
-    const ownedMiniMechs = useMemo(
-        () => (spawnedAI ? spawnedAI.filter((sa) => sa.aiType === AIType.MiniMech && sa.ownedByID === user.id) : []),
-        [spawnedAI, user],
-    )
     //ability triggers ------------------------------------
     const onGameAbilityTrigger = useCallback(
         async (warMachineHash: string, gameAbilityID: string) => {
@@ -186,10 +167,6 @@ export const HotkeyContainer = createContainer(() => {
         setMechMoveCommand,
         MechMoveCommandAbility,
         handleMechMove,
-        orderedWarMachines,
-        otherWarMachines,
-        factionWarMachines,
-        ownedMiniMechs,
         mechAbilityKey,
     }
 })

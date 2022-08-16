@@ -19,8 +19,7 @@ export const WarMachineStats = () => {
 const WarMachineStatsInner = () => {
     const { isMobile } = useMobile()
     const theme = useTheme()
-    const { factionWarMachines, otherWarMachines, ownedMiniMechs } = useHotkey()
-    const { warMachines, bribeStage, map } = useGame()
+    const { warMachines, bribeStage, map, factionWarMachines, otherWarMachines, ownedMiniMechs } = useGame()
     const [isPoppedout, toggleIsPoppedout] = useToggle()
 
     // Temp hotfix ask james ****************************

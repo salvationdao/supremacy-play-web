@@ -9,8 +9,7 @@ export const MapMechs = () => {
 }
 
 const MapMechsInner = () => {
-    const { map, spawnedAI } = useGame()
-    const { orderedWarMachines } = useHotkey()
+    const { map, spawnedAI, orderedWarMachines } = useGame()
 
     const mechs = useMemo(() => {
         if (!orderedWarMachines || orderedWarMachines.length <= 0) return null
