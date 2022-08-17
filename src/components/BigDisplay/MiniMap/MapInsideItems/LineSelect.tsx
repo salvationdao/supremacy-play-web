@@ -186,7 +186,7 @@ export const LineSelect = ({ mapScale }: { mapScale: number }) => {
             <canvas
                 ref={canvasRef}
                 style={{
-                    zIndex: 6,
+                    zIndex: 909,
                     position: "absolute",
                     top: 0,
                     left: 0,

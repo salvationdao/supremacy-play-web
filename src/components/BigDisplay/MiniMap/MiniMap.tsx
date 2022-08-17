@@ -165,6 +165,8 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
                     width: "100%",
                     height: "100%",
                     pb: containFit && !isEnlarged ? `${BOTTOM_PADDING}rem` : 0,
+                    boxShadow: 2,
+                    border: (theme) => `${theme.factionTheme.primary}60 1px solid`,
                 }}
             >
                 <Box
@@ -193,15 +195,6 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
                             zIndex: 99,
                         }}
                     >
-                        <Typography sx={{ fontFamily: fonts.nostromoHeavy }}>
-                            {map.name
-                                .replace(/([A-Z])/g, " $1")
-                                .trim()
-                                .toUpperCase()}
-                        </Typography>
-
-                        <Box sx={{ flex: 1 }} />
-
                         {!isPoppedout && (
                             <>
                                 <Box onClick={() => setIsStreamBigDisplay((prev) => !prev)} sx={{ cursor: "pointer", opacity: 0.4, ":hover": { opacity: 1 } }}>
@@ -219,6 +212,13 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
                                 {isEnlarged ? <SvgMinimize size="1.6rem" /> : <SvgFullscreen size="1.6rem" />}
                             </Box>
                         )}
+
+                        <Typography sx={{ fontFamily: fonts.nostromoHeavy }}>
+                            {map.name
+                                .replace(/([A-Z])/g, " $1")
+                                .trim()
+                                .toUpperCase()}
+                        </Typography>
                     </Stack>
 
                     <MiniMapInside containerDimensions={{ width: sizes.insideWidth, height: sizes.insideHeight }} />
