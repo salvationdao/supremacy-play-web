@@ -1,5 +1,5 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
-import { useCallback, useEffect, useMemo, useRef } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { MiniMapInside, MoveableResizable } from ".."
 import { SvgFullscreen, SvgMinimize } from "../../assets"
 import { useDimension, useGame, useMobile, useOverlayToggles } from "../../containers"
@@ -38,6 +38,7 @@ export const MiniMap = () => {
     const { map, bribeStage } = useGame()
     const { isTargeting, isEnlarged, resetSelection, playerAbility } = useMiniMap()
     const { isMapOpen, toggleIsMapOpen } = useOverlayToggles()
+    const [mapFocused, setMapFocused] = useState<boolean>()
 
     // Temp hotfix ask james ****************************
     const [show, toggleShow] = useToggle(false)
@@ -77,8 +78,9 @@ export const MiniMap = () => {
             onHideCallback: () => toggleIsMapOpen(false),
             hidePopoutBorder: true,
             topRightContent: <FullscreenIcon />,
+            isUnfocusedColor: !mapFocused,
         }),
-        [toggleIsMapOpen],
+        [toggleIsMapOpen, mapFocused],
     )
 
     return useMemo(() => {
@@ -97,6 +99,7 @@ export const MiniMap = () => {
                             toRender={toRender}
                             playerAbility={playerAbility}
                             isMapOpen={isMapOpen}
+                            setMapFocused={setMapFocused}
                         />
                     </MoveableResizable>
                 </Box>
@@ -113,6 +116,7 @@ const MiniMapInner = ({
     toRender,
     playerAbility,
     isMapOpen,
+    setMapFocused,
 }: {
     map: Map
     isTargeting: boolean
@@ -120,6 +124,7 @@ const MiniMapInner = ({
     toRender: boolean
     playerAbility?: PlayerAbility
     isMapOpen: boolean
+    setMapFocused: (value: ((prevState: boolean | undefined) => boolean | undefined) | boolean | undefined) => void
 }) => {
     const { isMobile } = useMobile()
     const theme = useTheme()
@@ -255,6 +260,8 @@ const MiniMapInner = ({
                     tabIndex={0}
                     onKeyDown={handleHotKey}
                     onClick={focusMap}
+                    onFocus={() => setMapFocused(true)}
+                    onBlur={() => setMapFocused(false)}
                     sx={{
                         position: "relative",
                         boxShadow: 1,
