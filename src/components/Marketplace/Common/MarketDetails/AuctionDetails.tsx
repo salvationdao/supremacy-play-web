@@ -3,7 +3,7 @@ import BigNumber from "bignumber.js"
 import { useCallback, useMemo, useState } from "react"
 import { ClipThing, FancyButton } from "../../.."
 import { SvgHammer, SvgSupToken } from "../../../../assets"
-import { useAuth, useSnackbar } from "../../../../containers"
+import { useAuth, useGlobalNotifications } from "../../../../containers"
 import { calculateDutchAuctionCurrentPrice, numberCommaFormatter, shadeColor } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
 import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
@@ -38,7 +38,7 @@ export const AuctionDetails = ({
     auctionLastBid,
     isTimeEnded,
 }: AuctionDetailsProps) => {
-    const { newSnackbarMessage } = useSnackbar()
+    const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const { userID } = useAuth()
     const [currentPrice, setCurrentPrice] = useState<BigNumber>(new BigNumber(auctionCurrentPrice).shiftedBy(-18))

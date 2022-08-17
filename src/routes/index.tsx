@@ -1,22 +1,25 @@
-import { BattleArenaPage, ClaimPage, HangarPage, MarketplacePage, BillingHistoryPage, NotFoundPage } from "../pages"
-import { SvgChat } from "../assets"
 import { Box } from "@mui/system"
-import { colors } from "../theme/theme"
-import { StorefrontPage } from "../pages/StorefrontPage"
+import { SvgChat, SvgDamage1, SvgHistoryClock, SvgRepair, SvgRobot } from "../assets"
+import { BattleArena } from "../components/LeftDrawer/BattleArena/BattleArena"
+import { QuickDeploy } from "../components/LeftDrawer/QuickDeploy/QuickDeploy"
+import { BattleEndScreen } from "../components/LeftDrawer/BattleEndScreen/BattleEndScreen"
+import { PlayerProfilePage } from "../components/PublicProfile/PlayerProfile"
+import { LiveChat } from "../components/RightDrawer/LiveChat/LiveChat"
+import { PlayerList } from "../components/RightDrawer/PlayerList/PlayerList"
+import { RepairJobs } from "../components/RightDrawer/RepairJobs/RepairJobs"
+import { BATTLE_ARENA_OPEN, IS_TESTING_MODE } from "../constants"
+import { BattleArenaPage, BillingHistoryPage, ClaimPage, HangarPage, MarketplacePage, NotFoundPage } from "../pages"
+import { LeaderboardPage } from "../pages/LeaderboardPage"
 import { MarketplaceItemPage } from "../pages/MarketplaceItemPage"
 import { MarketplaceSellPage } from "../pages/MarketplaceSellPage"
 import { MechPage } from "../pages/MechPage"
+import { StorefrontPage } from "../pages/StorefrontPage"
 import { WeaponPage } from "../pages/WeaponPage"
-import { LiveChat } from "../components/RightDrawer/LiveChat/LiveChat"
-import { PlayerList } from "../components/RightDrawer/PlayerList/PlayerList"
-import { PlayerProfilePage } from "../components/PublicProfile/PlayerProfile"
-import { BATTLE_ARENA_OPEN, IS_TESTING_MODE } from "../constants"
-import { LeaderboardPage } from "../pages/LeaderboardPage"
-import { JobsPage } from "../pages/JobsPage"
+import { colors } from "../theme/theme"
 
-/**
- * Left drawer
- */
+// ************
+// ** ROUTES **
+// ************
 interface RouteStruct {
     id: string
     path: string
@@ -26,12 +29,11 @@ interface RouteStruct {
     authTitle?: string // If omitted, it'll have a default title
     authDescription?: string // If omitted, it'll have a default description
     requireFaction: boolean
-    leftDrawer?: {
+    navLink?: {
         enable: boolean
         label: string
-        comingSoonLabel?: string
     }
-    matchLeftDrawerID?: string // The /route which will make this button highlighted
+    matchNavLinkID?: string // The /route which will make this button highlighted
     enable: boolean
 }
 
@@ -43,12 +45,11 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         Component: BattleArenaPage,
         requireAuth: false,
         requireFaction: false,
-        leftDrawer: {
+        navLink: {
             enable: BATTLE_ARENA_OPEN,
             label: "Battle Arena",
-            comingSoonLabel: "Returning Soon",
         },
-        matchLeftDrawerID: "home",
+        matchNavLinkID: "home",
         enable: true,
     },
 
@@ -60,11 +61,11 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         Component: LeaderboardPage,
         requireAuth: false,
         requireFaction: false,
-        leftDrawer: {
+        navLink: {
             enable: true,
             label: "Leaderboard",
         },
-        matchLeftDrawerID: "leaderboard",
+        matchNavLinkID: "leaderboard",
         enable: true,
     },
 
@@ -76,7 +77,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         Component: MechPage,
         requireAuth: true,
         requireFaction: true,
-        matchLeftDrawerID: "fleet",
+        matchNavLinkID: "fleet",
         enable: true,
     },
 
@@ -88,7 +89,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         Component: WeaponPage,
         requireAuth: true,
         requireFaction: true,
-        matchLeftDrawerID: "fleet",
+        matchNavLinkID: "fleet",
         enable: true,
     },
 
@@ -100,11 +101,11 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         Component: HangarPage,
         requireAuth: true,
         requireFaction: true,
-        leftDrawer: {
+        navLink: {
             enable: true,
             label: "fleet",
         },
-        matchLeftDrawerID: "fleet",
+        matchNavLinkID: "fleet",
         enable: true,
     },
 
@@ -116,11 +117,11 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         Component: StorefrontPage,
         requireAuth: true,
         requireFaction: true,
-        leftDrawer: {
+        navLink: {
             enable: true,
             label: "Storefront",
         },
-        matchLeftDrawerID: "storefront",
+        matchNavLinkID: "storefront",
         enable: !IS_TESTING_MODE,
     },
 
@@ -132,7 +133,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         Component: MarketplaceSellPage,
         requireAuth: true,
         requireFaction: true,
-        matchLeftDrawerID: "marketplace",
+        matchNavLinkID: "marketplace",
         enable: !IS_TESTING_MODE,
     },
     marketplace_item: {
@@ -142,7 +143,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         Component: MarketplaceItemPage,
         requireAuth: true,
         requireFaction: true,
-        matchLeftDrawerID: "marketplace",
+        matchNavLinkID: "marketplace",
         enable: !IS_TESTING_MODE,
     },
     marketplace: {
@@ -152,11 +153,11 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         Component: MarketplacePage,
         requireAuth: true,
         requireFaction: true,
-        leftDrawer: {
+        navLink: {
             enable: true,
             label: "Marketplace",
         },
-        matchLeftDrawerID: "marketplace",
+        matchNavLinkID: "marketplace",
         enable: !IS_TESTING_MODE,
     },
 
@@ -168,22 +169,6 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         Component: PlayerProfilePage,
         requireAuth: false,
         requireFaction: false,
-        enable: true,
-    },
-
-    // Jobs
-    jobs: {
-        id: "jobs",
-        path: "/jobs/:type?",
-        exact: true,
-        Component: JobsPage,
-        requireAuth: true,
-        requireFaction: true,
-        leftDrawer: {
-            enable: true,
-            label: "Jobs",
-        },
-        matchLeftDrawerID: "jobs",
         enable: true,
     },
 
@@ -228,30 +213,61 @@ for (const [, value] of Object.entries(ROUTES_MAP)) {
     ROUTES_ARRAY.push(value)
 }
 
-/**
- * Right drawer
- */
-export enum RightDrawerHashes {
-    None = "",
-    LiveChat = "#live_chat",
-    PlayerList = "#player_list",
-}
-
-export interface HashRouteStruct {
+// *****************
+// ** LEFT DRAWER **
+// *****************
+export interface SideTabsStruct {
     id: string
-    hash: string
-    Component?: () => JSX.Element
+    Component?: () => JSX.Element | null
     icon: string | React.ReactElement<unknown, string | React.JSXElementConstructor<unknown>>
     label: string
-    mountAllTime?: boolean
+    matchNavLinkID?: string // Leave blank to have the tab available on all pages, else specify the route
+    mountAllTime: boolean // Whether to keep component mounted even not on the tab
     requireAuth: boolean
 }
 
-export const HASH_ROUTES_MAP: { [name: string]: HashRouteStruct } = {
+export const LEFT_DRAWER_MAP: { [name: string]: SideTabsStruct } = {
+    battle_arena: {
+        id: "battle_arena",
+        icon: <SvgDamage1 size="1.2rem" sx={{ pt: ".3rem" }} />,
+        label: "Battle Commands",
+        Component: BattleArena,
+        requireAuth: false,
+        matchNavLinkID: "home",
+        mountAllTime: true,
+    },
+    quick_deploy: {
+        id: "quick_deploy",
+        icon: <SvgRobot size="1.3rem" sx={{ pt: ".3rem" }} />,
+        label: "Quick Deploy",
+        Component: QuickDeploy,
+        requireAuth: true,
+        matchNavLinkID: "home",
+        mountAllTime: false,
+    },
+    previous_battle: {
+        id: "previous_battle",
+        icon: <SvgHistoryClock size="1.3rem" sx={{ pt: ".3rem" }} />,
+        label: "Previous Battle",
+        Component: BattleEndScreen,
+        requireAuth: false,
+        matchNavLinkID: "home",
+        mountAllTime: true,
+    },
+}
+
+export const LEFT_DRAWER_ARRAY: SideTabsStruct[] = []
+for (const [, value] of Object.entries(LEFT_DRAWER_MAP)) {
+    LEFT_DRAWER_ARRAY.push(value)
+}
+
+// ******************
+// ** RIGHT DRAWER **
+// ******************
+export const RIGHT_DRAWER_MAP: { [name: string]: SideTabsStruct } = {
     live_chat: {
         id: "live_chat",
-        hash: RightDrawerHashes.LiveChat,
-        icon: <SvgChat size="1rem" sx={{ pt: ".3rem" }} />,
+        icon: <SvgChat size="1.1rem" sx={{ pt: ".3rem" }} />,
         label: "Live Chat",
         Component: LiveChat,
         requireAuth: false,
@@ -259,10 +275,9 @@ export const HASH_ROUTES_MAP: { [name: string]: HashRouteStruct } = {
     },
     active_players: {
         id: "active_players",
-        hash: RightDrawerHashes.PlayerList,
         icon: (
             <Box sx={{ pb: ".2rem" }}>
-                <Box sx={{ width: ".8rem", height: ".8rem", borderRadius: "50%", backgroundColor: colors.green }} />
+                <Box sx={{ width: ".9rem", height: ".9rem", borderRadius: "50%", backgroundColor: colors.green }} />
             </Box>
         ),
         label: "Active Players",
@@ -270,9 +285,17 @@ export const HASH_ROUTES_MAP: { [name: string]: HashRouteStruct } = {
         requireAuth: true,
         mountAllTime: false,
     },
+    repairs: {
+        id: "repairs",
+        icon: <SvgRepair size="1.1rem" sx={{ pt: ".3rem" }} />,
+        label: "Repairs",
+        Component: RepairJobs,
+        requireAuth: true,
+        mountAllTime: false,
+    },
 }
 
-export const HASH_ROUTES_ARRAY: HashRouteStruct[] = []
-for (const [, value] of Object.entries(HASH_ROUTES_MAP)) {
-    HASH_ROUTES_ARRAY.push(value)
+export const RIGHT_DRAWER_ARRAY: SideTabsStruct[] = []
+for (const [, value] of Object.entries(RIGHT_DRAWER_MAP)) {
+    RIGHT_DRAWER_ARRAY.push(value)
 }

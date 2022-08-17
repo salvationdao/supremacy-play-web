@@ -8,16 +8,28 @@ export const MapMechs = () => {
 }
 
 const MapMechsInner = () => {
-    const { map, warMachines } = useGame()
+    const { map, spawnedAI, orderedWarMachines } = useGame()
+
+    const mechs = useMemo(() => {
+        if (!orderedWarMachines || orderedWarMachines.length <= 0) return null
+
+        return orderedWarMachines.map((wm, i) => <MapMech key={`${wm.participantID} - ${wm.hash}`} warMachine={wm} label={i + 1} />)
+    }, [orderedWarMachines])
+
+    const ai = useMemo(() => {
+        if (!spawnedAI || spawnedAI.length <= 0) return null
+
+        return spawnedAI.map((wm) => <MapMech key={`${wm.participantID} - ${wm.hash}`} warMachine={wm} isAI />)
+    }, [spawnedAI])
 
     return useMemo(() => {
-        if (!map || !warMachines || warMachines.length <= 0) return null
+        if (!map || (!mechs && !ai)) return null
+
         return (
             <>
-                {warMachines.map((wm) => (
-                    <MapMech key={`${wm.participantID} - ${wm.hash}`} warMachine={wm} />
-                ))}
+                {mechs}
+                {ai}
             </>
         )
-    }, [map, warMachines])
+    }, [ai, map, mechs])
 }

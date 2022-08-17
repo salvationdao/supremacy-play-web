@@ -5,7 +5,7 @@ import { PlayerAbilityPNG } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { parseString } from "../../../helpers"
 import { usePagination, useToggle, useUrlQuery } from "../../../hooks"
-import { useGameServerSubscriptionUser } from "../../../hooks/useGameServer"
+import { useGameServerSubscriptionSecuredUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { LocationSelectType, PlayerAbility } from "../../../types"
@@ -53,7 +53,7 @@ export const PlayerAbilitiesHangar = () => {
         localStorage.setItem("isPlayerAbilitiesFiltersExpanded", isFiltersExpanded.toString())
     }, [isFiltersExpanded])
 
-    useGameServerSubscriptionUser<PlayerAbility[]>(
+    useGameServerSubscriptionSecuredUser<PlayerAbility[]>(
         {
             URI: "/player_abilities",
             key: GameServerKeys.SubPlayerAbilitiesList,
@@ -145,7 +145,7 @@ export const PlayerAbilitiesHangar = () => {
                     </Typography>
 
                     <FancyButton
-                        to={`/storefront/abilities${location.hash}`}
+                        to={`/storefront/abilities`}
                         clipThingsProps={{
                             clipSize: "9px",
                             backgroundColor: theme.factionTheme.primary,

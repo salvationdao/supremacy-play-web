@@ -1,5 +1,5 @@
 import { Box, Stack } from "@mui/material"
-import { ReactNode, useMemo } from "react"
+import { ReactNode, useCallback, useMemo } from "react"
 import { Rnd } from "react-rnd"
 import { TooltipHelper } from "../.."
 import { SvgClose, SvgDrag, SvgExternalLink, SvgInfoCircular } from "../../../assets"
@@ -53,9 +53,16 @@ const MoveableResizableInner = ({ children }: MoveableResizableProps) => {
 
         autoFit,
         hidePopoutBorder,
+        isUnfocusedColor,
     } = useMoveableResizable()
 
     const topRightBackgroundColor = useMemo(() => shadeColor(theme.factionTheme.primary, -90), [theme.factionTheme.primary])
+    const unfocusedColor = useCallback(
+        (color: string, modifier?: string) => {
+            return isUnfocusedColor !== undefined && isUnfocusedColor ? `${color}66` : modifier ? `${color + modifier}` : color
+        },
+        [isUnfocusedColor],
+    )
 
     if (isPoppedout) {
         return (
@@ -68,7 +75,7 @@ const MoveableResizableInner = ({ children }: MoveableResizableProps) => {
                 }}
                 features={{
                     width: curWidth / (remToPxRatio / 11),
-                    height: curHeight / (remToPxRatio / 11) + 30, // this is the top bar height
+                    height: Math.max(curHeight / (remToPxRatio / 11) + 30, 300), // this is the top bar height
                 }}
             >
                 <Box
@@ -132,8 +139,8 @@ const MoveableResizableInner = ({ children }: MoveableResizableProps) => {
                         borderThickness: ".25rem",
                         borderColor: theme.factionTheme.primary,
                     }}
-                    backgroundColor={theme.factionTheme.background}
-                    opacity={0.8}
+                    backgroundColor={unfocusedColor(theme.factionTheme.background)}
+                    opacity={isUnfocusedColor !== undefined && isUnfocusedColor ? 0.4 : 0.8}
                     sx={{ position: "relative", width: "100%", height: "100%", transition: "all .2s" }}
                 >
                     {/* Top right icon buttons */}
@@ -217,8 +224,8 @@ const MoveableResizableInner = ({ children }: MoveableResizableProps) => {
                                     left: -6,
                                     right: -6,
                                     backgroundColor: topRightBackgroundColor,
-                                    borderLeft: `${theme.factionTheme.primary}BB .25rem solid`,
-                                    borderBottom: `${theme.factionTheme.primary}BB .25rem solid`,
+                                    borderLeft: `${unfocusedColor(theme.factionTheme.primary, "BB")} .25rem solid`,
+                                    borderBottom: `${unfocusedColor(theme.factionTheme.primary, "BB")} .25rem solid`,
                                     transform: "skew(35deg)",
                                     zIndex: -1,
                                 }}

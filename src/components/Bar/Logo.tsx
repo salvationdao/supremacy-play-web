@@ -5,12 +5,13 @@ import { SvgHamburger, SvgSupremacyLogo } from "../../assets"
 import { IS_TESTING_MODE, VERSION } from "../../constants"
 import { useMobile, useOverlayToggles } from "../../containers"
 import { colors, fonts } from "../../theme/theme"
+import { HIDE_NAV_LINKS_WIDTH } from "./NavLinks/NavLinks"
 
 export const Logo = React.memo(function Logo() {
-    const below1370 = useMediaQuery("(max-width:1370px)")
+    const hideNavLinks = useMediaQuery(`(max-width:${HIDE_NAV_LINKS_WIDTH}px)`)
     const { isMobile } = useMobile()
     const [text, setText] = useState<string>(IS_TESTING_MODE ? "PROVING GROUNDS" : "EARLY ACCESS")
-    const { toggleIsLeftDrawerOpen } = useOverlayToggles()
+    const { toggleIsNavLinksDrawerOpen } = useOverlayToggles()
 
     return (
         <Stack
@@ -19,8 +20,8 @@ export const Logo = React.memo(function Logo() {
             spacing="1.3rem"
             sx={{ zIndex: 1, height: "100%", pl: "1.2rem", pr: "2.2rem", borderRight: "#FFFFFF30 1px solid" }}
         >
-            {below1370 && (
-                <IconButton size="small" onClick={() => toggleIsLeftDrawerOpen(true)}>
+            {hideNavLinks && (
+                <IconButton size="small" onClick={() => toggleIsNavLinksDrawerOpen(true)}>
                     <SvgHamburger size="2.3rem" />
                 </IconButton>
             )}

@@ -1,6 +1,5 @@
 import { Box, Typography } from "@mui/material"
 import { useState } from "react"
-import { useLocation } from "react-router-dom"
 import { ClipThing, FancyButton, TooltipHelper } from "../../.."
 import { BATTLE_ARENA_OPEN, IS_TESTING_MODE } from "../../../../constants"
 import { useTheme } from "../../../../containers/theme"
@@ -26,7 +25,6 @@ export const MechButtons = ({
     setRepairMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
     marketLocked: boolean
 }) => {
-    const location = useLocation()
     const theme = useTheme()
     const [mechStatus, setMechStatus] = useState<MechStatus>()
 
@@ -116,8 +114,8 @@ export const MechButtons = ({
                                 mechDetails.locked_to_marketplace
                                     ? !mechDetails.item_sale_id
                                         ? undefined
-                                        : `/marketplace/${MARKETPLACE_TABS.WarMachines}/${mechDetails.item_sale_id}${location.hash}`
-                                    : `/marketplace/sell?itemType=${ItemType.WarMachine}&assetID=${mechDetails.id}${location.hash}`
+                                        : `/marketplace/${MARKETPLACE_TABS.WarMachines}/${mechDetails.item_sale_id}`
+                                    : `/marketplace/sell?itemType=${ItemType.WarMachine}&assetID=${mechDetails.id}`
                             }
                         />
                     </Box>

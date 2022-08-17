@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { createContainer } from "unstated-next"
-import { useSupremacy } from "."
+import { useAuth, useSupremacy } from "."
 import { useGameServerCommandsUser, useGameServerSubscription } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
-import { AbilityDetail, BattleEndDetail, BattleZone, BribeStage, Map, WarMachineState } from "../types"
+import { AbilityDetail, AIType, BattleEndDetail, BattleZone, BribeStage, Map, WarMachineState } from "../types"
+import { useArena } from "./arena"
 
 export interface BribeStageResponse {
     phase: BribeStage
@@ -15,12 +16,15 @@ export interface GameSettingsResponse {
     game_map: Map
     battle_zone: BattleZone
     war_machines: WarMachineState[]
+    spawned_ai: WarMachineState[]
     ability_details: AbilityDetail[]
 }
 
 // Game data that needs to be shared between different components
 export const GameContainer = createContainer(() => {
     const { setBattleIdentifier } = useSupremacy()
+    const { factionID, user } = useAuth()
+    const { currentArenaID } = useArena()
     const { send } = useGameServerCommandsUser("/user_commander")
 
     // States
@@ -28,15 +32,37 @@ export const GameContainer = createContainer(() => {
     const [battleZone, setBattleZone] = useState<BattleZone>()
     const [abilityDetails, setAbilityDetails] = useState<AbilityDetail[]>([])
     const [warMachines, setWarMachines] = useState<WarMachineState[] | undefined>([])
+    const [spawnedAI, setSpawnedAI] = useState<WarMachineState[] | undefined>([])
     const [bribeStage, setBribeStage] = useState<BribeStageResponse | undefined>()
     const [battleEndDetail, setBattleEndDetail] = useState<BattleEndDetail>()
     const [forceDisplay100Percentage, setForceDisplay100Percentage] = useState<string>("")
 
+    const factionWarMachines = useMemo(() => {
+        if (!warMachines) return
+        return warMachines?.filter((w) => w.factionID === factionID).sort((a, b) => a.participantID - b.participantID)
+    }, [warMachines, factionID])
+
+    const otherWarMachines = useMemo(() => {
+        if (!warMachines) return
+        return warMachines?.filter((w) => w.factionID !== factionID).sort((a, b) => a.participantID - b.participantID)
+    }, [warMachines, factionID])
+
+    const orderedWarMachines = useMemo(() => {
+        if (!otherWarMachines || !factionWarMachines) return
+        return [...factionWarMachines, ...otherWarMachines]
+    }, [otherWarMachines, factionWarMachines])
+
+    const ownedMiniMechs = useMemo(
+        () => (spawnedAI ? spawnedAI.filter((sa) => sa.aiType === AIType.MiniMech && sa.ownedByID === user.id) : []),
+        [spawnedAI, user],
+    )
+
     // Subscribe for game settings
     useGameServerSubscription<GameSettingsResponse | undefined>(
         {
-            URI: "/public/game_settings",
+            URI: `/public/arena/${currentArenaID}/game_settings`,
             key: GameServerKeys.SubGameSettings,
+            ready: currentArenaID !== "",
         },
         (payload) => {
             if (!payload) return
@@ -45,19 +71,34 @@ export const GameContainer = createContainer(() => {
             setBattleZone(payload.battle_zone)
             setAbilityDetails(payload.ability_details)
             setWarMachines(payload.war_machines)
+            setSpawnedAI(payload.spawned_ai)
+        },
+    )
+
+    // Subscribe for spawned AI
+    useGameServerSubscription<WarMachineState[] | undefined>(
+        {
+            URI: `/public/arena/${currentArenaID}/minimap`,
+            key: GameServerKeys.SubBattleAISpawned,
+            ready: currentArenaID !== "",
+        },
+        (payload) => {
+            if (!payload) return
+            setSpawnedAI(payload)
         },
     )
 
     useEffect(() => {
-        if (!map) return
-        send(GameServerKeys.GameUserOnline)
-    }, [send, map])
+        if (!map || !currentArenaID) return
+        send(GameServerKeys.GameUserOnline, { arena_id: currentArenaID })
+    }, [send, map, currentArenaID])
 
     // Subscribe on battle end information
     useGameServerSubscription<BattleEndDetail>(
         {
-            URI: "/public/battle_end_result",
+            URI: `/public/arena/${currentArenaID}/battle_end_result`,
             key: GameServerKeys.SubBattleEndDetailUpdated,
+            ready: currentArenaID !== "",
         },
         (payload) => {
             if (!payload) return
@@ -68,8 +109,9 @@ export const GameContainer = createContainer(() => {
     // Subscribe on current voting state
     useGameServerSubscription<BribeStageResponse | undefined>(
         {
-            URI: "/public/bribe_stage",
+            URI: `/public/arena/${currentArenaID}/bribe_stage`,
             key: GameServerKeys.SubBribeStageUpdated,
+            ready: !!currentArenaID,
         },
         (payload) => {
             setBribeStage(payload)
@@ -86,6 +128,11 @@ export const GameContainer = createContainer(() => {
         setBattleZone,
         abilityDetails,
         warMachines,
+        factionWarMachines,
+        otherWarMachines,
+        orderedWarMachines,
+        ownedMiniMechs,
+        spawnedAI,
         battleEndDetail,
         setBattleEndDetail,
         forceDisplay100Percentage,

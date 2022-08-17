@@ -72,16 +72,14 @@ export const WalletPopover = ({
                 clipSize="10px"
                 border={{
                     borderColor: theme.factionTheme.primary,
-                    borderThickness: ".3rem",
+                    borderThickness: ".2rem",
                 }}
                 backgroundColor={theme.factionTheme.background}
                 sx={{ height: "100%" }}
             >
-                <Stack spacing="2rem" sx={{ position: "relative", minWidth: "35rem", px: "2rem", pt: "1.6rem", pb: "2rem" }}>
+                <Stack spacing="2rem" sx={{ position: "relative", minWidth: "35rem", maxHeight: "90vh", px: "2rem", pt: "1.6rem", pb: "2rem" }}>
                     <Box>
-                        <Typography gutterBottom sx={{ fontFamily: fonts.nostromoBlack, color: theme.factionTheme.primary }}>
-                            CURRENT SESSION
-                        </Typography>
+                        <Typography sx={{ mb: "1rem", fontFamily: fonts.nostromoBlack, color: theme.factionTheme.primary }}>CURRENT SESSION</Typography>
 
                         <Stack spacing=".5rem">
                             <Stack direction="row" alignItems="center">
@@ -107,7 +105,7 @@ export const WalletPopover = ({
                     </Box>
 
                     <Box>
-                        <Typography gutterBottom sx={{ fontFamily: fonts.nostromoBlack, color: theme.factionTheme.primary }}>
+                        <Typography sx={{ mb: "1rem", fontFamily: fonts.nostromoBlack, color: theme.factionTheme.primary }}>
                             TOTAL {IS_TESTING_MODE ? "V" : ""}SUPS
                         </Typography>
 
@@ -159,7 +157,7 @@ export const WalletPopover = ({
                         </Box>
                     )}
 
-                    <IconButton size="small" onClick={() => toggleLocalOpen(false)} sx={{ position: "absolute", top: "-1rem", right: ".2rem" }}>
+                    <IconButton size="small" onClick={() => toggleLocalOpen(false)} sx={{ position: "absolute", top: "-2rem", right: ".2rem" }}>
                         <SvgClose size="2.6rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
                     </IconButton>
                 </Stack>

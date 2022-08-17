@@ -35,7 +35,7 @@ export const PreferencesModal = ({ onClose, setTelegramShortcode, toggleAddDevic
                     clipSize="8px"
                     border={{
                         borderColor: theme.factionTheme.primary,
-                        borderThickness: ".3rem",
+                        borderThickness: ".2rem",
                     }}
                     sx={{ position: "relative" }}
                     backgroundColor={theme.factionTheme.background}

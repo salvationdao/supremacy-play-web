@@ -8,7 +8,7 @@ import { useTheme } from "../../../containers/theme"
 import { GetSaleAbilityAvailability } from "../../../fetching"
 import { timeSinceInWords } from "../../../helpers"
 import { useTimer } from "../../../hooks"
-import { useGameServerSubscription, useGameServerSubscriptionUser } from "../../../hooks/useGameServer"
+import { useGameServerSubscriptionSecured, useGameServerSubscriptionSecuredUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { HANGAR_TABS } from "../../../pages"
 import { colors, fonts } from "../../../theme/theme"
@@ -51,15 +51,14 @@ export const PlayerAbilitiesStore = () => {
         })()
     }, [queryAvailability, userID])
 
-    useGameServerSubscription<{
+    useGameServerSubscriptionSecured<{
         next_refresh_time: Date | null
         refresh_period_duration_seconds: number
         sale_abilities: SaleAbility[]
     }>(
         {
-            URI: "/secure_public/sale_abilities",
+            URI: "/sale_abilities",
             key: GameServerKeys.SubSaleAbilitiesList,
-            ready: !!userID,
         },
         (payload) => {
             if (!payload) return
@@ -74,11 +73,10 @@ export const PlayerAbilitiesStore = () => {
         },
     )
 
-    useGameServerSubscription<{ id: string; current_price: string }>(
+    useGameServerSubscriptionSecured<{ id: string; current_price: string }>(
         {
-            URI: "/secure_public/sale_abilities",
+            URI: "/sale_abilities",
             key: GameServerKeys.SubSaleAbilitiesPrice,
-            ready: !!userID,
         },
         (payload) => {
             if (!payload) return
@@ -88,7 +86,7 @@ export const PlayerAbilitiesStore = () => {
         },
     )
 
-    useGameServerSubscriptionUser<PlayerAbility[]>(
+    useGameServerSubscriptionSecuredUser<PlayerAbility[]>(
         {
             URI: "/player_abilities",
             key: GameServerKeys.SubPlayerAbilitiesList,
@@ -120,7 +118,7 @@ export const PlayerAbilitiesStore = () => {
     const content = useMemo(() => {
         if (!isLoaded) {
             return (
-                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                <Stack alignItems="center" justifyContent="center" sx={{ height: "10rem" }}>
                     <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
                         <CircularProgress size="3rem" sx={{ color: theme.factionTheme.primary }} />
                     </Stack>
@@ -301,7 +299,7 @@ export const PlayerAbilitiesStore = () => {
                             },
                         }}
                     >
-                        {content}
+                        <Box sx={{ height: 0 }}>{content}</Box>
                     </Box>
                 </Stack>
             </Stack>

@@ -5,7 +5,7 @@ import { FlamesPNG, GenericWarMachinePNG, SvgClose, SvgDamageCross, SvgDamageIco
 import { colors, fonts, siteZIndex } from "../../theme/theme"
 import { DamageRecord, Faction, WarMachineDestroyedRecord, WarMachineState } from "../../types"
 import { useTheme } from "../../containers/theme"
-import { useSnackbar } from "../../containers"
+import { useGlobalNotifications } from "../../containers"
 import { useParameterizedQuery } from "react-fetching-library"
 import { GetMechDestroyedInfo } from "../../fetching"
 
@@ -21,7 +21,7 @@ export const WarMachineDestroyedInfo = ({
     getFaction: (factionID: string) => Faction
 }) => {
     const theme = useTheme()
-    const { newSnackbarMessage } = useSnackbar()
+    const { newSnackbarMessage } = useGlobalNotifications()
     const { query: queryGetMechDestroyedInfo } = useParameterizedQuery(GetMechDestroyedInfo)
     const [warMachineDestroyedRecord, setWarMachineDestroyedRecord] = useState<WarMachineDestroyedRecord>()
 

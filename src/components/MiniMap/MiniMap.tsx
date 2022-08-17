@@ -1,5 +1,5 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
-import { useEffect, useMemo, useRef } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { MiniMapInside, MoveableResizable } from ".."
 import { SvgFullscreen, SvgMinimize } from "../../assets"
 import { useDimension, useGame, useMobile, useOverlayToggles } from "../../containers"
@@ -9,8 +9,10 @@ import { useToggle } from "../../hooks"
 import { fonts } from "../../theme/theme"
 import { LocationSelectType, Map, PlayerAbility } from "../../types"
 import { MoveableResizableConfig, useMoveableResizable } from "../Common/MoveableResizable/MoveableResizableContainer"
+import { SectionHeading } from "../LeftDrawer/BattleArena/Common/SectionHeading"
 import { HighlightedMechAbilities } from "./MapOutsideItems/HighlightedMechAbilities"
 import { TargetHint } from "./MapOutsideItems/TargetHint"
+import { useHotkey } from "../../containers/hotkeys"
 
 export const TOP_BAR_HEIGHT = 3.1 // rems
 
@@ -36,6 +38,7 @@ export const MiniMap = () => {
     const { map, bribeStage } = useGame()
     const { isTargeting, isEnlarged, resetSelection, playerAbility } = useMiniMap()
     const { isMapOpen, toggleIsMapOpen } = useOverlayToggles()
+    const [mapFocused, setMapFocused] = useState<boolean>()
 
     // Temp hotfix ask james ****************************
     const [show, toggleShow] = useToggle(false)
@@ -66,8 +69,8 @@ export const MiniMap = () => {
             minPosX: 0,
             minPosY: 0,
             // Size limits
-            minWidth: 300,
-            minHeight: 300,
+            minWidth: 250,
+            minHeight: 250,
             maxWidth: 1000,
             maxHeight: 1000,
             // Others
@@ -75,8 +78,9 @@ export const MiniMap = () => {
             onHideCallback: () => toggleIsMapOpen(false),
             hidePopoutBorder: true,
             topRightContent: <FullscreenIcon />,
+            isUnfocusedColor: !mapFocused,
         }),
-        [toggleIsMapOpen],
+        [toggleIsMapOpen, mapFocused],
     )
 
     return useMemo(() => {
@@ -88,7 +92,15 @@ export const MiniMap = () => {
             <Fade in={toRender}>
                 <Box sx={{ ...(isMobile ? { backgroundColor: "#FFFFFF12", boxShadow: 2, border: "#FFFFFF20 1px solid" } : {}) }}>
                     <MoveableResizable config={config}>
-                        <MiniMapInner map={map} isTargeting={isTargeting} isEnlarged={isEnlarged} toRender={toRender} playerAbility={playerAbility} />
+                        <MiniMapInner
+                            map={map}
+                            isTargeting={isTargeting}
+                            isEnlarged={isEnlarged}
+                            toRender={toRender}
+                            playerAbility={playerAbility}
+                            isMapOpen={isMapOpen}
+                            setMapFocused={setMapFocused}
+                        />
                     </MoveableResizable>
                 </Box>
             </Fade>
@@ -103,15 +115,20 @@ const MiniMapInner = ({
     isEnlarged,
     toRender,
     playerAbility,
+    isMapOpen,
+    setMapFocused,
 }: {
     map: Map
     isTargeting: boolean
     isEnlarged: boolean
     toRender: boolean
     playerAbility?: PlayerAbility
+    isMapOpen: boolean
+    setMapFocused: (value: ((prevState: boolean | undefined) => boolean | undefined) | boolean | undefined) => void
 }) => {
     const { isMobile } = useMobile()
     const theme = useTheme()
+    const { handleHotKey } = useHotkey()
     const {
         remToPxRatio,
         gameUIDimensions: { width, height },
@@ -140,10 +157,24 @@ const MiniMapInner = ({
     const prevPosX = useRef(curPosX)
     const prevPosY = useRef(curPosY)
 
+    const focusMap = useCallback(() => ref.current?.focus(), [ref])
+
+    useEffect(() => {
+        if (isMapOpen) {
+            focusMap()
+        }
+    }, [isMapOpen, ref, focusMap])
+
     // When it's targeting, enlarge the map and move to center of screen, else restore to the prev dimensions
     useEffect(() => {
         // If its mech move, then dont do the map enlarge, too disruptive
-        if (playerAbility?.ability.location_select_type === LocationSelectType.MECH_COMMAND) return
+        if (playerAbility?.ability.location_select_type === LocationSelectType.MECH_COMMAND) {
+            prevPosX.current = curPosX
+            prevPosY.current = curPosY
+            prevWidth.current = curWidth
+            prevHeight.current = curHeight
+            return
+        }
 
         if (isTargeting || isEnlarged) {
             const maxW = Math.min(width - 25, maxWidth || width, 900)
@@ -166,12 +197,8 @@ const MiniMapInner = ({
             updateSize({ width: prevWidth.current, height: prevHeight.current })
             updatePosition({ x: prevPosX.current, y: prevPosY.current })
         }
-
-        if (isTargeting && isMobile && ref.current) {
-            ref.current.scrollIntoView()
-        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isTargeting, isEnlarged, maxHeight, maxWidth, isMobile])
+    }, [isTargeting, isEnlarged, maxHeight, maxWidth])
 
     // Set initial size
     useEffect(() => {
@@ -230,6 +257,11 @@ const MiniMapInner = ({
             >
                 <Box
                     ref={ref}
+                    tabIndex={0}
+                    onKeyDown={handleHotKey}
+                    onClick={focusMap}
+                    onFocus={() => setMapFocused(true)}
+                    onBlur={() => setMapFocused(false)}
                     sx={{
                         position: "relative",
                         boxShadow: 1,
@@ -242,31 +274,42 @@ const MiniMapInner = ({
                         zIndex: 2,
                     }}
                 >
-                    <Stack
-                        direction="row"
-                        alignItems="center"
-                        sx={{
-                            height: `${TOP_BAR_HEIGHT}rem`,
-                            px: "1.8rem",
-                            backgroundColor: "#000000BF",
-                            borderBottom: `${theme.factionTheme.primary}80 .25rem solid`,
-                            zIndex: 99,
-                        }}
-                    >
-                        <Typography
-                            variant="caption"
+                    {isMobile ? (
+                        <Box>
+                            <SectionHeading
+                                label={map.name
+                                    .replace(/([A-Z])/g, " $1")
+                                    .trim()
+                                    .toUpperCase()}
+                            />
+                        </Box>
+                    ) : (
+                        <Stack
+                            direction="row"
+                            alignItems="center"
                             sx={{
-                                fontFamily: fonts.nostromoBlack,
-                                lineHeight: 1,
-                                opacity: 0.8,
+                                height: `${TOP_BAR_HEIGHT}rem`,
+                                px: "1.8rem",
+                                backgroundColor: "#000000BF",
+                                borderBottom: `${theme.factionTheme.primary}80 .25rem solid`,
+                                zIndex: 99,
                             }}
                         >
-                            {map.name
-                                .replace(/([A-Z])/g, " $1")
-                                .trim()
-                                .toUpperCase()}
-                        </Typography>
-                    </Stack>
+                            <Typography
+                                variant="caption"
+                                sx={{
+                                    fontFamily: fonts.nostromoBlack,
+                                    lineHeight: 1,
+                                    opacity: 0.8,
+                                }}
+                            >
+                                {map.name
+                                    .replace(/([A-Z])/g, " $1")
+                                    .trim()
+                                    .toUpperCase()}
+                            </Typography>
+                        </Stack>
+                    )}
 
                     <MiniMapInside containerDimensions={{ width: insideWidth, height: insideHeight }} />
 
@@ -292,5 +335,5 @@ const MiniMapInner = ({
             </Stack>
         )
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [toRender, theme.factionTheme.primary, curWidth, curHeight, remToPxRatio, isMobile, width, height, isPoppedout])
+    }, [toRender, theme.factionTheme.primary, curWidth, curHeight, remToPxRatio, isMobile, width, height, isPoppedout, handleHotKey, focusMap])
 }

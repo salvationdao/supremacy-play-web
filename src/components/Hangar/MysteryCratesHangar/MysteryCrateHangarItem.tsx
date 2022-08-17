@@ -1,9 +1,8 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useCallback, useState } from "react"
-import { useLocation } from "react-router-dom"
 import { SafePNG } from "../../../assets"
 import { IS_TESTING_MODE } from "../../../constants"
-import { useSnackbar } from "../../../containers"
+import { useGlobalNotifications } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { useTimer } from "../../../hooks"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
@@ -25,9 +24,8 @@ interface MysteryCrateStoreItemProps {
 }
 
 export const MysteryCrateHangarItem = ({ crate, setOpeningCrate, setOpenedRewards, getCrates }: MysteryCrateStoreItemProps) => {
-    const location = useLocation()
     const theme = useTheme()
-    const { newSnackbarMessage } = useSnackbar()
+    const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [loading, setLoading] = useState(false)
 
@@ -147,8 +145,8 @@ export const MysteryCrateHangarItem = ({ crate, setOpeningCrate, setOpenedReward
                                             crate.locked_to_marketplace
                                                 ? !crate.item_sale_id
                                                     ? undefined
-                                                    : `/marketplace/${MARKETPLACE_TABS.MysteryCrates}/${crate.item_sale_id}${location.hash}`
-                                                : `/marketplace/sell?itemType=${ItemType.MysteryCrate}&assetID=${crate.id}${location.hash}`
+                                                    : `/marketplace/${MARKETPLACE_TABS.MysteryCrates}/${crate.item_sale_id}`
+                                                : `/marketplace/sell?itemType=${ItemType.MysteryCrate}&assetID=${crate.id}`
                                         }
                                         clipThingsProps={{
                                             clipSize: "5px",

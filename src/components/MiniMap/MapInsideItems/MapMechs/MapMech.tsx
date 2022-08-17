@@ -10,11 +10,14 @@ import { colors, fonts } from "../../../../theme/theme"
 import { LocationSelectType, Map, Vector2i, WarMachineState } from "../../../../types"
 import { WarMachineLiveState } from "../../../../types/game"
 import { MechMoveCommand } from "../../../WarMachine/WarMachineItem/MoveCommand"
+import { useArena } from "../../../../containers/arena"
 
 const TRANSITION_DURATION = 0.275 // seconds
 
 interface MapMechProps {
     warMachine: WarMachineState
+    label?: number
+    isAI?: boolean
 }
 
 export const MapMech = (props: MapMechProps) => {
@@ -27,8 +30,9 @@ interface MapMechInnerProps extends MapMechProps {
     map: Map
 }
 
-const MapMechInner = ({ warMachine, map }: MapMechInnerProps) => {
+const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
     const { userID, factionID } = useAuth()
+    const { currentArenaID } = useArena()
     const { getFaction } = useSupremacy()
     const { isTargeting, gridWidth, gridHeight, playerAbility, highlightedMechParticipantID, setHighlightedMechParticipantID, selection, setSelection } =
         useMiniMap()
@@ -47,7 +51,7 @@ const MapMechInner = ({ warMachine, map }: MapMechInnerProps) => {
     /**
      * For rendering: size, colors etc.
      */
-    const iconSize = useMemo(() => Math.min(gridWidth, gridHeight) * 1.8, [gridWidth, gridHeight])
+    const iconSize = useMemo(() => Math.min(gridWidth, gridHeight) * (isAI ? 1.2 : 1.8), [gridWidth, gridHeight, isAI])
     const dirArrowLength = useMemo(() => iconSize / 2 + 0.6 * iconSize, [iconSize])
     const primaryColor = useMemo(
         () => (ownedByID === userID ? colors.gold : getFaction(warMachineFactionID).primary_color || colors.neonBlue),
@@ -93,10 +97,10 @@ const MapMechInner = ({ warMachine, map }: MapMechInnerProps) => {
     // Listen on mech stats
     useGameServerSubscription<WarMachineLiveState | undefined>(
         {
-            URI: `/public/mech/${participantID}`,
+            URI: `/public/arena/${currentArenaID}/mech/${participantID}`,
             key: GameServerKeys.SubMechLiveStats,
-            ready: !!participantID,
-            batchURI: "/public/mech",
+            ready: !!participantID && !!currentArenaID,
+            batchURI: `/public/arena/${currentArenaID}/mech`,
         },
         (payload) => {
             if (payload?.health !== undefined) setHealth(payload.health)
@@ -110,9 +114,9 @@ const MapMechInner = ({ warMachine, map }: MapMechInnerProps) => {
     // Listen on mech move command positions for this mech
     useGameServerSubscriptionFaction<MechMoveCommand>(
         {
-            URI: `/mech_command/${hash}`,
+            URI: `/arena/${currentArenaID}/mech_command/${hash}`,
             key: GameServerKeys.SubMechMoveCommand,
-            ready: factionID === warMachineFactionID && !!participantID,
+            ready: factionID === warMachineFactionID && !!participantID && !!currentArenaID,
         },
         (payload) => {
             if (!payload) return
@@ -246,6 +250,7 @@ const MapMechInner = ({ warMachine, map }: MapMechInnerProps) => {
                         }}
                     >
                         <Typography
+                            variant={isAI ? "h4" : "h1"}
                             sx={{
                                 color: primaryColor,
                                 fontSize: iconSize * 0.98,
@@ -253,7 +258,7 @@ const MapMechInner = ({ warMachine, map }: MapMechInnerProps) => {
                                 fontFamily: fonts.nostromoBlack,
                             }}
                         >
-                            {warMachine.participantID}
+                            {label}
                         </Typography>
                     </Box>
 
@@ -396,6 +401,7 @@ const MapMechInner = ({ warMachine, map }: MapMechInnerProps) => {
             </Stack>
         )
     }, [
+        isAI,
         isHidden,
         dirArrowLength,
         handleClick,
@@ -422,7 +428,7 @@ const MapMechInner = ({ warMachine, map }: MapMechInnerProps) => {
         hash,
         playerAbility,
         selection?.mechHash,
-        warMachine.participantID,
         zIndex,
+        label,
     ])
 }

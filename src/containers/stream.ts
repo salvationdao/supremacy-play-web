@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import { useParameterizedQuery } from "react-fetching-library"
 import { createContainer } from "unstated-next"
-import { useSnackbar } from "."
+import { useGlobalNotifications } from "."
 import { GetStreamList } from "../fetching"
 import { getObjectFromArrayByKey, parseString } from "../helpers"
 import { useToggle } from "../hooks"
@@ -27,7 +27,7 @@ const blankOption: Stream = {
 }
 
 export const StreamContainer = createContainer(() => {
-    const { newSnackbarMessage } = useSnackbar()
+    const { newSnackbarMessage } = useGlobalNotifications()
     const { query: queryGetStreamList } = useParameterizedQuery(GetStreamList)
 
     // Stream
