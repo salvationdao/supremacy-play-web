@@ -41,7 +41,6 @@ export interface MoveableResizableConfig {
     topRightContent?: ReactNode
     autoFit?: boolean
     hidePopoutBorder?: boolean
-    isUnfocusedColor?: boolean
 }
 
 // Container for allowing children to set size and position
@@ -64,7 +63,6 @@ export const MoveableResizableContainer = createContainer((initialState: Moveabl
         topRightContent,
         autoFit,
         hidePopoutBorder,
-        isUnfocusedColor,
     } = initialState || defaultConfig
 
     const {
@@ -227,7 +225,6 @@ export const MoveableResizableContainer = createContainer((initialState: Moveabl
         topRightContent,
         autoFit,
         hidePopoutBorder,
-        isUnfocusedColor,
     }
 })
 

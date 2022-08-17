@@ -1,5 +1,6 @@
 import { Box, Fade, Slide, Stack } from "@mui/material"
 import { ReactElement, useEffect, useMemo } from "react"
+import { ADD_MINI_MECH_PARTICIPANT_ID } from "../../constants"
 import { useGame, useMobile, useSupremacy } from "../../containers"
 import { useToggle } from "../../hooks"
 import { siteZIndex } from "../../theme/theme"
@@ -14,7 +15,6 @@ export const WarMachineStats = () => {
 const WarMachineStatsInner = () => {
     const { isMobile } = useMobile()
     const { warMachines, bribeStage, factionWarMachines, otherWarMachines, ownedMiniMechs } = useGame()
-    const addMiniMechParticipantId = 100
 
     // Temp hotfix ask james ****************************
     const [show, toggleShow] = useToggle(false)
@@ -50,7 +50,7 @@ const WarMachineStatsInner = () => {
                                             key={`${mm.participantID}`}
                                             warMachine={mm}
                                             scale={0.5}
-                                            label={mm.participantID - addMiniMechParticipantId}
+                                            label={mm.participantID - ADD_MINI_MECH_PARTICIPANT_ID}
                                             transformOrigin="0 0"
                                             initialExpanded
                                         />
@@ -110,7 +110,7 @@ const WarMachineStatsInner = () => {
                                             warMachine={wm}
                                             scale={0.7}
                                             transformOrigin="0 0"
-                                            label={i + 1 + (factionWarMachines ? factionWarMachines?.length : 0)}
+                                            label={i + 1 + (factionWarMachines?.length || 0)}
                                             initialExpanded
                                         />
                                     ))}
@@ -144,7 +144,7 @@ const WarMachineStatsInner = () => {
                                         <WarMachineItem
                                             key={`${mm.participantID}`}
                                             warMachine={mm}
-                                            label={mm.participantID - addMiniMechParticipantId}
+                                            label={mm.participantID - ADD_MINI_MECH_PARTICIPANT_ID}
                                             scale={0.6}
                                         />
                                     ))}

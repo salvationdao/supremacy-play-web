@@ -70,6 +70,8 @@ export const NOTIFICATION_TIME = 15000
 export const NOTIFICATION_LINGER = 400
 export const MAX_BAN_PROPOSAL_REASON_LENGTH = 150
 
+export const ADD_MINI_MECH_PARTICIPANT_ID = 100
+
 // Game stuff
 export const VOTING_OPTION_COSTS = [
     {

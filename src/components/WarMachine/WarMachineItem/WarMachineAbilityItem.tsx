@@ -66,10 +66,10 @@ export const WarMachineAbilityItem = ({ warMachine, gameAbility, clipSlantSize, 
 export const MechAbilityButton = ({ warMachine, gameAbility, index }: { warMachine: WarMachineState; gameAbility: GameAbility; index: number }) => {
     const { participantID, hash } = warMachine
     const { currentArenaID } = useArena()
+    const { send } = useGameServerCommandsFaction("/faction_commander")
     const { id, colour, text_colour } = gameAbility
     const [remainSeconds, setRemainSeconds] = useState(30)
     const { mechAbilityKey, addToHotkeyRecord } = useHotkey()
-    const { send } = useGameServerCommandsFaction("/faction_commander")
 
     // Listen on the progress of the votes
     useGameServerSubscriptionFaction<number | undefined>(

@@ -103,10 +103,10 @@ const HighlightedMechAbilitiesInner = ({ warMachine }: { warMachine: WarMachineS
 const AbilityItem = ({ hash, participantID, ability, index }: { hash: string; participantID: number; ability: GameAbility; index: number }) => {
     const { id, colour, image_url, label } = ability
     const { currentArenaID } = useArena()
+    const { send } = useGameServerCommandsFaction("/faction_commander")
     const [remainSeconds, setRemainSeconds] = useState(30)
     const ready = useMemo(() => remainSeconds === 0, [remainSeconds])
     const { mechAbilityKey, addToHotkeyRecord } = useHotkey()
-    const { send } = useGameServerCommandsFaction("/faction_commander")
 
     useGameServerSubscriptionFaction<number | undefined>(
         {
@@ -176,7 +176,7 @@ const AbilityItem = ({ hash, participantID, ability, index }: { hash: string; pa
                 onClick={ready ? onTrigger : undefined}
             />
 
-            <Stack direction={"row"} sx={{ width: "100%" }} justifyContent={"space-between"} alignItems={"center"}>
+            <Stack direction={"row"} sx={{ flex: 1 }} justifyContent={"space-between"} alignItems={"center"}>
                 <Typography
                     variant="body2"
                     sx={{
@@ -193,7 +193,12 @@ const AbilityItem = ({ hash, participantID, ability, index }: { hash: string; pa
                 >
                     {ready ? label : remainSeconds > 300 ? "∞" : `${remainSeconds}s`}
                 </Typography>
-                {ready && <Typography sx={{ opacity: "0.7" }}>[{mechAbilityKey[index]}]</Typography>}
+
+                {ready && (
+                    <Typography variant="body2" sx={{ opacity: 0.7, color: colors.neonBlue }}>
+                        <i>[{mechAbilityKey[index]}]</i>
+                    </Typography>
+                )}
             </Stack>
         </Stack>
     )

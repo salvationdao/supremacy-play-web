@@ -13,6 +13,7 @@ import { AIType, GameAbility, WarMachineState } from "../../../types"
 import { MoveCommand } from "./MoveCommand"
 import { useArena } from "../../../containers/arena"
 import { useHotkey } from "../../../containers/hotkeys"
+import { ADD_MINI_MECH_PARTICIPANT_ID } from "../../../constants"
 
 // in rems
 const WIDTH_AVATAR = 8.6
@@ -46,7 +47,6 @@ export const WarMachineItem = ({
 
     const { hash, participantID, factionID: wmFactionID, name, imageAvatar, tier, ownedByID, ownerUsername, aiType } = warMachine
     const isMiniMech = aiType === AIType.MiniMech
-    const addMiniMechParticipantId = 100
 
     // Subscribe to war machine ability updates
     const gameAbilities = useGameServerSubscriptionFaction<GameAbility[] | undefined>({
@@ -58,7 +58,6 @@ export const WarMachineItem = ({
     const [isAlive, toggleIsAlive] = useToggle(warMachine.health > 0)
     const [isExpanded, toggleIsExpanded] = useToggle(initialExpanded)
     const faction = getFaction(wmFactionID)
-    const [hovered, setHovered] = useToggle(false)
 
     const popoverRef = useRef(null)
     const [popoverOpen, togglePopoverOpen] = useToggle()
@@ -91,12 +90,12 @@ export const WarMachineItem = ({
 
     useEffect(() => {
         if (!label || wmFactionID !== factionID) return
-        if (participantID > addMiniMechParticipantId) {
+        if (participantID > ADD_MINI_MECH_PARTICIPANT_ID) {
             addToHotkeyRecord("ctrl_map", label.toString(), handleClick)
             return
         }
         addToHotkeyRecord("map", label.toString(), handleClick)
-    }, [handleClick, addMiniMechParticipantId, label, participantID, addToHotkeyRecord, factionID, wmFactionID])
+    }, [handleClick, label, participantID, addToHotkeyRecord, factionID, wmFactionID])
 
     return (
         <>
@@ -117,16 +116,22 @@ export const WarMachineItem = ({
                     transition: "width .1s",
                     transform: highlightedMechParticipantID === participantID ? `scale(${scale * 1.08})` : `scale(${scale})`,
                     transformOrigin: transformOrigin || "center",
+                    ":hover": {
+                        [`#${hash}-hotkey`]: {
+                            display: "block",
+                        },
+                    },
                 }}
-                onMouseEnter={() => setHovered(true)}
-                onMouseLeave={() => setHovered(false)}
             >
-                {/* Little info button to show the mech destroyed info */}
-                <Box sx={{ display: hovered ? "inline-block" : "none", position: "absolute", top: "-3rem", right: "0" }}>
-                    {label !== null && label !== undefined && wmFactionID === factionID && (
-                        <Typography>[{participantID > 100 ? `CTRL + ${label}` : label}]</Typography>
+                <Box id={`${hash}-hotkey`} sx={{ display: "none", position: "absolute", top: "-3rem", right: "0" }}>
+                    {label && wmFactionID === factionID && (
+                        <Typography sx={{ color: colors.neonBlue }}>
+                            <i>[{participantID > 100 ? `CTRL + ${label}` : label}]</i>
+                        </Typography>
                     )}
                 </Box>
+
+                {/* Little info button to show the mech destroyed info */}
                 {!isAlive && !isMiniMech && (
                     <IconButton
                         size="small"
