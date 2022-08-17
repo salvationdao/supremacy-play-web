@@ -80,11 +80,10 @@ const MiniMapInnerNormal = ({ map, isTargeting, isPoppedout, setIsPoppedout }: M
 const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 100, height = 100 }: MiniMapInnerProps) => {
     const { handleHotKey } = useHotkey()
     const { remToPxRatio } = useDimension()
-    const { isStreamBigDisplay, setIsStreamBigDisplay } = useGame()
+    const { isStreamBigDisplay, setIsStreamBigDisplay, prevIsStreamBigDisplay } = useGame()
     const [isEnlarged, toggleIsEnlarged] = useToggle(localStorage.getItem("isMiniMapEnlarged") === "true")
 
     const mapHeightWidthRatio = useRef(1)
-    const prevIsStreamBigDisplay = useRef(isStreamBigDisplay)
 
     const containFit = useMemo(() => isPoppedout || !isStreamBigDisplay, [isPoppedout, isStreamBigDisplay])
 
@@ -101,13 +100,14 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
     useEffect(() => {
         if (isTargeting) {
             setIsStreamBigDisplay((prev) => {
-                prevIsStreamBigDisplay.current = prev
+                if (!prevIsStreamBigDisplay.current) prevIsStreamBigDisplay.current = prev
                 return false
             })
-        } else {
+        } else if (prevIsStreamBigDisplay.current) {
             setIsStreamBigDisplay(prevIsStreamBigDisplay.current)
+            prevIsStreamBigDisplay.current = undefined
         }
-    }, [isTargeting, setIsStreamBigDisplay])
+    }, [isTargeting, prevIsStreamBigDisplay, setIsStreamBigDisplay])
 
     // Set size
     const sizes = useMemo(() => {

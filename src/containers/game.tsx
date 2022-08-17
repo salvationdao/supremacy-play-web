@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { createContainer } from "unstated-next"
 import { useAuth, useSupremacy } from "."
 import { useGameServerCommandsUser, useGameServerSubscription } from "../hooks/useGameServer"
@@ -29,6 +29,8 @@ export const GameContainer = createContainer(() => {
 
     // States
     const [isStreamBigDisplay, setIsStreamBigDisplay] = useState((localStorage.getItem("isStreamBigDisplay") || "true") === "true")
+    const prevIsStreamBigDisplay = useRef<boolean>()
+
     const [map, setMap] = useState<Map>()
     const [battleZone, setBattleZone] = useState<BattleZone>()
     const [abilityDetails, setAbilityDetails] = useState<AbilityDetail[]>([])
@@ -128,6 +130,8 @@ export const GameContainer = createContainer(() => {
     return {
         isStreamBigDisplay,
         setIsStreamBigDisplay,
+        prevIsStreamBigDisplay,
+
         bribeStage,
         map,
         setMap,
