@@ -102,7 +102,7 @@ export const MechAbilityButton = ({ warMachine, gameAbility, index }: { warMachi
     }, [hash, id, send])
 
     useEffect(() => {
-        addToHotkeyRecord(false, mechAbilityKey[index], onTrigger)
+        addToHotkeyRecord("map", mechAbilityKey[index], onTrigger)
     }, [onTrigger, mechAbilityKey, addToHotkeyRecord, index])
 
     return (

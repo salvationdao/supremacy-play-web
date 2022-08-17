@@ -137,7 +137,7 @@ const AbilityItem = ({ hash, participantID, ability, index }: { hash: string; pa
     }, [hash, id, send])
 
     useEffect(() => {
-        addToHotkeyRecord(false, mechAbilityKey[index], onTrigger)
+        addToHotkeyRecord("map", mechAbilityKey[index], onTrigger)
     }, [onTrigger, mechAbilityKey, addToHotkeyRecord, index])
 
     return (

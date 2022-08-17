@@ -1,5 +1,5 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
-import { useEffect, useMemo, useRef } from "react"
+import { useCallback, useEffect, useMemo, useRef } from "react"
 import { MiniMapInside, MoveableResizable } from ".."
 import { SvgFullscreen, SvgMinimize } from "../../assets"
 import { useDimension, useGame, useMobile, useOverlayToggles } from "../../containers"
@@ -90,7 +90,14 @@ export const MiniMap = () => {
             <Fade in={toRender}>
                 <Box sx={{ ...(isMobile ? { backgroundColor: "#FFFFFF12", boxShadow: 2, border: "#FFFFFF20 1px solid" } : {}) }}>
                     <MoveableResizable config={config}>
-                        <MiniMapInner map={map} isTargeting={isTargeting} isEnlarged={isEnlarged} toRender={toRender} playerAbility={playerAbility} />
+                        <MiniMapInner
+                            map={map}
+                            isTargeting={isTargeting}
+                            isEnlarged={isEnlarged}
+                            toRender={toRender}
+                            playerAbility={playerAbility}
+                            isMapOpen={isMapOpen}
+                        />
                     </MoveableResizable>
                 </Box>
             </Fade>
@@ -105,12 +112,14 @@ const MiniMapInner = ({
     isEnlarged,
     toRender,
     playerAbility,
+    isMapOpen,
 }: {
     map: Map
     isTargeting: boolean
     isEnlarged: boolean
     toRender: boolean
     playerAbility?: PlayerAbility
+    isMapOpen: boolean
 }) => {
     const { isMobile } = useMobile()
     const theme = useTheme()
@@ -143,9 +152,13 @@ const MiniMapInner = ({
     const prevPosX = useRef(curPosX)
     const prevPosY = useRef(curPosY)
 
+    const focusMap = useCallback(() => ref.current?.focus(), [ref])
+
     useEffect(() => {
-        ref.current?.focus()
-    }, [])
+        if (isMapOpen) {
+            focusMap()
+        }
+    }, [isMapOpen, ref, focusMap])
 
     // When it's targeting, enlarge the map and move to center of screen, else restore to the prev dimensions
     useEffect(() => {
@@ -241,7 +254,7 @@ const MiniMapInner = ({
                     ref={ref}
                     tabIndex={0}
                     onKeyDown={handleHotKey}
-                    onClick={() => ref.current?.focus()}
+                    onClick={focusMap}
                     sx={{
                         position: "relative",
                         boxShadow: 1,
@@ -315,5 +328,5 @@ const MiniMapInner = ({
             </Stack>
         )
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [toRender, theme.factionTheme.primary, curWidth, curHeight, remToPxRatio, isMobile, width, height, isPoppedout, handleHotKey])
+    }, [toRender, theme.factionTheme.primary, curWidth, curHeight, remToPxRatio, isMobile, width, height, isPoppedout, handleHotKey, focusMap])
 }

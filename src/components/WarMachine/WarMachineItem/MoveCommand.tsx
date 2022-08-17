@@ -124,7 +124,7 @@ const MoveCommandInner = ({ isAlive, remainCooldownSeconds, isMoving, isCancelle
     }, [isAlive, isMoving, isCancelled, send, mechMoveCommandID, hash, newSnackbarMessage, setPlayerAbility])
 
     useEffect(() => {
-        addToHotkeyRecord(false, "a", onClick)
+        addToHotkeyRecord("map", "a", onClick)
     }, [onClick, addToHotkeyRecord])
 
     if (smallVersion) {
