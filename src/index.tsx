@@ -236,12 +236,12 @@ const App = () => {
                                                                     <OverlayTogglesProvider>
                                                                         <MiniMapProvider>
                                                                             <HotkeyProvider>
-                                                                            <UserUpdater />
-                                                                            <Switch>
-                                                                                <Route path="/404" exact component={NotFoundPage} />
-                                                                                <Route path="/login-redirect" exact component={LoginRedirect} />
-                                                                                <Route path="" component={AppInner} />
-                                                                            </Switch>
+                                                                                <UserUpdater />
+                                                                                <Switch>
+                                                                                    <Route path="/404" exact component={NotFoundPage} />
+                                                                                    <Route path="/login-redirect" exact component={LoginRedirect} />
+                                                                                    <Route path="" component={AppInner} />
+                                                                                </Switch>
                                                                             </HotkeyProvider>
                                                                         </MiniMapProvider>
                                                                     </OverlayTogglesProvider>
