@@ -6,7 +6,7 @@ import { useDimension, useGame } from "../../../containers"
 import { useHotkey } from "../../../containers/hotkeys"
 import { useMiniMap } from "../../../containers/minimap"
 import { useToggle } from "../../../hooks"
-import { fonts } from "../../../theme/theme"
+import { colors, fonts } from "../../../theme/theme"
 import { Map } from "../../../types"
 import { WindowPortal } from "../../Common/WindowPortal/WindowPortal"
 import { useWindowPortal } from "../../Common/WindowPortal/WindowPortalContainer"
@@ -102,9 +102,10 @@ const BattleNotStarted = () => {
             }}
         >
             <Typography
-                variant={!isStreamBigDisplay ? "h3" : "h5"}
+                variant={!isStreamBigDisplay ? "h4" : "h5"}
                 sx={{
-                    fontFamily: fonts.nostromoHeavy,
+                    color: colors.grey,
+                    fontFamily: fonts.nostromoBlack,
                     WebkitTextStrokeWidth: !isStreamBigDisplay ? "2px" : "unset",
                     textAlign: "center",
                     zIndex: 1,
