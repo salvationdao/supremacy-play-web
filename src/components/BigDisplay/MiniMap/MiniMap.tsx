@@ -1,10 +1,11 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useRef, useState } from "react"
 import { MiniMapInside } from "../.."
-import { SvgExternalLink } from "../../../assets"
+import { SvgExternalLink, SvgFullscreen, SvgMinimize } from "../../../assets"
 import { useDimension, useGame } from "../../../containers"
 import { useHotkey } from "../../../containers/hotkeys"
 import { useMiniMap } from "../../../containers/minimap"
+import { useToggle } from "../../../hooks"
 import { fonts } from "../../../theme/theme"
 import { Dimension, Map } from "../../../types"
 import { WindowPortal } from "../../Common/WindowPortal/WindowPortal"
@@ -80,6 +81,7 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
     const { isStreamBigDisplay, setIsStreamBigDisplay } = useGame()
     const { handleHotKey } = useHotkey()
     const { remToPxRatio } = useDimension()
+    const [isEnlarged, toggleIsEnlarged] = useToggle(localStorage.getItem("isMiniMapEnlarged") === "true")
 
     const [renderDimensions, setRenderDimensions] = useState<Dimension>({ width: 100, height: 100 })
     const mapHeightWidthRatio = useRef(1)
@@ -103,6 +105,10 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
         setRenderDimensions({ width: defaultWidth, height: defaultHeight })
     }, [map, remToPxRatio, isPoppedout, isStreamBigDisplay, containFit, width, height])
 
+    useEffect(() => {
+        localStorage.setItem("isMiniMapEnlarged", isEnlarged.toString())
+    }, [isEnlarged])
+
     // When it's targeting, enlarge to big display, else restore to the prev location
     useEffect(() => {
         if (isTargeting) {
@@ -116,13 +122,15 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
     }, [isTargeting, setIsStreamBigDisplay])
 
     const sizes = useMemo(() => {
-        const padding = 6 * remToPxRatio
+        const padding = isEnlarged ? 0 : 6 * remToPxRatio
+        const bottomPadding = isEnlarged ? 0 : padding + BOTTOM_PADDING * remToPxRatio
+
         let outsideWidth = renderDimensions.width - padding
-        let outsideHeight = renderDimensions.height - padding - BOTTOM_PADDING * remToPxRatio
+        let outsideHeight = renderDimensions.height - bottomPadding
         let insideWidth = outsideWidth
         let insideHeight = outsideHeight - TOP_BAR_HEIGHT * remToPxRatio
 
-        if (containFit) {
+        if (containFit && !isEnlarged) {
             const maxHeight = outsideWidth * mapHeightWidthRatio.current
             const maxWidth = outsideHeight / mapHeightWidthRatio.current
 
@@ -143,7 +151,7 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
             insideWidth,
             insideHeight,
         }
-    }, [containFit, remToPxRatio, renderDimensions.height, renderDimensions.width])
+    }, [containFit, remToPxRatio, renderDimensions.height, renderDimensions.width, isEnlarged])
 
     return useMemo(() => {
         return (
@@ -154,7 +162,7 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
                     position: "relative",
                     width: "100%",
                     height: "100%",
-                    pb: containFit ? `${BOTTOM_PADDING}rem` : 0,
+                    pb: containFit && !isEnlarged ? `${BOTTOM_PADDING}rem` : 0,
                 }}
             >
                 <Box
@@ -173,6 +181,7 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
                 >
                     {/* Top bar */}
                     <Stack
+                        spacing="1rem"
                         direction="row"
                         alignItems="center"
                         sx={{
@@ -191,8 +200,14 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
 
                         <Box sx={{ flex: 1 }} />
 
-                        <Box onClick={() => setIsPoppedout(true)} sx={{ cursor: "pointer", opacity: 0.4, ":hover": { opacity: 1 } }}>
-                            <SvgExternalLink size="1.6rem" />
+                        {!isPoppedout && (
+                            <Box onClick={() => setIsPoppedout(true)} sx={{ cursor: "pointer", opacity: 0.4, ":hover": { opacity: 1 } }}>
+                                <SvgExternalLink size="1.6rem" />
+                            </Box>
+                        )}
+
+                        <Box onClick={() => toggleIsEnlarged()} sx={{ cursor: "pointer", opacity: 0.4, ":hover": { opacity: 1 } }}>
+                            {isEnlarged ? <SvgMinimize size="1.6rem" /> : <SvgFullscreen size="1.6rem" />}
                         </Box>
                     </Stack>
 
@@ -219,5 +234,18 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
                 />
             </Stack>
         )
-    }, [containFit, handleHotKey, sizes.outsideWidth, sizes.outsideHeight, sizes.insideWidth, sizes.insideHeight, map.name, map?.image_url, setIsPoppedout])
+    }, [
+        containFit,
+        handleHotKey,
+        sizes.outsideWidth,
+        sizes.outsideHeight,
+        sizes.insideWidth,
+        sizes.insideHeight,
+        map.name,
+        map?.image_url,
+        isPoppedout,
+        isEnlarged,
+        setIsPoppedout,
+        toggleIsEnlarged,
+    ])
 }
