@@ -3,9 +3,14 @@ import { createContainer } from "unstated-next"
 import { useAuth, useGlobalNotifications } from "."
 import { useGameServerCommandsFaction, useGameServerSubscriptionUser } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
-import { GameAbility, LocationSelectType, PlayerAbility, Position } from "../types"
+import { Position, GameAbility, LocationSelectType, PlayerAbility } from "../types"
 import { useToggle } from "./../hooks/useToggle"
 import { useGame } from "./game"
+
+interface WinnerAnnouncementResponse {
+    game_ability: GameAbility
+    end_time: Date
+}
 
 export interface MapSelection {
     // start coords (used for LINE_SELECT and LOCATION_SELECT abilities)
@@ -14,11 +19,6 @@ export interface MapSelection {
     endCoords?: Position
     // mech hash (only used for MECH_SELECT abilities)
     mechHash?: string
-}
-
-interface WinnerAnnouncementResponse {
-    game_ability: GameAbility
-    end_time: Date
 }
 
 export const MiniMapContainer = createContainer(() => {
@@ -37,6 +37,7 @@ export const MiniMapContainer = createContainer(() => {
     const [playerAbility, setPlayerAbility] = useState<PlayerAbility>()
     const [isEnlarged, toggleIsEnlarged] = useToggle()
     const [isTargeting, setIsTargeting] = useState(false)
+
     // Other stuff
     const [highlightedMechParticipantID, setHighlightedMechParticipantID] = useState<number>()
     const [selection, setSelection] = useState<MapSelection>()
