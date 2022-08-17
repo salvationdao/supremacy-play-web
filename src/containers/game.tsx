@@ -4,6 +4,7 @@ import { useSupremacy } from "."
 import { useGameServerCommandsUser, useGameServerSubscription } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
 import { AbilityDetail, BattleEndDetail, BattleZone, BribeStage, Map, WarMachineState } from "../types"
+import { useArena } from "./arena"
 
 export interface BribeStageResponse {
     phase: BribeStage
@@ -22,6 +23,7 @@ export interface GameSettingsResponse {
 // Game data that needs to be shared between different components
 export const GameContainer = createContainer(() => {
     const { setBattleIdentifier } = useSupremacy()
+    const { currentArenaID } = useArena()
     const { send } = useGameServerCommandsUser("/user_commander")
 
     // States
@@ -37,8 +39,9 @@ export const GameContainer = createContainer(() => {
     // Subscribe for game settings
     useGameServerSubscription<GameSettingsResponse | undefined>(
         {
-            URI: "/public/game_settings",
+            URI: `/public/arena/${currentArenaID}/game_settings`,
             key: GameServerKeys.SubGameSettings,
+            ready: currentArenaID !== "",
         },
         (payload) => {
             if (!payload) return
@@ -54,8 +57,9 @@ export const GameContainer = createContainer(() => {
     // Subscribe for spawned AI
     useGameServerSubscription<WarMachineState[] | undefined>(
         {
-            URI: "/public/minimap",
+            URI: `/public/arena/${currentArenaID}/minimap`,
             key: GameServerKeys.SubBattleAISpawned,
+            ready: currentArenaID !== "",
         },
         (payload) => {
             if (!payload) return
@@ -64,15 +68,16 @@ export const GameContainer = createContainer(() => {
     )
 
     useEffect(() => {
-        if (!map) return
-        send(GameServerKeys.GameUserOnline)
-    }, [send, map])
+        if (!map || !currentArenaID) return
+        send(GameServerKeys.GameUserOnline, { arena_id: currentArenaID })
+    }, [send, map, currentArenaID])
 
     // Subscribe on battle end information
     useGameServerSubscription<BattleEndDetail>(
         {
-            URI: "/public/battle_end_result",
+            URI: `/public/arena/${currentArenaID}/battle_end_result`,
             key: GameServerKeys.SubBattleEndDetailUpdated,
+            ready: currentArenaID !== "",
         },
         (payload) => {
             if (!payload) return
@@ -83,8 +88,9 @@ export const GameContainer = createContainer(() => {
     // Subscribe on current voting state
     useGameServerSubscription<BribeStageResponse | undefined>(
         {
-            URI: "/public/bribe_stage",
+            URI: `/public/arena/${currentArenaID}/bribe_stage`,
             key: GameServerKeys.SubBribeStageUpdated,
+            ready: !!currentArenaID,
         },
         (payload) => {
             setBribeStage(payload)
