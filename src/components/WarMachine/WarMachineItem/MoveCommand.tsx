@@ -1,5 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useCallback, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { SvgClose2, SvgDrag } from "../../../assets"
 import { useAuth, useMiniMap, useGlobalNotifications } from "../../../containers"
 import { shadeColor } from "../../../helpers"
@@ -9,6 +9,8 @@ import { GameServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
 import { LocationSelectType, PlayerAbility, WarMachineState } from "../../../types"
 import { DEAD_OPACITY, WIDTH_SKILL_BUTTON } from "./WarMachineItem"
+import { useArena } from "../../../containers/arena"
+import { RecordType, useHotkey } from "../../../containers/hotkeys"
 
 export const MechMoveCommandAbility: PlayerAbility = {
     id: "mech_move_command",
@@ -46,14 +48,15 @@ export interface MechMoveCommand {
 
 export const MoveCommand = ({ warMachine, isAlive, smallVersion }: { warMachine: WarMachineState; isAlive: boolean; smallVersion?: boolean }) => {
     const { factionID } = useAuth()
+    const { currentArenaID } = useArena()
     const { hash, factionID: wmFactionID, participantID } = warMachine
     const [mechMoveCommand, setMechMoveCommand] = useState<MechMoveCommand>()
 
     useGameServerSubscriptionFaction<MechMoveCommand>(
         {
-            URI: `/mech_command/${hash}`,
+            URI: `/arena/${currentArenaID}/mech_command/${hash}`,
             key: GameServerKeys.SubMechMoveCommand,
-            ready: factionID === wmFactionID && !!participantID,
+            ready: factionID === wmFactionID && !!participantID && !!currentArenaID,
         },
         (payload) => {
             if (!payload) return
@@ -90,7 +93,9 @@ interface MoveCommandInnerProps {
 const MoveCommandInner = ({ isAlive, remainCooldownSeconds, isMoving, isCancelled, hash, mechMoveCommandID, smallVersion }: MoveCommandInnerProps) => {
     const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsFaction("/faction_commander")
+    const { currentArenaID } = useArena()
     const { setPlayerAbility } = useMiniMap()
+    const { addToHotkeyRecord } = useHotkey()
 
     const { totalSecRemain } = useTimer(new Date(new Date().getTime() + remainCooldownSeconds * 1000))
     const ready = useMemo(() => totalSecRemain <= 0, [totalSecRemain])
@@ -100,11 +105,12 @@ const MoveCommandInner = ({ isAlive, remainCooldownSeconds, isMoving, isCancelle
     const backgroundColor = useMemo(() => shadeColor(primaryColor, -84), [primaryColor])
 
     const onClick = useCallback(async () => {
-        if (!isAlive) return
+        if (!isAlive || !currentArenaID) return
 
         if (isMoving && !isCancelled) {
             try {
                 await send(GameServerKeys.MechMoveCommandCancel, {
+                    arena_id: currentArenaID,
                     move_command_id: mechMoveCommandID,
                     hash,
                 })
@@ -119,7 +125,11 @@ const MoveCommandInner = ({ isAlive, remainCooldownSeconds, isMoving, isCancelle
                 mechHash: hash,
             })
         }
-    }, [isAlive, isMoving, isCancelled, send, mechMoveCommandID, hash, newSnackbarMessage, setPlayerAbility])
+    }, [isAlive, isMoving, isCancelled, send, mechMoveCommandID, hash, newSnackbarMessage, setPlayerAbility, currentArenaID])
+
+    useEffect(() => {
+        addToHotkeyRecord(RecordType.Map, "a", onClick)
+    }, [onClick, addToHotkeyRecord])
 
     if (smallVersion) {
         return (
@@ -151,23 +161,31 @@ const MoveCommandInner = ({ isAlive, remainCooldownSeconds, isMoving, isCancelle
                     {isMoving ? <SvgClose2 size="1.6rem" sx={{ pb: 0 }} fill={primaryColor} /> : <SvgDrag size="1.6rem" sx={{ pb: 0 }} fill={primaryColor} />}
                 </Stack>
 
-                <Typography
-                    variant="body2"
-                    sx={{
-                        pt: ".2rem",
-                        opacity: ready ? 1 : 0.6,
-                        lineHeight: 1,
-                        fontWeight: "fontWeightBold",
-                        display: "-webkit-box",
-                        overflow: "hidden",
-                        overflowWrap: "anywhere",
-                        textOverflow: "ellipsis",
-                        WebkitLineClamp: 1, // change to max number of lines
-                        WebkitBoxOrient: "vertical",
-                    }}
-                >
-                    {ready ? MechMoveCommandAbility.ability.label : `${totalSecRemain}s`}
-                </Typography>
+                <Stack direction={"row"} sx={{ flex: 1 }} justifyContent={"space-between"} alignItems={"center"}>
+                    <Typography
+                        variant="body2"
+                        sx={{
+                            pt: ".2rem",
+                            opacity: ready ? 1 : 0.6,
+                            lineHeight: 1,
+                            fontWeight: "fontWeightBold",
+                            display: "-webkit-box",
+                            overflow: "hidden",
+                            overflowWrap: "anywhere",
+                            textOverflow: "ellipsis",
+                            WebkitLineClamp: 1, // change to max number of lines
+                            WebkitBoxOrient: "vertical",
+                        }}
+                    >
+                        {ready ? MechMoveCommandAbility.ability.label : `${totalSecRemain}s`}
+                    </Typography>
+
+                    <Typography variant="body2" sx={{ color: colors.neonBlue }}>
+                        <i>
+                            <strong>[a]</strong>
+                        </i>
+                    </Typography>
+                </Stack>
             </Stack>
         )
     }

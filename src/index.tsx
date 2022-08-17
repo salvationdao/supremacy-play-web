@@ -38,6 +38,8 @@ import { LoginRedirect } from "./pages/LoginRedirect"
 import { ROUTES_ARRAY, ROUTES_MAP } from "./routes"
 import { colors, fonts } from "./theme/theme"
 import { LeftDrawer } from "./components/LeftDrawer/LeftDrawer"
+import { ArenaListener, ArenaProvider } from "./containers/arena"
+import { HotkeyProvider } from "./containers/hotkeys"
 
 const AppInner = () => {
     const { isServerDown, serverConnectedBefore } = useSupremacy()
@@ -226,22 +228,27 @@ const App = () => {
                                         <WalletProvider>
                                             <TourProvider {...tourProviderProps}>
                                                 <StreamProvider>
-                                                    <GameProvider>
-                                                        <MobileProvider>
-                                                            <DimensionProvider>
-                                                                <OverlayTogglesProvider>
-                                                                    <MiniMapProvider>
-                                                                        <UserUpdater />
-                                                                        <Switch>
-                                                                            <Route path="/404" exact component={NotFoundPage} />
-                                                                            <Route path="/login-redirect" exact component={LoginRedirect} />
-                                                                            <Route path="" component={AppInner} />
-                                                                        </Switch>
-                                                                    </MiniMapProvider>
-                                                                </OverlayTogglesProvider>
-                                                            </DimensionProvider>
-                                                        </MobileProvider>
-                                                    </GameProvider>
+                                                    <ArenaProvider>
+                                                        <ArenaListener />
+                                                        <GameProvider>
+                                                            <MobileProvider>
+                                                                <DimensionProvider>
+                                                                    <OverlayTogglesProvider>
+                                                                        <MiniMapProvider>
+                                                                            <HotkeyProvider>
+                                                                                <UserUpdater />
+                                                                                <Switch>
+                                                                                    <Route path="/404" exact component={NotFoundPage} />
+                                                                                    <Route path="/login-redirect" exact component={LoginRedirect} />
+                                                                                    <Route path="" component={AppInner} />
+                                                                                </Switch>
+                                                                            </HotkeyProvider>
+                                                                        </MiniMapProvider>
+                                                                    </OverlayTogglesProvider>
+                                                                </DimensionProvider>
+                                                            </MobileProvider>
+                                                        </GameProvider>
+                                                    </ArenaProvider>
                                                 </StreamProvider>
                                             </TourProvider>
                                         </WalletProvider>

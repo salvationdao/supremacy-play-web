@@ -6,6 +6,7 @@ import { GameServerKeys } from "../../keys"
 import { WarMachineLiveState, WarMachineState } from "../../types"
 import { useGameServerSubscription } from "../../hooks/useGameServer"
 import { useToggle } from "../../hooks"
+import { useArena } from "../../containers/arena"
 
 enum Sounds {
     generalIntro = "generalIntro",
@@ -161,15 +162,16 @@ interface MechProps {
 
 const Mech = ({ warMachine, setDeathCount }: MechProps) => {
     const { participantID } = warMachine
+    const { currentArenaID } = useArena()
     const [isDead, toggleIsDead] = useToggle()
 
     // Listen on current war machine changes
     useGameServerSubscription<WarMachineLiveState | undefined>(
         {
-            URI: `/public/mech/${participantID}`,
+            URI: `/public/arena/${currentArenaID}/mech/${participantID}`,
             key: GameServerKeys.SubMechLiveStats,
-            ready: !!participantID,
-            batchURI: "/public/mech",
+            ready: !!participantID && !!currentArenaID,
+            batchURI: `/public/arena/${currentArenaID}/mech`,
         },
         (payload) => {
             if (payload?.health !== undefined) {

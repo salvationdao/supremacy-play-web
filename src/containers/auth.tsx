@@ -4,7 +4,7 @@ import { useSupremacy } from "."
 import { PASSPORT_WEB } from "../constants"
 import { GameServerLoginCheck, GetGlobalFeatures, PassportLoginCheck } from "../fetching"
 import { shadeColor } from "../helpers"
-import { useGameServerCommandsUser, useGameServerSubscriptionUser } from "../hooks/useGameServer"
+import { useGameServerCommandsUser, useGameServerSubscriptionSecuredUser } from "../hooks/useGameServer"
 import { useInactivity } from "../hooks/useInactivity"
 import { GameServerKeys } from "../keys"
 import { colors } from "../theme/theme"
@@ -288,7 +288,7 @@ export const UserUpdater = () => {
     const activeInterval = useRef<NodeJS.Timer>()
 
     // Subscribe on the user
-    useGameServerSubscriptionUser<User>(
+    useGameServerSubscriptionSecuredUser<User>(
         {
             URI: "",
             key: GameServerKeys.UserSubscribe,
@@ -301,7 +301,7 @@ export const UserUpdater = () => {
     )
 
     // Subscribe user stats
-    useGameServerSubscriptionUser<UserStat>(
+    useGameServerSubscriptionSecuredUser<UserStat>(
         {
             URI: "/stat",
             key: GameServerKeys.SubscribeUserStat,
@@ -313,7 +313,7 @@ export const UserUpdater = () => {
     )
 
     // Listen on user ranking
-    useGameServerSubscriptionUser<UserRank>(
+    useGameServerSubscriptionSecuredUser<UserRank>(
         {
             URI: "/rank",
             key: GameServerKeys.PlayerRank,
@@ -325,7 +325,7 @@ export const UserUpdater = () => {
     )
 
     // Listen on user punishments
-    useGameServerSubscriptionUser<PunishListItem[]>(
+    useGameServerSubscriptionSecuredUser<PunishListItem[]>(
         {
             URI: "/punishment_list",
             key: GameServerKeys.ListPunishments,

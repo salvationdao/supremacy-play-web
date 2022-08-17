@@ -1,5 +1,5 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
-import { useCallback, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { ClipThing } from "../.."
 import { useAuth, useGame, useMiniMap } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
@@ -9,6 +9,8 @@ import { GameServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
 import { AIType, GameAbility, WarMachineLiveState, WarMachineState } from "../../../types"
 import { MoveCommand } from "../../WarMachine/WarMachineItem/MoveCommand"
+import { useArena } from "../../../containers/arena"
+import { RecordType, useHotkey } from "../../../containers/hotkeys"
 
 export const HighlightedMechAbilities = () => {
     const { userID } = useAuth()
@@ -30,6 +32,7 @@ export const HighlightedMechAbilities = () => {
 
 const HighlightedMechAbilitiesInner = ({ warMachine }: { warMachine: WarMachineState }) => {
     const { userID } = useAuth()
+    const { currentArenaID } = useArena()
     const theme = useTheme()
     const { participantID, ownedByID } = warMachine
     const [isAlive, toggleIsAlive] = useToggle(warMachine.health > 0)
@@ -38,18 +41,18 @@ const HighlightedMechAbilitiesInner = ({ warMachine }: { warMachine: WarMachineS
 
     // Subscribe to war machine ability updates
     const gameAbilities = useGameServerSubscriptionFaction<GameAbility[] | undefined>({
-        URI: `/mech/${participantID}/abilities`,
+        URI: `/arena/${currentArenaID}/mech/${participantID}/abilities`,
         key: GameServerKeys.SubWarMachineAbilitiesUpdated,
-        ready: !!participantID,
+        ready: !!participantID && !!currentArenaID,
     })
 
     // Listen on current war machine changes
     useGameServerSubscription<WarMachineLiveState | undefined>(
         {
-            URI: `/public/mech/${participantID}`,
+            URI: `/public/arena/${currentArenaID}/mech/${participantID}`,
             key: GameServerKeys.SubMechLiveStats,
-            ready: !!participantID,
-            batchURI: "/public/mech",
+            ready: !!participantID && !!currentArenaID,
+            batchURI: `/public/arena/${currentArenaID}/mech`,
         },
         (payload) => {
             if (payload?.health !== undefined) {
@@ -81,13 +84,13 @@ const HighlightedMechAbilitiesInner = ({ warMachine }: { warMachine: WarMachineS
                         e.preventDefault()
                         e.stopPropagation()
                     }}
-                    sx={{ p: ".8rem .9rem", width: "15rem" }}
+                    sx={{ p: ".8rem .9rem", width: "17rem" }}
                 >
                     {!isMiniMech &&
                         gameAbilities &&
                         gameAbilities.length > 0 &&
-                        gameAbilities.map((ga) => {
-                            return <AbilityItem key={ga.id} hash={warMachine.hash} participantID={participantID} ability={ga} />
+                        gameAbilities.map((ga, i) => {
+                            return <AbilityItem key={ga.id} hash={warMachine.hash} participantID={participantID} ability={ga} index={i} />
                         })}
 
                     {userID === ownedByID && <MoveCommand isAlive={isAlive} warMachine={warMachine} smallVersion />}
@@ -97,16 +100,19 @@ const HighlightedMechAbilitiesInner = ({ warMachine }: { warMachine: WarMachineS
     )
 }
 
-const AbilityItem = ({ hash, participantID, ability }: { hash: string; participantID: number; ability: GameAbility }) => {
-    const { send } = useGameServerCommandsFaction("/faction_commander")
+const AbilityItem = ({ hash, participantID, ability, index }: { hash: string; participantID: number; ability: GameAbility; index: number }) => {
     const { id, colour, image_url, label } = ability
+    const { currentArenaID } = useArena()
+    const { send } = useGameServerCommandsFaction("/faction_commander")
     const [remainSeconds, setRemainSeconds] = useState(30)
     const ready = useMemo(() => remainSeconds === 0, [remainSeconds])
+    const { mechAbilityKey, addToHotkeyRecord } = useHotkey()
 
     useGameServerSubscriptionFaction<number | undefined>(
         {
-            URI: `/mech/${participantID}/abilities/${id}/cool_down_seconds`,
+            URI: `/arena/${currentArenaID}/mech/${participantID}/abilities/${id}/cool_down_seconds`,
             key: GameServerKeys.SubMechAbilityCoolDown,
+            ready: !!currentArenaID && !!participantID,
         },
         (payload) => {
             if (payload === undefined) return
@@ -124,15 +130,21 @@ const AbilityItem = ({ hash, participantID, ability }: { hash: string; participa
     }, 1000)
 
     const onTrigger = useCallback(async () => {
+        if (!currentArenaID) return
         try {
-            await send<boolean, { mech_hash: string; game_ability_id: string }>(GameServerKeys.TriggerWarMachineAbility, {
+            await send<boolean, { arena_id: string; mech_hash: string; game_ability_id: string }>(GameServerKeys.TriggerWarMachineAbility, {
+                arena_id: currentArenaID,
                 mech_hash: hash,
                 game_ability_id: id,
             })
         } catch (e) {
             console.error(e)
         }
-    }, [hash, id, send])
+    }, [hash, id, send, currentArenaID])
+
+    useEffect(() => {
+        addToHotkeyRecord(RecordType.Map, mechAbilityKey[index], onTrigger)
+    }, [onTrigger, mechAbilityKey, addToHotkeyRecord, index])
 
     return (
         <Stack
@@ -164,22 +176,32 @@ const AbilityItem = ({ hash, participantID, ability }: { hash: string; participa
                 onClick={ready ? onTrigger : undefined}
             />
 
-            <Typography
-                variant="body2"
-                sx={{
-                    pt: ".4rem",
-                    lineHeight: 1,
-                    fontWeight: "fontWeightBold",
-                    display: "-webkit-box",
-                    overflow: "hidden",
-                    overflowWrap: "anywhere",
-                    textOverflow: "ellipsis",
-                    WebkitLineClamp: 1, // change to max number of lines
-                    WebkitBoxOrient: "vertical",
-                }}
-            >
-                {ready ? label : remainSeconds > 300 ? "∞" : `${remainSeconds}s`}
-            </Typography>
+            <Stack direction={"row"} sx={{ flex: 1 }} justifyContent={"space-between"} alignItems={"center"}>
+                <Typography
+                    variant="body2"
+                    sx={{
+                        pt: ".4rem",
+                        lineHeight: 1,
+                        fontWeight: "fontWeightBold",
+                        display: "-webkit-box",
+                        overflow: "hidden",
+                        overflowWrap: "anywhere",
+                        textOverflow: "ellipsis",
+                        WebkitLineClamp: 1, // change to max number of lines
+                        WebkitBoxOrient: "vertical",
+                    }}
+                >
+                    {ready ? label : remainSeconds > 300 ? "∞" : `${remainSeconds}s`}
+                </Typography>
+
+                {ready && (
+                    <Typography variant="body2" sx={{ color: colors.neonBlue }}>
+                        <i>
+                            <strong>[{mechAbilityKey[index]}]</strong>
+                        </i>
+                    </Typography>
+                )}
+            </Stack>
         </Stack>
     )
 }

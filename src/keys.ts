@@ -14,6 +14,10 @@ export enum GameServerKeys {
     // Notification container
     SubGameNotification = "GAME:NOTIFICATION",
 
+    // Battle Arena
+    SubBattleArenaList = "BATTLE:ARENA:LIST",
+    SubBattleArenaClosed = "BATTLE:ARENA:CLOSED",
+
     // Voting abilities
     SubBribeStageUpdated = "BRIBE:STAGE:UPDATED:SUBSCRIBE",
     SubBribeWinnerAnnouncement = "BRIBE:WINNER:SUBSCRIBE",

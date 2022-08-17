@@ -4,6 +4,7 @@ import { useTheme } from "../../../../containers/theme"
 import { useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { MapIcon } from "./MapIcon"
+import { useArena } from "../../../../containers/arena"
 
 interface FactionMechCommand {
     battle_id: string
@@ -14,12 +15,14 @@ interface FactionMechCommand {
 
 export const MechCommandIcons = () => {
     const theme = useTheme()
+    const { currentArenaID } = useArena()
     const [mechMoveCommands, setMechMoveCommands] = useState<FactionMechCommand[]>([])
 
     useGameServerSubscriptionFaction<FactionMechCommand[]>(
         {
-            URI: "/mech_commands",
+            URI: `/arena/${currentArenaID}/mech_commands`,
             key: GameServerKeys.SubMechCommands,
+            ready: !!currentArenaID,
         },
         (payload) => {
             setMechMoveCommands(payload || [])
