@@ -252,11 +252,12 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
                             </>
                         )}
 
-                        {!isStreamBigDisplay && (
-                            <Box onClick={() => toggleIsEnlarged()} sx={{ cursor: "pointer", opacity: 0.4, ":hover": { opacity: 1 } }}>
-                                {isEnlarged ? <SvgMinimize size="1.6rem" /> : <SvgFullscreen size="1.6rem" />}
-                            </Box>
-                        )}
+                        {!isStreamBigDisplay ||
+                            (isPoppedout && (
+                                <Box onClick={() => toggleIsEnlarged()} sx={{ cursor: "pointer", opacity: 0.4, ":hover": { opacity: 1 } }}>
+                                    {isEnlarged ? <SvgMinimize size="1.6rem" /> : <SvgFullscreen size="1.6rem" />}
+                                </Box>
+                            ))}
 
                         <Typography sx={{ fontFamily: fonts.nostromoHeavy }}>
                             {map.name
