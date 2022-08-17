@@ -153,6 +153,7 @@ import BottomMechWEBP from "./images/BottomMech.webp"
 import ClaimsBg from "./images/ClaimsBg.jpg"
 import Crosshair from "./images/Crosshair.png"
 import EmptyWarMachinesPNG from "./images/EmptyWarMachines.png"
+import BattleBgWebP from "./images/BattleBg.webp"
 import FlamesPNG from "./images/Flames.png"
 import Gabs from "./images/Gabs.png"
 import GenericWarMachinePNG from "./images/GenericWarMachine.png"
@@ -272,6 +273,7 @@ export {
     WarMachineBCPNG,
     WarMachineRMPNG,
     WarMachineZAIPNG,
+    BattleBgWebP,
 }
 
 export interface SvgWrapperProps extends BoxProps {

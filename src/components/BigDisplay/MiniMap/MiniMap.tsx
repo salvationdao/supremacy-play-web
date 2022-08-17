@@ -1,7 +1,7 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useRef, useState } from "react"
 import { MiniMapInside } from "../.."
-import { SvgExternalLink, SvgFullscreen, SvgMinimize, SvgSwap } from "../../../assets"
+import { BattleBgWebP, SvgExternalLink, SvgFullscreen, SvgMinimize, SvgSwap } from "../../../assets"
 import { useDimension, useGame } from "../../../containers"
 import { useHotkey } from "../../../containers/hotkeys"
 import { useMiniMap } from "../../../containers/minimap"
@@ -24,35 +24,33 @@ export const MiniMap = () => {
     const [isPoppedout, setIsPoppedout] = useState(false)
 
     useEffect(() => {
-        if (bribeStage && bribeStage.phase !== "HOLD" ? true : false) {
+        if (map && bribeStage && bribeStage.phase !== "HOLD" ? true : false) {
             setIsBattleStarted(true)
         } else {
             setIsBattleStarted(false)
             resetSelection()
         }
-    }, [bribeStage, setIsBattleStarted, resetSelection])
-
-    if (!map) {
-        return null
-    }
+    }, [bribeStage, setIsBattleStarted, resetSelection, map])
 
     if (isPoppedout) {
         return (
             <WindowPortal title="Supremacy - Battle Arena" onClose={() => setIsPoppedout(false)} features={{ width: 600, height: 600 }}>
                 <Box sx={{ width: "100%", height: "100%", border: (theme) => `${theme.factionTheme.primary} 1.5px solid` }}>
-                    {isBattleStarted ? (
+                    {isBattleStarted && map ? (
                         <MiniMapInnerPoppedOut map={map} isTargeting={isTargeting} isPoppedout={isPoppedout} setIsPoppedout={setIsPoppedout} />
                     ) : (
-                        <div />
+                        <BattleNotStarted />
                     )}
                 </Box>
             </WindowPortal>
         )
     }
 
-    return (
-        <>{isBattleStarted ? <MiniMapInnerNormal map={map} isTargeting={isTargeting} isPoppedout={isPoppedout} setIsPoppedout={setIsPoppedout} /> : <div />}</>
-    )
+    if (isBattleStarted && map) {
+        return <MiniMapInnerNormal map={map} isTargeting={isTargeting} isPoppedout={isPoppedout} setIsPoppedout={setIsPoppedout} />
+    }
+
+    return <BattleNotStarted />
 }
 
 interface MiniMapInnerProps {
@@ -74,6 +72,50 @@ const MiniMapInnerNormal = ({ map, isTargeting, isPoppedout, setIsPoppedout }: M
         gameUIDimensions: { width, height },
     } = useDimension()
     return <MiniMapInner map={map} isTargeting={isTargeting} isPoppedout={isPoppedout} setIsPoppedout={setIsPoppedout} width={width} height={height} />
+}
+
+const BattleNotStarted = () => {
+    const { isStreamBigDisplay } = useGame()
+    const [showBg, setShowBg] = useState(false)
+
+    // Only show the bg image after X seconds, dont want a bright flash in between battles
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            setShowBg(true)
+        }, 20000)
+
+        return () => clearTimeout(timeout)
+    }, [])
+
+    return (
+        <Stack
+            alignItems="center"
+            justifyContent="center"
+            sx={{
+                position: "relative",
+                width: "100%",
+                height: isStreamBigDisplay ? "28rem" : "100%",
+                background: showBg ? `url(${BattleBgWebP})` : "unset",
+                backgroundRepeat: "no-repeat",
+                backgroundPosition: "center",
+                backgroundSize: "cover",
+            }}
+        >
+            <Typography
+                variant={!isStreamBigDisplay ? "h3" : "h5"}
+                sx={{
+                    fontFamily: fonts.nostromoHeavy,
+                    WebkitTextStrokeWidth: !isStreamBigDisplay ? "2px" : "unset",
+                    textAlign: "center",
+                    zIndex: 1,
+                }}
+            >
+                Battle will begin shortly.
+            </Typography>
+
+            <Box sx={{ position: "absolute", top: 0, left: 0, bottom: 0, right: 0, backgroundColor: "#00000050", zIndex: 0 }} />
+        </Stack>
+    )
 }
 
 // This inner component takes care of the resizing etc.
