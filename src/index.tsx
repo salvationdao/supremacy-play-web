@@ -42,7 +42,7 @@ import { ArenaListener, ArenaProvider } from "./containers/arena"
 import { HotkeyProvider } from "./containers/hotkeys"
 
 const AppInner = () => {
-    const { isServerDown, serverConnectedBefore } = useSupremacy()
+    const { isServerDown, serverConnectedBefore, firstConnectTimedOut } = useSupremacy()
     const { isMobile } = useMobile()
     const { userID, factionID } = useAuth()
     const [showLoading, toggleShowLoading] = useToggle(true)
@@ -56,7 +56,7 @@ const AppInner = () => {
         return () => clearTimeout(timeout)
     }, [toggleShowLoading])
 
-    if (!serverConnectedBefore || showLoading) {
+    if ((!serverConnectedBefore && !firstConnectTimedOut) || showLoading) {
         return (
             <Stack
                 spacing="3rem"
