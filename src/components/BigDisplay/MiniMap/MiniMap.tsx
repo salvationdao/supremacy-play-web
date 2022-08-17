@@ -111,7 +111,7 @@ const BattleNotStarted = () => {
                     zIndex: 1,
                 }}
             >
-                Battle will begin shortly.
+                Preparing for next battle...
             </Typography>
 
             <Box sx={{ position: "absolute", top: 0, left: 0, bottom: 0, right: 0, backgroundColor: "#00000050", zIndex: 0 }} />
