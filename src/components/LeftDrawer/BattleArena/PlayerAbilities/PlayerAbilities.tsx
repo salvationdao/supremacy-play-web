@@ -6,7 +6,7 @@ import { useGame } from "../../../../containers"
 import { useAuth } from "../../../../containers/auth"
 import { useTheme } from "../../../../containers/theme"
 import { usePagination } from "../../../../hooks"
-import { useGameServerSubscriptionUser } from "../../../../hooks/useGameServer"
+import { useGameServerSubscriptionSecuredUser } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
 import { LocationSelectType, PlayerAbility } from "../../../../types"
@@ -52,7 +52,7 @@ const PlayerAbilitiesInner = () => {
     })
     const [locationSelectType, setLocationSelectType] = useState<LocationSelectType | null>(null)
 
-    useGameServerSubscriptionUser<PlayerAbility[]>(
+    useGameServerSubscriptionSecuredUser<PlayerAbility[]>(
         {
             URI: "/player_abilities",
             key: GameServerKeys.SubPlayerAbilitiesList,

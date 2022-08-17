@@ -11,6 +11,7 @@ import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { AIType, GameAbility, WarMachineState } from "../../../types"
 import { MoveCommand } from "./MoveCommand"
+import { useArena } from "../../../containers/arena"
 
 // in rems
 const WIDTH_AVATAR = 8.6
@@ -36,6 +37,7 @@ export const WarMachineItem = ({
     const { isMobile } = useMobile()
     const { userID, factionID } = useAuth()
     const { getFaction } = useSupremacy()
+    const { currentArenaID } = useArena()
     const { highlightedMechParticipantID, setHighlightedMechParticipantID } = useMiniMap()
 
     const { hash, participantID, factionID: wmFactionID, name, imageAvatar, tier, ownedByID, ownerUsername, aiType } = warMachine
@@ -43,9 +45,9 @@ export const WarMachineItem = ({
 
     // Subscribe to war machine ability updates
     const gameAbilities = useGameServerSubscriptionFaction<GameAbility[] | undefined>({
-        URI: `/mech/${participantID}/abilities`,
+        URI: `/arena/${currentArenaID}/mech/${participantID}/abilities`,
         key: GameServerKeys.SubWarMachineAbilitiesUpdated,
-        ready: factionID === wmFactionID && !!participantID,
+        ready: factionID === wmFactionID && !!participantID && !!currentArenaID,
     })
 
     const [isAlive, toggleIsAlive] = useToggle(warMachine.health > 0)

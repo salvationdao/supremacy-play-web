@@ -10,6 +10,7 @@ import { useGameServerSubscription } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { BattleAbility as BattleAbilityType } from "../../../../types"
 import { BattleAbilityTextTop } from "./BattleAbilityTextTop"
+import { useArena } from "../../../../containers/arena"
 
 export interface BattleAbilityProgressBigNum {
     faction_id: string
@@ -20,6 +21,7 @@ export interface BattleAbilityProgressBigNum {
 export const BattleAbilityItem = () => {
     const theme = useTheme()
     const { bribeStage } = useGame()
+    const { currentArenaID } = useArena()
 
     const [fadeEffect, toggleFadeEffect] = useToggle()
     const [battleAbility, setBattleAbility] = useState<BattleAbilityType>()
@@ -27,8 +29,9 @@ export const BattleAbilityItem = () => {
     // Subscribe to battle ability updates
     useGameServerSubscription<BattleAbilityType>(
         {
-            URI: "/public/battle_ability",
+            URI: `/public/arena/${currentArenaID}/battle_ability`,
             key: GameServerKeys.SubBattleAbility,
+            ready: currentArenaID !== "",
         },
         (payload) => {
             if (!payload) return

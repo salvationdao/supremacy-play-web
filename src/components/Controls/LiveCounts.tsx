@@ -10,7 +10,7 @@ import { Faction, ViewerLiveCount } from "../../types"
 export const LiveCounts = () => {
     const { getFaction } = useSupremacy()
     const viewers = useGameServerSubscription<ViewerLiveCount>({
-        URI: "/public/live_data",
+        URI: "/public/live_viewer_count",
         key: GameServerKeys.SubViewersLiveCount,
     })
 
