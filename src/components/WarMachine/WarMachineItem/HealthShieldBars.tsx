@@ -1,12 +1,12 @@
 import { Stack } from "@mui/material"
 import { useMemo, useState } from "react"
 import { WIDTH_STAT_BAR } from "../.."
+import { useArena } from "../../../containers/arena"
 import { useGameServerSubscription } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
 import { WarMachineLiveState, WarMachineState } from "../../../types"
 import { ProgressBar } from "../../Common/ProgressBar"
-import { useArena } from "../../../containers/arena"
 
 export const HealthShieldBars = ({ warMachine, toggleIsAlive }: { warMachine: WarMachineState; toggleIsAlive: (value: boolean) => void }) => {
     const { currentArenaID } = useArena()
@@ -23,7 +23,7 @@ export const HealthShieldBars = ({ warMachine, toggleIsAlive }: { warMachine: Wa
             URI: `/public/arena/${currentArenaID}/mech/${participantID}`,
             key: GameServerKeys.SubMechLiveStats,
             ready: !!participantID && !!currentArenaID,
-            batchURI: `public/arena/${currentArenaID}/mech`,
+            batchURI: `/public/arena/${currentArenaID}/mech`,
         },
         (payload) => {
             if (payload?.health !== undefined) {

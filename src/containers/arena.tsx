@@ -1,4 +1,5 @@
-import React, { createContext, Dispatch, ReactNode, useContext, useState } from "react"
+import { useState } from "react"
+import { createContainer } from "unstated-next"
 import { useGameServerSubscription } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
 
@@ -12,55 +13,27 @@ interface Arena {
     type: ArenaType
 }
 
-export interface ArenaState {
-    arenas: Arena[]
-    setArenas: Dispatch<React.SetStateAction<Arena[]>>
-    currentArena?: Arena
-    setCurrentArena: Dispatch<React.SetStateAction<Arena | undefined>>
-    currentArenaID: string
-}
-
-const initialState: ArenaState = {
-    arenas: [],
-    setArenas: () => {
-        return
-    },
-    currentArena: undefined,
-    setCurrentArena: () => {
-        return
-    },
-    currentArenaID: "",
-}
-
-export const ArenaContext = createContext<ArenaState>(initialState)
-
-export const ArenaProvider = ({ children }: { children: ReactNode }) => {
-    const [arenas, setArenas] = useState<Arena[]>([])
+export const ArenaContainer = createContainer(() => {
+    const [arenaList, setArenaList] = useState<Arena[]>([])
     const [currentArena, setCurrentArena] = useState<Arena>()
 
     const currentArenaID = currentArena?.id || ""
 
-    return (
-        <ArenaContext.Provider
-            value={{
-                arenas,
-                setArenas,
-                currentArena,
-                setCurrentArena,
-                currentArenaID,
-            }}
-        >
-            {children}
-        </ArenaContext.Provider>
-    )
-}
+    return {
+        arenaList,
+        setArenaList,
+        currentArena,
+        setCurrentArena,
+        currentArenaID,
+    }
+})
 
-export const useArena = () => {
-    return useContext<ArenaState>(ArenaContext)
-}
+export const ArenaProvider = ArenaContainer.Provider
+export const useArena = ArenaContainer.useContainer
 
 export const ArenaListener = () => {
-    const { setArenas, currentArenaID, setCurrentArena } = useArena()
+    const { setArenaList, currentArenaID, setCurrentArena } = useArena()
+
     useGameServerSubscription<Arena[]>(
         {
             URI: "/public/arena_list",
@@ -68,16 +41,13 @@ export const ArenaListener = () => {
         },
         (payload) => {
             if (!payload || payload.length === 0) {
-                setArenas([])
+                setArenaList([])
                 return
             }
 
-            setArenas(payload)
-
+            setArenaList(payload)
             // NOTE: temporary default arena to the first one
-            if (!currentArenaID) {
-                setCurrentArena(payload[0])
-            }
+            setCurrentArena((prev) => prev || payload[0])
         },
     )
 
