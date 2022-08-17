@@ -21,13 +21,12 @@ export const PlayerAbilities = () => {
     if (!bribeStage || !userID) return null
 
     return (
-        <Box>
+        <Box sx={{ position: "relative" }}>
             <SectionHeading label="OWNED ABILITIES" tooltip="Launch your own abilities." />
             <Stack
                 spacing="1rem"
                 sx={{
                     pointerEvents: isBattleStarted ? "all" : "none",
-                    opacity: isBattleStarted ? 1 : 0.5,
                     p: "1.5rem 1.1rem",
                     backgroundColor: "#FFFFFF12",
                     boxShadow: 2,
@@ -36,6 +35,8 @@ export const PlayerAbilities = () => {
             >
                 <PlayerAbilitiesInner />
             </Stack>
+
+            {!isBattleStarted && <Box sx={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", backgroundColor: "#000000AA" }} />}
         </Box>
     )
 }

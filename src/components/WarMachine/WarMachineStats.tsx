@@ -14,18 +14,18 @@ export const WarMachineStats = () => {
 const WarMachineStatsInner = () => {
     const { isMobile } = useMobile()
     const { warMachines, bribeStage, factionWarMachines, otherWarMachines, ownedMiniMechs } = useGame()
-    const [battleStarted, setBattleStarted] = useState(false)
+    const [isBattleStarted, setIsBattleStarted] = useState(false)
 
     useEffect(() => {
-        setBattleStarted(bribeStage && bribeStage.phase !== "HOLD" ? true : false)
-    }, [bribeStage, battleStarted])
+        setIsBattleStarted(bribeStage && bribeStage.phase !== "HOLD" ? true : false)
+    }, [bribeStage, isBattleStarted])
 
     const haveFactionMechs = useMemo(() => factionWarMachines && factionWarMachines.length > 0, [factionWarMachines])
 
     if (!warMachines || warMachines.length <= 0) return null
 
     if (isMobile) {
-        if (!battleStarted) return null
+        if (!isBattleStarted) return null
 
         return (
             <>
@@ -121,7 +121,7 @@ const WarMachineStatsInner = () => {
     }
 
     return (
-        <Slide in={battleStarted} direction="up">
+        <Slide in={isBattleStarted} direction="up">
             <Box
                 sx={{
                     position: "absolute",

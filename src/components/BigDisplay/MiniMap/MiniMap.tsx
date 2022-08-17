@@ -1,52 +1,85 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useRef, useState } from "react"
 import { MiniMapInside } from "../.."
+import { SvgExternalLink } from "../../../assets"
 import { useDimension, useGame } from "../../../containers"
 import { useHotkey } from "../../../containers/hotkeys"
 import { useMiniMap } from "../../../containers/minimap"
-import { useTheme } from "../../../containers/theme"
 import { fonts } from "../../../theme/theme"
 import { Dimension, Map } from "../../../types"
+import { WindowPortal } from "../../Common/WindowPortal/WindowPortal"
+import { useWindowPortal } from "../../Common/WindowPortal/WindowPortalContainer"
 import { LEFT_DRAWER_WIDTH } from "../../LeftDrawer/LeftDrawer"
 import { HighlightedMechAbilities } from "./MapOutsideItems/HighlightedMechAbilities"
 import { TargetHint } from "./MapOutsideItems/TargetHint"
 
-export const TOP_BAR_HEIGHT = 3.1 // rems
+export const TOP_BAR_HEIGHT = 3.4 // rems
 const BOTTOM_PADDING = 10 // rems
 
 export const MiniMap = () => {
     const { map, bribeStage } = useGame()
     const { isTargeting, resetSelection } = useMiniMap()
-    const [battleStarted, setBattleStarted] = useState(false)
+    const [isBattleStarted, setIsBattleStarted] = useState(false)
+    const [isPoppedout, setIsPoppedout] = useState(false)
 
     useEffect(() => {
         if (bribeStage && bribeStage.phase !== "HOLD" ? true : false) {
-            setBattleStarted(true)
+            setIsBattleStarted(true)
         } else {
-            setBattleStarted(false)
+            setIsBattleStarted(false)
             resetSelection()
         }
-    }, [bribeStage, setBattleStarted, resetSelection])
+    }, [bribeStage, setIsBattleStarted, resetSelection])
 
     if (!map) {
         return null
     }
 
-    if (!battleStarted) {
-        // TODO: show message saying wait for battle to start
+    if (isPoppedout) {
+        return (
+            <WindowPortal title="Supremacy - Battle Arena" onClose={() => setIsPoppedout(false)} features={{ width: 600, height: 600 }}>
+                <Box sx={{ width: "100%", height: "100%", border: (theme) => `${theme.factionTheme.primary} 1.5px solid` }}>
+                    {isBattleStarted ? (
+                        <MiniMapInnerPoppedOut map={map} isTargeting={isTargeting} isPoppedout={isPoppedout} setIsPoppedout={setIsPoppedout} />
+                    ) : (
+                        <div />
+                    )}
+                </Box>
+            </WindowPortal>
+        )
     }
 
-    const isPoppedout = false // TODO
+    return (
+        <>{isBattleStarted ? <MiniMapInnerNormal map={map} isTargeting={isTargeting} isPoppedout={isPoppedout} setIsPoppedout={setIsPoppedout} /> : <div />}</>
+    )
+}
 
-    return <MiniMapInner map={map} isTargeting={isTargeting} isPoppedout={isPoppedout} />
+interface MiniMapInnerProps {
+    map: Map
+    isTargeting: boolean
+    isPoppedout: boolean
+    setIsPoppedout: React.Dispatch<React.SetStateAction<boolean>>
+    width?: number
+    height?: number
+}
+
+const MiniMapInnerPoppedOut = ({ map, isTargeting, isPoppedout, setIsPoppedout }: MiniMapInnerProps) => {
+    const { curWidth, curHeight } = useWindowPortal()
+    return <MiniMapInner map={map} isTargeting={isTargeting} isPoppedout={isPoppedout} setIsPoppedout={setIsPoppedout} width={curWidth} height={curHeight} />
+}
+
+const MiniMapInnerNormal = ({ map, isTargeting, isPoppedout, setIsPoppedout }: MiniMapInnerProps) => {
+    const {
+        gameUIDimensions: { width, height },
+    } = useDimension()
+    return <MiniMapInner map={map} isTargeting={isTargeting} isPoppedout={isPoppedout} setIsPoppedout={setIsPoppedout} width={width} height={height} />
 }
 
 // This inner component takes care of the resizing etc.
-const MiniMapInner = ({ map, isTargeting, isPoppedout }: { map: Map; isTargeting: boolean; isPoppedout: boolean }) => {
+const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 100, height = 100 }: MiniMapInnerProps) => {
     const { isStreamBigDisplay, setIsStreamBigDisplay } = useGame()
-    const theme = useTheme()
     const { handleHotKey } = useHotkey()
-    const { remToPxRatio, gameUIDimensions } = useDimension()
+    const { remToPxRatio } = useDimension()
 
     const [renderDimensions, setRenderDimensions] = useState<Dimension>({ width: 100, height: 100 })
     const mapHeightWidthRatio = useRef(1)
@@ -58,17 +91,17 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout }: { map: Map; isTargeting
     useEffect(() => {
         mapHeightWidthRatio.current = map.height / map.width
 
-        let defaultWidth = gameUIDimensions.width
+        let defaultWidth = width
         let defaultHeight = 0
         if (!containFit) {
             defaultWidth = LEFT_DRAWER_WIDTH * remToPxRatio
             defaultHeight = defaultWidth * mapHeightWidthRatio.current
         } else {
-            defaultHeight = Math.min(defaultWidth * mapHeightWidthRatio.current, gameUIDimensions.height)
+            defaultHeight = Math.min(defaultWidth * mapHeightWidthRatio.current, height)
         }
 
         setRenderDimensions({ width: defaultWidth, height: defaultHeight })
-    }, [map, remToPxRatio, gameUIDimensions, isPoppedout, isStreamBigDisplay, containFit])
+    }, [map, remToPxRatio, isPoppedout, isStreamBigDisplay, containFit, width, height])
 
     // When it's targeting, enlarge to big display, else restore to the prev location
     useEffect(() => {
@@ -135,34 +168,32 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout }: { map: Map; isTargeting
                         transition: "all .2s",
                         overflow: "hidden",
                         pointerEvents: "all",
-                        border: isPoppedout ? `${theme.factionTheme.primary} 1.5px solid` : "unset",
                         zIndex: 2,
                     }}
                 >
+                    {/* Top bar */}
                     <Stack
                         direction="row"
                         alignItems="center"
                         sx={{
+                            p: ".6rem 1.6rem",
                             height: `${TOP_BAR_HEIGHT}rem`,
-                            px: "1.8rem",
-                            backgroundColor: "#000000BF",
-                            borderBottom: `${theme.factionTheme.primary}80 .25rem solid`,
+                            background: (theme) => `linear-gradient(${theme.factionTheme.background} 26%, ${theme.factionTheme.background}BB)`,
                             zIndex: 99,
                         }}
                     >
-                        <Typography
-                            variant="caption"
-                            sx={{
-                                fontFamily: fonts.nostromoBlack,
-                                lineHeight: 1,
-                                opacity: 0.8,
-                            }}
-                        >
+                        <Typography sx={{ fontFamily: fonts.nostromoHeavy }}>
                             {map.name
                                 .replace(/([A-Z])/g, " $1")
                                 .trim()
                                 .toUpperCase()}
                         </Typography>
+
+                        <Box sx={{ flex: 1 }} />
+
+                        <Box onClick={() => setIsPoppedout(true)} sx={{ cursor: "pointer", opacity: 0.4, ":hover": { opacity: 1 } }}>
+                            <SvgExternalLink size="1.6rem" />
+                        </Box>
                     </Stack>
 
                     <MiniMapInside containerDimensions={{ width: sizes.insideWidth, height: sizes.insideHeight }} />
@@ -188,16 +219,5 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout }: { map: Map; isTargeting
                 />
             </Stack>
         )
-    }, [
-        containFit,
-        handleHotKey,
-        sizes.outsideWidth,
-        sizes.outsideHeight,
-        sizes.insideWidth,
-        sizes.insideHeight,
-        isPoppedout,
-        theme.factionTheme.primary,
-        map.name,
-        map?.image_url,
-    ])
+    }, [containFit, handleHotKey, sizes.outsideWidth, sizes.outsideHeight, sizes.insideWidth, sizes.insideHeight, map.name, map?.image_url, setIsPoppedout])
 }

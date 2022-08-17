@@ -8,7 +8,7 @@ import { acronym, shadeColor } from "../../../helpers"
 import { zoomEffect } from "../../../theme/keyframes"
 import { colors, fonts } from "../../../theme/theme"
 import { ChatMessageType } from "../../../types/chat"
-import { WindowPortal } from "../../Common/WindowPortal"
+import { WindowPortal } from "../../Common/WindowPortal/WindowPortal"
 import { ChatMessages } from "./ChatMessages/ChatMessages"
 import { ChatSend } from "./ChatSend/ChatSend"
 

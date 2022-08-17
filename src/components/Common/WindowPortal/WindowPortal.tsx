@@ -3,6 +3,7 @@ import { CacheProvider } from "@emotion/react"
 import { Box } from "@mui/material"
 import React, { ReactNode, useEffect, useRef, useState } from "react"
 import NewWindow, { IWindowFeatures } from "react-new-window"
+import { WindowPortalProvider } from "./WindowPortalContainer"
 
 export interface WindowPortalProps {
     title: string
@@ -17,14 +18,16 @@ export const WindowPortal = React.forwardRef(function WindowPortal({ title, back
 
     return (
         <NewWindow title={title} onUnload={onClose} features={features}>
-            <Box
-                ref={(ref: HTMLElement) => setContainer(ref)}
-                sx={{ width: "100%", height: "100%", backgroundColor: (theme) => backgroundColor || theme.factionTheme.background }}
-            >
-                <Box ref={ref} sx={{ width: "100%", height: "100%" }}>
-                    {container && <CacheWrapper container={container}>{children}</CacheWrapper>}
+            <WindowPortalProvider initialState={{ features, container }}>
+                <Box
+                    ref={(ref: HTMLElement) => setContainer(ref)}
+                    sx={{ width: "100%", height: "100%", backgroundColor: (theme) => backgroundColor || theme.factionTheme.background }}
+                >
+                    <Box ref={ref} sx={{ width: "100%", height: "100%" }}>
+                        {container && <CacheWrapper container={container}>{children}</CacheWrapper>}
+                    </Box>
                 </Box>
-            </Box>
+            </WindowPortalProvider>
         </NewWindow>
     )
 })
