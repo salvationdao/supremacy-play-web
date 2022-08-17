@@ -93,7 +93,7 @@ export const HotkeyContainer = createContainer(() => {
 
     useEffect(() => {
         addToHotkeyRecord("global", "m", toggleIsMapOpen)
-    }, [addToHotkeyRecord])
+    }, [addToHotkeyRecord, toggleIsMapOpen])
 
     return {
         mechAbilityKey,

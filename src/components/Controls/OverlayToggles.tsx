@@ -2,7 +2,6 @@ import { IconButton, Stack, Typography } from "@mui/material"
 import { TooltipHelper } from ".."
 import { SvgHistory, SvgRadar } from "../../assets"
 import { useOverlayToggles } from "../../containers"
-import { Box } from "@mui/system"
 
 export const OverlayToggles = () => {
     const { isMapOpen, toggleIsMapOpen, isBattleHistoryOpen, toggleIsBattleHistoryOpen } = useOverlayToggles()
