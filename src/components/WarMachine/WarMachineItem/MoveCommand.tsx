@@ -10,7 +10,7 @@ import { colors } from "../../../theme/theme"
 import { LocationSelectType, PlayerAbility, WarMachineState } from "../../../types"
 import { DEAD_OPACITY, WIDTH_SKILL_BUTTON } from "./WarMachineItem"
 import { useArena } from "../../../containers/arena"
-import { useHotkey } from "../../../containers/hotkeys"
+import { RecordType, useHotkey } from "../../../containers/hotkeys"
 
 export const MechMoveCommandAbility: PlayerAbility = {
     id: "mech_move_command",
@@ -128,7 +128,7 @@ const MoveCommandInner = ({ isAlive, remainCooldownSeconds, isMoving, isCancelle
     }, [isAlive, isMoving, isCancelled, send, mechMoveCommandID, hash, newSnackbarMessage, setPlayerAbility, currentArenaID])
 
     useEffect(() => {
-        addToHotkeyRecord("map", "a", onClick)
+        addToHotkeyRecord(RecordType.Map, "a", onClick)
     }, [onClick, addToHotkeyRecord])
 
     if (smallVersion) {
@@ -161,7 +161,7 @@ const MoveCommandInner = ({ isAlive, remainCooldownSeconds, isMoving, isCancelle
                     {isMoving ? <SvgClose2 size="1.6rem" sx={{ pb: 0 }} fill={primaryColor} /> : <SvgDrag size="1.6rem" sx={{ pb: 0 }} fill={primaryColor} />}
                 </Stack>
 
-                <Stack direction={"row"} sx={{ width: "100%" }} justifyContent={"space-between"} alignItems={"center"}>
+                <Stack direction={"row"} sx={{ flex: 1 }} justifyContent={"space-between"} alignItems={"center"}>
                     <Typography
                         variant="body2"
                         sx={{
@@ -179,7 +179,12 @@ const MoveCommandInner = ({ isAlive, remainCooldownSeconds, isMoving, isCancelle
                     >
                         {ready ? MechMoveCommandAbility.ability.label : `${totalSecRemain}s`}
                     </Typography>
-                    <Typography sx={{ opacity: "0.7" }}>[a]</Typography>
+
+                    <Typography variant="body2" sx={{ color: colors.neonBlue }}>
+                        <i>
+                            <strong>[a]</strong>
+                        </i>
+                    </Typography>
                 </Stack>
             </Stack>
         )

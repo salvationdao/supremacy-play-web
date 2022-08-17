@@ -203,7 +203,7 @@ const client = createClient({
     responseInterceptors: [],
 })
 
-ws.Initialise({ defaultHost: GAME_SERVER_HOSTNAME })
+ws.Initialize({ defaultHost: GAME_SERVER_HOSTNAME })
 
 const tourProviderProps = {
     children: <AppInner />,

@@ -2,6 +2,7 @@ import { IconButton, Stack, Typography } from "@mui/material"
 import { TooltipHelper } from ".."
 import { SvgHistory, SvgRadar } from "../../assets"
 import { useOverlayToggles } from "../../containers"
+import { colors } from "../../theme/theme"
 
 export const OverlayToggles = () => {
     const { isMapOpen, toggleIsMapOpen, isBattleHistoryOpen, toggleIsBattleHistoryOpen } = useOverlayToggles()
@@ -16,13 +17,13 @@ export const OverlayToggles = () => {
             <TooltipHelper
                 text={
                     <>
-                        <Stack direction={"row"} justifyContent={"space-between"}>
-                            <Typography sx={{ display: "inline", textAlign: "justify" }}>Toggle the mini map</Typography>
-                            <Typography sx={{ float: "right" }} fontStyle={"italic"}>
-                                [m]
-                            </Typography>
-                        </Stack>
-                        <Typography>Shown when a battle begins</Typography>
+                        <Typography>
+                            Toggle the mini map{" "}
+                            <i style={{ color: colors.neonBlue }}>
+                                <strong>[m]</strong>
+                            </i>
+                        </Typography>
+                        <Typography>Shown when the battle begins.</Typography>
                     </>
                 }
             >

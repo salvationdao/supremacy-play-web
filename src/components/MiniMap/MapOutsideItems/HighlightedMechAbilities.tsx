@@ -10,7 +10,7 @@ import { colors } from "../../../theme/theme"
 import { AIType, GameAbility, WarMachineLiveState, WarMachineState } from "../../../types"
 import { MoveCommand } from "../../WarMachine/WarMachineItem/MoveCommand"
 import { useArena } from "../../../containers/arena"
-import { useHotkey } from "../../../containers/hotkeys"
+import { RecordType, useHotkey } from "../../../containers/hotkeys"
 
 export const HighlightedMechAbilities = () => {
     const { userID } = useAuth()
@@ -103,10 +103,10 @@ const HighlightedMechAbilitiesInner = ({ warMachine }: { warMachine: WarMachineS
 const AbilityItem = ({ hash, participantID, ability, index }: { hash: string; participantID: number; ability: GameAbility; index: number }) => {
     const { id, colour, image_url, label } = ability
     const { currentArenaID } = useArena()
+    const { send } = useGameServerCommandsFaction("/faction_commander")
     const [remainSeconds, setRemainSeconds] = useState(30)
     const ready = useMemo(() => remainSeconds === 0, [remainSeconds])
     const { mechAbilityKey, addToHotkeyRecord } = useHotkey()
-    const { send } = useGameServerCommandsFaction("/faction_commander")
 
     useGameServerSubscriptionFaction<number | undefined>(
         {
@@ -143,7 +143,7 @@ const AbilityItem = ({ hash, participantID, ability, index }: { hash: string; pa
     }, [hash, id, send, currentArenaID])
 
     useEffect(() => {
-        addToHotkeyRecord("map", mechAbilityKey[index], onTrigger)
+        addToHotkeyRecord(RecordType.Map, mechAbilityKey[index], onTrigger)
     }, [onTrigger, mechAbilityKey, addToHotkeyRecord, index])
 
     return (
@@ -176,7 +176,7 @@ const AbilityItem = ({ hash, participantID, ability, index }: { hash: string; pa
                 onClick={ready ? onTrigger : undefined}
             />
 
-            <Stack direction={"row"} sx={{ width: "100%" }} justifyContent={"space-between"} alignItems={"center"}>
+            <Stack direction={"row"} sx={{ flex: 1 }} justifyContent={"space-between"} alignItems={"center"}>
                 <Typography
                     variant="body2"
                     sx={{
@@ -193,7 +193,14 @@ const AbilityItem = ({ hash, participantID, ability, index }: { hash: string; pa
                 >
                     {ready ? label : remainSeconds > 300 ? "∞" : `${remainSeconds}s`}
                 </Typography>
-                {ready && <Typography sx={{ opacity: "0.7" }}>[{mechAbilityKey[index]}]</Typography>}
+
+                {ready && (
+                    <Typography variant="body2" sx={{ color: colors.neonBlue }}>
+                        <i>
+                            <strong>[{mechAbilityKey[index]}]</strong>
+                        </i>
+                    </Typography>
+                )}
             </Stack>
         </Stack>
     )
