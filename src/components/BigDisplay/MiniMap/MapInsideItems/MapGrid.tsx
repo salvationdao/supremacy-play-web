@@ -10,7 +10,6 @@ export const MapGrid = React.memo(function MapGrid({
     mapHeight,
     gridHeight,
     gridWidth,
-    mapElement,
     onClick,
     mapScale,
     isLocationSelection,
@@ -20,7 +19,6 @@ export const MapGrid = React.memo(function MapGrid({
     mapHeight: number
     gridHeight: number
     gridWidth: number
-    mapElement: React.MutableRefObject<HTMLDivElement | undefined>
     onClick: React.MouseEventHandler<HTMLDivElement>
     mapScale: number
     isLocationSelection: boolean
@@ -60,7 +58,7 @@ export const MapGrid = React.memo(function MapGrid({
 
     return (
         <Box
-            ref={mapElement}
+            id="minimap-grid"
             onClick={onClick}
             sx={{
                 position: "absolute",

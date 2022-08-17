@@ -89,7 +89,7 @@ const BattleArenaPageInner = () => {
                             <Box sx={{ direction: "ltr", height: 0 }}>
                                 <Stack direction="row">
                                     <Stack spacing="1.5rem" sx={{ width: "50%", position: "relative", p: ".8rem 1rem" }}>
-                                        <MiniMap />
+                                        {/* <MiniMap /> */}
                                         <WarMachineStats />
                                     </Stack>
 

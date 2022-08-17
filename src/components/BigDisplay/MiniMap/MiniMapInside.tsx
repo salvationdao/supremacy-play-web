@@ -19,7 +19,7 @@ interface MiniMapInsideProps {
 
 export const MiniMapInside = ({ containerDimensions }: MiniMapInsideProps) => {
     const { map } = useGame()
-    const { mapElement, gridWidth, gridHeight, isTargeting, selection, setSelection, playerAbility, winner, setHighlightedMechParticipantID } = useMiniMap()
+    const { gridWidth, gridHeight, isTargeting, selection, setSelection, playerAbility, winner, setHighlightedMechParticipantID } = useMiniMap()
 
     const mapRef = useRef<HTMLDivElement>(null)
     const gestureRef = useRef<HTMLDivElement>(null)
@@ -28,11 +28,13 @@ export const MiniMapInside = ({ containerDimensions }: MiniMapInsideProps) => {
     // Click inside the map, converts to a selection
     const onMapClick = useCallback(
         (e: React.MouseEvent<HTMLTableElement, MouseEvent>) => {
-            if (mapElement && mapElement.current) {
-                const rect = mapElement.current.getBoundingClientRect()
+            const mapElement = document.getElementById("minimap-grid")
+            if (mapElement) {
+                const rect = mapElement.getBoundingClientRect()
                 // Mouse position
                 const x = e.clientX - rect.left
                 const y = e.clientY - rect.top
+
                 setSelection({
                     startCoords: {
                         x: x / (gridWidth * mapScale),
@@ -41,7 +43,7 @@ export const MiniMapInside = ({ containerDimensions }: MiniMapInsideProps) => {
                 })
             }
         },
-        [mapElement, gridWidth, gridHeight, mapScale, setSelection],
+        [gridWidth, gridHeight, mapScale, setSelection],
     )
 
     // i.e. is battle ability or player ability of type LOCATION_SELECT
@@ -100,7 +102,6 @@ export const MiniMapInside = ({ containerDimensions }: MiniMapInsideProps) => {
                             mapHeight={map.height}
                             gridHeight={gridHeight}
                             gridWidth={gridWidth}
-                            mapElement={mapElement}
                             onClick={isLocationSelection ? onMapClick : () => setHighlightedMechParticipantID(undefined)}
                             mapScale={mapScale}
                             isLocationSelection={isLocationSelection}
@@ -126,7 +127,6 @@ export const MiniMapInside = ({ containerDimensions }: MiniMapInsideProps) => {
         isLineSelection,
         isLocationSelection,
         map,
-        mapElement,
         mapScale,
         onMapClick,
         selection?.startCoords,

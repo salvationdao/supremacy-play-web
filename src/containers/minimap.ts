@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { createContainer } from "unstated-next"
 import { useAuth, useGlobalNotifications } from "."
 import { useGameServerCommandsFaction, useGameServerSubscriptionSecuredUser } from "../hooks/useGameServer"
@@ -29,7 +29,6 @@ export const MiniMapContainer = createContainer(() => {
     const { send } = useGameServerCommandsFaction("/faction_commander")
 
     // Map
-    const mapElement = useRef<HTMLDivElement>()
     const gridWidth = useMemo(() => (map ? map.width / map.cells_x : 50), [map])
     const gridHeight = useMemo(() => (map ? map.height / map.cells_y : 50), [map])
 
@@ -89,15 +88,16 @@ export const MiniMapContainer = createContainer(() => {
         setIsTargeting(false)
     }, [])
 
-    const onTargetConfirm = useCallback(async () => {
+    const onTargetConfirm = useCallback(() => {
         if (!selection || !currentArenaID) return
+
         try {
             if (winner?.game_ability) {
                 if (!selection.startCoords) {
                     throw new Error("Something went wrong while activating this ability. Please try again, or contact support if the issue persists.")
                 }
 
-                await send<boolean>(GameServerKeys.SubmitAbilityLocationSelect, {
+                send<boolean>(GameServerKeys.SubmitAbilityLocationSelect, {
                     arena_id: currentArenaID,
                     start_coords: {
                         x: Math.floor(selection.startCoords.x),
@@ -171,7 +171,7 @@ export const MiniMapContainer = createContainer(() => {
                 if (!payload) {
                     throw new Error("Something went wrong while activating this ability. Please try again, or contact support if the issue persists.")
                 }
-                await send<boolean, typeof payload>(GameServerKeys.PlayerAbilityUse, payload)
+                send<boolean, typeof payload>(GameServerKeys.PlayerAbilityUse, payload)
             }
             resetSelection()
             if (playerAbility?.ability.location_select_type === LocationSelectType.MECH_SELECT) {
@@ -186,7 +186,6 @@ export const MiniMapContainer = createContainer(() => {
     }, [send, selection, resetSelection, winner?.game_ability, playerAbility, newSnackbarMessage, setHighlightedMechParticipantID, currentArenaID])
 
     return {
-        mapElement,
         winner,
         setWinner,
         highlightedMechParticipantID,

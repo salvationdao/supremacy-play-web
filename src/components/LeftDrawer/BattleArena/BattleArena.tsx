@@ -1,7 +1,7 @@
 import { Box, Stack } from "@mui/material"
 import { useMemo } from "react"
 import { useDimension, useGame } from "../../../containers"
-import { MiniMap } from "../../BigDisplay/MiniMap/MiniMap"
+import { MiniMap, TOP_BAR_HEIGHT } from "../../BigDisplay/MiniMap/MiniMap"
 import { Stream } from "../../BigDisplay/Stream/Stream"
 import { LEFT_DRAWER_WIDTH } from "../LeftDrawer"
 import { BattleAbility } from "./BattleAbility/BattleAbility"
@@ -53,7 +53,7 @@ export const BattleArena = () => {
                     {isStreamBigDisplay ? (
                         <MiniMap />
                     ) : (
-                        <Box sx={{ width: "100%", height: (LEFT_DRAWER_WIDTH * remToPxRatio) / (16 / 9) }}>
+                        <Box sx={{ width: "100%", height: (LEFT_DRAWER_WIDTH * remToPxRatio) / (16 / 9) + TOP_BAR_HEIGHT * remToPxRatio }}>
                             <Stream />
                         </Box>
                     )}

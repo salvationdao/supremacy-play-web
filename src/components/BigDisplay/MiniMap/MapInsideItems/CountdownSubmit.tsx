@@ -1,5 +1,5 @@
 import { Box, Typography } from "@mui/material"
-import { useEffect, useMemo } from "react"
+import React, { useEffect, useMemo } from "react"
 import { useMiniMap } from "../../../../containers"
 import { useTimer } from "../../../../hooks"
 import { fonts } from "../../../../theme/theme"
@@ -12,7 +12,7 @@ export const CountdownSubmit = () => {
     return <CountdownSubmitInner />
 }
 
-const CountdownSubmitInner = () => {
+const CountdownSubmitInner = React.memo(function CountdownSubmitInner() {
     const { winner, playerAbility, selection, onTargetConfirm } = useMiniMap()
     const { setEndTimeState, totalSecRemain, delay } = useTimer(undefined, 600)
 
@@ -93,4 +93,4 @@ const CountdownSubmitInner = () => {
             </Typography>
         </Box>
     )
-}
+})

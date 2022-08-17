@@ -106,7 +106,7 @@ const BattleNotStarted = () => {
                 sx={{
                     color: colors.grey,
                     fontFamily: fonts.nostromoBold,
-                    WebkitTextStrokeWidth: !isStreamBigDisplay ? "2px" : "unset",
+                    WebkitTextStrokeWidth: !isStreamBigDisplay ? "1px" : "unset",
                     textAlign: "center",
                     zIndex: 1,
                 }}
