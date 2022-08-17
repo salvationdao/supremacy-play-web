@@ -23,6 +23,7 @@ import FontCase from "!@svgr/webpack!./svg/FontCase.svg"
 import Global from "!@svgr/webpack!./svg/Global.svg"
 import Graph from "!@svgr/webpack!./svg/Graph.svg"
 import Hammer from "!@svgr/webpack!./svg/Hammer.svg"
+import Swap from "!@svgr/webpack!./svg/Swap.svg"
 import Health from "!@svgr/webpack!./svg/Health.svg"
 import IntroAnimation from "!@svgr/webpack!./svg/IntroAnimation.svg"
 import Logout from "!@svgr/webpack!./svg/Logout.svg"
@@ -1194,5 +1195,11 @@ export const SvgMinimize: React.VoidFunctionComponent<SvgWrapperProps> = (props)
 export const SvgQuest: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <Quest />
+    </SvgWrapper>
+)
+
+export const SvgSwap: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Swap />
     </SvgWrapper>
 )
