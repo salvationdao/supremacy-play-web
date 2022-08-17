@@ -60,7 +60,11 @@ export const MapGrid = React.memo(function MapGrid({
 
     return (
         <Box
-            ref={setMapElement}
+            ref={(e?: HTMLDivElement) => {
+                if (!e) return
+                if (e.getBoundingClientRect().top > window.innerHeight) return
+                setMapElement(e)
+            }}
             onClick={onClick}
             sx={{
                 position: "absolute",

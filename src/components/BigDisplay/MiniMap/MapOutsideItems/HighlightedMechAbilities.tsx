@@ -76,7 +76,7 @@ const HighlightedMechAbilitiesInner = ({ warMachine }: { warMachine: WarMachineS
                 corners={{ bottomLeft: true }}
                 opacity={0.3}
                 backgroundColor={theme.factionTheme.background}
-                sx={{ position: "absolute", top: "3.5rem", right: ".4rem" }}
+                sx={{ position: "absolute", top: "3.5rem", left: ".4rem" }}
             >
                 <Stack
                     spacing=".8rem"

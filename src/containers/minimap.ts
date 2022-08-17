@@ -42,10 +42,6 @@ export const MiniMapContainer = createContainer(() => {
     const [highlightedMechParticipantID, setHighlightedMechParticipantID] = useState<number>()
     const [selection, setSelection] = useState<MapSelection>()
 
-    useEffect(() => {
-        console.log(mapElement)
-    }, [mapElement])
-
     // Subscribe on winner announcements
     useGameServerSubscriptionSecuredUser<WinnerAnnouncementResponse | undefined>(
         {

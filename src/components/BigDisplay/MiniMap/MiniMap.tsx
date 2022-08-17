@@ -64,6 +64,7 @@ interface MiniMapInnerProps {
 
 const MiniMapInnerPoppedOut = ({ map, isTargeting, isPoppedout, setIsPoppedout }: MiniMapInnerProps) => {
     const { curWidth, curHeight } = useWindowPortal()
+    if (!curWidth || !curHeight) return null
     return <MiniMapInner map={map} isTargeting={isTargeting} isPoppedout={isPoppedout} setIsPoppedout={setIsPoppedout} width={curWidth} height={curHeight} />
 }
 
@@ -71,6 +72,7 @@ const MiniMapInnerNormal = ({ map, isTargeting, isPoppedout, setIsPoppedout }: M
     const {
         gameUIDimensions: { width, height },
     } = useDimension()
+    if (!width || !height) return null
     return <MiniMapInner map={map} isTargeting={isTargeting} isPoppedout={isPoppedout} setIsPoppedout={setIsPoppedout} width={width} height={height} />
 }
 
@@ -275,6 +277,8 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
                 <Box
                     sx={{
                         position: "absolute",
+                        top: 0,
+                        left: 0,
                         width: "100%",
                         height: "100%",
                         background: `url(${map?.image_url})`,
