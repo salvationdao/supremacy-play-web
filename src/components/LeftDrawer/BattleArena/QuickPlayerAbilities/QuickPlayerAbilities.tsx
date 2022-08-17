@@ -1,10 +1,10 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material"
-import { useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { useParameterizedQuery } from "react-fetching-library"
 import { useAuth } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
 import { GetSaleAbilityAvailability } from "../../../../fetching"
-import { useGameServerSubscriptionSecured, useGameServerSubscriptionSecuredUser } from "../../../../hooks/useGameServer"
+import { useGameServerCommandsUser, useGameServerSubscriptionSecured, useGameServerSubscriptionSecuredUser } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
 import { PlayerAbility, SaleAbility, SaleAbilityAvailability } from "../../../../types"
@@ -21,6 +21,7 @@ export const QuickPlayerAbilities = () => {
 const QuickPlayerAbilitiesInner = ({ userID }: { userID: string }) => {
     const theme = useTheme()
 
+    const { send } = useGameServerCommandsUser("/user_commander")
     const { query: queryAvailability } = useParameterizedQuery(GetSaleAbilityAvailability)
     const [availability, setAvailability] = useState<SaleAbilityAvailability>(SaleAbilityAvailability.CanClaim)
     const [availabilityError, setAvailabilityError] = useState<string>()
@@ -32,6 +33,33 @@ const QuickPlayerAbilitiesInner = ({ userID }: { userID: string }) => {
     const [purchaseError, setPurchaseError] = useState<string>()
 
     const [ownedAbilities, setOwnedAbilities] = useState<Map<string, number>>(new Map())
+
+    const refetchSaleAbilities = useCallback(async () => {
+        try {
+            const resp = await send<{
+                next_refresh_time: Date | null
+                refresh_period_duration_seconds: number
+                sale_abilities: SaleAbility[]
+            }>(GameServerKeys.SaleAbilitiesList)
+
+            if (!resp) return
+            const t = new Date()
+            t.setSeconds(t.getSeconds() + resp.refresh_period_duration_seconds)
+            setNextRefreshTime(resp.next_refresh_time || t)
+            setSaleAbilities(resp.sale_abilities)
+            setAvailability(SaleAbilityAvailability.CanClaim)
+            setPurchaseError(undefined)
+            setAvailabilityError(undefined)
+            if (isLoaded) return
+            setIsLoaded(true)
+        } catch (e) {
+            console.error(e)
+        }
+    }, [isLoaded, send])
+
+    useEffect(() => {
+        refetchSaleAbilities()
+    }, [refetchSaleAbilities])
 
     useEffect(() => {
         if (!userID) return
@@ -53,28 +81,28 @@ const QuickPlayerAbilitiesInner = ({ userID }: { userID: string }) => {
         })()
     }, [queryAvailability, userID])
 
-    useGameServerSubscriptionSecured<{
-        next_refresh_time: Date | null
-        refresh_period_duration_seconds: number
-        sale_abilities: SaleAbility[]
-    }>(
-        {
-            URI: "/sale_abilities",
-            key: GameServerKeys.SubSaleAbilitiesList,
-        },
-        (payload) => {
-            if (!payload) return
-            const t = new Date()
-            t.setSeconds(t.getSeconds() + payload.refresh_period_duration_seconds)
-            setNextRefreshTime(payload.next_refresh_time || t)
-            setSaleAbilities(payload.sale_abilities)
-            setAvailability(SaleAbilityAvailability.CanClaim)
-            setPurchaseError(undefined)
-            setAvailabilityError(undefined)
-            if (isLoaded) return
-            setIsLoaded(true)
-        },
-    )
+    // useGameServerSubscriptionSecured<{
+    //     next_refresh_time: Date | null
+    //     refresh_period_duration_seconds: number
+    //     sale_abilities: SaleAbility[]
+    // }>(
+    //     {
+    //         URI: "/sale_abilities",
+    //         key: GameServerKeys.SubSaleAbilitiesList,
+    //     },
+    //     (payload) => {
+    //         if (!payload) return
+    //         const t = new Date()
+    //         t.setSeconds(t.getSeconds() + payload.refresh_period_duration_seconds)
+    //         setNextRefreshTime(payload.next_refresh_time || t)
+    //         setSaleAbilities(payload.sale_abilities)
+    //         setAvailability(SaleAbilityAvailability.CanClaim)
+    //         setPurchaseError(undefined)
+    //         setAvailabilityError(undefined)
+    //         if (isLoaded) return
+    //         setIsLoaded(true)
+    //     },
+    // )
 
     useGameServerSubscriptionSecured<{ id: string; current_price: string }>(
         {
@@ -112,13 +140,13 @@ const QuickPlayerAbilitiesInner = ({ userID }: { userID: string }) => {
         if (nextRefreshTime) {
             return (
                 <Typography sx={{ color: colors.lightNeonBlue, fontFamily: fonts.shareTech, textTransform: "uppercase" }}>
-                    <TimeLeft key={nextRefreshTime.getMilliseconds()} dateTo={nextRefreshTime} />
+                    <TimeLeft key={nextRefreshTime.getMilliseconds()} dateTo={nextRefreshTime} onComplete={() => refetchSaleAbilities()} />
                 </Typography>
             )
         }
 
         return <Typography sx={{ color: colors.lightNeonBlue, fontFamily: fonts.shareTech, textTransform: "uppercase" }}>Less than an hour</Typography>
-    }, [nextRefreshTime])
+    }, [nextRefreshTime, refetchSaleAbilities])
 
     return (
         <Box>
