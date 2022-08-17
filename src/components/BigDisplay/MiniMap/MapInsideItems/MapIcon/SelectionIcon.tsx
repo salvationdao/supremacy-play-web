@@ -1,7 +1,7 @@
 import { useMemo } from "react"
-import { SvgDrag } from "../../../../assets"
-import { useMiniMap } from "../../../../containers"
-import { LocationSelectType } from "../../../../types"
+import { SvgDrag } from "../../../../../assets"
+import { useMiniMap } from "../../../../../containers"
+import { LocationSelectType } from "../../../../../types"
 import { MapIcon } from "./MapIcon"
 
 export const SelectionIcon = () => {

@@ -1,11 +1,11 @@
 import { WebRTCAdaptor } from "@antmedia/webrtc_adaptor"
 import { Stack } from "@mui/material"
 import { useCallback, useEffect, useRef } from "react"
-import { SupBackground } from "../../assets"
-import { useGlobalNotifications, useStream } from "../../containers"
-import { parseString } from "../../helpers"
-import { colors, siteZIndex } from "../../theme/theme"
-import { StreamService } from "../../types"
+import { SupBackground } from "../../../assets"
+import { useGlobalNotifications, useStream } from "../../../containers"
+import { parseString } from "../../../helpers"
+import { colors, siteZIndex } from "../../../theme/theme"
+import { StreamService } from "../../../types"
 import { NoStreamScreen } from "./NoStreamScreen"
 
 interface StreamInfoEntry {

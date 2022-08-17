@@ -1,7 +1,7 @@
 import { useGesture } from "@use-gesture/react"
 import { useCallback, useEffect, useState } from "react"
-import { useGame } from "../../containers"
-import { Dimension } from "../../types"
+import { useGame } from "../../../containers"
+import { Dimension } from "../../../types"
 
 export const useMiniMapGestures = ({ gestureRef, containerDimensions }: { gestureRef: React.RefObject<HTMLDivElement>; containerDimensions: Dimension }) => {
     const { map } = useGame()

@@ -1,9 +1,9 @@
 import { Stack } from "@mui/material"
 import { useCallback, useEffect, useRef, useState } from "react"
-import { useGlobalNotifications, useStream } from "../../containers"
-import { parseString } from "../../helpers"
-import { siteZIndex } from "../../theme/theme"
-import { StreamService } from "../../types"
+import { useGlobalNotifications, useStream } from "../../../containers"
+import { parseString } from "../../../helpers"
+import { siteZIndex } from "../../../theme/theme"
+import { StreamService } from "../../../types"
 
 declare global {
     interface Window {

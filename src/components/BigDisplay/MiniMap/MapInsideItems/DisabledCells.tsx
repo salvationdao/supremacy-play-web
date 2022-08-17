@@ -1,6 +1,6 @@
 import { styled } from "@mui/system"
 import { useMemo } from "react"
-import { useGame, useMiniMap } from "../../../containers"
+import { useGame, useMiniMap } from "../../../../containers"
 
 export const DisabledCells = () => {
     const { map } = useGame()

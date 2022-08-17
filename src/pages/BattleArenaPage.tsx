@@ -2,7 +2,7 @@ import { Box, Stack } from "@mui/material"
 import { useEffect, useState } from "react"
 import { Redirect } from "react-router-dom"
 import { SvgAbility, SvgHistory, SvgHistoryClock, SvgRobot } from "../assets"
-import { BattleAbility, BattleEndScreen, BattleHistory, Controls, EarlyAccessWarning, MiniMap, Notifications, Stream, WarMachineStats } from "../components"
+import { BattleAbility, BattleEndScreen, BattleHistory, Controls, EarlyAccessWarning, MiniMap, Notifications, BigDisplay, WarMachineStats } from "../components"
 import { PlayerAbilities } from "../components/LeftDrawer/BattleArena/PlayerAbilities/PlayerAbilities"
 import { QuickPlayerAbilities } from "../components/LeftDrawer/BattleArena/QuickPlayerAbilities/QuickPlayerAbilities"
 import { QuickDeploy } from "../components/LeftDrawer/QuickDeploy/QuickDeploy"
@@ -166,7 +166,7 @@ const BattleArenaPageInner = () => {
     return (
         <Stack id="battle-arena-all" sx={{ width: "100%", height: "100%", zIndex: siteZIndex.RoutePage }}>
             <Box id={isMobile ? "" : "game-ui-container"} sx={{ position: "relative", flex: 1 }}>
-                <Stream />
+                <BigDisplay />
 
                 {!isMobile && (
                     <>

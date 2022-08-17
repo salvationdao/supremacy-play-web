@@ -1,11 +1,11 @@
 import { Box, keyframes } from "@mui/material"
 import React, { useEffect, useMemo, useState } from "react"
-import { useGame, useMiniMap } from "../../../containers"
+import { useGame, useMiniMap } from "../../../../containers"
 
-import { useGameServerSubscription } from "../../../hooks/useGameServer"
-import { GameServerKeys } from "../../../keys"
-import { colors } from "../../../theme/theme"
-import { Position } from "../../../types"
+import { useGameServerSubscription } from "../../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../../keys"
+import { colors } from "../../../../theme/theme"
+import { Position } from "../../../../types"
 
 interface MinimapEvent {
     id: string

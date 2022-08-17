@@ -1,6 +1,6 @@
 import { Box } from "@mui/material"
 import React from "react"
-import { Map } from "../../../types"
+import { Map } from "../../../../types"
 
 export const MapImage = React.memo(function MapImage({ map }: { map: Map }) {
     return (

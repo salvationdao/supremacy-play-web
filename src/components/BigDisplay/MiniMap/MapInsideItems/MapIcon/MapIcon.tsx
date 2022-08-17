@@ -1,6 +1,6 @@
 import { Stack, SxProps } from "@mui/material"
 import { ReactNode, useMemo } from "react"
-import { useMiniMap } from "../../../../containers"
+import { useMiniMap } from "../../../../../containers"
 
 interface MapIconProps {
     primaryColor: string

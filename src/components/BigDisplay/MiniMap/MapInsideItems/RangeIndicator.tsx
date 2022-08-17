@@ -1,7 +1,7 @@
 import { Box } from "@mui/material"
 import React, { useCallback, useEffect, useMemo, useRef } from "react"
-import { useGame, useMiniMap } from "../../../containers"
-import { Map } from "../../../types"
+import { useGame, useMiniMap } from "../../../../containers"
+import { Map } from "../../../../types"
 
 interface RangeIndicatorProps {
     parentRef: React.RefObject<HTMLDivElement>

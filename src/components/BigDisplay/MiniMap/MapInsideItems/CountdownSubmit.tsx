@@ -1,10 +1,10 @@
 import { Box, Typography } from "@mui/material"
 import { useEffect, useMemo } from "react"
-import { useMiniMap } from "../../../containers"
-import { useTimer } from "../../../hooks"
-import { fonts } from "../../../theme/theme"
-import { LocationSelectType } from "../../../types"
-import { MechMoveCommandAbility } from "../../WarMachine/WarMachineItem/MoveCommand"
+import { useMiniMap } from "../../../../containers"
+import { useTimer } from "../../../../hooks"
+import { fonts } from "../../../../theme/theme"
+import { LocationSelectType } from "../../../../types"
+import { MechMoveCommandAbility } from "../../../WarMachine/WarMachineItem/MoveCommand"
 
 export const CountdownSubmit = () => {
     const { isTargeting, winner, playerAbility, selection } = useMiniMap()

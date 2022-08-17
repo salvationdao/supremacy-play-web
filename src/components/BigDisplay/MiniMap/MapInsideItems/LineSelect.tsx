@@ -1,8 +1,8 @@
 import { Stack, Typography, useTheme } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef } from "react"
-import { useGame, useMiniMap } from "../../../containers"
-import { fonts } from "../../../theme/theme"
-import { Position } from "../../../types"
+import { useGame, useMiniMap } from "../../../../containers"
+import { fonts } from "../../../../theme/theme"
+import { Position } from "../../../../types"
 
 const MIN_CANVAS_HEIGHT = 700
 

@@ -1,8 +1,8 @@
 import { Box, Stack, Typography } from "@mui/material"
 import React, { useMemo } from "react"
-import { Crosshair } from "../../../assets"
-import { intToLetter } from "../../../helpers"
-import { colors } from "../../../theme/theme"
+import { Crosshair } from "../../../../assets"
+import { intToLetter } from "../../../../helpers"
+import { colors } from "../../../../theme/theme"
 import { LineSelect } from "./LineSelect"
 
 export const MapGrid = React.memo(function MapGrid({

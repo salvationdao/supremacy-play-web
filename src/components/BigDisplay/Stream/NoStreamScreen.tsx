@@ -1,6 +1,6 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { SupBackground } from "../../assets"
-import { colors, fonts, siteZIndex } from "../../theme/theme"
+import { SupBackground } from "../../../assets"
+import { colors, fonts, siteZIndex } from "../../../theme/theme"
 
 export const NoStreamScreen = () => {
     return (

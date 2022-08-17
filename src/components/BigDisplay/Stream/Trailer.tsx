@@ -1,11 +1,11 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useRef } from "react"
-import { FancyButton } from ".."
-import { TrailerThumbPNG } from "../../assets"
-import { TRAILER_VIDEO } from "../../constants"
-import { useOverlayToggles, useStream } from "../../containers"
-import { useToggle } from "../../hooks"
-import { fonts, siteZIndex } from "../../theme/theme"
+import { FancyButton } from "../.."
+import { TrailerThumbPNG } from "../../../assets"
+import { TRAILER_VIDEO } from "../../../constants"
+import { useOverlayToggles, useStream } from "../../../containers"
+import { useToggle } from "../../../hooks"
+import { fonts, siteZIndex } from "../../../theme/theme"
 
 export const Trailer = () => {
     const { toggleShowTrailer } = useOverlayToggles()

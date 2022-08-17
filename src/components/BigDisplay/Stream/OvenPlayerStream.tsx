@@ -1,10 +1,10 @@
 import { Stack } from "@mui/material"
 import OvenPlayer from "ovenplayer"
 import { useEffect, useRef } from "react"
-import { useGlobalNotifications, useStream } from "../../containers"
-import { parseString } from "../../helpers"
-import { siteZIndex } from "../../theme/theme"
-import { StreamService } from "../../types"
+import { useGlobalNotifications, useStream } from "../../../containers"
+import { parseString } from "../../../helpers"
+import { siteZIndex } from "../../../theme/theme"
+import { StreamService } from "../../../types"
 
 interface OvenPlayerSource {
     type: "webrtc" | "llhls" | "hls" | "lldash" | "dash" | "mp4"

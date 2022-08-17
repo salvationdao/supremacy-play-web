@@ -1,5 +1,5 @@
 import { useMemo } from "react"
-import { useGame, useSupremacy } from "../../../../containers"
+import { useGame, useSupremacy } from "../../../../../containers"
 import { MapMech } from "./MapMech"
 
 export const MapMechs = () => {
