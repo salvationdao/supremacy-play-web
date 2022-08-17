@@ -2,7 +2,7 @@ import { Box, InputAdornment, MenuItem, Popover, Select, Stack, TextField, Typog
 import { useCallback, useEffect, useState } from "react"
 import { ClipThing, FancyButton } from "../../../.."
 import { SvgAbility, SvgDeath, SvgSkull2, SvgView } from "../../../../../assets"
-import { useAuth, useSnackbar } from "../../../../../containers"
+import { useAuth, useGlobalNotifications } from "../../../../../containers"
 import { useToggle } from "../../../../../hooks"
 import { useGameServerCommandsUser } from "../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../keys"
@@ -51,7 +51,7 @@ export const UserDetailsPopover = ({
     const [localOpen, toggleLocalOpen] = useToggle(open)
 
     // Chat banning
-    const { newSnackbarMessage } = useSnackbar()
+    const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsUser("/user_commander")
     const [showChatBanModal, setShowChatBanModal] = useState(false)
     const [reason, setReason] = useState<string>("")

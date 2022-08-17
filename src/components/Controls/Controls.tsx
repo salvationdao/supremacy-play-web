@@ -1,15 +1,17 @@
 import { Stack } from "@mui/material"
 import { useMemo } from "react"
 import { LiveCounts, OverlayToggles, VideoPlayerControls } from ".."
-import { CONTROLS_HEIGHT } from "../../constants"
+import { DEV_ONLY } from "../../constants"
 import { useMobile } from "../../containers"
 import { useTheme } from "../../containers/theme"
 import { shadeColor } from "../../helpers"
 import { siteZIndex } from "../../theme/theme"
-import { PreviousBattle } from "./PreviousBattle"
+import { ArenaSelect } from "./ArenaSelect"
 import { ResolutionSelect } from "./ResolutionSelect"
 import { ShowTrailerButton } from "./ShowTrailerButton"
 import { StreamSelect } from "./StreamSelect"
+
+export const CONTROLS_HEIGHT = 3.0 // rem
 
 export const Controls = () => {
     const { isMobile } = useMobile()
@@ -28,7 +30,7 @@ export const Controls = () => {
                 position: "relative",
                 width: "100%",
                 height: `${CONTROLS_HEIGHT}rem`,
-                pr: "1rem",
+                px: "1rem",
                 pt: ".24rem",
                 pb: ".16rem",
                 background: (theme) => `linear-gradient(${darkerBackgroundColor} 26%, ${theme.factionTheme.background})`,
@@ -50,13 +52,13 @@ export const Controls = () => {
             }}
         >
             <Stack direction="row" spacing="1.6rem" sx={{ flexShrink: 0, height: "100%" }}>
-                {!isMobile && <PreviousBattle />}
                 <LiveCounts />
                 {!isMobile && <OverlayToggles />}
             </Stack>
 
             <Stack direction="row" spacing="1.6rem" sx={{ flexShrink: 0, height: "100%" }}>
                 <ShowTrailerButton />
+                {DEV_ONLY && <ArenaSelect />}
                 <StreamSelect />
                 <ResolutionSelect />
                 <VideoPlayerControls />

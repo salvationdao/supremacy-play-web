@@ -3,7 +3,7 @@ import { useState } from "react"
 import { FancyButton } from "../../../../.."
 import { colors, fonts } from "../../../../../../theme/theme"
 import { RepairStatus } from "../../../../../../types/jobs"
-import { DoRepairModal } from "../../../../../Jobs/RepairJobs/DoRepairModal"
+import { DoRepairModal } from "../../../../../RightDrawer/RepairJobs/DoRepairModal"
 
 export const SelfRepairCard = ({ repairStatus, remainDamagedBlocks }: { repairStatus?: RepairStatus; remainDamagedBlocks: number }) => {
     const [doRepairModalOpen, setDoRepairModalOpen] = useState(false)

@@ -1,6 +1,6 @@
 import { Box, Checkbox, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useState } from "react"
-import { useHistory, useLocation } from "react-router-dom"
+import { useHistory } from "react-router-dom"
 import { FancyButton } from "../.."
 import { SvgSupToken, WarMachineIconPNG } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
@@ -17,8 +17,8 @@ import { ConfirmModal } from "../../Common/ConfirmModal"
 import { SuccessModal } from "../../Common/SuccessModal"
 import { AssetToSell } from "./AssetToSell/AssetToSell"
 import { ItemTypeSelect } from "./ItemTypeSelect"
-import { PricingInput } from "./PricingInput"
 import { ListingDurationHoursEnum, ListingDurationSelect } from "./ListingDurationSelect"
+import { PricingInput } from "./PricingInput"
 
 export interface AssetToSellStruct {
     id: string
@@ -47,7 +47,6 @@ export const SellItem = () => {
 export const SellItemInner = ({ toggleReset }: { toggleReset: () => void }) => {
     const theme = useTheme()
     const history = useHistory()
-    const location = useLocation()
     const [query] = useUrlQuery()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [understantDropRisk, toggleUnderstantDropRisk] = useToggle()
@@ -418,8 +417,9 @@ export const SellItemInner = ({ toggleReset }: { toggleReset: () => void }) => {
                                     }}
                                     sx={{
                                         transform: "scale(1.4)",
-                                        ".Mui-checked": { color: colors.neonBlue },
-                                        ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${colors.neonBlue}50` },
+                                        color: colors.neonBlue,
+                                        ".Mui-checked, .MuiSvgIcon-root": { color: `${colors.neonBlue} !important` },
+                                        ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${colors.neonBlue}50 !important` },
                                     }}
                                 />
                             </Stack>
@@ -433,7 +433,7 @@ export const SellItemInner = ({ toggleReset }: { toggleReset: () => void }) => {
                     title="ITEM LISTED!"
                     leftLabel="SELL ANOTHER"
                     onLeftButton={() => {
-                        history.replace(`/marketplace/sell${location.hash}`)
+                        history.replace(`/marketplace/sell`)
                         toggleReset()
                     }}
                     rightLabel="VIEW LISTING"
@@ -454,7 +454,7 @@ export const SellItemInner = ({ toggleReset }: { toggleReset: () => void }) => {
                                 break
                         }
 
-                        history.replace(`/marketplace/${subPath}/${successPayload.id}${location.hash}`)
+                        history.replace(`/marketplace/${subPath}/${successPayload.id}`)
                     }}
                 >
                     <Typography variant="h6">

@@ -38,7 +38,7 @@ export const colors = {
     bronze: "#CB7431",
     blue: "#0074D9",
     blue2: "#309FFF",
-    purple: "#A985FF",
+    purple: "#9A73F5",
     black2: "#13161B",
     black3: "#080303",
 
@@ -124,8 +124,6 @@ export enum siteZIndex {
 
     // Stream site top elements
     Bar = 199,
-    LeftDrawer = 198,
-    RightDrawer = 197,
     RoutePage = 101,
 
     // Battle areana

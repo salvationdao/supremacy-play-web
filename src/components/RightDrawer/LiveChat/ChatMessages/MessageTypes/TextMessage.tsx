@@ -2,9 +2,9 @@ import { ReactJSXElement } from "@emotion/react/types/jsx-namespace"
 import { Box, Stack, Typography } from "@mui/material"
 import React, { useCallback, useEffect, useMemo, useRef } from "react"
 import { UserBanForm } from "../../../.."
-import { SvgInfoCircular, SvgSkull2 } from "../../../../../assets"
+import { SvgInfoCircular, SvgSkull2, SvgReportFlag } from "../../../../../assets"
 import { PASSPORT_SERVER_HOST_IMAGES } from "../../../../../constants"
-import { useAuth, useChat, useSupremacy } from "../../../../../containers"
+import { useAuth, useChat, useGlobalNotifications, useSupremacy } from "../../../../../containers"
 import { dateFormatter, getUserRankDeets, shadeColor, truncate } from "../../../../../helpers"
 import { useToggle } from "../../../../../hooks"
 import { useGameServerCommandsUser } from "../../../../../hooks/useGameServer"
@@ -14,6 +14,7 @@ import { ChatMessageType, Faction, TextMessageData, User } from "../../../../../
 import { TooltipHelper } from "../../../../Common/TooltipHelper"
 import { Reactions } from "../../AdditionalOptions/Reactions"
 import { UserDetailsPopover } from "./UserDetailsPopover"
+import { ReportModal } from "../../AdditionalOptions/ReportModal"
 
 export const TextMessage = ({
     data,
@@ -46,8 +47,9 @@ export const TextMessage = ({
 }) => {
     const { from_user, user_rank, message_color, avatar_id, message, from_user_stat, metadata } = data
     const { id, username, gid, faction_id } = from_user
+    const { newSnackbarMessage, sendBrowserNotification } = useGlobalNotifications()
     const { isHidden, isActive } = useAuth()
-    const { userGidRecord, addToUserGidRecord, sendBrowserNotification, tabValue } = useChat()
+    const { userGidRecord, addToUserGidRecord, tabValue } = useChat()
     const { send } = useGameServerCommandsUser("/user_commander")
 
     const popoverRef = useRef(null)
@@ -57,6 +59,7 @@ export const TextMessage = ({
     const [isPreviousMessager, setIsPreviousMessager] = useToggle()
     const [shouldNotify, setShouldNotify] = useToggle(metadata && user.gid in metadata.tagged_users_read && !metadata.tagged_users_read[user.gid])
     const [isHovered, setIsHovered] = useToggle()
+    const [reportModalOpen, setReportModalOpen] = useToggle()
 
     const abilityKillColor = useMemo(() => {
         if (!from_user_stat || from_user_stat.ability_kill_count == 0 || !message_color) return colors.grey
@@ -132,7 +135,7 @@ export const TextMessage = ({
         const matchedArr = message.match(/#\d+/g)
         matchedArr?.map(async (match) => {
             const gidSubstring = parseInt(match.substring(1))
-            const taggedUser = userGidRecord[gidSubstring] ?? undefined
+            const taggedUser = userGidRecord[gidSubstring] || undefined
             //if not make a call to the backend to find the user and add to record
             if (!taggedUser) {
                 try {
@@ -307,7 +310,6 @@ export const TextMessage = ({
                     <Stack
                         direction={"column"}
                         sx={{
-                            ml: "1.8rem",
                             backgroundColor: shouldNotify ? "rgba(0,116,217, .4)" : isHovered ? "#121212" : "unset",
                             borderRadius: ".3rem",
                             transition: shouldNotify ? "background-color 2s" : "unset",
@@ -316,23 +318,46 @@ export const TextMessage = ({
                         onMouseEnter={() => setIsHovered(true)}
                         onMouseLeave={() => setIsHovered(false)}
                     >
-                        <Box
-                            sx={{
-                                fontFamily: fonts.shareTech,
-                                lineHeight: 1.2,
-                                color: "#FFFFFF",
-                                fontSize: `${renderFontSize()}rem`,
-                                zIndex: isHovered ? 2 : 1,
-                            }}
-                        >
-                            {chatMessage}
-                        </Box>
+                        <Stack direction={"row"} sx={{ lineHeight: 1.2, color: "#FFFFFF", zIndex: 1, alignItems: "center" }}>
+                            <SvgReportFlag
+                                fill={metadata?.reports.includes(user.id) ? colors.red : "grey"}
+                                size={"1.5rem"}
+                                sx={{
+                                    mr: "1rem",
+                                    opacity: isHovered ? "100%" : "0",
+                                    cursor: user.id ? "pointer" : "cursor",
+                                }}
+                                onClick={() => {
+                                    if (!user.id) return
+                                    if (metadata?.reports.includes(user.id)) {
+                                        newSnackbarMessage("Your report has already been sent.", "warning")
+                                        return
+                                    }
+                                    setReportModalOpen(true)
+                                }}
+                            />
+                            <Box
+                                sx={{
+                                    fontFamily: fonts.shareTech,
+                                    lineHeight: 1,
+                                    color: "#FFFFFF",
+                                    fontSize: `${renderFontSize()}rem`,
+                                    zIndex: isHovered ? 2 : 1,
+                                }}
+                            >
+                                {chatMessage}
+                            </Box>
+                        </Stack>
 
                         {!!metadata?.likes.net && <Reactions fontSize={fontSize} data={data} />}
 
                         {isHovered && <Reactions fontSize={fontSize} hoverOnly={true} data={data} />}
                     </Stack>
                 </Box>
+
+                {reportModalOpen && (
+                    <ReportModal fromUser={from_user} message={data} setReportModalOpen={setReportModalOpen} reportModalOpen={reportModalOpen} />
+                )}
             </Box>
 
             {isPopoverOpen && (

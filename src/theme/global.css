@@ -4,6 +4,7 @@
     margin: 0;
     padding: 0;
     box-sizing: inherit;
+    text-shadow: -0.5px 1px 0 #00000080;
 }
 
 body {
@@ -62,6 +63,12 @@ html {
 @media only screen and (max-width: 1500px) {
     html {
         font-size: 50%;
+    }
+}
+
+@media only screen and (max-width: 1300px) {
+    html {
+        font-size: 46%;
     }
 }
 

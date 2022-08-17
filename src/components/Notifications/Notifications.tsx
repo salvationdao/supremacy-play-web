@@ -21,6 +21,8 @@ import { useArray } from "../../hooks"
 import { useGameServerSubscription, useGameServerSubscriptionFaction } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { siteZIndex } from "../../theme/theme"
+import { BattleZone } from "../../types"
+import { BattleZoneAlert } from "./Alerts/BattleZoneAlert"
 import {
     battleAbilityNoti,
     factionAbilityNoti,
@@ -35,8 +37,7 @@ import {
     textNoti,
     warMachineAbilityNoti,
 } from "./testData"
-import { BattleZoneAlert } from "./Alerts/BattleZoneAlert"
-import { BattleZone } from "../../types"
+import { useArena } from "../../containers/arena"
 
 const SPAWN_TEST_NOTIFICATIONS = false
 
@@ -72,6 +73,7 @@ interface Notification extends NotificationResponse {
 export const Notifications = () => {
     const { isMobile } = useMobile()
     const { getFaction } = useSupremacy()
+    const { currentArenaID } = useArena()
     const { setForceDisplay100Percentage, setBattleZone } = useGame()
 
     // Notification array
@@ -163,8 +165,9 @@ export const Notifications = () => {
     // Notifications
     useGameServerSubscription<NotificationResponse | undefined>(
         {
-            URI: "/public/notification",
+            URI: `/public/arena/${currentArenaID}/notification`,
             key: GameServerKeys.SubGameNotification,
+            ready: !!currentArenaID,
         },
         (payload) => {
             if (!payload) return

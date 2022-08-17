@@ -23,7 +23,7 @@ export const BATTLE_ARENA_OPEN = STAGING_OR_DEV_ONLY
 
 // Testing related
 export const IS_TESTING_MODE = STAGING_ONLY
-export const NEXT_RESET_TIME = new Date("Wed Aug 17 2022 14:00:00 GMT+0800 (AWST)")
+export const NEXT_RESET_TIME = new Date("Fri Aug 19 2022 14:00:00 GMT+0800 (AWST)")
 
 if (USE_PROD) {
     GAME_SERVER_HOSTNAME = process.env.REACT_APP_GAME_SERVER_HOSTNAME || "api.supremacy.game"
@@ -62,16 +62,15 @@ export const SENTRY_CONFIG = {
 }
 
 // UI related stuff
-export const GAME_BAR_HEIGHT = 5.9 // rem
-export const RIGHT_DRAWER_WIDTH = 38 // rem
-export const CONTROLS_HEIGHT = 3.0 // rem
-
+export const GAME_BAR_HEIGHT = 5.2 // rem
 export const DRAWER_TRANSITION_DURATION = 250
 export const MESSAGES_BUFFER_SIZE = 500
 export const MAX_CHAT_MESSAGE_LENGTH = 280
-export const NOTIFICATION_TIME = 30000
+export const NOTIFICATION_TIME = 15000
 export const NOTIFICATION_LINGER = 400
 export const MAX_BAN_PROPOSAL_REASON_LENGTH = 150
+
+export const ADD_MINI_MECH_PARTICIPANT_ID = 100
 
 // Game stuff
 export const VOTING_OPTION_COSTS = [

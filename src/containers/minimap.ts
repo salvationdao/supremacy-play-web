@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { createContainer } from "unstated-next"
-import { useAuth, useSnackbar } from "."
-import { useGameServerCommandsFaction, useGameServerSubscriptionUser } from "../hooks/useGameServer"
+import { useAuth, useGlobalNotifications } from "."
+import { useGameServerCommandsFaction, useGameServerSubscriptionSecuredUser } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
 import { Position, GameAbility, LocationSelectType, PlayerAbility } from "../types"
 import { useToggle } from "./../hooks/useToggle"
 import { useGame } from "./game"
+import { useArena } from "./arena"
 
 interface WinnerAnnouncementResponse {
     game_ability: GameAbility
@@ -24,7 +25,8 @@ export interface MapSelection {
 export const MiniMapContainer = createContainer(() => {
     const { bribeStage, map } = useGame()
     const { factionID } = useAuth()
-    const { newSnackbarMessage } = useSnackbar()
+    const { currentArenaID } = useArena()
+    const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsFaction("/faction_commander")
 
     // Map
@@ -43,7 +45,7 @@ export const MiniMapContainer = createContainer(() => {
     const [selection, setSelection] = useState<MapSelection>()
 
     // Subscribe on winner announcements
-    useGameServerSubscriptionUser<WinnerAnnouncementResponse | undefined>(
+    useGameServerSubscriptionSecuredUser<WinnerAnnouncementResponse | undefined>(
         {
             URI: "",
             key: GameServerKeys.SubBribeWinnerAnnouncement,
@@ -90,7 +92,7 @@ export const MiniMapContainer = createContainer(() => {
     }, [])
 
     const onTargetConfirm = useCallback(async () => {
-        if (!selection) return
+        if (!selection || !currentArenaID) return
         try {
             if (winner?.game_ability) {
                 if (!selection.startCoords) {
@@ -98,6 +100,7 @@ export const MiniMapContainer = createContainer(() => {
                 }
 
                 await send<boolean>(GameServerKeys.SubmitAbilityLocationSelect, {
+                    arena_id: currentArenaID,
                     start_coords: {
                         x: Math.floor(selection.startCoords.x),
                         y: Math.floor(selection.startCoords.y),
@@ -113,6 +116,7 @@ export const MiniMapContainer = createContainer(() => {
                 setPlayerAbility(undefined)
             } else if (playerAbility) {
                 let payload: {
+                    arena_id: string
                     blueprint_ability_id: string
                     location_select_type: string
                     start_coords?: Position
@@ -125,6 +129,7 @@ export const MiniMapContainer = createContainer(() => {
                             throw new Error("Something went wrong while activating this ability. Please try again, or contact support if the issue persists.")
                         }
                         payload = {
+                            arena_id: currentArenaID,
                             blueprint_ability_id: playerAbility.ability.id,
                             location_select_type: playerAbility.ability.location_select_type,
                             start_coords: {
@@ -139,6 +144,7 @@ export const MiniMapContainer = createContainer(() => {
                         break
                     case LocationSelectType.MECH_SELECT:
                         payload = {
+                            arena_id: currentArenaID,
                             blueprint_ability_id: playerAbility.ability.id,
                             location_select_type: playerAbility.ability.location_select_type,
                             mech_hash: selection.mechHash,
@@ -150,6 +156,7 @@ export const MiniMapContainer = createContainer(() => {
                             throw new Error("Something went wrong while activating this ability. Please try again, or contact support if the issue persists.")
                         }
                         payload = {
+                            arena_id: currentArenaID,
                             blueprint_ability_id: playerAbility.ability.id,
                             location_select_type: playerAbility.ability.location_select_type,
                             start_coords: {
@@ -178,7 +185,7 @@ export const MiniMapContainer = createContainer(() => {
             console.error(err)
             setSelection(undefined)
         }
-    }, [send, selection, resetSelection, winner?.game_ability, playerAbility, newSnackbarMessage, setHighlightedMechParticipantID])
+    }, [send, selection, resetSelection, winner?.game_ability, playerAbility, newSnackbarMessage, setHighlightedMechParticipantID, currentArenaID])
 
     return {
         mapElement,

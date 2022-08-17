@@ -4,6 +4,7 @@ import { useMiniMap } from "../../../containers"
 import { useTimer } from "../../../hooks"
 import { fonts } from "../../../theme/theme"
 import { LocationSelectType } from "../../../types"
+import { MechMoveCommandAbility } from "../../WarMachine/WarMachineItem/MoveCommand"
 
 export const CountdownSubmit = () => {
     const { isTargeting, winner, playerAbility, selection } = useMiniMap()
@@ -22,6 +23,11 @@ const CountdownSubmitInner = () => {
                 case LocationSelectType.LOCATION_SELECT:
                 case LocationSelectType.MECH_COMMAND:
                     return true
+            }
+
+            // If is mini mech move
+            if (playerAbility.ability.game_client_ability_id === MechMoveCommandAbility.ability.game_client_ability_id) {
+                return true
             }
         }
         return false

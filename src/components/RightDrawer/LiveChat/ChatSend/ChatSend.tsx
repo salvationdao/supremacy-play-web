@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { ChatSettings, ClipThing, EmojiPopover } from "../../.."
 import { SvgEmoji, SvgEmojiSelector, SvgExternalLink, SvgSend } from "../../../../assets"
 import { MAX_CHAT_MESSAGE_LENGTH } from "../../../../constants"
-import { IncomingMessages, useAuth, useChat, useMobile, useSnackbar } from "../../../../containers"
+import { IncomingMessages, useAuth, useChat, useMobile, useGlobalNotifications } from "../../../../containers"
 import { SendFunc } from "../../../../containers/ws"
 import { getRandomColor } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
@@ -66,7 +66,7 @@ const ChatSendInner = ({
     globalActivePlayers,
     activePlayers,
 }: ChatSendInnerProps) => {
-    const { newSnackbarMessage } = useSnackbar()
+    const { newSnackbarMessage } = useGlobalNotifications()
     const { isMobile } = useMobile()
     const { userGidRecord } = useChat()
 
