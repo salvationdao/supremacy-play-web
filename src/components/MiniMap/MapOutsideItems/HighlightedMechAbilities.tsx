@@ -9,6 +9,7 @@ import { GameServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
 import { AIType, GameAbility, WarMachineLiveState, WarMachineState } from "../../../types"
 import { MoveCommand } from "../../WarMachine/WarMachineItem/MoveCommand"
+import { useArena } from "../../../containers/arena"
 import { useHotkey } from "../../../containers/hotkeys"
 
 export const HighlightedMechAbilities = () => {
@@ -31,6 +32,7 @@ export const HighlightedMechAbilities = () => {
 
 const HighlightedMechAbilitiesInner = ({ warMachine }: { warMachine: WarMachineState }) => {
     const { userID } = useAuth()
+    const { currentArenaID } = useArena()
     const theme = useTheme()
     const { participantID, ownedByID } = warMachine
     const [isAlive, toggleIsAlive] = useToggle(warMachine.health > 0)
@@ -39,18 +41,18 @@ const HighlightedMechAbilitiesInner = ({ warMachine }: { warMachine: WarMachineS
 
     // Subscribe to war machine ability updates
     const gameAbilities = useGameServerSubscriptionFaction<GameAbility[] | undefined>({
-        URI: `/mech/${participantID}/abilities`,
+        URI: `/arena/${currentArenaID}/mech/${participantID}/abilities`,
         key: GameServerKeys.SubWarMachineAbilitiesUpdated,
-        ready: !!participantID,
+        ready: !!participantID && !!currentArenaID,
     })
 
     // Listen on current war machine changes
     useGameServerSubscription<WarMachineLiveState | undefined>(
         {
-            URI: `/public/mech/${participantID}`,
+            URI: `/public/arena/${currentArenaID}/mech/${participantID}`,
             key: GameServerKeys.SubMechLiveStats,
-            ready: !!participantID,
-            batchURI: "/public/mech",
+            ready: !!participantID && !!currentArenaID,
+            batchURI: `/public/arena/${currentArenaID}/mech`,
         },
         (payload) => {
             if (payload?.health !== undefined) {
@@ -100,6 +102,7 @@ const HighlightedMechAbilitiesInner = ({ warMachine }: { warMachine: WarMachineS
 
 const AbilityItem = ({ hash, participantID, ability, index }: { hash: string; participantID: number; ability: GameAbility; index: number }) => {
     const { id, colour, image_url, label } = ability
+    const { currentArenaID } = useArena()
     const [remainSeconds, setRemainSeconds] = useState(30)
     const ready = useMemo(() => remainSeconds === 0, [remainSeconds])
     const { mechAbilityKey, addToHotkeyRecord } = useHotkey()
@@ -107,8 +110,9 @@ const AbilityItem = ({ hash, participantID, ability, index }: { hash: string; pa
 
     useGameServerSubscriptionFaction<number | undefined>(
         {
-            URI: `/mech/${participantID}/abilities/${id}/cool_down_seconds`,
+            URI: `/arena/${currentArenaID}/mech/${participantID}/abilities/${id}/cool_down_seconds`,
             key: GameServerKeys.SubMechAbilityCoolDown,
+            ready: !!currentArenaID && !!participantID,
         },
         (payload) => {
             if (payload === undefined) return
@@ -126,15 +130,17 @@ const AbilityItem = ({ hash, participantID, ability, index }: { hash: string; pa
     }, 1000)
 
     const onTrigger = useCallback(async () => {
+        if (!currentArenaID) return
         try {
-            await send<boolean, { mech_hash: string; game_ability_id: string }>(GameServerKeys.TriggerWarMachineAbility, {
+            await send<boolean, { arena_id: string; mech_hash: string; game_ability_id: string }>(GameServerKeys.TriggerWarMachineAbility, {
+                arena_id: currentArenaID,
                 mech_hash: hash,
                 game_ability_id: id,
             })
         } catch (e) {
             console.error(e)
         }
-    }, [hash, id, send])
+    }, [hash, id, send, currentArenaID])
 
     useEffect(() => {
         addToHotkeyRecord("map", mechAbilityKey[index], onTrigger)

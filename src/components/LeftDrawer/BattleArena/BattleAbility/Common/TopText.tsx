@@ -12,7 +12,7 @@ interface TopTextProps {
 }
 
 export const TopText = ({ description, image_url, colour, label, icon }: TopTextProps) => (
-    <TooltipHelper placement="right" text={description}>
+    <TooltipHelper color={colour} placement="right" text={description}>
         <Stack spacing=".8rem" direction="row" alignItems="center" justifyContent="center">
             <Stack
                 alignItems="center"

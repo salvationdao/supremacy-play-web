@@ -9,6 +9,7 @@ import { GameServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
 import { LocationSelectType, PlayerAbility, WarMachineState } from "../../../types"
 import { DEAD_OPACITY, WIDTH_SKILL_BUTTON } from "./WarMachineItem"
+import { useArena } from "../../../containers/arena"
 import { useHotkey } from "../../../containers/hotkeys"
 
 export const MechMoveCommandAbility: PlayerAbility = {
@@ -47,14 +48,15 @@ export interface MechMoveCommand {
 
 export const MoveCommand = ({ warMachine, isAlive, smallVersion }: { warMachine: WarMachineState; isAlive: boolean; smallVersion?: boolean }) => {
     const { factionID } = useAuth()
+    const { currentArenaID } = useArena()
     const { hash, factionID: wmFactionID, participantID } = warMachine
     const [mechMoveCommand, setMechMoveCommand] = useState<MechMoveCommand>()
 
     useGameServerSubscriptionFaction<MechMoveCommand>(
         {
-            URI: `/mech_command/${hash}`,
+            URI: `/arena/${currentArenaID}/mech_command/${hash}`,
             key: GameServerKeys.SubMechMoveCommand,
-            ready: factionID === wmFactionID && !!participantID,
+            ready: factionID === wmFactionID && !!participantID && !!currentArenaID,
         },
         (payload) => {
             if (!payload) return
@@ -91,6 +93,7 @@ interface MoveCommandInnerProps {
 const MoveCommandInner = ({ isAlive, remainCooldownSeconds, isMoving, isCancelled, hash, mechMoveCommandID, smallVersion }: MoveCommandInnerProps) => {
     const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsFaction("/faction_commander")
+    const { currentArenaID } = useArena()
     const { setPlayerAbility } = useMiniMap()
     const { addToHotkeyRecord } = useHotkey()
 
@@ -102,11 +105,12 @@ const MoveCommandInner = ({ isAlive, remainCooldownSeconds, isMoving, isCancelle
     const backgroundColor = useMemo(() => shadeColor(primaryColor, -84), [primaryColor])
 
     const onClick = useCallback(async () => {
-        if (!isAlive) return
+        if (!isAlive || !currentArenaID) return
 
         if (isMoving && !isCancelled) {
             try {
                 await send(GameServerKeys.MechMoveCommandCancel, {
+                    arena_id: currentArenaID,
                     move_command_id: mechMoveCommandID,
                     hash,
                 })
@@ -121,7 +125,7 @@ const MoveCommandInner = ({ isAlive, remainCooldownSeconds, isMoving, isCancelle
                 mechHash: hash,
             })
         }
-    }, [isAlive, isMoving, isCancelled, send, mechMoveCommandID, hash, newSnackbarMessage, setPlayerAbility])
+    }, [isAlive, isMoving, isCancelled, send, mechMoveCommandID, hash, newSnackbarMessage, setPlayerAbility, currentArenaID])
 
     useEffect(() => {
         addToHotkeyRecord("map", "a", onClick)

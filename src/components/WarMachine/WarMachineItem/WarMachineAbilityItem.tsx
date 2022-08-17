@@ -7,6 +7,7 @@ import { GameServerKeys } from "../../../keys"
 import { GameAbility, WarMachineState } from "../../../types"
 import { TopText } from "../../LeftDrawer/BattleArena/BattleAbility/Common/TopText"
 import { useInterval } from "../../../hooks"
+import { useArena } from "../../../containers/arena"
 import { useHotkey } from "../../../containers/hotkeys"
 
 export interface ContributeFactionUniqueAbilityRequest {
@@ -64,6 +65,7 @@ export const WarMachineAbilityItem = ({ warMachine, gameAbility, clipSlantSize, 
 
 export const MechAbilityButton = ({ warMachine, gameAbility, index }: { warMachine: WarMachineState; gameAbility: GameAbility; index: number }) => {
     const { participantID, hash } = warMachine
+    const { currentArenaID } = useArena()
     const { id, colour, text_colour } = gameAbility
     const [remainSeconds, setRemainSeconds] = useState(30)
     const { mechAbilityKey, addToHotkeyRecord } = useHotkey()
@@ -72,8 +74,9 @@ export const MechAbilityButton = ({ warMachine, gameAbility, index }: { warMachi
     // Listen on the progress of the votes
     useGameServerSubscriptionFaction<number | undefined>(
         {
-            URI: `/mech/${participantID}/abilities/${id}/cool_down_seconds`,
+            URI: `/arena/${currentArenaID}/mech/${participantID}/abilities/${id}/cool_down_seconds`,
             key: GameServerKeys.SubMechAbilityCoolDown,
+            ready: !!participantID && !!currentArenaID,
         },
         (payload) => {
             if (payload === undefined) return
@@ -91,15 +94,17 @@ export const MechAbilityButton = ({ warMachine, gameAbility, index }: { warMachi
     }, 1000)
 
     const onTrigger = useCallback(async () => {
+        if (!currentArenaID) return
         try {
-            await send<boolean, { mech_hash: string; game_ability_id: string }>(GameServerKeys.TriggerWarMachineAbility, {
+            await send<boolean, { arena_id: string; mech_hash: string; game_ability_id: string }>(GameServerKeys.TriggerWarMachineAbility, {
+                arena_id: currentArenaID,
                 mech_hash: hash,
                 game_ability_id: id,
             })
         } catch (e) {
             console.error(e)
         }
-    }, [hash, id, send])
+    }, [hash, id, send, currentArenaID])
 
     useEffect(() => {
         addToHotkeyRecord("map", mechAbilityKey[index], onTrigger)

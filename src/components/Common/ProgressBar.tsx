@@ -10,7 +10,7 @@ export const ProgressBar = ({
     thickness,
     orientation = "vertical",
 }: {
-    percent: number
+    percent: number // 0 to 100
     linePercent?: number
     color: string
     backgroundColor: string

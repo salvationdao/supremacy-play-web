@@ -26,7 +26,7 @@ export const TransactionItem = ({ transaction, userID }: { transaction: Transact
 
     return (
         <Stack direction="row" alignItems="center" sx={{ px: ".64rem", py: ".06rem", border: `#FFFFFF30 1px dashed`, borderRadius: 0.2 }}>
-            <TooltipHelper placement="left" text={tooltipText ? `  ${tooltipText.toUpperCase()}` : ""}>
+            <TooltipHelper color={color} placement="left" text={tooltipText ? `  ${tooltipText.toUpperCase()}` : ""}>
                 <Stack direction="row" alignItems="center" sx={{ mr: ".6rem", flex: 1 }}>
                     <Typography sx={{ lineHeight: 1, color }}>{isCredit ? "+" : "-"}</Typography>
                     <SvgSupToken size="1.3rem" fill={color} />

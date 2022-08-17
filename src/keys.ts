@@ -14,6 +14,10 @@ export enum GameServerKeys {
     // Notification container
     SubGameNotification = "GAME:NOTIFICATION",
 
+    // Battle Arena
+    SubBattleArenaList = "BATTLE:ARENA:LIST",
+    SubBattleArenaClosed = "BATTLE:ARENA:CLOSED",
+
     // Voting abilities
     SubBribeStageUpdated = "BRIBE:STAGE:UPDATED:SUBSCRIBE",
     SubBribeWinnerAnnouncement = "BRIBE:WINNER:SUBSCRIBE",
@@ -164,12 +168,14 @@ export enum GameServerKeys {
     PlayerProfileCustomAvatarDelete = "PLAYER:PROFILE:CUSTOM_AVATAR:DELETE",
 
     // Leaderboard
+    GetLeaderboardRounds = "LEADERBOARD:ROUNDS",
     GetPlayerBattlesSpectated = "LEADERBOARD:PLAYER:BATTLE:SPECTATED",
     GetPlayerMechSurvives = "LEADERBOARD:PLAYER:MECH:SURVIVES",
     GetPlayerMechKills = "LEADERBOARD:PLAYER:MECH:KILLS",
     GetPlayerAbilityKills = "LEADERBOARD:PLAYER:ABILITY:KILLS",
     GetPlayerAbilityTriggers = "LEADERBOARD:PLAYER:ABILITY:TRIGGERS",
     GetPlayerMechsOwned = "LEADERBOARD:PLAYER:MECHS:OWNED",
+    GetPlayerRepairBlocks = "LEADERBOARD:PLAYER:REPAIR:BLOCK",
 
     // Repairs
     SubRepairJobListUpdated = "MECH:REPAIR:OFFER:LIST:UPDATE",
@@ -186,6 +192,10 @@ export enum GameServerKeys {
     // Companion App
     AuthGenOneTimeToken = "GEN:ONE:TIME:TOKEN",
     GetPlayerDeviceList = "PLAYER:DEVICE:LIST",
+
+    // Quests
+    SubPlayerQuestStats = "PLAYER:QUEST:STAT",
+    SubPlayerQuestStatsProgression = "PLAYER:QUEST:PROGRESSIONS",
 }
 
 export enum PassportServerKeys {

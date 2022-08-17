@@ -1,32 +1,27 @@
-import { useCallback, useEffect, useState } from "react"
+import { useEffect, useRef } from "react"
 import { BribeStageResponse } from "../../../../containers"
 import { useTimer } from "../../../../hooks"
 import { SectionHeading } from "../Common/SectionHeading"
 
 export const BattleAbilityCountdown = ({ bribeStage }: { bribeStage?: BribeStageResponse }) => {
-    const [sentence, setSentence] = useState<string>("Loading...")
     const { setEndTimeState, totalSecRemain } = useTimer(undefined)
+    const sentence = useRef("Loading...")
 
     const phase = bribeStage?.phase || ""
-    const doSentence = useCallback(() => {
-        switch (phase) {
-            case "OPT_IN":
-                setSentence(`BATTLE ABILITY (${totalSecRemain})`)
-                break
 
-            case "LOCATION_SELECT":
-                setSentence(`BATTLE ABILITY INITIATED (${totalSecRemain})`)
-                break
+    switch (phase) {
+        case "OPT_IN":
+            sentence.current = `BATTLE ABILITY (${totalSecRemain})`
+            break
 
-            case "COOLDOWN":
-                setSentence(`NEXT BATTLE ABILITY (${totalSecRemain})`)
-                break
-        }
-    }, [phase, totalSecRemain])
+        case "LOCATION_SELECT":
+            sentence.current = `BATTLE ABILITY INITIATED (${totalSecRemain})`
+            break
 
-    useEffect(() => {
-        doSentence()
-    }, [doSentence, totalSecRemain])
+        case "COOLDOWN":
+            sentence.current = `NEXT BATTLE ABILITY (${totalSecRemain})`
+            break
+    }
 
     useEffect(() => {
         if (!bribeStage) return
@@ -42,8 +37,7 @@ export const BattleAbilityCountdown = ({ bribeStage }: { bribeStage?: BribeStage
         }
 
         setEndTimeState(endTime)
-        doSentence()
-    }, [bribeStage, doSentence, setEndTimeState])
+    }, [bribeStage, setEndTimeState])
 
-    return <SectionHeading label={sentence} tooltip="Opt into battle abilities and fight for your Faction!" />
+    return <SectionHeading label={sentence.current} tooltip="Opt into battle abilities and fight for your Faction!" />
 }

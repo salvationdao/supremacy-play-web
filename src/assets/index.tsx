@@ -119,6 +119,7 @@ import SupToken from "!react-svg-loader!./svg/SupToken.svg"
 import Target from "!react-svg-loader!./svg/Target.svg"
 import Telegram from "!react-svg-loader!./svg/Telegram.svg"
 import Twitter from "!react-svg-loader!./svg/Twitter.svg"
+import Quest from "!react-svg-loader!./svg/Quest.svg"
 import Unknown from "!react-svg-loader!./svg/Unknown.svg"
 import User from "!react-svg-loader!./svg/User.svg"
 import Volume from "!react-svg-loader!./svg/Volume.svg"
@@ -1187,5 +1188,11 @@ export const SvgRepair: React.VoidFunctionComponent<SvgWrapperProps> = (props) =
 export const SvgMinimize: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <Minimize />
+    </SvgWrapper>
+)
+
+export const SvgQuest: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Quest />
     </SvgWrapper>
 )

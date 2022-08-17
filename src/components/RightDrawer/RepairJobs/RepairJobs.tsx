@@ -3,10 +3,9 @@ import BigNumber from "bignumber.js"
 import { useEffect, useMemo, useState } from "react"
 import FlipMove from "react-flip-move"
 import { EmptyWarMachinesPNG } from "../../../assets"
-import { useAuth } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { useArray } from "../../../hooks"
-import { useGameServerSubscription } from "../../../hooks/useGameServer"
+import { useGameServerSubscriptionSecured } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { RepairJob } from "../../../types/jobs"
@@ -25,7 +24,6 @@ const sortOptions = [
 ]
 
 export const RepairJobs = () => {
-    const { userID } = useAuth()
     const theme = useTheme()
     const [repairJobModal, setRepairJobModal] = useState<RepairJob>()
 
@@ -36,11 +34,10 @@ export const RepairJobs = () => {
     // Filters and sorts
     const [sort, setSort] = useState<string>(SortTypeLabel.RewardAmountHighest)
 
-    useGameServerSubscription<RepairJob[]>(
+    useGameServerSubscriptionSecured<RepairJob[]>(
         {
-            URI: "/secure_public/repair_offer/update",
+            URI: "/repair_offer/update",
             key: GameServerKeys.SubRepairJobListUpdated,
-            ready: !!userID,
         },
         (payload) => {
             if (!payload || payload.length <= 0) return
@@ -149,13 +146,10 @@ export const RepairJobs = () => {
             <Stack sx={{ position: "relative", height: "100%", backgroundColor: theme.factionTheme.background }}>
                 <Stack
                     direction="row"
-                    spacing=".96rem"
                     alignItems="center"
                     sx={{
-                        position: "relative",
-                        pl: "2.2rem",
-                        pr: "4.8rem",
-                        height: `${5}rem`,
+                        px: "2.2rem",
+                        height: "5rem",
                         background: `linear-gradient(${theme.factionTheme.primary} 26%, ${theme.factionTheme.primary}95)`,
                         boxShadow: 1.5,
                     }}
