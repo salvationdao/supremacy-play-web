@@ -17,8 +17,11 @@ export const OverlayToggles = () => {
             <TooltipHelper
                 text={
                     <>
-                        <Typography sx={{ display: "inline", textAlign: "justify" }}>
-                            Toggle the mini map <i style={{ color: colors.neonBlue }}>[m]</i>
+                        <Typography>
+                            Toggle the mini map{" "}
+                            <i style={{ color: colors.neonBlue }}>
+                                <strong>[m]</strong>
+                            </i>
                         </Typography>
                         <Typography>Shown when the battle begins.</Typography>
                     </>

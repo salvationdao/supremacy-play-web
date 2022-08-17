@@ -10,7 +10,7 @@ import { colors } from "../../../theme/theme"
 import { AIType, GameAbility, WarMachineLiveState, WarMachineState } from "../../../types"
 import { MoveCommand } from "../../WarMachine/WarMachineItem/MoveCommand"
 import { useArena } from "../../../containers/arena"
-import { useHotkey } from "../../../containers/hotkeys"
+import { RecordType, useHotkey } from "../../../containers/hotkeys"
 
 export const HighlightedMechAbilities = () => {
     const { userID } = useAuth()
@@ -143,7 +143,7 @@ const AbilityItem = ({ hash, participantID, ability, index }: { hash: string; pa
     }, [hash, id, send, currentArenaID])
 
     useEffect(() => {
-        addToHotkeyRecord("map", mechAbilityKey[index], onTrigger)
+        addToHotkeyRecord(RecordType.Map, mechAbilityKey[index], onTrigger)
     }, [onTrigger, mechAbilityKey, addToHotkeyRecord, index])
 
     return (
@@ -195,8 +195,10 @@ const AbilityItem = ({ hash, participantID, ability, index }: { hash: string; pa
                 </Typography>
 
                 {ready && (
-                    <Typography variant="body2" sx={{ opacity: 0.7, color: colors.neonBlue }}>
-                        <i>[{mechAbilityKey[index]}]</i>
+                    <Typography variant="body2" sx={{ color: colors.neonBlue }}>
+                        <i>
+                            <strong>[{mechAbilityKey[index]}]</strong>
+                        </i>
                     </Typography>
                 )}
             </Stack>

@@ -1,24 +1,29 @@
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { createContainer } from "unstated-next"
 import { useOverlayToggles } from "./overlayToggles"
 
-//todo: Player Abilities hotkeys and custom hotkey maps
+// TODO: Player Abilities hotkeys and custom hotkey maps
+
+type hotkey = { [key: string]: () => void }
+
+export enum RecordType {
+    Global = "GLOBAL",
+    CtrlMap = "CTRL_MAP",
+    Map = "MAP",
+}
 
 export const HotkeyContainer = createContainer(() => {
-    //records
-    type hotkey = { [key: string]: () => void }
-    type recordType = "global" | "ctrl_map" | "map"
+    const { toggleIsMapOpen } = useOverlayToggles()
+
     const [hotkeyRecord, setHotkeyRecord] = useState<hotkey>({})
     const [controlHotkeyRecord, setControlHotkeyRecord] = useState<hotkey>({})
     const [globalHotkeyRecord, setGlobalHotkeyRecord] = useState<hotkey>({})
 
-    const { toggleIsMapOpen } = useOverlayToggles()
-
     //keys reserved for mech abilities
-    const mechAbilityKey = ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"]
+    const mechAbilityKey = useMemo(() => ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"], [])
 
     const addToHotkeyRecord = useCallback(
-        (recordType: recordType, key: string, value: () => void) => {
+        (recordType: RecordType, key: string, value: () => void) => {
             //keys often come from the index, return if it is more than 10
             const numKey = parseInt(key)
             if (numKey && numKey > 10) {
@@ -32,12 +37,12 @@ export const HotkeyContainer = createContainer(() => {
             let record = hotkeyRecord
             switch (recordType) {
                 //if global set to specific global record
-                case "global":
+                case RecordType.Global:
                     setRecord = setGlobalHotkeyRecord
                     record = globalHotkeyRecord
                     break
                 //if modifying the shortcut with [Ctrl + int] set it to specified CTRL record
-                case "ctrl_map":
+                case RecordType.CtrlMap:
                     setRecord = setControlHotkeyRecord
                     record = controlHotkeyRecord
                     break
@@ -92,7 +97,7 @@ export const HotkeyContainer = createContainer(() => {
     }, [handleGlobalHotKey])
 
     useEffect(() => {
-        addToHotkeyRecord("global", "m", toggleIsMapOpen)
+        addToHotkeyRecord(RecordType.Global, "m", toggleIsMapOpen)
     }, [addToHotkeyRecord, toggleIsMapOpen])
 
     return {

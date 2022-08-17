@@ -8,7 +8,7 @@ import { GameAbility, WarMachineState } from "../../../types"
 import { TopText } from "../../LeftDrawer/BattleArena/BattleAbility/Common/TopText"
 import { useInterval } from "../../../hooks"
 import { useArena } from "../../../containers/arena"
-import { useHotkey } from "../../../containers/hotkeys"
+import { RecordType, useHotkey } from "../../../containers/hotkeys"
 
 export interface ContributeFactionUniqueAbilityRequest {
     ability_identity: string
@@ -107,7 +107,7 @@ export const MechAbilityButton = ({ warMachine, gameAbility, index }: { warMachi
     }, [hash, id, send, currentArenaID])
 
     useEffect(() => {
-        addToHotkeyRecord("map", mechAbilityKey[index], onTrigger)
+        addToHotkeyRecord(RecordType.Map, mechAbilityKey[index], onTrigger)
     }, [onTrigger, mechAbilityKey, addToHotkeyRecord, index])
 
     return (

@@ -12,7 +12,7 @@ import { colors, fonts } from "../../../theme/theme"
 import { AIType, GameAbility, WarMachineState } from "../../../types"
 import { MoveCommand } from "./MoveCommand"
 import { useArena } from "../../../containers/arena"
-import { useHotkey } from "../../../containers/hotkeys"
+import { RecordType, useHotkey } from "../../../containers/hotkeys"
 import { ADD_MINI_MECH_PARTICIPANT_ID } from "../../../constants"
 
 // in rems
@@ -91,10 +91,10 @@ export const WarMachineItem = ({
     useEffect(() => {
         if (!label || wmFactionID !== factionID) return
         if (participantID > ADD_MINI_MECH_PARTICIPANT_ID) {
-            addToHotkeyRecord("ctrl_map", label.toString(), handleClick)
+            addToHotkeyRecord(RecordType.CtrlMap, label.toString(), handleClick)
             return
         }
-        addToHotkeyRecord("map", label.toString(), handleClick)
+        addToHotkeyRecord(RecordType.Map, label.toString(), handleClick)
     }, [handleClick, label, participantID, addToHotkeyRecord, factionID, wmFactionID])
 
     return (
@@ -126,7 +126,9 @@ export const WarMachineItem = ({
                 <Box id={`${hash}-hotkey`} sx={{ display: "none", position: "absolute", top: "-3rem", right: "0" }}>
                     {label && wmFactionID === factionID && (
                         <Typography sx={{ color: colors.neonBlue }}>
-                            <i>[{participantID > 100 ? `CTRL + ${label}` : label}]</i>
+                            <i>
+                                <strong>[{participantID > 100 ? `CTRL + ${label}` : label}]</strong>
+                            </i>
                         </Typography>
                     )}
                 </Box>

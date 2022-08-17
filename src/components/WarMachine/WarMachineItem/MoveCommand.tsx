@@ -10,7 +10,7 @@ import { colors } from "../../../theme/theme"
 import { LocationSelectType, PlayerAbility, WarMachineState } from "../../../types"
 import { DEAD_OPACITY, WIDTH_SKILL_BUTTON } from "./WarMachineItem"
 import { useArena } from "../../../containers/arena"
-import { useHotkey } from "../../../containers/hotkeys"
+import { RecordType, useHotkey } from "../../../containers/hotkeys"
 
 export const MechMoveCommandAbility: PlayerAbility = {
     id: "mech_move_command",
@@ -128,7 +128,7 @@ const MoveCommandInner = ({ isAlive, remainCooldownSeconds, isMoving, isCancelle
     }, [isAlive, isMoving, isCancelled, send, mechMoveCommandID, hash, newSnackbarMessage, setPlayerAbility, currentArenaID])
 
     useEffect(() => {
-        addToHotkeyRecord("map", "a", onClick)
+        addToHotkeyRecord(RecordType.Map, "a", onClick)
     }, [onClick, addToHotkeyRecord])
 
     if (smallVersion) {
@@ -180,8 +180,10 @@ const MoveCommandInner = ({ isAlive, remainCooldownSeconds, isMoving, isCancelle
                         {ready ? MechMoveCommandAbility.ability.label : `${totalSecRemain}s`}
                     </Typography>
 
-                    <Typography variant="body2" sx={{ opacity: 0.7, color: colors.neonBlue }}>
-                        <i>[a]</i>
+                    <Typography variant="body2" sx={{ color: colors.neonBlue }}>
+                        <i>
+                            <strong>[a]</strong>
+                        </i>
                     </Typography>
                 </Stack>
             </Stack>
