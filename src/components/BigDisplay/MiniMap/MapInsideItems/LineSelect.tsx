@@ -9,20 +9,19 @@ const MIN_CANVAS_HEIGHT = 700
 export const LineSelect = ({ mapScale }: { mapScale: number }) => {
     const theme = useTheme()
     const { map } = useGame()
-    const { gridWidth, gridHeight, selection, setSelection } = useMiniMap()
+    const { mapElement, gridWidth, gridHeight, selection, setSelection } = useMiniMap()
     const canvasRef = useRef<HTMLCanvasElement>(null)
 
     const indicatorDiameter = useMemo(() => (gridWidth || 50) * 1.8, [gridWidth])
 
     useEffect(() => {
         const c = canvasRef.current?.getContext("2d")
-        const mapElement = document.getElementById("minimap-grid")
         if (!c || !mapElement) return
 
         const { width, height } = mapElement.getBoundingClientRect()
         c.canvas.width = (width / height) * MIN_CANVAS_HEIGHT
         c.canvas.height = MIN_CANVAS_HEIGHT
-    }, [])
+    }, [mapElement])
 
     const drawCanvasLine = useCallback(
         (point1: Position, point2: Position, lineWidthMultiplier = 0.09) => {
@@ -54,7 +53,6 @@ export const LineSelect = ({ mapScale }: { mapScale: number }) => {
     // Draw line when both points are selected
     const onCanvasClick = useCallback(
         (e) => {
-            const mapElement = document.getElementById("minimap-grid")
             if (mapElement) {
                 const rect = mapElement.getBoundingClientRect()
 
@@ -84,7 +82,7 @@ export const LineSelect = ({ mapScale }: { mapScale: number }) => {
                 })
             }
         },
-        [gridHeight, gridWidth, mapScale, setSelection],
+        [gridHeight, mapElement, gridWidth, mapScale, setSelection],
     )
 
     useEffect(() => {
@@ -95,7 +93,6 @@ export const LineSelect = ({ mapScale }: { mapScale: number }) => {
     // Draw line from 1 point to mouse
     const handleMouseMove = useCallback(
         (e: MouseEvent) => {
-            const mapElement = document.getElementById("minimap-grid")
             if (!selection || !mapElement) return
             // Make sure only 1 point is selected
             const start = selection.startCoords
@@ -107,11 +104,10 @@ export const LineSelect = ({ mapScale }: { mapScale: number }) => {
                 drawCanvasLine(start || end || { x: 0, y: 0 }, { x, y }, 0.04)
             }
         },
-        [drawCanvasLine, gridHeight, gridWidth, mapScale, selection],
+        [drawCanvasLine, mapElement, gridHeight, gridWidth, mapScale, selection],
     )
 
     useEffect(() => {
-        const mapElement = document.getElementById("minimap-grid")
         const ref = mapElement
         if (!selection || !ref) return
         // Make sure only 1 point is selected
@@ -121,7 +117,7 @@ export const LineSelect = ({ mapScale }: { mapScale: number }) => {
             ref.addEventListener("mousemove", handleMouseMove, false)
             return () => ref?.removeEventListener("mousemove", handleMouseMove, false)
         }
-    }, [handleMouseMove, selection])
+    }, [handleMouseMove, mapElement, selection])
 
     return (
         <>

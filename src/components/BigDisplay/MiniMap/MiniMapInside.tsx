@@ -19,7 +19,8 @@ interface MiniMapInsideProps {
 
 export const MiniMapInside = ({ containerDimensions }: MiniMapInsideProps) => {
     const { map } = useGame()
-    const { gridWidth, gridHeight, isTargeting, selection, setSelection, playerAbility, winner, setHighlightedMechParticipantID } = useMiniMap()
+    const { mapElement, setMapElement, gridWidth, gridHeight, isTargeting, selection, setSelection, playerAbility, winner, setHighlightedMechParticipantID } =
+        useMiniMap()
 
     const mapRef = useRef<HTMLDivElement>(null)
     const gestureRef = useRef<HTMLDivElement>(null)
@@ -28,7 +29,6 @@ export const MiniMapInside = ({ containerDimensions }: MiniMapInsideProps) => {
     // Click inside the map, converts to a selection
     const onMapClick = useCallback(
         (e: React.MouseEvent<HTMLTableElement, MouseEvent>) => {
-            const mapElement = document.getElementById("minimap-grid")
             if (mapElement) {
                 const rect = mapElement.getBoundingClientRect()
                 // Mouse position
@@ -43,7 +43,7 @@ export const MiniMapInside = ({ containerDimensions }: MiniMapInsideProps) => {
                 })
             }
         },
-        [gridWidth, gridHeight, mapScale, setSelection],
+        [mapElement, gridWidth, gridHeight, mapScale, setSelection],
     )
 
     // i.e. is battle ability or player ability of type LOCATION_SELECT
@@ -104,6 +104,7 @@ export const MiniMapInside = ({ containerDimensions }: MiniMapInsideProps) => {
                             gridWidth={gridWidth}
                             onClick={isLocationSelection ? onMapClick : () => setHighlightedMechParticipantID(undefined)}
                             mapScale={mapScale}
+                            setMapElement={setMapElement}
                             isLocationSelection={isLocationSelection}
                             isLineSelection={isLineSelection}
                         />
@@ -133,5 +134,6 @@ export const MiniMapInside = ({ containerDimensions }: MiniMapInsideProps) => {
         setHighlightedMechParticipantID,
         gridHeight,
         gridWidth,
+        setMapElement,
     ])
 }

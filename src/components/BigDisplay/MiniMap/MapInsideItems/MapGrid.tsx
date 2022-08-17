@@ -12,6 +12,7 @@ export const MapGrid = React.memo(function MapGrid({
     gridWidth,
     onClick,
     mapScale,
+    setMapElement,
     isLocationSelection,
     isLineSelection,
 }: {
@@ -21,6 +22,7 @@ export const MapGrid = React.memo(function MapGrid({
     gridWidth: number
     onClick: React.MouseEventHandler<HTMLDivElement>
     mapScale: number
+    setMapElement: React.Dispatch<React.SetStateAction<HTMLDivElement | null>>
     isLocationSelection: boolean
     isLineSelection: boolean
 }) {
@@ -58,7 +60,7 @@ export const MapGrid = React.memo(function MapGrid({
 
     return (
         <Box
-            id="minimap-grid"
+            ref={setMapElement}
             onClick={onClick}
             sx={{
                 position: "absolute",

@@ -29,6 +29,7 @@ export const MiniMapContainer = createContainer(() => {
     const { send } = useGameServerCommandsFaction("/faction_commander")
 
     // Map
+    const [mapElement, setMapElement] = useState<HTMLDivElement | null>(null)
     const gridWidth = useMemo(() => (map ? map.width / map.cells_x : 50), [map])
     const gridHeight = useMemo(() => (map ? map.height / map.cells_y : 50), [map])
 
@@ -40,6 +41,10 @@ export const MiniMapContainer = createContainer(() => {
     // Other stuff
     const [highlightedMechParticipantID, setHighlightedMechParticipantID] = useState<number>()
     const [selection, setSelection] = useState<MapSelection>()
+
+    useEffect(() => {
+        console.log(mapElement)
+    }, [mapElement])
 
     // Subscribe on winner announcements
     useGameServerSubscriptionSecuredUser<WinnerAnnouncementResponse | undefined>(
@@ -186,6 +191,9 @@ export const MiniMapContainer = createContainer(() => {
     }, [send, selection, resetSelection, winner?.game_ability, playerAbility, newSnackbarMessage, setHighlightedMechParticipantID, currentArenaID])
 
     return {
+        mapElement,
+        setMapElement,
+
         winner,
         setWinner,
         highlightedMechParticipantID,
