@@ -33,6 +33,7 @@ export const useArena = ArenaContainer.useContainer
 
 export const ArenaListener = () => {
     const { setArenaList, currentArenaID, setCurrentArena } = useArena()
+
     useGameServerSubscription<Arena[]>(
         {
             URI: "/public/arena_list",
@@ -45,11 +46,8 @@ export const ArenaListener = () => {
             }
 
             setArenaList(payload)
-
             // NOTE: temporary default arena to the first one
-            if (!currentArenaID) {
-                setCurrentArena(payload[0])
-            }
+            setCurrentArena((prev) => prev || payload[0])
         },
     )
 
