@@ -14,6 +14,7 @@ export const SupremacyContainer = createContainer(() => {
         host: GAME_SERVER_HOSTNAME,
     })
     const [serverConnectedBefore, setServerConnectedBefore] = useState(false)
+    const [firstConnectTimedOut, setFirstConnectTimedOut] = useState(false)
     const [haveSups, toggleHaveSups] = useState<boolean>() // Needs 3 states: true, false, undefined. Undefined means it's not loaded yet.
     const [factionsAll, setFactionsAll] = useState<FactionsAll>({})
     const [battleIdentifier, setBattleIdentifier] = useState<number>()
@@ -26,6 +27,13 @@ export const SupremacyContainer = createContainer(() => {
             return prev
         })
     }, [state])
+
+    // If it's been X amount of time and we never connected, then server is probs down
+    useEffect(() => {
+        setTimeout(() => {
+            if (!serverConnectedBefore) setFirstConnectTimedOut(true)
+        }, 20000)
+    }, [serverConnectedBefore])
 
     // Get main color of each factions
     useEffect(() => {
@@ -59,6 +67,7 @@ export const SupremacyContainer = createContainer(() => {
         serverConnectedBefore,
         isReconnecting,
         isServerDown,
+        firstConnectTimedOut,
 
         factionsAll,
         getFaction,
