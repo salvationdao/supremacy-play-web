@@ -1,5 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useCallback, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { SvgClose2, SvgDrag } from "../../../assets"
 import { useAuth, useMiniMap, useGlobalNotifications } from "../../../containers"
 import { shadeColor } from "../../../helpers"
@@ -10,6 +10,7 @@ import { colors } from "../../../theme/theme"
 import { LocationSelectType, PlayerAbility, WarMachineState } from "../../../types"
 import { DEAD_OPACITY, WIDTH_SKILL_BUTTON } from "./WarMachineItem"
 import { useArena } from "../../../containers/arena"
+import { useHotkey } from "../../../containers/hotkeys"
 
 export const MechMoveCommandAbility: PlayerAbility = {
     id: "mech_move_command",
@@ -94,6 +95,7 @@ const MoveCommandInner = ({ isAlive, remainCooldownSeconds, isMoving, isCancelle
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const { currentArenaID } = useArena()
     const { setPlayerAbility } = useMiniMap()
+    const { addToHotkeyRecord } = useHotkey()
 
     const { totalSecRemain } = useTimer(new Date(new Date().getTime() + remainCooldownSeconds * 1000))
     const ready = useMemo(() => totalSecRemain <= 0, [totalSecRemain])
@@ -125,6 +127,10 @@ const MoveCommandInner = ({ isAlive, remainCooldownSeconds, isMoving, isCancelle
         }
     }, [isAlive, isMoving, isCancelled, send, mechMoveCommandID, hash, newSnackbarMessage, setPlayerAbility, currentArenaID])
 
+    useEffect(() => {
+        addToHotkeyRecord("map", "a", onClick)
+    }, [onClick, addToHotkeyRecord])
+
     if (smallVersion) {
         return (
             <Stack
@@ -155,23 +161,26 @@ const MoveCommandInner = ({ isAlive, remainCooldownSeconds, isMoving, isCancelle
                     {isMoving ? <SvgClose2 size="1.6rem" sx={{ pb: 0 }} fill={primaryColor} /> : <SvgDrag size="1.6rem" sx={{ pb: 0 }} fill={primaryColor} />}
                 </Stack>
 
-                <Typography
-                    variant="body2"
-                    sx={{
-                        pt: ".2rem",
-                        opacity: ready ? 1 : 0.6,
-                        lineHeight: 1,
-                        fontWeight: "fontWeightBold",
-                        display: "-webkit-box",
-                        overflow: "hidden",
-                        overflowWrap: "anywhere",
-                        textOverflow: "ellipsis",
-                        WebkitLineClamp: 1, // change to max number of lines
-                        WebkitBoxOrient: "vertical",
-                    }}
-                >
-                    {ready ? MechMoveCommandAbility.ability.label : `${totalSecRemain}s`}
-                </Typography>
+                <Stack direction={"row"} sx={{ width: "100%" }} justifyContent={"space-between"} alignItems={"center"}>
+                    <Typography
+                        variant="body2"
+                        sx={{
+                            pt: ".2rem",
+                            opacity: ready ? 1 : 0.6,
+                            lineHeight: 1,
+                            fontWeight: "fontWeightBold",
+                            display: "-webkit-box",
+                            overflow: "hidden",
+                            overflowWrap: "anywhere",
+                            textOverflow: "ellipsis",
+                            WebkitLineClamp: 1, // change to max number of lines
+                            WebkitBoxOrient: "vertical",
+                        }}
+                    >
+                        {ready ? MechMoveCommandAbility.ability.label : `${totalSecRemain}s`}
+                    </Typography>
+                    <Typography sx={{ opacity: "0.7" }}>[a]</Typography>
+                </Stack>
             </Stack>
         )
     }

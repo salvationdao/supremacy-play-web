@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { createContainer } from "unstated-next"
-import { useSupremacy } from "."
+import { useAuth, useSupremacy } from "."
 import { useGameServerCommandsUser, useGameServerSubscription } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
-import { AbilityDetail, BattleEndDetail, BattleZone, BribeStage, Map, WarMachineState } from "../types"
+import { AbilityDetail, AIType, BattleEndDetail, BattleZone, BribeStage, Map, WarMachineState } from "../types"
 import { useArena } from "./arena"
 
 export interface BribeStageResponse {
@@ -23,6 +23,7 @@ export interface GameSettingsResponse {
 // Game data that needs to be shared between different components
 export const GameContainer = createContainer(() => {
     const { setBattleIdentifier } = useSupremacy()
+    const { factionID, user } = useAuth()
     const { currentArenaID } = useArena()
     const { send } = useGameServerCommandsUser("/user_commander")
 
@@ -35,6 +36,26 @@ export const GameContainer = createContainer(() => {
     const [bribeStage, setBribeStage] = useState<BribeStageResponse | undefined>()
     const [battleEndDetail, setBattleEndDetail] = useState<BattleEndDetail>()
     const [forceDisplay100Percentage, setForceDisplay100Percentage] = useState<string>("")
+
+    const factionWarMachines = useMemo(() => {
+        if (!warMachines) return
+        return warMachines?.filter((w) => w.factionID === factionID).sort((a, b) => a.participantID - b.participantID)
+    }, [warMachines, factionID])
+
+    const otherWarMachines = useMemo(() => {
+        if (!warMachines) return
+        return warMachines?.filter((w) => w.factionID !== factionID).sort((a, b) => a.participantID - b.participantID)
+    }, [warMachines, factionID])
+
+    const orderedWarMachines = useMemo(() => {
+        if (!otherWarMachines || !factionWarMachines) return
+        return [...factionWarMachines, ...otherWarMachines]
+    }, [otherWarMachines, factionWarMachines])
+
+    const ownedMiniMechs = useMemo(
+        () => (spawnedAI ? spawnedAI.filter((sa) => sa.aiType === AIType.MiniMech && sa.ownedByID === user.id) : []),
+        [spawnedAI, user],
+    )
 
     // Subscribe for game settings
     useGameServerSubscription<GameSettingsResponse | undefined>(
@@ -107,6 +128,10 @@ export const GameContainer = createContainer(() => {
         setBattleZone,
         abilityDetails,
         warMachines,
+        factionWarMachines,
+        otherWarMachines,
+        orderedWarMachines,
+        ownedMiniMechs,
         spawnedAI,
         battleEndDetail,
         setBattleEndDetail,
