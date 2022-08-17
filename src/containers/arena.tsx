@@ -42,12 +42,13 @@ export const ArenaListener = () => {
         (payload) => {
             if (!payload || payload.length === 0) {
                 setArenaList([])
+                setCurrentArena(undefined)
                 return
             }
 
-            setArenaList(payload)
             // NOTE: temporary default arena to the first one
             setCurrentArena((prev) => prev || payload[0])
+            setArenaList(payload)
         },
     )
 
@@ -55,7 +56,7 @@ export const ArenaListener = () => {
         {
             URI: `/public/arena/${currentArenaID}/closed`,
             key: GameServerKeys.SubBattleArenaClosed,
-            ready: currentArenaID != "",
+            ready: !!currentArenaID,
         },
         (payload) => {
             if (!payload) return
