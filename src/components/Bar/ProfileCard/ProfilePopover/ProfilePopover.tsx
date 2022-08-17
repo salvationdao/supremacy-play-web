@@ -59,7 +59,7 @@ export const ProfilePopover = ({ open, popoverRef, onClose, user }: { open: bool
                     clipSize="10px"
                     border={{
                         borderColor: theme.factionTheme.primary,
-                        borderThickness: ".3rem",
+                        borderThickness: ".2rem",
                     }}
                     backgroundColor={theme.factionTheme.background}
                     sx={{ height: "100%" }}

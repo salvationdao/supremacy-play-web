@@ -1,7 +1,7 @@
 import { Box, Grow, IconButton, Modal, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { SvgClose } from "../../../../assets"
-import { useAuth, useSnackbar, useSupremacy } from "../../../../containers"
+import { useAuth, useGlobalNotifications, useSupremacy } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
 import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
@@ -43,7 +43,7 @@ export const CrateRewardsModal = ({
     setFutureCratesToOpen,
 }: CrateRewardsModalProps) => {
     const { getFaction } = useSupremacy()
-    const { newSnackbarMessage } = useSnackbar()
+    const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const { factionID } = useAuth()
     const theme = useTheme()

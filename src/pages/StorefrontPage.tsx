@@ -1,6 +1,6 @@
 import { Box, Fade, Stack, Tab, Tabs } from "@mui/material"
 import { SyntheticEvent, useCallback, useEffect, useState } from "react"
-import { useHistory, useLocation, useParams } from "react-router-dom"
+import { useHistory, useParams } from "react-router-dom"
 import { HangarBg } from "../assets"
 import { ClipThing } from "../components"
 import { MysteryCrateBanner } from "../components/Common/PageHeaderBanners/MysteryCrateBanner"
@@ -21,7 +21,6 @@ export enum STOREFRONT_TABS {
 
 export const StorefrontPage = () => {
     const theme = useTheme()
-    const location = useLocation()
     const history = useHistory()
     const { type } = useParams<{ type: STOREFRONT_TABS }>()
     const [currentValue, setCurrentValue] = useState<STOREFRONT_TABS>()
@@ -29,15 +28,15 @@ export const StorefrontPage = () => {
     // Make sure that the param route is correct, fix it if invalid
     useEffect(() => {
         if (Object.values(STOREFRONT_TABS).includes(type)) return setCurrentValue(type)
-        history.replace(`${ROUTES_MAP.storefront.path.replace(":type", STOREFRONT_TABS.MysteryCrates)}${location.hash}`)
-    }, [history, location.hash, location.pathname, type])
+        history.replace(`${ROUTES_MAP.storefront.path.replace(":type", STOREFRONT_TABS.MysteryCrates)}`)
+    }, [history, type])
 
     const handleChange = useCallback(
         (event: SyntheticEvent, newValue: STOREFRONT_TABS) => {
             setCurrentValue(newValue)
-            history.push(`${ROUTES_MAP.storefront.path.replace(":type", newValue)}${location.hash}`)
+            history.push(`${ROUTES_MAP.storefront.path.replace(":type", newValue)}`)
         },
-        [history, location.hash],
+        [history],
     )
 
     if (!currentValue) return null

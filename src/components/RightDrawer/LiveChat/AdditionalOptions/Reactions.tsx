@@ -1,7 +1,7 @@
 import { Stack, Typography } from "@mui/material"
 import { useCallback } from "react"
 import { SvgPriceDownArrow, SvgPriceUpArrow } from "../../../../assets"
-import { useAuth, useSnackbar } from "../../../../containers"
+import { useAuth, useGlobalNotifications } from "../../../../containers"
 import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors } from "../../../../theme/theme"
@@ -42,7 +42,7 @@ const styles = {
 export const Reactions = ({ fontSize, data, hoverOnly = false }: ReactionsProps) => {
     const { send } = useGameServerCommandsUser("/user_commander")
     const { user } = useAuth()
-    const { newSnackbarMessage } = useSnackbar()
+    const { newSnackbarMessage } = useGlobalNotifications()
 
     const handleReactionSend = useCallback(
         async (reactMessageSend: ReactMessageSendProps) => {

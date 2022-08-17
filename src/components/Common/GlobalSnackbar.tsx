@@ -2,11 +2,11 @@ import { Box, IconButton, Snackbar, SnackbarCloseReason, Stack, Typography } fro
 import { ReactNode, SyntheticEvent, useCallback, useMemo } from "react"
 import { ClipThing } from ".."
 import { SvgClose2, SvgInfoCircular, SvgSuccess, SvgWarnTriangle } from "../../assets"
-import { useSnackbar } from "../../containers"
+import { useGlobalNotifications } from "../../containers"
 import { colors } from "../../theme/theme"
 
 export const GlobalSnackbar = () => {
-    const { open, setOpen, messageInfo, setMessageInfo } = useSnackbar()
+    const { open, setOpen, messageInfo, setMessageInfo } = useGlobalNotifications()
 
     const handleClose = useCallback(
         (_event: Event | SyntheticEvent<unknown, Event>, reason?: SnackbarCloseReason) => {
@@ -66,7 +66,7 @@ export const GlobalSnackbar = () => {
                     }}
                     sx={{
                         mb: "-1rem",
-                        ml: "1.9rem",
+                        ml: "1.5rem",
                     }}
                     backgroundColor={severityDeets.color}
                     opacity={0.99}

@@ -44,11 +44,11 @@ export const MechGeneralStatus = ({
                     setColour(colors.yellow)
                     break
                 case MechStatusEnum.Battle:
-                    setText("IN BATTLE")
+                    setText("BATTLING")
                     setColour(colors.orange)
                     break
                 case MechStatusEnum.Market:
-                    setText("MARKETPLACE")
+                    setText("LISTED")
                     setColour(colors.red)
                     break
                 case MechStatusEnum.Sold:

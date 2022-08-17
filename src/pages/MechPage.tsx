@@ -1,13 +1,12 @@
 import { Stack, Typography } from "@mui/material"
 import { useCallback, useEffect } from "react"
-import { useHistory, useLocation, useParams } from "react-router-dom"
+import { useHistory, useParams } from "react-router-dom"
 import { HangarBg, SvgBack } from "../assets"
 import { FancyButton } from "../components"
 import { WarMachineHangarDetails } from "../components/Hangar/WarMachinesHangar/WarMachineDetails/WarMachineHangarDetails"
 import { fonts, siteZIndex } from "../theme/theme"
 
 export const MechPage = () => {
-    const location = useLocation()
     const history = useHistory()
     const { mechID } = useParams<{ mechID: string }>()
 
@@ -17,8 +16,8 @@ export const MechPage = () => {
 
     // Make sure we have a mechID passed in, else redirect to /fleet page
     useEffect(() => {
-        if (!mechID) history.replace(`/fleet${location.hash}`)
-    }, [history, location.hash, mechID])
+        if (!mechID) history.replace(`/fleet`)
+    }, [history, mechID])
 
     return (
         <Stack

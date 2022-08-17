@@ -1,6 +1,5 @@
 import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { useLocation } from "react-router-dom"
 import { ClipThing, FancyButton } from "../.."
 import { SafePNG } from "../../../assets"
 import { HANGAR_PAGE } from "../../../constants"
@@ -35,7 +34,6 @@ export interface OpeningCrate {
 }
 
 export const MysteryCratesHangar = () => {
-    const location = useLocation()
     const [query, updateQuery] = useUrlQuery()
     const { send } = useGameServerCommandsUser("/user_commander")
     const theme = useTheme()
@@ -181,7 +179,7 @@ export const MysteryCratesHangar = () => {
                     </Typography>
 
                     <FancyButton
-                        to={`/storefront/mystery-crates${location.hash}`}
+                        to={`/storefront/mystery-crates`}
                         clipThingsProps={{
                             clipSize: "9px",
                             backgroundColor: theme.factionTheme.primary,
@@ -204,7 +202,7 @@ export const MysteryCratesHangar = () => {
                 </Stack>
             </Stack>
         )
-    }, [crates, isLoading, loadError, location.hash, theme.factionTheme.primary, theme.factionTheme.secondary, getItems])
+    }, [crates, isLoading, loadError, theme.factionTheme.primary, theme.factionTheme.secondary, getItems])
 
     return (
         <>

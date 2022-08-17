@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useMemo, useRef } from "react"
 import { UserBanForm } from "../../../.."
 import { SvgInfoCircular, SvgSkull2, SvgReportFlag } from "../../../../../assets"
 import { PASSPORT_SERVER_HOST_IMAGES } from "../../../../../constants"
-import { useAuth, useChat, useSnackbar, useSupremacy } from "../../../../../containers"
+import { useAuth, useChat, useGlobalNotifications, useSupremacy } from "../../../../../containers"
 import { dateFormatter, getUserRankDeets, shadeColor, truncate } from "../../../../../helpers"
 import { useToggle } from "../../../../../hooks"
 import { useGameServerCommandsUser } from "../../../../../hooks/useGameServer"
@@ -47,9 +47,9 @@ export const TextMessage = ({
 }) => {
     const { from_user, user_rank, message_color, avatar_id, message, from_user_stat, metadata } = data
     const { id, username, gid, faction_id } = from_user
+    const { newSnackbarMessage, sendBrowserNotification } = useGlobalNotifications()
     const { isHidden, isActive } = useAuth()
-    const { newSnackbarMessage } = useSnackbar()
-    const { userGidRecord, addToUserGidRecord, sendBrowserNotification, tabValue } = useChat()
+    const { userGidRecord, addToUserGidRecord, tabValue } = useChat()
     const { send } = useGameServerCommandsUser("/user_commander")
 
     const popoverRef = useRef(null)
@@ -135,7 +135,7 @@ export const TextMessage = ({
         const matchedArr = message.match(/#\d+/g)
         matchedArr?.map(async (match) => {
             const gidSubstring = parseInt(match.substring(1))
-            const taggedUser = userGidRecord[gidSubstring] ?? undefined
+            const taggedUser = userGidRecord[gidSubstring] || undefined
             //if not make a call to the backend to find the user and add to record
             if (!taggedUser) {
                 try {
@@ -354,7 +354,10 @@ export const TextMessage = ({
                         {isHovered && <Reactions fontSize={fontSize} hoverOnly={true} data={data} />}
                     </Stack>
                 </Box>
-                {reportModalOpen && <ReportModal message={data} setReportModalOpen={setReportModalOpen} reportModalOpen={reportModalOpen} />}
+
+                {reportModalOpen && (
+                    <ReportModal fromUser={from_user} message={data} setReportModalOpen={setReportModalOpen} reportModalOpen={reportModalOpen} />
+                )}
             </Box>
 
             {isPopoverOpen && (

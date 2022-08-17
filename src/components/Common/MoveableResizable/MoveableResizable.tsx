@@ -68,7 +68,7 @@ const MoveableResizableInner = ({ children }: MoveableResizableProps) => {
                 }}
                 features={{
                     width: curWidth / (remToPxRatio / 11),
-                    height: curHeight / (remToPxRatio / 11) + 30, // this is the top bar height
+                    height: Math.max(curHeight / (remToPxRatio / 11) + 30, 300), // this is the top bar height
                 }}
             >
                 <Box

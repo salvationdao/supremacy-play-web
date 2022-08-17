@@ -119,6 +119,7 @@ import SupToken from "!react-svg-loader!./svg/SupToken.svg"
 import Target from "!react-svg-loader!./svg/Target.svg"
 import Telegram from "!react-svg-loader!./svg/Telegram.svg"
 import Twitter from "!react-svg-loader!./svg/Twitter.svg"
+import Quest from "!react-svg-loader!./svg/Quest.svg"
 import Unknown from "!react-svg-loader!./svg/Unknown.svg"
 import User from "!react-svg-loader!./svg/User.svg"
 import Volume from "!react-svg-loader!./svg/Volume.svg"
@@ -158,24 +159,7 @@ import HangarBg from "./images/HangarBg.jpg"
 import KeycardPNG from "./images/Keycard.png"
 import LogoWEBP from "./images/Logo.webp"
 import MaintenancePNG from "./images/Maintenance.png"
-// Multiplier images (no spaces in file names, won't work!)
 import { Cake } from "@mui/icons-material"
-import MultiplierAdmiral from "./images/Multipliers/Admiral.png"
-import MultiplierAFoolAndHisMoney from "./images/Multipliers/AFoolAndHisMoney.png"
-import MultiplierAirMarshal from "./images/Multipliers/AirMarshal.png"
-import MultiplierAirSupport from "./images/Multipliers/AirSupport.png"
-import MultiplierContributor from "./images/Multipliers/Contributor.png"
-import MultiplierDestroyerOfWorlds from "./images/Multipliers/DestroyerOfWorlds.png"
-import MultiplierFieldMechanic from "./images/Multipliers/FieldMechanic.png"
-import MultiplierGeneric from "./images/Multipliers/Generic.png"
-import MultiplierGreaseMonkey from "./images/Multipliers/GreaseMonkey.png"
-import MultiplierJunkE from "./images/Multipliers/JunkE.png"
-import MultiplierMechCommander from "./images/Multipliers/MechCommander.png"
-import MultiplierMechHead from "./images/Multipliers/MechHead.png"
-import MultiplierNowIAmBecomeDeath from "./images/Multipliers/NowIAmBecomeDeath.png"
-import MultiplierSniper from "./images/Multipliers/Sniper.png"
-import MultiplierWonBattle from "./images/Multipliers/WonBattle.png"
-import MultiplierWonLastThreeBattles from "./images/Multipliers/WonLastThreeBattles.png"
 import PlayerAbilityPNG from "./images/PlayerAbility.png"
 import AboutMeSVG from "./images/profileIcons/AboutMe.svg"
 import BattleHistorySVG from "./images/profileIcons/BattleHistory.svg"
@@ -257,26 +241,6 @@ export {
     Stack10aJPG,
     Stack10bJPG,
     Stack10cJPG,
-}
-
-// multiplier images
-export {
-    MultiplierAdmiral,
-    MultiplierAFoolAndHisMoney,
-    MultiplierAirSupport,
-    MultiplierContributor,
-    MultiplierDestroyerOfWorlds,
-    MultiplierFieldMechanic,
-    MultiplierGreaseMonkey,
-    MultiplierMechCommander,
-    MultiplierNowIAmBecomeDeath,
-    MultiplierAirMarshal,
-    MultiplierJunkE,
-    MultiplierMechHead,
-    MultiplierSniper,
-    MultiplierWonBattle,
-    MultiplierGeneric,
-    MultiplierWonLastThreeBattles,
 }
 
 export {
@@ -1224,5 +1188,11 @@ export const SvgRepair: React.VoidFunctionComponent<SvgWrapperProps> = (props) =
 export const SvgMinimize: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <Minimize />
+    </SvgWrapper>
+)
+
+export const SvgQuest: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Quest />
     </SvgWrapper>
 )

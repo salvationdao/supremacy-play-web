@@ -35,7 +35,7 @@ export const PunishmentList = ({ open, onClose, punishments }: Props) => {
                     clipSize="8px"
                     border={{
                         borderColor: colors.red,
-                        borderThickness: ".3rem",
+                        borderThickness: ".2rem",
                     }}
                     sx={{ position: "relative" }}
                     backgroundColor={theme.factionTheme.background}

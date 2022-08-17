@@ -13,7 +13,6 @@ import { ImagesPreview } from "../../../Marketplace/Common/MarketDetails/ImagesP
 import { FiatProduct } from "../../../../types/fiat"
 import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
-import { useSnackbar } from "../../../../containers"
 import { SetupCheckout } from "../../../../fetching"
 import { FancyButton } from "../../../Common/FancyButton"
 import { StripeTextFieldCVC, StripeTextFieldExpiry, StripeTextFieldNumber } from "../../../Stripe/StripeElements"
@@ -28,7 +27,6 @@ interface Props {
 
 export const PackageStoreCheckout = ({ id }: Props) => {
     const theme = useTheme()
-    const { newSnackbarMessage } = useSnackbar()
     const { send } = useGameServerCommandsFaction("/faction_commander")
 
     const [product, setProduct] = useState<FiatProduct>()
@@ -53,12 +51,11 @@ export const PackageStoreCheckout = ({ id }: Props) => {
                     message = err.message
                 }
                 setLoadError(message)
-                newSnackbarMessage(message, "error")
             } finally {
                 setIsLoading(false)
             }
         })()
-    }, [id, send, newSnackbarMessage])
+    }, [id, send])
 
     const content = useMemo(() => {
         if (loadError) {

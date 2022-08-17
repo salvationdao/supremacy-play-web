@@ -1,11 +1,10 @@
 import { Box, Button, Stack, Typography } from "@mui/material"
 import { useMemo } from "react"
-import { Link, useLocation } from "react-router-dom"
+import { Link } from "react-router-dom"
 import { SvgSkin } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
 import { getAssetItemDeets, getRarityDeets } from "../../../../helpers"
 import { colors, fonts } from "../../../../theme/theme"
-import { AssetItemType } from "../../../../types"
 import { FancyButton } from "../../../Common/FancyButton"
 import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
 import { TooltipHelper } from "../../../Common/TooltipHelper"
@@ -17,7 +16,6 @@ interface CrateRewardItemsProps {
 }
 
 export const CrateRewardItemsLarge = ({ item, largerVersion }: CrateRewardItemsProps) => {
-    const location = useLocation()
     const theme = useTheme()
     const rarityDeets = useMemo(() => getRarityDeets(item?.skin?.tier || item?.rarity || ""), [item?.rarity, item?.skin?.tier])
     const assetItemDeets = useMemo(() => getAssetItemDeets(item?.type), [item?.type])
@@ -43,18 +41,13 @@ export const CrateRewardItemsLarge = ({ item, largerVersion }: CrateRewardItemsP
                     sx: { height: "100%", pointerEvents: assetItemDeets.subRoute ? "all" : "none" },
                 }}
                 sx={{ p: 0, color: "#FFFFFF" }}
-                to={`/${assetItemDeets.subRoute}/${item?.id}${location.hash}`}
+                to={`/${assetItemDeets.subRoute}/${item?.id}`}
             >
                 <Stack sx={{ m: "1rem", textAlign: "start", width: largerVersion ? "30rem" : "25rem" }}>
                     <Box sx={{ position: "relative", width: "100%", height: largerVersion ? "30rem" : "22rem", mb: "1rem" }}>
-                        <MediaPreview
-                            imageUrl={imageUrl}
-                            videoUrls={[animationUrl, cardAnimationUrl]}
-                            objectFit="cover"
-                            imageTransform={item?.type === AssetItemType.Weapon || item?.type === AssetItemType.WeaponSkin ? "rotate(-30deg) scale(.95)" : ""}
-                        />
+                        <MediaPreview imageUrl={imageUrl} videoUrls={[animationUrl, cardAnimationUrl]} objectFit="cover" />
 
-                        <TooltipHelper placement="right" text={assetItemDeets.label}>
+                        <TooltipHelper color={assetItemDeets.color} placement="right" text={assetItemDeets.label}>
                             <Box sx={{ position: "absolute", top: ".1rem", left: ".1rem" }}>
                                 {assetItemDeets.icon && <assetItemDeets.icon size="2rem" fill={assetItemDeets.color} />}
                             </Box>
@@ -96,7 +89,6 @@ export const CrateRewardItemsLarge = ({ item, largerVersion }: CrateRewardItemsP
 }
 
 export const CrateRewardItemsSmall = ({ item }: CrateRewardItemsProps) => {
-    const location = useLocation()
     const theme = useTheme()
     const rarityDeets = useMemo(() => getRarityDeets(item?.skin?.tier || item?.rarity || ""), [item?.rarity, item?.skin?.tier])
     const assetItemDeets = useMemo(() => getAssetItemDeets(item?.type), [item?.type])
@@ -108,7 +100,7 @@ export const CrateRewardItemsSmall = ({ item }: CrateRewardItemsProps) => {
 
     return (
         <Button sx={{ color: "#FFFFFF", justifyContent: "flex-start", pointerEvents: assetItemDeets.subRoute ? "all" : "none" }}>
-            <Link to={`/${assetItemDeets.subRoute}/${item?.id}${location.hash}`}>
+            <Link to={`/${assetItemDeets.subRoute}/${item?.id}`}>
                 <Stack direction="row" alignItems="center" spacing="1rem" sx={{ textAlign: "start" }}>
                     <Box
                         sx={{
@@ -119,14 +111,9 @@ export const CrateRewardItemsSmall = ({ item }: CrateRewardItemsProps) => {
                             border: `${assetItemDeets.color || theme.factionTheme.primary} 1px solid`,
                         }}
                     >
-                        <MediaPreview
-                            imageUrl={imageUrl}
-                            videoUrls={[animationUrl, cardAnimationUrl]}
-                            showBorder
-                            imageTransform={item?.type === AssetItemType.Weapon || item?.type === AssetItemType.WeaponSkin ? "rotate(-30deg) scale(.95)" : ""}
-                        />
+                        <MediaPreview imageUrl={imageUrl} videoUrls={[animationUrl, cardAnimationUrl]} showBorder />
 
-                        <TooltipHelper placement="right" text={assetItemDeets.label}>
+                        <TooltipHelper color={assetItemDeets.color} placement="right" text={assetItemDeets.label}>
                             <Box sx={{ position: "absolute", top: ".1rem", left: ".1rem" }}>
                                 {assetItemDeets.icon && <assetItemDeets.icon size="1.4rem" fill={assetItemDeets.color} />}
                             </Box>

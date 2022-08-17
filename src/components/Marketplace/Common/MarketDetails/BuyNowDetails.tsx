@@ -1,7 +1,7 @@
 import { Box, Divider, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
 import { useCallback, useMemo, useState } from "react"
-import { useHistory, useLocation } from "react-router-dom"
+import { useHistory } from "react-router-dom"
 import { ClipThing, FancyButton } from "../../.."
 import { SvgSupToken, SvgWallet } from "../../../../assets"
 import { useAuth } from "../../../../containers"
@@ -55,7 +55,6 @@ export const BuyNowDetails = ({
     }, [buyNowPrice, createdAt, dutchAuctionDropRate, reservePrice])
 
     const history = useHistory()
-    const location = useLocation()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [currentPrice, setCurrentPrice] = useState<BigNumber>(calculateNewPrice())
 
@@ -227,7 +226,7 @@ export const BuyNowDetails = ({
                     title="PURCHASED ITEM"
                     leftLabel="GO BACK TO MARKETPLACE"
                     onLeftButton={() => {
-                        history.replace(`/marketplace${location.hash}`)
+                        history.replace(`/marketplace`)
                     }}
                     rightLabel="GO TO FLEET"
                     onRightButton={() => {
@@ -244,7 +243,7 @@ export const BuyNowDetails = ({
                                 break
                         }
 
-                        history.replace(`/fleet/${subPath}${location.hash}`)
+                        history.replace(`/fleet/${subPath}`)
                     }}
                 >
                     <Typography variant="h6">You have successfully purchased the item.</Typography>

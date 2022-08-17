@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { createContainer } from "unstated-next"
-import { useAuth, useSnackbar } from "."
+import { useAuth, useGlobalNotifications } from "."
 import { useGameServerCommandsFaction, useGameServerSubscriptionUser } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
 import { Position, GameAbility, LocationSelectType, PlayerAbility } from "../types"
@@ -24,7 +24,7 @@ export interface MapSelection {
 export const MiniMapContainer = createContainer(() => {
     const { bribeStage, map } = useGame()
     const { factionID } = useAuth()
-    const { newSnackbarMessage } = useSnackbar()
+    const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsFaction("/faction_commander")
 
     // Map

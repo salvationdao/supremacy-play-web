@@ -2,7 +2,7 @@ import { Box, Modal, Stack, TextField, Typography } from "@mui/material"
 import { useCallback, useMemo, useState } from "react"
 import { ClipThing, FancyButton } from "../../.."
 import { SafePNG, SvgArrow, SvgSupToken } from "../../../../assets"
-import { useSnackbar } from "../../../../containers"
+import { useGlobalNotifications } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
 import { numberCommaFormatter, supFormatterNoFixed } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
@@ -25,7 +25,7 @@ interface MysteryCrateStoreItemProps {
 
 export const MysteryCrateStoreItem = ({ enlargedView, crate, setOpeningCrate, setOpenedRewards, setFutureCratesToOpen }: MysteryCrateStoreItemProps) => {
     const theme = useTheme()
-    const { newSnackbarMessage } = useSnackbar()
+    const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [mysteryCrate, setMysteryCrate] = useState<StorefrontMysteryCrate>(crate)
     const [rewards, setRewards] = useState<RewardResponse[]>()

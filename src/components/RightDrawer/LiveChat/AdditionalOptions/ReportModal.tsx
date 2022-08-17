@@ -1,20 +1,15 @@
-import { Box, CircularProgress, MenuItem, Modal, Select, Stack, TextField, Typography } from "@mui/material"
+import { Box, MenuItem, Modal, Select, Stack, TextField, Typography } from "@mui/material"
 import { useCallback, useState } from "react"
-import { TextMessageData } from "../../../../types"
-import { colors, siteZIndex } from "../../../../theme/theme"
-import { ClipThing } from "../../../Common/ClipThing"
+import { useGlobalNotifications } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
-import { FancyButton } from "../../../Common/FancyButton"
-import { GameServerKeys } from "../../../../keys"
-import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
-import { useSnackbar } from "../../../../containers"
 import { useToggle } from "../../../../hooks"
-
-interface ReportModalProps {
-    message: TextMessageData
-    setReportModalOpen: (value?: boolean) => void
-    reportModalOpen: boolean
-}
+import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../../keys"
+import { colors, fonts, siteZIndex } from "../../../../theme/theme"
+import { TextMessageData, User } from "../../../../types"
+import { ClipThing } from "../../../Common/ClipThing"
+import { FancyButton } from "../../../Common/FancyButton"
+import { Player } from "../../../Common/Player"
 
 interface ReportSend {
     message_id: string
@@ -33,15 +28,23 @@ enum reasons {
     Other = "Other",
 }
 
-export const ReportModal = ({ message, reportModalOpen, setReportModalOpen }: ReportModalProps) => {
+interface ReportModalProps {
+    fromUser: User
+    message: TextMessageData
+    setReportModalOpen: (value?: boolean) => void
+    reportModalOpen: boolean
+}
+
+export const ReportModal = ({ fromUser, message, reportModalOpen, setReportModalOpen }: ReportModalProps) => {
     const theme = useTheme()
-    const { newSnackbarMessage } = useSnackbar()
+    const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsUser("/user_commander")
 
     const [reason, setReason] = useState<string>(reasons.OffensiveLanguage)
     const [otherDescription, setOtherDescription] = useState<string>("")
     const [description, setDescription] = useState<string>("")
     const [loading, setLoading] = useToggle(false)
+    const [error, setError] = useState<string>()
 
     const handleReport = useCallback(async () => {
         if (!message.id || loading) return
@@ -56,10 +59,11 @@ export const ReportModal = ({ message, reportModalOpen, setReportModalOpen }: Re
             setLoading(true)
             const resp = await send<boolean, ReportSend>(GameServerKeys.ChatReport, payload)
             if (!resp) return
+            newSnackbarMessage("Thank you for reporting the message.", "success")
             setReportModalOpen(false)
-            newSnackbarMessage("Thank you, your report has been successful.", "success")
-        } catch (e) {
-            newSnackbarMessage(typeof e === "string" ? e : "Failed to send report, try again or contact support.", "error")
+        } catch (err) {
+            setError(typeof err === "string" ? err : "Failed to send report, try again or contact support.")
+            console.error(err)
         } finally {
             setLoading(false)
         }
@@ -92,31 +96,47 @@ export const ReportModal = ({ message, reportModalOpen, setReportModalOpen }: Re
                     sx={{ position: "relative" }}
                     backgroundColor={backgroundColor}
                 >
-                    <form onSubmit={handleReport}>
-                        <Box sx={{ padding: "2rem", display: "grid", gridTemplateColumns: "70px 1fr", gridGap: "1rem" }}>
-                            <Typography variant={"h3"} sx={{ gridColumn: "1 / 3" }}>
-                                Report {message.from_user.username}
-                            </Typography>
-                            <Typography sx={{ gridColumn: "1 / 2" }}>Message:</Typography>
-                            <Typography sx={{ gridColumn: "2 / 3" }}>{message.message}</Typography>
+                    <Stack spacing="1.4rem" sx={{ p: "2rem" }}>
+                        <Typography sx={{ fontFamily: fonts.nostromoBlack }}>MESSAGE REPORTING</Typography>
 
-                            <Typography sx={{ mr: "1rem", gridColumn: "1 / 2" }}>Reason:</Typography>
+                        <Stack direction="row" alignItems="flex-start">
+                            <Typography sx={{ width: "10rem", fontWeight: "fontWeightBold" }}>User:</Typography>
+                            <Player player={fromUser} />
+                        </Stack>
+
+                        <Stack direction="row" alignItems="flex-start">
+                            <Typography sx={{ width: "10rem", fontWeight: "fontWeightBold" }}>Message:</Typography>
+                            <Typography>{message.message}</Typography>
+                        </Stack>
+
+                        <Stack direction="row" alignItems="flex-start">
+                            <Typography sx={{ width: "10rem", fontWeight: "fontWeightBold" }}>Reason:</Typography>
+
                             <Select
                                 sx={{
-                                    width: "100%",
-                                    gridColumn: "2 / 3",
-                                    borderRadius: 0.5,
+                                    flex: 1,
                                     "&:hover": {
-                                        backgroundColor: primaryColor,
-                                        ".MuiTypography-root": { color: (theme) => theme.factionTheme.secondary },
+                                        backgroundColor: `${primaryColor}80`,
+                                        ".MuiTypography-root": { color: secondaryColor },
                                     },
                                     ".MuiTypography-root": {
                                         px: "1rem",
                                         py: ".5rem",
                                     },
                                     "& .MuiSelect-outlined": { px: ".8rem", pt: ".2rem", pb: 0 },
+                                    ".MuiOutlinedInput-notchedOutline": {
+                                        borderRadius: 0.5,
+                                    },
+                                    ".MuiSelect-select": {
+                                        ".MuiTypography-root": {
+                                            color: secondaryColor,
+                                        },
+                                    },
+                                    ".MuiSelect-icon": {
+                                        fill: secondaryColor,
+                                    },
                                 }}
-                                value={reason ?? ""}
+                                value={reason || ""}
                                 MenuProps={{
                                     variant: "menu",
                                     sx: {
@@ -145,32 +165,39 @@ export const ReportModal = ({ message, reportModalOpen, setReportModalOpen }: Re
                                             }}
                                             sx={{ "&:hover": { backgroundColor: "#FFFFFF20" } }}
                                         >
-                                            <Typography textTransform="uppercase">{x}</Typography>
+                                            <Typography textTransform="uppercase" sx={{ fontWeight: "fontWeightBold" }}>
+                                                {x}
+                                            </Typography>
                                         </MenuItem>
                                     )
                                 })}
                             </Select>
-                            {reason === reasons.Other && (
-                                <Stack direction={"row"} sx={{ alignItems: "center", gridColumn: "1 / 3", ml: "3rem" }}>
-                                    <Typography>Description:</Typography>
-                                    <TextField
-                                        required={reason === reasons.Other}
-                                        value={otherDescription}
-                                        onChange={(e) => {
-                                            setOtherDescription(e.target.value)
-                                        }}
-                                        sx={{
-                                            width: "100%",
-                                            ml: "1rem",
-                                            "& .MuiInputBase-input": {
-                                                p: ".5rem",
-                                            },
-                                        }}
-                                        inputProps={{ maxLength: 30 }}
-                                    />
-                                </Stack>
-                            )}
-                            <Typography sx={{ gridColumn: "1 / 2" }}>Comments:</Typography>
+                        </Stack>
+
+                        {reason === reasons.Other && (
+                            <Stack direction="row" alignItems="flex-start">
+                                <Typography sx={{ width: "10rem", fontWeight: "fontWeightBold" }}>Description:</Typography>
+
+                                <TextField
+                                    required={reason === reasons.Other}
+                                    value={otherDescription}
+                                    onChange={(e) => {
+                                        setOtherDescription(e.target.value)
+                                    }}
+                                    sx={{
+                                        flex: 1,
+                                        "& .MuiInputBase-input": {
+                                            p: ".5rem",
+                                        },
+                                    }}
+                                    inputProps={{ maxLength: 30 }}
+                                />
+                            </Stack>
+                        )}
+
+                        <Stack direction="row" alignItems="flex-start">
+                            <Typography sx={{ width: "10rem", fontWeight: "fontWeightBold" }}>Comments:</Typography>
+
                             <TextField
                                 multiline
                                 required
@@ -180,19 +207,39 @@ export const ReportModal = ({ message, reportModalOpen, setReportModalOpen }: Re
                                     setDescription(e.target.value)
                                 }}
                                 sx={{
-                                    gridColumn: "2 / 3",
+                                    flex: 1,
                                     "& .MuiInputBase-root": {
                                         p: ".5rem",
                                     },
                                 }}
                             />
-                            <Box sx={{ gridColumn: "1 / 3" }}>
-                                <FancyButton disabled={loading} type={"submit"}>
-                                    {loading ? <CircularProgress size={"1.5rem"} /> : "Report"}
-                                </FancyButton>
-                            </Box>
+                        </Stack>
+
+                        <Box sx={{ mt: "auto" }}>
+                            <FancyButton
+                                loading={loading}
+                                clipThingsProps={{
+                                    clipSize: "9px",
+                                    backgroundColor: primaryColor,
+                                    opacity: 1,
+                                    border: { borderColor: primaryColor, borderThickness: "2px" },
+                                    sx: { position: "relative" },
+                                }}
+                                sx={{ px: "1.6rem", py: ".6rem", color: secondaryColor }}
+                                onClick={handleReport}
+                            >
+                                <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBlack, color: secondaryColor }}>
+                                    REPORT
+                                </Typography>
+                            </FancyButton>
                         </Box>
-                    </form>
+
+                        {error && (
+                            <Typography variant="body2" sx={{ color: colors.red }}>
+                                {error}
+                            </Typography>
+                        )}
+                    </Stack>
                 </ClipThing>
             </Box>
         </Modal>

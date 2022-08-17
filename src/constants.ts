@@ -62,14 +62,11 @@ export const SENTRY_CONFIG = {
 }
 
 // UI related stuff
-export const GAME_BAR_HEIGHT = 5.9 // rem
-export const RIGHT_DRAWER_WIDTH = 38 // rem
-export const CONTROLS_HEIGHT = 3.0 // rem
-
+export const GAME_BAR_HEIGHT = 5.2 // rem
 export const DRAWER_TRANSITION_DURATION = 250
 export const MESSAGES_BUFFER_SIZE = 500
 export const MAX_CHAT_MESSAGE_LENGTH = 280
-export const NOTIFICATION_TIME = 30000
+export const NOTIFICATION_TIME = 15000
 export const NOTIFICATION_LINGER = 400
 export const MAX_BAN_PROPOSAL_REASON_LENGTH = 150
 
