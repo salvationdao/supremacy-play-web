@@ -67,9 +67,13 @@ export const MechLoadout = ({ mechDetails }: { mechDetails: MechDetails }) => {
                                 imageTransform="rotate(-30deg) scale(.95)"
                                 rarity={w.weapon_skin ? getRarityDeets(w.weapon_skin.tier) : undefined}
                                 hasSkin={!!w.weapon_skin}
-                                renderModal={(toggleShowLoadoutModal) => <MechLoadoutWeaponModal onClose={() => toggleShowLoadoutModal(false)} equipped={w}
-                                weaponsWithSkinInheritance={weaponsWithSkinInheritance}
-                                 />}
+                                renderModal={(toggleShowLoadoutModal) => (
+                                    <MechLoadoutWeaponModal
+                                        onClose={() => toggleShowLoadoutModal(false)}
+                                        equipped={w}
+                                        weaponsWithSkinInheritance={weaponsWithSkinInheritance}
+                                    />
+                                )}
                             />
                         )
                     })}
