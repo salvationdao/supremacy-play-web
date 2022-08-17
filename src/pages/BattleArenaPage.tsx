@@ -165,7 +165,7 @@ const BattleArenaPageInner = () => {
 
     return (
         <Stack id="battle-arena-all" sx={{ width: "100%", height: "100%", zIndex: siteZIndex.RoutePage }}>
-            <Box id={isMobile ? "" : "game-ui-container"} sx={{ position: "relative", flex: 1 }}>
+            <Box id="game-ui-container" sx={{ position: "relative", flex: 1, height: 0 }}>
                 <BigDisplay />
 
                 {!isMobile && (

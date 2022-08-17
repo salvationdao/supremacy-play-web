@@ -5,7 +5,7 @@ import { RIGHT_DRAWER_ARRAY, RIGHT_DRAWER_MAP } from "../../routes"
 import { colors, siteZIndex } from "../../theme/theme"
 import { DrawerButtons } from "./DrawerButtons"
 
-export const DRAWER_WIDTH = 38 // rem
+export const RIGHT_DRAWER_WIDTH = 38 // rem
 
 export const RightDrawer = () => {
     const { rightDrawerActiveTabID } = useOverlayToggles()
@@ -26,11 +26,11 @@ export const RightDrawer = () => {
                 anchor="right"
                 sx={{
                     flexShrink: 0,
-                    width: isOpen ? `${DRAWER_WIDTH}rem` : 0,
+                    width: isOpen ? `${RIGHT_DRAWER_WIDTH}rem` : 0,
                     transition: `all ${DRAWER_TRANSITION_DURATION}ms cubic-bezier(0, 0, 0.2, 1)`,
                     zIndex: siteZIndex.Drawer,
                     "& .MuiDrawer-paper": {
-                        width: `${DRAWER_WIDTH}rem`,
+                        width: `${RIGHT_DRAWER_WIDTH}rem`,
                         backgroundColor: colors.darkNavy,
                         position: "absolute",
                         borderLeft: 0,

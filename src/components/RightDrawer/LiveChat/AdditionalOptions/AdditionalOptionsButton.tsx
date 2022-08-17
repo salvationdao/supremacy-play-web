@@ -1,6 +1,6 @@
 import { Button, Popover, Stack, Typography } from "@mui/material"
 import { MutableRefObject, useEffect, useRef } from "react"
-import { DRAWER_WIDTH, UserBanForm } from "../../.."
+import { RIGHT_DRAWER_WIDTH, UserBanForm } from "../../.."
 import { useAuth } from "../../../../containers"
 import { useToggle } from "../../../../hooks"
 import { colors, siteZIndex } from "../../../../theme/theme"
@@ -91,7 +91,7 @@ const OptionsPopover = ({
                 zIndex: siteZIndex.Popover,
                 ".MuiPaper-root": {
                     ml: 2,
-                    width: `${DRAWER_WIDTH}rem`,
+                    width: `${RIGHT_DRAWER_WIDTH}rem`,
                     background: "none",
                     backgroundColor: colors.darkerNavy,
                     borderRadius: 0.2,

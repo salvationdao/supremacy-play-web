@@ -68,6 +68,7 @@ export const MechName = ({ mechDetails, renameMech }: { renameMech: (name: strin
                     onFocus={() => renamingRef.current?.setSelectionRange(0, newMechName.length)}
                     onBlur={() => (newMechName === name ? setEditing(false) : undefined)}
                     onKeyDown={(e) => {
+                        e.stopPropagation()
                         if (e.key === "Enter") {
                             e.preventDefault()
                             renameMechHandler()

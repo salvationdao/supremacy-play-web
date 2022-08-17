@@ -1,208 +1,95 @@
-import { Box, Fade, Stack, Typography } from "@mui/material"
-import { useEffect, useMemo, useRef } from "react"
-import { MiniMapInside, MoveableResizable } from "../.."
-import { SvgFullscreen, SvgMinimize } from "../../../assets"
-import { useDimension, useGame, useMobile, useOverlayToggles } from "../../../containers"
+import { Box, Stack, Typography } from "@mui/material"
+import { useEffect, useMemo, useRef, useState } from "react"
+import { MiniMapInside } from "../.."
+import { useDimension, useGame } from "../../../containers"
 import { useHotkey } from "../../../containers/hotkeys"
 import { useMiniMap } from "../../../containers/minimap"
 import { useTheme } from "../../../containers/theme"
-import { useToggle } from "../../../hooks"
 import { fonts } from "../../../theme/theme"
-import { LocationSelectType, Map, PlayerAbility } from "../../../types"
-import { MoveableResizableConfig, useMoveableResizable } from "../../Common/MoveableResizable/MoveableResizableContainer"
-import { SectionHeading } from "../../LeftDrawer/BattleArena/Common/SectionHeading"
+import { Dimension, Map } from "../../../types"
+import { LEFT_DRAWER_WIDTH } from "../../LeftDrawer/LeftDrawer"
 import { HighlightedMechAbilities } from "./MapOutsideItems/HighlightedMechAbilities"
 import { TargetHint } from "./MapOutsideItems/TargetHint"
 
 export const TOP_BAR_HEIGHT = 3.1 // rems
-
-const FullscreenIcon = () => {
-    const { isEnlarged, toggleIsEnlarged } = useMiniMap()
-    return (
-        <Box
-            onClick={() => toggleIsEnlarged()}
-            sx={{
-                mr: ".9rem",
-                cursor: "pointer",
-                opacity: 0.4,
-                ":hover": { opacity: 1 },
-            }}
-        >
-            {isEnlarged ? <SvgMinimize size="1.6rem" /> : <SvgFullscreen size="1.6rem" />}
-        </Box>
-    )
-}
+const BOTTOM_PADDING = 10 // rems
 
 export const MiniMap = () => {
-    const { isMobile } = useMobile()
     const { map, bribeStage } = useGame()
-    const { isTargeting, isEnlarged, resetSelection, playerAbility } = useMiniMap()
-    const { isMapOpen, toggleIsMapOpen } = useOverlayToggles()
+    const { isTargeting, resetSelection } = useMiniMap()
+    const [battleStarted, setBattleStarted] = useState(false)
 
-    // Temp hotfix ask james ****************************
-    const [show, toggleShow] = useToggle(false)
     useEffect(() => {
         if (bribeStage && bribeStage.phase !== "HOLD" ? true : false) {
-            toggleShow(true)
+            setBattleStarted(true)
         } else {
-            toggleShow(false)
+            setBattleStarted(false)
             resetSelection()
         }
-    }, [bribeStage, toggleShow, resetSelection])
-    // End ****************************************
+    }, [bribeStage, setBattleStarted, resetSelection])
 
-    useEffect(() => {
-        if (isTargeting) toggleIsMapOpen(true)
-    }, [isTargeting, toggleIsMapOpen])
+    if (!map) {
+        return null
+    }
 
-    // Map config
-    const config: MoveableResizableConfig = useMemo(
-        () => ({
-            localStoragePrefix: "miniMap1",
-            // Defaults
-            defaultPosX: 9999,
-            defaultPosY: 9999,
-            defaultWidth: 300,
-            defaultHeight: 300,
-            // Position limits
-            minPosX: 0,
-            minPosY: 0,
-            // Size limits
-            minWidth: 250,
-            minHeight: 250,
-            maxWidth: 1000,
-            maxHeight: 1000,
-            // Others
-            infoTooltipText: "Battle arena minimap.",
-            onHideCallback: () => toggleIsMapOpen(false),
-            hidePopoutBorder: true,
-            topRightContent: <FullscreenIcon />,
-        }),
-        [toggleIsMapOpen],
-    )
+    if (!battleStarted) {
+        // TODO: show message saying wait for battle to start
+    }
 
-    return useMemo(() => {
-        if (!map) return null
+    const isPoppedout = false // TODO
 
-        const toRender = show && isMapOpen
-
-        return (
-            <Fade in={toRender}>
-                <Box sx={{ ...(isMobile ? { backgroundColor: "#FFFFFF12", boxShadow: 2, border: "#FFFFFF20 1px solid" } : {}) }}>
-                    <MoveableResizable config={config}>
-                        <MiniMapInner map={map} isTargeting={isTargeting} isEnlarged={isEnlarged} toRender={toRender} playerAbility={playerAbility} />
-                    </MoveableResizable>
-                </Box>
-            </Fade>
-        )
-    }, [map, show, isMapOpen, isMobile, config, isTargeting, isEnlarged, playerAbility])
+    return <MiniMapInner map={map} isTargeting={isTargeting} isPoppedout={isPoppedout} />
 }
 
 // This inner component takes care of the resizing etc.
-const MiniMapInner = ({
-    map,
-    isTargeting,
-    isEnlarged,
-    toRender,
-    playerAbility,
-}: {
-    map: Map
-    isTargeting: boolean
-    isEnlarged: boolean
-    toRender: boolean
-    playerAbility?: PlayerAbility
-}) => {
-    const { isMobile } = useMobile()
+const MiniMapInner = ({ map, isTargeting, isPoppedout }: { map: Map; isTargeting: boolean; isPoppedout: boolean }) => {
+    const { isStreamBigDisplay, setIsStreamBigDisplay } = useGame()
     const theme = useTheme()
     const { handleHotKey } = useHotkey()
-    const {
-        remToPxRatio,
-        gameUIDimensions: { width, height },
-    } = useDimension()
-    const {
-        isPoppedout,
-        updateSize,
-        updatePosition,
-        curWidth,
-        curHeight,
-        curPosX,
-        curPosY,
-        defaultWidth,
-        maxWidth,
-        maxHeight,
-        setDefaultWidth,
-        setDefaultHeight,
-        minWidth,
-        setMinHeight,
-    } = useMoveableResizable()
+    const { remToPxRatio, gameUIDimensions } = useDimension()
 
-    const ref = useRef<HTMLDivElement>()
+    const [renderDimensions, setRenderDimensions] = useState<Dimension>({ width: 100, height: 100 })
     const mapHeightWidthRatio = useRef(1)
-    const prevWidth = useRef(curWidth)
-    const prevHeight = useRef(curHeight)
-    const prevPosX = useRef(curPosX)
-    const prevPosY = useRef(curPosY)
+    const prevIsStreamBigDisplay = useRef(isStreamBigDisplay)
 
-    // When it's targeting, enlarge the map and move to center of screen, else restore to the prev dimensions
+    const containFit = useMemo(() => isPoppedout || !isStreamBigDisplay, [isPoppedout, isStreamBigDisplay])
+
+    // Set size
     useEffect(() => {
-        // If its mech move, then dont do the map enlarge, too disruptive
-        if (playerAbility?.ability.location_select_type === LocationSelectType.MECH_COMMAND) {
-            prevPosX.current = curPosX
-            prevPosY.current = curPosY
-            prevWidth.current = curWidth
-            prevHeight.current = curHeight
-            return
-        }
+        mapHeightWidthRatio.current = map.height / map.width
 
-        if (isTargeting || isEnlarged) {
-            const maxW = Math.min(width - 25, maxWidth || width, 900)
-            const maxH = Math.min(maxW * mapHeightWidthRatio.current, maxHeight || height, height - 120)
-            let targetingWidth = Math.min(maxW, 900)
-            let targetingHeight = targetingWidth * mapHeightWidthRatio.current
-
-            if (targetingHeight > maxH) {
-                targetingHeight = Math.min(maxH, 700)
-                targetingWidth = targetingHeight / mapHeightWidthRatio.current
-            }
-
-            prevPosX.current = curPosX
-            prevPosY.current = curPosY
-            prevWidth.current = curWidth
-            prevHeight.current = curHeight
-            updateSize({ width: targetingWidth, height: targetingHeight })
-            updatePosition({ x: (width - targetingWidth) / 2, y: Math.max((height - targetingHeight) / 2 - 55, 25) })
+        let defaultWidth = gameUIDimensions.width
+        let defaultHeight = 0
+        if (!containFit) {
+            defaultWidth = LEFT_DRAWER_WIDTH * remToPxRatio
+            defaultHeight = defaultWidth * mapHeightWidthRatio.current
         } else {
-            updateSize({ width: prevWidth.current, height: prevHeight.current })
-            updatePosition({ x: prevPosX.current, y: prevPosY.current })
+            defaultHeight = Math.min(defaultWidth * mapHeightWidthRatio.current, gameUIDimensions.height)
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isTargeting, isEnlarged, maxHeight, maxWidth])
 
-    // Set initial size
+        setRenderDimensions({ width: defaultWidth, height: defaultHeight })
+    }, [map, remToPxRatio, gameUIDimensions, isPoppedout, isStreamBigDisplay, containFit])
+
+    // When it's targeting, enlarge to big display, else restore to the prev location
     useEffect(() => {
-        const ratio = map.height / map.width
-        const defaultW = defaultWidth
-        const defaultH = defaultWidth * ratio + TOP_BAR_HEIGHT * remToPxRatio
-        const minH = (minWidth || defaultWidth) * ratio + TOP_BAR_HEIGHT * remToPxRatio
+        if (isTargeting) {
+            setIsStreamBigDisplay((prev) => {
+                prevIsStreamBigDisplay.current = prev
+                return false
+            })
+        } else {
+            setIsStreamBigDisplay(prevIsStreamBigDisplay.current)
+        }
+    }, [isTargeting, setIsStreamBigDisplay])
 
-        setDefaultWidth(defaultW)
-        setDefaultHeight(defaultH)
-        setMinHeight(minH)
-        updateSize({ width: curWidth, height: curWidth * ratio + TOP_BAR_HEIGHT * remToPxRatio })
-        mapHeightWidthRatio.current = ratio
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [map, setDefaultWidth, setDefaultHeight])
-
-    return useMemo(() => {
-        if (!toRender) return null
-
-        // All for the popped out window black bars
-        let outsideWidth = curWidth
-        let outsideHeight = curHeight
+    const sizes = useMemo(() => {
+        const padding = 6 * remToPxRatio
+        let outsideWidth = renderDimensions.width - padding
+        let outsideHeight = renderDimensions.height - padding - BOTTOM_PADDING * remToPxRatio
         let insideWidth = outsideWidth
         let insideHeight = outsideHeight - TOP_BAR_HEIGHT * remToPxRatio
 
-        if (isPoppedout) {
+        if (containFit) {
             const maxHeight = outsideWidth * mapHeightWidthRatio.current
             const maxWidth = outsideHeight / mapHeightWidthRatio.current
 
@@ -217,12 +104,15 @@ const MiniMapInner = ({
             }
         }
 
-        if (isMobile) {
-            const parentDiv = ref.current?.parentElement
-            insideWidth = parentDiv?.offsetWidth || 300
-            insideHeight = parentDiv?.offsetWidth || 300 * mapHeightWidthRatio.current
+        return {
+            outsideWidth,
+            outsideHeight,
+            insideWidth,
+            insideHeight,
         }
+    }, [containFit, remToPxRatio, renderDimensions.height, renderDimensions.width])
 
+    return useMemo(() => {
         return (
             <Stack
                 alignItems="center"
@@ -231,17 +121,17 @@ const MiniMapInner = ({
                     position: "relative",
                     width: "100%",
                     height: "100%",
+                    pb: containFit ? `${BOTTOM_PADDING}rem` : 0,
                 }}
             >
                 <Box
-                    ref={ref}
                     tabIndex={0}
                     onKeyDown={handleHotKey}
                     sx={{
                         position: "relative",
                         boxShadow: 1,
-                        width: isPoppedout ? outsideWidth : "100%",
-                        height: isPoppedout ? outsideHeight : "100%",
+                        width: sizes.outsideWidth,
+                        height: sizes.outsideHeight,
                         transition: "all .2s",
                         overflow: "hidden",
                         pointerEvents: "all",
@@ -249,51 +139,40 @@ const MiniMapInner = ({
                         zIndex: 2,
                     }}
                 >
-                    {isMobile ? (
-                        <Box>
-                            <SectionHeading
-                                label={map.name
-                                    .replace(/([A-Z])/g, " $1")
-                                    .trim()
-                                    .toUpperCase()}
-                            />
-                        </Box>
-                    ) : (
-                        <Stack
-                            direction="row"
-                            alignItems="center"
+                    <Stack
+                        direction="row"
+                        alignItems="center"
+                        sx={{
+                            height: `${TOP_BAR_HEIGHT}rem`,
+                            px: "1.8rem",
+                            backgroundColor: "#000000BF",
+                            borderBottom: `${theme.factionTheme.primary}80 .25rem solid`,
+                            zIndex: 99,
+                        }}
+                    >
+                        <Typography
+                            variant="caption"
                             sx={{
-                                height: `${TOP_BAR_HEIGHT}rem`,
-                                px: "1.8rem",
-                                backgroundColor: "#000000BF",
-                                borderBottom: `${theme.factionTheme.primary}80 .25rem solid`,
-                                zIndex: 99,
+                                fontFamily: fonts.nostromoBlack,
+                                lineHeight: 1,
+                                opacity: 0.8,
                             }}
                         >
-                            <Typography
-                                variant="caption"
-                                sx={{
-                                    fontFamily: fonts.nostromoBlack,
-                                    lineHeight: 1,
-                                    opacity: 0.8,
-                                }}
-                            >
-                                {map.name
-                                    .replace(/([A-Z])/g, " $1")
-                                    .trim()
-                                    .toUpperCase()}
-                            </Typography>
-                        </Stack>
-                    )}
+                            {map.name
+                                .replace(/([A-Z])/g, " $1")
+                                .trim()
+                                .toUpperCase()}
+                        </Typography>
+                    </Stack>
 
-                    <MiniMapInside containerDimensions={{ width: insideWidth, height: insideHeight }} />
+                    <MiniMapInside containerDimensions={{ width: sizes.insideWidth, height: sizes.insideHeight }} />
 
                     <TargetHint />
 
                     <HighlightedMechAbilities />
                 </Box>
 
-                {/* not scaled map background image, for background only */}
+                {/* Not scaled map background image, for background only */}
                 <Box
                     sx={{
                         position: "absolute",
@@ -309,6 +188,16 @@ const MiniMapInner = ({
                 />
             </Stack>
         )
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [toRender, theme.factionTheme.primary, curWidth, curHeight, remToPxRatio, isMobile, width, height, isPoppedout, handleHotKey])
+    }, [
+        containFit,
+        handleHotKey,
+        sizes.outsideWidth,
+        sizes.outsideHeight,
+        sizes.insideWidth,
+        sizes.insideHeight,
+        isPoppedout,
+        theme.factionTheme.primary,
+        map.name,
+        map?.image_url,
+    ])
 }

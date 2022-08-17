@@ -3,10 +3,9 @@ import { createContainer } from "unstated-next"
 import { useAuth, useGlobalNotifications } from "."
 import { useGameServerCommandsFaction, useGameServerSubscriptionSecuredUser } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
-import { Position, GameAbility, LocationSelectType, PlayerAbility } from "../types"
-import { useToggle } from "./../hooks/useToggle"
-import { useGame } from "./game"
+import { GameAbility, LocationSelectType, PlayerAbility, Position } from "../types"
 import { useArena } from "./arena"
+import { useGame } from "./game"
 
 interface WinnerAnnouncementResponse {
     game_ability: GameAbility
@@ -37,7 +36,6 @@ export const MiniMapContainer = createContainer(() => {
     // Map triggers
     const [winner, setWinner] = useState<WinnerAnnouncementResponse>()
     const [playerAbility, setPlayerAbility] = useState<PlayerAbility>()
-    const [isEnlarged, toggleIsEnlarged] = useToggle()
     const [isTargeting, setIsTargeting] = useState(false)
 
     // Other stuff
@@ -202,8 +200,6 @@ export const MiniMapContainer = createContainer(() => {
         onTargetConfirm,
         gridWidth,
         gridHeight,
-        isEnlarged,
-        toggleIsEnlarged,
     }
 })
 

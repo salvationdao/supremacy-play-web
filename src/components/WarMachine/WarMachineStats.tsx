@@ -1,8 +1,7 @@
 import { Box, Fade, Slide, Stack } from "@mui/material"
-import { ReactElement, useEffect, useMemo } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { ADD_MINI_MECH_PARTICIPANT_ID } from "../../constants"
 import { useGame, useMobile, useSupremacy } from "../../containers"
-import { useToggle } from "../../hooks"
 import { siteZIndex } from "../../theme/theme"
 import { SectionHeading } from "../LeftDrawer/BattleArena/Common/SectionHeading"
 import { WarMachineItem } from "./WarMachineItem/WarMachineItem"
@@ -15,20 +14,19 @@ export const WarMachineStats = () => {
 const WarMachineStatsInner = () => {
     const { isMobile } = useMobile()
     const { warMachines, bribeStage, factionWarMachines, otherWarMachines, ownedMiniMechs } = useGame()
+    const [battleStarted, setBattleStarted] = useState(false)
 
-    // Temp hotfix ask james ****************************
-    const [show, toggleShow] = useToggle(false)
     useEffect(() => {
-        toggleShow(bribeStage && bribeStage.phase !== "HOLD" ? true : false)
-    }, [bribeStage, toggleShow])
-    // End ****************************************
+        setBattleStarted(bribeStage && bribeStage.phase !== "HOLD" ? true : false)
+    }, [bribeStage, battleStarted])
 
     const haveFactionMechs = useMemo(() => factionWarMachines && factionWarMachines.length > 0, [factionWarMachines])
 
     if (!warMachines || warMachines.length <= 0) return null
 
     if (isMobile) {
-        if (!show) return null
+        if (!battleStarted) return null
+
         return (
             <>
                 {ownedMiniMechs.length > 0 && (
@@ -123,7 +121,7 @@ const WarMachineStatsInner = () => {
     }
 
     return (
-        <Slide in={show} direction="up">
+        <Slide in={battleStarted} direction="up">
             <Box
                 sx={{
                     position: "absolute",
@@ -135,81 +133,69 @@ const WarMachineStatsInner = () => {
                     filter: "drop-shadow(0 3px 3px #00000020)",
                 }}
             >
-                {ownedMiniMechs.length > 0 && (
-                    <Fade in>
-                        <Stack sx={{ px: "2rem", transform: "skew(-6deg)" }}>
-                            <HorizontalScrollContainer>
-                                <Stack spacing="-3rem" direction="row" alignItems="center">
-                                    {ownedMiniMechs.map((mm) => (
-                                        <WarMachineItem
-                                            key={`${mm.participantID}`}
-                                            warMachine={mm}
-                                            label={mm.participantID - ADD_MINI_MECH_PARTICIPANT_ID}
-                                            scale={0.6}
-                                        />
-                                    ))}
-                                </Stack>
-                            </HorizontalScrollContainer>
-                        </Stack>
-                    </Fade>
-                )}
+                <Box
+                    sx={{
+                        overflowY: "hidden",
+                        overflowX: "auto",
+                        direction: "ltr",
+                        mx: "1rem",
+                        mb: ".8rem",
+                        px: ".8rem",
+                        py: ".8rem",
 
-                <Stack sx={{ px: "2rem", transform: "skew(-6deg)" }}>
-                    {haveFactionMechs && (
-                        <HorizontalScrollContainer>
-                            <Stack spacing="-1.1rem" direction="row" alignItems="center" sx={{ pt: "1rem" }}>
-                                {factionWarMachines &&
+                        "::-webkit-scrollbar": {
+                            height: ".9rem",
+                        },
+                        "::-webkit-scrollbar-track": {
+                            background: "#FFFFFF15",
+                            borderRadius: 3,
+                        },
+                        "::-webkit-scrollbar-thumb": {
+                            background: (theme) => `${theme.factionTheme.primary}50`,
+                            borderRadius: 3,
+                        },
+                        transition: "all .2s",
+                    }}
+                >
+                    <Box sx={{ direction: "ltr" }}>
+                        <Stack spacing="-1.8rem" sx={{ transform: "skew(-6deg)" }}>
+                            {ownedMiniMechs.length > 0 && (
+                                <Fade in>
+                                    <Stack spacing="-3rem" direction="row" alignItems="center">
+                                        {ownedMiniMechs.map((mm) => (
+                                            <WarMachineItem
+                                                key={`${mm.participantID}`}
+                                                warMachine={mm}
+                                                label={mm.participantID - ADD_MINI_MECH_PARTICIPANT_ID}
+                                                scale={0.6}
+                                            />
+                                        ))}
+                                    </Stack>
+                                </Fade>
+                            )}
+
+                            <Stack direction="row" alignItems="center">
+                                {haveFactionMechs &&
+                                    factionWarMachines &&
                                     factionWarMachines.map((wm, i) => (
                                         <WarMachineItem key={`${wm.participantID} - ${wm.hash}`} warMachine={wm} scale={0.75} label={i + 1} />
                                     ))}
-                            </Stack>
-                        </HorizontalScrollContainer>
-                    )}
 
-                    {otherWarMachines && otherWarMachines.length > 0 && (
-                        <HorizontalScrollContainer>
-                            <Stack spacing="-1.1rem" direction="row" alignItems="center" sx={{ flex: 1, px: "1.2rem", py: "2rem" }}>
-                                {otherWarMachines.map((wm, i) => (
-                                    <WarMachineItem
-                                        key={`${wm.participantID} - ${wm.hash}`}
-                                        warMachine={wm}
-                                        scale={0.7}
-                                        label={i + 1 + (factionWarMachines ? factionWarMachines?.length : 0)}
-                                    />
-                                ))}
+                                {otherWarMachines &&
+                                    otherWarMachines.length > 0 &&
+                                    otherWarMachines.map((wm, i) => (
+                                        <WarMachineItem
+                                            key={`${wm.participantID} - ${wm.hash}`}
+                                            warMachine={wm}
+                                            scale={0.7}
+                                            label={i + 1 + (factionWarMachines ? factionWarMachines?.length : 0)}
+                                        />
+                                    ))}
                             </Stack>
-                        </HorizontalScrollContainer>
-                    )}
-                </Stack>
+                        </Stack>
+                    </Box>
+                </Box>
             </Box>
         </Slide>
-    )
-}
-
-const HorizontalScrollContainer = ({ children }: { children: ReactElement }) => {
-    return (
-        <Box
-            sx={{
-                flex: 1,
-                overflowY: "hidden",
-                overflowX: "auto",
-                direction: "ltr",
-
-                "::-webkit-scrollbar": {
-                    height: ".4rem",
-                },
-                "::-webkit-scrollbar-track": {
-                    background: "#FFFFFF15",
-                    borderRadius: 3,
-                },
-                "::-webkit-scrollbar-thumb": {
-                    background: (theme) => `${theme.factionTheme.primary}50`,
-                    borderRadius: 3,
-                },
-                transition: "all .2s",
-            }}
-        >
-            <Box sx={{ direction: "ltr" }}>{children}</Box>
-        </Box>
     )
 }

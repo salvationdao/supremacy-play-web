@@ -11,7 +11,6 @@ const OverlayTogglesContainer = createContainer(() => {
     const [rightDrawerActiveTabID, setRightDrawerActiveTabID] = useState(localStorage.getItem("rightDrawerActiveTabID") || "")
 
     const [showTrailer, toggleShowTrailer] = useToggle()
-    const [isMapOpen, toggleIsMapOpen] = useToggle((localStorage.getItem("mapOverlay") || "true") === "true")
     const [isBattleHistoryOpen, toggleIsBattleHistoryOpen] = useToggle()
 
     useEffect(() => {
@@ -23,15 +22,10 @@ const OverlayTogglesContainer = createContainer(() => {
     }, [rightDrawerActiveTabID])
 
     useEffect(() => {
-        localStorage.setItem("mapOverlay", isMapOpen.toString())
-    }, [isMapOpen])
-
-    useEffect(() => {
         if (isMobile) {
-            toggleIsMapOpen(true)
             toggleIsBattleHistoryOpen(true)
         }
-    }, [isMobile, toggleIsBattleHistoryOpen, toggleIsMapOpen])
+    }, [isMobile, toggleIsBattleHistoryOpen])
 
     return {
         isNavLinksDrawerOpen,
@@ -44,10 +38,8 @@ const OverlayTogglesContainer = createContainer(() => {
         setRightDrawerActiveTabID,
 
         showTrailer,
-        isMapOpen,
         isBattleHistoryOpen,
         toggleShowTrailer,
-        toggleIsMapOpen,
         toggleIsBattleHistoryOpen,
     }
 })

@@ -14,10 +14,11 @@ import { SectionHeading } from "../Common/SectionHeading"
 import { PlayerAbilityCard } from "./PlayerAbilityCard"
 
 export const PlayerAbilities = () => {
+    const { userID } = useAuth()
     const { bribeStage } = useGame()
     const isBattleStarted = useMemo(() => bribeStage && bribeStage.phase !== "HOLD", [bribeStage])
 
-    if (!bribeStage) return null
+    if (!bribeStage || !userID) return null
 
     return (
         <Box>
