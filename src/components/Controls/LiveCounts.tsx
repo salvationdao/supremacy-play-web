@@ -1,7 +1,6 @@
 import { Stack, Typography } from "@mui/material"
 import { TooltipHelper } from ".."
 import { SvgUser } from "../../assets"
-import { FactionIDs } from "../../constants"
 import { useSupremacy } from "../../containers"
 import { useGameServerSubscription } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
@@ -26,6 +25,8 @@ interface InnerProps {
 export const LiveCountsInner = ({ getFaction, viewers }: InnerProps) => {
     if (!viewers || !getFaction) return null
 
+    const total = viewers.boston + viewers.red_mountain + viewers.zaibatsu + viewers.other
+
     return (
         <Stack direction="row" spacing=".4rem" alignItems="center" justifyContent="center">
             <SvgUser size=".9rem" fill={colors.text} />
@@ -34,18 +35,19 @@ export const LiveCountsInner = ({ getFaction, viewers }: InnerProps) => {
             </Typography>
 
             <Stack direction="row" spacing=".64rem" alignItems="center" justifyContent="center">
-                <ReUsedText text={Math.abs(viewers.red_mountain).toFixed()} color={getFaction(FactionIDs.RM).primary_color} tooltip="Red Mountain" />
-                <ReUsedText text={Math.abs(viewers.boston).toFixed()} color={getFaction(FactionIDs.BC).primary_color} tooltip="Boston Cybernetics" />
-                <ReUsedText text={Math.abs(viewers.zaibatsu).toFixed()} color={getFaction(FactionIDs.ZHI).primary_color} tooltip="Zaibatsu Heavy Industries" />
+                <ReUsedText text={total.toFixed()} tooltip="Viewers" />
+                {/* <ReUsedText text={Math.abs(viewers.red_mountain).toFixed()} color={getFaction(FactionIDs.RM).primary_color} tooltip="Red Mountain" /> */}
+                {/* <ReUsedText text={Math.abs(viewers.boston).toFixed()} color={getFaction(FactionIDs.BC).primary_color} tooltip="Boston Cybernetics" /> */}
+                {/* <ReUsedText text={Math.abs(viewers.zaibatsu).toFixed()} color={getFaction(FactionIDs.ZHI).primary_color} tooltip="Zaibatsu Heavy Industries" /> */}
                 {/* <ReUsedText text={Math.abs(viewers.other).toFixed()} color={"grey !important"} tooltip="Not enlisted" /> */}
             </Stack>
         </Stack>
     )
 }
 
-const ReUsedText = ({ text, color, tooltip }: { text: string; color?: string; tooltip: string }) => {
+const ReUsedText = ({ text, color, textColor, tooltip }: { text: string; color?: string; textColor?: string; tooltip: string }) => {
     return (
-        <TooltipHelper text={tooltip} isCentered>
+        <TooltipHelper color={color} textColor={textColor} text={tooltip} isCentered>
             <Typography variant="body2" sx={{ color: color || colors.text, lineHeight: 1 }}>
                 {text}
             </Typography>

@@ -9,9 +9,9 @@ import { colors } from "../../../../theme/theme"
 import { MarketplaceBuyAuctionItem } from "../../../../types/marketplace"
 import { AuctionPrice } from "../../Common/MarketItem/AuctionPrice"
 import { BuyoutPrice } from "../../Common/MarketItem/BuyoutPrice"
-import { UserInfo } from "./UserInfo"
 import { Timeframe } from "../../Common/MarketItem/Timeframe"
 import { SoldPrice } from "./SoldPrice"
+import { UserInfo } from "./UserInfo"
 
 interface MarketItemProps {
     item: MarketplaceBuyAuctionItem
@@ -73,7 +73,7 @@ export const MarketItem = ({ item, isGridView, children, linkSubPath }: MarketIt
                     sx: { position: "relative", height: "100%" },
                 }}
                 sx={{ color: primaryColor, textAlign: "start", height: "100%", ":hover": { opacity: 1 } }}
-                to={`/marketplace/${linkSubPath}/${id}${location.hash}`}
+                to={`/marketplace/${linkSubPath}/${id}`}
             >
                 <Box
                     sx={{

@@ -2,7 +2,7 @@ import { Box, Fade, Stack, Typography } from "@mui/material"
 import { useCallback, useMemo, useState } from "react"
 import { FancyButton, TooltipHelper } from "../.."
 import { SvgGlobal, SvgLine, SvgMicrochip, SvgQuestionMark, SvgTarget } from "../../../assets"
-import { useSnackbar } from "../../../containers"
+import { useGlobalNotifications } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { numberCommaFormatter, supFormatter } from "../../../helpers"
 import { useToggle } from "../../../hooks"
@@ -36,7 +36,7 @@ export const PlayerAbilityStoreItem = ({
     const backgroundColor = theme.factionTheme.background
 
     // Purchasing
-    const { newSnackbarMessage } = useSnackbar()
+    const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsUser("/user_commander")
     const [showPurchaseModal, toggleShowPurchaseModal] = useToggle(false)
     const [loading, setLoading] = useState(false)
@@ -141,19 +141,8 @@ export const PlayerAbilityStoreItem = ({
                 }}
             >
                 <Fade in={true} timeout={1000}>
-                    <Stack
-                        spacing=".8rem"
-                        sx={{
-                            height: "100%",
-                            p: "4rem",
-                        }}
-                    >
-                        <Box
-                            sx={{
-                                position: "relative",
-                                width: "100%",
-                            }}
-                        >
+                    <Stack spacing=".8rem" sx={{ height: "100%", p: "4rem" }}>
+                        <Box sx={{ position: "relative", width: "100%" }}>
                             <Box
                                 component="img"
                                 src={saleAbility.ability.image_url}

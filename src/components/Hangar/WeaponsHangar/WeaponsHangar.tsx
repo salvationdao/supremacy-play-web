@@ -556,7 +556,7 @@ export const WeaponsHangar = () => {
                     </Typography>
 
                     <FancyButton
-                        to={`/marketplace/weapons${location.hash}`}
+                        to={`/marketplace/weapons`}
                         clipThingsProps={{
                             clipSize: "9px",
                             backgroundColor: theme.factionTheme.primary,

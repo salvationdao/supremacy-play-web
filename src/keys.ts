@@ -71,11 +71,13 @@ export enum GameServerKeys {
     ReadTaggedMessage = "READ:TAGGED:MESSAGE",
     ReactToMessage = "REACT:MESSAGE",
     ChatBanPlayer = "CHAT:BAN:PLAYER",
+    ChatReport = "CHAT:REPORT:MESSAGE",
 
     BattleMechHistoryList = "BATTLE:MECH:HISTORY:LIST",
     BattleMechStats = "BATTLE:MECH:STATS",
 
     // Get / sub to data
+    SubBattleAISpawned = "BATTLE:AI:SPAWNED:SUBSCRIBE",
     SubGameSettings = "GAME:SETTINGS:UPDATED",
     SubBattleEndDetailUpdated = "BATTLE:END:DETAIL:UPDATED",
     SubViewersLiveCount = "VIEWER:LIVE:COUNT:UPDATED",
@@ -164,12 +166,14 @@ export enum GameServerKeys {
     PlayerProfileCustomAvatarDelete = "PLAYER:PROFILE:CUSTOM_AVATAR:DELETE",
 
     // Leaderboard
+    GetLeaderboardRounds = "LEADERBOARD:ROUNDS",
     GetPlayerBattlesSpectated = "LEADERBOARD:PLAYER:BATTLE:SPECTATED",
     GetPlayerMechSurvives = "LEADERBOARD:PLAYER:MECH:SURVIVES",
     GetPlayerMechKills = "LEADERBOARD:PLAYER:MECH:KILLS",
     GetPlayerAbilityKills = "LEADERBOARD:PLAYER:ABILITY:KILLS",
     GetPlayerAbilityTriggers = "LEADERBOARD:PLAYER:ABILITY:TRIGGERS",
     GetPlayerMechsOwned = "LEADERBOARD:PLAYER:MECHS:OWNED",
+    GetPlayerRepairBlocks = "LEADERBOARD:PLAYER:REPAIR:BLOCK",
 
     // Repairs
     SubRepairJobListUpdated = "MECH:REPAIR:OFFER:LIST:UPDATE",
@@ -186,6 +190,10 @@ export enum GameServerKeys {
     // Companion App
     AuthGenOneTimeToken = "GEN:ONE:TIME:TOKEN",
     GetPlayerDeviceList = "PLAYER:DEVICE:LIST",
+
+    // Quests
+    SubPlayerQuestStats = "PLAYER:QUEST:STAT",
+    SubPlayerQuestStatsProgression = "PLAYER:QUEST:PROGRESSIONS",
 }
 
 export enum PassportServerKeys {

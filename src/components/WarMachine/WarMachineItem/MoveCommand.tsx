@@ -1,7 +1,7 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useCallback, useMemo, useState } from "react"
 import { SvgClose2, SvgDrag } from "../../../assets"
-import { useAuth, useMiniMap, useSnackbar } from "../../../containers"
+import { useAuth, useMiniMap, useGlobalNotifications } from "../../../containers"
 import { shadeColor } from "../../../helpers"
 import { useTimer } from "../../../hooks"
 import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
@@ -35,11 +35,13 @@ export interface MechMoveCommand {
     id: string
     mech_id: string
     triggered_by_id: string
-    cell_x?: number
-    cell_y?: number
+    cell_x: number
+    cell_y: number
     cancelled_at?: string
     reached_at?: string
+    is_moving: boolean
     remain_cooldown_seconds: number
+    is_mini_mech: boolean
 }
 
 export const MoveCommand = ({ warMachine, isAlive, smallVersion }: { warMachine: WarMachineState; isAlive: boolean; smallVersion?: boolean }) => {
@@ -67,7 +69,7 @@ export const MoveCommand = ({ warMachine, isAlive, smallVersion }: { warMachine:
             isAlive={isAlive}
             hash={hash}
             remainCooldownSeconds={mechMoveCommand.remain_cooldown_seconds}
-            isMoving={!mechMoveCommand?.reached_at && !mechMoveCommand?.cancelled_at && mechMoveCommand.remain_cooldown_seconds !== 0}
+            isMoving={mechMoveCommand.is_moving}
             isCancelled={!!mechMoveCommand.cancelled_at}
             mechMoveCommandID={mechMoveCommand.id}
             smallVersion={smallVersion}
@@ -86,7 +88,7 @@ interface MoveCommandInnerProps {
 }
 
 const MoveCommandInner = ({ isAlive, remainCooldownSeconds, isMoving, isCancelled, hash, mechMoveCommandID, smallVersion }: MoveCommandInnerProps) => {
-    const { newSnackbarMessage } = useSnackbar()
+    const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const { setPlayerAbility } = useMiniMap()
 

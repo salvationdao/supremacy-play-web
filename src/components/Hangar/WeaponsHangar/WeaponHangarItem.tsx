@@ -1,6 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useMemo, useState } from "react"
-import { useLocation } from "react-router-dom"
 import { FancyButton } from "../.."
 import { SvgDropdownArrow, SvgSkin } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
@@ -14,7 +13,6 @@ import { General } from "../../Marketplace/Common/MarketItem/General"
 import { WeaponBarStats } from "./Common/WeaponBarStats"
 
 export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGridView?: boolean }) => {
-    const location = useLocation()
     const theme = useTheme()
     const [weaponDetails, setWeaponDetails] = useState<Weapon>()
 
@@ -52,7 +50,7 @@ export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGri
                     sx: { position: "relative", height: "100%", ":hover": { opacity: 1 } },
                 }}
                 sx={{ color: primaryColor, textAlign: "start", height: "100%" }}
-                to={`/weapon/${weapon.id}${location.hash}`}
+                to={`/weapon/${weapon.id}`}
             >
                 <Box
                     sx={{
@@ -139,7 +137,7 @@ export const WeaponCommonArea = ({
                     flexShrink: 0,
                 }}
             >
-                <MediaPreview imageUrl={imageUrl || avatarUrl} objectFit={isGridView ? "cover" : "contain"} imageTransform="rotate(-30deg) scale(.95)" />
+                <MediaPreview imageUrl={imageUrl || avatarUrl} objectFit={isGridView ? "cover" : "contain"} />
             </Box>
             <Stack
                 spacing=".2rem"

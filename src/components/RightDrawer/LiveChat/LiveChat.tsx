@@ -209,7 +209,7 @@ const TabbedLayout = () => {
                                     />
                                 </Badge>
                                 {banProposal && (
-                                    <TooltipHelper placement="bottom" text="Punish proposal ongoing">
+                                    <TooltipHelper color={colors.orange} placement="bottom" text="Punish proposal ongoing">
                                         <Box sx={{ ml: "-.2rem", mr: ".4rem", animation: `${zoomEffect(1.1)} 1s infinite` }}>
                                             <SvgInfoCircular size="1rem" fill={colors.orange} sx={{ pb: ".2rem" }} />
                                         </Box>
@@ -335,7 +335,7 @@ const SplitLayout = () => {
                                 }}
                             />
                             {banProposal && (
-                                <TooltipHelper placement="bottom" text="Punish proposal ongoing">
+                                <TooltipHelper color={colors.orange} placement="bottom" text="Punish proposal ongoing">
                                     <Box sx={{ ml: "-.2rem", mr: ".4rem", animation: `${zoomEffect(1.1)} 1s infinite` }}>
                                         <SvgInfoCircular size="1rem" fill={colors.orange} sx={{ pb: ".2rem" }} />
                                     </Box>

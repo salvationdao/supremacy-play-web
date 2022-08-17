@@ -64,7 +64,6 @@ export const MechLoadout = ({ mechDetails }: { mechDetails: MechDetails }) => {
                                 label={w.label}
                                 primaryColor={colors.weapons}
                                 Icon={SvgWeapons}
-                                imageTransform="rotate(-30deg) scale(.95)"
                                 rarity={w.weapon_skin ? getRarityDeets(w.weapon_skin.tier) : undefined}
                                 hasSkin={!!w.weapon_skin}
                                 renderModal={(toggleShowLoadoutModal) => (
