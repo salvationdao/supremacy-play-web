@@ -1,5 +1,5 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
-import { useCallback, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { ClipThing, FancyButton } from "../.."
 import { shadeColor } from "../../../helpers"
 import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
@@ -8,6 +8,7 @@ import { GameAbility, WarMachineState } from "../../../types"
 import { TopText } from "../../LeftDrawer/BattleArena/BattleAbility/Common/TopText"
 import { useInterval } from "../../../hooks"
 import { useArena } from "../../../containers/arena"
+import { useHotkey } from "../../../containers/hotkeys"
 
 export interface ContributeFactionUniqueAbilityRequest {
     ability_identity: string
@@ -19,9 +20,10 @@ interface MechAbilityItemProps {
     warMachine: WarMachineState
     gameAbility: GameAbility
     clipSlantSize?: string
+    index: number
 }
 
-export const WarMachineAbilityItem = ({ warMachine, gameAbility, clipSlantSize }: MechAbilityItemProps) => {
+export const WarMachineAbilityItem = ({ warMachine, gameAbility, clipSlantSize, index }: MechAbilityItemProps) => {
     const { label, colour, image_url, description } = gameAbility
 
     const backgroundColor = useMemo(() => shadeColor(colour, -75), [colour])
@@ -51,7 +53,7 @@ export const WarMachineAbilityItem = ({ warMachine, gameAbility, clipSlantSize }
                         >
                             <Stack direction="row" alignItems="center" justifyContent="space-between" alignSelf="stretch">
                                 <TopText description={description} image_url={image_url} colour={colour} label={label} />
-                                <MechAbilityButton warMachine={warMachine} gameAbility={gameAbility} />
+                                <MechAbilityButton warMachine={warMachine} gameAbility={gameAbility} index={index} />
                             </Stack>
                         </Stack>
                     </ClipThing>
@@ -61,13 +63,13 @@ export const WarMachineAbilityItem = ({ warMachine, gameAbility, clipSlantSize }
     )
 }
 
-export const MechAbilityButton = ({ warMachine, gameAbility }: { warMachine: WarMachineState; gameAbility: GameAbility }) => {
+export const MechAbilityButton = ({ warMachine, gameAbility, index }: { warMachine: WarMachineState; gameAbility: GameAbility; index: number }) => {
     const { participantID, hash } = warMachine
     const { currentArenaID } = useArena()
     const { id, colour, text_colour } = gameAbility
-
-    const { send } = useGameServerCommandsFaction("/faction_commander")
     const [remainSeconds, setRemainSeconds] = useState(30)
+    const { mechAbilityKey, addToHotkeyRecord } = useHotkey()
+    const { send } = useGameServerCommandsFaction("/faction_commander")
 
     // Listen on the progress of the votes
     useGameServerSubscriptionFaction<number | undefined>(
@@ -103,6 +105,10 @@ export const MechAbilityButton = ({ warMachine, gameAbility }: { warMachine: War
             console.error(e)
         }
     }, [hash, id, send, currentArenaID])
+
+    useEffect(() => {
+        addToHotkeyRecord("map", mechAbilityKey[index], onTrigger)
+    }, [onTrigger, mechAbilityKey, addToHotkeyRecord, index])
 
     return (
         <FancyButton

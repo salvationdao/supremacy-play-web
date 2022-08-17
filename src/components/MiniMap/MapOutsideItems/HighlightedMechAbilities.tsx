@@ -1,5 +1,5 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
-import { useCallback, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { ClipThing } from "../.."
 import { useAuth, useGame, useMiniMap } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
@@ -10,6 +10,7 @@ import { colors } from "../../../theme/theme"
 import { AIType, GameAbility, WarMachineLiveState, WarMachineState } from "../../../types"
 import { MoveCommand } from "../../WarMachine/WarMachineItem/MoveCommand"
 import { useArena } from "../../../containers/arena"
+import { useHotkey } from "../../../containers/hotkeys"
 
 export const HighlightedMechAbilities = () => {
     const { userID } = useAuth()
@@ -83,13 +84,13 @@ const HighlightedMechAbilitiesInner = ({ warMachine }: { warMachine: WarMachineS
                         e.preventDefault()
                         e.stopPropagation()
                     }}
-                    sx={{ p: ".8rem .9rem", width: "15rem" }}
+                    sx={{ p: ".8rem .9rem", width: "17rem" }}
                 >
                     {!isMiniMech &&
                         gameAbilities &&
                         gameAbilities.length > 0 &&
-                        gameAbilities.map((ga) => {
-                            return <AbilityItem key={ga.id} hash={warMachine.hash} participantID={participantID} ability={ga} />
+                        gameAbilities.map((ga, i) => {
+                            return <AbilityItem key={ga.id} hash={warMachine.hash} participantID={participantID} ability={ga} index={i} />
                         })}
 
                     {userID === ownedByID && <MoveCommand isAlive={isAlive} warMachine={warMachine} smallVersion />}
@@ -99,12 +100,13 @@ const HighlightedMechAbilitiesInner = ({ warMachine }: { warMachine: WarMachineS
     )
 }
 
-const AbilityItem = ({ hash, participantID, ability }: { hash: string; participantID: number; ability: GameAbility }) => {
-    const { send } = useGameServerCommandsFaction("/faction_commander")
+const AbilityItem = ({ hash, participantID, ability, index }: { hash: string; participantID: number; ability: GameAbility; index: number }) => {
     const { id, colour, image_url, label } = ability
     const { currentArenaID } = useArena()
     const [remainSeconds, setRemainSeconds] = useState(30)
     const ready = useMemo(() => remainSeconds === 0, [remainSeconds])
+    const { mechAbilityKey, addToHotkeyRecord } = useHotkey()
+    const { send } = useGameServerCommandsFaction("/faction_commander")
 
     useGameServerSubscriptionFaction<number | undefined>(
         {
@@ -140,6 +142,10 @@ const AbilityItem = ({ hash, participantID, ability }: { hash: string; participa
         }
     }, [hash, id, send, currentArenaID])
 
+    useEffect(() => {
+        addToHotkeyRecord("map", mechAbilityKey[index], onTrigger)
+    }, [onTrigger, mechAbilityKey, addToHotkeyRecord, index])
+
     return (
         <Stack
             direction="row"
@@ -170,22 +176,25 @@ const AbilityItem = ({ hash, participantID, ability }: { hash: string; participa
                 onClick={ready ? onTrigger : undefined}
             />
 
-            <Typography
-                variant="body2"
-                sx={{
-                    pt: ".4rem",
-                    lineHeight: 1,
-                    fontWeight: "fontWeightBold",
-                    display: "-webkit-box",
-                    overflow: "hidden",
-                    overflowWrap: "anywhere",
-                    textOverflow: "ellipsis",
-                    WebkitLineClamp: 1, // change to max number of lines
-                    WebkitBoxOrient: "vertical",
-                }}
-            >
-                {ready ? label : remainSeconds > 300 ? "∞" : `${remainSeconds}s`}
-            </Typography>
+            <Stack direction={"row"} sx={{ width: "100%" }} justifyContent={"space-between"} alignItems={"center"}>
+                <Typography
+                    variant="body2"
+                    sx={{
+                        pt: ".4rem",
+                        lineHeight: 1,
+                        fontWeight: "fontWeightBold",
+                        display: "-webkit-box",
+                        overflow: "hidden",
+                        overflowWrap: "anywhere",
+                        textOverflow: "ellipsis",
+                        WebkitLineClamp: 1, // change to max number of lines
+                        WebkitBoxOrient: "vertical",
+                    }}
+                >
+                    {ready ? label : remainSeconds > 300 ? "∞" : `${remainSeconds}s`}
+                </Typography>
+                {ready && <Typography sx={{ opacity: "0.7" }}>[{mechAbilityKey[index]}]</Typography>}
+            </Stack>
         </Stack>
     )
 }

@@ -12,6 +12,7 @@ import { colors, fonts } from "../../../theme/theme"
 import { AIType, GameAbility, WarMachineState } from "../../../types"
 import { MoveCommand } from "./MoveCommand"
 import { useArena } from "../../../containers/arena"
+import { useHotkey } from "../../../containers/hotkeys"
 
 // in rems
 const WIDTH_AVATAR = 8.6
@@ -27,21 +28,25 @@ export const WarMachineItem = ({
     initialExpanded = false,
     transformOrigin,
     isPoppedout,
+    label,
 }: {
     warMachine: WarMachineState
     scale: number
     initialExpanded?: boolean
     transformOrigin?: string
     isPoppedout?: boolean
+    label?: number
 }) => {
     const { isMobile } = useMobile()
     const { userID, factionID } = useAuth()
     const { getFaction } = useSupremacy()
     const { currentArenaID } = useArena()
     const { highlightedMechParticipantID, setHighlightedMechParticipantID } = useMiniMap()
+    const { addToHotkeyRecord } = useHotkey()
 
     const { hash, participantID, factionID: wmFactionID, name, imageAvatar, tier, ownedByID, ownerUsername, aiType } = warMachine
     const isMiniMech = aiType === AIType.MiniMech
+    const addMiniMechParticipantId = 100
 
     // Subscribe to war machine ability updates
     const gameAbilities = useGameServerSubscriptionFaction<GameAbility[] | undefined>({
@@ -53,6 +58,7 @@ export const WarMachineItem = ({
     const [isAlive, toggleIsAlive] = useToggle(warMachine.health > 0)
     const [isExpanded, toggleIsExpanded] = useToggle(initialExpanded)
     const faction = getFaction(wmFactionID)
+    const [hovered, setHovered] = useToggle(false)
 
     const popoverRef = useRef(null)
     const [popoverOpen, togglePopoverOpen] = useToggle()
@@ -83,6 +89,15 @@ export const WarMachineItem = ({
         }
     }, [highlightedMechParticipantID, initialExpanded, isMobile, setHighlightedMechParticipantID, toggleIsExpanded, participantID])
 
+    useEffect(() => {
+        if (!label || wmFactionID !== factionID) return
+        if (participantID > addMiniMechParticipantId) {
+            addToHotkeyRecord("ctrl_map", label.toString(), handleClick)
+            return
+        }
+        addToHotkeyRecord("map", label.toString(), handleClick)
+    }, [handleClick, addMiniMechParticipantId, label, participantID, addToHotkeyRecord, factionID, wmFactionID])
+
     return (
         <>
             <Stack
@@ -103,8 +118,15 @@ export const WarMachineItem = ({
                     transform: highlightedMechParticipantID === participantID ? `scale(${scale * 1.08})` : `scale(${scale})`,
                     transformOrigin: transformOrigin || "center",
                 }}
+                onMouseEnter={() => setHovered(true)}
+                onMouseLeave={() => setHovered(false)}
             >
                 {/* Little info button to show the mech destroyed info */}
+                <Box sx={{ display: hovered ? "inline-block" : "none", position: "absolute", top: "-3rem", right: "0" }}>
+                    {label !== null && label !== undefined && wmFactionID === factionID && (
+                        <Typography>[{participantID > 100 ? `CTRL + ${label}` : label}]</Typography>
+                    )}
+                </Box>
                 {!isAlive && !isMiniMech && (
                     <IconButton
                         size="small"
@@ -171,7 +193,7 @@ export const WarMachineItem = ({
                             }}
                         >
                             <Typography variant="h4" sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack }}>
-                                {warMachine.participantID}
+                                {label}
                             </Typography>
                         </Box>
 

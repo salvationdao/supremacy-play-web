@@ -1,5 +1,5 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
-import { useEffect, useMemo, useRef } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { MiniMapInside, MoveableResizable } from ".."
 import { SvgFullscreen, SvgMinimize } from "../../assets"
 import { useDimension, useGame, useMobile, useOverlayToggles } from "../../containers"
@@ -12,6 +12,7 @@ import { MoveableResizableConfig, useMoveableResizable } from "../Common/Moveabl
 import { SectionHeading } from "../LeftDrawer/BattleArena/Common/SectionHeading"
 import { HighlightedMechAbilities } from "./MapOutsideItems/HighlightedMechAbilities"
 import { TargetHint } from "./MapOutsideItems/TargetHint"
+import { useHotkey } from "../../containers/hotkeys"
 
 export const TOP_BAR_HEIGHT = 3.1 // rems
 
@@ -37,6 +38,7 @@ export const MiniMap = () => {
     const { map, bribeStage } = useGame()
     const { isTargeting, isEnlarged, resetSelection, playerAbility } = useMiniMap()
     const { isMapOpen, toggleIsMapOpen } = useOverlayToggles()
+    const [mapFocused, setMapFocused] = useState<boolean>()
 
     // Temp hotfix ask james ****************************
     const [show, toggleShow] = useToggle(false)
@@ -76,8 +78,9 @@ export const MiniMap = () => {
             onHideCallback: () => toggleIsMapOpen(false),
             hidePopoutBorder: true,
             topRightContent: <FullscreenIcon />,
+            isUnfocusedColor: !mapFocused,
         }),
-        [toggleIsMapOpen],
+        [toggleIsMapOpen, mapFocused],
     )
 
     return useMemo(() => {
@@ -89,7 +92,15 @@ export const MiniMap = () => {
             <Fade in={toRender}>
                 <Box sx={{ ...(isMobile ? { backgroundColor: "#FFFFFF12", boxShadow: 2, border: "#FFFFFF20 1px solid" } : {}) }}>
                     <MoveableResizable config={config}>
-                        <MiniMapInner map={map} isTargeting={isTargeting} isEnlarged={isEnlarged} toRender={toRender} playerAbility={playerAbility} />
+                        <MiniMapInner
+                            map={map}
+                            isTargeting={isTargeting}
+                            isEnlarged={isEnlarged}
+                            toRender={toRender}
+                            playerAbility={playerAbility}
+                            isMapOpen={isMapOpen}
+                            setMapFocused={setMapFocused}
+                        />
                     </MoveableResizable>
                 </Box>
             </Fade>
@@ -104,15 +115,20 @@ const MiniMapInner = ({
     isEnlarged,
     toRender,
     playerAbility,
+    isMapOpen,
+    setMapFocused,
 }: {
     map: Map
     isTargeting: boolean
     isEnlarged: boolean
     toRender: boolean
     playerAbility?: PlayerAbility
+    isMapOpen: boolean
+    setMapFocused: (value: ((prevState: boolean | undefined) => boolean | undefined) | boolean | undefined) => void
 }) => {
     const { isMobile } = useMobile()
     const theme = useTheme()
+    const { handleHotKey } = useHotkey()
     const {
         remToPxRatio,
         gameUIDimensions: { width, height },
@@ -140,6 +156,14 @@ const MiniMapInner = ({
     const prevHeight = useRef(curHeight)
     const prevPosX = useRef(curPosX)
     const prevPosY = useRef(curPosY)
+
+    const focusMap = useCallback(() => ref.current?.focus(), [ref])
+
+    useEffect(() => {
+        if (isMapOpen) {
+            focusMap()
+        }
+    }, [isMapOpen, ref, focusMap])
 
     // When it's targeting, enlarge the map and move to center of screen, else restore to the prev dimensions
     useEffect(() => {
@@ -233,6 +257,11 @@ const MiniMapInner = ({
             >
                 <Box
                     ref={ref}
+                    tabIndex={0}
+                    onKeyDown={handleHotKey}
+                    onClick={focusMap}
+                    onFocus={() => setMapFocused(true)}
+                    onBlur={() => setMapFocused(false)}
                     sx={{
                         position: "relative",
                         boxShadow: 1,
@@ -306,5 +335,5 @@ const MiniMapInner = ({
             </Stack>
         )
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [toRender, theme.factionTheme.primary, curWidth, curHeight, remToPxRatio, isMobile, width, height, isPoppedout])
+    }, [toRender, theme.factionTheme.primary, curWidth, curHeight, remToPxRatio, isMobile, width, height, isPoppedout, handleHotKey, focusMap])
 }
