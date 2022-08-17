@@ -102,10 +102,10 @@ const BattleNotStarted = () => {
             }}
         >
             <Typography
-                variant={!isStreamBigDisplay ? "h4" : "h5"}
+                variant={!isStreamBigDisplay ? "h5" : "h6"}
                 sx={{
                     color: colors.grey,
-                    fontFamily: fonts.nostromoBlack,
+                    fontFamily: fonts.nostromoBold,
                     WebkitTextStrokeWidth: !isStreamBigDisplay ? "2px" : "unset",
                     textAlign: "center",
                     zIndex: 1,
