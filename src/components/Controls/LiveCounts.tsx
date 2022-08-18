@@ -36,10 +36,6 @@ export const LiveCountsInner = ({ getFaction, viewers }: InnerProps) => {
 
             <Stack direction="row" spacing=".64rem" alignItems="center" justifyContent="center">
                 <ReUsedText text={total.toFixed()} tooltip="Viewers" />
-                {/* <ReUsedText text={Math.abs(viewers.red_mountain).toFixed()} color={getFaction(FactionIDs.RM).primary_color} tooltip="Red Mountain" /> */}
-                {/* <ReUsedText text={Math.abs(viewers.boston).toFixed()} color={getFaction(FactionIDs.BC).primary_color} tooltip="Boston Cybernetics" /> */}
-                {/* <ReUsedText text={Math.abs(viewers.zaibatsu).toFixed()} color={getFaction(FactionIDs.ZHI).primary_color} tooltip="Zaibatsu Heavy Industries" /> */}
-                {/* <ReUsedText text={Math.abs(viewers.other).toFixed()} color={"grey !important"} tooltip="Not enlisted" /> */}
             </Stack>
         </Stack>
     )

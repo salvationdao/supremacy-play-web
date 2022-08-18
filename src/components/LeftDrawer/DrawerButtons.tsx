@@ -6,7 +6,7 @@ import { LEFT_DRAWER_ARRAY, ROUTES_ARRAY } from "../../routes"
 import { colors, siteZIndex } from "../../theme/theme"
 import { TabButton } from "../RightDrawer/DrawerButtons"
 
-export const DRAWER_BAR_WIDTH = 3 // rem
+export const LEFT_DRAWER_BAR_WIDTH = 3 // rem
 
 export const DrawerButtons = () => {
     const { leftDrawerActiveTabID, setLeftDrawerActiveTabID } = useOverlayToggles()
@@ -26,7 +26,7 @@ export const DrawerButtons = () => {
                 position: "relative",
                 height: "100%",
                 overflow: "hidden",
-                width: `${DRAWER_BAR_WIDTH}rem`,
+                width: `${LEFT_DRAWER_BAR_WIDTH}rem`,
                 background: (theme) => `linear-gradient(to right, #FFFFFF06 26%, ${theme.factionTheme.background})`,
                 zIndex: siteZIndex.Drawer + 10,
                 ".MuiTabs-flexContainer": {
