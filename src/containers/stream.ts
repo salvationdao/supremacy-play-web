@@ -46,7 +46,7 @@ export const StreamContainer = createContainer(() => {
     const [selectedResolution, setSelectedResolution] = useState<number>()
     const [resolutions, setResolutions] = useState<number[]>([])
 
-    const [isEnlarged, toggleIsEnlarged] = useToggle(localStorage.getItem("isStreamEnlarged") === "true")
+    const [isEnlarged, toggleIsEnlarged] = useToggle((localStorage.getItem("isStreamEnlarged") || "true") === "true")
     const hasInteracted = useRef(false)
 
     // Unmute stream / trailers etc. after user has interacted with the site.
