@@ -63,6 +63,7 @@ export const HotkeyContainer = createContainer(() => {
 
     const handleHotKey = useCallback(
         (e) => {
+            e.stopPropagation()
             e.preventDefault()
 
             let handlePress = hotkeyRecord[e.key]
@@ -82,6 +83,7 @@ export const HotkeyContainer = createContainer(() => {
             const handlePress = globalHotkeyRecord[e.key]
             if (!handlePress) return
 
+            e.stopPropagation()
             e.preventDefault()
             handlePress()
         },
