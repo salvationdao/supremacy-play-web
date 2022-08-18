@@ -1,5 +1,5 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useEffect, useCallback, useMemo, useRef, useState } from "react"
 import { MiniMapInside } from "../.."
 import { BattleBgWebP, SvgExternalLink, SvgFullscreen, SvgMinimize, SvgSwap } from "../../../assets"
 import { useDimension, useGame } from "../../../containers"
@@ -123,6 +123,7 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
     const [isEnlarged, toggleIsEnlarged] = useToggle(localStorage.getItem("isMiniMapEnlarged") === "true")
 
     const mapHeightWidthRatio = useRef(1)
+    const mapRef = useRef<HTMLDivElement>()
 
     // If small version, not allow enlarge
     useEffect(() => {
@@ -191,6 +192,12 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
         }
     }, [map.height, map.width, width, isEnlarged, height, remToPxRatio, isStreamBigDisplay, isPoppedout])
 
+    const focusMap = useCallback(() => mapRef.current?.focus(), [mapRef])
+
+    useEffect(() => {
+        focusMap()
+    }, [focusMap])
+
     return useMemo(() => {
         return (
             <Stack
@@ -206,8 +213,10 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
                 }}
             >
                 <Box
+                    ref={mapRef}
                     tabIndex={0}
                     onKeyDown={handleHotKey}
+                    onClick={focusMap}
                     sx={{
                         position: "relative",
                         boxShadow: 1,
@@ -217,6 +226,14 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
                         overflow: "hidden",
                         pointerEvents: "all",
                         zIndex: 2,
+                        boxSizing: "border-box",
+                        "&.MuiBox-root": {
+                            border: "1px transparent solid",
+                            "&:focus": {
+                                border: (theme) => `1px solid ${theme.factionTheme.primary}`,
+                            },
+                            outline: "none",
+                        },
                     }}
                 >
                     {/* Top bar */}
@@ -285,6 +302,7 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
     }, [
         isEnlarged,
         handleHotKey,
+        focusMap,
         sizes.outsideWidth,
         sizes.outsideHeight,
         sizes.insideWidth,
