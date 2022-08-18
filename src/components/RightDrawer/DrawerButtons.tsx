@@ -5,7 +5,7 @@ import { RIGHT_DRAWER_ARRAY } from "../../routes"
 import { colors, fonts, siteZIndex } from "../../theme/theme"
 
 const BUTTON_WIDTH = 20 //rem
-const DRAWER_BAR_WIDTH = 3 // rem
+const RIGHT_DRAWER_BAR_WIDTH = 3 // rem
 
 export const DrawerButtons = () => {
     const { rightDrawerActiveTabID, setRightDrawerActiveTabID } = useOverlayToggles()
@@ -18,7 +18,7 @@ export const DrawerButtons = () => {
                 position: "relative",
                 height: "100%",
                 overflow: "hidden",
-                width: `${DRAWER_BAR_WIDTH}rem`,
+                width: `${RIGHT_DRAWER_BAR_WIDTH}rem`,
                 background: (theme) => `linear-gradient(to right, #FFFFFF06 26%, ${theme.factionTheme.background})`,
                 zIndex: siteZIndex.Drawer,
                 ".MuiTabs-flexContainer": {
@@ -87,7 +87,7 @@ export const TabButton = ({
             sx={{
                 position: "relative",
                 height: `${BUTTON_WIDTH}rem`,
-                width: `${DRAWER_BAR_WIDTH}rem`,
+                width: `${RIGHT_DRAWER_BAR_WIDTH}rem`,
             }}
         >
             <Tab
@@ -107,14 +107,16 @@ export const TabButton = ({
                     color: isActive ? secondaryColor : "#FFFFFF",
                     backgroundColor: enable ? (isActive ? `${primaryColor}CC` : `${primaryColor}25`) : `${primaryColor}20`,
                     opacity: isActive ? 1 : 0.6,
-                    transform: `translate(${-BUTTON_WIDTH / 2 + DRAWER_BAR_WIDTH / 2}rem, ${BUTTON_WIDTH / 2 - DRAWER_BAR_WIDTH / 2}rem) rotate(-90deg)`,
+                    transform: `translate(${-BUTTON_WIDTH / 2 + RIGHT_DRAWER_BAR_WIDTH / 2}rem, ${
+                        BUTTON_WIDTH / 2 - RIGHT_DRAWER_BAR_WIDTH / 2
+                    }rem) rotate(-90deg)`,
                     ":hover": {
                         opacity: 1,
                     },
                     "&, .MuiTouchRipple-root": {
                         width: `${BUTTON_WIDTH}rem`,
-                        height: `${DRAWER_BAR_WIDTH}rem`,
-                        minHeight: `${DRAWER_BAR_WIDTH}rem`,
+                        height: `${RIGHT_DRAWER_BAR_WIDTH}rem`,
+                        minHeight: `${RIGHT_DRAWER_BAR_WIDTH}rem`,
                     },
                     "& svg": {
                         fill: isActive ? `${secondaryColor} !important` : "#FFFFFF",

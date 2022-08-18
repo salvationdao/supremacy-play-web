@@ -1,7 +1,7 @@
 import { Stack, Typography } from "@mui/material"
 import { Box } from "@mui/system"
 import moment from "moment"
-import { useEffect } from "react"
+import { useEffect, useRef } from "react"
 import { SectionFactions, SectionWinner } from "../.."
 import { useGame, useOverlayToggles } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
@@ -13,6 +13,8 @@ export const BattleEndScreen = () => {
     const theme = useTheme()
     const { map, battleEndDetail } = useGame()
     const { setLeftDrawerActiveTabID } = useOverlayToggles()
+    // When user first loads the web page and gets battle end, we want to prevent changing tabs
+    const skippedFirstIteration = useRef(false)
 
     // New game started, so close the panel
     useEffect(() => {
@@ -21,7 +23,13 @@ export const BattleEndScreen = () => {
 
     // Game ends, show the panel
     useEffect(() => {
-        if (battleEndDetail) setLeftDrawerActiveTabID(LEFT_DRAWER_MAP.previous_battle?.id)
+        if (battleEndDetail) {
+            if (skippedFirstIteration.current) {
+                setLeftDrawerActiveTabID(LEFT_DRAWER_MAP.previous_battle?.id)
+            } else {
+                skippedFirstIteration.current = true
+            }
+        }
     }, [battleEndDetail, setLeftDrawerActiveTabID])
 
     const primaryColor = theme.factionTheme.primary
