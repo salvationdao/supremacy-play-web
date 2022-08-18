@@ -15,7 +15,7 @@ export const QuestItem = ({ questStat, progress, showConfetti }: { questStat: Qu
         if (!showConfetti) return
         setTimeout(() => {
             setShowShowConfetti(true)
-        }, 500)
+        }, 400)
     }, [showConfetti])
 
     return (

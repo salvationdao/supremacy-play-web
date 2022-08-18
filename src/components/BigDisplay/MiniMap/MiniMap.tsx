@@ -1,4 +1,4 @@
-import { Box, Stack, Typography } from "@mui/material"
+import { Box, Fade, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useRef, useState } from "react"
 import { MiniMapInside } from "../.."
 import { BattleBgWebP, SvgExternalLink, SvgFullscreen, SvgMinimize, SvgSwap } from "../../../assets"
@@ -6,7 +6,7 @@ import { useDimension, useGame } from "../../../containers"
 import { useHotkey } from "../../../containers/hotkeys"
 import { useMiniMap } from "../../../containers/minimap"
 import { useToggle } from "../../../hooks"
-import { colors, fonts } from "../../../theme/theme"
+import { fonts } from "../../../theme/theme"
 import { Map } from "../../../types"
 import { WindowPortal } from "../../Common/WindowPortal/WindowPortal"
 import { useWindowPortal } from "../../Common/WindowPortal/WindowPortalContainer"
@@ -15,22 +15,12 @@ import { HighlightedMechAbilities } from "./MapOutsideItems/HighlightedMechAbili
 import { TargetHint } from "./MapOutsideItems/TargetHint"
 
 export const TOP_BAR_HEIGHT = 3.4 // rems
-const BOTTOM_PADDING = 10 // rems
+const BOTTOM_PADDING = 12 // rems
 
 export const MiniMap = () => {
-    const { map, bribeStage } = useGame()
-    const { isTargeting, resetSelection } = useMiniMap()
-    const [isBattleStarted, setIsBattleStarted] = useState(false)
+    const { map, isBattleStarted } = useGame()
+    const { isTargeting } = useMiniMap()
     const [isPoppedout, setIsPoppedout] = useState(false)
-
-    useEffect(() => {
-        if (map && bribeStage && bribeStage.phase !== "HOLD" ? true : false) {
-            setIsBattleStarted(true)
-        } else {
-            setIsBattleStarted(false)
-            resetSelection()
-        }
-    }, [bribeStage, setIsBattleStarted, resetSelection, map])
 
     if (isPoppedout) {
         return (
@@ -78,16 +68,6 @@ const MiniMapInnerNormal = ({ map, isTargeting, isPoppedout, setIsPoppedout }: M
 
 const BattleNotStarted = () => {
     const { isStreamBigDisplay } = useGame()
-    const [showBg, setShowBg] = useState(false)
-
-    // Only show the bg image after X seconds, dont want a bright flash in between battles
-    useEffect(() => {
-        const timeout = setTimeout(() => {
-            setShowBg(true)
-        }, 20000)
-
-        return () => clearTimeout(timeout)
-    }, [])
 
     return (
         <Stack
@@ -97,26 +77,40 @@ const BattleNotStarted = () => {
                 position: "relative",
                 width: "100%",
                 height: isStreamBigDisplay ? "28rem" : "100%",
-                background: showBg ? `url(${BattleBgWebP})` : "unset",
-                backgroundRepeat: "no-repeat",
-                backgroundPosition: "center",
-                backgroundSize: "cover",
+                border: (theme) => `${theme.factionTheme.primary}60 1px solid`,
             }}
         >
             <Typography
                 variant={!isStreamBigDisplay ? "h5" : "h6"}
                 sx={{
-                    color: colors.grey,
                     fontFamily: fonts.nostromoBold,
                     WebkitTextStrokeWidth: !isStreamBigDisplay ? "1px" : "unset",
                     textAlign: "center",
-                    zIndex: 1,
+                    zIndex: 2,
                 }}
             >
                 Preparing for next battle...
             </Typography>
 
-            <Box sx={{ position: "absolute", top: 0, left: 0, bottom: 0, right: 0, backgroundColor: "#00000050", zIndex: 0 }} />
+            <Box sx={{ position: "absolute", top: 0, left: 0, bottom: 0, right: 0, backgroundColor: "#00000050", zIndex: 1 }} />
+
+            {/* Background image */}
+            <Fade in>
+                <Box
+                    sx={{
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        bottom: 0,
+                        right: 0,
+                        zIndex: 0,
+                        background: `url(${BattleBgWebP})`,
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "center",
+                        backgroundSize: "cover",
+                    }}
+                />
+            </Fade>
         </Stack>
     )
 }
@@ -125,7 +119,7 @@ const BattleNotStarted = () => {
 const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 100, height = 100 }: MiniMapInnerProps) => {
     const { handleHotKey } = useHotkey()
     const { remToPxRatio } = useDimension()
-    const { isStreamBigDisplay, setIsStreamBigDisplay, prevIsStreamBigDisplay } = useGame()
+    const { isStreamBigDisplay, setIsStreamBigDisplay, toggleIsStreamBigDisplayMemorized, restoreIsStreamBigDisplayMemorized } = useGame()
     const [isEnlarged, toggleIsEnlarged] = useToggle(localStorage.getItem("isMiniMapEnlarged") === "true")
 
     const mapHeightWidthRatio = useRef(1)
@@ -142,15 +136,11 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
     // When it's targeting, enlarge to big display, else restore to the prev location
     useEffect(() => {
         if (isTargeting) {
-            setIsStreamBigDisplay((prev) => {
-                if (!prevIsStreamBigDisplay.current) prevIsStreamBigDisplay.current = prev
-                return false
-            })
-        } else if (prevIsStreamBigDisplay.current) {
-            setIsStreamBigDisplay(prevIsStreamBigDisplay.current)
-            prevIsStreamBigDisplay.current = undefined
+            toggleIsStreamBigDisplayMemorized(false)
+        } else {
+            restoreIsStreamBigDisplayMemorized()
         }
-    }, [isTargeting, prevIsStreamBigDisplay, setIsStreamBigDisplay])
+    }, [isTargeting, restoreIsStreamBigDisplayMemorized, toggleIsStreamBigDisplayMemorized])
 
     // Set size
     const sizes = useMemo(() => {
