@@ -197,7 +197,7 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
             insideWidth,
             insideHeight,
         }
-    }, [map.height, map.width, width, isEnlarged, height, remToPxRatio])
+    }, [map.height, map.width, width, isEnlarged, height, remToPxRatio, isStreamBigDisplay, isPoppedout])
 
     return useMemo(() => {
         return (
