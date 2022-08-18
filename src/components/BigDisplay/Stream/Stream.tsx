@@ -1,6 +1,6 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useEffect } from "react"
-import { SvgSwap } from "../../../assets"
+import { SvgFullscreen, SvgMinimize, SvgSwap } from "../../../assets"
 import { useDimension, useGame, useOverlayToggles, useStream } from "../../../containers"
 import { fonts, siteZIndex } from "../../../theme/theme"
 import { StreamService } from "../../../types"
@@ -15,6 +15,7 @@ import { Trailer } from "./Trailer"
 export const Stream = () => {
     const { remToPxRatio } = useDimension()
     const { isStreamBigDisplay, setIsStreamBigDisplay } = useGame()
+    const { isEnlarged, toggleIsEnlarged } = useStream()
 
     useEffect(() => {
         const thisElement = document.getElementById("bid-display-stream")
@@ -49,6 +50,12 @@ export const Stream = () => {
                 <Box onClick={() => setIsStreamBigDisplay((prev) => !prev)} sx={{ cursor: "pointer", opacity: 0.4, ":hover": { opacity: 1 } }}>
                     <SvgSwap size="1.6rem" />
                 </Box>
+
+                {isStreamBigDisplay && (
+                    <Box onClick={() => toggleIsEnlarged()} sx={{ cursor: "pointer", opacity: 0.4, ":hover": { opacity: 1 } }}>
+                        {isEnlarged ? <SvgMinimize size="1.6rem" /> : <SvgFullscreen size="1.6rem" />}
+                    </Box>
+                )}
 
                 <Typography sx={{ fontFamily: fonts.nostromoHeavy }}>BATTLE LIVE STREAM</Typography>
             </Stack>
