@@ -203,11 +203,7 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
     const focusMap = useCallback(() => mapRef.current?.focus(), [mapRef])
 
     useEffect(() => {
-        const timeout = setTimeout(() => {
-            focusMap()
-        }, 0)
-
-        return () => clearTimeout(timeout)
+        focusMap()
     }, [focusMap])
 
     return useMemo(() => {
