@@ -46,6 +46,7 @@ export const StreamContainer = createContainer(() => {
     const [selectedResolution, setSelectedResolution] = useState<number>()
     const [resolutions, setResolutions] = useState<number[]>([])
 
+    const [isEnlarged, toggleIsEnlarged] = useToggle((localStorage.getItem("isStreamEnlarged") || "true") === "true")
     const hasInteracted = useRef(false)
 
     // Unmute stream / trailers etc. after user has interacted with the site.
@@ -66,7 +67,6 @@ export const StreamContainer = createContainer(() => {
             try {
                 const resp = await queryGetStreamList({})
                 if (resp.error || !resp.payload) return
-                // setLoadedStreams([blankOption, ...resp.payload])
                 setLoadedStreams([blankOption, ...resp.payload])
             } catch (err) {
                 const message = typeof err === "string" ? err : "Failed to get the list of streams."
@@ -112,6 +112,10 @@ export const StreamContainer = createContainer(() => {
         setResolutions([])
         localStorage.setItem("new_stream_props", JSON.stringify(s))
     }, [])
+
+    useEffect(() => {
+        localStorage.setItem("isStreamEnlarged", isEnlarged.toString())
+    }, [isEnlarged])
 
     const setNewStreamOptions = useCallback(
         (newStreamOptions: Stream[], dontChangeCurrentStream?: boolean) => {
@@ -186,6 +190,8 @@ export const StreamContainer = createContainer(() => {
         setMusicVolume,
         isMusicMute,
         toggleIsMusicMute,
+        isEnlarged,
+        toggleIsEnlarged,
     }
 })
 

@@ -84,7 +84,7 @@ export const QuestsPopover = ({
                             boxShadow: 1.5,
                         }}
                     >
-                        <Typography sx={{ fontFamily: fonts.nostromoBlack }}>YOUR QUESTS</Typography>
+                        <Typography sx={{ fontFamily: fonts.nostromoBlack }}>YOUR CHALLENGES</Typography>
                     </Stack>
 
                     {eventNames.length > 0 &&

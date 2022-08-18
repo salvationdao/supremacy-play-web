@@ -22,7 +22,7 @@ export interface MapSelection {
 }
 
 export const MiniMapContainer = createContainer(() => {
-    const { bribeStage, map } = useGame()
+    const { bribeStage, map, isBattleStarted } = useGame()
     const { factionID } = useAuth()
     const { currentArenaID } = useArena()
     const { newSnackbarMessage } = useGlobalNotifications()
@@ -185,6 +185,10 @@ export const MiniMapContainer = createContainer(() => {
             setSelection(undefined)
         }
     }, [send, selection, resetSelection, winner?.game_ability, playerAbility, newSnackbarMessage, setHighlightedMechParticipantID, currentArenaID])
+
+    useEffect(() => {
+        if (!isBattleStarted) resetSelection()
+    }, [isBattleStarted, resetSelection])
 
     return {
         mapElement,

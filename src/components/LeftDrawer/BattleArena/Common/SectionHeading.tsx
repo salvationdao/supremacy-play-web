@@ -1,9 +1,12 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { SvgInfoCircular } from "../../../../assets"
-import { colors, fonts } from "../../../../theme/theme"
+import { useTheme } from "../../../../containers/theme"
+import { fonts } from "../../../../theme/theme"
 import { TooltipHelper } from "../../../Common/TooltipHelper"
 
 export const SectionHeading = ({ label, tooltip }: { label: string; tooltip?: string }) => {
+    const theme = useTheme()
+
     return (
         <Stack
             direction="row"
@@ -21,7 +24,7 @@ export const SectionHeading = ({ label, tooltip }: { label: string; tooltip?: st
                             ":hover": { opacity: 1 },
                         }}
                     >
-                        <SvgInfoCircular fill={colors.text} size="1.5rem" />
+                        <SvgInfoCircular fill={`${theme.factionTheme.secondary}80`} size="1.5rem" />
                     </Box>
                 </TooltipHelper>
             )}

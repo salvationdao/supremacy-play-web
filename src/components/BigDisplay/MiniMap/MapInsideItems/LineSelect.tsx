@@ -12,7 +12,7 @@ export const LineSelect = ({ mapScale }: { mapScale: number }) => {
     const { mapElement, gridWidth, gridHeight, selection, setSelection } = useMiniMap()
     const canvasRef = useRef<HTMLCanvasElement>(null)
 
-    const indicatorDiameter = useMemo(() => (gridWidth || 50) * 1.8, [gridWidth])
+    const indicatorDiameter = useMemo(() => (Math.min(gridWidth, gridHeight) || 50) * 1.8, [gridWidth, gridHeight])
 
     useEffect(() => {
         const c = canvasRef.current?.getContext("2d")

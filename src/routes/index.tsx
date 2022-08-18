@@ -122,7 +122,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
             label: "Storefront",
         },
         matchNavLinkID: "storefront",
-        enable: !IS_TESTING_MODE,
+        enable: true,
     },
 
     // Marketplace

@@ -1,11 +1,9 @@
 import { Stack, Typography } from "@mui/material"
 import { TooltipHelper } from ".."
 import { SvgUser } from "../../assets"
-import { useSupremacy } from "../../containers"
 import { useGameServerSubscription } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
-import { Faction } from "../../types"
 
 export const LiveCounts = () => {
     const viewerCount = useGameServerSubscription<number>({
