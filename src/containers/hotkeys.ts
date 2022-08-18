@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { KeyboardEventHandler, useCallback, useEffect, useMemo, useState } from "react"
 import { createContainer } from "unstated-next"
 
 // TODO: Player Abilities hotkeys and custom hotkey maps
@@ -63,6 +63,7 @@ export const HotkeyContainer = createContainer(() => {
 
     const handleHotKey = useCallback(
         (e) => {
+            e.stopPropagation()
             e.preventDefault()
 
             let handlePress = hotkeyRecord[e.key]
@@ -82,6 +83,7 @@ export const HotkeyContainer = createContainer(() => {
             const handlePress = globalHotkeyRecord[e.key]
             if (!handlePress) return
 
+            e.stopPropagation()
             e.preventDefault()
             handlePress()
         },
