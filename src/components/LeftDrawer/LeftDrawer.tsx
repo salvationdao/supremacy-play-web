@@ -6,7 +6,7 @@ import { LEFT_DRAWER_ARRAY, LEFT_DRAWER_MAP, ROUTES_ARRAY } from "../../routes"
 import { colors, siteZIndex } from "../../theme/theme"
 import { DrawerButtons } from "./DrawerButtons"
 
-export const LEFT_DRAWER_WIDTH = 45 // rem
+export const LEFT_DRAWER_WIDTH = 44 // rem
 
 export const LeftDrawer = () => {
     const { leftDrawerActiveTabID } = useOverlayToggles()
