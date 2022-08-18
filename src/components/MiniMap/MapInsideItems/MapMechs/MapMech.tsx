@@ -2,6 +2,7 @@ import { Box, Stack, Typography } from "@mui/material"
 import { useCallback, useMemo, useState } from "react"
 import { SvgMapSkull, SvgMapWarMachine } from "../../../../assets"
 import { useAuth, useGame, useMiniMap, useSupremacy } from "../../../../containers"
+import { useArena } from "../../../../containers/arena"
 import { closestAngle } from "../../../../helpers"
 import { useGameServerSubscription, useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
@@ -15,6 +16,7 @@ const TRANSITION_DURATION = 0.275 // seconds
 
 interface MapMechProps {
     warMachine: WarMachineState
+    label?: number
     isAI?: boolean
 }
 
@@ -28,8 +30,9 @@ interface MapMechInnerProps extends MapMechProps {
     map: Map
 }
 
-const MapMechInner = ({ warMachine, map, isAI }: MapMechInnerProps) => {
+const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
     const { userID, factionID } = useAuth()
+    const { currentArenaID } = useArena()
     const { getFaction } = useSupremacy()
     const { isTargeting, gridWidth, gridHeight, playerAbility, highlightedMechParticipantID, setHighlightedMechParticipantID, selection, setSelection } =
         useMiniMap()
@@ -94,10 +97,10 @@ const MapMechInner = ({ warMachine, map, isAI }: MapMechInnerProps) => {
     // Listen on mech stats
     useGameServerSubscription<WarMachineLiveState | undefined>(
         {
-            URI: `/public/mech/${participantID}`,
+            URI: `/public/arena/${currentArenaID}/mech/${participantID}`,
             key: GameServerKeys.SubMechLiveStats,
-            ready: !!participantID,
-            batchURI: "/public/mech",
+            ready: !!participantID && !!currentArenaID,
+            batchURI: `/public/arena/${currentArenaID}/mech`,
         },
         (payload) => {
             if (payload?.health !== undefined) setHealth(payload.health)
@@ -111,9 +114,9 @@ const MapMechInner = ({ warMachine, map, isAI }: MapMechInnerProps) => {
     // Listen on mech move command positions for this mech
     useGameServerSubscriptionFaction<MechMoveCommand>(
         {
-            URI: `/mech_command/${hash}`,
+            URI: `/arena/${currentArenaID}/mech_command/${hash}`,
             key: GameServerKeys.SubMechMoveCommand,
-            ready: factionID === warMachineFactionID && !!participantID,
+            ready: factionID === warMachineFactionID && !!participantID && !!currentArenaID,
         },
         (payload) => {
             if (!payload) return
@@ -255,7 +258,7 @@ const MapMechInner = ({ warMachine, map, isAI }: MapMechInnerProps) => {
                                 fontFamily: fonts.nostromoBlack,
                             }}
                         >
-                            {warMachine.participantID}
+                            {label}
                         </Typography>
                     </Box>
 
@@ -425,7 +428,7 @@ const MapMechInner = ({ warMachine, map, isAI }: MapMechInnerProps) => {
         hash,
         playerAbility,
         selection?.mechHash,
-        warMachine.participantID,
         zIndex,
+        label,
     ])
 }

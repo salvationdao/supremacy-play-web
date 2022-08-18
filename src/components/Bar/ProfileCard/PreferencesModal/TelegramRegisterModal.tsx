@@ -6,7 +6,7 @@ import { SvgContentCopyIcon } from "../../../../assets"
 import { TELEGRAM_BOT_URL } from "../../../../constants"
 import { useTheme } from "../../../../containers/theme"
 import { useToggle } from "../../../../hooks"
-import { useGameServerSubscriptionUser } from "../../../../hooks/useGameServer"
+import { useGameServerSubscriptionSecuredUser } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
 import { ClipThing } from "../../../Common/ClipThing"
@@ -17,7 +17,7 @@ export const TelegramRegisterModal = ({ onClose, code }: { onClose: () => void; 
     const [userTelegramShortcodeRegistered, setUserTelegramShortcodeRegistered] = useState<boolean>()
 
     // Subscribe on telegram shortcode registered status
-    useGameServerSubscriptionUser<string>(
+    useGameServerSubscriptionSecuredUser<string>(
         {
             URI: "/telegram_shortcode_register",
             key: GameServerKeys.UserTelegramShortcodeRegistered,

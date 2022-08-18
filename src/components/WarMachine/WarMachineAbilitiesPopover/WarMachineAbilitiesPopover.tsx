@@ -85,7 +85,7 @@ export const WarMachineAbilitiesPopover = ({
                         <Stack spacing="1rem">
                             {gameAbilities.map((ga, i) => (
                                 <Box key={ga.id} sx={{ ml: `${(i + 1) * 0.2 * 0.8}rem` }}>
-                                    <WarMachineAbilityItem warMachine={warMachine} gameAbility={ga} clipSlantSize="3px" />
+                                    <WarMachineAbilityItem warMachine={warMachine} gameAbility={ga} index={i} clipSlantSize="3px" />
                                 </Box>
                             ))}
                         </Stack>

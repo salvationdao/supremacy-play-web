@@ -91,8 +91,8 @@ export const DeviceRegisterModal = ({ onClose }: DeviceRegisterModalProps) => {
                                     token && (
                                         <Box
                                             sx={{
-                                                width: QR_CODE_SIZE,
-                                                height: QR_CODE_SIZE,
+                                                width: "fit-content",
+                                                p: "1rem",
                                                 backgroundColor: "#FFFFFF",
                                             }}
                                         >

@@ -1,10 +1,12 @@
 import { Stack } from "@mui/material"
 import { useMemo } from "react"
 import { LiveCounts, OverlayToggles, VideoPlayerControls } from ".."
+import { DEV_ONLY } from "../../constants"
 import { useMobile } from "../../containers"
 import { useTheme } from "../../containers/theme"
 import { shadeColor } from "../../helpers"
 import { siteZIndex } from "../../theme/theme"
+import { ArenaSelect } from "./ArenaSelect"
 import { ResolutionSelect } from "./ResolutionSelect"
 import { ShowTrailerButton } from "./ShowTrailerButton"
 import { StreamSelect } from "./StreamSelect"
@@ -56,6 +58,7 @@ export const Controls = () => {
 
             <Stack direction="row" spacing="1.6rem" sx={{ flexShrink: 0, height: "100%" }}>
                 <ShowTrailerButton />
+                {DEV_ONLY && <ArenaSelect />}
                 <StreamSelect />
                 <ResolutionSelect />
                 <VideoPlayerControls />

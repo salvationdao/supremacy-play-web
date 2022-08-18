@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef } from "react"
 import { MiniMapInside, MoveableResizable } from ".."
 import { SvgFullscreen, SvgMinimize } from "../../assets"
 import { useDimension, useGame, useMobile, useOverlayToggles } from "../../containers"
+import { useHotkey } from "../../containers/hotkeys"
 import { useMiniMap } from "../../containers/minimap"
 import { useTheme } from "../../containers/theme"
 import { useToggle } from "../../hooks"
@@ -113,6 +114,7 @@ const MiniMapInner = ({
 }) => {
     const { isMobile } = useMobile()
     const theme = useTheme()
+    const { handleHotKey } = useHotkey()
     const {
         remToPxRatio,
         gameUIDimensions: { width, height },
@@ -233,6 +235,8 @@ const MiniMapInner = ({
             >
                 <Box
                     ref={ref}
+                    tabIndex={0}
+                    onKeyDown={handleHotKey}
                     sx={{
                         position: "relative",
                         boxShadow: 1,
@@ -306,5 +310,5 @@ const MiniMapInner = ({
             </Stack>
         )
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [toRender, theme.factionTheme.primary, curWidth, curHeight, remToPxRatio, isMobile, width, height, isPoppedout])
+    }, [toRender, theme.factionTheme.primary, curWidth, curHeight, remToPxRatio, isMobile, width, height, isPoppedout, handleHotKey])
 }

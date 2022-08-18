@@ -14,6 +14,10 @@ export enum GameServerKeys {
     // Notification container
     SubGameNotification = "GAME:NOTIFICATION",
 
+    // Battle Arena
+    SubBattleArenaList = "BATTLE:ARENA:LIST",
+    SubBattleArenaClosed = "BATTLE:ARENA:CLOSED",
+
     // Voting abilities
     SubBribeStageUpdated = "BRIBE:STAGE:UPDATED:SUBSCRIBE",
     SubBribeWinnerAnnouncement = "BRIBE:WINNER:SUBSCRIBE",
@@ -57,6 +61,7 @@ export enum GameServerKeys {
     SubSaleAbilitiesPrice = "SALE:ABILITIES:PRICE:SUBSCRIBE",
     SubPlayerAbilitiesList = "PLAYER:ABILITIES:LIST:SUBSCRIBE",
     SubSaleAbilitiesList = "SALE:ABILITIES:LIST:SUBSCRIBE",
+    SaleAbilitiesList = "SALE:ABILITIES:LIST",
     SaleAbilityClaim = "SALE:ABILITY:CLAIM",
     SaleAbilityPurchase = "SALE:ABILITY:PURCHASE",
     PlayerAbilityUse = "PLAYER:ABILITY:USE",

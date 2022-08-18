@@ -3,7 +3,7 @@ import { ReactNode, useCallback, useEffect, useState } from "react"
 import { SvgClose, SvgMail } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { useToggle } from "../../../hooks"
-import { useGameServerCommandsUser, useGameServerSubscriptionUser } from "../../../hooks/useGameServer"
+import { useGameServerCommandsUser, useGameServerSubscriptionSecuredUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { siteZIndex } from "../../../theme/theme"
 import { SystemMessage, SystemMessageDataType } from "../../../types"
@@ -43,7 +43,7 @@ export const Messages = () => {
         fetchMessages()
     }, [fetchMessages, lastUpdated])
 
-    useGameServerSubscriptionUser<boolean>(
+    useGameServerSubscriptionSecuredUser<boolean>(
         {
             URI: "/system_messages",
             key: GameServerKeys.SubSystemMessageListUpdated,

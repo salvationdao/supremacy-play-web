@@ -2,6 +2,7 @@ import { IconButton, Stack, Typography } from "@mui/material"
 import { TooltipHelper } from ".."
 import { SvgHistory, SvgRadar } from "../../assets"
 import { useOverlayToggles } from "../../containers"
+import { colors } from "../../theme/theme"
 
 export const OverlayToggles = () => {
     const { isMapOpen, toggleIsMapOpen, isBattleHistoryOpen, toggleIsBattleHistoryOpen } = useOverlayToggles()
@@ -13,7 +14,19 @@ export const OverlayToggles = () => {
             </Typography>
 
             {/* Map */}
-            <TooltipHelper text="Toggle the mini map, it will show when the battle begins.">
+            <TooltipHelper
+                text={
+                    <>
+                        <Typography>
+                            Toggle the mini map{" "}
+                            <i style={{ color: colors.neonBlue }}>
+                                <strong>[m]</strong>
+                            </i>
+                        </Typography>
+                        <Typography>Shown when the battle begins.</Typography>
+                    </>
+                }
+            >
                 <IconButton
                     size="small"
                     onClick={() => toggleIsMapOpen()}
