@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { createContainer } from "unstated-next"
 import { useAuth, useSupremacy } from "."
 import { useGameServerCommandsUser, useGameServerSubscription } from "../hooks/useGameServer"
@@ -39,6 +39,8 @@ export const GameContainer = createContainer(() => {
     const [bribeStage, setBribeStage] = useState<BribeStageResponse | undefined>()
     const [battleEndDetail, setBattleEndDetail] = useState<BattleEndDetail>()
     const [forceDisplay100Percentage, setForceDisplay100Percentage] = useState<string>("")
+
+    const isBattleStarted = useMemo(() => (map && bribeStage && bribeStage.phase !== "HOLD" ? true : false), [bribeStage, map])
 
     const factionWarMachines = useMemo(() => {
         if (!warMachines) return
@@ -127,14 +129,40 @@ export const GameContainer = createContainer(() => {
         localStorage.setItem("isStreamBigDisplay", isStreamBigDisplay.toString())
     }, [isStreamBigDisplay])
 
+    // Toggles the big display, memorizes the previous value
+    const toggleIsStreamBigDisplayMemorized = useCallback((value: boolean) => {
+        setIsStreamBigDisplay((prev) => {
+            if (prevIsStreamBigDisplay.current === undefined) prevIsStreamBigDisplay.current = prev
+            return value
+        })
+    }, [])
+
+    const restoreIsStreamBigDisplayMemorized = useCallback(() => {
+        if (prevIsStreamBigDisplay.current !== undefined) {
+            setIsStreamBigDisplay(prevIsStreamBigDisplay.current)
+            prevIsStreamBigDisplay.current = undefined
+        }
+    }, [])
+
+    // If battle ends, then we will focus on the stream for watch mech intro
+    useEffect(() => {
+        if (!isBattleStarted) {
+            toggleIsStreamBigDisplayMemorized(true)
+        } else {
+            restoreIsStreamBigDisplayMemorized()
+        }
+    }, [isBattleStarted, restoreIsStreamBigDisplayMemorized, toggleIsStreamBigDisplayMemorized])
+
     return {
         isStreamBigDisplay,
         setIsStreamBigDisplay,
-        prevIsStreamBigDisplay,
+        toggleIsStreamBigDisplayMemorized,
+        restoreIsStreamBigDisplayMemorized,
 
         bribeStage,
         map,
         setMap,
+        isBattleStarted,
         battleZone,
         setBattleZone,
         abilityDetails,

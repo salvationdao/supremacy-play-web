@@ -1,5 +1,5 @@
 import { Box, Fade, Slide, Stack } from "@mui/material"
-import { useEffect, useMemo, useState } from "react"
+import { useMemo } from "react"
 import { ADD_MINI_MECH_PARTICIPANT_ID } from "../../constants"
 import { useGame, useMobile, useSupremacy } from "../../containers"
 import { siteZIndex } from "../../theme/theme"
@@ -13,12 +13,7 @@ export const WarMachineStats = () => {
 
 const WarMachineStatsInner = () => {
     const { isMobile } = useMobile()
-    const { warMachines, bribeStage, factionWarMachines, otherWarMachines, ownedMiniMechs } = useGame()
-    const [isBattleStarted, setIsBattleStarted] = useState(false)
-
-    useEffect(() => {
-        setIsBattleStarted(bribeStage && bribeStage.phase !== "HOLD" ? true : false)
-    }, [bribeStage, isBattleStarted])
+    const { isBattleStarted, warMachines, factionWarMachines, otherWarMachines, ownedMiniMechs } = useGame()
 
     const haveFactionMechs = useMemo(() => factionWarMachines && factionWarMachines.length > 0, [factionWarMachines])
 
