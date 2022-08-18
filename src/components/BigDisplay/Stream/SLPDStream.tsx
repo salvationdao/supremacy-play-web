@@ -128,7 +128,7 @@ export const SLPDStream = () => {
                     width: "100% !important",
                     height: "100% !important",
                     objectFit: `${isEnlarged ? "cover" : "contain"} !important`,
-                    objectPosition: "center !important",
+                    objectPosition: "50% 40% !important",
                     zIndex: siteZIndex.Stream,
                 },
                 ".op-ui": {
