@@ -1,6 +1,5 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import ReactDOM from "react-dom"
 import { MiniMapInside } from "../.."
 import { BattleBgWebP, SvgExternalLink, SvgFullscreen, SvgMinimize, SvgSwap } from "../../../assets"
 import { useDimension, useGame } from "../../../containers"
@@ -23,6 +22,15 @@ export const MiniMap = () => {
     const { isTargeting } = useMiniMap()
     const [isPoppedout, setIsPoppedout] = useState(false)
 
+    useEffect(() => {
+        const thisElement = document.getElementById("big-display-minimap")
+        const newContainerElement = document.getElementById(isStreamBigDisplay ? "left-drawer-space" : "big-display-space")
+
+        if (!isPoppedout && thisElement && newContainerElement) {
+            newContainerElement.appendChild(thisElement)
+        }
+    }, [isStreamBigDisplay, isPoppedout])
+
     if (isPoppedout) {
         return (
             <WindowPortal title="Supremacy - Battle Arena" onClose={() => setIsPoppedout(false)} features={{ width: 600, height: 600 }}>
@@ -37,23 +45,15 @@ export const MiniMap = () => {
         )
     }
 
-    const node = document && document.getElementById(isStreamBigDisplay ? "left-drawer-space" : "big-display-space")
-    if (!isPoppedout && node) {
-        return ReactDOM.createPortal(
-            <>
-                {isBattleStarted && map ? (
-                    <>
-                        <MiniMapInnerNormal map={map} isTargeting={isTargeting} isPoppedout={isPoppedout} setIsPoppedout={setIsPoppedout} />
-                    </>
-                ) : (
-                    <BattleNotStarted />
-                )}
-            </>,
-            node,
-        )
-    }
-
-    return null
+    return (
+        <Box id="big-display-minimap" sx={{ width: "100%", height: "100%" }}>
+            {isBattleStarted && map ? (
+                <MiniMapInnerNormal map={map} isTargeting={isTargeting} isPoppedout={isPoppedout} setIsPoppedout={setIsPoppedout} />
+            ) : (
+                <BattleNotStarted />
+            )}
+        </Box>
+    )
 }
 
 interface MiniMapInnerProps {
