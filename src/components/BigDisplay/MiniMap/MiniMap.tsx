@@ -161,25 +161,26 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
 
         let defaultWidth = width
         let defaultHeight = 0
-        if (!containFit) {
+        if (isPoppedout || !isStreamBigDisplay) {
+            defaultHeight = Math.min(defaultWidth * mapHeightWidthRatio.current, height)
+        } else {
             defaultWidth = LEFT_DRAWER_WIDTH * remToPxRatio
             defaultHeight = defaultWidth * mapHeightWidthRatio.current
-        } else {
-            defaultHeight = Math.min(defaultWidth * mapHeightWidthRatio.current, height)
         }
 
         if (isEnlarged) defaultHeight = height
 
         // Step 2
-        const padding = isEnlarged || !containFit ? 0 : 6 * remToPxRatio
-        const bottomPadding = isEnlarged || !containFit ? 0 : isPoppedout ? padding : padding + BOTTOM_PADDING * remToPxRatio
+        const padding = (isPoppedout || !isStreamBigDisplay) && !isEnlarged ? 6 * remToPxRatio : 0
+        let bottomPadding = padding
+        if (!isPoppedout && !isStreamBigDisplay) bottomPadding += BOTTOM_PADDING * remToPxRatio
 
         let outsideWidth = defaultWidth - padding
         let outsideHeight = defaultHeight - bottomPadding
         let insideWidth = outsideWidth
         let insideHeight = outsideHeight - TOP_BAR_HEIGHT * remToPxRatio
 
-        if (containFit && !isEnlarged) {
+        if ((isPoppedout || !isStreamBigDisplay) && !isEnlarged) {
             const maxHeight = outsideWidth * mapHeightWidthRatio.current
             const maxWidth = outsideHeight / mapHeightWidthRatio.current
 
@@ -198,7 +199,7 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
             insideWidth,
             insideHeight,
         }
-    }, [map.height, map.width, width, containFit, isEnlarged, height, remToPxRatio])
+    }, [map.height, map.width, width, isEnlarged, height, remToPxRatio])
 
     return useMemo(() => {
         return (
@@ -209,7 +210,7 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
                     position: "relative",
                     width: "100%",
                     height: "100%",
-                    pb: containFit && !isEnlarged ? `${BOTTOM_PADDING}rem` : 0,
+                    pb: !isPoppedout && !isStreamBigDisplay ? `${BOTTOM_PADDING}rem` : 0,
                     boxShadow: 2,
                     border: (theme) => `${theme.factionTheme.primary}60 1px solid`,
                 }}
@@ -292,7 +293,6 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
             </Stack>
         )
     }, [
-        containFit,
         isEnlarged,
         handleHotKey,
         sizes.outsideWidth,
