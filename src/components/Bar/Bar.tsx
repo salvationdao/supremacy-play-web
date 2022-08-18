@@ -7,7 +7,7 @@ import { User } from "../../types"
 import { Messages } from "./Messages/Messages"
 import { NavLinks } from "./NavLinks/NavLinks"
 import Marquee from "react-fast-marquee"
-import { hexToRGBArray, timeSinceInWords } from "../../helpers"
+import { hexToRGB, timeSinceInWords } from "../../helpers"
 import { useTimer } from "../../hooks"
 import { SvgDisconnected } from "../../assets"
 import { Quests } from "./Quests/Quests"
@@ -20,6 +20,8 @@ const Countdown = ({ endTime }: { endTime: Date }) => {
 
 export const Bar = () => {
     const { userID, user } = useAuth()
+
+    const rgb = hexToRGB(colors.lightRed)
 
     return (
         <>
@@ -35,7 +37,7 @@ export const Bar = () => {
                             zIndex: siteZIndex.Popover,
                         }}
                     >
-                        <Marquee direction="left" gradientColor={hexToRGBArray(colors.lightRed)} gradientWidth={50} style={{ overflow: "hidden" }}>
+                        <Marquee direction="left" gradientColor={[rgb.r, rgb.g, rgb.b]} gradientWidth={50} style={{ overflow: "hidden" }}>
                             <Typography variant="body2" sx={{ pr: "100px", fontFamily: fonts.nostromoBlack, lineHeight: 1 }}>
                                 Welcome to the proving grounds! <span style={{ color: colors.yellow }}>Hundreds of thousands of $SUPS</span> are up for grabs by
                                 helping us play-test incoming mechanisms and features. This round will reset in{" "}

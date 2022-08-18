@@ -103,7 +103,7 @@ const BottomNavInner = () => {
             </Box>
 
             {isNavOpen && (
-                <Box id="game-ui-container" sx={{ flex: 1, backgroundColor }}>
+                <Box sx={{ flex: 1, backgroundColor }}>
                     {tabs.map((item, i) => {
                         if (item.requireAuth && !userID) return null
                         return (
