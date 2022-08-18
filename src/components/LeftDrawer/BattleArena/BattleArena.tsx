@@ -1,29 +1,15 @@
 import { Box, Stack } from "@mui/material"
 import { useMemo } from "react"
-import { useDimension, useGame } from "../../../containers"
-import { MiniMap, TOP_BAR_HEIGHT } from "../../BigDisplay/MiniMap/MiniMap"
-import { Stream } from "../../BigDisplay/Stream/Stream"
-import { LEFT_DRAWER_WIDTH } from "../LeftDrawer"
 import { BattleAbility } from "./BattleAbility/BattleAbility"
 import { PlayerAbilities } from "./PlayerAbilities/PlayerAbilities"
 import { QuickPlayerAbilities } from "./QuickPlayerAbilities/QuickPlayerAbilities"
 
 export const BattleArena = () => {
-    const { isStreamBigDisplay } = useGame()
-    const { remToPxRatio } = useDimension()
-
     return useMemo(
         () => (
             <Stack sx={{ position: "relative", height: "100%", backgroundColor: (theme) => theme.factionTheme.background }}>
-                <Box sx={{ flexShrink: 0 }}>
-                    {isStreamBigDisplay ? (
-                        <MiniMap />
-                    ) : (
-                        <Box sx={{ width: "100%", height: (LEFT_DRAWER_WIDTH * remToPxRatio) / (16 / 9) + TOP_BAR_HEIGHT * remToPxRatio }}>
-                            <Stream />
-                        </Box>
-                    )}
-                </Box>
+                {/* The minimap or the stream will mount here */}
+                <Box id="left-drawer-space" sx={{ flexShrink: 0 }} />
 
                 <Box
                     sx={{
@@ -60,6 +46,6 @@ export const BattleArena = () => {
                 </Box>
             </Stack>
         ),
-        [isStreamBigDisplay, remToPxRatio],
+        [],
     )
 }

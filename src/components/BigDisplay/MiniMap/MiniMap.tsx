@@ -1,5 +1,6 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useRef, useState } from "react"
+import ReactDOM from "react-dom"
 import { MiniMapInside } from "../.."
 import { BattleBgWebP, SvgExternalLink, SvgFullscreen, SvgMinimize, SvgSwap } from "../../../assets"
 import { useDimension, useGame } from "../../../containers"
@@ -18,7 +19,7 @@ export const TOP_BAR_HEIGHT = 3.4 // rems
 const BOTTOM_PADDING = 12 // rems
 
 export const MiniMap = () => {
-    const { map, isBattleStarted } = useGame()
+    const { map, isBattleStarted, isStreamBigDisplay } = useGame()
     const { isTargeting } = useMiniMap()
     const [isPoppedout, setIsPoppedout] = useState(false)
 
@@ -36,11 +37,23 @@ export const MiniMap = () => {
         )
     }
 
-    if (isBattleStarted && map) {
-        return <MiniMapInnerNormal map={map} isTargeting={isTargeting} isPoppedout={isPoppedout} setIsPoppedout={setIsPoppedout} />
+    const node = document && document.getElementById(isStreamBigDisplay ? "left-drawer-space" : "big-display-space")
+    if (!isPoppedout && node) {
+        return ReactDOM.createPortal(
+            <>
+                {isBattleStarted && map ? (
+                    <>
+                        <MiniMapInnerNormal map={map} isTargeting={isTargeting} isPoppedout={isPoppedout} setIsPoppedout={setIsPoppedout} />
+                    </>
+                ) : (
+                    <BattleNotStarted />
+                )}
+            </>,
+            node,
+        )
     }
 
-    return <BattleNotStarted />
+    return null
 }
 
 interface MiniMapInnerProps {
