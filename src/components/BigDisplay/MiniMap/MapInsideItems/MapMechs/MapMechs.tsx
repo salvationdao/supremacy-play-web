@@ -1,4 +1,5 @@
 import { useMemo } from "react"
+import { ADD_MINI_MECH_PARTICIPANT_ID } from "../../../../../constants"
 import { useGame, useSupremacy } from "../../../../../containers"
 import { MapMech } from "./MapMech"
 
@@ -19,7 +20,9 @@ const MapMechsInner = () => {
     const ai = useMemo(() => {
         if (!spawnedAI || spawnedAI.length <= 0) return null
 
-        return spawnedAI.map((wm) => <MapMech key={`${wm.participantID} - ${wm.hash}`} warMachine={wm} isAI />)
+        return spawnedAI.map((wm) => (
+            <MapMech key={`${wm.participantID} - ${wm.hash}`} warMachine={wm} isAI label={wm.participantID - ADD_MINI_MECH_PARTICIPANT_ID} />
+        ))
     }, [spawnedAI])
 
     return useMemo(() => {

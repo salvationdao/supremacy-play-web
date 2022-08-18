@@ -16,7 +16,7 @@ const TRANSITION_DURATION = 0.275 // seconds
 
 interface MapMechProps {
     warMachine: WarMachineState
-    label?: number
+    label: number
     isAI?: boolean
 }
 
