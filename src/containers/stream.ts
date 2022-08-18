@@ -66,7 +66,6 @@ export const StreamContainer = createContainer(() => {
             try {
                 const resp = await queryGetStreamList({})
                 if (resp.error || !resp.payload) return
-                // setLoadedStreams([blankOption, ...resp.payload])
                 setLoadedStreams([blankOption, ...resp.payload])
             } catch (err) {
                 const message = typeof err === "string" ? err : "Failed to get the list of streams."
