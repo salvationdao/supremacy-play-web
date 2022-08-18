@@ -8,6 +8,7 @@ import MessageRenderer from "../../MessageRenderer"
 import { SystemMessageDisplayable } from "../../Messages"
 import { MechBattleCompleteDetails } from "./MechBattleCompleteDetails"
 import { MechOwnerBattleReward, MechOwnerBattleRewardData } from "./MechOwnerBattleReward"
+import { PlayerAbilityReversedData, PlayerAbilityReversedMessage } from "./PlayerAbilityRefund"
 
 export interface MessageDisplayProps {
     message: SystemMessageDisplayable
@@ -25,6 +26,8 @@ export const MessageDisplay = ({ message, onClose }: MessageDisplayProps) => {
 
             case SystemMessageDataType.MechOwnerBattleReward:
                 return <MechOwnerBattleReward message={message.message} data={message.data as MechOwnerBattleRewardData} />
+            case SystemMessageDataType.PlayerAbilityReversed:
+                return <PlayerAbilityReversedMessage message={message.message} data={message.data as PlayerAbilityReversedData[]} />
         }
 
         return <MessageRenderer markdown={message.message} />

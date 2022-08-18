@@ -1,6 +1,6 @@
 import { Box, Stack, Switch, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { SvgAnnouncement, SvgDamage1, SvgHealth, SvgHistoryClock, SvgNotification, SvgSyndicateFlag } from "../../../../assets"
+import { SvgAbility, SvgAnnouncement, SvgDamage1, SvgHealth, SvgHistoryClock, SvgNotification, SvgSyndicateFlag } from "../../../../assets"
 import { useAuth } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
 import { usePagination } from "../../../../hooks"
@@ -66,6 +66,9 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
                         break
                     case SystemMessageDataType.MechOwnerBattleReward:
                         icon = <SvgHealth fill={colors.yellow} size="1.6rem" />
+                        break
+                    case SystemMessageDataType.PlayerAbilityReversed:
+                        icon = <SvgAbility fill={colors.orange} size="1.6rem" />
                         break
                 }
 
