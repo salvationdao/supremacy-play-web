@@ -130,8 +130,6 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
 
     const mapHeightWidthRatio = useRef(1)
 
-    const containFit = useMemo(() => isPoppedout || !isStreamBigDisplay, [isPoppedout, isStreamBigDisplay])
-
     // If small version, not allow enlarge
     useEffect(() => {
         if (isStreamBigDisplay) toggleIsEnlarged(false)
