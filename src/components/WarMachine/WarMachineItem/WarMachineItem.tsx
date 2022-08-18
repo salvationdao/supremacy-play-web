@@ -259,7 +259,7 @@ export const WarMachineItem = ({
                                     WebkitLineClamp: 1,
                                 }}
                             >
-                                {isMiniMech ? "Mini Mech" : name || hash}
+                                {isMiniMech ? "Support Machine" : name || hash}
                             </Typography>
 
                             {!isMiniMech && (
