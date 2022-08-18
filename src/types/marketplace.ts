@@ -8,7 +8,7 @@ export enum ItemType {
 }
 
 export enum MarketSaleType {
-    Buyout = "BUY_OUT",
+    Buyout = "BUY_NOW",
     Auction = "AUCTION",
     DutchAuction = "DUTCH_AUCTION",
 }
