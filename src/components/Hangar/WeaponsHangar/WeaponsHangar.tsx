@@ -35,6 +35,7 @@ export interface GetWeaponsRequest {
     exclude_equipped?: boolean
     sort_by: string
     sort_dir: string
+    exclude_ids: string[]
     weapon_types: string[]
     rarities: string[]
     equipped_statuses: string[]
@@ -338,6 +339,7 @@ export const WeaponsHangar = () => {
                 sort_by: sortBy,
                 sort_dir: sortDir,
                 include_market_listed: true,
+                exclude_ids: [],
                 weapon_types: weaponTypes,
                 rarities,
                 equipped_statuses: equippedStatuses,

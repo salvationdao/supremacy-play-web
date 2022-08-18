@@ -1,22 +1,87 @@
 import { Box, Stack } from "@mui/material"
+import { useCallback, useState } from "react"
 import { SvgIntroAnimation, SvgOutroAnimation, SvgPowerCore, SvgSkin, SvgUtilities, SvgWeapons } from "../../../../assets"
 import { getRarityDeets } from "../../../../helpers"
+import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
 import { colors } from "../../../../theme/theme"
-import { MechDetails } from "../../../../types"
+import { MechDetails, PowerCore, Utility, Weapon } from "../../../../types"
 import { MechLoadoutItem } from "../Common/MechLoadoutItem"
 import { MechLoadoutPowerCoreModal } from "./Modals/Loadout/MechLoadoutPowerCoreModal"
 import { MechLoadoutWeaponModal } from "./Modals/Loadout/MechLoadoutWeaponModal"
 
+interface LoadoutChanges {
+    power_core?: PowerCore
+    utility?: Utility
+    weapons: LoadoutWeapon[]
+}
+
+type LoadoutWeapon = EquipWeapon & {
+    weapon: Weapon
+}
+
+interface PlayerAssetMechEquipRequest {
+    mech_id: string
+    equip_power_core?: string
+    equip_shield?: string
+    equip_weapons: EquipWeapon[]
+    equip_mech_skin?: string
+}
+
+interface EquipWeapon {
+    weapon_id: string
+    slot_number: number
+    inherit_skin: boolean
+}
+
 export const MechLoadout = ({ mechDetails }: { mechDetails: MechDetails }) => {
-    const weaponSlots = mechDetails.weapon_hardpoints
-    const utilitySlots = mechDetails.utility_slots
-    const weapons = mechDetails.weapons
-    const weaponsWithSkinInheritance = mechDetails.blueprint_weapon_ids_with_skin_inheritance
-    const utilities = mechDetails.utility
-    const powerCore = mechDetails.power_core
-    const chassisSkin = mechDetails.chassis_skin
-    const introAnimation = mechDetails.intro_animation
-    const outroAnimation = mechDetails.outro_animation
+    const { send } = useGameServerCommandsUser("/user_commander")
+
+    const [prevLoadout, setPrevLoadout] = useState(mechDetails)
+    const [currLoadout, setCurrLoadout] = useState(mechDetails)
+    const [loadoutChanges, setLoadoutChanges] = useState<LoadoutChanges>({
+        weapons: [],
+    })
+
+    // const submitLoadout = () => {
+
+    // }
+
+    const addWeaponSelection = useCallback((ew: LoadoutWeapon) => {
+        setLoadoutChanges((prev) => {
+            const equippedWeapons = prev.weapons.filter((w) => w.weapon_id !== ew.weapon_id)
+            equippedWeapons.push(ew)
+            return {
+                ...prev,
+                weapons: equippedWeapons,
+            }
+        })
+        setCurrLoadout((prev) => {
+            const prevWeapons = prev.weapons
+            const newWeapons = prev.weapons.map((w) => w)
+            for (let i = 0; i < prevWeapons.length; i++) {
+                if (prevWeapons[i].slot_number === ew.slot_number) {
+                    newWeapons[i] = ew.weapon
+                }
+            }
+
+            return {
+                ...prev,
+                weapons: newWeapons,
+            }
+        })
+    }, [])
+
+    const {
+        weapons,
+        weapon_hardpoints,
+        utility_slots,
+        blueprint_weapon_ids_with_skin_inheritance,
+        utility,
+        power_core,
+        chassis_skin,
+        intro_animation,
+        outro_animation,
+    } = currLoadout
 
     return (
         <Box
@@ -40,11 +105,11 @@ export const MechLoadout = ({ mechDetails }: { mechDetails: MechDetails }) => {
                     left: "6rem",
                 }}
             >
-                {powerCore ? (
+                {power_core ? (
                     <MechLoadoutItem
-                        imageUrl={powerCore.image_url || powerCore.avatar_url}
-                        videoUrls={[powerCore.card_animation_url]}
-                        label={powerCore.label}
+                        imageUrl={power_core.image_url || power_core.avatar_url}
+                        videoUrls={[power_core.card_animation_url]}
+                        label={power_core.label}
                         primaryColor={colors.powerCore}
                         Icon={SvgPowerCore}
                         renderModal={(toggleShowLoadoutModal) => <MechLoadoutPowerCoreModal onClose={() => toggleShowLoadoutModal(false)} />}
@@ -55,7 +120,7 @@ export const MechLoadout = ({ mechDetails }: { mechDetails: MechDetails }) => {
 
                 {weapons &&
                     weapons.length > 0 &&
-                    weapons.map((w) => {
+                    weapons.map((w, index) => {
                         return (
                             <MechLoadoutItem
                                 key={w.id}
@@ -69,26 +134,35 @@ export const MechLoadout = ({ mechDetails }: { mechDetails: MechDetails }) => {
                                 renderModal={(toggleShowLoadoutModal) => (
                                     <MechLoadoutWeaponModal
                                         onClose={() => toggleShowLoadoutModal(false)}
+                                        onConfirm={(selectedWeapon, inheritSkin) =>
+                                            addWeaponSelection({
+                                                weapon: selectedWeapon,
+                                                weapon_id: selectedWeapon.id,
+                                                slot_number: w.slot_number || index,
+                                                inherit_skin: inheritSkin,
+                                            })
+                                        }
                                         equipped={w}
-                                        weaponsWithSkinInheritance={weaponsWithSkinInheritance}
+                                        weaponsWithSkinInheritance={blueprint_weapon_ids_with_skin_inheritance}
+                                        weaponsAlreadyEquippedInOtherSlots={loadoutChanges.weapons.map((w) => w.weapon_id)}
                                     />
                                 )}
                             />
                         )
                     })}
 
-                {weaponSlots &&
+                {weapon_hardpoints &&
                     weapons &&
-                    weaponSlots - weapons.length > 0 &&
-                    new Array(weaponSlots - weapons.length)
+                    weapon_hardpoints - weapons.length > 0 &&
+                    new Array(weapon_hardpoints - weapons.length)
                         .fill(0)
                         .map((_, index) => (
                             <MechLoadoutItem key={index} label="WEAPON" primaryColor={colors.weapons} onClick={() => console.log("AAAAA")} isEmpty disabled />
                         ))}
 
-                {utilities &&
-                    utilities.length > 0 &&
-                    utilities.map((w) => {
+                {utility &&
+                    utility.length > 0 &&
+                    utility.map((w) => {
                         return (
                             <MechLoadoutItem
                                 key={w.id}
@@ -101,10 +175,10 @@ export const MechLoadout = ({ mechDetails }: { mechDetails: MechDetails }) => {
                         )
                     })}
 
-                {utilitySlots &&
-                    utilities &&
-                    utilitySlots - utilities.length &&
-                    new Array(utilitySlots - utilities.length)
+                {utility_slots &&
+                    utility &&
+                    utility_slots - utility.length &&
+                    new Array(utility_slots - utility.length)
                         .fill(0)
                         .map((_, index) => (
                             <MechLoadoutItem
@@ -128,24 +202,24 @@ export const MechLoadout = ({ mechDetails }: { mechDetails: MechDetails }) => {
                     right: "6rem",
                 }}
             >
-                {chassisSkin ? (
+                {chassis_skin ? (
                     <MechLoadoutItem
-                        imageUrl={chassisSkin.image_url || chassisSkin.avatar_url}
-                        videoUrls={[chassisSkin.card_animation_url]}
-                        label={chassisSkin.label}
+                        imageUrl={chassis_skin.image_url || chassis_skin.avatar_url}
+                        videoUrls={[chassis_skin.card_animation_url]}
+                        label={chassis_skin.label}
                         primaryColor={colors.chassisSkin}
                         Icon={SvgSkin}
-                        rarity={getRarityDeets(chassisSkin.tier)}
+                        rarity={getRarityDeets(chassis_skin.tier)}
                     />
                 ) : (
                     <MechLoadoutItem label="SUBMODEL" primaryColor={colors.chassisSkin} onClick={() => console.log("AAAAA")} isEmpty disabled />
                 )}
 
-                {introAnimation ? (
+                {intro_animation ? (
                     <MechLoadoutItem
-                        imageUrl={introAnimation.image_url || introAnimation.avatar_url}
-                        videoUrls={[introAnimation.card_animation_url]}
-                        label={introAnimation.label}
+                        imageUrl={intro_animation.image_url || intro_animation.avatar_url}
+                        videoUrls={[intro_animation.card_animation_url]}
+                        label={intro_animation.label}
                         primaryColor={colors.introAnimation}
                         Icon={SvgIntroAnimation}
                     />
@@ -153,11 +227,11 @@ export const MechLoadout = ({ mechDetails }: { mechDetails: MechDetails }) => {
                     <MechLoadoutItem label="INTRO ANIMATION" primaryColor={colors.introAnimation} onClick={() => console.log("AAAAA")} isEmpty disabled />
                 )}
 
-                {outroAnimation ? (
+                {outro_animation ? (
                     <MechLoadoutItem
-                        imageUrl={outroAnimation.image_url || outroAnimation.avatar_url}
-                        videoUrls={[outroAnimation.card_animation_url]}
-                        label={outroAnimation.label}
+                        imageUrl={outro_animation.image_url || outro_animation.avatar_url}
+                        videoUrls={[outro_animation.card_animation_url]}
+                        label={outro_animation.label}
                         primaryColor={colors.outroAnimation}
                         Icon={SvgOutroAnimation}
                     />

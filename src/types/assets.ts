@@ -234,6 +234,8 @@ export interface Weapon extends Collection, Images {
     created_at: Date
     market_locked: boolean
     item_sale_id?: string
+    slot_number?: number
+    locked_to_mech: boolean
 }
 
 export interface WeaponSkin extends Collection, Images {

@@ -29,13 +29,23 @@ const sortOptions = [
     { label: SortTypeLabel.RarestDesc, value: SortTypeLabel.RarestDesc },
 ]
 
+type OnConfirmWeaponSelection = (selectedWeapon: Weapon, inheritSkin: boolean) => void
+
 interface MechLoadoutWeaponModalProps {
     onClose: () => void
+    onConfirm: OnConfirmWeaponSelection
     equipped: Weapon
     weaponsWithSkinInheritance: string[]
+    weaponsAlreadyEquippedInOtherSlots: string[]
 }
 
-export const MechLoadoutWeaponModal = ({ onClose, equipped, weaponsWithSkinInheritance }: MechLoadoutWeaponModalProps) => {
+export const MechLoadoutWeaponModal = ({
+    onClose,
+    onConfirm,
+    equipped,
+    weaponsWithSkinInheritance,
+    weaponsAlreadyEquippedInOtherSlots,
+}: MechLoadoutWeaponModalProps) => {
     const { userID } = useAuth()
     const { send } = useGameServerCommandsUser("/user_commander")
 
@@ -259,7 +269,8 @@ export const MechLoadoutWeaponModal = ({ onClose, equipped, weaponsWithSkinInher
                 page_size: pageSize,
                 sort_by: sortBy,
                 sort_dir: sortDir,
-                include_market_listed: true,
+                include_market_listed: false,
+                exclude_ids: weaponsAlreadyEquippedInOtherSlots,
                 weapon_types: weaponTypes,
                 rarities,
                 equipped_statuses: equippedStatuses,
@@ -366,6 +377,7 @@ export const MechLoadoutWeaponModal = ({ onClose, equipped, weaponsWithSkinInher
         sort,
         spreadRange,
         weaponTypes,
+        weaponsAlreadyEquippedInOtherSlots,
     ])
 
     useEffect(() => {
@@ -651,6 +663,7 @@ export const MechLoadoutWeaponModal = ({ onClose, equipped, weaponsWithSkinInher
                                 weapon={selectedWeapon}
                                 equipped={equipped}
                                 skinInheritable={selectedWeapon ? !!weaponsWithSkinInheritance.find((s) => s === selectedWeapon?.blueprint_id) : false}
+                                onConfirm={onConfirm}
                             />
                         </Stack>
                     </Stack>
@@ -859,12 +872,13 @@ const WeaponItem = ({ id, equipped, selected, onSelect }: WeaponItemProps) => {
 }
 
 interface WeaponPreviewProps {
+    onConfirm: OnConfirmWeaponSelection
     weapon?: Weapon
     equipped: Weapon
     skinInheritable: boolean
 }
 
-const WeaponPreview = ({ weapon, equipped, skinInheritable }: WeaponPreviewProps) => {
+const WeaponPreview = ({ onConfirm, weapon, equipped, skinInheritable }: WeaponPreviewProps) => {
     const theme = useTheme()
     const [inheritSkin, setInheritSkin] = useState(false)
 
@@ -879,7 +893,7 @@ const WeaponPreview = ({ weapon, equipped, skinInheritable }: WeaponPreviewProps
 
         const percentageDifference = Math.round((difference * 100 * 100) / stats.oldStat) / 100
         return (
-            <Stack direction="row" spacing="1rem" alignItems="center">
+            <Stack key={label} direction="row" spacing="1rem" alignItems="center">
                 <Typography
                     variant="body2"
                     sx={{
@@ -1120,6 +1134,7 @@ const WeaponPreview = ({ weapon, equipped, skinInheritable }: WeaponPreviewProps
                         clipThingsProps={{
                             backgroundColor: colors.green,
                         }}
+                        onClick={() => onConfirm(weapon, inheritSkin)}
                     >
                         Equip To Mech
                     </FancyButton>
