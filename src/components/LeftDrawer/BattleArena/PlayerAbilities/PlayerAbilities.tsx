@@ -1,5 +1,5 @@
 import { Box, Button, ButtonGroup, Pagination, Stack, Typography } from "@mui/material"
-import { ReactNode, useCallback, useEffect, useMemo, useState } from "react"
+import { ReactNode, useCallback, useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import { SvgGlobal, SvgLine, SvgMicrochip, SvgTarget } from "../../../../assets"
 import { useGame } from "../../../../containers"
@@ -15,8 +15,7 @@ import { PlayerAbilityCard } from "./PlayerAbilityCard"
 
 export const PlayerAbilities = () => {
     const { userID } = useAuth()
-    const { bribeStage } = useGame()
-    const isBattleStarted = useMemo(() => bribeStage && bribeStage.phase !== "HOLD", [bribeStage])
+    const { bribeStage, isBattleStarted } = useGame()
 
     if (!bribeStage || !userID) return null
 

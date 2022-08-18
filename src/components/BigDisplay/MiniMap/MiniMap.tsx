@@ -18,19 +18,9 @@ export const TOP_BAR_HEIGHT = 3.4 // rems
 const BOTTOM_PADDING = 12 // rems
 
 export const MiniMap = () => {
-    const { map, bribeStage } = useGame()
-    const { isTargeting, resetSelection } = useMiniMap()
-    const [isBattleStarted, setIsBattleStarted] = useState(false)
+    const { map, isBattleStarted } = useGame()
+    const { isTargeting } = useMiniMap()
     const [isPoppedout, setIsPoppedout] = useState(false)
-
-    useEffect(() => {
-        if (map && bribeStage && bribeStage.phase !== "HOLD" ? true : false) {
-            setIsBattleStarted(true)
-        } else {
-            setIsBattleStarted(false)
-            resetSelection()
-        }
-    }, [bribeStage, setIsBattleStarted, resetSelection, map])
 
     if (isPoppedout) {
         return (
@@ -129,7 +119,7 @@ const BattleNotStarted = () => {
 const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 100, height = 100 }: MiniMapInnerProps) => {
     const { handleHotKey } = useHotkey()
     const { remToPxRatio } = useDimension()
-    const { isStreamBigDisplay, setIsStreamBigDisplay, prevIsStreamBigDisplay } = useGame()
+    const { isStreamBigDisplay, setIsStreamBigDisplay, toggleIsStreamBigDisplayMemorized, restoreIsStreamBigDisplayMemorized } = useGame()
     const [isEnlarged, toggleIsEnlarged] = useToggle(localStorage.getItem("isMiniMapEnlarged") === "true")
 
     const mapHeightWidthRatio = useRef(1)
@@ -146,15 +136,11 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
     // When it's targeting, enlarge to big display, else restore to the prev location
     useEffect(() => {
         if (isTargeting) {
-            setIsStreamBigDisplay((prev) => {
-                if (!prevIsStreamBigDisplay.current) prevIsStreamBigDisplay.current = prev
-                return false
-            })
-        } else if (prevIsStreamBigDisplay.current) {
-            setIsStreamBigDisplay(prevIsStreamBigDisplay.current)
-            prevIsStreamBigDisplay.current = undefined
+            toggleIsStreamBigDisplayMemorized(false)
+        } else {
+            restoreIsStreamBigDisplayMemorized()
         }
-    }, [isTargeting, prevIsStreamBigDisplay, setIsStreamBigDisplay])
+    }, [isTargeting, restoreIsStreamBigDisplayMemorized, toggleIsStreamBigDisplayMemorized])
 
     // Set size
     const sizes = useMemo(() => {
