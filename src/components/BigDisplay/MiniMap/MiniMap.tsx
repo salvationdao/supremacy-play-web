@@ -202,6 +202,13 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
 
     const focusMap = useCallback(() => mapRef.current?.focus(), [mapRef])
 
+    //focus on swap
+    useEffect(() => {
+        setTimeout(() => {
+            focusMap()
+        }, 0)
+    }, [focusMap])
+
     return useMemo(() => {
         return (
             <Stack
