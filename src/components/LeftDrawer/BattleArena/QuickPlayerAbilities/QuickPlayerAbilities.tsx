@@ -1,6 +1,7 @@
-import { Box, CircularProgress, Stack, Typography } from "@mui/material"
+import { Box, CircularProgress, IconButton, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { useParameterizedQuery } from "react-fetching-library"
+import { SvgRefresh } from "../../../../assets"
 import { useAuth } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
 import { GetSaleAbilityAvailability } from "../../../../fetching"
@@ -154,9 +155,18 @@ const QuickPlayerAbilitiesInner = ({ userID }: { userID: string }) => {
 
             <Stack sx={{ p: "1.5rem 1.1rem", backgroundColor: "#FFFFFF12", boxShadow: 2, border: "#FFFFFF20 1px solid" }}>
                 <Stack>
-                    <Stack direction="row" spacing=".6rem">
+                    <Stack direction="row" spacing=".6rem" alignItems="center">
                         <Typography sx={{ fontWeight: "fontWeightBold", textTransform: "uppercase" }}>Next refresh in:</Typography>
                         {timeLeft}
+                        <Box flex={1} />
+                        <IconButton
+                            sx={{
+                                borderRadius: ".5rem",
+                            }}
+                            onClick={() => refetchSaleAbilities()}
+                        >
+                            <SvgRefresh size="1.6rem" />
+                        </IconButton>
                     </Stack>
                     {purchaseError && (
                         <Typography variant="body2" sx={{ color: colors.red }}>

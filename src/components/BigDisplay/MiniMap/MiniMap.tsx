@@ -166,7 +166,7 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
         let outsideWidth = defaultWidth - padding
         let outsideHeight = defaultHeight - bottomPadding
         let insideWidth = outsideWidth
-        let insideHeight = outsideHeight - TOP_BAR_HEIGHT * remToPxRatio
+        let insideHeight = outsideHeight
 
         if ((isPoppedout || !isStreamBigDisplay) && !isEnlarged) {
             const maxHeight = outsideWidth * mapHeightWidthRatio.current
@@ -180,6 +180,8 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
                 insideWidth = outsideWidth
             }
         }
+
+        outsideHeight += TOP_BAR_HEIGHT * remToPxRatio
 
         return {
             outsideWidth,
