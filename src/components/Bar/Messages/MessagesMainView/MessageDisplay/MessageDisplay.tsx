@@ -8,7 +8,7 @@ import MessageRenderer from "../../MessageRenderer"
 import { SystemMessageDisplayable } from "../../Messages"
 import { MechBattleCompleteDetails } from "./MechBattleCompleteDetails"
 import { MechOwnerBattleReward, MechOwnerBattleRewardData } from "./MechOwnerBattleReward"
-import { PlayerAbilityReversedData, PlayerAbilityReversedMessage } from "./PlayerAbilityRefund"
+import { PlayerAbilityReversedData, PlayerAbilityReversedMessage } from "./PlayerAbilityRevered"
 
 export interface MessageDisplayProps {
     message: SystemMessageDisplayable

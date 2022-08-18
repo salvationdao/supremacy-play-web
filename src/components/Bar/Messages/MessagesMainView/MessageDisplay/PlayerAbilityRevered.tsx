@@ -1,9 +1,5 @@
 import { Box, Divider, Stack, Typography } from "@mui/material"
-import { SvgSupToken } from "../../../../../assets"
-import { supFormatterNoFixed } from "../../../../../helpers"
-import { colors, fonts } from "../../../../../theme/theme"
 import { BlueprintPlayerAbility, PlayerAbility } from "../../../../../types"
-import { ClipThing } from "../../../../Common/ClipThing"
 import { PlayerAbilityCard } from "../../../../LeftDrawer/BattleArena/PlayerAbilities/PlayerAbilityCard"
 
 interface PlayerAbilityReversedProps {
