@@ -153,10 +153,10 @@ const WarMachineStatsInner = () => {
                     }}
                 >
                     <Box sx={{ direction: "ltr" }}>
-                        <Stack spacing="-1.8rem" sx={{ transform: "skew(-6deg)" }}>
+                        <Stack spacing="-.8rem" sx={{ transform: "skew(-6deg)" }}>
                             {ownedMiniMechs.length > 0 && (
                                 <Fade in>
-                                    <Stack spacing="-3rem" direction="row" alignItems="center">
+                                    <Stack spacing="-1.2rem" direction="row" alignItems="center">
                                         {ownedMiniMechs.map((mm) => (
                                             <WarMachineItem
                                                 key={`${mm.participantID}`}
