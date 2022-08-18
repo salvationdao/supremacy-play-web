@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { createContainer } from "unstated-next"
-import { useOverlayToggles } from "./overlayToggles"
 
 // TODO: Player Abilities hotkeys and custom hotkey maps
 
@@ -13,8 +12,6 @@ export enum RecordType {
 }
 
 export const HotkeyContainer = createContainer(() => {
-    const { toggleIsMapOpen } = useOverlayToggles()
-
     const [hotkeyRecord, setHotkeyRecord] = useState<hotkey>({})
     const [controlHotkeyRecord, setControlHotkeyRecord] = useState<hotkey>({})
     const [globalHotkeyRecord, setGlobalHotkeyRecord] = useState<hotkey>({})
@@ -95,10 +92,6 @@ export const HotkeyContainer = createContainer(() => {
         document.addEventListener("keydown", handleGlobalHotKey)
         return () => document.removeEventListener("keydown", handleGlobalHotKey)
     }, [handleGlobalHotKey])
-
-    useEffect(() => {
-        addToHotkeyRecord(RecordType.Global, "m", toggleIsMapOpen)
-    }, [addToHotkeyRecord, toggleIsMapOpen])
 
     return {
         mechAbilityKey,

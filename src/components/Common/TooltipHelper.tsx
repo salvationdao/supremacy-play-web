@@ -1,6 +1,7 @@
 import { Stack, Tooltip, Typography } from "@mui/material"
 import { ReactElement } from "react"
 import { ClipThing } from ".."
+import { autoTextColor } from "../../helpers"
 import { fonts, siteZIndex } from "../../theme/theme"
 
 export const TooltipHelper = ({
@@ -10,7 +11,7 @@ export const TooltipHelper = ({
     placement,
     open,
     color,
-    textColor,
+    textColor: tColor,
 }: {
     text: string | React.ReactNode
     children: ReactElement
@@ -35,6 +36,7 @@ export const TooltipHelper = ({
     if (!text) return <>{children}</>
 
     const primaryColor = color || "#555555"
+    const textColor = tColor || autoTextColor(primaryColor)
 
     return (
         <Tooltip

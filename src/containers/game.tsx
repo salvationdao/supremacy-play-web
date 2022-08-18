@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { createContainer } from "unstated-next"
 import { useAuth, useSupremacy } from "."
 import { useGameServerCommandsUser, useGameServerSubscription } from "../hooks/useGameServer"
@@ -28,6 +28,9 @@ export const GameContainer = createContainer(() => {
     const { send } = useGameServerCommandsUser("/user_commander")
 
     // States
+    const [isStreamBigDisplay, setIsStreamBigDisplay] = useState((localStorage.getItem("isStreamBigDisplay") || "true") === "true")
+    const prevIsStreamBigDisplay = useRef<boolean>()
+
     const [map, setMap] = useState<Map>()
     const [battleZone, setBattleZone] = useState<BattleZone>()
     const [abilityDetails, setAbilityDetails] = useState<AbilityDetail[]>([])
@@ -62,7 +65,7 @@ export const GameContainer = createContainer(() => {
         {
             URI: `/public/arena/${currentArenaID}/game_settings`,
             key: GameServerKeys.SubGameSettings,
-            ready: currentArenaID !== "",
+            ready: !!currentArenaID,
         },
         (payload) => {
             if (!payload) return
@@ -80,7 +83,7 @@ export const GameContainer = createContainer(() => {
         {
             URI: `/public/arena/${currentArenaID}/minimap`,
             key: GameServerKeys.SubBattleAISpawned,
-            ready: currentArenaID !== "",
+            ready: !!currentArenaID,
         },
         (payload) => {
             if (!payload) return
@@ -98,7 +101,7 @@ export const GameContainer = createContainer(() => {
         {
             URI: `/public/arena/${currentArenaID}/battle_end_result`,
             key: GameServerKeys.SubBattleEndDetailUpdated,
-            ready: currentArenaID !== "",
+            ready: !!currentArenaID,
         },
         (payload) => {
             if (!payload) return
@@ -120,7 +123,15 @@ export const GameContainer = createContainer(() => {
         },
     )
 
+    useEffect(() => {
+        localStorage.setItem("isStreamBigDisplay", isStreamBigDisplay.toString())
+    }, [isStreamBigDisplay])
+
     return {
+        isStreamBigDisplay,
+        setIsStreamBigDisplay,
+        prevIsStreamBigDisplay,
+
         bribeStage,
         map,
         setMap,
