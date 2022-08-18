@@ -1,6 +1,6 @@
 import { Box, keyframes } from "@mui/material"
 import React, { useEffect, useMemo, useState } from "react"
-import { useGame, useMiniMap } from "../../../../containers"
+import { useArena, useGame, useMiniMap } from "../../../../containers"
 
 import { useGameServerSubscription } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
@@ -20,14 +20,14 @@ interface BlackoutWithAnimationState extends MinimapEvent {
 }
 
 export const Blackouts = () => {
-    // const [payload, setPayload] = useState<MinimapEvent[]>([])
+    const { currentArenaID } = useArena()
     const [payload, setPayload] = useState<MinimapEvent[]>([])
     const [blackouts, setBlackouts] = useState<Map<string, BlackoutWithAnimationState>>(new Map())
     const [removedBlackoutIDs, setRemovedBlackoutIDs] = useState<string[]>([])
 
     useGameServerSubscription<MinimapEvent[]>(
         {
-            URI: "/public/minimap",
+            URI: `/public/arena/${currentArenaID}/minimap`,
             key: GameServerKeys.MinimapUpdatesSubscribe,
         },
         (payload) => {
