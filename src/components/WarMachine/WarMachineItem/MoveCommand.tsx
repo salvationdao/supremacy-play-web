@@ -97,7 +97,8 @@ const MoveCommandInner = ({ isAlive, remainCooldownSeconds, isMoving, isCancelle
     const { setPlayerAbility } = useMiniMap()
     const { addToHotkeyRecord } = useHotkey()
 
-    const { totalSecRemain } = useTimer(new Date(new Date().getTime() + remainCooldownSeconds * 1000))
+    const endTime = useMemo(() => new Date(new Date().getTime() + remainCooldownSeconds * 1000), [remainCooldownSeconds])
+    const { totalSecRemain } = useTimer(endTime)
     const ready = useMemo(() => totalSecRemain <= 0, [totalSecRemain])
 
     const primaryColor = isMoving ? colors.grey : MechMoveCommandAbility.ability.colour

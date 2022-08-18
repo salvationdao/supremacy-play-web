@@ -4,9 +4,11 @@ import { SvgEmergency } from "../../../assets"
 import { colors } from "../../../theme/theme"
 import { BattleZone } from "../../../types"
 import { useTimer } from "../../../hooks"
+import { useMemo } from "react"
 
 export const BattleZoneAlert = ({ data }: { data: BattleZone }) => {
-    const { totalSecRemain } = useTimer(new Date(Date.now() + data.warnTime * 1000))
+    const endTime = useMemo(() => new Date(Date.now() + data.warnTime * 1000), [data.warnTime])
+    const { totalSecRemain } = useTimer(endTime)
 
     return (
         <ClipThing
