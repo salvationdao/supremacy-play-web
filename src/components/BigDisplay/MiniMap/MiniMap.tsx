@@ -172,7 +172,7 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
 
         // Step 2
         const padding = isEnlarged || !containFit ? 0 : 6 * remToPxRatio
-        const bottomPadding = isEnlarged || !containFit ? 0 : padding + BOTTOM_PADDING * remToPxRatio
+        const bottomPadding = isEnlarged || !containFit ? 0 : isPoppedout ? padding : padding + BOTTOM_PADDING * remToPxRatio
 
         let outsideWidth = defaultWidth - padding
         let outsideHeight = defaultHeight - bottomPadding
