@@ -1,5 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
-import ReactDOM from "react-dom"
+import { useEffect } from "react"
 import { SvgSwap } from "../../../assets"
 import { useDimension, useGame, useOverlayToggles, useStream } from "../../../containers"
 import { fonts, siteZIndex } from "../../../theme/theme"
@@ -16,44 +16,48 @@ export const Stream = () => {
     const { remToPxRatio } = useDimension()
     const { isStreamBigDisplay, setIsStreamBigDisplay } = useGame()
 
-    const node = document && document.getElementById(!isStreamBigDisplay ? "left-drawer-space" : "big-display-space")
-    if (node) {
-        return ReactDOM.createPortal(
+    useEffect(() => {
+        const thisElement = document.getElementById("bid-display-stream")
+        const newContainerElement = document.getElementById(!isStreamBigDisplay ? "left-drawer-space" : "big-display-space")
+
+        if (thisElement && newContainerElement) {
+            newContainerElement.appendChild(thisElement)
+        }
+    }, [isStreamBigDisplay])
+
+    return (
+        <Stack
+            id="bid-display-stream"
+            sx={{
+                width: "100%",
+                height: isStreamBigDisplay ? "100%" : (LEFT_DRAWER_WIDTH * remToPxRatio) / (16 / 9) + TOP_BAR_HEIGHT * remToPxRatio,
+                boxShadow: 2,
+                border: (theme) => `${theme.factionTheme.primary}60 1px solid`,
+            }}
+        >
+            {/* Top bar */}
             <Stack
+                spacing="1rem"
+                direction="row"
+                alignItems="center"
                 sx={{
-                    width: "100%",
-                    height: isStreamBigDisplay ? "100%" : (LEFT_DRAWER_WIDTH * remToPxRatio) / (16 / 9) + TOP_BAR_HEIGHT * remToPxRatio,
-                    boxShadow: 2,
-                    border: (theme) => `${theme.factionTheme.primary}60 1px solid`,
+                    p: ".6rem 1.6rem",
+                    height: `${TOP_BAR_HEIGHT}rem`,
+                    background: (theme) => `linear-gradient(${theme.factionTheme.background} 26%, ${theme.factionTheme.background}BB)`,
                 }}
             >
-                {/* Top bar */}
-                <Stack
-                    spacing="1rem"
-                    direction="row"
-                    alignItems="center"
-                    sx={{
-                        p: ".6rem 1.6rem",
-                        height: `${TOP_BAR_HEIGHT}rem`,
-                        background: (theme) => `linear-gradient(${theme.factionTheme.background} 26%, ${theme.factionTheme.background}BB)`,
-                    }}
-                >
-                    <Box onClick={() => setIsStreamBigDisplay((prev) => !prev)} sx={{ cursor: "pointer", opacity: 0.4, ":hover": { opacity: 1 } }}>
-                        <SvgSwap size="1.6rem" />
-                    </Box>
-
-                    <Typography sx={{ fontFamily: fonts.nostromoHeavy }}>BATTLE LIVE STREAM</Typography>
-                </Stack>
-
-                <Box sx={{ flex: 1 }}>
-                    <StreamInner />
+                <Box onClick={() => setIsStreamBigDisplay((prev) => !prev)} sx={{ cursor: "pointer", opacity: 0.4, ":hover": { opacity: 1 } }}>
+                    <SvgSwap size="1.6rem" />
                 </Box>
-            </Stack>,
-            node,
-        )
-    }
 
-    return null
+                <Typography sx={{ fontFamily: fonts.nostromoHeavy }}>BATTLE LIVE STREAM</Typography>
+            </Stack>
+
+            <Box sx={{ flex: 1 }}>
+                <StreamInner />
+            </Box>
+        </Stack>
+    )
 }
 
 export const StreamInner = () => {
