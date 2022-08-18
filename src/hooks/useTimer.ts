@@ -14,6 +14,13 @@ export const useTimer = (endTime: Date | undefined, speed: number = 1000, stopCo
     const [seconds, setSeconds] = useState<number>()
 
     useEffect(() => {
+        setEndTimeState((prev) => {
+            prevEndTimeState.current = prev
+            return endTime
+        })
+    }, [endTime])
+
+    useEffect(() => {
         if (endTimeState) {
             setDelay(speed)
             const d = moment.duration(moment(endTimeState).diff(moment()))
