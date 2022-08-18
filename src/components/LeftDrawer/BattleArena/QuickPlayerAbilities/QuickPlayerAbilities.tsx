@@ -141,7 +141,7 @@ const QuickPlayerAbilitiesInner = ({ userID }: { userID: string }) => {
         if (nextRefreshTime) {
             return (
                 <Typography sx={{ color: colors.lightNeonBlue, fontFamily: fonts.shareTech, textTransform: "uppercase" }}>
-                    <TimeLeft key={nextRefreshTime.getMilliseconds()} dateTo={nextRefreshTime} onComplete={() => refetchSaleAbilities()} />
+                    <TimeLeft key={nextRefreshTime.getMilliseconds()} dateTo={nextRefreshTime} onComplete={refetchSaleAbilities} />
                 </Typography>
             )
         }

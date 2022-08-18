@@ -134,7 +134,7 @@ export const PlayerAbilitiesStore = () => {
         if (nextRefreshTime) {
             return (
                 <Typography sx={{ color: colors.lightNeonBlue, fontFamily: fonts.nostromoBold, textTransform: "uppercase" }}>
-                    <TimeLeft key={nextRefreshTime.getMilliseconds()} dateTo={nextRefreshTime} onComplete={() => refetchSaleAbilities()} />
+                    <TimeLeft key={nextRefreshTime.getMilliseconds()} dateTo={nextRefreshTime} onComplete={refetchSaleAbilities} />
                 </Typography>
             )
         }
@@ -339,10 +339,10 @@ export const TimeLeft = ({ dateTo, onComplete }: { dateTo: Date | undefined; onC
 
     useEffect(() => {
         let t: NodeJS.Timeout | null = null
-        if (totalSecRemain < 1) {
+        if (totalSecRemain === 0) {
             t = setTimeout(() => {
                 onComplete()
-            }, 5000)
+            }, 6000)
         }
 
         return () => {
