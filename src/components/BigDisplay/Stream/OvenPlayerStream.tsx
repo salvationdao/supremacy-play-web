@@ -71,7 +71,7 @@ interface OvenPlayerInstance {
 
 export const OvenplayerStream = () => {
     const { newSnackbarMessage } = useGlobalNotifications()
-    const { isMute, volume, currentStream, setCurrentPlayingStreamHost } = useStream()
+    const { isMute, volume, currentStream, setCurrentPlayingStreamHost, isEnlarged } = useStream()
     const ovenPlayer = useRef<OvenPlayerInstance>()
 
     // Load the stream when its changed
@@ -144,7 +144,7 @@ export const OvenplayerStream = () => {
                     position: "absolute !important",
                     width: "100% !important",
                     height: "100% !important",
-                    objectFit: "cover !important",
+                    objectFit: `${isEnlarged ? "cover" : "contain"} !important`,
                     objectPosition: "center !important",
                     zIndex: siteZIndex.Stream,
                 },

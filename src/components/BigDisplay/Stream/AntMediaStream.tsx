@@ -63,6 +63,7 @@ export const AntMediaStream = () => {
         selectedResolution,
         setResolutions,
         setSelectedResolution,
+        isEnlarged,
     } = useStream()
     const webRtc = useRef<WebRTCAdaptorType>()
     const vidRef = useRef<HTMLVideoElement>()
@@ -194,7 +195,7 @@ export const AntMediaStream = () => {
                     position: "absolute",
                     width: "100%",
                     height: "100%",
-                    objectFit: "cover",
+                    objectFit: `${isEnlarged ? "cover" : "contain"}`,
                     objectPosition: "center",
                     zIndex: siteZIndex.Stream,
                     background: isPlaying ? "unset" : `center url(${SupBackground}) ${colors.darkNavy} cover no-repeat`,
