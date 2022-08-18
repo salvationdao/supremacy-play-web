@@ -48,7 +48,7 @@ export const ArenaListener = () => {
 
             // NOTE: temporary default arena to the first one
             const storyArena = payload.find((arena) => arena.type === ArenaType.Story)
-            if (storyArena) setCurrentArena((prev) => storyArena)
+            if (storyArena) setCurrentArena(storyArena)
             // above code will be refactor when players are able to select arena
 
             setArenaList(payload)
