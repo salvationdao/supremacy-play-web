@@ -1,12 +1,11 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { createContainer } from "unstated-next"
 import { useAuth, useGlobalNotifications } from "."
 import { useGameServerCommandsFaction, useGameServerSubscriptionSecuredUser } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
-import { Position, GameAbility, LocationSelectType, PlayerAbility } from "../types"
-import { useToggle } from "./../hooks/useToggle"
-import { useGame } from "./game"
+import { GameAbility, LocationSelectType, PlayerAbility, Position } from "../types"
 import { useArena } from "./arena"
+import { useGame } from "./game"
 
 interface WinnerAnnouncementResponse {
     game_ability: GameAbility
@@ -30,14 +29,13 @@ export const MiniMapContainer = createContainer(() => {
     const { send } = useGameServerCommandsFaction("/faction_commander")
 
     // Map
-    const mapElement = useRef<HTMLDivElement>()
+    const [mapElement, setMapElement] = useState<HTMLDivElement | null>(null)
     const gridWidth = useMemo(() => (map ? map.width / map.cells_x : 50), [map])
     const gridHeight = useMemo(() => (map ? map.height / map.cells_y : 50), [map])
 
     // Map triggers
     const [winner, setWinner] = useState<WinnerAnnouncementResponse>()
     const [playerAbility, setPlayerAbility] = useState<PlayerAbility>()
-    const [isEnlarged, toggleIsEnlarged] = useToggle()
     const [isTargeting, setIsTargeting] = useState(false)
 
     // Other stuff
@@ -91,15 +89,16 @@ export const MiniMapContainer = createContainer(() => {
         setIsTargeting(false)
     }, [])
 
-    const onTargetConfirm = useCallback(async () => {
+    const onTargetConfirm = useCallback(() => {
         if (!selection || !currentArenaID) return
+
         try {
             if (winner?.game_ability) {
                 if (!selection.startCoords) {
                     throw new Error("Something went wrong while activating this ability. Please try again, or contact support if the issue persists.")
                 }
 
-                await send<boolean>(GameServerKeys.SubmitAbilityLocationSelect, {
+                send<boolean>(GameServerKeys.SubmitAbilityLocationSelect, {
                     arena_id: currentArenaID,
                     start_coords: {
                         x: Math.floor(selection.startCoords.x),
@@ -173,7 +172,7 @@ export const MiniMapContainer = createContainer(() => {
                 if (!payload) {
                     throw new Error("Something went wrong while activating this ability. Please try again, or contact support if the issue persists.")
                 }
-                await send<boolean, typeof payload>(GameServerKeys.PlayerAbilityUse, payload)
+                send<boolean, typeof payload>(GameServerKeys.PlayerAbilityUse, payload)
             }
             resetSelection()
             if (playerAbility?.ability.location_select_type === LocationSelectType.MECH_SELECT) {
@@ -189,6 +188,8 @@ export const MiniMapContainer = createContainer(() => {
 
     return {
         mapElement,
+        setMapElement,
+
         winner,
         setWinner,
         highlightedMechParticipantID,
@@ -202,8 +203,6 @@ export const MiniMapContainer = createContainer(() => {
         onTargetConfirm,
         gridWidth,
         gridHeight,
-        isEnlarged,
-        toggleIsEnlarged,
     }
 })
 

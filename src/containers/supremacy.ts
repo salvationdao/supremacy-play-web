@@ -30,9 +30,11 @@ export const SupremacyContainer = createContainer(() => {
 
     // If it's been X amount of time and we never connected, then server is probs down
     useEffect(() => {
-        setTimeout(() => {
+        const timeout = setTimeout(() => {
             if (!serverConnectedBefore) setFirstConnectTimedOut(true)
         }, 20000)
+
+        return () => clearTimeout(timeout)
     }, [serverConnectedBefore])
 
     // Get main color of each factions
