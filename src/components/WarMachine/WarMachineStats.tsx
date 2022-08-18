@@ -27,7 +27,7 @@ const WarMachineStatsInner = () => {
                 {ownedMiniMechs.length > 0 && (
                     <Fade in>
                         <Box>
-                            <SectionHeading label="YOUR MINI MECHS" />
+                            <SectionHeading label="YOUR SUPPORT MACHINES" />
                             <Stack
                                 spacing="1rem"
                                 sx={{
