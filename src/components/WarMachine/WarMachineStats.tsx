@@ -146,7 +146,7 @@ const WarMachineStatsInner = () => {
                             borderRadius: 3,
                         },
                         "::-webkit-scrollbar-thumb": {
-                            background: (theme) => `${theme.factionTheme.primary}50`,
+                            background: (theme) => `${theme.factionTheme.primary}99`,
                             borderRadius: 3,
                         },
                         transition: "all .2s",
