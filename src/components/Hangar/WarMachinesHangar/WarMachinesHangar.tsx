@@ -97,6 +97,14 @@ export const WarMachinesHangar = () => {
         console.log("Clicked")
     }, [])
 
+    const onSelectAll = useCallback(() => {
+        setSelectedMechIDs(mechs.map((m) => m.id))
+    }, [mechs])
+
+    const onUnSelectAll = useCallback(() => {
+        setSelectedMechIDs([])
+    }, [])
+
     // Filters
     const statusFilterSection = useRef<ChipFilter>({
         label: "STATUS",
@@ -183,6 +191,7 @@ export const WarMachinesHangar = () => {
             setLoadError(undefined)
             setMechs(resp.mechs)
             setTotalItems(resp.total)
+            setSelectedMechIDs([])
         } catch (e) {
             setLoadError(typeof e === "string" ? e : "Failed to get war machines.")
             console.error(e)
@@ -414,6 +423,9 @@ export const WarMachinesHangar = () => {
                             toggleIsGridView={toggleIsGridView}
                             isFiltersExpanded={isFiltersExpanded}
                             toggleIsFiltersExpanded={toggleIsFiltersExpanded}
+                            selectedCount={selectedMechIDs.length}
+                            onSelectAll={onSelectAll}
+                            onUnselectedAll={onUnSelectAll}
                         />
 
                         <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
