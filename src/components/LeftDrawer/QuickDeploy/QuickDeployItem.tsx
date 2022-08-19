@@ -15,9 +15,11 @@ import { QueueFeed } from "../../Hangar/WarMachinesHangar/WarMachineDetails/Moda
 interface QuickDeployItemProps {
     mech: MechBasic
     queueFeed?: QueueFeed
+    isSelected?: boolean
+    toggleIsSelected?: () => void
 }
 
-export const QuickDeployItem = ({ mech }: QuickDeployItemProps) => {
+export const QuickDeployItem = ({ isSelected, toggleIsSelected, mech }: QuickDeployItemProps) => {
     const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [mechDetails, setMechDetails] = useState<MechDetails>()
@@ -79,8 +81,11 @@ export const QuickDeployItem = ({ mech }: QuickDeployItemProps) => {
                 py: ".8rem",
                 pl: ".5rem",
                 pr: ".7rem",
+                backgroundColor: isSelected ? "#FFFFFF30" : "unset",
+                borderRadius: 0.8,
             }}
         >
+            {/* Mech image and deploy button */}
             <Stack>
                 <Stack sx={{ height: "8rem" }}>
                     <MechThumbnail mech={mech} mechDetails={mechDetails} smallSize />
@@ -116,7 +121,14 @@ export const QuickDeployItem = ({ mech }: QuickDeployItemProps) => {
                 )}
             </Stack>
 
-            <Stack spacing="1.2rem" direction="row" alignItems="flex-start" sx={{ py: ".2rem", flex: 1 }}>
+            {/* Right side */}
+            <Stack
+                spacing="1.2rem"
+                direction="row"
+                alignItems="flex-start"
+                sx={{ py: ".2rem", flex: 1 }}
+                onClick={() => toggleIsSelected && toggleIsSelected()}
+            >
                 <Stack sx={{ flex: 1 }}>
                     <Stack spacing="1.2rem" direction="row" alignItems="flex-start" justifyContent="space-between" sx={{ py: ".2rem", flex: 1 }}>
                         <Box>

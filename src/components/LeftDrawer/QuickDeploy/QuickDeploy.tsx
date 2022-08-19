@@ -1,6 +1,6 @@
 import { Box, CircularProgress, IconButton, Pagination, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useState } from "react"
-import { TooltipHelper } from "../.."
+import { FancyButton, TooltipHelper } from "../.."
 import { SvgNotification, SvgSupToken } from "../../../assets"
 import { useAuth } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
@@ -57,9 +57,10 @@ const QuickDeployInner = () => {
     const [mechs, setMechs] = useState<MechBasic[]>([])
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
+    const [selectedMechIDs, setSelectedMechIDs] = useState<string[]>([])
 
     const [sort, setSort] = useState<string>(SortTypeLabel.MechQueueAsc)
-    const { page, changePage, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({
+    const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({
         pageSize: parseString(localStorage.getItem("quickDeployPageSize2"), 10),
         page: 1,
     })
@@ -76,6 +77,32 @@ const QuickDeployInner = () => {
     useEffect(() => {
         localStorage.setItem("quickDeployPageSize2", pageSize.toString())
     }, [pageSize])
+
+    const toggleSelected = useCallback((mechID: string) => {
+        setSelectedMechIDs((prev) => {
+            const newArray = [...prev]
+            const isAlreadySelected = prev.findIndex((s) => s === mechID)
+            if (isAlreadySelected >= 0) {
+                newArray.splice(isAlreadySelected, 1)
+            } else {
+                newArray.push(mechID)
+            }
+
+            return newArray
+        })
+    }, [])
+
+    const deploySelected = useCallback(() => {
+        console.log("Clicked")
+    }, [])
+
+    const onSelectAll = useCallback(() => {
+        setSelectedMechIDs(mechs.map((m) => m.id))
+    }, [mechs])
+
+    const onUnSelectAll = useCallback(() => {
+        setSelectedMechIDs([])
+    }, [])
 
     const getItems = useCallback(async () => {
         try {
@@ -132,7 +159,44 @@ const QuickDeployInner = () => {
                 </Stack>
 
                 <Stack sx={{ flex: 1 }}>
-                    <Stack spacing="1.5rem" direction="row" sx={{ p: ".5rem 1rem", backgroundColor: "#00000099" }}>
+                    <TotalAndPageSizeOptions
+                        countItems={mechs?.length}
+                        totalItems={totalItems}
+                        sortOptions={sortOptions}
+                        selectedSort={sort}
+                        onSetSort={setSort}
+                    />
+
+                    <TotalAndPageSizeOptions
+                        countItems={mechs?.length}
+                        pageSize={pageSize}
+                        changePageSize={changePageSize}
+                        changePage={changePage}
+                        pageSizeOptions={[10, 20, 40]}
+                        selectedCount={selectedMechIDs.length}
+                        onSelectAll={onSelectAll}
+                        onUnselectedAll={onUnSelectAll}
+                        manualRefresh={getItems}
+                    >
+                        <FancyButton
+                            disabled={selectedMechIDs.length <= 0}
+                            clipThingsProps={{
+                                clipSize: "6px",
+                                backgroundColor: colors.green,
+                                opacity: 1,
+                                border: { borderColor: colors.green, borderThickness: "1px" },
+                                sx: { position: "relative" },
+                            }}
+                            sx={{ px: "1rem", py: 0, color: "#FFFFFF" }}
+                            onClick={deploySelected}
+                        >
+                            <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBlack }}>
+                                DEPLOY SELECTED
+                            </Typography>
+                        </FancyButton>
+                    </TotalAndPageSizeOptions>
+
+                    <Stack spacing="1.5rem" direction="row" sx={{ px: "1rem", mt: "1.5rem", backgroundColor: "#00000099" }}>
                         {queueLength >= 0 && (
                             <AmountItem
                                 key={`${queueLength}-queue_length`}
@@ -157,18 +221,6 @@ const QuickDeployInner = () => {
                             <SvgNotification size="1.3rem" />
                         </IconButton>
                     </Stack>
-
-                    <TotalAndPageSizeOptions
-                        countItems={mechs?.length}
-                        pageSize={pageSize}
-                        changePageSize={changePageSize}
-                        changePage={changePage}
-                        manualRefresh={getItems}
-                        sortOptions={sortOptions}
-                        selectedSort={sort}
-                        onSetSort={setSort}
-                        pageSizeOptions={[10, 20, 40]}
-                    />
 
                     {loadError && (
                         <Stack alignItems="center" justifyContent="center" sx={{ minHeight: "20rem" }}>
@@ -212,9 +264,20 @@ const QuickDeployInner = () => {
                             }}
                         >
                             <Box sx={{ direction: "ltr", height: 0 }}>
-                                <Stack sx={{ minHeight: "20rem" }}>
+                                <Stack spacing=".3rem" sx={{ minHeight: "20rem" }}>
                                     {mechs.map((mech) => {
-                                        return <QuickDeployItem key={mech.id} mech={mech} queueFeed={queueFeed} />
+                                        const isSelected = selectedMechIDs.findIndex((s) => s === mech.id) >= 0
+                                        return (
+                                            <QuickDeployItem
+                                                key={mech.id}
+                                                isSelected={isSelected}
+                                                toggleIsSelected={() => {
+                                                    toggleSelected(mech.id)
+                                                }}
+                                                mech={mech}
+                                                queueFeed={queueFeed}
+                                            />
+                                        )
                                     })}
                                 </Stack>
                             </Box>

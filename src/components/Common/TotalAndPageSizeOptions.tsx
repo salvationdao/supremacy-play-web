@@ -1,4 +1,5 @@
 import { Box, Button, Checkbox, Divider, IconButton, MenuItem, Select, Stack, Typography } from "@mui/material"
+import { ReactNode } from "react"
 import { SvgFilter, SvgGridView, SvgListView, SvgRefresh } from "../../assets"
 import { useTheme } from "../../containers/theme"
 import { colors, fonts } from "../../theme/theme"
@@ -26,6 +27,7 @@ interface TotalAndPageSizeOptionsProps {
     selectedCount?: number
     onSelectAll?: () => void
     onUnselectedAll?: () => void
+    children?: ReactNode
 }
 
 // Pick and include the props you need
@@ -66,6 +68,7 @@ export const TotalAndPageSizeOptions = ({
 
     // Styles
     primaryColor: pColor,
+    children,
 }: TotalAndPageSizeOptionsProps) => {
     const theme = useTheme()
 
@@ -81,6 +84,7 @@ export const TotalAndPageSizeOptions = ({
                 pl: "1.5rem",
                 pr: ".5rem",
                 py: ".3rem",
+                height: "4.5rem",
                 backgroundColor: "#00000070",
                 borderBottom: `${primaryColor}70 1.5px solid`,
                 span: { fontFamily: fonts.nostromoBold },
@@ -110,6 +114,8 @@ export const TotalAndPageSizeOptions = ({
                     <strong>DISPLAYING:</strong> {countItems || 0} OF {totalItems}
                 </Typography>
             )}
+
+            {children}
 
             <Stack
                 direction="row"
