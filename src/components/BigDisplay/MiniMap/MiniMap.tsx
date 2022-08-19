@@ -31,27 +31,21 @@ export const MiniMap = () => {
         }
     }, [isStreamBigDisplay, isPoppedout])
 
-    if (isPoppedout) {
-        return (
-            <WindowPortal title="Supremacy - Battle Arena" onClose={() => setIsPoppedout(false)} features={{ width: 600, height: 600 }}>
-                <Box sx={{ width: "100%", height: "100%", border: (theme) => `${theme.factionTheme.primary} 1.5px solid` }}>
-                    {isBattleStarted && map ? (
-                        <MiniMapInnerPoppedOut map={map} isTargeting={isTargeting} isPoppedout={isPoppedout} setIsPoppedout={setIsPoppedout} />
-                    ) : (
-                        <BattleNotStarted />
-                    )}
-                </Box>
-            </WindowPortal>
-        )
-    }
+    const content = useMemo(() => {
+        if (isBattleStarted && map) {
+            if (isPoppedout) {
+                return <MiniMapInnerPoppedOut map={map} isTargeting={isTargeting} isPoppedout={isPoppedout} setIsPoppedout={setIsPoppedout} />
+            }
+
+            return <MiniMapInnerNormal map={map} isTargeting={isTargeting} isPoppedout={isPoppedout} setIsPoppedout={setIsPoppedout} />
+        }
+
+        return <BattleNotStarted />
+    }, [isBattleStarted, isPoppedout, isTargeting, map])
 
     return (
         <Box id="big-display-minimap" sx={{ width: "100%", height: "100%" }}>
-            {isBattleStarted && map ? (
-                <MiniMapInnerNormal map={map} isTargeting={isTargeting} isPoppedout={isPoppedout} setIsPoppedout={setIsPoppedout} />
-            ) : (
-                <BattleNotStarted />
-            )}
+            {content}
         </Box>
     )
 }
@@ -68,7 +62,20 @@ interface MiniMapInnerProps {
 const MiniMapInnerPoppedOut = ({ map, isTargeting, isPoppedout, setIsPoppedout }: MiniMapInnerProps) => {
     const { curWidth, curHeight } = useWindowPortal()
     if (!curWidth || !curHeight) return null
-    return <MiniMapInner map={map} isTargeting={isTargeting} isPoppedout={isPoppedout} setIsPoppedout={setIsPoppedout} width={curWidth} height={curHeight} />
+    return (
+        <WindowPortal title="Supremacy - Battle Arena" onClose={() => setIsPoppedout(false)} features={{ width: 600, height: 600 }}>
+            <Box sx={{ width: "100%", height: "100%", border: (theme) => `${theme.factionTheme.primary} 1.5px solid` }}>
+                <MiniMapInner
+                    map={map}
+                    isTargeting={isTargeting}
+                    isPoppedout={isPoppedout}
+                    setIsPoppedout={setIsPoppedout}
+                    width={curWidth}
+                    height={curHeight}
+                />
+            </Box>
+        </WindowPortal>
+    )
 }
 
 const MiniMapInnerNormal = ({ map, isTargeting, isPoppedout, setIsPoppedout }: MiniMapInnerProps) => {
