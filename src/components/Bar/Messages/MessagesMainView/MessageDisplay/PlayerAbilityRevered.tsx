@@ -2,17 +2,17 @@ import { Box, Divider, Stack, Typography } from "@mui/material"
 import { BlueprintPlayerAbility, PlayerAbility } from "../../../../../types"
 import { PlayerAbilityCard } from "../../../../LeftDrawer/BattleArena/PlayerAbilities/PlayerAbilityCard"
 
-interface PlayerAbilityReversedProps {
+interface PlayerAbilityRefundedProps {
     message: string
-    data: PlayerAbilityReversedData[]
+    data: PlayerAbilityRefundedData[]
 }
 
-export interface PlayerAbilityReversedData {
+export interface PlayerAbilityRefundedData {
     amount: number
     player_ability: BlueprintPlayerAbility
 }
 
-export const PlayerAbilityReversedMessage = ({ message, data }: PlayerAbilityReversedProps) => {
+export const PlayerAbilityRefundedMessage = ({ message, data }: PlayerAbilityRefundedProps) => {
     return (
         <Stack spacing=".3rem">
             <Typography variant="h6">{message}</Typography>

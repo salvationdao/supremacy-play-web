@@ -115,7 +115,7 @@ export enum SystemMessageDataType {
     Global = "GLOBAL",
     Faction = "FACTION",
     MechOwnerBattleReward = "MECH_OWNER_BATTLE_REWARD",
-    PlayerAbilityReversed = "PLAYER_ABILITY_REVERSED",
+    PlayerAbilityRefunded = "PLAYER_ABILITY_REFUNDED",
 }
 
 export interface SystemMessage {
