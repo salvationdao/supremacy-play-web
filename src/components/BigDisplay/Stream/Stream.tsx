@@ -1,5 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useEffect } from "react"
+import { useEffect, useRef } from "react"
 import { SvgFullscreen, SvgMinimize, SvgSwap } from "../../../assets"
 import { useDimension, useGame, useOverlayToggles, useStream } from "../../../containers"
 import { fonts, siteZIndex } from "../../../theme/theme"
@@ -16,19 +16,26 @@ export const Stream = () => {
     const { remToPxRatio } = useDimension()
     const { isStreamBigDisplay, setIsStreamBigDisplay } = useGame()
     const { isEnlarged, toggleIsEnlarged } = useStream()
+    const ref = useRef<HTMLElement | null>(null)
 
     useEffect(() => {
-        const thisElement = document.getElementById("bid-display-stream")
+        const thisElement = ref.current
         const newContainerElement = document.getElementById(!isStreamBigDisplay ? "left-drawer-space" : "big-display-space")
 
         if (thisElement && newContainerElement) {
+            let child = newContainerElement.lastElementChild
+            while (child) {
+                newContainerElement.removeChild(child)
+                child = newContainerElement.lastElementChild
+            }
+
             newContainerElement.appendChild(thisElement)
         }
     }, [isStreamBigDisplay])
 
     return (
         <Stack
-            id="bid-display-stream"
+            ref={ref}
             sx={{
                 width: "100%",
                 height: isStreamBigDisplay ? "100%" : (LEFT_DRAWER_WIDTH * remToPxRatio) / (16 / 9) + TOP_BAR_HEIGHT * remToPxRatio,
