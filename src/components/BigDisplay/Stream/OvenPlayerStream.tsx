@@ -13,6 +13,8 @@ interface OvenPlayerSource {
     framerate?: number
     sectionStart?: number
     sectionEnd?: number
+    resolution?: string
+    index?: number
 }
 
 type OvenPlayerPlayList = OvenPlayerSource[][]
@@ -79,27 +81,32 @@ export const OvenplayerStream = () => {
         isEnlarged,
 
         // res
-        ovenResolutions,
         setOvenResolutions,
         selectedOvenResolution,
-        setSelectedOvenResolution,
     } = useStream()
     const ovenPlayer = useRef<OvenPlayerInstance>()
 
-    const changeSource = () => {
-        console.log("changing source11111111")
-
+    const changeSource = (resolution: string) => {
         if (ovenPlayer && ovenPlayer.current) {
-            console.log("changing source")
+            const sources = ovenPlayer.current.getSources()
 
-            ovenPlayer.current.setCurrentSource(1)
+            if (Array.isArray(sources)) {
+                const bruh = sources as OvenPlayerSource[]
+                const src = bruh.filter((s: OvenPlayerSource, i) => {
+                    if (s.label === resolution) {
+                        return { source: s, index: i }
+                    }
+                })[0]
+
+                ovenPlayer.current.setCurrentSource(src.index || 0)
+            }
         }
     }
 
     // watch for res changes
     useEffect(() => {
         console.log("this is selected resolution", selectedOvenResolution)
-        changeSource()
+        changeSource(selectedOvenResolution || "")
     }, [selectedOvenResolution])
 
     // Load the stream when its changed
@@ -110,15 +117,17 @@ export const OvenplayerStream = () => {
 
             // Load oven player
             const source1: OvenPlayerSource = {
-                label: "2",
+                label: "1080",
                 type: "webrtc",
                 file: "wss://stream2.supremacy.game:3334/app/staging1",
+                resolution: "1080",
             }
 
             const source2: OvenPlayerSource = {
-                label: "2",
+                label: "potato",
                 type: "webrtc",
                 file: "wss://stream2.supremacy.game:3334/app/staging1_potato",
+                resolution: "potato",
             }
 
             const sources = [source1, source2]
@@ -174,41 +183,34 @@ export const OvenplayerStream = () => {
     }, [isMute])
 
     return (
-        <>
-            <Stack
-                key={currentStream?.stream_id}
-                sx={{
-                    position: "relative",
-                    width: "100%",
-                    height: "100%",
+        <Stack
+            key={currentStream?.stream_id}
+            sx={{
+                position: "relative",
+                width: "100%",
+                height: "100%",
+                zIndex: siteZIndex.Stream,
+                div: {
+                    height: "100% !important",
+                },
+                pointerEvents: "none",
+                video: {
+                    position: "absolute !important",
+                    width: "100% !important",
+                    height: "100% !important",
+                    objectFit: `${isEnlarged ? "cover" : "contain"} !important`,
+                    objectPosition: "50% 42% !important",
                     zIndex: siteZIndex.Stream,
-                    div: {
-                        height: "100% !important",
-                    },
-                    pointerEvents: "none",
-                    video: {
-                        position: "absolute !important",
-                        width: "100% !important",
-                        height: "100% !important",
-                        objectFit: `${isEnlarged ? "cover" : "contain"} !important`,
-                        objectPosition: "50% 42% !important",
-                        zIndex: siteZIndex.Stream,
-                    },
-                    ".op-ui": {
-                        display: "none !important",
-                    },
-                    ".op-ratio": {
-                        pb: "0 !important",
-                    },
-                }}
-            >
-                <div id="oven-player" />
-            </Stack>
-            <div>
-                <Button onClick={changeSource} sx={{ width: "5rem", height: "5rem", fontSize: "rem", cursor: "pointer" }}>
-                    change
-                </Button>
-            </div>
-        </>
+                },
+                ".op-ui": {
+                    display: "none !important",
+                },
+                ".op-ratio": {
+                    pb: "0 !important",
+                },
+            }}
+        >
+            <div id="oven-player" />
+        </Stack>
     )
 }
