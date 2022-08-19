@@ -12,6 +12,7 @@ import { useGameServerCommandsFaction, useGameServerCommandsUser, useGameServerS
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { MechBasic, MechStatus, MechStatusEnum } from "../../../types"
+import { RepairStatus } from "../../../types/jobs"
 import { SortTypeLabel } from "../../../types/marketplace"
 import { ConfirmModal } from "../../Common/ConfirmModal"
 import { PageHeader } from "../../Common/PageHeader"
@@ -61,7 +62,9 @@ export const WarMachinesHangar = () => {
     // Bulk action
     const [selectedMechs, setSelectedMechs] = useState<MechBasic[]>([])
     const [bulkDeployModalOpen, setBulkDeployModalOpen] = useState(false)
+    const [bulkRepairModalOpen, setBulkRepairModalOpen] = useState(false)
     const childrenMechStatus = useRef<{ [mechID: string]: MechStatus }>({})
+    const childrenRepairStatus = useRef<{ [mechID: string]: RepairStatus }>({})
 
     const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({
         pageSize: parseString(query.get("pageSize"), 10),
@@ -96,10 +99,6 @@ export const WarMachinesHangar = () => {
 
             return newArray
         })
-    }, [])
-
-    const repairSelected = useCallback(() => {
-        console.log("Clicked")
     }, [])
 
     const onSelectAll = useCallback(() => {
@@ -274,6 +273,7 @@ export const WarMachinesHangar = () => {
                                         toggleSelected(mech)
                                     }}
                                     childrenMechStatus={childrenMechStatus}
+                                    childrenRepairStatus={childrenRepairStatus}
                                     mech={mech}
                                     isGridView={isGridView}
                                 />
@@ -389,7 +389,7 @@ export const WarMachinesHangar = () => {
                                             sx: { position: "relative" },
                                         }}
                                         sx={{ px: "1.6rem", py: ".6rem", color: "#FFFFFF" }}
-                                        onClick={repairSelected}
+                                        onClick={() => setBulkRepairModalOpen(true)}
                                     >
                                         <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBlack }}>
                                             REPAIR SELECTED
@@ -511,6 +511,15 @@ export const WarMachinesHangar = () => {
                     queueFeed={queueFeed}
                 />
             )}
+
+            {bulkRepairModalOpen && (
+                <RepairConfirmModal
+                    setBulkRepairModalOpen={setBulkRepairModalOpen}
+                    selectedMechs={selectedMechs}
+                    childrenMechStatus={childrenMechStatus}
+                    childrenRepairStatus={childrenRepairStatus}
+                />
+            )}
         </>
     )
 }
@@ -557,7 +566,14 @@ export const DeployConfirmModal = ({
     const validMechs = selectedMechs.filter((s) => childrenMechStatus.current[s.id]?.can_deploy)
 
     return (
-        <ConfirmModal title="CONFIRMATION" onConfirm={deploySelected} onClose={() => setBulkDeployModalOpen(false)} isLoading={isLoading} error={error}>
+        <ConfirmModal
+            title="CONFIRMATION"
+            disableConfirm={validMechs.length <= 0}
+            onConfirm={deploySelected}
+            onClose={() => setBulkDeployModalOpen(false)}
+            isLoading={isLoading}
+            error={error}
+        >
             <Typography variant="h6">
                 In your selection, <span>{validMechs.length}</span>/{selectedMechs.length} mechs are battle-ready. <br />
                 The fee to deploy is{" "}
@@ -565,4 +581,22 @@ export const DeployConfirmModal = ({
             </Typography>
         </ConfirmModal>
     )
+}
+
+const RepairConfirmModal = ({
+    setBulkRepairModalOpen,
+    selectedMechs,
+    childrenMechStatus,
+    childrenRepairStatus,
+}: {
+    setBulkRepairModalOpen: React.Dispatch<React.SetStateAction<boolean>>
+    selectedMechs: MechBasic[]
+    childrenMechStatus: React.MutableRefObject<{
+        [mechID: string]: MechStatus
+    }>
+    childrenRepairStatus: React.MutableRefObject<{
+        [mechID: string]: RepairStatus
+    }>
+}) => {
+    return null
 }

@@ -85,7 +85,7 @@ export const QuickDeployItem = ({ isSelected, toggleIsSelected, mech, childrenMe
                 py: ".8rem",
                 pl: ".5rem",
                 pr: ".7rem",
-                backgroundColor: isSelected ? "#FFFFFF30" : "unset",
+                backgroundColor: isSelected ? "#FFFFFF20" : "unset",
                 borderRadius: 0.8,
             }}
         >

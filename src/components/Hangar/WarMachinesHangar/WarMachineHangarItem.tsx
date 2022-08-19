@@ -4,10 +4,11 @@ import { FancyButton } from "../.."
 import { SvgDropdownArrow } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { shadeColor } from "../../../helpers"
-import { useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
+import { useGameServerSubscriptionFaction, useGameServerSubscriptionSecured } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { MechBasic, MechDetails, MechStatus } from "../../../types"
+import { RepairStatus } from "../../../types/jobs"
 import { MediaPreview } from "../../Common/MediaPreview/MediaPreview"
 import { General } from "../../Marketplace/Common/MarketItem/General"
 import { MechBarStats } from "./Common/MechBarStats"
@@ -21,6 +22,7 @@ export const WarMachineHangarItem = ({
     mech,
     isGridView,
     childrenMechStatus,
+    childrenRepairStatus,
 }: {
     isSelected?: boolean
     toggleIsSelected?: () => void
@@ -28,6 +30,9 @@ export const WarMachineHangarItem = ({
     isGridView?: boolean
     childrenMechStatus: React.MutableRefObject<{
         [mechID: string]: MechStatus
+    }>
+    childrenRepairStatus: React.MutableRefObject<{
+        [mechID: string]: RepairStatus
     }>
 }) => {
     const theme = useTheme()
@@ -41,6 +46,18 @@ export const WarMachineHangarItem = ({
         (payload) => {
             if (!payload) return
             setMechDetails(payload)
+        },
+    )
+
+    useGameServerSubscriptionSecured<RepairStatus>(
+        {
+            URI: `/mech/${mech.id}/repair_case`,
+            key: GameServerKeys.SubMechRepairStatus,
+            ready: !!mech.id,
+        },
+        (payload) => {
+            if (!payload) return
+            childrenRepairStatus.current[mech.id] = payload
         },
     )
 
