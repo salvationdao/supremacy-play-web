@@ -4,10 +4,11 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { ClipThing, FancyButton } from "../.."
 import { EmptyWarMachinesPNG, WarMachineIconPNG } from "../../../assets"
 import { HANGAR_PAGE } from "../../../constants"
+import { useGlobalNotifications } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { getRarityDeets, parseString, supFormatter } from "../../../helpers"
 import { usePagination, useToggle, useUrlQuery } from "../../../hooks"
-import { useGameServerCommandsUser, useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
+import { useGameServerCommandsFaction, useGameServerCommandsUser, useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { MechBasic, MechStatus, MechStatusEnum } from "../../../types"
@@ -527,23 +528,36 @@ export const DeployConfirmModal = ({
     }>
     queueFeed: QueueFeed | undefined
 }) => {
-    const [isBulkLoading, setIsBulkLoading] = useState(false)
-    const [bulkActionError, setBulkActionError] = useState<string>()
+    const { newSnackbarMessage } = useGlobalNotifications()
+    const { send } = useGameServerCommandsFaction("/faction_commander")
+    const [isLoading, setIsLoading] = useState(false)
+    const [error, setError] = useState<string>()
 
-    const deploySelected = useCallback(() => {
-        console.log("Clicked")
-    }, [])
+    const deploySelected = useCallback(async () => {
+        try {
+            setIsLoading(true)
+            const resp = await send<{ success: boolean; code: string }>(GameServerKeys.JoinQueue, {
+                asset_hash: "xxxxxxxxx",
+            })
+
+            if (resp && resp.success) {
+                newSnackbarMessage("Successfully deployed war machines.", "success")
+                setBulkDeployModalOpen(false)
+                setError(undefined)
+            }
+        } catch (e) {
+            setError(typeof e === "string" ? e : "Failed to deploy war machines.")
+            console.error(e)
+            return
+        } finally {
+            setIsLoading(false)
+        }
+    }, [newSnackbarMessage, send, setBulkDeployModalOpen])
 
     const validMechs = selectedMechs.filter((s) => childrenMechStatus.current[s.id]?.can_deploy)
 
     return (
-        <ConfirmModal
-            title="CONFIRMATION"
-            onConfirm={deploySelected}
-            onClose={() => setBulkDeployModalOpen(false)}
-            isLoading={isBulkLoading}
-            error={bulkActionError}
-        >
+        <ConfirmModal title="CONFIRMATION" onConfirm={deploySelected} onClose={() => setBulkDeployModalOpen(false)} isLoading={isLoading} error={error}>
             <Typography variant="h6">
                 In your selection, <span>{validMechs.length}</span>/{selectedMechs.length} mechs are battle-ready. <br />
                 The fee to deploy is{" "}
