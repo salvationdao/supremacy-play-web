@@ -265,6 +265,7 @@ const NotificationsInner = ({ notificationsJsx }: { notificationsJsx: (JSX.Eleme
                 overflow: "hidden",
                 transform: isMobile ? "scale(.9)" : "unset",
                 transformOrigin: "top right",
+                pointerEvents: "none",
             }}
         >
             <Box

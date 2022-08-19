@@ -8,7 +8,7 @@ import { useDimension, useMobile } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { shadeColor } from "../../../helpers"
 import { colors, siteZIndex } from "../../../theme/theme"
-import { WindowPortal } from "../WindowPortal"
+import { WindowPortal } from "../WindowPortal/WindowPortal"
 import { MoveableResizableConfig, MoveableResizableProvider, useMoveableResizable } from "./MoveableResizableContainer"
 
 interface MoveableResizableProps {

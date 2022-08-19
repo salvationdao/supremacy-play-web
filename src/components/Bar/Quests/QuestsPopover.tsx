@@ -84,13 +84,17 @@ export const QuestsPopover = ({
                             boxShadow: 1.5,
                         }}
                     >
-                        <Typography sx={{ fontFamily: fonts.nostromoBlack }}>YOUR QUESTS</Typography>
+                        <Typography sx={{ fontFamily: fonts.nostromoBlack }}>YOUR CHALLENGES</Typography>
                     </Stack>
 
                     {eventNames.length > 0 &&
                         eventNames.map((eventName, i) => {
                             const questStatsFiltered = questStats.filter((qs) => qs.round_name === eventName)
                             const itemHasConfetti = questStatsFiltered.some((qs) => confetti.findIndex((i) => i === qs.id) >= 0)
+                            const countObtained = questStatsFiltered.filter((qs) => {
+                                const progress = questProgressions?.find((qp) => qp.quest_id === qs.id)
+                                return progress ? progress.current >= progress.goal : false
+                            }).length
 
                             return (
                                 <Accordion
@@ -100,7 +104,7 @@ export const QuestsPopover = ({
                                 >
                                     <AccordionSummary expandIcon={<SvgExpandMoreIcon />} sx={{ minHeight: 0, ":hover": { opacity: 0.95 } }}>
                                         <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack }}>
-                                            {eventName} ({questStatsFiltered.filter((qs) => qs.obtained).length}/{questStatsFiltered.length})
+                                            {eventName} ({countObtained}/{questStatsFiltered.length})
                                         </Typography>
                                     </AccordionSummary>
                                     <AccordionDetails>

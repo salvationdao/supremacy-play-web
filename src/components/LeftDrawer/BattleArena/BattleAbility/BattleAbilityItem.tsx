@@ -31,7 +31,7 @@ export const BattleAbilityItem = () => {
         {
             URI: `/public/arena/${currentArenaID}/battle_ability`,
             key: GameServerKeys.SubBattleAbility,
-            ready: currentArenaID !== "",
+            ready: !!currentArenaID,
         },
         (payload) => {
             if (!payload) return

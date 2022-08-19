@@ -1,5 +1,5 @@
 import { Box, Button, ButtonGroup, Pagination, Stack, Typography } from "@mui/material"
-import { ReactNode, useCallback, useEffect, useMemo, useState } from "react"
+import { ReactNode, useCallback, useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import { SvgGlobal, SvgLine, SvgMicrochip, SvgTarget } from "../../../../assets"
 import { useGame } from "../../../../containers"
@@ -14,19 +14,18 @@ import { SectionHeading } from "../Common/SectionHeading"
 import { PlayerAbilityCard } from "./PlayerAbilityCard"
 
 export const PlayerAbilities = () => {
-    const { bribeStage } = useGame()
-    const isBattleStarted = useMemo(() => bribeStage && bribeStage.phase !== "HOLD", [bribeStage])
+    const { userID } = useAuth()
+    const { bribeStage, isBattleStarted } = useGame()
 
-    if (!bribeStage) return null
+    if (!bribeStage || !userID) return null
 
     return (
-        <Box>
+        <Box sx={{ position: "relative" }}>
             <SectionHeading label="OWNED ABILITIES" tooltip="Launch your own abilities." />
             <Stack
                 spacing="1rem"
                 sx={{
                     pointerEvents: isBattleStarted ? "all" : "none",
-                    opacity: isBattleStarted ? 1 : 0.5,
                     p: "1.5rem 1.1rem",
                     backgroundColor: "#FFFFFF12",
                     boxShadow: 2,
@@ -35,6 +34,8 @@ export const PlayerAbilities = () => {
             >
                 <PlayerAbilitiesInner />
             </Stack>
+
+            {!isBattleStarted && <Box sx={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", backgroundColor: "#000000AA" }} />}
         </Box>
     )
 }

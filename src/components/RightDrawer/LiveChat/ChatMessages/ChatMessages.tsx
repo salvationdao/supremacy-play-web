@@ -137,7 +137,7 @@ const ChatMessagesInner = ({
                 }}
             >
                 <Box sx={{ height: 0 }}>
-                    <Stack spacing=".5rem" sx={{ mt: ".88rem" }}>
+                    <Stack spacing=".6rem" sx={{ mt: ".88rem" }}>
                         {chatMessages && chatMessages.length > 0 ? (
                             chatMessages.map((message, i) => {
                                 if (message.type == "TEXT") {

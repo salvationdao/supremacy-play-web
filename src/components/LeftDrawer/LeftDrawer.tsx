@@ -4,9 +4,9 @@ import { DRAWER_TRANSITION_DURATION } from "../../constants"
 import { useAuth, useMobile, useOverlayToggles } from "../../containers"
 import { LEFT_DRAWER_ARRAY, LEFT_DRAWER_MAP, ROUTES_ARRAY } from "../../routes"
 import { colors, siteZIndex } from "../../theme/theme"
-import { DrawerButtons, DRAWER_BAR_WIDTH } from "./DrawerButtons"
+import { DrawerButtons } from "./DrawerButtons"
 
-export const DRAWER_WIDTH = 45 // rem
+export const LEFT_DRAWER_WIDTH = 44 // rem
 
 export const LeftDrawer = () => {
     const { leftDrawerActiveTabID } = useOverlayToggles()
@@ -27,7 +27,6 @@ export const LeftDrawer = () => {
 
     return (
         <>
-            <DrawerButtons />
             <Drawer
                 transitionDuration={DRAWER_TRANSITION_DURATION}
                 open={isOpen}
@@ -35,14 +34,13 @@ export const LeftDrawer = () => {
                 anchor="left"
                 sx={{
                     flexShrink: 0,
-                    width: isOpen ? `${DRAWER_WIDTH}rem` : 0,
+                    width: isOpen ? `${LEFT_DRAWER_WIDTH}rem` : 0,
                     transition: `all ${DRAWER_TRANSITION_DURATION}ms cubic-bezier(0, 0, 0.2, 1)`,
                     zIndex: siteZIndex.Drawer,
                     "& .MuiDrawer-paper": {
-                        width: `${DRAWER_WIDTH}rem`,
+                        width: `${LEFT_DRAWER_WIDTH}rem`,
                         backgroundColor: colors.darkNavy,
                         position: "absolute",
-                        ml: `${DRAWER_BAR_WIDTH}rem`,
                         borderRight: 0,
                         overflow: "hidden",
                     },
@@ -69,6 +67,7 @@ export const LeftDrawer = () => {
                     return null
                 })}
             </Drawer>
+            <DrawerButtons />
         </>
     )
 }

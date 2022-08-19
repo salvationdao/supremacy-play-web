@@ -68,9 +68,11 @@ const mergeInPlace = (target: any, ...sources: any): any => {
 }
 
 export const shadeColor = (hexColor: string, factor: number) => {
-    let R = parseInt(hexColor.substring(1, 3), 16)
-    let G = parseInt(hexColor.substring(3, 5), 16)
-    let B = parseInt(hexColor.substring(5, 7), 16)
+    const hex = hexColor.toUpperCase()
+
+    let R = parseInt(hex.substring(1, 3), 16)
+    let G = parseInt(hex.substring(3, 5), 16)
+    let B = parseInt(hex.substring(5, 7), 16)
 
     R = parseInt((R * (100 + factor)) / 100 + "")
     G = parseInt((G * (100 + factor)) / 100 + "")
@@ -171,21 +173,14 @@ export function acronym(s: string): string {
     return x.join("").toUpperCase()
 }
 
-export const hexToRGB = (hex: string, alpha?: number): string => {
-    const h = "0123456789ABCDEF"
-    const r = h.indexOf(hex[1]) * 16 + h.indexOf(hex[2])
-    const g = h.indexOf(hex[3]) * 16 + h.indexOf(hex[4])
-    const b = h.indexOf(hex[5]) * 16 + h.indexOf(hex[6])
-    if (alpha) return "rgba(" + r + ", " + g + ", " + b + ", " + alpha + ")"
-    else return "rgb(" + r + ", " + g + ", " + b + ")"
-}
+export const hexToRGB = (hexx: string) => {
+    const hex = hexx.toUpperCase()
 
-export const hexToRGBArray = (hex: string): [number, number, number] => {
     const h = "0123456789ABCDEF"
     const r = h.indexOf(hex[1]) * 16 + h.indexOf(hex[2])
     const g = h.indexOf(hex[3]) * 16 + h.indexOf(hex[4])
     const b = h.indexOf(hex[5]) * 16 + h.indexOf(hex[6])
-    return [r, g, b]
+    return { r, g, b }
 }
 
 export const getRarityDeets = (rarityKey: string): Rarity => {
@@ -562,3 +557,13 @@ export const generatePriceText = (dollars: number, cents: number) => {
 
 // Converts number to alphabet letter. E.g. 0 -> "a"
 export const intToLetter = (i: number) => String.fromCharCode(97 + i)
+
+export const autoTextColor = (hex: string) => {
+    const rgb = hexToRGB(hex)
+
+    if (rgb.r * 0.299 + rgb.g * 0.587 + rgb.b * 0.114 > 150) {
+        return "#000000"
+    } else {
+        return "#FFFFFF"
+    }
+}
