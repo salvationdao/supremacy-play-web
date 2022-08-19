@@ -31,27 +31,25 @@ export const MiniMap = () => {
         }
     }, [isStreamBigDisplay, isPoppedout])
 
-    if (isPoppedout) {
-        return (
-            <WindowPortal title="Supremacy - Battle Arena" onClose={() => setIsPoppedout(false)} features={{ width: 600, height: 600 }}>
-                <Box sx={{ width: "100%", height: "100%", border: (theme) => `${theme.factionTheme.primary} 1.5px solid` }}>
-                    {isBattleStarted && map ? (
+    const content = useMemo(() => {
+        if (isBattleStarted && map) {
+            if (isPoppedout) {
+                return (
+                    <WindowPortal title="Supremacy - Battle Arena" onClose={() => setIsPoppedout(false)} features={{ width: 600, height: 600 }}>
                         <MiniMapInnerPoppedOut map={map} isTargeting={isTargeting} isPoppedout={isPoppedout} setIsPoppedout={setIsPoppedout} />
-                    ) : (
-                        <BattleNotStarted />
-                    )}
-                </Box>
-            </WindowPortal>
-        )
-    }
+                    </WindowPortal>
+                )
+            }
+
+            return <MiniMapInnerNormal map={map} isTargeting={isTargeting} isPoppedout={isPoppedout} setIsPoppedout={setIsPoppedout} />
+        }
+
+        return <BattleNotStarted />
+    }, [isBattleStarted, isPoppedout, isTargeting, map])
 
     return (
         <Box id="big-display-minimap" sx={{ width: "100%", height: "100%" }}>
-            {isBattleStarted && map ? (
-                <MiniMapInnerNormal map={map} isTargeting={isTargeting} isPoppedout={isPoppedout} setIsPoppedout={setIsPoppedout} />
-            ) : (
-                <BattleNotStarted />
-            )}
+            {content}
         </Box>
     )
 }
@@ -68,7 +66,11 @@ interface MiniMapInnerProps {
 const MiniMapInnerPoppedOut = ({ map, isTargeting, isPoppedout, setIsPoppedout }: MiniMapInnerProps) => {
     const { curWidth, curHeight } = useWindowPortal()
     if (!curWidth || !curHeight) return null
-    return <MiniMapInner map={map} isTargeting={isTargeting} isPoppedout={isPoppedout} setIsPoppedout={setIsPoppedout} width={curWidth} height={curHeight} />
+    return (
+        <Box sx={{ width: "100%", height: "100%", border: (theme) => `${theme.factionTheme.primary} 1.5px solid` }}>
+            <MiniMapInner map={map} isTargeting={isTargeting} isPoppedout={isPoppedout} setIsPoppedout={setIsPoppedout} width={curWidth} height={curHeight} />
+        </Box>
+    )
 }
 
 const MiniMapInnerNormal = ({ map, isTargeting, isPoppedout, setIsPoppedout }: MiniMapInnerProps) => {
@@ -235,7 +237,7 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
                         boxShadow: 1,
                         width: sizes.outsideWidth,
                         height: sizes.outsideHeight,
-                        transition: "all .2s",
+                        transition: "width .2s, height .2s",
                         overflow: "hidden",
                         pointerEvents: "all",
                         zIndex: 2,
@@ -243,7 +245,7 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
                         "&.MuiBox-root": {
                             border: "1px transparent solid",
                             "&:focus": {
-                                border: (theme) => `1px solid ${theme.factionTheme.primary}`,
+                                border: (theme) => `2px solid ${theme.factionTheme.primary}`,
                             },
                             outline: "none",
                         },

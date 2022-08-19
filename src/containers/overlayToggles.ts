@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react"
 import { createContainer } from "unstated-next"
 import { useToggle } from "../hooks"
+import { LEFT_DRAWER_ARRAY, RIGHT_DRAWER_ARRAY } from "../routes"
 import { useMobile } from "./mobile"
 
 // Control overlays, side drawers etc
 const OverlayTogglesContainer = createContainer(() => {
     const { isMobile } = useMobile()
     const [isNavLinksDrawerOpen, toggleIsNavLinksDrawerOpen] = useToggle(false)
-    const [leftDrawerActiveTabID, setLeftDrawerActiveTabID] = useState(localStorage.getItem("leftDrawerActiveTabID") || "")
-    const [rightDrawerActiveTabID, setRightDrawerActiveTabID] = useState(localStorage.getItem("rightDrawerActiveTabID") || "")
+    const [leftDrawerActiveTabID, setLeftDrawerActiveTabID] = useState(localStorage.getItem("leftDrawerActiveTabID") || LEFT_DRAWER_ARRAY[0]?.id || "")
+    const [rightDrawerActiveTabID, setRightDrawerActiveTabID] = useState(localStorage.getItem("rightDrawerActiveTabID") || RIGHT_DRAWER_ARRAY[0]?.id || "")
 
     const [showTrailer, toggleShowTrailer] = useToggle()
     const [isBattleHistoryOpen, toggleIsBattleHistoryOpen] = useToggle()
