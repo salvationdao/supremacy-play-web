@@ -1,4 +1,4 @@
-import { Box, Stack, Typography } from "@mui/material"
+import { Box, Checkbox, Stack, Typography } from "@mui/material"
 import { useMemo, useState } from "react"
 import { FancyButton } from "../.."
 import { SvgDropdownArrow } from "../../../assets"
@@ -15,7 +15,17 @@ import { MechGeneralStatus } from "./Common/MechGeneralStatus"
 import { MechLoadoutIcons } from "./Common/MechLoadoutIcons"
 import { MechRepairBlocks } from "./Common/MechRepairBlocks"
 
-export const WarMachineHangarItem = ({ mech, isGridView }: { mech: MechBasic; isGridView?: boolean }) => {
+export const WarMachineHangarItem = ({
+    isSelected,
+    toggleIsSelected,
+    mech,
+    isGridView,
+}: {
+    isSelected?: boolean
+    toggleIsSelected?: () => void
+    mech: MechBasic
+    isGridView?: boolean
+}) => {
     const theme = useTheme()
     const [mechDetails, setMechDetails] = useState<MechDetails>()
 
@@ -33,6 +43,7 @@ export const WarMachineHangarItem = ({ mech, isGridView }: { mech: MechBasic; is
     const primaryColor = theme.factionTheme.primary
     const secondaryColor = theme.factionTheme.secondary
     const backgroundColor = theme.factionTheme.background
+    const selectedBackgroundColor = useMemo(() => shadeColor(backgroundColor, 360), [backgroundColor])
 
     return (
         <Box sx={{ position: "relative", overflow: "visible", height: "100%" }}>
@@ -47,7 +58,7 @@ export const WarMachineHangarItem = ({ mech, isGridView }: { mech: MechBasic; is
                         bottomLeft: true,
                         bottomRight: true,
                     },
-                    backgroundColor: backgroundColor,
+                    backgroundColor: isSelected ? selectedBackgroundColor : backgroundColor,
                     opacity: 0.9,
                     border: { isFancy: !isGridView, borderColor: primaryColor, borderThickness: ".25rem" },
                     sx: { position: "relative", height: "100%" },
@@ -94,6 +105,24 @@ export const WarMachineHangarItem = ({ mech, isGridView }: { mech: MechBasic; is
                     }}
                 />
             </FancyButton>
+
+            {toggleIsSelected && (
+                <Checkbox
+                    size="small"
+                    checked={isSelected}
+                    onClick={toggleIsSelected}
+                    sx={{
+                        position: "absolute",
+                        bottom: 0,
+                        right: 0,
+                        zIndex: 3,
+                        color: primaryColor,
+                        "& > .MuiSvgIcon-root": { width: "3.5rem", height: "3.5rem" },
+                        ".Mui-checked, .MuiSvgIcon-root": { color: `${primaryColor} !important` },
+                        ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${primaryColor}50 !important` },
+                    }}
+                />
+            )}
         </Box>
     )
 }

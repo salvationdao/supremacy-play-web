@@ -52,6 +52,7 @@ export const WarMachinesHangar = () => {
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
     const [mechs, setMechs] = useState<MechBasic[]>([])
+    const [selectedMechIDs, setSelectedMechIDs] = useState<string[]>([])
 
     const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({
         pageSize: parseString(query.get("pageSize"), 10),
@@ -73,6 +74,28 @@ export const WarMachinesHangar = () => {
     useEffect(() => {
         localStorage.setItem("isWarMachinesHangarFiltersExpanded", isFiltersExpanded.toString())
     }, [isFiltersExpanded])
+
+    const toggleSelected = useCallback((mechID: string) => {
+        setSelectedMechIDs((prev) => {
+            const newArray = [...prev]
+            const isAlreadySelected = prev.findIndex((s) => s === mechID)
+            if (isAlreadySelected >= 0) {
+                newArray.splice(isAlreadySelected, 1)
+            } else {
+                newArray.push(mechID)
+            }
+
+            return newArray
+        })
+    }, [])
+
+    const deploySelected = useCallback(() => {
+        console.log("Clicked")
+    }, [])
+
+    const repairSelected = useCallback(() => {
+        console.log("Clicked")
+    }, [])
 
     // Filters
     const statusFilterSection = useRef<ChipFilter>({
@@ -221,9 +244,20 @@ export const WarMachinesHangar = () => {
                             overflow: "visible",
                         }}
                     >
-                        {mechs.map((mech) => (
-                            <WarMachineHangarItem key={`marketplace-${mech.id}`} mech={mech} isGridView={isGridView} />
-                        ))}
+                        {mechs.map((mech) => {
+                            const isSelected = selectedMechIDs.findIndex((s) => s === mech.id) >= 0
+                            return (
+                                <WarMachineHangarItem
+                                    key={`marketplace-${mech.id}`}
+                                    isSelected={isSelected}
+                                    toggleIsSelected={() => {
+                                        toggleSelected(mech.id)
+                                    }}
+                                    mech={mech}
+                                    isGridView={isGridView}
+                                />
+                            )
+                        })}
                     </Box>
                 </Box>
             )
@@ -280,7 +314,7 @@ export const WarMachinesHangar = () => {
                 </Stack>
             </Stack>
         )
-    }, [loadError, mechs, isLoading, theme.factionTheme.primary, theme.factionTheme.secondary, isGridView])
+    }, [loadError, mechs, isLoading, theme.factionTheme.primary, theme.factionTheme.secondary, isGridView, selectedMechIDs, toggleSelected])
 
     return (
         <Stack direction="row" sx={{ height: "100%" }}>
@@ -305,7 +339,41 @@ export const WarMachinesHangar = () => {
                 <Stack sx={{ position: "relative", height: "100%" }}>
                     <Stack sx={{ flex: 1 }}>
                         <PageHeader title="WAR MACHINES" description="Your war machines." imageUrl={WarMachineIconPNG}>
-                            <Box sx={{ ml: "auto !important", pr: "2rem" }}>
+                            <Stack spacing="1rem" direction="row" alignItems="center" sx={{ ml: "auto !important", pr: "2rem" }}>
+                                <FancyButton
+                                    disabled={selectedMechIDs.length <= 0}
+                                    clipThingsProps={{
+                                        clipSize: "9px",
+                                        backgroundColor: colors.green,
+                                        opacity: 1,
+                                        border: { borderColor: colors.green, borderThickness: "2px" },
+                                        sx: { position: "relative" },
+                                    }}
+                                    sx={{ px: "1.6rem", py: ".6rem", color: "#FFFFFF" }}
+                                    onClick={deploySelected}
+                                >
+                                    <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBlack }}>
+                                        DEPLOY SELECTED
+                                    </Typography>
+                                </FancyButton>
+
+                                <FancyButton
+                                    disabled={selectedMechIDs.length <= 0}
+                                    clipThingsProps={{
+                                        clipSize: "9px",
+                                        backgroundColor: colors.blue2,
+                                        opacity: 1,
+                                        border: { borderColor: colors.blue2, borderThickness: "2px" },
+                                        sx: { position: "relative" },
+                                    }}
+                                    sx={{ px: "1.6rem", py: ".6rem", color: "#FFFFFF" }}
+                                    onClick={repairSelected}
+                                >
+                                    <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBlack }}>
+                                        REPAIR SELECTED
+                                    </Typography>
+                                </FancyButton>
+
                                 <FancyButton
                                     clipThingsProps={{
                                         clipSize: "9px",
@@ -328,7 +396,7 @@ export const WarMachinesHangar = () => {
                                         WALKABLE HANGAR
                                     </Typography>
                                 </FancyButton>
-                            </Box>
+                            </Stack>
                         </PageHeader>
 
                         <TotalAndPageSizeOptions
