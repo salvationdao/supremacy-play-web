@@ -34,7 +34,11 @@ export const MiniMap = () => {
     const content = useMemo(() => {
         if (isBattleStarted && map) {
             if (isPoppedout) {
-                return <MiniMapInnerPoppedOut map={map} isTargeting={isTargeting} isPoppedout={isPoppedout} setIsPoppedout={setIsPoppedout} />
+                return (
+                    <WindowPortal title="Supremacy - Battle Arena" onClose={() => setIsPoppedout(false)} features={{ width: 600, height: 600 }}>
+                        <MiniMapInnerPoppedOut map={map} isTargeting={isTargeting} isPoppedout={isPoppedout} setIsPoppedout={setIsPoppedout} />
+                    </WindowPortal>
+                )
             }
 
             return <MiniMapInnerNormal map={map} isTargeting={isTargeting} isPoppedout={isPoppedout} setIsPoppedout={setIsPoppedout} />
@@ -63,18 +67,9 @@ const MiniMapInnerPoppedOut = ({ map, isTargeting, isPoppedout, setIsPoppedout }
     const { curWidth, curHeight } = useWindowPortal()
     if (!curWidth || !curHeight) return null
     return (
-        <WindowPortal title="Supremacy - Battle Arena" onClose={() => setIsPoppedout(false)} features={{ width: 600, height: 600 }}>
-            <Box sx={{ width: "100%", height: "100%", border: (theme) => `${theme.factionTheme.primary} 1.5px solid` }}>
-                <MiniMapInner
-                    map={map}
-                    isTargeting={isTargeting}
-                    isPoppedout={isPoppedout}
-                    setIsPoppedout={setIsPoppedout}
-                    width={curWidth}
-                    height={curHeight}
-                />
-            </Box>
-        </WindowPortal>
+        <Box sx={{ width: "100%", height: "100%", border: (theme) => `${theme.factionTheme.primary} 1.5px solid` }}>
+            <MiniMapInner map={map} isTargeting={isTargeting} isPoppedout={isPoppedout} setIsPoppedout={setIsPoppedout} width={curWidth} height={curHeight} />
+        </Box>
     )
 }
 
