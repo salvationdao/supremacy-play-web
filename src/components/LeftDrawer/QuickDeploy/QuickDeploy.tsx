@@ -92,10 +92,6 @@ const QuickDeployInner = () => {
         })
     }, [])
 
-    const deploySelected = useCallback(() => {
-        console.log("Clicked")
-    }, [])
-
     const onSelectAll = useCallback(() => {
         setSelectedMechs(mechs)
     }, [mechs])
@@ -309,7 +305,6 @@ const QuickDeployInner = () => {
 
             {bulkDeployModalOpen && (
                 <DeployConfirmModal
-                    deploySelected={deploySelected}
                     setBulkDeployModalOpen={setBulkDeployModalOpen}
                     selectedMechs={selectedMechs}
                     childrenMechStatus={childrenMechStatus}

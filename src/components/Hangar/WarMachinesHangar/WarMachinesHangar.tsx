@@ -97,10 +97,6 @@ export const WarMachinesHangar = () => {
         })
     }, [])
 
-    const deploySelected = useCallback(() => {
-        console.log("Clicked")
-    }, [])
-
     const repairSelected = useCallback(() => {
         console.log("Clicked")
     }, [])
@@ -508,7 +504,6 @@ export const WarMachinesHangar = () => {
 
             {bulkDeployModalOpen && (
                 <DeployConfirmModal
-                    deploySelected={deploySelected}
                     setBulkDeployModalOpen={setBulkDeployModalOpen}
                     selectedMechs={selectedMechs}
                     childrenMechStatus={childrenMechStatus}
@@ -520,13 +515,11 @@ export const WarMachinesHangar = () => {
 }
 
 export const DeployConfirmModal = ({
-    deploySelected,
     setBulkDeployModalOpen,
     selectedMechs,
     childrenMechStatus,
     queueFeed,
 }: {
-    deploySelected: () => void
     setBulkDeployModalOpen: React.Dispatch<React.SetStateAction<boolean>>
     selectedMechs: MechBasic[]
     childrenMechStatus: React.MutableRefObject<{
@@ -536,6 +529,10 @@ export const DeployConfirmModal = ({
 }) => {
     const [isBulkLoading, setIsBulkLoading] = useState(false)
     const [bulkActionError, setBulkActionError] = useState<string>()
+
+    const deploySelected = useCallback(() => {
+        console.log("Clicked")
+    }, [])
 
     const validMechs = selectedMechs.filter((s) => childrenMechStatus.current[s.id]?.can_deploy)
 
@@ -549,7 +546,7 @@ export const DeployConfirmModal = ({
         >
             <Typography variant="h6">
                 In your selection, <span>{validMechs.length}</span>/{selectedMechs.length} mechs are battle-ready. <br />
-                The fee to deploy <span>{validMechs.length}</span> mechs is{" "}
+                The fee to deploy is{" "}
                 <span>{supFormatter(new BigNumber(queueFeed?.queue_cost || 250 * Math.pow(10, 18)).multipliedBy(validMechs.length).toString(), 2)}</span> SUPS.
             </Typography>
         </ConfirmModal>
