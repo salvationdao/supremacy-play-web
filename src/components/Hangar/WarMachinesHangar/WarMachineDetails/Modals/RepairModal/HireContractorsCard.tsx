@@ -23,12 +23,12 @@ const listingDurations: {
     { label: "3 hours", value: 180 },
 ]
 
-export const HireContractorsCard = (props: { mechs: MechBasic[]; remainDamagedBlocks: number }) => {
+export const HireContractorsCard = (props: { mechs: MechBasic[]; remainDamagedBlocks: number; onClose?: () => void }) => {
     if (props.remainDamagedBlocks <= 0) return null
     return <HireContractorsCardInner {...props} />
 }
 
-const HireContractorsCardInner = ({ mechs, remainDamagedBlocks }: { mechs: MechBasic[]; remainDamagedBlocks: number }) => {
+const HireContractorsCardInner = ({ mechs, remainDamagedBlocks, onClose }: { mechs: MechBasic[]; remainDamagedBlocks: number; onClose?: () => void }) => {
     const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsUser("/user_commander")
     const [isSubmitting, setIsSubmitting] = useState(false)
@@ -49,6 +49,7 @@ const HireContractorsCardInner = ({ mechs, remainDamagedBlocks }: { mechs: MechB
             if (resp) {
                 newSnackbarMessage("Successfully submitted listed mech for repair.", "success")
                 setSubmitError(undefined)
+                onClose && onClose()
             }
         } catch (e) {
             setSubmitError(typeof e === "string" ? e : "Failed to listed mech for repair.")
@@ -56,7 +57,7 @@ const HireContractorsCardInner = ({ mechs, remainDamagedBlocks }: { mechs: MechB
         } finally {
             setIsSubmitting(false)
         }
-    }, [send, mechs, durationMinutes, agentRewardPerBlock, newSnackbarMessage])
+    }, [send, mechs, durationMinutes, agentRewardPerBlock, newSnackbarMessage, onClose])
 
     return (
         <Stack

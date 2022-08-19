@@ -685,7 +685,7 @@ const RepairConfirmModal = ({
                             <RepairBlocks defaultBlocks={remainDamagedBlocks} remainDamagedBlocks={remainDamagedBlocks} hideNumber />
                         </Stack>
 
-                        <HireContractorsCard mechs={validMechs} remainDamagedBlocks={remainDamagedBlocks} />
+                        <HireContractorsCard mechs={validMechs} remainDamagedBlocks={remainDamagedBlocks} onClose={onClose} />
                     </Stack>
 
                     <IconButton size="small" onClick={onClose} sx={{ position: "absolute", top: ".5rem", right: ".5rem" }}>
