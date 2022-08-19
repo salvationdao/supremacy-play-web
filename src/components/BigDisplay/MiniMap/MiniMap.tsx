@@ -235,7 +235,7 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
                         boxShadow: 1,
                         width: sizes.outsideWidth,
                         height: sizes.outsideHeight,
-                        transition: "all .2s",
+                        transition: "width .2s, height .2s",
                         overflow: "hidden",
                         pointerEvents: "all",
                         zIndex: 2,
@@ -243,7 +243,7 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
                         "&.MuiBox-root": {
                             border: "1px transparent solid",
                             "&:focus": {
-                                border: (theme) => `1px solid ${theme.factionTheme.primary}`,
+                                border: (theme) => `2px solid ${theme.factionTheme.primary}`,
                             },
                             outline: "none",
                         },
