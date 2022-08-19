@@ -1,11 +1,12 @@
-import { Box, Stack, Typography } from "@mui/material"
+import { Box, Button, Stack, Typography } from "@mui/material"
 import { useCallback, useState } from "react"
 import { SvgRepair } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
-import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
+import { useGameServerCommandsFaction, useGameServerSubscriptionFaction, useGameServerSubscriptionSecured } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
 import { MechDetails, MechStatus, MechStatusEnum } from "../../../../types"
+import { RepairOffer } from "../../../../types/jobs"
 import { RepairModal } from "../WarMachineDetails/Modals/RepairModal/RepairModal"
 
 export const MechGeneralStatus = ({
@@ -25,6 +26,13 @@ export const MechGeneralStatus = ({
     const [text, setText] = useState("LOADING...")
     const [color, setColour] = useState(theme.factionTheme.primary)
     const [repairMechModalOpen, setRepairMechModalOpen] = useState<boolean>(false)
+    const [defaultOpenSelfRepair, setDefaultOpenSelfRepair] = useState(false)
+
+    const repairOffer = useGameServerSubscriptionSecured<RepairOffer>({
+        URI: `/mech/${mechID}/active_repair_offer`,
+        key: GameServerKeys.GetMechRepairJob,
+        ready: mechStatus?.status === MechStatusEnum.Damaged,
+    })
 
     useGameServerSubscriptionFaction<MechStatus>(
         {
@@ -136,37 +144,81 @@ export const MechGeneralStatus = ({
                         sx={{ position: "absolute", left: "100%", top: "50%", transform: "translateY(-50%)", px: ".4rem", pb: ".3rem" }}
                     >
                         {mechDetails && mechStatus?.status === MechStatusEnum.Damaged && (
-                            <Stack
-                                direction="row"
-                                spacing=".3rem"
-                                alignItems="center"
-                                sx={{
-                                    p: ".1rem .6rem",
-                                    pt: ".2rem",
-                                    backgroundColor: colors.blue2,
-                                    color: "#FFFFFF",
-                                    borderRadius: 0.5,
-                                    cursor: "pointer",
-                                    ":hover": { transform: "scale(1.03)" },
-                                }}
+                            <Button
+                                sx={{ p: 0, color: "#FFFFFF", minWidth: 0, backgroundColor: colors.orange }}
                                 onClick={(e) => {
                                     e.preventDefault()
                                     e.stopPropagation()
+                                    setDefaultOpenSelfRepair(true)
                                     setRepairMechModalOpen(true)
                                 }}
                             >
-                                <SvgRepair size="1.1rem" />
-                                <Typography variant="subtitle1" sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>
-                                    REPAIR
-                                </Typography>
-                            </Stack>
+                                <Stack
+                                    direction="row"
+                                    spacing=".3rem"
+                                    alignItems="center"
+                                    sx={{
+                                        p: ".1rem .6rem",
+                                        pt: ".2rem",
+                                        borderRadius: 0.5,
+                                        ":hover": { transform: "scale(1.05)" },
+                                    }}
+                                >
+                                    <SvgRepair size="1.1rem" />
+                                    <Typography variant="subtitle1" sx={{ whiteSpace: "nowrap", lineHeight: 1, fontWeight: "fontWeightBold" }}>
+                                        REPAIR
+                                    </Typography>
+                                </Stack>
+                            </Button>
+                        )}
+
+                        {mechDetails && mechStatus?.status === MechStatusEnum.Damaged && (
+                            <Button
+                                variant="contained"
+                                sx={{
+                                    p: 0,
+                                    color: "#FFFFFF",
+                                    minWidth: 0,
+                                    opacity: repairOffer ? 0.6 : 1,
+                                    backgroundColor: repairOffer ? colors.grey : colors.blue2,
+                                }}
+                                disabled={!!repairOffer}
+                                onClick={(e) => {
+                                    e.preventDefault()
+                                    e.stopPropagation()
+                                    setDefaultOpenSelfRepair(false)
+                                    setRepairMechModalOpen(true)
+                                }}
+                            >
+                                <Stack
+                                    direction="row"
+                                    spacing=".3rem"
+                                    alignItems="center"
+                                    sx={{
+                                        p: ".1rem .6rem",
+                                        pt: ".2rem",
+                                        borderRadius: 0.5,
+                                        ":hover": { transform: "scale(1.05)" },
+                                    }}
+                                >
+                                    <SvgRepair size="1.1rem" />
+                                    <Typography variant="subtitle1" sx={{ whiteSpace: "nowrap", lineHeight: 1, fontWeight: "fontWeightBold" }}>
+                                        {repairOffer ? "JOB POSTED" : "POST JOB"}
+                                    </Typography>
+                                </Stack>
+                            </Button>
                         )}
                     </Stack>
                 </Box>
             </Stack>
 
             {repairMechModalOpen && mechDetails && (
-                <RepairModal selectedMechDetails={mechDetails} repairMechModalOpen={repairMechModalOpen} setRepairMechModalOpen={setRepairMechModalOpen} />
+                <RepairModal
+                    defaultOpenSelfRepair={defaultOpenSelfRepair}
+                    selectedMechDetails={mechDetails}
+                    repairMechModalOpen={repairMechModalOpen}
+                    setRepairMechModalOpen={setRepairMechModalOpen}
+                />
             )}
         </>
     )
