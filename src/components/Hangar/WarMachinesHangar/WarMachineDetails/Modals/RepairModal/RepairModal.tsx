@@ -112,7 +112,7 @@ export const RepairModal = ({
                         {repairOffer && !repairOffer.closed_at ? (
                             <ExistingRepairJobCard repairOffer={repairOffer} remainDamagedBlocks={remainDamagedBlocks} />
                         ) : (
-                            <HireContractorsCard mechDetails={selectedMechDetails} remainDamagedBlocks={remainDamagedBlocks} />
+                            <HireContractorsCard mechs={[selectedMechDetails]} remainDamagedBlocks={remainDamagedBlocks} />
                         )}
                     </Stack>
 

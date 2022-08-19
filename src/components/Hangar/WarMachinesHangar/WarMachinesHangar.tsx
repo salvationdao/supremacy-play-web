@@ -1,8 +1,8 @@
-import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
+import { Box, CircularProgress, IconButton, Modal, Pagination, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { ClipThing, FancyButton } from "../.."
-import { EmptyWarMachinesPNG, WarMachineIconPNG } from "../../../assets"
+import { EmptyWarMachinesPNG, SvgClose, WarMachineIconPNG } from "../../../assets"
 import { HANGAR_PAGE } from "../../../constants"
 import { useGlobalNotifications } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
@@ -10,9 +10,9 @@ import { getRarityDeets, parseString, supFormatter } from "../../../helpers"
 import { usePagination, useToggle, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsFaction, useGameServerCommandsUser, useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
-import { colors, fonts } from "../../../theme/theme"
+import { colors, fonts, siteZIndex } from "../../../theme/theme"
 import { MechBasic, MechStatus, MechStatusEnum } from "../../../types"
-import { RepairStatus } from "../../../types/jobs"
+import { RepairOffer, RepairStatus } from "../../../types/jobs"
 import { SortTypeLabel } from "../../../types/marketplace"
 import { ConfirmModal } from "../../Common/ConfirmModal"
 import { PageHeader } from "../../Common/PageHeader"
@@ -20,7 +20,9 @@ import { ChipFilter } from "../../Common/SortAndFilters/ChipFilterSection"
 import { SortAndFilters } from "../../Common/SortAndFilters/SortAndFilters"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { QueueDetails } from "../../LeftDrawer/QuickDeploy/QueueDetails"
+import { RepairBlocks } from "./Common/MechRepairBlocks"
 import { QueueFeed } from "./WarMachineDetails/Modals/DeployModal"
+import { HireContractorsCard } from "./WarMachineDetails/Modals/RepairModal/HireContractorsCard"
 import { WarMachineHangarItem } from "./WarMachineHangarItem"
 
 const sortOptions = [
@@ -65,6 +67,7 @@ export const WarMachinesHangar = () => {
     const [bulkRepairModalOpen, setBulkRepairModalOpen] = useState(false)
     const childrenMechStatus = useRef<{ [mechID: string]: MechStatus }>({})
     const childrenRepairStatus = useRef<{ [mechID: string]: RepairStatus }>({})
+    const childrenRepairOffer = useRef<{ [mechID: string]: RepairOffer }>({})
 
     const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({
         pageSize: parseString(query.get("pageSize"), 10),
@@ -274,6 +277,7 @@ export const WarMachinesHangar = () => {
                                     }}
                                     childrenMechStatus={childrenMechStatus}
                                     childrenRepairStatus={childrenRepairStatus}
+                                    childrenRepairOffer={childrenRepairOffer}
                                     mech={mech}
                                     isGridView={isGridView}
                                 />
@@ -518,6 +522,7 @@ export const WarMachinesHangar = () => {
                     selectedMechs={selectedMechs}
                     childrenMechStatus={childrenMechStatus}
                     childrenRepairStatus={childrenRepairStatus}
+                    childrenRepairOffer={childrenRepairOffer}
                 />
             )}
         </>
@@ -547,13 +552,11 @@ export const DeployConfirmModal = ({
     const deploySelected = useCallback(async () => {
         if (validMechs.length == 0) return
 
-        const ids: string[] = validMechs.map((vm) => vm.id)
-
         try {
             setIsLoading(true)
 
             const resp = await send<{ success: boolean; code: string }>(GameServerKeys.JoinQueue, {
-                mech_ids: ids,
+                mech_ids: validMechs.map((vm) => vm.id),
             })
 
             if (resp && resp.success) {
@@ -568,7 +571,7 @@ export const DeployConfirmModal = ({
         } finally {
             setIsLoading(false)
         }
-    }, [newSnackbarMessage, send, setBulkDeployModalOpen])
+    }, [newSnackbarMessage, send, setBulkDeployModalOpen, validMechs])
 
     return (
         <ConfirmModal
@@ -593,6 +596,7 @@ const RepairConfirmModal = ({
     selectedMechs,
     childrenMechStatus,
     childrenRepairStatus,
+    childrenRepairOffer,
 }: {
     setBulkRepairModalOpen: React.Dispatch<React.SetStateAction<boolean>>
     selectedMechs: MechBasic[]
@@ -602,6 +606,93 @@ const RepairConfirmModal = ({
     childrenRepairStatus: React.MutableRefObject<{
         [mechID: string]: RepairStatus
     }>
+    childrenRepairOffer: React.MutableRefObject<{
+        [mechID: string]: RepairOffer
+    }>
 }) => {
-    return null
+    const theme = useTheme()
+
+    const validMechs = selectedMechs.filter((s) => childrenMechStatus.current[s.id]?.status === MechStatusEnum.Damaged && !childrenRepairOffer.current[s.id])
+
+    const remainDamagedBlocks = validMechs.reduce((acc, mech) => {
+        const repairStatus = childrenRepairStatus.current[mech.id]
+        return (acc += repairStatus ? repairStatus.blocks_required_repair - repairStatus.blocks_repaired : 0)
+    }, 0)
+
+    const onClose = useCallback(() => {
+        setBulkRepairModalOpen(false)
+    }, [setBulkRepairModalOpen])
+
+    return (
+        <Modal
+            open
+            onClose={onClose}
+            sx={{ zIndex: siteZIndex.Modal }}
+            onBackdropClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+            }}
+        >
+            <Box
+                sx={{
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                    width: "50rem",
+                    boxShadow: 6,
+                    outline: "none",
+                }}
+                onClick={(e) => {
+                    e.preventDefault()
+                    e.stopPropagation()
+                }}
+            >
+                <ClipThing
+                    clipSize="8px"
+                    border={{
+                        borderColor: theme.factionTheme.primary,
+                        borderThickness: ".3rem",
+                    }}
+                    corners={{
+                        topLeft: true,
+                        topRight: true,
+                        bottomLeft: true,
+                        bottomRight: true,
+                    }}
+                    sx={{ position: "relative" }}
+                    backgroundColor={theme.factionTheme.background}
+                >
+                    <Stack
+                        spacing="1.6rem"
+                        sx={{
+                            position: "relative",
+                            px: "2.5rem",
+                            py: "2.4rem",
+                            maxHeight: "calc(100vh - 5rem)",
+                            overflow: "hidden",
+                        }}
+                    >
+                        <Stack>
+                            <Typography variant="h5" sx={{ color: theme.factionTheme.primary, fontFamily: fonts.nostromoHeavy }}>
+                                BULK REPAIR
+                            </Typography>
+
+                            <Typography sx={{ mb: ".2rem", color: colors.red, fontFamily: fonts.nostromoBlack }}>
+                                {remainDamagedBlocks} x DAMAGED BLOCKS
+                            </Typography>
+
+                            <RepairBlocks defaultBlocks={remainDamagedBlocks} remainDamagedBlocks={remainDamagedBlocks} hideNumber />
+                        </Stack>
+
+                        <HireContractorsCard mechs={validMechs} remainDamagedBlocks={remainDamagedBlocks} />
+                    </Stack>
+
+                    <IconButton size="small" onClick={onClose} sx={{ position: "absolute", top: ".5rem", right: ".5rem" }}>
+                        <SvgClose size="2.6rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
+                    </IconButton>
+                </ClipThing>
+            </Box>
+        </Modal>
+    )
 }

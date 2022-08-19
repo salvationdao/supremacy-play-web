@@ -8,7 +8,7 @@ import { useGameServerSubscriptionFaction, useGameServerSubscriptionSecured } fr
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { MechBasic, MechDetails, MechStatus } from "../../../types"
-import { RepairStatus } from "../../../types/jobs"
+import { RepairOffer, RepairStatus } from "../../../types/jobs"
 import { MediaPreview } from "../../Common/MediaPreview/MediaPreview"
 import { General } from "../../Marketplace/Common/MarketItem/General"
 import { MechBarStats } from "./Common/MechBarStats"
@@ -23,6 +23,7 @@ export const WarMachineHangarItem = ({
     isGridView,
     childrenMechStatus,
     childrenRepairStatus,
+    childrenRepairOffer,
 }: {
     isSelected?: boolean
     toggleIsSelected?: () => void
@@ -33,6 +34,9 @@ export const WarMachineHangarItem = ({
     }>
     childrenRepairStatus: React.MutableRefObject<{
         [mechID: string]: RepairStatus
+    }>
+    childrenRepairOffer: React.MutableRefObject<{
+        [mechID: string]: RepairOffer
     }>
 }) => {
     const theme = useTheme()
@@ -66,6 +70,13 @@ export const WarMachineHangarItem = ({
             childrenMechStatus.current[mech.id] = mechStatus
         },
         [childrenMechStatus, mech.id],
+    )
+
+    const onRepairOfferLoaded = useCallback(
+        (repairOffer: RepairOffer) => {
+            childrenRepairOffer.current[mech.id] = repairOffer
+        },
+        [childrenRepairOffer, mech.id],
     )
 
     const primaryColor = theme.factionTheme.primary
@@ -115,7 +126,14 @@ export const WarMachineHangarItem = ({
                     <MechCommonArea isGridView={isGridView} mech={mech} mechDetails={mechDetails} primaryColor={primaryColor} secondaryColor={secondaryColor} />
 
                     <General isGridView={isGridView} title="STATUS">
-                        <MechGeneralStatus mechID={mech.id} hideBox smallVersion mechDetails={mechDetails} onStatusLoaded={onStatusLoaded} />
+                        <MechGeneralStatus
+                            mechID={mech.id}
+                            hideBox
+                            smallVersion
+                            mechDetails={mechDetails}
+                            onStatusLoaded={onStatusLoaded}
+                            onRepairOfferLoaded={onRepairOfferLoaded}
+                        />
                     </General>
 
                     <MechBarStats fontSize="1.5rem" mech={mech} mechDetails={mechDetails} color={primaryColor} iconVersion />

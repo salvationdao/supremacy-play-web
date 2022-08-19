@@ -7,7 +7,7 @@ import { numberCommaFormatter } from "../../../../../../helpers"
 import { useGameServerCommandsUser } from "../../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../../keys"
 import { colors, fonts } from "../../../../../../theme/theme"
-import { MechDetails } from "../../../../../../types"
+import { MechBasic } from "../../../../../../types"
 import { AmountItem } from "../DeployModal"
 
 const INITIAL_REWARD = 10
@@ -23,12 +23,12 @@ const listingDurations: {
     { label: "3 hours", value: 180 },
 ]
 
-export const HireContractorsCard = (props: { mechDetails: MechDetails; remainDamagedBlocks: number }) => {
+export const HireContractorsCard = (props: { mechs: MechBasic[]; remainDamagedBlocks: number }) => {
     if (props.remainDamagedBlocks <= 0) return null
     return <HireContractorsCardInner {...props} />
 }
 
-const HireContractorsCardInner = ({ mechDetails, remainDamagedBlocks }: { mechDetails: MechDetails; remainDamagedBlocks: number }) => {
+const HireContractorsCardInner = ({ mechs, remainDamagedBlocks }: { mechs: MechBasic[]; remainDamagedBlocks: number }) => {
     const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsUser("/user_commander")
     const [isSubmitting, setIsSubmitting] = useState(false)
@@ -42,9 +42,9 @@ const HireContractorsCardInner = ({ mechDetails, remainDamagedBlocks }: { mechDe
         try {
             setIsSubmitting(true)
             const resp = await send(GameServerKeys.RegisterMechRepair, {
-                mech_id: mechDetails.id,
+                mech_ids: mechs.map((vm) => vm.id),
                 last_for_minutes: durationMinutes,
-                offered_sups: agentReward.toString(),
+                offered_sups_per_block: agentRewardPerBlock.toString(),
             })
             if (resp) {
                 newSnackbarMessage("Successfully submitted listed mech for repair.", "success")
@@ -56,7 +56,7 @@ const HireContractorsCardInner = ({ mechDetails, remainDamagedBlocks }: { mechDe
         } finally {
             setIsSubmitting(false)
         }
-    }, [send, mechDetails.id, durationMinutes, agentReward, newSnackbarMessage])
+    }, [send, mechs, durationMinutes, agentRewardPerBlock, newSnackbarMessage])
 
     return (
         <Stack

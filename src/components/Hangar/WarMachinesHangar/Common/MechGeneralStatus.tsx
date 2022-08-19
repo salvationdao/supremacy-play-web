@@ -15,12 +15,14 @@ export const MechGeneralStatus = ({
     smallVersion,
     mechDetails,
     onStatusLoaded,
+    onRepairOfferLoaded,
 }: {
     mechID: string
     hideBox?: boolean
     smallVersion?: boolean
     mechDetails?: MechDetails
     onStatusLoaded?: (mechStatus: MechStatus) => void
+    onRepairOfferLoaded?: (repairOffer: RepairOffer) => void
 }) => {
     const theme = useTheme()
     const { send } = useGameServerCommandsFaction("/faction_commander")
@@ -28,13 +30,21 @@ export const MechGeneralStatus = ({
     const [text, setText] = useState("LOADING...")
     const [color, setColour] = useState(theme.factionTheme.primary)
     const [repairMechModalOpen, setRepairMechModalOpen] = useState<boolean>(false)
+    const [repairOffer, setRepairOffer] = useState<RepairOffer>()
     const [defaultOpenSelfRepair, setDefaultOpenSelfRepair] = useState(false)
 
-    const repairOffer = useGameServerSubscriptionSecured<RepairOffer>({
-        URI: `/mech/${mechID}/active_repair_offer`,
-        key: GameServerKeys.GetMechRepairJob,
-        ready: mechStatus?.status === MechStatusEnum.Damaged,
-    })
+    useGameServerSubscriptionSecured<RepairOffer>(
+        {
+            URI: `/mech/${mechID}/active_repair_offer`,
+            key: GameServerKeys.GetMechRepairJob,
+            ready: mechStatus?.status === MechStatusEnum.Damaged,
+        },
+        (payload) => {
+            if (!payload) return
+            setRepairOffer(payload)
+            onRepairOfferLoaded && onRepairOfferLoaded(payload)
+        },
+    )
 
     useGameServerSubscriptionFaction<MechStatus>(
         {
