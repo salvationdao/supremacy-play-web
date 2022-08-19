@@ -21,12 +21,19 @@ export const MiniMap = () => {
     const { map, isBattleStarted, isStreamBigDisplay } = useGame()
     const { isTargeting } = useMiniMap()
     const [isPoppedout, setIsPoppedout] = useState(false)
+    const ref = useRef<HTMLElement | null>(null)
 
     useEffect(() => {
-        const thisElement = document.getElementById("big-display-minimap")
+        const thisElement = ref.current
         const newContainerElement = document.getElementById(isStreamBigDisplay ? "left-drawer-space" : "big-display-space")
 
         if (!isPoppedout && thisElement && newContainerElement) {
+            let child = newContainerElement.lastElementChild
+            while (child) {
+                newContainerElement.removeChild(child)
+                child = newContainerElement.lastElementChild
+            }
+
             newContainerElement.appendChild(thisElement)
         }
     }, [isStreamBigDisplay, isPoppedout])
@@ -48,7 +55,7 @@ export const MiniMap = () => {
     }, [isBattleStarted, isPoppedout, isTargeting, map])
 
     return (
-        <Box id="big-display-minimap" sx={{ width: "100%", height: "100%" }}>
+        <Box ref={ref} sx={{ width: "100%", height: "100%" }}>
             {content}
         </Box>
     )
