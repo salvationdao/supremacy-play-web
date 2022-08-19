@@ -112,7 +112,7 @@ export const WarMachineHangarItem = ({
                         p: isGridView ? ".5rem .6rem" : ".1rem .3rem",
                         display: isGridView ? "block" : "grid",
                         gridTemplateRows: "7rem",
-                        gridTemplateColumns: `minmax(38rem, auto) 20rem 32rem`,
+                        gridTemplateColumns: `minmax(38rem, auto) 28rem 32rem`,
                         gap: "1.4rem",
                         ...(isGridView
                             ? {
