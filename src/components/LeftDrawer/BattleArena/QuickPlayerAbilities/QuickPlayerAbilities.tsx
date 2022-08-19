@@ -165,7 +165,7 @@ const QuickPlayerAbilitiesInner = ({ userID }: { userID: string }) => {
                             }}
                             onClick={() => refetchSaleAbilities()}
                         >
-                            <SvgRefresh size="1.6rem" />
+                            <SvgRefresh size="1.4rem" />
                         </IconButton>
                     </Stack>
                     {purchaseError && (

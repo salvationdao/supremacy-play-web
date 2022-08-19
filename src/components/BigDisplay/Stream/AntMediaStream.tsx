@@ -196,7 +196,7 @@ export const AntMediaStream = () => {
                     width: "100%",
                     height: "100%",
                     objectFit: `${isEnlarged ? "cover" : "contain"}`,
-                    objectPosition: "center",
+                    objectPosition: "50% 42%",
                     zIndex: siteZIndex.Stream,
                     background: isPlaying ? "unset" : `center url(${SupBackground}) ${colors.darkNavy} cover no-repeat`,
                 }}

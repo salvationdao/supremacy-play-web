@@ -339,7 +339,7 @@ export const TextMessage = ({
                             <Box
                                 sx={{
                                     fontFamily: fonts.shareTech,
-                                    lineHeight: 1,
+                                    lineHeight: 1.2,
                                     color: "#FFFFFF",
                                     fontSize: `${renderFontSize()}rem`,
                                     zIndex: isHovered ? 2 : 1,

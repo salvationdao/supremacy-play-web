@@ -146,17 +146,17 @@ const WarMachineStatsInner = () => {
                             borderRadius: 3,
                         },
                         "::-webkit-scrollbar-thumb": {
-                            background: (theme) => `${theme.factionTheme.primary}50`,
+                            background: (theme) => `${theme.factionTheme.primary}99`,
                             borderRadius: 3,
                         },
                         transition: "all .2s",
                     }}
                 >
                     <Box sx={{ direction: "ltr" }}>
-                        <Stack spacing="-1.8rem" sx={{ transform: "skew(-6deg)" }}>
+                        <Stack spacing="1rem" sx={{ ml: "-2rem", transform: "skew(-6deg)" }}>
                             {ownedMiniMechs.length > 0 && (
                                 <Fade in>
-                                    <Stack spacing="-3rem" direction="row" alignItems="center">
+                                    <Stack spacing="-1.2rem" direction="row" alignItems="center">
                                         {ownedMiniMechs.map((mm) => (
                                             <WarMachineItem
                                                 key={`${mm.participantID}`}

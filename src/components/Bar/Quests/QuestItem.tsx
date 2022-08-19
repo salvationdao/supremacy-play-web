@@ -7,7 +7,8 @@ import Confetti from "react-confetti"
 import { useEffect, useState } from "react"
 
 export const QuestItem = ({ questStat, progress, showConfetti }: { questStat: QuestStat; progress?: QuestProgress; showConfetti: boolean }) => {
-    const progressPercent = progress ? (100 * progress.current) / progress.goal : 0
+    const cappedCurrent = progress ? Math.min(progress.current, progress.goal) : 0
+    const progressPercent = progress ? (100 * cappedCurrent) / progress.goal : 0
     const [showShowConfetti, setShowShowConfetti] = useState(false)
 
     // This timeout allows the popover to fully animate before we do other animations, else it will lage
@@ -79,7 +80,7 @@ export const QuestItem = ({ questStat, progress, showConfetti }: { questStat: Qu
                                 variant="body2"
                                 sx={{ color: progressPercent < 100 ? colors.red : colors.green, lineHeight: 1, fontWeight: "fontWeightBold" }}
                             >
-                                {progress.current}/{progress.goal}
+                                {cappedCurrent}/{progress.goal}
                             </Typography>
                         )}
                     </Stack>

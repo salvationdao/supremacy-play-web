@@ -1,7 +1,7 @@
-import { Avatar, Box, CircularProgress, Stack, Typography } from "@mui/material"
+import { Avatar, Box, CircularProgress, IconButton, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { useHistory, useParams } from "react-router-dom"
-import { AboutMeSVG, BattleHistorySVG, StatsSVG, SvgAbility, SvgCake, SvgDeath, SvgSkull2, SvgView } from "../../assets"
+import { AboutMeSVG, BattleHistorySVG, StatsSVG, SvgAbility, SvgCake, SvgClose, SvgDeath, SvgSkull2, SvgView } from "../../assets"
 import { useAuth, useGlobalNotifications } from "../../containers"
 import { getUserRankDeets, snakeToTitle, timeSince } from "../../helpers"
 import { useGameServerCommands, useGameServerCommandsUser } from "../../hooks/useGameServer"
@@ -114,6 +114,14 @@ export const PlayerProfilePage = () => {
         () => (profile?.active_log?.active_at ? getOnlineStatus(profile?.active_log?.active_at) : undefined),
         [profile?.active_log?.active_at],
     )
+
+    const handleClose = () => {
+        if (history.length === 0) {
+            history.push("/")
+            return
+        }
+        history.goBack()
+    }
 
     // username
     const updateUsername = useCallback(
@@ -272,8 +280,19 @@ export const PlayerProfilePage = () => {
             direction="column"
             sx={{
                 height: "100%",
-                "@media (max-width:1300px)": {
-                    overflowY: "auto",
+                scrollbarWidth: "none",
+                overflowY: "auto",
+
+                "::-webkit-scrollbar": {
+                    width: ".4rem",
+                },
+                "::-webkit-scrollbar-track": {
+                    background: "#FFFFFF15",
+                    borderRadius: 3,
+                },
+                "::-webkit-scrollbar-thumb": {
+                    background: primaryColor,
+                    borderRadius: 3,
                 },
             }}
         >
@@ -292,7 +311,7 @@ export const PlayerProfilePage = () => {
                     },
                 }}
             >
-                <Stack spacing="1.6rem" sx={{ p: "1rem 1rem" }}>
+                <Stack spacing="1.6rem" sx={{ p: "1rem 1rem" }} position="relative">
                     <Stack spacing=".5rem"></Stack>
                     <Stack spacing="1.8rem">
                         <Stack>
@@ -403,6 +422,12 @@ export const PlayerProfilePage = () => {
                             <Typography sx={{ fontFamily: fonts.nostromoBlack }}>Joined {profile.player.created_at.toLocaleDateString()}</Typography>
                         </Stack>
                     </Stack>
+
+                    <Box sx={{ position: "absolute", right: "1rem", top: 0, width: "4rem", height: "4rem" }}>
+                        <IconButton size="small" onClick={handleClose}>
+                            <SvgClose size="3.4rem" sx={{ opacity: 0.8, ":hover": { opacity: 1 } }} />
+                        </IconButton>
+                    </Box>
                 </Stack>
             </Stack>
 
@@ -425,7 +450,8 @@ export const PlayerProfilePage = () => {
 
                         flexShrink: 0,
                         height: "100%",
-                        width: "62rem",
+                        minWidth: "30rem",
+                        maxWidth: "62rem",
                         "@media (max-width:1300px)": {
                             width: "100%",
                             height: "50%",
