@@ -7,7 +7,7 @@ import { useTheme } from "../../containers/theme"
 import { shadeColor } from "../../helpers"
 import { siteZIndex } from "../../theme/theme"
 import { ArenaSelect } from "./ArenaSelect"
-import { ResolutionSelect } from "./ResolutionSelect"
+import { OvenResolutionSelect, ResolutionSelect } from "./ResolutionSelect"
 import { ShowTrailerButton } from "./ShowTrailerButton"
 import { StreamSelect } from "./StreamSelect"
 
@@ -60,6 +60,7 @@ export const Controls = () => {
                 <ShowTrailerButton />
                 {DEV_ONLY && <ArenaSelect />}
                 <StreamSelect />
+                <OvenResolutionSelect />
                 <ResolutionSelect />
                 <VideoPlayerControls />
             </Stack>

@@ -46,6 +46,10 @@ export const StreamContainer = createContainer(() => {
     const [selectedResolution, setSelectedResolution] = useState<number>()
     const [resolutions, setResolutions] = useState<number[]>([])
 
+    // oven resolution control
+    const [selectedOvenResolution, setSelectedOvenResolution] = useState<string>()
+    const [ovenResolutions, setOvenResolutions] = useState<string[]>([])
+
     const [isEnlarged, toggleIsEnlarged] = useToggle((localStorage.getItem("isStreamEnlarged") || "true") === "true")
     const hasInteracted = useRef(false)
 
@@ -178,6 +182,13 @@ export const StreamContainer = createContainer(() => {
         resolutions,
         setResolutions,
         selectedResolution,
+
+        // todo replace ant medo
+        selectedOvenResolution,
+        setSelectedOvenResolution,
+        ovenResolutions,
+        setOvenResolutions,
+
         setSelectedResolution,
         currentPlayingStreamHost,
         setCurrentPlayingStreamHost,
