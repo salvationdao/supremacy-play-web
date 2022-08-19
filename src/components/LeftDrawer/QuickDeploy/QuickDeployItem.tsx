@@ -59,7 +59,7 @@ export const QuickDeployItem = ({ isSelected, toggleIsSelected, mech, childrenMe
         try {
             setIsLoading(true)
             const resp = await send<{ success: boolean; code: string }>(GameServerKeys.JoinQueue, {
-                asset_hash: mech.hash,
+                mech_ids: [mech.id],
             })
 
             if (resp && resp.success) {
@@ -73,7 +73,7 @@ export const QuickDeployItem = ({ isSelected, toggleIsSelected, mech, childrenMe
         } finally {
             setIsLoading(false)
         }
-    }, [send, mech.hash, newSnackbarMessage])
+    }, [send, mech.id, newSnackbarMessage])
 
     return (
         <Stack

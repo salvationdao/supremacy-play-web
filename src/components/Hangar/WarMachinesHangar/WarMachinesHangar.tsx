@@ -542,11 +542,18 @@ export const DeployConfirmModal = ({
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState<string>()
 
+    const validMechs = selectedMechs.filter((s) => childrenMechStatus.current[s.id]?.can_deploy)
+
     const deploySelected = useCallback(async () => {
+        if (validMechs.length == 0) return
+
+        const ids: string[] = validMechs.map((vm) => vm.id)
+
         try {
             setIsLoading(true)
+
             const resp = await send<{ success: boolean; code: string }>(GameServerKeys.JoinQueue, {
-                asset_hash: "xxxxxxxxx",
+                mech_ids: ids,
             })
 
             if (resp && resp.success) {
@@ -562,8 +569,6 @@ export const DeployConfirmModal = ({
             setIsLoading(false)
         }
     }, [newSnackbarMessage, send, setBulkDeployModalOpen])
-
-    const validMechs = selectedMechs.filter((s) => childrenMechStatus.current[s.id]?.can_deploy)
 
     return (
         <ConfirmModal
