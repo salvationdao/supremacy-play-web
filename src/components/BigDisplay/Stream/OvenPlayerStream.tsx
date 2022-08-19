@@ -86,6 +86,15 @@ export const OvenplayerStream = () => {
     } = useStream()
     const ovenPlayer = useRef<OvenPlayerInstance>()
 
+    interface OvenStream {
+        name: string
+        base_url: string
+        available_resolutions: string[]
+    }
+
+    // fetch streams
+    const ovenStreams: OvenStream[] = [{ name: "thing", base_url: "wss://stream2.supremacy.game:3334/app/staging1", available_resolutions: ["1080", "potato"] }]
+
     const changeSource = (resolution: string) => {
         if (ovenPlayer && ovenPlayer.current) {
             const sources = ovenPlayer.current.getSources()
@@ -105,7 +114,6 @@ export const OvenplayerStream = () => {
 
     // watch for res changes
     useEffect(() => {
-        console.log("this is selected resolution", selectedOvenResolution)
         changeSource(selectedOvenResolution || "")
     }, [selectedOvenResolution])
 
@@ -115,22 +123,36 @@ export const OvenplayerStream = () => {
             // Uf already setup, then return
             if (!currentStream || ovenPlayer.current || currentStream.service !== StreamService.OvenMediaEngine) return
 
-            // Load oven player
-            const source1: OvenPlayerSource = {
+            // current source
+            const currSource = {
                 label: "1080",
                 type: "webrtc",
                 file: "wss://stream2.supremacy.game:3334/app/staging1",
-                resolution: "1080",
             }
 
-            const source2: OvenPlayerSource = {
-                label: "potato",
-                type: "webrtc",
-                file: "wss://stream2.supremacy.game:3334/app/staging1_potato",
-                resolution: "potato",
-            }
+            // //  parse db sources to OvenPlayerSource
+            // const _sources = ovenStreams.map((s) => ({
+            //     label: s.base_url,
+            //     type: "webrtc",
+            //     file: s.base_url,
+            //     resolution: "1080",
+            // }))
+            // // Load oven player
+            // const source1: OvenPlayerSource = {
+            //     label: "1080",
+            //     type: "webrtc",
+            //     file: "wss://stream2.supremacy.game:3334/app/staging1",
+            //     resolution: "1080",
+            // }
 
-            const sources = [source1, source2]
+            // const source2: OvenPlayerSource = {
+            //     label: "potato",
+            //     type: "webrtc",
+            //     file: "wss://stream2.supremacy.game:3334/app/staging1_potato",
+            //     resolution: "potato",
+            // }
+
+            // const sources = [source1, source2]
 
             const newOvenPlayer = OvenPlayer.create("oven-player", {
                 autoStart: true,
