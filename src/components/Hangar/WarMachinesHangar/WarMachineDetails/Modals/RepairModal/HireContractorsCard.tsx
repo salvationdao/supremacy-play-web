@@ -10,7 +10,7 @@ import { colors, fonts } from "../../../../../../theme/theme"
 import { MechBasic } from "../../../../../../types"
 import { AmountItem } from "../DeployModal"
 
-const INITIAL_REWARD = 10
+const INITIAL_REWARD_PER_BLOCK = 2
 
 const listingDurations: {
     label: string
@@ -34,8 +34,8 @@ const HireContractorsCardInner = ({ mechs, remainDamagedBlocks }: { mechs: MechB
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [submitError, setSubmitError] = useState<string>()
 
-    const [agentReward, setAgentReward] = useState<number>(INITIAL_REWARD)
-    const [agentRewardPerBlock, setAgentRewardPerBlock] = useState<number>(Math.round((100 * INITIAL_REWARD) / remainDamagedBlocks) / 100)
+    const [agentReward, setAgentReward] = useState<number>(Math.round(100 * INITIAL_REWARD_PER_BLOCK * remainDamagedBlocks) / 100)
+    const [agentRewardPerBlock, setAgentRewardPerBlock] = useState<number>(INITIAL_REWARD_PER_BLOCK)
     const [durationMinutes, setDurationMinutes] = useState<number>(listingDurations[1].value)
 
     const onAgentRepair = useCallback(async () => {
