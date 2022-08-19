@@ -115,7 +115,12 @@ export const TotalAndPageSizeOptions = ({
                 </Typography>
             )}
 
-            {children}
+            {children && (
+                <>
+                    <Divider orientation="vertical" sx={{ height: "unset", alignSelf: "stretch", my: ".4rem !important" }} />
+                    {children}{" "}
+                </>
+            )}
 
             <Stack
                 direction="row"

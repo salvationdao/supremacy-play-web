@@ -17,9 +17,12 @@ interface QuickDeployItemProps {
     queueFeed?: QueueFeed
     isSelected?: boolean
     toggleIsSelected?: () => void
+    childrenMechStatus: React.MutableRefObject<{
+        [mechID: string]: MechStatus
+    }>
 }
 
-export const QuickDeployItem = ({ isSelected, toggleIsSelected, mech }: QuickDeployItemProps) => {
+export const QuickDeployItem = ({ isSelected, toggleIsSelected, mech, childrenMechStatus }: QuickDeployItemProps) => {
     const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [mechDetails, setMechDetails] = useState<MechDetails>()
@@ -48,6 +51,7 @@ export const QuickDeployItem = ({ isSelected, toggleIsSelected, mech }: QuickDep
         (payload) => {
             if (!payload || mechStatus?.status === MechStatusEnum.Sold) return
             setMechStatus(payload)
+            childrenMechStatus.current[mech.id] = payload
         },
     )
 
@@ -127,7 +131,7 @@ export const QuickDeployItem = ({ isSelected, toggleIsSelected, mech }: QuickDep
                 direction="row"
                 alignItems="flex-start"
                 sx={{ py: ".2rem", flex: 1 }}
-                onClick={() => toggleIsSelected && toggleIsSelected()}
+                onClick={() => mechDetails && toggleIsSelected && toggleIsSelected()}
             >
                 <Stack sx={{ flex: 1 }}>
                     <Stack spacing="1.2rem" direction="row" alignItems="flex-start" justifyContent="space-between" sx={{ py: ".2rem", flex: 1 }}>

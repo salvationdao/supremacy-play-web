@@ -14,11 +14,13 @@ export const MechGeneralStatus = ({
     hideBox,
     smallVersion,
     mechDetails,
+    onStatusLoaded,
 }: {
     mechID: string
     hideBox?: boolean
     smallVersion?: boolean
     mechDetails?: MechDetails
+    onStatusLoaded?: (mechStatus: MechStatus) => void
 }) => {
     const theme = useTheme()
     const { send } = useGameServerCommandsFaction("/faction_commander")
@@ -42,6 +44,7 @@ export const MechGeneralStatus = ({
         (payload) => {
             if (!payload) return
             setMechStatus(payload)
+            onStatusLoaded && onStatusLoaded(payload)
             switch (payload.status) {
                 case MechStatusEnum.Idle:
                     setText("IDLE")

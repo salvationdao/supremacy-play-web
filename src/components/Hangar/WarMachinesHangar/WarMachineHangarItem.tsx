@@ -1,5 +1,5 @@
 import { Box, Checkbox, Stack, Typography } from "@mui/material"
-import { useMemo, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 import { FancyButton } from "../.."
 import { SvgDropdownArrow } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
@@ -7,7 +7,7 @@ import { shadeColor } from "../../../helpers"
 import { useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { MechBasic, MechDetails } from "../../../types"
+import { MechBasic, MechDetails, MechStatus } from "../../../types"
 import { MediaPreview } from "../../Common/MediaPreview/MediaPreview"
 import { General } from "../../Marketplace/Common/MarketItem/General"
 import { MechBarStats } from "./Common/MechBarStats"
@@ -20,11 +20,15 @@ export const WarMachineHangarItem = ({
     toggleIsSelected,
     mech,
     isGridView,
+    childrenMechStatus,
 }: {
     isSelected?: boolean
     toggleIsSelected?: () => void
     mech: MechBasic
     isGridView?: boolean
+    childrenMechStatus: React.MutableRefObject<{
+        [mechID: string]: MechStatus
+    }>
 }) => {
     const theme = useTheme()
     const [mechDetails, setMechDetails] = useState<MechDetails>()
@@ -40,10 +44,17 @@ export const WarMachineHangarItem = ({
         },
     )
 
+    const onStatusLoaded = useCallback(
+        (mechStatus: MechStatus) => {
+            childrenMechStatus.current[mech.id] = mechStatus
+        },
+        [childrenMechStatus, mech.id],
+    )
+
     const primaryColor = theme.factionTheme.primary
     const secondaryColor = theme.factionTheme.secondary
     const backgroundColor = theme.factionTheme.background
-    const selectedBackgroundColor = useMemo(() => shadeColor(backgroundColor, 360), [backgroundColor])
+    const selectedBackgroundColor = useMemo(() => shadeColor(backgroundColor, 390), [backgroundColor])
 
     return (
         <Box sx={{ position: "relative", overflow: "visible", height: "100%" }}>
@@ -87,7 +98,7 @@ export const WarMachineHangarItem = ({
                     <MechCommonArea isGridView={isGridView} mech={mech} mechDetails={mechDetails} primaryColor={primaryColor} secondaryColor={secondaryColor} />
 
                     <General isGridView={isGridView} title="STATUS">
-                        <MechGeneralStatus mechID={mech.id} hideBox smallVersion mechDetails={mechDetails} />
+                        <MechGeneralStatus mechID={mech.id} hideBox smallVersion mechDetails={mechDetails} onStatusLoaded={onStatusLoaded} />
                     </General>
 
                     <MechBarStats fontSize="1.5rem" mech={mech} mechDetails={mechDetails} color={primaryColor} iconVersion />
@@ -106,7 +117,7 @@ export const WarMachineHangarItem = ({
                 />
             </FancyButton>
 
-            {toggleIsSelected && (
+            {toggleIsSelected && mechDetails && (
                 <Checkbox
                     size="small"
                     checked={isSelected}
