@@ -11,8 +11,8 @@ import { colors, fonts } from "../../../theme/theme"
 import { MechBasic, MechStatus } from "../../../types"
 import { SortTypeLabel } from "../../../types/marketplace"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
+import { BulkDeployConfirmModal } from "../../Hangar/WarMachinesHangar/Common/BulkDeployConfirmModal"
 import { QueueFeed } from "../../Hangar/WarMachinesHangar/WarMachineDetails/Modals/DeployModal"
-import { DeployConfirmModal } from "../../Hangar/WarMachinesHangar/WarMachinesHangar"
 import { QueueDetails } from "./QueueDetails"
 import { QuickDeployItem } from "./QuickDeployItem"
 
@@ -56,7 +56,7 @@ const QuickDeployInner = () => {
 
     // Bulk action
     const [selectedMechs, setSelectedMechs] = useState<MechBasic[]>([])
-    const [bulkDeployModalOpen, setBulkDeployModalOpen] = useState(false)
+    const [bulkDeployConfirmModalOpen, setBulkDeployConfirmModalOpen] = useState(false)
     const childrenMechStatus = useRef<{ [mechID: string]: MechStatus }>({})
 
     const [sort, setSort] = useState<string>(SortTypeLabel.MechQueueAsc)
@@ -181,7 +181,7 @@ const QuickDeployInner = () => {
                                 sx: { position: "relative" },
                             }}
                             sx={{ px: "1rem", py: 0, color: "#FFFFFF" }}
-                            onClick={() => setBulkDeployModalOpen(true)}
+                            onClick={() => setBulkDeployConfirmModalOpen(true)}
                         >
                             <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBlack }}>
                                 DEPLOY SELECTED
@@ -303,9 +303,9 @@ const QuickDeployInner = () => {
                 </Stack>
             </Stack>
 
-            {bulkDeployModalOpen && (
-                <DeployConfirmModal
-                    setBulkDeployModalOpen={setBulkDeployModalOpen}
+            {bulkDeployConfirmModalOpen && (
+                <BulkDeployConfirmModal
+                    setBulkDeployConfirmModalOpen={setBulkDeployConfirmModalOpen}
                     selectedMechs={selectedMechs}
                     childrenMechStatus={childrenMechStatus}
                     queueFeed={queueFeed}

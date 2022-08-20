@@ -1,28 +1,25 @@
-import { Box, CircularProgress, IconButton, Modal, Pagination, Stack, Typography } from "@mui/material"
-import BigNumber from "bignumber.js"
+import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { ClipThing, FancyButton } from "../.."
-import { EmptyWarMachinesPNG, SvgClose, WarMachineIconPNG } from "../../../assets"
+import { EmptyWarMachinesPNG, WarMachineIconPNG } from "../../../assets"
 import { HANGAR_PAGE } from "../../../constants"
-import { useGlobalNotifications } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
-import { getRarityDeets, parseString, supFormatter } from "../../../helpers"
+import { getRarityDeets, parseString } from "../../../helpers"
 import { usePagination, useToggle, useUrlQuery } from "../../../hooks"
-import { useGameServerCommandsFaction, useGameServerCommandsUser, useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
+import { useGameServerCommandsUser, useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
-import { colors, fonts, siteZIndex } from "../../../theme/theme"
+import { colors, fonts } from "../../../theme/theme"
 import { MechBasic, MechStatus, MechStatusEnum } from "../../../types"
 import { RepairOffer, RepairStatus } from "../../../types/jobs"
 import { SortTypeLabel } from "../../../types/marketplace"
-import { ConfirmModal } from "../../Common/ConfirmModal"
 import { PageHeader } from "../../Common/PageHeader"
 import { ChipFilter } from "../../Common/SortAndFilters/ChipFilterSection"
 import { SortAndFilters } from "../../Common/SortAndFilters/SortAndFilters"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { QueueDetails } from "../../LeftDrawer/QuickDeploy/QueueDetails"
-import { RepairBlocks } from "./Common/MechRepairBlocks"
+import { BulkDeployConfirmModal } from "./Common/BulkDeployConfirmModal"
+import { BulkRepairConfirmModal } from "./Common/BulkRepairConfirmModal"
 import { QueueFeed } from "./WarMachineDetails/Modals/DeployModal"
-import { HireContractorsCard } from "./WarMachineDetails/Modals/RepairModal/HireContractorsCard"
 import { WarMachineHangarItem } from "./WarMachineHangarItem"
 
 const sortOptions = [
@@ -63,8 +60,8 @@ export const WarMachinesHangar = () => {
 
     // Bulk action
     const [selectedMechs, setSelectedMechs] = useState<MechBasic[]>([])
-    const [bulkDeployModalOpen, setBulkDeployModalOpen] = useState(false)
-    const [bulkRepairModalOpen, setBulkRepairModalOpen] = useState(false)
+    const [bulkDeployConfirmModalOpen, setBulkDeployConfirmModalOpen] = useState(false)
+    const [bulkRepairConfirmModalOpen, setBulkRepairConfirmModalOpen] = useState(false)
     const childrenMechStatus = useRef<{ [mechID: string]: MechStatus }>({})
     const childrenRepairStatus = useRef<{ [mechID: string]: RepairStatus }>({})
     const childrenRepairOffer = useRef<{ [mechID: string]: RepairOffer }>({})
@@ -376,7 +373,7 @@ export const WarMachinesHangar = () => {
                                             sx: { position: "relative" },
                                         }}
                                         sx={{ px: "1.6rem", py: ".6rem", color: "#FFFFFF" }}
-                                        onClick={() => setBulkDeployModalOpen(true)}
+                                        onClick={() => setBulkDeployConfirmModalOpen(true)}
                                     >
                                         <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBlack }}>
                                             DEPLOY SELECTED
@@ -393,7 +390,7 @@ export const WarMachinesHangar = () => {
                                             sx: { position: "relative" },
                                         }}
                                         sx={{ px: "1.6rem", py: ".6rem", color: "#FFFFFF" }}
-                                        onClick={() => setBulkRepairModalOpen(true)}
+                                        onClick={() => setBulkRepairConfirmModalOpen(true)}
                                     >
                                         <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBlack }}>
                                             REPAIR SELECTED
@@ -507,18 +504,18 @@ export const WarMachinesHangar = () => {
                 </ClipThing>
             </Stack>
 
-            {bulkDeployModalOpen && (
-                <DeployConfirmModal
-                    setBulkDeployModalOpen={setBulkDeployModalOpen}
+            {bulkDeployConfirmModalOpen && (
+                <BulkDeployConfirmModal
+                    setBulkDeployConfirmModalOpen={setBulkDeployConfirmModalOpen}
                     selectedMechs={selectedMechs}
                     childrenMechStatus={childrenMechStatus}
                     queueFeed={queueFeed}
                 />
             )}
 
-            {bulkRepairModalOpen && (
-                <RepairConfirmModal
-                    setBulkRepairModalOpen={setBulkRepairModalOpen}
+            {bulkRepairConfirmModalOpen && (
+                <BulkRepairConfirmModal
+                    setBulkRepairConfirmModalOpen={setBulkRepairConfirmModalOpen}
                     selectedMechs={selectedMechs}
                     childrenMechStatus={childrenMechStatus}
                     childrenRepairStatus={childrenRepairStatus}
@@ -526,173 +523,5 @@ export const WarMachinesHangar = () => {
                 />
             )}
         </>
-    )
-}
-
-export const DeployConfirmModal = ({
-    setBulkDeployModalOpen,
-    selectedMechs,
-    childrenMechStatus,
-    queueFeed,
-}: {
-    setBulkDeployModalOpen: React.Dispatch<React.SetStateAction<boolean>>
-    selectedMechs: MechBasic[]
-    childrenMechStatus: React.MutableRefObject<{
-        [mechID: string]: MechStatus
-    }>
-    queueFeed: QueueFeed | undefined
-}) => {
-    const { newSnackbarMessage } = useGlobalNotifications()
-    const { send } = useGameServerCommandsFaction("/faction_commander")
-    const [isLoading, setIsLoading] = useState(false)
-    const [error, setError] = useState<string>()
-
-    const validMechs = selectedMechs.filter((s) => childrenMechStatus.current[s.id]?.can_deploy)
-
-    const deploySelected = useCallback(async () => {
-        if (validMechs.length == 0) return
-
-        try {
-            setIsLoading(true)
-
-            const resp = await send<{ success: boolean; code: string }>(GameServerKeys.JoinQueue, {
-                mech_ids: validMechs.map((vm) => vm.id),
-            })
-
-            if (resp && resp.success) {
-                newSnackbarMessage("Successfully deployed war machines.", "success")
-                setBulkDeployModalOpen(false)
-                setError(undefined)
-            }
-        } catch (e) {
-            setError(typeof e === "string" ? e : "Failed to deploy war machines.")
-            console.error(e)
-            return
-        } finally {
-            setIsLoading(false)
-        }
-    }, [newSnackbarMessage, send, setBulkDeployModalOpen, validMechs])
-
-    return (
-        <ConfirmModal
-            title="CONFIRMATION"
-            disableConfirm={validMechs.length <= 0}
-            onConfirm={deploySelected}
-            onClose={() => setBulkDeployModalOpen(false)}
-            isLoading={isLoading}
-            error={error}
-        >
-            <Typography variant="h6">
-                In your selection, <span>{validMechs.length}</span>/{selectedMechs.length} mechs are battle-ready. <br />
-                The fee to deploy is{" "}
-                <span>{supFormatter(new BigNumber(queueFeed?.queue_cost || 250 * Math.pow(10, 18)).multipliedBy(validMechs.length).toString(), 0)}</span> SUPS.
-            </Typography>
-        </ConfirmModal>
-    )
-}
-
-const RepairConfirmModal = ({
-    setBulkRepairModalOpen,
-    selectedMechs,
-    childrenMechStatus,
-    childrenRepairStatus,
-    childrenRepairOffer,
-}: {
-    setBulkRepairModalOpen: React.Dispatch<React.SetStateAction<boolean>>
-    selectedMechs: MechBasic[]
-    childrenMechStatus: React.MutableRefObject<{
-        [mechID: string]: MechStatus
-    }>
-    childrenRepairStatus: React.MutableRefObject<{
-        [mechID: string]: RepairStatus
-    }>
-    childrenRepairOffer: React.MutableRefObject<{
-        [mechID: string]: RepairOffer
-    }>
-}) => {
-    const theme = useTheme()
-
-    const validMechs = selectedMechs.filter((s) => childrenMechStatus.current[s.id]?.status === MechStatusEnum.Damaged && !childrenRepairOffer.current[s.id])
-
-    const remainDamagedBlocks = validMechs.reduce((acc, mech) => {
-        const repairStatus = childrenRepairStatus.current[mech.id]
-        return (acc += repairStatus ? repairStatus.blocks_required_repair - repairStatus.blocks_repaired : 0)
-    }, 0)
-
-    const onClose = useCallback(() => {
-        setBulkRepairModalOpen(false)
-    }, [setBulkRepairModalOpen])
-
-    return (
-        <Modal
-            open
-            onClose={onClose}
-            sx={{ zIndex: siteZIndex.Modal }}
-            onBackdropClick={(e) => {
-                e.preventDefault()
-                e.stopPropagation()
-            }}
-        >
-            <Box
-                sx={{
-                    position: "absolute",
-                    top: "50%",
-                    left: "50%",
-                    transform: "translate(-50%, -50%)",
-                    width: "50rem",
-                    boxShadow: 6,
-                    outline: "none",
-                }}
-                onClick={(e) => {
-                    e.preventDefault()
-                    e.stopPropagation()
-                }}
-            >
-                <ClipThing
-                    clipSize="8px"
-                    border={{
-                        borderColor: theme.factionTheme.primary,
-                        borderThickness: ".3rem",
-                    }}
-                    corners={{
-                        topLeft: true,
-                        topRight: true,
-                        bottomLeft: true,
-                        bottomRight: true,
-                    }}
-                    sx={{ position: "relative" }}
-                    backgroundColor={theme.factionTheme.background}
-                >
-                    <Stack
-                        spacing="1.6rem"
-                        sx={{
-                            position: "relative",
-                            px: "2.5rem",
-                            py: "2.4rem",
-                            maxHeight: "calc(100vh - 5rem)",
-                            overflow: "hidden",
-                        }}
-                    >
-                        <Stack>
-                            <Typography variant="h5" sx={{ color: theme.factionTheme.primary, fontFamily: fonts.nostromoHeavy }}>
-                                BULK REPAIR
-                            </Typography>
-
-                            <Typography sx={{ mb: ".2rem", color: colors.red, fontFamily: fonts.nostromoBlack }}>
-                                {remainDamagedBlocks} x DAMAGED BLOCKS
-                            </Typography>
-
-                            <RepairBlocks defaultBlocks={remainDamagedBlocks} remainDamagedBlocks={remainDamagedBlocks} hideNumber />
-                        </Stack>
-
-                        <HireContractorsCard mechs={validMechs} remainDamagedBlocks={remainDamagedBlocks} onClose={onClose} />
-                    </Stack>
-
-                    <IconButton size="small" onClick={onClose} sx={{ position: "absolute", top: ".5rem", right: ".5rem" }}>
-                        <SvgClose size="2.6rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
-                    </IconButton>
-                </ClipThing>
-            </Box>
-        </Modal>
     )
 }
