@@ -51,7 +51,7 @@ const HireContractorsCardInner = ({ mechs, remainDamagedBlocks, onClose }: { mec
                 offered_sups_per_block: agentRewardPerBlock.toString(),
             })
             if (resp) {
-                newSnackbarMessage("Successfully submitted listed mech for repair.", "success")
+                newSnackbarMessage(`Successfully submitted listed mech${mechs.length > 1 ? "s" : ""} for repair.`, "success")
                 setSubmitError(undefined)
                 onClose && onClose()
             }
