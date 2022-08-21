@@ -91,17 +91,17 @@ export const StreamInner = () => {
         )
     }
 
-    if (currentStream?.service === StreamService.OvenMediaEngine) {
-        return <OvenplayerStream />
-    }
+    // if (currentStream?.service === StreamService.OvenMediaEngine) {
+    return <OvenplayerStream />
+    // }
 
-    if (currentStream?.service === StreamService.Softvelum) {
-        return <SLPDStream />
-    }
+    // if (currentStream?.service === StreamService.Softvelum) {
+    //     return <SLPDStream />
+    // }
 
-    if (currentStream?.service === StreamService.AntMedia) {
-        return <AntMediaStream />
-    }
+    // if (currentStream?.service === StreamService.AntMedia) {
+    //     return <AntMediaStream />
+    // }
 
-    return <NoStreamScreen />
+    // return <NoStreamScreen />
 }

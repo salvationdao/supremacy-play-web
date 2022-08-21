@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import { useParameterizedQuery } from "react-fetching-library"
 import { createContainer } from "unstated-next"
 import { useGlobalNotifications } from "."
-import { GetStreamList } from "../fetching"
+import { GetOvenStreamList, GetStreamList } from "../fetching"
 import { getObjectFromArrayByKey, parseString } from "../helpers"
 import { useToggle } from "../hooks"
 import { Stream, StreamService } from "../types"
@@ -26,15 +26,35 @@ const blankOption: Stream = {
     service: StreamService.None,
 }
 
+export interface OvenStream {
+    name: string
+    base_url: string
+    available_resolutions: string[]
+}
+
+const blankOptionOven: OvenStream = {
+    name: "No Stream",
+    base_url: "",
+    available_resolutions: [],
+}
+
 export const StreamContainer = createContainer(() => {
     const { newSnackbarMessage } = useGlobalNotifications()
     const { query: queryGetStreamList } = useParameterizedQuery(GetStreamList)
+
+    const { query: queryOvenGetStreamList } = useParameterizedQuery(GetOvenStreamList)
 
     // Stream
     const [loadedStreams, setLoadedStreams] = useState<Stream[]>([])
     const [streamOptions, setStreamOptions] = useState<Stream[]>([])
     const [currentStream, setCurrentStream] = useState<Stream>()
     const [currentPlayingStreamHost, setCurrentPlayingStreamHost] = useState<string>()
+
+    // oven
+    const [loadedOvenStreams, setLoadedOvenStreams] = useState<OvenStream[]>([])
+    const [ovenStreamOptions, setOvenStreamOptions] = useState<OvenStream[]>([])
+    const [currentOvenStream, setCurrentOvenStream] = useState<OvenStream>()
+    const [currentOvenPlayingStreamHost, setCurrentOvenPlayingStreamHost] = useState<string>()
 
     // Volume control
     const [volume, setVolume] = useState(parseString(localStorage.getItem("streamVolume"), 0.3))
@@ -80,6 +100,25 @@ export const StreamContainer = createContainer(() => {
         })()
     }, [newSnackbarMessage, queryGetStreamList])
 
+    // Fetch oven stream list
+    useEffect(() => {
+        ;(async () => {
+            try {
+                const resp = await queryOvenGetStreamList({})
+
+                console.log("thisi s ", resp)
+
+                if (resp.error || !resp.payload) return
+
+                setLoadedOvenStreams([blankOptionOven, ...resp.payload])
+            } catch (err) {
+                const message = typeof err === "string" ? err : "Failed to get the list of oven streams."
+                newSnackbarMessage(message, "error")
+                console.error(message)
+            }
+        })()
+    }, [newSnackbarMessage, queryOvenGetStreamList])
+
     useEffect(() => {
         if (hasInteracted.current) localStorage.setItem("isMute", isMute ? "true" : "false")
     }, [isMute])
@@ -117,6 +156,13 @@ export const StreamContainer = createContainer(() => {
         localStorage.setItem("new_stream_props", JSON.stringify(s))
     }, [])
 
+    const changeOvenStream = useCallback((s: OvenStream) => {
+        if (!s) return
+        setCurrentOvenStream(s)
+        setOvenResolutions(s.available_resolutions)
+        // localStorage.setItem("new_stream_props", JSON.stringify(s))
+    }, [])
+
     useEffect(() => {
         localStorage.setItem("isStreamEnlarged", isEnlarged.toString())
     }, [isEnlarged])
@@ -142,38 +188,58 @@ export const StreamContainer = createContainer(() => {
         [],
     )
 
+    // // Build stream options for the drop down
+    // useEffect(() => {
+    //     if (!loadedStreams || loadedStreams.length <= 0) return
+
+    //     // Filter for servers that have capacity and is online
+    //     const availStreams = [
+    //         ...loadedStreams.filter((x) => {
+    //             return x.users_now < x.user_max && x.status === "online" && x.active
+    //         }),
+    //     ]
+
+    //     if (availStreams.length <= 0) return
+
+    //     // Reduce the list of options so it's not too many for the user
+    //     // By default its sorted by quietest servers first
+    //     const quietestStreams = availStreams.sort((a, b) => (a.users_now / a.user_max > b.users_now / b.user_max ? 1 : -1))
+
+    //     // If the local storage stream is in the list, set as current stream
+    //     const localStream = localStorage.getItem("new_stream_props")
+    //     if (localStream) {
+    //         const savedStream = JSON.parse(localStream)
+    //         if (getObjectFromArrayByKey(availStreams, savedStream.stream_id, "stream_id")) {
+    //             setCurrentStream(savedStream)
+    //             setNewStreamOptions(quietestStreams, true)
+    //             return
+    //         }
+    //     } else if (quietestStreams.length > 0) {
+    //         setCurrentStream(quietestStreams[quietestStreams.length - 1])
+    //     }
+
+    //     setNewStreamOptions(quietestStreams)
+    // }, [setNewStreamOptions, loadedStreams])
+
     // Build stream options for the drop down
     useEffect(() => {
-        if (!loadedStreams || loadedStreams.length <= 0) return
+        if (!loadedOvenStreams || loadedOvenStreams.length <= 0) return
 
         // Filter for servers that have capacity and is online
-        const availStreams = [
-            ...loadedStreams.filter((x) => {
-                return x.users_now < x.user_max && x.status === "online" && x.active
-            }),
-        ]
+        const availStreams = loadedOvenStreams
 
         if (availStreams.length <= 0) return
 
         // Reduce the list of options so it's not too many for the user
         // By default its sorted by quietest servers first
-        const quietestStreams = availStreams.sort((a, b) => (a.users_now / a.user_max > b.users_now / b.user_max ? 1 : -1))
+        const quietestStreams = availStreams
 
-        // If the local storage stream is in the list, set as current stream
-        const localStream = localStorage.getItem("new_stream_props")
-        if (localStream) {
-            const savedStream = JSON.parse(localStream)
-            if (getObjectFromArrayByKey(availStreams, savedStream.stream_id, "stream_id")) {
-                setCurrentStream(savedStream)
-                setNewStreamOptions(quietestStreams, true)
-                return
-            }
-        } else if (quietestStreams.length > 0) {
-            setCurrentStream(quietestStreams[quietestStreams.length - 1])
+        if (quietestStreams.length > 0) {
+            setCurrentOvenStream(quietestStreams[1])
         }
 
-        setNewStreamOptions(quietestStreams)
-    }, [setNewStreamOptions, loadedStreams])
+        setOvenStreamOptions(quietestStreams)
+    }, [setNewStreamOptions, loadedOvenStreams])
 
     return {
         streamOptions,
@@ -188,6 +254,13 @@ export const StreamContainer = createContainer(() => {
         setSelectedOvenResolution,
         ovenResolutions,
         setOvenResolutions,
+
+        setCurrentOvenPlayingStreamHost,
+        ovenStreamOptions,
+        currentOvenStream,
+        currentOvenPlayingStreamHost,
+
+        changeOvenStream,
 
         setSelectedResolution,
         currentPlayingStreamHost,

@@ -9,7 +9,7 @@ import { siteZIndex } from "../../theme/theme"
 import { ArenaSelect } from "./ArenaSelect"
 import { OvenResolutionSelect, ResolutionSelect } from "./ResolutionSelect"
 import { ShowTrailerButton } from "./ShowTrailerButton"
-import { StreamSelect } from "./StreamSelect"
+import { OvenStreamSelect, StreamSelect } from "./StreamSelect"
 
 export const CONTROLS_HEIGHT = 3.0 // rem
 
@@ -59,9 +59,12 @@ export const Controls = () => {
             <Stack direction="row" spacing="1.6rem" sx={{ flexShrink: 0, height: "100%" }}>
                 <ShowTrailerButton />
                 {DEV_ONLY && <ArenaSelect />}
-                <StreamSelect />
+                {/* <StreamSelect /> */}
+
+                <OvenStreamSelect />
+
                 <OvenResolutionSelect />
-                <ResolutionSelect />
+                {/* <ResolutionSelect /> */}
                 <VideoPlayerControls />
             </Stack>
         </Stack>
