@@ -135,7 +135,7 @@ export const TextMessage = ({
         const matchedArr = message.match(/#\d+/g)
         matchedArr?.map(async (match) => {
             const gidSubstring = parseInt(match.substring(1))
-            const taggedUser = userGidRecord[gidSubstring] || undefined
+            const taggedUser = userGidRecord.current[gidSubstring] || undefined
             //if not make a call to the backend to find the user and add to record
             if (!taggedUser) {
                 try {
@@ -162,7 +162,7 @@ export const TextMessage = ({
                 //getting the gid from tag
                 const gidSubstring = parseInt(matchedArr[i].substring(1))
                 //finding the user in the GID Record (added above)
-                const taggedUser = userGidRecord[gidSubstring]
+                const taggedUser = userGidRecord.current[gidSubstring]
                 //if taggedUser doesnt exist or the user tagged themselves or user tagged taggedUser of a different faction in faction chat, just push the whole string, not rendering the tag
                 if (!taggedUser || gidSubstring === gid || (taggedUser.faction_id !== user.faction_id && tabValue !== 0)) {
                     newMsgArr.push(<span>{matchedArr[i]}</span>)
@@ -199,13 +199,15 @@ export const TextMessage = ({
 
     return (
         <>
-            <Box sx={{ opacity: isSent ? 1 : 0.45 }} ref={textMessageRef}>
+            <Box sx={{ position: "relative", opacity: isSent ? 1 : 0.45 }} ref={textMessageRef}>
+                {isFailed && (
+                    <SvgInfoCircular size="1.2rem" fill={colors.red} sx={{ position: "absolute", top: "50%", left: 0, transform: "translateY(-38%)" }} />
+                )}
+
                 {(!isPreviousMessager || (previousMessage && sentAt > new Date(previousMessage.sent_at.getTime() + 2 * 60000))) && (
                     <Stack direction="row" justifyContent="space-between" sx={{ mt: ".8rem", mb: ".5rem" }}>
                         <Stack ref={popoverRef} direction="row" spacing=".3rem">
                             <Stack direction="row" spacing=".4rem" alignItems="flex-start">
-                                {isFailed && <SvgInfoCircular size="1.2rem" fill={colors.red} sx={{ mt: ".2rem" }} />}
-
                                 {avatar_id && (
                                     <Box
                                         sx={{

@@ -39,7 +39,7 @@ export const ChatMessages = (props: ChatMessagesProps) => {
                 {...props}
                 user={user}
                 filterSystemMessages={filterSystemMessages}
-                failedMessages={failedMessages}
+                failedMessages={failedMessages.current}
                 faction_id={props.faction_id}
                 splitOption={splitOption}
                 fontSize={fontSize}
@@ -54,7 +54,7 @@ export const ChatMessages = (props: ChatMessagesProps) => {
 interface ChatMessagesInnerProps extends ChatMessagesProps {
     user: User
     filterSystemMessages?: boolean
-    failedMessages: Date[]
+    failedMessages: string[]
     splitOption: SplitOptionType
     fontSize: FontSizeType
     globalAnnouncement?: GlobalAnnouncementType
@@ -164,7 +164,7 @@ const ChatMessagesInner = ({
                                             fontSize={fontSize}
                                             filterSystemMessages={filterSystemMessages}
                                             isSent={!message.locallySent}
-                                            isFailed={data.from_user.id === user?.id ? failedMessages.includes(message.sent_at) : false}
+                                            isFailed={data.from_user.id === user?.id && failedMessages.includes(data.id)}
                                             getFaction={getFaction}
                                             user={user}
                                             isEmoji={isEmoji}

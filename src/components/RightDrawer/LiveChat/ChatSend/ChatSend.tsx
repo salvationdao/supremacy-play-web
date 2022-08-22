@@ -44,7 +44,7 @@ export const ChatSend = (props: ChatSendProps) => {
 interface ChatSendInnerProps extends ChatSendProps {
     user: User
     userRank?: UserRank
-    onFailedMessage: (sentAt: Date) => void
+    onFailedMessage: (id: string) => void
     newMessageHandler: ({ messages, faction }: IncomingMessages) => void
     send: SendFunc
     isPoppedout: boolean
@@ -107,7 +107,7 @@ const ChatSendInner = ({
             taggedStrings.map((s) => {
                 const gid = parseInt(s[0].substring(1))
                 if (gid === user.gid) return
-                const taggedUser = userGidRecord[gid]
+                const taggedUser = userGidRecord.current[gid]
 
                 if (taggedUser && faction_id !== null && taggedUser.faction_id !== faction_id) return
                 taggedGids = [...taggedGids, gid]
@@ -125,7 +125,7 @@ const ChatSendInner = ({
         const taggedUserGids = handleTaggedUsers(renderedMsg)
 
         const msg: ChatMessageType = {
-            id: id,
+            id,
             data: {
                 id: id,
                 from_user: user,
@@ -154,10 +154,9 @@ const ChatSendInner = ({
                 tagged_users_gids: taggedUserGids,
             })
             if (!resp) return
-            //update
         } catch (e) {
+            onFailedMessage(id)
             newSnackbarMessage(typeof e === "string" ? e : "Failed to send chat message.", "error")
-            onFailedMessage(sentAt)
             console.error(e)
         }
     }, [message, user, send, newMessageHandler, userRank, messageColor, faction_id, newSnackbarMessage, onFailedMessage, renderedMsg, handleTaggedUsers])

@@ -5,8 +5,8 @@ import { colors, fonts } from "../../../../../theme/theme"
 import { NewBattleMessageData } from "../../../../../types"
 
 export const NewBattleMessage = ({ data, sentAt }: { data: NewBattleMessageData; sentAt: Date }) => {
-    return useMemo(
-        () => (
+    return useMemo(() => {
+        return (
             <Stack direction={"row"} alignItems={"center"} sx={{ py: "0.5rem" }}>
                 <Divider sx={{ flex: "1" }} />
                 <Typography variant={"caption"} sx={{ color: colors.grey, flexShrink: "0", px: "1rem", fontFamily: fonts.nostromoBold }}>
@@ -14,7 +14,6 @@ export const NewBattleMessage = ({ data, sentAt }: { data: NewBattleMessageData;
                 </Typography>
                 <Divider sx={{ flex: "1" }} />
             </Stack>
-        ),
-        [data.battle_number, sentAt],
-    )
+        )
+    }, [data.battle_number, sentAt])
 }

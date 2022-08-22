@@ -140,7 +140,7 @@ const TabbedLayout = () => {
                     label={
                         <Stack direction="row" alignItems="center" justifyContent="center" spacing=".96rem">
                             <Badge
-                                badgeContent={globalChatUnread}
+                                badgeContent={globalChatUnread.current}
                                 sx={{
                                     ".MuiBadge-badge": {
                                         fontSize: "1.2rem",
@@ -179,7 +179,7 @@ const TabbedLayout = () => {
                                 sx={{ animation: banProposal ? `${zoomEffect(1.03)} 1s infinite` : "none" }}
                             >
                                 <Badge
-                                    badgeContent={factionChatUnread}
+                                    badgeContent={factionChatUnread.current}
                                     sx={{
                                         ".MuiBadge-badge": {
                                             fontSize: "1.2rem",
@@ -224,7 +224,7 @@ const TabbedLayout = () => {
                 )}
             </Tabs>
 
-            <Content userID={userID} faction_id={faction_id} primaryColor={primaryColor} secondaryColor={secondaryColor} chatMessages={chatMessages} />
+            <Content userID={userID} faction_id={faction_id} primaryColor={primaryColor} secondaryColor={secondaryColor} chatMessages={chatMessages.current} />
         </Stack>
     )
 }
@@ -294,7 +294,13 @@ const SplitLayout = () => {
                     </Typography>
                 </Stack>
 
-                <Content userID={userID} faction_id={null} primaryColor={colors.globalChat} secondaryColor={"#FFFFFF"} chatMessages={globalChatMessages} />
+                <Content
+                    userID={userID}
+                    faction_id={null}
+                    primaryColor={colors.globalChat}
+                    secondaryColor={"#FFFFFF"}
+                    chatMessages={globalChatMessages.current}
+                />
             </Stack>
 
             {isEnlisted && (
@@ -352,7 +358,7 @@ const SplitLayout = () => {
                         faction_id={factionID}
                         primaryColor={theme.factionTheme.primary}
                         secondaryColor={theme.factionTheme.secondary}
-                        chatMessages={factionChatMessages}
+                        chatMessages={factionChatMessages.current}
                     />
                 </Stack>
             )}
