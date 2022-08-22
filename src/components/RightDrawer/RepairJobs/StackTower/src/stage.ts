@@ -17,8 +17,7 @@ export class Stage {
     constructor(container: HTMLElement | null, backgroundColor = "#D0CBC7") {
         // container
         this.container = container
-        const width = this.container?.clientWidth || 200
-        const height = this.container?.clientHeight || 200
+        const { width, height } = this.getContainerDimensions()
 
         // renderer
         this.renderer = new THREE.WebGLRenderer({
@@ -67,8 +66,19 @@ export class Stage {
         this.onResize()
     }
 
-    setCamera(y: number, speed = 0.3) {
+    getContainerDimensions() {
+        const width = this.container?.clientWidth || 200
         const height = this.container?.clientHeight || 200
+        return { width, height }
+    }
+
+    resetContainerSize() {
+        const { width, height } = this.getContainerDimensions()
+        this.renderer.setSize(width, height)
+    }
+
+    setCamera(y: number, speed = 0.3) {
+        const { height } = this.getContainerDimensions()
         let yOffset = 3
 
         if (height < 350) {
@@ -85,8 +95,7 @@ export class Stage {
     }
 
     onResize() {
-        const width = this.container?.clientWidth || 200
-        const height = this.container?.clientHeight || 200
+        const { width, height } = this.getContainerDimensions()
         const viewSize = 30
         this.renderer.setSize(width, height)
         this.camera.left = width / -viewSize
