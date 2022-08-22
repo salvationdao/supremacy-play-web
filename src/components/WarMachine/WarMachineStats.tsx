@@ -1,5 +1,5 @@
 import { Box, Fade, Slide, Stack } from "@mui/material"
-import { useEffect, useMemo, useState } from "react"
+import { useMemo } from "react"
 import { ADD_MINI_MECH_PARTICIPANT_ID } from "../../constants"
 import { useGame, useMobile, useSupremacy } from "../../containers"
 import { siteZIndex } from "../../theme/theme"
@@ -13,12 +13,7 @@ export const WarMachineStats = () => {
 
 const WarMachineStatsInner = () => {
     const { isMobile } = useMobile()
-    const { warMachines, bribeStage, factionWarMachines, otherWarMachines, ownedMiniMechs } = useGame()
-    const [isBattleStarted, setIsBattleStarted] = useState(false)
-
-    useEffect(() => {
-        setIsBattleStarted(bribeStage && bribeStage.phase !== "HOLD" ? true : false)
-    }, [bribeStage, isBattleStarted])
+    const { isBattleStarted, warMachines, factionWarMachines, otherWarMachines, ownedMiniMechs } = useGame()
 
     const haveFactionMechs = useMemo(() => factionWarMachines && factionWarMachines.length > 0, [factionWarMachines])
 
@@ -32,7 +27,7 @@ const WarMachineStatsInner = () => {
                 {ownedMiniMechs.length > 0 && (
                     <Fade in>
                         <Box>
-                            <SectionHeading label="YOUR MINI MECHS" />
+                            <SectionHeading label="YOUR SUPPORT MACHINES" />
                             <Stack
                                 spacing="1rem"
                                 sx={{
@@ -151,17 +146,17 @@ const WarMachineStatsInner = () => {
                             borderRadius: 3,
                         },
                         "::-webkit-scrollbar-thumb": {
-                            background: (theme) => `${theme.factionTheme.primary}50`,
+                            background: (theme) => `${theme.factionTheme.primary}99`,
                             borderRadius: 3,
                         },
                         transition: "all .2s",
                     }}
                 >
                     <Box sx={{ direction: "ltr" }}>
-                        <Stack spacing="-1.8rem" sx={{ transform: "skew(-6deg)" }}>
+                        <Stack spacing="1rem" sx={{ ml: "-2rem", transform: "skew(-6deg)" }}>
                             {ownedMiniMechs.length > 0 && (
                                 <Fade in>
-                                    <Stack spacing="-3rem" direction="row" alignItems="center">
+                                    <Stack spacing="-1.2rem" direction="row" alignItems="center">
                                         {ownedMiniMechs.map((mm) => (
                                             <WarMachineItem
                                                 key={`${mm.participantID}`}

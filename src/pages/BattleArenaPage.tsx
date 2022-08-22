@@ -2,7 +2,7 @@ import { Box, Stack } from "@mui/material"
 import { useEffect, useState } from "react"
 import { Redirect } from "react-router-dom"
 import { SvgAbility, SvgHistory, SvgHistoryClock, SvgRobot } from "../assets"
-import { BattleAbility, BattleEndScreen, BattleHistory, Controls, EarlyAccessWarning, MiniMap, Notifications, BigDisplay, WarMachineStats } from "../components"
+import { BattleAbility, BattleEndScreen, BattleHistory, BigDisplay, Controls, EarlyAccessWarning, Notifications, WarMachineStats } from "../components"
 import { PlayerAbilities } from "../components/LeftDrawer/BattleArena/PlayerAbilities/PlayerAbilities"
 import { QuickPlayerAbilities } from "../components/LeftDrawer/BattleArena/QuickPlayerAbilities/QuickPlayerAbilities"
 import { QuickDeploy } from "../components/LeftDrawer/QuickDeploy/QuickDeploy"
@@ -172,7 +172,6 @@ const BattleArenaPageInner = () => {
                     <>
                         <WarMachineStats />
                         <BattleHistory />
-                        <MiniMap />
                     </>
                 )}
 

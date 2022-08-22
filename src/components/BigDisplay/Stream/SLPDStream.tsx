@@ -14,8 +14,17 @@ declare global {
 
 export const SLPDStream = () => {
     const { newSnackbarMessage } = useGlobalNotifications()
-    const { isMute, volume, currentStream, setCurrentPlayingStreamHost, setResolutions, setSelectedResolution, selectedResolution, currentPlayingStreamHost } =
-        useStream()
+    const {
+        isMute,
+        volume,
+        currentStream,
+        setCurrentPlayingStreamHost,
+        setResolutions,
+        setSelectedResolution,
+        selectedResolution,
+        currentPlayingStreamHost,
+        isEnlarged,
+    } = useStream()
     const [isScriptLoaded, setIsScriptLoaded] = useState(false)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const sldpPlayer = useRef<any>()
@@ -118,8 +127,8 @@ export const SLPDStream = () => {
                     position: "absolute !important",
                     width: "100% !important",
                     height: "100% !important",
-                    objectFit: "cover !important",
-                    objectPosition: "center !important",
+                    objectFit: `${isEnlarged ? "cover" : "contain"} !important`,
+                    objectPosition: "50% 42% !important",
                     zIndex: siteZIndex.Stream,
                 },
                 ".op-ui": {

@@ -3,7 +3,10 @@ import BigNumber from "bignumber.js"
 import { useCallback, useEffect, useMemo, useRef } from "react"
 import { ClipThing, HealthShieldBars, WarMachineAbilitiesPopover, WarMachineDestroyedInfo } from "../.."
 import { GenericWarMachinePNG, SvgInfoCircular, SvgSkull } from "../../../assets"
+import { ADD_MINI_MECH_PARTICIPANT_ID } from "../../../constants"
 import { useAuth, useMiniMap, useMobile, useSupremacy } from "../../../containers"
+import { useArena } from "../../../containers/arena"
+import { RecordType, useHotkey } from "../../../containers/hotkeys"
 import { getRarityDeets } from "../../../helpers"
 import { useToggle } from "../../../hooks"
 import { useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
@@ -11,9 +14,6 @@ import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { AIType, GameAbility, WarMachineState } from "../../../types"
 import { MoveCommand } from "./MoveCommand"
-import { useArena } from "../../../containers/arena"
-import { RecordType, useHotkey } from "../../../containers/hotkeys"
-import { ADD_MINI_MECH_PARTICIPANT_ID } from "../../../constants"
 
 // in rems
 const WIDTH_AVATAR = 8.6
@@ -117,13 +117,13 @@ export const WarMachineItem = ({
                     transform: highlightedMechParticipantID === participantID ? `scale(${scale * 1.08})` : `scale(${scale})`,
                     transformOrigin: transformOrigin || "center",
                     ":hover": {
-                        [`#${hash}-hotkey`]: {
+                        [`#hotkey-${hash}`]: {
                             display: "block",
                         },
                     },
                 }}
             >
-                <Box id={`${hash}-hotkey`} sx={{ display: "none", position: "absolute", top: "-3rem", right: "0" }}>
+                <Box id={`hotkey-${hash}`} sx={{ display: "none", position: "absolute", top: "-3rem", right: "0" }}>
                     {label && wmFactionID === factionID && (
                         <Typography sx={{ color: colors.neonBlue }}>
                             <i>
@@ -259,7 +259,7 @@ export const WarMachineItem = ({
                                     WebkitLineClamp: 1,
                                 }}
                             >
-                                {isMiniMech ? "Mini Mech" : name || hash}
+                                {isMiniMech ? "Support Machine" : name || hash}
                             </Typography>
 
                             {!isMiniMech && (

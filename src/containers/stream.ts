@@ -26,6 +26,23 @@ const blankOption: Stream = {
     service: StreamService.None,
 }
 
+// const testStream = {
+//     host: "https://stream2.supremacy.game:3334/app/staging1",
+//     name: "Experimental",
+//     url: "wss://stream2.supremacy.game:3334/app/staging1",
+//     stream_id: "Experimental",
+//     region: "au",
+//     resolution: "1920x1080",
+//     bit_rates_k_bits: 4000,
+//     user_max: 1000,
+//     users_now: 100,
+//     active: true,
+//     status: "online",
+//     latitude: "1.35210001",
+//     longitude: "103.81980133",
+//     service: StreamService.OvenMediaEngine,
+// }
+
 export const StreamContainer = createContainer(() => {
     const { newSnackbarMessage } = useGlobalNotifications()
     const { query: queryGetStreamList } = useParameterizedQuery(GetStreamList)
@@ -46,6 +63,7 @@ export const StreamContainer = createContainer(() => {
     const [selectedResolution, setSelectedResolution] = useState<number>()
     const [resolutions, setResolutions] = useState<number[]>([])
 
+    const [isEnlarged, toggleIsEnlarged] = useToggle((localStorage.getItem("isStreamEnlarged") || "true") === "true")
     const hasInteracted = useRef(false)
 
     // Unmute stream / trailers etc. after user has interacted with the site.
@@ -66,8 +84,8 @@ export const StreamContainer = createContainer(() => {
             try {
                 const resp = await queryGetStreamList({})
                 if (resp.error || !resp.payload) return
-                // setLoadedStreams([blankOption, ...resp.payload])
                 setLoadedStreams([blankOption, ...resp.payload])
+                // setLoadedStreams([testStream])
             } catch (err) {
                 const message = typeof err === "string" ? err : "Failed to get the list of streams."
                 newSnackbarMessage(message, "error")
@@ -112,6 +130,10 @@ export const StreamContainer = createContainer(() => {
         setResolutions([])
         localStorage.setItem("new_stream_props", JSON.stringify(s))
     }, [])
+
+    useEffect(() => {
+        localStorage.setItem("isStreamEnlarged", isEnlarged.toString())
+    }, [isEnlarged])
 
     const setNewStreamOptions = useCallback(
         (newStreamOptions: Stream[], dontChangeCurrentStream?: boolean) => {
@@ -186,6 +208,8 @@ export const StreamContainer = createContainer(() => {
         setMusicVolume,
         isMusicMute,
         toggleIsMusicMute,
+        isEnlarged,
+        toggleIsEnlarged,
     }
 })
 

@@ -233,7 +233,7 @@ const QuickDeployInner = () => {
                                         textAlign: "center",
                                     }}
                                 >
-                                    {`You don't own any war machines.`}
+                                    {`You don't have any battle-ready war machines.`}
                                 </Typography>
                             </Stack>
                         </Stack>

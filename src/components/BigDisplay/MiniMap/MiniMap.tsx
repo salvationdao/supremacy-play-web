@@ -1,12 +1,12 @@
-import { Box, Stack, Typography } from "@mui/material"
-import { useEffect, useMemo, useRef, useState } from "react"
+import { Box, Fade, Stack, Typography } from "@mui/material"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { MiniMapInside } from "../.."
 import { BattleBgWebP, SvgExternalLink, SvgFullscreen, SvgMinimize, SvgSwap } from "../../../assets"
 import { useDimension, useGame } from "../../../containers"
 import { useHotkey } from "../../../containers/hotkeys"
 import { useMiniMap } from "../../../containers/minimap"
 import { useToggle } from "../../../hooks"
-import { colors, fonts } from "../../../theme/theme"
+import { fonts } from "../../../theme/theme"
 import { Map } from "../../../types"
 import { WindowPortal } from "../../Common/WindowPortal/WindowPortal"
 import { useWindowPortal } from "../../Common/WindowPortal/WindowPortalContainer"
@@ -15,42 +15,50 @@ import { HighlightedMechAbilities } from "./MapOutsideItems/HighlightedMechAbili
 import { TargetHint } from "./MapOutsideItems/TargetHint"
 
 export const TOP_BAR_HEIGHT = 3.4 // rems
-const BOTTOM_PADDING = 10 // rems
+const BOTTOM_PADDING = 12 // rems
 
 export const MiniMap = () => {
-    const { map, bribeStage } = useGame()
-    const { isTargeting, resetSelection } = useMiniMap()
-    const [isBattleStarted, setIsBattleStarted] = useState(false)
+    const { map, isBattleStarted, isStreamBigDisplay } = useGame()
+    const { isTargeting } = useMiniMap()
     const [isPoppedout, setIsPoppedout] = useState(false)
+    const ref = useRef<HTMLElement | null>(null)
 
     useEffect(() => {
-        if (map && bribeStage && bribeStage.phase !== "HOLD" ? true : false) {
-            setIsBattleStarted(true)
-        } else {
-            setIsBattleStarted(false)
-            resetSelection()
+        const thisElement = ref.current
+        const newContainerElement = document.getElementById(isStreamBigDisplay ? "left-drawer-space" : "big-display-space")
+
+        if (!isPoppedout && thisElement && newContainerElement) {
+            let child = newContainerElement.lastElementChild
+            while (child) {
+                newContainerElement.removeChild(child)
+                child = newContainerElement.lastElementChild
+            }
+
+            newContainerElement.appendChild(thisElement)
         }
-    }, [bribeStage, setIsBattleStarted, resetSelection, map])
+    }, [isStreamBigDisplay, isPoppedout])
 
-    if (isPoppedout) {
-        return (
-            <WindowPortal title="Supremacy - Battle Arena" onClose={() => setIsPoppedout(false)} features={{ width: 600, height: 600 }}>
-                <Box sx={{ width: "100%", height: "100%", border: (theme) => `${theme.factionTheme.primary} 1.5px solid` }}>
-                    {isBattleStarted && map ? (
+    const content = useMemo(() => {
+        if (isBattleStarted && map) {
+            if (isPoppedout) {
+                return (
+                    <WindowPortal title="Supremacy - Battle Arena" onClose={() => setIsPoppedout(false)} features={{ width: 600, height: 600 }}>
                         <MiniMapInnerPoppedOut map={map} isTargeting={isTargeting} isPoppedout={isPoppedout} setIsPoppedout={setIsPoppedout} />
-                    ) : (
-                        <BattleNotStarted />
-                    )}
-                </Box>
-            </WindowPortal>
-        )
-    }
+                    </WindowPortal>
+                )
+            }
 
-    if (isBattleStarted && map) {
-        return <MiniMapInnerNormal map={map} isTargeting={isTargeting} isPoppedout={isPoppedout} setIsPoppedout={setIsPoppedout} />
-    }
+            return <MiniMapInnerNormal map={map} isTargeting={isTargeting} isPoppedout={isPoppedout} setIsPoppedout={setIsPoppedout} />
+        }
 
-    return <BattleNotStarted />
+        return <BattleNotStarted />
+    }, [isBattleStarted, isPoppedout, isTargeting, map])
+
+    return (
+        <Box ref={ref} sx={{ width: "100%", height: "100%" }}>
+            {content}
+        </Box>
+    )
 }
 
 interface MiniMapInnerProps {
@@ -65,7 +73,11 @@ interface MiniMapInnerProps {
 const MiniMapInnerPoppedOut = ({ map, isTargeting, isPoppedout, setIsPoppedout }: MiniMapInnerProps) => {
     const { curWidth, curHeight } = useWindowPortal()
     if (!curWidth || !curHeight) return null
-    return <MiniMapInner map={map} isTargeting={isTargeting} isPoppedout={isPoppedout} setIsPoppedout={setIsPoppedout} width={curWidth} height={curHeight} />
+    return (
+        <Box sx={{ width: "100%", height: "100%", border: (theme) => `${theme.factionTheme.primary} 1.5px solid` }}>
+            <MiniMapInner map={map} isTargeting={isTargeting} isPoppedout={isPoppedout} setIsPoppedout={setIsPoppedout} width={curWidth} height={curHeight} />
+        </Box>
+    )
 }
 
 const MiniMapInnerNormal = ({ map, isTargeting, isPoppedout, setIsPoppedout }: MiniMapInnerProps) => {
@@ -78,16 +90,6 @@ const MiniMapInnerNormal = ({ map, isTargeting, isPoppedout, setIsPoppedout }: M
 
 const BattleNotStarted = () => {
     const { isStreamBigDisplay } = useGame()
-    const [showBg, setShowBg] = useState(false)
-
-    // Only show the bg image after X seconds, dont want a bright flash in between battles
-    useEffect(() => {
-        const timeout = setTimeout(() => {
-            setShowBg(true)
-        }, 20000)
-
-        return () => clearTimeout(timeout)
-    }, [])
 
     return (
         <Stack
@@ -97,26 +99,40 @@ const BattleNotStarted = () => {
                 position: "relative",
                 width: "100%",
                 height: isStreamBigDisplay ? "28rem" : "100%",
-                background: showBg ? `url(${BattleBgWebP})` : "unset",
-                backgroundRepeat: "no-repeat",
-                backgroundPosition: "center",
-                backgroundSize: "cover",
+                border: (theme) => `${theme.factionTheme.primary}60 1px solid`,
             }}
         >
             <Typography
                 variant={!isStreamBigDisplay ? "h5" : "h6"}
                 sx={{
-                    color: colors.grey,
                     fontFamily: fonts.nostromoBold,
                     WebkitTextStrokeWidth: !isStreamBigDisplay ? "1px" : "unset",
                     textAlign: "center",
-                    zIndex: 1,
+                    zIndex: 2,
                 }}
             >
                 Preparing for next battle...
             </Typography>
 
-            <Box sx={{ position: "absolute", top: 0, left: 0, bottom: 0, right: 0, backgroundColor: "#00000050", zIndex: 0 }} />
+            <Box sx={{ position: "absolute", top: 0, left: 0, bottom: 0, right: 0, backgroundColor: "#00000050", zIndex: 1 }} />
+
+            {/* Background image */}
+            <Fade in>
+                <Box
+                    sx={{
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        bottom: 0,
+                        right: 0,
+                        zIndex: 0,
+                        background: `url(${BattleBgWebP})`,
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "center",
+                        backgroundSize: "cover",
+                    }}
+                />
+            </Fade>
         </Stack>
     )
 }
@@ -125,10 +141,11 @@ const BattleNotStarted = () => {
 const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 100, height = 100 }: MiniMapInnerProps) => {
     const { handleHotKey } = useHotkey()
     const { remToPxRatio } = useDimension()
-    const { isStreamBigDisplay, setIsStreamBigDisplay, prevIsStreamBigDisplay } = useGame()
+    const { isStreamBigDisplay, setIsStreamBigDisplay, toggleIsStreamBigDisplayMemorized, restoreIsStreamBigDisplayMemorized } = useGame()
     const [isEnlarged, toggleIsEnlarged] = useToggle(localStorage.getItem("isMiniMapEnlarged") === "true")
 
     const mapHeightWidthRatio = useRef(1)
+    const mapRef = useRef<HTMLDivElement>()
 
     // If small version, not allow enlarge
     useEffect(() => {
@@ -142,15 +159,11 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
     // When it's targeting, enlarge to big display, else restore to the prev location
     useEffect(() => {
         if (isTargeting) {
-            setIsStreamBigDisplay((prev) => {
-                if (!prevIsStreamBigDisplay.current) prevIsStreamBigDisplay.current = prev
-                return false
-            })
-        } else if (prevIsStreamBigDisplay.current) {
-            setIsStreamBigDisplay(prevIsStreamBigDisplay.current)
-            prevIsStreamBigDisplay.current = undefined
+            toggleIsStreamBigDisplayMemorized(false)
+        } else {
+            restoreIsStreamBigDisplayMemorized()
         }
-    }, [isTargeting, prevIsStreamBigDisplay, setIsStreamBigDisplay])
+    }, [isTargeting, restoreIsStreamBigDisplayMemorized, toggleIsStreamBigDisplayMemorized])
 
     // Set size
     const sizes = useMemo(() => {
@@ -176,7 +189,7 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
         let outsideWidth = defaultWidth - padding
         let outsideHeight = defaultHeight - bottomPadding
         let insideWidth = outsideWidth
-        let insideHeight = outsideHeight - TOP_BAR_HEIGHT * remToPxRatio
+        let insideHeight = outsideHeight
 
         if ((isPoppedout || !isStreamBigDisplay) && !isEnlarged) {
             const maxHeight = outsideWidth * mapHeightWidthRatio.current
@@ -191,6 +204,8 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
             }
         }
 
+        outsideHeight += TOP_BAR_HEIGHT * remToPxRatio
+
         return {
             outsideWidth,
             outsideHeight,
@@ -198,6 +213,12 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
             insideHeight,
         }
     }, [map.height, map.width, width, isEnlarged, height, remToPxRatio, isStreamBigDisplay, isPoppedout])
+
+    const focusMap = useCallback(() => mapRef.current?.focus(), [mapRef])
+
+    useEffect(() => {
+        focusMap()
+    }, [focusMap])
 
     return useMemo(() => {
         return (
@@ -214,17 +235,27 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
                 }}
             >
                 <Box
+                    ref={mapRef}
                     tabIndex={0}
                     onKeyDown={handleHotKey}
+                    onClick={focusMap}
                     sx={{
                         position: "relative",
                         boxShadow: 1,
                         width: sizes.outsideWidth,
                         height: sizes.outsideHeight,
-                        transition: "all .2s",
+                        transition: "width .2s, height .2s",
                         overflow: "hidden",
                         pointerEvents: "all",
                         zIndex: 2,
+                        boxSizing: "border-box",
+                        "&.MuiBox-root": {
+                            border: "1px transparent solid",
+                            "&:focus": {
+                                border: (theme) => `2px solid ${theme.factionTheme.primary}`,
+                            },
+                            outline: "none",
+                        },
                     }}
                 >
                     {/* Top bar */}
@@ -293,6 +324,7 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
     }, [
         isEnlarged,
         handleHotKey,
+        focusMap,
         sizes.outsideWidth,
         sizes.outsideHeight,
         sizes.insideWidth,

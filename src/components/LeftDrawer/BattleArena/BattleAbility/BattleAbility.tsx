@@ -1,13 +1,11 @@
 import { Box, Stack } from "@mui/material"
-import { useMemo } from "react"
 import { useAuth, useGame } from "../../../../containers"
 import { BattleAbilityCountdown } from "./BattleAbilityCountdown"
 import { BattleAbilityItem } from "./BattleAbilityItem"
 
 export const BattleAbility = () => {
     const { factionID } = useAuth()
-    const { bribeStage } = useGame()
-    const isBattleStarted = useMemo(() => bribeStage && bribeStage.phase !== "HOLD", [bribeStage])
+    const { bribeStage, isBattleStarted } = useGame()
 
     if (!bribeStage) return null
 
