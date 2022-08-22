@@ -1,6 +1,5 @@
 import { Stack, Typography } from "@mui/material"
 import { useCallback, useState } from "react"
-import { Link } from "react-router-dom"
 import { FancyButton } from "../../../../.."
 import { useGlobalNotifications } from "../../../../../../containers"
 import { supFormatterNoFixed, timeSinceInWords } from "../../../../../../helpers"
@@ -47,10 +46,6 @@ export const ExistingRepairJobCard = ({ repairOffer, remainDamagedBlocks }: { re
         >
             <Typography variant="h6" sx={{ fontFamily: fonts.nostromoBlack, color: colors.blue2 }}>
                 Repair job posted!
-            </Typography>
-
-            <Typography variant="h6">
-                You have a repair job listed on the <Link to="/jobs">jobs page</Link>.
             </Typography>
 
             <Stack>

@@ -14,10 +14,12 @@ import { HireContractorsCard } from "./HireContractorsCard"
 import { SelfRepairCard } from "./SelfRepairCard"
 
 export const RepairModal = ({
+    defaultOpenSelfRepair,
     selectedMechDetails,
     repairMechModalOpen,
     setRepairMechModalOpen,
 }: {
+    defaultOpenSelfRepair?: boolean
     selectedMechDetails: MechDetails
     repairMechModalOpen: boolean
     setRepairMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
@@ -105,7 +107,7 @@ export const RepairModal = ({
                             <MechRepairBlocks mechID={selectedMechDetails?.id} defaultBlocks={selectedMechDetails?.model.repair_blocks} hideNumber />
                         </Stack>
 
-                        <SelfRepairCard repairStatus={repairStatus} remainDamagedBlocks={remainDamagedBlocks} />
+                        <SelfRepairCard defaultOpenSelfRepair={defaultOpenSelfRepair} repairStatus={repairStatus} remainDamagedBlocks={remainDamagedBlocks} />
 
                         {repairOffer && !repairOffer.closed_at ? (
                             <ExistingRepairJobCard repairOffer={repairOffer} remainDamagedBlocks={remainDamagedBlocks} />
