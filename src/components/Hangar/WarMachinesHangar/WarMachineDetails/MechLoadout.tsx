@@ -1,8 +1,10 @@
-import { Box, Slide, Stack, Typography } from "@mui/material"
+import { Box, Fade, Slide, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useState } from "react"
 import { SvgIntroAnimation, SvgOutroAnimation, SvgPowerCore, SvgSkin, SvgUtilities, SvgWeapons } from "../../../../assets"
+import { useGlobalNotifications } from "../../../../containers"
 import { getRarityDeets } from "../../../../helpers"
 import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../../keys"
 import { colors } from "../../../../theme/theme"
 import { MechDetails, PowerCore, Utility, Weapon } from "../../../../types"
 import { FancyButton } from "../../../Common/FancyButton"
@@ -22,10 +24,10 @@ type LoadoutWeapon = EquipWeapon & {
 
 interface PlayerAssetMechEquipRequest {
     mech_id: string
+    equip_mech_skin?: string
     equip_power_core?: string
     equip_shield?: string
     equip_weapons: EquipWeapon[]
-    equip_mech_skin?: string
 }
 
 interface MechDetailsWithMaps extends MechDetails {
@@ -44,11 +46,14 @@ interface EquipWeapon {
 
 export const MechLoadout = ({ mechDetails }: { mechDetails: MechDetails }) => {
     const { send } = useGameServerCommandsUser("/user_commander")
+    const { newSnackbarMessage } = useGlobalNotifications()
 
+    const [error, setError] = useState<string>()
+    const [loading, setLoading] = useState(false)
     const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
     const [currLoadout, setCurrLoadout] = useState<MechDetailsWithMaps>({
         ...mechDetails,
-        weapons_map: new Map((mechDetails.weapons || []).map((w, index) => [w.slot_number || index, w])),
+        weapons_map: new Map((mechDetails.weapons || []).map((w, index) => [w.slot_number != null ? w.slot_number : index, w])),
         changed_weapons_map: new Map(),
         utility_map: new Map((mechDetails.utility || []).map((u, index) => [index, u])),
         changed_utility_map: new Map(),
@@ -58,6 +63,48 @@ export const MechLoadout = ({ mechDetails }: { mechDetails: MechDetails }) => {
     useEffect(() => {
         setHasUnsavedChanges(currLoadout.changed_weapons_map.size > 0 || currLoadout.changed_utility_map.size > 0 || !!currLoadout.changed_power_core)
     }, [currLoadout.changed_weapons_map.size, currLoadout.changed_utility_map.size, currLoadout.changed_power_core])
+
+    // Confirm selection and submit payload to server
+    const saveSelection = useCallback(async () => {
+        try {
+            setLoading(true)
+
+            const newMechDetails = await send<MechDetails, PlayerAssetMechEquipRequest>(GameServerKeys.EquipMech, {
+                mech_id: mechDetails.id,
+                equip_mech_skin: undefined,
+                equip_power_core: undefined,
+                equip_shield: undefined,
+                equip_weapons: Array.from(currLoadout.changed_weapons_map, ([slotNumber, w]) => ({
+                    weapon_id: w.id,
+                    slot_number: slotNumber,
+                    inherit_skin: false,
+                })),
+            })
+
+            newSnackbarMessage(`Successfully saved loadout.`, "success")
+            setError(undefined)
+            setCurrLoadout({
+                ...newMechDetails,
+                weapons_map: new Map(
+                    (newMechDetails.weapons ? newMechDetails.weapons.sort((w1, w2) => (w1.slot_number || 0) - (w2.slot_number || 0)) : []).map((w, index) => [
+                        w.slot_number != null ? w.slot_number : index,
+                        w,
+                    ]),
+                ),
+                changed_weapons_map: new Map(),
+                utility_map: new Map((newMechDetails.utility || []).map((u, index) => [index, u])),
+                changed_utility_map: new Map(),
+            })
+        } catch (e) {
+            if (e instanceof Error) {
+                setError(e.message)
+            } else if (typeof e === "string") {
+                setError(e)
+            }
+        } finally {
+            setLoading(false)
+        }
+    }, [currLoadout, mechDetails.id, newSnackbarMessage, send])
 
     const addWeaponSelection = useCallback((ew: LoadoutWeapon) => {
         setCurrLoadout((prev) => {
@@ -120,16 +167,29 @@ export const MechLoadout = ({ mechDetails }: { mechDetails: MechDetails }) => {
                 }}
             >
                 <Slide direction="up" in={hasUnsavedChanges} mountOnEnter unmountOnExit>
-                    <Box>
+                    <Stack>
+                        {
+                            <Fade in={!!error} mountOnEnter unmountOnExit>
+                                <Typography
+                                    sx={{
+                                        color: colors.red,
+                                    }}
+                                >
+                                    {error}
+                                </Typography>
+                            </Fade>
+                        }
                         <FancyButton
                             sx={{ px: "1.6rem", py: ".6rem" }}
                             clipThingsProps={{
                                 backgroundColor: colors.green,
                             }}
+                            onClick={() => saveSelection()}
+                            loading={loading}
                         >
                             <Typography variant="h6">Save Changes</Typography>
                         </FancyButton>
-                    </Box>
+                    </Stack>
                 </Slide>
             </Box>
             {/* Left side */}
