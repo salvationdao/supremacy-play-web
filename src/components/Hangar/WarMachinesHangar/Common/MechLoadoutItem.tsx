@@ -1,4 +1,4 @@
-import { Stack, Typography } from "@mui/material"
+import { Grow, Stack, Typography } from "@mui/material"
 import { useMemo } from "react"
 import { FancyButton } from "../../.."
 import { SvgPlus, SvgSkin, SvgSwap, SvgWrapperProps } from "../../../../assets"
@@ -44,12 +44,13 @@ export const MechLoadoutItem = (props: MechLoadoutItemProps) => {
                     }}
                     {...loadoutItemButtonProps}
                 />
-                {prevEquipped && (
-                    <>
+                <Grow in={!!prevEquipped} mountOnEnter unmountOnExit>
+                    <Stack direction="row" alignItems="center">
                         <SvgSwap sx={{ opacity: 0.6 }} />
-                        <MechLoadoutItemButton {...prevEquipped} isPreviouslyEquipped />
-                    </>
-                )}
+                        {/* eslint-disable-next-line @typescript-eslint/no-non-null-assertion */}
+                        <MechLoadoutItemButton {...prevEquipped!} isPreviouslyEquipped />
+                    </Stack>
+                </Grow>
             </Stack>
 
             {showLoadoutModal &&
