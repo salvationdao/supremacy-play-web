@@ -2,10 +2,10 @@ import { useEffect } from "react"
 import { useDebounce } from "."
 
 const getWindowDimensions = () => {
-    const { outerWidth: width, outerHeight: height } = window
+    const { outerWidth, outerHeight, innerWidth, innerHeight } = window
     return {
-        width,
-        height,
+        width: outerWidth || innerWidth,
+        height: outerHeight || innerHeight,
     }
 }
 

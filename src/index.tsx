@@ -20,7 +20,6 @@ import {
     MiniMapProvider,
     MobileProvider,
     OverlayTogglesProvider,
-    StreamProvider,
     SupremacyProvider,
     useMobile,
     useSupremacy,

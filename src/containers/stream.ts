@@ -26,6 +26,23 @@ const blankOption: Stream = {
     service: StreamService.None,
 }
 
+// const testStream = {
+//     host: "https://stream2.supremacy.game:3334/app/staging1",
+//     name: "Experimental",
+//     url: "wss://stream2.supremacy.game:3334/app/staging1",
+//     stream_id: "Experimental",
+//     region: "au",
+//     resolution: "1920x1080",
+//     bit_rates_k_bits: 4000,
+//     user_max: 1000,
+//     users_now: 100,
+//     active: true,
+//     status: "online",
+//     latitude: "1.35210001",
+//     longitude: "103.81980133",
+//     service: StreamService.OvenMediaEngine,
+// }
+
 export const StreamContainer = createContainer(() => {
     const { newSnackbarMessage } = useGlobalNotifications()
     const { query: queryGetStreamList } = useParameterizedQuery(GetStreamList)
