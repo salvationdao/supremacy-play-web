@@ -307,6 +307,7 @@ const QuickDeployInner = () => {
                 <BulkDeployConfirmModal
                     setBulkDeployConfirmModalOpen={setBulkDeployConfirmModalOpen}
                     selectedMechs={selectedMechs}
+                    setSelectedMechs={setSelectedMechs}
                     childrenMechStatus={childrenMechStatus}
                     queueFeed={queueFeed}
                 />

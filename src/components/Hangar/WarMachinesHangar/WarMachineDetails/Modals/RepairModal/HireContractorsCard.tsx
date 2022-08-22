@@ -1,5 +1,5 @@
 import { InputAdornment, MenuItem, Select, Stack, TextField, Typography } from "@mui/material"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { FancyButton } from "../../../../.."
 import { SvgSupToken } from "../../../../../../assets"
 import { useGlobalNotifications } from "../../../../../../containers"
@@ -9,8 +9,6 @@ import { GameServerKeys } from "../../../../../../keys"
 import { colors, fonts } from "../../../../../../theme/theme"
 import { MechBasic } from "../../../../../../types"
 import { AmountItem } from "../DeployModal"
-
-const INITIAL_REWARD_PER_BLOCK = parseString(localStorage.getItem("repairHireRewards"), 2)
 
 const listingDurations: {
     label: string
@@ -23,17 +21,28 @@ const listingDurations: {
     { label: "3 hours", value: 180 },
 ]
 
-export const HireContractorsCard = (props: { mechs: MechBasic[]; remainDamagedBlocks: number; onClose?: () => void }) => {
+export const HireContractorsCard = (props: { mechs: MechBasic[]; remainDamagedBlocks: number; onClose?: () => void; onSubmitted?: () => void }) => {
     if (props.remainDamagedBlocks <= 0) return null
     return <HireContractorsCardInner {...props} />
 }
 
-const HireContractorsCardInner = ({ mechs, remainDamagedBlocks, onClose }: { mechs: MechBasic[]; remainDamagedBlocks: number; onClose?: () => void }) => {
+const HireContractorsCardInner = ({
+    mechs,
+    remainDamagedBlocks,
+    onClose,
+    onSubmitted,
+}: {
+    mechs: MechBasic[]
+    remainDamagedBlocks: number
+    onClose?: () => void
+    onSubmitted?: () => void
+}) => {
     const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsUser("/user_commander")
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [submitError, setSubmitError] = useState<string>()
 
+    const INITIAL_REWARD_PER_BLOCK = useMemo(() => parseString(localStorage.getItem("repairHireRewards"), 2), [])
     const [agentReward, setAgentReward] = useState<number>(Math.round(100 * INITIAL_REWARD_PER_BLOCK * remainDamagedBlocks) / 100)
     const [agentRewardPerBlock, setAgentRewardPerBlock] = useState<number>(INITIAL_REWARD_PER_BLOCK)
     const [durationMinutes, setDurationMinutes] = useState<number>(listingDurations[1].value)
@@ -53,6 +62,7 @@ const HireContractorsCardInner = ({ mechs, remainDamagedBlocks, onClose }: { mec
             if (resp) {
                 newSnackbarMessage(`Successfully submitted listed mech${mechs.length > 1 ? "s" : ""} for repair.`, "success")
                 setSubmitError(undefined)
+                onSubmitted && onSubmitted()
                 onClose && onClose()
             }
         } catch (e) {
@@ -61,7 +71,7 @@ const HireContractorsCardInner = ({ mechs, remainDamagedBlocks, onClose }: { mec
         } finally {
             setIsSubmitting(false)
         }
-    }, [send, mechs, durationMinutes, agentRewardPerBlock, newSnackbarMessage, onClose])
+    }, [send, mechs, durationMinutes, agentRewardPerBlock, newSnackbarMessage, onSubmitted, onClose])
 
     return (
         <Stack

@@ -508,6 +508,7 @@ export const WarMachinesHangar = () => {
                 <BulkDeployConfirmModal
                     setBulkDeployConfirmModalOpen={setBulkDeployConfirmModalOpen}
                     selectedMechs={selectedMechs}
+                    setSelectedMechs={setSelectedMechs}
                     childrenMechStatus={childrenMechStatus}
                     queueFeed={queueFeed}
                 />
@@ -517,6 +518,7 @@ export const WarMachinesHangar = () => {
                 <BulkRepairConfirmModal
                     setBulkRepairConfirmModalOpen={setBulkRepairConfirmModalOpen}
                     selectedMechs={selectedMechs}
+                    setSelectedMechs={setSelectedMechs}
                     childrenMechStatus={childrenMechStatus}
                     childrenRepairStatus={childrenRepairStatus}
                     childrenRepairOffer={childrenRepairOffer}

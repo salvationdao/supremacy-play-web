@@ -12,11 +12,13 @@ import { QueueFeed } from "../WarMachineDetails/Modals/DeployModal"
 export const BulkDeployConfirmModal = ({
     setBulkDeployConfirmModalOpen,
     selectedMechs,
+    setSelectedMechs,
     childrenMechStatus,
     queueFeed,
 }: {
     setBulkDeployConfirmModalOpen: React.Dispatch<React.SetStateAction<boolean>>
     selectedMechs: MechBasic[]
+    setSelectedMechs: React.Dispatch<React.SetStateAction<MechBasic[]>>
     childrenMechStatus: React.MutableRefObject<{
         [mechID: string]: MechStatus
     }>
@@ -41,8 +43,9 @@ export const BulkDeployConfirmModal = ({
 
             if (resp && resp.success) {
                 newSnackbarMessage("Successfully deployed war machines.", "success")
-                setBulkDeployConfirmModalOpen(false)
+                setSelectedMechs([])
                 setError(undefined)
+                setBulkDeployConfirmModalOpen(false)
             }
         } catch (e) {
             setError(typeof e === "string" ? e : "Failed to deploy war machines.")
@@ -51,7 +54,7 @@ export const BulkDeployConfirmModal = ({
         } finally {
             setIsLoading(false)
         }
-    }, [newSnackbarMessage, send, setBulkDeployConfirmModalOpen, validMechs])
+    }, [newSnackbarMessage, send, setBulkDeployConfirmModalOpen, setSelectedMechs, validMechs])
 
     return (
         <ConfirmModal
