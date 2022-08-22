@@ -106,6 +106,24 @@ const MechLoadoutItemButton = ({
                 onClick && onClick()
             }}
         >
+            {isPreviouslyEquipped && (
+                <Stack
+                    alignItems="center"
+                    justifyContent="center"
+                    sx={{
+                        zIndex: 1,
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        backgroundColor: colors.black2,
+                        opacity: 0.6,
+                    }}
+                >
+                    <Typography>Undo Selection</Typography>
+                </Stack>
+            )}
             <Stack spacing="1rem" alignItems="center" sx={{ height: "16rem", width: "16rem", p: "1rem", textAlign: "center" }}>
                 <Stack justifyContent="center" sx={{ position: "relative", height: "9rem", alignSelf: "stretch", backgroundColor: "#00000060" }}>
                     {isEmpty ? (

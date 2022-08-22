@@ -27,6 +27,13 @@ interface PlayerAssetMechEquipRequest {
     equip_mech_skin?: string
 }
 
+interface MechDetailsWithMaps extends MechDetails {
+    weapons_map: Map<number, Weapon> // Map<slot_number, Weapon>
+    changed_weapons_map: Map<number, Weapon>
+    utility_map: Map<number, Utility> // Map<slot_number, utility>
+    changed_utility_map: Map<number, Weapon>
+}
+
 interface EquipWeapon {
     weapon_id: string
     slot_number: number
@@ -36,52 +43,59 @@ interface EquipWeapon {
 export const MechLoadout = ({ mechDetails }: { mechDetails: MechDetails }) => {
     const { send } = useGameServerCommandsUser("/user_commander")
 
-    const [prevLoadout, setPrevLoadout] = useState(mechDetails)
-    const [currLoadout, setCurrLoadout] = useState(mechDetails)
-    const [loadoutChanges, setLoadoutChanges] = useState<LoadoutChanges>({
-        weapons: [],
+    const [prevLoadout, setPrevLoadout] = useState<MechDetailsWithMaps>()
+    const [currLoadout, setCurrLoadout] = useState<MechDetailsWithMaps>({
+        ...mechDetails,
+        weapons_map: new Map((mechDetails.weapons || []).map((w, index) => [w.slot_number || index, w])),
+        changed_weapons_map: new Map(),
+        utility_map: new Map((mechDetails.utility || []).map((u, index) => [index, u])),
+        changed_utility_map: new Map(),
     })
 
-    // const submitLoadout = () => {
-
-    // }
-
     useEffect(() => {
-        console.log(prevLoadout.weapons, currLoadout.weapons)
-    }, [currLoadout, prevLoadout])
+        setCurrLoadout({
+            ...mechDetails,
+            weapons_map: new Map((mechDetails.weapons || []).map((w, index) => [w.slot_number || index, w])),
+            changed_weapons_map: new Map(),
+            utility_map: new Map((mechDetails.utility || []).map((u, index) => [index, u])),
+            changed_utility_map: new Map(),
+        })
+    }, [mechDetails])
 
     const addWeaponSelection = useCallback((ew: LoadoutWeapon) => {
-        setLoadoutChanges((prev) => {
-            const equippedWeapons = prev.weapons.filter((w) => w.weapon_id !== ew.weapon_id)
-            equippedWeapons.push(ew)
-            return {
-                ...prev,
-                weapons: equippedWeapons,
-            }
-        })
         setCurrLoadout((prev) => {
-            const prevWeapons = prev.weapons
-            const newWeapons = prev.weapons.map((w) => w)
-            for (let i = 0; i < prevWeapons.length; i++) {
-                if (prevWeapons[i].slot_number === ew.slot_number) {
-                    newWeapons[i] = ew.weapon
-                }
-            }
+            const updated = prev.changed_weapons_map
+            updated.set(ew.slot_number, ew.weapon)
 
             return {
                 ...prev,
-                weapons: newWeapons,
+                changed_weapons_map: updated,
+            }
+        })
+    }, [])
+
+    const undoWeaponSelection = useCallback((slotNumber: number) => {
+        setCurrLoadout((prev) => {
+            const updated = prev.changed_weapons_map
+            updated.delete(slotNumber)
+
+            return {
+                ...prev,
+                changed_weapons_map: updated,
             }
         })
     }, [])
 
     const {
-        weapons,
         weapon_hardpoints,
+        weapons_map,
+        changed_weapons_map,
         utility_slots,
-        blueprint_weapon_ids_with_skin_inheritance,
         utility,
+        utility_map,
+        changed_utility_map,
         power_core,
+        blueprint_weapon_ids_with_skin_inheritance,
         chassis_skin,
         intro_animation,
         outro_animation,
@@ -122,58 +136,60 @@ export const MechLoadout = ({ mechDetails }: { mechDetails: MechDetails }) => {
                     <MechLoadoutItem label="POWER CORE" primaryColor={colors.powerCore} onClick={() => console.log("AAAAA")} isEmpty disabled />
                 )}
 
-                {weapons &&
-                    weapons.length > 0 &&
-                    weapons.map((w, index) => {
-                        return (
-                            <MechLoadoutItem
-                                key={w.id}
-                                imageUrl={w.image_url || w.avatar_url}
-                                videoUrls={[w.card_animation_url]}
-                                label={w.label}
-                                primaryColor={colors.weapons}
-                                Icon={SvgWeapons}
-                                rarity={w.weapon_skin ? getRarityDeets(w.weapon_skin.tier) : undefined}
-                                hasSkin={!!w.weapon_skin}
-                                renderModal={(toggleShowLoadoutModal) => (
-                                    <MechLoadoutWeaponModal
-                                        onClose={() => toggleShowLoadoutModal(false)}
-                                        onConfirm={(selectedWeapon, inheritSkin) =>
-                                            addWeaponSelection({
-                                                weapon: selectedWeapon,
-                                                weapon_id: selectedWeapon.id,
-                                                slot_number: w.slot_number || index,
-                                                inherit_skin: inheritSkin,
-                                            })
-                                        }
-                                        equipped={w}
-                                        weaponsWithSkinInheritance={blueprint_weapon_ids_with_skin_inheritance}
-                                        weaponsAlreadyEquippedInOtherSlots={loadoutChanges.weapons.map((w) => w.weapon_id)}
-                                    />
-                                )}
-                                prevEquipped={
-                                    currLoadout.weapons[index] && prevLoadout.weapons[index] && currLoadout.weapons[index].id !== prevLoadout.weapons[index].id
-                                        ? {
-                                              imageUrl: prevLoadout.weapons[index].image_url,
-                                              videoUrls: [prevLoadout.weapons[index].card_animation_url],
-                                              label: prevLoadout.weapons[index].label,
-                                              primaryColor: colors.weapons,
-                                              Icon: SvgWeapons,
-                                              rarity: prevLoadout.weapons[index].weapon_skin
-                                                  ? getRarityDeets(prevLoadout.weapons[index].weapon_skin?.tier || "")
-                                                  : undefined,
-                                              hasSkin: !!prevLoadout.weapons[index].weapon_skin,
-                                          }
-                                        : undefined
+                {Array.from(weapons_map, ([slotNumber, w]) => {
+                    const weapon = changed_weapons_map.get(slotNumber) || w
+
+                    return (
+                        <MechLoadoutItem
+                            key={weapon.id}
+                            imageUrl={weapon.image_url || weapon.avatar_url}
+                            videoUrls={[weapon.card_animation_url]}
+                            label={weapon.label}
+                            primaryColor={colors.weapons}
+                            Icon={SvgWeapons}
+                            rarity={weapon.weapon_skin ? getRarityDeets(weapon.weapon_skin.tier) : undefined}
+                            hasSkin={!!weapon.weapon_skin}
+                            renderModal={(toggleShowLoadoutModal) => (
+                                <MechLoadoutWeaponModal
+                                    onClose={() => toggleShowLoadoutModal(false)}
+                                    onConfirm={(selectedWeapon, inheritSkin) =>
+                                        addWeaponSelection({
+                                            weapon: selectedWeapon,
+                                            weapon_id: selectedWeapon.id,
+                                            slot_number: slotNumber,
+                                            inherit_skin: inheritSkin,
+                                        })
+                                    }
+                                    equipped={weapon}
+                                    weaponsWithSkinInheritance={blueprint_weapon_ids_with_skin_inheritance}
+                                    weaponsAlreadyEquippedInOtherSlots={Array.from(changed_weapons_map.values(), (w) => w.id)}
+                                />
+                            )}
+                            prevEquipped={(() => {
+                                if (!changed_weapons_map.has(slotNumber)) return
+
+                                const previouslyEquipped = weapons_map.get(slotNumber)
+                                if (!previouslyEquipped) return
+
+                                return {
+                                    imageUrl: previouslyEquipped.image_url,
+                                    videoUrls: [previouslyEquipped.card_animation_url],
+                                    label: previouslyEquipped.label,
+                                    primaryColor: colors.weapons,
+                                    Icon: SvgWeapons,
+                                    rarity: previouslyEquipped.weapon_skin ? getRarityDeets(previouslyEquipped.weapon_skin?.tier || "") : undefined,
+                                    hasSkin: !!previouslyEquipped.weapon_skin,
+                                    onClick: () => undoWeaponSelection(slotNumber),
                                 }
-                            />
-                        )
-                    })}
+                            })()}
+                        />
+                    )
+                })}
 
                 {weapon_hardpoints &&
-                    weapons &&
-                    weapon_hardpoints - weapons.length > 0 &&
-                    new Array(weapon_hardpoints - weapons.length)
+                    weapons_map &&
+                    weapon_hardpoints - weapons_map.size > 0 &&
+                    new Array(weapon_hardpoints - weapons_map.size)
                         .fill(0)
                         .map((_, index) => (
                             <MechLoadoutItem key={index} label="WEAPON" primaryColor={colors.weapons} onClick={() => console.log("AAAAA")} isEmpty disabled />

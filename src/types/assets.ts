@@ -123,8 +123,8 @@ export interface MechDetails extends MechBasic {
     intro_animation?: MechAnimation
     outro_animation?: MechAnimation
     power_core?: PowerCore
-    weapons: Weapon[]
-    utility: Utility[]
+    weapons?: Weapon[]
+    utility?: Utility[]
     battle_ready: boolean
     blueprint_weapon_ids_with_skin_inheritance: string[]
 }
