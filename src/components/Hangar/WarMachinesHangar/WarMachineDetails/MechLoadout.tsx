@@ -1,5 +1,5 @@
 import { Box, Stack } from "@mui/material"
-import { useCallback, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { SvgIntroAnimation, SvgOutroAnimation, SvgPowerCore, SvgSkin, SvgUtilities, SvgWeapons } from "../../../../assets"
 import { getRarityDeets } from "../../../../helpers"
 import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
@@ -45,6 +45,10 @@ export const MechLoadout = ({ mechDetails }: { mechDetails: MechDetails }) => {
     // const submitLoadout = () => {
 
     // }
+
+    useEffect(() => {
+        console.log(prevLoadout.weapons, currLoadout.weapons)
+    }, [currLoadout, prevLoadout])
 
     const addWeaponSelection = useCallback((ew: LoadoutWeapon) => {
         setLoadoutChanges((prev) => {
@@ -147,6 +151,21 @@ export const MechLoadout = ({ mechDetails }: { mechDetails: MechDetails }) => {
                                         weaponsAlreadyEquippedInOtherSlots={loadoutChanges.weapons.map((w) => w.weapon_id)}
                                     />
                                 )}
+                                prevEquipped={
+                                    currLoadout.weapons[index] && prevLoadout.weapons[index] && currLoadout.weapons[index].id !== prevLoadout.weapons[index].id
+                                        ? {
+                                              imageUrl: prevLoadout.weapons[index].image_url,
+                                              videoUrls: [prevLoadout.weapons[index].card_animation_url],
+                                              label: prevLoadout.weapons[index].label,
+                                              primaryColor: colors.weapons,
+                                              Icon: SvgWeapons,
+                                              rarity: prevLoadout.weapons[index].weapon_skin
+                                                  ? getRarityDeets(prevLoadout.weapons[index].weapon_skin?.tier || "")
+                                                  : undefined,
+                                              hasSkin: !!prevLoadout.weapons[index].weapon_skin,
+                                          }
+                                        : undefined
+                                }
                             />
                         )
                     })}
