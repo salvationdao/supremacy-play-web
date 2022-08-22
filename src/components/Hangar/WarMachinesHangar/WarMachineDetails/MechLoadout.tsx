@@ -1,10 +1,11 @@
-import { Box, Stack } from "@mui/material"
+import { Box, Slide, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useState } from "react"
 import { SvgIntroAnimation, SvgOutroAnimation, SvgPowerCore, SvgSkin, SvgUtilities, SvgWeapons } from "../../../../assets"
 import { getRarityDeets } from "../../../../helpers"
 import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
 import { colors } from "../../../../theme/theme"
 import { MechDetails, PowerCore, Utility, Weapon } from "../../../../types"
+import { FancyButton } from "../../../Common/FancyButton"
 import { MechLoadoutItem } from "../Common/MechLoadoutItem"
 import { MechLoadoutPowerCoreModal } from "./Modals/Loadout/MechLoadoutPowerCoreModal"
 import { MechLoadoutWeaponModal } from "./Modals/Loadout/MechLoadoutWeaponModal"
@@ -32,6 +33,7 @@ interface MechDetailsWithMaps extends MechDetails {
     changed_weapons_map: Map<number, Weapon>
     utility_map: Map<number, Utility> // Map<slot_number, utility>
     changed_utility_map: Map<number, Weapon>
+    changed_power_core?: PowerCore
 }
 
 interface EquipWeapon {
@@ -43,7 +45,7 @@ interface EquipWeapon {
 export const MechLoadout = ({ mechDetails }: { mechDetails: MechDetails }) => {
     const { send } = useGameServerCommandsUser("/user_commander")
 
-    const [prevLoadout, setPrevLoadout] = useState<MechDetailsWithMaps>()
+    const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
     const [currLoadout, setCurrLoadout] = useState<MechDetailsWithMaps>({
         ...mechDetails,
         weapons_map: new Map((mechDetails.weapons || []).map((w, index) => [w.slot_number || index, w])),
@@ -52,15 +54,10 @@ export const MechLoadout = ({ mechDetails }: { mechDetails: MechDetails }) => {
         changed_utility_map: new Map(),
     })
 
+    // Track if changes have been made
     useEffect(() => {
-        setCurrLoadout({
-            ...mechDetails,
-            weapons_map: new Map((mechDetails.weapons || []).map((w, index) => [w.slot_number || index, w])),
-            changed_weapons_map: new Map(),
-            utility_map: new Map((mechDetails.utility || []).map((u, index) => [index, u])),
-            changed_utility_map: new Map(),
-        })
-    }, [mechDetails])
+        setHasUnsavedChanges(currLoadout.changed_weapons_map.size > 0 || currLoadout.changed_utility_map.size > 0 || !!currLoadout.changed_power_core)
+    }, [currLoadout.changed_weapons_map.size, currLoadout.changed_utility_map.size, currLoadout.changed_power_core])
 
     const addWeaponSelection = useCallback((ew: LoadoutWeapon) => {
         setCurrLoadout((prev) => {
@@ -113,6 +110,28 @@ export const MechLoadout = ({ mechDetails }: { mechDetails: MechDetails }) => {
                 zIndex: 6,
             }}
         >
+            {/* Save Changes Button */}
+            <Box
+                sx={{
+                    zIndex: 1,
+                    position: "absolute",
+                    right: "6rem",
+                    bottom: "5rem",
+                }}
+            >
+                <Slide direction="up" in={hasUnsavedChanges} mountOnEnter unmountOnExit>
+                    <Box>
+                        <FancyButton
+                            sx={{ px: "1.6rem", py: ".6rem" }}
+                            clipThingsProps={{
+                                backgroundColor: colors.green,
+                            }}
+                        >
+                            <Typography variant="h6">Save Changes</Typography>
+                        </FancyButton>
+                    </Box>
+                </Slide>
+            </Box>
             {/* Left side */}
             <Stack
                 flexWrap="wrap"
