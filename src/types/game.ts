@@ -7,13 +7,6 @@ export interface FactionsAll {
 
 export type BribeStage = "OPT_IN" | "LOCATION_SELECT" | "COOLDOWN" | "HOLD"
 
-export interface ViewerLiveCount {
-    red_mountain: number
-    boston: number
-    zaibatsu: number
-    other: number
-}
-
 export enum LocationSelectType {
     LINE_SELECT = "LINE_SELECT",
     MECH_SELECT = "MECH_SELECT",
