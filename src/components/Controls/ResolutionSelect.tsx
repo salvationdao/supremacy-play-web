@@ -73,7 +73,7 @@ export const ResolutionSelect = () => {
 
 const resolutionToText = (resolution: string) => {
     if (resolution === "1080_60") {
-        return "1080p"
+        return "1080p 60fps"
     }
     if (resolution === "potato") {
         return "potato"

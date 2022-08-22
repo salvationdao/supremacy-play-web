@@ -2,7 +2,7 @@ import { Stack } from "@mui/material"
 import OvenPlayer from "ovenplayer"
 import { useEffect, useRef } from "react"
 import { useGlobalNotifications } from "../../../containers"
-import { useOvenStream } from "../../../containers/oven"
+import { OvenStream, useOvenStream } from "../../../containers/oven"
 import { parseString } from "../../../helpers"
 import { siteZIndex } from "../../../theme/theme"
 
@@ -128,12 +128,16 @@ export const OvenplayerStream = () => {
             }
 
             // build sources with different resolutions
-            const _sources: OvenPlayerSource[] = currentOvenStream.available_resolutions.map((os) => ({
-                label: os,
-                type: "webrtc",
-                file: `${currentOvenStream.base_url}_${os}`,
-                resolution: os,
-            }))
+            const _sources: OvenPlayerSource[] = currentOvenStream.available_resolutions.map((ovs) => {
+                const isDefault = ovs === currentOvenStream.default_resolution
+                const streamURL = isDefault ? currentOvenStream.base_url : `${currentOvenStream.base_url}_${ovs}`
+                return {
+                    label: ovs,
+                    type: "webrtc",
+                    file: streamURL,
+                    resolution: ovs,
+                }
+            })
 
             const newOvenPlayer = OvenPlayer.create("oven-player", {
                 autoStart: true,

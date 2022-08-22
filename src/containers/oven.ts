@@ -10,11 +10,13 @@ export interface OvenStream {
     name: string
     base_url: string
     available_resolutions: string[]
+    default_resolution: string
     isBlank?: boolean
 }
 
 const blankOptionOven: OvenStream = {
     name: "No Stream",
+    default_resolution: "",
     base_url: "",
     available_resolutions: [],
     isBlank: true,
