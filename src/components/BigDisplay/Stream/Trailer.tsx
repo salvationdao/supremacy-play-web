@@ -4,13 +4,14 @@ import { FancyButton } from "../.."
 import { TrailerThumbPNG } from "../../../assets"
 import { TRAILER_VIDEO } from "../../../constants"
 import { useOverlayToggles, useStream } from "../../../containers"
+import { useOvenStream } from "../../../containers/oven"
 import { useToggle } from "../../../hooks"
 import { fonts, siteZIndex } from "../../../theme/theme"
 
 export const Trailer = () => {
     const { toggleShowTrailer } = useOverlayToggles()
     const vidRef = useRef<HTMLVideoElement>(null)
-    const { isMute, volume } = useStream()
+    const { isMute, volume } = useOvenStream()
     const [isPlaying, toggleIsPlaying] = useToggle()
 
     const onEnded = useCallback(() => {

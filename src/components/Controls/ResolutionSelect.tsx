@@ -1,5 +1,6 @@
 import { MenuItem, Select, Stack, Typography } from "@mui/material"
 import { useStream } from "../../containers"
+import { useOvenStream } from "../../containers/oven"
 import { useTheme } from "../../containers/theme"
 import { colors } from "../../theme/theme"
 
@@ -70,9 +71,19 @@ export const ResolutionSelect = () => {
     )
 }
 
+const resolutionToText = (resolution: string) => {
+    if (resolution === "1080_60") {
+        return "1080p"
+    }
+    if (resolution === "potato") {
+        return "potato"
+    }
+    return resolution + "p"
+}
+
 export const OvenResolutionSelect = () => {
     const theme = useTheme()
-    const { ovenResolutions, setOvenResolutions, selectedOvenResolution, setSelectedOvenResolution, currentStream } = useStream()
+    const { ovenResolutions, selectedOvenResolution, setSelectedOvenResolution } = useOvenStream()
 
     if (!ovenResolutions || ovenResolutions.length <= 0) return null
 
@@ -122,13 +133,12 @@ export const OvenResolutionSelect = () => {
                             value={x}
                             onClick={() => {
                                 setSelectedOvenResolution(x)
-                                localStorage.setItem(`${currentStream?.host}-resolution`, x.toString())
+                                // localStorage.setItem(`${currentStream?.host}-resolution`, x.toString())
                             }}
                             sx={{ "&:hover": { backgroundColor: `#FFFFFF30` } }}
                         >
-                            <Typography textTransform="uppercase" variant="body2" sx={{ lineHeight: 1 }}>
-                                {/* {x === 0 ? "Automatic" : `${x}P`} */}
-                                {x}
+                            <Typography variant="body2" sx={{ lineHeight: 1 }}>
+                                {resolutionToText(x)}
                             </Typography>
                         </MenuItem>
                     )

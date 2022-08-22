@@ -2,6 +2,7 @@ import { Button, Stack } from "@mui/material"
 import OvenPlayer from "ovenplayer"
 import { useEffect, useRef } from "react"
 import { useGlobalNotifications, useStream } from "../../../containers"
+import { useOvenStream } from "../../../containers/oven"
 import { parseString } from "../../../helpers"
 import { siteZIndex } from "../../../theme/theme"
 import { StreamService } from "../../../types"
@@ -82,27 +83,25 @@ export const OvenplayerStream = () => {
         isEnlarged,
 
         selectedOvenResolution,
-    } = useStream()
+    } = useOvenStream()
     const ovenPlayer = useRef<OvenPlayerInstance>()
 
-    interface OvenStream {
-        name: string
-        base_url: string
-        available_resolutions: string[]
-    }
-
-    const changeSource = (resolution: string) => {
+    const changeResolutionSource = (resolution: string) => {
         if (ovenPlayer && ovenPlayer.current) {
-            const blah = ovenPlayer.current.getSources()
+            // get availible sources from oven palyer (resolutions)
+            const availSources = ovenPlayer.current.getSources()
 
-            if (Array.isArray(blah)) {
-                const bruh = blah as OvenPlayerSource[]
-                const src = bruh.filter((s: OvenPlayerSource, i) => {
+            if (Array.isArray(availSources)) {
+                const _availSources = availSources as OvenPlayerSource[]
+
+                //  get source with index
+                const src = _availSources.filter((s: OvenPlayerSource, i) => {
                     if (s.label === resolution) {
                         return { source: s, index: i }
                     }
                 })[0]
 
+                // set new source
                 ovenPlayer.current.setCurrentSource(src.index || 0)
             }
         }
@@ -110,7 +109,7 @@ export const OvenplayerStream = () => {
 
     // watch for res changes
     useEffect(() => {
-        changeSource(selectedOvenResolution || "")
+        changeResolutionSource(selectedOvenResolution || "")
     }, [selectedOvenResolution])
 
     // Load the stream when its changed
