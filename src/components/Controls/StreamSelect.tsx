@@ -53,7 +53,6 @@ export const OvenStreamSelect = () => {
                             value={x.name}
                             onClick={() => {
                                 changeOvenStream(x)
-                                console.log("changing streams")
                             }}
                             sx={{ "&:hover": { backgroundColor: `#FFFFFF30` } }}
                         >

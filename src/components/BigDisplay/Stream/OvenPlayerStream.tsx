@@ -87,23 +87,26 @@ export const OvenplayerStream = () => {
     } = useOvenStream()
     const ovenPlayer = useRef<OvenPlayerInstance>()
 
+    const getSourcerIdx = (sources: OvenPlayerSource[], resolution: string) => {
+        //  get source with index
+        const src = sources.filter((s: OvenPlayerSource, i) => {
+            if (s.label === resolution) {
+                return { source: s, index: i }
+            }
+        })[0]
+
+        return src.index || 0
+    }
     const changeResolutionSource = (resolution: string) => {
         if (ovenPlayer && ovenPlayer.current) {
             // get availible sources from oven palyer (resolutions)
             const availSources = ovenPlayer.current.getSources()
-
             if (Array.isArray(availSources)) {
                 const _availSources = availSources as OvenPlayerSource[]
-
-                //  get source with index
-                const src = _availSources.filter((s: OvenPlayerSource, i) => {
-                    if (s.label === resolution) {
-                        return { source: s, index: i }
-                    }
-                })[0]
+                const idx = getSourcerIdx(_availSources, resolution)
 
                 // set new source
-                ovenPlayer.current.setCurrentSource(src.index || 0)
+                ovenPlayer.current.setCurrentSource(idx)
             }
         }
     }
@@ -146,12 +149,13 @@ export const OvenplayerStream = () => {
                 console.log("ovenplayer ready")
                 setCurrentOvenPlayingStreamHost(currentOvenStream.name)
                 setOvenResolutions(currentOvenStream.available_resolutions)
-                const prevRes = localStorage.getItem(`${currentOvenStream.name}-resolution`)
-                if (prevRes) {
-                    setSelectedOvenResolution(prevRes)
-                } else {
-                    setSelectedOvenResolution("720")
-                }
+
+                //  set resolution
+                const prevRes = localStorage.getItem(`${currentOvenStream.name}-resolution`) || "720"
+                const osSources = newOvenPlayer.getSources() as OvenPlayerSource[]
+                const idx = getSourcerIdx(osSources, prevRes)
+                newOvenPlayer.setCurrentSource(idx)
+                setSelectedOvenResolution(prevRes)
             })
 
             newOvenPlayer.on("error", (err: Error) => {
