@@ -2,7 +2,7 @@ import { Box, CircularProgress, Divider, IconButton, Modal, Pagination, Stack, S
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useParameterizedQuery } from "react-fetching-library"
 import { FancyButton } from "../../../../.."
-import { EmptyWarMachinesPNG, SvgClose } from "../../../../../../assets"
+import { EmptyWarMachinesPNG, SvgClose, SvgView } from "../../../../../../assets"
 import { useAuth } from "../../../../../../containers"
 import { useTheme } from "../../../../../../containers/theme"
 import { GetWeaponMaxStats } from "../../../../../../fetching"
@@ -782,6 +782,18 @@ const WeaponItem = ({ id, equipped, selected, onSelect }: WeaponItemProps) => {
                     </Typography>
                 </Box>
             )}
+            {selected && (
+                <SvgView
+                size="3rem"
+                    sx={{
+                        position: "absolute",
+                        top: "2rem",
+                        right: "2rem",
+                        opacity: 0.5
+                    }}
+                    
+                />
+            )}
             <Stack direction="row" alignItems="stretch" padding="1rem">
                 <Box sx={{ width: "10rem" }}>
                     <Box
@@ -859,6 +871,12 @@ const WeaponItem = ({ id, equipped, selected, onSelect }: WeaponItemProps) => {
                         renderStat("PROJECTILE SPEED", {
                             oldStat: equipped.projectile_speed,
                             newStat: weaponDetails.projectile_speed,
+                        })}
+                    {typeof weaponDetails.energy_cost !== "undefined" &&
+                        renderStat("ENERGY COST", {
+                            oldStat: equipped.energy_cost,
+                            newStat: weaponDetails.energy_cost,
+                            negated: true,
                         })}
                     {typeof weaponDetails.max_ammo !== "undefined" &&
                         renderStat("MAX AMMO", {
@@ -956,6 +974,12 @@ const WeaponPreview = ({ onConfirm, weapon, equipped, skinInheritable }: WeaponP
                     oldStat: equipped.projectile_speed,
                     newStat: weapon.projectile_speed,
                 }),
+            typeof weapon.energy_cost !== "undefined" &&
+                renderStatChange("ENERGY COST", {
+                    oldStat: equipped.energy_cost,
+                    newStat: weapon.energy_cost,
+                    negated: true,
+                }),
             typeof weapon.max_ammo !== "undefined" &&
                 renderStatChange("MAX AMMO", {
                     oldStat: equipped.max_ammo,
@@ -967,6 +991,7 @@ const WeaponPreview = ({ onConfirm, weapon, equipped, skinInheritable }: WeaponP
     }, [
         equipped.damage,
         equipped.damage_falloff,
+        equipped.energy_cost,
         equipped.max_ammo,
         equipped.projectile_speed,
         equipped.radius,
