@@ -1,5 +1,5 @@
 import { Box, Fade, IconButton, Stack, Typography } from "@mui/material"
-import { useCallback, useLayoutEffect, useRef, useState } from "react"
+import { useCallback, useLayoutEffect, useMemo, useRef, useState } from "react"
 import { PunishMessage, TextMessage } from "../../.."
 import { SvgScrolldown } from "../../../../assets"
 import { FontSizeType, SplitOptionType, useAuth, useChat, useSupremacy } from "../../../../containers"
@@ -23,18 +23,21 @@ export const ChatMessages = (props: ChatMessagesProps) => {
     const { filterSystemMessages, failedMessages, splitOption, fontSize, globalAnnouncement } = useChat()
     const { getFaction } = useSupremacy()
 
-    return (
-        <ChatMessagesInner
-            {...props}
-            user={user}
-            filterSystemMessages={filterSystemMessages}
-            failedMessages={failedMessages}
-            faction_id={props.faction_id}
-            splitOption={splitOption}
-            fontSize={fontSize}
-            globalAnnouncement={globalAnnouncement}
-            getFaction={getFaction}
-        />
+    return useMemo(
+        () => (
+            <ChatMessagesInner
+                {...props}
+                user={user}
+                filterSystemMessages={filterSystemMessages}
+                failedMessages={failedMessages}
+                faction_id={props.faction_id}
+                splitOption={splitOption}
+                fontSize={fontSize}
+                globalAnnouncement={globalAnnouncement}
+                getFaction={getFaction}
+            />
+        ),
+        [failedMessages, filterSystemMessages, fontSize, getFaction, globalAnnouncement, props, splitOption, user],
     )
 }
 
