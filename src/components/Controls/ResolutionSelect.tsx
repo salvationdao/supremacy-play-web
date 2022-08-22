@@ -83,7 +83,7 @@ const resolutionToText = (resolution: string) => {
 
 export const OvenResolutionSelect = () => {
     const theme = useTheme()
-    const { ovenResolutions, selectedOvenResolution, setSelectedOvenResolution } = useOvenStream()
+    const { ovenResolutions, selectedOvenResolution, setSelectedOvenResolution, currentOvenStream } = useOvenStream()
 
     if (!ovenResolutions || ovenResolutions.length <= 0) return null
 
@@ -133,7 +133,7 @@ export const OvenResolutionSelect = () => {
                             value={x}
                             onClick={() => {
                                 setSelectedOvenResolution(x)
-                                // localStorage.setItem(`${currentStream?.host}-resolution`, x.toString())
+                                localStorage.setItem(`${currentOvenStream?.name}-resolution`, x.toString())
                             }}
                             sx={{ "&:hover": { backgroundColor: `#FFFFFF30` } }}
                         >

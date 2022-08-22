@@ -1,6 +1,7 @@
 import { Action } from "react-fetching-library"
 import { GAME_SERVER_HOSTNAME, PASSPORT_SERVER_HOST } from "../constants"
-import { Fingerprint, OvenStream } from "../containers"
+import { Fingerprint } from "../containers"
+import { OvenStream } from "../containers/oven"
 import { Faction, Feature, SaleAbilityAvailability, Stream, User, UserFromPassport, WarMachineDestroyedRecord, WeaponMaxStats } from "../types"
 
 export const PassportLoginCheck = (): Action<UserFromPassport> => {

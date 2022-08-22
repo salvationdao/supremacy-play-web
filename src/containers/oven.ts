@@ -105,7 +105,7 @@ export const OvenStreamContainer = createContainer(() => {
         if (!s) return
         setCurrentOvenStream(s)
         setOvenResolutions(s.available_resolutions)
-        // localStorage.setItem("new_stream_props", JSON.stringify(s))
+        localStorage.setItem("new_stream_props", JSON.stringify(s))
     }, [])
 
     useEffect(() => {
@@ -116,20 +116,13 @@ export const OvenStreamContainer = createContainer(() => {
     useEffect(() => {
         if (!loadedOvenStreams || loadedOvenStreams.length <= 0) return
 
-        // Filter for servers that have capacity and is online
-        const availStreams = loadedOvenStreams
+        if (loadedOvenStreams.length <= 0) return
 
-        if (availStreams.length <= 0) return
-
-        // Reduce the list of options so it's not too many for the user
-        // By default its sorted by quietest servers first
-        const quietestStreams = availStreams
-
-        if (quietestStreams.length > 0) {
-            setCurrentOvenStream(quietestStreams[1])
+        if (loadedOvenStreams.length > 0) {
+            setCurrentOvenStream(loadedOvenStreams[1])
         }
 
-        setOvenStreamOptions(quietestStreams)
+        setOvenStreamOptions(loadedOvenStreams)
     }, [loadedOvenStreams])
 
     return {

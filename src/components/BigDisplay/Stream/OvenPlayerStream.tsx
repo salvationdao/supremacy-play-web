@@ -1,11 +1,10 @@
-import { Button, Stack } from "@mui/material"
+import { Stack } from "@mui/material"
 import OvenPlayer from "ovenplayer"
 import { useEffect, useRef } from "react"
-import { useGlobalNotifications, useStream } from "../../../containers"
+import { useGlobalNotifications } from "../../../containers"
 import { useOvenStream } from "../../../containers/oven"
 import { parseString } from "../../../helpers"
 import { siteZIndex } from "../../../theme/theme"
-import { StreamService } from "../../../types"
 
 // set resoltion opts when stream base url changes
 interface OvenPlayerSource {
@@ -82,7 +81,9 @@ export const OvenplayerStream = () => {
         setCurrentOvenPlayingStreamHost,
         isEnlarged,
 
+        setOvenResolutions,
         selectedOvenResolution,
+        setSelectedOvenResolution,
     } = useOvenStream()
     const ovenPlayer = useRef<OvenPlayerInstance>()
 
@@ -144,6 +145,13 @@ export const OvenplayerStream = () => {
             newOvenPlayer.on("ready", () => {
                 console.log("ovenplayer ready")
                 setCurrentOvenPlayingStreamHost(currentOvenStream.name)
+                setOvenResolutions(currentOvenStream.available_resolutions)
+                const prevRes = localStorage.getItem(`${currentOvenStream.name}-resolution`)
+                if (prevRes) {
+                    setSelectedOvenResolution(prevRes)
+                } else {
+                    setSelectedOvenResolution("720")
+                }
             })
 
             newOvenPlayer.on("error", (err: Error) => {
