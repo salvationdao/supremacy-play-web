@@ -2,7 +2,6 @@ import { MenuItem, Select, Stack, Typography } from "@mui/material"
 import { useOvenStream } from "../../containers/oven"
 import { useTheme } from "../../containers/theme"
 import { colors } from "../../theme/theme"
-import { StreamService } from "../../types"
 
 export const OvenStreamSelect = () => {
     const theme = useTheme()
