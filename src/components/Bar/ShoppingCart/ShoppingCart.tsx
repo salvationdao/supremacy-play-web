@@ -1,7 +1,6 @@
 import { Stack, Box, IconButton, Badge } from "@mui/material"
 import { SvgShop } from "../../../assets"
 import { useFiat } from "../../../containers/fiat"
-import { useTheme } from "../../../containers/theme"
 
 export const ShoppingCart = () => {
     const { itemsCount } = useFiat()

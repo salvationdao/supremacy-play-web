@@ -54,6 +54,28 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate, setOpeningCrate, se
         },
     )
 
+    const addToCart = useCallback(async () => {
+        const errMsg = "Failed to add item to the shopping cart."
+        try {
+            setIsLoading(true)
+            const resp = await send<boolean>(GameServerKeys.FiatShoppingCartItemAdd, {
+                product_id: mysteryCrate.fiat_product_id,
+                quantity,
+            })
+
+            if (!resp) {
+                setBuyError(errMsg)
+            }
+
+            newSnackbarMessage(`Successfully added ${quantity} ${mysteryCrate.mystery_crate_type} crate to shopping cart.`, "success")
+        } catch (err) {
+            setBuyError(typeof err === "string" ? err : errMsg)
+            console.error(err)
+        } finally {
+            setIsLoading(false)
+        }
+    }, [send, newSnackbarMessage, mysteryCrate.mystery_crate_type, quantity])
+
     const confirmBuy = useCallback(async () => {
         try {
             setIsLoading(true)
@@ -273,7 +295,7 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate, setOpeningCrate, se
                                     </Typography>
                                 </FancyButton>
                                 <FancyButton
-                                    onClick={() => toggleConfirmModalOpen(true)}
+                                    onClick={() => addToCart()}
                                     clipThingsProps={{
                                         clipSize: "5px",
                                         backgroundColor: colors.green,
