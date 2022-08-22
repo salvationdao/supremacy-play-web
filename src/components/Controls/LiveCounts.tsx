@@ -1,32 +1,24 @@
 import { Stack, Typography } from "@mui/material"
 import { TooltipHelper } from ".."
 import { SvgUser } from "../../assets"
-import { useSupremacy } from "../../containers"
 import { useGameServerSubscription } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { colors } from "../../theme/theme"
-import { Faction, ViewerLiveCount } from "../../types"
 
 export const LiveCounts = () => {
-    const { getFaction } = useSupremacy()
-    const viewers = useGameServerSubscription<ViewerLiveCount>({
+    const viewerCount = useGameServerSubscription<number>({
         URI: "/public/live_viewer_count",
         key: GameServerKeys.SubViewersLiveCount,
     })
 
-    return <LiveCountsInner getFaction={getFaction} viewers={viewers} />
+    return <LiveCountsInner viewerCount={viewerCount || 0} />
 }
 
 interface InnerProps {
-    getFaction?: (factionID: string) => Faction
-    viewers?: ViewerLiveCount
+    viewerCount: number
 }
 
-export const LiveCountsInner = ({ getFaction, viewers }: InnerProps) => {
-    if (!viewers || !getFaction) return null
-
-    const total = viewers.boston + viewers.red_mountain + viewers.zaibatsu + viewers.other
-
+export const LiveCountsInner = ({ viewerCount }: InnerProps) => {
     return (
         <Stack direction="row" spacing=".4rem" alignItems="center" justifyContent="center">
             <SvgUser size=".9rem" fill={colors.text} />
@@ -35,7 +27,7 @@ export const LiveCountsInner = ({ getFaction, viewers }: InnerProps) => {
             </Typography>
 
             <Stack direction="row" spacing=".64rem" alignItems="center" justifyContent="center">
-                <ReUsedText text={total.toFixed()} tooltip="Viewers" />
+                <ReUsedText text={`${viewerCount}`} tooltip="Viewers" />
             </Stack>
         </Stack>
     )
