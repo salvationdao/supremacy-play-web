@@ -115,7 +115,7 @@ export const WarmachineDetails = ({ mechID, primaryColor, backgroundColor }: { m
                                             <Typography sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack }}>SYSTEM STATUS</Typography>
                                         </Stack>
 
-                                        <MechRepairBlocks mechID={mechID} defaultBlocks={mechDetails?.model.repair_blocks} />
+                                        <MechRepairBlocks mechID={mechID} defaultBlocks={mechDetails?.repair_blocks} />
                                     </Stack>
 
                                     {/* Bar stats */}

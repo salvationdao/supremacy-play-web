@@ -91,10 +91,13 @@ export interface MechBasic extends Collection, Images {
     weapon_hardpoints: number
     utility_slots: number
     speed: number
+    boosted_speed: number
     max_hitpoints: number
+    boosted_max_hitpoints: number
     is_default: boolean
     is_insured: boolean
     name: string
+    repair_blocks: number
     genesis_token_id?: number
     limited_release_token_id?: number
     power_core_size: string
@@ -117,7 +120,6 @@ export interface MechDetails extends MechBasic {
     brand: Brand
     user: User
     faction?: Faction
-    model: MechModel
     default_chassis_skin: BlueprintMechSkin
     chassis_skin?: MechSkin
     intro_animation?: MechAnimation
@@ -154,19 +156,6 @@ export interface Brand {
     deleted_at?: Date
     updated_at: Date
     created_at: Date
-}
-
-export interface MechModel extends Collection, Images {
-    id: string
-    blueprint_id: string
-    genesis_token_id?: number
-    label: string
-    description: string
-    background_color: string
-    mech_model: string
-    equipped_on?: string
-    created_at: Date
-    repair_blocks: number
 }
 
 export interface BlueprintMechSkin extends Collection, Images {
@@ -282,6 +271,7 @@ export interface UtilityShield {
     utility_id: string
     hitpoints: number
     recharge_rate: number
+    boosted_recharge_rate: number
     recharge_energy_cost: number
 }
 
@@ -305,8 +295,8 @@ export interface UtilityRepairDrone {
 export interface UtilityAccelerator {
     utility_id: string
     energy_cost: number
-    boost_seconds: number
-    boost_amount: number
+    boosted_seconds: number
+    boosted_amount: number
 }
 
 export interface UtilityAntiMissile {

@@ -166,7 +166,7 @@ export const QuickDeployItem = ({ mech }: QuickDeployItemProps) => {
                         {mech.label}
                     </Typography>
 
-                    <MechRepairBlocks mechID={mech?.id || mechDetails?.id} defaultBlocks={mechDetails?.model?.repair_blocks} />
+                    <MechRepairBlocks mechID={mech?.id || mechDetails?.id} defaultBlocks={mechDetails?.repair_blocks} />
 
                     {error && (
                         <Typography variant="body2" sx={{ color: colors.red }}>
