@@ -1,5 +1,5 @@
 import { InputAdornment, MenuItem, Select, Stack, TextField, Typography } from "@mui/material"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { FancyButton } from "../../../../.."
 import { SvgSupToken } from "../../../../../../assets"
 import { useGlobalNotifications } from "../../../../../../containers"
@@ -9,8 +9,6 @@ import { GameServerKeys } from "../../../../../../keys"
 import { colors, fonts } from "../../../../../../theme/theme"
 import { MechBasic } from "../../../../../../types"
 import { AmountItem } from "../DeployModal"
-
-const INITIAL_REWARD_PER_BLOCK = parseString(localStorage.getItem("repairHireRewards"), 2)
 
 const listingDurations: {
     label: string
@@ -34,6 +32,7 @@ const HireContractorsCardInner = ({ mechs, remainDamagedBlocks, onClose }: { mec
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [submitError, setSubmitError] = useState<string>()
 
+    const INITIAL_REWARD_PER_BLOCK = useMemo(() => parseString(localStorage.getItem("repairHireRewards"), 2), [])
     const [agentReward, setAgentReward] = useState<number>(Math.round(100 * INITIAL_REWARD_PER_BLOCK * remainDamagedBlocks) / 100)
     const [agentRewardPerBlock, setAgentRewardPerBlock] = useState<number>(INITIAL_REWARD_PER_BLOCK)
     const [durationMinutes, setDurationMinutes] = useState<number>(listingDurations[1].value)
