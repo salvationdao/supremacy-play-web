@@ -12,12 +12,14 @@ import { RepairBlocks } from "./MechRepairBlocks"
 export const BulkRepairConfirmModal = ({
     setBulkRepairConfirmModalOpen,
     selectedMechs,
+    setSelectedMechs,
     childrenMechStatus,
     childrenRepairStatus,
     childrenRepairOffer,
 }: {
     setBulkRepairConfirmModalOpen: React.Dispatch<React.SetStateAction<boolean>>
     selectedMechs: MechBasic[]
+    setSelectedMechs: React.Dispatch<React.SetStateAction<MechBasic[]>>
     childrenMechStatus: React.MutableRefObject<{
         [mechID: string]: MechStatus
     }>
@@ -103,7 +105,12 @@ export const BulkRepairConfirmModal = ({
                             <RepairBlocks defaultBlocks={remainDamagedBlocks} remainDamagedBlocks={remainDamagedBlocks} hideNumber />
                         </Stack>
 
-                        <HireContractorsCard mechs={validMechs} remainDamagedBlocks={remainDamagedBlocks} onClose={onClose} />
+                        <HireContractorsCard
+                            mechs={validMechs}
+                            remainDamagedBlocks={remainDamagedBlocks}
+                            onClose={onClose}
+                            onSubmitted={() => setSelectedMechs([])}
+                        />
                     </Stack>
 
                     <IconButton size="small" onClick={onClose} sx={{ position: "absolute", top: ".5rem", right: ".5rem" }}>
