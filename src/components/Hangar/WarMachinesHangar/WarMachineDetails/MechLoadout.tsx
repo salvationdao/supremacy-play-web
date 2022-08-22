@@ -44,6 +44,19 @@ interface EquipWeapon {
     inherit_skin: boolean
 }
 
+const generateLoadout = (newMechDetails: MechDetails): MechDetailsWithMaps => ({
+    ...newMechDetails,
+    weapons_map: new Map(
+        (newMechDetails.weapons ? newMechDetails.weapons.sort((w1, w2) => (w1.slot_number || 0) - (w2.slot_number || 0)) : []).map((w, index) => [
+            w.slot_number != null ? w.slot_number : index,
+            w,
+        ]),
+    ),
+    changed_weapons_map: new Map(),
+    utility_map: new Map((newMechDetails.utility || []).map((u, index) => [index, u])),
+    changed_utility_map: new Map(),
+})
+
 export const MechLoadout = ({ mechDetails }: { mechDetails: MechDetails }) => {
     const { send } = useGameServerCommandsUser("/user_commander")
     const { newSnackbarMessage } = useGlobalNotifications()
@@ -51,13 +64,7 @@ export const MechLoadout = ({ mechDetails }: { mechDetails: MechDetails }) => {
     const [error, setError] = useState<string>()
     const [loading, setLoading] = useState(false)
     const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
-    const [currLoadout, setCurrLoadout] = useState<MechDetailsWithMaps>({
-        ...mechDetails,
-        weapons_map: new Map((mechDetails.weapons || []).map((w, index) => [w.slot_number != null ? w.slot_number : index, w])),
-        changed_weapons_map: new Map(),
-        utility_map: new Map((mechDetails.utility || []).map((u, index) => [index, u])),
-        changed_utility_map: new Map(),
-    })
+    const [currLoadout, setCurrLoadout] = useState<MechDetailsWithMaps>(generateLoadout(mechDetails))
 
     // Track if changes have been made
     useEffect(() => {
@@ -83,18 +90,7 @@ export const MechLoadout = ({ mechDetails }: { mechDetails: MechDetails }) => {
 
             newSnackbarMessage(`Successfully saved loadout.`, "success")
             setError(undefined)
-            setCurrLoadout({
-                ...newMechDetails,
-                weapons_map: new Map(
-                    (newMechDetails.weapons ? newMechDetails.weapons.sort((w1, w2) => (w1.slot_number || 0) - (w2.slot_number || 0)) : []).map((w, index) => [
-                        w.slot_number != null ? w.slot_number : index,
-                        w,
-                    ]),
-                ),
-                changed_weapons_map: new Map(),
-                utility_map: new Map((newMechDetails.utility || []).map((u, index) => [index, u])),
-                changed_utility_map: new Map(),
-            })
+            setCurrLoadout(generateLoadout(newMechDetails))
         } catch (e) {
             if (e instanceof Error) {
                 setError(e.message)
@@ -221,6 +217,7 @@ export const MechLoadout = ({ mechDetails }: { mechDetails: MechDetails }) => {
                     return (
                         <MechLoadoutItem
                             key={weapon.id}
+                            slotNumber={slotNumber}
                             imageUrl={weapon.image_url || weapon.avatar_url}
                             videoUrls={[weapon.card_animation_url]}
                             label={weapon.label}
@@ -251,6 +248,7 @@ export const MechLoadout = ({ mechDetails }: { mechDetails: MechDetails }) => {
                                 if (!previouslyEquipped) return
 
                                 return {
+                                    slotNumber,
                                     imageUrl: previouslyEquipped.image_url,
                                     videoUrls: [previouslyEquipped.card_animation_url],
                                     label: previouslyEquipped.label,

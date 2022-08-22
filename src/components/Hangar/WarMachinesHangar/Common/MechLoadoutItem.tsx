@@ -10,6 +10,7 @@ import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
 import { MediaPreviewModal } from "../../../Common/MediaPreview/MediaPreviewModal"
 
 interface LoadoutItem {
+    slotNumber?: number
     imageUrl?: string
     videoUrls?: (string | undefined)[] | undefined
     label: string
@@ -66,6 +67,7 @@ interface MechLoadoutItemButtonProps extends LoadoutItem {
 }
 
 const MechLoadoutItemButton = ({
+    slotNumber,
     imageUrl,
     videoUrls,
     label,
@@ -136,6 +138,19 @@ const MechLoadoutItemButton = ({
                         {Icon && <Icon fill={primaryColor} size="1.8rem" />}
                         {hasSkin && <SvgSkin fill={colors.chassisSkin} size="1.8rem" />}
                     </Stack>
+
+                    {slotNumber != null && (
+                        <Typography
+                            sx={{
+                                position: "absolute",
+                                top: ".1rem",
+                                right: ".5rem",
+                                opacity: 0.6,
+                            }}
+                        >
+                            SLOT {slotNumber}
+                        </Typography>
+                    )}
 
                     {rarity && (
                         <Typography
