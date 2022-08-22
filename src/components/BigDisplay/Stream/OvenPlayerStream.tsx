@@ -1,8 +1,8 @@
 import { Stack } from "@mui/material"
 import OvenPlayer from "ovenplayer"
-import { useEffect, useRef } from "react"
+import { useCallback, useEffect, useRef } from "react"
 import { useGlobalNotifications } from "../../../containers"
-import { OvenStream, useOvenStream } from "../../../containers/oven"
+import { useOvenStream } from "../../../containers/oven"
 import { parseString } from "../../../helpers"
 import { siteZIndex } from "../../../theme/theme"
 
@@ -97,7 +97,7 @@ export const OvenplayerStream = () => {
 
         return src.index || 0
     }
-    const changeResolutionSource = (resolution: string) => {
+    const changeResolutionSource = useCallback((resolution: string) => {
         if (ovenPlayer && ovenPlayer.current) {
             // get availible sources from oven palyer (resolutions)
             const availSources = ovenPlayer.current.getSources()
@@ -109,12 +109,12 @@ export const OvenplayerStream = () => {
                 ovenPlayer.current.setCurrentSource(idx)
             }
         }
-    }
+    }, [])
 
     // watch for res changes
     useEffect(() => {
         changeResolutionSource(selectedOvenResolution || "")
-    }, [selectedOvenResolution])
+    }, [selectedOvenResolution, changeResolutionSource])
 
     // Load the stream when its changed
     useEffect(() => {
