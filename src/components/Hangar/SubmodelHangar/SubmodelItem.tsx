@@ -4,28 +4,20 @@ import { IS_TESTING_MODE } from "../../../constants"
 import { useTheme } from "../../../containers/theme"
 import { MARKETPLACE_TABS } from "../../../pages"
 import { colors, fonts } from "../../../theme/theme"
-import { Keycard } from "../../../types"
+import { Keycard, MechSkin, WeaponSkin } from "../../../types"
 import { ItemType } from "../../../types/marketplace"
 import { ClipThing } from "../../Common/ClipThing"
 import { MediaPreview } from "../../Common/MediaPreview/MediaPreview"
 
-interface MysteryCrateStoreItemProps {
-    keycard: Keycard
-    itemSaleID?: string
+interface SubmodelItemProps {
+    submodel: MechSkin | WeaponSkin
 }
 
-export const SubmodelItem = ({ keycard }: MysteryCrateStoreItemProps) => {
-    return (
-        <>
-            {keycard.count > 0 && <KeycardHangarItemInner keycard={keycard} />}
-            {keycard.item_sale_ids?.map((itemSaleID) => {
-                return <KeycardHangarItemInner key={itemSaleID} keycard={keycard} itemSaleID={itemSaleID} />
-            })}
-        </>
-    )
+export const SubmodelItem = ({ submodel }: SubmodelItemProps) => {
+    return <>{submodel && <KeycardHangarItemInner submodel={submodel} />}</>
 }
 
-export const KeycardHangarItemInner = ({ keycard, itemSaleID }: MysteryCrateStoreItemProps) => {
+export const KeycardHangarItemInner = ({ submodel }: SubmodelItemProps) => {
     const theme = useTheme()
 
     const primaryColor = theme.factionTheme.primary
@@ -60,14 +52,14 @@ export const KeycardHangarItemInner = ({ keycard, itemSaleID }: MysteryCrateStor
                         }}
                     >
                         <MediaPreview
-                            imageUrl={keycard.blueprints.image_url}
-                            videoUrls={[keycard.blueprints.animation_url, keycard.blueprints.card_animation_url]}
+                            imageUrl={submodel.blueprints.image_url}
+                            videoUrls={[submodel.blueprints.animation_url, submodel.blueprints.card_animation_url]}
                         />
 
                         {!itemSaleID && (
                             <Box sx={{ position: "absolute", top: ".6rem", right: ".8rem" }}>
                                 <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
-                                    {keycard.count}x
+                                    {submodel.count}x
                                 </Typography>
                             </Box>
                         )}
@@ -75,10 +67,10 @@ export const KeycardHangarItemInner = ({ keycard, itemSaleID }: MysteryCrateStor
 
                     <Stack spacing=".4rem" sx={{ flex: 1, px: ".4rem", py: ".3rem" }}>
                         <Typography variant="h6" sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack }}>
-                            {keycard.blueprints.label}
+                            {submodel.blueprints.label}
                         </Typography>
 
-                        <Typography variant="h6">{keycard.blueprints.description}</Typography>
+                        <Typography variant="h6">{submodel.blueprints.description}</Typography>
 
                         {!IS_TESTING_MODE && (
                             <Stack alignItems="center" sx={{ mt: "auto !important", pt: ".8rem", alignSelf: "stretch" }}>
@@ -86,7 +78,7 @@ export const KeycardHangarItemInner = ({ keycard, itemSaleID }: MysteryCrateStor
                                     to={
                                         itemSaleID
                                             ? `/marketplace/${MARKETPLACE_TABS.Keycards}/${itemSaleID}`
-                                            : `/marketplace/sell?itemType=${ItemType.Keycards}&assetID=${keycard.id}`
+                                            : `/marketplace/sell?itemType=${ItemType.Keycards}&assetID=${submodel.id}`
                                     }
                                     clipThingsProps={{
                                         clipSize: "5px",

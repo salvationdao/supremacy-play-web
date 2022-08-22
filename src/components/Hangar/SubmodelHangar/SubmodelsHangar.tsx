@@ -1,7 +1,7 @@
 import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { ClipThing, FancyButton } from "../.."
-import { KeycardPNG } from "../../../assets"
+import { EmptyWarMachinesPNG } from "../../../assets"
 import { PASSPORT_WEB } from "../../../constants"
 import { useAuth } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
@@ -10,19 +10,19 @@ import { usePagination, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { Keycard, MechSkin, WeaponSkin } from "../../../types"
+import { MechSkin, WeaponSkin } from "../../../types"
 import { PageHeader } from "../../Common/PageHeader"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { SubmodelItem } from "./SubmodelItem"
 
-interface GetPlayerKeycardsRequest {
+interface GetPlayerSubmodelsRequest {
     page: number
     page_size: number
     include_market_listed: boolean
 }
 
 interface GetAssetsResponse {
-    keycards: Keycard[]
+    submodel: MechSkin[] | WeaponSkin[]
     total: number
 }
 
@@ -44,7 +44,7 @@ export const SubmodelsHangar = () => {
     const getItems = useCallback(async () => {
         try {
             setIsLoading(true)
-            const resp = await send<GetAssetsResponse, GetPlayerKeycardsRequest>(GameServerKeys.GetPlayerKeycards, {
+            const resp = await send<GetAssetsResponse, GetPlayerSubmodelsRequest>(GameServerKeys.GetSubmodels, {
                 page,
                 page_size: pageSize,
                 include_market_listed: true,
@@ -57,10 +57,10 @@ export const SubmodelsHangar = () => {
 
             if (!resp) return
             setLoadError(undefined)
-            setKeycards(resp.keycards)
+            setSubmodels(resp.submodel)
             setTotalItems(resp.total)
         } catch (e) {
-            const message = typeof e === "string" ? e : "Failed to get keycards."
+            const message = typeof e === "string" ? e : "Failed to get submodels."
             setLoadError(message)
             console.error(e)
         } finally {
@@ -112,7 +112,7 @@ export const SubmodelsHangar = () => {
                         }}
                     >
                         {submodels.map((submodel, index) => (
-                            <SubmodelItem key={`storefront-submodel-${submodel.id}-${index}`} keycard={submodel} />
+                            <SubmodelItem key={`storefront-submodel-${submodel.id}-${index}`} submodel={submodel} />
                         ))}
                     </Box>
                 </Box>
@@ -138,7 +138,7 @@ export const SubmodelsHangar = () => {
                             height: "10rem",
                             opacity: 0.6,
                             filter: "grayscale(100%)",
-                            background: `url(${KeycardPNG})`,
+                            background: `url(${EmptyWarMachinesPNG})`,
                             backgroundRepeat: "no-repeat",
                             backgroundPosition: "top center",
                             backgroundSize: "contain",
@@ -154,11 +154,11 @@ export const SubmodelsHangar = () => {
                             textAlign: "center",
                         }}
                     >
-                        {"You don't have any keycards."}
+                        {"You don't have any submodels."}
                     </Typography>
 
                     <FancyButton
-                        to={`/marketplace/keycards`}
+                        to={`/marketplace/submodels`}
                         clipThingsProps={{
                             clipSize: "9px",
                             backgroundColor: theme.factionTheme.primary,
@@ -205,15 +205,15 @@ export const SubmodelsHangar = () => {
                         title="KEY CARDS"
                         description={
                             <Typography sx={{ fontSize: "1.85rem" }}>
-                                The keycards that you have on Supremacy are shown here. If you don&apos;t see your keycards here, you may need to transfer them
-                                from{" "}
+                                The submodels that you have on Supremacy are shown here. If you don&apos;t see your submodels here, you may need to transfer
+                                them from{" "}
                                 <a rel="noreferrer" target="_blank" href={`${PASSPORT_WEB}profile/${user.username}/achievements`}>
                                     XSYN
                                 </a>{" "}
                                 to Supremacy.
                             </Typography>
                         }
-                        imageUrl={KeycardPNG}
+                        imageUrl={EmptyWarMachinesPNG}
                     ></PageHeader>
 
                     <TotalAndPageSizeOptions
