@@ -39,3 +39,15 @@ export interface FiatBillingHistoryItem {
     tax_dollars: number
     tax_cents: number
 }
+
+export interface ShoppingCart {
+    items: ShoppingCartItem[]
+    created_at: string
+    expires_at: string
+}
+
+export interface ShoppingCartItem {
+    id: string
+    quantity: number
+    product: FiatProduct
+}

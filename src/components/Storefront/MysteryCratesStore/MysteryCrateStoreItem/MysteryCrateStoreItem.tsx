@@ -272,6 +272,24 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate, setOpeningCrate, se
                                         Buy Now
                                     </Typography>
                                 </FancyButton>
+                                <FancyButton
+                                    onClick={() => toggleConfirmModalOpen(true)}
+                                    clipThingsProps={{
+                                        clipSize: "5px",
+                                        backgroundColor: colors.green,
+                                        opacity: 1,
+                                        border: { isFancy: true, borderColor: primaryColor, borderThickness: "1.5px" },
+                                        sx: { position: "relative", width: enlargedView ? "50%" : "100%", height: "100%" },
+                                    }}
+                                    sx={{ px: "1.6rem", py: enlargedView ? "1.1rem" : ".6rem" }}
+                                >
+                                    <Typography
+                                        variant={enlargedView ? "body1" : "caption"}
+                                        sx={{ fontFamily: fonts.nostromoBlack, color: theme.factionTheme.secondary }}
+                                    >
+                                        Add to Cart
+                                    </Typography>
+                                </FancyButton>
                             </Stack>
                         </Stack>
                     </Stack>

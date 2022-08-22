@@ -120,10 +120,16 @@ export enum GameServerKeys {
     SubMysteryCrate = "STORE:MYSTERY:CRATE:SUBSCRIBE",
     PurchaseMysteryCrate = "STORE:MYSTERY:CRATE:PURCHASE",
 
-    // FIAT
+    // Fiat
     FiatProductList = "FIAT:PRODUCT:LIST",
     FiatProductGet = "FIAT:PRODUCT:GET",
     FiatBillingHistoryList = "FIAT:BILLING_HISTORY:LIST",
+    FiatShoppingCartItemAdd = "FIAT:SHOPPING_CART:ITEM:ADD",
+    FiatShoppingCartItemRemove = "FIAT:SHOPPING_CART:ITEM:REMOVE",
+    FiatShoppingCartItemClear = "FIAT:SHOPPING_CART:ITEM:CLEAR",
+    FiatShoppingCartExpired = "FIAT:SHOPPING_CART:EXPIRED",
+    FiatShoppingCartUpdated = "FIAT:SHOPPING_CART:UPDATED",
+    FiatCheckoutSetup = "FIAT:CHECKOUT:SETUP",
 
     // Marketplace
     MarketplaceSalesList = "MARKETPLACE:SALES:LIST",

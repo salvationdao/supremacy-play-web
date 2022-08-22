@@ -416,6 +416,7 @@ export enum MysteryCrateType {
 
 export interface StorefrontMysteryCrate extends Images {
     id: string
+    fiat_product_id: string
     mystery_crate_type: MysteryCrateType
     price: string
     amount: number

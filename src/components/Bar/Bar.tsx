@@ -11,6 +11,7 @@ import { hexToRGB, timeSinceInWords } from "../../helpers"
 import { useTimer } from "../../hooks"
 import { SvgDisconnected } from "../../assets"
 import { Quests } from "./Quests/Quests"
+import { ShoppingCart } from "./ShoppingCart/ShoppingCart"
 
 const Countdown = ({ endTime }: { endTime: Date }) => {
     const { totalSecRemain } = useTimer(endTime)
@@ -155,6 +156,7 @@ const BarContent = ({ userID, user }: { userID?: string; user: User }) => {
             {/* {userID && <Enlist />} */}
             {userID && <WalletDetails />}
             {userID && <Quests />}
+            {userID && <ShoppingCart />}
             {userID && <Messages />}
             <ProfileCard userID={userID} user={user} />
         </>

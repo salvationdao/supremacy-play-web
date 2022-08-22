@@ -40,6 +40,7 @@ import { colors, fonts } from "./theme/theme"
 import { LeftDrawer } from "./components/LeftDrawer/LeftDrawer"
 import { ArenaListener, ArenaProvider } from "./containers/arena"
 import { HotkeyProvider } from "./containers/hotkeys"
+import { FiatProvider } from "./containers/fiat"
 
 const AppInner = () => {
     const { isServerDown, serverConnectedBefore, firstConnectTimedOut } = useSupremacy()
@@ -236,12 +237,14 @@ const App = () => {
                                                                     <OverlayTogglesProvider>
                                                                         <MiniMapProvider>
                                                                             <HotkeyProvider>
-                                                                                <UserUpdater />
-                                                                                <Switch>
-                                                                                    <Route path="/404" exact component={NotFoundPage} />
-                                                                                    <Route path="/login-redirect" exact component={LoginRedirect} />
-                                                                                    <Route path="" component={AppInner} />
-                                                                                </Switch>
+                                                                                <FiatProvider>
+                                                                                    <UserUpdater />
+                                                                                    <Switch>
+                                                                                        <Route path="/404" exact component={NotFoundPage} />
+                                                                                        <Route path="/login-redirect" exact component={LoginRedirect} />
+                                                                                        <Route path="" component={AppInner} />
+                                                                                    </Switch>
+                                                                                </FiatProvider>
                                                                             </HotkeyProvider>
                                                                         </MiniMapProvider>
                                                                     </OverlayTogglesProvider>
