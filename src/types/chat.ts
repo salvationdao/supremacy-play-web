@@ -135,3 +135,16 @@ export interface SystemBanMessageData {
 export interface NewBattleMessageData {
     battle_number: number
 }
+
+export interface IncomingMessages {
+    faction: string | null
+    messages: ChatMessageType[]
+}
+
+export enum SplitOptionType {
+    Tabbed = "TABBED",
+    Split = "SPLIT",
+    None = "NONE",
+}
+
+export type FontSizeType = 0.8 | 1.2 | 1.35

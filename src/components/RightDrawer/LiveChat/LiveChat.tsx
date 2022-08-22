@@ -7,7 +7,7 @@ import { useTheme } from "../../../containers/theme"
 import { acronym, shadeColor } from "../../../helpers"
 import { zoomEffect } from "../../../theme/keyframes"
 import { colors, fonts } from "../../../theme/theme"
-import { ChatMessageType } from "../../../types/chat"
+import { ChatMessageType, SplitOptionType } from "../../../types/chat"
 import { WindowPortal } from "../../Common/WindowPortal/WindowPortal"
 import { ChatMessages } from "./ChatMessages/ChatMessages"
 import { ChatSend } from "./ChatSend/ChatSend"
@@ -27,7 +27,7 @@ export const LiveChat = () => {
                     }}
                 >
                     <Stack sx={{ width: "100%", height: "100%", overflow: "hidden" }}>
-                        {splitOption == "split" ? <SplitLayout /> : <TabbedLayout />}
+                        {splitOption === SplitOptionType.Split ? <SplitLayout /> : <TabbedLayout />}
                         <AdditionalOptionsButton />
                     </Stack>
                 </WindowPortal>
@@ -56,7 +56,7 @@ export const LiveChat = () => {
 
     return (
         <Stack sx={{ width: "100%", height: "100%", overflow: "hidden" }}>
-            {splitOption == "split" ? <SplitLayout /> : <TabbedLayout />}
+            {splitOption === SplitOptionType.Split ? <SplitLayout /> : <TabbedLayout />}
             <AdditionalOptionsButton />
         </Stack>
     )

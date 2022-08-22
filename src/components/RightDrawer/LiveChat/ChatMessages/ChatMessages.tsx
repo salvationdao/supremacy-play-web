@@ -2,10 +2,20 @@ import { Box, Fade, IconButton, Stack, Typography } from "@mui/material"
 import { useCallback, useLayoutEffect, useMemo, useRef, useState } from "react"
 import { PunishMessage, TextMessage } from "../../.."
 import { SvgScrolldown } from "../../../../assets"
-import { FontSizeType, SplitOptionType, useAuth, useChat, useSupremacy } from "../../../../containers"
+import { useAuth, useChat, useSupremacy } from "../../../../containers"
 import { checkIfIsEmoji } from "../../../../helpers"
 import { colors } from "../../../../theme/theme"
-import { ChatMessageType, Faction, NewBattleMessageData, PunishMessageData, SystemBanMessageData, TextMessageData, User } from "../../../../types"
+import {
+    ChatMessageType,
+    Faction,
+    FontSizeType,
+    NewBattleMessageData,
+    PunishMessageData,
+    SplitOptionType,
+    SystemBanMessageData,
+    TextMessageData,
+    User,
+} from "../../../../types"
 import { BanProposal } from "../BanProposal/BanProposal"
 import { GlobalAnnouncement, GlobalAnnouncementType } from "../GlobalAnnouncement"
 import { NewBattleMessage } from "./MessageTypes/NewBattleMessage"
@@ -104,7 +114,7 @@ const ChatMessagesInner = ({
 
     return (
         <>
-            {globalAnnouncement && (splitOption == "tabbed" || (splitOption == "split" && faction_id == null)) && (
+            {globalAnnouncement && (splitOption === SplitOptionType.Tabbed || (splitOption === SplitOptionType.Split && faction_id == null)) && (
                 <GlobalAnnouncement globalAnnouncement={globalAnnouncement} />
             )}
 

@@ -7,16 +7,7 @@ import { parseString } from "../helpers"
 import { useToggle } from "../hooks"
 import { useGameServerSubscription, useGameServerSubscriptionFaction } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
-import { BanProposalStruct, ChatMessageType, TextMessageData, User } from "../types"
-
-export interface IncomingMessages {
-    faction: string | null
-    messages: ChatMessageType[]
-}
-
-export type SplitOptionType = "tabbed" | "split" | null
-
-export type FontSizeType = 0.8 | 1.2 | 1.35
+import { BanProposalStruct, ChatMessageType, FontSizeType, IncomingMessages, SplitOptionType, TextMessageData, User } from "../types"
 
 export const ChatContainer = createContainer(() => {
     const { sendBrowserNotification } = useGlobalNotifications()
@@ -27,7 +18,7 @@ export const ChatContainer = createContainer(() => {
     const [tabValue, setTabValue] = useState(0)
 
     // Chat settings
-    const [splitOption, setSplitOption] = useState<SplitOptionType>((localStorage.getItem("chatSplitOption") as SplitOptionType) || "tabbed")
+    const [splitOption, setSplitOption] = useState<SplitOptionType>((localStorage.getItem("chatSplitOption") as SplitOptionType) || SplitOptionType.Tabbed)
     const [filterSystemMessages, toggleFilterSystemMessages] = useToggle(localStorage.getItem("chatFilterSystemMessages") == "true")
     const [fontSize, setFontSize] = useState<FontSizeType>(parseString(localStorage.getItem("chatFontSize2"), 1.2) as FontSizeType)
 
@@ -91,7 +82,7 @@ export const ChatContainer = createContainer(() => {
     )
 
     useEffect(() => {
-        if (splitOption == "split") {
+        if (splitOption === SplitOptionType.Split) {
             setGlobalChatUnread(0)
             setFactionChatUnread(0)
             return
@@ -141,14 +132,14 @@ export const ChatContainer = createContainer(() => {
             })
 
             if (faction === null) {
-                if (tabValue !== 0 && !isPastMessages && splitOption == "tabbed") setGlobalChatUnread((prev) => prev + newMessagesCount)
+                if (tabValue !== 0 && !isPastMessages && splitOption === SplitOptionType.Tabbed) setGlobalChatUnread((prev) => prev + newMessagesCount)
                 setGlobalChatMessages((prev) => {
                     // Buffer the messages
                     const newArray = [...prev, ...newMessages]
                     return newArray.slice(newArray.length - MESSAGES_BUFFER_SIZE, newArray.length)
                 })
             } else {
-                if (tabValue !== 1 && !isPastMessages && splitOption == "tabbed") setFactionChatUnread((prev) => prev + newMessagesCount)
+                if (tabValue !== 1 && !isPastMessages && splitOption === SplitOptionType.Tabbed) setFactionChatUnread((prev) => prev + newMessagesCount)
                 setFactionChatMessages((prev) => {
                     // Buffer the messages
                     const newArray = [...prev, ...newMessages]
@@ -161,10 +152,7 @@ export const ChatContainer = createContainer(() => {
 
     const updateMessageHandler = useCallback(
         (updatedMessage: ChatMessageType, faction: string | null): boolean => {
-            const genericUpdate = (
-                chatMessages: ChatMessageType[],
-                setChatMessages: (value: ((prevState: ChatMessageType[]) => ChatMessageType[]) | ChatMessageType[]) => void,
-            ) => {
+            const genericUpdate = (chatMessages: ChatMessageType[], setChatMessages: React.Dispatch<React.SetStateAction<ChatMessageType[]>>) => {
                 const updatedArr = [...chatMessages]
                 const i = updatedArr.findIndex((m) => m.id === updatedMessage.id)
                 if (i === -1) return false
@@ -172,6 +160,7 @@ export const ChatContainer = createContainer(() => {
                 setChatMessages(updatedArr)
                 return true
             }
+
             //global chat
             if (!faction) {
                 return genericUpdate(globalChatMessages, setGlobalChatMessages)

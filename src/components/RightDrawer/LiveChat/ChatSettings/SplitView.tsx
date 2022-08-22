@@ -1,7 +1,8 @@
 import { Stack, ToggleButton, ToggleButtonGroup, Typography } from "@mui/material"
 import { useCallback, MouseEvent } from "react"
 import { SvgChatSplit, SvgChatTabbed } from "../../../../assets"
-import { SplitOptionType, useChat } from "../../../../containers"
+import { useChat } from "../../../../containers"
+import { SplitOptionType } from "../../../../types"
 
 export const SplitView = () => {
     const { splitOption, setSplitOption } = useChat()
