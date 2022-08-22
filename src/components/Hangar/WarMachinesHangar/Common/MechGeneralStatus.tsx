@@ -1,4 +1,4 @@
-import { Box, Button, Stack, Typography } from "@mui/material"
+import { Box, Stack, Typography } from "@mui/material"
 import { useCallback, useState } from "react"
 import { SvgRepair } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
@@ -157,69 +157,56 @@ export const MechGeneralStatus = ({
                         sx={{ position: "absolute", left: "100%", top: "50%", transform: "translateY(-50%)", px: ".4rem", pb: ".3rem" }}
                     >
                         {mechDetails && mechStatus?.status === MechStatusEnum.Damaged && (
-                            <Button
-                                sx={{ p: 0, color: "#FFFFFF", minWidth: 0, backgroundColor: colors.orange }}
+                            <Stack
+                                direction="row"
+                                spacing=".3rem"
+                                alignItems="center"
                                 onClick={(e) => {
                                     e.preventDefault()
                                     e.stopPropagation()
                                     setDefaultOpenSelfRepair(true)
                                     setRepairMechModalOpen(true)
                                 }}
+                                sx={{
+                                    p: ".1rem .6rem",
+                                    pt: ".2rem",
+                                    borderRadius: 0.5,
+                                    backgroundColor: colors.orange,
+                                    ":hover": { transform: "scale(1.05)" },
+                                }}
                             >
-                                <Stack
-                                    direction="row"
-                                    spacing=".3rem"
-                                    alignItems="center"
-                                    sx={{
-                                        p: ".1rem .6rem",
-                                        pt: ".2rem",
-                                        borderRadius: 0.5,
-                                        ":hover": { transform: "scale(1.05)" },
-                                    }}
-                                >
-                                    <SvgRepair size="1.1rem" />
-                                    <Typography variant="subtitle1" sx={{ whiteSpace: "nowrap", lineHeight: 1, fontWeight: "fontWeightBold" }}>
-                                        REPAIR
-                                    </Typography>
-                                </Stack>
-                            </Button>
+                                <SvgRepair size="1.1rem" />
+                                <Typography variant="subtitle1" sx={{ whiteSpace: "nowrap", lineHeight: 1, fontWeight: "fontWeightBold" }}>
+                                    REPAIR
+                                </Typography>
+                            </Stack>
                         )}
 
                         {mechDetails && mechStatus?.status === MechStatusEnum.Damaged && (
-                            <Button
-                                variant="contained"
-                                sx={{
-                                    p: 0,
-                                    color: "#FFFFFF",
-                                    minWidth: 0,
-                                    opacity: repairOffer ? 0.6 : 1,
-                                    backgroundColor: repairOffer ? colors.grey : colors.blue2,
-                                }}
-                                disabled={!!repairOffer}
+                            <Stack
+                                direction="row"
+                                spacing=".3rem"
+                                alignItems="center"
                                 onClick={(e) => {
                                     e.preventDefault()
                                     e.stopPropagation()
                                     setDefaultOpenSelfRepair(false)
                                     setRepairMechModalOpen(true)
                                 }}
+                                sx={{
+                                    p: ".1rem .6rem",
+                                    pt: ".2rem",
+                                    opacity: repairOffer ? 0.6 : 1,
+                                    backgroundColor: repairOffer ? colors.grey : colors.blue2,
+                                    borderRadius: 0.5,
+                                    ":hover": { transform: "scale(1.05)" },
+                                }}
                             >
-                                <Stack
-                                    direction="row"
-                                    spacing=".3rem"
-                                    alignItems="center"
-                                    sx={{
-                                        p: ".1rem .6rem",
-                                        pt: ".2rem",
-                                        borderRadius: 0.5,
-                                        ":hover": { transform: "scale(1.05)" },
-                                    }}
-                                >
-                                    <SvgRepair size="1.1rem" />
-                                    <Typography variant="subtitle1" sx={{ whiteSpace: "nowrap", lineHeight: 1, fontWeight: "fontWeightBold" }}>
-                                        {repairOffer ? "JOB POSTED" : "POST JOB"}
-                                    </Typography>
-                                </Stack>
-                            </Button>
+                                <SvgRepair size="1.1rem" />
+                                <Typography variant="subtitle1" sx={{ whiteSpace: "nowrap", lineHeight: 1, fontWeight: "fontWeightBold" }}>
+                                    {repairOffer ? "JOB POSTED" : "POST JOB"}
+                                </Typography>
+                            </Stack>
                         )}
                     </Stack>
                 </Box>
