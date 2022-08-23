@@ -1,10 +1,13 @@
+import { useState, useEffect, useCallback } from "react"
 import { Box, Stack, Typography, TextField } from "@mui/material"
 import { SvgSupToken } from "../../../../assets"
 import { IS_TESTING_MODE } from "../../../../constants"
 import { generatePriceText } from "../../../../helpers"
 import { colors, fonts } from "../../../../theme/theme"
+import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
 import { ShoppingCart, ShoppingCartItem } from "../../../../types/fiat"
 import { ClipThing } from "../../../Common/ClipThing"
+import { GameServerKeys } from "../../../../keys"
 
 interface Props {
     shoppingCart?: ShoppingCart
@@ -13,6 +16,13 @@ interface Props {
 }
 
 export const ShoppingCartTable = ({ shoppingCart, primaryColor, backgroundColor }: Props) => {
+    let totalDollars = 0
+    let totalCents = 0
+    shoppingCart?.items.forEach((item) => {
+        totalDollars += item.product.price_dollars * item.quantity
+        totalCents += item.product.price_cents * item.quantity
+    })
+
     return (
         <Box sx={{ width: "500px" }}>
             <Stack direction="row" justifyContent="space-between">
@@ -60,7 +70,7 @@ export const ShoppingCartTable = ({ shoppingCart, primaryColor, backgroundColor 
                             fontFamily: fonts.shareTech,
                         }}
                     >
-                        $USD 2,000.00
+                        {generatePriceText(totalDollars, totalCents)}
                     </Typography>
                 </Stack>
             </Stack>
@@ -75,6 +85,35 @@ interface ShoppingCartRowProps {
 }
 
 const ShoppingCartRow = ({ item, primaryColor, backgroundColor }: ShoppingCartRowProps) => {
+    const { send } = useGameServerCommandsUser("/user_commander")
+
+    const [quantity, setQuantity] = useState(item.quantity)
+    const [updating, setUpdating] = useState(false)
+    const [unsaved, setUnsaved] = useState(false)
+
+    const updateCart = useCallback(async () => {
+        try {
+            setUpdating(true)
+            const resp = await send(GameServerKeys.FiatShoppingCartItemUpdate, {
+                id: item.id,
+                quantity,
+            })
+
+            if (!resp) return
+            setUnsaved(false)
+        } catch (err) {
+            console.error(err)
+        } finally {
+            setUpdating(false)
+        }
+    }, [quantity, send, item.id])
+
+    useEffect(() => {
+        if (!unsaved || updating) return
+        const t = setTimeout(updateCart, 1000)
+        return () => clearTimeout(t)
+    }, [unsaved, updating, updateCart])
+
     return (
         <Stack direction="row" spacing={1} sx={{ borderBottom: `1px solid ${primaryColor}`, pb: "2rem" }}>
             {/* TODO: Product Image */}
@@ -125,7 +164,14 @@ const ShoppingCartRow = ({ item, primaryColor, backgroundColor }: ShoppingCartRo
                                     },
                                     ".MuiOutlinedInput-notchedOutline": { border: "unset" },
                                 }}
-                                value={item.quantity}
+                                value={quantity}
+                                disabled={updating}
+                                onChange={(e) => {
+                                    const newValue = parseInt(e.target.value)
+                                    if (isNaN(newValue)) return
+                                    setQuantity(newValue)
+                                    setUnsaved(true)
+                                }}
                             />
                         </Stack>
                     </ClipThing>
