@@ -104,7 +104,7 @@ export const PlayerProfilePage = () => {
     const { send } = useGameServerCommands("/public/commander")
     const { send: userSend } = useGameServerCommandsUser("/user_commander")
     const { newSnackbarMessage } = useGlobalNotifications()
-    const { leftDrawerActiveTabID, rightDrawerActiveTabID } = useOverlayToggles()
+    const { rightDrawerActiveTabID } = useOverlayToggles()
     const isMe = `${user?.gid}` === playerGID
 
     const rankDeets = useMemo(() => (profile?.player.rank ? getUserRankDeets(profile?.player.rank, "1.6rem", "1.6rem") : undefined), [profile?.player.rank])
@@ -439,7 +439,7 @@ export const PlayerProfilePage = () => {
                     background: primaryColor,
                     // if drawers opened and less than 1700 => column
                     "@media (max-width:1700px)": {
-                        flexDirection: leftDrawerActiveTabID && rightDrawerActiveTabID ? "column" : "row",
+                        flexDirection: rightDrawerActiveTabID ? "column" : "row",
                     },
 
                     "@media (max-width:1300px)": {
@@ -458,8 +458,8 @@ export const PlayerProfilePage = () => {
                         minWidth: "30rem",
                         maxWidth: "62rem",
                         "@media (max-width:1700px)": {
-                            maxWidth: leftDrawerActiveTabID && rightDrawerActiveTabID ? "100%" : "62rem",
-                            height: leftDrawerActiveTabID && rightDrawerActiveTabID ? "50%" : "100%",
+                            maxWidth: rightDrawerActiveTabID ? "100%" : "62rem",
+                            height: rightDrawerActiveTabID ? "50%" : "100%",
                         },
                         "@media (max-width:1300px)": {
                             width: "100%",
