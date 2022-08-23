@@ -26,7 +26,7 @@ export const SectionFactions = ({ battleEndDetail }: { battleEndDetail: BattleEn
             </Box>
 
             {winning_faction_id_order && winning_faction_id_order.length > 0 ? (
-                <Stack spacing="1.2rem" sx={{ pl: ".8rem" }}>
+                <Stack spacing="1.2rem" sx={{ px: "1.2rem" }}>
                     {winning_faction_id_order.map((fid, index) => {
                         const rank = index + 1
                         const faction = getFaction(fid)
