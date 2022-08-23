@@ -154,7 +154,7 @@ const WarMachineStatsInner = () => {
                     }}
                 >
                     <Box sx={{ direction: "ltr" }}>
-                        <Stack spacing="1rem" sx={{ ml: "-2rem", transform: "skew(-6deg)" }}>
+                        <Stack spacing="1rem" sx={{ transform: "skew(-6deg)" }}>
                             {ownedMiniMechs.length > 0 && (
                                 <Fade in>
                                     <Stack spacing="-1.2rem" direction="row" alignItems="center">
