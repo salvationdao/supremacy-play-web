@@ -212,10 +212,10 @@ export const NotificationPreferencesInner = ({ notificationPreferences, setNotif
                                     setAgreeToBeCharged(e.currentTarget.checked)
                                 }}
                                 sx={{
-                                    transform: "scale(1.4)",
-                                    color: colors.neonBlue,
-                                    ".Mui-checked, .MuiSvgIcon-root": { color: `${colors.neonBlue} !important` },
-                                    ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${colors.neonBlue}50 !important` },
+                                    "& > .MuiSvgIcon-root": { width: "2.8rem", height: "2.8rem" },
+                                    color: colors.yellow,
+                                    ".Mui-checked, .MuiSvgIcon-root": { color: `${colors.yellow} !important` },
+                                    ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${colors.yellow}50 !important` },
                                 }}
                             />
                         </Stack>

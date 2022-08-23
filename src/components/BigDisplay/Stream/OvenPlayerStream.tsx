@@ -1,11 +1,12 @@
 import { Stack } from "@mui/material"
 import OvenPlayer from "ovenplayer"
-import { useEffect, useRef } from "react"
-import { useGlobalNotifications, useStream } from "../../../containers"
+import { useCallback, useEffect, useRef } from "react"
+import { useGlobalNotifications } from "../../../containers"
+import { useOvenStream } from "../../../containers/oven"
 import { parseString } from "../../../helpers"
 import { siteZIndex } from "../../../theme/theme"
-import { StreamService } from "../../../types"
 
+// set resoltion opts when stream base url changes
 interface OvenPlayerSource {
     type: "webrtc" | "llhls" | "hls" | "lldash" | "dash" | "mp4"
     file: string
@@ -13,6 +14,8 @@ interface OvenPlayerSource {
     framerate?: number
     sectionStart?: number
     sectionEnd?: number
+    resolution?: string
+    index?: number
 }
 
 type OvenPlayerPlayList = OvenPlayerSource[][]
@@ -71,35 +74,92 @@ interface OvenPlayerInstance {
 
 export const OvenplayerStream = () => {
     const { newSnackbarMessage } = useGlobalNotifications()
-    const { isMute, volume, currentStream, setCurrentPlayingStreamHost, isEnlarged } = useStream()
+    const {
+        isMute,
+        volume,
+        currentOvenStream,
+        setCurrentOvenPlayingStreamHost,
+        isEnlarged,
+
+        setOvenResolutions,
+        selectedOvenResolution,
+        setSelectedOvenResolution,
+    } = useOvenStream()
     const ovenPlayer = useRef<OvenPlayerInstance>()
+
+    const getSourcerIdx = (sources: OvenPlayerSource[], resolution: string) => {
+        //  get source with index
+        const src = sources.filter((s: OvenPlayerSource, i) => {
+            if (s.label === resolution) {
+                return { source: s, index: i }
+            }
+        })[0]
+
+        return src.index || 0
+    }
+    const changeResolutionSource = useCallback((resolution: string) => {
+        if (ovenPlayer && ovenPlayer.current) {
+            // get availible sources from oven palyer (resolutions)
+            const availSources = ovenPlayer.current.getSources()
+            if (Array.isArray(availSources)) {
+                const _availSources = availSources as OvenPlayerSource[]
+                const idx = getSourcerIdx(_availSources, resolution)
+
+                // set new source
+                ovenPlayer.current.setCurrentSource(idx)
+            }
+        }
+    }, [])
+
+    // watch for res changes
+    useEffect(() => {
+        changeResolutionSource(selectedOvenResolution || "")
+    }, [selectedOvenResolution, changeResolutionSource])
 
     // Load the stream when its changed
     useEffect(() => {
         if (document.getElementById("oven-player")) {
-            // Uf already setup, then return
-            if (!currentStream || ovenPlayer.current || currentStream.service !== StreamService.OvenMediaEngine) return
+            // if already setup, then return
+            if (!currentOvenStream) return
 
-            // Load oven player
-            const source: OvenPlayerSource = {
-                label: currentStream.name,
-                type: "webrtc",
-                file: currentStream.url,
+            if (ovenPlayer.current) {
+                ovenPlayer.current = undefined
+                return
             }
+
+            // build sources with different resolutions
+            const _sources: OvenPlayerSource[] = currentOvenStream.available_resolutions.map((ovs) => {
+                const isDefault = ovs === currentOvenStream.default_resolution
+                const streamURL = isDefault ? currentOvenStream.base_url : `${currentOvenStream.base_url}_${ovs}`
+                return {
+                    label: ovs,
+                    type: "webrtc",
+                    file: streamURL,
+                    resolution: ovs,
+                }
+            })
 
             const newOvenPlayer = OvenPlayer.create("oven-player", {
                 autoStart: true,
                 controls: false,
                 mute: isMute,
                 volume: parseString(localStorage.getItem("streamVolume"), 0.3) * 100,
-                sources: [source],
+                sources: _sources,
                 autoFallback: true,
                 disableSeekUI: true,
             })
 
             newOvenPlayer.on("ready", () => {
                 console.log("ovenplayer ready")
-                setCurrentPlayingStreamHost(currentStream.host)
+                setCurrentOvenPlayingStreamHost(currentOvenStream.name)
+                setOvenResolutions(currentOvenStream.available_resolutions)
+
+                //  set resolution
+                const prevRes = localStorage.getItem(`${currentOvenStream.name}-resolution`) || "720"
+                const osSources = newOvenPlayer.getSources() as OvenPlayerSource[]
+                const idx = getSourcerIdx(osSources, prevRes)
+                newOvenPlayer.setCurrentSource(idx)
+                setSelectedOvenResolution(prevRes)
             })
 
             newOvenPlayer.on("error", (err: Error) => {
@@ -117,7 +177,7 @@ export const OvenplayerStream = () => {
             }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [currentStream, setCurrentPlayingStreamHost])
+    }, [currentOvenStream, setCurrentOvenPlayingStreamHost])
 
     useEffect(() => {
         if (volume <= 0) return
@@ -130,7 +190,7 @@ export const OvenplayerStream = () => {
 
     return (
         <Stack
-            key={currentStream?.stream_id}
+            key={currentOvenStream?.name}
             sx={{
                 position: "relative",
                 width: "100%",
