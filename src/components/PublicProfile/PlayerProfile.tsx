@@ -454,6 +454,7 @@ export const PlayerProfilePage = () => {
                         maxWidth: "62rem",
                         "@media (max-width:1300px)": {
                             width: "100%",
+                            maxWidth: "100%",
                             height: "50%",
                         },
                     }}

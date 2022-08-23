@@ -16,6 +16,7 @@ import { MechPage } from "../pages/MechPage"
 import { StorefrontPage } from "../pages/StorefrontPage"
 import { WeaponPage } from "../pages/WeaponPage"
 import { colors } from "../theme/theme"
+import { Landing } from "../components/PublicProfile/Landing"
 
 // ************
 // ** ROUTES **
@@ -167,6 +168,17 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         path: "/profile/:playerGID",
         exact: true,
         Component: PlayerProfilePage,
+        requireAuth: false,
+        requireFaction: false,
+        enable: true,
+    },
+
+    // Landing
+    landing: {
+        id: "landing",
+        path: "/landing",
+        exact: true,
+        Component: Landing,
         requireAuth: false,
         requireFaction: false,
         enable: true,
