@@ -30,8 +30,8 @@ export const MiniMapContainer = createContainer(() => {
 
     // Map
     const [mapElement, setMapElement] = useState<HTMLDivElement | null>(null)
-    const gridWidth = useMemo(() => (map ? Math.max(map.width / map.cells_x, 50) : 50), [map])
-    const gridHeight = useMemo(() => (map ? Math.max(map.height / map.cells_y, 50) : 50), [map])
+    const gridWidth = useMemo(() => (map ? map.width / map.cells_x : 50), [map])
+    const gridHeight = useMemo(() => (map ? map.height / map.cells_y : 50), [map])
 
     // Map triggers
     const [winner, setWinner] = useState<WinnerAnnouncementResponse>()
