@@ -171,6 +171,7 @@ export interface MechSkin extends Collection, Images {
     label: string
     created_at: Date
     equipped_on?: string
+    level: number
 }
 
 export interface MechAnimation extends Collection, Images {

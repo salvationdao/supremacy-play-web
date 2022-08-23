@@ -221,6 +221,7 @@ export const BarStat = ({
         if (!parsedCurrent && !parsedBoosted) return null
 
         return (
+            <TooltipHelper text={parsedBoosted && parsedBoosted != parsedCurrent ? `The attached submodel has boosted this stat from ${parsedCurrent} to ${parsedBoosted}` : ""}>
             <Box>
                 <Stack direction="row" alignItems="center" justifyContent="space-between" spacing=".6rem">
                     <Stack spacing=".5rem" direction="row" alignItems="center">
@@ -242,23 +243,25 @@ export const BarStat = ({
                         </Typography>
                     </Stack>
 
-                    <Typography
-                        variant="caption"
-                        sx={{
-                            fontSize,
-                            textAlign: "end",
-                            fontFamily: fonts.nostromoBold,
-                            display: "-webkit-box",
-                            overflow: "hidden",
-                            overflowWrap: "anywhere",
-                            textOverflow: "ellipsis",
-                            WebkitLineClamp: 1,
-                            WebkitBoxOrient: "vertical",
-                        }}
-                    >
-                        {parsedBoosted || parsedCurrent}
-                        {unit}
-                    </Typography>
+
+                        <Typography
+                            variant="caption"
+                            sx={{
+                                fontSize,
+                                textAlign: "end",
+                                fontFamily: fonts.nostromoBold,
+                                display: "-webkit-box",
+                                overflow: "hidden",
+                                overflowWrap: "anywhere",
+                                textOverflow: "ellipsis",
+                                WebkitLineClamp: 1,
+                                WebkitBoxOrient: "vertical",
+                                color: (parsedBoosted && parsedBoosted != parsedCurrent) ? "gold" : "white"
+                            }}
+                        >
+                            {parsedBoosted || parsedCurrent}
+                            {unit}
+                        </Typography>
                 </Stack>
 
                 <Box sx={{height: barHeight || ".7rem", backgroundColor: "#FFFFFF25", position: 'relative'}}>
@@ -284,6 +287,7 @@ export const BarStat = ({
                     />}
                 </Box>
             </Box>
+            </TooltipHelper>
         )
     }, [Icon, barHeight, current, fontSize, label, primaryColor, total, unit, boostedTo])
 }
