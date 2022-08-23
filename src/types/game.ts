@@ -34,31 +34,6 @@ export interface BattleZone {
     warnTime: number
 }
 
-export enum StreamService {
-    OvenMediaEngine = "OvenMediaEngine",
-    AntMedia = "AntMedia",
-    Softvelum = "Softvelum",
-    None = "None",
-}
-
-export interface Stream {
-    host: string
-    name: string
-    url: string
-    stream_id: string
-    region: string
-    resolution: string
-    bit_rates_k_bits: number
-    user_max: number
-    users_now: number
-    active: boolean
-    status: string
-    latitude: string
-    longitude: string
-    service: StreamService
-    distance?: number
-}
-
 export interface Dimension {
     width: number
     height: number

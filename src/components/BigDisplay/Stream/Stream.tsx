@@ -75,14 +75,13 @@ export const Stream = () => {
 export const StreamInner = () => {
     const { showTrailer } = useOverlayToggles()
     const { currentOvenStream } = useOvenStream()
-
-    const isGreenScreen = localStorage.getItem("greenScreen") === "true"
+    const isGreenScreen = useRef(localStorage.getItem("greenScreen") === "true")
 
     if (showTrailer) {
         return <Trailer />
     }
 
-    if (isGreenScreen) {
+    if (isGreenScreen.current) {
         return (
             <Box
                 sx={{
