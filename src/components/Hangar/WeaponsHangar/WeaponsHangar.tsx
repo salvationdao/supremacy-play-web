@@ -29,17 +29,18 @@ const sortOptions = [
 ]
 
 export interface GetWeaponsRequest {
+    search: string
     page: number
     page_size: number
     include_market_listed: boolean
     exclude_equipped?: boolean
+    exclude_mech_locked?: boolean
     sort_by: string
     sort_dir: string
     exclude_ids: string[]
     weapon_types: string[]
     rarities: string[]
     equipped_statuses: string[]
-    search: string
     stat_ammo?: GetWeaponStatFilter
     stat_damage?: GetWeaponStatFilter
     stat_damage_falloff?: GetWeaponStatFilter

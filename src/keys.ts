@@ -55,6 +55,7 @@ export enum GameServerKeys {
     GetPowerCores = "PLAYER:ASSET:POWER_CORE:LIST",
     GetPowerCoreDetails = "PLAYER:ASSET:POWER_CORE:DETAIL",
     GetUtilities = "PLAYER:ASSET:UTILITY:LIST",
+    GetUtilityDetails = "PLAYER:ASSET:UTILITY:DETAIL",
     TriggerMechStatusUpdate = "PLAYER:ASSET:MECH:STATUS:UPDATE",
     MechRename = "PLAYER:MECH:RENAME",
 

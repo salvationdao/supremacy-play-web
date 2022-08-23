@@ -784,14 +784,13 @@ const WeaponItem = ({ id, equipped, selected, onSelect }: WeaponItemProps) => {
             )}
             {selected && (
                 <SvgView
-                size="3rem"
+                    size="3rem"
                     sx={{
                         position: "absolute",
                         top: "2rem",
                         right: "2rem",
-                        opacity: 0.5
+                        opacity: 0.5,
                     }}
-                    
                 />
             )}
             <Stack direction="row" alignItems="stretch" padding="1rem">
@@ -805,7 +804,7 @@ const WeaponItem = ({ id, equipped, selected, onSelect }: WeaponItemProps) => {
                     >
                         <Box
                             component="img"
-                            src={weaponDetails?.image_url}
+                            src={weaponDetails.avatar_url || weaponDetails.image_url || weaponDetails.large_image_url}
                             sx={{
                                 position: "absolute",
                                 top: 0,

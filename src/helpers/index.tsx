@@ -439,6 +439,25 @@ export const calculateDutchAuctionEndPrice = ({ endAt, dropRate, startPrice }: {
     return Math.max(startPrice - dropRate * timeDiff(new Date(), endAt).minutes, 1)
 }
 
+export const getUtilityTypeColor = (utilityType: string | undefined) => {
+    if (!utilityType) return colors.neonBlue
+
+    switch (utilityType.toUpperCase()) {
+        case "SHIELD":
+            return colors.shield
+        case "ATTACK DRONE":
+            return colors.red
+        case "REPAIR DRONE":
+            return colors.green
+        case "ANTI MISSILE":
+            return colors.black2
+        case "ACCELERATOR":
+            return colors.silver
+        default:
+            return colors.neonBlue
+    }
+}
+
 export const getWeaponTypeColor = (weaponType: string | undefined) => {
     if (!weaponType) return colors.neonBlue
 

@@ -10,6 +10,14 @@ export enum MechStatusEnum {
     Damaged = "DAMAGED",
 }
 
+export enum UtilityType {
+    Shield = "SHIELD",
+    AttackDrone = "ATTACK DRONE",
+    RepairDrone = "REPAIR DRONE",
+    AntiMissile = "ANTI MISSILE",
+    Accelerator = "ACCELERATOR",
+}
+
 export enum WeaponType {
     Cannon = "Cannon",
     Sword = "Sword",
@@ -273,6 +281,8 @@ export interface Utility extends Collection, Images {
     genesis_token_id?: number
     equipped_on?: string
     type: string
+    locked_to_mech: boolean
+    slot_number?: number
 
     shield?: UtilityShield
     attack_drone?: UtilityAttackDrone

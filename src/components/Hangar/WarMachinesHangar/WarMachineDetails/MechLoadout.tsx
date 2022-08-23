@@ -1,6 +1,6 @@
 import { Box, Fade, Slide, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useState } from "react"
-import { SvgIntroAnimation, SvgOutroAnimation, SvgPowerCore, SvgSkin, SvgUtilities, SvgWeapons } from "../../../../assets"
+import { SvgIntroAnimation, SvgOutroAnimation, SvgPowerCore, SvgUtilities, SvgWeapons } from "../../../../assets"
 import { useGlobalNotifications } from "../../../../containers"
 import { getRarityDeets } from "../../../../helpers"
 import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
@@ -10,23 +10,14 @@ import { MechDetails, PowerCore, Utility, Weapon } from "../../../../types"
 import { FancyButton } from "../../../Common/FancyButton"
 import { MechLoadoutItem } from "../Common/MechLoadoutItem"
 import { MechLoadoutPowerCoreModal } from "./Modals/Loadout/MechLoadoutPowerCoreModal"
+import { MechLoadoutUtilityModal } from "./Modals/Loadout/MechLoadoutUtilityModal"
 import { MechLoadoutWeaponModal } from "./Modals/Loadout/MechLoadoutWeaponModal"
-
-interface LoadoutChanges {
-    power_core?: PowerCore
-    utility?: Utility
-    weapons: LoadoutWeapon[]
-}
-
-type LoadoutWeapon = EquipWeapon & {
-    weapon: Weapon
-}
 
 interface PlayerAssetMechEquipRequest {
     mech_id: string
     equip_mech_skin?: string
     equip_power_core?: string
-    equip_shield?: string
+    equip_utility: EquipUtility[]
     equip_weapons: EquipWeapon[]
 }
 
@@ -34,7 +25,7 @@ interface MechDetailsWithMaps extends MechDetails {
     weapons_map: Map<number, Weapon> // Map<slot_number, Weapon>
     changed_weapons_map: Map<number, Weapon>
     utility_map: Map<number, Utility> // Map<slot_number, utility>
-    changed_utility_map: Map<number, Weapon>
+    changed_utility_map: Map<number, Utility>
     changed_power_core?: PowerCore
 }
 
@@ -42,6 +33,19 @@ interface EquipWeapon {
     weapon_id: string
     slot_number: number
     inherit_skin: boolean
+}
+
+type LoadoutWeapon = EquipWeapon & {
+    weapon: Weapon
+}
+
+interface EquipUtility {
+    utility_id: string
+    slot_number: number
+}
+
+type LoadoutUtility = EquipUtility & {
+    utility: Utility
 }
 
 const generateLoadout = (newMechDetails: MechDetails): MechDetailsWithMaps => ({
@@ -53,7 +57,12 @@ const generateLoadout = (newMechDetails: MechDetails): MechDetailsWithMaps => ({
         ]),
     ),
     changed_weapons_map: new Map(),
-    utility_map: new Map((newMechDetails.utility || []).map((u, index) => [index, u])),
+    utility_map: new Map(
+        (newMechDetails.utility ? newMechDetails.utility.sort((u1, u2) => (u1.slot_number || 0) - (u2.slot_number || 0)) : []).map((u, index) => [
+            u.slot_number != null ? u.slot_number : index,
+            u,
+        ]),
+    ),
     changed_utility_map: new Map(),
 })
 
@@ -80,7 +89,10 @@ export const MechLoadout = ({ mechDetails }: { mechDetails: MechDetails }) => {
                 mech_id: mechDetails.id,
                 equip_mech_skin: undefined,
                 equip_power_core: undefined,
-                equip_shield: undefined,
+                equip_utility: Array.from(currLoadout.changed_utility_map, ([slotNumber, u]) => ({
+                    utility_id: u.id,
+                    slot_number: slotNumber,
+                })),
                 equip_weapons: Array.from(currLoadout.changed_weapons_map, ([slotNumber, w]) => ({
                     weapon_id: w.id,
                     slot_number: slotNumber,
@@ -104,12 +116,24 @@ export const MechLoadout = ({ mechDetails }: { mechDetails: MechDetails }) => {
 
     const addWeaponSelection = useCallback((ew: LoadoutWeapon) => {
         setCurrLoadout((prev) => {
-            const updated = prev.changed_weapons_map
+            const updated = new Map(prev.changed_weapons_map)
             updated.set(ew.slot_number, ew.weapon)
 
             return {
                 ...prev,
                 changed_weapons_map: updated,
+            }
+        })
+    }, [])
+
+    const addUtilitySelection = useCallback((eu: LoadoutUtility) => {
+        setCurrLoadout((prev) => {
+            const updated = new Map(prev.changed_utility_map)
+            updated.set(eu.slot_number, eu.utility)
+
+            return {
+                ...prev,
+                changed_utility_map: updated,
             }
         })
     }, [])
@@ -131,7 +155,6 @@ export const MechLoadout = ({ mechDetails }: { mechDetails: MechDetails }) => {
         weapons_map,
         changed_weapons_map,
         utility_slots,
-        utility,
         utility_map,
         changed_utility_map,
         power_core,
@@ -264,7 +287,6 @@ export const MechLoadout = ({ mechDetails }: { mechDetails: MechDetails }) => {
                 })}
 
                 {weapon_hardpoints &&
-                    weapons_map &&
                     weapon_hardpoints - weapons_map.size > 0 &&
                     new Array(weapon_hardpoints - weapons_map.size)
                         .fill(0)
@@ -272,25 +294,57 @@ export const MechLoadout = ({ mechDetails }: { mechDetails: MechDetails }) => {
                             <MechLoadoutItem key={index} label="WEAPON" primaryColor={colors.weapons} onClick={() => console.log("AAAAA")} isEmpty disabled />
                         ))}
 
-                {utility &&
-                    utility.length > 0 &&
-                    utility.map((w) => {
-                        return (
-                            <MechLoadoutItem
-                                key={w.id}
-                                imageUrl={w.image_url || w.avatar_url}
-                                videoUrls={[w.card_animation_url]}
-                                label={w.label}
-                                primaryColor={colors.utilities}
-                                Icon={SvgUtilities}
-                            />
-                        )
-                    })}
+                {Array.from(utility_map, ([slotNumber, u]) => {
+                    const utility = changed_utility_map.get(slotNumber) || u
+
+                    return (
+                        <MechLoadoutItem
+                            key={utility.id}
+                            slotNumber={slotNumber}
+                            imageUrl={utility.image_url || utility.avatar_url}
+                            videoUrls={[utility.card_animation_url]}
+                            label={utility.label}
+                            primaryColor={colors.utilities}
+                            Icon={SvgUtilities}
+                            rarity={getRarityDeets(utility.tier)}
+                            renderModal={(toggleShowLoadoutModal) => (
+                                <MechLoadoutUtilityModal
+                                    onClose={() => toggleShowLoadoutModal(false)}
+                                    onConfirm={(selectedUtility) =>
+                                        addUtilitySelection({
+                                            utility: selectedUtility,
+                                            utility_id: selectedUtility.id,
+                                            slot_number: slotNumber,
+                                        })
+                                    }
+                                    equipped={utility}
+                                    utilitiesAlreadyEquippedInOtherSlots={Array.from(changed_utility_map.values(), (u) => u.id)}
+                                />
+                            )}
+                            prevEquipped={(() => {
+                                if (!changed_utility_map.has(slotNumber)) return
+
+                                const previouslyEquipped = utility_map.get(slotNumber)
+                                if (!previouslyEquipped) return
+
+                                return {
+                                    slotNumber,
+                                    imageUrl: previouslyEquipped.image_url,
+                                    videoUrls: [previouslyEquipped.card_animation_url],
+                                    label: previouslyEquipped.label,
+                                    primaryColor: colors.utilities,
+                                    Icon: SvgUtilities,
+                                    rarity: getRarityDeets(previouslyEquipped.tier),
+                                    onClick: () => undoWeaponSelection(slotNumber),
+                                }
+                            })()}
+                        />
+                    )
+                })}
 
                 {utility_slots &&
-                    utility &&
-                    utility_slots - utility.length &&
-                    new Array(utility_slots - utility.length)
+                    utility_slots - utility_map.size &&
+                    new Array(utility_slots - utility_map.size)
                         .fill(0)
                         .map((_, index) => (
                             <MechLoadoutItem
@@ -320,8 +374,8 @@ export const MechLoadout = ({ mechDetails }: { mechDetails: MechDetails }) => {
                         videoUrls={[chassis_skin.card_animation_url]}
                         label={chassis_skin.label}
                         primaryColor={colors.chassisSkin}
-                        Icon={SvgSkin}
                         rarity={getRarityDeets(chassis_skin.tier)}
+                        hasSkin
                     />
                 ) : (
                     <MechLoadoutItem label="SUBMODEL" primaryColor={colors.chassisSkin} onClick={() => console.log("AAAAA")} isEmpty disabled />

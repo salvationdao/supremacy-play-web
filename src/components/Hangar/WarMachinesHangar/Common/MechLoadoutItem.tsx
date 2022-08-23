@@ -137,7 +137,7 @@ const MechLoadoutItemButton = ({
 
                     <Stack spacing=".3rem" direction="row" alignItems="center" sx={{ position: "absolute", top: ".1rem", left: ".5rem" }}>
                         {Icon && <Icon fill={primaryColor} size="1.8rem" />}
-                        {hasSkin && <SvgSkin fill={colors.chassisSkin} size="1.8rem" />}
+                        {hasSkin && <SvgSkin fill={colors.chassisSkin} size="1.4rem" />}
                     </Stack>
 
                     {slotNumber != null && (
