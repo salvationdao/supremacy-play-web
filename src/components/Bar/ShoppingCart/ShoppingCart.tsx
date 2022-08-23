@@ -1,6 +1,6 @@
 import { useRef } from "react"
 import { Stack, Box, IconButton, Badge } from "@mui/material"
-import { SvgShop } from "../../../assets"
+import { SvgShoppingCart } from "../../../assets"
 import { useFiat } from "../../../containers/fiat"
 import { ShoppingCartPopover } from "./ShoppingCartListing/ShoppingCartPopover"
 import { useToggle } from "../../../hooks"
@@ -37,7 +37,7 @@ export const ShoppingCart = () => {
                         }}
                     >
                         <IconButton onClick={() => togglePopoverOpen()}>
-                            <SvgShop size="2.2rem" />
+                            <SvgShoppingCart size="2.2rem" />
                         </IconButton>
                     </Badge>
                 </Box>

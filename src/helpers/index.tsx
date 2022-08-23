@@ -552,7 +552,7 @@ export const generatePriceText = (dollars: number, cents: number) => {
     const totalDollars = dollars + Math.floor(cents / 100)
     const remainingCents = cents % 100
 
-    return `$${totalDollars}.${remainingCents < 10 ? `0${remainingCents}` : remainingCents}`
+    return `$USD ${totalDollars}.${remainingCents < 10 ? `0${remainingCents}` : remainingCents}`
 }
 
 // Converts number to alphabet letter. E.g. 0 -> "a"

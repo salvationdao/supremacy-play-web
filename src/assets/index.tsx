@@ -52,6 +52,7 @@ import Send from "!@svgr/webpack!./svg/Send.svg"
 import Shield from "!@svgr/webpack!./svg/Shield.svg"
 import ShieldRegen from "!@svgr/webpack!./svg/ShieldRegen.svg"
 import Shop from "!@svgr/webpack!./svg/Shop.svg"
+import ShoppingCart from "!@svgr/webpack!./svg/ShoppingCart.svg"
 import Skin from "!@svgr/webpack!./svg/Skin.svg"
 import Speed from "!@svgr/webpack!./svg/Speed.svg"
 import Spread from "!@svgr/webpack!./svg/Spread.svg"
@@ -663,6 +664,12 @@ export const SvgAssets: React.VoidFunctionComponent<SvgWrapperProps> = (props) =
 export const SvgShop: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <Shop />
+    </SvgWrapper>
+)
+
+export const SvgShoppingCart: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <ShoppingCart />
     </SvgWrapper>
 )
 

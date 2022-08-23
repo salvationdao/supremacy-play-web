@@ -1,6 +1,7 @@
 import { Box, Stack, Typography, TextField } from "@mui/material"
 import { SvgSupToken } from "../../../../assets"
 import { IS_TESTING_MODE } from "../../../../constants"
+import { generatePriceText } from "../../../../helpers"
 import { colors, fonts } from "../../../../theme/theme"
 import { ShoppingCart, ShoppingCartItem } from "../../../../types/fiat"
 import { ClipThing } from "../../../Common/ClipThing"
@@ -19,7 +20,9 @@ export const ShoppingCartTable = ({ shoppingCart, primaryColor, backgroundColor 
                 <Typography variant="caption">Total</Typography>
             </Stack>
 
-            <ShoppingCartRow primaryColor={primaryColor} backgroundColor={backgroundColor} />
+            {shoppingCart?.items.map((item) => {
+                return <ShoppingCartRow key={`shopping-cart-item-${item.id}`} item={item} primaryColor={primaryColor} backgroundColor={backgroundColor} />
+            })}
 
             <Stack direction="row" justifyContent="flex-end" spacing={1} sx={{ mt: "2rem" }}>
                 <Stack>
@@ -66,7 +69,7 @@ export const ShoppingCartTable = ({ shoppingCart, primaryColor, backgroundColor 
 }
 
 interface ShoppingCartRowProps {
-    item?: ShoppingCartItem
+    item: ShoppingCartItem
     primaryColor: string
     backgroundColor: string
 }
@@ -86,9 +89,9 @@ const ShoppingCartRow = ({ item, primaryColor, backgroundColor }: ShoppingCartRo
                         textTransform: "uppercase",
                     }}
                 >
-                    An Actual Tank
+                    {item?.product.name}
                 </Typography>
-                <Typography variant={"caption"}>Extremely Large</Typography>
+                <Typography variant={"caption"}>Extremely Large (dummy text)</Typography>
 
                 <Box sx={{ width: "10rem", mt: "0.5rem" }}>
                     <ClipThing
@@ -122,7 +125,7 @@ const ShoppingCartRow = ({ item, primaryColor, backgroundColor }: ShoppingCartRo
                                     },
                                     ".MuiOutlinedInput-notchedOutline": { border: "unset" },
                                 }}
-                                value={"1"}
+                                value={item.quantity}
                             />
                         </Stack>
                     </ClipThing>
@@ -160,7 +163,7 @@ const ShoppingCartRow = ({ item, primaryColor, backgroundColor }: ShoppingCartRo
                         fontFamily: fonts.shareTech,
                     }}
                 >
-                    $USD 2,000.00
+                    {generatePriceText(item.product.price_dollars, item.product.price_cents)}
                 </Typography>
             </Stack>
         </Stack>
