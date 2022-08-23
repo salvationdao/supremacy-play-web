@@ -1,16 +1,15 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { SvgClose2, SvgDrag } from "../../../assets"
-import { useAuth, useMiniMap, useGlobalNotifications } from "../../../containers"
+import { SvgDrag } from "../../../assets"
+import { useAuth, useMiniMap } from "../../../containers"
+import { useArena } from "../../../containers/arena"
+import { RecordType, useHotkey } from "../../../containers/hotkeys"
 import { shadeColor } from "../../../helpers"
-import { useTimer } from "../../../hooks"
-import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
+import { useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
 import { LocationSelectType, PlayerAbility, WarMachineState } from "../../../types"
 import { DEAD_OPACITY, WIDTH_SKILL_BUTTON } from "./WarMachineItem"
-import { useArena } from "../../../containers/arena"
-import { RecordType, useHotkey } from "../../../containers/hotkeys"
 
 export const MechMoveCommandAbility: PlayerAbility = {
     id: "mech_move_command",
@@ -66,67 +65,32 @@ export const MoveCommand = ({ warMachine, isAlive, smallVersion }: { warMachine:
 
     if (!mechMoveCommand || !isAlive) return null
 
-    return (
-        <MoveCommandInner
-            key={mechMoveCommand.id}
-            isAlive={isAlive}
-            hash={hash}
-            remainCooldownSeconds={mechMoveCommand.remain_cooldown_seconds}
-            isMoving={mechMoveCommand.is_moving}
-            isCancelled={!!mechMoveCommand.cancelled_at}
-            mechMoveCommandID={mechMoveCommand.id}
-            smallVersion={smallVersion}
-        />
-    )
+    return <MoveCommandInner key={mechMoveCommand.id} hash={hash} isAlive={isAlive} smallVersion={smallVersion} />
 }
 
 interface MoveCommandInnerProps {
     hash: string
-    mechMoveCommandID: string
     isAlive: boolean
-    isMoving: boolean
-    isCancelled: boolean
-    remainCooldownSeconds: number
     smallVersion?: boolean
 }
 
-const MoveCommandInner = ({ isAlive, remainCooldownSeconds, isMoving, isCancelled, hash, mechMoveCommandID, smallVersion }: MoveCommandInnerProps) => {
-    const { newSnackbarMessage } = useGlobalNotifications()
-    const { send } = useGameServerCommandsFaction("/faction_commander")
+const MoveCommandInner = ({ isAlive, hash, smallVersion }: MoveCommandInnerProps) => {
     const { currentArenaID } = useArena()
     const { setPlayerAbility } = useMiniMap()
     const { addToHotkeyRecord } = useHotkey()
 
-    const endTime = useMemo(() => new Date(new Date().getTime() + remainCooldownSeconds * 1000), [remainCooldownSeconds])
-    const { totalSecRemain } = useTimer(endTime)
-    const ready = useMemo(() => totalSecRemain <= 0, [totalSecRemain])
-
-    const primaryColor = isMoving ? colors.grey : MechMoveCommandAbility.ability.colour
-    const secondaryColor = isMoving ? "#FFFFFF" : MechMoveCommandAbility.ability.text_colour
+    const primaryColor = MechMoveCommandAbility.ability.colour
+    const secondaryColor = MechMoveCommandAbility.ability.text_colour
     const backgroundColor = useMemo(() => shadeColor(primaryColor, -84), [primaryColor])
 
-    const onClick = useCallback(async () => {
+    const onClick = useCallback(() => {
         if (!isAlive || !currentArenaID) return
 
-        if (isMoving && !isCancelled) {
-            try {
-                await send(GameServerKeys.MechMoveCommandCancel, {
-                    arena_id: currentArenaID,
-                    move_command_id: mechMoveCommandID,
-                    hash,
-                })
-            } catch (err) {
-                const message = typeof err === "string" ? err : "Failed cancel mech move command."
-                newSnackbarMessage(message, "error")
-                console.error(err)
-            }
-        } else {
-            setPlayerAbility({
-                ...MechMoveCommandAbility,
-                mechHash: hash,
-            })
-        }
-    }, [isAlive, isMoving, isCancelled, send, mechMoveCommandID, hash, newSnackbarMessage, setPlayerAbility, currentArenaID])
+        setPlayerAbility({
+            ...MechMoveCommandAbility,
+            mechHash: hash,
+        })
+    }, [isAlive, hash, setPlayerAbility, currentArenaID])
 
     useEffect(() => {
         addToHotkeyRecord(RecordType.Map, "a", onClick)
@@ -159,7 +123,7 @@ const MoveCommandInner = ({ isAlive, remainCooldownSeconds, isMoving, isCancelle
                     }}
                     onClick={onClick}
                 >
-                    {isMoving ? <SvgClose2 size="1.6rem" sx={{ pb: 0 }} fill={primaryColor} /> : <SvgDrag size="1.6rem" sx={{ pb: 0 }} fill={primaryColor} />}
+                    <SvgDrag size="1.6rem" sx={{ pb: 0 }} fill={primaryColor} />
                 </Stack>
 
                 <Stack direction={"row"} sx={{ flex: 1 }} justifyContent={"space-between"} alignItems={"center"}>
@@ -167,7 +131,7 @@ const MoveCommandInner = ({ isAlive, remainCooldownSeconds, isMoving, isCancelle
                         variant="body2"
                         sx={{
                             pt: ".2rem",
-                            opacity: ready ? 1 : 0.6,
+                            opacity: 1,
                             lineHeight: 1,
                             fontWeight: "fontWeightBold",
                             display: "-webkit-box",
@@ -178,7 +142,7 @@ const MoveCommandInner = ({ isAlive, remainCooldownSeconds, isMoving, isCancelle
                             WebkitBoxOrient: "vertical",
                         }}
                     >
-                        {ready ? MechMoveCommandAbility.ability.label : `${totalSecRemain}s`}
+                        {MechMoveCommandAbility.ability.label}
                     </Typography>
 
                     <Typography variant="body2" sx={{ color: colors.neonBlue }}>
@@ -197,7 +161,7 @@ const MoveCommandInner = ({ isAlive, remainCooldownSeconds, isMoving, isCancelle
                 position: "relative",
                 width: `${WIDTH_SKILL_BUTTON}rem`,
                 height: "100%",
-                backgroundColor: isMoving ? colors.lightGrey : primaryColor,
+                backgroundColor: primaryColor,
                 boxShadow: 2,
                 cursor: isAlive ? "pointer" : "auto",
                 zIndex: 3,
@@ -222,12 +186,12 @@ const MoveCommandInner = ({ isAlive, remainCooldownSeconds, isMoving, isCancelle
                     variant="body1"
                     sx={{
                         fontWeight: "fontWeightBold",
-                        color: isMoving ? "#000000" : secondaryColor,
+                        color: secondaryColor,
                         letterSpacing: 1,
                         transition: "all .2s",
                     }}
                 >
-                    {isMoving ? "CANCEL" : "MOVE"}
+                    MOVE
                 </Typography>
             </Box>
         </Box>
