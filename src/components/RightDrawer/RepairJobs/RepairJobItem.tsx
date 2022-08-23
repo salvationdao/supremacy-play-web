@@ -62,15 +62,7 @@ export const RepairJobItem = ({
                     sx={{ p: 0, color: primaryColor, textAlign: "start", height: "100%", ":hover": { opacity: 1 } }}
                     onClick={() => !isFinished && setRepairJobModal(repairJob)}
                 >
-                    <Stack
-                        spacing=".8rem"
-                        sx={{
-                            position: "relative",
-                            height: "100%",
-                            p: "1rem 1.5rem",
-                            background: (theme) => `linear-gradient(#00000010 26%, ${theme.factionTheme.primary}20)`,
-                        }}
-                    >
+                    <Stack spacing=".8rem" sx={{ position: "relative", height: "100%", p: "1rem 1.5rem" }}>
                         <Stack spacing="1.5rem" direction="row" alignItems="center" sx={{ pl: ".5rem" }}>
                             <SvgCubes size="2.8rem" />
                             <Stack>
