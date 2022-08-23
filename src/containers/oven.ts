@@ -22,15 +22,82 @@ const blankOptionOven: OvenStream = {
     isBlank: true,
 }
 
+export interface OvenPlayerSource {
+    type: "webrtc" | "llhls" | "hls" | "lldash" | "dash" | "mp4"
+    file: string
+    label?: string
+    framerate?: number
+    sectionStart?: number
+    sectionEnd?: number
+    resolution?: string
+    index?: number
+}
+
+type OvenPlayerPlayList = OvenPlayerSource[][]
+
+type OvenPlayerCallbackFunction = (...args: unknown[]) => void
+
+interface OvenPlayerInstance {
+    getVersion(): string
+    getContainerElement(): HTMLDivElement
+    getContainerId(): string
+    getMseInstance(): object | null
+    getProviderName(): string | null
+    load(sources: OvenPlayerSource[] | OvenPlayerPlayList): void
+    getMediaElement(): HTMLVideoElement
+    getState(): string
+    getBrowser(): object
+    setTimecodeMode(mode: boolean): void
+    isTimecodeMode(): boolean
+    getFramerate(): number
+    seekFrame(frame: number): void
+    getDuration(): number
+    getPosition(): number
+    getVolume(): number
+    setVolume(volume: number): void
+    getMute(): boolean
+    setMute(mute: boolean): void
+    play(): void
+    pause(): void
+    stop(): void
+    seek(position: number): void
+    getPlaybackRate(): number
+    setPlaybackRate(rate: number): void
+    getPlaylist(): OvenPlayerPlayList
+    getCurrentPlaylist(): number
+    setCurrentPlaylist(index: number): void
+    getSources(): OvenPlayerSource[] | OvenPlayerPlayList
+    getCurrentSource(): number
+    setCurrentSource(index: number): void
+    getQualityLevels(): object[]
+    getCurrentQuality(): number
+    setCurrentQuality(index: number): void
+    isAutoQuality(): boolean
+    setAutoQuality(auto: boolean): void
+    addCaption(track: object): void
+    getCaptionList(): object[]
+    getCurrentCaption(): number
+    setCurrentCaption(index: number): void
+    setCaption(caption: object): void
+    removeCaption(index: number): void
+    showControls(show: boolean): void
+    toggleFullScreen(): void
+    on(eventName: string, callback: OvenPlayerCallbackFunction): void
+    once(eventName: string, callback: OvenPlayerCallbackFunction): void
+    off(eventName: string): void
+    remove(): void
+}
+
 export const OvenStreamContainer = createContainer(() => {
     const { newSnackbarMessage } = useGlobalNotifications()
     const { query: queryOvenGetStreamList } = useParameterizedQuery(GetOvenStreamList)
+
+    const ovenPlayer = useRef<OvenPlayerInstance>()
 
     // Stream
     const [loadedOvenStreams, setLoadedOvenStreams] = useState<OvenStream[]>([])
     const [ovenStreamOptions, setOvenStreamOptions] = useState<OvenStream[]>([])
     const [currentOvenStream, setCurrentOvenStream] = useState<OvenStream>()
-    const [currentOvenPlayingStreamHost, setCurrentOvenPlayingStreamHost] = useState<string>()
 
     // Volume control
     const [volume, setVolume] = useState(parseString(localStorage.getItem("streamVolume"), 0.3))
@@ -82,6 +149,11 @@ export const OvenStreamContainer = createContainer(() => {
     }, [isMusicMute])
 
     useEffect(() => {
+        if (!selectedOvenResolution) return
+        localStorage.setItem(`${currentOvenStream?.name}-resolution`, selectedOvenResolution.toString())
+    }, [currentOvenStream?.name, selectedOvenResolution])
+
+    useEffect(() => {
         localStorage.setItem("streamVolume", volume.toString())
 
         if (volume <= 0) {
@@ -107,7 +179,7 @@ export const OvenStreamContainer = createContainer(() => {
         if (!s) return
         setCurrentOvenStream(s)
         setOvenResolutions(s.available_resolutions)
-        localStorage.setItem("new_stream_props", JSON.stringify(s))
+        localStorage.setItem("selectedOvenStream", JSON.stringify(s))
     }, [])
 
     useEffect(() => {
@@ -118,25 +190,71 @@ export const OvenStreamContainer = createContainer(() => {
     useEffect(() => {
         if (!loadedOvenStreams || loadedOvenStreams.length <= 0) return
 
-        if (loadedOvenStreams.length <= 0) return
-
-        if (loadedOvenStreams.length > 0) {
-            setCurrentOvenStream(loadedOvenStreams[1])
-        }
-
         setOvenStreamOptions(loadedOvenStreams)
-    }, [loadedOvenStreams])
+
+        // Load saved stream from local storage
+        const localStream = localStorage.getItem("selectedOvenStream")
+        if (localStream) {
+            const savedStream = JSON.parse(localStream)
+            const exists = loadedOvenStreams.find((os) => os.name === savedStream.name)
+            if (exists) {
+                changeOvenStream(exists)
+                return
+            }
+        }
+        changeOvenStream(loadedOvenStreams[1])
+    }, [changeOvenStream, loadedOvenStreams])
+
+    const getSourceIdx = (sources: OvenPlayerSource[], resolution: string) => {
+        //  get source with index
+        const src = sources.filter((s: OvenPlayerSource, i) => {
+            if (s.label === resolution) {
+                return { source: s, index: i }
+            }
+        })[0]
+
+        return src.index || 0
+    }
+
+    const changeResolutionSource = useCallback((resolution: string) => {
+        if (ovenPlayer && ovenPlayer.current) {
+            // get availible sources from oven palyer (resolutions)
+            const availSources = ovenPlayer.current.getSources()
+            if (Array.isArray(availSources)) {
+                const _availSources = availSources as OvenPlayerSource[]
+                const idx = getSourceIdx(_availSources, resolution)
+
+                // set new source
+                ovenPlayer.current.setCurrentSource(idx)
+            }
+        }
+    }, [])
+
+    // watch for res changes
+    useEffect(() => {
+        changeResolutionSource(selectedOvenResolution || "")
+    }, [selectedOvenResolution, changeResolutionSource])
+
+    useEffect(() => {
+        if (volume <= 0) return
+        ovenPlayer.current?.setVolume(volume * 100)
+    }, [volume])
+
+    useEffect(() => {
+        ovenPlayer.current?.setMute(isMute)
+    }, [isMute])
 
     return {
+        ovenPlayer,
+        getSourceIdx,
+
         selectedOvenResolution,
         setSelectedOvenResolution,
         ovenResolutions,
         setOvenResolutions,
 
-        setCurrentOvenPlayingStreamHost,
         ovenStreamOptions,
         currentOvenStream,
-        currentOvenPlayingStreamHost,
 
         changeOvenStream,
 
