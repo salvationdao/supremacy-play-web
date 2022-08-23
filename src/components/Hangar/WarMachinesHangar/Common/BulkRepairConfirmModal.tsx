@@ -1,53 +1,51 @@
 import { Box, IconButton, Modal, Stack, Typography } from "@mui/material"
 import { useCallback } from "react"
-import { ClipThing } from "../../../../.."
-import { SvgClose } from "../../../../../../assets"
-import { useTheme } from "../../../../../../containers/theme"
-import { useGameServerSubscriptionSecured } from "../../../../../../hooks/useGameServer"
-import { GameServerKeys } from "../../../../../../keys"
-import { colors, fonts, siteZIndex } from "../../../../../../theme/theme"
-import { MechDetails } from "../../../../../../types"
-import { RepairOffer, RepairStatus } from "../../../../../../types/jobs"
-import { MechRepairBlocks } from "../../../Common/MechRepairBlocks"
-import { ExistingRepairJobCard } from "./ExistingRepairJobCard"
-import { HireContractorsCard } from "./HireContractorsCard"
-import { SelfRepairCard } from "./SelfRepairCard"
+import { SvgClose } from "../../../../assets"
+import { useTheme } from "../../../../containers/theme"
+import { colors, fonts, siteZIndex } from "../../../../theme/theme"
+import { MechBasic, MechStatus, MechStatusEnum } from "../../../../types"
+import { RepairOffer, RepairStatus } from "../../../../types/jobs"
+import { ClipThing } from "../../../Common/ClipThing"
+import { HireContractorsCard } from "../WarMachineDetails/Modals/RepairModal/HireContractorsCard"
+import { RepairBlocks } from "./MechRepairBlocks"
 
-export const RepairModal = ({
-    defaultOpenSelfRepair,
-    selectedMechDetails,
-    repairMechModalOpen,
-    setRepairMechModalOpen,
+export const BulkRepairConfirmModal = ({
+    setBulkRepairConfirmModalOpen,
+    selectedMechs,
+    setSelectedMechs,
+    childrenMechStatus,
+    childrenRepairStatus,
+    childrenRepairOffer,
 }: {
-    defaultOpenSelfRepair?: boolean
-    selectedMechDetails: MechDetails
-    repairMechModalOpen: boolean
-    setRepairMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
+    setBulkRepairConfirmModalOpen: React.Dispatch<React.SetStateAction<boolean>>
+    selectedMechs: MechBasic[]
+    setSelectedMechs: React.Dispatch<React.SetStateAction<MechBasic[]>>
+    childrenMechStatus: React.MutableRefObject<{
+        [mechID: string]: MechStatus
+    }>
+    childrenRepairStatus: React.MutableRefObject<{
+        [mechID: string]: RepairStatus
+    }>
+    childrenRepairOffer: React.MutableRefObject<{
+        [mechID: string]: RepairOffer
+    }>
 }) => {
     const theme = useTheme()
 
-    const repairStatus = useGameServerSubscriptionSecured<RepairStatus>({
-        URI: `/mech/${selectedMechDetails.id}/repair_case`,
-        key: GameServerKeys.SubMechRepairStatus,
-        ready: !!selectedMechDetails.id,
-    })
+    const validMechs = selectedMechs.filter((s) => childrenMechStatus.current[s.id]?.status === MechStatusEnum.Damaged && !childrenRepairOffer.current[s.id])
 
-    const repairOffer = useGameServerSubscriptionSecured<RepairOffer>({
-        URI: `/mech/${selectedMechDetails.id}/active_repair_offer`,
-        key: GameServerKeys.GetMechRepairJob,
-    })
-
-    const remainDamagedBlocks = repairStatus ? repairStatus.blocks_required_repair - repairStatus.blocks_repaired : 0
+    const remainDamagedBlocks = validMechs.reduce((acc, mech) => {
+        const repairStatus = childrenRepairStatus.current[mech.id]
+        return (acc += repairStatus ? repairStatus.blocks_required_repair - repairStatus.blocks_repaired : 0)
+    }, 0)
 
     const onClose = useCallback(() => {
-        setRepairMechModalOpen(false)
-    }, [setRepairMechModalOpen])
-
-    if (!selectedMechDetails || remainDamagedBlocks <= 0) return null
+        setBulkRepairConfirmModalOpen(false)
+    }, [setBulkRepairConfirmModalOpen])
 
     return (
         <Modal
-            open={repairMechModalOpen}
+            open
             onClose={onClose}
             sx={{ zIndex: siteZIndex.Modal }}
             onBackdropClick={(e) => {
@@ -97,23 +95,22 @@ export const RepairModal = ({
                     >
                         <Stack>
                             <Typography variant="h5" sx={{ color: theme.factionTheme.primary, fontFamily: fonts.nostromoHeavy }}>
-                                DAMAGED MECH
+                                BULK REPAIR
                             </Typography>
 
                             <Typography sx={{ mb: ".2rem", color: colors.red, fontFamily: fonts.nostromoBlack }}>
                                 {remainDamagedBlocks} x DAMAGED BLOCKS
                             </Typography>
 
-                            <MechRepairBlocks mechID={selectedMechDetails?.id} defaultBlocks={selectedMechDetails?.repair_blocks} hideNumber />
+                            <RepairBlocks defaultBlocks={remainDamagedBlocks} remainDamagedBlocks={remainDamagedBlocks} hideNumber />
                         </Stack>
 
-                        <SelfRepairCard defaultOpenSelfRepair={defaultOpenSelfRepair} repairStatus={repairStatus} remainDamagedBlocks={remainDamagedBlocks} />
-
-                        {repairOffer && !repairOffer.closed_at ? (
-                            <ExistingRepairJobCard repairOffer={repairOffer} remainDamagedBlocks={remainDamagedBlocks} />
-                        ) : (
-                            <HireContractorsCard mechs={[selectedMechDetails]} remainDamagedBlocks={remainDamagedBlocks} />
-                        )}
+                        <HireContractorsCard
+                            mechs={validMechs}
+                            remainDamagedBlocks={remainDamagedBlocks}
+                            onClose={onClose}
+                            onSubmitted={() => setSelectedMechs([])}
+                        />
                     </Stack>
 
                     <IconButton size="small" onClick={onClose} sx={{ position: "absolute", top: ".5rem", right: ".5rem" }}>

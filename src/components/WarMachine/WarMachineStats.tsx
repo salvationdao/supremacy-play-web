@@ -35,6 +35,7 @@ const WarMachineStatsInner = () => {
                                     boxShadow: 2,
                                     border: "#FFFFFF20 1px solid",
                                     p: "1.2rem 1.4rem",
+                                    mx: "-3rem",
                                 }}
                             >
                                 <Box sx={{ display: "grid", gridTemplateColumns: "repeat(2, 50%)" }}>

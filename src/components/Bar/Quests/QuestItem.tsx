@@ -51,8 +51,8 @@ export const QuestItem = ({ questStat, progress, showConfetti }: { questStat: Qu
                     checked={questStat.obtained}
                     disabled
                     sx={{
-                        transform: "scale(1.8)",
                         color: colors.purple,
+                        "& > .MuiSvgIcon-root": { width: "2.8rem", height: "2.8rem" },
                         ".Mui-checked, .MuiSvgIcon-root": { color: `${colors.purple} !important` },
                         ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${colors.purple}50 !important` },
                     }}

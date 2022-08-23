@@ -15,9 +15,14 @@ import { QueueFeed } from "../../Hangar/WarMachinesHangar/WarMachineDetails/Moda
 interface QuickDeployItemProps {
     mech: MechBasic
     queueFeed?: QueueFeed
+    isSelected?: boolean
+    toggleIsSelected?: () => void
+    childrenMechStatus: React.MutableRefObject<{
+        [mechID: string]: MechStatus
+    }>
 }
 
-export const QuickDeployItem = ({ mech }: QuickDeployItemProps) => {
+export const QuickDeployItem = ({ isSelected, toggleIsSelected, mech, childrenMechStatus }: QuickDeployItemProps) => {
     const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [mechDetails, setMechDetails] = useState<MechDetails>()
@@ -46,6 +51,7 @@ export const QuickDeployItem = ({ mech }: QuickDeployItemProps) => {
         (payload) => {
             if (!payload || mechStatus?.status === MechStatusEnum.Sold) return
             setMechStatus(payload)
+            childrenMechStatus.current[mech.id] = payload
         },
     )
 
@@ -53,7 +59,7 @@ export const QuickDeployItem = ({ mech }: QuickDeployItemProps) => {
         try {
             setIsLoading(true)
             const resp = await send<{ success: boolean; code: string }>(GameServerKeys.JoinQueue, {
-                asset_hash: mech.hash,
+                mech_ids: [mech.id],
             })
 
             if (resp && resp.success) {
@@ -67,7 +73,7 @@ export const QuickDeployItem = ({ mech }: QuickDeployItemProps) => {
         } finally {
             setIsLoading(false)
         }
-    }, [send, mech.hash, newSnackbarMessage])
+    }, [send, mech.id, newSnackbarMessage])
 
     return (
         <Stack
@@ -79,8 +85,11 @@ export const QuickDeployItem = ({ mech }: QuickDeployItemProps) => {
                 py: ".8rem",
                 pl: ".5rem",
                 pr: ".7rem",
+                backgroundColor: isSelected ? "#FFFFFF20" : "unset",
+                borderRadius: 0.8,
             }}
         >
+            {/* Mech image and deploy button */}
             <Stack>
                 <Stack sx={{ height: "8rem" }}>
                     <MechThumbnail mech={mech} mechDetails={mechDetails} smallSize />
@@ -116,7 +125,14 @@ export const QuickDeployItem = ({ mech }: QuickDeployItemProps) => {
                 )}
             </Stack>
 
-            <Stack spacing="1.2rem" direction="row" alignItems="flex-start" sx={{ py: ".2rem", flex: 1 }}>
+            {/* Right side */}
+            <Stack
+                spacing="1.2rem"
+                direction="row"
+                alignItems="flex-start"
+                sx={{ py: ".2rem", flex: 1 }}
+                onClick={() => mechDetails && toggleIsSelected && toggleIsSelected()}
+            >
                 <Stack sx={{ flex: 1 }}>
                     <Stack spacing="1.2rem" direction="row" alignItems="flex-start" justifyContent="space-between" sx={{ py: ".2rem", flex: 1 }}>
                         <Box>

@@ -3,12 +3,13 @@ import { useCallback, useEffect, useState } from "react"
 import screenfull from "screenfull"
 import { SvgFullscreen, SvgMinimize, SvgMusic, SvgMusicMute, SvgVolume, SvgVolumeMute } from "../../assets"
 import { DEV_ONLY } from "../../constants"
-import { useMobile, useStream } from "../../containers"
+import { useMobile } from "../../containers"
+import { useOvenStream } from "../../containers/oven"
 import { siteZIndex } from "../../theme/theme"
 
 export const VideoPlayerControls = () => {
     const { isMobile, isMobileHorizontal } = useMobile()
-    const { toggleIsMute, isMute, toggleIsMusicMute, isMusicMute, musicVolume, setMusicVolume, volume, setVolume } = useStream()
+    const { toggleIsMute, isMute, toggleIsMusicMute, isMusicMute, musicVolume, setMusicVolume, volume, setVolume } = useOvenStream()
     const [fullscreen, setFullscreen] = useState(false)
 
     const handleVolumeChange = useCallback(
