@@ -103,21 +103,23 @@ export const MechLoadoutItem = ({
                         >
                             {label}
                         </Typography>
-                        {subLabel && <Typography
-                            variant="body2"
-                            sx={{
-                                color: primaryColor,
-                                fontFamily: fonts.nostromoBold,
-                                display: "-webkit-box",
-                                overflow: "hidden",
-                                overflowWrap: "anywhere",
-                                textOverflow: "ellipsis",
-                                WebkitLineClamp: 2,
-                                WebkitBoxOrient: "vertical",
-                            }}
-                        >
-                            {subLabel}
-                        </Typography>}
+                        {subLabel && (
+                            <Typography
+                                variant="body2"
+                                sx={{
+                                    color: primaryColor,
+                                    fontFamily: fonts.nostromoBold,
+                                    display: "-webkit-box",
+                                    overflow: "hidden",
+                                    overflowWrap: "anywhere",
+                                    textOverflow: "ellipsis",
+                                    WebkitLineClamp: 2,
+                                    WebkitBoxOrient: "vertical",
+                                }}
+                            >
+                                {subLabel}
+                            </Typography>
+                        )}
                     </Stack>
                 </FancyButton>
             </Box>
