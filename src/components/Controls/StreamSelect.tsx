@@ -1,17 +1,11 @@
 import { MenuItem, Select, Stack, Typography } from "@mui/material"
-import { useStream } from "../../containers"
+import { useOvenStream } from "../../containers/oven"
 import { useTheme } from "../../containers/theme"
 import { colors } from "../../theme/theme"
-import { StreamService } from "../../types"
 
-const isExperimental = (service: StreamService) => {
-    return service === StreamService.OvenMediaEngine || service === StreamService.Softvelum
-}
-
-export const StreamSelect = () => {
+export const OvenStreamSelect = () => {
     const theme = useTheme()
-    const { currentStream, changeStream, streamOptions } = useStream()
-
+    const { currentOvenStream, changeOvenStream, ovenStreamOptions } = useOvenStream()
     const primaryColor = theme.factionTheme.primary
     const secondaryColor = theme.factionTheme.secondary
 
@@ -31,8 +25,8 @@ export const StreamSelect = () => {
                     },
                     "& .MuiSelect-outlined": { p: 0 },
                 }}
-                defaultValue={currentStream?.host}
-                value={currentStream ? currentStream.host : ""}
+                defaultValue={currentOvenStream?.name}
+                value={currentOvenStream ? currentOvenStream.name : ""}
                 MenuProps={{
                     variant: "menu",
                     sx: {
@@ -51,21 +45,19 @@ export const StreamSelect = () => {
                     },
                 }}
             >
-                {streamOptions.map((x) => {
+                {ovenStreamOptions.map((x) => {
                     return (
                         <MenuItem
-                            key={x.host}
-                            value={x.host}
+                            key={x.name}
+                            value={x.name}
                             onClick={() => {
-                                changeStream(x)
+                                changeOvenStream(x)
                             }}
                             sx={{ "&:hover": { backgroundColor: `#FFFFFF30` } }}
                         >
                             <Typography
                                 sx={{
                                     lineHeight: 1,
-                                    color: isExperimental(x.service) ? "#E4E455" : "unset",
-                                    fontWeight: isExperimental(x.service) ? "bold" : "unset",
                                 }}
                                 variant="body2"
                             >
