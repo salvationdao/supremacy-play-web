@@ -357,7 +357,7 @@ const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
             )}
 
             {/* Mech move command dashed line */}
-            {isAlive && !mechMoveCommand?.reached_at && !mechMoveCommand?.cancelled_at && (
+            {isAlive && mechMoveCommand && !mechMoveCommand?.reached_at && !mechMoveCommand?.cancelled_at && (
                 <Box
                     style={{
                         position: "absolute",
