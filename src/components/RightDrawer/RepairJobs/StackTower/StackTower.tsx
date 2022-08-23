@@ -1,5 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
-import React, { useCallback, useEffect, useMemo, useState } from "react"
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useTheme } from "../../../../containers/theme"
 import { colors, fonts } from "../../../../theme/theme"
 import { RepairAgent } from "../../../../types/jobs"
@@ -94,7 +94,13 @@ export const StackTower = React.memo(function StackTower({
                 </Stack>
 
                 <Box sx={{ position: "relative", flex: 1, border: "#FFFFFF20 1px solid" }}>
-                    <TowerStackInner score={score} gameState={gameState} setGameState={setGameState} oneNewGamePattern={oneNewGamePattern} />
+                    <TowerStackInner
+                        disableGame={disableGame}
+                        score={score}
+                        gameState={gameState}
+                        setGameState={setGameState}
+                        oneNewGamePattern={oneNewGamePattern}
+                    />
                 </Box>
 
                 <Typography sx={{ color: colors.lightGrey }}>
@@ -112,18 +118,25 @@ const TowerStackInner = ({
     gameState,
     setGameState,
     oneNewGamePattern,
+    disableGame,
 }: {
     score: number
     gameState: GameState
     setGameState: React.Dispatch<React.SetStateAction<GameState>>
     oneNewGamePattern: (gamePattern: GamePattern) => void
+    disableGame: boolean
 }) => {
     const theme = useTheme()
 
     return useMemo(() => {
         return (
             <Box sx={{ position: "relative", width: "100%", height: "100%", overflow: "hidden", userSelect: "none" }}>
-                <StaticGame backgroundColor={theme.factionTheme.background} setGameState={setGameState} oneNewGamePattern={oneNewGamePattern} />
+                <StaticGame
+                    disableGame={disableGame}
+                    backgroundColor={theme.factionTheme.background}
+                    setGameState={setGameState}
+                    oneNewGamePattern={oneNewGamePattern}
+                />
 
                 {/* Score */}
                 <Stack
@@ -218,27 +231,34 @@ const TowerStackInner = ({
                 </Stack>
             </Box>
         )
-    }, [gameState, oneNewGamePattern, score, setGameState, theme.factionTheme.background])
+    }, [disableGame, gameState, oneNewGamePattern, score, setGameState, theme.factionTheme.background])
 }
 
 const StaticGame = React.memo(function StaticGame({
     backgroundColor,
     setGameState,
     oneNewGamePattern,
+    disableGame,
 }: {
     backgroundColor: string
     setGameState: React.Dispatch<React.SetStateAction<GameState>>
     oneNewGamePattern: (gamePattern: GamePattern) => void
+    disableGame: boolean
 }) {
+    const gameStarted = useRef(false)
+
     // Initialize game
     useEffect(() => {
+        if (gameStarted.current || disableGame) return
+
         const game = new Game(backgroundColor, setGameState, oneNewGamePattern)
         setTimeout(() => {
             game.start()
+            gameStarted.current = true
         }, 100)
 
         return () => game.cleanup()
-    }, [backgroundColor, oneNewGamePattern, setGameState])
+    }, [backgroundColor, disableGame, oneNewGamePattern, setGameState])
 
     // Game container, must keep the id
     return (

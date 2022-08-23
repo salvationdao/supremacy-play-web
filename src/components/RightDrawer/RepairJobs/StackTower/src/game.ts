@@ -114,7 +114,6 @@ export class Game {
     }
 
     handleEvent() {
-        console.log("aaaaaaa")
         switch (this.state) {
             case GameState.Ready:
                 this.setState(GameState.Playing)
