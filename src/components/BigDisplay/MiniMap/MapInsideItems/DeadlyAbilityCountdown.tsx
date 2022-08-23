@@ -1,10 +1,12 @@
-import { useArena, useGame, useMiniMap } from "../../../../containers"
+import { useArena, useMiniMap } from "../../../../containers"
 import { useGameServerSubscription } from "../../../../hooks/useGameServer"
 import { GameAbility } from "../../../../types"
 import { GameServerKeys } from "../../../../keys"
-import React, { useMemo, useState } from "react"
-import { Box } from "@mui/material"
-import { colors } from "../../../../theme/theme"
+import React, { useState } from "react"
+import { Typography } from "@mui/material"
+import { MapIcon } from "./MapIcon/MapIcon"
+import { useTimer } from "../../../../hooks"
+import { fonts } from "../../../../theme/theme"
 
 interface DeadlyAbility {
     ability: GameAbility
@@ -31,8 +33,6 @@ export const DeadlyAbilityCountdowns = () => {
                 return
             }
 
-            console.log(payload)
-
             setDeadlyAbilities(payload)
         },
     )
@@ -40,24 +40,37 @@ export const DeadlyAbilityCountdowns = () => {
     return <>{deadlyAbilities.length > 0 && deadlyAbilities.map((da, i) => <DeadlyAbilityDisplay key={i} {...da} />)}</>
 }
 
-const DeadlyAbilityDisplay = React.forwardRef(function DeadlyAbilityDisplay({ ability, launching_at, location }: DeadlyAbility, ref) {
-    const { gridHeight, gridWidth } = useMiniMap()
+const DeadlyAbilityDisplay = ({ ability, launching_at, location }: DeadlyAbility) => {
+    const { gridHeight } = useMiniMap()
 
     return (
-        <Box
-            ref={ref}
-            sx={{
-                zIndex: 900,
-                position: "absolute",
-                width: gridWidth * 2,
-                height: gridHeight * 2,
-                transform: `translate(${(location.x - 1) * gridWidth}px, ${(location.y - 1) * gridHeight}px)`,
-                borderRadius: "3px",
-                backgroundImage: `url(${ability.image_url})`,
-                backgroundSize: "auto",
-                backgroundRepeat: "no-repeat",
-                pointerEvents: "none",
-            }}
+        <MapIcon
+            primaryColor={ability.colour}
+            imageUrl={ability.image_url}
+            sizeGrid={3}
+            position={location}
+            icon={
+                <Typography
+                    variant={"caption"}
+                    sx={{
+                        position: "absolute",
+                        top: "50%",
+                        left: "50%",
+                        transform: "translate(-50%, -50%)",
+                        fontFamily: fonts.nostromoBold,
+                        fontSize: gridHeight * 1.8,
+                        lineHeight: 1,
+                        backgroundColor: "#00000080",
+                    }}
+                >
+                    <Countdown launchDate={launching_at} />
+                </Typography>
+            }
         />
     )
-})
+}
+
+const Countdown = ({ launchDate }: { launchDate: Date }) => {
+    const { totalSecRemain } = useTimer(launchDate)
+    return <>{totalSecRemain}</>
+}
