@@ -30,16 +30,20 @@ export const StackTower = React.memo(function StackTower({
             setScore(gamePattern?.score)
 
             if (repairAgent?.id) {
-                const resp = await agentRepairUpdate(repairAgent.id, gamePattern)
-                if (resp) {
-                    setCumulativeScore((prev) => {
-                        const newCumScore = prev + 1
-                        if (repairAgent?.id && newCumScore === repairAgent?.required_stacks) {
-                            completeAgentRepair(repairAgent.id)
-                            return 0
-                        }
-                        return newCumScore
-                    })
+                try {
+                    const resp = await agentRepairUpdate(repairAgent.id, gamePattern)
+                    if (resp) {
+                        setCumulativeScore((prev) => {
+                            const newCumScore = prev + 1
+                            if (repairAgent?.id && newCumScore === repairAgent?.required_stacks) {
+                                completeAgentRepair(repairAgent.id)
+                                return 0
+                            }
+                            return newCumScore
+                        })
+                    }
+                } catch (err) {
+                    console.error(err)
                 }
             }
         },
