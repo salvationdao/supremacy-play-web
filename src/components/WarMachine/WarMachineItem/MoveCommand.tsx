@@ -1,12 +1,10 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo } from "react"
 import { SvgDrag } from "../../../assets"
-import { useAuth, useMiniMap } from "../../../containers"
+import { useMiniMap } from "../../../containers"
 import { useArena } from "../../../containers/arena"
 import { RecordType, useHotkey } from "../../../containers/hotkeys"
 import { shadeColor } from "../../../helpers"
-import { useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
-import { GameServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
 import { LocationSelectType, PlayerAbility, WarMachineState } from "../../../types"
 import { DEAD_OPACITY, WIDTH_SKILL_BUTTON } from "./WarMachineItem"
@@ -46,26 +44,11 @@ export interface MechMoveCommand {
 }
 
 export const MoveCommand = ({ warMachine, isAlive, smallVersion }: { warMachine: WarMachineState; isAlive: boolean; smallVersion?: boolean }) => {
-    const { factionID } = useAuth()
-    const { currentArenaID } = useArena()
-    const { hash, factionID: wmFactionID, participantID } = warMachine
-    const [mechMoveCommand, setMechMoveCommand] = useState<MechMoveCommand>()
+    const { hash } = warMachine
 
-    useGameServerSubscriptionFaction<MechMoveCommand>(
-        {
-            URI: `/arena/${currentArenaID}/mech_command/${hash}`,
-            key: GameServerKeys.SubMechMoveCommand,
-            ready: factionID === wmFactionID && !!participantID && !!currentArenaID,
-        },
-        (payload) => {
-            if (!payload) return
-            setMechMoveCommand(payload)
-        },
-    )
+    if (!isAlive) return null
 
-    if (!mechMoveCommand || !isAlive) return null
-
-    return <MoveCommandInner key={mechMoveCommand.id} hash={hash} isAlive={isAlive} smallVersion={smallVersion} />
+    return <MoveCommandInner key={hash} hash={hash} isAlive={isAlive} smallVersion={smallVersion} />
 }
 
 interface MoveCommandInnerProps {
