@@ -92,9 +92,13 @@ const PlayerAbilitiesInner = () => {
                 sx={(theme) => ({
                     "& .MuiButton-root": {
                         flex: 1,
+                        height: "3rem",
+                        borderWidth: "2px",
                         borderRadius: 0.8,
+                        transition: "none",
                         "&:hover": {
-                            border: `1px solid ${theme.factionTheme.primary}65`,
+                            opacity: 0.9,
+                            backgroundColor: theme.factionTheme.primary,
                         },
                     },
                 })}
