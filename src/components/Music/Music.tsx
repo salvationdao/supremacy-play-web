@@ -1,12 +1,13 @@
-import { useCallback, useEffect, useRef, useState } from "react"
 import { Howl, Howler } from "howler"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { FactionIDs } from "../../constants"
-import { useGame, useStream } from "../../containers"
+import { useGame } from "../../containers"
+import { useArena } from "../../containers/arena"
+import { useOvenStream } from "../../containers/oven"
+import { useToggle } from "../../hooks"
+import { useGameServerSubscription } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { WarMachineLiveState, WarMachineState } from "../../types"
-import { useGameServerSubscription } from "../../hooks/useGameServer"
-import { useToggle } from "../../hooks"
-import { useArena } from "../../containers/arena"
 
 enum Sounds {
     generalIntro = "generalIntro",
@@ -20,7 +21,7 @@ enum Sounds {
 }
 
 export const Music = () => {
-    const { musicVolume, isMusicMute } = useStream()
+    const { musicVolume, isMusicMute } = useOvenStream()
     const { warMachines, battleEndDetail } = useGame()
     const sounds = useRef<{ [name: string]: Howl }>({})
     const currentPlaying = useRef<Sounds>()
