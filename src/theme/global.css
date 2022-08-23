@@ -87,3 +87,8 @@ a {
     text-decoration: none;
     color: #00ffff;
 }
+
+button,
+button * {
+    user-select: none;
+}
