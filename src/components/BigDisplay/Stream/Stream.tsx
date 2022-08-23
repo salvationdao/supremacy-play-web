@@ -1,21 +1,19 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useEffect, useRef } from "react"
 import { SvgFullscreen, SvgMinimize, SvgSwap } from "../../../assets"
-import { useDimension, useGame, useOverlayToggles, useStream } from "../../../containers"
+import { useDimension, useGame, useOverlayToggles } from "../../../containers"
+import { useOvenStream } from "../../../containers/oven"
 import { fonts, siteZIndex } from "../../../theme/theme"
-import { StreamService } from "../../../types"
 import { LEFT_DRAWER_WIDTH } from "../../LeftDrawer/LeftDrawer"
 import { TOP_BAR_HEIGHT } from "../MiniMap/MiniMap"
-import { AntMediaStream } from "./AntMediaStream"
 import { NoStreamScreen } from "./NoStreamScreen"
 import { OvenplayerStream } from "./OvenPlayerStream"
-import { SLPDStream } from "./SLPDStream"
 import { Trailer } from "./Trailer"
 
 export const Stream = () => {
     const { remToPxRatio } = useDimension()
     const { isStreamBigDisplay, setIsStreamBigDisplay } = useGame()
-    const { isEnlarged, toggleIsEnlarged } = useStream()
+    const { isEnlarged, toggleIsEnlarged } = useOvenStream()
     const ref = useRef<HTMLElement | null>(null)
 
     useEffect(() => {
@@ -76,15 +74,14 @@ export const Stream = () => {
 
 export const StreamInner = () => {
     const { showTrailer } = useOverlayToggles()
-    const { currentStream } = useStream()
-
-    const isGreenScreen = localStorage.getItem("greenScreen") === "true"
+    const { currentOvenStream } = useOvenStream()
+    const isGreenScreen = useRef(localStorage.getItem("greenScreen") === "true")
 
     if (showTrailer) {
         return <Trailer />
     }
 
-    if (isGreenScreen) {
+    if (isGreenScreen.current) {
         return (
             <Box
                 sx={{
@@ -98,16 +95,8 @@ export const StreamInner = () => {
         )
     }
 
-    if (currentStream?.service === StreamService.OvenMediaEngine) {
+    if (!currentOvenStream?.isBlank) {
         return <OvenplayerStream />
-    }
-
-    if (currentStream?.service === StreamService.Softvelum) {
-        return <SLPDStream />
-    }
-
-    if (currentStream?.service === StreamService.AntMedia) {
-        return <AntMediaStream />
     }
 
     return <NoStreamScreen />
