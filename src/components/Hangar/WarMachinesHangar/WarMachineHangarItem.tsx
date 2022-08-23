@@ -1,13 +1,14 @@
-import { Box, Stack, Typography } from "@mui/material"
-import { useMemo, useState } from "react"
+import { Box, Checkbox, Stack, Typography } from "@mui/material"
+import { useCallback, useMemo, useState } from "react"
 import { FancyButton } from "../.."
 import { SvgDropdownArrow } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { shadeColor } from "../../../helpers"
-import { useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
+import { useGameServerSubscriptionFaction, useGameServerSubscriptionSecured } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { MechBasic, MechDetails } from "../../../types"
+import { MechBasic, MechDetails, MechStatus } from "../../../types"
+import { RepairOffer, RepairStatus } from "../../../types/jobs"
 import { MediaPreview } from "../../Common/MediaPreview/MediaPreview"
 import { General } from "../../Marketplace/Common/MarketItem/General"
 import { MechBarStats } from "./Common/MechBarStats"
@@ -15,7 +16,29 @@ import { MechGeneralStatus } from "./Common/MechGeneralStatus"
 import { MechLoadoutIcons } from "./Common/MechLoadoutIcons"
 import { MechRepairBlocks } from "./Common/MechRepairBlocks"
 
-export const WarMachineHangarItem = ({ mech, isGridView }: { mech: MechBasic; isGridView?: boolean }) => {
+export const WarMachineHangarItem = ({
+    isSelected,
+    toggleIsSelected,
+    mech,
+    isGridView,
+    childrenMechStatus,
+    childrenRepairStatus,
+    childrenRepairOffer,
+}: {
+    isSelected?: boolean
+    toggleIsSelected?: () => void
+    mech: MechBasic
+    isGridView?: boolean
+    childrenMechStatus: React.MutableRefObject<{
+        [mechID: string]: MechStatus
+    }>
+    childrenRepairStatus: React.MutableRefObject<{
+        [mechID: string]: RepairStatus
+    }>
+    childrenRepairOffer: React.MutableRefObject<{
+        [mechID: string]: RepairOffer
+    }>
+}) => {
     const theme = useTheme()
     const [mechDetails, setMechDetails] = useState<MechDetails>()
 
@@ -30,9 +53,36 @@ export const WarMachineHangarItem = ({ mech, isGridView }: { mech: MechBasic; is
         },
     )
 
+    useGameServerSubscriptionSecured<RepairStatus>(
+        {
+            URI: `/mech/${mech.id}/repair_case`,
+            key: GameServerKeys.SubMechRepairStatus,
+            ready: !!mech.id,
+        },
+        (payload) => {
+            if (!payload) return
+            childrenRepairStatus.current[mech.id] = payload
+        },
+    )
+
+    const onStatusLoaded = useCallback(
+        (mechStatus: MechStatus) => {
+            childrenMechStatus.current[mech.id] = mechStatus
+        },
+        [childrenMechStatus, mech.id],
+    )
+
+    const onRepairOfferLoaded = useCallback(
+        (repairOffer: RepairOffer) => {
+            childrenRepairOffer.current[mech.id] = repairOffer
+        },
+        [childrenRepairOffer, mech.id],
+    )
+
     const primaryColor = theme.factionTheme.primary
     const secondaryColor = theme.factionTheme.secondary
     const backgroundColor = theme.factionTheme.background
+    const selectedBackgroundColor = useMemo(() => shadeColor(backgroundColor, 420), [backgroundColor])
 
     return (
         <Box sx={{ position: "relative", overflow: "visible", height: "100%" }}>
@@ -47,7 +97,7 @@ export const WarMachineHangarItem = ({ mech, isGridView }: { mech: MechBasic; is
                         bottomLeft: true,
                         bottomRight: true,
                     },
-                    backgroundColor: backgroundColor,
+                    backgroundColor: isSelected ? selectedBackgroundColor : backgroundColor,
                     opacity: 0.9,
                     border: { isFancy: !isGridView, borderColor: primaryColor, borderThickness: ".25rem" },
                     sx: { position: "relative", height: "100%" },
@@ -62,7 +112,7 @@ export const WarMachineHangarItem = ({ mech, isGridView }: { mech: MechBasic; is
                         p: isGridView ? ".5rem .6rem" : ".1rem .3rem",
                         display: isGridView ? "block" : "grid",
                         gridTemplateRows: "7rem",
-                        gridTemplateColumns: `minmax(38rem, auto) 20rem 32rem`,
+                        gridTemplateColumns: `minmax(38rem, auto) 28rem 32rem`,
                         gap: "1.4rem",
                         ...(isGridView
                             ? {
@@ -76,7 +126,14 @@ export const WarMachineHangarItem = ({ mech, isGridView }: { mech: MechBasic; is
                     <MechCommonArea isGridView={isGridView} mech={mech} mechDetails={mechDetails} primaryColor={primaryColor} secondaryColor={secondaryColor} />
 
                     <General isGridView={isGridView} title="STATUS">
-                        <MechGeneralStatus mechID={mech.id} hideBox smallVersion mechDetails={mechDetails} />
+                        <MechGeneralStatus
+                            mechID={mech.id}
+                            hideBox
+                            smallVersion
+                            mechDetails={mechDetails}
+                            onStatusLoaded={onStatusLoaded}
+                            onRepairOfferLoaded={onRepairOfferLoaded}
+                        />
                     </General>
 
                     <MechBarStats fontSize="1.5rem" mech={mech} mechDetails={mechDetails} color={primaryColor} iconVersion />
@@ -94,6 +151,24 @@ export const WarMachineHangarItem = ({ mech, isGridView }: { mech: MechBasic; is
                     }}
                 />
             </FancyButton>
+
+            {toggleIsSelected && mechDetails && (
+                <Checkbox
+                    size="small"
+                    checked={isSelected}
+                    onClick={toggleIsSelected}
+                    sx={{
+                        position: "absolute",
+                        bottom: 0,
+                        right: 0,
+                        zIndex: 3,
+                        color: primaryColor,
+                        "& > .MuiSvgIcon-root": { width: "3.5rem", height: "3.5rem" },
+                        ".Mui-checked, .MuiSvgIcon-root": { color: `${primaryColor} !important` },
+                        ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${primaryColor}50 !important` },
+                    }}
+                />
+            )}
         </Box>
     )
 }
