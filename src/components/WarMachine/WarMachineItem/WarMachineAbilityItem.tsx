@@ -37,7 +37,7 @@ export const WarMachineAbilityItem = ({ warMachine, gameAbility, clipSlantSize, 
                         clipSlantSize={clipSlantSize}
                         border={{
                             borderColor: colour,
-                            borderThickness: ".15rem",
+                            borderThickness: "1px",
                         }}
                         backgroundColor={backgroundColor}
                         opacity={0.7}
