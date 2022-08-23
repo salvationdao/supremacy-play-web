@@ -11,13 +11,14 @@ import { MediaPreview } from "../../Common/MediaPreview/MediaPreview"
 
 interface SubmodelItemProps {
     submodel: MechSkin | WeaponSkin
+    isGridView: boolean
 }
 
-export const SubmodelItem = ({ submodel }: SubmodelItemProps) => {
-    return <>{submodel && <KeycardHangarItemInner submodel={submodel} />}</>
+export const SubmodelItem = ({ submodel, isGridView }: SubmodelItemProps) => {
+    return <>{submodel && <KeycardHangarItemInner submodel={submodel} isGridView={isGridView} />}</>
 }
 
-export const KeycardHangarItemInner = ({ submodel }: SubmodelItemProps) => {
+export const KeycardHangarItemInner = ({ submodel, isGridView }: SubmodelItemProps) => {
     const theme = useTheme()
 
     const primaryColor = theme.factionTheme.primary
@@ -51,115 +52,16 @@ export const KeycardHangarItemInner = ({ submodel }: SubmodelItemProps) => {
                             height: "20rem",
                         }}
                     >
-                        <MediaPreview
-                            imageUrl={submodel.blueprints.image_url}
-                            videoUrls={[submodel.blueprints.animation_url, submodel.blueprints.card_animation_url]}
-                        />
-
-                        {!itemSaleID && (
-                            <Box sx={{ position: "absolute", top: ".6rem", right: ".8rem" }}>
-                                <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
-                                    {submodel.count}x
-                                </Typography>
-                            </Box>
-                        )}
+                        <MediaPreview imageUrl={submodel.image_url ?? ""} videoUrls={[submodel.animation_url, submodel.card_animation_url]} />
                     </Box>
 
                     <Stack spacing=".4rem" sx={{ flex: 1, px: ".4rem", py: ".3rem" }}>
                         <Typography variant="h6" sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack }}>
-                            {submodel.blueprints.label}
+                            {submodel.label}
                         </Typography>
-
-                        <Typography variant="h6">{submodel.blueprints.description}</Typography>
-
-                        {!IS_TESTING_MODE && (
-                            <Stack alignItems="center" sx={{ mt: "auto !important", pt: ".8rem", alignSelf: "stretch" }}>
-                                <FancyButton
-                                    to={
-                                        itemSaleID
-                                            ? `/marketplace/${MARKETPLACE_TABS.Keycards}/${itemSaleID}`
-                                            : `/marketplace/sell?itemType=${ItemType.Keycards}&assetID=${submodel.id}`
-                                    }
-                                    clipThingsProps={{
-                                        clipSize: "5px",
-                                        backgroundColor: itemSaleID ? backgroundColor : colors.red,
-                                        opacity: 1,
-                                        border: { isFancy: !itemSaleID, borderColor: colors.red, borderThickness: "1.5px" },
-                                        sx: { position: "relative", mt: "1rem", width: "100%" },
-                                    }}
-                                    sx={{ px: "1.6rem", py: ".6rem", color: itemSaleID ? colors.red : "#FFFFFF" }}
-                                >
-                                    <Typography variant={"caption"} sx={{ fontFamily: fonts.nostromoBlack, color: itemSaleID ? colors.red : "#FFFFFF" }}>
-                                        {itemSaleID ? "VIEW LISTING" : "SELL ITEM"}
-                                    </Typography>
-                                </FancyButton>
-                            </Stack>
-                        )}
                     </Stack>
                 </Stack>
             </ClipThing>
         </Box>
-    )
-}
-
-export const KeycardCommonArea = ({
-    isGridView,
-    label,
-    description,
-    imageUrl,
-    videoUrls,
-}: {
-    isGridView: boolean
-    label: string
-    description: string
-    imageUrl?: string
-    videoUrls?: (string | undefined)[]
-}) => {
-    const theme = useTheme()
-
-    return (
-        <Stack direction={isGridView ? "column" : "row"} alignItems={isGridView ? "flex-start" : "center"} spacing="1.4rem" sx={{ position: "relative" }}>
-            <Box
-                sx={{
-                    position: "relative",
-                    height: isGridView ? "20rem" : "100%",
-                    width: isGridView ? "100%" : "8rem",
-                    flexShrink: 0,
-                }}
-            >
-                <MediaPreview imageUrl={imageUrl} videoUrls={videoUrls} objectFit={isGridView ? "cover" : "contain"} />
-            </Box>
-
-            <Stack spacing={isGridView ? ".1rem" : ".6rem"}>
-                <Typography
-                    variant="body2"
-                    sx={{
-                        fontFamily: fonts.nostromoBlack,
-                        color: theme.factionTheme.primary,
-                        display: "-webkit-box",
-                        overflow: "hidden",
-                        overflowWrap: "anywhere",
-                        textOverflow: "ellipsis",
-                        WebkitLineClamp: 1,
-                        WebkitBoxOrient: "vertical",
-                    }}
-                >
-                    {label}
-                </Typography>
-
-                <Typography
-                    sx={{
-                        display: "-webkit-box",
-                        overflow: "hidden",
-                        overflowWrap: "anywhere",
-                        textOverflow: "ellipsis",
-                        WebkitLineClamp: 2,
-                        WebkitBoxOrient: "vertical",
-                    }}
-                >
-                    {description}
-                </Typography>
-            </Stack>
-        </Stack>
     )
 }
