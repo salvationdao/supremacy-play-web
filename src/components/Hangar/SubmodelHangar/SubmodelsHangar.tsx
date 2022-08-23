@@ -31,16 +31,22 @@ interface EquippedStatus {
     toggle: boolean
 }
 interface GetSubmodelsRequest {
-    queue_sort?: string
-    sort_by?: string
-    sort_dir?: string
-    search: string
-    page: number
-    page_size: number
-    rarities: string[]
-    equipped_status?: EquippedStatus
-    include_market_listed: boolean
-    models?: string[]
+    mech_skin_list_opts: {
+        search?: string
+        sortBy?: string
+        sort_dir?: string
+        page_size: number
+        page: number
+        owner_id?: string
+        display_xsyn_mech_skins: boolean
+        display_genesis_and_limited?: boolean
+        display_hidden: boolean
+        exclude_market_locked?: boolean
+        include_market_listed: boolean
+        rarities: string[]
+        equipped_status: EquippedStatus
+        models: string[]
+    }
 }
 
 interface GetSubmodelsResponse {
@@ -141,18 +147,24 @@ export const SubmodelsHangar = () => {
             const isQueueSort = sort === SortTypeLabel.MechQueueAsc || sort === SortTypeLabel.MechQueueDesc
 
             const resp = await send<GetSubmodelsResponse, GetSubmodelsRequest>(GameServerKeys.GetSubmodels, {
-                queue_sort: isQueueSort ? sortDir : undefined,
-                sort_by: isQueueSort ? undefined : sortBy,
-                sort_dir: isQueueSort ? undefined : sortDir,
-                search,
-                rarities,
-                equipped_status: {
-                    filter: false,
-                    toggle: false,
+                mech_skin_list_opts: {
+                    search: search,
+                    sortBy: isQueueSort ? undefined : sortBy,
+                    sort_dir: isQueueSort ? undefined : sortDir,
+                    page_size: pageSize,
+                    page: page,
+                    display_xsyn_mech_skins: false,
+                    display_genesis_and_limited: false,
+                    display_hidden: false,
+                    exclude_market_locked: true,
+                    include_market_listed: true,
+                    rarities: [""],
+                    equipped_status: {
+                        filter: false,
+                        toggle: false,
+                    },
+                    models: [""],
                 },
-                page,
-                page_size: pageSize,
-                include_market_listed: true,
             })
 
             updateQuery({
