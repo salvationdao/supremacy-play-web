@@ -358,7 +358,7 @@ const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
                 )}
 
                 {/* Mech move command dashed line */}
-                {isAlive && !mechMoveCommand?.reached_at && !mechMoveCommand?.cancelled_at && (
+                {isAlive && mechMoveCommand && !mechMoveCommand?.reached_at && !mechMoveCommand?.cancelled_at && (
                     <Box
                         style={{
                             position: "absolute",
@@ -401,34 +401,35 @@ const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
             </Stack>
         )
     }, [
-        isAI,
+        position,
         isHidden,
-        dirArrowLength,
-        handleClick,
-        health,
-        iconSize,
         isAlive,
-        isMechHighlighted,
+        participantID,
+        handleClick,
         isTargeting,
-        maxHealth,
-        maxShield,
-        mechCommandAngle,
-        mechCommandDist,
+        playerAbility?.ability.location_select_type,
+        playerAbility?.ability.colour,
+        playerAbility?.ability.image_url,
         mechMapX,
         mechMapY,
-        mechMoveCommand?.cancelled_at,
-        mechMoveCommand?.reached_at,
-        participantID,
-        position,
-        primaryColor,
-        rotation,
-        setSelection,
-        shield,
-        warMachine.maxShield,
-        hash,
-        playerAbility,
-        selection?.mechHash,
         zIndex,
+        selection?.mechHash,
+        hash,
+        iconSize,
+        primaryColor,
+        isMechHighlighted,
+        isAI,
         label,
+        rotation,
+        dirArrowLength,
+        warMachine.maxShield,
+        shield,
+        maxShield,
+        health,
+        maxHealth,
+        mechMoveCommand,
+        mechCommandAngle,
+        mechCommandDist,
+        setSelection,
     ])
 }
