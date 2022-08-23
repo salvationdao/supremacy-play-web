@@ -282,6 +282,7 @@ export const MechLoadout = ({ mechDetails }: { mechDetails: MechDetails }) => {
                                     onClick: () => undoWeaponSelection(slotNumber),
                                 }
                             })()}
+                            locked={weapon.locked_to_mech}
                         />
                     )
                 })}
@@ -338,6 +339,7 @@ export const MechLoadout = ({ mechDetails }: { mechDetails: MechDetails }) => {
                                     onClick: () => undoWeaponSelection(slotNumber),
                                 }
                             })()}
+                            locked={utility.locked_to_mech}
                         />
                     )
                 })}

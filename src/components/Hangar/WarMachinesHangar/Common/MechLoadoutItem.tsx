@@ -1,7 +1,7 @@
 import { Grow, Stack, Typography } from "@mui/material"
 import { useMemo } from "react"
 import { FancyButton } from "../../.."
-import { SvgPlus, SvgSkin, SvgSwap, SvgWrapperProps } from "../../../../assets"
+import { SvgLock, SvgPlus, SvgSkin, SvgSwap, SvgWrapperProps } from "../../../../assets"
 import { shadeColor } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
 import { colors, fonts } from "../../../../theme/theme"
@@ -20,6 +20,7 @@ interface LoadoutItem {
     primaryColor: string
     imageTransform?: string
     Icon?: React.VoidFunctionComponent<SvgWrapperProps>
+    locked?: boolean
     disabled?: boolean
     isEmpty?: boolean
 }
@@ -79,6 +80,7 @@ const MechLoadoutItemButton = ({
     rarity,
     hasSkin,
     imageTransform,
+    locked,
     disabled,
     isPreviouslyEquipped,
 }: MechLoadoutItemButtonProps) => {
@@ -86,7 +88,7 @@ const MechLoadoutItemButton = ({
 
     return (
         <FancyButton
-            disabled={disabled}
+            disabled={disabled || locked}
             clipThingsProps={{
                 clipSize: "10px",
                 clipSlantSize: "0px",
@@ -109,6 +111,24 @@ const MechLoadoutItemButton = ({
                 onClick && onClick()
             }}
         >
+            {locked && (
+                <Stack
+                    alignItems="center"
+                    justifyContent="center"
+                    sx={{
+                        zIndex: 1,
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        backgroundColor: colors.black2,
+                        opacity: 0.6,
+                    }}
+                >
+                    <SvgLock />
+                </Stack>
+            )}
             {isPreviouslyEquipped && (
                 <Stack
                     alignItems="center"
