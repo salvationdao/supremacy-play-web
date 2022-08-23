@@ -424,7 +424,6 @@ const UtilityItem = ({ id, equipped, selected, onSelect }: UtilityItemProps) => 
         },
         (payload) => {
             if (!payload) return
-            console.log(payload)
             setUtilityDetails(payload)
         },
     )
