@@ -2,7 +2,7 @@ import { Avatar, Box, CircularProgress, IconButton, Stack, Typography } from "@m
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { useHistory, useParams } from "react-router-dom"
 import { AboutMeSVG, BattleHistorySVG, StatsSVG, SvgAbility, SvgCake, SvgClose, SvgDeath, SvgSkull2, SvgView } from "../../assets"
-import { useAuth, useGlobalNotifications } from "../../containers"
+import { useAuth, useGlobalNotifications, useOverlayToggles } from "../../containers"
 import { getUserRankDeets, snakeToTitle, timeSince } from "../../helpers"
 import { useGameServerCommands, useGameServerCommandsUser } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
@@ -104,6 +104,7 @@ export const PlayerProfilePage = () => {
     const { send } = useGameServerCommands("/public/commander")
     const { send: userSend } = useGameServerCommandsUser("/user_commander")
     const { newSnackbarMessage } = useGlobalNotifications()
+    const { rightDrawerActiveTabID } = useOverlayToggles()
     const isMe = `${user?.gid}` === playerGID
 
     const rankDeets = useMemo(() => (profile?.player.rank ? getUserRankDeets(profile?.player.rank, "1.6rem", "1.6rem") : undefined), [profile?.player.rank])
@@ -436,6 +437,10 @@ export const PlayerProfilePage = () => {
                 sx={{
                     height: "100%",
                     background: primaryColor,
+                    // if drawers opened and less than 1700 => column
+                    "@media (max-width:1700px)": {
+                        flexDirection: rightDrawerActiveTabID ? "column" : "row",
+                    },
 
                     "@media (max-width:1300px)": {
                         flexDirection: "column",
@@ -452,8 +457,13 @@ export const PlayerProfilePage = () => {
                         height: "100%",
                         minWidth: "30rem",
                         maxWidth: "62rem",
+                        "@media (max-width:1700px)": {
+                            maxWidth: rightDrawerActiveTabID ? "100%" : "62rem",
+                            height: rightDrawerActiveTabID ? "50%" : "100%",
+                        },
                         "@media (max-width:1300px)": {
                             width: "100%",
+                            maxWidth: "100%",
                             height: "50%",
                         },
                     }}
