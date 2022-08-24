@@ -1,1 +1,3 @@
+/login https://staging.xsyn.dev/external/login?tenant=supremacy&redirectURL=https%3A%2F%2Fstaging.supremacygame.dev
+/signup https://staging.xsyn.dev/external/login?signup=true&tenant=supremacy&redirectURL=https%3A%2F%2Fstaging.supremacygame.dev
 /* /index.html 200
