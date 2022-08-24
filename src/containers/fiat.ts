@@ -5,6 +5,7 @@ import { GameServerKeys } from "../keys"
 import { ShoppingCart } from "../types/fiat"
 
 export const FiatContainer = createContainer(() => {
+    const [loading, setLoading] = useState(true)
     const [shoppingCart, setShoppingCart] = useState<ShoppingCart>()
 
     // Subscribe for cart updates
@@ -14,6 +15,7 @@ export const FiatContainer = createContainer(() => {
             key: GameServerKeys.FiatShoppingCartUpdated,
         },
         (payload) => {
+            if (loading) setLoading(false)
             console.log("Cart Updated", payload)
             setShoppingCart(payload)
         },
@@ -32,6 +34,7 @@ export const FiatContainer = createContainer(() => {
     )
 
     return {
+        loading,
         shoppingCart,
         itemsCount: shoppingCart?.items?.length || 0,
     }

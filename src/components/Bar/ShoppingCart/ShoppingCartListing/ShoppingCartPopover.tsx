@@ -9,12 +9,13 @@ import { ShoppingCartTable } from "./ShoppingCartTable"
 
 interface Props {
     open: boolean
+    loading: boolean
     shoppingCart?: ShoppingCart
     popoverRef: MutableRefObject<null>
     onClose: () => void
 }
 
-export const ShoppingCartPopover = ({ open, shoppingCart, popoverRef, onClose }: Props) => {
+export const ShoppingCartPopover = ({ open, loading, shoppingCart, popoverRef, onClose }: Props) => {
     const theme = useTheme()
     const [localOpen, toggleLocalOpen] = useToggle(open)
 
@@ -29,6 +30,7 @@ export const ShoppingCartPopover = ({ open, shoppingCart, popoverRef, onClose }:
     }, [localOpen, onClose])
 
     const primaryColor = theme.factionTheme.primary
+    const secondaryColor = theme.factionTheme.secondary
     const backgroundColor = theme.factionTheme.background
 
     return (
@@ -68,7 +70,13 @@ export const ShoppingCartPopover = ({ open, shoppingCart, popoverRef, onClose }:
                         <Typography sx={{ fontFamily: fonts.nostromoBlack, color: theme.factionTheme.primary }}>YOUR CART</Typography>
                     </Box>
 
-                    <ShoppingCartTable shoppingCart={shoppingCart} primaryColor={primaryColor} backgroundColor={backgroundColor} />
+                    <ShoppingCartTable
+                        loading={loading}
+                        shoppingCart={shoppingCart}
+                        primaryColor={primaryColor}
+                        secondaryColor={secondaryColor}
+                        backgroundColor={backgroundColor}
+                    />
                 </Stack>
             </ClipThing>
         </Popover>

@@ -6,7 +6,7 @@ import { ShoppingCartPopover } from "./ShoppingCartListing/ShoppingCartPopover"
 import { useToggle } from "../../../hooks"
 
 export const ShoppingCart = () => {
-    const { shoppingCart, itemsCount } = useFiat()
+    const { loading, shoppingCart, itemsCount } = useFiat()
     const popoverRef = useRef(null)
     const [popoverOpen, togglePopoverOpen] = useToggle(false)
 
@@ -47,6 +47,7 @@ export const ShoppingCart = () => {
                 <ShoppingCartPopover
                     open={popoverOpen}
                     shoppingCart={shoppingCart}
+                    loading={loading}
                     popoverRef={popoverRef}
                     onClose={() => {
                         togglePopoverOpen(false)
