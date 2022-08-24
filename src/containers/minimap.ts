@@ -3,7 +3,7 @@ import { createContainer } from "unstated-next"
 import { useAuth, useGlobalNotifications } from "."
 import { useGameServerCommandsFaction, useGameServerSubscriptionSecuredUser } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
-import { GameAbility, LocationSelectType, PlayerAbility, Position } from "../types"
+import { BribeStage, GameAbility, LocationSelectType, PlayerAbility, Position } from "../types"
 import { useArena } from "./arena"
 import { useGame } from "./game"
 
@@ -67,7 +67,7 @@ export const MiniMapContainer = createContainer(() => {
 
     // Toggle expand if user is using player ability or user is chosen to use battle ability
     useEffect(() => {
-        if (winner && bribeStage?.phase === "LOCATION_SELECT") {
+        if (winner && bribeStage?.phase === BribeStage.LocationSelect) {
             if (!playerAbility) return setIsTargeting(true)
             // If battle ability is overriding player ability selection
             setIsTargeting(false)
@@ -105,7 +105,7 @@ export const MiniMapContainer = createContainer(() => {
                         y: Math.floor(selection.startCoords.y),
                     },
                     end_coords:
-                        winner?.game_ability.location_select_type === LocationSelectType.LINE_SELECT && selection.endCoords
+                        winner?.game_ability.location_select_type === LocationSelectType.LineSelect && selection.endCoords
                             ? {
                                   x: Math.floor(selection.endCoords.x),
                                   y: Math.floor(selection.endCoords.y),
@@ -123,7 +123,7 @@ export const MiniMapContainer = createContainer(() => {
                     mech_hash?: string
                 } | null = null
                 switch (playerAbility.ability.location_select_type) {
-                    case LocationSelectType.LINE_SELECT:
+                    case LocationSelectType.LineSelect:
                         if (!selection.startCoords || !selection.endCoords) {
                             throw new Error("Something went wrong while activating this ability. Please try again, or contact support if the issue persists.")
                         }
@@ -141,7 +141,7 @@ export const MiniMapContainer = createContainer(() => {
                             },
                         }
                         break
-                    case LocationSelectType.MECH_SELECT:
+                    case LocationSelectType.MechSelect:
                         payload = {
                             arena_id: currentArenaID,
                             blueprint_ability_id: playerAbility.ability.id,
@@ -149,8 +149,8 @@ export const MiniMapContainer = createContainer(() => {
                             mech_hash: selection.mechHash,
                         }
                         break
-                    case LocationSelectType.LOCATION_SELECT:
-                    case LocationSelectType.MECH_COMMAND:
+                    case LocationSelectType.LocationSelect:
+                    case LocationSelectType.MechCommand:
                         if (!selection.startCoords) {
                             throw new Error("Something went wrong while activating this ability. Please try again, or contact support if the issue persists.")
                         }
@@ -165,7 +165,7 @@ export const MiniMapContainer = createContainer(() => {
                             mech_hash: playerAbility.mechHash,
                         }
                         break
-                    case LocationSelectType.GLOBAL:
+                    case LocationSelectType.Global:
                         break
                 }
 
@@ -175,7 +175,7 @@ export const MiniMapContainer = createContainer(() => {
                 send<boolean, typeof payload>(GameServerKeys.PlayerAbilityUse, payload)
             }
             resetSelection()
-            if (playerAbility?.ability.location_select_type === LocationSelectType.MECH_SELECT) {
+            if (playerAbility?.ability.location_select_type === LocationSelectType.MechSelect) {
                 setHighlightedMechParticipantID(undefined)
             }
             newSnackbarMessage("Successfully submitted target location.", "success")

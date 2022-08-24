@@ -11,7 +11,7 @@ import { useToggle } from "../../../../hooks"
 import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
-import { ChatMessageType, IncomingMessages, User, UserRank } from "../../../../types"
+import { ChatMessage, ChatMessageType, IncomingMessage, User, UserRank } from "../../../../types"
 import { TooltipHelper } from "../../../Common/TooltipHelper"
 import { v4 as uuidv4 } from "uuid"
 
@@ -23,7 +23,7 @@ interface ChatSendProps {
 export const ChatSend = (props: ChatSendProps) => {
     const { send } = useGameServerCommandsUser("/user_commander")
     const { user, userRank } = useAuth()
-    const { onFailedMessage, handleIncomingMessages, isPoppedout, setIsPoppedout, globalActivePlayers, activePlayers } = useChat()
+    const { onFailedMessage, handleIncomingMessage, isPoppedout, setIsPoppedout, globalActivePlayers, activePlayers } = useChat()
 
     return (
         <ChatSendInner
@@ -32,7 +32,7 @@ export const ChatSend = (props: ChatSendProps) => {
             user={user}
             userRank={userRank}
             onFailedMessage={onFailedMessage}
-            handleIncomingMessages={handleIncomingMessages}
+            handleIncomingMessage={handleIncomingMessage}
             isPoppedout={isPoppedout}
             setIsPoppedout={setIsPoppedout}
             globalActivePlayers={globalActivePlayers}
@@ -45,7 +45,7 @@ interface ChatSendInnerProps extends ChatSendProps {
     user: User
     userRank?: UserRank
     onFailedMessage: (id: string) => void
-    handleIncomingMessages: (incomingMessages: IncomingMessages) => void
+    handleIncomingMessage: (incomingMessage: IncomingMessage) => void
     send: SendFunc
     isPoppedout: boolean
     setIsPoppedout: React.Dispatch<React.SetStateAction<boolean>>
@@ -60,7 +60,7 @@ const ChatSendInner = ({
     user,
     userRank,
     onFailedMessage,
-    handleIncomingMessages,
+    handleIncomingMessage,
     isPoppedout,
     setIsPoppedout,
     globalActivePlayers,
@@ -124,7 +124,7 @@ const ChatSendInner = ({
         const id = uuidv4()
         const taggedUserGids = handleTaggedUsers(renderedMsg)
 
-        const msg: ChatMessageType = {
+        const msg: ChatMessage = {
             id,
             data: {
                 id: id,
@@ -134,19 +134,19 @@ const ChatSendInner = ({
                 message: renderedMsg,
                 tagged_users_gids: taggedUserGids,
             },
-            type: "TEXT",
+            type: ChatMessageType.Text,
             sent_at: sentAt,
             locallySent: true,
         }
 
-        handleIncomingMessages({
+        handleIncomingMessage({
             messages: [msg],
             faction: faction_id,
         })
 
         try {
             setMessage("")
-            const resp = await send<ChatMessageType>(GameServerKeys.SendChatMessage, {
+            const resp = await send<ChatMessage>(GameServerKeys.SendChatMessage, {
                 id,
                 faction_id,
                 message: renderedMsg,
@@ -159,7 +159,7 @@ const ChatSendInner = ({
             newSnackbarMessage(typeof e === "string" ? e : "Failed to send chat message.", "error")
             console.error(e)
         }
-    }, [message, user, send, handleIncomingMessages, userRank, messageColor, faction_id, newSnackbarMessage, onFailedMessage, renderedMsg, handleTaggedUsers])
+    }, [message, user, send, handleIncomingMessage, userRank, messageColor, faction_id, newSnackbarMessage, onFailedMessage, renderedMsg, handleTaggedUsers])
 
     const showCharCount = message.length >= MAX_CHAT_MESSAGE_LENGTH
 

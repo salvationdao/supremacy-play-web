@@ -17,14 +17,14 @@ export const PlayerAbilityHangarItem = ({ playerAbility }: PlayerAbilityHangarIt
 
     const [abilityTypeIcon, abilityTypeDescription] = useMemo(() => {
         switch (playerAbility.ability.location_select_type) {
-            case LocationSelectType.GLOBAL:
-                return [<SvgGlobal key={LocationSelectType.GLOBAL} />, "This ability will affect all units on the map."]
-            case LocationSelectType.LOCATION_SELECT:
-                return [<SvgTarget key={LocationSelectType.LOCATION_SELECT} />, "This ability will target a specific location on the map."]
-            case LocationSelectType.MECH_SELECT:
-                return [<SvgMicrochip key={LocationSelectType.MECH_SELECT} />, "This ability will target a specific mech on the map."]
-            case LocationSelectType.LINE_SELECT:
-                return [<SvgLine key={LocationSelectType.LINE_SELECT} />, "This ability will target a straight line on the map."]
+            case LocationSelectType.Global:
+                return [<SvgGlobal key={LocationSelectType.Global} />, "This ability will affect all units on the map."]
+            case LocationSelectType.LocationSelect:
+                return [<SvgTarget key={LocationSelectType.LocationSelect} />, "This ability will target a specific location on the map."]
+            case LocationSelectType.MechSelect:
+                return [<SvgMicrochip key={LocationSelectType.MechSelect} />, "This ability will target a specific mech on the map."]
+            case LocationSelectType.LineSelect:
+                return [<SvgLine key={LocationSelectType.LineSelect} />, "This ability will target a straight line on the map."]
         }
 
         return [<SvgQuestionMark key="MISCELLANEOUS" />, "Miscellaneous ability type."]

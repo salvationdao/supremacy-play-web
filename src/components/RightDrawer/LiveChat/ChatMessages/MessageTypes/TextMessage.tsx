@@ -10,7 +10,7 @@ import { useToggle } from "../../../../../hooks"
 import { useGameServerCommandsUser } from "../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../keys"
 import { colors, fonts } from "../../../../../theme/theme"
-import { ChatMessageType, Faction, TextMessageData, User } from "../../../../../types"
+import { ChatMessage, Faction, TextMessageData, User } from "../../../../../types"
 import { TooltipHelper } from "../../../../Common/TooltipHelper"
 import { Reactions } from "../../AdditionalOptions/Reactions"
 import { UserDetailsPopover } from "./UserDetailsPopover"
@@ -40,10 +40,10 @@ export const TextMessage = ({
     getFaction: (factionID: string) => Faction
     user: User
     isEmoji: boolean
-    previousMessage: ChatMessageType | undefined
+    previousMessage: ChatMessage | undefined
     containerRef: React.RefObject<HTMLDivElement>
     isScrolling: boolean
-    chatMessages: ChatMessageType[]
+    chatMessages: ChatMessage[]
 }) => {
     const { from_user, user_rank, message_color, avatar_id, message, from_user_stat, metadata } = data
     const { id, username, gid, faction_id } = from_user

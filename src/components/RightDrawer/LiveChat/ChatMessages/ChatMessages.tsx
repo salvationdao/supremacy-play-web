@@ -5,7 +5,7 @@ import { SvgScrolldown } from "../../../../assets"
 import { useAuth, useChat, useSupremacy } from "../../../../containers"
 import { checkIfIsEmoji } from "../../../../helpers"
 import { colors } from "../../../../theme/theme"
-import { NewBattleMessageData, PunishMessageData, SplitOptionType, SystemBanMessageData, TextMessageData } from "../../../../types"
+import { ChatMessageType, NewBattleMessageData, PunishMessageData, SplitOptionType, SystemBanMessageData, TextMessageData } from "../../../../types"
 import { BanProposal } from "../BanProposal/BanProposal"
 import { GlobalAnnouncement } from "../GlobalAnnouncement"
 import { NewBattleMessage } from "./MessageTypes/NewBattleMessage"
@@ -113,7 +113,7 @@ export const ChatMessages = React.memo(function ChatMessages({ faction_id, prima
                         <Stack spacing=".6rem" sx={{ mt: ".88rem" }}>
                             {chatMessages && chatMessages.length > 0 ? (
                                 chatMessages.map((message, i) => {
-                                    if (message.type == "TEXT") {
+                                    if (message.type === ChatMessageType.Text) {
                                         const data = message.data as TextMessageData
                                         const isEmoji: boolean = checkIfIsEmoji(data.message)
                                         return (
@@ -134,7 +134,7 @@ export const ChatMessages = React.memo(function ChatMessages({ faction_id, prima
                                                 chatMessages={chatMessages}
                                             />
                                         )
-                                    } else if (message.type == "PUNISH_VOTE") {
+                                    } else if (message.type === ChatMessageType.PunishVote) {
                                         const data = message.data as PunishMessageData
                                         return (
                                             <PunishMessage
@@ -144,7 +144,7 @@ export const ChatMessages = React.memo(function ChatMessages({ faction_id, prima
                                                 fontSize={fontSize}
                                             />
                                         )
-                                    } else if (message.type == "SYSTEM_BAN") {
+                                    } else if (message.type === ChatMessageType.SystemBan) {
                                         const data = message.data as SystemBanMessageData
                                         return (
                                             <SystemBanMessage
@@ -154,7 +154,7 @@ export const ChatMessages = React.memo(function ChatMessages({ faction_id, prima
                                                 fontSize={fontSize}
                                             />
                                         )
-                                    } else if (message.type === "NEW_BATTLE") {
+                                    } else if (message.type === ChatMessageType.NewBattle) {
                                         const data = message.data as NewBattleMessageData
                                         return (
                                             <NewBattleMessage

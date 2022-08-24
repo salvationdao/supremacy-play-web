@@ -159,7 +159,7 @@ const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
             onClick={handleClick}
             style={{
                 position: "absolute",
-                pointerEvents: isTargeting && playerAbility?.ability.location_select_type !== LocationSelectType.MECH_SELECT ? "none" : "all",
+                pointerEvents: isTargeting && playerAbility?.ability.location_select_type !== LocationSelectType.MechSelect ? "none" : "all",
                 cursor: "pointer",
                 padding: "1rem 1.3rem",
                 transform: `translate(-50%, -50%) translate3d(${mechMapX}px, ${mechMapY}px, 0)`,
@@ -169,7 +169,7 @@ const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
             }}
         >
             {/* Show player ability icon above the mech */}
-            {playerAbility?.ability.location_select_type === LocationSelectType.MECH_SELECT && selection?.mechHash === hash && (
+            {playerAbility?.ability.location_select_type === LocationSelectType.MechSelect && selection?.mechHash === hash && (
                 <Box
                     onClick={() => setSelection(undefined)}
                     sx={{

@@ -7,7 +7,7 @@ import { parseString } from "../helpers"
 import { useToggle } from "../hooks"
 import { useGameServerSubscription, useGameServerSubscriptionFaction } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
-import { BanProposalStruct, ChatMessageType, FontSizeType, IncomingMessages, SplitOptionType, User } from "../types"
+import { BanProposalStruct, ChatMessage, ChatMessageType, FontSizeType, IncomingMessage, SplitOptionType, User } from "../types"
 
 export const ChatContainer = createContainer(() => {
     const { sendBrowserNotification } = useGlobalNotifications()
@@ -24,8 +24,8 @@ export const ChatContainer = createContainer(() => {
     const [banProposal, setBanProposal] = useState<BanProposalStruct>()
 
     // Chat states
-    const [globalChatMessages, setGlobalChatMessages] = useState<ChatMessageType[]>([])
-    const [factionChatMessages, setFactionChatMessages] = useState<ChatMessageType[]>([])
+    const [globalChatMessages, setGlobalChatMessages] = useState<ChatMessage[]>([])
+    const [factionChatMessages, setFactionChatMessages] = useState<ChatMessage[]>([])
     const [globalChatUnread, setGlobalChatUnread] = useState<number>(0)
     const [factionChatUnread, setFactionChatUnread] = useState<number>(0)
     const userGidRecord = useRef<{ [gid: number]: User }>({})
@@ -88,24 +88,24 @@ export const ChatContainer = createContainer(() => {
         })
     }, [])
 
-    const handleIncomingMessages = useCallback((incomingMessages: IncomingMessages) => {
-        if (!incomingMessages || incomingMessages.messages.length <= 0) return
-        const handleMessagesSetState = incomingMessages.faction ? setFactionChatMessages : setGlobalChatMessages
-        const handleCounterSetState = incomingMessages.faction ? setFactionChatUnread : setGlobalChatUnread
+    const handleIncomingMessage = useCallback((incomingMessage: IncomingMessage) => {
+        if (!incomingMessage || incomingMessage.messages.length <= 0) return
+        const handleMessagesSetState = incomingMessage.faction ? setFactionChatMessages : setGlobalChatMessages
+        const handleCounterSetState = incomingMessage.faction ? setFactionChatUnread : setGlobalChatUnread
 
         handleMessagesSetState((prev) => {
             const oldMessages = [...prev]
-            const newMessages: ChatMessageType[] = []
+            const newMessages: ChatMessage[] = []
             let newMessagesCount = 0
 
             // If the message is an existing one, update it in the array
-            incomingMessages.messages.forEach((message) => {
+            incomingMessage.messages.forEach((message) => {
                 const existingMessageIndex = oldMessages.findIndex((m) => m.id === message.id)
                 if (existingMessageIndex > 0) {
                     oldMessages[existingMessageIndex] = message
                 } else {
                     // Increment count for unread counter
-                    if (message.type !== "NEW_BATTLE") newMessagesCount++
+                    if (message.type !== ChatMessageType.NewBattle) newMessagesCount++
                     newMessages.push(message)
                 }
             })
@@ -123,26 +123,26 @@ export const ChatContainer = createContainer(() => {
     }, [])
 
     // Subscribe to global chat messages
-    useGameServerSubscription<ChatMessageType[]>(
+    useGameServerSubscription<ChatMessage[]>(
         {
             URI: "/public/global_chat",
             key: GameServerKeys.SubscribeGlobalChat,
         },
         (payload) => {
             if (!payload || payload.length <= 0) return
-            handleIncomingMessages({ faction: null, messages: payload })
+            handleIncomingMessage({ faction: null, messages: payload })
         },
     )
 
     // Subscribe to faction chat messages
-    useGameServerSubscriptionFaction<ChatMessageType[]>(
+    useGameServerSubscriptionFaction<ChatMessage[]>(
         {
             URI: "/faction_chat",
             key: GameServerKeys.SubscribeFactionChat,
         },
         (payload) => {
             if (!payload || payload.length <= 0) return
-            handleIncomingMessages({ faction: "something", messages: payload })
+            handleIncomingMessage({ faction: "something", messages: payload })
         },
     )
 
@@ -206,7 +206,7 @@ export const ChatContainer = createContainer(() => {
         setSplitOption,
         filterSystemMessages,
         toggleFilterSystemMessages,
-        handleIncomingMessages,
+        handleIncomingMessage,
         globalChatMessages,
         factionChatMessages,
         factionChatUnread,

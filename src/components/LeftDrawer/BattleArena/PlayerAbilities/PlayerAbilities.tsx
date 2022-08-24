@@ -104,28 +104,28 @@ const PlayerAbilitiesInner = () => {
                 })}
             >
                 <FilterButton
-                    value={LocationSelectType.GLOBAL}
+                    value={LocationSelectType.Global}
                     currentSelectedValue={locationSelectType}
                     onChange={onLocationSelectTypeChange}
                     icon={<SvgGlobal size="1.4rem" />}
                 />
 
                 <FilterButton
-                    value={LocationSelectType.LOCATION_SELECT}
+                    value={LocationSelectType.LocationSelect}
                     currentSelectedValue={locationSelectType}
                     onChange={onLocationSelectTypeChange}
                     icon={<SvgTarget size="1.4rem" />}
                 />
 
                 <FilterButton
-                    value={LocationSelectType.MECH_SELECT}
+                    value={LocationSelectType.MechSelect}
                     currentSelectedValue={locationSelectType}
                     onChange={onLocationSelectTypeChange}
                     icon={<SvgMicrochip size="1.4rem" />}
                 />
 
                 <FilterButton
-                    value={LocationSelectType.LINE_SELECT}
+                    value={LocationSelectType.LineSelect}
                     currentSelectedValue={locationSelectType}
                     onChange={onLocationSelectTypeChange}
                     icon={<SvgLine size="1.4rem" />}
