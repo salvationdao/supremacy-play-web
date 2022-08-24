@@ -22,6 +22,7 @@ interface TextMessageProps {
     isScrolling: boolean
     previousMessage?: ChatMessage
     latestMessage?: ChatMessage
+    isFailed: boolean
 }
 
 const propsAreEqual = (prevProps: TextMessageProps, nextProps: TextMessageProps) => {
@@ -30,16 +31,17 @@ const propsAreEqual = (prevProps: TextMessageProps, nextProps: TextMessageProps)
         prevProps.message.received_at === nextProps.message.received_at &&
         prevProps.isScrolling === nextProps.isScrolling &&
         prevProps.previousMessage?.id === nextProps.previousMessage?.id &&
-        prevProps.latestMessage?.id === nextProps.latestMessage?.id
+        prevProps.latestMessage?.id === nextProps.latestMessage?.id &&
+        prevProps.isFailed === nextProps.isFailed
     )
 }
 
-export const TextMessage = React.memo(function TextMessage({ message, containerRef, isScrolling, previousMessage, latestMessage }: TextMessageProps) {
+export const TextMessage = React.memo(function TextMessage({ message, containerRef, isScrolling, previousMessage, latestMessage, isFailed }: TextMessageProps) {
     const { newSnackbarMessage, sendBrowserNotification } = useGlobalNotifications()
     const { getFaction } = useSupremacy()
     const { send } = useGameServerCommandsUser("/user_commander")
     const { user, userID, isHidden, isActive } = useAuth()
-    const { userGidRecord, addToUserGidRecord, tabValue, failedMessages, fontSize } = useChat()
+    const { userGidRecord, addToUserGidRecord, tabValue, fontSize } = useChat()
 
     // States
     const [refreshMessage, toggleRefreshMessage] = useToggle()
@@ -103,7 +105,7 @@ export const TextMessage = React.memo(function TextMessage({ message, containerR
     }, [data, getFaction, user.gid])
 
     const isAlreadyReported = useMemo(() => metadata?.reports.includes(userID), [metadata?.reports, userID])
-    const isFailed = useMemo(() => from_user.id === userID && failedMessages.includes(data.id), [data.id, failedMessages, from_user.id, userID])
+    // const isFailed = useMemo(() => from_user.id === userID && failedMessages.includes(data.id), [data.id, failedMessages, from_user.id, userID])
     const rankDeets = useMemo(() => (user_rank ? getUserRankDeets(user_rank, ".8rem", "1.8rem") : undefined), [user_rank])
     const fontSizes = useMemo(
         () => ({
@@ -149,7 +151,7 @@ export const TextMessage = React.memo(function TextMessage({ message, containerR
         if (isRead === false && (isHidden || !isActive)) {
             // Check if its the last message
             if (latestMessage?.id === message.id) {
-                sendBrowserNotification(`New Chat Message`, `${from_user.username} has tagged you in a message.`)
+                sendBrowserNotification.current(`New Chat Message`, `${from_user.username} has tagged you in a message.`)
             }
             return
         }

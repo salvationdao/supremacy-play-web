@@ -4,7 +4,7 @@ import { PunishMessage, TextMessage } from "../../.."
 import { SvgScrolldown } from "../../../../assets"
 import { useAuth, useChat } from "../../../../containers"
 import { colors } from "../../../../theme/theme"
-import { ChatMessageType, NewBattleMessageData, PunishMessageData, SplitOptionType, SystemBanMessageData } from "../../../../types"
+import { ChatMessageType, NewBattleMessageData, PunishMessageData, SplitOptionType, SystemBanMessageData, TextMessageData } from "../../../../types"
 import { BanProposal } from "../BanProposal/BanProposal"
 import { GlobalAnnouncement } from "../GlobalAnnouncement"
 import { NewBattleMessage } from "./MessageTypes/NewBattleMessage"
@@ -18,7 +18,7 @@ interface ChatMessagesProps {
 
 export const ChatMessages = React.memo(function ChatMessages({ faction_id, primaryColor, secondaryColor }: ChatMessagesProps) {
     const { userID } = useAuth()
-    const { splitOption, fontSize, globalAnnouncement, globalChatMessages, factionChatMessages, onlyShowSystemMessages } = useChat()
+    const { splitOption, fontSize, globalAnnouncement, globalChatMessages, factionChatMessages, onlyShowSystemMessages, failedMessages } = useChat()
     const [autoScroll, setAutoScroll] = useState(true)
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -120,6 +120,7 @@ export const ChatMessages = React.memo(function ChatMessages({ faction_id, prima
                                                 message={message}
                                                 containerRef={scrollableRef}
                                                 isScrolling={isScrolling}
+                                                isFailed={(message.data as TextMessageData).from_user.id === userID && failedMessages.includes(message.id)}
                                                 previousMessage={chatMessages[i - 1]}
                                                 latestMessage={latestMessage}
                                             />
@@ -187,19 +188,21 @@ export const ChatMessages = React.memo(function ChatMessages({ faction_id, prima
             </>
         ),
         [
-            autoScroll,
-            chatMessages,
-            faction_id,
-            fontSize,
             globalAnnouncement,
-            isScrolling,
-            latestMessage,
-            onClickScrollToBottom,
-            onlyShowSystemMessages,
-            primaryColor,
-            scrollHandler,
-            secondaryColor,
             splitOption,
+            faction_id,
+            scrollHandler,
+            primaryColor,
+            chatMessages,
+            onClickScrollToBottom,
+            autoScroll,
+            secondaryColor,
+            onlyShowSystemMessages,
+            isScrolling,
+            userID,
+            failedMessages,
+            latestMessage,
+            fontSize,
         ],
     )
 })
