@@ -52,7 +52,10 @@ export const KeycardHangarItemInner = ({ submodel, isGridView }: SubmodelItemPro
                             height: "20rem",
                         }}
                     >
-                        <MediaPreview imageUrl={submodel.image_url ?? ""} videoUrls={[submodel.animation_url, submodel.card_animation_url]} />
+                        <MediaPreview
+                            imageUrl={submodel.images.image_url ?? ""}
+                            videoUrls={[submodel.images.animation_url, submodel.images.card_animation_url]}
+                        />
                     </Box>
 
                     <Stack spacing=".4rem" sx={{ flex: 1, px: ".4rem", py: ".3rem" }}>

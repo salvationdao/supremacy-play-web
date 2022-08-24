@@ -500,6 +500,7 @@ export interface StorefrontPackage {
 }
 
 export interface Submodel {
+    images: Images
     collection_slug: string
     hash: string
     id: string
