@@ -15,9 +15,10 @@ interface Props {
     shoppingCart?: ShoppingCart
     primaryColor: string
     backgroundColor: string
+    fullPage?: boolean
 }
 
-export const ShoppingCartTable = ({ shoppingCart, loading, primaryColor, backgroundColor }: Props) => {
+export const ShoppingCartTable = ({ shoppingCart, loading, primaryColor, backgroundColor, fullPage }: Props) => {
     const content = useMemo(() => {
         if (loading) {
             return (
@@ -101,27 +102,36 @@ export const ShoppingCartTable = ({ shoppingCart, loading, primaryColor, backgro
                             {generatePriceText(totalDollars, totalCents)}
                         </Typography>
 
-                        <FancyButton
-                            clipThingsProps={{
-                                clipSize: "5px",
-                                backgroundColor: colors.blue,
-                                opacity: 1,
-                                border: { isFancy: true, borderColor: colors.blue, borderThickness: "1.5px" },
-                                sx: { position: "relative", width: "100%", height: "100%", mt: "1rem" },
-                            }}
-                            sx={{ px: "1.6rem", py: "1.1rem" }}
-                        >
-                            <Typography variant={"body1"} sx={{ fontFamily: fonts.nostromoBlack, color: colors.offWhite }}>
-                                CHECKOUT
-                            </Typography>
-                        </FancyButton>
+                        {!fullPage && (
+                            <FancyButton
+                                clipThingsProps={{
+                                    clipSize: "5px",
+                                    backgroundColor: colors.blue,
+                                    opacity: 1,
+                                    border: { isFancy: true, borderColor: colors.blue, borderThickness: "1.5px" },
+                                    sx: { position: "relative", width: "100%", height: "100%", mt: "1rem" },
+                                }}
+                                to={"/storefront/shopping-cart"}
+                                sx={{ px: "1.6rem", py: "1.1rem" }}
+                            >
+                                <Typography variant={"body1"} sx={{ fontFamily: fonts.nostromoBlack, color: colors.offWhite }}>
+                                    CHECKOUT
+                                </Typography>
+                            </FancyButton>
+                        )}
                     </Stack>
                 </Stack>
             </>
         )
-    }, [shoppingCart, loading, primaryColor, backgroundColor])
+    }, [shoppingCart, loading, primaryColor, backgroundColor, fullPage])
 
-    return <Box sx={{ width: "500px" }}>{content}</Box>
+    return (
+        <>
+            <Typography sx={{ fontFamily: fonts.nostromoBlack, color: colors.offWhite }}>YOUR CART</Typography>
+
+            {content}
+        </>
+    )
 }
 
 interface ShoppingCartRowProps {

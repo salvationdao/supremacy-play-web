@@ -65,11 +65,9 @@ export const ShoppingCartPopover = ({ open, loading, shoppingCart, popoverRef, o
                 sx={{ height: "100%" }}
             >
                 <Stack spacing="2rem" sx={{ position: "relative", minWidth: "35rem", maxHeight: "90vh", px: "2rem", pt: "1.6rem", pb: "2rem" }}>
-                    <Box>
-                        <Typography sx={{ fontFamily: fonts.nostromoBlack, color: theme.factionTheme.primary }}>YOUR CART</Typography>
+                    <Box sx={{ maxWidth: "33.33%", minWidth: "500px" }}>
+                        <ShoppingCartTable loading={loading} shoppingCart={shoppingCart} primaryColor={primaryColor} backgroundColor={backgroundColor} />
                     </Box>
-
-                    <ShoppingCartTable loading={loading} shoppingCart={shoppingCart} primaryColor={primaryColor} backgroundColor={backgroundColor} />
                 </Stack>
             </ClipThing>
         </Popover>

@@ -110,7 +110,7 @@ export const PackageStoreCheckout = ({ id }: Props) => {
                 backgroundColor={theme.factionTheme.background}
                 sx={{ height: "100%" }}
             >
-                <Stack sx={{ height: "100%" }}>({content}</Stack>
+                <Stack sx={{ height: "100%" }}>{content}</Stack>
             </ClipThing>
         </Elements>
     )
