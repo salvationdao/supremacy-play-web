@@ -197,7 +197,7 @@ export class NormalBlock extends Block {
         const value = this.position[this.axis as keyof typeof this.position]
         if (value > this.MOVE_AMOUNT || value < -this.MOVE_AMOUNT) {
             this.reverseDirection()
-            this.position[this.axis as keyof typeof this.position] = clamp(-this.MOVE_AMOUNT, value, this.MOVE_AMOUNT)
+            this.position[this.axis as keyof typeof this.position] = clamp(-this.MOVE_AMOUNT + 1, value, this.MOVE_AMOUNT - 1)
         }
 
         this.position[this.axis as keyof typeof this.position] += (this.direction + this.direction * speed) * (elapsedTime * (baseFrameRate / 1000))

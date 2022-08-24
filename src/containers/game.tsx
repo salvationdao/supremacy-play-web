@@ -38,7 +38,7 @@ export const GameContainer = createContainer(() => {
     const [battleEndDetail, setBattleEndDetail] = useState<BattleEndDetail>()
     const [forceDisplay100Percentage, setForceDisplay100Percentage] = useState<string>("")
 
-    const isBattleStarted = useMemo(() => (map && bribeStage && bribeStage.phase !== "HOLD" ? true : false), [bribeStage, map])
+    const isBattleStarted = useMemo(() => (map && bribeStage && bribeStage.phase !== BribeStage.Hold ? true : false), [bribeStage, map])
 
     const factionWarMachines = useMemo(() => {
         if (!warMachines) return
@@ -119,7 +119,7 @@ export const GameContainer = createContainer(() => {
         (payload) => {
             setBribeStage(payload)
             // reset force display, if
-            if (payload?.phase === "COOLDOWN" || payload?.phase === "HOLD") setForceDisplay100Percentage("")
+            if (payload?.phase === BribeStage.Cooldown || payload?.phase === BribeStage.Hold) setForceDisplay100Percentage("")
         },
     )
 

@@ -8,7 +8,7 @@ import { shadeColor } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
 import { useGameServerSubscription } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
-import { BattleAbility as BattleAbilityType } from "../../../../types"
+import { BattleAbility as BattleAbilityType, BribeStage } from "../../../../types"
 import { BattleAbilityTextTop } from "./BattleAbilityTextTop"
 import { useArena } from "../../../../containers/arena"
 
@@ -98,7 +98,7 @@ const BattleAbilityItemInner = ({ bribeStage, battleAbility, fadeEffect }: Inner
                                 label={label}
                                 image_url={image_url}
                                 colour={colour}
-                                disableButton={!factionID || bribeStage?.phase !== "OPT_IN"}
+                                disableButton={!factionID || bribeStage?.phase !== BribeStage.OptIn}
                             />
 
                             <Typography>{description}</Typography>

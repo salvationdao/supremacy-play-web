@@ -92,49 +92,52 @@ const MiniMapInnerNormal = ({ map, isTargeting, isPoppedout, setIsPoppedout }: M
 const BattleNotStarted = () => {
     const { isStreamBigDisplay } = useUI()
 
-    return (
-        <Stack
-            alignItems="center"
-            justifyContent="center"
-            sx={{
-                position: "relative",
-                width: "100%",
-                height: isStreamBigDisplay ? "28rem" : "100%",
-                border: (theme) => `${theme.factionTheme.primary}60 1px solid`,
-            }}
-        >
-            <Typography
-                variant={!isStreamBigDisplay ? "h5" : "h6"}
+    return useMemo(
+        () => (
+            <Stack
+                alignItems="center"
+                justifyContent="center"
                 sx={{
-                    fontFamily: fonts.nostromoBold,
-                    WebkitTextStrokeWidth: !isStreamBigDisplay ? "1px" : "unset",
-                    textAlign: "center",
-                    zIndex: 2,
+                    position: "relative",
+                    width: "100%",
+                    height: isStreamBigDisplay ? "28rem" : "100%",
+                    border: (theme) => `${theme.factionTheme.primary}60 1px solid`,
                 }}
             >
-                Preparing for next battle...
-            </Typography>
-
-            <Box sx={{ position: "absolute", top: 0, left: 0, bottom: 0, right: 0, backgroundColor: "#00000050", zIndex: 1 }} />
-
-            {/* Background image */}
-            <Fade in>
-                <Box
+                <Typography
+                    variant={!isStreamBigDisplay ? "h5" : "h6"}
                     sx={{
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
-                        bottom: 0,
-                        right: 0,
-                        zIndex: 0,
-                        background: `url(${BattleBgWebP})`,
-                        backgroundRepeat: "no-repeat",
-                        backgroundPosition: "center",
-                        backgroundSize: "cover",
+                        fontFamily: fonts.nostromoBold,
+                        WebkitTextStrokeWidth: !isStreamBigDisplay ? "1px" : "unset",
+                        textAlign: "center",
+                        zIndex: 2,
                     }}
-                />
-            </Fade>
-        </Stack>
+                >
+                    Preparing for next battle...
+                </Typography>
+
+                <Box sx={{ position: "absolute", top: 0, left: 0, bottom: 0, right: 0, backgroundColor: "#00000050", zIndex: 1 }} />
+
+                {/* Background image */}
+                <Fade in>
+                    <Box
+                        sx={{
+                            position: "absolute",
+                            top: 0,
+                            left: 0,
+                            bottom: 0,
+                            right: 0,
+                            zIndex: 0,
+                            background: `url(${BattleBgWebP})`,
+                            backgroundRepeat: "no-repeat",
+                            backgroundPosition: "center",
+                            backgroundSize: "cover",
+                        }}
+                    />
+                </Fade>
+            </Stack>
+        ),
+        [isStreamBigDisplay],
     )
 }
 
