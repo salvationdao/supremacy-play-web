@@ -513,7 +513,7 @@ export const UsernameJSX = ({ data, fontSize, toggleIsPopoverOpen, user }: Usern
             <span
                 style={{
                     marginLeft: ".2rem",
-                    fontSize: `calc(1.1 * ${fontSize})`,
+                    fontSize,
                 }}
             >{`#${user?.gid}`}</span>
         </Typography>

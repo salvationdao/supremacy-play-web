@@ -1,94 +1,73 @@
-import { Box, IconButton, InputAdornment, MenuItem, MenuList, Stack, TextField, Typography } from "@mui/material"
-import { BaseEmoji, emojiIndex } from "emoji-mart"
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { IconButton, InputAdornment, Stack, TextField, Typography } from "@mui/material"
+import { useCallback, useMemo, useRef, useState } from "react"
+import { v4 as uuidv4 } from "uuid"
 import { ChatSettings, ClipThing, EmojiPopover } from "../../.."
-import { SvgEmoji, SvgEmojiSelector, SvgExternalLink, SvgSend } from "../../../../assets"
+import { SvgEmoji, SvgExternalLink, SvgSend } from "../../../../assets"
 import { MAX_CHAT_MESSAGE_LENGTH } from "../../../../constants"
-import { useAuth, useChat, useMobile, useGlobalNotifications } from "../../../../containers"
-import { SendFunc } from "../../../../containers/ws"
+import { useAuth, useChat, useGlobalNotifications, useMobile } from "../../../../containers"
 import { getRandomColor } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
 import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
-import { ChatMessage, ChatMessageType, IncomingMessage, User, UserRank } from "../../../../types"
+import { ChatMessage, ChatMessageType } from "../../../../types"
 import { TooltipHelper } from "../../../Common/TooltipHelper"
-import { v4 as uuidv4 } from "uuid"
+import { EmojiShortcut } from "./EmojiShortcut"
+import { TagPlayer } from "./TagPlayer"
 
 interface ChatSendProps {
     primaryColor: string
     faction_id: string | null
 }
 
-export const ChatSend = (props: ChatSendProps) => {
+export const ChatSend = ({ primaryColor, faction_id }: ChatSendProps) => {
+    const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsUser("/user_commander")
     const { user, userRank } = useAuth()
-    const { onFailedMessage, handleIncomingMessage, isPoppedout, setIsPoppedout, globalActivePlayers, activePlayers } = useChat()
-
-    return (
-        <ChatSendInner
-            {...props}
-            send={send}
-            user={user}
-            userRank={userRank}
-            onFailedMessage={onFailedMessage}
-            handleIncomingMessage={handleIncomingMessage}
-            isPoppedout={isPoppedout}
-            setIsPoppedout={setIsPoppedout}
-            globalActivePlayers={globalActivePlayers}
-            activePlayers={activePlayers}
-        />
-    )
-}
-
-interface ChatSendInnerProps extends ChatSendProps {
-    user: User
-    userRank?: UserRank
-    onFailedMessage: (id: string) => void
-    handleIncomingMessage: (incomingMessage: IncomingMessage) => void
-    send: SendFunc
-    isPoppedout: boolean
-    setIsPoppedout: React.Dispatch<React.SetStateAction<boolean>>
-    globalActivePlayers: User[]
-    activePlayers: User[]
-}
-
-const ChatSendInner = ({
-    primaryColor,
-    faction_id,
-    send,
-    user,
-    userRank,
-    onFailedMessage,
-    handleIncomingMessage,
-    isPoppedout,
-    setIsPoppedout,
-    globalActivePlayers,
-    activePlayers,
-}: ChatSendInnerProps) => {
-    const { newSnackbarMessage } = useGlobalNotifications()
     const { isMobile } = useMobile()
-    const { userGidRecord } = useChat()
+    const { userGidRecord, onFailedMessage, handleIncomingMessage, isPoppedout, setIsPoppedout } = useChat()
 
     // Message field
-    const [message, setMessage] = useState("")
-
-    // Emoji Shortcut
-    const [emojis, setEmojis] = useState<BaseEmoji[]>([])
-    const [caretPosition, setCaretPosition] = useState<number | null>(null)
-    const [caretMsg, setCaretMsg] = useState<string>("")
-    const [emojiSelect, setEmojiSelect] = useState<number>()
     const textfieldRef = useRef<HTMLInputElement>()
-    //tagging states
-    const [searchPlayersQuery, setSearchPlayersQuery] = useState<string>()
-    const [playersResults, setPlayersResults] = useState<User[]>([])
+    const [message, setMessage] = useState("")
+    const caretStartPosition = useRef<number | null>(null)
 
     //Emoji Popup
-    const [isEmojiOpen, toggleIsEmojiOpen] = useToggle()
     const popoverRef = useRef(null)
+    const [isEmojiOpen, toggleIsEmojiOpen] = useToggle()
 
     const messageColor = useMemo(() => getRandomColor(), [])
     const renderedMsg = message.replace(/@[a-zA-Z0-9-_]+#/g, "#")
+
+    // Go through input message and return tagged gid's
+    const taggedGIDs = useCallback(
+        (msg: string): number[] => {
+            const taggedStrings = [...msg.matchAll(/#\d+/g)]
+            const taggedGids: number[] = []
+
+            taggedStrings.map((s) => {
+                const gid = parseInt(s[0].substring(1))
+                if (gid === user.gid) return
+
+                const taggedUser = userGidRecord.current[gid]
+                // If on faction chat, prevent tagging players not in same faction
+                if (taggedUser && faction_id !== null && taggedUser.faction_id !== faction_id) return
+                taggedGids.push(gid)
+            })
+
+            return taggedGids
+        },
+        [userGidRecord, faction_id, user.gid],
+    )
+
+    // Sets the caret (cursor) position back to where it was previously
+    const focusCaretTextField = useCallback(() => {
+        if (caretStartPosition.current) {
+            textfieldRef.current?.setSelectionRange(caretStartPosition.current, caretStartPosition.current)
+        }
+    }, [])
+
+    // Checks input is not too long etc.
     const setMessageWithCheck = useCallback(
         (newMessage: string, append?: boolean) => {
             setMessage((prev) => {
@@ -100,29 +79,12 @@ const ChatSendInner = ({
         [setMessage],
     )
 
-    const handleTaggedUsers = useCallback(
-        (msg: string): number[] => {
-            const taggedStrings = [...msg.matchAll(/#\d+/g)]
-            let taggedGids: number[] = []
-            taggedStrings.map((s) => {
-                const gid = parseInt(s[0].substring(1))
-                if (gid === user.gid) return
-                const taggedUser = userGidRecord.current[gid]
-
-                if (taggedUser && faction_id !== null && taggedUser.faction_id !== faction_id) return
-                taggedGids = [...taggedGids, gid]
-            })
-            return taggedGids
-        },
-        [userGidRecord, faction_id, user.gid],
-    )
-
     const sendMessage = useCallback(async () => {
         if (!message.trim()) return
 
-        const sentAt = new Date()
         const id = uuidv4()
-        const taggedUserGids = handleTaggedUsers(renderedMsg)
+        const sentAt = new Date()
+        const taggedUserGids = taggedGIDs(renderedMsg)
 
         const msg: ChatMessage = {
             id,
@@ -158,159 +120,9 @@ const ChatSendInner = ({
             newSnackbarMessage(typeof e === "string" ? e : "Failed to send chat message.", "error")
             console.error(e)
         }
-    }, [message, user, send, handleIncomingMessage, userRank, messageColor, faction_id, newSnackbarMessage, onFailedMessage, renderedMsg, handleTaggedUsers])
+    }, [message, user, send, handleIncomingMessage, userRank, messageColor, faction_id, newSnackbarMessage, onFailedMessage, renderedMsg, taggedGIDs])
 
     const showCharCount = message.length >= MAX_CHAT_MESSAGE_LENGTH
-
-    // After user has selected an emoji- deconstructs string before and after the emoji enter point and reconstructs the message string
-    const handleOnEmojiSelect = useCallback(
-        (emoji: BaseEmoji) => {
-            //getting the index of the last colon of the string from the start of the message to the caret (cursor) position
-            const index = caretMsg.lastIndexOf(":")
-            //if there is an index, run the next block of code
-            if (index != -1) {
-                //saving the string before the colon
-                const stringBefore = caretMsg.substring(0, index)
-                //initializing the full string to be the string before the colon and the chosen emoji
-                let fullString = `${stringBefore + emoji.native}`
-                //caretPosition can be null if elements not focused, but shouldn't be in this use case, getting string after the caret position in case user uses this in middle of message
-                if (caretPosition) {
-                    //finding the string after the caret position
-                    const stringAfter = message.substring(caretPosition, message.length)
-                    //setting the full string to add the string after
-                    fullString = `${fullString + stringAfter}`
-                }
-                //setting message
-                setMessageWithCheck(fullString)
-                //setting Emojis Array, to close out the Emoji selector
-                setEmojis([])
-                //setting the Select to no emojis
-                setEmojiSelect(undefined)
-            }
-        },
-        [caretMsg, caretPosition, message, setMessageWithCheck],
-    )
-
-    // While the user is using :emoji short cut- finding the search phrase and setting caret (cursor) positioning
-    const handleEmojiShortcut = useCallback((caretStartPosition: number | null, msg: string) => {
-        //there should always be a caret position or the element is not focused
-        if (caretStartPosition) {
-            //set the caret position
-            setCaretPosition(caretStartPosition)
-            //finds the string from the start of the message to the caret string- allows for multiple colons to be used in a message and focus only where the user is typing
-            const caretString = msg.substring(0, caretStartPosition)
-            //sets for use in another function
-            setCaretMsg(caretString)
-            //getting last index of shortcut key: colon
-            const colonIndex = caretString.lastIndexOf(":")
-            //if there is a colon, run the next block of code
-            if (colonIndex != -1) {
-                //gets the string from the first letter after the colon to the end of the caret position
-                const afterColonSubstring = caretString.substring(colonIndex + 1, caretString.length)
-                //identifies if theres a space, if there is one and marks it as the end of the search query
-                const searchStringEndIndex = afterColonSubstring.indexOf(" ")
-                const searchString = afterColonSubstring.substring(0, searchStringEndIndex !== -1 ? searchStringEndIndex : caretString.length)
-
-                //if there is no matches, clear the results
-                if (searchStringEndIndex !== -1) {
-                    setEmojis([])
-                    setEmojiSelect(undefined)
-                    return
-                }
-
-                //checks if the search query matches only letters
-                if (searchString.match(/^[a-zA-Z]+$/) !== null) {
-                    //search the emoji Index and set the array- top 15 returned results
-                    const searchArr = emojiIndex.search(searchString)?.slice(0, 15)
-                    setEmojis(searchArr as BaseEmoji[])
-                }
-            }
-        }
-    }, [])
-
-    // After user has selected an emoji- deconstructs string before and after the emoji enter point and reconstructs the message string
-    const handlePlayerTagSelect = useCallback(
-        (taggedUser: User) => {
-            //getting the index of the last colon of the string from the start of the message to the caret (cursor) position
-            const index = caretMsg.lastIndexOf("@")
-            //if there is an index, run the next block of code
-            if (index != -1) {
-                //saving the string before the colon
-                const stringBefore = caretMsg.substring(0, index)
-                //initializing the full string to be the string before the colon and the chosen emoji
-                let fullString = `${stringBefore + "@" + taggedUser.username + "#" + taggedUser.gid + " "}`
-                //caretPosition can be null if elements not focused, but shouldn't be in this use case, getting string after the caret position in case user uses this in middle of message
-                if (caretPosition) {
-                    //finding the string after the caret position
-                    const stringAfter = message.substring(caretPosition, message.length)
-                    //setting the full string to add the string after
-                    fullString = `${fullString + stringAfter}`
-                }
-                //setting message
-                setMessageWithCheck(fullString)
-                //setting Emojis Array, to close out the Emoji selector
-                setPlayersResults([])
-                setSearchPlayersQuery("")
-                document.getElementById(`message-textfield-${faction_id}`)?.focus()
-            }
-        },
-        [caretMsg, caretPosition, message, setMessageWithCheck, faction_id],
-    )
-
-    // While the user is using :emoji short cut- finding the search phrase and setting caret (cursor) positioning
-    const handlePlayerSearchShortcut = useCallback((caretStartPosition: number | null, msg: string) => {
-        //there should always be a caret position or the element is not focused
-        if (caretStartPosition) {
-            //set the caret position
-            setCaretPosition(caretStartPosition)
-            //finds the string from the start of the message to the caret string- allows for multiple @s to be used in a message and focus only where the user is typing
-            const caretString = msg.substring(0, caretStartPosition)
-            //sets for use in another function
-            setCaretMsg(caretString)
-            //getting last index of shortcut key: colon
-            const colonIndex = caretString.lastIndexOf("@")
-            //if there is a colon, run the next block of code
-            if (colonIndex != -1) {
-                //gets the string from the first letter after the colon to the end of the caret position
-                const afterColonSubstring = caretString.substring(colonIndex + 1, caretString.length)
-                //identifies if theres a space, if there is one and marks it as the end of the search query
-                const searchStringEndIndex = afterColonSubstring.indexOf(" ")
-                const searchString = afterColonSubstring.substring(0, searchStringEndIndex !== -1 ? searchStringEndIndex : caretString.length)
-
-                //if there is no matches, clear the results
-                if (searchStringEndIndex !== -1) {
-                    setSearchPlayersQuery(undefined)
-                    return
-                }
-
-                setSearchPlayersQuery(searchString)
-            }
-        }
-    }, [])
-
-    useEffect(() => {
-        if (!searchPlayersQuery || !send) {
-            setPlayersResults([])
-            return
-        }
-
-        const fap = activePlayers.filter((ap) => {
-            return ap.id !== user.id && (ap.username.includes(searchPlayersQuery) || ap.gid.toString().includes(searchPlayersQuery))
-        })
-
-        const gap = globalActivePlayers.filter((ap) => {
-            return ap.id !== user.id && (ap.username.includes(searchPlayersQuery) || ap.gid.toString().includes(searchPlayersQuery))
-        })
-
-        faction_id ? setPlayersResults(fap.slice(0, 10)) : setPlayersResults(gap.slice(0, 10))
-    }, [searchPlayersQuery, activePlayers, globalActivePlayers, faction_id, send, user.id])
-
-    // Sets the caret (cursor) position back to where it was previously
-    const focusCaretTextField = useCallback(() => {
-        if (caretPosition) {
-            textfieldRef.current?.setSelectionRange(caretPosition, caretPosition)
-        }
-    }, [caretPosition])
 
     return (
         <form
@@ -323,173 +135,20 @@ const ChatSendInner = ({
                 justifyContent="flex-end"
                 sx={{
                     position: "relative",
-                    px: "1.28rem",
-                    pt: ".32rem",
+                    px: "1.3rem",
+                    pt: ".4rem",
                     pb: showCharCount ? "2.4rem" : "1.1rem",
                 }}
             >
-                {emojis?.length > 0 && (
-                    <Box
-                        sx={{
-                            background: "#49494933",
-                            mb: ".8rem",
-                            boxShadow: 4,
-                            borderRadius: 1,
-                            width: "100%",
-                            display: "flex",
-                            p: ".5rem",
-                            overflowX: "scroll",
-                            scrollBehavior: "smooth",
-                            "::-webkit-scrollbar": {
-                                height: ".4rem",
-                            },
-                            "::-webkit-scrollbar-track": {
-                                background: "#FFFFFF15",
-                                borderRadius: 3,
-                            },
-                            "::-webkit-scrollbar-thumb": {
-                                background: primaryColor,
-                                borderRadius: 3,
-                            },
-                        }}
-                    >
-                        {emojis.map((e, i) => {
-                            return (
-                                <Box key={e.unified} sx={{ position: "relative" }}>
-                                    {i === emojiSelect && (
-                                        <SvgEmojiSelector
-                                            size="100%"
-                                            sx={{
-                                                position: "absolute",
-                                                left: "50%",
-                                                top: "50%",
-                                                transform: "translate(-50%, -50%)",
-                                                width: "100%",
-                                            }}
-                                            stroke={primaryColor}
-                                            strokeWidth="6"
-                                        />
-                                    )}
-                                    <IconButton
-                                        id={`emoji-index-${faction_id}-${i}`}
-                                        disableRipple
-                                        onClick={() => {
-                                            handleOnEmojiSelect(e)
-                                            document.getElementById(`message-textfield-${faction_id}`)?.focus()
-                                        }}
-                                        //handling keyboard navigation
-                                        onKeyDown={(e: React.KeyboardEvent<HTMLButtonElement>) => {
-                                            e.stopPropagation()
-                                            switch (e.key) {
-                                                case "ArrowLeft": {
-                                                    e.preventDefault()
-                                                    let prev = i - 1
+                <EmojiShortcut
+                    primaryColor={primaryColor}
+                    faction_id={faction_id}
+                    message={message}
+                    setMessageWithCheck={setMessageWithCheck}
+                    caretStartPosition={caretStartPosition}
+                />
 
-                                                    if (prev <= -1) {
-                                                        prev = emojis.length - 1
-                                                    }
-                                                    document.getElementById(`emoji-index-${faction_id}-${prev}`)?.focus()
-                                                    break
-                                                }
-                                                case "ArrowRight": {
-                                                    e.preventDefault()
-                                                    let next = i + 1
-
-                                                    if (next >= emojis.length) {
-                                                        next = 0
-                                                    }
-                                                    document.getElementById(`emoji-index-${faction_id}-${next}`)?.focus()
-                                                    break
-                                                }
-                                                case "ArrowDown": {
-                                                    e.preventDefault()
-                                                    setEmojiSelect(undefined)
-                                                    document.getElementById(`message-textfield-${faction_id}`)?.focus()
-                                                    break
-                                                }
-                                                case "Escape": {
-                                                    setEmojis([])
-                                                    setEmojiSelect(undefined)
-                                                    document.getElementById(`message-textfield-${faction_id}`)?.focus()
-                                                    break
-                                                }
-                                            }
-                                        }}
-                                        onFocus={() => {
-                                            setEmojiSelect(i)
-                                        }}
-                                        onBlur={() => {
-                                            setEmojiSelect(undefined)
-                                        }}
-                                    >
-                                        <Typography fontSize="3rem">{e.native}</Typography>
-                                    </IconButton>
-                                </Box>
-                            )
-                        })}
-                    </Box>
-                )}
-
-                {playersResults && playersResults.length > 0 && (
-                    <MenuList
-                        sx={{
-                            background: "#49494933",
-                            mb: ".8rem",
-                            boxShadow: 4,
-                            borderRadius: 1,
-                        }}
-                    >
-                        <Stack direction={"column-reverse"}>
-                            {playersResults.map((r, i) => {
-                                return (
-                                    <MenuItem
-                                        id={"search-player-results-" + i}
-                                        dense
-                                        key={r.id}
-                                        onClick={() => {
-                                            handlePlayerTagSelect(r)
-                                        }}
-                                        onKeyDown={(e) => {
-                                            e.stopPropagation()
-                                            switch (e.key) {
-                                                case "ArrowUp": {
-                                                    e.preventDefault()
-                                                    if (i === playersResults.length - 1) {
-                                                        break
-                                                    }
-                                                    document.getElementById(`search-player-results-${i + 1}`)?.focus()
-                                                    break
-                                                }
-                                                case "ArrowDown": {
-                                                    e.preventDefault()
-                                                    if (i === 0) {
-                                                        document.getElementById(`message-textfield-${faction_id}`)?.focus()
-                                                        break
-                                                    }
-                                                    document.getElementById(`search-player-results-${i - 1}`)?.focus()
-                                                    break
-                                                }
-                                                case "Escape": {
-                                                    e.preventDefault()
-                                                    document.getElementById(`message-textfield-${faction_id}`)?.focus()
-                                                    break
-                                                }
-                                                case "Enter": {
-                                                    document.getElementById(`message-textfield-${faction_id}`)?.focus()
-                                                    setPlayersResults([])
-                                                    setSearchPlayersQuery("")
-                                                    break
-                                                }
-                                            }
-                                        }}
-                                    >
-                                        <Typography>{r.username + " #" + r.gid}</Typography>
-                                    </MenuItem>
-                                )
-                            })}
-                        </Stack>
-                    </MenuList>
-                )}
+                <TagPlayer faction_id={faction_id} message={message} setMessageWithCheck={setMessageWithCheck} caretStartPosition={caretStartPosition} />
 
                 <ClipThing
                     clipSize="8px"
@@ -508,12 +167,8 @@ const ChatSendInner = ({
                             inputRef={textfieldRef}
                             onChange={(e) => {
                                 const msg = e.currentTarget.value
-                                setEmojis([])
-                                setEmojiSelect(undefined)
                                 setMessageWithCheck(msg)
-
-                                handleEmojiShortcut(e.target.selectionStart, msg)
-                                handlePlayerSearchShortcut(e.target.selectionStart, msg)
+                                caretStartPosition.current = e.target.selectionStart
                             }}
                             onFocus={(e) => {
                                 e.preventDefault()
@@ -530,34 +185,13 @@ const ChatSendInner = ({
                                     case "Enter": {
                                         e.preventDefault()
                                         sendMessage()
-                                        setEmojis([])
-                                        setPlayersResults([])
-                                        setSearchPlayersQuery("")
                                         break
                                     }
                                     case "ArrowUp": {
                                         e.preventDefault()
-                                        if (emojis.length > 0) {
-                                            document.getElementById(`emoji-index-${faction_id}-0`)?.focus()
-                                        }
-                                        if (playersResults.length > 0) {
+                                        document.getElementById(`emoji-index-${faction_id}-0`)?.focus() ||
                                             document.getElementById(`search-player-results-0`)?.focus()
-                                        }
                                         break
-                                    }
-                                    case "Tab": {
-                                        e.preventDefault()
-                                        if (emojis.length > 0) {
-                                            const emoji = emojis[0]
-                                            handleOnEmojiSelect(emoji)
-                                        }
-                                        if (playersResults.length > 0) {
-                                            const taggedUser = playersResults[0]
-                                            handlePlayerTagSelect(taggedUser)
-                                        }
-                                        if (caretPosition) {
-                                            textfieldRef.current?.setSelectionRange(caretPosition, caretPosition)
-                                        }
                                     }
                                 }
                             }}
@@ -635,8 +269,8 @@ const ChatSendInner = ({
                         variant="caption"
                         sx={{
                             position: "absolute",
-                            bottom: ".5rem",
-                            right: "1.5rem",
+                            bottom: "3rem",
+                            right: "2.8rem",
                             opacity: showCharCount ? 1 : 0.4,
                             color: showCharCount ? colors.red : "#FFFFFF",
                         }}

@@ -96,7 +96,7 @@ export const GlobalSnackbar = () => {
                         }}
                         sx={{
                             mb: "-1rem",
-                            ml: "1.5rem",
+                            ml: "-1rem",
                         }}
                         backgroundColor={severityDeets.color}
                         opacity={0.99}
