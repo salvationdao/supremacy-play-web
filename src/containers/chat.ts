@@ -16,7 +16,7 @@ export const ChatContainer = createContainer(() => {
     // Chat settings
     const [tabValue, setTabValue] = useState(0) // 0 is global chat, 1 is faction chat
     const [splitOption, setSplitOption] = useState<SplitOptionType>((localStorage.getItem("chatSplitOption") as SplitOptionType) || SplitOptionType.Tabbed)
-    const [onlyShowSystemMessages, toggleOnlyShowSystemMessages] = useToggle(localStorage.getItem("chatonlyShowSystemMessages") == "true")
+    const [onlyShowSystemMessages, toggleOnlyShowSystemMessages] = useToggle(localStorage.getItem("chatOnlyShowSystemMessages") == "true")
     const [fontSize, setFontSize] = useState<FontSizeType>(parseString(localStorage.getItem("chatFontSize2"), 1.2) as FontSizeType)
 
     // Global announcement message
@@ -39,7 +39,7 @@ export const ChatContainer = createContainer(() => {
     // Save chat settings to local storage
     useEffect(() => {
         localStorage.setItem("chatSplitOption", splitOption || SplitOptionType.Tabbed)
-        localStorage.setItem("chatonlyShowSystemMessages", onlyShowSystemMessages ? "true" : "false")
+        localStorage.setItem("chatOnlyShowSystemMessages", onlyShowSystemMessages ? "true" : "false")
         localStorage.setItem("chatFontSize2", fontSize ? fontSize.toString() : "1")
     }, [splitOption, onlyShowSystemMessages, fontSize])
 
