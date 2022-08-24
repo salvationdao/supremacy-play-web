@@ -1,7 +1,7 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useEffect, useRef } from "react"
 import { SvgFullscreen, SvgMinimize, SvgSwap } from "../../../assets"
-import { useDimension, useGame, useOverlayToggles } from "../../../containers"
+import { useDimension, useGame, useUI } from "../../../containers"
 import { useOvenStream } from "../../../containers/oven"
 import { fonts, siteZIndex } from "../../../theme/theme"
 import { LEFT_DRAWER_WIDTH } from "../../LeftDrawer/LeftDrawer"
@@ -73,7 +73,7 @@ export const Stream = () => {
 }
 
 export const StreamInner = () => {
-    const { showTrailer } = useOverlayToggles()
+    const { showTrailer } = useUI()
     const { currentOvenStream } = useOvenStream()
     const isGreenScreen = useRef(localStorage.getItem("greenScreen") === "true")
 

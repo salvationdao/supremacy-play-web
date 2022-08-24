@@ -1,6 +1,6 @@
 import { Box, Tabs } from "@mui/material"
 import { useRouteMatch } from "react-router-dom"
-import { useAuth, useOverlayToggles } from "../../containers"
+import { useAuth, useUI } from "../../containers"
 import { useTheme } from "../../containers/theme"
 import { LEFT_DRAWER_ARRAY, ROUTES_ARRAY } from "../../routes"
 import { colors, siteZIndex } from "../../theme/theme"
@@ -9,7 +9,7 @@ import { TabButton } from "../RightDrawer/DrawerButtons"
 export const LEFT_DRAWER_BAR_WIDTH = 3 // rem
 
 export const DrawerButtons = () => {
-    const { leftDrawerActiveTabID, setLeftDrawerActiveTabID } = useOverlayToggles()
+    const { leftDrawerActiveTabID, setLeftDrawerActiveTabID } = useUI()
     const theme = useTheme()
     const { userID } = useAuth()
 

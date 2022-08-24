@@ -19,7 +19,7 @@ import {
     GlobalNotificationsProvider,
     MiniMapProvider,
     MobileProvider,
-    OverlayTogglesProvider,
+    UiProvider,
     SupremacyProvider,
     useMobile,
     useSupremacy,
@@ -233,7 +233,7 @@ const App = () => {
                                                         <GameProvider>
                                                             <MobileProvider>
                                                                 <DimensionProvider>
-                                                                    <OverlayTogglesProvider>
+                                                                    <UiProvider>
                                                                         <MiniMapProvider>
                                                                             <HotkeyProvider>
                                                                                 <UserUpdater />
@@ -244,7 +244,7 @@ const App = () => {
                                                                                 </Switch>
                                                                             </HotkeyProvider>
                                                                         </MiniMapProvider>
-                                                                    </OverlayTogglesProvider>
+                                                                    </UiProvider>
                                                                 </DimensionProvider>
                                                             </MobileProvider>
                                                         </GameProvider>

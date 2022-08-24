@@ -1,10 +1,10 @@
 import { IconButton, Stack, Typography } from "@mui/material"
 import { TooltipHelper } from ".."
 import { SvgHistory } from "../../assets"
-import { useOverlayToggles } from "../../containers"
+import { useUI } from "../../containers"
 
 export const OverlayToggles = () => {
-    const { isBattleHistoryOpen, toggleIsBattleHistoryOpen } = useOverlayToggles()
+    const { isBattleHistoryOpen, toggleIsBattleHistoryOpen } = useUI()
 
     return (
         <Stack direction="row" alignItems="center" sx={{ height: "100%" }}>

@@ -1,7 +1,7 @@
 import { Box, Drawer, Fade } from "@mui/material"
 import { useRouteMatch } from "react-router-dom"
 import { DRAWER_TRANSITION_DURATION } from "../../constants"
-import { useAuth, useMobile, useOverlayToggles } from "../../containers"
+import { useAuth, useMobile, useUI } from "../../containers"
 import { LEFT_DRAWER_ARRAY, LEFT_DRAWER_MAP, ROUTES_ARRAY } from "../../routes"
 import { colors, siteZIndex } from "../../theme/theme"
 import { DrawerButtons } from "./DrawerButtons"
@@ -9,7 +9,7 @@ import { DrawerButtons } from "./DrawerButtons"
 export const LEFT_DRAWER_WIDTH = 44 // rem
 
 export const LeftDrawer = () => {
-    const { leftDrawerActiveTabID } = useOverlayToggles()
+    const { leftDrawerActiveTabID } = useUI()
     const { isMobile } = useMobile()
     const { userID } = useAuth()
 

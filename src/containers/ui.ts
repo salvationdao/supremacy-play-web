@@ -5,7 +5,7 @@ import { LEFT_DRAWER_ARRAY, RIGHT_DRAWER_ARRAY } from "../routes"
 import { useMobile } from "./mobile"
 
 // Control overlays, side drawers etc
-const OverlayTogglesContainer = createContainer(() => {
+const uiContainer = createContainer(() => {
     const { isMobile } = useMobile()
     const [isNavLinksDrawerOpen, toggleIsNavLinksDrawerOpen] = useToggle(false)
     const [leftDrawerActiveTabID, setLeftDrawerActiveTabID] = useState(localStorage.getItem("leftDrawerActiveTabID") || LEFT_DRAWER_ARRAY[0]?.id || "")
@@ -45,5 +45,5 @@ const OverlayTogglesContainer = createContainer(() => {
     }
 })
 
-export const OverlayTogglesProvider = OverlayTogglesContainer.Provider
-export const useOverlayToggles = OverlayTogglesContainer.useContainer
+export const UiProvider = uiContainer.Provider
+export const useUI = uiContainer.useContainer
