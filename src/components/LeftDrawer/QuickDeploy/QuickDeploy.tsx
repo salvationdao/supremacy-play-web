@@ -1,20 +1,19 @@
-import { Box, CircularProgress, IconButton, Pagination, Stack, Typography } from "@mui/material"
-import { useCallback, useEffect, useState } from "react"
-import { TooltipHelper } from "../.."
-import { SvgNotification, SvgSupToken } from "../../../assets"
+import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
+import { useCallback, useEffect, useRef, useState } from "react"
+import { FancyButton } from "../.."
 import { useAuth } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
-import { parseString, supFormatter } from "../../../helpers"
-import { usePagination, useToggle } from "../../../hooks"
+import { parseString } from "../../../helpers"
+import { usePagination } from "../../../hooks"
 import { useGameServerCommandsUser, useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { MechBasic } from "../../../types"
+import { MechBasic, MechStatus } from "../../../types"
 import { SortTypeLabel } from "../../../types/marketplace"
-import { PreferencesModal } from "../../Bar/ProfileCard/PreferencesModal/PreferencesModal"
-import { TelegramRegisterModal } from "../../Bar/ProfileCard/PreferencesModal/TelegramRegisterModal"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
+import { BulkDeployConfirmModal } from "../../Hangar/WarMachinesHangar/Common/BulkDeployConfirmModal"
 import { QueueFeed } from "../../Hangar/WarMachinesHangar/WarMachineDetails/Modals/DeployModal"
+import { QueueDetails } from "./QueueDetails"
 import { QuickDeployItem } from "./QuickDeployItem"
 
 const sortOptions = [
@@ -49,17 +48,19 @@ export const QuickDeploy = () => {
 const QuickDeployInner = () => {
     const theme = useTheme()
     const { send } = useGameServerCommandsUser("/user_commander")
-    const [preferencesModalOpen, togglePreferencesModalOpen] = useToggle()
-    const [addDeviceModalOpen, toggleAddDeviceModalOpen] = useToggle()
-    const [telegramShortcode, setTelegramShortcode] = useState<string>("")
 
     // Mechs
     const [mechs, setMechs] = useState<MechBasic[]>([])
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
 
+    // Bulk action
+    const [selectedMechs, setSelectedMechs] = useState<MechBasic[]>([])
+    const [bulkDeployConfirmModalOpen, setBulkDeployConfirmModalOpen] = useState(false)
+    const childrenMechStatus = useRef<{ [mechID: string]: MechStatus }>({})
+
     const [sort, setSort] = useState<string>(SortTypeLabel.MechQueueAsc)
-    const { page, changePage, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({
+    const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({
         pageSize: parseString(localStorage.getItem("quickDeployPageSize2"), 10),
         page: 1,
     })
@@ -76,6 +77,28 @@ const QuickDeployInner = () => {
     useEffect(() => {
         localStorage.setItem("quickDeployPageSize2", pageSize.toString())
     }, [pageSize])
+
+    const toggleSelected = useCallback((mech: MechBasic) => {
+        setSelectedMechs((prev) => {
+            const newArray = [...prev]
+            const isAlreadySelected = prev.findIndex((s) => s.id === mech.id)
+            if (isAlreadySelected >= 0) {
+                newArray.splice(isAlreadySelected, 1)
+            } else {
+                newArray.push(mech)
+            }
+
+            return newArray
+        })
+    }, [])
+
+    const onSelectAll = useCallback(() => {
+        setSelectedMechs(mechs)
+    }, [mechs])
+
+    const onUnSelectAll = useCallback(() => {
+        setSelectedMechs([])
+    }, [])
 
     const getItems = useCallback(async () => {
         try {
@@ -109,9 +132,6 @@ const QuickDeployInner = () => {
         getItems()
     }, [getItems])
 
-    const queueLength = queueFeed?.queue_length || 0
-    const queueCost = queueFeed?.queue_cost || "0"
-
     return (
         <>
             <Stack sx={{ position: "relative", height: "100%", backgroundColor: theme.factionTheme.background }}>
@@ -132,46 +152,49 @@ const QuickDeployInner = () => {
                 </Stack>
 
                 <Stack sx={{ flex: 1 }}>
-                    <Stack spacing="1.5rem" direction="row" sx={{ p: ".5rem 1rem", backgroundColor: "#00000099" }}>
-                        {queueLength >= 0 && (
-                            <AmountItem
-                                key={`${queueLength}-queue_length`}
-                                title={"NEXT POSITION: "}
-                                color="#FFFFFF"
-                                value={`${queueLength + 1}`}
-                                tooltip="The queue position of your war machine if you deploy now."
-                                disableIcon
-                            />
-                        )}
-
-                        {queueCost && (
-                            <AmountItem
-                                title={"FEE: "}
-                                color={colors.yellow}
-                                value={supFormatter(queueCost, 2)}
-                                tooltip="The cost to place your war machine into the battle queue."
-                            />
-                        )}
-
-                        <IconButton size="small" onClick={() => togglePreferencesModalOpen(true)}>
-                            <SvgNotification size="1.3rem" />
-                        </IconButton>
-                    </Stack>
+                    <TotalAndPageSizeOptions
+                        countItems={mechs?.length}
+                        totalItems={totalItems}
+                        sortOptions={sortOptions}
+                        selectedSort={sort}
+                        onSetSort={setSort}
+                    />
 
                     <TotalAndPageSizeOptions
                         countItems={mechs?.length}
                         pageSize={pageSize}
                         changePageSize={changePageSize}
                         changePage={changePage}
-                        manualRefresh={getItems}
-                        sortOptions={sortOptions}
-                        selectedSort={sort}
-                        onSetSort={setSort}
                         pageSizeOptions={[10, 20, 40]}
-                    />
+                        selectedCount={selectedMechs.length}
+                        onSelectAll={onSelectAll}
+                        onUnselectedAll={onUnSelectAll}
+                        manualRefresh={getItems}
+                    >
+                        <FancyButton
+                            disabled={selectedMechs.length <= 0}
+                            clipThingsProps={{
+                                clipSize: "6px",
+                                backgroundColor: colors.green,
+                                opacity: 1,
+                                border: { borderColor: colors.green, borderThickness: "1px" },
+                                sx: { position: "relative" },
+                            }}
+                            sx={{ px: "1rem", py: 0, color: "#FFFFFF" }}
+                            onClick={() => setBulkDeployConfirmModalOpen(true)}
+                        >
+                            <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBlack }}>
+                                DEPLOY SELECTED
+                            </Typography>
+                        </FancyButton>
+                    </TotalAndPageSizeOptions>
+
+                    <Box sx={{ px: "1rem", mt: "1.5rem", backgroundColor: "#00000099" }}>
+                        <QueueDetails queueFeed={queueFeed} />
+                    </Box>
 
                     {loadError && (
-                        <Stack alignItems="center" justifyContent="center" sx={{ minHeight: "20rem" }}>
+                        <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                             <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem" }}>
                                 <Typography sx={{ color: colors.red, fontFamily: fonts.nostromoBold, textAlign: "center" }}>{loadError}</Typography>
                             </Stack>
@@ -179,7 +202,7 @@ const QuickDeployInner = () => {
                     )}
 
                     {isLoading && !loadError && (
-                        <Stack alignItems="center" justifyContent="center" sx={{ minHeight: "20rem" }}>
+                        <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                             <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem" }}>
                                 <CircularProgress size="3rem" sx={{ color: primaryColor }} />
                             </Stack>
@@ -212,9 +235,21 @@ const QuickDeployInner = () => {
                             }}
                         >
                             <Box sx={{ direction: "ltr", height: 0 }}>
-                                <Stack sx={{ minHeight: "20rem" }}>
+                                <Stack spacing=".3rem" sx={{ height: "100%" }}>
                                     {mechs.map((mech) => {
-                                        return <QuickDeployItem key={mech.id} mech={mech} queueFeed={queueFeed} />
+                                        const isSelected = selectedMechs.findIndex((s) => s.id === mech.id) >= 0
+                                        return (
+                                            <QuickDeployItem
+                                                key={mech.id}
+                                                isSelected={isSelected}
+                                                toggleIsSelected={() => {
+                                                    toggleSelected(mech)
+                                                }}
+                                                childrenMechStatus={childrenMechStatus}
+                                                mech={mech}
+                                                queueFeed={queueFeed}
+                                            />
+                                        )
                                     })}
                                 </Stack>
                             </Box>
@@ -222,7 +257,7 @@ const QuickDeployInner = () => {
                     )}
 
                     {!isLoading && !loadError && mechs && mechs.length <= 0 && (
-                        <Stack alignItems="center" justifyContent="center" sx={{ minHeight: "20rem" }}>
+                        <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                             <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                                 <Typography
                                     variant="body2"
@@ -268,43 +303,15 @@ const QuickDeployInner = () => {
                 </Stack>
             </Stack>
 
-            {/* preferences modal */}
-            {preferencesModalOpen && (
-                <PreferencesModal
-                    onClose={() => togglePreferencesModalOpen(false)}
-                    setTelegramShortcode={setTelegramShortcode}
-                    toggleAddDeviceModal={() => toggleAddDeviceModalOpen(!addDeviceModalOpen)}
+            {bulkDeployConfirmModalOpen && (
+                <BulkDeployConfirmModal
+                    setBulkDeployConfirmModalOpen={setBulkDeployConfirmModalOpen}
+                    selectedMechs={selectedMechs}
+                    setSelectedMechs={setSelectedMechs}
+                    childrenMechStatus={childrenMechStatus}
+                    queueFeed={queueFeed}
                 />
             )}
-
-            {/* telegram register modal */}
-            {!!telegramShortcode && <TelegramRegisterModal code={telegramShortcode} onClose={() => setTelegramShortcode("")} />}
         </>
-    )
-}
-
-const AmountItem = ({
-    title,
-    color,
-    value,
-    tooltip,
-    disableIcon,
-}: {
-    title: string
-    color: string
-    value: string | number
-    tooltip: string
-    disableIcon?: boolean
-}) => {
-    return (
-        <TooltipHelper placement="bottom-start" text={tooltip}>
-            <Stack direction="row" alignItems="center">
-                <Typography sx={{ mr: ".4rem", fontWeight: "fontWeightBold" }}>{title}</Typography>
-
-                {!disableIcon && <SvgSupToken size="1.7rem" fill={color} sx={{ mr: ".1rem", pb: ".2rem" }} />}
-
-                <Typography sx={{ color: color, fontWeight: "fontWeightBold" }}>{value || "---"}</Typography>
-            </Stack>
-        </TooltipHelper>
     )
 }

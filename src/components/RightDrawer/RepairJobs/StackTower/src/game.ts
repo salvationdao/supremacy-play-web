@@ -38,6 +38,10 @@ export class Game {
     animationID: number | null
     timestamp: number
 
+    onKeydownBound: (e: KeyboardEvent) => void
+    onClickBound: () => void
+    onTouchedBound: () => void
+
     constructor(
         backgroundColor: string,
         _setGameState: React.Dispatch<React.SetStateAction<GameState>>,
@@ -56,25 +60,9 @@ export class Game {
                 child = gameContainer.lastElementChild
             }
 
-            container.addEventListener("keydown", (e: KeyboardEvent) => {
-                if (e.key === "Spacebar" || e.key === " ") {
-                    this.triggerWith = TriggerWith.Spacebar
-                    this.handleEvent()
-                }
-            })
-
-            container.addEventListener("click", () => {
-                this.triggerWith = TriggerWith.LeftClick
-                this.handleEvent()
-            })
-
-            container.addEventListener("touchend", () => {
-                this.triggerWith = TriggerWith.Touch
-                this.handleEvent()
-            })
-
             gameContainer.appendChild(container)
         }
+
         container.focus()
         this.container = container
 
@@ -89,14 +77,40 @@ export class Game {
         this.score = 0
         this.animationID = null
         this.timestamp = 0
+
+        this.onKeydownBound = this.onKeydown.bind(this)
+        this.onClickBound = this.onClick.bind(this)
+        this.onTouchedBound = this.onTouched.bind(this)
+    }
+
+    onKeydown(e: KeyboardEvent) {
+        if (e.key === "Spacebar" || e.key === " ") {
+            this.triggerWith = TriggerWith.Spacebar
+            this.handleEvent()
+        }
+    }
+
+    onClick() {
+        this.triggerWith = TriggerWith.LeftClick
+        this.handleEvent()
+    }
+
+    onTouched() {
+        this.triggerWith = TriggerWith.Touch
+        this.handleEvent()
     }
 
     start() {
+        document.addEventListener("keydown", this.onKeydownBound)
+        this.container?.addEventListener("click", this.onClickBound)
+        this.container?.addEventListener("touchend", this.onTouchedBound)
+
         this.addBlock()
         this.tick(0)
         setTimeout(() => {
             this.setState(GameState.Ready)
         }, 500) // This allows the parent to full load because game ready means it needs parent container dimensions
+        this.stage.resetContainerSize()
     }
 
     handleEvent() {
@@ -234,6 +248,10 @@ export class Game {
     }
 
     cleanup() {
+        document.removeEventListener("keydown", this.onKeydownBound)
+        this.container?.removeEventListener("click", this.onClickBound)
+        this.container?.removeEventListener("touchend", this.onTouchedBound)
+
         if (this.animationID) {
             cancelAnimationFrame(this.animationID)
         }

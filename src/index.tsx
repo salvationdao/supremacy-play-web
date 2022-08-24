@@ -20,7 +20,6 @@ import {
     MiniMapProvider,
     MobileProvider,
     OverlayTogglesProvider,
-    StreamProvider,
     SupremacyProvider,
     useMobile,
     useSupremacy,
@@ -41,6 +40,7 @@ import { LeftDrawer } from "./components/LeftDrawer/LeftDrawer"
 import { ArenaListener, ArenaProvider } from "./containers/arena"
 import { HotkeyProvider } from "./containers/hotkeys"
 import { FiatProvider } from "./containers/fiat"
+import { OvenStreamProvider } from "./containers/oven"
 
 const AppInner = () => {
     const { isServerDown, serverConnectedBefore, firstConnectTimedOut } = useSupremacy()
@@ -228,7 +228,7 @@ const App = () => {
                                     <ChatProvider>
                                         <WalletProvider>
                                             <TourProvider {...tourProviderProps}>
-                                                <StreamProvider>
+                                                <OvenStreamProvider>
                                                     <ArenaProvider>
                                                         <ArenaListener />
                                                         <GameProvider>
@@ -252,7 +252,7 @@ const App = () => {
                                                             </MobileProvider>
                                                         </GameProvider>
                                                     </ArenaProvider>
-                                                </StreamProvider>
+                                                </OvenStreamProvider>
                                             </TourProvider>
                                         </WalletProvider>
                                     </ChatProvider>

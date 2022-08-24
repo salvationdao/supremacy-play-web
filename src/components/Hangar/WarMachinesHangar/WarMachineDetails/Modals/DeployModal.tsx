@@ -41,11 +41,11 @@ export const DeployModal = ({
     }, [setDeployQueueError, setDeployMechModalOpen])
 
     const onDeployQueue = useCallback(
-        async ({ hash }: { hash: string }) => {
+        async ({ mechIDs }: { mechIDs: string[] }) => {
             try {
                 setIsLoading(true)
                 const resp = await send<{ success: boolean; code: string }>(GameServerKeys.JoinQueue, {
-                    asset_hash: hash,
+                    mech_ids: mechIDs,
                 })
 
                 if (resp && resp.success) {
@@ -67,7 +67,7 @@ export const DeployModal = ({
 
     const queueLength = queueFeed?.queue_length || 0
     const queueCost = queueFeed?.queue_cost || "0"
-    const { hash } = deployMechDetails
+    const { id } = deployMechDetails
 
     return (
         <MechModal open={deployMechModalOpen} mechDetails={deployMechDetails} onClose={onClose}>
@@ -101,7 +101,7 @@ export const DeployModal = ({
                             sx: { position: "relative", width: "100%" },
                         }}
                         sx={{ px: "1.6rem", py: ".6rem", color: "#FFFFFF" }}
-                        onClick={() => onDeployQueue({ hash })}
+                        onClick={() => onDeployQueue({ mechIDs: [id] })}
                     >
                         <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBlack }}>
                             DEPLOY

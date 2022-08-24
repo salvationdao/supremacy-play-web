@@ -1,9 +1,11 @@
 import BigNumber from "bignumber.js"
+import ReactGA from "react-ga"
 
 const USE_PROD = false
 
 // Envar stuff
 export const STAGING_OR_DEV_ONLY = process.env.REACT_APP_ENVIRONMENT !== "production"
+export const PROD_ONLY = process.env.REACT_APP_ENVIRONMENT === "production"
 export const STAGING_ONLY = process.env.REACT_APP_ENVIRONMENT === "staging"
 export const DEV_ONLY = process.env.REACT_APP_ENVIRONMENT !== "production" && process.env.REACT_APP_ENVIRONMENT !== "staging"
 export const CAPTCHA_KEY = process.env.REACT_APP_CAPTCHA_SITE_KEY || "87f715ba-98ff-43da-b970-cfc30fd7c5a0"
@@ -109,3 +111,7 @@ export const TELEGRAM_BOT_URL = process.env.REACT_APP_TELEGRAM_BOT_URL || "https
 
 // stripe
 export const STRIPE_PUBLISHABLE_KEY = process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY || ""
+
+// Google analytics
+export const GA_TAG = PROD_ONLY ? "G-BRBP3B75ZM" : STAGING_ONLY ? "G-FJ55GQ2WG9" : ""
+ReactGA.initialize("UA-000000-01")

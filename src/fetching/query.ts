@@ -1,7 +1,8 @@
 import { Action } from "react-fetching-library"
 import { GAME_SERVER_HOSTNAME, PASSPORT_SERVER_HOST } from "../constants"
 import { Fingerprint } from "../containers"
-import { Faction, Feature, SaleAbilityAvailability, Stream, User, UserFromPassport, WarMachineDestroyedRecord, WeaponMaxStats } from "../types"
+import { OvenStream } from "../containers/oven"
+import { Faction, Feature, SaleAbilityAvailability, User, UserFromPassport, WarMachineDestroyedRecord, WeaponMaxStats } from "../types"
 
 export const PassportLoginCheck = (): Action<UserFromPassport> => {
     return {
@@ -31,10 +32,10 @@ export const GetFactionsAll = (): Action<Faction[]> => {
     }
 }
 
-export const GetStreamList = (): Action<Stream[]> => {
+export const GetOvenStreamList = (): Action<OvenStream[]> => {
     return {
         method: "GET",
-        endpoint: "/video_server",
+        endpoint: "/video_server/oven_streams",
         credentials: "include",
         responseType: "json",
     }

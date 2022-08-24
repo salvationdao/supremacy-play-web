@@ -259,7 +259,7 @@ const NotificationsInner = ({ notificationsJsx }: { notificationsJsx: (JSX.Eleme
             sx={{
                 position: "absolute",
                 height: "100%",
-                top: "1rem",
+                top: "1.5rem",
                 right: "1rem",
                 zIndex: siteZIndex.Notifications,
                 overflow: "hidden",
