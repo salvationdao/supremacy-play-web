@@ -66,7 +66,11 @@ const generateLoadout = (newMechDetails: MechDetails): MechDetailsWithMaps => ({
     changed_utility_map: new Map(),
 })
 
-export const MechLoadout = ({ mechDetails }: { mechDetails: MechDetails }) => {
+interface MechLoadoutProps {
+    mechDetails: MechDetails
+}
+
+export const MechLoadout = ({ mechDetails }: MechLoadoutProps) => {
     const { send } = useGameServerCommandsUser("/user_commander")
     const { newSnackbarMessage } = useGlobalNotifications()
 
@@ -112,7 +116,7 @@ export const MechLoadout = ({ mechDetails }: { mechDetails: MechDetails }) => {
         } finally {
             setLoading(false)
         }
-    }, [currLoadout, mechDetails.id, newSnackbarMessage, send])
+    }, [currLoadout.changed_utility_map, currLoadout.changed_weapons_map, mechDetails, newSnackbarMessage, send])
 
     const addWeaponSelection = useCallback((ew: LoadoutWeapon) => {
         setCurrLoadout((prev) => {
@@ -154,11 +158,11 @@ export const MechLoadout = ({ mechDetails }: { mechDetails: MechDetails }) => {
         weapon_hardpoints,
         weapons_map,
         changed_weapons_map,
+        blueprint_weapon_ids_with_skin_inheritance,
         utility_slots,
         utility_map,
         changed_utility_map,
         power_core,
-        blueprint_weapon_ids_with_skin_inheritance,
         chassis_skin,
         intro_animation,
         outro_animation,

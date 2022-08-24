@@ -1,5 +1,5 @@
 import { Grow, Stack, Typography } from "@mui/material"
-import { useMemo } from "react"
+import { useEffect, useMemo, useRef } from "react"
 import { FancyButton } from "../../.."
 import { SvgLock, SvgPlus, SvgSkin, SvgSwap, SvgWrapperProps } from "../../../../assets"
 import { shadeColor } from "../../../../helpers"
@@ -34,6 +34,15 @@ export const MechLoadoutItem = (props: MechLoadoutItemProps) => {
     const { imageUrl, videoUrls } = props
     const { prevEquipped, renderModal, onClick, ...loadoutItemButtonProps } = props
     const [showLoadoutModal, toggleShowLoadoutModal] = useToggle()
+    const memoizedPrevEquipped = useRef<LoadoutItem>()
+
+    useEffect(() => {
+        if (!prevEquipped) return
+        // Prevents white-page bug. Bug is caused by the Grow component
+        // trying to render a MechLouadoutItemButton with a LoadoutItem that
+        // has been set to undefined
+        memoizedPrevEquipped.current = prevEquipped
+    }, [prevEquipped])
 
     return (
         <>
@@ -49,7 +58,7 @@ export const MechLoadoutItem = (props: MechLoadoutItemProps) => {
                     <Stack direction="row" alignItems="center">
                         <SvgSwap sx={{ opacity: 0.6 }} />
                         {/* eslint-disable-next-line @typescript-eslint/no-non-null-assertion */}
-                        <MechLoadoutItemButton {...prevEquipped!} isPreviouslyEquipped />
+                        <MechLoadoutItemButton {...(prevEquipped! || memoizedPrevEquipped.current)} isPreviouslyEquipped />
                     </Stack>
                 </Grow>
             </Stack>
