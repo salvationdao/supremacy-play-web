@@ -9,7 +9,7 @@ import { usePagination, useToggle, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { MechSkin, MechStatusEnum, WeaponSkin } from "../../../types"
+import { MechSkin, MechStatusEnum, Submodel, WeaponSkin } from "../../../types"
 import { SortTypeLabel } from "../../../types/marketplace"
 import { PageHeader } from "../../Common/PageHeader"
 import { ChipFilter } from "../../Common/SortAndFilters/ChipFilterSection"
@@ -26,31 +26,23 @@ const sortOptions = [
     { label: SortTypeLabel.RarestDesc, value: SortTypeLabel.RarestDesc },
 ]
 
-interface EquippedStatus {
-    filter: boolean
-    toggle: boolean
-}
 interface GetSubmodelsRequest {
-    mech_skin_list_opts: {
-        search?: string
-        sortBy?: string
-        sort_dir?: string
-        page_size: number
-        page: number
-        owner_id?: string
-        display_xsyn_mech_skins: boolean
-        display_genesis_and_limited?: boolean
-        display_hidden: boolean
-        exclude_market_locked?: boolean
-        include_market_listed: boolean
-        rarities: string[]
-        equipped_status: EquippedStatus
-        models: string[]
-    }
+    search?: string
+    sort_by?: string
+    sort_dir: string
+    page_size: number
+    page?: number
+    display_xsyn_mechs: boolean
+    exclude_market_locked?: boolean
+    include_market_listed: boolean
+    display_genesis_and_limited?: boolean
+    rarities: string[]
+    skin_compatibility: string[]
+    equipped_statuses: string[]
 }
 
 interface GetSubmodelsResponse {
-    submodels: MechSkin[] | WeaponSkin[]
+    submodels: Submodel[]
     total: number
 }
 
@@ -62,7 +54,7 @@ export const SubmodelsHangar = () => {
     // Items
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
-    const [submodels, setSubmodels] = useState<MechSkin[] | WeaponSkin[]>([])
+    const [submodels, setSubmodels] = useState<Submodel[]>([])
 
     const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({
         pageSize: parseString(query.get("pageSize"), 10),
@@ -144,27 +136,19 @@ export const SubmodelsHangar = () => {
                     sortBy = "rarity"
             }
 
-            const isQueueSort = sort === SortTypeLabel.MechQueueAsc || sort === SortTypeLabel.MechQueueDesc
-
             const resp = await send<GetSubmodelsResponse, GetSubmodelsRequest>(GameServerKeys.GetSubmodels, {
-                mech_skin_list_opts: {
-                    search: search,
-                    sortBy: isQueueSort ? undefined : sortBy,
-                    sort_dir: isQueueSort ? undefined : sortDir,
-                    page_size: pageSize,
-                    page: page,
-                    display_xsyn_mech_skins: false,
-                    display_genesis_and_limited: false,
-                    display_hidden: false,
-                    exclude_market_locked: true,
-                    include_market_listed: true,
-                    rarities: [],
-                    equipped_status: {
-                        filter: false,
-                        toggle: false,
-                    },
-                    models: [],
-                },
+                search: search,
+                sort_by: sortBy,
+                sort_dir: sortDir,
+                page_size: pageSize,
+                page: page,
+                display_xsyn_mechs: false,
+                exclude_market_locked: false,
+                include_market_listed: false,
+                display_genesis_and_limited: false,
+                rarities: [],
+                skin_compatibility: [],
+                equipped_statuses: [],
             })
 
             updateQuery({
@@ -180,6 +164,7 @@ export const SubmodelsHangar = () => {
             setLoadError(undefined)
             setSubmodels(resp.submodels)
             setTotalItems(resp.total)
+            console.log(resp)
         } catch (e) {
             setLoadError(typeof e === "string" ? e : "Failed to get war machines.")
             console.error(e)

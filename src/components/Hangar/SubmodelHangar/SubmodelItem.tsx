@@ -4,13 +4,13 @@ import { IS_TESTING_MODE } from "../../../constants"
 import { useTheme } from "../../../containers/theme"
 import { MARKETPLACE_TABS } from "../../../pages"
 import { colors, fonts } from "../../../theme/theme"
-import { Keycard, MechSkin, WeaponSkin } from "../../../types"
+import { Keycard, MechSkin, Submodel, WeaponSkin } from "../../../types"
 import { ItemType } from "../../../types/marketplace"
 import { ClipThing } from "../../Common/ClipThing"
 import { MediaPreview } from "../../Common/MediaPreview/MediaPreview"
 
 interface SubmodelItemProps {
-    submodel: MechSkin | WeaponSkin
+    submodel: Submodel
     isGridView: boolean
 }
 
