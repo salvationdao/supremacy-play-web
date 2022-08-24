@@ -94,7 +94,7 @@ export interface ChatMessage {
     type: ChatMessageType
     data: TextMessageData | PunishMessageData | SystemBanMessageData | NewBattleMessageData
     sent_at: Date
-    locallySent?: boolean
+    received_at?: Date
 }
 
 export interface Likes {

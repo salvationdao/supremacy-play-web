@@ -136,7 +136,6 @@ const ChatSendInner = ({
             },
             type: ChatMessageType.Text,
             sent_at: sentAt,
-            locallySent: true,
         }
 
         handleIncomingMessage({

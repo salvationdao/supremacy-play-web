@@ -2,10 +2,9 @@ import { Box, IconButton, Stack, Typography } from "@mui/material"
 import React, { useCallback, useLayoutEffect, useMemo, useRef, useState } from "react"
 import { PunishMessage, TextMessage } from "../../.."
 import { SvgScrolldown } from "../../../../assets"
-import { useAuth, useChat, useSupremacy } from "../../../../containers"
-import { checkIfIsEmoji } from "../../../../helpers"
+import { useAuth, useChat } from "../../../../containers"
 import { colors } from "../../../../theme/theme"
-import { ChatMessageType, NewBattleMessageData, PunishMessageData, SplitOptionType, SystemBanMessageData, TextMessageData } from "../../../../types"
+import { ChatMessageType, NewBattleMessageData, PunishMessageData, SplitOptionType, SystemBanMessageData } from "../../../../types"
 import { BanProposal } from "../BanProposal/BanProposal"
 import { GlobalAnnouncement } from "../GlobalAnnouncement"
 import { NewBattleMessage } from "./MessageTypes/NewBattleMessage"
@@ -18,13 +17,13 @@ interface ChatMessagesProps {
 }
 
 export const ChatMessages = React.memo(function ChatMessages({ faction_id, primaryColor, secondaryColor }: ChatMessagesProps) {
-    const { user, userID } = useAuth()
-    const { filterSystemMessages, failedMessages, splitOption, fontSize, globalAnnouncement, globalChatMessages, factionChatMessages } = useChat()
-    const { getFaction } = useSupremacy()
+    const { userID } = useAuth()
+    const { splitOption, fontSize, globalAnnouncement, globalChatMessages, factionChatMessages, onlyShowSystemMessages } = useChat()
     const [autoScroll, setAutoScroll] = useState(true)
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const chatMessages = useMemo(() => (faction_id ? factionChatMessages : globalChatMessages), [faction_id, factionChatMessages, globalChatMessages])
+    const latestMessage = useMemo(() => chatMessages[chatMessages.length - 1], [chatMessages])
 
     // Scroll related stuff
     const [isScrolling, setIsScrolling] = useState(false)
@@ -114,31 +113,22 @@ export const ChatMessages = React.memo(function ChatMessages({ faction_id, prima
                             {chatMessages && chatMessages.length > 0 ? (
                                 chatMessages.map((message, i) => {
                                     if (message.type === ChatMessageType.Text) {
-                                        const data = message.data as TextMessageData
-                                        const isEmoji: boolean = checkIfIsEmoji(data.message)
+                                        if (onlyShowSystemMessages) return null
                                         return (
                                             <TextMessage
-                                                key={`${message.id}`}
-                                                data={data}
-                                                sentAt={message.sent_at}
-                                                fontSize={fontSize}
-                                                filterSystemMessages={filterSystemMessages}
-                                                isSent={!message.locallySent}
-                                                isFailed={data.from_user.id === user?.id && failedMessages.current.includes(data.id)}
-                                                getFaction={getFaction}
-                                                user={user}
-                                                isEmoji={isEmoji}
-                                                previousMessage={chatMessages[i - 1]}
+                                                key={`${message.id}-${message.sent_at.toISOString()}`}
+                                                message={message}
                                                 containerRef={scrollableRef}
                                                 isScrolling={isScrolling}
-                                                chatMessages={chatMessages}
+                                                previousMessage={chatMessages[i - 1]}
+                                                latestMessage={latestMessage}
                                             />
                                         )
                                     } else if (message.type === ChatMessageType.PunishVote) {
                                         const data = message.data as PunishMessageData
                                         return (
                                             <PunishMessage
-                                                key={`${data.issued_by_user.id} - ${message.sent_at.toISOString()}`}
+                                                key={`${message.id}-${message.sent_at.toISOString()}`}
                                                 data={data}
                                                 sentAt={message.sent_at}
                                                 fontSize={fontSize}
@@ -148,7 +138,7 @@ export const ChatMessages = React.memo(function ChatMessages({ faction_id, prima
                                         const data = message.data as SystemBanMessageData
                                         return (
                                             <SystemBanMessage
-                                                key={`${data.banned_user.id} - ${message.sent_at.toISOString()}`}
+                                                key={`${message.id}-${message.sent_at.toISOString()}`}
                                                 data={data}
                                                 sentAt={message.sent_at}
                                                 fontSize={fontSize}
@@ -156,13 +146,7 @@ export const ChatMessages = React.memo(function ChatMessages({ faction_id, prima
                                         )
                                     } else if (message.type === ChatMessageType.NewBattle) {
                                         const data = message.data as NewBattleMessageData
-                                        return (
-                                            <NewBattleMessage
-                                                key={`${data.battle_number} - ${message.sent_at.toISOString()}`}
-                                                data={data}
-                                                sentAt={message.sent_at}
-                                            />
-                                        )
+                                        return <NewBattleMessage key={`${message.id}-${message.sent_at.toISOString()}`} data={data} sentAt={message.sent_at} />
                                     }
 
                                     return null
@@ -206,18 +190,16 @@ export const ChatMessages = React.memo(function ChatMessages({ faction_id, prima
             autoScroll,
             chatMessages,
             faction_id,
-            failedMessages,
-            filterSystemMessages,
             fontSize,
-            getFaction,
             globalAnnouncement,
             isScrolling,
+            latestMessage,
             onClickScrollToBottom,
+            onlyShowSystemMessages,
             primaryColor,
             scrollHandler,
             secondaryColor,
             splitOption,
-            user,
         ],
     )
 })

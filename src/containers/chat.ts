@@ -16,7 +16,7 @@ export const ChatContainer = createContainer(() => {
     // Chat settings
     const [tabValue, setTabValue] = useState(0) // 0 is global chat, 1 is faction chat
     const [splitOption, setSplitOption] = useState<SplitOptionType>((localStorage.getItem("chatSplitOption") as SplitOptionType) || SplitOptionType.Tabbed)
-    const [filterSystemMessages, toggleFilterSystemMessages] = useToggle(localStorage.getItem("chatFilterSystemMessages") == "true")
+    const [onlyShowSystemMessages, toggleOnlyShowSystemMessages] = useToggle(localStorage.getItem("chatonlyShowSystemMessages") == "true")
     const [fontSize, setFontSize] = useState<FontSizeType>(parseString(localStorage.getItem("chatFontSize2"), 1.2) as FontSizeType)
 
     // Global announcement message
@@ -28,9 +28,9 @@ export const ChatContainer = createContainer(() => {
     const [factionChatMessages, setFactionChatMessages] = useState<ChatMessage[]>([])
     const [globalChatUnread, setGlobalChatUnread] = useState<number>(0)
     const [factionChatUnread, setFactionChatUnread] = useState<number>(0)
-    const userGidRecord = useRef<{ [gid: number]: User }>({})
     // Store list of messages that were successfully sent or failed
-    const failedMessages = useRef<string[]>([])
+    const [failedMessages, setFailedMessages] = useState<string[]>([])
+    const userGidRecord = useRef<{ [gid: number]: User }>({})
 
     //active users
     const [activePlayers, setActivePlayers] = useState<User[]>([])
@@ -39,18 +39,24 @@ export const ChatContainer = createContainer(() => {
     // Save chat settings to local storage
     useEffect(() => {
         localStorage.setItem("chatSplitOption", splitOption || SplitOptionType.Tabbed)
-        localStorage.setItem("chatFilterSystemMessages", filterSystemMessages ? "true" : "false")
+        localStorage.setItem("chatonlyShowSystemMessages", onlyShowSystemMessages ? "true" : "false")
         localStorage.setItem("chatFontSize2", fontSize ? fontSize.toString() : "1")
-    }, [splitOption, filterSystemMessages, fontSize])
+    }, [splitOption, onlyShowSystemMessages, fontSize])
 
     const addToUserGidRecord = useCallback((user: User) => {
         userGidRecord.current = { ...userGidRecord.current, [user.gid]: user }
     }, [])
 
-    const onFailedMessage = useCallback((id: string) => {
-        const newArray = failedMessages.current.concat(id)
-        failedMessages.current = newArray.slice(newArray.length - MESSAGES_BUFFER_SIZE, newArray.length)
-    }, [])
+    const onFailedMessage = useCallback(
+        (id: string) => {
+            setFailedMessages((prev) => {
+                // Buffer the array
+                const newArray = prev.concat(id)
+                return newArray.slice(newArray.length - MESSAGES_BUFFER_SIZE, newArray.length)
+            })
+        },
+        [setFailedMessages],
+    )
 
     // Global announcements
     useGameServerSubscription<GlobalAnnouncementType>(
@@ -99,7 +105,8 @@ export const ChatContainer = createContainer(() => {
             let newMessagesCount = 0
 
             // If the message is an existing one, update it in the array
-            incomingMessage.messages.forEach((message) => {
+            incomingMessage.messages.forEach((m) => {
+                const message = { ...m, received_at: new Date() }
                 const existingMessageIndex = oldMessages.findIndex((m) => m.id === message.id)
                 if (existingMessageIndex > 0) {
                     oldMessages[existingMessageIndex] = message
@@ -204,8 +211,8 @@ export const ChatContainer = createContainer(() => {
         changeTab,
         splitOption,
         setSplitOption,
-        filterSystemMessages,
-        toggleFilterSystemMessages,
+        onlyShowSystemMessages,
+        toggleOnlyShowSystemMessages,
         handleIncomingMessage,
         globalChatMessages,
         factionChatMessages,
