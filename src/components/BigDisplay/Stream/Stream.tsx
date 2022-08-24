@@ -12,13 +12,13 @@ import { Trailer } from "./Trailer"
 
 export const Stream = () => {
     const { remToPxRatio } = useDimension()
-    const { isStreamBigDisplay, setIsStreamBigDisplay } = useUI()
+    const { smallDisplayRef, bigDisplayRef, isStreamBigDisplay, setIsStreamBigDisplay } = useUI()
     const { isEnlarged, toggleIsEnlarged } = useOvenStream()
     const ref = useRef<HTMLElement | null>(null)
 
     useEffect(() => {
         const thisElement = ref.current
-        const newContainerElement = document.getElementById(!isStreamBigDisplay ? "left-drawer-space" : "big-display-space")
+        const newContainerElement = !isStreamBigDisplay ? smallDisplayRef : bigDisplayRef //document.getElementById(!isStreamBigDisplay ? "left-drawer-space" : "big-display-space")
 
         if (thisElement && newContainerElement) {
             let child = newContainerElement.lastElementChild
@@ -29,7 +29,7 @@ export const Stream = () => {
 
             newContainerElement.appendChild(thisElement)
         }
-    }, [isStreamBigDisplay])
+    }, [bigDisplayRef, isStreamBigDisplay, smallDisplayRef])
 
     return (
         <Stack

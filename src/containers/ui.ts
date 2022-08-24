@@ -12,6 +12,8 @@ const uiContainer = createContainer(() => {
     const [rightDrawerActiveTabID, setRightDrawerActiveTabID] = useState(localStorage.getItem("rightDrawerActiveTabID") || RIGHT_DRAWER_ARRAY[0]?.id || "")
 
     // Big display vs left drawer
+    const [smallDisplayRef, setSmallDisplayRef] = useState<HTMLDivElement | null>(null)
+    const [bigDisplayRef, setBigDisplayRef] = useState<HTMLDivElement | null>(null)
     const [isStreamBigDisplay, setIsStreamBigDisplay] = useState((localStorage.getItem("isStreamBigDisplay") || "true") === "true")
     const prevIsStreamBigDisplay = useRef<boolean>()
 
@@ -52,6 +54,10 @@ const uiContainer = createContainer(() => {
     }, [])
 
     return {
+        smallDisplayRef,
+        setSmallDisplayRef,
+        bigDisplayRef,
+        setBigDisplayRef,
         isStreamBigDisplay,
         setIsStreamBigDisplay,
         toggleIsStreamBigDisplayMemorized,

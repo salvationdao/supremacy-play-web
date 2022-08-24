@@ -18,7 +18,7 @@ export const TOP_BAR_HEIGHT = 3.4 // rems
 const BOTTOM_PADDING = 12 // rems
 
 export const MiniMap = () => {
-    const { isStreamBigDisplay } = useUI()
+    const { smallDisplayRef, bigDisplayRef, isStreamBigDisplay } = useUI()
     const { map, isBattleStarted } = useGame()
     const { isTargeting } = useMiniMap()
     const [isPoppedout, setIsPoppedout] = useState(false)
@@ -26,7 +26,7 @@ export const MiniMap = () => {
 
     useEffect(() => {
         const thisElement = ref.current
-        const newContainerElement = document.getElementById(isStreamBigDisplay ? "left-drawer-space" : "big-display-space")
+        const newContainerElement = isStreamBigDisplay ? smallDisplayRef : bigDisplayRef // document.getElementById(isStreamBigDisplay ? "left-drawer-space" : "big-display-space")
 
         if (!isPoppedout && thisElement && newContainerElement) {
             let child = newContainerElement.lastElementChild
@@ -37,7 +37,7 @@ export const MiniMap = () => {
 
             newContainerElement.appendChild(thisElement)
         }
-    }, [isStreamBigDisplay, isPoppedout])
+    }, [isStreamBigDisplay, isPoppedout, smallDisplayRef, bigDisplayRef])
 
     const content = useMemo(() => {
         if (isBattleStarted && map) {
