@@ -23,9 +23,9 @@ interface PlayerAssetMechEquipRequest {
 
 interface MechDetailsWithMaps extends MechDetails {
     weapons_map: Map<number, Weapon> // Map<slot_number, Weapon>
-    changed_weapons_map: Map<number, Weapon>
+    changed_weapons_map: Map<number, LoadoutWeapon>
     utility_map: Map<number, Utility> // Map<slot_number, utility>
-    changed_utility_map: Map<number, Utility>
+    changed_utility_map: Map<number, LoadoutUtility>
     changed_power_core?: PowerCore
 }
 
@@ -90,13 +90,13 @@ export const MechLoadout = ({ mechDetails }: { mechDetails: MechDetails }) => {
                 equip_mech_skin: undefined,
                 equip_power_core: undefined,
                 equip_utility: Array.from(currLoadout.changed_utility_map, ([slotNumber, u]) => ({
-                    utility_id: u.id,
+                    utility_id: u.utility_id,
                     slot_number: slotNumber,
                 })),
                 equip_weapons: Array.from(currLoadout.changed_weapons_map, ([slotNumber, w]) => ({
-                    weapon_id: w.id,
+                    weapon_id: w.weapon_id,
                     slot_number: slotNumber,
-                    inherit_skin: false,
+                    inherit_skin: w.inherit_skin,
                 })),
             })
 
@@ -117,7 +117,7 @@ export const MechLoadout = ({ mechDetails }: { mechDetails: MechDetails }) => {
     const addWeaponSelection = useCallback((ew: LoadoutWeapon) => {
         setCurrLoadout((prev) => {
             const updated = new Map(prev.changed_weapons_map)
-            updated.set(ew.slot_number, ew.weapon)
+            updated.set(ew.slot_number, ew)
 
             return {
                 ...prev,
@@ -129,7 +129,7 @@ export const MechLoadout = ({ mechDetails }: { mechDetails: MechDetails }) => {
     const addUtilitySelection = useCallback((eu: LoadoutUtility) => {
         setCurrLoadout((prev) => {
             const updated = new Map(prev.changed_utility_map)
-            updated.set(eu.slot_number, eu.utility)
+            updated.set(eu.slot_number, eu)
 
             return {
                 ...prev,
@@ -235,7 +235,11 @@ export const MechLoadout = ({ mechDetails }: { mechDetails: MechDetails }) => {
                 )}
 
                 {Array.from(weapons_map, ([slotNumber, w]) => {
-                    const weapon = changed_weapons_map.get(slotNumber) || w
+                    let weapon = w
+                    if (changed_weapons_map.has(slotNumber)) {
+                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                        weapon = changed_weapons_map.get(slotNumber)!.weapon
+                    }
 
                     return (
                         <MechLoadoutItem
@@ -261,7 +265,7 @@ export const MechLoadout = ({ mechDetails }: { mechDetails: MechDetails }) => {
                                     }
                                     equipped={weapon}
                                     weaponsWithSkinInheritance={blueprint_weapon_ids_with_skin_inheritance}
-                                    weaponsAlreadyEquippedInOtherSlots={Array.from(changed_weapons_map.values(), (w) => w.id)}
+                                    weaponsAlreadyEquippedInOtherSlots={Array.from(changed_weapons_map.values(), (w) => w.weapon_id)}
                                 />
                             )}
                             prevEquipped={(() => {
@@ -296,7 +300,11 @@ export const MechLoadout = ({ mechDetails }: { mechDetails: MechDetails }) => {
                         ))}
 
                 {Array.from(utility_map, ([slotNumber, u]) => {
-                    const utility = changed_utility_map.get(slotNumber) || u
+                    let utility = u
+                    if (changed_utility_map.has(slotNumber)) {
+                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                        utility = changed_utility_map.get(slotNumber)!.utility
+                    }
 
                     return (
                         <MechLoadoutItem
@@ -319,7 +327,7 @@ export const MechLoadout = ({ mechDetails }: { mechDetails: MechDetails }) => {
                                         })
                                     }
                                     equipped={utility}
-                                    utilitiesAlreadyEquippedInOtherSlots={Array.from(changed_utility_map.values(), (u) => u.id)}
+                                    utilitiesAlreadyEquippedInOtherSlots={Array.from(changed_utility_map.values(), (u) => u.utility_id)}
                                 />
                             )}
                             prevEquipped={(() => {
