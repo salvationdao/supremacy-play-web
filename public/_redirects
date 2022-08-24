@@ -1,3 +1,6 @@
-/login https://staging.xsyn.dev/external/login?tenant=supremacy&redirectURL=https%3A%2F%2Fstaging.supremacygame.dev
-/signup https://staging.xsyn.dev/external/login?signup=true&tenant=supremacy&redirectURL=https%3A%2F%2Fstaging.supremacygame.dev
+https://supremacygame.dev/login https://staging.xsyn.dev/external/login?tenant=supremacy&redirectURL=https%3A%2F%2Fsupremacygame.dev
+https://supremacygame.dev/signup https://staging.xsyn.dev/external/login?signup=true&tenant=supremacy&redirectURL=https%3A%2F%2Fsupremacygame.dev
+
+https://play.supremacy.game/login https://passport.xsyn.io/external/login?tenant=supremacy&redirectURL=https%3A%2F%2Fplay.supremacy.game
+https://play.supremacy.game/signup  https://passport.xsyn.io/external/login?signup=true&tenant=supremacy&redirectURL=https%3A%2F%2Fplay.supremacy.game
 /* /index.html 200
