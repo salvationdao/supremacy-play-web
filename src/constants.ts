@@ -25,7 +25,7 @@ export const BATTLE_ARENA_OPEN = STAGING_OR_DEV_ONLY
 
 // Testing related
 export const IS_TESTING_MODE = STAGING_ONLY
-export const NEXT_RESET_TIME = new Date("Wed Aug 24 2022 14:00:00 GMT+0800 (AWST)")
+export const NEXT_RESET_TIME = new Date("Fri Aug 26 2022 12:30:00 GMT+0800 (AWST)")
 
 if (USE_PROD) {
     GAME_SERVER_HOSTNAME = process.env.REACT_APP_GAME_SERVER_HOSTNAME || "api.supremacy.game"
