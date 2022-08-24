@@ -1,5 +1,5 @@
 import { Box, Fade, IconButton, Stack, Typography } from "@mui/material"
-import { useCallback, useLayoutEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useLayoutEffect, useRef, useState } from "react"
 import { PunishMessage, TextMessage } from "../../.."
 import { SvgScrolldown } from "../../../../assets"
 import { useAuth, useChat, useSupremacy } from "../../../../containers"
@@ -24,30 +24,29 @@ import { SystemBanMessage } from "./MessageTypes/SystemBanMessage"
 interface ChatMessagesProps {
     primaryColor: string
     secondaryColor: string
-    chatMessages: ChatMessageType[]
     faction_id: string | null
 }
 
 export const ChatMessages = (props: ChatMessagesProps) => {
     const { user } = useAuth()
-    const { filterSystemMessages, failedMessages, splitOption, fontSize, globalAnnouncement } = useChat()
+    const { filterSystemMessages, failedMessages, splitOption, fontSize, globalAnnouncement, globalChatMessages, factionChatMessages } = useChat()
     const { getFaction } = useSupremacy()
 
-    return useMemo(
-        () => (
-            <ChatMessagesInner
-                {...props}
-                user={user}
-                filterSystemMessages={filterSystemMessages}
-                failedMessages={failedMessages.current}
-                faction_id={props.faction_id}
-                splitOption={splitOption}
-                fontSize={fontSize}
-                globalAnnouncement={globalAnnouncement}
-                getFaction={getFaction}
-            />
-        ),
-        [failedMessages, filterSystemMessages, fontSize, getFaction, globalAnnouncement, props, splitOption, user],
+    const chatMessages = props.faction_id ? factionChatMessages : globalChatMessages
+
+    return (
+        <ChatMessagesInner
+            {...props}
+            user={user}
+            filterSystemMessages={filterSystemMessages}
+            failedMessages={failedMessages.current}
+            faction_id={props.faction_id}
+            splitOption={splitOption}
+            fontSize={fontSize}
+            globalAnnouncement={globalAnnouncement}
+            getFaction={getFaction}
+            chatMessages={chatMessages}
+        />
     )
 }
 
@@ -59,6 +58,7 @@ interface ChatMessagesInnerProps extends ChatMessagesProps {
     fontSize: FontSizeType
     globalAnnouncement?: GlobalAnnouncementType
     getFaction: (factionID: string) => Faction
+    chatMessages: ChatMessageType[]
 }
 
 const ChatMessagesInner = ({

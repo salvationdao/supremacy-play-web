@@ -1,41 +1,36 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import { createContainer } from "unstated-next"
-import { useAuth, useGlobalNotifications } from "."
+import { useGlobalNotifications } from "."
 import { GlobalAnnouncementType } from "../components/RightDrawer/LiveChat/GlobalAnnouncement"
 import { MESSAGES_BUFFER_SIZE } from "../constants"
 import { parseString } from "../helpers"
 import { useToggle } from "../hooks"
 import { useGameServerSubscription, useGameServerSubscriptionFaction } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
-import { BanProposalStruct, ChatMessageType, FontSizeType, IncomingMessages, SplitOptionType, TextMessageData, User } from "../types"
+import { BanProposalStruct, ChatMessageType, FontSizeType, IncomingMessages, SplitOptionType, User } from "../types"
 
 export const ChatContainer = createContainer(() => {
     const { sendBrowserNotification } = useGlobalNotifications()
-    const { userID } = useAuth()
-    const [isPoppedout, toggleIsPoppedout] = useToggle()
-
-    // Tabs: 0 is global chat, 1 is faction chat
-    const [tabValue, setTabValue] = useState(0)
+    const [isPoppedout, setIsPoppedout] = useState(false)
 
     // Chat settings
+    const [tabValue, setTabValue] = useState(0) // 0 is global chat, 1 is faction chat
     const [splitOption, setSplitOption] = useState<SplitOptionType>((localStorage.getItem("chatSplitOption") as SplitOptionType) || SplitOptionType.Tabbed)
     const [filterSystemMessages, toggleFilterSystemMessages] = useToggle(localStorage.getItem("chatFilterSystemMessages") == "true")
     const [fontSize, setFontSize] = useState<FontSizeType>(parseString(localStorage.getItem("chatFontSize2"), 1.2) as FontSizeType)
 
     // Global announcement message
     const [globalAnnouncement, setGlobalAnnouncement] = useState<GlobalAnnouncementType>()
+    const [banProposal, setBanProposal] = useState<BanProposalStruct>()
 
     // Chat states
-    const [incomingMessages, setIncomingMessages] = useState<IncomingMessages>()
-    const globalChatMessages = useRef<ChatMessageType[]>([])
-    const factionChatMessages = useRef<ChatMessageType[]>([])
+    const [globalChatMessages, setGlobalChatMessages] = useState<ChatMessageType[]>([])
+    const [factionChatMessages, setFactionChatMessages] = useState<ChatMessageType[]>([])
+    const [globalChatUnread, setGlobalChatUnread] = useState<number>(0)
+    const [factionChatUnread, setFactionChatUnread] = useState<number>(0)
     const userGidRecord = useRef<{ [gid: number]: User }>({})
-    const globalChatUnread = useRef<number>(0)
-    const factionChatUnread = useRef<number>(0)
     // Store list of messages that were successfully sent or failed
     const failedMessages = useRef<string[]>([])
-
-    const [banProposal, setBanProposal] = useState<BanProposalStruct>()
 
     //active users
     const [activePlayers, setActivePlayers] = useState<User[]>([])
@@ -43,7 +38,7 @@ export const ChatContainer = createContainer(() => {
 
     // Save chat settings to local storage
     useEffect(() => {
-        localStorage.setItem("chatSplitOption", splitOption || "tabbed")
+        localStorage.setItem("chatSplitOption", splitOption || SplitOptionType.Tabbed)
         localStorage.setItem("chatFilterSystemMessages", filterSystemMessages ? "true" : "false")
         localStorage.setItem("chatFontSize2", fontSize ? fontSize.toString() : "1")
     }, [splitOption, filterSystemMessages, fontSize])
@@ -72,91 +67,60 @@ export const ChatContainer = createContainer(() => {
         },
     )
 
+    // Logic to reset unread count when chat layout changes
     useEffect(() => {
         if (splitOption === SplitOptionType.Split) {
-            globalChatUnread.current = 0
-            factionChatUnread.current = 0
-            return
+            setGlobalChatUnread(0)
+            setFactionChatUnread(0)
         }
+    }, [splitOption])
 
-        if (tabValue === 1 && factionChatUnread.current !== 0) {
-            factionChatUnread.current = 0
-        }
-        if (tabValue === 0 && globalChatUnread.current !== 0) {
-            globalChatUnread.current = 0
-        }
-    }, [tabValue, splitOption])
+    // Logic to reset unread count when chat layout changes
+    const changeTab = useCallback((newTabValue: number) => {
+        setTabValue((prev) => {
+            if (prev === 0) {
+                setGlobalChatUnread(0)
+            } else if (prev === 1) {
+                setFactionChatUnread(0)
+            }
 
-    const newMessageHandler = useCallback(
-        ({ messages, faction }: IncomingMessages) => {
-            let newMessagesCount: number = 0
-            let newMessages: ChatMessageType[] = []
-            const isPastMessages = messages.length > 1
+            return newTabValue
+        })
+    }, [])
 
-            messages.forEach((message) => {
-                if (!message.locallySent && !isPastMessages && message.type === "TEXT" && (message.data as TextMessageData).from_user.id === userID) return
-                newMessages = [...newMessages, message]
-                if (message.type !== "NEW_BATTLE") newMessagesCount++
+    const handleIncomingMessages = useCallback((incomingMessages: IncomingMessages) => {
+        if (!incomingMessages || incomingMessages.messages.length <= 0) return
+        const handleMessagesSetState = incomingMessages.faction ? setFactionChatMessages : setGlobalChatMessages
+        const handleCounterSetState = incomingMessages.faction ? setFactionChatUnread : setGlobalChatUnread
+
+        handleMessagesSetState((prev) => {
+            const oldMessages = [...prev]
+            const newMessages: ChatMessageType[] = []
+            let newMessagesCount = 0
+
+            // If the message is an existing one, update it in the array
+            incomingMessages.messages.forEach((message) => {
+                const existingMessageIndex = oldMessages.findIndex((m) => m.id === message.id)
+                if (existingMessageIndex > 0) {
+                    oldMessages[existingMessageIndex] = message
+                } else {
+                    // Increment count for unread counter
+                    if (message.type !== "NEW_BATTLE") newMessagesCount++
+                    newMessages.push(message)
+                }
             })
 
-            if (faction === null) {
-                if (tabValue !== 0 && !isPastMessages && splitOption === SplitOptionType.Tabbed) {
-                    globalChatUnread.current += newMessagesCount
-                }
-
-                const newArray = [...globalChatMessages.current, ...newMessages]
-                globalChatMessages.current = newArray.slice(newArray.length - MESSAGES_BUFFER_SIZE, newArray.length)
-            } else {
-                if (tabValue !== 1 && !isPastMessages && splitOption === SplitOptionType.Tabbed) {
-                    factionChatUnread.current += newMessagesCount
-                }
-
-                const newArray = [...factionChatMessages.current, ...newMessages]
-                factionChatMessages.current = newArray.slice(newArray.length - MESSAGES_BUFFER_SIZE, newArray.length)
-            }
-        },
-        [userID, tabValue, splitOption],
-    )
-
-    const updateMessageHandler = useCallback(
-        (updatedMessage: ChatMessageType, faction: string | null): boolean => {
-            const genericUpdate = (globalChatMessages: React.MutableRefObject<ChatMessageType[]>) => {
-                const updatedArr = [...globalChatMessages.current]
-                const i = updatedArr.findIndex((m) => m.id === updatedMessage.id)
-                if (i === -1) return false
-                updatedArr[i] = updatedMessage
-                globalChatMessages.current = updatedArr
-                return true
+            // We assume if back end sends us multiple messages, its the message history, dont update unread counter
+            const isPastMessages = newMessages.length > 1
+            if (!isPastMessages) {
+                handleCounterSetState((prev) => prev + newMessagesCount)
             }
 
-            //global chat
-            if (!faction) {
-                return genericUpdate(globalChatMessages)
-            }
-            if (faction) {
-                return genericUpdate(factionChatMessages)
-            }
-            return false
-        },
-        [globalChatMessages, factionChatMessages],
-    )
-
-    useEffect(() => {
-        if (!incomingMessages || incomingMessages.messages.length <= 0) return
-
-        let isUpdate = false
-        incomingMessages.messages.forEach((message) => {
-            if (message.type === "TEXT") {
-                isUpdate = updateMessageHandler(message, incomingMessages.faction)
-            }
-
-            return message
+            // Buffer the results to be no more than X messages
+            const finalArray = [...oldMessages, ...newMessages]
+            return finalArray.slice(finalArray.length - MESSAGES_BUFFER_SIZE, finalArray.length)
         })
-
-        setIncomingMessages(undefined)
-        if (isUpdate) return
-        newMessageHandler(incomingMessages)
-    }, [incomingMessages, newMessageHandler, userID, updateMessageHandler])
+    }, [])
 
     // Subscribe to global chat messages
     useGameServerSubscription<ChatMessageType[]>(
@@ -166,7 +130,7 @@ export const ChatContainer = createContainer(() => {
         },
         (payload) => {
             if (!payload || payload.length <= 0) return
-            setIncomingMessages({ faction: null, messages: payload })
+            handleIncomingMessages({ faction: null, messages: payload })
         },
     )
 
@@ -178,7 +142,7 @@ export const ChatContainer = createContainer(() => {
         },
         (payload) => {
             if (!payload || payload.length <= 0) return
-            setIncomingMessages({ faction: "faction_id", messages: payload })
+            handleIncomingMessages({ faction: "something", messages: payload })
         },
     )
 
@@ -209,7 +173,7 @@ export const ChatContainer = createContainer(() => {
         },
     )
 
-    //subscribe active faction users
+    // Subscribe active faction users
     useGameServerSubscriptionFaction<User[]>(
         {
             URI: "",
@@ -221,7 +185,7 @@ export const ChatContainer = createContainer(() => {
         },
     )
 
-    //subscribe active global users
+    // Subscribe active global users
     useGameServerSubscription<User[]>(
         {
             URI: "/public/global_active_players",
@@ -235,14 +199,14 @@ export const ChatContainer = createContainer(() => {
 
     return {
         isPoppedout,
-        toggleIsPoppedout,
+        setIsPoppedout,
         tabValue,
-        setTabValue,
-        newMessageHandler,
+        changeTab,
         splitOption,
         setSplitOption,
         filterSystemMessages,
         toggleFilterSystemMessages,
+        handleIncomingMessages,
         globalChatMessages,
         factionChatMessages,
         factionChatUnread,

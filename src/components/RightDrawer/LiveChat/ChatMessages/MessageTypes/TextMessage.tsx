@@ -124,7 +124,7 @@ export const TextMessage = ({
                 }
             }, 1000)
         }
-    }, [isVisibleInChat, data, chatMessages, metadata, send, user.gid, isHidden, isActive, sendBrowserNotification, tabValue, username, setShouldNotify])
+    }, [isVisibleInChat, data, chatMessages, metadata, send, user.gid, isHidden, isActive, sendBrowserNotification, username, setShouldNotify])
 
     const chatMessage = useMemo(() => {
         //if no tagged users return the message

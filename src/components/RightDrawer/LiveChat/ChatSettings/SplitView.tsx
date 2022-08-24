@@ -23,10 +23,10 @@ export const SplitView = () => {
         >
             <Typography sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>Layout:</Typography>
             <ToggleButtonGroup size="small" value={splitOption} exclusive onChange={onChange} sx={{ ".MuiToggleButton-root": { p: ".5rem" } }}>
-                <ToggleButton value="tabbed">
+                <ToggleButton value={SplitOptionType.Tabbed}>
                     <SvgChatTabbed size="1.7rem" />
                 </ToggleButton>
-                <ToggleButton value="split">
+                <ToggleButton value={SplitOptionType.Split}>
                     <SvgChatSplit size="1.7rem" />
                 </ToggleButton>
             </ToggleButtonGroup>
