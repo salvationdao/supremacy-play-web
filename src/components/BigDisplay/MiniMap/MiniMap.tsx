@@ -2,7 +2,7 @@ import { Box, Fade, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { MiniMapInside } from "../.."
 import { BattleBgWebP, SvgExternalLink, SvgFullscreen, SvgMinimize, SvgSwap } from "../../../assets"
-import { useDimension, useGame } from "../../../containers"
+import { useDimension, useGame, useUI } from "../../../containers"
 import { useHotkey } from "../../../containers/hotkeys"
 import { useMiniMap } from "../../../containers/minimap"
 import { useToggle } from "../../../hooks"
@@ -18,14 +18,15 @@ export const TOP_BAR_HEIGHT = 3.4 // rems
 const BOTTOM_PADDING = 12 // rems
 
 export const MiniMap = () => {
-    const { map, isBattleStarted, isStreamBigDisplay } = useGame()
+    const { smallDisplayRef, bigDisplayRef, isStreamBigDisplay } = useUI()
+    const { map, isBattleStarted } = useGame()
     const { isTargeting } = useMiniMap()
     const [isPoppedout, setIsPoppedout] = useState(false)
     const ref = useRef<HTMLElement | null>(null)
 
     useEffect(() => {
         const thisElement = ref.current
-        const newContainerElement = document.getElementById(isStreamBigDisplay ? "left-drawer-space" : "big-display-space")
+        const newContainerElement = isStreamBigDisplay ? smallDisplayRef : bigDisplayRef // document.getElementById(isStreamBigDisplay ? "left-drawer-space" : "big-display-space")
 
         if (!isPoppedout && thisElement && newContainerElement) {
             let child = newContainerElement.lastElementChild
@@ -36,7 +37,7 @@ export const MiniMap = () => {
 
             newContainerElement.appendChild(thisElement)
         }
-    }, [isStreamBigDisplay, isPoppedout])
+    }, [isStreamBigDisplay, isPoppedout, smallDisplayRef, bigDisplayRef])
 
     const content = useMemo(() => {
         if (isBattleStarted && map) {
@@ -89,7 +90,7 @@ const MiniMapInnerNormal = ({ map, isTargeting, isPoppedout, setIsPoppedout }: M
 }
 
 const BattleNotStarted = () => {
-    const { isStreamBigDisplay } = useGame()
+    const { isStreamBigDisplay } = useUI()
 
     return (
         <Stack
@@ -141,7 +142,7 @@ const BattleNotStarted = () => {
 const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 100, height = 100 }: MiniMapInnerProps) => {
     const { handleHotKey } = useHotkey()
     const { remToPxRatio } = useDimension()
-    const { isStreamBigDisplay, setIsStreamBigDisplay, toggleIsStreamBigDisplayMemorized, restoreIsStreamBigDisplayMemorized } = useGame()
+    const { isStreamBigDisplay, setIsStreamBigDisplay, toggleIsStreamBigDisplayMemorized, restoreIsStreamBigDisplayMemorized } = useUI()
     const [isEnlarged, toggleIsEnlarged] = useToggle(localStorage.getItem("isMiniMapEnlarged") === "true")
 
     const mapHeightWidthRatio = useRef(1)

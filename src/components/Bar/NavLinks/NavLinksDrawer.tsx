@@ -2,7 +2,7 @@ import { Button, Drawer, IconButton, Stack, Typography } from "@mui/material"
 import { Link, useHistory, useRouteMatch } from "react-router-dom"
 import { SvgBack, SvgSupremacyLogo } from "../../../assets"
 import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT } from "../../../constants"
-import { useAuth, useOverlayToggles } from "../../../containers"
+import { useAuth, useUI } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { ROUTES_ARRAY } from "../../../routes"
 import { fonts, siteZIndex } from "../../../theme/theme"
@@ -13,7 +13,7 @@ export const NavLinksDrawer = () => {
     const { userID } = useAuth()
     const theme = useTheme()
     const history = useHistory()
-    const { isNavLinksDrawerOpen, toggleIsNavLinksDrawerOpen } = useOverlayToggles()
+    const { isNavLinksDrawerOpen, toggleIsNavLinksDrawerOpen } = useUI()
 
     const match = useRouteMatch(ROUTES_ARRAY.filter((r) => r.path !== "/").map((r) => r.path))
     let activeRouteID = ""
