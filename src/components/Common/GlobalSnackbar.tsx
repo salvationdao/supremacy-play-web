@@ -25,13 +25,17 @@ export const GlobalSnackbar = () => {
         if (messages.length && !messageInfo) {
             // Set a new snack when we don't have an active one
             setMessageInfo({ ...messages[0] })
-            setMessages((prev) => prev.slice(1))
+            setMessages((prev) => {
+                const newValue = prev.slice(1)
+                snackBarMessages.current = newValue
+                return newValue
+            })
             setOpen(true)
         } else if (messages.length && messageInfo && open) {
             // Close an active snack when a new one is added
             setOpen(false)
         }
-    }, [messages, messageInfo, open, setMessages])
+    }, [messages, messageInfo, open, setMessages, snackBarMessages])
 
     const handleClose = useCallback(
         (_event: Event | SyntheticEvent<unknown, Event>, reason?: SnackbarCloseReason) => {
