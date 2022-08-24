@@ -1,5 +1,5 @@
 import { Box, Tab, Tabs } from "@mui/material"
-import { useAuth, useOverlayToggles } from "../../containers"
+import { useAuth, useUI } from "../../containers"
 import { useTheme } from "../../containers/theme"
 import { RIGHT_DRAWER_ARRAY } from "../../routes"
 import { colors, fonts, siteZIndex } from "../../theme/theme"
@@ -8,7 +8,7 @@ const BUTTON_WIDTH = 20 //rem
 const RIGHT_DRAWER_BAR_WIDTH = 3 // rem
 
 export const DrawerButtons = () => {
-    const { rightDrawerActiveTabID, setRightDrawerActiveTabID } = useOverlayToggles()
+    const { rightDrawerActiveTabID, setRightDrawerActiveTabID } = useUI()
     const theme = useTheme()
     const { userID } = useAuth()
 
