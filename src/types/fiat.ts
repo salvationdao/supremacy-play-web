@@ -1,5 +1,6 @@
 export enum FiatProductType {
     StarterPackage = "starter_package",
+    MysteryCrate = "mystery_crate",
     MechSkin = "mech_skin",
     WeaponSkin = "weapon_skin",
     MechAnimation = "mech_animation",
@@ -7,6 +8,7 @@ export enum FiatProductType {
 
 export interface FiatProduct {
     id: string
+    product_type: FiatProductType
     name: string
     description: string
     currency: string

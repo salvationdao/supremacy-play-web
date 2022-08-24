@@ -30,7 +30,6 @@ export const ShoppingCartPopover = ({ open, loading, shoppingCart, popoverRef, o
     }, [localOpen, onClose])
 
     const primaryColor = theme.factionTheme.primary
-    const secondaryColor = theme.factionTheme.secondary
     const backgroundColor = theme.factionTheme.background
 
     return (
@@ -70,13 +69,7 @@ export const ShoppingCartPopover = ({ open, loading, shoppingCart, popoverRef, o
                         <Typography sx={{ fontFamily: fonts.nostromoBlack, color: theme.factionTheme.primary }}>YOUR CART</Typography>
                     </Box>
 
-                    <ShoppingCartTable
-                        loading={loading}
-                        shoppingCart={shoppingCart}
-                        primaryColor={primaryColor}
-                        secondaryColor={secondaryColor}
-                        backgroundColor={backgroundColor}
-                    />
+                    <ShoppingCartTable loading={loading} shoppingCart={shoppingCart} primaryColor={primaryColor} backgroundColor={backgroundColor} />
                 </Stack>
             </ClipThing>
         </Popover>

@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useMemo } from "react"
 import { Box, Stack, Typography, TextField, CircularProgress } from "@mui/material"
 import { SvgArrow, SvgSupToken } from "../../../../assets"
 import { IS_TESTING_MODE } from "../../../../constants"
-import { generatePriceText } from "../../../../helpers"
+import { snakeToTitle, generatePriceText } from "../../../../helpers"
 import { colors, fonts } from "../../../../theme/theme"
 import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
 import { ShoppingCart, ShoppingCartItem } from "../../../../types/fiat"
@@ -14,11 +14,10 @@ interface Props {
     loading: boolean
     shoppingCart?: ShoppingCart
     primaryColor: string
-    secondaryColor: string
     backgroundColor: string
 }
 
-export const ShoppingCartTable = ({ shoppingCart, loading, primaryColor, secondaryColor, backgroundColor }: Props) => {
+export const ShoppingCartTable = ({ shoppingCart, loading, primaryColor, backgroundColor }: Props) => {
     const content = useMemo(() => {
         if (loading) {
             return (
@@ -120,7 +119,7 @@ export const ShoppingCartTable = ({ shoppingCart, loading, primaryColor, seconda
                 </Stack>
             </>
         )
-    }, [shoppingCart, loading, primaryColor])
+    }, [shoppingCart, loading, primaryColor, backgroundColor])
 
     return <Box sx={{ width: "500px" }}>{content}</Box>
 }
@@ -175,9 +174,9 @@ const ShoppingCartRow = ({ item, primaryColor, backgroundColor }: ShoppingCartRo
                         textTransform: "uppercase",
                     }}
                 >
-                    {item?.product.name}
+                    {item.product.name}
                 </Typography>
-                <Typography variant={"caption"}>Extremely Large (dummy text)</Typography>
+                <Typography variant={"caption"}>{snakeToTitle(item.product.product_type).toLocaleUpperCase()}</Typography>
 
                 <Box sx={{ width: "10rem", mt: "0.5rem" }}>
                     <ClipThing

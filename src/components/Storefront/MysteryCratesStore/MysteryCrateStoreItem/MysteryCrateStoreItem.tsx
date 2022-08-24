@@ -74,7 +74,7 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate, setOpeningCrate, se
         } finally {
             setIsLoading(false)
         }
-    }, [send, newSnackbarMessage, mysteryCrate.mystery_crate_type, quantity])
+    }, [send, newSnackbarMessage, mysteryCrate.mystery_crate_type, mysteryCrate.fiat_product_id, quantity])
 
     const confirmBuy = useCallback(async () => {
         try {
