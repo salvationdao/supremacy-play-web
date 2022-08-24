@@ -158,12 +158,12 @@ export const SubmodelsHangar = () => {
                     display_hidden: false,
                     exclude_market_locked: true,
                     include_market_listed: true,
-                    rarities: [""],
+                    rarities: [],
                     equipped_status: {
                         filter: false,
                         toggle: false,
                     },
-                    models: [""],
+                    models: [],
                 },
             })
 
