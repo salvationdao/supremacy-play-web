@@ -36,10 +36,10 @@ export const PlayerAbilitiesHangar = () => {
     const locationSelectTypeFilterSection = useRef<ChipFilter>({
         label: "ABILITY TYPE",
         options: [
-            { value: LocationSelectType.GLOBAL, label: LocationSelectType.GLOBAL.split("_").join(" "), color: colors.green },
-            { value: LocationSelectType.LOCATION_SELECT, label: LocationSelectType.LOCATION_SELECT.split("_").join(" "), color: colors.blue2 },
-            { value: LocationSelectType.MECH_SELECT, label: LocationSelectType.MECH_SELECT.split("_").join(" "), color: colors.gold },
-            { value: LocationSelectType.LINE_SELECT, label: LocationSelectType.LINE_SELECT.split("_").join(" "), color: colors.purple },
+            { value: LocationSelectType.Global, label: LocationSelectType.Global.split("_").join(" "), color: colors.green },
+            { value: LocationSelectType.LocationSelect, label: LocationSelectType.LocationSelect.split("_").join(" "), color: colors.blue2 },
+            { value: LocationSelectType.MechSelect, label: LocationSelectType.MechSelect.split("_").join(" "), color: colors.gold },
+            { value: LocationSelectType.LineSelect, label: LocationSelectType.LineSelect.split("_").join(" "), color: colors.purple },
         ],
         initialSelected: locationSelectTypes,
         initialExpanded: true,
