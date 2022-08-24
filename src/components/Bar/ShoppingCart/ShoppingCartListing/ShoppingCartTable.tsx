@@ -197,18 +197,20 @@ const ShoppingCartRow = ({ item, primaryColor, backgroundColor }: ShoppingCartRo
                                     variant="outlined"
                                     hiddenLabel
                                     type="number"
+                                    placeholder={"1"}
+                                    onWheel={(event) => {
+                                        event.currentTarget.getElementsByTagName("input")[0]?.blur()
+                                    }}
                                     sx={{
-                                        backgroundColor: "unset",
+                                        backgroundColor: "#00000090",
                                         ".MuiOutlinedInput-input": {
-                                            px: "1.5rem",
-                                            py: ".5rem",
+                                            px: ".75rem",
+                                            py: ".75rem",
                                             height: "unset",
                                             "::-webkit-outer-spin-button, ::-webkit-inner-spin-button": {
                                                 WebkitAppearance: "none",
                                             },
-                                            borderRadius: 0.5,
-                                            border: `${primaryColor}50 2px solid`,
-                                            ":hover, :focus, :active": { backgroundColor: "#00000080", border: `${primaryColor}99 2px solid` },
+                                            appearance: "textfield",
                                         },
                                         ".MuiOutlinedInput-notchedOutline": { border: "unset" },
                                     }}
@@ -233,7 +235,7 @@ const ShoppingCartRow = ({ item, primaryColor, backgroundColor }: ShoppingCartRo
                                     }}
                                 >
                                     <SvgArrow
-                                        size="0.75rem"
+                                        size=".75rem"
                                         sx={{ cursor: "pointer", zIndex: 1 }}
                                         fill={primaryColor}
                                         onClick={() => {
@@ -241,7 +243,7 @@ const ShoppingCartRow = ({ item, primaryColor, backgroundColor }: ShoppingCartRo
                                         }}
                                     />
                                     <SvgArrow
-                                        size="0.75rem"
+                                        size=".75rem"
                                         sx={{ transform: "rotate(180deg)", cursor: "pointer" }}
                                         fill={primaryColor}
                                         onClick={() => {

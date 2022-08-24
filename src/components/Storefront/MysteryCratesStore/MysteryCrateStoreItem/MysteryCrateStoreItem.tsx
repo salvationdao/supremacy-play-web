@@ -221,7 +221,6 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate, setOpeningCrate, se
                                         <TextField
                                             variant="outlined"
                                             hiddenLabel
-                                            placeholder={"1"}
                                             onWheel={(event) => {
                                                 event.currentTarget.getElementsByTagName("input")[0]?.blur()
                                             }}
