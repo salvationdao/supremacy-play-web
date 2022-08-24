@@ -16,10 +16,10 @@ export const NavLinksDrawer = () => {
     const { isNavLinksDrawerOpen, toggleIsNavLinksDrawerOpen } = useOverlayToggles()
 
     const match = useRouteMatch(ROUTES_ARRAY.filter((r) => r.path !== "/").map((r) => r.path))
-    let activeTabID = ""
+    let activeRouteID = ""
     if (match) {
         const r = ROUTES_ARRAY.find((r) => r.path === match.path)
-        activeTabID = r?.matchNavLinkID || ""
+        activeRouteID = r?.id || ""
     }
 
     return (
@@ -70,7 +70,7 @@ export const NavLinksDrawer = () => {
                                     history.push(`${navigateTo}`)
                                     toggleIsNavLinksDrawerOpen(false)
                                 }}
-                                isActive={activeTabID === r.matchNavLinkID || location.pathname === r.path}
+                                isActive={activeRouteID === r.matchNavLinkID || location.pathname === r.path}
                                 primaryColor={theme.factionTheme.primary}
                                 secondaryColor={theme.factionTheme.secondary}
                             />

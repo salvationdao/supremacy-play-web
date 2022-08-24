@@ -416,10 +416,10 @@ export const SellItemInner = ({ toggleReset }: { toggleReset: () => void }) => {
                                         toggleUnderstantDropRisk(e.currentTarget.checked)
                                     }}
                                     sx={{
-                                        transform: "scale(1.4)",
-                                        color: colors.neonBlue,
-                                        ".Mui-checked, .MuiSvgIcon-root": { color: `${colors.neonBlue} !important` },
-                                        ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${colors.neonBlue}50 !important` },
+                                        color: colors.yellow,
+                                        "& > .MuiSvgIcon-root": { width: "2.8rem", height: "2.8rem" },
+                                        ".Mui-checked, .MuiSvgIcon-root": { color: `${colors.yellow} !important` },
+                                        ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${colors.yellow}50 !important` },
                                     }}
                                 />
                             </Stack>

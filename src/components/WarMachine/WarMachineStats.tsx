@@ -35,6 +35,7 @@ const WarMachineStatsInner = () => {
                                     boxShadow: 2,
                                     border: "#FFFFFF20 1px solid",
                                     p: "1.2rem 1.4rem",
+                                    mx: "-3rem",
                                 }}
                             >
                                 <Box sx={{ display: "grid", gridTemplateColumns: "repeat(2, 50%)" }}>
@@ -153,7 +154,7 @@ const WarMachineStatsInner = () => {
                     }}
                 >
                     <Box sx={{ direction: "ltr" }}>
-                        <Stack spacing="1rem" sx={{ ml: "-2rem", transform: "skew(-6deg)" }}>
+                        <Stack spacing="1rem" sx={{ transform: "skew(-6deg)" }}>
                             {ownedMiniMechs.length > 0 && (
                                 <Fade in>
                                     <Stack spacing="-1.2rem" direction="row" alignItems="center">
@@ -169,7 +170,7 @@ const WarMachineStatsInner = () => {
                                 </Fade>
                             )}
 
-                            <Stack direction="row" alignItems="center">
+                            <Stack direction="row" alignItems="center" sx={{ mx: "2rem" }}>
                                 {haveFactionMechs &&
                                     factionWarMachines &&
                                     factionWarMachines.map((wm, i) => (
