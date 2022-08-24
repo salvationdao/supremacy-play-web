@@ -1,7 +1,7 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useEffect, useRef } from "react"
 import { SvgFullscreen, SvgMinimize, SvgSwap } from "../../../assets"
-import { useDimension, useGame, useUI } from "../../../containers"
+import { useDimension, useUI } from "../../../containers"
 import { useOvenStream } from "../../../containers/oven"
 import { fonts, siteZIndex } from "../../../theme/theme"
 import { LEFT_DRAWER_WIDTH } from "../../LeftDrawer/LeftDrawer"
@@ -12,7 +12,7 @@ import { Trailer } from "./Trailer"
 
 export const Stream = () => {
     const { remToPxRatio } = useDimension()
-    const { isStreamBigDisplay, setIsStreamBigDisplay } = useGame()
+    const { isStreamBigDisplay, setIsStreamBigDisplay } = useUI()
     const { isEnlarged, toggleIsEnlarged } = useOvenStream()
     const ref = useRef<HTMLElement | null>(null)
 

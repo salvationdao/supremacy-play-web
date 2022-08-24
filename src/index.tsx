@@ -230,10 +230,10 @@ const App = () => {
                                                 <OvenStreamProvider>
                                                     <ArenaProvider>
                                                         <ArenaListener />
-                                                        <GameProvider>
-                                                            <MobileProvider>
-                                                                <DimensionProvider>
-                                                                    <UiProvider>
+                                                        <MobileProvider>
+                                                            <DimensionProvider>
+                                                                <UiProvider>
+                                                                    <GameProvider>
                                                                         <MiniMapProvider>
                                                                             <HotkeyProvider>
                                                                                 <UserUpdater />
@@ -244,10 +244,10 @@ const App = () => {
                                                                                 </Switch>
                                                                             </HotkeyProvider>
                                                                         </MiniMapProvider>
-                                                                    </UiProvider>
-                                                                </DimensionProvider>
-                                                            </MobileProvider>
-                                                        </GameProvider>
+                                                                    </GameProvider>
+                                                                </UiProvider>
+                                                            </DimensionProvider>
+                                                        </MobileProvider>
                                                     </ArenaProvider>
                                                 </OvenStreamProvider>
                                             </TourProvider>
