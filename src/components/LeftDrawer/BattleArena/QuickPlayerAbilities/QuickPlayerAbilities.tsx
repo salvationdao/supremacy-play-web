@@ -152,7 +152,7 @@ const QuickPlayerAbilitiesInner = React.memo(function QuickPlayerAbilitiesInner(
                     </Stack>
                 )}
 
-                {!isLoaded && saleAbilities && saleAbilities.length > 0 && (
+                {isLoaded && saleAbilities && saleAbilities.length > 0 && (
                     <Box
                         sx={{
                             display: "grid",
