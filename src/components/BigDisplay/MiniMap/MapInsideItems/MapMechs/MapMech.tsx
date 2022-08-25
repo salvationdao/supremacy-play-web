@@ -332,7 +332,7 @@ const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
                                 bottom: -2,
                                 right: -2,
                                 zIndex: 97,
-                                border: `${abilityPulseEffect?.colour} ${0.08 * iconSize}px solid`,
+                                border: `${abilityBorderEffect?.colour} ${0.09 * iconSize}px solid`,
                                 animation: `${pulseEffect} 1.8s infinite`,
                             }}
                         />
@@ -343,12 +343,13 @@ const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
                         <Box
                             sx={{
                                 position: "absolute",
-                                top: iconSize,
-                                left: iconSize,
-                                bottom: iconSize,
-                                right: iconSize,
+                                top: -iconSize,
+                                left: -iconSize,
+                                bottom: -iconSize,
+                                right: -iconSize,
                                 zIndex: 97,
-                                animation: `${rippleEffect(abilityPulseEffect.colour)} 5s infinite`,
+                                borderRadius: "50%",
+                                animation: `${rippleEffect(abilityPulseEffect.colour)} 1.2s infinite alternate`,
                             }}
                         />
                     )}
