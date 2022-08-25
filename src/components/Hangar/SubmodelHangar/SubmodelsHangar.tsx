@@ -358,7 +358,7 @@ export const SubmodelsHangar = () => {
                 </Stack>
             </Stack>
         )
-    }, [loadError, submodels, isLoading, theme.factionTheme.primary, theme.factionTheme.secondary, isGridView])
+    }, [loadError, submodels, isLoading, theme.factionTheme.primary, theme.factionTheme.secondary, isGridView, submodelType])
 
     return (
         <Stack direction="row" sx={{ height: "100%" }}>
