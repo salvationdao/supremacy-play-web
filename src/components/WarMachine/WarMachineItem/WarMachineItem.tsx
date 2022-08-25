@@ -1,6 +1,6 @@
 import { Box, IconButton, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
-import { useCallback, useEffect, useMemo, useRef } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { ClipThing, HealthShieldBars, WarMachineAbilitiesPopover, WarMachineDestroyedInfo } from "../.."
 import { GenericWarMachinePNG, SvgInfoCircular, SvgSkull } from "../../../assets"
 import { ADD_MINI_MECH_PARTICIPANT_ID } from "../../../constants"
@@ -55,7 +55,7 @@ export const WarMachineItem = ({
         ready: factionID === wmFactionID && !!participantID && !!currentArenaID,
     })
 
-    const [isAlive, toggleIsAlive] = useToggle(warMachine.health > 0)
+    const [isAlive, setIsAlive] = useState(warMachine.health > 0)
     const [isExpanded, toggleIsExpanded] = useToggle(initialExpanded)
     const faction = getFaction(wmFactionID)
 
@@ -284,7 +284,7 @@ export const WarMachineItem = ({
                     )}
 
                     {/* Health and shield bars */}
-                    <HealthShieldBars warMachine={warMachine} toggleIsAlive={toggleIsAlive} />
+                    <HealthShieldBars warMachine={warMachine} setIsAlive={setIsAlive} />
 
                     {!isMiniMech && isAlive && gameAbilities && gameAbilities.length > 0 && (
                         <Box
