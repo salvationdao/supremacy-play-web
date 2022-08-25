@@ -101,14 +101,14 @@ export const MiniMapContainer = createContainer(() => {
                 send<boolean>(GameServerKeys.SubmitAbilityLocationSelect, {
                     arena_id: currentArenaID,
                     start_coords: {
-                        x: Math.floor(selection.startCoords.x),
-                        y: Math.floor(selection.startCoords.y),
+                        x: selection.startCoords.x,
+                        y: selection.startCoords.y,
                     },
                     end_coords:
                         winner?.game_ability.location_select_type === LocationSelectType.LineSelect && selection.endCoords
                             ? {
-                                  x: Math.floor(selection.endCoords.x),
-                                  y: Math.floor(selection.endCoords.y),
+                                  x: selection.endCoords.x,
+                                  y: selection.endCoords.y,
                               }
                             : undefined,
                 })
@@ -132,12 +132,12 @@ export const MiniMapContainer = createContainer(() => {
                             blueprint_ability_id: playerAbility.ability.id,
                             location_select_type: playerAbility.ability.location_select_type,
                             start_coords: {
-                                x: Math.floor(selection.startCoords.x),
-                                y: Math.floor(selection.startCoords.y),
+                                x: selection.startCoords.x,
+                                y: selection.startCoords.y,
                             },
                             end_coords: {
-                                x: Math.floor(selection.endCoords.x),
-                                y: Math.floor(selection.endCoords.y),
+                                x: selection.endCoords.x,
+                                y: selection.endCoords.y,
                             },
                         }
                         break
@@ -161,8 +161,8 @@ export const MiniMapContainer = createContainer(() => {
                             blueprint_ability_id: playerAbility.ability.id,
                             location_select_type: playerAbility.ability.location_select_type,
                             start_coords: {
-                                x: Math.floor(selection.startCoords.x),
-                                y: Math.floor(selection.startCoords.y),
+                                x: selection.startCoords.x,
+                                y: selection.startCoords.y,
                             },
                             mech_hash: playerAbility.mechHash,
                         }
