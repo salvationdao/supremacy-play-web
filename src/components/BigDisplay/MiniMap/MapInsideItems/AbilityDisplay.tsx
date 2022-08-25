@@ -84,7 +84,7 @@ const MiniMapAbilityDisplay = ({ displayAbility }: { displayAbility: DisplayedAb
                                     border: `8px ${colour}`,
                                     borderStyle: "dashed solid",
                                     backgroundColor: `${colour}30`,
-                                    animation: display_effect_type === DisplayEffectType.Range ? `${rippleEffect("#000000")} 6s ease-out` : "none",
+                                    animation: display_effect_type === DisplayEffectType.Range ? `${rippleEffect(colour)} 10s ease-out` : "none",
                                     zIndex: 90,
                                 }}
                             />
