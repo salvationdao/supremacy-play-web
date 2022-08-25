@@ -98,6 +98,7 @@ const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
                     const mechMapX = ((payload.position?.x || 0) - map.left_pixels) * mapScale
                     const mechMapY = ((payload.position?.y || 0) - map.top_pixels) * mapScale
                     positionEl.style.transform = `translate(-50%, -50%) translate3d(${mechMapX}px, ${mechMapY}px, 0)`
+                    positionEl.style.transition = `transform ${TRANSITION_DURATION}s linear`
 
                     // Update the mech move dash line length and rotation
                     const moveCommandEl = document.getElementById(`map-mech-move-command-${hash}`)
@@ -128,7 +129,13 @@ const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
                 }
             }
 
-            if (payload?.is_hidden !== undefined) setIsHidden(payload.is_hidden)
+            if (payload?.is_hidden !== undefined) {
+                if (payload?.is_hidden) {
+                    const positionEl = document.getElementById(`map-mech-position-${hash}`)
+                    if (positionEl) positionEl.style.transition = "unset"
+                }
+                setIsHidden(payload.is_hidden)
+            }
         },
     )
 
@@ -179,7 +186,7 @@ const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
                     pointerEvents: isTargeting && playerAbility?.ability.location_select_type !== LocationSelectType.MechSelect ? "none" : "all",
                     cursor: "pointer",
                     padding: "1rem 1.3rem",
-                    transition: `transform ${TRANSITION_DURATION}s linear`,
+                    transform: "translate(-100px, -100px)",
                     opacity: 1,
                     zIndex,
                 }}
