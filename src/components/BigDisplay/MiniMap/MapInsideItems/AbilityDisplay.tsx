@@ -5,21 +5,8 @@ import { useTimer } from "../../../../hooks"
 import { useGameServerSubscription } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { fonts } from "../../../../theme/theme"
+import { DisplayedAbility } from "../../../../types"
 import { MapIcon } from "./Common/MapIcon"
-
-interface DisplayedAbility {
-    offering_id: string
-    image_url: string
-    colour: string
-    location_select_type: string
-    radius?: number
-    mech_id: string
-    location: {
-        x: number
-        y: number
-    }
-    launching_at?: Date
-}
 
 export const MiniMapAbilitiesDisplay = () => {
     const { currentArenaID } = useArena()
@@ -37,14 +24,21 @@ export const MiniMapAbilitiesDisplay = () => {
                 return
             }
 
+            // Only show the ones that are not on a mech
             setAbilityList(payload.filter((a) => !a.mech_id))
         },
     )
 
-    return <>{abilityList.length > 0 && abilityList.map((da) => <MiniMapAbilityDisplay key={da.offering_id} {...da} />)}</>
+    return (
+        <>
+            {abilityList.length > 0 &&
+                abilityList.map((displayAbility) => <MiniMapAbilityDisplay key={displayAbility.offering_id} displayAbility={displayAbility} />)}
+        </>
+    )
 }
 
-const MiniMapAbilityDisplay = ({ image_url, colour, radius, launching_at, location }: DisplayedAbility) => {
+const MiniMapAbilityDisplay = ({ displayAbility }: { displayAbility: DisplayedAbility }) => {
+    const { image_url, colour, radius, launching_at, location } = displayAbility
     const { gridHeight } = useMiniMap()
 
     const { map } = useGame()
@@ -69,7 +63,7 @@ const MiniMapAbilityDisplay = ({ image_url, colour, radius, launching_at, locati
                                 left: "50%",
                                 transform: "translate(-50%, -50%)",
                                 fontFamily: fonts.nostromoBold,
-                                fontSize: gridHeight * 1.4,
+                                fontSize: gridHeight,
                                 lineHeight: 1,
                                 backgroundColor: "#00000080",
                             }}

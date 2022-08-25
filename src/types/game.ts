@@ -190,3 +190,25 @@ export interface DamageRecord {
     caused_by_war_machine?: WarMachineState
     source_name: string // weapon/ability name
 }
+
+export enum DisplayEffectType {
+    None = "NONE", // Just show the icon or circle
+    Range = "RANGE", // E.g. nuke, shows a one off pulse
+    MechBorder = "MECH_BORDER", // E.g. Hacker drone, red border on mech
+    MechPulse = "MECH_PULSE", // E.g. overcharge, mech pulses
+}
+
+export interface DisplayedAbility {
+    offering_id: string
+    display_effect_type: DisplayEffectType
+    location_select_type: LocationSelectType
+    image_url: string
+    colour: string
+    radius?: number
+    mech_id?: string
+    location: {
+        x: number
+        y: number
+    }
+    launching_at?: Date
+}
