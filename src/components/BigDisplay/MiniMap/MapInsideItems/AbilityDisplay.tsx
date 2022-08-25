@@ -1,12 +1,11 @@
-import { useArena, useGame, useMiniMap } from "../../../../containers"
-import { useGameServerSubscription } from "../../../../hooks/useGameServer"
-import { LocationSelectType } from "../../../../types"
-import { GameServerKeys } from "../../../../keys"
-import React, { useMemo, useState } from "react"
 import { Box, Typography } from "@mui/material"
-import { MapIcon } from "./MapIcon/MapIcon"
+import { useMemo, useState } from "react"
+import { useArena, useGame, useMiniMap } from "../../../../containers"
 import { useTimer } from "../../../../hooks"
+import { useGameServerSubscription } from "../../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../../keys"
 import { fonts } from "../../../../theme/theme"
+import { MapIcon } from "./Common/MapIcon"
 
 interface DisplayedAbility {
     offering_id: string
