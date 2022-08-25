@@ -233,6 +233,7 @@ export const WarMachineItem = ({
                             sx={{
                                 flex: 1,
                                 position: "relative",
+                                width: `${WIDTH_BODY}rem`,
                                 height: "100%",
                                 px: "1rem",
                                 py: ".6rem",
