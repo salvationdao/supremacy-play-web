@@ -85,7 +85,17 @@ export const Blackouts = () => {
         return () => timeouts.forEach((t) => clearTimeout(t))
     }, [removedBlackoutIDs])
 
-    return <>{blackouts.size > 0 && new Array(...blackouts).map(([id, b]) => <Blackout key={id} {...b} />)}</>
+    if (blackouts.size <= 0) {
+        return null
+    }
+
+    return (
+        <>
+            {new Array(...blackouts).map(([id, b]) => (
+                <Blackout key={id} {...b} />
+            ))}
+        </>
+    )
 }
 
 const BLACKOUT_TRANSITION_DURATION = 500

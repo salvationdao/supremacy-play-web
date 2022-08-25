@@ -1,8 +1,8 @@
 import { useMemo } from "react"
-import { SvgDrag } from "../../../../../assets"
-import { useMiniMap } from "../../../../../containers"
-import { LocationSelectType } from "../../../../../types"
-import { MapIcon } from "./MapIcon"
+import { SvgDrag } from "../../../../assets"
+import { useMiniMap } from "../../../../containers"
+import { LocationSelectType } from "../../../../types"
+import { MapIcon } from "./Common/MapIcon"
 
 export const SelectionIcon = () => {
     const { selection, setSelection, isTargeting, playerAbility, winner } = useMiniMap()

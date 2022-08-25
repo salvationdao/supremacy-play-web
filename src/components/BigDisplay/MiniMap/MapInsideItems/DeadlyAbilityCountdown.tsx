@@ -4,7 +4,7 @@ import { GameAbility } from "../../../../types"
 import { GameServerKeys } from "../../../../keys"
 import React, { useState } from "react"
 import { Typography } from "@mui/material"
-import { MapIcon } from "./MapIcon/MapIcon"
+import { MapIcon } from "./Common/MapIcon"
 import { useTimer } from "../../../../hooks"
 import { fonts } from "../../../../theme/theme"
 

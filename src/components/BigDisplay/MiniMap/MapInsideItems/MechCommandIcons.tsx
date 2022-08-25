@@ -1,10 +1,10 @@
 import { useMemo, useState } from "react"
-import { SvgDrag } from "../../../../../assets"
-import { useTheme } from "../../../../../containers/theme"
-import { useGameServerSubscriptionFaction } from "../../../../../hooks/useGameServer"
-import { GameServerKeys } from "../../../../../keys"
-import { MapIcon } from "./MapIcon"
-import { useArena } from "../../../../../containers/arena"
+import { SvgDrag } from "../../../../assets"
+import { useTheme } from "../../../../containers/theme"
+import { useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../../keys"
+import { MapIcon } from "./Common/MapIcon"
+import { useArena } from "../../../../containers/arena"
 
 interface FactionMechCommand {
     battle_id: string
