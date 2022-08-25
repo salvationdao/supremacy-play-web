@@ -512,3 +512,14 @@ export enum SubmodelStatus {
     Equipped = "EQUIPPED",
     Unequipped = "UNEQUIPPED",
 }
+
+export interface WeaponModel {
+    id: string
+    brand_id: string
+    label: string
+    weapon_type: string
+    default_skin_id: string
+    repair_blocks: number
+    updated_at: Date
+    created_at: Date
+}

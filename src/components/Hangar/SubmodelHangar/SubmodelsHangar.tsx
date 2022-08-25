@@ -9,7 +9,7 @@ import { usePagination, useToggle, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { MechModel, Submodel, SubmodelStatus } from "../../../types"
+import { MechModel, Submodel, SubmodelStatus, WeaponModel } from "../../../types"
 import { SortTypeLabel } from "../../../types/marketplace"
 import { PageHeader } from "../../Common/PageHeader"
 import { ChipFilter } from "../../Common/SortAndFilters/ChipFilterSection"
@@ -35,7 +35,7 @@ interface GetSubmodelsRequest {
     sort_dir: string
     page_size: number
     page?: number
-    display_xsyn_mechs: boolean
+    display_xsyn: boolean
     exclude_market_locked?: boolean
     include_market_listed: boolean
     display_genesis_and_limited?: boolean
@@ -153,13 +153,13 @@ export const SubmodelsHangar = () => {
 
             const resp =
                 submodelType === SubmodelType.warMachine
-                    ? await send<GetSubmodelsResponse, GetSubmodelsRequest>(GameServerKeys.GetSubmodels, {
+                    ? await send<GetSubmodelsResponse, GetSubmodelsRequest>(GameServerKeys.GetMechSubmodels, {
                           search: search,
                           sort_by: sortBy,
                           sort_dir: sortDir,
                           page_size: pageSize,
                           page: page,
-                          display_xsyn_mechs: false,
+                          display_xsyn: false,
                           exclude_market_locked: false,
                           include_market_listed: false,
                           display_genesis_and_limited: false,
@@ -167,13 +167,13 @@ export const SubmodelsHangar = () => {
                           skin_compatibility: modelFilter,
                           equipped_statuses: equippedStatus,
                       })
-                    : await send<GetSubmodelsResponse, GetSubmodelsRequest>(GameServerKeys.GetSubmodels, {
+                    : await send<GetSubmodelsResponse, GetSubmodelsRequest>(GameServerKeys.GetWeaponSubmodels, {
                           search: search,
                           sort_by: sortBy,
                           sort_dir: sortDir,
                           page_size: pageSize,
                           page: page,
-                          display_xsyn_mechs: false,
+                          display_xsyn: false,
                           exclude_market_locked: false,
                           include_market_listed: false,
                           display_genesis_and_limited: false,
@@ -203,33 +203,53 @@ export const SubmodelsHangar = () => {
         } finally {
             setIsLoading(false)
         }
-    }, [send, page, pageSize, search, rarities, equippedStatus, updateQuery, sort, setSubmodels, setTotalItems, modelFilter])
+    }, [send, page, pageSize, search, rarities, equippedStatus, updateQuery, sort, setSubmodels, setTotalItems, modelFilter, submodelType])
 
     useEffect(() => {
         getItems()
     }, [getItems])
 
     useEffect(() => {
-        ;(async () => {
-            try {
-                setIsLoading(true)
-                const resp = await send<MechModel[]>(GameServerKeys.GetMechModels)
+        submodelType === SubmodelType.warMachine
+            ? (async () => {
+                  try {
+                      setIsLoading(true)
+                      const resp = await send<MechModel[]>(GameServerKeys.GetMechModels)
 
-                if (!resp) return
+                      if (!resp) return
 
-                modelFilterSection.current.options = resp.map((r) => {
-                    return { value: r.id, label: r.label, color: colors.blue2 }
-                })
+                      modelFilterSection.current.options = resp.map((r) => {
+                          return { value: r.id, label: r.label, color: colors.blue2 }
+                      })
 
-                toggleSortFilterReRender()
-            } catch (e) {
-                setLoadError(typeof e === "string" ? e : "Failed to get war machines.")
-                console.error(e)
-            } finally {
-                setIsLoading(false)
-            }
-        })()
-    }, [send, toggleSortFilterReRender])
+                      toggleSortFilterReRender()
+                  } catch (e) {
+                      setLoadError(typeof e === "string" ? e : "Failed to get war machines models.")
+                      console.error(e)
+                  } finally {
+                      setIsLoading(false)
+                  }
+              })()
+            : (async () => {
+                  try {
+                      setIsLoading(true)
+                      const resp = await send<WeaponModel[]>(GameServerKeys.GetWeaponModels)
+
+                      if (!resp) return
+
+                      modelFilterSection.current.options = resp.map((r) => {
+                          return { value: r.id, label: r.label, color: colors.blue2 }
+                      })
+
+                      toggleSortFilterReRender()
+                  } catch (e) {
+                      setLoadError(typeof e === "string" ? e : "Failed to get weapon models.")
+                      console.error(e)
+                  } finally {
+                      setIsLoading(false)
+                  }
+              })()
+    }, [send, submodelType, toggleSortFilterReRender])
 
     const content = useMemo(() => {
         if (loadError) {
