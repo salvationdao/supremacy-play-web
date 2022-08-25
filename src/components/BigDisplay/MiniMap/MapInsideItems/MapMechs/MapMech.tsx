@@ -6,10 +6,10 @@ import { useArena } from "../../../../../containers/arena"
 import { closestAngle } from "../../../../../helpers"
 import { useGameServerSubscription, useGameServerSubscriptionFaction } from "../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../keys"
-import { spinEffect } from "../../../../../theme/keyframes"
+import { pulseEffect, rippleEffect, spinEffect } from "../../../../../theme/keyframes"
 import { colors, fonts } from "../../../../../theme/theme"
 import { LocationSelectType, Map, WarMachineState } from "../../../../../types"
-import { DisplayedAbility, WarMachineLiveState } from "../../../../../types/game"
+import { DisplayedAbility, DisplayEffectType, WarMachineLiveState } from "../../../../../types/game"
 import { MechMoveCommand } from "../../../../WarMachine/WarMachineItem/MoveCommand"
 
 const TRANSITION_DURATION = 0.275 // seconds
@@ -63,7 +63,8 @@ const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
     // Mech move command related
     const mechMoveCommand = useRef<MechMoveCommand>()
     // Mech ability display
-    const [abilityList, setAbilityList] = useState<DisplayedAbility[]>([])
+    const [abilityBorderEffect, setAbilityBorderEffect] = useState<DisplayedAbility>()
+    const [abilityPulseEffect, setAbilityPulseEffect] = useState<DisplayedAbility>()
 
     // Listen on mech stats
     useGameServerSubscription<WarMachineLiveState | undefined>(
@@ -163,12 +164,13 @@ const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
         },
         (payload) => {
             if (!payload) {
-                setAbilityList([])
+                setAbilityBorderEffect(undefined)
+                setAbilityPulseEffect(undefined)
                 return
             }
 
-            // Only show the ones thats on this mech
-            setAbilityList(payload.filter((a) => a.mech_id === id))
+            setAbilityBorderEffect(payload.find((da) => da.mech_id === id && da.display_effect_type === DisplayEffectType.MechBorder))
+            setAbilityPulseEffect(payload.find((da) => da.mech_id === id && da.display_effect_type === DisplayEffectType.MechPulse))
         },
     )
 
@@ -318,6 +320,37 @@ const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
                                 }}
                             />
                         </Box>
+                    )}
+
+                    {/* Border effect */}
+                    {abilityBorderEffect && (
+                        <Box
+                            sx={{
+                                position: "absolute",
+                                top: -2,
+                                left: -2,
+                                bottom: -2,
+                                right: -2,
+                                zIndex: 97,
+                                border: `${abilityPulseEffect?.colour} ${0.08 * iconSize}px solid`,
+                                animation: `${pulseEffect} 1.8s infinite`,
+                            }}
+                        />
+                    )}
+
+                    {/* Border effect */}
+                    {abilityPulseEffect && (
+                        <Box
+                            sx={{
+                                position: "absolute",
+                                top: iconSize,
+                                left: iconSize,
+                                bottom: iconSize,
+                                right: iconSize,
+                                zIndex: 97,
+                                animation: `${rippleEffect(abilityPulseEffect.colour)} 5s animate`,
+                            }}
+                        />
                     )}
 
                     {/* Number */}
@@ -508,5 +541,7 @@ const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
         zIndex,
         isHidden,
         canSelect,
+        abilityBorderEffect,
+        abilityPulseEffect,
     ])
 }
