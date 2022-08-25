@@ -348,7 +348,7 @@ const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
                                 bottom: iconSize,
                                 right: iconSize,
                                 zIndex: 97,
-                                animation: `${rippleEffect(abilityPulseEffect.colour)} 5s animate`,
+                                animation: `${rippleEffect(abilityPulseEffect.colour)} 5s infinite`,
                             }}
                         />
                     )}
