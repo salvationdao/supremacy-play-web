@@ -66,7 +66,13 @@ export const ShoppingCartPopover = ({ open, loading, shoppingCart, popoverRef, o
             >
                 <Stack spacing="2rem" sx={{ position: "relative", minWidth: "35rem", maxHeight: "90vh", px: "2rem", pt: "1.6rem", pb: "2rem" }}>
                     <Box sx={{ maxWidth: "33.33%", minWidth: "500px" }}>
-                        <ShoppingCartTable loading={loading} shoppingCart={shoppingCart} primaryColor={primaryColor} backgroundColor={backgroundColor} />
+                        <ShoppingCartTable
+                            loading={loading}
+                            shoppingCart={shoppingCart}
+                            primaryColor={primaryColor}
+                            backgroundColor={backgroundColor}
+                            onCheckoutClicked={() => toggleLocalOpen(false)}
+                        />
                     </Box>
                 </Stack>
             </ClipThing>

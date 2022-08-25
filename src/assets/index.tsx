@@ -130,6 +130,7 @@ import Minimize from "!react-svg-loader!./svg/Minimize.svg"
 import WarnTriangle from "!react-svg-loader!./svg/WarnTriangle.svg"
 import Repair from "!react-svg-loader!./svg/Repair.svg"
 import YouTube from "!react-svg-loader!./svg/YouTube.svg"
+import Bin from "!react-svg-loader!./svg/Bin.svg"
 import AccessTimeSharpIcon from "@mui/icons-material/AccessTimeSharp"
 import AppsIcon from "@mui/icons-material/Apps"
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown"
@@ -530,6 +531,12 @@ export const SvgTwitter: React.VoidFunctionComponent<SvgWrapperProps> = (props) 
 export const SvgYouTube: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <YouTube />
+    </SvgWrapper>
+)
+
+export const SvgBin: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Bin />
     </SvgWrapper>
 )
 

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from "react"
-import { Box, Stack, Typography, TextField, CircularProgress } from "@mui/material"
-import { SvgArrow, SvgSupToken } from "../../../../assets"
+import { Box, Stack, Typography, TextField, CircularProgress, Button } from "@mui/material"
+import { SvgArrow, SvgSupToken, SvgBin } from "../../../../assets"
 import { IS_TESTING_MODE } from "../../../../constants"
 import { snakeToTitle, generatePriceText } from "../../../../helpers"
 import { colors, fonts } from "../../../../theme/theme"
@@ -16,9 +16,10 @@ interface Props {
     primaryColor: string
     backgroundColor: string
     fullPage?: boolean
+    onCheckoutClicked?: () => void
 }
 
-export const ShoppingCartTable = ({ shoppingCart, loading, primaryColor, backgroundColor, fullPage }: Props) => {
+export const ShoppingCartTable = ({ shoppingCart, loading, primaryColor, backgroundColor, fullPage, onCheckoutClicked }: Props) => {
     const content = useMemo(() => {
         if (loading) {
             return (
@@ -113,6 +114,7 @@ export const ShoppingCartTable = ({ shoppingCart, loading, primaryColor, backgro
                                 }}
                                 to={"/storefront/shopping-cart"}
                                 sx={{ px: "1.6rem", py: "1.1rem" }}
+                                onClick={onCheckoutClicked}
                             >
                                 <Typography variant={"body1"} sx={{ fontFamily: fonts.nostromoBlack, color: colors.offWhite }}>
                                     CHECKOUT
@@ -147,7 +149,7 @@ const ShoppingCartRow = ({ item, primaryColor, backgroundColor }: ShoppingCartRo
     const [updating, setUpdating] = useState(false)
     const [unsaved, setUnsaved] = useState(false)
 
-    const updateCart = useCallback(async () => {
+    const updateItem = useCallback(async () => {
         try {
             setUpdating(true)
             const resp = await send(GameServerKeys.FiatShoppingCartItemUpdate, {
@@ -164,11 +166,21 @@ const ShoppingCartRow = ({ item, primaryColor, backgroundColor }: ShoppingCartRo
         }
     }, [quantity, send, item.id])
 
+    const removeItem = useCallback(async () => {
+        try {
+            await send(GameServerKeys.FiatShoppingCartItemRemove, {
+                id: item.id,
+            })
+        } catch (err) {
+            console.error(err)
+        }
+    }, [])
+
     useEffect(() => {
         if (!unsaved || updating) return
-        const t = setTimeout(updateCart, 1000)
+        const t = setTimeout(updateItem, 1000)
         return () => clearTimeout(t)
-    }, [unsaved, updating, updateCart])
+    }, [unsaved, updating, updateItem])
 
     return (
         <Stack direction="row" spacing={1} sx={{ borderBottom: `1px solid ${primaryColor}`, pb: "2rem" }}>
@@ -188,82 +200,89 @@ const ShoppingCartRow = ({ item, primaryColor, backgroundColor }: ShoppingCartRo
                 </Typography>
                 <Typography variant={"caption"}>{snakeToTitle(item.product.product_type).toLocaleUpperCase()}</Typography>
 
-                <Box sx={{ width: "10rem", mt: "0.5rem" }}>
-                    <ClipThing
-                        clipSize="5px"
-                        clipSlantSize="2px"
-                        opacity={0.9}
-                        border={{
-                            borderColor: primaryColor,
-                            borderThickness: "1px",
-                        }}
-                        backgroundColor={backgroundColor}
-                        sx={{ height: "100%", flex: 1 }}
-                    >
-                        <Stack sx={{ height: "100%" }}>
-                            <Stack direction="row" justifyContent="space-between">
-                                <TextField
-                                    variant="outlined"
-                                    hiddenLabel
-                                    type="number"
-                                    placeholder={"1"}
-                                    onWheel={(event) => {
-                                        event.currentTarget.getElementsByTagName("input")[0]?.blur()
-                                    }}
-                                    sx={{
-                                        backgroundColor: "#00000090",
-                                        ".MuiOutlinedInput-input": {
-                                            px: ".75rem",
-                                            py: ".75rem",
-                                            height: "unset",
-                                            "::-webkit-outer-spin-button, ::-webkit-inner-spin-button": {
-                                                WebkitAppearance: "none",
+                <Stack flexDirection="row">
+                    <Box sx={{ width: "10rem", mt: "0.5rem" }}>
+                        <ClipThing
+                            clipSize="5px"
+                            clipSlantSize="2px"
+                            opacity={0.9}
+                            border={{
+                                borderColor: primaryColor,
+                                borderThickness: "1px",
+                            }}
+                            backgroundColor={backgroundColor}
+                            sx={{ height: "100%", flex: 1 }}
+                        >
+                            <Stack sx={{ height: "100%" }}>
+                                <Stack direction="row" justifyContent="space-between">
+                                    <TextField
+                                        variant="outlined"
+                                        hiddenLabel
+                                        type="number"
+                                        placeholder={"1"}
+                                        onWheel={(event) => {
+                                            event.currentTarget.getElementsByTagName("input")[0]?.blur()
+                                        }}
+                                        sx={{
+                                            backgroundColor: "#00000090",
+                                            ".MuiOutlinedInput-input": {
+                                                px: ".75rem",
+                                                py: ".75rem",
+                                                height: "unset",
+                                                "::-webkit-outer-spin-button, ::-webkit-inner-spin-button": {
+                                                    WebkitAppearance: "none",
+                                                },
+                                                appearance: "textfield",
                                             },
-                                            appearance: "textfield",
-                                        },
-                                        ".MuiOutlinedInput-notchedOutline": { border: "unset" },
-                                    }}
-                                    value={quantity}
-                                    disabled={updating}
-                                    onChange={(e) => {
-                                        const newValue = parseInt(e.target.value)
-                                        if (isNaN(newValue)) return
-                                        setQuantity(newValue)
-                                        setUnsaved(true)
-                                    }}
-                                />
+                                            ".MuiOutlinedInput-notchedOutline": { border: "unset" },
+                                        }}
+                                        value={quantity}
+                                        disabled={updating}
+                                        onChange={(e) => {
+                                            const newValue = parseInt(e.target.value)
+                                            if (isNaN(newValue)) return
+                                            setQuantity(newValue)
+                                            setUnsaved(true)
+                                        }}
+                                    />
 
-                                <Stack
-                                    sx={{
-                                        height: "2.5rem",
-                                        p: "1em",
-                                        "& svg:active": {
-                                            transform: "scale(1.5)",
-                                            transition: "all .2s",
-                                        },
-                                    }}
-                                >
-                                    <SvgArrow
-                                        size=".75rem"
-                                        sx={{ cursor: "pointer", zIndex: 1 }}
-                                        fill={primaryColor}
-                                        onClick={() => {
-                                            setQuantity((prev) => prev + 1)
+                                    <Stack
+                                        sx={{
+                                            height: "2.5rem",
+                                            p: "1em",
+                                            "& svg:active": {
+                                                transform: "scale(1.5)",
+                                                transition: "all .2s",
+                                            },
                                         }}
-                                    />
-                                    <SvgArrow
-                                        size=".75rem"
-                                        sx={{ transform: "rotate(180deg)", cursor: "pointer" }}
-                                        fill={primaryColor}
-                                        onClick={() => {
-                                            if (quantity > 1) setQuantity((prev) => prev - 1)
-                                        }}
-                                    />
+                                    >
+                                        <SvgArrow
+                                            size=".75rem"
+                                            sx={{ cursor: "pointer", zIndex: 1 }}
+                                            fill={primaryColor}
+                                            onClick={() => {
+                                                setQuantity((prev) => prev + 1)
+                                            }}
+                                        />
+                                        <SvgArrow
+                                            size=".75rem"
+                                            sx={{ transform: "rotate(180deg)", cursor: "pointer" }}
+                                            fill={primaryColor}
+                                            onClick={() => {
+                                                if (quantity > 1) setQuantity((prev) => prev - 1)
+                                            }}
+                                        />
+                                    </Stack>
                                 </Stack>
                             </Stack>
-                        </Stack>
-                    </ClipThing>
-                </Box>
+                        </ClipThing>
+                    </Box>
+
+                    <Button type="button" size="small" disabled={updating} onClick={removeItem} sx={{ ml: "1rem" }}>
+                        <SvgBin sx={{ mr: "0.5rem" }} />
+                        <Typography variant="caption">Remove</Typography>
+                    </Button>
+                </Stack>
             </Stack>
 
             <Stack>
