@@ -1,5 +1,5 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
-import React, { useCallback, useMemo, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 import { SvgGlobal, SvgLine, SvgMicrochip, SvgQuestionMark, SvgSupToken, SvgTarget } from "../../../../assets"
 import { useGlobalNotifications } from "../../../../containers"
 import { supFormatter } from "../../../../helpers"
@@ -8,6 +8,7 @@ import { GameServerKeys } from "../../../../keys"
 import { scaleUpKeyframes } from "../../../../theme/keyframes"
 import { colors } from "../../../../theme/theme"
 import { LocationSelectType, SaleAbility, SaleAbilityAvailability } from "../../../../types"
+import { ConfirmModal } from "../../../Common/ConfirmModal"
 import { FancyButton } from "../../../Common/FancyButton"
 import { TooltipHelper } from "../../../Common/TooltipHelper"
 
@@ -15,9 +16,9 @@ export interface QuickPlayerAbilitiesItemProps {
     saleAbility: SaleAbility
     price?: string
     amount?: number
-    setError: React.Dispatch<React.SetStateAction<string | undefined>>
     onClaim: () => void
     onPurchase: () => void
+    setClaimError: React.Dispatch<React.SetStateAction<string | undefined>>
     availability: SaleAbilityAvailability
 }
 
@@ -25,15 +26,17 @@ export const QuickPlayerAbilitiesItem = ({
     saleAbility,
     price = saleAbility.current_price,
     amount = 0,
-    setError,
     onClaim: onClaimCallback,
     onPurchase: onPurchaseCallback,
+    setClaimError,
     availability,
 }: QuickPlayerAbilitiesItemProps) => {
     // Purchasing
     const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsUser("/user_commander")
     const [loading, setLoading] = useState(false)
+    const [purchaseError, setPurchaseError] = useState<string>()
+    const [showPurchaseModal, setShowPurchaseModal] = useState(false)
 
     const disabled = availability === SaleAbilityAvailability.Unavailable
 
@@ -78,17 +81,21 @@ export const QuickPlayerAbilitiesItem = ({
             })
             newSnackbarMessage(`Successfully claimed 1 x ${saleAbility.ability.label || "ability"}`, "success")
             onClaimCallback()
-            setError(undefined)
+            setClaimError(undefined)
         } catch (e) {
             if (e instanceof Error) {
-                setError(e.message)
+                setClaimError(e.message)
             } else if (typeof e === "string") {
-                setError(e)
+                setClaimError(e)
             }
         } finally {
             setLoading(false)
         }
-    }, [send, saleAbility.id, saleAbility.ability.label, newSnackbarMessage, onClaimCallback, setError])
+    }, [send, saleAbility.id, saleAbility.ability.label, newSnackbarMessage, onClaimCallback, setClaimError])
+
+    const onOpenPurchaseModal = () => {
+        setShowPurchaseModal(true)
+    }
 
     const onPurchase = useCallback(async () => {
         try {
@@ -99,25 +106,26 @@ export const QuickPlayerAbilitiesItem = ({
             })
             newSnackbarMessage(`Successfully purchased 1 x ${saleAbility.ability.label || "ability"}`, "success")
             onPurchaseCallback()
-            setError(undefined)
+            setPurchaseError(undefined)
+            setShowPurchaseModal(false)
         } catch (e) {
             if (e instanceof Error) {
-                setError(e.message)
+                setPurchaseError(e.message)
             } else if (typeof e === "string") {
-                setError(e)
+                setPurchaseError(e)
             }
         } finally {
             setLoading(false)
         }
-    }, [send, saleAbility.id, saleAbility.ability.label, price, newSnackbarMessage, onPurchaseCallback, setError])
+    }, [send, saleAbility.id, saleAbility.ability.label, price, newSnackbarMessage, onPurchaseCallback, setPurchaseError])
 
     const onClick = useMemo(() => {
         if (availability === SaleAbilityAvailability.CanClaim) {
             return onClaim
         } else if (availability === SaleAbilityAvailability.CanPurchase) {
-            return onPurchase
+            return onOpenPurchaseModal
         }
-    }, [availability, onClaim, onPurchase])
+    }, [availability, onClaim])
 
     return (
         <>
@@ -300,6 +308,19 @@ export const QuickPlayerAbilitiesItem = ({
                     </TooltipHelper>
                 </FancyButton>
             </Fade>
+            {showPurchaseModal && (
+                <ConfirmModal
+                    title="Confirm Purchase"
+                    onConfirm={onPurchase}
+                    onClose={() => setShowPurchaseModal(false)}
+                    isLoading={loading}
+                    error={purchaseError}
+                >
+                    <Typography>
+                        Purchase {saleAbility.ability.label} for {supFormatter(saleAbility.current_price, 2)} SUPS?
+                    </Typography>
+                </ConfirmModal>
+            )}
         </>
     )
 }
