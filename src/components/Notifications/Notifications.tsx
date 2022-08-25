@@ -21,7 +21,7 @@ import { useArray } from "../../hooks"
 import { useGameServerSubscription, useGameServerSubscriptionFaction } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { siteZIndex } from "../../theme/theme"
-import { BattleZone } from "../../types"
+import { BattleZoneStruct } from "../../types"
 import { BattleZoneAlert } from "./Alerts/BattleZoneAlert"
 import {
     battleAbilityNoti,
@@ -61,7 +61,7 @@ export enum NotificationType {
 
 export interface NotificationResponse {
     type: NotificationType
-    data: BattleFactionAbilityAlertProps | KillAlertProps | LocationSelectAlertProps | WarMachineAbilityAlertProps | BattleZone | string
+    data: BattleFactionAbilityAlertProps | KillAlertProps | LocationSelectAlertProps | WarMachineAbilityAlertProps | BattleZoneStruct | string
 }
 
 interface Notification extends NotificationResponse {
@@ -88,7 +88,7 @@ export const Notifications = () => {
             let duration = SPAWN_TEST_NOTIFICATIONS ? NOTIFICATION_TIME * 10000 : NOTIFICATION_TIME
 
             if (notification.type === NotificationType.BattleZoneChange) {
-                const battleZoneChange = notification.data as BattleZone
+                const battleZoneChange = notification.data as BattleZoneStruct
                 duration = battleZoneChange.warnTime * 1000
                 setBattleZone(battleZoneChange)
             }
@@ -202,7 +202,7 @@ export const Notifications = () => {
                         case NotificationType.BattleZoneChange:
                             return (
                                 <NotificationItem key={n.notiID} duration={n.duration}>
-                                    <BattleZoneAlert data={n.data as BattleZone} />
+                                    <BattleZoneAlert data={n.data as BattleZoneStruct} />
                                 </NotificationItem>
                             )
                     }
