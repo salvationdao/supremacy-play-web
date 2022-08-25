@@ -3,11 +3,13 @@ import { useCallback, useMemo, useState } from "react"
 import { SvgGlobal, SvgLine, SvgMicrochip, SvgQuestionMark, SvgSupToken, SvgTarget } from "../../../../assets"
 import { useGlobalNotifications } from "../../../../containers"
 import { supFormatter } from "../../../../helpers"
+import { useToggle } from "../../../../hooks"
 import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { scaleUpKeyframes } from "../../../../theme/keyframes"
 import { colors } from "../../../../theme/theme"
 import { LocationSelectType, SaleAbility, SaleAbilityAvailability } from "../../../../types"
+import { PreferenceToggle } from "../../../Bar/ProfileCard/PreferencesModal/NotificationPreferences"
 import { ConfirmModal } from "../../../Common/ConfirmModal"
 import { FancyButton } from "../../../Common/FancyButton"
 import { TooltipHelper } from "../../../Common/TooltipHelper"
@@ -37,6 +39,7 @@ export const QuickPlayerAbilitiesItem = ({
     const [loading, setLoading] = useState(false)
     const [purchaseError, setPurchaseError] = useState<string>()
     const [showPurchaseModal, setShowPurchaseModal] = useState(false)
+    const [showConfirmation, toggleShowConfirmation] = useToggle(false)
 
     const disabled = availability === SaleAbilityAvailability.Unavailable
 
@@ -108,6 +111,9 @@ export const QuickPlayerAbilitiesItem = ({
             onPurchaseCallback()
             setPurchaseError(undefined)
             setShowPurchaseModal(false)
+            if (showConfirmation) {
+                localStorage.setItem("hideSaleAbilitiesPurchaseConfirmation", String(showConfirmation))
+            }
         } catch (e) {
             if (e instanceof Error) {
                 setPurchaseError(e.message)
@@ -117,15 +123,15 @@ export const QuickPlayerAbilitiesItem = ({
         } finally {
             setLoading(false)
         }
-    }, [send, saleAbility.id, saleAbility.ability.label, price, newSnackbarMessage, onPurchaseCallback, setPurchaseError])
+    }, [send, saleAbility.id, saleAbility.ability.label, price, newSnackbarMessage, onPurchaseCallback, showConfirmation])
 
     const onClick = useMemo(() => {
         if (availability === SaleAbilityAvailability.CanClaim) {
             return onClaim
         } else if (availability === SaleAbilityAvailability.CanPurchase) {
-            return onOpenPurchaseModal
+            return localStorage.getItem("hideSaleAbilitiesPurchaseConfirmation") === "true" ? onPurchase : onOpenPurchaseModal
         }
-    }, [availability, onClaim])
+    }, [availability, onClaim, onPurchase])
 
     return (
         <>
@@ -326,6 +332,12 @@ export const QuickPlayerAbilitiesItem = ({
                     >
                         Purchase {saleAbility.ability.label} for <span key={price}>{supFormatter(price, 2)} SUPS</span>?
                     </Typography>
+                    <PreferenceToggle
+                        disabled={loading}
+                        title="Don't show this again"
+                        checked={!!showConfirmation}
+                        onChangeFunction={(e) => toggleShowConfirmation(e.currentTarget.checked)}
+                    />
                 </ConfirmModal>
             )}
         </>
