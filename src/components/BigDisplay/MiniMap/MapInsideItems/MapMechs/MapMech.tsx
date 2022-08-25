@@ -350,7 +350,6 @@ const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
                                 zIndex: 97,
                                 borderRadius: "50%",
                                 animation: `${rippleEffect(abilityPulseEffect.colour)} 1.2s infinite`,
-                                animationDirection: "reverse",
                                 border: `8px ${abilityPulseEffect.colour}`,
                                 borderStyle: "dashed solid",
                                 opacity: 0.8,
