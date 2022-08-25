@@ -23,7 +23,7 @@ export const MechMoveCommandAbility: PlayerAbility = {
         description: "Command the war machine to move to a specific location.",
         text_colour: "#000000",
         colour: colors.gold,
-        location_select_type: LocationSelectType.MECH_COMMAND,
+        location_select_type: LocationSelectType.MechCommand,
         created_at: new Date(),
         inventory_limit: 10,
         cooldown_seconds: 5,

@@ -141,203 +141,184 @@ const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
         }
     }, [playerAbility, factionID, warMachineFactionID, hash, participantID, highlightedMechParticipantID, setSelection, setHighlightedMechParticipantID])
 
-    return useMemo(() => {
-        if (!position) return null
+    if (!position) return null
 
-        // Don't show on map if the mech is hidden
-        if (isHidden) return null
+    // Don't show on map if the mech is hidden
+    if (isHidden) return null
 
-        let opacity = 1
-        if (!isAlive) opacity = 0.7
-        if (isHidden) opacity = 0
+    let opacity = 1
+    if (!isAlive) opacity = 0.7
+    if (isHidden) opacity = 0
 
-        return (
-            <Stack
-                key={`warMachine-${participantID}`}
-                alignItems="center"
-                justifyContent="center"
-                spacing=".6rem"
-                onClick={handleClick}
+    return (
+        <Stack
+            key={`warMachine-${participantID}`}
+            alignItems="center"
+            justifyContent="center"
+            spacing=".6rem"
+            onClick={handleClick}
+            style={{
+                position: "absolute",
+                pointerEvents: isTargeting && playerAbility?.ability.location_select_type !== LocationSelectType.MechSelect ? "none" : "all",
+                cursor: "pointer",
+                padding: "1rem 1.3rem",
+                transform: `translate(-50%, -50%) translate3d(${mechMapX}px, ${mechMapY}px, 0)`,
+                transition: `transform ${TRANSITION_DURATION}s linear`,
+                opacity: 1,
+                zIndex,
+            }}
+        >
+            {/* Show player ability icon above the mech */}
+            {playerAbility?.ability.location_select_type === LocationSelectType.MechSelect && selection?.mechHash === hash && (
+                <Box
+                    onClick={() => setSelection(undefined)}
+                    sx={{
+                        position: "absolute",
+                        top: "0",
+                        left: "50%",
+                        transform: "translate(-50%, -80%)",
+                        height: iconSize,
+                        width: iconSize,
+                        cursor: "pointer",
+                        border: `3px solid ${playerAbility.ability.colour}`,
+                        borderRadius: 1,
+                        boxShadow: 2,
+                        backgroundImage: `url(${playerAbility.ability.image_url})`,
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "center",
+                        backgroundSize: "cover",
+                        zIndex: 100,
+                    }}
+                />
+            )}
+
+            {/* The mech icon and rotation arrow */}
+            <Box
                 style={{
-                    position: "absolute",
-                    pointerEvents: isTargeting && playerAbility?.ability.location_select_type !== LocationSelectType.MECH_SELECT ? "none" : "all",
-                    cursor: "pointer",
-                    padding: "1rem 1.3rem",
-                    transform: `translate(-50%, -50%) translate3d(${mechMapX}px, ${mechMapY}px, 0)`,
-                    transition: `transform ${TRANSITION_DURATION}s linear`,
-                    opacity: 1,
-                    zIndex,
+                    position: "relative",
+                    width: iconSize,
+                    height: iconSize,
+                    overflow: "visible",
+                    backgroundColor: primaryColor,
+                    // backgroundImage: `url(${factionLogoUrl})`,
+                    // backgroundRepeat: "no-repeat",
+                    // backgroundPosition: "center",
+                    // backgroundSize: "contain",
+                    borderRadius: 3,
+                    boxShadow: isAlive ? `0 0 8px 2px ${primaryColor}70` : "none",
+                    zIndex: 2,
+                    opacity,
+                    transition: "opacity 0.2s ease-out",
                 }}
             >
-                {/* Show player ability icon above the mech */}
-                {playerAbility?.ability.location_select_type === LocationSelectType.MECH_SELECT && selection?.mechHash === hash && (
-                    <Box
-                        onClick={() => setSelection(undefined)}
-                        sx={{
-                            position: "absolute",
-                            top: "0",
-                            left: "50%",
-                            transform: "translate(-50%, -80%)",
-                            height: iconSize,
-                            width: iconSize,
-                            cursor: "pointer",
-                            border: `3px solid ${playerAbility.ability.colour}`,
-                            borderRadius: 1,
-                            boxShadow: 2,
-                            backgroundImage: `url(${playerAbility.ability.image_url})`,
-                            backgroundRepeat: "no-repeat",
-                            backgroundPosition: "center",
-                            backgroundSize: "cover",
-                            zIndex: 100,
-                        }}
-                    />
-                )}
-
-                {/* The mech icon and rotation arrow */}
-                <Box
-                    style={{
-                        position: "relative",
-                        width: iconSize,
-                        height: iconSize,
-                        overflow: "visible",
-                        backgroundColor: primaryColor,
-                        // backgroundImage: `url(${factionLogoUrl})`,
-                        // backgroundRepeat: "no-repeat",
-                        // backgroundPosition: "center",
-                        // backgroundSize: "contain",
-                        borderRadius: 3,
-                        boxShadow: isAlive ? `0 0 8px 2px ${primaryColor}70` : "none",
-                        zIndex: 2,
-                        opacity,
-                        transition: "opacity 0.2s ease-out",
-                    }}
-                >
-                    {/* Highlighted mech */}
-                    {isMechHighlighted && (
-                        <Box
-                            sx={{
-                                position: "absolute",
-                                top: "50%",
-                                left: "50%",
-                                transform: "translate(-50%, -50%)",
-                                zIndex: 99,
-                            }}
-                        >
-                            <Box
-                                sx={{
-                                    width: iconSize * 1.6,
-                                    height: iconSize * 1.6,
-                                    border: `${primaryColor} 1.5rem dashed`,
-                                    borderStyle: "dashed solid",
-                                    borderRadius: "50%",
-                                    backgroundColor: `${primaryColor}20`,
-                                    animation: `${spinEffect} 3s infinite`,
-                                    boxShadow: "0 0 12px 9px #FFFFFF40",
-                                }}
-                            />
-                        </Box>
-                    )}
-
-                    {/* Number */}
+                {/* Highlighted mech */}
+                {isMechHighlighted && (
                     <Box
                         sx={{
                             position: "absolute",
                             top: "50%",
                             left: "50%",
                             transform: "translate(-50%, -50%)",
-                            px: "1rem",
-                            backgroundColor: "#000000DD",
+                            zIndex: 99,
                         }}
                     >
-                        <Typography
-                            variant={isAI ? "h4" : "h1"}
-                            sx={{
-                                color: primaryColor,
-                                fontSize: iconSize * 0.98,
-                                lineHeight: 1,
-                                fontFamily: fonts.nostromoBlack,
-                            }}
-                        >
-                            {label}
-                        </Typography>
-                    </Box>
-
-                    {/* Skull icon */}
-                    {!isAlive && (
-                        <Stack
-                            alignItems="center"
-                            justifyContent="center"
-                            style={{
-                                width: "100%",
-                                height: "100%",
-                                background: "linear-gradient(#00000040, #00000090)",
-                                opacity: 1,
-                            }}
-                        >
-                            <SvgMapSkull
-                                fill="#000000"
-                                size={`${0.8 * iconSize}px`}
-                                style={{
-                                    position: "absolute",
-                                    top: "52%",
-                                    left: "50%",
-                                    transform: "translate(-50%, -50%)",
-                                }}
-                            />
-                        </Stack>
-                    )}
-
-                    {/* Rotation arrow */}
-                    {isAlive && (
                         <Box
-                            style={{
-                                position: "absolute",
-                                left: "50%",
-                                top: "50%",
-                                transform: `translate(-50%, -50%) rotate(${rotation + 90}deg)`,
-                                transition: `all ${TRANSITION_DURATION}s`,
-                                zIndex: 3,
+                            sx={{
+                                width: iconSize * 1.6,
+                                height: iconSize * 1.6,
+                                border: `${primaryColor} 1.5rem dashed`,
+                                borderStyle: "dashed solid",
+                                borderRadius: "50%",
+                                backgroundColor: `${primaryColor}20`,
+                                animation: `${spinEffect} 3s infinite`,
+                                boxShadow: "0 0 12px 9px #FFFFFF40",
                             }}
-                        >
-                            <Box style={{ position: "relative", height: dirArrowLength }}>
-                                <SvgMapWarMachine
-                                    fill={primaryColor}
-                                    size={`${0.6 * iconSize}px`}
-                                    style={{
-                                        position: "absolute",
-                                        top: -6,
-                                        left: "50%",
-                                        transform: "translateX(-50%)",
-                                    }}
-                                />
-                            </Box>
-                            <Box style={{ height: dirArrowLength }} />
-                        </Box>
-                    )}
+                        />
+                    </Box>
+                )}
+
+                {/* Number */}
+                <Box
+                    sx={{
+                        position: "absolute",
+                        top: "50%",
+                        left: "50%",
+                        transform: "translate(-50%, -50%)",
+                        px: "1rem",
+                        backgroundColor: "#000000DD",
+                    }}
+                >
+                    <Typography
+                        variant={isAI ? "h4" : "h1"}
+                        sx={{
+                            color: primaryColor,
+                            fontSize: iconSize * 0.98,
+                            lineHeight: 1,
+                            fontFamily: fonts.nostromoBlack,
+                        }}
+                    >
+                        {label}
+                    </Typography>
                 </Box>
 
-                {/* Health and shield bars */}
-                {isAlive && (
-                    <Stack spacing=".2rem" style={{ width: iconSize * 0.9, zIndex: 1 }}>
-                        {warMachine.maxShield > 0 && (
-                            <Box
-                                style={{
-                                    width: "100%",
-                                    height: `${0.2 * iconSize}px`,
-                                    border: "3px solid #00000080",
-                                    overflow: "hidden",
-                                }}
-                            >
-                                <Box
-                                    style={{
-                                        width: `${(shield / maxShield) * 100}%`,
-                                        height: "100%",
-                                        backgroundColor: colors.shield,
-                                    }}
-                                />
-                            </Box>
-                        )}
+                {/* Skull icon */}
+                {!isAlive && (
+                    <Stack
+                        alignItems="center"
+                        justifyContent="center"
+                        style={{
+                            width: "100%",
+                            height: "100%",
+                            background: "linear-gradient(#00000040, #00000090)",
+                            opacity: 1,
+                        }}
+                    >
+                        <SvgMapSkull
+                            fill="#000000"
+                            size={`${0.8 * iconSize}px`}
+                            style={{
+                                position: "absolute",
+                                top: "52%",
+                                left: "50%",
+                                transform: "translate(-50%, -50%)",
+                            }}
+                        />
+                    </Stack>
+                )}
 
+                {/* Rotation arrow */}
+                {isAlive && (
+                    <Box
+                        style={{
+                            position: "absolute",
+                            left: "50%",
+                            top: "50%",
+                            transform: `translate(-50%, -50%) rotate(${rotation + 90}deg)`,
+                            transition: `all ${TRANSITION_DURATION}s`,
+                            zIndex: 3,
+                        }}
+                    >
+                        <Box style={{ position: "relative", height: dirArrowLength }}>
+                            <SvgMapWarMachine
+                                fill={primaryColor}
+                                size={`${0.6 * iconSize}px`}
+                                style={{
+                                    position: "absolute",
+                                    top: -6,
+                                    left: "50%",
+                                    transform: "translateX(-50%)",
+                                }}
+                            />
+                        </Box>
+                        <Box style={{ height: dirArrowLength }} />
+                    </Box>
+                )}
+            </Box>
+
+            {/* Health and shield bars */}
+            {isAlive && (
+                <Stack spacing=".2rem" style={{ width: iconSize * 0.9, zIndex: 1 }}>
+                    {warMachine.maxShield > 0 && (
                         <Box
                             style={{
                                 width: "100%",
@@ -348,88 +329,74 @@ const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
                         >
                             <Box
                                 style={{
-                                    width: `${(health / maxHealth) * 100}%`,
+                                    width: `${(shield / maxShield) * 100}%`,
                                     height: "100%",
-                                    backgroundColor: health / maxHealth <= 0.45 ? colors.red : colors.health,
+                                    backgroundColor: colors.shield,
                                 }}
                             />
                         </Box>
-                    </Stack>
-                )}
+                    )}
 
-                {/* Mech move command dashed line */}
-                {isAlive && mechMoveCommand && !mechMoveCommand?.reached_at && !mechMoveCommand?.cancelled_at && (
                     <Box
                         style={{
-                            position: "absolute",
-                            left: "50%",
-                            top: "50%",
-                            transform: `translate(-50%, -50%) rotate(${mechCommandAngle + 90}deg)`,
-                            transition: `all ${TRANSITION_DURATION}s`,
-                            zIndex: 1,
+                            width: "100%",
+                            height: `${0.2 * iconSize}px`,
+                            border: "3px solid #00000080",
+                            overflow: "hidden",
                         }}
                     >
                         <Box
                             style={{
-                                position: "relative",
-                                height: mechCommandDist,
-                                borderLeft: `${primaryColor} 1.3rem dashed`,
-                                transition: `all ${TRANSITION_DURATION}s`,
-                            }}
-                        >
-                            <Box
-                                style={{
-                                    width: "1.6rem",
-                                    height: "1.6rem",
-                                    position: "absolute",
-                                    left: "50%",
-                                    transform: "translateX(-50%)",
-                                    backgroundColor: primaryColor,
-                                    borderRadius: "50%",
-                                }}
-                            />
-                        </Box>
-
-                        <Box
-                            style={{
-                                height: mechCommandDist,
-                                transition: `all ${TRANSITION_DURATION}s`,
+                                width: `${(health / maxHealth) * 100}%`,
+                                height: "100%",
+                                backgroundColor: health / maxHealth <= 0.45 ? colors.red : colors.health,
                             }}
                         />
                     </Box>
-                )}
-            </Stack>
-        )
-    }, [
-        position,
-        isHidden,
-        isAlive,
-        participantID,
-        handleClick,
-        isTargeting,
-        playerAbility?.ability.location_select_type,
-        playerAbility?.ability.colour,
-        playerAbility?.ability.image_url,
-        mechMapX,
-        mechMapY,
-        zIndex,
-        selection?.mechHash,
-        hash,
-        iconSize,
-        primaryColor,
-        isMechHighlighted,
-        isAI,
-        label,
-        rotation,
-        dirArrowLength,
-        warMachine.maxShield,
-        shield,
-        maxShield,
-        health,
-        maxHealth,
-        mechMoveCommand,
-        mechCommandAngle,
-        mechCommandDist,
-        setSelection,
-    ])
+                </Stack>
+            )}
+
+            {/* Mech move command dashed line */}
+            {isAlive && mechMoveCommand && !mechMoveCommand?.reached_at && !mechMoveCommand?.cancelled_at && (
+                <Box
+                    style={{
+                        position: "absolute",
+                        left: "50%",
+                        top: "50%",
+                        transform: `translate(-50%, -50%) rotate(${mechCommandAngle + 90}deg)`,
+                        transition: `all ${TRANSITION_DURATION}s`,
+                        zIndex: 1,
+                    }}
+                >
+                    <Box
+                        style={{
+                            position: "relative",
+                            height: mechCommandDist,
+                            borderLeft: `${primaryColor} 1.3rem dashed`,
+                            transition: `all ${TRANSITION_DURATION}s`,
+                        }}
+                    >
+                        <Box
+                            style={{
+                                width: "1.6rem",
+                                height: "1.6rem",
+                                position: "absolute",
+                                left: "50%",
+                                transform: "translateX(-50%)",
+                                backgroundColor: primaryColor,
+                                borderRadius: "50%",
+                            }}
+                        />
+                    </Box>
+
+                    <Box
+                        style={{
+                            height: mechCommandDist,
+                            transition: `all ${TRANSITION_DURATION}s`,
+                        }}
+                    />
+                </Box>
+            )}
+        </Stack>
+    )
 }

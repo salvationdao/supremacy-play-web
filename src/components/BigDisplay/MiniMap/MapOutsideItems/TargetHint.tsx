@@ -162,16 +162,16 @@ const PlayerAbilityTargetHint = () => {
         let descriptor = "Select a location"
 
         switch (ability.location_select_type) {
-            case LocationSelectType.LOCATION_SELECT:
-            case LocationSelectType.MECH_COMMAND:
+            case LocationSelectType.LocationSelect:
+            case LocationSelectType.MechCommand:
                 icon = <SvgTarget {...iconProps} />
                 descriptor = "Select a location to deploy"
                 break
-            case LocationSelectType.MECH_SELECT:
+            case LocationSelectType.MechSelect:
                 icon = <SvgMicrochip {...iconProps} />
                 descriptor = "Select an allied mech to activate"
                 break
-            case LocationSelectType.LINE_SELECT:
+            case LocationSelectType.LineSelect:
                 icon = <SvgLine {...iconProps} />
                 descriptor = "Draw a line by selecting two locations to deploy"
                 break

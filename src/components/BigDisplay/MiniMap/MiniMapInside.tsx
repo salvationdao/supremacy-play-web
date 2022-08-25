@@ -11,6 +11,7 @@ import { MechCommandIcons } from "./MapInsideItems/MapIcon/MechCommandIcons"
 import { MapImage } from "./MapInsideItems/MapImage"
 import { RangeIndicator } from "./MapInsideItems/RangeIndicator"
 import { useMiniMapGestures } from "./useMiniMapGestures"
+import { DeadlyAbilityCountdowns } from "./MapInsideItems/DeadlyAbilityCountdown"
 
 interface MiniMapInsideProps {
     containerDimensions: Dimension
@@ -48,12 +49,12 @@ export const MiniMapInside = ({ containerDimensions }: MiniMapInsideProps) => {
     // i.e. is battle ability or player ability of type LOCATION_SELECT
     const isLocationSelection = useMemo(() => {
         const abilityType = winner?.game_ability.location_select_type || playerAbility?.ability.location_select_type
-        return isTargeting && (abilityType === LocationSelectType.LOCATION_SELECT || abilityType === LocationSelectType.MECH_COMMAND)
+        return isTargeting && (abilityType === LocationSelectType.LocationSelect || abilityType === LocationSelectType.MechCommand)
     }, [isTargeting, winner?.game_ability.location_select_type, playerAbility?.ability.location_select_type])
 
     const isLineSelection = useMemo(() => {
         const abilityType = winner?.game_ability.location_select_type || playerAbility?.ability.location_select_type
-        return isTargeting && abilityType === LocationSelectType.LINE_SELECT
+        return isTargeting && abilityType === LocationSelectType.LineSelect
     }, [isTargeting, playerAbility?.ability.location_select_type, winner?.game_ability.location_select_type])
 
     return useMemo(() => {
@@ -110,6 +111,8 @@ export const MiniMapInside = ({ containerDimensions }: MiniMapInsideProps) => {
 
                         {/* Blackouts */}
                         <Blackouts />
+
+                        <DeadlyAbilityCountdowns />
                     </Box>
                 </Stack>
 

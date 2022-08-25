@@ -16,14 +16,14 @@ export const SelectionIcon = () => {
         // Will return null if the ability doesnt involve selection icon.
         if (
             "location_select_type" in ability &&
-            (ability.location_select_type === LocationSelectType.LINE_SELECT ||
-                ability.location_select_type === LocationSelectType.MECH_SELECT ||
-                ability.location_select_type === LocationSelectType.GLOBAL)
+            (ability.location_select_type === LocationSelectType.LineSelect ||
+                ability.location_select_type === LocationSelectType.MechSelect ||
+                ability.location_select_type === LocationSelectType.Global)
         ) {
             return null
         }
 
-        const isMechMoveCommand = "location_select_type" in ability && ability.location_select_type === LocationSelectType.MECH_COMMAND
+        const isMechMoveCommand = "location_select_type" in ability && ability.location_select_type === LocationSelectType.MechCommand
 
         return (
             <MapIcon

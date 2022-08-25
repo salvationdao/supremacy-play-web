@@ -1,9 +1,9 @@
 import { Typography } from "@mui/material"
-import { useOverlayToggles } from "../../containers"
+import { useUI } from "../../containers"
 import { FancyButton } from "../Common/FancyButton"
 
 export const ShowTrailerButton = () => {
-    const { showTrailer, toggleShowTrailer } = useOverlayToggles()
+    const { showTrailer, toggleShowTrailer } = useUI()
 
     return (
         <FancyButton

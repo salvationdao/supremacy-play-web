@@ -1,6 +1,6 @@
 import { Box, Drawer, Fade } from "@mui/material"
 import { DRAWER_TRANSITION_DURATION } from "../../constants"
-import { useAuth, useMobile, useOverlayToggles } from "../../containers"
+import { useAuth, useMobile, useUI } from "../../containers"
 import { RIGHT_DRAWER_ARRAY, RIGHT_DRAWER_MAP } from "../../routes"
 import { colors, siteZIndex } from "../../theme/theme"
 import { DrawerButtons } from "./DrawerButtons"
@@ -8,7 +8,7 @@ import { DrawerButtons } from "./DrawerButtons"
 export const RIGHT_DRAWER_WIDTH = 38 // rem
 
 export const RightDrawer = () => {
-    const { rightDrawerActiveTabID } = useOverlayToggles()
+    const { rightDrawerActiveTabID } = useUI()
     const { isMobile } = useMobile()
     const { userID } = useAuth()
 

@@ -1,7 +1,7 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useEffect, useRef } from "react"
 import { SvgFullscreen, SvgMinimize, SvgSwap } from "../../../assets"
-import { useDimension, useGame, useOverlayToggles } from "../../../containers"
+import { useDimension, useUI } from "../../../containers"
 import { useOvenStream } from "../../../containers/oven"
 import { fonts, siteZIndex } from "../../../theme/theme"
 import { LEFT_DRAWER_WIDTH } from "../../LeftDrawer/LeftDrawer"
@@ -12,13 +12,13 @@ import { Trailer } from "./Trailer"
 
 export const Stream = () => {
     const { remToPxRatio } = useDimension()
-    const { isStreamBigDisplay, setIsStreamBigDisplay } = useGame()
+    const { smallDisplayRef, bigDisplayRef, isStreamBigDisplay, setIsStreamBigDisplay } = useUI()
     const { isEnlarged, toggleIsEnlarged } = useOvenStream()
     const ref = useRef<HTMLElement | null>(null)
 
     useEffect(() => {
         const thisElement = ref.current
-        const newContainerElement = document.getElementById(!isStreamBigDisplay ? "left-drawer-space" : "big-display-space")
+        const newContainerElement = !isStreamBigDisplay ? smallDisplayRef : bigDisplayRef //document.getElementById(!isStreamBigDisplay ? "left-drawer-space" : "big-display-space")
 
         if (thisElement && newContainerElement) {
             let child = newContainerElement.lastElementChild
@@ -29,7 +29,7 @@ export const Stream = () => {
 
             newContainerElement.appendChild(thisElement)
         }
-    }, [isStreamBigDisplay])
+    }, [bigDisplayRef, isStreamBigDisplay, smallDisplayRef])
 
     return (
         <Stack
@@ -73,7 +73,7 @@ export const Stream = () => {
 }
 
 export const StreamInner = () => {
-    const { showTrailer } = useOverlayToggles()
+    const { showTrailer } = useUI()
     const { currentOvenStream } = useOvenStream()
     const isGreenScreen = useRef(localStorage.getItem("greenScreen") === "true")
 
