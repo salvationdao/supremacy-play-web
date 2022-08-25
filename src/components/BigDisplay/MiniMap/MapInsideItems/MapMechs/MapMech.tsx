@@ -332,7 +332,7 @@ const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
                                 bottom: -10,
                                 right: -10,
                                 zIndex: 102,
-                                backgroundColor: `${abilityBorderEffect.colour}18`,
+                                backgroundColor: `${abilityBorderEffect.colour}25`,
                                 border: `${abilityBorderEffect?.colour} ${0.1 * iconSize}px solid`,
                                 animation: `${pulseEffect} 1.8s infinite`,
                             }}
@@ -349,7 +349,6 @@ const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
                                 bottom: -iconSize * 0.8,
                                 right: -iconSize * 0.8,
                                 zIndex: 97,
-                                backgroundColor: `${abilityPulseEffect.colour}18`,
                                 animation: `${rippleEffect(abilityPulseEffect.colour)} 1.2s infinite`,
                                 border: `8px ${abilityPulseEffect.colour}`,
                                 borderStyle: "dashed solid",
