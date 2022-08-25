@@ -63,11 +63,8 @@ export const SubmodelsHangar = () => {
     const [isFiltersExpanded, toggleIsFiltersExpanded] = useToggle(localStorage.getItem("isWarMachinesHangarFiltersExpanded") === "true")
     const [search, setSearch] = useState("")
     const [sort, setSort] = useState<string>(query.get("sort") || SortTypeLabel.Alphabetical)
-    const [equippedStatus, setEquippedStatus] = useState<string[]>(
-        (query.get("statuses") || undefined)?.split("||") || [SubmodelStatus.Equipped, SubmodelStatus.Unequipped],
-    )
+    const [equippedStatus, setEquippedStatus] = useState<string[]>((query.get("statuses") || undefined)?.split("||") || [])
     const [rarities, setRarities] = useState<string[]>((query.get("rarities") || undefined)?.split("||") || [])
-
     const [modelFilter, setModelFilter] = useState<string[]>((query.get("models") || undefined)?.split("||") || [])
 
     const [sortFilterReRender, toggleSortFilterReRender] = useToggle()
@@ -130,6 +127,10 @@ export const SubmodelsHangar = () => {
         },
     })
 
+    useEffect(() => {
+        console.log(modelFilter)
+    }, [modelFilter])
+
     const getItems = useCallback(async () => {
         try {
             setIsLoading(true)
@@ -162,15 +163,15 @@ export const SubmodelsHangar = () => {
                 skin_compatibility: modelFilter,
                 equipped_statuses: equippedStatus,
             })
-
+            console.log("Hit")
             updateQuery({
                 sort,
                 search,
+                models: modelFilter.join("||"),
                 rarities: rarities.join("||"),
                 statuses: equippedStatus.join("||"),
                 page: page.toString(),
                 pageSize: pageSize.toString(),
-                models: modelFilter.join("||"),
             })
 
             if (!resp) return
@@ -185,6 +186,10 @@ export const SubmodelsHangar = () => {
             setIsLoading(false)
         }
     }, [send, page, pageSize, search, rarities, equippedStatus, updateQuery, sort, setSubmodels, setTotalItems, modelFilter])
+
+    useEffect(() => {
+        getItems()
+    }, [getItems])
 
     useEffect(() => {
         ;(async () => {
@@ -206,7 +211,7 @@ export const SubmodelsHangar = () => {
                 setIsLoading(false)
             }
         })()
-    }, [send])
+    }, [send, toggleSortFilterReRender])
 
     const content = useMemo(() => {
         if (loadError) {
