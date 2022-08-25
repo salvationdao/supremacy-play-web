@@ -38,11 +38,11 @@ export const MechCommandIcons = () => {
                         return (
                             <MapIcon
                                 key={`${mmc.battle_id}-${index}`}
-                                primaryColor={theme.factionTheme.primary}
                                 position={{ x: mmc.cell_x, y: mmc.cell_y }}
-                                sx={{ zIndex: 9, borderRadius: "50%" }}
                                 sizeGrid={1.3}
-                                icon={<SvgDrag size="3rem" sx={{ pb: 0 }} fill={theme.factionTheme.primary} />}
+                                primaryColor={theme.factionTheme.primary}
+                                insideRender={<SvgDrag size="3rem" sx={{ pb: 0 }} fill={theme.factionTheme.primary} />}
+                                sx={{ zIndex: 9, borderRadius: "50%" }}
                             />
                         )
                     })}

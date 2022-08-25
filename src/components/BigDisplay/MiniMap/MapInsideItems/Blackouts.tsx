@@ -1,11 +1,12 @@
 import { Box, keyframes } from "@mui/material"
 import React, { useEffect, useMemo, useState } from "react"
 import { useArena, useGame, useMiniMap } from "../../../../containers"
-
 import { useGameServerSubscription } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors } from "../../../../theme/theme"
 import { Position } from "../../../../types"
+
+const BLACKOUT_TRANSITION_DURATION = 500
 
 interface MinimapEvent {
     id: string
@@ -97,8 +98,6 @@ export const Blackouts = () => {
         </>
     )
 }
-
-const BLACKOUT_TRANSITION_DURATION = 500
 
 const Blackout = React.forwardRef(function Blackout({ radius, coords, isVisible }: BlackoutWithAnimationState, ref) {
     const { gridHeight, gridWidth } = useMiniMap()

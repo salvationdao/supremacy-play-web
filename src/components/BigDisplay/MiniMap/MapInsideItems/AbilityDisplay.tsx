@@ -54,11 +54,11 @@ const MiniMapAbilityDisplay = ({ image_url, colour, radius, launching_at, locati
 
     return (
         <MapIcon
-            primaryColor={colour}
-            imageUrl={image_url}
-            sizeGrid={1.5}
             position={location}
-            icon={
+            sizeGrid={1.5}
+            primaryColor={colour}
+            backgroundImageUrl={image_url}
+            insideRender={
                 <>
                     {!!launching_at && (
                         <Typography
@@ -69,7 +69,7 @@ const MiniMapAbilityDisplay = ({ image_url, colour, radius, launching_at, locati
                                 left: "50%",
                                 transform: "translate(-50%, -50%)",
                                 fontFamily: fonts.nostromoBold,
-                                fontSize: gridHeight * 1.8,
+                                fontSize: gridHeight * 1.4,
                                 lineHeight: 1,
                                 backgroundColor: "#00000080",
                             }}
@@ -81,7 +81,6 @@ const MiniMapAbilityDisplay = ({ image_url, colour, radius, launching_at, locati
                     {!!diameter && (
                         <Box
                             sx={{
-                                zIndex: 900,
                                 position: "absolute",
                                 width: diameter,
                                 height: diameter,
@@ -89,7 +88,8 @@ const MiniMapAbilityDisplay = ({ image_url, colour, radius, launching_at, locati
                                 pointerEvents: "none",
                                 border: `3px ${colour}`,
                                 borderStyle: "dashed solid",
-                                backgroundColor: "rgba(0, 0, 0, 0.1)",
+                                backgroundColor: "#00000015",
+                                zIndex: 90,
                             }}
                         />
                     )}

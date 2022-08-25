@@ -118,6 +118,7 @@ export const MiniMapInside = ({ containerDimensions }: MiniMapInsideProps) => {
                     </Box>
                 </Stack>
 
+                {/* Displays countdown before target selection submits */}
                 <CountdownSubmit />
             </>
         )

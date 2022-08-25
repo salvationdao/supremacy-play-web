@@ -3,20 +3,21 @@ import { ReactNode, useMemo } from "react"
 import { useMiniMap } from "../../../../../containers"
 
 interface MapIconProps {
-    primaryColor: string
-    imageUrl?: string
-    icon?: ReactNode
-    onClick?: () => void
     position: { x: number; y: number }
+    sizeGrid: number
+    primaryColor: string
+    insideRender?: ReactNode
+    backgroundImageUrl?: string
     sx?: SxProps
-    sizeGrid?: number
+    onClick?: () => void
 }
 
-export const MapIcon = ({ primaryColor, imageUrl, icon, onClick, position, sx, sizeGrid }: MapIconProps) => {
+// Renders an item on the minimap with correct position etc. just pass in the props you need.
+export const MapIcon = ({ primaryColor, backgroundImageUrl, insideRender, onClick, position, sx, sizeGrid }: MapIconProps) => {
     const { gridWidth, gridHeight } = useMiniMap()
 
-    const sizeX = useMemo(() => gridWidth * (sizeGrid || 1.8), [sizeGrid, gridWidth])
-    const sizeY = useMemo(() => gridHeight * (sizeGrid || 1.8), [sizeGrid, gridHeight])
+    const sizeX = useMemo(() => gridWidth * sizeGrid, [sizeGrid, gridWidth])
+    const sizeY = useMemo(() => gridHeight * sizeGrid, [sizeGrid, gridHeight])
 
     return useMemo(() => {
         return (
@@ -32,18 +33,18 @@ export const MapIcon = ({ primaryColor, imageUrl, icon, onClick, position, sx, s
                     border: `5px solid ${primaryColor}`,
                     borderRadius: 1,
                     boxShadow: 2,
-                    backgroundImage: `url(${imageUrl})`,
+                    backgroundImage: `url(${backgroundImageUrl})`,
                     backgroundRepeat: "no-repeat",
                     backgroundPosition: "center",
                     backgroundSize: "cover",
-                    backgroundColor: icon ? "#030409" : primaryColor,
+                    backgroundColor: insideRender ? "#030409" : primaryColor,
                     transform: `translate(${position.x * gridWidth - sizeX / 2}px, ${position.y * gridHeight - sizeY / 2}px)`,
                     zIndex: 100,
                     ...sx,
                 }}
             >
-                {icon}
+                {insideRender}
             </Stack>
         )
-    }, [gridHeight, gridWidth, icon, imageUrl, onClick, position.x, position.y, primaryColor, sizeX, sizeY, sx])
+    }, [gridHeight, gridWidth, insideRender, backgroundImageUrl, onClick, position.x, position.y, primaryColor, sizeX, sizeY, sx])
 }

@@ -29,11 +29,12 @@ export const SelectionIcon = () => {
 
         return (
             <MapIcon
-                primaryColor={ability.colour}
-                imageUrl={ability.image_url}
-                onClick={() => setSelection(undefined)}
                 position={coords}
-                icon={isMechMoveCommand ? <SvgDrag size="4.5rem" fill={ability.colour} /> : undefined}
+                sizeGrid={1.8}
+                primaryColor={ability.colour}
+                backgroundImageUrl={ability.image_url}
+                insideRender={isMechMoveCommand ? <SvgDrag size="4.5rem" fill={ability.colour} /> : undefined}
+                onClick={() => setSelection(undefined)}
             />
         )
     }, [ability, coords, isTargeting, setSelection])
