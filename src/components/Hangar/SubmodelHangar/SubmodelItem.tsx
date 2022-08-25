@@ -1,11 +1,7 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { FancyButton } from "../.."
-import { IS_TESTING_MODE } from "../../../constants"
 import { useTheme } from "../../../containers/theme"
-import { MARKETPLACE_TABS } from "../../../pages"
-import { colors, fonts } from "../../../theme/theme"
-import { Keycard, MechSkin, Submodel, WeaponSkin } from "../../../types"
-import { ItemType } from "../../../types/marketplace"
+import { fonts } from "../../../theme/theme"
+import { Submodel } from "../../../types"
 import { ClipThing } from "../../Common/ClipThing"
 import { MediaPreview } from "../../Common/MediaPreview/MediaPreview"
 

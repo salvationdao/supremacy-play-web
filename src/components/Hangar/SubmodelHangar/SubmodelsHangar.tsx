@@ -9,7 +9,7 @@ import { usePagination, useToggle, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { SubmodelStatus, Submodel } from "../../../types"
+import { SubmodelStatus, Submodel, MechModel } from "../../../types"
 import { SortTypeLabel } from "../../../types/marketplace"
 import { PageHeader } from "../../Common/PageHeader"
 import { ChipFilter } from "../../Common/SortAndFilters/ChipFilterSection"
@@ -67,6 +67,10 @@ export const SubmodelsHangar = () => {
         (query.get("statuses") || undefined)?.split("||") || [SubmodelStatus.Equipped, SubmodelStatus.Unequipped],
     )
     const [rarities, setRarities] = useState<string[]>((query.get("rarities") || undefined)?.split("||") || [])
+
+    const [modelFilter, setModelFilter] = useState<string[]>((query.get("models") || undefined)?.split("||") || [])
+
+    const [sortFilterReRender, toggleSortFilterReRender] = useToggle()
     const [isGridView, toggleIsGridView] = useToggle((localStorage.getItem("fleetMechGrid") || "true") === "true")
 
     useEffect(() => {
@@ -115,6 +119,17 @@ export const SubmodelsHangar = () => {
         },
     })
 
+    const modelFilterSection = useRef<ChipFilter>({
+        label: "MODEL COMPATIBILITY",
+        options: [],
+        initialSelected: modelFilter,
+        initialExpanded: true,
+        onSetSelected: (value: string[]) => {
+            setModelFilter(value)
+            changePage(1)
+        },
+    })
+
     const getItems = useCallback(async () => {
         try {
             setIsLoading(true)
@@ -144,7 +159,7 @@ export const SubmodelsHangar = () => {
                 include_market_listed: false,
                 display_genesis_and_limited: false,
                 rarities: rarities,
-                skin_compatibility: [],
+                skin_compatibility: modelFilter,
                 equipped_statuses: equippedStatus,
             })
 
@@ -155,6 +170,7 @@ export const SubmodelsHangar = () => {
                 statuses: equippedStatus.join("||"),
                 page: page.toString(),
                 pageSize: pageSize.toString(),
+                models: modelFilter.join("||"),
             })
 
             if (!resp) return
@@ -168,11 +184,29 @@ export const SubmodelsHangar = () => {
         } finally {
             setIsLoading(false)
         }
-    }, [send, page, pageSize, search, rarities, equippedStatus, updateQuery, sort, setSubmodels, setTotalItems])
+    }, [send, page, pageSize, search, rarities, equippedStatus, updateQuery, sort, setSubmodels, setTotalItems, modelFilter])
 
     useEffect(() => {
-        getItems()
-    }, [getItems])
+        ;(async () => {
+            try {
+                setIsLoading(true)
+                const resp = await send<MechModel[]>(GameServerKeys.GetMechModels)
+
+                if (!resp) return
+
+                modelFilterSection.current.options = resp.map((r) => {
+                    return { value: r.id, label: r.label, color: colors.blue2 }
+                })
+
+                toggleSortFilterReRender()
+            } catch (e) {
+                setLoadError(typeof e === "string" ? e : "Failed to get war machines.")
+                console.error(e)
+            } finally {
+                setIsLoading(false)
+            }
+        })()
+    }, [send])
 
     const content = useMemo(() => {
         if (loadError) {
@@ -287,9 +321,10 @@ export const SubmodelsHangar = () => {
     return (
         <Stack direction="row" sx={{ height: "100%" }}>
             <SortAndFilters
+                key={sortFilterReRender.toString()}
                 initialSearch={search}
                 onSetSearch={setSearch}
-                chipFilters={[statusFilterSection.current, rarityChipFilter.current]}
+                chipFilters={[statusFilterSection.current, rarityChipFilter.current, modelFilterSection.current]}
                 changePage={changePage}
                 isExpanded={isFiltersExpanded}
             />
