@@ -262,6 +262,7 @@ const ShoppingCartRow = ({ item, primaryColor, backgroundColor }: ShoppingCartRo
                                             fill={primaryColor}
                                             onClick={() => {
                                                 setQuantity((prev) => prev + 1)
+                                                setUnsaved(true)
                                             }}
                                         />
                                         <SvgArrow
@@ -269,7 +270,10 @@ const ShoppingCartRow = ({ item, primaryColor, backgroundColor }: ShoppingCartRo
                                             sx={{ transform: "rotate(180deg)", cursor: "pointer" }}
                                             fill={primaryColor}
                                             onClick={() => {
-                                                if (quantity > 1) setQuantity((prev) => prev - 1)
+                                                if (quantity > 1) {
+                                                    setQuantity((prev) => prev - 1)
+                                                    setUnsaved(true)
+                                                }
                                             }}
                                         />
                                     </Stack>
