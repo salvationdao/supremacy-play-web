@@ -60,16 +60,10 @@ export const shake = keyframes`
 
 export const rippleEffect = (color: string) => keyframes`
 	0% {
-		@include transform(scale(.9));
-	}
-
-	70% {
-		@include transform(scale(1));
-		box-shadow: 0 0 0 50px rgba(${color}, 0);
+		box-shadow: inset 0 0 26px 130px ${color}60;
 	}
 
 	100% {
-		@include transform(scale(.9));
-		box-shadow: 0 0 0 0 rgba(${color}, 0);
+		box-shadow: inset 0 0 26px 0 ${color}60;
 	}
 `

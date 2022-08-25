@@ -152,6 +152,24 @@ const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
         },
     )
 
+    // // Listen on abilities that apply on this mech to display
+    // useGameServerSubscription<DisplayedAbility[]>(
+    //     {
+    //         URI: `/public/arena/${currentArenaID}/mini_map_ability_display_list`,
+    //         key: GameServerKeys.SubMiniMapAbilityDisplayList,
+    //         ready: !!currentArenaID,
+    //     },
+    //     (payload) => {
+    //         if (!payload) {
+    //             setAbilityList([])
+    //             return
+    //         }
+
+    //         // Only show the ones that are not on a mech
+    //         setAbilityList(payload.filter((a) => !a.mech_id))
+    //     },
+    // )
+
     const canSelect = useMemo(() => {
         if (!playerAbility || !isAlive) return false
         const locationSelectType = playerAbility.ability.location_select_type
@@ -226,7 +244,7 @@ const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
                 onClick={handleClick}
                 style={{
                     position: "absolute",
-                    pointerEvents: isTargeting && playerAbility?.ability.location_select_type !== LocationSelectType.MechSelect ? "none" : "all",
+                    pointerEvents: isTargeting && canSelect ? "none" : "all",
                     cursor: "pointer",
                     padding: "1rem 1.3rem",
                     transform: "translate(-100px, -100px)",

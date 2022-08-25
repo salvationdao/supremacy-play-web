@@ -4,10 +4,10 @@ import { useArena, useGame, useMiniMap } from "../../../../containers"
 import { useTimer } from "../../../../hooks"
 import { useGameServerSubscription } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
+import { rippleEffect } from "../../../../theme/keyframes"
 import { fonts } from "../../../../theme/theme"
 import { DisplayedAbility, DisplayEffectType } from "../../../../types"
 import { MapIcon } from "./Common/MapIcon"
-import { rippleEffect } from "../../../../theme/keyframes"
 
 export const MiniMapAbilitiesDisplay = () => {
     const { currentArenaID } = useArena()
@@ -81,10 +81,10 @@ const MiniMapAbilityDisplay = ({ displayAbility }: { displayAbility: DisplayedAb
                                     height: diameter,
                                     borderRadius: "50%",
                                     pointerEvents: "none",
-                                    border: `3px ${colour}`,
+                                    border: `5px ${colour}`,
                                     borderStyle: "dashed solid",
-                                    backgroundColor: "#00000015",
-                                    animation: display_effect_type === DisplayEffectType.Range ? `${rippleEffect(colour)} 3s ease-out` : "none",
+                                    backgroundColor: `${colour}30`,
+                                    animation: display_effect_type === DisplayEffectType.Range ? `${rippleEffect("#000000")} 6s ease-out` : "none",
                                     zIndex: 90,
                                 }}
                             />
