@@ -58,14 +58,14 @@ const QuickPlayerAbilitiesInner = ({ userID }: { userID: string }) => {
             // Fetch sale abilities
             const resp = await send<{
                 next_refresh_time: Date | null
-                refresh_period_duration_seconds: number
+                time_left_seconds: number
                 sale_abilities: SaleAbility[]
             }>(GameServerKeys.SaleAbilitiesList)
 
             if (!resp) return
             const t = new Date()
-            t.setSeconds(t.getSeconds() + resp.refresh_period_duration_seconds)
-            setNextRefreshTime(resp.next_refresh_time || t)
+            t.setSeconds(t.getSeconds() + Math.max(resp.time_left_seconds, 1))
+            setNextRefreshTime(t)
             setSaleAbilities(resp.sale_abilities)
             setPurchaseError(undefined)
 
