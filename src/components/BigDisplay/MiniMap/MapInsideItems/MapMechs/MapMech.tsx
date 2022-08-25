@@ -9,7 +9,7 @@ import { GameServerKeys } from "../../../../../keys"
 import { spinEffect } from "../../../../../theme/keyframes"
 import { colors, fonts } from "../../../../../theme/theme"
 import { LocationSelectType, Map, WarMachineState } from "../../../../../types"
-import { WarMachineLiveState } from "../../../../../types/game"
+import { DisplayedAbility, WarMachineLiveState } from "../../../../../types/game"
 import { MechMoveCommand } from "../../../../WarMachine/WarMachineItem/MoveCommand"
 
 const TRANSITION_DURATION = 0.275 // seconds
@@ -36,7 +36,7 @@ const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
     const { getFaction } = useSupremacy()
     const { isTargeting, gridWidth, gridHeight, playerAbility, highlightedMechParticipantID, setHighlightedMechParticipantID, selection, setSelection } =
         useMiniMap()
-    const { hash, participantID, factionID: warMachineFactionID, maxHealth, maxShield, ownedByID } = warMachine
+    const { id, hash, participantID, factionID: warMachineFactionID, maxHealth, maxShield, ownedByID } = warMachine
 
     // For rendering: size, colors etc.
     const prevRotation = useRef(warMachine.rotation)
@@ -62,6 +62,8 @@ const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
 
     // Mech move command related
     const mechMoveCommand = useRef<MechMoveCommand>()
+    // Mech ability display
+    const [abilityList, setAbilityList] = useState<DisplayedAbility[]>([])
 
     // Listen on mech stats
     useGameServerSubscription<WarMachineLiveState | undefined>(
@@ -152,23 +154,23 @@ const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
         },
     )
 
-    // // Listen on abilities that apply on this mech to display
-    // useGameServerSubscription<DisplayedAbility[]>(
-    //     {
-    //         URI: `/public/arena/${currentArenaID}/mini_map_ability_display_list`,
-    //         key: GameServerKeys.SubMiniMapAbilityDisplayList,
-    //         ready: !!currentArenaID,
-    //     },
-    //     (payload) => {
-    //         if (!payload) {
-    //             setAbilityList([])
-    //             return
-    //         }
+    // Listen on abilities that apply on this mech to display
+    useGameServerSubscription<DisplayedAbility[]>(
+        {
+            URI: `/public/arena/${currentArenaID}/mini_map_ability_display_list`,
+            key: GameServerKeys.SubMiniMapAbilityDisplayList,
+            ready: !!currentArenaID,
+        },
+        (payload) => {
+            if (!payload) {
+                setAbilityList([])
+                return
+            }
 
-    //         // Only show the ones that are not on a mech
-    //         setAbilityList(payload.filter((a) => !a.mech_id))
-    //     },
-    // )
+            // Only show the ones thats on this mech
+            setAbilityList(payload.filter((a) => a.mech_id === id))
+        },
+    )
 
     const canSelect = useMemo(() => {
         if (!playerAbility || !isAlive) return false
@@ -244,16 +246,17 @@ const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
                 onClick={handleClick}
                 style={{
                     position: "absolute",
-                    pointerEvents: isTargeting && canSelect ? "none" : "all",
+                    pointerEvents: isTargeting && !canSelect ? "none" : "all",
                     cursor: "pointer",
                     padding: "1rem 1.3rem",
+                    border: isTargeting && canSelect ? `${primaryColor} ${0.1 * iconSize}px dashed` : "none",
                     transform: "translate(-100px, -100px)",
                     opacity: 1,
                     zIndex,
                 }}
             >
                 {/* Show player ability icon above the mech */}
-                {canSelect && playerAbility?.ability.location_select_type === LocationSelectType.MechSelect && selection?.mechHash === hash && (
+                {canSelect && selection?.mechHash === hash && (
                     <Box
                         onClick={() => setSelection(undefined)}
                         sx={{
@@ -264,10 +267,10 @@ const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
                             height: iconSize,
                             width: iconSize,
                             cursor: "pointer",
-                            border: `3px solid ${playerAbility.ability.colour}`,
+                            border: `3px solid ${playerAbility?.ability.colour}`,
                             borderRadius: 1,
                             boxShadow: 2,
-                            backgroundImage: `url(${playerAbility.ability.image_url})`,
+                            backgroundImage: `url(${playerAbility?.ability.image_url})`,
                             backgroundRepeat: "no-repeat",
                             backgroundPosition: "center",
                             backgroundSize: "cover",
@@ -496,7 +499,6 @@ const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
         participantID,
         playerAbility?.ability.colour,
         playerAbility?.ability.image_url,
-        playerAbility?.ability.location_select_type,
         primaryColor,
         selection?.mechHash,
         setSelection,
