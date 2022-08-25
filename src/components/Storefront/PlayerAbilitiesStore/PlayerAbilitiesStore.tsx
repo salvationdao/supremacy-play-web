@@ -78,28 +78,6 @@ export const PlayerAbilitiesStore = () => {
         })()
     }, [queryAvailability, userID])
 
-    // useGameServerSubscriptionSecured<{
-    //     next_refresh_time: Date | null
-    //     refresh_period_duration_seconds: number
-    //     sale_abilities: SaleAbility[]
-    // }>(
-    //     {
-    //         URI: "/sale_abilities",
-    //         key: GameServerKeys.SubSaleAbilitiesList,
-    //     },
-    //     (payload) => {
-    //         if (!payload) return
-    //         const t = new Date()
-    //         t.setSeconds(t.getSeconds() + payload.refresh_period_duration_seconds)
-    //         setNextRefreshTime(payload.next_refresh_time || t)
-    //         setSaleAbilities(payload.sale_abilities)
-    //         setAvailability(SaleAbilityAvailability.CanClaim)
-    //         setAvailabilityError(undefined)
-    //         if (isLoaded) return
-    //         setIsLoaded(true)
-    //     },
-    // )
-
     useGameServerSubscriptionSecured<{ id: string; current_price: string }>(
         {
             URI: "/sale_abilities",
@@ -334,23 +312,19 @@ export const PlayerAbilitiesStore = () => {
     )
 }
 
-export const TimeLeft = ({ dateTo, onComplete }: { dateTo: Date | undefined; onComplete: () => void }) => {
+interface TimeLeftProps {
+    dateTo: Date | undefined
+    onComplete: () => void
+}
+
+export const TimeLeft = ({ dateTo, onComplete }: TimeLeftProps) => {
     const { totalSecRemain } = useTimer(dateTo)
 
     useEffect(() => {
-        let t: NodeJS.Timeout | null = null
-        if (totalSecRemain === 0) {
-            t = setTimeout(() => {
-                onComplete()
-            }, 6000)
-        }
-
-        return () => {
-            if (t) {
-                clearTimeout(t)
-            }
+        if (totalSecRemain < 1) {
+            onComplete()
         }
     }, [onComplete, totalSecRemain])
 
-    return <>{totalSecRemain > 0 ? timeSinceInWords(new Date(), new Date(new Date().getTime() + totalSecRemain * 1000)) : "0 SECONDS"}</>
+    return <>{totalSecRemain > 0 ? timeSinceInWords(new Date(), new Date(new Date().getTime() + totalSecRemain * 1000)) : "REFRESHING..."}</>
 }

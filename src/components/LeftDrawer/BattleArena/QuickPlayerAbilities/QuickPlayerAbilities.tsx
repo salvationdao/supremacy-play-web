@@ -1,7 +1,6 @@
-import { Box, CircularProgress, IconButton, Stack, Typography } from "@mui/material"
+import { Box, CircularProgress, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { useParameterizedQuery } from "react-fetching-library"
-import { SvgRefresh } from "../../../../assets"
 import { useAuth } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
 import { GetSaleAbilityAvailability } from "../../../../fetching"
@@ -35,8 +34,28 @@ const QuickPlayerAbilitiesInner = ({ userID }: { userID: string }) => {
 
     const [ownedAbilities, setOwnedAbilities] = useState<Map<string, number>>(new Map())
 
+    const refetchSaleAvailability = useCallback(async () => {
+        if (!userID) return
+        try {
+            const resp = await queryAvailability(userID)
+            if (resp.error || resp.payload == null) return
+            setAvailability(resp.payload)
+            setAvailabilityError(undefined)
+        } catch (e) {
+            let message = "Failed to obtain purchase availability during this sale period."
+            if (typeof e === "string") {
+                message = e
+            } else if (e instanceof Error) {
+                message = e.message
+            }
+            console.error(e)
+            setAvailabilityError(message)
+        }
+    }, [queryAvailability, userID])
+
     const refetchSaleAbilities = useCallback(async () => {
         try {
+            // Fetch sale abilities
             const resp = await send<{
                 next_refresh_time: Date | null
                 refresh_period_duration_seconds: number
@@ -48,62 +67,25 @@ const QuickPlayerAbilitiesInner = ({ userID }: { userID: string }) => {
             t.setSeconds(t.getSeconds() + resp.refresh_period_duration_seconds)
             setNextRefreshTime(resp.next_refresh_time || t)
             setSaleAbilities(resp.sale_abilities)
-            setAvailability(SaleAbilityAvailability.CanClaim)
             setPurchaseError(undefined)
-            setAvailabilityError(undefined)
+
+            // Fetch sale availability
+            await refetchSaleAvailability()
+
             if (isLoaded) return
             setIsLoaded(true)
         } catch (e) {
             console.error(e)
         }
-    }, [isLoaded, send])
+    }, [isLoaded, refetchSaleAvailability, send])
 
     useEffect(() => {
         refetchSaleAbilities()
     }, [refetchSaleAbilities])
 
     useEffect(() => {
-        if (!userID) return
-        ;(async () => {
-            try {
-                const resp = await queryAvailability(userID)
-                if (resp.error || resp.payload == null) return
-                setAvailability(resp.payload)
-            } catch (e) {
-                let message = "Failed to obtain purchase availability during this sale period."
-                if (typeof e === "string") {
-                    message = e
-                } else if (e instanceof Error) {
-                    message = e.message
-                }
-                console.error(e)
-                setAvailabilityError(message)
-            }
-        })()
-    }, [queryAvailability, userID])
-
-    // useGameServerSubscriptionSecured<{
-    //     next_refresh_time: Date | null
-    //     refresh_period_duration_seconds: number
-    //     sale_abilities: SaleAbility[]
-    // }>(
-    //     {
-    //         URI: "/sale_abilities",
-    //         key: GameServerKeys.SubSaleAbilitiesList,
-    //     },
-    //     (payload) => {
-    //         if (!payload) return
-    //         const t = new Date()
-    //         t.setSeconds(t.getSeconds() + payload.refresh_period_duration_seconds)
-    //         setNextRefreshTime(payload.next_refresh_time || t)
-    //         setSaleAbilities(payload.sale_abilities)
-    //         setAvailability(SaleAbilityAvailability.CanClaim)
-    //         setPurchaseError(undefined)
-    //         setAvailabilityError(undefined)
-    //         if (isLoaded) return
-    //         setIsLoaded(true)
-    //     },
-    // )
+        refetchSaleAvailability()
+    }, [refetchSaleAvailability])
 
     useGameServerSubscriptionSecured<{ id: string; current_price: string }>(
         {
@@ -158,15 +140,6 @@ const QuickPlayerAbilitiesInner = ({ userID }: { userID: string }) => {
                     <Stack direction="row" spacing=".6rem" alignItems="center">
                         <Typography sx={{ fontWeight: "fontWeightBold", textTransform: "uppercase" }}>Next refresh in:</Typography>
                         {timeLeft}
-                        <Box flex={1} />
-                        <IconButton
-                            sx={{
-                                borderRadius: ".5rem",
-                            }}
-                            onClick={() => refetchSaleAbilities()}
-                        >
-                            <SvgRefresh size="1.4rem" />
-                        </IconButton>
                     </Stack>
                     {purchaseError && (
                         <Typography variant="body2" sx={{ color: colors.red }}>
