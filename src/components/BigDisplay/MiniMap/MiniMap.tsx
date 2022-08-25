@@ -15,7 +15,7 @@ import { HighlightedMechAbilities } from "./MapOutsideItems/HighlightedMechAbili
 import { TargetHint } from "./MapOutsideItems/TargetHint"
 
 export const TOP_BAR_HEIGHT = 3.4 // rems
-const BOTTOM_PADDING = 12 // rems
+const BOTTOM_PADDING = 10 // rems
 
 export const MiniMap = () => {
     const { smallDisplayRef, bigDisplayRef, isStreamBigDisplay } = useUI()
