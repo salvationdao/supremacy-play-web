@@ -1,4 +1,4 @@
-import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
+import { Box, CircularProgress, Pagination, Stack, Tab, Tabs, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { ClipThing, FancyButton } from "../.."
 import { EmptyWarMachinesPNG, WarMachineIconPNG } from "../../../assets"
@@ -9,7 +9,7 @@ import { usePagination, useToggle, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { SubmodelStatus, Submodel, MechModel } from "../../../types"
+import { MechModel, Submodel, SubmodelStatus } from "../../../types"
 import { SortTypeLabel } from "../../../types/marketplace"
 import { PageHeader } from "../../Common/PageHeader"
 import { ChipFilter } from "../../Common/SortAndFilters/ChipFilterSection"
@@ -23,6 +23,11 @@ const sortOptions = [
     { label: SortTypeLabel.RarestAsc, value: SortTypeLabel.RarestAsc },
     { label: SortTypeLabel.RarestDesc, value: SortTypeLabel.RarestDesc },
 ]
+
+enum SubmodelType {
+    weapon = "WEAPON",
+    warMachine = "WAR MACHINE",
+}
 
 interface GetSubmodelsRequest {
     search?: string
@@ -66,6 +71,7 @@ export const SubmodelsHangar = () => {
     const [equippedStatus, setEquippedStatus] = useState<string[]>((query.get("statuses") || undefined)?.split("||") || [])
     const [rarities, setRarities] = useState<string[]>((query.get("rarities") || undefined)?.split("||") || [])
     const [modelFilter, setModelFilter] = useState<string[]>((query.get("models") || undefined)?.split("||") || [])
+    const [submodelType, setSubmodelType] = useState<SubmodelType>(SubmodelType.warMachine)
 
     const [sortFilterReRender, toggleSortFilterReRender] = useToggle()
     const [isGridView, toggleIsGridView] = useToggle((localStorage.getItem("fleetMechGrid") || "true") === "true")
@@ -127,10 +133,6 @@ export const SubmodelsHangar = () => {
         },
     })
 
-    useEffect(() => {
-        console.log(modelFilter)
-    }, [modelFilter])
-
     const getItems = useCallback(async () => {
         try {
             setIsLoading(true)
@@ -149,21 +151,37 @@ export const SubmodelsHangar = () => {
                     sortBy = "rarity"
             }
 
-            const resp = await send<GetSubmodelsResponse, GetSubmodelsRequest>(GameServerKeys.GetSubmodels, {
-                search: search,
-                sort_by: sortBy,
-                sort_dir: sortDir,
-                page_size: pageSize,
-                page: page,
-                display_xsyn_mechs: false,
-                exclude_market_locked: false,
-                include_market_listed: false,
-                display_genesis_and_limited: false,
-                rarities: rarities,
-                skin_compatibility: modelFilter,
-                equipped_statuses: equippedStatus,
-            })
-            console.log("Hit")
+            const resp =
+                submodelType === SubmodelType.warMachine
+                    ? await send<GetSubmodelsResponse, GetSubmodelsRequest>(GameServerKeys.GetSubmodels, {
+                          search: search,
+                          sort_by: sortBy,
+                          sort_dir: sortDir,
+                          page_size: pageSize,
+                          page: page,
+                          display_xsyn_mechs: false,
+                          exclude_market_locked: false,
+                          include_market_listed: false,
+                          display_genesis_and_limited: false,
+                          rarities: rarities,
+                          skin_compatibility: modelFilter,
+                          equipped_statuses: equippedStatus,
+                      })
+                    : await send<GetSubmodelsResponse, GetSubmodelsRequest>(GameServerKeys.GetSubmodels, {
+                          search: search,
+                          sort_by: sortBy,
+                          sort_dir: sortDir,
+                          page_size: pageSize,
+                          page: page,
+                          display_xsyn_mechs: false,
+                          exclude_market_locked: false,
+                          include_market_listed: false,
+                          display_genesis_and_limited: false,
+                          rarities: rarities,
+                          skin_compatibility: modelFilter,
+                          equipped_statuses: equippedStatus,
+                      })
+
             updateQuery({
                 sort,
                 search,
@@ -346,7 +364,7 @@ export const SubmodelsHangar = () => {
             >
                 <Stack sx={{ position: "relative", height: "100%" }}>
                     <Stack sx={{ flex: 1 }}>
-                        <PageHeader title="WAR MACHINES" description="Your war machines." imageUrl={WarMachineIconPNG}>
+                        <PageHeader title="SUBMODELS" description="Your submodels for war machines and weapons." imageUrl={WarMachineIconPNG}>
                             <Box sx={{ ml: "auto !important", pr: "2rem" }}>
                                 <FancyButton
                                     clipThingsProps={{
@@ -389,6 +407,29 @@ export const SubmodelsHangar = () => {
                             isFiltersExpanded={isFiltersExpanded}
                             toggleIsFiltersExpanded={toggleIsFiltersExpanded}
                         />
+                        <Stack direction={"row"} sx={{ borderBottom: `${theme.factionTheme.primary}70 1.5px solid` }}>
+                            <Tabs
+                                value={submodelType}
+                                onChange={(e, v) => setSubmodelType(v)}
+                                variant="scrollable"
+                                scrollButtons="auto"
+                                sx={{
+                                    flexShrink: 0,
+                                    color: theme.factionTheme.primary,
+                                    minHeight: 0,
+                                    ".MuiTab-root": { minHeight: 0, fontSize: "1.3rem", height: "6rem", width: "20rem" },
+                                    ".Mui-selected": {
+                                        color: `${theme.factionTheme.secondary} !important`,
+                                        background: `linear-gradient(${theme.factionTheme.primary} 26%, ${theme.factionTheme.primary}BB)`,
+                                    },
+                                    ".MuiTabs-indicator": { display: "none" },
+                                    ".MuiTabScrollButton-root": { display: "none" },
+                                }}
+                            >
+                                <Tab label="WAR MACHINES" value={SubmodelType.warMachine} />
+                                <Tab label="WEAPONS" value={SubmodelType.weapon} />
+                            </Tabs>
+                        </Stack>
 
                         <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
                             <Box
