@@ -349,7 +349,10 @@ const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
                                 right: -iconSize,
                                 zIndex: 97,
                                 borderRadius: "50%",
-                                animation: `${rippleEffect(abilityPulseEffect.colour)} 1.2s infinite alternate`,
+                                animation: `${rippleEffect(abilityPulseEffect.colour)} 1.2s infinite`,
+                                animationDirection: "reverse",
+                                border: `8px ${abilityPulseEffect.colour}`,
+                                borderStyle: "dashed solid",
                                 opacity: 0.8,
                             }}
                         />
@@ -364,6 +367,7 @@ const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
                             transform: "translate(-50%, -50%)",
                             px: "1rem",
                             backgroundColor: "#000000DD",
+                            zIndex: 100,
                         }}
                     >
                         <Typography
