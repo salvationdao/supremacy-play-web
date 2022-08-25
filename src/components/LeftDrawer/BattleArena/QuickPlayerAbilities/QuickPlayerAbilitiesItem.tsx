@@ -316,8 +316,15 @@ export const QuickPlayerAbilitiesItem = ({
                     isLoading={loading}
                     error={purchaseError}
                 >
-                    <Typography>
-                        Purchase {saleAbility.ability.label} for {supFormatter(saleAbility.current_price, 2)} SUPS?
+                    <Typography
+                        sx={{
+                            "& span": {
+                                animation: `${scaleUpKeyframes} 0.1s ease-out`,
+                                color: colors.gold,
+                            },
+                        }}
+                    >
+                        Purchase {saleAbility.ability.label} for <span key={price}>{supFormatter(price, 2)} SUPS</span>?
                     </Typography>
                 </ConfirmModal>
             )}
