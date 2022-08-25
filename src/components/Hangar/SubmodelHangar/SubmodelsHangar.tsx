@@ -185,7 +185,6 @@ export const SubmodelsHangar = () => {
             updateQuery({
                 sort,
                 search,
-                models: modelFilter.join("||"),
                 rarities: rarities.join("||"),
                 statuses: equippedStatus.join("||"),
                 page: page.toString(),
@@ -198,7 +197,7 @@ export const SubmodelsHangar = () => {
             setTotalItems(resp.total)
             console.log(resp)
         } catch (e) {
-            setLoadError(typeof e === "string" ? e : "Failed to get war machines.")
+            setLoadError(typeof e === "string" ? e : `Failed to get ${submodelType} submodel.`)
             console.error(e)
         } finally {
             setIsLoading(false)
@@ -224,7 +223,7 @@ export const SubmodelsHangar = () => {
 
                       toggleSortFilterReRender()
                   } catch (e) {
-                      setLoadError(typeof e === "string" ? e : "Failed to get war machines models.")
+                      setLoadError(typeof e === "string" ? e : `Failed to get war machines models.`)
                       console.error(e)
                   } finally {
                       setIsLoading(false)
@@ -332,7 +331,7 @@ export const SubmodelsHangar = () => {
                             textAlign: "center",
                         }}
                     >
-                        {"There are no war machines found, please try again."}
+                        {`There are no ${submodelType} Submodels found, please try again.`}
                     </Typography>
 
                     <FancyButton
