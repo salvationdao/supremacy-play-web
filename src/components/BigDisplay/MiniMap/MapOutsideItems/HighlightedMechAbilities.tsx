@@ -7,7 +7,7 @@ import { useInterval, useToggle } from "../../../../hooks"
 import { useGameServerCommandsFaction, useGameServerSubscription, useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors } from "../../../../theme/theme"
-import { AIType, GameAbility, WarMachineLiveState, WarMachineState } from "../../../../types"
+import { AIType, BribeStage, GameAbility, WarMachineLiveState, WarMachineState } from "../../../../types"
 import { MoveCommand } from "../../../WarMachine/WarMachineItem/MoveCommand"
 import { useArena } from "../../../../containers/arena"
 import { RecordType, useHotkey } from "../../../../containers/hotkeys"
@@ -17,7 +17,7 @@ export const HighlightedMechAbilities = () => {
     const { bribeStage, warMachines, spawnedAI } = useGame()
     const { highlightedMechParticipantID, isTargeting } = useMiniMap()
 
-    const isVoting = useMemo(() => bribeStage && bribeStage?.phase != "HOLD", [bribeStage])
+    const isVoting = useMemo(() => bribeStage && bribeStage?.phase !== BribeStage.Hold, [bribeStage])
 
     const highlightedMech = useMemo(() => {
         return [...(warMachines || []), ...(spawnedAI || [])].find((m) => m.participantID === highlightedMechParticipantID)

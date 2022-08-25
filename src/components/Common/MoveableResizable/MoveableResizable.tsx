@@ -32,7 +32,7 @@ const MoveableResizableInner = ({ children }: MoveableResizableProps) => {
     const {
         setPopoutRef,
         isPoppedout,
-        toggleIsPoppedout,
+        setIsPoppedout,
         curWidth,
         curHeight,
 
@@ -63,7 +63,7 @@ const MoveableResizableInner = ({ children }: MoveableResizableProps) => {
                 ref={(ref: HTMLDivElement) => setPopoutRef(ref)}
                 title="Supremacy - Battle Arena"
                 onClose={() => {
-                    toggleIsPoppedout(false)
+                    setIsPoppedout(false)
                     setPopoutRef(null)
                 }}
                 features={{
@@ -185,7 +185,7 @@ const MoveableResizableInner = ({ children }: MoveableResizableProps) => {
                             </Box>
 
                             <Box
-                                onClick={() => toggleIsPoppedout()}
+                                onClick={() => setIsPoppedout(true)}
                                 sx={{
                                     mr: onHideCallback ? ".9rem" : 0,
                                     cursor: "pointer",

@@ -304,7 +304,7 @@ export const WarMachineItem = ({
                                 if (!isAlive) return
                                 setHighlightedMechParticipantID(participantID)
                                 // Need this time out so that it waits for it expand first then popover, else positioning is wrong
-                                initialExpanded ? togglePopoverOpen(true) : setTimeout(() => togglePopoverOpen(true), 110)
+                                initialExpanded ? togglePopoverOpen(true) : setTimeout(() => togglePopoverOpen(true), 200)
                             }}
                         >
                             <Box

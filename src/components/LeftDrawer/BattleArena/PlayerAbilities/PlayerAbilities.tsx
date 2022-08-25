@@ -92,36 +92,40 @@ const PlayerAbilitiesInner = () => {
                 sx={(theme) => ({
                     "& .MuiButton-root": {
                         flex: 1,
+                        height: "3rem",
+                        borderWidth: "2px",
                         borderRadius: 0.8,
+                        transition: "none",
                         "&:hover": {
-                            border: `1px solid ${theme.factionTheme.primary}65`,
+                            opacity: 0.9,
+                            backgroundColor: theme.factionTheme.primary,
                         },
                     },
                 })}
             >
                 <FilterButton
-                    value={LocationSelectType.GLOBAL}
+                    value={LocationSelectType.Global}
                     currentSelectedValue={locationSelectType}
                     onChange={onLocationSelectTypeChange}
                     icon={<SvgGlobal size="1.4rem" />}
                 />
 
                 <FilterButton
-                    value={LocationSelectType.LOCATION_SELECT}
+                    value={LocationSelectType.LocationSelect}
                     currentSelectedValue={locationSelectType}
                     onChange={onLocationSelectTypeChange}
                     icon={<SvgTarget size="1.4rem" />}
                 />
 
                 <FilterButton
-                    value={LocationSelectType.MECH_SELECT}
+                    value={LocationSelectType.MechSelect}
                     currentSelectedValue={locationSelectType}
                     onChange={onLocationSelectTypeChange}
                     icon={<SvgMicrochip size="1.4rem" />}
                 />
 
                 <FilterButton
-                    value={LocationSelectType.LINE_SELECT}
+                    value={LocationSelectType.LineSelect}
                     currentSelectedValue={locationSelectType}
                     onChange={onLocationSelectTypeChange}
                     icon={<SvgLine size="1.4rem" />}

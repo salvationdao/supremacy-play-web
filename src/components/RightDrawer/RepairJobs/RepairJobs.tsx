@@ -141,8 +141,8 @@ export const RepairJobs = () => {
         )
     }, [removeByID, repairJobModal, repairJobsRender, theme.factionTheme.primary])
 
-    return (
-        <>
+    const main = useMemo(
+        () => (
             <Stack sx={{ position: "relative", height: "100%", backgroundColor: theme.factionTheme.background }}>
                 <Stack
                     direction="row"
@@ -189,7 +189,13 @@ export const RepairJobs = () => {
                     </Box>
                 </Stack>
             </Stack>
+        ),
+        [content, sort, theme.factionTheme.background, theme.factionTheme.primary, theme.factionTheme.secondary],
+    )
 
+    return (
+        <>
+            {main}
             {repairJobModal && <DoRepairModal repairJob={repairJobModal} open={!!repairJobModal} onClose={() => setRepairJobModal(undefined)} />}
         </>
     )

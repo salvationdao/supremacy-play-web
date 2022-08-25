@@ -3,7 +3,7 @@ import { useChat } from "../../../../containers"
 import { colors } from "../../../../theme/theme"
 
 export const SystemMessageFilter = () => {
-    const { filterSystemMessages, toggleFilterSystemMessages } = useChat()
+    const { onlyShowSystemMessages, toggleOnlyShowSystemMessages } = useChat()
 
     return (
         <Stack
@@ -15,8 +15,8 @@ export const SystemMessageFilter = () => {
             <Typography sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>Only show system messages:</Typography>
             <Switch
                 size="small"
-                checked={filterSystemMessages}
-                onChange={() => toggleFilterSystemMessages()}
+                checked={onlyShowSystemMessages}
+                onChange={() => toggleOnlyShowSystemMessages()}
                 sx={{
                     transform: "scale(.7)",
                     ".Mui-checked": { color: `${colors.neonBlue} !important` },

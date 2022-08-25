@@ -19,7 +19,7 @@ import {
     GlobalNotificationsProvider,
     MiniMapProvider,
     MobileProvider,
-    OverlayTogglesProvider,
+    UiProvider,
     SupremacyProvider,
     useMobile,
     useSupremacy,
@@ -231,10 +231,10 @@ const App = () => {
                                                 <OvenStreamProvider>
                                                     <ArenaProvider>
                                                         <ArenaListener />
-                                                        <GameProvider>
-                                                            <MobileProvider>
-                                                                <DimensionProvider>
-                                                                    <OverlayTogglesProvider>
+                                                        <MobileProvider>
+                                                            <DimensionProvider>
+                                                                <UiProvider>
+                                                                    <GameProvider>
                                                                         <MiniMapProvider>
                                                                             <HotkeyProvider>
                                                                                 <FiatProvider>
@@ -247,10 +247,10 @@ const App = () => {
                                                                                 </FiatProvider>
                                                                             </HotkeyProvider>
                                                                         </MiniMapProvider>
-                                                                    </OverlayTogglesProvider>
-                                                                </DimensionProvider>
-                                                            </MobileProvider>
-                                                        </GameProvider>
+                                                                    </GameProvider>
+                                                                </UiProvider>
+                                                            </DimensionProvider>
+                                                        </MobileProvider>
                                                     </ArenaProvider>
                                                 </OvenStreamProvider>
                                             </TourProvider>

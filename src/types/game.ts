@@ -5,14 +5,19 @@ export interface FactionsAll {
     [faction_id: string]: Faction
 }
 
-export type BribeStage = "OPT_IN" | "LOCATION_SELECT" | "COOLDOWN" | "HOLD"
+export enum BribeStage {
+    OptIn = "OPT_IN",
+    LocationSelect = "LOCATION_SELECT",
+    Cooldown = "COOLDOWN",
+    Hold = "HOLD",
+}
 
 export enum LocationSelectType {
-    LINE_SELECT = "LINE_SELECT",
-    MECH_SELECT = "MECH_SELECT",
-    LOCATION_SELECT = "LOCATION_SELECT",
-    GLOBAL = "GLOBAL",
-    MECH_COMMAND = "MECH_COMMAND",
+    LineSelect = "LINE_SELECT",
+    MechSelect = "MECH_SELECT",
+    LocationSelect = "LOCATION_SELECT",
+    Global = "GLOBAL",
+    MechCommand = "MECH_COMMAND",
 }
 
 export interface Map {
