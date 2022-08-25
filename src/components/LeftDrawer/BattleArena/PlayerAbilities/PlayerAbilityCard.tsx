@@ -39,6 +39,10 @@ export const PlayerAbilityCard = ({ playerAbility, viewOnly }: { playerAbility: 
                 return <SvgTarget size="1.5rem" />
             case LocationSelectType.MechSelect:
                 return <SvgMicrochip size="1.5rem" />
+            case LocationSelectType.MechSelectAllied:
+                return <SvgMicrochip size="1.5rem" />
+            case LocationSelectType.MechSelectOpponent:
+                return <SvgMicrochip size="1.5rem" />
             case LocationSelectType.LineSelect:
                 return <SvgLine size="1.5rem" />
         }

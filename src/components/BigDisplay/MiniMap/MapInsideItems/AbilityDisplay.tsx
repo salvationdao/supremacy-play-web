@@ -1,12 +1,12 @@
 import { useArena, useGame, useMiniMap } from "../../../../containers"
 import { useGameServerSubscription } from "../../../../hooks/useGameServer"
-import { GameAbility, LocationSelectType } from "../../../../types"
+import { LocationSelectType } from "../../../../types"
 import { GameServerKeys } from "../../../../keys"
 import React, { useMemo, useState } from "react"
 import { Box, Typography } from "@mui/material"
 import { MapIcon } from "./MapIcon/MapIcon"
 import { useTimer } from "../../../../hooks"
-import { colors, fonts } from "../../../../theme/theme"
+import { fonts } from "../../../../theme/theme"
 
 interface DisplayedAbility {
     offering_id: string
@@ -14,6 +14,7 @@ interface DisplayedAbility {
     colour: string
     location_select_type: string
     radius?: number
+    mech_id: string
     location: {
         x: number
         y: number
@@ -37,15 +38,11 @@ export const MiniMapAbilitiesDisplay = () => {
                 return
             }
 
-            setAbilityList(
-                payload.filter(
-                    (a) => a.location_select_type === LocationSelectType.LOCATION_SELECT || a.location_select_type === LocationSelectType.LINE_SELECT,
-                ),
-            )
+            setAbilityList(payload.filter((a) => !a.mech_id))
         },
     )
 
-    return <>{abilityList.length > 0 && abilityList.map((da, i) => <MiniMapAbilityDisplay key={da.offering_id} {...da} />)}</>
+    return <>{abilityList.length > 0 && abilityList.map((da) => <MiniMapAbilityDisplay key={da.offering_id} {...da} />)}</>
 }
 
 const MiniMapAbilityDisplay = ({ image_url, colour, radius, launching_at, location }: DisplayedAbility) => {
@@ -62,7 +59,7 @@ const MiniMapAbilityDisplay = ({ image_url, colour, radius, launching_at, locati
         <MapIcon
             primaryColor={colour}
             imageUrl={image_url}
-            sizeGrid={2}
+            sizeGrid={1.5}
             position={location}
             icon={
                 <>

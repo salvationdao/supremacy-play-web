@@ -125,6 +125,20 @@ const PlayerAbilitiesInner = () => {
                 />
 
                 <FilterButton
+                    value={LocationSelectType.MechSelectAllied}
+                    currentSelectedValue={locationSelectType}
+                    onChange={onLocationSelectTypeChange}
+                    icon={<SvgMicrochip size="1.4rem" />}
+                />
+
+                <FilterButton
+                    value={LocationSelectType.MechSelectOpponent}
+                    currentSelectedValue={locationSelectType}
+                    onChange={onLocationSelectTypeChange}
+                    icon={<SvgMicrochip size="1.4rem" />}
+                />
+
+                <FilterButton
                     value={LocationSelectType.LineSelect}
                     currentSelectedValue={locationSelectType}
                     onChange={onLocationSelectTypeChange}

@@ -124,8 +124,41 @@ const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
         },
     )
 
+    const canSelect = useMemo(() => {
+        if (!playerAbility || !isAlive) return false
+        const locationSelectType = playerAbility.ability.location_select_type
+
+        switch (locationSelectType) {
+            case LocationSelectType.MechSelectAllied:
+                return factionID === warMachineFactionID
+            case LocationSelectType.MechSelectOpponent:
+                return factionID !== warMachineFactionID
+            case LocationSelectType.MechSelect:
+                return true
+            default:
+                return false
+        }
+    }, [playerAbility, warMachineFactionID, factionID, isAlive])
+
     const handleClick = useCallback(() => {
-        if (playerAbility && factionID === warMachineFactionID) {
+        if (playerAbility) {
+            if (!isAlive) return
+
+            const locationSelectType = playerAbility.ability.location_select_type
+
+            switch (locationSelectType) {
+                case LocationSelectType.MechSelectAllied:
+                    if (factionID !== warMachineFactionID) return
+                    break
+                case LocationSelectType.MechSelectOpponent:
+                    if (factionID === warMachineFactionID) return
+                    break
+                case LocationSelectType.MechSelect:
+                    break
+                default:
+                    // throw error
+                    return
+            }
             setSelection((prev) => {
                 if (prev?.mechHash === hash) return undefined
                 return { mechHash: hash }
@@ -159,7 +192,7 @@ const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
             onClick={handleClick}
             style={{
                 position: "absolute",
-                pointerEvents: isTargeting && playerAbility?.ability.location_select_type !== LocationSelectType.MechSelect ? "none" : "all",
+                pointerEvents: isTargeting && !canSelect ? "none" : "all",
                 cursor: "pointer",
                 padding: "1rem 1.3rem",
                 transform: `translate(-50%, -50%) translate3d(${mechMapX}px, ${mechMapY}px, 0)`,
@@ -169,7 +202,7 @@ const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
             }}
         >
             {/* Show player ability icon above the mech */}
-            {playerAbility?.ability.location_select_type === LocationSelectType.MechSelect && selection?.mechHash === hash && (
+            {canSelect && selection?.mechHash === hash && (
                 <Box
                     onClick={() => setSelection(undefined)}
                     sx={{
@@ -180,10 +213,10 @@ const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
                         height: iconSize,
                         width: iconSize,
                         cursor: "pointer",
-                        border: `3px solid ${playerAbility.ability.colour}`,
+                        border: `3px solid ${playerAbility?.ability.colour}`,
                         borderRadius: 1,
                         boxShadow: 2,
-                        backgroundImage: `url(${playerAbility.ability.image_url})`,
+                        backgroundImage: `url(${playerAbility?.ability.image_url})`,
                         backgroundRepeat: "no-repeat",
                         backgroundPosition: "center",
                         backgroundSize: "cover",
