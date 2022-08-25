@@ -389,10 +389,15 @@ const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
                             alignItems="center"
                             justifyContent="center"
                             style={{
+                                position: "absolute",
+                                top: "50%",
+                                left: "50%",
+                                transform: "translate(-50%, -50%)",
                                 width: "100%",
                                 height: "100%",
                                 background: "linear-gradient(#00000040, #00000090)",
                                 opacity: 1,
+                                zIndex: 105,
                             }}
                         >
                             <SvgMapSkull
