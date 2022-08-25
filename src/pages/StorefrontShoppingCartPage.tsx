@@ -1,5 +1,4 @@
 import { useState, useCallback } from "react"
-import { useMutation } from "react-fetching-library"
 import { useHistory } from "react-router-dom"
 import { Box, CircularProgress, Stack, TextField, Typography } from "@mui/material"
 import { HangarBg, SvgBack } from "../assets"
@@ -9,12 +8,13 @@ import { useFiat } from "../containers/fiat"
 import { ShoppingCartTable } from "../components/Bar/ShoppingCart/ShoppingCartListing/ShoppingCartTable"
 import { useTheme } from "../containers/theme"
 import { PageHeader } from "../components/Common/PageHeader"
-import { SetupCheckout } from "../fetching"
 import { loadStripe } from "@stripe/stripe-js"
 import { STRIPE_PUBLISHABLE_KEY } from "../constants"
 import { StripeTextFieldCVC, StripeTextFieldExpiry, StripeTextFieldNumber } from "../components/Stripe/StripeElements"
 import { CardNumberElement, Elements, useElements, useStripe } from "@stripe/react-stripe-js"
 import { StripeGenericChangeEvent } from "../components/Stripe/StripeInput"
+import { useGameServerCommandsUser } from "../hooks/useGameServer"
+import { GameServerKeys } from "../keys"
 
 const stripePromise = loadStripe(STRIPE_PUBLISHABLE_KEY)
 
@@ -113,7 +113,7 @@ const PaymentSection = () => {
 const PaymentForm = () => {
     const theme = useTheme()
     const { loading } = useFiat()
-    const { mutate } = useMutation(SetupCheckout)
+    const { send } = useGameServerCommandsUser("/user_commander")
 
     const elements = useElements()
     const stripe = useStripe()
@@ -147,11 +147,10 @@ const PaymentForm = () => {
 
     const setupCheckout = useCallback(async () => {
         try {
-            const { payload: secretToken, error } = await mutate({
+            const secretToken = await send<string>(GameServerKeys.FiatCheckoutSetup, {
                 email_address: receiptEmail,
             })
-
-            if (error || !secretToken) {
+            if (!secretToken) {
                 return
             }
             return secretToken
@@ -159,7 +158,7 @@ const PaymentForm = () => {
             const message = typeof err === "string" ? err : "Unable to start checkout, please try again."
             console.error(message)
         }
-    }, [mutate, receiptEmail])
+    }, [send, receiptEmail])
 
     const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()

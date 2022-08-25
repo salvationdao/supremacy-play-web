@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react"
-import { useMutation } from "react-fetching-library"
 import { Masonry } from "@mui/lab"
 import { useMediaQuery, Stack, Box, Typography, CircularProgress, TextField } from "@mui/material"
 import { Elements, useElements, useStripe, CardNumberElement } from "@stripe/react-stripe-js"
@@ -11,9 +10,8 @@ import { SafePNG, SvgWallet } from "../../../../assets"
 import { ClipThing } from "../../../Common/ClipThing"
 import { ImagesPreview } from "../../../Marketplace/Common/MarketDetails/ImagesPreview"
 import { FiatProduct } from "../../../../types/fiat"
-import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
+import { useGameServerCommandsFaction, useGameServerCommandsUser } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
-import { SetupCheckout } from "../../../../fetching"
 import { FancyButton } from "../../../Common/FancyButton"
 import { StripeTextFieldCVC, StripeTextFieldExpiry, StripeTextFieldNumber } from "../../../Stripe/StripeElements"
 import { generatePriceText } from "../../../../helpers"
@@ -192,7 +190,7 @@ const PackageStoreCheckoutInner = ({ product }: PackageStoreCheckoutInnerProps) 
                                 </Stack>
                             </Stack>
 
-                            <PaymentForm product={product} />
+                            <PaymentForm />
                         </Masonry>
                     </Box>
                 </Box>
@@ -201,9 +199,9 @@ const PackageStoreCheckoutInner = ({ product }: PackageStoreCheckoutInnerProps) 
     )
 }
 
-const PaymentForm = ({ product }: PackageStoreCheckoutInnerProps) => {
+const PaymentForm = () => {
     const theme = useTheme()
-    const { mutate } = useMutation(SetupCheckout)
+    const { send } = useGameServerCommandsUser("/user_commander")
 
     const elements = useElements()
     const stripe = useStripe()
@@ -238,13 +236,10 @@ const PaymentForm = ({ product }: PackageStoreCheckoutInnerProps) => {
 
     const setupCheckout = useCallback(async () => {
         try {
-            const { payload: secretToken, error } = await mutate({
-                product_id: product.id,
-                product_type: "generic",
+            const secretToken = await send<string>(GameServerKeys.FiatCheckoutSetup, {
                 email_address: receiptEmail,
             })
-
-            if (error || !secretToken) {
+            if (!secretToken) {
                 return
             }
             return secretToken
@@ -252,7 +247,7 @@ const PaymentForm = ({ product }: PackageStoreCheckoutInnerProps) => {
             const message = typeof err === "string" ? err : "Unable to start checkout, please try again."
             console.error(message)
         }
-    }, [mutate, product, receiptEmail])
+    }, [send, receiptEmail])
 
     const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
