@@ -48,6 +48,7 @@ export const PlayerAbilitiesHangar = () => {
         onSetSelected: (value: string[]) => {
             let newValue = [...value]
 
+            // Some manual logic, mech select should include mech select allied and mech select opponent
             if (newValue.includes(LocationSelectType.MechSelect)) {
                 newValue = newValue.concat([LocationSelectType.MechSelectAllied, LocationSelectType.MechSelectOpponent])
             }

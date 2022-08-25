@@ -49,8 +49,6 @@ const MiniMapAbilityDisplay = ({ image_url, colour, radius, launching_at, locati
 
     const { map } = useGame()
 
-    console.log(radius)
-
     const mapScale = useMemo(() => (map ? map.width / (map.cells_x * 2000) : 0), [map])
     const diameter = useMemo(() => (radius ? radius * mapScale * 2 : 0), [mapScale, radius])
 
@@ -79,6 +77,7 @@ const MiniMapAbilityDisplay = ({ image_url, colour, radius, launching_at, locati
                             <Countdown launchDate={launching_at} />
                         </Typography>
                     )}
+
                     {!!diameter && (
                         <Box
                             sx={{
