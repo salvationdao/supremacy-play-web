@@ -59,7 +59,7 @@ export const BattleArena = () => {
                 {content}
 
                 {battleIdentifier && (
-                    <Box sx={{ pb: ".4rem", pl: "1rem" }}>
+                    <Box sx={{ p: ".4rem 1rem", borderTop: (theme) => `${theme.factionTheme.primary}30 1px solid` }}>
                         <Typography sx={{ fontFamily: fonts.nostromoBlack }}>BATTLE ID #{battleIdentifier.toString().padStart(4, "0")}</Typography>
                     </Box>
                 )}
