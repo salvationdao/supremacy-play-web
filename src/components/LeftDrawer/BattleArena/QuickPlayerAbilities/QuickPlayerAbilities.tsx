@@ -52,16 +52,14 @@ const QuickPlayerAbilitiesInner = React.memo(function QuickPlayerAbilitiesInner(
         }
     }, [queryAvailability, userID])
 
-    useGameServerSubscriptionSecured<{ id: string; current_price: string }>(
+    useGameServerSubscriptionSecured<{ id: string; current_price: string }[]>(
         {
             URI: "/sale_abilities",
             key: GameServerKeys.SubSaleAbilitiesPrice,
         },
         (payload) => {
             if (!payload) return
-            setPriceMap((prev) => {
-                return new Map(prev.set(payload.id, payload.current_price))
-            })
+            setPriceMap(new Map(payload.map((p) => [p.id, p.current_price])))
         },
     )
 
