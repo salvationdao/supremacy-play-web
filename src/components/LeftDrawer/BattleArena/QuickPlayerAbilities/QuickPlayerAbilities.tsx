@@ -1,10 +1,10 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material"
-import { useCallback, useEffect, useMemo, useState } from "react"
+import React, { useCallback, useMemo, useState } from "react"
 import { useParameterizedQuery } from "react-fetching-library"
 import { useAuth } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
 import { GetSaleAbilityAvailability } from "../../../../fetching"
-import { useGameServerCommandsUser, useGameServerSubscriptionSecured, useGameServerSubscriptionSecuredUser } from "../../../../hooks/useGameServer"
+import { useGameServerSubscriptionSecured, useGameServerSubscriptionSecuredUser } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
 import { PlayerAbility, SaleAbility, SaleAbilityAvailability } from "../../../../types"
@@ -18,10 +18,9 @@ export const QuickPlayerAbilities = () => {
     return <QuickPlayerAbilitiesInner userID={userID} />
 }
 
-const QuickPlayerAbilitiesInner = ({ userID }: { userID: string }) => {
+const QuickPlayerAbilitiesInner = React.memo(function QuickPlayerAbilitiesInner({ userID }: { userID: string }) {
     const theme = useTheme()
 
-    const { send } = useGameServerCommandsUser("/user_commander")
     const { query: queryAvailability } = useParameterizedQuery(GetSaleAbilityAvailability)
     const [availability, setAvailability] = useState<SaleAbilityAvailability>(SaleAbilityAvailability.CanClaim)
     const [availabilityError, setAvailabilityError] = useState<string>()
@@ -53,40 +52,6 @@ const QuickPlayerAbilitiesInner = ({ userID }: { userID: string }) => {
         }
     }, [queryAvailability, userID])
 
-    const refetchSaleAbilities = useCallback(async () => {
-        try {
-            // Fetch sale abilities
-            const resp = await send<{
-                next_refresh_time: Date | null
-                time_left_seconds: number
-                sale_abilities: SaleAbility[]
-            }>(GameServerKeys.SaleAbilitiesList)
-
-            if (!resp) return
-            const t = new Date()
-            t.setSeconds(t.getSeconds() + Math.max(resp.time_left_seconds, 1))
-            setNextRefreshTime(t)
-            setSaleAbilities(resp.sale_abilities)
-            setPurchaseError(undefined)
-
-            // Fetch sale availability
-            await refetchSaleAvailability()
-
-            if (isLoaded) return
-            setIsLoaded(true)
-        } catch (e) {
-            console.error(e)
-        }
-    }, [isLoaded, refetchSaleAvailability, send])
-
-    useEffect(() => {
-        refetchSaleAbilities()
-    }, [refetchSaleAbilities])
-
-    useEffect(() => {
-        refetchSaleAvailability()
-    }, [refetchSaleAvailability])
-
     useGameServerSubscriptionSecured<{ id: string; current_price: string }>(
         {
             URI: "/sale_abilities",
@@ -97,6 +62,32 @@ const QuickPlayerAbilitiesInner = ({ userID }: { userID: string }) => {
             setPriceMap((prev) => {
                 return new Map(prev.set(payload.id, payload.current_price))
             })
+        },
+    )
+
+    useGameServerSubscriptionSecured<{
+        next_refresh_time: Date | null
+        time_left_seconds: number
+        sale_abilities: SaleAbility[]
+    }>(
+        {
+            URI: "/sale_abilities",
+            key: GameServerKeys.SubSaleAbilitiesList,
+        },
+        (payload) => {
+            if (!payload) return
+
+            const t = new Date()
+            t.setSeconds(t.getSeconds() + Math.max(payload.time_left_seconds, 1))
+            setNextRefreshTime(t)
+            setSaleAbilities(payload.sale_abilities)
+            setPurchaseError(undefined)
+
+            // Fetch sale availability
+            refetchSaleAvailability()
+
+            if (isLoaded) return
+            setIsLoaded(true)
         },
     )
 
@@ -123,13 +114,13 @@ const QuickPlayerAbilitiesInner = ({ userID }: { userID: string }) => {
         if (nextRefreshTime) {
             return (
                 <Typography sx={{ color: colors.lightNeonBlue, fontFamily: fonts.shareTech, textTransform: "uppercase" }}>
-                    <TimeLeft key={nextRefreshTime.getMilliseconds()} dateTo={nextRefreshTime} onComplete={refetchSaleAbilities} />
+                    <TimeLeft key={nextRefreshTime.getMilliseconds()} dateTo={nextRefreshTime} />
                 </Typography>
             )
         }
 
         return <Typography sx={{ color: colors.lightNeonBlue, fontFamily: fonts.shareTech, textTransform: "uppercase" }}>Less than an hour</Typography>
-    }, [nextRefreshTime, refetchSaleAbilities])
+    }, [nextRefreshTime])
 
     return (
         <Box>
@@ -209,4 +200,4 @@ const QuickPlayerAbilitiesInner = ({ userID }: { userID: string }) => {
             </Stack>
         </Box>
     )
-}
+})
