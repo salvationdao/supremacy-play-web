@@ -514,3 +514,8 @@ export interface Submodel {
     updated_at: Date
     created_at: Date
 }
+
+export enum SubmodelStatus {
+    Equipped = "EQUIPPED",
+    Unequipped = "UNEQUIPPED",
+}

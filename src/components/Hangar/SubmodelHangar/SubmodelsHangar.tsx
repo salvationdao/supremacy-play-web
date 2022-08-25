@@ -9,7 +9,7 @@ import { usePagination, useToggle, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { MechSkin, MechStatusEnum, Submodel, WeaponSkin } from "../../../types"
+import { SubmodelStatus, Submodel } from "../../../types"
 import { SortTypeLabel } from "../../../types/marketplace"
 import { PageHeader } from "../../Common/PageHeader"
 import { ChipFilter } from "../../Common/SortAndFilters/ChipFilterSection"
@@ -18,8 +18,6 @@ import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { SubmodelItem } from "./SubmodelItem"
 
 const sortOptions = [
-    { label: SortTypeLabel.MechQueueAsc, value: SortTypeLabel.MechQueueAsc },
-    { label: SortTypeLabel.MechQueueDesc, value: SortTypeLabel.MechQueueDesc },
     { label: SortTypeLabel.Alphabetical, value: SortTypeLabel.Alphabetical },
     { label: SortTypeLabel.AlphabeticalReverse, value: SortTypeLabel.AlphabeticalReverse },
     { label: SortTypeLabel.RarestAsc, value: SortTypeLabel.RarestAsc },
@@ -64,8 +62,10 @@ export const SubmodelsHangar = () => {
     // Filters and sorts
     const [isFiltersExpanded, toggleIsFiltersExpanded] = useToggle(localStorage.getItem("isWarMachinesHangarFiltersExpanded") === "true")
     const [search, setSearch] = useState("")
-    const [sort, setSort] = useState<string>(query.get("sort") || SortTypeLabel.MechQueueAsc)
-    const [status, setStatus] = useState<string[]>((query.get("statuses") || undefined)?.split("||") || [])
+    const [sort, setSort] = useState<string>(query.get("sort") || SortTypeLabel.Alphabetical)
+    const [equippedStatus, setEquippedStatus] = useState<string[]>(
+        (query.get("statuses") || undefined)?.split("||") || [SubmodelStatus.Equipped, SubmodelStatus.Unequipped],
+    )
     const [rarities, setRarities] = useState<string[]>((query.get("rarities") || undefined)?.split("||") || [])
     const [isGridView, toggleIsGridView] = useToggle((localStorage.getItem("fleetMechGrid") || "true") === "true")
 
@@ -79,18 +79,15 @@ export const SubmodelsHangar = () => {
 
     // Filters
     const statusFilterSection = useRef<ChipFilter>({
-        label: "STATUS",
+        label: "EQUIPPED STATUS",
         options: [
-            { value: MechStatusEnum.Idle, label: "IDLE", color: colors.green },
-            { value: MechStatusEnum.Battle, label: "IN BATTLE", color: colors.orange },
-            { value: MechStatusEnum.Market, label: "MARKETPLACE", color: colors.red },
-            { value: MechStatusEnum.Queue, label: "IN QUEUE", color: colors.yellow },
-            { value: MechStatusEnum.BattleReady, label: "BATTLE READY", color: colors.purple },
+            { value: SubmodelStatus.Equipped, label: "EQUIPPED", color: colors.gold },
+            { value: SubmodelStatus.Unequipped, label: "UNEQUIPPED", color: colors.bronze },
         ],
-        initialSelected: status,
+        initialSelected: equippedStatus,
         initialExpanded: true,
         onSetSelected: (value: string[]) => {
-            setStatus(value)
+            setEquippedStatus(value)
             changePage(1)
         },
     })
@@ -146,16 +143,16 @@ export const SubmodelsHangar = () => {
                 exclude_market_locked: false,
                 include_market_listed: false,
                 display_genesis_and_limited: false,
-                rarities: [],
+                rarities: rarities,
                 skin_compatibility: [],
-                equipped_statuses: [],
+                equipped_statuses: equippedStatus,
             })
 
             updateQuery({
                 sort,
                 search,
                 rarities: rarities.join("||"),
-                statuses: status.join("||"),
+                statuses: equippedStatus.join("||"),
                 page: page.toString(),
                 pageSize: pageSize.toString(),
             })
@@ -171,7 +168,7 @@ export const SubmodelsHangar = () => {
         } finally {
             setIsLoading(false)
         }
-    }, [send, page, pageSize, search, rarities, status, updateQuery, sort, setTotalItems])
+    }, [send, page, pageSize, search, rarities, equippedStatus, updateQuery, sort, setSubmodels, setTotalItems])
 
     useEffect(() => {
         getItems()
