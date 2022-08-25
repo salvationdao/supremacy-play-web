@@ -17,6 +17,7 @@ export enum GameServerKeys {
     // Battle Arena
     SubBattleArenaList = "BATTLE:ARENA:LIST",
     SubBattleArenaClosed = "BATTLE:ARENA:CLOSED",
+    SubDeadlyAbilityCountdownList = "DEADLY:ABILITY:COUNTDOWN:LIST",
 
     // Voting abilities
     SubBribeStageUpdated = "BRIBE:STAGE:UPDATED:SUBSCRIBE",
@@ -56,8 +57,8 @@ export enum GameServerKeys {
     MechRename = "PLAYER:MECH:RENAME",
 
     // Player Abilities
-    SubSaleAbilitiesPrice = "SALE:ABILITIES:PRICE:SUBSCRIBE",
     SubPlayerAbilitiesList = "PLAYER:ABILITIES:LIST:SUBSCRIBE",
+    SubSaleAbilitiesPrice = "SALE:ABILITIES:PRICE:SUBSCRIBE",
     SubSaleAbilitiesList = "SALE:ABILITIES:LIST:SUBSCRIBE",
     SaleAbilitiesList = "SALE:ABILITIES:LIST",
     SaleAbilityClaim = "SALE:ABILITY:CLAIM",
