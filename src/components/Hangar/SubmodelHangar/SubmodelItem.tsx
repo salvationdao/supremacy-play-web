@@ -17,7 +17,7 @@ export const SubmodelItem = ({ submodel, isGridView }: SubmodelItemProps) => {
     return <>{submodel && <KeycardHangarItemInner submodel={submodel} isGridView={isGridView} />}</>
 }
 
-export const KeycardHangarItemInner = ({ submodel, isGridView }: SubmodelItemProps) => {
+export const KeycardHangarItemInner = ({ submodel }: SubmodelItemProps) => {
     const theme = useTheme()
     const rarityDeets = useMemo(() => getRarityDeets(submodel.tier), [submodel.tier])
 
