@@ -65,10 +65,10 @@ export const Landing = () => {
                 height: "100%",
                 width: "100%",
 
-                backgroundImage: `url(${"https://afiles.ninja-cdn.com/supremacy-stream-site/assets/img/factions/zai-wall.png"})`,
+                backgroundImage: `url(${nextBattle?.map?.background_url})`,
                 backgroundRepeat: "no-repeat",
                 backgroundPosition: "center",
-                backgroundSize: "contain",
+                backgroundSize: "cover",
             }}
         >
             <Box sx={{ display: "flex", width: "100%", height: "100%", justifyContent: "center" }}>
@@ -99,8 +99,10 @@ export const Landing = () => {
                     </Box>
 
                     <Box sx={{ position: "absolute", bottom: 0 }}>
-                        <Typography variant="h4">Next Battle</Typography>
-                        <Typography variant="h4">Battle name</Typography>
+                        <Typography variant="h4" textAlign={"center"}>
+                            NEXT BATTLE
+                        </Typography>
+                        <img height="150rem" src={nextBattle?.map?.logo_url} alt="" />
                     </Box>
                 </Box>
             </Box>
