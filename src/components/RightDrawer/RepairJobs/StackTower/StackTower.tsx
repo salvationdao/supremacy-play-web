@@ -1,6 +1,8 @@
 import { Box, Stack, Typography } from "@mui/material"
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useTheme } from "../../../../containers/theme"
+import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
 import { RepairAgent } from "../../../../types/jobs"
 import { ProgressBar } from "../../../Common/ProgressBar"
@@ -10,19 +12,68 @@ export const StackTower = React.memo(function StackTower({
     primaryColor,
     disableGame,
     repairAgent,
-    agentRepairUpdate,
-    completeAgentRepair,
+    setIsSubmitting,
+    setSubmitError,
+    onSubmitted,
 }: {
     primaryColor: string
     disableGame: boolean
     repairAgent?: RepairAgent
-    agentRepairUpdate: (repairAgentID: string, gamePattern: GamePattern) => Promise<boolean>
-    completeAgentRepair: (repairAgentID: string) => Promise<boolean>
+    setIsSubmitting: React.Dispatch<React.SetStateAction<boolean>>
+    setSubmitError: React.Dispatch<React.SetStateAction<string | undefined>>
+    onSubmitted: () => void
 }) {
+    const { send } = useGameServerCommandsUser("/user_commander")
+
     // Game data
     const [gameState, setGameState] = useState<GameState>(GameState.Loading)
     const [score, setScore] = useState(0)
     const [cumulativeScore, setCumulativeScore] = useState(0)
+
+    // Send individual updates
+    const agentRepairUpdate = useCallback(
+        async (repairAgentID: string, gamePattern: GamePattern) => {
+            try {
+                const resp = await send(GameServerKeys.RepairAgentUpdate, {
+                    repair_agent_id: repairAgentID,
+                    ...gamePattern,
+                })
+
+                if (!resp) return Promise.reject(false)
+                return Promise.resolve(true)
+            } catch (err) {
+                return Promise.reject(false)
+            }
+        },
+        [send],
+    )
+
+    // Tell server we finished and do validation
+    const completeAgentRepair = useCallback(
+        async (repairAgentID: string) => {
+            try {
+                setSubmitError(undefined)
+                setIsSubmitting(true)
+                const resp = await send(GameServerKeys.CompleteRepairAgent, {
+                    repair_agent_id: repairAgentID,
+                })
+
+                if (!resp) return Promise.reject(false)
+                onSubmitted()
+                return Promise.resolve(true)
+            } catch (err) {
+                const message = typeof err === "string" ? err : "Failed to submit results."
+                setSubmitError(message)
+                console.error(err)
+                return Promise.reject(false)
+            } finally {
+                setTimeout(() => {
+                    setIsSubmitting(false)
+                }, 1500) // Show the loading spinner for at least sometime so it doesnt flash away
+            }
+        },
+        [onSubmitted, send, setIsSubmitting, setSubmitError],
+    )
 
     // As the player plays the mini game, this will be the game updates
     const oneNewGamePattern = useCallback(
