@@ -172,7 +172,7 @@ export const WarMachineItem = ({
                     corners={{ bottomLeft: true }}
                     border={{ isFancy: false, borderColor: primaryColor, borderThickness: ".25rem" }}
                     backgroundColor={primaryColor}
-                    sx={{ zIndex: 2 }}
+                    sx={{ zIndex: 2, flexShrink: 0 }}
                     innerSx={{ background: `linear-gradient(${primaryColor}, #000000)` }}
                 >
                     <Box
