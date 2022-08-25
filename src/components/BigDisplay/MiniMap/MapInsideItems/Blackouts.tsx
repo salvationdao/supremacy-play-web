@@ -106,22 +106,25 @@ const Blackout = React.forwardRef(function Blackout({ radius, coords, isVisible 
     const mapScale = useMemo(() => (map ? map.width / (map.cells_x * 2000) : 0), [map])
     const diameter = useMemo(() => radius * mapScale * 2, [mapScale, radius])
 
-    return (
-        <Box
-            ref={ref}
-            sx={{
-                zIndex: 900,
-                position: "absolute",
-                width: diameter,
-                height: diameter,
-                transform: `translate(${coords.x * gridWidth - diameter / 2}px, ${coords.y * gridHeight - diameter / 2}px)`,
-                borderRadius: "50%",
-                backgroundColor: `${colors.black2}DD`,
-                boxShadow: 20,
-                animation: `${isVisible ? fadeInKeyframes : fadeOutKeyframes} ${BLACKOUT_TRANSITION_DURATION}ms ease-in`,
-                pointerEvents: "none",
-            }}
-        />
+    return useMemo(
+        () => (
+            <Box
+                ref={ref}
+                sx={{
+                    zIndex: 900,
+                    position: "absolute",
+                    width: diameter,
+                    height: diameter,
+                    transform: `translate(${coords.x * gridWidth - diameter / 2}px, ${coords.y * gridHeight - diameter / 2}px)`,
+                    borderRadius: "50%",
+                    backgroundColor: `${colors.black2}DD`,
+                    boxShadow: 20,
+                    animation: `${isVisible ? fadeInKeyframes : fadeOutKeyframes} ${BLACKOUT_TRANSITION_DURATION}ms ease-in`,
+                    pointerEvents: "none",
+                }}
+            />
+        ),
+        [coords.x, coords.y, diameter, gridHeight, gridWidth, isVisible, ref],
     )
 })
 

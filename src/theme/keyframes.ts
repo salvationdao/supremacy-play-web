@@ -57,3 +57,19 @@ export const shake = keyframes`
 		transform: translate3d(3px, 0, 0);
 	}
 `
+
+export const rippleEffect = (color: string) => keyframes`
+	0% {
+		@include transform(scale(.9));
+	}
+
+	70% {
+		@include transform(scale(1));
+		box-shadow: 0 0 0 50px rgba(${color}, 0);
+	}
+
+	100% {
+		@include transform(scale(.9));
+		box-shadow: 0 0 0 0 rgba(${color}, 0);
+	}
+`
