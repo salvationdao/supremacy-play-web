@@ -1,8 +1,8 @@
-import { useEffect, MutableRefObject } from "react"
-import { Popover, Stack, Box, Typography } from "@mui/material"
+import { useEffect, useCallback, MutableRefObject } from "react"
+import { Popover, Stack, Box } from "@mui/material"
 import { useTheme } from "../../../../containers/theme"
 import { useToggle } from "../../../../hooks"
-import { fonts, siteZIndex } from "../../../../theme/theme"
+import { siteZIndex } from "../../../../theme/theme"
 import { ClipThing } from "../../../Common/ClipThing"
 import { ShoppingCart } from "../../../../types/fiat"
 import { ShoppingCartTable } from "./ShoppingCartTable"
@@ -29,6 +29,8 @@ export const ShoppingCartPopover = ({ open, loading, shoppingCart, popoverRef, o
         }
     }, [localOpen, onClose])
 
+    const closePopover = useCallback(() => toggleLocalOpen(false), [toggleLocalOpen])
+
     const primaryColor = theme.factionTheme.primary
     const backgroundColor = theme.factionTheme.background
 
@@ -36,7 +38,7 @@ export const ShoppingCartPopover = ({ open, loading, shoppingCart, popoverRef, o
         <Popover
             open={localOpen}
             anchorEl={popoverRef.current}
-            onClose={() => toggleLocalOpen(false)}
+            onClose={closePopover}
             anchorOrigin={{
                 vertical: "bottom",
                 horizontal: "center",
@@ -71,7 +73,7 @@ export const ShoppingCartPopover = ({ open, loading, shoppingCart, popoverRef, o
                             shoppingCart={shoppingCart}
                             primaryColor={primaryColor}
                             backgroundColor={backgroundColor}
-                            onCheckoutClicked={() => toggleLocalOpen(false)}
+                            onCheckoutClicked={closePopover}
                         />
                     </Box>
                 </Stack>

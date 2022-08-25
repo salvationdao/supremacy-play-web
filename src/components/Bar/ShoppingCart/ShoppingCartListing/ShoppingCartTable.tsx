@@ -125,7 +125,7 @@ export const ShoppingCartTable = ({ shoppingCart, loading, primaryColor, backgro
                 </Stack>
             </>
         )
-    }, [shoppingCart, loading, primaryColor, backgroundColor, fullPage])
+    }, [shoppingCart, loading, primaryColor, backgroundColor, fullPage, onCheckoutClicked])
 
     return (
         <>
@@ -174,7 +174,7 @@ const ShoppingCartRow = ({ item, primaryColor, backgroundColor }: ShoppingCartRo
         } catch (err) {
             console.error(err)
         }
-    }, [])
+    }, [send, item.id])
 
     useEffect(() => {
         if (!unsaved || updating) return
