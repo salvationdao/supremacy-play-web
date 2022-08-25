@@ -46,7 +46,13 @@ export const PlayerAbilitiesHangar = () => {
         initialSelected: locationSelectTypes,
         initialExpanded: true,
         onSetSelected: (value: string[]) => {
-            setLocationSelectTypes(value)
+            let newValue = [...value]
+
+            if (newValue.includes(LocationSelectType.MechSelect)) {
+                newValue = newValue.concat([LocationSelectType.MechSelectAllied, LocationSelectType.MechSelectOpponent])
+            }
+
+            setLocationSelectTypes(newValue)
             changePage(1)
         },
     })
@@ -74,6 +80,7 @@ export const PlayerAbilitiesHangar = () => {
         if (locationSelectTypes.length > 0) {
             result = result.filter((p) => locationSelectTypes.includes(p.ability.location_select_type))
         }
+
         if (search !== "") {
             result = result.filter((p) => p.ability.label.includes(search) || p.ability.description.includes(search))
         }
