@@ -1,10 +1,10 @@
 import { Fade } from "@mui/material"
 import { Box } from "@mui/system"
-import { useOverlayToggles } from "../../containers"
+import { useUI } from "../../containers"
 import { colors, siteZIndex } from "../../theme/theme"
 
 export const BattleHistory = () => {
-    const { isBattleHistoryOpen } = useOverlayToggles()
+    const { isBattleHistoryOpen } = useUI()
 
     return (
         <Fade in={isBattleHistoryOpen}>

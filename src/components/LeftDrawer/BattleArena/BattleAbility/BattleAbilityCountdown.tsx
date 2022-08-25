@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react"
 import { BribeStageResponse } from "../../../../containers"
 import { useTimer } from "../../../../hooks"
+import { BribeStage } from "../../../../types"
 import { SectionHeading } from "../Common/SectionHeading"
 
 export const BattleAbilityCountdown = ({ bribeStage }: { bribeStage?: BribeStageResponse }) => {
@@ -10,15 +11,15 @@ export const BattleAbilityCountdown = ({ bribeStage }: { bribeStage?: BribeStage
     const phase = bribeStage?.phase || ""
 
     switch (phase) {
-        case "OPT_IN":
+        case BribeStage.OptIn:
             sentence.current = `BATTLE ABILITY (${totalSecRemain})`
             break
 
-        case "LOCATION_SELECT":
+        case BribeStage.LocationSelect:
             sentence.current = `BATTLE ABILITY INITIATED (${totalSecRemain})`
             break
 
-        case "COOLDOWN":
+        case BribeStage.Cooldown:
             sentence.current = `NEXT BATTLE ABILITY (${totalSecRemain})`
             break
     }
@@ -33,7 +34,7 @@ export const BattleAbilityCountdown = ({ bribeStage }: { bribeStage?: BribeStage
         // Just a temp fix, if user's pc time is not correct then at least set for them
         // Checked by seeing if they have at least 8s to do stuff
         if (endTime < dateNow || diff > 40000) {
-            endTime = new Date(dateNow.getTime() + (bribeStage.phase == "OPT_IN" ? 30000 : 20000))
+            endTime = new Date(dateNow.getTime() + (bribeStage.phase === BribeStage.OptIn ? 30000 : 20000))
         }
 
         setEndTimeState(endTime)

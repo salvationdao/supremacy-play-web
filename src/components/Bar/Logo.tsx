@@ -3,7 +3,7 @@ import React, { useState } from "react"
 import { Link } from "react-router-dom"
 import { SvgHamburger, SvgSupremacyLogo } from "../../assets"
 import { IS_TESTING_MODE, VERSION } from "../../constants"
-import { useMobile, useOverlayToggles } from "../../containers"
+import { useMobile, useUI } from "../../containers"
 import { colors, fonts } from "../../theme/theme"
 import { HIDE_NAV_LINKS_WIDTH } from "./NavLinks/NavLinks"
 
@@ -11,7 +11,7 @@ export const Logo = React.memo(function Logo() {
     const hideNavLinks = useMediaQuery(`(max-width:${HIDE_NAV_LINKS_WIDTH}px)`)
     const { isMobile } = useMobile()
     const [text, setText] = useState<string>(IS_TESTING_MODE ? "PROVING GROUNDS" : "EARLY ACCESS")
-    const { toggleIsNavLinksDrawerOpen } = useOverlayToggles()
+    const { toggleIsNavLinksDrawerOpen } = useUI()
 
     return (
         <Stack

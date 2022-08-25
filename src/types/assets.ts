@@ -63,13 +63,6 @@ export interface MechStatus {
     can_deploy?: boolean
 }
 
-export interface AssetDurability {
-    hash: string
-    started_at: Date
-    expect_completed_at: Date
-    repair_type: "FAST" | "STANDARD" | ""
-}
-
 export interface Images {
     image_url?: string
     animation_url?: string

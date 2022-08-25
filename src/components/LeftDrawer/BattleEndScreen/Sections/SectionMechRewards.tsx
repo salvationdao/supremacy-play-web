@@ -29,7 +29,7 @@ export const SectionMechRewards = ({ battleEndDetail }: { battleEndDetail: Battl
             </Box>
 
             {mech_rewards && mech_rewards.length > 0 ? (
-                <Stack spacing="1.2rem" sx={{ pl: ".5rem" }}>
+                <Stack spacing="1.2rem" sx={{ px: "1.2rem" }}>
                     {mech_rewards.map((wm) => {
                         const faction = getFaction(wm.faction_id)
                         return (

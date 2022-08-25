@@ -1,10 +1,10 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { SupBackground } from "../../../assets"
-import { useGame } from "../../../containers"
+import { useUI } from "../../../containers"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
 
 export const NoStreamScreen = () => {
-    const { isStreamBigDisplay } = useGame()
+    const { isStreamBigDisplay } = useUI()
 
     return (
         <Box

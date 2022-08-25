@@ -179,6 +179,7 @@ import TrailerThumbPNG from "./images/TrailerThumb.png"
 import WarMachineIconPNG from "./images/WarMachineIcon.png"
 import ZaibatsuLogo from "./images/ZaibatsuLogo.png"
 
+import { useMemo } from "react"
 import Stack10aJPG from "./images/TowerStackSkins/Stack10a.jpg"
 import Stack10bJPG from "./images/TowerStackSkins/Stack10b.jpg"
 import Stack10cJPG from "./images/TowerStackSkins/Stack10c.jpg"
@@ -286,24 +287,27 @@ export interface SvgWrapperProps extends BoxProps {
 }
 
 export const SvgWrapper: React.FC<SvgWrapperProps> = ({ fill, stroke, strokeWidth, sx, size, width, height, ...props }: SvgWrapperProps) => {
-    return (
-        <Box
-            sx={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                pb: 0.3,
-                "& > svg": {
-                    width: width || size || "2rem",
-                    height: height || size || "2rem",
-                    fill: fill || colors.text,
-                    stroke: stroke || "unset",
-                    strokeWidth: strokeWidth || "1",
-                },
-                ...sx,
-            }}
-            {...props}
-        />
+    return useMemo(
+        () => (
+            <Box
+                sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    pb: 0.3,
+                    "& > svg": {
+                        width: width || size || "2rem",
+                        height: height || size || "2rem",
+                        fill: fill || colors.text,
+                        stroke: stroke || "unset",
+                        strokeWidth: strokeWidth || "1",
+                    },
+                    ...sx,
+                }}
+                {...props}
+            />
+        ),
+        [fill, height, props, size, stroke, strokeWidth, sx, width],
     )
 }
 

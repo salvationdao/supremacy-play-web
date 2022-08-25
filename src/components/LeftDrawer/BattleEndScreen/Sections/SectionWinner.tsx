@@ -28,7 +28,7 @@ export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndD
                 </Typography>
             </Box>
 
-            <Stack spacing="1.5rem" sx={{ px: ".96rem" }}>
+            <Stack spacing="1.5rem" sx={{ px: "1.2rem" }}>
                 <Box sx={{ position: "relative" }}>
                     <SvgCrown fill={colors.yellow} size="2rem" sx={{ position: "absolute", bottom: "calc(100% - .7rem)", left: ".8rem" }} />
 
