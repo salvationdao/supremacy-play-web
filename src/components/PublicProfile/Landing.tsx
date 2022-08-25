@@ -167,7 +167,7 @@ const Card = ({ mechID, faction }: { mechID: string; faction: string }) => {
     const border = getCardInfo(faction)?.border || ""
     const borderBottom = getCardInfo(faction)?.borderBottom || ""
     const bottom = getCardInfo(faction)?.bottom || ""
-
+    //
     const h = "27rem"
     const w = "23rem"
 
@@ -184,7 +184,6 @@ const Card = ({ mechID, faction }: { mechID: string; faction: string }) => {
         },
     )
     const avatarUrl = mechDetails?.chassis_skin?.avatar_url || mechDetails?.avatar_url
-    const imageUrl = mechDetails?.chassis_skin?.image_url || mechDetails?.image_url
 
     return (
         <Box position="relative" height={h} width={w}>
