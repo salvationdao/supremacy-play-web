@@ -39,6 +39,8 @@ export const PlayerAbilitiesHangar = () => {
             { value: LocationSelectType.Global, label: LocationSelectType.Global.split("_").join(" "), color: colors.green },
             { value: LocationSelectType.LocationSelect, label: LocationSelectType.LocationSelect.split("_").join(" "), color: colors.blue2 },
             { value: LocationSelectType.MechSelect, label: LocationSelectType.MechSelect.split("_").join(" "), color: colors.gold },
+            { value: LocationSelectType.MechSelectAllied, label: LocationSelectType.MechSelectAllied.split("_").join(" "), color: colors.bronze },
+            { value: LocationSelectType.MechSelectOpponent, label: LocationSelectType.MechSelectOpponent.split("_").join(" "), color: colors.orange },
             { value: LocationSelectType.LineSelect, label: LocationSelectType.LineSelect.split("_").join(" "), color: colors.purple },
         ],
         initialSelected: locationSelectTypes,

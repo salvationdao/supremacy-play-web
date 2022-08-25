@@ -11,7 +11,7 @@ import { MechCommandIcons } from "./MapInsideItems/MechCommandIcons"
 import { MapImage } from "./MapInsideItems/MapImage"
 import { RangeIndicator } from "./MapInsideItems/RangeIndicator"
 import { useMiniMapGestures } from "./useMiniMapGestures"
-import { DeadlyAbilityCountdowns } from "./MapInsideItems/DeadlyAbilityCountdown"
+import { MiniMapAbilitiesDisplay } from "./MapInsideItems/AbilityDisplay"
 
 interface MiniMapInsideProps {
     containerDimensions: Dimension
@@ -112,7 +112,7 @@ export const MiniMapInside = ({ containerDimensions }: MiniMapInsideProps) => {
                         {/* Blackouts */}
                         <Blackouts />
 
-                        <DeadlyAbilityCountdowns />
+                        <MiniMapAbilitiesDisplay />
                     </Box>
                 </Stack>
 

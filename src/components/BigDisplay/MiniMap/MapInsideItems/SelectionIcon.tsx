@@ -18,6 +18,8 @@ export const SelectionIcon = () => {
             "location_select_type" in ability &&
             (ability.location_select_type === LocationSelectType.LineSelect ||
                 ability.location_select_type === LocationSelectType.MechSelect ||
+                ability.location_select_type === LocationSelectType.MechSelectAllied ||
+                ability.location_select_type === LocationSelectType.MechSelectOpponent ||
                 ability.location_select_type === LocationSelectType.Global)
         ) {
             return null

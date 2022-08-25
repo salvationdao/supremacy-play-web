@@ -15,6 +15,8 @@ export enum BribeStage {
 export enum LocationSelectType {
     LineSelect = "LINE_SELECT",
     MechSelect = "MECH_SELECT",
+    MechSelectAllied = "MECH_SELECT_ALLIED",
+    MechSelectOpponent = "MECH_SELECT_OPPONENT",
     LocationSelect = "LOCATION_SELECT",
     Global = "GLOBAL",
     MechCommand = "MECH_COMMAND",

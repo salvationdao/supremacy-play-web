@@ -2,7 +2,7 @@ import { Box, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo } from "react"
 import { ClipThing, FancyButton } from "../../.."
 import { SvgLine, SvgMicrochip, SvgQuestionMark, SvgTarget } from "../../../../assets"
-import { useMiniMap, useGlobalNotifications } from "../../../../containers"
+import { useGlobalNotifications, useMiniMap } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
 import { useTimer } from "../../../../hooks"
 import { colors } from "../../../../theme/theme"
@@ -169,7 +169,15 @@ const PlayerAbilityTargetHint = () => {
                 break
             case LocationSelectType.MechSelect:
                 icon = <SvgMicrochip {...iconProps} />
+                descriptor = "Select a mech to activate"
+                break
+            case LocationSelectType.MechSelectAllied:
+                icon = <SvgMicrochip {...iconProps} />
                 descriptor = "Select an allied mech to activate"
+                break
+            case LocationSelectType.MechSelectOpponent:
+                icon = <SvgMicrochip {...iconProps} />
+                descriptor = "Select an opponent mech to activate"
                 break
             case LocationSelectType.LineSelect:
                 icon = <SvgLine {...iconProps} />

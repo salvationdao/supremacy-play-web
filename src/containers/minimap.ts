@@ -142,6 +142,8 @@ export const MiniMapContainer = createContainer(() => {
                         }
                         break
                     case LocationSelectType.MechSelect:
+                    case LocationSelectType.MechSelectAllied:
+                    case LocationSelectType.MechSelectOpponent:
                         payload = {
                             arena_id: currentArenaID,
                             blueprint_ability_id: playerAbility.ability.id,
