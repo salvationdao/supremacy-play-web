@@ -1,6 +1,7 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { BattleEndTooltip, StyledImageText } from "../../.."
 import { useSupremacy } from "../../../../containers"
+import { acronym } from "../../../../helpers"
 import { colors, fonts } from "../../../../theme/theme"
 import { BattleEndDetail } from "../../../../types"
 
@@ -31,6 +32,13 @@ export const SectionFactions = ({ battleEndDetail }: { battleEndDetail: BattleEn
                         const rank = index + 1
                         const faction = getFaction(fid)
 
+                        let label = faction.label
+                        const labelSplit = label.split(" ")
+                        // If more than 3 words, abbreviate after that
+                        if (labelSplit.length > 3) {
+                            label = labelSplit.slice(0, 2).join(" ") + " " + acronym(labelSplit.slice(2).join(" "))
+                        }
+
                         let color = "#FFFFFF"
                         if (rank === 1) color = colors.yellow
                         if (rank === 2) color = colors.silver
@@ -43,7 +51,7 @@ export const SectionFactions = ({ battleEndDetail }: { battleEndDetail: BattleEn
                                 </Typography>
                                 <StyledImageText
                                     color={faction.primary_color}
-                                    text={faction.label}
+                                    text={label}
                                     imageUrl={faction.logo_url}
                                     variant="h6"
                                     imageSize={2.9}
