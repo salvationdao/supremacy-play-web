@@ -19,9 +19,9 @@ const CountdownSubmitInner = React.memo(function CountdownSubmitInner() {
     const isInstant = useMemo(() => {
         if (playerAbility?.ability) {
             switch (playerAbility.ability.location_select_type) {
-                case LocationSelectType.LINE_SELECT:
-                case LocationSelectType.LOCATION_SELECT:
-                case LocationSelectType.MECH_COMMAND:
+                case LocationSelectType.LineSelect:
+                case LocationSelectType.LocationSelect:
+                case LocationSelectType.MechCommand:
                     return true
             }
 
@@ -38,13 +38,13 @@ const CountdownSubmitInner = React.memo(function CountdownSubmitInner() {
         const ability = winner?.game_ability || playerAbility?.ability
         if (ability) {
             switch (ability.location_select_type) {
-                case LocationSelectType.LINE_SELECT:
+                case LocationSelectType.LineSelect:
                     selected = !!(selection?.startCoords && selection?.endCoords)
                     break
-                case LocationSelectType.LOCATION_SELECT:
+                case LocationSelectType.LocationSelect:
                     selected = !!selection?.startCoords
                     break
-                case LocationSelectType.MECH_SELECT:
+                case LocationSelectType.MechSelect:
                     selected = !!selection?.mechHash
                     break
             }
