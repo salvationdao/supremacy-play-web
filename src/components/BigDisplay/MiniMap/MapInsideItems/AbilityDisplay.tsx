@@ -54,7 +54,7 @@ const MiniMapAbilityDisplay = ({ displayAbility }: { displayAbility: DisplayedAb
                 primaryColor={colour}
                 backgroundImageUrl={image_url}
                 iconSx={{
-                    animation: mini_map_display_effect_type === MiniMapDisplayEffectType.Drop ? `${dropEffect(3)} 3s ease-out` : "none",
+                    animation: mini_map_display_effect_type === MiniMapDisplayEffectType.Drop ? `${dropEffect(3)} 2s ease-out` : "none",
                 }}
                 insideRender={
                     <>
@@ -70,6 +70,7 @@ const MiniMapAbilityDisplay = ({ displayAbility }: { displayAbility: DisplayedAb
                                     fontSize: gridHeight * 0.8,
                                     lineHeight: 1,
                                     backgroundColor: "#00000080",
+                                    zIndex: 10,
                                 }}
                             >
                                 <Countdown launchDate={launching_at} />

@@ -36,25 +36,27 @@ export const MapIcon = ({ primaryColor, backgroundImageUrl, insideRender, onClic
                     ...sx,
                 }}
             >
-                <Box
-                    sx={{
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
-                        bottom: 0,
-                        right: 0,
-                        zIndex: 2,
-                        backgroundImage: `url(${backgroundImageUrl})`,
-                        backgroundRepeat: "no-repeat",
-                        backgroundPosition: "center",
-                        backgroundSize: "cover",
-                        border: `5px solid ${primaryColor}`,
-                        borderRadius: 1,
-                        boxShadow: 2,
-                        backgroundColor: insideRender ? "#030409" : primaryColor,
-                        ...iconSx,
-                    }}
-                />
+                {backgroundImageUrl && (
+                    <Box
+                        sx={{
+                            position: "absolute",
+                            top: 0,
+                            left: 0,
+                            bottom: 0,
+                            right: 0,
+                            zIndex: 2,
+                            backgroundImage: `url(${backgroundImageUrl})`,
+                            backgroundRepeat: "no-repeat",
+                            backgroundPosition: "center",
+                            backgroundSize: "cover",
+                            border: `5px solid ${primaryColor}`,
+                            borderRadius: 1,
+                            boxShadow: 2,
+                            backgroundColor: insideRender ? "#030409" : primaryColor,
+                            ...iconSx,
+                        }}
+                    />
+                )}
 
                 {insideRender}
             </Stack>
