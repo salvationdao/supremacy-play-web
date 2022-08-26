@@ -1,13 +1,16 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
-import React, { useCallback, useMemo, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 import { SvgGlobal, SvgLine, SvgMicrochip, SvgQuestionMark, SvgSupToken, SvgTarget } from "../../../../assets"
 import { useGlobalNotifications } from "../../../../containers"
 import { supFormatter } from "../../../../helpers"
+import { useToggle } from "../../../../hooks"
 import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { scaleUpKeyframes } from "../../../../theme/keyframes"
 import { colors } from "../../../../theme/theme"
 import { LocationSelectType, SaleAbility, SaleAbilityAvailability } from "../../../../types"
+import { PreferenceToggle } from "../../../Bar/ProfileCard/PreferencesModal/NotificationPreferences"
+import { ConfirmModal } from "../../../Common/ConfirmModal"
 import { FancyButton } from "../../../Common/FancyButton"
 import { TooltipHelper } from "../../../Common/TooltipHelper"
 
@@ -15,9 +18,9 @@ export interface QuickPlayerAbilitiesItemProps {
     saleAbility: SaleAbility
     price?: string
     amount?: number
-    setError: React.Dispatch<React.SetStateAction<string | undefined>>
     onClaim: () => void
     onPurchase: () => void
+    setClaimError: React.Dispatch<React.SetStateAction<string | undefined>>
     availability: SaleAbilityAvailability
 }
 
@@ -25,15 +28,18 @@ export const QuickPlayerAbilitiesItem = ({
     saleAbility,
     price = saleAbility.current_price,
     amount = 0,
-    setError,
     onClaim: onClaimCallback,
     onPurchase: onPurchaseCallback,
+    setClaimError,
     availability,
 }: QuickPlayerAbilitiesItemProps) => {
     // Purchasing
     const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsUser("/user_commander")
     const [loading, setLoading] = useState(false)
+    const [purchaseError, setPurchaseError] = useState<string>()
+    const [showPurchaseModal, setShowPurchaseModal] = useState(false)
+    const [showConfirmation, toggleShowConfirmation] = useToggle(false)
 
     const disabled = availability === SaleAbilityAvailability.Unavailable
 
@@ -57,14 +63,18 @@ export const QuickPlayerAbilitiesItem = ({
 
     const [abilityTypeIcon] = useMemo(() => {
         switch (saleAbility.ability.location_select_type) {
-            case LocationSelectType.GLOBAL:
-                return [<SvgGlobal key={LocationSelectType.GLOBAL} />, "This ability will affect all units on the map."]
-            case LocationSelectType.LOCATION_SELECT:
-                return [<SvgTarget key={LocationSelectType.LOCATION_SELECT} />, "This ability will target a specific location on the map."]
-            case LocationSelectType.MECH_SELECT:
-                return [<SvgMicrochip key={LocationSelectType.MECH_SELECT} />, "This ability will target a specific mech on the map."]
-            case LocationSelectType.LINE_SELECT:
-                return [<SvgLine key={LocationSelectType.LINE_SELECT} />, "This ability will target a straight line on the map."]
+            case LocationSelectType.Global:
+                return [<SvgGlobal key={LocationSelectType.Global} />, "This ability will affect all units on the map."]
+            case LocationSelectType.LocationSelect:
+                return [<SvgTarget key={LocationSelectType.LocationSelect} />, "This ability will target a specific location on the map."]
+            case LocationSelectType.MechSelect:
+                return [<SvgMicrochip key={LocationSelectType.MechSelect} />, "This ability will target a specific mech on the map."]
+            case LocationSelectType.MechSelectAllied:
+                return [<SvgMicrochip key={LocationSelectType.MechSelectAllied} />, "This ability will target a specific allied mech on the map."]
+            case LocationSelectType.MechSelectOpponent:
+                return [<SvgMicrochip key={LocationSelectType.MechSelectOpponent} />, "This ability will target a specific opponent mech on the map."]
+            case LocationSelectType.LineSelect:
+                return [<SvgLine key={LocationSelectType.LineSelect} />, "This ability will target a straight line on the map."]
         }
 
         return [<SvgQuestionMark key="MISCELLANEOUS" />, "Miscellaneous ability type."]
@@ -78,17 +88,21 @@ export const QuickPlayerAbilitiesItem = ({
             })
             newSnackbarMessage(`Successfully claimed 1 x ${saleAbility.ability.label || "ability"}`, "success")
             onClaimCallback()
-            setError(undefined)
+            setClaimError(undefined)
         } catch (e) {
             if (e instanceof Error) {
-                setError(e.message)
+                setClaimError(e.message)
             } else if (typeof e === "string") {
-                setError(e)
+                setClaimError(e)
             }
         } finally {
             setLoading(false)
         }
-    }, [send, saleAbility.id, saleAbility.ability.label, newSnackbarMessage, onClaimCallback, setError])
+    }, [send, saleAbility.id, saleAbility.ability.label, newSnackbarMessage, onClaimCallback, setClaimError])
+
+    const onOpenPurchaseModal = () => {
+        setShowPurchaseModal(true)
+    }
 
     const onPurchase = useCallback(async () => {
         try {
@@ -99,23 +113,27 @@ export const QuickPlayerAbilitiesItem = ({
             })
             newSnackbarMessage(`Successfully purchased 1 x ${saleAbility.ability.label || "ability"}`, "success")
             onPurchaseCallback()
-            setError(undefined)
+            setPurchaseError(undefined)
+            setShowPurchaseModal(false)
+            if (showConfirmation) {
+                localStorage.setItem("hideSaleAbilitiesPurchaseConfirmation", String(showConfirmation))
+            }
         } catch (e) {
             if (e instanceof Error) {
-                setError(e.message)
+                setPurchaseError(e.message)
             } else if (typeof e === "string") {
-                setError(e)
+                setPurchaseError(e)
             }
         } finally {
             setLoading(false)
         }
-    }, [send, saleAbility.id, saleAbility.ability.label, price, newSnackbarMessage, onPurchaseCallback, setError])
+    }, [send, saleAbility.id, saleAbility.ability.label, price, newSnackbarMessage, onPurchaseCallback, showConfirmation])
 
     const onClick = useMemo(() => {
         if (availability === SaleAbilityAvailability.CanClaim) {
             return onClaim
         } else if (availability === SaleAbilityAvailability.CanPurchase) {
-            return onPurchase
+            return localStorage.getItem("hideSaleAbilitiesPurchaseConfirmation") === "true" ? onPurchase : onOpenPurchaseModal
         }
     }, [availability, onClaim, onPurchase])
 
@@ -300,6 +318,32 @@ export const QuickPlayerAbilitiesItem = ({
                     </TooltipHelper>
                 </FancyButton>
             </Fade>
+            {showPurchaseModal && (
+                <ConfirmModal
+                    title="Confirm Purchase"
+                    onConfirm={onPurchase}
+                    onClose={() => setShowPurchaseModal(false)}
+                    isLoading={loading}
+                    error={purchaseError}
+                >
+                    <Typography
+                        sx={{
+                            "& span": {
+                                animation: `${scaleUpKeyframes} 0.1s ease-out`,
+                                color: colors.gold,
+                            },
+                        }}
+                    >
+                        Purchase {saleAbility.ability.label} for <span key={price}>{supFormatter(price, 2)} SUPS</span>?
+                    </Typography>
+                    <PreferenceToggle
+                        disabled={loading}
+                        title="Don't show this again"
+                        checked={!!showConfirmation}
+                        onChangeFunction={(e) => toggleShowConfirmation(e.currentTarget.checked)}
+                    />
+                </ConfirmModal>
+            )}
         </>
     )
 }

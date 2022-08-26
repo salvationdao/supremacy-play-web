@@ -1,15 +1,20 @@
-import { Box, Stack } from "@mui/material"
+import { Box, Stack, Typography } from "@mui/material"
 import { useMemo } from "react"
+import { useSupremacy, useUI } from "../../../containers"
+import { fonts } from "../../../theme/theme"
 import { BattleAbility } from "./BattleAbility/BattleAbility"
 import { PlayerAbilities } from "./PlayerAbilities/PlayerAbilities"
 import { QuickPlayerAbilities } from "./QuickPlayerAbilities/QuickPlayerAbilities"
 
 export const BattleArena = () => {
-    return useMemo(
-        () => (
-            <Stack sx={{ position: "relative", height: "100%", backgroundColor: (theme) => theme.factionTheme.background }}>
+    const { setSmallDisplayRef } = useUI()
+    const { battleIdentifier } = useSupremacy()
+
+    const content = useMemo(() => {
+        return (
+            <>
                 {/* The minimap or the stream will mount here */}
-                <Box id="left-drawer-space" sx={{ flexShrink: 0 }} />
+                <Box ref={setSmallDisplayRef} sx={{ flexShrink: 0 }} />
 
                 <Box
                     sx={{
@@ -20,7 +25,7 @@ export const BattleArena = () => {
                         mr: ".8rem",
                         pr: ".8rem",
                         pl: "1.6rem",
-                        py: "1.4rem",
+                        py: "1rem",
                         direction: "ltr",
                         scrollbarWidth: "none",
                         "::-webkit-scrollbar": {
@@ -44,8 +49,21 @@ export const BattleArena = () => {
                         </Stack>
                     </Box>
                 </Box>
+            </>
+        )
+    }, [setSmallDisplayRef])
+
+    return useMemo(() => {
+        return (
+            <Stack spacing="1rem" sx={{ position: "relative", height: "100%", backgroundColor: (theme) => theme.factionTheme.background }}>
+                {content}
+
+                {battleIdentifier && (
+                    <Box sx={{ p: ".4rem 1rem", borderTop: (theme) => `${theme.factionTheme.primary}30 1px solid` }}>
+                        <Typography sx={{ fontFamily: fonts.nostromoBlack }}>BATTLE ID #{battleIdentifier.toString().padStart(4, "0")}</Typography>
+                    </Box>
+                )}
             </Stack>
-        ),
-        [],
-    )
+        )
+    }, [battleIdentifier, content])
 }

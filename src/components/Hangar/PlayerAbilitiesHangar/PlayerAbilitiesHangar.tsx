@@ -36,15 +36,24 @@ export const PlayerAbilitiesHangar = () => {
     const locationSelectTypeFilterSection = useRef<ChipFilter>({
         label: "ABILITY TYPE",
         options: [
-            { value: LocationSelectType.GLOBAL, label: LocationSelectType.GLOBAL.split("_").join(" "), color: colors.green },
-            { value: LocationSelectType.LOCATION_SELECT, label: LocationSelectType.LOCATION_SELECT.split("_").join(" "), color: colors.blue2 },
-            { value: LocationSelectType.MECH_SELECT, label: LocationSelectType.MECH_SELECT.split("_").join(" "), color: colors.gold },
-            { value: LocationSelectType.LINE_SELECT, label: LocationSelectType.LINE_SELECT.split("_").join(" "), color: colors.purple },
+            { value: LocationSelectType.Global, label: LocationSelectType.Global.split("_").join(" "), color: colors.green },
+            { value: LocationSelectType.LocationSelect, label: LocationSelectType.LocationSelect.split("_").join(" "), color: colors.blue2 },
+            { value: LocationSelectType.MechSelect, label: LocationSelectType.MechSelect.split("_").join(" "), color: colors.gold },
+            { value: LocationSelectType.MechSelectAllied, label: LocationSelectType.MechSelectAllied.split("_").join(" "), color: colors.bronze },
+            { value: LocationSelectType.MechSelectOpponent, label: LocationSelectType.MechSelectOpponent.split("_").join(" "), color: colors.orange },
+            { value: LocationSelectType.LineSelect, label: LocationSelectType.LineSelect.split("_").join(" "), color: colors.purple },
         ],
         initialSelected: locationSelectTypes,
         initialExpanded: true,
         onSetSelected: (value: string[]) => {
-            setLocationSelectTypes(value)
+            let newValue = [...value]
+
+            // Some manual logic, mech select should include mech select allied and mech select opponent
+            if (newValue.includes(LocationSelectType.MechSelect)) {
+                newValue = newValue.concat([LocationSelectType.MechSelectAllied, LocationSelectType.MechSelectOpponent])
+            }
+
+            setLocationSelectTypes(newValue)
             changePage(1)
         },
     })
@@ -72,6 +81,7 @@ export const PlayerAbilitiesHangar = () => {
         if (locationSelectTypes.length > 0) {
             result = result.filter((p) => locationSelectTypes.includes(p.ability.location_select_type))
         }
+
         if (search !== "") {
             result = result.filter((p) => p.ability.label.includes(search) || p.ability.description.includes(search))
         }

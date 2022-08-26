@@ -51,7 +51,7 @@ const PlayerAbilitiesInner = () => {
         pageSize: 8,
         page: 1,
     })
-    const [locationSelectType, setLocationSelectType] = useState<LocationSelectType | null>(null)
+    const [locationSelectTypes, setLocationSelectTypes] = useState<LocationSelectType[]>([])
 
     useGameServerSubscriptionSecuredUser<PlayerAbility[]>(
         {
@@ -67,18 +67,18 @@ const PlayerAbilitiesInner = () => {
 
     useEffect(() => {
         let result = playerAbilities.map((p) => p)
-        if (locationSelectType) {
-            result = result.filter((p) => p.ability.location_select_type === locationSelectType)
+        if (locationSelectTypes.length > 0) {
+            result = result.filter((p) => locationSelectTypes.includes(p.ability.location_select_type))
         }
 
         setTotalItems(result.length)
         setShownPlayerAbilities(result.slice((page - 1) * pageSize, page * pageSize))
-    }, [playerAbilities, locationSelectType, setTotalItems, pageSize, page])
+    }, [playerAbilities, locationSelectTypes, setTotalItems, pageSize, page])
 
     const onLocationSelectTypeChange = useCallback(
-        (l: LocationSelectType | null) => {
+        (l: LocationSelectType[]) => {
             changePage(1)
-            setLocationSelectType(l)
+            setLocationSelectTypes(l)
         },
         [changePage],
     )
@@ -92,37 +92,41 @@ const PlayerAbilitiesInner = () => {
                 sx={(theme) => ({
                     "& .MuiButton-root": {
                         flex: 1,
+                        height: "3rem",
+                        borderWidth: "2px",
                         borderRadius: 0.8,
+                        transition: "none",
                         "&:hover": {
-                            border: `1px solid ${theme.factionTheme.primary}65`,
+                            opacity: 0.9,
+                            backgroundColor: theme.factionTheme.primary,
                         },
                     },
                 })}
             >
                 <FilterButton
-                    value={LocationSelectType.GLOBAL}
-                    currentSelectedValue={locationSelectType}
+                    value={[LocationSelectType.Global]}
+                    currentSelectedValue={locationSelectTypes}
                     onChange={onLocationSelectTypeChange}
                     icon={<SvgGlobal size="1.4rem" />}
                 />
 
                 <FilterButton
-                    value={LocationSelectType.LOCATION_SELECT}
-                    currentSelectedValue={locationSelectType}
+                    value={[LocationSelectType.LocationSelect]}
+                    currentSelectedValue={locationSelectTypes}
                     onChange={onLocationSelectTypeChange}
                     icon={<SvgTarget size="1.4rem" />}
                 />
 
                 <FilterButton
-                    value={LocationSelectType.MECH_SELECT}
-                    currentSelectedValue={locationSelectType}
+                    value={[LocationSelectType.MechSelect, LocationSelectType.MechSelectAllied, LocationSelectType.MechSelectOpponent]}
+                    currentSelectedValue={locationSelectTypes}
                     onChange={onLocationSelectTypeChange}
                     icon={<SvgMicrochip size="1.4rem" />}
                 />
 
                 <FilterButton
-                    value={LocationSelectType.LINE_SELECT}
-                    currentSelectedValue={locationSelectType}
+                    value={[LocationSelectType.LineSelect]}
+                    currentSelectedValue={locationSelectTypes}
                     onChange={onLocationSelectTypeChange}
                     icon={<SvgLine size="1.4rem" />}
                 />
@@ -150,10 +154,10 @@ const PlayerAbilitiesInner = () => {
                         opacity: 0.8,
                     }}
                 >
-                    {locationSelectType ? (
+                    {locationSelectTypes ? (
                         <>
                             No results,&nbsp;
-                            <strong style={{ color: colors.gold, textDecoration: "underline" }} onClick={() => setLocationSelectType(null)}>
+                            <strong style={{ color: colors.gold, textDecoration: "underline" }} onClick={() => setLocationSelectTypes([])}>
                                 click here to clear filters.
                             </strong>
                         </>
@@ -203,29 +207,31 @@ const PlayerAbilitiesInner = () => {
 const FilterButton = ({
     value,
     currentSelectedValue,
-    onChange: setLocationSelectType,
+    onChange: setLocationSelectTypes,
     icon,
 }: {
-    value: LocationSelectType
-    currentSelectedValue: LocationSelectType | null
-    onChange: (l: LocationSelectType | null) => void
+    value: LocationSelectType[]
+    currentSelectedValue: LocationSelectType[]
+    onChange: (l: LocationSelectType[]) => void
     icon: ReactNode
 }) => {
     const theme = useTheme()
+
+    const isSame = value.join("||") === currentSelectedValue.join("||")
 
     return (
         <Button
             sx={{
                 "&&": {
-                    backgroundColor: value === currentSelectedValue ? theme.factionTheme.primary : "unset",
+                    backgroundColor: isSame ? theme.factionTheme.primary : "unset",
                     border: `1px solid ${theme.factionTheme.primary}`,
                 },
                 svg: {
-                    fill: value === currentSelectedValue ? theme.factionTheme.secondary : "#FFFFFF",
+                    fill: isSame ? theme.factionTheme.secondary : "#FFFFFF",
                 },
             }}
             onClick={() => {
-                setLocationSelectType(value === currentSelectedValue ? null : value)
+                setLocationSelectTypes(isSame ? [] : value)
             }}
         >
             {icon}

@@ -55,13 +55,6 @@ export interface MechStatus {
     can_deploy?: boolean
 }
 
-export interface AssetDurability {
-    hash: string
-    started_at: Date
-    expect_completed_at: Date
-    repair_type: "FAST" | "STANDARD" | ""
-}
-
 export interface Images {
     image_url?: string
     animation_url?: string
@@ -497,4 +490,36 @@ export interface StorefrontPackage {
     currency: string
     price_dollars: number
     price_cents: number
+}
+
+export interface Submodel {
+    images: Images
+    collection_slug: string
+    hash: string
+    id: string
+    label: string
+    owner_id: string
+    tier: string
+    token_id: number
+    locked_to_marketplace: boolean
+    market_locked: boolean
+    xsyn_locked: boolean
+    updated_at: Date
+    created_at: Date
+}
+
+export enum SubmodelStatus {
+    Equipped = "EQUIPPED",
+    Unequipped = "UNEQUIPPED",
+}
+
+export interface WeaponModel {
+    id: string
+    brand_id: string
+    label: string
+    weapon_type: string
+    default_skin_id: string
+    repair_blocks: number
+    updated_at: Date
+    created_at: Date
 }

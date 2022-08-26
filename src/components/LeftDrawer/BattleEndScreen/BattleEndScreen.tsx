@@ -3,7 +3,7 @@ import { Box } from "@mui/system"
 import moment from "moment"
 import { useEffect, useRef } from "react"
 import { SectionFactions, SectionWinner } from "../.."
-import { useGame, useOverlayToggles } from "../../../containers"
+import { useGame, useUI } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { LEFT_DRAWER_MAP } from "../../../routes"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
@@ -12,17 +12,21 @@ import { SectionMechRewards } from "./Sections/SectionMechRewards"
 export const BattleEndScreen = () => {
     const theme = useTheme()
     const { map, battleEndDetail } = useGame()
-    const { setLeftDrawerActiveTabID } = useOverlayToggles()
+    const { hasModalsOpen, setLeftDrawerActiveTabID } = useUI()
     // When user first loads the web page and gets battle end, we want to prevent changing tabs
     const skippedFirstIteration = useRef(false)
 
     // New game started, so close the panel
     useEffect(() => {
+        if (hasModalsOpen()) return
+
         if (map) setLeftDrawerActiveTabID((prev) => (prev ? LEFT_DRAWER_MAP.battle_arena?.id : prev))
-    }, [map, setLeftDrawerActiveTabID])
+    }, [hasModalsOpen, map, setLeftDrawerActiveTabID])
 
     // Game ends, show the panel
     useEffect(() => {
+        if (hasModalsOpen()) return
+
         if (battleEndDetail) {
             if (skippedFirstIteration.current) {
                 setLeftDrawerActiveTabID(LEFT_DRAWER_MAP.previous_battle?.id)
@@ -30,7 +34,7 @@ export const BattleEndScreen = () => {
                 skippedFirstIteration.current = true
             }
         }
-    }, [battleEndDetail, setLeftDrawerActiveTabID])
+    }, [battleEndDetail, hasModalsOpen, setLeftDrawerActiveTabID])
 
     const primaryColor = theme.factionTheme.primary
     const backgroundColor = theme.factionTheme.background

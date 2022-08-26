@@ -5,14 +5,21 @@ export interface FactionsAll {
     [faction_id: string]: Faction
 }
 
-export type BribeStage = "OPT_IN" | "LOCATION_SELECT" | "COOLDOWN" | "HOLD"
+export enum BribeStage {
+    OptIn = "OPT_IN",
+    LocationSelect = "LOCATION_SELECT",
+    Cooldown = "COOLDOWN",
+    Hold = "HOLD",
+}
 
 export enum LocationSelectType {
-    LINE_SELECT = "LINE_SELECT",
-    MECH_SELECT = "MECH_SELECT",
-    LOCATION_SELECT = "LOCATION_SELECT",
-    GLOBAL = "GLOBAL",
-    MECH_COMMAND = "MECH_COMMAND",
+    LineSelect = "LINE_SELECT",
+    MechSelect = "MECH_SELECT",
+    MechSelectAllied = "MECH_SELECT_ALLIED",
+    MechSelectOpponent = "MECH_SELECT_OPPONENT",
+    LocationSelect = "LOCATION_SELECT",
+    Global = "GLOBAL",
+    MechCommand = "MECH_COMMAND",
 }
 
 export interface Map {
@@ -27,7 +34,7 @@ export interface Map {
     disabled_cells: number[]
 }
 
-export interface BattleZone {
+export interface BattleZoneStruct {
     location: Position
     radius: number
     shrinkTime: number
@@ -182,4 +189,26 @@ export interface DamageRecord {
     amount: number
     caused_by_war_machine?: WarMachineState
     source_name: string // weapon/ability name
+}
+
+export enum DisplayEffectType {
+    None = "NONE", // Just show the icon or circle
+    Range = "RANGE", // E.g. nuke, shows a one off pulse
+    MechBorder = "MECH_BORDER", // E.g. Hacker drone, red border on mech
+    MechPulse = "MECH_PULSE", // E.g. overcharge, mech pulses
+}
+
+export interface DisplayedAbility {
+    offering_id: string
+    display_effect_type: DisplayEffectType
+    location_select_type: LocationSelectType
+    image_url: string
+    colour: string
+    radius?: number
+    mech_id?: string
+    location: {
+        x: number
+        y: number
+    }
+    launching_at?: Date
 }

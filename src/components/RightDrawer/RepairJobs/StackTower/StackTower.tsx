@@ -1,6 +1,8 @@
 import { Box, Stack, Typography } from "@mui/material"
-import React, { useCallback, useEffect, useMemo, useState } from "react"
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useTheme } from "../../../../containers/theme"
+import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
 import { RepairAgent } from "../../../../types/jobs"
 import { ProgressBar } from "../../../Common/ProgressBar"
@@ -10,19 +12,68 @@ export const StackTower = React.memo(function StackTower({
     primaryColor,
     disableGame,
     repairAgent,
-    agentRepairUpdate,
-    completeAgentRepair,
+    setIsSubmitting,
+    setSubmitError,
+    onSubmitted,
 }: {
     primaryColor: string
     disableGame: boolean
     repairAgent?: RepairAgent
-    agentRepairUpdate: (repairAgentID: string, gamePattern: GamePattern) => Promise<boolean>
-    completeAgentRepair: (repairAgentID: string) => Promise<boolean>
+    setIsSubmitting: React.Dispatch<React.SetStateAction<boolean>>
+    setSubmitError: React.Dispatch<React.SetStateAction<string | undefined>>
+    onSubmitted: () => void
 }) {
+    const { send } = useGameServerCommandsUser("/user_commander")
+
     // Game data
     const [gameState, setGameState] = useState<GameState>(GameState.Loading)
     const [score, setScore] = useState(0)
     const [cumulativeScore, setCumulativeScore] = useState(0)
+
+    // Send individual updates
+    const agentRepairUpdate = useCallback(
+        async (repairAgentID: string, gamePattern: GamePattern) => {
+            try {
+                const resp = await send(GameServerKeys.RepairAgentUpdate, {
+                    repair_agent_id: repairAgentID,
+                    ...gamePattern,
+                })
+
+                if (!resp) return Promise.reject(false)
+                return Promise.resolve(true)
+            } catch (err) {
+                return Promise.reject(false)
+            }
+        },
+        [send],
+    )
+
+    // Tell server we finished and do validation
+    const completeAgentRepair = useCallback(
+        async (repairAgentID: string) => {
+            try {
+                setSubmitError(undefined)
+                setIsSubmitting(true)
+                const resp = await send(GameServerKeys.CompleteRepairAgent, {
+                    repair_agent_id: repairAgentID,
+                })
+
+                if (!resp) return Promise.reject(false)
+                onSubmitted()
+                return Promise.resolve(true)
+            } catch (err) {
+                const message = typeof err === "string" ? err : "Failed to submit results."
+                setSubmitError(message)
+                console.error(err)
+                return Promise.reject(false)
+            } finally {
+                setTimeout(() => {
+                    setIsSubmitting(false)
+                }, 1500) // Show the loading spinner for at least sometime so it doesnt flash away
+            }
+        },
+        [onSubmitted, send, setIsSubmitting, setSubmitError],
+    )
 
     // As the player plays the mini game, this will be the game updates
     const oneNewGamePattern = useCallback(
@@ -30,16 +81,20 @@ export const StackTower = React.memo(function StackTower({
             setScore(gamePattern?.score)
 
             if (repairAgent?.id) {
-                const resp = await agentRepairUpdate(repairAgent.id, gamePattern)
-                if (resp) {
-                    setCumulativeScore((prev) => {
-                        const newCumScore = prev + 1
-                        if (repairAgent?.id && newCumScore === repairAgent?.required_stacks) {
-                            completeAgentRepair(repairAgent.id)
-                            return 0
-                        }
-                        return newCumScore
-                    })
+                try {
+                    const resp = await agentRepairUpdate(repairAgent.id, gamePattern)
+                    if (resp) {
+                        setCumulativeScore((prev) => {
+                            const newCumScore = prev + 1
+                            if (repairAgent?.id && newCumScore === repairAgent?.required_stacks) {
+                                completeAgentRepair(repairAgent.id)
+                                return 0
+                            }
+                            return newCumScore
+                        })
+                    }
+                } catch (err) {
+                    console.error(err)
                 }
             }
         },
@@ -90,7 +145,13 @@ export const StackTower = React.memo(function StackTower({
                 </Stack>
 
                 <Box sx={{ position: "relative", flex: 1, border: "#FFFFFF20 1px solid" }}>
-                    <TowerStackInner score={score} gameState={gameState} setGameState={setGameState} oneNewGamePattern={oneNewGamePattern} />
+                    <TowerStackInner
+                        disableGame={disableGame}
+                        score={score}
+                        gameState={gameState}
+                        setGameState={setGameState}
+                        oneNewGamePattern={oneNewGamePattern}
+                    />
                 </Box>
 
                 <Typography sx={{ color: colors.lightGrey }}>
@@ -108,18 +169,25 @@ const TowerStackInner = ({
     gameState,
     setGameState,
     oneNewGamePattern,
+    disableGame,
 }: {
     score: number
     gameState: GameState
     setGameState: React.Dispatch<React.SetStateAction<GameState>>
     oneNewGamePattern: (gamePattern: GamePattern) => void
+    disableGame: boolean
 }) => {
     const theme = useTheme()
 
     return useMemo(() => {
         return (
             <Box sx={{ position: "relative", width: "100%", height: "100%", overflow: "hidden", userSelect: "none" }}>
-                <StaticGame backgroundColor={theme.factionTheme.background} setGameState={setGameState} oneNewGamePattern={oneNewGamePattern} />
+                <StaticGame
+                    disableGame={disableGame}
+                    backgroundColor={theme.factionTheme.background}
+                    setGameState={setGameState}
+                    oneNewGamePattern={oneNewGamePattern}
+                />
 
                 {/* Score */}
                 <Stack
@@ -214,27 +282,34 @@ const TowerStackInner = ({
                 </Stack>
             </Box>
         )
-    }, [gameState, oneNewGamePattern, score, setGameState, theme.factionTheme.background])
+    }, [disableGame, gameState, oneNewGamePattern, score, setGameState, theme.factionTheme.background])
 }
 
 const StaticGame = React.memo(function StaticGame({
     backgroundColor,
     setGameState,
     oneNewGamePattern,
+    disableGame,
 }: {
     backgroundColor: string
     setGameState: React.Dispatch<React.SetStateAction<GameState>>
     oneNewGamePattern: (gamePattern: GamePattern) => void
+    disableGame: boolean
 }) {
+    const gameStarted = useRef(false)
+
     // Initialize game
     useEffect(() => {
+        if (gameStarted.current || disableGame) return
+
         const game = new Game(backgroundColor, setGameState, oneNewGamePattern)
         setTimeout(() => {
             game.start()
+            gameStarted.current = true
         }, 100)
 
         return () => game.cleanup()
-    }, [backgroundColor, oneNewGamePattern, setGameState])
+    }, [backgroundColor, disableGame, oneNewGamePattern, setGameState])
 
     // Game container, must keep the id
     return (

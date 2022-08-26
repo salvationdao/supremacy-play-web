@@ -33,13 +33,17 @@ export const PlayerAbilityCard = ({ playerAbility, viewOnly }: { playerAbility: 
 
     const abilityTypeIcon = useMemo(() => {
         switch (playerAbility.ability.location_select_type) {
-            case LocationSelectType.GLOBAL:
+            case LocationSelectType.Global:
                 return <SvgGlobal size="1.5rem" />
-            case LocationSelectType.LOCATION_SELECT:
+            case LocationSelectType.LocationSelect:
                 return <SvgTarget size="1.5rem" />
-            case LocationSelectType.MECH_SELECT:
+            case LocationSelectType.MechSelect:
                 return <SvgMicrochip size="1.5rem" />
-            case LocationSelectType.LINE_SELECT:
+            case LocationSelectType.MechSelectAllied:
+                return <SvgMicrochip size="1.5rem" />
+            case LocationSelectType.MechSelectOpponent:
+                return <SvgMicrochip size="1.5rem" />
+            case LocationSelectType.LineSelect:
                 return <SvgLine size="1.5rem" />
         }
         return <SvgQuestionMark size="1.5rem" />

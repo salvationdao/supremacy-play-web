@@ -2,11 +2,11 @@ import { Box, Stack } from "@mui/material"
 import { ClipThing, StyledNormalText } from "../.."
 import { SvgEmergency } from "../../../assets"
 import { colors } from "../../../theme/theme"
-import { BattleZone } from "../../../types"
+import { BattleZoneStruct } from "../../../types"
 import { useTimer } from "../../../hooks"
 import { useMemo } from "react"
 
-export const BattleZoneAlert = ({ data }: { data: BattleZone }) => {
+export const BattleZoneAlert = ({ data }: { data: BattleZoneStruct }) => {
     const endTime = useMemo(() => new Date(Date.now() + data.warnTime * 1000), [data.warnTime])
     const { totalSecRemain } = useTimer(endTime)
 

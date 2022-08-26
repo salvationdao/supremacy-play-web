@@ -1,16 +1,12 @@
 import { Box } from "@mui/material"
-import { useCallback, useMemo } from "react"
+import { useMemo } from "react"
 import { useGame } from "../../../../containers"
 import { colors } from "../../../../theme/theme"
-import { Map } from "../../../../types"
-
-interface BattleZoneProps {
-    map: Map
-}
+import { BattleZoneStruct, Map } from "../../../../types"
 
 const borderThickness = 3000
 
-export const BattleZone = ({ map }: BattleZoneProps) => {
+export const BattleZone = ({ map }: { map: Map }) => {
     const { battleZone } = useGame()
 
     const mapScale = useMemo(() => map.width / (map.cells_x * 2000), [map])
@@ -24,37 +20,15 @@ export const BattleZone = ({ map }: BattleZoneProps) => {
         [map.top_pixels, map.height, mapScale, battleZone?.location.y],
     )
     const radius = useMemo(() => (battleZone?.radius || 0) * mapScale, [mapScale, battleZone?.radius])
-    const adjustedRadius = (radius + borderThickness) * 2
 
-    const battleZoneCircle = useCallback(
-        (overlay: boolean = false) => (
-            <Box
-                sx={{
-                    zIndex: overlay ? 900 : 1,
-                    position: "absolute",
-                    left: 0,
-                    width: adjustedRadius,
-                    height: adjustedRadius,
-                    transform: `translate(-50%, -50%) translate3d(${locationX}px, ${locationY}px, 0)`,
-                    borderRadius: "50%",
-                    border: `${borderThickness}px solid #0F0202${overlay ? "66" : "BB"}`,
-                    pointerEvents: "none",
-                    transition: `all ${battleZone?.shrinkTime || 0.5}s ease-in-out`,
-                    transitionDelay: `${battleZone?.warnTime || 0}s`,
-                }}
-            />
-        ),
-        [adjustedRadius, battleZone?.shrinkTime, battleZone?.warnTime, locationX, locationY],
-    )
-
-    if (!battleZone || battleZone.radius === 0) return <></>
+    if (!battleZone || battleZone.radius === 0) return null
 
     return (
         <>
-            {battleZoneCircle()}
+            <BattleZoneCircle battleZone={battleZone} radius={radius} locationX={locationX} locationY={locationY} />
 
             {/* Dim mechs outside battle zone */}
-            {battleZoneCircle(true)}
+            <BattleZoneCircle overlay battleZone={battleZone} radius={radius} locationX={locationX} locationY={locationY} />
 
             {/* Target Circle */}
             <Box
@@ -73,5 +47,39 @@ export const BattleZone = ({ map }: BattleZoneProps) => {
                 }}
             />
         </>
+    )
+}
+
+const BattleZoneCircle = ({
+    battleZone,
+    overlay,
+    radius,
+    locationX,
+    locationY,
+}: {
+    battleZone: BattleZoneStruct
+    overlay?: boolean
+    radius: number
+    locationX: number
+    locationY: number
+}) => {
+    const adjustedRadius = (radius + borderThickness) * 2
+
+    return (
+        <Box
+            sx={{
+                zIndex: overlay ? 900 : 1,
+                position: "absolute",
+                left: 0,
+                width: adjustedRadius,
+                height: adjustedRadius,
+                transform: `translate(-50%, -50%) translate3d(${locationX}px, ${locationY}px, 0)`,
+                borderRadius: "50%",
+                border: `${borderThickness}px solid #0F0202${overlay ? "66" : "BB"}`,
+                pointerEvents: "none",
+                transition: `all ${battleZone?.shrinkTime || 0.5}s ease-in-out`,
+                transitionDelay: `${battleZone?.warnTime || 0}s`,
+            }}
+        />
     )
 }

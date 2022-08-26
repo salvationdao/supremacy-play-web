@@ -1,9 +1,9 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { createContainer } from "unstated-next"
-import { useAuth, useSupremacy } from "."
+import { useAuth, useSupremacy, useUI } from "."
 import { useGameServerCommandsUser, useGameServerSubscription } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
-import { AbilityDetail, AIType, BattleEndDetail, BattleZone, BribeStage, Map, WarMachineState } from "../types"
+import { AbilityDetail, AIType, BattleEndDetail, BattleZoneStruct, BribeStage, Map, WarMachineState } from "../types"
 import { useArena } from "./arena"
 
 export interface BribeStageResponse {
@@ -14,7 +14,7 @@ export interface BribeStageResponse {
 export interface GameSettingsResponse {
     battle_identifier: number
     game_map: Map
-    battle_zone: BattleZone
+    battle_zone: BattleZoneStruct
     war_machines: WarMachineState[]
     spawned_ai: WarMachineState[]
     ability_details: AbilityDetail[]
@@ -22,17 +22,15 @@ export interface GameSettingsResponse {
 
 // Game data that needs to be shared between different components
 export const GameContainer = createContainer(() => {
+    const { toggleIsStreamBigDisplayMemorized, restoreIsStreamBigDisplayMemorized } = useUI()
     const { setBattleIdentifier } = useSupremacy()
     const { factionID, user } = useAuth()
     const { currentArenaID } = useArena()
     const { send } = useGameServerCommandsUser("/user_commander")
 
     // States
-    const [isStreamBigDisplay, setIsStreamBigDisplay] = useState((localStorage.getItem("isStreamBigDisplay") || "true") === "true")
-    const prevIsStreamBigDisplay = useRef<boolean>()
-
     const [map, setMap] = useState<Map>()
-    const [battleZone, setBattleZone] = useState<BattleZone>()
+    const [battleZone, setBattleZone] = useState<BattleZoneStruct>()
     const [abilityDetails, setAbilityDetails] = useState<AbilityDetail[]>([])
     const [warMachines, setWarMachines] = useState<WarMachineState[] | undefined>([])
     const [spawnedAI, setSpawnedAI] = useState<WarMachineState[] | undefined>([])
@@ -40,7 +38,7 @@ export const GameContainer = createContainer(() => {
     const [battleEndDetail, setBattleEndDetail] = useState<BattleEndDetail>()
     const [forceDisplay100Percentage, setForceDisplay100Percentage] = useState<string>("")
 
-    const isBattleStarted = useMemo(() => (map && bribeStage && bribeStage.phase !== "HOLD" ? true : false), [bribeStage, map])
+    const isBattleStarted = useMemo(() => (map && bribeStage && bribeStage.phase !== BribeStage.Hold ? true : false), [bribeStage, map])
 
     const factionWarMachines = useMemo(() => {
         if (!warMachines) return
@@ -121,28 +119,9 @@ export const GameContainer = createContainer(() => {
         (payload) => {
             setBribeStage(payload)
             // reset force display, if
-            if (payload?.phase === "COOLDOWN" || payload?.phase === "HOLD") setForceDisplay100Percentage("")
+            if (payload?.phase === BribeStage.Cooldown || payload?.phase === BribeStage.Hold) setForceDisplay100Percentage("")
         },
     )
-
-    useEffect(() => {
-        localStorage.setItem("isStreamBigDisplay", isStreamBigDisplay.toString())
-    }, [isStreamBigDisplay])
-
-    // Toggles the big display, memorizes the previous value
-    const toggleIsStreamBigDisplayMemorized = useCallback((value: boolean) => {
-        setIsStreamBigDisplay((prev) => {
-            if (prevIsStreamBigDisplay.current === undefined) prevIsStreamBigDisplay.current = prev
-            return value
-        })
-    }, [])
-
-    const restoreIsStreamBigDisplayMemorized = useCallback(() => {
-        if (prevIsStreamBigDisplay.current !== undefined) {
-            setIsStreamBigDisplay(prevIsStreamBigDisplay.current)
-            prevIsStreamBigDisplay.current = undefined
-        }
-    }, [])
 
     // If battle ends, then we will focus on the stream for watch mech intro
     useEffect(() => {
@@ -154,11 +133,6 @@ export const GameContainer = createContainer(() => {
     }, [isBattleStarted, restoreIsStreamBigDisplayMemorized, toggleIsStreamBigDisplayMemorized])
 
     return {
-        isStreamBigDisplay,
-        setIsStreamBigDisplay,
-        toggleIsStreamBigDisplayMemorized,
-        restoreIsStreamBigDisplayMemorized,
-
         bribeStage,
         map,
         setMap,
