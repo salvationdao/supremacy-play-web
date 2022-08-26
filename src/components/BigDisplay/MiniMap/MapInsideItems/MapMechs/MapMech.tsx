@@ -98,8 +98,8 @@ const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
             if (payload?.position !== undefined) {
                 const positionEl = document.getElementById(`map-mech-position-${hash}`)
                 if (positionEl) {
-                    const mechMapX = ((payload.position?.x || 0) - map.left_pixels) * mapScale
-                    const mechMapY = ((payload.position?.y || 0) - map.top_pixels) * mapScale
+                    const mechMapX = ((payload.position?.x || 0) - map.pixel_left) * mapScale
+                    const mechMapY = ((payload.position?.y || 0) - map.pixel_top) * mapScale
                     positionEl.style.transform = `translate(-50%, -50%) translate3d(${mechMapX}px, ${mechMapY}px, 0)`
                     positionEl.style.transition = `transform ${TRANSITION_DURATION}s linear`
 
