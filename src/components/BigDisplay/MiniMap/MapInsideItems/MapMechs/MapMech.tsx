@@ -63,9 +63,10 @@ const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
     // Mech move command related
     const mechMoveCommand = useRef<MechMoveCommand>()
     // Mech ability display
-    const [abilityBorderEffect, setAbilityBorderEffect] = useState<DisplayedAbility>()
-    const [abilityPulseEffect, setAbilityPulseEffect] = useState<DisplayedAbility>()
-    const [abilityShakeEffect, setAbilityShakeEffect] = useState<DisplayedAbility>()
+    const [abilityEffects, setAbilityEffects] = useState<DisplayedAbility[]>([])
+    const abilityBorderEffect = useMemo(() => abilityEffects.find((da) => da.mech_display_effect_type === MechDisplayEffectType.Border), [abilityEffects])
+    const abilityPulseEffect = useMemo(() => abilityEffects.find((da) => da.mech_display_effect_type === MechDisplayEffectType.Pulse), [abilityEffects])
+    const abilityShakeEffect = useMemo(() => abilityEffects.find((da) => da.mech_display_effect_type === MechDisplayEffectType.Shake), [abilityEffects])
 
     // Listen on mech stats
     useGameServerSubscription<WarMachineLiveState | undefined>(
@@ -165,19 +166,15 @@ const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
         },
         (payload) => {
             if (!payload) {
-                setAbilityBorderEffect(undefined)
-                setAbilityPulseEffect(undefined)
+                setAbilityEffects([])
                 return
             }
-
-            setAbilityBorderEffect(payload.find((da) => da.mech_id === id && da.mech_display_effect_type === MechDisplayEffectType.Border))
-            setAbilityPulseEffect(payload.find((da) => da.mech_id === id && da.mech_display_effect_type === MechDisplayEffectType.Pulse))
-            setAbilityShakeEffect(payload.find((da) => da.mech_id === id && da.mech_display_effect_type === MechDisplayEffectType.Shake))
+            setAbilityEffects(payload.filter((da) => da.mech_id === id) || [])
         },
     )
 
     const canSelect = useMemo(() => {
-        if (!playerAbility || !isAlive) return false
+        if (!playerAbility || !isAlive || !!abilityBorderEffect) return false
         const locationSelectType = playerAbility.ability.location_select_type
 
         switch (locationSelectType) {
@@ -190,7 +187,7 @@ const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
             default:
                 return false
         }
-    }, [playerAbility, warMachineFactionID, factionID, isAlive])
+    }, [playerAbility, isAlive, abilityBorderEffect, factionID, warMachineFactionID])
 
     const handleClick = useCallback(() => {
         if (playerAbility) {
@@ -293,7 +290,7 @@ const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
                         backgroundColor: primaryColor,
                         borderRadius: 3,
                         boxShadow: isAlive ? `0 0 8px 2px ${primaryColor}70` : "none",
-                        opacity: isAlive ? 1 : 0.7,
+                        opacity: isAlive && !abilityShakeEffect ? 1 : 0.7,
                         animation: abilityShakeEffect ? `${shake} 1s infinite` : "unset",
                         zIndex: 2,
                         transition: "opacity 0.2s ease-out",
@@ -489,10 +486,11 @@ const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
                 )}
 
                 {/* Mech move command dashed line */}
-                {isAlive && mechMoveCommand.current && !mechMoveCommand.current?.reached_at && !mechMoveCommand.current?.cancelled_at && (
+                {isAlive && (
                     <Box
                         id={`map-mech-move-command-${hash}`}
                         style={{
+                            display: "none",
                             position: "absolute",
                             left: "50%",
                             top: "50%",
