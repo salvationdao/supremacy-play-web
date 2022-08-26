@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { useParameterizedQuery } from "react-fetching-library"
 import { createContainer } from "unstated-next"
 import { FallbackFaction, useGlobalNotifications } from "."
@@ -15,6 +15,8 @@ export const SupremacyContainer = createContainer(() => {
     })
     const [serverConnectedBefore, setServerConnectedBefore] = useState(false)
     const [firstConnectTimedOut, setFirstConnectTimedOut] = useState(false)
+    const windowReloadTimeout = useRef<NodeJS.Timeout | null>(null)
+
     const [haveSups, toggleHaveSups] = useState<boolean>() // Needs 3 states: true, false, undefined. Undefined means it's not loaded yet.
     const [factionsAll, setFactionsAll] = useState<FactionsAll>({})
     const [battleIdentifier, setBattleIdentifier] = useState<number>()
@@ -27,6 +29,24 @@ export const SupremacyContainer = createContainer(() => {
             return prev
         })
     }, [state])
+
+    const clearWindowReloadTimeout = useCallback(() => {
+        windowReloadTimeout.current && clearTimeout(windowReloadTimeout.current)
+        windowReloadTimeout.current = null
+    }, [])
+
+    // If server is down and we're not trying to reconnect, reload window after 30 minutes
+    useEffect(() => {
+        console.log({ isServerDown, isReconnecting })
+        if (isServerDown && !isReconnecting) {
+            clearWindowReloadTimeout()
+            windowReloadTimeout.current = setTimeout(() => {
+                location.reload()
+            }, 5000)
+        } else {
+            clearWindowReloadTimeout()
+        }
+    }, [clearWindowReloadTimeout, isReconnecting, isServerDown])
 
     // If it's been X amount of time and we never connected, then server is probs down
     useEffect(() => {
