@@ -1,10 +1,10 @@
 import { useMemo, useState } from "react"
-import { SvgDrag } from "../../../../../assets"
-import { useTheme } from "../../../../../containers/theme"
-import { useGameServerSubscriptionFaction } from "../../../../../hooks/useGameServer"
-import { GameServerKeys } from "../../../../../keys"
-import { MapIcon } from "./MapIcon"
-import { useArena } from "../../../../../containers/arena"
+import { SvgDrag } from "../../../../assets"
+import { useTheme } from "../../../../containers/theme"
+import { useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../../keys"
+import { MapIcon } from "./Common/MapIcon"
+import { useArena } from "../../../../containers/arena"
 
 interface FactionMechCommand {
     battle_id: string
@@ -38,11 +38,11 @@ export const MechCommandIcons = () => {
                         return (
                             <MapIcon
                                 key={`${mmc.battle_id}-${index}`}
-                                primaryColor={theme.factionTheme.primary}
                                 position={{ x: mmc.cell_x, y: mmc.cell_y }}
+                                sizeGrid={1.3}
+                                primaryColor={theme.factionTheme.primary}
+                                insideRender={<SvgDrag size="3rem" sx={{ pb: 0 }} fill={theme.factionTheme.primary} />}
                                 sx={{ zIndex: 9, borderRadius: "50%" }}
-                                sizeGrid={1.2}
-                                icon={<SvgDrag size="3rem" sx={{ pb: 0 }} fill={theme.factionTheme.primary} />}
                             />
                         )
                     })}

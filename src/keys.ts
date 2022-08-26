@@ -17,7 +17,7 @@ export enum GameServerKeys {
     // Battle Arena
     SubBattleArenaList = "BATTLE:ARENA:LIST",
     SubBattleArenaClosed = "BATTLE:ARENA:CLOSED",
-    SubDeadlyAbilityCountdownList = "DEADLY:ABILITY:COUNTDOWN:LIST",
+    SubMiniMapAbilityDisplayList = "MINI:MAP:ABILITY:DISPLAY:LIST",
 
     // Voting abilities
     SubBribeStageUpdated = "BRIBE:STAGE:UPDATED:SUBSCRIBE",

@@ -126,7 +126,7 @@ const QuickPlayerAbilitiesInner = React.memo(function QuickPlayerAbilitiesInner(
         <Box>
             <SectionHeading label="PURCHASE ABILITIES" tooltip="Purchase abilities that are currently on sale." />
 
-            <Stack sx={{ p: "1.5rem 1.1rem", backgroundColor: "#FFFFFF12", boxShadow: 2, border: "#FFFFFF20 1px solid" }}>
+            <Stack sx={{ p: "1.5rem 1.1rem", backgroundColor: "#FFFFFF12", boxShadow: 2, border: "#FFFFFF20 1px solid", minHeight: "12rem" }}>
                 <Stack>
                     <Stack direction="row" spacing=".6rem" alignItems="center">
                         <Typography sx={{ fontWeight: "fontWeightBold", textTransform: "uppercase" }}>Next refresh in:</Typography>
@@ -145,7 +145,7 @@ const QuickPlayerAbilitiesInner = React.memo(function QuickPlayerAbilitiesInner(
                 </Stack>
 
                 {!isLoaded && (
-                    <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                    <Stack alignItems="center" justifyContent="center" sx={{ flex: 1 }}>
                         <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem" }}>
                             <CircularProgress size="3rem" sx={{ color: primaryColor }} />
                         </Stack>
@@ -181,7 +181,7 @@ const QuickPlayerAbilitiesInner = React.memo(function QuickPlayerAbilitiesInner(
                 )}
 
                 {isLoaded && saleAbilities && saleAbilities.length <= 0 && (
-                    <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                    <Stack alignItems="center" justifyContent="center" sx={{ flex: 1 }}>
                         <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", maxWidth: "40rem" }}>
                             <Typography
                                 variant="body2"

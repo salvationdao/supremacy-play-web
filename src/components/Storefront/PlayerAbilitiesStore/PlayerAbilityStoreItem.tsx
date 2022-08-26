@@ -63,6 +63,10 @@ export const PlayerAbilityStoreItem = ({
                 return [<SvgTarget key={LocationSelectType.LocationSelect} />, "This ability will target a specific location on the map."]
             case LocationSelectType.MechSelect:
                 return [<SvgMicrochip key={LocationSelectType.MechSelect} />, "This ability will target a specific mech on the map."]
+            case LocationSelectType.MechSelectAllied:
+                return [<SvgMicrochip key={LocationSelectType.MechSelectAllied} />, "This ability will target a specific allied mech on the map."]
+            case LocationSelectType.MechSelectOpponent:
+                return [<SvgMicrochip key={LocationSelectType.MechSelectOpponent} />, "This ability will target a specific opponent mech on the map."]
             case LocationSelectType.LineSelect:
                 return [<SvgLine key={LocationSelectType.LineSelect} />, "This ability will target a straight line on the map."]
         }
