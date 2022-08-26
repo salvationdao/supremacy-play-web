@@ -37,7 +37,7 @@ export const ChatSend = ({ primaryColor, faction_id }: ChatSendProps) => {
     const [isEmojiOpen, toggleIsEmojiOpen] = useToggle()
 
     const messageColor = useMemo(() => getRandomColor(), [])
-    const renderedMsg = message.replace(/@[a-zA-Z0-9-_]+#/g, "#")
+    const renderedMsg = message.replace(/@[\w ]+#/g, "#")
 
     // Go through input message and return tagged gid's
     const taggedGIDs = useCallback(
