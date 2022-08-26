@@ -186,60 +186,77 @@ const Card = ({ mechID, faction }: { mechID: string; faction: string }) => {
     const avatarUrl = mechDetails?.chassis_skin?.avatar_url || mechDetails?.avatar_url
 
     return (
-        <Box position="relative" height={h} width={w}>
-            <img style={{ position: "absolute", top: "-35px", zIndex: 4 }} width={"100%"} src={border} alt="" />
-            {avatarUrl ? (
-                <div
-                    style={{
-                        position: "absolute",
-                        top: "-26px",
-                        left: "4px",
-                        backgroundImage: `url(${avatarUrl})`,
-                        backgroundRepeat: "no-repeat",
-                        backgroundPosition: "center",
-                        backgroundSize: "contain",
-                        height: "82%",
-                        width: "96%",
-                        zIndex: 3,
-                        clipPath: "polygon(10% 0%, 90% 0%, 100% 10%, 100% 90%, 90% 100%, 10% 100%, 0% 90%, 0% 10%)",
-                    }}
-                />
-            ) : (
-                <div
-                    style={{
-                        position: "absolute",
-                        top: "-26px",
-                        left: "4px",
-                        background: "black",
-                        height: "82%",
-                        width: "96%",
-                        zIndex: 3,
-                        clipPath: "polygon(10% 0%, 90% 0%, 100% 10%, 100% 90%, 90% 100%, 10% 100%, 0% 90%, 0% 10%)",
-                    }}
-                ></div>
-            )}
+        <CardSVG height={h} width={w} />
+        // <Box position="relative" height={h} width={w}>
+        //     <img style={{ position: "absolute", top: "-35px", zIndex: 4 }} width={"100%"} src={border} alt="" />
+        //     {avatarUrl ? (
+        //         <div
+        //             style={{
+        //                 position: "absolute",
+        //                 top: "-26px",
+        //                 left: "4px",
+        //                 backgroundImage: `url(${avatarUrl})`,
+        //                 backgroundRepeat: "no-repeat",
+        //                 backgroundPosition: "center",
+        //                 backgroundSize: "contain",
+        //                 height: "82%",
+        //                 width: "96%",
+        //                 zIndex: 3,
+        //                 clipPath: "polygon(10% 0%, 90% 0%, 100% 10%, 100% 90%, 90% 100%, 10% 100%, 0% 90%, 0% 10%)",
+        //             }}
+        //         />
+        //     ) : (
+        //         <div
+        //             style={{
+        //                 position: "absolute",
+        //                 top: "-26px",
+        //                 left: "4px",
+        //                 background: "black",
+        //                 height: "82%",
+        //                 width: "96%",
+        //                 zIndex: 3,
+        //                 clipPath: "polygon(10% 0%, 90% 0%, 100% 10%, 100% 90%, 90% 100%, 10% 100%, 0% 90%, 0% 10%)",
+        //             }}
+        //         ></div>
+        //     )}
 
-            <img style={{ bottom: 0, zIndex: 3, left: "4px", position: "absolute" }} width={"96.5%"} src={borderBottom} alt="" />
-            <img style={{ bottom: 0, zIndex: 2, left: "4px", position: "absolute" }} width={"96.5%"} src={bottom} alt="" />
-            <Typography
-                sx={{
-                    position: "absolute",
-                    left: 0,
-                    right: 0,
-                    ml: "auto",
-                    mr: "auto",
-                    width: "180px",
-                    textAlign: "center",
+        //     <img style={{ bottom: 0, zIndex: 3, left: "4px", position: "absolute" }} width={"96.5%"} src={borderBottom} alt="" />
+        //     <img style={{ bottom: 0, zIndex: 2, left: "4px", position: "absolute" }} width={"96.5%"} src={bottom} alt="" />
+        //     <Typography
+        //         sx={{
+        //             position: "absolute",
+        //             left: 0,
+        //             right: 0,
+        //             ml: "auto",
+        //             mr: "auto",
+        //             width: "180px",
+        //             textAlign: "center",
 
-                    bottom: "2rem",
-                    zIndex: 3,
-                    opacity: !mechDetails?.name && !mechDetails?.label ? 0.5 : 1,
-                    // left: "20%",
-                }}
-                variant="h5"
-            >
-                {mechDetails?.name || mechDetails?.label || "Waiting"}
-            </Typography>
-        </Box>
+        //             bottom: "2rem",
+        //             zIndex: 3,
+        //             opacity: !mechDetails?.name && !mechDetails?.label ? 0.5 : 1,
+        //             // left: "20%",
+        //         }}
+        //         variant="h5"
+        //     >
+        //         {mechDetails?.name || mechDetails?.label || "Waiting"}
+        //     </Typography>
+        // </Box>
+    )
+}
+
+const CardSVG = ({ width, height }: { width: string; height: string }) => {
+    return (
+        <svg xmlns="http://www.w3.org/2000/svg" width={width} height={height} viewBox="0 0 150.631 161.37">
+            <path
+                id="Path_101109"
+                data-name="Path 101109"
+                d="M136.561,162.367l-21.9-.382-3.55-3.675-36.3-.634-36.3.634-3.55,3.675-21.9.382L2.237,151.911H2.215V112.48L0,110.266V48.359l2.215-2.215V18.7L14.2,6.716h14.42l-.058-.058L30.013,5.2H63.737l3.2-3.2H82.69l3.2,3.2h33.724l1.456,1.456-.057.057h14.332l12.066,12.066v27.36l2.219,2.22v61.907l-2.219,2.219v39.425h-.025l-10.825,10.455ZM4,19.286V46.131l2.227,2.228v61.907l-2.228,2.228v26.735c2.561,2.525,8.754,8.642,10.958,10.9H134.444c2.235-2.292,8.569-8.547,11.187-11.129V112.49l-2.223-2.222V48.361l2.223-2.223V19.515c-2.558-2.523-8.761-8.649-11.081-11.019H121.063l-1.448,1.448H85.892l-3.2,3.2H66.938l-3.2-3.2H30.013L28.565,8.5H14.843C12.557,10.835,6.5,16.82,4,19.286Z"
+                transform="translate(0.5 -1.5)"
+                fill="#4da1d9"
+                stroke="rgba(0,0,0,0)"
+                strokeWidth="1"
+            />
+        </svg>
     )
 }
