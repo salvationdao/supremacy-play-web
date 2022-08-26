@@ -7,7 +7,7 @@ export const Maintenance = () => {
     return (
         <Box
             sx={{
-                position: "relative",
+                position: "fixed",
                 width: "100%",
                 height: "100%",
                 backgroundColor: "#040B10",
