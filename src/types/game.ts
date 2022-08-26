@@ -202,7 +202,7 @@ export enum MechDisplayEffectType {
     None = "NONE",
     Border = "BORDER",
     Pulse = "PULSE",
-    Fade = "FADE",
+    Shake = "SHAKE",
 }
 
 export interface DisplayedAbility {
