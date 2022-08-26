@@ -41,7 +41,7 @@ export const SupremacyContainer = createContainer(() => {
             clearWindowReloadTimeout()
             windowReloadTimeout.current = setTimeout(() => {
                 location.reload()
-            }, 5000)
+            }, 1200000)
         } else {
             clearWindowReloadTimeout()
         }
