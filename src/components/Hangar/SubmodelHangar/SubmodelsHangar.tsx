@@ -50,6 +50,18 @@ interface GetSubmodelsResponse {
 }
 
 export const SubmodelsHangar = () => {
+    // The tabs
+    const [submodelType, setSubmodelType] = useState<SubmodelType>(SubmodelType.warMachine)
+    return <SubmodelsHangarInner key={submodelType} submodelType={submodelType} setSubmodelType={setSubmodelType} />
+}
+
+const SubmodelsHangarInner = ({
+    submodelType,
+    setSubmodelType,
+}: {
+    submodelType: SubmodelType
+    setSubmodelType: React.Dispatch<React.SetStateAction<SubmodelType>>
+}) => {
     const [query, updateQuery] = useUrlQuery()
     const { send } = useGameServerCommandsUser("/user_commander")
     const theme = useTheme()
@@ -71,7 +83,6 @@ export const SubmodelsHangar = () => {
     const [equippedStatus, setEquippedStatus] = useState<string[]>((query.get("statuses") || undefined)?.split("||") || [])
     const [rarities, setRarities] = useState<string[]>((query.get("rarities") || undefined)?.split("||") || [])
     const [modelFilter, setModelFilter] = useState<string[]>((query.get("models") || undefined)?.split("||") || [])
-    const [submodelType, setSubmodelType] = useState<SubmodelType>(SubmodelType.warMachine)
 
     const [sortFilterReRender, toggleSortFilterReRender] = useToggle()
     const [isGridView, toggleIsGridView] = useToggle((localStorage.getItem("fleetMechGrid") || "true") === "true")
