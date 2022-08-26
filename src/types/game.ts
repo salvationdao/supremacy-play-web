@@ -23,15 +23,15 @@ export enum LocationSelectType {
 }
 
 export interface Map {
-    name: string
-    image_url: string
-    width: number
-    height: number
-    cells_x: number
-    cells_y: number
-    pixel_top: number
-    pixel_left: number
-    disabled_cells: number[]
+    Name: string
+    Image_Url: string
+    Width: number
+    Height: number
+    Cells_X: number
+    Cells_Y: number
+    Pixel_Top: number
+    Pixel_Left: number
+    Disabled_Cells: number[]
 }
 
 export interface BattleZoneStruct {
