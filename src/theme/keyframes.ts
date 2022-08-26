@@ -40,24 +40,6 @@ export const heightEffect = (to = 100) => keyframes`
 	100% { height: ${to}%; }
 `
 
-export const shake = keyframes`
-	10%, 90% {
-		transform: translate3d(-1px, 0, 0);
-	}
-
-	20%, 80% {
-		transform: translate3d(2px, 0, 0);
-	}
-
-	30%, 50%, 70% {
-		transform: translate3d(-3px, 0, 0);
-	}
-
-	40%, 60% {
-		transform: translate3d(3px, 0, 0);
-	}
-`
-
 export const rippleEffect = (color: string) => keyframes`
 	0% {
 		background-color: #00000010;
@@ -79,4 +61,22 @@ export const rippleEffect = (color: string) => keyframes`
 export const dropEffect = (scale = 1.5) => keyframes`
 	0% { transform: scale(${scale}); }
 	100% { transform: scale(1); }
+`
+
+export const shake = (shakeScale = 1) => keyframes`
+10%, 90% {
+	transform: translate3d(calc(-1px * ${shakeScale}), 0, 0);
+}
+
+20%, 80% {
+	transform: translate3d(calc(2px * ${shakeScale}), 0, 0);
+}
+
+30%, 50%, 70% {
+	transform: translate3d(calc(-3px * ${shakeScale}), 0, 0);
+}
+
+40%, 60% {
+	transform: translate3d(calc(3px * ${shakeScale}), 0, 0);
+}
 `
