@@ -817,12 +817,21 @@ const WeaponItem = ({ id, equipped, selected, onSelect }: WeaponItemProps) => {
                     </Box>
 
                     <Typography
+                        variant="h6"
+                        sx={{
+                            color: getRarityDeets(weaponDetails.tier).color,
+                            fontFamily: fonts.nostromoBlack,
+                        }}
+                    >
+                        {weaponDetails.tier}
+                    </Typography>
+                    <Typography
                         variant="body2"
                         sx={{
                             textAlign: "center",
                         }}
                     >
-                        {weaponDetails?.label}
+                        {weaponDetails.label}
                     </Typography>
                 </Box>
                 <Divider
