@@ -12,12 +12,12 @@ export const BattleZone = ({ map }: { map: Map }) => {
     const mapScale = useMemo(() => map.width / (map.cells_x * 2000), [map])
 
     const locationX = useMemo(
-        () => ((battleZone?.location.x || map.left_pixels + map.width / 2) - map.left_pixels) * mapScale,
-        [map.left_pixels, map.width, mapScale, battleZone?.location.x],
+        () => ((battleZone?.location.x || map.pixel_left + map.width / 2) - map.pixel_left) * mapScale,
+        [map.pixel_left, map.width, mapScale, battleZone?.location.x],
     )
     const locationY = useMemo(
-        () => ((battleZone?.location.y || map.top_pixels + map.height / 2) - map.top_pixels) * mapScale,
-        [map.top_pixels, map.height, mapScale, battleZone?.location.y],
+        () => ((battleZone?.location.y || map.pixel_top + map.height / 2) - map.pixel_top) * mapScale,
+        [map.pixel_top, map.height, mapScale, battleZone?.location.y],
     )
     const radius = useMemo(() => (battleZone?.radius || 0) * mapScale, [mapScale, battleZone?.radius])
 
