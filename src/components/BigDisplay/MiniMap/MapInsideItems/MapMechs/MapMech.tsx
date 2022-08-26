@@ -40,7 +40,7 @@ const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
 
     // For rendering: size, colors etc.
     const prevRotation = useRef(warMachine.rotation)
-    const mapScale = useMemo(() => map.width / (map.cells_x * 2000), [map])
+    const mapScale = useMemo(() => map.Width / (map.Cells_X * 2000), [map])
     const iconSize = useMemo(() => Math.max(gridWidth, gridHeight, 50) * (isAI ? 1.2 : 1.8), [gridWidth, gridHeight, isAI])
     const dirArrowLength = useMemo(() => iconSize / 2 + 0.6 * iconSize, [iconSize])
     const primaryColor = useMemo(
@@ -99,8 +99,8 @@ const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
             if (payload?.position !== undefined) {
                 const positionEl = document.getElementById(`map-mech-position-${hash}`)
                 if (positionEl) {
-                    const mechMapX = ((payload.position?.x || 0) - map.pixel_left) * mapScale
-                    const mechMapY = ((payload.position?.y || 0) - map.pixel_top) * mapScale
+                    const mechMapX = ((payload.position?.x || 0) - map.Pixel_Left) * mapScale
+                    const mechMapY = ((payload.position?.y || 0) - map.Pixel_Top) * mapScale
                     positionEl.style.transform = `translate(-50%, -50%) translate3d(${mechMapX}px, ${mechMapY}px, 0)`
                     positionEl.style.transition = `transform ${TRANSITION_DURATION}s linear`
 
