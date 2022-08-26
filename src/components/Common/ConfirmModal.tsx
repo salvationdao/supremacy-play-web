@@ -70,7 +70,7 @@ export const ConfirmModal = ({
                             position: "relative",
                             px: "2.5rem",
                             py: "2.4rem",
-                            span: {
+                            "p span": {
                                 color: colors.neonBlue,
                                 fontWeight: "fontWeightBold",
                             },

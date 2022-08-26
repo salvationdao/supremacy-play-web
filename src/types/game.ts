@@ -191,16 +191,24 @@ export interface DamageRecord {
     source_name: string // weapon/ability name
 }
 
-export enum DisplayEffectType {
-    None = "NONE", // Just show the icon or circle
-    Range = "RANGE", // E.g. nuke, shows a one off pulse
-    MechBorder = "MECH_BORDER", // E.g. Hacker drone, red border on mech
-    MechPulse = "MECH_PULSE", // E.g. overcharge, mech pulses
+export enum MiniMapDisplayEffectType {
+    None = "NONE",
+    Range = "RANGE",
+    Pulse = "PULSE",
+    Drop = "DROP",
+}
+
+export enum MechDisplayEffectType {
+    None = "NONE",
+    Border = "BORDER",
+    Pulse = "PULSE",
+    Shake = "SHAKE",
 }
 
 export interface DisplayedAbility {
     offering_id: string
-    display_effect_type: DisplayEffectType
+    mini_map_display_effect_type: MiniMapDisplayEffectType
+    mech_display_effect_type: MechDisplayEffectType
     location_select_type: LocationSelectType
     image_url: string
     colour: string

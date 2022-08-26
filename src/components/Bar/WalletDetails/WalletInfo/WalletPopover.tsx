@@ -1,9 +1,9 @@
-import { Box, IconButton, Popover, Stack, Switch, Typography } from "@mui/material"
+import { Box, IconButton, Popover, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
 import { MutableRefObject, useEffect } from "react"
 import { ClipThing, TransactionItem } from "../../.."
 import { SvgClose, SvgExternalLink, SvgSupToken } from "../../../../assets"
-import { PASSPORT_WEB, IS_TESTING_MODE } from "../../../../constants"
+import { IS_TESTING_MODE, PASSPORT_WEB } from "../../../../constants"
 import { useTheme } from "../../../../containers/theme"
 import { supFormatterNoFixed } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
@@ -33,7 +33,6 @@ export const WalletPopover = ({
 }) => {
     const theme = useTheme()
     const [localOpen, toggleLocalOpen] = useToggle(open)
-    const [hideBattleTxs, toggleHideBattleTxs] = useToggle()
 
     useEffect(() => {
         if (!localOpen) {
@@ -125,34 +124,10 @@ export const WalletPopover = ({
                                 </a>
                             </Stack>
 
-                            <Stack direction="row" alignItems="center" sx={{ mt: "-.5rem", mb: ".2rem", opacity: 0.7, ":hover": { opacity: 1 } }}>
-                                <Typography variant="body2">Hide battle transactions:</Typography>
-                                <Switch
-                                    size="small"
-                                    checked={hideBattleTxs}
-                                    onClick={() => toggleHideBattleTxs()}
-                                    sx={{
-                                        transform: "scale(.5)",
-                                        ".Mui-checked": { color: (theme) => `${theme.factionTheme.primary} !important` },
-                                        ".Mui-checked+.MuiSwitch-track": {
-                                            backgroundColor: (theme) => `${theme.factionTheme.primary}50 !important`,
-                                        },
-                                    }}
-                                />
-                            </Stack>
-
                             <Stack spacing=".3rem">
-                                {transactions
-                                    .slice(0, 5)
-                                    .filter(
-                                        (t) =>
-                                            !hideBattleTxs ||
-                                            (!t.description.toLowerCase().includes("spoil") && !t.description.toLowerCase().includes("battle contri")),
-                                    )
-
-                                    .map((t, i) => (
-                                        <TransactionItem userID={userID} key={i} transaction={t} />
-                                    ))}
+                                {transactions.slice(0, 5).map((t, i) => (
+                                    <TransactionItem userID={userID} key={i} transaction={t} />
+                                ))}
                             </Stack>
                         </Box>
                     )}
