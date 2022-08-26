@@ -99,8 +99,8 @@ export const MiniMapInside = ({ containerDimensions }: MiniMapInsideProps) => {
 
                         {/* Map grid, with map clicking */}
                         <MapGrid
-                            mapWidth={map.width}
-                            mapHeight={map.height}
+                            mapWidth={map.Width}
+                            mapHeight={map.Height}
                             gridHeight={gridHeight}
                             gridWidth={gridWidth}
                             onClick={isLocationSelection ? onMapClick : () => setHighlightedMechParticipantID(undefined)}

@@ -43,7 +43,7 @@ const MiniMapAbilityDisplay = ({ displayAbility }: { displayAbility: DisplayedAb
     const { gridHeight } = useMiniMap()
     const { map } = useGame()
 
-    const mapScale = useMemo(() => (map ? map.width / (map.cells_x * 2000) : 0), [map])
+    const mapScale = useMemo(() => (map ? map.Width / (map.Cells_X * 2000) : 0), [map])
     const diameter = useMemo(() => (radius ? radius * mapScale * 2 : 0), [mapScale, radius])
 
     return useMemo(
