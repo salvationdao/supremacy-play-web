@@ -75,3 +75,8 @@ export const rippleEffect = (color: string) => keyframes`
 		box-shadow: inset 0 0 26px 0 ${color}65;
 	}
 `
+
+export const dropEffect = (scale = 1.5) => keyframes`
+	0% { transform: scale(${scale}); }
+	100% { transform: scale(1); }
+`

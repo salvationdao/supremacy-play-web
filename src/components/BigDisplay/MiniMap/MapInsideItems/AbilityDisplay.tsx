@@ -4,7 +4,7 @@ import { useArena, useGame, useMiniMap } from "../../../../containers"
 import { useTimer } from "../../../../hooks"
 import { useGameServerSubscription } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
-import { rippleEffect } from "../../../../theme/keyframes"
+import { dropEffect, rippleEffect } from "../../../../theme/keyframes"
 import { fonts } from "../../../../theme/theme"
 import { DisplayedAbility, MiniMapDisplayEffectType } from "../../../../types"
 import { MapIcon } from "./Common/MapIcon"
@@ -53,6 +53,9 @@ const MiniMapAbilityDisplay = ({ displayAbility }: { displayAbility: DisplayedAb
                 sizeGrid={1.5}
                 primaryColor={colour}
                 backgroundImageUrl={image_url}
+                iconSx={{
+                    animation: mini_map_display_effect_type === MiniMapDisplayEffectType.Drop ? `${dropEffect(3)} 3s ease-out` : "none",
+                }}
                 insideRender={
                     <>
                         {!!launching_at && (
