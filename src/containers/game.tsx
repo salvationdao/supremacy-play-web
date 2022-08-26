@@ -3,7 +3,7 @@ import { createContainer } from "unstated-next"
 import { useAuth, useSupremacy, useUI } from "."
 import { useGameServerCommandsUser, useGameServerSubscription } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
-import { AbilityDetail, AIType, BattleEndDetail, BattleZone, BribeStage, Map, WarMachineState } from "../types"
+import { AbilityDetail, AIType, BattleEndDetail, BattleZoneStruct, BribeStage, Map, WarMachineState } from "../types"
 import { useArena } from "./arena"
 
 export interface BribeStageResponse {
@@ -14,7 +14,7 @@ export interface BribeStageResponse {
 export interface GameSettingsResponse {
     battle_identifier: number
     game_map: Map
-    battle_zone: BattleZone
+    battle_zone: BattleZoneStruct
     war_machines: WarMachineState[]
     spawned_ai: WarMachineState[]
     ability_details: AbilityDetail[]
@@ -30,7 +30,7 @@ export const GameContainer = createContainer(() => {
 
     // States
     const [map, setMap] = useState<Map>()
-    const [battleZone, setBattleZone] = useState<BattleZone>()
+    const [battleZone, setBattleZone] = useState<BattleZoneStruct>()
     const [abilityDetails, setAbilityDetails] = useState<AbilityDetail[]>([])
     const [warMachines, setWarMachines] = useState<WarMachineState[] | undefined>([])
     const [spawnedAI, setSpawnedAI] = useState<WarMachineState[] | undefined>([])

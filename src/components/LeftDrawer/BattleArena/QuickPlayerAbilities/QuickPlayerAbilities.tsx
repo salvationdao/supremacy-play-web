@@ -29,7 +29,7 @@ const QuickPlayerAbilitiesInner = React.memo(function QuickPlayerAbilitiesInner(
     const [nextRefreshTime, setNextRefreshTime] = useState<Date | null>(null)
     const [saleAbilities, setSaleAbilities] = useState<SaleAbility[]>([])
     const [priceMap, setPriceMap] = useState<Map<string, string>>(new Map())
-    const [purchaseError, setPurchaseError] = useState<string>()
+    const [error, setError] = useState<string>()
 
     const [ownedAbilities, setOwnedAbilities] = useState<Map<string, number>>(new Map())
 
@@ -52,16 +52,14 @@ const QuickPlayerAbilitiesInner = React.memo(function QuickPlayerAbilitiesInner(
         }
     }, [queryAvailability, userID])
 
-    useGameServerSubscriptionSecured<{ id: string; current_price: string }>(
+    useGameServerSubscriptionSecured<{ id: string; current_price: string }[]>(
         {
             URI: "/sale_abilities",
             key: GameServerKeys.SubSaleAbilitiesPrice,
         },
         (payload) => {
             if (!payload) return
-            setPriceMap((prev) => {
-                return new Map(prev.set(payload.id, payload.current_price))
-            })
+            setPriceMap(new Map(payload.map((p) => [p.id, p.current_price])))
         },
     )
 
@@ -81,7 +79,7 @@ const QuickPlayerAbilitiesInner = React.memo(function QuickPlayerAbilitiesInner(
             t.setSeconds(t.getSeconds() + Math.max(payload.time_left_seconds, 1))
             setNextRefreshTime(t)
             setSaleAbilities(payload.sale_abilities)
-            setPurchaseError(undefined)
+            setError(undefined)
 
             // Fetch sale availability
             refetchSaleAvailability()
@@ -126,15 +124,15 @@ const QuickPlayerAbilitiesInner = React.memo(function QuickPlayerAbilitiesInner(
         <Box>
             <SectionHeading label="PURCHASE ABILITIES" tooltip="Purchase abilities that are currently on sale." />
 
-            <Stack sx={{ p: "1.5rem 1.1rem", backgroundColor: "#FFFFFF12", boxShadow: 2, border: "#FFFFFF20 1px solid" }}>
+            <Stack sx={{ p: "1.5rem 1.1rem", backgroundColor: "#FFFFFF12", boxShadow: 2, border: "#FFFFFF20 1px solid", minHeight: "12rem" }}>
                 <Stack>
                     <Stack direction="row" spacing=".6rem" alignItems="center">
                         <Typography sx={{ fontWeight: "fontWeightBold", textTransform: "uppercase" }}>Next refresh in:</Typography>
                         {timeLeft}
                     </Stack>
-                    {purchaseError && (
+                    {error && (
                         <Typography variant="body2" sx={{ color: colors.red }}>
-                            {purchaseError}
+                            {error}
                         </Typography>
                     )}
                     {availabilityError && (
@@ -145,7 +143,7 @@ const QuickPlayerAbilitiesInner = React.memo(function QuickPlayerAbilitiesInner(
                 </Stack>
 
                 {!isLoaded && (
-                    <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                    <Stack alignItems="center" justifyContent="center" sx={{ flex: 1 }}>
                         <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem" }}>
                             <CircularProgress size="3rem" sx={{ color: primaryColor }} />
                         </Stack>
@@ -171,7 +169,7 @@ const QuickPlayerAbilitiesInner = React.memo(function QuickPlayerAbilitiesInner(
                                 saleAbility={s}
                                 price={priceMap.get(s.id)}
                                 amount={ownedAbilities.get(s.blueprint_id)}
-                                setError={setPurchaseError}
+                                setClaimError={setError}
                                 onClaim={() => setAvailability(SaleAbilityAvailability.CanPurchase)}
                                 onPurchase={() => setAvailability(SaleAbilityAvailability.Unavailable)}
                                 availability={availability}
@@ -181,7 +179,7 @@ const QuickPlayerAbilitiesInner = React.memo(function QuickPlayerAbilitiesInner(
                 )}
 
                 {isLoaded && saleAbilities && saleAbilities.length <= 0 && (
-                    <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                    <Stack alignItems="center" justifyContent="center" sx={{ flex: 1 }}>
                         <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", maxWidth: "40rem" }}>
                             <Typography
                                 variant="body2"

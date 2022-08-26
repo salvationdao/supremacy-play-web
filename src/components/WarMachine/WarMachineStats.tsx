@@ -170,7 +170,7 @@ const WarMachineStatsInner = () => {
                                 </Fade>
                             )}
 
-                            <Stack direction="row" alignItems="center" sx={{ mx: "2rem" }}>
+                            <Stack direction="row" alignItems="center">
                                 {haveFactionMechs &&
                                     factionWarMachines &&
                                     factionWarMachines.map((wm, i) => (

@@ -15,6 +15,8 @@ export enum BribeStage {
 export enum LocationSelectType {
     LineSelect = "LINE_SELECT",
     MechSelect = "MECH_SELECT",
+    MechSelectAllied = "MECH_SELECT_ALLIED",
+    MechSelectOpponent = "MECH_SELECT_OPPONENT",
     LocationSelect = "LOCATION_SELECT",
     Global = "GLOBAL",
     MechCommand = "MECH_COMMAND",
@@ -27,12 +29,12 @@ export interface Map {
     height: number
     cells_x: number
     cells_y: number
-    top_pixels: number
-    left_pixels: number
+    pixel_top: number
+    pixel_left: number
     disabled_cells: number[]
 }
 
-export interface BattleZone {
+export interface BattleZoneStruct {
     location: Position
     radius: number
     shrinkTime: number
@@ -187,4 +189,26 @@ export interface DamageRecord {
     amount: number
     caused_by_war_machine?: WarMachineState
     source_name: string // weapon/ability name
+}
+
+export enum DisplayEffectType {
+    None = "NONE", // Just show the icon or circle
+    Range = "RANGE", // E.g. nuke, shows a one off pulse
+    MechBorder = "MECH_BORDER", // E.g. Hacker drone, red border on mech
+    MechPulse = "MECH_PULSE", // E.g. overcharge, mech pulses
+}
+
+export interface DisplayedAbility {
+    offering_id: string
+    display_effect_type: DisplayEffectType
+    location_select_type: LocationSelectType
+    image_url: string
+    colour: string
+    radius?: number
+    mech_id?: string
+    location: {
+        x: number
+        y: number
+    }
+    launching_at?: Date
 }

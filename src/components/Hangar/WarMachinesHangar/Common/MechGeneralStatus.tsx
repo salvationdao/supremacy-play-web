@@ -16,6 +16,7 @@ export const MechGeneralStatus = ({
     mechDetails,
     onStatusLoaded,
     onRepairOfferLoaded,
+    setPrimaryColor,
 }: {
     mechID: string
     hideBox?: boolean
@@ -23,6 +24,7 @@ export const MechGeneralStatus = ({
     mechDetails?: MechDetails
     onStatusLoaded?: (mechStatus: MechStatus) => void
     onRepairOfferLoaded?: (repairOffer: RepairOffer) => void
+    setPrimaryColor?: React.Dispatch<React.SetStateAction<string>>
 }) => {
     const theme = useTheme()
     const { send } = useGameServerCommandsFaction("/faction_commander")
@@ -55,35 +57,41 @@ export const MechGeneralStatus = ({
             if (!payload) return
             setMechStatus(payload)
             onStatusLoaded && onStatusLoaded(payload)
+            let text = ""
+            let color = ""
             switch (payload.status) {
                 case MechStatusEnum.Idle:
-                    setText("IDLE")
-                    setColour(colors.green)
+                    text = "IDLE"
+                    color = colors.green
                     break
                 case MechStatusEnum.Queue:
-                    setText(`IN QUEUE${payload.queue_position ? `: ${payload.queue_position}` : ""}`)
-                    setColour(colors.yellow)
+                    text = `IN QUEUE${payload.queue_position ? `: ${payload.queue_position}` : ""}`
+                    color = colors.yellow
                     break
                 case MechStatusEnum.Battle:
-                    setText("BATTLING")
-                    setColour(colors.orange)
+                    text = "BATTLING"
+                    color = colors.orange
                     break
                 case MechStatusEnum.Market:
-                    setText("LISTED")
-                    setColour(colors.red)
+                    text = "LISTED"
+                    color = colors.red
                     break
                 case MechStatusEnum.Sold:
-                    setText("SOLD")
-                    setColour(colors.lightGrey)
+                    text = "SOLD"
+                    color = colors.lightGrey
                     break
                 case MechStatusEnum.Damaged:
-                    setText("DAMAGED")
-                    setColour(colors.bronze)
+                    text = "DAMAGED"
+                    color = colors.bronze
                     break
                 default:
-                    setText(payload.status)
-                    setColour(colors.lightGrey)
+                    text = payload.status
+                    color = colors.lightGrey
             }
+
+            setText(text)
+            setColour(color)
+            setPrimaryColor && setPrimaryColor(color)
         },
     )
 

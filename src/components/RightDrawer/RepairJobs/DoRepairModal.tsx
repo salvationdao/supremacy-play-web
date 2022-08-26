@@ -17,7 +17,6 @@ import { ClipThing } from "../../Common/ClipThing"
 import { FancyButton } from "../../Common/FancyButton"
 import { WindowPortal } from "../../Common/WindowPortal/WindowPortal"
 import { RepairBlocks } from "../../Hangar/WarMachinesHangar/Common/MechRepairBlocks"
-import { GamePattern } from "./StackTower/src/game"
 import { isWebGLAvailable } from "./StackTower/src/utils"
 import { StackTower } from "./StackTower/StackTower"
 
@@ -99,6 +98,8 @@ export const DoRepairModal = React.memo(function DoRepairModal({ repairStatus, r
         onClose()
     }, [onClose, repairAgent?.id, send])
 
+    const onSubmitted = useCallback(() => setRepairAgent(undefined), [])
+
     // Register for an agent
     const registerAgentRepair = useCallback(async () => {
         if (!repairStatus?.id && !repairJob?.id) return
@@ -127,51 +128,6 @@ export const DoRepairModal = React.memo(function DoRepairModal({ repairStatus, r
             setIsRegistering(false)
         }
     }, [repairJob?.id, repairStatus?.id, send, captchaToken])
-
-    // Send individual updates
-    const agentRepairUpdate = useCallback(
-        async (repairAgentID: string, gamePattern: GamePattern) => {
-            try {
-                const resp = await send(GameServerKeys.RepairAgentUpdate, {
-                    repair_agent_id: repairAgentID,
-                    ...gamePattern,
-                })
-
-                if (!resp) return Promise.reject(false)
-                return Promise.resolve(true)
-            } catch (err) {
-                return Promise.reject(false)
-            }
-        },
-        [send],
-    )
-
-    // Tell server we finished and do validation
-    const completeAgentRepair = useCallback(
-        async (repairAgentID: string) => {
-            try {
-                setSubmitError(undefined)
-                setIsSubmitting(true)
-                const resp = await send(GameServerKeys.CompleteRepairAgent, {
-                    repair_agent_id: repairAgentID,
-                })
-
-                if (!resp) return Promise.reject(false)
-                setRepairAgent(undefined)
-                return Promise.resolve(true)
-            } catch (err) {
-                const message = typeof err === "string" ? err : "Failed to submit results."
-                setSubmitError(message)
-                console.error(err)
-                return Promise.reject(false)
-            } finally {
-                setTimeout(() => {
-                    setIsSubmitting(false)
-                }, 1500) // Show the loading spinner for at least sometime so it doesnt flash away
-            }
-        },
-        [send],
-    )
 
     const overlayContent = useMemo(() => {
         if (isFinished) {
@@ -490,8 +446,9 @@ export const DoRepairModal = React.memo(function DoRepairModal({ repairStatus, r
                         primaryColor={primaryColor}
                         disableGame={!repairAgent || !!submitError || isSubmitting || isFinished}
                         repairAgent={repairAgent}
-                        agentRepairUpdate={agentRepairUpdate}
-                        completeAgentRepair={completeAgentRepair}
+                        setIsSubmitting={setIsSubmitting}
+                        setSubmitError={setSubmitError}
+                        onSubmitted={onSubmitted}
                     />
                 </Box>
 

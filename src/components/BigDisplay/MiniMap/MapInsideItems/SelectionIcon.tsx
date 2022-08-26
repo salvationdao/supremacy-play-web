@@ -1,8 +1,8 @@
 import { useMemo } from "react"
-import { SvgDrag } from "../../../../../assets"
-import { useMiniMap } from "../../../../../containers"
-import { LocationSelectType } from "../../../../../types"
-import { MapIcon } from "./MapIcon"
+import { SvgDrag } from "../../../../assets"
+import { useMiniMap } from "../../../../containers"
+import { LocationSelectType } from "../../../../types"
+import { MapIcon } from "./Common/MapIcon"
 
 export const SelectionIcon = () => {
     const { selection, setSelection, isTargeting, playerAbility, winner } = useMiniMap()
@@ -18,6 +18,8 @@ export const SelectionIcon = () => {
             "location_select_type" in ability &&
             (ability.location_select_type === LocationSelectType.LineSelect ||
                 ability.location_select_type === LocationSelectType.MechSelect ||
+                ability.location_select_type === LocationSelectType.MechSelectAllied ||
+                ability.location_select_type === LocationSelectType.MechSelectOpponent ||
                 ability.location_select_type === LocationSelectType.Global)
         ) {
             return null
@@ -27,11 +29,12 @@ export const SelectionIcon = () => {
 
         return (
             <MapIcon
-                primaryColor={ability.colour}
-                imageUrl={ability.image_url}
-                onClick={() => setSelection(undefined)}
                 position={coords}
-                icon={isMechMoveCommand ? <SvgDrag size="4.5rem" fill={ability.colour} /> : undefined}
+                sizeGrid={1.8}
+                primaryColor={ability.colour}
+                backgroundImageUrl={ability.image_url}
+                insideRender={isMechMoveCommand ? <SvgDrag size="4.5rem" fill={ability.colour} /> : undefined}
+                onClick={() => setSelection(undefined)}
             />
         )
     }, [ability, coords, isTargeting, setSelection])

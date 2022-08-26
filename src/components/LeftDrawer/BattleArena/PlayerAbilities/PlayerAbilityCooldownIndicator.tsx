@@ -33,7 +33,7 @@ export const PlayerAbilityCooldownIndicator = ({ playerAbility }: PlayerAbilityC
                 left: "50%",
                 width: "150%",
                 height: "150%",
-                transform: "translate(-50%, -50%) rotate(-90deg)",
+                transform: "translate(-50%, -50%) rotate(90deg) scaleX(-1)",
             }}
             className="base-timer__svg"
             viewBox="0 0 100 100"

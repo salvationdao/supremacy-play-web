@@ -3,15 +3,15 @@ import { useCallback, useMemo, useRef } from "react"
 import { MapMechs, SelectionIcon } from "../.."
 import { useGame, useMiniMap } from "../../../containers"
 import { Dimension, LocationSelectType } from "../../../types"
+import { MiniMapAbilitiesDisplay } from "./MapInsideItems/AbilityDisplay"
 import { BattleZone } from "./MapInsideItems/BattleZone"
 import { Blackouts } from "./MapInsideItems/Blackouts"
 import { CountdownSubmit } from "./MapInsideItems/CountdownSubmit"
 import { MapGrid } from "./MapInsideItems/MapGrid"
-import { MechCommandIcons } from "./MapInsideItems/MapIcon/MechCommandIcons"
 import { MapImage } from "./MapInsideItems/MapImage"
+import { MechCommandIcons } from "./MapInsideItems/MechCommandIcons"
 import { RangeIndicator } from "./MapInsideItems/RangeIndicator"
 import { useMiniMapGestures } from "./useMiniMapGestures"
-import { DeadlyAbilityCountdowns } from "./MapInsideItems/DeadlyAbilityCountdown"
 
 interface MiniMapInsideProps {
     containerDimensions: Dimension
@@ -71,7 +71,7 @@ export const MiniMapInside = ({ containerDimensions }: MiniMapInsideProps) => {
                         overflow: "hidden",
                     }}
                 >
-                    {/* Range indicator */}
+                    {/* Range indicator that follows the mouse */}
                     <RangeIndicator parentRef={mapRef} map={map} mapScale={mapScale} />
 
                     <Box
@@ -82,6 +82,7 @@ export const MiniMapInside = ({ containerDimensions }: MiniMapInsideProps) => {
                             transform: `translate(${dragX}px, ${dragY}px) scale(${mapScale})`,
                         }}
                     >
+                        {/* Renders the shrinking battle zone area */}
                         <BattleZone map={map} />
 
                         {/* Render the user selection icon on the map */}
@@ -112,10 +113,12 @@ export const MiniMapInside = ({ containerDimensions }: MiniMapInsideProps) => {
                         {/* Blackouts */}
                         <Blackouts />
 
-                        <DeadlyAbilityCountdowns />
+                        {/* Show any abilities on the minimap */}
+                        <MiniMapAbilitiesDisplay />
                     </Box>
                 </Stack>
 
+                {/* Displays countdown before target selection submits */}
                 <CountdownSubmit />
             </>
         )

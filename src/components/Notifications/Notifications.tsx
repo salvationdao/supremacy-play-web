@@ -8,7 +8,6 @@ import {
     KillAlertProps,
     LocationSelectAlert,
     LocationSelectAlertProps,
-    LocationSelectAlertType,
     NotificationItem,
     TextAlert,
     WarMachineAbilityAlert,
@@ -16,12 +15,13 @@ import {
 } from ".."
 import { NOTIFICATION_LINGER, NOTIFICATION_TIME } from "../../constants"
 import { useGame, useMobile, useSupremacy } from "../../containers"
+import { useArena } from "../../containers/arena"
 import { makeid } from "../../containers/ws/util"
 import { useArray } from "../../hooks"
 import { useGameServerSubscription, useGameServerSubscriptionFaction } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { siteZIndex } from "../../theme/theme"
-import { BattleZone } from "../../types"
+import { BattleZoneStruct } from "../../types"
 import { BattleZoneAlert } from "./Alerts/BattleZoneAlert"
 import {
     battleAbilityNoti,
@@ -37,7 +37,6 @@ import {
     textNoti,
     warMachineAbilityNoti,
 } from "./testData"
-import { useArena } from "../../containers/arena"
 
 const SPAWN_TEST_NOTIFICATIONS = false
 
@@ -62,7 +61,7 @@ export enum NotificationType {
 
 export interface NotificationResponse {
     type: NotificationType
-    data: BattleFactionAbilityAlertProps | KillAlertProps | LocationSelectAlertProps | WarMachineAbilityAlertProps | BattleZone | string
+    data: BattleFactionAbilityAlertProps | KillAlertProps | LocationSelectAlertProps | WarMachineAbilityAlertProps | BattleZoneStruct | string
 }
 
 interface Notification extends NotificationResponse {
@@ -89,7 +88,7 @@ export const Notifications = () => {
             let duration = SPAWN_TEST_NOTIFICATIONS ? NOTIFICATION_TIME * 10000 : NOTIFICATION_TIME
 
             if (notification.type === NotificationType.BattleZoneChange) {
-                const battleZoneChange = notification.data as BattleZone
+                const battleZoneChange = notification.data as BattleZoneStruct
                 duration = battleZoneChange.warnTime * 1000
                 setBattleZone(battleZoneChange)
             }
@@ -102,44 +101,6 @@ export const Notifications = () => {
             }, duration + NOTIFICATION_LINGER)
 
             if (justOne) return
-
-            // These cases renders another notification (so two)
-            if (notification.type === NotificationType.LocationSelect) {
-                const noti = notification as { type: NotificationType; data: LocationSelectAlertProps }
-                if (noti.data.type !== LocationSelectAlertType.FailedTimeOut && noti.data.type !== LocationSelectAlertType.FailedDisconnected) return
-
-                const {
-                    data: { ability, nextUser },
-                } = noti
-                newNotification(
-                    {
-                        type: NotificationType.LocationSelect,
-                        data: {
-                            type: LocationSelectAlertType.Assigned,
-                            currentUser: nextUser,
-                            ability,
-                        },
-                    },
-                    true,
-                )
-            }
-
-            if (notification.type === NotificationType.BattleAbility) {
-                const {
-                    data: { ability, user },
-                } = notification as { type: NotificationType; data: BattleFactionAbilityAlertProps }
-                newNotification(
-                    {
-                        type: NotificationType.LocationSelect,
-                        data: {
-                            type: LocationSelectAlertType.Assigned,
-                            currentUser: user,
-                            ability,
-                        },
-                    },
-                    true,
-                )
-            }
         },
         [addNotification, removeByID, setBattleZone],
     )
@@ -241,7 +202,7 @@ export const Notifications = () => {
                         case NotificationType.BattleZoneChange:
                             return (
                                 <NotificationItem key={n.notiID} duration={n.duration}>
-                                    <BattleZoneAlert data={n.data as BattleZone} />
+                                    <BattleZoneAlert data={n.data as BattleZoneStruct} />
                                 </NotificationItem>
                             )
                     }
