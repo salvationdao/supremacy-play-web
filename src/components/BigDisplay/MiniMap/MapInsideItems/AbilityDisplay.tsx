@@ -70,6 +70,7 @@ const MiniMapAbilityDisplay = ({ displayAbility }: { displayAbility: DisplayedAb
                                     fontSize: gridHeight * 0.8,
                                     lineHeight: 1,
                                     backgroundColor: "#00000080",
+                                    zIndex: 10,
                                 }}
                             >
                                 <Countdown launchDate={launching_at} />
