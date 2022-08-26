@@ -166,7 +166,6 @@ export const TextMessage = React.memo(function TextMessage({ message, containerR
 
     // Get tagged user details from cache, if not exist, fetch from server
     useEffect(() => {
-        console.log(userGidRecord)
         ;(async () => {
             const matchedArray = content.match(/#\d+/g)
             const taggedUserFetches = matchedArray?.map(
