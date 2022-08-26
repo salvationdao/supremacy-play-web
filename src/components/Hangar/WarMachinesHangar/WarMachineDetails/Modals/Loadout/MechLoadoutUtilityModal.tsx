@@ -77,7 +77,7 @@ export const MechLoadoutUtilityModal = ({ onClose, onConfirm, equipped, utilitie
     const [search, setSearch] = useState("")
     const [utilityTypes, setUtilityTypes] = useState<string[]>([])
     const [rarities, setRarities] = useState<string[]>([])
-    const [equippedStatuses, setEquippedStatuses] = useState<string[]>(["unequipped"])
+    const [equippedStatuses, setEquippedStatuses] = useState<string[]>([])
 
     const utilityTypeFilterSection = useRef<ChipFilter>({
         label: "UTILITY TYPE",
@@ -706,12 +706,21 @@ const UtilityItem = ({ id, equipped, selected, onSelect }: UtilityItemProps) => 
                     </Box>
 
                     <Typography
+                        variant="h6"
+                        sx={{
+                            color: getRarityDeets(utilityDetails.tier).color,
+                            fontFamily: fonts.nostromoBlack,
+                        }}
+                    >
+                        {utilityDetails.tier}
+                    </Typography>
+                    <Typography
                         variant="body2"
                         sx={{
                             textAlign: "center",
                         }}
                     >
-                        {utilityDetails?.label}
+                        {utilityDetails.label}
                     </Typography>
                 </Box>
                 <Divider
