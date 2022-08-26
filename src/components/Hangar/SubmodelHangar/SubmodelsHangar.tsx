@@ -72,6 +72,7 @@ export const SubmodelsHangar = () => {
     const [rarities, setRarities] = useState<string[]>((query.get("rarities") || undefined)?.split("||") || [])
     const [modelFilter, setModelFilter] = useState<string[]>((query.get("models") || undefined)?.split("||") || [])
     const [submodelType, setSubmodelType] = useState<SubmodelType>(SubmodelType.warMachine)
+    const prevSubmodelType = useRef<SubmodelType>(SubmodelType.warMachine)
 
     const [sortFilterReRender, toggleSortFilterReRender] = useToggle()
     const [isGridView, toggleIsGridView] = useToggle((localStorage.getItem("fleetMechGrid") || "true") === "true")
@@ -177,6 +178,14 @@ export const SubmodelsHangar = () => {
                 models: modelFilter.join("||"),
             })
 
+            if (prevSubmodelType.current !== submodelType) {
+                console.log(modelFilter, rarities, equippedStatus)
+                // setEquippedStatus((query.get("statuses") || undefined)?.split("||") || [])
+                // setRarities((query.get("rarities") || undefined)?.split("||") || [])
+                // setModelFilter((query.get("models") || undefined)?.split("||") || [])
+                toggleSortFilterReRender()
+                prevSubmodelType.current = submodelType
+            }
             if (!resp) return
             setLoadError(undefined)
             setSubmodels(resp.submodels)
