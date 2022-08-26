@@ -26,7 +26,7 @@ export const MiniMapAbilitiesDisplay = () => {
             }
 
             // Only show the ones that are not on a mech
-            setAbilityList(payload.filter((a) => !a.mech_id))
+            setAbilityList(payload.filter((da) => !da.mech_id))
         },
     )
 
