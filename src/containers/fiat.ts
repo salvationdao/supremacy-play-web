@@ -36,7 +36,7 @@ export const FiatContainer = createContainer(() => {
     return {
         loading,
         shoppingCart,
-        itemsCount: shoppingCart?.items?.length || 0,
+        itemsCount: shoppingCart?.items ? shoppingCart.items.reduce((prev, current) => prev + current.quantity, 0) : 0,
     }
 })
 

@@ -64,12 +64,13 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate, setOpeningCrate, se
             })
 
             if (!resp) {
-                setBuyError(errMsg)
+                newSnackbarMessage(errMsg, "error")
+                return
             }
 
             newSnackbarMessage(`Successfully added ${quantity} ${mysteryCrate.mystery_crate_type} crate to shopping cart.`, "success")
         } catch (err) {
-            setBuyError(typeof err === "string" ? err : errMsg)
+            newSnackbarMessage(typeof err === "string" ? err : errMsg, "error")
             console.error(err)
         } finally {
             setIsLoading(false)
