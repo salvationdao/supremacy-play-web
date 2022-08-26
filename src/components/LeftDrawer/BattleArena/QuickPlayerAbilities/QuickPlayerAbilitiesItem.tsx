@@ -100,10 +100,6 @@ export const QuickPlayerAbilitiesItem = ({
         }
     }, [send, saleAbility.id, saleAbility.ability.label, newSnackbarMessage, onClaimCallback, setClaimError])
 
-    const onOpenPurchaseModal = () => {
-        setShowPurchaseModal(true)
-    }
-
     const onPurchase = useCallback(async () => {
         try {
             setLoading(true)
@@ -116,7 +112,7 @@ export const QuickPlayerAbilitiesItem = ({
             setPurchaseError(undefined)
             setShowPurchaseModal(false)
             if (showConfirmation) {
-                localStorage.setItem("hideSaleAbilitiesPurchaseConfirmation", String(showConfirmation))
+                localStorage.setItem("hideSaleAbilitiesPurchaseConfirmation", showConfirmation.toString())
             }
         } catch (e) {
             if (e instanceof Error) {
@@ -133,7 +129,7 @@ export const QuickPlayerAbilitiesItem = ({
         if (availability === SaleAbilityAvailability.CanClaim) {
             return onClaim
         } else if (availability === SaleAbilityAvailability.CanPurchase) {
-            return localStorage.getItem("hideSaleAbilitiesPurchaseConfirmation") === "true" ? onPurchase : onOpenPurchaseModal
+            return localStorage.getItem("hideSaleAbilitiesPurchaseConfirmation") === "true" ? onPurchase : () => setShowPurchaseModal(true)
         }
     }, [availability, onClaim, onPurchase])
 
@@ -318,6 +314,7 @@ export const QuickPlayerAbilitiesItem = ({
                     </TooltipHelper>
                 </FancyButton>
             </Fade>
+
             {showPurchaseModal && (
                 <ConfirmModal
                     title="Confirm Purchase"
@@ -327,6 +324,7 @@ export const QuickPlayerAbilitiesItem = ({
                     error={purchaseError}
                 >
                     <Typography
+                        variant="h6"
                         sx={{
                             "& span": {
                                 animation: `${scaleUpKeyframes} 0.1s ease-out`,
@@ -336,6 +334,7 @@ export const QuickPlayerAbilitiesItem = ({
                     >
                         Purchase {saleAbility.ability.label} for <span key={price}>{supFormatter(price, 2)} SUPS</span>?
                     </Typography>
+
                     <PreferenceToggle
                         disabled={loading}
                         title="Don't show this again"

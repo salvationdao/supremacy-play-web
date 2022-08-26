@@ -6,7 +6,7 @@ import { useGameServerSubscription } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { rippleEffect } from "../../../../theme/keyframes"
 import { fonts } from "../../../../theme/theme"
-import { DisplayedAbility, DisplayEffectType } from "../../../../types"
+import { DisplayedAbility, MiniMapDisplayEffectType } from "../../../../types"
 import { MapIcon } from "./Common/MapIcon"
 
 export const MiniMapAbilitiesDisplay = () => {
@@ -39,7 +39,7 @@ export const MiniMapAbilitiesDisplay = () => {
 }
 
 const MiniMapAbilityDisplay = ({ displayAbility }: { displayAbility: DisplayedAbility }) => {
-    const { image_url, colour, radius, launching_at, location, display_effect_type } = displayAbility
+    const { image_url, colour, radius, launching_at, location, mini_map_display_effect_type } = displayAbility
     const { gridHeight } = useMiniMap()
     const { map } = useGame()
 
@@ -84,7 +84,12 @@ const MiniMapAbilityDisplay = ({ displayAbility }: { displayAbility: DisplayedAb
                                     border: `8px ${colour}`,
                                     borderStyle: "dashed solid",
                                     backgroundColor: "#00000010",
-                                    animation: display_effect_type === DisplayEffectType.Range ? `${rippleEffect(colour)} 10s ease-out` : "none",
+                                    animation:
+                                        mini_map_display_effect_type === MiniMapDisplayEffectType.Range
+                                            ? `${rippleEffect(colour)} 10s ease-out`
+                                            : mini_map_display_effect_type === MiniMapDisplayEffectType.Pulse
+                                            ? `${rippleEffect(colour)} 1.2s infinite`
+                                            : "none",
                                     zIndex: 90,
                                 }}
                             />
@@ -93,7 +98,7 @@ const MiniMapAbilityDisplay = ({ displayAbility }: { displayAbility: DisplayedAb
                 }
             />
         ),
-        [colour, diameter, display_effect_type, gridHeight, image_url, launching_at, location],
+        [colour, diameter, mini_map_display_effect_type, gridHeight, image_url, launching_at, location],
     )
 }
 
