@@ -8,7 +8,7 @@ import { usePagination, useToggle } from "../../../../../../hooks"
 import { useGameServerCommandsUser, useGameServerSubscriptionFaction } from "../../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../../keys"
 import { colors, fonts, siteZIndex } from "../../../../../../theme/theme"
-import { Utility, UtilityObjectType, UtilityType } from "../../../../../../types"
+import { Utility, UtilityType } from "../../../../../../types"
 import { SortTypeLabel } from "../../../../../../types/marketplace"
 import { ClipThing } from "../../../../../Common/ClipThing"
 import { PageHeader } from "../../../../../Common/PageHeader"
@@ -481,7 +481,7 @@ const UtilityItem = ({ id, equipped, selected, onSelect }: UtilityItemProps) => 
                                 newStat: utility.recharge_rate,
                             })}
                         {typeof utility.recharge_energy_cost !== "undefined" &&
-                            renderStat("HITPOINTS", {
+                            renderStat("ENERGY COST", {
                                 oldStat: oldUtility?.recharge_energy_cost,
                                 newStat: utility.recharge_energy_cost,
                             })}
@@ -495,22 +495,7 @@ const UtilityItem = ({ id, equipped, selected, onSelect }: UtilityItemProps) => 
                 if (!utility) return
                 return (
                     <Stack>
-                        {typeof utility.hitpoints !== "undefined" &&
-                            renderStat("HITPOINTS", {
-                                oldStat: oldUtility?.hitpoints,
-                                newStat: utility.hitpoints,
-                            })}
-                    </Stack>
-                )
-            }
-            case UtilityType.RepairDrone: {
-                const oldUtility = equipped.attack_drone
-                const utility = utilityDetails.attack_drone
-
-                if (!utility) return
-                return (
-                    <Stack>
-                        {typeof utility.hitpoints !== "undefined" &&
+{typeof utility.hitpoints !== "undefined" &&
                             renderStat("HITPOINTS", {
                                 oldStat: oldUtility?.hitpoints,
                                 newStat: utility.hitpoints,
@@ -525,6 +510,52 @@ const UtilityItem = ({ id, equipped, selected, onSelect }: UtilityItemProps) => 
                                 oldStat: oldUtility?.rate_of_fire,
                                 newStat: utility.rate_of_fire,
                             })}
+                        {typeof utility.lifespan_seconds !== "undefined" &&
+                            renderStat("LIFESPAN (SECONDS)", {
+                                oldStat: oldUtility?.lifespan_seconds,
+                                newStat: utility.lifespan_seconds,
+                            })}
+                        {typeof utility.deploy_energy_cost !== "undefined" &&
+                            renderStat("ENERGY COST", {
+                                oldStat: oldUtility?.deploy_energy_cost,
+                                newStat: utility.deploy_energy_cost,
+                            })}
+                    
+                    </Stack>
+                )
+            }
+            case UtilityType.RepairDrone: {
+                const oldUtility = equipped.repair_drone
+                const utility = utilityDetails.repair_drone
+
+                if (!utility) return
+                return (
+                    <Stack>
+                        {typeof utility.repair_amount !== "undefined" &&
+                            renderStat("REPAIR AMOUNT", {
+                                oldStat: oldUtility?.repair_amount,
+                                newStat: utility.repair_amount,
+                            })}
+                       <Stack direction="row" spacing="1rem" alignItems="center">
+                <Typography
+                    variant="caption"
+                    sx={{
+                        color: colors.lightGrey,
+                        fontSize: "1rem",
+                        fontFamily: fonts.nostromoBlack,
+                    }}
+                >
+                    REPAIR TYPE
+                </Typography>
+                <Typography
+                    variant="body2"
+                    sx={{
+                        color: "white",
+                    }}
+                >
+                    {utility.repair_type}
+                </Typography>
+            </Stack>
                         {typeof utility.lifespan_seconds !== "undefined" &&
                             renderStat("LIFESPAN (SECONDS)", {
                                 oldStat: oldUtility?.lifespan_seconds,
@@ -699,31 +730,6 @@ const UtilityItem = ({ id, equipped, selected, onSelect }: UtilityItemProps) => 
     )
 }
 
-const getUtility = <T extends UtilityType>(type: T, detail: Utility): UtilityObjectType<T> | undefined => {
-    if (!detail) return
-
-    let utility
-    switch (type) {
-        case UtilityType.Shield:
-            utility = detail.shield
-            break
-        case UtilityType.AttackDrone:
-            utility = detail.attack_drone
-            break
-        case UtilityType.RepairDrone:
-            utility = detail.repair_drone
-            break
-        case UtilityType.Accelerator:
-            utility = detail.accelerator
-            break
-        case UtilityType.AntiMissile:
-            utility = detail.anti_missile
-            break
-    }
-
-    return utility as UtilityObjectType<T>
-}
-
 interface UtilityPreviewProps {
     onConfirm: OnConfirmUtilitySelection
     utility?: Utility
@@ -732,6 +738,141 @@ interface UtilityPreviewProps {
 
 const UtilityPreview = ({ onConfirm, utility, equipped }: UtilityPreviewProps) => {
     const theme = useTheme()
+
+    const renderStatChange = useCallback((label: string, stats: { oldStat?: number; newStat: number; negated?: boolean }) => {
+        const positiveColor = stats.negated ? colors.red : colors.green
+        const negativeColor = stats.negated ? colors.green : colors.red
+        const difference = stats.newStat - (stats.oldStat || 0)
+        const color = difference > 0 ? positiveColor : difference === 0 ? "white" : negativeColor
+        const symbol = difference > 0 ? "+" : ""
+
+        if (difference === 0 || !stats.oldStat) return null
+
+        const percentageDifference = Math.round((difference * 100 * 100) / stats.oldStat) / 100
+        return (
+            <Stack key={label} direction="row" spacing="1rem" alignItems="center">
+                <Typography
+                    variant="body2"
+                    sx={{
+                        color,
+                    }}
+                >
+                    {symbol}
+                    {percentageDifference}%
+                </Typography>
+                <Typography
+                    variant="caption"
+                    sx={{
+                        fontSize: "1rem",
+                        fontFamily: fonts.nostromoBlack,
+                    }}
+                >
+                    {label}
+                </Typography>
+            </Stack>
+        )
+    }, [])
+
+    const statChanges = useMemo(() => {
+        if (!utility) return []
+
+        const stats = [
+// Shield
+typeof utility.shield?.hitpoints !== "undefined" &&
+renderStatChange("HITPOINTS", {
+    oldStat: equipped.shield?.hitpoints,
+    newStat: utility.shield?.hitpoints,
+}),
+typeof utility.shield?.recharge_rate !== "undefined" &&
+renderStatChange("RECHARGE RATE", {
+    oldStat: equipped.shield?.recharge_rate,
+    newStat: utility.shield?.recharge_rate,
+}),
+typeof utility.shield?.recharge_energy_cost !== "undefined" &&
+renderStatChange("ENERGY COST", {
+    oldStat: equipped.shield?.recharge_energy_cost,
+    newStat: utility.shield?.recharge_energy_cost,
+}),
+
+// AttackDrone
+typeof utility.attack_drone?.hitpoints !== "undefined" &&
+                            renderStatChange("HITPOINTS", {
+                                oldStat: equipped.attack_drone?.hitpoints,
+                                newStat: utility.attack_drone?.hitpoints,
+                            }),
+typeof utility.attack_drone?.damage !== "undefined" &&
+                            renderStatChange("DAMAGE", {
+                                oldStat: equipped.attack_drone?.damage,
+                                newStat: utility.attack_drone?.damage,
+                            }),
+typeof utility.attack_drone?.rate_of_fire !== "undefined" &&
+                            renderStatChange("RATE OF FIRE", {
+                                oldStat: equipped.attack_drone?.rate_of_fire,
+                                newStat: utility.attack_drone?.rate_of_fire,
+                            }),
+typeof utility.attack_drone?.lifespan_seconds !== "undefined" &&
+                            renderStatChange("LIFESPAN (SECONDS)", {
+                                oldStat: equipped.attack_drone?.lifespan_seconds,
+                                newStat: utility.attack_drone?.lifespan_seconds,
+                            }),
+typeof utility.attack_drone?.deploy_energy_cost !== "undefined" &&
+                            renderStatChange("ENERGY COST", {
+                                oldStat: equipped.attack_drone?.deploy_energy_cost,
+                                newStat: utility.attack_drone?.deploy_energy_cost,
+                            }),
+
+// RepairDrone
+typeof utility.repair_drone?.repair_amount !== "undefined" &&
+renderStatChange("REPAIR AMOUNT", {
+    oldStat: equipped.repair_drone?.repair_amount,
+    newStat: utility.repair_drone?.repair_amount,
+}),
+typeof utility.repair_drone?.lifespan_seconds !== "undefined" &&
+renderStatChange("LIFESPAN (SECONDS)", {
+    oldStat: equipped.repair_drone?.lifespan_seconds,
+    newStat: utility.repair_drone?.lifespan_seconds,
+}),
+typeof utility.repair_drone?.deploy_energy_cost !== "undefined" &&
+renderStatChange("ENERGY COST", {
+    oldStat: equipped.repair_drone?.deploy_energy_cost,
+    newStat: utility.repair_drone?.deploy_energy_cost,
+}),
+
+// Accelerator
+typeof utility.accelerator?.boost_amount !== "undefined" &&
+renderStatChange("BOOST AMOUNT", {
+    oldStat: equipped.accelerator?.boost_amount,
+    newStat: utility.accelerator?.boost_amount,
+}),
+typeof utility.accelerator?.boost_seconds !== "undefined" &&
+renderStatChange("DURATION (SECONDS)", {
+    oldStat: equipped.accelerator?.boost_seconds,
+    newStat: utility.accelerator?.boost_seconds,
+}),
+typeof utility.accelerator?.energy_cost !== "undefined" &&
+renderStatChange("ENERGY COST", {
+    oldStat: equipped.accelerator?.energy_cost,
+    newStat: utility.accelerator?.energy_cost,
+}),
+
+
+// AntiMissile
+
+typeof utility.anti_missile?.rate_of_fire !== "undefined" &&
+renderStatChange("RATE OF FIRE", {
+    oldStat: equipped.anti_missile?.rate_of_fire,
+    newStat: utility.anti_missile?.rate_of_fire,
+}),
+typeof utility.anti_missile?.fire_energy_cost !== "undefined" &&
+renderStatChange("ENERGY COST", {
+    oldStat: equipped.anti_missile?.fire_energy_cost,
+    newStat: utility.anti_missile?.fire_energy_cost,
+}),
+
+        ]
+
+        return stats.filter((s) => !!s)
+    }, [equipped.accelerator?.boost_amount, equipped.accelerator?.boost_seconds, equipped.accelerator?.energy_cost, equipped.anti_missile?.fire_energy_cost, equipped.anti_missile?.rate_of_fire, equipped.attack_drone?.damage, equipped.attack_drone?.deploy_energy_cost, equipped.attack_drone?.hitpoints, equipped.attack_drone?.lifespan_seconds, equipped.attack_drone?.rate_of_fire, equipped.repair_drone?.deploy_energy_cost, equipped.repair_drone?.lifespan_seconds, equipped.repair_drone?.repair_amount, equipped.shield?.hitpoints, equipped.shield?.recharge_energy_cost, equipped.shield?.recharge_rate, renderStatChange, utility])
 
     if (utility) {
         const videoUrls = [utility?.animation_url, utility?.card_animation_url]
@@ -834,6 +975,28 @@ const UtilityPreview = ({ onConfirm, utility, equipped }: UtilityPreviewProps) =
                             }}
                         >
                             Currently equipped on another mech.
+                        </Typography>
+                    )}
+                    {statChanges.length > 0 ? (
+                        <Stack>
+                            <Typography
+                                sx={{
+                                    color: colors.lightGrey,
+                                    textTransform: "uppercase",
+                                }}
+                            >
+                                Stat Changes If Equipped:
+                            </Typography>
+                            {statChanges}
+                        </Stack>
+                    ) : (
+                        <Typography
+                            sx={{
+                                color: colors.lightGrey,
+                                textTransform: "uppercase",
+                            }}
+                        >
+                            No Stat Changes If Equipped
                         </Typography>
                     )}
                 </Stack>
