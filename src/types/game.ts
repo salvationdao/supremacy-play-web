@@ -29,8 +29,8 @@ export interface Map {
     height: number
     cells_x: number
     cells_y: number
-    top_pixels: number
-    left_pixels: number
+    pixel_top: number
+    pixel_left: number
     disabled_cells: number[]
 }
 
