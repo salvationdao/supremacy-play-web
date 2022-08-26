@@ -9,7 +9,7 @@ import { GameServerKeys } from "../../../../../keys"
 import { pulseEffect, rippleEffect, spinEffect } from "../../../../../theme/keyframes"
 import { colors, fonts } from "../../../../../theme/theme"
 import { LocationSelectType, Map, WarMachineState } from "../../../../../types"
-import { DisplayedAbility, DisplayEffectType, WarMachineLiveState } from "../../../../../types/game"
+import { DisplayedAbility, MechDisplayEffectType, WarMachineLiveState } from "../../../../../types/game"
 import { MechMoveCommand } from "../../../../WarMachine/WarMachineItem/MoveCommand"
 
 const TRANSITION_DURATION = 0.275 // seconds
@@ -169,8 +169,8 @@ const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
                 return
             }
 
-            setAbilityBorderEffect(payload.find((da) => da.mech_id === id && da.display_effect_type === DisplayEffectType.MechBorder))
-            setAbilityPulseEffect(payload.find((da) => da.mech_id === id && da.display_effect_type === DisplayEffectType.MechPulse))
+            setAbilityBorderEffect(payload.find((da) => da.mech_id === id && da.mech_display_effect_type === MechDisplayEffectType.Border))
+            setAbilityPulseEffect(payload.find((da) => da.mech_id === id && da.mech_display_effect_type === MechDisplayEffectType.Pulse))
         },
     )
 
@@ -339,7 +339,7 @@ const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
                         />
                     )}
 
-                    {/* Border effect */}
+                    {/* Pulse effect */}
                     {abilityPulseEffect && (
                         <Box
                             sx={{
