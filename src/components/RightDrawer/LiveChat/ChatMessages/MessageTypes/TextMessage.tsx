@@ -166,7 +166,6 @@ export const TextMessage = React.memo(function TextMessage({ message, containerR
 
     // Get tagged user details from cache, if not exist, fetch from server
     useEffect(() => {
-        console.log(userGidRecord)
         ;(async () => {
             const matchedArray = content.match(/#\d+/g)
             const taggedUserFetches = matchedArray?.map(
@@ -174,6 +173,7 @@ export const TextMessage = React.memo(function TextMessage({ message, containerR
                     new Promise<boolean>((resolve) => {
                         const gidSubstring = parseInt(match.substring(1))
                         const taggedUser = userGidRecord.current[gidSubstring] || undefined
+
                         if (!taggedUser) {
                             ;(async () => {
                                 try {
@@ -187,9 +187,9 @@ export const TextMessage = React.memo(function TextMessage({ message, containerR
                                     resolve(true)
                                 }
                             })()
+                        } else {
+                            resolve(true)
                         }
-
-                        resolve(true)
                     }),
             )
             if (taggedUserFetches) {
@@ -205,7 +205,7 @@ export const TextMessage = React.memo(function TextMessage({ message, containerR
 
         // Splitting the message on tags, identifying #12345 patterns e.g.: hi, #1234 how are you? => ['hi,', ' how are you'] (tags are stored in match array)
         const matchedArray = content.match(/#\d+/g)
-        const stringsArray = content.split(/@[\w ]+#\d+/g)
+        const stringsArray = content.split(/#\d+/g)
         const newMessageArray: ReactJSXElement[] = []
 
         // Looping through the string array
@@ -213,11 +213,13 @@ export const TextMessage = React.memo(function TextMessage({ message, containerR
             // Pushing the first string
             newMessageArray.push(<span>{str}</span>)
             // If there is an item in matchedArr with the same index, push it into the new string, even if the tag is the first thing, it will still be split with an empty string at the start of stringsArr
+
             if (matchedArray && matchedArray[i]) {
                 // Getting the gid from tag
                 const gidSubstring = parseInt(matchedArray[i].substring(1))
                 // Finding the user in the GID Record (added in above useEffect)
                 const taggedUser = userGidRecord.current[gidSubstring]
+
                 // If taggedUser doesnt exist or the user tagged themselves or user tagged taggedUser of a different faction in faction chat, just push the whole string, not rendering the tag
                 if (!taggedUser || gidSubstring === from_user.gid || (taggedUser.faction_id !== user.faction_id && tabValue !== 0)) {
                     newMessageArray.push(<span>{matchedArray[i]}</span>)

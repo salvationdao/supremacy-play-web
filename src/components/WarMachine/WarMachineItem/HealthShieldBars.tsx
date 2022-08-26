@@ -38,7 +38,7 @@ export const HealthShieldBars = React.memo(function HealthShieldBars({ warMachin
                 if (healthBarEl) {
                     const percent = Math.min((payload.health / maxHealth) * 100, 100)
                     healthBarEl.style.height = `${percent}%`
-                    healthBarEl.style.backgroundColor = percent <= 45 ? colors.red : colors.green
+                    healthBarEl.style.backgroundColor = percent <= 45 ? colors.red : colors.health
                 }
             }
 

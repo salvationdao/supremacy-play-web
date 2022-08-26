@@ -258,7 +258,7 @@ const PlayerAbilityTargetHint = () => {
                             clipSize: "4px",
                             backgroundColor: colors.red,
                             border: { isFancy: true, borderColor: colors.red },
-                            sx: { ml: "auto !important" },
+                            sx: { ml: "auto !important", pointerEvents: "all" },
                         }}
                         sx={{ py: ".2rem", px: "1.5rem" }}
                         onClick={() => resetSelection()}
