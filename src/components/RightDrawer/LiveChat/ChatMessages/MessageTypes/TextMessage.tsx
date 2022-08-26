@@ -166,6 +166,7 @@ export const TextMessage = React.memo(function TextMessage({ message, containerR
 
     // Get tagged user details from cache, if not exist, fetch from server
     useEffect(() => {
+        console.log(userGidRecord)
         ;(async () => {
             const matchedArray = content.match(/#\d+/g)
             const taggedUserFetches = matchedArray?.map(
@@ -204,7 +205,7 @@ export const TextMessage = React.memo(function TextMessage({ message, containerR
 
         // Splitting the message on tags, identifying #12345 patterns e.g.: hi, #1234 how are you? => ['hi,', ' how are you'] (tags are stored in match array)
         const matchedArray = content.match(/#\d+/g)
-        const stringsArray = content.split(/#\d+/)
+        const stringsArray = content.split(/@[\w ]+#\d+/g)
         const newMessageArray: ReactJSXElement[] = []
 
         // Looping through the string array
@@ -230,7 +231,6 @@ export const TextMessage = React.memo(function TextMessage({ message, containerR
                 )
             }
         })
-
         return (
             <>
                 {newMessageArray.map((x, i) => (
