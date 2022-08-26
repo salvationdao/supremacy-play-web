@@ -80,7 +80,7 @@ export const Notifications = () => {
 
             if (notification.type === NotificationType.BattleZoneChange) {
                 const battleZoneChange = notification.data as BattleZoneStruct
-                duration = battleZoneChange.warnTime * 1000
+                duration = battleZoneChange.warn_time * 1000
                 setBattleZone(battleZoneChange)
             }
 
