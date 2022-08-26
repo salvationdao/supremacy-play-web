@@ -37,7 +37,7 @@ export const TagPlayer = ({
                     const afterColonSubstring = caretString.substring(colonIndex + 1)
                     //identifies if theres a space, if there is one and marks it as the end of the search query
                     const searchStringEndIndex = afterColonSubstring.indexOf(" ")
-                    const searchString = afterColonSubstring.substring(0, searchStringEndIndex !== -1 ? searchStringEndIndex : caretString.length)
+                    const searchString = afterColonSubstring.substring(0, searchStringEndIndex !== -1 ? searchStringEndIndex : caretString.length).toLowerCase()
 
                     //if there is no matches, clear the results
                     if (searchStringEndIndex !== -1) {
@@ -48,7 +48,9 @@ export const TagPlayer = ({
                     if (searchString) {
                         const players = faction_id ? activePlayers : globalActivePlayers
                         const filteredPlayers = players.filter((ap) => {
-                            return ap.id !== userID && (ap.username.includes(searchString) || ap.gid.toString().includes(searchString))
+                            return (
+                                ap.id !== userID && (ap.username.toLowerCase().includes(searchString) || ap.gid.toString().toLowerCase().includes(searchString))
+                            )
                         })
 
                         // Limit to top 10 results, else too many

@@ -2,7 +2,7 @@ import { Box, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo } from "react"
 import { ClipThing, FancyButton } from "../../.."
 import { SvgLine, SvgMicrochip, SvgQuestionMark, SvgTarget } from "../../../../assets"
-import { useMiniMap, useGlobalNotifications } from "../../../../containers"
+import { useGlobalNotifications, useMiniMap } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
 import { useTimer } from "../../../../hooks"
 import { colors } from "../../../../theme/theme"
@@ -28,30 +28,7 @@ const WinnerTargetHint = () => {
     const { label, colour, image_url } = winner.game_ability
 
     return (
-        <Stack
-            direction="row"
-            alignItems="flex-end"
-            sx={{
-                position: "absolute",
-                bottom: 0,
-                left: 0,
-                right: 0,
-                zIndex: 98,
-            }}
-        >
-            <ClipThing backgroundColor={colour} corners={{ topRight: true }} border={{ borderColor: colour, borderThickness: ".25rem" }} sx={{ zIndex: 99 }}>
-                <Box
-                    sx={{
-                        width: "45px",
-                        height: "45px",
-                        background: `url(${image_url})`,
-                        backgroundRepeat: "no-repeat",
-                        backgroundPosition: "center",
-                        backgroundSize: "contain",
-                    }}
-                />
-            </ClipThing>
-
+        <>
             <Box
                 sx={{
                     zIndex: 98,
@@ -60,11 +37,12 @@ const WinnerTargetHint = () => {
                     left: 0,
                     right: 0,
                     bottom: 0,
-                    background: `radial-gradient(rgba(0, 0, 0, 0), ${colour}aa)`,
+                    background: `radial-gradient(rgba(0, 0, 0, 0), ${colour}20)`,
+                    border: `${colour} 5px dashed`,
                     pointerEvents: "none",
-                    opacity: 0.2,
                 }}
             />
+
             <Stack
                 direction="row"
                 alignItems="flex-end"
@@ -80,7 +58,7 @@ const WinnerTargetHint = () => {
                     backgroundColor={colour}
                     corners={{ topRight: true }}
                     border={{ borderColor: colour, borderThickness: ".25rem" }}
-                    sx={{ zIndex: 99, m: "-.3rem" }}
+                    sx={{ zIndex: 99 }}
                 >
                     <Box
                         sx={{
@@ -94,30 +72,60 @@ const WinnerTargetHint = () => {
                     />
                 </ClipThing>
 
-                <Box
+                <Stack
+                    direction="row"
+                    alignItems="flex-end"
                     sx={{
-                        position: "relative",
-                        flex: 1,
-                        px: "2rem",
-                        py: ".6rem",
-                        backgroundColor: (theme) => `${theme.factionTheme.background}`,
+                        position: "absolute",
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        zIndex: 98,
                     }}
                 >
-                    <Typography variant="h5" sx={{ lineHeight: 1, span: { fontWeight: "fontWeightBold", color: colour } }}>
-                        You have{" "}
-                        <WinnerTargetHintInner
-                            endTime={winner.end_time}
-                            onCountdownExpired={() => {
-                                newSnackbarMessage("Failed to submit target location on time.", "error")
-                                resetSelection()
+                    <ClipThing
+                        backgroundColor={colour}
+                        corners={{ topRight: true }}
+                        border={{ borderColor: colour, borderThickness: ".25rem" }}
+                        sx={{ zIndex: 99, m: "-.3rem" }}
+                    >
+                        <Box
+                            sx={{
+                                width: "45px",
+                                height: "45px",
+                                background: `url(${image_url})`,
+                                backgroundRepeat: "no-repeat",
+                                backgroundPosition: "center",
+                                backgroundSize: "contain",
                             }}
                         />
-                        s to choose a location for&nbsp;
-                        <span>{`${label}`}</span>
-                    </Typography>
-                </Box>
+                    </ClipThing>
+
+                    <Box
+                        sx={{
+                            position: "relative",
+                            flex: 1,
+                            px: "2rem",
+                            py: ".6rem",
+                            backgroundColor: (theme) => `${theme.factionTheme.background}`,
+                        }}
+                    >
+                        <Typography variant="h5" sx={{ lineHeight: 1, span: { fontWeight: "fontWeightBold", color: colour } }}>
+                            You have{" "}
+                            <WinnerTargetHintInner
+                                endTime={winner.end_time}
+                                onCountdownExpired={() => {
+                                    newSnackbarMessage("Failed to submit target location on time.", "error")
+                                    resetSelection()
+                                }}
+                            />
+                            s to choose a location for&nbsp;
+                            <span>{`${label}`}</span>
+                        </Typography>
+                    </Box>
+                </Stack>
             </Stack>
-        </Stack>
+        </>
     )
 }
 
@@ -169,7 +177,15 @@ const PlayerAbilityTargetHint = () => {
                 break
             case LocationSelectType.MechSelect:
                 icon = <SvgMicrochip {...iconProps} />
+                descriptor = "Select a mech to activate"
+                break
+            case LocationSelectType.MechSelectAllied:
+                icon = <SvgMicrochip {...iconProps} />
                 descriptor = "Select an allied mech to activate"
+                break
+            case LocationSelectType.MechSelectOpponent:
+                icon = <SvgMicrochip {...iconProps} />
+                descriptor = "Select an opponent mech to activate"
                 break
             case LocationSelectType.LineSelect:
                 icon = <SvgLine {...iconProps} />
@@ -193,9 +209,9 @@ const PlayerAbilityTargetHint = () => {
                     left: 0,
                     right: 0,
                     bottom: 0,
-                    background: `radial-gradient(rgba(0, 0, 0, 0), ${playerAbility.ability.colour}aa)`,
+                    background: `radial-gradient(rgba(0, 0, 0, 0), ${playerAbility.ability.colour}20)`,
+                    border: `${playerAbility.ability.colour} 5px dashed`,
                     pointerEvents: "none",
-                    opacity: 0.2,
                 }}
             />
 
