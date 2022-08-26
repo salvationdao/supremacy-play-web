@@ -52,6 +52,7 @@ const WinnerTargetHint = () => {
                     left: 0,
                     right: 0,
                     zIndex: 98,
+                    pointerEvents: "none",
                 }}
             >
                 <ClipThing
@@ -224,6 +225,7 @@ const PlayerAbilityTargetHint = () => {
                     left: 0,
                     right: 0,
                     zIndex: 98,
+                    pointerEvents: "none",
                 }}
             >
                 <ClipThing
