@@ -77,8 +77,8 @@ const BattleZoneCircle = ({
                 borderRadius: "50%",
                 border: `${borderThickness}px solid #0F0202${overlay ? "66" : "BB"}`,
                 pointerEvents: "none",
-                transition: `all ${battleZone?.shrinkTime || 0.5}s ease-in-out`,
-                transitionDelay: `${battleZone?.warnTime || 0}s`,
+                transition: `all ${battleZone?.shrink_time || 0.5}s ease-in-out`,
+                transitionDelay: `${battleZone?.warn_time || 0}s`,
             }}
         />
     )
