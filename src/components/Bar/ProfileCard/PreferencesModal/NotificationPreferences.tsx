@@ -267,7 +267,7 @@ interface PreferenceToggleProps {
     onChangeFunction: (e: React.ChangeEvent<HTMLInputElement>) => void
 }
 
-const PreferenceToggle = ({ title, checked, onChangeFunction, disabled }: PreferenceToggleProps) => {
+export const PreferenceToggle = ({ title, checked, onChangeFunction, disabled }: PreferenceToggleProps) => {
     return (
         <Stack direction="row" alignItems="center" justifyContent="space-between">
             <Typography sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>{title}</Typography>
