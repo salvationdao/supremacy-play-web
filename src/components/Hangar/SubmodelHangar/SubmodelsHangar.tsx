@@ -52,7 +52,6 @@ interface GetSubmodelsResponse {
 export const SubmodelsHangar = () => {
     // The tabs
     const [submodelType, setSubmodelType] = useState<SubmodelType>(SubmodelType.warMachine)
-
     return <SubmodelsHangarInner key={submodelType} submodelType={submodelType} setSubmodelType={setSubmodelType} />
 }
 
