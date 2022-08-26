@@ -37,7 +37,6 @@ export const SupremacyContainer = createContainer(() => {
 
     // If server is down and we're not trying to reconnect, reload window after 30 minutes
     useEffect(() => {
-        console.log({ isServerDown, isReconnecting })
         if (isServerDown && !isReconnecting) {
             clearWindowReloadTimeout()
             windowReloadTimeout.current = setTimeout(() => {
