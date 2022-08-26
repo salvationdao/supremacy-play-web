@@ -37,8 +37,8 @@ export interface Map {
 export interface BattleZoneStruct {
     location: Position
     radius: number
-    shrinkTime: number
-    warnTime: number
+    shrink_time: number
+    warn_time: number
 }
 
 export interface Dimension {
