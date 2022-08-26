@@ -186,9 +186,9 @@ export const TextMessage = React.memo(function TextMessage({ message, containerR
                                     resolve(true)
                                 }
                             })()
+                        } else {
+                            resolve(true)
                         }
-
-                        resolve(true)
                     }),
             )
             if (taggedUserFetches) {
@@ -204,7 +204,7 @@ export const TextMessage = React.memo(function TextMessage({ message, containerR
 
         // Splitting the message on tags, identifying #12345 patterns e.g.: hi, #1234 how are you? => ['hi,', ' how are you'] (tags are stored in match array)
         const matchedArray = content.match(/#\d+/g)
-        const stringsArray = content.split(/#\d+/)
+        const stringsArray = content.split(/@[\w ]+#\d+/g)
         const newMessageArray: ReactJSXElement[] = []
 
         // Looping through the string array
@@ -230,7 +230,6 @@ export const TextMessage = React.memo(function TextMessage({ message, containerR
                 )
             }
         })
-
         return (
             <>
                 {newMessageArray.map((x, i) => (
