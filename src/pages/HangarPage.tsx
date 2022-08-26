@@ -13,6 +13,7 @@ import { WarMachinesHangar } from "../components/Hangar/WarMachinesHangar/WarMac
 import { useTheme } from "../containers/theme"
 import { ROUTES_MAP } from "../routes"
 import { siteZIndex } from "../theme/theme"
+import { SubmodelsHangar } from "../components/Hangar/SubmodelHangar/SubmodelsHangar"
 
 export enum HANGAR_TABS {
     WarMachines = "war-machines",
@@ -20,6 +21,7 @@ export enum HANGAR_TABS {
     Keycards = "key-cards",
     Abilities = "abilities",
     Weapons = "weapons",
+    Submodels = "submodels",
 }
 
 export const HangarPage = () => {
@@ -96,9 +98,12 @@ export const HangarPage = () => {
 
                                 <Tab label="WEAPONS" value={HANGAR_TABS.Weapons} />
 
+                                <Tab label="SUBMODELS" value={HANGAR_TABS.Submodels} />
+
                                 <Tab label="KEY CARDS" value={HANGAR_TABS.Keycards} />
 
                                 <Tab label="MYSTERY CRATES" value={HANGAR_TABS.MysteryCrates} />
+
                                 <Tab label="ABILITIES" value={HANGAR_TABS.Abilities} />
                             </Tabs>
                         </Box>
@@ -113,6 +118,10 @@ export const HangarPage = () => {
 
                 <TabPanel currentValue={currentValue} value={HANGAR_TABS.Weapons}>
                     <WeaponsHangar />
+                </TabPanel>
+
+                <TabPanel currentValue={currentValue} value={HANGAR_TABS.Submodels}>
+                    <SubmodelsHangar />
                 </TabPanel>
 
                 <TabPanel currentValue={currentValue} value={HANGAR_TABS.Keycards}>

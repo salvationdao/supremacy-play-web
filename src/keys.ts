@@ -147,6 +147,12 @@ export enum GameServerKeys {
     GetPlayerMysteryCrate = "PLAYER:ASSET:MYSTERY_CRATE:GET",
     OpenCrate = "CRATE:OPEN",
 
+    //submodels
+    GetMechSubmodels = "PLAYER:ASSET:MECH:SUBMODEL:LIST",
+    GetWeaponSubmodels = "PLAYER:ASSET:WEAPON:SUBMODEL:LIST",
+    GetMechModels = "PLAYER:MECH:MODEL:LIST",
+    GetWeaponModels = "PLAYER:WEAPON:MODEL:LIST",
+
     // Keycards
     GetPlayerKeycards = "PLAYER:ASSET:KEYCARD:LIST",
     GetPlayerKeycard = "PLAYER:ASSET:KEYCARD:GET",
