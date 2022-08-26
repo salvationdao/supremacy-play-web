@@ -10,6 +10,18 @@ export enum MechStatusEnum {
     Damaged = "DAMAGED",
 }
 
+export type UtilityObjectType<T> = T extends UtilityType.Shield
+    ? UtilityShield
+    : T extends UtilityType.AttackDrone
+    ? UtilityAttackDrone
+    : T extends UtilityType.RepairDrone
+    ? UtilityRepairDrone
+    : T extends UtilityType.AntiMissile
+    ? UtilityAntiMissile
+    : T extends UtilityType.Accelerator
+    ? UtilityAccelerator
+    : never
+
 export enum UtilityType {
     Shield = "SHIELD",
     AttackDrone = "ATTACK DRONE",
@@ -273,7 +285,7 @@ export interface Utility extends Collection, Images {
     blueprint_id: string
     genesis_token_id?: number
     equipped_on?: string
-    type: string
+    type: UtilityType
     locked_to_mech: boolean
     slot_number?: number
 

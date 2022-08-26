@@ -1,4 +1,4 @@
-import { Box, CircularProgress, IconButton, Modal, Pagination, Stack, Typography } from "@mui/material"
+import { Box, CircularProgress, Divider, IconButton, Modal, Pagination, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { FancyButton } from "../../../../.."
 import { EmptyWarMachinesPNG, SvgClose, SvgView } from "../../../../../../assets"
@@ -8,7 +8,7 @@ import { usePagination, useToggle } from "../../../../../../hooks"
 import { useGameServerCommandsUser, useGameServerSubscriptionFaction } from "../../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../../keys"
 import { colors, fonts, siteZIndex } from "../../../../../../theme/theme"
-import { Utility, UtilityType } from "../../../../../../types"
+import { Utility, UtilityObjectType, UtilityType } from "../../../../../../types"
 import { SortTypeLabel } from "../../../../../../types/marketplace"
 import { ClipThing } from "../../../../../Common/ClipThing"
 import { PageHeader } from "../../../../../Common/PageHeader"
@@ -428,6 +428,164 @@ const UtilityItem = ({ id, equipped, selected, onSelect }: UtilityItemProps) => 
         },
     )
 
+    const renderStat = useCallback((label: string, stats: { oldStat?: number; newStat: number; negated?: boolean }) => {
+        const positiveColor = stats.negated ? colors.red : colors.green
+        const negativeColor = stats.negated ? colors.green : colors.red
+        const difference = stats.newStat - (stats.oldStat || 0)
+        const color = difference > 0 ? positiveColor : difference === 0 ? "white" : negativeColor
+        const symbol = difference > 0 ? "+" : ""
+
+        return (
+            <Stack direction="row" spacing="1rem" alignItems="center">
+                <Typography
+                    variant="caption"
+                    sx={{
+                        color: colors.lightGrey,
+                        fontSize: "1rem",
+                        fontFamily: fonts.nostromoBlack,
+                    }}
+                >
+                    {label}
+                </Typography>
+                <Typography
+                    variant="body2"
+                    sx={{
+                        color,
+                    }}
+                >
+                    {stats.newStat} {difference !== 0 && `(${symbol}${difference})`}
+                </Typography>
+            </Stack>
+        )
+    }, [])
+
+    const renderUtilityStats = useCallback(() => {
+        if (!utilityDetails) return
+
+        switch (utilityDetails.type) {
+            case UtilityType.Shield: {
+                const oldUtility = equipped.shield
+                const utility = utilityDetails.shield
+
+                if (!utility) return
+                return (
+                    <Stack>
+                        {typeof utility.hitpoints !== "undefined" &&
+                            renderStat("HITPOINTS", {
+                                oldStat: oldUtility?.hitpoints,
+                                newStat: utility.hitpoints,
+                            })}
+                        {typeof utility.recharge_rate !== "undefined" &&
+                            renderStat("RECHARGE RATE", {
+                                oldStat: oldUtility?.recharge_rate,
+                                newStat: utility.recharge_rate,
+                            })}
+                        {typeof utility.recharge_energy_cost !== "undefined" &&
+                            renderStat("HITPOINTS", {
+                                oldStat: oldUtility?.recharge_energy_cost,
+                                newStat: utility.recharge_energy_cost,
+                            })}
+                    </Stack>
+                )
+            }
+            case UtilityType.AttackDrone: {
+                const oldUtility = equipped.attack_drone
+                const utility = utilityDetails.attack_drone
+
+                if (!utility) return
+                return (
+                    <Stack>
+                        {typeof utility.hitpoints !== "undefined" &&
+                            renderStat("HITPOINTS", {
+                                oldStat: oldUtility?.hitpoints,
+                                newStat: utility.hitpoints,
+                            })}
+                    </Stack>
+                )
+            }
+            case UtilityType.RepairDrone: {
+                const oldUtility = equipped.attack_drone
+                const utility = utilityDetails.attack_drone
+
+                if (!utility) return
+                return (
+                    <Stack>
+                        {typeof utility.hitpoints !== "undefined" &&
+                            renderStat("HITPOINTS", {
+                                oldStat: oldUtility?.hitpoints,
+                                newStat: utility.hitpoints,
+                            })}
+                        {typeof utility.damage !== "undefined" &&
+                            renderStat("DAMAGE", {
+                                oldStat: oldUtility?.damage,
+                                newStat: utility.damage,
+                            })}
+                        {typeof utility.rate_of_fire !== "undefined" &&
+                            renderStat("RATE OF FIRE", {
+                                oldStat: oldUtility?.rate_of_fire,
+                                newStat: utility.rate_of_fire,
+                            })}
+                        {typeof utility.lifespan_seconds !== "undefined" &&
+                            renderStat("LIFESPAN (SECONDS)", {
+                                oldStat: oldUtility?.lifespan_seconds,
+                                newStat: utility.lifespan_seconds,
+                            })}
+                        {typeof utility.deploy_energy_cost !== "undefined" &&
+                            renderStat("ENERGY COST", {
+                                oldStat: oldUtility?.deploy_energy_cost,
+                                newStat: utility.deploy_energy_cost,
+                            })}
+                    </Stack>
+                )
+            }
+            case UtilityType.Accelerator: {
+                const oldUtility = equipped.accelerator
+                const utility = utilityDetails.accelerator
+
+                if (!utility) return
+                return (
+                    <Stack>
+                        {typeof utility.boost_amount !== "undefined" &&
+                            renderStat("BOOST AMOUNT", {
+                                oldStat: oldUtility?.boost_amount,
+                                newStat: utility.boost_amount,
+                            })}
+                        {typeof utility.boost_seconds !== "undefined" &&
+                            renderStat("DURATION (SECONDS)", {
+                                oldStat: oldUtility?.boost_seconds,
+                                newStat: utility.boost_seconds,
+                            })}
+                        {typeof utility.energy_cost !== "undefined" &&
+                            renderStat("ENERGY COST", {
+                                oldStat: oldUtility?.energy_cost,
+                                newStat: utility.energy_cost,
+                            })}
+                    </Stack>
+                )
+            }
+            case UtilityType.AntiMissile: {
+                const oldUtility = equipped.anti_missile
+                const utility = utilityDetails.anti_missile
+
+                if (!utility) return
+                return (
+                    <Stack>
+                        {typeof utility.rate_of_fire !== "undefined" &&
+                            renderStat("RATE OF FIRE", {
+                                oldStat: oldUtility?.rate_of_fire,
+                                newStat: utility.rate_of_fire,
+                            })}
+                        {typeof utility.fire_energy_cost !== "undefined" &&
+                            renderStat("ENERGY COST", {
+                                oldStat: oldUtility?.fire_energy_cost,
+                                newStat: utility.fire_energy_cost,
+                            })}
+                    </Stack>
+                )
+            }
+        }
+    }, [equipped.accelerator, equipped.anti_missile, equipped.attack_drone, equipped.shield, renderStat, utilityDetails])
+
     if (!utilityDetails) {
         return (
             <ClipThing
@@ -526,9 +684,44 @@ const UtilityItem = ({ id, equipped, selected, onSelect }: UtilityItemProps) => 
                         {utilityDetails?.label}
                     </Typography>
                 </Box>
+                <Divider
+                    orientation="vertical"
+                    sx={{
+                        alignSelf: "stretch",
+                        height: "auto",
+                        mx: "1rem",
+                        borderColor: "#494949",
+                    }}
+                />
+                {renderUtilityStats()}
             </Stack>
         </FancyButton>
     )
+}
+
+const getUtility = <T extends UtilityType>(type: T, detail: Utility): UtilityObjectType<T> | undefined => {
+    if (!detail) return
+
+    let utility
+    switch (type) {
+        case UtilityType.Shield:
+            utility = detail.shield
+            break
+        case UtilityType.AttackDrone:
+            utility = detail.attack_drone
+            break
+        case UtilityType.RepairDrone:
+            utility = detail.repair_drone
+            break
+        case UtilityType.Accelerator:
+            utility = detail.accelerator
+            break
+        case UtilityType.AntiMissile:
+            utility = detail.anti_missile
+            break
+    }
+
+    return utility as UtilityObjectType<T>
 }
 
 interface UtilityPreviewProps {
