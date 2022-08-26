@@ -8,7 +8,7 @@ import { useTheme } from "../../../containers/theme"
 import { GetSaleAbilityAvailability } from "../../../fetching"
 import { timeSinceInWords } from "../../../helpers"
 import { useTimer } from "../../../hooks"
-import { useGameServerCommandsUser, useGameServerSubscriptionSecured, useGameServerSubscriptionSecuredUser } from "../../../hooks/useGameServer"
+import { useGameServerSubscriptionSecured, useGameServerSubscriptionSecuredUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { HANGAR_TABS } from "../../../pages"
 import { colors, fonts } from "../../../theme/theme"
@@ -20,7 +20,6 @@ export const PlayerAbilitiesStore = () => {
     const theme = useTheme()
     const { userID } = useAuth()
 
-    const { send } = useGameServerCommandsUser("/user_commander")
     const { query: queryAvailability } = useParameterizedQuery(GetSaleAbilityAvailability)
     const [availability, setAvailability] = useState<SaleAbilityAvailability>(SaleAbilityAvailability.CanClaim)
     const [availabilityError, setAvailabilityError] = useState<string>()
@@ -32,31 +31,24 @@ export const PlayerAbilitiesStore = () => {
 
     const [ownedAbilities, setOwnedAbilities] = useState<Map<string, number>>(new Map())
 
-    const refetchSaleAbilities = useCallback(async () => {
+    const refetchSaleAvailability = useCallback(async () => {
+        if (!userID) return
         try {
-            const resp = await send<{
-                next_refresh_time: Date | null
-                refresh_period_duration_seconds: number
-                sale_abilities: SaleAbility[]
-            }>(GameServerKeys.SaleAbilitiesList)
-
-            if (!resp) return
-            const t = new Date()
-            t.setSeconds(t.getSeconds() + resp.refresh_period_duration_seconds)
-            setNextRefreshTime(resp.next_refresh_time || t)
-            setSaleAbilities(resp.sale_abilities)
-            setAvailability(SaleAbilityAvailability.CanClaim)
+            const resp = await queryAvailability(userID)
+            if (resp.error || resp.payload == null) return
+            setAvailability(resp.payload)
             setAvailabilityError(undefined)
-            if (isLoaded) return
-            setIsLoaded(true)
         } catch (e) {
+            let message = "Failed to obtain purchase availability during this sale period."
+            if (typeof e === "string") {
+                message = e
+            } else if (e instanceof Error) {
+                message = e.message
+            }
             console.error(e)
+            setAvailabilityError(message)
         }
-    }, [isLoaded, send])
-
-    useEffect(() => {
-        refetchSaleAbilities()
-    }, [refetchSaleAbilities])
+    }, [queryAvailability, userID])
 
     useEffect(() => {
         if (!userID) return
@@ -78,28 +70,6 @@ export const PlayerAbilitiesStore = () => {
         })()
     }, [queryAvailability, userID])
 
-    // useGameServerSubscriptionSecured<{
-    //     next_refresh_time: Date | null
-    //     refresh_period_duration_seconds: number
-    //     sale_abilities: SaleAbility[]
-    // }>(
-    //     {
-    //         URI: "/sale_abilities",
-    //         key: GameServerKeys.SubSaleAbilitiesList,
-    //     },
-    //     (payload) => {
-    //         if (!payload) return
-    //         const t = new Date()
-    //         t.setSeconds(t.getSeconds() + payload.refresh_period_duration_seconds)
-    //         setNextRefreshTime(payload.next_refresh_time || t)
-    //         setSaleAbilities(payload.sale_abilities)
-    //         setAvailability(SaleAbilityAvailability.CanClaim)
-    //         setAvailabilityError(undefined)
-    //         if (isLoaded) return
-    //         setIsLoaded(true)
-    //     },
-    // )
-
     useGameServerSubscriptionSecured<{ id: string; current_price: string }>(
         {
             URI: "/sale_abilities",
@@ -110,6 +80,31 @@ export const PlayerAbilitiesStore = () => {
             setPriceMap((prev) => {
                 return new Map(prev.set(payload.id, payload.current_price))
             })
+        },
+    )
+
+    useGameServerSubscriptionSecured<{
+        next_refresh_time: Date | null
+        time_left_seconds: number
+        sale_abilities: SaleAbility[]
+    }>(
+        {
+            URI: "/sale_abilities",
+            key: GameServerKeys.SubSaleAbilitiesList,
+        },
+        (payload) => {
+            if (!payload) return
+
+            const t = new Date()
+            t.setSeconds(t.getSeconds() + Math.max(payload.time_left_seconds, 1))
+            setNextRefreshTime(payload.next_refresh_time || t)
+            setSaleAbilities(payload.sale_abilities)
+
+            // Fetch sale availability
+            refetchSaleAvailability()
+
+            if (isLoaded) return
+            setIsLoaded(true)
         },
     )
 
@@ -134,13 +129,13 @@ export const PlayerAbilitiesStore = () => {
         if (nextRefreshTime) {
             return (
                 <Typography sx={{ color: colors.lightNeonBlue, fontFamily: fonts.nostromoBold, textTransform: "uppercase" }}>
-                    <TimeLeft key={nextRefreshTime.getMilliseconds()} dateTo={nextRefreshTime} onComplete={refetchSaleAbilities} />
+                    <TimeLeft key={nextRefreshTime.getMilliseconds()} dateTo={nextRefreshTime} />
                 </Typography>
             )
         }
 
         return <Typography sx={{ color: colors.lightNeonBlue, fontFamily: fonts.nostromoBold }}>Less than an hour</Typography>
-    }, [nextRefreshTime, refetchSaleAbilities])
+    }, [nextRefreshTime])
 
     const content = useMemo(() => {
         if (!isLoaded) {
@@ -334,23 +329,19 @@ export const PlayerAbilitiesStore = () => {
     )
 }
 
-export const TimeLeft = ({ dateTo, onComplete }: { dateTo: Date | undefined; onComplete: () => void }) => {
+interface TimeLeftProps {
+    dateTo: Date | undefined
+    onComplete?: () => void
+}
+
+export const TimeLeft = ({ dateTo, onComplete }: TimeLeftProps) => {
     const { totalSecRemain } = useTimer(dateTo)
 
     useEffect(() => {
-        let t: NodeJS.Timeout | null = null
-        if (totalSecRemain === 0) {
-            t = setTimeout(() => {
-                onComplete()
-            }, 6000)
-        }
-
-        return () => {
-            if (t) {
-                clearTimeout(t)
-            }
+        if (totalSecRemain < 1 && onComplete) {
+            onComplete()
         }
     }, [onComplete, totalSecRemain])
 
-    return <>{totalSecRemain > 0 ? timeSinceInWords(new Date(), new Date(new Date().getTime() + totalSecRemain * 1000)) : "0 SECONDS"}</>
+    return <>{totalSecRemain > 0 ? timeSinceInWords(new Date(), new Date(new Date().getTime() + totalSecRemain * 1000)) : "REFRESHING..."}</>
 }
