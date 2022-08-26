@@ -614,7 +614,7 @@ const UtilityItem = ({ id, equipped, selected, onSelect }: UtilityItemProps) => 
                 )
             }
         }
-    }, [equipped.accelerator, equipped.anti_missile, equipped.attack_drone, equipped.shield, renderStat, utilityDetails])
+    }, [equipped.accelerator, equipped.anti_missile, equipped.attack_drone, equipped.repair_drone, equipped.shield, renderStat, utilityDetails])
 
     if (!utilityDetails) {
         return (
