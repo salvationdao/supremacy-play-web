@@ -85,7 +85,7 @@ const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
                 if (healthBarEl) {
                     const percent = Math.min((payload.health / maxHealth) * 100, 100)
                     healthBarEl.style.width = `${percent}%`
-                    if (percent <= 45) healthBarEl.style.backgroundColor = colors.red
+                    healthBarEl.style.backgroundColor = percent <= 45 ? colors.red : colors.green
                 }
             }
 
@@ -291,7 +291,7 @@ const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
                         borderRadius: 3,
                         boxShadow: isAlive ? `0 0 8px 2px ${primaryColor}70` : "none",
                         opacity: isAlive && !abilityShakeEffect ? 1 : 0.7,
-                        animation: abilityShakeEffect ? `${shake} 1s infinite` : "unset",
+                        animation: abilityShakeEffect ? `${shake(iconSize * 0.3)} 1s infinite` : "unset",
                         zIndex: 2,
                         transition: "opacity 0.2s ease-out",
                     }}
