@@ -72,7 +72,7 @@ const SettingsPopover = ({
                 mt: ".8rem",
                 zIndex: siteZIndex.Popover,
                 ".MuiPaper-root": {
-                    mt: "-2.5rem",
+                    mt: "-3rem",
                     background: "none",
                     boxShadow: 0,
                 },
