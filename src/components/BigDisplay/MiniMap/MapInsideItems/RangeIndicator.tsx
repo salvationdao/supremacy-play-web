@@ -15,7 +15,7 @@ export const RangeIndicator = ({ parentRef, map, mapScale: zoomScale }: RangeInd
 
     const indicatorRef = useRef<HTMLDivElement>(null)
 
-    const mapScale = useMemo(() => map.width / (map.cells_x * 2000), [map])
+    const mapScale = useMemo(() => map.Width / (map.Cells_X * 2000), [map])
     const ability = useMemo(() => winner?.game_ability || playerAbility?.ability, [winner, playerAbility])
     const abilityDetail = typeof ability?.game_client_ability_id !== "undefined" ? abilityDetails[ability.game_client_ability_id] : undefined
     const diameter = useMemo(() => (abilityDetail ? abilityDetail.radius * mapScale * zoomScale * 2 : undefined), [abilityDetail, mapScale, zoomScale])

@@ -9,15 +9,15 @@ const borderThickness = 3000
 export const BattleZone = ({ map }: { map: Map }) => {
     const { battleZone } = useGame()
 
-    const mapScale = useMemo(() => map.width / (map.cells_x * 2000), [map])
+    const mapScale = useMemo(() => map.Width / (map.Cells_X * 2000), [map])
 
     const locationX = useMemo(
-        () => ((battleZone?.location.x || map.pixel_left + map.width / 2) - map.pixel_left) * mapScale,
-        [map.pixel_left, map.width, mapScale, battleZone?.location.x],
+        () => ((battleZone?.location.x || map.Pixel_Left + map.Width / 2) - map.Pixel_Left) * mapScale,
+        [map.Pixel_Left, map.Width, mapScale, battleZone?.location.x],
     )
     const locationY = useMemo(
-        () => ((battleZone?.location.y || map.pixel_top + map.height / 2) - map.pixel_top) * mapScale,
-        [map.pixel_top, map.height, mapScale, battleZone?.location.y],
+        () => ((battleZone?.location.y || map.Pixel_Top + map.Height / 2) - map.Pixel_Top) * mapScale,
+        [map.Pixel_Top, map.Height, mapScale, battleZone?.location.y],
     )
     const radius = useMemo(() => (battleZone?.radius || 0) * mapScale, [mapScale, battleZone?.radius])
 
@@ -77,8 +77,8 @@ const BattleZoneCircle = ({
                 borderRadius: "50%",
                 border: `${borderThickness}px solid #0F0202${overlay ? "66" : "BB"}`,
                 pointerEvents: "none",
-                transition: `all ${battleZone?.shrinkTime || 0.5}s ease-in-out`,
-                transitionDelay: `${battleZone?.warnTime || 0}s`,
+                transition: `all ${battleZone?.shrink_time || 0.5}s ease-in-out`,
+                transitionDelay: `${battleZone?.warn_time || 0}s`,
             }}
         />
     )

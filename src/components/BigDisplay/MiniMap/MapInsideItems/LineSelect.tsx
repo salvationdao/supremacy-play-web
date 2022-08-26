@@ -31,13 +31,13 @@ export const LineSelect = ({ mapScale }: { mapScale: number }) => {
             c.clearRect(0, 0, c.canvas.width, c.canvas.height)
 
             const normalisedStartCoords = {
-                x: (point1.x * c.canvas.width) / map.cells_x,
-                y: (point1.y * c.canvas.height) / map.cells_y,
+                x: (point1.x * c.canvas.width) / map.Cells_X,
+                y: (point1.y * c.canvas.height) / map.Cells_Y,
             }
 
             const normalisedEndCoords = {
-                x: (point2.x * c.canvas.width) / map.cells_x,
-                y: (point2.y * c.canvas.height) / map.cells_y,
+                x: (point2.x * c.canvas.width) / map.Cells_X,
+                y: (point2.y * c.canvas.height) / map.Cells_Y,
             }
 
             c.beginPath()

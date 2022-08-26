@@ -4,7 +4,7 @@ import { useArena, useGame, useMiniMap } from "../../../../containers"
 import { useTimer } from "../../../../hooks"
 import { useGameServerSubscription } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
-import { rippleEffect } from "../../../../theme/keyframes"
+import { dropEffect, rippleEffect } from "../../../../theme/keyframes"
 import { fonts } from "../../../../theme/theme"
 import { DisplayedAbility, MiniMapDisplayEffectType } from "../../../../types"
 import { MapIcon } from "./Common/MapIcon"
@@ -26,7 +26,7 @@ export const MiniMapAbilitiesDisplay = () => {
             }
 
             // Only show the ones that are not on a mech
-            setAbilityList(payload.filter((a) => !a.mech_id))
+            setAbilityList(payload.filter((da) => !da.mech_id))
         },
     )
 
@@ -43,7 +43,7 @@ const MiniMapAbilityDisplay = ({ displayAbility }: { displayAbility: DisplayedAb
     const { gridHeight } = useMiniMap()
     const { map } = useGame()
 
-    const mapScale = useMemo(() => (map ? map.width / (map.cells_x * 2000) : 0), [map])
+    const mapScale = useMemo(() => (map ? map.Width / (map.Cells_X * 2000) : 0), [map])
     const diameter = useMemo(() => (radius ? radius * mapScale * 2 : 0), [mapScale, radius])
 
     return useMemo(
@@ -53,6 +53,9 @@ const MiniMapAbilityDisplay = ({ displayAbility }: { displayAbility: DisplayedAb
                 sizeGrid={1.5}
                 primaryColor={colour}
                 backgroundImageUrl={image_url}
+                iconSx={{
+                    animation: mini_map_display_effect_type === MiniMapDisplayEffectType.Drop ? `${dropEffect(3)} 2s ease-out` : "none",
+                }}
                 insideRender={
                     <>
                         {!!launching_at && (
@@ -67,6 +70,7 @@ const MiniMapAbilityDisplay = ({ displayAbility }: { displayAbility: DisplayedAb
                                     fontSize: gridHeight * 0.8,
                                     lineHeight: 1,
                                     backgroundColor: "#00000080",
+                                    zIndex: 10,
                                 }}
                             >
                                 <Countdown launchDate={launching_at} />
