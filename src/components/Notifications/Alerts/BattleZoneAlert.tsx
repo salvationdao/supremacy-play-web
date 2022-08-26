@@ -7,7 +7,7 @@ import { useTimer } from "../../../hooks"
 import { useMemo } from "react"
 
 export const BattleZoneAlert = ({ data }: { data: BattleZoneStruct }) => {
-    const endTime = useMemo(() => new Date(Date.now() + data.warnTime * 1000), [data.warnTime])
+    const endTime = useMemo(() => new Date(Date.now() + data.warn_time * 1000), [data.warn_time])
     const { totalSecRemain } = useTimer(endTime)
 
     return (

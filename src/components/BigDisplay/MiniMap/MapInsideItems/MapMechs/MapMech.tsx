@@ -234,9 +234,6 @@ const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
     ])
 
     return useMemo(() => {
-        // Don't show on map if the mech is hidden
-        if (isHidden) return null
-
         return (
             <Stack
                 id={`map-mech-position-${hash}`}
@@ -246,6 +243,7 @@ const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
                 spacing=".6rem"
                 onClick={handleClick}
                 style={{
+                    display: isHidden ? "none" : "block",
                     position: "absolute",
                     pointerEvents: isTargeting && !canSelect ? "none" : "all",
                     cursor: "pointer",
