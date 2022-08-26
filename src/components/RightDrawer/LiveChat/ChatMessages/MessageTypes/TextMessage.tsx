@@ -187,9 +187,9 @@ export const TextMessage = React.memo(function TextMessage({ message, containerR
                                     resolve(true)
                                 }
                             })()
+                        } else {
+                            resolve(true)
                         }
-
-                        resolve(true)
                     }),
             )
             if (taggedUserFetches) {
