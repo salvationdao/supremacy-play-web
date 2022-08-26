@@ -85,7 +85,7 @@ const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
                 if (healthBarEl) {
                     const percent = Math.min((payload.health / maxHealth) * 100, 100)
                     healthBarEl.style.width = `${percent}%`
-                    if (percent <= 45) healthBarEl.style.backgroundColor = colors.red
+                    healthBarEl.style.backgroundColor = percent <= 45 ? colors.red : colors.green
                 }
             }
 
