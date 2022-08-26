@@ -321,7 +321,7 @@ export const MechLoadoutUtilityModal = ({ onClose, onConfirm, equipped, utilitie
                             }}
                         />
                         <Stack flex={1}>
-                            <PageHeader title="Equip a weapon" description="Select a weapon to equip on your mech." />
+                            <PageHeader title="Equip a utility" description="Select a utility to equip on your mech." />
                             <TotalAndPageSizeOptions
                                 countItems={utilities?.length}
                                 totalItems={totalItems}
