@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material"
+import { Box, Typography, useMediaQuery } from "@mui/material"
 
 // rm
 import RmBorder from "../../assets/landing/rm/RmBorder.svg"
@@ -18,6 +18,8 @@ import { useGameServerCommands, useGameServerSubscription } from "../../hooks/us
 import { useCallback, useEffect, useState } from "react"
 import { GameServerKeys } from "../../keys"
 import { MechDetails } from "../../types/assets"
+import { useUI } from "../../containers"
+import { Scale } from "@mui/icons-material"
 
 interface BattleMap {
     name: string
@@ -34,6 +36,8 @@ interface NextBattle {
 export const Landing = () => {
     const { send } = useGameServerCommands("/public/commander")
     const [nextBattle, setNextBattle] = useState<NextBattle | undefined>()
+    const { rightDrawerActiveTabID } = useUI()
+    const showMobile = useMediaQuery("(max-width:1550px)")
 
     // get next battle details
     const fetchNextBattle = useCallback(async () => {
@@ -71,17 +75,30 @@ export const Landing = () => {
                 backgroundSize: "cover",
             }}
         >
-            <Box sx={{ display: "flex", width: "100%", height: "100%", justifyContent: "center" }}>
+            <Box
+                sx={{
+                    display: "flex",
+                    width: "100%",
+                    height: "100%",
+                    justifyContent: "center",
+
+                    "@media (max-width:1550px)": {
+                        justifyContent: "center",
+                        alignItems: "center",
+                    },
+                }}
+            >
                 <Box
                     sx={{
+                        border: "2px solid blue",
                         position: "relative",
                         display: "flex",
-                        width: "75%",
+                        width: rightDrawerActiveTabID ? "100%" : "75%",
                         "@media (max-width:2900px)": {
-                            width: "90%",
+                            width: rightDrawerActiveTabID ? "100%" : "90%",
                         },
                         "@media (max-width:2400px)": {
-                            width: "96%",
+                            width: rightDrawerActiveTabID ? "100%" : "96%",
                         },
                         "@media (max-width:2150px)": {
                             width: "100%",
@@ -93,28 +110,42 @@ export const Landing = () => {
                         flexDirection: "column",
                     }}
                 >
-                    {/* left */}
-                    <Box sx={{ top: "25rem", position: "absolute", left: 0 }}>
-                        <BoxThing mechIDs={nextBattle?.bc_mech_ids || []} faction="bc" />
-                    </Box>
-
-                    {/* right */}
-                    <Box sx={{ top: "25rem", position: "absolute", right: 0 }}>
-                        <BoxThing mechIDs={nextBattle?.zhi_mech_ids || []} faction="zhi" />
-                    </Box>
-
-                    {/* center */}
-                    <Box sx={{ position: "absolute", top: "4rem" }}>
-                        <BoxThing mechIDs={nextBattle?.rm_mech_ids || []} faction="rm" />
-                    </Box>
+                    {showMobile ? (
+                        <Box
+                            sx={{
+                                "@media (max-width:1550px)": {
+                                    transform: "scale(.8)",
+                                },
+                            }}
+                        >
+                            <Box marginBottom={"5rem"}>
+                                <BoxThingMobile rightDrawerOpen={!!rightDrawerActiveTabID} mechIDs={nextBattle?.bc_mech_ids || []} faction="bc" />
+                            </Box>
+                            <Box marginBottom={"5rem"}>
+                                <BoxThingMobile rightDrawerOpen={!!rightDrawerActiveTabID} mechIDs={nextBattle?.zhi_mech_ids || []} faction="zhi" />
+                            </Box>
+                            <Box marginBottom={"5rem"}>
+                                <BoxThingMobile rightDrawerOpen={!!rightDrawerActiveTabID} mechIDs={nextBattle?.rm_mech_ids || []} faction="rm" />
+                            </Box>
+                        </Box>
+                    ) : (
+                        <>
+                            <Box sx={{ top: "25rem", position: "absolute", left: 0 }}>
+                                <BoxThing rightDrawerOpen={!!rightDrawerActiveTabID} mechIDs={nextBattle?.bc_mech_ids || []} faction="bc" />
+                            </Box>
+                            <Box sx={{ top: "25rem", position: "absolute", right: 0 }}>
+                                <BoxThing rightDrawerOpen={!!rightDrawerActiveTabID} mechIDs={nextBattle?.zhi_mech_ids || []} faction="zhi" />
+                            </Box>
+                            <Box sx={{ position: "absolute", top: "4rem" }}>
+                                <BoxThing rightDrawerOpen={!!rightDrawerActiveTabID} mechIDs={nextBattle?.rm_mech_ids || []} faction="rm" />
+                            </Box>
+                        </>
+                    )}
 
                     <Box
                         sx={{
                             position: "absolute",
-                            bottom: "30rem",
-                            "@media (max-width:2150px)": {
-                                bottom: "40rem",
-                            },
+                            bottom: "25%",
                         }}
                     >
                         <Typography variant="h4" textAlign={"center"}>
@@ -128,7 +159,7 @@ export const Landing = () => {
     )
 }
 
-const BoxThing = ({ faction, mechIDs }: { faction: string; mechIDs: string[] }) => {
+const BoxThing = ({ rightDrawerOpen, faction, mechIDs }: { rightDrawerOpen: boolean; faction: string; mechIDs: string[] }) => {
     return (
         <Box
             position="relative"
@@ -136,11 +167,22 @@ const BoxThing = ({ faction, mechIDs }: { faction: string; mechIDs: string[] }) 
             height="70rem"
             margin="1rem"
             sx={{
-                "@media (max-width:2400px)": {
-                    transform: "scale(.85)",
+                "@media (max-width:2550px)": {
+                    transform: rightDrawerOpen ? "scale(.85)" : "scale(1)",
                 },
-                "@media (max-width:2170px)": {
-                    transform: "scale(.8)",
+
+                "@media (max-width:2450px)": {
+                    transform: rightDrawerOpen ? "scale(.75)" : "scale(.85)",
+                },
+
+                "@media (max-width:2250px)": {
+                    transform: rightDrawerOpen ? "scale(.65)" : "scale(.8)",
+                },
+                "@media (max-width:1850px)": {
+                    transform: rightDrawerOpen ? "scale(.60)" : "scale(.8)",
+                },
+                "@media (max-width:1750px)": {
+                    transform: rightDrawerOpen ? "scale(.60)" : "scale(.7)",
                 },
             }}
         >
@@ -159,6 +201,16 @@ const BoxThing = ({ faction, mechIDs }: { faction: string; mechIDs: string[] }) 
             <Box sx={{ position: "absolute", bottom: "10%", left: "34%", margin: "1rem" }}>
                 <Card mechID={mechIDs[2] || ""} faction={faction} />
             </Box>
+        </Box>
+    )
+}
+
+const BoxThingMobile = ({ rightDrawerOpen, faction, mechIDs }: { rightDrawerOpen: boolean; faction: string; mechIDs: string[] }) => {
+    return (
+        <Box sx={{ display: "flex", width: "100%" }}>
+            <Card mechID={mechIDs[0] || ""} faction={faction} />
+            <Card mechID={mechIDs[1] || ""} faction={faction} />
+            <Card mechID={mechIDs[2] || ""} faction={faction} />
         </Box>
     )
 }
@@ -217,7 +269,16 @@ const Card = ({ mechID, faction }: { mechID: string; faction: string }) => {
     const avatarUrl = mechDetails?.chassis_skin?.avatar_url || mechDetails?.avatar_url
 
     return (
-        <Box position="relative" height={h} width={w}>
+        <Box
+            position="relative"
+            height={h}
+            width={w}
+            style={
+                {
+                    // margin: "2rem"
+                }
+            }
+        >
             <img style={{ position: "absolute", top: "-14%", zIndex: 4 }} width={"100%"} src={border} alt="" />
             {avatarUrl ? (
                 <div
@@ -259,7 +320,7 @@ const Card = ({ mechID, faction }: { mechID: string; faction: string }) => {
                     right: 0,
                     ml: "auto",
                     mr: "auto",
-                    width: "180px",
+                    minWidth: "100px",
                     textAlign: "center",
 
                     bottom: "2rem",
