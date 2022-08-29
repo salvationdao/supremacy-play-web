@@ -9,7 +9,7 @@ import { usePagination, useToggle, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { MechModel, Submodel, SubmodelStatus, WeaponModel } from "../../../types"
+import { BlueprintMech, Submodel, SubmodelStatus, WeaponModel } from "../../../types"
 import { SortTypeLabel } from "../../../types/marketplace"
 import { PageHeader } from "../../Common/PageHeader"
 import { ChipFilter } from "../../Common/SortAndFilters/ChipFilterSection"
@@ -213,7 +213,7 @@ export const SubmodelsHangar = () => {
             ? (async () => {
                   try {
                       setIsLoading(true)
-                      const resp = await send<MechModel[]>(GameServerKeys.GetMechModels)
+                      const resp = await send<BlueprintMech[]>(GameServerKeys.GetMechBlueprints)
 
                       if (!resp) return
 
@@ -232,7 +232,7 @@ export const SubmodelsHangar = () => {
             : (async () => {
                   try {
                       setIsLoading(true)
-                      const resp = await send<WeaponModel[]>(GameServerKeys.GetWeaponModels)
+                      const resp = await send<WeaponModel[]>(GameServerKeys.GetWeaponBlueprints)
 
                       if (!resp) return
 
