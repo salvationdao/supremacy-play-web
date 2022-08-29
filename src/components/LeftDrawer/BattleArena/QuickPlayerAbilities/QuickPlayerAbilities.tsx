@@ -121,7 +121,12 @@ const QuickPlayerAbilitiesInner = React.memo(function QuickPlayerAbilitiesInner(
     }, [nextRefreshTime])
 
     return (
-        <SectionCollapsible label="PURCHASE ABILITIES" tooltip="Purchase abilities that are currently on sale." initialExpanded={true}>
+        <SectionCollapsible
+            label="PURCHASE ABILITIES"
+            tooltip="Purchase abilities that are currently on sale."
+            initialExpanded={true}
+            localStoragePrefix="quickPlayerAbility"
+        >
             <Stack sx={{ minHeight: "12rem" }}>
                 <Stack>
                     <Stack direction="row" spacing=".6rem" alignItems="center">

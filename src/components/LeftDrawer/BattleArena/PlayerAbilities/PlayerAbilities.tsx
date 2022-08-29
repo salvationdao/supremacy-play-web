@@ -21,7 +21,7 @@ export const PlayerAbilities = () => {
 
     return (
         <Box sx={{ position: "relative" }}>
-            <SectionCollapsible label="OWNED ABILITIES" tooltip="Launch your own abilities." initialExpanded={true}>
+            <SectionCollapsible label="OWNED ABILITIES" tooltip="Launch your own abilities." initialExpanded={true} localStoragePrefix="playerAbility">
                 <Box sx={{ pointerEvents: isBattleStarted ? "all" : "none" }}>
                     <PlayerAbilitiesInner />
                 </Box>

@@ -16,6 +16,7 @@ export const BattleAbility = () => {
                 label={<BattleAbilityCountdown bribeStage={bribeStage} />}
                 tooltip="Opt into battle abilities and fight for your Faction!"
                 initialExpanded={true}
+                localStoragePrefix="battleAbility"
             >
                 <Box sx={{ pointerEvents: isBattleStarted ? "all" : "none" }}>
                     <BattleAbilityItem key={factionID} />

@@ -1,5 +1,5 @@
 import { Box, Collapse, Stack, Typography } from "@mui/material"
-import { ReactNode } from "react"
+import { ReactNode, useEffect } from "react"
 import { SvgDropdownArrow, SvgInfoCircular } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
 import { useToggle } from "../../../../hooks"
@@ -12,17 +12,25 @@ export const SectionCollapsible = ({
     tooltip,
     children,
     initialExpanded,
+    localStoragePrefix,
 }: {
     label: string | ReactNode
     tooltip?: string
     children: ReactNode
     initialExpanded?: boolean
+    localStoragePrefix: string
 }) => {
     const theme = useTheme()
-    const [isExpanded, toggleIsExpanded] = useToggle(initialExpanded)
+    const [isExpanded, toggleIsExpanded] = useToggle(
+        (localStorage.getItem(`${localStoragePrefix}-section-collapsible`) || initialExpanded?.toString()) === "true",
+    )
 
     const primaryColor = theme.factionTheme.primary
     const secondaryColor = theme.factionTheme.secondary
+
+    useEffect(() => {
+        localStorage.setItem(`${localStoragePrefix}-section-collapsible`, isExpanded.toString())
+    }, [isExpanded, localStoragePrefix])
 
     return (
         <Box sx={{ my: isExpanded ? "1rem" : ".5rem" }}>
