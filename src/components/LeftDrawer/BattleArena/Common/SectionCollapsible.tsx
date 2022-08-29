@@ -25,7 +25,7 @@ export const SectionCollapsible = ({
     const secondaryColor = theme.factionTheme.secondary
 
     return (
-        <Box sx={{ mb: isExpanded ? "2rem" : "1rem" }}>
+        <Box sx={{ my: isExpanded ? "1rem" : ".5rem" }}>
             <FancyButton
                 clipThingsProps={{
                     clipSize: "0px",
