@@ -291,7 +291,7 @@ export const WarMachinesMarket = () => {
                             textAlign: "center",
                         }}
                     >
-                        {"There are no war machines found, please try again."}
+                        {"There are no war machines found, please check your filters try again."}
                     </Typography>
                 </Stack>
             </Stack>

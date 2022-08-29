@@ -9,7 +9,7 @@ import { usePagination, useToggle, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { BlueprintMech, Submodel, SubmodelStatus, WeaponModel } from "../../../types"
+import { BlueprintMech, BlueprintWeapon, Submodel, SubmodelStatus } from "../../../types"
 import { SortTypeLabel } from "../../../types/marketplace"
 import { PageHeader } from "../../Common/PageHeader"
 import { ChipFilter } from "../../Common/SortAndFilters/ChipFilterSection"
@@ -68,7 +68,7 @@ export const SubmodelsHangar = () => {
     const [isFiltersExpanded, toggleIsFiltersExpanded] = useToggle(localStorage.getItem("isWarMachinesHangarFiltersExpanded") === "true")
     const [search, setSearch] = useState("")
     const [sort, setSort] = useState<string>(query.get("sort") || SortTypeLabel.Alphabetical)
-    const [equippedStatus, setEquippedStatus] = useState<string[]>((query.get("statuses") || undefined)?.split("||") || [])
+    const [equippedStatus, setEquippedStatus] = useState<string[]>((query.get("statuses") || undefined)?.split("||") || ["UNEQUIPPED"])
     const [rarities, setRarities] = useState<string[]>((query.get("rarities") || undefined)?.split("||") || [])
     const [modelFilter, setModelFilter] = useState<string[]>((query.get("models") || undefined)?.split("||") || [])
     const [submodelType, setSubmodelType] = useState<SubmodelType>(SubmodelType.warMachine)
@@ -195,7 +195,6 @@ export const SubmodelsHangar = () => {
             setLoadError(undefined)
             setSubmodels(resp.submodels)
             setTotalItems(resp.total)
-            console.log(resp)
         } catch (e) {
             setLoadError(typeof e === "string" ? e : `Failed to get ${submodelType} submodel.`)
             console.error(e)
@@ -232,7 +231,7 @@ export const SubmodelsHangar = () => {
             : (async () => {
                   try {
                       setIsLoading(true)
-                      const resp = await send<WeaponModel[]>(GameServerKeys.GetWeaponBlueprints)
+                      const resp = await send<BlueprintWeapon[]>(GameServerKeys.GetWeaponBlueprints)
 
                       if (!resp) return
 
@@ -331,7 +330,7 @@ export const SubmodelsHangar = () => {
                             textAlign: "center",
                         }}
                     >
-                        {`There are no ${submodelType} Submodels found, please try again.`}
+                        {`There are no ${submodelType} Submodels found, please check your filters try again.`}
                     </Typography>
 
                     <FancyButton

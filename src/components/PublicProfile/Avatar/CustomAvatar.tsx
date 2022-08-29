@@ -513,7 +513,7 @@ export const LayerList = ({ setLayer, layerType, primaryColor }: LayerListProps)
                             textAlign: "center",
                         }}
                     >
-                        {"There are no avatars found, please try again."}
+                        {"There are no avatars found, please check your filters try again."}
                     </Typography>
                 </Stack>
             </Stack>

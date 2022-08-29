@@ -54,7 +54,7 @@ export const KeycardHangarItemInner = ({ submodel }: SubmodelItemProps) => {
                     >
                         <MediaPreview
                             imageUrl={submodel.images.image_url ?? submodel.images.avatar_url ?? ""}
-                            videoUrls={[submodel.images.animation_url, submodel.images.card_animation_url]}
+                            videoUrls={[submodel.images.card_animation_url, submodel.images.animation_url]}
                         />
                     </Box>
 

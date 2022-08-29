@@ -196,7 +196,7 @@ export const HistoryMarket = () => {
                             textAlign: "center",
                         }}
                     >
-                        {"There are no marketplace events found, please try again."}
+                        {"There are no marketplace events found, please check your filters try again."}
                     </Typography>
                 </Stack>
             </Stack>

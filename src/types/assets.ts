@@ -127,19 +127,19 @@ export interface BlueprintMech {
     id: string
     brand_id: string
     label: string
-    slug: string
-    skin: string
     weapon_hardpoints: number
     utility_slots: number
     speed: number
     max_hitpoints: number
-    updated_at: Date
     created_at: Date
-    model_id: string
     power_core_size?: string
     tier?: string
     default_chassis_skin_id: string
     collection: string
+    repair_blocks: number
+    boost_stat: string
+    mech_type: string
+    availability_id?: string
 }
 
 export interface Brand {
@@ -504,13 +504,29 @@ export enum SubmodelStatus {
     Unequipped = "UNEQUIPPED",
 }
 
-export interface WeaponModel {
+export interface BlueprintWeapon {
     id: string
-    brand_id: string
     label: string
+    damage: number
     weapon_type: string
+    default_damage_type: string
+    damage_falloff?: number
+    damage_falloff_rate?: number
+    spread?: string
+    rate_of_fire?: string
+    radius?: number
+    radius_damage_falloff?: number
+    projectile_speed?: string
+    max_ammo?: number
+    power_cost?: string
+    collection: string
+    brand_id?: string
     default_skin_id: string
-    repair_blocks: number
-    updated_at: Date
-    created_at: Date
+    is_melee: boolean
+    projectile_amount?: number
+    dot_tick_damage?: string
+    dot_max_ticks?: number
+    is_arced?: boolean
+    charge_time_seconds?: string
+    burst_rate_of_fire?: string
 }
