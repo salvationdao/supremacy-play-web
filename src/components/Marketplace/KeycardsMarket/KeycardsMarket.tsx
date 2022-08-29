@@ -234,7 +234,7 @@ export const KeycardsMarket = () => {
                             textAlign: "center",
                         }}
                     >
-                        {"There are no keycards found, please try again."}
+                        {"There are no keycards found, please check your filters and try again."}
                     </Typography>
                 </Stack>
             </Stack>

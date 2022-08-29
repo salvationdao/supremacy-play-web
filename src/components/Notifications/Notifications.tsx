@@ -40,23 +40,14 @@ import {
 
 const SPAWN_TEST_NOTIFICATIONS = false
 
-/*
-    WAR_MACHINE_DESTROYED: when a war machine is destroyed
-    LOCATION_SELECTING: user is choosing a target location on map
-    BATTLE_ABILITY: when a faction has initiated a battle ability
-    FACTION_ABILITY: when a faction has initiated a faction ability
-    WARMACHINE_ABILITY: when a faction has initiated a war machine ability
-    TEXT: generic notification with no styles, just text
-*/
-
 export enum NotificationType {
-    Text = "TEXT",
-    LocationSelect = "LOCATION_SELECT",
-    BattleAbility = "BATTLE_ABILITY",
-    FactionAbility = "FACTION_ABILITY",
-    WarMachineAbility = "WAR_MACHINE_ABILITY",
-    WarMachineDestroyed = "WAR_MACHINE_DESTROYED",
-    BattleZoneChange = "BATTLE_ZONE_CHANGE",
+    Text = "TEXT", // generic notification with no styles, just text
+    LocationSelect = "LOCATION_SELECT", // user is choosing a target location on map
+    BattleAbility = "BATTLE_ABILITY", // when a faction has initiated a battle ability
+    FactionAbility = "FACTION_ABILITY", // when a faction has initiated a faction ability
+    WarMachineAbility = "WAR_MACHINE_ABILITY", //
+    WarMachineDestroyed = "WAR_MACHINE_DESTROYED", // when a faction has initiated a war machine ability
+    BattleZoneChange = "BATTLE_ZONE_CHANGE", // when a war machine is destroyed
 }
 
 export interface NotificationResponse {
@@ -89,7 +80,7 @@ export const Notifications = () => {
 
             if (notification.type === NotificationType.BattleZoneChange) {
                 const battleZoneChange = notification.data as BattleZoneStruct
-                duration = battleZoneChange.warnTime * 1000
+                duration = battleZoneChange.warn_time * 1000
                 setBattleZone(battleZoneChange)
             }
 

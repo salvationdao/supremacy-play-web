@@ -23,22 +23,22 @@ export enum LocationSelectType {
 }
 
 export interface Map {
-    name: string
-    image_url: string
-    width: number
-    height: number
-    cells_x: number
-    cells_y: number
-    top_pixels: number
-    left_pixels: number
-    disabled_cells: number[]
+    Name: string
+    Image_Url: string
+    Width: number
+    Height: number
+    Cells_X: number
+    Cells_Y: number
+    Pixel_Top: number
+    Pixel_Left: number
+    Disabled_Cells: number[]
 }
 
 export interface BattleZoneStruct {
     location: Position
     radius: number
-    shrinkTime: number
-    warnTime: number
+    shrink_time: number
+    warn_time: number
 }
 
 export interface Dimension {
@@ -191,16 +191,24 @@ export interface DamageRecord {
     source_name: string // weapon/ability name
 }
 
-export enum DisplayEffectType {
-    None = "NONE", // Just show the icon or circle
-    Range = "RANGE", // E.g. nuke, shows a one off pulse
-    MechBorder = "MECH_BORDER", // E.g. Hacker drone, red border on mech
-    MechPulse = "MECH_PULSE", // E.g. overcharge, mech pulses
+export enum MiniMapDisplayEffectType {
+    None = "NONE",
+    Range = "RANGE",
+    Pulse = "PULSE",
+    Drop = "DROP",
+}
+
+export enum MechDisplayEffectType {
+    None = "NONE",
+    Border = "BORDER",
+    Pulse = "PULSE",
+    Shake = "SHAKE",
 }
 
 export interface DisplayedAbility {
     offering_id: string
-    display_effect_type: DisplayEffectType
+    mini_map_display_effect_type: MiniMapDisplayEffectType
+    mech_display_effect_type: MechDisplayEffectType
     location_select_type: LocationSelectType
     image_url: string
     colour: string
