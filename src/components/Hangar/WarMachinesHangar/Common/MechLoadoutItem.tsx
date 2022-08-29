@@ -13,6 +13,7 @@ export const MechLoadoutItem = ({
     imageUrl,
     videoUrls,
     label,
+    subLabel,
     primaryColor,
     onClick,
     isEmpty,
@@ -25,6 +26,7 @@ export const MechLoadoutItem = ({
     imageUrl?: string
     videoUrls?: (string | undefined)[] | undefined
     label: string
+    subLabel?: string
     primaryColor: string
     onClick?: () => void
     isEmpty?: boolean
@@ -101,6 +103,23 @@ export const MechLoadoutItem = ({
                         >
                             {label}
                         </Typography>
+                        {subLabel && (
+                            <Typography
+                                variant="body2"
+                                sx={{
+                                    color: primaryColor,
+                                    fontFamily: fonts.nostromoBold,
+                                    display: "-webkit-box",
+                                    overflow: "hidden",
+                                    overflowWrap: "anywhere",
+                                    textOverflow: "ellipsis",
+                                    WebkitLineClamp: 2,
+                                    WebkitBoxOrient: "vertical",
+                                }}
+                            >
+                                {subLabel}
+                            </Typography>
+                        )}
                     </Stack>
                 </FancyButton>
             </Box>

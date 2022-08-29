@@ -122,6 +122,7 @@ export const MechLoadout = ({ mechDetails }: { mechDetails: MechDetails }) => {
                         imageUrl={chassisSkin.image_url || chassisSkin.avatar_url}
                         videoUrls={[chassisSkin.card_animation_url]}
                         label={chassisSkin.label}
+                        subLabel={`Level: ${chassisSkin.level}`}
                         primaryColor={colors.chassisSkin}
                         Icon={SvgSkin}
                         rarity={getRarityDeets(chassisSkin.tier)}

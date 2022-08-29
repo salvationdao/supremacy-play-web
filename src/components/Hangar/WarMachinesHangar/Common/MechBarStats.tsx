@@ -30,12 +30,15 @@ export const MechBarStats = ({
     const primaryColor = color || theme.factionTheme.primary
     const fontSize = fs || "1.1rem"
 
-    const health = mech.max_hitpoints
-    const speed = mech.speed
+    const health = mechDetails?.max_hitpoints || mech.max_hitpoints
+    const boostedHealth = mechDetails?.boosted_max_hitpoints || mech.boosted_max_hitpoints
+    const speed = mechDetails?.speed || mech.speed
+    const boostedSpeed = mechDetails?.boosted_speed || mech.boosted_speed
     let powerCoreCapacity = 0
     let powerCoreRechargeRate = 0
     let totalShield = 0
     let totalShieldRechargeRate = 0
+    let boostedTotalShieldRechargeRate = 0
 
     if (mechDetails) {
         powerCoreCapacity = mechDetails.power_core?.capacity || 0
@@ -45,6 +48,7 @@ export const MechBarStats = ({
             if (utility.shield) {
                 totalShield += utility.shield.hitpoints
                 totalShieldRechargeRate += utility.shield.recharge_rate
+                boostedTotalShieldRechargeRate += utility.shield.boosted_recharge_rate || 0
             }
         })
     }
@@ -52,8 +56,25 @@ export const MechBarStats = ({
     if (iconVersion) {
         return (
             <Stack alignItems="center" justifyContent="flex-start" direction="row" flexWrap="wrap">
-                <IconStat primaryColor={primaryColor} fontSize={fontSize} label="HEALTH" current={health} total={3000} Icon={SvgHealth} />
-                <IconStat primaryColor={primaryColor} fontSize={fontSize} label="SPEED" current={speed} total={5000} unit="CM/S" Icon={SvgSpeed} />
+                <IconStat
+                    primaryColor={primaryColor}
+                    fontSize={fontSize}
+                    label="HEALTH"
+                    current={health}
+                    boostedTo={boostedHealth}
+                    total={3000}
+                    Icon={SvgHealth}
+                />
+                <IconStat
+                    primaryColor={primaryColor}
+                    fontSize={fontSize}
+                    label="SPEED"
+                    current={speed}
+                    boostedTo={boostedSpeed}
+                    total={5000}
+                    unit="CM/S"
+                    Icon={SvgSpeed}
+                />
                 <IconStat
                     primaryColor={primaryColor}
                     fontSize={fontSize}
@@ -77,6 +98,7 @@ export const MechBarStats = ({
                     fontSize={fontSize}
                     label="SHIELD REGEN"
                     current={totalShieldRechargeRate}
+                    boostedTo={boostedTotalShieldRechargeRate}
                     total={1000}
                     Icon={SvgShieldRegen}
                 />
@@ -115,13 +137,23 @@ export const MechBarStats = ({
                     flexShrink: 0,
                 }}
             >
-                <BarStat primaryColor={primaryColor} fontSize={fontSize} barHeight={barHeight} label="HEALTH" current={health} total={3000} Icon={SvgHealth} />
+                <BarStat
+                    primaryColor={primaryColor}
+                    fontSize={fontSize}
+                    barHeight={barHeight}
+                    label="HEALTH"
+                    current={health}
+                    boostedTo={boostedHealth}
+                    total={6000}
+                    Icon={SvgHealth}
+                />
                 <BarStat
                     primaryColor={primaryColor}
                     fontSize={fontSize}
                     barHeight={barHeight}
                     label="SPEED"
                     current={speed}
+                    boostedTo={boostedSpeed}
                     total={5000}
                     unit="CM/S"
                     Icon={SvgSpeed}
@@ -151,7 +183,7 @@ export const MechBarStats = ({
                     barHeight={barHeight}
                     label="SHIELD"
                     current={totalShield}
-                    total={3000}
+                    total={4000}
                     Icon={SvgShield}
                 />
                 <BarStat
@@ -160,7 +192,8 @@ export const MechBarStats = ({
                     barHeight={barHeight}
                     label="SHIELD REGEN"
                     current={totalShieldRechargeRate}
-                    total={1000}
+                    boostedTo={boostedTotalShieldRechargeRate}
+                    total={500}
                     Icon={SvgShieldRegen}
                 />
             </Stack>
@@ -173,6 +206,7 @@ export const BarStat = ({
     fontSize,
     label,
     current,
+    boostedTo,
     total,
     unit,
     barHeight,
@@ -182,6 +216,7 @@ export const BarStat = ({
     fontSize: string
     label: string
     current: number | string
+    boostedTo?: number | string
     total: number
     unit?: string
     barHeight?: string
@@ -189,62 +224,86 @@ export const BarStat = ({
 }) => {
     return useMemo(() => {
         const parsedCurrent = typeof current === "string" ? parseFloat(current) : current
-        if (!parsedCurrent) return null
+        const parsedBoosted = typeof boostedTo === "string" ? parseFloat(boostedTo) : boostedTo
+        if (!parsedCurrent && !parsedBoosted) return null
 
         return (
-            <Box>
-                <Stack direction="row" alignItems="center" justifyContent="space-between" spacing=".6rem">
-                    <Stack spacing=".5rem" direction="row" alignItems="center">
-                        <Icon size={fontSize} sx={{ pb: "3px", height: "unset" }} />
+            <TooltipHelper
+                text={
+                    parsedBoosted && parsedBoosted != parsedCurrent
+                        ? `The attached submodel has boosted this stat from ${parsedCurrent} to ${parsedBoosted}`
+                        : ""
+                }
+            >
+                <Box>
+                    <Stack direction="row" alignItems="center" justifyContent="space-between" spacing=".6rem">
+                        <Stack spacing=".5rem" direction="row" alignItems="center">
+                            <Icon size={fontSize} sx={{ pb: "3px", height: "unset" }} />
+                            <Typography
+                                variant="caption"
+                                sx={{
+                                    fontSize,
+                                    fontFamily: fonts.nostromoBlack,
+                                    display: "-webkit-box",
+                                    overflow: "hidden",
+                                    overflowWrap: "anywhere",
+                                    textOverflow: "ellipsis",
+                                    WebkitLineClamp: 1,
+                                    WebkitBoxOrient: "vertical",
+                                }}
+                            >
+                                {label}
+                            </Typography>
+                        </Stack>
+
                         <Typography
                             variant="caption"
                             sx={{
                                 fontSize,
-                                fontFamily: fonts.nostromoBlack,
+                                textAlign: "end",
+                                fontFamily: fonts.nostromoBold,
                                 display: "-webkit-box",
                                 overflow: "hidden",
                                 overflowWrap: "anywhere",
                                 textOverflow: "ellipsis",
                                 WebkitLineClamp: 1,
                                 WebkitBoxOrient: "vertical",
+                                color: parsedBoosted && parsedBoosted != parsedCurrent ? "gold" : "white",
                             }}
                         >
-                            {label}
+                            {parsedBoosted || parsedCurrent}
+                            {unit}
                         </Typography>
                     </Stack>
 
-                    <Typography
-                        variant="caption"
-                        sx={{
-                            fontSize,
-                            textAlign: "end",
-                            fontFamily: fonts.nostromoBold,
-                            display: "-webkit-box",
-                            overflow: "hidden",
-                            overflowWrap: "anywhere",
-                            textOverflow: "ellipsis",
-                            WebkitLineClamp: 1,
-                            WebkitBoxOrient: "vertical",
-                        }}
-                    >
-                        {parsedCurrent}
-                        {unit}
-                    </Typography>
-                </Stack>
-
-                <Box sx={{ height: barHeight || ".7rem", backgroundColor: "#FFFFFF25" }}>
-                    <Box
-                        sx={{
-                            width: `${(100 * parsedCurrent) / total}%`,
-                            height: "100%",
-                            backgroundColor: primaryColor,
-                            transition: "all .15s",
-                        }}
-                    />
+                    <Box sx={{ height: barHeight || ".7rem", backgroundColor: "#FFFFFF25", position: "relative" }}>
+                        <Box
+                            sx={{
+                                width: `${(100 * parsedCurrent) / total}%`,
+                                height: "100%",
+                                backgroundColor: primaryColor,
+                                transition: "all .15s",
+                                zIndex: 10,
+                                position: "absolute",
+                            }}
+                        />
+                        {parsedBoosted && (
+                            <Box
+                                sx={{
+                                    width: `${(100 * parsedBoosted) / total}%`,
+                                    height: "100%",
+                                    backgroundColor: "gold",
+                                    transition: "all .15s",
+                                    zIndex: 9,
+                                    position: "absolute",
+                                }}
+                            />
+                        )}
+                    </Box>
                 </Box>
-            </Box>
+            </TooltipHelper>
         )
-    }, [Icon, barHeight, current, fontSize, label, primaryColor, total, unit])
+    }, [Icon, barHeight, current, fontSize, label, primaryColor, total, unit, boostedTo])
 }
 
 export const IconStat = ({
@@ -252,22 +311,25 @@ export const IconStat = ({
     fontSize,
     label,
     current,
+    boostedTo,
     Icon,
 }: {
     primaryColor: string
     fontSize: string
     label: string
     current: number | string
+    boostedTo?: number | string
     total: number
     unit?: string
     Icon: React.VoidFunctionComponent<SvgWrapperProps>
 }) => {
     return useMemo(() => {
         const parsedCurrent = typeof current === "string" ? parseFloat(current) : current
-        if (!parsedCurrent) return null
+        const parsedBoosted = typeof boostedTo === "string" ? parseFloat(boostedTo) : boostedTo
+        if (!parsedCurrent && !parsedBoosted) return null
 
         return (
-            <TooltipHelper text={`${label}: ${current}`} placement="bottom">
+            <TooltipHelper text={`${label}: ${boostedTo || current}`} placement="bottom">
                 <Stack
                     direction="row"
                     alignItems="center"
@@ -282,9 +344,9 @@ export const IconStat = ({
                     }}
                 >
                     <Icon size={`calc(${fontSize} * 0.9)`} sx={{ pb: "3px" }} />
-                    <Typography sx={{ lineHeight: 1, fontSize }}>{parsedCurrent}</Typography>
+                    <Typography sx={{ lineHeight: 1, fontSize }}>{parsedBoosted || parsedCurrent}</Typography>
                 </Stack>
             </TooltipHelper>
         )
-    }, [Icon, current, fontSize, label, primaryColor])
+    }, [Icon, current, fontSize, label, primaryColor, boostedTo])
 }

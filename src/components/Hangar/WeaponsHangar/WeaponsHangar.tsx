@@ -552,7 +552,7 @@ export const WeaponsHangar = () => {
                             textAlign: "center",
                         }}
                     >
-                        {"There are no weapons found, please try again."}
+                        {"There are no weapons found, please check your filters and try again."}
                     </Typography>
 
                     <FancyButton
