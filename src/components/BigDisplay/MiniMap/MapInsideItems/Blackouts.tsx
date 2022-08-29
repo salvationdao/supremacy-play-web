@@ -103,7 +103,7 @@ const Blackout = React.forwardRef(function Blackout({ radius, coords, isVisible 
     const { gridHeight, gridWidth } = useMiniMap()
     const { map } = useGame()
 
-    const mapScale = useMemo(() => (map ? map.width / (map.cells_x * 2000) : 0), [map])
+    const mapScale = useMemo(() => (map ? map.Width / (map.Cells_X * 2000) : 0), [map])
     const diameter = useMemo(() => radius * mapScale * 2, [mapScale, radius])
 
     return useMemo(

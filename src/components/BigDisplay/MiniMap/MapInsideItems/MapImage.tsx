@@ -7,9 +7,9 @@ export const MapImage = React.memo(function MapImage({ map }: { map: Map }) {
         <Box
             sx={{
                 position: "absolute",
-                width: `${map.width}px`,
-                height: `${map.height}px`,
-                backgroundImage: `url(${map.image_url})`,
+                width: `${map.Width}px`,
+                height: `${map.Height}px`,
+                backgroundImage: `url(${map.Image_Url})`,
                 borderSpacing: 0,
             }}
         />

@@ -8,9 +8,10 @@ import { Action, ClientContextProvider, createClient } from "react-fetching-libr
 import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom"
 import { SupremacyPNG } from "./assets"
 import { Bar, GlobalSnackbar, Maintenance, RightDrawer } from "./components"
+import { NavLinksDrawer } from "./components/Bar/NavLinks/NavLinksDrawer"
 import { BottomNav } from "./components/BottomNav/BottomNav"
 import { tourStyles } from "./components/HowToPlay/Tutorial/SetupTutorial"
-import { NavLinksDrawer } from "./components/Bar/NavLinks/NavLinksDrawer"
+import { LeftDrawer } from "./components/LeftDrawer/LeftDrawer"
 import { GAME_SERVER_HOSTNAME, SENTRY_CONFIG, UNDER_MAINTENANCE } from "./constants"
 import {
     ChatProvider,
@@ -19,14 +20,17 @@ import {
     GlobalNotificationsProvider,
     MiniMapProvider,
     MobileProvider,
-    UiProvider,
     SupremacyProvider,
+    UiProvider,
     useMobile,
     useSupremacy,
     WalletProvider,
 } from "./containers"
+import { ArenaListener, ArenaProvider } from "./containers/arena"
 import { AuthProvider, useAuth, UserUpdater } from "./containers/auth"
 import { FingerprintProvider } from "./containers/fingerprint"
+import { HotkeyProvider } from "./containers/hotkeys"
+import { OvenStreamProvider } from "./containers/oven"
 import { ThemeProvider } from "./containers/theme"
 import { ws } from "./containers/ws"
 import { useToggle } from "./hooks"
@@ -36,10 +40,6 @@ import { EnlistPage } from "./pages/EnlistPage"
 import { LoginRedirect } from "./pages/LoginRedirect"
 import { ROUTES_ARRAY, ROUTES_MAP } from "./routes"
 import { colors, fonts } from "./theme/theme"
-import { LeftDrawer } from "./components/LeftDrawer/LeftDrawer"
-import { ArenaListener, ArenaProvider } from "./containers/arena"
-import { HotkeyProvider } from "./containers/hotkeys"
-import { OvenStreamProvider } from "./containers/oven"
 
 const AppInner = () => {
     const { isServerDown, serverConnectedBefore, firstConnectTimedOut } = useSupremacy()
@@ -97,6 +97,10 @@ const AppInner = () => {
         )
     }
 
+    if (isServerDown || UNDER_MAINTENANCE) {
+        return <Maintenance />
+    }
+
     return (
         <>
             <Stack
@@ -136,26 +140,22 @@ const AppInner = () => {
                         }}
                     >
                         <Box sx={{ flex: 1, position: "relative", overflow: "hidden" }}>
-                            {!isServerDown && !UNDER_MAINTENANCE ? (
-                                <Switch>
-                                    {ROUTES_ARRAY.map((r) => {
-                                        const { id, path, exact, Component, requireAuth, requireFaction, authTitle, authDescription, enable } = r
-                                        if (!enable) return null
+                            <Switch>
+                                {ROUTES_ARRAY.map((r) => {
+                                    const { id, path, exact, Component, requireAuth, requireFaction, authTitle, authDescription, enable } = r
+                                    if (!enable) return null
 
-                                        let component = Component
-                                        if (requireAuth && !userID) {
-                                            const Comp = () => <AuthPage authTitle={authTitle} authDescription={authDescription} />
-                                            component = Comp
-                                        } else if (requireFaction && !factionID) {
-                                            component = EnlistPage
-                                        }
-                                        return <Route key={id} path={path} exact={exact} component={component} />
-                                    })}
-                                    <Redirect to={ROUTES_MAP.not_found_page.path} />
-                                </Switch>
-                            ) : (
-                                <Maintenance />
-                            )}
+                                    let component = Component
+                                    if (requireAuth && !userID) {
+                                        const Comp = () => <AuthPage authTitle={authTitle} authDescription={authDescription} />
+                                        component = Comp
+                                    } else if (requireFaction && !factionID) {
+                                        component = EnlistPage
+                                    }
+                                    return <Route key={id} path={path} exact={exact} component={component} />
+                                })}
+                                <Redirect to={ROUTES_MAP.not_found_page.path} />
+                            </Switch>
                         </Box>
 
                         {isMobile && <BottomNav />}
