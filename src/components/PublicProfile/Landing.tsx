@@ -1,19 +1,24 @@
 import { Box, CircularProgress, Stack, Typography, useMediaQuery } from "@mui/material"
-import RmBorder from "../../assets/landing/rm/RmBorder.svg"
-import RmBottom from "../../assets/landing/rm/RmBottom.svg"
-import RmBorderBottom from "../../assets/landing/rm/RmBorderBottom.svg"
-import ZhiBorder from "../../assets/landing/zhi/ZHIBorder.svg"
-import ZhiBottom from "../../assets/landing/zhi/ZHIBottom.svg"
-import ZhiBorderBottom from "../../assets/landing/zhi/ZHIBorderBottom.svg"
+import { useState } from "react"
 import BcBorder from "../../assets/landing/bc/BCBorder.svg"
-import BcBottom from "../../assets/landing/bc/BCBottom.svg"
 import BcBorderBottom from "../../assets/landing/bc/BCBorderBottom.svg"
-import { useGameServerCommands, useGameServerSubscription } from "../../hooks/useGameServer"
-import { useCallback, useEffect, useState } from "react"
+import BcBottom from "../../assets/landing/bc/BCBottom.svg"
+import RmBorder from "../../assets/landing/rm/RmBorder.svg"
+import RmBorderBottom from "../../assets/landing/rm/RmBorderBottom.svg"
+import RmBottom from "../../assets/landing/rm/RmBottom.svg"
+import ZhiBorder from "../../assets/landing/zhi/ZHIBorder.svg"
+import ZhiBorderBottom from "../../assets/landing/zhi/ZHIBorderBottom.svg"
+import ZhiBottom from "../../assets/landing/zhi/ZHIBottom.svg"
+import ZhiMask from "../../assets/landing/zhi/ZHIMask.png"
+import BcMask from "../../assets/landing/bc/BCMask.png"
+import RmMask from "../../assets/landing/rm/RmMask.png"
+
+import { useSupremacy, useUI } from "../../containers"
+import { useGameServerSubscription } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
-import { MechDetails } from "../../types/assets"
-import { useGlobalNotifications, useUI } from "../../containers"
 import { theme } from "../../theme/theme"
+import { Faction } from "../../types"
+import { MechDetails } from "../../types/assets"
 
 interface BattleMap {
     name: string
@@ -22,6 +27,9 @@ interface BattleMap {
 }
 interface NextBattle {
     map: BattleMap
+    bc_id: string
+    zhi_id: string
+    rm_id: string
     bc_mech_ids: string[]
     zhi_mech_ids: string[]
     rm_mech_ids: string[]
@@ -45,6 +53,8 @@ export const Landing = () => {
                 setLoading(false)
                 return
             }
+            console.log("this is next battle", payload)
+
             setNextBattle(payload)
             setLoading(false)
         },
@@ -111,13 +121,25 @@ export const Landing = () => {
                             }}
                         >
                             <Box marginBottom={"5rem"}>
-                                <CardGroupMobile rightDrawerOpen={!!rightDrawerActiveTabID} mechIDs={nextBattle?.bc_mech_ids || []} faction="bc" />
+                                <CardGroupMobile
+                                    rightDrawerOpen={!!rightDrawerActiveTabID}
+                                    mechIDs={nextBattle?.bc_mech_ids || []}
+                                    factionID={nextBattle?.bc_id || ""}
+                                />
                             </Box>
                             <Box marginBottom={"5rem"}>
-                                <CardGroupMobile rightDrawerOpen={!!rightDrawerActiveTabID} mechIDs={nextBattle?.zhi_mech_ids || []} faction="zhi" />
+                                <CardGroupMobile
+                                    rightDrawerOpen={!!rightDrawerActiveTabID}
+                                    mechIDs={nextBattle?.zhi_mech_ids || []}
+                                    factionID={nextBattle?.zhi_id || ""}
+                                />
                             </Box>
                             <Box>
-                                <CardGroupMobile rightDrawerOpen={!!rightDrawerActiveTabID} mechIDs={nextBattle?.rm_mech_ids || []} faction="rm" />
+                                <CardGroupMobile
+                                    rightDrawerOpen={!!rightDrawerActiveTabID}
+                                    mechIDs={nextBattle?.rm_mech_ids || []}
+                                    factionID={nextBattle?.rm_id || ""}
+                                />
                             </Box>
                         </Box>
                     ) : (
@@ -133,7 +155,11 @@ export const Landing = () => {
                                     },
                                 }}
                             >
-                                <CardGroup rightDrawerOpen={!!rightDrawerActiveTabID} mechIDs={nextBattle?.bc_mech_ids || []} faction="bc" />
+                                <CardGroup
+                                    rightDrawerOpen={!!rightDrawerActiveTabID}
+                                    mechIDs={nextBattle?.bc_mech_ids || []}
+                                    factionID={nextBattle?.bc_id || ""}
+                                />
                             </Box>
                             <Box
                                 sx={{
@@ -146,10 +172,18 @@ export const Landing = () => {
                                     },
                                 }}
                             >
-                                <CardGroup rightDrawerOpen={!!rightDrawerActiveTabID} mechIDs={nextBattle?.zhi_mech_ids || []} faction="zhi" />
+                                <CardGroup
+                                    rightDrawerOpen={!!rightDrawerActiveTabID}
+                                    mechIDs={nextBattle?.zhi_mech_ids || []}
+                                    factionID={nextBattle?.zhi_id || ""}
+                                />
                             </Box>
                             <Box sx={{ position: "absolute", top: "4rem" }}>
-                                <CardGroup rightDrawerOpen={!!rightDrawerActiveTabID} mechIDs={nextBattle?.rm_mech_ids || []} faction="rm" />
+                                <CardGroup
+                                    rightDrawerOpen={!!rightDrawerActiveTabID}
+                                    mechIDs={nextBattle?.rm_mech_ids || []}
+                                    factionID={nextBattle?.rm_id || ""}
+                                />
                             </Box>
                         </>
                     )}
@@ -181,7 +215,10 @@ export const Landing = () => {
     )
 }
 
-const CardGroup = ({ rightDrawerOpen, faction, mechIDs }: { rightDrawerOpen: boolean; faction: string; mechIDs: string[] }) => {
+const CardGroup = ({ rightDrawerOpen, factionID, mechIDs }: { rightDrawerOpen: boolean; factionID: string; mechIDs: string[] }) => {
+    const { getFaction } = useSupremacy()
+    const faction = getFaction(factionID)
+
     return (
         <Box
             position="relative"
@@ -212,26 +249,28 @@ const CardGroup = ({ rightDrawerOpen, faction, mechIDs }: { rightDrawerOpen: boo
                 },
             }}
         >
-            <Box sx={{ position: "absolute", top: 0, left: "34%", margin: "1rem" }}>
-                <MechCard mechID={""} faction={faction} />
+            <Box sx={{ position: "absolute", top: 0, left: "33.5%", margin: "1rem" }}>
+                <FactionLogoCard faction={faction} />
             </Box>
 
-            <Box sx={{ position: "absolute", top: "35%", left: 0, margin: "1rem" }}>
+            <Box sx={{ position: "absolute", top: "20%", left: 0, margin: "1rem" }}>
                 <MechCard mechID={mechIDs[0] || ""} faction={faction} />
             </Box>
 
-            <Box sx={{ position: "absolute", top: "35%", right: 0, margin: "1rem" }}>
+            <Box sx={{ position: "absolute", top: "20%", right: 0, margin: "1rem" }}>
                 <MechCard mechID={mechIDs[1] || ""} faction={faction} />
             </Box>
 
-            <Box sx={{ position: "absolute", bottom: "10%", left: "34%", margin: "1rem" }}>
+            <Box sx={{ position: "absolute", bottom: "20%", left: "33.5%", margin: "1rem" }}>
                 <MechCard mechID={mechIDs[2] || ""} faction={faction} />
             </Box>
         </Box>
     )
 }
 
-const CardGroupMobile = ({ faction, mechIDs }: { rightDrawerOpen: boolean; faction: string; mechIDs: string[] }) => {
+const CardGroupMobile = ({ factionID, mechIDs }: { rightDrawerOpen: boolean; factionID: string; mechIDs: string[] }) => {
+    const { getFaction } = useSupremacy()
+    const faction = getFaction(factionID)
     return (
         <Box sx={{ display: "flex", width: "100%" }}>
             <MechCard mechID={mechIDs[0] || ""} faction={faction} />
@@ -241,28 +280,31 @@ const CardGroupMobile = ({ faction, mechIDs }: { rightDrawerOpen: boolean; facti
     )
 }
 
-const getCardInfo = (faction: string) => {
-    if (faction === "bc") {
+const getCardInfo = (factionLabel: string) => {
+    if (factionLabel === "Boston Cybernetics") {
         return {
             border: BcBorder,
             borderBottom: BcBorderBottom,
             bottom: BcBottom,
+            mask: BcMask,
         }
     }
 
-    if (faction === "zhi") {
+    if (factionLabel === "Zaibatsu Heavy Industries") {
         return {
             border: ZhiBorder,
             borderBottom: ZhiBorderBottom,
             bottom: ZhiBottom,
+            mask: ZhiMask,
         }
     }
 
-    if (faction === "rm") {
+    if (factionLabel === "Red Mountain Offworld Mining Corporation") {
         return {
             border: RmBorder,
             borderBottom: RmBorderBottom,
             bottom: RmBottom,
+            mask: RmMask,
         }
     }
 
@@ -270,12 +312,16 @@ const getCardInfo = (faction: string) => {
         border: RmBorder,
         borderBottom: RmBorderBottom,
         bottom: RmBottom,
+        mask: RmMask,
     }
 }
-const MechCard = ({ mechID, faction }: { mechID: string; faction: string }) => {
-    const border = getCardInfo(faction)?.border || ""
-    const borderBottom = getCardInfo(faction)?.borderBottom || ""
-    const bottom = getCardInfo(faction)?.bottom || ""
+const MechCard = ({ mechID, faction }: { mechID: string; faction: Faction }) => {
+    const cardInfo = getCardInfo(faction.label)
+    const border = cardInfo?.border || ""
+    const borderBottom = cardInfo?.borderBottom || ""
+    const bottom = cardInfo?.bottom || ""
+    const emptySlot = cardInfo?.mask || ""
+
     const h = "27rem"
     const w = "23rem"
 
@@ -297,7 +343,7 @@ const MechCard = ({ mechID, faction }: { mechID: string; faction: string }) => {
     return (
         <Box position="relative" height={h} width={w}>
             <img style={{ position: "absolute", top: "-14%", zIndex: 4 }} width={"100%"} src={border} alt="" />
-            {avatarUrl ? (
+            {mechID && avatarUrl ? (
                 <div
                     style={{
                         position: "absolute",
@@ -319,7 +365,10 @@ const MechCard = ({ mechID, faction }: { mechID: string; faction: string }) => {
                         position: "absolute",
                         top: "-10%",
                         left: "2%",
-                        background: "black",
+                        backgroundImage: `url(${emptySlot})`,
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "center",
+                        backgroundSize: "contain",
                         height: "82%",
                         width: "96%",
                         zIndex: 3,
@@ -342,13 +391,54 @@ const MechCard = ({ mechID, faction }: { mechID: string; faction: string }) => {
 
                     bottom: "2rem",
                     zIndex: 3,
-                    opacity: !mechDetails?.name && !mechDetails?.label ? 0.5 : 1,
-                    // left: "20%",
+                    opacity: !mechID ? 0.5 : 1,
                 }}
                 variant="h5"
             >
-                {mechDetails?.name || mechDetails?.label || "Waiting"}
+                {mechID ? mechDetails?.name || mechDetails?.label : "Waiting"}
             </Typography>
+        </Box>
+    )
+}
+
+const FactionLogoCard = ({ faction }: { faction: Faction }) => {
+    const border = getCardInfo(faction.label)?.border || ""
+    const h = "27rem"
+    const w = "23rem"
+    const avatarUrl = faction.logo_url
+
+    return (
+        <Box position="relative" height={h} width={w} sx={{}}>
+            <img style={{ position: "absolute", top: "-14%", zIndex: 4 }} width={"100%"} src={border} alt="" />
+
+            <div
+                style={{
+                    position: "absolute",
+                    top: "-10%",
+                    left: "2%",
+                    backgroundColor: faction.primary_color,
+                    filter: "brightness(28%)",
+                    height: "82%",
+                    width: "96%",
+                    zIndex: 2,
+                    clipPath: "polygon(10% 0%, 90% 0%, 100% 10%, 100% 90%, 90% 100%, 10% 100%, 0% 90%, 0% 10%)",
+                }}
+            />
+
+            <div
+                style={{
+                    position: "absolute",
+                    top: "-10%",
+                    left: "10%",
+                    backgroundImage: `url(${avatarUrl})`,
+                    backgroundRepeat: "no-repeat",
+                    backgroundPosition: "center",
+                    backgroundSize: "contain",
+                    height: "80%",
+                    width: "80%",
+                    zIndex: 3,
+                }}
+            />
         </Box>
     )
 }
