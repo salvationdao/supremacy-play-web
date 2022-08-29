@@ -34,7 +34,7 @@ export interface GetUtilitiesRequest {
     sort_by: string
     sort_dir: string
     exclude_ids: string[]
-    weapon_types: string[]
+    utility_types: string[]
     rarities: string[]
     equipped_statuses: string[]
 }
@@ -119,7 +119,7 @@ export const MechLoadoutUtilityModal = ({ onClose, onConfirm, equipped, utilitie
         },
     })
 
-    const weaponEquippedFilterSection = useRef<ChipFilter>({
+    const utilityEquippedFilterSection = useRef<ChipFilter>({
         label: "EQUIPPED STATUS",
         options: [
             { value: "equipped", label: "EQUIPPED", color: colors.green, textColor: "#FFFFFF" },
@@ -160,7 +160,7 @@ export const MechLoadoutUtilityModal = ({ onClose, onConfirm, equipped, utilitie
                 include_market_listed: false,
 
                 exclude_ids: utilitiesAlreadyEquippedInOtherSlots,
-                weapon_types: utilityTypes,
+                utility_types: utilityTypes,
                 rarities,
                 equipped_statuses: equippedStatuses,
                 search,
@@ -171,7 +171,7 @@ export const MechLoadoutUtilityModal = ({ onClose, onConfirm, equipped, utilitie
             setUtilities(resp.utilities)
             setTotalItems(resp.total)
         } catch (e) {
-            setLoadError(typeof e === "string" ? e : "Failed to get weapons.")
+            setLoadError(typeof e === "string" ? e : "Failed to get utilities.")
             console.error(e)
         } finally {
             setIsLoading(false)
@@ -311,7 +311,7 @@ export const MechLoadoutUtilityModal = ({ onClose, onConfirm, equipped, utilitie
                         <SortAndFilters
                             initialSearch={search}
                             onSetSearch={setSearch}
-                            chipFilters={[utilityTypeFilterSection.current, rarityChipFilter.current, weaponEquippedFilterSection.current]}
+                            chipFilters={[utilityTypeFilterSection.current, rarityChipFilter.current, utilityEquippedFilterSection.current]}
                             changePage={changePage}
                             isExpanded={isFiltersExpanded}
                             width="25rem"

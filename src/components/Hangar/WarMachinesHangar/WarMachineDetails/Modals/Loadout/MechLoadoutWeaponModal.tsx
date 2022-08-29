@@ -404,7 +404,7 @@ export const MechLoadoutWeaponModal = ({
                 spreadRangeFilter.current.minMax[1] = resp.payload.spread || 0
                 toggleSortFilterReRender()
             } catch (err) {
-                const message = typeof err === "string" ? err : "Failed to get the list of streams."
+                const message = typeof err === "string" ? err : "Failed to get weapon filter stats."
                 console.error(message)
             }
         })()

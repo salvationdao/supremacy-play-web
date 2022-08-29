@@ -10,6 +10,12 @@ export enum MechStatusEnum {
     Damaged = "DAMAGED",
 }
 
+export enum PowerCoreSize {
+    Small = "SMALL",
+    Medium = "MEDIUM",
+    Large = "LARGE",
+}
+
 export type UtilityObjectType<T> = T extends UtilityType.Shield
     ? UtilityShield
     : T extends UtilityType.AttackDrone
@@ -220,6 +226,14 @@ export interface PowerCore extends Collection, Images {
     max_hitpoints: number
     equipped_on?: string
     created_at: Date
+}
+
+export interface PowerCoreMaxStats {
+    capacity: number
+    max_draw_rate: number
+    recharge_rate: number
+    armour: number
+    max_hitpoints: number
 }
 
 export interface Weapon extends Collection, Images {

@@ -29,6 +29,14 @@ interface MechDetailsWithMaps extends MechDetails {
     changed_power_core?: PowerCore
 }
 
+interface EquipPowerCore {
+    power_core_id: string
+}
+
+type LoadoutPowerCore = EquipPowerCore & {
+    power_core: PowerCore
+}
+
 interface EquipWeapon {
     weapon_id: string
     slot_number: number
@@ -117,6 +125,15 @@ export const MechLoadout = ({ mechDetails }: MechLoadoutProps) => {
             setLoading(false)
         }
     }, [currLoadout.changed_utility_map, currLoadout.changed_weapons_map, mechDetails, newSnackbarMessage, send])
+
+    const addPowerCoreSelection = useCallback((ep: LoadoutPowerCore) => {
+        setCurrLoadout((prev) => {
+            return {
+                ...prev,
+                changed_power_core: ep.power_core,
+            }
+        })
+    }, [])
 
     const addWeaponSelection = useCallback((ew: LoadoutWeapon) => {
         setCurrLoadout((prev) => {
@@ -232,7 +249,18 @@ export const MechLoadout = ({ mechDetails }: MechLoadoutProps) => {
                         label={power_core.label}
                         primaryColor={colors.powerCore}
                         Icon={SvgPowerCore}
-                        renderModal={(toggleShowLoadoutModal) => <MechLoadoutPowerCoreModal onClose={() => toggleShowLoadoutModal(false)} />}
+                        renderModal={(toggleShowLoadoutModal) => (
+                            <MechLoadoutPowerCoreModal
+                                onClose={() => toggleShowLoadoutModal(false)}
+                                onConfirm={(selectedPowerCore) =>
+                                    addPowerCoreSelection({
+                                        power_core: selectedPowerCore,
+                                        power_core_id: selectedPowerCore.id,
+                                    })
+                                }
+                                equipped={power_core}
+                            />
+                        )}
                     />
                 ) : (
                     <MechLoadoutItem label="POWER CORE" primaryColor={colors.powerCore} onClick={() => console.log("AAAAA")} isEmpty disabled />

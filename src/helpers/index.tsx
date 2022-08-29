@@ -439,6 +439,21 @@ export const calculateDutchAuctionEndPrice = ({ endAt, dropRate, startPrice }: {
     return Math.max(startPrice - dropRate * timeDiff(new Date(), endAt).minutes, 1)
 }
 
+export const getPowerCoreSizeColor = (powerCoreSize: string | undefined) => {
+    if (!powerCoreSize) return colors.neonBlue
+
+    switch (powerCoreSize.toUpperCase()) {
+        case "SMALL":
+            return colors.yellow
+        case "MEDIUM":
+            return colors.blue
+        case "LARGE":
+            return colors.purple
+        default:
+            return colors.neonBlue
+    }
+}
+
 export const getUtilityTypeColor = (utilityType: string | undefined) => {
     if (!utilityType) return colors.neonBlue
 
