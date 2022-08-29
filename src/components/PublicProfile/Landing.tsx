@@ -408,7 +408,7 @@ const FactionLogoCard = ({ faction }: { faction: Faction }) => {
     const avatarUrl = faction.logo_url
 
     return (
-        <Box position="relative" height={h} width={w} sx={{}}>
+        <Box position="relative" height={h} width={w}>
             <img style={{ position: "absolute", top: "-14%", zIndex: 4 }} width={"100%"} src={border} alt="" />
 
             <div
