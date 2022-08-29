@@ -86,7 +86,7 @@ export const QuickDeployItem = ({ isSelected, toggleIsSelected, mech, childrenMe
         <Stack
             direction="row"
             spacing="1.2rem"
-            alignItems="flex-start"
+            alignItems="center"
             onClick={() => mechDetails && toggleIsSelected && toggleIsSelected()}
             sx={{
                 position: "relative",
