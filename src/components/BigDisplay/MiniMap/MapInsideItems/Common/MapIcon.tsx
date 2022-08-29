@@ -32,6 +32,10 @@ export const MapIcon = ({ primaryColor, backgroundImageUrl, insideRender, onClic
                     width: `${sizeY}px`,
                     cursor: "pointer",
                     transform: `translate(${position.x * gridWidth - sizeX / 2}px, ${position.y * gridHeight - sizeY / 2}px)`,
+                    backgroundColor: insideRender ? "#030409" : primaryColor,
+                    border: `5px solid ${primaryColor}`,
+                    borderRadius: 1,
+                    boxShadow: 2,
                     zIndex: 100,
                     ...sx,
                 }}
@@ -49,10 +53,6 @@ export const MapIcon = ({ primaryColor, backgroundImageUrl, insideRender, onClic
                             backgroundRepeat: "no-repeat",
                             backgroundPosition: "center",
                             backgroundSize: "cover",
-                            border: `5px solid ${primaryColor}`,
-                            borderRadius: 1,
-                            boxShadow: 2,
-                            backgroundColor: insideRender ? "#030409" : primaryColor,
                             ...iconSx,
                         }}
                     />
