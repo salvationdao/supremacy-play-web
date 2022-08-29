@@ -158,8 +158,8 @@ export enum GameServerKeys {
     //submodels
     GetMechSubmodels = "PLAYER:ASSET:MECH:SUBMODEL:LIST",
     GetWeaponSubmodels = "PLAYER:ASSET:WEAPON:SUBMODEL:LIST",
-    GetMechModels = "PLAYER:MECH:MODEL:LIST",
-    GetWeaponModels = "PLAYER:WEAPON:MODEL:LIST",
+    GetMechBlueprints = "PLAYER:MECH:BLUEPRINT:LIST",
+    GetWeaponBlueprints = "PLAYER:WEAPON:BLUEPRINT:LIST",
 
     // Keycards
     GetPlayerKeycards = "PLAYER:ASSET:KEYCARD:LIST",

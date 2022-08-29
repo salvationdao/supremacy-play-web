@@ -187,7 +187,7 @@ export const ProfileWarmachines = ({ playerID, primaryColour, secondaryColor, ba
                             textAlign: "center",
                         }}
                     >
-                        {"There are no war machines found, please try again."}
+                        {"There are no war machines found, please check your filters and try again."}
                     </Typography>
                 </Stack>
             </Stack>
