@@ -273,9 +273,15 @@ const CardGroupMobile = ({ factionID, mechIDs }: { rightDrawerOpen: boolean; fac
     const faction = getFaction(factionID)
     return (
         <Box sx={{ display: "flex", width: "100%" }}>
-            <MechCard mechID={mechIDs[0] || ""} faction={faction} />
-            <MechCard mechID={mechIDs[1] || ""} faction={faction} />
-            <MechCard mechID={mechIDs[2] || ""} faction={faction} />
+            <Box sx={{ margin: "2rem" }}>
+                <MechCard mechID={mechIDs[0] || ""} faction={faction} />
+            </Box>
+            <Box sx={{ margin: "2rem" }}>
+                <MechCard mechID={mechIDs[1] || ""} faction={faction} />
+            </Box>
+            <Box sx={{ margin: "2rem" }}>
+                <MechCard mechID={mechIDs[2] || ""} faction={faction} />
+            </Box>
         </Box>
     )
 }
