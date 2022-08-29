@@ -497,6 +497,7 @@ export interface Submodel {
     xsyn_locked: boolean
     updated_at: Date
     created_at: Date
+    level?: number
 }
 
 export enum SubmodelStatus {

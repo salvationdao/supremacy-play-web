@@ -586,7 +586,7 @@ export const WeaponsMarket = () => {
                             textAlign: "center",
                         }}
                     >
-                        {"There are no weapons found, please check your filters try again."}
+                        {"There are no weapons found, please check your filters and try again."}
                     </Typography>
                 </Stack>
             </Stack>

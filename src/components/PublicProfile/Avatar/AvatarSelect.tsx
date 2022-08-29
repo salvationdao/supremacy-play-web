@@ -318,7 +318,7 @@ export const ProfileAvatar = ({
                             textAlign: "center",
                         }}
                     >
-                        {"There are no avatars found, please check your filters try again."}
+                        {"There are no avatars found, please check your filters and try again."}
                     </Typography>
                 </Stack>
             </Stack>
@@ -456,7 +456,7 @@ export const ProfileAvatar = ({
                             textAlign: "center",
                         }}
                     >
-                        {"There are no avatars found, please check your filters try again."}
+                        {"There are no avatars found, please check your filters and try again."}
                     </Typography>
                 </Stack>
             </Stack>

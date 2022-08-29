@@ -278,8 +278,8 @@ const SubmodelsHangarInner = ({
                             overflow: "visible",
                         }}
                     >
-                        {submodels.map((mech) => (
-                            <SubmodelItem key={`marketplace-${mech.id}`} submodel={mech} isGridView={isGridView} />
+                        {submodels.map((submodel) => (
+                            <SubmodelItem key={`submodels-${submodel.id}`} submodel={submodel} isGridView={isGridView} />
                         ))}
                     </Box>
                 </Box>
@@ -310,7 +310,7 @@ const SubmodelsHangarInner = ({
                             textAlign: "center",
                         }}
                     >
-                        {`There are no ${submodelType} submodels found, please check your filters try again.`}
+                        {`There are no ${submodelType} submodels found, please check your filters and try again.`}
                     </Typography>
 
                     <FancyButton

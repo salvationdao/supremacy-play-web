@@ -253,7 +253,7 @@ export const MysteryCratesMarket = () => {
                             textAlign: "center",
                         }}
                     >
-                        {"There are no mystery crates found, please check your filters try again."}
+                        {"There are no mystery crates found, please check your filters and try again."}
                     </Typography>
                 </Stack>
             </Stack>
