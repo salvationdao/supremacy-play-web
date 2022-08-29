@@ -9,7 +9,7 @@ import { usePagination, useToggle, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { MechModel, Submodel, SubmodelStatus, WeaponModel } from "../../../types"
+import { BlueprintMech, BlueprintWeapon, Submodel, SubmodelStatus } from "../../../types"
 import { SortTypeLabel } from "../../../types/marketplace"
 import { PageHeader } from "../../Common/PageHeader"
 import { ChipFilter } from "../../Common/SortAndFilters/ChipFilterSection"
@@ -80,7 +80,7 @@ const SubmodelsHangarInner = ({
     const [isFiltersExpanded, toggleIsFiltersExpanded] = useToggle(localStorage.getItem("isWarMachinesHangarFiltersExpanded") === "true")
     const [search, setSearch] = useState("")
     const [sort, setSort] = useState<string>(query.get("sort") || SortTypeLabel.Alphabetical)
-    const [equippedStatus, setEquippedStatus] = useState<string[]>((query.get("statuses") || undefined)?.split("||") || [])
+    const [equippedStatus, setEquippedStatus] = useState<string[]>((query.get("statuses") || undefined)?.split("||") || ["UNEQUIPPED"])
     const [rarities, setRarities] = useState<string[]>((query.get("rarities") || undefined)?.split("||") || [])
     const [modelFilter, setModelFilter] = useState<string[]>((query.get("models") || undefined)?.split("||") || [])
 
@@ -192,7 +192,6 @@ const SubmodelsHangarInner = ({
             setLoadError(undefined)
             setSubmodels(resp.submodels)
             setTotalItems(resp.total)
-            console.log(resp)
         } catch (e) {
             setLoadError(typeof e === "string" ? e : `Failed to get ${submodelType} submodel.`)
             console.error(e)
@@ -211,8 +210,8 @@ const SubmodelsHangarInner = ({
                 setIsLoading(true)
                 const resp =
                     submodelType === SubmodelType.warMachine
-                        ? await send<MechModel[]>(GameServerKeys.GetMechModels)
-                        : await send<WeaponModel[]>(GameServerKeys.GetWeaponModels)
+                        ? await send<BlueprintMech[]>(GameServerKeys.GetMechBlueprints)
+                        : await send<BlueprintWeapon[]>(GameServerKeys.GetWeaponBlueprints)
 
                 if (!resp) return
 
@@ -279,8 +278,8 @@ const SubmodelsHangarInner = ({
                             overflow: "visible",
                         }}
                     >
-                        {submodels.map((mech) => (
-                            <SubmodelItem key={`marketplace-${mech.id}`} submodel={mech} isGridView={isGridView} />
+                        {submodels.map((submodel) => (
+                            <SubmodelItem key={`submodels-${submodel.id}`} submodel={submodel} isGridView={isGridView} />
                         ))}
                     </Box>
                 </Box>
@@ -311,7 +310,7 @@ const SubmodelsHangarInner = ({
                             textAlign: "center",
                         }}
                     >
-                        {`There are no ${submodelType} submodels found, please try again.`}
+                        {`There are no ${submodelType} submodels found, please check your filters and try again.`}
                     </Typography>
 
                     <FancyButton
