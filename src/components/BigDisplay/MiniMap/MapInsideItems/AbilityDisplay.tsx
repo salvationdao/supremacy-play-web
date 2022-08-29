@@ -6,8 +6,18 @@ import { useGameServerSubscription } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { dropEffect, rippleEffect } from "../../../../theme/keyframes"
 import { fonts } from "../../../../theme/theme"
-import { DisplayedAbility, MiniMapDisplayEffectType } from "../../../../types"
+import { DisplayedAbility, LocationSelectType, MechDisplayEffectType, MiniMapDisplayEffectType } from "../../../../types"
 import { MapIcon } from "./Common/MapIcon"
+import { decode } from "base64-arraybuffer"
+
+export enum MapEventType {
+    AirstrikeExplosions,
+    LandmineActivations,
+    LandmineExplosions,
+    PickupLanded,
+    PickupUsed,
+    HiveHexUpdate,
+}
 
 export const MiniMapAbilitiesDisplay = () => {
     const { currentArenaID } = useArena()
@@ -30,10 +40,61 @@ export const MiniMapAbilitiesDisplay = () => {
         },
     )
 
+    useGameServerSubscription<string>(
+        {
+            URI: `/public/arena/${currentArenaID}/minimap_events`,
+            key: GameServerKeys.MinimapEventsSubscribe,
+            ready: !!currentArenaID,
+        },
+        (payload) => {
+            if (!payload) return
+
+            const buffer = decode(payload)
+            const dv = new DataView(buffer)
+
+            const count = dv.getUint8(0)
+            let offset = 1
+            for (let c = 0; c < count; c++) {
+                const type = dv.getUint8(offset) as MapEventType
+                offset++
+                console.log(`type: ${type}`)
+                switch (type) {
+                    case MapEventType.AirstrikeExplosions: {
+                        const explosionCount = dv.getUint8(offset)
+                        offset++
+                        for (let i = 0; i < explosionCount; i++) {
+                            const timeOffset = dv.getUint16(offset)
+                            offset += 2
+                            const x = dv.getInt32(offset, false)
+                            offset += 4
+                            const y = dv.getInt32(offset, false)
+                            offset += 4
+
+                            const explosion: DisplayedAbility = {
+                                offering_id: `explosion-${i}`, // temp
+                                mini_map_display_effect_type: MiniMapDisplayEffectType.Pulse,
+                                mech_display_effect_type: MechDisplayEffectType.None,
+                                location_select_type: LocationSelectType.LocationSelect,
+                                image_url: "",
+                                location: { x, y },
+                                radius: 1000,
+                                colour: "#FF6600",
+                            }
+                            console.log(`airstrike - ${x}, ${y}`)
+
+                            setAbilityList((list) => [...list, explosion])
+                        }
+                        break
+                    }
+                }
+            }
+        },
+    )
+
     return (
         <>
             {abilityList.length > 0 &&
-                abilityList.map((displayAbility) => <MiniMapAbilityDisplay key={displayAbility.offering_id} displayAbility={displayAbility} />)}
+                abilityList.map((displayAbility, index) => <MiniMapAbilityDisplay key={`ability-${index}`} displayAbility={displayAbility} />)}
         </>
     )
 }
@@ -44,12 +105,16 @@ const MiniMapAbilityDisplay = ({ displayAbility }: { displayAbility: DisplayedAb
     const { map } = useGame()
 
     const mapScale = useMemo(() => (map ? map.Width / (map.Cells_X * 2000) : 0), [map])
+    const position = useMemo(
+        () => ({ x: (location.x - (map ? map.Pixel_Left : 0)) * mapScale, y: (location.y - (map ? map.Pixel_Top : 0)) * mapScale }),
+        [mapScale, radius],
+    )
     const diameter = useMemo(() => (radius ? radius * mapScale * 2 : 0), [mapScale, radius])
 
     return useMemo(
         () => (
             <MapIcon
-                position={location}
+                position={position}
                 sizeGrid={1.5}
                 primaryColor={colour}
                 backgroundImageUrl={image_url}

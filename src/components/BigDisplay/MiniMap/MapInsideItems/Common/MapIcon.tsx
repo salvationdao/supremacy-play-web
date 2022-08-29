@@ -31,7 +31,7 @@ export const MapIcon = ({ primaryColor, backgroundImageUrl, insideRender, onClic
                     height: `${sizeX}px`,
                     width: `${sizeY}px`,
                     cursor: "pointer",
-                    transform: `translate(${position.x * gridWidth - sizeX / 2}px, ${position.y * gridHeight - sizeY / 2}px)`,
+                    transform: `translate(${position.x}px, ${position.y}px)`,
                     zIndex: 100,
                     ...sx,
                 }}
