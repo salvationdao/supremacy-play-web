@@ -9,7 +9,7 @@ import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
 import { PlayerAbility, SaleAbility, SaleAbilityAvailability } from "../../../../types"
 import { TimeLeft } from "../../../Storefront/PlayerAbilitiesStore/PlayerAbilitiesStore"
-import { SectionHeading } from "../Common/SectionHeading"
+import { SectionCollapsible } from "../Common/SectionCollapsible"
 import { QuickPlayerAbilitiesItem } from "./QuickPlayerAbilitiesItem"
 
 export const QuickPlayerAbilities = () => {
@@ -121,10 +121,8 @@ const QuickPlayerAbilitiesInner = React.memo(function QuickPlayerAbilitiesInner(
     }, [nextRefreshTime])
 
     return (
-        <Box>
-            <SectionHeading label="PURCHASE ABILITIES" tooltip="Purchase abilities that are currently on sale." />
-
-            <Stack sx={{ p: "1.5rem 1.1rem", backgroundColor: "#FFFFFF12", boxShadow: 2, border: "#FFFFFF20 1px solid", minHeight: "12rem" }}>
+        <SectionCollapsible label="PURCHASE ABILITIES" tooltip="Purchase abilities that are currently on sale." initialExpanded={true}>
+            <Stack sx={{ minHeight: "12rem" }}>
                 <Stack>
                     <Stack direction="row" spacing=".6rem" alignItems="center">
                         <Typography sx={{ fontWeight: "fontWeightBold", textTransform: "uppercase" }}>Next refresh in:</Typography>
@@ -196,6 +194,6 @@ const QuickPlayerAbilitiesInner = React.memo(function QuickPlayerAbilitiesInner(
                     </Stack>
                 )}
             </Stack>
-        </Box>
+        </SectionCollapsible>
     )
 })

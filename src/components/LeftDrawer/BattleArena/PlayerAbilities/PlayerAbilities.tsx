@@ -10,7 +10,7 @@ import { useGameServerSubscriptionSecuredUser } from "../../../../hooks/useGameS
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
 import { LocationSelectType, PlayerAbility } from "../../../../types"
-import { SectionHeading } from "../Common/SectionHeading"
+import { SectionCollapsible } from "../Common/SectionCollapsible"
 import { PlayerAbilityCard } from "./PlayerAbilityCard"
 
 export const PlayerAbilities = () => {
@@ -21,21 +21,13 @@ export const PlayerAbilities = () => {
 
     return (
         <Box sx={{ position: "relative" }}>
-            <SectionHeading label="OWNED ABILITIES" tooltip="Launch your own abilities." />
-            <Stack
-                spacing="1rem"
-                sx={{
-                    pointerEvents: isBattleStarted ? "all" : "none",
-                    p: "1.5rem 1.1rem",
-                    backgroundColor: "#FFFFFF12",
-                    boxShadow: 2,
-                    border: "#FFFFFF20 1px solid",
-                }}
-            >
-                <PlayerAbilitiesInner />
-            </Stack>
+            <SectionCollapsible label="OWNED ABILITIES" tooltip="Launch your own abilities." initialExpanded={true}>
+                <Box sx={{ pointerEvents: isBattleStarted ? "all" : "none" }}>
+                    <PlayerAbilitiesInner />
+                </Box>
 
-            {!isBattleStarted && <Box sx={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", backgroundColor: "#000000AA" }} />}
+                {!isBattleStarted && <Box sx={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", backgroundColor: "#000000AA" }} />}
+            </SectionCollapsible>
         </Box>
     )
 }

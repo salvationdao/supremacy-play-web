@@ -2,7 +2,6 @@ import { useEffect, useRef } from "react"
 import { BribeStageResponse } from "../../../../containers"
 import { useTimer } from "../../../../hooks"
 import { BribeStage } from "../../../../types"
-import { SectionHeading } from "../Common/SectionHeading"
 
 export const BattleAbilityCountdown = ({ bribeStage }: { bribeStage?: BribeStageResponse }) => {
     const { setEndTimeState, totalSecRemain } = useTimer(undefined)
@@ -40,5 +39,5 @@ export const BattleAbilityCountdown = ({ bribeStage }: { bribeStage?: BribeStage
         setEndTimeState(endTime)
     }, [bribeStage, setEndTimeState])
 
-    return <SectionHeading label={sentence.current} tooltip="Opt into battle abilities and fight for your Faction!" />
+    return <>{sentence.current}</>
 }
