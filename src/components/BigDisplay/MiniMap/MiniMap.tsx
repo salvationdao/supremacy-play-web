@@ -15,7 +15,7 @@ import { HighlightedMechAbilities } from "./MapOutsideItems/HighlightedMechAbili
 import { TargetHint } from "./MapOutsideItems/TargetHint"
 
 export const TOP_BAR_HEIGHT = 3.4 // rems
-const BOTTOM_PADDING = 12 // rems
+const BOTTOM_PADDING = 10 // rems
 
 export const MiniMap = () => {
     const { smallDisplayRef, bigDisplayRef, isStreamBigDisplay } = useUI()
@@ -172,7 +172,7 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
     // Set size
     const sizes = useMemo(() => {
         // Step 1
-        mapHeightWidthRatio.current = map.height / map.width
+        mapHeightWidthRatio.current = map.Height / map.Width
 
         let defaultWidth = width
         let defaultHeight = 0
@@ -216,7 +216,7 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
             insideWidth,
             insideHeight,
         }
-    }, [map.height, map.width, width, isEnlarged, height, remToPxRatio, isStreamBigDisplay, isPoppedout])
+    }, [map.Height, map.Width, width, isEnlarged, height, remToPxRatio, isStreamBigDisplay, isPoppedout])
 
     const focusMap = useCallback(() => mapRef.current?.focus(), [mapRef])
 
@@ -293,8 +293,7 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
                         )}
 
                         <Typography sx={{ fontFamily: fonts.nostromoHeavy }}>
-                            {map.name
-                                .replace(/([A-Z])/g, " $1")
+                            {map.Name.replace(/([A-Z])/g, " $1")
                                 .trim()
                                 .toUpperCase()}
                         </Typography>
@@ -315,7 +314,7 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
                         left: 0,
                         width: "100%",
                         height: "100%",
-                        background: `url(${map?.image_url})`,
+                        background: `url(${map?.Image_Url})`,
                         backgroundRepeat: "no-repeat",
                         backgroundPosition: "center",
                         backgroundSize: "cover",
@@ -333,8 +332,8 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
         sizes.outsideHeight,
         sizes.insideWidth,
         sizes.insideHeight,
-        map.name,
-        map?.image_url,
+        map.Name,
+        map?.Image_Url,
         isPoppedout,
         isStreamBigDisplay,
         setIsStreamBigDisplay,

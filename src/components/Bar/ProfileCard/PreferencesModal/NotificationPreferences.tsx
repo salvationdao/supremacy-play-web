@@ -263,23 +263,25 @@ export const NotificationPreferencesInner = ({ notificationPreferences, setNotif
 interface PreferenceToggleProps {
     title: string
     checked: boolean
-    disabled: boolean
+    disabled?: boolean
     onChangeFunction: (e: React.ChangeEvent<HTMLInputElement>) => void
 }
 
-const PreferenceToggle = ({ title, checked, onChangeFunction, disabled }: PreferenceToggleProps) => {
+export const PreferenceToggle = ({ title, checked, onChangeFunction, disabled }: PreferenceToggleProps) => {
     return (
         <Stack direction="row" alignItems="center" justifyContent="space-between">
-            <Typography sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>{title}</Typography>
+            <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBold }}>
+                {title}
+            </Typography>
             <Switch
                 disabled={disabled}
                 size="small"
                 checked={checked}
                 onChange={onChangeFunction}
                 sx={{
-                    transform: "scale(.7)",
-                    ".Mui-checked": { color: colors.neonBlue },
-                    ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${colors.neonBlue}50` },
+                    transform: "scale(.7) translateY(-3px)",
+                    ".Mui-checked": { color: (theme) => theme.factionTheme.primary },
+                    ".Mui-checked+.MuiSwitch-track": { backgroundColor: (theme) => `${theme.factionTheme.primary}50` },
                 }}
             />
         </Stack>

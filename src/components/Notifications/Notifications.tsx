@@ -8,7 +8,6 @@ import {
     KillAlertProps,
     LocationSelectAlert,
     LocationSelectAlertProps,
-    LocationSelectAlertType,
     NotificationItem,
     TextAlert,
     WarMachineAbilityAlert,
@@ -16,12 +15,13 @@ import {
 } from ".."
 import { NOTIFICATION_LINGER, NOTIFICATION_TIME } from "../../constants"
 import { useGame, useMobile, useSupremacy } from "../../containers"
+import { useArena } from "../../containers/arena"
 import { makeid } from "../../containers/ws/util"
 import { useArray } from "../../hooks"
 import { useGameServerSubscription, useGameServerSubscriptionFaction } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { siteZIndex } from "../../theme/theme"
-import { BattleZone } from "../../types"
+import { BattleZoneStruct } from "../../types"
 import { BattleZoneAlert } from "./Alerts/BattleZoneAlert"
 import {
     battleAbilityNoti,
@@ -37,32 +37,22 @@ import {
     textNoti,
     warMachineAbilityNoti,
 } from "./testData"
-import { useArena } from "../../containers/arena"
 
 const SPAWN_TEST_NOTIFICATIONS = false
 
-/*
-    WAR_MACHINE_DESTROYED: when a war machine is destroyed
-    LOCATION_SELECTING: user is choosing a target location on map
-    BATTLE_ABILITY: when a faction has initiated a battle ability
-    FACTION_ABILITY: when a faction has initiated a faction ability
-    WARMACHINE_ABILITY: when a faction has initiated a war machine ability
-    TEXT: generic notification with no styles, just text
-*/
-
 export enum NotificationType {
-    Text = "TEXT",
-    LocationSelect = "LOCATION_SELECT",
-    BattleAbility = "BATTLE_ABILITY",
-    FactionAbility = "FACTION_ABILITY",
-    WarMachineAbility = "WAR_MACHINE_ABILITY",
-    WarMachineDestroyed = "WAR_MACHINE_DESTROYED",
-    BattleZoneChange = "BATTLE_ZONE_CHANGE",
+    Text = "TEXT", // generic notification with no styles, just text
+    LocationSelect = "LOCATION_SELECT", // user is choosing a target location on map
+    BattleAbility = "BATTLE_ABILITY", // when a faction has initiated a battle ability
+    FactionAbility = "FACTION_ABILITY", // when a faction has initiated a faction ability
+    WarMachineAbility = "WAR_MACHINE_ABILITY", //
+    WarMachineDestroyed = "WAR_MACHINE_DESTROYED", // when a faction has initiated a war machine ability
+    BattleZoneChange = "BATTLE_ZONE_CHANGE", // when a war machine is destroyed
 }
 
 export interface NotificationResponse {
     type: NotificationType
-    data: BattleFactionAbilityAlertProps | KillAlertProps | LocationSelectAlertProps | WarMachineAbilityAlertProps | BattleZone | string
+    data: BattleFactionAbilityAlertProps | KillAlertProps | LocationSelectAlertProps | WarMachineAbilityAlertProps | BattleZoneStruct | string
 }
 
 interface Notification extends NotificationResponse {
@@ -89,8 +79,8 @@ export const Notifications = () => {
             let duration = SPAWN_TEST_NOTIFICATIONS ? NOTIFICATION_TIME * 10000 : NOTIFICATION_TIME
 
             if (notification.type === NotificationType.BattleZoneChange) {
-                const battleZoneChange = notification.data as BattleZone
-                duration = battleZoneChange.warnTime * 1000
+                const battleZoneChange = notification.data as BattleZoneStruct
+                duration = battleZoneChange.warn_time * 1000
                 setBattleZone(battleZoneChange)
             }
 
@@ -102,44 +92,6 @@ export const Notifications = () => {
             }, duration + NOTIFICATION_LINGER)
 
             if (justOne) return
-
-            // These cases renders another notification (so two)
-            if (notification.type === NotificationType.LocationSelect) {
-                const noti = notification as { type: NotificationType; data: LocationSelectAlertProps }
-                if (noti.data.type !== LocationSelectAlertType.FailedTimeOut && noti.data.type !== LocationSelectAlertType.FailedDisconnected) return
-
-                const {
-                    data: { ability, nextUser },
-                } = noti
-                newNotification(
-                    {
-                        type: NotificationType.LocationSelect,
-                        data: {
-                            type: LocationSelectAlertType.Assigned,
-                            currentUser: nextUser,
-                            ability,
-                        },
-                    },
-                    true,
-                )
-            }
-
-            if (notification.type === NotificationType.BattleAbility) {
-                const {
-                    data: { ability, user },
-                } = notification as { type: NotificationType; data: BattleFactionAbilityAlertProps }
-                newNotification(
-                    {
-                        type: NotificationType.LocationSelect,
-                        data: {
-                            type: LocationSelectAlertType.Assigned,
-                            currentUser: user,
-                            ability,
-                        },
-                    },
-                    true,
-                )
-            }
         },
         [addNotification, removeByID, setBattleZone],
     )
@@ -241,7 +193,7 @@ export const Notifications = () => {
                         case NotificationType.BattleZoneChange:
                             return (
                                 <NotificationItem key={n.notiID} duration={n.duration}>
-                                    <BattleZoneAlert data={n.data as BattleZone} />
+                                    <BattleZoneAlert data={n.data as BattleZoneStruct} />
                                 </NotificationItem>
                             )
                     }

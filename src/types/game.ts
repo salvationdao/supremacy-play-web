@@ -15,28 +15,30 @@ export enum BribeStage {
 export enum LocationSelectType {
     LineSelect = "LINE_SELECT",
     MechSelect = "MECH_SELECT",
+    MechSelectAllied = "MECH_SELECT_ALLIED",
+    MechSelectOpponent = "MECH_SELECT_OPPONENT",
     LocationSelect = "LOCATION_SELECT",
     Global = "GLOBAL",
     MechCommand = "MECH_COMMAND",
 }
 
 export interface Map {
-    name: string
-    image_url: string
-    width: number
-    height: number
-    cells_x: number
-    cells_y: number
-    top_pixels: number
-    left_pixels: number
-    disabled_cells: number[]
+    Name: string
+    Image_Url: string
+    Width: number
+    Height: number
+    Cells_X: number
+    Cells_Y: number
+    Pixel_Top: number
+    Pixel_Left: number
+    Disabled_Cells: number[]
 }
 
-export interface BattleZone {
+export interface BattleZoneStruct {
     location: Position
     radius: number
-    shrinkTime: number
-    warnTime: number
+    shrink_time: number
+    warn_time: number
 }
 
 export interface Dimension {
@@ -187,4 +189,34 @@ export interface DamageRecord {
     amount: number
     caused_by_war_machine?: WarMachineState
     source_name: string // weapon/ability name
+}
+
+export enum MiniMapDisplayEffectType {
+    None = "NONE",
+    Range = "RANGE",
+    Pulse = "PULSE",
+    Drop = "DROP",
+}
+
+export enum MechDisplayEffectType {
+    None = "NONE",
+    Border = "BORDER",
+    Pulse = "PULSE",
+    Shake = "SHAKE",
+}
+
+export interface DisplayedAbility {
+    offering_id: string
+    mini_map_display_effect_type: MiniMapDisplayEffectType
+    mech_display_effect_type: MechDisplayEffectType
+    location_select_type: LocationSelectType
+    image_url: string
+    colour: string
+    radius?: number
+    mech_id?: string
+    location: {
+        x: number
+        y: number
+    }
+    launching_at?: Date
 }

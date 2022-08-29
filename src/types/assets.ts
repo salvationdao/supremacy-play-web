@@ -483,3 +483,44 @@ export interface Rarity {
     color: string
     textColor: string
 }
+
+export interface StorefrontPackage {
+    id: string
+    name: string
+    description: string
+    currency: string
+    price_dollars: number
+    price_cents: number
+}
+
+export interface Submodel {
+    images: Images
+    collection_slug: string
+    hash: string
+    id: string
+    label: string
+    owner_id: string
+    tier: string
+    token_id: number
+    locked_to_marketplace: boolean
+    market_locked: boolean
+    xsyn_locked: boolean
+    updated_at: Date
+    created_at: Date
+}
+
+export enum SubmodelStatus {
+    Equipped = "EQUIPPED",
+    Unequipped = "UNEQUIPPED",
+}
+
+export interface WeaponModel {
+    id: string
+    brand_id: string
+    label: string
+    weapon_type: string
+    default_skin_id: string
+    repair_blocks: number
+    updated_at: Date
+    created_at: Date
+}

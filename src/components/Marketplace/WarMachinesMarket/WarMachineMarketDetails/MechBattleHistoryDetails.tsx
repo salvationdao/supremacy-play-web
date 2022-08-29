@@ -166,8 +166,8 @@ export const MechBattleHistoryDetails = ({ mechDetails, smallSize }: { mechDetai
                         {history.map((h, index) => (
                             <HistoryEntry
                                 key={index}
-                                mapName={camelToTitle(h.battle?.game_map?.name || "Unknown")}
-                                backgroundImage={h.battle?.game_map?.image_url}
+                                mapName={camelToTitle(h.battle?.game_map?.Name || "Unknown")}
+                                backgroundImage={h.battle?.game_map?.Image_Url}
                                 mechSurvived={!!h.mech_survived}
                                 status={!h.battle?.battle?.ended_at ? "pending" : h.faction_won ? "won" : "lost"}
                                 kills={h.kills}

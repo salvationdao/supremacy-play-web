@@ -13,7 +13,7 @@ export const useMiniMapGestures = ({ gestureRef, containerDimensions }: { gestur
     // Set map scale to minimum scale while staying in-bounds
     useEffect(() => {
         if (!map) return
-        const minScale = Math.max(containerDimensions.width / map.width, containerDimensions.height / map.height)
+        const minScale = Math.max(containerDimensions.width / map.Width, containerDimensions.height / map.Height)
         setDragX(0)
         setDragY(0)
         setMapScale(minScale)
@@ -47,8 +47,8 @@ export const useMiniMapGestures = ({ gestureRef, containerDimensions }: { gestur
             onWheel: ({ delta: [, deltaY], pinching, wheeling, dragging, event: e }) => {
                 if (pinching || dragging || !map || !wheeling) return
 
-                const mapWidth = map.width
-                const mapHeight = map.height
+                const mapWidth = map.Width
+                const mapHeight = map.Height
 
                 // Calculate new scale
                 const curScale = mapScale
@@ -100,13 +100,13 @@ export const useMiniMapGestures = ({ gestureRef, containerDimensions }: { gestur
                     if (!map) return
                     return {
                         top:
-                            containerDimensions.height <= map.height * mapScale
-                                ? -(map.height * mapScale - containerDimensions.height)
-                                : (containerDimensions.height - map.height * mapScale) / 2,
+                            containerDimensions.height <= map.Height * mapScale
+                                ? -(map.Height * mapScale - containerDimensions.height)
+                                : (containerDimensions.height - map.Height * mapScale) / 2,
                         left:
-                            containerDimensions.width <= map.width * mapScale
-                                ? -(map.width * mapScale - containerDimensions.width)
-                                : (containerDimensions.width - map.width * mapScale) / 2,
+                            containerDimensions.width <= map.Width * mapScale
+                                ? -(map.Width * mapScale - containerDimensions.width)
+                                : (containerDimensions.width - map.Width * mapScale) / 2,
                         right: 0,
                         bottom: 0,
                     }
@@ -129,7 +129,7 @@ export const useMiniMapGestures = ({ gestureRef, containerDimensions }: { gestur
     const setScale = useCallback(
         (newScale: number, newX: number, newY: number) => {
             if (!map) return
-            const minScale = Math.max(containerDimensions.width / map.width, containerDimensions.height / map.height)
+            const minScale = Math.max(containerDimensions.width / map.Width, containerDimensions.height / map.Height)
             const maxScale = 1
             const curScale = mapScale
 
@@ -145,13 +145,13 @@ export const useMiniMapGestures = ({ gestureRef, containerDimensions }: { gestur
 
             // Calculate the new boundary
             const xBound =
-                containerDimensions.width <= map.width * newScale
-                    ? -(map.width * newScale - containerDimensions.width)
-                    : (containerDimensions.width - map.width * newScale) / 2
+                containerDimensions.width <= map.Width * newScale
+                    ? -(map.Width * newScale - containerDimensions.width)
+                    : (containerDimensions.width - map.Width * newScale) / 2
             const yBound =
-                containerDimensions.height <= map.height * newScale
-                    ? -(map.height * newScale - containerDimensions.height)
-                    : (containerDimensions.height - map.height * newScale) / 2
+                containerDimensions.height <= map.Height * newScale
+                    ? -(map.Height * newScale - containerDimensions.height)
+                    : (containerDimensions.height - map.Height * newScale) / 2
 
             // Keep the map in-bounds
             newX = xBound >= newX ? xBound : newX > 0 ? 0 : newX

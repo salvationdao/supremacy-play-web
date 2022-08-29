@@ -38,20 +38,30 @@ const uiContainer = createContainer(() => {
         localStorage.setItem("isStreamBigDisplay", isStreamBigDisplay.toString())
     }, [isStreamBigDisplay])
 
-    // Toggles the big display, memorizes the previous value
-    const toggleIsStreamBigDisplayMemorized = useCallback((value: boolean) => {
-        setIsStreamBigDisplay((prev) => {
-            if (prevIsStreamBigDisplay.current === undefined) prevIsStreamBigDisplay.current = prev
-            return value
-        })
+    // Check if the UI has any modals open
+    const hasModalsOpen = useCallback(() => {
+        return !!document.querySelector(".MuiModal-root")
     }, [])
 
+    // Toggles the big display, memorizes the previous value
+    const toggleIsStreamBigDisplayMemorized = useCallback(
+        (value: boolean) => {
+            if (hasModalsOpen()) return
+            setIsStreamBigDisplay((prev) => {
+                if (prevIsStreamBigDisplay.current === undefined) prevIsStreamBigDisplay.current = prev
+                return value
+            })
+        },
+        [hasModalsOpen],
+    )
+
     const restoreIsStreamBigDisplayMemorized = useCallback(() => {
+        if (hasModalsOpen()) return
         if (prevIsStreamBigDisplay.current !== undefined) {
             setIsStreamBigDisplay(prevIsStreamBigDisplay.current)
             prevIsStreamBigDisplay.current = undefined
         }
-    }, [])
+    }, [hasModalsOpen])
 
     return {
         smallDisplayRef,
@@ -76,6 +86,8 @@ const uiContainer = createContainer(() => {
         isBattleHistoryOpen,
         toggleShowTrailer,
         toggleIsBattleHistoryOpen,
+
+        hasModalsOpen,
     }
 })
 
