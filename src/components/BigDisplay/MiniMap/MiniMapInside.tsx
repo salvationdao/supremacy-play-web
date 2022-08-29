@@ -3,13 +3,13 @@ import { useCallback, useMemo, useRef } from "react"
 import { MapMechs, SelectionIcon } from "../.."
 import { useGame, useMiniMap } from "../../../containers"
 import { Dimension, LocationSelectType } from "../../../types"
+import { MiniMapAbilitiesDisplay } from "./MapInsideItems/AbilityDisplay"
 import { BattleZone } from "./MapInsideItems/BattleZone"
 import { Blackouts } from "./MapInsideItems/Blackouts"
 import { CountdownSubmit } from "./MapInsideItems/CountdownSubmit"
-import { DisabledCells } from "./MapInsideItems/DisabledCells"
 import { MapGrid } from "./MapInsideItems/MapGrid"
-import { MechCommandIcons } from "./MapInsideItems/MapIcon/MechCommandIcons"
 import { MapImage } from "./MapInsideItems/MapImage"
+import { MechCommandIcons } from "./MapInsideItems/MechCommandIcons"
 import { RangeIndicator } from "./MapInsideItems/RangeIndicator"
 import { useMiniMapGestures } from "./useMiniMapGestures"
 
@@ -49,12 +49,12 @@ export const MiniMapInside = ({ containerDimensions }: MiniMapInsideProps) => {
     // i.e. is battle ability or player ability of type LOCATION_SELECT
     const isLocationSelection = useMemo(() => {
         const abilityType = winner?.game_ability.location_select_type || playerAbility?.ability.location_select_type
-        return isTargeting && (abilityType === LocationSelectType.LOCATION_SELECT || abilityType === LocationSelectType.MECH_COMMAND)
+        return isTargeting && (abilityType === LocationSelectType.LocationSelect || abilityType === LocationSelectType.MechCommand)
     }, [isTargeting, winner?.game_ability.location_select_type, playerAbility?.ability.location_select_type])
 
     const isLineSelection = useMemo(() => {
         const abilityType = winner?.game_ability.location_select_type || playerAbility?.ability.location_select_type
-        return isTargeting && abilityType === LocationSelectType.LINE_SELECT
+        return isTargeting && abilityType === LocationSelectType.LineSelect
     }, [isTargeting, playerAbility?.ability.location_select_type, winner?.game_ability.location_select_type])
 
     return useMemo(() => {
@@ -71,7 +71,7 @@ export const MiniMapInside = ({ containerDimensions }: MiniMapInsideProps) => {
                         overflow: "hidden",
                     }}
                 >
-                    {/* Range indicator */}
+                    {/* Range indicator that follows the mouse */}
                     <RangeIndicator parentRef={mapRef} map={map} mapScale={mapScale} />
 
                     <Box
@@ -82,6 +82,7 @@ export const MiniMapInside = ({ containerDimensions }: MiniMapInsideProps) => {
                             transform: `translate(${dragX}px, ${dragY}px) scale(${mapScale})`,
                         }}
                     >
+                        {/* Renders the shrinking battle zone area */}
                         <BattleZone map={map} />
 
                         {/* Render the user selection icon on the map */}
@@ -98,8 +99,8 @@ export const MiniMapInside = ({ containerDimensions }: MiniMapInsideProps) => {
 
                         {/* Map grid, with map clicking */}
                         <MapGrid
-                            mapWidth={map.width}
-                            mapHeight={map.height}
+                            mapWidth={map.Width}
+                            mapHeight={map.Height}
                             gridHeight={gridHeight}
                             gridWidth={gridWidth}
                             onClick={isLocationSelection ? onMapClick : () => setHighlightedMechParticipantID(undefined)}
@@ -109,14 +110,15 @@ export const MiniMapInside = ({ containerDimensions }: MiniMapInsideProps) => {
                             isLineSelection={isLineSelection}
                         />
 
-                        {/* Shade disabled cells */}
-                        <DisabledCells />
-
                         {/* Blackouts */}
                         <Blackouts />
+
+                        {/* Show any abilities on the minimap */}
+                        <MiniMapAbilitiesDisplay />
                     </Box>
                 </Stack>
 
+                {/* Displays countdown before target selection submits */}
                 <CountdownSubmit />
             </>
         )

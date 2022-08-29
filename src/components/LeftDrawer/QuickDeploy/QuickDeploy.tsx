@@ -194,7 +194,7 @@ const QuickDeployInner = () => {
                     </Box>
 
                     {loadError && (
-                        <Stack alignItems="center" justifyContent="center" sx={{ minHeight: "20rem" }}>
+                        <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                             <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem" }}>
                                 <Typography sx={{ color: colors.red, fontFamily: fonts.nostromoBold, textAlign: "center" }}>{loadError}</Typography>
                             </Stack>
@@ -202,7 +202,7 @@ const QuickDeployInner = () => {
                     )}
 
                     {isLoading && !loadError && (
-                        <Stack alignItems="center" justifyContent="center" sx={{ minHeight: "20rem" }}>
+                        <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                             <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem" }}>
                                 <CircularProgress size="3rem" sx={{ color: primaryColor }} />
                             </Stack>
@@ -235,7 +235,7 @@ const QuickDeployInner = () => {
                             }}
                         >
                             <Box sx={{ direction: "ltr", height: 0 }}>
-                                <Stack spacing=".3rem" sx={{ minHeight: "20rem" }}>
+                                <Stack spacing=".3rem" sx={{ height: "100%" }}>
                                     {mechs.map((mech) => {
                                         const isSelected = selectedMechs.findIndex((s) => s.id === mech.id) >= 0
                                         return (
@@ -257,7 +257,7 @@ const QuickDeployInner = () => {
                     )}
 
                     {!isLoading && !loadError && mechs && mechs.length <= 0 && (
-                        <Stack alignItems="center" justifyContent="center" sx={{ minHeight: "20rem" }}>
+                        <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                             <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                                 <Typography
                                     variant="body2"

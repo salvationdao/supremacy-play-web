@@ -2,7 +2,7 @@ import { Box, Fade, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { MiniMapInside } from "../.."
 import { BattleBgWebP, SvgExternalLink, SvgFullscreen, SvgMinimize, SvgSwap } from "../../../assets"
-import { useDimension, useGame } from "../../../containers"
+import { useDimension, useGame, useUI } from "../../../containers"
 import { useHotkey } from "../../../containers/hotkeys"
 import { useMiniMap } from "../../../containers/minimap"
 import { useToggle } from "../../../hooks"
@@ -15,17 +15,18 @@ import { HighlightedMechAbilities } from "./MapOutsideItems/HighlightedMechAbili
 import { TargetHint } from "./MapOutsideItems/TargetHint"
 
 export const TOP_BAR_HEIGHT = 3.4 // rems
-const BOTTOM_PADDING = 12 // rems
+const BOTTOM_PADDING = 10 // rems
 
 export const MiniMap = () => {
-    const { map, isBattleStarted, isStreamBigDisplay } = useGame()
+    const { smallDisplayRef, bigDisplayRef, isStreamBigDisplay } = useUI()
+    const { map, isBattleStarted } = useGame()
     const { isTargeting } = useMiniMap()
     const [isPoppedout, setIsPoppedout] = useState(false)
     const ref = useRef<HTMLElement | null>(null)
 
     useEffect(() => {
         const thisElement = ref.current
-        const newContainerElement = document.getElementById(isStreamBigDisplay ? "left-drawer-space" : "big-display-space")
+        const newContainerElement = isStreamBigDisplay ? smallDisplayRef : bigDisplayRef // document.getElementById(isStreamBigDisplay ? "left-drawer-space" : "big-display-space")
 
         if (!isPoppedout && thisElement && newContainerElement) {
             let child = newContainerElement.lastElementChild
@@ -36,7 +37,7 @@ export const MiniMap = () => {
 
             newContainerElement.appendChild(thisElement)
         }
-    }, [isStreamBigDisplay, isPoppedout])
+    }, [isStreamBigDisplay, isPoppedout, smallDisplayRef, bigDisplayRef])
 
     const content = useMemo(() => {
         if (isBattleStarted && map) {
@@ -89,51 +90,54 @@ const MiniMapInnerNormal = ({ map, isTargeting, isPoppedout, setIsPoppedout }: M
 }
 
 const BattleNotStarted = () => {
-    const { isStreamBigDisplay } = useGame()
+    const { isStreamBigDisplay } = useUI()
 
-    return (
-        <Stack
-            alignItems="center"
-            justifyContent="center"
-            sx={{
-                position: "relative",
-                width: "100%",
-                height: isStreamBigDisplay ? "28rem" : "100%",
-                border: (theme) => `${theme.factionTheme.primary}60 1px solid`,
-            }}
-        >
-            <Typography
-                variant={!isStreamBigDisplay ? "h5" : "h6"}
+    return useMemo(
+        () => (
+            <Stack
+                alignItems="center"
+                justifyContent="center"
                 sx={{
-                    fontFamily: fonts.nostromoBold,
-                    WebkitTextStrokeWidth: !isStreamBigDisplay ? "1px" : "unset",
-                    textAlign: "center",
-                    zIndex: 2,
+                    position: "relative",
+                    width: "100%",
+                    height: isStreamBigDisplay ? "28rem" : "100%",
+                    border: (theme) => `${theme.factionTheme.primary}60 1px solid`,
                 }}
             >
-                Preparing for next battle...
-            </Typography>
-
-            <Box sx={{ position: "absolute", top: 0, left: 0, bottom: 0, right: 0, backgroundColor: "#00000050", zIndex: 1 }} />
-
-            {/* Background image */}
-            <Fade in>
-                <Box
+                <Typography
+                    variant={!isStreamBigDisplay ? "h5" : "h6"}
                     sx={{
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
-                        bottom: 0,
-                        right: 0,
-                        zIndex: 0,
-                        background: `url(${BattleBgWebP})`,
-                        backgroundRepeat: "no-repeat",
-                        backgroundPosition: "center",
-                        backgroundSize: "cover",
+                        fontFamily: fonts.nostromoBold,
+                        WebkitTextStrokeWidth: !isStreamBigDisplay ? "1px" : "unset",
+                        textAlign: "center",
+                        zIndex: 2,
                     }}
-                />
-            </Fade>
-        </Stack>
+                >
+                    Preparing for next battle...
+                </Typography>
+
+                <Box sx={{ position: "absolute", top: 0, left: 0, bottom: 0, right: 0, backgroundColor: "#00000050", zIndex: 1 }} />
+
+                {/* Background image */}
+                <Fade in>
+                    <Box
+                        sx={{
+                            position: "absolute",
+                            top: 0,
+                            left: 0,
+                            bottom: 0,
+                            right: 0,
+                            zIndex: 0,
+                            background: `url(${BattleBgWebP})`,
+                            backgroundRepeat: "no-repeat",
+                            backgroundPosition: "center",
+                            backgroundSize: "cover",
+                        }}
+                    />
+                </Fade>
+            </Stack>
+        ),
+        [isStreamBigDisplay],
     )
 }
 
@@ -141,7 +145,7 @@ const BattleNotStarted = () => {
 const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 100, height = 100 }: MiniMapInnerProps) => {
     const { handleHotKey } = useHotkey()
     const { remToPxRatio } = useDimension()
-    const { isStreamBigDisplay, setIsStreamBigDisplay, toggleIsStreamBigDisplayMemorized, restoreIsStreamBigDisplayMemorized } = useGame()
+    const { isStreamBigDisplay, setIsStreamBigDisplay, toggleIsStreamBigDisplayMemorized, restoreIsStreamBigDisplayMemorized } = useUI()
     const [isEnlarged, toggleIsEnlarged] = useToggle(localStorage.getItem("isMiniMapEnlarged") === "true")
 
     const mapHeightWidthRatio = useRef(1)
@@ -168,7 +172,7 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
     // Set size
     const sizes = useMemo(() => {
         // Step 1
-        mapHeightWidthRatio.current = map.height / map.width
+        mapHeightWidthRatio.current = map.Height / map.Width
 
         let defaultWidth = width
         let defaultHeight = 0
@@ -212,7 +216,7 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
             insideWidth,
             insideHeight,
         }
-    }, [map.height, map.width, width, isEnlarged, height, remToPxRatio, isStreamBigDisplay, isPoppedout])
+    }, [map.Height, map.Width, width, isEnlarged, height, remToPxRatio, isStreamBigDisplay, isPoppedout])
 
     const focusMap = useCallback(() => mapRef.current?.focus(), [mapRef])
 
@@ -289,8 +293,7 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
                         )}
 
                         <Typography sx={{ fontFamily: fonts.nostromoHeavy }}>
-                            {map.name
-                                .replace(/([A-Z])/g, " $1")
+                            {map.Name.replace(/([A-Z])/g, " $1")
                                 .trim()
                                 .toUpperCase()}
                         </Typography>
@@ -311,7 +314,7 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
                         left: 0,
                         width: "100%",
                         height: "100%",
-                        background: `url(${map?.image_url})`,
+                        background: `url(${map?.Image_Url})`,
                         backgroundRepeat: "no-repeat",
                         backgroundPosition: "center",
                         backgroundSize: "cover",
@@ -329,8 +332,8 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
         sizes.outsideHeight,
         sizes.insideWidth,
         sizes.insideHeight,
-        map.name,
-        map?.image_url,
+        map.Name,
+        map?.Image_Url,
         isPoppedout,
         isStreamBigDisplay,
         setIsStreamBigDisplay,

@@ -2,7 +2,7 @@ import { Button, Drawer, IconButton, Stack, Typography } from "@mui/material"
 import { Link, useHistory, useRouteMatch } from "react-router-dom"
 import { SvgBack, SvgSupremacyLogo } from "../../../assets"
 import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT } from "../../../constants"
-import { useAuth, useOverlayToggles } from "../../../containers"
+import { useAuth, useUI } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { ROUTES_ARRAY } from "../../../routes"
 import { fonts, siteZIndex } from "../../../theme/theme"
@@ -13,13 +13,13 @@ export const NavLinksDrawer = () => {
     const { userID } = useAuth()
     const theme = useTheme()
     const history = useHistory()
-    const { isNavLinksDrawerOpen, toggleIsNavLinksDrawerOpen } = useOverlayToggles()
+    const { isNavLinksDrawerOpen, toggleIsNavLinksDrawerOpen } = useUI()
 
     const match = useRouteMatch(ROUTES_ARRAY.filter((r) => r.path !== "/").map((r) => r.path))
-    let activeTabID = ""
+    let activeRouteID = ""
     if (match) {
         const r = ROUTES_ARRAY.find((r) => r.path === match.path)
-        activeTabID = r?.matchNavLinkID || ""
+        activeRouteID = r?.id || ""
     }
 
     return (
@@ -70,7 +70,7 @@ export const NavLinksDrawer = () => {
                                     history.push(`${navigateTo}`)
                                     toggleIsNavLinksDrawerOpen(false)
                                 }}
-                                isActive={activeTabID === r.matchNavLinkID || location.pathname === r.path}
+                                isActive={activeRouteID === r.matchNavLinkID || location.pathname === r.path}
                                 primaryColor={theme.factionTheme.primary}
                                 secondaryColor={theme.factionTheme.secondary}
                             />

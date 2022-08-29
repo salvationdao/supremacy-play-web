@@ -77,7 +77,7 @@ export const Quests = () => {
                         cursor: "pointer",
                         borderRadius: 1,
                         backgroundColor: popoverOpen ? "#FFFFFF12" : "unset",
-                        animation: confetti.length > 0 ? `${shake} 1s infinite` : "unset",
+                        animation: confetti.length > 0 ? `${shake(1)} 1s infinite` : "unset",
                         ":hover": {
                             backgroundColor: "#FFFFFF12",
                         },

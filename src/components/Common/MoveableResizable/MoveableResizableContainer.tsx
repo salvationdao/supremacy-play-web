@@ -3,7 +3,6 @@ import { Rnd } from "react-rnd"
 import { createContainer } from "unstated-next"
 import { useDimension } from "../../../containers"
 import { clamp, parseString } from "../../../helpers"
-import { useToggle } from "../../../hooks"
 import { Dimension, Position } from "../../../types"
 
 const PADDING = 10
@@ -69,7 +68,7 @@ export const MoveableResizableContainer = createContainer((initialState: Moveabl
         gameUIDimensions: { width, height },
     } = useDimension()
     const [popoutRef, setPopoutRef] = useState<HTMLElement | null>(null)
-    const [isPoppedout, toggleIsPoppedout] = useToggle()
+    const [isPoppedout, setIsPoppedout] = useState(false)
 
     const rndRef = useRef<Rnd | null>(null)
     const [curPosX, setCurPosX] = useState(parseString(localStorage.getItem(`${localStoragePrefix}PosX`), defaultPosX))
@@ -190,7 +189,7 @@ export const MoveableResizableContainer = createContainer((initialState: Moveabl
     return {
         setPopoutRef,
         isPoppedout,
-        toggleIsPoppedout,
+        setIsPoppedout,
 
         setCurWidth,
         setCurHeight,

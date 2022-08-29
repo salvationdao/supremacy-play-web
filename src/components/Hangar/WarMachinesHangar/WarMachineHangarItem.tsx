@@ -79,7 +79,7 @@ export const WarMachineHangarItem = ({
         [childrenRepairOffer, mech.id],
     )
 
-    const primaryColor = theme.factionTheme.primary
+    const [primaryColor, setPrimaryColor] = useState(theme.factionTheme.primary)
     const secondaryColor = theme.factionTheme.secondary
     const backgroundColor = theme.factionTheme.background
     const selectedBackgroundColor = useMemo(() => shadeColor(backgroundColor, 420), [backgroundColor])
@@ -133,6 +133,7 @@ export const WarMachineHangarItem = ({
                             mechDetails={mechDetails}
                             onStatusLoaded={onStatusLoaded}
                             onRepairOfferLoaded={onRepairOfferLoaded}
+                            setPrimaryColor={setPrimaryColor}
                         />
                     </General>
 

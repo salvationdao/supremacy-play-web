@@ -1,11 +1,12 @@
 import { Box, keyframes } from "@mui/material"
 import React, { useEffect, useMemo, useState } from "react"
 import { useArena, useGame, useMiniMap } from "../../../../containers"
-
 import { useGameServerSubscription } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors } from "../../../../theme/theme"
 import { Position } from "../../../../types"
+
+const BLACKOUT_TRANSITION_DURATION = 500
 
 interface MinimapEvent {
     id: string
@@ -85,34 +86,45 @@ export const Blackouts = () => {
         return () => timeouts.forEach((t) => clearTimeout(t))
     }, [removedBlackoutIDs])
 
-    return <>{blackouts.size > 0 && new Array(...blackouts).map(([id, b]) => <Blackout key={id} {...b} />)}</>
-}
+    if (blackouts.size <= 0) {
+        return null
+    }
 
-const BLACKOUT_TRANSITION_DURATION = 500
+    return (
+        <>
+            {new Array(...blackouts).map(([id, b]) => (
+                <Blackout key={id} {...b} />
+            ))}
+        </>
+    )
+}
 
 const Blackout = React.forwardRef(function Blackout({ radius, coords, isVisible }: BlackoutWithAnimationState, ref) {
     const { gridHeight, gridWidth } = useMiniMap()
     const { map } = useGame()
 
-    const mapScale = useMemo(() => (map ? map.width / (map.cells_x * 2000) : 0), [map])
+    const mapScale = useMemo(() => (map ? map.Width / (map.Cells_X * 2000) : 0), [map])
     const diameter = useMemo(() => radius * mapScale * 2, [mapScale, radius])
 
-    return (
-        <Box
-            ref={ref}
-            sx={{
-                zIndex: 900,
-                position: "absolute",
-                width: diameter,
-                height: diameter,
-                transform: `translate(${coords.x * gridWidth - diameter / 2}px, ${coords.y * gridHeight - diameter / 2}px)`,
-                borderRadius: "50%",
-                backgroundColor: `${colors.black2}DD`,
-                boxShadow: 20,
-                animation: `${isVisible ? fadeInKeyframes : fadeOutKeyframes} ${BLACKOUT_TRANSITION_DURATION}ms ease-in`,
-                pointerEvents: "none",
-            }}
-        />
+    return useMemo(
+        () => (
+            <Box
+                ref={ref}
+                sx={{
+                    zIndex: 900,
+                    position: "absolute",
+                    width: diameter,
+                    height: diameter,
+                    transform: `translate(${coords.x * gridWidth - diameter / 2}px, ${coords.y * gridHeight - diameter / 2}px)`,
+                    borderRadius: "50%",
+                    backgroundColor: `${colors.black2}DD`,
+                    boxShadow: 20,
+                    animation: `${isVisible ? fadeInKeyframes : fadeOutKeyframes} ${BLACKOUT_TRANSITION_DURATION}ms ease-in`,
+                    pointerEvents: "none",
+                }}
+            />
+        ),
+        [coords.x, coords.y, diameter, gridHeight, gridWidth, isVisible, ref],
     )
 })
 

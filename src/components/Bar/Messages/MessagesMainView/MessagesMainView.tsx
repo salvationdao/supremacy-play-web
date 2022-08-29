@@ -1,4 +1,4 @@
-import { Box, Stack, Switch, Typography } from "@mui/material"
+import { Box, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { SvgAbility, SvgAnnouncement, SvgDamage1, SvgHealth, SvgHistoryClock, SvgNotification, SvgSyndicateFlag } from "../../../../assets"
 import { useAuth } from "../../../../containers"
@@ -10,6 +10,7 @@ import { colors, fonts } from "../../../../theme/theme"
 import { FeatureName, SystemMessage, SystemMessageDataType } from "../../../../types"
 import { CoolTable } from "../../../Common/CoolTable"
 import { FancyButton } from "../../../Common/FancyButton"
+import { PreferenceToggle } from "../../ProfileCard/PreferencesModal/NotificationPreferences"
 import { SystemMessageDisplayable } from "../Messages"
 import { MessageDisplay } from "./MessageDisplay/MessageDisplay"
 
@@ -299,21 +300,9 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
                         <SvgHistoryClock size="1.2rem" />
                         <Typography>Last updated: {lastUpdated.toISOString()}</Typography>
 
-                        <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ ml: "auto !important" }}>
-                            <Switch
-                                size="small"
-                                checked={hideRead}
-                                onChange={(e, c) => setHideRead(c)}
-                                sx={{
-                                    transform: "scale(.7)",
-                                    ".Mui-checked": { color: theme.factionTheme.primary },
-                                    ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${theme.factionTheme.primary}50` },
-                                }}
-                            />
-                            <Typography variant="body2" sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>
-                                Hide Read
-                            </Typography>
-                        </Stack>
+                        <Box sx={{ ml: "auto !important" }}>
+                            <PreferenceToggle title="Hide read" checked={hideRead} onChangeFunction={(e) => setHideRead(e.currentTarget.checked)} />
+                        </Box>
                     </Stack>
 
                     {error && (
