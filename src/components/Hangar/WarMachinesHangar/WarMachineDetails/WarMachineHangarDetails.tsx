@@ -1,12 +1,12 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material"
-import { useCallback, useMemo, useState } from "react"
+import { useMemo, useState } from "react"
 import { ClipThing } from "../../.."
 import { SvgCubes, SvgSkin, SvgStats } from "../../../../assets"
 import { BATTLE_ARENA_OPEN } from "../../../../constants"
-import { useGlobalNotifications } from "../../../../containers"
+import { useAuth } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
 import { getRarityDeets } from "../../../../helpers"
-import { useGameServerCommandsUser, useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
+import { useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { fonts } from "../../../../theme/theme"
 import { MechDetails } from "../../../../types"
@@ -81,9 +81,8 @@ export const WarMachineHangarDetailsInner = ({
     setRentalMechModalOpen,
     setRepairMechModalOpen,
 }: WarMachineHangarDetailsInnerProps) => {
-    const { newSnackbarMessage } = useGlobalNotifications()
     const theme = useTheme()
-    const { send: userSend } = useGameServerCommandsUser("/user_commander")
+    const { userID } = useAuth()
     const [mechDetails, setMechDetails] = useState<MechDetails>()
 
     const rarityDeets = useMemo(() => getRarityDeets(mechDetails?.chassis_skin?.tier || mechDetails?.tier || ""), [mechDetails])
@@ -97,26 +96,6 @@ export const WarMachineHangarDetailsInner = ({
             if (!payload) return
             setMechDetails(payload)
         },
-    )
-
-    const renameMech = useCallback(
-        async (newName: string) => {
-            try {
-                const resp = await userSend<string>(GameServerKeys.MechRename, {
-                    mech_id: mechID,
-                    new_name: newName,
-                })
-
-                if (!resp || !mechDetails) return
-                setMechDetails({ ...mechDetails, name: newName })
-                newSnackbarMessage("Successfully updated war machine name.", "success")
-            } catch (err) {
-                const message = typeof err === "string" ? err : "Failed to update war machine name."
-                newSnackbarMessage(message, "error")
-                console.error(err)
-            }
-        },
-        [setMechDetails, mechDetails, mechID, userSend, newSnackbarMessage],
     )
 
     const primaryColor = theme.factionTheme.primary
@@ -212,7 +191,11 @@ export const WarMachineHangarDetailsInner = ({
 
                                         <Typography sx={{ fontFamily: fonts.nostromoBlack }}>{mechDetails.label}</Typography>
 
-                                        <MechName renameMech={renameMech} mechDetails={mechDetails} />
+                                        <MechName
+                                            onRename={(newName) => setMechDetails({ ...mechDetails, name: newName })}
+                                            mech={mechDetails}
+                                            allowEdit={userID === mechDetails.owner_id}
+                                        />
                                     </Stack>
 
                                     {/* Repair status */}
