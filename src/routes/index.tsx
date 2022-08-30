@@ -16,6 +16,7 @@ import { MechPage } from "../pages/MechPage"
 import { StorefrontPage } from "../pages/StorefrontPage"
 import { WeaponPage } from "../pages/WeaponPage"
 import { colors } from "../theme/theme"
+import { Landing } from "../components/PublicProfile/Landing"
 
 // ************
 // ** ROUTES **
@@ -38,6 +39,21 @@ interface RouteStruct {
 }
 
 export const ROUTES_MAP: { [name: string]: RouteStruct } = {
+    // Landing
+    landing: {
+        id: "landing",
+        path: "/landing",
+        exact: true,
+        Component: Landing,
+        requireAuth: true,
+        requireFaction: true,
+        enable: true,
+        navLink: {
+            enable: BATTLE_ARENA_OPEN,
+            label: "Upcoming Battle",
+        },
+    },
+
     home: {
         id: "home",
         path: "/",
