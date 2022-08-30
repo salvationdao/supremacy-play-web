@@ -3,7 +3,7 @@ import React, { useMemo } from "react"
 import { TooltipHelper } from "../../.."
 import { SvgHealth, SvgPowerCoreCapacity, SvgPowerCoreRegen, SvgShield, SvgShieldRegen, SvgSpeed, SvgWrapperProps } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
-import { fonts } from "../../../../theme/theme"
+import { colors, fonts } from "../../../../theme/theme"
 import { MechBasic, MechDetails } from "../../../../types"
 
 export const MechBarStats = ({
@@ -269,7 +269,7 @@ export const BarStat = ({
                                 textOverflow: "ellipsis",
                                 WebkitLineClamp: 1,
                                 WebkitBoxOrient: "vertical",
-                                color: parsedBoosted && parsedBoosted != parsedCurrent ? "gold" : "white",
+                                color: parsedBoosted && parsedBoosted != parsedCurrent ? colors.gold : "#FFFFFF",
                             }}
                         >
                             {parsedBoosted || parsedCurrent}
@@ -294,7 +294,7 @@ export const BarStat = ({
                             sx={{
                                 width: `${(100 * parsedBoosted) / total}%`,
                                 height: "100%",
-                                backgroundColor: "gold",
+                                backgroundColor: colors.gold,
                                 transition: "all .15s",
                                 zIndex: 9,
                                 position: "absolute",
