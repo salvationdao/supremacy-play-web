@@ -290,7 +290,13 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
                                     <SvgSwap size="1.6rem" />
                                 </Box>
 
-                                <Box onClick={() => setIsPoppedout(true)} sx={{ cursor: "pointer", opacity: 0.4, ":hover": { opacity: 1 } }}>
+                                <Box
+                                    onClick={() => {
+                                        setIsPoppedout(true)
+                                        setIsStreamBigDisplay(true)
+                                    }}
+                                    sx={{ cursor: "pointer", opacity: 0.4, ":hover": { opacity: 1 } }}
+                                >
                                     <SvgExternalLink size="1.6rem" />
                                 </Box>
                             </>
