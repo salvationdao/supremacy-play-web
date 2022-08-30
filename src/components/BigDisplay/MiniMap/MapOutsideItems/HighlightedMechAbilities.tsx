@@ -2,6 +2,8 @@ import { Box, Fade, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { ClipThing } from "../../.."
 import { useAuth, useGame, useMiniMap } from "../../../../containers"
+import { useArena } from "../../../../containers/arena"
+import { MECH_ABILITY_KEY, RecordType, useHotkey } from "../../../../containers/hotkeys"
 import { useTheme } from "../../../../containers/theme"
 import { useInterval, useToggle } from "../../../../hooks"
 import { useGameServerCommandsFaction, useGameServerSubscription, useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
@@ -9,8 +11,6 @@ import { GameServerKeys } from "../../../../keys"
 import { colors } from "../../../../theme/theme"
 import { AIType, BribeStage, GameAbility, WarMachineLiveState, WarMachineState } from "../../../../types"
 import { MoveCommand } from "../../../WarMachine/WarMachineItem/MoveCommand"
-import { useArena } from "../../../../containers/arena"
-import { RecordType, useHotkey } from "../../../../containers/hotkeys"
 
 export const HighlightedMechAbilities = () => {
     const { userID } = useAuth()
@@ -106,7 +106,7 @@ const AbilityItem = ({ hash, participantID, ability, index }: { hash: string; pa
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [remainSeconds, setRemainSeconds] = useState(30)
     const ready = useMemo(() => remainSeconds === 0, [remainSeconds])
-    const { mechAbilityKey, addToHotkeyRecord } = useHotkey()
+    const { addToHotkeyRecord } = useHotkey()
 
     useGameServerSubscriptionFaction<number | undefined>(
         {
@@ -143,8 +143,8 @@ const AbilityItem = ({ hash, participantID, ability, index }: { hash: string; pa
     }, [hash, id, send, currentArenaID])
 
     useEffect(() => {
-        addToHotkeyRecord(RecordType.Map, mechAbilityKey[index], onTrigger)
-    }, [onTrigger, mechAbilityKey, addToHotkeyRecord, index])
+        addToHotkeyRecord(RecordType.MiniMap, MECH_ABILITY_KEY[index], onTrigger)
+    }, [onTrigger, addToHotkeyRecord, index])
 
     return (
         <Stack
@@ -197,7 +197,7 @@ const AbilityItem = ({ hash, participantID, ability, index }: { hash: string; pa
                 {ready && (
                     <Typography variant="body2" sx={{ color: colors.neonBlue }}>
                         <i>
-                            <strong>[{mechAbilityKey[index]}]</strong>
+                            <strong>[{MECH_ABILITY_KEY[index]}]</strong>
                         </i>
                     </Typography>
                 )}

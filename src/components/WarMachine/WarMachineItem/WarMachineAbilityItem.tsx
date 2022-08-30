@@ -1,14 +1,14 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { ClipThing, FancyButton } from "../.."
+import { useArena } from "../../../containers/arena"
+import { MECH_ABILITY_KEY, RecordType, useHotkey } from "../../../containers/hotkeys"
 import { shadeColor } from "../../../helpers"
+import { useInterval } from "../../../hooks"
 import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { GameAbility, WarMachineState } from "../../../types"
 import { TopText } from "../../LeftDrawer/BattleArena/BattleAbility/Common/TopText"
-import { useInterval } from "../../../hooks"
-import { useArena } from "../../../containers/arena"
-import { RecordType, useHotkey } from "../../../containers/hotkeys"
 
 export interface ContributeFactionUniqueAbilityRequest {
     ability_identity: string
@@ -69,7 +69,7 @@ export const MechAbilityButton = ({ warMachine, gameAbility, index }: { warMachi
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const { id, colour, text_colour } = gameAbility
     const [remainSeconds, setRemainSeconds] = useState(30)
-    const { mechAbilityKey, addToHotkeyRecord } = useHotkey()
+    const { addToHotkeyRecord } = useHotkey()
 
     // Listen on the progress of the votes
     useGameServerSubscriptionFaction<number | undefined>(
@@ -107,8 +107,8 @@ export const MechAbilityButton = ({ warMachine, gameAbility, index }: { warMachi
     }, [hash, id, send, currentArenaID])
 
     useEffect(() => {
-        addToHotkeyRecord(RecordType.Map, mechAbilityKey[index], onTrigger)
-    }, [onTrigger, mechAbilityKey, addToHotkeyRecord, index])
+        addToHotkeyRecord(RecordType.MiniMap, MECH_ABILITY_KEY[index], onTrigger)
+    }, [onTrigger, addToHotkeyRecord, index])
 
     return (
         <FancyButton

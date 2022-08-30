@@ -127,6 +127,7 @@ const WarMachineStatsInner = () => {
                     zIndex: siteZIndex.MechStats,
                     overflow: "hidden",
                     filter: "drop-shadow(0 3px 3px #00000020)",
+                    pointerEvents: "none",
                 }}
             >
                 <Box

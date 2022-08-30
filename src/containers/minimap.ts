@@ -6,6 +6,7 @@ import { GameServerKeys } from "../keys"
 import { BribeStage, GameAbility, LocationSelectType, PlayerAbility, Position } from "../types"
 import { useArena } from "./arena"
 import { useGame } from "./game"
+import { RecordType, useHotkey } from "./hotkeys"
 
 interface WinnerAnnouncementResponse {
     game_ability: GameAbility
@@ -25,6 +26,7 @@ export const MiniMapContainer = createContainer(() => {
     const { bribeStage, map, isBattleStarted } = useGame()
     const { factionID } = useAuth()
     const { currentArenaID } = useArena()
+    const { addToHotkeyRecord } = useHotkey()
     const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsFaction("/faction_commander")
 
@@ -88,6 +90,13 @@ export const MiniMapContainer = createContainer(() => {
         setSelection(undefined)
         setIsTargeting(false)
     }, [])
+
+    useEffect(() => {
+        addToHotkeyRecord(RecordType.MiniMap, "Escape", () => {
+            resetSelection()
+            setHighlightedMechParticipantID(undefined)
+        })
+    }, [addToHotkeyRecord, resetSelection])
 
     const onTargetConfirm = useCallback(() => {
         if (!selection || !currentArenaID) return
@@ -176,7 +185,12 @@ export const MiniMapContainer = createContainer(() => {
                 }
                 send<boolean, typeof payload>(GameServerKeys.PlayerAbilityUse, payload)
             }
-            resetSelection()
+
+            // If it's mech move command, dont reset so player can keep moving the mech
+            if (playerAbility?.ability.location_select_type !== LocationSelectType.MechCommand) {
+                resetSelection()
+            }
+
             if (playerAbility?.ability.location_select_type === LocationSelectType.MechSelect) {
                 setHighlightedMechParticipantID(undefined)
             }

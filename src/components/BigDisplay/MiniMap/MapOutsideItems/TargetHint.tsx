@@ -1,5 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useCallback, useEffect, useMemo } from "react"
+import { useEffect, useMemo } from "react"
 import { ClipThing, FancyButton } from "../../.."
 import { SvgLine, SvgMicrochip, SvgQuestionMark, SvgTarget } from "../../../../assets"
 import { useGlobalNotifications, useMiniMap } from "../../../../containers"
@@ -144,21 +144,6 @@ const WinnerTargetHintInner = ({ endTime, onCountdownExpired }: { endTime: Date;
 const PlayerAbilityTargetHint = () => {
     const { playerAbility, resetSelection } = useMiniMap()
     const theme = useTheme()
-
-    const handleKeyDown = useCallback(
-        (e: KeyboardEvent) => {
-            if (e.key === "Escape") {
-                resetSelection()
-            }
-        },
-        [resetSelection],
-    )
-
-    useEffect(() => {
-        document.addEventListener("keydown", handleKeyDown)
-
-        return () => document.removeEventListener("keydown", handleKeyDown)
-    }, [handleKeyDown])
 
     const data = useMemo(() => {
         const ability = playerAbility?.ability
