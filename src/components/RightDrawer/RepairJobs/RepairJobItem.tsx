@@ -126,7 +126,7 @@ export const RepairJobItem = ({
                                 textColor={colors.lightGrey}
                             />
                         ) : (
-                            <CountdownGeneral isGridView={true} endTime={repairJob.expires_at} />
+                            <CountdownGeneral isGridViewCompact={true} endTime={repairJob.expires_at} />
                         )}
                     </Stack>
 
@@ -148,12 +148,12 @@ export const RepairJobItem = ({
     )
 }
 
-const CountdownGeneral = ({ isGridView, endTime }: { isGridView?: boolean; endTime: Date }) => {
+const CountdownGeneral = ({ isGridViewCompact, endTime }: { isGridViewCompact?: boolean; endTime: Date }) => {
     const { totalSecRemain } = useTimer(endTime)
 
     return (
         <General
-            isGridView={isGridView}
+            isGridViewCompact={isGridViewCompact}
             title="TIME LEFT"
             text={timeSinceInWords(new Date(), new Date(new Date().getTime() + totalSecRemain * 1000))}
             textColor={totalSecRemain < 300 ? colors.orange : "#FFFFFF"}
