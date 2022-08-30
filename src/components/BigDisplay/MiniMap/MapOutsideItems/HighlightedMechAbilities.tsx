@@ -15,7 +15,7 @@ import { RecordType, useHotkey } from "../../../../containers/hotkeys"
 export const HighlightedMechAbilities = () => {
     const { userID } = useAuth()
     const { bribeStage, warMachines, spawnedAI } = useGame()
-    const { highlightedMechParticipantID, isTargeting } = useMiniMap()
+    const { highlightedMechParticipantID } = useMiniMap()
 
     const isVoting = useMemo(() => bribeStage && bribeStage?.phase !== BribeStage.Hold, [bribeStage])
 
@@ -23,7 +23,7 @@ export const HighlightedMechAbilities = () => {
         return [...(warMachines || []), ...(spawnedAI || [])].find((m) => m.participantID === highlightedMechParticipantID)
     }, [highlightedMechParticipantID, spawnedAI, warMachines])
 
-    if (isTargeting || !highlightedMechParticipantID || !highlightedMech || highlightedMech?.ownedByID !== userID || !isVoting) {
+    if (!highlightedMechParticipantID || !highlightedMech || highlightedMech?.ownedByID !== userID || !isVoting) {
         return null
     }
 
@@ -73,10 +73,10 @@ const HighlightedMechAbilitiesInner = ({ warMachine }: { warMachine: WarMachineS
                     borderColor: userID === ownedByID ? colors.gold : theme.factionTheme.primary,
                     borderThickness: "2px",
                 }}
-                corners={{ bottomLeft: true }}
+                corners={{ bottomRight: true }}
                 opacity={0.3}
                 backgroundColor={theme.factionTheme.background}
-                sx={{ position: "absolute", top: "3.5rem", left: ".4rem" }}
+                sx={{ position: "absolute", top: "4.5rem", left: "1.2rem" }}
             >
                 <Stack
                     spacing=".8rem"

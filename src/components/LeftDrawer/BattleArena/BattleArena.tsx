@@ -21,11 +21,10 @@ export const BattleArena = () => {
                         flex: 1,
                         overflowY: "auto",
                         overflowX: "hidden",
-                        my: "1rem",
+                        my: ".5rem",
                         mr: ".8rem",
                         pr: ".8rem",
-                        pl: "1.6rem",
-                        py: "1rem",
+                        pl: "1rem",
                         direction: "ltr",
                         scrollbarWidth: "none",
                         "::-webkit-scrollbar": {
@@ -42,7 +41,7 @@ export const BattleArena = () => {
                     }}
                 >
                     <Box sx={{ direction: "ltr", height: 0 }}>
-                        <Stack spacing="2rem">
+                        <Stack>
                             <BattleAbility />
                             <PlayerAbilities />
                             <QuickPlayerAbilities />

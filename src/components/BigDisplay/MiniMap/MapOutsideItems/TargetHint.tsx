@@ -38,7 +38,7 @@ const WinnerTargetHint = () => {
                     right: 0,
                     bottom: 0,
                     background: `radial-gradient(rgba(0, 0, 0, 0), ${colour}20)`,
-                    border: `${colour} 5px dashed`,
+                    border: `${colour} 4px dashed`,
                     pointerEvents: "none",
                 }}
             />
@@ -211,7 +211,7 @@ const PlayerAbilityTargetHint = () => {
                     right: 0,
                     bottom: 0,
                     background: `radial-gradient(rgba(0, 0, 0, 0), ${playerAbility.ability.colour}20)`,
-                    border: `${playerAbility.ability.colour} 5px dashed`,
+                    border: `${playerAbility.ability.colour} 4px dashed`,
                     pointerEvents: "none",
                 }}
             />
