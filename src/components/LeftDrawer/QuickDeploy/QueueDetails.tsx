@@ -1,8 +1,8 @@
 import { IconButton, Stack, Typography } from "@mui/material"
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import { TooltipHelper } from "../.."
 import { SvgNotification, SvgSupToken } from "../../../assets"
-import { supFormatter } from "../../../helpers"
+import { supFormatter, timeSinceInWords } from "../../../helpers"
 import { useToggle } from "../../../hooks"
 import { colors } from "../../../theme/theme"
 import { PreferencesModal } from "../../Bar/ProfileCard/PreferencesModal/PreferencesModal"
@@ -14,22 +14,31 @@ export const QueueDetails = ({ queueFeed }: { queueFeed?: QueueFeed }) => {
     const [addDeviceModalOpen, toggleAddDeviceModalOpen] = useToggle()
     const [telegramShortcode, setTelegramShortcode] = useState<string>("")
 
-    const queueLength = queueFeed?.queue_length || 0
+    const estimatedTimeOfBattle = useMemo(() => {
+        if (typeof queueFeed?.estimated_queue_time_seconds === "undefined") return
+
+        if (queueFeed.estimated_queue_time_seconds < 60) {
+            return "LESS THAN A MINUTE"
+        }
+
+        const t = new Date()
+        t.setSeconds(t.getSeconds() + queueFeed.estimated_queue_time_seconds)
+
+        return timeSinceInWords(new Date(), t)
+    }, [queueFeed?.estimated_queue_time_seconds])
     const queueCost = queueFeed?.queue_cost || "0"
 
     return (
         <>
             <Stack spacing="1.5rem" direction="row">
-                {queueLength >= 0 && (
-                    <AmountItem
-                        key={`${queueLength}-queue_length`}
-                        title={"NEXT POSITION: "}
-                        color="#FFFFFF"
-                        value={`${queueLength + 1}`}
-                        tooltip="The queue position of your war machine if you deploy now."
-                        disableIcon
-                    />
-                )}
+                <AmountItem
+                    key={`${queueFeed?.estimated_queue_time_seconds}-queue_time`}
+                    title={"WAIT TIME: "}
+                    color={colors.offWhite}
+                    value={estimatedTimeOfBattle || "UNKNOWN"}
+                    tooltip="The estimated time it will take before your mech is placed into battle."
+                    disableIcon
+                />
 
                 {queueCost && (
                     <AmountItem
