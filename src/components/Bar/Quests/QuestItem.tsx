@@ -1,4 +1,4 @@
-import { Box, Checkbox, Stack, Typography } from "@mui/material"
+import { Box, Stack, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
 import Confetti from "react-confetti"
 import { SvgChest } from "../../../assets"
@@ -33,9 +33,10 @@ export const QuestItem = ({ questStat, progress, showConfetti }: { questStat: Qu
                     pl: ".5rem",
                     pr: "1.6rem",
                     borderRadius: 1,
-                    backgroundColor: `${colors.purple}12`,
+                    backgroundColor: `${colors.purple}16`,
                     userSelect: "none",
                     opacity: questStat.obtained && !showConfetti ? 0.4 : 1,
+                    border: questStat.obtained && !showConfetti ? "none" : `${colors.purple}50 1px solid`,
                     overflow: "visible",
                 }}
             >
