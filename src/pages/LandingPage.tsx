@@ -13,12 +13,12 @@ import ZhiMask from "../../assets/landing/zhi/ZHIMask.png"
 import BcMask from "../../assets/landing/bc/BCMask.png"
 import RmMask from "../../assets/landing/rm/RmMask.png"
 
-import { useSupremacy, useUI } from "../../containers"
-import { useGameServerSubscription } from "../../hooks/useGameServer"
-import { GameServerKeys } from "../../keys"
-import { theme } from "../../theme/theme"
-import { Faction } from "../../types"
-import { MechDetails } from "../../types/assets"
+import { useSupremacy, useUI } from "../containers"
+import { useGameServerSubscription } from "../hooks/useGameServer"
+import { GameServerKeys } from "../keys"
+import { theme } from "../theme/theme"
+import { Faction } from "../types"
+import { MechDetails } from "../types/assets"
 
 interface BattleMap {
     name: string
@@ -35,7 +35,7 @@ interface NextBattle {
     rm_mech_ids: string[]
 }
 
-export const Landing = () => {
+export const LandingPage = () => {
     const [nextBattle, setNextBattle] = useState<NextBattle | undefined>()
     const { rightDrawerActiveTabID } = useUI()
     const below1150 = useMediaQuery("(max-width:1150px)")

@@ -16,7 +16,7 @@ import { MechPage } from "../pages/MechPage"
 import { StorefrontPage } from "../pages/StorefrontPage"
 import { WeaponPage } from "../pages/WeaponPage"
 import { colors } from "../theme/theme"
-import { Landing } from "../components/PublicProfile/Landing"
+import { LandingPage } from "../pages/LandingPage"
 
 // ************
 // ** ROUTES **
@@ -44,7 +44,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         id: "landing",
         path: "/landing",
         exact: true,
-        Component: Landing,
+        Component: LandingPage,
         requireAuth: true,
         requireFaction: true,
         enable: true,
