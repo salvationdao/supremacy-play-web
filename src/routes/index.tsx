@@ -45,7 +45,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         path: "/landing",
         exact: true,
         Component: Landing,
-        requireAuth: false,
+        requireAuth: true,
         requireFaction: true,
         enable: true,
         navLink: {

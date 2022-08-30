@@ -39,7 +39,7 @@ export const Landing = () => {
     const [nextBattle, setNextBattle] = useState<NextBattle | undefined>()
     const { rightDrawerActiveTabID } = useUI()
     const below1150 = useMediaQuery("(max-width:1150px)")
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState(true)
 
     // Subscribe on battle end information
     useGameServerSubscription<NextBattle>(
@@ -48,13 +48,10 @@ export const Landing = () => {
             key: GameServerKeys.NextBattleDetails,
         },
         (payload) => {
-            setLoading(true)
             if (!payload) {
                 setLoading(false)
                 return
             }
-            console.log("this is next battle", payload)
-
             setNextBattle(payload)
             setLoading(false)
         },
