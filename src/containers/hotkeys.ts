@@ -1,7 +1,5 @@
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useRef } from "react"
 import { createContainer } from "unstated-next"
-
-// TODO: Player Abilities hotkeys and custom hotkey maps
 
 type hotkey = { [key: string]: () => void }
 
@@ -11,54 +9,47 @@ export enum RecordType {
     Map = "MAP",
 }
 
-export const HotkeyContainer = createContainer(() => {
-    const [hotkeyRecord, setHotkeyRecord] = useState<hotkey>({})
-    const [controlHotkeyRecord, setControlHotkeyRecord] = useState<hotkey>({})
-    const [globalHotkeyRecord, setGlobalHotkeyRecord] = useState<hotkey>({})
+// Keys reserved for mech abilities
+export const MECH_ABILITY_KEY = ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"]
 
-    //keys reserved for mech abilities
-    const mechAbilityKey = useMemo(() => ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"], [])
+export const HotkeyContainer = createContainer(() => {
+    const hotkeyRecord = useRef<hotkey>({})
+    const globalHotkeyRecord = useRef<hotkey>({})
+    const controlHotkeyRecord = useRef<hotkey>({})
 
     const addToHotkeyRecord = useCallback(
         (recordType: RecordType, key: string, value: () => void) => {
             //keys often come from the index, return if it is more than 10
             const numKey = parseInt(key)
+
             if (numKey && numKey > 10) {
-                console.error("Cannot create key more than keyboard number value")
+                console.error("Cannot create key more than keyboard number value.")
             }
+
             if (numKey === 10) {
                 key = "0"
             }
 
-            let setRecord = setHotkeyRecord
             let record = hotkeyRecord
             switch (recordType) {
                 //if global set to specific global record
                 case RecordType.Global:
-                    setRecord = setGlobalHotkeyRecord
                     record = globalHotkeyRecord
                     break
                 //if modifying the shortcut with [Ctrl + int] set it to specified CTRL record
                 case RecordType.CtrlMap:
-                    setRecord = setControlHotkeyRecord
                     record = controlHotkeyRecord
+                    break
+                case RecordType.Map:
+                    record = hotkeyRecord
                     break
                 default:
                     break
             }
 
-            //if already exists, update and return
-            if (record[key]) {
-                record[key] = value
-                return
-            }
-
-            //else create record
-            setRecord((prev) => {
-                return { ...prev, [key]: value }
-            })
+            record.current = { ...record.current, [key]: value }
         },
-        [hotkeyRecord, setHotkeyRecord, controlHotkeyRecord, setControlHotkeyRecord, globalHotkeyRecord, setGlobalHotkeyRecord],
+        [hotkeyRecord, controlHotkeyRecord, globalHotkeyRecord],
     )
 
     const handleHotKey = useCallback(
@@ -66,26 +57,23 @@ export const HotkeyContainer = createContainer(() => {
             e.stopPropagation()
             e.preventDefault()
 
-            let handlePress = hotkeyRecord[e.key]
+            let handlePress = hotkeyRecord.current[e.key]
             if (e.ctrlKey) {
-                handlePress = controlHotkeyRecord[e.key]
+                handlePress = controlHotkeyRecord.current[e.key]
             }
 
-            if (!handlePress) return
-
-            handlePress()
+            handlePress && handlePress()
         },
         [hotkeyRecord, controlHotkeyRecord],
     )
 
     const handleGlobalHotKey = useCallback(
         (e) => {
-            const handlePress = globalHotkeyRecord[e.key]
-            if (!handlePress) return
-
             e.stopPropagation()
             e.preventDefault()
-            handlePress()
+
+            const handlePress = globalHotkeyRecord.current[e.key]
+            handlePress && handlePress()
         },
         [globalHotkeyRecord],
     )
@@ -96,7 +84,6 @@ export const HotkeyContainer = createContainer(() => {
     }, [handleGlobalHotKey])
 
     return {
-        mechAbilityKey,
         addToHotkeyRecord,
         handleHotKey,
     }

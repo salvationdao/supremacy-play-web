@@ -6,6 +6,7 @@ import { GameServerKeys } from "../keys"
 import { BribeStage, GameAbility, LocationSelectType, PlayerAbility, Position } from "../types"
 import { useArena } from "./arena"
 import { useGame } from "./game"
+import { RecordType, useHotkey } from "./hotkeys"
 
 interface WinnerAnnouncementResponse {
     game_ability: GameAbility
@@ -25,6 +26,7 @@ export const MiniMapContainer = createContainer(() => {
     const { bribeStage, map, isBattleStarted } = useGame()
     const { factionID } = useAuth()
     const { currentArenaID } = useArena()
+    const { addToHotkeyRecord } = useHotkey()
     const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsFaction("/faction_commander")
 
@@ -88,6 +90,10 @@ export const MiniMapContainer = createContainer(() => {
         setSelection(undefined)
         setIsTargeting(false)
     }, [])
+
+    useEffect(() => {
+        addToHotkeyRecord(RecordType.Map, "Escape", resetSelection)
+    }, [addToHotkeyRecord, resetSelection])
 
     const onTargetConfirm = useCallback(() => {
         if (!selection || !currentArenaID) return
