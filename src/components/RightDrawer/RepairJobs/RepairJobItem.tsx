@@ -62,8 +62,8 @@ export const RepairJobItem = ({
                     sx={{ p: 0, color: primaryColor, textAlign: "start", height: "100%", ":hover": { opacity: 1 } }}
                     onClick={() => !isFinished && setRepairJobModal(repairJob)}
                 >
-                    <Stack spacing=".8rem" sx={{ position: "relative", height: "100%", p: "1rem 1.5rem" }}>
-                        <Stack spacing="1.5rem" direction="row" alignItems="center" sx={{ pl: ".5rem" }}>
+                    <Stack spacing=".4rem" sx={{ position: "relative", height: "100%", p: "1rem 1.5rem" }}>
+                        <Stack spacing="1.5rem" direction="row" alignItems="center" sx={{ pl: ".5rem", pb: ".6rem" }}>
                             <SvgCubes size="2.8rem" />
                             <Stack>
                                 <Typography
@@ -86,13 +86,13 @@ export const RepairJobItem = ({
                         </Stack>
 
                         <General
-                            isGridView={true}
+                            isGridViewCompact={true}
                             title="ACTIVE WORKERS"
                             text={repairJob.working_agent_count.toString()}
                             textColor={repairJob.working_agent_count <= 3 ? colors.green : colors.orange}
                         />
 
-                        <General isGridView={true} title="REWARD">
+                        <General isGridViewCompact={true} title="REWARD">
                             <Stack direction="row" alignItems="center">
                                 <SvgSupToken size="1.8rem" fill={colors.yellow} />
                                 <Typography
@@ -111,7 +111,7 @@ export const RepairJobItem = ({
                             </Stack>
                         </General>
 
-                        <General isGridView={true} title="JOB OWNER">
+                        <General isGridViewCompact={true} title="JOB OWNER">
                             <Box>
                                 <Player player={repairJob.job_owner} />
                                 {repairJob.offered_by_id === userID && <Typography sx={{ display: "inline", color: colors.neonBlue }}>&nbsp;(YOU)</Typography>}
