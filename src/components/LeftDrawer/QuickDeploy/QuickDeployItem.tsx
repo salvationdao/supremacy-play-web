@@ -10,6 +10,7 @@ import { MechBasic, MechDetails, MechStatus, MechStatusEnum } from "../../../typ
 import { MechGeneralStatus } from "../../Hangar/WarMachinesHangar/Common/MechGeneralStatus"
 import { MechRepairBlocks } from "../../Hangar/WarMachinesHangar/Common/MechRepairBlocks"
 import { MechThumbnail } from "../../Hangar/WarMachinesHangar/Common/MechThumbnail"
+import { MechName } from "../../Hangar/WarMachinesHangar/WarMachineDetails/MechName"
 import { QueueFeed } from "../../Hangar/WarMachinesHangar/WarMachineDetails/Modals/DeployModal"
 
 interface QuickDeployItemProps {
@@ -55,31 +56,38 @@ export const QuickDeployItem = ({ isSelected, toggleIsSelected, mech, childrenMe
         },
     )
 
-    const onDeployQueue = useCallback(async () => {
-        try {
-            setIsLoading(true)
-            const resp = await send<{ success: boolean; code: string }>(GameServerKeys.JoinQueue, {
-                mech_ids: [mech.id],
-            })
+    const onDeployQueue = useCallback(
+        async (e) => {
+            e.stopPropagation()
+            e.preventDefault()
 
-            if (resp && resp.success) {
-                newSnackbarMessage("Successfully deployed war machine.", "success")
-                setError(undefined)
+            try {
+                setIsLoading(true)
+                const resp = await send<{ success: boolean; code: string }>(GameServerKeys.JoinQueue, {
+                    mech_ids: [mech.id],
+                })
+
+                if (resp && resp.success) {
+                    newSnackbarMessage("Successfully deployed war machine.", "success")
+                    setError(undefined)
+                }
+            } catch (e) {
+                setError(typeof e === "string" ? e : "Failed to deploy war machine.")
+                console.error(e)
+                return
+            } finally {
+                setIsLoading(false)
             }
-        } catch (e) {
-            setError(typeof e === "string" ? e : "Failed to deploy war machine.")
-            console.error(e)
-            return
-        } finally {
-            setIsLoading(false)
-        }
-    }, [send, mech.id, newSnackbarMessage])
+        },
+        [send, mech.id, newSnackbarMessage],
+    )
 
     return (
         <Stack
             direction="row"
             spacing="1.2rem"
-            alignItems="flex-start"
+            alignItems="center"
+            onClick={() => mechDetails && toggleIsSelected && toggleIsSelected()}
             sx={{
                 position: "relative",
                 py: ".8rem",
@@ -126,13 +134,7 @@ export const QuickDeployItem = ({ isSelected, toggleIsSelected, mech, childrenMe
             </Stack>
 
             {/* Right side */}
-            <Stack
-                spacing="1.2rem"
-                direction="row"
-                alignItems="flex-start"
-                sx={{ py: ".2rem", flex: 1 }}
-                onClick={() => mechDetails && toggleIsSelected && toggleIsSelected()}
-            >
+            <Stack spacing="1.2rem" direction="row" alignItems="flex-start" sx={{ py: ".2rem", flex: 1 }}>
                 <Stack sx={{ flex: 1 }}>
                     <Stack spacing="1.2rem" direction="row" alignItems="flex-start" justifyContent="space-between" sx={{ py: ".2rem", flex: 1 }}>
                         <Box>
@@ -146,21 +148,13 @@ export const QuickDeployItem = ({ isSelected, toggleIsSelected, mech, childrenMe
                                 {rarityDeets.label}
                             </Typography>
 
-                            <Typography
-                                sx={{
-                                    color: mech.name ? "#FFFFFF" : colors.grey,
-                                    lineHeight: 1,
-                                    fontWeight: "fontWeightBold",
-                                    display: "-webkit-box",
-                                    overflow: "hidden",
-                                    overflowWrap: "anywhere",
-                                    textOverflow: "ellipsis",
-                                    WebkitLineClamp: 1,
-                                    WebkitBoxOrient: "vertical",
-                                }}
-                            >
-                                {mech.name || "Unnamed"}
-                            </Typography>
+                            {mechDetails && (
+                                <MechName
+                                    allowEdit
+                                    mech={mechDetails.name ? mechDetails : mech}
+                                    onRename={(newName) => setMechDetails((prev) => (prev ? { ...prev, name: newName } : prev))}
+                                />
+                            )}
                         </Box>
 
                         <MechGeneralStatus mechID={mech.id} smallVersion />

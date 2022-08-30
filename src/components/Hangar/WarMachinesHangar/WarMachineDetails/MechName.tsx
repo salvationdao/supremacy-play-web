@@ -1,15 +1,38 @@
 import { CircularProgress, IconButton, Stack, TextField, Typography } from "@mui/material"
 import { useCallback, useRef, useState } from "react"
 import { SvgEdit, SvgSave } from "../../../../assets"
-import { useAuth } from "../../../../containers"
+import { useGlobalNotifications } from "../../../../containers"
+import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../../keys"
 import { colors } from "../../../../theme/theme"
-import { MechDetails } from "../../../../types"
+import { MechBasic } from "../../../../types"
 
-export const MechName = ({ mechDetails, renameMech }: { renameMech: (name: string) => Promise<void>; mechDetails: MechDetails }) => {
-    const { userID } = useAuth()
+export const MechName = ({ mech, onRename, allowEdit }: { onRename?: (newName: string) => void; mech: MechBasic; allowEdit: boolean }) => {
+    const { newSnackbarMessage } = useGlobalNotifications()
+    const { send: userSend } = useGameServerCommandsUser("/user_commander")
 
-    const name = mechDetails.name
-    const isOwner = userID === mechDetails.owner_id
+    const name = mech.name
+
+    const renameMech = useCallback(
+        async (newName: string) => {
+            try {
+                const resp = await userSend<string>(GameServerKeys.MechRename, {
+                    mech_id: mech.id,
+                    new_name: newName,
+                })
+
+                if (!resp) return
+
+                newSnackbarMessage("Successfully updated war machine name.", "success")
+                onRename && onRename(newName)
+            } catch (err) {
+                const message = typeof err === "string" ? err : "Failed to update war machine name."
+                newSnackbarMessage(message, "error")
+                console.error(err)
+            }
+        },
+        [userSend, mech, newSnackbarMessage, onRename],
+    )
 
     // Rename
     const renamingRef = useRef<HTMLInputElement>()
@@ -29,7 +52,14 @@ export const MechName = ({ mechDetails, renameMech }: { renameMech: (name: strin
     }, [newMechName, renameMech])
 
     return (
-        <Stack direction="row" alignItems="center">
+        <Stack
+            direction="row"
+            alignItems="center"
+            onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+            }}
+        >
             <Stack direction="row" alignItems="center" sx={{ cursor: "text" }}>
                 <TextField
                     inputRef={renamingRef}
@@ -105,7 +135,7 @@ export const MechName = ({ mechDetails, renameMech }: { renameMech: (name: strin
                     </Typography>
                 )}
 
-                {!editing && isOwner && (
+                {!editing && allowEdit && (
                     <IconButton
                         size="small"
                         sx={{ ml: ".5rem", opacity: 0.6, ":hover": { opacity: 1 } }}

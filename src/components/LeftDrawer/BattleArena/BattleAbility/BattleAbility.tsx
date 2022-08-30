@@ -1,5 +1,6 @@
-import { Box, Stack } from "@mui/material"
+import { Box } from "@mui/material"
 import { useAuth, useGame } from "../../../../containers"
+import { SectionCollapsible } from "../Common/SectionCollapsible"
 import { BattleAbilityCountdown } from "./BattleAbilityCountdown"
 import { BattleAbilityItem } from "./BattleAbilityItem"
 
@@ -11,21 +12,18 @@ export const BattleAbility = () => {
 
     return (
         <Box sx={{ position: "relative" }}>
-            <BattleAbilityCountdown bribeStage={bribeStage} />
-            <Stack
-                spacing="1rem"
-                sx={{
-                    pointerEvents: isBattleStarted ? "all" : "none",
-                    p: "1.5rem 1.1rem",
-                    backgroundColor: "#FFFFFF12",
-                    boxShadow: 2,
-                    border: "#FFFFFF20 1px solid",
-                }}
+            <SectionCollapsible
+                label={<BattleAbilityCountdown bribeStage={bribeStage} />}
+                tooltip="Opt into battle abilities and fight for your Faction!"
+                initialExpanded={true}
+                localStoragePrefix="battleAbility"
             >
-                <BattleAbilityItem key={factionID} />
-            </Stack>
+                <Box sx={{ pointerEvents: isBattleStarted ? "all" : "none" }}>
+                    <BattleAbilityItem key={factionID} />
+                </Box>
 
-            {!isBattleStarted && <Box sx={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", backgroundColor: "#000000AA" }} />}
+                {!isBattleStarted && <Box sx={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", backgroundColor: "#000000AA" }} />}
+            </SectionCollapsible>
         </Box>
     )
 }
