@@ -29,7 +29,7 @@ export const QuestItem = ({ questStat, progress, showConfetti }: { questStat: Qu
                 position: "relative",
                 py: "1.2rem",
                 pl: ".5rem",
-                pr: "1.6rem",
+                pr: "1.4rem",
                 borderRadius: 1,
                 backgroundColor: `${colors.purple}16`,
                 userSelect: "none",
