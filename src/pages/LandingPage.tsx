@@ -1,18 +1,19 @@
 import { Box, CircularProgress, Stack, Typography, useMediaQuery } from "@mui/material"
 import { useState } from "react"
-import BcBorder from "../../assets/landing/bc/BCBorder.svg"
-import BcBorderBottom from "../../assets/landing/bc/BCBorderBottom.svg"
-import BcBottom from "../../assets/landing/bc/BCBottom.svg"
-import RmBorder from "../../assets/landing/rm/RmBorder.svg"
-import RmBorderBottom from "../../assets/landing/rm/RmBorderBottom.svg"
-import RmBottom from "../../assets/landing/rm/RmBottom.svg"
-import ZhiBorder from "../../assets/landing/zhi/ZHIBorder.svg"
-import ZhiBorderBottom from "../../assets/landing/zhi/ZHIBorderBottom.svg"
-import ZhiBottom from "../../assets/landing/zhi/ZHIBottom.svg"
-import ZhiMask from "../../assets/landing/zhi/ZHIMask.png"
-import BcMask from "../../assets/landing/bc/BCMask.png"
-import RmMask from "../../assets/landing/rm/RmMask.png"
-
+import {
+    BcBorder,
+    BcBorderBottom,
+    BcBottom,
+    BcMask,
+    RmBorder,
+    RmBorderBottom,
+    RmBottom,
+    RmMask,
+    ZhiBorder,
+    ZhiBorderBottom,
+    ZhiBottom,
+    ZhiMask,
+} from "../assets"
 import { useSupremacy, useUI } from "../containers"
 import { useGameServerSubscription } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
