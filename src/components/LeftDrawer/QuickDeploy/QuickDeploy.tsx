@@ -8,7 +8,7 @@ import { usePagination } from "../../../hooks"
 import { useGameServerCommandsUser, useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { MechBasic, MechStatus } from "../../../types"
+import { MechBasic, MechBasicWithQueueStatus, MechStatus } from "../../../types"
 import { SortTypeLabel } from "../../../types/marketplace"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { BulkDeployConfirmModal } from "../../Hangar/WarMachinesHangar/Common/BulkDeployConfirmModal"
@@ -35,7 +35,7 @@ interface GetMechsRequest {
 }
 
 interface GetAssetsResponse {
-    mechs: MechBasic[]
+    mechs: MechBasicWithQueueStatus[]
     total: number
 }
 
@@ -50,7 +50,7 @@ const QuickDeployInner = () => {
     const { send } = useGameServerCommandsUser("/user_commander")
 
     // Mechs
-    const [mechs, setMechs] = useState<MechBasic[]>([])
+    const [mechs, setMechs] = useState<MechBasicWithQueueStatus[]>([])
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
 
@@ -191,7 +191,7 @@ const QuickDeployInner = () => {
                     </TotalAndPageSizeOptions>
 
                     <Box sx={{ px: "1rem", mt: "1.5rem", backgroundColor: "#00000099" }}>
-                        <QueueDetails queueFeed={queueFeed} ownerQueueLength={mechs.filter((m) => m.queue_position != null).length} />
+                        <QueueDetails queueFeed={queueFeed} ownerQueueLength={mechs.filter((m) => m.in_queue).length} />
                     </Box>
 
                     {loadError && (

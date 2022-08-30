@@ -30,7 +30,7 @@ export const QueueDetails = ({ queueFeed, ownerQueueLength }: QueueDetailsProps)
         const t = new Date()
         t.setSeconds(t.getSeconds() + actualWaitTime)
         return timeSinceInWords(new Date(), t)
-    }, [ownerQueueLength, queueFeed?.average_game_length_seconds, queueFeed?.minimum_wait_time_seconds])
+    }, [ownerQueueLength, queueFeed])
     const queueCost = queueFeed?.queue_cost || "0"
 
     return (
@@ -38,7 +38,7 @@ export const QueueDetails = ({ queueFeed, ownerQueueLength }: QueueDetailsProps)
             <Stack spacing="1.5rem" direction="row">
                 <AmountItem
                     key={`${queueFeed?.minimum_wait_time_seconds}-${queueFeed?.average_game_length_seconds}-queue_time`}
-                    title={"MIN WAIT TIME: "}
+                    title={"WAIT TIME: "}
                     color={colors.offWhite}
                     value={estimatedTimeOfBattle || "UNKNOWN"}
                     tooltip="The minimum time it will take before your mech is placed into battle."

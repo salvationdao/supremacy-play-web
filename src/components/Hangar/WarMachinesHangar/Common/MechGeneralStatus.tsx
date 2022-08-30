@@ -65,7 +65,7 @@ export const MechGeneralStatus = ({
                     color = colors.green
                     break
                 case MechStatusEnum.Queue:
-                    text = `IN QUEUE${payload.queue_position ? `: ${payload.queue_position}` : ""}`
+                    text = "IN QUEUE"
                     color = colors.yellow
                     break
                 case MechStatusEnum.Battle:

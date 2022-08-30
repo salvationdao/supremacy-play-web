@@ -51,7 +51,6 @@ export interface MechRepairStatus {
 
 export interface MechStatus {
     status: MechStatusEnum
-    queue_position?: number
     can_deploy?: boolean
 }
 
@@ -107,6 +106,10 @@ export interface MechBasic extends Collection, Images {
     queue_position: number | null
     updated_at: Date
     created_at: Date
+}
+
+export interface MechBasicWithQueueStatus extends MechBasic {
+    in_queue: boolean
 }
 
 export interface MechDetails extends MechBasic {
