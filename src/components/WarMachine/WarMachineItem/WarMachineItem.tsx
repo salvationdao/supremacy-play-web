@@ -91,10 +91,10 @@ export const WarMachineItem = ({
     useEffect(() => {
         if (!label || wmFactionID !== factionID) return
         if (participantID > ADD_MINI_MECH_PARTICIPANT_ID) {
-            addToHotkeyRecord(RecordType.CtrlMap, label.toString(), handleClick)
+            addToHotkeyRecord(RecordType.MiniMapCtrl, label.toString(), handleClick)
             return
         }
-        addToHotkeyRecord(RecordType.Map, label.toString(), handleClick)
+        addToHotkeyRecord(RecordType.MiniMap, label.toString(), handleClick)
     }, [handleClick, label, participantID, addToHotkeyRecord, factionID, wmFactionID])
 
     return (

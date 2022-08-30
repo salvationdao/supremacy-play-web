@@ -92,7 +92,7 @@ export const MiniMapContainer = createContainer(() => {
     }, [])
 
     useEffect(() => {
-        addToHotkeyRecord(RecordType.Map, "Escape", resetSelection)
+        addToHotkeyRecord(RecordType.MiniMap, "Escape", resetSelection)
     }, [addToHotkeyRecord, resetSelection])
 
     const onTargetConfirm = useCallback(() => {

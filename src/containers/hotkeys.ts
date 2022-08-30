@@ -5,17 +5,17 @@ type hotkey = { [key: string]: () => void }
 
 export enum RecordType {
     Global = "GLOBAL",
-    CtrlMap = "CTRL_MAP",
-    Map = "MAP",
+    MiniMapCtrl = "CTRL_MAP",
+    MiniMap = "MAP",
 }
 
 // Keys reserved for mech abilities
 export const MECH_ABILITY_KEY = ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"]
 
 export const HotkeyContainer = createContainer(() => {
-    const hotkeyRecord = useRef<hotkey>({})
-    const globalHotkeyRecord = useRef<hotkey>({})
-    const controlHotkeyRecord = useRef<hotkey>({})
+    const globalHotkeyRecord = useRef<hotkey>({}) // Works globally
+    const miniMapHotkeyRecord = useRef<hotkey>({}) // Works when focused on minimap
+    const miniMapControlHotkeyRecord = useRef<hotkey>({}) // Works when focused on minimap with ctrl
 
     const addToHotkeyRecord = useCallback(
         (recordType: RecordType, key: string, value: () => void) => {
@@ -30,18 +30,18 @@ export const HotkeyContainer = createContainer(() => {
                 key = "0"
             }
 
-            let record = hotkeyRecord
+            let record = miniMapHotkeyRecord
             switch (recordType) {
                 //if global set to specific global record
                 case RecordType.Global:
                     record = globalHotkeyRecord
                     break
                 //if modifying the shortcut with [Ctrl + int] set it to specified CTRL record
-                case RecordType.CtrlMap:
-                    record = controlHotkeyRecord
+                case RecordType.MiniMapCtrl:
+                    record = miniMapControlHotkeyRecord
                     break
-                case RecordType.Map:
-                    record = hotkeyRecord
+                case RecordType.MiniMap:
+                    record = miniMapHotkeyRecord
                     break
                 default:
                     break
@@ -49,7 +49,7 @@ export const HotkeyContainer = createContainer(() => {
 
             record.current = { ...record.current, [key]: value }
         },
-        [hotkeyRecord, controlHotkeyRecord, globalHotkeyRecord],
+        [miniMapHotkeyRecord, miniMapControlHotkeyRecord, globalHotkeyRecord],
     )
 
     const handleHotKey = useCallback(
@@ -57,14 +57,14 @@ export const HotkeyContainer = createContainer(() => {
             e.stopPropagation()
             e.preventDefault()
 
-            let handlePress = hotkeyRecord.current[e.key]
+            let handlePress = miniMapHotkeyRecord.current[e.key]
             if (e.ctrlKey) {
-                handlePress = controlHotkeyRecord.current[e.key]
+                handlePress = miniMapControlHotkeyRecord.current[e.key]
             }
 
             handlePress && handlePress()
         },
-        [hotkeyRecord, controlHotkeyRecord],
+        [miniMapHotkeyRecord, miniMapControlHotkeyRecord],
     )
 
     const handleGlobalHotKey = useCallback(

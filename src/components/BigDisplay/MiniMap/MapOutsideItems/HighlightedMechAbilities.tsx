@@ -143,7 +143,7 @@ const AbilityItem = ({ hash, participantID, ability, index }: { hash: string; pa
     }, [hash, id, send, currentArenaID])
 
     useEffect(() => {
-        addToHotkeyRecord(RecordType.Map, MECH_ABILITY_KEY[index], onTrigger)
+        addToHotkeyRecord(RecordType.MiniMap, MECH_ABILITY_KEY[index], onTrigger)
     }, [onTrigger, addToHotkeyRecord, index])
 
     return (
