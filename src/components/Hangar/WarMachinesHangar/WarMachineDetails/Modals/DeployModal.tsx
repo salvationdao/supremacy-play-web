@@ -11,7 +11,8 @@ import { MechDetails } from "../../../../../types"
 import { MechModal } from "../../Common/MechModal"
 
 export interface QueueFeed {
-    estimated_queue_time_seconds: number
+    minimum_wait_time_seconds: number
+    average_game_length_seconds: number
     queue_cost: string
 }
 
@@ -64,17 +65,17 @@ export const DeployModal = ({
     )
 
     const estimatedTimeOfBattle = useMemo(() => {
-        if (typeof queueFeed?.estimated_queue_time_seconds === "undefined") return
+        if (typeof queueFeed?.minimum_wait_time_seconds === "undefined") return
 
-        if (queueFeed.estimated_queue_time_seconds < 60) {
+        if (queueFeed.minimum_wait_time_seconds < 60) {
             return "LESS THAN A MINUTE"
         }
 
         const t = new Date()
-        t.setSeconds(t.getSeconds() + queueFeed.estimated_queue_time_seconds)
+        t.setSeconds(t.getSeconds() + queueFeed.minimum_wait_time_seconds)
 
         return timeSinceInWords(new Date(), t)
-    }, [queueFeed?.estimated_queue_time_seconds])
+    }, [queueFeed?.minimum_wait_time_seconds])
     const queueCost = queueFeed?.queue_cost || "0"
 
     if (!deployMechDetails) return null
@@ -85,10 +86,10 @@ export const DeployModal = ({
             <Stack spacing="1.5rem">
                 <Stack spacing=".2rem">
                     <AmountItem
-                        key={`${queueFeed?.estimated_queue_time_seconds}-queue_time`}
-                        title={"Wait Time: "}
+                        key={`${queueFeed?.minimum_wait_time_seconds}-queue_time`}
+                        title={"Min Wait Time: "}
                         value={estimatedTimeOfBattle || "UNKNOWN"}
-                        tooltip="The estimated time it will take before your mech is placed into battle."
+                        tooltip="The minimum time it will take before your mech is placed into battle."
                         disableIcon
                     />
 

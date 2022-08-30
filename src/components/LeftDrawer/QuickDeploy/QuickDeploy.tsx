@@ -119,6 +119,7 @@ const QuickDeployInner = () => {
             if (!resp) return
             setLoadError(undefined)
             setMechs(resp.mechs)
+            console.log(resp.mechs)
             setTotalItems(resp.total)
         } catch (e) {
             setLoadError(typeof e === "string" ? e : "Failed to get war machines.")
@@ -190,7 +191,7 @@ const QuickDeployInner = () => {
                     </TotalAndPageSizeOptions>
 
                     <Box sx={{ px: "1rem", mt: "1.5rem", backgroundColor: "#00000099" }}>
-                        <QueueDetails queueFeed={queueFeed} />
+                        <QueueDetails queueFeed={queueFeed} ownerQueueLength={mechs.filter((m) => m.queue_position != null).length} />
                     </Box>
 
                     {loadError && (
@@ -247,7 +248,6 @@ const QuickDeployInner = () => {
                                                 }}
                                                 childrenMechStatus={childrenMechStatus}
                                                 mech={mech}
-                                                queueFeed={queueFeed}
                                             />
                                         )
                                     })}

@@ -11,11 +11,9 @@ import { MechGeneralStatus } from "../../Hangar/WarMachinesHangar/Common/MechGen
 import { MechRepairBlocks } from "../../Hangar/WarMachinesHangar/Common/MechRepairBlocks"
 import { MechThumbnail } from "../../Hangar/WarMachinesHangar/Common/MechThumbnail"
 import { MechName } from "../../Hangar/WarMachinesHangar/WarMachineDetails/MechName"
-import { QueueFeed } from "../../Hangar/WarMachinesHangar/WarMachineDetails/Modals/DeployModal"
 
 interface QuickDeployItemProps {
     mech: MechBasic
-    queueFeed?: QueueFeed
     isSelected?: boolean
     toggleIsSelected?: () => void
     childrenMechStatus: React.MutableRefObject<{

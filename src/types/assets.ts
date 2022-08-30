@@ -104,6 +104,7 @@ export interface MechBasic extends Collection, Images {
     intro_animation_id: string
     outro_animation_id: string
     power_core_id: string
+    queue_position: number | null
     updated_at: Date
     created_at: Date
 }

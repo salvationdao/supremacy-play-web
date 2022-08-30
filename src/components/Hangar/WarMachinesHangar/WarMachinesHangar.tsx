@@ -441,7 +441,7 @@ export const WarMachinesHangar = () => {
                                 onSelectAll={onSelectAll}
                                 onUnselectedAll={onUnSelectAll}
                             >
-                                <QueueDetails queueFeed={queueFeed} />
+                                <QueueDetails queueFeed={queueFeed} ownerQueueLength={mechs.filter((m) => m.queue_position != null).length} />
                             </TotalAndPageSizeOptions>
 
                             <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>

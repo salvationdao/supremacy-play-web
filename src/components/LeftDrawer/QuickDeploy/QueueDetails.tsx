@@ -9,34 +9,39 @@ import { PreferencesModal } from "../../Bar/ProfileCard/PreferencesModal/Prefere
 import { TelegramRegisterModal } from "../../Bar/ProfileCard/PreferencesModal/TelegramRegisterModal"
 import { QueueFeed } from "../../Hangar/WarMachinesHangar/WarMachineDetails/Modals/DeployModal"
 
-export const QueueDetails = ({ queueFeed }: { queueFeed?: QueueFeed }) => {
+interface QueueDetailsProps {
+    queueFeed?: QueueFeed
+    ownerQueueLength: number
+}
+
+export const QueueDetails = ({ queueFeed, ownerQueueLength }: QueueDetailsProps) => {
     const [preferencesModalOpen, togglePreferencesModalOpen] = useToggle()
     const [addDeviceModalOpen, toggleAddDeviceModalOpen] = useToggle()
     const [telegramShortcode, setTelegramShortcode] = useState<string>("")
 
     const estimatedTimeOfBattle = useMemo(() => {
-        if (typeof queueFeed?.estimated_queue_time_seconds === "undefined") return
+        if (typeof queueFeed?.minimum_wait_time_seconds === "undefined") return
 
-        if (queueFeed.estimated_queue_time_seconds < 60) {
+        const actualWaitTime = queueFeed.minimum_wait_time_seconds + queueFeed.average_game_length_seconds * ownerQueueLength
+        if (actualWaitTime < 60) {
             return "LESS THAN A MINUTE"
         }
 
         const t = new Date()
-        t.setSeconds(t.getSeconds() + queueFeed.estimated_queue_time_seconds)
-
+        t.setSeconds(t.getSeconds() + actualWaitTime)
         return timeSinceInWords(new Date(), t)
-    }, [queueFeed?.estimated_queue_time_seconds])
+    }, [ownerQueueLength, queueFeed?.average_game_length_seconds, queueFeed?.minimum_wait_time_seconds])
     const queueCost = queueFeed?.queue_cost || "0"
 
     return (
         <>
             <Stack spacing="1.5rem" direction="row">
                 <AmountItem
-                    key={`${queueFeed?.estimated_queue_time_seconds}-queue_time`}
-                    title={"WAIT TIME: "}
+                    key={`${queueFeed?.minimum_wait_time_seconds}-${queueFeed?.average_game_length_seconds}-queue_time`}
+                    title={"MIN WAIT TIME: "}
                     color={colors.offWhite}
                     value={estimatedTimeOfBattle || "UNKNOWN"}
-                    tooltip="The estimated time it will take before your mech is placed into battle."
+                    tooltip="The minimum time it will take before your mech is placed into battle."
                     disableIcon
                 />
 
