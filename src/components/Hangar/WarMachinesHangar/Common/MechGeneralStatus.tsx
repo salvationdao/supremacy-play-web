@@ -138,7 +138,7 @@ export const MechGeneralStatus = ({
 
     return (
         <>
-            <Stack direction="row" alignItems="center" spacing=".5rem" sx={{}}>
+            <Stack direction="row" alignItems="center" spacing=".5rem" sx={{ flexShrink: 0 }}>
                 <Box
                     sx={
                         hideBox

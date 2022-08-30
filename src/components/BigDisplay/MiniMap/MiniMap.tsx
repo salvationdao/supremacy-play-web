@@ -15,7 +15,8 @@ import { HighlightedMechAbilities } from "./MapOutsideItems/HighlightedMechAbili
 import { TargetHint } from "./MapOutsideItems/TargetHint"
 
 export const TOP_BAR_HEIGHT = 3.4 // rems
-const BOTTOM_PADDING = 10 // rems
+const PADDING = 6 // rems
+const BOTTOM_PADDING = 10.5 // rems
 
 export const MiniMap = () => {
     const { smallDisplayRef, bigDisplayRef, isStreamBigDisplay } = useUI()
@@ -26,7 +27,7 @@ export const MiniMap = () => {
 
     useEffect(() => {
         const thisElement = ref.current
-        const newContainerElement = isStreamBigDisplay ? smallDisplayRef : bigDisplayRef // document.getElementById(isStreamBigDisplay ? "left-drawer-space" : "big-display-space")
+        const newContainerElement = isStreamBigDisplay ? smallDisplayRef : bigDisplayRef
 
         if (!isPoppedout && thisElement && newContainerElement) {
             let child = newContainerElement.lastElementChild
@@ -143,7 +144,7 @@ const BattleNotStarted = () => {
 
 // This inner component takes care of the resizing etc.
 const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 100, height = 100 }: MiniMapInnerProps) => {
-    const { handleHotKey } = useHotkey()
+    const { handleMiniMapHotKey } = useHotkey()
     const { remToPxRatio } = useDimension()
     const { isStreamBigDisplay, setIsStreamBigDisplay, toggleIsStreamBigDisplayMemorized, restoreIsStreamBigDisplayMemorized } = useUI()
     const [isEnlarged, toggleIsEnlarged] = useToggle(localStorage.getItem("isMiniMapEnlarged") === "true")
@@ -186,7 +187,7 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
         if (isEnlarged) defaultHeight = height
 
         // Step 2
-        const padding = (isPoppedout || !isStreamBigDisplay) && !isEnlarged ? 6 * remToPxRatio : 0
+        const padding = (isPoppedout || !isStreamBigDisplay) && !isEnlarged ? PADDING * remToPxRatio : 0
         let bottomPadding = padding
         if (!isPoppedout && !isStreamBigDisplay) bottomPadding += BOTTOM_PADDING * remToPxRatio
 
@@ -241,7 +242,7 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
                 <Box
                     ref={mapRef}
                     tabIndex={0}
-                    onKeyDown={handleHotKey}
+                    onKeyDown={handleMiniMapHotKey}
                     onClick={focusMap}
                     sx={{
                         position: "relative",
@@ -326,7 +327,7 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
         )
     }, [
         isEnlarged,
-        handleHotKey,
+        handleMiniMapHotKey,
         focusMap,
         sizes.outsideWidth,
         sizes.outsideHeight,

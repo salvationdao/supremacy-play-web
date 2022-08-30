@@ -127,6 +127,7 @@ const WarMachineStatsInner = () => {
                     zIndex: siteZIndex.MechStats,
                     overflow: "hidden",
                     filter: "drop-shadow(0 3px 3px #00000020)",
+                    pointerEvents: "none",
                 }}
             >
                 <Box
@@ -140,14 +141,14 @@ const WarMachineStatsInner = () => {
                         py: ".8rem",
 
                         "::-webkit-scrollbar": {
-                            height: ".9rem",
+                            height: ".4rem",
                         },
                         "::-webkit-scrollbar-track": {
                             background: "#FFFFFF15",
                             borderRadius: 3,
                         },
                         "::-webkit-scrollbar-thumb": {
-                            background: (theme) => `${theme.factionTheme.primary}99`,
+                            background: (theme) => `${theme.factionTheme.primary}`,
                             borderRadius: 3,
                         },
                         transition: "all .2s",

@@ -76,7 +76,7 @@ const MoveCommandInner = ({ isAlive, hash, smallVersion }: MoveCommandInnerProps
     }, [isAlive, hash, setPlayerAbility, currentArenaID])
 
     useEffect(() => {
-        addToHotkeyRecord(RecordType.Map, "a", onClick)
+        addToHotkeyRecord(RecordType.MiniMap, "a", onClick)
     }, [onClick, addToHotkeyRecord])
 
     if (smallVersion) {

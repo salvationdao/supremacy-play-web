@@ -4,6 +4,7 @@ import * as Sentry from "@sentry/react"
 import { Buffer } from "buffer"
 import { useEffect } from "react"
 import ReactDOM from "react-dom"
+import { ErrorBoundary } from "react-error-boundary"
 import { Action, ClientContextProvider, createClient } from "react-fetching-library"
 import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom"
 import { SupremacyPNG } from "./assets"
@@ -37,6 +38,7 @@ import { useToggle } from "./hooks"
 import { NotFoundPage } from "./pages"
 import { AuthPage } from "./pages/AuthPage"
 import { EnlistPage } from "./pages/EnlistPage"
+import { ErrorFallbackPage } from "./pages/ErrorFallbackPage"
 import { LoginRedirect } from "./pages/LoginRedirect"
 import { ROUTES_ARRAY, ROUTES_MAP } from "./routes"
 import { colors, fonts } from "./theme/theme"
@@ -218,47 +220,49 @@ const tourProviderProps = {
 const App = () => {
     return (
         <ThemeProvider>
-            <FingerprintProvider>
-                <GlobalNotificationsProvider>
-                    <ClientContextProvider client={client}>
-                        <SupremacyProvider>
-                            <AuthProvider>
-                                <BrowserRouter>
-                                    <ChatProvider>
-                                        <WalletProvider>
-                                            <TourProvider {...tourProviderProps}>
-                                                <OvenStreamProvider>
-                                                    <ArenaProvider>
-                                                        <ArenaListener />
-                                                        <MobileProvider>
-                                                            <DimensionProvider>
-                                                                <UiProvider>
-                                                                    <GameProvider>
-                                                                        <MiniMapProvider>
+            <ErrorBoundary FallbackComponent={ErrorFallbackPage}>
+                <FingerprintProvider>
+                    <GlobalNotificationsProvider>
+                        <ClientContextProvider client={client}>
+                            <SupremacyProvider>
+                                <AuthProvider>
+                                    <BrowserRouter>
+                                        <ChatProvider>
+                                            <WalletProvider>
+                                                <TourProvider {...tourProviderProps}>
+                                                    <OvenStreamProvider>
+                                                        <ArenaProvider>
+                                                            <ArenaListener />
+                                                            <MobileProvider>
+                                                                <DimensionProvider>
+                                                                    <UiProvider>
+                                                                        <GameProvider>
                                                                             <HotkeyProvider>
-                                                                                <UserUpdater />
-                                                                                <Switch>
-                                                                                    <Route path="/404" exact component={NotFoundPage} />
-                                                                                    <Route path="/login-redirect" exact component={LoginRedirect} />
-                                                                                    <Route path="" component={AppInner} />
-                                                                                </Switch>
+                                                                                <MiniMapProvider>
+                                                                                    <UserUpdater />
+                                                                                    <Switch>
+                                                                                        <Route path="/404" exact component={NotFoundPage} />
+                                                                                        <Route path="/login-redirect" exact component={LoginRedirect} />
+                                                                                        <Route path="" component={AppInner} />
+                                                                                    </Switch>
+                                                                                </MiniMapProvider>
                                                                             </HotkeyProvider>
-                                                                        </MiniMapProvider>
-                                                                    </GameProvider>
-                                                                </UiProvider>
-                                                            </DimensionProvider>
-                                                        </MobileProvider>
-                                                    </ArenaProvider>
-                                                </OvenStreamProvider>
-                                            </TourProvider>
-                                        </WalletProvider>
-                                    </ChatProvider>
-                                </BrowserRouter>
-                            </AuthProvider>
-                        </SupremacyProvider>
-                    </ClientContextProvider>
-                </GlobalNotificationsProvider>
-            </FingerprintProvider>
+                                                                        </GameProvider>
+                                                                    </UiProvider>
+                                                                </DimensionProvider>
+                                                            </MobileProvider>
+                                                        </ArenaProvider>
+                                                    </OvenStreamProvider>
+                                                </TourProvider>
+                                            </WalletProvider>
+                                        </ChatProvider>
+                                    </BrowserRouter>
+                                </AuthProvider>
+                            </SupremacyProvider>
+                        </ClientContextProvider>
+                    </GlobalNotificationsProvider>
+                </FingerprintProvider>
+            </ErrorBoundary>
         </ThemeProvider>
     )
 }
