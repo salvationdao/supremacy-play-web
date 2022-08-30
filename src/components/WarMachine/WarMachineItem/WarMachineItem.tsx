@@ -113,6 +113,7 @@ export const WarMachineItem = ({
                         (gameAbilities && gameAbilities.length > 0 && isAlive ? WIDTH_SKILL_BUTTON : 0) +
                         (warMachine.ownedByID === userID ? WIDTH_SKILL_BUTTON : 0)
                     }rem`,
+                    pointerEvents: "all",
                     transition: "width .1s",
                     transform: highlightedMechParticipantID === participantID ? `scale(${scale * 1.08})` : `scale(${scale})`,
                     transformOrigin: transformOrigin || "center",
