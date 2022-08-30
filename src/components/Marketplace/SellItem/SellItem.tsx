@@ -405,7 +405,7 @@ export const SellItemInner = ({ toggleReset }: { toggleReset: () => void }) => {
                                 SUP by the end of the listing.
                             </Typography>
 
-                            <Stack direction="row" alignItems="center">
+                            <Stack spacing="1rem" direction="row" alignItems="center">
                                 <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
                                     I have read and understood the above.
                                 </Typography>
@@ -416,6 +416,7 @@ export const SellItemInner = ({ toggleReset }: { toggleReset: () => void }) => {
                                         toggleUnderstantDropRisk(e.currentTarget.checked)
                                     }}
                                     sx={{
+                                        p: 0,
                                         color: colors.yellow,
                                         "& > .MuiSvgIcon-root": { width: "2.8rem", height: "2.8rem" },
                                         ".Mui-checked, .MuiSvgIcon-root": { color: `${colors.yellow} !important` },

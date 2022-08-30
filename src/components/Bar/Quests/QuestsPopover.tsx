@@ -132,7 +132,7 @@ export const QuestsPopover = ({
                                             </Typography>
                                         </AccordionSummary>
                                         <AccordionDetails sx={{ p: "1rem 1rem 2rem" }}>
-                                            <Stack spacing=".7rem">
+                                            <Stack spacing="1rem">
                                                 {questStatsFiltered.map((qs) => {
                                                     const progress = questProgressions?.find((qp) => qp.quest_id === qs.id)
 

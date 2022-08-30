@@ -160,9 +160,10 @@ export const WarMachineHangarItem = ({
                     onClick={toggleIsSelected}
                     sx={{
                         position: "absolute",
-                        bottom: 0,
-                        right: 0,
+                        bottom: "1rem",
+                        right: ".8rem",
                         zIndex: 3,
+                        p: 0,
                         color: primaryColor,
                         "& > .MuiSvgIcon-root": { width: "3.5rem", height: "3.5rem" },
                         ".Mui-checked, .MuiSvgIcon-root": { color: `${primaryColor} !important` },

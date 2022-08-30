@@ -1,10 +1,11 @@
-import { Checkbox, Stack, Typography } from "@mui/material"
-import { colors } from "../../../theme/theme"
+import { Box, Checkbox, Stack, Typography } from "@mui/material"
+import { useEffect, useState } from "react"
+import Confetti from "react-confetti"
+import { SvgChest } from "../../../assets"
+import { colors, fonts } from "../../../theme/theme"
 import { QuestProgress, QuestStat } from "../../../types"
 import { ProgressBar } from "../../Common/ProgressBar"
 import { TooltipHelper } from "../../Common/TooltipHelper"
-import Confetti from "react-confetti"
-import { useEffect, useState } from "react"
 
 export const QuestItem = ({ questStat, progress, showConfetti }: { questStat: QuestStat; progress?: QuestProgress; showConfetti: boolean }) => {
     const cappedCurrent = progress ? Math.min(progress.current, progress.goal) : 0
@@ -24,42 +25,35 @@ export const QuestItem = ({ questStat, progress, showConfetti }: { questStat: Qu
             <Stack
                 direction="row"
                 alignItems="center"
-                spacing=".3rem"
+                spacing="1rem"
                 sx={{
                     position: "relative",
-                    overflow: "hidden",
-                    p: ".8rem .5rem",
+                    pt: "1.6rem",
+                    pb: "1.2rem",
+                    pl: ".5rem",
                     pr: "1.6rem",
                     borderRadius: 1,
                     backgroundColor: `${colors.purple}12`,
                     userSelect: "none",
+                    opacity: questStat.obtained && !showConfetti ? 0.4 : 1,
+                    overflow: "visible",
                 }}
             >
-                <Confetti
-                    width={1000}
-                    height={40}
-                    gravity={0.04}
-                    initialVelocityX={1}
-                    tweenDuration={10000}
-                    run={showShowConfetti}
-                    numberOfPieces={600}
-                    recycle={false}
-                />
+                <Box sx={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, overflow: "hidden" }}>
+                    <Confetti
+                        width={1000}
+                        height={40}
+                        gravity={0.04}
+                        initialVelocityX={1}
+                        tweenDuration={10000}
+                        run={showShowConfetti}
+                        numberOfPieces={600}
+                        recycle={false}
+                    />
+                </Box>
 
-                <Checkbox
-                    size="small"
-                    checked={questStat.obtained}
-                    disabled
-                    sx={{
-                        color: colors.purple,
-                        "& > .MuiSvgIcon-root": { width: "2.8rem", height: "2.8rem" },
-                        ".Mui-checked, .MuiSvgIcon-root": { color: `${colors.purple} !important` },
-                        ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${colors.purple}50 !important` },
-                    }}
-                />
-
-                <Stack spacing=".6rem" sx={{ flex: 1 }}>
-                    <Stack direction="row" alignItems="center" justifyContent="space-between">
+                <Stack spacing=".8rem" sx={{ flex: 1 }}>
+                    <Stack spacing=".8rem" direction="row" alignItems="center">
                         <Typography
                             sx={{
                                 lineHeight: 1,
@@ -74,26 +68,42 @@ export const QuestItem = ({ questStat, progress, showConfetti }: { questStat: Qu
                         >
                             {questStat.name}
                         </Typography>
-
-                        {progress && (
-                            <Typography
-                                variant="body2"
-                                sx={{ color: progressPercent < 100 ? colors.red : colors.green, lineHeight: 1, fontWeight: "fontWeightBold" }}
-                            >
-                                {cappedCurrent}/{progress.goal}
-                            </Typography>
-                        )}
                     </Stack>
 
                     {progress && (
-                        <ProgressBar
-                            color={colors.green}
-                            backgroundColor={`${colors.red}BB`}
-                            orientation="horizontal"
-                            thickness="7px"
-                            percent={progressPercent}
-                        />
+                        <Stack spacing=".8rem" direction="row" alignItems="center">
+                            <ProgressBar
+                                color={colors.green}
+                                backgroundColor={`${colors.red}BB`}
+                                orientation="horizontal"
+                                thickness="7px"
+                                percent={progressPercent}
+                            />
+
+                            <Typography
+                                variant="body2"
+                                sx={{
+                                    color: progressPercent < 100 ? colors.red : colors.green,
+                                    lineHeight: 1,
+                                    fontWeight: "fontWeightBold",
+                                }}
+                            >
+                                {cappedCurrent}/{progress.goal}
+                            </Typography>
+                        </Stack>
                     )}
+
+                    <Stack direction="row" alignItems="center">
+                        <SvgChest size="1.6rem" sx={{ mr: ".7rem" }} />
+
+                        <Typography variant="subtitle2" sx={{ color: colors.gold, lineHeight: 1, fontFamily: fonts.nostromoBlack }}>
+                            REWARD:&nbsp;
+                        </Typography>
+
+                        <Typography variant="subtitle2" sx={{ lineHeight: 1, fontFamily: fonts.nostromoBold }}>
+                            SUPPORT MACHINE
+                        </Typography>
+                    </Stack>
                 </Stack>
             </Stack>
         </TooltipHelper>
