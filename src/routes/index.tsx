@@ -39,21 +39,6 @@ interface RouteStruct {
 }
 
 export const ROUTES_MAP: { [name: string]: RouteStruct } = {
-    // Landing
-    landing: {
-        id: "landing",
-        path: "/landing",
-        exact: true,
-        Component: LandingPage,
-        requireAuth: true,
-        requireFaction: true,
-        enable: true,
-        navLink: {
-            enable: BATTLE_ARENA_OPEN,
-            label: "Upcoming Battle",
-        },
-    },
-
     home: {
         id: "home",
         path: "/",
@@ -67,6 +52,21 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         },
         matchNavLinkID: "home",
         enable: true,
+    },
+
+    // Landing
+    landing: {
+        id: "landing",
+        path: "/landing",
+        exact: true,
+        Component: LandingPage,
+        requireAuth: true,
+        requireFaction: true,
+        enable: true,
+        navLink: {
+            enable: BATTLE_ARENA_OPEN,
+            label: "Upcoming Battle",
+        },
     },
 
     // Leaderboard
