@@ -54,14 +54,16 @@ export const HotkeyContainer = createContainer(() => {
 
     const handleMiniMapHotKey = useCallback(
         (e) => {
-            e.stopPropagation()
-            e.preventDefault()
-
             let handlePress = miniMapHotkeyRecord.current[e.key]
             if (e.ctrlKey) {
                 handlePress = miniMapControlHotkeyRecord.current[e.key]
             }
 
+            if (handlePress) {
+                e.stopPropagation()
+                e.preventDefault()
+                handlePress()
+            }
             handlePress && handlePress()
         },
         [miniMapHotkeyRecord, miniMapControlHotkeyRecord],
