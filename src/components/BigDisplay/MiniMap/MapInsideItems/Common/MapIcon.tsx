@@ -11,10 +11,11 @@ interface MapIconProps {
     sx?: SxProps
     iconSx?: SxProps
     onClick?: () => void
+    locationInPixels?: boolean
 }
 
 // Renders an item on the minimap with correct position etc. just pass in the props you need.
-export const MapIcon = ({ primaryColor, backgroundImageUrl, insideRender, onClick, position, sx, iconSx, sizeGrid }: MapIconProps) => {
+export const MapIcon = ({ primaryColor, backgroundImageUrl, insideRender, onClick, position, sx, iconSx, sizeGrid, locationInPixels }: MapIconProps) => {
     const { gridWidth, gridHeight } = useMiniMap()
 
     const sizeX = useMemo(() => gridWidth * sizeGrid, [sizeGrid, gridWidth])
@@ -31,7 +32,9 @@ export const MapIcon = ({ primaryColor, backgroundImageUrl, insideRender, onClic
                     height: `${sizeX}px`,
                     width: `${sizeY}px`,
                     cursor: "pointer",
-                    transform: `translate(${position.x}px, ${position.y}px)`,
+                    transform: locationInPixels
+                        ? `translate(${position.x}px, ${position.y}px)`
+                        : `translate(${position.x * gridWidth - sizeX / 2}px, ${position.y * gridHeight - sizeY / 2}px)`,
                     zIndex: 100,
                     ...sx,
                 }}
@@ -61,5 +64,5 @@ export const MapIcon = ({ primaryColor, backgroundImageUrl, insideRender, onClic
                 {insideRender}
             </Stack>
         )
-    }, [onClick, sizeX, sizeY, position.x, position.y, gridWidth, gridHeight, sx, backgroundImageUrl, primaryColor, insideRender, iconSx])
+    }, [onClick, sizeX, sizeY, position.x, position.y, gridWidth, gridHeight, sx, backgroundImageUrl, primaryColor, insideRender, iconSx, locationInPixels])
 }

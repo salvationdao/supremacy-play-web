@@ -196,6 +196,7 @@ export enum MiniMapDisplayEffectType {
     Range = "RANGE",
     Pulse = "PULSE",
     Drop = "DROP",
+    Explosion = "EXPLOSION",
 }
 
 export enum MechDisplayEffectType {
@@ -219,4 +220,7 @@ export interface DisplayedAbility {
         y: number
     }
     launching_at?: Date
+    location_in_pixels?: boolean
+    remove_at?: number
+    border_width?: number
 }
