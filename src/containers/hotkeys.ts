@@ -52,7 +52,7 @@ export const HotkeyContainer = createContainer(() => {
         [miniMapHotkeyRecord, miniMapControlHotkeyRecord, globalHotkeyRecord],
     )
 
-    const handleHotKey = useCallback(
+    const handleMiniMapHotKey = useCallback(
         (e) => {
             e.stopPropagation()
             e.preventDefault()
@@ -86,7 +86,7 @@ export const HotkeyContainer = createContainer(() => {
 
     return {
         addToHotkeyRecord,
-        handleHotKey,
+        handleMiniMapHotKey,
     }
 })
 
