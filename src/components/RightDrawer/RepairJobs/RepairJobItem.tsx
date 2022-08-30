@@ -120,7 +120,7 @@ export const RepairJobItem = ({
 
                         {isFinished ? (
                             <General
-                                isGridView={true}
+                                isGridViewCompact={true}
                                 title="TIME LEFT"
                                 text={repairJob ? `JOB ${repairJob.finished_reason}` : "EXPIRED"}
                                 textColor={colors.lightGrey}
