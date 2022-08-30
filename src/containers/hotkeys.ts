@@ -69,11 +69,12 @@ export const HotkeyContainer = createContainer(() => {
 
     const handleGlobalHotKey = useCallback(
         (e) => {
-            e.stopPropagation()
-            e.preventDefault()
-
             const handlePress = globalHotkeyRecord.current[e.key]
-            handlePress && handlePress()
+            if (handlePress) {
+                e.stopPropagation()
+                e.preventDefault()
+                handlePress()
+            }
         },
         [globalHotkeyRecord],
     )
