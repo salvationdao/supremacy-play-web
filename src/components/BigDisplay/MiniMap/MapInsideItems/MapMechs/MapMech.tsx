@@ -10,7 +10,7 @@ import { pulseEffect, rippleEffect, shake, spinEffect } from "../../../../../the
 import { colors, fonts } from "../../../../../theme/theme"
 import { LocationSelectType, Map, WarMachineState } from "../../../../../types"
 import { DisplayedAbility, MechDisplayEffectType, WarMachineLiveState } from "../../../../../types/game"
-import { MechMoveCommand } from "../../../../WarMachine/WarMachineItem/MoveCommand"
+import { MechMoveCommand, MechMoveCommandAbility } from "../../../../WarMachine/WarMachineItem/MoveCommand"
 
 const TRANSITION_DURATION = 0.275 // seconds
 
@@ -34,8 +34,17 @@ const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
     const { userID, factionID } = useAuth()
     const { currentArenaID } = useArena()
     const { getFaction } = useSupremacy()
-    const { isTargeting, gridWidth, gridHeight, playerAbility, highlightedMechParticipantID, setHighlightedMechParticipantID, selection, setSelection } =
-        useMiniMap()
+    const {
+        setPlayerAbility,
+        isTargeting,
+        gridWidth,
+        gridHeight,
+        playerAbility,
+        highlightedMechParticipantID,
+        setHighlightedMechParticipantID,
+        selection,
+        setSelection,
+    } = useMiniMap()
     const { id, hash, participantID, factionID: warMachineFactionID, maxHealth, maxShield, ownedByID } = warMachine
 
     // For rendering: size, colors etc.
@@ -103,7 +112,6 @@ const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
                     const mechMapX = ((payload.position?.x || 0) - map.Pixel_Left) * mapScale
                     const mechMapY = ((payload.position?.y || 0) - map.Pixel_Top) * mapScale
                     positionEl.style.transform = `translate(-50%, -50%) translate3d(${mechMapX}px, ${mechMapY}px, 0)`
-                    positionEl.style.transition = `transform ${TRANSITION_DURATION}s linear`
 
                     // Update the mech move dash line length and rotation
                     const moveCommandEl = document.getElementById(`map-mech-move-command-${hash}`)
@@ -135,10 +143,6 @@ const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
             }
 
             if (payload?.is_hidden !== undefined) {
-                if (payload?.is_hidden) {
-                    const positionEl = document.getElementById(`map-mech-position-${hash}`)
-                    if (positionEl) positionEl.style.transition = "unset"
-                }
                 setIsHidden(payload.is_hidden)
             }
         },
@@ -221,16 +225,27 @@ const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
         } else {
             setHighlightedMechParticipantID(participantID)
         }
+
+        // Activate mech move command if user owns the mech, un-activate on click again
+        if (isAlive && ownedByID === userID) {
+            setPlayerAbility({
+                ...MechMoveCommandAbility,
+                mechHash: hash,
+            })
+        }
     }, [
         playerAbility,
         participantID,
         highlightedMechParticipantID,
         isAlive,
+        ownedByID,
+        userID,
         setSelection,
         factionID,
         warMachineFactionID,
         hash,
         setHighlightedMechParticipantID,
+        setPlayerAbility,
     ])
 
     return useMemo(() => {
@@ -250,6 +265,7 @@ const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
                     padding: "1rem 1.3rem",
                     border: isTargeting && canSelect ? `${primaryColor} ${0.1 * iconSize}px dashed` : "none",
                     transform: "translate(-100px, -100px)",
+                    transition: `transform ${TRANSITION_DURATION}s linear`,
                     opacity: 1,
                     zIndex,
                 }}

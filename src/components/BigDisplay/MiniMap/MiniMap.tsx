@@ -15,7 +15,8 @@ import { HighlightedMechAbilities } from "./MapOutsideItems/HighlightedMechAbili
 import { TargetHint } from "./MapOutsideItems/TargetHint"
 
 export const TOP_BAR_HEIGHT = 3.4 // rems
-const BOTTOM_PADDING = 10 // rems
+const PADDING = 6 // rems
+const BOTTOM_PADDING = 10.5 // rems
 
 export const MiniMap = () => {
     const { smallDisplayRef, bigDisplayRef, isStreamBigDisplay } = useUI()
@@ -186,7 +187,7 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
         if (isEnlarged) defaultHeight = height
 
         // Step 2
-        const padding = (isPoppedout || !isStreamBigDisplay) && !isEnlarged ? 6 * remToPxRatio : 0
+        const padding = (isPoppedout || !isStreamBigDisplay) && !isEnlarged ? PADDING * remToPxRatio : 0
         let bottomPadding = padding
         if (!isPoppedout && !isStreamBigDisplay) bottomPadding += BOTTOM_PADDING * remToPxRatio
 
