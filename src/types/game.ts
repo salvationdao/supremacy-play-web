@@ -223,4 +223,5 @@ export interface DisplayedAbility {
     location_in_pixels?: boolean
     remove_at?: number
     border_width?: number
+    show_below_mechs?: boolean
 }

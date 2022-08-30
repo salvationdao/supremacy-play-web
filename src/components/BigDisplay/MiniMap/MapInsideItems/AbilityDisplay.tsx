@@ -94,9 +94,10 @@ export const MiniMapAbilitiesDisplay = () => {
                                         location_select_type: LocationSelectType.LocationSelect,
                                         location: { x, y },
                                         location_in_pixels: true,
-                                        radius: 3100,
+                                        radius: 2500,
                                         colour: "#FF6600",
                                         border_width: 2,
+                                        show_below_mechs: true,
                                         remove_at: remove_at,
                                     }
                                     setAbilityList((list) => [...list, explosion])
@@ -104,7 +105,7 @@ export const MiniMapAbilitiesDisplay = () => {
                                 timeOffset,
                                 x,
                                 y,
-                                now + timeOffset + 4500, // remove after 4.5s
+                                now + timeOffset + 4000, // remove after 4.5s
                             )
                         }
                         break
@@ -135,7 +136,8 @@ export const MiniMapAbilitiesDisplay = () => {
 }
 
 const MiniMapAbilityDisplay = ({ displayAbility }: { displayAbility: DisplayedAbility }) => {
-    const { image_url, colour, radius, launching_at, location, location_in_pixels, mini_map_display_effect_type, border_width } = displayAbility
+    const { image_url, colour, radius, launching_at, location, location_in_pixels, mini_map_display_effect_type, border_width, show_below_mechs } =
+        displayAbility
     const { gridHeight } = useMiniMap()
     const { map } = useGame()
 
@@ -158,9 +160,7 @@ const MiniMapAbilityDisplay = ({ displayAbility }: { displayAbility: DisplayedAb
                 iconSx={{
                     animation: mini_map_display_effect_type === MiniMapDisplayEffectType.Drop ? `${dropEffect(3)} 2s ease-out` : "none",
                 }}
-                sx={{
-                    pointerEvents: "none",
-                }}
+                zIndex={show_below_mechs ? 1 : 100}
                 insideRender={
                     <>
                         {!!launching_at && (
@@ -190,7 +190,7 @@ const MiniMapAbilityDisplay = ({ displayAbility }: { displayAbility: DisplayedAb
                                     height: diameter,
                                     borderRadius: "50%",
                                     pointerEvents: "none",
-                                    border: `${border_width || 8}px`,
+                                    borderWidth: `${border_width || 8}px`,
                                     borderColor: colour,
                                     borderStyle: "dashed solid",
                                     backgroundColor: "#00000010",
@@ -201,7 +201,7 @@ const MiniMapAbilityDisplay = ({ displayAbility }: { displayAbility: DisplayedAb
                                             case MiniMapDisplayEffectType.Pulse:
                                                 return `${explosionEffect(colour)} 1.2s infinite`
                                             case MiniMapDisplayEffectType.Explosion:
-                                                return `${explosionEffect(colour)} 4s forwards`
+                                                return `${explosionEffect(colour)} 3s forwards`
                                             default:
                                                 return "none"
                                         }
