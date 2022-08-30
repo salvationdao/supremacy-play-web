@@ -97,14 +97,14 @@ export const QuestItem = ({ questStat, progress, showConfetti }: { questStat: Qu
                 )}
 
                 <Stack direction="row" alignItems="center">
-                    <SvgChest size="1.6rem" sx={{ mr: ".7rem" }} />
+                    <SvgChest size="1.6rem" />
 
-                    <Typography variant="subtitle2" sx={{ color: colors.gold, lineHeight: 1, fontFamily: fonts.nostromoBlack }}>
-                        REWARD:&nbsp;
+                    <Typography variant="subtitle2" sx={{ mx: ".7rem", color: colors.gold, fontFamily: fonts.nostromoBlack }}>
+                        REWARD:
                     </Typography>
 
-                    <Typography variant="subtitle2" sx={{ lineHeight: 1, fontFamily: fonts.nostromoBold }}>
-                        SUPPORT MACHINE
+                    <Typography variant="subtitle2" sx={{ fontFamily: fonts.nostromoBold }}>
+                        SUPPORT MACHINE ABILITY
                     </Typography>
                 </Stack>
             </Stack>
