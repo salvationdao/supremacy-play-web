@@ -4,7 +4,7 @@ import { useArena, useGame, useMiniMap } from "../../../../containers"
 import { useTimer } from "../../../../hooks"
 import { useGameServerSubscription } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
-import { dropEffect, explosionEffect, rippleEffect } from "../../../../theme/keyframes"
+import { dropEffect, explosionEffect, fadeEffect, landmineEffect, rippleEffect } from "../../../../theme/keyframes"
 import { fonts } from "../../../../theme/theme"
 import { DisplayedAbility, LocationSelectType, MechDisplayEffectType, MiniMapDisplayEffectType } from "../../../../types"
 import { MapIcon } from "./Common/MapIcon"
@@ -51,67 +51,190 @@ export const MiniMapAbilitiesDisplay = () => {
 
             const buffer = decode(payload)
             const dv = new DataView(buffer)
+            let offset = 0
 
-            const count = dv.getUint8(0)
-            let offset = 1
-            for (let c = 0; c < count; c++) {
-                const type = dv.getUint8(offset) as MapEventType
+            do {
+                const count = dv.getUint8(offset)
                 offset++
-                switch (type) {
-                    case MapEventType.AirstrikeExplosions: {
-                        const explosionCount = dv.getUint8(offset)
-                        offset++
+                for (let c = 0; c < count; c++) {
+                    const type = dv.getUint8(offset) as MapEventType
+                    offset++
+                    switch (type) {
+                        case MapEventType.AirstrikeExplosions: {
+                            const explosionCount = dv.getUint8(offset)
+                            offset++
 
-                        let firstTimeOffset = 0
-                        for (let i = 0; i < explosionCount; i++) {
-                            let timeOffset = dv.getUint16(offset)
-                            offset += 2
-                            const x = dv.getInt32(offset, false)
-                            offset += 4
-                            const y = dv.getInt32(offset, false)
-                            offset += 4
-
-                            // Delay subsequent explosions based on time offset
-                            // timeOffset = time in ms since explosion happened.
-                            // Since map events are sent via ticks which occur every 0.25s, multiple explosions come in per tick.
-                            // First explosion is generally happening around 200ms ago, show that first then delay the rest based on this and their time offset
-                            if (i === 0) {
-                                firstTimeOffset = timeOffset
-                                timeOffset = 0
-                            } else {
-                                timeOffset = firstTimeOffset - timeOffset
-                            }
-
-                            // Show airstrike impact after time offset
                             const now = Date.now()
-                            setTimeout(
-                                (x: number, y: number, remove_at: number) => {
-                                    const explosion: DisplayedAbility = {
-                                        offering_id: `explosion-${x}-${y}-${now}`,
-                                        image_url: "",
-                                        mini_map_display_effect_type: MiniMapDisplayEffectType.Explosion,
-                                        mech_display_effect_type: MechDisplayEffectType.None,
-                                        location_select_type: LocationSelectType.LocationSelect,
-                                        location: { x, y },
-                                        location_in_pixels: true,
-                                        radius: 2500,
-                                        colour: "#FF6600",
-                                        border_width: 2,
-                                        show_below_mechs: true,
-                                        remove_at: remove_at,
-                                    }
-                                    setAbilityList((list) => [...list, explosion])
-                                },
-                                timeOffset,
-                                x,
-                                y,
-                                now + timeOffset + 4000, // remove after 4.5s
-                            )
+
+                            let firstTimeOffset = 0
+                            for (let i = 0; i < explosionCount; i++) {
+                                let timeOffset = dv.getUint8(offset)
+                                offset++
+                                const x = dv.getInt32(offset)
+                                offset += 4
+                                const y = dv.getInt32(offset)
+                                offset += 4
+
+                                // Delay subsequent explosions based on time offset
+                                // timeOffset = time in ms since explosion happened.
+                                // Since map events are sent via ticks which occur every 0.25s, multiple explosions come in per tick.
+                                // First explosion is generally happening around 200ms ago, show that first then delay the rest based on this and their time offset
+                                if (i === 0) {
+                                    firstTimeOffset = timeOffset
+                                    timeOffset = 0
+                                } else {
+                                    timeOffset = firstTimeOffset - timeOffset
+                                }
+
+                                // Show airstrike impact after time offset
+                                setTimeout(
+                                    (x: number, y: number, remove_at: number) => {
+                                        const explosion: DisplayedAbility = {
+                                            offering_id: `explosion-${x}-${y}-${now}`,
+                                            image_url: "",
+                                            mini_map_display_effect_type: MiniMapDisplayEffectType.Explosion,
+                                            mech_display_effect_type: MechDisplayEffectType.None,
+                                            location_select_type: LocationSelectType.LocationSelect,
+                                            location: { x, y },
+                                            location_in_pixels: true,
+                                            radius: 2500,
+                                            colour: "#FF6600",
+                                            border_width: 2,
+                                            show_below_mechs: true,
+                                            remove_at: remove_at,
+                                        }
+                                        setAbilityList((list) => [...list, explosion])
+                                    },
+                                    timeOffset,
+                                    x,
+                                    y,
+                                    now + timeOffset + 4000, // remove after 4.5s
+                                )
+                            }
+                            break
                         }
-                        break
+                        case MapEventType.LandmineActivations: {
+                            const landmineCount = dv.getUint16(offset)
+                            offset += 2
+                            const factionNo = dv.getUint8(offset)
+                            offset++
+
+                            let firstTimeOffset = 0
+                            for (let i = 0; i < landmineCount; i++) {
+                                const landmineID = dv.getUint16(offset)
+                                offset += 2
+                                let timeOffset = dv.getUint8(offset)
+                                offset++
+                                const x = dv.getInt32(offset)
+                                offset += 4
+                                const y = dv.getInt32(offset)
+                                offset += 4
+
+                                if (i === 0) {
+                                    firstTimeOffset = timeOffset
+                                    timeOffset = 0
+                                } else {
+                                    timeOffset = firstTimeOffset - timeOffset
+                                }
+
+                                // Show landmine activation after time offset
+                                setTimeout(
+                                    (x: number, y: number, landmineID: number, factionNo: number) => {
+                                        let image_url = "https://i.imgur.com/hL62NOp.png"
+                                        let colour = "#000000"
+                                        switch (factionNo) {
+                                            case 1:
+                                                image_url = "https://i.imgur.com/cCyzXYu.png"
+                                                colour = "#C24242"
+                                                break
+                                            case 2:
+                                                image_url = "https://i.imgur.com/LLSGAz5.png"
+                                                colour = "#428EC1"
+                                                break
+                                            case 3:
+                                                image_url = "https://i.imgur.com/p3aIL4x.png"
+                                                colour = "#FFFFFF"
+                                                break
+                                        }
+
+                                        const landmine: DisplayedAbility = {
+                                            offering_id: `landmine-${landmineID}`,
+                                            image_url,
+                                            mini_map_display_effect_type: MiniMapDisplayEffectType.Landmine,
+                                            mech_display_effect_type: MechDisplayEffectType.None,
+                                            location_select_type: LocationSelectType.LocationSelect,
+                                            location: { x, y },
+                                            location_in_pixels: true,
+                                            colour,
+                                            border_width: 2,
+                                            show_below_mechs: true,
+                                        }
+                                        setAbilityList((list) => [...list, landmine])
+                                    },
+                                    timeOffset,
+                                    x,
+                                    y,
+                                    landmineID,
+                                    factionNo,
+                                )
+                            }
+                            break
+                        }
+                        case MapEventType.LandmineExplosions: {
+                            const landmineCount = dv.getUint16(offset)
+                            offset += 2
+
+                            const now = Date.now()
+
+                            let firstTimeOffset = 0
+                            for (let i = 0; i < landmineCount; i++) {
+                                const landmineID = dv.getUint16(offset)
+                                offset += 2
+                                let timeOffset = dv.getUint8(offset)
+                                offset++
+
+                                if (i === 0) {
+                                    firstTimeOffset = timeOffset
+                                    timeOffset = 0
+                                } else {
+                                    timeOffset = firstTimeOffset - timeOffset
+                                }
+
+                                // Landmine Explosion
+                                setTimeout(
+                                    (landmineID: string, remove_at: number) => {
+                                        setAbilityList((list) =>
+                                            list.map((item) => {
+                                                if (item.offering_id === landmineID) {
+                                                    const landmineExplosion: DisplayedAbility = {
+                                                        offering_id: landmineID,
+                                                        image_url: "",
+                                                        mini_map_display_effect_type: MiniMapDisplayEffectType.Explosion,
+                                                        mech_display_effect_type: MechDisplayEffectType.None,
+                                                        location_select_type: LocationSelectType.LocationSelect,
+                                                        location: item.location,
+                                                        location_in_pixels: true,
+                                                        radius: 1000,
+                                                        colour: "#FF6600",
+                                                        border_width: 2,
+                                                        show_below_mechs: false, // too hard to see landmine explosions as they are small and always under mechs
+                                                        remove_at: remove_at,
+                                                    }
+                                                    return landmineExplosion
+                                                }
+                                                return item
+                                            }),
+                                        )
+                                    },
+                                    timeOffset,
+                                    `landmine-${landmineID}`,
+                                    now + timeOffset + 4000, // remove after 4.5s
+                                )
+                            }
+                        }
                     }
                 }
-            }
+            } while (offset < dv.byteLength)
         },
     )
 
@@ -145,7 +268,7 @@ const MiniMapAbilityDisplay = ({ displayAbility }: { displayAbility: DisplayedAb
     const position = useMemo(
         () =>
             location_in_pixels ? { x: (location.x - (map ? map.Pixel_Left : 0)) * mapScale, y: (location.y - (map ? map.Pixel_Top : 0)) * mapScale } : location,
-        [map, mapScale, radius, location_in_pixels],
+        [map, mapScale, location, location_in_pixels],
     )
     const diameter = useMemo(() => (radius ? radius * mapScale * 2 : 0), [mapScale, radius])
 
@@ -154,11 +277,21 @@ const MiniMapAbilityDisplay = ({ displayAbility }: { displayAbility: DisplayedAb
             <MapIcon
                 position={position}
                 locationInPixels={location_in_pixels || false}
-                sizeGrid={1.5}
+                sizeGrid={mini_map_display_effect_type === MiniMapDisplayEffectType.Landmine ? 0.5 : 1.5}
                 primaryColor={colour}
                 backgroundImageUrl={image_url}
+                noBackgroundColour={mini_map_display_effect_type === MiniMapDisplayEffectType.Landmine}
                 iconSx={{
-                    animation: mini_map_display_effect_type === MiniMapDisplayEffectType.Drop ? `${dropEffect(3)} 2s ease-out` : "none",
+                    animation: (() => {
+                        switch (mini_map_display_effect_type) {
+                            case MiniMapDisplayEffectType.Drop:
+                                return `${dropEffect(3)} 2s ease-out`
+                            case MiniMapDisplayEffectType.Landmine:
+                                return `${dropEffect(2)} 1.5s ease-out, ${landmineEffect("https://i.imgur.com/hL62NOp.png", image_url)} 3s ease-out forwards` // 3s landmine arm delay
+                            default:
+                                return "none"
+                        }
+                    })(),
                 }}
                 zIndex={show_below_mechs ? 1 : 100}
                 insideRender={
@@ -202,6 +335,8 @@ const MiniMapAbilityDisplay = ({ displayAbility }: { displayAbility: DisplayedAb
                                                 return `${explosionEffect(colour)} 1.2s infinite`
                                             case MiniMapDisplayEffectType.Explosion:
                                                 return `${explosionEffect(colour)} 3s forwards`
+                                            case MiniMapDisplayEffectType.Fade:
+                                                return `${fadeEffect()} 1s forwards`
                                             default:
                                                 return "none"
                                         }
@@ -214,7 +349,7 @@ const MiniMapAbilityDisplay = ({ displayAbility }: { displayAbility: DisplayedAb
                 }
             />
         ),
-        [colour, diameter, mini_map_display_effect_type, gridHeight, image_url, launching_at, location],
+        [colour, diameter, mini_map_display_effect_type, gridHeight, image_url, launching_at, border_width, location_in_pixels, position, show_below_mechs],
     )
 }
 

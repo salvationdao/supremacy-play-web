@@ -90,9 +90,20 @@ export const explosionEffect = (color: string) => keyframes`
 	}
 `
 
+export const fadeEffect = () => keyframes`
+	0% { opacity: 1; }
+	100% { opacity: 0; }
+`
+
 export const dropEffect = (scale = 1.5) => keyframes`
 	0% { transform: scale(${scale}); }
 	100% { transform: scale(1); }
+`
+
+export const landmineEffect = (defaultImage: string, backgroundImageUrl: string) => keyframes`
+	0% { background-image: url(${defaultImage}); }
+	99% { background-image: url(${defaultImage}); }
+	100% { background-image: url(${backgroundImageUrl}); }
 `
 
 export const shake = (shakeScale = 1) => keyframes`

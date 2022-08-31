@@ -197,6 +197,8 @@ export enum MiniMapDisplayEffectType {
     Pulse = "PULSE",
     Drop = "DROP",
     Explosion = "EXPLOSION",
+    Fade = "FADE",
+    Landmine = "LANDMINE",
 }
 
 export enum MechDisplayEffectType {

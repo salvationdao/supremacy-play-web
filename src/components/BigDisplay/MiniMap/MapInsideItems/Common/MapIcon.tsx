@@ -13,6 +13,7 @@ interface MapIconProps {
     onClick?: () => void
     locationInPixels?: boolean
     zIndex?: number
+    noBackgroundColour?: boolean
 }
 
 // Renders an item on the minimap with correct position etc. just pass in the props you need.
@@ -27,11 +28,14 @@ export const MapIcon = ({
     sizeGrid,
     locationInPixels,
     zIndex,
+    noBackgroundColour,
 }: MapIconProps) => {
     const { gridWidth, gridHeight } = useMiniMap()
 
     const sizeX = useMemo(() => gridWidth * sizeGrid, [sizeGrid, gridWidth])
     const sizeY = useMemo(() => gridHeight * sizeGrid, [sizeGrid, gridHeight])
+
+    const imageBackgroundColour = !!backgroundImageUrl && noBackgroundColour !== true
 
     return useMemo(() => {
         return (
@@ -45,12 +49,12 @@ export const MapIcon = ({
                     width: `${sizeY}px`,
                     cursor: "pointer",
                     transform: locationInPixels
-                        ? `translate(${position.x}px, ${position.y}px)`
+                        ? `translate(${position.x - sizeX / 2}px, ${position.y - sizeY / 2}px)`
                         : `translate(${position.x * gridWidth - sizeX / 2}px, ${position.y * gridHeight - sizeY / 2}px)`,
-                    backgroundColor: backgroundImageUrl && (insideRender ? "#030409" : primaryColor),
-                    border: backgroundImageUrl && `5px solid ${primaryColor}`,
-                    borderRadius: backgroundImageUrl && 1,
-                    boxShadow: backgroundImageUrl && 2,
+                    backgroundColor: imageBackgroundColour ? (insideRender ? "#030409" : primaryColor) : "unset",
+                    border: imageBackgroundColour ? `5px solid ${primaryColor}` : "unset",
+                    borderRadius: imageBackgroundColour ? 1 : "unset",
+                    boxShadow: imageBackgroundColour ? 2 : "unset",
                     zIndex: zIndex || 100,
                     pointerEvents: onClick ? "all" : "none",
                     ...sx,
