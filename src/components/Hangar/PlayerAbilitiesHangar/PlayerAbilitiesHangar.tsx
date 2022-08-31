@@ -109,7 +109,7 @@ export const PlayerAbilitiesHangar = () => {
                             overflow: "visible",
                             display: "grid",
                             width: "100%",
-                            gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
+                            gridTemplateColumns: "repeat(auto-fill, minmax(30rem, 1fr))",
                             gridTemplateRows: "repeat(1, min-content)",
                             gap: "3rem",
                             alignItems: "stretch",
