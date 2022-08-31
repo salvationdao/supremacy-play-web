@@ -77,15 +77,10 @@ const SubmodelsHangarInner = () => {
     const [modelFilter, setModelFilter] = useState<string[]>((query.get("models") || undefined)?.split("||") || [])
 
     const [sortFilterReRender, toggleSortFilterReRender] = useToggle()
-    const [isGridView, toggleIsGridView] = useToggle((localStorage.getItem("fleetMechGrid") || "true") === "true")
 
     // The tabs
     const [submodelType, setSubmodelType] = useState<SubmodelType>(SubmodelType.warMachine)
     const previousSubmodelType = useRef<SubmodelType>(SubmodelType.warMachine)
-
-    useEffect(() => {
-        localStorage.setItem("fleetMechGrid", isGridView.toString())
-    }, [isGridView])
 
     useEffect(() => {
         localStorage.setItem("isSubmodelHangarFiltersExpanded", isFiltersExpanded.toString())
@@ -273,15 +268,15 @@ const SubmodelsHangarInner = () => {
                             width: "100%",
                             py: "1rem",
                             display: "grid",
-                            gridTemplateColumns: isGridView ? "repeat(auto-fill, minmax(30rem, 1fr))" : "100%",
-                            gap: "1.3rem",
+                            gridTemplateColumns: "repeat(auto-fill, minmax(30rem, 1fr))",
+                            gap: "1.5rem",
                             alignItems: "center",
                             justifyContent: "center",
                             overflow: "visible",
                         }}
                     >
                         {submodels.map((submodel) => (
-                            <SubmodelItem key={`submodels-${submodel.id}`} submodel={submodel} isGridView={isGridView} />
+                            <SubmodelItem key={`submodels-${submodel.id}`} submodel={submodel} />
                         ))}
                     </Box>
                 </Box>
@@ -339,7 +334,7 @@ const SubmodelsHangarInner = () => {
                 </Stack>
             </Stack>
         )
-    }, [loadError, submodels, isLoading, theme.factionTheme.primary, theme.factionTheme.secondary, isGridView, submodelType])
+    }, [loadError, submodels, isLoading, theme.factionTheme.primary, theme.factionTheme.secondary, submodelType])
 
     return (
         <Stack direction="row" sx={{ height: "100%" }}>
@@ -402,8 +397,6 @@ const SubmodelsHangarInner = () => {
                             sortOptions={sortOptions}
                             selectedSort={sort}
                             onSetSort={setSort}
-                            isGridView={isGridView}
-                            toggleIsGridView={toggleIsGridView}
                             isFiltersExpanded={isFiltersExpanded}
                             toggleIsFiltersExpanded={toggleIsFiltersExpanded}
                         />
@@ -421,7 +414,7 @@ const SubmodelsHangarInner = () => {
                                     flexShrink: 0,
                                     color: theme.factionTheme.primary,
                                     minHeight: 0,
-                                    ".MuiTab-root": { minHeight: 0, fontSize: "1.3rem", height: "6rem", width: "20rem" },
+                                    ".MuiTab-root": { minHeight: 0, fontSize: "1.3rem", height: "5rem", width: "20rem" },
                                     ".Mui-selected": {
                                         color: `${theme.factionTheme.secondary} !important`,
                                         background: `linear-gradient(${theme.factionTheme.primary} 26%, ${theme.factionTheme.primary}BB)`,
