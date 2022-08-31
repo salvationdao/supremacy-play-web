@@ -3,12 +3,7 @@ import { ClipThing, StyledImageText } from "../.."
 import { SvgEmergency } from "../../../assets"
 import { acronym } from "../../../helpers"
 import { colors } from "../../../theme/theme"
-import { BattleAbility, Faction, User } from "../../../types"
-
-export interface BattleFactionAbilityAlertProps {
-    user: User
-    ability: BattleAbility
-}
+import { BattleFactionAbilityAlertProps, Faction } from "../../../types"
 
 export const BattleAbilityAlert = ({ data, getFaction }: { data: BattleFactionAbilityAlertProps; getFaction: (factionID: string) => Faction }) => {
     const { user, ability } = data

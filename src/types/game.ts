@@ -1,5 +1,6 @@
 import { Faction, WarMachineState } from "."
 import { FactionIDs } from "./../constants"
+import { User } from "./user"
 
 export interface FactionsAll {
     [faction_id: string]: Faction
@@ -231,5 +232,91 @@ export interface Arena {
 
 export interface BattleReplay {
     id: string
-    battle: Battle
+    stream_id?: string
+    arena_id: string
+    battle_id: string
+    is_complete_battle: boolean
+    recording_status: string
+    started_at?: Date
+    stopped_at?: Date
+    events: Events
+    battle?: Battle
+    game_map?: Map
+}
+
+export interface Events {
+    timestamp: Date
+    notification: NotificationStruct
+}
+
+// Notifications
+
+export enum NotificationType {
+    Text = "TEXT", // generic notification with no styles, just text
+    LocationSelect = "LOCATION_SELECT", // user is choosing a target location on map
+    BattleAbility = "BATTLE_ABILITY", // when a faction has initiated a battle ability
+    FactionAbility = "FACTION_ABILITY", // when a faction has initiated a faction ability
+    WarMachineAbility = "WAR_MACHINE_ABILITY", //
+    WarMachineDestroyed = "WAR_MACHINE_DESTROYED", // when a faction has initiated a war machine ability
+    BattleZoneChange = "BATTLE_ZONE_CHANGE", // when a war machine is destroyed
+}
+
+/*
+NOTE:
+Some examples:
+1. CANCELLED_NO_PLAYER
+=> {ability} is cancelled, due to no player select location
+
+2. CANCELLED_DISCONNECT
+=> {ability} is cancelled, due to the last player eligible to pick location is disconnected.
+
+3. FAILED_TIMEOUT
+=> {currentUsername} failed to select location in time, it is {nextUsername}'s turn to select the location for {ability}
+
+4. FAILED_DISCONNECTED
+=> {currentUsername} is disconnected, it is {nextUsername}'s turn to select the location for {ability}
+
+5. TRIGGER
+=> {currentUserName} has chosen a target location for {ability}
+*/
+
+export enum LocationSelectAlertType {
+    CancelledNoPlayer = "CANCELLED_NO_PLAYER",
+    CancelledDisconnect = "CANCELLED_DISCONNECT",
+    FailedTimeOut = "FAILED_TIMEOUT",
+    FailedDisconnected = "FAILED_DISCONNECTED",
+    Trigger = "TRIGGER",
+    Assigned = "ASSIGNED",
+}
+
+export interface LocationSelectAlertProps {
+    type: LocationSelectAlertType
+    currentUser?: User
+    nextUser?: User
+    ability: BattleAbility
+    x?: number
+    y?: number
+}
+
+export interface WarMachineAbilityAlertProps {
+    user: User
+    ability: BattleAbility
+    warMachine: WarMachineState
+}
+
+export interface KillAlertProps {
+    destroyed_war_machine: WarMachineState
+    killed_by_war_machine?: WarMachineState
+    killed_by?: string
+    killed_by_user?: User
+}
+
+export interface BattleFactionAbilityAlertProps {
+    user: User
+    ability: BattleAbility
+}
+
+export interface NotificationStruct {
+    type: NotificationType
+    data: BattleFactionAbilityAlertProps | KillAlertProps | LocationSelectAlertProps | WarMachineAbilityAlertProps | BattleZoneStruct | string
 }

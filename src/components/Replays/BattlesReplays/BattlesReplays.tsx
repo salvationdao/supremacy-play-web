@@ -9,7 +9,7 @@ import { useGameServerCommands } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { Arena, BattleReplay } from "../../../types"
-import { SortTypeLabel } from "../../../types/marketplace"
+import { SortDir, SortTypeLabel } from "../../../types/marketplace"
 import { PageHeader } from "../../Common/PageHeader"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { ArenaTypeSelect } from "./ArenaTypeSelect"
@@ -17,8 +17,11 @@ import { BattleReplayItem } from "./BattleReplayItem"
 import { SearchBattle } from "./SearchBattle"
 
 interface GetReplaysRequest {
-    sort_by?: string
-    sort_dir?: string
+    sort?: {
+        table?: string
+        column?: string
+        direction: SortDir
+    }
     search: string
     page: number
     page_size: number
@@ -26,7 +29,7 @@ interface GetReplaysRequest {
 }
 
 interface GetReplaysResponse {
-    replays: BattleReplay[]
+    battle_replays: BattleReplay[]
     total: number
 }
 
@@ -39,7 +42,7 @@ const sortOptions = [
 export const BattlesReplays = () => {
     const theme = useTheme()
     const { arenaList } = useArena()
-    const { send } = useGameServerCommands("/public/xxxxxx")
+    const { send } = useGameServerCommands("/public")
 
     // Items
     const [isLoading, setIsLoading] = useState(true)
@@ -61,23 +64,11 @@ export const BattlesReplays = () => {
         try {
             setIsLoading(true)
 
-            let sortDir = "asc"
-            let sortBy = ""
-            if (sort === SortTypeLabel.DateAddedNewest || sort === SortTypeLabel.MostViewed) sortDir = "desc"
-
-            switch (sort) {
-                case SortTypeLabel.Alphabetical:
-                case SortTypeLabel.AlphabeticalReverse:
-                    sortBy = "alphabetical"
-                    break
-                case SortTypeLabel.RarestAsc:
-                case SortTypeLabel.RarestDesc:
-                    sortBy = "rarity"
-            }
+            let sortDir = SortDir.Asc
+            if (sort === SortTypeLabel.DateAddedNewest) sortDir = SortDir.Desc
 
             const resp = await send<GetReplaysResponse, GetReplaysRequest>(GameServerKeys.GetReplays, {
-                sort_by: sortBy,
-                sort_dir: sortDir,
+                sort: { direction: sortDir },
                 search: searchValue,
                 page,
                 page_size: pageSize,
@@ -86,7 +77,7 @@ export const BattlesReplays = () => {
 
             if (!resp) return
             setLoadError(undefined)
-            setReplays(resp.replays)
+            setReplays(resp.battle_replays)
             setTotalItems(resp.total)
         } catch (e) {
             setLoadError(typeof e === "string" ? e : "Failed to get replays.")

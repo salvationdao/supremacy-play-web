@@ -8,6 +8,7 @@ import { usePagination, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsUser, useGameServerSubscription } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
+import { SortDir } from "../../../types/marketplace"
 import { ClipThing } from "../../Common/ClipThing"
 import { ConfirmModal } from "../../Common/ConfirmModal"
 import { FancyButton } from "../../Common/FancyButton"
@@ -366,7 +367,7 @@ export const LayerList = ({ setLayer, layerType, primaryColor }: LayerListProps)
     const getItems = useCallback(async () => {
         try {
             setIsLoading(true)
-            const sortDir = "asc"
+            const sortDir = SortDir.Asc
             const resp = await send<GetLayersResponse, ListRequest>(GameServerKeys.PlayerProfileLayerList, {
                 queue_sort: sortDir,
                 page,

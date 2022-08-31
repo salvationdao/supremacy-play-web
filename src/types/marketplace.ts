@@ -13,6 +13,11 @@ export enum MarketSaleType {
     DutchAuction = "DUTCH_AUCTION",
 }
 
+export enum SortDir {
+    Asc = "asc",
+    Desc = "desc",
+}
+
 export enum SortTypeLabel {
     CreateTimeOldestFirst = "Create time: oldest",
     CreateTimeNewestFirst = "Create time: newly listed",

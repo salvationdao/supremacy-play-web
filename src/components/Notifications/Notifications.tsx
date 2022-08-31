@@ -1,18 +1,6 @@
 import { Box, Stack } from "@mui/material"
 import { useCallback, useEffect, useMemo } from "react"
-import {
-    BattleAbilityAlert,
-    BattleFactionAbilityAlertProps,
-    FactionAbilityAlert,
-    KillAlert,
-    KillAlertProps,
-    LocationSelectAlert,
-    LocationSelectAlertProps,
-    NotificationItem,
-    TextAlert,
-    WarMachineAbilityAlert,
-    WarMachineAbilityAlertProps,
-} from ".."
+import { BattleAbilityAlert, FactionAbilityAlert, KillAlert, LocationSelectAlert, NotificationItem, TextAlert, WarMachineAbilityAlert } from ".."
 import { NOTIFICATION_LINGER, NOTIFICATION_TIME } from "../../constants"
 import { useGame, useMobile, useSupremacy } from "../../containers"
 import { useArena } from "../../containers/arena"
@@ -21,7 +9,15 @@ import { useArray } from "../../hooks"
 import { useGameServerSubscription, useGameServerSubscriptionFaction } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { siteZIndex } from "../../theme/theme"
-import { BattleZoneStruct } from "../../types"
+import {
+    BattleFactionAbilityAlertProps,
+    BattleZoneStruct,
+    KillAlertProps,
+    LocationSelectAlertProps,
+    NotificationStruct,
+    NotificationType,
+    WarMachineAbilityAlertProps,
+} from "../../types"
 import { BattleZoneAlert } from "./Alerts/BattleZoneAlert"
 import {
     battleAbilityNoti,
@@ -40,22 +36,7 @@ import {
 
 const SPAWN_TEST_NOTIFICATIONS = false
 
-export enum NotificationType {
-    Text = "TEXT", // generic notification with no styles, just text
-    LocationSelect = "LOCATION_SELECT", // user is choosing a target location on map
-    BattleAbility = "BATTLE_ABILITY", // when a faction has initiated a battle ability
-    FactionAbility = "FACTION_ABILITY", // when a faction has initiated a faction ability
-    WarMachineAbility = "WAR_MACHINE_ABILITY", //
-    WarMachineDestroyed = "WAR_MACHINE_DESTROYED", // when a faction has initiated a war machine ability
-    BattleZoneChange = "BATTLE_ZONE_CHANGE", // when a war machine is destroyed
-}
-
-export interface NotificationResponse {
-    type: NotificationType
-    data: BattleFactionAbilityAlertProps | KillAlertProps | LocationSelectAlertProps | WarMachineAbilityAlertProps | BattleZoneStruct | string
-}
-
-interface Notification extends NotificationResponse {
+interface Notification extends NotificationStruct {
     notiID: string
     duration: number
 }
@@ -71,7 +52,7 @@ export const Notifications = () => {
 
     // Function to add new notification to array, and will clear itself out after certain time
     const newNotification = useCallback(
-        (notification: NotificationResponse | undefined, justOne?: boolean) => {
+        (notification: NotificationStruct | undefined, justOne?: boolean) => {
             if (!notification) return
 
             const notiID = makeid()
@@ -115,7 +96,7 @@ export const Notifications = () => {
     }, [newNotification])
 
     // Notifications
-    useGameServerSubscription<NotificationResponse | undefined>(
+    useGameServerSubscription<NotificationStruct | undefined>(
         {
             URI: `/public/arena/${currentArenaID}/notification`,
             key: GameServerKeys.SubGameNotification,
@@ -133,7 +114,7 @@ export const Notifications = () => {
     )
 
     // Faction specific notifications
-    useGameServerSubscriptionFaction<NotificationResponse | undefined>(
+    useGameServerSubscriptionFaction<NotificationStruct | undefined>(
         {
             URI: "/mech_command_notification",
             key: GameServerKeys.SubGameNotification,

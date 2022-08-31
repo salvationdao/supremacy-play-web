@@ -8,9 +8,10 @@ import { FancyButton } from "../../Common/FancyButton"
 
 export const BattleReplayItem = ({ battleReplay }: { battleReplay: BattleReplay }) => {
     const theme = useTheme()
-    const { battle_number, ended_at } = battleReplay.battle
 
-    if (!ended_at) return null
+    if (!battleReplay.battle || !battleReplay.battle.ended_at) return null
+
+    const { battle_number, ended_at } = battleReplay.battle
 
     return (
         <FancyButton

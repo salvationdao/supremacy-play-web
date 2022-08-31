@@ -208,7 +208,8 @@ export enum GameServerKeys {
     NextBattleDetails = "BATTLE:NEXT:DETAILS",
 
     // Replays
-    GetReplays = "XXXXXX",
+    GetReplays = "GET:BATTLE:REPLAYS",
+    GetReplayDetails = "GET:REPLAY:DETAILS",
 }
 
 export enum PassportServerKeys {
