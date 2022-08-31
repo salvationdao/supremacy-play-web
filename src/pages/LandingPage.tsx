@@ -92,18 +92,18 @@ export const LandingPage = () => {
                     sx={{
                         position: "relative",
                         display: "flex",
-                        width: rightDrawerActiveTabID ? "100%" : "75%",
+                        width: rightDrawerActiveTabID ? "89%" : "75%",
                         "@media (max-width:2900px)": {
-                            width: rightDrawerActiveTabID ? "100%" : "90%",
+                            width: "90%",
                         },
-                        "@media (max-width:2400px)": {
+                        "@media (max-width:2700px)": {
                             width: rightDrawerActiveTabID ? "100%" : "96%",
                         },
                         "@media (max-width:2150px)": {
                             width: "100%",
                         },
 
-                        height: "100%",
+                        height: "80%",
                         alignItems: "center",
                         justifyContent: "center",
                         flexDirection: "column",
@@ -189,7 +189,11 @@ export const LandingPage = () => {
                     <Box
                         sx={{
                             position: "absolute",
-                            bottom: "18%",
+                            bottom: 0,
+
+                            "@media (max-width:1550px)": {
+                                bottom: "15%",
+                            },
                             "@media (max-width:1150px)": {
                                 position: "static",
                                 mt: "0",
