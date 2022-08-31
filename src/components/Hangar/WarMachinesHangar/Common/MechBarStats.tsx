@@ -3,7 +3,7 @@ import React, { useMemo } from "react"
 import { TooltipHelper } from "../../.."
 import { SvgHealth, SvgPowerCoreCapacity, SvgPowerCoreRegen, SvgShield, SvgShieldRegen, SvgSpeed, SvgWrapperProps } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
-import { fonts } from "../../../../theme/theme"
+import { colors, fonts } from "../../../../theme/theme"
 import { MechBasic, MechDetails } from "../../../../types"
 
 export const MechBarStats = ({
@@ -228,14 +228,15 @@ export const BarStat = ({
         if (!parsedCurrent && !parsedBoosted) return null
 
         return (
-            <TooltipHelper
-                text={
-                    parsedBoosted && parsedBoosted != parsedCurrent
-                        ? `The attached submodel has boosted this stat from ${parsedCurrent} to ${parsedBoosted}`
-                        : ""
-                }
-            >
-                <Box>
+            <Box>
+                <TooltipHelper
+                    placement="right"
+                    text={
+                        parsedBoosted && parsedBoosted != parsedCurrent
+                            ? `The attached submodel has boosted this stat from ${parsedCurrent} to ${parsedBoosted}`
+                            : ""
+                    }
+                >
                     <Stack direction="row" alignItems="center" justifyContent="space-between" spacing=".6rem">
                         <Stack spacing=".5rem" direction="row" alignItems="center">
                             <Icon size={fontSize} sx={{ pb: "3px", height: "unset" }} />
@@ -268,40 +269,40 @@ export const BarStat = ({
                                 textOverflow: "ellipsis",
                                 WebkitLineClamp: 1,
                                 WebkitBoxOrient: "vertical",
-                                color: parsedBoosted && parsedBoosted != parsedCurrent ? "gold" : "white",
+                                color: parsedBoosted && parsedBoosted != parsedCurrent ? colors.gold : "#FFFFFF",
                             }}
                         >
                             {parsedBoosted || parsedCurrent}
                             {unit}
                         </Typography>
                     </Stack>
+                </TooltipHelper>
 
-                    <Box sx={{ height: barHeight || ".7rem", backgroundColor: "#FFFFFF25", position: "relative" }}>
+                <Box sx={{ height: barHeight || ".7rem", backgroundColor: "#FFFFFF25", position: "relative" }}>
+                    <Box
+                        sx={{
+                            width: `${(100 * parsedCurrent) / total}%`,
+                            height: "100%",
+                            backgroundColor: primaryColor,
+                            transition: "all .15s",
+                            zIndex: 10,
+                            position: "absolute",
+                        }}
+                    />
+                    {parsedBoosted && (
                         <Box
                             sx={{
-                                width: `${(100 * parsedCurrent) / total}%`,
+                                width: `${(100 * parsedBoosted) / total}%`,
                                 height: "100%",
-                                backgroundColor: primaryColor,
+                                backgroundColor: colors.gold,
                                 transition: "all .15s",
-                                zIndex: 10,
+                                zIndex: 9,
                                 position: "absolute",
                             }}
                         />
-                        {parsedBoosted && (
-                            <Box
-                                sx={{
-                                    width: `${(100 * parsedBoosted) / total}%`,
-                                    height: "100%",
-                                    backgroundColor: "gold",
-                                    transition: "all .15s",
-                                    zIndex: 9,
-                                    position: "absolute",
-                                }}
-                            />
-                        )}
-                    </Box>
+                    )}
                 </Box>
-            </TooltipHelper>
+            </Box>
         )
     }, [Icon, barHeight, current, fontSize, label, primaryColor, total, unit, boostedTo])
 }

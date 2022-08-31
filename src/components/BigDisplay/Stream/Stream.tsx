@@ -18,7 +18,7 @@ export const Stream = () => {
 
     useEffect(() => {
         const thisElement = ref.current
-        const newContainerElement = !isStreamBigDisplay ? smallDisplayRef : bigDisplayRef //document.getElementById(!isStreamBigDisplay ? "left-drawer-space" : "big-display-space")
+        const newContainerElement = !isStreamBigDisplay ? smallDisplayRef : bigDisplayRef
 
         if (thisElement && newContainerElement) {
             let child = newContainerElement.lastElementChild
