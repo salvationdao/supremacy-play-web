@@ -159,9 +159,10 @@ export const WarMachineHangarDetailsInner = ({
                             overflowY: "auto",
                             overflowX: "hidden",
                             ml: "1.9rem",
-                            pr: "1.4rem",
-                            mt: ".6rem",
-                            mb: ".8rem",
+                            pr: "1.3rem",
+                            mr: ".6rem",
+                            my: ".5rem",
+                            py: ".5rem",
                             direction: "ltr",
                             scrollbarWidth: "none",
                             "::-webkit-scrollbar": {
