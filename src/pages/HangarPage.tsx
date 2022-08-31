@@ -14,6 +14,7 @@ import { useTheme } from "../containers/theme"
 import { ROUTES_MAP } from "../routes"
 import { siteZIndex } from "../theme/theme"
 import { SubmodelsHangar } from "../components/Hangar/SubmodelHangar/SubmodelsHangar"
+import { DEV_ONLY } from "../constants"
 
 export enum HANGAR_TABS {
     WarMachines = "war-machines",
@@ -120,9 +121,11 @@ export const HangarPage = () => {
                     <WeaponsHangar />
                 </TabPanel>
 
-                <TabPanel currentValue={currentValue} value={HANGAR_TABS.Submodels}>
-                    <SubmodelsHangar />
-                </TabPanel>
+                {DEV_ONLY && (
+                    <TabPanel currentValue={currentValue} value={HANGAR_TABS.Submodels}>
+                        <SubmodelsHangar />
+                    </TabPanel>
+                )}
 
                 <TabPanel currentValue={currentValue} value={HANGAR_TABS.Keycards}>
                     <KeycardsHangar />
