@@ -220,3 +220,13 @@ export interface DisplayedAbility {
     }
     launching_at?: Date
 }
+
+export enum ArenaType {
+    Story = "STORY",
+    Expedition = "EXPEDITION",
+}
+
+export interface Arena {
+    id: string
+    type: ArenaType
+}

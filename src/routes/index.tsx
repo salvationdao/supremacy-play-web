@@ -17,6 +17,7 @@ import { StorefrontPage } from "../pages/StorefrontPage"
 import { WeaponPage } from "../pages/WeaponPage"
 import { colors } from "../theme/theme"
 import { LandingPage } from "../pages/LandingPage"
+import { ReplayPage } from "../pages/ReplayPage"
 
 // ************
 // ** ROUTES **
@@ -199,7 +200,23 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         enable: true,
     },
 
-    // Others
+    // Replays
+    replays: {
+        id: "replays",
+        path: "/replays/:type?",
+        exact: true,
+        Component: ReplayPage,
+        requireAuth: false,
+        requireFaction: false,
+        navLink: {
+            enable: true,
+            label: "Replays",
+        },
+        matchNavLinkID: "replays",
+        enable: true,
+    },
+
+    // Claim
     claim: {
         id: "claim",
         path: "/claim",
