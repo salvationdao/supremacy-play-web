@@ -53,7 +53,7 @@ export const ArenaTypeSelect = ({
                     },
                 }}
                 displayEmpty
-                value={selectedArenaType}
+                value={selectedArenaType || ""}
                 MenuProps={{
                     variant: "menu",
                     sx: {
