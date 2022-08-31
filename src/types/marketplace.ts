@@ -28,6 +28,9 @@ export enum SortTypeLabel {
     RarestDesc = "Rarity: most rarest",
     RewardAmountHighest = "Reward: highest first",
     RewardAmountLowest = "Reward: lowest first",
+    DateAddedNewest = "Date added (newest)",
+    DateAddedOldest = "Date added (oldest)",
+    MostViewed = "Most viewed",
 }
 
 export interface MarketUser {

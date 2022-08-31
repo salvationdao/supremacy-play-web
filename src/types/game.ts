@@ -137,14 +137,12 @@ export interface BattleAbilityProgress {
 }
 
 export interface Battle {
-    battle: {
-        id: string
-        game_map_id: string
-        started_at: Date
-        ended_at?: Date
-        battle_number: number
-    }
-    game_map?: Map
+    id: string
+    game_map_id: string
+    started_at: Date
+    ended_at?: Date
+    battle_number: number
+    arena_id: string
 }
 
 export interface WarMachineLiveState {
@@ -229,4 +227,9 @@ export enum ArenaType {
 export interface Arena {
     id: string
     type: ArenaType
+}
+
+export interface BattleReplay {
+    id: string
+    battle: Battle
 }
