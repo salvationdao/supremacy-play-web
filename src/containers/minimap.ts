@@ -121,7 +121,6 @@ export const MiniMapContainer = createContainer(() => {
                               }
                             : undefined,
                 })
-                setPlayerAbility(undefined)
             } else if (playerAbility) {
                 let payload: {
                     arena_id: string
@@ -187,11 +186,11 @@ export const MiniMapContainer = createContainer(() => {
             }
 
             // If it's mech move command, dont reset so player can keep moving the mech
-            if (playerAbility?.ability.location_select_type !== LocationSelectType.MechCommand) {
-                resetSelection()
-            } else {
+            if (playerAbility?.ability.location_select_type === LocationSelectType.MechCommand) {
                 setWinner(undefined)
                 setSelection(undefined)
+            } else {
+                resetSelection()
             }
 
             if (playerAbility?.ability.location_select_type === LocationSelectType.MechSelect) {
@@ -204,6 +203,8 @@ export const MiniMapContainer = createContainer(() => {
             setSelection(undefined)
         }
     }, [send, selection, resetSelection, winner?.game_ability, playerAbility, newSnackbarMessage, setHighlightedMechParticipantID, currentArenaID])
+
+    console.log({ winner, playerAbility, isTargeting })
 
     useEffect(() => {
         if (!isBattleStarted) resetSelection()
