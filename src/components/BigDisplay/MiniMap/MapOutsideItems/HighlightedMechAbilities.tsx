@@ -9,13 +9,13 @@ import { useInterval, useToggle } from "../../../../hooks"
 import { useGameServerCommandsFaction, useGameServerSubscription, useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors } from "../../../../theme/theme"
-import { AIType, BribeStage, GameAbility, WarMachineLiveState, WarMachineState } from "../../../../types"
-import { MoveCommand } from "../../../WarMachine/WarMachineItem/MoveCommand"
+import { AIType, BribeStage, GameAbility, PlayerAbility, WarMachineLiveState, WarMachineState } from "../../../../types"
+import { MechMoveCommandAbility, MoveCommand } from "../../../WarMachine/WarMachineItem/MoveCommand"
 
 export const HighlightedMechAbilities = () => {
     const { userID } = useAuth()
     const { bribeStage, warMachines, spawnedAI } = useGame()
-    const { highlightedMechParticipantID } = useMiniMap()
+    const { setPlayerAbility, highlightedMechParticipantID } = useMiniMap()
 
     const isVoting = useMemo(() => bribeStage && bribeStage?.phase !== BribeStage.Hold, [bribeStage])
 
@@ -27,13 +27,19 @@ export const HighlightedMechAbilities = () => {
         return null
     }
 
-    return <HighlightedMechAbilitiesInner key={highlightedMechParticipantID} warMachine={highlightedMech} />
+    return <HighlightedMechAbilitiesInner key={highlightedMechParticipantID} warMachine={highlightedMech} setPlayerAbility={setPlayerAbility} />
 }
 
-const HighlightedMechAbilitiesInner = ({ warMachine }: { warMachine: WarMachineState }) => {
+const HighlightedMechAbilitiesInner = ({
+    warMachine,
+    setPlayerAbility,
+}: {
+    warMachine: WarMachineState
+    setPlayerAbility: React.Dispatch<React.SetStateAction<PlayerAbility | undefined>>
+}) => {
+    const theme = useTheme()
     const { userID } = useAuth()
     const { currentArenaID } = useArena()
-    const theme = useTheme()
     const { participantID, ownedByID } = warMachine
     const [isAlive, toggleIsAlive] = useToggle(warMachine.health > 0)
 
@@ -60,6 +66,16 @@ const HighlightedMechAbilitiesInner = ({ warMachine }: { warMachine: WarMachineS
             }
         },
     )
+
+    // On activate mech move command
+    const activateMechMoveCommand = useCallback(() => {
+        if (!isAlive || !currentArenaID) return
+
+        setPlayerAbility({
+            ...MechMoveCommandAbility,
+            mechHash: warMachine.hash,
+        })
+    }, [isAlive, warMachine.hash, setPlayerAbility, currentArenaID])
 
     if (!isAlive) {
         return null
@@ -93,7 +109,7 @@ const HighlightedMechAbilitiesInner = ({ warMachine }: { warMachine: WarMachineS
                             return <AbilityItem key={ga.id} hash={warMachine.hash} participantID={participantID} ability={ga} index={i} />
                         })}
 
-                    {userID === ownedByID && <MoveCommand isAlive={isAlive} warMachine={warMachine} smallVersion />}
+                    {userID === ownedByID && <MoveCommand isAlive={isAlive} warMachine={warMachine} activateMechMoveCommand={activateMechMoveCommand} />}
                 </Stack>
             </ClipThing>
         </Fade>

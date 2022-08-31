@@ -18,6 +18,7 @@ interface MapMechProps {
     warMachine: WarMachineState
     label: number
     isAI?: boolean
+    poppedOutContainerRef?: React.MutableRefObject<HTMLElement | null>
 }
 
 export const MapMech = (props: MapMechProps) => {
@@ -30,7 +31,7 @@ interface MapMechInnerProps extends MapMechProps {
     map: Map
 }
 
-const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
+const MapMechInner = ({ warMachine, map, label, isAI, poppedOutContainerRef }: MapMechInnerProps) => {
     const { userID, factionID } = useAuth()
     const { currentArenaID } = useArena()
     const { getFaction } = useSupremacy()
@@ -90,7 +91,7 @@ const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
             if (payload?.health !== undefined) {
                 if (payload.health <= 0) setIsAlive(false)
 
-                const healthBarEl = document.getElementById(`map-mech-health-bar-${hash}`)
+                const healthBarEl = (poppedOutContainerRef?.current || document).querySelector(`#map-mech-health-bar-${hash}`) as HTMLElement
                 if (healthBarEl) {
                     const percent = Math.min((payload.health / maxHealth) * 100, 100)
                     healthBarEl.style.width = `${percent}%`
@@ -99,7 +100,7 @@ const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
             }
 
             if (payload?.shield !== undefined) {
-                const shieldBarEl = document.getElementById(`map-mech-shield-bar-${hash}`)
+                const shieldBarEl = (poppedOutContainerRef?.current || document).querySelector(`#map-mech-shield-bar-${hash}`) as HTMLElement
                 if (shieldBarEl) {
                     const percent = Math.min((payload.shield / maxShield) * 100, 100)
                     shieldBarEl.style.width = `${percent}%`
@@ -107,14 +108,14 @@ const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
             }
 
             if (payload?.position !== undefined) {
-                const positionEl = document.getElementById(`map-mech-position-${hash}`)
+                const positionEl = (poppedOutContainerRef?.current || document).querySelector(`#map-mech-position-${hash}`) as HTMLElement
                 if (positionEl) {
                     const mechMapX = ((payload.position?.x || 0) - map.Pixel_Left) * mapScale
                     const mechMapY = ((payload.position?.y || 0) - map.Pixel_Top) * mapScale
                     positionEl.style.transform = `translate(-50%, -50%) translate3d(${mechMapX}px, ${mechMapY}px, 0)`
 
                     // Update the mech move dash line length and rotation
-                    const moveCommandEl = document.getElementById(`map-mech-move-command-${hash}`)
+                    const moveCommandEl = (poppedOutContainerRef?.current || document).querySelector(`#map-mech-move-command-${hash}`) as HTMLElement
                     if (moveCommandEl) {
                         if (mechMoveCommand.current?.cell_x && mechMoveCommand.current?.cell_y) {
                             const commandMapX = mechMoveCommand.current.cell_x * gridWidth
@@ -133,7 +134,7 @@ const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
             }
 
             if (payload?.rotation !== undefined) {
-                const rotationEl = document.getElementById(`map-mech-rotation-${hash}`)
+                const rotationEl = (poppedOutContainerRef?.current || document).querySelector(`#map-mech-rotation-${hash}`) as HTMLElement
                 if (rotationEl) {
                     // 0 is east, and goes CW, can be negative and above 360
                     const newRotation = closestAngle(prevRotation.current, payload.rotation || 0)

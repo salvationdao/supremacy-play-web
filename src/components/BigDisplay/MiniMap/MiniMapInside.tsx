@@ -15,9 +15,10 @@ import { useMiniMapGestures } from "./useMiniMapGestures"
 
 interface MiniMapInsideProps {
     containerDimensions: Dimension
+    poppedOutContainerRef?: React.MutableRefObject<HTMLElement | null>
 }
 
-export const MiniMapInside = ({ containerDimensions }: MiniMapInsideProps) => {
+export const MiniMapInside = ({ containerDimensions, poppedOutContainerRef }: MiniMapInsideProps) => {
     const { map } = useGame()
     const { mapElement, setMapElement, gridWidth, gridHeight, isTargeting, selection, setSelection, playerAbility, winner, setHighlightedMechParticipantID } =
         useMiniMap()
@@ -92,7 +93,7 @@ export const MiniMapInside = ({ containerDimensions }: MiniMapInsideProps) => {
                         <MechCommandIcons />
 
                         {/* Rendering war machines on the map */}
-                        <MapMechs />
+                        <MapMechs poppedOutContainerRef={poppedOutContainerRef} />
 
                         {/* Map Image */}
                         <MapImage map={map} />
@@ -137,5 +138,6 @@ export const MiniMapInside = ({ containerDimensions }: MiniMapInsideProps) => {
         gridHeight,
         gridWidth,
         setMapElement,
+        poppedOutContainerRef,
     ])
 }
