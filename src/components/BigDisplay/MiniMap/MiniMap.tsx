@@ -16,7 +16,7 @@ import { TargetHint } from "./MapOutsideItems/TargetHint"
 
 export const TOP_BAR_HEIGHT = 3.4 // rems
 const PADDING = 6 // rems
-const BOTTOM_PADDING = 10.5 // rems
+const BOTTOM_PADDING = 11.5 // rems
 
 export const MiniMap = () => {
     const { smallDisplayRef, bigDisplayRef, isStreamBigDisplay } = useUI()
