@@ -19,6 +19,7 @@ import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { QueueDetails } from "../../LeftDrawer/QuickDeploy/QueueDetails"
 import { BulkDeployConfirmModal } from "./Common/BulkDeployConfirmModal"
 import { BulkRepairConfirmModal } from "./Common/BulkRepairConfirmModal"
+import { RepairBay } from "./RepairBay/RepairBay"
 import { QueueFeed } from "./WarMachineDetails/Modals/DeployModal"
 import { WarMachineHangarItem } from "./WarMachineHangarItem"
 
@@ -502,6 +503,8 @@ export const WarMachinesHangar = () => {
                         )}
                     </Stack>
                 </ClipThing>
+
+                <RepairBay />
             </Stack>
 
             {bulkDeployConfirmModalOpen && (
