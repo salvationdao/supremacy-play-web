@@ -189,6 +189,8 @@ export const MiniMapContainer = createContainer(() => {
             // If it's mech move command, dont reset so player can keep moving the mech
             if (playerAbility?.ability.location_select_type !== LocationSelectType.MechCommand) {
                 resetSelection()
+            } else {
+                setSelection(undefined)
             }
 
             if (playerAbility?.ability.location_select_type === LocationSelectType.MechSelect) {
