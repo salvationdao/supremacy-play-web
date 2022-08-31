@@ -8,6 +8,7 @@ export interface WindowPortalConfig {
 }
 
 export const WindowPortalContainer = createContainer((initialState: WindowPortalConfig | undefined) => {
+    const containerRef = useRef<HTMLElement | null>(null)
     const [curWidth, setCurWidth] = useState(initialState?.features?.width || 0)
     const [curHeight, setCurHeight] = useState(initialState?.features?.height || 0)
 
@@ -30,7 +31,12 @@ export const WindowPortalContainer = createContainer((initialState: WindowPortal
         return cleanup
     }, [initialState?.container])
 
+    useEffect(() => {
+        if (initialState?.container) containerRef.current = initialState?.container
+    }, [initialState?.container])
+
     return {
+        containerRef,
         curWidth,
         curHeight,
     }
