@@ -190,6 +190,7 @@ export const MiniMapContainer = createContainer(() => {
             if (playerAbility?.ability.location_select_type !== LocationSelectType.MechCommand) {
                 resetSelection()
             } else {
+                setWinner(undefined)
                 setSelection(undefined)
             }
 
