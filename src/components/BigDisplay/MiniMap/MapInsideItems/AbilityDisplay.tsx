@@ -1,5 +1,5 @@
 import { Box, Typography } from "@mui/material"
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { useArena, useGame, useMiniMap } from "../../../../containers"
 import { useTimer } from "../../../../hooks"
 import { useGameServerSubscription } from "../../../../hooks/useGameServer"
@@ -19,9 +19,16 @@ export enum MapEventType {
     HiveHexUpdate,
 }
 
+interface PendingAbility {
+    ability: DisplayedAbility
+    delay: number
+    replaceID?: string // if set, will replace existing ability
+}
+
 export const MiniMapAbilitiesDisplay = () => {
     const { currentArenaID } = useArena()
     const [abilityList, setAbilityList] = useState<DisplayedAbility[]>([])
+    const timeouts = useRef<NodeJS.Timeout[]>([])
 
     useGameServerSubscription<DisplayedAbility[]>(
         {
@@ -52,6 +59,8 @@ export const MiniMapAbilitiesDisplay = () => {
             const buffer = decode(payload)
             const dv = new DataView(buffer)
             let offset = 0
+
+            const pendingAbilities: PendingAbility[] = []
 
             do {
                 const count = dv.getUint8(offset)
@@ -87,29 +96,21 @@ export const MiniMapAbilitiesDisplay = () => {
                                 }
 
                                 // Show airstrike impact after time offset
-                                setTimeout(
-                                    (x: number, y: number, remove_at: number) => {
-                                        const explosion: DisplayedAbility = {
-                                            offering_id: `explosion-${x}-${y}-${now}`,
-                                            image_url: "",
-                                            mini_map_display_effect_type: MiniMapDisplayEffectType.Explosion,
-                                            mech_display_effect_type: MechDisplayEffectType.None,
-                                            location_select_type: LocationSelectType.LocationSelect,
-                                            location: { x, y },
-                                            location_in_pixels: true,
-                                            radius: 2500,
-                                            colour: "#FF6600",
-                                            border_width: 2,
-                                            show_below_mechs: true,
-                                            remove_at: remove_at,
-                                        }
-                                        setAbilityList((list) => [...list, explosion])
-                                    },
-                                    timeOffset,
-                                    x,
-                                    y,
-                                    now + timeOffset + 4000, // remove after 4.5s
-                                )
+                                const ability: DisplayedAbility = {
+                                    offering_id: `explosion-${x}-${y}-${now}`,
+                                    image_url: "",
+                                    mini_map_display_effect_type: MiniMapDisplayEffectType.Explosion,
+                                    mech_display_effect_type: MechDisplayEffectType.None,
+                                    location_select_type: LocationSelectType.LocationSelect,
+                                    location: { x, y },
+                                    location_in_pixels: true,
+                                    radius: 2500,
+                                    colour: "#FF6600",
+                                    border_width: 2,
+                                    show_below_mechs: true,
+                                    remove_at: now + timeOffset + 4000,
+                                }
+                                pendingAbilities.push({ ability, delay: timeOffset })
                             }
                             break
                         }
@@ -138,45 +139,36 @@ export const MiniMapAbilitiesDisplay = () => {
                                 }
 
                                 // Show landmine activation after time offset
-                                setTimeout(
-                                    (x: number, y: number, landmineID: number, factionNo: number) => {
-                                        let image_url = "https://i.imgur.com/hL62NOp.png"
-                                        let colour = "#000000"
-                                        switch (factionNo) {
-                                            case 1:
-                                                image_url = "https://i.imgur.com/cCyzXYu.png"
-                                                colour = "#C24242"
-                                                break
-                                            case 2:
-                                                image_url = "https://i.imgur.com/LLSGAz5.png"
-                                                colour = "#428EC1"
-                                                break
-                                            case 3:
-                                                image_url = "https://i.imgur.com/p3aIL4x.png"
-                                                colour = "#FFFFFF"
-                                                break
-                                        }
+                                let image_url = "https://i.imgur.com/hL62NOp.png"
+                                let colour = "#000000"
+                                switch (factionNo) {
+                                    case 1:
+                                        image_url = "https://i.imgur.com/cCyzXYu.png"
+                                        colour = "#C24242"
+                                        break
+                                    case 2:
+                                        image_url = "https://i.imgur.com/LLSGAz5.png"
+                                        colour = "#428EC1"
+                                        break
+                                    case 3:
+                                        image_url = "https://i.imgur.com/p3aIL4x.png"
+                                        colour = "#FFFFFF"
+                                        break
+                                }
 
-                                        const landmine: DisplayedAbility = {
-                                            offering_id: `landmine-${landmineID}`,
-                                            image_url,
-                                            mini_map_display_effect_type: MiniMapDisplayEffectType.Landmine,
-                                            mech_display_effect_type: MechDisplayEffectType.None,
-                                            location_select_type: LocationSelectType.LocationSelect,
-                                            location: { x, y },
-                                            location_in_pixels: true,
-                                            colour,
-                                            border_width: 2,
-                                            show_below_mechs: true,
-                                        }
-                                        setAbilityList((list) => [...list, landmine])
-                                    },
-                                    timeOffset,
-                                    x,
-                                    y,
-                                    landmineID,
-                                    factionNo,
-                                )
+                                const ability: DisplayedAbility = {
+                                    offering_id: `landmine-${landmineID}`,
+                                    image_url,
+                                    mini_map_display_effect_type: MiniMapDisplayEffectType.Landmine,
+                                    mech_display_effect_type: MechDisplayEffectType.None,
+                                    location_select_type: LocationSelectType.LocationSelect,
+                                    location: { x, y },
+                                    location_in_pixels: true,
+                                    colour,
+                                    border_width: 2,
+                                    show_below_mechs: true,
+                                }
+                                pendingAbilities.push({ ability, delay: timeOffset })
                             }
                             break
                         }
@@ -201,54 +193,64 @@ export const MiniMapAbilitiesDisplay = () => {
                                 }
 
                                 // Landmine Explosion
-                                setTimeout(
-                                    (landmineID: string, remove_at: number) => {
-                                        setAbilityList((list) =>
-                                            list.map((item) => {
-                                                if (item.offering_id === landmineID) {
-                                                    const landmineExplosion: DisplayedAbility = {
-                                                        offering_id: landmineID,
-                                                        image_url: "",
-                                                        mini_map_display_effect_type: MiniMapDisplayEffectType.Explosion,
-                                                        mech_display_effect_type: MechDisplayEffectType.None,
-                                                        location_select_type: LocationSelectType.LocationSelect,
-                                                        location: item.location,
-                                                        location_in_pixels: true,
-                                                        radius: 1000,
-                                                        colour: "#FF6600",
-                                                        border_width: 2,
-                                                        show_below_mechs: false, // too hard to see landmine explosions as they are small and always under mechs
-                                                        remove_at: remove_at,
-                                                    }
-                                                    return landmineExplosion
-                                                }
-                                                return item
-                                            }),
-                                        )
-                                    },
-                                    timeOffset,
-                                    `landmine-${landmineID}`,
-                                    now + timeOffset + 4000, // remove after 4.5s
-                                )
+                                const abilityID = `landmine-${landmineID}`
+                                const ability: DisplayedAbility = {
+                                    offering_id: abilityID,
+                                    image_url: "",
+                                    mini_map_display_effect_type: MiniMapDisplayEffectType.Explosion,
+                                    mech_display_effect_type: MechDisplayEffectType.None,
+                                    location_select_type: LocationSelectType.LocationSelect,
+                                    location: { x: -1, y: -1 }, // location is taken from existing landmine on the mini-map (using id)
+                                    location_in_pixels: true,
+                                    radius: 1000,
+                                    colour: "#FF6600",
+                                    border_width: 2,
+                                    show_below_mechs: false, // too hard to see landmine explosions as they are small and always under mechs
+                                    remove_at: now + timeOffset + 4000,
+                                }
+                                pendingAbilities.push({ ability, delay: timeOffset, replaceID: abilityID })
                             }
                         }
                     }
                 }
             } while (offset < dv.byteLength)
+
+            // Timeouts (map events come with time offsets, so they can show on the map in the same order as they occurred in-game)
+            for (const pendingAbility of pendingAbilities) {
+                const t = setTimeout(() => {
+                    if (pendingAbility.replaceID) {
+                        // Replace existing ability
+                        setAbilityList((list) =>
+                            list.map((item) => {
+                                if (item.offering_id === pendingAbility.replaceID) {
+                                    return { ...pendingAbility.ability, location: item.location }
+                                }
+                                return item
+                            }),
+                        )
+                    } else {
+                        // Add ability
+                        setAbilityList((list) => [...list, pendingAbility.ability])
+                    }
+                }, pendingAbility.delay)
+                timeouts.current.push(t)
+            }
         },
     )
 
-    // Attempt cleanup every 10s
     useEffect(() => {
+        // Attempt clean-up every 10s - loads of events (explosions mainly) fade away quickly, this cleans them up.
         const cleanupTimer = setInterval(() => {
             const now = Date.now()
             setAbilityList((list) => list.filter((item) => item.remove_at === undefined || item.remove_at > now))
-        }, 2000)
+        }, 10000)
 
         return () => {
             clearInterval(cleanupTimer)
+            // Clear timeouts on unmount
+            timeouts.current.forEach((t) => clearTimeout(t))
         }
-    })
+    }, [])
 
     return (
         <>
