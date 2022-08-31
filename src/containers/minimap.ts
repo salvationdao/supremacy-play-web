@@ -204,8 +204,6 @@ export const MiniMapContainer = createContainer(() => {
         }
     }, [send, selection, resetSelection, winner?.game_ability, playerAbility, newSnackbarMessage, setHighlightedMechParticipantID, currentArenaID])
 
-    console.log({ winner, playerAbility, isTargeting })
-
     useEffect(() => {
         if (!isBattleStarted) resetSelection()
     }, [isBattleStarted, resetSelection])
