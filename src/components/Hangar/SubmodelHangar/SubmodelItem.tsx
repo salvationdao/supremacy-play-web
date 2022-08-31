@@ -48,6 +48,7 @@ const SubmodelItemInner = ({ submodel }: SubmodelItemProps) => {
                     {/* Image */}
                     <Box sx={{ position: "relative", height: "20rem" }}>
                         <MediaPreview
+                            sx={{ p: "1.5rem" }}
                             imageUrl={submodel.images.image_url ?? submodel.images.avatar_url ?? ""}
                             videoUrls={[submodel.images.card_animation_url, submodel.images.animation_url]}
                         />
