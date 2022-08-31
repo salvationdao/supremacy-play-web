@@ -42,7 +42,7 @@ const sortOptions = [
 export const BattlesReplays = () => {
     const theme = useTheme()
     const { arenaList } = useArena()
-    const { send } = useGameServerCommands("/public")
+    const { send } = useGameServerCommands("/public/commander")
 
     // Items
     const [isLoading, setIsLoading] = useState(true)
