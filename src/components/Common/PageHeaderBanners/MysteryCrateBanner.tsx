@@ -117,10 +117,10 @@ export const MysteryCrateBanner = () => {
                             clipSize: "6px",
                             backgroundColor: primaryColor,
                             opacity: 1,
-                            border: { isFancy: true, borderColor: primaryColor, borderThickness: "1.5px" },
+                            border: { borderColor: primaryColor, borderThickness: "1.5px" },
                             sx: { position: "relative" },
                         }}
-                        sx={{ px: "3.4rem", py: ".8rem", color: secondaryColor, flexWrap: 0, whiteSpace: "nowrap" }}
+                        sx={{ px: "3rem", py: ".4rem", color: secondaryColor, flexWrap: 0, whiteSpace: "nowrap" }}
                         to={`/storefront/mystery-crates`}
                     >
                         <Stack justifyContent="center" sx={{ height: "100%" }}>

@@ -69,7 +69,7 @@ const SubmodelsHangarInner = ({
     // Items
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
-    const [submodels, setSubmodels] = useState<Submodel[]>([])
+    const [submodels, setSubmodels] = useState<Submodel[]>()
 
     const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({
         pageSize: parseString(query.get("pageSize"), 10),

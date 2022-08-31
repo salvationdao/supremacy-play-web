@@ -16,7 +16,7 @@ import { TargetHint } from "./MapOutsideItems/TargetHint"
 
 export const TOP_BAR_HEIGHT = 3.4 // rems
 const PADDING = 6 // rems
-const BOTTOM_PADDING = 10.5 // rems
+const BOTTOM_PADDING = 11.5 // rems
 
 export const MiniMap = () => {
     const { smallDisplayRef, bigDisplayRef, isStreamBigDisplay } = useUI()
@@ -27,7 +27,7 @@ export const MiniMap = () => {
 
     useEffect(() => {
         const thisElement = ref.current
-        const newContainerElement = isStreamBigDisplay ? smallDisplayRef : bigDisplayRef // document.getElementById(isStreamBigDisplay ? "left-drawer-space" : "big-display-space")
+        const newContainerElement = isStreamBigDisplay ? smallDisplayRef : bigDisplayRef
 
         if (!isPoppedout && thisElement && newContainerElement) {
             let child = newContainerElement.lastElementChild
@@ -70,14 +70,23 @@ interface MiniMapInnerProps {
     setIsPoppedout: React.Dispatch<React.SetStateAction<boolean>>
     width?: number
     height?: number
+    poppedOutContainerRef?: React.MutableRefObject<HTMLElement | null>
 }
 
 const MiniMapInnerPoppedOut = ({ map, isTargeting, isPoppedout, setIsPoppedout }: MiniMapInnerProps) => {
-    const { curWidth, curHeight } = useWindowPortal()
+    const { containerRef, curWidth, curHeight } = useWindowPortal()
     if (!curWidth || !curHeight) return null
     return (
         <Box sx={{ width: "100%", height: "100%", border: (theme) => `${theme.factionTheme.primary} 1.5px solid` }}>
-            <MiniMapInner map={map} isTargeting={isTargeting} isPoppedout={isPoppedout} setIsPoppedout={setIsPoppedout} width={curWidth} height={curHeight} />
+            <MiniMapInner
+                poppedOutContainerRef={containerRef}
+                map={map}
+                isTargeting={isTargeting}
+                isPoppedout={isPoppedout}
+                setIsPoppedout={setIsPoppedout}
+                width={curWidth}
+                height={curHeight}
+            />
         </Box>
     )
 }
@@ -143,8 +152,8 @@ const BattleNotStarted = () => {
 }
 
 // This inner component takes care of the resizing etc.
-const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 100, height = 100 }: MiniMapInnerProps) => {
-    const { handleHotKey } = useHotkey()
+const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 100, height = 100, poppedOutContainerRef }: MiniMapInnerProps) => {
+    const { handleMiniMapHotKey } = useHotkey()
     const { remToPxRatio } = useDimension()
     const { isStreamBigDisplay, setIsStreamBigDisplay, toggleIsStreamBigDisplayMemorized, restoreIsStreamBigDisplayMemorized } = useUI()
     const [isEnlarged, toggleIsEnlarged] = useToggle(localStorage.getItem("isMiniMapEnlarged") === "true")
@@ -242,7 +251,7 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
                 <Box
                     ref={mapRef}
                     tabIndex={0}
-                    onKeyDown={handleHotKey}
+                    onKeyDown={handleMiniMapHotKey}
                     onClick={focusMap}
                     sx={{
                         position: "relative",
@@ -281,7 +290,13 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
                                     <SvgSwap size="1.6rem" />
                                 </Box>
 
-                                <Box onClick={() => setIsPoppedout(true)} sx={{ cursor: "pointer", opacity: 0.4, ":hover": { opacity: 1 } }}>
+                                <Box
+                                    onClick={() => {
+                                        setIsPoppedout(true)
+                                        setIsStreamBigDisplay(true)
+                                    }}
+                                    sx={{ cursor: "pointer", opacity: 0.4, ":hover": { opacity: 1 } }}
+                                >
                                     <SvgExternalLink size="1.6rem" />
                                 </Box>
                             </>
@@ -300,7 +315,10 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
                         </Typography>
                     </Stack>
 
-                    <MiniMapInside containerDimensions={{ width: sizes.insideWidth, height: sizes.insideHeight }} />
+                    <MiniMapInside
+                        containerDimensions={{ width: sizes.insideWidth, height: sizes.insideHeight }}
+                        poppedOutContainerRef={poppedOutContainerRef}
+                    />
 
                     <TargetHint />
 
@@ -327,7 +345,7 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
         )
     }, [
         isEnlarged,
-        handleHotKey,
+        handleMiniMapHotKey,
         focusMap,
         sizes.outsideWidth,
         sizes.outsideHeight,
@@ -340,5 +358,6 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
         setIsStreamBigDisplay,
         setIsPoppedout,
         toggleIsEnlarged,
+        poppedOutContainerRef,
     ])
 }

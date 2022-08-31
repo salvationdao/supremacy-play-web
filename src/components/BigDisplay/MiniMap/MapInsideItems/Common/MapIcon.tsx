@@ -37,6 +37,7 @@ export const MapIcon = ({ primaryColor, backgroundImageUrl, insideRender, onClic
                     borderRadius: 1,
                     boxShadow: 2,
                     zIndex: 100,
+                    pointerEvents: onClick ? "all" : "none",
                     ...sx,
                 }}
             >
