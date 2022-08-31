@@ -542,7 +542,7 @@ export const WeaponsMarket = () => {
                             py: "1rem",
                             display: "grid",
                             gridTemplateColumns: isGridView ? "repeat(auto-fill, minmax(30rem, 1fr))" : "100%",
-                            gap: "1.3rem",
+                            gap: "1.5rem",
                             alignItems: "center",
                             justifyContent: "center",
                             overflow: "visible",

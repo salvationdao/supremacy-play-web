@@ -440,7 +440,7 @@ export const LayerList = ({ setLayer, layerType, primaryColor }: LayerListProps)
                             py: "1rem",
                             display: "grid",
                             gridTemplateColumns: "repeat(auto-fill, minmax(21rem, 1fr))",
-                            gap: "1.3rem",
+                            gap: "1.5rem",
                             alignItems: "center",
                             justifyContent: "center",
                             overflow: "visible",
