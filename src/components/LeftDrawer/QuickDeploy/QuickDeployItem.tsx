@@ -27,7 +27,7 @@ export const QuickDeployItem = ({ isSelected, toggleIsSelected, mech, childrenMe
     const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [mechDetails, setMechDetails] = useState<MechDetails>()
-    const rarityDeets = useMemo(() => getRarityDeets(mech.tier || mechDetails?.tier || ""), [mech, mechDetails])
+    const rarityDeets = useMemo(() => getRarityDeets(mechDetails?.tier || mech.tier || ""), [mech, mechDetails])
     const [mechStatus, setMechStatus] = useState<MechStatus>()
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState<string>()
