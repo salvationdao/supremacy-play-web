@@ -231,15 +231,13 @@ const NotificationsInner = ({ notificationsJsx }: { notificationsJsx: (JSX.Eleme
                     direction: "ltr",
 
                     "::-webkit-scrollbar": {
-                        width: ".4rem",
+                        width: "1rem",
                     },
                     "::-webkit-scrollbar-track": {
                         background: "#FFFFFF15",
-                        borderRadius: 3,
                     },
                     "::-webkit-scrollbar-thumb": {
                         background: (theme) => theme.factionTheme.primary,
-                        borderRadius: 3,
                     },
                 }}
             >
