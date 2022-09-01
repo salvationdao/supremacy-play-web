@@ -93,63 +93,6 @@ export const PlayerAbilityHangarItem = ({ playerAbility }: PlayerAbilityHangarIt
                     </Typography>
                 </Stack>
             </Stack>
-
-            {/* <Stack sx={{ height: "100%", px: "1.5rem", pt: "1.2rem", pb: ".6rem" }}>
-                <Stack direction="row" spacing="1.2rem" mb="1rem">
-                    <ClipThing
-                        corners={{
-                            topLeft: true,
-                        }}
-                        sx={{
-                            position: "relative",
-                            width: "10rem",
-                            height: "10rem",
-                        }}
-                    >
-                        <Box
-                            component="img"
-                            src={playerAbility.ability.image_url}
-                            alt={`Thumbnail image for ${playerAbility.ability.label}`}
-                            sx={{
-                                height: "100%",
-                                width: "100%",
-                            }}
-                        />
-                        <TooltipHelper text={abilityTypeDescription} placement="bottom-start">
-                            <Stack
-                                justifyContent="center"
-                                alignItems="center"
-                                sx={{
-                                    position: "absolute",
-                                    right: 0,
-                                    bottom: 0,
-                                    height: "3rem",
-                                    width: "3rem",
-                                    "& div": {
-                                        p: 0,
-                                    },
-                                }}
-                            >
-                                {abilityTypeIcon}
-                            </Stack>
-                        </TooltipHelper>
-                    </ClipThing>
-
-                    <Stack sx={{ flex: 1 }}>
-                        <Typography gutterBottom variant="h6" sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack }}>
-                            {playerAbility.ability.label}
-                        </Typography>
-
-                        <Typography>{playerAbility.ability.description}</Typography>
-                    </Stack>
-                </Stack>
-
-                <Box sx={{ mt: "auto" }}>
-                    <Typography variant="caption" sx={{ textAlign: "end", color: colors.neonBlue, fontFamily: fonts.nostromoBlack }}>
-                        {playerAbility.count} in inventory
-                    </Typography>
-                </Box>
-            </Stack> */}
         </ClipThing>
     )
 }
