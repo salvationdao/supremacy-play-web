@@ -1,4 +1,4 @@
-import { Box, Checkbox, Fade, Stack, Typography } from "@mui/material"
+import { Checkbox, Fade, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { ClipThing } from "../../.."
@@ -87,38 +87,36 @@ const BattleAbilityItemInner = ({ bribeStage, battleAbility, fadeEffect }: Inner
         <Stack spacing=".8rem">
             <Stack key={fadeEffect.toString()} spacing="1.04rem">
                 <Fade in={true}>
-                    <Box>
-                        <ClipThing
-                            clipSize="6px"
-                            border={{
-                                borderColor: colour,
-                                borderThickness: ".3rem",
+                    <ClipThing
+                        clipSize="6px"
+                        border={{
+                            borderColor: colour,
+                            borderThickness: ".3rem",
+                        }}
+                        backgroundColor={backgroundColor}
+                        opacity={0.7}
+                    >
+                        <Stack
+                            spacing=".8rem"
+                            alignItems="flex-start"
+                            sx={{
+                                flex: 1,
+                                minWidth: "32.5rem",
+                                px: "1.6rem",
+                                pt: "1.12rem",
+                                pb: "1.28rem",
                             }}
-                            backgroundColor={backgroundColor}
-                            opacity={0.7}
                         >
-                            <Stack
-                                spacing=".8rem"
-                                alignItems="flex-start"
-                                sx={{
-                                    flex: 1,
-                                    minWidth: "32.5rem",
-                                    px: "1.6rem",
-                                    pt: "1.12rem",
-                                    pb: "1.28rem",
-                                }}
-                            >
-                                <BattleAbilityTextTop
-                                    label={label}
-                                    image_url={image_url}
-                                    colour={colour}
-                                    disableButton={!factionID || bribeStage?.phase !== BribeStage.OptIn}
-                                />
+                            <BattleAbilityTextTop
+                                label={label}
+                                image_url={image_url}
+                                colour={colour}
+                                disableButton={!factionID || bribeStage?.phase !== BribeStage.OptIn}
+                            />
 
-                                <Typography>{description}</Typography>
-                            </Stack>
-                        </ClipThing>
-                    </Box>
+                            <Typography>{description}</Typography>
+                        </Stack>
+                    </ClipThing>
                 </Fade>
             </Stack>
 
