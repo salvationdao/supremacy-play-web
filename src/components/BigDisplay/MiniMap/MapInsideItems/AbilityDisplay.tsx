@@ -14,8 +14,6 @@ export enum MapEventType {
     AirstrikeExplosions,
     LandmineActivations,
     LandmineExplosions,
-    PickupLanded,
-    PickupUsed,
     HiveHexUpdate,
 }
 
