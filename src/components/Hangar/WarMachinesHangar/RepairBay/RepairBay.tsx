@@ -49,30 +49,30 @@ export const RepairBay = ({ selectedMechs }: { selectedMechs: MechBasic[] }) => 
         }
     }, [selectedMechs, send])
 
-    const removeRepairBay = useCallback(async () => {
-        try {
-            await send<boolean>(GameServerKeys.RemoveRepairBay, {
-                mech_ids: [],
-            })
-        } catch (err) {
-            const message = typeof err === "string" ? err : "Failed to remove from repair bay."
-            setError(message)
-            console.error(err)
-        }
-    }, [send])
+    // const removeRepairBay = useCallback(async () => {
+    //     try {
+    //         await send<boolean>(GameServerKeys.RemoveRepairBay, {
+    //             mech_ids: [],
+    //         })
+    //     } catch (err) {
+    //         const message = typeof err === "string" ? err : "Failed to remove from repair bay."
+    //         setError(message)
+    //         console.error(err)
+    //     }
+    // }, [send])
 
-    const swapRepairBay = useCallback(async () => {
-        try {
-            await send<boolean>(GameServerKeys.SwapRepairBay, {
-                from_mech_id: "",
-                to_mech_id: "",
-            })
-        } catch (err) {
-            const message = typeof err === "string" ? err : "Failed to swap repair bay slots."
-            setError(message)
-            console.error(err)
-        }
-    }, [send])
+    // const swapRepairBay = useCallback(async () => {
+    //     try {
+    //         await send<boolean>(GameServerKeys.SwapRepairBay, {
+    //             from_mech_id: "",
+    //             to_mech_id: "",
+    //         })
+    //     } catch (err) {
+    //         const message = typeof err === "string" ? err : "Failed to swap repair bay slots."
+    //         setError(message)
+    //         console.error(err)
+    //     }
+    // }, [send])
 
     const activeRepairSlot = useMemo(() => (repairSlots ? repairSlots[0] : undefined), [repairSlots])
     const queuedRepairSlots = useMemo(() => repairSlots?.slice(1), [repairSlots])

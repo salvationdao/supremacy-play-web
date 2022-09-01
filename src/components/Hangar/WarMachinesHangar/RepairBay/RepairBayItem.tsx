@@ -1,7 +1,8 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material"
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { useTheme } from "../../../../containers/theme"
 import { getRarityDeets } from "../../../../helpers"
+import { useTimer } from "../../../../hooks"
 import { useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
@@ -10,7 +11,7 @@ import { ClipThing } from "../../../Common/ClipThing"
 import { MechRepairBlocks } from "../Common/MechRepairBlocks"
 
 export const RepairBayItem = ({ repairSlot, isBigVersion }: { repairSlot: RepairSlot; isBigVersion?: boolean }) => {
-    const { mech_id, repair_case_id, status, next_repair_time, slot_number } = repairSlot
+    const { mech_id, next_repair_time } = repairSlot
     const theme = useTheme()
     const [mechDetails, setMechDetails] = useState<MechDetails>()
     const rarityDeets = useMemo(() => getRarityDeets(mechDetails?.tier || ""), [mechDetails])
@@ -108,7 +109,7 @@ export const RepairBayItem = ({ repairSlot, isBigVersion }: { repairSlot: Repair
                             {mechDetails.label}
                         </Typography>
 
-                        <MechRepairBlocks mechID={mech_id} defaultBlocks={mechDetails?.repair_blocks} pulsateEffect={isBigVersion} />
+                        <Blocks mechID={mech_id} defaultBlocks={mechDetails?.repair_blocks} nextRepairTime={next_repair_time} />
                     </Stack>
                 </Stack>
             </Stack>
@@ -125,10 +126,10 @@ export const EmptyRepairBayItem = ({ isLoading, isBigVersion }: { isLoading?: bo
     return (
         <ClipThing
             clipSize="6px"
-            opacity={0.8}
+            opacity={0.6}
             border={{ borderColor: primaryColor }}
             backgroundColor={backgroundColor}
-            sx={{ height: isBigVersion ? "100%" : "6rem", width: "100%" }}
+            sx={{ height: isBigVersion ? "100%" : "8rem", width: "100%" }}
         >
             <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                 {isLoading ? (
@@ -140,5 +141,26 @@ export const EmptyRepairBayItem = ({ isLoading, isBigVersion }: { isLoading?: bo
                 )}
             </Stack>
         </ClipThing>
+    )
+}
+
+const Blocks = ({ mechID, defaultBlocks, nextRepairTime }: { mechID: string; defaultBlocks?: number; nextRepairTime?: Date }) => {
+    const { totalSecRemain } = useTimer(nextRepairTime)
+    const totalTimeDurationSec = useRef(nextRepairTime ? (nextRepairTime.getTime() - new Date().getTime()) / 1000 : 0)
+    const pulsateEffectPercent = useRef(0)
+
+    console.log({
+        pulsateEffectPercent: pulsateEffectPercent.current,
+        totalTimeDurationSec: totalTimeDurationSec.current,
+    })
+
+    useEffect(() => {
+        pulsateEffectPercent.current = totalTimeDurationSec.current ? (100 * totalSecRemain) / totalTimeDurationSec.current : 0
+    }, [totalSecRemain])
+
+    return (
+        <Box>
+            <MechRepairBlocks mechID={mechID} defaultBlocks={defaultBlocks} pulsateEffectPercent={pulsateEffectPercent.current} />
+        </Box>
     )
 }

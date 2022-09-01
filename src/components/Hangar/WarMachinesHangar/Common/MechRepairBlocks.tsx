@@ -11,13 +11,13 @@ export const RepairBlocks = ({
     remainDamagedBlocks,
     hideNumber,
     size = 8,
-    pulsateEffect,
+    pulsateEffectPercent,
 }: {
     defaultBlocks?: number
     remainDamagedBlocks: number
     hideNumber?: boolean
     size?: number
-    pulsateEffect?: boolean
+    pulsateEffectPercent?: number // Out of 100
 }) => {
     return (
         <Stack direction="row" alignItems="center" spacing=".5rem" sx={{ width: "100%" }}>
@@ -42,7 +42,7 @@ export const RepairBlocks = ({
                     },
 
                     // Pulsate effect
-                    ...(pulsateEffect
+                    ...(pulsateEffectPercent && pulsateEffectPercent > 0
                         ? {
                               [`& > div:nth-of-type(${defaultBlocks ? Math.max(defaultBlocks - remainDamagedBlocks, 1) : 1})`]: {
                                   ".single-block": {
@@ -54,7 +54,7 @@ export const RepairBlocks = ({
                                           top: 0,
                                           left: 0,
                                           bottom: 0,
-                                          width: "65%",
+                                          width: `${pulsateEffectPercent}%`,
                                           backgroundColor: colors.green,
                                       },
                                   },
@@ -92,12 +92,12 @@ export const MechRepairBlocks = React.memo(function MechRepairBlocks({
     mechID,
     defaultBlocks,
     hideNumber,
-    pulsateEffect,
+    pulsateEffectPercent,
 }: {
     mechID?: string
     defaultBlocks?: number
     hideNumber?: boolean
-    pulsateEffect?: boolean
+    pulsateEffectPercent?: number
 }) {
     const repairStatus = useGameServerSubscriptionSecured<RepairStatus>({
         URI: `/mech/${mechID}/repair_case`,
@@ -107,5 +107,12 @@ export const MechRepairBlocks = React.memo(function MechRepairBlocks({
 
     const remainDamagedBlocks = repairStatus ? repairStatus.blocks_required_repair - repairStatus.blocks_repaired : 0
 
-    return <RepairBlocks defaultBlocks={defaultBlocks} remainDamagedBlocks={remainDamagedBlocks} hideNumber={hideNumber} pulsateEffect={pulsateEffect} />
+    return (
+        <RepairBlocks
+            defaultBlocks={defaultBlocks}
+            remainDamagedBlocks={remainDamagedBlocks}
+            hideNumber={hideNumber}
+            pulsateEffectPercent={pulsateEffectPercent}
+        />
+    )
 })
