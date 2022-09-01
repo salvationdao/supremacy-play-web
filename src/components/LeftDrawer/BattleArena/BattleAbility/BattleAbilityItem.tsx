@@ -84,7 +84,7 @@ const BattleAbilityItemInner = ({ bribeStage, battleAbility, fadeEffect }: Inner
     }, [bribeStage?.phase, label, sendBANotifications, sendBrowserNotification])
 
     return (
-        <Stack>
+        <Stack spacing=".8rem">
             <Stack key={fadeEffect.toString()} spacing="1.04rem">
                 <Fade in={true}>
                     <Box>
@@ -121,15 +121,19 @@ const BattleAbilityItemInner = ({ bribeStage, battleAbility, fadeEffect }: Inner
                     </Box>
                 </Fade>
             </Stack>
-            <Stack direction={"row"} sx={{ mt: ".5rem", alignItems: "center", alignSelf: "flex-end" }}>
+
+            <Stack spacing=".7rem" alignItems="center" direction={"row"} sx={{ alignSelf: "flex-end" }}>
                 <Typography>Send notifications when there is a new ability</Typography>
                 <Checkbox
+                    size="small"
                     checked={sendBANotifications}
                     onChange={toggleNotifications}
-                    disableRipple
                     sx={{
-                        p: ".5rem",
+                        p: 0,
+                        color: (theme) => theme.factionTheme.primary,
                         "& > .MuiSvgIcon-root": { width: "2rem", height: "2rem" },
+                        ".Mui-checked, .MuiSvgIcon-root": { color: (theme) => `${theme.factionTheme.primary} !important` },
+                        ".Mui-checked+.MuiSwitch-track": { backgroundColor: (theme) => `${theme.factionTheme.primary}50 !important` },
                     }}
                 />
             </Stack>
