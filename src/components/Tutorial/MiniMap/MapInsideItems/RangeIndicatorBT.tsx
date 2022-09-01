@@ -6,16 +6,14 @@ import { Map } from "../../../../types"
 
 interface RangeIndicatorProps {
     parentRef: React.RefObject<HTMLDivElement>
+    gestureRef: React.RefObject<HTMLDivElement>
+    empRef: React.RefObject<HTMLDivElement>
     mapScale: number
     map: Map
 }
 
-export const EMP_X = 435.4375
-export const EMP_Y = 335.3125
-
-export const RangeIndicatorBT = ({ parentRef, mapScale: zoomScale, map }: RangeIndicatorProps) => {
-    const { abilityDetails, playerAbility, winner } = useTraining()
-
+export const RangeIndicatorBT = ({ parentRef, mapScale: zoomScale, map, gestureRef, empRef }: RangeIndicatorProps) => {
+    const { abilityDetails, playerAbility, winner, empCoords } = useTraining()
     const indicatorRef = useRef<HTMLDivElement>(null)
     const mapScale = useMemo(() => map?.Width / (map?.Cells_X * 2000), [map])
     const ability = useMemo(() => winner?.game_ability || playerAbility?.ability, [winner, playerAbility])
@@ -35,6 +33,11 @@ export const RangeIndicatorBT = ({ parentRef, mapScale: zoomScale, map }: RangeI
         },
         [diameter],
     )
+
+    useEffect(() => {
+        if (!gestureRef.current || !empRef.current) return
+        gestureRef.current.appendChild(empRef.current)
+    }, [empRef, gestureRef])
 
     useEffect(() => {
         const gestureDiv = parentRef.current
@@ -63,18 +66,19 @@ export const RangeIndicatorBT = ({ parentRef, mapScale: zoomScale, map }: RangeI
                     }}
                 />
                 <Box
+                    ref={empRef}
                     sx={{
                         zIndex: 1000,
                         position: "absolute",
-                        width: diameter,
-                        height: diameter,
+                        width: diameter * 2,
+                        height: diameter * 2,
                         borderRadius: "50%",
                         pointerEvents: "none",
                         border: `3px ${colors.grey}`,
                         borderStyle: "dashed",
                         backgroundColor: "rgba(0, 0, 0, 0.3)",
-                        transform: `translate(calc(${EMP_X}px - 50%), calc(${EMP_Y}px - 50%))`,
-                        animation: `${growEffect(diameter)} 2s infinite`,
+                        transform: `translate(-50%, -50%) translate3d(${empCoords?.x}px, ${empCoords?.y}px, 0)`,
+                        animation: `${growEffect(diameter * 2)} 2s infinite`,
                     }}
                 >
                     <Typography
@@ -93,23 +97,23 @@ export const RangeIndicatorBT = ({ parentRef, mapScale: zoomScale, map }: RangeI
                 </Box>
             </>
         )
-    }, [ability, diameter])
+    }, [ability, diameter, empCoords?.x, empCoords?.y])
 }
 
 export const growEffect = (d: number) => keyframes`
     0% {
     width: ${d}px;
     height: ${d};
-    font-size:1.4rem;
+    font-size:30px;
 }
 	50% {
     width: ${d * 1.15}px;
     height: ${d * 1.15}px;
-    font-size:2rem;
+    font-size:45px;
  }
 	100% {
     width: ${d}px;
     height: ${d}px;
-    font-size:1.4rem;
+    font-size:30px;
 }
 `

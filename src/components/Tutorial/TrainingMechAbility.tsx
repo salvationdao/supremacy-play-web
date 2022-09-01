@@ -1,16 +1,9 @@
-import { Box, Fade, Stack, Typography } from "@mui/material"
-import { Mask } from "@reactour/mask"
-import { Popover } from "@reactour/popover"
-import { useRect } from "@reactour/utils"
 import { useEffect, useRef, useState } from "react"
 import { TRAINING_ASSETS } from "../../constants"
 import { useAuth, useTraining } from "../../containers"
-import { fonts } from "../../theme/theme"
-import { BribeStage, Map, MechAbilityStages } from "../../types"
-import { TOP_BAR_HEIGHT } from "../BigDisplay/MiniMap/MiniMap"
-import { tourStyles } from "../HowToPlay/Tutorial/SetupTutorial"
-import { Congratulations } from "./Congratulations"
+import { BribeStage, Context, Map, MechAbilityStages, TrainingAbility } from "../../types"
 import { TrainingBribeStageResponse } from "./TrainingBattleAbility"
+import { TutorialContainer } from "./TutorialContainer"
 
 export const VIDEO_SOURCE_MA = {
     intro: TRAINING_ASSETS + "/mech_ability/1.mp4",
@@ -24,7 +17,6 @@ export const VIDEO_SOURCE_MA_LIST = Object.values(VIDEO_SOURCE_MA)
 export const TrainingMechAbility = () => {
     const { userID } = useAuth()
     const {
-        tutorialRef,
         setTrainingStage,
         trainingStage,
         setMap,
@@ -37,23 +29,15 @@ export const TrainingMechAbility = () => {
         setBribeStage,
         setWinner,
         setIsTargeting,
-        isStreamBigDisplay,
-        smallDisplayRef,
-        bigDisplayRef,
         setPlayerAbility,
         setHighlightedMechParticipantID,
-        bribeStage,
     } = useTraining()
     const [videoSource, setVideoSource] = useState(VIDEO_SOURCE_MA.intro)
     const [stage, setStage] = useState<Context | null>(null)
     const [popoverOpen, setPopoverOpen] = useState(true)
-    const [updater, setUpdater] = useState<unknown[]>([])
     const [end, setEnd] = useState(false)
-    const [bribeStageTime, setBribeStageTime] = useState(45)
 
-    const sizes = useRect(tutorialRef, updater)
     const videoRef = useRef<HTMLVideoElement>(null)
-    const ref = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
         switch (trainingStage) {
@@ -104,47 +88,29 @@ export const TrainingMechAbility = () => {
         }
     }, [trainingStage, setStage, toggleIsMapOpen, setWinner, setIsTargeting])
 
-    useEffect(() => {
-        window.addEventListener("scroll", () => {
-            setUpdater([tutorialRef])
-        })
-        return () => {
-            window.removeEventListener("scroll", () => {
-                setUpdater([tutorialRef])
-            })
-        }
-    }, [setUpdater, tutorialRef])
-
     // Initialise
     useEffect(() => {
         setMap(trainingMap)
         setWarMachines(trainingMechs(userID))
-    }, [setMap, setWarMachines, userID])
-
-    useEffect(() => {
-        const thisElement = ref.current
-        const newContainerElement = isStreamBigDisplay ? bigDisplayRef : smallDisplayRef
-
-        if (thisElement && newContainerElement) {
-            newContainerElement.appendChild(thisElement)
+        const trainingBribeStage: TrainingBribeStageResponse = {
+            phase: BribeStage.Cooldown,
+            time: 30,
         }
-    }, [isStreamBigDisplay, smallDisplayRef, bigDisplayRef])
-    console.log(bribeStage)
+        setBribeStage(trainingBribeStage)
+    }, [setBribeStage, setMap, setWarMachines, userID])
+
     return (
-        <Box ref={ref} sx={{ background: "#000", width: "100%", height: "100%" }}>
-            {/* Top bar */}
-            <Stack
-                spacing="1rem"
-                direction="row"
-                alignItems="center"
-                sx={{
-                    p: ".6rem 1.6rem",
-                    height: `${TOP_BAR_HEIGHT}rem`,
-                    background: (theme) => `linear-gradient(${theme.factionTheme.background} 26%, ${theme.factionTheme.background}BB)`,
-                }}
-            >
-                <Typography sx={{ fontFamily: fonts.nostromoHeavy }}>BATTLE TRAINING</Typography>
-            </Stack>
+        <TutorialContainer
+            stage={stage}
+            currentAbility={TrainingAbility.Mech}
+            context={context}
+            videoSource={videoSource}
+            setStage={setStage}
+            end={end}
+            videoRef={videoRef}
+            popoverOpen={popoverOpen}
+            setPopoverOpen={setPopoverOpen}
+        >
             <video
                 key={videoSource}
                 ref={videoRef}
@@ -155,13 +121,6 @@ export const TrainingMechAbility = () => {
                 }}
                 onTimeUpdate={(e) => {
                     const { currentTime, duration } = e.currentTarget
-                    // BattleAbility
-                    const trainingBribeStage: TrainingBribeStageResponse = {
-                        phase: BribeStage.Cooldown,
-                        time: Math.floor(bribeStageTime - currentTime),
-                    }
-                    setBribeStage(trainingBribeStage)
-
                     const bc1_init = trainingMechs(userID).find((w) => w.id === MechIDs.BC1)
                     const zb1 = warMachines?.find((w) => w.id === MechIDs.ZB1)
                     const zb2 = warMachines?.find((w) => w.id === MechIDs.ZB2)
@@ -171,7 +130,6 @@ export const TrainingMechAbility = () => {
 
                     // INTRO BATTLE
                     if (videoSource === VIDEO_SOURCE_MA.intro) {
-                        healthChange(800, bc1_init, currentTime, duration)
                         healthChange(1000, zb1, currentTime, duration)
                         healthChange(1500, zb2, currentTime, duration)
                         healthChange(1500, zb3, currentTime, duration)
@@ -196,6 +154,7 @@ export const TrainingMechAbility = () => {
                         healthChange(0, zb1, currentTime, duration - 0.5)
 
                         // Shield
+                        shieldChange(500, bc1, currentTime, duration)
                         shieldChange(600, zb2, currentTime, duration)
                         shieldChange(500, zb3, currentTime, duration)
 
@@ -215,15 +174,15 @@ export const TrainingMechAbility = () => {
                         healthChange(0, rm3, currentTime, duration / 3)
 
                         // Shield change
-                        shieldChange(200, bc1, currentTime, duration)
+                        shieldChange(400, bc1, currentTime, duration)
                         shieldChange(400, zb2, currentTime, duration)
                         shieldChange(400, zb3, currentTime, duration)
 
                         const moveCommand = trainingMoveCommand(userID)
-                        if (currentTime <= 8 || currentTime >= 10) {
+                        if (currentTime <= 8 || currentTime >= 9) {
                             mechMove(moveCommand.cell_x, moveCommand.cell_y, bc1_init, currentTime, duration)
                         }
-                        if (currentTime >= 10) healthChange(1000, bc1, currentTime, duration)
+                        if (currentTime >= 10) shieldChange(200, bc1, currentTime, duration)
                     }
 
                     // Overcharge
@@ -231,7 +190,6 @@ export const TrainingMechAbility = () => {
                         // Get current health
                         const bc1 = warMachines?.find((w) => w.id === MechIDs.BC1)
                         if (!bc1) return
-                        healthChange(800, bc1, currentTime, 8)
                         shieldChange(100, bc1, currentTime, 8)
                         if (currentTime >= 7.5 && currentTime <= 8.4) {
                             healthChange(0, zb2, currentTime, 8)
@@ -241,8 +199,7 @@ export const TrainingMechAbility = () => {
                         }
                     }
                 }}
-                onEnded={(e) => {
-                    const { duration } = e.currentTarget
+                onEnded={() => {
                     const finalVideo = VIDEO_SOURCE_MA_LIST[VIDEO_SOURCE_MA_LIST.length - 1]
                     if (videoSource === finalVideo) {
                         setStage(null)
@@ -254,9 +211,6 @@ export const TrainingMechAbility = () => {
                     // Next video
                     const index = VIDEO_SOURCE_MA_LIST.findIndex((v) => v === videoSource)
                     const nextVideo = VIDEO_SOURCE_MA_LIST[index + 1]
-
-                    // Set bribe stage time based on current duration time
-                    setBribeStageTime((prev) => Math.floor(prev - duration))
 
                     const currentStage = context.find((s) => {
                         // Automatically goes next stage
@@ -280,25 +234,8 @@ export const TrainingMechAbility = () => {
             >
                 <source src={videoSource} />
             </video>
-            {end && <Congratulations ability="mech" />}
-            {stage && (
-                <Fade in={popoverOpen}>
-                    <Box>
-                        <Popover sizes={sizes} styles={{ popover: tourStyles?.popover }} position="right">
-                            <p>{stage.text}</p>
-                        </Popover>
-                        <Mask sizes={sizes} styles={{ maskWrapper: tourStyles?.maskWrapper }} />
-                    </Box>
-                </Fade>
-            )}
-        </Box>
+        </TutorialContainer>
     )
-}
-interface Context {
-    videoSource: string
-    text: string
-    showNext: boolean
-    state: MechAbilityStages
 }
 
 const context: Context[] = [
@@ -401,7 +338,7 @@ const trainingMechs = (userID: string) => {
             factionID: "7c6dde21-b067-46cf-9e56-155c88a520e2",
             maxHealth: 3600,
             maxShield: 3000,
-            health: 1500,
+            health: 1000,
             model: "XFVS",
             skin: "BlueWhite",
             speed: 2750,
@@ -430,8 +367,8 @@ const trainingMechs = (userID: string) => {
             ownerUsername: "",
             modelID: "",
             id: MechIDs.BC2,
-            hash: "JkRNuNlljO",
-            ownedByID: userID,
+            hash: "JkRNuNldsdsdljO",
+            ownedByID: "test",
             name: "Boston Cybernetics 2",
             participantID: 2,
             factionID: "7c6dde21-b067-46cf-9e56-155c88a520e2",
@@ -466,8 +403,8 @@ const trainingMechs = (userID: string) => {
             ownerUsername: "",
             modelID: "",
             id: MechIDs.BC3,
-            hash: "JkRNuNlljO",
-            ownedByID: userID,
+            hash: "JkRNuNllsdsdjO",
+            ownedByID: "test",
             name: "Boston Cybernetics 3",
             participantID: 3,
             factionID: "7c6dde21-b067-46cf-9e56-155c88a520e2",

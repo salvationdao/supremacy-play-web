@@ -1,6 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useRef } from "react"
-import { SvgFullscreen, SvgMinimize } from "../../../assets"
 import { useDimension, useTraining } from "../../../containers"
 import { useToggle } from "../../../hooks"
 import { fonts } from "../../../theme/theme"
@@ -164,12 +163,6 @@ const MiniMapInner = ({ map }: { map: Map }) => {
                             zIndex: 99,
                         }}
                     >
-                        {!isStreamBigDisplay && (
-                            <Box onClick={() => toggleIsEnlarged()} sx={{ cursor: "pointer", opacity: 0.4, ":hover": { opacity: 1 } }}>
-                                {isEnlarged ? <SvgMinimize size="1.6rem" /> : <SvgFullscreen size="1.6rem" />}
-                            </Box>
-                        )}
-
                         <Typography sx={{ fontFamily: fonts.nostromoHeavy }}>
                             {map.Name.replace(/([A-Z])/g, " $1")
                                 .trim()

@@ -12,17 +12,30 @@ import { CountdownSubmitBT } from "./MapInsideItems/CountdownSubmitBT"
 import { DisabledCellsBT } from "./MapInsideItems/DisabledCellsBT"
 import { LineSelectBT } from "./MapInsideItems/LineSelectBT"
 import { MapMechsBT } from "./MapInsideItems/MapMechs/MapMechsBT"
-import { EMP_X, EMP_Y, RangeIndicatorBT } from "./MapInsideItems/RangeIndicatorBT"
+import { RangeIndicatorBT } from "./MapInsideItems/RangeIndicatorBT"
 
 interface MiniMapInsideProps {
     containerDimensions: Dimension
 }
 
 export const MiniMapInsideBT = ({ containerDimensions }: MiniMapInsideProps) => {
-    const { map, setPlayerAbility, mapElement, gridWidth, gridHeight, isTargeting, selection, setTrainingStage, playerAbility, winner, trainingStage } =
-        useTraining()
+    const {
+        map,
+        setPlayerAbility,
+        mapElement,
+        gridWidth,
+        gridHeight,
+        isTargeting,
+        selection,
+        setTrainingStage,
+        playerAbility,
+        winner,
+        trainingStage,
+        empCoords,
+    } = useTraining()
     const mapRef = useRef<HTMLDivElement>(null)
     const gestureRef = useRef<HTMLDivElement>(null)
+    const empRef = useRef<HTMLDivElement>(null)
     const { mapScale, dragX, dragY } = useMiniMapGesturesBT({ gestureRef, containerDimensions })
 
     // Click inside the map, converts to a selection
@@ -34,16 +47,24 @@ export const MiniMapInsideBT = ({ containerDimensions }: MiniMapInsideProps) => 
                 const x = e.clientX - rect.left
                 const y = e.clientY - rect.top
 
-                const empRange = Math.abs(x - EMP_X) <= 15 && Math.abs(y - EMP_Y) <= 15
-                if (trainingStage === PlayerAbilityStages.LocationActionPA && empRange) {
-                    setTrainingStage(PlayerAbilityStages.ShowAbilityPA)
-                    setPlayerAbility(undefined)
+                if (trainingStage === PlayerAbilityStages.LocationActionPA && empCoords) {
+                    const positionX = x / (gridWidth * mapScale)
+                    const positionY = y / (gridHeight * mapScale)
+                    const empX = 47.36873293712241
+                    const empY = 35.558872277346836
+                    const empRange = Math.abs(positionX - empX) <= 3 && Math.abs(positionY - empY) <= 3
+                    if (empRange) {
+                        setTrainingStage(PlayerAbilityStages.ShowAbilityPA)
+                        setPlayerAbility(undefined)
+                        if (!mapRef.current || !empRef.current) return
+                        mapRef.current.appendChild(empRef.current)
+                    }
                 }
                 console.log(convertCellsToGameLocation(x / (gridWidth * mapScale), y / (gridHeight * mapScale), map?.Pixel_Left, map?.Pixel_Top))
                 console.log(x / (gridWidth * mapScale), y / (gridHeight * mapScale))
             }
         },
-        [mapElement, map, trainingStage, gridWidth, mapScale, gridHeight, setTrainingStage, setPlayerAbility],
+        [mapElement, map, trainingStage, empCoords, gridWidth, mapScale, gridHeight, setTrainingStage, setPlayerAbility],
     )
 
     // i.e. is battle ability or player ability of type LOCATION_SELECT
@@ -78,7 +99,9 @@ export const MiniMapInsideBT = ({ containerDimensions }: MiniMapInsideProps) => 
                     }}
                 >
                     {/* Range indicator */}
-                    {trainingStage === PlayerAbilityStages.LocationActionPA && <RangeIndicatorBT map={map} parentRef={mapRef} mapScale={mapScale} />}
+                    {trainingStage === PlayerAbilityStages.LocationActionPA && (
+                        <RangeIndicatorBT map={map} parentRef={mapRef} mapScale={mapScale} gestureRef={gestureRef} empRef={empRef} />
+                    )}
 
                     <Box
                         ref={gestureRef}

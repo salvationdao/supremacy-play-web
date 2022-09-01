@@ -5,7 +5,7 @@ import { GenericWarMachinePNG, SvgInfoCircular, SvgSkull } from "../../../../ass
 import { useAuth, useMobile, useSupremacy, useTraining } from "../../../../containers"
 import { getRarityDeets } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
-import { zoomEffect } from "../../../../theme/keyframes"
+import { dropShadowEffect, zoomEffect } from "../../../../theme/keyframes"
 import { colors, fonts } from "../../../../theme/theme"
 import { GameAbility, MechAbilityStages, WarMachineState } from "../../../../types"
 import { ClipThing } from "../../../Common/ClipThing"
@@ -105,6 +105,7 @@ export const WarMachineItemBT = ({
                 alignItems="flex-end"
                 sx={{
                     position: "relative",
+                    animation: selfOwned && trainingStage === MechAbilityStages.ExplainMA ? `${dropShadowEffect} 2s infinite` : "unset",
                     height: "100%",
                     opacity: isAlive ? 1 : 0.8,
                     width: `${
@@ -262,6 +263,7 @@ export const WarMachineItemBT = ({
                                     cursor: isAlive ? "pointer" : "auto",
                                     zIndex: 3,
                                     opacity: isAlive ? 1 : DEAD_OPACITY,
+
                                     ":hover #warMachineSkillsText": {
                                         letterSpacing: trainingStage !== MechAbilityStages.ExplainMA ? "unset" : isAlive ? 2.3 : 1,
                                     },

@@ -4,6 +4,7 @@ import { SvgGlobal, SvgLine, SvgMicrochip, SvgTarget } from "../../../assets"
 import { useTraining } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { usePagination } from "../../../hooks"
+import { glowEffect } from "../../../theme/keyframes"
 import { colors, fonts } from "../../../theme/theme"
 import { LocationSelectType, PlayerAbility, PlayerAbilityPrePurchase, PlayerAbilityStages } from "../../../types"
 import { SectionCollapsibleBT } from "../SectionCollapsibleBT"
@@ -42,7 +43,16 @@ export const PlayerAbilitiesBT = () => {
         }
     }, [trainingStage, setTutorialRef])
     return (
-        <Box ref={ref} sx={{ position: "relative" }}>
+        <Box
+            ref={ref}
+            sx={{
+                position: "relative",
+                animation:
+                    trainingStage === PlayerAbilityStages.ExplainPA || trainingStage === PlayerAbilityStages.UseAbilityPA
+                        ? (theme) => `${glowEffect(theme.factionTheme.primary)} 2s infinite`
+                        : "unset",
+            }}
+        >
             <SectionCollapsibleBT label="OWNED ABILITIES" tooltip="Launch your own abilities." initialExpanded={true} localStoragePrefix="playerAbility">
                 <PlayerAbilitiesInner />
             </SectionCollapsibleBT>

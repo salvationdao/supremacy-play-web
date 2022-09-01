@@ -1,0 +1,114 @@
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward"
+import { Box, Fade, Stack, Typography, useTheme } from "@mui/material"
+import { Mask } from "@reactour/mask"
+import { Popover } from "@reactour/popover"
+import { useRect } from "@reactour/utils"
+import React, { useEffect, useRef } from "react"
+import { useTraining } from "../../containers"
+import { zoomEffect } from "../../theme/keyframes"
+import { fonts } from "../../theme/theme"
+import { Context } from "../../types"
+import { TOP_BAR_HEIGHT } from "../BigDisplay/MiniMap/MiniMap"
+import { FancyButton } from "../Common/FancyButton"
+import { tourStyles } from "../HowToPlay/Tutorial/SetupTutorial"
+import { Congratulations, TrainingAbility } from "./Congratulations"
+
+interface TutorialContainerProps {
+    currentAbility: TrainingAbility
+    stage: Context | null
+    context: Context[]
+    videoSource: string
+    setStage: React.Dispatch<React.SetStateAction<Context | null>>
+    end: boolean
+    videoRef: React.RefObject<HTMLVideoElement>
+    popoverOpen: boolean
+    setPopoverOpen: React.Dispatch<React.SetStateAction<boolean>>
+}
+
+export const TutorialContainer: React.FC<TutorialContainerProps> = ({
+    children,
+    currentAbility,
+    stage,
+    context,
+    videoSource,
+    setStage,
+    end,
+    videoRef,
+    popoverOpen,
+    setPopoverOpen,
+}) => {
+    const { tutorialRef, setTrainingStage, updater, isStreamBigDisplay, bigDisplayRef, smallDisplayRef } = useTraining()
+    const sizes = useRect(tutorialRef, updater)
+    const ref = useRef<HTMLDivElement>(null)
+    const theme = useTheme()
+
+    useEffect(() => {
+        const thisElement = ref.current
+        const newContainerElement = isStreamBigDisplay ? bigDisplayRef : smallDisplayRef
+
+        if (thisElement && newContainerElement) {
+            newContainerElement.appendChild(thisElement)
+        }
+    }, [isStreamBigDisplay, smallDisplayRef, bigDisplayRef])
+
+    return (
+        <Box ref={ref} sx={{ background: "#000", width: "100%", height: "100%" }}>
+            {/* Top bar */}
+            <Stack
+                spacing="1rem"
+                direction="row"
+                alignItems="center"
+                sx={{
+                    p: ".6rem 1.6rem",
+                    height: `${TOP_BAR_HEIGHT}rem`,
+                    background: (theme) => `linear-gradient(${theme.factionTheme.background} 26%, ${theme.factionTheme.background}BB)`,
+                }}
+            >
+                <Typography sx={{ fontFamily: fonts.nostromoHeavy }}>BATTLE TRAINING</Typography>
+            </Stack>
+            {children}
+            {end && <Congratulations ability={currentAbility} />}
+            {stage && (
+                <Fade in={popoverOpen}>
+                    <Box>
+                        <Popover sizes={sizes} styles={{ popover: tourStyles?.popover }} position="right">
+                            <p>{stage.text}</p>
+                            {stage.showNext && (
+                                <FancyButton
+                                    clipThingsProps={{
+                                        backgroundColor: `${theme.factionTheme.primary}50`,
+                                        sx: { position: "relative", ml: "auto", mt: "2rem" },
+                                        border: { borderColor: `${theme.factionTheme.primary}50` },
+                                    }}
+                                    onClick={() => {
+                                        const i = context.findIndex((s) => s === stage)
+                                        const nextStage = context[i + 1]
+                                        if (nextStage.videoSource !== videoSource) {
+                                            videoRef.current?.play()
+                                            setPopoverOpen(false)
+                                        } else {
+                                            setStage(context[i + 1])
+                                            setTrainingStage(context[i + 1].state)
+                                        }
+                                    }}
+                                    sx={{
+                                        width: "fit-content",
+                                        fontFamily: fonts.nostromoBlack,
+                                        p: ".5em 2em",
+
+                                        display: "flex",
+                                        gap: ".5rem",
+                                        animation: `${zoomEffect(1.35)} 2s infinite`,
+                                    }}
+                                >
+                                    Next <ArrowForwardIcon />
+                                </FancyButton>
+                            )}
+                        </Popover>
+                        <Mask sizes={sizes} styles={{ maskWrapper: tourStyles?.maskWrapper }} />
+                    </Box>
+                </Fade>
+            )}
+        </Box>
+    )
+}

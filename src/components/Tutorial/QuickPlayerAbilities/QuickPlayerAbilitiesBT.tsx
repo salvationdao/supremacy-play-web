@@ -1,6 +1,7 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useRef, useState } from "react"
 import { useTraining } from "../../../containers"
+import { glowEffect } from "../../../theme/keyframes"
 import { colors, fonts } from "../../../theme/theme"
 import { LocationSelectType, PlayerAbilityStages, SaleAbility } from "../../../types"
 import { SectionCollapsibleBT } from "../SectionCollapsibleBT"
@@ -32,7 +33,17 @@ const QuickPlayerAbilitiesInner = () => {
     }, [])
 
     return (
-        <div ref={ref}>
+        <Box
+            sx={{
+                animation:
+                    trainingStage === PlayerAbilityStages.SalePeriodPA ||
+                    trainingStage === PlayerAbilityStages.ClaimPA ||
+                    trainingStage === PlayerAbilityStages.ShowPurchasePA
+                        ? (theme) => `${glowEffect(theme.factionTheme.primary)} 2s infinite`
+                        : "unset",
+            }}
+            ref={ref}
+        >
             <SectionCollapsibleBT
                 label="PURCHASE ABILITIES"
                 tooltip="Purchase abilities that are currently on sale."
@@ -104,7 +115,7 @@ const QuickPlayerAbilitiesInner = () => {
                     )}
                 </Stack>
             </SectionCollapsibleBT>
-        </div>
+        </Box>
     )
 }
 

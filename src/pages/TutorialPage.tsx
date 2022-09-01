@@ -74,14 +74,15 @@ const battleTrainingOptions = [
 const BattleTraining = () => {
     const { isOpen } = useTour()
     const { user } = useAuth()
-    const { trainingStage, setTrainingStage, completed, setBigDisplayRef } = useTraining()
+    const { trainingStage, setTrainingStage, completed, setBigDisplayRef, setTutorialRef } = useTraining()
     const [showIntro, toggleShowIntro] = useToggle(true)
 
     useEffect(() => {
         if (user.training_completed || searchParams.get("skip") === "true") {
             toggleShowIntro(false)
         }
-    }, [user, toggleShowIntro])
+        setTutorialRef(undefined)
+    }, [user, toggleShowIntro, setTutorialRef])
 
     if (showIntro) return <Intro toggleTrainingIntro={toggleShowIntro} />
     if (!(trainingStage === TrainingLobby.All))

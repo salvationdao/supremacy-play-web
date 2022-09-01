@@ -3,8 +3,8 @@ import { useMemo, useState } from "react"
 import { useAuth, useTraining } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
 import { useInterval } from "../../../../hooks"
-import { zoomEffect } from "../../../../theme/keyframes"
-import { BattleAbilityStages, GameAbility, MechAbilityStages, TrainingLocationSelects, WarMachineState } from "../../../../types"
+import { glowEffect, zoomEffect } from "../../../../theme/keyframes"
+import { BattleAbilityStages, GameAbility, MechAbilitiesHighlight, MechAbilityStages, TrainingLocationSelects, WarMachineState } from "../../../../types"
 import { ClipThing } from "../../../Common/ClipThing"
 import { MoveCommandBT } from "../../WarMachine/WarMachineItem/MoveCommandBT"
 
@@ -55,9 +55,9 @@ export const HighlightedMechAbilitiesBT = () => {
 
 const HighlightedMechAbilitiesInner = ({ warMachine }: { warMachine: WarMachineState }) => {
     const { userID } = useAuth()
+    const { trainingStage } = useTraining()
     const theme = useTheme()
     const { participantID, ownedByID } = warMachine
-
     return (
         <Fade in>
             <ClipThing
@@ -69,7 +69,12 @@ const HighlightedMechAbilitiesInner = ({ warMachine }: { warMachine: WarMachineS
                 corners={{ bottomLeft: true }}
                 opacity={0.3}
                 backgroundColor={theme.factionTheme.background}
-                sx={{ position: "absolute", top: "3.5rem", right: ".4rem" }}
+                sx={{
+                    position: "absolute",
+                    top: "3.5rem",
+                    right: ".4rem",
+                    animation: trainingStage in MechAbilitiesHighlight ? `${glowEffect(theme.factionTheme.primary)} 4s infinite` : "unset",
+                }}
             >
                 <Stack
                     spacing=".8rem"

@@ -230,7 +230,37 @@ export const TrainingContainer = createContainer(() => {
         [map, warMachines],
     )
 
+    const rotationChange = useCallback(
+        (rotation: number, warMachine: WarMachineState, currentTime: number, duration: number) => {
+            if (!map || !warMachines) return
+            const wm = warMachines.find((w) => w.id === warMachine.id)
+            if (!wm) return
+            const rate = currentTime / duration
+
+            const delta = (rotation - warMachine.rotation) * rate
+            wm.rotation = Math.round(warMachine.rotation + delta)
+
+            const group = [...warMachines]
+            const i = group.findIndex((w) => w.id === wm.id)
+            setWarMachines((prevState) => {
+                if (!prevState) return
+                const newGroup = [...prevState]
+                newGroup[i] = wm
+                return newGroup
+            })
+        },
+        [map, warMachines],
+    )
+
+    const empCoords = useMemo(() => {
+        const empX = 987.838
+        const empY = 750.444
+
+        return { x: empX, y: empY }
+    }, [])
+
     return {
+        empCoords,
         bribeStage,
         setBribeStage,
         map,
@@ -285,6 +315,7 @@ export const TrainingContainer = createContainer(() => {
         isStreamBigDisplay,
         updater,
         setUpdater,
+        rotationChange,
     }
 })
 

@@ -8,7 +8,11 @@ import { TOP_BAR_HEIGHT } from "../BigDisplay/MiniMap/MiniMap"
 import { ClipThing } from "../Common/ClipThing"
 import { FancyButton } from "../Common/FancyButton"
 
-type TrainingAbility = "battle" | "mech" | "player"
+export enum TrainingAbility {
+    Battle = "battle",
+    Player = "player",
+    Mech = "mech",
+}
 
 export const Congratulations = ({ ability }: { ability: TrainingAbility }) => {
     const { completed, setCompleted, setTrainingStage } = useTraining()
@@ -19,7 +23,7 @@ export const Congratulations = ({ ability }: { ability: TrainingAbility }) => {
 
     useEffect(() => {
         switch (ability) {
-            case "battle":
+            case TrainingAbility.Battle:
                 setCompleted((prevState) => {
                     return {
                         ...prevState,
@@ -27,7 +31,7 @@ export const Congratulations = ({ ability }: { ability: TrainingAbility }) => {
                     }
                 })
                 break
-            case "mech":
+            case TrainingAbility.Mech:
                 setCompleted((prevState) => {
                     return {
                         ...prevState,
@@ -35,7 +39,7 @@ export const Congratulations = ({ ability }: { ability: TrainingAbility }) => {
                     }
                 })
                 break
-            case "player":
+            case TrainingAbility.Player:
                 setCompleted((prevState) => {
                     return {
                         ...prevState,
@@ -49,17 +53,17 @@ export const Congratulations = ({ ability }: { ability: TrainingAbility }) => {
     }, [ability, setCompleted])
 
     switch (ability) {
-        case "battle":
+        case TrainingAbility.Battle:
             text = "Battle Ability"
             nextStage = TrainingLobby.MechAbility
             nextStageText = "Mech Ability"
             break
-        case "mech":
+        case TrainingAbility.Mech:
             text = "Mech Ability"
             nextStage = TrainingLobby.PlayerAbility
             nextStageText = "Player Ability"
             break
-        case "player":
+        case TrainingAbility.Player:
             text = "Player Ability"
             nextStage = TrainingLobby.BattleAbility
             nextStageText = "Battle Ability"
