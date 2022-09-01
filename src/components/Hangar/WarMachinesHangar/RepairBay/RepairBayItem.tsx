@@ -28,7 +28,7 @@ export const RepairBayItem = ({ repairSlot, isBigVersion }: { repairSlot: Repair
     )
 
     if (!mechDetails) {
-        return <EmptyRepairBayItem isLoading />
+        return <EmptyRepairBayItem isLoading isBigVersion={isBigVersion} />
     }
 
     const backgroundColor = theme.factionTheme.background
@@ -108,7 +108,7 @@ export const RepairBayItem = ({ repairSlot, isBigVersion }: { repairSlot: Repair
                             {mechDetails.label}
                         </Typography>
 
-                        <MechRepairBlocks mechID={mech_id} defaultBlocks={mechDetails?.repair_blocks} />
+                        <MechRepairBlocks mechID={mech_id} defaultBlocks={mechDetails?.repair_blocks} pulsateEffect />
                     </Stack>
                 </Stack>
             </Stack>
@@ -116,14 +116,20 @@ export const RepairBayItem = ({ repairSlot, isBigVersion }: { repairSlot: Repair
     )
 }
 
-export const EmptyRepairBayItem = ({ isLoading }: { isLoading?: boolean }) => {
+export const EmptyRepairBayItem = ({ isLoading, isBigVersion }: { isLoading?: boolean; isBigVersion?: boolean }) => {
     const theme = useTheme()
 
     const backgroundColor = theme.factionTheme.background
     const primaryColor = isLoading ? colors.bronze : backgroundColor
 
     return (
-        <ClipThing clipSize="6px" opacity={0.8} border={{ borderColor: primaryColor }} backgroundColor={backgroundColor} sx={{ height: "6rem" }}>
+        <ClipThing
+            clipSize="6px"
+            opacity={0.8}
+            border={{ borderColor: primaryColor }}
+            backgroundColor={backgroundColor}
+            sx={{ height: isBigVersion ? "100%" : "6rem", width: "100%" }}
+        >
             <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                 {isLoading ? (
                     <CircularProgress size="2rem" sx={{ color: theme.factionTheme.primary }} />
