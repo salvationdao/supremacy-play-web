@@ -263,8 +263,9 @@ export const MiniMapAbilitiesDisplay = () => {
 
     // Clear timeouts on unmount
     useEffect(() => {
+        const timeoutsRef = timeouts.current
         return () => {
-            timeouts.current.forEach((t) => clearTimeout(t))
+            timeoutsRef.forEach((t) => clearTimeout(t))
         }
     }, [])
 
