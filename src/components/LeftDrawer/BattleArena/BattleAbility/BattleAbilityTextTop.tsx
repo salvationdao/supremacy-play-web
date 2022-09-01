@@ -63,7 +63,7 @@ export const BattleAbilityTextTop = ({ label, image_url, colour, disableButton }
                     {label}
                 </Typography>
             </Stack>
-            <Box sx={{ animation: !disableButton ? `${shake(1)} 1s 3` : "unset" }}>
+            <Box>
                 <OptInButton disable={disableButton} isOptedIn={isOptedIn} />
             </Box>
         </Stack>
@@ -95,7 +95,7 @@ const OptInButton = ({ disable, isOptedIn }: { disable: boolean; isOptedIn: bool
                 clipSize: "5px",
                 backgroundColor: colors.green,
                 border: { borderColor: colors.green, borderThickness: "1px" },
-                sx: { position: "relative" },
+                sx: { position: "relative", animation: !disabled ? `${shake(0.38)} 1s infinite` : "unset" },
             }}
             sx={{ px: "1rem", pt: 0, pb: ".1rem", minWidth: "7rem", color: "#FFFFFF" }}
             onClick={onTrigger}
