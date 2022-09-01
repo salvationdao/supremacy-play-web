@@ -69,9 +69,6 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
                     case SystemMessageDataType.Faction:
                         icon = <SvgSyndicateFlag fill={theme.factionTheme.primary} size="1.6rem" />
                         break
-                    case SystemMessageDataType.MechOwnerBattleReward:
-                        icon = <SvgHealth fill={colors.yellow} size="1.6rem" />
-                        break
                     case SystemMessageDataType.PlayerAbilityRefunded:
                         icon = <SvgAbility fill={colors.orange} size="1.6rem" />
                         break
