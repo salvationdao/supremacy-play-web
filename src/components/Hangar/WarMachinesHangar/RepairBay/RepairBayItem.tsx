@@ -109,7 +109,12 @@ export const RepairBayItem = ({ repairSlot, isBigVersion }: { repairSlot: Repair
                             {mechDetails.label}
                         </Typography>
 
-                        <Blocks mechID={mech_id} defaultBlocks={mechDetails?.repair_blocks} nextRepairTime={next_repair_time} />
+                        <Blocks
+                            key={next_repair_time?.toISOString()}
+                            mechID={mech_id}
+                            defaultBlocks={mechDetails?.repair_blocks}
+                            nextRepairTime={next_repair_time}
+                        />
                     </Stack>
                 </Stack>
             </Stack>
@@ -150,7 +155,7 @@ const Blocks = ({ mechID, defaultBlocks, nextRepairTime }: { mechID: string; def
     const pulsateEffectPercent = useRef(0)
 
     useEffect(() => {
-        pulsateEffectPercent.current = totalTimeDurationSec.current ? Math.min(100, (100 * totalSecRemain) / totalTimeDurationSec.current) : 0
+        pulsateEffectPercent.current = totalTimeDurationSec.current ? 100 - Math.min(100, (100 * totalSecRemain) / totalTimeDurationSec.current) : 0
     }, [totalSecRemain])
 
     return (
