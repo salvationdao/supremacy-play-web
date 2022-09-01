@@ -155,7 +155,7 @@ const Blocks = ({ mechID, defaultBlocks, nextRepairTime }: { mechID: string; def
     const pulsateEffectPercent = useRef(0)
 
     useEffect(() => {
-        pulsateEffectPercent.current = totalTimeDurationSec.current ? 100 - Math.min(100, (100 * totalSecRemain) / totalTimeDurationSec.current) : 0
+        pulsateEffectPercent.current = totalTimeDurationSec.current ? 100 - Math.max(100, (100 * totalSecRemain) / totalTimeDurationSec.current) : 0
     }, [totalSecRemain])
 
     return <MechRepairBlocks mechID={mechID} defaultBlocks={defaultBlocks} pulsateEffectPercent={pulsateEffectPercent.current} />

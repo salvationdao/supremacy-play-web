@@ -44,7 +44,7 @@ export const RepairBlocks = ({
                     // Pulsate effect
                     ...(pulsateEffectPercent && pulsateEffectPercent > 0
                         ? {
-                              [`& > div:nth-of-type(${defaultBlocks ? Math.max(defaultBlocks - remainDamagedBlocks, 1) : 1})`]: {
+                              [`& > div:nth-of-type(${defaultBlocks ? Math.max(defaultBlocks - remainDamagedBlocks + 1, 1) : 1})`]: {
                                   ".single-block": {
                                       animation: `${pulseEffect} 3s infinite`,
 
