@@ -380,7 +380,20 @@ const MiniMapAbilityDisplay = ({ displayAbility }: { displayAbility: DisplayedAb
                 }
             />
         ),
-        [colour, diameter, mini_map_display_effect_type, gridHeight, image_url, launching_at, border_width, location_in_pixels, position, show_below_mechs],
+        [
+            colour,
+            diameter,
+            mini_map_display_effect_type,
+            gridHeight,
+            image_url,
+            launching_at,
+            border_width,
+            location_in_pixels,
+            position,
+            show_below_mechs,
+            no_background_colour,
+            size_grid_override,
+        ],
     )
 }
 

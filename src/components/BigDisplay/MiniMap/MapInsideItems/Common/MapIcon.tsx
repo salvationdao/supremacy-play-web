@@ -81,5 +81,21 @@ export const MapIcon = ({
                 {insideRender}
             </Stack>
         )
-    }, [onClick, sizeX, sizeY, position.x, position.y, gridWidth, gridHeight, sx, backgroundImageUrl, primaryColor, insideRender, iconSx, locationInPixels])
+    }, [
+        onClick,
+        sizeX,
+        sizeY,
+        position.x,
+        position.y,
+        gridWidth,
+        gridHeight,
+        sx,
+        backgroundImageUrl,
+        primaryColor,
+        insideRender,
+        iconSx,
+        locationInPixels,
+        imageBackgroundColour,
+        zIndex,
+    ])
 }
