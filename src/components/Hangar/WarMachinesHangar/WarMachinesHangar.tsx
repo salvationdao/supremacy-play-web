@@ -504,7 +504,7 @@ export const WarMachinesHangar = () => {
                     </Stack>
                 </ClipThing>
 
-                <RepairBay />
+                <RepairBay selectedMechs={selectedMechs} />
             </Stack>
 
             {bulkDeployConfirmModalOpen && (

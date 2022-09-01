@@ -1,19 +1,18 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useCallback, useMemo, useState } from "react"
-import { useGlobalNotifications } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
 import { useGameServerCommandsUser, useGameServerSubscriptionSecuredUser } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
-import { RepairSlot } from "../../../../types"
+import { MechBasic, RepairSlot } from "../../../../types"
 import { ClipThing } from "../../../Common/ClipThing"
+import { FancyButton } from "../../../Common/FancyButton"
 import { EmptyRepairBayItem, RepairBayItem } from "./RepairBayItem"
 
 const REPAIR_BAY_SLOTS_MAX = 5
 
-export const RepairBay = () => {
+export const RepairBay = ({ selectedMechs }: { selectedMechs: MechBasic[] }) => {
     const theme = useTheme()
-    const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsUser("/user_commander")
     const [repairSlots, setRepairSlots] = useState<RepairSlot[]>()
     const [isLoading, setIsLoading] = useState(false)
@@ -35,58 +34,51 @@ export const RepairBay = () => {
 
     const insertRepairBay = useCallback(async () => {
         try {
+            if (selectedMechs.length <= 0) return
+
             setIsLoading(true)
             await send<boolean>(GameServerKeys.InsertRepairBay, {
-                mech_ids: [],
+                mech_ids: selectedMechs.map((mech) => mech.id),
             })
         } catch (err) {
             const message = typeof err === "string" ? err : "Failed to insert into repair bay."
-            newSnackbarMessage(message, "error")
             setError(message)
             console.error(err)
         } finally {
             setIsLoading(false)
         }
-    }, [newSnackbarMessage, send])
+    }, [selectedMechs, send])
 
     const removeRepairBay = useCallback(async () => {
         try {
-            setIsLoading(true)
             await send<boolean>(GameServerKeys.RemoveRepairBay, {
                 mech_ids: [],
             })
         } catch (err) {
             const message = typeof err === "string" ? err : "Failed to remove from repair bay."
-            newSnackbarMessage(message, "error")
             setError(message)
             console.error(err)
-        } finally {
-            setIsLoading(false)
         }
-    }, [newSnackbarMessage, send])
+    }, [send])
 
     const swapRepairBay = useCallback(async () => {
         try {
-            setIsLoading(true)
             await send<boolean>(GameServerKeys.SwapRepairBay, {
                 from_mech_id: "",
                 to_mech_id: "",
             })
         } catch (err) {
             const message = typeof err === "string" ? err : "Failed to swap repair bay slots."
-            newSnackbarMessage(message, "error")
             setError(message)
             console.error(err)
-        } finally {
-            setIsLoading(false)
         }
-    }, [newSnackbarMessage, send])
+    }, [send])
 
     const activeRepairSlot = useMemo(() => (repairSlots ? repairSlots[0] : undefined), [repairSlots])
     const queuedRepairSlots = useMemo(() => repairSlots?.slice(1), [repairSlots])
     const emptySlotsToRender = useMemo(() => REPAIR_BAY_SLOTS_MAX - (repairSlots?.length || 0), [repairSlots])
 
-    const primaryColor = theme.factionTheme.primary
+    const primaryColor = colors.bronze
     const secondaryColor = theme.factionTheme.secondary
     const backgroundColor = theme.factionTheme.background
 
@@ -112,7 +104,7 @@ export const RepairBay = () => {
                             borderThickness: ".3rem",
                         }}
                         backgroundColor={primaryColor}
-                        sx={{ m: "-.3rem", p: "1rem" }}
+                        sx={{ m: "-.3rem", p: "1.3rem" }}
                     >
                         <Typography sx={{ textAlign: "center", fontFamily: fonts.nostromoBlack }}>ACTIVE REPAIR BAY</Typography>
                     </ClipThing>
@@ -129,7 +121,7 @@ export const RepairBay = () => {
                 </Stack>
 
                 {/* Queue */}
-                <Box sx={{ flex: 1 }}>
+                <Stack sx={{ flex: 1 }}>
                     <ClipThing
                         clipSize="10px"
                         corners={{ topLeft: true, topRight: true }}
@@ -138,7 +130,7 @@ export const RepairBay = () => {
                             borderThickness: ".3rem",
                         }}
                         backgroundColor={primaryColor}
-                        sx={{ m: "-.3rem", p: "1rem" }}
+                        sx={{ m: "-.3rem", p: "1.3rem" }}
                     >
                         <Typography sx={{ textAlign: "center", fontFamily: fonts.nostromoBlack }}>REPAIR BAY QUEUE</Typography>
                     </ClipThing>
@@ -148,10 +140,10 @@ export const RepairBay = () => {
                             flex: 1,
                             overflowY: "auto",
                             overflowX: "hidden",
-                            ml: "1.9rem",
+                            ml: "1.3rem",
                             mr: ".5rem",
-                            pr: "1.4rem",
-                            my: "1rem",
+                            pr: ".8rem",
+                            my: "1.6rem",
                             direction: "ltr",
                             scrollbarWidth: "none",
                             "::-webkit-scrollbar": {
@@ -168,7 +160,7 @@ export const RepairBay = () => {
                         }}
                     >
                         <Box sx={{ direction: "ltr", height: 0 }}>
-                            <Stack>
+                            <Stack spacing="1rem">
                                 {queuedRepairSlots &&
                                     queuedRepairSlots.map((repairSlot) => {
                                         return <RepairBayItem key={repairSlot.id} repairSlot={repairSlot} />
@@ -178,7 +170,29 @@ export const RepairBay = () => {
                             </Stack>
                         </Box>
                     </Box>
-                </Box>
+
+                    {/* Bottom buttons */}
+                    <Stack spacing=".8rem" sx={{ p: "1rem" }}>
+                        <FancyButton
+                            disabled={selectedMechs.length <= 0}
+                            loading={isLoading}
+                            clipThingsProps={{
+                                clipSize: "6px",
+                                clipSlantSize: "0px",
+                                corners: { topLeft: true, topRight: true, bottomLeft: true, bottomRight: true },
+                                backgroundColor: colors.bronze,
+                                border: { isFancy: true, borderColor: colors.bronze, borderThickness: "1.5px" },
+                                sx: { position: "relative", minWidth: "10rem" },
+                            }}
+                            sx={{ px: "1.3rem", py: ".9rem", color: "#FFFFFF" }}
+                            onClick={insertRepairBay}
+                        >
+                            <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack }}>
+                                INSERT SELECTED MECHS
+                            </Typography>
+                        </FancyButton>
+                    </Stack>
+                </Stack>
             </Stack>
         </ClipThing>
     )
