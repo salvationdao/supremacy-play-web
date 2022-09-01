@@ -196,6 +196,9 @@ export enum MiniMapDisplayEffectType {
     Range = "RANGE",
     Pulse = "PULSE",
     Drop = "DROP",
+    Explosion = "EXPLOSION",
+    Fade = "FADE",
+    Landmine = "LANDMINE",
 }
 
 export enum MechDisplayEffectType {
@@ -219,4 +222,10 @@ export interface DisplayedAbility {
         y: number
     }
     launching_at?: Date
+    location_in_pixels?: boolean
+    border_width?: number
+    show_below_mechs?: boolean
+    no_background_colour?: boolean
+    // defaults to 1.5
+    size_grid_override?: number
 }
