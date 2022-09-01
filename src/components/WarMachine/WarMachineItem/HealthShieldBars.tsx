@@ -32,7 +32,7 @@ export const HealthShieldBars = React.memo(function HealthShieldBars({ warMachin
         (payload) => {
             // Direct DOM manipulation is a lot more optimized than re-rendering
             if (payload?.health !== undefined) {
-                if (payload.health <= 0) setIsAlive(false)
+                setIsAlive(payload.health > 0)
 
                 const healthBarEl = document.getElementById(`war-machine-item-health-bar-${hash}`)
                 if (healthBarEl) {

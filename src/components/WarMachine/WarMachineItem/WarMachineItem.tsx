@@ -300,6 +300,7 @@ export const WarMachineItem = ({
                     )}
                     {/* Health and shield bars */}
                     <HealthShieldBars warMachine={warMachine} setIsAlive={setIsAlive} />
+
                     {!isMiniMech && isAlive && gameAbilities && gameAbilities.length > 0 && (
                         <Box
                             sx={{
