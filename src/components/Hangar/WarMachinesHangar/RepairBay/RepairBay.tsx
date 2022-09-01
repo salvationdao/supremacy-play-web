@@ -108,12 +108,12 @@ export const RepairBay = ({ selectedMechs }: { selectedMechs: MechBasic[] }) => 
                         <Typography sx={{ textAlign: "center", fontFamily: fonts.nostromoBlack }}>ACTIVE REPAIR BAY</Typography>
                     </ClipThing>
 
-                    <Stack alignItems="center" justifyContent="center" sx={{ minHeight: "20rem", p: "2rem" }}>
+                    <Stack alignItems="center" justifyContent="center" sx={{ minHeight: "20rem", p: "2rem 1.3rem" }}>
                         {activeRepairSlot ? (
                             <RepairBayItem isBigVersion repairSlot={activeRepairSlot} />
                         ) : (
                             <Typography variant="body2" sx={{ color: colors.grey, textAlign: "center", fontFamily: fonts.nostromoBold }}>
-                                No mech is using this bay.
+                                Repair bay is not being used.
                             </Typography>
                         )}
                     </Stack>
@@ -153,7 +153,7 @@ export const RepairBay = ({ selectedMechs }: { selectedMechs: MechBasic[] }) => 
                                 borderRadius: 3,
                             },
                             "::-webkit-scrollbar-thumb": {
-                                background: (theme) => theme.factionTheme.primary,
+                                background: colors.bronze,
                                 borderRadius: 3,
                             },
                         }}
@@ -172,6 +172,8 @@ export const RepairBay = ({ selectedMechs }: { selectedMechs: MechBasic[] }) => 
 
                     {/* Bottom buttons */}
                     <Stack spacing=".8rem" sx={{ p: "1rem" }}>
+                        {error && <Typography sx={{ color: colors.red }}>{error}</Typography>}
+
                         <FancyButton
                             disabled={selectedMechs.length <= 0}
                             loading={isLoading}

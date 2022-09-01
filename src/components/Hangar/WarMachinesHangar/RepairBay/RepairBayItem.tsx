@@ -8,10 +8,10 @@ import { colors, fonts } from "../../../../theme/theme"
 import { MechDetails, RepairSlot } from "../../../../types"
 import { ClipThing } from "../../../Common/ClipThing"
 import { MechRepairBlocks } from "../Common/MechRepairBlocks"
-import { MechThumbnail } from "../Common/MechThumbnail"
 
 export const RepairBayItem = ({ repairSlot, isBigVersion }: { repairSlot: RepairSlot; isBigVersion?: boolean }) => {
     const { mech_id, repair_case_id, status, next_repair_time, slot_number } = repairSlot
+    const theme = useTheme()
     const [mechDetails, setMechDetails] = useState<MechDetails>()
     const rarityDeets = useMemo(() => getRarityDeets(mechDetails?.tier || ""), [mechDetails])
 
@@ -31,42 +31,72 @@ export const RepairBayItem = ({ repairSlot, isBigVersion }: { repairSlot: Repair
         return <EmptyRepairBayItem isLoading />
     }
 
+    const backgroundColor = theme.factionTheme.background
+    const primaryColor = colors.bronze
+    const skin = mechDetails ? mechDetails.chassis_skin || mechDetails.default_chassis_skin : undefined
+    const imageUrl = skin?.avatar_url || skin?.image_url || mechDetails.avatar_url || mechDetails.image_url
+
     return (
-        <Stack
-            direction="row"
-            spacing="1.2rem"
-            alignItems="center"
-            sx={{
-                position: "relative",
-                py: ".8rem",
-                pl: ".5rem",
-                pr: ".7rem",
-                borderRadius: 0.8,
-            }}
-        >
-            {/* Mech image and deploy button */}
-            <Box sx={{ height: "8rem" }}>
-                <MechThumbnail mech={mechDetails} mechDetails={mechDetails} smallSize />
-            </Box>
+        <ClipThing clipSize="6px" opacity={0.8} border={{ borderColor: primaryColor }} backgroundColor={backgroundColor} sx={{ width: "100%" }}>
+            <Stack
+                direction={isBigVersion ? "column" : "row"}
+                spacing="1.2rem"
+                alignItems={isBigVersion ? "flex-start" : "center"}
+                sx={{
+                    position: "relative",
+                    p: ".8rem 1rem",
+                    borderRadius: 0.8,
+                }}
+            >
+                {/* Mech image and deploy button */}
+                <Box
+                    sx={{
+                        height: isBigVersion ? "16rem" : "8rem",
+                        width: isBigVersion ? "100%" : "8rem",
+                        overflow: "hidden",
+                        background: `url(${imageUrl})`,
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "center",
+                        backgroundSize: "cover",
+                        borderRadius: 0.3,
+                    }}
+                />
 
-            {/* Right side */}
-            <Stack spacing="1.2rem" direction="row" alignItems="flex-start" sx={{ py: ".2rem", flex: 1 }}>
-                <Stack sx={{ flex: 1 }}>
-                    <Box sx={{ py: ".2rem", flex: 1 }}>
-                        <Typography
-                            variant="caption"
-                            sx={{
-                                fontFamily: fonts.nostromoHeavy,
-                                color: rarityDeets.color,
-                            }}
-                        >
-                            {rarityDeets.label}
-                        </Typography>
+                {/* Right side */}
+                <Stack spacing="1.2rem" direction="row" alignItems="flex-start" sx={{ py: ".2rem", flex: 1 }}>
+                    <Stack sx={{ flex: 1 }}>
+                        <Box sx={{ py: ".2rem", flex: 1 }}>
+                            <Typography
+                                variant="caption"
+                                sx={{
+                                    fontFamily: fonts.nostromoHeavy,
+                                    color: rarityDeets.color,
+                                }}
+                            >
+                                {rarityDeets.label}
+                            </Typography>
+
+                            <Typography
+                                sx={{
+                                    fontSize: "1.8rem",
+                                    color: !mechDetails.name ? colors.grey : "#FFFFFF",
+                                    display: "-webkit-box",
+                                    overflow: "hidden",
+                                    overflowWrap: "anywhere",
+                                    textOverflow: "ellipsis",
+                                    WebkitLineClamp: 1,
+                                    WebkitBoxOrient: "vertical",
+                                }}
+                            >
+                                {mechDetails.name || "Unnamed"}
+                            </Typography>
+                        </Box>
 
                         <Typography
+                            variant="body2"
                             sx={{
-                                fontSize: "1.8rem",
-                                color: !mechDetails.name ? colors.grey : "#FFFFFF",
+                                fontFamily: fonts.nostromoBlack,
+                                fontWeight: "fontWeightBold",
                                 display: "-webkit-box",
                                 overflow: "hidden",
                                 overflowWrap: "anywhere",
@@ -75,30 +105,14 @@ export const RepairBayItem = ({ repairSlot, isBigVersion }: { repairSlot: Repair
                                 WebkitBoxOrient: "vertical",
                             }}
                         >
-                            {mechDetails.name}
+                            {mechDetails.label}
                         </Typography>
-                    </Box>
 
-                    <Typography
-                        variant="body2"
-                        sx={{
-                            fontFamily: fonts.nostromoBlack,
-                            fontWeight: "fontWeightBold",
-                            display: "-webkit-box",
-                            overflow: "hidden",
-                            overflowWrap: "anywhere",
-                            textOverflow: "ellipsis",
-                            WebkitLineClamp: 1,
-                            WebkitBoxOrient: "vertical",
-                        }}
-                    >
-                        {mechDetails.label}
-                    </Typography>
-
-                    <MechRepairBlocks mechID={mech_id} defaultBlocks={mechDetails?.repair_blocks} />
+                        <MechRepairBlocks mechID={mech_id} defaultBlocks={mechDetails?.repair_blocks} />
+                    </Stack>
                 </Stack>
             </Stack>
-        </Stack>
+        </ClipThing>
     )
 }
 
@@ -109,7 +123,7 @@ export const EmptyRepairBayItem = ({ isLoading }: { isLoading?: boolean }) => {
     const primaryColor = isLoading ? colors.bronze : backgroundColor
 
     return (
-        <ClipThing clipSize="6px" opacity={0.5} border={{ borderColor: primaryColor }} backgroundColor={backgroundColor} sx={{ height: "6rem" }}>
+        <ClipThing clipSize="6px" opacity={0.8} border={{ borderColor: primaryColor }} backgroundColor={backgroundColor} sx={{ height: "6rem" }}>
             <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                 {isLoading ? (
                     <CircularProgress size="2rem" sx={{ color: theme.factionTheme.primary }} />
