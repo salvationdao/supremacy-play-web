@@ -40,7 +40,7 @@ export const QuestItem = ({ questStat, progress, showConfetti }: { questStat: Qu
         >
             <Confetti
                 width={400}
-                height={40}
+                height={80}
                 gravity={0.04}
                 initialVelocityX={1}
                 tweenDuration={10000}

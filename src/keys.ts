@@ -198,6 +198,12 @@ export enum GameServerKeys {
     CompleteRepairAgent = "REPAIR:AGENT:COMPLETE",
     AbandonRepairAgent = "REPAIR:AGENT:ABANDON",
 
+    // Repair bay
+    GetRepairBaySlots = "MECH:REPAIR:SLOTS",
+    InsertRepairBay = "MECH:REPAIR:SLOT:INSERT",
+    RemoveRepairBay = "MECH:REPAIR:SLOT:REMOVE",
+    SwapRepairBay = "MECH:REPAIR:SLOT:SWAP",
+
     // Companion App
     AuthGenOneTimeToken = "GEN:ONE:TIME:TOKEN",
     GetPlayerDeviceList = "PLAYER:DEVICE:LIST",
