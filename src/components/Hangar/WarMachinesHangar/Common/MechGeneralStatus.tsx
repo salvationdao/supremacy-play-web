@@ -1,9 +1,11 @@
 import { Stack, Typography } from "@mui/material"
 import { useCallback, useRef, useState } from "react"
 import { SvgRepair } from "../../../../assets"
+import { useGlobalNotifications } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
 import {
     useGameServerCommandsFaction,
+    useGameServerCommandsUser,
     useGameServerSubscriptionFaction,
     useGameServerSubscriptionSecured,
     useGameServerSubscriptionSecuredUser,
@@ -32,7 +34,9 @@ export const MechGeneralStatus = ({
     setPrimaryColor?: React.Dispatch<React.SetStateAction<string>>
 }) => {
     const theme = useTheme()
+    const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsFaction("/faction_commander")
+    const { send: sendUser } = useGameServerCommandsUser("/user_commander")
     const [mechStatus, setMechStatus] = useState<MechStatus>()
     const textValue = useRef("LOADING...")
     const [color, setColour] = useState(theme.factionTheme.primary)
@@ -143,6 +147,19 @@ export const MechGeneralStatus = ({
         },
     )
 
+    // Adds mech to repair bay
+    const insertRepairBay = useCallback(async () => {
+        try {
+            await sendUser<boolean>(GameServerKeys.InsertRepairBay, {
+                mech_ids: [mechID],
+            })
+        } catch (err) {
+            const message = typeof err === "string" ? err : "Failed to insert into repair bay."
+            newSnackbarMessage(message, "error")
+            console.error(err)
+        }
+    }, [mechID, newSnackbarMessage, sendUser])
+
     return (
         <>
             <Stack direction="row" alignItems="center" spacing=".5rem" sx={{ flexShrink: 0 }}>
@@ -224,7 +241,7 @@ export const MechGeneralStatus = ({
                             </Stack>
                         )}
 
-                        {isInRepairBay && (
+                        {mechDetails && mechStatus?.status === MechStatusEnum.Damaged && (
                             <Stack
                                 direction="row"
                                 spacing=".3rem"
@@ -232,14 +249,22 @@ export const MechGeneralStatus = ({
                                 sx={{
                                     p: ".1rem .6rem",
                                     pt: ".2rem",
-                                    border: `${colors.bronze} 1px solid`,
+                                    opacity: isInRepairBay ? 0.6 : 1,
+                                    backgroundColor: isInRepairBay ? "unset" : colors.bronze,
+                                    border: isInRepairBay ? `${colors.bronze} 1px solid` : "unset",
                                     borderRadius: 0.5,
+                                    ":hover": { transform: "scale(1.05)" },
+                                }}
+                                onClick={(e) => {
+                                    e.preventDefault()
+                                    e.stopPropagation()
+                                    insertRepairBay()
                                 }}
                             >
-                                <SvgRepair size="1.1rem" fill={colors.bronze} />
+                                <SvgRepair size="1.1rem" fill={isInRepairBay ? colors.bronze : "#FFFFFF"} />
                                 <Typography
                                     variant="subtitle1"
-                                    sx={{ color: colors.bronze, whiteSpace: "nowrap", lineHeight: 1, fontWeight: "fontWeightBold" }}
+                                    sx={{ color: isInRepairBay ? colors.bronze : "#FFFFFF", whiteSpace: "nowrap", lineHeight: 1, fontWeight: "fontWeightBold" }}
                                 >
                                     REPAIR BAY
                                 </Typography>
