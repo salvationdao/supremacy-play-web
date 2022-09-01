@@ -2,22 +2,20 @@ import { Box, Stack, Typography } from "@mui/material"
 import { useCallback, useState } from "react"
 import { FancyButton } from "../../.."
 import { useGlobalNotifications } from "../../../../containers"
+import { useArena } from "../../../../containers/arena"
 import { useGameServerCommandsFaction, useGameServerSubscriptionSecuredUser } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
-import { colors, fonts } from "../../../../theme/theme"
-import { useArena } from "../../../../containers/arena"
-import { BribeStage } from "../../../../types"
 import { shake } from "../../../../theme/keyframes"
+import { colors, fonts } from "../../../../theme/theme"
 
 interface BattleAbilityTextTopProps {
     label: string
     image_url: string
     colour: string
     disableButton: boolean
-    phase: BribeStage | undefined
 }
 
-export const BattleAbilityTextTop = ({ label, image_url, colour, disableButton, phase }: BattleAbilityTextTopProps) => {
+export const BattleAbilityTextTop = ({ label, image_url, colour, disableButton }: BattleAbilityTextTopProps) => {
     const [isOptedIn, setIsOptedIn] = useState(false)
     const { currentArenaID } = useArena()
 
@@ -65,7 +63,7 @@ export const BattleAbilityTextTop = ({ label, image_url, colour, disableButton, 
                     {label}
                 </Typography>
             </Stack>
-            <Box sx={{ animation: phase === BribeStage.OptIn ? `${shake(1)} 1s 3` : "unset" }}>
+            <Box sx={{ animation: !disableButton ? `${shake(1)} 1s 3` : "unset" }}>
                 <OptInButton disable={disableButton} isOptedIn={isOptedIn} />
             </Box>
         </Stack>

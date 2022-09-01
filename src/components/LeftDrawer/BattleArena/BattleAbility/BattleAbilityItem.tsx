@@ -3,6 +3,7 @@ import BigNumber from "bignumber.js"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { ClipThing } from "../../.."
 import { BribeStageResponse, useAuth, useGame, useGlobalNotifications } from "../../../../containers"
+import { useArena } from "../../../../containers/arena"
 import { useTheme } from "../../../../containers/theme"
 import { shadeColor } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
@@ -10,7 +11,6 @@ import { useGameServerSubscription } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { BattleAbility as BattleAbilityType, BribeStage } from "../../../../types"
 import { BattleAbilityTextTop } from "./BattleAbilityTextTop"
-import { useArena } from "../../../../containers/arena"
 
 export interface BattleAbilityProgressBigNum {
     faction_id: string
@@ -80,9 +80,8 @@ const BattleAbilityItemInner = ({ bribeStage, battleAbility, fadeEffect }: Inner
 
     useEffect(() => {
         if (bribeStage?.phase !== BribeStage.OptIn || !sendBANotifications) return
-
         sendBrowserNotification.current(`Battle Ability: ${label} Available`, `Opt in now to lead your faction to victory!`)
-    }, [bribeStage?.phase, sendBANotifications])
+    }, [bribeStage?.phase, label, sendBANotifications, sendBrowserNotification])
 
     return (
         <Stack>
@@ -114,7 +113,6 @@ const BattleAbilityItemInner = ({ bribeStage, battleAbility, fadeEffect }: Inner
                                     image_url={image_url}
                                     colour={colour}
                                     disableButton={!factionID || bribeStage?.phase !== BribeStage.OptIn}
-                                    phase={bribeStage?.phase}
                                 />
 
                                 <Typography>{description}</Typography>
