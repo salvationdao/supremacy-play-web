@@ -82,7 +82,7 @@ export const WarMachineHangarItem = ({
     const [primaryColor, setPrimaryColor] = useState(theme.factionTheme.primary)
     const secondaryColor = theme.factionTheme.secondary
     const backgroundColor = theme.factionTheme.background
-    const selectedBackgroundColor = useMemo(() => shadeColor(backgroundColor, 420), [backgroundColor])
+    const selectedBackgroundColor = useMemo(() => shadeColor(primaryColor, -72), [primaryColor])
 
     return (
         <Box sx={{ position: "relative", overflow: "visible", height: "100%" }}>
