@@ -1,5 +1,6 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useCallback, useMemo, useState } from "react"
+import FlipMove from "react-flip-move"
 import { useTheme } from "../../../../containers/theme"
 import { useGameServerCommandsUser, useGameServerSubscriptionSecuredUser } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
@@ -166,13 +167,24 @@ export const RepairBay = ({
                         }}
                     >
                         <Box sx={{ direction: "ltr", height: 0 }}>
-                            <Stack spacing="1rem">
-                                {queuedRepairSlots &&
-                                    queuedRepairSlots.map((repairSlot) => {
-                                        return <RepairBayItem key={repairSlot.id} repairSlot={repairSlot} />
-                                    })}
+                            <Stack>
+                                <FlipMove>
+                                    {queuedRepairSlots &&
+                                        queuedRepairSlots.map((repairSlot) => {
+                                            return (
+                                                <div key={repairSlot.id} style={{ width: "100%", marginBottom: "1rem" }}>
+                                                    <RepairBayItem repairSlot={repairSlot} />
+                                                </div>
+                                            )
+                                        })}
 
-                                {emptySlotsToRender > 0 && new Array(emptySlotsToRender).fill(0).map((_, index) => <EmptyRepairBayItem key={index} />)}
+                                    {emptySlotsToRender > 0 &&
+                                        new Array(emptySlotsToRender).fill(0).map((_, index) => (
+                                            <div key={index} style={{ width: "100%", marginBottom: "1rem" }}>
+                                                <EmptyRepairBayItem />
+                                            </div>
+                                        ))}
+                                </FlipMove>
                             </Stack>
                         </Box>
                     </Box>
@@ -192,7 +204,7 @@ export const RepairBay = ({
                                 border: { isFancy: true, borderColor: colors.bronze, borderThickness: "1.5px" },
                                 sx: { position: "relative", minWidth: "10rem" },
                             }}
-                            sx={{ px: "1.3rem", py: ".9rem", color: "#FFFFFF" }}
+                            sx={{ px: "1.3rem", py: "1.2rem", color: "#FFFFFF" }}
                             onClick={insertRepairBay}
                         >
                             <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack }}>

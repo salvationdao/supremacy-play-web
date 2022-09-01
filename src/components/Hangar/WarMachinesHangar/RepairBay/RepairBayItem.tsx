@@ -158,9 +158,5 @@ const Blocks = ({ mechID, defaultBlocks, nextRepairTime }: { mechID: string; def
         pulsateEffectPercent.current = totalTimeDurationSec.current ? 100 - Math.min(100, (100 * totalSecRemain) / totalTimeDurationSec.current) : 0
     }, [totalSecRemain])
 
-    return (
-        <Box>
-            <MechRepairBlocks mechID={mechID} defaultBlocks={defaultBlocks} pulsateEffectPercent={pulsateEffectPercent.current} />
-        </Box>
-    )
+    return <MechRepairBlocks mechID={mechID} defaultBlocks={defaultBlocks} pulsateEffectPercent={pulsateEffectPercent.current} />
 }
