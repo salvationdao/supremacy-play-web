@@ -89,7 +89,7 @@ const MapMechInner = ({ warMachine, map, label, isAI, poppedOutContainerRef }: M
         (payload) => {
             // Direct DOM manipulation is a lot more optimized than re-rendering
             if (payload?.health !== undefined) {
-                if (payload.health <= 0) setIsAlive(false)
+                setIsAlive(payload.health > 0)
 
                 const healthBarEl = (poppedOutContainerRef?.current || document).querySelector(`#map-mech-health-bar-${hash}`) as HTMLElement
                 if (healthBarEl) {
