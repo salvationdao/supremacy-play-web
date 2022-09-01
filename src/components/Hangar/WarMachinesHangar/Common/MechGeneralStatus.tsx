@@ -1,4 +1,4 @@
-import { Box, Stack, Typography } from "@mui/material"
+import { Stack, Typography } from "@mui/material"
 import { useCallback, useRef, useState } from "react"
 import { SvgRepair } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
@@ -126,7 +126,8 @@ export const MechGeneralStatus = ({
     return (
         <>
             <Stack direction="row" alignItems="center" spacing=".5rem" sx={{ flexShrink: 0 }}>
-                <Box
+                <Stack
+                    spacing=".8rem"
                     sx={
                         hideBox
                             ? { position: "relative" }
@@ -145,12 +146,7 @@ export const MechGeneralStatus = ({
                         {textValue.current}
                     </Typography>
 
-                    <Stack
-                        direction="row"
-                        alignItems="center"
-                        spacing=".5rem"
-                        sx={{ position: "absolute", left: "100%", top: "50%", transform: "translateY(-50%)", px: ".4rem", pb: ".3rem" }}
-                    >
+                    <Stack direction="row" alignItems="center" spacing=".5rem" sx={{ pb: ".4rem" }}>
                         {mechDetails && mechStatus?.status === MechStatusEnum.Damaged && (
                             <Stack
                                 direction="row"
@@ -204,7 +200,7 @@ export const MechGeneralStatus = ({
                             </Stack>
                         )}
                     </Stack>
-                </Box>
+                </Stack>
             </Stack>
 
             {repairMechModalOpen && mechDetails && (

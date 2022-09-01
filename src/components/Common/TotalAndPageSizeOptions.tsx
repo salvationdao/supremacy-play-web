@@ -98,7 +98,7 @@ export const TotalAndPageSizeOptions = ({
                     sx={{
                         minWidth: 0,
                         borderRadius: 1,
-                        backgroundColor: isFiltersExpanded ? "transparent !important" : primaryColor,
+                        backgroundColor: isFiltersExpanded ? primaryColor : "transparent !important",
                         border: `${primaryColor}90 1px solid`,
                         color: secondaryColor,
                         ":hover": { backgroundColor: primaryColor },

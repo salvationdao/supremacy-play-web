@@ -1,5 +1,6 @@
-import { Box, CircularProgress, Stack, Typography } from "@mui/material"
+import { Box, CircularProgress, IconButton, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useRef, useState } from "react"
+import { SvgDelete, SvgDownArrow, SvgUpArrow } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
 import { getRarityDeets } from "../../../../helpers"
 import { useTimer } from "../../../../hooks"
@@ -10,8 +11,22 @@ import { MechDetails, RepairSlot } from "../../../../types"
 import { ClipThing } from "../../../Common/ClipThing"
 import { MechRepairBlocks } from "../Common/MechRepairBlocks"
 
-export const RepairBayItem = ({ repairSlot, isBigVersion }: { repairSlot: RepairSlot; isBigVersion?: boolean }) => {
-    const { mech_id, next_repair_time } = repairSlot
+export const RepairBayItem = ({
+    repairSlot,
+    aboveSlot,
+    belowSlot,
+    isBigVersion,
+    removeRepairBay,
+    swapRepairBay,
+}: {
+    repairSlot: RepairSlot
+    isBigVersion?: boolean
+    aboveSlot?: RepairSlot
+    belowSlot?: RepairSlot
+    removeRepairBay?: (mechIDs: string[]) => Promise<void>
+    swapRepairBay?: (mechIDs: [string, string]) => Promise<void>
+}) => {
+    const { id, mech_id, next_repair_time } = repairSlot
     const theme = useTheme()
     const [mechDetails, setMechDetails] = useState<MechDetails>()
     const rarityDeets = useMemo(() => getRarityDeets(mechDetails?.tier || ""), [mechDetails])
@@ -42,11 +57,14 @@ export const RepairBayItem = ({ repairSlot, isBigVersion }: { repairSlot: Repair
             <Stack
                 direction={isBigVersion ? "column" : "row"}
                 spacing="1.2rem"
-                alignItems={isBigVersion ? "flex-start" : "center"}
+                alignItems={isBigVersion ? "stretch" : "center"}
                 sx={{
                     position: "relative",
                     p: ".8rem 1rem",
                     borderRadius: 0.8,
+                    [`:hover #repair-bay-item-buttons-${id}`]: {
+                        display: "block",
+                    },
                 }}
             >
                 {/* Mech image and deploy button */}
@@ -64,7 +82,7 @@ export const RepairBayItem = ({ repairSlot, isBigVersion }: { repairSlot: Repair
                 />
 
                 {/* Right side */}
-                <Stack spacing="1.2rem" direction="row" alignItems="flex-start" sx={{ py: ".2rem", flex: 1 }}>
+                <Stack spacing="1.2rem" direction="row" alignItems="flex-start" sx={{ position: "relative", py: ".2rem", flex: 1 }}>
                     <Stack sx={{ flex: 1 }}>
                         <Box sx={{ py: ".2rem", flex: 1 }}>
                             <Typography
@@ -116,6 +134,31 @@ export const RepairBayItem = ({ repairSlot, isBigVersion }: { repairSlot: Repair
                             nextRepairTime={next_repair_time}
                         />
                     </Stack>
+
+                    <Box
+                        id={`repair-bay-item-buttons-${id}`}
+                        sx={{ display: "none", position: "absolute", right: "-.3rem", top: ".6rem", bottom: ".6rem", px: ".6rem", backgroundColor: "#000000" }}
+                    >
+                        <Stack justifyContent="center" sx={{ height: "100%" }}>
+                            {aboveSlot && swapRepairBay && (
+                                <IconButton size="small" onClick={() => swapRepairBay([mech_id, aboveSlot.mech_id])}>
+                                    <SvgUpArrow size="1.4rem" />
+                                </IconButton>
+                            )}
+
+                            {belowSlot && swapRepairBay && (
+                                <IconButton size="small" onClick={() => swapRepairBay([mech_id, belowSlot.mech_id])}>
+                                    <SvgDownArrow size="1.4rem" />
+                                </IconButton>
+                            )}
+
+                            {removeRepairBay && (
+                                <IconButton size="small" onClick={() => removeRepairBay([mech_id])}>
+                                    <SvgDelete size="1.4rem" fill={colors.red} />
+                                </IconButton>
+                            )}
+                        </Stack>
+                    </Box>
                 </Stack>
             </Stack>
         </ClipThing>
