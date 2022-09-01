@@ -149,13 +149,8 @@ const Blocks = ({ mechID, defaultBlocks, nextRepairTime }: { mechID: string; def
     const totalTimeDurationSec = useRef(nextRepairTime ? (nextRepairTime.getTime() - new Date().getTime()) / 1000 : 0)
     const pulsateEffectPercent = useRef(0)
 
-    console.log({
-        pulsateEffectPercent: pulsateEffectPercent.current,
-        totalTimeDurationSec: totalTimeDurationSec.current,
-    })
-
     useEffect(() => {
-        pulsateEffectPercent.current = totalTimeDurationSec.current ? (100 * totalSecRemain) / totalTimeDurationSec.current : 0
+        pulsateEffectPercent.current = totalTimeDurationSec.current ? Math.min(100, (100 * totalSecRemain) / totalTimeDurationSec.current) : 0
     }, [totalSecRemain])
 
     return (

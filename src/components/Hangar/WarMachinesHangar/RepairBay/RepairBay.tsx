@@ -11,7 +11,13 @@ import { EmptyRepairBayItem, RepairBayItem } from "./RepairBayItem"
 
 const REPAIR_BAY_SLOTS_MAX = 5
 
-export const RepairBay = ({ selectedMechs }: { selectedMechs: MechBasic[] }) => {
+export const RepairBay = ({
+    selectedMechs,
+    setSelectedMechs,
+}: {
+    selectedMechs: MechBasic[]
+    setSelectedMechs: React.Dispatch<React.SetStateAction<MechBasic[]>>
+}) => {
     const theme = useTheme()
     const { send } = useGameServerCommandsUser("/user_commander")
     const [repairSlots, setRepairSlots] = useState<RepairSlot[]>()
@@ -40,6 +46,7 @@ export const RepairBay = ({ selectedMechs }: { selectedMechs: MechBasic[] }) => 
             await send<boolean>(GameServerKeys.InsertRepairBay, {
                 mech_ids: selectedMechs.map((mech) => mech.id),
             })
+            setSelectedMechs([])
         } catch (err) {
             const message = typeof err === "string" ? err : "Failed to insert into repair bay."
             setError(message)
@@ -47,7 +54,7 @@ export const RepairBay = ({ selectedMechs }: { selectedMechs: MechBasic[] }) => 
         } finally {
             setIsLoading(false)
         }
-    }, [selectedMechs, send])
+    }, [selectedMechs, send, setSelectedMechs])
 
     // const removeRepairBay = useCallback(async () => {
     //     try {
