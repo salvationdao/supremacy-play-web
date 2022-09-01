@@ -18,6 +18,7 @@ import { WeaponPage } from "../pages/WeaponPage"
 import { StorefrontCheckoutPage } from "../pages/StorefrontCheckoutPage"
 import { colors } from "../theme/theme"
 import { StorefrontShoppingCartPage } from "../pages/StorefrontShoppingCartPage"
+import { LandingPage } from "../pages/LandingPage"
 
 // ************
 // ** ROUTES **
@@ -53,6 +54,21 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         },
         matchNavLinkID: "home",
         enable: true,
+    },
+
+    // Landing
+    landing: {
+        id: "landing",
+        path: "/landing",
+        exact: true,
+        Component: LandingPage,
+        requireAuth: true,
+        requireFaction: true,
+        enable: true,
+        navLink: {
+            enable: BATTLE_ARENA_OPEN,
+            label: "Upcoming Battle",
+        },
     },
 
     // Leaderboard

@@ -48,7 +48,7 @@ export const Section = ({
                     <SvgDropdownArrow
                         size="1.3rem"
                         fill={isExpanded ? secondaryColor : "#FFFFFF"}
-                        sx={{ mr: ".6rem", transform: isExpanded ? "scaleY(-1) translateY(2px)" : "unset" }}
+                        sx={{ mr: ".9rem", transform: isExpanded ? "scaleY(-1) translateY(2px)" : "unset" }}
                     />
                     <Typography variant="caption" sx={{ color: isExpanded ? secondaryColor : "#FFFFFF", fontFamily: fonts.nostromoBlack }}>
                         {label}
