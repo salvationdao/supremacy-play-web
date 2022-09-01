@@ -35,7 +35,8 @@ export const RepairBay = ({
                 setRepairSlots(undefined)
                 return
             }
-            setRepairSlots(payload.sort((a, b) => (a.slot_number > b.slot_number ? 1 : -1)))
+            const sortedPayload = payload.sort((a, b) => (a.slot_number > b.slot_number ? 1 : -1))
+            setRepairSlots(sortedPayload)
         },
     )
 

@@ -2,10 +2,15 @@ import { Stack, Typography } from "@mui/material"
 import { useCallback, useRef, useState } from "react"
 import { SvgRepair } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
-import { useGameServerCommandsFaction, useGameServerSubscriptionFaction, useGameServerSubscriptionSecured } from "../../../../hooks/useGameServer"
+import {
+    useGameServerCommandsFaction,
+    useGameServerSubscriptionFaction,
+    useGameServerSubscriptionSecured,
+    useGameServerSubscriptionSecuredUser,
+} from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
-import { MechDetails, MechStatus, MechStatusEnum } from "../../../../types"
+import { MechDetails, MechStatus, MechStatusEnum, RepairSlot } from "../../../../types"
 import { RepairOffer } from "../../../../types/jobs"
 import { RepairModal } from "../WarMachineDetails/Modals/RepairModal/RepairModal"
 
@@ -34,7 +39,9 @@ export const MechGeneralStatus = ({
     const [repairMechModalOpen, setRepairMechModalOpen] = useState<boolean>(false)
     const [repairOffer, setRepairOffer] = useState<RepairOffer>()
     const [defaultOpenSelfRepair, setDefaultOpenSelfRepair] = useState(false)
+    const [isInRepairBay, setIsInRepairBay] = useState(false)
 
+    // Subscribe on the mech's repair job listed
     useGameServerSubscriptionSecured<RepairOffer>(
         {
             URI: `/mech/${mechID}/active_repair_offer`,
@@ -48,6 +55,19 @@ export const MechGeneralStatus = ({
         },
     )
 
+    // Subscribe on the repair bay
+    useGameServerSubscriptionSecuredUser<RepairSlot[]>(
+        {
+            URI: "/repair_bay",
+            key: GameServerKeys.GetRepairBaySlots,
+        },
+        (payload) => {
+            if (!payload || payload.length <= 0) return
+            setIsInRepairBay(!!payload.find((repairSlot) => repairSlot.mech_id === mechID))
+        },
+    )
+
+    // Subscribe on the mech's status
     useGameServerSubscriptionFaction<MechStatus>(
         {
             URI: `/queue/${mechID}`,
@@ -188,14 +208,40 @@ export const MechGeneralStatus = ({
                                     p: ".1rem .6rem",
                                     pt: ".2rem",
                                     opacity: repairOffer ? 0.6 : 1,
-                                    backgroundColor: repairOffer ? colors.grey : colors.blue2,
+                                    backgroundColor: repairOffer ? "unset" : colors.blue2,
+                                    border: repairOffer ? `${colors.blue2} 1px solid` : "unset",
                                     borderRadius: 0.5,
                                     ":hover": { transform: "scale(1.05)" },
                                 }}
                             >
-                                <SvgRepair size="1.1rem" />
-                                <Typography variant="subtitle1" sx={{ whiteSpace: "nowrap", lineHeight: 1, fontWeight: "fontWeightBold" }}>
+                                <SvgRepair size="1.1rem" fill={repairOffer ? colors.blue2 : "#FFFFFF"} />
+                                <Typography
+                                    variant="subtitle1"
+                                    sx={{ color: repairOffer ? colors.blue2 : "#FFFFFF", whiteSpace: "nowrap", lineHeight: 1, fontWeight: "fontWeightBold" }}
+                                >
                                     {repairOffer ? "JOB POSTED" : "POST JOB"}
+                                </Typography>
+                            </Stack>
+                        )}
+
+                        {isInRepairBay && (
+                            <Stack
+                                direction="row"
+                                spacing=".3rem"
+                                alignItems="center"
+                                sx={{
+                                    p: ".1rem .6rem",
+                                    pt: ".2rem",
+                                    border: `${colors.bronze} 1px solid`,
+                                    borderRadius: 0.5,
+                                }}
+                            >
+                                <SvgRepair size="1.1rem" fill={colors.bronze} />
+                                <Typography
+                                    variant="subtitle1"
+                                    sx={{ color: colors.bronze, whiteSpace: "nowrap", lineHeight: 1, fontWeight: "fontWeightBold" }}
+                                >
+                                    REPAIR BAY
                                 </Typography>
                             </Stack>
                         )}
