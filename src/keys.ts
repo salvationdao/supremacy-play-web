@@ -67,6 +67,7 @@ export enum GameServerKeys {
 
     // Minimap ability updates
     MinimapUpdatesSubscribe = "MINIMAP:UPDATES:SUBSCRIBE",
+    MinimapEventsSubscribe = "MINIMAP:EVENTS:SUBSCRIBE",
 
     // Chat
     SubscribeFactionChat = "FACTION:CHAT:SUBSCRIBE",
