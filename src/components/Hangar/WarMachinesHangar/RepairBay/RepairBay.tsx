@@ -79,7 +79,6 @@ export const RepairBay = ({ selectedMechs }: { selectedMechs: MechBasic[] }) => 
     const emptySlotsToRender = useMemo(() => REPAIR_BAY_SLOTS_MAX - (repairSlots?.length || 0), [repairSlots])
 
     const primaryColor = colors.bronze
-    const secondaryColor = theme.factionTheme.secondary
     const backgroundColor = theme.factionTheme.background
 
     return (

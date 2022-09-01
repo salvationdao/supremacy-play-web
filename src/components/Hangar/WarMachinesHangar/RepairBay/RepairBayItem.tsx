@@ -1,4 +1,4 @@
-import { Box, Stack, Typography } from "@mui/material"
+import { Box, CircularProgress, Stack, Typography } from "@mui/material"
 import { useMemo, useState } from "react"
 import { useTheme } from "../../../../containers/theme"
 import { getRarityDeets } from "../../../../helpers"
@@ -105,16 +105,19 @@ export const RepairBayItem = ({ repairSlot, isBigVersion }: { repairSlot: Repair
 export const EmptyRepairBayItem = ({ isLoading }: { isLoading?: boolean }) => {
     const theme = useTheme()
 
-    const primaryColor = theme.factionTheme.primary
-    const secondaryColor = theme.factionTheme.secondary
     const backgroundColor = theme.factionTheme.background
+    const primaryColor = isLoading ? colors.bronze : backgroundColor
 
     return (
-        <ClipThing clipSize="6px" opacity={0.5} backgroundColor={backgroundColor} sx={{ height: "6rem" }}>
+        <ClipThing clipSize="6px" opacity={0.5} border={{ borderColor: primaryColor }} backgroundColor={backgroundColor} sx={{ height: "6rem" }}>
             <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
-                <Typography variant="body2" sx={{ textAlign: "center", color: colors.grey, fontFamily: fonts.nostromoBold }}>
-                    Empty slot
-                </Typography>
+                {isLoading ? (
+                    <CircularProgress size="2rem" sx={{ color: theme.factionTheme.primary }} />
+                ) : (
+                    <Typography variant="body2" sx={{ textAlign: "center", color: colors.grey, fontFamily: fonts.nostromoBold }}>
+                        Empty slot
+                    </Typography>
+                )}
             </Stack>
         </ClipThing>
     )
