@@ -108,7 +108,7 @@ export const RepairBayItem = ({ repairSlot, isBigVersion }: { repairSlot: Repair
                             {mechDetails.label}
                         </Typography>
 
-                        <MechRepairBlocks mechID={mech_id} defaultBlocks={mechDetails?.repair_blocks} pulsateEffect />
+                        <MechRepairBlocks mechID={mech_id} defaultBlocks={mechDetails?.repair_blocks} pulsateEffect={isBigVersion} />
                     </Stack>
                 </Stack>
             </Stack>
