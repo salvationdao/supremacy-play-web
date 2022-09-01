@@ -6,11 +6,13 @@ import { useMobile } from "./mobile"
 
 // Control overlays, side drawers etc
 const uiContainer = createContainer(() => {
+    const isTraining = window.location.pathname.includes("/training")
     const { isMobile } = useMobile()
     const [isNavLinksDrawerOpen, toggleIsNavLinksDrawerOpen] = useToggle(false)
     const [leftDrawerActiveTabID, setLeftDrawerActiveTabID] = useState(localStorage.getItem("leftDrawerActiveTabID") || LEFT_DRAWER_ARRAY[0]?.id || "")
-    const [rightDrawerActiveTabID, setRightDrawerActiveTabID] = useState(localStorage.getItem("rightDrawerActiveTabID") || RIGHT_DRAWER_ARRAY[0]?.id || "")
-
+    const [rightDrawerActiveTabID, setRightDrawerActiveTabID] = useState(
+        isTraining ? "" : localStorage.getItem("rightDrawerActiveTabID") || RIGHT_DRAWER_ARRAY[0]?.id || "",
+    )
     // Big display vs left drawer
     const [smallDisplayRef, setSmallDisplayRef] = useState<HTMLDivElement | null>(null)
     const [bigDisplayRef, setBigDisplayRef] = useState<HTMLDivElement | null>(null)

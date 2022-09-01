@@ -35,7 +35,7 @@ import { OvenStreamProvider } from "./containers/oven"
 import { ThemeProvider } from "./containers/theme"
 import { ws } from "./containers/ws"
 import { useToggle } from "./hooks"
-import { NotFoundPage } from "./pages"
+import { NotFoundPage, TutorialPage } from "./pages"
 import { AuthPage } from "./pages/AuthPage"
 import { EnlistPage } from "./pages/EnlistPage"
 import { ErrorFallbackPage } from "./pages/ErrorFallbackPage"
@@ -98,11 +98,6 @@ const AppInner = () => {
             </Stack>
         )
     }
-
-    if (isServerDown || UNDER_MAINTENANCE) {
-        return <Maintenance />
-    }
-
     return (
         <>
             <Stack
@@ -129,8 +124,7 @@ const AppInner = () => {
                     }}
                 >
                     <NavLinksDrawer />
-
-                    <LeftDrawer />
+                    {window.location.pathname !== "/training" && <LeftDrawer />}
 
                     <Stack
                         sx={{
@@ -142,28 +136,34 @@ const AppInner = () => {
                         }}
                     >
                         <Box sx={{ flex: 1, position: "relative", overflow: "hidden" }}>
-                            <Switch>
-                                {ROUTES_ARRAY.map((r) => {
-                                    const { id, path, exact, Component, requireAuth, requireFaction, authTitle, authDescription, enable } = r
-                                    if (!enable) return null
+                            {window.location.pathname === "/training" ? (
+                                <TutorialPage />
+                            ) : !isServerDown && !UNDER_MAINTENANCE ? (
+                                <Switch>
+                                    {ROUTES_ARRAY.map((r) => {
+                                        const { id, path, exact, Component, requireAuth, requireFaction, authTitle, authDescription, enable } = r
+                                        if (!enable) return null
 
-                                    let component = Component
-                                    if (requireAuth && !userID) {
-                                        const Comp = () => <AuthPage authTitle={authTitle} authDescription={authDescription} />
-                                        component = Comp
-                                    } else if (requireFaction && !factionID) {
-                                        component = EnlistPage
-                                    }
-                                    return <Route key={id} path={path} exact={exact} component={component} />
-                                })}
-                                <Redirect to={ROUTES_MAP.not_found_page.path} />
-                            </Switch>
+                                        let component = Component
+                                        if (requireAuth && !userID) {
+                                            const Comp = () => <AuthPage authTitle={authTitle} authDescription={authDescription} />
+                                            component = Comp
+                                        } else if (requireFaction && !factionID) {
+                                            component = EnlistPage
+                                        }
+                                        return <Route key={id} path={path} exact={exact} component={component} />
+                                    })}
+                                    <Redirect to={ROUTES_MAP.not_found_page.path} />
+                                </Switch>
+                            ) : (
+                                <Maintenance />
+                            )}
                         </Box>
 
                         {isMobile && <BottomNav />}
                     </Stack>
 
-                    <RightDrawer />
+                    {!isServerDown && !UNDER_MAINTENANCE && <RightDrawer />}
                 </Stack>
             </Stack>
 
@@ -214,7 +214,7 @@ const tourProviderProps = {
     styles: tourStyles,
     showBadge: false,
     disableKeyboardNavigation: false,
-    disableDotsNavigation: true,
+    disableDotsNavigation: false,
 }
 
 const App = () => {
@@ -224,9 +224,9 @@ const App = () => {
                 <FingerprintProvider>
                     <GlobalNotificationsProvider>
                         <ClientContextProvider client={client}>
-                            <SupremacyProvider>
-                                <AuthProvider>
-                                    <BrowserRouter>
+                            <BrowserRouter>
+                                <SupremacyProvider>
+                                    <AuthProvider>
                                         <ChatProvider>
                                             <WalletProvider>
                                                 <TourProvider {...tourProviderProps}>
@@ -256,9 +256,9 @@ const App = () => {
                                                 </TourProvider>
                                             </WalletProvider>
                                         </ChatProvider>
-                                    </BrowserRouter>
-                                </AuthProvider>
-                            </SupremacyProvider>
+                                    </AuthProvider>
+                                </SupremacyProvider>
+                            </BrowserRouter>
                         </ClientContextProvider>
                     </GlobalNotificationsProvider>
                 </FingerprintProvider>

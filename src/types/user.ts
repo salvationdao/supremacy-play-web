@@ -43,6 +43,7 @@ export interface User {
     mobile_number?: string
     rank: UserRank
     features: Feature[]
+    training_completed?: boolean
 }
 
 export interface FactionStat {

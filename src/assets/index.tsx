@@ -207,6 +207,7 @@ import Stack9bJPG from "./images/TowerStackSkins/Stack9b.jpg"
 import Stack9cJPG from "./images/TowerStackSkins/Stack9c.jpg"
 import StackTowerBackgroundJPG from "./images/TowerStackSkins/StackTowerBackground.jpg"
 import TrailerThumbPNG from "./images/TrailerThumb.png"
+import BattleTrainingBG from "./images/TrainingBg.png"
 import WarMachineIconPNG from "./images/WarMachineIcon.png"
 import ZaibatsuLogo from "./images/ZaibatsuLogo.png"
 import BcBorder from "./svg/Landing/bc/BCBorder.svg"
@@ -257,6 +258,7 @@ export {
     Stack10cJPG,
 }
 export {
+    BattleTrainingBG,
     KeycardPNG,
     HangarBg,
     ClaimsBg,
