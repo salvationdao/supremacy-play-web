@@ -24,6 +24,7 @@ export const MechGeneralStatus = ({
     onStatusLoaded,
     onRepairOfferLoaded,
     setPrimaryColor,
+    showButtons,
 }: {
     mechID: string
     hideBox?: boolean
@@ -32,6 +33,7 @@ export const MechGeneralStatus = ({
     onStatusLoaded?: (mechStatus: MechStatus) => void
     onRepairOfferLoaded?: (repairOffer: RepairOffer) => void
     setPrimaryColor?: React.Dispatch<React.SetStateAction<string>>
+    showButtons?: boolean
 }) => {
     const theme = useTheme()
     const { newSnackbarMessage } = useGlobalNotifications()
@@ -183,94 +185,106 @@ export const MechGeneralStatus = ({
                         {textValue.current}
                     </Typography>
 
-                    <Stack direction="row" alignItems="center" spacing=".5rem" sx={{ pb: ".4rem" }}>
-                        {mechDetails && mechStatus?.status === MechStatusEnum.Damaged && (
-                            <Stack
-                                direction="row"
-                                spacing=".3rem"
-                                alignItems="center"
-                                onClick={(e) => {
-                                    e.preventDefault()
-                                    e.stopPropagation()
-                                    setDefaultOpenSelfRepair(true)
-                                    setRepairMechModalOpen(true)
-                                }}
-                                sx={{
-                                    p: ".1rem .6rem",
-                                    pt: ".2rem",
-                                    borderRadius: 0.5,
-                                    backgroundColor: colors.orange,
-                                    ":hover": { transform: "scale(1.05)" },
-                                }}
-                            >
-                                <SvgRepair size="1.1rem" />
-                                <Typography variant="subtitle1" sx={{ whiteSpace: "nowrap", lineHeight: 1, fontWeight: "fontWeightBold" }}>
-                                    REPAIR
-                                </Typography>
-                            </Stack>
-                        )}
-
-                        {mechDetails && mechStatus?.status === MechStatusEnum.Damaged && (
-                            <Stack
-                                direction="row"
-                                spacing=".3rem"
-                                alignItems="center"
-                                onClick={(e) => {
-                                    e.preventDefault()
-                                    e.stopPropagation()
-                                    setDefaultOpenSelfRepair(false)
-                                    setRepairMechModalOpen(true)
-                                }}
-                                sx={{
-                                    p: ".1rem .6rem",
-                                    pt: ".2rem",
-                                    opacity: repairOffer ? 0.6 : 1,
-                                    backgroundColor: repairOffer ? "unset" : colors.blue2,
-                                    border: repairOffer ? `${colors.blue2} 1px solid` : "unset",
-                                    borderRadius: 0.5,
-                                    ":hover": { transform: "scale(1.05)" },
-                                }}
-                            >
-                                <SvgRepair size="1.1rem" fill={repairOffer ? colors.blue2 : "#FFFFFF"} />
-                                <Typography
-                                    variant="subtitle1"
-                                    sx={{ color: repairOffer ? colors.blue2 : "#FFFFFF", whiteSpace: "nowrap", lineHeight: 1, fontWeight: "fontWeightBold" }}
+                    {showButtons && (
+                        <Stack direction="row" alignItems="center" spacing=".5rem" sx={{ pb: ".4rem" }}>
+                            {mechDetails && mechStatus?.status === MechStatusEnum.Damaged && (
+                                <Stack
+                                    direction="row"
+                                    spacing=".3rem"
+                                    alignItems="center"
+                                    onClick={(e) => {
+                                        e.preventDefault()
+                                        e.stopPropagation()
+                                        setDefaultOpenSelfRepair(true)
+                                        setRepairMechModalOpen(true)
+                                    }}
+                                    sx={{
+                                        p: ".1rem .6rem",
+                                        pt: ".2rem",
+                                        borderRadius: 0.5,
+                                        backgroundColor: colors.orange,
+                                        ":hover": { transform: "scale(1.05)" },
+                                    }}
                                 >
-                                    {repairOffer ? "JOB POSTED" : "POST JOB"}
-                                </Typography>
-                            </Stack>
-                        )}
+                                    <SvgRepair size="1.1rem" />
+                                    <Typography variant="subtitle1" sx={{ whiteSpace: "nowrap", lineHeight: 1, fontWeight: "fontWeightBold" }}>
+                                        REPAIR
+                                    </Typography>
+                                </Stack>
+                            )}
 
-                        {mechDetails && mechStatus?.status === MechStatusEnum.Damaged && (
-                            <Stack
-                                direction="row"
-                                spacing=".3rem"
-                                alignItems="center"
-                                sx={{
-                                    p: ".1rem .6rem",
-                                    pt: ".2rem",
-                                    opacity: isInRepairBay ? 0.6 : 1,
-                                    backgroundColor: isInRepairBay ? "unset" : colors.bronze,
-                                    border: isInRepairBay ? `${colors.bronze} 1px solid` : "unset",
-                                    borderRadius: 0.5,
-                                    ":hover": { transform: "scale(1.05)" },
-                                }}
-                                onClick={(e) => {
-                                    e.preventDefault()
-                                    e.stopPropagation()
-                                    insertRepairBay()
-                                }}
-                            >
-                                <SvgRepair size="1.1rem" fill={isInRepairBay ? colors.bronze : "#FFFFFF"} />
-                                <Typography
-                                    variant="subtitle1"
-                                    sx={{ color: isInRepairBay ? colors.bronze : "#FFFFFF", whiteSpace: "nowrap", lineHeight: 1, fontWeight: "fontWeightBold" }}
+                            {mechDetails && mechStatus?.status === MechStatusEnum.Damaged && (
+                                <Stack
+                                    direction="row"
+                                    spacing=".3rem"
+                                    alignItems="center"
+                                    onClick={(e) => {
+                                        e.preventDefault()
+                                        e.stopPropagation()
+                                        setDefaultOpenSelfRepair(false)
+                                        setRepairMechModalOpen(true)
+                                    }}
+                                    sx={{
+                                        p: ".1rem .6rem",
+                                        pt: ".2rem",
+                                        opacity: repairOffer ? 0.6 : 1,
+                                        backgroundColor: repairOffer ? "unset" : colors.blue2,
+                                        border: repairOffer ? `${colors.blue2} 1px solid` : "unset",
+                                        borderRadius: 0.5,
+                                        ":hover": { transform: "scale(1.05)" },
+                                    }}
                                 >
-                                    REPAIR BAY
-                                </Typography>
-                            </Stack>
-                        )}
-                    </Stack>
+                                    <SvgRepair size="1.1rem" fill={repairOffer ? colors.blue2 : "#FFFFFF"} />
+                                    <Typography
+                                        variant="subtitle1"
+                                        sx={{
+                                            color: repairOffer ? colors.blue2 : "#FFFFFF",
+                                            whiteSpace: "nowrap",
+                                            lineHeight: 1,
+                                            fontWeight: "fontWeightBold",
+                                        }}
+                                    >
+                                        {repairOffer ? "JOB POSTED" : "POST JOB"}
+                                    </Typography>
+                                </Stack>
+                            )}
+
+                            {mechDetails && mechStatus?.status === MechStatusEnum.Damaged && (
+                                <Stack
+                                    direction="row"
+                                    spacing=".3rem"
+                                    alignItems="center"
+                                    sx={{
+                                        p: ".1rem .6rem",
+                                        pt: ".2rem",
+                                        opacity: isInRepairBay ? 0.6 : 1,
+                                        backgroundColor: isInRepairBay ? "unset" : colors.bronze,
+                                        border: isInRepairBay ? `${colors.bronze} 1px solid` : "unset",
+                                        borderRadius: 0.5,
+                                        ":hover": { transform: "scale(1.05)" },
+                                    }}
+                                    onClick={(e) => {
+                                        e.preventDefault()
+                                        e.stopPropagation()
+                                        insertRepairBay()
+                                    }}
+                                >
+                                    <SvgRepair size="1.1rem" fill={isInRepairBay ? colors.bronze : "#FFFFFF"} />
+                                    <Typography
+                                        variant="subtitle1"
+                                        sx={{
+                                            color: isInRepairBay ? colors.bronze : "#FFFFFF",
+                                            whiteSpace: "nowrap",
+                                            lineHeight: 1,
+                                            fontWeight: "fontWeightBold",
+                                        }}
+                                    >
+                                        REPAIR BAY
+                                    </Typography>
+                                </Stack>
+                            )}
+                        </Stack>
+                    )}
                 </Stack>
             </Stack>
 

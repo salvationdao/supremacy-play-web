@@ -134,6 +134,7 @@ export const WarMachineHangarItem = ({
                             onStatusLoaded={onStatusLoaded}
                             onRepairOfferLoaded={onRepairOfferLoaded}
                             setPrimaryColor={setPrimaryColor}
+                            showButtons
                         />
                     </General>
 
