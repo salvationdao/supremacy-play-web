@@ -223,7 +223,9 @@ export interface DisplayedAbility {
     }
     launching_at?: Date
     location_in_pixels?: boolean
-    remove_at?: number
     border_width?: number
     show_below_mechs?: boolean
+    no_background_colour?: boolean
+    // defaults to 1.5
+    size_grid_override?: number
 }

@@ -19,16 +19,18 @@ export enum MapEventType {
     HiveHexUpdate,
 }
 
-interface PendingAbility {
+interface PendingMapEvent {
     ability: DisplayedAbility
     delay: number
-    replaceID?: string // if set, will replace existing ability
+    replace?: boolean // if set, will replace existing ability
+    remove_after?: number
 }
 
 export const MiniMapAbilitiesDisplay = () => {
     const { currentArenaID } = useArena()
     const [abilityList, setAbilityList] = useState<DisplayedAbility[]>([])
-    const timeouts = useRef<NodeJS.Timeout[]>([])
+    const [mapEvents, setMapEvents] = useState<DisplayedAbility[]>([])
+    const timeouts = useRef<Map<string, NodeJS.Timeout>>(new Map<string, NodeJS.Timeout>())
 
     useGameServerSubscription<DisplayedAbility[]>(
         {
@@ -60,7 +62,8 @@ export const MiniMapAbilitiesDisplay = () => {
             const dv = new DataView(buffer)
             let offset = 0
 
-            const pendingAbilities: PendingAbility[] = []
+            const newMapEvents: DisplayedAbility[] = [] // events to be added
+            const pendingMapEvents: PendingMapEvent[] = [] // events to be added after their individual timeout
 
             do {
                 const count = dv.getUint8(offset)
@@ -72,8 +75,6 @@ export const MiniMapAbilitiesDisplay = () => {
                         case MapEventType.AirstrikeExplosions: {
                             const explosionCount = dv.getUint8(offset)
                             offset++
-
-                            const now = Date.now()
 
                             let firstTimeOffset = 0
                             for (let i = 0; i < explosionCount; i++) {
@@ -96,8 +97,9 @@ export const MiniMapAbilitiesDisplay = () => {
                                 }
 
                                 // Show airstrike impact after time offset
+                                const id = `explosion-${x}-${y}`
                                 const ability: DisplayedAbility = {
-                                    offering_id: `explosion-${x}-${y}-${now}`,
+                                    offering_id: id,
                                     image_url: "",
                                     mini_map_display_effect_type: MiniMapDisplayEffectType.Explosion,
                                     mech_display_effect_type: MechDisplayEffectType.None,
@@ -108,9 +110,8 @@ export const MiniMapAbilitiesDisplay = () => {
                                     colour: "#FF6600",
                                     border_width: 2,
                                     show_below_mechs: true,
-                                    remove_at: now + timeOffset + 4000,
                                 }
-                                pendingAbilities.push({ ability, delay: timeOffset })
+                                pendingMapEvents.push({ ability, delay: timeOffset, remove_after: 4000 })
                             }
                             break
                         }
@@ -131,11 +132,17 @@ export const MiniMapAbilitiesDisplay = () => {
                                 const y = dv.getInt32(offset)
                                 offset += 4
 
-                                if (i === 0) {
-                                    firstTimeOffset = timeOffset
-                                    timeOffset = 0
+                                let noAnim = false
+                                if (timeOffset === 255) {
+                                    // Time offset never go past 250, so 255 is used to mark an event that will spawn instantly with no animation
+                                    noAnim = true
                                 } else {
-                                    timeOffset = firstTimeOffset - timeOffset
+                                    if (i === 0) {
+                                        firstTimeOffset = timeOffset
+                                        timeOffset = 0
+                                    } else if (firstTimeOffset > 0) {
+                                        timeOffset = firstTimeOffset - timeOffset
+                                    }
                                 }
 
                                 // Show landmine activation after time offset
@@ -156,10 +163,11 @@ export const MiniMapAbilitiesDisplay = () => {
                                         break
                                 }
 
+                                const id = `landmine-${landmineID}`
                                 const ability: DisplayedAbility = {
-                                    offering_id: `landmine-${landmineID}`,
+                                    offering_id: id,
                                     image_url,
-                                    mini_map_display_effect_type: MiniMapDisplayEffectType.Landmine,
+                                    mini_map_display_effect_type: noAnim ? MiniMapDisplayEffectType.None : MiniMapDisplayEffectType.Landmine,
                                     mech_display_effect_type: MechDisplayEffectType.None,
                                     location_select_type: LocationSelectType.LocationSelect,
                                     location: { x, y },
@@ -167,16 +175,20 @@ export const MiniMapAbilitiesDisplay = () => {
                                     colour,
                                     border_width: 2,
                                     show_below_mechs: true,
+                                    no_background_colour: true,
+                                    size_grid_override: 0.5,
                                 }
-                                pendingAbilities.push({ ability, delay: timeOffset })
+                                if (timeOffset === 0) {
+                                    newMapEvents.push(ability)
+                                } else {
+                                    pendingMapEvents.push({ ability, delay: timeOffset })
+                                }
                             }
                             break
                         }
                         case MapEventType.LandmineExplosions: {
                             const landmineCount = dv.getUint16(offset)
                             offset += 2
-
-                            const now = Date.now()
 
                             let firstTimeOffset = 0
                             for (let i = 0; i < landmineCount; i++) {
@@ -193,9 +205,9 @@ export const MiniMapAbilitiesDisplay = () => {
                                 }
 
                                 // Landmine Explosion
-                                const abilityID = `landmine-${landmineID}`
+                                const id = `landmine-${landmineID}`
                                 const ability: DisplayedAbility = {
-                                    offering_id: abilityID,
+                                    offering_id: id,
                                     image_url: "",
                                     mini_map_display_effect_type: MiniMapDisplayEffectType.Explosion,
                                     mech_display_effect_type: MechDisplayEffectType.None,
@@ -206,48 +218,54 @@ export const MiniMapAbilitiesDisplay = () => {
                                     colour: "#FF6600",
                                     border_width: 2,
                                     show_below_mechs: false, // too hard to see landmine explosions as they are small and always under mechs
-                                    remove_at: now + timeOffset + 4000,
                                 }
-                                pendingAbilities.push({ ability, delay: timeOffset, replaceID: abilityID })
+                                pendingMapEvents.push({ ability, delay: timeOffset, replace: true, remove_after: 4000 })
                             }
                         }
                     }
                 }
             } while (offset < dv.byteLength)
 
+            // Add new map events
+            setMapEvents((events) => [...events, ...newMapEvents])
+
             // Timeouts (map events come with time offsets, so they can show on the map in the same order as they occurred in-game)
-            for (const pendingAbility of pendingAbilities) {
+            for (const pendingMapEvent of pendingMapEvents) {
                 const t = setTimeout(() => {
-                    if (pendingAbility.replaceID) {
+                    if (pendingMapEvent.replace) {
                         // Replace existing ability
-                        setAbilityList((list) =>
-                            list.map((item) => {
-                                if (item.offering_id === pendingAbility.replaceID) {
-                                    return { ...pendingAbility.ability, location: item.location }
+                        setMapEvents((events) =>
+                            events.map((item) => {
+                                if (item.offering_id === pendingMapEvent.ability.offering_id) {
+                                    return { ...pendingMapEvent.ability, location: item.location }
                                 }
                                 return item
                             }),
                         )
                     } else {
                         // Add ability
-                        setAbilityList((list) => [...list, pendingAbility.ability])
+                        setMapEvents((events) => [...events, pendingMapEvent.ability])
                     }
-                }, pendingAbility.delay)
-                timeouts.current.push(t)
+
+                    if (pendingMapEvent.remove_after) {
+                        // Remove after delay
+                        const rt = setTimeout(() => {
+                            setMapEvents((events) => events.filter((item) => item.offering_id !== pendingMapEvent.ability.offering_id))
+                            timeouts.current.delete(pendingMapEvent.ability.offering_id)
+                        }, pendingMapEvent.remove_after)
+                        timeouts.current.set(pendingMapEvent.ability.offering_id, rt)
+                    } else {
+                        timeouts.current.delete(pendingMapEvent.ability.offering_id)
+                    }
+                }, pendingMapEvent.delay)
+                timeouts.current.set(pendingMapEvent.ability.offering_id, t)
             }
         },
     )
 
+    // Clear timeouts on unmount
     useEffect(() => {
-        // Attempt clean-up every 10s - loads of events (explosions mainly) fade away quickly, this cleans them up.
-        const cleanupTimer = setInterval(() => {
-            const now = Date.now()
-            setAbilityList((list) => list.filter((item) => item.remove_at === undefined || item.remove_at > now))
-        }, 10000)
-
         return () => {
-            clearInterval(cleanupTimer)
-            // Clear timeouts on unmount
             timeouts.current.forEach((t) => clearTimeout(t))
         }
     }, [])
@@ -256,13 +274,26 @@ export const MiniMapAbilitiesDisplay = () => {
         <>
             {abilityList.length > 0 &&
                 abilityList.map((displayAbility) => <MiniMapAbilityDisplay key={displayAbility.offering_id} displayAbility={displayAbility} />)}
+            {mapEvents.length > 0 &&
+                mapEvents.map((displayAbility) => <MiniMapAbilityDisplay key={displayAbility.offering_id} displayAbility={displayAbility} />)}
         </>
     )
 }
 
 const MiniMapAbilityDisplay = ({ displayAbility }: { displayAbility: DisplayedAbility }) => {
-    const { image_url, colour, radius, launching_at, location, location_in_pixels, mini_map_display_effect_type, border_width, show_below_mechs } =
-        displayAbility
+    const {
+        image_url,
+        colour,
+        radius,
+        launching_at,
+        location,
+        location_in_pixels,
+        mini_map_display_effect_type,
+        border_width,
+        show_below_mechs,
+        no_background_colour,
+        size_grid_override,
+    } = displayAbility
     const { gridHeight } = useMiniMap()
     const { map } = useGame()
 
@@ -279,10 +310,10 @@ const MiniMapAbilityDisplay = ({ displayAbility }: { displayAbility: DisplayedAb
             <MapIcon
                 position={position}
                 locationInPixels={location_in_pixels || false}
-                sizeGrid={mini_map_display_effect_type === MiniMapDisplayEffectType.Landmine ? 0.5 : 1.5}
+                sizeGrid={size_grid_override || 1.5}
                 primaryColor={colour}
                 backgroundImageUrl={image_url}
-                noBackgroundColour={mini_map_display_effect_type === MiniMapDisplayEffectType.Landmine}
+                noBackgroundColour={!!no_background_colour}
                 iconSx={{
                     animation: (() => {
                         switch (mini_map_display_effect_type) {
