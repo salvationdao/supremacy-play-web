@@ -17,7 +17,7 @@ const CountdownSubmitInner = React.memo(function CountdownSubmitInner() {
     const { setEndTimeState, totalSecRemain, delay } = useTimer(undefined, 600)
 
     const isInstant = useMemo(() => {
-        if (playerAbility?.ability) {
+        if (!winner && playerAbility?.ability) {
             switch (playerAbility.ability.location_select_type) {
                 case LocationSelectType.LineSelect:
                 case LocationSelectType.LocationSelect:
@@ -31,7 +31,7 @@ const CountdownSubmitInner = React.memo(function CountdownSubmitInner() {
             }
         }
         return false
-    }, [playerAbility?.ability])
+    }, [playerAbility?.ability, winner])
 
     const hasSelected = useMemo(() => {
         let selected = !!selection
@@ -63,10 +63,10 @@ const CountdownSubmitInner = React.memo(function CountdownSubmitInner() {
     }, [hasSelected, setEndTimeState, isInstant])
 
     useEffect(() => {
-        if (hasSelected && totalSecRemain === 0) onTargetConfirm()
-    }, [hasSelected, totalSecRemain, onTargetConfirm])
+        if (hasSelected && (isInstant || totalSecRemain === 0)) onTargetConfirm()
+    }, [hasSelected, totalSecRemain, onTargetConfirm, isInstant])
 
-    if (!delay || totalSecRemain < 0) return null
+    if (isInstant || !delay || totalSecRemain < 0) return null
 
     return (
         <Box
