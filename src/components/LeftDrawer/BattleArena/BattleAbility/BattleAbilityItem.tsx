@@ -1,8 +1,8 @@
-import { Box, Fade, Stack, Typography } from "@mui/material"
+import { Box, Checkbox, Fade, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
-import { useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { ClipThing } from "../../.."
-import { BribeStageResponse, useAuth, useGame } from "../../../../containers"
+import { BribeStageResponse, useAuth, useGame, useGlobalNotifications } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
 import { shadeColor } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
@@ -67,45 +67,74 @@ interface InnerProps {
 const BattleAbilityItemInner = ({ bribeStage, battleAbility, fadeEffect }: InnerProps) => {
     const { label, colour, image_url, description } = battleAbility
     const { factionID } = useAuth()
+    const { sendBrowserNotification } = useGlobalNotifications()
+
+    const [sendBANotifications, toggleSendBANotifications] = useToggle(localStorage.getItem("sendBANotifications") === "true" ?? false)
 
     const backgroundColor = useMemo(() => shadeColor(colour, -75), [colour])
 
-    return (
-        <Stack key={fadeEffect.toString()} spacing="1.04rem">
-            <Fade in={true}>
-                <Box>
-                    <ClipThing
-                        clipSize="6px"
-                        border={{
-                            borderColor: colour,
-                            borderThickness: ".3rem",
-                        }}
-                        backgroundColor={backgroundColor}
-                        opacity={0.7}
-                    >
-                        <Stack
-                            spacing=".8rem"
-                            alignItems="flex-start"
-                            sx={{
-                                flex: 1,
-                                minWidth: "32.5rem",
-                                px: "1.6rem",
-                                pt: "1.12rem",
-                                pb: "1.28rem",
-                            }}
-                        >
-                            <BattleAbilityTextTop
-                                label={label}
-                                image_url={image_url}
-                                colour={colour}
-                                disableButton={!factionID || bribeStage?.phase !== BribeStage.OptIn}
-                            />
+    const toggleNotifications = useCallback(() => {
+        localStorage.setItem("sendBANotifications", String(!sendBANotifications))
+        toggleSendBANotifications()
+    }, [toggleSendBANotifications, sendBANotifications])
 
-                            <Typography>{description}</Typography>
-                        </Stack>
-                    </ClipThing>
-                </Box>
-            </Fade>
+    useEffect(() => {
+        if (bribeStage?.phase !== BribeStage.OptIn || !sendBANotifications) return
+
+        sendBrowserNotification.current(`Battle Ability: ${label} Available`, `Opt in now to lead your faction to victory!`)
+    }, [bribeStage?.phase, sendBANotifications])
+
+    return (
+        <Stack>
+            <Stack key={fadeEffect.toString()} spacing="1.04rem">
+                <Fade in={true}>
+                    <Box>
+                        <ClipThing
+                            clipSize="6px"
+                            border={{
+                                borderColor: colour,
+                                borderThickness: ".3rem",
+                            }}
+                            backgroundColor={backgroundColor}
+                            opacity={0.7}
+                        >
+                            <Stack
+                                spacing=".8rem"
+                                alignItems="flex-start"
+                                sx={{
+                                    flex: 1,
+                                    minWidth: "32.5rem",
+                                    px: "1.6rem",
+                                    pt: "1.12rem",
+                                    pb: "1.28rem",
+                                }}
+                            >
+                                <BattleAbilityTextTop
+                                    label={label}
+                                    image_url={image_url}
+                                    colour={colour}
+                                    disableButton={!factionID || bribeStage?.phase !== BribeStage.OptIn}
+                                    phase={bribeStage?.phase}
+                                />
+
+                                <Typography>{description}</Typography>
+                            </Stack>
+                        </ClipThing>
+                    </Box>
+                </Fade>
+            </Stack>
+            <Stack direction={"row"} sx={{ mt: ".5rem", alignItems: "center", alignSelf: "flex-end" }}>
+                <Typography>Send notifications when there is a new ability</Typography>
+                <Checkbox
+                    checked={sendBANotifications}
+                    onChange={toggleNotifications}
+                    disableRipple
+                    sx={{
+                        p: ".5rem",
+                        "& > .MuiSvgIcon-root": { width: "2rem", height: "2rem" },
+                    }}
+                />
+            </Stack>
         </Stack>
     )
 }
