@@ -213,7 +213,7 @@ export const OvenStreamContainer = createContainer(() => {
             }
         })[0]
 
-        return src.index || 0
+        return src?.index || 0
     }
 
     const changeResolutionSource = useCallback((resolution: string) => {
