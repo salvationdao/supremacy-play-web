@@ -27,11 +27,15 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
     const [messages, setMessages] = useState<SystemMessageDisplayable[]>([])
     const [focusedMessage, setFocusedMessage] = useState<SystemMessageDisplayable>()
     const [error, setError] = useState<string>()
-    const [hideRead, setHideRead] = useState(false)
+    const [hideRead, setHideRead] = useState(localStorage.getItem("hideReadMessages") === "true")
     const { page, changePage, setTotalItems, totalItems, changePageSize, pageSize } = usePagination({
         pageSize: 15,
         page: 0,
     })
+
+    useEffect(() => {
+        localStorage.setItem("hideReadMessages", hideRead.toString())
+    }, [hideRead])
 
     const fetchMessages = useCallback(async () => {
         try {

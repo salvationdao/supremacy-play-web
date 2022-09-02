@@ -70,7 +70,7 @@ const SubmodelItemInner = ({ submodel }: SubmodelItemProps) => {
                                 </Typography>
                                 <SvgSkin fill={rarityDeets.color} size="1.7rem" />
 
-                                {submodel.level && (
+                                {typeof submodel.level !== "undefined" && (
                                     <Typography
                                         variant="body2"
                                         sx={{ ml: "auto !important", color: theme.factionTheme.secondary, fontFamily: fonts.nostromoBlack }}
@@ -79,7 +79,6 @@ const SubmodelItemInner = ({ submodel }: SubmodelItemProps) => {
                                     </Typography>
                                 )}
                             </Stack>
-
                             <Typography variant="h6" sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack }}>
                                 {submodel.label}
                             </Typography>
