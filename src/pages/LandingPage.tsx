@@ -203,6 +203,7 @@ export const LandingPage = () => {
                         <Typography variant="h4" textAlign={"center"}>
                             NEXT BATTLE
                         </Typography>
+
                         <img
                             style={{
                                 height: below1150 ? "7rem" : "10rem",
