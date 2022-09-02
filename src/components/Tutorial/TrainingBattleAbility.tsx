@@ -53,7 +53,7 @@ export const TrainingBattleAbility = () => {
     // Initialise
     useEffect(() => {
         setMap(trainingMap)
-        setWarMachines(trainingMechs(userID))
+        setWarMachines(trainingMechs())
     }, [setMap, setWarMachines, userID])
 
     return (
@@ -198,7 +198,7 @@ export const TrainingBattleAbility = () => {
                 style={{
                     width: "100%",
                     height: "100%",
-                    objectFit: "contain",
+                    objectFit: "cover",
                 }}
             >
                 <source src={videoSource} />
@@ -274,7 +274,7 @@ const trainingMap: Map = {
     ],
 }
 
-const trainingMechs = (userID: string): WarMachineState[] => {
+const trainingMechs = (): WarMachineState[] => {
     return [
         {
             id: "088132f5-ee2f-47f7-bd18-9b7dfb466ff5",

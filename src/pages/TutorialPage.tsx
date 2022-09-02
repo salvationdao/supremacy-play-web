@@ -46,7 +46,6 @@ const TutorialPageInner = () => {
                     <Box id="game-ui-container" sx={{ position: "relative", flex: 1 }}>
                         <MiniMapBT />
                         {(trainingStage in MechAbilityStages || trainingStage === TrainingLobby.MechAbility) && <WarMachineStatsBT />}
-                        {/* <Congratulations ability={TrainingAbility.Battle} /> */}
 
                         <BattleTraining />
                     </Box>
@@ -60,7 +59,7 @@ const TutorialPageInner = () => {
         () => (
             <Intro
                 toggleTrainingIntro={() => {
-                    setLobbyStage(TrainingLobby.FactionIntro)
+                    setLobbyStage(TrainingLobby.All)
                 }}
             />
         ),
@@ -93,7 +92,7 @@ const TutorialPageInner = () => {
 const battleTrainingOptions = [
     {
         title: "Battle Abilities",
-        description: "Learn about blah blah blah blah blah blah blah blah blah",
+        description: "The Overseer selects worthy citizens from two factions to deploy an airstrike, nuke or a repair crate.",
         video: `/nuke.mp4`,
         image: `/nuke.avif`,
         stage: TrainingLobby.BattleAbility,
@@ -101,7 +100,7 @@ const battleTrainingOptions = [
     },
     {
         title: "Mech Abilities",
-        description: "Learn about blah blah blah blah blah blah blah blah blah",
+        description: "Citizens are able to control their mechs, to turn the tide of battle in their favour.",
         video: `/overcharge.mp4`,
         image: `/overcharge.avif`,
         stage: TrainingLobby.MechAbility,
@@ -109,8 +108,8 @@ const battleTrainingOptions = [
     },
     {
         title: "Player Abilities",
-        description: "Learn about blah blah blah blah blah blah blah blah blah",
-        video: `/dogs.mp4`,
+        description: "Help your faction using a player ability. Use it against the opposing factions or empower your faction's mechs. ",
+        video: `/player_ability/3.mp4`,
         image: `/dogs.avif`,
         stage: TrainingLobby.PlayerAbility,
         completedState: CompletedTraining.PlayerAbility,
@@ -120,6 +119,9 @@ const battleTrainingOptions = [
 const BattleTraining = () => {
     const { isOpen } = useTour()
     const { trainingStage, setTrainingStage, completed, setBigDisplayRef } = useTraining()
+    const { gameUIDimensions } = useDimension()
+
+    const smallScreen = gameUIDimensions.width <= 1140 && gameUIDimensions.width > 0
 
     const Lobby = useMemo(
         () => (
@@ -131,18 +133,45 @@ const BattleTraining = () => {
                     backgroundSize: "cover",
                     alignItems: "center",
                     justifyContent: "center",
-                    gap: "2rem",
+                    gap: "5rem",
                     filter: isOpen ? "blur(10px)" : "unset",
                 }}
             >
-                <Typography variant="h2">Battle Training</Typography>
-                <Box sx={{ display: "flex", justifyContent: "space-evenly", width: "100%", px: "5vw", alignItems: "stretch", maxWidth: "1800px" }}>
+                <Stack alignItems="center">
+                    <Typography
+                        variant="h2"
+                        sx={{
+                            fontFamily: fonts.nostromoHeavy,
+                            fontSize: "8rem",
+                            WebkitTextStrokeWidth: "1px",
+                            WebkitTextStrokeColor: colors.black2,
+                            textShadow: `1px 3px ${colors.black2}`,
+                        }}
+                    >
+                        Battle Training
+                    </Typography>
+                    <Typography sx={{ fontFamily: fonts.nostromoMedium }}>Select one of options below</Typography>
+                </Stack>
+                <Box
+                    sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        width: "100%",
+                        px: "4rem",
+                        alignItems: "stretch",
+                        maxWidth: "2560px",
+                        flexWrap: "wrap",
+                        gap: smallScreen ? "2rem" : "4rem",
+                    }}
+                >
                     {battleTrainingOptions.map((t, i) => (
                         <Button
                             key={i}
                             sx={{
-                                height: "auto",
-                                width: `calc((100% / ${battleTrainingOptions.length}) - 2vw)`,
+                                height: smallScreen ? "25vh" : "auto",
+                                width: smallScreen ? "100%" : `calc((100% / ${battleTrainingOptions.length}) - 4rem)`,
+                                maxWidth: smallScreen ? "unset" : "600px",
+                                minWidth: "300px",
                                 transition: "all .5s",
                                 opacity: isOpen ? 0 : 1,
                                 position: "relative",
@@ -158,9 +187,9 @@ const BattleTraining = () => {
                                         fontSize: "2rem",
                                         fontFamily: fonts.nostromoBlack,
                                         position: "absolute",
-                                        top: "50%",
+                                        top: smallScreen ? "40%" : "50%",
                                         left: "50%",
-                                        transform: "translateX(-50%)",
+                                        transform: "translate(-50%,-50%)",
                                         background: `${colors.darkNavy}99`,
                                         p: "1em",
                                         width: "calc(100% - 2rem)",
@@ -171,6 +200,7 @@ const BattleTraining = () => {
                                 </Typography>
                             )}
                             <ClipThing
+                                border={{ borderThickness: "5px", isFancy: true, borderColor: colors.black2 }}
                                 sx={{
                                     width: "100%",
                                     height: "100%",
@@ -190,12 +220,23 @@ const BattleTraining = () => {
                                         controlsList="nodownload"
                                         style={{
                                             width: "100%",
-                                            height: "auto",
+                                            height: smallScreen ? "60%" : "100%",
+                                            objectFit: "cover",
                                         }}
                                     />
-                                    <Stack sx={{ p: "2em" }}>
-                                        <Typography variant="h3">{t.title}</Typography>
-                                        <Typography>{t.description}</Typography>
+                                    <Stack
+                                        sx={{
+                                            p: "2rem",
+                                            textAlign: "left",
+                                            gap: "1rem",
+                                            minHeight: smallScreen ? "unset" : "130px",
+                                            height: "max-content",
+                                        }}
+                                    >
+                                        <Typography variant="h3" sx={{ fontFamily: fonts.nostromoBlack, fontSize: "3rem" }}>
+                                            {t.title}
+                                        </Typography>
+                                        <Typography sx={{ fontFamily: fonts.shareTech, textTransform: "none", fontSize: "2rem" }}>{t.description}</Typography>
                                     </Stack>
                                 </Stack>
                             </ClipThing>
@@ -204,7 +245,7 @@ const BattleTraining = () => {
                 </Box>
             </Stack>
         ),
-        [completed, isOpen, setTrainingStage],
+        [completed, isOpen, setTrainingStage, smallScreen],
     )
 
     return trainingStage === TrainingLobby.All ? (

@@ -97,7 +97,7 @@ export const RangeIndicatorBT = ({ parentRef, mapScale: zoomScale, map, gestureR
                 </Box>
             </>
         )
-    }, [ability, diameter, empCoords?.x, empCoords?.y])
+    }, [ability, diameter, empCoords?.x, empCoords?.y, empRef])
 }
 
 export const growEffect = (d: number) => keyframes`

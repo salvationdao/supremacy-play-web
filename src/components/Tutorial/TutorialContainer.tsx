@@ -7,7 +7,7 @@ import React, { useEffect, useRef } from "react"
 import { useTraining } from "../../containers"
 import { zoomEffect } from "../../theme/keyframes"
 import { fonts } from "../../theme/theme"
-import { Context } from "../../types"
+import { Context, TrainingLobby } from "../../types"
 import { TOP_BAR_HEIGHT } from "../BigDisplay/MiniMap/MiniMap"
 import { FancyButton } from "../Common/FancyButton"
 import { tourStyles } from "../HowToPlay/Tutorial/SetupTutorial"
@@ -37,7 +37,7 @@ export const TutorialContainer: React.FC<TutorialContainerProps> = ({
     popoverOpen,
     setPopoverOpen,
 }) => {
-    const { tutorialRef, setTrainingStage, updater, isStreamBigDisplay, bigDisplayRef, smallDisplayRef } = useTraining()
+    const { tutorialRef, setTrainingStage, updater, isStreamBigDisplay, bigDisplayRef, smallDisplayRef, completed } = useTraining()
     const sizes = useRect(tutorialRef, updater)
     const ref = useRef<HTMLDivElement>(null)
     const theme = useTheme()
@@ -50,6 +50,20 @@ export const TutorialContainer: React.FC<TutorialContainerProps> = ({
             newContainerElement.appendChild(thisElement)
         }
     }, [isStreamBigDisplay, smallDisplayRef, bigDisplayRef])
+
+    useEffect(() => {
+        if (!end) return
+        // If all abilities are completed
+        if (Object.values(completed).every((c) => c)) return
+        // Redirect to lobby after 5 seconds after showing congratulations
+        const redirectToLobby = setTimeout(() => {
+            setTrainingStage(TrainingLobby.All)
+        }, 5000)
+
+        return () => {
+            clearTimeout(redirectToLobby)
+        }
+    }, [setTrainingStage, end, completed])
 
     return (
         <Box ref={ref} sx={{ background: "#000", width: "100%", height: "100%" }}>
@@ -67,7 +81,7 @@ export const TutorialContainer: React.FC<TutorialContainerProps> = ({
                 <Typography sx={{ fontFamily: fonts.nostromoHeavy }}>BATTLE TRAINING</Typography>
             </Stack>
             {children}
-            {end && <Congratulations ability={currentAbility} />}
+            {end && <Congratulations open={end} ability={currentAbility} />}
             {stage && (
                 <Fade in={popoverOpen}>
                     <Box>
