@@ -9,7 +9,7 @@ import { useGameServerCommandsUser, useGameServerSubscriptionFaction } from "../
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { MechBasic, MechStatus } from "../../../types"
-import { SortTypeLabel } from "../../../types/marketplace"
+import { SortDir, SortTypeLabel } from "../../../types/marketplace"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { BulkDeployConfirmModal } from "../../Hangar/WarMachinesHangar/Common/BulkDeployConfirmModal"
 import { QueueFeed } from "../../Hangar/WarMachinesHangar/WarMachineDetails/Modals/DeployModal"
@@ -104,8 +104,8 @@ const QuickDeployInner = () => {
         try {
             setIsLoading(true)
 
-            let sortDir = "asc"
-            if (sort === SortTypeLabel.MechQueueDesc) sortDir = "desc"
+            let sortDir = SortDir.Asc
+            if (sort === SortTypeLabel.MechQueueDesc) sortDir = SortDir.Desc
 
             const resp = await send<GetAssetsResponse, GetMechsRequest>(GameServerKeys.GetMechs, {
                 queue_sort: sortDir,

@@ -1,4 +1,4 @@
-import { Battle, Faction, User, Vector2i } from "."
+import { Map, Battle, Faction, User, Vector2i } from "."
 
 export enum MechStatusEnum {
     Idle = "IDLE",
@@ -322,7 +322,10 @@ export interface BattleMechHistory {
     created_at: Date
     faction_won?: boolean
     mech_survived?: boolean
-    battle?: Battle
+    battle?: {
+        battle: Battle
+        game_map?: Map
+    }
     mech?: MechDetails
 }
 

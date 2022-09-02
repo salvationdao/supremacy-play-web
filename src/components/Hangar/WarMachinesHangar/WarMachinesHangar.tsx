@@ -11,7 +11,7 @@ import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { MechBasic, MechStatus, MechStatusEnum } from "../../../types"
 import { RepairOffer, RepairStatus } from "../../../types/jobs"
-import { SortTypeLabel } from "../../../types/marketplace"
+import { SortDir, SortTypeLabel } from "../../../types/marketplace"
 import { PageHeader } from "../../Common/PageHeader"
 import { ChipFilter } from "../../Common/SortAndFilters/ChipFilterSection"
 import { SortAndFilters } from "../../Common/SortAndFilters/SortAndFilters"
@@ -161,9 +161,9 @@ export const WarMachinesHangar = () => {
         try {
             setIsLoading(true)
 
-            let sortDir = "asc"
+            let sortDir = SortDir.Asc
             let sortBy = ""
-            if (sort === SortTypeLabel.MechQueueDesc || sort === SortTypeLabel.AlphabeticalReverse || sort === SortTypeLabel.RarestDesc) sortDir = "desc"
+            if (sort === SortTypeLabel.MechQueueDesc || sort === SortTypeLabel.AlphabeticalReverse || sort === SortTypeLabel.RarestDesc) sortDir = SortDir.Desc
 
             switch (sort) {
                 case SortTypeLabel.Alphabetical:

@@ -3,13 +3,7 @@ import { useMemo } from "react"
 import { ClipThing, StyledImageText } from "../.."
 import { GenericWarMachinePNG, SvgEmergency } from "../../../assets"
 import { colors } from "../../../theme/theme"
-import { BattleAbility, Faction, User, WarMachineState } from "../../../types"
-
-export interface WarMachineAbilityAlertProps {
-    user: User
-    ability: BattleAbility
-    warMachine: WarMachineState
-}
+import { Faction, WarMachineAbilityAlertProps } from "../../../types"
 
 export const WarMachineAbilityAlert = ({ data, getFaction }: { data: WarMachineAbilityAlertProps; getFaction: (factionID: string) => Faction }) => {
     const { ability, warMachine } = data

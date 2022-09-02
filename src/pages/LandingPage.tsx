@@ -18,16 +18,11 @@ import { useSupremacy, useUI } from "../containers"
 import { useGameServerSubscription } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
 import { theme } from "../theme/theme"
-import { Faction } from "../types"
+import { Faction, GameMap } from "../types"
 import { MechDetails } from "../types/assets"
 
-interface BattleMap {
-    name: string
-    logo_url: string
-    background_url: string
-}
 interface NextBattle {
-    map: BattleMap
+    map: GameMap
     bc_id: string
     zhi_id: string
     rm_id: string

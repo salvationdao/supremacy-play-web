@@ -4,6 +4,7 @@
     "private": true,
     "dependencies": {
         "@antmedia/webrtc_adaptor": "^2.4.2-latest",
+        "@cloudflare/stream-react": "^1.8.0",
         "@emotion/react": "^11.9.0",
         "@emotion/styled": "^11.3.0",
         "@fingerprintjs/fingerprintjs": "^3.3.3",
