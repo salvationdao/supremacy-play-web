@@ -26,7 +26,7 @@ export enum MapEventType {
     HiveHexLowered,
 }
 
-const TheHiveMapID: string = "bf84dd8e-e124-4c77-99a1-f515a81752b1"
+const TheHiveMapName: string = "TheHive"
 
 interface PendingMapEvent {
     ability: DisplayedAbility
@@ -241,9 +241,10 @@ export const MiniMapAbilitiesDisplay = ({ map }: { map: GameMap }) => {
                         }
                         case MapEventType.HiveState: {
                             // Hive state is 589 booleans packed into 74 bytes (589 / 8bits)
-                            let newHiveState: boolean[] = []
+                            console.log("hive state")
+                            const newHiveState: boolean[] = []
                             for (let b = 0; b < 74; b++) {
-                                let byte = dv.getUint8(offset)
+                                const byte = dv.getUint8(offset)
                                 offset++
                                 for (let i = 0; i < 8; i++) {
                                     newHiveState.push((byte & (1 << i)) != 0)
@@ -266,6 +267,22 @@ export const MiniMapAbilitiesDisplay = ({ map }: { map: GameMap }) => {
                                 timeOffset = 250 - timeOffset
 
                                 pendingHiveState.push({ id: hexID, raised: true, delay: timeOffset })
+                            }
+                            break
+                        }
+                        case MapEventType.HiveHexLowered: {
+                            const changeCount = dv.getUint16(offset)
+                            offset += 2
+
+                            for (let i = 0; i < changeCount; i++) {
+                                const hexID = dv.getUint16(offset)
+                                offset += 2
+                                let timeOffset = dv.getUint8(offset)
+                                offset++
+
+                                timeOffset = 250 - timeOffset
+
+                                pendingHiveState.push({ id: hexID, raised: false, delay: timeOffset })
                             }
                             break
                         }
@@ -313,7 +330,7 @@ export const MiniMapAbilitiesDisplay = ({ map }: { map: GameMap }) => {
             }
 
             // Delayed hive hex update
-            for (let pendingChange of pendingHiveState) {
+            for (const pendingChange of pendingHiveState) {
                 const hiveTimeoutID = `hive-hex-${pendingChange.id}`
                 const t = setTimeout(
                     (id: number, raised: boolean, hiveTimeoutID: string) => {
@@ -346,7 +363,7 @@ export const MiniMapAbilitiesDisplay = ({ map }: { map: GameMap }) => {
             {mapEvents.length > 0 &&
                 mapEvents.map((displayAbility) => <MiniMapAbilityDisplay key={displayAbility.offering_id} displayAbility={displayAbility} />)}
 
-            {map.ID === TheHiveMapID && <HiveHexes map={map} state={hiveState} />}
+            {map.Name === TheHiveMapName && <HiveHexes map={map} state={hiveState} />}
         </>
     )
 }
