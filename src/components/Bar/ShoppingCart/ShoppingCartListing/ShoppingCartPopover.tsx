@@ -67,7 +67,7 @@ export const ShoppingCartPopover = ({ open, loading, shoppingCart, popoverRef, o
                 sx={{ height: "100%" }}
             >
                 <Stack spacing="2rem" sx={{ position: "relative", minWidth: "35rem", maxHeight: "90vh", px: "2rem", pt: "1.6rem", pb: "2rem" }}>
-                    <Box sx={{ maxWidth: "33.33%", minWidth: "500px" }}>
+                    <Box sx={{ minWidth: "500px" }}>
                         <ShoppingCartTable
                             loading={loading}
                             shoppingCart={shoppingCart}

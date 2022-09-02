@@ -183,7 +183,7 @@ const ShoppingCartRow = ({ item, primaryColor, backgroundColor }: ShoppingCartRo
     }, [unsaved, updating, updateItem])
 
     return (
-        <Stack direction="row" spacing={1} sx={{ borderBottom: `1px solid ${primaryColor}`, pb: "2rem" }}>
+        <Stack direction="row" spacing={1} sx={{ borderBottom: `1px solid ${primaryColor}`, pb: "2rem", mb: "2rem" }}>
             {/* TODO: Product Image */}
             <Box sx={{ backgroundColor: "#666", width: "64px", height: "64px" }} />
 
