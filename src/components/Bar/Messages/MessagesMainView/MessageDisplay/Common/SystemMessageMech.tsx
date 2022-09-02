@@ -49,7 +49,7 @@ export const SystemMessageMech = ({ mech }: { mech: SystemMessageMechStruct }) =
                             }}
                         />
 
-                        {killed ? (
+                        {!total_blocks && killed && (
                             <Stack
                                 alignItems="center"
                                 justifyContent="center"
@@ -66,9 +66,9 @@ export const SystemMessageMech = ({ mech }: { mech: SystemMessageMechStruct }) =
                             >
                                 <SvgSkull size="90%" />
                             </Stack>
-                        ) : (
-                            <SvgCrown size="2rem" fill={colors.gold} sx={{ position: "absolute", top: ".4rem", left: ".4rem" }} />
                         )}
+
+                        {!total_blocks && !killed && <SvgCrown size="2rem" fill={colors.gold} sx={{ position: "absolute", top: ".4rem", left: ".4rem" }} />}
                     </Box>
 
                     {/* Info */}
