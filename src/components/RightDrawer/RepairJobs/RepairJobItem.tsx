@@ -55,8 +55,8 @@ export const RepairJobItem = ({
                             bottomRight: true,
                         },
                         backgroundColor: backgroundColor,
-                        opacity: 0.9,
-                        border: { borderColor: primaryColor, borderThickness: ".15rem" },
+                        opacity: isFinished ? 0.6 : 0.9,
+                        border: { borderColor: primaryColor, borderThickness: isFinished ? "0" : ".15rem" },
                         sx: { position: "relative", height: "100%" },
                     }}
                     sx={{ p: 0, color: primaryColor, textAlign: "start", height: "100%", ":hover": { opacity: 1 } }}
