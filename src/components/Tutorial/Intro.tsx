@@ -93,7 +93,7 @@ export const Intro = ({ toggleTrainingIntro }: { toggleTrainingIntro: (value?: b
                         animation: `${opacityEffect} 1.5s ease-in-out`,
                     }}
                 >
-                    <Typography sx={{ textShadow: "2px 2px black", fontSize: "32px" }}>{stage.text}</Typography>
+                    <Typography sx={{ textShadow: "2px 2px black", fontSize: "32px", textAlign: "center" }}>{stage.text}</Typography>
                 </Box>
             )}
         </Box>

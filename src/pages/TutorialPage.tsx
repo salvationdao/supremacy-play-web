@@ -1,4 +1,4 @@
-import { Box, Button, Stack, Typography } from "@mui/material"
+import { Box, Button, Modal, Stack, Typography } from "@mui/material"
 import { useTour } from "@reactour/tour"
 import { useEffect, useMemo, useState } from "react"
 import { BattleTrainingBG } from "../assets"
@@ -48,11 +48,7 @@ const TutorialPageInner = () => {
                 />
             )
         }
-
-        if (lobbyStage === TrainingLobby.FactionIntro) {
-            return <FactionIntro nextStep={() => setLobbyStage(TrainingLobby.All)} />
-        }
-        if (lobbyStage === TrainingLobby.All) {
+        if (lobbyStage === TrainingLobby.All || lobbyStage === TrainingLobby.FactionIntro) {
             return (
                 <>
                     <LeftDrawerBT />
@@ -60,6 +56,17 @@ const TutorialPageInner = () => {
                         <Box id="game-ui-container" sx={{ position: "relative", flex: 1 }}>
                             <MiniMapBT />
                             {(trainingStage in MechAbilityStages || trainingStage === TrainingLobby.MechAbility) && <WarMachineStatsBT />}
+                            <Modal
+                                open={lobbyStage === TrainingLobby.FactionIntro}
+                                onClose={() => setLobbyStage(TrainingLobby.All)}
+                                BackdropProps={{
+                                    style: {
+                                        background: "rgba(0,0,0,0.7)",
+                                    },
+                                }}
+                            >
+                                <FactionIntro />
+                            </Modal>
                             <BattleTraining />
                         </Box>
                     </Stack>
