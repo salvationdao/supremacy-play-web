@@ -3,6 +3,8 @@ import { useTour } from "@reactour/tour"
 import { useEffect } from "react"
 import { BattleTrainingBG } from "../assets"
 import { ClipThing, LeftDrawerBT, MiniMapBT, TrainingBattleAbility, TrainingMechAbility, TrainingPlayerAbility } from "../components"
+import { FactionIntro } from "../components/Tutorial/Faction/FactionIntro"
+import { FactionSelect } from "../components/Tutorial/Faction/FactionSelect"
 import { Intro } from "../components/Tutorial/Intro"
 import { WarMachineStatsBT } from "../components/Tutorial/WarMachine/WarMachineStatsBT"
 import { TRAINING_ASSETS } from "../constants"
@@ -83,7 +85,10 @@ const BattleTraining = () => {
         }
     }, [user, toggleShowIntro])
 
-    if (showIntro) return <Intro toggleTrainingIntro={toggleShowIntro} />
+    // if (showIntro) return <FactionIntro />
+    if (showIntro) return <FactionSelect />
+    // if (showIntro) return <Intro toggleTrainingIntro={toggleShowIntro} />
+
     if (!(trainingStage === TrainingLobby.All))
         return (
             <Box
