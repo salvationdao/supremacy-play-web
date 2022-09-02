@@ -10,17 +10,20 @@ import { BattleReplayPlayer } from "./BattleReplayPlayer"
 export const BattleReplayDetails = ({
     gid,
     battleNumber,
+    setBattleGID,
     setBattleNumber,
 }: {
     gid: number
     battleNumber: number
+    setBattleGID: React.Dispatch<React.SetStateAction<number>>
     setBattleNumber: React.Dispatch<React.SetStateAction<number>>
 }) => {
     const theme = useTheme()
 
     const goBack = useCallback(() => {
+        setBattleGID(-1)
         setBattleNumber(-1)
-    }, [setBattleNumber])
+    }, [setBattleGID, setBattleNumber])
 
     return (
         <Stack
@@ -76,7 +79,7 @@ export const BattleReplayDetails = ({
                     sx={{ height: "100%" }}
                 >
                     <Stack sx={{ height: "100%" }}>
-                        <BattleReplayPlayer battleNumber={battleNumber} gid={gid}/>
+                        <BattleReplayPlayer battleNumber={battleNumber} gid={gid} />
                     </Stack>
                 </ClipThing>
             </Stack>

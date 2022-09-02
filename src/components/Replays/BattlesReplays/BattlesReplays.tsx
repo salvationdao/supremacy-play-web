@@ -43,28 +43,33 @@ const sortOptions = [
 
 export const BattlesReplays = () => {
     const [query, updateQuery] = useUrlQuery()
-    const [gid, setGID] = useState(parseString(query.get("gid"), -1))
+    const [selectedGID, setSelectedGID] = useState(parseString(query.get("selectedGID"), -1))
+    const [battleGID, setBattleGID] = useState(parseString(query.get("battleGID"), -1))
     const [battleNumber, setBattleNumber] = useState(parseString(query.get("battleNumber"), -1))
 
     useEffect(() => {
         updateQuery({
-            gid: gid >= 0 ? `${gid}` : "",
-            battleNumber: battleNumber >= 0 ? `${battleNumber}` : "",
+            selectedGID: selectedGID > 0 ? `${selectedGID}` : "",
+            battleGID: battleGID > 0 ? `${battleGID}` : "",
+            battleNumber: battleNumber > 0 ? `${battleNumber}` : "",
         })
-    }, [gid, battleNumber, updateQuery])
+    }, [selectedGID, battleNumber, updateQuery, battleGID])
 
-    if (gid > 0 && battleNumber > 0) return <BattleReplayDetails gid={gid} battleNumber={battleNumber} setBattleNumber={setBattleNumber} />
+    // If both battle gid and battle number are present, show the individual page
+    if (battleGID > 0 && battleNumber > 0) {
+        return <BattleReplayDetails gid={selectedGID} battleNumber={battleNumber} setBattleGID={setBattleGID} setBattleNumber={setBattleNumber} />
+    }
 
-    return <BattlesReplaysInner gid={gid} setGID={setGID} setBattleNumber={setBattleNumber} />
+    return <BattlesReplaysInner setSelectedGID={setSelectedGID} setBattleGID={setBattleGID} setBattleNumber={setBattleNumber} />
 }
 
 const BattlesReplaysInner = ({
-    gid,
-    setGID,
+    setSelectedGID,
+    setBattleGID,
     setBattleNumber,
 }: {
-    gid: number
-    setGID: React.Dispatch<React.SetStateAction<number>>
+    setSelectedGID: React.Dispatch<React.SetStateAction<number>>
+    setBattleGID: React.Dispatch<React.SetStateAction<number>>
     setBattleNumber: React.Dispatch<React.SetStateAction<number>>
 }) => {
     const theme = useTheme()
@@ -88,10 +93,16 @@ const BattlesReplaysInner = ({
     })
 
     useEffect(() => {
-        const defaultArena = arenaList.find((arena) => arena.gid === gid)
-        setGID(defaultArena?.gid || -1)
-        setSelectedArenaType(defaultArena)
-    }, [arenaList, gid, setGID])
+        setSelectedGID((prev) => {
+            let gid = -1
+            if (prev > 0) {
+                const defaultArena = arenaList.find((arena) => arena.gid === prev)
+                gid = defaultArena?.gid || gid
+                setSelectedArenaType(defaultArena)
+            }
+            return gid
+        })
+    }, [arenaList, setSelectedGID])
 
     const getItems = useCallback(async () => {
         try {
@@ -126,18 +137,18 @@ const BattlesReplaysInner = ({
 
     const onChangeArenaType = useCallback(
         (arena: Arena | undefined) => {
-            if (arena) setGID(arena.gid)
+            if (arena) setSelectedGID(arena.gid)
             setSelectedArenaType(arena)
         },
-        [setGID],
+        [setSelectedGID],
     )
 
     const onItemClick = useCallback(
         (gid: number, battleNumber: number) => {
-            setGID(gid)
+            setBattleGID(gid)
             setBattleNumber(battleNumber)
         },
-        [setBattleNumber, setGID],
+        [setBattleNumber, setBattleGID],
     )
 
     const content = useMemo(() => {

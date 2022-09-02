@@ -1,6 +1,5 @@
-import { Box, Typography } from "@mui/material"
+import { Box, Stack, Typography } from "@mui/material"
 import { useTheme } from "../../../containers/theme"
-import { timeSinceInWords } from "../../../helpers"
 import { fonts } from "../../../theme/theme"
 import { BattleReplay } from "../../../types"
 import { FancyButton } from "../../Common/FancyButton"
@@ -33,30 +32,33 @@ export const BattleReplayItem = ({ battleReplay, onItemClick }: { battleReplay: 
             sx={{ color: theme.factionTheme.primary, textAlign: "start", height: "100%", ":hover": { opacity: 1 } }}
             onClick={() => onItemClick(arena.gid, battle_number)}
         >
-            <Box sx={{ height: "100%" }}>
+            <Stack spacing="1rem" sx={{ height: "100%" }}>
                 {/* Thumbnail */}
                 <Box sx={{ position: "relative" }}>
                     <Box
-                        component="img"
-                        src={battleReplay.game_map?.logo_url}
                         sx={{
-                            top: "5",
-                            right: "5",
-                            width: "100%",
-                            objectFit: "cover",
-                            objectPosition: "center",
                             position: "absolute",
+                            top: "50%",
+                            left: "50%",
+                            transform: "translate(-50%, -50%)",
+                            height: "100%",
+                            width: "90%",
+                            background: `url(${battleReplay.game_map?.logo_url})`,
+                            backgroundRepeat: "no-repeat",
+                            backgroundPosition: "center",
+                            backgroundSize: "contain",
+                            zIndex: 1,
                         }}
                     />
 
                     <Box
-                        component="img"
-                        src={battleReplay.game_map?.background_url}
                         sx={{
                             height: "15rem",
                             width: "100%",
-                            objectFit: "cover",
-                            objectPosition: "center",
+                            background: `url(${battleReplay.game_map?.background_url})`,
+                            backgroundRepeat: "no-repeat",
+                            backgroundPosition: "center",
+                            backgroundSize: "cover",
                         }}
                     />
                 </Box>
@@ -64,9 +66,9 @@ export const BattleReplayItem = ({ battleReplay, onItemClick }: { battleReplay: 
                 {/* Info */}
                 <Box>
                     <Typography sx={{ fontFamily: fonts.nostromoBlack }}>BATTLE #{battle_number}</Typography>
-                    <Typography>{timeSinceInWords(ended_at, new Date())} ago</Typography>
+                    <Typography>{ended_at.toLocaleDateString()}</Typography>
                 </Box>
-            </Box>
+            </Stack>
         </FancyButton>
     )
 }
