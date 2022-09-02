@@ -240,7 +240,7 @@ export interface Arena {
 
 export interface BattleReplay {
     id: string
-    stream_id?: string
+    stream_id: string
     arena_id: string
     battle_id: string
     is_complete_battle: boolean

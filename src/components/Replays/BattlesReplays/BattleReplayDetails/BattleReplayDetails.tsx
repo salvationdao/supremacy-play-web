@@ -5,6 +5,7 @@ import { useTheme } from "../../../../containers/theme"
 import { fonts, siteZIndex } from "../../../../theme/theme"
 import { ClipThing } from "../../../Common/ClipThing"
 import { FancyButton } from "../../../Common/FancyButton"
+import { BattleReplayPlayer } from "./BattleReplayPlayer"
 
 export const BattleReplayDetails = ({
     gid,
@@ -75,6 +76,7 @@ export const BattleReplayDetails = ({
                     sx={{ height: "100%" }}
                 >
                     <Stack sx={{ height: "100%" }}>
+                        <BattleReplayPlayer battleNumber={battleNumber} gid={gid}/>
                         <Typography>{`TODO: get video for gid: <${gid}> and battle number: <${battleNumber}>`}</Typography>
                     </Stack>
                 </ClipThing>
