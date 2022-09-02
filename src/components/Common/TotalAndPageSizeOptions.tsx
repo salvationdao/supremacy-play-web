@@ -1,5 +1,5 @@
 import { Box, Button, Checkbox, Divider, IconButton, MenuItem, Select, Stack, Typography } from "@mui/material"
-import { ReactNode } from "react"
+import React, { ReactNode } from "react"
 import { SvgFilter, SvgGridView, SvgListView, SvgRefresh } from "../../assets"
 import { useTheme } from "../../containers/theme"
 import { colors, fonts } from "../../theme/theme"
@@ -31,7 +31,7 @@ interface TotalAndPageSizeOptionsProps {
 }
 
 // Pick and include the props you need
-export const TotalAndPageSizeOptions = ({
+export const TotalAndPageSizeOptions = React.memo(function TotalAndPageSizeOptions({
     // Count of items on current page
     countItems,
 
@@ -69,7 +69,7 @@ export const TotalAndPageSizeOptions = ({
     // Styles
     primaryColor: pColor,
     children,
-}: TotalAndPageSizeOptionsProps) => {
+}: TotalAndPageSizeOptionsProps) {
     const theme = useTheme()
 
     const primaryColor = pColor || theme.factionTheme.primary
@@ -274,4 +274,4 @@ export const TotalAndPageSizeOptions = ({
             </Stack>
         </Stack>
     )
-}
+})
