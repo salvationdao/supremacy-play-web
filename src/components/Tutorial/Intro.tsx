@@ -11,88 +11,24 @@ interface Context {
 }
 
 const context: Context[] = [
-    {
-        time: 0,
-        text: "In the year 2112.",
-    },
-    {
-        time: 3,
-        text: "the biggest tech companies on earth.",
-    },
-    {
-        time: 5,
-        text: "were united in celebration",
-    },
-    {
-        time: 9,
-        text: "They gave birth to AI",
-    },
-
-    {
-        time: 12,
-        text: "the technological singularity",
-    },
-
-    {
-        time: 15,
-        text: "Corporate leaders saw the writing on the wallI",
-    },
-
-    {
-        time: 18,
-        text: "and converted their consciousness into artificial intelligences",
-    },
-
-    {
-        time: 22,
-        text: "These Corporate AI's,",
-    },
-
-    {
-        time: 25,
-        text: "singular in focus relentless in their desire",
-    },
-
-    {
-        time: 27,
-        text: "for expansion came to dominate the economy",
-    },
-
-    {
-        time: 32,
-        text: "Human controlled corporations",
-    },
-
-    {
-        time: 34.5,
-        text: "were quickly out manoeuvred",
-    },
-
-    {
-        time: 36,
-        text: "The old world had fallen",
-    },
-
-    {
-        time: 39,
-        text: "human rights and freedom",
-    },
-    {
-        time: 40.5,
-        text: "were quickly stripped",
-    },
-    {
-        time: 42,
-        text: "as AI conglomerates took over",
-    },
-    {
-        time: 45.5,
-        text: "The world was no longer",
-    },
-    {
-        time: 47,
-        text: "under human control",
-    },
+    { time: 0, text: "In the year 2112." },
+    { time: 3, text: "the biggest tech companies on earth." },
+    { time: 5, text: "were united in celebration" },
+    { time: 9, text: "They gave birth to AI" },
+    { time: 12, text: "the technological singularity" },
+    { time: 15, text: "Corporate leaders saw the writing on the wallI" },
+    { time: 18, text: "and converted their consciousness into artificial intelligences" },
+    { time: 22, text: "These Corporate AI's," },
+    { time: 25, text: "singular in focus relentless in their desire" },
+    { time: 27, text: "for expansion came to dominate the economy" },
+    { time: 32, text: "Human controlled corporations" },
+    { time: 34.5, text: "were quickly out manoeuvred" },
+    { time: 36, text: "The old world had fallen" },
+    { time: 39, text: "human rights and freedom" },
+    { time: 40.5, text: "were quickly stripped" },
+    { time: 42, text: "as AI conglomerates took over" },
+    { time: 45.5, text: "The world was no longer" },
+    { time: 47, text: "under human control" },
 ]
 
 export const Intro = ({ toggleTrainingIntro }: { toggleTrainingIntro: (value?: boolean | undefined) => void }) => {
@@ -149,7 +85,7 @@ export const Intro = ({ toggleTrainingIntro }: { toggleTrainingIntro: (value?: b
                     objectFit: "cover",
                 }}
             >
-                <source src={`${TRAINING_ASSETS}/intro.mp4`} />
+                <source src={`${TRAINING_ASSETS}/intro2.mp4`} />
             </video>
             {stage && (
                 <Box
