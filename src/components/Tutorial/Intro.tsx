@@ -16,7 +16,7 @@ const context: Context[] = [
     { time: 5, text: "were united in celebration" },
     { time: 9, text: "They gave birth to AI" },
     { time: 12, text: "the technological singularity" },
-    { time: 15, text: "Corporate leaders saw the writing on the wallI" },
+    { time: 15, text: "Corporate leaders saw the writing on the wall" },
     { time: 18, text: "and converted their consciousness into artificial intelligences" },
     { time: 22, text: "These Corporate AI's," },
     { time: 25, text: "singular in focus relentless in their desire" },
@@ -101,7 +101,7 @@ export const Intro = ({ toggleTrainingIntro }: { toggleTrainingIntro: (value?: b
                         animation: `${opacityEffect} 1.5s ease-in-out`,
                     }}
                 >
-                    <Typography sx={{ fontSize: "32px" }}>{stage.text}</Typography>
+                    <Typography sx={{ textShadow: "2px 2px black", fontSize: "32px" }}>{stage.text}</Typography>
                 </Box>
             )}
         </Box>
