@@ -1,22 +1,28 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useMemo } from "react"
+import { SvgCrown, SvgSkull } from "../../../../../../assets"
 import { useSupremacy } from "../../../../../../containers"
 import { useTheme } from "../../../../../../containers/theme"
 import { getRarityDeets } from "../../../../../../helpers"
-import { fonts } from "../../../../../../theme/theme"
+import { colors, fonts } from "../../../../../../theme/theme"
 import { SystemMessageMechStruct } from "../../../../../../types"
 import { ClipThing } from "../../../../../Common/ClipThing"
 import { RepairBlocks } from "../../../../../Hangar/WarMachinesHangar/Common/MechRepairBlocks"
 
 export const SystemMessageMech = ({ mech }: { mech: SystemMessageMechStruct }) => {
-    const { name, faction_id, image_url, tier, total_blocks, damaged_blocks, kills, killed } = mech
+    const { name, image_url, tier, total_blocks, damaged_blocks, kills, killed } = mech
 
     const theme = useTheme()
     const { getFaction } = useSupremacy()
     const rarityDeets = useMemo(() => getRarityDeets(tier || ""), [tier])
 
     return (
-        <ClipThing clipSize="6px" opacity={0.8} border={{ borderColor: theme.factionTheme.primary }} backgroundColor={theme.factionTheme.background}>
+        <ClipThing
+            clipSize="6px"
+            opacity={0.8}
+            border={{ borderColor: theme.factionTheme.primary, borderThickness: killed ? "0" : "1px" }}
+            backgroundColor={theme.factionTheme.background}
+        >
             <Stack
                 spacing="1.2rem"
                 alignItems="stretch"
@@ -30,16 +36,45 @@ export const SystemMessageMech = ({ mech }: { mech: SystemMessageMechStruct }) =
                 {/* Mech image */}
                 <Box
                     sx={{
+                        position: "relative",
                         height: "16rem",
                         width: "100%",
-                        overflow: "hidden",
-                        background: `url(${image_url})`,
-                        backgroundRepeat: "no-repeat",
-                        backgroundPosition: "center",
-                        backgroundSize: "cover",
                         borderRadius: 0.3,
+                        overflow: "hidden",
                     }}
-                />
+                >
+                    <Box
+                        sx={{
+                            height: "100%",
+                            width: "100%",
+                            background: `url(${image_url})`,
+                            backgroundRepeat: "no-repeat",
+                            backgroundPosition: "center",
+                            backgroundSize: "cover",
+                        }}
+                    />
+
+                    {killed ? (
+                        <Stack
+                            alignItems="center"
+                            justifyContent="center"
+                            sx={{
+                                px: "4rem",
+                                position: "absolute",
+                                top: 0,
+                                bottom: 0,
+                                left: 0,
+                                right: 0,
+                                background: "linear-gradient(#00000090, #000000)",
+                                zIndex: 2,
+                            }}
+                        >
+                            <SvgSkull size="90%" />
+                        </Stack>
+                    ) : (
+                        <SvgCrown size="2rem" fill={colors.gold} sx={{ position: "absolute", top: ".4rem", left: ".4rem" }} />
+                    )}
+                </Box>
 
                 {/* Info */}
                 <Stack sx={{ flex: 1, py: ".2rem" }}>

@@ -22,14 +22,16 @@ export const MechBattleCompleteDetails = ({ message, data }: MechBattleCompleteD
 
 const RewardsSection = ({ data }: { data: SystemMessageDataMechBattleComplete }) => {
     const sups = data.rewarded_sups
+    const supsBonus = data.rewarded_sups_bonus
     const ability = data.rewarded_player_ability
 
     return (
         <Stack spacing="1rem">
             <Typography sx={{ fontFamily: fonts.nostromoBlack }}>YOUR REWARDS:</Typography>
 
-            <Stack alignItems="center" direction="row" spacing="1.4rem">
+            <Stack alignItems="center" direction="row" spacing="2rem">
                 {sups && sups != "0" && <RewardSups sups={sups} />}
+                {supsBonus && supsBonus != "0" && <RewardSups sups={supsBonus} label="BONUS" />}
                 {ability && <RewardAbility ability={ability} />}
             </Stack>
         </Stack>

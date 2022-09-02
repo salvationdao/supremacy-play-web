@@ -4,7 +4,7 @@ import { supFormatterNoFixed } from "../../../../../../helpers"
 import { colors, fonts } from "../../../../../../theme/theme"
 import { ClipThing } from "../../../../../Common/ClipThing"
 
-export const RewardSups = ({ sups }: { sups: string }) => {
+export const RewardSups = ({ sups, label }: { sups: string; label?: string }) => {
     return (
         <Stack alignItems="center" spacing=".8rem" sx={{ alignSelf: "stretch" }}>
             <ClipThing
@@ -26,7 +26,7 @@ export const RewardSups = ({ sups }: { sups: string }) => {
             </ClipThing>
 
             <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack }}>
-                SUPS
+                {label || "SUPS"}
             </Typography>
         </Stack>
     )
