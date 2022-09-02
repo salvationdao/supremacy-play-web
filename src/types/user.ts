@@ -113,6 +113,7 @@ export enum FeatureName {
 
 export enum SystemMessageDataType {
     MechQueue = "MECH_QUEUE",
+    MechBattleBegin = "MECH_BATTLE_BEGIN",
     MechBattleComplete = "MECH_BATTLE_COMPLETE",
     Global = "GLOBAL",
     Faction = "FACTION",
@@ -132,25 +133,39 @@ export interface SystemMessage {
     sender: User
 }
 
+interface SystemMessageMech {
+    mech_id: string
+    name: string
+    faction_id: string
+    image_url: string
+    tier: string
+}
+
 export interface SystemMessageDataMechBattleComplete {
     rewarded_sups: string
     rewarded_sups_bonus: string
     rewarded_player_ability?: BlueprintPlayerAbility
-    mech_battle_briefs: MechBattleBrief[]
+    mech_battle_briefs: MechBattleCompleteBrief[]
 }
 
-export interface MechBattleBrief {
-    mech_id: string
-    faction_id: string
+export interface MechBattleCompleteBrief extends SystemMessageMech {
     kills: KillInfo[]
     killed: KillInfo | null
-    label: string
-    name: string
 }
 
 export interface KillInfo {
     name: string
     faction_id: string
+}
+
+export interface SystemMessageDataMechBattleBegin {
+    player_id: string
+    mechs: MechBattleBeginBrief[]
+}
+
+export interface MechBattleBeginBrief extends SystemMessageMech {
+    total_blocks: number
+    damaged_blocks: number
 }
 
 export enum QuestKey {
