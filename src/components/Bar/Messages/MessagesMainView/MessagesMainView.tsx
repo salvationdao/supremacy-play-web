@@ -66,6 +66,9 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
                     case SystemMessageDataType.MechBattleComplete:
                         icon = <SvgDamage1 fill={colors.green} size="1.6rem" />
                         break
+                    case SystemMessageDataType.MechBattleBegin:
+                        icon = <SvgNotification size="1.6rem" />
+                        break
                     case SystemMessageDataType.Faction:
                         icon = <SvgSyndicateFlag fill={theme.factionTheme.primary} size="1.6rem" />
                         break
