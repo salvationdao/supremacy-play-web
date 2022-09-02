@@ -136,10 +136,10 @@ export interface SystemMessageDataMechBattleComplete {
     rewarded_sups: string
     rewarded_sups_bonus: string
     rewarded_player_ability?: BlueprintPlayerAbility
-    mech_battle_briefs: MechBattleBrief[]
+    mech_battle_briefs: MechBattleBriefStruct[]
 }
 
-export interface MechBattleBrief {
+export interface MechBattleBriefStruct {
     mech_id: string
     faction_id: string
     kills: KillInfo[]

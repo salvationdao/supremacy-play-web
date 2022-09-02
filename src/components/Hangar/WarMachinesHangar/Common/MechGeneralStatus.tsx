@@ -55,7 +55,7 @@ export const MechGeneralStatus = ({
             ready: mechStatus?.status === MechStatusEnum.Damaged,
         },
         (payload) => {
-            if (!payload) {
+            if (!payload || payload.closed_at) {
                 setRepairOffer(undefined)
                 return
             }
