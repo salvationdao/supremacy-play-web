@@ -65,10 +65,10 @@ export const ReplayItemPage = () => {
 }
 
 const ReplayItemPageInner = () => {
-    const { type, id } = useParams<{ type: REPLAY_TABS; id: string }>()
+    const { type, gid, battleNumber } = useParams<{ type: REPLAY_TABS; battleNumber: string; gid: string }>()
 
-    if (type === REPLAY_TABS.BATTLES && !!id) {
-        return <BattleReplayDetails replayID={id} />
+    if (type === REPLAY_TABS.BATTLES && !!battleNumber && !! gid) {
+        return <BattleReplayDetails battleNumber={battleNumber} arenaGID={gid} />
     }
 
     return null

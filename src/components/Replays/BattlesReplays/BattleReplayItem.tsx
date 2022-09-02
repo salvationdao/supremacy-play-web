@@ -35,16 +35,32 @@ export const BattleReplayItem = ({ battleReplay }: { battleReplay: BattleReplay 
         >
             <Box sx={{ height: "100%" }}>
                 {/* Thumbnail */}
-                <Box
-                    component="img"
-                    src={ThreeMechsJPG}
-                    sx={{
-                        height: "15rem",
-                        width: "100%",
-                        objectFit: "cover",
-                        objectPosition: "center",
-                    }}
-                />
+                <Box sx={{position: "relative"}}>
+                    <Box
+                        component="img"
+                        src={battleReplay.game_map?.logo_url}
+                        sx={{
+                            top: "5",
+                            right: "5",
+                            width: "100%",
+                            objectFit: "cover",
+                            objectPosition: "center",
+                            position:"absolute",
+                        }}
+                    />
+
+                    <Box
+                        component="img"
+                        src={battleReplay.game_map?.background_url}
+                        sx={{
+                            height: "15rem",
+                            width: "100%",
+                            objectFit: "cover",
+                            objectPosition: "center",
+                        }}
+                    />
+                </Box>
+
 
                 {/* Info */}
                 <Box>

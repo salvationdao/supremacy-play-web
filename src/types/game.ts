@@ -35,6 +35,13 @@ export interface Map {
     Disabled_Cells: number[]
 }
 
+export interface GameMap {
+    background_url: string
+    id: string
+    logo_url: string
+    name: string
+}
+
 export interface BattleZoneStruct {
     location: Position
     radius: number
@@ -228,6 +235,7 @@ export enum ArenaType {
 export interface Arena {
     id: string
     type: ArenaType
+    gid: number
 }
 
 export interface BattleReplay {
@@ -241,7 +249,8 @@ export interface BattleReplay {
     stopped_at?: Date
     events: Events
     battle?: Battle
-    game_map?: Map
+    arena?: Arena
+    game_map?: GameMap
 }
 
 export interface Events {

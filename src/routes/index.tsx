@@ -204,7 +204,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
     // Replays
     replays_item: {
         id: "replays_item",
-        path: "/replays/:type/:id",
+        path: "/replays/:type/:gid/:battleNumber",
         exact: true,
         Component: ReplayItemPage,
         requireAuth: false,
