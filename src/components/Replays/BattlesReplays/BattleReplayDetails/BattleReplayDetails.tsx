@@ -2,7 +2,7 @@ import { Stack, Typography } from "@mui/material"
 import { useCallback } from "react"
 import { HangarBg, SvgBack } from "../../../../assets"
 import { useUrlQuery } from "../../../../hooks"
-import { siteZIndex } from "../../../../theme/theme"
+import { fonts, siteZIndex } from "../../../../theme/theme"
 import { FancyButton } from "../../../Common/FancyButton"
 
 export const BattleReplayDetails = ({ gid, battleNumber }: { gid: number; battleNumber: number }) => {
