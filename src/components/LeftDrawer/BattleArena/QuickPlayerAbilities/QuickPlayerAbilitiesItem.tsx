@@ -29,7 +29,10 @@ const propsAreEqual = (prevProps: QuickPlayerAbilitiesItemProps, nextProps: Quic
         prevProps.price === nextProps.price &&
         prevProps.saleAbility.id === nextProps.saleAbility.id &&
         prevProps.amount === nextProps.amount &&
-        prevProps.availability === nextProps.availability
+        prevProps.availability === nextProps.availability &&
+        prevProps.onClaim === nextProps.onClaim &&
+        prevProps.onPurchase === nextProps.onPurchase &&
+        prevProps.setClaimError === nextProps.setClaimError
     )
 }
 

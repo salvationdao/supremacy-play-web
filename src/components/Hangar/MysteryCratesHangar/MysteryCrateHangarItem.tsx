@@ -24,7 +24,7 @@ interface MysteryCrateStoreItemProps {
 }
 
 const propsAreEqual = (prevProps: MysteryCrateStoreItemProps, nextProps: MysteryCrateStoreItemProps) => {
-    return prevProps.crate.id === nextProps.crate.id
+    return prevProps.crate.id === nextProps.crate.id && prevProps.getCrates === nextProps.getCrates
 }
 
 export const MysteryCrateHangarItem = React.memo(function MysteryCrateHangarItem({

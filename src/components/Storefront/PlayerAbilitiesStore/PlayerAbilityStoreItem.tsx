@@ -28,7 +28,9 @@ const propsAreEqual = (prevProps: PlayerAbilityStoreItemProps, nextProps: Player
         prevProps.amount === nextProps.amount &&
         prevProps.availability === nextProps.availability &&
         prevProps.saleAbility.id === nextProps.saleAbility.id &&
-        prevProps.amount === nextProps.amount
+        prevProps.amount === nextProps.amount &&
+        prevProps.onClaim === nextProps.onClaim &&
+        prevProps.onPurchase === nextProps.onPurchase
     )
 }
 
