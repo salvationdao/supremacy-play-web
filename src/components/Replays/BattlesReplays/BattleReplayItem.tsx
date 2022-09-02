@@ -1,16 +1,16 @@
 import { Box, Typography } from "@mui/material"
-import { ThreeMechsJPG } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { timeSinceInWords } from "../../../helpers"
 import { fonts } from "../../../theme/theme"
 import { BattleReplay } from "../../../types"
 import { FancyButton } from "../../Common/FancyButton"
 
-export const BattleReplayItem = ({ battleReplay }: { battleReplay: BattleReplay }) => {
+export const BattleReplayItem = ({ battleReplay, onItemClick }: { battleReplay: BattleReplay; onItemClick: (gid: number, battleNumber: number) => void }) => {
     const theme = useTheme()
 
-    if (!battleReplay.battle || !battleReplay.battle.ended_at) return null
+    if (!battleReplay.battle.ended_at) return null
 
+    const { arena } = battleReplay
     const { battle_number, ended_at } = battleReplay.battle
 
     return (
@@ -31,11 +31,11 @@ export const BattleReplayItem = ({ battleReplay }: { battleReplay: BattleReplay 
                 sx: { position: "relative", height: "100%" },
             }}
             sx={{ color: theme.factionTheme.primary, textAlign: "start", height: "100%", ":hover": { opacity: 1 } }}
-            to={`/replays/battles/${battleReplay.id}`}
+            onClick={() => onItemClick(arena.gid, battle_number)}
         >
             <Box sx={{ height: "100%" }}>
                 {/* Thumbnail */}
-                <Box sx={{position: "relative"}}>
+                <Box sx={{ position: "relative" }}>
                     <Box
                         component="img"
                         src={battleReplay.game_map?.logo_url}
@@ -45,7 +45,7 @@ export const BattleReplayItem = ({ battleReplay }: { battleReplay: BattleReplay 
                             width: "100%",
                             objectFit: "cover",
                             objectPosition: "center",
-                            position:"absolute",
+                            position: "absolute",
                         }}
                     />
 
@@ -60,7 +60,6 @@ export const BattleReplayItem = ({ battleReplay }: { battleReplay: BattleReplay 
                         }}
                     />
                 </Box>
-
 
                 {/* Info */}
                 <Box>

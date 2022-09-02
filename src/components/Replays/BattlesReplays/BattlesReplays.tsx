@@ -42,17 +42,31 @@ const sortOptions = [
 ]
 
 export const BattlesReplays = () => {
-    const [query] = useUrlQuery()
+    const [query, updateQuery] = useUrlQuery()
+    const [gid, setGID] = useState(parseString(query.get("gid"), -1))
+    const [battleNumber, setBattleNumber] = useState(parseString(query.get("battleNumber"), -1))
 
-    const gid = parseString(query.get("gid"), -1)
-    const battleNumber = parseString(query.get("battleNumber"), -1)
+    useEffect(() => {
+        updateQuery({
+            gid: `${gid}`,
+            battleNumber: `${battleNumber}`,
+        })
+    }, [gid, battleNumber, updateQuery])
 
-    if (gid > 0 && battleNumber > 0) return <BattleReplayDetails gid={gid} battleNumber={battleNumber} />
+    if (gid > 0 && battleNumber > 0) return <BattleReplayDetails gid={gid} battleNumber={battleNumber} setBattleNumber={setBattleNumber} />
 
-    return <BattlesReplaysInner gid={gid} />
+    return <BattlesReplaysInner gid={gid} setGID={setGID} setBattleNumber={setBattleNumber} />
 }
 
-const BattlesReplaysInner = ({ gid }: { gid: number }) => {
+const BattlesReplaysInner = ({
+    gid,
+    setGID,
+    setBattleNumber,
+}: {
+    gid: number
+    setGID: React.Dispatch<React.SetStateAction<number>>
+    setBattleNumber: React.Dispatch<React.SetStateAction<number>>
+}) => {
     const theme = useTheme()
     const { arenaList } = useArena()
     const { send } = useGameServerCommands("/public/commander")
@@ -74,8 +88,10 @@ const BattlesReplaysInner = ({ gid }: { gid: number }) => {
     })
 
     useEffect(() => {
-        setSelectedArenaType(arenaList.find((arena) => arena.gid === gid))
-    }, [arenaList, gid])
+        const defaultArena = arenaList.find((arena) => arena.gid === gid)
+        setGID(defaultArena?.gid || -1)
+        setSelectedArenaType(defaultArena)
+    }, [arenaList, gid, setGID])
 
     const getItems = useCallback(async () => {
         try {
@@ -107,6 +123,22 @@ const BattlesReplaysInner = ({ gid }: { gid: number }) => {
     useEffect(() => {
         getItems()
     }, [getItems])
+
+    const onChangeArenaType = useCallback(
+        (arena: Arena | undefined) => {
+            if (arena) setGID(arena.gid)
+            setSelectedArenaType(arena)
+        },
+        [setGID],
+    )
+
+    const onItemClick = useCallback(
+        (gid: number, battleNumber: number) => {
+            setGID(gid)
+            setBattleNumber(battleNumber)
+        },
+        [setBattleNumber, setGID],
+    )
 
     const content = useMemo(() => {
         if (loadError) {
@@ -158,7 +190,7 @@ const BattlesReplaysInner = ({ gid }: { gid: number }) => {
                         }}
                     >
                         {replays.map((replay) => {
-                            return <BattleReplayItem key={replay.id} battleReplay={replay} />
+                            return <BattleReplayItem key={replay.id} battleReplay={replay} onItemClick={onItemClick} />
                         })}
                     </Box>
                 </Box>
@@ -216,7 +248,7 @@ const BattlesReplaysInner = ({ gid }: { gid: number }) => {
                 </Stack>
             </Stack>
         )
-    }, [loadError, replays, isLoading, theme.factionTheme.primary, theme.factionTheme.secondary])
+    }, [loadError, replays, isLoading, theme.factionTheme.primary, theme.factionTheme.secondary, onItemClick])
 
     return (
         <ClipThing
@@ -278,7 +310,7 @@ const BattlesReplaysInner = ({ gid }: { gid: number }) => {
                             <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack }}>
                                 BATTLE MODE:
                             </Typography>
-                            <ArenaTypeSelect arenaTypeOptions={arenaList} selectedArenaType={selectedArenaType} setSelectedArenaType={setSelectedArenaType} />
+                            <ArenaTypeSelect arenaTypeOptions={arenaList} selectedArenaType={selectedArenaType} onChangeArenaType={onChangeArenaType} />
                         </Stack>
                     </Stack>
 

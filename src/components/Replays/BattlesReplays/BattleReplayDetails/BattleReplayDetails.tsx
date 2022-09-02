@@ -1,19 +1,21 @@
 import { Stack, Typography } from "@mui/material"
 import { useCallback } from "react"
 import { HangarBg, SvgBack } from "../../../../assets"
-import { useUrlQuery } from "../../../../hooks"
 import { fonts, siteZIndex } from "../../../../theme/theme"
 import { FancyButton } from "../../../Common/FancyButton"
 
-export const BattleReplayDetails = ({ gid, battleNumber }: { gid: number; battleNumber: number }) => {
-    const [, updateQuery] = useUrlQuery()
-
+export const BattleReplayDetails = ({
+    gid,
+    battleNumber,
+    setBattleNumber,
+}: {
+    gid: number
+    battleNumber: number
+    setBattleNumber: React.Dispatch<React.SetStateAction<number>>
+}) => {
     const goBack = useCallback(() => {
-        updateQuery({
-            gid: `${gid}`,
-            battleNumber: undefined,
-        })
-    }, [gid, updateQuery])
+        setBattleNumber(-1)
+    }, [setBattleNumber])
 
     return (
         <Stack

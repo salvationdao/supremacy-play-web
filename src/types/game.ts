@@ -248,8 +248,8 @@ export interface BattleReplay {
     started_at?: Date
     stopped_at?: Date
     events: Events
-    battle?: Battle
-    arena?: Arena
+    battle: Battle
+    arena: Arena
     game_map?: GameMap
 }
 

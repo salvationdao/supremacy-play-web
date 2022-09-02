@@ -7,11 +7,11 @@ import { Arena } from "../../../types"
 export const ArenaTypeSelect = ({
     arenaTypeOptions,
     selectedArenaType,
-    setSelectedArenaType,
+    onChangeArenaType,
 }: {
     arenaTypeOptions: Arena[]
     selectedArenaType?: Arena
-    setSelectedArenaType: React.Dispatch<React.SetStateAction<Arena | undefined>>
+    onChangeArenaType: (arena: Arena | undefined) => void
 }) => {
     const theme = useTheme()
 
@@ -79,7 +79,7 @@ export const ArenaTypeSelect = ({
                     )
                 }}
             >
-                <MenuItem value="" onClick={() => setSelectedArenaType(undefined)}>
+                <MenuItem value="" onClick={() => onChangeArenaType(undefined)}>
                     <Typography textTransform="uppercase" sx={{ fontWeight: "fontWeightBold" }}>
                         ANY
                     </Typography>
@@ -90,7 +90,7 @@ export const ArenaTypeSelect = ({
                             key={x.id + i}
                             value={x.id}
                             onClick={() => {
-                                setSelectedArenaType(x)
+                                onChangeArenaType(x)
                             }}
                             sx={{ "&:hover": { backgroundColor: "#FFFFFF20" } }}
                         >
