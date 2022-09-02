@@ -19,6 +19,7 @@ import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { QueueDetails } from "../../LeftDrawer/QuickDeploy/QueueDetails"
 import { BulkDeployConfirmModal } from "./Common/BulkDeployConfirmModal"
 import { BulkRepairConfirmModal } from "./Common/BulkRepairConfirmModal"
+import { RepairBay } from "./RepairBay/RepairBay"
 import { QueueFeed } from "./WarMachineDetails/Modals/DeployModal"
 import { WarMachineHangarItem } from "./WarMachineHangarItem"
 
@@ -257,7 +258,7 @@ export const WarMachinesHangar = () => {
                             py: "1rem",
                             display: "grid",
                             gridTemplateColumns: isGridView ? "repeat(auto-fill, minmax(30rem, 1fr))" : "100%",
-                            gap: "1.3rem",
+                            gap: "1.5rem",
                             alignItems: "center",
                             justifyContent: "center",
                             overflow: "visible",
@@ -502,6 +503,8 @@ export const WarMachinesHangar = () => {
                         )}
                     </Stack>
                 </ClipThing>
+
+                <RepairBay selectedMechs={selectedMechs} setSelectedMechs={setSelectedMechs} />
             </Stack>
 
             {bulkDeployConfirmModalOpen && (

@@ -342,6 +342,7 @@ export const MiniMapAbilitiesDisplay = ({ map }: { map: GameMap }) => {
         <>
             {abilityList.length > 0 &&
                 abilityList.map((displayAbility) => <MiniMapAbilityDisplay key={displayAbility.offering_id} displayAbility={displayAbility} />)}
+
             {mapEvents.length > 0 &&
                 mapEvents.map((displayAbility) => <MiniMapAbilityDisplay key={displayAbility.offering_id} displayAbility={displayAbility} />)}
 
