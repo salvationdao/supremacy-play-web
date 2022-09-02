@@ -77,7 +77,6 @@ export const BattleReplayDetails = ({
                 >
                     <Stack sx={{ height: "100%" }}>
                         <BattleReplayPlayer battleNumber={battleNumber} gid={gid}/>
-                        <Typography>{`TODO: get video for gid: <${gid}> and battle number: <${battleNumber}>`}</Typography>
                     </Stack>
                 </ClipThing>
             </Stack>
