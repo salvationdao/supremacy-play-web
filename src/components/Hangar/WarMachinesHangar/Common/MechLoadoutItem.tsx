@@ -88,22 +88,7 @@ export const MechLoadoutItem = ({
                             )}
                         </Stack>
 
-                        <Typography
-                            variant="body2"
-                            sx={{
-                                color: primaryColor,
-                                fontFamily: fonts.nostromoBold,
-                                display: "-webkit-box",
-                                overflow: "hidden",
-                                overflowWrap: "anywhere",
-                                textOverflow: "ellipsis",
-                                WebkitLineClamp: 2,
-                                WebkitBoxOrient: "vertical",
-                            }}
-                        >
-                            {label}
-                        </Typography>
-                        {subLabel && (
+                        <Box>
                             <Typography
                                 variant="body2"
                                 sx={{
@@ -117,9 +102,27 @@ export const MechLoadoutItem = ({
                                     WebkitBoxOrient: "vertical",
                                 }}
                             >
-                                {subLabel}
+                                {label}
                             </Typography>
-                        )}
+
+                            {subLabel && (
+                                <Typography
+                                    variant="body2"
+                                    sx={{
+                                        color: primaryColor,
+                                        fontFamily: fonts.nostromoBold,
+                                        display: "-webkit-box",
+                                        overflow: "hidden",
+                                        overflowWrap: "anywhere",
+                                        textOverflow: "ellipsis",
+                                        WebkitLineClamp: 1,
+                                        WebkitBoxOrient: "vertical",
+                                    }}
+                                >
+                                    {subLabel}
+                                </Typography>
+                            )}
+                        </Box>
                     </Stack>
                 </FancyButton>
             </Box>

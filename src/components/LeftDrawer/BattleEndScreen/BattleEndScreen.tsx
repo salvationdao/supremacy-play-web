@@ -82,16 +82,14 @@ export const BattleEndScreen = () => {
                     overflowX: "auto",
 
                     "::-webkit-scrollbar": {
-                        width: ".4rem",
-                        height: ".4rem",
+                        width: "1rem",
+                        height: ".6rem",
                     },
                     "::-webkit-scrollbar-track": {
                         background: "#FFFFFF15",
-                        borderRadius: 3,
                     },
                     "::-webkit-scrollbar-thumb": {
                         background: primaryColor,
-                        borderRadius: 3,
                     },
                 }}
             >

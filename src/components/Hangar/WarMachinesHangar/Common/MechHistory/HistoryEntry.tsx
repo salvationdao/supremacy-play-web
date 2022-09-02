@@ -35,7 +35,6 @@ export const HistoryEntry = ({ status, mapName, mechSurvived, backgroundImage, k
         <ClipThing
             clipSize="10px"
             border={{
-                isFancy: true,
                 borderColor: statusColor,
                 borderThickness: ".2rem",
             }}
@@ -61,7 +60,7 @@ export const HistoryEntry = ({ status, mapName, mechSurvived, backgroundImage, k
                         bottom: 0,
                         left: 0,
                         right: 0,
-                        background: `linear-gradient(60deg, rgba(0, 0, 0, 0.6) 30%, ${statusColor}60)`,
+                        background: `linear-gradient(60deg, rgba(0, 0, 0, 0.1) 20%, ${statusColor}60)`,
                         zIndex: -1,
                     }}
                 />

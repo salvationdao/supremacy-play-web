@@ -39,7 +39,7 @@ export const Controls = () => {
                 overflowY: "hidden",
 
                 "::-webkit-scrollbar": {
-                    height: ".4rem",
+                    height: ".6rem",
                 },
                 "::-webkit-scrollbar-track": {
                     background: "#FFFFFF15",

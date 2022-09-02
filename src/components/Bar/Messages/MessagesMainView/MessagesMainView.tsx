@@ -1,6 +1,6 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { SvgAbility, SvgAnnouncement, SvgDamage1, SvgHealth, SvgHistoryClock, SvgNotification, SvgSyndicateFlag } from "../../../../assets"
+import { SvgAbility, SvgAnnouncement, SvgDamage1, SvgHistoryClock, SvgNotification, SvgSyndicateFlag } from "../../../../assets"
 import { useAuth } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
 import { usePagination } from "../../../../hooks"
@@ -66,11 +66,11 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
                     case SystemMessageDataType.MechBattleComplete:
                         icon = <SvgDamage1 fill={colors.green} size="1.6rem" />
                         break
+                    case SystemMessageDataType.MechBattleBegin:
+                        icon = <SvgNotification size="1.6rem" />
+                        break
                     case SystemMessageDataType.Faction:
                         icon = <SvgSyndicateFlag fill={theme.factionTheme.primary} size="1.6rem" />
-                        break
-                    case SystemMessageDataType.MechOwnerBattleReward:
-                        icon = <SvgHealth fill={colors.yellow} size="1.6rem" />
                         break
                     case SystemMessageDataType.PlayerAbilityRefunded:
                         icon = <SvgAbility fill={colors.orange} size="1.6rem" />
@@ -233,7 +233,7 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
                         />
                     </Stack>
 
-                    <Box sx={{ height: "50%", borderTop: `${theme.factionTheme.primary} 1px solid` }}>
+                    <Box sx={{ height: "60%", borderTop: `${theme.factionTheme.primary} 1px solid` }}>
                         {focusedMessage ? (
                             <MessageDisplay message={focusedMessage} onClose={() => setFocusedMessage(undefined)} />
                         ) : (
