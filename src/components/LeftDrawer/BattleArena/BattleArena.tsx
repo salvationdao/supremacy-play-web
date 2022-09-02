@@ -22,8 +22,8 @@ export const BattleArena = () => {
                         overflowY: "auto",
                         overflowX: "hidden",
                         my: ".5rem",
-                        mr: ".8rem",
-                        pr: ".8rem",
+                        mr: ".5rem",
+                        pr: ".5rem",
                         pl: "1rem",
                         direction: "ltr",
                         scrollbarWidth: "none",
@@ -54,7 +54,7 @@ export const BattleArena = () => {
 
     return useMemo(() => {
         return (
-            <Stack spacing="1rem" sx={{ position: "relative", height: "100%", backgroundColor: (theme) => theme.factionTheme.background }}>
+            <Stack sx={{ position: "relative", height: "100%", backgroundColor: (theme) => theme.factionTheme.background }}>
                 {content}
 
                 {battleIdentifier && (

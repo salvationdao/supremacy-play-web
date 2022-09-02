@@ -1,5 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useCallback, useState } from "react"
+import { useCallback, useRef, useState } from "react"
 import { SvgRepair } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
 import { useGameServerCommandsFaction, useGameServerSubscriptionFaction, useGameServerSubscriptionSecured } from "../../../../hooks/useGameServer"
@@ -29,7 +29,7 @@ export const MechGeneralStatus = ({
     const theme = useTheme()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [mechStatus, setMechStatus] = useState<MechStatus>()
-    const [text, setText] = useState("LOADING...")
+    const textValue = useRef("LOADING...")
     const [color, setColour] = useState(theme.factionTheme.primary)
     const [repairMechModalOpen, setRepairMechModalOpen] = useState<boolean>(false)
     const [repairOffer, setRepairOffer] = useState<RepairOffer>()
@@ -55,6 +55,7 @@ export const MechGeneralStatus = ({
         },
         (payload) => {
             if (!payload) return
+
             setMechStatus(payload)
             onStatusLoaded && onStatusLoaded(payload)
             let text = ""
@@ -89,7 +90,7 @@ export const MechGeneralStatus = ({
                     color = colors.lightGrey
             }
 
-            setText(text)
+            textValue.current = text
             setColour(color)
             setPrimaryColor && setPrimaryColor(color)
         },
@@ -99,7 +100,7 @@ export const MechGeneralStatus = ({
     const triggerStatusUpdate = useCallback(
         async (currentStatus: string) => {
             try {
-                if (currentStatus.includes("QUEUE")) return
+                if (!currentStatus.includes("QUEUE") && !currentStatus.includes("BATTLING")) return
                 await send(GameServerKeys.TriggerMechStatusUpdate, {
                     mech_id: mechID,
                 })
@@ -113,26 +114,12 @@ export const MechGeneralStatus = ({
     // When the battle queue is updated, tell the server to send the mech status to us again
     useGameServerSubscriptionFaction<boolean>(
         {
-            URI: `/mech/${mechID}/repair-update`,
-            key: GameServerKeys.MechQueueUpdated,
-        },
-        (payload) => {
-            if (!payload) return
-            // Force update status
-            triggerStatusUpdate("")
-        },
-    )
-
-    // When the battle queue is updated, tell the server to send the mech status to us again
-    useGameServerSubscriptionFaction<boolean>(
-        {
             URI: "/queue-update",
             key: GameServerKeys.MechQueueUpdated,
         },
         (payload) => {
             if (!payload) return
-
-            triggerStatusUpdate(text)
+            triggerStatusUpdate(textValue.current)
         },
     )
 
@@ -155,7 +142,7 @@ export const MechGeneralStatus = ({
                         variant={smallVersion ? "caption" : "body1"}
                         sx={{ lineHeight: 1, color, textAlign: hideBox ? "start" : "center", fontFamily: fonts.nostromoBlack }}
                     >
-                        {text}
+                        {textValue.current}
                     </Typography>
 
                     <Stack

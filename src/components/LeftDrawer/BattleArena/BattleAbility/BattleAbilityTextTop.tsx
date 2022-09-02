@@ -2,10 +2,11 @@ import { Box, Stack, Typography } from "@mui/material"
 import { useCallback, useState } from "react"
 import { FancyButton } from "../../.."
 import { useGlobalNotifications } from "../../../../containers"
+import { useArena } from "../../../../containers/arena"
 import { useGameServerCommandsFaction, useGameServerSubscriptionSecuredUser } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
+import { shake } from "../../../../theme/keyframes"
 import { colors, fonts } from "../../../../theme/theme"
-import { useArena } from "../../../../containers/arena"
 
 interface BattleAbilityTextTopProps {
     label: string
@@ -62,7 +63,9 @@ export const BattleAbilityTextTop = ({ label, image_url, colour, disableButton }
                     {label}
                 </Typography>
             </Stack>
-            <OptInButton disable={disableButton} isOptedIn={isOptedIn} />
+            <Box sx={{ animation: !disableButton ? `${shake(1)} 1s 3` : "unset" }}>
+                <OptInButton disable={disableButton} isOptedIn={isOptedIn} />
+            </Box>
         </Stack>
     )
 }

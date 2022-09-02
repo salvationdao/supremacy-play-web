@@ -56,7 +56,7 @@ export const ImagesPreview = ({ media, primaryColor }: { media: MarketMedia[]; p
                         display: "grid",
                         gridTemplateColumns: "repeat(auto-fill, 6rem)",
                         gridTemplateRows: "repeat(auto-fill, 6rem)",
-                        gap: "1.3rem",
+                        gap: "1.5rem",
                     }}
                 >
                     {media.map((m, i) => {

@@ -218,16 +218,7 @@ export const MessagesComposeView = ({ onBack, type }: MessageComposeViewProps) =
 
                 <Box flex={1} />
 
-                {error && (
-                    <Typography
-                        sx={{
-                            color: colors.red,
-                            mr: "1rem",
-                        }}
-                    >
-                        {error}
-                    </Typography>
-                )}
+                {error && <Typography sx={{ color: colors.red, mr: "1rem" }}>{error}</Typography>}
 
                 <Stack direction="row">
                     <Typography sx={{ color: colors.grey }}>

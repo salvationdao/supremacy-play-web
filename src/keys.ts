@@ -67,6 +67,7 @@ export enum GameServerKeys {
 
     // Minimap ability updates
     MinimapUpdatesSubscribe = "MINIMAP:UPDATES:SUBSCRIBE",
+    MinimapEventsSubscribe = "MINIMAP:EVENTS:SUBSCRIBE",
 
     // Chat
     SubscribeFactionChat = "FACTION:CHAT:SUBSCRIBE",
@@ -197,6 +198,12 @@ export enum GameServerKeys {
     CompleteRepairAgent = "REPAIR:AGENT:COMPLETE",
     AbandonRepairAgent = "REPAIR:AGENT:ABANDON",
 
+    // Repair bay
+    GetRepairBaySlots = "MECH:REPAIR:SLOTS",
+    InsertRepairBay = "MECH:REPAIR:SLOT:INSERT",
+    RemoveRepairBay = "MECH:REPAIR:SLOT:REMOVE",
+    SwapRepairBay = "MECH:REPAIR:SLOT:SWAP",
+
     // Companion App
     AuthGenOneTimeToken = "GEN:ONE:TIME:TOKEN",
     GetPlayerDeviceList = "PLAYER:DEVICE:LIST",
@@ -204,6 +211,8 @@ export enum GameServerKeys {
     // Quests
     SubPlayerQuestStats = "PLAYER:QUEST:STAT",
     SubPlayerQuestStatsProgression = "PLAYER:QUEST:PROGRESSIONS",
+
+    NextBattleDetails = "BATTLE:NEXT:DETAILS",
 }
 
 export enum PassportServerKeys {

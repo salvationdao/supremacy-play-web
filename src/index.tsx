@@ -237,16 +237,16 @@ const App = () => {
                                                                 <DimensionProvider>
                                                                     <UiProvider>
                                                                         <GameProvider>
-                                                                            <MiniMapProvider>
-                                                                                <HotkeyProvider>
+                                                                            <HotkeyProvider>
+                                                                                <MiniMapProvider>
                                                                                     <UserUpdater />
                                                                                     <Switch>
                                                                                         <Route path="/404" exact component={NotFoundPage} />
                                                                                         <Route path="/login-redirect" exact component={LoginRedirect} />
                                                                                         <Route path="" component={AppInner} />
                                                                                     </Switch>
-                                                                                </HotkeyProvider>
-                                                                            </MiniMapProvider>
+                                                                                </MiniMapProvider>
+                                                                            </HotkeyProvider>
                                                                         </GameProvider>
                                                                     </UiProvider>
                                                                 </DimensionProvider>

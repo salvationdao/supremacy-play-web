@@ -200,7 +200,7 @@ export const NotificationPreferencesInner = ({ notificationPreferences, setNotif
                             queue. You will be charged when the notification has been delivered to you.
                         </Typography>
 
-                        <Stack direction="row" alignItems="center">
+                        <Stack spacing="1rem" direction="row" alignItems="center">
                             <Typography sx={{ fontWeight: "fontWeightBold", span: { color: colors.yellow } }}>
                                 I have read and agree to be charge <span>5</span> SUPS per notification.
                             </Typography>
@@ -212,8 +212,9 @@ export const NotificationPreferencesInner = ({ notificationPreferences, setNotif
                                     setAgreeToBeCharged(e.currentTarget.checked)
                                 }}
                                 sx={{
-                                    "& > .MuiSvgIcon-root": { width: "2.8rem", height: "2.8rem" },
+                                    p: 0,
                                     color: colors.yellow,
+                                    "& > .MuiSvgIcon-root": { width: "2.8rem", height: "2.8rem" },
                                     ".Mui-checked, .MuiSvgIcon-root": { color: `${colors.yellow} !important` },
                                     ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${colors.yellow}50 !important` },
                                 }}

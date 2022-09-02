@@ -49,6 +49,16 @@ export interface MechRepairStatus {
     remain_seconds?: number
 }
 
+export interface RepairSlot {
+    id: string
+    player_id: string
+    mech_id: string
+    repair_case_id: string
+    status: string
+    next_repair_time: Date
+    slot_number: number
+}
+
 export interface MechStatus {
     status: MechStatusEnum
     can_deploy?: boolean

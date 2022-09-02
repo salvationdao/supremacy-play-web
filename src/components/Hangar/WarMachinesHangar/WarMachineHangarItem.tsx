@@ -82,7 +82,7 @@ export const WarMachineHangarItem = ({
     const [primaryColor, setPrimaryColor] = useState(theme.factionTheme.primary)
     const secondaryColor = theme.factionTheme.secondary
     const backgroundColor = theme.factionTheme.background
-    const selectedBackgroundColor = useMemo(() => shadeColor(backgroundColor, 420), [backgroundColor])
+    const selectedBackgroundColor = useMemo(() => shadeColor(primaryColor, -72), [primaryColor])
 
     return (
         <Box sx={{ position: "relative", overflow: "visible", height: "100%" }}>
@@ -160,9 +160,10 @@ export const WarMachineHangarItem = ({
                     onClick={toggleIsSelected}
                     sx={{
                         position: "absolute",
-                        bottom: 0,
-                        right: 0,
+                        bottom: "1rem",
+                        right: ".8rem",
                         zIndex: 3,
+                        p: 0,
                         color: primaryColor,
                         "& > .MuiSvgIcon-root": { width: "3.5rem", height: "3.5rem" },
                         ".Mui-checked, .MuiSvgIcon-root": { color: `${primaryColor} !important` },

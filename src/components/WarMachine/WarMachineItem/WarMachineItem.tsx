@@ -13,7 +13,7 @@ import { useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { AIType, GameAbility, WarMachineState } from "../../../types"
-import { MoveCommand } from "./MoveCommand"
+import { MechMoveCommandAbility } from "./MoveCommand"
 
 // in rems
 const WIDTH_AVATAR = 8.6
@@ -42,7 +42,7 @@ export const WarMachineItem = ({
     const { userID, factionID } = useAuth()
     const { getFaction } = useSupremacy()
     const { currentArenaID } = useArena()
-    const { highlightedMechParticipantID, setHighlightedMechParticipantID } = useMiniMap()
+    const { setPlayerAbility, highlightedMechParticipantID, setHighlightedMechParticipantID, resetSelection } = useMiniMap()
     const { addToHotkeyRecord } = useHotkey()
 
     const { hash, participantID, factionID: wmFactionID, name, imageAvatar, tier, ownedByID, ownerUsername, aiType } = warMachine
@@ -70,6 +70,16 @@ export const WarMachineItem = ({
     const primaryColor = useMemo(() => (selfOwned ? colors.gold : faction.primary_color), [faction.primary_color, selfOwned])
     const backgroundColor = useMemo(() => faction.background_color, [faction.background_color])
 
+    // On activate mech move command
+    const activateMechMoveCommand = useCallback(() => {
+        if (!isAlive || !currentArenaID) return
+
+        setPlayerAbility({
+            ...MechMoveCommandAbility,
+            mechHash: hash,
+        })
+    }, [isAlive, hash, setPlayerAbility, currentArenaID])
+
     // Highlighting on the map
     const handleClick = useCallback(() => {
         if (participantID === highlightedMechParticipantID) {
@@ -77,7 +87,13 @@ export const WarMachineItem = ({
         } else {
             setHighlightedMechParticipantID(participantID)
         }
-    }, [participantID, highlightedMechParticipantID, setHighlightedMechParticipantID])
+
+        if (selfOwned) {
+            activateMechMoveCommand()
+        } else {
+            resetSelection()
+        }
+    }, [participantID, highlightedMechParticipantID, selfOwned, setHighlightedMechParticipantID, activateMechMoveCommand, resetSelection])
 
     // Toggle out isExpanded if other mech is highlighted
     useEffect(() => {
@@ -91,10 +107,10 @@ export const WarMachineItem = ({
     useEffect(() => {
         if (!label || wmFactionID !== factionID) return
         if (participantID > ADD_MINI_MECH_PARTICIPANT_ID) {
-            addToHotkeyRecord(RecordType.CtrlMap, label.toString(), handleClick)
+            addToHotkeyRecord(RecordType.MiniMapCtrl, label.toString(), handleClick)
             return
         }
-        addToHotkeyRecord(RecordType.Map, label.toString(), handleClick)
+        addToHotkeyRecord(RecordType.MiniMap, label.toString(), handleClick)
     }, [handleClick, label, participantID, addToHotkeyRecord, factionID, wmFactionID])
 
     return (
@@ -110,9 +126,9 @@ export const WarMachineItem = ({
                     width: `${
                         WIDTH_AVATAR +
                         (isExpanded ? WIDTH_BODY : 2 * WIDTH_STAT_BAR) +
-                        (gameAbilities && gameAbilities.length > 0 && isAlive ? WIDTH_SKILL_BUTTON : 0) +
-                        (warMachine.ownedByID === userID ? WIDTH_SKILL_BUTTON : 0)
+                        (gameAbilities && gameAbilities.length > 0 && isAlive ? WIDTH_SKILL_BUTTON : 0)
                     }rem`,
+                    pointerEvents: "all",
                     transition: "width .1s",
                     transform: highlightedMechParticipantID === participantID ? `scale(${scale * 1.08})` : `scale(${scale})`,
                     transformOrigin: transformOrigin || "center",
@@ -282,7 +298,6 @@ export const WarMachineItem = ({
                             )}
                         </Stack>
                     )}
-
                     {/* Health and shield bars */}
                     <HealthShieldBars warMachine={warMachine} setIsAlive={setIsAlive} />
 
@@ -332,8 +347,6 @@ export const WarMachineItem = ({
                             </Box>
                         </Box>
                     )}
-
-                    {warMachine.ownedByID === userID && <MoveCommand isAlive={isAlive} warMachine={warMachine} />}
                 </Stack>
             </Stack>
 

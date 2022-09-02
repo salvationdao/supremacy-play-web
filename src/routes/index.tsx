@@ -16,6 +16,7 @@ import { MechPage } from "../pages/MechPage"
 import { StorefrontPage } from "../pages/StorefrontPage"
 import { WeaponPage } from "../pages/WeaponPage"
 import { colors } from "../theme/theme"
+import { LandingPage } from "../pages/LandingPage"
 
 // ************
 // ** ROUTES **
@@ -51,6 +52,21 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         },
         matchNavLinkID: "home",
         enable: true,
+    },
+
+    // Landing
+    landing: {
+        id: "landing",
+        path: "/landing",
+        exact: true,
+        Component: LandingPage,
+        requireAuth: true,
+        requireFaction: true,
+        enable: true,
+        navLink: {
+            enable: BATTLE_ARENA_OPEN,
+            label: "Upcoming Battle",
+        },
     },
 
     // Leaderboard
@@ -288,7 +304,7 @@ export const RIGHT_DRAWER_MAP: { [name: string]: SideTabsStruct } = {
     repairs: {
         id: "repairs",
         icon: <SvgRepair size="1.1rem" sx={{ pt: ".3rem" }} />,
-        label: "Repairs",
+        label: "Repairs Jobs",
         Component: RepairJobs,
         requireAuth: true,
         mountAllTime: false,

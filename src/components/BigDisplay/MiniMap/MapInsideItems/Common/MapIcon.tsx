@@ -11,14 +11,31 @@ interface MapIconProps {
     sx?: SxProps
     iconSx?: SxProps
     onClick?: () => void
+    locationInPixels?: boolean
+    zIndex?: number
+    noBackgroundColour?: boolean
 }
 
 // Renders an item on the minimap with correct position etc. just pass in the props you need.
-export const MapIcon = ({ primaryColor, backgroundImageUrl, insideRender, onClick, position, sx, iconSx, sizeGrid }: MapIconProps) => {
+export const MapIcon = ({
+    primaryColor,
+    backgroundImageUrl,
+    insideRender,
+    onClick,
+    position,
+    sx,
+    iconSx,
+    sizeGrid,
+    locationInPixels,
+    zIndex,
+    noBackgroundColour,
+}: MapIconProps) => {
     const { gridWidth, gridHeight } = useMiniMap()
 
     const sizeX = useMemo(() => gridWidth * sizeGrid, [sizeGrid, gridWidth])
     const sizeY = useMemo(() => gridHeight * sizeGrid, [sizeGrid, gridHeight])
+
+    const imageBackgroundColour = !!backgroundImageUrl && noBackgroundColour !== true
 
     return useMemo(() => {
         return (
@@ -31,12 +48,15 @@ export const MapIcon = ({ primaryColor, backgroundImageUrl, insideRender, onClic
                     height: `${sizeX}px`,
                     width: `${sizeY}px`,
                     cursor: "pointer",
-                    transform: `translate(${position.x * gridWidth - sizeX / 2}px, ${position.y * gridHeight - sizeY / 2}px)`,
-                    backgroundColor: insideRender ? "#030409" : primaryColor,
-                    border: `5px solid ${primaryColor}`,
-                    borderRadius: 1,
-                    boxShadow: 2,
-                    zIndex: 100,
+                    transform: locationInPixels
+                        ? `translate(${position.x - sizeX / 2}px, ${position.y - sizeY / 2}px)`
+                        : `translate(${position.x * gridWidth - sizeX / 2}px, ${position.y * gridHeight - sizeY / 2}px)`,
+                    backgroundColor: imageBackgroundColour ? (insideRender ? "#030409" : primaryColor) : "unset",
+                    border: imageBackgroundColour ? `5px solid ${primaryColor}` : "unset",
+                    borderRadius: imageBackgroundColour ? 1 : "unset",
+                    boxShadow: imageBackgroundColour ? 2 : "unset",
+                    zIndex: zIndex || 100,
+                    pointerEvents: onClick ? "all" : "none",
                     ...sx,
                 }}
             >
@@ -61,5 +81,21 @@ export const MapIcon = ({ primaryColor, backgroundImageUrl, insideRender, onClic
                 {insideRender}
             </Stack>
         )
-    }, [onClick, sizeX, sizeY, position.x, position.y, gridWidth, gridHeight, sx, backgroundImageUrl, primaryColor, insideRender, iconSx])
+    }, [
+        onClick,
+        sizeX,
+        sizeY,
+        position.x,
+        position.y,
+        gridWidth,
+        gridHeight,
+        sx,
+        backgroundImageUrl,
+        primaryColor,
+        insideRender,
+        iconSx,
+        locationInPixels,
+        imageBackgroundColour,
+        zIndex,
+    ])
 }

@@ -3,19 +3,25 @@ import { ADD_MINI_MECH_PARTICIPANT_ID } from "../../../../../constants"
 import { useGame, useSupremacy } from "../../../../../containers"
 import { MapMech } from "./MapMech"
 
-export const MapMechs = () => {
-    const { battleIdentifier } = useSupremacy()
-    return <MapMechsInner key={battleIdentifier} />
+interface MapMechsProps {
+    poppedOutContainerRef?: React.MutableRefObject<HTMLElement | null>
 }
 
-const MapMechsInner = () => {
+export const MapMechs = (props: MapMechsProps) => {
+    const { battleIdentifier } = useSupremacy()
+    return <MapMechsInner key={battleIdentifier} {...props} />
+}
+
+const MapMechsInner = ({ poppedOutContainerRef }: MapMechsProps) => {
     const { map, spawnedAI, orderedWarMachines } = useGame()
 
     const mechs = useMemo(() => {
         if (!orderedWarMachines || orderedWarMachines.length <= 0) return null
 
-        return orderedWarMachines.map((wm, i) => <MapMech key={`${wm.participantID} - ${wm.hash}`} warMachine={wm} label={i + 1} />)
-    }, [orderedWarMachines])
+        return orderedWarMachines.map((wm, i) => (
+            <MapMech key={`${wm.participantID} - ${wm.hash}`} warMachine={wm} label={i + 1} poppedOutContainerRef={poppedOutContainerRef} />
+        ))
+    }, [orderedWarMachines, poppedOutContainerRef])
 
     const ai = useMemo(() => {
         if (!spawnedAI || spawnedAI.length <= 0) return null
