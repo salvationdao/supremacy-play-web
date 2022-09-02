@@ -22,12 +22,7 @@ interface QuickDeployItemProps {
 }
 
 const propsAreEqual = (prevProps: QuickDeployItemProps, nextProps: QuickDeployItemProps) => {
-    return (
-        prevProps.isSelected === nextProps.isSelected &&
-        prevProps.mech.id === nextProps.mech.id &&
-        prevProps.queueFeed?.queue_cost === nextProps.queueFeed?.queue_cost &&
-        prevProps.queueFeed?.queue_length === nextProps.queueFeed?.queue_length
-    )
+    return prevProps.isSelected === nextProps.isSelected && prevProps.mech.id === nextProps.mech.id
 }
 
 export const QuickDeployItem = React.memo(function QuickDeployItem({ isSelected, toggleIsSelected, mech, childrenMechStatus }: QuickDeployItemProps) {
