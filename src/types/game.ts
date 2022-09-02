@@ -25,6 +25,7 @@ export enum LocationSelectType {
 export interface Map {
     Name: string
     Image_Url: string
+    Background_Url: string
     Width: number
     Height: number
     Cells_X: number
