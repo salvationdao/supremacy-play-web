@@ -190,7 +190,7 @@ const QuickDeployInner = () => {
                     </TotalAndPageSizeOptions>
 
                     <Box sx={{ px: "1rem", mt: "1.5rem", backgroundColor: "#00000099" }}>
-                        <QueueDetails queueFeed={queueFeed} ownerQueueLength={mechs.filter((m) => m.in_queue).length} />
+                        <QueueDetails queueFeed={queueFeed} />
                     </Box>
 
                     {loadError && (
