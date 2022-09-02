@@ -1,5 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useCallback, useEffect, useMemo, useState } from "react"
+import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { SvgGlobal, SvgLine, SvgMicrochip, SvgQuestionMark, SvgTarget } from "../../../../assets"
 import { useMiniMap } from "../../../../containers"
 import { colors } from "../../../../theme/theme"
@@ -8,7 +8,16 @@ import { FancyButton } from "../../../Common/FancyButton"
 import { TooltipHelper } from "../../../Common/TooltipHelper"
 import { PlayerAbilityCooldownIndicator } from "./PlayerAbilityCooldownIndicator"
 
-export const PlayerAbilityCard = ({ playerAbility, viewOnly }: { playerAbility: PlayerAbility; viewOnly?: boolean }) => {
+interface PlayerAbilityCardProps {
+    playerAbility: PlayerAbility
+    viewOnly?: boolean
+}
+
+const propsAreEqual = (prevProps: PlayerAbilityCardProps, nextProps: PlayerAbilityCardProps) => {
+    return prevProps.viewOnly === nextProps.viewOnly && prevProps.playerAbility.id === nextProps.playerAbility.id
+}
+
+export const PlayerAbilityCard = React.memo(function PlayerAbilityCard({ playerAbility, viewOnly }: PlayerAbilityCardProps) {
     const { setPlayerAbility } = useMiniMap()
     const [disabled, setDisabled] = useState(false)
 
@@ -176,4 +185,4 @@ export const PlayerAbilityCard = ({ playerAbility, viewOnly }: { playerAbility: 
             </TooltipHelper>
         </>
     )
-}
+}, propsAreEqual)
