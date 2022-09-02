@@ -71,10 +71,7 @@ const TutorialPageInner = () => {
     }, [lobbyStage, trainingStage])
 
     return (
-        <Box
-            key={lobbyStage === TrainingLobby.Intro ? "intro" : trainingStage === TrainingLobby.All ? TrainingLobby.All : "training"}
-            sx={{ width: "100%", height: "100%", display: "flex", animation: `${opacityEffect} 1s`, position: "relative" }}
-        >
+        <Box key={lobbyStage} sx={{ width: "100%", height: "100%", display: "flex", animation: `${opacityEffect} 1s`, position: "relative" }}>
             {component}
         </Box>
     )
@@ -161,7 +158,7 @@ const BattleTraining = () => {
                             sx={{
                                 height: smallScreen ? "25vh" : "auto",
                                 width: smallScreen ? "100%" : `calc((100% / ${battleTrainingOptions.length}) - 4rem)`,
-                                maxWidth: smallScreen ? "unset" : "600px",
+                                maxWidth: smallScreen ? "750px" : "500px",
                                 minWidth: "300px",
                                 transition: "all .5s",
                                 opacity: isOpen ? 0 : 1,
@@ -199,7 +196,7 @@ const BattleTraining = () => {
                                     filter: completed[t.completedState] ? "grayscale(.9)" : "unset",
                                 }}
                             >
-                                <Stack sx={{ width: "100%", height: "100%", background: colors.black2 }}>
+                                <Stack sx={{ width: "100%", height: "100%", background: colors.black2, position: "relative" }}>
                                     <video
                                         src={`${TRAINING_ASSETS}${t.video}`}
                                         poster={`${TRAINING_ASSETS}${t.image}`}
@@ -217,10 +214,13 @@ const BattleTraining = () => {
                                     />
                                     <Stack
                                         sx={{
+                                            position: "absolute",
+                                            bottom: 0,
+                                            background: "rgba(0,0,0,0.7)",
                                             p: "2rem",
                                             textAlign: "left",
                                             gap: "1rem",
-                                            minHeight: smallScreen ? "unset" : "130px",
+                                            minHeight: smallScreen ? "unset" : "150px",
                                             height: "max-content",
                                         }}
                                     >

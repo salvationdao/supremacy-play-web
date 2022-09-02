@@ -44,7 +44,6 @@ export const FactionIntro = ({ nextStep }: { nextStep: () => void }) => {
                         },
                     }}
                     onClick={() => {
-                        console.log("clicking")
                         nextStep()
                     }}
                 >
