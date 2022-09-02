@@ -92,10 +92,9 @@ export const Intro = ({ toggleTrainingIntro }: { toggleTrainingIntro: (value?: b
                     key={stage.time}
                     sx={{
                         position: "absolute",
-                        bottom: "20%",
+                        bottom: "10%",
                         left: "50%",
                         transform: "translateX(-50%)",
-                        background: `${colors.black2}99`,
                         padding: "2rem",
                         width: "calc(100% - 2rem)",
                         maxWidth: "1200px",
