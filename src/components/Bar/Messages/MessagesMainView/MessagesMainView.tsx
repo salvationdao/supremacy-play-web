@@ -1,6 +1,6 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { SvgAbility, SvgAnnouncement, SvgDamage1, SvgHealth, SvgHistoryClock, SvgNotification, SvgSyndicateFlag } from "../../../../assets"
+import { SvgAbility, SvgAnnouncement, SvgDamage1, SvgHistoryClock, SvgNotification, SvgSyndicateFlag } from "../../../../assets"
 import { useAuth } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
 import { usePagination } from "../../../../hooks"

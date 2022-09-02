@@ -68,7 +68,10 @@ export const MechGeneralStatus = ({
             key: GameServerKeys.GetRepairBaySlots,
         },
         (payload) => {
-            if (!payload || payload.length <= 0) return
+            if (!payload || payload.length <= 0) {
+                setIsInRepairBay(false)
+                return
+            }
             setIsInRepairBay(!!payload.find((repairSlot) => repairSlot.mech_id === mechID))
         },
     )
