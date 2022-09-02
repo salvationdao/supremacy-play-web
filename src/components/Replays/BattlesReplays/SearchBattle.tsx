@@ -17,7 +17,7 @@ export const SearchBattle = ({
             variant="outlined"
             hiddenLabel
             fullWidth
-            placeholder="Enter Battle ID..."
+            placeholder="Enter keywords..."
             sx={{
                 backgroundColor: "unset",
                 ".MuiOutlinedInput-input": {
