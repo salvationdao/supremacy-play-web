@@ -8,6 +8,9 @@ export enum TrainingLobby {
     BattleAbility = "BattleAbility",
     MechAbility = "MechAbility",
     PlayerAbility = "PlayerAbility",
+    Intro = "Intro",
+    FactionIntro = "FactionIntro",
+    FactionEnlist = "FactionEnlist",
     Signup = "Signup",
 }
 

@@ -26,8 +26,7 @@ export interface TrainingWinnerResponse {
 
 export const TrainingBattleAbility = () => {
     const { userID } = useAuth()
-    const { setTrainingStage, trainingStage, setBribeStage, setMap, setWarMachines, setIsTargeting, toggleIsEnlarged, setWinner, toggleIsMapOpen } =
-        useTraining()
+    const { setTrainingStage, trainingStage, setBribeStage, setMap, setWarMachines, setIsTargeting, setWinner, toggleIsMapOpen } = useTraining()
     const [videoSource, setVideoSource] = useState(VIDEO_SOURCE_BA.intro)
     const [stage, setStage] = useState<Context | null>(null)
     const [popoverOpen, setPopoverOpen] = useState(true)
@@ -45,12 +44,11 @@ export const TrainingBattleAbility = () => {
             setStage(locationStage)
             setPopoverOpen(true)
             setIsTargeting(true)
-            toggleIsEnlarged(true)
         } else if (trainingStage === BattleAbilityStages.ShowAbilityBA) {
             setPopoverOpen(false)
             videoRef.current?.play()
         }
-    }, [setIsTargeting, setPopoverOpen, toggleIsEnlarged, trainingStage, toggleIsMapOpen])
+    }, [setIsTargeting, setPopoverOpen, trainingStage, toggleIsMapOpen])
 
     // Initialise
     useEffect(() => {

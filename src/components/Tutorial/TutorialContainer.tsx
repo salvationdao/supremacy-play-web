@@ -76,9 +76,10 @@ export const TutorialContainer: React.FC<TutorialContainerProps> = ({
                             {stage.showNext && (
                                 <FancyButton
                                     clipThingsProps={{
-                                        backgroundColor: `${theme.factionTheme.primary}50`,
+                                        backgroundColor: theme.factionTheme.primary,
                                         sx: { position: "relative", ml: "auto", mt: "2rem" },
-                                        border: { borderColor: `${theme.factionTheme.primary}50` },
+                                        border: { borderColor: theme.factionTheme.primary },
+                                        opacity: 0.5,
                                     }}
                                     onClick={() => {
                                         const i = context.findIndex((s) => s === stage)
@@ -99,6 +100,7 @@ export const TutorialContainer: React.FC<TutorialContainerProps> = ({
                                         display: "flex",
                                         gap: ".5rem",
                                         animation: `${zoomEffect(1.35)} 2s infinite`,
+                                        color: theme.factionTheme.secondary,
                                     }}
                                 >
                                     Next <ArrowForwardIcon />

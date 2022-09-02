@@ -79,7 +79,7 @@ export const TrainingContainer = createContainer(() => {
     // Map triggers
     const [winner, setWinner] = useState<TrainingWinnerResponse>()
     const [playerAbility, setPlayerAbility] = useState<PlayerAbility>()
-    const [isEnlarged, toggleIsEnlarged] = useToggle(false)
+    const isEnlarged = false
     const [isTargeting, setIsTargeting] = useState(false)
 
     // Other stuff
@@ -293,7 +293,6 @@ export const TrainingContainer = createContainer(() => {
         gridWidth,
         gridHeight,
         isEnlarged,
-        toggleIsEnlarged,
         isMapOpen,
         toggleIsMapOpen,
         completed,
