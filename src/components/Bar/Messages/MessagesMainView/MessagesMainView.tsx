@@ -233,7 +233,7 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
                         />
                     </Stack>
 
-                    <Box sx={{ height: "50%", borderTop: `${theme.factionTheme.primary} 1px solid` }}>
+                    <Box sx={{ height: "60%", borderTop: `${theme.factionTheme.primary} 1px solid` }}>
                         {focusedMessage ? (
                             <MessageDisplay message={focusedMessage} onClose={() => setFocusedMessage(undefined)} />
                         ) : (

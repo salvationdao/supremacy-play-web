@@ -1,9 +1,9 @@
 import { Stack, Typography } from "@mui/material"
 import { fonts } from "../../../../../theme/theme"
 import { SystemMessageDataMechBattleComplete } from "../../../../../types"
-import { MechBattleBrief } from "./Common/MechBattleBrief"
 import { RewardAbility } from "./Common/RewardAbility"
 import { RewardSups } from "./Common/RewardSups"
+import { SystemMessageMech } from "./Common/SystemMessageMech"
 
 export interface MechBattleCompleteDetailsProps {
     message: string
@@ -12,7 +12,7 @@ export interface MechBattleCompleteDetailsProps {
 
 export const MechBattleCompleteDetails = ({ message, data }: MechBattleCompleteDetailsProps) => {
     return (
-        <Stack spacing="2rem">
+        <Stack spacing="3rem" sx={{ px: "1rem", pt: "1rem", pb: "3rem" }}>
             <Typography variant="h6">{message}</Typography>
             <RewardsSection data={data} />
             <MechsSection data={data} />
@@ -28,9 +28,8 @@ const RewardsSection = ({ data }: { data: SystemMessageDataMechBattleComplete })
         <Stack spacing="1rem">
             <Typography sx={{ fontFamily: fonts.nostromoBlack }}>YOUR REWARDS:</Typography>
 
-            <Stack alignItems="center" direction="row" spacing="2rem">
+            <Stack alignItems="center" direction="row" spacing="1.4rem">
                 {sups && sups != "0" && <RewardSups sups={sups} />}
-
                 {ability && <RewardAbility ability={ability} />}
             </Stack>
         </Stack>
@@ -46,9 +45,9 @@ const MechsSection = ({ data }: { data: SystemMessageDataMechBattleComplete }) =
         <Stack spacing="1rem">
             <Typography sx={{ fontFamily: fonts.nostromoBlack }}>{`YOUR MECH${data.mech_battle_briefs.length > 1 ? "S" : ""}:`}</Typography>
 
-            <Stack direction="row">
-                {data.mech_battle_briefs.map((battleBrief) => (
-                    <MechBattleBrief key={battleBrief.mech_id} battleBrief={battleBrief} />
+            <Stack direction="row" spacing="1.4rem">
+                {data.mech_battle_briefs.map((mech) => (
+                    <SystemMessageMech key={mech.mech_id} mech={mech} />
                 ))}
             </Stack>
         </Stack>

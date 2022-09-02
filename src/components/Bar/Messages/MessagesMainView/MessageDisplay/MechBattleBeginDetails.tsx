@@ -1,7 +1,7 @@
-import { Box, Divider, Stack, Typography } from "@mui/material"
-import { SvgCrown } from "../../../../../assets"
-import { colors, fonts } from "../../../../../theme/theme"
+import { Stack, Typography } from "@mui/material"
+import { fonts } from "../../../../../theme/theme"
 import { SystemMessageDataMechBattleBegin } from "../../../../../types"
+import { SystemMessageMech } from "./Common/SystemMessageMech"
 
 export interface MechBattleBeginDetailsProps {
     message: string
@@ -10,35 +10,27 @@ export interface MechBattleBeginDetailsProps {
 
 export const MechBattleBeginDetails = ({ message, data }: MechBattleBeginDetailsProps) => {
     return (
-        <Stack spacing=".3rem">
+        <Stack spacing="3rem" sx={{ px: "1rem", pt: "1rem", pb: "3rem" }}>
             <Typography variant="h6">{message}</Typography>
+            <MechsSection data={data} />
+        </Stack>
+    )
+}
 
-            <Divider sx={{ my: "1rem !important", borderColor: "#FFFFFF28" }} />
+const MechsSection = ({ data }: { data: SystemMessageDataMechBattleBegin }) => {
+    if (!data.mechs || data.mechs.length <= 0) {
+        return null
+    }
 
-            <Typography sx={{ fontFamily: fonts.nostromoBold, pb: "1rem" }}>REWARDS:</Typography>
+    return (
+        <Stack spacing="1rem">
+            <Typography sx={{ fontFamily: fonts.nostromoBlack }}>{`YOUR MECH${data.mechs.length > 1 ? "S" : ""}:`}</Typography>
 
-            {data.mechs && data.mechs.length > 0 && (
-                <Stack direction="row">
-                    {data.mechs.map((mech) => (
-                        <Box key={mech.mech_id}>
-                            {console.log({ mech })}
-                            <Stack direction="row" spacing=".6rem" alignItems="center">
-                                <Typography
-                                    variant="h6"
-                                    sx={{
-                                        fontWeight: "fontWeightBold",
-                                        span: {
-                                            color: (theme) => theme.factionTheme.primary,
-                                        },
-                                    }}
-                                >
-                                    NAME: <span>{mech.name}</span>
-                                </Typography>
-                            </Stack>
-                        </Box>
-                    ))}
-                </Stack>
-            )}
+            <Stack direction="row" spacing="1.4rem">
+                {data.mechs.map((mech) => (
+                    <SystemMessageMech key={mech.mech_id} mech={mech} />
+                ))}
+            </Stack>
         </Stack>
     )
 }

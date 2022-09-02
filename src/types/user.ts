@@ -133,39 +133,35 @@ export interface SystemMessage {
     sender: User
 }
 
-interface SystemMessageMech {
+export interface SystemMessageMechStruct {
     mech_id: string
     name: string
     faction_id: string
     image_url: string
     tier: string
+    // For battle begin
+    total_blocks?: number
+    damaged_blocks?: number
+    // For battle complete
+    kills?: KillInfo[]
+    killed?: KillInfo | null
+}
+
+export interface SystemMessageDataMechBattleBegin {
+    player_id: string
+    mechs: SystemMessageMechStruct[]
 }
 
 export interface SystemMessageDataMechBattleComplete {
     rewarded_sups: string
     rewarded_sups_bonus: string
     rewarded_player_ability?: BlueprintPlayerAbility
-    mech_battle_briefs: MechBattleCompleteBrief[]
-}
-
-export interface MechBattleCompleteBrief extends SystemMessageMech {
-    kills: KillInfo[]
-    killed: KillInfo | null
+    mech_battle_briefs: SystemMessageMechStruct[]
 }
 
 export interface KillInfo {
     name: string
     faction_id: string
-}
-
-export interface SystemMessageDataMechBattleBegin {
-    player_id: string
-    mechs: MechBattleBeginBrief[]
-}
-
-export interface MechBattleBeginBrief extends SystemMessageMech {
-    total_blocks: number
-    damaged_blocks: number
 }
 
 export enum QuestKey {

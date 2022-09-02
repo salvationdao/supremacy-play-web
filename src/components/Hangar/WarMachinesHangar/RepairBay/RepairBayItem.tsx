@@ -67,7 +67,7 @@ export const RepairBayItem = ({
                     },
                 }}
             >
-                {/* Mech image and deploy button */}
+                {/* Mech image */}
                 <Box
                     sx={{
                         height: isBigVersion ? "16rem" : "8rem",

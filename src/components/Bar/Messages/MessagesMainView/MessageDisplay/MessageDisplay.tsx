@@ -7,7 +7,7 @@ import { FancyButton } from "../../../../Common/FancyButton"
 import MessageRenderer from "../../MessageRenderer"
 import { SystemMessageDisplayable } from "../../Messages"
 import { MechBattleCompleteDetails } from "./MechBattleCompleteDetails"
-import { PlayerAbilityRefundedData, PlayerAbilityRefundedMessage } from "./PlayerAbilityRevered"
+import { PlayerAbilityRefundedData, PlayerAbilityRefundedMessage } from "./PlayerAbilityRefundedMessage"
 import { MechBattleBeginDetails } from "./MechBattleBeginDetails"
 
 export interface MessageDisplayProps {
