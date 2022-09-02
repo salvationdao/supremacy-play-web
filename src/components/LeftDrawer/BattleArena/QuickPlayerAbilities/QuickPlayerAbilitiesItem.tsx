@@ -18,22 +18,10 @@ export interface QuickPlayerAbilitiesItemProps {
     saleAbility: SaleAbility
     price?: string
     amount?: number
+    availability: SaleAbilityAvailability
     onClaim: () => void
     onPurchase: () => void
     setClaimError: React.Dispatch<React.SetStateAction<string | undefined>>
-    availability: SaleAbilityAvailability
-}
-
-const propsAreEqual = (prevProps: QuickPlayerAbilitiesItemProps, nextProps: QuickPlayerAbilitiesItemProps) => {
-    return (
-        prevProps.price === nextProps.price &&
-        prevProps.saleAbility.id === nextProps.saleAbility.id &&
-        prevProps.amount === nextProps.amount &&
-        prevProps.availability === nextProps.availability &&
-        prevProps.onClaim === nextProps.onClaim &&
-        prevProps.onPurchase === nextProps.onPurchase &&
-        prevProps.setClaimError === nextProps.setClaimError
-    )
 }
 
 export const QuickPlayerAbilitiesItem = React.memo(function QuickPlayerAbilitiesItem({
@@ -357,5 +345,4 @@ export const QuickPlayerAbilitiesItem = React.memo(function QuickPlayerAbilities
             )}
         </>
     )
-},
-propsAreEqual)
+})
