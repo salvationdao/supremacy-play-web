@@ -99,7 +99,7 @@ export const TrainingPlayerAbility = () => {
                         videoRef.current?.pause()
                     }
                 }}
-                onEnded={(e) => {
+                onEnded={() => {
                     const finalVideo = VIDEO_SOURCE_PA_LIST[VIDEO_SOURCE_PA_LIST.length - 1]
                     if (videoSource === finalVideo) {
                         setStage(null)
